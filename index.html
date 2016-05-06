@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
-</body>
+    <head>
+        
+        <script type="text/javascript" src="instafeed.min.js"></script>
+      
+    </head>
+    <body>
+        <script type="text/javascript">
+            var feed = new Instafeed({
+                get: 'tagged',
+                tagName: 'awesome',
+                clientId: 'YOUR_CLIENT_ID'
+            });
+            feed.run();
+        </script>
+    </body>
 </html>
