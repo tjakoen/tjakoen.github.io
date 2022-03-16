@@ -21,58 +21,61 @@ $(document).ready(function() {
 				var eventsList = [];
 				for (var i = 0; i < data.length; i++) {
 					var item =  data[i];
-				var name = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
-				
-				var checkInDate = new Date(item.cf_8).toLocaleString("en-US");
-				var checkOutDate = new Date(item.cf_9).toLocaleString("en-US");
-				
-				var stage;
-				switch ( item.pipeline_stage_id ) {
-					case 3: stage = 'yellow';
-					break;
-				case 4: stage = 'yellow';
-					break;
-				case 7: stage = 'yellow';
-					break;
-				case 8: stage = 'yellow';
-					break
-				case 5: stage = 'red';
-					break;
-					case 6: stage = 'lightgreen';
-					break;
-				}
+					var name = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
+					
+					// if ( new Date(item.cf_8) < new Date()) continue;
+					if ( item.closing_status_id != 0 ) continue;
 
-				let accom = ""
-				if (item.cf_29) {
-					accom = item.cf_29;	
-					accom = accom.replace("39", "R1");
-					accom = accom.replace("40", "R2");
-					accom = accom.replace("41", "R3");
-					accom = accom.replace("42", "R4");
-					accom = accom.replace("43", "R5");
-					accom = accom.replace("44", "G1");
-					accom = accom.replace("45", "G2");
-					accom = accom.replace("46", "G3");
-					accom = accom.replace("47", "G4");
-					accom = accom.replace("48", "G5");
-					accom = accom.replace("49", "G6");
-					accom = accom.replace("50", "VILLA");
-					accom = accom.replace("51", "DAY TRIP");
-					accom = accom.replace("52", "CAMPERS");
-					accom = accom.replace("53", "EXCLUSIVE");
-				}
-	
+					var checkInDate = new Date(item.cf_8).toLocaleString("en-US");
+					var checkOutDate = new Date(item.cf_9).toLocaleString("en-US");
+					
+					var stage;
+					switch ( item.pipeline_stage_id ) {
+						case 3: stage = 'yellow';
+						break;
+					case 4: stage = 'yellow';
+						break;
+					case 7: stage = 'yellow';
+						break;
+					case 8: stage = 'yellow';
+						break
+					case 5: stage = 'red';
+						break;
+						case 6: stage = 'lightgreen';
+						break;
+					}
+
+					let accom = ""
+					if (item.cf_29) {
+						accom = item.cf_29;	
+						accom = accom.replace("39", "R1");
+						accom = accom.replace("40", "R2");
+						accom = accom.replace("41", "R3");
+						accom = accom.replace("42", "R4");
+						accom = accom.replace("43", "R5");
+						accom = accom.replace("44", "G1");
+						accom = accom.replace("45", "G2");
+						accom = accom.replace("46", "G3");
+						accom = accom.replace("47", "G4");
+						accom = accom.replace("48", "G5");
+						accom = accom.replace("49", "G6");
+						accom = accom.replace("50", "VILLA");
+						accom = accom.replace("51", "DAY TRIP");
+						accom = accom.replace("52", "CAMPERS");
+						accom = accom.replace("53", "EXCLUSIVE");
+					}
+		
+					
 				
-			
-				var event = {
-					title: (accom != "" ?  accom + " - ": "") + name,
-					start: checkInDate,
-					end: checkOutDate,
-					color: stage,
-					textColor: 'black',
-					url: 'https://budgetoutings.flowlu.com/_module/crm/view/lead/' + item.id,
-				};
-				eventsList.push(event);
+					var event = {
+						title: (accom != "" ?  accom + " - ": "") + name,
+						start: checkInDate,
+						end: checkOutDate,
+						color: stage,
+						textColor: 'black',
+						url: 'https://budgetoutings.flowlu.com/_module/crm/view/lead/' + item.id,
+					};
+					eventsList.push(event);
 				}
 				callback(eventsList);
 			});
