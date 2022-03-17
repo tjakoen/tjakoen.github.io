@@ -24,14 +24,16 @@ $(document).ready(function() {
 					var name = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
 					
 					// if ( new Date(item.cf_8) < new Date()) continue;
-					if ( item.closing_status_id != 0 ) continue;
+					if ( item.closing_status_id == 1 || item.closing_status_id == 2|| item.closing_status_id == 3|| item.closing_status_id == 4|| item.closing_status_id == 5) {
+						if ( item.pipeline_stage_id != 6 ) continue;
+					} 
 
 					var checkInDate = new Date(item.cf_8).toLocaleString("en-US");
 					var checkOutDate = new Date(item.cf_9).toLocaleString("en-US");
 					
 					var stage;
 					switch ( item.pipeline_stage_id ) {
-						case 3: stage = 'yellow';
+					case 3: stage = 'yellow';
 						break;
 					case 4: stage = 'yellow';
 						break;
@@ -41,7 +43,7 @@ $(document).ready(function() {
 						break
 					case 5: stage = 'red';
 						break;
-						case 6: stage = 'lightgreen';
+					case 6: stage = 'lightgreen';
 						break;
 					}
 
@@ -81,7 +83,7 @@ $(document).ready(function() {
 			});
 		},
 		eventRender: function eventRender( event, element, view ) {
-			console.log (event);
+			// console.log (event);
 			return ['all', event.color].indexOf($('#booking_selector').val()) >= 0
 		},
 		eventClick: function(info) {
