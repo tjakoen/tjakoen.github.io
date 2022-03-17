@@ -4,16 +4,24 @@ $(document).ready(function() {
 	})
 
 	$('#calendar').fullCalendar({
-		dayMaxEventRows: true, // for all non-TimeGrid views
-		views: {
-		timeGrid: {
-			dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
-		}
-		},
+		defaultView: 'listYear', // Default to Year so that the calendar doesnt have to load when going through months and weeks
 		header: {
 			left: 'prev,next today',
 			center: 'title',
-			right: 'month',
+			right: 'month,listYear,listMonth,listWeek',
+		},
+		buttonText: {
+			month: 'Calendar',
+			listYear: 'Year',
+			listMonth: 'Month',
+			listWeek: 'Week',
+	   	},
+	   	// Only show 6 dates on calendar, show 'show more' if more than 6 
+		eventLimit: true,
+		views: {
+			month: {
+			eventLimit: 6
+			}
 		},
 		displayEventTime: false,
 		events: function(start, end, timezone, callback ) {
@@ -23,8 +31,12 @@ $(document).ready(function() {
 					var item =  data[i];
 					var name = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
 					
-					// if ( new Date(item.cf_8) < new Date()) continue;
+					// Do not display if checkout date is not today
+					if ( new Date(item.cf_9) < new Date()) continue;
+					// Do not display closed leads
 					if ( item.closing_status_id == 1 || item.closing_status_id == 2|| item.closing_status_id == 3|| item.closing_status_id == 4|| item.closing_status_id == 5) {
+						// If a lead was closed, but is in finalization, still display
+						// API Limitation, if a lead is closed then opened aagain closing_status_id reains as previous closed.
 						if ( item.pipeline_stage_id != 6 ) continue;
 					} 
 
@@ -67,8 +79,6 @@ $(document).ready(function() {
 						accom = accom.replace("53", "EXCLUSIVE");
 					}
 		
-					
-				
 					var event = {
 						title: (accom != "" ?  accom + " - ": "") + name,
 						start: checkInDate,
@@ -82,10 +92,20 @@ $(document).ready(function() {
 				callback(eventsList);
 			});
 		},
+		// Loading Bar when retreiving data
+		loading: function (isLoading) {
+			if (isLoading) {
+				$('#loading').show();
+			}
+			else {                
+				$('#loading').hide();
+			}
+		},
+		// Filter for color
 		eventRender: function eventRender( event, element, view ) {
-			// console.log (event);
 			return ['all', event.color].indexOf($('#booking_selector').val()) >= 0
 		},
+		// Open CRM link on click
 		eventClick: function(info) {
 			//info.jsEvent.preventDefault(); // don't let the browser navigate
 			if (info.event.url) {
@@ -95,6 +115,7 @@ $(document).ready(function() {
 	});
 });
 
+// Get All CRM Leads (Can be optimitzed)
 async function fetchMetaData() {
 	let allData = [];
 	let morePagesAvailable = true;
@@ -102,14 +123,14 @@ async function fetchMetaData() {
 	let totalPages = 0;
 
 	while(morePagesAvailable) {
-	currentPage++;
-	const response = await fetch(`https://budgetoutings.flowlu.com/api/v1/module/crm/lead/list?api_key=aGU5NVJWYW00UTNsZmkyanpSNkVzTDd5Z2dnTUdvcWxfNzY5ODY&filter[pipeline_stage_id]=3,4,5,6,7,8&limit=100&page=${currentPage}`)
-	let data = await response.json();
-	totalPages = totalPages == 0 ? Math.ceil( (data.response.total_result) / 100 ) : totalPages;
-	let items = data.response.items;
+		currentPage++; // Start with page 1
+		const response = await fetch(`https://budgetoutings.flowlu.com/api/v1/module/crm/lead/list?api_key=aGU5NVJWYW00UTNsZmkyanpSNkVzTDd5Z2dnTUdvcWxfNzY5ODY&filter[pipeline_stage_id]=3,4,5,6,7,8&limit=100&page=${currentPage}`)
+		let data = await response.json();
+		// Round up to nearest page if on first loop
+		totalPages = totalPages == 0 ? Math.ceil( (data.response.total_result) / 100 ) : totalPages;
+		let items = data.response.items;
 		items.forEach(e => allData.unshift(e));
-	morePagesAvailable = currentPage < totalPages;
+		morePagesAvailable = currentPage < totalPages;
 	}
-	//console.log ( allData );
 	return allData;
 }
