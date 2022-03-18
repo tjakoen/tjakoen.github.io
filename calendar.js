@@ -88,7 +88,7 @@ $(document).ready(function() {
 					}
 		
 					var event = {
-						title: (accom != "" ?  accom + " - ": "") + name,
+						title: (accom != "" ?  accom + " - ": "") + name + ( item.cf_30 != null  ? " [ " +  item.cf_30 + " ]" : ""),
 						start: checkInDate,
 						end: checkOutDate,
 						color: stage,
