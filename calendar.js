@@ -31,8 +31,14 @@ $(document).ready(function() {
 					var item =  data[i];
 					var name = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
 					
+					var today = new Date();
+					var yesteday = new Date();
+					yesteday.setDate(today.getDate() - 1);
 					// Do not display if checkout date is not today
-					if ( new Date(item.cf_9) < new Date()) continue;
+					if ( item.cf_9 ) { // Day Trip has no checkout date set sometimes
+						if ( new Date(item.cf_9) < today ) continue; // If checkout is before today remove
+					} else if ( new Date( item.cf_8 ) < yesteday ) continue; // If check-in is before yesterday remove (For Day Trip)
+
 					// Do not display closed leads
 					if ( item.closing_status_id == 1 || item.closing_status_id == 2|| item.closing_status_id == 3|| item.closing_status_id == 4|| item.closing_status_id == 5) {
 						// If a lead was closed, but is in finalization, still display
@@ -77,6 +83,8 @@ $(document).ready(function() {
 						accom = accom.replace("51", "DAY TRIP");
 						accom = accom.replace("52", "CAMPERS");
 						accom = accom.replace("53", "EXCLUSIVE");
+						accom = accom.replace("54", "CATERING");
+						accom = accom.replace("55", "TEAM BUILDING");
 					}
 		
 					var event = {
