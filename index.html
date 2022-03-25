@@ -1,6 +1,9 @@
 <html lang='en'>
   <head>
     <meta charset='utf-8' />
+    <title>Bookings Calendar</title>
+    <link rel="icon" href="favicon-16x16.png">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
@@ -9,7 +12,11 @@
     <style>
       body {
         font: 14px Arial;
-        margin: 2em 4em;
+        margin: 2em 2em;
+      }
+      .calendar-parent {
+        height: 100vh;
+        
       }
       #calendar {
         display: block;
@@ -55,7 +62,9 @@
       </div>
     </div>
     <div style="clear: both"></div>
-    <div id='calendar'></div>
+    <div class='calendar-parent'>
+      <div id='calendar'></div>
+    </div>
     <div id="loading" style="display:none;"><img id="loading-image" src="loading.gif" alt="Loading..." /></div>
   	<script src='calendar.js'></script>
   </body>

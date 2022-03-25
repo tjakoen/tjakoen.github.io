@@ -4,6 +4,7 @@ $(document).ready(function() {
 	})
 
 	$('#calendar').fullCalendar({
+		height: 'parent',
 		defaultView: 'listYear', // Default to Year so that the calendar doesnt have to load when going through months and weeks
 		header: {
 			left: 'prev,next today',
@@ -28,16 +29,17 @@ $(document).ready(function() {
 			fetchMetaData().then(function(data) {
 				var eventsList = [];
 				for (var i = 0; i < data.length; i++) {
-					var item =  data[i];
-					var name = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
-					
+					var item =  data[i];				
 					var today = new Date();
 					var yesteday = new Date();
+					var dayBeforeYesterday = new Date();
 					yesteday.setDate(today.getDate() - 1);
+					dayBeforeYesterday.setDate(yesteday.getDate() - 1);
+
 					// Do not display if checkout date is not today
 					if ( item.cf_9 ) { // Day Trip has no checkout date set sometimes
-						if ( new Date(item.cf_9) < today ) continue; // If checkout is before today remove
-					} else if ( new Date( item.cf_8 ) < yesteday ) continue; // If check-in is before yesterday remove (For Day Trip)
+						if ( new Date(item.cf_9) < yesteday ) continue; // If checkout is before today remove
+					} else if ( new Date( item.cf_8 ) < dayBeforeYesterday ) continue; // If check-in is before yesterday remove (For Day Trip)
 
 					// Do not display closed leads
 					if ( item.closing_status_id == 1 || item.closing_status_id == 2|| item.closing_status_id == 3|| item.closing_status_id == 4|| item.closing_status_id == 5) {
@@ -87,8 +89,13 @@ $(document).ready(function() {
 						accom = accom.replace("55", "TEAM BUILDING");
 					}
 		
+					var bookingName = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
+					var accommodationType = (accom != "" ?  "[ " + accom + " ]": "");
+					var numberOfPax = ( item.cf_11 != "" ? "(" + item.cf_11 + " PAX)" : ""); 
+					var bookingNotes = ( item.cf_30 != null  ? " \` \` \` \` << " +  item.cf_30 + " >>" : "");
+
 					var event = {
-						title: (accom != "" ?  accom + " - ": "") + name + ( item.cf_30 != null  ? " [ " +  item.cf_30 + " ]" : ""),
+						title:  accommodationType + " : " + bookingName + " " +  numberOfPax + " " + bookingNotes,
 						start: checkInDate,
 						end: checkOutDate,
 						color: stage,
