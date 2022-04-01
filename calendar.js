@@ -39,7 +39,7 @@ $(document).ready(function() {
 					// Do not display if checkout date is not today
 					if ( item.cf_9 ) { // Day Trip has no checkout date set sometimes
 						if ( new Date(item.cf_9) < yesteday ) continue; // If checkout is before today remove
-					} else if ( new Date( item.cf_8 ) < dayBeforeYesterday ) continue; // If check-in is before yesterday remove (For Day Trip)
+					} else if ( new Date( item.cf_8 ) < yesteday ) continue; // If check-in is before yesterday remove (For Day Trip)
 
 					// Do not display closed leads
 					if ( item.closing_status_id == 1 || item.closing_status_id == 2|| item.closing_status_id == 3|| item.closing_status_id == 4|| item.closing_status_id == 5) {
