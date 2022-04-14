@@ -42,7 +42,7 @@ $(document).ready(function() {
 					} else if ( new Date( item.cf_8 ) < yesteday ) continue; // If check-in is before yesterday remove (For Day Trip)
 
 					// Do not display closed leads
-					if ( item.closing_status_id == 1 || item.closing_status_id == 2|| item.closing_status_id == 3|| item.closing_status_id == 4|| item.closing_status_id == 5) {
+					if ( item.closing_status_id == 1 || item.closing_status_id == 2|| item.closing_status_id == 3|| item.closing_status_id == 4|| item.closing_status_id == 5 || item.closing_status_id == 6 || item.closing_status_id == 7 || item.closing_status_id == 8) {
 						// If a lead was closed, but is in finalization, still display
 						// API Limitation, if a lead is closed then opened aagain closing_status_id reains as previous closed.
 						if ( item.pipeline_stage_id != 6 ) continue;
