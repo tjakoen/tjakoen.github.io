@@ -28,18 +28,14 @@ $(document).ready(function() {
 		events: function(start, end, timezone, callback ) {
 			fetchMetaData().then(function(data) {
 				var eventsList = [];
+				let date = getDate();
 				for (var i = 0; i < data.length; i++) {
 					var item =  data[i];				
-					var today = new Date();
-					var yesteday = new Date();
-					var dayBeforeYesterday = new Date();
-					yesteday.setDate(today.getDate() - 1);
-					dayBeforeYesterday.setDate(yesteday.getDate() - 1);
-
+					
 					// Do not display if checkout date is not today
 					if ( item.cf_9 ) { // Day Trip has no checkout date set sometimes
-						if ( new Date(item.cf_9) < yesteday ) continue; // If checkout is before today remove
-					} else if ( new Date( item.cf_8 ) < yesteday ) continue; // If check-in is before yesterday remove (For Day Trip)
+						if ( new Date(item.cf_9) < date ) continue; // If checkout is before today remove
+					} else if ( new Date( item.cf_8 ) < date ) continue; // If check-in is before yesterday remove (For Day Trip)
 
 					// Do not display closed leads
 					if ( item.closing_status_id == 1 || item.closing_status_id == 2|| item.closing_status_id == 3|| item.closing_status_id == 4|| item.closing_status_id == 5 || item.closing_status_id == 6 || item.closing_status_id == 7 || item.closing_status_id == 8) {
@@ -87,6 +83,9 @@ $(document).ready(function() {
 						accom = accom.replace("53", "EXCLUSIVE");
 						accom = accom.replace("54", "CATERING");
 						accom = accom.replace("55", "TEAM BUILDING");
+						accom = accom.replace("60", "BEDDINGS");
+						accom = accom.replace("61", "ISLAND HOPPING");
+						accom = accom.replace("62", "HIKING");
 					}
 		
 					var bookingName = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
@@ -130,6 +129,14 @@ $(document).ready(function() {
 	});
 });
 
+function getDate() {
+	var today = new Date();
+	var yesteday = new Date();
+	// var dayBeforeYesterday = new Date();
+	yesteday.setDate(today.getDate() - 1);
+	// dayBeforeYesterday.setDate(yesteday.getDate() - 1);
+	return yesteday;
+}
 // Get All CRM Leads (Can be optimitzed)
 async function fetchMetaData() {
 	let allData = [];
@@ -137,9 +144,15 @@ async function fetchMetaData() {
 	let currentPage = 0;
 	let totalPages = 0;
 
+	var date = getDate();
+	var dateString = date.getFullYear() + "-0" + (date.getMonth()+1) + "-" + date.getDate();
+
 	while(morePagesAvailable) {
 		currentPage++; // Start with page 1
-		const response = await fetch(`https://budgetoutings.flowlu.com/api/v1/module/crm/lead/list?api_key=aGU5NVJWYW00UTNsZmkyanpSNkVzTDd5Z2dnTUdvcWxfNzY5ODY&filter[pipeline_stage_id]=3,4,5,6,7,8&limit=100&page=${currentPage}`)
+		// const response = await fetch(`https://budgetoutings.flowlu.com/api/v1/module/crm/lead/list?api_key=aGU5NVJWYW00UTNsZmkyanpSNkVzTDd5Z2dnTUdvcWxfNzY5ODY&filter[pipeline_stage_id]=3,4,5,6,7,8&limit=100&page=${currentPage}`)
+		const requestString = `https://budgetoutings.flowlu.com/api/v1/module/crm/lead/list?api_key=aGU5NVJWYW00UTNsZmkyanpSNkVzTDd5Z2dnTUdvcWxfNzY5ODY&filter[pipeline_stage_id]=3,4,5,6,7,8&filter[cf.field_8]={"start_date":"${dateString}"}&limit=100&page=${currentPage}`;
+		console.log ( requestString );
+		const response = await fetch(requestString);
 		let data = await response.json();
 		// Round up to nearest page if on first loop
 		totalPages = totalPages == 0 ? Math.ceil( (data.response.total_result) / 100 ) : totalPages;
