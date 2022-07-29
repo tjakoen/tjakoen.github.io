@@ -91,7 +91,7 @@ $(document).ready(function() {
 					var bookingName = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
 					var accommodationType = (accom != "" ?  "[ " + accom + " ]": "");
 					var numberOfPax = ( item.cf_11 != "" ? "(" + item.cf_11 + " PAX)" : ""); 
-					var bookingNotes = ( item.cf_30 != null  ? " \` \` \` \` << " +  item.cf_30 + " >>" : "");
+					var bookingNotes = ( item.cf_30 != null  ? "\n» NOTES: " +  item.cf_30 + "" : "");
 
 					var event = {
 						title:  accommodationType + " : " + bookingName + " " +  numberOfPax + " " + bookingNotes,
