@@ -63,6 +63,7 @@ $(document).ready(function() {
 						break;
 					}
 
+					// Accommodations (Multi-Select)
 					let accom = ""
 					if (item.cf_29) {
 						accom = item.cf_29;	
@@ -81,25 +82,40 @@ $(document).ready(function() {
 						accom = accom.replace("51", "DAY TRIP");
 						accom = accom.replace("52", "CAMPERS");
 						accom = accom.replace("53", "EXCLUSIVE");
-						accom = accom.replace("54", "CATERING");
-						accom = accom.replace("55", "TEAM BUILDING");
-						accom = accom.replace("60", "BEDDINGS");
-						accom = accom.replace("61", "ISLAND HOPPING");
-						accom = accom.replace("62", "HIKING");
 					}
-		
+
+
+					// Inclusions (Multi-Select)
+					let bookInclusions = "";
+					if (item.cf_32) {
+						bookInclusions = item.cf_32;	
+						bookInclusions = bookInclusions.replace("63", "Promo Booking");
+						bookInclusions = bookInclusions.replace("64", "Pilows & Beddings");
+						bookInclusions = bookInclusions.replace("65", "Catering");
+						bookInclusions = bookInclusions.replace("66", "Transportation");
+						bookInclusions = bookInclusions.replace("67", "Team Building");
+						bookInclusions = bookInclusions.replace("68", "Island Hopping (Shuttle)");
+						bookInclusions = bookInclusions.replace("69", "Island Hopping (Private)");
+						bookInclusions = bookInclusions.replace("70", "Hiking");
+						bookInclusions = bookInclusions.replace("71", "KTV Rental");
+					}
+
+					// SETUP STRING
 					var bookingName = item.name + (item.cf_24 ? ' - ' + item.cf_24 : '');
-					var accommodationType = (accom != "" ?  "[ " + accom + " ]": "");
-					var numberOfPax = ( item.cf_11 != "" ? "(" + item.cf_11 + " PAX)" : ""); 
-					var bookingNotes = ( item.cf_30 != null  ? "\n» NOTES: " +  item.cf_30 + "" : "");
+					var groupType =  ( item.cf_15 != "" ? "\n👪 " + getGroupType(item.cf_15) : ""); 
+					var numberOfPax = ( item.cf_11 != "" ? " (" + item.cf_11 + " PAX)" : ""); 
+					var accommodationType = (accom != "" ?  "\n🏠 [ " + accom + " ]": "");
+					var bookingType = ( item.cf_14 != null  ?  getBookingType(item.cf_14) : "");
+					var bookingInclusions =  ( item.cf_32 != null  ?  "\n🔎 " + bookInclusions : ""); 
+					var bookingNotes = ( item.cf_30 != null  ? "\n📃 " +  item.cf_30 : "");
 
 					var event = {
-						title:  accommodationType + " : " + bookingName + " " +  numberOfPax + " " + bookingNotes,
+						title:  bookingName + groupType + numberOfPax + accommodationType + ": " + bookingType + bookingInclusions + bookingNotes,
 						start: checkInDate,
 						end: checkOutDate,
 						color: stage,
 						textColor: 'black',
-						url: 'https://budgetoutings.flowlu.com/_module/crm/view/lead/' + item.id,
+						url: 'https://sales.budgetoutings.com.ph/_module/crm/view/lead/' + item.id,
 					};
 					eventsList.push(event);
 				}
@@ -120,14 +136,44 @@ $(document).ready(function() {
 			return ['all', event.color].indexOf($('#booking_selector').val()) >= 0
 		},
 		// Open CRM link on click
-		eventClick: function(info) {
-			//info.jsEvent.preventDefault(); // don't let the browser navigate
-			if (info.event.url) {
-				window.open(info.event.url);
+		eventClick: function(event) {
+			if (event.url) {
+				window.open(event.url, "_blank");
+				return false;
 			}
 		},
 	});
 });
+	
+// BOOKING TYPE
+function getBookingType (values) {
+	var type = {
+	  '58': '1799 All-in Team Building w/ Transpo',
+	  '7': 'Overnight Camping',
+	  '5': 'Dormitory Accommodations',
+	  '6': 'Day Trip',
+	  '9': 'Team Building',
+	  '56': '799 Team Building Promo',
+	  '57':'Catering',
+	};
+	return type[values];
+}
+
+function getGroupType (values) {
+	var type = {
+	  '12': 'Company Outing',
+	  '11': 'Team Outing',
+	  '13': 'Family Outing',
+	  '14': 'Barkada Outing',
+	  '15': 'Church Group',
+	  '16': 'Government',
+	  '22': 'Couple Outing',
+	  '59': 'School/University',
+	};
+	return type[values];
+}
+
+
 
 function getDate() {
 	var today = new Date();
