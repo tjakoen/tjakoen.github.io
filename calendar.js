@@ -82,6 +82,9 @@ $(document).ready(function() {
 						accom = accom.replace("51", "DAY TRIP");
 						accom = accom.replace("52", "CAMPERS");
 						accom = accom.replace("53", "EXCLUSIVE");
+						accom = accom.replace("73", "G7");
+						accom = accom.replace("74", "G8");
+						accom = accom.replace("75", "G9");			
 					}
 
 
