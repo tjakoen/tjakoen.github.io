@@ -1,6 +1,6 @@
 # CLAUDE.md — portfolio
 
-Onboarding + operating rules for anyone (AI or human) working in `portfolio/`: the personal site
+Onboarding + operating rules for anyone (AI or human) working in `tjakoen.github.io/`: the personal site
 (tjakoen.github.io) and the home of all published content, the notes, and the personal standards.
 Read this first. This is where most content work happens, so before writing anything in Tjakoen's
 name, read the standards below.
@@ -10,7 +10,7 @@ name, read the standards below.
 
 ## What this is
 
-`portfolio/` is a consumer of grain + batch, plus the content layer: the blog/notes, the résumé and
+`tjakoen.github.io/` is a consumer of grain + batch, plus the content layer: the blog/notes, the résumé and
 showcase pages (`/`, `/grain`, `/batch`), and the standards. It uses MILL to render Markdown content
 into GRAIN pages (MILL is planned; content is authored as `.md` now). It uses the stack; it does not
 build it. Pages are trailheads to the canonical docs, never forks of them.

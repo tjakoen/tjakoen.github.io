@@ -110,11 +110,11 @@ Draft/finish a note for tjakoen.github.io/notes following my personal standard. 
 byline, so voice and honesty are the whole job.
 
 STEP 1 — READ THE STANDARDS FIRST, don't wing it:
-- portfolio/standards/VOICE.md — how it must READ. Match it. If a passage is clean, correct, and
+- tjakoen.github.io/standards/VOICE.md — how it must READ. Match it. If a passage is clean, correct, and
   forgettable, it sounds like AI; make it mine (a confession up front, a real number, a wink at my
   own expense, a sentence that's too short).
-- portfolio/standards/NOTE-STANDARD.md (this file) — the artifact: frontmatter, structure, footer.
-- portfolio/CONTENT-BACKLOG.md — is this piece planned? what's its angle? what must it NOT say?
+- tjakoen.github.io/standards/NOTE-STANDARD.md (this file) — the artifact: frontmatter, structure, footer.
+- tjakoen.github.io/CONTENT-BACKLOG.md — is this piece planned? what's its angle? what must it NOT say?
 
 STEP 2 — WRITE:
 - Frontmatter block per the template (title/subtitle/author/status: DRAFT/type/date/readingTime/

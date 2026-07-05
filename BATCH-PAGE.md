@@ -3,7 +3,7 @@
 > Status: **planned, not built.** The BATCH section of the portfolio — the pitch for the
 > *substrate* (Bun · Addressable · TypeScript · CSS · htmx; **no build step**, renders live at request
 > time). Like `/grain`, it's a portfolio section served at **`/batch`** from
-> `portfolio/pages/batch/index.html`, built *with* the stack it describes. Ships in the same static
+> `tjakoen.github.io/pages/batch/index.html`, built *with* the stack it describes. Ships in the same static
 > `dist/` export as the rest of the portfolio (ARCHITECTURE §18 — a crawler over the running
 > server, not a second renderer), root-hosted on GitHub Pages (`tjakoen.github.io`). See `PLAN.md`
 > and — for the identical docs approach — `GRAIN-PAGE.md`.
@@ -56,7 +56,7 @@ callouts deep-link to `/batch/docs`.
    through **one door**; no privileged AI→DOM back channel. A small diagram.
 4. **The four concerns, one direction of dependency.** Each layer builds only on those below:
    `batch` (substrate) → `grain` (design system) → `mill` (the CMS) → the consuming apps (`project`,
-   `portfolio`); the composition root is the only place they're wired (`project/server.ts`). Import
+   `portfolio`); the composition root is the only place they're wired (`tjakoen.github.io/server.ts`). Import
    purity as a feature. Deep-links to `docs/CONVENTIONS.md` §1/§10.
 5. **Atomic + tokens, live.** Server-side Atomic templating, `var(--token)` theming, htmx for
    reads/loads/nav. A compact "here's a route rendered live" example.
@@ -84,7 +84,7 @@ them — alongside `/batch/docs` pages and the shared allowlist (`/components.cs
 ## Build order
 
 - **v1:** the pitch page — hero + no-build + one-vocabulary/one-door + three-layers + atomic/tokens
-  + testing + footer, at `portfolio/pages/batch/index.html`; e2e in `project/e2e/`; a `batch` shot.
+  + testing + footer, at `tjakoen.github.io/pages/batch/index.html`; e2e in `tjakoen.github.io/e2e/`; a `batch` shot.
 - **docs:** `/batch/docs` once the markdown content collection (`PLAN.md` piece 3) lands.
 - **export:** rides `batch/export` (`PLAN.md` piece 1) with the rest of the portfolio.
 

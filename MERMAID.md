@@ -91,13 +91,13 @@ const doc = renderGrainDocument(raw, withDiagrams(c.adapter, svgs));
 ```
 Index route unchanged (frontmatter only).
 
-**`portfolio/content.ts`** — compose the renderer once, pass into `createMillRoutes`:
+**`tjakoen.github.io/content.ts`** — compose the renderer once, pass into `createMillRoutes`:
 ```ts
-const diagrams = cachedRenderer("portfolio/diagram-cache", createMermaidRenderer());
+const diagrams = cachedRenderer("tjakoen.github.io/diagram-cache", createMermaidRenderer());
 ```
-Cache dir: **`portfolio/diagram-cache/`** (committed `.svg` files + a short README.md explaining key scheme + regeneration). All three collections benefit — the key is content-hash so batch/docs diagrams cache in the same consumer-owned dir.
+Cache dir: **`tjakoen.github.io/diagram-cache/`** (committed `.svg` files + a short README.md explaining key scheme + regeneration). All three collections benefit — the key is content-hash so batch/docs diagrams cache in the same consumer-owned dir.
 
-**Warm tool** — `portfolio/tools/warm-diagrams.ts`: iterate the three collections' sources, run `prepareDiagrams` on every entry with the cached renderer, print rendered/cached/failed counts, `close()` the browser. Root script `"diagrams": "bun portfolio/tools/warm-diagrams.ts"`. Run it once during the build to populate + commit the cache (22 diagrams). Export needs nothing new: it freezes live output, and the live output now contains SVGs (cache hit, no chromium).
+**Warm tool** — `tjakoen.github.io/tools/warm-diagrams.ts`: iterate the three collections' sources, run `prepareDiagrams` on every entry with the cached renderer, print rendered/cached/failed counts, `close()` the browser. Root script `"diagrams": "bun tjakoen.github.io/tools/warm-diagrams.ts"`. Run it once during the build to populate + commit the cache (22 diagrams). Export needs nothing new: it freezes live output, and the live output now contains SVGs (cache hit, no chromium).
 
 **Deps** — root `package.json`: add `"mermaid"` to devDependencies. `mill/package.json` stays dep-free; mill/README documents that the mermaid renderer module requires the consumer to install `playwright` + `mermaid` (post-split note).
 
@@ -120,21 +120,21 @@ FIGURES.md edits:
 2. Rendering-reality table: mermaid row "MILL / published site" → **yes — MILL renders mermaid→SVG server-side, theme-tokened**; delete the "MILL dependency (open…)" paragraph, replace with a short "how it renders" note (committed cache, `bun run diagrams` to warm).
 3. Document the `<style>`-inside-generated-SVG distinction (hand-authored rule unchanged).
 
-Migrate existing hand-authored inline SVGs in `portfolio/notes/*.md` (grep `<svg` — the three reference figures in `ten-times-zero.md` and any others): mechanical replacement of each SVG root's palette declaration + font-family with the new form. Verify each page in light + dark after.
+Migrate existing hand-authored inline SVGs in `tjakoen.github.io/notes/*.md` (grep `<svg` — the three reference figures in `ten-times-zero.md` and any others): mechanical replacement of each SVG root's palette declaration + font-family with the new form. Verify each page in light + dark after.
 
 ## Tests (3 tiers per CONVENTIONS §6)
 
 - **Unit** (`mill/diagrams/*.test.ts`): `prepareDiagrams` finds multiple mermaid blocks and only mermaid; `withDiagrams` falls back to default `<pre>` for non-mermaid langs, missing map entries, and composes over an existing consumer `code` override; `cachedRenderer` — hit skips inner, key changes with source and VERSION_TAG, inner-null not cached; sentinel replacement as a pure function (feed fake SVG containing sentinel hex + rgb forms → all replaced, leftover-hex warning path).
 - **Integration** (`mill/serve.test.ts` additions): route with a fake `DiagramRenderer` returning `<svg data-fake>` → response contains `data-variant="diagram"` figure with the SVG and no `<pre data-lang="mermaid">`; fake returning null → `<pre class="code-block" data-lang="mermaid">` fallback, page 200; grade guardrail still green.
-- **E2E** (`project/e2e/`): one check — a note with a diagram (e.g. `/notes/why-i-teach`) serves an inline `<svg>` inside `.figure`, in both `data-color-scheme` values (cache committed, so no live chromium render during the test run beyond Playwright itself).
+- **E2E** (`tjakoen.github.io/e2e/`): one check — a note with a diagram (e.g. `/notes/why-i-teach`) serves an inline `<svg>` inside `.figure`, in both `data-color-scheme` values (cache committed, so no live chromium render during the test run beyond Playwright itself).
 
 ## Docs sync (root CLAUDE.md table)
 
 - `mill/PLAN.md`: un-defer mermaid→SVG (lines ~69, ~159-161, ~255) — tick it in "What MILL gives you" with the port/cache design one-liner.
 - `mill/README.md` + `mill/CLAUDE.md` (built-so-far list): diagrams module + consumer requirements.
-- `portfolio/standards/FIGURES.md`: as above.
+- `tjakoen.github.io/standards/FIGURES.md`: as above.
 - `ROADMAP.md` Track C: tick the mermaid item.
-- `portfolio/CONTENT-BACKLOG.md`: close the tracked "MILL dependency" item.
+- `tjakoen.github.io/CONTENT-BACKLOG.md`: close the tracked "MILL dependency" item.
 - Root `package.json`: `mermaid` devDep + `diagrams` script.
 - Memory: write one recording the port design, sentinel technique, committed-cache decision.
 
@@ -145,7 +145,7 @@ Migrate existing hand-authored inline SVGs in `portfolio/notes/*.md` (grep `<svg
 3. `mill/serve.ts` deps + entry branch; integration tests with fake renderer.
 4. `mermaid` devDep; `mill/diagrams/mermaid-playwright.ts` (sentinel init + post-process + leftover-hex warning); pure-function tests for the substitution.
 5. `grain` figure diagram variant CSS + `figure.md`.
-6. `portfolio/content.ts` wiring + `portfolio/tools/warm-diagrams.ts` + root script; run warm → commit `portfolio/diagram-cache/`.
+6. `tjakoen.github.io/content.ts` wiring + `tjakoen.github.io/tools/warm-diagrams.ts` + root script; run warm → commit `tjakoen.github.io/diagram-cache/`.
 7. FIGURES.md rewrite + migrate note SVGs.
 8. E2E test; docs sync; memory.
 

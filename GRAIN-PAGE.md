@@ -3,7 +3,7 @@
 > Status: **v1 built (2026-07-01), relocated into the portfolio.** hero · grade-as-signal ·
 > catalog-peek · how-it-works · footer (the components showcase was removed 2026-07-02 — the
 > sidebar catalog is the reference) — served at **`/grain`** from
-> `portfolio/pages/grain/index.html`, with e2e (`project/e2e/grain-page.e2e.ts`) and shots
+> `tjakoen.github.io/pages/grain/index.html`, with e2e (`tjakoen.github.io/e2e/grain-page.e2e.ts`) and shots
 > (`grain`, `grain-peek`). v2 (AI demo) + v3 (re-skin toggle) still to come.
 >
 > This is the GRAIN showcase, built *with* GRAIN — the portfolio's proof the framework is real
@@ -129,7 +129,7 @@ no-op when misused). First slice = design the live traps out + add conformance t
   `chat-message`'s `align-self` can't silently misalign — chat-message.md documents the parent
   requirement; (c) the AI **click pulse** is self-sufficient (`.is-click` in `grain/ai/ai.css` no
   longer needs a sibling `.ai-spotlit`).
-- **GRAIN conformance tests** (`project/e2e/grain-conformance.e2e.ts`): assert usage CONTRACTS in a
+- **GRAIN conformance tests** (`tjakoen.github.io/e2e/grain-conformance.e2e.ts`): assert usage CONTRACTS in a
   real browser (computed style / geometry) — grade renders grain on a bare span, chat aligns in a
   chat-log, a pending input shows the dashed edge, reduced-motion stills the caret. On the grain
   split (CONVENTIONS §10) this becomes grain's own e2e harness.
@@ -296,7 +296,7 @@ AI-demo decision — the portfolio-wide chat island is the same idea, generalize
 ## Build order
 
 - **v1 ✅ (2026-07-01):** hero + grade-as-signal + components + catalog-peek + how-it-works + footer.
-  At `portfolio/pages/grain/index.html`; e2e at `project/e2e/grain-page.e2e.ts` (portfolio home +
+  At `tjakoen.github.io/pages/grain/index.html`; e2e at `tjakoen.github.io/e2e/grain-page.e2e.ts` (portfolio home +
   3 showcase tests, green); shots `grain` + `grain-peek`. `tsc` + `bun test` green.
 - **v2 (2026-07-03):** the "Watch the AI act" section — first shipped with a client-side
   op-emitter (`surface-demo.js`). Superseded by v3.
