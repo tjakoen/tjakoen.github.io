@@ -1,0 +1,11 @@
+{
+  "//": "Placeholder for the future site repo (see ../SPLIT-PLAN.md). Code is Apache-2.0; written content is all rights reserved — see NOTICE. private:true because a site isn't an npm package, not a comment on repo visibility. Today the monorepo root package.json is authoritative.",
+  "name": "tjakoen.github.io",
+  "version": "0.1.0",
+  "description": "tjakoen.github.io — a custom BATCH + GRAIN site that uses MILL for its content.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "private": true,
+  "author": "Tjakoen Stolk <tjakoen.s@gmail.com> (https://tjakoen.github.io)",
+  "homepage": "https://tjakoen.github.io"
+}

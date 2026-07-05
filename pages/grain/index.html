@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GRAIN — an AI-interaction design system</title>
+  <meta name="description" content="One interface a person and an AI operate through the same controls. GRAIN's own site, built with GRAIN.">
+  <!-- shell.js runs the rail/console toggles (this page now lives in the BREAD shell) -->
+  <!-- the Catalog pane behaviours (sidebar-panel Catalog mode): hover a component → its catalog
+       entry is revealed in the pane (opened by the Catalog tab / hero CTA). ⌘K is global. -->
+  <script src="/scripts/catalog-peek.js" defer></script>
+  <!-- reusable demo-box island (ES module): runs the declarative scripted demos below -->
+  <script type="module" src="/scripts/demo-box.js"></script>
+  <!-- THE REAL DISPATCHER — the same one client-JS island /loop uses. The composed surface below
+       is operated through the ONE DOOR: a human's Ask and the AI's "Watch the AI act" both post an
+       Intent to POST /intent and render back over SSE. No showcase-only AI→DOM back channel. -->
+  <style>
+    /* ---------------------------------------------------------------------------
+       Demo-site LAYOUT only (NOT the design system). This page is GRAIN's own site,
+       composed from GRAIN's components on the default theme; a product re-skins it by
+       overriding tokens. Tokens only here — no hardcoded colours.
+       --------------------------------------------------------------------------- */
+    .site { --site-max: 60rem; }
+
+    /* persistent chrome: a quiet sticky bar (wordmark · demo flag · ⌘K · Inspect) */
+    .site__bar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; gap: var(--space-4);
+      padding: var(--space-3) var(--page-pad);
+      background: color-mix(in srgb, var(--paper) 88%, transparent);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--color-line);
+    }
+    .site__brand { display: flex; align-items: baseline; gap: var(--space-3); min-width: 0; }
+    .site__wordmark { font-family: var(--font-accent); font-size: var(--text-xl); letter-spacing: 0.02em; }
+    .site__tagline { color: var(--color-muted); font-size: var(--text-sm); white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; }
+    .site__flag { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--color-muted); border: 1px dashed var(--ink); border-radius: var(--radius-pill);
+      padding: 0 var(--space-2); }
+    .site__bar-actions { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; }
+
+    /* one editorial column, rules between sections */
+    .site__section { max-width: var(--site-max); margin: 0 auto; padding: var(--space-7) var(--page-pad); }
+    .site__section + .site__section { border-top: 1px solid var(--color-line); }
+    .site__lede { color: var(--color-muted); font-size: var(--text-lg); max-width: 54ch; line-height: var(--leading-relaxed); }
+    .site__why { color: var(--color-muted); font-size: var(--text-sm); max-width: 60ch; }
+
+    /* hero */
+    .hero { padding-top: var(--space-8); padding-bottom: var(--space-8); }
+    .hero__head { font-size: var(--display); line-height: var(--leading-tight); letter-spacing: -0.01em;
+      margin: 0 0 var(--space-5); max-width: 18ch; }
+    .hero__cta { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); }
+
+    /* the signature micro-moment: the AI types a line — in grain, and it STAYS grain */
+    .signature { display: block; margin-top: var(--space-6); font-size: var(--text-2xl); line-height: 1.3; }
+    .signature__line { min-height: 1.3em; }
+    .signature__cap { display: block; margin-top: var(--space-3); font-size: var(--text-sm); color: var(--color-muted); }
+    .sig-replay { background: transparent; border: 0; padding: 0; cursor: pointer; color: var(--color-muted);
+      font: inherit; font-size: var(--text-sm); text-decoration: underline; }
+    .sig-replay:hover { color: var(--ink); }
+
+    /* grade-as-signal panel */
+    .grade { display: grid; gap: var(--space-6); margin-top: var(--space-6);
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+    .grade__card { border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-5); }
+    .grade__card h3 { font-size: var(--text-lg); margin: 0 0 var(--space-3); }
+    .grade__card .field { margin-bottom: var(--space-3); }
+    .grade__card .list__item { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+    .grade__legend { display: flex; flex-wrap: wrap; gap: var(--space-5); margin-top: var(--space-6);
+      font-size: var(--text-sm); color: var(--color-muted); }
+    .grade__legend b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+
+    /* the headline proof: the SAME words, large, clean vs grain — so you can actually see the
+       texture change (Redaction vs Redaction 50). Small body text hides the grade. */
+    .grade-show { margin: var(--space-6) 0; display: flex; flex-direction: column; gap: var(--space-4); }
+    .grade-show__row { display: flex; align-items: baseline; gap: var(--space-4); margin: 0; flex-wrap: wrap; }
+    .grade-show__tag { flex: 0 0 6rem; font-size: var(--text-xs); text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--color-muted); }
+    .grade-show__text { font-size: var(--text-3xl); line-height: 1.2; }
+
+    /* a real composed surface (rail + main), not a specimen grid — every part is a grain component */
+    .surface { display: grid; grid-template-columns: minmax(7rem, 12rem) 1fr; gap: var(--space-5);
+      margin-top: var(--space-6); border: 1px solid var(--color-line); border-radius: var(--radius-md);
+      padding: var(--space-5); }
+    .surface__rail { display: flex; flex-direction: column; gap: var(--space-1);
+      border-right: 1px solid var(--color-line); padding-right: var(--space-4); }
+    .surface__main { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+    /* chat threads use grain's own .chat-log container (bundled in /components.css) — see chat-log.css */
+    .surface__main .list__item { display: flex; align-items: center; gap: var(--space-3); }
+    .surface__main .list__item .task-label { flex: 1; }
+    .surface__main .list__item.is-done .task-label { text-decoration: line-through; color: var(--color-muted); }
+    [data-ai-run] { font-family: var(--font-grain); }   /* the AI trigger wears grain — it's the machine's move */
+    /* while acting it holds the standard AI-mode state (data-commit="pending" → dashed edge + caret,
+       from b-button); lift it above the spotlight veil so that state is visible over the dim.
+       Pin bg+fg together: a lingering :hover (mouse didn't move after the click) sets color:paper,
+       which over a paper bg would be white-on-white — so state the working look explicitly. */
+    [data-ai-run][data-commit="pending"] { position: relative; z-index: var(--z-ai-surface, 9002);
+      background: var(--paper); color: var(--ink); }
+    /* align-items:end so the Send button lines up with the INPUT, not the label+input block */
+    .surface__compose { display: flex; align-items: flex-end; gap: var(--space-3); flex-wrap: wrap;
+      border-top: 1px solid var(--color-line); padding-top: var(--space-4); }
+    .surface__compose .field { flex: 1; }
+    @media (max-width: 34rem) { .surface { grid-template-columns: 1fr; }
+      .surface__rail { flex-direction: row; flex-wrap: wrap; border-right: 0; padding-right: 0;
+        border-bottom: 1px solid var(--color-line); padding-bottom: var(--space-3); } }
+
+    /* the terminal: hidden at rest; RISES while the AI acts (backdrop on) and lifts above the
+       spotlight veil so its narration is readable over the dim — the /grain analogue of /loop's
+       app-shell console takeover. */
+    .surface-term { display: none; }
+    body:has(.ai-backdrop.is-on) .surface-term { display: block; position: relative;
+      z-index: var(--z-ai-surface, 9002); margin-top: var(--space-5);
+      border: 1px solid var(--ink); border-radius: var(--radius-md); overflow: hidden;
+      background: var(--paper); }
+    .surface-term__bar { display: flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-2) var(--space-4); border-bottom: 1px solid var(--color-line);
+      font-family: var(--font-grain); font-size: var(--text-sm); color: var(--color-muted); }
+    .surface-term .console__feed { padding: var(--space-3) var(--space-4); max-height: 12rem;
+      overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-2); }
+    .surface-term .console__line { display: flex; align-items: baseline; gap: var(--space-3);
+      font-size: var(--text-sm); }
+    @media (prefers-reduced-motion: reduce) { .surface-term { scroll-behavior: auto; } }
+
+    /* how it works — a small monochrome diagram */
+    .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-2); margin: var(--space-6) 0; }
+    .flow__node { flex: 1 1 8rem; border: 1px solid var(--ink); border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4); font-size: var(--text-sm); text-align: center;
+      display: flex; align-items: center; justify-content: center; }
+    .flow__node--door { border-style: solid; border-width: 2px; }
+    .flow__node--code { font-family: var(--font-grain); }
+    .flow__arrow { display: flex; align-items: center; color: var(--color-muted); }
+    .how__points { margin-top: var(--space-6); }
+
+    /* footer */
+    .site__foot { max-width: var(--site-max); margin: 0 auto; padding: var(--space-8) var(--page-pad) var(--space-16);
+      border-top: 1px solid var(--color-line); color: var(--color-muted); font-size: var(--text-sm); }
+    .site__foot-links { display: flex; flex-wrap: wrap; gap: var(--space-5); margin-bottom: var(--space-4); }
+    .site__foot em { font-style: normal; text-decoration: underline; }
+
+    /* The Catalog peek is no longer page-local: it lives in the frame's sidebar-panel as the
+       Catalog pane (Chat ⇄ Catalog mode tabs — portfolio-frame.{html,css}; behaviours in
+       grain/scripts/catalog-peek.js). Opening it widens the aside GRID COLUMN, so the content
+       shifts aside — never an overlay. The GRAIN section tabs likewise live in the frame's
+       topbar. Nothing page-local needed here anymore. */
+
+    /* Themes tab — one card per flavor with a live "Use this theme" button (theme.js, data-set-theme) */
+    .themes { display: grid; gap: var(--space-4); margin-top: var(--space-5);
+      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+    .theme-card { border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: var(--space-5);
+      display: flex; flex-direction: column; gap: var(--space-3); }
+    .theme-card__name { font-size: var(--text-lg); margin: 0; }
+    .theme-card__desc { color: var(--color-muted); font-size: var(--text-sm); margin: 0; flex: 1; }
+    .theme-card .btn { align-self: flex-start; }
+  </style>
+</head>
+<body data-screen="grain" class="app-window-backdrop">
+  <!-- the GRAIN section now lives in the unified BREAD shell (portfolio frame + site-wide
+       assistant/console + theme toggles). Its old .site__bar chrome is retired. -->
+  <!-- data-section="grain" makes the frame's GRAIN section tabs (Catalog · Demo · Themes) show in the
+       topbar here AND on /loop (the Demo), persisting across the section via the topbar transition. -->
+  <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+  <div class="site" data-peek-root>
+
+    <!-- 1 · HERO — the pitch, with the signature settling grain → clean -->
+    <section class="site__section hero" aria-label="What GRAIN is">
+      <p class="eyebrow">The <span class="name">GRAIN</span> design system</p>
+      <h1 class="hero__head">One interface. A person <em>and</em> an AI operate it through the same controls.</h1>
+      <p class="site__lede">A human click and an AI decision become the same intent, flow through one door, and
+        come back as visible edits. The AI's presence is shown, never hidden — <b class="name">grain</b> is the signature of a machine at work.</p>
+
+      <div class="signature" data-demo="trigger" aria-label="A line the AI types, in grain.">
+        <span class="signature__line" data-grade="grain" id="sig-line">Draft the Thursday plan.</span><span class="caret" id="sig-caret" hidden></span>
+        <span class="signature__cap">the AI types it in grain — and it <b>stays</b> grain (provenance persists) ·
+          <button class="sig-replay" data-demo-play type="button">▷ replay</button></span>
+        <script type="application/json" class="demo-box__steps">
+          [{"type":"#sig-line","value":"Draft the Thursday plan.","caret":"#sig-caret","speed":55}]
+        </script>
+      </div>
+
+      <div class="hero__cta">
+        <!-- opens the Catalog sidebar (a behaviour hook → hand-authored .btn, like the Inspect toggle;
+             b-button forwards only config props, not data-peek). Full-page catalog is one click on
+             from inside the sidebar. -->
+        <button class="btn" type="button" data-peek="open">Browse the components</button>
+        <b-button as="a" href="#how" label="How it works" variant="soft"></b-button>
+      </div>
+      <p class="site__why">Every surface on this page is one of GRAIN's own components. Open the
+        <b>Catalog</b> tab and hover anything — the peek reveals its entry.</p>
+    </section>
+
+    <!-- 2 · GRADE-AS-SIGNAL — grain = AI / in-transit, clean = human / committed -->
+    <section class="site__section" aria-label="Grade as signal">
+      <div class="section-head"><span>Grade as signal</span></div>
+      <p class="site__why">One rule reads instantly and everywhere: <b class="name">grain</b> type means the AI is
+        acting or a value is in transit; <b>clean</b> type means a human wrote it or it has committed. Same words,
+        two typefaces — no badges to learn.</p>
+
+      <!-- the proof, at a size where the texture reads: same line, clean (Redaction) vs grain (Redaction 50) -->
+      <div class="grade-show">
+        <p class="grade-show__row"><span class="grade-show__tag">a person</span><span class="grade-show__text">Draft the Thursday plan.</span></p>
+        <p class="grade-show__row"><span class="grade-show__tag">the AI</span><span class="grade-show__text" data-grade="grain">Draft the Thursday plan.</span></p>
+      </div>
+
+      <div class="grade">
+        <div class="grade__card" data-demo="loop">
+          <h3>Two hands, one thread</h3>
+          <!-- real chat-message components in a flex thread: you (clean, right) + the AI (grain, left) -->
+          <div class="chat-log">
+            <div class="chat-message" data-role="you"><span class="chat-message__who">You</span><span class="chat-message__body">Plan my afternoon around the review.</span></div>
+            <div class="chat-message" data-role="ai" data-grade="grain"><span class="chat-message__who">GRAIN</span><span class="chat-message__body" id="ai-typing">On it — drafting a plan and triaging today's items.</span></div>
+          </div>
+          <p class="site__why">You (clean) and the AI (grain) in one conversation — the AI's line <b>stays</b> grain; provenance never evaporates into looking human.</p>
+          <script type="application/json" class="demo-box__steps">
+            [{"type":"#ai-typing","value":"On it — drafting a plan and triaging today's items.","speed":34},{"wait":2800}]
+          </script>
+        </div>
+
+        <div class="grade__card" data-demo="loop">
+          <h3>Your optimistic action settles</h3>
+          <!-- settling to clean is for a HUMAN's own value (AI-INTERFACE §5): grain in-transit → clean committed -->
+          <ul class="list">
+            <li class="list__item" id="settle-row"><span>Archive last week's notes</span><span class="badge" data-status="archived" id="settle-badge">archived</span></li>
+          </ul>
+          <p class="site__why">Archiving is <b>your</b> action: grain while in-transit, then clean once it commits.
+            AI speech, by contrast, stays grain — only your committed data reads clean.</p>
+          <script type="application/json" class="demo-box__steps">
+            [{"attr":"#settle-row","name":"data-grade","value":"grain"},{"attr":"#settle-badge","name":"data-status","value":"active"},{"text":"#settle-badge","value":"archiving…"},{"wait":1500},{"clear":"#settle-row","name":"data-grade"},{"attr":"#settle-badge","name":"data-status","value":"archived"},{"text":"#settle-badge","value":"archived"},{"wait":2400}]
+          </script>
+        </div>
+      </div>
+
+      <div class="grade__legend">
+        <span data-grade="grain"><b>grain</b> — the AI, in transit</span>
+        <span><b>clean</b> — a human, committed</span>
+      </div>
+    </section>
+
+    <!-- 3 · A REAL SURFACE — not a specimen grid: one believable composition that USES the
+         components in context, so hovering any piece reveals it in the sidebar catalog. -->
+    <section class="site__section" aria-label="A surface composed from GRAIN">
+      <div class="section-head">
+        <span>One surface, both operators</span>
+        <!-- run the SAME surface as the AI would — a real Intent through the door (demo.run). The
+             server's reasoner pushes the RenderOps; the dispatcher applies them (like /loop). -->
+        <button class="btn" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ Watch the AI act</button>
+      </div>
+      <p class="site__why">A real GRAIN composition, operated through the <b>one door</b>. <b>Ask it something</b>
+        yourself, or <b>watch the AI act</b> — both post the same Intent to <span class="name">/intent</span> and
+        render back over SSE. There is no privileged AI&nbsp;→&nbsp;DOM path; the same page powers this demo.</p>
+
+      <div class="surface" data-surface="screen" data-surface-demo>
+        <nav class="surface__rail" data-surface="grain-rail" aria-label="Views">
+          <a class="nav-item" aria-current="page"><b-icon sym="/assets/sprite.svg#tasks"></b-icon><span class="nav-item__label">Tasks</span></a>
+          <a class="nav-item"><b-icon sym="/assets/sprite.svg#loop"></b-icon><span class="nav-item__label">Loops</span></a>
+          <a class="nav-item"><b-icon sym="/assets/sprite.svg#knowledge"></b-icon><span class="nav-item__label">Notes</span></a>
+        </nav>
+
+        <div class="surface__main">
+          <nav class="tab-bar" aria-label="Range">
+            <a class="tab" aria-current="page">Today</a>
+            <a class="tab">This week</a>
+          </nav>
+
+          <!-- the assistant thread: your message settles clean; the AI's reply streams in and STAYS grain -->
+          <!-- the surface's OWN chat (chat-log:grain) — distinct from the shell assistant's chat-log,
+               and visible in the main pane during a takeover (the shell assistant slides away). -->
+          <div class="chat-log" data-chat-log data-surface="chat-log:grain">
+            <div class="chat-message" data-role="ai" data-grade="grain"><span class="chat-message__who">GRAIN</span><span class="chat-message__body">Ask me to plan something — or watch me act.</span></div>
+          </div>
+
+          <ul class="list" data-tasks data-surface="grain-tasks">
+            <li class="list__item" data-surface="grain-task"><span class="task-label">Draft the Q3 plan</span> <span class="badge" data-status="active" data-surface="grain-task-badge">active</span></li>
+            <li class="list__item"><span class="task-label">Review the design thread</span> <span class="badge" data-status="archived">done</span></li>
+          </ul>
+
+          <!-- operable controls, wired to the real door (raw input/button so they carry data-action +
+               data-surface, exactly like /loop's composer) — chat.send → your bubble + the AI's reply -->
+          <div class="surface__compose">
+            <label class="field">
+              <span class="field__label">Ask</span>
+              <input class="field__input" type="text" placeholder="Ask GRAIN to do something…"
+                     data-action="chat.send" data-target="chat-log:grain" data-surface="grain-ask" aria-label="Ask GRAIN">
+            </label>
+            <button class="btn" data-action="chat.send" data-target="chat-log:grain" data-from="grain-ask">Send</button>
+            <b-kbd keys="⌘K"></b-kbd>
+          </div>
+        </div>
+      </div>
+
+      <!-- narration now goes to the SHELL console (portfolio-frame's data-surface="console"), which
+           rises on takeover — the standalone .surface-term is retired. -->
+    </section>
+
+    <!-- 5 · HOW IT WORKS — one vocabulary → one door → RenderOps over SSE -->
+    <section class="site__section" id="how" aria-label="How it works">
+      <div class="section-head"><span>How it works</span><a class="action" href="/ai/manifest?screen=grain">manifest</a></div>
+      <p class="site__why">The whole system is one closed vocabulary of verbs and surfaces
+        (<span class="name">contract.ts</span>). A human click and an AI decision are the same
+        <b>Intent</b>; both flow through <b>one door</b> and return as <b>RenderOp</b>s pushed over SSE.
+        There is no privileged AI → DOM back channel.</p>
+
+      <div class="flow" aria-hidden="true">
+        <div class="flow__node">Human click<br>· or ·<br>AI decision</div>
+        <div class="flow__arrow">→</div>
+        <div class="flow__node flow__node--code">Intent</div>
+        <div class="flow__arrow">→</div>
+        <div class="flow__node flow__node--door">one door<br>POST /intent</div>
+        <div class="flow__arrow">→</div>
+        <div class="flow__node flow__node--code">RenderOps</div>
+        <div class="flow__arrow">→</div>
+        <div class="flow__node">SSE → DOM</div>
+      </div>
+
+      <ul class="list how__points">
+        <li class="list__item"><b>One vocabulary.</b> Verbs and surfaces live in a single registry — referenced, never re-typed as strings.</li>
+        <li class="list__item"><b>A manifest the AI reads.</b> Each screen publishes a drift-proof, machine-readable map of what's operable at <a href="/ai/manifest">/ai/manifest</a> — harvested from the components, so the AI is <em>shown</em> the page, not told about it.</li>
+        <li class="list__item"><b>Self-documenting.</b> Every component auto-appears in a live <a href="/catalog">component catalog</a> — the design system browses itself.</li>
+        <li class="list__item"><b>Auditable by design.</b> Every interaction — human or AI — is one source-tagged Intent through one server-side door, so a full human + AI interaction log is a server-side drop-in.</li>
+        <li class="list__item"><b>Two door transports, one contract.</b> On the live server the door is <span class="name">POST /intent</span>; on a static host this page opts into the <b>client-side door</b> — the same vocabulary and the same ops, run in your browser with no backend. The client door is deliberately fenced: everything it loads is <b>client-safe by contract</b> — static-style modules only, no secrets or tokens, nothing that needs a server. Anything that does need one (real data, a real model) stays behind the server door and is simply absent here.</li>
+        <li class="list__item"><b>No build step.</b> Server-rendered hypermedia on BATCH — Bun, TypeScript, CSS, htmx. Ship the source.</li>
+      </ul>
+    </section>
+
+    <!-- 6 · THEMES — every theme is a pure token override; switch the whole site -->
+    <section class="site__section" id="themes" aria-label="Themes">
+      <div class="section-head"><span>Themes</span></div>
+      <p class="site__why">Every theme is a <b>pure token override</b> — one signature accent hue, no component
+        edits (the topbar ◆ toggle cycles these site-wide too). Pick one:</p>
+      <div class="themes">
+        <div class="theme-card">
+          <h3 class="theme-card__name">Sourdough</h3>
+          <p class="theme-card__desc">Warm monochrome e-ink — the default, hueless.</p>
+          <button class="btn" data-variant="soft" data-set-theme="sourdough">Use Sourdough</button>
+        </div>
+        <div class="theme-card">
+          <h3 class="theme-card__name">Baguette</h3>
+          <p class="theme-card__desc">Clean and crisp — near-white light, near-black dark, a soft-blue accent.</p>
+          <button class="btn" data-variant="soft" data-set-theme="baguette">Use Baguette</button>
+        </div>
+        <div class="theme-card">
+          <h3 class="theme-card__name">Brioche</h3>
+          <p class="theme-card__desc">Warm cream and honey-gold — the cozy one.</p>
+          <button class="btn" data-variant="soft" data-set-theme="brioche">Use Brioche</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- footer -->
+    <footer class="site__foot">
+      <div class="site__foot-links">
+        <a href="/catalog">Component catalog</a>
+        <a href="/ai/manifest">AI manifest</a>
+        <a href="/loop">The reference screen (/loop)</a>
+      </div>
+      <p>Built on <b class="name">BATCH</b> — no build step. <em>This site is itself built with GRAIN</em>, on the
+        default theme; a product re-skins it by overriding tokens. The "watch the AI act" demo above runs
+        through the real door, and the <b>Themes</b> tab re-skins the whole site live.</p>
+    </footer>
+      </div><!-- /.site -->
+    </main>
+  </div><!-- /.app-shell -->
+</body>
+</html>

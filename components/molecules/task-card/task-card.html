@@ -1,0 +1,10 @@
+<!-- molecules/task-card -->
+<article class="task-card" data-bind-id="id">
+  <b-text as="h3" class="card-title" data="name"></b-text>
+  <b-badge data="status"><span class="badge">active</span></b-badge>
+  <!-- data-driven action button: raw markup is fine INSIDE a component (it owns its
+       markup); variant/size are static, label/action come from the task's data. -->
+  <button class="btn" data-size="sm" data-variant="outline"
+          data-bind-hx-post="archive.action" hx-target="closest .task-card" hx-swap="outerHTML"
+          data-field="archive.label">Archive</button>
+</article>

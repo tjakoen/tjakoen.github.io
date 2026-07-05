@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The desk — Department of Time</title>
+  <!-- htmx loads the initial list; shell.js runs the rail; the dispatcher runs the AI loop. -->
+  <script src="/vendor/htmx.min.js" defer></script>
+  <style>
+    /* page-specific layout for the desk's workspace (not part of the design system) */
+    .desk { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+      padding: var(--space-5); margin-bottom: var(--space-6); }
+    .desk__line { min-height: 1.6em; margin: var(--space-3) 0; }
+    .desk__plan { margin: var(--space-3) 0; }
+    .desk__plan:empty::before { content: "—"; color: var(--ink-faint); }   /* a resting bullet before the desk writes */
+  </style>
+</head>
+<body data-screen="loop" class="app-window-backdrop">
+  <!-- /loop is the GRAIN section's "Demo" tab — data-section="grain" shows the section tabs here too -->
+  <div class="app-shell app-window" data-section="workspace" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="board">
+        <!-- masthead (DESIGN-SYSTEM §5) -->
+        <p class="eyebrow">The <span class="name">Department of Time</span></p>
+        <h1 class="masthead">A desk that writes back.</h1>
+        <hr class="rule">
+
+        <!-- THE DEMO — watch the desk plan your Thursday end-to-end: it composes a request,
+             reflects, drafts a plan as a bullet LIST, then REVISES one item (backspacing it,
+             retyping), and summarises. Each thing it touches goes grain (working) → clean
+             (done). The spotlight follows it; click anywhere to ask it to stop (AI-INTERFACE §5c). -->
+        <div class="section-head">
+          <span>Watch the desk work</span>
+          <a class="action" href="/ai/manifest?screen=loop">manifest</a>
+        </div>
+        <p class="muted">The desk plans your Thursday: it writes a request, drafts a plan, then revises one line — each touch goes grain while it works, then settles clean. Click anywhere to ask it to stop.</p>
+        <button class="btn" data-action="demo.run" data-target="screen" style="margin-bottom: var(--space-5)">Watch the desk work</button>
+
+        <!-- the workspace the desk acts in. Each region carries its surface address; the desk
+             writes to them over SSE. You can also type a request yourself in the field. -->
+        <section class="desk" aria-label="The desk">
+          <label class="field">
+            <span class="field__label">Ask the desk — or watch it above</span>
+            <input class="field__input" type="text" placeholder="e.g. plan my Thursday"
+                   data-action="say.set" data-target="reflection" data-surface="ask-input" aria-label="Ask the desk">
+          </label>
+
+          <p class="desk__line" data-surface="reflection"><span class="muted">The desk is listening.</span></p>
+
+          <ul class="list desk__plan" data-surface="plan"></ul>
+
+          <!-- today's tasks the desk triages: it spotlights each card (loop-card / task-card)
+               and flips its b-badge — grain while it acts, clean when committed. The first card is
+               backed by a REAL item (ITM-demo-1): the desk archives it through the service, not a
+               cosmetic flip, then the committed card is rendered back over SSE. -->
+          <article class="loop-card" data-surface="item:ITM-demo-1">
+            <h3 class="loop-card__title">Review architecture doc</h3>
+            <span class="badge" data-status="active">active</span>
+          </article>
+          <div class="task-card" data-surface="item:ITM-demo-2">
+            <h3 class="card-title">Deep-work block</h3>
+            <span class="badge" data-status="active" data-surface="demo-task-badge">unscheduled</span>
+          </div>
+
+          <!-- the desk presses this to finalise — a button it CLICKS (b-button) -->
+          <button class="btn" data-surface="commit-btn" style="margin-top: var(--space-4)">Commit plan</button>
+
+          <p class="desk__line" data-surface="summary"></p>
+        </section>
+
+        <!-- The real task loop — Archive routes through the single AI interaction layer:
+             optimistic grain → committed clean, pushed over SSE. Interactive (click Archive). -->
+        <div class="section-head" style="margin-top: var(--space-8)"><span>Your tasks</span></div>
+        <div id="loop-list" data-surface="item-list" hx-get="/ui/loop" hx-trigger="load">
+          <span class="muted">Loading…</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

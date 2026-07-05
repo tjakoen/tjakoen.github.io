@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome — TJ's Desk</title>
+  <meta name="description" content="Portfolio of Tjakoen Stolk — AI-first interfaces, built with my own no-build hypermedia stack (BATCH · GRAIN · MILL) and served as plain static files.">
+  <!-- default theme (LINKED): tokens → base/skin → grade mechanism. All component styles come
+       bundled in /components.css; pages carry no <style> of their own. -->
+</head>
+<body data-screen="welcome" class="app-window-backdrop">
+  <!-- THE EDITOR: the whole site lives inside one app window; / is its Welcome page -->
+  <div class="app-shell app-window" data-section="desk" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="welcome">
+        <h1 class="welcome__title">TJ's Desk</h1>
+        <p class="welcome__sub">Software engineering, taught and shipped — I direct, Claude types.</p>
+
+        <div class="welcome__cols">
+          <div>
+            <h2>Start</h2>
+            <nav class="start" data-surface="welcome-start" aria-label="Start">
+              <a class="start__item" href="/grain" data-shell="focus-chat"><b-icon sym="/assets/sprite.svg#spark" size="sm"></b-icon>Ask the desk about TJ…</a>
+              <a class="start__item" href="/notes"><b-icon sym="/assets/sprite.svg#knowledge" size="sm"></b-icon>Read the notes…</a>
+              <a class="start__item" href="/grain"><b-icon sym="/assets/sprite.svg#tasks" size="sm"></b-icon>See the BREAD stack…</a>
+              <a class="start__item" href="/dashboard"><b-icon sym="/assets/sprite.svg#loop" size="sm"></b-icon>Open the workspace…</a>
+              <a class="start__item" href="/about"><b-icon sym="/assets/sprite.svg#send" size="sm"></b-icon>Get in touch…</a>
+            </nav>
+
+            <h2>Recent</h2>
+            <div class="recent" data-surface="welcome-recent">
+              <welcome-recent each="recentNotes"></welcome-recent>
+              <a class="recent__item" href="/notes"><span class="recent__name">More…</span></a>
+            </div>
+          </div>
+
+          <div>
+            <h2>Walkthroughs</h2>
+            <div class="walks" data-surface="welcome-walks">
+              <a class="walk" href="/grain">
+                <span class="walk__head"><b-icon sym="/assets/sprite.svg#spark" size="sm"></b-icon>Watch the AI act
+                  <span class="walk__badge">live</span></span>
+                <p class="walk__body">One vocabulary, two operators: a person and an AI drive the same
+                  controls — the AI's hand stays visible as grain.</p>
+              </a>
+              <a class="walk" href="/batch">
+                <span class="walk__head"><b-icon sym="/assets/sprite.svg#tasks" size="sm"></b-icon>Get started with BREAD
+                  <span class="walk__badge">3 layers</span></span>
+                <p class="walk__body">BATCH the substrate, GRAIN the design system, MILL the content
+                  engine — the no-build stack this site runs on.</p>
+              </a>
+              <a class="walk" href="/notes/ten-times-zero">
+                <span class="walk__head"><b-icon sym="/assets/sprite.svg#knowledge" size="sm"></b-icon>Ten times zero
+                  <span class="walk__badge">flagship</span></span>
+                <p class="walk__body">From imposter to professional — the story behind the byline, and
+                  why the counter starts at zero.</p>
+              </a>
+              <a class="walk" href="/notes/how-i-use-ai-in-teaching">
+                <span class="walk__head"><b-icon sym="/assets/sprite.svg#traces" size="sm"></b-icon>How I teach with AI
+                  <span class="walk__badge">teaching</span></span>
+                <p class="walk__body">~150 students, an explain-or-fail policy, and why the AI types
+                  while the humans think.</p>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="welcome__foot">
+          <a class="welcome__cta" href="/grain" data-shell="focus-chat">✶ Try the desk — it answers about TJ</a>
+          <label class="welcome__startup">
+            <input type="checkbox" data-startup-checkbox checked> Show welcome page on startup
+          </label>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

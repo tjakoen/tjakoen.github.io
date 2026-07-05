@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MILL — Markdown in, living layouts</title>
+  <meta name="description" content="MILL: a reusable Markdown-to-pages CMS. Feed it markdown + images, it renders GRAIN pages. A layer above BATCH and GRAIN; framework-agnostic core. The core is live — it renders this site's notes and docs.">
+</head>
+<body data-screen="mill" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="board">
+    <p class="eyebrow">🌾 <span class="name">MILL</span> · Content engine</p>
+    <h1 class="masthead">Markdown in, living layouts.</h1>
+    <hr class="rule">
+    <p class="lede">MILL is a reusable Markdown-to-pages CMS. Feed it <em>markdown and images</em> and it renders
+      <span class="name">GRAIN</span> pages. It's the content pipeline behind this site's docs and blog: write the
+      prose, get real pages, no hand-built HTML. It sits <em>above</em> BATCH and GRAIN, an extension of neither.</p>
+    <span class="flag">Live · it renders the notes and docs on this site</span>
+
+    <div class="section-head"><span>The idea</span></div>
+    <div class="card-grid">
+      <div class="card" data-pad="sm"><h3 class="card__title">A layer above</h3><p class="card__body">It depends on GRAIN for components and BATCH for the substrate, never the reverse. Batch, then grain, then MILL on top.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Framework-agnostic core</h3><p class="card__body">A Markdown-to-components engine driven by a render-adapter port. The BATCH and GRAIN adapter is the default, not baked in.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Frontmatter picks the layout</h3><p class="card__body">Frontmatter chooses a layout, content blocks map to component tags. MILL emits the tags, BATCH composes them.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Live, then frozen</h3><p class="card__body">It renders live on BATCH while you write, and the static export freezes the result. Same content, two modes.</p></div>
+    </div>
+
+    <div class="section-head"><span>The plan</span></div>
+    <p class="lede">MILL is the proof that BATCH and GRAIN compose into a real, reusable tool. The canonical design,
+      the seams, the mapping model, and the build pieces are written up (and will render here through MILL itself,
+      once it lands).</p>
+
+    <div class="page-foot">
+      Part of <a href="/">tjakoen.github.io</a>. Built on <a href="/grain"><span class="name">GRAIN</span></a>
+      and <a href="/batch"><span class="name">BATCH</span></a>.
+      <p>🤖 Built with Claude. I don't prompt and pray, I prompt and prove.</p>
+    </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

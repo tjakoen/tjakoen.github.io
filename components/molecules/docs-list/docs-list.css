@@ -1,0 +1,7 @@
+/* molecules/docs-list — portfolio: a ruled index of canonical docs (name + what it is).
+   A quiet list, not a table: hairline rules between rows, name column fixed. */
+.docs-list { margin-top: var(--space-4); }
+.docs-list__item { display: flex; align-items: baseline; gap: var(--space-3);
+  padding: var(--space-2) 0; border-top: 1px solid var(--color-line); }
+.docs-list__name { font-size: var(--text-base); min-width: 12rem; }
+.docs-list__what { color: var(--color-muted); font-size: var(--text-sm); }

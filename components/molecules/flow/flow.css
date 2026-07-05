@@ -1,0 +1,11 @@
+/* molecules/flow — portfolio: a small left-to-right diagram of boxed nodes joined by arrows
+   (e.g. BATCH → GRAIN → MILL, or the one-door pipeline). CSS-only layout pattern; compose the
+   markup inline (see flow.md). Tokens only. Wraps on narrow widths. */
+.flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-2); margin: var(--space-6) 0; }
+.flow__node { flex: 1 1 8rem; border: 1px solid var(--ink); border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4); font-size: var(--text-sm); text-align: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.flow__node small { color: var(--color-muted); }
+.flow__node--door { border-width: 2px; }
+.flow__node--code { font-family: var(--font-grain); }
+.flow__arrow { display: flex; align-items: center; color: var(--color-muted); }
