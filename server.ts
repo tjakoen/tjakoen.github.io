@@ -8,10 +8,10 @@ import { makeStatic } from "../batch/http/static.ts";
 import { makePageServer } from "../batch/http/pages.ts";
 import { createSitemap } from "../batch/http/sitemap.ts";
 import { createStyleBundle } from "../batch/assets/style-bundle.ts";
-import { createCatalog } from "../batch/catalog/catalog.ts";
 import { createStream } from "../batch/http/stream.ts";
 import { makeModuleServer } from "../batch/http/modules.ts";
 // --- GRAIN (AI design system) ---
+import { createCatalog } from "../grain/catalog/catalog.ts";   // grain's self-documenting catalog (grade toggle = grain vocabulary)
 import { createAccepts } from "../grain/ai/accepts.ts";
 import { makeStubReasoner } from "../grain/ai/reasoner.ts";
 import { createInteractionLayer } from "../grain/ai/interaction-layer.ts";
@@ -50,7 +50,7 @@ const service = new TaskService(repo);
 // MILL-rendered) hand-lists it — single source, zero drift. A page's own <head> carries only its
 // title/meta; everything global comes from these constants.
 //
-// The CATALOG is a self-contained BATCH page (it lists its OWN design-system styles and needs no
+// The CATALOG is a self-contained GRAIN page (it lists its OWN design-system styles and needs no
 // shell/door), so it gets a LIGHTER set — just the FOUC guard (head) + ⌘K/theming islands (body).
 const CATALOG_HEAD = `<script src="/scripts/theme-boot.js"></script>`;
 const CATALOG_ASSETS = `<link rel="stylesheet" href="/styles/cmdk.css"><script src="/scripts/cmdk.js" defer></script><script src="/scripts/theme.js" defer></script>`;
@@ -81,7 +81,7 @@ const contentRoutes = await listPortfolioContentRoutes();
 const sitemap = createSitemap(config.pagesDir, () => contentRoutes);   // pages tree + MILL content
 // the catalog builds its own shell, so it receives the SAME global assets — otherwise it's the
 // one page that ignores the saved theme (the bug this seam fixed)
-const catalog = createCatalog(bunRuntime, config.componentRoots, sitemap,
+const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
   { headEnd: CATALOG_HEAD, bodyEnd: CATALOG_ASSETS });  // .md docs across grain+portfolio → /catalog
 const accepts = createAccepts(config.componentRoots);           // harvest data-kind/data-accepts → AI manifest
 
