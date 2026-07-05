@@ -1,0 +1,78 @@
+/* organisms/portfolio-frame — product-specific chrome for the PORTFOLIO (the reusable shell CSS is
+   grain: app-shell / side-rail / sidebar-panel / console / topbar). Only the portfolio's choices
+   live here: the flat e-ink tone, the current-nav accent, and the brand. Sorts last in the bundle
+   ("portfolio" > "grain"/"project"), so these overrides win. */
+
+/* flat e-ink tone: one paper surface separated by hairlines (DESIGN-SYSTEM §6) — no tinted strips */
+.app-shell__topbar, .app-shell__aside { background: var(--color-bg); }
+.side-rail__brand { color: var(--color-fg); }
+
+/* current main-menu item (rail): the selection indicator runs FLUSH to the rail's left edge
+   (a full-height ink accent bar breaking out past the rail's own padding), plus a quiet fill.
+   "All the way to the left" — the bar sits at x=0 of the rail, not inset by the padding. */
+.side-rail .nav-item[aria-current="page"] {
+  background: var(--color-bg); border-color: transparent; color: var(--color-fg);
+  position: relative;
+}
+.side-rail .nav-item[aria-current="page"]::before {
+  content: ""; position: absolute; top: 0; bottom: 0;
+  left: calc(-1 * var(--space-2));                 /* cancel the rail's left padding → flush to the edge */
+  width: 2px; background: var(--color-accent);
+}
+
+/* THE EDITOR v2 nav model (owner, 2026-07-05): the RAIL is the EXPLORER (grain file-tree of the
+   real sources + the fixed app links at the bottom); the TABS are the OPEN PAGES (one global
+   strip, grain/scripts/tabs.js). The old per-section tab groups (data-tabs-for) are gone. The
+   tree takes the rail's stretch between the brand and the spacer, and scrolls inside itself. */
+.side-rail .file-tree { flex: 0 1 auto; min-height: 0; margin: 0 calc(-1 * var(--space-2)); }
+/* full-bleed tree rows (the negative margin above) still start their text at the rail padding */
+.side-rail .file-tree__dir > summary,
+.side-rail .file-tree > .file-tree__dir > summary { padding-left: var(--space-3); }
+
+/* Chat⇄Catalog modes are available sitewide (no per-section gating). */
+
+/* presence show/hide is the grain AI module's (ai.css keys the three .presence__* states off
+   <body data-ai-online>); only the wording here is the portfolio's. */
+
+/* status bar: the breadcrumb (moved here from the title bar) reads as quiet mono meta next to
+   presence; the byline + contact keep the muted register and sharpen on hover. */
+.status-bar__crumb { font-family: var(--font-mono); color: var(--color-muted); }
+/* the breadcrumb's segments are LINKS (site.js builds them): quiet until hovered, like the rest
+   of the status bar; the current (last) segment stays plain text. */
+.status-bar__crumb a { color: inherit; text-decoration: none; }
+.status-bar__crumb a:hover { color: var(--color-fg); text-decoration: underline; }
+.status-bar__byline, .status-bar__contact { color: inherit; text-decoration: none; }
+.status-bar__byline:hover, .status-bar__contact:hover { color: var(--color-fg); }
+
+
+/* assistant empty-state: centered prompt shown until the first message lands. The higher
+   specificity (p.assistant__empty) beats sidebar-panel's `> :first-child { margin-top:auto }`
+   bottom-pin, so the prompt centers instead of sticking to the composer. */
+.assistant__log > p.assistant__empty { margin: auto; max-width: 26ch; text-align: center;
+  color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+.assistant__log:has(.chat-message) .assistant__empty { display: none; }
+
+/* Catalog pane: the embedded /catalog fills the pane; the footer sits where the chat composer
+   sits (the hover hint + the full-page way out). Scroll stays contained to the pane. */
+.catalog-pane__frame { flex: 1; width: 100%; border: 0; background: var(--color-bg);
+  overscroll-behavior: contain; }
+.catalog-pane__foot { border-top: 1px solid var(--color-line); padding: var(--space-3) var(--space-4);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+  font-size: var(--text-xs); color: var(--color-muted); }
+.catalog-pane__expand { color: var(--color-muted); text-decoration: none;
+  border-bottom: 1px solid var(--color-line); white-space: nowrap; }
+.catalog-pane__expand:hover { color: var(--ink); border-color: var(--ink); }
+/* the hover-to-reveal hint only where a hovering pointer exists (on touch the pane shows the
+   full scrollable catalog instead — catalog-peek.js) */
+.catalog-pane__hint { display: none; }
+@media (hover: hover) and (pointer: fine) { .catalog-pane__hint { display: block; } }
+
+/* catalog head label: the panel is the "GRAIN Inspector" in Catalog mode, "Assistant" in Chat */
+.assistant__title--catalog { display: none; }
+.assistant[data-mode="catalog"] .assistant__title--chat { display: none; }
+.assistant[data-mode="catalog"] .assistant__title--catalog { display: inline; }
+
+/* the catalog wants a little more width than the chat column, but not so much that the main
+   content gets cramped: a measured widen (the peek shows one component entry at a time). It's a
+   grid-column change, so the content SHIFTS aside (never overlaid). */
+.app-shell:has(.assistant[data-mode="catalog"]) { --shell-aside: clamp(18rem, 26vw, 24rem); }

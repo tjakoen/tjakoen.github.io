@@ -1,0 +1,19 @@
+/* organisms/welcome — portfolio: the editor's Welcome page layout (the VS Code start screen,
+   re-spoken in GRAIN). Owns the page scaffold only; the lists inside are welcome-start /
+   welcome-recent / walkthrough-card. Tokens only. */
+.welcome { max-width: 72rem; margin: 0 auto; padding: clamp(2rem, 8vh, 6rem) var(--page-pad) 3rem; }
+.welcome__title { font-family: var(--font-accent); font-size: clamp(2.2rem, 5vw, 3.4rem); margin: 0; }
+.welcome__sub { color: var(--ink-muted); font-size: var(--text-lg); margin: 0.4rem 0 3rem; }
+
+.welcome__cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(2rem, 6vw, 6rem); }
+@media (max-width: 56rem) { .welcome__cols { grid-template-columns: 1fr; } }
+.welcome h2 { font-size: var(--text-xl); font-weight: var(--font-weight-regular); margin: 0 0 1rem; }
+
+/* bottom: the pill CTA + the (functional) startup checkbox */
+.welcome__foot { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; margin-top: 4.5rem; }
+.welcome__cta { display: inline-flex; align-items: center; gap: 0.6rem; font-size: var(--text-base);
+  border: 1px solid var(--ink); border-radius: 999px; padding: 0.7rem 1.6rem;
+  color: var(--ink); text-decoration: none; background: var(--panel); }
+.welcome__cta:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.welcome__startup { display: flex; align-items: center; gap: 0.5rem;
+  color: var(--ink-muted); font-size: var(--text-sm); }

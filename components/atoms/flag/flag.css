@@ -1,0 +1,11 @@
+/* atoms/flag — portfolio: a small status flag for a work ("Planned", "Demo"). Uppercase
+   whisper in a dashed pill. Portfolio-owned on purpose: inside GRAIN the dashed edge means
+   "AI / in-transit" — a static flag borrowing it belongs to the site's voice, not the
+   design system's vocabulary. */
+.flag {
+  display: inline-block; margin-top: var(--space-3);
+  font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--color-muted);
+  border: 1px dashed var(--ink); border-radius: var(--radius-pill);
+  padding: 0 var(--space-2);
+}

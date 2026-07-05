@@ -1,0 +1,2 @@
+/* organisms/empty-state */
+.empty-state { color: var(--color-muted); text-align: center; padding: var(--space-6); }

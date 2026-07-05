@@ -1,0 +1,18 @@
+PORTFOLIO — tjakoen.github.io
+Copyright 2026 Tjakoen Stolk
+
+Two different licenses apply in this repository:
+
+1. CODE (everything that makes the site run — .ts, .js, .css, .html
+   templates, build/tooling, and the reusable material under standards/)
+   is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+2. WRITTEN CONTENT — the prose and its media: everything under notes/,
+   the whitepaper, PHILOSOPHY.md, origin-story.md, and any other essays,
+   articles, or blog posts — is © 2026 Tjakoen Stolk, ALL RIGHTS RESERVED.
+   It is published here to be read, not reused. You may quote briefly with
+   attribution and a link; you may not republish, translate, or reproduce
+   it in whole or substantial part without written permission.
+
+If in doubt about whether a file is "code" or "content," treat it as
+content (all rights reserved).

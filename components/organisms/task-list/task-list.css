@@ -1,0 +1,2 @@
+/* organisms/task-list */
+.task-list { display: grid; gap: var(--space-2); }

@@ -1,0 +1,7 @@
+/* molecules/welcome-start — portfolio: the Welcome page's "Start" list (icon + link rows,
+   the VS Code Start list). CSS-only; the rows are real <a>s — zero-JS navigable. */
+.start { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 2.5rem; }
+.start__item { display: flex; align-items: center; gap: 0.7rem; width: fit-content;
+  color: var(--color-accent, var(--ink)); text-decoration: none; font-size: var(--text-base); }
+.start__item:hover { text-decoration: underline; }
+.start__item .icon { color: var(--ink-muted); }

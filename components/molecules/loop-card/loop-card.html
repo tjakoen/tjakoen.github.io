@@ -1,0 +1,11 @@
+<!-- molecules/loop-card — the AI-loop demo card (docs/AI-INTERFACE.md §7).
+     Carries its SURFACE address (data-surface) and an action verb (data-action) the
+     dispatcher reads. data-commit encodes grade = commit state. data-accepts is the
+     seam the manifest will harvest (AI-INTERFACE §4). -->
+<article class="loop-card" data-kind="item" data-accepts="item.archive"
+         data-bind-data-surface="surface" data-bind-data-commit="commit">
+  <b-text as="h3" class="loop-card__title" data="name"></b-text>
+  <span class="loop-card__status" data-field="status.label"></span>
+  <button class="btn" data-size="sm" data-variant="outline"
+          data-bind-data-action="action.name" data-field="action.label">Archive</button>
+</article>

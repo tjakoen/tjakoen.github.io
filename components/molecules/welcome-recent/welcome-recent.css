@@ -1,0 +1,9 @@
+/* molecules/welcome-recent — portfolio: the Welcome page's "Recent" feed rows (name + muted
+   mono path — the notes as the editor's recent files). The wrapping .recent column is part
+   of this component's vocabulary; each row is the data-bound welcome-recent tag. */
+.recent { display: flex; flex-direction: column; gap: 0.55rem; }
+.recent__item { display: flex; gap: 1rem; align-items: baseline; width: fit-content;
+  text-decoration: none; font-size: var(--text-base); }
+.recent__name { color: var(--color-accent, var(--ink)); }
+.recent__item:hover .recent__name { text-decoration: underline; }
+.recent__path { color: var(--ink-faint); font-size: var(--text-sm); font-family: var(--font-mono); }
