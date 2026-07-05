@@ -22,7 +22,7 @@
   try { sessionStorage.setItem("tj.booted", "1"); } catch { /* private mode */ }
   if (path === "/" && !booted && get(KEY.startup) === "off") {
     const last = get(KEY.lastPage);
-    location.replace(last && last !== "/" ? last : "/dashboard");
+    location.replace(last && last !== "/" ? last : "/loop");
     return;                                          // stop — this page is being left
   }
 
