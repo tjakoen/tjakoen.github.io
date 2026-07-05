@@ -211,7 +211,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
 ## White paper
 
 - [x] **GRAIN + BATCH whitepaper — DRAFT written** at `notes/whitepaper-one-vocabulary.md`
-      ("One Vocabulary, Two Operators"), a research-doc *projection* of `portfolio/PHILOSOPHY.md` with cited
+      ("One Vocabulary, Two Operators"), a research-doc *projection* of `tjakoen.github.io/PHILOSOPHY.md` with cited
       sources (AG-UI/MCP-UI/MCP Apps, GUI-agent surveys, Anthropic Computer Use, WebArena/OSWorld,
       Horvitz, Lieberman, Signifiers/HATEOAS, C2PA, Carbon for AI). To be linked from `/grain`.
       **TODO** (draft §8): (1) 2nd verified research pass on provenance / generative-UI / accessibility /

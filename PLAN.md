@@ -48,7 +48,7 @@ prerender crawl that boots the app, walks its routes, and writes static files.
   route inside the BATCH app" to its **own top-level project** (memory: portfolio-cms-separate-project).
   - **Definition — MILL = "Markdown In, Living Layouts"** *(canonical plan: [`mill/PLAN.md`](../mill/PLAN.md); this is the consumer view)*: a **standalone, reusable, open-source CMS**.
     Feed it `.md` + images and it renders **GRAIN** pages on the theme. It is the **fourth top-level
-    project** alongside `batch/`, `grain/`, `project/`, `portfolio/`, and it **depends on GRAIN (its
+    project** alongside `batch/`, `grain/`, `project/`, `tjakoen.github.io/`, and it **depends on GRAIN (its
     components) and BATCH (the substrate), never the reverse** — a new layer *above* both
     (`batch → grain → MILL`), an **extension of neither** (the ARCHITECTURE + CLAUDE.md layering
     diagrams were updated to note this concern this pass). **The portfolio is MILL's first consumer** —
@@ -66,7 +66,7 @@ prerender crawl that boots the app, walks its routes, and writes static files.
   - **Consequence — one content source, many consumers:** the same mds render the human Notes pages,
     are chunked into `knowledge.json` for the AI's RAG ("the desk is aware of my posts", free), and
     (for `docs/*.md`) publish the doc pages. Authoring = commit: edit a `.md` → the Action reboots the
-    app, crawls, deploys. Backlog + content model live in `portfolio/CONTENT-BACKLOG.md`.
+    app, crawls, deploys. Backlog + content model live in `tjakoen.github.io/CONTENT-BACKLOG.md`.
 - **AI demo: Path B — runs entirely in the browser, no backend, no secret.** Purpose: answer
   questions about me from my fixed portfolio content. It's a portfolio *showcase*, so the "the
   assistant is running in *your* browser, nothing server-side" narrative is worth real weight.
@@ -162,7 +162,7 @@ better than assumed:**
     portfolio pages (`/`, `/grain`).
   - Static assets are plain directory copies via `config.assetDirs` (`/styles`, `/vendor`,
     `/scripts`, `/assets`) + `config.fontsDir` (binary woff2) — copy them into `dist/` verbatim.
-  - The boot-and-fetch seam already exists: `project/tools/screenshots.ts` spawns the server and
+  - The boot-and-fetch seam already exists: `tjakoen.github.io/tools/screenshots.ts` spawns the server and
     waits for the port. The exporter reuses that pattern.
   - Data-driven fragments (`/ui/loop`, `/api/items`) freeze at build time to whatever the seed
     data is — fine for a portfolio; just be aware they're snapshots, not live.
@@ -298,8 +298,8 @@ and absorbs pieces 8–10 below.
 - **Separation of concerns:** shell **primitives** (rail incl. grouped variant, `tab-bar`,
   `sidebar-panel`, `console`, `topbar`) live in **GRAIN**, persona-neutral ("the AI", never "the
   desk"); the **portfolio frame** (composition with the BREAD nav + "TJ's Desk" branding) and any
-  **custom theme/components** live in **`portfolio/`** — new `portfolio/components/` (register in
-  `componentRoots`/`styleRoots`) + `portfolio/styles/` (a token-override sheet, new `assetDirs`
+  **custom theme/components** live in **`tjakoen.github.io/`** — new `tjakoen.github.io/components/` (register in
+  `componentRoots`/`styleRoots`) + `tjakoen.github.io/styles/` (a token-override sheet, new `assetDirs`
   prefix). Consumer path documented in [grain README §6](../grain/README.md).
 - **AI is UI-now, model-later:** build the shell + chat/terminal UI now; on the static deploy the
   chat rests gracefully (site fully usable as hypermedia). The in-browser LLM (Path B, pieces 4–5
@@ -353,7 +353,7 @@ workspace next visit, localStorage).
    sessions' uncommitted work lands; single-thread the shell overhaul, don't worktree it.
 2. **Portfolio-frame overhaul**: compose window bar + status bar; relocate topbar-ctl; tabs
    become site navigation (decide: fixed section tabs vs "open pages" metaphor — start fixed).
-3. **Welcome page**: promote `/welcome-poc` to `/` with components in `portfolio/components/**`,
+3. **Welcome page**: promote `/welcome-poc` to `/` with components in `tjakoen.github.io/components/**`,
    live Recent (MILL), wired Ask-the-desk (focus the assistant composer; scripted desk answers
    via the `data-ai-door` seam), functional startup checkbox.
 4. **Honest status**: export bakes commit sha + tsc/test counts into the status bar (they're
@@ -432,7 +432,7 @@ their real page sources. "The site is its own source tree" — the strongest ver
 and on doctrine with the honest status bar. Sketch:
 
 ```
-portfolio/
+tjakoen.github.io/
   welcome.html            ← /            (pinned tab)
   notes/
     ten-times-zero.md     ← /notes/ten-times-zero
@@ -448,7 +448,7 @@ batch/
   COLLAPSED by default** so a deep notes/ archive stays scannable.
 - **Bottom of the panel — the APP links** (fixed, not files; the things that aren't documents):
   **Calendar · Mail · Catalog · Profile** (Profile = the renamed About; where the actual
-  portfolio/résumé lives — final name owner's call, "Profile" fits the editor metaphor).
+  tjakoen.github.io/résumé lives — final name owner's call, "Profile" fits the editor metaphor).
   They open as **app-style tabs** (icon + name, no extension — VS Code's Settings-tab idiom).
   The aside's Inspector/Catalog *mode* stays (hover-inspect); the bottom Catalog link is the
   full page.
@@ -528,28 +528,28 @@ earlier cards wireframe IS the mobile layout). Wireframes: `screenshots/desk-sce
 (the scene) + `screenshots/desk-wireframe.png` (the narrow/cards reflow).
 
 **PoC — proven in-tree (2026-07-04), keep until the real page replaces it:**
-`portfolio/pages/desk-poc/` + receipts: (a) cross-document VT names verified on both sides
+`tjakoen.github.io/pages/desk-poc/` + receipts: (a) cross-document VT names verified on both sides
 (tablet screen ↔ dashboard main pane, `startViewTransition` present); (b) the lamp iris wakes AT
 `[data-lamp-origin]` (transition-suppressed initial placement — never glides in from center);
 (c) the flat object language (hairline + offset-shadow `.desk-object`). Screenshot:
 `screenshots/desk-poc.png`.
 
 **Implementation order (for the next session; respect the seams, don't rebuild them):**
-1. **The desk reasoner** — `portfolio/ai/desk-door.ts` (client-safe: relative imports only, no
+1. **The desk reasoner** — `tjakoen.github.io/ai/desk-door.ts` (client-safe: relative imports only, no
    secrets): exports `createClientDoor(applyOp)` wrapping grain's with a scripted desk scenario
    (4–6 chip questions; answers travel to the right object, stream grain, settle, RELEASE — grain
    lessons 6/7/9 apply). Page selects it via
-   `<body data-ai-transport="client" data-ai-door="/modules/portfolio/ai/desk-door.js">` —
-   the module server already serves `portfolio/**`; grain stays persona-neutral. Colocated test.
-2. **The scene** — rebuild `portfolio/pages/index.html` as the desk; object styling as
-   portfolio components (`portfolio/components/**` — site-specific, NOT grain). Server-render the
+   `<body data-ai-transport="client" data-ai-door="/modules/tjakoen.github.io/ai/desk-door.js">` —
+   the module server already serves `tjakoen.github.io/**`; grain stays persona-neutral. Colocated test.
+2. **The scene** — rebuild `tjakoen.github.io/pages/index.html` as the desk; object styling as
+   portfolio components (`tjakoen.github.io/components/**` — site-specific, NOT grain). Server-render the
    sticky note + calendar content from data. Keep the desk-poc page until parity, then delete it.
 3. **The morph** — `view-transition-name: workspace` pair (PoC already stamped `/dashboard`'s
    main pane); consider `::view-transition-old/new(workspace)` timing polish.
 4. **Docking** — assistant panel collapsed on `/` (page-scoped for v1; proper frame/app-shell
    docking is a follow-up with the companion work).
-5. **Export** — add `"/modules/portfolio/ai/desk-door.js"` to `MODULE_ENTRIES` in
-   `project/tools/export.ts`; verify the desk works on the frozen static build (chips + morph
+5. **Export** — add `"/modules/tjakoen.github.io/ai/desk-door.js"` to `MODULE_ENTRIES` in
+   `tjakoen.github.io/tools/export.ts`; verify the desk works on the frozen static build (chips + morph
    fall back gracefully).
 6. Screenshots + `bun test` + `tsc` + the lamp-travel e2e still green; sync FEATURES.md's desk
    section to say "scene" (it currently says "restyle of live machinery" — still true).
@@ -569,20 +569,20 @@ earlier cards wireframe IS the mobile layout). Wireframes: `screenshots/desk-sce
 
 ## Notes
 
-- **This folder (`portfolio/`) is a temporary home.** The portfolio moves to its own repo later,
+- **This folder (`tjakoen.github.io/`) is a temporary home.** The portfolio moves to its own repo later,
   once the framework is solid enough to depend on. Develop it here against live BATCH + GRAIN;
   extract when stable. This is exactly why the export tooling lives in **`batch/export`** and not
   in the portfolio — it must travel with the framework so the portfolio (and any other BATCH
   site) can consume it after the split. Keep the portfolio importing only through BATCH/GRAIN's
   public seams so the extraction stays clean (nothing portfolio-specific leaks into the framework).
-- **The GRAIN showcase now lives here, at `/grain`** (`portfolio/pages/grain/index.html`) — moved
+- **The GRAIN showcase now lives here, at `/grain`** (`tjakoen.github.io/pages/grain/index.html`) — moved
   out of `grain/` so the framework repo is just the framework. grain keeps `/catalog` as its own
   self-documentation; the narrative showcase is a portfolio section. See `GRAIN-PAGE.md`.
 - **The BATCH showcase is the companion section, at `/batch`** — the pitch for the substrate
   (no-build, request-time render, one-vocabulary/one-door). No catalog (batch has no components);
   its reference layer is rendered docs at `/batch/docs`. Planned, built after `/grain` +
   the export pipeline. See `BATCH-PAGE.md`.
-- **Course-platform landing page at `/course-platform`** (`portfolio/pages/course-platform/`) — a
+- **Course-platform landing page at `/course-platform`** (`tjakoen.github.io/pages/course-platform/`) — a
   single **showcase-only** page for an *external* project, the GitHub-native course platform
   (github.com/tjakoen/github-native-course-platform). Unlike `/grain` and `/batch`, it is **NOT a
   stack section and ships NO docs** — the full write-up lives in that repo's own README; this page is

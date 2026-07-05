@@ -309,7 +309,7 @@ The portfolio's subject *is* these three layers, so let the site be its own case
 | Component catalog exhibit | `/catalog` + `?annotate` overlay |
 | Re-skin live | the token system (`grain/styles/variables.css`) |
 | ⌘K palette / keyboard | `cmdk.js`, `b-kbd` atom |
-| Screenshots for project cards | `bun run shots` (`project/tools/screenshots.ts`) |
+| Screenshots for project cards | `bun run shots` (`tjakoen.github.io/tools/screenshots.ts`) |
 | Contact-as-Intent | the one-door `Intent` pattern (memory: interaction-door-pattern) |
 | Résumé → PDF | `@media print` stylesheet + browser "Save as PDF" (no new tooling, no build) |
 | `/grain` project page | fold in the live `/catalog` + `?annotate` overlay |

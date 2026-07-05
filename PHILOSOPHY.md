@@ -89,7 +89,7 @@ Each is a conviction, not a preference. We hold them until the code proves one w
 - A privileged AI back channel, or any hidden AI action (grain always shows).
 - Hardcoded styling in components; per-component theme overrides.
 - Framework/library reached for before standards and native APIs are exhausted.
-- Skeuomorphic chrome and generic template polish (see `portfolio/FEATURES.md` anti-features).
+- Skeuomorphic chrome and generic template polish (see `tjakoen.github.io/FEATURES.md` anti-features).
 - Unbounded model trust — the AI is grounded (RAG) and acts only through the closed vocabulary.
 
 ## The four concerns (one direction of dependency)
@@ -99,10 +99,10 @@ batch/   BATCH — the substrate (Bun · Addressable · TypeScript · CSS · htm
   └─ grain/   GRAIN — an AI-interaction design system + its default theme
        ├─ project/     the product ("Project")
        ├─ mill/        the Markdown→GRAIN CMS (a layer above grain; PLANNED)
-       └─ portfolio/   the personal site (a custom BATCH+GRAIN app that *uses* MILL for content)
+       └─ tjakoen.github.io/   the personal site (a custom BATCH+GRAIN app that *uses* MILL for content)
 ```
 
-`project/`, `mill/`, and `portfolio/` are independent consumers of `grain` + `batch`.
+`project/`, `mill/`, and `tjakoen.github.io/` are independent consumers of `grain` + `batch`.
 → canonical diagram + rules: [CLAUDE.md](../CLAUDE.md) · [CONVENTIONS §1](../batch/docs/CONVENTIONS.md)
 
 ## Where each truth lives (so nothing forks)

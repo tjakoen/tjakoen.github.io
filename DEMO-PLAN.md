@@ -11,7 +11,7 @@ Owner approved the shape 2026-07-05.
    `../grain/CLAUDE.md` **lessons 1–9** (each has bitten us at least once), and
    `../batch/docs/CONVENTIONS.md`. Pre-flight: `../ROADMAP.md`.
 2. **Layering:** anything reusable goes UP into `grain/` (persona-neutral — "the AI", never
-   "the desk"); the desk persona + site-specific work stays in `portfolio/`. MILL sits above
+   "the desk"); the desk persona + site-specific work stays in `tjakoen.github.io/`. MILL sits above
    both. Nothing imports upward.
 3. **One door.** Every write — human or AI — is an `Intent` through the door
    (`grain/ai/interaction-layer.ts`); render back as `RenderOp`s. New capabilities = new verbs

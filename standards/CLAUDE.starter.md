@@ -3,7 +3,7 @@
 > **Starter template.** Copy this to the root of a new repo as `CLAUDE.md`, delete this line, and
 > fill the `<…>` placeholders. It wires a fresh project into Tjakoen's personal standards (voice,
 > badges, AI-use posture) from day one. The standards live publicly at
-> `https://tjakoen.github.io` (source in the batch-stack repo under `portfolio/standards/`), so you
+> `https://tjakoen.github.io` (source in the batch-stack repo under `tjakoen.github.io/standards/`), so you
 > can either link them or copy `VOICE.md` + `README-STANDARD.md` into this repo.
 
 ## What this is
@@ -23,14 +23,14 @@ before touching it.>
 
 ## Voice (for any prose in my name)
 
-Follow **VOICE.md** (`portfolio/standards/VOICE.md` in batch-stack, or the published copy). The short
+Follow **VOICE.md** (`tjakoen.github.io/standards/VOICE.md` in batch-stack, or the published copy). The short
 version: honest, quirky, self-deprecating, concrete, opinionated-with-the-why; **no backticks in
 prose**; contractions in casual writing, expanded in formal docs. Never publish a claim I haven't
 earned; keep money vague.
 
 ## README presentation (do this once, at repo start)
 
-Follow **README-STANDARD.md** (`portfolio/standards/README-STANDARD.md`). In short:
+Follow **README-STANDARD.md** (`tjakoen.github.io/standards/README-STANDARD.md`). In short:
 
 1. **Title emoji.** One emoji before the H1 that fits this repo (my repos lean a bread/baking family).
 2. **A curated badge row** (~5–7, honesty rule: only true, ideally verifiable badges), always led by:
