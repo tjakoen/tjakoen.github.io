@@ -105,7 +105,10 @@ for (const n of accepts.actions())
 // the default (rendered by the bare :root, so it has no block, and is exempt).
 async function checkThemingDrift(): Promise<void> {
   try {
-    const css = await Bun.file("grain/styles/variables.css").text();
+    // flavors are DEFINED in variables.css :root + the themes/ reference files (@imported there)
+    let css = await Bun.file("grain/styles/variables.css").text();
+    for await (const rel of new Bun.Glob("*.css").scan("grain/styles/themes"))
+      css += "\n" + await Bun.file(join("grain/styles/themes", rel)).text();
     const defined = new Set([...css.matchAll(/\[data-theme="([^"]+)"\]/g)].map((m) => m[1]));
     const referenced = new Set<string>(), defaults = new Set<string>();
     for (const root of [config.pagesDir, ...config.componentRoots]) {
