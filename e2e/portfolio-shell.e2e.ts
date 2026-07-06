@@ -7,16 +7,17 @@ import { test, expect } from "@playwright/test";
 test.describe("the portfolio workspace shell (BREAD frame, on /)", () => {
   test("renders TJ's Desk chrome + the explorer rail as plain-hypermedia nav", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator(".side-rail__brand")).toContainText("TJ's Desk");
+    await expect(page.locator(".rail-head")).toContainText("TJ's Desk");
     // THE EDITOR v2: the rail is the EXPLORER — a file tree of the real sources, every file a
     // real <a href> (works with no JS; SEO-safe) — plus the fixed APP links at the bottom.
     await expect(page.locator(".side-rail .file-tree")).toBeAttached();
     await expect(page.locator('.file-tree a[href="/"]')).toContainText("index.html");
     await expect(page.locator('.file-tree a[href="/grain/docs/grain"]')).toContainText("GRAIN.md");
-    // the fixed APP links now live in the VS Code activity bar (icon-only → aria-label is the name)
+    // the Explorer toggle is the sole activity-bar icon (icon-only → aria-label is the name)
     await expect(page.locator('.activity-bar__item[data-shell="rail-toggle"]')).toHaveAttribute("aria-label", "Explorer");
+    // the fixed APP links live in the side-rail's own footer, icon + visible label
     for (const [label, href] of [["Calendar", "/calendar"], ["Mail", "/mail"], ["Catalog", "/catalog"], ["Profile", "/about"]] as const)
-      await expect(page.locator(`.activity-bar a[href="${href}"]`)).toHaveAttribute("aria-label", label);
+      await expect(page.locator(`.side-rail .nav-item[href="${href}"]`)).toContainText(label);
     // the assistant + console live on the page — the site-wide AI's home
     await expect(page.locator('.app-shell__aside [data-surface="chat-log"]')).toBeAttached();
     await expect(page.locator('.app-shell__console [data-surface="console"]')).toBeAttached();

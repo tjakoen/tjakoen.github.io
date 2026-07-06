@@ -36,7 +36,7 @@ test.describe("portfolio umbrella", () => {
 test.describe("/grain — the GRAIN showcase", () => {
   test("renders in the BREAD shell, hero and the component composition", async ({ page }) => {
     await page.goto("/grain");
-    await expect(page.locator(".side-rail__brand")).toContainText("TJ's Desk");   // the unified shell, not its own bar
+    await expect(page.locator(".rail-head")).toContainText("TJ's Desk");   // the unified shell, not its own bar
     await expect(page.locator('[data-open-tabs] .tab[data-pinned]')).toContainText("Welcome");  // the open-pages strip
     await expect(page.locator(".hero__head")).toContainText("same controls");
     await expect(page.locator("#how .flow__node--door")).toContainText("/intent");
@@ -53,7 +53,7 @@ test.describe("/grain — the GRAIN showcase", () => {
     await expect(page.locator('.file-tree a[href="/grain"]')).toHaveAttribute("aria-current", "page");
     await expect(page.locator('[data-open-tabs] .tab[href="/grain"]')).toHaveAttribute("aria-current", "page");
     // a tree file is a REAL nav link — following a sibling opens ITS tab, current moves. /batch sits
-    // under the bread/ group's batch/ folder (a sibling of grain/, collapsed on /grain); open it.
+    // under the top-level batch/ folder (a sibling of grain/, collapsed on /grain); open it.
     await page.locator('.file-tree summary:text-is("batch/")').click();
     await page.locator('.file-tree a[href="/batch"]').click();
     await expect(page).toHaveURL(/\/batch$/);

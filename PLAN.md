@@ -524,6 +524,56 @@ consolidation removed `project/` entirely — so `loop.html` sits under `tjakoen
 accordingly (`editor-tabs`, `portfolio-shell`, `mobile`, `grain-page`) + new suites
 (`persistence.e2e.ts`, `ai-degradation.e2e.ts`). Gate: 165 unit + 71 e2e green.
 
+#### THE EDITOR v3.1 — owner UI polish pass (BUILT 2026-07-06, uncommitted)
+
+Owner feedback on the v3 chrome, two rounds:
+
+- **TJ's Desk brand** relocated to a new grain-level opt-in mechanism: `.rail-head` (full-width row,
+  same height as the tab rail) + `.rail-body` (wraps activity-bar + side-rail) — `app-shell.css`/`.md`
+  + `activity-bar.md` updated. Brand sits at the SAME row as the tab strip, the sidebar (icon column
+  + tree) starts on its own line below it. (First pass wrongly hoisted it into the window title bar
+  — corrected per owner: "same line as the Tab rail not in the taskbar.")
+- **Bottom app links** (Calendar/Mail/Catalog/Profile) moved out of the icon-only activity bar back
+  into the side-rail's footer as labeled `nav-item`s (icon column + link column, restoring the pre-v3
+  look) — `shell.js`'s current-section selector repointed at `.app-shell__rail` accordingly.
+- **File-tree flattened to mirror the repo root 1:1**: `portfolio/` (renamed from `tjakoen.github.io/`
+  — tree LABEL only, the real folder on disk is untouched), `batch/`, `grain/`, `mill/` as top-level
+  siblings — dropped the fake `bread/` wrapper folder. `bread.html` now sits inside `portfolio/`
+  alongside `index.html`/`notes/`/`loop.html`.
+- **MILL/portfolio content padding regression fixed**: `.board` (the app-shell `__main` content
+  wrapper, replaced `.container` during the v2/v3 refactor) had never gotten the padding rule —
+  added to `grain/styles/global.css`, mirroring `.container`.
+- **Terminal narration lines boxed** like chat bubbles (`.console__line` in `console.css`: border +
+  radius + padding) instead of flowing as bare text.
+- Status-bar byline/contact given an explicit `font-family: var(--font-mono)` (defensive — no actual
+  override was found, but it closes the gap if one ever lands ahead of it in the bundle).
+
+6 e2e files re-aimed for the new selectors/tree (`portfolio-shell`, `grain-page`, `mobile`,
+`editor-tabs`). Gate: 165 unit + 71 e2e green, `tsc` clean. **Not committed** — working tree has 12
+modified files, awaiting the owner's own commit.
+
+#### THE EDITOR v3.2 — owner UI feedback (backlog, not built, 2026-07-06)
+
+Owner round after v3.1. Note: item 1 **reverts** v3.1's boxed console lines (just shipped, owner
+now says it hurt readability) — don't stack fixes, redo that spot.
+
+1. **Terminal line display redo** — v3.1's per-line boxing (`.console__line` border+radius) made
+   lines harder to read, not easier. Need a different narration format (not boxed-per-line).
+2. **Chat-embedded terminal feels crowded** — same narration surface inside the chat pane needs
+   more room/breathing space, current density too tight.
+3. **Terminal full-height expand toggle** — a control to expand the console upward to fill the
+   window, not just its current fixed band.
+4. **`notes.html`** — needs its own page with a look matching the site vibe; notes need ordering +
+   categorization (not just a flat list).
+5. **"Close all tabs" action** — no current way to bulk-close the open-tabs strip.
+6. **Search redo** — current ⌘K search needs rework, both functionally and to better match the
+   VS Code vibe.
+7. **Catalog attribution + sizing** — `/catalog` is GRAIN-generated; the page should say so
+   (auto-generated, not hand-authored). Doesn't need to match THE EDITOR vibe, but currently sits
+   boxed inside the window instead of using the full page — investigate why it's constrained.
+8. **Asterisk/presence-star bug** — the `✶` next to "TJ's Desk" brand is left-aligned, not
+   centered, in the new `.rail-head` row (v3.1 regression or pre-existing, unconfirmed).
+
 The main page (`/`) is a **literal desk, drawn flat, viewed top-down** — the owner's vision,
 reconciled with the anti-skeuomorphism guardrail: the guardrail forbids *photorealism/wooden-desk
 PNGs*, not literalness. The scene is **token-drawn** (a "technical drawing / stationery flat-lay"):
