@@ -152,6 +152,12 @@
     .theme-card__name { font-size: var(--text-lg); margin: 0; }
     .theme-card__desc { color: var(--color-muted); font-size: var(--text-sm); margin: 0; flex: 1; }
     .theme-card .btn { align-self: flex-start; }
+
+    /* offline degradation copy: shown only when the door's reply channel is down (the dispatcher
+       stamps body[data-ai-online="false"] by outcome). Persona-worded here (portfolio side); the
+       gating MECHANISM + the [data-ai-gate]/[data-ai-run] disable is grain's (ai.css). */
+    .offline-hint { display: none; color: var(--color-muted); font-size: var(--text-sm); }
+    body[data-ai-online="false"] .offline-hint { display: inline; }
   </style>
 </head>
 <body data-screen="grain" class="app-window-backdrop">
@@ -246,6 +252,7 @@
         <!-- run the SAME surface as the AI would — a real Intent through the door (demo.run). The
              server's reasoner pushes the RenderOps; the dispatcher applies them (like /loop). -->
         <button class="btn" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ Watch the AI act</button>
+        <span class="offline-hint">desk offline — live demo unavailable</span>
       </div>
       <p class="site__why">A real GRAIN composition, operated through the <b>one door</b>. <b>Ask it something</b>
         yourself, or <b>watch the AI act</b> — both post the same Intent to <span class="name">/intent</span> and
@@ -278,7 +285,7 @@
 
           <!-- operable controls, wired to the real door (raw input/button so they carry data-action +
                data-surface, exactly like /loop's composer) — chat.send → your bubble + the AI's reply -->
-          <div class="surface__compose">
+          <div class="surface__compose" data-ai-gate>
             <label class="field">
               <span class="field__label">Ask</span>
               <input class="field__input" type="text" placeholder="Ask GRAIN to do something…"

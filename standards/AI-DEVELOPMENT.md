@@ -78,6 +78,16 @@ premise. That's the whole value of a second reader.
 - **Keep dependencies close to the floor.** Every dep is a liability — a build step, a
   supply-chain surface, a thing to upgrade. Reach for the platform first; add a library
   only when it earns its place.
+- **Index the codebase for the AI.** A whole-repo knowledge graph (I use
+  [`graphify`](https://github.com/safishamsi/graphify) — local tree-sitter AST, zero API
+  cost) lets the AI answer "what connects X to Y", "where does this abstraction live", and
+  orient itself from a scoped subgraph instead of re-reading and re-grepping raw files.
+  Measured ~20x fewer tokens per codebase question on this repo. Keep it *fresh or it
+  lies*: rebuild on the post-commit hook (`graphify hook install`) and after any code edit
+  (`graphify update .`, AST-only, free). It's a **dev aid**, not a runtime dep — output is
+  generated and git-ignored, so the foreign toolchain (Python) stays out of the app. The
+  graph is an orientation layer, not a substitute for reading the actual lines you're about
+  to change.
 - **Tokens/config over hardcoded values.** Colors, sizes, endpoints, feature flags —
   named in one place, read everywhere. Re-skin or re-point by changing the source, never
   by editing every consumer.

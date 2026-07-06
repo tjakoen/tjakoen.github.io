@@ -13,8 +13,10 @@ test.describe("the portfolio workspace shell (BREAD frame, on /)", () => {
     await expect(page.locator(".side-rail .file-tree")).toBeAttached();
     await expect(page.locator('.file-tree a[href="/"]')).toContainText("index.html");
     await expect(page.locator('.file-tree a[href="/grain/docs/grain"]')).toContainText("GRAIN.md");
+    // the fixed APP links now live in the VS Code activity bar (icon-only → aria-label is the name)
+    await expect(page.locator('.activity-bar__item[data-shell="rail-toggle"]')).toHaveAttribute("aria-label", "Explorer");
     for (const [label, href] of [["Calendar", "/calendar"], ["Mail", "/mail"], ["Catalog", "/catalog"], ["Profile", "/about"]] as const)
-      await expect(page.locator(`.side-rail .nav-item[href="${href}"]`)).toContainText(label);
+      await expect(page.locator(`.activity-bar a[href="${href}"]`)).toHaveAttribute("aria-label", label);
     // the assistant + console live on the page — the site-wide AI's home
     await expect(page.locator('.app-shell__aside [data-surface="chat-log"]')).toBeAttached();
     await expect(page.locator('.app-shell__console [data-surface="console"]')).toBeAttached();

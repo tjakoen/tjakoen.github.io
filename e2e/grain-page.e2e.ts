@@ -52,7 +52,9 @@ test.describe("/grain — the GRAIN showcase", () => {
     // the explorer marks /grain's real source file, ancestors unfolded
     await expect(page.locator('.file-tree a[href="/grain"]')).toHaveAttribute("aria-current", "page");
     await expect(page.locator('[data-open-tabs] .tab[href="/grain"]')).toHaveAttribute("aria-current", "page");
-    // a tree file is a REAL nav link — following a sibling opens ITS tab, current moves
+    // a tree file is a REAL nav link — following a sibling opens ITS tab, current moves. /batch sits
+    // under the bread/ group's batch/ folder (a sibling of grain/, collapsed on /grain); open it.
+    await page.locator('.file-tree summary:text-is("batch/")').click();
     await page.locator('.file-tree a[href="/batch"]').click();
     await expect(page).toHaveURL(/\/batch$/);
     await expect(page.locator('[data-open-tabs] .tab[href="/batch"]')).toHaveAttribute("aria-current", "page");
