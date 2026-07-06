@@ -124,11 +124,11 @@ export function listPortfolioContentRoutes(): Promise<string[]> {
   return listMillRoutes(collections);
 }
 
-/** The welcome page's "Recent" feed: the newest notes, straight from MILL frontmatter —
- *  server-composed live data (the export freezes it, §18). Shape matches the
- *  <welcome-recent> component's bindings. */
-export interface RecentNote { title: string; href: string; path: string; }
-export async function listRecentNotes(limit = 4): Promise<RecentNote[]> {
+// Every note's frontmatter, newest-first (undated last, then by slug) — the SAME order MILL's
+// own /notes index uses (mill/serve.ts's byDateDesc). Shared so every OTHER consumer that lists
+// notes (the Welcome "Recent" feed, the explorer tree via /search.json) matches it, rather than
+// each re-deriving its own order or falling back to alphabetical route order.
+async function sortedNoteEntries(): Promise<Array<{ slug: string; title: string; date: string }>> {
   const notes = collections[0]!;                     // the "/notes" collection above
   const entries: Array<{ slug: string; title: string; date: string }> = [];
   for (const slug of await notes.source.list()) {
@@ -143,7 +143,23 @@ export async function listRecentNotes(limit = 4): Promise<RecentNote[]> {
   }
   entries.sort((a, b) => a.date === b.date ? a.slug.localeCompare(b.slug)
     : a.date === "" ? 1 : b.date === "" ? -1 : b.date.localeCompare(a.date));
+  return entries;
+}
+
+/** The welcome page's "Recent" feed: the newest notes, straight from MILL frontmatter —
+ *  server-composed live data (the export freezes it, §18). Shape matches the
+ *  <welcome-recent> component's bindings. */
+export interface RecentNote { title: string; href: string; path: string; }
+export async function listRecentNotes(limit = 4): Promise<RecentNote[]> {
+  const entries = await sortedNoteEntries();
   return entries.slice(0, limit).map((e) => ({
     title: e.title, href: `/notes/${e.slug}`, path: `notes/${e.slug}.md`,
   }));
+}
+
+/** Every note's route in newest-first order — for any consumer that lists ALL notes and must
+ *  match the /notes index's order (currently: /search.json, feeding the explorer tree's
+ *  notes/ entries so the sidebar menu reflects the same date order as the page itself). */
+export async function listNoteRoutesByDate(): Promise<string[]> {
+  return (await sortedNoteEntries()).map((e) => `/notes/${e.slug}`);
 }

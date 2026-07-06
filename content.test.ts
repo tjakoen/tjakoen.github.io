@@ -2,7 +2,7 @@
 // Run from the repo root (dirSource("tjakoen.github.io/notes") is root-relative, like config.ts).
 import { test, expect } from "bun:test";
 import { readdir } from "node:fs/promises";
-import { createPortfolioContentRoutes } from "./content.ts";
+import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes } from "./content.ts";
 
 const serve = createPortfolioContentRoutes();
 
@@ -52,4 +52,16 @@ test("content pages wear the BREAD shell chrome", async () => {
   const body = await (await serve("/notes"))!.text();
   expect(body).toContain("<portfolio-frame />");
   expect(body).toContain(`data-screen="notes"`);
+});
+
+test("listNoteRoutesByDate matches the /notes index's own newest-first order — the explorer tree (fed from this via /search.json) must agree with the page, not fall back to alphabetical", async () => {
+  const body = await (await serve("/notes"))!.text();
+  const inPageOrder = [...body.matchAll(/href="(\/notes\/[a-z0-9._-]+)"/g)].map((m) => m[1]);
+  expect(await listNoteRoutesByDate()).toEqual(inPageOrder);
+});
+
+test("listRecentNotes is a prefix of listNoteRoutesByDate (same order, just truncated)", async () => {
+  const all = await listNoteRoutesByDate();
+  const recent = await listRecentNotes(2);
+  expect(recent.map((n) => n.href)).toEqual(all.slice(0, 2));
 });
