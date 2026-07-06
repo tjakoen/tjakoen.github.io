@@ -9,6 +9,10 @@ The one-line version: **I direct, the AI types.** I own the intent, the architec
 and the taste; the AI does the reading, drafting, and legwork at speed. Neither replaces
 the other.
 
+> Companion: **[`SESSION-LOOP.md`](SESSION-LOOP.md)** owns the *mechanics* — how a session
+> orients, the loop it repeats, memory, handoff, and model economy. This file owns the
+> *standards* it all runs against. The full folder map is **[`README.md`](README.md)**.
+
 ---
 
 ## 1. The working relationship
@@ -102,6 +106,10 @@ premise. That's the whole value of a second reader.
   AI co-author trailers or attribution unless explicitly wanted.
 - **Conventional-ish commits.** `type: imperative summary`. Body only when the *why*
   isn't obvious from the diff.
+- **Match the model to the task.** Reason with the strongest model (planning, architecture,
+  hard debugging); execute an approved plan on a mid model; hand wide reads to a small-model
+  subagent. The full rule of thumb and how to actually capture the savings is
+  **[`SESSION-LOOP.md`](SESSION-LOOP.md) §6**.
 
 ### Reusable prompt: index the codebase for the AI
 
@@ -167,7 +175,8 @@ unstaged. Report committable (.gitignore, CLAUDE.md, standards doc) vs local-onl
 5. **Sync the ripple.** Anything that had to change alongside — docs, tests, related
    call sites — changes now, not "later."
 6. **Record the non-obvious.** If a real decision got made or something surprising got
-   learned, write it down so the next session (human or AI) inherits it.
+   learned, write it down so the next session (human or AI) inherits it — the memory format
+   and where each kind of fact lives is **[`SESSION-LOOP.md`](SESSION-LOOP.md) §4**.
 
 **Core principle: a mistake is a signal about the system, not just the operator.** When
 the AI trips, or a person trips, suspect the docs/design *first*. An operator stumbling

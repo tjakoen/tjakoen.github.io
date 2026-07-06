@@ -1,0 +1,35 @@
+# 📐 standards/ — how I build, write, and work with AI
+
+The single source of truth for how I work across every repo: how I build software with an AI
+partner, how anything under my byline reads, and how a new repo is set up. Public and portable —
+any repo of mine references this folder instead of copying its own drifting rules.
+
+**How to use this, human or AI:** read this index first, then fetch **only** the standard the task in
+front of you needs. Each line below is the whole hook — that's the point, so you load one file, not
+six.
+
+## The standards
+
+| Read this when you're… | Standard | In one line |
+|---|---|---|
+| **Building anything with an AI** | [AI-DEVELOPMENT.md](AI-DEVELOPMENT.md) | The working relationship, the definition of done, the conventions and pitfalls every change is held to. The rulebook. |
+| **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
+| **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard — cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
+| **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built — frontmatter, structure, footer — plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
+| **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard — inline-SVG-vs-mermaid rule, the tokenized scaffold, one palette. |
+| **Setting up a README** | [README-STANDARD.md](README-STANDARD.md) | Title emoji, the honest badge row, the "built with Claude" footer, plus a runnable prompt. |
+| **Starting a new repo** | [CLAUDE.starter.md](CLAUDE.starter.md) | The `CLAUDE.md` template that wires a fresh repo into all of the above from day one. |
+
+## How they fit together
+
+- **AI-DEVELOPMENT + SESSION-LOOP** are the engineering pair: the first is the standards, the second
+  is the session mechanics that run against them. Start here for any building work.
+- **VOICE + NOTE-STANDARD + README-STANDARD + FIGURES** are the writing set: VOICE owns the prose,
+  the others own specific artifacts and point back at it. Start here for any published words.
+- **CLAUDE.starter** is the on-ramp: it's how a new repo inherits the whole set.
+
+## The one rule this folder lives by
+
+Single source of truth, everywhere. Each fact has exactly one home here; every other mention is a
+*pointer*, never a copy. Two copies of a rule drift, and then both are suspect. If you find the same
+thing stated in two of these files, one of them is a bug — fix it to a link.
