@@ -58,10 +58,16 @@
           <a class="file-tree__file" href="/" data-variant="index" data-tab-label="Welcome">index.html</a>
           <a class="file-tree__file" href="/bread" data-tab-label="BREAD">bread.html</a>
           <details class="file-tree__dir">
-            <summary><a href="/notes">notes/</a></summary>
-            <!-- the real .md notes fill in from the ⌘K corpus (site.js); the folder link is the
-                 zero-JS path to the full listing -->
-            <div class="file-tree__children" data-tree-fill="/notes"></div>
+            <summary>notes/</summary>
+            <div class="file-tree__children">
+              <!-- index.html = the /notes listing itself (dimmed, matches batch/grain/mill's own
+                   top-level index.html entry) — a real .md note is never called "index.html" so
+                   this can never collide with a tree-filled entry below. -->
+              <a class="file-tree__file" href="/notes" data-variant="index" data-tab-label="Notes">index.html</a>
+              <!-- the real .md notes fill in here from the ⌘K corpus (site.js), zero-JS fallback
+                   is the index.html link above -->
+              <div data-tree-fill="/notes"></div>
+            </div>
           </details>
           <a class="file-tree__file" href="/loop" data-tab-label="Loop">loop.html</a>
         </div>

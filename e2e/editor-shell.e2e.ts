@@ -48,11 +48,13 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await expect(page.locator(".welcome__title")).toBeVisible();
     await page.reload();                              // …but reloading "/" DOES reopen last-page
     await expect(page).toHaveURL(/\/grain$/);
-    // check it → even a refresh of "/" now always opens Welcome
-    await page.goto("/grain");
-    await page.evaluate(() => localStorage.setItem("tj.welcome-startup", "on"));
-    await page.goto("/");
+    // unchecked leaves refreshes of OTHER pages untouched — you're already where you meant to be
     await page.reload();
+    await expect(page).toHaveURL(/\/grain$/);
+    // check it → refreshing ANYWHERE opens Welcome, not just "/" (the actual "on refresh" ask)
+    await page.evaluate(() => localStorage.setItem("tj.welcome-startup", "on"));
+    await page.reload();
+    await expect(page).toHaveURL(/\/$/);
     await expect(page.locator(".welcome__title")).toBeVisible();
   });
 

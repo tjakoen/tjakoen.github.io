@@ -13,22 +13,24 @@
   const get = (k) => { try { return store && store.getItem(k); } catch { return null; } };
   const put = (k, v) => { try { if (store) store.setItem(k, v); } catch { /* private mode */ } };
 
-  // ---- refresh redirect (BEFORE paint): "/" honors the welcome checkbox on every actual
-  // REFRESH (F5 / reload), not just the first one this session — checked means a refresh
-  // of "/" always re-opens Welcome; unchecked (the default) reopens wherever you last were.
-  // A plain NAVIGATE to "/" (the pinned Welcome tab, a tab-close fallback, the logo) is left
-  // alone regardless of the checkbox — that's an intentional visit, not a refresh, and must
-  // not bounce the visitor straight back out. Nothing to reopen yet (no last page cached) →
-  // "/" shows Welcome regardless, checkbox or not. Navigation Timing tells reload from
-  // navigate; falls open (treat as navigate) if the API is unavailable.
+  // ---- refresh redirect (BEFORE paint): the welcome checkbox fires on every actual REFRESH
+  // (F5 / reload), on ANY page — not just "/", and not just the first one this session.
+  // CHECKED: refreshing anywhere always re-opens Welcome ("show welcome page on refresh").
+  // UNCHECKED (the default): refreshing "/" specifically reopens wherever you last were
+  // (a stale/forgotten Welcome tab is more useful jumping forward than sitting blank);
+  // refreshing anywhere ELSE is untouched — you're already exactly where you meant to be.
+  // A plain NAVIGATE (the pinned Welcome tab, a tab-close fallback, the logo, any link) is
+  // NEVER affected by the checkbox — that's an intentional visit, not a refresh, and must not
+  // bounce the visitor straight back out. Navigation Timing tells reload from navigate; falls
+  // open (treat as navigate) if the API is unavailable.
   const path = location.pathname.replace(/\/+$/, "") || "/";
   const last = get(KEY.lastPage);
   const isReload = (() => {
     try { return performance.getEntriesByType("navigation")[0]?.type === "reload"; } catch { return false; }
   })();
-  if (path === "/" && isReload && get(KEY.startup) !== "on" && last && last !== "/") {
-    location.replace(last);
-    return;                                          // stop — this page is being left
+  if (isReload) {
+    if (get(KEY.startup) === "on" && path !== "/") { location.replace("/"); return; }
+    if (path === "/" && get(KEY.startup) !== "on" && last && last !== "/") { location.replace(last); return; }
   }
 
   document.addEventListener("DOMContentLoaded", () => {
