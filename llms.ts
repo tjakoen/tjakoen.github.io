@@ -1,0 +1,43 @@
+// portfolio/llms.ts — the CONTENT of /llms.txt (the llmstxt.org convention). BATCH owns the format
+// (batch/http/llms.ts); this composition-root file owns the curated links, so the substrate stays
+// content-agnostic. It is a PROJECTION of DOCS.md + the README — a trailhead an AI crawler reads to
+// learn what this stack is and where the canonical docs live — never a fork of them. When the doc map
+// or the layer/route structure changes, re-sync this list (see CLAUDE.md's "change X → update Y").
+import type { LlmsDoc } from "../batch/http/llms.ts";
+
+// Links use relative "/route" paths — batch/http/llms absolutizes them against the request origin,
+// and the export's origin-rewrite swaps in the deploy URL (same path robots.txt/sitemap.xml take).
+export const portfolioLlmsDoc: LlmsDoc = {
+  title: "BREAD — one vocabulary, two operators",
+  summary:
+    "A no-build, AI-native web stack where every surface is addressable and operable by both a " +
+    "human and an AI through one shared vocabulary, and the AI's presence is a visible signal (grain = AI).",
+  details: [
+    "A human click and an AI decision become the same Intent, flow through one door (POST /intent), " +
+      "and return as render operations pushed over SSE. There is no privileged AI-to-DOM back channel: " +
+      "the AI operates the UI the same way a person does, and you can watch it happen.",
+    "Server-rendered hypermedia on Bun. No build step, no bundler, zero third-party runtime dependencies. " +
+      "The three layers build in one direction — batch → grain → mill.",
+  ],
+  sections: [
+    { heading: "The stack", links: [
+      { title: "BATCH", url: "/batch", note: "the no-build substrate — server-rendered hypermedia, no bundler, no template language" },
+      { title: "GRAIN", url: "/grain", note: "the AI-interaction design system + its default theme (Sourdough); grade-as-signal (grain = AI, clean = human)" },
+      { title: "MILL", url: "/mill", note: "Markdown → GRAIN-pages CMS — feed it .md + images, it renders GRAIN pages" },
+    ]},
+    { heading: "Documentation", links: [
+      { title: "BATCH docs", url: "/batch/docs", note: "ARCHITECTURE (the substrate's reasoning, single source of truth) + CONVENTIONS (the build standard)" },
+      { title: "GRAIN docs", url: "/grain/docs", note: "GRAIN (the design system + AI layer), AI-INTERFACE (the contract: one door, render ops, manifest), DESIGN-SYSTEM (the look)" },
+      { title: "Component catalog", url: "/catalog", note: "every GRAIN component, self-documenting, with a Human/AI grade toggle" },
+    ]},
+    { heading: "See the AI act", links: [
+      { title: "/loop", url: "/loop", note: "the reference screen — watch the AI plan and act through the one door, its presence lit as it works" },
+    ]},
+    { heading: "Writing", links: [
+      { title: "Notes", url: "/notes", note: "essays on the stack and on building with AI; the flagship is \"ten times zero\"" },
+    ]},
+    { heading: "Optional", links: [
+      { title: "Sitemap", url: "/sitemap.xml", note: "the full list of crawlable routes" },
+    ]},
+  ],
+};

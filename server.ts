@@ -7,6 +7,7 @@ import { watchComponents } from "../batch/platform/watch.ts";
 import { makeStatic } from "../batch/http/static.ts";
 import { makePageServer } from "../batch/http/pages.ts";
 import { createSitemap } from "../batch/http/sitemap.ts";
+import { renderLlms } from "../batch/http/llms.ts";
 import { createStyleBundle } from "../batch/assets/style-bundle.ts";
 import { createStream } from "../batch/http/stream.ts";
 import { makeModuleServer } from "../batch/http/modules.ts";
@@ -26,6 +27,7 @@ import { toLoopCardView } from "./demo/services/task-views.ts";
 import type { Task } from "./demo/domain/task.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
 import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes } from "./content.ts";
+import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 
 // --- seed a couple of tasks so the /loop demo has something to show ---
 const seed: Task[] = [
@@ -189,6 +191,11 @@ Bun.serve({
     "/robots.txt": (req: Request) =>
       new Response(`User-agent: *\nAllow: /\nSitemap: ${new URL(req.url).origin}/sitemap.xml\n`,
         { headers: { "Content-Type": "text/plain" } }),
+    // /llms.txt — the AI-facing index (llmstxt.org): what this stack is + where the canonical docs
+    // live. Same origin-from-request idiom as sitemap.xml so the export can rewrite the deploy URL in.
+    "/llms.txt": (req: Request) =>
+      new Response(renderLlms(portfolioLlmsDoc, new URL(req.url).origin),
+        { headers: { "Content-Type": "text/plain; charset=utf-8" } }),
   },
   async fetch(req) {
     const p = new URL(req.url).pathname;
