@@ -121,7 +121,7 @@ with their work, and I spend my attention where it's actually useful: stepping i
 needs real context, guiding people through the parts that are genuinely hard, having the conversation
 that makes it click. The mechanical grind went to the machine. The human part came back to me.
 
-This is my third semester now, and this term it's four classes, around a hundred and fifty students.
+This is my third semester now, and each term it's somewhere between a hundred and a hundred and fifty students.
 A year ago that number would have buried me. Now it's fine. Not because I care less than the version
 of me staring at that 1am pile, because I finally built the thing that let me care *sustainably.*
 

@@ -22,7 +22,7 @@ Then a class I did not ask for made me check my assumptions.
 
 ## The class that made me look again
 
-INTROWEB, basic HTML and CSS, got added to my teaching load. Prepping it meant actually looking at the modern platform instead of assuming I still knew it, and the rabbit hole that opened up ([the origin story](origin-story.md) tells that whole tale, snowball and all) ended with a belief I had quietly filed away years ago: the native web is genuinely good now. This note is the part I skipped there: the actual technical *why*. What does "the platform is good enough now" mean once you get specific?
+INTROWEB, basic HTML and CSS, got added to my teaching load. Prepping it meant actually looking at the modern platform instead of assuming I still knew it, and the rabbit hole that opened up ([the origin story](origin-story.md) tells that whole tale) ended with a belief I had quietly filed away years ago: the native web is genuinely good now. This note is the part I skipped there: the actual technical *why*. What does "the platform is good enough now" mean once you get specific?
 
 It means most of the things I used to install a library for, the browser just does.
 
@@ -61,7 +61,9 @@ The pattern got almost funny. I would sit down to add something, reach for the l
 
 Let me be precise about "no build step," because the phrase gets thrown around loosely. Most stacks mean a *fast* build step. I mean there is not one. No compile, no bundle, no transpile into a dist folder between the source I write and the page you get. A request comes in, the server reads my templates, expands the custom tags I invented, and hands back finished HTML. Edit a file, refresh the tab, done. I built the backend, BATCH, on exactly that bet (the fuller story is in the [origin story](origin-story.md)): the server is the build step, and it runs on demand instead of ahead of time. Nothing sits between my source and the page, which means nothing can go stale behind my back.
 
-I should not oversell that, because I hate a weasel word. "No build step" is a claim about what ships to you, not about having no tooling at all. There is still a package.json: it pins my dependencies and holds the dev tools, the Playwright tests and the TypeScript type checks, none of which ever reach a visitor. What is gone is the compiler that turns my source into a separate bundle the browser has to download. The one build-like moment left is optional, and funnily enough it is a production one: to host the site as static files, I run the app once and freeze its pages. That is a crawl, not a bundler.
+I should not oversell it though: "No build step" is a claim about what ships to you, not about having no tooling at all. There is still a package.json: it pins my dependencies and holds the dev tools, the Playwright tests and the TypeScript type checks, none of which ever reach a visitor. What is gone is the compiler that turns my source into a separate bundle the browser has to download. 
+
+The one build-like moment left is optional, and funnily enough it is a production one: to host the site as static files, I run the app once and freeze its pages. That is a crawl, not a bundler.
 
 That is also why the runtime mattered. Bun earned the job with one specific trick: it parses HTML on the server, natively. That is what lets me invent my own component tags and have the server compose them without adopting a template engine, which would have been the build step sneaking back in through the kitchen door. It runs TypeScript directly, no separate compile, and it will even hand a TypeScript file to the browser transpiled on the way out. It bundles a database too, so the day I need one it is already in the box instead of being another dependency to install. Otherwise it stays out of my way, and every part it replaces is a part I never have to babysit.
 
@@ -90,7 +92,7 @@ To be fair, React can render on the server and pre-generate pages too. The hones
 
 ## The server you stop needing
 
-Here is the part I did not fully see coming, and the bit worth sitting with. Because the output is just HTML, plus native behavior, plus one small script in one place, most of the site does not need the server at all once it exists. I run the server once, crawl every page, freeze the result to plain files, and host them on GitHub Pages for nothing. In development it is a live server. In production it is a folder of static files a CDN serves in its sleep. There is no hydration to reconcile, because there is nothing to hydrate.
+Here is the part I did not fully see coming, and the bit worth sitting with. Because the output is just HTML, plus native behavior, plus one small script in one place, most of the site does not need the server at all once it exists. I run the server once, crawl every page, freeze the result to plain files, and host them on GitHub Pages for nothing. In development it is a live server. In production it is a folder of static files a CDN serves in its sleep. There is no hydration to reconcile, because there is nothing to hydrate. How that frozen folder still behaves like a live app, click for click, is its own note: [This Site Feels Like an App](feels-like-an-app.md).
 
 ```mermaid
 flowchart LR
@@ -106,9 +108,9 @@ So here is the rule of thumb I landed on:
 
 > A server is not the price of admission for a website. It is a tool you reach for when you actually need server things.
 
-A database. A real API call. Data that changes per request. In a full product built on [this stack](/grain), the one place that genuinely needs a server is the AI: the single door writes go through, and the live stream of edits it pushes back. Everything that is only content, the writing, the pages, the design, needs nothing behind it. It was finished the moment it was composed. The server did its work and clocked out.
+The site you're reading this on was built static, but there is still a use case for the framework to have a server. If you have a database, an API call, or a connection to an AI endpoint, a full product built on [this stack](/grain) would genuinely need a server. BATCH is designed to work with both.
 
-And this site is where I take that to its end. The portfolio you are reading is headed for no server at all, the AI included: a small language model that runs in your browser, so even the assistant is just static files plus your own hardware. That last part is still in progress and I will not pretend otherwise, but it is the thesis stated plainly. A server should be something you reach for when the job actually needs one, not the ground a website is built on by default.
+The portfolio you are reading has no server at all. The AI is headed the same way: a small language model that will run in your browser, so even the assistant becomes static files plus your own hardware. That part is still in progress and I will not pretend otherwise, but it is the thesis stated plainly. A server should be something you reach for when the job actually needs one, not the ground a website is built on by default.
 
 ```mermaid
 flowchart TD

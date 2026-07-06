@@ -15,7 +15,7 @@ summary: >
   writing the rails and the AI writing much of the code inside them. Includes the playbook.
 ---
 
-> **Draft: my voice, plain text for now.** Figures and styling come later via MILL/GRAIN. This is
+> **Draft: my voice.** This is
 > the post my repo footers point at, the one honest answer to "you let an AI write this?" Companion
 > to [my origin story](origin-story.md), and to the teaching side of the same idea:
 > [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md) and
@@ -75,64 +75,58 @@ multiplying first.**
 ## I was the zero, for years
 
 Here's the part I don't usually lead with. For most of my twenties I was a talented amateur with just
-enough instinct to talk my way into rooms I had no business being in. School coding came easy, so I
-coasted on easy. Then I decided the real value was in business, and I kept running the same play: say
+enough instinct to talk my way into rooms I had no business being in. Coding in school came easy, so I
+coasted on easy. Then when I decided the real value was in business, I kept running the same play: Say
 yes to running the thing before I actually knew how to run the thing.
 
-It worked. That's the trap. It worked just enough to keep me doing it, and never enough to get me what
+It worked. And that's the trap. It worked just enough to keep me doing it, but never enough to get me what
 I was actually after. I helped grow my family's little beachside campsite into a real resort, then a
-pandemic flattened it. I ran marketing for a company and learned I can't stand doing marketing for
+pandemic flattened it. I ran marketing for a company until I learned that I can't stand doing marketing for
 anyone but myself. I started a cafe with friends, a salon with friends, a marketing firm on my own.
 One broke even, one sold at break-even, one went nowhere, and it turns out you can't tell your friends
-what to do. Then I built and launched an events platform with investors, got it to a real product with
-real money moving, and watched it end badly.
+what to do. Then I built and launched an events platform, got it to a real product with
+real money moving, and then watched it end badly.
 
-Add it all up and it cost me real money and a few years I don't get back. I don't regret a peso of it,
-because it finally taught me the one thing every single failure had in common. It wasn't the ideas. It
+Add it all up and it cost me real money and a few years I can't get back. But through it all, I don't regret a moment of it,
+because it taught me the one thing every single failure had in common. It wasn't the ideas. It
 was me. I kept starting things I wasn't the right person to start yet.
 
-> You have to be the right person before you try the thing. I paid tuition to learn that.
+> You have to be the right person before you try the thing. I paid the tuition to learn that so you don't have to.
 
 So I did the unglamorous thing. I stopped chasing the next launch and started working on the one
-variable I could actually fix: me. I slowed down. I went back and learned the foundations properly,
-deeply, not just enough to pass, and I shoved myself into the parts I was worst at, like standing in
-front of a room full of students. Grind, then grind some more. That's the actual plan: work like this
-now so that by my thirties the work is something I picked, on my terms. The goal was never to relax.
-It was to earn the pick.
+variable I could actually fix: me. I slowed down. I went back and learned the foundations properly, not just enough to pass, and I shoved myself into the parts I was worst at, like standing in
+front of a room full of students or doing talks on a stage. That's the actual plan: work my butt off, grind, so that by my thirties I'd get to a point where the work I do will be something I picked, on my terms.
 
-That, to me, is the definition of the word professional. Not the title. The reps.
+That, to me, is the definition of the word professional. Not the title, but the journey I had to take to be able to write this in the first place.
 
 ## So we're clear who's talking
 
-That backstory exists to buy one sentence: I could have written every line of this
-project by hand. I run a team of developers for a living; on the side, I teach software engineering
-part time using a [platform I built](why-i-teach.md); and the thing serving you this very sentence
-is a stack I built from the ground up. Going frameworkless wasn't ignorance of the
-alternatives: I lived inside frameworks for years and walked away on purpose, because [the web
-platform grew up while we weren't looking](the-browser-grew-up.md) and I'd rather build on the thing
+I wrote that backstory to buy one sentence: I could have written every line of this
+project by hand. I run a team of developers for a living, I teach software engineering
+part time using a [platform I built](why-i-teach.md), and I built the thing serving you this very sentence
+on a framework and stack I built from the ground up. 
+
+**As a side note:** going frameworkless wasn't ignorance of the
+alternatives. I lived inside frameworks for years, but I walked away for my own projects because I learned that [the platform the web is written on grew up while we weren't looking](the-browser-grew-up.md), and to be honest, I'd rather build on the thing
 than on the thing on top of the thing.
 
-None of that is there to impress you. It's there to place me on the multiplier at the top of this
-post, because that's the whole question: what does the machine have to work with. A beginner vibe
-codes because they *can't* write the code. I vibe code because I *can*, and I've learned the typing
+None of that is there to impress you. It's there to establish me as a multiplier and to reinforce that: A beginner vibe
+codes because they *can't* write the code. I vibe code because I *can*. I've learned the typing
 was never the valuable part. The value is knowing what to build, how it should be shaped, and when
-the machine has quietly done something dumb. I catch that last one because I've made those same
+the machine has quietly done something dumb, catch it in the act and correct. I've made those same
 mistakes by hand, expensively, enough times to smell them coming.
 
 So when I hand the typing to a machine, I'm not skipping the hard part. I did the hard part years ago,
-the boring way and the expensive way both. That's the deal.
+the boring way and the expensive way.
 
-One gap in that list, while I'm being honest: I don't hold a single credential in AI. What I've got
-instead is a thick folder of ways I've been wrong with it, which has taught me more than any syllabus
-would, and I still fully intend to go earn the real thing. Chalk it up as the next foundation I
-haven't laid yet.
+While I'm being honest: I should probably put in the record that I don't hold a single credential in AI. I stay updated in trends, I follow the right youtubers and journalists. But what I've got
+instead is a long list of ways I've been wrong, and I personally think that this has taught me more than any syllabus
+would, I still fully intend to go earn the real thing. But for now we'll just chalk that up as the next foundation I haven't laid yet.
 
 ## A decade of rehearsal, billed as management
 
-The reframe that made me good at this faster than I had any right to be: directing an AI isn't a new
-skill I had to go learn. It's the skill my whole twenties turned out to be building: the ventures
-that failed, the team I run, the classroom. I'd been rehearsing for a decade. I just didn't know
-what for.
+Directing an AI isn't a new skill I had to go learn. It's the skill my whole twenties turned out to be building: the ventures
+that failed, the team I run, the classroom. I'd been rehearsing for a decade. I just didn't know what for.
 
 Think about what a dev manager actually does: hand work to people whose hands you don't control, give
 them enough context to succeed, then read what comes back and catch the problems before they ship. A
@@ -143,11 +137,11 @@ list, top to bottom.
 
 So I stopped treating the model like a magic oracle or a fancy search box, and started treating it
 like what it actually resembles: a fast, capable, occasionally overconfident junior on my team, or a
-student. The instant I framed it that way I got better at it overnight, because I already knew how to
+student rushing through an activity for the sake of getting it done. The instant I framed it that way I got better at it overnight, because I already knew how to
 do *that.*
 
 <svg viewBox="0 0 620 250" width="100%" role="img"
-     aria-label="Four titles, one skill set. A matrix of four roles (dev manager, tech lead, teacher of 120, and directing an AI) running the same moves. Give direction: a clear brief, the conventions, the lesson, a prompt with docs. Verify anyway: review the pull request, the design review, grade the work, read the output. Then all four do the same last move: correct the reasoning, not just the output. Same moves down every column; only the subject changes."
+     aria-label="Four titles, one skill set. A matrix of four roles (dev manager, tech lead, teacher of 100 to 150 students, and directing an AI) running the same moves. Give direction: a clear brief, the conventions, the lesson, a prompt with docs. Verify anyway: review the pull request, the design review, grade the work, read the output. Then all four do the same last move: correct the reasoning, not just the output. Same moves down every column; only the subject changes."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
   <rect x="0.5" y="0.5" width="619" height="249" style="fill:var(--paper);stroke:var(--edge)"/>
@@ -158,7 +152,7 @@ do *that.*
   <line x1="484.5" y1="44" x2="484.5" y2="152" style="stroke:var(--edge);stroke-width:1"/>
   <text x="206" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">Dev manager</text>
   <text x="317" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">Tech lead</text>
-  <text x="429" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">Teacher (120)</text>
+  <text x="429" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">Teacher (100–150)</text>
   <text x="540" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">AI</text>
   <line x1="24" y1="72" x2="596" y2="72" style="stroke:var(--edge);stroke-width:1"/>
   <text x="24" y="104" style="fill:var(--ink);font-size:14px">Give direction</text>
@@ -176,23 +170,21 @@ do *that.*
   <text x="28" y="232" style="fill:var(--accent);font-size:13px">Same moves down every column. Only the subject changes.</text>
 </svg>
 
+*Four jobs, one muscle: give direction, verify anyway, then fix the reasoning instead of the output.*
+
 Some evenings I've got five to ten Claude sessions open at once, and it feels *exactly* like running a team:
-parcel out the work, keep each one on-brief, stitch what comes back into something that hangs together.
-And when I read through what they produce, it's the same muscle I use reviewing a junior's pull request
-or grading a student's submission, not "is this impressive," but "do they actually understand what
-they shipped, and would it survive contact with reality." My one rule for students turns out to be my
-one rule for the machine: if you can't explain it, you didn't build it.
+delegate the work, keep each agent productive, and stitch what comes out into something that works.
+When I read through what they produce, it's the same muscle I use reviewing a junior's pull request or grading a student's submission. I ask the same questions: "Does this meet the objectives?", "Do they understand what they shipped?", "Is it in line with our established standards and architecture?". My one rule for students turns out to be my one rule for the machine: if you can't explain it, you didn't build it.
 
-> I'm not learning a new skill with AI. I'm spending the one I already paid for.
-
-The AI is just the newest, fastest, least-tenured member of a team I already knew how to run.
+> I'm not learning a new skill with AI. I'm spending the one I already paid for. The AI is just the newest, fastest, least-tenured member of a team I already knew how to run.
 
 ## The receipts
 
 Everything below is pulled straight from the git history of the thing you're reading this on: my
 portfolio, built on three tools I made for it. My own no-build framework (BATCH), my own design
-system (GRAIN), and the little Markdown CMS that renders these very words into the page (MILL). Not a
-toy, not a tutorial repo. The thing I actually build on. Fair warning: it's still in progress and not
+system (GRAIN), and a little Markdown CMS that renders these very words into the page (MILL). 
+
+Not a demo, not a tutorial repo. The thing I actually build on. Fair warning: it's still in progress and not
 published yet, so treat every number below as a snapshot I'll re-pull the day it ships. The ratio is
 the point, and the ratio won't move.
 
@@ -224,13 +216,9 @@ Let me get the headline out of the way, because it reframes everything else:
 
 Sit with that for a second, because it's the exact opposite of what vibe coding is supposed to look
 like. The caricature is a person who writes *no* docs, who couldn't produce a spec if you begged.
-My repo has the inverse problem, if it even is one: there's *more* specification than there is
-implementation.
+My repo has the inverse problem: there's *more* specification than there is implementation.
 
-I didn't tidy that up after the fact. It's the method. When you work with an AI at speed, the scarce
-resource stops being code and becomes *intent.* The model can't know what you meant, what the rules
-are, or what "done" looks like, unless you wrote it down. So I do. The documentation *is* the work;
-the code is the cheap part the machine handles.
+I didn't tidy that up after the fact. It's the method. When you work with an AI at speed, the scarce resource stops being code and becomes *intent.* The model can't know what you meant, what the rules are, or what "done" looks like, unless you wrote it down. So I do. The documentation *is* the work, the code is the cheap part the machine handles.
 
 <svg viewBox="0 0 620 190" width="100%" role="img"
      aria-label="On this repo: 5,411 lines of code versus 6,947 lines of prose; 56% of everything written is words, not code."
@@ -247,6 +235,8 @@ the code is the cheap part the machine handles.
   <text x="28" y="170" style="fill:var(--accent);font-size:13px">56% of everything written is words, not code.</text>
 </svg>
 
+*More spec than implementation: the inverse of what vibe coding is supposed to look like.*
+
 ## Now the "vibe" part, because I do go fast
 
 <!-- LIVING NUMBERS (refresh occasionally, and definitely before publish): the counts below grow with
@@ -258,8 +248,7 @@ the code is the cheap part the machine handles.
      over the sprint day — eyeball the timestamps. Keep in sync with the ratio SVG + frontmatter; the
      full recompute process (prose/code/ratio) lives in the REFRESH note under "The one number that matters". -->
 
-If the docs number makes me sound slow and fussy, the tempo says otherwise. Here's the shape of the
-build:
+If the docs number makes me sound slow and fussy, the tempo says otherwise. Here's the shape of the build:
 
 - 33 commits, and every single one of them was co-authored with an AI. That's not the machine
   writing while I watched, I still write plenty of the code myself. Co-authored is the honest word:
@@ -319,6 +308,8 @@ before I opened the throttle.
   <text x="28" y="144" style="fill:var(--accent);font-size:13px">Every tick, co-authored by a machine.</text>
 </svg>
 
+*Ten hours, thirty-one commits: fast is safe when the rails went up first.*
+
 ## The part that actually makes it professional
 
 The distinction that matters has nothing to do with whether you use AI or how fast you
@@ -364,14 +355,14 @@ to sound right exactly when it's wrong.
 
 > Most of my prompting isn't "build this." It's "check this."
 
-Does it still match the goal. Does it honor the docs. Did it quietly break a rule to get something
-working. That's where most of the hours actually go: not building, checking. Then before the big
-commits there's a [repeatable runbook](../../AUDIT.md): type-checker green? Layers still importing in
+Does it still match the goal? Does it honor the docs? Did it quietly break a rule to get something
+working? That's where most of the hours actually go: not building, checking. Then before the big
+commits there's a [repeatable runbook](../../AUDIT.md): tests green? Layers still importing in
 one direction only? Any hardcoded values that should be design tokens? Going fast is only safe when
 there's a cheap, repeatable way to prove you didn't bend the shape of the thing.
 
 **5. Tests are part of the work, not a phase after it.** Three tiers (unit, integration,
-end-to-end) written *as* features land, not bolted on later. The type-checker and the test suite
+end-to-end) written *as* features, not bolted on later. The type-checker and the test suite
 have to be green before I call anything done. It's the least glamorous rule and it does the most
 work: it's the seatbelt that lets me drive fast.
 
@@ -379,8 +370,8 @@ work: it's the seatbelt that lets me drive fast.
 first-class reader, so I write *for* it, not *around* it. It reads the same onboarding and conventions
 a new teammate would. And I've started taking that down to the component level in my design system,
 where the pieces the AI actually operates get a second doc written only for the machine: how to drive
-the thing, not how a human reads about it. You onboard this collaborator over and over, so you build
-the onboarding once and make it excellent.
+the thing, not how a human reads about it. You onboard this collaborator every time you spin up a new session, so you build
+the onboarding, make it excellent, and polish it as you go.
 
 ```mermaid
 flowchart LR
@@ -401,14 +392,13 @@ text, a "chat" that rendered as two stacked boxes instead of a conversation, an 
 didn't actually look like a click. Normal bug-fixing territory. The boring move is to squash each one
 and move on.
 
-Instead we stopped, the machine and I, and asked a better question: why do I keep tripping on my
-*own* system? It's the
-same reflex I use giving feedback on a code review or grading a student's project: when the same
-mistake keeps coming back, you stop blaming the person making it and start suspecting the thing
+Instead we stopped, the machine and I, and started asking questions: why do I keep tripping on my
+*own* system? Am I the problem? Is the architecture I planned out the problem? I am designing my framework in a way that's supposed to be easy for a human to use. Much less an AI. So why is it tripping up on trivial things?
+
+It's the same reflex I use giving feedback on a code review or grading a student's project: when the same mistake keeps coming back, you stop blaming the person making it and start suspecting the thing
 they're using. When half a class flubs the same question, the problem is the question, not the class.
 
-> If the person who designed it keeps slipping, the architecture isn't clear, and it's meant to be
-> easy for a human, never mind an AI.
+> If the person who designed it keeps slipping, the architecture isn't clear, and it's meant to be easy for a human, never mind an AI.
 
 So the mistakes stopped being bugs and started being data.
 
@@ -445,6 +435,8 @@ flowchart LR
   E -->|becomes a permanent guardrail| A
 ```
 
+*Every trip the AI takes is a map of where the design isn't clear yet, and a chance to harden it.*
+
 ## The tell is the ratio
 
 Strip all of it down and you land right back at that first number. **56% prose.** More spec than
@@ -466,9 +458,7 @@ the receipt (the commits, the ratio, the runbook) and show you it wasn't luck.
 
 That's the whole word. *Professional.* It just means I keep the receipts. Get so good at the
 fundamentals that when you finally pick up the power tool, it multiplies something real. It's the
-same discipline I drill into my students from the other side of the desk, and the same rule I turn
-on my own AI when it grades their work: [how I teach with AI, and where I lock it
-out](how-i-use-ai-in-teaching.md).
+same discipline I drill into my students when I teach, and the same rule I turn on my own AI when it grades their work: [how I teach with AI, and where I lock it out](how-i-use-ai-in-teaching.md).
 
 Bring nothing and it multiplies nothing: ten times zero is still zero. So become a bigger number
 first, then go make it dangerous.
