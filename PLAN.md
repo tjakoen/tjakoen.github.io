@@ -568,9 +568,18 @@ now says it hurt readability) — don't stack fixes, redo that spot.
    the shell instead of the capped 11rem band; main shrinks to a peek above it. Persisted
    (`grain.shell.console-expanded`, mirrors the `console-open` pattern in `shell.js`). Clicking it
    auto-opens a collapsed console first. e2e in `persistence.e2e.ts`.
-4. **`notes.html`** — its own page, look matching the site vibe. Ordering/categorization already
-   exists in the data — owner says it should **reflect in the menu** (explorer tree / nav), not
-   just on the notes page itself.
+4. **Menu-order half ✅ BUILT (2026-07-06):** `/notes` already had its own real dedicated page
+   (MILL's `content-index` GRAIN component, wrapped in THE EDITOR/BREAD shell — not missing, as
+   the original ask assumed) and already sorted newest-first (`mill/serve.ts`'s `byDateDesc`). The
+   actual gap: the explorer tree's `notes/` entries (filled client-side from `/search.json`) rode
+   the sitemap's plain alphabetical route order, disagreeing with the page. Fixed by threading the
+   same date order through: `content.ts` exports `listNoteRoutesByDate()` (factored out of the
+   existing `listRecentNotes`, one sort, two consumers); `server.ts`'s `/search.json` substitutes
+   the notes/ block into that order before `site.js` reads it for the tree fill. Unit-tested
+   (`content.test.ts`) against the actual rendered page order, not a re-assertion of the sort.
+   **Still open:** the "interesting look matching the vibe" half — owner should confirm whether
+   the existing `content-index` treatment (in the BREAD shell) already reads that way, or a
+   redesign is still wanted, before guessing at a visual direction.
 5. ✅ **BUILT (2026-07-06):** a `tabs-close-all` control (topbar, sibling of the strip so it
    survives the strip's own scroll) clears every non-pinned tab, bouncing to the pinned Welcome
    if the current page was one of them; `tabs.js` hides it when there's nothing closable. The

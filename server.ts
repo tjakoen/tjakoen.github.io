@@ -26,7 +26,7 @@ import { LoopCard } from "./demo/view/components.ts";
 import { toLoopCardView } from "./demo/services/task-views.ts";
 import type { Task } from "./demo/domain/task.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes } from "./content.ts";
+import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 
 // --- seed a couple of tasks so the /loop demo has something to show ---
@@ -182,7 +182,14 @@ Bun.serve({
       new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } }),
     "/search.json": async () => {
       const titleOf = (p: string) => { const s = p === "/" ? "home" : p.replace(/^\//, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
-      const pages = sitemap.routes().map((p) => ({ title: titleOf(p), url: p }));
+      // the sitemap lists routes alphabetically; substitute the notes/ block for the SAME
+      // newest-first order the /notes index uses, so the explorer tree (which fills its
+      // notes/ folder from this list, in this order) matches the page instead of the ABCs.
+      const noteOrder = await listNoteRoutesByDate();
+      let noteIdx = 0;
+      const noteSet = new Set(noteOrder);
+      const routes = sitemap.routes().map((r) => noteSet.has(r) ? noteOrder[noteIdx++]! : r);
+      const pages = routes.map((p) => ({ title: titleOf(p), url: p }));
       const components = (await catalog.entries()).map((c) => ({ title: c.name, subtitle: c.layer, url: `/catalog#${c.slug}` }));
       return Response.json({ pages, components });
     },
