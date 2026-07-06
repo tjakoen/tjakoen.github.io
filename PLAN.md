@@ -557,17 +557,26 @@ modified files, awaiting the owner's own commit.
 Owner round after v3.1. Note: item 1 **reverts** v3.1's boxed console lines (just shipped, owner
 now says it hurt readability) — don't stack fixes, redo that spot.
 
-1. **Terminal line display redo** — v3.1's per-line boxing (`.console__line` border+radius) made
-   lines harder to read, not easier. Need a different narration format (not boxed-per-line).
-2. **Chat-embedded terminal feels crowded** — box-per-**output** (one AI action/run = one box),
-   not box-per-line; current per-line density reads too tight.
-3. **Terminal full-height expand toggle** — a control to expand the console upward to fill the
-   window, not just its current fixed band.
+1./2. ✅ **BUILT (2026-07-06):** reverted v3.1's per-line boxing (`console.css` `.console__line` lost
+   its border/radius/padding — back to a plain flowing row). This fixed both at once: the docked
+   terminal's lines read as a stream again (#1), and the chat's `.chat-thinking__preview` (which
+   clones the same lines) stopped double-boxing — its own outer `.chat-thinking` border already
+   IS the "one box per output" grouping (#2), so per-line borders inside it were pure redundancy.
+3. ✅ **BUILT (2026-07-06):** a `console__grow` toggle (repurposed the dead `console__toggle`
+   chat⇄terminal slot, inert since the two started coexisting) expands the console's grid row via
+   `data-console-expanded` (`--shell-console`/`--shell-main` in `app-shell.css`) to fill most of
+   the shell instead of the capped 11rem band; main shrinks to a peek above it. Persisted
+   (`grain.shell.console-expanded`, mirrors the `console-open` pattern in `shell.js`). Clicking it
+   auto-opens a collapsed console first. e2e in `persistence.e2e.ts`.
 4. **`notes.html`** — its own page, look matching the site vibe. Ordering/categorization already
    exists in the data — owner says it should **reflect in the menu** (explorer tree / nav), not
    just on the notes page itself.
-5. **"Close all tabs" action** — bulk-close the open-tabs strip; owner also wants tabs closable
-   **from the sidebar/explorer menu**, not only from the tab strip itself.
+5. ✅ **BUILT (2026-07-06):** a `tabs-close-all` control (topbar, sibling of the strip so it
+   survives the strip's own scroll) clears every non-pinned tab, bouncing to the pinned Welcome
+   if the current page was one of them; `tabs.js` hides it when there's nothing closable. The
+   explorer file-tree also gets a live close × (`.file-tree__close`, hidden until hover, mirrors
+   `.tab__close`) on any entry that's an open tab, injected/removed on every `render()` — closes
+   from the sidebar without switching to the page first.
 6. **Search redo** — current ⌘K search needs rework, both functionally and to better match the
    VS Code vibe.
 7. ✅ **BUILT (2026-07-06):** root cause was `app-window.md`'s own doc example — a live-previewed
