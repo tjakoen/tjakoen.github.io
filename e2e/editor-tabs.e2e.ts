@@ -19,6 +19,16 @@ test.describe("THE EDITOR v2 — explorer + open tabs", () => {
     await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("batch/"))')).not.toHaveAttribute("open", "");
   });
 
+  test("notes/ shows its own index.html entry (like its top-level siblings batch/grain/mill), alongside the individual notes", async ({ page }) => {
+    await page.goto("/notes/ten-times-zero");
+    const notesDir = page.locator('.file-tree__dir:has(> summary:text-is("notes/"))');
+    const index = notesDir.locator('> .file-tree__children > a.file-tree__file[href="/notes"]');
+    await expect(index).toHaveText("index.html");
+    await expect(index).toHaveAttribute("data-variant", "index");
+    // the individual .md entries still fill in alongside it, not replaced by it
+    await expect(notesDir.locator('a[href="/notes/ten-times-zero"]')).toHaveCount(1);
+  });
+
   test("index files are dimmed + labeled by section; visiting opens a closable tab named for the section", async ({ page }) => {
     await page.goto("/");
     // Welcome is the PINNED first tab: current, with the pin marker and NO close affordance

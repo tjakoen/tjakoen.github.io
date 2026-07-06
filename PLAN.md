@@ -562,11 +562,12 @@ now says it hurt readability) — don't stack fixes, redo that spot.
    terminal's lines read as a stream again (#1), and the chat's `.chat-thinking__preview` (which
    clones the same lines) stopped double-boxing — its own outer `.chat-thinking` border already
    IS the "one box per output" grouping (#2), so per-line borders inside it were pure redundancy.
-3. ✅ **BUILT (2026-07-06):** a `console__grow` toggle (repurposed the dead `console__toggle`
-   chat⇄terminal slot, inert since the two started coexisting) expands the console's grid row via
-   `data-console-expanded` (`--shell-console`/`--shell-main` in `app-shell.css`) to fill most of
-   the shell instead of the capped 11rem band; main shrinks to a peek above it. Persisted
-   (`grain.shell.console-expanded`, mirrors the `console-open` pattern in `shell.js`). Clicking it
+3. ✅ **BUILT (2026-07-06, corrected 2026-07-07):** a `console__grow` toggle (repurposed the dead
+   `console__toggle` chat⇄terminal slot, inert since the two started coexisting) expands the
+   console's grid row via `data-console-expanded` (`--shell-console`/`--shell-main` in
+   `app-shell.css`) to fill the WHOLE screen (main collapses to `0px`, not a peek — first pass
+   left main at `0.4fr`, corrected per owner). Persisted (`grain.shell.console-expanded`, mirrors
+   the `console-open` pattern in `shell.js`). Clicking it
    auto-opens a collapsed console first. e2e in `persistence.e2e.ts`.
 4. **Menu-order half ✅ BUILT (2026-07-06):** `/notes` already had its own real dedicated page
    (MILL's `content-index` GRAIN component, wrapped in THE EDITOR/BREAD shell — not missing, as
@@ -577,9 +578,13 @@ now says it hurt readability) — don't stack fixes, redo that spot.
    existing `listRecentNotes`, one sort, two consumers); `server.ts`'s `/search.json` substitutes
    the notes/ block into that order before `site.js` reads it for the tree fill. Unit-tested
    (`content.test.ts`) against the actual rendered page order, not a re-assertion of the sort.
-   **Still open:** the "interesting look matching the vibe" half — owner should confirm whether
-   the existing `content-index` treatment (in the BREAD shell) already reads that way, or a
-   redesign is still wanted, before guessing at a visual direction.
+   Owner confirmed 2026-07-07 the existing look is fine — no redesign needed. **Also corrected
+   2026-07-07:** the explorer's `notes/` folder used the same "folder-name-is-the-link" pattern as
+   the NESTED `batch/docs`/`grain/docs` collection folders — but `notes/` sits at the TOP level,
+   sibling to `batch/`/`grain/`/`mill/`, which each show their own real `index.html` entry first.
+   Restructured to match: `notes/` now lists a dimmed `index.html` (`data-variant="index"`, →
+   `/notes`) as its first child, with the individual `.md` tree-fill entries alongside it —
+   consistent with its top-level siblings, not its collection-folder cousins.
 5. ✅ **BUILT (2026-07-06):** a `tabs-close-all` control (topbar, sibling of the strip so it
    survives the strip's own scroll) clears every non-pinned tab, bouncing to the pinned Welcome
    if the current page was one of them; `tabs.js` hides it when there's nothing closable. The
@@ -614,6 +619,11 @@ now says it hurt readability) — don't stack fixes, redo that spot.
    tab-close fallback (closing the active tab lands on `/`, which then immediately bounced right
    back to the last page, so the close looked like a no-op). Caught by e2e
    (`editor-tabs.e2e.ts` "active close falls back to a neighbor"), fixed in `site.js`.
+   **Corrected 2026-07-07:** "on refresh" was still scoped to `/` only — refreshing any OTHER
+   page did nothing, so checking the box didn't feel like it worked from anywhere but the
+   Welcome page itself. Now: checked + refresh, on ANY page, redirects to `/`; unchecked +
+   refresh of `/` still reopens the last page (unaffected); unchecked + refresh of any other
+   page is untouched. A navigate is still never affected either way.
 
 The main page (`/`) is a **literal desk, drawn flat, viewed top-down** — the owner's vision,
 reconciled with the anti-skeuomorphism guardrail: the guardrail forbids *photorealism/wooden-desk
