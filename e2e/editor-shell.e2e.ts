@@ -36,22 +36,23 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await expect(page.locator(".presence .presence__off")).toBeHidden();
   });
 
-  test("the startup checkbox is FUNCTIONAL: unchecked, a FRESH SESSION's '/' reopens where you left off", async ({ page }) => {
+  test("the welcome-on-refresh checkbox is FUNCTIONAL: unchecked (default), a REFRESH of '/' reopens where you left off — a plain navigate to '/' does not", async ({ page }) => {
     await page.goto("/");
     const box = page.locator("[data-startup-checkbox]");
-    await expect(box).toBeChecked();                 // default: welcome shows
-    await box.uncheck();
-    await page.goto("/grain");                       // leave the desk on a page…
-    // WITHIN the session "/" opens normally (the pinned Welcome tab must not bounce)…
+    await expect(box).not.toBeChecked();              // default: unchecked
+    await expect(page.locator(".welcome__title")).toBeVisible();   // first-ever "/" load has no last page yet
+    await page.goto("/grain");                        // leave the desk on a page…
+    // a plain NAVIGATE to "/" (pinned tab, tab-close fallback, logo) must NOT bounce away —
+    // only an actual refresh honors the checkbox
     await page.goto("/");
     await expect(page.locator(".welcome__title")).toBeVisible();
-    // …the redirect is a STARTUP behavior: clear the session boot mark to simulate a fresh visit
-    await page.evaluate(() => sessionStorage.removeItem("tj.booted"));
+    await page.reload();                              // …but reloading "/" DOES reopen last-page
+    await expect(page).toHaveURL(/\/grain$/);
+    // check it → even a refresh of "/" now always opens Welcome
+    await page.goto("/grain");
+    await page.evaluate(() => localStorage.setItem("tj.welcome-startup", "on"));
     await page.goto("/");
-    await expect(page).toHaveURL(/\/grain$/);        // …and startup-"/" reopens where you left off
-    // re-enable → even a fresh session lands on the welcome page again
-    await page.evaluate(() => { localStorage.setItem("tj.welcome-startup", "on"); sessionStorage.removeItem("tj.booted"); });
-    await page.goto("/");
+    await page.reload();
     await expect(page.locator(".welcome__title")).toBeVisible();
   });
 

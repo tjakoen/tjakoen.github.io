@@ -16,7 +16,7 @@
   border-bottom: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
   font-family: var(--font-accent); color: var(--color-fg); white-space: nowrap;
 }
-.rail-head > b-icon { justify-self: center; color: var(--color-accent); }
+.rail-head > b-icon, .rail-head > .icon { justify-self: center; color: var(--color-accent); }
 
 /* current main-menu item (rail): the selection indicator runs FLUSH to the rail's left edge
    (a full-height ink accent bar breaking out past the rail's own padding), plus a quiet fill.
