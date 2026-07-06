@@ -569,6 +569,13 @@ now says it hurt readability) — don't stack fixes, redo that spot.
    left main at `0.4fr`, corrected per owner). Persisted (`grain.shell.console-expanded`, mirrors
    the `console-open` pattern in `shell.js`). Clicking it
    auto-opens a collapsed console first. e2e in `persistence.e2e.ts`.
+   **Dead-knob fix (2026-07-07):** the whole feature was silently inert — `shell.js`
+   `toggleAttribute("data-console-expanded")` sets the attribute to `""`, but every CSS selector
+   matched `[data-console-expanded="true"]` (value required), so `"" ≠ "true"` and nothing ever
+   moved. The `persistence.e2e.ts` assertion checked `toHaveAttribute(..., "")` — the attribute,
+   not the effect — so it passed while the knob did nothing (grain lesson 9 exactly). Fixed the
+   CSS to presence selectors `[data-console-expanded]` (matching the sibling `data-console-open`
+   idiom, which never had a value), and hardened the e2e to assert `main` actually collapses.
 4. **Menu-order half ✅ BUILT (2026-07-06):** `/notes` already had its own real dedicated page
    (MILL's `content-index` GRAIN component, wrapped in THE EDITOR/BREAD shell — not missing, as
    the original ask assumed) and already sorted newest-first (`mill/serve.ts`'s `byDateDesc`). The

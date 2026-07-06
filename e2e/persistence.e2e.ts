@@ -40,9 +40,16 @@ test.describe("THE EDITOR v3 — island state survives navigation", () => {
     await expect(shell).not.toHaveAttribute("data-console-open", "");
     await expect(shell).not.toHaveAttribute("data-console-expanded", "");
     // growing a CLOSED console opens it too (growing something hidden makes no sense)
+    const mainBefore = (await page.locator(".app-shell__main").boundingBox())!.height;
     await grow.click();
     await expect(shell).toHaveAttribute("data-console-open", "");
     await expect(shell).toHaveAttribute("data-console-expanded", "");
+    // ASSERT THE EFFECT, not just the attribute: the console must actually take over — main
+    // collapses to ~0 and the console fills the space it left. (A prior bug set the attr to ""
+    // while the CSS matched only ="true", so the attribute flipped but nothing moved — a dead
+    // knob the old attribute-only assertion sailed straight past. grain/CLAUDE §9.)
+    await expect.poll(async () => (await page.locator(".app-shell__main").boundingBox())!.height).toBeLessThan(mainBefore / 2);
+    expect((await page.locator(".app-shell__console").boundingBox())!.height).toBeGreaterThan(mainBefore / 2);
     // survives a page load
     await page.goto("/grain");
     await expect(page.locator(".app-shell")).toHaveAttribute("data-console-expanded", "");
