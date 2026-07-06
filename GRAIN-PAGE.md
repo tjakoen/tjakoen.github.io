@@ -312,9 +312,9 @@ AI-demo decision — the portfolio-wide chat island is the same idea, generalize
 - `grain/scripts/catalog-peek.js` — the peek island (hover → catalog scroll + highlight). *v1 fix:
   now keys off `[data-peek-root]` (was `.app-shell`, which the showcase doesn't have).*
 - The shell components (`app-shell`, `side-rail`, `tab-bar`, `nav-item`, `tab`, `shell.js`) exist in
-  grain and are used by the **product** dashboard (`/dashboard`); the showcase shows
-  `tab-bar`/`nav-item` in the components section (raw markup — they're CSS-only patterns, no
-  Atomic template).
+  grain and are used by the app's EDITOR shell (`portfolio-frame`, on every page incl. `/loop`); the
+  showcase shows `tab-bar`/`nav-item` in the components section (raw markup — they're CSS-only
+  patterns, no Atomic template).
 - **`b-badge`/`b-list` are data-driven** (`data-field`/`each`) — they render blank from page
   attributes, so the showcase composes badges/lists as raw `.badge`/`.list` markup (peek still maps
   the classes). Prop-driven atoms (`b-button`, `b-input`, `b-kbd`, `b-icon`, `b-icon-button`) are
