@@ -35,7 +35,7 @@ const CLIENT_DOOR_PAGES = new Set(["/grain"]);
 const MODULE_ENTRIES = ["/modules/grain/ai/client-door.js"];
 
 // Generated routes that a href/src crawler won't discover: the ⌘K palette's index + the SEO infra.
-const DATA_ROUTES = ["/components.css", "/search.json", "/sitemap.xml", "/robots.txt"];
+const DATA_ROUTES = ["/components.css", "/search.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
 
 async function waitForServer(timeoutMs = 15000) {
   const deadline = Date.now() + timeoutMs;
