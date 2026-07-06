@@ -10,10 +10,11 @@ name, read the standards below.
 
 ## What this is
 
-`tjakoen.github.io/` is a consumer of grain + batch, plus the content layer: the blog/notes, the résumé and
-showcase pages (`/`, `/grain`, `/batch`), and the standards. It uses MILL to render Markdown content
-into GRAIN pages (MILL is planned; content is authored as `.md` now). It uses the stack; it does not
-build it. Pages are trailheads to the canonical docs, never forks of them.
+`tjakoen.github.io/` is **the app + composition root** — it wires grain + batch + mill and runs the
+site — plus the content layer: the blog/notes, the résumé and showcase pages (`/`, `/grain`, `/batch`),
+and the standards. It uses MILL to render Markdown content into GRAIN pages — **MILL is built and
+live** (`/notes`, `/grain/docs`, `/batch/docs` render through it); content is authored as `.md`. It
+uses the stack; it does not build it. Pages are trailheads to the canonical docs, never forks of them.
 
 ## Start here (reading order)
 

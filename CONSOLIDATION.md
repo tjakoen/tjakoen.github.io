@@ -1,12 +1,14 @@
 # CONSOLIDATION.md — fold the composition root into the portfolio
 
-**Status: planned, not started.** Owner decision (2026-07-05): the AI-assistant product (`project/`)
-is paused; the **portfolio is the only thing we're building**. This plan makes the portfolio the
-single app by absorbing the composition root, and retires `project/` as a separate concern.
+**Status: DONE (2026-07-05).** Shipped in commits `bff7438`/`ea7a3bb`/`cfad20a`/`43fa9ee`: the
+composition root now lives in `tjakoen.github.io/server.ts`, `portfolio/` was renamed to
+`tjakoen.github.io/`, and `project/` is a paused docs-only archive. This file is kept as the
+**historical record** of that pass — the reasoning and step list below are what was executed, not
+outstanding work.
 
-**Execute as one focused pass in a dedicated session (fable), AFTER the current parallel thread
-lands** — it rewrites the composition root + every e2e import path, so it collides hard with any
-in-flight work in `project/`. Do not do it piecemeal.
+Owner decision (2026-07-05): the AI-assistant product (`project/`) is paused; the **portfolio is
+the only thing we're building**. This plan made the portfolio the single app by absorbing the
+composition root, and retired `project/` as a separate concern.
 
 ## Why
 
