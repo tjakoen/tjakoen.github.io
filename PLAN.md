@@ -586,8 +586,14 @@ now says it hurt readability) — don't stack fixes, redo that spot.
    explorer file-tree also gets a live close × (`.file-tree__close`, hidden until hover, mirrors
    `.tab__close`) on any entry that's an open tab, injected/removed on every `render()` — closes
    from the sidebar without switching to the page first.
-6. **Search redo** — current ⌘K search needs rework, both functionally and to better match the
-   VS Code vibe.
+6. ✅ **BUILT (2026-07-07):** owner confirmed visual-only — matching logic (substring across
+   title+subtitle+url, arrow-key nav, native `<dialog>`) stays. Restyled `cmdk.css` (3 concrete
+   drifts, not a guess): raw `--ink`/`--paper`/`--line-soft` → the semantic `--color-*` tokens
+   (so the palette can pick up the accent hue on Baguette/Brioche, like everything else); the
+   selected row was a solid ink-invert block → a quiet accent wash (DESIGN-SYSTEM §5 already
+   rejected the invert pattern elsewhere — see `icon-btn.css`'s own hover comment); `--font-smooth`
+   → `--font-mono` to match the file-tree/tab-bar/console it sits beside (the actual "doesn't
+   match the VS Code vibe" gap).
 7. ✅ **BUILT (2026-07-06):** root cause was `app-window.md`'s own doc example — a live-previewed
    panel injecting a literal `<body class="app-window-backdrop">` into the catalog's DOM. HTML
    merges a second `<body>` tag's attributes onto the real document body, so visiting `/catalog`
