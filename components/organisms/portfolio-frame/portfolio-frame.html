@@ -31,66 +31,81 @@
   </span>
 </header>
 
-<!-- ═══ the RAIL = the EXPLORER: the real source tree behind the pages (file-tree, folders ship
-     COLLAPSED — site.js opens the current file's ancestors), then the fixed APP links (the
-     non-documents). data-tab-source: the open-tabs strip labels its tabs from these links. ═══ -->
-<aside class="app-shell__rail side-rail" data-variant="explorer" data-tab-source>
-  <div class="side-rail__brand"><b-icon sym="/assets/sprite.svg#spark"></b-icon><span>TJ's Desk</span></div>
-  <nav class="file-tree" aria-label="Explorer">
-    <details class="file-tree__dir">
-      <summary>tjakoen.github.io/</summary>
-      <div class="file-tree__children">
-        <details class="file-tree__dir">
-          <summary>pages/</summary>
-          <div class="file-tree__children">
-            <a class="file-tree__file" href="/" data-tab-label="Welcome">index.html</a>
-            <a class="file-tree__file" href="/bread">bread/index.html</a>
-            <a class="file-tree__file" href="/grain">grain/index.html</a>
-            <a class="file-tree__file" href="/batch">batch/index.html</a>
-            <a class="file-tree__file" href="/mill">mill/index.html</a>
-            <a class="file-tree__file" href="/loop">loop.html</a>
-          </div>
-        </details>
-        <details class="file-tree__dir">
-          <summary><a href="/notes">notes/</a></summary>
-          <!-- the real .md notes fill in from the ⌘K corpus (site.js); the folder link is the
-               zero-JS path to the full listing -->
-          <div class="file-tree__children" data-tree-fill="/notes"></div>
-        </details>
-      </div>
-    </details>
-    <details class="file-tree__dir">
-      <summary>grain/</summary>
-      <div class="file-tree__children">
-        <details class="file-tree__dir">
-          <summary><a href="/grain/docs">docs/</a></summary>
-          <div class="file-tree__children">
-            <a class="file-tree__file" href="/grain/docs/grain">GRAIN.md</a>
-            <a class="file-tree__file" href="/grain/docs/ai-interface">AI-INTERFACE.md</a>
-            <a class="file-tree__file" href="/grain/docs/design-system">DESIGN-SYSTEM.md</a>
-          </div>
-        </details>
-      </div>
-    </details>
-    <details class="file-tree__dir">
-      <summary>batch/</summary>
-      <div class="file-tree__children">
-        <details class="file-tree__dir">
-          <summary><a href="/batch/docs">docs/</a></summary>
-          <div class="file-tree__children">
-            <a class="file-tree__file" href="/batch/docs/architecture">ARCHITECTURE.md</a>
-            <a class="file-tree__file" href="/batch/docs/conventions">CONVENTIONS.md</a>
-          </div>
-        </details>
-      </div>
-    </details>
+<!-- ═══ the RAIL = the ACTIVITY BAR (VS Code icon column) + the EXPLORER file tree. The activity
+     bar (grain organism) carries the explorer toggle at the top and the fixed APP links at the
+     bottom (icon-only); the nested .side-rail holds the brand + the file tree of the real sources
+     (folders ship COLLAPSED — site.js opens the current file's ancestors). data-tab-source stays
+     on the outer rail: the open-tabs strip labels its tabs from every link inside it. ═══ -->
+<aside class="app-shell__rail" data-tab-source>
+  <nav class="activity-bar" aria-label="Activity">
+    <!-- the explorer toggle reuses the existing rail-toggle binding (collapses/reveals the tree) -->
+    <button class="activity-bar__item" type="button" data-shell="rail-toggle" aria-current="true"
+            title="Explorer" aria-label="Explorer"><b-icon sym="/assets/sprite.svg#files"></b-icon></button>
+    <span class="activity-bar__spacer"></span>
+    <!-- the APP links (the non-documents): icon-only, open as app-style tabs (no extension) -->
+    <a class="activity-bar__item" href="/calendar" data-section="calendar" data-tab-label="Calendar" title="Calendar" aria-label="Calendar"><b-icon sym="/assets/sprite.svg#traces"></b-icon></a>
+    <a class="activity-bar__item" href="/mail" data-section="mail" data-tab-label="Mail" title="Mail" aria-label="Mail"><b-icon sym="/assets/sprite.svg#send"></b-icon></a>
+    <a class="activity-bar__item" href="/catalog" data-section="catalog" data-tab-label="Catalog" title="Catalog" aria-label="Catalog"><b-icon sym="/assets/sprite.svg#rules"></b-icon></a>
+    <a class="activity-bar__item" href="/about" data-section="about" data-tab-label="Profile" title="Profile" aria-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon></a>
   </nav>
-  <div class="side-rail__spacer"></div>
-  <!-- the APP links: the things that aren't documents — they open as app-style tabs (no extension) -->
-  <a class="nav-item" href="/calendar" data-section="calendar" data-tab-label="Calendar"><b-icon sym="/assets/sprite.svg#traces"></b-icon><span class="nav-item__label">Calendar</span></a>
-  <a class="nav-item" href="/mail" data-section="mail" data-tab-label="Mail"><b-icon sym="/assets/sprite.svg#send"></b-icon><span class="nav-item__label">Mail</span></a>
-  <a class="nav-item" href="/catalog" data-section="catalog" data-tab-label="Catalog"><b-icon sym="/assets/sprite.svg#rules"></b-icon><span class="nav-item__label">Catalog</span></a>
-  <a class="nav-item" href="/about" data-section="about" data-tab-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon><span class="nav-item__label">Profile</span></a>
+  <div class="side-rail" data-variant="explorer">
+    <div class="side-rail__brand"><b-icon sym="/assets/sprite.svg#spark"></b-icon><span>TJ's Desk</span></div>
+    <nav class="file-tree" aria-label="Explorer">
+      <details class="file-tree__dir">
+        <summary>tjakoen.github.io/</summary>
+        <div class="file-tree__children">
+          <a class="file-tree__file" href="/" data-variant="index" data-tab-label="Welcome">index.html</a>
+          <details class="file-tree__dir">
+            <summary><a href="/notes">notes/</a></summary>
+            <!-- the real .md notes fill in from the ⌘K corpus (site.js); the folder link is the
+                 zero-JS path to the full listing -->
+            <div class="file-tree__children" data-tree-fill="/notes"></div>
+          </details>
+          <a class="file-tree__file" href="/loop" data-tab-label="Loop">loop.html</a>
+        </div>
+      </details>
+      <!-- the BREAD stack: the three layers nest under one group (batch → grain → mill) -->
+      <details class="file-tree__dir">
+        <summary>bread/</summary>
+        <div class="file-tree__children">
+          <a class="file-tree__file" href="/bread" data-variant="index" data-tab-label="BREAD">index.html</a>
+          <details class="file-tree__dir">
+            <summary>grain/</summary>
+            <div class="file-tree__children">
+              <a class="file-tree__file" href="/grain" data-variant="index" data-tab-label="GRAIN">index.html</a>
+              <details class="file-tree__dir">
+                <summary><a href="/grain/docs">docs/</a></summary>
+                <div class="file-tree__children">
+                  <a class="file-tree__file" href="/grain/docs/grain">GRAIN.md</a>
+                  <a class="file-tree__file" href="/grain/docs/ai-interface">AI-INTERFACE.md</a>
+                  <a class="file-tree__file" href="/grain/docs/design-system">DESIGN-SYSTEM.md</a>
+                </div>
+              </details>
+            </div>
+          </details>
+          <details class="file-tree__dir">
+            <summary>batch/</summary>
+            <div class="file-tree__children">
+              <a class="file-tree__file" href="/batch" data-variant="index" data-tab-label="BATCH">index.html</a>
+              <details class="file-tree__dir">
+                <summary><a href="/batch/docs">docs/</a></summary>
+                <div class="file-tree__children">
+                  <a class="file-tree__file" href="/batch/docs/architecture">ARCHITECTURE.md</a>
+                  <a class="file-tree__file" href="/batch/docs/conventions">CONVENTIONS.md</a>
+                </div>
+              </details>
+            </div>
+          </details>
+          <details class="file-tree__dir">
+            <summary>mill/</summary>
+            <div class="file-tree__children">
+              <a class="file-tree__file" href="/mill" data-variant="index" data-tab-label="MILL">index.html</a>
+            </div>
+          </details>
+        </div>
+      </details>
+    </nav>
+  </div>
 </aside>
 
 <!-- ═══ the TAB BAR = the OPEN PAGES (tabs.js renders the stored list after the pinned Welcome;
@@ -100,7 +115,7 @@
     <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#menu"></use></svg>
   </button>
   <nav class="app-shell__tabs tab-bar" data-open-tabs aria-label="Open pages">
-    <a class="tab" data-pinned href="/"><span class="tab__icon"><b-icon sym="/assets/sprite.svg#spark" size="sm"></b-icon></span>Welcome</a>
+    <a class="tab" data-pinned href="/"><span class="tab__icon"><b-icon sym="/assets/sprite.svg#spark" size="sm"></b-icon></span>Welcome<span class="tab__pin" aria-hidden="true"><b-icon sym="/assets/sprite.svg#pin" size="sm"></b-icon></span></a>
   </nav>
 </header>
 
@@ -170,9 +185,10 @@
 <!-- ═══ the STATUS BAR: presence + breadcrumb, left; the byline + contact, right ═══ -->
 <footer class="app-shell__status status-bar">
   <span class="presence">
-    <span class="presence__wait">✶ desk waking…</span>
-    <span class="presence__on">✶ desk online</span>
-    <span class="presence__off">✶ desk offline</span>
+    <span class="presence__star" aria-hidden="true">✶</span>
+    <span class="presence__wait">desk waking…</span>
+    <span class="presence__on">desk online</span>
+    <span class="presence__off">desk offline</span>
   </span>
   <span class="status-bar__crumb" data-breadcrumb>tjakoen.github.io</span>
   <span class="status-bar__spacer"></span>
