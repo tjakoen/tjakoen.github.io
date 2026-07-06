@@ -489,6 +489,41 @@ notes/ fills live from the corpus. Bonus root-cause fix: the mobile drawer's `po
 was silently lost to side-rail's later `position: relative` (bundle order) — the rail had been
 falling into grid flow on mobile; app-shell now wins by specificity, with a comment.
 
+### THE EDITOR v3 — activity bar, nav polish, presence-gated AI (owner-approved, BUILT 2026-07-06)
+
+v2 dropped the VS Code icon column when the explorer replaced the old nav rail (a regression). v3
+brings back an **activity bar**, restructures the tree, polishes labels/icons, and closes three
+resilience gaps. Built after the portfolio consolidation landed (same hot files).
+
+- **Activity bar** — a new grain organism (`activity-bar`, CSS-only, persona-neutral): a slim icon
+  column mounted as the first child of `.app-shell__rail`, sibling of a now-nested `.side-rail`.
+  Explorer toggle at top (reuses the existing `rail-toggle` binding — zero new JS), app links
+  (Calendar · Mail · Catalog · Profile) at the bottom, icon-only. **Not a 4th grid column** — it
+  rides the rail's existing track + mobile drawer; opted in with one `:has()` rule in app-shell.css
+  (a shell without one is byte-identical). Rejected-alternative recorded in `activity-bar.md`.
+- **Tree restructure** — grain/batch/mill nest under a `bread/` group; `index.html` entries dimmed
+  (`data-variant="index"`, the directory carries the meaning) and labeled by section
+  (`data-tab-label` → the open-tabs strip shows "GRAIN", never "index.html"). Pinned Welcome tab
+  gains a **pin icon** (`.tab__pin`, always visible = "doesn't close").
+- **Accent reach** — the rail brand mark + the presence star (`.presence__star`, its own element)
+  join the accent (hueless under Sourdough, a hue under Baguette/Brioche).
+- **Persistence** — x-ray (`grain.xray.on`) and the terminal open-state (`grain.shell.console-open`)
+  now survive MPA navigation (per-island localStorage, try/catch). Prefs-helper verdict: stay inline
+  until keys pass ~6 (ROADMAP B.6e(3)).
+- **Graceful AI failure + presence gating** (the architecture piece — the contract the real model
+  inherits at M★): **presence = transport health; offline = controls visibly disabled + honest copy;
+  every pending trigger has a bounded lifetime.** Fetch timeout (AbortController on `POST /intent`),
+  `es.onerror` release + re-arming `ready`, an independent pending-trigger **watchdog** (refreshed on
+  each op, so a healthy multi-second run never trips it), and declarative gating
+  (`body[data-ai-online="false"]` disables `[data-ai-run]`/`[data-ai-gate]`; the dispatcher no-ops
+  `submit()` too). Documented in AI-INTERFACE §5f.
+
+**Deviation receipt:** the approved tree preview showed `project/ → loop.html` top-level, but the
+consolidation removed `project/` entirely — so `loop.html` sits under `tjakoen.github.io/`, no
+`project/` node, no `/dashboard` entry (honesty rule: the tree mirrors real files). e2e retargeted
+accordingly (`editor-tabs`, `portfolio-shell`, `mobile`, `grain-page`) + new suites
+(`persistence.e2e.ts`, `ai-degradation.e2e.ts`). Gate: 165 unit + 71 e2e green.
+
 The main page (`/`) is a **literal desk, drawn flat, viewed top-down** — the owner's vision,
 reconciled with the anti-skeuomorphism guardrail: the guardrail forbids *photorealism/wooden-desk
 PNGs*, not literalness. The scene is **token-drawn** (a "technical drawing / stationery flat-lay"):
