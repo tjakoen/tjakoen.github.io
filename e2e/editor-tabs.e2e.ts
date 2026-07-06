@@ -12,10 +12,11 @@ test.describe("THE EDITOR v2 — explorer + open tabs", () => {
     // the current file is marked and every ancestor <details> of it is open…
     const current = page.locator('.file-tree a[aria-current="page"]');
     await expect(current).toHaveAttribute("href", "/bread");
-    await expect(page.locator('.file-tree__dir:has(a[href="/bread"])').last()).toHaveAttribute("open", "");
+    // bread.html lives directly under portfolio/ (the 1:1 repo-root mirror) — that folder unfolds…
+    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("portfolio/"))')).toHaveAttribute("open", "");
     // …while an unrelated top-level folder stays collapsed (collapsed-by-default doctrine).
     // NB exact summary text — :has-text would also match ancestors.
-    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("tjakoen.github.io/"))')).not.toHaveAttribute("open", "");
+    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("batch/"))')).not.toHaveAttribute("open", "");
   });
 
   test("index files are dimmed + labeled by section; visiting opens a closable tab named for the section", async ({ page }) => {
@@ -25,8 +26,7 @@ test.describe("THE EDITOR v2 — explorer + open tabs", () => {
     await expect(pinned).toHaveAttribute("aria-current", "page");
     await expect(pinned.locator(".tab__close")).toHaveCount(0);
     await expect(pinned.locator(".tab__pin")).toHaveCount(1);
-    // the GRAIN index sits under bread/ → grain/ (collapsed on "/"); open the ancestors and click it
-    await page.locator('.file-tree summary:text-is("bread/")').click();
+    // the GRAIN index sits under the top-level grain/ folder (collapsed on "/"); open it and click
     await page.locator('.file-tree summary:text-is("grain/")').click();
     const grainIndex = page.locator('.file-tree a[href="/grain"]');
     await expect(grainIndex).toHaveAttribute("data-variant", "index");   // dimmed entry file
@@ -39,14 +39,13 @@ test.describe("THE EDITOR v2 — explorer + open tabs", () => {
     await expect(tab).toHaveAttribute("aria-current", "page");
   });
 
-  test("collapsed-except-current at depth: on /grain/docs/grain the bread→grain→docs chain unfolds, siblings stay shut", async ({ page }) => {
+  test("collapsed-except-current at depth: on /grain/docs/grain the grain→docs chain unfolds, siblings stay shut", async ({ page }) => {
     await page.goto("/grain/docs/grain");
     // the whole ancestor chain is open…
-    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("bread/"))')).toHaveAttribute("open", "");
-    await expect(page.locator('.file-tree__dir:has(> summary:text-is("grain/"))')).toHaveAttribute("open", "");
+    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("grain/"))')).toHaveAttribute("open", "");
     await expect(page.locator('.file-tree__dir:has(> summary > a[href="/grain/docs"])')).toHaveAttribute("open", "");
-    // …but an unrelated top-level folder (tjakoen.github.io/) and a sibling layer (batch/) stay collapsed
-    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("tjakoen.github.io/"))')).not.toHaveAttribute("open", "");
+    // …but unrelated top-level siblings (portfolio/, batch/) stay collapsed
+    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("portfolio/"))')).not.toHaveAttribute("open", "");
     await expect(page.locator('.file-tree__dir:has(> summary:text-is("batch/"))')).not.toHaveAttribute("open", "");
   });
 
@@ -85,8 +84,8 @@ test.describe("THE EDITOR v2 — explorer + open tabs", () => {
     await page.goto("/");
     await expect(page.locator('[data-open-tabs] a[data-pinned]')).toContainText("Welcome");
     // native <details> unfold + a plain link — no JS anywhere in the path
-    const breadDir = page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("bread/"))');
-    await breadDir.locator('> summary').click();
+    const siteDir = page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("portfolio/"))');
+    await siteDir.locator('> summary').click();
     await page.locator('.file-tree a[href="/bread"]').click();
     await expect(page).toHaveURL(/\/bread$/);
     await ctx.close();

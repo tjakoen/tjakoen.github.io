@@ -37,24 +37,26 @@
      (folders ship COLLAPSED — site.js opens the current file's ancestors). data-tab-source stays
      on the outer rail: the open-tabs strip labels its tabs from every link inside it. ═══ -->
 <aside class="app-shell__rail" data-tab-source>
+  <!-- the brand — a full-width row at the SAME height as the tab rail beside it; the sidebar
+       (activity-bar + file explorer, in .rail-body) starts on its own line below it. -->
+  <div class="rail-head"><b-icon sym="/assets/sprite.svg#spark"></b-icon><span>TJ's Desk</span></div>
+  <div class="rail-body">
   <nav class="activity-bar" aria-label="Activity">
-    <!-- the explorer toggle reuses the existing rail-toggle binding (collapses/reveals the tree) -->
+    <!-- the explorer toggle reuses the existing rail-toggle binding (collapses/reveals the tree) —
+         the sole activity-bar icon (one view: Explorer); the app links moved to the side-rail's own
+         footer below (labeled nav-items, not an icon-only strip — see side-rail__spacer). -->
     <button class="activity-bar__item" type="button" data-shell="rail-toggle" aria-current="true"
             title="Explorer" aria-label="Explorer"><b-icon sym="/assets/sprite.svg#files"></b-icon></button>
-    <span class="activity-bar__spacer"></span>
-    <!-- the APP links (the non-documents): icon-only, open as app-style tabs (no extension) -->
-    <a class="activity-bar__item" href="/calendar" data-section="calendar" data-tab-label="Calendar" title="Calendar" aria-label="Calendar"><b-icon sym="/assets/sprite.svg#traces"></b-icon></a>
-    <a class="activity-bar__item" href="/mail" data-section="mail" data-tab-label="Mail" title="Mail" aria-label="Mail"><b-icon sym="/assets/sprite.svg#send"></b-icon></a>
-    <a class="activity-bar__item" href="/catalog" data-section="catalog" data-tab-label="Catalog" title="Catalog" aria-label="Catalog"><b-icon sym="/assets/sprite.svg#rules"></b-icon></a>
-    <a class="activity-bar__item" href="/about" data-section="about" data-tab-label="Profile" title="Profile" aria-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon></a>
   </nav>
   <div class="side-rail" data-variant="explorer">
-    <div class="side-rail__brand"><b-icon sym="/assets/sprite.svg#spark"></b-icon><span>TJ's Desk</span></div>
+    <!-- the tree mirrors the REAL monorepo layout 1:1 — portfolio/, batch/, grain/, mill/ sit as
+         TOP-LEVEL siblings (matching the repo root), not nested under a "bread/" wrapper. -->
     <nav class="file-tree" aria-label="Explorer">
       <details class="file-tree__dir">
-        <summary>tjakoen.github.io/</summary>
+        <summary>portfolio/</summary>
         <div class="file-tree__children">
           <a class="file-tree__file" href="/" data-variant="index" data-tab-label="Welcome">index.html</a>
+          <a class="file-tree__file" href="/bread" data-tab-label="BREAD">bread.html</a>
           <details class="file-tree__dir">
             <summary><a href="/notes">notes/</a></summary>
             <!-- the real .md notes fill in from the ⌘K corpus (site.js); the folder link is the
@@ -64,47 +66,47 @@
           <a class="file-tree__file" href="/loop" data-tab-label="Loop">loop.html</a>
         </div>
       </details>
-      <!-- the BREAD stack: the three layers nest under one group (batch → grain → mill) -->
       <details class="file-tree__dir">
-        <summary>bread/</summary>
+        <summary>batch/</summary>
         <div class="file-tree__children">
-          <a class="file-tree__file" href="/bread" data-variant="index" data-tab-label="BREAD">index.html</a>
+          <a class="file-tree__file" href="/batch" data-variant="index" data-tab-label="BATCH">index.html</a>
           <details class="file-tree__dir">
-            <summary>grain/</summary>
+            <summary><a href="/batch/docs">docs/</a></summary>
             <div class="file-tree__children">
-              <a class="file-tree__file" href="/grain" data-variant="index" data-tab-label="GRAIN">index.html</a>
-              <details class="file-tree__dir">
-                <summary><a href="/grain/docs">docs/</a></summary>
-                <div class="file-tree__children">
-                  <a class="file-tree__file" href="/grain/docs/grain">GRAIN.md</a>
-                  <a class="file-tree__file" href="/grain/docs/ai-interface">AI-INTERFACE.md</a>
-                  <a class="file-tree__file" href="/grain/docs/design-system">DESIGN-SYSTEM.md</a>
-                </div>
-              </details>
-            </div>
-          </details>
-          <details class="file-tree__dir">
-            <summary>batch/</summary>
-            <div class="file-tree__children">
-              <a class="file-tree__file" href="/batch" data-variant="index" data-tab-label="BATCH">index.html</a>
-              <details class="file-tree__dir">
-                <summary><a href="/batch/docs">docs/</a></summary>
-                <div class="file-tree__children">
-                  <a class="file-tree__file" href="/batch/docs/architecture">ARCHITECTURE.md</a>
-                  <a class="file-tree__file" href="/batch/docs/conventions">CONVENTIONS.md</a>
-                </div>
-              </details>
-            </div>
-          </details>
-          <details class="file-tree__dir">
-            <summary>mill/</summary>
-            <div class="file-tree__children">
-              <a class="file-tree__file" href="/mill" data-variant="index" data-tab-label="MILL">index.html</a>
+              <a class="file-tree__file" href="/batch/docs/architecture">ARCHITECTURE.md</a>
+              <a class="file-tree__file" href="/batch/docs/conventions">CONVENTIONS.md</a>
             </div>
           </details>
         </div>
       </details>
+      <details class="file-tree__dir">
+        <summary>grain/</summary>
+        <div class="file-tree__children">
+          <a class="file-tree__file" href="/grain" data-variant="index" data-tab-label="GRAIN">index.html</a>
+          <details class="file-tree__dir">
+            <summary><a href="/grain/docs">docs/</a></summary>
+            <div class="file-tree__children">
+              <a class="file-tree__file" href="/grain/docs/grain">GRAIN.md</a>
+              <a class="file-tree__file" href="/grain/docs/ai-interface">AI-INTERFACE.md</a>
+              <a class="file-tree__file" href="/grain/docs/design-system">DESIGN-SYSTEM.md</a>
+            </div>
+          </details>
+        </div>
+      </details>
+      <details class="file-tree__dir">
+        <summary>mill/</summary>
+        <div class="file-tree__children">
+          <a class="file-tree__file" href="/mill" data-variant="index" data-tab-label="MILL">index.html</a>
+        </div>
+      </details>
     </nav>
+    <div class="side-rail__spacer"></div>
+    <!-- the APP links (the non-documents): icon + label, like before v3's activity-bar rework -->
+    <a class="nav-item" href="/calendar" data-section="calendar" data-tab-label="Calendar"><b-icon sym="/assets/sprite.svg#traces"></b-icon><span class="nav-item__label">Calendar</span></a>
+    <a class="nav-item" href="/mail" data-section="mail" data-tab-label="Mail"><b-icon sym="/assets/sprite.svg#send"></b-icon><span class="nav-item__label">Mail</span></a>
+    <a class="nav-item" href="/catalog" data-section="catalog" data-tab-label="Catalog"><b-icon sym="/assets/sprite.svg#rules"></b-icon><span class="nav-item__label">Catalog</span></a>
+    <a class="nav-item" href="/about" data-section="about" data-tab-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon><span class="nav-item__label">Profile</span></a>
+  </div>
   </div>
 </aside>
 

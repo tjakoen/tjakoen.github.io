@@ -5,7 +5,18 @@
 
 /* flat e-ink tone: one paper surface separated by hairlines (DESIGN-SYSTEM §6) — no tinted strips */
 .app-shell__topbar, .app-shell__aside { background: var(--color-bg); }
-.side-rail__brand { color: var(--color-fg); }
+
+/* the brand (owner, 2026-07-06): a full-width row at the top of the RAIL — the same height as the
+   tab rail beside it (var(--editor-header-h)), with the sidebar (.rail-body: activity-bar +
+   explorer) starting on its own line below. Its icon sits in a 3.25rem column matching the
+   activity-bar's width directly beneath it, so the two align in one continuous left column. */
+.rail-head {
+  display: grid; grid-template-columns: 3.25rem auto; align-items: center;
+  min-height: var(--editor-header-h, 2.9rem);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
+  font-family: var(--font-accent); color: var(--color-fg); white-space: nowrap;
+}
+.rail-head > b-icon { justify-self: center; color: var(--color-accent); }
 
 /* current main-menu item (rail): the selection indicator runs FLUSH to the rail's left edge
    (a full-height ink accent bar breaking out past the rail's own padding), plus a quiet fill.
@@ -41,7 +52,9 @@
    of the status bar; the current (last) segment stays plain text. */
 .status-bar__crumb a { color: inherit; text-decoration: none; }
 .status-bar__crumb a:hover { color: var(--color-fg); text-decoration: underline; }
-.status-bar__byline, .status-bar__contact { color: inherit; text-decoration: none; }
+/* explicit mono (not just inherited) so the byline/contact links can't drift off the status
+   bar's font if a more specific `a` rule ever lands ahead of them in the bundle */
+.status-bar__byline, .status-bar__contact { font-family: var(--font-mono); color: inherit; text-decoration: none; }
 .status-bar__byline:hover, .status-bar__contact:hover { color: var(--color-fg); }
 
 
