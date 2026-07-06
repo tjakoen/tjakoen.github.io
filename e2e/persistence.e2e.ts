@@ -32,4 +32,23 @@ test.describe("THE EDITOR v3 — island state survives navigation", () => {
     await page.goto("/loop");
     await expect(page.locator(".app-shell")).not.toHaveAttribute("data-console-open", "");
   });
+
+  test("terminal GROW toggle: expands the console to fill the shell, persists, and auto-opens a closed console", async ({ page }) => {
+    await page.goto("/loop");
+    const shell = page.locator(".app-shell");
+    const grow = page.locator('.console__grow');
+    await expect(shell).not.toHaveAttribute("data-console-open", "");
+    await expect(shell).not.toHaveAttribute("data-console-expanded", "");
+    // growing a CLOSED console opens it too (growing something hidden makes no sense)
+    await grow.click();
+    await expect(shell).toHaveAttribute("data-console-open", "");
+    await expect(shell).toHaveAttribute("data-console-expanded", "");
+    // survives a page load
+    await page.goto("/grain");
+    await expect(page.locator(".app-shell")).toHaveAttribute("data-console-expanded", "");
+    // collapsing persists too
+    await page.locator('.console__grow').click();
+    await page.goto("/loop");
+    await expect(page.locator(".app-shell")).not.toHaveAttribute("data-console-expanded", "");
+  });
 });

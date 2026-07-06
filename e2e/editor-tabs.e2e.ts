@@ -67,6 +67,27 @@ test.describe("THE EDITOR v2 — explorer + open tabs", () => {
     await expect(page.locator('[data-open-tabs] a[href="/mill"]')).toHaveCount(0);
   });
 
+  test("close-all clears every non-pinned tab; the sidebar can close an open tab without switching to it", async ({ page }) => {
+    const closeAll = page.locator('[data-shell="tabs-close-all"]');
+    await page.goto("/");
+    await expect(closeAll).toBeHidden();               // only the pinned Welcome open — nothing closable
+    await page.goto("/bread");
+    await expect(closeAll).toBeVisible();               // /bread itself is now an open, closable tab
+    await page.goto("/mill");
+    // the sidebar's own close × for a BACKGROUND open tab (bread) — closes it without navigating.
+    // bread.html sits under the collapsed portfolio/ folder (we're on /mill, a different
+    // top-level folder, so it isn't auto-unfolded) — open it, same as a real visitor would.
+    await page.locator('.file-tree__dir > summary', { hasText: "portfolio/" }).click();
+    await page.locator('.file-tree__file[href="/bread"] .file-tree__close').click();
+    await expect(page.locator('[data-open-tabs] a[href="/bread"]')).toHaveCount(0);
+    await expect(page).toHaveURL(/\/mill$/);
+    // close-all: clears the rest (mill, the page we're ON) → bounces to the pinned Welcome
+    await closeAll.click();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.locator('[data-open-tabs] a:not([data-pinned])')).toHaveCount(0);
+    await expect(closeAll).toBeHidden();
+  });
+
   test("the status-bar breadcrumb is linked: segments navigate, the last stays text", async ({ page }) => {
     await page.goto("/grain/docs/grain");
     const crumb = page.locator("[data-breadcrumb]");

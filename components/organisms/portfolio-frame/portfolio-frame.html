@@ -119,6 +119,12 @@
   <nav class="app-shell__tabs tab-bar" data-open-tabs aria-label="Open pages">
     <a class="tab" data-pinned href="/"><span class="tab__icon"><b-icon sym="/assets/sprite.svg#spark" size="sm"></b-icon></span>Welcome<span class="tab__pin" aria-hidden="true"><b-icon sym="/assets/sprite.svg#pin" size="sm"></b-icon></span></a>
   </nav>
+  <!-- sits OUTSIDE the scrollable strip, so it's always reachable; tabs.js hides it (hidden
+       attribute) whenever there's nothing closable open (pinned tabs don't count). -->
+  <button class="icon-btn" data-variant="ghost" data-shell="tabs-close-all" type="button"
+          aria-label="Close all tabs" title="Close all tabs" hidden>
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#close"></use></svg>
+  </button>
 </header>
 
 <aside class="app-shell__aside">
@@ -178,7 +184,7 @@
         <span class="console__acting">— the desk is acting…</span>
         <span class="console__chev" aria-hidden="true">▾</span>
       </button>
-      <button class="console__toggle" data-shell="chat-toggle" type="button" aria-label="Switch between chat and terminal"></button>
+      <button class="console__grow" data-shell="console-grow-toggle" type="button" aria-label="Expand or collapse the terminal"></button>
     </div>
     <div class="console__feed" data-surface="console"></div>
   </div>
