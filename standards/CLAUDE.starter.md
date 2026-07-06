@@ -1,10 +1,15 @@
 # CLAUDE.md: <PROJECT NAME>
 
 > **Starter template.** Copy this to the root of a new repo as `CLAUDE.md`, delete this line, and
-> fill the `<…>` placeholders. It wires a fresh project into Tjakoen's personal standards (voice,
-> badges, AI-use posture) from day one. The standards live publicly at
-> `https://tjakoen.github.io` (source in the batch-stack repo under `tjakoen.github.io/standards/`), so you
-> can either link them or copy `VOICE.md` + `README-STANDARD.md` into this repo.
+> fill the `<…>` placeholders. It wires a fresh project into Tjakoen's personal standards (how I build
+> with AI, voice, badges, AI-use posture) from day one. The standards live publicly at
+> `https://tjakoen.github.io` (source in the batch-stack repo under `tjakoen.github.io/standards/`) —
+> **reference them, don't fork them.** The [`standards/README.md`](https://tjakoen.github.io/standards)
+> index is the map; point this repo at it rather than copying files that will drift.
+>
+> **Make it tool-agnostic.** Symlink `AGENTS.md → CLAUDE.md` (`ln -s CLAUDE.md AGENTS.md`) so any
+> agent that reads the cross-tool `AGENTS.md` convention (Codex, Cursor, Copilot, Gemini CLI, …) gets
+> the same instructions Claude Code reads from `CLAUDE.md`. One file, every tool.
 
 ## What this is
 
@@ -13,13 +18,21 @@ before touching it.>
 
 ## How I work here (non-negotiables)
 
-- **I build with AI, out loud, on purpose.** Every commit is co-authored with Claude. That is a
-  discipline, not a shortcut; see the posture below.
+The full rulebook is **[`AI-DEVELOPMENT.md`](https://tjakoen.github.io/standards/AI-DEVELOPMENT.md)**
+(the standards) + **[`SESSION-LOOP.md`](https://tjakoen.github.io/standards/SESSION-LOOP.md)** (the
+session mechanics, memory, handoff, model economy). The short version for this repo:
+
+- **I build with AI, out loud, on purpose.** The work is co-authored with Claude as a *practice* —
+  not a git trailer (see the commit convention below; no `Co-Authored-By` lines). The receipt is the
+  README badge + footer and the flagship note, not commit metadata.
 - **AI multiplies, it doesn't add.** The AI types; I engineer. I keep the judgment, the architecture,
   and the final call. If I can't explain it, I didn't build it.
-- **Tests + a green build before "done."** <Name the check/test commands for this repo.>
+- **Definition of done = code + tests + docs synced + green gate.** <Name the check/test commands for
+  this repo.> Not one of these — all of them.
 - **Write the decision down.** Keep a short record of *why* non-obvious choices were made so the next
-  session inherits the reasoning instead of relitigating it.
+  session inherits the reasoning instead of relitigating it (format: SESSION-LOOP §4).
+- **Hand off when a task finishes.** Gate green, committed, decisions recorded → emit a compact
+  handoff prompt for the next session (SESSION-LOOP §5).
 
 ## Voice (for any prose in my name)
 
