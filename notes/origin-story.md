@@ -23,7 +23,7 @@ summary: >
 
 I would not describe myself as a fully functional adult. I am a developer, I hold down a real job, I teach on the side, and I still cannot reliably tell you what I am supposed to be doing on Thursday. I am disorganized in a way that has outlasted every tool built to fix it.
 
-And I tried the tools. All of them. Notion, Obsidian, Craft, Apple Reminders, the calendar, the other calendar. Each one worked for about a week, and then the same thing happened every single time: the app wanted me to become a more organized person in order to use it. It had a system, and the system was the deal. Adopt the system, and it works. I never once managed to adopt the system.
+I tried the tools. All of them. Notion, Obsidian, Craft, Apple Reminders, the calendar, the other calendar. Each one worked for about a week, and then the same thing happened every single time: the app wanted me to become a more organized person in order to use it. It had a system, and the system was the deal. Adopt the system, and it works. I never once managed to adapt to their system.
 
 So I would bounce to the next app, learn *its* system, fall off *that* one, and go around again, collecting abandoned workspaces like a very tidy hoarder.
 
@@ -42,15 +42,17 @@ flowchart LR
 
 ## Build for the one user I understand
 
-Here is the part that finally changed something. Recently my life got good in a quiet way: a stable job I care about, room to be passionate about the work instead of just surviving it. But good does not mean roomy. My days are already full: a full-time job as a dev manager and a team lead, plus teaching part-time to a hundred to a hundred and fifty students a semester. That is not a schedule with slack in it. It is exactly the situation a disorganized person should not be in.
+Recently my life got good in a quiet way: a stable job I care about, room to be passionate about the work instead of just surviving it. But good does not mean roomy. My days are already full: a full-time job as a dev manager and a tech lead, plus teaching part-time to a hundred to a hundred and fifty students a semester. That is not a schedule with slack in it. It is exactly the situation a disorganized person should not be in.
 
-Which is why I do not really have hobbies. Some people decompress with the gym, or gaming, or a five-a-side league; I do not have the hours for much of that. The little free time I do get, I spend *building*. That is my version of unwinding. So sitting in one of those rare pockets, it clicked: I had spent years trying to build things for hypothetical clients and other people. I should point that time at the one thing I actually, personally needed, and stop asking an app to reform me.
+Which is why I do not really have hobbies. Some people decompress with the gym, or gaming, or are into a specific sport. I do not have the hours for much of that. The little free time I do get, I spend *building*. That is my version of unwinding. So sitting in one of those rare pockets, it clicked: I had spent years trying to build things for hypothetical clients and other people. I should point that time at the one thing I actually, personally needed, and stop asking an app to reform me.
 
 ## Then a class I did not ask for lit the fuse
 
-One of my teaching classes became INTROWEB: basic HTML and CSS. It was not supposed to be mine; it got added to my load. Happy accident. Prepping lessons, I fell down a rabbit hole (shout-out to [Coding2GO](https://www.youtube.com/@coding2go)) and realized something I had stopped believing: **modern HTML, CSS, and JavaScript are genuinely good now.**
+One of my teaching classes became INTROWEB: basic HTML and CSS. It was not supposed to be mine, but it got added to my load. Happy accident. Prepping lessons, I fell down a rabbit hole (shout-out to [Coding2GO](https://www.youtube.com/@coding2go)) and realized something I had stopped believing: **modern HTML, CSS, and JavaScript are genuinely good now.**
 
-I had lived inside frameworks for years, because when I started, the native platform really was not enough for anything serious. But I have never *liked* frameworks. They bug me the same way a productivity app does: they make you do things their way. So it turned into a dare to myself: *build this as natively as possible.* No framework, no build step, just the platform. Down that hole I met the tools that make native-first realistic today: htmx, Bun, and a lot of CSS I had underestimated. The feature-by-feature ledger of what the browser can do now is its own note: [The Browser Grew Up While I Was Busy With Frameworks](the-browser-grew-up.md).
+I had lived inside frameworks for years, because when I started, the native platform really was not enough for anything serious. But I have never *liked* frameworks. They bug me the same way a productivity app does: they make you do things their way. So it turned into a dare to myself: *build this as natively as possible.* No framework, no build step, just the platform. 
+
+Down that hole I met the tools that make native-first realistic today: htmx, Bun, and a lot of CSS I had underestimated. The feature-by-feature ledger of what the browser can do now is its own note: [The Browser Grew Up While I Was Busy With Frameworks](the-browser-grew-up.md).
 
 ```mermaid
 flowchart LR
@@ -66,11 +68,11 @@ flowchart LR
 
 ## The real idea: an AI that manages me
 
-Here is the thing I actually want to build. Not another place to type tasks, but an assistant whose whole job is to **manage me.** I call it the Department of Time.
+Here is the thing I actually want to build. Not another place to type tasks, but an assistant whose whole job is to **manage me.**
 
-Some context on why I need it. You already know the shape of my week: the job, the team, the hundred-odd students. Now stack a master's degree on top of that. Call it sixteen-hour days. I do not have a shortage of tasks; I have a shortage of the calm, organized person who is supposed to be arranging them. So I do not want a prettier list. I want something that holds the entire mess and makes the calls I would make myself, if I ever had the time.
+Call it sixteen-hour days: the job, the team, the hundred or so students. Now stack a master's degree on top of that. I do not have a shortage of things I need to do, I have a shortage of the calm, organized person who is supposed to be arranging them. So I do not want a prettier list. I want something that holds the entire mess and makes the calls I would make myself, if I ever had the time.
 
-The key inversion is this: normally *you* do the data entry. You add the task, tick the box, file the note, keep the system fed. In the Department of Time the **AI is the writer.** A human click and an AI decision become the *same action*, go through *one door*, and come back as the same visible change on screen. And crucially, the AI gets no secret back channel. It drives the exact same controls I do. When it does something, I watch it happen.
+The key inversion is this: normally *you* do the data entry. You add the task, tick the box, file the note, keep the system fed. In this project, the **AI is the writer.** A human click and an AI decision become the *same action*, go through *one door*, and come back as the same visible change on screen. And crucially, the AI gets no secret back channel. It drives the exact same controls I do. When it does something, I watch it happen.
 
 I can watch it, literally, because the AI's presence shows up as a texture in the type. When the machine writes, the ink comes out grained:
 
@@ -78,13 +80,13 @@ I can watch it, literally, because the AI's presence shows up as a texture in th
 
 That texture is not a font bug. Grained ink means the AI did it; clean ink means a human did. The signal is never hidden. That is the whole idea.
 
-To have an AI manage me, though, it first needed a surface to manage, something for both of us to operate, built to a no-framework, no-build standard I refused to bend on. That is where the story stops being about me and starts being about three tools I did not plan to build. Each one existed only to solve the problem the one before it created.
+To have an AI manage me, though, it first needed a surface to manage, something for both of us to operate, built to the near-native, no-build standard I set for myself. That is where the story stops being about me and starts being about three tools I did not plan to build. Each one existed only to solve the problem the one before created.
 
 ## BATCH: the backend that skips the build
 
 The assistant needed a surface to drive, and my no-framework rule needed a backend that would not fight me about it. So I built **BATCH,** on one stubborn bet: there is no build step, because **the server is the build step.** It composes the final HTML on every request. Edit a file, hit refresh, done: no compiler, no toolchain, no dist folder quietly going stale while I lose twenty minutes wondering why my change did nothing.
 
-I landed on **Bun** for a concrete reason, not the usual hype: it is the one runtime that parses HTML on the server out of the box, so I could keep inventing my own tags and still have a no-build server compose them, without dragging in a whole library to do the one thing I was trying to avoid. It runs TypeScript straight, ships its own database, and otherwise minds its business. Every choice paid down the same debt: fewer moving parts standing between me and a working page.
+I landed on **Bun** for a concrete reason, not the usual hype: it is the one runtime that parses HTML on the server out of the box, so I could keep inventing my own tags and still have a no-build server compose them, without dragging in a whole library to do the one thing I was trying to avoid. It runs TypeScript straight, ships its own database if needed, and otherwise minds its business. Every choice paid down the same debt: fewer moving parts standing between me and a working page.
 
 ```mermaid
 flowchart LR
@@ -96,11 +98,12 @@ flowchart LR
   end
 ```
 
-*No build, no dist folder: the page is composed fresh on every request.*
+*No build, no dist folder: the page is composed fresh on every request.* 
+*(Caveat: I did add a batch export function that uses a dist/ folder to build static pages. I needed to do that in order to host it statically like for here in Github Pages. But with a server you wouldn't need to do that).*
 
 ## GRAIN: making the machine visible
 
-Then the thing actually had to look and behave like something, and here is a confession inside the confession: I am a design-systems person to my core. [Brad Frost's atomic design](https://atomicdesign.bradfrost.com/) is more or less my love language, I am DRY to a fault, and I would happily build fifty tiny parts before one big one. So the UI did not stay the dashboard's styles for long. It grew up into **GRAIN**, a design system built specifically around *AI interaction*, with one non-negotiable rule, the one you already met: grained ink means the machine acted, clean ink means a human did. The AI never gets to work in the dark.
+The next step was enabling the thing I wanna build to be able to look and behave like something. I am a design-systems person to my core. After learning about it, [Brad Frost's atomic design](https://atomicdesign.bradfrost.com/) became more or less my love language when designing frontend. I am DRY (Do not repeat yourself) to a fault, and I would happily build fifty tiny parts before one big one. So as I was building, it grew up into **GRAIN**, a design system built specifically around *AI interaction*, with one non-negotiable rule: What an AI did and what a human did must be clearly visible. The AI never gets to work in the dark.
 
 Underneath the look is the part that keeps it honest. A human click and an AI decision resolve to the same intent, go through one write door, and come back as operations that redraw the surface. The AI gets no secret key I do not also hold. It plays the same piano I do, in the same room, where I can watch its hands.
 
@@ -142,7 +145,7 @@ flowchart LR
 
 Here is the part I am proud of, and it is not a feature. I could have rushed straight at the big app, hacked the assistant together on whatever held it up and called the mess a foundation. The younger version of me would have. Instead I noticed that the pieces underneath were worth their own care, pulled them out into real projects, and made myself finish them properly before chasing the exciting thing.
 
-So the plan is deliberately patient. First I ship this portfolio (the modest, finishable thing) as proof that BATCH, GRAIN, and MILL actually stand on their own outside my head. Then I publish the repos publicly, so the claims are checkable and not just a story I tell. Only then do I go build the Department of Time (the assistant I needed in the first place) on foundations I already trust.
+So the plan is deliberately patient. First I ship this portfolio (the modest, finishable thing) as proof that BATCH, GRAIN, and MILL actually stand on their own outside my head. Then I publish the repos publicly, so the claims are checkable and not just a story I tell. Only then do I go build the assistant I needed in the first place on foundations I already trust.
 
 Somewhere in there I started writing the idea down properly, because it turned out to be bigger than my app. Here is the core of it, and it is nearly as old as computers themselves: a machine should *amplify* the person using it, not quietly replace them. Almost all of today's AI is built to take the task off your plate and do it somewhere offstage, out of sight. I want the opposite: an AI that works right beside you, on the very same controls, in full view. A power tool, not a stand-in. That rests on three plain commitments: the human and the AI share one set of actions, so the AI can do nothing you could not do yourself; everything it does passes through one door onto the same screen you are already watching, so it can never act behind your back; and its work is written in a different grade of ink, so you can always tell its hand from yours. Give someone a collaborator like that (visible, accountable, on equal footing) and they get help without ever handing over the wheel.
 

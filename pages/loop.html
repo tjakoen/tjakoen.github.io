@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The desk — Department of Time</title>
+  <title>The desk · Department of Time</title>
   <!-- htmx loads the initial list; shell.js runs the rail; the dispatcher runs the AI loop. -->
   <script src="/vendor/htmx.min.js" defer></script>
   <style>
@@ -34,14 +34,14 @@
           <span>Watch the desk work</span>
           <a class="action" href="/ai/manifest?screen=loop">manifest</a>
         </div>
-        <p class="muted">The desk plans your Thursday: it writes a request, drafts a plan, then revises one line — each touch goes grain while it works, then settles clean. Click anywhere to ask it to stop.</p>
+        <p class="muted">The desk plans your Thursday: it writes a request, drafts a plan, then revises one line. Each touch goes grain while it works, then settles clean. Click anywhere to ask it to stop.</p>
         <button class="btn" data-action="demo.run" data-target="screen" style="margin-bottom: var(--space-5)">Watch the desk work</button>
 
         <!-- the workspace the desk acts in. Each region carries its surface address; the desk
              writes to them over SSE. You can also type a request yourself in the field. -->
         <section class="desk" aria-label="The desk">
           <label class="field">
-            <span class="field__label">Ask the desk — or watch it above</span>
+            <span class="field__label">Ask the desk, or watch it above</span>
             <input class="field__input" type="text" placeholder="e.g. plan my Thursday"
                    data-action="say.set" data-target="reflection" data-surface="ask-input" aria-label="Ask the desk">
           </label>

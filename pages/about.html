@@ -3,20 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>About — TJ's Desk</title>
+  <title>About · TJ's Desk</title>
+  <meta name="description" content="About Tjakoen Stolk: dev manager, tech lead, and part-time software engineering teacher who builds his own no-build stack. I direct, Claude types.">
 </head>
 <body data-screen="about" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="about" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
       <div class="board">
+        <p class="eyebrow">👋 <span class="name">Tjakoen Stolk</span></p>
         <h1 class="masthead">About</h1>
         <hr class="rule">
-        <p>A reference POC: server-rendered HTML fragments, htmx, no build step.</p>
-        <p>The whole product is one consistent workspace — the same rail, top bar, assistant, and
-           console wrap every page. Navigation uses the native CSS <strong>cross-document view
-           transitions</strong>: the chrome persists while the main content cross-fades, so
-           multi-page loads feel like a single app. No client router.</p>
+        <p class="lede">Dev manager and tech lead by day, part-time software engineering teacher by
+          evening, and a builder of things nobody asked for in the hours left over. This whole site is
+          one of those things: my own no-build hypermedia stack, running as plain static files. I
+          direct, Claude types.</p>
+
+        <p>The long version, the failures included, is in <a href="/notes/ten-times-zero">the notes</a>:
+          how I actually work with AI, why I went frameworkless, and how I nearly quit teaching before
+          I automated my way back to it.</p>
+
+        <div class="section-head"><span>Résumé</span></div>
+        <p>The full résumé is landing here soon. Until then, the work speaks on the
+          <a href="/">rest of the site</a>, and I am a message away below.</p>
+
+        <div class="section-head"><span>Get in touch</span></div>
+        <div class="docs-list">
+          <div class="docs-list__item"><a class="docs-list__name" href="mailto:tjakoen.s@gmail.com">Email</a><span class="docs-list__what">tjakoen.s@gmail.com</span></div>
+          <!-- TODO(tjakoen): replace REPLACE-ME with your real LinkedIn handle -->
+          <div class="docs-list__item"><a class="docs-list__name" href="https://www.linkedin.com/in/REPLACE-ME">LinkedIn</a><span class="docs-list__what">professional history and contact.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">GitHub</a><span class="docs-list__what">the code, this stack included.</span></div>
+        </div>
+
+        <div class="page-foot">
+          Part of <a href="/">tjakoen.github.io</a>, built with itself.
+          <p>🤖 Built with Claude. I don't prompt and pray, I prompt and prove. Every commit here is
+            co-authored with an AI, on purpose. <a href="/notes/ten-times-zero">How I actually work with AI, receipts and all →</a></p>
+        </div>
       </div>
     </main>
   </div>

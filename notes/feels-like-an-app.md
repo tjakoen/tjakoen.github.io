@@ -116,7 +116,7 @@ That door is also where the more interesting idea lives: a human and the AI oper
 None of the above lives in one big pile. It is three layers, and dependency only ever flows one way.
 
 <svg viewBox="0 0 620 290" width="100%" role="img"
-     aria-label="The stack, three layers, dependency flowing one direction only. BATCH is the substrate at the bottom: a no-build server that composes HTML, runs on Bun, ships no framework. GRAIN sits on top of BATCH: the design system and the one-door AI interaction model. MILL sits on top of GRAIN: the content engine that turns Markdown into pages, and it is planned, not yet built. Each layer depends only on the ones below it, so each can be extracted into its own project."
+     aria-label="The stack, three layers, dependency flowing one direction only. BATCH is the substrate at the bottom: a no-build server that composes HTML, runs on Bun, ships no framework. GRAIN sits on top of BATCH: the design system and the one-door AI interaction model. MILL sits on top of GRAIN: the content engine that turns Markdown into pages, and it renders this very note. Each layer depends only on the ones below it, so each can be extracted into its own project."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
   <rect x="0.5" y="0.5" width="619" height="289" style="fill:var(--paper);stroke:var(--edge)"/>
@@ -124,7 +124,7 @@ None of the above lives in one big pile. It is three layers, and dependency only
 
   <rect x="120" y="52" width="380" height="52" style="fill:var(--paper);stroke:var(--edge);stroke-width:1"/>
   <text x="140" y="76" style="fill:var(--ink);font-size:14px">MILL</text>
-  <text x="140" y="94" style="fill:var(--muted);font-size:12.5px">Markdown into pages (planned, not yet built)</text>
+  <text x="140" y="94" style="fill:var(--muted);font-size:12.5px">Markdown into pages (live: it renders this note)</text>
 
   <rect x="120" y="118" width="380" height="52" style="fill:var(--paper);stroke:var(--edge);stroke-width:1"/>
   <text x="140" y="142" style="fill:var(--ink);font-size:14px">GRAIN</text>

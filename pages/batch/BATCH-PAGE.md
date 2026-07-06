@@ -1,12 +1,13 @@
 # BATCH showcase — plan (the portfolio's `/batch` section)
 
-> Status: **planned, not built.** The BATCH section of the portfolio — the pitch for the
+> Status: **built and live in the BREAD shell.** The BATCH section of the portfolio — the pitch for the
 > *substrate* (Bun · Addressable · TypeScript · CSS · htmx; **no build step**, renders live at request
 > time). Like `/grain`, it's a portfolio section served at **`/batch`** from
-> `tjakoen.github.io/pages/batch/index.html`, built *with* the stack it describes. Ships in the same static
+> `tjakoen.github.io/pages/batch/index.html`, built *with* the stack it describes; the canonical docs
+> render at `/batch/docs` through MILL. Ships in the same static
 > `dist/` export as the rest of the portfolio (ARCHITECTURE §18 — a crawler over the running
-> server, not a second renderer), root-hosted on GitHub Pages (`tjakoen.github.io`). See `PLAN.md`
-> and — for the identical docs approach — `GRAIN-PAGE.md`.
+> server, not a second renderer), root-hosted on GitHub Pages (`tjakoen.github.io`). See `../../PLAN.md`
+> and — for the identical docs approach — `../grain/GRAIN-PAGE.md`.
 >
 > Where `/grain` sells the *look + AI-interaction design system*, `/batch` sells the *engine under
 > it*: why "no build" is possible, what request-time rendering buys you, and the one-vocabulary /
@@ -55,8 +56,9 @@ callouts deep-link to `/batch/docs`.
    `POST /intent` → `RenderOp`s over SSE. A human click and an AI decision are the **same `Intent`**
    through **one door**; no privileged AI→DOM back channel. A small diagram.
 4. **The four concerns, one direction of dependency.** Each layer builds only on those below:
-   `batch` (substrate) → `grain` (design system) → `mill` (the CMS) → the consuming apps (`project`,
-   `portfolio`); the composition root is the only place they're wired (`tjakoen.github.io/server.ts`). Import
+   `batch` (substrate) → `grain` (design system) → `mill` (the CMS) → the app (`tjakoen.github.io`, which
+   folded in the composition root; `project` is a paused docs-only archive); the composition root is the
+   only place they're wired (`tjakoen.github.io/server.ts`). Import
    purity as a feature. Deep-links to `docs/CONVENTIONS.md` §1/§10.
 5. **Atomic + tokens, live.** Server-side Atomic templating, `var(--token)` theming, htmx for
    reads/loads/nav. A compact "here's a route rendered live" example.

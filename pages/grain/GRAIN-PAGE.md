@@ -4,13 +4,14 @@
 > catalog-peek · how-it-works · footer (the components showcase was removed 2026-07-02 — the
 > sidebar catalog is the reference) — served at **`/grain`** from
 > `tjakoen.github.io/pages/grain/index.html`, with e2e (`tjakoen.github.io/e2e/grain-page.e2e.ts`) and shots
-> (`grain`, `grain-peek`). v2 (AI demo) + v3 (re-skin toggle) still to come.
+> (`grain`, `grain-peek`). v2 (labelled AI demo through the real door) and v3 (Themes re-skin toggle)
+> are now built and live on the page; the live-model behind the reasoner seam is the remaining milestone.
 >
 > This is the GRAIN showcase, built *with* GRAIN — the portfolio's proof the framework is real
 > (a consuming product re-skinning grain via its public seams). It introduces the system,
 > demonstrates it (a labelled AI demo), and carries the catalog-peek sidebar. **Moved out of
 > `grain/`** so the framework repo is just the framework: grain keeps **`/catalog`** as its own
-> self-documentation; this narrative showcase is a portfolio section. See `PLAN.md`.
+> self-documentation; this narrative showcase is a portfolio section. See `../../PLAN.md`.
 >
 > **Hosting: GitHub Pages, root-served.** The portfolio is the **`tjakoen.github.io`** user site
 > (domain root), so `/grain` (and future `/batch`) are subpaths of ONE root site — which is why
