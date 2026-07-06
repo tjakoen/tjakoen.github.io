@@ -103,6 +103,40 @@ premise. That's the whole value of a second reader.
 - **Conventional-ish commits.** `type: imperative summary`. Body only when the *why*
   isn't obvious from the diff.
 
+### Reusable prompt: index the codebase for the AI
+
+Paste into a fresh session in any repo to set up the knowledge-graph index (see the
+"Index the codebase for the AI" convention above). Freshness rides the git post-commit
+hook + a free AST update — *never* the build or test step (they fire on unchanged code;
+the graph would rebuild for nothing).
+
+```
+Set up graphify (github.com/safishamsi/graphify) as a token-saving dev aid in this repo —
+a whole-repo tree-sitter knowledge graph I query instead of grepping/re-reading raw files.
+
+1. Install (skip if present): `uv tool install graphifyy` (CLI is `graphify`; fall back to
+   `pipx install graphifyy` without uv).
+2. Build free (AST-only, no API cost): `graphify update .` — confirm graphify-out/ exists,
+   report node/edge count.
+3. Auto-update on commit: `graphify hook install` (post-commit + post-checkout). Note that
+   hooks are per-clone (not committed) — each clone re-runs this.
+4. gitignore graphify-out/ (generated, per-machine).
+5. Register with Claude Code: `graphify claude install` (appends a section to CLAUDE.md +
+   two PreToolUse hooks to .claude/settings.json). Then DELETE the "matcher": "Read|Glob"
+   hook block — keep only the "matcher": "Bash" grep gate — and validate the JSON. (The Read
+   gate nags on every source read including edits: pure friction.)
+6. Verify: `graphify query "<real question about this repo>"` + `graphify benchmark`; report
+   the token-reduction figure.
+7. If this repo has a standards/AI-dev doc, add a short "Index the codebase for the AI"
+   bullet (what it is, ~Nx fewer tokens/query, updates via post-commit hook + free
+   `graphify update .`, dev aid only — git-ignored output, never a runtime dep).
+
+Rules: don't commit unless I ask. Stage only the graphify files; leave unrelated changes
+unstaged. Report committable (.gitignore, CLAUDE.md, standards doc) vs local-only
+(.claude/settings.json, git hooks). Rollback: `graphify claude uninstall` +
+`graphify hook uninstall`.
+```
+
 ---
 
 ## 5. Common pitfalls (and the guard for each)
