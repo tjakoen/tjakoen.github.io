@@ -13,16 +13,21 @@
   const get = (k) => { try { return store && store.getItem(k); } catch { return null; } };
   const put = (k, v) => { try { if (store) store.setItem(k, v); } catch { /* private mode */ } };
 
-  // ---- startup redirect (BEFORE paint): "/" honors the welcome checkbox — unchecked means
-  // the desk opens straight to where you last were (falling back to the workspace). STARTUP
-  // only: once this browsing session has booted, "/" opens normally — otherwise the pinned
-  // Welcome tab (and any in-site link home) would bounce right back.
+  // ---- refresh redirect (BEFORE paint): "/" honors the welcome checkbox on every actual
+  // REFRESH (F5 / reload), not just the first one this session — checked means a refresh
+  // of "/" always re-opens Welcome; unchecked (the default) reopens wherever you last were.
+  // A plain NAVIGATE to "/" (the pinned Welcome tab, a tab-close fallback, the logo) is left
+  // alone regardless of the checkbox — that's an intentional visit, not a refresh, and must
+  // not bounce the visitor straight back out. Nothing to reopen yet (no last page cached) →
+  // "/" shows Welcome regardless, checkbox or not. Navigation Timing tells reload from
+  // navigate; falls open (treat as navigate) if the API is unavailable.
   const path = location.pathname.replace(/\/+$/, "") || "/";
-  const booted = (() => { try { return sessionStorage.getItem("tj.booted") === "1"; } catch { return true; } })();
-  try { sessionStorage.setItem("tj.booted", "1"); } catch { /* private mode */ }
-  if (path === "/" && !booted && get(KEY.startup) === "off") {
-    const last = get(KEY.lastPage);
-    location.replace(last && last !== "/" ? last : "/loop");
+  const last = get(KEY.lastPage);
+  const isReload = (() => {
+    try { return performance.getEntriesByType("navigation")[0]?.type === "reload"; } catch { return false; }
+  })();
+  if (path === "/" && isReload && get(KEY.startup) !== "on" && last && last !== "/") {
+    location.replace(last);
     return;                                          // stop — this page is being left
   }
 
@@ -86,10 +91,11 @@
       }).catch(() => { /* corpus unreachable → the static tree still navigates */ });
     }
 
-    // ---- the welcome checkbox (functional): checked = land on the welcome page
+    // ---- the welcome checkbox (functional): checked = "/" always opens Welcome;
+    // unchecked (default, unset reads as unchecked) = reopen where you left off.
     const startup = document.querySelector("[data-startup-checkbox]");
     if (startup) {
-      startup.checked = get(KEY.startup) !== "off";
+      startup.checked = get(KEY.startup) === "on";
       startup.addEventListener("change", () => put(KEY.startup, startup.checked ? "on" : "off"));
     }
 
