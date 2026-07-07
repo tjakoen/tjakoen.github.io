@@ -29,6 +29,10 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
   `ten-times-zero.md` is fully figured (2026-07-03): docs-vs-code ratio SVG, multiplier SVG, sprint
   timeline SVG (all on the scaffold), plus the playbook-loop and mistakes-loop mermaids. Rollout to
   the OTHER notes is still PENDING.
+- **Owed from the 2026-07-07 fable audit (owner-deferred, no urgency):**
+  1. **about.html:33** — LinkedIn link is a `REPLACE-ME` stub; needs the real handle.
+  2. **DRAFT flip** — all 8 notes still carry `status: DRAFT`; owner to name which are ready to
+     publish (or flip individually as each is finished).
 - **Pending work (approved, not yet done):**
   1. **Visualization rollout — mostly DONE (2026-07-04):** ten-times-zero was already done;
      origin-story now has 5 of 6 rendered (the "desk at work" figure stays a placeholder on purpose —
