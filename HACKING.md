@@ -36,6 +36,7 @@ you know where to edit.
 | `/batch` | `pages/batch/index.html` (BATCH showcase) |
 | `/bread` | `pages/bread/index.html` (the stack umbrella page) |
 | `/mill` | `pages/mill/index.html` (MILL page) |
+| `/docs` | `pages/docs/index.html` (developer-docs hub — plan in [`../DEV-DOCS.md`](../DEV-DOCS.md)) |
 
 **Content** — Markdown through MILL, wired in [`content.ts`](content.ts) (not hand-authored HTML):
 
