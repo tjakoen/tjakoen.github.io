@@ -28,5 +28,5 @@ test("'See what's new' travels the newest notes, writes the digest into the chat
   await expect(page.locator('[data-surface="chat-log"] .chat-message')).toHaveCount(before + 1);
   const reply = page.locator('[data-surface="chat-log"] .chat-message[data-role="ai"]').last();
   await expect(reply).toHaveAttribute("data-grade", "grain");
-  await expect(page.locator('[data-surface="desk-note"]')).not.toBeEmpty();
+  await expect(page.locator('[data-surface="notes-digest"]')).not.toBeEmpty();
 });
