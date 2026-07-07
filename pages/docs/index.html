@@ -16,7 +16,8 @@
     <hr class="rule">
     <p class="lede">The <a href="/bread">BREAD stack</a> docs mostly explain <em>why</em> it's built this
       way. This page is the other half: where to start if you want to <em>build</em> something with it —
-      getting started, a hands-on tutorial, how-to guides for common tasks, and the live reference.</p>
+      getting started, a hands-on tutorial, how-to guides for common tasks, the live reference, and
+      where to look if you want to contribute.</p>
 
     <div class="section-head"><span>Getting started</span></div>
     <div class="docs-list">
@@ -42,15 +43,17 @@
 
     <div class="section-head"><span>Reference</span></div>
     <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="/reference">Generated reference</a><span class="docs-list__what">actions, surface kinds, render ops, the door's endpoints, and every token slot — read from the real source at request time, never hand-copied.</span></div>
       <div class="docs-list__item"><a class="docs-list__name" href="/catalog">Component catalog</a><span class="docs-list__what">every GRAIN component, self-documenting, with a Human/AI grade toggle.</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/ai-interface">AI vocabulary contract</a><span class="docs-list__what">the actions, surfaces, and render ops an AI (or a human) can operate — the single source is <a href="https://github.com/tjakoen">the code</a>'s <code>grain/ai/contract.ts</code>.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/ai-interface">AI-INTERFACE.md</a><span class="docs-list__what">the full contract in prose — the intent envelope, the manifest, the AI-acts protocol.</span></div>
     </div>
 
-    <div class="section-head"><span>Coming next</span></div>
-    <p>Not built yet, honestly: a <strong>generated</strong> reference for the AI vocabulary and
-      endpoints (today the AI vocabulary contract link above points at the source, not a rendered
-      table). The plan is <code>DEV-DOCS.md</code> in <a href="https://github.com/tjakoen">the
-      code</a>, if you want to see where it's going.</p>
+    <div class="section-head"><span>Contribute</span></div>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">CLAUDE.md</a><span class="docs-list__what">the operating rules for anyone (AI or human) working in this repo.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">HACKING.md</a><span class="docs-list__what">the route → source map — "which file do I open to change X".</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/conventions">CONVENTIONS.md</a><span class="docs-list__what">the build standard — layering, components, tokens, the 3-tier testing bar.</span></div>
+    </div>
 
     <div class="page-foot">
       Part of <a href="/">tjakoen.github.io</a>, built with itself, on the very stack it describes.
