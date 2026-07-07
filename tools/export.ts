@@ -17,7 +17,7 @@
 // graph is frozen into dist/modules — the demo runs the same vocabulary fully in-browser.
 import { createSitemap } from "../../batch/http/sitemap.ts";
 import { exportSite, type AssetMount } from "../../batch/export/export.ts";
-import { listPortfolioContentRoutes } from "../content.ts";
+import { listPortfolioContentRoutes, listPortfolioRawContentRoutes } from "../content.ts";
 import { config } from "../config.ts";
 
 const PORT = Number(Bun.env.EXPORT_PORT ?? 3330);
@@ -36,6 +36,13 @@ const MODULE_ENTRIES = ["/modules/grain/ai/client-door.js"];
 
 // Generated routes that a href/src crawler won't discover: the ⌘K palette's index + the SEO infra.
 const DATA_ROUTES = ["/components.css", "/search.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
+
+// Every content entry's raw `.md` twin (MILL's honest-source route) — a data route (literal
+// bytes, no chrome), never a page: freezing it here (not `pages`) keeps the export honest and
+// lets the entry chrome's Rendered/Source toggle resolve under the export's dead-link check.
+async function dataRoutes(): Promise<string[]> {
+  return [...DATA_ROUTES, ...await listPortfolioRawContentRoutes()];
+}
 
 async function waitForServer(timeoutMs = 15000) {
   const deadline = Date.now() + timeoutMs;
@@ -79,7 +86,7 @@ try {
     baseURL: BASE,
     distDir: DIST,
     pages,
-    dataRoutes: DATA_ROUTES,
+    dataRoutes: await dataRoutes(),
     assets: assetMounts(),
     moduleEntries: MODULE_ENTRIES,
     transformPage: (route, html) =>

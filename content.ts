@@ -14,7 +14,7 @@
 // the injected renderPage composes that tag — and any escape-hatch <b-…> tags an author
 // wrote in the Markdown — at request time.
 import {
-  createMillRoutes, dirSource, listMillRoutes, packageDocsSource,
+  createMillRoutes, dirSource, listMillRoutes, listMillRawRoutes, packageDocsSource,
   type MillCollection, type MillRequestHandler, type PageChrome,
 } from "../mill/serve.ts";
 import { escapeHtml } from "../mill/core/engine.ts";
@@ -53,11 +53,28 @@ function notesLink(href: string): string {
 // Mirrors the hand-written portfolio pages (pages/mill/index.html): same head, same
 // app-shell + portfolio-frame skeleton, so content pages ARE portfolio pages.
 function shellChrome(inject: string, injectHead = ""): PageChrome {
-  return ({ title, description, body, collection }) => {
+  return ({ kind, title, description, body, collection, slug }) => {
     const screen = collection.prefix.split("/")[1] ?? "notes";   // /notes → notes, /grain/docs → grain
     // THE EDITOR section (rail active + tab group): notes → its own; layer docs live under BREAD.
     const sectionName = collection.prefix === "/notes" ? "notes" : "bread";
     const section = ` data-section="${sectionName}"`;
+    // the honest-source toggle: an entry page links straight to its own raw .md (MILL's
+    // honest-source route) — "the site is its own source tree" made clickable.
+    const sourceToggle = kind === "entry" && slug
+      ? `<nav class="content-source" aria-label="View">
+      <a class="tab" aria-current="page" href="${escapeHtml(`${collection.prefix}/${slug}`)}">Rendered</a>
+      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>
+    </nav>`
+      : "";
+    // the notes index's own "watch the AI act" entry point (DEMO-PLAN.md item 1, staged here).
+    // Same door, same demo.run verb as /grain's trigger. The reasoner's "notes" screen branch
+    // reads the newest entries (data-surface="note:<slug>", above) and writes its digest into
+    // the SIDEBAR CHAT (owner feedback, NOTES-PAGE-PLAN.md 2026-07-07) — like anything else the
+    // desk says to you — not a card in the reading column; only the trigger stays on the page
+    // until chat messages can carry their own action affordances (tracked, not yet built).
+    const deskNoteTrigger = kind === "index" && collection.prefix === "/notes"
+      ? `<button class="btn" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ See what's new</button>`
+      : "";
     return `<!DOCTYPE html>
 <html lang="en" data-themes="sourdough baguette brioche">
 <head>
@@ -71,7 +88,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
   <div class="app-shell app-window"${section} data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
-      <div class="board">${body}</div>
+      <div class="board">${sourceToggle}${deskNoteTrigger}${body}</div>
     </main>
   </div>
 ${inject}</body>
@@ -88,6 +105,8 @@ const collections: MillCollection[] = [
     description: "Long-form notes — how this stack got built, how I teach, and what broke along the way.",
     source: dirSource("tjakoen.github.io/notes"),
     adapter: { resolveLink: notesLink },
+    indexVariant: "log",
+    itemSurfacePrefix: "note",
   },
   {
     prefix: "/grain/docs",
@@ -122,6 +141,12 @@ export function createPortfolioContentRoutes(
  *  by definition (§18), so the sitemap and the export allowlist both feed from this. */
 export function listPortfolioContentRoutes(): Promise<string[]> {
   return listMillRoutes(collections);
+}
+
+/** Every entry's raw `.md` twin — a DATA route (literal bytes, no chrome), so a caller feeds
+ *  this into an export's `dataRoutes`, never `pages` (§18: content pages must export). */
+export function listPortfolioRawContentRoutes(): Promise<string[]> {
+  return listMillRawRoutes(collections);
 }
 
 // Every note's frontmatter, newest-first (undated last, then by slug) — the SAME order MILL's

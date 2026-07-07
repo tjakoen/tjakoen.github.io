@@ -63,6 +63,18 @@ runs on the static host; label it scripted. When the live model lands: the run m
 running the old demo-box scripted walkthrough; chat stays disabled ("The desk is offline");
 terminal stays hidden.
 
+**A first slice is BUILT (2026-07-07), staged on `/notes` instead of `/grain`** — see
+[`NOTES-PAGE-PLAN.md`](NOTES-PAGE-PLAN.md) idea 6. `demo.run`'s `notes` screen branch
+(`grain/ai/reasoner.ts`) travels the newest notes (real `data-surface="note:<slug>"` targets,
+`mill/serve.ts` `itemSurfacePrefix`) and writes a digest into a fresh AI bubble in the **sidebar
+chat** (`chat-log`, the same global surface `chat.send` replies into) — through the server door,
+same as every other `demo.run` scenario. Smaller than the full vision above: server-side door only
+(no client-door static seam yet), the chat bubble is a one-off, not the rail **notepad** (piece 2,
+still not built), and not yet idempotent (matches the /grain scenario's existing bar; idempotency
+is called out for the live model at M★, not this stub). Still owed: the /grain placement, the
+notepad pane, actionable chat dialogs (a button inside the digest bubble), and the client-side
+door so the run works on a static export.
+
 ### 2. The AI's notepad (rail pane)
 
 A notepad pane in the left rail: **markdown ⇄ rendered** toggle. No native browser markdown —
