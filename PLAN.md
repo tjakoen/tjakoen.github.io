@@ -576,6 +576,16 @@ now says it hurt readability) — don't stack fixes, redo that spot.
    not the effect — so it passed while the knob did nothing (grain lesson 9 exactly). Fixed the
    CSS to presence selectors `[data-console-expanded]` (matching the sibling `data-console-open`
    idiom, which never had a value), and hardened the e2e to assert `main` actually collapses.
+   **Smooth-transition fix (2026-07-07, owner: "panels should ALWAYS have transitions"):** the
+   expand still SNAPPED because the grid endpoints weren't interpolable (`minmax(0,1fr)`↔`0px`,
+   `auto`↔`1fr`). Reworked the console's height model so every state change glides: the console
+   grid row is now `minmax(var(--shell-console-min, 2.75rem), var(--shell-console-fr, 0fr))` and
+   main is `minmax(0, var(--shell-main-fr, 1fr))` — ALL endpoints lengths/fr, so `grid-template-rows`
+   interpolates (measured: main ramps 603→0 over frames, both ways). The feed became `flex: 1 1 0`
+   (zero intrinsic height — kills the min-content balloon), so the row height alone drives
+   closed(bar)→open(16rem band)→expanded(1fr); `display:none` when fully closed so it's genuinely
+   hidden. `data-acting` deliberately does NOT open the band (the run keeps the terminal collapsed;
+   the chat previews — loop.e2e "takeover"). Replaced the old `max-height` reveal entirely.
 4. **Menu-order half ✅ BUILT (2026-07-06):** `/notes` already had its own real dedicated page
    (MILL's `content-index` GRAIN component, wrapped in THE EDITOR/BREAD shell — not missing, as
    the original ask assumed) and already sorted newest-first (`mill/serve.ts`'s `byDateDesc`). The
