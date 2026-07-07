@@ -1,0 +1,118 @@
+# HACKING.md — change something yourself, fast
+
+The map I reach for when I want to make a *small* edit without spinning up an AI: where every URL's
+source lives, and which file to open for the usual tweaks. The site is deliberately no-build — Bun
+renders it on every request — so the loop is just **edit → refresh**. There is no bundler, no
+compile step, no framework to fight.
+
+> Companion to [`README.md`](README.md) (what the site is) and [`PLAN.md`](PLAN.md) (where it's
+> going). This file is the *how do I touch it* doc. If a route or a source location moves, update the
+> table here — it's the single source for the wiring map.
+
+## The one rule that makes this navigable
+
+**Every URL resolves to a file, through one of five mechanisms.** The composition root
+([`server.ts`](server.ts)) wires them; nothing is hidden. Once you know which of the five a URL is,
+you know where to edit.
+
+| Mechanism | What it serves | Source |
+|---|---|---|
+| **Hand-authored page** | the bespoke screens | `pages/**/*.html` |
+| **MILL content** | notes + rendered layer docs (Markdown) | `notes/*.md`, and the installed `grain`/`batch` `docs/` |
+| **Generated** | catalog, CSS bundle, sitemap/robots/llms | built at request time from components + the pages tree |
+| **The AI door** | the interaction endpoints | [`routes/ai-routes.ts`](routes/ai-routes.ts) |
+| **Static asset** | styles, scripts, fonts, images, vendor libs | mapped dirs (mostly up in `grain/`) |
+
+## Route → source map (every URL the server answers)
+
+**Pages** — hand-authored HTML, URL mirrors the file under [`pages/`](pages/):
+
+| URL | File |
+|---|---|
+| `/` | `pages/index.html` |
+| `/about` | `pages/about.html` |
+| `/loop` | `pages/loop.html` (the reference "watch the AI act" screen) |
+| `/grain` | `pages/grain/index.html` (GRAIN showcase) |
+| `/batch` | `pages/batch/index.html` (BATCH showcase) |
+| `/bread` | `pages/bread/index.html` (the stack umbrella page) |
+| `/mill` | `pages/mill/index.html` (MILL page) |
+
+**Content** — Markdown through MILL, wired in [`content.ts`](content.ts) (not hand-authored HTML):
+
+| URL | Source |
+|---|---|
+| `/notes`, `/notes/<slug>` | `notes/<slug>.md` |
+| `/notes/<slug>.md` | the same file, served raw (the "honest source" toggle) |
+| `/grain/docs`, `/grain/docs/<slug>` | the installed `@tjakoen/grain` package's `docs/*.md` (in the monorepo: `../grain/docs/`) |
+| `/batch/docs`, `/batch/docs/<slug>` | the installed `@tjakoen/batch` package's `docs/*.md` (in the monorepo: `../batch/docs/`) |
+
+**Generated** — no file to edit directly; change the *inputs*:
+
+| URL | Built from |
+|---|---|
+| `/catalog` | every component's `.md` (`grain/catalog` harvests the component tree) |
+| `/components.css` | every component's `.css`, bundled (`batch/assets/style-bundle`) |
+| `/sitemap.xml`, `/robots.txt` | the pages tree + content routes |
+| `/llms.txt` | [`llms.ts`](llms.ts) (the AI-facing index) |
+| `/search.json` | the sitemap + catalog (feeds ⌘K and the explorer tree) |
+
+**The AI door + client runtime** — [`routes/ai-routes.ts`](routes/ai-routes.ts) and `batch/http/modules.ts`:
+
+| URL | What |
+|---|---|
+| `/intent` | the single write door (a human click or an AI decision, same envelope) |
+| `/stream` | the SSE channel render ops push back over |
+| `/ai/manifest` | the machine-readable index of what's operable |
+| `/ui/loop` | the `/loop` demo's task fragment |
+| `/modules/*` | grain's TypeScript, transpiled to browser JS on request (no build) |
+
+**Static assets** — served from mapped dirs (see `config.ts` `assetDirs`); **most live up in `grain/`**,
+because the look is the design system's, not the site's:
+
+| Prefix | Directory |
+|---|---|
+| `/styles/*` | `grain/styles` (tokens, base, grade mechanism, themes) |
+| `/scripts/*` | `grain/scripts` (the client islands) |
+| `/assets/*` | `grain/assets` (the icon sprite) |
+| `/fonts/*` | `grain/fonts` (the Redaction grades — grain = AI) |
+| `/site/*` | `tjakoen.github.io/scripts` (the site's own island: `site.js`, `desk-commands.js`) |
+| `/vendor/*` | `tjakoen.github.io/vendor` (vendored libs) |
+
+## "I want to change X" — the file to open
+
+| I want to… | Open | Notes |
+|---|---|---|
+| **Fix wording on a page** | the `pages/**/*.html` for that URL (table above) | plain HTML; refresh to see it |
+| **Edit / add a note or blog post** | `notes/<slug>.md` | Markdown + frontmatter; see [`standards/NOTE-STANDARD.md`](standards/NOTE-STANDARD.md). A new file = a new `/notes/<slug>` route automatically |
+| **Change a color / the theme** | `grain/styles/variables.css` (**only** here) | never hardcode a color in a component — override the token. Themes: `grain/styles/themes/*.css` |
+| **Change how a component looks** | `grain/components/<layer>/<name>/<name>.css` | one component owns its styling; edit its `.css`, not the page |
+| **Change a component's markup** | `grain/components/<layer>/<name>/<name>.html` | some layout components are CSS-only (no `.html`) — see [`../batch/docs/CONVENTIONS.md`](../batch/docs/CONVENTIONS.md) §4 |
+| **Add a whole new page** | a new `pages/<name>/index.html` (or `pages/<name>.html`) | it's live at `/<name>` on the next refresh; add it to the sitemap? — it's derived, so no |
+| **Change the global page shell** (head, scripts) | the `PAGE_HEAD` / `PAGE_ASSETS` constants in [`server.ts`](server.ts) | one place, injected into every page — don't hand-list assets in a page's `<head>` |
+| **Change what the AI does in a demo** | `grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [`../ROADMAP.md`](../ROADMAP.md)) |
+| **Add / change an AI verb or surface** | `grain/ai/contract.ts` first, then walk the alignment row in [`../CLAUDE.md`](../CLAUDE.md) | this is *not* a minor edit — it ripples into tests + docs |
+
+## The dev loop
+
+```sh
+# from the repo root (paths in config.ts assume it)
+bun run dev        # http://localhost:3000 — hot reload, no build
+bun run check      # tsc --noEmit — must stay green
+bun run test       # unit + integration
+bun run shots      # capture screenshots + a gallery (to *see* a change headless)
+```
+
+Edit a page, a component's CSS, or a note → **just refresh**. The server recomposes on the request;
+component/style changes hot-reload. Only a change to `server.ts` or other server code needs a restart
+(the `bun run dev` watcher handles most of it).
+
+## The three things that will trip you
+
+1. **Colors live in exactly one file.** `grain/styles/variables.css`. A hardcoded `#hex` in a
+   component is a bug the audit catches — re-skin by overriding a token, never by editing a component.
+2. **The look is up in `grain/`, not here.** If you're hunting for a style and it isn't in
+   `tjakoen.github.io/components/`, it's a GRAIN component — look in `grain/components/`. The site only
+   owns its *bespoke* surfaces (the frame, the `/loop` demo cards); everything reusable is the design
+   system's.
+3. **No build step is a feature, not a missing step.** There's nothing to compile. If a change isn't
+   showing, it's a stale server process or a hard-refresh away — not a build that didn't run.
