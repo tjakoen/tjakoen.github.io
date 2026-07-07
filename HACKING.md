@@ -106,6 +106,10 @@ Edit a page, a component's CSS, or a note → **just refresh**. The server recom
 component/style changes hot-reload. Only a change to `server.ts` or other server code needs a restart
 (the `bun run dev` watcher handles most of it).
 
+Changed how a page *looks* on purpose? The visual-regression suite (`e2e/visual.e2e.ts`) will fail
+because the pixels moved — that's it working. Re-bless the baseline once you're happy:
+`bun run test:e2e visual --update-snapshots`.
+
 ## The three things that will trip you
 
 1. **Colors live in exactly one file.** `grain/styles/variables.css`. A hardcoded `#hex` in a
