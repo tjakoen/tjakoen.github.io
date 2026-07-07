@@ -31,6 +31,7 @@ export const portfolioLlmsDoc: LlmsDoc = {
       { title: "BATCH docs", url: "/batch/docs", note: "ARCHITECTURE (the substrate's reasoning, single source of truth) + CONVENTIONS (the build standard)" },
       { title: "GRAIN docs", url: "/grain/docs", note: "GRAIN (the design system + AI layer), AI-INTERFACE (the contract: one door, render ops, manifest), DESIGN-SYSTEM (the look)" },
       { title: "Component catalog", url: "/catalog", note: "every GRAIN component, self-documenting, with a Human/AI grade toggle" },
+      { title: "Generated reference", url: "/reference", note: "actions, surface kinds, render ops, the door's endpoints, and every token slot — read from the real source, never hand-copied" },
     ]},
     { heading: "See the AI act", links: [
       { title: "/loop", url: "/loop", note: "the reference screen — watch the AI plan and act through the one door, its presence lit as it works" },
