@@ -171,6 +171,39 @@ test.describe("/grain — the surface is operable by both a person and the AI, t
 
   // Symmetry is now real, not simulated: BOTH tests above exercise the SAME POST /intent door and
   // apply the server's RenderOps — a human Ask and the AI's run travel the identical path.
+
+  test("actionable chat dialog: a control INSIDE the chat fires through the door (and the composer Send button works on click)", async ({ page }) => {
+    await page.goto("/grain");
+    // the REAL app-shell chat (the aside), not the showcase demo surface above.
+    const log = page.locator('.app-shell__aside [data-surface="chat-log"]');
+    await expect(page.locator("body")).toHaveAttribute("data-ai-online", "true", { timeout: 8000 });
+
+    // (1) the composer SEND BUTTON dispatches on CLICK — it lives in the aside, which the dispatcher
+    // used to skip wholesale (only Enter worked). Closing that gap is what makes chat controls fire.
+    const n0 = await log.locator(".chat-message").count();
+    await page.locator('.assistant__composer input[data-surface="chat-input"]').fill("hi from the send button");
+    await page.locator('.assistant__composer .icon-btn[data-action="chat.send"]').click();
+    await expect(log.locator(".chat-message")).toHaveCount(n0 + 2);   // your line + the AI's grain reply
+    await expect(log.locator('.chat-message[data-role="you"]').last()).toContainText("hi from the send button");
+
+    // (2) an AI-OFFERED actionable dialog — a b-button carrying the vocabulary inside a grain
+    // message — fires through the same door. It renders clean + clickable (NOT grain-disabled),
+    // because it's the human's affordance; presence still gates it (data-ai-run, online here).
+    await page.evaluate(() => {
+      const chatLog = document.querySelector('.app-shell__aside [data-surface="chat-log"]')!;
+      const m = document.createElement("div");
+      m.className = "chat-message"; m.setAttribute("data-role", "ai"); m.setAttribute("data-grade", "grain");
+      m.innerHTML = '<span class="chat-message__who">GRAIN</span><span class="chat-message__body">I found something.</span>'
+        + '<div class="chat-message__actions"><button class="btn" data-ai-run data-action="chat.send" data-target="chat-log" data-from="chat-input" type="button">Do it</button></div>';
+      chatLog.appendChild(m);
+    });
+    const btn = page.locator(".chat-message__actions .btn");
+    await expect(btn).toHaveCSS("pointer-events", "auto");            // grade override wins while online → operable
+    const n1 = await log.locator(".chat-message").count();
+    await page.locator('.assistant__composer input[data-surface="chat-input"]').fill("from the dialog button");
+    await btn.click();
+    await expect(log.locator(".chat-message")).toHaveCount(n1 + 2);   // the offered action posted through the door
+  });
 });
 
 test.describe("/grain — the AI spotlight (with motion)", () => {
