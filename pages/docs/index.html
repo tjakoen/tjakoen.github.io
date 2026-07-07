@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Developer docs · BREAD</title>
-  <meta name="description" content="Learn to build with BREAD: getting started with BATCH and GRAIN, a hands-on tutorial building an operable surface, the component catalog, the AI vocabulary contract, and how-to guides in progress.">
+  <meta name="description" content="Learn to build with BREAD: getting started with BATCH and GRAIN, a hands-on tutorial building an operable surface, how-to guides for common tasks, the component catalog, and the AI vocabulary contract.">
 </head>
 <body data-screen="docs" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">
@@ -16,7 +16,7 @@
     <hr class="rule">
     <p class="lede">The <a href="/bread">BREAD stack</a> docs mostly explain <em>why</em> it's built this
       way. This page is the other half: where to start if you want to <em>build</em> something with it —
-      getting started, a hands-on tutorial, the live reference, and (in progress) how-to guides.</p>
+      getting started, a hands-on tutorial, how-to guides for common tasks, and the live reference.</p>
 
     <div class="section-head"><span>Getting started</span></div>
     <div class="docs-list">
@@ -29,6 +29,17 @@
       <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/tutorial">Build your first operable surface</a><span class="docs-list__what">a real, running example (item.archive on /loop) — the five pieces, in build order, ending with a checklist for adding your own verb.</span></div>
     </div>
 
+    <div class="section-head"><span>How-to guides</span></div>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/add-a-route">Add a route</a><span class="docs-list__what">a hand-authored page vs. a generated/API route.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/add-a-component">Add a component</a><span class="docs-list__what">the checklist: template, styles, catalog doc, when it needs its own AI panel.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/make-a-surface-operable">Make a surface operable</a><span class="docs-list__what">the bare checklist — contract, markup, reasoner branch, tests, docs.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/add-a-render-op-kind">Add a RenderOp kind</a><span class="docs-list__what">a new effect the dispatcher can apply — contract + ai-dispatch.js + tests.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/re-skin-via-tokens">Re-skin via tokens</a><span class="docs-list__what">override the token slots — never edit a component's CSS to re-theme.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/consume-as-git-deps">Consume as a dependency</a><span class="docs-list__what">the intended post-split shape — a Bun git dependency, no registry.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/static-export-and-deploy">Static export + deploy</a><span class="docs-list__what">freeze the running server to dist/ — what's built today, what's still planned.</span></div>
+    </div>
+
     <div class="section-head"><span>Reference</span></div>
     <div class="docs-list">
       <div class="docs-list__item"><a class="docs-list__name" href="/catalog">Component catalog</a><span class="docs-list__what">every GRAIN component, self-documenting, with a Human/AI grade toggle.</span></div>
@@ -36,10 +47,10 @@
     </div>
 
     <div class="section-head"><span>Coming next</span></div>
-    <p>Not built yet, honestly: short <strong>how-to guides</strong> (add a route, add a component,
-      re-skin via tokens) and a generated reference for the AI vocabulary and endpoints. The plan is
-      <code>DEV-DOCS.md</code> in <a href="https://github.com/tjakoen">the code</a>, if you want to see
-      where it's going.</p>
+    <p>Not built yet, honestly: a <strong>generated</strong> reference for the AI vocabulary and
+      endpoints (today the AI vocabulary contract link above points at the source, not a rendered
+      table). The plan is <code>DEV-DOCS.md</code> in <a href="https://github.com/tjakoen">the
+      code</a>, if you want to see where it's going.</p>
 
     <div class="page-foot">
       Part of <a href="/">tjakoen.github.io</a>, built with itself, on the very stack it describes.
