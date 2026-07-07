@@ -26,7 +26,8 @@ export const portfolioLlmsDoc: LlmsDoc = {
       { title: "MILL", url: "/mill", note: "Markdown → GRAIN-pages CMS — feed it .md + images, it renders GRAIN pages" },
     ]},
     { heading: "Documentation", links: [
-      { title: "Developer docs", url: "/docs", note: "start here to build with it: getting started, the live reference, and the in-progress tutorial/how-to guides" },
+      { title: "Developer docs", url: "/docs", note: "start here to build with it: getting started, a hands-on tutorial, the live reference, and the in-progress how-to guides" },
+      { title: "Tutorial: build your first operable surface", url: "/grain/docs/tutorial", note: "a real, running example — one surface, human-click and AI-decision, through the same door" },
       { title: "BATCH docs", url: "/batch/docs", note: "ARCHITECTURE (the substrate's reasoning, single source of truth) + CONVENTIONS (the build standard)" },
       { title: "GRAIN docs", url: "/grain/docs", note: "GRAIN (the design system + AI layer), AI-INTERFACE (the contract: one door, render ops, manifest), DESIGN-SYSTEM (the look)" },
       { title: "Component catalog", url: "/catalog", note: "every GRAIN component, self-documenting, with a Human/AI grade toggle" },
