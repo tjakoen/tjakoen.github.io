@@ -45,10 +45,14 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
      pass (one driving metaphor, thinning the formula further) still deserves the user's own eye.
   3. **"Watch Its Hands"** whitepaper companion: plain-language, in-voice, sells the paper to normal
      people. Blueprint (hooks + concept-translations) is in this session's plan; leads with the piano.
-  4. **where-were-we.md — DRAFTED (2026-07-08):** the PROOF companion note (plans-as-files, board as
-     projection; canonical plan `proof/PLAN.md`, ROADMAP Track E). Mermaid figure rendered. The note
-     says plainly PROOF is unbuilt (honesty clause); before any DRAFT→PUBLISHED flip, re-check that
-     claim against reality — once piece 1 ships, soften "none of this is built" to match.
+  4. **where-were-we.md — DRAFTED (2026-07-08), NOW STALE:** the PROOF companion note (plans-as-files,
+     board as projection; canonical `proof/PLAN.md`, ROADMAP Track E). Mermaid figure rendered.
+     **The note's central honest confession — "none of this is built… I'm publishing the plan for the
+     plan tool before the plan tool exists" — is now FALSE:** PROOF shipped (core + board + check/init
+     +the mountable routes) and PANTRY v1 runs (the note doesn't mention PANTRY at all). Before any
+     DRAFT→PUBLISHED flip this needs an owner-voiced rewrite: swap the "unbuilt" framing for the
+     honest new state (it got built, fast, with delegated agents), and decide whether to fold in
+     PANTRY. Owner owns the prose — flagged, not rewritten.
 
 ## Information architecture (decisions — memory `portfolio-content-architecture`)
 
