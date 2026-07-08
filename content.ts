@@ -16,9 +16,9 @@
 import {
   createMillRoutes, dirSource, listMillRoutes, listMillRawRoutes, packageDocsSource,
   type MillCollection, type MillRequestHandler, type PageChrome,
-} from "../mill/serve.ts";
-import { escapeHtml } from "../mill/core/engine.ts";
-import { parseFrontmatter } from "../mill/core/frontmatter.ts";
+} from "@tjakoen/mill/serve.ts";
+import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
+import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
 
 // ---- link resolution --------------------------------------------------------
 // Docs cross-link each other as relative .md paths (./AI-INTERFACE.md,
