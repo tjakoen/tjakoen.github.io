@@ -1,4 +1,5 @@
 // portfolio/tools/audit.ts — audit THIS product against its native-first / SEO / AEO baseline.
+import { join } from "node:path";
 //
 // A thin consumer of the framework-generic auditor (batch/audit). This file owns everything
 // product-specific: booting portfolio/server.ts, the page list, the grain affordance selectors, and
@@ -13,7 +14,7 @@
 // Note: this measures the live dev render. `batch/export` freezes the same bytes, so the numbers are a
 // fair proxy for the static site (export is a projection, not a second renderer — ARCHITECTURE §18).
 import { mkdir, writeFile } from "node:fs/promises";
-import { audit, renderTables, kb, type AuditReport } from "../../batch/audit/audit.ts";
+import { audit, renderTables, kb, type AuditReport } from "@tjakoen/batch/audit/audit.ts";
 
 const PORT = Number(Bun.env.AUDIT_PORT ?? 3320);
 const BASE = `http://localhost:${PORT}`;
@@ -68,7 +69,7 @@ function narrate(report: AuditReport): string {
 }
 
 console.log(`[audit] starting server on ${PORT}…`);
-const server = Bun.spawn(["bun", "tjakoen.github.io/server.ts"], {
+const server = Bun.spawn(["bun", join(import.meta.dir, "..", "server.ts")], {
   env: { ...process.env, PORT: String(PORT), NODE_ENV: "production" },
   stdout: "ignore", stderr: "ignore",
 });

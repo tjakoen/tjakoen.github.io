@@ -4,14 +4,14 @@
 //   GET  /stream           per-session SSE channel (server→client push)
 //   GET  /ai/manifest      the AI's instruction manual for a screen
 import type { TaskService } from "../demo/services/task-service.ts";
-import type { Stream } from "../../batch/http/stream.ts";
-import type { Accepts } from "../../grain/ai/accepts.ts";
-import type { InteractionLayer } from "../../grain/ai/interaction-layer.ts";
-import type { Intent, ActionName } from "../../grain/ai/contract.ts";
-import { isAction, actionsForKind, surface } from "../../grain/ai/contract.ts";
+import type { Stream } from "@tjakoen/batch/http/stream.ts";
+import type { Accepts } from "@tjakoen/grain/ai/accepts.ts";
+import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
+import type { Intent, ActionName } from "@tjakoen/grain/ai/contract.ts";
+import { isAction, actionsForKind, surface } from "@tjakoen/grain/ai/contract.ts";
 import { LoopCard } from "../demo/view/components.ts";
 import { toLoopCardView } from "../demo/services/task-views.ts";
-import { buildManifest, type ManifestTarget } from "../../grain/ai/manifest.ts";
+import { buildManifest, type ManifestTarget } from "@tjakoen/grain/ai/manifest.ts";
 
 const htmlFragment = (s: string, status = 200) =>
   new Response(s, { status, headers: { "Content-Type": "text/html; charset=utf-8" } });

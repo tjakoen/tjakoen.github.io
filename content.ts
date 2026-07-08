@@ -19,6 +19,7 @@ import {
 } from "@tjakoen/mill/serve.ts";
 import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
 import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
+import { join } from "node:path";
 
 // ---- link resolution --------------------------------------------------------
 // Docs cross-link each other as relative .md paths (./AI-INTERFACE.md,
@@ -103,7 +104,7 @@ const collections: MillCollection[] = [
     prefix: "/notes",
     title: "Notes",
     description: "Long-form notes — how this stack got built, how I teach, and what broke along the way.",
-    source: dirSource("tjakoen.github.io/notes"),
+    source: dirSource(join(import.meta.dir, "notes")),
     adapter: { resolveLink: notesLink },
     indexVariant: "log",
     itemSurfacePrefix: "note",

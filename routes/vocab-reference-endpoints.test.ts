@@ -4,7 +4,7 @@
 // THIS app's ai-routes.ts — a renamed/removed endpoint fails this test instead of silently
 // going stale in the generated /reference page.
 import { test, expect } from "bun:test";
-import { ENDPOINTS } from "../../grain/ai/vocab-reference.ts";
+import { ENDPOINTS } from "@tjakoen/grain/ai/vocab-reference.ts";
 
 test("every ENDPOINTS path is a real route literal in ai-routes.ts", async () => {
   const src = await Bun.file(new URL("./ai-routes.ts", import.meta.url)).text();

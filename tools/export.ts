@@ -1,4 +1,5 @@
 // portfolio/tools/export.ts — freeze THIS app to a static dist/ for GitHub Pages / any static host.
+import { join } from "node:path";
 //
 // A thin consumer of the framework-generic exporter (batch/export), exactly parallel to
 // portfolio/tools/audit.ts: this file owns everything app-specific — booting portfolio/server.ts,
@@ -15,8 +16,8 @@
 // loop (/intent, /stream) is intentionally absent: a static copy has no backend. The /grain showcase
 // still WORKS though: its page is flipped to the CLIENT-side door (§19.3) and the door's module
 // graph is frozen into dist/modules — the demo runs the same vocabulary fully in-browser.
-import { createSitemap } from "../../batch/http/sitemap.ts";
-import { exportSite, type AssetMount } from "../../batch/export/export.ts";
+import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
+import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { listPortfolioContentRoutes, listPortfolioRawContentRoutes } from "../content.ts";
 import { config } from "../config.ts";
 
@@ -74,7 +75,7 @@ function assetMounts(): AssetMount[] {
 }
 
 console.log(`[export] starting server on ${PORT}…`);
-const server = Bun.spawn(["bun", "tjakoen.github.io/server.ts"], {
+const server = Bun.spawn(["bun", join(import.meta.dir, "..", "server.ts")], {
   env: { ...process.env, PORT: String(PORT), NODE_ENV: "production" },
   stdout: "ignore", stderr: "ignore",
 });

@@ -1,4 +1,5 @@
 // portfolio/tools/screenshots.ts — visual review for headless/remote work.
+import { join } from "node:path";
 //
 // Boots the app, drives a real browser (Playwright + chromium), and captures the key
 // screens AND the interesting *states* you can't see from a page load — the desk mid-act
@@ -119,7 +120,7 @@ async function waitForServer(timeoutMs = 15000) {
 }
 
 console.log(`[shots] starting server on ${PORT}…`);
-const server = Bun.spawn(["bun", "tjakoen.github.io/server.ts"], {
+const server = Bun.spawn(["bun", join(import.meta.dir, "..", "server.ts")], {
   env: { ...process.env, PORT: String(PORT), NODE_ENV: "production" },
   stdout: "ignore", stderr: "ignore",
 });
