@@ -199,7 +199,7 @@ GRAIN showcase, formerly `/demo`) · `/catalog`.
 
 ## Tier 2 — the "show, don't tell" case studies
 
-The portfolio's subject *is* these three layers, so let the site be its own case study.
+The portfolio's subject *is* this stack, so let the site be its own case study.
 
 - **This site explains itself.** A section that says "this page is served as static files
   prerendered from a live no-build BATCH app" — with a link to the actual export tooling and

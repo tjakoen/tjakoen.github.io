@@ -32,10 +32,12 @@ const goto = (path: string) => async (page: import("@playwright/test").Page) => 
 const SHOTS: Shot[] = [
   { name: "welcome", desc: "/ — THE EDITOR's Welcome page (the whole site as one editor window)", fullPage: true, prepare: goto("/") },
   { name: "notes", desc: "/notes — the notes index (MILL), inside the editor window", fullPage: true, prepare: goto("/notes") },
-  { name: "bread", desc: "/bread — the BREAD Stack intro (BATCH · GRAIN · MILL)", fullPage: true, prepare: goto("/bread") },
+  { name: "bread", desc: "/bread — the BREAD Stack directory: all five members, one card shape", fullPage: true, prepare: goto("/bread") },
   { name: "grain", desc: "/grain — the GRAIN showcase, built with GRAIN", fullPage: true, prepare: goto("/grain") },
   { name: "batch", desc: "/batch — the lean substrate landing page", fullPage: true, prepare: goto("/batch") },
   { name: "mill", desc: "/mill — the lean content-engine landing page", fullPage: true, prepare: goto("/mill") },
+  { name: "proof", desc: "/proof — the AI plan board trailhead (building)", fullPage: true, prepare: goto("/proof") },
+  { name: "pantry", desc: "/pantry — the installable dev-docs cockpit trailhead (building)", fullPage: true, prepare: goto("/pantry") },
   {
     name: "grain-peek", desc: "/grain — Inspect: the Catalog peek bridges usage → specimen",
     prepare: async (page) => {
