@@ -88,7 +88,7 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
       reference; runs in production across live courses) — etc. Also gets its **own picture-led
       landing page** at `/course-platform` (see PLAN.md) — screenshots + gifs, links out to the repo,
       **no docs** (the write-up lives in the repo). Asset task: capture the screenshots/gifs.
-- [ ] **People I worked with** — what they contributed, LinkedIn links (e.g. PH Live CEO Robert).
+- [ ] **People I worked with** — what they contributed, LinkedIn links (public professional info only; names go in only with each person's consent, per the no-names guardrail above).
 
 ### Captured narrative — the raw career arc (in the user's words, 2026-07-03)
 
