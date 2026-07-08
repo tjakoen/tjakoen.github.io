@@ -42,11 +42,20 @@
   <div class="rail-head"><b-icon sym="/assets/sprite.svg#spark"></b-icon><span>TJ's Desk</span></div>
   <div class="rail-body">
   <nav class="activity-bar" aria-label="Activity">
-    <!-- the explorer toggle reuses the existing rail-toggle binding (collapses/reveals the tree) —
-         the sole activity-bar icon (one view: Explorer); the app links moved to the side-rail's own
-         footer below (labeled nav-items, not an icon-only strip — see side-rail__spacer). -->
+    <!-- the explorer toggle reuses the existing rail-toggle binding (collapses/reveals the tree). -->
     <button class="activity-bar__item" type="button" data-shell="rail-toggle" aria-current="true"
             title="Explorer" aria-label="Explorer"><b-icon sym="/assets/sprite.svg#files"></b-icon></button>
+    <div class="activity-bar__spacer"></div>
+    <!-- the APP links (the non-documents) — icon-only, VS Code's bottom activity-bar group
+         (settings/account sit here, below the view icons, pinned by the spacer above). -->
+    <a class="activity-bar__item" href="/calendar" data-section="calendar" data-tab-label="Calendar"
+       title="Calendar" aria-label="Calendar"><b-icon sym="/assets/sprite.svg#traces"></b-icon></a>
+    <a class="activity-bar__item" href="/mail" data-section="mail" data-tab-label="Mail"
+       title="Mail" aria-label="Mail"><b-icon sym="/assets/sprite.svg#send"></b-icon></a>
+    <a class="activity-bar__item" href="/catalog" data-section="catalog" data-tab-label="Catalog"
+       title="Catalog" aria-label="Catalog"><b-icon sym="/assets/sprite.svg#rules"></b-icon></a>
+    <a class="activity-bar__item" href="/about" data-section="about" data-tab-label="Profile"
+       title="Profile" aria-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon></a>
   </nav>
   <div class="side-rail" data-variant="explorer">
     <!-- the tree mirrors the REAL monorepo layout 1:1 — portfolio/, batch/, grain/, mill/ sit as
@@ -106,12 +115,6 @@
         </div>
       </details>
     </nav>
-    <div class="side-rail__spacer"></div>
-    <!-- the APP links (the non-documents): icon + label, like before v3's activity-bar rework -->
-    <a class="nav-item" href="/calendar" data-section="calendar" data-tab-label="Calendar"><b-icon sym="/assets/sprite.svg#traces"></b-icon><span class="nav-item__label">Calendar</span></a>
-    <a class="nav-item" href="/mail" data-section="mail" data-tab-label="Mail"><b-icon sym="/assets/sprite.svg#send"></b-icon><span class="nav-item__label">Mail</span></a>
-    <a class="nav-item" href="/catalog" data-section="catalog" data-tab-label="Catalog"><b-icon sym="/assets/sprite.svg#rules"></b-icon><span class="nav-item__label">Catalog</span></a>
-    <a class="nav-item" href="/about" data-section="about" data-tab-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon><span class="nav-item__label">Profile</span></a>
   </div>
   </div>
 </aside>
@@ -127,7 +130,7 @@
   </nav>
   <!-- sits OUTSIDE the scrollable strip, so it's always reachable; tabs.js hides it (hidden
        attribute) whenever there's nothing closable open (pinned tabs don't count). -->
-  <button class="icon-btn" data-variant="ghost" data-shell="tabs-close-all" type="button"
+  <button class="tab-bar__close-all" data-shell="tabs-close-all" type="button"
           aria-label="Close all tabs" title="Close all tabs" hidden>
     <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#close"></use></svg>
   </button>

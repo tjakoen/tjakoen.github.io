@@ -23,7 +23,7 @@ test.describe("mobile — the assistant bottom sheet", () => {
     await expect(page.locator('[data-surface="chat-input"]')).toBeInViewport();   // the composer is reachable
   });
 
-  test("the rail rides the off-canvas drawer; its app links (in the explorer footer) are reachable", async ({ page }) => {
+  test("the rail rides the off-canvas drawer; its app links (in the activity-bar) are reachable", async ({ page }) => {
     await page.goto("/loop");
     const shell = page.locator(".app-shell");
     const activity = page.locator(".activity-bar");
@@ -33,8 +33,8 @@ test.describe("mobile — the assistant bottom sheet", () => {
     await page.locator('.app-shell__topbar [data-shell="rail-toggle"]').click();
     await expect(shell).toHaveAttribute("data-rail-open", "true");
     await expect(activity).toBeInViewport();                                   // the strip is part of the drawer
-    // a Calendar link (icon + label, side-rail's footer) is present + clickable (also dismisses the drawer)
-    await page.locator('.side-rail a[href="/calendar"]').click();
+    // a Calendar icon (the activity-bar's bottom app-link group) is present + clickable (also dismisses the drawer)
+    await page.locator('.activity-bar a[href="/calendar"]').click();
     await expect(page).toHaveURL(/\/calendar$/);
   });
 });
