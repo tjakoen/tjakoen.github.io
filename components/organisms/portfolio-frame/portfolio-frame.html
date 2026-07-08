@@ -61,8 +61,9 @@
        title="Profile" aria-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon></a>
   </nav>
   <div class="side-rail" data-variant="explorer">
-    <!-- the tree mirrors the REAL monorepo layout 1:1 — portfolio/, batch/, grain/, mill/ sit as
-         TOP-LEVEL siblings (matching the repo root), not nested under a "bread/" wrapper. -->
+    <!-- the tree mirrors the REAL monorepo layout 1:1 — portfolio/, batch/, grain/, mill/, proof/,
+         pantry/ sit as TOP-LEVEL siblings (matching the repo root), not nested under a "bread/"
+         wrapper. -->
     <nav class="file-tree" aria-label="Explorer">
       <details class="file-tree__dir">
         <summary>portfolio/</summary>
@@ -126,6 +127,18 @@
         <summary>mill/</summary>
         <div class="file-tree__children">
           <a class="file-tree__file" href="/mill" data-variant="index" data-tab-label="MILL">index.html</a>
+        </div>
+      </details>
+      <details class="file-tree__dir">
+        <summary>proof/</summary>
+        <div class="file-tree__children">
+          <a class="file-tree__file" href="/proof" data-variant="index" data-tab-label="PROOF">index.html</a>
+        </div>
+      </details>
+      <details class="file-tree__dir">
+        <summary>pantry/</summary>
+        <div class="file-tree__children">
+          <a class="file-tree__file" href="/pantry" data-variant="index" data-tab-label="PANTRY">index.html</a>
         </div>
       </details>
     </nav>

@@ -17,13 +17,16 @@ export const portfolioLlmsDoc: LlmsDoc = {
       "and return as render operations pushed over SSE. There is no privileged AI-to-DOM back channel: " +
       "the AI operates the UI the same way a person does, and you can watch it happen.",
     "Server-rendered hypermedia on Bun. No build step, no bundler, zero third-party runtime dependencies. " +
-      "The three layers build in one direction — batch → grain → mill.",
+      "Four layers build in one direction — batch → grain → mill → proof — and PANTRY is the app that " +
+      "composes them into one server (this portfolio is the other consumer of the same layers).",
   ],
   sections: [
     { heading: "The stack", links: [
-      { title: "BATCH", url: "/batch", note: "the no-build substrate — server-rendered hypermedia, no bundler, no template language" },
-      { title: "GRAIN", url: "/grain", note: "the AI-interaction design system + its default theme (Sourdough); grade-as-signal (grain = AI, clean = human)" },
-      { title: "MILL", url: "/mill", note: "Markdown → GRAIN-pages CMS — feed it .md + images, it renders GRAIN pages" },
+      { title: "BATCH", url: "/batch", note: "the no-build substrate — server-rendered hypermedia, no bundler, no template language. Live." },
+      { title: "GRAIN", url: "/grain", note: "the AI-interaction design system + its default theme (Sourdough); grade-as-signal (grain = AI, clean = human). Live." },
+      { title: "MILL", url: "/mill", note: "Markdown → GRAIN-pages CMS — feed it .md + images, it renders GRAIN pages. Live: it renders this site's notes and layer docs." },
+      { title: "PROOF", url: "/proof", note: "the AI plan board — plans are markdown files, the board is a projection of them. Building: core parser, board, and check/init tooling shipped; the live board is next." },
+      { title: "PANTRY", url: "/pantry", note: "the installable dev-docs and AI cockpit app that composes BATCH, GRAIN, MILL, and PROOF into one server. Building: v1 runs home, the board, and the framework docs; reference/catalog next." },
     ]},
     { heading: "Documentation", links: [
       { title: "Developer docs", url: "/docs", note: "start here to build with it: getting started, a hands-on tutorial, how-to guides, and the live reference" },

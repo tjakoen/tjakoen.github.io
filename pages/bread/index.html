@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The BREAD Stack · BATCH · GRAIN · MILL</title>
-  <meta name="description" content="BREAD: a no-build, server-rendered hypermedia stack in three layers: BATCH the substrate, GRAIN the AI-interaction design system, MILL the content engine. This whole site is the proof.">
+  <title>The BREAD Stack · five members, one stack</title>
+  <meta name="description" content="BREAD: a no-build, server-rendered hypermedia stack. Four layers in one direction (BATCH, GRAIN, MILL, PROOF) plus PANTRY, the app that composes them into one server. This whole site runs on it.">
 </head>
 <body data-screen="bread" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
@@ -12,22 +12,27 @@
     <main class="app-shell__main">
       <div class="board">
     <p class="eyebrow">🍞 <span class="name">BREAD</span> · The stack</p>
-    <h1 class="masthead">Three layers, one direction.</h1>
+    <h1 class="masthead">Four layers, one direction, and the app that runs them.</h1>
     <hr class="rule">
-    <p class="lede">BREAD is a <em>no-build, server-rendered hypermedia</em> stack, built in three layers that each
-      stand only on the ones below. This whole site runs on it: <em>the site is the proof</em>. Start here, then
-      open any layer from the tabs above.</p>
+    <p class="lede">BREAD is a <em>no-build, server-rendered hypermedia</em> stack, built in four layers that each
+      stand only on the ones below: <span class="name">BATCH</span>, <span class="name">GRAIN</span>,
+      <span class="name">MILL</span>, <span class="name">PROOF</span>. <span class="name">PANTRY</span> is not a
+      fifth layer in that chain: it's the app that composes all four into one running server, the same job this
+      site does. This whole site runs on the same four layers. Start here, then open any member from the
+      cards below.</p>
 
-    <div class="section-head"><span>The three layers</span></div>
+    <div class="section-head"><span>The layers</span></div>
     <div class="card-grid" style="--card-min: 16rem">
       <a class="card work-card" href="/batch">
         <div class="work-card__head"><span class="work-card__name name">🥖 BATCH</span><span class="work-card__kind">Substrate</span></div>
+        <span class="flag">Live · runs this site</span>
         <p class="card__body">The bottom layer: server-rendered hypermedia on Bun with <em>no build step</em> and
           near-zero client JavaScript. Bun runs the TypeScript directly, nothing between source and server.</p>
         <span class="work-card__go">See the substrate →</span>
       </a>
       <a class="card work-card" href="/grain">
         <div class="work-card__head"><span class="work-card__name name">🌾 GRAIN</span><span class="work-card__kind">Design system</span></div>
+        <span class="flag">Live</span>
         <p class="card__body">On top of BATCH: an AI-interaction design system where a person <em>and</em> an AI
           operate the same controls through one vocabulary, with the AI's presence shown as a visible signal
           (grain = AI).</p>
@@ -35,23 +40,51 @@
       </a>
       <a class="card work-card" href="/mill">
         <div class="work-card__head"><span class="work-card__name name">⚙ MILL</span><span class="work-card__kind">Content engine</span></div>
+        <span class="flag">Live · renders the notes and layer docs</span>
         <p class="card__body">Above both: a Markdown-to-pages engine that renders GRAIN pages from content.
           It manages this site's notes and docs, a layer above BATCH and GRAIN, an extension of neither.</p>
         <span class="work-card__go">See the engine →</span>
       </a>
+      <a class="card work-card" href="/proof">
+        <div class="work-card__head"><span class="work-card__name name">📋 PROOF</span><span class="work-card__kind">AI plan board</span></div>
+        <span class="flag">Building · core, board, and check/init shipped; live board next</span>
+        <p class="card__body">Above MILL: plans are markdown files, and PROOF's board is a projection of them,
+          never the other way round. The AI maintains the files; the board is for the human watching.</p>
+        <span class="work-card__go">See the board →</span>
+      </a>
     </div>
+
+    <div class="section-head"><span>The app that runs them</span></div>
+    <div class="card-grid" style="--card-min: 16rem">
+      <a class="card work-card" href="/pantry">
+        <div class="work-card__head"><span class="work-card__name name">🥫 PANTRY</span><span class="work-card__kind">Dev-docs cockpit</span></div>
+        <span class="flag">Building · v1 runs home, board, and framework docs; reference and catalog next</span>
+        <p class="card__body">PANTRY is an installable server that composes BATCH, GRAIN, MILL, and PROOF into one
+          project's docs and plan board. Drop it into any repo; it's the neutral, project-agnostic sibling of
+          this site.</p>
+        <span class="work-card__go">See the cockpit →</span>
+      </a>
+    </div>
+    <p class="lede">This portfolio is the other consumer of the same four layers: two composition roots, one
+      stack. PANTRY is the neutral, installable one; this site is the personal one, with its own résumé and
+      notes on top.</p>
 
     <div class="section-head"><span>One direction of dependency</span></div>
     <p class="lede">Each layer builds only on the ones beneath it: <span class="name">BATCH</span> imports nothing
       inward, <span class="name">GRAIN</span> imports nothing from BATCH but one port, <span class="name">MILL</span>
-      sits above both. That purity is what lets each become its own repo once proven.</p>
+      sits above both, and <span class="name">PROOF</span> sits above MILL. That purity is what lets each become
+      its own repo once proven.</p>
     <div class="flow" aria-hidden="true">
       <div class="flow__node">BATCH<br><small>substrate</small></div>
       <div class="flow__arrow">→</div>
       <div class="flow__node">GRAIN<br><small>design system</small></div>
       <div class="flow__arrow">→</div>
       <div class="flow__node">MILL<br><small>content engine</small></div>
+      <div class="flow__arrow">→</div>
+      <div class="flow__node">PROOF<br><small>plan board</small></div>
     </div>
+    <p class="lede">PANTRY (and this portfolio) mount all four into one running server: two composition roots,
+      one stack, honest about which parts are live and which are still building.</p>
 
     <div class="page-foot">
       Part of <a href="/">tjakoen.github.io</a>, built with itself, on the very stack it describes.

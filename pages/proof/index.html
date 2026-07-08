@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PROOF · files are the source, the board is a projection</title>
+  <meta name="description" content="PROOF: the BREAD stack's AI plan board. Plans are markdown files, the board renders what they already say. Building: the core parser, the board, and the check/init tooling are shipped; the live board is next.">
+</head>
+<body data-screen="proof" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="board">
+    <p class="eyebrow">📋 <span class="name">PROOF</span> · AI plan board</p>
+    <h1 class="masthead">Files are the source. The board just shows it.</h1>
+    <hr class="rule">
+    <p class="lede">PROOF is the stack's AI plan board: a standardized way to write an AI's development plans as
+      markdown files, and a board that renders what those files already say. <span class="name">Files are the
+      source of truth; the board is a projection of them</span>, never the other way round. Delete PROOF and the
+      plans stay readable markdown.</p>
+    <span class="flag">Building · the core parser, the board, and the check/init tooling are shipped; the live board is next</span>
+
+    <div class="section-head"><span>The idea</span></div>
+    <div class="card-grid">
+      <div class="card" data-pad="sm"><h3 class="card__title">Plans are files</h3><p class="card__body">Each plan is a markdown file with a small frontmatter (status, track, depends, owner). The AI edits them with its native tools, no new workflow.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">The board never edits</h3><p class="card__body">The machine index is derived by the parser, never hand-maintained. A hand-edited index beside the markdown would be dual bookkeeping, so PROOF refuses to let that happen.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">A small schema, on purpose</h3><p class="card__body">Six fields, no more. A heavy schema makes the AI do bookkeeping instead of work, which would undercut the whole point.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Mostly for the human</h3><p class="card__body">The honest split: most of the value is a person watching the AI's intent, not the AI going faster. The AI never reads the board itself, only the files.</p></div>
+    </div>
+
+    <div class="section-head"><span>Where it stands</span></div>
+    <p class="lede">Shipped: the core parser, the kanban-style board, and the check/init command-line tooling.
+      Not yet shipped: the live board (today's board is a snapshot, not a streaming view). The canonical design,
+      the schema, and what's next are written up in the PROOF plan that ships beside the code.</p>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">proof/PLAN.md</a><span class="docs-list__what">the canonical PROOF plan: positioning, the schema, the design law, and the build order.</span></div>
+    </div>
+
+    <div class="page-foot">
+      Part of <a href="/">tjakoen.github.io</a>. Built on <a href="/mill"><span class="name">MILL</span></a>,
+      <a href="/grain"><span class="name">GRAIN</span></a>, and <a href="/batch"><span class="name">BATCH</span></a>.
+      <p>Part of the <a href="/bread">BREAD stack</a>, alongside <a href="/batch">BATCH</a>,
+        <a href="/grain">GRAIN</a>, <a href="/mill">MILL</a>, and <a href="/pantry">PANTRY</a>.</p>
+      <p>🤖 Built with Claude. I don't prompt and pray, I prompt and prove. Every commit here is
+        co-authored with an AI, on purpose. <a href="/notes/ten-times-zero">How I actually work with AI, receipts and all →</a></p>
+    </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
