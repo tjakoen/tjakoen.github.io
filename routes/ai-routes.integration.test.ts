@@ -6,6 +6,7 @@ import { test, expect, afterAll } from "bun:test";
 import { buildAiRoutes } from "./ai-routes.ts";
 import { createStream } from "../../batch/http/stream.ts";
 import { createInteractionLayer } from "../../grain/ai/interaction-layer.ts";
+import { createStreamLogSink } from "../../grain/ai/timeline-log.ts";
 import { makeStubReasoner } from "../../grain/ai/reasoner.ts";
 import { createAccepts } from "../../grain/ai/accepts.ts";
 import { InMemoryTaskRepository } from "../demo/data/in-memory-task-repository.ts";
@@ -31,6 +32,7 @@ function makeServer() {
     reasoner, stream,
     archiveItem: (id) => service.archiveTask(id).then(() => undefined),
     renderSurface,
+    logSink: createStreamLogSink(stream),
   });
   const accepts = createAccepts(["./grain/components", "./tjakoen.github.io/components"]);
   const server = Bun.serve({ port: 0, routes: buildAiRoutes(service, stream, layer, accepts) });
@@ -119,7 +121,7 @@ test("POST /intent (chat.send) streams your message + the desk's grain reply ove
   expect(ops.some((o) => o.op === "type")).toBe(true);                                          // the reply streamed in
 });
 
-test("POST /intent (demo.run, screen:notes) travels the notes surfaces, writes the desk-note digest, releases", async () => {
+test("POST /intent (demo.run, screen:notes) travels the notes surfaces, writes the notes-digest, releases", async () => {
   const { server, base } = makeServer();
   toStop = server;
   const stream = await fetch(`${base}/stream?session=s1`);
@@ -130,11 +132,27 @@ test("POST /intent (demo.run, screen:notes) travels the notes surfaces, writes t
     o.some((x: any) => x.op === "spotlight" && x.target === "screen" && x.active === false));
   const targets = new Set(ops.map((o) => o.target));
   expect(targets.has("note:feels-like-an-app")).toBe(true);       // travelled the real note surfaces
-  expect(targets.has("desk-note")).toBe(true);                    // wrote the digest
-  expect(ops.some((o) => o.op === "type" && o.target === "desk-note")).toBe(true);
+  expect(targets.has("notes-digest")).toBe(true);                 // wrote the digest
+  expect(ops.some((o) => o.op === "type" && o.target === "notes-digest")).toBe(true);
   const spots = ops.filter((o) => o.op === "spotlight");
   expect(spots.at(-1)?.target).toBe("screen");
   expect(spots.at(-1)?.active).toBe(false);                       // released on natural completion
+});
+
+test("POST /intent records the crossing to the interaction timeline: log ops arrive over /stream", async () => {
+  const { server, base } = makeServer();
+  toStop = server;
+  const stream = await fetch(`${base}/stream?session=s1`);
+  const res = await post(base, { source: "user", session: "s1", screen: "loop", surface: "item:ITM-1", action: "item.archive", payload: {} });
+  expect(res.status).toBe(202);
+
+  const ops = await readOps(stream, (o) => o.filter((x) => x.op === "log").length >= 2);
+  const logs = ops.filter((o) => o.op === "log");
+  expect(logs.length).toBeGreaterThanOrEqual(2);                          // request + response, one door, one format
+  expect(logs.every((o) => o.target === "timeline")).toBe(true);
+  expect(logs.some((o) => o.provenance === "user")).toBe(true);          // the human's request
+  expect(logs.some((o) => o.provenance === "ai")).toBe(true);            // the AI's response
+  expect(logs.every((o) => typeof o.html === "string")).toBe(true);
 });
 
 test("GET /ai/manifest reflects the harvested vocabulary (reflection + item.archive)", async () => {

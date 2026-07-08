@@ -30,6 +30,8 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
    with a reusable prompt to run in any repo.
 6. [`CONTENT-BACKLOG.md`](CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
 7. [`PLAN.md`](PLAN.md) + [`FEATURES.md`](FEATURES.md): the site's *how* and *what*.
+8. [`HACKING.md`](HACKING.md): the route → source map + "which file do I open to change X" — the
+   fast path for a *small* edit (human or AI) without cold-reading `server.ts`.
 
 Whole-repo doc map: [`../DOCS.md`](../DOCS.md).
 
