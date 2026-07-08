@@ -2,7 +2,7 @@
 
 Plan for turning `/notes` into the editor's most honest screen. Owner-picked ideas 1, 2, 6 from the
 `/notes`-vibe brainstorm (2026-07-07). Canonical for this work; tick items here and sync the rows in
-[`../CLAUDE.md`](../CLAUDE.md) "when you change X, update Y" as each lands. Related: THE EDITOR
+[`../../CLAUDE.md`](../../CLAUDE.md) "when you change X, update Y" as each lands. Related: THE EDITOR
 (`PLAN.md` §THE EDITOR), `DEMO-PLAN.md` item 1 (this page is that run's home).
 
 **Status (2026-07-07): all three BUILT** — `tsc` + unit + integration + e2e green. Idea 6's write
@@ -176,3 +176,14 @@ edit `content.ts`/`reasoner.ts`/the surfaces at once. Owner to confirm ownership
 left. Item 2 (actionable chat dialogs) is NOT built — it needs its own design pass (a `chat-message`
 extension + a contract decision on verb reuse vs. a registry) and is out of scope for this pass; the
 notes trigger stays a plain on-page button until it lands.
+
+**Item 2 BUILT (other session, 2026-07-07, commit 57e8c76):** actionable chat dialogs shipped as a
+GRAIN capability — a `chat-message` can carry a `chat-message__actions` row of `b-button`s
+(`data-action`/`data-target`, presence-gated with `data-ai-run`) that fire through the one door; the
+dispatcher (`ai-dispatch.js`) now fires action controls inside the chat aside (only *plain* chat
+clicks stay non-interrupts; mid-run page clicks still interrupt). Grade doctrine handled (offer text
+grain, buttons clean+operable online, gated offline). Docs: AI-INTERFACE §5e + chat-message.md. NO
+new `ActionName` — verbs reuse the existing vocabulary and walk the normal alignment row. **So the
+notes digest's follow-ups can now be real buttons:** put a `chat-message__actions` row on the digest
+bubble with e.g. "add to my notes" / "see what's new" instead of the plain on-page trigger — each
+needs its verb in `contract.ts` + a reasoner branch (that part is still the notes session's to build).
