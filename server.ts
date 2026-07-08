@@ -18,6 +18,7 @@ import { makeStubReasoner } from "../grain/ai/reasoner.ts";
 import { createInteractionLayer } from "../grain/ai/interaction-layer.ts";
 import { createStreamLogSink } from "../grain/ai/timeline-log.ts";
 import { surfaceId, ACTIONS, type Surface } from "../grain/ai/contract.ts";
+import { buildVocabReference } from "../grain/ai/vocab-reference.ts";
 // --- portfolio (THE app) + its /loop demo domain ---
 import { InMemoryTaskRepository } from "./demo/data/in-memory-task-repository.ts";
 import { TaskService } from "./demo/services/task-service.ts";
@@ -81,7 +82,7 @@ const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-c
 // its allowlist from the same lists). Content routes are computed at boot; authoring a note = a
 // restart/redeploy anyway (the export freezes per deploy).
 const contentRoutes = await listPortfolioContentRoutes();
-const sitemap = createSitemap(config.pagesDir, () => contentRoutes);   // pages tree + MILL content
+const sitemap = createSitemap(config.pagesDir, () => [...contentRoutes, "/reference"]);   // pages tree + MILL content + the generated reference
 // the catalog builds its own shell, so it receives the SAME global assets — otherwise it's the
 // one page that ignores the saved theme (the bug this seam fixed)
 const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
@@ -182,6 +183,38 @@ Bun.serve({
       new Response(await styles.css(), { headers: { "Content-Type": "text/css" } }),
     "/catalog": async () =>
       new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } }),
+    // /reference — the GENERATED developer-docs reference (DEV-DOCS.md step 5): the AI vocabulary
+    // + token slots read from the real registries (grain/ai/vocab-reference.ts), never hand-copied.
+    "/reference": async () => {
+      const body = await buildVocabReference("grain/styles/variables.css");
+      const page = `<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reference · Developer docs</title>
+  <meta name="description" content="Generated reference: the AI vocabulary (actions, surface kinds, render ops), the one door's endpoints, and GRAIN's token slots — read from the real source, never hand-copied.">
+  ${PAGE_HEAD}
+</head>
+<body data-screen="reference" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="board">
+        <p class="eyebrow">📚 <span class="name">Reference</span></p>
+        <h1 class="masthead">Generated, not hand-copied.</h1>
+        <hr class="rule">
+        <p class="lede">Everything below is read from the real source at request time — the
+          <a href="/grain/docs/ai-interface">AI vocabulary</a> contract and GRAIN's token slots.
+          Change the source, this page changes with it.</p>
+        ${body}
+      </div>
+    </main>
+  </div>
+${PAGE_ASSETS}</body>
+</html>`;
+      return new Response(await renderAppPage(page), { headers: { "Content-Type": "text/html; charset=utf-8" } });
+    },
     "/search.json": async () => {
       const titleOf = (p: string) => { const s = p === "/" ? "home" : p.replace(/^\//, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
       // the sitemap lists routes alphabetically; substitute the notes/ block for the SAME

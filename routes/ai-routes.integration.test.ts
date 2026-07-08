@@ -121,7 +121,7 @@ test("POST /intent (chat.send) streams your message + the desk's grain reply ove
   expect(ops.some((o) => o.op === "type")).toBe(true);                                          // the reply streamed in
 });
 
-test("POST /intent (demo.run, screen:notes) travels the notes surfaces, writes the desk-note digest, releases", async () => {
+test("POST /intent (demo.run, screen:notes) travels the notes surfaces, writes the notes-digest, releases", async () => {
   const { server, base } = makeServer();
   toStop = server;
   const stream = await fetch(`${base}/stream?session=s1`);
@@ -132,8 +132,8 @@ test("POST /intent (demo.run, screen:notes) travels the notes surfaces, writes t
     o.some((x: any) => x.op === "spotlight" && x.target === "screen" && x.active === false));
   const targets = new Set(ops.map((o) => o.target));
   expect(targets.has("note:feels-like-an-app")).toBe(true);       // travelled the real note surfaces
-  expect(targets.has("desk-note")).toBe(true);                    // wrote the digest
-  expect(ops.some((o) => o.op === "type" && o.target === "desk-note")).toBe(true);
+  expect(targets.has("notes-digest")).toBe(true);                 // wrote the digest
+  expect(ops.some((o) => o.op === "type" && o.target === "notes-digest")).toBe(true);
   const spots = ops.filter((o) => o.op === "spotlight");
   expect(spots.at(-1)?.target).toBe("screen");
   expect(spots.at(-1)?.active).toBe(false);                       // released on natural completion

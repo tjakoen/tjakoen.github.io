@@ -55,12 +55,13 @@ async function waitForServer(timeoutMs = 15000) {
 
 // The exportable allowlist: every page route the app serves (the portfolio's one pages tree —
 // "/", "/grain", "/batch", "/mill", /loop, /about) + MILL's content routes (/notes, /grain/docs,
-// /batch/docs — content pages MUST export, §18) + /catalog, minus the operable surfaces. Derived
-// from the same route lists the server's sitemap uses, so new pages/notes export automatically.
+// /batch/docs — content pages MUST export, §18) + /catalog + /reference, minus the operable
+// surfaces. Derived from the same route lists the server's sitemap uses, so new pages/notes
+// export automatically.
 async function pageRoutes(): Promise<string[]> {
   const pages = createSitemap(config.pagesDir).routes();
   const content = await listPortfolioContentRoutes();                    // MILL collections, enumerated
-  const all = new Set([...pages, ...content, "/catalog"]);
+  const all = new Set([...pages, ...content, "/catalog", "/reference"]);
   return [...all].filter((r) => !OPERABLE.has(r)).sort();
 }
 
