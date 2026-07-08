@@ -3,7 +3,7 @@
 // content-agnostic. It is a PROJECTION of DOCS.md + the README — a trailhead an AI crawler reads to
 // learn what this stack is and where the canonical docs live — never a fork of them. When the doc map
 // or the layer/route structure changes, re-sync this list (see CLAUDE.md's "change X → update Y").
-import type { LlmsDoc } from "../batch/http/llms.ts";
+import type { LlmsDoc } from "@tjakoen/batch/http/llms.ts";
 
 // Links use relative "/route" paths — batch/http/llms absolutizes them against the request origin,
 // and the export's origin-rewrite swaps in the deploy URL (same path robots.txt/sitemap.xml take).

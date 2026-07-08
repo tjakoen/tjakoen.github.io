@@ -2,23 +2,23 @@
 import { join, normalize, resolve, sep } from "path";
 import { config } from "./config.ts";
 // --- BATCH (substrate) ---
-import { bunRuntime } from "../batch/platform/bun-runtime.ts";
-import { watchComponents } from "../batch/platform/watch.ts";
-import { makeStatic } from "../batch/http/static.ts";
-import { makePageServer } from "../batch/http/pages.ts";
-import { createSitemap } from "../batch/http/sitemap.ts";
-import { renderLlms } from "../batch/http/llms.ts";
-import { createStyleBundle } from "../batch/assets/style-bundle.ts";
-import { createStream } from "../batch/http/stream.ts";
-import { makeModuleServer } from "../batch/http/modules.ts";
+import { bunRuntime } from "@tjakoen/batch/platform/bun-runtime.ts";
+import { watchComponents } from "@tjakoen/batch/platform/watch.ts";
+import { makeStatic } from "@tjakoen/batch/http/static.ts";
+import { makePageServer } from "@tjakoen/batch/http/pages.ts";
+import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
+import { renderLlms } from "@tjakoen/batch/http/llms.ts";
+import { createStyleBundle } from "@tjakoen/batch/assets/style-bundle.ts";
+import { createStream } from "@tjakoen/batch/http/stream.ts";
+import { makeModuleServer } from "@tjakoen/batch/http/modules.ts";
 // --- GRAIN (AI design system) ---
-import { createCatalog } from "../grain/catalog/catalog.ts";   // grain's self-documenting catalog (grade toggle = grain vocabulary)
-import { createAccepts } from "../grain/ai/accepts.ts";
-import { makeStubReasoner } from "../grain/ai/reasoner.ts";
-import { createInteractionLayer } from "../grain/ai/interaction-layer.ts";
-import { createStreamLogSink } from "../grain/ai/timeline-log.ts";
-import { surfaceId, ACTIONS, type Surface } from "../grain/ai/contract.ts";
-import { buildVocabReference } from "../grain/ai/vocab-reference.ts";
+import { createCatalog } from "@tjakoen/grain/catalog/catalog.ts";   // grain's self-documenting catalog (grade toggle = grain vocabulary)
+import { createAccepts } from "@tjakoen/grain/ai/accepts.ts";
+import { makeStubReasoner } from "@tjakoen/grain/ai/reasoner.ts";
+import { createInteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
+import { createStreamLogSink } from "@tjakoen/grain/ai/timeline-log.ts";
+import { surfaceId, ACTIONS, type Surface } from "@tjakoen/grain/ai/contract.ts";
+import { buildVocabReference } from "@tjakoen/grain/ai/vocab-reference.ts";
 // --- portfolio (THE app) + its /loop demo domain ---
 import { InMemoryTaskRepository } from "./demo/data/in-memory-task-repository.ts";
 import { TaskService } from "./demo/services/task-service.ts";
@@ -109,10 +109,12 @@ for (const n of accepts.actions())
 // the default (rendered by the bare :root, so it has no block, and is exempt).
 async function checkThemingDrift(): Promise<void> {
   try {
-    // flavors are DEFINED in variables.css :root + the themes/ reference files (@imported there)
-    let css = await Bun.file("grain/styles/variables.css").text();
-    for await (const rel of new Bun.Glob("*.css").scan("grain/styles/themes"))
-      css += "\n" + await Bun.file(join("grain/styles/themes", rel)).text();
+    // flavors are DEFINED in variables.css :root + the themes/ reference files (@imported there).
+    // Read from GRAIN's package dir (config.grainDir), not a cwd path, so this survives the split.
+    const stylesDir = join(config.grainDir, "styles");
+    let css = await Bun.file(join(stylesDir, "variables.css")).text();
+    for await (const rel of new Bun.Glob("*.css").scan(join(stylesDir, "themes")))
+      css += "\n" + await Bun.file(join(stylesDir, "themes", rel)).text();
     const defined = new Set([...css.matchAll(/\[data-theme="([^"]+)"\]/g)].map((m) => m[1]));
     const referenced = new Set<string>(), defaults = new Set<string>();
     for (const root of [config.pagesDir, ...config.componentRoots]) {
@@ -186,7 +188,7 @@ Bun.serve({
     // /reference — the GENERATED developer-docs reference (DEV-DOCS.md step 5): the AI vocabulary
     // + token slots read from the real registries (grain/ai/vocab-reference.ts), never hand-copied.
     "/reference": async () => {
-      const body = await buildVocabReference("grain/styles/variables.css");
+      const body = await buildVocabReference(join(config.grainDir, "styles", "variables.css"));
       const page = `<!DOCTYPE html>
 <html lang="en" data-themes="sourdough baguette brioche">
 <head>
