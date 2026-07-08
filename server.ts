@@ -16,6 +16,7 @@ import { createCatalog } from "../grain/catalog/catalog.ts";   // grain's self-d
 import { createAccepts } from "../grain/ai/accepts.ts";
 import { makeStubReasoner } from "../grain/ai/reasoner.ts";
 import { createInteractionLayer } from "../grain/ai/interaction-layer.ts";
+import { createStreamLogSink } from "../grain/ai/timeline-log.ts";
 import { surfaceId, ACTIONS, type Surface } from "../grain/ai/contract.ts";
 // --- portfolio (THE app) + its /loop demo domain ---
 import { InMemoryTaskRepository } from "./demo/data/in-memory-task-repository.ts";
@@ -147,6 +148,7 @@ const aiLayer = createInteractionLayer({
   reasoner, stream,
   archiveItem: (id) => service.archiveTask(id).then(() => undefined),
   renderSurface,
+  logSink: createStreamLogSink(stream),   // record every door crossing to the interaction timeline (§5g)
 });
 
 // hot reload: watch every component root + the GRAIN mechanism stylesheet; pages refresh sitemap+catalog
