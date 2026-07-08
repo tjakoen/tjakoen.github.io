@@ -132,9 +132,15 @@ above is what it should produce. If not, write the prompt by hand to that shape.
 ## 6. Model economy (be smart about which brain runs)
 
 Bigger models cost more and are slower; smaller ones are cheaper and faster. Match the model to the
-*kind* of thinking the task needs, not to every task uniformly. The main thread can't silently swap
-models mid-task, so this is partly a human lever — the standard is that **the AI names when a switch
-would pay off** and the human flips it.
+*kind* of thinking the task needs, not to every task uniformly.
+
+**The default posture: plan and orchestrate in Opus, execute and delegate to Sonnet subagents wherever possible.** Reason with
+the top tier while the shape is still uncertain (planning, architecture, hard debugging); once the
+plan is approved and the rest is grind, drop to the mid tier; push wide reads out to a small-tier
+subagent. Stay on the big model only for the parts that are actually still *thinking*. The main
+thread can't silently swap models mid-task, so this is partly a human lever — the standard is that
+**the AI names when a switch would pay off** and the human flips it (or `/model opusplan` automates
+the plan→execute half).
 
 **Rule of thumb:**
 

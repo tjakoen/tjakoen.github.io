@@ -106,10 +106,11 @@ premise. That's the whole value of a second reader.
   AI co-author trailers or attribution unless explicitly wanted.
 - **Conventional-ish commits.** `type: imperative summary`. Body only when the *why*
   isn't obvious from the diff.
-- **Match the model to the task.** Reason with the strongest model (planning, architecture,
-  hard debugging); execute an approved plan on a mid model; hand wide reads to a small-model
-  subagent. The full rule of thumb and how to actually capture the savings is
-  **[`SESSION-LOOP.md`](SESSION-LOOP.md) §6**.
+- **Match the model to the task — plan and orchestrate in Opus, execute and delegate to Sonnet subagents where possible.**
+  Reason with the strongest model (planning, architecture, hard debugging); once the plan's approved,
+  execute on the mid tier; hand wide reads to a small-model subagent. The default is to drop off the
+  big model as soon as the work stops being *thinking*. The full rule of thumb and how to actually
+  capture the savings is **[`SESSION-LOOP.md`](SESSION-LOOP.md) §6**.
 
 ### Reusable prompt: index the codebase for the AI
 
