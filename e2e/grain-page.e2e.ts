@@ -157,6 +157,25 @@ test.describe("/grain — the surface is operable by both a person and the AI, t
     await expect(s.locator('[data-chat-log] .chat-message[data-role="ai"]').last()).toHaveAttribute("data-grade", "grain");
   });
 
+  test("the interaction timeline records BOTH halves of a crossing (§5g) — human request + AI response, graded", async ({ page }) => {
+    await page.goto("/grain");
+    const feed = page.locator('[data-surface="timeline"]');
+    await expect(feed.locator(".timeline__entry")).toHaveCount(0);   // empty at rest (only the placeholder)
+
+    const s = page.locator("[data-surface-demo]");
+    await s.locator(".surface__compose .field__input").fill("Book focus time");
+    await s.locator(".surface__compose .btn").click();
+
+    // the door logs the incoming request (user) AND the outgoing decision (ai) — one format, both operators
+    await expect(feed.locator('.timeline__entry[data-provenance="user"][data-kind="intent"]')).toHaveCount(1);
+    await expect(feed.locator('.timeline__entry[data-provenance="ai"][data-kind="response"]')).toHaveCount(1);
+    await expect(feed.locator('.timeline__entry[data-provenance="user"]')).toContainText("chat.send");
+    // grade-as-signal IN the log: the AI row renders in the grain face (the visible client effect a unit test can't see)
+    const aiFont = await feed.locator('.timeline__entry[data-provenance="ai"]').first()
+      .evaluate((el) => getComputedStyle(el).fontFamily);
+    expect(aiFont).toContain("Redaction 50");
+  });
+
   test("AI: 'Watch the AI act' drives the surface through the door (grain reply, completes + drafts a task)", async ({ page }) => {
     await page.goto("/grain");
     const s = page.locator("[data-surface-demo]");

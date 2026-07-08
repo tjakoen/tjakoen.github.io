@@ -394,7 +394,7 @@ where they differ:
 - **Catalog⇄Chat sidebar modes are SITEWIDE** (the /grain-only gating removed).
 
 **Backlog (owner ideas 2026-07-05 — captured, not built). CANONICAL expansion + build order:
-[`DEMO-PLAN.md`](DEMO-PLAN.md) (handoff doc — includes the prompt→GRAIN generator and the
+[`DEMO-PLAN.md`](plans/done/DEMO-PLAN.md) (handoff doc — includes the prompt→GRAIN generator and the
 theme builder; this list stays the one-line index):**
 1. **/grain demo = the whole interface** (not a demo-box island): default prompt "See what TJ has
    been up to" → the AI travels the real pages (lamp), reads the latest notes, then **writes a

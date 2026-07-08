@@ -8,8 +8,12 @@ Tjakoen's personal site (`tjakoen.github.io`) — a **custom BATCH + GRAIN app**
 strongest possible proof the stack works: AI-first design, served as plain static files, with a
 lightweight AI demo that runs entirely in the visitor's browser.
 
-> **Status: mostly planned.** The `/grain` showcase v1 is built ([pages/grain/](pages/grain/)); the
-> rest is planned. Deployed free + zero-ops to GitHub Pages via `batch/export` + GitHub Actions.
+> **Status: live and running.** THE EDITOR shell (the whole site as one VS-Code-style window),
+> the `/grain` and `/batch` showcases, the `/loop` "watch the AI act" demo, the `/catalog`, and the
+> notes + rendered layer docs (through MILL) are all built and served today by [`server.ts`](server.ts).
+> Still planned: the productivity views (calendar, contacts) and the zero-ops GitHub Pages deploy
+> (`batch/export` + a GitHub Actions workflow). New here and want to make a small edit? →
+> **[HACKING.md](HACKING.md)** (route → source map + "which file do I open").
 
 ## What it is (and isn't)
 

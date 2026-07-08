@@ -28,6 +28,7 @@
     <button type="button" data-shell="aside-toggle" title="Toggle the assistant panel">◫</button>
 <button type="button" data-shell="console-toggle" title="Expand or collapse the terminal">▭</button>
     <button type="button" data-xray-toggle title="X-ray — see the page as the AI sees it">⊹</button>
+    <button type="button" data-shell="viewport-toggle" title="Preview width: desktop / tablet / mobile">⬚ <span data-viewport-name>desktop</span></button>
   </span>
 </header>
 
@@ -54,6 +55,8 @@
        title="Mail" aria-label="Mail"><b-icon sym="/assets/sprite.svg#send"></b-icon></a>
     <a class="activity-bar__item" href="/catalog" data-section="catalog" data-tab-label="Catalog"
        title="Catalog" aria-label="Catalog"><b-icon sym="/assets/sprite.svg#rules"></b-icon></a>
+    <a class="activity-bar__item" href="/reference" data-section="reference" data-tab-label="Reference"
+       title="Reference" aria-label="Reference"><b-icon sym="/assets/sprite.svg#rules"></b-icon></a>
     <a class="activity-bar__item" href="/about" data-section="about" data-tab-label="Profile"
        title="Profile" aria-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon></a>
   </nav>
@@ -66,6 +69,7 @@
         <div class="file-tree__children">
           <a class="file-tree__file" href="/" data-variant="index" data-tab-label="Welcome">index.html</a>
           <a class="file-tree__file" href="/bread" data-tab-label="BREAD">bread.html</a>
+          <a class="file-tree__file" href="/docs" data-tab-label="Docs">docs.html</a>
           <details class="file-tree__dir">
             <summary>notes/</summary>
             <div class="file-tree__children">
@@ -88,8 +92,12 @@
           <details class="file-tree__dir">
             <summary><a href="/batch/docs">docs/</a></summary>
             <div class="file-tree__children">
+              <a class="file-tree__file" href="/batch/docs/getting-started">GETTING-STARTED.md</a>
               <a class="file-tree__file" href="/batch/docs/architecture">ARCHITECTURE.md</a>
               <a class="file-tree__file" href="/batch/docs/conventions">CONVENTIONS.md</a>
+              <a class="file-tree__file" href="/batch/docs/add-a-route">ADD-A-ROUTE.md</a>
+              <a class="file-tree__file" href="/batch/docs/static-export-and-deploy">STATIC-EXPORT-AND-DEPLOY.md</a>
+              <a class="file-tree__file" href="/batch/docs/consume-as-git-deps">CONSUME-AS-GIT-DEPS.md</a>
             </div>
           </details>
         </div>
@@ -101,9 +109,15 @@
           <details class="file-tree__dir">
             <summary><a href="/grain/docs">docs/</a></summary>
             <div class="file-tree__children">
+              <a class="file-tree__file" href="/grain/docs/getting-started">GETTING-STARTED.md</a>
+              <a class="file-tree__file" href="/grain/docs/tutorial">TUTORIAL.md</a>
               <a class="file-tree__file" href="/grain/docs/grain">GRAIN.md</a>
               <a class="file-tree__file" href="/grain/docs/ai-interface">AI-INTERFACE.md</a>
               <a class="file-tree__file" href="/grain/docs/design-system">DESIGN-SYSTEM.md</a>
+              <a class="file-tree__file" href="/grain/docs/add-a-component">ADD-A-COMPONENT.md</a>
+              <a class="file-tree__file" href="/grain/docs/make-a-surface-operable">MAKE-A-SURFACE-OPERABLE.md</a>
+              <a class="file-tree__file" href="/grain/docs/add-a-render-op-kind">ADD-A-RENDER-OP-KIND.md</a>
+              <a class="file-tree__file" href="/grain/docs/re-skin-via-tokens">RE-SKIN-VIA-TOKENS.md</a>
             </div>
           </details>
         </div>

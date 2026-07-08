@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Developer docs · BREAD</title>
+  <meta name="description" content="Learn to build with BREAD: getting started with BATCH and GRAIN, a hands-on tutorial building an operable surface, how-to guides for common tasks, the component catalog, and the AI vocabulary contract.">
+</head>
+<body data-screen="docs" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="board">
+    <p class="eyebrow">📚 <span class="name">Developer docs</span></p>
+    <h1 class="masthead">Learn to build with it.</h1>
+    <hr class="rule">
+    <p class="lede">The <a href="/bread">BREAD stack</a> docs mostly explain <em>why</em> it's built this
+      way. This page is the other half: where to start if you want to <em>build</em> something with it —
+      getting started, a hands-on tutorial, how-to guides for common tasks, the live reference, and
+      where to look if you want to contribute.</p>
+
+    <div class="section-head"><span>Getting started</span></div>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/getting-started">BATCH: getting started</a><span class="docs-list__what">install, run, what you get out of the box — the substrate.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/getting-started">GRAIN: getting started</a><span class="docs-list__what">install, the two layers (design system vs. the AI door), the markup conventions.</span></div>
+    </div>
+
+    <div class="section-head"><span>Tutorial</span></div>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/tutorial">Build your first operable surface</a><span class="docs-list__what">a real, running example (item.archive on /loop) — the five pieces, in build order, ending with a checklist for adding your own verb.</span></div>
+    </div>
+
+    <div class="section-head"><span>How-to guides</span></div>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/add-a-route">Add a route</a><span class="docs-list__what">a hand-authored page vs. a generated/API route.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/add-a-component">Add a component</a><span class="docs-list__what">the checklist: template, styles, catalog doc, when it needs its own AI panel.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/make-a-surface-operable">Make a surface operable</a><span class="docs-list__what">the bare checklist — contract, markup, reasoner branch, tests, docs.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/add-a-render-op-kind">Add a RenderOp kind</a><span class="docs-list__what">a new effect the dispatcher can apply — contract + ai-dispatch.js + tests.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/re-skin-via-tokens">Re-skin via tokens</a><span class="docs-list__what">override the token slots — never edit a component's CSS to re-theme.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/consume-as-git-deps">Consume as a dependency</a><span class="docs-list__what">the intended post-split shape — a Bun git dependency, no registry.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/static-export-and-deploy">Static export + deploy</a><span class="docs-list__what">freeze the running server to dist/ — what's built today, what's still planned.</span></div>
+    </div>
+
+    <div class="section-head"><span>Reference</span></div>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="/reference">Generated reference</a><span class="docs-list__what">actions, surface kinds, render ops, the door's endpoints, and every token slot — read from the real source at request time, never hand-copied.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/catalog">Component catalog</a><span class="docs-list__what">every GRAIN component, self-documenting, with a Human/AI grade toggle.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/grain/docs/ai-interface">AI-INTERFACE.md</a><span class="docs-list__what">the full contract in prose — the intent envelope, the manifest, the AI-acts protocol.</span></div>
+    </div>
+
+    <div class="section-head"><span>Contribute</span></div>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">CLAUDE.md</a><span class="docs-list__what">the operating rules for anyone (AI or human) working in this repo.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">HACKING.md</a><span class="docs-list__what">the route → source map — "which file do I open to change X".</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/batch/docs/conventions">CONVENTIONS.md</a><span class="docs-list__what">the build standard — layering, components, tokens, the 3-tier testing bar.</span></div>
+    </div>
+
+    <div class="page-foot">
+      Part of <a href="/">tjakoen.github.io</a>, built with itself, on the very stack it describes.
+      <p>🤖 Built with Claude. I don't prompt and pray, I prompt and prove. Every commit here is
+        co-authored with an AI, on purpose. <a href="/notes/ten-times-zero">How I actually work with AI, receipts and all →</a></p>
+    </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
