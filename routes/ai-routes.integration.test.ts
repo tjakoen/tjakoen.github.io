@@ -4,16 +4,17 @@
 // asserts the resulting RenderOps actually arrive over SSE. No browser; many real modules.
 import { test, expect, afterAll } from "bun:test";
 import { buildAiRoutes } from "./ai-routes.ts";
-import { createStream } from "../../batch/http/stream.ts";
-import { createInteractionLayer } from "../../grain/ai/interaction-layer.ts";
-import { createStreamLogSink } from "../../grain/ai/timeline-log.ts";
-import { makeStubReasoner } from "../../grain/ai/reasoner.ts";
-import { createAccepts } from "../../grain/ai/accepts.ts";
+import { config } from "../config.ts";
+import { createStream } from "@tjakoen/batch/http/stream.ts";
+import { createInteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
+import { createStreamLogSink } from "@tjakoen/grain/ai/timeline-log.ts";
+import { makeStubReasoner } from "@tjakoen/grain/ai/reasoner.ts";
+import { createAccepts } from "@tjakoen/grain/ai/accepts.ts";
 import { InMemoryTaskRepository } from "../demo/data/in-memory-task-repository.ts";
 import { TaskService } from "../demo/services/task-service.ts";
 import { LoopCard } from "../demo/view/components.ts";
 import { toLoopCardView } from "../demo/services/task-views.ts";
-import { surfaceId, type Surface } from "../../grain/ai/contract.ts";
+import { surfaceId, type Surface } from "@tjakoen/grain/ai/contract.ts";
 import type { Task } from "../demo/domain/task.ts";
 
 function makeServer() {
@@ -34,7 +35,7 @@ function makeServer() {
     renderSurface,
     logSink: createStreamLogSink(stream),
   });
-  const accepts = createAccepts(["./grain/components", "./tjakoen.github.io/components"]);
+  const accepts = createAccepts(config.componentRoots);
   const server = Bun.serve({ port: 0, routes: buildAiRoutes(service, stream, layer, accepts) });
   return { server, service, base: `http://localhost:${server.port}` };
 }

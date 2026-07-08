@@ -1,6 +1,6 @@
 // portfolio/demo/services/task-views.ts — view models live with the app layer
 import type { Task } from "../domain/task.ts";
-import { surface, type ActionName, type Surface } from "../../../grain/ai/contract.ts";
+import { surface, type ActionName, type Surface } from "@tjakoen/grain/ai/contract.ts";
 
 // View for the AI-loop demo card (docs/AI-INTERFACE.md §7). Carries its SURFACE
 // address and an action verb; `commit` is always "committed" server-side — the

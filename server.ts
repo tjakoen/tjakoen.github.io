@@ -158,7 +158,7 @@ const aiLayer = createInteractionLayer({
 if (config.hotReload) {
   for (const root of config.componentRoots)
     watchComponents(root, () => { refresh(); styles.refresh(); catalog.refresh(); accepts.refresh(); });
-  watchComponents("./grain/ai", () => { styles.refresh(); modules.refresh(); });   // ai.css (bundled) + client modules
+  watchComponents(join(config.grainDir, "ai"), () => { styles.refresh(); modules.refresh(); });   // ai.css (bundled) + client modules
 
   watchComponents(config.pagesDir, () => { sitemap.refresh(); catalog.refresh(); });
 }
