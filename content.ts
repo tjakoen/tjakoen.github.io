@@ -14,7 +14,7 @@
 // the injected renderPage composes that tag — and any escape-hatch <b-…> tags an author
 // wrote in the Markdown — at request time.
 import {
-  createMillRoutes, dirSource, listMillRoutes, listMillRawRoutes, packageDocsSource,
+  createMillRoutes, dirSource, listMillRoutes, listMillRawRoutes,
   type MillCollection, type MillRequestHandler, type PageChrome,
 } from "@tjakoen/mill/serve.ts";
 import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
@@ -124,13 +124,14 @@ const collections: MillCollection[] = [
     adapter: { resolveLink: docsLink("/batch/docs") },
   },
   {
-    // The canonical published home of the cross-repo standards (SPLIT-PLAN § "standards/ is
-    // referenced by every repo, never copied"): every repo's CLAUDE.md points at
-    // https://tjakoen.github.io/standards, and THIS collection is what makes that URL real.
+    // The canonical home of the cross-repo standards. Since 2026-07-09 the standards source lives
+    // HERE (standards/), the same option-b move used for the layer docs: every repo's CLAUDE.md
+    // points at https://tjakoen.github.io/standards, and THIS collection is what makes that URL real.
+    // PANTRY resolves the same files out of this repo's package (./standards/* export).
     prefix: "/standards",
     title: "Standards",
-    description: "The cross-repo standards — how I build with an AI, how anything under my byline reads, and how a repo is set up. Rendered from the installed package — never copied.",
-    source: packageDocsSource("@tjakoen/standards/README.md"),
+    description: "The cross-repo standards — how I build with an AI, how anything under my byline reads, and how a repo is set up. Canonically homed here and rendered through MILL.",
+    source: dirSource(join(import.meta.dir, "standards")),
     adapter: { resolveLink: docsLink("/standards") },
   },
 ];

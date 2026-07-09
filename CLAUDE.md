@@ -1,10 +1,11 @@
 # CLAUDE.md — portfolio
 
 Onboarding + operating rules for anyone (AI or human) working in `tjakoen.github.io/`: the personal site
-(tjakoen.github.io), the home of all published content and the notes, and the *rendered* home of the
-personal standards (`/standards`, served from the installed `@tjakoen/standards` package — the source
-lives in the `tjakoen/standards` repo, referenced, never forked). Read this first. This is where most
-content work happens, so before writing anything in Tjakoen's name, read the standards below.
+(tjakoen.github.io), the home of all published content and the notes, and the canonical home of the
+personal standards (`/standards`, rendered through MILL from this repo's own `standards/` dir — since
+the 2026-07-09 fold-in, the same option-b move used for the layer docs; PANTRY resolves the same files
+out of this repo's package). Read this first. This is where most content work happens, so before
+writing anything in Tjakoen's name, read the standards below.
 
 > This file follows the `CLAUDE.starter.md` template from the published standards index
 > <https://tjakoen.github.io/standards>. The personal voice/badge standards it points to
@@ -30,7 +31,7 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
    `notes/*.md`.
 5. [README-STANDARD](https://tjakoen.github.io/standards/readme-standard): badges + README presentation,
    with a reusable prompt to run in any repo.
-   (Working offline? The same files are installed at `node_modules/@tjakoen/standards/`.)
+   (The source of these lives in this repo's `standards/` dir — edit them there.)
 6. [`CONTENT-BACKLOG.md`](CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
 7. [`PLAN.md`](PLAN.md) + [`FEATURES.md`](FEATURES.md): the site's *how* and *what*.
 8. [`HACKING.md`](HACKING.md): the route → source map + "which file do I open to change X" — the

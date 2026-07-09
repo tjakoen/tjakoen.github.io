@@ -9,7 +9,6 @@
         "@tjakoen/grain": "github:tjakoen/grain#3e94bdc",
         "@tjakoen/mill": "github:tjakoen/mill#15fa3a5",
         "@tjakoen/proof": "github:tjakoen/proof#f06daab",
-        "@tjakoen/standards": "github:tjakoen/standards#4a3c180",
       },
       "devDependencies": {
         "@playwright/test": "^1.61.1",
@@ -28,8 +27,6 @@
     "@tjakoen/mill": ["@tjakoen/mill@github:tjakoen/mill#15fa3a5", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#f9ecb03", "@tjakoen/grain": "github:tjakoen/grain#3e94bdc" } }, "tjakoen-mill-15fa3a5", "sha512-MVXGcLZFGJTCU1RcP1YbPl/At/5BP+kwiZ/1wRWQqs/QcA0TKQ3JNA52CkmNYtQx/PTTU/v4qJqpRKuXoLf1sw=="],
 
     "@tjakoen/proof": ["@tjakoen/proof@github:tjakoen/proof#f06daab", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#f9ecb03", "@tjakoen/grain": "github:tjakoen/grain#3e94bdc", "@tjakoen/mill": "github:tjakoen/mill#15fa3a5" }, "bin": { "proof": "./cli.ts" } }, "tjakoen-proof-f06daab", "sha512-oD6fqpq7FhkRfyUZELTs3UVgwa2I4cZXqTz2KkgRAyoaEqsr2FLXNeKL2LCq9oOItII78lpCFP89Y3jCpqzArA=="],
-
-    "@tjakoen/standards": ["@tjakoen/standards@github:tjakoen/standards#4a3c180", {}, "tjakoen-standards-4a3c180", "sha512-rjgQ//3VJ9cvf903dgfTZSUXBwHNSLEVMPTqVC1tk82Au9w0euxmzhHJN7O8a2KhSJ0SCZvFKEdUrWFm1iTizA=="],
 
     "@types/node": ["@types/node@26.1.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw=="],
 
