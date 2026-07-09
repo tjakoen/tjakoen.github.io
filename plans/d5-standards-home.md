@@ -1,6 +1,6 @@
 ---
 id: d5-standards-home
-status: doing
+status: done
 track: D
 depends: [d4-docs-home-option-b]
 touches: [standards/, content.ts, package.json, ../pantry/app.ts]
@@ -23,8 +23,8 @@ repos only ever linked the published URL, which is unchanged.
 - [x] portfolio CLAUDE.md: standards are homed here now (not the retired package)
 - [x] PANTRY: `STANDARDS_DIR` resolves from `tjakoen.github.io/standards/README.md`; drop the
       `@tjakoen/standards` dep + `deps:refresh` entry (keeps the auto-disable-when-absent behavior)
-- [ ] Re-pin cascade (PANTRY portfolio pin → the standards-bearing sha), export + deploy, verify
-      /standards on the live site + PANTRY's /standards from the git-dep
+- [x] Re-pin cascade (PANTRY portfolio pin → 14146b9, the standards-bearing sha), export + deploy,
+      verify /standards on the live site + PANTRY's /standards from the git-dep — DONE 2026-07-09
 - [ ] Follow-up (Phase 3 / owner): the `tjakoen/standards` repo is now vestigial — archive it; and the
       "@tjakoen/standards package, referenced never forked" language in every repo's CLAUDE.md header
       is stale (the published URL still works). Fold into the Phase-3 CLAUDE sweep.
