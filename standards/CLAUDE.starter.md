@@ -3,8 +3,8 @@
 > **Starter template.** Copy this to the root of a new repo as `CLAUDE.md`, delete this line, and
 > fill the `<…>` placeholders. It wires a fresh project into Tjakoen's personal standards (how I build
 > with AI, voice, badges, AI-use posture) from day one. The standards live publicly at
-> `https://tjakoen.github.io/standards` (source: the [`tjakoen/standards`](https://github.com/tjakoen/standards)
-> repo, installable as the `@tjakoen/standards` package) —
+> `https://tjakoen.github.io/standards` (source: the [`standards/`](https://github.com/tjakoen/tjakoen.github.io/tree/main/standards)
+> dir in the portfolio repo) —
 > **reference them, don't fork them.** The published [index](https://tjakoen.github.io/standards)
 > is the map; point this repo at it rather than copying files that will drift.
 >
