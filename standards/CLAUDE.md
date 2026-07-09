@@ -7,10 +7,10 @@ Keep it accurate: if a standard changes, this file and the index change in the s
 ## What this is
 
 The single source of truth for the cross-repo standards, published at
-<https://tjakoen.github.io/standards> (rendered by the portfolio from this repo's
-`@tjakoen/standards` package) and consumed the same way by PANTRY. **Every other repo references
-this set — none forks it.** [`README.md`](README.md) is the index: one line per standard, so a
-reader loads one file, not six.
+<https://tjakoen.github.io/standards> (rendered by the portfolio from its own `standards/` dir,
+where these files are canonically homed since the 2026-07-09 fold-in) and resolved the same way by
+PANTRY, out of the portfolio package. **Every other repo references this set — none forks it.**
+[`README.md`](README.md) is the index: one line per standard, so a reader loads one file, not six.
 
 ## Start here (reading order)
 
@@ -26,8 +26,9 @@ reader loads one file, not six.
 - **The published URL is load-bearing.** Renames/removals of a standard break every repo's
   CLAUDE.md links and the rendered `/standards/<slug>` pages (slugs are the lowercased filename).
   If a file must move, keep the index accurate and fix the known inbound refs in the same change.
-- **This is a docs package, not an app.** No runtime code, no build. `package.json` exists only so
-  consumers can install the files (`files: *.md`); keep it that way.
+- **This is a docs set, not an app.** No runtime code, no build — just `.md`. It lives as the
+  portfolio's `standards/` dir and is resolved by consumers through the portfolio package's
+  `./standards/*` export; keep it that way (no code creeps in here).
 - **The starter is the on-ramp.** Changes to how a new repo is wired (badges, symlinks, the
   reference-don't-fork rule) land in `CLAUDE.starter.md` — that's the file every future repo copies.
 
