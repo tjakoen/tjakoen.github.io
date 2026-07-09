@@ -1,7 +1,7 @@
 {
   "name": "tjakoen.github.io",
   "version": "0.1.0",
-  "description": "tjakoen.github.io \u2014 a custom BATCH + GRAIN site that uses MILL for its content.",
+  "description": "tjakoen.github.io — a custom BATCH + GRAIN site that uses MILL for its content.",
   "type": "module",
   "license": "Apache-2.0",
   "private": true,
@@ -11,11 +11,10 @@
     "@tjakoen/batch": "github:tjakoen/batch#f9ecb03",
     "@tjakoen/grain": "github:tjakoen/grain#3e94bdc",
     "@tjakoen/mill": "github:tjakoen/mill#15fa3a5",
-    "@tjakoen/proof": "github:tjakoen/proof#f06daab",
-    "@tjakoen/standards": "github:tjakoen/standards#4a3c180"
+    "@tjakoen/proof": "github:tjakoen/proof#f06daab"
   },
   "scripts": {
-    "deps:refresh": "for p in batch grain mill proof standards; do bun add @tjakoen/$p@github:tjakoen/$p#$(git ls-remote https://github.com/tjakoen/$p.git main | cut -c1-7); done",
+    "deps:refresh": "for p in batch grain mill proof; do bun add @tjakoen/$p@github:tjakoen/$p#$(git ls-remote https://github.com/tjakoen/$p.git main | cut -c1-7); done",
     "dev": "bun --hot server.ts",
     "start": "bun server.ts",
     "test": "bun test",
@@ -32,6 +31,7 @@
     "typescript": "^5.8.0"
   },
   "exports": {
-    "./docs/*": "./docs/*"
+    "./docs/*": "./docs/*",
+    "./standards/*": "./standards/*"
   }
 }
