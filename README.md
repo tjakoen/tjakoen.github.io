@@ -1,4 +1,4 @@
-# portfolio — the personal site
+# 🖥️ portfolio — the personal site
 
 [![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://tjakoen.github.io/notes/ten-times-zero)
 [![Code: Apache 2.0](https://img.shields.io/badge/code-Apache_2.0-blue)](LICENSE)
@@ -10,9 +10,10 @@ lightweight AI demo that runs entirely in the visitor's browser.
 
 > **Status: live and running.** THE EDITOR shell (the whole site as one VS-Code-style window),
 > the `/grain` and `/batch` showcases, the `/loop` "watch the AI act" demo, the `/catalog`, and the
-> notes + rendered layer docs (through MILL) are all built and served today by [`server.ts`](server.ts).
-> Still planned: the productivity views (calendar, contacts) and the zero-ops GitHub Pages deploy
-> (`batch/export` + a GitHub Actions workflow). New here and want to make a small edit? →
+> notes + rendered layer docs (through MILL) are all built and served today by [`server.ts`](server.ts),
+> and the zero-ops GitHub Pages deploy is live (`batch/export` via
+> [`.github/workflows/pages.yml`](.github/workflows/pages.yml)). Still planned: the productivity
+> views (calendar, contacts). New here and want to make a small edit? →
 > **[HACKING.md](HACKING.md)** (route → source map + "which file do I open").
 
 ## What it is (and isn't)
@@ -31,3 +32,6 @@ lightweight AI demo that runs entirely in the visitor's browser.
 - **[CONTENT-BACKLOG.md](CONTENT-BACKLOG.md)** — the content to author (guardrails: public repo, neutral).
 - **[GRAIN-PAGE.md](pages/grain/GRAIN-PAGE.md)** · **[BATCH-PAGE.md](pages/batch/BATCH-PAGE.md)** — the `/grain` and `/batch` showcase plans.
 - **[PHILOSOPHY.md](PHILOSOPHY.md)** — the beliefs the site proves.
+
+---
+🤖 **Built with Claude, and it is also the proof.** This site is the stack's own demo: I made the calls, Claude typed them, and the same pages you are reading are the receipts. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)

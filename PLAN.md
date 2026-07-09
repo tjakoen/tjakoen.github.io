@@ -3,7 +3,8 @@
 > The **cross-layer what-next** (including the convergence-first framing for `/grain` and `/batch`,
 > Track D) lives in [`../ROADMAP.md`](../ROADMAP.md); this file stays canonical for the portfolio.
 
-> Status: **planned, not built.** A personal portfolio — a **custom BATCH + GRAIN** site that
+> Status: **live and running** (deployed to GitHub Pages via `.github/workflows/pages.yml`; the
+> original header said "planned, not built" and had gone stale). A personal portfolio — a **custom BATCH + GRAIN** site that
 > **uses MILL** (my markdown CMS) to manage its markdown content: the notes/blog *and* the rendered
 > BATCH/GRAIN docs — deployed **free and zero-ops** to GitHub Pages via GitHub Actions.
 > The site doubles as the strongest possible proof the stack works: it's AI-first design served
