@@ -123,6 +123,16 @@ const collections: MillCollection[] = [
     source: packageDocsSource("@tjakoen/batch/docs/ARCHITECTURE.md"),
     adapter: { resolveLink: docsLink("/batch/docs") },
   },
+  {
+    // The canonical published home of the cross-repo standards (SPLIT-PLAN § "standards/ is
+    // referenced by every repo, never copied"): every repo's CLAUDE.md points at
+    // https://tjakoen.github.io/standards, and THIS collection is what makes that URL real.
+    prefix: "/standards",
+    title: "Standards",
+    description: "The cross-repo standards — how I build with an AI, how anything under my byline reads, and how a repo is set up. Rendered from the installed package — never copied.",
+    source: packageDocsSource("@tjakoen/standards/README.md"),
+    adapter: { resolveLink: docsLink("/standards") },
+  },
 ];
 
 /**
