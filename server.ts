@@ -166,7 +166,10 @@ void checkThemingDrift();
 // no-build CLIENT modules (ARCHITECTURE §19): the browser imports the real grain/ai vocabulary,
 // transpiled on request, guarded client-safe. Substrate under the OPT-IN client-side door — the
 // static export freezes this graph so /grain's demo runs with no backend (§19.3).
-const modules = makeModuleServer(bunRuntime, { roots: { grain: "./grain", portfolio: "./tjakoen.github.io" } });
+// Roots are cwd-independent (config.ts's rule): grain = the installed package dir, portfolio =
+// this repo dir — the old "./grain" / "./tjakoen.github.io" cwd paths were monorepo-era and 404'd
+// every /modules/* request in the standalone repo, freezing ZERO modules into the export.
+const modules = makeModuleServer(bunRuntime, { roots: { grain: config.grainDir, portfolio: import.meta.dir } });
 
 // --- GRAIN interaction layer: the single door (docs/AI-INTERFACE.md) ---
 const stream = createStream();
