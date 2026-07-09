@@ -1,6 +1,6 @@
 ---
 id: d1-bread-stack-ia
-status: doing
+status: done
 track: D
 depends: []
 touches: [pages/batch/index.html, pages/mill/index.html, pages/grain/index.html, BREAD-STACK-IA.md]
@@ -21,6 +21,9 @@ the consistency pass on the older trailheads.
 - [x] `/pantry` trailhead
 - [x] proof/ + pantry/ in the explorer frame
 - [x] `llms.ts` lists all five members
-- [ ] Status flag on `/batch` (live) and `/mill` (live) per the shared card shape
-- [ ] The "part of the BREAD stack" footer spine on every member trailhead
-- [ ] Re-read the IA's honesty rules against the shipped pages (statuses still true?)
+- [x] Status flag on `/batch` (live) and `/mill` (live) per the shared card shape
+- [x] The "part of the BREAD stack" footer spine on every member trailhead
+- [x] Re-read the IA's honesty rules against the shipped pages (statuses still true?) — fixed two
+      stale flags on `/bread` (PROOF live-SSE-board and PANTRY v2/reference/catalog had shipped but
+      the directory still said "next"), and the `/batch` lede + `PLAN.md` layer-docs bullet that d4
+      made stale ("docs live beside the code" / "resolved from the installed package")

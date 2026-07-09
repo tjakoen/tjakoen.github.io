@@ -38,14 +38,13 @@ prerender crawl that boots the app, walks its routes, and writes static files.
   - **Portfolio-owned content** — the Notes stream + long-form posts (see [FEATURES.md](FEATURES.md)) —
     lives as **`.md` files (+ images) in the portfolio's own repo**, so the site is maintained by
     *editing content, not HTML*.
-  - **Layer docs** — grain's `docs/GRAIN.md` + `AI-INTERFACE.md` (→ `/grain/docs`) and batch's
-    `docs/ARCHITECTURE.md` + `CONVENTIONS.md` (→ `/batch/docs`) — are **NOT copied into the portfolio
-    repo.** They ride along inside the installed grain/batch packages and MILL resolves them straight
-    from there (`import.meta.resolve('@tjakoen/grain/docs/…')` — today that resolves to the sibling
-    `grain/docs/` folder in the monorepo; post-split it resolves into the git-dep). So the docs are
-    **always synced to `#main`** via `bun update`, with zero drift and no duplicated files. The one
-    enabling task lives in each layer's `package.json` `exports` map (`./docs/*`), staged now. See
-    [`../SPLIT-PLAN.md`](../SPLIT-PLAN.md) § "Layer docs travel inside the package". The renderer is **MILL**, promoted from "a content
+  - **Layer docs** — grain's `GRAIN.md` + `AI-INTERFACE.md` (→ `/grain/docs`) and batch's
+    `ARCHITECTURE.md` + `CONVENTIONS.md` (→ `/batch/docs`) — are **canonically homed in THIS repo**
+    under `docs/<layer>/` since the option-b docs home (owner decision 2026-07-09, plans/d4). MILL
+    renders them with `dirSource(docs/<layer>)`; PANTRY resolves them out of this repo's package
+    (`./docs/*` export). The layer repos keep a thin README pointer and no longer ship a `docs/`
+    folder. (Superseded model, kept for history: the docs used to ride inside each layer's package
+    and resolve via `import.meta.resolve('@tjakoen/grain/docs/…')`.) The renderer is **MILL**, promoted from "a content
   route inside the BATCH app" to its **own top-level project** (memory: portfolio-cms-separate-project).
   - **Definition — MILL = "Markdown In, Living Layouts"** *(canonical plan: [`mill/PLAN.md`](../mill/PLAN.md); this is the consumer view)*: a **standalone, reusable, open-source CMS**.
     Feed it `.md` + images and it renders **GRAIN** pages on the theme. It is the **fourth top-level
@@ -115,8 +114,8 @@ prerender crawl that boots the app, walks its routes, and writes static files.
   showcase page), **component reference** (`/catalog` — grain only, auto-generated specimens), and
   **concepts / how-to-build** (rendered `docs/*.md`). grain publishes `docs/GRAIN.md` +
   `docs/AI-INTERFACE.md` at `/grain/docs`; batch publishes `docs/ARCHITECTURE.md` + `docs/CONVENTIONS.md` at
-  `/batch/docs`. **These docs are the layer's own files, resolved from the installed grain/batch
-  package (never copied into this repo)** — see the "Layer docs" bullet above. The vehicle is the
+  `/batch/docs`. **Since the option-b docs home (2026-07-09) these docs are canonically homed in THIS
+  repo under `docs/<layer>/` and rendered with `dirSource`** (see the "Layer docs" bullet above). The vehicle is the
   **markdown content collection (piece 3)** — no new pipeline, no new prose. The showcase's concept
   sections are *teasers* that deep-link into these. Consequence, free: each source `.md` is at once
   the human docs page, the AI demo's `knowledge.json` (RAG), and the layer's own repo doc (content
