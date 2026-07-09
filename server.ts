@@ -30,6 +30,9 @@ import type { Task } from "./demo/domain/task.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
 import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
+// --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
+import { createProofRoutes } from "@tjakoen/proof/routes.ts";
+import { fileURLToPath } from "node:url";
 
 // --- seed a couple of tasks so the /loop demo has something to show ---
 const seed: Task[] = [
@@ -76,6 +79,31 @@ const renderAppPage = async (html: string) =>
   renderPage(html, { recentNotes: await listRecentNotes() });
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
 const serveContent = createPortfolioContentRoutes(renderPage, PAGE_ASSETS, PAGE_HEAD);   // MILL mount (same global assets + head)
+// PROOF mount: the portfolio consumes @tjakoen/proof directly and renders its OWN plans/ folder as a
+// board at /plans, wrapped in the portfolio's page shell (proof owns the body, the host owns <head>).
+// Server-rendered only for now — the live SSE auto-refresh (watchPlans + board-live.js) is a follow-up
+// so it gets its own stream and never crosses the /loop demo's interaction stream (line ~144).
+const PROOF_CSS = fileURLToPath(import.meta.resolve("@tjakoen/proof/board.css"));
+const PLANS_DIR = fileURLToPath(new URL("./plans", import.meta.url));
+const proofRoutes = createProofRoutes({
+  plansDir: PLANS_DIR,
+  prefix: "/plans",
+  chrome: (title, body) => renderAppPage(`<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${title} · Plans</title>
+  ${PAGE_HEAD}<link rel="stylesheet" href="/proof.css">
+</head>
+<body data-screen="plans" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main"><div class="board">${body}</div></main>
+  </div>
+${PAGE_ASSETS}</body>
+</html>`),
+});
 const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-component CSS + GRAIN's AI module → /components.css
 // The sitemap covers EVERYTHING this server actually serves: the portfolio pages tree + MILL's
 // content routes (SEO is first-class — content pages must be discoverable, and the export derives
@@ -183,6 +211,8 @@ Bun.serve({
     ...buildAiRoutes(service, stream, aiLayer, accepts),   // /intent, /stream, /ai/manifest, /ui/loop
     "/components.css": async () =>
       new Response(await styles.css(), { headers: { "Content-Type": "text/css" } }),
+    "/proof.css": async () =>
+      new Response(await Bun.file(PROOF_CSS).text(), { headers: { "Content-Type": "text/css" } }),
     "/catalog": async () =>
       new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } }),
     // /reference — the GENERATED developer-docs reference (DEV-DOCS.md step 5): the AI vocabulary
@@ -247,6 +277,9 @@ ${PAGE_ASSETS}</body>
     if (p.startsWith("/modules/")) return modules.serve(p);                    // client-safe TS → browser JS
     for (const [prefix, serve] of staticServers)
       if (p.startsWith(prefix + "/")) return serve(p.slice(prefix.length));    // strip prefix → mapped dir
+    // --- PROOF mount: the plan board (/plans, /plans/plan/:id) — try before MILL/pages ---
+    const fromProof = await proofRoutes(p);
+    if (fromProof) return fromProof;
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
     if (fromContent) return fromContent;
