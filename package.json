@@ -8,10 +8,10 @@
   "author": "Tjakoen Stolk <tjakoen.s@gmail.com> (https://tjakoen.github.io)",
   "homepage": "https://tjakoen.github.io",
   "dependencies": {
-    "@tjakoen/batch": "github:tjakoen/batch#f9ecb03",
-    "@tjakoen/grain": "github:tjakoen/grain#3e94bdc",
-    "@tjakoen/mill": "github:tjakoen/mill#15fa3a5",
-    "@tjakoen/proof": "github:tjakoen/proof#f06daab"
+    "@tjakoen/batch": "github:tjakoen/batch#5d04be0",
+    "@tjakoen/grain": "github:tjakoen/grain#af2c484",
+    "@tjakoen/mill": "github:tjakoen/mill#2b85cb1",
+    "@tjakoen/proof": "github:tjakoen/proof#19b444c"
   },
   "scripts": {
     "deps:refresh": "for p in batch grain mill proof; do bun add @tjakoen/$p@github:tjakoen/$p#$(git ls-remote https://github.com/tjakoen/$p.git main | cut -c1-7); done",
