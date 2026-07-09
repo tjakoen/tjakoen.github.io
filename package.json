@@ -10,6 +10,12 @@
   "dependencies": {
     "@tjakoen/batch": "github:tjakoen/batch#8da87f9",
     "@tjakoen/grain": "github:tjakoen/grain#e2530fc",
+    "@tjakoen/mill": "github:tjakoen/mill#22c8cfa",
+    "@tjakoen/proof": "github:tjakoen/proof#1a5a248"
+  },
+  "overrides": {
+    "@tjakoen/batch": "github:tjakoen/batch#8da87f9",
+    "@tjakoen/grain": "github:tjakoen/grain#e2530fc",
     "@tjakoen/mill": "github:tjakoen/mill#22c8cfa"
   },
   "scripts": {

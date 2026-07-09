@@ -8,6 +8,7 @@
         "@tjakoen/batch": "github:tjakoen/batch#8da87f9",
         "@tjakoen/grain": "github:tjakoen/grain#e2530fc",
         "@tjakoen/mill": "github:tjakoen/mill#22c8cfa",
+        "@tjakoen/proof": "github:tjakoen/proof#1a5a248",
       },
       "devDependencies": {
         "@playwright/test": "^1.61.1",
@@ -15,6 +16,11 @@
         "typescript": "^5.8.0",
       },
     },
+  },
+  "overrides": {
+    "@tjakoen/batch": "github:tjakoen/batch#8da87f9",
+    "@tjakoen/grain": "github:tjakoen/grain#e2530fc",
+    "@tjakoen/mill": "github:tjakoen/mill#22c8cfa",
   },
   "packages": {
     "@playwright/test": ["@playwright/test@1.61.1", "", { "dependencies": { "playwright": "1.61.1" }, "bin": { "playwright": "cli.js" } }, "sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig=="],
@@ -24,6 +30,8 @@
     "@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#e2530fc", {}, "tjakoen-grain-e2530fc", "sha512-swdBTgD1UPPU6apKzONYR3EbPqeL9rl3WXnQehDkjA1vQ14/0cvULtr+GLJlNW6fyo8hfEh1vcxPA7JY3bZI0w=="],
 
     "@tjakoen/mill": ["@tjakoen/mill@github:tjakoen/mill#22c8cfa", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#main", "@tjakoen/grain": "github:tjakoen/grain#main" } }, "tjakoen-mill-22c8cfa", "sha512-vcO0OidRyJGsjAKw1vfRxkUv5NwyXrJ5cS858tsNLY2gO1Hd78oIabC4l78Hv2opyCLD/VQeBPlKww512QI01g=="],
+
+    "@tjakoen/proof": ["@tjakoen/proof@github:tjakoen/proof#1a5a248", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#main", "@tjakoen/grain": "github:tjakoen/grain#main", "@tjakoen/mill": "github:tjakoen/mill#main" }, "bin": { "proof": "./cli.ts" } }, "tjakoen-proof-1a5a248", "sha512-9PStltWWnecIuvCSc6XuCBqkzebA4SkMoUA6pSp5ObuGWAZWP+PE+blq8wrvNnsuUwivVZn3aAX6LeTrL5UsLw=="],
 
     "@types/node": ["@types/node@26.1.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw=="],
 
@@ -38,9 +46,5 @@
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "undici-types": ["undici-types@8.3.0", "", {}, "sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ=="],
-
-    "@tjakoen/mill/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#8da87f9", {}, "tjakoen-batch-8da87f9", "sha512-TLl3IF2EzZ0K7r3QaVey/S6upX+Z8e22/3/kghbrwAYnesLbRYgbAq7o7O1q/VF77dpYEdMRsJxvos0aFo+20A=="],
-
-    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#e2530fc", {}, "tjakoen-grain-e2530fc", "sha512-swdBTgD1UPPU6apKzONYR3EbPqeL9rl3WXnQehDkjA1vQ14/0cvULtr+GLJlNW6fyo8hfEh1vcxPA7JY3bZI0w=="],
   }
 }
