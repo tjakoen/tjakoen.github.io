@@ -1,6 +1,6 @@
 ---
 id: d4-docs-home-option-b
-status: todo
+status: done
 track: D
 depends: []
 touches: [docs/, content.ts, package.json]

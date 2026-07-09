@@ -2,13 +2,13 @@
 //
 // Three collections flow through MILL's live content route (mill/serve.ts):
 //   /notes       + /notes/:slug   ← portfolio/notes/*.md   (the portfolio's own content)
-//   /grain/docs  + /grain/docs/:slug ← the INSTALLED @tjakoen/grain package's docs/
-//   /batch/docs  + /batch/docs/:slug ← the INSTALLED @tjakoen/batch package's docs/
+//   /grain/docs  + /grain/docs/:slug ← this repo's own docs/grain/  (option b, 2026-07-09)
+//   /batch/docs  + /batch/docs/:slug ← this repo's own docs/batch/  (option b, 2026-07-09)
 //
-// Layer docs are package-resolved on purpose (packageDocsSource → import.meta.resolve):
-// in the monorepo that lands on the sibling grain/docs/, post-split on the git-dep —
-// same code both eras, zero copied files. NEVER a `../grain/docs` relative path
-// (../SPLIT-PLAN.md § "Layer docs travel inside the package").
+// Layer docs are now canonically homed HERE (docs/<layer>/) and resolved with dirSource
+// (owner decision, plans/d4-docs-home-option-b.md): the portfolio is the physical home of
+// the stack's explanatory docs; the layer repos keep a thin README pointer. Other consumers
+// (pantry) resolve them out of THIS repo's package (./docs/* export), never each layer's.
 //
 // The chrome wraps every content page in the BREAD workspace shell (portfolio-frame);
 // the injected renderPage composes that tag — and any escape-hatch <b-…> tags an author
@@ -112,15 +112,15 @@ const collections: MillCollection[] = [
   {
     prefix: "/grain/docs",
     title: "GRAIN docs",
-    description: "The GRAIN design system's own docs, rendered from the installed package — never copied.",
-    source: packageDocsSource("@tjakoen/grain/docs/GRAIN.md"),
+    description: "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
+    source: dirSource(join(import.meta.dir, "docs/grain")),
     adapter: { resolveLink: docsLink("/grain/docs") },
   },
   {
     prefix: "/batch/docs",
     title: "BATCH docs",
-    description: "The BATCH substrate's own docs, rendered from the installed package — never copied.",
-    source: packageDocsSource("@tjakoen/batch/docs/ARCHITECTURE.md"),
+    description: "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
+    source: dirSource(join(import.meta.dir, "docs/batch")),
     adapter: { resolveLink: docsLink("/batch/docs") },
   },
   {
