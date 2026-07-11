@@ -29,10 +29,13 @@ const DIST = Bun.env.EXPORT_DIST ?? "dist";
 // excluded from the crawl (§18). `/dashboard` + `/home` are retired; never crawl them.
 const OPERABLE = new Set(["/loop"]);
 
-// Pages flipped to the CLIENT-SIDE door on the static copy (§19.3): the demo's service-free
-// scenarios run fully in-browser — same vocabulary, same door, loopback ops. The live server keeps
-// the server door; only the frozen copy carries the marker.
-const CLIENT_DOOR_PAGES = new Set(["/grain"]);
+// EVERY exported page is flipped to the CLIENT-SIDE door on the static copy (§19.3): the static
+// host has no backend, so ai-dispatch (loaded on every page via PAGE_ASSETS) must NOT open a
+// server `/stream` — on GitHub Pages that request 404s, and each page logs a stream error + goes
+// "offline". The loopback client door runs the same vocabulary in-browser, so the desk stays online
+// and quiet everywhere. The live dev server keeps the server door (no marker); only the frozen copy
+// carries it. Safe to stamp unconditionally: the one genuinely server-operable page (/loop) is in
+// OPERABLE and never exported, so nothing static should ever talk to a live stream.
 const MODULE_ENTRIES = ["/modules/grain/ai/client-door.js"];
 
 // Generated routes that a href/src crawler won't discover: the ⌘K palette's index + the SEO infra.
@@ -91,8 +94,8 @@ try {
     dataRoutes: await dataRoutes(),
     assets: assetMounts(),
     moduleEntries: MODULE_ENTRIES,
-    transformPage: (route, html) =>
-      CLIENT_DOOR_PAGES.has(route) ? html.replace(/<body\b/, '<body data-ai-transport="client"') : html,
+    transformPage: (_route, html) =>
+      html.replace(/<body\b/, '<body data-ai-transport="client"'),
     basePath: Bun.env.PUBLIC_BASE_PATH,
     publicOrigin: Bun.env.PUBLIC_ORIGIN,
     log: (m) => console.log(m),
