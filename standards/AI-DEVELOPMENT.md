@@ -1,3 +1,8 @@
+---
+title: AI-DEVELOPMENT.md — how I build full stack with AI
+summary: A portable playbook for building with an AI partner - the standards, the pitfalls, and how problems become solutions.
+---
+
 # AI-DEVELOPMENT.md — how I build full stack with AI
 
 A portable playbook for developing software with an AI partner. Drop this into any

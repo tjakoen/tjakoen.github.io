@@ -1,7 +1,7 @@
 # How to: static export + deploy
 
 **Status: the export itself is built and works today; a zero-ops GitHub Pages Actions workflow is
-still planned** (see [`../../tjakoen.github.io/README.md`](../../tjakoen.github.io/README.md)). This
+still planned** (see [`README.md`](../../README.md)). This
 guide covers what runs now.
 
 ## Run it

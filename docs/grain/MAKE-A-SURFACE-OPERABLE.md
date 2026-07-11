@@ -6,7 +6,7 @@ tutorial once and just need the steps.
 
 ## 1. Add the verb to the contract
 
-[`ai/contract.ts`](../ai/contract.ts) is the one closed registry — never a magic string elsewhere:
+[`ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/ai/contract.ts) is the one closed registry — never a magic string elsewhere:
 
 ```ts
 export type ActionName = /* … */ | "my.verb";
@@ -32,7 +32,7 @@ On the component's root element:
 
 ## 3. Teach the reasoner
 
-Add a branch in [`ai/reasoner.ts`](../ai/reasoner.ts)'s `decide()`:
+Add a branch in [`ai/reasoner.ts`](https://github.com/tjakoen/grain/blob/main/ai/reasoner.ts)'s `decide()`:
 
 ```ts
 if (intent.action === "my.verb") {

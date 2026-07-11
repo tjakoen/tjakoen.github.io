@@ -13,7 +13,7 @@ mkdir tjakoen.github.io/pages/widgets
 echo '<!DOCTYPE html><html>...</html>' > tjakoen.github.io/pages/widgets/index.html
 ```
 
-`makePageServer` ([`http/pages.ts`](../../batch/http/pages.ts)) maps the URL straight onto the file
+`makePageServer` ([`http/pages.ts`](https://github.com/tjakoen/batch/blob/main/http/pages.ts)) maps the URL straight onto the file
 under `pagesDir`; the sitemap and the static-export allowlist both derive from the same pages tree,
 so a new page reaches SEO and the export automatically — nothing else to wire.
 
@@ -21,7 +21,7 @@ so a new page reaches SEO and the export automatically — nothing else to wire.
 
 Server-level routes (JSON endpoints, the AI door, anything that isn't a page) are added directly in
 `Bun.serve({ routes: {...} })` at the composition root
-([`server.ts`](../../tjakoen.github.io/server.ts)):
+([`server.ts`](../../server.ts)):
 
 ```ts
 Bun.serve({
@@ -33,7 +33,7 @@ Bun.serve({
 ```
 
 For a family of related routes (methods, params), group them into a builder like
-[`routes/ai-routes.ts`](../../tjakoen.github.io/routes/ai-routes.ts) does (`buildAiRoutes(...)`
+[`routes/ai-routes.ts`](../../routes/ai-routes.ts) does (`buildAiRoutes(...)`
 returns a `routes` object spread into `Bun.serve`), rather than growing `server.ts` inline.
 
 ## Next steps

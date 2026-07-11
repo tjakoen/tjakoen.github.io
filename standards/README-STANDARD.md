@@ -1,3 +1,8 @@
+---
+title: README-STANDARD.md — the README standard
+summary: How a README presents itself across every repo - the title emoji, the badge row, and the footer, plus a reusable prompt.
+---
+
 # README standard + reusable prompt
 
 My standard for how a README presents itself across all my repos: title emoji, badge row, and the

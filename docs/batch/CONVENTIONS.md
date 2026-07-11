@@ -5,10 +5,10 @@ each thing — so new code (and new sessions) extend the grain instead of fighti
 When a rule and the surrounding code disagree, the surrounding code wins until this doc
 is updated; keep them in sync.
 
-> Companion docs: [`PHILOSOPHY.md`](../../tjakoen.github.io/PHILOSOPHY.md) (the why), [`ARCHITECTURE.md`](ARCHITECTURE.md)
+> Companion docs: [`PHILOSOPHY.md`](../../PHILOSOPHY.md) (the why), [`ARCHITECTURE.md`](ARCHITECTURE.md)
 > (the substrate), [`GRAIN.md`](../../grain/docs/GRAIN.md) (the design system + AI layer),
 > [`AI-INTERFACE.md`](../../grain/docs/AI-INTERFACE.md) (the contract),
-> [`DESIGN-SYSTEM.md`](../../grain/docs/DESIGN-SYSTEM.md) (the visual identity), [`grain/README.md`](../../grain/README.md) (usage).
+> [`DESIGN-SYSTEM.md`](../../grain/docs/DESIGN-SYSTEM.md) (the visual identity), [`grain/README.md`](https://github.com/tjakoen/grain/blob/main/README.md) (usage).
 
 ---
 
@@ -60,7 +60,7 @@ style-computing JS. The test when reaching for JS: *does a browser primitive alr
 yes, use it; only write JS when none does (in this stack the sole such case is the `/intent`
 dispatcher). GRAIN's running inventory of which primitives are in use is in
 [`grain/docs/GRAIN.md`](../../grain/docs/GRAIN.md) ("What GRAIN gives you"); page transitions are
-worked in [ARCHITECTURE §11.3](../docs/ARCHITECTURE.md).
+worked in [ARCHITECTURE §11.3](ARCHITECTURE.md).
 
 ---
 

@@ -4,8 +4,8 @@
 > [GRAIN.md](./GRAIN.md)). GRAIN is built on BATCH and headed for its own repo.
 
 **Status:** Design + reference scaffold (running in the monorepo).
-**Depends on:** [MVP.md](../../project/docs/MVP.md) §"One interface, one path" and §"The Interaction Flow";
-[PROJECT-PLAN.md](../../project/PROJECT-PLAN.md) §9 (control plane / single-writer);
+**Depends on:** [MVP.md](https://github.com/tjakoen/project/blob/main/docs/MVP.md) §"One interface, one path" and §"The Interaction Flow";
+[PROJECT-PLAN.md](https://github.com/tjakoen/project/blob/main/PROJECT-PLAN.md) §9 (control plane / single-writer);
 [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) §3 (grade as signal).
 
 This doc cashes out the MVP's hardest principle — *the AI acts through the same
@@ -47,7 +47,7 @@ The AI reads the index for its move set and the snapshot for where it's standing
 (§3), so the AI is expected to pre-check the manifest, not probe blindly. (A more forgiving *"the
 surface has physics"* model — an unafforded action no-ops and reports what *is* available — is a
 noted direction, **not** current behavior.) The *why* behind the modality lives in
-[`PHILOSOPHY.md`](../../tjakoen.github.io/PHILOSOPHY.md).
+[`PHILOSOPHY.md`](../../PHILOSOPHY.md).
 
 ---
 
@@ -104,7 +104,7 @@ These verbs are designed but not yet wired. When a verb lands, it moves to the b
 The built table **is** the live contract. It is defined once in TypeScript and everything else
 — validation, the manifest, the UI affordances — derives from it.
 
-> **Single source of truth: [`grain/ai/contract.ts`](../ai/contract.ts).**
+> **Single source of truth: [`grain/ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/ai/contract.ts).**
 > The closed sets are **union types + a `const` registry**, not a TS `enum` (`enum`
 > is banned by `erasableSyntaxOnly`) — that union *is* the erasable enum:
 > - `ActionName` — the verbs · `ACTIONS` — the registry (depth + accepted kinds).

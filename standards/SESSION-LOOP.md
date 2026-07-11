@@ -1,3 +1,8 @@
+---
+title: SESSION-LOOP.md — the working loop, memory, and handoff
+summary: How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.
+---
+
 # SESSION-LOOP.md — the working loop, memory, and handoff
 
 How a session with an AI actually runs, start to finish: how it orients, the loop it repeats,

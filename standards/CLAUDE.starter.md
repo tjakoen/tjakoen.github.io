@@ -1,3 +1,8 @@
+---
+title: CLAUDE.starter.md — the new-repo starter template
+summary: The template every new repo copies to wire itself into these standards from day one - reference them, don't fork them.
+---
+
 # CLAUDE.md: <PROJECT NAME>
 
 > **Starter template.** Copy this to the root of a new repo as `CLAUDE.md`, delete this line, and

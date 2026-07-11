@@ -1,3 +1,8 @@
+---
+title: CLAUDE.md — standards
+summary: Operating rules for editing standards/ itself - keep each fact in exactly one home, and keep it accurate.
+---
+
 # CLAUDE.md — standards
 
 Operating rules for any AI (or human) editing **`standards/`** — the canon itself: how Tjakoen

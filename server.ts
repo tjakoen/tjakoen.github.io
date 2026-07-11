@@ -84,6 +84,35 @@ const serveContent = createPortfolioContentRoutes(renderPage, PAGE_ASSETS, PAGE_
 // Server-rendered only for now — the live SSE auto-refresh (watchPlans + board-live.js) is a follow-up
 // so it gets its own stream and never crosses the /loop demo's interaction stream (line ~144).
 const PROOF_CSS = fileURLToPath(import.meta.resolve("@tjakoen/proof/board.css"));
+// Host-owned layer on top of the vendored board.css (never edit the package — this repo just
+// serves it, same "proof owns the body, the host owns <head>" split as the mount above). Fixes a
+// /plans layout bug: the assistant aside sat empty on the plans screen yet still claimed its full
+// column, so the DONE column clipped off-screen with no visible way to reach it. Concatenated
+// AFTER the base rules below (see the /proof.css route) so it always wins the cascade.
+const PROOF_CSS_OVERRIDES = `
+/* portfolio override: the plans screen has no assistant conversation to show, so give the board
+   the width back instead of leaving it dead-blank (mirrors app-shell.css's own
+   [data-aside-hidden="true"] behavior, keyed off the screen instead of a JS toggle). */
+body[data-screen="plans"] .app-shell { --shell-aside: 0rem; }
+body[data-screen="plans"] .app-shell__aside { border-left: 0; overflow: hidden; }
+
+/* a visible scroll cue (a plain native scrollbar, not just an implicit overflow) + a smaller
+   column floor so more of the board fits before anything needs to scroll at all. */
+.proof-board {
+  grid-auto-columns: minmax(13rem, 1fr);
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faint, #999) transparent;
+}
+.proof-board::-webkit-scrollbar { height: 0.6rem; }
+.proof-board::-webkit-scrollbar-thumb { background: var(--ink-faint, #999); border-radius: var(--radius-sm, 3px); }
+.proof-board::-webkit-scrollbar-track { background: transparent; }
+
+/* mobile: stack the columns instead of a sideways scroll — a thumb doesn't have the horizontal
+   room a mouse-driven overflow assumes. */
+@media (max-width: 640px) {
+  .proof-board { grid-auto-flow: row; grid-auto-columns: unset; overflow-x: visible; }
+}
+`;
 const PLANS_DIR = fileURLToPath(new URL("./plans", import.meta.url));
 const proofRoutes = createProofRoutes({
   plansDir: PLANS_DIR,
@@ -215,7 +244,7 @@ Bun.serve({
     "/components.css": async () =>
       new Response(await styles.css(), { headers: { "Content-Type": "text/css" } }),
     "/proof.css": async () =>
-      new Response(await Bun.file(PROOF_CSS).text(), { headers: { "Content-Type": "text/css" } }),
+      new Response((await Bun.file(PROOF_CSS).text()) + PROOF_CSS_OVERRIDES, { headers: { "Content-Type": "text/css" } }),
     "/catalog": async () =>
       new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } }),
     // /reference — the GENERATED developer-docs reference (DEV-DOCS.md step 5): the AI vocabulary
