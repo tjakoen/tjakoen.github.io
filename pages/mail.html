@@ -4,56 +4,43 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mail · TJ's Desk</title>
-  <meta name="description" content="A static mail panel on TJ's Desk: an illustrative inbox from around the stack, with a real way to reach me. Part of the desktop metaphor, not a live mailbox.">
+  <meta name="description" content="The contact panel on TJ's Desk, dressed as a compose window. Write a message and it opens in your own mail app, addressed to me. A real way to reach me on a static site.">
   <style>
-    /* page-specific layout for the mail panel (not part of the design system).
-       A no-JS two-pane inbox: hidden radios drive which message the reading pane shows. */
-    .mail { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
-      overflow: hidden; margin: var(--space-5) 0 var(--space-6); }
-    .mail__radio { position: absolute; width: 1px; height: 1px; opacity: 0;
-      pointer-events: none; overflow: hidden; }
-    .mail__grid { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); }
-    .mail__list { list-style: none; margin: 0; padding: 0;
-      border-right: 1px solid var(--line-soft); background: var(--paper-2); }
-    .mail__item { display: block; cursor: pointer; padding: var(--space-3) var(--space-4);
+    /* page-specific layout for the compose panel (not part of the design system).
+       A static contact form: the Send button builds a mailto: from the fields and hands
+       off to your own mail app, so the site stays plain files with no backend to receive mail. */
+    .compose { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+      overflow: hidden; margin: var(--space-5) 0 var(--space-6); background: var(--paper); }
+    .compose__bar { display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4); background: var(--paper-2);
       border-bottom: 1px solid var(--line-soft); }
-    .mail__item:hover { background: var(--panel); }
-    .mail__from { display: flex; align-items: center; gap: var(--space-2);
-      font-size: var(--text-sm); font-weight: var(--font-weight-semibold); color: var(--ink); }
-    .mail__dot { width: .5rem; height: .5rem; border-radius: var(--radius-pill);
-      background: var(--color-accent); flex: none; }
-    .mail__subj { font-size: var(--text-sm); color: var(--ink); margin-top: 2px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .mail__when { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-faint); }
-    .mail__read { padding: var(--space-5); min-width: 0; }
-    .mail__msg { display: none; }
-    .mail__msg-head { margin-bottom: var(--space-4); }
-    .mail__msg-subj { font-family: var(--font-accent); font-size: var(--text-xl);
-      font-weight: var(--font-weight-semibold); color: var(--ink); margin: 0 0 var(--space-1); }
-    .mail__msg-meta { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-muted); }
-    .mail__msg p { margin: 0 0 var(--space-3); color: var(--ink); }
+    .compose__title { font-family: var(--font-mono); font-size: var(--text-sm);
+      color: var(--ink); font-weight: var(--font-weight-semibold); }
+    .compose__dots { margin-left: auto; display: flex; gap: var(--space-1); }
+    .compose__dot { width: .55rem; height: .55rem; border-radius: var(--radius-pill);
+      background: var(--line-soft); }
 
-    /* radio N checked -> show message N + light its list row */
-    #mail-1:checked ~ .mail__grid .mail__msg--1,
-    #mail-2:checked ~ .mail__grid .mail__msg--2,
-    #mail-3:checked ~ .mail__grid .mail__msg--3,
-    #mail-4:checked ~ .mail__grid .mail__msg--4 { display: block; }
-    #mail-1:checked ~ .mail__grid .mail__item[for="mail-1"],
-    #mail-2:checked ~ .mail__grid .mail__item[for="mail-2"],
-    #mail-3:checked ~ .mail__grid .mail__item[for="mail-3"],
-    #mail-4:checked ~ .mail__grid .mail__item[for="mail-4"] {
-      background: var(--panel); box-shadow: inset 3px 0 0 var(--color-accent); }
-    /* keyboard focus: the radios are visually hidden, so surface focus on their list row */
-    #mail-1:focus-visible ~ .mail__grid .mail__item[for="mail-1"],
-    #mail-2:focus-visible ~ .mail__grid .mail__item[for="mail-2"],
-    #mail-3:focus-visible ~ .mail__grid .mail__item[for="mail-3"],
-    #mail-4:focus-visible ~ .mail__grid .mail__item[for="mail-4"] {
-      outline: 2px solid var(--color-accent); outline-offset: -2px; }
+    .compose__row { display: flex; align-items: baseline; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--line-soft); }
+    .compose__key { flex: 0 0 auto; min-width: 4rem; font-size: var(--text-sm);
+      font-family: var(--font-mono); color: var(--ink-muted); }
+    .compose__to { font-size: var(--text-sm); font-weight: var(--font-weight-semibold); color: var(--ink); }
+    .compose__to small { font-weight: var(--font-weight-regular); color: var(--ink-faint);
+      font-family: var(--font-mono); }
+    .compose__field { flex: 1; min-width: 0; }
+    .compose__input, .compose__textarea { width: 100%; border: 0; padding: 0; margin: 0;
+      background: transparent; color: var(--ink); font-family: var(--type-font);
+      font-size: var(--text-base); }
+    .compose__input::placeholder, .compose__textarea::placeholder { color: var(--ink-faint); }
+    .compose__input:focus-visible, .compose__textarea:focus-visible {
+      outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+    .compose__body { padding: var(--space-4); }
+    .compose__textarea { min-height: 12rem; resize: vertical; line-height: var(--leading-relaxed); }
 
-    @media (max-width: 640px) {
-      .mail__grid { grid-template-columns: 1fr; }
-      .mail__list { border-right: 0; border-bottom: 1px solid var(--line-soft); }
-    }
+    .compose__foot { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3) var(--space-4);
+      padding: var(--space-3) var(--space-4); border-top: 1px solid var(--line-soft); background: var(--paper-2); }
+    .compose__hint { font-size: var(--text-xs); color: var(--ink-faint); flex: 1; min-width: 12rem; }
+    .compose__hint a { color: var(--ink-muted); }
   </style>
 </head>
 <body data-screen="mail" class="app-window-backdrop">
@@ -64,85 +51,46 @@
         <p class="eyebrow">✉️ <span class="name">The Desk</span></p>
         <h1 class="masthead">Mail</h1>
         <hr class="rule">
-        <p class="lede">A panel on the desk, dressed as an inbox. The messages below are illustrative,
-          postcards from around the stack rather than a live mailbox. The first one has the real way
-          to reach me. Pick a row to read it.</p>
+        <p class="lede">A panel on the desk, dressed as a compose window. This is the real contact
+          form: write your message here, press send, and it opens in your own mail app already
+          addressed to me. The site itself is plain static files, so there is no mailbox behind the
+          panel, your own does the sending. Nothing you type here is stored or sent until you do.</p>
 
-        <div class="section-head"><span>Inbox</span></div>
-        <div class="mail">
-          <input class="mail__radio" type="radio" name="mail" id="mail-1" checked aria-label="Message from The Desk">
-          <input class="mail__radio" type="radio" name="mail" id="mail-2" aria-label="Message from PROOF">
-          <input class="mail__radio" type="radio" name="mail" id="mail-3" aria-label="Message from PANTRY">
-          <input class="mail__radio" type="radio" name="mail" id="mail-4" aria-label="Message from grain">
-
-          <div class="mail__grid">
-            <ul class="mail__list">
-              <li><label class="mail__item" for="mail-1">
-                <span class="mail__from"><span class="mail__dot"></span>The Desk</span>
-                <span class="mail__subj">How to actually reach me</span>
-                <span class="mail__when">now</span>
-              </label></li>
-              <li><label class="mail__item" for="mail-2">
-                <span class="mail__from"><span class="mail__dot"></span>PROOF</span>
-                <span class="mail__subj">The board is live over SSE</span>
-                <span class="mail__when">today</span>
-              </label></li>
-              <li><label class="mail__item" for="mail-3">
-                <span class="mail__from"><span class="mail__dot"></span>PANTRY</span>
-                <span class="mail__subj">The mindmap shipped</span>
-                <span class="mail__when">this week</span>
-              </label></li>
-              <li><label class="mail__item" for="mail-4">
-                <span class="mail__from">grain</span>
-                <span class="mail__subj">One vocabulary, one direction</span>
-                <span class="mail__when">earlier</span>
-              </label></li>
-            </ul>
-
-            <div class="mail__read">
-              <article class="mail__msg mail__msg--1">
-                <div class="mail__msg-head">
-                  <h2 class="mail__msg-subj">How to actually reach me</h2>
-                  <p class="mail__msg-meta">from The Desk · to you · now</p>
-                </div>
-                <p>This inbox is a static panel, part of the desk metaphor that runs this whole site.
-                  There is no mailbox behind it, and that is on purpose: the site is plain static
-                  files, no backend to read live mail.</p>
-                <p>For the real thing, the <a href="/about">about page</a> has my email, LinkedIn, and
-                  GitHub. That is where a message actually lands.</p>
-              </article>
-              <article class="mail__msg mail__msg--2">
-                <div class="mail__msg-head">
-                  <h2 class="mail__msg-subj">The board is live over SSE</h2>
-                  <p class="mail__msg-meta">from PROOF · to The Desk · today</p>
-                </div>
-                <p>The plan board no longer renders a snapshot. It streams. Cards move as the work
-                  moves, pushed over server-sent events, on the site you are reading now.</p>
-                <p>See it on the <a href="/proof">PROOF trailhead</a>.</p>
-              </article>
-              <article class="mail__msg mail__msg--3">
-                <div class="mail__msg-head">
-                  <h2 class="mail__msg-subj">The mindmap shipped</h2>
-                  <p class="mail__msg-meta">from PANTRY · to The Desk · this week</p>
-                </div>
-                <p>PANTRY is a side tool for a project's docs and for working with the AI you already
-                  have. It is AI-legible, not AI-powered: it runs no model, it just makes a project
-                  easy for an agent to read. The whole-codebase mindmap is the newest surface.</p>
-                <p>The story is on the <a href="/pantry">PANTRY trailhead</a>.</p>
-              </article>
-              <article class="mail__msg mail__msg--4">
-                <div class="mail__msg-head">
-                  <h2 class="mail__msg-subj">One vocabulary, one direction</h2>
-                  <p class="mail__msg-meta">from grain · to The Desk · earlier</p>
-                </div>
-                <p>grain is the design system where every surface is addressable by both a human and
-                  an AI through one shared vocabulary, with the AI's presence shown as a visible
-                  signal. Two layers, one direction.</p>
-                <p>More on the <a href="/grain">grain trailhead</a>.</p>
-              </article>
-            </div>
+        <div class="section-head"><span>Compose</span></div>
+        <form class="compose" data-compose>
+          <div class="compose__bar">
+            <span class="compose__title">New message</span>
+            <span class="compose__dots" aria-hidden="true">
+              <span class="compose__dot"></span><span class="compose__dot"></span><span class="compose__dot"></span>
+            </span>
           </div>
-        </div>
+
+          <div class="compose__row">
+            <span class="compose__key">To</span>
+            <span class="compose__to">Tjakoen Stolk <small data-to-addr>(the desk)</small></span>
+          </div>
+          <div class="compose__row">
+            <label class="compose__key" for="compose-subject">Subject</label>
+            <span class="compose__field">
+              <input class="compose__input" id="compose-subject" name="subject" type="text"
+                     placeholder="What is this about?" autocomplete="off">
+            </span>
+          </div>
+          <div class="compose__body">
+            <textarea class="compose__textarea" id="compose-body" name="body" aria-label="Message"
+              placeholder="Write your message. Send hands it to your mail app, so you get a copy in your own sent folder."></textarea>
+          </div>
+
+          <div class="compose__foot">
+            <button class="btn" type="submit">Send</button>
+            <span class="compose__hint">Opens in your mail app, addressed to me.
+              <noscript>JavaScript is off, so Send can't compose for you:
+              <a href="mailto:tjakoen.s&#64;gmail.com">email me directly</a> instead.</noscript></span>
+          </div>
+        </form>
+
+        <p class="muted">Prefer another channel? The <a href="/about">about page</a> has my LinkedIn
+          and GitHub too.</p>
 
         <div class="page-foot">
           Part of <a href="/">tjakoen.github.io</a>, built with itself.
@@ -152,5 +100,28 @@
       </div>
     </main>
   </div>
+
+  <script>
+    // Static contact form: no backend receives mail, so Send composes a mailto: from the fields
+    // and hands off to the visitor's own mail app. The address is assembled from parts here rather
+    // than sitting in the page source as harvestable plaintext; the no-JS path points at /about.
+    (function () {
+      var form = document.querySelector('[data-compose]');
+      if (!form) return;
+      var to = ['tjakoen.s', 'gmail.com'].join('@');
+
+      var addr = form.querySelector('[data-to-addr]');
+      if (addr) addr.textContent = '<' + to + '>';
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var subject = form.querySelector('[name="subject"]').value.trim() || 'Hello from tjakoen.github.io';
+        var body = form.querySelector('[name="body"]').value;
+        window.location.href = 'mailto:' + to +
+          '?subject=' + encodeURIComponent(subject) +
+          '&body=' + encodeURIComponent(body);
+      });
+    })();
+  </script>
 </body>
 </html>
