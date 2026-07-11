@@ -96,6 +96,11 @@ const PROOF_CSS_OVERRIDES = `
 body[data-screen="plans"] .app-shell { --shell-aside: 0rem; }
 body[data-screen="plans"] .app-shell__aside { border-left: 0; overflow: hidden; }
 
+/* the plans screen IS the board, not prose — the shared .board wrapper caps content at the
+   readable ~768px text measure, which squeezed the four columns into a narrow scrolling strip
+   instead of letting them spread. Drop the cap here so the board uses the full main width. */
+body[data-screen="plans"] .board { max-width: none; }
+
 /* a visible scroll cue (a plain native scrollbar, not just an implicit overflow) + a smaller
    column floor so more of the board fits before anything needs to scroll at all. */
 .proof-board {

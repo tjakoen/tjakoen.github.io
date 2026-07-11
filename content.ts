@@ -15,11 +15,36 @@
 // wrote in the Markdown — at request time.
 import {
   createMillRoutes, dirSource, listMillRoutes, listMillRawRoutes,
-  type MillCollection, type MillRequestHandler, type PageChrome,
+  type ContentSource, type MillCollection, type MillRequestHandler, type PageChrome,
 } from "@tjakoen/mill/serve.ts";
 import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
 import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
-import { join } from "node:path";
+import { join, basename } from "node:path";
+import { readdir, lstat } from "node:fs/promises";
+
+// A dirSource that ignores symlinked .md files. `standards/AGENTS.md` is a symlink to CLAUDE.md
+// (the AGENTS.md tooling convention — an agent that opens the folder finds it), but dirSource
+// harvests any *.md by filename, so the alias would render the SAME doc under two slugs
+// (/standards/agents duplicating /standards/claude). This drops symlinked entries from the
+// collection: the alias stays on disk for tools, the rendered index lists each doc once.
+function realFilesSource(dir: string): ContentSource {
+  const base = dirSource(dir);
+  const aliasSlugs = async (): Promise<Set<string>> => {
+    const out = new Set<string>();
+    for (const f of await readdir(dir)) {
+      if (!f.endsWith(".md")) continue;
+      if ((await lstat(join(dir, f))).isSymbolicLink()) out.add(basename(f, ".md").toLowerCase());
+    }
+    return out;
+  };
+  return {
+    list: async () => {
+      const drop = await aliasSlugs();
+      return (await base.list()).filter((slug) => !drop.has(slug));
+    },
+    read: async (slug) => ((await aliasSlugs()).has(slug.toLowerCase()) ? null : base.read(slug)),
+  };
+}
 
 // ---- link resolution --------------------------------------------------------
 // Docs cross-link each other as relative .md paths (./AI-INTERFACE.md,
@@ -131,7 +156,7 @@ const collections: MillCollection[] = [
     prefix: "/standards",
     title: "Standards",
     description: "The cross-repo standards — how I build with an AI, how anything under my byline reads, and how a repo is set up. Canonically homed here and rendered through MILL.",
-    source: dirSource(join(import.meta.dir, "standards")),
+    source: realFilesSource(join(import.meta.dir, "standards")),
     adapter: { resolveLink: docsLink("/standards") },
   },
 ];
