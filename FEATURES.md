@@ -36,8 +36,8 @@ is **not** the "Project" product in `project/`; the portfolio only borrows the d
 | App view | Portfolio content | Route | Static-safe? |
 |---|---|---|---|
 | **Notes** | the activity stream (teaching · talks · student work · roles) + long-form posts | `/notes` (+ `/notes/:slug`) | ✅ md files |
-| **Calendar** | talks + roles as a real timeline (CV-as-calendar) + "now / currently" | `/calendar` | ✅ read-only render |
-| **Contacts** | a contact card — `mailto:` + socials + a downloadable vCard | `/contact` | ✅ static file |
+| **Calendar** | the real current month as a read-only render, with a few illustrative working blocks (client-side, no feed) | `/calendar` | ✅ read-only render |
+| **Mail** | a static inbox panel; the real way to reach me (email + socials) routes to `/about` | `/mail` | ✅ static render |
 | **The desk** | the hero AI that answers "who is this person?"; ⌘K summons it anywhere | `/` (+ everywhere) | ✅ browser demo |
 
 **Notes** replaces the earlier "feed/blog" framing — same md-in-repo content model, same
