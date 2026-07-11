@@ -16,7 +16,7 @@ It's **static markup** wired by the app's client islands, not a data-bound tag:
 
 **Nav model (THE EDITOR v3):** the RAIL is the EXPLORER — a file tree of the real sources behind
 each page (the site is its own source tree), with an `activity-bar` icon column and fixed APP links
-(Calendar / Mail / Catalog / Profile) at the bottom. The TABS are the OPEN PAGES.
+(Feed / Mail / Catalog / Profile) at the bottom. The TABS are the OPEN PAGES.
 
 Compose it as a sibling of `<main>`, inside `.app-shell.app-window` (the `<body>` carries
 `.app-window-backdrop`). It's the app's own chrome — it isn't meant to be re-instantiated in the
