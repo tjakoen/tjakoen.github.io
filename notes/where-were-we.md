@@ -12,7 +12,8 @@ summary: >
   and handoff prompts that both operators have to re-read. PROOF is a small open-source tool that
   standardizes AI plans as markdown files with six frontmatter fields and renders them as a live
   kanban board. The files are the source of truth, the board is a projection, and the AI never
-  maintains the board. Unbuilt as of this writing; this note is the argument for building it.
+  maintains the board. Written as the argument for building it; PROOF has since shipped, and the
+  dated update at the end closes the loop.
 ---
 
 Every working session with Claude starts the same way: me asking it where we were.
@@ -107,6 +108,18 @@ thing on its own board.
 And the next time a session opens, nobody has to ask where we were. The answer is on the wall,
 where answers about work in progress have belonged since somebody invented the corkboard. It took
 me an AI, a design system, and three bread puns to get back to that.
+
+## Update, 2026-07-12: it's on the wall
+
+I wrote everything above before PROOF existed. It exists now. The parser, the board, and the
+check-and-init tooling all shipped, and the board streams live over server-sent events instead of
+rendering a snapshot. The recursive bet a few paragraphs up paid off exactly as promised: the plan
+for building PROOF was the first thing on its own board. You can read that board at
+[/plans](/plans), or start at the [PROOF trailhead](/proof).
+
+The lopsided split held too. I glance at the wall instead of interrogating a chat window, and the
+machine keeps it current by flipping a status field in a file it was already editing. It has been a
+while since a session opened with anyone asking where we were.
 
 ---
 
