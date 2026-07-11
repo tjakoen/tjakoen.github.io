@@ -1,3 +1,8 @@
+---
+title: FIGURES.md — figures & visualizations
+summary: The standard for every diagram and chart - one tokenized SVG scaffold, one palette, and the mermaid-vs-SVG rule.
+---
+
 # Figures & visualizations: the standard
 
 > The standard for every diagram and chart in Tjakoen's notes, docs, and pages. Companion to

@@ -8,7 +8,7 @@ request/response captured against a running server, not a mockup. The full contr
 the whole thing.
 
 **The goal:** one surface — a task card — that a human can click *and* a decision-maker (a
-reasoner; a real model at [ROADMAP.md](../../ROADMAP.md)'s M★) can act on, through the exact same
+reasoner; a real model at [ROADMAP.md](https://github.com/tjakoen/bread/blob/main/ROADMAP.md#the-one-milestone-that-changes-what-this-is)'s M★) can act on, through the exact same
 door, validated against the same closed vocabulary, rendered back the same way.
 
 ## The five pieces, in build order
@@ -16,7 +16,7 @@ door, validated against the same closed vocabulary, rendered back the same way.
 ### 1. Name the surface and the verb — the contract
 
 Everything operable is declared in one closed registry,
-[`ai/contract.ts`](../ai/contract.ts) — never a magic string elsewhere:
+[`ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/ai/contract.ts) — never a magic string elsewhere:
 
 ```ts
 export type SurfaceKind = "item" | "reflection" | "say-stream" | "screen" | "chat-log";
@@ -36,7 +36,7 @@ render ops target.
 
 ### 2. Mark the surface in markup
 
-[`components/molecules/loop-card/loop-card.html`](../../tjakoen.github.io/components/molecules/loop-card/loop-card.html):
+[`components/molecules/loop-card/loop-card.html`](../../components/molecules/loop-card/loop-card.html):
 
 ```html
 <article class="loop-card" data-kind="item" data-accepts="item.archive"
@@ -54,7 +54,7 @@ request.
 
 ### 3. Wire the one door — the composition root
 
-[`server.ts`](../../tjakoen.github.io/server.ts) (the *only* place BATCH + GRAIN meet) builds the
+[`server.ts`](../../server.ts) (the *only* place BATCH + GRAIN meet) builds the
 interaction layer once:
 
 ```ts
@@ -70,7 +70,7 @@ const aiLayer = createInteractionLayer({
 `stream` is the `OpChannel` port (push-to-a-session); `archiveItem`/`renderSurface` are the scoped
 write capability GRAIN is handed — it never reaches storage on its own. Every request that reaches
 `POST /intent` ends up at `aiLayer.handleIntent(...)`
-([`routes/ai-routes.ts`](../../tjakoen.github.io/routes/ai-routes.ts)), which validates the intent
+([`routes/ai-routes.ts`](../../routes/ai-routes.ts)), which validates the intent
 against the registry from step 1 before it ever reaches your code:
 
 ```ts
@@ -81,7 +81,7 @@ else decision = await reasoner.decide(intent, tools);
 
 ### 4. Teach the reasoner the verb
 
-[`ai/reasoner.ts`](../ai/reasoner.ts) is the single writer — the only place a verb's effect gets
+[`ai/reasoner.ts`](https://github.com/tjakoen/grain/blob/main/ai/reasoner.ts) is the single writer — the only place a verb's effect gets
 decided. `item.archive` falls through to the default path:
 
 ```ts
@@ -100,9 +100,9 @@ branch — write, then hand back a `RenderOp` addressed at the surface it touche
 A click on the button (`data-action="item.archive"`) is turned by the client dispatcher
 (`grain/scripts/ai-dispatch.js`) into `POST /intent`. The HTTP door always stamps
 `source: "user"` — the client can never self-declare as the AI
-([`routes/ai-routes.ts`](../../tjakoen.github.io/routes/ai-routes.ts) `parseIntent`). What you
+([`routes/ai-routes.ts`](../../routes/ai-routes.ts) `parseIntent`). What you
 watched happen in step 4 runs identically no matter what triggered it: a plain click, or (once a
-real model is wired at M★, see [ROADMAP.md](../../ROADMAP.md)) an in-process decision. Same door,
+real model is wired at M★, see [ROADMAP.md](https://github.com/tjakoen/bread/blob/main/ROADMAP.md#the-one-milestone-that-changes-what-this-is)) an in-process decision. Same door,
 same registry, same reasoner — that symmetry is the whole point.
 
 ## Run it yourself

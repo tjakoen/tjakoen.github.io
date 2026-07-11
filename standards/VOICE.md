@@ -1,3 +1,8 @@
+---
+title: VOICE.md — voice & tone
+summary: The standard for anything published in Tjakoen's name - cadence, the machine-tells to avoid, and the honesty clause.
+---
+
 # Voice & Tone: how Tjakoen writes
 
 > The standard for anything published in Tjakoen's name (notes, the whitepaper, READMEs, the blog,

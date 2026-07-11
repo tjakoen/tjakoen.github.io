@@ -1,3 +1,8 @@
+---
+title: NOTE-STANDARD.md — the note / blog-post standard
+summary: How a note is put together - frontmatter, structure, the sign-off footer, plus a reusable drafting prompt.
+---
+
 # Note / blog-post standard + reusable prompt
 
 My standard for how a note (a blog post on tjakoen.github.io/notes) is put together: the frontmatter

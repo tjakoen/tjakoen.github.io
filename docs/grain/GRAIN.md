@@ -7,7 +7,7 @@ focus/editing). The AI layer adds the part where every surface is **addressable*
 **operable by both a human and an AI through one shared vocabulary**, with the AI's
 presence shown as a visible signal: *grain = AI* (the Redaction grain grade), clean =
 human. The dependency is one-directional — the AI layer uses the design system, never
-the reverse (see [`../grain/README.md`](../README.md) §0).
+the reverse (see [`grain/README.md`](https://github.com/tjakoen/grain/blob/main/README.md) §0).
 
 > **On the name.** *Grain* earns it twice: it's the literal AI signal (the Redaction
 > grain grade), and it's the *vibe* — warm paper, soft ink, that faxed/floury texture
@@ -234,5 +234,5 @@ roots**, so components compose across `grain/components` + `tjakoen.github.io/co
 The detailed contract is **[AI-INTERFACE.md](./AI-INTERFACE.md)**; the visual identity
 and grade mechanics are **[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)**; the hands-on usage
 reference (substrate contract, binding vocabulary, token slots, wiring) lives in the
-package itself, **[`../grain/README.md`](../README.md)**. When extracting:
+package itself, **[`grain/README.md`](https://github.com/tjakoen/grain/blob/main/README.md)**. When extracting:
 BATCH → its own repo; GRAIN → a repo on a substrate (BATCH the reference); product → on GRAIN.

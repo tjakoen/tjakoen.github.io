@@ -1,3 +1,8 @@
+---
+title: standards/ — how I build, write, and work with AI
+summary: The index - one line per standard, so a reader loads one file, not six.
+---
+
 # 📐 standards/ — how I build, write, and work with AI
 
 [![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://tjakoen.github.io/notes/ten-times-zero)

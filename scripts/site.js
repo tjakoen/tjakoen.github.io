@@ -13,6 +13,29 @@
   const get = (k) => { try { return store && store.getItem(k); } catch { return null; } };
   const put = (k, v) => { try { if (store) store.setItem(k, v); } catch { /* private mode */ } };
 
+  // ---- close every open SSE stream before a hard navigation (BEFORE ai-dispatch.js runs).
+  // This site does full-document navigations (no client router), so grain/scripts/ai-dispatch.js's
+  // `/stream` EventSource is still connected the instant the browser tears the page down; Chrome
+  // aborts that open chunked response mid-flight and logs `net::ERR_INCOMPLETE_CHUNKED_ENCODING`
+  // on every navigation — harmless, but it drowns out real console errors. ai-dispatch.js doesn't
+  // expose its EventSource instance for a host to close, so wrap the constructor here (site.js runs
+  // synchronously in <head>, ahead of ai-dispatch's deferred module script in the body) and close
+  // every tracked stream on the way out.
+  if (typeof window.EventSource === "function") {
+    const NativeEventSource = window.EventSource;
+    const liveStreams = new Set();
+    window.EventSource = class extends NativeEventSource {
+      constructor(...args) {
+        super(...args);
+        liveStreams.add(this);
+        this.addEventListener("error", () => { if (this.readyState === this.CLOSED) liveStreams.delete(this); });
+      }
+    };
+    const closeAllStreams = () => { for (const es of liveStreams) es.close(); liveStreams.clear(); };
+    window.addEventListener("pagehide", closeAllStreams);
+    window.addEventListener("beforeunload", closeAllStreams);
+  }
+
   // ---- refresh redirect (BEFORE paint): the welcome checkbox fires on every actual REFRESH
   // (F5 / reload), on ANY page — not just "/", and not just the first one this session.
   // CHECKED: refreshing anywhere always re-opens Welcome ("show welcome page on refresh").
@@ -36,6 +59,15 @@
   document.addEventListener("DOMContentLoaded", () => {
     // ---- remember the open page (the "reopen where you left off" cache)
     if (path !== "/") put(KEY.lastPage, path);
+
+    // ---- mobile: the open-tabs strip (grain/scripts/tabs.js) scrolls horizontally with no
+    // memory of position; with enough open tabs the active one can render off-screen on load,
+    // clipped with no visible cue it's just a scroll away. rAF, not immediate: tabs.js's own
+    // render() (also deferred) must land first so `aria-current="page"` actually exists yet.
+    requestAnimationFrame(() => {
+      document.querySelector('.tab-bar[data-open-tabs] [aria-current="page"]')
+        ?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    });
 
     // ---- the window nav: back / refresh / forward (VS Code-style, our hover color)
     document.querySelector("[data-window-back]")?.addEventListener("click", () => history.back());

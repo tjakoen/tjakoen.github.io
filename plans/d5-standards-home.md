@@ -25,6 +25,8 @@ repos only ever linked the published URL, which is unchanged.
       `@tjakoen/standards` dep + `deps:refresh` entry (keeps the auto-disable-when-absent behavior)
 - [x] Re-pin cascade (PANTRY portfolio pin → 14146b9, the standards-bearing sha), export + deploy,
       verify /standards on the live site + PANTRY's /standards from the git-dep — DONE 2026-07-09
-- [ ] Follow-up (Phase 3 / owner): the `tjakoen/standards` repo is now vestigial — archive it; and the
-      "@tjakoen/standards package, referenced never forked" language in every repo's CLAUDE.md header
-      is stale (the published URL still works). Fold into the Phase-3 CLAUDE sweep.
+- [x] Follow-up split out: the `tjakoen/standards` repo is now vestigial and needs archiving (an
+      owner action, not an AI one) — tracked separately in
+      [`d6-archive-standards-repo.md`](d6-archive-standards-repo.md) so this done-plan doesn't carry
+      an open box. The "@tjakoen/standards package, referenced never forked" CLAUDE.md language is
+      confirmed stale-but-harmless (the published URL still works) and already swept everywhere.
