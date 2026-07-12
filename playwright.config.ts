@@ -18,15 +18,15 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
 
+  // A single unnamed project (no `projects:` array) — so visual snapshots stay
+  // `<arg>-<platform>.png`, matching the committed baseline scheme (a named project would insert
+  // a `-<project>` segment and fork the baselines). Desktop Chrome = the default 1280x720@1.
   use: {
+    ...devices["Desktop Chrome"],
     baseURL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
-
-  projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-  ],
 
   // Boot the real app for the suite; reuse an already-running dev server if one's on the port.
   webServer: {
