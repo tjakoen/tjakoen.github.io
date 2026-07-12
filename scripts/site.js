@@ -191,5 +191,64 @@
       };
       tick();
     }
+
+    // ---- rest-state suggestion chips: swap in a per-page set, then route a click through the
+    // SAME one door as the composer (set the input's value, fire the existing Send). The CSS hides
+    // the whole row once your first `you` turn lands; these are just a fast way in for a cold visit.
+    const SUGGEST = {
+      "/":         ["What is BREAD?", "Who is TJ?", "Watch the AI act"],
+      "/bread":    ["Why four layers?", "What is PANTRY?", "Is this stack live?"],
+      "/grain":    ["What does 'grain' mean?", "How does the one door work?", "Watch the AI act"],
+      "/batch":    ["What is the substrate?", "Why no build step?", "What runs this site?"],
+      "/mill":     ["What does MILL do?", "How are the notes rendered?", "Show me a note"],
+      "/proof":    ["What is a plan board?", "How does PROOF track work?", "Why plans as files?"],
+      "/pantry":   ["What does PANTRY compose?", "How does the app boot?", "What is the composition root?"],
+      "/notes":    ["What's the flagship post?", "How does TJ use AI?", "Why teach with AI?"],
+      "/about":    ["How do I reach TJ?", "What's TJ's background?", "Is there a résumé?"],
+      "/loop":     ["What is the workspace?", "Watch the AI act", "How does the desk work?"],
+      "/calendar": ["What is this feed?", "How is this site built?", "Who is TJ?"],
+      "/mail":     ["How do I reach TJ?", "What is this inbox?", "Who is TJ?"],
+    };
+    const chips = document.querySelector("[data-suggest-chips]");
+    if (chips) {
+      const pick = () => {
+        if (SUGGEST[path]) return SUGGEST[path];        // exact, else longest matching prefix
+        let best = null;
+        for (const key in SUGGEST) {
+          if (key !== "/" && path.startsWith(key) && (!best || key.length > best.length)) best = key;
+        }
+        return best ? SUGGEST[best] : null;
+      };
+      const set = pick();
+      if (set) {
+        chips.replaceChildren(...set.map((q) => {
+          const b = document.createElement("button");
+          b.type = "button"; b.className = "suggest-chip"; b.setAttribute("data-suggest-ask", "");
+          b.textContent = q;                            // textContent: never inject markup
+          return b;
+        }));
+      }
+      chips.addEventListener("click", (ev) => {
+        const chip = ev.target.closest("[data-suggest-ask]");
+        if (!chip) return;
+        const input = document.querySelector('[data-surface="chat-input"]');
+        const send = document.querySelector('.assistant__composer [data-action="chat.send"][data-from]');
+        if (!input || !send) return;
+        input.value = chip.textContent;                 // reuse the one door: same path as typing + Send
+        send.click();
+      });
+    }
+
+    // ---- mobile bottom sheet: grain's scrim handler only closes the RAIL drawer, so a scrim tap
+    // (or Escape) wouldn't lower the assistant sheet. Wire those here. The grab bar (.assistant__head)
+    // and the FAB (focus-chat) already open/close it through grain's shell.js.
+    const shell = document.querySelector(".app-shell");
+    if (shell) {
+      const closeSheet = () => shell.removeAttribute("data-aside-open");
+      shell.querySelector(".app-shell__scrim")?.addEventListener("click", closeSheet);
+      document.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape" && shell.hasAttribute("data-aside-open")) closeSheet();
+      });
+    }
   });
 })();

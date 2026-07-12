@@ -65,6 +65,22 @@
   color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
 .assistant__log:has(.chat-message) .assistant__empty { display: none; }
 
+/* rest-state suggestion chips: a fast lane into the SAME one door as the composer. Shown until
+   your first message, then gone — the greeting is an `ai` turn (chips stay), a `you` turn hides
+   the whole row. Sits just above the composer so it reads as "or try one of these". */
+.assistant__suggest { display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) var(--space-2); }
+.assistant__pane:has(.assistant__log .chat-message[data-role="you"]) .assistant__suggest { display: none; }
+.assistant__suggest-label { font-family: var(--font-mono); font-size: var(--text-xs);
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-muted); }
+.assistant__suggest-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.suggest-chip { font: inherit; font-size: var(--text-sm); color: var(--color-fg);
+  background: var(--color-bg); border: 1px solid var(--color-line); border-radius: 999px;
+  padding: var(--space-1) var(--space-3); cursor: pointer; white-space: nowrap;
+  transition: border-color 0.15s ease, background 0.15s ease; }
+.suggest-chip:hover { border-color: var(--ink); background: var(--color-surface); }
+.suggest-chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
 /* Catalog pane: the embedded /catalog fills the pane; the footer sits where the chat composer
    sits (the hover hint + the full-page way out). Scroll stays contained to the pane. */
 .catalog-pane__frame { flex: 1; width: 100%; border: 0; background: var(--color-bg);
@@ -89,3 +105,44 @@
    content gets cramped: a measured widen (the peek shows one component entry at a time). It's a
    grid-column change, so the content SHIFTS aside (never overlaid). */
 .app-shell:has(.assistant[data-mode="catalog"]) { --shell-aside: clamp(18rem, 26vw, 24rem); }
+
+
+/* ═══ MOBILE: the assistant as a BOTTOM SHEET ═══════════════════════════════════════════════
+   grain's app-shell.css hides the aside on mobile ("hidden here until its bottom-sheet form
+   lands") but its shell.js ALREADY ships the mechanism — `data-aside-open` is toggled by the
+   grab bar (`.assistant__head`) and the mode tabs. This is the missing PRESENTATION: the whole
+   point of the site — "I direct, Claude types" — was unreachable on a phone. The aside re-appears
+   as a bottom sheet COLLAPSED TO ITS HEADER (a peeking grab bar); tapping it raises the full chat,
+   the scrim or another tap lowers it. Portfolio-owned override (bundled after grain), ships
+   without a grain repin. Design contract lives in e2e/mobile.e2e.ts. */
+@media (max-width: 768px) {
+  /* the aside is a fixed sheet; when closed it's pushed down so only the header peeks (a grab
+     bar), instead of vanishing (grain's display:none can't animate and left no way back in). */
+  .app-shell.app-window .app-shell__aside {
+    --sheet-peek: 3.5rem;
+    display: flex; flex-direction: column;
+    position: fixed; inset: auto 0 0 0; z-index: 44;
+    height: min(85vh, 40rem); max-height: 85vh;
+    border-top: 1px solid var(--color-line);
+    border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: 0 -0.5rem 2rem color-mix(in srgb, var(--ink) 22%, transparent);
+    transform: translateY(calc(100% - var(--sheet-peek))); transition: transform 0.3s ease;
+  }
+  .app-shell.app-window[data-aside-open] .app-shell__aside { transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .app-shell.app-window .app-shell__aside { transition: none; }
+  }
+
+  /* the head IS the grab bar: a pill handle + a clear, full-width tap target that raises/lowers
+     the sheet (wired in grain's shell.js). Extra top padding leaves room for the handle. */
+  .app-shell.app-window .assistant__head { position: relative; cursor: pointer;
+    min-height: var(--sheet-peek); padding-top: var(--space-4); }
+  .app-shell.app-window .assistant__head::before {
+    content: ""; position: absolute; top: var(--space-2); left: 50%; transform: translateX(-50%);
+    width: 2.25rem; height: 0.25rem; border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--ink) 24%, transparent); }
+
+  /* the shared mobile scrim (grain sets its base rules) also veils behind the open sheet. */
+  .app-shell.app-window[data-aside-open] .app-shell__scrim { opacity: 1; pointer-events: auto; }
+}
