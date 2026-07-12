@@ -1,0 +1,47 @@
+<!-- molecules/stack-diagram — the shared "four layers, one direction" figure that opens
+     every BREAD layer page. ONE authored SVG; each page passes current="<member>" and the
+     matching layer is ink-filled (its name in paper) while the rest stay outlined. PANTRY is
+     NOT a layer — it's the frame around the stack: the app that composes the four. Omit
+     current (the /bread overview) and nothing is singled out.
+
+     Highlight is DRY-by-config: `prop-attr-data-current="current"` stamps data-current on the
+     root (same interpolation b-icon uses for data-size); stack-diagram.css keys the fill off
+     [data-current] × [data-layer]. Colors are DRIVEN FROM THE LIVE THEME TOKENS (see the .css),
+     a deliberate deviation from FIGURES' fixed palette so the figure flips with the site theme;
+     the FIGURES geometry (0 0 620 H canvas, width 100%, role=img + a spoken aria-label, serif,
+     the 15/14/12.5 scale) is kept. No chromatic accent, no client JS. -->
+<svg class="stack-diagram" prop-attr-data-current="current"
+     viewBox="0 0 620 240" width="100%" role="img"
+     aria-label="The BREAD stack drawn as four layers built bottom to top — BATCH, then GRAIN, then MILL, then PROOF — each resting on the ones below, all wrapped by PANTRY, the app that composes them."
+     xmlns="http://www.w3.org/2000/svg">
+
+  <!-- PANTRY: the enclosing frame (the composition root), not a fifth layer -->
+  <g class="pantry" data-layer="pantry">
+    <rect class="frame" x="30.5" y="22.5" width="559" height="195" rx="10"/>
+    <text class="frame-label" x="310" y="42" text-anchor="middle">PANTRY · the app that composes the four</text>
+  </g>
+
+  <!-- "one direction": the stack builds upward, each layer resting on the ones below -->
+  <g class="direction" aria-hidden="true">
+    <line class="dir-line" x1="48" y1="196" x2="48" y2="68"/>
+    <polyline class="dir-head" points="42,76 48,64 54,76" fill="none"/>
+  </g>
+
+  <!-- the four layers, top → bottom in source (PROOF on top, BATCH the base) -->
+  <g data-layer="proof">
+    <rect class="bar" x="70" y="62" width="480" height="28" rx="6"/>
+    <text class="bar-label" x="310" y="76" text-anchor="middle" dominant-baseline="central">PROOF</text>
+  </g>
+  <g data-layer="mill">
+    <rect class="bar" x="70" y="98" width="480" height="28" rx="6"/>
+    <text class="bar-label" x="310" y="112" text-anchor="middle" dominant-baseline="central">MILL</text>
+  </g>
+  <g data-layer="grain">
+    <rect class="bar" x="70" y="134" width="480" height="28" rx="6"/>
+    <text class="bar-label" x="310" y="148" text-anchor="middle" dominant-baseline="central">GRAIN</text>
+  </g>
+  <g data-layer="batch">
+    <rect class="bar" x="70" y="170" width="480" height="28" rx="6"/>
+    <text class="bar-label" x="310" y="184" text-anchor="middle" dominant-baseline="central">BATCH</text>
+  </g>
+</svg>
