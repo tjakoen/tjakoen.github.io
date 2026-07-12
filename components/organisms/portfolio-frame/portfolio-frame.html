@@ -56,7 +56,7 @@
     <a class="activity-bar__item" href="/catalog" data-section="catalog" data-tab-label="Catalog"
        title="Catalog" aria-label="Catalog"><b-icon sym="/assets/sprite.svg#rules"></b-icon></a>
     <a class="activity-bar__item" href="/reference" data-section="reference" data-tab-label="Reference"
-       title="Reference" aria-label="Reference"><b-icon sym="/assets/sprite.svg#rules"></b-icon></a>
+       title="Reference" aria-label="Reference"><b-icon sym="/assets/sprite.svg#knowledge"></b-icon></a>
     <a class="activity-bar__item" href="/about" data-section="about" data-tab-label="Profile"
        title="Profile" aria-label="Profile"><b-icon sym="/assets/sprite.svg#settings"></b-icon></a>
   </nav>
@@ -188,6 +188,17 @@
           <button class="chat-thinking__toggle" data-shell="open-terminal" type="button" title="Open in terminal" aria-label="Open in terminal">↧</button>
         </div>
         <div class="chat-thinking__preview" data-terminal-preview></div>
+      </div>
+      <!-- rest-state suggestions: a fast way into the SAME one door as the composer (site.js sets
+           chat-input + fires Send). site.js swaps these per page (data-suggest); the whole row
+           hides once your first "you" turn lands (the typed greeting is an ai turn, so it stays). -->
+      <div class="assistant__suggest" data-suggest>
+        <span class="assistant__suggest-label">Try asking</span>
+        <div class="assistant__suggest-chips" data-suggest-chips>
+          <button type="button" class="suggest-chip" data-suggest-ask>What is BREAD?</button>
+          <button type="button" class="suggest-chip" data-suggest-ask>Who is TJ?</button>
+          <button type="button" class="suggest-chip" data-suggest-ask>How is this site built?</button>
+        </div>
       </div>
       <div class="assistant__composer">
         <input class="field__input" type="text" placeholder="Ask the desk…" aria-label="Ask the desk"
