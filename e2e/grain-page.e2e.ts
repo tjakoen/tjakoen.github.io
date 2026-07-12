@@ -299,8 +299,10 @@ test.describe("GRAIN theming — token-only re-skin (color-scheme axis; flavor a
 
   // Accent doctrine: "full reach, one hue" — the default stays hueless (accent = ink), and an
   // accented flavor's one hue reaches the links (proof of full reach via a token override alone).
-  test("accent: Sourdough is hueless (accent = ink); a flavor's hue reaches links + primary", async ({ page }) => {
+  test("accent: Sourdough is hueless (accent = ink); a flavor's hue reaches links + focus + primary", async ({ page }) => {
     await page.goto("/grain");
+    // keyboard modality so a programmatically-focused probe still matches :focus-visible
+    await page.keyboard.press("Tab");
     const cssVar = (v: string) => page.evaluate((n) =>
       getComputedStyle(document.documentElement).getPropertyValue(n).trim(), v);
     // a fresh <a> with no page-specific override, so it reflects the global `a { color: accent }`
@@ -308,14 +310,27 @@ test.describe("GRAIN theming — token-only re-skin (color-scheme axis; flavor a
       const a = document.createElement("a"); a.href = "#"; document.body.appendChild(a);
       const c = getComputedStyle(a).color; a.remove(); return c;
     });
+    // the global `:focus-visible { outline: 2px solid var(--color-accent) }` — the last reach target
+    const focusRing = () => page.evaluate(() => {
+      const a = document.createElement("a"); a.href = "#"; document.body.appendChild(a);
+      a.focus();
+      const s = getComputedStyle(a);
+      const out = { fv: a.matches(":focus-visible"), w: s.outlineWidth, st: s.outlineStyle, c: s.outlineColor };
+      a.remove(); return out;
+    });
     // hueless default: accent resolves to ink, and primary chains to accent
     expect(await cssVar("--color-accent")).toBe(await cssVar("--ink"));
     expect(await cssVar("--color-primary")).toBe(await cssVar("--color-accent"));
     const sourdoughLink = await linkColor();
-    // switch to Baguette → a real hue that reaches links (full reach via a token override alone)
+    const sourdoughRing = await focusRing();
+    expect(sourdoughRing.fv).toBe(true);              // keyboard focus IS ring-visible
+    expect(sourdoughRing.st).toBe("solid");
+    expect(sourdoughRing.w).toBe("2px");              // our rule, not the UA default
+    // switch to Baguette → a real hue that reaches links AND the focus ring (full reach, token-only)
     await page.evaluate(() => document.documentElement.setAttribute("data-theme", "baguette"));
     expect(await cssVar("--color-accent")).not.toBe(await cssVar("--ink"));
     expect(await linkColor()).not.toBe(sourdoughLink);
+    expect((await focusRing()).c).not.toBe(sourdoughRing.c);
   });
 });
 
