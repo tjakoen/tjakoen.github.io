@@ -282,8 +282,8 @@ and absorbs pieces 8–10 below.
     design-system section also **shows the colors as swatches** and offers a **token playground with
     live sliders** (+ CSS export) — the human moves the same sliders the AI does (a shared surface,
     no special API). Built later, on top of the theming tokens above.
-- **Accent color — full support, ONE signature hue** *(decided 2026-07-04; being wired in a parallel
-  thread — do not edit grain CSS/components/DESIGN-SYSTEM here until it lands):* GRAIN gains a single
+- **Accent color — full support, ONE signature hue** *(decided 2026-07-04; LANDED — links/`::selection`/
+  primary in the parallel thread, focus-ring completed 2026-07-12 in grain `637630e`; see plan d3):* GRAIN gains a single
   optional accent slot (`--color-accent` + derived `-contrast`/`-hover`/`-soft`) with **full reach**
   — links, focus rings, `::selection`, and the **primary button fill** (the one brand knob a product
   sets). The palette otherwise stays **closed**: only *one* accent, and success/danger remain
