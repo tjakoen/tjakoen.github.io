@@ -1,0 +1,43 @@
+/* molecules/stack-diagram — the shared four-layers figure (see stack-diagram.html).
+   Deliberate FIGURES deviation: the palette is the SITE's live theme tokens, not the fixed
+   FIGURES hex, so the figure re-skins with sourdough / baguette / brioche and light↔dark. No
+   chromatic accent — the only emphasis is ink-fill (current) vs outline (the rest). */
+.stack-diagram {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin: 0 0 var(--space-5);
+  font-family: Georgia, "Times New Roman", serif;   /* FIGURES: serif always */
+}
+
+/* --- resting state: every layer outlined, PANTRY frame quiet, direction cue muted --- */
+.stack-diagram .frame { fill: none; stroke: var(--color-line); stroke-width: 1; }
+.stack-diagram .frame-label { fill: var(--color-muted); font-size: 12.5px; }
+
+.stack-diagram .bar { fill: none; stroke: var(--color-muted); stroke-width: 1; }
+.stack-diagram .bar-label { fill: var(--color-fg); font-size: 14px; letter-spacing: 0.08em; }
+
+.stack-diagram .dir-line,
+.stack-diagram .dir-head { stroke: var(--color-muted); stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round; }
+
+/* --- current layer = ink-filled, its name in paper (one rule per member; CSS can't test
+       [data-current] value-equals [data-layer], so the four are spelled out) --- */
+.stack-diagram[data-current="batch"] [data-layer="batch"] .bar,
+.stack-diagram[data-current="grain"] [data-layer="grain"] .bar,
+.stack-diagram[data-current="mill"]  [data-layer="mill"]  .bar,
+.stack-diagram[data-current="proof"] [data-layer="proof"] .bar {
+  fill: var(--color-fg);
+  stroke: var(--color-fg);
+}
+.stack-diagram[data-current="batch"] [data-layer="batch"] .bar-label,
+.stack-diagram[data-current="grain"] [data-layer="grain"] .bar-label,
+.stack-diagram[data-current="mill"]  [data-layer="mill"]  .bar-label,
+.stack-diagram[data-current="proof"] [data-layer="proof"] .bar-label {
+  fill: var(--color-bg);
+}
+
+/* --- /pantry: the composition-root frame is the subject, so emphasize it --- */
+.stack-diagram[data-current="pantry"] .frame { stroke: var(--color-fg); stroke-width: 2; }
+.stack-diagram[data-current="pantry"] .frame-label { fill: var(--color-fg); }
