@@ -17,7 +17,7 @@ test.describe("the portfolio workspace shell (BREAD frame, on /)", () => {
     // then the fixed APP links below a spacer (VS Code's bottom icon group), never hidden by the
     // explorer's own collapse/mobile-drawer state.
     await expect(page.locator('.activity-bar__item[data-shell="rail-toggle"]')).toHaveAttribute("aria-label", "Explorer");
-    for (const [label, href] of [["Calendar", "/calendar"], ["Mail", "/mail"], ["Catalog", "/catalog"], ["Profile", "/about"]] as const)
+    for (const [label, href] of [["Feed", "/calendar"], ["Mail", "/mail"], ["Catalog", "/catalog"], ["Profile", "/about"]] as const)
       await expect(page.locator(`.activity-bar__item[href="${href}"]`)).toHaveAttribute("aria-label", label);
     // the assistant + console live on the page — the site-wide AI's home
     await expect(page.locator('.app-shell__aside [data-surface="chat-log"]')).toBeAttached();
