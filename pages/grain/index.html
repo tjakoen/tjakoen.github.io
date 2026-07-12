@@ -105,22 +105,8 @@
       .surface__rail { flex-direction: row; flex-wrap: wrap; border-right: 0; padding-right: 0;
         border-bottom: 1px solid var(--color-line); padding-bottom: var(--space-3); } }
 
-    /* the terminal: hidden at rest; RISES while the AI acts (backdrop on) and lifts above the
-       spotlight veil so its narration is readable over the dim — the /grain analogue of /loop's
-       app-shell console takeover. */
-    .surface-term { display: none; }
-    body:has(.ai-backdrop.is-on) .surface-term { display: block; position: relative;
-      z-index: var(--z-ai-surface, 9002); margin-top: var(--space-5);
-      border: 1px solid var(--ink); border-radius: var(--radius-md); overflow: hidden;
-      background: var(--paper); }
-    .surface-term__bar { display: flex; align-items: center; gap: var(--space-2);
-      padding: var(--space-2) var(--space-4); border-bottom: 1px solid var(--color-line);
-      font-family: var(--font-grain); font-size: var(--text-sm); color: var(--color-muted); }
-    .surface-term .console__feed { padding: var(--space-3) var(--space-4); max-height: 12rem;
-      overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-2); }
-    .surface-term .console__line { display: flex; align-items: baseline; gap: var(--space-3);
-      font-size: var(--text-sm); }
-    @media (prefers-reduced-motion: reduce) { .surface-term { scroll-behavior: auto; } }
+    /* (the standalone .surface-term terminal is retired — an AI run now narrates to the shell
+       console, which rises on takeover; see the note above the timeline. No page-local CSS needed.) */
 
     /* how it works — a small monochrome diagram */
     .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-2); margin: var(--space-6) 0; }
@@ -194,7 +180,7 @@
         <b-button as="a" href="#how" label="How it works" variant="soft"></b-button>
       </div>
       <p class="site__why">Every surface on this page is one of GRAIN's own components. Open the
-        <b>Catalog</b> tab and hover anything: the peek reveals its entry.</p>
+        <b>Catalog</b> tab, then hover anything — or tap it on a touch screen — to reveal its entry.</p>
     </section>
 
     <!-- 2 · GRADE-AS-SIGNAL — grain = AI / in-transit, clean = human / committed -->

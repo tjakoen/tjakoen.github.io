@@ -319,7 +319,7 @@ test.describe("GRAIN theming — token-only re-skin (color-scheme axis; flavor a
   });
 });
 
-test.describe("/grain on a touch device — the reveal mechanic is pointer-only", () => {
+test.describe("/grain on a touch device — the reveal mechanic adapts to a finger", () => {
   test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 800 } });
 
   test("the pane shows the full, scrollable catalog (no single-mode reveal) on touch", async ({ page }) => {
@@ -332,5 +332,20 @@ test.describe("/grain on a touch device — the reveal mechanic is pointer-only"
     await expect(cat.locator(".cat")).toBeVisible();                       // wait for the embedded catalog to load
     await expect(cat.locator(".cat[data-peek-single]")).toHaveCount(0);    // single mode off — hover makes no sense on touch
     await expect(cat.locator(".cat-doc").nth(1)).toBeAttached();           // >1 entry present (the full list to scroll)
+  });
+
+  test("tapping a component opens the Catalog sheet and brings that entry into view", async ({ page }) => {
+    await page.goto("/grain");
+    const pane = page.locator('.assistant__pane[data-pane="catalog"]');
+    // a finger can't hover — TAP a catalogued component (the How-it-works list) to bridge to it
+    await page.locator("#how .list").first().dispatchEvent("click");
+    // the sheet opens on the Catalog pane and records which entry the tap pointed at
+    await expect(page.locator(".assistant")).toHaveAttribute("data-mode", "catalog");
+    await expect(page.locator(".app-shell")).toHaveAttribute("data-aside-open", "");
+    await expect(pane).toHaveAttribute("data-peek-slug", "list");
+    // full list stays (not single mode) and the tapped entry is scrolled into the viewport
+    const cat = page.frameLocator(".catalog-pane__frame");
+    await expect(cat.locator(".cat[data-peek-single]")).toHaveCount(0);
+    await expect(cat.locator("#list")).toBeInViewport({ ratio: 0.1 });
   });
 });
