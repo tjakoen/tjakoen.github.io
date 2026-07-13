@@ -71,7 +71,7 @@ const CATALOG_ASSETS = `<link rel="stylesheet" href="/styles/cmdk.css"><script s
 // xray.js (dev x-ray: dormant until toggled), desk-commands (registers only if the terminal seam
 // exists) — all deferred/no-op where their hook is absent, so one list serves every page.
 const PAGE_HEAD = `<script src="/scripts/theme-boot.js"></script><link rel="stylesheet" href="/styles/variables.css"><link rel="stylesheet" href="/styles/global.css"><link rel="stylesheet" href="/styles/grain.css"><link rel="stylesheet" href="/components.css"><script src="/site/site.js"></script>`;
-const PAGE_ASSETS = `${CATALOG_ASSETS}<script src="/scripts/shell.js" defer></script><script type="module" src="/scripts/ai-dispatch.js"></script><script type="module" src="/scripts/tabs.js"></script><script type="module" src="/scripts/terminal.js"></script><script type="module" src="/scripts/xray.js"></script><script type="module" src="/site/desk-commands.js"></script>`;
+const PAGE_ASSETS = `${CATALOG_ASSETS}<script src="/scripts/shell.js" defer></script><script src="/scripts/catalog-peek.js" defer></script><script type="module" src="/scripts/ai-dispatch.js"></script><script type="module" src="/scripts/tabs.js"></script><script type="module" src="/scripts/terminal.js"></script><script type="module" src="/scripts/xray.js"></script><script type="module" src="/site/desk-commands.js"></script>`;
 // ONE page server now — the portfolio IS the app (composition root folded in). Every page
 // composes with LIVE data (the welcome page's Recent = the newest notes from MILL frontmatter);
 // the static export freezes what this renders (§18 — projection, not re-render). The /loop +
