@@ -39,6 +39,7 @@ const screens: Array<[name: string, path: string]> = [
   ["batch", "/batch"],       // the BATCH showcase
   ["catalog", "/catalog"],   // the generated component catalog
   ["about", "/about"],       // a plain content page
+  ["notes", "/notes"],       // the /notes feed (Pass 1 — Notes: a portfolio route override)
 ];
 
 for (const [name, path] of screens) {

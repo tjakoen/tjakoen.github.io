@@ -133,6 +133,11 @@ const collections: MillCollection[] = [
     adapter: { resolveLink: notesLink },
     indexVariant: "log",
     itemSurfacePrefix: "note",
+    // The portfolio owns the /notes INDEX as a Reddit-style feed (renderNotesFeedPage, below) —
+    // a route override MILL has no hook for (the one gap: a proposed grain follow-up is an
+    // `indexRenderer` hook on MillCollection). MILL still renders each entry (/notes/:slug)
+    // untouched; only the listing itself is opted out here.
+    index: false,
   },
   {
     prefix: "/grain/docs",
@@ -176,8 +181,13 @@ export function createPortfolioContentRoutes(
 
 /** Every content route (index + entries per collection) — content pages are exportable
  *  by definition (§18), so the sitemap and the export allowlist both feed from this. */
-export function listPortfolioContentRoutes(): Promise<string[]> {
-  return listMillRoutes(collections);
+export async function listPortfolioContentRoutes(): Promise<string[]> {
+  const routes = await listMillRoutes(collections);
+  // /notes is opted OUT of MILL's own index serving (index: false, above) — the portfolio
+  // serves that route itself (renderNotesFeedPage, mounted at server.ts). Re-append it so the
+  // sitemap, /search.json's page list, and the export allowlist still carry the route.
+  if (!routes.includes("/notes")) routes.push("/notes");
+  return routes;
 }
 
 /** Every entry's raw `.md` twin — a DATA route (literal bytes, no chrome), so a caller feeds
@@ -188,24 +198,158 @@ export function listPortfolioRawContentRoutes(): Promise<string[]> {
 
 // Every note's frontmatter, newest-first (undated last, then by slug) — the SAME order MILL's
 // own /notes index uses (mill/serve.ts's byDateDesc). Shared so every OTHER consumer that lists
-// notes (the Welcome "Recent" feed, the explorer tree via /search.json) matches it, rather than
-// each re-deriving its own order or falling back to alphabetical route order.
-async function sortedNoteEntries(): Promise<Array<{ slug: string; title: string; date: string }>> {
+// notes (the Welcome "Recent" feed, the explorer tree via /search.json, and the /notes feed
+// itself) matches it, rather than each re-deriving its own order or falling back to alphabetical
+// route order.
+//
+// Widened (Pass 1 — Notes feed) to carry the full frontmatter the feed cards need: `score` is
+// the real reading-minutes number parsed from `readingTime` (the "vote" glyph — a tooltip on the
+// card says so, it is never a popularity count), and `sections` is a real count of `## ` headings
+// in the note's own body (the feed's "N sections" link, standing in for a comment count).
+export interface NoteFeedEntry {
+  slug: string;
+  title: string;
+  date: string;
+  subtitle: string;
+  summary: string;
+  readingTime: string;
+  score: number;
+  tags: string[];
+  sections: number;
+}
+async function sortedNoteEntries(): Promise<NoteFeedEntry[]> {
   const notes = collections[0]!;                     // the "/notes" collection above
-  const entries: Array<{ slug: string; title: string; date: string }> = [];
+  const entries: NoteFeedEntry[] = [];
   for (const slug of await notes.source.list()) {
     const raw = await notes.source.read(slug);
     if (raw === null) continue;
-    const fm = parseFrontmatter(raw).data;
+    const { data: fm, body } = parseFrontmatter(raw);
+    const readingTime = typeof fm.readingTime === "string" ? fm.readingTime : "";
+    const scoreMatch = readingTime.match(/\d+/);
     entries.push({
       slug,
       title: typeof fm.title === "string" ? fm.title : slug,
       date: typeof fm.date === "string" ? fm.date : "",
+      subtitle: typeof fm.subtitle === "string" ? fm.subtitle : "",
+      summary: typeof fm.summary === "string" ? fm.summary : "",
+      readingTime,
+      score: scoreMatch ? Number(scoreMatch[0]) : 0,
+      tags: Array.isArray(fm.tags) ? fm.tags : [],
+      sections: (body.match(/^## /gm) ?? []).length,
     });
   }
   entries.sort((a, b) => a.date === b.date ? a.slug.localeCompare(b.slug)
     : a.date === "" ? 1 : b.date === "" ? -1 : b.date.localeCompare(a.date));
   return entries;
+}
+
+/** The /notes index, server-composed as a Reddit-style feed (Pass 1 — Notes: a route override,
+ *  not a MILL fork — the /notes collection opts out of MILL's own index serving above). Cards
+ *  carry `data-surface="note:<slug>"` (the reasoner's travel target, notes-demo.e2e.ts) and are
+ *  wrapped with the SAME `shellChrome` every MILL content page uses (`kind: "index"`), so
+ *  `data-screen/data-section="notes"` and the "See what's new" AI trigger come for free. The
+ *  New/Top sort + tag filter are a small inline island that only reorders/hides the `<li>` nodes
+ *  already in the page (no fetch, no new data route); with no JS the list stays newest-first and
+ *  the controls stay hidden. "Top" sorts by `score` — real reading minutes parsed from each
+ *  note's own `readingTime` frontmatter, never a vote count (the vote glyph says so via its
+ *  `title`). "N sections" is a real count of `## ` headings in the note's body, standing in for
+ *  a comment count and linking straight into the entry. */
+export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise<string> {
+  const notes = collections[0]!;                     // the "/notes" collection above
+  const entries = await sortedNoteEntries();
+
+  // the union of every note's tags, in first-seen (newest-first) order — stable across renders
+  // since sortedNoteEntries' own sort is stable.
+  const allTags: string[] = [];
+  for (const e of entries) for (const t of e.tags) if (!allTags.includes(t)) allTags.push(t);
+  const tagChips = allTags.map((t) => {
+    const tag = escapeHtml(t);
+    return `<label class="chip"><input type="checkbox" value="${tag}"> ${tag}</label>`;
+  }).join("");
+
+  const cards = entries.map((e) => {
+    const slug = escapeHtml(e.slug);
+    const date = escapeHtml(e.date);
+    const time = e.date ? `<time datetime="${date}">${date}</time>` : "";
+    const byline = `Tjakoen Stolk · the desk${time ? ` · ${time}` : ""}`;
+    const summary = escapeHtml(e.summary || e.subtitle);
+    const tags = e.tags.map((t) => `<span class="badge" data-status="active">${escapeHtml(t)}</span>`).join("");
+    const dataTags = escapeHtml(e.tags.join(" "));
+    return `<li class="note-card" data-surface="note:${slug}" data-date="${date}" data-score="${e.score}" data-tags="${dataTags}">
+        <div class="note-card__vote" aria-hidden="true" title="Reading minutes, from the note's own frontmatter. Not votes.">&#9650;<span class="note-card__score">${e.score}</span></div>
+        <div class="note-card__main">
+          <p class="note-card__byline">${byline}</p>
+          <h2 class="note-card__title"><a href="/notes/${slug}">${escapeHtml(e.title)}</a></h2>
+          <p class="note-card__summary">${summary}</p>
+          <p class="note-card__foot"><span class="note__tags">${tags}</span>
+            <a class="note-card__sections" href="/notes/${slug}">${e.sections} sections</a></p>
+        </div>
+      </li>`;
+  }).join("\n");
+
+  // The inline island: pure DOM reorder/hide over the cards already in the page (no fetch, no
+  // new data route). Guarded so a missing form/list (or no JS at all) leaves the newest-first
+  // list visible and the controls hidden, per the brief's no-JS requirement.
+  const island = `<script>
+    (function () {
+      var form = document.querySelector("[data-feed-controls]");
+      var list = document.querySelector(".note-feed");
+      if (!form || !list) return;
+      var cards = Array.prototype.slice.call(list.querySelectorAll(".note-card"));
+      var newest = cards.slice();   // New = the original newest-first DOM order
+
+      function sortCards() {
+        var checked = form.querySelector('input[name="sort"]:checked');
+        var mode = checked ? checked.value : "new";
+        var ordered = mode === "top"
+          ? newest.slice().sort(function (a, b) {
+              return Number(b.getAttribute("data-score")) - Number(a.getAttribute("data-score"));
+            })
+          : newest;
+        ordered.forEach(function (card) { list.appendChild(card); });
+      }
+
+      function filterCards() {
+        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
+        var wanted = boxes.map(function (b) { return b.value; });
+        cards.forEach(function (card) {
+          if (wanted.length === 0) { card.hidden = false; return; }
+          var tags = (card.getAttribute("data-tags") || "").split(" ");
+          card.hidden = wanted.every(function (t) { return tags.indexOf(t) === -1; });
+        });
+      }
+
+      form.addEventListener("change", function (ev) {
+        var target = ev.target;
+        if (!target) return;
+        if (target.name === "sort") sortCards();
+        else if (target.type === "checkbox") filterCards();
+      });
+
+      form.hidden = false;   // reveal the controls only once the island is live
+    })();
+  </script>`;
+
+  const body = `<form class="feed-controls" data-feed-controls hidden>
+      <div class="chips" role="radiogroup" aria-label="Sort">
+        <label class="chip"><input type="radio" name="sort" value="new" checked> New</label>
+        <label class="chip"><input type="radio" name="sort" value="top"> Top</label>
+      </div>
+      <div class="chips" aria-label="Filter by tag">${tagChips}</div>
+    </form>
+    <ul class="note-feed">
+${cards}
+    </ul>
+    ${island}`;
+
+  return shellChrome(inject, injectHead)({
+    kind: "index",
+    title: notes.title,
+    description: notes.description ?? "",
+    body,
+    collection: notes,
+    slug: undefined,
+  });
 }
 
 /** The welcome page's "Recent" feed: the newest notes, straight from MILL frontmatter —
