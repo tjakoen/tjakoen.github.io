@@ -40,18 +40,22 @@ const OPERABLE = new Set<string>();
 // "offline". The loopback client door runs the same vocabulary in-browser, so the desk stays online
 // and quiet everywhere. The live dev server keeps the server door (no marker); only the frozen copy
 // carries it. Safe to stamp unconditionally, `/loop` included: the client door would actually run
-// the demo fine in-browser (same as the /grain showcase), but /loop's OWN task list is real
-// per-deploy data with no live backend behind it (no real Archive, no real reasoner) — so
-// pages/loop.html's own script reads this same marker to show an honest "static snapshot" banner
-// and disable the free-text composer, rather than let a visitor believe they're talking to the
-// live desk.
-const MODULE_ENTRIES = ["/modules/grain/ai/client-door.js"];
+// the demo fine in-browser, but /loop's OWN task list is real per-deploy data with no live backend
+// behind it — so pages/loop.html's own script reads this same marker to show an honest "static
+// snapshot" banner and disable the free-text composer.
+// The desk door (ai/desk-door.js) is the portfolio's OWN client door — data-ai-door selects it over
+// grain's default. Freezing it as an entry crawls its static graph (desk-reasoner, webllm-loader,
+// prompt, retrieval); grain's door/reasoner are already frozen via the entry below, and WebLLM's URL
+// import is a runtime string (not followed, so esm.run never enters the export).
+// manifest-dom is URL-imported by the desk door (for "what can I do here?"), so a static crawl of the
+// door's graph won't reach it — freeze it as its own entry.
+const MODULE_ENTRIES = ["/modules/grain/ai/client-door.js", "/modules/grain/ai/manifest-dom.js", "/modules/portfolio/ai/desk-door.js"];
 
-// Generated routes that a href/src crawler won't discover: the ⌘K palette's index, the SEO infra,
-// and PROOF's stylesheet (board.css + this host's overrides, concatenated at /proof.css —
-// server.ts) — every /plans page links it, so now that /plans exports (Phase 2, task 1) it must
-// travel too, or the frozen board ships unstyled.
-const DATA_ROUTES = ["/components.css", "/proof.css", "/search.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
+// Generated routes that a href/src crawler won't discover: the ⌘K palette's index, the desk's
+// grounding corpus (knowledge/notes), the SEO infra, and PROOF's stylesheet (/proof.css — every
+// /plans page links it, so now that /plans exports (Phase 2) it must travel too, or the frozen
+// board ships unstyled).
+const DATA_ROUTES = ["/components.css", "/proof.css", "/search.json", "/knowledge.json", "/notes.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
 
 // Every content entry's raw `.md` twin (MILL's honest-source route) — a data route (literal
 // bytes, no chrome), never a page: freezing it here (not `pages`) keeps the export honest and
@@ -108,7 +112,8 @@ try {
     assets: assetMounts(),
     moduleEntries: MODULE_ENTRIES,
     transformPage: (route, html) => {
-      let out = html.replace(/<body\b/, '<body data-ai-transport="client"');
+      // client transport + the portfolio's OWN door (desk-door selects the WebLLM path over grain's default)
+      let out = html.replace(/<body\b/, '<body data-ai-transport="client" data-ai-door="/modules/portfolio/ai/desk-door.js"');
       // /loop's frozen snapshot (server.ts freezeLoopList) already carries the real list; strip
       // the live htmx auto-refresh so the static copy never requests the backend-only /ui/loop
       // (a 404 on GitHub Pages) — pages/loop.html documents the pairing.

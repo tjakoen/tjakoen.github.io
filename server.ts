@@ -28,7 +28,7 @@ import { LoopCard } from "./demo/view/components.ts";
 import { toLoopCardView } from "./demo/services/task-views.ts";
 import type { Task } from "./demo/domain/task.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage } from "./content.ts";
+import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 // --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
 import { createProofRoutes } from "@tjakoen/proof/routes.ts";
@@ -76,10 +76,21 @@ const PAGE_ASSETS = `${CATALOG_ASSETS}<script src="/scripts/shell.js" defer></sc
 // composes with LIVE data (the welcome page's Recent = the newest notes from MILL frontmatter);
 // the static export freezes what this renders (§18 — projection, not re-render). The /loop +
 // /about demo pages ignore the injected recentNotes; injecting it everywhere costs nothing.
+// Dev seam for the DESK's client door: the export stamps data-ai-transport="client" on the frozen
+// site (tools/export.ts); in dev the server door (SSE) is used, so the real WebLLM path is untested.
+// Set AI_DOOR=1 (`AI_DOOR=1 bun run dev`) to stamp the same client-transport + desk-door markers on
+// live pages, so the local-model path can be exercised in a WebGPU browser without exporting first.
+const stampDevDoor = (html: string): string =>
+  Bun.env.AI_DOOR
+    ? html.replace(/<body\b/, '<body data-ai-transport="client" data-ai-door="/modules/portfolio/ai/desk-door.js"')
+    : html;
 const renderAppPage = async (html: string) =>
-  renderPage(html, { recentNotes: await listRecentNotes() });
+  stampDevDoor(await renderPage(html, { recentNotes: await listRecentNotes() }));
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
-const serveContent = createPortfolioContentRoutes(renderPage, PAGE_ASSETS, PAGE_HEAD);   // MILL mount (same global assets + head)
+const serveContent = createPortfolioContentRoutes(
+  async (html: string) => stampDevDoor(await renderPage(html)),
+  PAGE_ASSETS, PAGE_HEAD,
+);   // MILL mount (same global assets + head) — desk-door marker stamped so the WebLLM path can arm
 // /loop, frozen (Phase 2, §18): splice the live task list into the placeholder the composed page
 // already carries (pages/loop.html's `#loop-list` div). A static crawl has no backend to htmx-fetch
 // /ui/loop from, so without this the exported page would show the page's resting "Loading…" shell
@@ -334,6 +345,12 @@ ${PAGE_ASSETS}</body>
       const components = (await catalog.entries()).map((c) => ({ title: c.name, subtitle: c.layer, url: `/catalog#${c.slug}` }));
       return Response.json({ pages, components });
     },
+    // the desk's grounding corpus: every note + layer doc + the facts block, compiled to chunks
+    // with a df table (content.ts/ai). The browser model fetches this, never the repo. A data route
+    // (§18) so the export freezes it alongside /search.json.
+    "/knowledge.json": async () => Response.json(await buildPortfolioKnowledge()),
+    // newest-first notes ({slug,title,route}) for the desk's "open the latest note" action.
+    "/notes.json": async () => Response.json(await listPortfolioNotes()),
     // Trailing-slash CANONICAL urls, not batch's sitemap.xml() as-is: this app is hosted on
     // GitHub Pages (dist/<route>/index.html), which serves a directory at its OWN url (e.g.
     // "/grain/") and 301-redirects the extensionless form ("/grain") to it. Listing the

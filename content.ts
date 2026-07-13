@@ -21,6 +21,8 @@ import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
 import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
+import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
+import { FACTS_ROUTE, type Knowledge } from "./ai/retrieval.ts";
 
 // A dirSource that ignores symlinked .md files. `standards/AGENTS.md` is a symlink to CLAUDE.md
 // (the AGENTS.md tooling convention — an agent that opens the folder finds it), but dirSource
@@ -196,6 +198,43 @@ export function listPortfolioRawContentRoutes(): Promise<string[]> {
   return listMillRawRoutes(collections);
 }
 
+// ---- the desk's build-time knowledge corpus (ai/knowledge.ts) -----------------
+// The local browser model is grounded on the SITE'S OWN CONTENT: every note + the layer docs, plus
+// a hand-authored facts block. /standards is skipped (internal), and the PLAN/FEATURES/CONTENT docs
+// are simply not collections here, so they never enter the corpus. Served frozen as /knowledge.json
+// (§18 data route) so the export freezes it and the model fetches it, never the repo.
+export async function listKnowledgeSources(): Promise<KnowledgeSource[]> {
+  const out: KnowledgeSource[] = [];
+  for (const col of collections) {
+    if (col.prefix === "/standards") continue;           // internal standards — not desk grounding
+    for (const slug of await col.source.list()) {
+      const raw = await col.source.read(slug);
+      if (raw === null) continue;
+      const { data, body } = parseFrontmatter(raw);
+      out.push({
+        route: `${col.prefix}/${slug}`,
+        title: typeof data.title === "string" ? data.title : slug,
+        markdown: body,
+      });
+    }
+  }
+  // the hand-authored grounding (bio, "What is BREAD?", how the site is built) — covers the chips.
+  const factsRaw = await Bun.file(join(import.meta.dir, "ai", "facts.md")).text();
+  const facts = parseFrontmatter(factsRaw);
+  out.push({
+    route: FACTS_ROUTE,
+    title: typeof facts.data.title === "string" ? facts.data.title : "About",
+    markdown: facts.body,
+  });
+  return out;
+}
+
+/** The compiled corpus the desk retrieves against — served at /knowledge.json (and frozen by the
+ *  export). Built from the live content each call; the corpus is small, so no cache is needed. */
+export async function buildPortfolioKnowledge(): Promise<Knowledge> {
+  return buildKnowledge(await listKnowledgeSources());
+}
+
 // Every note's frontmatter, newest-first (undated last, then by slug) — the SAME order MILL's
 // own /notes index uses (mill/serve.ts's byDateDesc). Shared so every OTHER consumer that lists
 // notes (the Welcome "Recent" feed, the explorer tree via /search.json, and the /notes feed
@@ -368,4 +407,11 @@ export async function listRecentNotes(limit = 4): Promise<RecentNote[]> {
  *  notes/ entries so the sidebar menu reflects the same date order as the page itself). */
 export async function listNoteRoutesByDate(): Promise<string[]> {
   return (await sortedNoteEntries()).map((e) => `/notes/${e.slug}`);
+}
+
+/** Newest-first notes ({slug,title,route}) for the desk's "open the latest note" action — served
+ *  frozen as /notes.json (a §18 data route) so the browser model can pick the newest with a real
+ *  title, never the sitemap's slug-cased fallback. */
+export async function listPortfolioNotes(): Promise<Array<{ slug: string; title: string; route: string }>> {
+  return (await sortedNoteEntries()).map((e) => ({ slug: e.slug, title: e.title, route: `/notes/${e.slug}` }));
 }

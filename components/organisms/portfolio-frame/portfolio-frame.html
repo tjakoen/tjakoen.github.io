@@ -61,7 +61,7 @@
           <details class="file-tree__dir" open>
             <summary>portfolio/</summary>
             <div class="file-tree__children">
-              <a class="file-tree__file" href="/" data-variant="index" data-tab-label="Welcome">index.html</a>
+              <a class="file-tree__file" href="/" data-variant="index" data-tab-label="Welcome" data-surface="nav:/">index.html</a>
               <a class="file-tree__file" href="/resume" data-tab-label="Résumé">resume.html</a>
               <a class="file-tree__file" href="/loop" data-tab-label="Loop">loop.html</a>
             </div>
@@ -73,16 +73,16 @@
               <details class="file-tree__dir">
                 <summary>bread-stack/</summary>
                 <div class="file-tree__children">
-                  <a class="file-tree__file" href="/bread" data-variant="index" data-tab-label="BREAD">index.html</a>
-                  <a class="file-tree__file" href="/batch" data-tab-label="BATCH">batch.html</a>
-                  <a class="file-tree__file" href="/batch/docs" data-tab-label="batch/docs">docs.html</a>
-                  <a class="file-tree__file" href="/grain" data-tab-label="GRAIN">grain.html</a>
-                  <a class="file-tree__file" href="/grain/docs" data-tab-label="grain/docs">docs.html</a>
-                  <a class="file-tree__file" href="/mill" data-tab-label="MILL">mill.html</a>
-                  <a class="file-tree__file" href="/proof" data-tab-label="PROOF">proof.html</a>
+                  <a class="file-tree__file" href="/bread" data-variant="index" data-tab-label="BREAD" data-surface="nav:/bread">index.html</a>
+                  <a class="file-tree__file" href="/batch" data-tab-label="BATCH" data-surface="nav:/batch">batch.html</a>
+                  <a class="file-tree__file" href="/batch/docs" data-tab-label="batch/docs" data-surface="nav:/batch/docs">docs.html</a>
+                  <a class="file-tree__file" href="/grain" data-tab-label="GRAIN" data-surface="nav:/grain">grain.html</a>
+                  <a class="file-tree__file" href="/grain/docs" data-tab-label="grain/docs" data-surface="nav:/grain/docs">docs.html</a>
+                  <a class="file-tree__file" href="/mill" data-tab-label="MILL" data-surface="nav:/mill">mill.html</a>
+                  <a class="file-tree__file" href="/proof" data-tab-label="PROOF" data-surface="nav:/proof">proof.html</a>
                 </div>
               </details>
-              <a class="file-tree__file" href="/pantry" data-tab-label="PANTRY">pantry.html</a>
+              <a class="file-tree__file" href="/pantry" data-tab-label="PANTRY" data-surface="nav:/pantry">pantry.html</a>
               <a class="file-tree__file" href="/greenroom" data-tab-label="Greenroom">greenroom.html</a>
               <details class="file-tree__dir">
                 <summary>native-github-classroom/</summary>
@@ -115,7 +115,7 @@
          Each row is a full-width <a>; site.js marks the current one aria-current="page" (prefix
          match for Notes, exact for the rest). ═══ -->
     <nav class="app-dock" aria-label="Apps">
-      <a class="app-dock__item" href="/notes" data-section="notes" data-tab-label="Notes" title="Notes">
+      <a class="app-dock__item" href="/notes" data-section="notes" data-tab-label="Notes" title="Notes" data-surface="nav:/notes">
         <span class="app-dock__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
             <path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.5 9h2M9.5 12.5h5M9.5 16h5"/>
@@ -139,7 +139,7 @@
         </span>
         <span class="app-dock__label">Mail</span>
       </a>
-      <a class="app-dock__item" href="/about" data-section="about" data-tab-label="About" title="About">
+      <a class="app-dock__item" href="/about" data-section="about" data-tab-label="About" title="About" data-surface="nav:/about">
         <span class="app-dock__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/>
@@ -180,6 +180,8 @@
         <button type="button" data-shell-mode="chat" aria-selected="true">Chat</button>
         <button type="button" data-shell-mode="catalog" aria-selected="false">Catalog</button>
       </nav>
+      <!-- New chat: clears the persisted conversation + the desk's memory and re-greets (site.js). -->
+      <button type="button" class="assistant__newchat" data-desk-newchat title="Start a new conversation" aria-label="New conversation">New chat</button>
     </div>
     <div class="assistant__pane" data-pane="chat">
       <!-- the desk appends here over SSE (chat.send → your bubble + the streamed reply). Site-wide.
@@ -194,12 +196,13 @@
         </div>
         <div class="chat-thinking__preview" data-terminal-preview></div>
       </div>
-      <!-- rest-state suggestions: a fast way into the SAME one door as the composer (site.js sets
-           chat-input + fires Send). site.js swaps these per page (data-suggest); the whole row
-           hides once your first "you" turn lands (the typed greeting is an ai turn, so it stays). -->
+      <!-- suggestions: a fast way into the SAME one door as the composer (site.js sets chat-input +
+           fires Send). site.js seeds a per-page set; after each answer the desk REPLACES the chips
+           (data-surface="suggest-chips") with follow-ups drawn from what it just grounded on. The
+           row stays visible the whole conversation (site.js delegates the click on this stable row). -->
       <div class="assistant__suggest" data-suggest>
         <span class="assistant__suggest-label">Try asking</span>
-        <div class="assistant__suggest-chips" data-suggest-chips>
+        <div class="assistant__suggest-chips" data-suggest-chips data-surface="suggest-chips">
           <button type="button" class="suggest-chip" data-suggest-ask>What is BREAD?</button>
           <button type="button" class="suggest-chip" data-suggest-ask>Who is TJ?</button>
           <button type="button" class="suggest-chip" data-suggest-ask>How is this site built?</button>
@@ -212,6 +215,13 @@
           <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#send"></use></svg>
         </button>
       </div>
+      <!-- Desk Offline: shown only when the local model can't run (body[data-desk="offline"], set by
+           the desk door on a WebGPU/load failure). The composer + suggest chips hide; the chat LOG
+           stays, so a stub-driven digest (notes "see what's new") still lands somewhere visible. -->
+      <p class="assistant__offline" data-desk-offline>
+        <b-icon sym="/assets/sprite.svg#spark"></b-icon>
+        <span>The desk is offline. It runs a small AI model in your browser, and this browser can't run it. The rest of the site works as usual.</span>
+      </p>
     </div>
     <!-- Catalog pane — the peek as a sidebar-panel mode: embeds /catalog lazily; on /grain,
          hovering a component reveals its entry (grain/scripts/catalog-peek.js). -->
