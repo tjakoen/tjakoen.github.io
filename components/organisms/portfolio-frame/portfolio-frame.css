@@ -143,12 +143,11 @@
   color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
 .assistant__log:has(.chat-message) .assistant__empty { display: none; }
 
-/* rest-state suggestion chips: a fast lane into the SAME one door as the composer. Shown until
-   your first message, then gone — the greeting is an `ai` turn (chips stay), a `you` turn hides
-   the whole row. Sits just above the composer so it reads as "or try one of these". */
+/* suggestion chips: a fast lane into the SAME one door as the composer. They stay visible the whole
+   conversation (the desk swaps in follow-ups drawn from what it just answered) — only Desk Offline
+   hides them (below). Sits just above the composer so it reads as "or try one of these". */
 .assistant__suggest { display: flex; flex-direction: column; gap: var(--space-2);
   padding: var(--space-3) var(--space-4) var(--space-2); }
-.assistant__pane:has(.assistant__log .chat-message[data-role="you"]) .assistant__suggest { display: none; }
 .assistant__suggest-label { font-family: var(--font-mono); font-size: var(--text-xs);
   letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-muted); }
 .assistant__suggest-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
@@ -158,6 +157,56 @@
   transition: border-color 0.15s ease, background 0.15s ease; }
 .suggest-chip:hover { border-color: var(--ink); background: var(--color-surface); }
 .suggest-chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* the desk's model-load progress bar (rendered into the chat bubble while the local model downloads).
+   A real track + accent fill, honest about the one-time ~350MB cost. */
+.desk-load { display: inline-flex; flex-direction: column; gap: var(--space-1); width: 100%; }
+.desk-load__title { color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-snug); }
+.desk-load__bar { display: block; height: 6px; width: 100%; max-width: 16rem; overflow: hidden;
+  background: var(--color-line); border-radius: 999px; }
+.desk-load__fill { display: block; height: 100%; background: var(--color-accent);
+  transition: width 0.3s ease; }
+.desk-load__pct { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted); }
+
+/* the desk's "Thinking…" indicator — shown in the bubble the instant a turn starts, until real
+   content arrives, so there's never dead air. */
+.desk-typing { color: var(--color-muted); font-size: var(--text-sm); }
+.desk-typing i { display: inline-block; width: 4px; height: 4px; margin-left: 3px; border-radius: 50%;
+  background: currentColor; opacity: 0.3; animation: desk-blink 1.2s ease-in-out infinite; }
+.desk-typing i:nth-child(2) { animation-delay: 0.15s; }
+.desk-typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes desk-blink { 0%, 65%, 100% { opacity: 0.25; } 32% { opacity: 0.9; } }
+@media (prefers-reduced-motion: reduce) { .desk-typing i { animation: none; opacity: 0.55; } }
+
+/* New chat: a quiet reset in the assistant head. Left-group the title + modes (override grain's
+   space-between) and push this to the far right; hidden with the composer when the desk is offline
+   (there's no conversation to reset then). */
+.assistant__head { justify-content: flex-start; gap: var(--space-2); }
+.assistant__newchat { margin-left: auto; font: inherit; font-size: var(--text-xs);
+  font-family: var(--font-mono); color: var(--color-muted); background: none;
+  border: 1px solid var(--color-line); border-radius: 999px; padding: var(--space-1) var(--space-3);
+  cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease; }
+.assistant__newchat:hover { color: var(--color-fg); border-color: var(--ink); }
+.assistant__newchat:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+body[data-desk="offline"] .assistant__newchat { display: none; }
+/* on mobile the head IS the grab bar (grain adds a tap-to-open + a chevron) — a button there would
+   fight the tap and crowd the narrow bar, so drop it (the sheet has its own affordances). */
+@media (max-width: 768px) { .assistant__newchat { display: none; } }
+
+/* Desk Offline (body[data-desk="offline"], set by the desk door when the local browser model can't
+   run — no WebGPU, or a load/generation failure). This is a portfolio-owned, CHAT-SPECIFIC marker,
+   deliberately NOT the global presence flag (data-ai-online): the door + stub demos stay ONLINE, so
+   "See what's new" and the /grain demo keep working; only the ways to TALK to the local model hide.
+   The chat LOG stays visible so a stub-driven digest still lands somewhere the visitor can see it. */
+.assistant__offline { display: none; }
+body[data-desk="offline"] .assistant__composer,
+body[data-desk="offline"] .assistant__suggest,
+body[data-desk="offline"] .assistant__empty { display: none; }
+body[data-desk="offline"] .assistant__offline {
+  display: flex; align-items: flex-start; gap: var(--space-2);
+  padding: var(--space-3) var(--space-4); border-top: 1px solid var(--color-line);
+  color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); margin: 0; }
+body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); flex: none; }
 
 /* Catalog pane: the embedded /catalog fills the pane; the footer sits where the chat composer
    sits (the hover hint + the full-page way out). Scroll stays contained to the pane. */

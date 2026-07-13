@@ -12,6 +12,7 @@
   const store = (() => { try { return window.localStorage; } catch { return null; } })();
   const get = (k) => { try { return store && store.getItem(k); } catch { return null; } };
   const put = (k, v) => { try { if (store) store.setItem(k, v); } catch { /* private mode */ } };
+  const del = (k) => { try { if (store) store.removeItem(k); } catch { /* private mode */ } };
 
   // ---- close every open SSE stream before a hard navigation (BEFORE ai-dispatch.js runs).
   // This site does full-document navigations (no client router), so grain/scripts/ai-dispatch.js's
@@ -166,6 +167,7 @@
     // both from localStorage on load, and save on change — capped so they can't grow unbounded).
     // A `replace` RenderOp swaps a surface NODE (outerHTML), so bind the observer to a STABLE
     // ancestor and re-query the surface each time — otherwise persistence orphans after the first run.
+    const flushers = [];                           // synchronous "save NOW" for each persisted surface
     const persist = (ancestorSel, surface, key, cap) => {
       const root = document.querySelector(ancestorSel);
       if (!root) return null;
@@ -174,25 +176,33 @@
       if (!el0) return null;
       const saved = get(key);
       if (saved != null) el0.innerHTML = saved;
-      let t = null;
-      const save = () => {
-        clearTimeout(t);
-        t = setTimeout(() => {
-          const el = cur();
-          if (!el) return;
-          while (el.children.length > cap) el.removeChild(el.firstElementChild);
-          put(key, el.innerHTML);
-        }, 400);                                   // debounce: type/stream ops mutate rapidly
+      // the actual write — shared by the debounced saver AND the flush-on-exit below.
+      const flush = () => {
+        const el = cur();
+        if (!el) return;
+        while (el.children.length > cap) el.removeChild(el.firstElementChild);
+        put(key, el.innerHTML);
       };
+      flushers.push(flush);
+      let t = null;
+      const save = () => { clearTimeout(t); t = setTimeout(flush, 400); };   // debounce: stream ops mutate rapidly
       new MutationObserver(save).observe(root, { childList: true, subtree: true, characterData: true });
       return el0;
     };
     const chatLog = persist(".app-shell__aside", "chat-log", KEY.chat, 40);
     persist(".app-shell__console", "console", KEY.term, 60);
+    // FLUSH before the page tears down: the debounced save is often mid-wait when the desk (or the
+    // user) navigates — and typing/streaming keeps resetting it — so without this the chat + terminal
+    // vanish on every navigation. pagehide fires on real nav; visibilitychange covers bfcache/mobile.
+    const flushAll = () => { for (const f of flushers) f(); };
+    window.addEventListener("pagehide", flushAll);
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushAll(); });
 
-    // ---- fresh cache: the desk greets in the chat (typed). Only when there's no stored
-    // conversation yet; once greeted it's persisted, so return visits restore it instead.
-    if (chatLog && get(KEY.chat) == null) {
+    // ---- the desk greets in the chat (typed). Shared by first load (no stored conversation) and
+    // "New chat" (below), which clears the log first. Once greeted it's persisted, so return visits
+    // restore it instead of re-greeting.
+    const greet = () => {
+      if (!chatLog) return;
       const msg = document.createElement("div");
       msg.className = "chat-message"; msg.setAttribute("data-role", "ai"); msg.setAttribute("data-grade", "grain");
       msg.innerHTML = `<span class="chat-message__who">Desk</span><span class="chat-message__body"></span>`;
@@ -205,11 +215,12 @@
         if (i < hello.length) setTimeout(tick, 18);
       };
       tick();
-    }
+    };
+    if (chatLog && get(KEY.chat) == null) greet();
 
-    // ---- rest-state suggestion chips: swap in a per-page set, then route a click through the
-    // SAME one door as the composer (set the input's value, fire the existing Send). The CSS hides
-    // the whole row once your first `you` turn lands; these are just a fast way in for a cold visit.
+    // ---- suggestion chips: seed a per-page starter set; the desk then REPLACES them with contextual
+    // follow-ups after each answer (desk-reasoner). A click routes through the SAME one door as the
+    // composer (set the input's value, fire the existing Send). The row stays visible all conversation.
     const SUGGEST = {
       "/":         ["What is BREAD?", "Who is TJ?", "Watch the AI act"],
       "/bread":    ["Why four layers?", "What is PANTRY?", "Is this stack live?"],
@@ -224,26 +235,40 @@
       "/calendar": ["What is this feed?", "How is this site built?", "Who is TJ?"],
       "/mail":     ["How do I reach TJ?", "What is this inbox?", "Who is TJ?"],
     };
-    const chips = document.querySelector("[data-suggest-chips]");
-    if (chips) {
-      const pick = () => {
-        if (SUGGEST[path]) return SUGGEST[path];        // exact, else longest matching prefix
-        let best = null;
-        for (const key in SUGGEST) {
-          if (key !== "/" && path.startsWith(key) && (!best || key.length > best.length)) best = key;
-        }
-        return best ? SUGGEST[best] : null;
-      };
-      const set = pick();
-      if (set) {
-        chips.replaceChildren(...set.map((q) => {
-          const b = document.createElement("button");
-          b.type = "button"; b.className = "suggest-chip"; b.setAttribute("data-suggest-ask", "");
-          b.textContent = q;                            // textContent: never inject markup
-          return b;
-        }));
+    const mkChip = (q) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "suggest-chip"; b.setAttribute("data-suggest-ask", "");
+      b.textContent = q;                                // textContent: never inject markup
+      return b;
+    };
+    const pickSuggest = () => {
+      if (SUGGEST[path]) return SUGGEST[path];          // exact, else longest matching prefix
+      let best = null;
+      for (const key in SUGGEST) {
+        if (key !== "/" && path.startsWith(key) && (!best || key.length > best.length)) best = key;
       }
-      chips.addEventListener("click", (ev) => {
+      return best ? SUGGEST[best] : null;
+    };
+    // The starter chip set: the always-pinned "What can I do here?", the two headline ACTIONS
+    // (summarize / open the latest note — both routed deterministically by the desk), then a topical
+    // page suggestion. The desk swaps these for contextual follow-ups after each answer (but keeps the
+    // pin first). These strings must match the desk's action router (ai/actions.ts).
+    const PINNED_CHIP = "What can I do here?";
+    const setDefaultChips = () => {
+      const chips = document.querySelector("[data-suggest-chips]");
+      if (!chips) return;
+      const topical = (pickSuggest() || []).slice(0, 1);
+      const full = [PINNED_CHIP, "Summarize this page", "Show me the latest note", ...topical];
+      chips.replaceChildren(...full.map(mkChip));
+    };
+    setDefaultChips();
+
+    // Delegate the chip click on the STABLE suggest ROW, not the chips container: the desk replaces
+    // that container after each answer (contextual follow-ups), so a listener bound to it would die
+    // with the first swap. The row itself is never replaced.
+    const suggestRow = document.querySelector(".assistant__suggest");
+    if (suggestRow) {
+      suggestRow.addEventListener("click", (ev) => {
         const chip = ev.target.closest("[data-suggest-ask]");
         if (!chip) return;
         const input = document.querySelector('[data-surface="chat-input"]');
@@ -251,6 +276,20 @@
         if (!input || !send) return;
         input.value = chip.textContent;                 // reuse the one door: same path as typing + Send
         send.click();
+      });
+    }
+
+    // ---- New chat: clear the conversation + the desk's in-memory turns, re-greet, and restore this
+    // page's starter chips. The model itself stays loaded (deskReset only forgets the turns).
+    const newChatBtn = document.querySelector("[data-desk-newchat]");
+    if (newChatBtn) {
+      newChatBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();                           // don't also toggle the mobile sheet (head = grab bar)
+        if (chatLog) chatLog.innerHTML = '<p class="assistant__empty">Ask the desk about TJ — or anything on this site. It answers here, and narrates its work in the terminal below.</p>';
+        del(KEY.chat);
+        if (typeof window.deskReset === "function") window.deskReset();
+        greet();                                        // fresh greeting (also re-persists a clean log)
+        setDefaultChips();                              // swap the follow-ups back to page starters
       });
     }
 
