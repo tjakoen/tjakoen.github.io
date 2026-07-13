@@ -1,0 +1,79 @@
+/* molecules/note-card — portfolio: the /notes feed (content.ts renderNotesFeedPage), a
+   Reddit-ish read of the notes collection. CSS-only: server-composed HTML, nothing data-binds
+   it (see note-card.md — no .html file). This file owns the feed controls + the card anatomy:
+   `.feed-controls`/`.chips`/`.chip`, `.note-feed`, and every `.note-card__*` part. Tokens only
+   (DESIGN-SYSTEM §2) — no hardcoded colors, mirrors work-card.css's convention. */
+
+/* ---- controls: New/Top + tag filter, as chip pills. Hidden until the inline island in
+   renderNotesFeedPage reveals it — see the [hidden] rule at the bottom, the no-JS default. */
+.feed-controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4);
+  padding: var(--space-3) 0 var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+  margin: 0 0 var(--space-3);
+}
+/* the no-JS default: the inline island reveals this by clearing [hidden] (renderNotesFeedPage).
+   `display: flex` above matches [hidden]'s UA-stylesheet specificity, and an author rule loads
+   after the UA sheet — without this override the flex display would win and the "hidden" controls
+   would still show up on a no-JS load. */
+.feed-controls[hidden] { display: none; }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chip {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  font-size: var(--text-xs); color: var(--color-muted);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-line); border-radius: var(--radius-pill);
+  cursor: pointer; user-select: none;
+}
+.chip:has(input:checked) { color: var(--color-fg); border-color: var(--color-fg); }
+.chip input { accent-color: var(--color-accent); }
+
+/* ---- the feed: a plain vertical list, one hairline separator per card (content-index's own
+   convention) rather than a boxed tile — the "front page" read is a rule-separated column, not
+   a grid of cards. */
+.note-feed { list-style: none; margin: 0; padding: 0; }
+.note-card {
+  display: flex; gap: var(--space-4);
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--color-line);
+}
+.note-card:last-child { border-bottom: 0; }
+.note-card[hidden] { display: none; }
+
+/* the vote glyph: a narrow fixed gutter on the left, same idea as content-index's log-variant
+   graph column. The number is real reading minutes (renderNotesFeedPage), never a vote tally —
+   the title="" tooltip on the element itself says so. */
+.note-card__vote {
+  flex: 0 0 auto; width: 2.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding-top: 2px;
+  font-size: var(--text-xs); color: var(--color-muted);
+}
+.note-card__score { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-fg); }
+
+.note-card__main { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: var(--space-1); }
+.note-card__byline {
+  font-size: var(--text-xs); color: var(--color-muted);
+  font-family: var(--font-mono);
+  margin: 0;
+}
+.note-card__title { font-size: var(--text-lg); margin: 0; }
+.note-card__title a { color: var(--color-fg); text-decoration: none; }
+.note-card__title a:hover { text-decoration: underline; }
+.note-card__summary {
+  color: var(--color-muted); line-height: var(--leading-relaxed);
+  max-width: 60ch; margin: 0;
+}
+.note-card__foot {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-xs);
+}
+.note-card__sections { color: var(--color-muted); text-decoration: none; }
+.note-card__sections:hover { text-decoration: underline; }
+.note__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; }
+
+/* AI / in-transit idiom (grain lesson 3): a card the AI is currently traveling through wears the
+   dashed terminal edge, same vocabulary as content-index's own [data-commit="pending"] rule. */
+.note-card[data-commit="pending"],
+[data-grade="grain"] .note-card { border-bottom-style: dashed; }

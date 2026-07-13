@@ -28,7 +28,7 @@ import { LoopCard } from "./demo/view/components.ts";
 import { toLoopCardView } from "./demo/services/task-views.ts";
 import type { Task } from "./demo/domain/task.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate } from "./content.ts";
+import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 // --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
 import { createProofRoutes } from "@tjakoen/proof/routes.ts";
@@ -314,6 +314,13 @@ ${PAGE_ASSETS}</body>
 </html>`;
       return new Response(await renderAppPage(page), { headers: { "Content-Type": "text/html; charset=utf-8" } });
     },
+    // /notes — the portfolio-owned feed (content.ts renderNotesFeedPage): the /notes collection
+    // opts OUT of MILL's own index serving (index: false, content.ts), so this route wins over
+    // the MILL mount below (registered `routes` beat the `fetch` chain in Bun.serve). Individual
+    // entries (/notes/:slug) still go through MILL untouched.
+    "/notes": async () =>
+      new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
+        { headers: { "Content-Type": "text/html; charset=utf-8" } }),
     "/search.json": async () => {
       const titleOf = (p: string) => { const s = p === "/" ? "home" : p.replace(/^\//, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
       // the sitemap lists routes alphabetically; substitute the notes/ block for the SAME

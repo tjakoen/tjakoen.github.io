@@ -3,12 +3,18 @@
 import { test, expect } from "bun:test";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes } from "./content.ts";
+import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, renderNotesFeedPage } from "./content.ts";
 
 const serve = createPortfolioContentRoutes();
 
+// The /notes INDEX is a portfolio route override (content.ts renderNotesFeedPage), not served by
+// MILL's own listing (the /notes collection's `index: false`) — `serve("/notes")` is null by
+// design (server.ts's Bun.serve routes map wins for that path in the real app); these tests
+// exercise renderNotesFeedPage() directly instead. Individual entries (`serve("/notes/:slug")`,
+// below) are still MILL, untouched.
+
 test("/notes lists every note in portfolio/notes", async () => {
-  const body = await (await serve("/notes"))!.text();
+  const body = await renderNotesFeedPage();
   const files = (await readdir(join(import.meta.dir, "notes"))).filter(f => f.endsWith(".md"));
   for (const f of files) expect(body).toContain(`href="/notes/${f.replace(/\.md$/, "")}"`);
 });
@@ -50,14 +56,14 @@ test("docs cross-layer links rewrite to rendered routes", async () => {
 });
 
 test("content pages wear the BREAD shell chrome", async () => {
-  const body = await (await serve("/notes"))!.text();
+  const body = await renderNotesFeedPage();
   expect(body).toContain("<portfolio-frame />");
   expect(body).toContain(`data-screen="notes"`);
 });
 
-test("listNoteRoutesByDate matches the /notes index's own newest-first order — the explorer tree (fed from this via /search.json) must agree with the page, not fall back to alphabetical", async () => {
-  const body = await (await serve("/notes"))!.text();
-  const inPageOrder = [...body.matchAll(/href="(\/notes\/[a-z0-9._-]+)"/g)].map((m) => m[1]);
+test("listNoteRoutesByDate matches the /notes feed's own newest-first order — the explorer tree (fed from this via /search.json) must agree with the page, not fall back to alphabetical", async () => {
+  const body = await renderNotesFeedPage();
+  const inPageOrder = [...body.matchAll(/note-card__title"><a href="(\/notes\/[a-z0-9._-]+)"/g)].map((m) => m[1]);
   expect(await listNoteRoutesByDate()).toEqual(inPageOrder);
 });
 
