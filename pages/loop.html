@@ -26,6 +26,15 @@
         <h1 class="masthead">A desk that writes back.</h1>
         <hr class="rule">
 
+        <!-- The honest static-snapshot notice (Phase 2): hidden by default (the live dev server
+             never sets the marker below); revealed client-side only on the frozen export, off the
+             SAME data-ai-transport="client" marker ai-dispatch.js already checks to pick its
+             transport (grain/scripts/ai-dispatch.js) — see the script at the bottom of this page. -->
+        <blockquote class="callout" data-status="strong" data-loop-static-banner hidden>
+          Static snapshot — this board is frozen at deploy time. The live version, where the desk
+          actually plans and archives things, runs on the dev server.
+        </blockquote>
+
         <!-- THE DEMO — watch the desk plan your Thursday end-to-end: it composes a request,
              reflects, drafts a plan as a bullet LIST, then REVISES one item (backspacing it,
              retyping), and summarises. Each thing it touches goes grain (working) → clean
@@ -73,11 +82,33 @@
         <!-- The real task loop — Archive routes through the single AI interaction layer:
              optimistic grain → committed clean, pushed over SSE. Interactive (click Archive). -->
         <div class="section-head" style="margin-top: var(--space-8)"><span>Your tasks</span></div>
+        <!-- Server-rendered at request time (server.ts freezeLoopList, Phase 2): the SAME markup
+             /ui/loop answers with, so a crawl with no backend (the static export) still shows a
+             real board instead of this "Loading…" shell. The live dev server refreshes it once
+             more via htmx on load (harmless — same data); the export strips that hx- pair (see
+             tools/export.ts transformPage) so the frozen copy never requests the absent endpoint. -->
         <div id="loop-list" data-surface="item-list" hx-get="/ui/loop" hx-trigger="load">
           <span class="muted">Loading…</span>
         </div>
       </div>
     </main>
   </div>
+
+  <script>
+    // Gate the static-snapshot banner + composer on the SAME marker the exported HTML carries
+    // (<body data-ai-transport="client">, stamped only by tools/export.ts — never present on the
+    // live dev server). No feature test, no guessing: this is the one bit ai-dispatch.js itself
+    // reads to decide whether it's running against a live backend or the frozen export.
+    (function () {
+      if (document.body.dataset.aiTransport !== "client") return;
+      var banner = document.querySelector('[data-loop-static-banner]');
+      if (banner) banner.hidden = false;
+      var ask = document.querySelector('[data-surface="ask-input"]');
+      if (ask) {
+        ask.disabled = true;
+        ask.placeholder = "Static snapshot — ask the desk on the dev server";
+      }
+    })();
+  </script>
 </body>
 </html>

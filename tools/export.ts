@@ -19,27 +19,39 @@ import { join } from "node:path";
 import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
 import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { listPortfolioContentRoutes, listPortfolioRawContentRoutes } from "../content.ts";
+import { listPlanRoutes } from "../plans.ts";
 import { config } from "../config.ts";
 
 const PORT = Number(Bun.env.EXPORT_PORT ?? 3330);
 const BASE = `http://localhost:${PORT}`;
 const DIST = Bun.env.EXPORT_DIST ?? "dist";
 
-// Operable surfaces — behind the one door (/intent + SSE). A static copy has no backend, so they are
-// excluded from the crawl (§18). `/dashboard` + `/home` are retired; never crawl them.
-const OPERABLE = new Set(["/loop"]);
+// Operable surfaces — behind the one door (/intent + SSE) — excluded from the crawl because a
+// static copy has no backend to answer them (§18). `/dashboard` + `/home` are retired; never
+// crawl them. `/loop` is NOT here (Phase 2, was `new Set(["/loop"])`): it's now exported as a
+// FROZEN SNAPSHOT — server.ts server-renders its initial task list into the page (so the crawl
+// captures a real board, not an empty shell) and this file's transformPage (below) strips the
+// live htmx auto-refresh, so the static copy never calls the (absent) `/ui/loop` backend.
+const OPERABLE = new Set<string>();
 
 // EVERY exported page is flipped to the CLIENT-SIDE door on the static copy (§19.3): the static
 // host has no backend, so ai-dispatch (loaded on every page via PAGE_ASSETS) must NOT open a
 // server `/stream` — on GitHub Pages that request 404s, and each page logs a stream error + goes
 // "offline". The loopback client door runs the same vocabulary in-browser, so the desk stays online
 // and quiet everywhere. The live dev server keeps the server door (no marker); only the frozen copy
-// carries it. Safe to stamp unconditionally: the one genuinely server-operable page (/loop) is in
-// OPERABLE and never exported, so nothing static should ever talk to a live stream.
+// carries it. Safe to stamp unconditionally, `/loop` included: the client door would actually run
+// the demo fine in-browser (same as the /grain showcase), but /loop's OWN task list is real
+// per-deploy data with no live backend behind it (no real Archive, no real reasoner) — so
+// pages/loop.html's own script reads this same marker to show an honest "static snapshot" banner
+// and disable the free-text composer, rather than let a visitor believe they're talking to the
+// live desk.
 const MODULE_ENTRIES = ["/modules/grain/ai/client-door.js"];
 
-// Generated routes that a href/src crawler won't discover: the ⌘K palette's index + the SEO infra.
-const DATA_ROUTES = ["/components.css", "/search.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
+// Generated routes that a href/src crawler won't discover: the ⌘K palette's index, the SEO infra,
+// and PROOF's stylesheet (board.css + this host's overrides, concatenated at /proof.css —
+// server.ts) — every /plans page links it, so now that /plans exports (Phase 2, task 1) it must
+// travel too, or the frozen board ships unstyled.
+const DATA_ROUTES = ["/components.css", "/proof.css", "/search.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
 
 // Every content entry's raw `.md` twin (MILL's honest-source route) — a data route (literal
 // bytes, no chrome), never a page: freezing it here (not `pages`) keeps the export honest and
@@ -59,13 +71,14 @@ async function waitForServer(timeoutMs = 15000) {
 
 // The exportable allowlist: every page route the app serves (the portfolio's one pages tree —
 // "/", "/grain", "/batch", "/mill", /loop, /about) + MILL's content routes (/notes, /grain/docs,
-// /batch/docs — content pages MUST export, §18) + /catalog + /reference, minus the operable
-// surfaces. Derived from the same route lists the server's sitemap uses, so new pages/notes
-// export automatically.
+// /batch/docs — content pages MUST export, §18) + PROOF's plan routes (/plans, /plans/plan/:id)
+// + /catalog + /reference, minus the operable surfaces. Derived from the same route lists the
+// server's sitemap uses, so new pages/notes/plans export automatically.
 async function pageRoutes(): Promise<string[]> {
   const pages = createSitemap(config.pagesDir).routes();
   const content = await listPortfolioContentRoutes();                    // MILL collections, enumerated
-  const all = new Set([...pages, ...content, "/catalog", "/reference"]);
+  const plans = await listPlanRoutes();                                  // PROOF's board, enumerated
+  const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference"]);
   return [...all].filter((r) => !OPERABLE.has(r)).sort();
 }
 
@@ -94,8 +107,15 @@ try {
     dataRoutes: await dataRoutes(),
     assets: assetMounts(),
     moduleEntries: MODULE_ENTRIES,
-    transformPage: (_route, html) =>
-      html.replace(/<body\b/, '<body data-ai-transport="client"'),
+    transformPage: (route, html) => {
+      let out = html.replace(/<body\b/, '<body data-ai-transport="client"');
+      // /loop's frozen snapshot (server.ts freezeLoopList) already carries the real list; strip
+      // the live htmx auto-refresh so the static copy never requests the backend-only /ui/loop
+      // (a 404 on GitHub Pages) — pages/loop.html documents the pairing.
+      if (route === "/loop")
+        out = out.replace(/\s+hx-get="\/ui\/loop"\s+hx-trigger="load"/, "");
+      return out;
+    },
     basePath: Bun.env.PUBLIC_BASE_PATH,
     publicOrigin: Bun.env.PUBLIC_ORIGIN,
     log: (m) => console.log(m),
