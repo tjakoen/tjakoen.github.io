@@ -105,7 +105,16 @@ const SHOTS: Shot[] = [
     await page.waitForTimeout(600);
   } },
   { name: "catalog", desc: "/catalog — the component catalog", prepare: goto("/catalog") },
-  { name: "about", desc: "/about", fullPage: true, prepare: goto("/about") },
+  { name: "about", desc: "/about — the tabbed profile app: Profile/Résumé/Contact/Now over the same real bio, no invented facts (Pass 4 — About)", fullPage: true, prepare: goto("/about") },
+  {
+    name: "about-tabs", desc: "/about — the Contact tab: the compose CTA and docs-list, Reply/Forward-free (Pass 4 — About)",
+    prepare: async (page) => {
+      await page.goto(`${BASE}/about`, { waitUntil: "networkidle" });
+      await page.locator('.about-tabs [href="#contact"]').click();
+      await page.locator('#contact:not([hidden])').waitFor({ timeout: 5000 });
+      await page.waitForTimeout(200);
+    },
+  },
 ];
 
 function escapeHtml(s: string) {
