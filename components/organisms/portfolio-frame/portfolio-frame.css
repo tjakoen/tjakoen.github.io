@@ -90,6 +90,34 @@
    in grain's file-tree.css) */
 [data-rail-collapsed="true"] .app-dock__label { display: none; }
 
+/* the open-tabs strip (grain's tab-bar, overflow-x: auto, native scrollbar hidden): two
+   affordance fixes for when it overflows (owner, 2026-07-13).
+   (a) OVERFLOW CUE: grain hides the native scrollbar outright (scrollbar-width: none /
+   ::-webkit-scrollbar{display:none} in tab-bar.css), so a scrollable strip gives no visual hint
+   there's more — a quiet trailing fade, STUCK to the scrollport's own right edge (so it travels
+   with the view instead of scrolling away with the content), signals "more tabs" without ever
+   drawing a scrollbar. Self-conditional with no JS: when nothing overflows, the strip's trailing
+   space is already this same background color, so the gradient is invisible; it only reads once
+   a real tab scrolls in underneath it.
+   (b) THE "ELCOME" CLIP: site.js's boot-time scrollIntoView({block:"nearest"}) (the current tab
+   can render off-screen with enough open tabs) scrolls the strip just enough to reveal the
+   CURRENT tab — which can leave the PINNED Welcome tab only partially in view at the left edge
+   (verified: /mill with 12 tabs open left it reading "elcome", the W and pin icon cropped).
+   scroll-padding on the container does NOT protect a bystander element from this (only the
+   scrollIntoView target's own alignment) — the fix is to make the pinned tab itself un-croppable:
+   sticky to the scrollport's own left edge, so the OTHER tabs scroll underneath it instead of it
+   ever scrolling out from under itself. */
+.app-shell__tabs.tab-bar a[data-pinned] {
+  position: sticky; left: 0; z-index: 2;
+  background: var(--color-bg);
+}
+.app-shell__tabs.tab-bar::after {
+  content: ""; position: sticky; right: 0; align-self: stretch;
+  width: 1.5rem; margin-left: -1.5rem; flex: none; z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to right, transparent, var(--color-bg));
+}
+
 /* Chat⇄Catalog modes are available sitewide (no per-section gating). */
 
 /* presence show/hide is the grain AI module's (ai.css keys the three .presence__* states off
