@@ -32,13 +32,62 @@
 }
 
 /* THE EDITOR v2 nav model (owner, 2026-07-05): the RAIL is the EXPLORER (grain file-tree of the
-   real sources + the fixed app links at the bottom); the TABS are the OPEN PAGES (one global
-   strip, grain/scripts/tabs.js). The old per-section tab groups (data-tabs-for) are gone. The
-   tree takes the rail's stretch between the brand and the spacer, and scrolls inside itself. */
+   real sources); the TABS are the OPEN PAGES (one global strip, grain/scripts/tabs.js). The old
+   per-section tab groups (data-tabs-for) are gone. The tree takes the rail's stretch between the
+   brand and the spacer, and scrolls inside itself. */
 .side-rail .file-tree { flex: 0 1 auto; min-height: 0; margin: 0 calc(-1 * var(--space-2)); }
 /* full-bleed tree rows (the negative margin above) still start their text at the rail padding */
 .side-rail .file-tree__dir > summary,
 .side-rail .file-tree > .file-tree__dir > summary { padding-left: var(--space-3); }
+
+/* THE EDITOR v2 nav model, restructured (owner, 2026-07-13): the RAIL BODY is now a flex COLUMN
+   with two zones — the EXPLORER (.rail-explorer: the grain activity-bar icon toggle + the
+   file-tree, side by side) on top, and the APP DOCK (labeled app rows) pinned full-width below
+   it. Wrapping the activity-bar + side-rail in .rail-explorer takes .activity-bar out from being
+   a DIRECT child of .rail-body, so grain's app-shell.css `:has(> .activity-bar)` flex-ROW opt-in
+   never matches — this sheet owns the column/row split instead (bundle order still wins: this
+   file sorts after app-shell.css/activity-bar.css). */
+.rail-body { display: flex; flex-direction: column; min-height: 0; }
+.rail-explorer { display: flex; flex-direction: row; align-items: stretch; flex: 1 1 auto; min-height: 0; }
+.rail-explorer > .side-rail { flex: 1 1 auto; min-width: 0; }
+/* collapsed rail (icons-only): grain's own `:has(> .activity-bar)` collapse rule can't reach the
+   tree either, for the same reason — restate it here so the collapse still hides it. */
+[data-rail-collapsed="true"] .rail-explorer > .side-rail { display: none; }
+
+/* ---- the APP DOCK: fixed, labeled app rows pinned to the rail's bottom. Each row's icon sits in
+   a 3.25rem leading gutter — the SAME width as the activity-bar column directly above it — so the
+   glyphs line up in one continuous left column from the brand icon down through the dock. The
+   gutter carries the SAME right-border "line" as grain's .activity-bar (owner, 2026-07-13: "keep
+   the line of the icon column, text should be on the column next to it"), full row height on every
+   item, so the divider reads as ONE continuous vertical line from the activity-bar down through
+   every dock row — not a line that stops partway. ---- */
+.app-dock { flex: 0 0 auto; display: flex; flex-direction: column;
+  border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent); }
+.app-dock__item {
+  display: grid; grid-template-columns: 3.25rem 1fr; align-items: stretch;
+  min-height: 2.5rem; padding-right: var(--space-3);
+  color: var(--color-muted); text-decoration: none; position: relative;
+}
+.app-dock__icon { display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent); }
+.app-dock__icon svg { width: 1.15rem; height: 1.15rem; }
+.app-dock__label { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; align-self: center; }
+.app-dock__item:hover { color: var(--color-fg);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent); }
+/* the ACTIVE app: the same flush accent left-bar + quiet fill as the open file in the tree above
+   (.side-rail .nav-item[aria-current="page"]), run across the FULL-WIDTH row — not the
+   activity-bar's floating chip. The rail has no left padding down here, so the bar sits at x=0
+   with no offset needed to cancel it (unlike the tree's ::before, which cancels the tree's own
+   padding). */
+.app-dock__item[aria-current="page"] { color: var(--color-fg); background: var(--color-bg); }
+.app-dock__item[aria-current="page"]::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0;
+  width: 2px; background: var(--color-accent);
+}
+/* collapsed rail: labels are noise at icon-only width (mirrors the file-tree's own collapsed rule
+   in grain's file-tree.css) */
+[data-rail-collapsed="true"] .app-dock__label { display: none; }
 
 /* Chat⇄Catalog modes are available sitewide (no per-section gating). */
 

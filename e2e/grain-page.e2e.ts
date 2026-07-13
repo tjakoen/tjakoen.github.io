@@ -52,17 +52,18 @@ test.describe("/grain — the GRAIN showcase", () => {
     // the explorer marks /grain's real source file, ancestors unfolded
     await expect(page.locator('.file-tree a[href="/grain"]')).toHaveAttribute("aria-current", "page");
     await expect(page.locator('[data-open-tabs] .tab[href="/grain"]')).toHaveAttribute("aria-current", "page");
-    // a tree file is a REAL nav link — following a sibling opens ITS tab, current moves. /batch sits
-    // under the top-level batch/ folder (a sibling of grain/, collapsed on /grain); open it.
-    await page.locator('.file-tree summary:text-is("batch/")').click();
+    // a tree file is a REAL nav link — following a sibling opens ITS tab, current moves. /batch
+    // sits right beside /grain under the same bread-stack/ folder (already unfolded as /grain's
+    // own ancestor) — no folder click needed.
     await page.locator('.file-tree a[href="/batch"]').click();
     await expect(page).toHaveURL(/\/batch$/);
     await expect(page.locator('[data-open-tabs] .tab[href="/batch"]')).toHaveAttribute("aria-current", "page");
     await expect(page.locator('[data-open-tabs] .tab[href="/grain"]')).not.toHaveAttribute("aria-current", "page");
-    // a note page: its .md fills into the tree (from the corpus) and gets the current mark
+    // a note page: notes/ was removed from the tree — it's reached via the app dock now, not a
+    // tree entry. The page still renders directly, and the app dock marks Notes current.
     await page.goto("/notes/ten-times-zero");
-    await expect(page.locator('.file-tree a[href="/notes/ten-times-zero"]')).toContainText("ten-times-zero.md");
-    await expect(page.locator('.file-tree a[href="/notes/ten-times-zero"]')).toHaveAttribute("aria-current", "page");
+    await expect(page.locator('.file-tree a[href="/notes/ten-times-zero"]')).toHaveCount(0);
+    await expect(page.locator('.app-dock a[href="/notes"]')).toHaveAttribute("aria-current", "page");
   });
 
   test("grade-as-signal is visible — grain beside clean, and AI text STAYS grain", async ({ page }) => {

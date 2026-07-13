@@ -91,22 +91,37 @@
       parts.forEach((p, i) => seg(p, i < parts.length - 1 ? "/" + parts.slice(0, i + 1).join("/") : null));
     }
 
-    // ---- the EXPLORER (the file-tree rail): mark the open file, unfold its ancestors (folders
-    // ship collapsed), and fill the collection folders (notes/) with their real .md entries from
-    // the ⌘K corpus — each added entry is a plain <a>, the tree stays hypermedia.
+    // ---- the EXPLORER (the file-tree rail) + the APP DOCK below it: mark the open file (and
+    // unfold its ancestors — folders ship collapsed) in the tree, and the active app in the dock.
+    // The dock uses a PREFIX match for Notes (so /notes/anything keeps it lit — Notes claims a
+    // real page + its subpages) and an EXACT match for the rest (Calendar/Mail/About are single
+    // pages, no subtree to claim). [data-tree-fill] boxes (if a future folder adds one) still fill
+    // from the ⌘K corpus — each added entry is a plain <a>, the tree stays hypermedia.
     const tree = document.querySelector(".file-tree");
-    if (tree) {
+    const dock = document.querySelector(".app-dock");
+    if (tree || dock) {
       const normed = (h) => (h || "").replace(/\/+$/, "") || "/";
       const markCurrent = () => {
-        for (const a of tree.querySelectorAll("a.file-tree__file")) {
-          if (normed(a.getAttribute("href")) !== path) continue;
-          a.setAttribute("aria-current", "page");
-          for (let d = a.closest("details"); d; d = d.parentElement && d.parentElement.closest("details"))
-            d.setAttribute("open", "");
+        if (tree) {
+          for (const a of tree.querySelectorAll("a.file-tree__file")) {
+            if (normed(a.getAttribute("href")) !== path) continue;
+            a.setAttribute("aria-current", "page");
+            for (let d = a.closest("details"); d; d = d.parentElement && d.parentElement.closest("details"))
+              d.setAttribute("open", "");
+          }
+        }
+        if (dock) {
+          for (const a of dock.querySelectorAll(".app-dock__item")) {
+            const href = normed(a.getAttribute("href"));
+            const isMatch = href === "/notes"
+              ? (path === href || path.startsWith(href + "/"))   // Notes claims its subpages too
+              : path === href;                                   // everything else is exact-only
+            if (isMatch) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+          }
         }
       };
       markCurrent();
-      const fills = [...tree.querySelectorAll("[data-tree-fill]")];
+      const fills = tree ? [...tree.querySelectorAll("[data-tree-fill]")] : [];
       if (fills.length) fetch("/search.json").then((r) => r.json()).then(({ pages = [] }) => {
         for (const box of fills) {
           const prefix = normed(box.getAttribute("data-tree-fill"));
