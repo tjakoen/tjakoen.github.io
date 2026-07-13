@@ -72,7 +72,8 @@
   border-right: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent); }
 .app-dock__icon svg { width: 1.15rem; height: 1.15rem; }
 .app-dock__label { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.01em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; align-self: center; }
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; align-self: center;
+  padding-inline-start: var(--space-3); }
 .app-dock__item:hover { color: var(--color-fg);
   background: color-mix(in srgb, var(--color-surface) 70%, transparent); }
 /* the ACTIVE app: the same flush accent left-bar + quiet fill as the open file in the tree above
