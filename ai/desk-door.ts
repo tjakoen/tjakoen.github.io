@@ -44,7 +44,6 @@ const loc = (): { assign(u: string): void; pathname?: string } | undefined =>
   (globalThis as unknown as { location?: { assign(u: string): void; pathname?: string } }).location;
 interface WebStorage { getItem(k: string): string | null; setItem(k: string, v: string): void; removeItem(k: string): void }
 const ss = (): WebStorage | undefined => (globalThis as unknown as { sessionStorage?: WebStorage }).sessionStorage;
-const esc = (s: string): string => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /** Mark the DESK CHAT offline (portfolio-owned marker). Not the global presence flag — the door and
  *  stub demos stay online; only the chat composer + chips hide (portfolio-frame.css). */
@@ -70,13 +69,15 @@ const listNotes = (): Promise<DeskNote[]> =>
     .then((r) => r.json() as Promise<DeskNote[]>).catch(() => []));
 
 // ---- the desk's UI-driving capabilities (the DOM/nav contact point) ----
-const navigate = (url: string): void => loc()?.assign(url);
 const pageText = (): string => doc()?.querySelector?.(".app-shell__main")?.textContent?.trim() ?? "";
 const pageInfo = (): { route: string; title: string } => ({ route: loc()?.pathname ?? "/", title: doc()?.title ?? "" });
 // GRAIN's own live-DOM manifest of what's operable on this page (for "what can I do here?"). The
 // real `document` satisfies grain's structural DomDoc (body + querySelectorAll).
-const pageManifest = (): Manifest =>
-  grainManifest.domManifest((globalThis as unknown as { document?: DomDoc }).document as DomDoc);
+const liveDoc = (): DomDoc => (globalThis as unknown as { document?: DomDoc }).document as DomDoc;
+const pageManifest = (): Manifest => grainManifest.domManifest(liveDoc());
+// The SAME manifest, as prompt-ready prose (grain's manifestForReasoner) — the desk-reasoner pulls
+// the "nav:<route>" lines out of this to tell a real model what it can navigate to (Tier-2 nav).
+const pageManifestText = (): string => grainManifest.manifestForReasoner(liveDoc());
 // Open any collapsed file-tree folder above a nav link, so the lamp can travel to a VISIBLE target
 // before the desk "clicks" it (the bread-stack folder ships collapsed).
 interface NavEl { tagName: string; open?: boolean; parentElement: NavEl | null }
@@ -105,12 +106,14 @@ async function runArrival(applyOp: (op: RenderOp) => void): Promise<void> {
   if (!plan?.surface) return;
   const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
   await wait(450);                                   // let the destination page settle in
+  // grain's own markup + op builders (reasoner-kit) — not hand-rolled HTML/op literals — so the
+  // arrival announce can't drift from the exact chat-bubble shape the dispatcher renders elsewhere.
   if (plan.announce)
     applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
-      html: `<div class="chat-message" data-role="ai" data-grade="grain"><span class="chat-message__who">Desk</span><span class="chat-message__body">${esc(plan.announce)}</span></div>` });
-  applyOp({ target: plan.surface, op: "spotlight", active: true, provenance: "ai", commit: "pending" });   // the lamp lands on the destination
+      html: grainKit.chatBubble("ai", "grain", grainKit.chatBody(grainKit.esc(plan.announce)), "Desk") });
+  applyOp(grainKit.spotlightOp(plan.surface, { active: true }));   // the lamp lands on the destination
   await wait(1500);
-  applyOp({ target: "screen", op: "spotlight", active: false, provenance: "ai", commit: "committed" });    // hand back to the visitor
+  applyOp(grainKit.spotlightOp("screen", { active: false }));      // hand back to the visitor
 }
 
 /** The door the dispatcher composes (data-ai-door). grain marks presence ONLINE once this returns;
@@ -119,6 +122,16 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // Up-front UX: if the model can't run here, hide the chat before the visitor ever types.
   probe().then((ok) => { if (!ok) markOffline(); }).catch(() => markOffline());
 
+  // Navigate through GRAIN's own `navigate` RenderOp (kit.navigateOp → applyOp), not a bare
+  // location.assign: it gets the SAME href validation (isSafeNavigateHref — navigateOp throws right
+  // here on anything unsafe, before it can travel anywhere) and the SAME settle beat the dispatcher
+  // gives every other AI-driven navigation (ai-dispatch.js's NAVIGATE_SETTLE_MS), instead of a
+  // desk-only shortcut that bypasses both. A rejected href logs and does nothing (never navigates).
+  const navigate = (url: string): void => {
+    try { applyOp(grainKit.navigateOp("screen", url)); }
+    catch (err) { console.error("[desk] refused an unsafe navigate href", url, err); }
+  };
+
   const reasoner = makeDeskReasoner({
     probe,
     loadEngine,
@@ -126,7 +139,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     fallback: grainReasoner.makeStubReasoner(),   // every non-chat verb (demo.run, say.*, item.archive)
     markOffline,
     kit: grainKit,                                // grain's chat markup builders (no fork)
-    navigate, pageText, pageInfo, pageManifest, listNotes, arrive, revealNav,   // the desk drives the UI through these
+    navigate, pageText, pageInfo, pageManifest, pageManifestText, listNotes, arrive, revealNav,   // the desk drives the UI through these
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();

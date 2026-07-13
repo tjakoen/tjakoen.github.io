@@ -15,6 +15,12 @@ export interface PromptInput {
   query: string;
   chunks: Chunk[];
   history: ChatMessage[];   // prior turns (user/assistant), oldest→newest
+  /** Live navigation targets on the CURRENT page — the routes GRAIN's manifestForReasoner() reports
+   *  as "nav:<route>" surfaces (the portfolio sidebar's file-tree/dock links), already extracted to
+   *  bare routes by the caller. Optional: omitted (or empty) leaves the prompt exactly as before, so
+   *  a consumer with no manifest still gets a valid, unchanged prompt. When present, the model gets a
+   *  narrow NAVIGATE:<route> protocol scoped to ONLY these routes — never a hardcoded guess. */
+  navRoutes?: string[];
 }
 
 // Budget in APPROX tokens (~4 chars/token — good enough for clipping a 0.5B's 2048 window).
@@ -32,6 +38,17 @@ const PERSONA = [
   "If the CONTEXT doesn't cover the question, say you don't have that on hand and point to a relevant page path (e.g. /notes or /grain/docs).",
   "Keep answers to 2–4 sentences, plain and direct. No hype, no bullet lists unless asked.",
 ].join(" ");
+
+/** The NAVIGATE:<route> protocol block — told to the model ONLY when there are live nav targets to
+ *  offer, and scoped to exactly that list (never a route the model invents). Kept terse: a 0.5B
+ *  follows a short, literal instruction far more reliably than a long one. */
+function navBlock(routes: string[]): string {
+  const list = routes.join(", ");
+  return `You can also take the visitor to one of these pages, live on this site right now: ${list}. ` +
+    `If (and only if) they ask to go to one of them, reply with EXACTLY "NAVIGATE:<route>" (the route ` +
+    `only, e.g. "NAVIGATE:${routes[0]}") and say nothing else. Never write NAVIGATE for a route that ` +
+    `isn't in that list — answer normally instead.`;
+}
 
 /** Render the retrieved chunks as a single CONTEXT block, each tagged with its route so the model
  *  can cite where something lives. Chunks are added until the token budget for context is spent. */
@@ -67,10 +84,12 @@ function clipHistory(history: ChatMessage[], budget: number): ChatMessage[] {
  *  CONTEXT — MLC requires the system prompt to be the single first message) → clipped history → the
  *  user's query. Budget is spent persona-first, then query, then history, then context fills the rest. */
 export function buildPrompt(input: PromptInput): ChatMessage[] {
-  const { query, chunks, history } = input;
+  const { query, chunks, history, navRoutes } = input;
+  const nav = navRoutes && navRoutes.length > 0 ? navBlock(navRoutes) : "";
   const personaCost = approxTokens(PERSONA);
+  const navCost = nav ? approxTokens(nav) : 0;
   const queryCost = approxTokens(query);
-  let remaining = PROMPT_TOKEN_BUDGET - personaCost - queryCost;
+  let remaining = PROMPT_TOKEN_BUDGET - personaCost - navCost - queryCost;
 
   const historyBudget = Math.floor(remaining * 0.35);
   const clippedHistory = clipHistory(history, Math.max(0, historyBudget));
@@ -78,12 +97,12 @@ export function buildPrompt(input: PromptInput): ChatMessage[] {
 
   const context = contextBlock(chunks, Math.max(0, remaining));
 
-  // Persona + grounding go in ONE system message (a second `system` message anywhere but first
-  // trips MLC's SystemMessageOrderError). CONTEXT is appended below the persona so it still reads
-  // as a distinct, route-tagged block the model can cite.
-  const systemContent = context
-    ? `${PERSONA}\n\nCONTEXT (site content the visitor can open):\n\n${context}`
-    : PERSONA;
+  // Persona + grounding (+ the nav protocol, when offered) go in ONE system message (a second
+  // `system` message anywhere but first trips MLC's SystemMessageOrderError). CONTEXT is appended
+  // below so it still reads as a distinct, route-tagged block the model can cite.
+  let systemContent = PERSONA;
+  if (nav) systemContent += `\n\n${nav}`;
+  if (context) systemContent += `\n\nCONTEXT (site content the visitor can open):\n\n${context}`;
   const messages: ChatMessage[] = [{ role: "system", content: systemContent }];
   messages.push(...clippedHistory);
   messages.push({ role: "user", content: query });

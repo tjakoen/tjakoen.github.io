@@ -65,4 +65,22 @@ test.describe("THE DESK — client transport, no WebGPU → Desk Offline (chat h
     expect(corpus.chunks.length).toBeGreaterThan(0);
     expect(corpus.chunks.some((c: { route: string }) => c.route === "facts")).toBe(true);
   });
+
+  // 2026-07-13 requirement, made explicit end-to-end: even if a chat.send intent reaches the door
+  // anyway (the composer is hidden, but the door itself stays live — the desk's own guard is what
+  // has to hold, not just the CSS), the desk must answer HONEST-OFFLINE, never a stub-scripted reply
+  // (grain's stub answers chat.send with "Noted — "..."" — that string must never appear here).
+  test("a chat.send raised anyway (bypassing the hidden composer) gets the honest offline line, never a stub answer", async ({ page }) => {
+    await asClientDesk(page, "**/grain");
+    await page.goto("/grain");
+    await expect(page.locator("body")).toHaveAttribute("data-desk", "offline");
+
+    await page.evaluate(() =>
+      (window as unknown as { grain: { door: { submit(a: string, s: string, p: unknown): void } } })
+        .grain.door.submit("chat.send", "chat-log", { text: "who is TJ?" }));
+
+    const reply = page.locator('[data-surface="chat-log"] .chat-message[data-role="ai"]').last();
+    await expect(reply).toContainText("offline");
+    await expect(reply).not.toContainText("Noted —");   // the stub's chat.send phrasing — never leaks through
+  });
 });

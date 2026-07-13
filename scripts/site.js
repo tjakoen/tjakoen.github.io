@@ -208,7 +208,9 @@
       msg.innerHTML = `<span class="chat-message__who">Desk</span><span class="chat-message__body"></span>`;
       chatLog.appendChild(msg);                    // a real .chat-message → the empty-state hides
       const body = msg.querySelector(".chat-message__body");
-      const hello = "Hi — I'm the desk. Ask me about TJ, or anything on this site. I'll answer here and think out loud in the terminal.";
+      // Honest onboarding: only capabilities that actually work (ai/actions.ts's deterministic
+      // router + the grounded chat) — no hype, matches VOICE (no dashes in prose).
+      const hello = "Hi, I'm the desk. Ask me about TJ, the BREAD stack, or this site, and I'll answer here and think out loud in the terminal. I can also take you somewhere or open the latest note, just ask.";
       let i = 0;
       const tick = () => {                         // lightweight typewriter (the "type" flourish)
         body.textContent = hello.slice(0, ++i);
