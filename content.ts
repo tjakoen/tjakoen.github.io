@@ -402,6 +402,46 @@ export async function listRecentNotes(limit = 4): Promise<RecentNote[]> {
   }));
 }
 
+/** One row of the /calendar Agenda (Pass 2 — Calendar): a real thing with a real date, never an
+ *  invented event. `server.ts` merges this shape's note-derived rows with `data/desk-feed.json`'s
+ *  hand-authored posts (read there, not here — desk-feed.json is portfolio dressing, not MILL
+ *  content) into one `calendarEvents` array, passed through `renderAppPage` alongside
+ *  `recentNotes`. `domId` is the precomputed `#evt-<id>` anchor the agenda-item molecule binds
+ *  to `id` and the calendar island scroll-highlights on a chip click; `dateLabel`/`tagsLabel` are
+ *  precomputed display strings so the batch template only ever binds flat fields (no nested
+ *  each= inside each=). */
+export interface CalendarEvent {
+  id: string;
+  domId: string;
+  date: string;
+  dateLabel: string;
+  kind: "note" | "post";
+  title: string;
+  body: string;
+  tags: string[];
+  tagsLabel: string;
+  link: string;
+  icon: string;
+}
+/** Note publish dates as calendar events — every note WITH a real date (undated notes have
+ *  nothing to place on a calendar, so they're excluded here; they still appear in /notes). */
+export async function listNoteCalendarEvents(): Promise<CalendarEvent[]> {
+  const entries = await sortedNoteEntries();
+  return entries.filter((e) => e.date).map((e) => ({
+    id: `note-${e.slug}`,
+    domId: `evt-note-${e.slug}`,
+    date: e.date,
+    dateLabel: e.date,
+    kind: "note" as const,
+    title: e.title,
+    body: e.summary || e.subtitle,
+    tags: e.tags,
+    tagsLabel: e.tags.join(", "),
+    link: `/notes/${e.slug}`,
+    icon: "📝",
+  }));
+}
+
 /** Every note's route in newest-first order — for any consumer that lists ALL notes and must
  *  match the /notes index's order (currently: /search.json, feeding the explorer tree's
  *  notes/ entries so the sidebar menu reflects the same date order as the page itself). */

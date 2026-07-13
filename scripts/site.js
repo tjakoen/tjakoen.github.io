@@ -234,7 +234,7 @@
       "/notes":    ["What's the flagship post?", "How does TJ use AI?", "Why teach with AI?"],
       "/about":    ["How do I reach TJ?", "What's TJ's background?", "Is there a résumé?"],
       "/loop":     ["What is the workspace?", "Watch the AI act", "How does the desk work?"],
-      "/calendar": ["What is this feed?", "How is this site built?", "Who is TJ?"],
+      "/calendar": ["What's on the calendar?", "How is this site built?", "Who is TJ?"],
       "/mail":     ["How do I reach TJ?", "What is this inbox?", "Who is TJ?"],
     };
     const mkChip = (q) => {

@@ -3,14 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Feed · TJ's Desk</title>
-  <meta name="description" content="The desk's feed: the real current month up top, and a running feed of what's shipping across the stack below. Part of the desktop metaphor, illustrative rather than a live timeline.">
+  <title>Calendar · TJ's Desk</title>
+  <meta name="description" content="The desk's calendar: Month, Week, and Agenda views over the same real things, note publish dates and posts about what shipped. Part of the desktop metaphor, not a live scheduling tool.">
   <style>
-    /* page-specific layout for the feed panel (not part of the design system).
-       Top: a read-only render of the real current month. Below: a social-style feed of
-       what's shipping around the stack. Both are illustrative, part of the desk metaphor. */
+    /* page-specific layout for the calendar panel (not part of the design system). Three views
+       over ONE real dataset (calendarEvents, server-composed via server.ts + content.ts): Month
+       and Week are read-only renders of the actual current month/week, plotted client-side from
+       the Agenda's own server-rendered <agenda-item>s (one source of truth, no fetch). Agenda is
+       the no-JS default; Month/Week + the view tabs ship hidden until the island is live. */
+    .cal-views { display: flex; border-bottom: 1px solid var(--line-soft); margin: var(--space-5) 0 0; }
+    .cal-views[hidden] { display: none; }   /* matches [hidden]'s UA specificity over the flex rule above */
+
     .cal { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
-      overflow: hidden; margin: var(--space-5) 0 var(--space-4); }
+      overflow: hidden; margin: var(--space-4) 0; }
     .cal__head { display: flex; align-items: baseline; justify-content: space-between;
       gap: var(--space-3); padding: var(--space-4) var(--space-5);
       border-bottom: 1px solid var(--line-soft); background: var(--paper-2); }
@@ -32,40 +37,25 @@
       background: var(--color-accent); border-radius: var(--radius-pill);
       width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center;
       justify-content: center; font-weight: var(--font-weight-semibold); }
-    .cal__event { font-size: var(--text-xs); line-height: var(--leading-tight);
-      padding: 2px var(--space-2); border-radius: var(--radius-sm);
+    .cal__event { display: block; width: 100%; text-align: left; font: inherit;
+      font-size: var(--text-xs); line-height: var(--leading-tight); cursor: pointer;
+      padding: 2px var(--space-2); border-radius: var(--radius-sm); border: 0;
       background: var(--color-accent-soft); color: var(--ink);
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cal__event--muted { background: var(--paper-2); color: var(--ink-muted);
+    .cal__event--post { background: var(--paper-2); color: var(--ink-muted);
       border: 1px solid var(--line-soft); }
+    .cal__event:hover { outline: 1px solid var(--color-accent); }
     .cal__legend { display: flex; flex-wrap: wrap; gap: var(--space-4);
       font-size: var(--text-xs); color: var(--ink-muted); margin: 0 0 var(--space-6); }
     .cal__swatch { display: inline-block; width: .8rem; height: .8rem; border-radius: var(--radius-sm);
       vertical-align: -1px; margin-right: var(--space-1); }
 
-    /* the feed */
-    .feed { display: flex; flex-direction: column; gap: var(--space-4);
-      margin: var(--space-5) 0 var(--space-6); }
-    .post { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
-      padding: var(--space-4) var(--space-5); background: var(--paper); }
-    .post__head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
-    .post__avatar { width: 2.25rem; height: 2.25rem; flex: none; border-radius: var(--radius-pill);
-      background: var(--color-accent-soft); display: inline-flex; align-items: center;
-      justify-content: center; font-size: var(--text-base); }
-    .post__who { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-    .post__name { font-size: var(--text-sm); font-weight: var(--font-weight-semibold); color: var(--ink); }
-    .post__meta { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-faint); }
-    .post__body { color: var(--ink); }
-    .post__body p { margin: 0 0 var(--space-2); }
-    .post__body p:last-child { margin-bottom: 0; }
-    .post__tags { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-3); }
-    .post__tag { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--color-accent); }
-    .post__foot { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-3);
-      padding-top: var(--space-3); border-top: 1px solid var(--line-soft);
-      font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-muted); }
+    /* week view: same grid vocabulary, one row, taller cells (fewer days = more room per day). */
+    .cal--week .cal__cell { min-height: 8rem; }
 
     @media (max-width: 640px) {
       .cal__cell { min-height: 3.6rem; }
+      .cal--week .cal__cell { min-height: 6rem; }
       .cal__event { padding: 1px var(--space-1); }
     }
   </style>
@@ -75,16 +65,21 @@
     <portfolio-frame />
     <main class="app-shell__main">
       <div class="board">
-        <p class="eyebrow">📣 <span class="name">The Desk</span></p>
-        <h1 class="masthead">Feed</h1>
+        <p class="eyebrow">📅 <span class="name">The Desk</span></p>
+        <h1 class="masthead">Calendar</h1>
         <hr class="rule">
-        <p class="lede">The desk's own feed. Up top, the real current month, rendered in your browser,
-          so it is always today. Below it, a running feed of what has been shipping across the stack.
-          Both are part of the desk metaphor, the shape of a working week and the posts that came out
-          of it, rather than a live timeline wired to anything.</p>
+        <p class="lede">The desk's calendar. Month and Week plot the real current date and the real
+          things that happened around it, note publish dates and posts about what shipped, read
+          straight off the Agenda below. Agenda is the honest list: every row here is real, nothing
+          invented, so with JavaScript off it's what you get.</p>
 
-        <div class="section-head"><span>This month</span></div>
-        <div class="cal">
+        <nav class="cal-views" data-cal-views hidden aria-label="View">
+          <button class="tab" type="button" data-view="month" aria-current="page">Month</button>
+          <button class="tab" type="button" data-view="week">Week</button>
+          <button class="tab" type="button" data-view="agenda">Agenda</button>
+        </nav>
+
+        <div class="cal" data-cal-panel="month" hidden>
           <div class="cal__head">
             <span class="cal__month" data-cal="title">Loading…</span>
             <span class="cal__note">read-only render</span>
@@ -92,112 +87,30 @@
           <div class="cal__grid" data-cal="dow"></div>
           <div class="cal__grid" data-cal="grid">
             <noscript><p class="muted" style="padding: var(--space-5)">This panel renders the month
-              with a little JavaScript. With it off, the month grid stays empty, the feed below and
-              the rest of the desk work fine without it.</p></noscript>
+              with a little JavaScript. With it off, the Agenda below has the same information as a
+              plain list.</p></noscript>
           </div>
         </div>
 
+        <div class="cal cal--week" data-cal-panel="week" hidden>
+          <div class="cal__head">
+            <span class="cal__month" data-cal-week="title">Loading…</span>
+            <span class="cal__note">read-only render</span>
+          </div>
+          <div class="cal__grid" data-cal-week="dow"></div>
+          <div class="cal__grid" data-cal-week="grid"></div>
+        </div>
+
         <p class="cal__legend">
-          <span><span class="cal__swatch" style="background: var(--color-accent-soft)"></span>focus and reviews</span>
-          <span><span class="cal__swatch" style="background: var(--paper-2); border: 1px solid var(--line-soft)"></span>lighter holds</span>
+          <span><span class="cal__swatch" style="background: var(--color-accent-soft)"></span>notes</span>
+          <span><span class="cal__swatch" style="background: var(--paper-2); border: 1px solid var(--line-soft)"></span>posts</span>
           <span><span class="cal__swatch" style="background: var(--color-accent)"></span>today</span>
         </p>
 
-        <div class="section-head"><span>Feed</span></div>
-        <div class="feed">
-          <article class="post">
-            <div class="post__head">
-              <span class="post__avatar" aria-hidden="true">📋</span>
-              <span class="post__who">
-                <span class="post__name">The Desk</span>
-                <span class="post__meta">@tjakoen.github.io · now</span>
-              </span>
-            </div>
-            <div class="post__body">
-              <p>PROOF is live. The plan board stopped rendering a snapshot and started streaming:
-                cards move as the work moves, pushed over server-sent events, on this very site.</p>
-            </div>
-            <div class="post__tags">
-              <span class="post__tag">#proof</span><span class="post__tag">#bread</span><span class="post__tag">#shipped</span>
-            </div>
-            <div class="post__foot"><a href="/proof">See the board →</a></div>
-          </article>
-
-          <article class="post">
-            <div class="post__head">
-              <span class="post__avatar" aria-hidden="true">📝</span>
-              <span class="post__who">
-                <span class="post__name">The Desk</span>
-                <span class="post__meta">@tjakoen.github.io · today</span>
-              </span>
-            </div>
-            <div class="post__body">
-              <p>Closed a loop I called at the top of a note: the plan for building PROOF was the
-                first thing on its own board. I published the plan for the plan tool before the tool
-                existed, and it held.</p>
-            </div>
-            <div class="post__tags">
-              <span class="post__tag">#writing</span><span class="post__tag">#planning</span>
-            </div>
-            <div class="post__foot"><a href="/notes/where-were-we">Read the note →</a></div>
-          </article>
-
-          <article class="post">
-            <div class="post__head">
-              <span class="post__avatar" aria-hidden="true">🗄️</span>
-              <span class="post__who">
-                <span class="post__name">The Desk</span>
-                <span class="post__meta">@tjakoen.github.io · this week</span>
-              </span>
-            </div>
-            <div class="post__body">
-              <p>PANTRY's whole-codebase mindmap shipped. It is AI-legible, not AI-powered: it runs
-                no model, it just makes a project easy for an agent already on your machine to read.</p>
-            </div>
-            <div class="post__tags">
-              <span class="post__tag">#pantry</span><span class="post__tag">#docs</span>
-            </div>
-            <div class="post__foot"><a href="/pantry">See PANTRY →</a></div>
-          </article>
-
-          <article class="post">
-            <div class="post__head">
-              <span class="post__avatar" aria-hidden="true">🌾</span>
-              <span class="post__who">
-                <span class="post__name">The Desk</span>
-                <span class="post__meta">@tjakoen.github.io · earlier</span>
-              </span>
-            </div>
-            <div class="post__body">
-              <p>The whole site is one design system: every surface is addressable by a human and an
-                AI through one shared vocabulary, and the AI's hand stays visible on the page as
-                grain. One vocabulary, one direction.</p>
-            </div>
-            <div class="post__tags">
-              <span class="post__tag">#grain</span><span class="post__tag">#designsystem</span>
-            </div>
-            <div class="post__foot"><a href="/grain">Watch the AI act →</a></div>
-          </article>
-
-          <article class="post">
-            <div class="post__head">
-              <span class="post__avatar" aria-hidden="true">✉️</span>
-              <span class="post__who">
-                <span class="post__name">The Desk</span>
-                <span class="post__meta">@tjakoen.github.io · earlier</span>
-              </span>
-            </div>
-            <div class="post__body">
-              <p>New panels on the desk: this feed, and a compose window that doubles as the contact
-                form. The site is static, so the compose window hands your message to your own mail
-                app rather than pretending to have a backend.</p>
-            </div>
-            <div class="post__tags">
-              <span class="post__tag">#desk</span><span class="post__tag">#static</span>
-            </div>
-            <div class="post__foot"><a href="/mail">Open the compose panel →</a></div>
-          </article>
-        </div>
+        <section class="agenda" data-cal-panel="agenda">
+          <div class="section-head"><span>Agenda</span></div>
+          <ol class="agenda__list"><agenda-item each="calendarEvents"></agenda-item></ol>
+        </section>
 
         <div class="page-foot">
           Part of <a href="/">tjakoen.github.io</a>, built with itself.
@@ -209,18 +122,69 @@
   </div>
 
   <script>
-    // Read-only render of the real current month. No backend, no data: it draws the grid for
-    // new Date() and drops a few illustrative blocks on days relative to today so the panel always
-    // reads as current. Part of the desk metaphor, not a live calendar feed.
+    // Reads the real events straight off the server-rendered Agenda (one source of truth, no
+    // fetch, no second copy of the data) and plots the real current Month + Week from them. With
+    // no JS the Agenda above is already the whole page; this island only adds the two other views
+    // and the tab switcher. Deleted (Pass 2 — Calendar): the old invented `seeds` array
+    // (Deep-work block, Standup) — this panel plots only real things now.
     (function () {
-      var dowEl = document.querySelector('[data-cal="dow"]');
-      var gridEl = document.querySelector('[data-cal="grid"]');
-      var titleEl = document.querySelector('[data-cal="title"]');
-      if (!gridEl || !dowEl) return;
+      var viewsNav = document.querySelector('[data-cal-views]');
+      var agendaList = document.querySelector('.agenda__list');
+      var monthPanel = document.querySelector('[data-cal-panel="month"]');
+      var weekPanel = document.querySelector('[data-cal-panel="week"]');
+      var agendaPanel = document.querySelector('[data-cal-panel="agenda"]');
+      if (!viewsNav || !agendaList || !monthPanel || !weekPanel || !agendaPanel) return;
 
+      // ---- read events off the agenda DOM ----
+      var items = Array.prototype.slice.call(agendaList.querySelectorAll('.agenda__item'));
+      var events = items.map(function (li) {
+        var titleEl = li.querySelector('.agenda__title');
+        return {
+          id: li.id,
+          date: li.getAttribute('data-date') || '',
+          kind: li.getAttribute('data-event-kind') || 'note',
+          title: titleEl ? titleEl.textContent : '',
+        };
+      }).filter(function (e) { return e.date; });
+
+      function parseISODate(s) {
+        var parts = s.split('-').map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+      function isoKey(d) {
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      }
+      var byDate = {};
+      events.forEach(function (e) {
+        (byDate[e.date] = byDate[e.date] || []).push(e);
+      });
+
+      // ---- shared: a clickable chip for one event, switches to Agenda + highlights the row ----
+      function makeChip(e) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cal__event' + (e.kind === 'post' ? ' cal__event--post' : '');
+        btn.textContent = e.title;
+        if (e.id) btn.setAttribute('data-target', e.id);   // the agenda row this chip reveals
+        btn.addEventListener('click', function () {
+          setView('agenda');
+          var row = e.id && document.getElementById(e.id);
+          if (!row) return;
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          row.classList.add('agenda__item--highlight');
+          setTimeout(function () { row.classList.remove('agenda__item--highlight'); }, 1600);
+        });
+        return btn;
+      }
+
+      // ---- Month ----
       var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
         'August', 'September', 'October', 'November', 'December'];
+
+      var dowEl = document.querySelector('[data-cal="dow"]');
+      var gridEl = document.querySelector('[data-cal="grid"]');
+      var titleEl = document.querySelector('[data-cal="title"]');
 
       var now = new Date();
       var year = now.getFullYear(), month = now.getMonth(), todayDate = now.getDate();
@@ -233,25 +197,6 @@
         dowEl.appendChild(c);
       });
 
-      // illustrative blocks keyed to an offset from today (so they cluster around now).
-      // [dayOffset, label, muted?]
-      var seeds = [
-        [0, 'Deep-work block', false],
-        [0, 'Ship notes', false],
-        [1, 'PROOF board review', false],
-        [2, 'Standup', true],
-        [3, 'Focus: grain', false],
-        [-2, 'Standup', true],
-        [5, 'Reading + refactor', true]
-      ];
-      var events = {};
-      seeds.forEach(function (s) {
-        var d = new Date(year, month, todayDate + s[0]);
-        if (d.getMonth() !== month) return; // keep it within this month
-        var key = d.getDate();
-        (events[key] = events[key] || []).push({ label: s[1], muted: s[2] });
-      });
-
       var first = new Date(year, month, 1).getDay();
       var inMonth = new Date(year, month + 1, 0).getDate();
       var prevMonth = new Date(year, month, 0).getDate();
@@ -262,26 +207,69 @@
         var num = document.createElement('span');
         num.className = 'cal__num';
 
-        var dateNum, out = false;
-        if (i < first) { dateNum = prevMonth - first + 1 + i; out = true; }
-        else if (i >= first + inMonth) { dateNum = i - first - inMonth + 1; out = true; }
-        else { dateNum = i - first + 1; }
+        var dateNum, out = false, cellDate;
+        if (i < first) { dateNum = prevMonth - first + 1 + i; out = true; cellDate = new Date(year, month - 1, dateNum); }
+        else if (i >= first + inMonth) { dateNum = i - first - inMonth + 1; out = true; cellDate = new Date(year, month + 1, dateNum); }
+        else { dateNum = i - first + 1; cellDate = new Date(year, month, dateNum); }
 
         if (out) cell.classList.add('cal__cell--out');
         if (!out && dateNum === todayDate) cell.classList.add('cal__cell--today');
         num.textContent = dateNum;
         cell.appendChild(num);
 
-        if (!out && events[dateNum]) {
-          events[dateNum].forEach(function (e) {
-            var ev = document.createElement('span');
-            ev.className = 'cal__event' + (e.muted ? ' cal__event--muted' : '');
-            ev.textContent = e.label;
-            cell.appendChild(ev);
-          });
-        }
+        (byDate[isoKey(cellDate)] || []).forEach(function (e) { cell.appendChild(makeChip(e)); });
         gridEl.appendChild(cell);
       }
+
+      // ---- Week (the 7 days of the current week, Sun-Sat) ----
+      var weekDowEl = document.querySelector('[data-cal-week="dow"]');
+      var weekGridEl = document.querySelector('[data-cal-week="grid"]');
+      var weekTitleEl = document.querySelector('[data-cal-week="title"]');
+
+      var weekStart = new Date(year, month, todayDate - now.getDay());
+      var weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
+      var sameMonth = weekStart.getMonth() === weekEnd.getMonth();
+      weekTitleEl.textContent = sameMonth
+        ? months[weekStart.getMonth()] + ' ' + weekStart.getDate() + '–' + weekEnd.getDate() + ', ' + weekStart.getFullYear()
+        : months[weekStart.getMonth()] + ' ' + weekStart.getDate() + ' – ' + months[weekEnd.getMonth()] + ' ' + weekEnd.getDate() + ', ' + weekEnd.getFullYear();
+
+      days.forEach(function (d) {
+        var c = document.createElement('div');
+        c.className = 'cal__dow';
+        c.textContent = d;
+        weekDowEl.appendChild(c);
+      });
+
+      for (var w = 0; w < 7; w++) {
+        var wDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + w);
+        var wCell = document.createElement('div');
+        wCell.className = 'cal__cell';
+        var wNum = document.createElement('span');
+        wNum.className = 'cal__num';
+        wNum.textContent = wDate.getDate();
+        if (isoKey(wDate) === isoKey(now)) wCell.classList.add('cal__cell--today');
+        wCell.appendChild(wNum);
+        (byDate[isoKey(wDate)] || []).forEach(function (e) { wCell.appendChild(makeChip(e)); });
+        weekGridEl.appendChild(wCell);
+      }
+
+      // ---- view tabs ----
+      var panels = { month: monthPanel, week: weekPanel, agenda: agendaPanel };
+      function setView(name) {
+        Object.keys(panels).forEach(function (k) { panels[k].hidden = k !== name; });
+        var buttons = viewsNav.querySelectorAll('[data-view]');
+        for (var b = 0; b < buttons.length; b++) {
+          if (buttons[b].getAttribute('data-view') === name) buttons[b].setAttribute('aria-current', 'page');
+          else buttons[b].removeAttribute('aria-current');
+        }
+      }
+      viewsNav.addEventListener('click', function (ev) {
+        var btn = ev.target.closest('[data-view]');
+        if (btn) setView(btn.getAttribute('data-view'));
+      });
+
+      viewsNav.hidden = false;   // reveal the tabs + default to Month only once the island is live
+      setView('month');
     })();
   </script>
 </body>
