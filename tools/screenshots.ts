@@ -33,6 +33,7 @@ const goto = (path: string) => async (page: import("@playwright/test").Page) => 
 const SHOTS: Shot[] = [
   { name: "welcome", desc: "/ — THE EDITOR's Welcome page (the whole site as one editor window)", fullPage: true, prepare: goto("/") },
   { name: "notes", desc: "/notes — the notes index (MILL), inside the editor window", fullPage: true, prepare: goto("/notes") },
+  { name: "calendar", desc: "/calendar — Month/Week/Agenda over the real note dates + desk-feed posts (Pass 2 — Calendar)", fullPage: true, prepare: goto("/calendar") },
   { name: "bread", desc: "/bread — the BREAD Stack directory: all five members, one card shape", fullPage: true, prepare: goto("/bread") },
   { name: "grain", desc: "/grain — the GRAIN showcase, built with GRAIN", fullPage: true, prepare: goto("/grain") },
   { name: "batch", desc: "/batch — the lean substrate landing page", fullPage: true, prepare: goto("/batch") },

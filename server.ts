@@ -28,7 +28,7 @@ import { LoopCard } from "./demo/view/components.ts";
 import { toLoopCardView } from "./demo/services/task-views.ts";
 import type { Task } from "./demo/domain/task.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes } from "./content.ts";
+import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 // --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
 import { createProofRoutes } from "@tjakoen/proof/routes.ts";
@@ -84,8 +84,34 @@ const stampDevDoor = (html: string): string =>
   Bun.env.AI_DOOR
     ? html.replace(/<body\b/, '<body data-ai-transport="client" data-ai-door="/modules/portfolio/ai/desk-door.js"')
     : html;
+// /calendar's Agenda (Pass 2 — Calendar): data/desk-feed.json is hand-authored dressing — the
+// desk's own shipped-things posts, read server-side ONLY (never a client fetch, so it carries no
+// export dataRoute, unlike /notes.json etc.) — merged with real note publish dates
+// (content.ts's listNoteCalendarEvents) into one calendarEvents array. Read once at boot, same
+// idiom as PROOF_CSS above; a new post means a restart, same as a new note or plan.
+interface DeskFeedPost { id: string; date: string; title: string; body: string; tags: string[]; link: string; icon: string; }
+const deskFeedPosts: DeskFeedPost[] =
+  await Bun.file(join(import.meta.dir, "data", "desk-feed.json")).json();
+async function buildCalendarEvents(): Promise<CalendarEvent[]> {
+  const noteEvents = await listNoteCalendarEvents();
+  const postEvents: CalendarEvent[] = deskFeedPosts.map((p) => ({
+    id: `post-${p.id}`,
+    domId: `evt-post-${p.id}`,
+    date: p.date,
+    dateLabel: p.date,
+    kind: "post",
+    title: p.title,
+    body: p.body,
+    tags: p.tags,
+    tagsLabel: p.tags.join(", "),
+    link: p.link,
+    icon: p.icon,
+  }));
+  // newest-first, same convention as the old hardcoded feed (a post/note ID break ties deterministically).
+  return [...noteEvents, ...postEvents].sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
+}
 const renderAppPage = async (html: string) =>
-  stampDevDoor(await renderPage(html, { recentNotes: await listRecentNotes() }));
+  stampDevDoor(await renderPage(html, { recentNotes: await listRecentNotes(), calendarEvents: await buildCalendarEvents() }));
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
 const serveContent = createPortfolioContentRoutes(
   async (html: string) => stampDevDoor(await renderPage(html)),

@@ -32,7 +32,12 @@ test.beforeEach(async ({ page }) => {
 // catching real layout shifts (a moved element trips far more than 1% of the frame).
 const SHOT = { fullPage: true, animations: "disabled", maxDiffPixelRatio: 0.01 } as const;
 
-const screens: Array<[name: string, path: string]> = [
+// `freeze`, when set, pins the clock before navigation — /calendar (Pass 2 — Calendar) plots the
+// REAL current month/week, so an unfrozen clock's today ring moves every day and breaks the
+// baseline monthly. 2026-07-12 sits after every fixture event (data/desk-feed.json, the real note
+// frontmatter) but in the same month as all of them, so the baseline shows a populated month
+// rather than an empty one.
+const screens: Array<[name: string, path: string, freeze?: Date]> = [
   ["welcome", "/"],          // THE EDITOR shell — the most-seen surface
   ["loop", "/loop"],         // the reference "watch the AI act" screen, idle
   ["grain", "/grain"],       // the GRAIN showcase
@@ -40,10 +45,12 @@ const screens: Array<[name: string, path: string]> = [
   ["catalog", "/catalog"],   // the generated component catalog
   ["about", "/about"],       // a plain content page
   ["notes", "/notes"],       // the /notes feed (Pass 1 — Notes: a portfolio route override)
+  ["calendar", "/calendar", new Date("2026-07-12T12:00:00")],   // Pass 2 — Calendar (time frozen, see above)
 ];
 
-for (const [name, path] of screens) {
+for (const [name, path, freeze] of screens) {
   test(`${name} (${path}) matches its visual baseline`, async ({ page }) => {
+    if (freeze) await page.clock.setFixedTime(freeze);
     await page.goto(path, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);   // no FOUC frame in the baseline
     await expect(page).toHaveScreenshot(`${name}.png`, SHOT);
