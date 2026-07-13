@@ -7,8 +7,8 @@
       "dependencies": {
         "@tjakoen/batch": "github:tjakoen/batch#5d04be0",
         "@tjakoen/grain": "github:tjakoen/grain#8e85a47",
-        "@tjakoen/mill": "github:tjakoen/mill#2b85cb1",
-        "@tjakoen/proof": "github:tjakoen/proof#19b444c",
+        "@tjakoen/mill": "github:tjakoen/mill#7051ef8",
+        "@tjakoen/proof": "github:tjakoen/proof#06087d7",
       },
       "devDependencies": {
         "@playwright/test": "^1.61.1",
@@ -24,9 +24,9 @@
 
     "@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#8e85a47", {}, "tjakoen-grain-8e85a47", "sha512-XKlJ6mQqd19FN+3SmTxaLV5QqetPns11nhDHetP51OUFTm+qIeALGLy6gPEwoUIq145geSrAxK/pNxDONJ/mAw=="],
 
-    "@tjakoen/mill": ["@tjakoen/mill@github:tjakoen/mill#2b85cb1", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#c00836e", "@tjakoen/grain": "github:tjakoen/grain#4076759" } }, "tjakoen-mill-2b85cb1", "sha512-YQTmCmJixpnwspHU/9tAQ5edaZyjqG7ZBI49zsc9vcVMINr90lxe02YGMm3KXL2uR00HHtCNH3i/eUXGouZPXA=="],
+    "@tjakoen/mill": ["@tjakoen/mill@github:tjakoen/mill#7051ef8", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "github:tjakoen/grain#8e85a47" } }, "tjakoen-mill-7051ef8", "sha512-12fOIn0Ogfh/MAPUjoVVbsMKHjoiniHTrse9jMl6+5QwqapC+9mKFpiEi1k6tcB2puP8yw44DwQ8aWBRZ4T72A=="],
 
-    "@tjakoen/proof": ["@tjakoen/proof@github:tjakoen/proof#19b444c", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#f9ecb03", "@tjakoen/grain": "github:tjakoen/grain#3e94bdc", "@tjakoen/mill": "github:tjakoen/mill#15fa3a5" }, "bin": { "proof": "./cli.ts" } }, "tjakoen-proof-19b444c", "sha512-03OMoXzWFDkh9WbehlDypBY9/2RJQA6C2sWZAfXnv8xGpv1zJrPEYc+UwqK/gViUP5X50JBT2ZT9dKH1dnI+qA=="],
+    "@tjakoen/proof": ["@tjakoen/proof@github:tjakoen/proof#06087d7", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "github:tjakoen/grain#8e85a47", "@tjakoen/mill": "github:tjakoen/mill#7051ef8" }, "bin": { "proof": "./cli.ts" } }, "tjakoen-proof-06087d7", "sha512-6BIbjGLR8WasFKquYyf6gwokAliV1F+VVd/cKr1n03McN2DAQruTNtw4NCZ88Uz3QsaDj3J1Z9l+80Ku7CMBRQ=="],
 
     "@types/node": ["@types/node@26.1.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw=="],
 
@@ -42,14 +42,8 @@
 
     "undici-types": ["undici-types@8.3.0", "", {}, "sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ=="],
 
-    "@tjakoen/mill/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#c00836e", {}, "tjakoen-batch-c00836e", "sha512-awd1LZWTasGw+uiUPl39Qdf7YqDoiP39eXgy8p4ITHl3mg71a7cKLBTMxgsWw3ZhKTiSUaHVr9XjgtNkReeDlA=="],
+    "@tjakoen/mill/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
 
-    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#4076759", {}, "tjakoen-grain-4076759", "sha512-I2IHnD+5/sdQZhlynPj0p+g4qSgFSsp0YYt+WLHsTdZkhwwsF8IiI4hXLpRXQQtBXbLSv6gdiic3ma/OFAm/5g=="],
-
-    "@tjakoen/proof/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#f9ecb03", {}, "tjakoen-batch-f9ecb03", "sha512-QTzYtphPzZdEEk7Qs6s3CIR01WHw3JTfgpD0u0vp5qL8RGO7yXLRMFJj55uLhIzxCucYdhQsaz72PKsb3iiheQ=="],
-
-    "@tjakoen/proof/@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#3e94bdc", {}, "tjakoen-grain-3e94bdc", "sha512-Iyg9JdyEt7GSiE9xdV1lubrQQFfxQpxOGeYJ/QKfD0OM4W04tEcxQIajUstWqvjawMlkv12CxXNEpcmjmbAlJw=="],
-
-    "@tjakoen/proof/@tjakoen/mill": ["@tjakoen/mill@github:tjakoen/mill#15fa3a5", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#f9ecb03", "@tjakoen/grain": "github:tjakoen/grain#3e94bdc" } }, "tjakoen-mill-15fa3a5", "sha512-MVXGcLZFGJTCU1RcP1YbPl/At/5BP+kwiZ/1wRWQqs/QcA0TKQ3JNA52CkmNYtQx/PTTU/v4qJqpRKuXoLf1sw=="],
+    "@tjakoen/proof/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
   }
 }
