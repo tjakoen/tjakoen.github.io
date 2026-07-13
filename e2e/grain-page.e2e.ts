@@ -295,7 +295,11 @@ test.describe("GRAIN theming — token-only re-skin (color-scheme axis; flavor a
     expect(dark).not.toBe(light);                                 // whole page re-skinned, zero component edits
     const grainFont = await page.locator('[data-grade="grain"]').first()
       .evaluate((el) => getComputedStyle(el).fontFamily);
-    expect(grainFont).toContain("Redaction 50");                  // the AI grain face persists in dark
+    // The AI grain face (the Redaction family) persists in dark — never resolves to a plain serif.
+    // The exact weight varies by size on purpose: large grain text carries the Redaction 50 texture
+    // (grade-as-signal reads at >= --text-2xl, grain lesson #4), while small chat bubbles use the
+    // fine Redaction 35 (grain P2 legibility floor). Either way the grain face survives the re-skin.
+    expect(grainFont).toContain("Redaction");
   });
 
   // Accent doctrine: "full reach, one hue" — the default stays hueless (accent = ink), and an
