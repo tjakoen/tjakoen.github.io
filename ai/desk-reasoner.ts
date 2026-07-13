@@ -48,6 +48,25 @@ function pageOperables(manifest: Manifest): string[] {
 const joinPhrases = (xs: string[]): string =>
   xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
 
+// Pull the live "nav:<route>" targets out of manifestForReasoner()'s prose (grain/ai/manifest-dom.ts)
+// — the portfolio sidebar's file-tree + dock links carry that surface prefix. Distilled to bare
+// routes (not the full manifest text, which lists every surface on the page — most irrelevant to
+// navigation and not worth the 0.5B's small context window) before it's handed to the prompt.
+const NAV_LINE_RE = /^- nav:(\/\S*) \[/;
+export function navRoutesFromManifest(manifestText: string): string[] {
+  const out: string[] = [];
+  for (const line of manifestText.split("\n")) {
+    const m = NAV_LINE_RE.exec(line);
+    if (m) out.push(m[1]!);
+  }
+  return out;
+}
+
+// The model's own navigation choice, per the NAVIGATE:<route> protocol prompt.ts offers it (scoped
+// to exactly the routes navRoutesFromManifest found — see navBlock in prompt.ts). Matched loosely
+// (case-insensitive, trims stray whitespace) since a 0.5B doesn't always hit a format byte-exact.
+const MODEL_NAVIGATE_RE = /^navigate:\s*(\/\S*)\s*$/i;
+
 /** The Reasoner plus a client-only reset — the door hangs this on window.deskReset ("New chat"). */
 export interface DeskReasoner extends Reasoner {
   /** Forget the conversation (and re-arm a degraded desk to retry loading). Keeps a healthy engine. */
@@ -57,6 +76,14 @@ export interface DeskReasoner extends Reasoner {
 const MODEL_LABEL = "Qwen2.5-0.5B";
 const OFFLINE_LINE =
   "The desk runs a small AI model in your browser, and this browser can't run it, so the desk is offline. Everything else on the site works as usual.";
+
+// How long the lamp lingers on a clicked nav link before the page actually tears down — the desk's
+// OWN "let the click read before we leave" beat, tuned down from 950ms (too slow — 2026-07-13 owner
+// call). SEPARATE from grain's own NAVIGATE_SETTLE_MS (ai-dispatch.js, 220ms): that one guards the
+// navigate RenderOp itself (any settle in flight gets a beat to finish); this one is the desk's own
+// choreography BEFORE it ever emits that op. Named per grain CLAUDE.md lesson #9 — a knob with no
+// name can't be found, let alone tuned twice.
+const NAV_GLIDE_MS = 550;
 
 export interface DeskDeps {
   /** WebGPU (+ memory) available? */
@@ -83,6 +110,11 @@ export interface DeskDeps {
   /** GRAIN's live-DOM manifest (domManifest) — what's operable on THIS page, honestly derived from
    *  the registry, so "what can I do here?" reads grain's own description instead of a hardcoded list. */
   pageManifest?: () => Manifest;
+  /** GRAIN's manifestForReasoner() — the SAME manifest, as prompt-ready prose. The desk pulls out
+   *  just the "nav:<route>" lines (the sidebar's live navigation targets) to tell the MODEL what it
+   *  can navigate to, so a real model's chat.send can choose a destination from what's actually on
+   *  screen right now — not only the hardcoded alias table in actions.ts (Tier ~1.5's fast path). */
+  pageManifestText?: () => string;
   /** Newest-first notes (from /notes.json), for "open the latest note". */
   listNotes?: () => Promise<DeskNote[]>;
   /** Stash a "spotlight + announce on arrival" so the lamp RESUMES on the destination page after a
@@ -186,26 +218,23 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
 
       // 1) your message — clean, committed. Committed on the chat-log target RELEASES the composer
       //    trigger immediately (dispatcher clearTrigger) and stands the op-silence watchdog down, so
-      //    the long model load that follows can't trip it.
-      tools.emit({ target: log, op: "append", provenance: "user", commit: "committed",
-        html: bubble("you", "", `<span class="chat-message__body">${esc(text || "…")}</span>`) });
+      //    the long model load that follows can't trip it. GRAIN's own op-builder (reasoner-kit) —
+      //    not hand-rolled markup — so the desk can't drift from the exact shape the dispatcher expects.
+      tools.emit(deps.kit.userMessageOp(log, text));
 
       // 2) an empty desk bubble to stream into — grain (AI), pending until it settles.
       const id = `chat-msg:${RUN}-${++seq}`;
       tools.emit({ target: log, op: "append", provenance: "ai", commit: "pending",
         html: bubble("ai", "grain", bodySpan(id, THINKING), "Desk") });   // never blank — shows "Thinking…" at once
 
-      // replace the bubble body (status / progress / final) — keeps the data-surface so later ops land.
-      const setBody = (inner: string, commit: "pending" | "committed") =>
-        tools.emit({ target: id, op: "replace", provenance: "ai", commit, html: bodySpan(id, inner) });
-      const setBodyRaw = (innerHtml: string, commit: "pending" | "committed") =>   // trusted markup (load bar)
-        tools.emit({ target: id, op: "replace", provenance: "ai", commit, html: bodySpan(id, innerHtml) });
+      // replace the bubble body (status / progress / final) — same op-builder either way; the two
+      // names just document intent at the call site (escaped text vs. already-trusted markup).
+      const setBody = (inner: string, commit: "pending" | "committed") => tools.emit(deps.kit.replaceBodyOp(id, inner, commit));
+      const setBodyRaw = setBody;   // trusted markup (load bar) — same op, kept as a distinct name for readability
       const setChips = (list: string[]) =>
         tools.emit({ target: "suggest-chips", op: "replace", provenance: "ai", commit: "committed", html: suggestChipsHtml(list) });
       const offline = (): Decision => { deps.markOffline(); setBody(esc(OFFLINE_LINE), "committed"); return { ok: true, ops: [], reply: OFFLINE_LINE }; };
-      const narrate = (verb: string, desc: string) =>   // console feed if the page shows one (else a no-op find)
-        tools.emit({ target: "console", op: "append", provenance: "ai", commit: "committed",
-          html: `<div class="console__line"><span class="action-badge">${verb}</span><span class="console__desc">${esc(desc)}</span></div>` });
+      const narrate = (verb: string, desc: string) => tools.emit(deps.kit.narrateOp(verb, desc));   // console feed if the page shows one (else a no-op find)
       // stream a completion into the desk bubble (chat + summarize share this). Never leaves an empty
       // bubble; penalties + a loop-guard tame the 0.5B's tendency to spin into repetition.
       const streamInto = async (engine: DeskEngine, messages: ChatMessage[], maxTokens?: number): Promise<string> => {
@@ -224,7 +253,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             const delta = part.choices?.[0]?.delta?.content;
             if (!delta) continue;
             acc += delta;
-            tools.emit({ target: id, op: "type", text: delta, provenance: "ai", commit: "pending" });
+            tools.emit(deps.kit.typeToken(id, delta));
             // loop-guard: if a ~28-char tail has already recurred 3+ times ("a board, a screen, a
             // board…"), stop, trim the display back to one instance, and settle.
             if (acc.length > 140) {
@@ -243,9 +272,27 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           return acc;
         }
         if (looped) setBody(esc(acc || "…"), "committed");                  // clean up the repeated junk
-        else if (acc.trim()) tools.emit({ target: id, op: "type", done: true, provenance: "ai", commit: "committed" });
+        else if (acc.trim()) tools.emit(deps.kit.settleOp(id));
         else setBody(esc(tools.cancelled() ? "Stopped." : "The desk didn't have an answer for that. Try asking about TJ, the BREAD stack, or this site."), "committed");
         return acc;
+      };
+
+      // Travel the lamp to a nav link, "click" it, then leave the page — the ONE sequence shared by
+      // every navigation-driving path (deterministic latest-note, deterministic section nav, and the
+      // model's own NAVIGATE:<route> choice below), so the choreography can't drift between them.
+      // The spotlight op is grain's own kit builder, not a hand-rolled literal (CLAUDE.md lesson #1:
+      // use the mechanism, don't reinvent it) — and the actual navigate RenderOp is emitted by
+      // deps.navigate itself (desk-door.ts, via kit.navigateOp), not here. `navLink` is the VISIBLE
+      // sidebar link the lamp travels to and "clicks" (e.g. "/notes"); `goto` is where the browser
+      // actually ends up (e.g. "/notes/newest" — a specific note has no nav link of its own).
+      const travelAndNavigate = async (navLink: string, goto: string, label: string, announce: string, readDesc: string) => {
+        narrate("reads", readDesc);
+        deps.revealNav?.(navLink);
+        narrate("clicks", label);
+        tools.emit(deps.kit.spotlightOp(`nav:${navLink}`, { active: true, click: true }));
+        deps.arrive?.("screen", announce);   // resume the lamp on arrival
+        await tools.delay(NAV_GLIDE_MS);     // lamp opens the folder, glides, pulses
+        deps.navigate?.(goto);
       };
 
       // Everything past the bubble is guarded: any unexpected throw settles an honest line rather
@@ -273,14 +320,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const target = notes[0];
           if (target && deps.navigate) {
             setBody(esc(`Opening the latest note, “${target.title}”.`), "committed");
-            narrate("reads", "the notebook");
-            // travel the lamp to the Notes nav item and "click" it, like a human would, then load.
-            deps.revealNav?.("/notes");
-            narrate("clicks", "Notes");
-            tools.emit({ target: "nav:/notes", op: "spotlight", active: true, click: true, provenance: "ai", commit: "pending" });
-            deps.arrive?.("screen", `Here's the latest note, “${target.title}”.`);   // resume the lamp on arrival
-            await tools.delay(950);                                                  // lamp opens the folder, glides, pulses
-            deps.navigate(target.route);
+            await travelAndNavigate("/notes", target.route, "Notes", `Here's the latest note, “${target.title}”.`, "the notebook");
             return { ok: true, ops: [], reply: `Opening ${target.title}` };
           }
           setBody(esc("I couldn't reach the notebook just now."), "committed");
@@ -290,14 +330,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         if (action?.kind === "navigate") {
           if (deps.navigate) {
             setBody(esc(`Taking you to ${action.name}.`), "committed");
-            narrate("reads", "the navigation");
-            // travel the lamp to that section's nav link and "click" it, then load the page.
-            deps.revealNav?.(action.route);
-            narrate("clicks", action.name);
-            tools.emit({ target: `nav:${action.route}`, op: "spotlight", active: true, click: true, provenance: "ai", commit: "pending" });
-            deps.arrive?.("screen", `Here's ${action.name}.`);
-            await tools.delay(950);                                                  // lamp opens the folder, glides, pulses
-            deps.navigate(action.route);
+            await travelAndNavigate(action.route, action.route, action.name, `Here's ${action.name}.`, "the navigation");
             return { ok: true, ops: [], reply: `Navigating to ${action.name}` };
           }
           setBody(esc("I can't navigate from here."), "committed");
@@ -335,7 +368,30 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         const knowledge = await deps.loadKnowledge();
         const grounding = retrieve(text, knowledge, 3);
         narrate("reads", grounding.map((c) => c.route).join(", ") || "facts");
-        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history }));
+        // Tier-2 navigation: offer the model the page's LIVE nav targets (grain's manifestForReasoner,
+        // distilled to bare routes) so it can choose a destination from what's actually on screen —
+        // on top of, not instead of, the deterministic alias table above (actions.ts stays Tier ~1.5's
+        // fast, reliable path; this is the model's own judgment call for anything the aliases miss).
+        const navRoutes = navRoutesFromManifest(deps.pageManifestText?.() ?? "");
+        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navRoutes }));
+
+        // The model chose to navigate. Validate TWICE before acting on generated text: it must be one
+        // of the routes we actually offered (navRoutes, above — never trust the model to have stayed
+        // in scope), AND kit.navigateOp's own isSafeNavigateHref check (it throws on anything unsafe) —
+        // the same defense-in-depth the deterministic paths get for free from their hardcoded routes.
+        const navMatch = MODEL_NAVIGATE_RE.exec(acc.trim());
+        if (navMatch && deps.navigate && navRoutes.includes(navMatch[1]!)) {
+          const route = navMatch[1]!;
+          try {
+            deps.kit.navigateOp("screen", route);   // throws on an unsafe href — validate before acting
+            setBody(esc(`Taking you to ${route}.`), "committed");
+            await travelAndNavigate(route, route, route, `Here's ${route}.`, "the navigation");
+            return { ok: true, ops: [], reply: `Navigating to ${route}` };
+          } catch (err) {
+            console.error("[desk] model chose an unsafe navigate href", route, err);   // fall through to a plain reply
+          }
+        }
+
         history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: acc });
         setChips([...pickFollowups(text, history), "Summarize this page"]);
         return { ok: true, ops: [], reply: acc };

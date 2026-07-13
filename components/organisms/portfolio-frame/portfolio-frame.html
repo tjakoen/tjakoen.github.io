@@ -187,7 +187,9 @@
       <!-- the desk appends here over SSE (chat.send → your bubble + the streamed reply). Site-wide.
            Empty-state text shows until the first message lands (CSS :has). -->
       <div class="assistant__log" data-surface="chat-log">
-        <p class="assistant__empty">Ask the desk about TJ — or anything on this site. It answers here, and narrates its work in the terminal below.</p>
+        <!-- honest onboarding: only capabilities that actually work (ai/actions.ts's deterministic
+             router + the grounded chat) — no hype, matches VOICE (no dashes in prose). -->
+        <p class="assistant__empty">Ask the desk about TJ, the BREAD stack, or this site. It can also take you somewhere or open the latest note if you ask. It answers here and narrates its steps in the terminal below.</p>
       </div>
       <div class="chat-thinking" data-thinking>
         <div class="chat-thinking__head">

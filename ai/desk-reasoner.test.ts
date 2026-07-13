@@ -3,7 +3,7 @@
 // and never delegates chat to the stub. Headless CI has no WebGPU, so this fake-driven suite IS the
 // coverage for both the healthy and the degraded paths.
 import { test, expect, describe } from "bun:test";
-import { makeDeskReasoner, type DeskDeps } from "./desk-reasoner.ts";
+import { makeDeskReasoner, navRoutesFromManifest, type DeskDeps } from "./desk-reasoner.ts";
 import type { DeskEngine } from "./webllm-loader.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
@@ -274,5 +274,76 @@ describe("makeDeskReasoner — UI actions (the showcase: the desk drives the pag
 
     expect(d.reply).toBe("A summary.");
     expect(ops.some((o) => o.op === "type" && o.done && o.commit === "committed")).toBe(true);
+  });
+});
+
+describe("navRoutesFromManifest", () => {
+  test("pulls bare routes out of manifestForReasoner's nav: lines, ignoring everything else", () => {
+    const text = [
+      "screen: loop",
+      "targets: (4)",
+      "- nav:/grain [nav] -> (no verb currently targets this)",
+      "- nav:/notes [nav] -> (no verb currently targets this)",
+      "- chat-log [chat-log] -> chat.send",
+      "- item:ITM-1 [item] -> item.archive",
+    ].join("\n");
+    expect(navRoutesFromManifest(text)).toEqual(["/grain", "/notes"]);
+  });
+
+  test("no nav: lines → empty list", () => {
+    expect(navRoutesFromManifest("screen: (none)\ntargets: (none — this page declares no [data-surface] elements)")).toEqual([]);
+  });
+});
+
+describe("makeDeskReasoner — Tier-2 navigation (the model's own NAVIGATE:<route> choice)", () => {
+  const manifestWith = (...routes: string[]): string =>
+    routes.map((r) => `- nav:${r} [nav] -> (no verb currently targets this)`).join("\n");
+
+  test("model replies NAVIGATE:<route> for a route it was actually offered → the desk navigates", async () => {
+    const { engine } = fakeEngine(["NAVIGATE:/loop"]);
+    let navd = "";
+    const { deps } = makeDeps({ loadEngine: async () => engine });
+    deps.navigate = (u) => { navd = u; };
+    deps.pageManifestText = () => manifestWith("/loop", "/notes");
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("take me somewhere new"), tools);
+
+    expect(navd).toBe("/loop");
+    expect(d.reply).toBe("Navigating to /loop");
+    // the raw sentinel never settles as the visible reply — it's replaced with a friendly line
+    const lastReplace = [...ops].reverse().find((o) => o.op === "replace");
+    expect(lastReplace!.html).not.toContain("NAVIGATE:");
+    expect(lastReplace!.html).toContain("Taking you to /loop");
+    expect(ops.some((o) => o.op === "spotlight" && o.target === "nav:/loop" && o.active)).toBe(true);
+  });
+
+  test("model names a route it was NOT offered → treated as plain text, no navigation", async () => {
+    const { engine } = fakeEngine(["NAVIGATE:/secret-admin"]);
+    let navd = "";
+    const { deps } = makeDeps({ loadEngine: async () => engine });
+    deps.navigate = (u) => { navd = u; };
+    deps.pageManifestText = () => manifestWith("/loop");   // "/secret-admin" was never offered
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("take me somewhere"), tools);
+
+    expect(navd).toBe("");                       // never navigated
+    expect(d.reply).toBe("NAVIGATE:/secret-admin");   // fell through to a plain (if odd) reply
+  });
+
+  test("no manifest offered (e.g. a page with no live nav) → the prompt gets no NAVIGATE protocol, model answers normally", async () => {
+    const { engine } = fakeEngine(["Just an answer."]);
+    let navd = "";
+    const { deps } = makeDeps({ loadEngine: async () => engine });
+    deps.navigate = (u) => { navd = u; };
+    const r = makeDeskReasoner(deps);   // no pageManifestText dep at all
+
+    const d = await r.decide(chat("who is TJ?"), makeTools().tools);
+
+    expect(navd).toBe("");
+    expect(d.reply).toBe("Just an answer.");
   });
 });

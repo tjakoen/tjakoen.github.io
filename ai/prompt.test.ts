@@ -56,4 +56,18 @@ describe("buildPrompt", () => {
     expect(msgs[0]!.content).not.toContain("CONTEXT (site content");
     expect(msgs[msgs.length - 1]!.content).toBe("q");
   });
+
+  test("no navRoutes → no NAVIGATE protocol in the system message (unchanged prompt)", () => {
+    const msgs = buildPrompt({ query: "q", chunks: [], history: [] });
+    expect(msgs[0]!.content).not.toContain("NAVIGATE");
+  });
+
+  test("navRoutes present → the system message offers a scoped NAVIGATE:<route> protocol", () => {
+    const msgs = buildPrompt({ query: "take me to grain", chunks: [], history: [], navRoutes: ["/grain", "/notes"] });
+    const sys = msgs[0]!.content;
+    expect(sys).toContain("/grain");
+    expect(sys).toContain("/notes");
+    expect(sys).toContain("NAVIGATE:<route>");
+    expect(sys).toContain('NAVIGATE:/grain"');   // the worked example uses the FIRST offered route
+  });
 });
