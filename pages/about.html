@@ -5,34 +5,120 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About · TJ's Desk</title>
   <meta name="description" content="About Tjakoen Stolk: dev manager, tech lead, and part-time software engineering teacher who builds his own no-build stack. I direct, Claude types.">
+  <style>
+    /* page-specific layout for the profile app (not part of the design system). Pass 4 — About:
+       a small tabbed profile over the SAME four things the old flat page already had (prose,
+       résumé pointer, contact, nothing invented) — the tabs are grain's `.tab` anchor semantics
+       (a .tab[aria-current] bar), NOT the sidebar's [data-shell-mode] modes, which belong to the
+       chrome's assistant panel via shell.js and would entangle this page with the frame. */
+    .profile-card { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
+      padding: var(--space-5); margin: var(--space-5) 0 var(--space-4);
+      border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--paper-2); }
+    .profile-card__avatar { flex: 0 0 auto; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-pill);
+      background: var(--paper); border: 1px solid var(--line-soft); display: flex; align-items: center;
+      justify-content: center; font-size: 1.6rem; }
+    .profile-card__id { flex: 1 1 16rem; min-width: 0; }
+    .profile-card__id .eyebrow { margin: 0 0 var(--space-1); }
+    .profile-card__name { margin: 0 0 var(--space-1); }
+    .profile-card__role { margin: 0 0 var(--space-1); color: var(--ink-muted); font-size: var(--text-sm); }
+    .profile-card__tagline { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
+    .profile-card__actions { flex: 0 0 auto; display: flex; gap: var(--space-2); }
+
+    /* the tab bar: grain's .tab molecule (bordered, editor-style), used standalone as a plain
+       jump-link nav rather than inside a tab-bar organism — same idiom /calendar's view switcher
+       uses, but anchors here (not buttons) so a no-JS visit gets real in-page navigation for free. */
+    .about-tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--line-soft);
+      margin: 0 0 var(--space-5); }
+
+    /* WITH JS: the island shows one panel at a time. WITHOUT JS: no panel ever carries [hidden]
+       in the static markup below (that trap bit Pass 3 — Mail), so every panel stays visible and
+       the tabs above are just working anchors into a long, readable page. */
+    .about-panel[hidden] { display: none; }
+    .about-panel + .about-panel { margin-top: var(--space-6); }
+
+    .now-list { list-style: none; margin: var(--space-3) 0 var(--space-5); padding: 0;
+      display: flex; flex-direction: column; gap: var(--space-2); }
+    .now-list li { font-size: var(--text-sm); color: var(--ink-muted); }
+    .now-list time { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint);
+      margin-right: var(--space-2); }
+  </style>
 </head>
 <body data-screen="about" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="about" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
       <div class="board">
-        <p class="eyebrow">👋 <span class="name">Tjakoen Stolk</span></p>
-        <h1 class="masthead">About</h1>
-        <hr class="rule">
-        <p class="lede">Dev manager and tech lead by day, part-time software engineering teacher by
-          evening, and a builder of things nobody asked for in the hours left over. This whole site is
-          one of those things: my own no-build hypermedia stack, running as plain static files. I
-          direct, Claude types.</p>
+        <header class="profile-card">
+          <div class="profile-card__avatar" aria-hidden="true">🧑‍💻</div>
+          <div class="profile-card__id">
+            <p class="eyebrow">About</p>
+            <h1 class="masthead profile-card__name">Tjakoen Stolk</h1>
+            <p class="profile-card__role">Dev manager, tech lead, and part-time software engineering teacher.</p>
+            <p class="profile-card__tagline">I direct, Claude types.</p>
+          </div>
+          <div class="profile-card__actions">
+            <a class="btn" href="/mail">Message</a>
+            <a class="btn" data-variant="soft" href="/resume">Résumé</a>
+          </div>
+        </header>
 
-        <p>The long version, the failures included, is in <a href="/notes/ten-times-zero">the notes</a>:
-          how I actually work with AI, why I went frameworkless, and how I nearly quit teaching before
-          I automated my way back to it.</p>
+        <nav class="about-tabs" data-about-tabs aria-label="Sections">
+          <a class="tab" href="#profile" aria-current="page">Profile</a>
+          <a class="tab" href="#resume">Résumé</a>
+          <a class="tab" href="#contact">Contact</a>
+          <a class="tab" href="#now">Now</a>
+        </nav>
 
-        <div class="section-head"><span>Résumé</span></div>
-        <p>The full résumé is landing here soon. Until then, the work speaks on the
-          <a href="/">rest of the site</a>, and I am a message away below.</p>
+        <section class="about-panel" id="profile">
+          <div class="section-head"><span>Profile</span></div>
+          <p class="lede">Dev manager and tech lead by day, part-time software engineering teacher
+            by evening, and a builder of things nobody asked for in the hours left over. This
+            whole site is one of those things: my own no-build hypermedia stack, running as plain
+            static files.</p>
+          <p>The long version, the failures included, is in <a href="/notes/ten-times-zero">the
+            notes</a>: how I actually work with AI, why I went frameworkless, and how I nearly
+            quit teaching before I automated my way back to it.</p>
+        </section>
 
-        <div class="section-head"><span>Get in touch</span></div>
-        <div class="docs-list">
-          <div class="docs-list__item"><a class="docs-list__name" href="/mail">Send a message</a><span class="docs-list__what">opens the compose panel, addressed to me.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a><span class="docs-list__what">professional history and contact.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">GitHub</a><span class="docs-list__what">the code, this stack included.</span></div>
-        </div>
+        <section class="about-panel" id="resume">
+          <div class="section-head"><span>Résumé</span></div>
+          <p>The working record lives on its own page, and the professional history sits on
+            LinkedIn.</p>
+          <div class="docs-list">
+            <div class="docs-list__item"><a class="docs-list__name" href="/resume">Résumé</a><span class="docs-list__what">the working record, and where the full version will land.</span></div>
+            <div class="docs-list__item"><a class="docs-list__name" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a><span class="docs-list__what">professional history and contact.</span></div>
+          </div>
+        </section>
+
+        <section class="about-panel" id="contact">
+          <div class="section-head"><span>Contact</span></div>
+          <p>The one live control on this site is the mail panel: one compose form, one send
+            path, addressed to me. <a href="/mail">Send a message</a> and it hands off to your
+            own mail app.</p>
+          <div class="docs-list">
+            <div class="docs-list__item"><a class="docs-list__name" href="/mail">Send a message</a><span class="docs-list__what">opens the compose panel, addressed to me.</span></div>
+            <div class="docs-list__item"><a class="docs-list__name" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a><span class="docs-list__what">professional history and contact.</span></div>
+            <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">GitHub</a><span class="docs-list__what">the code, this stack included.</span></div>
+          </div>
+        </section>
+
+        <section class="about-panel" id="now">
+          <div class="section-head"><span>On the desk now</span></div>
+          <p>What's on the desk right now, dated, so it goes stale honestly instead of quietly.</p>
+          <ul class="now-list">
+            <li><time datetime="2026-07-14">Jul 14</time> — About became a small app: profile, résumé, contact, and this list (this pass).</li>
+            <li><time datetime="2026-07-13">Jul 13</time> — <a href="/mail">Mail</a>: a compose panel dressed as an inbox, one real send path.</li>
+            <li><time datetime="2026-07-12">Jul 12</time> — <a href="/calendar">Calendar</a>: Month, Week, and Agenda over real note dates and shipped posts.</li>
+            <li><time datetime="2026-07-11">Jul 11</time> — <a href="/proof">PROOF</a> went live: the plan board streams over server-sent events instead of rendering a snapshot.</li>
+            <li><time datetime="2026-07-06">Jul 6</time> — <a href="/pantry">PANTRY</a>'s whole-codebase mindmap shipped, AI-legible not AI-powered.</li>
+          </ul>
+
+          <div class="section-head"><span>Recent notes</span></div>
+          <div class="recent" data-surface="welcome-recent">
+            <welcome-recent each="recentNotes"></welcome-recent>
+            <a class="recent__item" href="/notes"><span class="recent__name">More…</span></a>
+          </div>
+        </section>
 
         <div class="page-foot">
           Part of <a href="/">tjakoen.github.io</a>, built with itself.
@@ -42,5 +128,39 @@
       </div>
     </main>
   </div>
+
+  <script>
+    // The about-tabs island (Pass 4 — About). With no JS every panel above is already visible and
+    // in document order (profile, résumé, contact, now), so the tabs' hrefs are plain in-page
+    // jump links that work with zero script. This only adds the show-one-panel tab behavior and
+    // honors an incoming location.hash. Nothing REAL is JS-gated: every panel's content and every
+    // link is reachable identically with this script never running.
+    (function () {
+      var nav = document.querySelector('[data-about-tabs]');
+      var panels = Array.prototype.slice.call(document.querySelectorAll('.about-panel'));
+      if (!nav || !panels.length) return;
+
+      var tabs = Array.prototype.slice.call(nav.querySelectorAll('.tab'));
+      var ids = panels.map(function (p) { return p.id; });
+
+      function setPanel(id) {
+        if (ids.indexOf(id) === -1) return;
+        panels.forEach(function (p) { p.hidden = p.id !== id; });
+        tabs.forEach(function (t) {
+          if (t.getAttribute('href') === '#' + id) t.setAttribute('aria-current', 'page');
+          else t.removeAttribute('aria-current');
+        });
+      }
+
+      nav.addEventListener('click', function (ev) {
+        var link = ev.target.closest('.tab');
+        if (!link) return;
+        setPanel(link.getAttribute('href').slice(1));
+      });
+
+      var initial = (location.hash || '').slice(1);
+      setPanel(ids.indexOf(initial) !== -1 ? initial : 'profile');
+    })();
+  </script>
 </body>
 </html>
