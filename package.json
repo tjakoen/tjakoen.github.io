@@ -23,6 +23,7 @@
     "shots": "bun tools/screenshots.ts",
     "audit": "bun tools/audit.ts",
     "export": "bun tools/export.ts",
+    "verify:export": "bun tools/verify-export.ts",
     "check": "tsc --noEmit"
   },
   "devDependencies": {

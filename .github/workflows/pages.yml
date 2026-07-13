@@ -2,8 +2,9 @@ name: Deploy to GitHub Pages
 
 # The site is a static PROJECTION of the running server (ARCHITECTURE §18):
 # bun install pulls the layer git-deps (docs ride inside the packages),
-# bun run export crawls the booted app into dist/, and Pages serves dist/.
-# See ../SPLIT-PLAN.md § "The static front door".
+# bun run export crawls the booted app into dist/, bun run verify:export gates the result
+# (every sitemap URL + every internal link must resolve to a real file — Phase 2), and Pages
+# serves dist/. See ../SPLIT-PLAN.md § "The static front door".
 
 on:
   push:
@@ -31,6 +32,7 @@ jobs:
       - run: bun run export
         env:
           PUBLIC_ORIGIN: https://tjakoen.github.io
+      - run: bun run verify:export
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
