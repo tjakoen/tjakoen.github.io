@@ -6,9 +6,9 @@
   <title>GRAIN · an AI-interaction design system</title>
   <meta name="description" content="One interface a person and an AI operate through the same controls. GRAIN's own site, built with GRAIN.">
   <!-- shell.js runs the rail/console toggles (this page now lives in the BREAD shell) -->
-  <!-- the Catalog pane behaviours (sidebar-panel Catalog mode): hover a component → its catalog
-       entry is revealed in the pane (opened by the Catalog tab / hero CTA). ⌘K is global. -->
-  <script src="/scripts/catalog-peek.js" defer></script>
+  <!-- the Catalog pane behaviours (sidebar-panel Catalog mode) now load sitewide via PAGE_ASSETS
+       (server.ts) — catalog-peek.js is safe/no-op without a [data-peek-root], and this page's
+       hover-a-component → reveal-in-pane bridge is its progressive enhancement. ⌘K is global. -->
   <!-- reusable demo-box island (ES module): runs the declarative scripted demos below -->
   <script type="module" src="/scripts/demo-box.js"></script>
   <!-- THE REAL DISPATCHER — the same one client-JS island /loop uses. The composed surface below
