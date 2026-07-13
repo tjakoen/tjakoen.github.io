@@ -23,7 +23,7 @@ import { buildVocabReference } from "@tjakoen/grain/ai/vocab-reference.ts";
 import { InMemoryTaskRepository } from "./demo/data/in-memory-task-repository.ts";
 import { TaskService } from "./demo/services/task-service.ts";
 import { renderPage, refresh } from "./render.ts";
-import { buildAiRoutes } from "./routes/ai-routes.ts";
+import { buildAiRoutes, renderLoopListFragment } from "./routes/ai-routes.ts";
 import { LoopCard } from "./demo/view/components.ts";
 import { toLoopCardView } from "./demo/services/task-views.ts";
 import type { Task } from "./demo/domain/task.ts";
@@ -32,6 +32,7 @@ import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNot
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 // --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
 import { createProofRoutes } from "@tjakoen/proof/routes.ts";
+import { PLANS_DIR, PLANS_PREFIX, listPlanRoutes } from "./plans.ts";
 import { fileURLToPath } from "node:url";
 
 // --- seed a couple of tasks so the /loop demo has something to show ---
@@ -79,6 +80,22 @@ const renderAppPage = async (html: string) =>
   renderPage(html, { recentNotes: await listRecentNotes() });
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
 const serveContent = createPortfolioContentRoutes(renderPage, PAGE_ASSETS, PAGE_HEAD);   // MILL mount (same global assets + head)
+// /loop, frozen (Phase 2, §18): splice the live task list into the placeholder the composed page
+// already carries (pages/loop.html's `#loop-list` div). A static crawl has no backend to htmx-fetch
+// /ui/loop from, so without this the exported page would show the page's resting "Loading…" shell
+// forever — this makes the FIRST paint (dev server AND export alike) the real board. The live dev
+// server's own hx-get on load still re-fetches once more after this (same data, so no visible
+// change); the export strips that hx- pair (tools/export.ts transformPage) since it has nowhere to
+// fetch it from.
+async function freezeLoopList(res: Response): Promise<Response> {
+  const html = await res.text();
+  const list = await renderLoopListFragment(service);
+  const out = html.replace(
+    /(<div id="loop-list"[^>]*>)[\s\S]*?(<\/div>)/,
+    (_m, open: string, close: string) => `${open}${list}${close}`,
+  );
+  return new Response(out, { headers: res.headers });
+}
 // PROOF mount: the portfolio consumes @tjakoen/proof directly and renders its OWN plans/ folder as a
 // board at /plans, wrapped in the portfolio's page shell (proof owns the body, the host owns <head>).
 // Server-rendered only for now — the live SSE auto-refresh (watchPlans + board-live.js) is a follow-up
@@ -118,10 +135,9 @@ body[data-screen="plans"] .board { max-width: none; }
   .proof-board { grid-auto-flow: row; grid-auto-columns: unset; overflow-x: visible; }
 }
 `;
-const PLANS_DIR = fileURLToPath(new URL("./plans", import.meta.url));
 const proofRoutes = createProofRoutes({
   plansDir: PLANS_DIR,
-  prefix: "/plans",
+  prefix: PLANS_PREFIX,
   chrome: (title, body) => renderAppPage(`<!DOCTYPE html>
 <html lang="en" data-themes="sourdough baguette brioche">
 <head>
@@ -138,13 +154,27 @@ const proofRoutes = createProofRoutes({
 ${PAGE_ASSETS}</body>
 </html>`),
 });
+// HOST-side workaround, same idiom as PROOF_CSS_OVERRIDES above (never edit the vendored
+// package): @tjakoen/proof's board.ts emits a plan card's link as the root-absolute "/plan/<id>"
+// regardless of the mount prefix it's actually given — a package bug (confirmed live: it 404s
+// under this app's "/plans" mount). Rewrite it to the route PROOF itself answers
+// (`${PLANS_PREFIX}/plan/<id>`, see routes.ts's `rel.startsWith("/plan/")` check) so a real click
+// doesn't 404 and the export's dead-link check (tools/verify-export.ts) doesn't flag it.
+async function fixProofCardLinks(res: Response): Promise<Response> {
+  const ct = res.headers.get("content-type") ?? "";
+  if (!ct.includes("text/html")) return res;   // /plans.json etc. carry no such href
+  const html = await res.text();
+  const fixed = html.replaceAll('href="/plan/', `href="${PLANS_PREFIX}/plan/`);
+  return new Response(fixed, { headers: res.headers });
+}
 const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-component CSS + GRAIN's AI module → /components.css
 // The sitemap covers EVERYTHING this server actually serves: the portfolio pages tree + MILL's
-// content routes (SEO is first-class — content pages must be discoverable, and the export derives
-// its allowlist from the same lists). Content routes are computed at boot; authoring a note = a
-// restart/redeploy anyway (the export freezes per deploy).
+// content routes + PROOF's plan routes (SEO is first-class — content pages must be discoverable,
+// and the export derives its allowlist from the same lists). Routes are computed at boot;
+// authoring a note/plan = a restart/redeploy anyway (the export freezes per deploy).
 const contentRoutes = await listPortfolioContentRoutes();
-const sitemap = createSitemap(config.pagesDir, () => [...contentRoutes, "/reference"]);   // pages tree + MILL content + the generated reference
+const planRoutes = await listPlanRoutes();
+const sitemap = createSitemap(config.pagesDir, () => [...contentRoutes, ...planRoutes, "/reference"]);   // pages tree + MILL content + PROOF's plans + the generated reference
 // the catalog builds its own shell, so it receives the SAME global assets — otherwise it's the
 // one page that ignores the saved theme (the bug this seam fixed)
 const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
@@ -297,8 +327,21 @@ ${PAGE_ASSETS}</body>
       const components = (await catalog.entries()).map((c) => ({ title: c.name, subtitle: c.layer, url: `/catalog#${c.slug}` }));
       return Response.json({ pages, components });
     },
-    "/sitemap.xml": (req: Request) =>
-      new Response(sitemap.xml(new URL(req.url).origin), { headers: { "Content-Type": "application/xml" } }),
+    // Trailing-slash CANONICAL urls, not batch's sitemap.xml() as-is: this app is hosted on
+    // GitHub Pages (dist/<route>/index.html), which serves a directory at its OWN url (e.g.
+    // "/grain/") and 301-redirects the extensionless form ("/grain") to it. Listing the
+    // redirecting form in the sitemap means every crawl/audit takes an avoidable extra hop —
+    // so this route reuses sitemap.routes() (still the one source of truth) but formats each
+    // non-root route with a trailing slash before writing the XML.
+    "/sitemap.xml": (req: Request) => {
+      const origin = new URL(req.url).origin;
+      const escXml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+      const canonical = (p: string) => p === "/" ? "/" : `${p}/`;
+      const urls = sitemap.routes().map((p) => `  <url><loc>${escXml(origin + canonical(p))}</loc></url>`).join("\n");
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+      return new Response(xml, { headers: { "Content-Type": "application/xml" } });
+    },
     "/robots.txt": (req: Request) =>
       new Response(`User-agent: *\nAllow: /\nSitemap: ${new URL(req.url).origin}/sitemap.xml\n`,
         { headers: { "Content-Type": "text/plain" } }),
@@ -316,12 +359,18 @@ ${PAGE_ASSETS}</body>
       if (p.startsWith(prefix + "/")) return serve(p.slice(prefix.length));    // strip prefix → mapped dir
     // --- PROOF mount: the plan board (/plans, /plans/plan/:id) — try before MILL/pages ---
     const fromProof = await proofRoutes(p);
-    if (fromProof) return fromProof;
+    if (fromProof) return fixProofCardLinks(fromProof);
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
     if (fromContent) return fromContent;
     // the portfolio's own pages tree: "/" (home), "/grain"·"/batch" showcases, /loop + /about
-    return servePage(p);
+    const page = await servePage(p);
+    // /loop, frozen (Phase 2, §18): server-render the initial task list into the page HTML here
+    // so a crawl with no backend (the static export) captures a real board — see
+    // routes/ai-routes.ts renderLoopListFragment (the same fragment /ui/loop answers with) and
+    // pages/loop.html (the placeholder div + the banner/composer gate).
+    if ((p === "/loop" || p === "/loop/") && page.status === 200) return freezeLoopList(page);
+    return page;
   },
 });
 

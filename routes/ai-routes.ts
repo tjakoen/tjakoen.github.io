@@ -16,6 +16,17 @@ import { buildManifest, type ManifestTarget } from "@tjakoen/grain/ai/manifest.t
 const htmlFragment = (s: string, status = 200) =>
   new Response(s, { status, headers: { "Content-Type": "text/html; charset=utf-8" } });
 
+// Shared with server.ts: the /loop page's static-export snapshot (Phase 2, §18) freezes THIS
+// SAME markup into the page HTML at request time, so a crawl with no backend still shows a real
+// board instead of the "Loading…" shell the live htmx fetch would otherwise fill in.
+export async function renderLoopListFragment(service: TaskService): Promise<string> {
+  // demo fixtures (ITM-demo-*) are the /loop showcase's own cards, not user tasks — keep them
+  // out of the list so each item surface address stays unique on the page.
+  const tasks = (await service.listTasks()).filter((t) => !t.id.startsWith("ITM-demo"));
+  const cards = await Promise.all(tasks.map((t) => LoopCard(toLoopCardView(t))));
+  return cards.join("") || `<p class="muted">No tasks.</p>`;
+}
+
 // A well-formed Intent, or null. The door never trusts the client's shape.
 // PROVENANCE: the HTTP door is the HUMAN/external entrance, so an intent arriving here is
 // ALWAYS `source:"user"` — the client's own `source` field is ignored (it can't self-declare
@@ -39,13 +50,7 @@ function parseIntent(b: unknown, sessionFallback: string): Intent | null {
 export function buildAiRoutes(service: TaskService, stream: Stream, layer: InteractionLayer, accepts: Accepts) {
   return {
     "/ui/loop": {
-      GET: async () => {
-        // demo fixtures (ITM-demo-*) are the /loop showcase's own cards, not user tasks —
-        // keep them out of the list so each item surface address stays unique on the page.
-        const tasks = (await service.listTasks()).filter((t) => !t.id.startsWith("ITM-demo"));
-        const cards = await Promise.all(tasks.map((t) => LoopCard(toLoopCardView(t))));
-        return htmlFragment(cards.join("") || `<p class="muted">No tasks.</p>`);
-      },
+      GET: async () => htmlFragment(await renderLoopListFragment(service)),
     },
 
     "/intent": {
