@@ -1,20 +1,6 @@
 /* pages/resume — résumé page layout (bundled into /components.css, scoped to the résumé screen so
-   nothing leaks to other pages). Reuses grain primitives (profile-card shape, section-head, docs-list,
-   badge); only the résumé's own grid + experience list + print rules live here. */
-
-/* profile header (shared shape with /about — a candidate to promote to a real molecule later) */
-[data-screen="resume"] .profile-card { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
-  padding: var(--space-5); margin: var(--space-5) 0 var(--space-4);
-  border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--paper-2); }
-[data-screen="resume"] .profile-card__avatar { flex: 0 0 auto; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-pill);
-  background: var(--paper); border: 1px solid var(--line-soft); display: flex; align-items: center;
-  justify-content: center; font-size: 1.6rem; }
-[data-screen="resume"] .profile-card__id { flex: 1 1 16rem; min-width: 0; }
-[data-screen="resume"] .profile-card__id .eyebrow { margin: 0 0 var(--space-1); }
-[data-screen="resume"] .profile-card__name { margin: 0 0 var(--space-1); }
-[data-screen="resume"] .profile-card__role { margin: 0 0 var(--space-1); color: var(--ink-muted); font-size: var(--text-sm); }
-[data-screen="resume"] .profile-card__tagline { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
-[data-screen="resume"] .profile-card__actions { flex: 0 0 auto; display: flex; gap: var(--space-2); flex-wrap: wrap; }
+   nothing leaks to other pages). Reuses grain primitives + the shared profile-card molecule; only the
+   résumé's own skills grid + experience list + print rules live here. */
 
 [data-screen="resume"] .resume-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin: var(--space-3) 0 var(--space-5); }
 @media (min-width: 40rem) { [data-screen="resume"] .resume-grid--skills { grid-template-columns: 1fr 1fr 1fr; } }

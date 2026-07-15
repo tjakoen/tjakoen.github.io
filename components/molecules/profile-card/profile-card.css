@@ -1,0 +1,16 @@
+/* molecules/profile-card — a person header: avatar + id block (eyebrow, name, role, tagline) + an
+   actions group, wrapping on narrow widths. Shared by /about and /resume (promoted out of both pages'
+   inline styles). Tokens only; re-skins with the theme. CSS-only component (no .html) — the markup is
+   authored per page; see profile-card.md. */
+.profile-card { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
+  padding: var(--space-5); margin: var(--space-5) 0 var(--space-4);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--paper-2); }
+.profile-card__avatar { flex: 0 0 auto; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-pill);
+  background: var(--paper); border: 1px solid var(--line-soft); display: flex; align-items: center;
+  justify-content: center; font-size: 1.6rem; }
+.profile-card__id { flex: 1 1 16rem; min-width: 0; }
+.profile-card__id .eyebrow { margin: 0 0 var(--space-1); }
+.profile-card__name { margin: 0 0 var(--space-1); }
+.profile-card__role { margin: 0 0 var(--space-1); color: var(--ink-muted); font-size: var(--text-sm); }
+.profile-card__tagline { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
+.profile-card__actions { flex: 0 0 auto; display: flex; gap: var(--space-2); flex-wrap: wrap; }

@@ -1,0 +1,51 @@
+/* pages/calendar — the calendar panel layout (bundled into /components.css, scoped to the calendar
+   screen). Three views over ONE real dataset (calendarEvents, server-composed): Month + Week are
+   read-only renders plotted client-side from the Agenda's own server-rendered <agenda-item>s (one
+   source of truth, no fetch). Agenda is the no-JS default; Month/Week + the tabs ship hidden. */
+[data-screen="calendar"] .cal-views { display: flex; border-bottom: 1px solid var(--line-soft); margin: var(--space-5) 0 0; }
+[data-screen="calendar"] .cal-views[hidden] { display: none; }
+
+[data-screen="calendar"] .cal { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+  overflow: hidden; margin: var(--space-4) 0; }
+[data-screen="calendar"] .cal__head { display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--space-3); padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line-soft); background: var(--paper-2); }
+[data-screen="calendar"] .cal__month { font-family: var(--font-accent); font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold); color: var(--ink); }
+[data-screen="calendar"] .cal__note { font-size: var(--text-xs); color: var(--ink-faint); font-family: var(--font-mono); }
+[data-screen="calendar"] .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+[data-screen="calendar"] .cal__dow { padding: var(--space-2); text-align: center; font-size: var(--text-xs);
+  font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;
+  letter-spacing: .04em; border-bottom: 1px solid var(--line-soft); }
+[data-screen="calendar"] .cal__cell { min-width: 0; min-height: 5.2rem; padding: var(--space-2);
+  border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft);
+  display: flex; flex-direction: column; gap: var(--space-1); }
+[data-screen="calendar"] .cal__cell:nth-child(7n) { border-right: 0; }
+[data-screen="calendar"] .cal__cell--out { background: var(--paper-2); }
+[data-screen="calendar"] .cal__num { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-muted); }
+[data-screen="calendar"] .cal__cell--out .cal__num { color: var(--ink-faint); }
+[data-screen="calendar"] .cal__cell--today .cal__num { color: var(--color-accent-contrast);
+  background: var(--color-accent); border-radius: var(--radius-pill);
+  width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center;
+  justify-content: center; font-weight: var(--font-weight-semibold); }
+[data-screen="calendar"] .cal__event { display: block; width: 100%; text-align: left; font: inherit;
+  font-size: var(--text-xs); line-height: var(--leading-tight); cursor: pointer;
+  padding: 2px var(--space-2); border-radius: var(--radius-sm); border: 0;
+  background: var(--color-accent-soft); color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-screen="calendar"] .cal__event--post { background: var(--paper-2); color: var(--ink-muted);
+  border: 1px solid var(--line-soft); }
+[data-screen="calendar"] .cal__event:hover { outline: 1px solid var(--color-accent); }
+[data-screen="calendar"] .cal__legend { display: flex; flex-wrap: wrap; gap: var(--space-4);
+  font-size: var(--text-xs); color: var(--ink-muted); margin: 0 0 var(--space-6); }
+[data-screen="calendar"] .cal__swatch { display: inline-block; width: .8rem; height: .8rem; border-radius: var(--radius-sm);
+  vertical-align: -1px; margin-right: var(--space-1); }
+
+/* week view: same grid vocabulary, one row, taller cells (fewer days = more room per day). */
+[data-screen="calendar"] .cal--week .cal__cell { min-height: 8rem; }
+
+@media (max-width: 640px) {
+  [data-screen="calendar"] .cal__cell { min-height: 3.6rem; }
+  [data-screen="calendar"] .cal--week .cal__cell { min-height: 6rem; }
+  [data-screen="calendar"] .cal__event { padding: 1px var(--space-1); }
+}
