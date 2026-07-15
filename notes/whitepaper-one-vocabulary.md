@@ -149,16 +149,48 @@ user-study track (§5), not asserted as a result.
   (human or AI) already enters through the one door as a `source`-tagged `Intent`, a single uniform log of
   human *and* AI actions is a natural, cheap extension (the door is the ideal choke point; not built today).
 
-```mermaid
-flowchart TD
-    H["human click"] --> I["one Intent (same object)"]
-    A["AI decision"] --> I
-    I --> D["POST /intent: the one door"]
-    D --> V["validate (surface, action) against the registry"]
-    V --> W["single writer, the reasoner<br/>holds the only mutation capability"]
-    W --> R["RenderOps pushed over SSE"]
-    R --> S["addressed surfaces update<br/>(commit settles the liveness; the grade persists:<br/>AI stays grain, human is clean)"]
-```
+<svg viewBox="0 0 620 486" width="100%" role="img"
+     aria-label="The one door: a human click and an AI decision become the same Intent, posted to one endpoint, validated against the registry, applied by a single writer (the reasoner), and pushed back as RenderOps over SSE that update the addressed surfaces. The AI's edits stay grain; the human's settle clean."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="wp-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <!-- two inputs, one Intent -->
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="95" y="20" width="170" height="40" rx="6"/>
+    <rect x="355" y="20" width="170" height="40" rx="6"/>
+    <rect x="180" y="96" width="260" height="40" rx="6"/>
+    <rect x="125" y="226" width="370" height="40" rx="6"/>
+    <rect x="110" y="290" width="400" height="50" rx="6"/>
+    <rect x="180" y="364" width="260" height="40" rx="6"/>
+    <rect x="100" y="428" width="420" height="50" rx="6"/>
+  </g>
+  <!-- the door: ink-filled, the choke point (emphasis by fill, no accent — matches the stack figure) -->
+  <rect x="155" y="160" width="310" height="42" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <!-- arrows -->
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="180" y1="60" x2="292" y2="94" marker-end="url(#wp-arrow)"/>
+    <line x1="440" y1="60" x2="328" y2="94" marker-end="url(#wp-arrow)"/>
+    <line x1="310" y1="136" x2="310" y2="158" marker-end="url(#wp-arrow)"/>
+    <line x1="310" y1="202" x2="310" y2="224" marker-end="url(#wp-arrow)"/>
+    <line x1="310" y1="266" x2="310" y2="288" marker-end="url(#wp-arrow)"/>
+    <line x1="310" y1="340" x2="310" y2="362" marker-end="url(#wp-arrow)"/>
+    <line x1="310" y1="404" x2="310" y2="426" marker-end="url(#wp-arrow)"/>
+  </g>
+  <!-- labels -->
+  <g style="fill:var(--color-fg)" text-anchor="middle">
+    <text x="180" y="45">human click</text>
+    <text x="440" y="45">AI decision</text>
+    <text x="310" y="121">one Intent (same object)</text>
+    <text x="310" y="251">validate against the registry</text>
+    <text x="310" y="311">single writer: the reasoner<tspan x="310" dy="17" style="fill:var(--color-muted);font-size:12px">the only mutation capability</tspan></text>
+    <text x="310" y="389">RenderOps pushed over SSE</text>
+    <text x="310" y="449">addressed surfaces update<tspan x="310" dy="17" style="fill:var(--color-muted);font-size:12px">AI stays grain, the human settles clean</tspan></text>
+  </g>
+  <text x="310" y="186" text-anchor="middle" style="fill:var(--color-bg)">POST /intent — the one door</text>
+</svg>
 *Figure 1. One door, one writer. A human click and an AI decision are the same `Intent`; neither
 mutates state directly: a single writer arbitrates every change and pushes the result back.*
 
