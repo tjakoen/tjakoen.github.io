@@ -149,6 +149,29 @@
       startup.addEventListener("change", () => put(KEY.startup, startup.checked ? "on" : "off"));
     }
 
+    // ---- "Dark mode defaults to system": checked = follow the OS. grain/theme.js treats an UNSET
+    // grain-color-scheme as `auto` (the OS wins, no forced-override flash), so "defaults to system"
+    // IS the auto/unset state. Checked ⇒ setScheme("auto") clears the key; unchecked ⇒ pin the
+    // scheme that's showing right now so the OS stops driving it. Drive it through grain's own
+    // setScheme (falls back to raw storage if theme.js hasn't attached yet).
+    const schemeAuto = document.querySelector("[data-scheme-auto-checkbox]");
+    if (schemeAuto) {
+      const SCHEME_KEY = "grain-color-scheme";
+      const theme = window.grain && window.grain.theme;
+      const prefersDark = () => { try { return matchMedia("(prefers-color-scheme: dark)").matches; } catch { return false; } };
+      const isAuto = () => theme ? theme.scheme() === "auto" : get(SCHEME_KEY) == null;
+      schemeAuto.checked = isAuto();
+      schemeAuto.addEventListener("change", () => {
+        if (schemeAuto.checked) {
+          theme ? theme.setScheme("auto") : del(SCHEME_KEY);
+        } else {
+          const cur = theme ? theme.scheme() : (get(SCHEME_KEY) || "auto");
+          const eff = cur === "auto" ? (prefersDark() ? "dark" : "light") : cur;   // pin what's on screen now
+          theme ? theme.setScheme(eff) : put(SCHEME_KEY, eff);
+        }
+      });
+    }
+
     // ---- offline degradation: if the door never came up (body[data-ai-online="false"], set
     // by ai-dispatch by OUTCOME), the chat composer disables honestly instead of pretending.
     const composer = document.querySelectorAll(".assistant__composer input, .assistant__composer button");
@@ -280,6 +303,20 @@
         send.click();
       });
     }
+
+    // ---- mark the desk "warm" the first time the visitor engages it (any chat.send: a typed message
+    // or a chip). The desk door reads this session flag on load to decide whether to run page-arrival
+    // awareness (a greeting + contextual chips read from the new page) on later navigations — so a
+    // visitor who never opened the desk is never forced to load the browser model just by navigating.
+    const markWarm = () => { try { sessionStorage.setItem("desk-warm", "1"); } catch { /* private mode */ } };
+    document.addEventListener("click", (ev) => {
+      const t = ev.target;
+      if (t && t.closest && t.closest('[data-action="chat.send"]')) markWarm();
+    });
+    document.addEventListener("keydown", (ev) => {
+      const t = ev.target;
+      if (ev.key === "Enter" && t && t.matches && t.matches('[data-surface="chat-input"]')) markWarm();
+    });
 
     // ---- New chat: clear the conversation + the desk's in-memory turns, re-greet, and restore this
     // page's starter chips. The model itself stays loaded (deskReset only forgets the turns).

@@ -1,4 +1,6 @@
-# How to: add a route
+---
+title: "How to: add a route"
+---
 
 Two kinds of route exist; pick the one that matches what you're adding.
 

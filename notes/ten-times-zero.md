@@ -1,6 +1,9 @@
 ---
 title: "Ten Times Zero Is Still Zero"
-subtitle: "\"Vibe coder\" gets used as an insult: prompt and pray, ship a house of cards. I claim it anyway, with one word in front: professional. The receipt is the portfolio you're reading this on: I wrote more documentation than code."
+subtitle: >
+  "Vibe coder" gets used as an insult: prompt and pray, ship a house of cards. I claim it anyway,
+  with one word in front: professional. The receipt is the portfolio you're reading this on: I
+  wrote more documentation than code.
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note

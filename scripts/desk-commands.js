@@ -19,6 +19,29 @@
     ctx.printHtml('more: <a href="/about">/about</a> · <a href="/notes/ten-times-zero">/notes/ten-times-zero</a>');
   }});
 
+  // ── content: the page's READABLE TEXT (what the page SAYS) ──────────────────────────────────────
+  // grain's built-in `context` prints the DOM MANIFEST — the operable surfaces, i.e. what the AI can
+  // DO here (by design; manifest-dom.ts harvests [data-surface], never prose). That leaves a real gap:
+  // nothing surfaces what the page actually SAYS. `content` fills it, reading the SAME slice the desk
+  // chat reasons over (`.app-shell__main` textContent — pageText() in ai/desk-door.ts), so "what the
+  // terminal shows" and "what the AI sees" are one thing. Together: context = affordances, content = prose.
+  t.register({ name: "content", args: "", help: "the readable text on THIS page (what the desk reads)", run(ctx) {
+    const main = document.querySelector(".app-shell__main");
+    const text = (main ? main.textContent : "").replace(/\s+/g, " ").trim();
+    if (!text) { ctx.printErr("no readable text on this page (the desk would see nothing here either)."); return; }
+    const MAX = 4000;   // keep the dump bounded in the console feed; the desk itself reads the full text
+    ctx.print(`${location.pathname} — ${text.length} chars of readable text (context = what you can do; content = what it says):`);
+    ctx.print(text.length > MAX ? text.slice(0, MAX) + " …[truncated, " + (text.length - MAX) + " more]" : text);
+  }});
+
+  // ── resume: the short version in the console; the full record is /resume ─────────────────────────
+  t.register({ name: "resume", args: "", help: "the working record (opens /resume)", run(ctx) {
+    ctx.print("Tjakoen Stolk — dev manager, tech lead, and part-time software engineering teacher.");
+    ctx.print("I build AI-first, no-build interfaces (this whole site is one) and teach 100 to 150 students a semester.");
+    ctx.print("I direct, Claude types.");
+    ctx.printHtml('full record: <a href="/resume">/resume</a> · history: <a href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a> · code: <a href="https://github.com/tjakoen">GitHub</a>');
+  }});
+
   // ── easter eggs — each one honest about how this thing actually works ───────────────────────────
   t.register({ name: "sudo", args: "", help: "", run(ctx) {
     ctx.print("you're already the operator. Equal footing is the whole point here — no elevated mode to grant.");

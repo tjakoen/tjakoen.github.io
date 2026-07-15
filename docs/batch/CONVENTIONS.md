@@ -1,4 +1,6 @@
-# CONVENTIONS
+---
+title: "CONVENTIONS"
+---
 
 How we build on this stack. The goal is one consistent, reusable, scalable way to do
 each thing — so new code (and new sessions) extend the grain instead of fighting it.

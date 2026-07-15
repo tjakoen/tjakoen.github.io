@@ -89,7 +89,7 @@ Each is a conviction, not a preference. We hold them until the code proves one w
 - A privileged AI back channel, or any hidden AI action (grain always shows).
 - Hardcoded styling in components; per-component theme overrides.
 - Framework/library reached for before standards and native APIs are exhausted.
-- Skeuomorphic chrome and generic template polish (see `tjakoen.github.io/FEATURES.md` anti-features).
+- Skeuomorphic chrome and generic template polish (see `tjakoen.github.io/docs/architecture/FEATURES.md` anti-features).
 - Unbounded model trust — the AI is grounded (RAG) and acts only through the closed vocabulary.
 
 ## The four concerns (one direction of dependency)

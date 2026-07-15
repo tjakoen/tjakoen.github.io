@@ -65,7 +65,10 @@
   border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent); }
 .app-dock__item {
   display: grid; grid-template-columns: 3.25rem 1fr; align-items: stretch;
-  min-height: 2.5rem; padding-right: var(--space-3);
+  /* taller rows give the dock the vertical breathing room the rows lacked — raised via min-height,
+     NOT padding-block, so the icon gutter's full-height border-right stays edge-to-edge and the
+     divider still reads as ONE continuous line from the activity-bar down (see block comment above). */
+  min-height: 2.9rem; padding-right: var(--space-3);
   color: var(--color-muted); text-decoration: none; position: relative;
 }
 .app-dock__icon { display: flex; align-items: center; justify-content: center;
@@ -272,4 +275,21 @@ body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); 
 
   /* the shared mobile scrim (grain sets its base rules) also veils behind the open sheet. */
   .app-shell.app-window[data-aside-open] .app-shell__scrim { opacity: 1; pointer-events: auto; }
+}
+
+/* ---- MILLED CONTENT: a `mermaid` fenced block (site-wide override; this file sorts last).
+   FIGURES keeps FLOWS in mermaid (a text DSL) and quantitative figures in inline SVG. But the
+   no-build live site ships zero framework JS, so mermaid can't render client-side — the real fix is
+   MILL converting `mermaid`→SVG at render/export time (tracked: CONTENT-BACKLOG "MILL must render
+   mermaid", FIGURES render matrix). Until that lands, MILL emits the diagram's SOURCE as a
+   `.code-block[data-lang="mermaid"]`, which otherwise reads as a broken render. Label it so it reads
+   as an intentional, honest source block instead. ---- */
+/* .board context raises specificity above grain's own `.code-block[data-lang]::before` lang eyebrow
+   (which otherwise wins on source order), so this replaces the bare "MERMAID" tag with the honest why. */
+.board .code-block[data-lang="mermaid"] { position: relative; }
+.board .code-block[data-lang="mermaid"]::before {
+  content: "◇ mermaid diagram — shown as source until MILL renders it live";
+  display: block; margin-bottom: var(--space-2);
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--color-muted); letter-spacing: 0.02em; text-transform: none; white-space: normal;
 }

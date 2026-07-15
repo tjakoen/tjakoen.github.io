@@ -1,4 +1,6 @@
-# Tutorial: build your first operable surface
+---
+title: "Tutorial: build your first operable surface"
+---
 
 This walks through **one real, already-running example** in this repo — `item.archive` on the
 `/loop` demo — piece by piece, in the order you'd build it. It's not a toy: every file and line

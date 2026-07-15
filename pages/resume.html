@@ -4,27 +4,142 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Résumé · TJ's Desk</title>
-  <meta name="description" content="Tjakoen Stolk's résumé: landing here soon. Until then, the site itself and the linked profiles are the working record.">
+  <meta name="description" content="Tjakoen Stolk's résumé: dev manager, tech lead, and part-time software engineering teacher who builds his own no-build AI-first stack. The working record, print-friendly. I direct, Claude types.">
+  <style>
+    /* page-specific résumé layout (not part of the design system) — same approach as pages/about.html:
+       reuse grain primitives (profile-card, section-head, docs-list, badge) and add only the résumé's
+       own structural rules here. Nothing invented: every claim traces to /about, the notes, or the
+       linked profiles. The full dated history stays on LinkedIn; this page is the working record. */
+    .profile-card { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
+      padding: var(--space-5); margin: var(--space-5) 0 var(--space-4);
+      border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--paper-2); }
+    .profile-card__avatar { flex: 0 0 auto; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-pill);
+      background: var(--paper); border: 1px solid var(--line-soft); display: flex; align-items: center;
+      justify-content: center; font-size: 1.6rem; }
+    .profile-card__id { flex: 1 1 16rem; min-width: 0; }
+    .profile-card__id .eyebrow { margin: 0 0 var(--space-1); }
+    .profile-card__name { margin: 0 0 var(--space-1); }
+    .profile-card__role { margin: 0 0 var(--space-1); color: var(--ink-muted); font-size: var(--text-sm); }
+    .profile-card__tagline { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
+    .profile-card__actions { flex: 0 0 auto; display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+    .resume-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin: var(--space-3) 0 var(--space-5); }
+    @media (min-width: 40rem) { .resume-grid--skills { grid-template-columns: 1fr 1fr 1fr; } }
+    .skill-group { border: 1px solid var(--line-soft); border-radius: var(--radius-md); padding: var(--space-4); background: var(--paper-2); }
+    .skill-group h3 { margin: 0 0 var(--space-2); font-size: var(--text-sm); }
+    .skill-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+    .skill-group li { font-size: var(--text-sm); color: var(--ink-muted); }
+
+    /* experience: a dateless, honest set of roles. Dates + employers live on LinkedIn (linked). */
+    .xp { list-style: none; margin: var(--space-3) 0 var(--space-5); padding: 0;
+      display: flex; flex-direction: column; gap: var(--space-4); }
+    .xp__role { margin: 0 0 var(--space-1); font-size: var(--text-md); }
+    .xp__meta { margin: 0 0 var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
+    .xp__what { margin: 0; color: var(--ink-muted); font-size: var(--text-sm); }
+
+    /* PRINT: drop the whole editor chrome and the interactive bits, print just the résumé board on
+       white. So a visitor can hit Print (or the button) and get a clean record. <portfolio-frame/>
+       is expanded server-side into the app-shell's chrome children (titlebar, rail, assistant,
+       console, status bar), so we hide every app-shell child EXCEPT the main content column. */
+    @media print {
+      .app-window-backdrop { background: #fff !important; }
+      .app-shell > *:not(.app-shell__main) { display: none !important; }
+      .app-shell { display: block !important; height: auto !important; }
+      .app-shell__main { display: block !important; overflow: visible !important; height: auto !important; }
+      .profile-card__actions, .page-foot { display: none !important; }
+      .profile-card, .skill-group { background: #fff !important; }
+      a { color: inherit; text-decoration: underline; }
+    }
+  </style>
 </head>
 <body data-screen="resume" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="resume" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
       <div class="board">
-        <p class="eyebrow">📄 <span class="name">Résumé</span></p>
-        <h1 class="masthead">Résumé</h1>
-        <hr class="rule">
-        <p class="lede">The full résumé is landing here soon. Until then, this site is the living
-          version: every layer of the BREAD stack, the notes on how I actually work, and the code
-          itself are all one click away.</p>
+        <header class="profile-card">
+          <div class="profile-card__avatar" aria-hidden="true">📄</div>
+          <div class="profile-card__id">
+            <p class="eyebrow">Résumé</p>
+            <h1 class="masthead profile-card__name">Tjakoen Stolk</h1>
+            <p class="profile-card__role">Dev manager, tech lead, and part-time software engineering teacher.</p>
+            <p class="profile-card__tagline">I direct, Claude types.</p>
+          </div>
+          <div class="profile-card__actions">
+            <a class="btn" href="/mail">Message</a>
+            <a class="btn" data-variant="soft" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a>
+            <a class="btn" data-variant="soft" href="https://github.com/tjakoen">GitHub</a>
+            <button class="btn" data-variant="soft" type="button" data-resume-print>Print</button>
+          </div>
+        </header>
 
-        <div class="section-head"><span>In the meantime</span></div>
-        <div class="docs-list">
-          <div class="docs-list__item"><a class="docs-list__name" href="/">tjakoen.github.io</a><span class="docs-list__what">the site as living résumé: the stack, the projects, the notes.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/about">About</a><span class="docs-list__what">who I am and how I work, in prose.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a><span class="docs-list__what">professional history and contact.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen">GitHub</a><span class="docs-list__what">the code, this stack included.</span></div>
+        <p class="lede">Dev manager and tech lead by day, part-time software engineering teacher by
+          evening, and a builder of things nobody asked for in the hours left over. I build AI-first
+          interfaces and I teach people to build software. This whole site is one of those things: my
+          own no-build hypermedia stack, running as plain static files, with an AI that runs in your
+          browser.</p>
+
+        <div class="section-head"><span>What I do</span></div>
+        <div class="resume-grid resume-grid--skills">
+          <div class="skill-group">
+            <h3>Build</h3>
+            <ul>
+              <li>No-build, server-rendered hypermedia</li>
+              <li>Design systems and component libraries</li>
+              <li>TypeScript, Bun, static-export web apps</li>
+              <li>Content pipelines (Markdown to living pages)</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h3>Interfaces &amp; AI</h3>
+            <ul>
+              <li>AI-first UIs a human and an AI share one vocabulary to operate</li>
+              <li>In-browser language models (WebLLM / WebGPU)</li>
+              <li>Grounded assistants over your own content</li>
+              <li>Working in the open with an AI, receipts and all</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h3>Teach &amp; lead</h3>
+            <ul>
+              <li>Software engineering, 100 to 150 students a semester</li>
+              <li>Leading engineers as a dev manager and tech lead</li>
+              <li>Automating the grind so teaching stays about people</li>
+              <li>Honest about limits, low on hype</li>
+            </ul>
+          </div>
         </div>
+
+        <div class="section-head"><span>Selected work</span></div>
+        <div class="docs-list">
+          <div class="docs-list__item"><a class="docs-list__name" href="/bread">The BREAD stack</a><span class="docs-list__what">my own no-build software stack: BATCH, GRAIN, MILL, PROOF, and PANTRY, built to depend on each other in one direction.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/">tjakoen.github.io</a><span class="docs-list__what">this site: a portfolio that runs on the stack it shows you, with an AI desk that operates it.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/native-github-classroom">GitHub-native teaching platform</a><span class="docs-list__what">the classroom platform I built to automate the grading grind so I could stop drowning and start teaching again.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/notes">Notes</a><span class="docs-list__what">long-form writing on how I actually work with AI, why I went frameworkless, and how I teach.</span></div>
+        </div>
+
+        <div class="section-head"><span>Experience</span></div>
+        <ul class="xp">
+          <li>
+            <p class="xp__role">Dev manager &amp; tech lead</p>
+            <p class="xp__meta">day job · leading engineering</p>
+            <p class="xp__what">Leading and mentoring engineers, setting technical direction, and shipping the tools a team actually needs.</p>
+          </li>
+          <li>
+            <p class="xp__role">Part-time software engineering teacher</p>
+            <p class="xp__meta">evenings · 100 to 150 students a semester</p>
+            <p class="xp__what">Teaching adults to build software: treat them like adults, lean into self-study, skip the fluff, go straight at the hard parts. I built a GitHub-native platform to automate the mechanical grading so the time goes back to students.</p>
+          </li>
+          <li>
+            <p class="xp__role">Independent builder</p>
+            <p class="xp__meta">the hours left over</p>
+            <p class="xp__what">The BREAD stack and this site: a personal no-build hypermedia stack and an AI-first portfolio, built in the open, co-authored with an AI on purpose.</p>
+          </li>
+        </ul>
+        <p class="lede">The full dated history and roles sit on
+          <a href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a>. The code is on
+          <a href="https://github.com/tjakoen">GitHub</a>. The honest long version, failures included,
+          is in <a href="/notes/ten-times-zero">the notes</a>.</p>
 
         <div class="page-foot">
           Part of <a href="/">tjakoen.github.io</a>, built with itself.
@@ -34,5 +149,15 @@
       </div>
     </main>
   </div>
+
+  <script>
+    // The one interactive bit: Print opens the browser print dialog. The @media print rules above
+    // strip the editor chrome so the printout is just the résumé board on white. No-JS: the button
+    // simply does nothing, and Cmd/Ctrl+P still prints the same clean sheet.
+    (function () {
+      var btn = document.querySelector('[data-resume-print]');
+      if (btn) btn.addEventListener('click', function () { window.print(); });
+    })();
+  </script>
 </body>
 </html>

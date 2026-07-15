@@ -1,4 +1,6 @@
-# BATCH — Reference Architecture (Single Source of Truth)
+---
+title: "BATCH — Reference Architecture (Single Source of Truth)"
+---
 
 **BATCH** = **B**un · **A**ddressable · **T**ypeScript · **C**SS · **H**tmx — a no-build,
 server-rendered hypermedia stack. Reusable design-system component tags use the
@@ -28,7 +30,7 @@ same day (§3). The code in `batch/ grain/ project/` is the source of truth.
 > of neither*). MILL's core is framework-agnostic (a Markdown→components engine driven by a
 > render adapter); its default adapter emits GRAIN + serves on BATCH. The portfolio *uses*
 > MILL to manage its markdown content — its notes/blog **and** the rendered BATCH/GRAIN docs —
-> but is otherwise a custom BATCH + GRAIN app. See `mill/PLAN.md` (canonical) + `tjakoen.github.io/PLAN.md`
+> but is otherwise a custom BATCH + GRAIN app. See `mill/PLAN.md` (canonical) + `tjakoen.github.io/docs/architecture/PLAN.md`
 > (consumer view). Product docs are under `project/docs/`; the doc map is `DOCS.md` at the repo root.
 
 Every code block here has been run on Bun 1.3.14. For the final revision the
@@ -2092,7 +2094,7 @@ and writes `dist/`. It lives in **`batch/`** on purpose: crawl-sitemap→write-f
 substrate concern, so it must travel with the framework — then *any* BATCH site (the portfolio
 and its `/grain` showcase, and others later) gets Pages hosting from the one tool, per BATCH's
 extraction philosophy. No change to `batch/`/`grain/`/`project` runtime code — the export is an
-outside observer, so it can't regress the live path. (See `tjakoen.github.io/PLAN.md` piece 1, which drives
+outside observer, so it can't regress the live path. (See `tjakoen.github.io/docs/architecture/PLAN.md` piece 1, which drives
 the first real use.)
 
 ### Status — Tier 1 shipped (2026-07-04)

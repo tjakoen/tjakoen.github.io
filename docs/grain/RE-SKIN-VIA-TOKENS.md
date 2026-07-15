@@ -1,4 +1,6 @@
-# How to: re-skin via tokens
+---
+title: "How to: re-skin via tokens"
+---
 
 **Never edit a component's CSS to change how it looks app-wide.** GRAIN's atoms and the AI-mode
 mechanism (`styles/grain.css`) read semantic token *slots*; a consumer re-skins by overriding those
