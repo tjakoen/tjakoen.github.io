@@ -1,4 +1,6 @@
-# How to: add a RenderOp kind
+---
+title: "How to: add a RenderOp kind"
+---
 
 Adding a new *kind* of effect (today's set: `replace` / `append` / `remove` / `flash` / `type` /
 `spotlight`) touches two files that must agree on the shape, plus the docs and a test.

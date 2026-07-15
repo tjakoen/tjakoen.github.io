@@ -27,8 +27,8 @@ lightweight AI demo that runs entirely in the visitor's browser.
 
 ## Read next
 
-- **[PLAN.md](PLAN.md)** — the execution plan: export → Pages, in-browser AI demo, the build pieces.
-- **[FEATURES.md](FEATURES.md)** — the feature menu (north star, the desk, anti-features, reuse table).
+- **[PLAN.md](docs/architecture/PLAN.md)** — the execution plan: export → Pages, in-browser AI demo, the build pieces.
+- **[FEATURES.md](docs/architecture/FEATURES.md)** — the feature menu (north star, the desk, anti-features, reuse table).
 - **[CONTENT-BACKLOG.md](CONTENT-BACKLOG.md)** — the content to author (guardrails: public repo, neutral).
 - **[GRAIN-PAGE.md](pages/grain/GRAIN-PAGE.md)** · **[BATCH-PAGE.md](pages/batch/BATCH-PAGE.md)** — the `/grain` and `/batch` showcase plans.
 - **[PHILOSOPHY.md](PHILOSOPHY.md)** — the beliefs the site proves.

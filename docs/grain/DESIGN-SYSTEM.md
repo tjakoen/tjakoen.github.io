@@ -1,4 +1,6 @@
-# 🍞 Sourdough — GRAIN's default theme
+---
+title: "🍞 Sourdough — GRAIN's default theme"
+---
 
 *Sourdough* is the visual identity GRAIN ships by default; a consuming product re-skins by overriding token
 slots (CONVENTIONS §1), never by editing components. A monochrome, e-ink / Swiss-editorial aesthetic. The whole identity rests on three

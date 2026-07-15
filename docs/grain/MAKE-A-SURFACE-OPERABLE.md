@@ -1,4 +1,6 @@
-# How to: make a surface operable
+---
+title: "How to: make a surface operable"
+---
 
 The worked example, with real code and a captured request/response, is
 [`TUTORIAL.md`](TUTORIAL.md). This page is the bare checklist — use it once you've read the

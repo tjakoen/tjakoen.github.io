@@ -1,4 +1,6 @@
-# AI ↔ UI Interface — the GRAIN action vocabulary contract
+---
+title: "AI ↔ UI Interface — the GRAIN action vocabulary contract"
+---
 
 > This is the detailed contract for **GRAIN**, the AI-interaction layer (overview:
 > [GRAIN.md](./GRAIN.md)). GRAIN is built on BATCH and headed for its own repo.

@@ -3,7 +3,7 @@
 // and never delegates chat to the stub. Headless CI has no WebGPU, so this fake-driven suite IS the
 // coverage for both the healthy and the degraded paths.
 import { test, expect, describe } from "bun:test";
-import { makeDeskReasoner, navRoutesFromManifest, type DeskDeps } from "./desk-reasoner.ts";
+import { makeDeskReasoner, navRoutesFromManifest, parseArrival, type DeskDeps } from "./desk-reasoner.ts";
 import type { DeskEngine } from "./webllm-loader.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
@@ -274,6 +274,64 @@ describe("makeDeskReasoner — UI actions (the showcase: the desk drives the pag
 
     expect(d.reply).toBe("A summary.");
     expect(ops.some((o) => o.op === "type" && o.done && o.commit === "committed")).toBe(true);
+  });
+});
+
+describe("parseArrival — the 0.5B's arrival reply", () => {
+  test("greeting line + CHIPS line → greeting text and up to 3 chips", () => {
+    const { greeting, chips } = parseArrival("You're on Notes, long-form writing.\nCHIPS: Latest note | Why teach with AI | What is BREAD");
+    expect(greeting).toBe("You're on Notes, long-form writing.");
+    expect(chips).toEqual(["Latest note", "Why teach with AI", "What is BREAD"]);
+  });
+  test("greeting only (no CHIPS) → greeting, empty chips (static starters stand)", () => {
+    expect(parseArrival("Just a greeting, nothing else.")).toEqual({ greeting: "Just a greeting, nothing else.", chips: [] });
+  });
+  test("empty / garbage → empty greeting (caller no-ops)", () => {
+    expect(parseArrival("").greeting).toBe("");
+  });
+});
+
+describe("makeDeskReasoner — arrive() (page-arrival awareness)", () => {
+  const arrivalReply = "You're on the Notes page, long-form writing.\nCHIPS: Latest note | Why teach with AI";
+
+  test("reads the page → emits a greeting bubble + reasoner-driven chips (pinned first)", async () => {
+    const { deps } = makeDeps({ loadEngine: async () => fakeEngine([arrivalReply]).engine });
+    deps.pageText = () => "Notes: long-form writing about building and teaching with AI.";
+    deps.pageInfo = () => ({ route: "/notes", title: "Notes" });
+    const r = makeDeskReasoner(deps);
+    const captured: RenderOp[] = [];
+
+    await r.arrive((op) => captured.push(op));
+
+    const bubble = captured.find((o) => o.op === "append" && o.target === "chat-log");
+    expect(bubble).toBeDefined();
+    expect(bubble!.provenance).toBe("ai");
+    expect(bubble!.html).toContain("You're on the Notes page");   // the greeting, in the bubble body
+    const chips = captured.find((o) => o.op === "replace" && o.target === "suggest-chips");
+    expect(chips).toBeDefined();
+    expect(chips!.html).toContain("Latest note");                     // a model-derived chip
+    expect(chips!.html).toContain("What can I do here?");             // always pinned first
+  });
+
+  test("offline (probe false) → no-op, no ops, and the static chips stand", async () => {
+    const { deps } = makeDeps({ probe: async () => false });
+    deps.pageText = () => "some page text";
+    deps.pageInfo = () => ({ route: "/notes", title: "Notes" });
+    const r = makeDeskReasoner(deps);
+    const captured: RenderOp[] = [];
+    await r.arrive((op) => captured.push(op));
+    expect(captured).toEqual([]);
+  });
+
+  test("no page text → no-op (nothing to greet about)", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([arrivalReply]).engine; } });
+    deps.pageText = () => "";
+    const r = makeDeskReasoner(deps);
+    const captured: RenderOp[] = [];
+    await r.arrive((op) => captured.push(op));
+    expect(captured).toEqual([]);
+    expect(loads).toBe(0);                                            // never even loaded the model
   });
 });
 

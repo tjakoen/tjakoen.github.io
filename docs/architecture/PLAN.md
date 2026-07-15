@@ -1,7 +1,7 @@
 # Portfolio site — plan
 
 > The **cross-layer what-next** (including the convergence-first framing for `/grain` and `/batch`,
-> Track D) lives in [`../ROADMAP.md`](../ROADMAP.md); this file stays canonical for the portfolio.
+> Track D) lives in [`../ROADMAP.md`](../../../ROADMAP.md); this file stays canonical for the portfolio.
 
 > Status: **live and running** (deployed to GitHub Pages via `.github/workflows/pages.yml`; the
 > original header said "planned, not built" and had gone stale). A personal portfolio — a **custom BATCH + GRAIN** site that
@@ -46,7 +46,7 @@ prerender crawl that boots the app, walks its routes, and writes static files.
     folder. (Superseded model, kept for history: the docs used to ride inside each layer's package
     and resolve via `import.meta.resolve('@tjakoen/grain/docs/…')`.) The renderer is **MILL**, promoted from "a content
   route inside the BATCH app" to its **own top-level project** (memory: portfolio-cms-separate-project).
-  - **Definition — MILL = "Markdown In, Living Layouts"** *(canonical plan: [`mill/PLAN.md`](../mill/PLAN.md); this is the consumer view)*: a **standalone, reusable, open-source CMS**.
+  - **Definition — MILL = "Markdown In, Living Layouts"** *(canonical plan: [`mill/PLAN.md`](../../../mill/PLAN.md); this is the consumer view)*: a **standalone, reusable, open-source CMS**.
     Feed it `.md` + images and it renders **GRAIN** pages on the theme. It is the **fourth top-level
     project** alongside `batch/`, `grain/`, `project/`, `tjakoen.github.io/`, and it **depends on GRAIN (its
     components) and BATCH (the substrate), never the reverse** — a new layer *above* both
@@ -300,7 +300,7 @@ and absorbs pieces 8–10 below.
   desk"); the **portfolio frame** (composition with the BREAD nav + "TJ's Desk" branding) and any
   **custom theme/components** live in **`tjakoen.github.io/`** — new `tjakoen.github.io/components/` (register in
   `componentRoots`/`styleRoots`) + `tjakoen.github.io/styles/` (a token-override sheet, new `assetDirs`
-  prefix). Consumer path documented in [grain README §6](../grain/README.md).
+  prefix). Consumer path documented in [grain README §6](../../../grain/README.md).
 - **AI is UI-now, model-later:** build the shell + chat/terminal UI now; on the static deploy the
   chat rests gracefully (site fully usable as hypermedia). The in-browser LLM (Path B, pieces 4–5
   above) drops into this same chat surface later — nothing built now is thrown away.
@@ -394,7 +394,7 @@ where they differ:
 - **Catalog⇄Chat sidebar modes are SITEWIDE** (the /grain-only gating removed).
 
 **Backlog (owner ideas 2026-07-05 — captured, not built). CANONICAL expansion + build order:
-[`DEMO-PLAN.md`](plans/done/DEMO-PLAN.md) (handoff doc — includes the prompt→GRAIN generator and the
+[`DEMO-PLAN.md`](../../plans/done/DEMO-PLAN.md) (handoff doc — includes the prompt→GRAIN generator and the
 theme builder; this list stays the one-line index):**
 1. **/grain demo = the whole interface** (not a demo-box island): default prompt "See what TJ has
    been up to" → the AI travels the real pages (lamp), reads the latest notes, then **writes a

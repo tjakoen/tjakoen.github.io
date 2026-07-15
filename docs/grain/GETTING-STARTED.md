@@ -1,4 +1,6 @@
-# Getting started with GRAIN
+---
+title: "Getting started with GRAIN"
+---
 
 GRAIN is the AI-interaction design system: a UI where every surface is addressable and operable by
 both a human and an AI through one shared vocabulary, with the AI's presence shown as a visible

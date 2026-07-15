@@ -1,7 +1,7 @@
 # Portfolio — content backlog
 
 > Status: **captured, not written.** The list of *content pieces* to author for the portfolio
-> (companion to [PLAN.md](PLAN.md) = the *how* and [FEATURES.md](FEATURES.md) = the *what*).
+> (companion to [PLAN.md](docs/architecture/PLAN.md) = the *how* and [FEATURES.md](docs/architecture/FEATURES.md) = the *what*).
 > These are writing/asset tasks, not code. All content is authored as **Markdown + images** and
 > rendered by the CMS (see memory `portfolio-cms-separate-project`); pages are trailheads.
 >
@@ -236,8 +236,22 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
   machine-readable by design, so being AI-operable ≈ being AI-answerable (memory `seo-aeo-first-class`).
 - Reconcile `PLAN.md` "rendering in the live app" with the CMS-as-separate-project decision.
 - **MILL must render `mermaid` code blocks to inline SVG at render/export time** (server-side, no client
-  JS) — the whitepaper (`notes/whitepaper-one-vocabulary.md`) uses Mermaid diagrams, and served pages
-  must stay zero-framework-JS to honor the no-build thesis (Mermaid source in the `.md`, static SVG on the wire).
+  JS) — ~23 flow diagrams across `notes/*.md` + `docs/batch/ARCHITECTURE.md` currently render as raw
+  Mermaid SOURCE on the live site. Stopgap shipped 2026-07-15: the portfolio labels those blocks
+  ("◇ mermaid diagram — shown as source until MILL renders it live", `portfolio-frame.css`) so they read
+  as intentional, not broken. Served pages must stay zero-framework-JS (Mermaid source in the `.md`,
+  static SVG on the wire). FIGURES keeps flows in mermaid — do NOT hand-convert them to SVG.
+- **MILL upstream fixes found 2026-07-15** (both are `@tjakoen/mill` core — need a mill change + repin;
+  worked around portfolio-side for now):
+  1. **Frontmatter `\"` not unescaped.** `core/frontmatter.ts` `unquote` strips the outer quotes but
+     returns the inner verbatim, so a double-quoted scalar with escaped quotes (`"\"Vibe coder\"…"`)
+     renders the backslashes literally. Worked around by switching `notes/ten-times-zero.md`'s subtitle
+     to a `>` block scalar. Fix: unescape `\"` and `\\` in `unquote`.
+  2. **Duplicate title on frontmatter-less docs.** `core/engine.ts` `deriveTitle` falls back to the
+     first `# H1` for the masthead but the body render keeps that H1, so a doc with no frontmatter
+     `title:` shows the title twice. Worked around by giving the 15 `docs/{grain,batch}/*.md` a
+     frontmatter `title:` and dropping the body H1. Fix: when the title is derived from the first
+     heading, strip that heading node from the rendered body.
 - **Framework comparison / Evaluation** (public proof of native-first + no-build): same reference app
   across htmx / Astro / Next.js, measured by a multi-target `bun run audit`; lead with client-JS-shipped
   + no-build + deps (categorical), corroborate with perf numbers, publish the bench repo, state where

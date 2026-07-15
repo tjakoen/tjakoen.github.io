@@ -144,6 +144,15 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();
   // If we arrived here from a desk navigation, resume the lamp on this page (cross-page continuity).
+  // Read the arrival key BEFORE runArrival consumes it, so page-arrival awareness can skip a page the
+  // desk itself drove us to (runArrival already announces there — no double greeting).
+  const droveHere = (() => { try { return !!ss()?.getItem(ARRIVE_KEY); } catch { return false; } })();
   void runArrival(applyOp);
+  // Page-arrival awareness (reasoner-driven): read the new page and offer a greeting + contextual
+  // chips — but ONLY when the desk is already warm this session (site.js sets desk-warm on the first
+  // chat.send) and the visitor navigated here themselves. Gated so a visitor who never opened the desk
+  // is never forced to load the model just by navigating (this is an MPA: the engine reloads per page).
+  const warm = (() => { try { return ss()?.getItem("desk-warm") === "1"; } catch { return false; } })();
+  if (warm && !droveHere) void reasoner.arrive(applyOp);
   return grainDoor.createClientDoor(applyOp, { reasoner });
 }

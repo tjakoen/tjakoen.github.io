@@ -5,7 +5,7 @@ source lives, and which file to open for the usual tweaks. The site is deliberat
 renders it on every request — so the loop is just **edit → refresh**. There is no bundler, no
 compile step, no framework to fight.
 
-> Companion to [`README.md`](README.md) (what the site is) and [`PLAN.md`](PLAN.md) (where it's
+> Companion to [`README.md`](README.md) (what the site is) and [`PLAN.md`](docs/architecture/PLAN.md) (where it's
 > going). This file is the *how do I touch it* doc. If a route or a source location moves, update the
 > table here — it's the single source for the wiring map.
 

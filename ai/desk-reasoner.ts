@@ -12,7 +12,7 @@
 // Offline" note) and settles an honest line. The stub answers non-chat verbs only.
 
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
-import type { Intent, Decision } from "@tjakoen/grain/ai/contract.ts";
+import type { Intent, Decision, RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import { buildPrompt, type ChatMessage } from "./prompt.ts";
 import { retrieve, type Knowledge } from "./retrieval.ts";
 import type { DeskEngine, EngineProgress } from "./webllm-loader.ts";
@@ -71,6 +71,28 @@ const MODEL_NAVIGATE_RE = /^navigate:\s*(\/\S*)\s*$/i;
 export interface DeskReasoner extends Reasoner {
   /** Forget the conversation (and re-arm a degraded desk to retry loading). Keeps a healthy engine. */
   reset(): void;
+  /** Page-arrival awareness: on landing, read the page and offer a one-line greeting + contextual
+   *  chips. The DOOR calls this (with its applyOp) on load, gated on the desk being warm. No-op when
+   *  offline or the page has no readable text. */
+  arrive(applyOp: (op: RenderOp) => void): Promise<void>;
+}
+
+// Parse the 0.5B's arrival reply: one greeting line, then a `CHIPS: a | b | c` line. Defensive — a
+// small model doesn't always hit the format, so a bad parse yields an empty greeting/chips (the
+// caller then no-ops or leaves the static starter chips in place).
+export function parseArrival(raw: string): { greeting: string; chips: string[] } {
+  const text = raw.trim();
+  const idx = text.search(/chips\s*:/i);
+  const greetPart = (idx >= 0 ? text.slice(0, idx) : text).trim();
+  const firstLine = greetPart.split("\n").map((s) => s.trim()).filter(Boolean)[0] ?? "";
+  const greeting = (firstLine.split(/(?<=[.!?])\s/)[0] ?? "").slice(0, 160).trim();
+  let chips: string[] = [];
+  if (idx >= 0) {
+    chips = text.slice(idx).replace(/chips\s*:/i, "")
+      .split(/[|\n]/).map((s) => s.replace(/^[-*\d.\s]+/, "").trim())
+      .filter((s) => s.length > 0 && s.length <= 40).slice(0, 3);
+  }
+  return { greeting, chips };
 }
 
 const MODEL_LABEL = "Qwen2.5-0.5B";
@@ -405,6 +427,49 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       history.length = 0;
       seq = 0;
       if (degraded) { degraded = false; enginePromise = null; }   // re-arm a degraded desk to retry loading
+    },
+
+    // Page-arrival awareness (reasoner-driven). Called by the door on load, only when the desk is
+    // already warm this session (desk-door.ts checks the desk-warm flag site.js sets on the first
+    // chat.send) — so a visitor who never opened the desk is never made to load the model just by
+    // navigating. Best-effort and unobtrusive: SILENT engine load (no progress bar on a nav), and if
+    // the model can't run, the page is empty, or the parse fails, it's a no-op and the static starter
+    // chips stand. When it works: a short "you're on X, here's what's here" greeting + chips the model
+    // drew from THIS page's content.
+    async arrive(applyOp: (op: RenderOp) => void): Promise<void> {
+      if (degraded) return;
+      const info = deps.pageInfo?.() ?? { route: "/", title: "" };
+      const page = (deps.pageText?.() ?? "").replace(/\s+/g, " ").trim();
+      if (!page) return;
+      const engine = await ensureEngine(() => {});   // SILENT: never render the load bar on a navigation
+      if (!engine) return;                           // offline/unavailable → static chips stand
+      let raw = "";
+      try {
+        const stream = await engine.chat.completions.create({
+          messages: [
+            { role: "system", content:
+              "You are the desk, a brief assistant on TJ's personal site. The visitor just opened a page. " +
+              "From the page CONTENT only, write ONE short friendly sentence (max 20 words) naming where they are and what is here. " +
+              "Then a new line that starts exactly with 'CHIPS:' and 2 or 3 short things a visitor might tap, each under 6 words, separated by ' | '. " +
+              "No hype, no markdown, no extra lines." },
+            { role: "user", content: `Page: ${info.title || info.route} (${info.route})\n\nCONTENT:\n${page.slice(0, 1800)}` },
+          ],
+          stream: true, max_tokens: 150, temperature: 0.4, top_p: 0.9,
+          frequency_penalty: 0.6, presence_penalty: 0.4,
+        });
+        for await (const part of stream) raw += part.choices?.[0]?.delta?.content ?? "";
+      } catch (err) {
+        console.error("[desk] arrival generation failed", err);   // a nav is not worth a visible error
+        return;
+      }
+      const { greeting, chips } = parseArrival(raw);
+      if (!greeting) return;
+      // an AI greeting bubble — grain's own kit, the same shape as every other desk bubble.
+      applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
+        html: deps.kit.chatBubble("ai", "grain", deps.kit.chatBody(deps.kit.esc(greeting)), "Desk") });
+      // reasoner-driven chips: only REPLACE the static starters when the model actually offered some.
+      if (chips.length) applyOp({ target: "suggest-chips", op: "replace", provenance: "ai",
+        commit: "committed", html: suggestChipsHtml(chips) });
     },
   };
 }

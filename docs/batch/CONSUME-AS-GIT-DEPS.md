@@ -1,4 +1,6 @@
-# How to: consume BATCH / GRAIN as a dependency
+---
+title: "How to: consume BATCH / GRAIN as a dependency"
+---
 
 **Today, in this monorepo, this is aspirational** — `batch`, `grain`, `mill`, and the portfolio are
 Bun **workspaces**, not separately published packages (see the root `package.json`). This page

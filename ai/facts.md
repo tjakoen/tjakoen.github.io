@@ -11,6 +11,10 @@ TJ is a teacher who builds software. He works on a career team, helping people f
 
 His writing sits under Notes. It is honest about limits, low on hype, and written to be read rather than to sell. If you want to know how he works with an AI, the notes are the place to start. The flagship post is "Ten Times Zero" (at /notes/ten-times-zero), on building with an AI in the open.
 
+## Is there a résumé?
+
+Yes. The working record is at /resume: a print-friendly page with what TJ does, selected work, and his roles. TJ is a dev manager and tech lead by day and a part-time software engineering teacher by evening, teaching 100 to 150 students a semester. He built a GitHub-native platform to automate the grading so the time goes back to students. The full dated history sits on LinkedIn, and the code is on GitHub. If someone asks for the résumé or the CV, point them at /resume.
+
 ## What is BREAD?
 
 BREAD is TJ's personal software stack. It is five members, built to depend on each other in one direction, so each layer only knows about the ones below it.

@@ -1,4 +1,6 @@
-# Getting started with BATCH
+---
+title: "Getting started with BATCH"
+---
 
 BATCH is a no-build, server-rendered hypermedia substrate: Bun runs the TypeScript directly (even
 client `.ts` is transpiled on request), there's no bundler, and htmx handles reads/nav. This page is

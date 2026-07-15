@@ -1,4 +1,6 @@
-# GRAIN — an interface an AI can operate
+---
+title: "GRAIN — an interface an AI can operate"
+---
 
 **GRAIN** is a **design system** with an **optional AI-interaction layer** on top. The
 design system — the `b-*` atoms + *grade-as-signal* (grain texture encodes state) — is

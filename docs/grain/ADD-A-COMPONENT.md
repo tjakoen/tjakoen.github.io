@@ -1,4 +1,6 @@
-# How to: add a component
+---
+title: "How to: add a component"
+---
 
 The full rules are [`CONVENTIONS.md`](../../batch/docs/CONVENTIONS.md) §4; this is the short,
 task-oriented version.
