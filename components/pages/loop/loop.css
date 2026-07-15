@@ -1,0 +1,6 @@
+/* pages/loop — the desk's workspace layout (bundled into /components.css, scoped to the loop screen). */
+[data-screen="loop"] .desk { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+  padding: var(--space-5); margin-bottom: var(--space-6); }
+[data-screen="loop"] .desk__line { min-height: 1.6em; margin: var(--space-3) 0; }
+[data-screen="loop"] .desk__plan { margin: var(--space-3) 0; }
+[data-screen="loop"] .desk__plan:empty::before { content: "—"; color: var(--ink-faint); }   /* a resting bullet before the desk writes */
