@@ -149,11 +149,17 @@
 /* suggestion chips: a fast lane into the SAME one door as the composer. They stay visible the whole
    conversation (the desk swaps in follow-ups drawn from what it just answered) — only Desk Offline
    hides them (below). Sits just above the composer so it reads as "or try one of these". */
-.assistant__suggest { display: flex; flex-direction: column; gap: var(--space-2);
-  padding: var(--space-3) var(--space-4) var(--space-2); }
-.assistant__suggest-label { font-family: var(--font-mono); font-size: var(--text-xs);
-  letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-muted); }
-.assistant__suggest-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+/* Compact: the chips were eating ~5 rows above the composer (a "TRY ASKING" label + 4 chips that
+   wrapped in the narrow aside). Now ONE quiet scrolling row — label dropped (the composer placeholder
+   already says "Ask the desk"), chips on a single line that scrolls sideways (scrollbar hidden), so
+   the conversation keeps the vertical space. */
+.assistant__suggest { display: flex; flex-direction: column; gap: 0;
+  padding: var(--space-2) var(--space-4); }
+.assistant__suggest-label { display: none; }
+.assistant__suggest-chips { display: flex; flex-wrap: nowrap; gap: var(--space-2);
+  overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 1px; }
+.assistant__suggest-chips::-webkit-scrollbar { display: none; }
+.suggest-chip { flex: 0 0 auto; }
 .suggest-chip { font: inherit; font-size: var(--text-sm); color: var(--color-fg);
   background: var(--color-bg); border: 1px solid var(--color-line); border-radius: 999px;
   padding: var(--space-1) var(--space-3); cursor: pointer; white-space: nowrap;
@@ -275,6 +281,22 @@ body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); 
 
   /* the shared mobile scrim (grain sets its base rules) also veils behind the open sheet. */
   .app-shell.app-window[data-aside-open] .app-shell__scrim { opacity: 1; pointer-events: auto; }
+}
+
+/* ═══ MOBILE TITLE BAR: keep theme + the viewport toggle reachable ══════════════════════════════
+   grain hides the WHOLE window-bar when the shell is narrow (`@container shell-frame` in app-window.css)
+   — which also removes the theme (◆) + light/dark (◐) controls AND the viewport toggle (⬚), the only
+   way back OUT of the desktop mobile-width PREVIEW (toggle in, the button vanishes, you're stuck).
+   Keep a COMPACT bar with just those. Must be a @container query, not @media, so it also covers the
+   preview (which clamps the container, not the real viewport). Higher specificity than grain's
+   `.window-bar { display:none }`, so it wins in the same container regardless of bundle order. */
+@container shell-frame (max-width: 768px) {
+  .app-shell.app-window .window-bar { display: flex; justify-content: flex-end; }
+  .app-shell.app-window .window-bar__nav,
+  .app-shell.app-window .window-bar__search { display: none; }
+  .app-shell.app-window .window-bar__ctl [data-shell="aside-toggle"],
+  .app-shell.app-window .window-bar__ctl [data-shell="console-toggle"],
+  .app-shell.app-window .window-bar__ctl [data-xray-toggle] { display: none; }
 }
 
 /* ---- MILLED CONTENT: a `mermaid` fenced block (site-wide override; this file sorts last).

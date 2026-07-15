@@ -221,6 +221,29 @@
     window.addEventListener("pagehide", flushAll);
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushAll(); });
 
+    // ---- chat: keep the log pinned to the NEWEST message (stick-to-bottom, but yield the moment the
+    // visitor scrolls up to read history). Without this a streamed reply lands below the fold and the
+    // chat reads as "not scrolling". Runs on load (restored conversation) and on every new bubble/token.
+    if (chatLog) {
+      const nearBottom = () => chatLog.scrollHeight - chatLog.scrollTop - chatLog.clientHeight < 64;
+      let stick = true;
+      chatLog.addEventListener("scroll", () => { stick = nearBottom(); });
+      new MutationObserver(() => { if (stick) chatLog.scrollTop = chatLog.scrollHeight; })
+        .observe(chatLog, { childList: true, subtree: true, characterData: true });
+      chatLog.scrollTop = chatLog.scrollHeight;   // land on the newest message on load
+    }
+
+    // ---- terminal: once the AI ACTS (grain sets data-acting on the shell during a run), keep the
+    // console OPEN so its narration STAYS visible like the chat, instead of collapsing back to the
+    // "Terminal ▸" bar and hiding what just happened. grain's own console-open persistence then
+    // carries that open state across navigations.
+    const actShell = document.querySelector(".app-shell");
+    if (actShell) {
+      new MutationObserver(() => {
+        if (actShell.getAttribute("data-acting") === "true") actShell.setAttribute("data-console-open", "");
+      }).observe(actShell, { attributes: true, attributeFilter: ["data-acting"] });
+    }
+
     // ---- the desk greets in the chat (typed). Shared by first load (no stored conversation) and
     // "New chat" (below), which clears the log first. Once greeted it's persisted, so return visits
     // restore it instead of re-greeting.

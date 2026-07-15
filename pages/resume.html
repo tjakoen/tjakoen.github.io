@@ -5,52 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Résumé · TJ's Desk</title>
   <meta name="description" content="Tjakoen Stolk's résumé: dev manager, tech lead, and part-time software engineering teacher who builds his own no-build AI-first stack. The working record, print-friendly. I direct, Claude types.">
-  <style>
-    /* page-specific résumé layout (not part of the design system) — same approach as pages/about.html:
-       reuse grain primitives (profile-card, section-head, docs-list, badge) and add only the résumé's
-       own structural rules here. Nothing invented: every claim traces to /about, the notes, or the
-       linked profiles. The full dated history stays on LinkedIn; this page is the working record. */
-    .profile-card { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
-      padding: var(--space-5); margin: var(--space-5) 0 var(--space-4);
-      border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--paper-2); }
-    .profile-card__avatar { flex: 0 0 auto; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-pill);
-      background: var(--paper); border: 1px solid var(--line-soft); display: flex; align-items: center;
-      justify-content: center; font-size: 1.6rem; }
-    .profile-card__id { flex: 1 1 16rem; min-width: 0; }
-    .profile-card__id .eyebrow { margin: 0 0 var(--space-1); }
-    .profile-card__name { margin: 0 0 var(--space-1); }
-    .profile-card__role { margin: 0 0 var(--space-1); color: var(--ink-muted); font-size: var(--text-sm); }
-    .profile-card__tagline { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
-    .profile-card__actions { flex: 0 0 auto; display: flex; gap: var(--space-2); flex-wrap: wrap; }
-
-    .resume-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin: var(--space-3) 0 var(--space-5); }
-    @media (min-width: 40rem) { .resume-grid--skills { grid-template-columns: 1fr 1fr 1fr; } }
-    .skill-group { border: 1px solid var(--line-soft); border-radius: var(--radius-md); padding: var(--space-4); background: var(--paper-2); }
-    .skill-group h3 { margin: 0 0 var(--space-2); font-size: var(--text-sm); }
-    .skill-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
-    .skill-group li { font-size: var(--text-sm); color: var(--ink-muted); }
-
-    /* experience: a dateless, honest set of roles. Dates + employers live on LinkedIn (linked). */
-    .xp { list-style: none; margin: var(--space-3) 0 var(--space-5); padding: 0;
-      display: flex; flex-direction: column; gap: var(--space-4); }
-    .xp__role { margin: 0 0 var(--space-1); font-size: var(--text-md); }
-    .xp__meta { margin: 0 0 var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
-    .xp__what { margin: 0; color: var(--ink-muted); font-size: var(--text-sm); }
-
-    /* PRINT: drop the whole editor chrome and the interactive bits, print just the résumé board on
-       white. So a visitor can hit Print (or the button) and get a clean record. <portfolio-frame/>
-       is expanded server-side into the app-shell's chrome children (titlebar, rail, assistant,
-       console, status bar), so we hide every app-shell child EXCEPT the main content column. */
-    @media print {
-      .app-window-backdrop { background: #fff !important; }
-      .app-shell > *:not(.app-shell__main) { display: none !important; }
-      .app-shell { display: block !important; height: auto !important; }
-      .app-shell__main { display: block !important; overflow: visible !important; height: auto !important; }
-      .profile-card__actions, .page-foot { display: none !important; }
-      .profile-card, .skill-group { background: #fff !important; }
-      a { color: inherit; text-decoration: underline; }
-    }
-  </style>
 </head>
 <body data-screen="resume" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="resume" data-rail-collapsed="false" data-surface="screen">
