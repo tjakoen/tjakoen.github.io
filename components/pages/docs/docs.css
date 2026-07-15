@@ -1,0 +1,19 @@
+/* pages/docs — the docs MAP: a clickable variant of the shared four-layers figure
+   (molecules/stack-diagram), reusing its classes so it inherits the theme-following palette (no new
+   colors). The shared component stays a static figure; this map wraps each layer + the PANTRY frame
+   in an <a> into that member's docs. Bars are outlined (fill:none), so pointer-events:all makes the
+   WHOLE bar clickable, and hover ink-fills it exactly like the figure's "current" state — pickable
+   without a new accent. Bundled into /components.css, scoped to the docs screen. */
+[data-screen="docs"] .docs-map { margin: var(--space-4) 0 var(--space-6); }
+[data-screen="docs"] .docs-map .stack-diagram { margin: 0 auto var(--space-2); }
+[data-screen="docs"] .docs-map a { cursor: pointer; }
+[data-screen="docs"] .docs-map a .bar { pointer-events: all; transition: fill 120ms ease, stroke 120ms ease; }
+[data-screen="docs"] .docs-map a:hover .bar,
+[data-screen="docs"] .docs-map a:focus-visible .bar { fill: var(--color-fg); stroke: var(--color-fg); }
+[data-screen="docs"] .docs-map a:hover .bar-label,
+[data-screen="docs"] .docs-map a:focus-visible .bar-label { fill: var(--color-bg); }
+[data-screen="docs"] .docs-map a:hover .frame,
+[data-screen="docs"] .docs-map a:focus-visible .frame { stroke: var(--color-fg); stroke-width: 2; }
+[data-screen="docs"] .docs-map a:hover .frame-label,
+[data-screen="docs"] .docs-map a:focus-visible .frame-label { fill: var(--color-fg); }
+[data-screen="docs"] .docs-map figcaption { text-align: center; font-size: var(--text-sm); color: var(--color-muted); margin: 0; }

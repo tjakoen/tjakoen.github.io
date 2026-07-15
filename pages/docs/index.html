@@ -5,23 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Developer docs · BREAD</title>
   <meta name="description" content="Learn to build with BREAD: getting started with BATCH and GRAIN, a hands-on tutorial building an operable surface, how-to guides for common tasks, the component catalog, and the AI vocabulary contract.">
-  <style>
-    /* the docs MAP: a clickable variant of the shared four-layers figure (molecules/stack-diagram),
-       reusing its classes so it inherits the theme-following palette (no new colors). We do NOT edit
-       the shared component (the layer pages still use it as a static figure); this map wraps each
-       layer + the PANTRY frame in an <a> into that member's docs. Bars are outlined (fill:none) in
-       the shared style, so pointer-events:all makes the WHOLE bar clickable, and hover ink-fills it
-       exactly like the figure's "current" state — so the map reads as pickable without a new accent. */
-    .docs-map { margin: var(--space-4) 0 var(--space-6); }
-    .docs-map .stack-diagram { margin: 0 auto var(--space-2); }
-    .docs-map a { cursor: pointer; }
-    .docs-map a .bar { pointer-events: all; transition: fill 120ms ease, stroke 120ms ease; }
-    .docs-map a:hover .bar, .docs-map a:focus-visible .bar { fill: var(--color-fg); stroke: var(--color-fg); }
-    .docs-map a:hover .bar-label, .docs-map a:focus-visible .bar-label { fill: var(--color-bg); }
-    .docs-map a:hover .frame, .docs-map a:focus-visible .frame { stroke: var(--color-fg); stroke-width: 2; }
-    .docs-map a:hover .frame-label, .docs-map a:focus-visible .frame-label { fill: var(--color-fg); }
-    .docs-map figcaption { text-align: center; font-size: var(--text-sm); color: var(--color-muted); margin: 0; }
-  </style>
 </head>
 <body data-screen="docs" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">

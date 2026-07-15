@@ -1,0 +1,46 @@
+/* pages/resume — résumé page layout (bundled into /components.css, scoped to the résumé screen so
+   nothing leaks to other pages). Reuses grain primitives (profile-card shape, section-head, docs-list,
+   badge); only the résumé's own grid + experience list + print rules live here. */
+
+/* profile header (shared shape with /about — a candidate to promote to a real molecule later) */
+[data-screen="resume"] .profile-card { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
+  padding: var(--space-5); margin: var(--space-5) 0 var(--space-4);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--paper-2); }
+[data-screen="resume"] .profile-card__avatar { flex: 0 0 auto; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-pill);
+  background: var(--paper); border: 1px solid var(--line-soft); display: flex; align-items: center;
+  justify-content: center; font-size: 1.6rem; }
+[data-screen="resume"] .profile-card__id { flex: 1 1 16rem; min-width: 0; }
+[data-screen="resume"] .profile-card__id .eyebrow { margin: 0 0 var(--space-1); }
+[data-screen="resume"] .profile-card__name { margin: 0 0 var(--space-1); }
+[data-screen="resume"] .profile-card__role { margin: 0 0 var(--space-1); color: var(--ink-muted); font-size: var(--text-sm); }
+[data-screen="resume"] .profile-card__tagline { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
+[data-screen="resume"] .profile-card__actions { flex: 0 0 auto; display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+[data-screen="resume"] .resume-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); margin: var(--space-3) 0 var(--space-5); }
+@media (min-width: 40rem) { [data-screen="resume"] .resume-grid--skills { grid-template-columns: 1fr 1fr 1fr; } }
+[data-screen="resume"] .skill-group { border: 1px solid var(--line-soft); border-radius: var(--radius-md); padding: var(--space-4); background: var(--paper-2); }
+[data-screen="resume"] .skill-group h3 { margin: 0 0 var(--space-2); font-size: var(--text-sm); }
+[data-screen="resume"] .skill-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+[data-screen="resume"] .skill-group li { font-size: var(--text-sm); color: var(--ink-muted); }
+
+/* experience: a dateless, honest set of roles (dates + employers live on LinkedIn, linked) */
+[data-screen="resume"] .xp { list-style: none; margin: var(--space-3) 0 var(--space-5); padding: 0;
+  display: flex; flex-direction: column; gap: var(--space-4); }
+[data-screen="resume"] .xp__role { margin: 0 0 var(--space-1); font-size: var(--text-md); }
+[data-screen="resume"] .xp__meta { margin: 0 0 var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
+[data-screen="resume"] .xp__what { margin: 0; color: var(--ink-muted); font-size: var(--text-sm); }
+
+/* PRINT: drop the whole editor chrome + interactive bits, print just the résumé board on white.
+   <portfolio-frame/> expands into the app-shell's chrome children, so hide every app-shell child
+   EXCEPT the main column. Scoped to the résumé screen so printing other pages is unaffected. */
+@media print {
+  body[data-screen="resume"].app-window-backdrop { background: #fff !important; }
+  body[data-screen="resume"] .app-shell > *:not(.app-shell__main) { display: none !important; }
+  body[data-screen="resume"] .app-shell { display: block !important; height: auto !important; }
+  body[data-screen="resume"] .app-shell__main { display: block !important; overflow: visible !important; height: auto !important; }
+  body[data-screen="resume"] .profile-card__actions,
+  body[data-screen="resume"] .page-foot { display: none !important; }
+  body[data-screen="resume"] .profile-card,
+  body[data-screen="resume"] .skill-group { background: #fff !important; }
+  body[data-screen="resume"] a { color: inherit; text-decoration: underline; }
+}
