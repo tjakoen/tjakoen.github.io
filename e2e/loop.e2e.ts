@@ -33,17 +33,19 @@ test.describe("/loop — the desk", () => {
     await expect(page.locator(".ai-backdrop")).not.toHaveClass(/is-on/, { timeout: 30_000 });   // …then hands back
   });
 
-  test("takeover: the terminal stays collapsed; the chat previews the output; expand shows the full feed", async ({ page }) => {
+  test("takeover: the terminal opens and narrates the run (action badges) while the chat previews alongside", async ({ page }) => {
     await page.goto("/loop");
     const shell = page.locator(".app-shell");
     await page.getByRole("button", { name: "Watch the desk work" }).click();
 
     await expect(shell).toHaveAttribute("data-acting", "true");                       // the acting bar lights up
-    await expect(page.locator(".console__feed")).toBeHidden();                        // terminal stays COLLAPSED during the run
-    // the chat's thinking box shows a small LIVE PREVIEW of the terminal output
+    // the desk keeps the docked terminal OPEN once it acts, so the narration stays visible instead of
+    // collapsing behind the "Terminal ▸" bar (site.js mirrors data-acting → data-console-open).
+    await expect(shell).toHaveAttribute("data-console-open", "");
+    await expect(page.locator(".console__feed")).toBeVisible();
+    // the chat's thinking box shows a small LIVE PREVIEW of the same output, alongside the open terminal
     await expect(page.locator("[data-terminal-preview]")).toContainText(/\w/, { timeout: 15_000 });
-    // "open in terminal" expands the full feed (narrated as action badges)
-    await page.locator('.chat-thinking [data-shell="open-terminal"]').click();
+    // …and the open terminal narrates the run as action badges
     await expect(page.locator('.console__box [data-surface="console"] .action-badge').first()).toBeVisible({ timeout: 15_000 });
     await expect(shell).not.toHaveAttribute("data-acting", "true", { timeout: 30_000 });  // hands back at the end
   });
