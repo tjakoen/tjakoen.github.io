@@ -42,7 +42,7 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
 </style></head><body>
   <div class="card">
     <div>
-      <p class="eyebrow">The Department of Time</p>
+      <p class="eyebrow">Portfolio · Notebook · Live demo</p>
     </div>
     <div style="display:flex; flex-direction:column; gap:28px;">
       <h1 class="title">${SITE.name}</h1>

@@ -167,7 +167,7 @@ try {
   await browser.close();
 
   // a self-contained gallery (body content only — openable locally + publishable as an
-  // Artifact). Styled to match the product it shows: Department of Time paper/ink, a serif
+  // Artifact). Styled to match the product it shows: e-ink / Swiss-editorial paper/ink, a serif
   // masthead, hairline-framed plates. Lives here so `bun run shots` always regenerates it.
   const gallery =
     `<style>\n` +
@@ -190,7 +190,7 @@ try {
     `        border-radius: 4px; background: #fff; }\n` +
     `</style>\n` +
     `<div class="wrap">\n` +
-    `  <p class="eyebrow">The Department of Time</p>\n` +
+    `  <p class="eyebrow">TJ's Desk</p>\n` +
     `  <h1>UI snapshots</h1>\n` +
     `  <p class="lede">Captured headless from the running app for visual review. Regenerate any time with <code>bun run shots</code>.</p>\n` +
     `  <hr>\n` +
