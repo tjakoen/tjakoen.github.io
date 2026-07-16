@@ -245,9 +245,13 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
   - This supersedes the earlier "MILL must render mermaid server-side" requirement *for content*: there
     is no content mermaid left to render. If mermaid authoring is ever wanted again, that MILL capability
     is still unbuilt.
-  - **Owner decision, flagged:** FIGURES' "pick the tool by job" rule still says *flows → mermaid* and
-    the standard warns against hand-converting. Practice has now diverged (whitepaper Fig 1 + these 22).
-    FIGURES + its render-matrix note should be reconciled to the SVG-flow reality in a standards pass.
+  - **Owner decision RESOLVED 2026-07-16 (SVG-first for flows too):** FIGURES.md reconciled to the
+    SVG-flow reality. The "one rule" is now *two figure shapes, one medium (inline SVG)* — a **data-viz
+    scaffold** (self-contained e-ink palette, light-only) and a new **flow scaffold** (inherits the page's
+    `--color-*` theme tokens, inverts in dark; arrowhead marker + single ink-filled emphasis node
+    documented). Mermaid demoted to an optional private source-draft that must be hand-converted before
+    publish; the "MILL renders mermaid server-side" dependency is closed as **not planned** for content.
+    Render matrix + inbound refs (standards/README.md, CLAUDE.md) updated in the same pass.
 - **MILL upstream fixes found 2026-07-15** (both are `@tjakoen/mill` core — need a mill change + repin;
   worked around portfolio-side for now):
   1. **Frontmatter `\"` not unescaped.** `core/frontmatter.ts` `unquote` strips the outer quotes but

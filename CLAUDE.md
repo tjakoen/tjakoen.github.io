@@ -24,8 +24,8 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
 1. [`PHILOSOPHY.md`](PHILOSOPHY.md): the *why* beneath the whole stack. Read first.
 2. [VOICE](https://tjakoen.github.io/standards/voice): the writing standard (voice, the machine-tells to
    avoid). Match it for any prose in his name.
-3. [FIGURES](https://tjakoen.github.io/standards/figures): the figure standard, the tokenized SVG scaffold +
-   the mermaid-vs-SVG rule. Use it for any diagram or chart.
+3. [FIGURES](https://tjakoen.github.io/standards/figures): the figure standard, the two tokenized inline-SVG
+   scaffolds (data-viz + flow) and the no-mermaid-on-the-published-site rule. Use it for any diagram or chart.
 4. [NOTE-STANDARD](https://tjakoen.github.io/standards/note-standard): how a note/blog post is built
    (frontmatter, structure, the sign-off footer) + a reusable prompt to draft one. Use it for any
    `notes/*.md`.
