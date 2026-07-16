@@ -57,24 +57,51 @@ The trick that keeps it sane is that it is one idea repeated:
   back. Delivering grades and feedback is a second, deliberate step that dry-runs by default and only
   runs for work I have explicitly flagged for release.
 
-```mermaid
-flowchart LR
-  T["Teacher control repo<br/>engine · private tests · gradebook"]
-  S1["Student repo"]
-  S2["Student repo"]
-  A["GitHub Actions<br/>grade off a snapshot"]
-  G[("Gradebook<br/>single source of truth")]
-  C["Canvas"]
-
-  T -->|publish content| S1
-  T -->|publish content| S2
-  S1 -->|push = submit| A
-  S2 -->|push = submit| A
-  A -->|write scores| G
-  G -->|deliberate publish step| S1
-  G -->|deliberate publish step| S2
-  G -->|one CSV, term end| C
-```
+<svg viewBox="-53 0 364 348" width="100%" role="img"
+     aria-label="A teacher control repo (engine, private tests, gradebook) publishes content to each student repo. A push is a submission: GitHub Actions grades off a snapshot and writes scores to the gradebook, the single source of truth. Scores flow back to student repos in a deliberate publish step, and out to Canvas as one CSV at term end."
+     style="display:block;width:100%;max-width:480px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-howitu0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="35" y="16" width="210" height="52" rx="6"/>
+    <rect x="16" y="86" width="108" height="36" rx="6"/>
+    <rect x="158" y="86" width="108" height="36" rx="6"/>
+    <rect x="71" y="156" width="140" height="52" rx="6"/>
+    <path d="M68,233 a73,7 0 0 1 146,0 v50 a73,7 0 0 1 -146,0 z M68,233 a73,7 0 0 0 146,0"/>
+    <rect x="103" y="296" width="76" height="36" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="111" y1="68" x2="90" y2="86" marker-end="url(#fl-howitu0)"/>
+    <line x1="170" y1="68" x2="191" y2="86" marker-end="url(#fl-howitu0)"/>
+    <line x1="86" y1="122" x2="117" y2="156" marker-end="url(#fl-howitu0)"/>
+    <line x1="195" y1="122" x2="164" y2="156" marker-end="url(#fl-howitu0)"/>
+    <line x1="141" y1="208" x2="141" y2="226" marker-end="url(#fl-howitu0)"/>
+    <path d="M68,258 C-14,258 -14,104 16,104" marker-end="url(#fl-howitu0)"/>
+    <path d="M213,258 C295,258 295,104 265,104" marker-end="url(#fl-howitu0)"/>
+    <line x1="141" y1="290" x2="141" y2="296" marker-end="url(#fl-howitu0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="141" y="38.3" style="fill:var(--color-fg)">Teacher control repo</text>
+    <text x="141" y="54.8" style="fill:var(--color-muted);font-size:12px">engine · private tests · gradebook</text>
+    <text x="70" y="108.3" style="fill:var(--color-fg)">Student repo</text>
+    <text x="211" y="108.3" style="fill:var(--color-fg)">Student repo</text>
+    <text x="141" y="178.3" style="fill:var(--color-fg)">GitHub Actions</text>
+    <text x="141" y="194.8" style="fill:var(--color-muted);font-size:12px">grade off a snapshot</text>
+    <text x="141" y="254.3" style="fill:var(--color-fg)">Gradebook</text>
+    <text x="141" y="270.8" style="fill:var(--color-muted);font-size:12px">single source of truth</text>
+    <text x="141" y="318.3" style="fill:var(--color-fg)">Canvas</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="100" y="72">publish content</text>
+    <text x="101" y="134">push = submit</text>
+    <text x="141" y="212">write scores</text>
+    <text x="141" y="288">one CSV, term end</text>
+    <text x="-23" y="181" transform="rotate(-90 -23 181)">deliberate publish step</text>
+  </g>
+</svg>
 
 The invariant I will not break: **the engine is identical across every course. Only the tests and a
 small config file change.** Edit once, copy everywhere. That single rule is what keeps four live

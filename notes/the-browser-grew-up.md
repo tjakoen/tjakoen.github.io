@@ -26,14 +26,45 @@ INTROWEB, basic HTML and CSS, got added to my teaching load. Prepping it meant a
 
 It means most of the things I used to install a library for, the browser just does.
 
-```mermaid
-flowchart TD
-  A[Need a UI feature] --> B{Does the browser already do it?}
-  B -->|Yes| C[Use the native primitive<br/>dialog · details · View Transitions · has · color-mix]
-  B -->|No| D[Only then, reach for a small library<br/>htmx handles reads · one script drives the AI]
-  C --> E[Nothing to build. Nothing to ship. Nothing to maintain.]
-  D --> E
-```
+<svg viewBox="0 0 659 334" width="100%" role="img"
+     aria-label="For a UI feature, first ask whether the browser already does it. If yes, use the native primitive (dialog, details, View Transitions, :has(), color-mix); only if no, reach for a small library (htmx for reads, one script for the AI). Either way: nothing to build, ship, or maintain."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-thebro0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="274" y="16" width="136" height="36" rx="6"/>
+    <polygon points="342,94 433,131 342,168 252,131"/>
+    <rect x="16" y="172" width="322" height="52" rx="6"/>
+    <rect x="372" y="172" width="272" height="52" rx="6"/>
+  </g>
+  <rect x="265" y="250" width="155" height="68" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="342" y1="52" x2="342" y2="94" marker-end="url(#fl-thebro0)"/>
+    <line x1="297" y1="149" x2="241" y2="172" marker-end="url(#fl-thebro0)"/>
+    <line x1="388" y1="149" x2="443" y2="172" marker-end="url(#fl-thebro0)"/>
+    <line x1="227" y1="224" x2="277" y2="250" marker-end="url(#fl-thebro0)"/>
+    <line x1="458" y1="224" x2="408" y2="250" marker-end="url(#fl-thebro0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="342" y="38.3" style="fill:var(--color-fg)">Need a UI feature</text>
+    <text x="342" y="127.3" style="fill:var(--color-fg)">Does the browser</text>
+    <text x="342" y="143.8" style="fill:var(--color-fg)">already do it?</text>
+    <text x="177" y="194.3" style="fill:var(--color-fg)">Use the native primitive</text>
+    <text x="177" y="210.8" style="fill:var(--color-muted);font-size:12px">dialog · details · View Transitions · :has() · color-mix</text>
+    <text x="508" y="194.3" style="fill:var(--color-fg)">Only then, reach for a small library</text>
+    <text x="508" y="210.8" style="fill:var(--color-muted);font-size:12px">htmx handles reads · one script drives the AI</text>
+    <text x="342" y="272.3" style="fill:var(--color-bg)">Nothing to build.</text>
+    <text x="342" y="288.8" style="fill:var(--color-bg)">Nothing to ship.</text>
+    <text x="342" y="305.3" style="fill:var(--color-bg)">Nothing to maintain.</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="269" y="156">yes</text>
+    <text x="416" y="156">no</text>
+  </g>
+</svg>
 
 *The native-first ladder: the browser first, a small library only when it earns it.*
 
@@ -94,13 +125,39 @@ To be fair, React can render on the server and pre-generate pages too. The hones
 
 Here is the part I did not fully see coming, and the bit worth sitting with. Because the output is just HTML, plus native behavior, plus one small script in one place, most of the site does not need the server at all once it exists. I run the server once, crawl every page, freeze the result to plain files, and host them on GitHub Pages for nothing. In development it is a live server. In production it is a folder of static files a CDN serves in its sleep. There is no hydration to reconcile, because there is nothing to hydrate. How that frozen folder still behaves like a live app, click for click, is its own note: [This Site Feels Like an App](feels-like-an-app.md).
 
-```mermaid
-flowchart LR
-  App[One BATCH app] --> Dev[In development<br/>live Bun server<br/>composes HTML per request]
-  App --> Exp[For production<br/>crawl the running app once]
-  Exp --> Static[Static HTML files]
-  Static --> CDN[GitHub Pages or any CDN<br/>nothing running behind it]
-```
+<svg viewBox="0 0 380 294" width="100%" role="img"
+     aria-label="One BATCH app runs two ways. In development, a live Bun server composes HTML per request. For production, crawl the running app once into static HTML files served from GitHub Pages or any CDN, with nothing running behind it."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-thebro1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="178" y="16" width="186" height="68" rx="6"/>
+    <rect x="183" y="86" width="176" height="52" rx="6"/>
+    <rect x="200" y="156" width="142" height="36" rx="6"/>
+    <rect x="179" y="226" width="185" height="52" rx="6"/>
+  </g>
+  <rect x="16" y="86" width="128" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="143" y1="86" x2="178" y2="76" marker-end="url(#fl-thebro1)"/>
+    <line x1="144" y1="107" x2="183" y2="108" marker-end="url(#fl-thebro1)"/>
+    <line x1="271" y1="138" x2="271" y2="156" marker-end="url(#fl-thebro1)"/>
+    <line x1="271" y1="192" x2="271" y2="226" marker-end="url(#fl-thebro1)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="271" y="38.3" style="fill:var(--color-fg)">In development</text>
+    <text x="271" y="54.8" style="fill:var(--color-muted);font-size:12px">live Bun server</text>
+    <text x="271" y="71.3" style="fill:var(--color-muted);font-size:12px">composes HTML per request</text>
+    <text x="80" y="108.3" style="fill:var(--color-bg)">One BATCH app</text>
+    <text x="271" y="108.3" style="fill:var(--color-fg)">For production</text>
+    <text x="271" y="124.8" style="fill:var(--color-muted);font-size:12px">crawl the running app once</text>
+    <text x="271" y="178.3" style="fill:var(--color-fg)">Static HTML files</text>
+    <text x="271" y="248.3" style="fill:var(--color-fg)">GitHub Pages or any CDN</text>
+    <text x="271" y="264.8" style="fill:var(--color-muted);font-size:12px">nothing running behind it</text>
+  </g>
+</svg>
 
 *The two lives of one app: a live server while I build it, a folder of static files once it ships.*
 
@@ -112,16 +169,51 @@ The site you're reading this on was built static, but there is still a use case 
 
 The portfolio you are reading has no server at all. The AI is headed the same way: a small language model that will run in your browser, so even the assistant becomes static files plus your own hardware. That part is still in progress and I will not pretend otherwise, but it is the thesis stated plainly. A server should be something you reach for when the job actually needs one, not the ground a website is built on by default.
 
-```mermaid
-flowchart TD
-  Q{What does the page need?} --> Content[Just content<br/>writing, pages, design]
-  Q --> Work[Real server work<br/>database, API, live data]
-  Q --> AI[The AI]
-  Content --> None[No server. Static files]
-  Work --> Server[A server, when the job needs one]
-  AI --> ProductAI[Full product: live door and stream<br/>needs a server]
-  AI --> SiteAI[This site, planned: a model in your browser<br/>no server]
-```
+<svg viewBox="0 0 654 306" width="100%" role="img"
+     aria-label="What does the page need? Just content (writing, pages, design) needs no server — static files. Real server work (database, API, live data) needs a server when the job needs one. The AI splits two ways: a full product with a live door and stream needs a server, while this site, planned, runs a model in your browser with no server."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-thebro2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <polygon points="285,16 368,53 285,90 202,53"/>
+    <rect x="16" y="90" width="152" height="52" rx="6"/>
+    <rect x="204" y="90" width="161" height="52" rx="6"/>
+    <rect x="484" y="90" width="72" height="36" rx="6"/>
+    <rect x="47" y="164" width="91" height="52" rx="6"/>
+    <rect x="206" y="164" width="158" height="52" rx="6"/>
+    <rect x="402" y="164" width="236" height="52" rx="6"/>
+    <rect x="406" y="238" width="227" height="52" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="237" y1="69" x2="168" y2="91" marker-end="url(#fl-thebro2)"/>
+    <line x1="285" y1="90" x2="285" y2="90" marker-end="url(#fl-thebro2)"/>
+    <line x1="340" y1="66" x2="484" y2="99" marker-end="url(#fl-thebro2)"/>
+    <line x1="92" y1="142" x2="92" y2="164" marker-end="url(#fl-thebro2)"/>
+    <line x1="285" y1="142" x2="285" y2="164" marker-end="url(#fl-thebro2)"/>
+    <line x1="520" y1="126" x2="520" y2="164" marker-end="url(#fl-thebro2)"/>
+    <line x1="520" y1="126" x2="520" y2="238" marker-end="url(#fl-thebro2)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="285" y="49.3" style="fill:var(--color-fg)">What does</text>
+    <text x="285" y="65.8" style="fill:var(--color-fg)">the page need?</text>
+    <text x="92" y="112.3" style="fill:var(--color-fg)">Just content</text>
+    <text x="92" y="128.8" style="fill:var(--color-muted);font-size:12px">writing, pages, design</text>
+    <text x="285" y="112.3" style="fill:var(--color-fg)">Real server work</text>
+    <text x="285" y="128.8" style="fill:var(--color-muted);font-size:12px">database, API, live data</text>
+    <text x="520" y="112.3" style="fill:var(--color-fg)">The AI</text>
+    <text x="92" y="186.3" style="fill:var(--color-fg)">No server</text>
+    <text x="92" y="202.8" style="fill:var(--color-muted);font-size:12px">static files</text>
+    <text x="285" y="186.3" style="fill:var(--color-fg)">A server</text>
+    <text x="285" y="202.8" style="fill:var(--color-muted);font-size:12px">when the job needs one</text>
+    <text x="520" y="186.3" style="fill:var(--color-fg)">Full product</text>
+    <text x="520" y="202.8" style="fill:var(--color-muted);font-size:12px">live door and stream — needs a server</text>
+    <text x="520" y="260.3" style="fill:var(--color-fg)">This site, planned</text>
+    <text x="520" y="276.8" style="fill:var(--color-muted);font-size:12px">a model in your browser — no server</text>
+  </g>
+</svg>
 
 *Where a server actually earns its keep. For this site, even the AI is headed for the browser.*
 

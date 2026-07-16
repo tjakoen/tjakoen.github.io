@@ -552,60 +552,149 @@ imports nothing. `server.ts` is the sole wiring point and belongs to neither sid
 
 ## 4. Architecture diagrams
 
-```mermaid
-flowchart TB
-    subgraph Browser
-        P["Page shell (.html)"]
-        HX["htmx (vendored)"]
-        API["other consumers (CLI, app, AI layer)"]
-    end
-    subgraph FE["/frontend — no build"]
-        ATOMS["atoms / molecules / organisms / templates"]
-    end
-    subgraph App["/backend"]
-        SRV["server.ts — Bun.serve (composition root)"]
-        UI["/ui/* → HTML fragments (render)"]
-        JSON["/api/* → JSON (Response.json)"]
-        SVC["services (use cases + view models)"]
-        DOM["domain (Item)"]
-        REPO["data: ItemRepository port"]
-        REN["render (HTMLRewriter)"]
-    end
-    subgraph Storage["repository impls (swappable; none wired by default but in-memory)"]
-        MEM["InMemoryItemRepository (default)"]
-        SQLREPO["SqlItemRepository → your DB"]
-        RESTREPO["RestItemRepository → another API"]
-    end
-    P -- "hx-get /ui/..." --> SRV
-    API -- "GET /api/..." --> SRV
-    HX -.->|enhances| P
-    SRV --> UI --> SVC
-    SRV --> JSON --> SVC
-    SVC --> REPO
-    SVC --> DOM
-    REPO -.implemented by.-> MEM
-    REPO -.implemented by.-> SQLREPO
-    REPO -.implemented by.-> RESTREPO
-    UI --> REN
-    REN -- reads --> ATOMS
-    REN -- "HTML fragment" --> P
-```
+<svg viewBox="-13 -15 1000 472" width="100%" role="img"
+     aria-label="The BATCH request/response architecture. The browser (a page shell, vendored htmx, and other consumers like a CLI, app or AI layer) calls server.ts, the Bun.serve composition root. It routes /ui/* to HTML fragments and /api/* to JSON, both through services (use cases and view models) onto the domain (Item) and a data ItemRepository port. That port is implemented by a swappable in-memory, SQL, or REST repository. Rendering uses an HTMLRewriter that reads the frontend components and returns an HTML fragment to the page."
+     style="display:block;width:100%;max-width:680px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-archit0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+    <rect x="300" y="-12" width="540" height="93" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 3"/>
+    <text x="310" y="1" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">BROWSER</text>
+    <rect x="3" y="132" width="289" height="165" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 3"/>
+    <text x="13" y="145" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">RENDER + FRONTEND</text>
+    <rect x="309" y="60" width="532" height="309" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 3"/>
+    <text x="319" y="73" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">BACKEND</text>
+    <rect x="344" y="348" width="627" height="93" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 3"/>
+    <text x="354" y="361" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">REPOSITORY IMPLS — SWAPPABLE</text>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="313" y="16" width="141" height="36" rx="6"/>
+    <rect x="508" y="16" width="129" height="36" rx="6"/>
+    <rect x="692" y="16" width="134" height="52" rx="6"/>
+    <rect x="322" y="160" width="123" height="52" rx="6"/>
+    <rect x="704" y="160" width="110" height="52" rx="6"/>
+    <rect x="91" y="160" width="113" height="52" rx="6"/>
+    <rect x="16" y="232" width="263" height="52" rx="6"/>
+    <rect x="488" y="232" width="168" height="52" rx="6"/>
+    <rect x="325" y="304" width="117" height="36" rx="6"/>
+    <rect x="690" y="304" width="138" height="52" rx="6"/>
+    <rect x="357" y="376" width="185" height="52" rx="6"/>
+    <rect x="603" y="376" width="145" height="52" rx="6"/>
+    <rect x="806" y="376" width="152" height="52" rx="6"/>
+  </g>
+  <rect x="490" y="88" width="165" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="426" y1="52" x2="511" y2="88" marker-end="url(#fl-archit0)"/>
+    <line x1="692" y1="68" x2="640" y2="88" marker-end="url(#fl-archit0)"/>
+    <line x1="508" y1="34" x2="454" y2="34" marker-end="url(#fl-archit0)"/> stroke-dasharray="5 4"
+    <line x1="504" y1="140" x2="445" y2="162" marker-end="url(#fl-archit0)"/>
+    <line x1="640" y1="140" x2="704" y2="165" marker-end="url(#fl-archit0)"/>
+    <line x1="445" y1="210" x2="504" y2="232" marker-end="url(#fl-archit0)"/>
+    <line x1="704" y1="207" x2="640" y2="232" marker-end="url(#fl-archit0)"/>
+    <line x1="495" y1="284" x2="436" y2="304" marker-end="url(#fl-archit0)"/>
+    <line x1="640" y1="284" x2="692" y2="304" marker-end="url(#fl-archit0)"/>
+    <line x1="690" y1="346" x2="542" y2="380" marker-end="url(#fl-archit0)"/> stroke-dasharray="5 4"
+    <line x1="729" y1="356" x2="706" y2="376" marker-end="url(#fl-archit0)"/> stroke-dasharray="5 4"
+    <line x1="804" y1="356" x2="838" y2="376" marker-end="url(#fl-archit0)"/> stroke-dasharray="5 4"
+    <line x1="322" y1="186" x2="204" y2="186" marker-end="url(#fl-archit0)"/>
+    <line x1="148" y1="212" x2="148" y2="232" marker-end="url(#fl-archit0)"/>
+    <line x1="188" y1="160" x2="356" y2="52" marker-end="url(#fl-archit0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="384" y="38.3" style="fill:var(--color-fg)">Page shell (.html)</text>
+    <text x="572" y="38.3" style="fill:var(--color-fg)">htmx (vendored)</text>
+    <text x="759" y="38.3" style="fill:var(--color-fg)">other consumers</text>
+    <text x="759" y="54.8" style="fill:var(--color-muted);font-size:12px">CLI · app · AI layer</text>
+    <text x="572" y="110.3" style="fill:var(--color-bg)">server.ts — Bun.serve</text>
+    <text x="572" y="126.8" style="fill:var(--color-muted);font-size:12px">the composition root</text>
+    <text x="384" y="182.3" style="fill:var(--color-fg)">/ui/*</text>
+    <text x="384" y="198.8" style="fill:var(--color-muted);font-size:12px">HTML fragments</text>
+    <text x="759" y="182.3" style="fill:var(--color-fg)">/api/*</text>
+    <text x="759" y="198.8" style="fill:var(--color-muted);font-size:12px">Response.json</text>
+    <text x="148" y="182.3" style="fill:var(--color-fg)">render</text>
+    <text x="148" y="198.8" style="fill:var(--color-muted);font-size:12px">HTMLRewriter</text>
+    <text x="148" y="254.3" style="fill:var(--color-fg)">frontend components</text>
+    <text x="148" y="270.8" style="fill:var(--color-muted);font-size:12px">atoms · molecules · organisms · templates</text>
+    <text x="572" y="254.3" style="fill:var(--color-fg)">services</text>
+    <text x="572" y="270.8" style="fill:var(--color-muted);font-size:12px">use cases + view models</text>
+    <text x="384" y="326.3" style="fill:var(--color-fg)">domain (Item)</text>
+    <text x="759" y="326.3" style="fill:var(--color-fg)">data</text>
+    <text x="759" y="342.8" style="fill:var(--color-muted);font-size:12px">ItemRepository port</text>
+    <text x="450" y="398.3" style="fill:var(--color-fg)">InMemoryItemRepository</text>
+    <text x="450" y="414.8" style="fill:var(--color-muted);font-size:12px">default</text>
+    <text x="675" y="398.3" style="fill:var(--color-fg)">SqlItemRepository</text>
+    <text x="675" y="414.8" style="fill:var(--color-muted);font-size:12px">→ your DB</text>
+    <text x="882" y="398.3" style="fill:var(--color-fg)">RestItemRepository</text>
+    <text x="882" y="414.8" style="fill:var(--color-muted);font-size:12px">→ another API</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="468" y="65">hx-get /ui/…</text>
+    <text x="666" y="73">GET /api/…</text>
+    <text x="481" y="29">enhances</text>
+    <text x="616" y="358">implemented by</text>
+    <text x="148" y="217">reads</text>
+    <text x="272" y="101">HTML fragment</text>
+  </g>
+</svg>
 
-```mermaid
-flowchart TD
-    start["render(name, data, props)"] --> read["read cached template"]
-    read --> p0["PASS 0: apply config props (as / prop-attr)"]
-    p0 --> p1["PASS 1: bind data-field + data-bind-* in this scope"]
-    p1 --> scan{"any component tag?"}
-    scan -- no --> done["return HTML"]
-    scan -- yes --> slice["take slice via data= / each="]
-    slice --> each{"each / array?"}
-    each -- yes --> many["render child per element, join"]
-    each -- no --> one["render child once (recurse)"]
-    many --> splice["splice child HTML into slot marker"]
-    one --> splice
-    splice --> done
-```
+<svg viewBox="0 0 468 626" width="100%" role="img"
+     aria-label="How render walks the template tree. Read the cached template; PASS 0 applies config props (as, prop-attr); PASS 1 binds data-field and data-bind-* in this scope. If there is no component tag, return the HTML. Otherwise take a slice via data= or each=; if it is an each/array, render a child per element and join, else render the child once (recurse); splice the child HTML into the slot marker, and return the HTML."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-archit1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="145" y="16" width="186" height="36" rx="6"/>
+    <rect x="158" y="78" width="161" height="36" rx="6"/>
+    <rect x="140" y="140" width="197" height="52" rx="6"/>
+    <rect x="110" y="202" width="256" height="52" rx="6"/>
+    <polygon points="239,264 336,293 239,322 141,293"/>
+    <rect x="138" y="326" width="200" height="36" rx="6"/>
+    <polygon points="239,388 317,417 239,446 161,417"/>
+    <rect x="16" y="450" width="210" height="36" rx="6"/>
+    <rect x="260" y="450" width="192" height="36" rx="6"/>
+    <rect x="116" y="512" width="245" height="36" rx="6"/>
+  </g>
+  <rect x="184" y="574" width="109" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="239" y1="52" x2="239" y2="78" marker-end="url(#fl-archit1)"/>
+    <line x1="239" y1="114" x2="239" y2="140" marker-end="url(#fl-archit1)"/>
+    <line x1="239" y1="192" x2="239" y2="202" marker-end="url(#fl-archit1)"/>
+    <line x1="239" y1="254" x2="239" y2="264" marker-end="url(#fl-archit1)"/>
+    <line x1="239" y1="322" x2="239" y2="326" marker-end="url(#fl-archit1)"/>
+    <path d="M336,293 L362,293 L362,592 L293,592" marker-end="url(#fl-archit1)"/>
+    <line x1="239" y1="362" x2="239" y2="388" marker-end="url(#fl-archit1)"/>
+    <line x1="203" y1="432" x2="162" y2="450" marker-end="url(#fl-archit1)"/>
+    <line x1="274" y1="432" x2="315" y2="450" marker-end="url(#fl-archit1)"/>
+    <line x1="155" y1="486" x2="205" y2="512" marker-end="url(#fl-archit1)"/>
+    <line x1="322" y1="486" x2="272" y2="512" marker-end="url(#fl-archit1)"/>
+    <line x1="239" y1="548" x2="239" y2="574" marker-end="url(#fl-archit1)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="239" y="38.3" style="fill:var(--color-fg)">render(name, data, props)</text>
+    <text x="239" y="100.3" style="fill:var(--color-fg)">read cached template</text>
+    <text x="239" y="162.3" style="fill:var(--color-fg)">PASS 0: apply config props</text>
+    <text x="239" y="178.8" style="fill:var(--color-muted);font-size:12px">as / prop-attr</text>
+    <text x="239" y="224.3" style="fill:var(--color-fg)">PASS 1: bind data-field + data-bind-*</text>
+    <text x="239" y="240.8" style="fill:var(--color-muted);font-size:12px">in this scope</text>
+    <text x="239" y="297.3" style="fill:var(--color-fg)">any component tag?</text>
+    <text x="239" y="348.3" style="fill:var(--color-fg)">take slice via data= / each=</text>
+    <text x="239" y="421.3" style="fill:var(--color-fg)">each / array?</text>
+    <text x="121" y="472.3" style="fill:var(--color-fg)">render child per element, join</text>
+    <text x="356" y="472.3" style="fill:var(--color-fg)">render child once (recurse)</text>
+    <text x="239" y="534.3" style="fill:var(--color-fg)">splice child HTML into slot marker</text>
+    <text x="239" y="596.3" style="fill:var(--color-bg)">return HTML</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="239" y="319">yes</text>
+    <text x="182" y="436">yes</text>
+    <text x="295" y="436">no</text>
+    <text x="371" y="442" transform="rotate(-90 371 442)">no</text>
+  </g>
+</svg>
 
 ---
 
@@ -1823,14 +1912,39 @@ multi-device deferred with conflict-resolution, `docs/MVP.md`).
 
 ## 15. Build order
 
-```mermaid
-flowchart LR
-    s1["1· render() + tests"] --> s2["2· data: port + in-memory repo"]
-    s2 --> s3["3· services + view models"]
-    s3 --> s4["4· native routes (/ui + /api) + server"]
-    s4 --> s5["5· first page end-to-end"]
-    s5 --> s6["6· swap in a real ItemRepository when persistence is needed"]
-```
+<svg viewBox="0 0 285 384" width="100%" role="img"
+     aria-label="The build order: one, render() plus tests; two, the data port and an in-memory repo; three, services and view models; four, native /ui and /api routes and the server; five, the first page end-to-end; six, swap in a real ItemRepository when persistence is needed."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-archit2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="71" y="16" width="142" height="36" rx="6"/>
+    <rect x="34" y="76" width="217" height="36" rx="6"/>
+    <rect x="45" y="136" width="195" height="36" rx="6"/>
+    <rect x="16" y="196" width="253" height="36" rx="6"/>
+    <rect x="26" y="316" width="233" height="52" rx="6"/>
+  </g>
+  <rect x="55" y="256" width="175" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="143" y1="52" x2="143" y2="76" marker-end="url(#fl-archit2)"/>
+    <line x1="143" y1="112" x2="143" y2="136" marker-end="url(#fl-archit2)"/>
+    <line x1="143" y1="172" x2="143" y2="196" marker-end="url(#fl-archit2)"/>
+    <line x1="143" y1="232" x2="143" y2="256" marker-end="url(#fl-archit2)"/>
+    <line x1="143" y1="292" x2="143" y2="316" marker-end="url(#fl-archit2)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="143" y="38.3" style="fill:var(--color-fg)">1 · render() + tests</text>
+    <text x="143" y="98.3" style="fill:var(--color-fg)">2 · data: port + in-memory repo</text>
+    <text x="143" y="158.3" style="fill:var(--color-fg)">3 · services + view models</text>
+    <text x="143" y="218.3" style="fill:var(--color-fg)">4 · native routes (/ui + /api) + server</text>
+    <text x="143" y="278.3" style="fill:var(--color-bg)">5 · first page end-to-end</text>
+    <text x="143" y="338.3" style="fill:var(--color-fg)">6 · swap in a real ItemRepository</text>
+    <text x="143" y="354.8" style="fill:var(--color-muted);font-size:12px">when persistence is needed</text>
+  </g>
+</svg>
 
 Steps 1–4 are verified. The database is deferred on purpose — build the
 architecture on the in-memory placeholder, swap one adapter later.
