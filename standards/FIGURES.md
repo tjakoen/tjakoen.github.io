@@ -1,29 +1,36 @@
 ---
 title: FIGURES.md — figures & visualizations
-summary: The standard for every diagram and chart - one tokenized SVG scaffold, one palette, and the mermaid-vs-SVG rule.
+summary: The standard for every diagram and chart - two tokenized inline-SVG scaffolds (data-viz and flow), one palette each, no mermaid on the published site.
 ---
 
 # Figures & visualizations: the standard
 
 > The standard for every diagram and chart in Tjakoen's notes, docs, and pages. Companion to
 > [`VOICE.md`](VOICE.md) (which owns the prose); this file owns the pictures. The point is that a
-> figure should be built to a **contract**, not hand-drawn from zero each time. Mermaid is already
-> standardized because it's a text DSL; this doc gives our inline SVGs the same discipline, one
-> palette, one scaffold, one type scale, so every figure is a member of the same family and you
-> re-skin them all by editing tokens, never by editing shapes. Same philosophy as the rest of the
-> stack: tokens are the theme, DRY to a fault, design tells the truth.
+> figure should be built to a **contract**, not hand-drawn from zero each time. Every figure here is
+> **inline SVG**, built to one of two scaffolds, so it renders on the published no-build site with zero
+> dependencies and every figure is a member of the same family: you re-skin them all by editing tokens,
+> never by editing shapes. Same philosophy as the rest of the stack: tokens are the theme, DRY to a
+> fault, design tells the truth.
 
-## Pick the tool by job (the one rule)
+## Two figure shapes, one medium (the one rule)
 
-| The figure is… | Use | Why |
-|---|---|---|
-| **Quantitative data-viz** — bars, ratios, timelines, the multiplier | **inline SVG** (to the scaffold below) | Precise proportions, exact labels, the e-ink palette; and it's just HTML, so it renders on the published no-build site today with zero dependencies. |
-| **A flow, loop, relationship, or architecture** — steps, cycles, "A → B → C" | **mermaid** fenced block | It's a text DSL: readable in the source, trivial to edit, and the right shape for graphs. Charting quantitative bars is *not* its job (`xychart-beta` is beta and can't take our palette). |
+Everything is inline SVG. Which of the two scaffolds you copy is decided by what the figure *is*:
 
-If you're reaching for mermaid to draw a proportional bar, stop, that's an SVG. If you're hand-placing
-`<rect>`s to fake a flowchart, stop, that's mermaid.
+| The figure is… | Copy | Palette | Why |
+|---|---|---|---|
+| **Quantitative data-viz** — bars, ratios, timelines, the multiplier | the **data-viz scaffold** below | self-contained e-ink palette, hardcoded on the root | Precise proportions, exact labels, one fixed measure down the page; it carries its own palette so it looks identical everywhere, even committed as an image. |
+| **A flow, loop, relationship, or architecture** — steps, cycles, "A → B → C" | the **flow scaffold** below | inherits the page's `--color-*` theme tokens | It sizes to its own content and themes with the site (it inverts in dark), so a diagram reads as part of the page it lives on, not a pasted-in light rectangle. |
 
-## The SVG scaffold (copy this, don't freehand)
+**On mermaid.** It used to be the tool for flows, but the published site ships zero framework JS and
+MILL never gained server-side `mermaid`→SVG rendering, so a `mermaid` block renders in your editor
+preview and on GitHub but is **blank on the live site**. Practice converged on hand-built flow SVGs
+instead (see the references below), and that is now the standard. Mermaid is fine as an **optional
+source draft** you keep for your own readability, but it is never the published form: hand-convert it
+to the flow scaffold before it ships. Don't reach for it to chart a proportional bar either, that has
+always been an SVG.
+
+## The data-viz scaffold (copy this, don't freehand)
 
 Every data-viz SVG starts from this exact skeleton. The palette lives **once**, as CSS custom
 properties on the `<svg>` root; every shape and label references a token via `style="…:var(--x)"`.
@@ -72,27 +79,87 @@ Serif always (Georgia / Times, set once on the root and inherited). Sizes: **tit
   zero-framework-JS promise.
 - **Follow it with a one-line italic caption** in the prose (`*The inversion: …*`), like the reference figure.
 
+## The flow scaffold (steps, loops, relationships)
+
+A flow is structural, not quantitative, so it does the opposite of the data-viz figure on one point:
+it **inherits the page's theme tokens** instead of carrying its own palette, so it themes with the
+site and inverts in dark. It reads `--color-fg` (nodes + node labels), `--color-bg` (the page behind
+it, used for label halos and for text on a filled node), `--color-line` (node borders), and
+`--color-muted` (arrows, the arrowhead marker, secondary sub-labels). Never hardcode hex.
+
+```html
+<svg viewBox="-1 0 263 502" width="100%" role="img"
+     aria-label="State the flow in words, node by node, including the loop and the exit."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <!-- one arrowhead marker per figure; give it a page-unique id (fl-<slug><n>) -->
+    <marker id="fl-slug0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="68" y="16" width="125" height="36" rx="6"/>       <!-- ordinary nodes -->
+  </g>
+  <rect x="16" y="450" width="230" height="36" rx="6"
+        style="fill:var(--color-fg);stroke:var(--color-fg)"/>  <!-- the ONE emphasis node: ink-filled, inverts in dark -->
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="131" y1="52" x2="131" y2="78" marker-end="url(#fl-slug0)"/>   <!-- edges carry the marker -->
+  </g>
+  <g text-anchor="middle">
+    <text x="131" y="38.3" style="fill:var(--color-fg)">Ordinary node</text>
+    <text x="131" y="472.3" style="fill:var(--color-bg)">The payoff (on the ink node)</text>
+  </g>
+  <!-- edge labels ride a bg-colored halo so the line doesn't cut through them -->
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
+       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="131" y="319">what I did instead</text>
+  </g>
+</svg>
+```
+
+### Non-negotiables (flow)
+
+- **Theme tokens, never hex.** `--color-fg / --color-bg / --color-line / --color-muted` only. This is
+  what makes it invert in dark; a hardcoded palette (the data-viz trick) would strand it light.
+- **`role="img"` + an `aria-label` that narrates the whole flow** in words, node by node, including the
+  loop and the exit. The label *is* the accessible figure, and it doubles as the AI-legible version.
+- **One emphasis node.** Exactly one node is ink-filled (`fill:var(--color-fg)`, label in
+  `--color-bg`), the flow's payoff. If two nodes are "the point," neither is. This is the flow's
+  equivalent of the data-viz single accent.
+- **One arrowhead marker per figure, id `fl-<slug><n>`.** Marker ids are document-global, so a page
+  with several flows needs distinct ids or they cross-reference. Slug from the note.
+- **Edge labels get a `--color-bg` halo** (`stroke:var(--color-bg);paint-order:stroke`) so an arrow
+  never strikes through the text.
+- **Size to the content.** Unlike data-viz (a fixed 620 measure), a flow's `viewBox` and `max-width`
+  fit the diagram; keep `width="100%"`, `height:auto`, and center it (`margin:… auto`).
+- **Self-contained, no `<style>`, no client JS**, same as data-viz.
+
 ## The reference figures (built to this standard)
 
-Live in [`../notes/ten-times-zero.md`](../notes/ten-times-zero.md): the **docs-vs-code ratio** bar,
-the **multiplier** (two rows, same AI, different baseline), and the **sprint timeline** (31 ticks).
-Copy the nearest one when you need a new chart, then re-label. The **playbook loop** and the
-**mistakes-as-measurement loop** in the same file are the mermaid references.
+All live in [`../notes/ten-times-zero.md`](../notes/ten-times-zero.md). Data-viz: the **docs-vs-code
+ratio** bar, the **multiplier** (two rows, same AI, different baseline), and the **sprint timeline**
+(31 ticks). Flows: the **playbook loop** and the **mistakes-as-measurement loop** in the same file, plus
+the one-door flow in [`../notes/whitepaper-one-vocabulary.md`](../notes/whitepaper-one-vocabulary.md) and
+the loop diagrams across the other notes. Copy the nearest one for the shape you need, then re-label.
 
-## Rendering reality (know this before you pick)
+## Rendering reality (know this before you build)
 
-| Context | inline SVG | mermaid |
-|---|---|---|
-| VSCode markdown preview | yes | yes (with the Mermaid extension) |
-| GitHub.com markdown viewer | **stripped** (commit a `.svg` as an image if it must show there) | yes |
-| **MILL / the published site** | yes | **only once MILL renders mermaid→SVG server-side** |
+Inline SVG renders everywhere the site serves, today, with zero dependencies. That is the whole reason
+both scaffolds are SVG.
 
-**The MILL dependency (open, tracked in `CONTENT-BACKLOG.md`):** the served pages must ship zero
-framework JS, so mermaid can't render client-side in production. MILL must convert `mermaid` fenced
-blocks to inline SVG at render/export time (server-side). Until that lands, mermaid diagrams render in
-the *preview* and on *GitHub* but not on the live site; inline SVG renders everywhere the site serves
-it, today. When authoring for imminent publish, prefer SVG; a mermaid flow is fine but is on MILL's
-critical path.
+| Context | inline SVG |
+|---|---|
+| VSCode markdown preview | yes |
+| GitHub.com markdown viewer | **stripped** (commit a `.svg` as an image if a figure must show there) |
+| **MILL / the published site** | yes |
+
+**Mermaid (source-draft only).** A `mermaid` fenced block renders in the VSCode preview (with the
+Mermaid extension) and on GitHub, but the published site ships zero framework JS and MILL does **not**
+render mermaid server-side, so it is blank on the live site. That server-side capability was considered
+and is **not planned** (there is no content mermaid left to justify it, tracked in
+`CONTENT-BACKLOG.md`). So mermaid is fine only as a private, editable draft of a flow's structure;
+convert it to the flow scaffold before it ships. Nothing under Tjakoen's byline publishes as mermaid.
 
 ---
 

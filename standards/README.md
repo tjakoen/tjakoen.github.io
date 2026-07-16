@@ -25,7 +25,7 @@ six.
 | **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
 | **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard — cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built — frontmatter, structure, footer — plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
-| **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard — inline-SVG-vs-mermaid rule, the tokenized scaffold, one palette. |
+| **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard — two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
 | **Setting up a README** | [README-STANDARD.md](README-STANDARD.md) | Title emoji, the honest badge row, the "built with Claude" footer, plus a runnable prompt. |
 | **Starting a new repo** | [CLAUDE.starter.md](CLAUDE.starter.md) | The `CLAUDE.md` template that wires a fresh repo into all of the above from day one. |
 
