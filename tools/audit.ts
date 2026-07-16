@@ -64,8 +64,10 @@ function narrate(report: AuditReport): string {
     `## Notes\n\n` +
     `- Skipped pages: ${skipped}\n` +
     `- **Surfaces** = count of \`[data-surface]\` — machine-operable affordances; doubles as an AEO signal.\n` +
-    `- **Desc / Canon / OG / JSON-LD** largely absent is expected pre-MILL — those are exactly what MILL should emit\n` +
-    `  (frontmatter → meta/OG, canonical URLs, schema.org JSON-LD). See memory \`seo-aeo-first-class\`.\n`;
+    `- **Desc / Canon / OG / JSON-LD** should now be ✓ on every page: \`seo.ts\` enriches every full-document\n` +
+    `  response with a canonical URL, Open Graph + Twitter Card, and schema.org JSON-LD (Person + WebSite on\n` +
+    `  home, BlogPosting on notes, WebPage + BreadcrumbList elsewhere), derived from each page's own\n` +
+    `  title/description + path. A ✗ here is a regression. See memory \`seo-aeo-first-class\`.\n`;
 }
 
 console.log(`[audit] starting server on ${PORT}…`);

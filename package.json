@@ -21,6 +21,7 @@
     "test:e2e": "playwright test",
     "test:all": "bun test && playwright test",
     "shots": "bun tools/screenshots.ts",
+    "og:card": "bun tools/og-card.ts",
     "audit": "bun tools/audit.ts",
     "export": "bun tools/export.ts",
     "verify:export": "bun tools/verify-export.ts",

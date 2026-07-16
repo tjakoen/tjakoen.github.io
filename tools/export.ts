@@ -18,6 +18,7 @@ import { join } from "node:path";
 // graph is frozen into dist/modules — the demo runs the same vocabulary fully in-browser.
 import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
 import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
+import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
 import { listPortfolioContentRoutes, listPortfolioRawContentRoutes } from "../content.ts";
 import { listPlanRoutes } from "../plans.ts";
 import { config } from "../config.ts";
@@ -119,6 +120,11 @@ try {
       // (a 404 on GitHub Pages) — pages/loop.html documents the pairing.
       if (route === "/loop")
         out = out.replace(/\s+hx-get="\/ui\/loop"\s+hx-trigger="load"/, "");
+      // The SEO head (seo.ts) emits ABSOLUTE canonical/OG/JSON-LD URLs at the crawl origin; swap it
+      // for the deploy origin, the same rewrite sitemap.xml/robots.txt/llms.txt take (batch/export
+      // only origin-rewrites .xml/.txt data routes, not pages — so pages do it here). No-op without
+      // PUBLIC_ORIGIN, exactly like those endpoints.
+      out = rewriteOrigin(out, BASE, Bun.env.PUBLIC_ORIGIN);
       return out;
     },
     basePath: Bun.env.PUBLIC_BASE_PATH,
