@@ -232,8 +232,13 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
 
 ## Open follow-ups
 
-- SEO **+ AEO/AIEO**: research concrete wins for the statically-served pages — the stack is
-  machine-readable by design, so being AI-operable ≈ being AI-answerable (memory `seo-aeo-first-class`).
+- **SEO + AEO/AIEO — DONE 2026-07-16 (shipped + deployed).** `seo.ts` `enrichHead` enriches every
+  full-document response (server.ts `finalizePage`, idempotent, skips fragments) with a canonical URL,
+  Open Graph + Twitter Card, and schema.org JSON-LD (Person + WebSite on home, BlogPosting on notes,
+  WebPage + BreadcrumbList elsewhere), derived from each page's own title/description + path. og:image
+  is a real Playwright-rendered social card (`media/og-card.png`, `bun run og:card`). The export
+  origin-rewrites HTML pages too. The audit's Canon/OG/JSON-LD columns are now green across pages.
+  See memory `seo-aeo-first-class-2026-07-16`.
 - Reconcile `PLAN.md` "rendering in the live app" with the CMS-as-separate-project decision.
 - **Flow diagrams: mermaid → themed inline SVG — DONE 2026-07-16.** All 22 remaining flow diagrams
   across `notes/*.md` + `docs/batch/ARCHITECTURE.md` are now hand-converted to themed inline SVG on the
