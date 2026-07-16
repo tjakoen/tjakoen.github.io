@@ -376,14 +376,44 @@ where the pieces the AI actually operates get a second doc written only for the 
 the thing, not how a human reads about it. You onboard this collaborator every time you spin up a new session, so you build
 the onboarding, make it excellent, and polish it as you go.
 
-```mermaid
-flowchart LR
-  A[Rails<br/>conventions + onboarding] --> B[Memory<br/>decisions carry over]
-  B --> C[Sync map<br/>change propagates]
-  C --> D[Audit<br/>check, don't trust]
-  D --> E[Tests<br/>the seatbelt]
-  E -->|back to the work| A
-```
+<svg viewBox="0 0 252 340" width="100%" role="img"
+     aria-label="The working loop: rails (conventions and onboarding), memory (decisions carry over), a sync map (change propagates), audit (check, don't trust), and tests (the seatbelt), then back to the work."
+     style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-tentim0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="16" y="16" width="167" height="52" rx="6"/>
+    <rect x="30" y="80" width="140" height="52" rx="6"/>
+    <rect x="34" y="144" width="131" height="52" rx="6"/>
+    <rect x="37" y="208" width="126" height="52" rx="6"/>
+    <rect x="52" y="272" width="95" height="52" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="100" y1="68" x2="100" y2="80" marker-end="url(#fl-tentim0)"/>
+    <line x1="100" y1="132" x2="100" y2="144" marker-end="url(#fl-tentim0)"/>
+    <line x1="100" y1="196" x2="100" y2="208" marker-end="url(#fl-tentim0)"/>
+    <line x1="100" y1="260" x2="100" y2="272" marker-end="url(#fl-tentim0)"/>
+    <path d="M147,298 C213,298 213,42 183,42" marker-end="url(#fl-tentim0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="100" y="38.3" style="fill:var(--color-fg)">Rails</text>
+    <text x="100" y="54.8" style="fill:var(--color-muted);font-size:12px">conventions + onboarding</text>
+    <text x="100" y="102.3" style="fill:var(--color-fg)">Memory</text>
+    <text x="100" y="118.8" style="fill:var(--color-muted);font-size:12px">decisions carry over</text>
+    <text x="100" y="166.3" style="fill:var(--color-fg)">Sync map</text>
+    <text x="100" y="182.8" style="fill:var(--color-muted);font-size:12px">change propagates</text>
+    <text x="100" y="230.3" style="fill:var(--color-fg)">Audit</text>
+    <text x="100" y="246.8" style="fill:var(--color-muted);font-size:12px">check, don't trust</text>
+    <text x="100" y="294.3" style="fill:var(--color-fg)">Tests</text>
+    <text x="100" y="310.8" style="fill:var(--color-muted);font-size:12px">the seatbelt</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="222" y="170" transform="rotate(-90 222 170)">back to the work</text>
+  </g>
+</svg>
 
 *The loop is what keeps fast from turning into fragile.*
 
@@ -429,14 +459,44 @@ end-to-end runs, never "it probably looks right."
 The one-sentence version: *where the AI keeps slipping* is a map of where my design isn't clear yet,
 and I harden the design so neither of us slips there again.
 
-```mermaid
-flowchart LR
-  A[AI trips on a<br/>documented idiom] --> B[Read it as a clarity<br/>signal, not a bug]
-  B --> C[Find the silent-<br/>failure contract]
-  C --> D[Design the<br/>misuse out]
-  D --> E[Lock it with a test<br/>human = AI parity]
-  E -->|becomes a permanent guardrail| A
-```
+<svg viewBox="0 0 231 340" width="100%" role="img"
+     aria-label="Turning a mistake into a guardrail: the AI trips on a documented idiom; read it as a clarity signal, not a bug; find the silent-failure contract; design the misuse out; lock it with a test at human-equals-AI parity; and it becomes a permanent guardrail."
+     style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-tentim1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="18" y="16" width="143" height="52" rx="6"/>
+    <rect x="16" y="80" width="147" height="52" rx="6"/>
+    <rect x="27" y="144" width="125" height="52" rx="6"/>
+    <rect x="40" y="208" width="99" height="52" rx="6"/>
+    <rect x="17" y="272" width="144" height="52" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="89" y1="68" x2="89" y2="80" marker-end="url(#fl-tentim1)"/>
+    <line x1="89" y1="132" x2="89" y2="144" marker-end="url(#fl-tentim1)"/>
+    <line x1="89" y1="196" x2="89" y2="208" marker-end="url(#fl-tentim1)"/>
+    <line x1="89" y1="260" x2="89" y2="272" marker-end="url(#fl-tentim1)"/>
+    <path d="M162,298 C192,298 192,42 161,42" marker-end="url(#fl-tentim1)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="89" y="38.3" style="fill:var(--color-fg)">AI trips on a</text>
+    <text x="89" y="54.8" style="fill:var(--color-fg)">documented idiom</text>
+    <text x="89" y="102.3" style="fill:var(--color-fg)">Read it as a clarity</text>
+    <text x="89" y="118.8" style="fill:var(--color-fg)">signal, not a bug</text>
+    <text x="89" y="166.3" style="fill:var(--color-fg)">Find the silent-</text>
+    <text x="89" y="182.8" style="fill:var(--color-fg)">failure contract</text>
+    <text x="89" y="230.3" style="fill:var(--color-fg)">Design the</text>
+    <text x="89" y="246.8" style="fill:var(--color-fg)">misuse out</text>
+    <text x="89" y="294.3" style="fill:var(--color-fg)">Lock it with a test</text>
+    <text x="89" y="310.8" style="fill:var(--color-fg)">human = AI parity</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="201" y="170" transform="rotate(-90 201 170)">becomes a permanent guardrail</text>
+  </g>
+</svg>
 
 *Every trip the AI takes is a map of where the design isn't clear yet, and a chance to harden it.*
 

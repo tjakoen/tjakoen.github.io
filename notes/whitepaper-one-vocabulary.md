@@ -281,19 +281,53 @@ all.
 
 ### 3.3 GUI agents and computer-use: the primary foil
 
-```mermaid
-flowchart LR
-    subgraph Imitation["Imitation: GUI agents / computer-use"]
-        direction LR
-        M["model"] --> P["read pixels / DOM / a11y"] --> C["emit clicks and keystrokes"] --> App1["app"]
-    end
-    subgraph Shared["Shared vocabulary: GRAIN / BATCH"]
-        direction LR
-        Hu["human"] --> Voc["one closed action vocabulary"]
-        Ai["AI"] --> Voc
-        Voc --> Door["one door"] --> Wr["one writer"] --> App2["app"]
-    end
-```
+<svg viewBox="-13 -15 336 594" width="100%" role="img"
+     aria-label="The inversion. Imitation (GUI agents, computer-use): a model reads pixels, DOM and the accessibility tree, emits clicks and keystrokes, into the app. A shared vocabulary (GRAIN / BATCH): a human and an AI both address one closed action vocabulary, through one door to one writer, into the app."
+     style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-whitep0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+    <rect x="3" y="-12" width="221" height="244" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 3"/>
+    <text x="13" y="1" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">IMITATION — GUI AGENTS / COMPUTER-USE</text>
+    <rect x="65" y="262" width="242" height="301" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 3"/>
+    <text x="75" y="275" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">SHARED VOCABULARY — GRAIN / BATCH</text>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="79" y="16" width="69" height="36" rx="6"/>
+    <rect x="23" y="72" width="181" height="36" rx="6"/>
+    <rect x="16" y="128" width="195" height="36" rx="6"/>
+    <rect x="87" y="184" width="53" height="36" rx="6"/>
+    <rect x="78" y="290" width="72" height="36" rx="6"/>
+    <rect x="245" y="290" width="46" height="36" rx="6"/>
+    <rect x="87" y="346" width="207" height="36" rx="6"/>
+    <rect x="144" y="458" width="94" height="36" rx="6"/>
+    <rect x="164" y="514" width="53" height="36" rx="6"/>
+  </g>
+  <rect x="149" y="402" width="82" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="113" y1="52" x2="113" y2="72" marker-end="url(#fl-whitep0)"/>
+    <line x1="113" y1="108" x2="113" y2="128" marker-end="url(#fl-whitep0)"/>
+    <line x1="113" y1="164" x2="113" y2="184" marker-end="url(#fl-whitep0)"/>
+    <line x1="138" y1="326" x2="166" y2="346" marker-end="url(#fl-whitep0)"/>
+    <line x1="245" y1="325" x2="215" y2="346" marker-end="url(#fl-whitep0)"/>
+    <line x1="190" y1="382" x2="190" y2="402" marker-end="url(#fl-whitep0)"/>
+    <line x1="190" y1="438" x2="190" y2="458" marker-end="url(#fl-whitep0)"/>
+    <line x1="190" y1="494" x2="190" y2="514" marker-end="url(#fl-whitep0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="113" y="38.3" style="fill:var(--color-fg)">model</text>
+    <text x="113" y="94.3" style="fill:var(--color-fg)">read pixels · DOM · a11y</text>
+    <text x="113" y="150.3" style="fill:var(--color-fg)">emit clicks and keystrokes</text>
+    <text x="113" y="206.3" style="fill:var(--color-fg)">app</text>
+    <text x="113" y="312.7" style="fill:var(--color-fg)">human</text>
+    <text x="268" y="312.7" style="fill:var(--color-fg)">AI</text>
+    <text x="190" y="368.7" style="fill:var(--color-fg)">one closed action vocabulary</text>
+    <text x="190" y="424.7" style="fill:var(--color-bg)">one door</text>
+    <text x="190" y="480.7" style="fill:var(--color-fg)">one writer</text>
+    <text x="190" y="536.7" style="fill:var(--color-fg)">app</text>
+  </g>
+</svg>
 *Figure 2. The inversion. Instead of the AI reverse-engineering an interface built for humans, the
 surface exposes an application-authored vocabulary both operators address directly.*
 
@@ -371,15 +405,39 @@ grade renders, and the disclosure cannot drift from the act. We do not claim it 
 (whether such a cue is legible across sighted and non-sighted users is an open empirical question,
 §5) only that it is a different and, in this coupled form, unoccupied point.
 
-```mermaid
-flowchart TD
-    S["AI is acting on / authored this surface<br/>(data-grade=grain · data-commit=pending → committed)"]
-    S --> T["text → degraded font grade"]
-    S --> B["button / badge → dashed 'terminal' edge + block caret"]
-    S --> I["input → dashed border (solid while the AI composes, human-like)"]
-    S --> C["card / list / region → dashed outline"]
-    S --> W["whole workspace → 'takeover' (console rises, aside recedes)"]
-```
+<svg viewBox="0 0 681 316" width="100%" role="img"
+     aria-label="Grade-as-signal is not only typographic. One source, the AI acting on or authoring a surface (data-grade grain, data-commit pending then committed), renders in every operable surface in its own idiom: text as a degraded font grade, a button or badge as a dashed edge with a block caret, an input as a dashed border, a card or region as a dashed outline, and the whole workspace as a takeover."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-whitep1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="419" y="16" width="195" height="36" rx="6"/>
+    <rect x="369" y="78" width="296" height="36" rx="6"/>
+    <rect x="433" y="140" width="168" height="36" rx="6"/>
+    <rect x="389" y="202" width="255" height="36" rx="6"/>
+    <rect x="411" y="264" width="212" height="36" rx="6"/>
+  </g>
+  <rect x="16" y="140" width="319" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="242" y1="140" x2="471" y2="52" marker-end="url(#fl-whitep1)"/>
+    <line x1="302" y1="140" x2="430" y2="114" marker-end="url(#fl-whitep1)"/>
+    <line x1="335" y1="162" x2="433" y2="160" marker-end="url(#fl-whitep1)"/>
+    <line x1="335" y1="191" x2="404" y2="202" marker-end="url(#fl-whitep1)"/>
+    <line x1="252" y1="192" x2="464" y2="264" marker-end="url(#fl-whitep1)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="175" y="162.3" style="fill:var(--color-bg)">AI is acting on or authored this surface</text>
+    <text x="175" y="178.8" style="fill:var(--color-muted);font-size:12px">data-grade=grain · data-commit=pending → committed</text>
+    <text x="517" y="38.3" style="fill:var(--color-fg)">text  →  degraded font grade</text>
+    <text x="517" y="100.3" style="fill:var(--color-fg)">button / badge  →  dashed edge + block caret</text>
+    <text x="517" y="162.3" style="fill:var(--color-fg)">input  →  dashed border</text>
+    <text x="517" y="224.3" style="fill:var(--color-fg)">card / list / region  →  dashed outline</text>
+    <text x="517" y="286.3" style="fill:var(--color-fg)">whole workspace  →  takeover</text>
+  </g>
+</svg>
 *Figure 3. Grade-as-signal is not only typographic: every operable surface shows the AI's hand in its
 own idiom, all keyed off the same `data-grade` / `data-commit` attributes. The grade encodes
 **provenance** and persists after commit; only the in-transit **liveness** (block caret, pulse) settles.*

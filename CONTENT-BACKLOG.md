@@ -235,12 +235,19 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
 - SEO **+ AEO/AIEO**: research concrete wins for the statically-served pages — the stack is
   machine-readable by design, so being AI-operable ≈ being AI-answerable (memory `seo-aeo-first-class`).
 - Reconcile `PLAN.md` "rendering in the live app" with the CMS-as-separate-project decision.
-- **MILL must render `mermaid` code blocks to inline SVG at render/export time** (server-side, no client
-  JS) — ~23 flow diagrams across `notes/*.md` + `docs/batch/ARCHITECTURE.md` currently render as raw
-  Mermaid SOURCE on the live site. Stopgap shipped 2026-07-15: the portfolio labels those blocks
-  ("◇ mermaid diagram — shown as source until MILL renders it live", `portfolio-frame.css`) so they read
-  as intentional, not broken. Served pages must stay zero-framework-JS (Mermaid source in the `.md`,
-  static SVG on the wire). FIGURES keeps flows in mermaid — do NOT hand-convert them to SVG.
+- **Flow diagrams: mermaid → themed inline SVG — DONE 2026-07-16.** All 22 remaining flow diagrams
+  across `notes/*.md` + `docs/batch/ARCHITECTURE.md` are now hand-converted to themed inline SVG on the
+  whitepaper Figure-1 pattern (`--color-*` tokens, one arrowhead marker per figure, ink-filled emphasis
+  box that inverts in dark, `role="img"` + a spoken `aria-label`); verified in light + dark. No `mermaid`
+  fences remain in notes/docs, so the diagrams render live everywhere with zero framework JS, and the
+  2026-07-15 "shown as source until MILL renders it live" stopgap label (`portfolio-frame.css`) no longer
+  triggers on these pages (the CSS is now dead for content — safe to leave or prune).
+  - This supersedes the earlier "MILL must render mermaid server-side" requirement *for content*: there
+    is no content mermaid left to render. If mermaid authoring is ever wanted again, that MILL capability
+    is still unbuilt.
+  - **Owner decision, flagged:** FIGURES' "pick the tool by job" rule still says *flows → mermaid* and
+    the standard warns against hand-converting. Practice has now diverged (whitepaper Fig 1 + these 22).
+    FIGURES + its render-matrix note should be reconciled to the SVG-flow reality in a standards pass.
 - **MILL upstream fixes found 2026-07-15** (both are `@tjakoen/mill` core — need a mill change + repin;
   worked around portfolio-side for now):
   1. **Frontmatter `\"` not unescaped.** `core/frontmatter.ts` `unquote` strips the outer quotes but

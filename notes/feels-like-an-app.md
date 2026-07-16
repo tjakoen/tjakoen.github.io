@@ -41,15 +41,46 @@ That lives in the stylesheet every page loads. On its own it cross-fades the who
 
 Because the sidebar on the old page and the sidebar on the new page carry the same name, the browser understands they are one continuous element and morphs it in place rather than fading it out and back in. Only the main content area, which has no shared name, actually cross-fades. So the rail, the top bar, the status row all hold steady while the middle swaps. That is the entire single-page feel. No router, no diffing, no virtual anything. Two full documents and a promise that these boxes are the same box.
 
-```mermaid
-flowchart TD
-  Click[You click a link] --> Load[Browser fetches a whole new HTML document]
-  Load --> Match{Do both pages share<br/>view-transition-name regions?}
-  Match -->|Yes| Morph[Named chrome morphs in place<br/>rail · topbar · status hold steady]
-  Match -->|Yes| Fade[Unnamed main content cross-fades]
-  Morph --> Feel[Feels like one continuous app]
-  Fade --> Feel
-```
+<svg viewBox="0 0 457 380" width="100%" role="img"
+     aria-label="You click a link and the browser fetches a whole new HTML document. If both pages share view-transition-name regions, the named chrome (rail, topbar, status) morphs in place while the unnamed main content cross-fades — so a full page load feels like one continuous app."
+     style="display:block;width:100%;max-width:540px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-feelsl0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="178" y="16" width="127" height="36" rx="6"/>
+    <rect x="83" y="94" width="316" height="36" rx="6"/>
+    <polygon points="242,172 372,209 242,246 111,209"/>
+    <rect x="16" y="250" width="222" height="52" rx="6"/>
+    <rect x="272" y="250" width="170" height="52" rx="6"/>
+  </g>
+  <rect x="135" y="328" width="212" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="242" y1="52" x2="242" y2="94" marker-end="url(#fl-feelsl0)"/>
+    <line x1="242" y1="130" x2="242" y2="172" marker-end="url(#fl-feelsl0)"/>
+    <line x1="199" y1="234" x2="171" y2="250" marker-end="url(#fl-feelsl0)"/>
+    <line x1="284" y1="234" x2="312" y2="250" marker-end="url(#fl-feelsl0)"/>
+    <line x1="170" y1="302" x2="212" y2="328" marker-end="url(#fl-feelsl0)"/>
+    <line x1="314" y1="302" x2="271" y2="328" marker-end="url(#fl-feelsl0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="242" y="38.3" style="fill:var(--color-fg)">You click a link</text>
+    <text x="242" y="116.3" style="fill:var(--color-fg)">Browser fetches a whole new HTML document</text>
+    <text x="242" y="205.3" style="fill:var(--color-fg)">Do both pages share</text>
+    <text x="242" y="221.8" style="fill:var(--color-fg)">view-transition-name regions?</text>
+    <text x="127" y="272.3" style="fill:var(--color-fg)">Named chrome morphs in place</text>
+    <text x="127" y="288.8" style="fill:var(--color-muted);font-size:12px">rail · topbar · status hold steady</text>
+    <text x="356" y="272.3" style="fill:var(--color-fg)">Unnamed main content</text>
+    <text x="356" y="288.8" style="fill:var(--color-fg)">cross-fades</text>
+    <text x="242" y="350.3" style="fill:var(--color-bg)">Feels like one continuous app</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="185" y="237">yes</text>
+    <text x="298" y="237">yes</text>
+  </g>
+</svg>
 
 *What actually happens on a click versus what you perceive: a fresh document every time, dressed up as a continuous surface.*
 
@@ -63,15 +94,44 @@ I made the full case for "no build step, and I mean it literally" in the [other 
 
 Two details specific to how this site is put together are worth adding. First, the stylesheet you load, the one with every component's styles in it, is not a file I maintain. Each component owns its own styles, built the way [atomic design](https://atomicdesign.bradfrost.com/) teaches: small atoms compose into molecules compose into whole organisms, behavior living at the lowest layer and cascading up by inheritance rather than getting bolted on per piece. The served stylesheet is just those parts concatenated at the moment you request it. There is no bundle to keep in sync with the components, because the components *are* the bundle. (I have confessed at length about being a design-systems person to my core in [the origin story](origin-story.md); this is what that looks like in the plumbing.)
 
-```mermaid
-flowchart LR
-  A["Atoms<br/>b-button · b-input · b-badge"] --> M["Molecules<br/>card · tab · chat-message"]
-  M --> O["Organisms<br/>app-shell · sidebar-panel · console"]
-  O --> P[A page]
-  A -. its own CSS .-> Bundle["The stylesheet you load:<br/>every component's own CSS, concatenated on request"]
-  M -. its own CSS .-> Bundle
-  O -. its own CSS .-> Bundle
-```
+<svg viewBox="0 0 574 260" width="100%" role="img"
+     aria-label="Atoms compose into molecules into organisms into a page. Independently, each component contributes its own CSS to the one stylesheet you load: every component's CSS, concatenated on request."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-feelsl1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="37" y="16" width="176" height="52" rx="6"/>
+    <rect x="41" y="80" width="168" height="52" rx="6"/>
+    <rect x="16" y="144" width="217" height="52" rx="6"/>
+    <rect x="88" y="208" width="73" height="36" rx="6"/>
+  </g>
+  <rect x="235" y="112" width="323" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="125" y1="68" x2="125" y2="80" marker-end="url(#fl-feelsl1)"/>
+    <line x1="125" y1="132" x2="125" y2="144" marker-end="url(#fl-feelsl1)"/>
+    <line x1="125" y1="196" x2="125" y2="208" marker-end="url(#fl-feelsl1)"/>
+    <line x1="198" y1="68" x2="323" y2="112" marker-end="url(#fl-feelsl1)"/> stroke-dasharray="5 4"
+    <line x1="208" y1="116" x2="235" y2="119" marker-end="url(#fl-feelsl1)"/> stroke-dasharray="5 4"
+    <line x1="233" y1="157" x2="235" y2="157" marker-end="url(#fl-feelsl1)"/> stroke-dasharray="5 4"
+  </g>
+  <g text-anchor="middle">
+    <text x="125" y="38.3" style="fill:var(--color-fg)">Atoms</text>
+    <text x="125" y="54.8" style="fill:var(--color-muted);font-size:12px">b-button · b-input · b-badge</text>
+    <text x="125" y="102.3" style="fill:var(--color-fg)">Molecules</text>
+    <text x="125" y="118.8" style="fill:var(--color-muted);font-size:12px">card · tab · chat-message</text>
+    <text x="125" y="166.3" style="fill:var(--color-fg)">Organisms</text>
+    <text x="125" y="182.8" style="fill:var(--color-muted);font-size:12px">app-shell · sidebar-panel · console</text>
+    <text x="125" y="230.3" style="fill:var(--color-fg)">A page</text>
+    <text x="397" y="134.3" style="fill:var(--color-bg)">The stylesheet you load</text>
+    <text x="397" y="150.8" style="fill:var(--color-muted);font-size:12px">every component's own CSS, concatenated on request</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="222" y="112">its own CSS</text>
+  </g>
+</svg>
 
 *Atomic design in the plumbing: small parts compose into big ones, and the stylesheet the browser loads is just each part's own styles concatenated on request. The components are the bundle.*
 
@@ -89,15 +149,45 @@ Open the page source and count the JavaScript. There is no framework runtime. Wh
 
 The one script that is genuinely load-bearing, the one the whole design system is built around, is the door. And it is smaller than you would guess, because it only has two jobs. One: when you act on something marked as actionable, it optimistically flips that thing into its pending state and posts your intent to the single write path. Two: it listens for the edits that come back and applies each one by finding its region by *semantic* address, never by hunting for a CSS class or a tag. Send intents out; apply edits as they return. That is the entire client-side model, and, tellingly, it says nothing about a server: the script behaves identically whether a real backend decides what changes or, on this static site, the same logic runs in the browser and hands the edits straight back.
 
-```mermaid
-flowchart TD
-  Act["You act on an actionable element<br/>a click, or Enter in a field"] --> Pend["The script flips that element to its<br/>pending state, optimistically (the grain look)"]
-  Pend --> Post["It posts your intent through the one write path"]
-  Post --> Decide["Something decides what changes<br/>a live server, or the same logic in the<br/>browser on a static page like this one"]
-  Decide --> Edits["A list of small typed edits comes back"]
-  Edits --> Apply["For each edit: find the region by its semantic<br/>address, not a CSS selector, and update it"]
-  Apply --> Settle["The pending state releases: the surface settles"]
-```
+<svg viewBox="0 0 347 440" width="100%" role="img"
+     aria-label="The one write path, step by step: you act on an actionable element (a click, or Enter in a field); it flips to its pending grain state optimistically; it posts your intent through the one write path; something decides what changes (a live server, or the same logic in the browser); a list of small typed edits comes back; each edit finds its region by semantic address, not a CSS selector, and updates it; the pending state releases and the surface settles."
+     style="display:block;width:100%;max-width:520px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-feelsl2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="57" y="16" width="232" height="52" rx="6"/>
+    <rect x="42" y="78" width="264" height="52" rx="6"/>
+    <rect x="20" y="140" width="307" height="36" rx="6"/>
+    <rect x="34" y="202" width="279" height="52" rx="6"/>
+    <rect x="41" y="264" width="265" height="36" rx="6"/>
+    <rect x="18" y="326" width="312" height="52" rx="6"/>
+    <rect x="16" y="388" width="315" height="36" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="174" y1="68" x2="174" y2="78" marker-end="url(#fl-feelsl2)"/>
+    <line x1="174" y1="130" x2="174" y2="140" marker-end="url(#fl-feelsl2)"/>
+    <line x1="174" y1="176" x2="174" y2="202" marker-end="url(#fl-feelsl2)"/>
+    <line x1="174" y1="254" x2="174" y2="264" marker-end="url(#fl-feelsl2)"/>
+    <line x1="174" y1="300" x2="174" y2="326" marker-end="url(#fl-feelsl2)"/>
+    <line x1="174" y1="378" x2="174" y2="388" marker-end="url(#fl-feelsl2)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="174" y="38.3" style="fill:var(--color-fg)">You act on an actionable element</text>
+    <text x="174" y="54.8" style="fill:var(--color-muted);font-size:12px">a click, or Enter in a field</text>
+    <text x="174" y="100.3" style="fill:var(--color-fg)">That element flips to its pending state</text>
+    <text x="174" y="116.8" style="fill:var(--color-muted);font-size:12px">optimistically — the grain look</text>
+    <text x="174" y="162.3" style="fill:var(--color-fg)">It posts your intent through the one write path</text>
+    <text x="174" y="224.3" style="fill:var(--color-fg)">Something decides what changes</text>
+    <text x="174" y="240.8" style="fill:var(--color-muted);font-size:12px">a live server, or the same logic in the browser</text>
+    <text x="174" y="286.3" style="fill:var(--color-fg)">A list of small typed edits comes back</text>
+    <text x="174" y="348.3" style="fill:var(--color-fg)">Each edit finds its region by semantic address</text>
+    <text x="174" y="364.8" style="fill:var(--color-muted);font-size:12px">not a CSS selector — and updates it</text>
+    <text x="174" y="410.3" style="fill:var(--color-fg)">The pending state releases: the surface settles</text>
+  </g>
+</svg>
 
 *What the one script does, start to finish: send an intent out the door, then apply the edits that come back, addressing each region by name. The script runs the same whether a server or the browser itself is what decides.*
 

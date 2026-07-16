@@ -64,15 +64,42 @@ committed to the bread thing well past the point of dignity. Proofing is the sta
 rises before you bake it. It's also what a plan on a wall is: proof of progress, or proof you
 stalled. The pun carries more weight than most of my architecture decisions.
 
-```mermaid
-flowchart LR
-    AI[AI edits plans/*.md] --> P[parser]
-    H[human edits the same files] --> P
-    P --> IDX[derived index]
-    IDX --> B[board in the browser]
-    G[git log] --> B
-    B -.a window, never a store.-> IDX
-```
+<svg viewBox="0 0 467 266" width="100%" role="img"
+     aria-label="The AI edits plans markdown files and a human edits the same files; a parser turns them into a derived index, which becomes the board in the browser, alongside the git log. The board is a window onto the index, never a store."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-wherew0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="16" y="16" width="153" height="36" rx="6"/>
+    <rect x="203" y="16" width="207" height="36" rx="6"/>
+    <rect x="165" y="82" width="69" height="36" rx="6"/>
+    <rect x="122" y="214" width="155" height="36" rx="6"/>
+    <rect x="380" y="161" width="71" height="36" rx="6"/>
+  </g>
+  <rect x="143" y="148" width="113" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="121" y1="52" x2="171" y2="82" marker-end="url(#fl-wherew0)"/>
+    <line x1="278" y1="52" x2="228" y2="82" marker-end="url(#fl-wherew0)"/>
+    <line x1="200" y1="118" x2="200" y2="148" marker-end="url(#fl-wherew0)"/>
+    <line x1="200" y1="184" x2="200" y2="214" marker-end="url(#fl-wherew0)"/>
+    <line x1="380" y1="188" x2="272" y2="214" marker-end="url(#fl-wherew0)"/>
+    <path d="M122,232 C92,232 92,166 143,166" marker-end="url(#fl-wherew0)"/> stroke-dasharray="5 4"
+  </g>
+  <g text-anchor="middle">
+    <text x="93" y="38.3" style="fill:var(--color-fg)">AI edits plans/*.md</text>
+    <text x="307" y="38.3" style="fill:var(--color-fg)">a human edits the same files</text>
+    <text x="200" y="104.3" style="fill:var(--color-fg)">parser</text>
+    <text x="200" y="170.3" style="fill:var(--color-bg)">derived index</text>
+    <text x="200" y="236.3" style="fill:var(--color-fg)">board in the browser</text>
+    <text x="415" y="183.5" style="fill:var(--color-fg)">git log</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="83" y="199" transform="rotate(-90 83 199)">a window, never a store</text>
+  </g>
+</svg>
 
 ## The machine forgets its chores, and so do I
 

@@ -134,16 +134,46 @@ There's even a defensive line of code whose only job is to strip the instructor-
 it can leak into the student copy. **The machine drafts; the teacher signs.** I let AI write the
 first pass. I never let it grade or speak to a student on its own.
 
-```mermaid
-flowchart LR
-  S[Student pushes work] --> E[AI drafts feedback<br/>grounded in the rubric]
-  E --> SF[Student-facing half<br/>prose only, no scores, no fixes]
-  E --> IF[Instructor-only half<br/>proposed grade + soft flags]
-  SF --> R[Held for my review]
-  IF --> R
-  R --> T[I edit and sign]
-  T --> D[Delivered to the student's repo<br/>in a deliberate, separate step]
-```
+<svg viewBox="0 0 448 424" width="100%" role="img"
+     aria-label="A student pushes work; the AI drafts feedback grounded in the rubric, split into a student-facing half (prose only, no scores or fixes) and an instructor-only half (proposed grade plus soft flags). Both are held for my review; I edit and sign; then it is delivered to the student's repo in a deliberate, separate step."
+     style="display:block;width:100%;max-width:540px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-howius0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="152" y="16" width="158" height="36" rx="6"/>
+    <rect x="157" y="84" width="148" height="52" rx="6"/>
+    <rect x="16" y="152" width="206" height="52" rx="6"/>
+    <rect x="256" y="152" width="176" height="52" rx="6"/>
+    <rect x="157" y="220" width="148" height="36" rx="6"/>
+    <rect x="123" y="356" width="217" height="52" rx="6"/>
+  </g>
+  <rect x="172" y="288" width="118" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="231" y1="52" x2="231" y2="84" marker-end="url(#fl-howius0)"/>
+    <line x1="188" y1="136" x2="162" y2="152" marker-end="url(#fl-howius0)"/>
+    <line x1="274" y1="136" x2="301" y2="152" marker-end="url(#fl-howius0)"/>
+    <line x1="168" y1="204" x2="198" y2="220" marker-end="url(#fl-howius0)"/>
+    <line x1="295" y1="204" x2="265" y2="220" marker-end="url(#fl-howius0)"/>
+    <line x1="231" y1="256" x2="231" y2="288" marker-end="url(#fl-howius0)"/>
+    <line x1="231" y1="324" x2="231" y2="356" marker-end="url(#fl-howius0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="231" y="38.3" style="fill:var(--color-fg)">Student pushes work</text>
+    <text x="231" y="106.3" style="fill:var(--color-fg)">AI drafts feedback</text>
+    <text x="231" y="122.8" style="fill:var(--color-muted);font-size:12px">grounded in the rubric</text>
+    <text x="119" y="174.3" style="fill:var(--color-fg)">Student-facing half</text>
+    <text x="119" y="190.8" style="fill:var(--color-muted);font-size:12px">prose only — no scores, no fixes</text>
+    <text x="344" y="174.3" style="fill:var(--color-fg)">Instructor-only half</text>
+    <text x="344" y="190.8" style="fill:var(--color-muted);font-size:12px">proposed grade + soft flags</text>
+    <text x="231" y="242.3" style="fill:var(--color-fg)">Held for my review</text>
+    <text x="231" y="310.3" style="fill:var(--color-bg)">I edit and sign</text>
+    <text x="231" y="378.3" style="fill:var(--color-fg)">Delivered to the student's repo</text>
+    <text x="231" y="394.8" style="fill:var(--color-muted);font-size:12px">a deliberate, separate step</text>
+  </g>
+</svg>
 
 *The wall: the machine drafts both halves; nothing reaches a student until I sign it.*
 

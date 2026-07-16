@@ -34,17 +34,51 @@ said stop.
 
 I didn't stop. I couldn't quite make myself walk away, so instead I went after the actual problem.
 
-```mermaid
-flowchart LR
-  A[Teach all week] --> B[Grading piles up]
-  B --> C[Procrastinate, exactly like<br/>I warn my students not to]
-  C --> D[1am marking before<br/>a full workday]
-  D --> E{Quit?}
-  E -->|the old loop| A
-  E -->|what I did instead| F[Automate the grind]
-  F --> G[Grading runs as a GitHub Action]
-  G --> H[My hours go back to the students]
-```
+<svg viewBox="-1 0 263 502" width="100%" role="img"
+     aria-label="The old loop: teach all week, grading piles up, procrastinate exactly as I warn students not to, 1am marking before a full workday, and quit back to the start. What I did instead: automate the grind, grading runs as a GitHub Action, and my hours go back to the students."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-whyite0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="68" y="16" width="125" height="36" rx="6"/>
+    <rect x="66" y="78" width="130" height="36" rx="6"/>
+    <rect x="20" y="140" width="222" height="52" rx="6"/>
+    <rect x="58" y="202" width="146" height="52" rx="6"/>
+    <polygon points="131,264 185,293 131,322 77,293"/>
+    <rect x="58" y="326" width="146" height="36" rx="6"/>
+    <rect x="19" y="388" width="224" height="36" rx="6"/>
+  </g>
+  <rect x="16" y="450" width="230" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="131" y1="52" x2="131" y2="78" marker-end="url(#fl-whyite0)"/>
+    <line x1="131" y1="114" x2="131" y2="140" marker-end="url(#fl-whyite0)"/>
+    <line x1="131" y1="192" x2="131" y2="202" marker-end="url(#fl-whyite0)"/>
+    <line x1="131" y1="254" x2="131" y2="264" marker-end="url(#fl-whyite0)"/>
+    <path d="M77,293 C38,293 38,34 68,34" marker-end="url(#fl-whyite0)"/>
+    <line x1="131" y1="322" x2="131" y2="326" marker-end="url(#fl-whyite0)"/>
+    <line x1="131" y1="362" x2="131" y2="388" marker-end="url(#fl-whyite0)"/>
+    <line x1="131" y1="424" x2="131" y2="450" marker-end="url(#fl-whyite0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="131" y="38.3" style="fill:var(--color-fg)">Teach all week</text>
+    <text x="131" y="100.3" style="fill:var(--color-fg)">Grading piles up</text>
+    <text x="131" y="162.3" style="fill:var(--color-fg)">Procrastinate</text>
+    <text x="131" y="178.8" style="fill:var(--color-muted);font-size:12px">exactly what I warn students not to</text>
+    <text x="131" y="224.3" style="fill:var(--color-fg)">1am marking</text>
+    <text x="131" y="240.8" style="fill:var(--color-muted);font-size:12px">before a full workday</text>
+    <text x="131" y="297.3" style="fill:var(--color-fg)">Quit?</text>
+    <text x="131" y="348.3" style="fill:var(--color-fg)">Automate the grind</text>
+    <text x="131" y="410.3" style="fill:var(--color-fg)">Grading runs as a GitHub Action</text>
+    <text x="131" y="472.3" style="fill:var(--color-bg)">My hours go back to the students</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="131" y="319">what I did instead</text>
+    <text x="29" y="163" transform="rotate(-90 29 163)">the old loop</text>
+  </g>
+</svg>
 
 *The loop I was stuck in, and the exit I built instead of taking the other one.*
 
