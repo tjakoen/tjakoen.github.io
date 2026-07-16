@@ -114,14 +114,27 @@ async function buildCalendarEvents(): Promise<CalendarEvent[]> {
 const renderAppPage = async (html: string) =>
   stampDevDoor(await renderPage(html, { recentNotes: await listRecentNotes(), calendarEvents: await buildCalendarEvents() }));
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
-// Enrich every full-document HTML response with the machine-readable head (seo.ts): canonical +
-// Open Graph + Twitter + schema.org JSON-LD, derived from the page's own title/description + path.
-// No-op on non-HTML and on fragments (enrichHead needs a </head>), so it is safe to wrap broadly; the
-// static export inherits it (it crawls this server) and rewrites the origin to the deploy URL.
-async function withSeo(req: Request, res: Response | Promise<Response>): Promise<Response> {
+// Give every page's main content region a catalog hover-root so grain's usage→specimen bridge
+// (grain/scripts/catalog-peek.js) works SITE-WIDE, not only on /grain: with the Catalog pane open,
+// hovering any catalogued GRAIN component (a button, field, list, badge, tab…) reveals its entry in
+// the pane. Pages that already declare their OWN [data-peek-root] (only /grain, scoped to its
+// showcase) are left alone, so their tuned scope is preserved. `<main class="app-shell__main">` is
+// the one content wrapper every page (static + MILL + the reference/plans chrome) shares.
+function withPeekRoot(html: string): string {
+  if (html.includes("data-peek-root")) return html;
+  return html.replace('<main class="app-shell__main"', '<main data-peek-root class="app-shell__main"');
+}
+
+// Finalize every full-document HTML response: (1) enrich the head (seo.ts) with canonical + Open
+// Graph + Twitter + schema.org JSON-LD derived from the page's own title/description + path; (2) mark
+// the content region as a catalog hover-root. No-op on non-HTML and on fragments (enrichHead needs a
+// </head>), so it is safe to wrap broadly; the static export inherits both (it crawls this server)
+// and rewrites the origin to the deploy URL.
+async function finalizePage(req: Request, res: Response | Promise<Response>): Promise<Response> {
   const r = await res;
   if (!r.headers.get("content-type")?.includes("text/html")) return r;
-  const html = enrichHead(await r.text(), new URL(req.url).pathname, new URL(req.url).origin);
+  let html = enrichHead(await r.text(), new URL(req.url).pathname, new URL(req.url).origin);
+  html = withPeekRoot(html);
   return new Response(html, { status: r.status, headers: r.headers });
 }
 const serveContent = createPortfolioContentRoutes(
@@ -342,7 +355,7 @@ Bun.serve({
     "/proof.css": async () =>
       new Response((await Bun.file(PROOF_CSS).text()) + PROOF_CSS_OVERRIDES, { headers: { "Content-Type": "text/css" } }),
     "/catalog": async (req: Request) =>
-      withSeo(req, new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } })),
+      finalizePage(req, new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } })),
     // /reference — the GENERATED developer-docs reference (DEV-DOCS.md step 5): the AI vocabulary
     // + token slots read from the real registries (grain/ai/vocab-reference.ts), never hand-copied.
     "/reference": async (req: Request) => {
@@ -373,14 +386,14 @@ Bun.serve({
   </div>
 ${PAGE_ASSETS}</body>
 </html>`;
-      return withSeo(req, new Response(await renderAppPage(page), { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+      return finalizePage(req, new Response(await renderAppPage(page), { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     },
     // /notes — the portfolio-owned feed (content.ts renderNotesFeedPage): the /notes collection
     // opts OUT of MILL's own index serving (index: false, content.ts), so this route wins over
     // the MILL mount below (registered `routes` beat the `fetch` chain in Bun.serve). Individual
     // entries (/notes/:slug) still go through MILL untouched.
     "/notes": async (req: Request) =>
-      withSeo(req, new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
+      finalizePage(req, new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
         { headers: { "Content-Type": "text/html; charset=utf-8" } })),
     "/search.json": async () => {
       const titleOf = (p: string) => { const s = p === "/" ? "home" : p.replace(/^\//, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
@@ -434,18 +447,18 @@ ${PAGE_ASSETS}</body>
       if (p.startsWith(prefix + "/")) return serve(p.slice(prefix.length));    // strip prefix → mapped dir
     // --- PROOF mount: the plan board (/plans, /plans/plan/:id) — try before MILL/pages ---
     const fromProof = await proofRoutes(p);
-    if (fromProof) return withSeo(req, fixProofCardLinks(fromProof));
+    if (fromProof) return finalizePage(req, fixProofCardLinks(fromProof));
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
-    if (fromContent) return withSeo(req, fromContent);
+    if (fromContent) return finalizePage(req, fromContent);
     // the portfolio's own pages tree: "/" (home), "/grain"·"/batch" showcases, /loop + /about
     const page = await servePage(p);
     // /loop, frozen (Phase 2, §18): server-render the initial task list into the page HTML here
     // so a crawl with no backend (the static export) captures a real board — see
     // routes/ai-routes.ts renderLoopListFragment (the same fragment /ui/loop answers with) and
     // pages/loop.html (the placeholder div + the banner/composer gate).
-    if ((p === "/loop" || p === "/loop/") && page.status === 200) return withSeo(req, freezeLoopList(page));
-    return withSeo(req, page);
+    if ((p === "/loop" || p === "/loop/") && page.status === 200) return finalizePage(req, freezeLoopList(page));
+    return finalizePage(req, page);
   },
 });
 
