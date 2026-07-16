@@ -42,6 +42,7 @@ export const config = {
     "/scripts": join(GRAIN, "scripts"),
     "/assets": join(GRAIN, "assets"),      // GRAIN's shared static assets (the icon sprite → b-icon)
     "/site": join(HERE, "scripts"),        // the portfolio's own island(s): site.js (THE EDITOR chrome behaviors)
+    "/media": join(HERE, "media"),         // the portfolio's own binary media: the og-card.png social image (tools/og-card.ts)
   } as Record<string, string>,
   fontsDir: join(GRAIN, "fonts"),          // the Redaction grades — GRAIN's signature (grain = AI)
 

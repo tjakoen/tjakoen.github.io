@@ -30,6 +30,7 @@ import type { Task } from "./demo/domain/task.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
 import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
+import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
 // --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
 import { createProofRoutes } from "@tjakoen/proof/routes.ts";
 import { PLANS_DIR, PLANS_PREFIX, listPlanRoutes } from "./plans.ts";
@@ -113,6 +114,16 @@ async function buildCalendarEvents(): Promise<CalendarEvent[]> {
 const renderAppPage = async (html: string) =>
   stampDevDoor(await renderPage(html, { recentNotes: await listRecentNotes(), calendarEvents: await buildCalendarEvents() }));
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
+// Enrich every full-document HTML response with the machine-readable head (seo.ts): canonical +
+// Open Graph + Twitter + schema.org JSON-LD, derived from the page's own title/description + path.
+// No-op on non-HTML and on fragments (enrichHead needs a </head>), so it is safe to wrap broadly; the
+// static export inherits it (it crawls this server) and rewrites the origin to the deploy URL.
+async function withSeo(req: Request, res: Response | Promise<Response>): Promise<Response> {
+  const r = await res;
+  if (!r.headers.get("content-type")?.includes("text/html")) return r;
+  const html = enrichHead(await r.text(), new URL(req.url).pathname, new URL(req.url).origin);
+  return new Response(html, { status: r.status, headers: r.headers });
+}
 const serveContent = createPortfolioContentRoutes(
   async (html: string) => stampDevDoor(await renderPage(html)),
   PAGE_ASSETS, PAGE_HEAD,
@@ -309,6 +320,19 @@ async function serveFont(rel: string): Promise<Response> {
   return new Response(file, { headers: { "Content-Type": "font/woff2", "Cache-Control": "public, max-age=31536000, immutable" } });
 }
 
+// Binary media (the og-card.png social image): same reason as fonts — makeStatic reads as text and
+// has no .png type, so it would mistype + corrupt the image. Bun.file preserves bytes and infers the
+// type. The static EXPORT copies config.assetDirs verbatim (images byte-for-byte), so /media needs no
+// export change; only the LIVE server needs this binary short-circuit (before the static loop).
+const MEDIA_ROOT = resolve(join(fileURLToPath(import.meta.url), "..", "media"));
+async function serveMedia(rel: string): Promise<Response> {
+  const fp = resolve(normalize(join(MEDIA_ROOT, rel)));
+  if (fp !== MEDIA_ROOT && !fp.startsWith(MEDIA_ROOT + sep)) return new Response("Forbidden", { status: 403 });
+  const file = Bun.file(fp);
+  if (!(await file.exists())) return new Response("Not found", { status: 404 });
+  return new Response(file, { headers: { "Cache-Control": "public, max-age=31536000, immutable" } });
+}
+
 Bun.serve({
   port: config.port,
   routes: {
@@ -317,11 +341,11 @@ Bun.serve({
       new Response(await styles.css(), { headers: { "Content-Type": "text/css" } }),
     "/proof.css": async () =>
       new Response((await Bun.file(PROOF_CSS).text()) + PROOF_CSS_OVERRIDES, { headers: { "Content-Type": "text/css" } }),
-    "/catalog": async () =>
-      new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } }),
+    "/catalog": async (req: Request) =>
+      withSeo(req, new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } })),
     // /reference — the GENERATED developer-docs reference (DEV-DOCS.md step 5): the AI vocabulary
     // + token slots read from the real registries (grain/ai/vocab-reference.ts), never hand-copied.
-    "/reference": async () => {
+    "/reference": async (req: Request) => {
       const body = await buildVocabReference(join(config.grainDir, "styles", "variables.css"));
       const page = `<!DOCTYPE html>
 <html lang="en" data-themes="sourdough baguette brioche">
@@ -349,15 +373,15 @@ Bun.serve({
   </div>
 ${PAGE_ASSETS}</body>
 </html>`;
-      return new Response(await renderAppPage(page), { headers: { "Content-Type": "text/html; charset=utf-8" } });
+      return withSeo(req, new Response(await renderAppPage(page), { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     },
     // /notes — the portfolio-owned feed (content.ts renderNotesFeedPage): the /notes collection
     // opts OUT of MILL's own index serving (index: false, content.ts), so this route wins over
     // the MILL mount below (registered `routes` beat the `fetch` chain in Bun.serve). Individual
     // entries (/notes/:slug) still go through MILL untouched.
-    "/notes": async () =>
-      new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
-        { headers: { "Content-Type": "text/html; charset=utf-8" } }),
+    "/notes": async (req: Request) =>
+      withSeo(req, new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
+        { headers: { "Content-Type": "text/html; charset=utf-8" } })),
     "/search.json": async () => {
       const titleOf = (p: string) => { const s = p === "/" ? "home" : p.replace(/^\//, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
       // the sitemap lists routes alphabetically; substitute the notes/ block for the SAME
@@ -404,23 +428,24 @@ ${PAGE_ASSETS}</body>
   async fetch(req) {
     const p = new URL(req.url).pathname;
     if (p.startsWith("/fonts/")) return serveFont(p.slice("/fonts".length));   // binary: bytes preserved
+    if (p.startsWith("/media/")) return serveMedia(p.slice("/media".length));  // binary: the og-card.png
     if (p.startsWith("/modules/")) return modules.serve(p);                    // client-safe TS → browser JS
     for (const [prefix, serve] of staticServers)
       if (p.startsWith(prefix + "/")) return serve(p.slice(prefix.length));    // strip prefix → mapped dir
     // --- PROOF mount: the plan board (/plans, /plans/plan/:id) — try before MILL/pages ---
     const fromProof = await proofRoutes(p);
-    if (fromProof) return fixProofCardLinks(fromProof);
+    if (fromProof) return withSeo(req, fixProofCardLinks(fromProof));
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
-    if (fromContent) return fromContent;
+    if (fromContent) return withSeo(req, fromContent);
     // the portfolio's own pages tree: "/" (home), "/grain"·"/batch" showcases, /loop + /about
     const page = await servePage(p);
     // /loop, frozen (Phase 2, §18): server-render the initial task list into the page HTML here
     // so a crawl with no backend (the static export) captures a real board — see
     // routes/ai-routes.ts renderLoopListFragment (the same fragment /ui/loop answers with) and
     // pages/loop.html (the placeholder div + the banner/composer gate).
-    if ((p === "/loop" || p === "/loop/") && page.status === 200) return freezeLoopList(page);
-    return page;
+    if ((p === "/loop" || p === "/loop/") && page.status === 200) return withSeo(req, freezeLoopList(page));
+    return withSeo(req, page);
   },
 });
 
