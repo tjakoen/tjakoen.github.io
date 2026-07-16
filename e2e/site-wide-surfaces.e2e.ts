@@ -23,6 +23,23 @@ test.describe("command surfaces are site-wide (not /grain-only)", () => {
     await expect(frame).toHaveAttribute("src", /\/catalog/);         // the iframe got its source
   });
 
+  test("the Catalog hover-reveal bridge works on a non-grain page (/about), not just /grain", async ({ page }) => {
+    await page.goto("/about");
+    // the page's main content region is a catalog hover-root (server.ts finalizePage), so the
+    // usage→specimen bridge attaches here the same as on /grain's own showcase.
+    await expect(page.locator("main.app-shell__main")).toHaveAttribute("data-peek-root", "");
+    // open the Catalog pane; it lazy-embeds /catalog in single (reveal-one) mode
+    await page.locator('.assistant__modes [data-shell-mode="catalog"]').click();
+    const pane = page.locator('.assistant__pane[data-pane="catalog"]');
+    await expect(pane).toBeVisible();
+    const cat = page.frameLocator(".catalog-pane__frame");
+    await expect(cat.locator(".cat")).toHaveAttribute("data-peek-single", "");
+    // hover a catalogued component INSIDE the root → the pane reveals exactly that entry
+    await page.locator("main.app-shell__main .btn").first().dispatchEvent("mouseover");
+    await expect(pane).toHaveAttribute("data-peek-slug", "button");
+    await expect(cat.locator(".cat-doc.is-peek-active")).toHaveAttribute("id", "button");
+  });
+
   test("`content` prints the page's readable text — the slice the desk reads", async ({ page }) => {
     await page.goto("/notes/ten-times-zero");
     await page.keyboard.press("Control+`");
