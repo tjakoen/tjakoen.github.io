@@ -252,17 +252,19 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
     documented). Mermaid demoted to an optional private source-draft that must be hand-converted before
     publish; the "MILL renders mermaid server-side" dependency is closed as **not planned** for content.
     Render matrix + inbound refs (standards/README.md, CLAUDE.md) updated in the same pass.
-- **MILL upstream fixes found 2026-07-15** (both are `@tjakoen/mill` core — need a mill change + repin;
-  worked around portfolio-side for now):
-  1. **Frontmatter `\"` not unescaped.** `core/frontmatter.ts` `unquote` strips the outer quotes but
-     returns the inner verbatim, so a double-quoted scalar with escaped quotes (`"\"Vibe coder\"…"`)
-     renders the backslashes literally. Worked around by switching `notes/ten-times-zero.md`'s subtitle
-     to a `>` block scalar. Fix: unescape `\"` and `\\` in `unquote`.
-  2. **Duplicate title on frontmatter-less docs.** `core/engine.ts` `deriveTitle` falls back to the
-     first `# H1` for the masthead but the body render keeps that H1, so a doc with no frontmatter
-     `title:` shows the title twice. Worked around by giving the 15 `docs/{grain,batch}/*.md` a
-     frontmatter `title:` and dropping the body H1. Fix: when the title is derived from the first
-     heading, strip that heading node from the rendered body.
+- **MILL upstream fixes found 2026-07-15 — FIXED 2026-07-16** (both `@tjakoen/mill` core; fixed in
+  mill `e56954e`, portfolio repinned `9d370af`, deployed):
+  1. ✅ **Frontmatter `\"` not unescaped.** `core/frontmatter.ts` `unquote` returned the inner verbatim,
+     so a double-quoted scalar with escaped quotes rendered the backslashes literally. Fixed: `unquote`
+     now processes YAML escapes (`\"`, `\\`) for double-quoted scalars; single-quoted stay verbatim.
+     The `notes/ten-times-zero.md` `>` block-scalar workaround is kept (still correct).
+  2. ✅ **Duplicate title on frontmatter-less docs.** `core/engine.ts` `deriveTitle` derived the title
+     from the first `# H1` but the body kept rendering it. Fixed: when the title is lifted from a heading,
+     that node is dropped from the rendered body (returned `ast` stays whole for TOC/RAG). The 15
+     `docs/{grain,batch}/*.md` explicit-title workarounds are kept (still correct). No live page changed —
+     every served collection already had frontmatter titles; the fix only benefits future title-less content.
+  3. **(Was fix #3, now moot)** server-side mermaid→SVG renderer: closed as NOT-planned for content per
+     the FIGURES reconcile — no content mermaid remains. Capability stays unbuilt unless mermaid authoring returns.
 - **Framework comparison / Evaluation** (public proof of native-first + no-build): same reference app
   across htmx / Astro / Next.js, measured by a multi-target `bun run audit`; lead with client-JS-shipped
   + no-build + deps (categorical), corroborate with perf numbers, publish the bench repo, state where
