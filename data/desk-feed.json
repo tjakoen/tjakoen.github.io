@@ -2,45 +2,55 @@
   {
     "id": "mail-panel",
     "date": "2026-07-03",
+    "kind": "shipped",
     "title": "New panels on the desk",
     "body": "This feed, and a compose window that doubles as the contact form. The site is static, so the compose window hands your message to your own mail app rather than pretending to have a backend.",
     "tags": ["desk", "static"],
+    "links": [{ "href": "/mail", "label": "Open the mail panel" }],
     "link": "/mail",
     "icon": "✉️"
   },
   {
     "id": "grain-vocab",
     "date": "2026-07-04",
+    "kind": "shipped",
     "title": "One design system, one vocabulary",
     "body": "The whole site is one design system: every surface is addressable by a human and an AI through one shared vocabulary, and the AI's hand stays visible on the page as grain. One vocabulary, one direction.",
     "tags": ["grain", "designsystem"],
+    "links": [{ "href": "/grain", "label": "See GRAIN" }],
     "link": "/grain",
     "icon": "🌾"
   },
   {
     "id": "pantry-mindmap",
     "date": "2026-07-06",
+    "kind": "shipped",
     "title": "PANTRY's mindmap shipped",
     "body": "PANTRY's whole-codebase mindmap shipped. It is AI-legible, not AI-powered: it runs no model, it just makes a project easy for an agent already on your machine to read.",
     "tags": ["pantry", "docs"],
+    "links": [{ "href": "/pantry", "label": "See PANTRY" }],
     "link": "/pantry",
     "icon": "🗄️"
   },
   {
     "id": "closed-loop",
     "date": "2026-07-09",
+    "kind": "shipped",
     "title": "Closed a loop I called at the top of a note",
     "body": "The plan for building PROOF was the first thing on its own board. I published the plan for the plan tool before the tool existed, and it held.",
     "tags": ["writing", "planning"],
+    "links": [{ "href": "/notes/where-were-we", "label": "Read the note" }],
     "link": "/notes/where-were-we",
     "icon": "📝"
   },
   {
     "id": "proof-live",
     "date": "2026-07-11",
+    "kind": "shipped",
     "title": "PROOF is live",
     "body": "The plan board stopped rendering a snapshot and started streaming: cards move as the work moves, pushed over server-sent events, on this very site.",
     "tags": ["proof", "bread", "shipped"],
+    "links": [{ "href": "/proof", "label": "Open PROOF" }],
     "link": "/proof",
     "icon": "📋"
   }

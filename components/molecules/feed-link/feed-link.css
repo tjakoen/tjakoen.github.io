@@ -1,0 +1,9 @@
+/* molecules/feed-link — the related-links row under a feed card. Scoped to [data-screen="calendar"];
+   bundled into /components.css via config.styleRoots. The row hides when an event carries no links. */
+[data-screen="calendar"] .feed-card__links { list-style: none; margin: var(--space-2) 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+[data-screen="calendar"] .feed-card__links:empty { display: none; }
+[data-screen="calendar"] .feed-card__link-item { margin: 0; }
+[data-screen="calendar"] .feed-card__link { font-size: var(--text-sm); color: var(--color-accent); text-decoration: none; }
+[data-screen="calendar"] .feed-card__link:hover { text-decoration: underline; }
+[data-screen="calendar"] .feed-card__link::before { content: "→ "; color: var(--ink-faint); }

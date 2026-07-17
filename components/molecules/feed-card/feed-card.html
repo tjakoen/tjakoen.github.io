@@ -1,0 +1,22 @@
+<!-- molecules/feed-card — one post in the /calendar social feed, data-bound via each="calendarEvents"
+     (server.ts merges note dates + desk-feed "shipped" posts + the events collection). Images first,
+     then the text, mirroring the event page's own post template. The root carries data-date /
+     data-event-kind / data-tags so the Month + Week islands can plot and colour it (one source of
+     truth, read off this DOM, no fetch). domId is the #evt-… anchor a month/week chip scrolls to.
+     The date relativizes client-side (absolute stays in title); with no JS it shows the absolute
+     date. Photo strip, links row, location and tags each hide when empty. See feed-card.md. -->
+<li class="feed-card" data-bind-id="domId" data-bind-data-date="date" data-bind-data-event-kind="kind" data-bind-data-tags="tagsAttr">
+  <div class="feed-photos"><feed-photo each="photos"></feed-photo></div>
+  <div class="feed-card__body">
+    <p class="feed-card__meta">
+      <span class="feed-card__icon" aria-hidden="true" data-field="icon"></span>
+      <span class="feed-card__kind" data-field="kindLabel"></span>
+      <time class="feed-card__date" data-relativize data-bind-datetime="date" data-bind-data-date="date" data-bind-title="dateLabel" data-field="dateLabel"></time>
+      <span class="feed-card__loc" data-field="locationLabel"></span>
+    </p>
+    <h3 class="feed-card__title"><a data-bind-href="link" data-field="title"></a></h3>
+    <p class="feed-card__summary" data-field="body"></p>
+    <ul class="feed-card__links"><feed-link each="links"></feed-link></ul>
+    <p class="feed-card__tags" data-field="tagsLabel"></p>
+  </div>
+</li>

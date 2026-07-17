@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-label="Placeholder photo">
+  <rect width="1200" height="675" fill="#e7e2d8"/>
+  <rect x="40" y="40" width="1120" height="595" fill="none" stroke="#c3bcae" stroke-width="3" stroke-dasharray="14 12"/>
+  <text x="600" y="330" text-anchor="middle" font-family="ui-monospace, monospace" font-size="52" fill="#8a8272">placeholder photo</text>
+  <text x="600" y="392" text-anchor="middle" font-family="ui-monospace, monospace" font-size="30" fill="#a59d8d">hackathon · 1</text>
+</svg>

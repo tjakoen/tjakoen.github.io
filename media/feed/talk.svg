@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-label="Placeholder photo">
+  <rect width="1200" height="675" fill="#e8e1e2"/>
+  <rect x="40" y="40" width="1120" height="595" fill="none" stroke="#c8bcbe" stroke-width="3" stroke-dasharray="14 12"/>
+  <text x="600" y="330" text-anchor="middle" font-family="ui-monospace, monospace" font-size="52" fill="#8c8082">placeholder photo</text>
+  <text x="600" y="392" text-anchor="middle" font-family="ui-monospace, monospace" font-size="30" fill="#a6989b">talk</text>
+</svg>
