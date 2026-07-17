@@ -160,7 +160,14 @@
       const theme = window.grain && window.grain.theme;
       const prefersDark = () => { try { return matchMedia("(prefers-color-scheme: dark)").matches; } catch { return false; } };
       const isAuto = () => theme ? theme.scheme() === "auto" : get(SCHEME_KEY) == null;
-      schemeAuto.checked = isAuto();
+      // reflect the LIVE scheme, not just the initial one: the ◐ light/dark toggle (and setScheme from
+      // anywhere) forces an explicit scheme, which must un-tick "defaults to system". Without this the
+      // box went stale — it stayed ticked while the ◐ button had already pinned a scheme, so it read as
+      // broken. grain/theme.js writes data-color-scheme on <html>, so observe THAT as the source of truth.
+      const syncBox = () => { schemeAuto.checked = isAuto(); };
+      syncBox();
+      new MutationObserver(syncBox).observe(document.documentElement, { attributes: true, attributeFilter: ["data-color-scheme"] });
+      addEventListener("storage", (e) => { if (e.key === SCHEME_KEY) syncBox(); });   // another tab changed it
       schemeAuto.addEventListener("change", () => {
         if (schemeAuto.checked) {
           theme ? theme.setScheme("auto") : del(SCHEME_KEY);
