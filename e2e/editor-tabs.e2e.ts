@@ -52,15 +52,15 @@ test.describe("THE EDITOR v2 — explorer + open tabs", () => {
     await expect(tab).toHaveAttribute("aria-current", "page");
   });
 
-  test("collapsed-except-current at depth: on /native-github-classroom/docs the Projects→native-github-classroom chain unfolds, siblings stay shut", async ({ page }) => {
+  test("collapsed-except-current at depth: on /native-github-classroom/docs the Docs→native-github-classroom chain unfolds, siblings stay shut", async ({ page }) => {
     await page.goto("/native-github-classroom/docs");
-    // the whole ancestor chain is open…
-    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("Projects/"))')).toHaveAttribute("open", "");
+    // the whole ancestor chain is open… (the classroom's docs now live under Docs/, mirroring its route)
+    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("Docs/"))')).toHaveAttribute("open", "");
     await expect(page.locator('.file-tree__dir:has(> summary:text-is("native-github-classroom/"))')).toHaveAttribute("open", "");
-    // …but an unrelated sibling folder inside the same Projects/ parent (bread-stack/) and an
-    // unrelated top-level folder (Docs/) stay collapsed
-    await expect(page.locator('.file-tree__dir:has(> summary:text-is("bread-stack/"))')).not.toHaveAttribute("open", "");
-    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("Docs/"))')).not.toHaveAttribute("open", "");
+    // …but an unrelated sibling folder inside the same Docs/ parent (batch/) and an unrelated
+    // top-level folder (Projects/) stay collapsed
+    await expect(page.locator('.file-tree__dir:has(> summary:text-is("batch/"))')).not.toHaveAttribute("open", "");
+    await expect(page.locator('.file-tree > .file-tree__dir:has(> summary:text-is("Projects/"))')).not.toHaveAttribute("open", "");
   });
 
   test("open tabs persist across navigation; × closes — active close falls back to a neighbor", async ({ page }) => {
