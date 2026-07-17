@@ -293,14 +293,24 @@ async function sortedNoteEntries(): Promise<NoteFeedEntry[]> {
  *  note's own `readingTime` frontmatter, never a vote count (the vote glyph says so via its
  *  `title`). "N sections" is a real count of `## ` headings in the note's body, standing in for
  *  a comment count and linking straight into the entry. */
+/** The flagship note, PINNED to the top of the /notes feed (owner ask 2026-07-17). Pinned in the
+ *  FEED only: sortedNoteEntries stays date-ordered so the Welcome "Recent" list and the sidebar
+ *  tree keep showing genuinely-recent notes first. */
+export const FLAGSHIP_NOTE_SLUG = "ten-times-zero";
+
 export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise<string> {
   const notes = collections[0]!;                     // the "/notes" collection above
-  const entries = await sortedNoteEntries();
+  const dated = await sortedNoteEntries();
+  // float the flagship to the front (date order preserved for everything after it)
+  const entries = [
+    ...dated.filter((e) => e.slug === FLAGSHIP_NOTE_SLUG),
+    ...dated.filter((e) => e.slug !== FLAGSHIP_NOTE_SLUG),
+  ];
 
-  // the union of every note's tags, in first-seen (newest-first) order — stable across renders
-  // since sortedNoteEntries' own sort is stable.
+  // the union of every note's tags, in first-seen (newest-first) order — from the DATE-ordered list
+  // so the tag chips keep their newest-first order regardless of the pin. Stable across renders.
   const allTags: string[] = [];
-  for (const e of entries) for (const t of e.tags) if (!allTags.includes(t)) allTags.push(t);
+  for (const e of dated) for (const t of e.tags) if (!allTags.includes(t)) allTags.push(t);
   const tagChips = allTags.map((t) => {
     const tag = escapeHtml(t);
     return `<label class="chip"><input type="checkbox" value="${tag}"> ${tag}</label>`;
@@ -314,10 +324,12 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
     const summary = escapeHtml(e.summary || e.subtitle);
     const tags = e.tags.map((t) => `<span class="badge" data-status="active">${escapeHtml(t)}</span>`).join("");
     const dataTags = escapeHtml(e.tags.join(" "));
-    return `<li class="note-card" data-surface="note:${slug}" data-date="${date}" data-score="${e.score}" data-tags="${dataTags}">
+    const pinned = e.slug === FLAGSHIP_NOTE_SLUG;
+    const pinTag = pinned ? `<span class="note-card__pin">📌 Pinned</span> · ` : "";
+    return `<li class="note-card${pinned ? " note-card--pinned" : ""}" data-surface="note:${slug}"${pinned ? " data-pinned" : ""} data-date="${date}" data-score="${e.score}" data-tags="${dataTags}">
         <div class="note-card__vote" aria-hidden="true" title="Reading minutes, from the note's own frontmatter. Not votes.">&#9650;<span class="note-card__score">${e.score}</span></div>
         <div class="note-card__main">
-          <p class="note-card__byline">${byline}</p>
+          <p class="note-card__byline">${pinTag}${byline}</p>
           <h2 class="note-card__title"><a href="/notes/${slug}">${escapeHtml(e.title)}</a></h2>
           <p class="note-card__summary">${summary}</p>
           <p class="note-card__foot"><span class="note__tags">${tags}</span>
@@ -335,7 +347,15 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       var list = document.querySelector(".note-feed");
       if (!form || !list) return;
       var cards = Array.prototype.slice.call(list.querySelectorAll(".note-card"));
-      var newest = cards.slice();   // New = the original newest-first DOM order
+      var newest = cards.slice();   // New = the original newest-first DOM order (pinned already first)
+
+      // the flagship stays pinned to the top in BOTH New and Top — float any data-pinned card to
+      // the front after whatever sort ran, so "Top" (by score) can't bury it.
+      function floatPinned(arr) {
+        var pinned = arr.filter(function (c) { return c.hasAttribute("data-pinned"); });
+        var rest = arr.filter(function (c) { return !c.hasAttribute("data-pinned"); });
+        return pinned.concat(rest);
+      }
 
       function sortCards() {
         var checked = form.querySelector('input[name="sort"]:checked');
@@ -345,7 +365,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
               return Number(b.getAttribute("data-score")) - Number(a.getAttribute("data-score"));
             })
           : newest;
-        ordered.forEach(function (card) { list.appendChild(card); });
+        floatPinned(ordered).forEach(function (card) { list.appendChild(card); });
       }
 
       function filterCards() {

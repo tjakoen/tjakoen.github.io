@@ -3,7 +3,7 @@
 import { test, expect } from "bun:test";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, renderNotesFeedPage } from "./content.ts";
+import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, renderNotesFeedPage, FLAGSHIP_NOTE_SLUG } from "./content.ts";
 
 const serve = createPortfolioContentRoutes();
 
@@ -61,10 +61,16 @@ test("content pages wear the BREAD shell chrome", async () => {
   expect(body).toContain(`data-screen="notes"`);
 });
 
-test("listNoteRoutesByDate matches the /notes feed's own newest-first order — the explorer tree (fed from this via /search.json) must agree with the page, not fall back to alphabetical", async () => {
+test("the /notes feed = the flagship pinned to the front of the date order — the tail stays newest-first (not alphabetical), and the explorer tree (listNoteRoutesByDate → /search.json) stays PURE date order", async () => {
   const body = await renderNotesFeedPage();
   const inPageOrder = [...body.matchAll(/note-card__title"><a href="(\/notes\/[a-z0-9._-]+)"/g)].map((m) => m[1]);
-  expect(await listNoteRoutesByDate()).toEqual(inPageOrder);
+  const dateOrder = await listNoteRoutesByDate();
+  // the tree/search order is unchanged (pure date) — the pin lives only in the feed page
+  const flagship = `/notes/${FLAGSHIP_NOTE_SLUG}`;
+  expect(dateOrder).toContain(flagship);
+  // the feed floats the flagship first; everything after it keeps the date order
+  const expectedFeed = [flagship, ...dateOrder.filter((r) => r !== flagship)];
+  expect(inPageOrder).toEqual(expectedFeed);
 });
 
 test("listRecentNotes is a prefix of listNoteRoutesByDate (same order, just truncated)", async () => {

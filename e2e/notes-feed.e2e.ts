@@ -7,16 +7,18 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("the /notes feed (JS on)", () => {
-  test("cards render newest-first, each carries a note surface, and the AI trigger is present", async ({ page }) => {
+  test("the pinned flagship leads; the rest render newest-first, each a note surface, and the AI trigger is present", async ({ page }) => {
     await page.goto("/notes");
 
     const cards = page.locator(".note-card");
     await expect(cards.first()).toBeVisible();
 
-    // newest-first: the first card's own date is >= every other card's date
-    const dates = await cards.evaluateAll((els) => els.map((el) => el.getAttribute("data-date")));
-    const sorted = [...dates].sort((a, b) => (a! < b! ? 1 : a! > b! ? -1 : 0));
-    expect(dates).toEqual(sorted);
+    // the flagship is pinned to the front; the REST stays newest-first (first tail date >= the next)
+    const rows = await cards.evaluateAll((els) => els.map((el) => ({ date: el.getAttribute("data-date"), pinned: el.hasAttribute("data-pinned") })));
+    expect(rows[0]!.pinned).toBe(true);
+    const tailDates = rows.filter((r) => !r.pinned).map((r) => r.date);
+    const sorted = [...tailDates].sort((a, b) => (a! < b! ? 1 : a! > b! ? -1 : 0));
+    expect(tailDates).toEqual(sorted);
 
     // every card is a real note surface (the reasoner's travel target, notes-demo.e2e.ts)
     const surfaces = await cards.evaluateAll((els) => els.map((el) => el.getAttribute("data-surface")));
@@ -30,7 +32,7 @@ test.describe("the /notes feed (JS on)", () => {
     await expect(page.locator("[data-feed-controls]")).toBeVisible();
   });
 
-  test("Top sorts cards by their reading-minutes score, descending", async ({ page }) => {
+  test("Top sorts cards by their reading-minutes score, descending (pinned flagship still leads)", async ({ page }) => {
     await page.goto("/notes");
     const cards = page.locator(".note-card");
 
@@ -39,10 +41,12 @@ test.describe("the /notes feed (JS on)", () => {
 
     await page.locator('input[name="sort"][value="top"]').check();
 
-    const scoresAfter = await cards.evaluateAll((els) => els.map((el) => Number(el.getAttribute("data-score"))));
-    const sortedDesc = [...scoresAfter].sort((a, b) => b - a);
-    expect(scoresAfter).toEqual(sortedDesc);
-    expect(scoresAfter[0]).toBe(Math.max(...scoresBefore));
+    // the pin floats the flagship to the front in Top too; the REST is score-descending
+    const rows = await cards.evaluateAll((els) => els.map((el) => ({ score: Number(el.getAttribute("data-score")), pinned: el.hasAttribute("data-pinned") })));
+    expect(rows[0]!.pinned).toBe(true);
+    const tailScores = rows.filter((r) => !r.pinned).map((r) => r.score);
+    expect(tailScores).toEqual([...tailScores].sort((a, b) => b - a));
+    expect(tailScores[0]).toBe(Math.max(...tailScores));   // the highest-scoring non-pinned note leads the tail
   });
 
   test("a tag chip filters the feed to matching cards", async ({ page }) => {
@@ -78,14 +82,17 @@ test.describe("the /notes feed (JS on)", () => {
 test.describe("the /notes feed (no JS)", () => {
   test.use({ javaScriptEnabled: false });
 
-  test("renders newest-first with the controls hidden, no island required", async ({ page }) => {
+  test("renders the pinned flagship first then newest-first, controls hidden, no island required", async ({ page }) => {
     await page.goto("/notes");
 
     const cards = page.locator(".note-card");
     await expect(cards.first()).toBeVisible();
-    const dates = await cards.evaluateAll((els) => els.map((el) => el.getAttribute("data-date")));
-    const sorted = [...dates].sort((a, b) => (a! < b! ? 1 : a! > b! ? -1 : 0));
-    expect(dates).toEqual(sorted);
+    // the server already renders the pin (no JS): flagship first, the rest newest-first
+    const rows = await cards.evaluateAll((els) => els.map((el) => ({ date: el.getAttribute("data-date"), pinned: el.hasAttribute("data-pinned") })));
+    expect(rows[0]!.pinned).toBe(true);
+    const tailDates = rows.filter((r) => !r.pinned).map((r) => r.date);
+    const sorted = [...tailDates].sort((a, b) => (a! < b! ? 1 : a! > b! ? -1 : 0));
+    expect(tailDates).toEqual(sorted);
 
     await expect(page.locator("[data-feed-controls]")).toBeHidden();
   });

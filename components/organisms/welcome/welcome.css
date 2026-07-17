@@ -6,7 +6,12 @@
 .welcome__sub { color: var(--ink-muted); font-size: var(--text-lg); margin: 0.4rem 0 3rem; }
 
 .welcome__cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(2rem, 6vw, 6rem); }
-@media (max-width: 56rem) { .welcome__cols { grid-template-columns: 1fr; } }
+/* collapse to one column when the SHELL FRAME is narrow — a @container query, not @media, so the
+   viewport-toggle's mobile PREVIEW (which clamps the frame, not the real viewport) also collapses
+   it. Under plain @media the two columns stayed side by side in the preview and the Walkthroughs
+   column overflowed off the frame's right edge. The container is <body> (grain's shell-frame);
+   on a real window its width tracks the viewport, so narrow real windows collapse exactly as before. */
+@container shell-frame (max-width: 56rem) { .welcome__cols { grid-template-columns: 1fr; } }
 .welcome h2 { font-size: var(--text-xl); font-weight: var(--font-weight-regular); margin: 0 0 1rem; }
 
 /* bottom: the pill CTA + the (functional) startup checkbox */

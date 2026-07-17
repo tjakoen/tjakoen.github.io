@@ -40,6 +40,15 @@
 .note-card:last-child { border-bottom: 0; }
 .note-card[hidden] { display: none; }
 
+/* the flagship, pinned to the top of the feed (content.ts FLAGSHIP_NOTE_SLUG): a quiet "featured"
+   inset — an accent rule down the left edge + an accent-colored pin tag in the byline. Subtle
+   enough to sit among the border-separated rows without shouting. */
+.note-card--pinned {
+  border-inline-start: 3px solid var(--color-accent);
+  padding-inline-start: var(--space-4);
+}
+.note-card__pin { color: var(--color-accent); font-weight: var(--font-weight-medium, 600); white-space: nowrap; }
+
 /* the vote glyph: a narrow fixed gutter on the left, same idea as content-index's log-variant
    graph column. The number is real reading minutes (renderNotesFeedPage), never a vote tally —
    the title="" tooltip on the element itself says so. */
