@@ -6,6 +6,9 @@
 .walk { position: relative; display: block; text-decoration: none; color: var(--ink);
   background: var(--panel); border: 1px solid var(--color-line); padding: 1rem 1.1rem 1.2rem; }
 .walk:hover { border-color: var(--ink); }
+/* the featured walkthrough (the flagship, pinned to the top): an accent rule down the left edge,
+   the same quiet "featured" signal the pinned note card wears in the /notes feed. */
+.walk[data-featured] { border-inline-start: 3px solid var(--color-accent); }
 .walk__head { display: flex; align-items: center; gap: 0.6rem; font-weight: var(--font-weight-medium); }
 .walk__badge { font-size: var(--text-xs); font-family: var(--font-mono); letter-spacing: 0.05em;
   border: 1px solid var(--color-line); padding: 0.1rem 0.45rem; color: var(--ink-muted); }
