@@ -45,6 +45,31 @@ test.describe("THE DESK drives the page (deterministic actions, no WebGPU needed
     await expect(page.locator(".assistant__log")).toContainText("Here's GRAIN");   // arrival choreography resumed
   });
 
+  test("navigate home: 'take me to homepage' → drives back to / (the shipped nav-intent bug, full-stack)", async ({ page }) => {
+    // 'homepage' != 'home' (no \b before "page"), so this used to fall through to the offline model,
+    // which EXPLAINS how to navigate instead of doing it. Unit-tested at the router (actions.test.ts);
+    // this guards the whole chain — typed intent → real grain navigation back to root — end to end.
+    await clientDeskEverywhere(page);
+    await page.goto("/grain");
+    await deskReady(page);
+
+    await ask(page, "take me to homepage");
+
+    await page.waitForURL((url) => new URL(url).pathname === "/");        // it actually left /grain for root
+  });
+
+  test("bare destination: a one-word 'batch' (no verb) is treated as 'go there'", async ({ page }) => {
+    // the whole message IS a place name — the common one-word ask. A distinct router branch from the
+    // verb+alias path above (no nav verb present); prove it drives navigation the same way.
+    await clientDeskEverywhere(page);
+    await page.goto("/");
+    await deskReady(page);
+
+    await ask(page, "batch");
+
+    await page.waitForURL("**/batch");
+  });
+
   test("open a note: 'show me the latest note' → navigates into a /notes/ entry", async ({ page }) => {
     await clientDeskEverywhere(page);
     await page.goto("/");
