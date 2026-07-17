@@ -5,7 +5,7 @@ subtitle: >
   with one word in front: professional. The receipt is the portfolio you're reading this on: I
   wrote more documentation than code.
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-07-03
 readingTime: "~13 min"
@@ -17,13 +17,6 @@ summary: >
   code, written fast, with an AI co-authoring every commit. Professional vibe coding is the human
   writing the rails and the AI writing much of the code inside them. Includes the playbook.
 ---
-
-> **Draft: my voice.** This is
-> the post my repo footers point at, the one honest answer to "you let an AI write this?" Companion
-> to [my origin story](origin-story.md), and to the teaching side of the same idea:
-> [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md) and
-> [I Nearly Quit Teaching](why-i-teach.md). All numbers are a snapshot of the
-> [batch-stack](https://github.com/tjakoen/bread) repo at the time of writing.
 
 > **One of my students?** If what you actually want to know is how I feel about *you* using AI, I
 > wrote that post for you: [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md).

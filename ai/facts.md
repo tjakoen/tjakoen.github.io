@@ -7,7 +7,7 @@ This is grounding for the desk, the small assistant that runs in your browser on
 
 ## Who is TJ?
 
-TJ is a teacher who builds software. He works on a career team, helping people find and grow into work, and he builds the tools that make that teaching go further. The site you are on is his desk: a personal portfolio, a notebook, and a live demo of the way he thinks a site should feel.
+TJ is a teacher who builds software. He is a dev manager and tech lead at Career Team, a company (that is the employer's name, not a description of the job), and he teaches software engineering part-time and builds the tools that make that teaching go further. The site you are on is his desk: a personal portfolio, a notebook, and a live demo of the way he thinks a site should feel.
 
 His writing sits under Notes. It is honest about limits, low on hype, and written to be read rather than to sell. If you want to know how he works with an AI, the notes are the place to start. The flagship post is "Ten Times Zero" (at /notes/ten-times-zero), on building with an AI in the open.
 

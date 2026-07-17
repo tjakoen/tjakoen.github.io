@@ -2,7 +2,7 @@
 title: "How I Turned a GitHub Org Into My Whole Classroom"
 subtitle: "No hosted app, no server to babysit, no budget. Just a GitHub org, a pile of Actions, and one rule I refused to break: the machine never writes to a student's own work. Here's the build, and everything that broke on the way."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-07-03
 readingTime: "~7 min"
@@ -13,12 +13,6 @@ summary: >
   of having no budget, the one-engine-many-courses design, and the unglamorous bugs that turned out
   to be the real work: access control, scoped tokens, and treating repo names as data.
 ---
-
-> **Draft. My voice, plain text for now.** This is the *build* story. Why I was drowning in the first
-> place is [I Nearly Quit Teaching](why-i-teach.md); how I actually use AI across my teaching, with
-> the receipts, is [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md); the
-> principle under all of it is [Ten Times Zero Is Still Zero](ten-times-zero.md). The platform itself
-> is public: [github-native-course-platform](https://github.com/tjakoen/github-native-course-platform).
 
 ## I built a whole platform out of pure cheapness
 
