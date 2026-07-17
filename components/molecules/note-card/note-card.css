@@ -32,6 +32,12 @@
    convention) rather than a boxed tile — the "front page" read is a rule-separated column, not
    a grid of cards. */
 .note-feed { list-style: none; margin: 0; padding: 0; }
+/* The ?tag= deep-link empty state: shown only when a requested tag has no notes yet (island-revealed). */
+.feed-empty {
+  font-size: var(--text-sm); color: var(--color-muted); font-style: italic;
+  margin: 0 0 var(--space-4);
+}
+.feed-empty[hidden] { display: none; }
 .note-card {
   display: flex; gap: var(--space-4);
   padding: var(--space-5) 0;

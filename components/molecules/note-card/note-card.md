@@ -38,3 +38,10 @@ is never a vote count, and the element's own `title=""` attribute says so for an
 reorder/hide over the cards already on the page, no fetch involved. With no JS the list stays in
 its server-rendered newest-first order and the sort/filter controls (`.feed-controls`) stay
 hidden.
+
+The island also honors a `?tag=` deep link (comma list ok): on boot it checks every matching chip
+and filters, and it mirrors the live selection back into the URL (`history.replaceState`, so a
+filtered view is shareable — the target of résumé role links). A requested tag that no note carries
+has no chip, so it filters nothing and instead reveals `<p class="feed-empty" data-feed-empty>`
+naming the tag ("No notes tagged … yet."). With no JS the query is ignored: the full list renders
+and both `.feed-controls` and `.feed-empty` stay hidden.

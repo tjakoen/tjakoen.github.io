@@ -66,6 +66,45 @@ test.describe("the /notes feed (JS on)", () => {
     expect(hiddenCount).toBeGreaterThan(0);   // the filter actually hides something (mixed tag set)
   });
 
+  test("a ?tag= deep link pre-checks the matching chip and filters the feed (résumé → tagged notes)", async ({ page }) => {
+    // discover a real tag from the rendered chips, then arrive at the shareable filtered URL
+    await page.goto("/notes");
+    const tag = await page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first().getAttribute("value");
+    expect(tag).toBeTruthy();
+
+    await page.goto(`/notes?tag=${tag}`);
+    await expect(page.locator("[data-feed-controls]")).toBeVisible();   // island is live
+    // the chip is checked on arrival
+    await expect(page.locator(`.chips[aria-label="Filter by tag"] input[value="${tag}"]`)).toBeChecked();
+    // and the feed is filtered to matching cards, no empty state
+    const visible = page.locator(".note-card:not([hidden])");
+    expect(await visible.count()).toBeGreaterThan(0);
+    const tagsOfVisible = await visible.evaluateAll((els) => els.map((el) => el.getAttribute("data-tags") ?? ""));
+    for (const t of tagsOfVisible) expect(t.split(" ")).toContain(tag);
+    await expect(page.locator("[data-feed-empty]")).toBeHidden();
+  });
+
+  test("a ?tag= for a tag with no notes yet shows the empty state and keeps the full list", async ({ page }) => {
+    const totalBefore = await (async () => { await page.goto("/notes"); return page.locator(".note-card").count(); })();
+
+    await page.goto("/notes?tag=no-such-tag-yet");
+    const empty = page.locator("[data-feed-empty]");
+    await expect(empty).toBeVisible();
+    await expect(empty).toContainText("no-such-tag-yet");
+    // an unknown tag filters nothing — the full list stays visible
+    expect(await page.locator(".note-card:not([hidden])").count()).toBe(totalBefore);
+  });
+
+  test("changing the tag filter mirrors the selection into the URL (shareable ?tag=)", async ({ page }) => {
+    await page.goto("/notes");
+    const box = page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first();
+    const tag = await box.getAttribute("value");
+    await box.check();
+    await expect(page).toHaveURL(new RegExp(`\\?tag=${tag}$`));
+    await box.uncheck();
+    await expect(page).toHaveURL(/\/notes$/);   // clearing the filter drops the query
+  });
+
   test("a card's title links into its MILL entry, and the entry renders", async ({ page }) => {
     await page.goto("/notes");
     const firstLink = page.locator(".note-card__title a").first();
@@ -95,5 +134,14 @@ test.describe("the /notes feed (no JS)", () => {
     expect(tailDates).toEqual(sorted);
 
     await expect(page.locator("[data-feed-controls]")).toBeHidden();
+  });
+
+  test("a ?tag= query is ignored without JS: full list, controls and empty state hidden", async ({ page }) => {
+    await page.goto("/notes?tag=no-such-tag-yet");
+    const cards = page.locator(".note-card");
+    await expect(cards.first()).toBeVisible();
+    expect(await page.locator(".note-card:not([hidden])").count()).toBe(await cards.count());
+    await expect(page.locator("[data-feed-controls]")).toBeHidden();
+    await expect(page.locator("[data-feed-empty]")).toBeHidden();
   });
 });

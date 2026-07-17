@@ -378,13 +378,45 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         });
       }
 
+      // Mirror the current tag filter into the URL so a filtered view is shareable (replaceState,
+      // not push — filtering isn't navigation). Empty selection drops the query entirely.
+      var empty = list.parentNode.querySelector("[data-feed-empty]");
+      function syncUrl() {
+        var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
+        var wanted = boxes.map(function (b) { return b.value; });
+        var url = location.pathname + (wanted.length ? "?tag=" + wanted.join(",") : "") + location.hash;
+        try { history.replaceState(null, "", url); } catch (e) { /* file:// — leave the URL be */ }
+      }
+
+      // Honor a ?tag= deep link on boot: check every chip that matches (comma list ok) and filter.
+      // A requested tag with no chip has no notes yet — surface the empty state, naming the tag(s),
+      // and leave the full list visible (an unknown tag filters nothing).
+      function applyQueryTags() {
+        var q = new URLSearchParams(location.search).get("tag");
+        if (!q) return;
+        var requested = q.split(",").map(function (t) { return t.trim(); }).filter(Boolean);
+        var unknown = [];
+        requested.forEach(function (t) {
+          var box = form.querySelector('input[type="checkbox"][value="' + (window.CSS && CSS.escape ? CSS.escape(t) : t) + '"]');
+          if (box) box.checked = true;
+          else if (unknown.indexOf(t) === -1) unknown.push(t);
+        });
+        filterCards();
+        if (empty && unknown.length) {
+          var label = unknown.map(function (t) { return '"' + t + '"'; }).join(", ");
+          empty.textContent = "No notes tagged " + label + " yet. They are being written.";
+          empty.hidden = false;
+        }
+      }
+
       form.addEventListener("change", function (ev) {
         var target = ev.target;
         if (!target) return;
         if (target.name === "sort") sortCards();
-        else if (target.type === "checkbox") filterCards();
+        else if (target.type === "checkbox") { filterCards(); syncUrl(); if (empty) empty.hidden = true; }
       });
 
+      applyQueryTags();
       form.hidden = false;   // reveal the controls only once the island is live
     })();
   </script>`;
@@ -396,6 +428,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       </div>
       <div class="chips" aria-label="Filter by tag">${tagChips}</div>
     </form>
+    <p class="feed-empty" data-feed-empty hidden></p>
     <ul class="note-feed">
 ${cards}
     </ul>
