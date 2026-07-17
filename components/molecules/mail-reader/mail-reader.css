@@ -1,0 +1,14 @@
+/* molecules/mail-reader — one open message below the /mail list. Scoped to the mail screen; bundled
+   into /components.css via config.styleRoots. Parent-context: a direct child of .mailbox__readers.
+   The body is a single block with white-space: pre-line (the message text carries its own \n\n). */
+[data-screen="mail"] .mailbox__reader { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+  padding: var(--space-5); background: var(--paper); }
+[data-screen="mail"] .mailbox__reader[hidden] { display: none; }
+[data-screen="mail"] .mailbox__reader-head { display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--space-3); margin-bottom: var(--space-1); }
+[data-screen="mail"] .mailbox__reader-subject { font-family: var(--font-accent); font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold); margin: 0; }
+[data-screen="mail"] .mailbox__reader-meta { font-size: var(--text-xs); color: var(--ink-faint);
+  font-family: var(--font-mono); margin: 0 0 var(--space-4); }
+[data-screen="mail"] .mailbox__reader-tools { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
+[data-screen="mail"] .mailbox__reader-body { white-space: pre-line; line-height: var(--leading-relaxed); }

@@ -111,8 +111,47 @@ async function buildCalendarEvents(): Promise<CalendarEvent[]> {
   // newest-first, same convention as the old hardcoded feed (a post/note ID break ties deterministically).
   return [...noteEvents, ...postEvents].sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
 }
+// /mail (Apps-v2 Pass B): data/mailbox.json is hand-authored dressing too — every "message" is page
+// copy written ahead of time (never a real received mail), read server-side ONLY (no client fetch,
+// so no export dataRoute), same boot-read idiom as deskFeedPosts. The view models below are what the
+// mail-folder/mail-row/mail-reader molecules bind to; folder counts are computed from the messages
+// so they can never drift, and the list/reader dates are server-formatted absolute (export-safe,
+// never rots — the island rewrites the list's [data-relativize] spans to "N days ago" client-side).
+interface MailLink { href: string; label: string; }
+interface MailMessageRaw {
+  id: string; folder: string; from: string; subject: string; snippet: string;
+  date: string; whenLabel?: string; body: string; links: MailLink[];
+}
+interface MailboxData { folders: Array<{ id: string; label: string }>; messages: MailMessageRaw[]; }
+const mailbox: MailboxData = await Bun.file(join(import.meta.dir, "data", "mailbox.json")).json();
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// Parse the ISO date's own digits (no Date(), so a machine timezone can't shift "Jul 14" to the 13th).
+const fmtDate = (iso: string, withYear: boolean): string => {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return "";
+  return `${MONTHS[m - 1]} ${d}${withYear ? `, ${y}` : ""}`;
+};
+const mailFolders = mailbox.folders.map((f) => ({
+  ...f, count: mailbox.messages.filter((m) => m.folder === f.id).length,
+}));
+const mailMessages = mailbox.messages.map((m) => {
+  const whenFull = m.date ? fmtDate(m.date, true) : (m.whenLabel ?? "");
+  return {
+    id: m.id, folder: m.folder, from: m.from, subject: m.subject, snippet: m.snippet,
+    body: m.body, links: m.links,
+    domId: `msg-${m.id}`, href: `#msg-${m.id}`,
+    whenText: m.date ? fmtDate(m.date, false) : (m.whenLabel ?? ""),   // list column: short "Jul 14" or the literal label
+    whenDate: m.date,                                                   // "" for undated → binding omits data-date (no relativize)
+    whenTitle: m.date ? whenFull : "",                                  // absolute stays in title when the list span relativizes
+    metaLabel: `The Desk → You · ${whenFull}`,                          // reader meta line (always absolute)
+  };
+});
+
 const renderAppPage = async (html: string) =>
-  stampDevDoor(await renderPage(html, { recentNotes: await listRecentNotes(), calendarEvents: await buildCalendarEvents() }));
+  stampDevDoor(await renderPage(html, {
+    recentNotes: await listRecentNotes(), calendarEvents: await buildCalendarEvents(),
+    mailFolders, mailMessages,
+  }));
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
 // Give every page's main content region a catalog hover-root so grain's usage→specimen bridge
 // (grain/scripts/catalog-peek.js) works SITE-WIDE, not only on /grain: with the Catalog pane open,

@@ -1,0 +1,8 @@
+<!-- molecules/mail-folder — one folder in the /mail rail, data-bound via each="mailFolders"
+     (server.ts). The label plus a real message count, computed server-side from the messages so it
+     can never drift. The island owns aria-current on click; href is the harmless #mailbox-list jump
+     kept for the no-JS path. See mail-folder.md. -->
+<a class="mailbox__folder" href="#mailbox-list" data-bind-data-folder="id">
+  <span class="mailbox__folder-label" data-field="label"></span>
+  <span class="mailbox__folder-count" data-field="count"></span>
+</a>

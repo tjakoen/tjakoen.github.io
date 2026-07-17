@@ -1,0 +1,91 @@
+{
+  "folders": [
+    { "id": "inbox", "label": "Inbox" },
+    { "id": "sent", "label": "Sent" },
+    { "id": "drafts", "label": "Drafts" },
+    { "id": "archive", "label": "Archive" }
+  ],
+  "messages": [
+    {
+      "id": "welcome",
+      "folder": "inbox",
+      "from": "The Desk",
+      "subject": "Welcome to the mail panel",
+      "snippet": "What's real here, what isn't, and where the one live control is.",
+      "date": "2026-07-14",
+      "body": "This whole panel is dressed up like a real inbox, and almost none of it is real. Every message you see here, including this one, was written by me ahead of time and shipped as part of the page. Nothing arrives, nothing gets deleted, and Reply, Forward, and Archive are wired to do exactly nothing. Hover one and it will tell you so.\n\nThe one exception is Compose. Type something there and press Send, and it hands your message to your own mail app, already addressed to me. That's the whole trick: a static site with no backend can still have a real way to reach me, it just borrows your mail app to do the sending.\n\nSo read this like a letters page, not a live inbox. The letters are real things I actually did. The inbox around them is set dressing.",
+      "links": []
+    },
+    {
+      "id": "shipped",
+      "folder": "inbox",
+      "from": "The Desk",
+      "subject": "What shipped recently",
+      "snippet": "A short, honest list of the last few real things, in case you don't want to dig for it.",
+      "date": "2026-07-13",
+      "body": "A short, honest list of the last few things that actually shipped, in case you don't want to dig through the notes for it.\n\nThe notes list turned into a real feed this week, newest first, sortable by reading time instead of upvotes (I don't have real votes, so I didn't fake them). The calendar next to it plots the same real dates, note publish days and the handful of posts about what shipped, nothing invented. This mail panel is the third piece of that same push, a compose window wearing an inbox's clothes.\n\nBefore that: PROOF, the plan board this whole stack runs on, went from a static page to something that streams as the work happens. PANTRY's mindmap shipped the same week, a way for an AI already on your machine to read a codebase without running a model of its own.\n\nIf any of that sounds interesting, the notes feed has the long version.",
+      "links": [
+        { "href": "/notes", "label": "The notes feed" },
+        { "href": "/calendar", "label": "The calendar" },
+        { "href": "/proof", "label": "PROOF" },
+        { "href": "/pantry", "label": "PANTRY" }
+      ]
+    },
+    {
+      "id": "howsend",
+      "folder": "inbox",
+      "from": "The Desk",
+      "subject": "How this site sends mail",
+      "snippet": "There's no server behind this site that could receive a message, so send had to mean something else.",
+      "date": "2026-07-12",
+      "body": "There's no server behind this site that could receive a message, so send had to mean something else here.\n\nThe Compose form below builds a mailto link out of whatever you type, then hands your browser to your own mail app with the subject and body already filled in. You press send from your own inbox, which means you also keep a copy in your own sent folder, a small honest side effect I like more than I expected to.\n\nThe address itself doesn't sit in the page as plain text either. It's assembled from two pieces once the page loads, mostly to keep the simplest scrapers from finding it. If JavaScript is off, the address won't assemble that way, so there's a plain mailto link right in the form's hint text instead. Either path reaches the same inbox.",
+      "links": []
+    },
+    {
+      "id": "sent-preview",
+      "folder": "sent",
+      "from": "The Desk",
+      "subject": "Your message (a preview)",
+      "snippet": "Nothing lives here yet, because nothing's been sent.",
+      "date": "",
+      "whenLabel": "Not sent",
+      "body": "Nothing lives here yet, because nothing's been sent. If this were a real Sent folder, your message would land here right after your own mail app fired it off, since the actual sending happens over there, not on this site.\n\nThis row exists mostly so the folder isn't lying about having a Sent folder at all. Write something in Compose and see for yourself: the sending happens in your mail app, not here.",
+      "links": []
+    },
+    {
+      "id": "draft",
+      "folder": "drafts",
+      "from": "The Desk",
+      "subject": "Your draft lives below",
+      "snippet": "Whatever you're part way through typing lives in the Compose form, not on a server.",
+      "date": "",
+      "whenLabel": "While you type",
+      "body": "Whatever you're part way through typing lives in the Compose form below, in your browser, in the actual form fields. Nothing here saves a draft server-side, so if you want to keep it, keep the tab open, or paste it somewhere safer.\n\nThis folder is really just a signpost pointing down at the one place a draft can exist on a static site: the form itself.",
+      "links": []
+    },
+    {
+      "id": "archive-1",
+      "folder": "archive",
+      "from": "The Desk",
+      "subject": "One design system, one vocabulary",
+      "snippet": "Every surface on this site is addressable by a human and an AI through the same shared vocabulary.",
+      "date": "2026-07-04",
+      "body": "The whole site runs on one design system: every surface addressable by a human and an AI through the same shared vocabulary, and the AI's hand stays visible on the page as grain rather than pretending to be a human's clean ink.\n\nOne vocabulary, one direction. There's more on that over at grain.",
+      "links": [
+        { "href": "/grain", "label": "/grain" }
+      ]
+    },
+    {
+      "id": "archive-2",
+      "folder": "archive",
+      "from": "The Desk",
+      "subject": "PANTRY's mindmap shipped",
+      "snippet": "AI-legible, not AI-powered: it runs no model of its own.",
+      "date": "2026-07-06",
+      "body": "PANTRY's whole-codebase mindmap shipped. It's AI-legible, not AI-powered: it runs no model of its own, it just makes a project easy for an agent already on your machine to read.\n\nThere's more on that over at pantry.",
+      "links": [
+        { "href": "/pantry", "label": "/pantry" }
+      ]
+    }
+  ]
+}

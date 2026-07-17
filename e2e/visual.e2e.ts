@@ -46,7 +46,7 @@ const screens: Array<[name: string, path: string, freeze?: Date]> = [
   ["about", "/about"],       // Pass 4 — About: tabbed profile app (re-blessed, was a plain content page)
   ["notes", "/notes"],       // the /notes feed (Pass 1 — Notes: a portfolio route override)
   ["calendar", "/calendar", new Date("2026-07-12T12:00:00")],   // Pass 2 — Calendar (time frozen, see above)
-  ["mail", "/mail"],         // Pass 3 — Mail (fully static; no clock dependency)
+  ["mail", "/mail", new Date("2026-07-16T12:00:00")],   // Mail v2: list dates relativize, so freeze the clock (see calendar)
 ];
 
 for (const [name, path, freeze] of screens) {

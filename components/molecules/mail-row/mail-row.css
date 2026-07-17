@@ -1,0 +1,32 @@
+/* molecules/mail-row — a message row in the /mail list. Scoped to the mail screen; bundled into
+   /components.css via config.styleRoots. Parent-context: a direct child of .mailbox__list. The
+   status dot, from, subject and when sit on one dense row; the snippet spans the full width below. */
+[data-screen="mail"] .mailbox__item { display: grid; grid-template-columns: 0.9rem 7rem 1fr auto;
+  column-gap: var(--space-3); align-items: baseline; padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line-soft); text-decoration: none; color: inherit; }
+[data-screen="mail"] .mailbox__item:last-child { border-bottom: 0; }
+[data-screen="mail"] .mailbox__item:hover { background: var(--paper-2); }
+[data-screen="mail"] .mailbox__item[aria-current="page"] { background: var(--color-accent-soft); }
+[data-screen="mail"] .mailbox__item[hidden] { display: none; }
+
+/* status dot: empty by default; the island paints it and bolds the subject when the row is unread
+   (read state is localStorage-only, so this class is never server-rendered). */
+[data-screen="mail"] .mailbox__item-dot { justify-self: center; align-self: center;
+  width: 0.45rem; height: 0.45rem; border-radius: var(--radius-pill); background: transparent; }
+[data-screen="mail"] .mailbox__item.is-unread .mailbox__item-dot { background: var(--color-accent); }
+[data-screen="mail"] .mailbox__item.is-unread .mailbox__item-subject { font-weight: var(--font-weight-semibold); }
+
+[data-screen="mail"] .mailbox__item-from { font-size: var(--text-sm); font-weight: var(--font-weight-semibold); color: var(--ink); }
+[data-screen="mail"] .mailbox__item-subject { font-size: var(--text-sm); color: var(--ink); }
+[data-screen="mail"] .mailbox__item-snippet { grid-column: 2 / -1; font-size: var(--text-xs); color: var(--ink-faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+[data-screen="mail"] .mailbox__item-when { font-size: var(--text-xs); color: var(--ink-faint); font-family: var(--font-mono);
+  white-space: nowrap; text-align: right; }
+
+@media (max-width: 640px) {
+  [data-screen="mail"] .mailbox__item { grid-template-columns: 0.9rem 1fr auto; }
+  [data-screen="mail"] .mailbox__item-from { grid-column: 2; }
+  [data-screen="mail"] .mailbox__item-when { grid-column: 3; }
+  [data-screen="mail"] .mailbox__item-subject { grid-column: 2 / -1; }
+  [data-screen="mail"] .mailbox__item-snippet { grid-column: 2 / -1; }
+}
