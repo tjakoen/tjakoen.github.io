@@ -30,7 +30,10 @@ you know where to edit.
 | URL | File |
 |---|---|
 | `/` | `pages/index.html` |
-| `/about` | `pages/about.html` |
+| `/about` | `pages/about.html` (tabbed profile app; the Lessons tab's roles + résumé roles link to `/notes?tag=<tag>`) |
+| `/resume` | `pages/resume.html` (the résumé board; each experience role links to its tagged notes) |
+| `/mail` | `pages/mail.html` + `data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
+| `/calendar` | `pages/calendar.html` (the feed page) + `data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule; see the events collection below for `/calendar/<slug>` |
 | `/loop` | `pages/loop.html` (the reference "watch the AI act" screen) |
 | `/grain` | `pages/grain/index.html` (GRAIN showcase) |
 | `/batch` | `pages/batch/index.html` (BATCH showcase) |
@@ -42,8 +45,9 @@ you know where to edit.
 
 | URL | Source |
 |---|---|
-| `/notes`, `/notes/<slug>` | `notes/<slug>.md` |
+| `/notes`, `/notes/<slug>` | `notes/<slug>.md` (the `/notes` index is a portfolio-owned feed, `renderNotesFeedPage`; entries render through MILL) |
 | `/notes/<slug>.md` | the same file, served raw (the "honest source" toggle) |
+| `/calendar/<slug>` | `events/<slug>.md` — the social-feed events collection (`index: false`, so the `/calendar` feed page above still wins the bare path); each entry page gets the photo-grid post template from its frontmatter (`shellChrome` `renderPhotoGrid`) |
 | `/grain/docs`, `/grain/docs/<slug>` | the installed `@tjakoen/grain` package's `docs/*.md` (in the monorepo: `../grain/docs/`) |
 | `/batch/docs`, `/batch/docs/<slug>` | the installed `@tjakoen/batch` package's `docs/*.md` (in the monorepo: `../batch/docs/`) |
 
