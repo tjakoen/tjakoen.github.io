@@ -58,6 +58,26 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await expect(page.locator(".welcome__title")).toBeVisible();
   });
 
+  test("the 'Dark mode defaults to system' checkbox reflects the LIVE scheme (not stale after the ◐ toggle)", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.goto("/");
+    const box = page.locator("[data-scheme-auto-checkbox]");
+    const scheme = () => page.evaluate(() => document.documentElement.getAttribute("data-color-scheme"));
+    // fresh visit with no saved pref = "auto" (follow the OS) → the box reads checked
+    await expect(box).toBeChecked();
+    expect(await scheme()).toBeNull();
+    // clicking the ◐ light/dark toggle FORCES an explicit scheme → the box must un-tick (was stale before)
+    await page.locator("[data-toggle-scheme]").first().click();
+    expect(await scheme()).not.toBeNull();
+    await expect(box).not.toBeChecked();
+    // ticking it again returns to following the system (clears the forced scheme)…
+    await box.check();
+    expect(await scheme()).toBeNull();
+    // …and un-ticking it directly pins a scheme so the OS stops driving it
+    await box.uncheck();
+    expect(await scheme()).not.toBeNull();
+  });
+
   test("title-bar view controls: aside hides (persisted); the terminal button expands/collapses the feed", async ({ page }) => {
     await page.goto("/grain");
     const shell = page.locator(".app-shell");
