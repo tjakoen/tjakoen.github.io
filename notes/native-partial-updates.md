@@ -78,7 +78,7 @@ I spent two posts saying the browser grew up. Turns out it is still growing, and
 
 > The bet I kept calling well-founded is measured now. It held.
 
-*(The full harness and the four builds live in the framework bench repo, so you can run it yourself and get your own numbers.* [ *Link once the repo is pushed.* ] *)*
+*(The full harness and the four builds live in the [framework bench repo](https://github.com/tjakoen/framework-bench), so you can run it yourself and get your own numbers.)*
 
 ---
 
