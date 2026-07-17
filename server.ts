@@ -28,7 +28,7 @@ import { LoopCard } from "./demo/view/components.ts";
 import { toLoopCardView } from "./demo/services/task-views.ts";
 import type { Task } from "./demo/domain/task.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
 // --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
@@ -90,26 +90,40 @@ const stampDevDoor = (html: string): string =>
 // export dataRoute, unlike /notes.json etc.) — merged with real note publish dates
 // (content.ts's listNoteCalendarEvents) into one calendarEvents array. Read once at boot, same
 // idiom as PROOF_CSS above; a new post means a restart, same as a new note or plan.
-interface DeskFeedPost { id: string; date: string; title: string; body: string; tags: string[]; link: string; icon: string; }
+interface DeskFeedPost {
+  id: string; date: string; title: string; body: string; tags: string[]; link: string; icon: string;
+  kind?: string; location?: string; photos?: string[]; links?: Array<{ href: string; label: string }>;
+}
 const deskFeedPosts: DeskFeedPost[] =
   await Bun.file(join(import.meta.dir, "data", "desk-feed.json")).json();
 async function buildCalendarEvents(): Promise<CalendarEvent[]> {
-  const noteEvents = await listNoteCalendarEvents();
-  const postEvents: CalendarEvent[] = deskFeedPosts.map((p) => ({
-    id: `post-${p.id}`,
-    domId: `evt-post-${p.id}`,
-    date: p.date,
-    dateLabel: p.date,
-    kind: "post",
-    title: p.title,
-    body: p.body,
-    tags: p.tags,
-    tagsLabel: p.tags.join(", "),
-    link: p.link,
-    icon: p.icon,
-  }));
-  // newest-first, same convention as the old hardcoded feed (a post/note ID break ties deterministically).
-  return [...noteEvents, ...postEvents].sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
+  // Three sources merged into ONE feed (Apps-v2 Pass C): note publish dates + the hand-authored
+  // desk-feed "shipped" posts + the MILL-authored events collection (hackathons/talks/highlights).
+  const [noteEvents, eventEvents] = await Promise.all([listNoteCalendarEvents(), listEventCalendarEvents()]);
+  const postEvents: CalendarEvent[] = deskFeedPosts.map((p) => {
+    const kind = p.kind ?? "shipped";
+    return {
+      id: `post-${p.id}`,
+      domId: `evt-post-${p.id}`,
+      date: p.date,
+      dateLabel: p.date,
+      kind,
+      kindLabel: kindLabel(kind),
+      title: p.title,
+      body: p.body,
+      tags: p.tags,
+      tagsLabel: p.tags.join(", "),
+      tagsAttr: p.tags.join(" "),
+      locationLabel: p.location ?? "",
+      photos: parsePhotos(p.photos),
+      links: p.links ?? [],
+      link: p.link,
+      icon: p.icon,
+    };
+  });
+  // newest-first, same convention as the old hardcoded feed (a stable id breaks date ties).
+  return [...noteEvents, ...postEvents, ...eventEvents]
+    .sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
 }
 // /mail (Apps-v2 Pass B): data/mailbox.json is hand-authored dressing too — every "message" is page
 // copy written ahead of time (never a real received mail), read server-side ONLY (no client fetch,

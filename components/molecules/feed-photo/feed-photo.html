@@ -1,0 +1,9 @@
+<!-- molecules/feed-photo — one image in a feed card's photo strip, nested each="photos" inside
+     feed-card (bound to an event's photos: {src,width,height,alt}). Links to the full image, which
+     is the no-JS-safe lightbox (a real navigation, no script); a <dialog> lightbox is a deferred
+     grain proposal. The bound width/height reserve the aspect box so a slow photo can't shift the
+     layout. The event PAGE renders the same .feed-photos markup from its frontmatter (content.ts
+     renderPhotoGrid), so a card and its page look identical. See feed-photo.md. -->
+<a class="feed-photo" data-bind-href="src">
+  <img loading="lazy" decoding="async" data-bind-src="src" data-bind-width="width" data-bind-height="height" data-bind-alt="alt">
+</a>

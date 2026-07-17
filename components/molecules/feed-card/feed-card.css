@@ -1,0 +1,33 @@
+/* molecules/feed-card — one post in the /calendar social feed. Scoped to the calendar screen; bundled
+   into /components.css via config.styleRoots. Parent-context requirement: a direct child of
+   <ol class="feed__list">. Images-first, then text; the photo strip, links, location and tags each
+   hide when empty (see feed-photo / feed-link css and the :empty rules below). */
+[data-screen="calendar"] .feed__list { list-style: none; margin: var(--space-4) 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: var(--space-5); }
+[data-screen="calendar"] .feed-card { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+  padding: var(--space-4); background: var(--paper);
+  scroll-margin-top: var(--space-6); }   /* room for a chip-click scroll-highlight to land clear of the header */
+
+/* a brief ring when a month/week chip scrolls this card into view — the island toggles the class. */
+[data-screen="calendar"] .feed-card--highlight { outline: 2px solid var(--color-accent);
+  outline-offset: var(--space-2); }
+
+[data-screen="calendar"] .feed-card__body { display: flex; flex-direction: column; gap: var(--space-1); }
+[data-screen="calendar"] .feed-card__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2);
+  font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-muted); margin: 0; }
+[data-screen="calendar"] .feed-card__kind { text-transform: uppercase; letter-spacing: .04em; color: var(--ink-muted); }
+[data-screen="calendar"] .feed-card__date { color: var(--ink-faint); }
+[data-screen="calendar"] .feed-card__loc { color: var(--ink-faint); }
+[data-screen="calendar"] .feed-card__loc:empty { display: none; }
+[data-screen="calendar"] .feed-card__title { font-size: var(--text-lg); margin: 0; }
+[data-screen="calendar"] .feed-card__title a { color: var(--ink); text-decoration: none; }
+[data-screen="calendar"] .feed-card__title a:hover { text-decoration: underline; }
+[data-screen="calendar"] .feed-card__summary { color: var(--ink-muted); line-height: var(--leading-relaxed); margin: 0; }
+[data-screen="calendar"] .feed-card__tags { font-size: var(--text-xs); font-family: var(--font-mono);
+  color: var(--color-accent); margin: var(--space-1) 0 0; }
+[data-screen="calendar"] .feed-card__tags:empty { display: none; }
+
+/* per-kind accent on the meta line's kind label — mirrors the Month/Week chip colours (calendar.css). */
+[data-screen="calendar"] .feed-card[data-event-kind="hackathon"] .feed-card__kind { color: var(--color-accent); }
+[data-screen="calendar"] .feed-card[data-event-kind="talk"] .feed-card__kind { color: var(--color-accent); }
+[data-screen="calendar"] .feed-card[data-event-kind="student-highlight"] .feed-card__kind { color: var(--color-accent); }

@@ -14,15 +14,15 @@
         <p class="eyebrow">📅 <span class="name">The Desk</span></p>
         <h1 class="masthead">Calendar</h1>
         <hr class="rule">
-        <p class="lede">The desk's calendar. Month and Week plot the real current date and the real
-          things that happened around it, note publish dates and posts about what shipped, read
-          straight off the Agenda below. Agenda is the honest list: every row here is real, nothing
-          invented, so with JavaScript off it's what you get.</p>
+        <p class="lede">The desk's feed. It reads newest first: hackathons coached, talks given, student
+          projects worth showing, and the things that shipped, alongside the days notes went up. Month
+          and Week plot the same real dates, read straight off the feed below. The feed is the honest
+          list, every post is a real dated thing, so with JavaScript off it's what you get.</p>
 
         <nav class="cal-views" data-cal-views hidden aria-label="View">
-          <button class="tab" type="button" data-view="month" aria-current="page">Month</button>
+          <button class="tab" type="button" data-view="feed" aria-current="page">Feed</button>
+          <button class="tab" type="button" data-view="month">Month</button>
           <button class="tab" type="button" data-view="week">Week</button>
-          <button class="tab" type="button" data-view="agenda">Agenda</button>
         </nav>
 
         <div class="cal" data-cal-panel="month" hidden>
@@ -49,13 +49,14 @@
 
         <p class="cal__legend">
           <span><span class="cal__swatch" style="background: var(--color-accent-soft)"></span>notes</span>
-          <span><span class="cal__swatch" style="background: var(--paper-2); border: 1px solid var(--line-soft)"></span>posts</span>
+          <span><span class="cal__swatch" style="background: var(--paper-2); border: 1px solid var(--line-soft)"></span>shipped</span>
+          <span><span class="cal__swatch cal__swatch--event"></span>events</span>
           <span><span class="cal__swatch" style="background: var(--color-accent)"></span>today</span>
         </p>
 
-        <section class="agenda" data-cal-panel="agenda">
-          <div class="section-head"><span>Agenda</span></div>
-          <ol class="agenda__list"><agenda-item each="calendarEvents"></agenda-item></ol>
+        <section class="feed" data-cal-panel="feed">
+          <div class="section-head"><span>Feed</span></div>
+          <ol class="feed__list"><feed-card each="calendarEvents"></feed-card></ol>
         </section>
 
         <div class="page-foot">
@@ -68,35 +69,49 @@
   </div>
 
   <script>
-    // Reads the real events straight off the server-rendered Agenda (one source of truth, no
-    // fetch, no second copy of the data) and plots the real current Month + Week from them. With
-    // no JS the Agenda above is already the whole page; this island only adds the two other views
-    // and the tab switcher. Deleted (Pass 2 — Calendar): the old invented `seeds` array
-    // (Deep-work block, Standup) — this panel plots only real things now.
+    // Reads the real events straight off the server-rendered Feed (one source of truth, no fetch,
+    // no second copy of the data) and plots the real current Month + Week from them. With no JS the
+    // Feed above is already the whole page; this island only adds the two other views, the tab
+    // switcher, and the relative dates on the feed cards. Every event is a real dated thing (note
+    // publish dates + shipped posts + the events collection) — nothing invented.
     (function () {
       var viewsNav = document.querySelector('[data-cal-views]');
-      var agendaList = document.querySelector('.agenda__list');
+      var feedList = document.querySelector('.feed__list');
       var monthPanel = document.querySelector('[data-cal-panel="month"]');
       var weekPanel = document.querySelector('[data-cal-panel="week"]');
-      var agendaPanel = document.querySelector('[data-cal-panel="agenda"]');
-      if (!viewsNav || !agendaList || !monthPanel || !weekPanel || !agendaPanel) return;
+      var feedPanel = document.querySelector('[data-cal-panel="feed"]');
+      if (!viewsNav || !feedList || !monthPanel || !weekPanel || !feedPanel) return;
 
-      // ---- read events off the agenda DOM ----
-      var items = Array.prototype.slice.call(agendaList.querySelectorAll('.agenda__item'));
-      var events = items.map(function (li) {
-        var titleEl = li.querySelector('.agenda__title');
+      // ---- relative dates on the feed cards: server renders each date absolute (export-safe, in
+      // title); rewrite [data-relativize] to "Today / Yesterday / N days ago", keeping the absolute. ----
+      (function relativize() {
+        var now = new Date();
+        var today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+        Array.prototype.forEach.call(feedList.querySelectorAll('[data-relativize]'), function (el) {
+          var iso = el.getAttribute('data-date');
+          if (!iso) return;
+          var p = iso.split('-');
+          if (p.length !== 3) return;
+          var then = Date.UTC(+p[0], +p[1] - 1, +p[2]);
+          var days = Math.round((today - then) / 86400000);
+          if (days < 0) return;
+          if (!el.getAttribute('title')) el.setAttribute('title', el.textContent);
+          el.textContent = days === 0 ? 'Today' : days === 1 ? 'Yesterday' : days + ' days ago';
+        });
+      })();
+
+      // ---- read events off the feed DOM ----
+      var cards = Array.prototype.slice.call(feedList.querySelectorAll('.feed-card'));
+      var events = cards.map(function (li) {
+        var titleEl = li.querySelector('.feed-card__title');
         return {
           id: li.id,
           date: li.getAttribute('data-date') || '',
           kind: li.getAttribute('data-event-kind') || 'note',
-          title: titleEl ? titleEl.textContent : '',
+          title: titleEl ? titleEl.textContent.trim() : '',
         };
       }).filter(function (e) { return e.date; });
 
-      function parseISODate(s) {
-        var parts = s.split('-').map(Number);
-        return new Date(parts[0], parts[1] - 1, parts[2]);
-      }
       function isoKey(d) {
         return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
       }
@@ -105,20 +120,20 @@
         (byDate[e.date] = byDate[e.date] || []).push(e);
       });
 
-      // ---- shared: a clickable chip for one event, switches to Agenda + highlights the row ----
+      // ---- shared: a clickable chip for one event, switches to Feed + highlights the card ----
       function makeChip(e) {
         var btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'cal__event' + (e.kind === 'post' ? ' cal__event--post' : '');
+        btn.className = 'cal__event cal__event--' + (e.kind || 'note');
         btn.textContent = e.title;
-        if (e.id) btn.setAttribute('data-target', e.id);   // the agenda row this chip reveals
+        if (e.id) btn.setAttribute('data-target', e.id);   // the feed card this chip reveals
         btn.addEventListener('click', function () {
-          setView('agenda');
+          setView('feed');
           var row = e.id && document.getElementById(e.id);
           if (!row) return;
           row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          row.classList.add('agenda__item--highlight');
-          setTimeout(function () { row.classList.remove('agenda__item--highlight'); }, 1600);
+          row.classList.add('feed-card--highlight');
+          setTimeout(function () { row.classList.remove('feed-card--highlight'); }, 1600);
         });
         return btn;
       }
@@ -200,7 +215,7 @@
       }
 
       // ---- view tabs ----
-      var panels = { month: monthPanel, week: weekPanel, agenda: agendaPanel };
+      var panels = { feed: feedPanel, month: monthPanel, week: weekPanel };
       function setView(name) {
         Object.keys(panels).forEach(function (k) { panels[k].hidden = k !== name; });
         var buttons = viewsNav.querySelectorAll('[data-view]');
@@ -214,8 +229,8 @@
         if (btn) setView(btn.getAttribute('data-view'));
       });
 
-      viewsNav.hidden = false;   // reveal the tabs + default to Month only once the island is live
-      setView('month');
+      viewsNav.hidden = false;   // reveal the tabs; Feed stays the default (also the no-JS view)
+      setView('feed');
     })();
   </script>
 </body>

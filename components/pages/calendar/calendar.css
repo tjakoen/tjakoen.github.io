@@ -1,7 +1,9 @@
 /* pages/calendar — the calendar panel layout (bundled into /components.css, scoped to the calendar
    screen). Three views over ONE real dataset (calendarEvents, server-composed): Month + Week are
-   read-only renders plotted client-side from the Agenda's own server-rendered <agenda-item>s (one
-   source of truth, no fetch). Agenda is the no-JS default; Month/Week + the tabs ship hidden. */
+   read-only renders plotted client-side from the Feed's own server-rendered <feed-card>s (one source
+   of truth, no fetch). Feed is the no-JS default; Month/Week + the tabs ship hidden. The feed card
+   and photo styles live with their molecules (feed-card / feed-photo / feed-link). */
+[data-screen="calendar"] .board { max-width: 64rem; }   /* a feed with photo strips + Month/Week grids needs the room (mail precedent) */
 [data-screen="calendar"] .cal-views { display: flex; border-bottom: 1px solid var(--line-soft); margin: var(--space-5) 0 0; }
 [data-screen="calendar"] .cal-views[hidden] { display: none; }
 
@@ -33,13 +35,20 @@
   padding: 2px var(--space-2); border-radius: var(--radius-sm); border: 0;
   background: var(--color-accent-soft); color: var(--ink);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-[data-screen="calendar"] .cal__event--post { background: var(--paper-2); color: var(--ink-muted);
+/* per-kind month/week chips: notes (base accent-soft), shipped posts (bordered), and events
+   (hackathon / talk / student-highlight) as a filled accent so the coached/taught days stand out. */
+[data-screen="calendar"] .cal__event--shipped { background: var(--paper-2); color: var(--ink-muted);
   border: 1px solid var(--line-soft); }
+[data-screen="calendar"] .cal__event--hackathon,
+[data-screen="calendar"] .cal__event--talk,
+[data-screen="calendar"] .cal__event--student-highlight {
+  background: var(--color-accent); color: var(--color-accent-contrast); }
 [data-screen="calendar"] .cal__event:hover { outline: 1px solid var(--color-accent); }
 [data-screen="calendar"] .cal__legend { display: flex; flex-wrap: wrap; gap: var(--space-4);
   font-size: var(--text-xs); color: var(--ink-muted); margin: 0 0 var(--space-6); }
 [data-screen="calendar"] .cal__swatch { display: inline-block; width: .8rem; height: .8rem; border-radius: var(--radius-sm);
   vertical-align: -1px; margin-right: var(--space-1); }
+[data-screen="calendar"] .cal__swatch--event { background: var(--color-accent); }
 
 /* week view: same grid vocabulary, one row, taller cells (fewer days = more room per day). */
 [data-screen="calendar"] .cal--week .cal__cell { min-height: 8rem; }

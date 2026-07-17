@@ -81,8 +81,14 @@ function notesLink(href: string): string {
 // Mirrors the hand-written portfolio pages (pages/mill/index.html): same head, same
 // app-shell + portfolio-frame skeleton, so content pages ARE portfolio pages.
 function shellChrome(inject: string, injectHead = ""): PageChrome {
-  return ({ kind, title, description, body, collection, slug }) => {
+  return ({ kind, title, description, body, collection, slug, frontmatter }) => {
     const screen = collection.prefix.split("/")[1] ?? "notes";   // /notes → notes, /grain/docs → grain
+    // /calendar EVENT pages (Apps-v2 Pass C) get the standard post template: a photo grid on top,
+    // the MILL-rendered body below. The photos come off the entry's own frontmatter (flat "src | WxH
+    // | alt" strings); the same .feed-photos markup the feed cards use, so an event page and its feed
+    // card read identically.
+    const photoGrid = kind === "entry" && collection.prefix === "/calendar" && frontmatter
+      ? renderPhotoGrid(parsePhotos(frontmatter.photos)) : "";
     // THE EDITOR section (rail active + tab group): notes → its own; layer docs live under BREAD.
     const sectionName = collection.prefix === "/notes" ? "notes" : "bread";
     const section = ` data-section="${sectionName}"`;
@@ -116,7 +122,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
   <div class="app-shell app-window"${section} data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
-      <div class="board">${sourceToggle}${deskNoteTrigger}${body}</div>
+      <div class="board">${sourceToggle}${deskNoteTrigger}${photoGrid}${body}</div>
     </main>
   </div>
 ${inject}</body>
@@ -166,6 +172,19 @@ const collections: MillCollection[] = [
     source: realFilesSource(join(import.meta.dir, "standards")),
     adapter: { resolveLink: docsLink("/standards") },
   },
+  {
+    // The /calendar social feed's EVENTS (Apps-v2 Pass C): hackathons coached, talks given, student
+    // highlights — full posts authored as events/*.md. Like /notes, the portfolio OWNS the /calendar
+    // index (pages/calendar.html, the feed), so this collection opts OUT of MILL's own index serving
+    // (index: false); MILL still renders each entry at /calendar/<slug>, and shellChrome gives those
+    // entry pages the photo-grid-on-top post template from their frontmatter.
+    prefix: "/calendar",
+    title: "Feed",
+    description: "The desk's feed: hackathons coached, talks given, and student projects worth showing, alongside what shipped.",
+    source: dirSource(join(import.meta.dir, "events")),
+    adapter: { resolveLink: eventsLink },
+    index: false,
+  },
 ];
 
 /**
@@ -207,6 +226,7 @@ export async function listKnowledgeSources(): Promise<KnowledgeSource[]> {
   const out: KnowledgeSource[] = [];
   for (const col of collections) {
     if (col.prefix === "/standards") continue;           // internal standards — not desk grounding
+    if (col.prefix === "/calendar") continue;            // feed events are short social posts (currently placeholders) — not grounding
     for (const slug of await col.source.list()) {
       const raw = await col.source.read(slug);
       if (raw === null) continue;
@@ -455,27 +475,81 @@ export async function listRecentNotes(limit = 4): Promise<RecentNote[]> {
   }));
 }
 
-/** One row of the /calendar Agenda (Pass 2 — Calendar): a real thing with a real date, never an
- *  invented event. `server.ts` merges this shape's note-derived rows with `data/desk-feed.json`'s
- *  hand-authored posts (read there, not here — desk-feed.json is portfolio dressing, not MILL
- *  content) into one `calendarEvents` array, passed through `renderAppPage` alongside
- *  `recentNotes`. `domId` is the precomputed `#evt-<id>` anchor the agenda-item molecule binds
- *  to `id` and the calendar island scroll-highlights on a chip click; `dateLabel`/`tagsLabel` are
- *  precomputed display strings so the batch template only ever binds flat fields (no nested
- *  each= inside each=). */
+/** One post in the /calendar social feed (Apps-v2 Pass C): a real dated thing, never an invented
+ *  event. `server.ts` (buildCalendarEvents) merges three sources into one `calendarEvents` array —
+ *  note publish dates (here), the hand-authored `data/desk-feed.json` "shipped" posts, and the
+ *  MILL-authored events collection (`events/*.md`, listEventCalendarEvents) — passed through
+ *  `renderAppPage`. `domId` is the precomputed `#evt-<id>` anchor the feed-card molecule binds to
+ *  `id` and the calendar island scroll-highlights on a chip click; `dateLabel`/`tagsLabel`/
+ *  `kindLabel`/`locationLabel` are precomputed display strings, and `photos`/`links` are the only
+ *  nested arrays the feed card binds via nested `each=`. */
+export interface EventPhoto { src: string; width: string; height: string; alt: string; }
+export interface CalendarEventLink { href: string; label: string; }
 export interface CalendarEvent {
   id: string;
   domId: string;
   date: string;
   dateLabel: string;
-  kind: "note" | "post";
+  kind: string;               // "note" | "shipped" | "hackathon" | "talk" | "student-highlight" | …
+  kindLabel: string;          // display label for the kind ("Note", "Hackathon", …)
   title: string;
   body: string;
   tags: string[];
-  tagsLabel: string;
-  link: string;
+  tagsLabel: string;          // ", "-joined display string
+  tagsAttr: string;           // space-joined, for a data-tags attribute
+  locationLabel: string;      // "" when the event has no place
+  photos: EventPhoto[];       // images-first feed card; [] renders no strip (:empty hides it)
+  links: CalendarEventLink[]; // related links row; [] renders nothing
+  link: string;               // the card's own title target
   icon: string;
 }
+
+// The kind → display-label map. An unknown kind falls back to a title-cased version of its own id,
+// so a new event kind renders sanely without a code change (the label is just prettier when listed).
+const KIND_LABELS: Record<string, string> = {
+  note: "Note", shipped: "Shipped", hackathon: "Hackathon", talk: "Talk",
+  "student-highlight": "Student highlight",
+};
+export const kindLabel = (kind: string): string =>
+  KIND_LABELS[kind] ?? kind.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+
+// MILL's yamlish frontmatter parser is flat (scalars + string lists only), so a photo is encoded as
+// one "src | 1200x675 | alt text" string; split it back into {src,width,height,alt}. desk-feed.json
+// (JSON, so it COULD nest) uses the same flat-string shape for symmetry — one parser for both.
+// A grain proposal (Pass E) tracks first-class nested-object frontmatter to retire this encoding.
+export function parsePhotos(raw: unknown): EventPhoto[] {
+  if (!Array.isArray(raw)) return [];
+  const out: EventPhoto[] = [];
+  for (const entry of raw) {
+    if (typeof entry !== "string") continue;
+    const [src = "", dim = "", alt = ""] = entry.split("|").map((x) => x.trim());
+    if (!src) continue;
+    const [width = "", height = ""] = dim.split(/x/i).map((x) => x.trim());
+    out.push({ src, width, height, alt });
+  }
+  return out;
+}
+
+// The event-page photo grid (composed in shellChrome for /calendar entries). Hand-rendered rather
+// than via the feed-photo molecule because the chrome has no per-request binding context to pass the
+// photos array through; it emits the SAME .feed-photos / .feed-photo markup the molecule does, so one
+// stylesheet dresses both. Each photo links to its full image (the no-JS-safe lightbox).
+function renderPhotoGrid(photos: EventPhoto[]): string {
+  if (!photos.length) return "";
+  const items = photos.map((p) => {
+    const src = escapeHtml(p.src);
+    const dims = p.width && p.height ? ` width="${escapeHtml(p.width)}" height="${escapeHtml(p.height)}"` : "";
+    return `<a class="feed-photo" href="${src}"><img src="${src}"${dims} alt="${escapeHtml(p.alt)}" loading="lazy" decoding="async"></a>`;
+  }).join("");
+  return `<div class="feed-photos" data-event-photos>${items}</div>`;
+}
+
+// Events cross-link like notes (note:slug → /notes/slug); everything else (absolute site links)
+// passes through untouched.
+function eventsLink(href: string): string {
+  return href.startsWith("note:") ? "/notes/" + href.slice(5) : href;
+}
+
 /** Note publish dates as calendar events — every note WITH a real date (undated notes have
  *  nothing to place on a calendar, so they're excluded here; they still appear in /notes). */
 export async function listNoteCalendarEvents(): Promise<CalendarEvent[]> {
@@ -485,14 +559,58 @@ export async function listNoteCalendarEvents(): Promise<CalendarEvent[]> {
     domId: `evt-note-${e.slug}`,
     date: e.date,
     dateLabel: e.date,
-    kind: "note" as const,
+    kind: "note",
+    kindLabel: KIND_LABELS.note!,
     title: e.title,
     body: e.summary || e.subtitle,
     tags: e.tags,
     tagsLabel: e.tags.join(", "),
+    tagsAttr: e.tags.join(" "),
+    locationLabel: "",
+    photos: [],
+    links: [],
     link: `/notes/${e.slug}`,
     icon: "📝",
   }));
+}
+
+/** The /calendar social-feed EVENTS collection (Apps-v2 Pass C): MILL-authored posts under
+ *  events/*.md, surfaced on the feed as calendar events (kind from frontmatter, link → the event's
+ *  own MILL page /calendar/<slug>). Reads frontmatter only (title/date/kind/location/tags/summary +
+ *  the flat photo strings), same idiom as sortedNoteEntries. Newest-first; undated events are
+ *  dropped (nothing to place on a calendar). */
+export async function listEventCalendarEvents(): Promise<CalendarEvent[]> {
+  const events = collections.find((c) => c.prefix === "/calendar");
+  if (!events) return [];
+  const out: CalendarEvent[] = [];
+  for (const slug of await events.source.list()) {
+    const raw = await events.source.read(slug);
+    if (raw === null) continue;
+    const { data: fm } = parseFrontmatter(raw);
+    const date = typeof fm.date === "string" ? fm.date : "";
+    if (!date) continue;
+    const kind = typeof fm.kind === "string" ? fm.kind : "post";
+    const tags = Array.isArray(fm.tags) ? fm.tags.filter((t): t is string => typeof t === "string") : [];
+    out.push({
+      id: `event-${slug}`,
+      domId: `evt-event-${slug}`,
+      date,
+      dateLabel: date,
+      kind,
+      kindLabel: kindLabel(kind),
+      title: typeof fm.title === "string" ? fm.title : slug,
+      body: typeof fm.summary === "string" ? fm.summary : "",
+      tags,
+      tagsLabel: tags.join(", "),
+      tagsAttr: tags.join(" "),
+      locationLabel: typeof fm.location === "string" ? fm.location : "",
+      photos: parsePhotos(fm.photos),
+      links: [],
+      link: `/calendar/${slug}`,
+      icon: "🗓️",
+    });
+  }
+  return out;
 }
 
 /** Every note's route in newest-first order — for any consumer that lists ALL notes and must
