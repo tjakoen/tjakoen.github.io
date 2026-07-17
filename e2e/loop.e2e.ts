@@ -33,6 +33,17 @@ test.describe("/loop — the desk", () => {
     await expect(page.locator(".ai-backdrop")).not.toHaveClass(/is-on/, { timeout: 30_000 });   // …then hands back
   });
 
+  test("during a run the page still SCROLLS — the interrupt backdrop no longer locks it", async ({ page }) => {
+    await page.goto("/loop");
+    await page.getByRole("button", { name: "Watch the desk work" }).click();
+    await expect(page.locator(".ai-backdrop.is-on")).toBeVisible();   // acting: the full-screen click-catcher is up
+    const main = page.locator(".app-shell__main");
+    const before = await main.evaluate((el) => el.scrollTop);
+    // a wheel over the backdrop used to be swallowed (scroll locked); now it forwards to the scroll region
+    await page.locator(".ai-backdrop").dispatchEvent("wheel", { deltaY: 400 });
+    await expect.poll(async () => main.evaluate((el) => el.scrollTop)).toBeGreaterThan(before);
+  });
+
   test("takeover: the terminal opens and narrates the run (action badges) while the chat previews alongside", async ({ page }) => {
     await page.goto("/loop");
     const shell = page.locator(".app-shell");
