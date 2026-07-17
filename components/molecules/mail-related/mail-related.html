@@ -1,0 +1,6 @@
+<!-- molecules/mail-related — one link in a reader's Related row, nested each="links" inside
+     mail-reader. Because bindings escape HTML, a message body can't hold inline anchors; the links
+     it references surface here as real, navigable rows. See mail-related.md. -->
+<li class="mailbox__reader-link-item">
+  <a class="mailbox__reader-link" data-bind-href="href" data-field="label"></a>
+</li>

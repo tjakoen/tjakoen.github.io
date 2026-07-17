@@ -22,221 +22,20 @@
 
         <div class="section-head"><span>Mailbox</span></div>
         <div class="mailbox">
-          <nav class="mailbox__folders" data-mailbox-folders aria-label="Folders">
-            <a class="mailbox__folder" href="#mailbox-list" data-folder="inbox" aria-current="page">
-              Inbox <span class="mailbox__folder-count">3</span>
-            </a>
-            <a class="mailbox__folder" href="#mailbox-list" data-folder="sent">
-              Sent <span class="mailbox__folder-count">1</span>
-            </a>
-            <a class="mailbox__folder" href="#mailbox-list" data-folder="drafts">
-              Drafts <span class="mailbox__folder-count">1</span>
-            </a>
-            <a class="mailbox__folder" href="#mailbox-list" data-folder="archive">
-              Archive <span class="mailbox__folder-count">2</span>
-            </a>
-            <a class="btn mailbox__compose" href="#compose" data-open-compose>Compose</a>
-          </nav>
+          <div class="mailbox__rail">
+            <nav class="mailbox__folders" data-mailbox-folders aria-label="Folders">
+              <mail-folder each="mailFolders"></mail-folder>
+              <a class="btn mailbox__compose" href="#compose" data-open-compose>Compose</a>
+            </nav>
+            <p class="mailbox__rail-note">Unread lives in your browser. Nothing here reports back.</p>
+          </div>
 
           <div class="mailbox__list" id="mailbox-list" data-mailbox-list>
-            <a class="mailbox__item" href="#msg-welcome" data-folder="inbox" aria-current="page">
-              <span class="mailbox__item-from">The Desk</span>
-              <span class="mailbox__item-subject">Welcome to the mail panel</span>
-              <span class="mailbox__item-when"><time datetime="2026-07-14">Jul 14</time></span>
-              <span class="mailbox__item-snippet">What's real here, what isn't, and where the one live control is.</span>
-            </a>
-            <a class="mailbox__item" href="#msg-shipped" data-folder="inbox">
-              <span class="mailbox__item-from">The Desk</span>
-              <span class="mailbox__item-subject">What shipped recently</span>
-              <span class="mailbox__item-when"><time datetime="2026-07-13">Jul 13</time></span>
-              <span class="mailbox__item-snippet">A short, honest list of the last few real things, in case you don't want to dig for it.</span>
-            </a>
-            <a class="mailbox__item" href="#msg-howsend" data-folder="inbox">
-              <span class="mailbox__item-from">The Desk</span>
-              <span class="mailbox__item-subject">How this site sends mail</span>
-              <span class="mailbox__item-when"><time datetime="2026-07-12">Jul 12</time></span>
-              <span class="mailbox__item-snippet">There's no server behind this site that could receive a message, so send had to mean something else.</span>
-            </a>
-            <a class="mailbox__item" href="#msg-sent-preview" data-folder="sent">
-              <span class="mailbox__item-from">The Desk</span>
-              <span class="mailbox__item-subject">Your message (a preview)</span>
-              <span class="mailbox__item-when">Not sent</span>
-              <span class="mailbox__item-snippet">Nothing lives here yet, because nothing's been sent.</span>
-            </a>
-            <a class="mailbox__item" href="#msg-draft" data-folder="drafts">
-              <span class="mailbox__item-from">The Desk</span>
-              <span class="mailbox__item-subject">Your draft lives below</span>
-              <span class="mailbox__item-when">While you type</span>
-              <span class="mailbox__item-snippet">Whatever you're part way through typing lives in the Compose form, not on a server.</span>
-            </a>
-            <a class="mailbox__item" href="#msg-archive-1" data-folder="archive">
-              <span class="mailbox__item-from">The Desk</span>
-              <span class="mailbox__item-subject">One design system, one vocabulary</span>
-              <span class="mailbox__item-when"><time datetime="2026-07-04">Jul 4</time></span>
-              <span class="mailbox__item-snippet">Every surface on this site is addressable by a human and an AI through the same shared vocabulary.</span>
-            </a>
-            <a class="mailbox__item" href="#msg-archive-2" data-folder="archive">
-              <span class="mailbox__item-from">The Desk</span>
-              <span class="mailbox__item-subject">PANTRY's mindmap shipped</span>
-              <span class="mailbox__item-when"><time datetime="2026-07-06">Jul 6</time></span>
-              <span class="mailbox__item-snippet">AI-legible, not AI-powered: it runs no model of its own.</span>
-            </a>
+            <mail-row each="mailMessages"></mail-row>
           </div>
 
           <div class="mailbox__readers" data-mailbox-readers>
-            <article class="mailbox__reader" id="msg-welcome" data-message data-folder="inbox">
-              <div class="mailbox__reader-head">
-                <h2 class="mailbox__reader-subject">Welcome to the mail panel</h2>
-              </div>
-              <p class="mailbox__reader-meta">The Desk → You · <time datetime="2026-07-14">Jul 14, 2026</time></p>
-              <div class="mailbox__reader-tools">
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
-              </div>
-              <div class="mailbox__reader-body">
-                <p>This whole panel is dressed up like a real inbox, and almost none of it is real.
-                  Every message you see here, including this one, was written by me ahead of time
-                  and shipped as part of the page. Nothing arrives, nothing gets deleted, and
-                  Reply, Forward, and Archive are wired to do exactly nothing. Hover one and it
-                  will tell you so.</p>
-                <p>The one exception is Compose. Type something there and press Send, and it hands
-                  your message to your own mail app, already addressed to me. That's the whole
-                  trick: a static site with no backend can still have a real way to reach me, it
-                  just borrows your mail app to do the sending.</p>
-                <p>So read this like a letters page, not a live inbox. The letters are real things
-                  I actually did. The inbox around them is set dressing.</p>
-              </div>
-            </article>
-
-            <article class="mailbox__reader" id="msg-shipped" data-message data-folder="inbox">
-              <div class="mailbox__reader-head">
-                <h2 class="mailbox__reader-subject">What shipped recently</h2>
-              </div>
-              <p class="mailbox__reader-meta">The Desk → You · <time datetime="2026-07-13">Jul 13, 2026</time></p>
-              <div class="mailbox__reader-tools">
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
-              </div>
-              <div class="mailbox__reader-body">
-                <p>A short, honest list of the last few things that actually shipped, in case you
-                  don't want to dig through the notes for it.</p>
-                <p>The <a href="/notes">notes list</a> turned into a real feed this week, newest
-                  first, sortable by reading time instead of upvotes (I don't have real votes, so I
-                  didn't fake them). The <a href="/calendar">calendar</a> next to it plots the same
-                  real dates, note publish days and the handful of posts about what shipped,
-                  nothing invented. This mail panel is the third piece of that same push, a compose
-                  window wearing an inbox's clothes.</p>
-                <p>Before that: <a href="/proof">PROOF</a>, the plan board this whole stack runs
-                  on, went from a static page to something that streams as the work happens.
-                  <a href="/pantry">PANTRY</a>'s mindmap shipped the same week, a way for an AI
-                  already on your machine to read a codebase without running a model of its own.</p>
-                <p>If any of that sounds interesting, the notes feed has the long version.</p>
-              </div>
-            </article>
-
-            <article class="mailbox__reader" id="msg-howsend" data-message data-folder="inbox">
-              <div class="mailbox__reader-head">
-                <h2 class="mailbox__reader-subject">How this site sends mail</h2>
-              </div>
-              <p class="mailbox__reader-meta">The Desk → You · <time datetime="2026-07-12">Jul 12, 2026</time></p>
-              <div class="mailbox__reader-tools">
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
-              </div>
-              <div class="mailbox__reader-body">
-                <p>There's no server behind this site that could receive a message, so send had to
-                  mean something else here.</p>
-                <p>The Compose form below builds a mailto link out of whatever you type, then
-                  hands your browser to your own mail app with the subject and body already
-                  filled in. You press send from your own inbox, which means you also keep a copy
-                  in your own sent folder, a small honest side effect I like more than I expected
-                  to.</p>
-                <p>The address itself doesn't sit in the page as plain text either. It's assembled
-                  from two pieces once the page loads, mostly to keep the simplest scrapers from
-                  finding it. If JavaScript is off, the address won't assemble that way, so there's
-                  a plain mailto link right in the form's hint text instead. Either path reaches
-                  the same inbox.</p>
-              </div>
-            </article>
-
-            <article class="mailbox__reader" id="msg-sent-preview" data-message data-folder="sent">
-              <div class="mailbox__reader-head">
-                <h2 class="mailbox__reader-subject">Your message (a preview)</h2>
-              </div>
-              <p class="mailbox__reader-meta">The Desk → You · Not sent</p>
-              <div class="mailbox__reader-tools">
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
-              </div>
-              <div class="mailbox__reader-body">
-                <p>Nothing lives here yet, because nothing's been sent. If this were a real Sent
-                  folder, your message would land here right after your own mail app fired it
-                  off, since the actual sending happens over there, not on this site.</p>
-                <p>This row exists mostly so the folder isn't lying about having a Sent folder at
-                  all. Write something in Compose and see for yourself: the sending happens in
-                  your mail app, not here.</p>
-              </div>
-            </article>
-
-            <article class="mailbox__reader" id="msg-draft" data-message data-folder="drafts">
-              <div class="mailbox__reader-head">
-                <h2 class="mailbox__reader-subject">Your draft lives below</h2>
-              </div>
-              <p class="mailbox__reader-meta">The Desk → You · While you type</p>
-              <div class="mailbox__reader-tools">
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
-              </div>
-              <div class="mailbox__reader-body">
-                <p>Whatever you're part way through typing lives in the Compose form below, in
-                  your browser, in the actual form fields. Nothing here saves a draft
-                  server-side, so if you want to keep it, keep the tab open, or paste it
-                  somewhere safer.</p>
-                <p>This folder is really just a signpost pointing down at the one place a draft
-                  can exist on a static site: the form itself.</p>
-              </div>
-            </article>
-
-            <article class="mailbox__reader" id="msg-archive-1" data-message data-folder="archive">
-              <div class="mailbox__reader-head">
-                <h2 class="mailbox__reader-subject">One design system, one vocabulary</h2>
-              </div>
-              <p class="mailbox__reader-meta">The Desk → You · <time datetime="2026-07-04">Jul 4, 2026</time></p>
-              <div class="mailbox__reader-tools">
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
-              </div>
-              <div class="mailbox__reader-body">
-                <p>The whole site runs on one design system: every surface addressable by a human
-                  and an AI through the same shared vocabulary, and the AI's hand stays visible on
-                  the page as grain rather than pretending to be a human's clean ink.</p>
-                <p>One vocabulary, one direction. More on that at <a href="/grain">/grain</a>.</p>
-              </div>
-            </article>
-
-            <article class="mailbox__reader" id="msg-archive-2" data-message data-folder="archive">
-              <div class="mailbox__reader-head">
-                <h2 class="mailbox__reader-subject">PANTRY's mindmap shipped</h2>
-              </div>
-              <p class="mailbox__reader-meta">The Desk → You · <time datetime="2026-07-06">Jul 6, 2026</time></p>
-              <div class="mailbox__reader-tools">
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
-                <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
-              </div>
-              <div class="mailbox__reader-body">
-                <p>PANTRY's whole-codebase mindmap shipped. It's AI-legible, not AI-powered: it
-                  runs no model of its own, it just makes a project easy for an agent already on
-                  your machine to read.</p>
-                <p>More on that at <a href="/pantry">/pantry</a>.</p>
-              </div>
-            </article>
+            <mail-reader each="mailMessages"></mail-reader>
           </div>
         </div>
 
@@ -311,9 +110,10 @@
   </script>
 
   <script>
-    // The mailbox island (Pass 3 — Mail). With no JS, every folder's items and every reader are
-    // already in the DOM and visible (a stacked letters page); this only adds the collapse-to-one
-    // reading mode, folder filtering, and the Compose reveal. Nothing REAL is gated behind it: the
+    // The mailbox island (Apps-v2 Pass B — Mail). With no JS, every folder's items and every reader
+    // are already in the DOM and visible (a stacked letters page); this only adds the collapse-to-one
+    // reading mode, folder filtering, the Compose reveal, plus two client-only touches that degrade
+    // to nothing: localStorage unread dots and relative dates. Nothing REAL is gated behind it: the
     // compose form above is reachable and functional with this script never running at all.
     (function () {
       var foldersNav = document.querySelector('[data-mailbox-folders]');
@@ -326,6 +126,43 @@
       var items = Array.prototype.slice.call(list.querySelectorAll('.mailbox__item'));
       var readers = Array.prototype.slice.call(readersWrap.querySelectorAll('.mailbox__reader'));
       var folderLinks = Array.prototype.slice.call(foldersNav.querySelectorAll('[data-folder]'));
+
+      // ---- read/unread lives ONLY in this browser (localStorage), so the server renders zero dots
+      // and a no-JS page makes no read-tracking claim. Fresh visitor = every row unread. ----
+      var READ_KEY = 'tj.mail.read';
+      function readList() { try { return JSON.parse(localStorage.getItem(READ_KEY) || '[]') || []; } catch (e) { return []; } }
+      var read = readList();
+      function keyOf(item) { return (item.getAttribute('href') || '').slice(1); }   // "msg-<id>"
+      function paintUnread() {
+        items.forEach(function (it) {
+          if (read.indexOf(keyOf(it)) === -1) it.classList.add('is-unread');
+          else it.classList.remove('is-unread');
+        });
+      }
+      function markRead(item) {
+        var k = keyOf(item);
+        if (read.indexOf(k) === -1) { read.push(k); try { localStorage.setItem(READ_KEY, JSON.stringify(read)); } catch (e) { /* private mode */ } }
+        item.classList.remove('is-unread');
+      }
+
+      // ---- relative dates: the server renders each list date ABSOLUTE (export-safe, never rots) with
+      // the full date in title; here we swap [data-relativize] spans to "Today / Yesterday / N days
+      // ago". Undated rows carry no data-date, so they keep their literal label. ----
+      function relativize() {
+        var now = new Date();
+        var today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+        Array.prototype.forEach.call(document.querySelectorAll('[data-relativize]'), function (el) {
+          var iso = el.getAttribute('data-date');
+          if (!iso) return;
+          var p = iso.split('-');
+          if (p.length !== 3) return;
+          var then = Date.UTC(+p[0], +p[1] - 1, +p[2]);
+          var days = Math.round((today - then) / 86400000);
+          if (days < 0) return;                                   // a future date: leave the absolute
+          if (!el.getAttribute('title')) el.setAttribute('title', el.textContent);
+          el.textContent = days === 0 ? 'Today' : days === 1 ? 'Yesterday' : days + ' days ago';
+        });
+      }
 
       function showReader(id) {
         readers.forEach(function (r) { r.hidden = r.id !== id; });
@@ -348,7 +185,12 @@
         });
       }
 
-      // ---- collapse to the reading pane: one reader visible, its row marked current ----
+      // ---- paint unread + relative dates before the first paint of the reading mode ----
+      paintUnread();
+      relativize();
+
+      // ---- collapse to the reading pane: one reader visible, its row marked current. Auto-showing
+      // the first message does NOT mark it read — only an explicit click does. ----
       var initial = items[0];
       if (initial) {
         showReader(initial.getAttribute('href').slice(1));
@@ -356,12 +198,13 @@
       }
       filterFolder('inbox');
 
-      // ---- clicking a message swaps the reader (the anchor jump still happens natively) ----
+      // ---- clicking a message swaps the reader, marks it current, and marks it read ----
       list.addEventListener('click', function (ev) {
         var link = ev.target.closest('.mailbox__item');
         if (!link) return;
         showReader(link.getAttribute('href').slice(1));
         selectItem(link);
+        markRead(link);
       });
 
       // ---- clicking a folder filters the list (the anchor jump to #mailbox-list is harmless) ----

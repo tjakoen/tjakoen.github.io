@@ -1,0 +1,10 @@
+/* molecules/mail-related — the Related-links row under a reader body. Scoped to the mail screen;
+   bundled into /components.css via config.styleRoots. The row hides itself when a message carries no
+   links (:empty), so readers without links show no empty affordance. */
+[data-screen="mail"] .mailbox__reader-links { list-style: none; margin: var(--space-4) 0 0; padding: var(--space-4) 0 0;
+  border-top: 1px solid var(--line-soft); display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+[data-screen="mail"] .mailbox__reader-links:empty { display: none; }
+[data-screen="mail"] .mailbox__reader-link-item { margin: 0; }
+[data-screen="mail"] .mailbox__reader-link { font-size: var(--text-sm); color: var(--color-accent); text-decoration: none; }
+[data-screen="mail"] .mailbox__reader-link:hover { text-decoration: underline; }
+[data-screen="mail"] .mailbox__reader-link::before { content: "→ "; color: var(--ink-faint); }

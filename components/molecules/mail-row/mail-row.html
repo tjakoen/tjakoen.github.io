@@ -1,0 +1,13 @@
+<!-- molecules/mail-row — one message row in the /mail list, data-bound via each="mailMessages"
+     (server.ts). The status-dot col stays empty until the island marks the row .is-unread (that
+     read/unread state lives only in the browser's localStorage, so the server renders zero dots).
+     The when-span is server-rendered ABSOLUTE (export-safe) and carries data-relativize so the
+     island can rewrite it to "N days ago", keeping the absolute date in title. Undated rows (Sent,
+     Drafts) carry a literal label and no data-date, so they're never relativized. See mail-row.md. -->
+<a class="mailbox__item" data-bind-href="href" data-bind-data-folder="folder">
+  <span class="mailbox__item-dot" aria-hidden="true"></span>
+  <span class="mailbox__item-from" data-field="from"></span>
+  <span class="mailbox__item-subject" data-field="subject"></span>
+  <span class="mailbox__item-when" data-relativize data-bind-data-date="whenDate" data-bind-title="whenTitle" data-field="whenText"></span>
+  <span class="mailbox__item-snippet" data-field="snippet"></span>
+</a>

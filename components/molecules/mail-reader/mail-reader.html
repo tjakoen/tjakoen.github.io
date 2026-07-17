@@ -1,0 +1,20 @@
+<!-- molecules/mail-reader — one open message below the list, data-bound via each="mailMessages"
+     (server.ts). The body is PLAIN TEXT (batch bindings escape HTML, by design) rendered with
+     white-space: pre-line, so \n\n in the JSON becomes paragraph spacing; any links that used to be
+     inline anchors migrate to the Related row (mail-related, nested each="links", hidden when empty).
+     Reply / Forward / Archive are honest set dressing (disabled, they say so on hover). With JS the
+     island collapses these to one visible at a time; with no JS every reader is a stacked letter.
+     See mail-reader.md. -->
+<article class="mailbox__reader" data-message data-bind-id="domId" data-bind-data-folder="folder">
+  <div class="mailbox__reader-head">
+    <h2 class="mailbox__reader-subject" data-field="subject"></h2>
+  </div>
+  <p class="mailbox__reader-meta" data-field="metaLabel"></p>
+  <div class="mailbox__reader-tools">
+    <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
+    <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
+    <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
+  </div>
+  <div class="mailbox__reader-body" data-field="body"></div>
+  <ul class="mailbox__reader-links"><mail-related each="links"></mail-related></ul>
+</article>

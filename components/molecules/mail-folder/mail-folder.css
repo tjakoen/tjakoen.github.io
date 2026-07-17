@@ -1,0 +1,10 @@
+/* molecules/mail-folder — a folder row in the /mail rail. Scoped to the mail screen (it only appears
+   there); bundled into /components.css via config.styleRoots. Parent-context: a direct child of
+   nav.mailbox__folders (the rail box owns the border/background). */
+[data-screen="mail"] .mailbox__folder { display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-2); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm);
+  font-size: var(--text-sm); color: var(--ink-muted); text-decoration: none; }
+[data-screen="mail"] .mailbox__folder:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--ink); }
+[data-screen="mail"] .mailbox__folder[aria-current="page"] { background: var(--paper); color: var(--ink);
+  font-weight: var(--font-weight-semibold); box-shadow: inset 0 0 0 1px var(--line-soft); }
+[data-screen="mail"] .mailbox__folder-count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
