@@ -14,8 +14,8 @@ summary: >
 
 > **Draft, my own voice.** Styling and presentation come later via MILL/GRAIN; the desk figure
 > awaits a real capture from the live demo. Companion to the technical docs
-> ([PHILOSOPHY.md](../PHILOSOPHY.md), [ARCHITECTURE.md](../../batch/docs/ARCHITECTURE.md),
-> [mill/PLAN.md](../../mill/PLAN.md)), the technical side of the native-first bet
+> ([PHILOSOPHY.md](https://github.com/tjakoen/tjakoen.github.io/blob/main/PHILOSOPHY.md), [ARCHITECTURE.md](/batch/docs/architecture),
+> [mill/PLAN.md](https://github.com/tjakoen/mill/blob/main/PLAN.md)), the technical side of the native-first bet
 > ([The Browser Grew Up While I Was Busy With Frameworks](the-browser-grew-up.md)), and the
 > whitepaper draft [One Vocabulary, Two Operators](whitepaper-one-vocabulary.md).
 
@@ -47,7 +47,7 @@ So I would bounce to the next app, learn *its* system, fall off *that* one, and 
     <line x1="83" y1="134" x2="83" y2="180" marker-end="url(#fl-origin0)"/>
     <line x1="83" y1="216" x2="83" y2="262" marker-end="url(#fl-origin0)"/>
     <path d="M20,280 C-10,280 -10,34 21,34" marker-end="url(#fl-origin0)"/>
-    <line x1="147" y1="283" x2="198" y2="285" marker-end="url(#fl-origin0)"/> stroke-dasharray="5 4"
+    <line x1="147" y1="283" x2="198" y2="285" marker-end="url(#fl-origin0)" stroke-dasharray="5 4"/>
   </g>
   <g text-anchor="middle">
     <text x="83" y="38.3" style="fill:var(--color-fg)">Pick a new app</text>

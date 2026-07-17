@@ -587,16 +587,16 @@ imports nothing. `server.ts` is the sole wiring point and belongs to neither sid
   <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
     <line x1="426" y1="52" x2="511" y2="88" marker-end="url(#fl-archit0)"/>
     <line x1="692" y1="68" x2="640" y2="88" marker-end="url(#fl-archit0)"/>
-    <line x1="508" y1="34" x2="454" y2="34" marker-end="url(#fl-archit0)"/> stroke-dasharray="5 4"
+    <line x1="508" y1="34" x2="454" y2="34" marker-end="url(#fl-archit0)" stroke-dasharray="5 4"/>
     <line x1="504" y1="140" x2="445" y2="162" marker-end="url(#fl-archit0)"/>
     <line x1="640" y1="140" x2="704" y2="165" marker-end="url(#fl-archit0)"/>
     <line x1="445" y1="210" x2="504" y2="232" marker-end="url(#fl-archit0)"/>
     <line x1="704" y1="207" x2="640" y2="232" marker-end="url(#fl-archit0)"/>
     <line x1="495" y1="284" x2="436" y2="304" marker-end="url(#fl-archit0)"/>
     <line x1="640" y1="284" x2="692" y2="304" marker-end="url(#fl-archit0)"/>
-    <line x1="690" y1="346" x2="542" y2="380" marker-end="url(#fl-archit0)"/> stroke-dasharray="5 4"
-    <line x1="729" y1="356" x2="706" y2="376" marker-end="url(#fl-archit0)"/> stroke-dasharray="5 4"
-    <line x1="804" y1="356" x2="838" y2="376" marker-end="url(#fl-archit0)"/> stroke-dasharray="5 4"
+    <line x1="690" y1="346" x2="542" y2="380" marker-end="url(#fl-archit0)" stroke-dasharray="5 4"/>
+    <line x1="729" y1="356" x2="706" y2="376" marker-end="url(#fl-archit0)" stroke-dasharray="5 4"/>
+    <line x1="804" y1="356" x2="838" y2="376" marker-end="url(#fl-archit0)" stroke-dasharray="5 4"/>
     <line x1="322" y1="186" x2="204" y2="186" marker-end="url(#fl-archit0)"/>
     <line x1="148" y1="212" x2="148" y2="232" marker-end="url(#fl-archit0)"/>
     <line x1="188" y1="160" x2="356" y2="52" marker-end="url(#fl-archit0)"/>

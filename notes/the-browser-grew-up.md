@@ -5,13 +5,13 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-07-04
-readingTime: "~8 min"
+readingTime: "~12 min"
 tags: [native-first, css, no-build, batch, web-platform]
 summary: >
   I spent years inside frameworks because the native web platform couldn't do the job. It can now.
   Here is the specific, mildly technical account of the browser features (View Transitions, the dialog
   element, details, has, color-mix) that let me build a whole stack with no framework and no build
-  step, what that actually buys you, and the honest limits, including the benchmark I haven't run yet.
+  step, what that actually buys you, and the honest limits, plus the benchmark I finally ran.
 ---
 
 I have a graveyard of side projects, and for a long time they all died in the same place. Not at the idea. Not at the design. Somewhere around the third day, when the build config broke and I could not remember why. A framework upgrade here, a plugin that stopped talking to another plugin there, a node_modules folder heavier than the app it was supposed to serve. I would lose an evening to the machinery and never get back to the thing I actually wanted to make.
@@ -106,6 +106,8 @@ And when I do reach for a library, I am picky in one specific way: I want the on
 
 Most frameworks will not promise you that. Anyone who has limped a codebase across a major version, or watched a favorite library go unmaintained, knows the tax. The closer a dependency stays to the standards, the less of that tax I will ever pay.
 
+There is a coda to the htmx part that I did not expect to be writing this soon. The one job I still hand to a library, taking a piece of HTML from the server and slotting it into the page, the browser is starting to do on its own. There is a proposal called Declarative Partial Updates, behind a flag in Chrome this year, that adds native ways to stream and patch HTML into a page: methods with plain names like setHTML and streamHTML, and a way to mark a slot in the markup and fill it later in the same response. Firefox already ships the smallest piece of it, setHTML, in a normal release. I want to be honest about how early this is: it is one browser behind a flag for the full thing, the others have not committed yet, and none of it is safe to put in front of a real visitor before roughly 2027. So I have not moved onto it, and I am not about to. But it is this whole note in miniature. The platform is reaching down and picking up the last small library I was still holding. htmx does not simply disappear the day it lands, the triggers, the request, the history handling are still real work it does well, and I expect small libraries like it to sit on top of these new primitives rather than fight them. What changes is that the swap itself, the one bit of glue I had to import, is on its way to being something the browser just does. I did end up building it and pointing the benchmark at it, which is a story for [its own note](native-partial-updates.md).
+
 If it helps to see the whole trade in one view, here is my stack next to a typical React app. Not the most optimized setup a React expert could hand-tune, just the normal one most projects actually run.
 
 | | A typical React app | This stack |
@@ -119,7 +121,7 @@ If it helps to see the whole trade in one view, here is my stack next to a typic
 | Static hosting | Possible, with a build or a static-generation step | Crawl the live app and freeze it to files |
 | Ten years from now | Migrations across major versions | Standards. Backwards compatible |
 
-To be fair, React can render on the server and pre-generate pages too. The honest difference is that here those are the default, not things I add and keep configured. And the one row I left off on purpose is raw speed, because I have not run that benchmark yet. More on that below.
+To be fair, React can render on the server and pre-generate pages too. The honest difference is that here those are the default, not things I add and keep configured. And the one row I left off on purpose is raw speed, because that one needed a benchmark, and I have run it now. More on that below.
 
 ## The server you stop needing
 
@@ -167,10 +169,10 @@ So here is the rule of thumb I landed on:
 
 The site you're reading this on was built static, but there is still a use case for the framework to have a server. If you have a database, an API call, or a connection to an AI endpoint, a full product built on [this stack](/grain) would genuinely need a server. BATCH is designed to work with both.
 
-The portfolio you are reading has no server at all. The AI is headed the same way: a small language model that will run in your browser, so even the assistant becomes static files plus your own hardware. That part is still in progress and I will not pretend otherwise, but it is the thesis stated plainly. A server should be something you reach for when the job actually needs one, not the ground a website is built on by default.
+The portfolio you are reading has no server at all. The AI is now the same way: a small language model runs in your browser, so even the assistant is static files plus your own hardware. It is small, so it fumbles the odd prompt, and it needs a recent browser with WebGPU to wake up at all, and I will not pretend otherwise. But it is no longer a promise, it is running, and it is the thesis stated plainly. A server should be something you reach for when the job actually needs one, not the ground a website is built on by default.
 
 <svg viewBox="0 0 654 306" width="100%" role="img"
-     aria-label="What does the page need? Just content (writing, pages, design) needs no server — static files. Real server work (database, API, live data) needs a server when the job needs one. The AI splits two ways: a full product with a live door and stream needs a server, while this site, planned, runs a model in your browser with no server."
+     aria-label="What does the page need? Just content (writing, pages, design) needs no server — static files. Real server work (database, API, live data) needs a server when the job needs one. The AI splits two ways: a full product with a live door and stream needs a server, while this site now runs a model in your browser with no server."
      style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <defs>
     <marker id="fl-thebro2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
@@ -210,12 +212,12 @@ The portfolio you are reading has no server at all. The AI is headed the same wa
     <text x="285" y="202.8" style="fill:var(--color-muted);font-size:12px">when the job needs one</text>
     <text x="520" y="186.3" style="fill:var(--color-fg)">Full product</text>
     <text x="520" y="202.8" style="fill:var(--color-muted);font-size:12px">live door and stream — needs a server</text>
-    <text x="520" y="260.3" style="fill:var(--color-fg)">This site, planned</text>
+    <text x="520" y="260.3" style="fill:var(--color-fg)">This site, now</text>
     <text x="520" y="276.8" style="fill:var(--color-muted);font-size:12px">a model in your browser — no server</text>
   </g>
 </svg>
 
-*Where a server actually earns its keep. For this site, even the AI is headed for the browser.*
+*Where a server actually earns its keep. For this site, even the AI runs in the browser.*
 
 ## So what does it actually buy me
 
@@ -258,7 +260,7 @@ The honest, checkable advantages first.
 
 ## The honest ledger
 
-Now the part the framework crowd will, fairly, push on. Is it actually *faster*? My gut says obviously, less shipped is less to parse and less to run. But I have not published the benchmark, so I am not going to print a number I cannot back. The plan is real and specific: the same reference app built three ways, mine on htmx, one on Astro, one on Next, all measured by the same script, leading with the categorical facts (how much client JavaScript each ships, whether there is a build, how many dependencies) and letting the performance figures corroborate. When that exists, it gets linked right here. Until then, treat "fast because there is less" as a well-founded bet, not a proven result.
+Now the part the framework crowd will, fairly, push on. Is it actually *faster*? For a long time my honest answer was that I had not published a benchmark, so I would not print a number I could not back. I have run it now. The same small blog, built four ways and measured by one script: my native stack, the same stack with the browser doing the HTML swap instead of a script I ship, one on Astro, one on Next. The categorical result, the one I actually trust, is stark. For a single identical filter on the page, Next ships around 118 kilobytes of JavaScript where my stack ships about two, roughly a hundred and sixty times more, with the same rendered HTML and the same SEO on every build so the comparison is not rigged. Astro, fairly, ships even less than I do on a page this static, and I say so plainly. The performance timings point the same way, and I am treating them as corroboration, not proof. The full story, the four builds, the honest asterisks, and the new browser primitive that pushes the cost lower still, is its own note: [I Finally Ran the Benchmark I Kept Promising](native-partial-updates.md).
 
 Two more edges worth owning. Native as possible is a direction, not a religion, and it never meant no JavaScript. JavaScript is part of the platform. The line I hold is no client framework, not no code, so the script I write for the AI is plain JavaScript on standard browser APIs, the Fetch call and the event stream and the DOM, as native as the HTML around it. The one genuine dependency I lean on is htmx, and I picked it because it barely leaves the platform at all. Purity for its own sake is just a different dogma wearing nicer clothes. And the trade is real: the moment you want genuinely rich client behavior, drag-and-drop, optimistic offline editing, the stuff a heavy client framework is actually great at, you are swimming against this current. I took that trade on purpose, because the apps I build do not need it. Yours might, and that is a fair reason to choose differently.
 

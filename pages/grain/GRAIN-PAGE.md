@@ -5,7 +5,8 @@
 > sidebar catalog is the reference) — served at **`/grain`** from
 > `tjakoen.github.io/pages/grain/index.html`, with e2e (`tjakoen.github.io/e2e/grain-page.e2e.ts`) and shots
 > (`grain`, `grain-peek`). v2 (labelled AI demo through the real door) and v3 (Themes re-skin toggle)
-> are now built and live on the page; the live-model behind the reasoner seam is the remaining milestone.
+> are now built and live on the page; the live model behind the reasoner seam is now wired too — a small
+> in-browser model (WebLLM) drives the demo's nav and choice ops (owner-verified via WebGPU, 2026-07-17).
 >
 > This is the GRAIN showcase, built *with* GRAIN — the portfolio's proof the framework is real
 > (a consuming product re-skinning grain via its public seams). It introduces the system,
@@ -35,9 +36,11 @@
   **Consequence (accepted):** the demo is an *operable surface*, so on the static `dist/` export it
   is inert (ARCHITECTURE §18 — the AI loop can't be a static file). Live render (dev/prod server)
   is where it runs. See [[interaction-door-pattern]] and "The AI demo" below.
-- **AI-demo brain: scripted now, model-later.** Ship the deterministic scripted reasoner first
-  (like `/loop` — reliable showcase, zero download). Design the reasoner as a seam so a real
-  in-browser model (embeddings → optional local LLM) can drop in later as an upgrade tier.
+- **AI-demo brain: scripted now, model-later** *(model tier landed 2026-07-17)*. Ship the
+  deterministic scripted reasoner first (like `/loop` — reliable showcase, zero download). Design the
+  reasoner as a seam so a real in-browser model (embeddings → optional local LLM) can drop in later as an
+  upgrade tier. The upgrade tier is now live: a small WebLLM model drives nav and choice ops behind the
+  same seam, with the scripted path kept as the offline/no-WebGPU fallback.
 - **Build order: v1 first ✅**, then v2 (AI demo), then v3 (re-skin toggle).
 - **The catalog-peek EMBEDS `/catalog` (unchanged) in an iframe** — no batch/grain/catalog
   changes; the island stays in `grain/scripts/` (reusable doc affordance). See
