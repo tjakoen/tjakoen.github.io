@@ -28,6 +28,7 @@
         <nav class="about-tabs" data-about-tabs aria-label="Sections">
           <a class="tab" href="#profile" aria-current="page">Profile</a>
           <a class="tab" href="#resume">Résumé</a>
+          <a class="tab" href="#lessons">Lessons</a>
           <a class="tab" href="#contact">Contact</a>
           <a class="tab" href="#now">Now</a>
         </nav>
@@ -50,6 +51,45 @@
           <div class="docs-list">
             <div class="docs-list__item"><a class="docs-list__name" href="/resume">Résumé</a><span class="docs-list__what">the working record, and where the full version will land.</span></div>
             <div class="docs-list__item"><a class="docs-list__name" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a><span class="docs-list__what">professional history and contact.</span></div>
+          </div>
+        </section>
+
+        <section class="about-panel" id="lessons">
+          <div class="section-head"><span>Lessons</span></div>
+          <p class="muted">Placeholder. These are lessons learned by role, structure only for now, so the
+            shape is here while the real ones are written. Each role links out to the notes tagged for
+            that kind of work.</p>
+          <nav class="lessons-tabs" data-lessons-tabs aria-label="Lessons by role">
+            <a class="tab" href="#lessons-dev-manager" aria-current="page">Dev manager</a>
+            <a class="tab" href="#lessons-tech-lead">Tech lead</a>
+            <a class="tab" href="#lessons-educator">Educator</a>
+          </nav>
+
+          <div class="lessons-panel" id="lessons-dev-manager" data-role="dev-manager">
+            <ul class="lessons-list">
+              <li>Placeholder lesson: the tools a team actually needs are rarely the ones on the roadmap.</li>
+              <li>Placeholder lesson: direction is a thing you repeat, not a thing you announce once.</li>
+              <li>Placeholder lesson: the honest version of a status is the one that ages well.</li>
+            </ul>
+            <p class="xp__notes-link"><a href="/notes?tag=ai">Notes from this role →</a></p>
+          </div>
+
+          <div class="lessons-panel" id="lessons-tech-lead" data-role="tech-lead">
+            <ul class="lessons-list">
+              <li>Placeholder lesson: fewer moving parts beats a clever abstraction almost every time.</li>
+              <li>Placeholder lesson: a build step you can delete is a decision you get to keep making.</li>
+              <li>Placeholder lesson: the design that survives is the one the next person can read.</li>
+            </ul>
+            <p class="xp__notes-link"><a href="/notes?tag=no-build">Notes from this role →</a></p>
+          </div>
+
+          <div class="lessons-panel" id="lessons-educator" data-role="educator">
+            <ul class="lessons-list">
+              <li>Placeholder lesson: treat adults like adults and most of the fluff falls away.</li>
+              <li>Placeholder lesson: automate the mechanical grading so the time goes back to students.</li>
+              <li>Placeholder lesson: go straight at the hard parts, that is what they came for.</li>
+            </ul>
+            <p class="xp__notes-link"><a href="/notes?tag=teaching">Notes from this role →</a></p>
           </div>
         </section>
 
@@ -93,11 +133,12 @@
   </div>
 
   <script>
-    // The about-tabs island (Pass 4 — About). With no JS every panel above is already visible and
-    // in document order (profile, résumé, contact, now), so the tabs' hrefs are plain in-page
-    // jump links that work with zero script. This only adds the show-one-panel tab behavior and
-    // honors an incoming location.hash. Nothing REAL is JS-gated: every panel's content and every
-    // link is reachable identically with this script never running.
+    // The about-tabs island (Pass 4 — About; Apps-v2 Pass D adds the nested Lessons roles). With no
+    // JS every panel above is already visible and in document order (profile, résumé, lessons,
+    // contact, now), and inside Lessons all three role panels are visible too, so every tab href is
+    // a plain in-page jump that works with zero script. This only adds the show-one-panel behavior at
+    // both levels and honors an incoming location.hash (#contact, or #lessons-educator to open
+    // Lessons on a role). Nothing REAL is JS-gated.
     (function () {
       var nav = document.querySelector('[data-about-tabs]');
       var panels = Array.prototype.slice.call(document.querySelectorAll('.about-panel'));
@@ -115,6 +156,27 @@
         });
       }
 
+      // ---- nested Lessons roles: show one .lessons-panel at a time (its id is #lessons-<role>) ----
+      var lessonsNav = document.querySelector('[data-lessons-tabs]');
+      var lessonsPanels = Array.prototype.slice.call(document.querySelectorAll('.lessons-panel'));
+      var lessonIds = lessonsPanels.map(function (p) { return p.id; });
+      var lessonsTabs = lessonsNav ? Array.prototype.slice.call(lessonsNav.querySelectorAll('.tab')) : [];
+      function setRole(id) {
+        if (lessonIds.indexOf(id) === -1) return;
+        lessonsPanels.forEach(function (p) { p.hidden = p.id !== id; });
+        lessonsTabs.forEach(function (t) {
+          if (t.getAttribute('href') === '#' + id) t.setAttribute('aria-current', 'page');
+          else t.removeAttribute('aria-current');
+        });
+      }
+      if (lessonsNav) {
+        lessonsNav.addEventListener('click', function (ev) {
+          var link = ev.target.closest('.tab');
+          if (!link) return;
+          setRole(link.getAttribute('href').slice(1));
+        });
+      }
+
       nav.addEventListener('click', function (ev) {
         var link = ev.target.closest('.tab');
         if (!link) return;
@@ -122,7 +184,13 @@
       });
 
       var initial = (location.hash || '').slice(1);
-      setPanel(ids.indexOf(initial) !== -1 ? initial : 'profile');
+      if (initial.indexOf('lessons-') === 0 && lessonIds.indexOf(initial) !== -1) {
+        setPanel('lessons');       // a #lessons-<role> deep link opens Lessons on that role
+        setRole(initial);
+      } else {
+        setPanel(ids.indexOf(initial) !== -1 ? initial : 'profile');
+        setRole(lessonIds.length ? lessonIds[0] : '');   // default the nested roles to the first
+      }
     })();
   </script>
 </body>

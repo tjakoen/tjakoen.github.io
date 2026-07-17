@@ -44,6 +44,7 @@ const screens: Array<[name: string, path: string, freeze?: Date]> = [
   ["batch", "/batch"],       // the BATCH showcase
   ["catalog", "/catalog"],   // the generated component catalog
   ["about", "/about"],       // Pass 4 — About: tabbed profile app (re-blessed, was a plain content page)
+  ["resume", "/resume"],     // the résumé board (Apps-v2 Pass D pins it: role links → tagged notes)
   ["notes", "/notes"],       // the /notes feed (Pass 1 — Notes: a portfolio route override)
   ["calendar", "/calendar", new Date("2026-07-12T12:00:00")],   // Pass 2 — Calendar (time frozen, see above)
   ["mail", "/mail", new Date("2026-07-16T12:00:00")],   // Mail v2: list dates relativize, so freeze the clock (see calendar)

@@ -66,6 +66,34 @@ test.describe("the /about profile app (JS on)", () => {
 
 });
 
+test.describe("the /about Lessons tab (Apps-v2 Pass D — nested roles)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/about");
+    await page.locator('.about-tabs [href="#lessons"]').click();
+  });
+
+  test("Lessons shows exactly one role panel by default (Dev manager)", async ({ page }) => {
+    await expect(page.locator("#lessons")).toBeVisible();
+    await expect(page.locator(".lessons-panel:not([hidden])")).toHaveCount(1);
+    await expect(page.locator("#lessons-dev-manager")).toBeVisible();
+    await expect(page.locator('.lessons-tabs [href="#lessons-dev-manager"]')).toHaveAttribute("aria-current", "page");
+  });
+
+  test("clicking a role swaps to exactly that one role panel and moves aria-current", async ({ page }) => {
+    await page.locator('.lessons-tabs [href="#lessons-educator"]').click();
+
+    await expect(page.locator(".lessons-panel:not([hidden])")).toHaveCount(1);
+    await expect(page.locator("#lessons-educator")).toBeVisible();
+    await expect(page.locator("#lessons-dev-manager")).toBeHidden();
+    await expect(page.locator('.lessons-tabs [href="#lessons-educator"]')).toHaveAttribute("aria-current", "page");
+  });
+
+  test("each role links out to its tagged notes", async ({ page }) => {
+    const link = page.locator('#lessons-dev-manager .xp__notes-link a');
+    await expect(link).toHaveAttribute("href", /^\/notes\?tag=[a-z-]+$/);
+  });
+});
+
 test.describe("the /about profile app — incoming hash", () => {
   // deliberately NOT under the beforeEach above: navigating from /about to /about#resume is a
   // same-document fragment change (no reload), so the island's location.hash read on load would
@@ -76,28 +104,44 @@ test.describe("the /about profile app — incoming hash", () => {
     await expect(page.locator("#resume")).toBeVisible();
     await expect(page.locator('.about-tabs [href="#resume"]')).toHaveAttribute("aria-current", "page");
   });
+
+  test("a direct #lessons-educator hash opens Lessons on the Educator role", async ({ page }) => {
+    await page.goto("/about#lessons-educator");
+    await expect(page.locator(".about-panel:not([hidden])")).toHaveCount(1);
+    await expect(page.locator("#lessons")).toBeVisible();
+    await expect(page.locator(".lessons-panel:not([hidden])")).toHaveCount(1);
+    await expect(page.locator("#lessons-educator")).toBeVisible();
+    await expect(page.locator('.lessons-tabs [href="#lessons-educator"]')).toHaveAttribute("aria-current", "page");
+  });
 });
 
 test.describe("the /about profile app (no JS)", () => {
   test.use({ javaScriptEnabled: false });
 
-  test("all four panels are visible, and the tabs are working jump links", async ({ page }) => {
+  test("all five panels are visible (incl. Lessons with every role stacked), tabs are jump links", async ({ page }) => {
     await page.goto("/about");
 
     const panels = page.locator(".about-panel");
-    await expect(panels).toHaveCount(4);
+    await expect(panels).toHaveCount(5);
     for (const panel of await panels.all()) {
       await expect(panel).toBeVisible();
     }
 
     // the tabs are plain anchors into the (fully visible) panels below — no script required
-    await expect(page.locator('.about-tabs [href="#profile"]')).toBeVisible();
-    await expect(page.locator('.about-tabs [href="#resume"]')).toBeVisible();
-    await expect(page.locator('.about-tabs [href="#contact"]')).toBeVisible();
-    await expect(page.locator('.about-tabs [href="#now"]')).toBeVisible();
+    for (const id of ["#profile", "#resume", "#lessons", "#contact", "#now"]) {
+      await expect(page.locator(`.about-tabs [href="${id}"]`)).toBeVisible();
+    }
+
+    // inside Lessons, all three role panels are visible too (no nested show-one without JS)
+    const lessons = page.locator(".lessons-panel");
+    await expect(lessons).toHaveCount(3);
+    for (const panel of await lessons.all()) {
+      await expect(panel).toBeVisible();
+    }
 
     // the real links still resolve without JS
     await expect(page.locator("#resume a[href='/resume']")).toBeVisible();
     await expect(page.locator("#contact a[href='/mail']").first()).toBeVisible();
+    await expect(page.locator("#lessons .xp__notes-link a").first()).toHaveAttribute("href", /^\/notes\?tag=/);
   });
 });
