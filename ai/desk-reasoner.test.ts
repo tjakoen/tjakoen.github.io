@@ -3,7 +3,7 @@
 // and never delegates chat to the stub. Headless CI has no WebGPU, so this fake-driven suite IS the
 // coverage for both the healthy and the degraded paths.
 import { test, expect, describe } from "bun:test";
-import { makeDeskReasoner, navRoutesFromManifest, parseArrival, type DeskDeps } from "./desk-reasoner.ts";
+import { makeDeskReasoner, navRoutesFromManifest, parseArrival, parseModelChoices, type DeskDeps } from "./desk-reasoner.ts";
 import type { DeskEngine } from "./webllm-loader.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
@@ -303,10 +303,16 @@ describe("makeDeskReasoner — arrive() (page-arrival awareness)", () => {
 
     await r.arrive((op) => captured.push(op));
 
-    const bubble = captured.find((o) => o.op === "append" && o.target === "chat-log");
-    expect(bubble).toBeDefined();
-    expect(bubble!.provenance).toBe("ai");
-    expect(bubble!.html).toContain("You're on the Notes page");   // the greeting, in the bubble body
+    // a pending thinking bubble is shown during generation, then SETTLED into the greeting (replace)
+    const thinking = captured.find((o) => o.op === "append" && o.target === "chat-log");
+    expect(thinking).toBeDefined();
+    expect(thinking!.provenance).toBe("ai");
+    expect(thinking!.commit).toBe("pending");
+    expect(thinking!.html).toContain("desk-typing");                  // the animated indicator
+    const greeting = captured.find((o) => o.op === "replace" && typeof o.target === "string" && o.target.startsWith("chat-msg:arrive-body"));
+    expect(greeting).toBeDefined();
+    expect(greeting!.commit).toBe("committed");
+    expect(greeting!.html).toContain("You're on the Notes page");     // the greeting, settled into the same bubble
     const chips = captured.find((o) => o.op === "replace" && o.target === "suggest-chips");
     expect(chips).toBeDefined();
     expect(chips!.html).toContain("Latest note");                     // a model-derived chip
@@ -323,6 +329,19 @@ describe("makeDeskReasoner — arrive() (page-arrival awareness)", () => {
     expect(captured).toEqual([]);
   });
 
+  test("engine ready but the model gives nothing usable → the thinking bubble is removed (stays quiet)", async () => {
+    const { deps } = makeDeps({ loadEngine: async () => fakeEngine([]).engine });   // empty reply → no greeting parses out
+    deps.pageText = () => "Notes: writing about building and teaching with AI.";
+    deps.pageInfo = () => ({ route: "/notes", title: "Notes" });
+    const r = makeDeskReasoner(deps);
+    const captured: RenderOp[] = [];
+    await r.arrive((op) => captured.push(op));
+    expect(captured.some((o) => o.op === "append")).toBe(true);        // the thinking bubble WAS shown
+    const removed = captured.find((o) => o.op === "remove");
+    expect(removed).toBeDefined();                                     // …then cleaned up on the miss
+    expect(captured.some((o) => o.op === "replace" && o.target === "suggest-chips")).toBe(false);
+  });
+
   test("no page text → no-op (nothing to greet about)", async () => {
     let loads = 0;
     const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([arrivalReply]).engine; } });
@@ -332,6 +351,54 @@ describe("makeDeskReasoner — arrive() (page-arrival awareness)", () => {
     await r.arrive((op) => captured.push(op));
     expect(captured).toEqual([]);
     expect(loads).toBe(0);                                            // never even loaded the model
+  });
+});
+
+describe("parseModelChoices — the 0.5B's CHOICES: reply", () => {
+  test("parses a well-formed question + options", () => {
+    const r = parseModelChoices("CHOICES: Which layer? | GRAIN | BATCH | MILL");
+    expect(r).toEqual({ prompt: "Which layer?", choices: [
+      { label: "GRAIN", value: "GRAIN" }, { label: "BATCH", value: "BATCH" }, { label: "MILL", value: "MILL" }] });
+  });
+  test("caps at 5 options and drops blanks", () => {
+    const r = parseModelChoices("choices: pick | a | b | c | d | e | f | g");
+    expect(r?.choices.length).toBe(5);
+  });
+  test("rejects a miss (no question, or fewer than 2 options, or not the protocol)", () => {
+    expect(parseModelChoices("CHOICES: only one")).toBeNull();
+    expect(parseModelChoices("Just a normal answer.")).toBeNull();
+    expect(parseModelChoices("CHOICES:")).toBeNull();
+  });
+});
+
+describe("makeDeskReasoner — clarify (AI asks, human picks)", () => {
+  test("a vague ask → deterministic choice buttons, no model load", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+    await r.decide(chat("show me around"), tools);
+    expect(loads).toBe(0);                                         // deterministic + offline-safe: never touched the model
+    const dialog = ops.find((o) => o.op === "replace" && typeof o.html === "string" && o.html.includes("data-choices"));
+    expect(dialog).toBeDefined();
+    expect(dialog!.html).toContain('data-action="chat.send"');
+    expect(dialog!.html).toContain("chat-choice");
+    expect(dialog!.html).toContain('data-payload-text=');          // each button carries its own answer
+  });
+
+  test("the model can ASK: a CHOICES: reply becomes a first-class choices op", async () => {
+    const { engine } = fakeEngine(["CHOICES: Which layer do you mean? | GRAIN | BATCH"]);
+    const { deps } = makeDeps({ loadEngine: async () => engine });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+    await r.decide(chat("tell me about the layers"), tools);       // not a deterministic action → hits the model
+    const choices = ops.find((o) => o.op === "choices");
+    expect(choices).toBeDefined();
+    expect(choices!.choices).toEqual([{ label: "GRAIN", value: "GRAIN" }, { label: "BATCH", value: "BATCH" }]);
+    // the streamed bubble is settled to the plain question (no raw "CHOICES:" text left showing)
+    const settled = ops.find((o) => o.op === "replace" && typeof o.html === "string" && o.html.includes("Which layer do you mean?"));
+    expect(settled).toBeDefined();
+    expect(settled!.html).not.toContain("CHOICES:");
   });
 });
 

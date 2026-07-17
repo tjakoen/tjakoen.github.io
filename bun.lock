@@ -6,7 +6,7 @@
       "name": "tjakoen.github.io",
       "dependencies": {
         "@tjakoen/batch": "github:tjakoen/batch#5d04be0",
-        "@tjakoen/grain": "github:tjakoen/grain#8e85a47",
+        "@tjakoen/grain": "github:tjakoen/grain#599f7d9",
         "@tjakoen/mill": "github:tjakoen/mill#e56954e",
         "@tjakoen/proof": "github:tjakoen/proof#06087d7",
       },
@@ -22,7 +22,7 @@
 
     "@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#5d04be0", {}, "tjakoen-batch-5d04be0", "sha512-VHK0qDeZ5L0OVPZnb0zbk2jixC2LqwoeDnjiTZfZ2GXyHbAZDAqU0e9uSERku0IpyeTWvsaxiAsrpIlHj6/7sQ=="],
 
-    "@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#8e85a47", {}, "tjakoen-grain-8e85a47", "sha512-XKlJ6mQqd19FN+3SmTxaLV5QqetPns11nhDHetP51OUFTm+qIeALGLy6gPEwoUIq145geSrAxK/pNxDONJ/mAw=="],
+    "@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#599f7d9", {}, "tjakoen-grain-599f7d9", "sha512-V6T9Xqbsi+/dMTVJ4SOOJnA5WXKSLvLeb2HUO3G4HO/7imEsA7zWTA8f6p4zIF694mD/1Gb2pSKFrdVWziO8xA=="],
 
     "@tjakoen/mill": ["@tjakoen/mill@github:tjakoen/mill#e56954e", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "github:tjakoen/grain#8e85a47" } }, "tjakoen-mill-e56954e", "sha512-YUd7fcUvCFCF8niFBTBWWcM/H3NlAYarvjdFo0JB7juiFnqA3DUXzJHGXtgUSSFOVoMTGOwXWPfVCddOZxLy0Q=="],
 
@@ -44,7 +44,11 @@
 
     "@tjakoen/mill/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
 
+    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#8e85a47", {}, "tjakoen-grain-8e85a47", "sha512-XKlJ6mQqd19FN+3SmTxaLV5QqetPns11nhDHetP51OUFTm+qIeALGLy6gPEwoUIq145geSrAxK/pNxDONJ/mAw=="],
+
     "@tjakoen/proof/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
+
+    "@tjakoen/proof/@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#8e85a47", {}, "tjakoen-grain-8e85a47", "sha512-XKlJ6mQqd19FN+3SmTxaLV5QqetPns11nhDHetP51OUFTm+qIeALGLy6gPEwoUIq145geSrAxK/pNxDONJ/mAw=="],
 
     "@tjakoen/proof/@tjakoen/mill": ["@tjakoen/mill@github:tjakoen/mill#7051ef8", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "github:tjakoen/grain#8e85a47" } }, "tjakoen-mill-7051ef8", "sha512-12fOIn0Ogfh/MAPUjoVVbsMKHjoiniHTrse9jMl6+5QwqapC+9mKFpiEi1k6tcB2puP8yw44DwQ8aWBRZ4T72A=="],
   }
