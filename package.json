@@ -10,8 +10,8 @@
   "dependencies": {
     "@tjakoen/batch": "github:tjakoen/batch#5d04be0",
     "@tjakoen/grain": "github:tjakoen/grain#599f7d9",
-    "@tjakoen/mill": "github:tjakoen/mill#e56954e",
-    "@tjakoen/proof": "github:tjakoen/proof#06087d7"
+    "@tjakoen/mill": "github:tjakoen/mill#c767085",
+    "@tjakoen/proof": "github:tjakoen/proof#82493cb"
   },
   "scripts": {
     "deps:refresh": "for p in batch grain mill proof; do bun add @tjakoen/$p@github:tjakoen/$p#$(git ls-remote https://github.com/tjakoen/$p.git main | cut -c1-7); done",
