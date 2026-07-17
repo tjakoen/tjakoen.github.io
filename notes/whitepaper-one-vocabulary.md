@@ -5,7 +5,7 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: whitepaper
 date: 2026-07-02
-updated: 2026-07-03
+updated: 2026-07-17
 readingTime: "~28 min"
 tags: [ai, design-systems, hci, provenance, grain]
 summary: >
@@ -15,7 +15,7 @@ summary: >
   *modality* for AI, a design-system claim, independent of what is built with it or where it runs.
 ---
 
-> **Status: working draft, revised 2026-07-03.** This is a *projection* of
+> **Status: working draft, revised 2026-07-17.** This is a *projection* of
 > [PHILOSOPHY.md](../PHILOSOPHY.md): the beliefs are canonical there; this paper situates them in
 > the literature and argues the contribution. The narrative version of the same stance is
 > [the origin story](origin-story.md); the working method behind the claims is
@@ -23,6 +23,8 @@ summary: >
 > GUI agents / mixed-initiative HCI (verified), provenance / generative-UI (verified), and a
 > shipped-landscape sweep (2026-07-03) that added Builder.io Agent-Native and Meta Astryx as the
 > closest contemporaries and narrowed the novelty claim accordingly (§3.2, §4, §8).
+> **Update (2026-07-17):** the model seam this draft calls the next milestone is now filled: a small
+> live model operates the vocabulary in the browser (§5, §6, §8).
 
 ## Abstract
 
@@ -48,9 +50,12 @@ door**, and **provenance-as-grade**) is a coherent, opinionated position the con
 not yet reached: the nearest contemporary (Agent-Native) shares the first two properties and carries
 no provenance surface at all, so the third (disclosure rendered in the operable surface, coupled to
 the same door that admits the action) is load-bearing. We are equally explicit about limits: the
-reference implementation enforces the door, the registry, and the grade for the human operator
-today, with a scripted reasoner standing behind the model seam (a live model driving the vocabulary
-end-to-end is the declared next milestone); and the claimed *benefits* (that symmetry aids
+reference implementation enforces the door, the registry, and the grade, proven first for the human
+operator and now for a live model as well: a small language model running in the browser reads the
+vocabulary and drives a subset of it (navigation and choice operations) end-to-end through the same
+door, turning the model seam from a declared milestone into a working, if narrow, existence proof (the
+model is small and its command of the full vocabulary is unproven); and the claimed *benefits* (that
+symmetry aids
 controllability; that grade-as-signal is a legible, correctly-interpreted cue) require original user
 studies we have not yet run.
 
@@ -491,12 +496,27 @@ the shape of the combination, and the gap it fills, becomes visible. A coherent,
 position is a contribution; occupying it in running code is the proof, and §6 states plainly how
 much of that occupation stands today.
 
-## 5. Evaluation (planned)
+## 5. Evaluation
 
 The thesis is about the **interaction model** (GRAIN); the evaluation that matters tests *that*. The
 substrate (no-build, native-first) is an engineering property of **BATCH**, largely **orthogonal** to the
 claim: the same interaction model could run on a heavier stack and the argument would stand. So the
-evaluation has one real track, plus an explicit out-of-scope note.
+evaluation has one milestone now met (a live model operating the vocabulary), one real track still to run
+(the interaction claims, which require user studies), and an explicit out-of-scope note.
+
+**What stands today: the live-model existence proof.** When this paper was first drafted the reasoner
+behind the model seam was a scripted stub, and "existence proof" referred to the architecture alone. That
+milestone is now met. A small language model runs entirely in the browser (WebLLM, no server, the
+operator's own hardware) and reads the same vocabulary the human operates, emitting `Intent`s through the
+same `POST /intent` door: it drives a subset of the vocabulary end-to-end, navigation and choice
+operations, with its presence rendered in-surface as grade exactly as the architecture requires. This
+turns the central "can a live model operate this contract at all" question from *argued* to
+*demonstrated*. We state the limits in the same breath: the model is small and its command of the *full*
+vocabulary is unproven; the demonstration is an existence proof of feasibility, not a measure of the
+manifest's sufficiency as a general instruction set; and it is not a controlled study of any *benefit*
+(those are below, and still to run). What it settles is the one thing the architecture could not settle by
+construction, that a real model, given only the index and the snapshot, resolves to the same primitives a
+human click does, through the one door, with the grade following.
 
 **Primary: interaction claims (require user studies).** These *benefits* have **no support in the mapped
   literature**; we state them as hypotheses, not results:
@@ -519,23 +539,30 @@ evaluation has one real track, plus an explicit out-of-scope note.
   co-writing provenance patterns) is the nearest published template. This is what moves the claims
   from *argued* to *demonstrated*.
 
-**Out of scope.** What is built with GRAIN, how it is bundled, and where it is deployed do not bear on the
-modality and are not evaluated here. (In passing: the reference implementation is light enough to run the
-demo entirely in the browser, and a fuller no-build / native-first comparison lives in the BATCH showcase,
-memory `framework-comparison-methodology`, but neither is evidence for this thesis.)
+**Out of scope (measured, but not evidence for this thesis).** What is built with GRAIN, how it is bundled,
+and where it is deployed do not bear on the modality and are not evaluated here. For completeness, the
+substrate's no-build / native-first cost has since been measured directly: the same reference app built
+four ways and audited by one harness (`framework-bench`, memory `framework-comparison-methodology`). On
+the one measured interaction the native / BATCH build ships about 2kb of JavaScript against Next.js's
+118kb for the identical filter, roughly 163× less, with the SEO/AEO head held identical across all four so
+the comparison is fair. Those numbers are real and we stand behind them, but they measure the *substrate*,
+not the *modality*: a heavier stack could carry the same interaction model, so this is context, not proof
+of the thesis.
 
 ## 6. Limitations and threats
 
 - **Implementation status (honesty over rhetoric).** The reference implementation enforces the
   door, the registry validation, and grade rendering (with unit, integration, and conformance
-  tests) for the *human* operator; provenance is stamped server-side and spoof-tested. The reasoner
-  behind the model seam is today a **scripted stub**: no live model has yet read the manifest and
-  driven the vocabulary end-to-end, so the manifest's adequacy as an instruction set is untested.
-  The build order is deliberate: the modality (vocabulary, door, grade, control lifecycle) is being
-  finished *first*, so that the model, when wired, arrives into a contract rather than a scaffold,
-  but until that milestone, "existence proof" refers to the architecture, and this paper says so.
-  Two legacy direct-write routes predating the door also remain in the demo application and are
-  being retired into the documented ownership seam (§2).
+  tests) for the *human* operator; provenance is stamped server-side and spoof-tested. The model
+  seam is no longer a scripted stub: a small language model now runs in the browser, reads the
+  manifest, and drives a subset of the vocabulary (navigation and choice operations) end-to-end
+  through the door (§5). The manifest's adequacy is therefore *demonstrated* for that subset and
+  still untested for the full vocabulary, and the model's small size is its own honest limit. The
+  build order paid off as intended: the modality (vocabulary, door, grade, control lifecycle) was
+  finished *first*, so the model arrived into a contract rather than a scaffold. "Existence proof"
+  now covers the architecture *and* a live model operating it, within the scope §5 states. Two
+  legacy direct-write routes predating the door also remain in the demo application and are being
+  retired into the documented ownership seam (§2).
 - **Fast-moving ground.** The agent-UI protocol landscape (AG-UI, MCP Apps) is months old and shifting;
   capability benchmarks age in weeks. Positioning must be dated, not absolute.
 - **Vendor framing.** The AG-UI "tools/agents/users" layering is the ecosystem's self-description; we
@@ -557,10 +584,17 @@ argues for the destination: authoring symmetry (Astryx), action symmetry (Agent-
 standardized channels (AG-UI, MCP Apps) have all shipped; what none of them carries is the operator
 seeing, in the surface itself, whose hand did what. It is a synthesis and an existence proof rather
 than an invention, a coherent, under-explored point in the design space, occupied here in running
-code, architecture first and the live model next (§6). That is the contribution, and it is enough.
+code, architecture first and now a live model operating it too (§6). That is the contribution, and it
+is enough.
 
 ## 8. Open questions / next research pass
 
+- **Model seam filled (2026-07-17): the milestone this draft called "next" is met.** A small
+  in-browser model (WebLLM) now reads the vocabulary and drives navigation and choice operations
+  end-to-end through the one door; the abstract, §5, §6, and §7 were revised from "scripted stub /
+  declared next milestone" to a working, if narrow, existence proof. What remains open is the *scope*
+  (the full vocabulary, larger models) and every *benefit* claim below, which still needs the user
+  studies.
 - **Third pass (2026-07-03): the landscape moved; absorbed in this revision.** An adversarial
   sweep against the *shipped* landscape (not only papers) surfaced: **Builder.io Agent-Native**
   (May 2026), symmetry + a single executor, no provenance surface; now cited as the closest

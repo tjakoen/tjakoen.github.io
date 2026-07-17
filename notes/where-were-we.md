@@ -86,7 +86,7 @@ stalled. The pun carries more weight than most of my architecture decisions.
     <line x1="200" y1="118" x2="200" y2="148" marker-end="url(#fl-wherew0)"/>
     <line x1="200" y1="184" x2="200" y2="214" marker-end="url(#fl-wherew0)"/>
     <line x1="380" y1="188" x2="272" y2="214" marker-end="url(#fl-wherew0)"/>
-    <path d="M122,232 C92,232 92,166 143,166" marker-end="url(#fl-wherew0)"/> stroke-dasharray="5 4"
+    <path d="M122,232 C92,232 92,166 143,166" marker-end="url(#fl-wherew0)" stroke-dasharray="5 4"/>
   </g>
   <g text-anchor="middle">
     <text x="93" y="38.3" style="fill:var(--color-fg)">AI edits plans/*.md</text>

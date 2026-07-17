@@ -31,7 +31,7 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
   the OTHER notes is still PENDING.
 - **Owed from the 2026-07-07 fable audit (owner-deferred, no urgency):**
   1. ~~**about.html:33** — LinkedIn link is a `REPLACE-ME` stub~~ **DONE (2026-07-08)** — real handle wired.
-  2. **DRAFT flip** — all 8 notes still carry `status: DRAFT`; owner to name which are ready to
+  2. **DRAFT flip** — all 10 notes still carry `status: DRAFT`; owner to name which are ready to
      publish (or flip individually as each is finished).
 - **Pending work (approved, not yet done):**
   1. **Visualization rollout — mostly DONE (2026-07-04):** ten-times-zero was already done;
@@ -45,14 +45,13 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
      pass (one driving metaphor, thinning the formula further) still deserves the user's own eye.
   3. **"Watch Its Hands"** whitepaper companion: plain-language, in-voice, sells the paper to normal
      people. Blueprint (hooks + concept-translations) is in this session's plan; leads with the piano.
-  4. **where-were-we.md — DRAFTED (2026-07-08), NOW STALE:** the PROOF companion note (plans-as-files,
-     board as projection; canonical `proof/PLAN.md`, ROADMAP Track E). Mermaid figure rendered.
-     **The note's central honest confession — "none of this is built… I'm publishing the plan for the
-     plan tool before the plan tool exists" — is now FALSE:** PROOF shipped (core + board + check/init
-     +the mountable routes) and PANTRY v1 runs (the note doesn't mention PANTRY at all). Before any
-     DRAFT→PUBLISHED flip this needs an owner-voiced rewrite: swap the "unbuilt" framing for the
-     honest new state (it got built, fast, with delegated agents), and decide whether to fold in
-     PANTRY. Owner owns the prose — flagged, not rewritten.
+  4. **where-were-we.md — DRAFTED (2026-07-08), STALE-FLAG RESOLVED (2026-07-12):** the PROOF companion
+     note (plans-as-files, board as projection; canonical `proof/PLAN.md`, ROADMAP Track E). Mermaid figure
+     rendered. The note's original "none of this is built… I'm publishing the plan for the plan tool before
+     the plan tool exists" confession has since gained a dated **"Update, 2026-07-12: it's on the wall"**
+     section that closes the loop honestly (PROOF shipped: core + board + check/init + the mountable
+     routes). **Only open question left from this entry:** whether to fold in a mention of PANTRY v1 (the
+     note still doesn't name it). Owner owns the prose — flagged, not rewritten.
 
 ## Information architecture (decisions — memory `portfolio-content-architecture`)
 
@@ -192,13 +191,28 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       retired a library (View Transitions, dialog, details, has/color-mix, constraint validation,
       plain-links tabs), the no-build + static-export payoff, the categorical advantages (zero runtime
       deps, own-the-surface, native = accessible/future-proof, one JS file shipped), and the honest
-      ledger: perf is a **well-founded bet, not measured** (ties to the Framework comparison follow-up
-      below, `bun run audit`), plus native-as-direction-not-religion (still uses htmx/Bun/one script).
-      **DRAFT** at `notes/the-browser-grew-up.md`. Cross-links origin-story + ten-times-zero, and is
-      linked back from both (de-orphaned 2026-07-04); duplicated sentences shared with origin-story
+      ledger: perf is now **measured** (the framework-comparison bench, `framework-bench`: ~163× less JS
+      than Next on the one interaction; the note's ledger flipped bet→measured, and the in-browser model
+      claim flipped to wired, 2026-07-17), plus native-as-direction-not-religion (still uses htmx/Bun/one
+      script). **DRAFT** at `notes/the-browser-grew-up.md`. Cross-links origin-story + ten-times-zero, and
+      is linked back from both (de-orphaned 2026-07-04); duplicated sentences shared with origin-story
       (Bun-for-a-reason, stale-dist, Coding2GO) were rewritten here so the joke lives in one place.
-      All figures rendered (replacement-map SVG on the scaffold, 2026-07-04). **TODO before publish:**
-      link the framework-comparison bench once it exists.
+      All figures rendered (replacement-map SVG on the scaffold, 2026-07-04). Reading time corrected to
+      ~12 min (2026-07-17). **TODO before publish:** the measured companion (native-partial-updates) is
+      linked; only loose end is the bench repo's public link, pending its git push (bench P6).
+- [~] **Feels Like an App (and It's Lying to You)** — the native-first *how it works* companion to
+      the-browser-grew-up (which carries the *why*): the single-page illusion in one line of CSS (View
+      Transitions), no-build/pages-are-photographs, the one script that earns its keep, one write path with
+      no server, three layers stacked one direction. Honest ledger now **closed on the benchmark** (the
+      measured number is in hand; §seam retitled + opener rewritten 2026-07-17) and **the model seam is
+      wired** (a small in-browser model drives the desk; scripted-scenario claim flipped 2026-07-17).
+      Cross-links native-partial-updates + ten-times-zero. **DRAFT** at `notes/feels-like-an-app.md`.
+- [~] **Native Partial Updates (I Finally Ran It)** — the *measured* companion that closes the
+      "well-founded bet, not measured" seam the other two native notes used to carry: the same reference
+      app built four ways and audited by one harness (`framework-bench`), the Declarative Partial Updates
+      variant (streamHTMLUnsafe/setHTMLUnsafe), and the honest frame (categorical JS/bytes as the headline,
+      local timings as corroboration only). **DRAFT** at `notes/native-partial-updates.md`. **TODO before
+      publish:** fill the footer repo link once `framework-bench` is git-pushed (#8 / bench P6).
 - [x] **~~Fifty Tiny Things Before One Big One~~ — CUT (2026-07-03).** A standalone design-philosophy
       note had no lane: the atomic/DRY/tokens core is just Brad Frost (credit + link him where design
       comes up — origin-story already does), and the genuinely-original bits (grade-as-signal,
@@ -270,7 +284,15 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
      every served collection already had frontmatter titles; the fix only benefits future title-less content.
   3. **(Was fix #3, now moot)** server-side mermaid→SVG renderer: closed as NOT-planned for content per
      the FIGURES reconcile — no content mermaid remains. Capability stays unbuilt unless mermaid authoring returns.
-- **Framework comparison / Evaluation** (public proof of native-first + no-build): same reference app
-  across htmx / Astro / Next.js, measured by a multi-target `bun run audit`; lead with client-JS-shipped
-  + no-build + deps (categorical), corroborate with perf numbers, publish the bench repo, state where
-  others win. Becomes the whitepaper's Evaluation section (memory `framework-comparison-methodology`).
+- **Framework comparison / Evaluation** (public proof of native-first + no-build) — **SCOPED + approach
+  confirmed 2026-07-16. BUILT + MEASURED 2026-07-17.** Own public repo `framework-bench`; reference app = a small blog
+  (index + article detail + one client-side filter); targets = **native/BATCH vs Astro vs Next.js** (htmx
+  dropped). De-risk: `batch/audit/audit.ts` `audit()` is already framework-generic, so this is "build 3
+  apps + point it at each," not "build a benchmark tool." Lead with client-JS-shipped + no-build + deps
+  (categorical, network-independent), corroborate with local perf (median, not proof), state where Astro
+  ties/wins. Becomes the whitepaper's Evaluation section. Full plan: `~/.claude/plans/framework-bench-plan.md`;
+  memory `framework-comparison-methodology`. **Realized as FOUR builds (added a native+DPU variant): index
+  JS for one identical filter = Astro ~744b / native ~2kb / native+DPU ~3kb / Next ~118kb (~162x), parity
+  ties across all. Measured note landed: `notes/native-partial-updates.md` (DRAFT); the-browser-grew-up +
+  feels-like-an-app ledgers flipped bet→measured. Repo now at `bread-repos/framework-bench` (own repo, NOT
+  yet pushed = P6). Next = P6 (README + owner git init/push), P7 (whitepaper Evaluation section).**

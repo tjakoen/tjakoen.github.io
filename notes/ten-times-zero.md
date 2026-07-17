@@ -23,7 +23,7 @@ summary: >
 > to [my origin story](origin-story.md), and to the teaching side of the same idea:
 > [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md) and
 > [I Nearly Quit Teaching](why-i-teach.md). All numbers are a snapshot of the
-> [batch-stack](../../README.md) repo at the time of writing.
+> [batch-stack](https://github.com/tjakoen/bread) repo at the time of writing.
 
 > **One of my students?** If what you actually want to know is how I feel about *you* using AI, I
 > wrote that post for you: [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md).
@@ -334,8 +334,8 @@ That environment is a system, and it's copyable.
 ### The playbook
 
 **1. Write the rails before the features.** Before I built much of anything, I wrote the rulebook.
-The repo has a [conventions doc](../../batch/docs/CONVENTIONS.md), the build standard: layering rules, how
-components are structured, the testing bar. And an [onboarding doc](../../CLAUDE.md) written *for the
+The repo has a [conventions doc](/batch/docs/conventions), the build standard: layering rules, how
+components are structured, the testing bar. And an [onboarding doc](https://github.com/tjakoen/bread/blob/main/CLAUDE.md) written *for the
 AI*, so any model (or human) joining the project reads the same "here's how this works, here's what
 not to touch" before it writes a line. The AI goes fast because the guardrails are already up. You
 don't tell a fast driver to be careful; you build the track.
@@ -360,7 +360,7 @@ to sound right exactly when it's wrong.
 
 Does it still match the goal? Does it honor the docs? Did it quietly break a rule to get something
 working? That's where most of the hours actually go: not building, checking. Then before the big
-commits there's a [repeatable runbook](../../AUDIT.md): tests green? Layers still importing in
+commits there's a [repeatable runbook](https://github.com/tjakoen/bread/blob/main/AUDIT.md): tests green? Layers still importing in
 one direction only? Any hardcoded values that should be design tokens? Going fast is only safe when
 there's a cheap, repeatable way to prove you didn't bend the shape of the thing.
 
