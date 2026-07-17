@@ -39,4 +39,31 @@ test.describe("mobile — the assistant bottom sheet", () => {
     await page.locator('.app-dock a[href="/calendar"]').click();
     await expect(page).toHaveURL(/\/calendar$/);
   });
+
+  test("with the drawer open, NO dock row is covered by the assistant sheet's peeking grab bar", async ({ page }) => {
+    // the assistant bottom-sheet sits at a higher z-index than grain's off-canvas rail, so before the
+    // modal-layering fix its peeking grab bar poked up through the open drawer and hid the dock's
+    // lowest rows (About, half of Mail). Open the drawer; every dock row must be the topmost element
+    // at its own centre (nothing painted over it).
+    await page.goto("/loop");
+    await page.locator('.app-shell__topbar [data-shell="rail-toggle"]').click();
+    await expect(page.locator(".app-shell")).toHaveAttribute("data-rail-open", "true");
+    await page.waitForTimeout(400);   // let the 0.3s slide-in settle before hit-testing positions
+    const items = page.locator(".app-dock__item");
+    const n = await items.count();
+    expect(n).toBeGreaterThanOrEqual(4);   // Notes / Calendar / Mail / About — the last is the one that hid
+    for (let i = 0; i < n; i++) {
+      const covered = await items.nth(i).evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        return !el.contains(hit);   // true = something else is painted over this row's centre
+      });
+      const label = (await items.nth(i).locator(".app-dock__label").textContent())?.trim();
+      expect(covered, `dock row "${label}" is covered by an overlay`).toBe(false);
+    }
+    // the open drawer is the topmost layer: its scrim sits above the assistant sheet, the rail above the scrim.
+    const z = async (sel: string) => Number(await page.locator(sel).evaluate((el) => getComputedStyle(el).zIndex));
+    expect(await z(".app-shell__rail")).toBeGreaterThan(await z(".app-shell__scrim"));
+    expect(await z(".app-shell__scrim")).toBeGreaterThan(await z(".app-shell__aside"));
+  });
 });

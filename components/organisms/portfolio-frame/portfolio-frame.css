@@ -281,6 +281,19 @@ body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); 
 
   /* the shared mobile scrim (grain sets its base rules) also veils behind the open sheet. */
   .app-shell.app-window[data-aside-open] .app-shell__scrim { opacity: 1; pointer-events: auto; }
+
+  /* THE NAV DRAWER IS A MODAL LAYER. grain stacks the off-canvas rail at z-index 40 and its scrim
+     at 39, but this file lifts the assistant bottom-sheet to z-index 44 (above) — so with the
+     drawer open, the sheet's peeking grab bar pokes UP through the drawer and clips the app dock's
+     lowest rows (About, half of Mail hid behind "ASSISTANT · Chat"). When the drawer is open it
+     should be the topmost layer: lift its scrim above the sheet, and the drawer above the scrim,
+     so the dock reads in full and a scrim tap still dismisses. */
+  .app-shell.app-window[data-rail-open="true"] .app-shell__scrim { z-index: 45; }
+  .app-shell.app-window[data-rail-open="true"] .app-shell__rail { z-index: 46; }
+
+  /* the dock's last row sat flush to the screen's bottom edge; give it safe-area breathing room so
+     it clears a phone's home indicator (no-op on devices without an inset). */
+  .app-shell.app-window .app-dock { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
 /* ═══ MOBILE TITLE BAR: keep theme + the viewport toggle reachable ══════════════════════════════
