@@ -2,7 +2,7 @@
 title: "I Nearly Quit Teaching. So I Automated the Part That Was Killing Me."
 subtitle: "I teach 100 to 150 students a semester, part-time, for a fraction of what my day job pays, and last term it almost broke me. Here's why I do it anyway, how I actually run a classroom, and the GitHub-native platform I built so I could stop drowning and start teaching again."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-07-03
 readingTime: "~8 min"
@@ -13,12 +13,6 @@ summary: >
   nearly made me quit, I automated grading and coursework onto a GitHub-native platform so the
   mechanical grind stopped stealing the time I actually wanted to spend on students.
 ---
-
-> **Draft: my voice, plain text for now.** Companion to
-> [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md) (how the platform
-> actually uses AI, with the numbers) and [Ten Times Zero Is Still Zero](ten-times-zero.md) (the
-> principle underneath it). The platform this post describes is one of my highlighted projects:
-> [github-native-course-platform](https://github.com/tjakoen/github-native-course-platform).
 
 ## The semester that almost ended it
 

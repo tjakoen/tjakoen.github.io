@@ -2,7 +2,7 @@
 title: "I Built a Whole Stack Because No To-Do App Would Have Me"
 subtitle: "The honest story of how trying to get my own life organized turned into a no-build web stack, a design system, a little content engine, and an AI whose entire job is to manage me"
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-07-02
 readingTime: "~9 min"
@@ -11,13 +11,6 @@ summary: >
   How trying to organize my own life turned into a no-build stack, a design system, a content engine,
   and an AI that manages me.
 ---
-
-> **Draft, my own voice.** Styling and presentation come later via MILL/GRAIN; the desk figure
-> awaits a real capture from the live demo. Companion to the technical docs
-> ([PHILOSOPHY.md](https://github.com/tjakoen/tjakoen.github.io/blob/main/PHILOSOPHY.md), [ARCHITECTURE.md](/batch/docs/architecture),
-> [mill/PLAN.md](https://github.com/tjakoen/mill/blob/main/PLAN.md)), the technical side of the native-first bet
-> ([The Browser Grew Up While I Was Busy With Frameworks](the-browser-grew-up.md)), and the
-> whitepaper draft [One Vocabulary, Two Operators](whitepaper-one-vocabulary.md).
 
 ## A confession, up front
 

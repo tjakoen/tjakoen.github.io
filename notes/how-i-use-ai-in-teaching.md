@@ -2,7 +2,7 @@
 title: "How I Teach With AI, and Where I Lock It Out"
 subtitle: "I used an AI to build the platform I run 100 to 150 students a semester through, and to draft their feedback at scale. I also used it to build the one exam where AI is banned from the room. Here's exactly how I use it in my teaching (with the numbers), and every place I deliberately refuse to."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-07-03
 readingTime: "~9 min"
@@ -15,12 +15,6 @@ summary: >
   banned outright, the PII I keep away from the model, and the boundaries I had to keep hardening so
   the automation could never quietly damage a real student's work.
 ---
-
-> **Draft. My voice, plain text for now.** The teaching half of a bigger idea. The principle it
-> rests on (*AI is a multiplier, and ten times zero is still zero*) is its own post:
-> [Ten Times Zero Is Still Zero](ten-times-zero.md). Why I built the platform in the first place is
-> [I Nearly Quit Teaching](why-i-teach.md). The platform itself:
-> [github-native-course-platform](https://github.com/tjakoen/github-native-course-platform).
 
 ## Two sentences that look like a contradiction
 
