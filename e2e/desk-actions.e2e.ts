@@ -77,3 +77,38 @@ test.describe("THE DESK drives the page (deterministic actions, no WebGPU needed
     await expect(page.locator('.assistant__log .chat-message[data-role="you"]')).toContainText("what can I do here?");
   });
 });
+
+test.describe("THE DESK asks (choices dialog — AI asks, human picks)", () => {
+  test("a vague ask offers pick-one choices, and picking one drives the page", async ({ page }) => {
+    await clientDeskEverywhere(page);
+    await page.goto("/");
+    await deskReady(page);
+
+    await ask(page, "show me around");                                  // deterministic clarify (no model)
+
+    const choices = page.locator(".assistant__log [data-choices] .chat-choice");
+    await expect(choices.first()).toBeVisible();
+    expect(await choices.count()).toBeGreaterThanOrEqual(2);
+
+    await page.locator(".assistant__log .chat-choice", { hasText: "GRAIN" }).first().click();
+    await page.waitForURL("**/grain");                                  // the pick drove the navigation
+  });
+
+  test("the picked choice resolves the group pick-once (siblings retire, no re-answer)", async ({ page }) => {
+    await clientDeskEverywhere(page);
+    await page.goto("/");
+    await deskReady(page);
+
+    await ask(page, "show me around");
+    const group = page.locator(".assistant__log [data-choices]").first();
+    await expect(group.locator(".chat-choice").first()).toBeVisible();
+
+    // pick a choice that stays on the page (capabilities) so we can assert the resolution
+    await group.locator(".chat-choice", { hasText: "What can I do here?" }).click();
+    await expect(group).toHaveAttribute("data-resolved", "");
+    await expect(group.locator("[data-chosen]")).toHaveCount(1);
+    await expect(group.locator("button:disabled")).toHaveCount(await group.locator("button").count());
+    // and the pick actually ran (capabilities reply landed)
+    await expect(page.locator(".assistant__log")).toContainText("open the latest note");
+  });
+});

@@ -39,6 +39,15 @@ const PERSONA = [
   "Keep answers to 2–4 sentences, plain and direct. No hype, no bullet lists unless asked.",
 ].join(" ");
 
+// The CHOICES protocol — offered ALWAYS (unlike nav, which needs live targets): when the visitor's
+// request is genuinely ambiguous or a small set of options would serve them better than prose, the
+// model may ASK instead of answer. Terse + literal so a 0.5B follows it; the reasoner parses it
+// (parseModelChoices) into grain's choices op. Kept a rare move so it doesn't nag.
+const CHOICES_BLOCK =
+  "If (and only if) the request is ambiguous and a short menu would help, you MAY reply with EXACTLY " +
+  "\"CHOICES: <your one-line question> | <option 1> | <option 2> | <option 3>\" — 2 to 4 short options " +
+  "(each a few words), and nothing else. Otherwise just answer. Don't offer choices for a clear question.";
+
 /** The NAVIGATE:<route> protocol block — told to the model ONLY when there are live nav targets to
  *  offer, and scoped to exactly that list (never a route the model invents). Kept terse: a 0.5B
  *  follows a short, literal instruction far more reliably than a long one. */
@@ -87,9 +96,10 @@ export function buildPrompt(input: PromptInput): ChatMessage[] {
   const { query, chunks, history, navRoutes } = input;
   const nav = navRoutes && navRoutes.length > 0 ? navBlock(navRoutes) : "";
   const personaCost = approxTokens(PERSONA);
+  const choicesCost = approxTokens(CHOICES_BLOCK);   // always in the system prompt
   const navCost = nav ? approxTokens(nav) : 0;
   const queryCost = approxTokens(query);
-  let remaining = PROMPT_TOKEN_BUDGET - personaCost - navCost - queryCost;
+  let remaining = PROMPT_TOKEN_BUDGET - personaCost - choicesCost - navCost - queryCost;
 
   const historyBudget = Math.floor(remaining * 0.35);
   const clippedHistory = clipHistory(history, Math.max(0, historyBudget));
@@ -101,6 +111,7 @@ export function buildPrompt(input: PromptInput): ChatMessage[] {
   // `system` message anywhere but first trips MLC's SystemMessageOrderError). CONTEXT is appended
   // below so it still reads as a distinct, route-tagged block the model can cite.
   let systemContent = PERSONA;
+  systemContent += `\n\n${CHOICES_BLOCK}`;
   if (nav) systemContent += `\n\n${nav}`;
   if (context) systemContent += `\n\nCONTEXT (site content the visitor can open):\n\n${context}`;
   const messages: ChatMessage[] = [{ role: "system", content: systemContent }];

@@ -16,14 +16,30 @@ export const SECTIONS: Section[] = [
   { name: "the BREAD stack", route: "/bread", aliases: ["bread", "the stack", "stack"] },
   { name: "Notes", route: "/notes", aliases: ["notes", "the notes", "blog", "the blog", "notebook", "the notebook"] },
   { name: "About", route: "/about", aliases: ["about", "contact", "resume", "cv"] },
-  { name: "Home", route: "/", aliases: ["home", "welcome", "the welcome page"] },
+  // "homepage"/"home page" are listed explicitly because `\bhome\b` does NOT match "homepage"
+  // (no word boundary before "page") — the exact miss that sent "take me to homepage" to chat.
+  { name: "Home", route: "/", aliases: ["home", "homepage", "home page", "welcome", "the welcome page", "landing", "landing page", "front page", "main page", "the home page"] },
 ];
 
+export type Choice = { label: string; value: string };
 export type Action =
   | { kind: "open-latest-note" }
   | { kind: "summarize" }
   | { kind: "capabilities" }
+  | { kind: "clarify"; prompt: string; choices: Choice[] }
   | { kind: "navigate"; route: string; name: string };
+
+/** The disambiguation the desk offers for a vague "where should I go?" — each choice's `value` is a
+ *  phrase routeAction itself resolves (a navigate or capabilities), so a click just re-enters the
+ *  router. Deterministic + offline-safe: no model needed to ASK, and no model needed to ANSWER. */
+export const CLARIFY_PROMPT = "Sure — where would you like to go?";
+export const CLARIFY_CHOICES: Choice[] = [
+  { label: "GRAIN", value: "take me to grain" },
+  { label: "The notes", value: "take me to the notes" },
+  { label: "The BREAD stack", value: "take me to the stack" },
+  { label: "About TJ", value: "take me to about" },
+  { label: "What can I do here?", value: "what can I do here?" },
+];
 
 const norm = (s: string): string => s.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
 const reEscape = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -44,6 +60,14 @@ export function routeAction(text: string): Action | null {
       /\bwhat.?s (here|next)\b/.test(t))
     return { kind: "capabilities" };
 
+  // clarify — a vague "help me get somewhere" ask with no concrete destination. Offer choices rather
+  // than a wall of text or a guess. Kept BEFORE navigate so "show me around" (a nav VERB + no alias)
+  // resolves here instead of falling through to chat.
+  if (/\bshow me around\b/.test(t) || /\b(give me|take) a tour\b/.test(t) || /\bsurprise me\b/.test(t) ||
+      /\bwhere (should|can|do) i (go|start|look|begin)\b/.test(t) || /\bhelp me (choose|decide|navigate|find|get around)\b/.test(t) ||
+      /\b(what are my |my )?options\b/.test(t) || /\bnot sure\b/.test(t))
+    return { kind: "clarify", prompt: CLARIFY_PROMPT, choices: CLARIFY_CHOICES };
+
   // open the latest note — a "latest/newest/recent" qualifier + a note word + an intent verb
   const noteWord = /\b(note|notes|blog|post|posts|article|writing|entry)\b/;
   const latest = /\b(latest|newest|recent|last|most recent)\b/;
@@ -51,8 +75,10 @@ export function routeAction(text: string): Action | null {
   if (latest.test(t) && noteWord.test(t) && intent.test(t)) return { kind: "open-latest-note" };
 
   // navigate to a section — a nav verb + a known section alias (longest alias wins, so "the stack"
-  // beats "stack" and can't be shadowed by a shorter partial).
-  if (/\b(take me to|go to|open|show me|navigate to|jump to|visit|show)\b/.test(t)) {
+  // beats "stack" and can't be shadowed by a shorter partial). The verb set is generous on purpose:
+  // a visitor phrases "take me home" a dozen ways, and a miss here dumps them into chat where the
+  // 0.5B tends to EXPLAIN how to navigate instead of doing it.
+  if (/\b(?:(?:take|bring|send|get) me(?: back)?(?: to)?|go(?: back)? to|head(?: back)? to|return to|back to|navigate to|jump to|visit|open|show me|show)\b/.test(t)) {
     let hit: { route: string; name: string; len: number } | null = null;
     for (const s of SECTIONS)
       for (const a of s.aliases)
@@ -60,6 +86,14 @@ export function routeAction(text: string): Action | null {
           hit = { route: s.route, name: s.name, len: a.length };
     if (hit) return { kind: "navigate", route: hit.route, name: hit.name };
   }
+
+  // Bare destination: the whole message IS a place name ("homepage", "grain", "the notes") with no
+  // verb. Treat it as "go there" — navigation is a safe, reversible default, and it rescues the very
+  // common one-word ask. Gated to an EXACT whole-text match so "what is grain" (a question that only
+  // contains the alias) still falls through to chat.
+  for (const s of SECTIONS)
+    for (const a of s.aliases)
+      if (t === a) return { kind: "navigate", route: s.route, name: s.name };
   return null;
 }
 

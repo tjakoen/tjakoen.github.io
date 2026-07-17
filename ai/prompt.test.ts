@@ -52,7 +52,8 @@ describe("buildPrompt", () => {
   test("no chunks → system message is persona-only (no CONTEXT), still valid (persona + query)", () => {
     const msgs = buildPrompt({ query: "q", chunks: [], history: [] });
     expect(msgs.filter((m) => m.role === "system").length).toBe(1);
-    expect(msgs[0]!.content).toBe(__test.PERSONA);
+    expect(msgs[0]!.content).toContain(__test.PERSONA);           // persona present…
+    expect(msgs[0]!.content).toContain("CHOICES:");               // …plus the always-on choices protocol
     expect(msgs[0]!.content).not.toContain("CONTEXT (site content");
     expect(msgs[msgs.length - 1]!.content).toBe("q");
   });

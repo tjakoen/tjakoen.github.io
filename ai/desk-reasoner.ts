@@ -16,7 +16,12 @@ import type { Intent, Decision, RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import { buildPrompt, type ChatMessage } from "./prompt.ts";
 import { retrieve, type Knowledge } from "./retrieval.ts";
 import type { DeskEngine, EngineProgress } from "./webllm-loader.ts";
-import { routeAction, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
+import { routeAction, SECTIONS, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
+
+// The routes the deterministic router knows by name (e.g. "/", "/grain"). Used as a safety net when
+// the MODEL chooses a NAVIGATE target: even if that route isn't a live "nav:" surface in this page's
+// manifest (e.g. "/" is rarely a sidebar link), it's a real destination we trust, so honor it.
+const SECTION_ROUTES = new Set(SECTIONS.map((s) => s.route));
 // GRAIN's reasoner-kit — the chat bubble markup the desk USED to fork now comes from here (injected
 // as deps.kit at runtime; the door URL-imports it). Type-only import (erased) so this stays a
 // client-safe module. See grain/ai/reasoner-kit.ts.
@@ -66,6 +71,20 @@ export function navRoutesFromManifest(manifestText: string): string[] {
 // to exactly the routes navRoutesFromManifest found — see navBlock in prompt.ts). Matched loosely
 // (case-insensitive, trims stray whitespace) since a 0.5B doesn't always hit a format byte-exact.
 const MODEL_NAVIGATE_RE = /^navigate:\s*(\/\S*)\s*$/i;
+
+// The model's own clarifying-question choice, per the CHOICES:<question> | <opt> | <opt> protocol
+// prompt.ts offers it. The 0.5B is loose, so parse defensively: pipe-split, trim, drop blanks, cap.
+// Returns null unless there's a question AND 2–5 usable options (a lone or over-long list is a miss).
+const MODEL_CHOICES_RE = /^choices:\s*(.+)$/is;
+export function parseModelChoices(raw: string): { prompt: string; choices: { label: string; value: string }[] } | null {
+  const m = MODEL_CHOICES_RE.exec(raw.trim());
+  if (!m) return null;
+  const parts = m[1]!.split("|").map((s) => s.replace(/\s+/g, " ").trim()).filter(Boolean);
+  const prompt = parts.shift() ?? "";
+  const opts = parts.slice(0, 5).filter((s) => s.length <= 48);
+  if (!prompt || opts.length < 2) return null;
+  return { prompt, choices: opts.map((label) => ({ label, value: label })) };
+}
 
 /** The Reasoner plus a client-only reset — the door hangs this on window.deskReset ("New chat"). */
 export interface DeskReasoner extends Reasoner {
@@ -337,6 +356,14 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           return { ok: true, ops: [], reply: line };
         }
 
+        if (action?.kind === "clarify") {
+          // Deterministic + offline: one clean bubble — the prompt with the choice buttons under it.
+          // choiceGroup (trusted, self-escaping) goes INSIDE the body so it's a single message; the
+          // dispatcher still resolves the group pick-once (keyed on [data-choices], not the op kind).
+          setBodyRaw(esc(action.prompt) + deps.kit.choiceGroup(log, action.choices), "committed");
+          return { ok: true, ops: [], reply: action.prompt };
+        }
+
         if (action?.kind === "open-latest-note") {
           const notes = (await deps.listNotes?.()) ?? [];
           const target = notes[0];
@@ -402,7 +429,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // in scope), AND kit.navigateOp's own isSafeNavigateHref check (it throws on anything unsafe) —
         // the same defense-in-depth the deterministic paths get for free from their hardcoded routes.
         const navMatch = MODEL_NAVIGATE_RE.exec(acc.trim());
-        if (navMatch && deps.navigate && navRoutes.includes(navMatch[1]!)) {
+        if (navMatch && deps.navigate && (navRoutes.includes(navMatch[1]!) || SECTION_ROUTES.has(navMatch[1]!))) {
           const route = navMatch[1]!;
           try {
             deps.kit.navigateOp("screen", route);   // throws on an unsafe href — validate before acting
@@ -412,6 +439,17 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           } catch (err) {
             console.error("[desk] model chose an unsafe navigate href", route, err);   // fall through to a plain reply
           }
+        }
+
+        // The model chose to ASK instead of answer (CHOICES: protocol, prompt.ts). Turn the raw
+        // "CHOICES: q | a | b" into a real ask: the streamed bubble becomes the question, and grain's
+        // first-class choicesOp appends the pick-one buttons (each a chat.send carrying its value).
+        const asked = parseModelChoices(acc);
+        if (asked) {
+          setBody(esc(asked.prompt), "committed");
+          tools.emit(deps.kit.choicesOp(log, "", asked.choices));
+          history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: asked.prompt });
+          return { ok: true, ops: [], reply: asked.prompt };
         }
 
         history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: acc });
@@ -443,6 +481,15 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       if (!page) return;
       const engine = await ensureEngine(() => {});   // SILENT: never render the load bar on a navigation
       if (!engine) return;                           // offline/unavailable → static chips stand
+      // Now the engine is ready, generation itself takes a beat — show the thinking indicator so the
+      // pane isn't dead-silent before the greeting lands (the load phase above stays silent by design).
+      // The bubble's body is addressable so we settle it to the greeting, or remove the whole bubble
+      // if the model gives nothing usable (keeping arrival's "quiet on a miss" character).
+      const arriveMsg = `chat-msg:arrive-${RUN}`;
+      const arriveBody = `chat-msg:arrive-body-${RUN}`;
+      applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "pending",
+        html: deps.kit.chatBubble("ai", "grain", deps.kit.chatBody(THINKING, arriveBody), "Desk")
+          .replace('<div class="chat-message"', `<div class="chat-message" data-surface="${arriveMsg}"`) });
       let raw = "";
       try {
         const stream = await engine.chat.completions.create({
@@ -460,13 +507,16 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         for await (const part of stream) raw += part.choices?.[0]?.delta?.content ?? "";
       } catch (err) {
         console.error("[desk] arrival generation failed", err);   // a nav is not worth a visible error
+        applyOp({ target: arriveMsg, op: "remove", provenance: "ai", commit: "committed" });   // drop the thinking bubble
         return;
       }
       const { greeting, chips } = parseArrival(raw);
-      if (!greeting) return;
-      // an AI greeting bubble — grain's own kit, the same shape as every other desk bubble.
-      applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
-        html: deps.kit.chatBubble("ai", "grain", deps.kit.chatBody(deps.kit.esc(greeting)), "Desk") });
+      if (!greeting) {
+        applyOp({ target: arriveMsg, op: "remove", provenance: "ai", commit: "committed" });   // nothing usable → stay quiet
+        return;
+      }
+      // settle the thinking bubble into the greeting (grain's kit — same shape as every desk bubble).
+      applyOp(deps.kit.replaceBodyOp(arriveBody, deps.kit.esc(greeting), "committed"));
       // reasoner-driven chips: only REPLACE the static starters when the model actually offered some.
       if (chips.length) applyOp({ target: "suggest-chips", op: "replace", provenance: "ai",
         commit: "committed", html: suggestChipsHtml(chips) });
