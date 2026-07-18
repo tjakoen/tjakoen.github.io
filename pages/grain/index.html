@@ -28,10 +28,6 @@
     <!-- 1 · HERO — the pitch, with the signature settling grain → clean -->
     <section class="site__section hero" aria-label="What GRAIN is">
       <p class="eyebrow">The <span class="name">GRAIN</span> design system</p>
-      <!-- diagram-first: the shared four-layers stack, GRAIN highlighted (see
-           components/molecules/stack-diagram). Leads the hero so you land knowing where GRAIN
-           sits in BREAD before the headline. -->
-      <stack-diagram current="grain"></stack-diagram>
       <h1 class="hero__head">One interface. A person <em>and</em> an AI operate it through the same controls.</h1>
       <p class="site__lede">A human click and an AI decision become the same intent, flow through one door, and
         come back as visible edits. The AI's presence is shown, never hidden: <b class="name">grain</b> is the signature of a machine at work.</p>
@@ -223,6 +219,12 @@
           <button class="btn" data-variant="soft" data-set-theme="brioche">Use Brioche</button>
         </div>
       </div>
+    </section>
+
+    <!-- the shared four-layers stack now CLOSES the page (headline leads; owner 2026-07-18) -->
+    <section class="site__section" aria-label="Where GRAIN sits in the stack">
+      <div class="section-head"><span>Where it sits in the stack</span></div>
+      <stack-diagram current="grain"></stack-diagram>
     </section>
 
     <!-- footer -->
