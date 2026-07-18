@@ -18,7 +18,9 @@
         "Built solutions for US government and education clients aimed at lowering barriers to employment.",
         "Turned social-impact goals into concrete technical specs, working with product, design, and leadership."
       ],
-      "links": []
+      "links": [
+        { "href": "/calendar/conference-talk", "label": "Gave a talk" }
+      ]
     },
     {
       "title": "College Instructor",
@@ -34,7 +36,10 @@
         "Built full-stack web and mobile curricula: Dart, Flutter, Web, React, Vue on the frontend; Node, Express, PHP, MySQL on the backend.",
         "Teach Software Engineering Implementation and Management, connecting theory to real agile practice."
       ],
-      "links": []
+      "links": [
+        { "href": "/calendar/hackathon-coaching", "label": "Coached a hackathon team" },
+        { "href": "/calendar/student-project-highlight", "label": "A student project worth showing" }
+      ]
     },
     {
       "title": "Chief Technology Officer",
@@ -157,7 +162,14 @@
     { "value": "0-to-1", "label": "platforms from zero", "sub": "CTO and lead roles" },
     { "value": "no build", "label": "my own stack", "sub": "this site runs on it" }
   ],
-  "primarySkills": ["AI-first development", "No-build hypermedia", "Next", "Nest", "Design systems", "Team leadership"],
+  "primarySkills": [
+    { "text": "AI-first development", "href": "/notes/ten-times-zero" },
+    { "text": "No-build hypermedia", "href": "/bread" },
+    { "text": "Next", "href": "" },
+    { "text": "Nest", "href": "" },
+    { "text": "Design systems", "href": "/grain" },
+    { "text": "Team leadership", "href": "/about#lessons-dev-manager" }
+  ],
   "skills": [
     { "group": "Frontend and Mobile", "items": ["Next", "React", "Flutter", "Dart"] },
     { "group": "Backend", "items": ["Nest", "Node", "Express", "PHP", "REST"] },

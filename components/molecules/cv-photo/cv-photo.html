@@ -1,0 +1,7 @@
+<!-- molecules/cv-photo — one optional experience photo under a résumé entry, nested each="photos"
+     inside cv-entry (0..1 per role, bound to {src,alt}). server.ts builds photos from a role's optional
+     "photo" path in data/cv.json: a role with a path renders one image, a role without renders nothing
+     (the same 0..n gate as links[]). Every role ships photoless today; drop a "photo" into a role later
+     to fill the slot with no code change. Screen-only enhancement — @media print strips the whole media
+     row (resume.css) so the ATS/PDF sheet stays flat text. Styled by cv-entry.css. See cv-photo.md. -->
+<img class="cv-photo" data-bind-src="src" data-bind-alt="alt" loading="lazy">

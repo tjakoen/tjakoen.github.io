@@ -170,12 +170,13 @@ interface CvRoleRaw {
   title: string; company: string; location: string; start: string; end: string;
   current?: boolean; roleTag?: string; summary: string; bullets: string[];
   links?: Array<{ href: string; label: string }>;
+  photo?: string; photoAlt?: string;   // optional experience photo (0..1); empty today, fill in cv.json later
 }
 interface CvData {
   summary: string; roles: CvRoleRaw[];
   education: Array<{ school: string; credential: string; start: string; end: string; notes: string[] }>;
   stats: Array<{ value: string; label: string; sub?: string }>;
-  primarySkills: string[];
+  primarySkills: Array<{ text: string; href?: string }>;
   skills: Array<{ group: string; items: string[] }>;
   languages: string[];
   certs: Array<{ name: string; issuer: string; date: string }>;
@@ -186,15 +187,19 @@ const cv: CvData = await Bun.file(join(import.meta.dir, "data", "cv.json")).json
 const toCvEntry = (e: {
   domId: string; roleTag?: string; title: string; company: string; dateRange: string;
   location?: string; summary?: string; bullets: string[]; links?: Array<{ href: string; label: string }>;
+  photos?: Array<{ src: string; alt: string }>;
 }) => ({
   domId: e.domId, roleTag: e.roleTag ?? "", title: e.title, company: e.company, dateRange: e.dateRange,
   locationLabel: e.location ?? "", summary: e.summary ?? "",
-  bullets: e.bullets.map((text) => ({ text })), links: e.links ?? [],
+  bullets: e.bullets.map((text) => ({ text })), links: e.links ?? [], photos: e.photos ?? [],
 });
 const cvRoles = cv.roles.map((r, i) => toCvEntry({
   domId: `xp-${i}`, roleTag: r.roleTag, title: r.title, company: r.company,
   dateRange: `${r.start} to ${r.end}`, location: r.location, summary: r.summary,
   bullets: r.bullets, links: r.links,
+  // optional experience photo: a role with a "photo" path in cv.json renders one, none renders nothing
+  // (same 0..n gate as links[]). Every role is photoless today; drop a path in later with no code change.
+  photos: r.photo ? [{ src: r.photo, alt: r.photoAlt ?? `${r.title}, ${r.company}` }] : [],
 }));
 const cvEducation = cv.education.map((e, i) => toCvEntry({
   domId: `edu-${i}`, title: e.credential, company: e.school,
@@ -203,7 +208,7 @@ const cvEducation = cv.education.map((e, i) => toCvEntry({
 const cvSkills = cv.skills.map((s) => ({ group: s.group, itemsLabel: s.items.join(" · ") }));
 const cvCerts = cv.certs.map((c) => ({ text: `${c.name} (${c.issuer}), ${c.date}` }));
 const cvStats = cv.stats.map((s) => ({ value: s.value, label: s.label, sub: s.sub ?? "" }));
-const cvPrimary = cv.primarySkills.map((text) => ({ text }));
+const cvPrimary = cv.primarySkills.map((s) => ({ text: s.text, href: s.href ?? "" }));
 const cvLanguages = cv.languages.join(" · ");
 const cvSummary = cv.summary;
 

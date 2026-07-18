@@ -27,6 +27,13 @@
 
 :is([data-screen="resume"], [data-screen="about"]) .cv-entry__detail { margin: var(--space-2) 0 0; }
 :is([data-screen="resume"], [data-screen="about"]) .cv-entry.is-collapsed .cv-entry__detail { display: none; }
+
+/* optional experience photo — the media row renders empty (and hides) when a role has no photo;
+   @media print strips it (resume.css) so it never reaches the ATS/PDF sheet */
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__media { margin: 0 0 var(--space-3); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__media:empty { display: none; }
+:is([data-screen="resume"], [data-screen="about"]) .cv-photo { display: block; max-width: 100%; height: auto;
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
 :is([data-screen="resume"], [data-screen="about"]) .cv-entry__bullets { margin: 0; padding-left: var(--space-4);
   display: flex; flex-direction: column; gap: var(--space-1); }
 :is([data-screen="resume"], [data-screen="about"]) .cv-bullet { color: var(--ink-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
