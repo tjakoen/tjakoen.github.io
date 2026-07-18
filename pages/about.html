@@ -28,7 +28,6 @@
         <nav class="about-tabs" data-about-tabs aria-label="Sections">
           <a class="tab" href="#profile" aria-current="page">Profile</a>
           <a class="tab" href="#resume">CV</a>
-          <a class="tab" href="#lessons">Lessons</a>
           <a class="tab" href="#contact">Contact</a>
           <a class="tab" href="#now">Now</a>
         </nav>
@@ -37,20 +36,50 @@
           <div class="section-head"><span>Profile</span></div>
           <div class="quotes-hero" data-quotes-hero>
             <ul class="quotes-hero__list">
-              <li class="quote"><a href="#lessons-dev-manager">As a <span class="quote__role">manager</span>, I repeat the direction until it sticks. Saying it once was never enough.</a></li>
-              <li class="quote"><a href="#lessons-tech-lead">As a <span class="quote__role">tech lead</span>, I delete the build step, so I keep making the decision.</a></li>
-              <li class="quote"><a href="#lessons-educator">As an <span class="quote__role">educator</span>, I treat adults like adults, and most of the fluff falls away.</a></li>
+              <li class="quote"><a href="#role-manager">As a <span class="quote__role">manager</span>, I grow the people first. The goals arrive through them.</a></li>
+              <li class="quote"><a href="#role-tech-lead">As a <span class="quote__role">tech lead</span>, I hold the architecture and the bar, and keep the direction legible.</a></li>
+              <li class="quote"><a href="#role-educator">As an <span class="quote__role">educator</span>, I treat adults like adults, and most of the fluff falls away.</a></li>
               <li class="quote">As a <span class="quote__role">builder</span>, I ship things nobody asked for, in the hours left over.</li>
               <li class="quote">As an <span class="quote__role">engineer</span>, I direct, Claude types.</li>
             </ul>
           </div>
-          <p class="lede">Dev manager and tech lead by day, part-time software engineering teacher
-            by evening, and a builder of things nobody asked for in the hours left over. This
-            whole site is one of those things: my own no-build hypermedia stack, running as plain
-            static files.</p>
-          <p>The long version, the failures included, is in <a href="/notes/ten-times-zero">the
-            notes</a>: how I actually work with AI, why I went frameworkless, and how I nearly
-            quit teaching before I automated my way back to it.</p>
+          <p class="lede">Dev manager and tech lead by day, part-time software engineering teacher by
+            evening. Most of my nine years have gone into two things: growing engineers, and shipping
+            platforms from nothing. What each of those roles actually taught me is below.</p>
+
+          <div class="section-head" id="role-manager"><span>As a manager</span></div>
+          <p>I mentor and support the people first, then deliver the goals through them. The team is
+            the thing I am really building; the features are what falls out of it.</p>
+          <ul class="role-list">
+            <li>Mentoring is the job, not the overhead. A junior I actually grow is worth more than any single feature I could have written myself.</li>
+            <li>Direction is something you repeat, not something you announce once. I say the same why in standup, in review, and in the doc, until it is boring.</li>
+            <li>I ship the small internal tool that unblocks five people before the feature that demos well.</li>
+            <li>The honest version of a status is the one that ages well. I would rather write down what is blocked and why than hand up a green square that turns red next week.</li>
+          </ul>
+          <p class="role__notes-link"><a href="/notes?tag=ai">Notes from this work →</a></p>
+
+          <div class="section-head" id="role-tech-lead"><span>As a tech lead</span></div>
+          <p>I own the architecture, hold the quality bar, and keep the direction legible to whoever
+            opens the file next. Fewer decisions, made in the open, held in review.</p>
+          <ul class="role-list">
+            <li>Fewer moving parts beats a clever abstraction almost every time. I have deleted more code than I was ever proud of writing.</li>
+            <li>The design that survives is the one the next person can read. I write for the stranger who opens the file at two in the morning.</li>
+            <li>Standards live in review, not in a document nobody reopens. I would rather hold the bar in a pull request than in a wiki.</li>
+            <li>A build step you can delete is a decision you get to keep making. This whole site runs with no build, on purpose.</li>
+          </ul>
+          <p class="role__notes-link"><a href="/notes?tag=no-build">Notes from this work →</a></p>
+
+          <div class="section-head" id="role-educator"><span>As an educator</span></div>
+          <p>I teach the way I wish I had been taught: straight at the hard parts, adults treated as
+            adults, the mechanical work automated so the time goes back to the students.</p>
+          <ul class="role-list">
+            <li>Treat adults like adults and most of the fluff falls away. My students get the real thing, limits included.</li>
+            <li>Automate the mechanical grading so the time goes back to students. I built a GitHub-native platform to buy back the hours I was drowning in.</li>
+            <li>Go straight at the hard parts. Nobody signs up for a semester to be kept away from the difficult idea.</li>
+            <li>You end up teaching the way you wish you had been taught. I nearly quit before I found a way to make it sustainable.</li>
+          </ul>
+          <p class="role__notes-link"><a href="/notes?tag=teaching">Notes from this work →</a></p>
+
           <div class="cv-stats"><cv-stat each="cvStats"></cv-stat></div>
         </section>
 
@@ -78,47 +107,6 @@
 
           <div class="section-head"><span>Certifications</span></div>
           <ul class="cv-certs"><cv-bullet each="cvCerts"></cv-bullet></ul>
-        </section>
-
-        <section class="about-panel" id="lessons">
-          <div class="section-head"><span>Lessons</span></div>
-          <p class="muted">What each role actually taught me. Each one links out to the notes tagged for
-            that kind of work.</p>
-          <nav class="lessons-tabs" data-lessons-tabs aria-label="Lessons by role">
-            <a class="tab" href="#lessons-dev-manager" aria-current="page">Dev manager</a>
-            <a class="tab" href="#lessons-tech-lead">Tech lead</a>
-            <a class="tab" href="#lessons-educator">Educator</a>
-          </nav>
-
-          <div class="lessons-panel" id="lessons-dev-manager" data-role="dev-manager">
-            <ul class="lessons-list">
-              <li>The tools a team actually needs are rarely the ones on the roadmap. I ship the small internal thing that unblocks five people before the feature that demos well.</li>
-              <li>Direction is something you repeat, not something you announce once. I say the same why in standup, in review, and in the doc, until it is boring.</li>
-              <li>The honest version of a status is the one that ages well. I would rather write down what is blocked and why than hand up a green square that turns red next week.</li>
-              <li>Mentoring is the job, not the overhead. A junior I actually grow is worth more than any one feature I could have written myself.</li>
-            </ul>
-            <p class="xp__notes-link"><a href="/notes?tag=ai">Notes from this role →</a></p>
-          </div>
-
-          <div class="lessons-panel" id="lessons-tech-lead" data-role="tech-lead">
-            <ul class="lessons-list">
-              <li>Fewer moving parts beats a clever abstraction almost every time. I have deleted more code than I was ever proud of writing.</li>
-              <li>A build step you can delete is a decision you get to keep making. This whole site runs with no build, on purpose.</li>
-              <li>The design that survives is the one the next person can read. I write for the stranger who opens the file at two in the morning.</li>
-              <li>Standards live in review, not in a document nobody reopens. I would rather hold the bar in a pull request than in a wiki.</li>
-            </ul>
-            <p class="xp__notes-link"><a href="/notes?tag=no-build">Notes from this role →</a></p>
-          </div>
-
-          <div class="lessons-panel" id="lessons-educator" data-role="educator">
-            <ul class="lessons-list">
-              <li>Treat adults like adults and most of the fluff falls away. My students get the real thing, limits included.</li>
-              <li>Automate the mechanical grading so the time goes back to students. I built a GitHub-native platform to buy back the hours I was drowning in.</li>
-              <li>Go straight at the hard parts. Nobody signs up for a semester to be kept away from the difficult idea.</li>
-              <li>You end up teaching the way you wish you had been taught. I nearly quit before I found a way to make it sustainable.</li>
-            </ul>
-            <p class="xp__notes-link"><a href="/notes?tag=teaching">Notes from this role →</a></p>
-          </div>
         </section>
 
         <section class="about-panel" id="contact">
@@ -161,12 +149,11 @@
   </div>
 
   <script>
-    // The about-tabs island (Pass 4 — About; Apps-v2 Pass D adds the nested Lessons roles). With no
-    // JS every panel above is already visible and in document order (profile, résumé, lessons,
-    // contact, now), and inside Lessons all three role panels are visible too, so every tab href is
-    // a plain in-page jump that works with zero script. This only adds the show-one-panel behavior at
-    // both levels and honors an incoming location.hash (#contact, or #lessons-educator to open
-    // Lessons on a role). Nothing REAL is JS-gated.
+    // The about-tabs island (Pass 4 — About). With no JS every panel above is already visible and in
+    // document order (profile, cv, contact, now), so every tab href is a plain in-page jump that works
+    // with zero script. This only adds the show-one-panel behavior and honors an incoming location.hash
+    // (#contact, or a #role-<role> quote deep link, which lives inside Profile — the browser scrolls to
+    // it once Profile is the shown panel). Nothing REAL is JS-gated.
     (function () {
       var nav = document.querySelector('[data-about-tabs]');
       var panels = Array.prototype.slice.call(document.querySelectorAll('.about-panel'));
@@ -184,47 +171,18 @@
         });
       }
 
-      // ---- nested Lessons roles: show one .lessons-panel at a time (its id is #lessons-<role>) ----
-      var lessonsNav = document.querySelector('[data-lessons-tabs]');
-      var lessonsPanels = Array.prototype.slice.call(document.querySelectorAll('.lessons-panel'));
-      var lessonIds = lessonsPanels.map(function (p) { return p.id; });
-      var lessonsTabs = lessonsNav ? Array.prototype.slice.call(lessonsNav.querySelectorAll('.tab')) : [];
-      function setRole(id) {
-        if (lessonIds.indexOf(id) === -1) return;
-        lessonsPanels.forEach(function (p) { p.hidden = p.id !== id; });
-        lessonsTabs.forEach(function (t) {
-          if (t.getAttribute('href') === '#' + id) t.setAttribute('aria-current', 'page');
-          else t.removeAttribute('aria-current');
-        });
-      }
-      if (lessonsNav) {
-        lessonsNav.addEventListener('click', function (ev) {
-          var link = ev.target.closest('.tab');
-          if (!link) return;
-          setRole(link.getAttribute('href').slice(1));
-        });
-      }
-
       nav.addEventListener('click', function (ev) {
         var link = ev.target.closest('.tab');
         if (!link) return;
         setPanel(link.getAttribute('href').slice(1));
       });
 
-      // Route a hash to the right panel/role. Called on load AND on hashchange, so the Profile quotes'
-      // #lessons-<role> deep links (plain in-page anchors) open Lessons on that role with no extra wiring.
+      // Route a hash to the right panel. A #role-<role> quote deep link isn't a panel — it's a section
+      // inside Profile — so it resolves to Profile, then the browser's own anchor jump scrolls to it.
       function applyHash(hash) {
         var id = (hash || '').slice(1);
-        if (id.indexOf('lessons-') === 0 && lessonIds.indexOf(id) !== -1) {
-          setPanel('lessons');     // a #lessons-<role> deep link opens Lessons on that role
-          setRole(id);
-        } else if (id === 'lessons') {
-          setPanel('lessons');
-        } else {
-          setPanel(ids.indexOf(id) !== -1 ? id : 'profile');
-        }
+        setPanel(ids.indexOf(id) !== -1 ? id : 'profile');
       }
-      setRole(lessonIds.length ? lessonIds[0] : '');   // default the nested roles to the first
       applyHash(location.hash);
       window.addEventListener('hashchange', function () { applyHash(location.hash); });
 

@@ -100,15 +100,9 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>
     </nav>`
       : "";
-    // the notes index's own "watch the AI act" entry point (DEMO-PLAN.md item 1, staged here).
-    // Same door, same demo.run verb as /grain's trigger. The reasoner's "notes" screen branch
-    // reads the newest entries (data-surface="note:<slug>", above) and writes its digest into
-    // the SIDEBAR CHAT (owner feedback, NOTES-PAGE-PLAN.md 2026-07-07) — like anything else the
-    // desk says to you — not a card in the reading column; only the trigger stays on the page
-    // until chat messages can carry their own action affordances (tracked, not yet built).
-    const deskNoteTrigger = kind === "index" && collection.prefix === "/notes"
-      ? `<button class="btn" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ See what's new</button>`
-      : "";
+    // NOTE: the /notes index's "See what's new" AI trigger (data-ai-run demo.run) used to render
+    // here, above the body. It now lives INSIDE renderNotesFeedPage's toolbar (grouped with New/Top
+    // + search), so shellChrome no longer emits it — the notes feed owns its own top bar.
     return `<!DOCTYPE html>
 <html lang="en" data-themes="sourdough baguette brioche">
 <head>
@@ -122,7 +116,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
   <div class="app-shell app-window"${section} data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
-      <div class="board">${sourceToggle}${deskNoteTrigger}${photoGrid}${body}</div>
+      <div class="board">${sourceToggle}${photoGrid}${body}</div>
     </main>
   </div>
 ${inject}</body>
@@ -331,10 +325,20 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
   // so the tag chips keep their newest-first order regardless of the pin. Stable across renders.
   const allTags: string[] = [];
   for (const e of dated) for (const t of e.tags) if (!allTags.includes(t)) allTags.push(t);
-  const tagChips = allTags.map((t) => {
+  // Reduce the chip pile: show a handful up front, tuck the rest behind a "+N more" toggle (all
+  // checkboxes stay in the DOM either way, so a ?tag= deep link can still check an overflow tag and
+  // the island reveals the rest when it does).
+  const CHIP_HEAD = 6;
+  const chipHtml = (t: string) => {
     const tag = escapeHtml(t);
     return `<label class="chip"><input type="checkbox" value="${tag}"> ${tag}</label>`;
-  }).join("");
+  };
+  const headChips = allTags.slice(0, CHIP_HEAD).map(chipHtml).join("");
+  const restTags = allTags.slice(CHIP_HEAD);
+  const restChips = restTags.length
+    ? `<span class="notes-tags__rest" data-tags-rest hidden>${restTags.map(chipHtml).join("")}</span>` +
+      `<button type="button" class="notes-tags__more" data-tags-more aria-expanded="false">+${restTags.length} more</button>`
+    : "";
 
   const cards = entries.map((e) => {
     const slug = escapeHtml(e.slug);
@@ -368,13 +372,17 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       if (!form || !list) return;
       var cards = Array.prototype.slice.call(list.querySelectorAll(".note-card"));
       var newest = cards.slice();   // New = the original newest-first DOM order (pinned already first)
+      var search = form.querySelector("[data-notes-search]");
+      var rest = form.querySelector("[data-tags-rest]");
+      var moreBtn = form.querySelector("[data-tags-more]");
+      var empty = list.parentNode.querySelector("[data-feed-empty]");
 
       // the flagship stays pinned to the top in BOTH New and Top — float any data-pinned card to
       // the front after whatever sort ran, so "Top" (by score) can't bury it.
       function floatPinned(arr) {
         var pinned = arr.filter(function (c) { return c.hasAttribute("data-pinned"); });
-        var rest = arr.filter(function (c) { return !c.hasAttribute("data-pinned"); });
-        return pinned.concat(rest);
+        var rst = arr.filter(function (c) { return !c.hasAttribute("data-pinned"); });
+        return pinned.concat(rst);
       }
 
       function sortCards() {
@@ -388,19 +396,24 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         floatPinned(ordered).forEach(function (card) { list.appendChild(card); });
       }
 
-      function filterCards() {
+      // one filter pass over BOTH controls: the checked tag chips (a card must carry one) AND the
+      // free-text search (matched against the card's own text). Either empty means "don't constrain".
+      function applyFilters() {
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
         var wanted = boxes.map(function (b) { return b.value; });
+        var q = (search && search.value || "").trim().toLowerCase();
         cards.forEach(function (card) {
-          if (wanted.length === 0) { card.hidden = false; return; }
           var tags = (card.getAttribute("data-tags") || "").split(" ");
-          card.hidden = wanted.every(function (t) { return tags.indexOf(t) === -1; });
+          var tagOk = wanted.length === 0 || wanted.some(function (t) { return tags.indexOf(t) !== -1; });
+          var textOk = q === "" || (card.textContent || "").toLowerCase().indexOf(q) !== -1;
+          card.hidden = !(tagOk && textOk);
         });
+        if (empty && !(wanted.length === 0 && q === "")) empty.hidden = true;
       }
 
       // Mirror the current tag filter into the URL so a filtered view is shareable (replaceState,
-      // not push — filtering isn't navigation). Empty selection drops the query entirely.
-      var empty = list.parentNode.querySelector("[data-feed-empty]");
+      // not push — filtering isn't navigation). Search text stays out of the URL. Empty tag set
+      // drops the query entirely.
       function syncUrl() {
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
         var wanted = boxes.map(function (b) { return b.value; });
@@ -408,20 +421,30 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         try { history.replaceState(null, "", url); } catch (e) { /* file:// — leave the URL be */ }
       }
 
+      function revealRest(open) {
+        if (!rest || !moreBtn) return;
+        rest.hidden = !open;
+        moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        moreBtn.textContent = open ? "fewer" : "+" + rest.querySelectorAll(".chip").length + " more";
+      }
+      if (moreBtn) moreBtn.addEventListener("click", function () { revealRest(rest.hidden); });
+
       // Honor a ?tag= deep link on boot: check every chip that matches (comma list ok) and filter.
       // A requested tag with no chip has no notes yet — surface the empty state, naming the tag(s),
-      // and leave the full list visible (an unknown tag filters nothing).
+      // and leave the full list visible (an unknown tag filters nothing). A matched tag in the
+      // collapsed overflow reveals it, so the checked chip is visible.
       function applyQueryTags() {
         var q = new URLSearchParams(location.search).get("tag");
         if (!q) return;
         var requested = q.split(",").map(function (t) { return t.trim(); }).filter(Boolean);
-        var unknown = [];
+        var unknown = [], hitRest = false;
         requested.forEach(function (t) {
           var box = form.querySelector('input[type="checkbox"][value="' + (window.CSS && CSS.escape ? CSS.escape(t) : t) + '"]');
-          if (box) box.checked = true;
+          if (box) { box.checked = true; if (rest && rest.contains(box)) hitRest = true; }
           else if (unknown.indexOf(t) === -1) unknown.push(t);
         });
-        filterCards();
+        if (hitRest) revealRest(true);
+        applyFilters();
         if (empty && unknown.length) {
           var label = unknown.map(function (t) { return '"' + t + '"'; }).join(", ");
           empty.textContent = "No notes tagged " + label + " yet. They are being written.";
@@ -433,20 +456,29 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var target = ev.target;
         if (!target) return;
         if (target.name === "sort") sortCards();
-        else if (target.type === "checkbox") { filterCards(); syncUrl(); if (empty) empty.hidden = true; }
+        else if (target.type === "checkbox") { applyFilters(); syncUrl(); }
       });
+      if (search) search.addEventListener("input", function () { applyFilters(); });
 
       applyQueryTags();
       form.hidden = false;   // reveal the controls only once the island is live
     })();
   </script>`;
 
-  const body = `<form class="feed-controls" data-feed-controls hidden>
-      <div class="chips" role="radiogroup" aria-label="Sort">
-        <label class="chip"><input type="radio" name="sort" value="new" checked> New</label>
-        <label class="chip"><input type="radio" name="sort" value="top"> Top</label>
+  const deskTrigger = `<button class="btn notes-toolbar__ai" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ See what's new</button>`;
+  const body = `<form class="notes-toolbar" data-feed-controls hidden>
+      <div class="notes-toolbar__bar">
+        <input class="notes-search" type="search" placeholder="Search notes" aria-label="Search notes"
+               autocomplete="off" data-notes-search>
+        <div class="notes-toolbar__actions">
+          <div class="chips notes-sort" role="radiogroup" aria-label="Sort">
+            <label class="chip"><input type="radio" name="sort" value="new" checked> New</label>
+            <label class="chip"><input type="radio" name="sort" value="top"> Top</label>
+          </div>
+          ${deskTrigger}
+        </div>
       </div>
-      <div class="chips" aria-label="Filter by tag">${tagChips}</div>
+      <div class="chips notes-tags" aria-label="Filter by tag">${headChips}${restChips}</div>
     </form>
     <p class="feed-empty" data-feed-empty hidden></p>
     <ul class="note-feed">

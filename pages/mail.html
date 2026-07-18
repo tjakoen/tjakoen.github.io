@@ -11,71 +11,67 @@
     <portfolio-frame />
     <main class="app-shell__main">
       <div class="board">
-        <p class="eyebrow">✉️ <span class="name">The Desk</span></p>
-        <h1 class="masthead">Mail</h1>
-        <hr class="rule">
-        <p class="lede">A panel on the desk, dressed as a mailbox: folders, a message list, and a
-          reader below. Almost none of it is real, every letter here was written by me ahead of
-          time, and the folder chrome doesn't do anything but sort them. The one live control is
-          Compose: write a message there and it opens in your own mail app, already addressed to
-          me. That's the real contact form. Everything else is honest set dressing.</p>
-
-        <div class="section-head"><span>Mailbox</span></div>
-        <div class="mailbox">
+        <div class="mailbox" data-mailbox>
           <div class="mailbox__rail">
+            <a class="btn mailbox__compose" href="#compose" data-open-compose>✎ Compose</a>
             <nav class="mailbox__folders" data-mailbox-folders aria-label="Folders">
               <mail-folder each="mailFolders"></mail-folder>
-              <a class="btn mailbox__compose" href="#compose" data-open-compose>Compose</a>
             </nav>
-            <p class="mailbox__rail-note">Unread lives in your browser. Nothing here reports back.</p>
           </div>
 
-          <div class="mailbox__list" id="mailbox-list" data-mailbox-list>
-            <mail-row each="mailMessages"></mail-row>
-          </div>
+          <section class="mailbox__list" id="mailbox-list" data-mailbox-list aria-label="Messages">
+            <header class="mailbox__list-head">
+              <span class="mailbox__list-folder" data-mailbox-folder-label>Inbox</span>
+              <span class="mailbox__list-count" data-mailbox-folder-count></span>
+            </header>
+            <div class="mailbox__rows">
+              <mail-row each="mailMessages"></mail-row>
+            </div>
+          </section>
 
-          <div class="mailbox__readers" data-mailbox-readers>
-            <mail-reader each="mailMessages"></mail-reader>
-          </div>
+          <section class="mailbox__pane" aria-label="Reader">
+            <div class="mailbox__readers" data-mailbox-readers>
+              <mail-reader each="mailMessages"></mail-reader>
+            </div>
+
+            <div class="compose-panel" id="compose">
+              <form class="compose" data-compose>
+                <div class="compose__bar">
+                  <span class="compose__title">New message</span>
+                  <span class="compose__dots" aria-hidden="true">
+                    <span class="compose__dot"></span><span class="compose__dot"></span><span class="compose__dot"></span>
+                  </span>
+                </div>
+
+                <div class="compose__row">
+                  <span class="compose__key">To</span>
+                  <span class="compose__to">Tjakoen Stolk <small data-to-addr>(the desk)</small></span>
+                </div>
+                <div class="compose__row">
+                  <label class="compose__key" for="compose-subject">Subject</label>
+                  <span class="compose__field">
+                    <input class="compose__input" id="compose-subject" name="subject" type="text"
+                           placeholder="What is this about?" autocomplete="off">
+                  </span>
+                </div>
+                <div class="compose__body">
+                  <textarea class="compose__textarea" id="compose-body" name="body" aria-label="Message"
+                    placeholder="Write your message. Send hands it to your mail app, so you get a copy in your own sent folder."></textarea>
+                </div>
+
+                <div class="compose__foot">
+                  <button class="btn" type="submit">Send</button>
+                  <span class="compose__hint">Opens in your mail app, addressed to me.
+                    <noscript>JavaScript is off, so Send can't compose for you:
+                    <a href="mailto:tjakoen.s&#64;gmail.com">email me directly</a> instead.</noscript></span>
+                </div>
+              </form>
+            </div>
+          </section>
         </div>
 
-        <section class="compose-panel" id="compose">
-          <div class="section-head"><span>Compose</span></div>
-          <form class="compose" data-compose>
-            <div class="compose__bar">
-              <span class="compose__title">New message</span>
-              <span class="compose__dots" aria-hidden="true">
-                <span class="compose__dot"></span><span class="compose__dot"></span><span class="compose__dot"></span>
-              </span>
-            </div>
-
-            <div class="compose__row">
-              <span class="compose__key">To</span>
-              <span class="compose__to">Tjakoen Stolk <small data-to-addr>(the desk)</small></span>
-            </div>
-            <div class="compose__row">
-              <label class="compose__key" for="compose-subject">Subject</label>
-              <span class="compose__field">
-                <input class="compose__input" id="compose-subject" name="subject" type="text"
-                       placeholder="What is this about?" autocomplete="off">
-              </span>
-            </div>
-            <div class="compose__body">
-              <textarea class="compose__textarea" id="compose-body" name="body" aria-label="Message"
-                placeholder="Write your message. Send hands it to your mail app, so you get a copy in your own sent folder."></textarea>
-            </div>
-
-            <div class="compose__foot">
-              <button class="btn" type="submit">Send</button>
-              <span class="compose__hint">Opens in your mail app, addressed to me.
-                <noscript>JavaScript is off, so Send can't compose for you:
-                <a href="mailto:tjakoen.s&#64;gmail.com">email me directly</a> instead.</noscript></span>
-            </div>
-          </form>
-        </section>
-
-        <p class="muted">Prefer another channel? The <a href="/about">about page</a> has my LinkedIn
-          and GitHub too.</p>
+        <p class="mailbox__note muted">Unread lives in your browser. Nothing here reports back.
+          Reach me elsewhere from the <a href="/about#contact">about page</a>.</p>
 
         <div class="page-foot">
           Part of <a href="/">tjakoen.github.io</a>, built with itself.
@@ -121,6 +117,8 @@
       var readersWrap = document.querySelector('[data-mailbox-readers]');
       var composeLink = document.querySelector('[data-open-compose]');
       var composePanel = document.getElementById('compose');
+      var folderLabelEl = document.querySelector('[data-mailbox-folder-label]');
+      var folderCountEl = document.querySelector('[data-mailbox-folder-count]');
       if (!foldersNav || !list || !readersWrap) return;
 
       var items = Array.prototype.slice.call(list.querySelectorAll('.mailbox__item'));
@@ -166,6 +164,7 @@
 
       function showReader(id) {
         readers.forEach(function (r) { r.hidden = r.id !== id; });
+        if (composePanel) composePanel.hidden = true;   // reading takes the pane back from Compose
       }
 
       function selectItem(link) {
@@ -176,13 +175,23 @@
       }
 
       function filterFolder(name) {
+        var shown = 0;
         items.forEach(function (it) {
-          it.hidden = it.getAttribute('data-folder') !== name;
+          var match = it.getAttribute('data-folder') === name;
+          it.hidden = !match;
+          if (match) shown++;
         });
+        var active = null;
         folderLinks.forEach(function (f) {
-          if (f.getAttribute('data-folder') === name) f.setAttribute('aria-current', 'page');
+          if (f.getAttribute('data-folder') === name) { f.setAttribute('aria-current', 'page'); active = f; }
           else f.removeAttribute('aria-current');
         });
+        // sync the list header with the active folder (label + live count)
+        if (folderLabelEl && active) {
+          var label = active.querySelector('.mailbox__folder-label');
+          folderLabelEl.textContent = label ? label.textContent : name;
+        }
+        if (folderCountEl) folderCountEl.textContent = shown === 1 ? '1 message' : shown + ' messages';
       }
 
       // ---- paint unread + relative dates before the first paint of the reading mode ----
@@ -222,8 +231,10 @@
         composePanel.hidden = true;
         composeLink.addEventListener('click', function (ev) {
           ev.preventDefault();
+          readers.forEach(function (r) { r.hidden = true; });   // Compose takes over the reader pane
+          items.forEach(function (it) { it.removeAttribute('aria-current'); });
           composePanel.hidden = false;
-          composePanel.scrollIntoView({ block: 'start' });
+          composePanel.scrollIntoView({ block: 'nearest' });
           var subjectField = composePanel.querySelector('#compose-subject');
           if (subjectField) subjectField.focus({ preventScroll: true });
         });

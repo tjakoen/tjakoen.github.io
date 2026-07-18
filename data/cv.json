@@ -168,7 +168,7 @@
     { "text": "Next", "href": "" },
     { "text": "Nest", "href": "" },
     { "text": "Design systems", "href": "/grain" },
-    { "text": "Team leadership", "href": "/about#lessons-dev-manager" }
+    { "text": "Team leadership", "href": "/about#role-manager" }
   ],
   "skills": [
     { "group": "Frontend and Mobile", "items": ["Next", "React", "Flutter", "Dart"] },

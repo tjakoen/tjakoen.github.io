@@ -10,10 +10,10 @@
       "id": "welcome",
       "folder": "inbox",
       "from": "The Desk",
-      "subject": "Welcome to the mail panel",
+      "subject": "About this mailbox",
       "snippet": "What's real here, what isn't, and where the one live control is.",
       "date": "2026-07-14",
-      "body": "This whole panel is dressed up like a real inbox, and almost none of it is real. Every message you see here, including this one, was written by me ahead of time and shipped as part of the page. Nothing arrives, nothing gets deleted, and Reply, Forward, and Archive are wired to do exactly nothing. Hover one and it will tell you so.\n\nThe one exception is Compose. Type something there and press Send, and it hands your message to your own mail app, already addressed to me. That's the whole trick: a static site with no backend can still have a real way to reach me, it just borrows your mail app to do the sending.\n\nSo read this like a letters page, not a live inbox. The letters are real things I actually did. The inbox around them is set dressing.",
+      "body": "A panel on the desk, dressed as a mailbox: folders, a message list, and the letter itself. Almost none of it is real. Every letter here was written by me ahead of time, and the folder chrome doesn't do anything but sort them.\n\nThe one live control is Compose: write a message there and it opens in your own mail app, already addressed to me. That's the real contact form. Everything else is honest set dressing.\n\nSo read this like a letters page, not a live inbox. The letters are real things I actually did. The inbox around them is the costume.",
       "links": []
     },
     {
