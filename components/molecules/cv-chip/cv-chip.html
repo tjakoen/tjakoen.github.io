@@ -1,5 +1,8 @@
-<!-- molecules/cv-chip — one headline "primary" skill, a non-interactive accent pill. Data-bound
-     each="cvPrimary" above the full Skills grid on /resume and About's CV tab. NOT grain's chips
-     form control (those carry inputs for filtering) — this is display only. In @media print it
-     flattens to a plain comma list so the printed résumé stays ATS-plain. See cv-chip.md. -->
-<li class="cv-chip" data-field="text"></li>
+<!-- molecules/cv-chip — one headline "primary" skill pill, data-bound each="cvPrimary" above the full
+     Skills grid on /resume and About's CV tab. When the skill carries an href in data/cv.json it links
+     to its evidence (a note, /bread, /grain, a Lessons role); the renderer omits an empty href, so a
+     href-less skill renders as a plain pill (the nested <a> has no [href] and is styled flat). NOT
+     grain's chips form control (those carry inputs for filtering) — this is display only. In @media
+     print it flattens to a plain comma list, decoration stripped, so the printed résumé stays
+     ATS-plain. See cv-chip.md. -->
+<li class="cv-chip"><a class="cv-chip__link" data-bind-href="href" data-field="text"></a></li>

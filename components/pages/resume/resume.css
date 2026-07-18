@@ -20,6 +20,7 @@
   body[data-screen="resume"] .profile-card__actions,
   body[data-screen="resume"] .cv-entry__toggle,
   body[data-screen="resume"] .cv-entry__links,
+  body[data-screen="resume"] .cv-entry__media,
   body[data-screen="resume"] .page-foot { display: none !important; }
   /* force every accordion open no matter its screen state, so no bullet is hidden from the PDF/ATS */
   body[data-screen="resume"] .cv-entry.is-collapsed .cv-entry__detail,
@@ -33,5 +34,7 @@
   body[data-screen="resume"] .cv-core { gap: 0 !important; }
   body[data-screen="resume"] .cv-chip { border: 0 !important; padding: 0 !important; color: inherit !important; font-family: inherit !important; }
   body[data-screen="resume"] .cv-chip:not(:last-child)::after { content: ", "; }
+  /* the chip label is a nested <a>; in the flat comma list it must read as plain text, not a link */
+  body[data-screen="resume"] .cv-chip__link { color: inherit !important; text-decoration: none !important; }
   body[data-screen="resume"] a { color: inherit; text-decoration: underline; }
 }

@@ -7,6 +7,8 @@ import { test, expect } from "@playwright/test";
 import cv from "../data/cv.json" with { type: "json" };
 
 const entryCount = cv.roles.length + cv.education.length;
+const linkedRoleIdx = cv.roles.findIndex((r) => (r.links?.length ?? 0) > 0);   // a role WITH feed posts
+const linklessRoleIdx = cv.roles.findIndex((r) => (r.links?.length ?? 0) === 0); // a role with none
 
 test.describe("résumé — the real CV (data/cv.json)", () => {
   test("renders the full timeline, skills, languages, certs, and the Download PDF control", async ({ page }) => {
@@ -18,6 +20,11 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
       await expect(page.locator(".cv-entry__title", { hasText: role.title }).first()).toBeVisible();
     }
     await expect(page.locator(".cv-core .cv-chip")).toHaveCount(cv.primarySkills.length);   // headline chips
+    // skill -> evidence: a primary skill with an href links out; one without stays a plain, hrefless label
+    const linkedSkill = cv.primarySkills.find((s) => s.href);
+    const plainSkill = cv.primarySkills.find((s) => !s.href);
+    if (linkedSkill) await expect(page.locator(`.cv-core .cv-chip__link[href="${linkedSkill.href}"]`)).toHaveText(linkedSkill.text);
+    if (plainSkill) await expect(page.locator(".cv-core .cv-chip", { hasText: plainSkill.text }).locator(".cv-chip__link")).not.toHaveAttribute("href", /./);
     await expect(page.locator(".cv-skill")).toHaveCount(cv.skills.length);
     await expect(page.locator(".cv-languages")).toContainText("English");
     await expect(page.locator(".cv-certs .cv-bullet")).toHaveCount(cv.certs.length);
@@ -39,9 +46,29 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
 
   test("a role with no feed posts hides its related-posts row", async ({ page }) => {
     await page.goto("/resume");
-    const first = page.locator(".cv-entry").first();
-    await first.locator(".cv-entry__toggle").click();          // reveal the detail
-    await expect(first.locator(".cv-entry__links")).toBeHidden();  // :empty hides the links row
+    const entry = page.locator(".cv-entry").nth(linklessRoleIdx);
+    await entry.locator(".cv-entry__toggle").click();          // reveal the detail
+    await expect(entry.locator(".cv-entry__links")).toBeHidden();  // :empty hides the links row
+  });
+
+  test("a role WITH feed posts renders each as a /calendar link", async ({ page }) => {
+    await page.goto("/resume");
+    const role = cv.roles[linkedRoleIdx];
+    const entry = page.locator(".cv-entry").nth(linkedRoleIdx);
+    await entry.locator(".cv-entry__toggle").click();          // reveal the detail
+    const links = entry.locator(".cv-entry__links .cv-link");
+    await expect(links).toHaveCount(role.links!.length);
+    for (const l of role.links!) {
+      await expect(entry.locator(`.cv-link[href="${l.href}"]`)).toHaveText(l.label);
+      expect(l.href.startsWith("/calendar/")).toBe(true);
+    }
+  });
+
+  test("experience-photo slot ships empty — no role has a photo yet, so no <img> renders", async ({ page }) => {
+    await page.goto("/resume");
+    // the slot exists (cv-entry has a .cv-entry__media each="photos"); every role is photoless today, so
+    // it renders nothing (no broken image). Drop a "photo" into a role in cv.json to fill it, no code change.
+    await expect(page.locator(".cv-photo")).toHaveCount(0);
   });
 
   test("`resume` in the terminal prints the summary and links to /resume", async ({ page }) => {

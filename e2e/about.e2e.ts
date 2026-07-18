@@ -190,6 +190,9 @@ test.describe("the /about CV tab (real timeline + download)", () => {
     await expect(page.locator("#resume")).toContainText("Career Team");
     await expect(page.locator("#resume")).toContainText("Experience");
     await expect(page.locator("#resume .cv-core .cv-chip")).toHaveCount(cv.primarySkills.length);
+    // a primary skill with evidence links out from the CV tab too (same cv.json source as /resume)
+    const linkedSkill = cv.primarySkills.find((s) => s.href);
+    if (linkedSkill) await expect(page.locator(`#resume .cv-core .cv-chip__link[href="${linkedSkill.href}"]`)).toHaveText(linkedSkill.text);
   });
 
   test("Download PDF points at /cv and Open-the-full-page at /resume; still no form on the page", async ({ page }) => {
