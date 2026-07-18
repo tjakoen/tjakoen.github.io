@@ -5,6 +5,7 @@
 // [data-shell-mode] modes pattern (that belongs to the chrome's assistant panel). Contact links
 // out to /mail rather than embedding a second compose form — Mail owns the one send path.
 import { test, expect } from "@playwright/test";
+import cv from "../data/cv.json" with { type: "json" };
 
 test.describe("the /about profile app (JS on)", () => {
   test.beforeEach(async ({ page }) => {
@@ -141,7 +142,59 @@ test.describe("the /about profile app (no JS)", () => {
 
     // the real links still resolve without JS
     await expect(page.locator("#resume a[href='/resume']")).toBeVisible();
+    await expect(page.locator("#resume a[href='/cv']")).toBeVisible();
     await expect(page.locator("#contact a[href='/mail']").first()).toBeVisible();
     await expect(page.locator("#lessons .xp__notes-link a").first()).toHaveAttribute("href", /^\/notes\?tag=/);
+  });
+});
+
+test.describe("the /about Profile quotes-hero", () => {
+  test("leads the Profile panel with five first-person quotes", async ({ page }) => {
+    await page.goto("/about");
+    await expect(page.locator("#profile .quotes-hero .quote")).toHaveCount(5);
+    await expect(page.locator("#profile .quotes-hero")).toContainText("As a");
+  });
+
+  test("a role quote deep-links into its Lessons role", async ({ page }) => {
+    await page.goto("/about");
+    await page.locator('.quote a[href="#lessons-educator"]').click();
+    await expect(page.locator(".about-panel:not([hidden])")).toHaveCount(1);
+    await expect(page.locator("#lessons")).toBeVisible();
+    await expect(page.locator("#lessons-educator")).toBeVisible();
+  });
+
+  test("the Profile highlights strip renders one stat tile per cv.json stat", async ({ page }) => {
+    await page.goto("/about");
+    await expect(page.locator("#profile .cv-stats .stat")).toHaveCount(cv.stats.length);
+    await expect(page.locator("#profile .cv-stats .stat__value").first()).not.toBeEmpty();
+  });
+});
+
+test.describe("the /about Lessons — real prose (no placeholders left)", () => {
+  test("no lesson still reads as a placeholder", async ({ page }) => {
+    await page.goto("/about");
+    await expect(page.locator("#lessons")).not.toContainText("Placeholder");
+    // every role panel has real, multi-line lessons
+    await expect(page.locator("#lessons-dev-manager .lessons-list li").first()).not.toBeEmpty();
+  });
+});
+
+test.describe("the /about CV tab (real timeline + download)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/about");
+    await page.locator('.about-tabs [href="#resume"]').click();
+  });
+
+  test("renders the full CV timeline inline, with headline skill chips", async ({ page }) => {
+    await expect(page.locator("#resume .cv-entry").first()).toBeVisible();
+    await expect(page.locator("#resume")).toContainText("Career Team");
+    await expect(page.locator("#resume")).toContainText("Experience");
+    await expect(page.locator("#resume .cv-core .cv-chip")).toHaveCount(cv.primarySkills.length);
+  });
+
+  test("Download PDF points at /cv and Open-the-full-page at /resume; still no form on the page", async ({ page }) => {
+    await expect(page.locator('#resume a[href="/cv"]')).toBeVisible();
+    await expect(page.locator('#resume a[href="/resume"]')).toBeVisible();
+    await expect(page.locator("form")).toHaveCount(0);   // Mail still owns the one send path
   });
 });

@@ -1,0 +1,6 @@
+/* molecules/cv-stat — the About highlights strip. The tile itself is GRAIN's .stat (stat-tile);
+   this only adds the row layout (grain's stat-tile.md says the parent owns layout, not a wrapper)
+   and hides an empty sub-line. Scoped to the About screen. */
+[data-screen="about"] .cv-stats { display: grid; gap: var(--space-3); margin: 0 0 var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+[data-screen="about"] .cv-stats .stat__sub:empty { display: none; }

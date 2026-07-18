@@ -1,0 +1,41 @@
+/* molecules/cv-entry — a résumé/education timeline entry. Scoped to the two screens it appears on
+   (résumé page + About's CV tab; /cv is the résumé screen too) so nothing leaks. Bundled into
+   /components.css via config.styleRoots. The collapse is a screen-only enhancement: no JS -> the
+   detail is open; the cv-accordion island adds .is-collapsed to hide it behind the summary. The
+   print-flattening lives in components/pages/resume/resume.css (@media print), not here. */
+:is([data-screen="resume"], [data-screen="about"]) .cv-list { list-style: none; margin: var(--space-3) 0 var(--space-5); padding: 0;
+  display: flex; flex-direction: column; gap: var(--space-4); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+  padding: var(--space-4); background: var(--paper-2); scroll-margin-top: var(--space-6); }
+
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__title { margin: 0 0 var(--space-1); font-size: var(--text-md); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__meta { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2);
+  align-items: baseline; font-family: var(--font-mono); font-size: var(--text-xs); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__company { color: var(--ink); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__dates { color: var(--ink-faint); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__where { margin: var(--space-1) 0 0; font-family: var(--font-mono);
+  font-size: var(--text-xs); color: var(--ink-faint); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__where:empty { display: none; }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__summary { margin: var(--space-2) 0 0; color: var(--ink-muted); font-size: var(--text-sm); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__summary:empty { display: none; }
+
+/* the toggle is revealed by the island only (hidden attribute in the markup + no-JS) */
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__toggle { margin: var(--space-2) 0 0; padding: 0;
+  background: none; border: 0; cursor: pointer; font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--color-accent); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__toggle:hover { text-decoration: underline; }
+
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__detail { margin: var(--space-2) 0 0; }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry.is-collapsed .cv-entry__detail { display: none; }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__bullets { margin: 0; padding-left: var(--space-4);
+  display: flex; flex-direction: column; gap: var(--space-1); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-bullet { color: var(--ink-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+
+/* related feed/calendar posts under an entry — hides itself when the entry has no links */
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__links { list-style: none; margin: var(--space-2) 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: var(--space-2); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-entry__links:empty { display: none; }
+:is([data-screen="resume"], [data-screen="about"]) .cv-link-item { font-family: var(--font-mono); font-size: var(--text-xs); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-link { color: var(--color-accent); text-decoration: none; }
+:is([data-screen="resume"], [data-screen="about"]) .cv-link::before { content: "↗ "; }
+:is([data-screen="resume"], [data-screen="about"]) .cv-link:hover { text-decoration: underline; }

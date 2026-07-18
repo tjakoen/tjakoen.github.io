@@ -1,0 +1,9 @@
+/* molecules/cv-skill — one skill group card in the résumé Skills grid. Scoped to the résumé + About
+   screens; bundled into /components.css. The grid wrapper (.cv-skills) is a simple auto-fill of these.
+   Print flattening (single column) lives in components/pages/resume/resume.css (@media print). */
+:is([data-screen="resume"], [data-screen="about"]) .cv-skills { display: grid; gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); margin: var(--space-3) 0 var(--space-5); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-skill { border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md); padding: var(--space-4); background: var(--paper-2); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-skill__group { margin: 0 0 var(--space-1); font-size: var(--text-sm); }
+:is([data-screen="resume"], [data-screen="about"]) .cv-skill__items { margin: 0; font-size: var(--text-sm); color: var(--ink-muted); }

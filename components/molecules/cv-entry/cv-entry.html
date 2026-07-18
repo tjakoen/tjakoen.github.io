@@ -1,0 +1,24 @@
+<!-- molecules/cv-entry — one entry in the résumé timeline (a job, or an education line), data-bound
+     via each="cvRoles" / each="cvEducation" (server.ts builds both from data/cv.json in the same
+     shape). Screen with JS: the bullet detail + related feed-post links collapse behind the summary
+     line, and the per-entry toggle (revealed by the cv-accordion island) expands it. With NO JS the
+     detail renders open (the [hidden] toggle stays hidden), so the static export is flat, linear and
+     ATS-readable. Print (@media print, resume.css): detail forced open, toggle + links stripped, one
+     column on white. Used on /resume, /cv and /about's CV tab. The related-posts row and the summary /
+     location each hide when empty. See cv-entry.md. -->
+<li class="cv-entry" data-bind-id="domId" data-bind-data-role-tag="roleTag">
+  <div class="cv-entry__head">
+    <h3 class="cv-entry__title" data-field="title"></h3>
+    <p class="cv-entry__meta">
+      <span class="cv-entry__company" data-field="company"></span>
+      <span class="cv-entry__dates" data-field="dateRange"></span>
+    </p>
+    <p class="cv-entry__where" data-field="locationLabel"></p>
+    <p class="cv-entry__summary" data-field="summary"></p>
+    <button class="cv-entry__toggle" type="button" hidden aria-expanded="true">Hide details</button>
+  </div>
+  <div class="cv-entry__detail">
+    <ul class="cv-entry__bullets"><cv-bullet each="bullets"></cv-bullet></ul>
+    <ul class="cv-entry__links" aria-label="Related posts"><cv-link each="links"></cv-link></ul>
+  </div>
+</li>

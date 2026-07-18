@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Résumé · TJ's Desk</title>
-  <meta name="description" content="Tjakoen Stolk's résumé: dev manager, tech lead, and part-time software engineering teacher who builds his own no-build AI-first stack. The working record, print-friendly. I direct, Claude types.">
+  <meta name="description" content="Tjakoen Stolk's résumé: software engineering lead and part-time software engineering teacher who builds his own no-build AI-first stack. The full working record, print-friendly. I direct, Claude types.">
 </head>
 <body data-screen="resume" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="resume" data-rail-collapsed="false" data-surface="screen">
@@ -16,53 +16,34 @@
           <div class="profile-card__id">
             <p class="eyebrow">Résumé</p>
             <h1 class="masthead profile-card__name">Tjakoen Stolk</h1>
-            <p class="profile-card__role">Dev manager, tech lead, and part-time software engineering teacher.</p>
+            <p class="profile-card__role">Software engineering lead and part-time software engineering teacher.</p>
             <p class="profile-card__tagline">I direct, Claude types.</p>
           </div>
           <div class="profile-card__actions">
             <a class="btn" href="/mail">Message</a>
             <a class="btn" data-variant="soft" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a>
             <a class="btn" data-variant="soft" href="https://github.com/tjakoen">GitHub</a>
-            <button class="btn" data-variant="soft" type="button" data-resume-print>Print</button>
+            <button class="btn" type="button" data-resume-print>Download PDF</button>
           </div>
         </header>
 
-        <p class="lede">Dev manager and tech lead by day, part-time software engineering teacher by
-          evening, and a builder of things nobody asked for in the hours left over. I build AI-first
-          interfaces and I teach people to build software. This whole site is one of those things: my
-          own no-build hypermedia stack, running as plain static files, with an AI that runs in your
-          browser.</p>
+        <p class="lede" data-field="cvSummary"></p>
 
-        <div class="section-head"><span>What I do</span></div>
-        <div class="resume-grid resume-grid--skills">
-          <div class="skill-group">
-            <h3>Build</h3>
-            <ul>
-              <li>No-build, server-rendered hypermedia</li>
-              <li>Design systems and component libraries</li>
-              <li>TypeScript, Bun, static-export web apps</li>
-              <li>Content pipelines (Markdown to living pages)</li>
-            </ul>
-          </div>
-          <div class="skill-group">
-            <h3>Interfaces &amp; AI</h3>
-            <ul>
-              <li>AI-first UIs a human and an AI share one vocabulary to operate</li>
-              <li>In-browser language models (WebLLM / WebGPU)</li>
-              <li>Grounded assistants over your own content</li>
-              <li>Working in the open with an AI, receipts and all</li>
-            </ul>
-          </div>
-          <div class="skill-group">
-            <h3>Teach &amp; lead</h3>
-            <ul>
-              <li>Software engineering, 100 to 150 students a semester</li>
-              <li>Leading engineers as a dev manager and tech lead</li>
-              <li>Automating the grind so teaching stays about people</li>
-              <li>Honest about limits, low on hype</li>
-            </ul>
-          </div>
-        </div>
+        <div class="section-head"><span>Experience</span></div>
+        <ol class="cv-list"><cv-entry each="cvRoles"></cv-entry></ol>
+
+        <div class="section-head"><span>Education</span></div>
+        <ol class="cv-list"><cv-entry each="cvEducation"></cv-entry></ol>
+
+        <div class="section-head"><span>Skills</span></div>
+        <ul class="cv-core"><cv-chip each="cvPrimary"></cv-chip></ul>
+        <div class="cv-skills"><cv-skill each="cvSkills"></cv-skill></div>
+
+        <div class="section-head"><span>Languages</span></div>
+        <p class="cv-languages" data-field="cvLanguages"></p>
+
+        <div class="section-head"><span>Certifications</span></div>
+        <ul class="cv-certs"><cv-bullet each="cvCerts"></cv-bullet></ul>
 
         <div class="section-head"><span>Selected work</span></div>
         <div class="docs-list">
@@ -72,28 +53,7 @@
           <div class="docs-list__item"><a class="docs-list__name" href="/notes">Notes</a><span class="docs-list__what">long-form writing on how I actually work with AI, why I went frameworkless, and how I teach.</span></div>
         </div>
 
-        <div class="section-head"><span>Experience</span></div>
-        <ul class="xp">
-          <li class="xp__entry" data-role-tag="ai">
-            <p class="xp__role"><a href="/notes?tag=ai">Dev manager &amp; tech lead</a></p>
-            <p class="xp__meta">day job · leading engineering</p>
-            <p class="xp__what">Leading and mentoring engineers, setting technical direction, and shipping the tools a team actually needs.</p>
-            <p class="xp__notes-link"><a href="/notes?tag=ai">Notes from this role →</a></p>
-          </li>
-          <li class="xp__entry" data-role-tag="teaching">
-            <p class="xp__role"><a href="/notes?tag=teaching">Part-time software engineering teacher</a></p>
-            <p class="xp__meta">evenings · 100 to 150 students a semester</p>
-            <p class="xp__what">Teaching adults to build software: treat them like adults, lean into self-study, skip the fluff, go straight at the hard parts. I built a GitHub-native platform to automate the mechanical grading so the time goes back to students.</p>
-            <p class="xp__notes-link"><a href="/notes?tag=teaching">Notes from this role →</a></p>
-          </li>
-          <li class="xp__entry" data-role-tag="batch">
-            <p class="xp__role"><a href="/notes?tag=batch">Independent builder</a></p>
-            <p class="xp__meta">the hours left over</p>
-            <p class="xp__what">The BREAD stack and this site: a personal no-build hypermedia stack and an AI-first portfolio, built in the open, co-authored with an AI on purpose.</p>
-            <p class="xp__notes-link"><a href="/notes?tag=batch">Notes from this role →</a></p>
-          </li>
-        </ul>
-        <p class="lede">The full dated history and roles sit on
+        <p class="lede">The dated history also sits on
           <a href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a>. The code is on
           <a href="https://github.com/tjakoen">GitHub</a>. The honest long version, failures included,
           is in <a href="/notes/ten-times-zero">the notes</a>.</p>
@@ -108,12 +68,35 @@
   </div>
 
   <script>
-    // The one interactive bit: Print opens the browser print dialog. The @media print rules above
-    // strip the editor chrome so the printout is just the résumé board on white. No-JS: the button
-    // simply does nothing, and Cmd/Ctrl+P still prints the same clean sheet.
+    // Two islands, both pure enhancement (nothing real is JS-gated):
+    //
+    // 1) Download PDF opens the browser print dialog (save as PDF). The @media print rules in
+    //    resume.css strip the editor chrome AND force every accordion open, so the printout is the
+    //    full résumé on white, a flat single-column sheet an ATS reads cleanly. No-JS: the button does
+    //    nothing, but Cmd/Ctrl+P still prints the same clean sheet, and /cv auto-prints on load.
+    //
+    // 2) The cv-accordion: with JS, each experience/education entry collapses to its summary line with
+    //    a Show/Hide toggle. With NO JS the detail is already open (the toggle stays hidden), so the
+    //    static export is flat and parser-friendly. Print ignores the collapsed state (see @media print).
     (function () {
       var btn = document.querySelector('[data-resume-print]');
       if (btn) btn.addEventListener('click', function () { window.print(); });
+
+      var entries = Array.prototype.slice.call(document.querySelectorAll('.cv-entry'));
+      entries.forEach(function (entry) {
+        var toggle = entry.querySelector('.cv-entry__toggle');
+        if (!toggle) return;
+        function setOpen(open) {
+          entry.classList.toggle('is-collapsed', !open);
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          toggle.textContent = open ? 'Hide details' : 'Show details';
+        }
+        setOpen(false);            // collapse by default once JS is confirmed present
+        toggle.hidden = false;     // reveal the control (it is hidden in the markup + no-JS)
+        toggle.addEventListener('click', function () {
+          setOpen(entry.classList.contains('is-collapsed'));
+        });
+      });
     })();
   </script>
 </body>
