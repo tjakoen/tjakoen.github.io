@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Greenroom · TJ's Desk</title>
-  <meta name="description" content="Greenroom: a work-in-progress app being built on the BREAD stack. Landing soon.">
+  <meta name="description" content="Greenroom: a small local app that runs automated browser checks against your web app and hands developers a one-click bug bundle. No coding required. Built on the BREAD stack.">
 </head>
 <body data-screen="greenroom" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="greenroom" data-rail-collapsed="false" data-surface="screen">
@@ -12,16 +12,36 @@
     <main class="app-shell__main">
       <div class="board">
         <p class="eyebrow">🎬 <span class="name">Greenroom</span></p>
-        <h1 class="masthead">Greenroom</h1>
+        <h1 class="masthead">Run browser checks. Watch them pass. Hand over a bug bundle.</h1>
         <hr class="rule">
-        <p class="lede">Greenroom is a work-in-progress app, built on the BREAD stack the same way this
-          site is. It is still early, and this page is a placeholder rather than a pitch. The write-up
-          and the live app are landing here soon.</p>
+        <p class="lede">Greenroom is a small local app that runs automated browser checks against your web
+          app and lets you review the results, with no coding required. It runs entirely on your own
+          computer, from VS Code or the terminal. Under the hood it wraps <em>Playwright</em> in a friendly
+          dashboard: point it at any site, tell it the URLs and how to log in, pick one or several
+          environments, click <em>Run</em>, and watch a live pass and fail checklist. When something breaks,
+          it hands a developer a one-click bug bundle with everything they need to reproduce it.</p>
+
+        <div class="section-head"><span>What it does</span></div>
+        <div class="card-grid" style="--card-min: 15rem">
+          <div class="card" data-pad="sm"><h3 class="card__title">Run tests</h3><p class="card__body">Pick one or several environments, click Run, and watch a live pass, fail, and running checklist. More than one environment shows as a test-by-environment matrix with per-environment health.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Manage tests</h3><p class="card__body">Every check, grouped by feature. Run one, run a selection, or run by tag. Filter by failing, flaky, never-run, or slowest. Record a new test by clicking through the site, and let it log itself in without ever putting credentials in the file.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Report a bug</h3><p class="card__body">One-click bug bundle: the Playwright trace, video, screenshots, logs, and a plain-language summary, everything a developer needs to replay the session. Or export a single-frame PDF straight from the video.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Try the demo</h3><p class="card__body">Boots read-only with example data already filled in, so you can click around a populated dashboard with zero config before you set anything up.</p></div>
+        </div>
+
+        <div class="section-head"><span>Built on the BREAD stack</span></div>
+        <p class="lede">Greenroom is being rebuilt as a full consumer of the <a href="/bread">BREAD stack</a>,
+          the same no-build stack this site runs on: a Bun composition root, a frontend rebuilt in GRAIN,
+          docs through MILL, and the plan board mounted straight from PROOF. It is honest work in progress:
+          the Run, Tests, and Settings pages are already the new GRAIN app, with History and the last
+          frozen surfaces still being migrated across. The live app and a fuller write-up are landing here
+          as that work finishes.</p>
 
         <div class="section-head"><span>In the meantime</span></div>
         <div class="docs-list">
           <div class="docs-list__item"><a class="docs-list__name" href="/projects">Projects</a><span class="docs-list__what">back to the rest of what I've been building.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/">tjakoen.github.io</a><span class="docs-list__what">the site itself, and the stack Greenroom is built on.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/bread">The BREAD stack</a><span class="docs-list__what">the four layers plus PANTRY that Greenroom is being rebuilt on.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/">tjakoen.github.io</a><span class="docs-list__what">the site itself, the other app built on the same stack.</span></div>
         </div>
 
         <div class="page-foot">

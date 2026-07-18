@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Native GitHub Classroom · Docs</title>
-  <meta name="description" content="Documentation for Native GitHub Classroom: landing soon.">
+  <meta name="description" content="How Native GitHub Classroom is put together: the four repos, the access model, scoped tokens, repo names as data, and the safe-by-default writes. No course internals or student data.">
 </head>
 <body data-screen="classroom" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="classroom" data-rail-collapsed="false" data-surface="screen">
@@ -12,12 +12,42 @@
     <main class="app-shell__main">
       <div class="board">
         <p class="eyebrow">🎓 <span class="name">Native GitHub Classroom</span></p>
-        <h1 class="masthead">Docs</h1>
+        <h1 class="masthead">How it works</h1>
         <hr class="rule">
-        <p class="lede">Documentation for Native GitHub Classroom is landing here soon.</p>
+        <p class="lede">The shape in one line: one org per course, one teacher control repo holding the
+          engine, one workspace repo per student, and grading and publishing kept as two deliberate steps.
+          This page walks the parts that make that safe to run. It is the architecture, not the course
+          content: no student data and no private course internals live here, and the canonical grader tests
+          and the gradebook stay in the private control repo.</p>
 
-        <div class="section-head"><span>In the meantime</span></div>
+        <div class="section-head"><span>The four repos</span></div>
         <div class="docs-list">
+          <div class="docs-list__item"><span class="docs-list__name">The org</span><span class="docs-list__what">one per course, owned by the org so the engine can reach in and grade, and locked down so a student sees only their own repos.</span></div>
+          <div class="docs-list__item"><span class="docs-list__name">The teacher control repo</span><span class="docs-list__what">the engine: the scripts, the workflows, the private grader tests, and the gradebook. The gradebook is the single source of truth. If it is not in the gradebook, it did not happen.</span></div>
+          <div class="docs-list__item"><span class="docs-list__name">The student workspace repo</span><span class="docs-list__what">one per student, both their graded coursework and their personal scratch space.</span></div>
+          <div class="docs-list__item"><span class="docs-list__name">Canvas</span><span class="docs-list__what">the only outside system, and only at the end, to receive final grades as one CSV.</span></div>
+        </div>
+
+        <div class="section-head"><span>The parts that were the real work</span></div>
+        <p class="lede">The interesting engineering was never the grading. It was the plumbing around who can
+          touch what. Every real bug was a boundary bug.</p>
+        <div class="card-grid" style="--card-min: 15rem">
+          <div class="card" data-pad="sm"><h3 class="card__title">Access control is the whole ballgame</h3><p class="card__body">The org owns every repo so the engine can grade it, but each student has to be the admin of their own repo and no one else's. That is a narrow beam to thread, and getting it wrong is not cosmetic. I stopped trusting my memory of who could reach what and wrote an audit that checks it directly, by actual collaborators on each repo.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Tokens, not titles</h3><p class="card__body">Being an org admin does not let a workflow reach into other repos. The workflow needs its own scoped token. Obvious in hindsight, a lost afternoon at the time.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Names are data</h3><p class="card__body">The course code in a repo's name is what the engine filters on, so a misnamed or unconfigured repo matches to nobody. Half my "the grader is broken" panics were really "a repo is misnamed." Now an audit catches the bad names before I ever run a grade.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Safe by default, or not at all</h3><p class="card__body">Anything that writes to a student repo or the gradebook dry-runs first and shows me the plan. I read what is about to happen before it happens. That one rule is why I can let automation this close to real grades sleep at night.</p></div>
+        </div>
+
+        <div class="section-head"><span>Booting a term</span></div>
+        <p class="lede">The operating loop I open every term with, each step something I can point at and say
+          <em>that works</em>: lock down the org, stand up the control repo, get every student a correctly
+          named workspace, push a unit of content and confirm it landed everywhere, then have them do the
+          hello-world activity and watch it show up as a graded row in the gradebook. When that first green
+          row appears, the platform is confirmed end to end.</p>
+
+        <div class="section-head"><span>Read more</span></div>
+        <div class="docs-list">
+          <div class="docs-list__item"><a class="docs-list__name" href="/notes/how-i-turned-github-into-a-classroom">The full build story</a><span class="docs-list__what">the maker's account of the reframe, the design, and everything that broke on the way.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/native-github-classroom">Native GitHub Classroom</a><span class="docs-list__what">back to the project page.</span></div>
         </div>
 
