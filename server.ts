@@ -161,10 +161,57 @@ const mailMessages = mailbox.messages.map((m) => {
   };
 });
 
+// /resume + /about's CV tab (About pages pass): data/cv.json is the single source for the résumé —
+// the full chronological timeline plus education/skills/languages/certs — read server-side only at
+// boot (no client fetch, no export dataRoute), same idiom as deskFeedPosts/mailbox. Rendered by the
+// cv-entry/cv-bullet/cv-link/cv-skill molecules on BOTH /resume (the page) and /about's CV tab, so the
+// content lives in exactly one place. /cv serves the same sheet and auto-prints (see fetch below).
+interface CvRoleRaw {
+  title: string; company: string; location: string; start: string; end: string;
+  current?: boolean; roleTag?: string; summary: string; bullets: string[];
+  links?: Array<{ href: string; label: string }>;
+}
+interface CvData {
+  summary: string; roles: CvRoleRaw[];
+  education: Array<{ school: string; credential: string; start: string; end: string; notes: string[] }>;
+  stats: Array<{ value: string; label: string; sub?: string }>;
+  primarySkills: string[];
+  skills: Array<{ group: string; items: string[] }>;
+  languages: string[];
+  certs: Array<{ name: string; issuer: string; date: string }>;
+}
+const cv: CvData = await Bun.file(join(import.meta.dir, "data", "cv.json")).json();
+// Experience + education share the cv-entry molecule (same shape). Bullets/notes become {text}
+// objects so the nested each="bullets" binds a field (the renderer binds fields, not bare strings).
+const toCvEntry = (e: {
+  domId: string; roleTag?: string; title: string; company: string; dateRange: string;
+  location?: string; summary?: string; bullets: string[]; links?: Array<{ href: string; label: string }>;
+}) => ({
+  domId: e.domId, roleTag: e.roleTag ?? "", title: e.title, company: e.company, dateRange: e.dateRange,
+  locationLabel: e.location ?? "", summary: e.summary ?? "",
+  bullets: e.bullets.map((text) => ({ text })), links: e.links ?? [],
+});
+const cvRoles = cv.roles.map((r, i) => toCvEntry({
+  domId: `xp-${i}`, roleTag: r.roleTag, title: r.title, company: r.company,
+  dateRange: `${r.start} to ${r.end}`, location: r.location, summary: r.summary,
+  bullets: r.bullets, links: r.links,
+}));
+const cvEducation = cv.education.map((e, i) => toCvEntry({
+  domId: `edu-${i}`, title: e.credential, company: e.school,
+  dateRange: `${e.start} to ${e.end}`, bullets: e.notes ?? [],
+}));
+const cvSkills = cv.skills.map((s) => ({ group: s.group, itemsLabel: s.items.join(" · ") }));
+const cvCerts = cv.certs.map((c) => ({ text: `${c.name} (${c.issuer}), ${c.date}` }));
+const cvStats = cv.stats.map((s) => ({ value: s.value, label: s.label, sub: s.sub ?? "" }));
+const cvPrimary = cv.primarySkills.map((text) => ({ text }));
+const cvLanguages = cv.languages.join(" · ");
+const cvSummary = cv.summary;
+
 const renderAppPage = async (html: string) =>
   stampDevDoor(await renderPage(html, {
     recentNotes: await listRecentNotes(), calendarEvents: await buildCalendarEvents(),
     mailFolders, mailMessages,
+    cvRoles, cvEducation, cvSkills, cvCerts, cvStats, cvPrimary, cvLanguages, cvSummary,
   }));
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
 // Give every page's main content region a catalog hover-root so grain's usage→specimen bridge
@@ -504,6 +551,20 @@ ${PAGE_ASSETS}</body>
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
     if (fromContent) return finalizePage(req, fromContent);
+    // /cv — the "straight to download" twin of /resume: serve the exact same rendered résumé sheet
+    // (single source, no markup fork) plus a tiny script that fires the browser print/save-as-PDF
+    // dialog on load. The résumé's own @media print rules produce the clean white ATS sheet. Exported
+    // via the pageRoutes allowlist in tools/export.ts, so the static /cv works the same on GitHub Pages.
+    if (p === "/cv" || p === "/cv/") {
+      const sheet = await servePage("/resume");
+      if (sheet.status === 200) {
+        const html = (await sheet.text()).replace(
+          "</body>",
+          `<script>addEventListener("load",function(){setTimeout(function(){try{window.print();}catch(e){}},350);});</script></body>`,
+        );
+        return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+      }
+    }
     // the portfolio's own pages tree: "/" (home), "/grain"·"/batch" showcases, /loop + /about
     const page = await servePage(p);
     // /loop, frozen (Phase 2, §18): server-render the initial task list into the page HTML here

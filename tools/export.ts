@@ -83,7 +83,9 @@ async function pageRoutes(): Promise<string[]> {
   const pages = createSitemap(config.pagesDir).routes();
   const content = await listPortfolioContentRoutes();                    // MILL collections, enumerated
   const plans = await listPlanRoutes();                                  // PROOF's board, enumerated
-  const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference"]);
+  // "/cv" is not a page file — it's the auto-print résumé twin the server synthesizes from /resume
+  // (server.ts fetch), so add it explicitly or the dead-link walk flags the About/résumé download link.
+  const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference", "/cv"]);
   return [...all].filter((r) => !OPERABLE.has(r)).sort();
 }
 

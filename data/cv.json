@@ -1,0 +1,172 @@
+{
+  "summary": "Software engineering lead and part-time computer science teacher. I build production software and AI-first interfaces, lead engineers as a manager and tech lead, and teach the next batch of developers on the side.",
+  "roles": [
+    {
+      "title": "Technical Team Lead",
+      "company": "Career Team",
+      "location": "United States, remote",
+      "start": "Sep 2025",
+      "end": "Present",
+      "current": true,
+      "roleTag": "ai",
+      "summary": "Both people-manager and technical lead for the team, working AI-first.",
+      "bullets": [
+        "Worked as both people-manager and technical lead, a scope usually split across two roles, connecting day-to-day engineering with longer-term architecture.",
+        "Manage and mentor a team of engineers and product specialists, working AI-first to ship faster.",
+        "Build full-stack solutions (Next, Nest, MongoDB) on AWS microservices.",
+        "Made key architectural calls on the architecture team and ran code reviews across engineering to hold a consistent bar for quality and maintainability.",
+        "Built solutions for US government and education clients aimed at lowering barriers to employment.",
+        "Turned social-impact goals into concrete technical specs, working with product, design, and leadership."
+      ],
+      "links": []
+    },
+    {
+      "title": "College Instructor",
+      "company": "Holy Angel University",
+      "location": "Angeles, Philippines, on-site",
+      "start": "Jun 2025",
+      "end": "Present",
+      "current": true,
+      "roleTag": "teaching",
+      "summary": "Teach software engineering to 100 to 200 students a semester.",
+      "bullets": [
+        "Teach and mentor 100 to 200 students a semester on software engineering, modern frameworks, design systems, and architecture.",
+        "Built full-stack web and mobile curricula: Dart, Flutter, Web, React, Vue on the frontend; Node, Express, PHP, MySQL on the backend.",
+        "Teach Software Engineering Implementation and Management, connecting theory to real agile practice."
+      ],
+      "links": []
+    },
+    {
+      "title": "Chief Technology Officer",
+      "company": "PH Live Music",
+      "location": "Remote, hybrid",
+      "start": "Oct 2024",
+      "end": "Jun 2025",
+      "current": false,
+      "roleTag": "",
+      "summary": "Built a new platform from zero with the CEO and grew the founding team.",
+      "bullets": [
+        "Set the technology roadmap and built a new platform from zero, working directly with the CEO.",
+        "Ran the product from idea to launch, hands-on to unblock engineering and ship.",
+        "Recruited, scaled, and mentored the founding engineering and leadership team."
+      ],
+      "links": []
+    },
+    {
+      "title": "Director of Information Technology",
+      "company": "Broadheader IT Solutions",
+      "location": "Angeles, Philippines",
+      "start": "Oct 2024",
+      "end": "Jan 2025",
+      "current": false,
+      "roleTag": "",
+      "summary": "Co-founded and built the agency's engineering arm.",
+      "bullets": [
+        "Co-founded and built the agency's engineering arm; the team was later acquired by PH Live Music.",
+        "Designed technical strategy and system design for greenfield client applications.",
+        "Set the initial engineering culture and standards: git-flow workflows and agile tracking."
+      ],
+      "links": []
+    },
+    {
+      "title": "Operations Manager",
+      "company": "Vers Architecture",
+      "location": "Angeles, Philippines",
+      "start": "Aug 2023",
+      "end": "Oct 2024",
+      "current": false,
+      "roleTag": "",
+      "summary": "Built operations from scratch and scaled to onboard a large BPO client.",
+      "bullets": [
+        "Built operations from scratch and scaled infrastructure to onboard and support a large BPO client.",
+        "Designed business-process systems that cut operational bottlenecks.",
+        "Directed procurement, resource allocation, and cross-functional leadership against client SLAs.",
+        "Led go-to-market and marketing during growth phases, connecting operations to business development."
+      ],
+      "links": []
+    },
+    {
+      "title": "Sales and Marketing Lead",
+      "company": "Taskforce Outsourcing",
+      "location": "Angeles, Philippines",
+      "start": "Jan 2023",
+      "end": "Aug 2023",
+      "current": false,
+      "roleTag": "",
+      "summary": "Built the first sales and marketing setup and a repeatable pipeline.",
+      "bullets": [
+        "Built the company's first sales and marketing setup from scratch, with a client-acquisition system that gave the business a steady, predictable pipeline.",
+        "Started the company's social presence and paid-ads strategy, running the first campaigns to find and convert enterprise leads.",
+        "Standardized the sales lifecycle: the sales process, client proposals, and service contracts.",
+        "Ran the corporate WordPress site to bring in inbound traffic and leads.",
+        "Recruited, trained, and managed a small sales and marketing team, aligned to the company's growth targets."
+      ],
+      "links": []
+    },
+    {
+      "title": "Sales and Marketing Manager, Co-owner",
+      "company": "Small Anawangin Beach",
+      "location": "Zambales, Philippines",
+      "start": "Apr 2018",
+      "end": "Jan 2023",
+      "current": false,
+      "roleTag": "",
+      "summary": "Co-ran a family resort's operations and its whole digital footprint.",
+      "bullets": [
+        "Co-managed resort operations and commercial strategy with family stakeholders, growing bookings and the guest experience across the seasons.",
+        "Built the resort's digital footprint from scratch: the official website and a strong organic social presence.",
+        "Ran the resort's paid-ads strategy, with campaigns that turned social engagement into steady bookings.",
+        "Set up and integrated a central booking system across Airbnb, OTA platforms, and direct channels."
+      ],
+      "links": []
+    },
+    {
+      "title": "Associate Software Engineer",
+      "company": "Torocloud",
+      "location": "Clark, Philippines",
+      "start": "Apr 2017",
+      "end": "Apr 2018",
+      "current": false,
+      "roleTag": "",
+      "summary": "First job, recruited before graduation onto an enterprise software team.",
+      "bullets": [
+        "Recruited in my third university year, before graduation, onto a fast-paced enterprise software team.",
+        "Learned production practice: version control, clean architecture, and agile methods.",
+        "Worked on core software components and took part in rigorous code review.",
+        "Balanced a full course load with the job before shifting to a family business."
+      ],
+      "links": []
+    }
+  ],
+  "education": [
+    {
+      "school": "Holy Angel University",
+      "credential": "BS Computer Science",
+      "start": "2014",
+      "end": "2018",
+      "notes": [
+        "President of LOOP, the official Computer Science student organization.",
+        "Top 3rd-year student for academic and technical performance.",
+        "Best Thesis award for research, architecture, and implementation."
+      ]
+    }
+  ],
+  "stats": [
+    { "value": "150+", "label": "students a term", "sub": "software engineering" },
+    { "value": "9 yrs", "label": "building software", "sub": "since 2017" },
+    { "value": "0-to-1", "label": "platforms from zero", "sub": "CTO and lead roles" },
+    { "value": "no build", "label": "my own stack", "sub": "this site runs on it" }
+  ],
+  "primarySkills": ["AI-first development", "No-build hypermedia", "Next", "Nest", "Design systems", "Team leadership"],
+  "skills": [
+    { "group": "Frontend and Mobile", "items": ["Next", "React", "Flutter", "Dart"] },
+    { "group": "Backend", "items": ["Nest", "Node", "Express", "PHP", "REST"] },
+    { "group": "Databases", "items": ["MongoDB", "MySQL", "PostgreSQL", "Supabase", "Firebase"] },
+    { "group": "Tools and Methods", "items": ["Git", "Agile/Scrum", "Jira", "Apache DevLake", "Notion"] },
+    { "group": "Build and AI", "items": ["No-build hypermedia", "WebLLM / WebGPU", "Design systems"] }
+  ],
+  "languages": ["English (native)", "Filipino (fluent)", "Dutch (conversational)"],
+  "certs": [
+    { "name": "Developing on AWS", "issuer": "EnterOne", "date": "Oct 2025" }
+  ]
+}

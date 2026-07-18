@@ -1,0 +1,6 @@
+<!-- molecules/cv-link — one related /calendar feed post under a résumé entry, nested each="links"
+     inside cv-entry (bound to {href,label}). The whole row hides when an entry has no links, and it
+     is stripped in @media print (resume.css). Styled by cv-entry.css. See cv-entry.md. -->
+<li class="cv-link-item">
+  <a class="cv-link" data-bind-href="href" data-field="label"></a>
+</li>

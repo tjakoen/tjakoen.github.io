@@ -1,0 +1,9 @@
+<!-- molecules/cv-stat — one KPI tile in the About highlights strip, data-bound each="cvStats" (from
+     data/cv.json). Reuses GRAIN's stat-tile class contract (.stat/.stat__value/.stat__label/.stat__sub)
+     so the look is the stack's own dashboard primitive; the parent .cv-stats owns the row layout. The
+     sub-line hides when empty. See cv-stat.md. -->
+<div class="stat">
+  <span class="stat__value" data-field="value"></span>
+  <span class="stat__label" data-field="label"></span>
+  <span class="stat__sub" data-field="sub"></span>
+</div>

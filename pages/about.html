@@ -27,7 +27,7 @@
 
         <nav class="about-tabs" data-about-tabs aria-label="Sections">
           <a class="tab" href="#profile" aria-current="page">Profile</a>
-          <a class="tab" href="#resume">Résumé</a>
+          <a class="tab" href="#resume">CV</a>
           <a class="tab" href="#lessons">Lessons</a>
           <a class="tab" href="#contact">Contact</a>
           <a class="tab" href="#now">Now</a>
@@ -35,6 +35,15 @@
 
         <section class="about-panel" id="profile">
           <div class="section-head"><span>Profile</span></div>
+          <div class="quotes-hero" data-quotes-hero>
+            <ul class="quotes-hero__list">
+              <li class="quote"><a href="#lessons-dev-manager">As a <span class="quote__role">manager</span>, I repeat the direction until it sticks. Saying it once was never enough.</a></li>
+              <li class="quote"><a href="#lessons-tech-lead">As a <span class="quote__role">tech lead</span>, I delete the build step, so I keep making the decision.</a></li>
+              <li class="quote"><a href="#lessons-educator">As an <span class="quote__role">educator</span>, I treat adults like adults, and most of the fluff falls away.</a></li>
+              <li class="quote">As a <span class="quote__role">builder</span>, I ship things nobody asked for, in the hours left over.</li>
+              <li class="quote">As an <span class="quote__role">engineer</span>, I direct, Claude types.</li>
+            </ul>
+          </div>
           <p class="lede">Dev manager and tech lead by day, part-time software engineering teacher
             by evening, and a builder of things nobody asked for in the hours left over. This
             whole site is one of those things: my own no-build hypermedia stack, running as plain
@@ -42,22 +51,38 @@
           <p>The long version, the failures included, is in <a href="/notes/ten-times-zero">the
             notes</a>: how I actually work with AI, why I went frameworkless, and how I nearly
             quit teaching before I automated my way back to it.</p>
+          <div class="cv-stats"><cv-stat each="cvStats"></cv-stat></div>
         </section>
 
         <section class="about-panel" id="resume">
-          <div class="section-head"><span>Résumé</span></div>
-          <p>The working record lives on its own page, and the professional history sits on
-            LinkedIn.</p>
-          <div class="docs-list">
-            <div class="docs-list__item"><a class="docs-list__name" href="/resume">Résumé</a><span class="docs-list__what">the working record, and where the full version will land.</span></div>
-            <div class="docs-list__item"><a class="docs-list__name" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a><span class="docs-list__what">professional history and contact.</span></div>
+          <div class="section-head"><span>CV</span></div>
+          <p class="cv-tab__intro" data-field="cvSummary"></p>
+          <div class="cv-tab__actions">
+            <a class="btn" href="/cv">Download PDF</a>
+            <a class="btn" data-variant="soft" href="/resume">Open the full page</a>
+            <a class="btn" data-variant="soft" href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a>
           </div>
+
+          <div class="section-head"><span>Experience</span></div>
+          <ol class="cv-list"><cv-entry each="cvRoles"></cv-entry></ol>
+
+          <div class="section-head"><span>Education</span></div>
+          <ol class="cv-list"><cv-entry each="cvEducation"></cv-entry></ol>
+
+          <div class="section-head"><span>Skills</span></div>
+          <ul class="cv-core"><cv-chip each="cvPrimary"></cv-chip></ul>
+          <div class="cv-skills"><cv-skill each="cvSkills"></cv-skill></div>
+
+          <div class="section-head"><span>Languages</span></div>
+          <p class="cv-languages" data-field="cvLanguages"></p>
+
+          <div class="section-head"><span>Certifications</span></div>
+          <ul class="cv-certs"><cv-bullet each="cvCerts"></cv-bullet></ul>
         </section>
 
         <section class="about-panel" id="lessons">
           <div class="section-head"><span>Lessons</span></div>
-          <p class="muted">Placeholder. These are lessons learned by role, structure only for now, so the
-            shape is here while the real ones are written. Each role links out to the notes tagged for
+          <p class="muted">What each role actually taught me. Each one links out to the notes tagged for
             that kind of work.</p>
           <nav class="lessons-tabs" data-lessons-tabs aria-label="Lessons by role">
             <a class="tab" href="#lessons-dev-manager" aria-current="page">Dev manager</a>
@@ -67,27 +92,30 @@
 
           <div class="lessons-panel" id="lessons-dev-manager" data-role="dev-manager">
             <ul class="lessons-list">
-              <li>Placeholder lesson: the tools a team actually needs are rarely the ones on the roadmap.</li>
-              <li>Placeholder lesson: direction is a thing you repeat, not a thing you announce once.</li>
-              <li>Placeholder lesson: the honest version of a status is the one that ages well.</li>
+              <li>The tools a team actually needs are rarely the ones on the roadmap. I ship the small internal thing that unblocks five people before the feature that demos well.</li>
+              <li>Direction is something you repeat, not something you announce once. I say the same why in standup, in review, and in the doc, until it is boring.</li>
+              <li>The honest version of a status is the one that ages well. I would rather write down what is blocked and why than hand up a green square that turns red next week.</li>
+              <li>Mentoring is the job, not the overhead. A junior I actually grow is worth more than any one feature I could have written myself.</li>
             </ul>
             <p class="xp__notes-link"><a href="/notes?tag=ai">Notes from this role →</a></p>
           </div>
 
           <div class="lessons-panel" id="lessons-tech-lead" data-role="tech-lead">
             <ul class="lessons-list">
-              <li>Placeholder lesson: fewer moving parts beats a clever abstraction almost every time.</li>
-              <li>Placeholder lesson: a build step you can delete is a decision you get to keep making.</li>
-              <li>Placeholder lesson: the design that survives is the one the next person can read.</li>
+              <li>Fewer moving parts beats a clever abstraction almost every time. I have deleted more code than I was ever proud of writing.</li>
+              <li>A build step you can delete is a decision you get to keep making. This whole site runs with no build, on purpose.</li>
+              <li>The design that survives is the one the next person can read. I write for the stranger who opens the file at two in the morning.</li>
+              <li>Standards live in review, not in a document nobody reopens. I would rather hold the bar in a pull request than in a wiki.</li>
             </ul>
             <p class="xp__notes-link"><a href="/notes?tag=no-build">Notes from this role →</a></p>
           </div>
 
           <div class="lessons-panel" id="lessons-educator" data-role="educator">
             <ul class="lessons-list">
-              <li>Placeholder lesson: treat adults like adults and most of the fluff falls away.</li>
-              <li>Placeholder lesson: automate the mechanical grading so the time goes back to students.</li>
-              <li>Placeholder lesson: go straight at the hard parts, that is what they came for.</li>
+              <li>Treat adults like adults and most of the fluff falls away. My students get the real thing, limits included.</li>
+              <li>Automate the mechanical grading so the time goes back to students. I built a GitHub-native platform to buy back the hours I was drowning in.</li>
+              <li>Go straight at the hard parts. Nobody signs up for a semester to be kept away from the difficult idea.</li>
+              <li>You end up teaching the way you wish you had been taught. I nearly quit before I found a way to make it sustainable.</li>
             </ul>
             <p class="xp__notes-link"><a href="/notes?tag=teaching">Notes from this role →</a></p>
           </div>
@@ -183,14 +211,37 @@
         setPanel(link.getAttribute('href').slice(1));
       });
 
-      var initial = (location.hash || '').slice(1);
-      if (initial.indexOf('lessons-') === 0 && lessonIds.indexOf(initial) !== -1) {
-        setPanel('lessons');       // a #lessons-<role> deep link opens Lessons on that role
-        setRole(initial);
-      } else {
-        setPanel(ids.indexOf(initial) !== -1 ? initial : 'profile');
-        setRole(lessonIds.length ? lessonIds[0] : '');   // default the nested roles to the first
+      // Route a hash to the right panel/role. Called on load AND on hashchange, so the Profile quotes'
+      // #lessons-<role> deep links (plain in-page anchors) open Lessons on that role with no extra wiring.
+      function applyHash(hash) {
+        var id = (hash || '').slice(1);
+        if (id.indexOf('lessons-') === 0 && lessonIds.indexOf(id) !== -1) {
+          setPanel('lessons');     // a #lessons-<role> deep link opens Lessons on that role
+          setRole(id);
+        } else if (id === 'lessons') {
+          setPanel('lessons');
+        } else {
+          setPanel(ids.indexOf(id) !== -1 ? id : 'profile');
+        }
       }
+      setRole(lessonIds.length ? lessonIds[0] : '');   // default the nested roles to the first
+      applyHash(location.hash);
+      window.addEventListener('hashchange', function () { applyHash(location.hash); });
+
+      // cv-accordion: with JS, each CV entry collapses to its summary line + a Show/Hide toggle. With
+      // no JS the detail is already open (toggle stays hidden), so the export/print stay flat + ATS-safe.
+      Array.prototype.slice.call(document.querySelectorAll('.cv-entry')).forEach(function (entry) {
+        var toggle = entry.querySelector('.cv-entry__toggle');
+        if (!toggle) return;
+        function setOpen(open) {
+          entry.classList.toggle('is-collapsed', !open);
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          toggle.textContent = open ? 'Hide details' : 'Show details';
+        }
+        setOpen(false);
+        toggle.hidden = false;
+        toggle.addEventListener('click', function () { setOpen(entry.classList.contains('is-collapsed')); });
+      });
     })();
   </script>
 </body>

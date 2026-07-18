@@ -28,3 +28,30 @@
 [data-screen="about"] .now-list li { font-size: var(--text-sm); color: var(--ink-muted); }
 [data-screen="about"] .now-list time { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint);
   margin-right: var(--space-2); }
+
+/* Profile quotes-hero: a first-person manifesto that leads the Profile panel. First three lines deep-link
+   to their Lessons role (the island's hashchange routing opens it). All five render stacked and visible
+   with no JS; with motion allowed they fade in with a small stagger, settling to the same visible state
+   (so the visual baseline is deterministic). Reduced motion + Playwright's disabled-animations both land
+   on all-visible. */
+[data-screen="about"] .quotes-hero { margin: 0 0 var(--space-5); }
+[data-screen="about"] .quotes-hero__list { list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: var(--space-3); }
+[data-screen="about"] .quote { font-size: var(--text-lg); line-height: var(--leading-snug); color: var(--ink);
+  max-width: 44rem; }
+[data-screen="about"] .quote a { color: inherit; text-decoration: none; }
+[data-screen="about"] .quote a:hover { text-decoration: underline; text-decoration-color: var(--color-accent); }
+[data-screen="about"] .quote__role { color: var(--color-accent); font-weight: 600; }
+@media (prefers-reduced-motion: no-preference) {
+  [data-screen="about"] .quote { animation: quote-in 0.5s ease both; }
+  [data-screen="about"] .quote:nth-child(1) { animation-delay: 0s; }
+  [data-screen="about"] .quote:nth-child(2) { animation-delay: 0.08s; }
+  [data-screen="about"] .quote:nth-child(3) { animation-delay: 0.16s; }
+  [data-screen="about"] .quote:nth-child(4) { animation-delay: 0.24s; }
+  [data-screen="about"] .quote:nth-child(5) { animation-delay: 0.32s; }
+}
+@keyframes quote-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* CV tab: the summary line + the download/actions row above the shared cv-* molecules. */
+[data-screen="about"] .cv-tab__intro { margin: 0 0 var(--space-4); color: var(--ink-muted); }
+[data-screen="about"] .cv-tab__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0 0 var(--space-5); }
