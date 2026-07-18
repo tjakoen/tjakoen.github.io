@@ -1,25 +1,36 @@
-// portfolio/e2e/calendar.e2e.ts — CONFORMANCE: the /calendar feed-first social feed (Apps-v2 Pass C,
-// plans/imperative-dazzling-pillow.md). The Feed is server-rendered (content.ts merges note publish
-// dates + data/desk-feed.json "shipped" posts + the events collection events/*.md in server.ts,
-// composed via batch's each="calendarEvents" through the feed-card molecule, images-first). Month +
-// Week are a client-side island reading the SAME events straight off the feed DOM, no fetch. Time is
-// frozen so this spec stays deterministic past July 2026, when the fixture dates stop overlapping the
-// real calendar.
+// portfolio/e2e/calendar.e2e.ts — CONFORMANCE: the /calendar app (Apps-v2 Pass C, reworked to read
+// like a standalone calendar app). The Feed is server-rendered (content.ts merges note publish dates
+// + data/desk-feed.json "shipped" posts + the events collection events/*.md in server.ts, composed
+// via batch's each="calendarEvents" through the feed-card molecule, images-first). The Month grid is a
+// client-side island reading the SAME events straight off the feed DOM (no fetch) and renders ABOVE
+// the feed; the feed is always on the page (the whole page with no JS — the month grid ships hidden).
+// Week view and the view tabs were removed. Time is frozen so this spec stays deterministic past July
+// 2026, when the fixture dates stop overlapping the real calendar.
 import { test, expect } from "@playwright/test";
 
 const FIXED_NOW = new Date("2026-07-12T12:00:00");   // after every fixture event, same month as all of them
 
-test.describe("the /calendar feed (JS on)", () => {
+test.describe("the /calendar app (JS on)", () => {
   test.beforeEach(async ({ page }) => {
     await page.clock.setFixedTime(FIXED_NOW);
     await page.goto("/calendar");
   });
 
-  test("Feed is the default view; Month and Week ship behind their tabs", async ({ page }) => {
+  test("the month grid renders above the always-present feed, today ring on the 12th", async ({ page }) => {
+    await expect(page.locator('[data-cal-panel="month"]')).toBeVisible();
     await expect(page.locator('[data-cal-panel="feed"]')).toBeVisible();
-    await expect(page.locator('[data-cal-panel="month"]')).toBeHidden();
-    await expect(page.locator('[data-cal-panel="week"]')).toBeHidden();
-    await expect(page.locator('.cal-views [data-view="feed"]')).toHaveAttribute("aria-current", "page");
+
+    const today = page.locator('[data-cal-panel="month"] .cal__cell--today .cal__num');
+    await expect(today).toBeVisible();
+    await expect(today).toHaveText("12");
+    await expect(page.locator('[data-cal="title"]')).toHaveText("July 2026");
+  });
+
+  test("a jump-to-feed link points at the feed section", async ({ page }) => {
+    const jump = page.locator(".cal__to-feed");
+    await expect(jump).toBeVisible();
+    await expect(jump).toHaveAttribute("href", "#feed");
+    await expect(page.locator('section.feed#feed')).toBeVisible();
   });
 
   test("an events-collection card (hackathon) leads with a real, dimensioned, alt-texted photo", async ({ page }) => {
@@ -46,19 +57,7 @@ test.describe("the /calendar feed (JS on)", () => {
     await expect(noteCard.locator(".feed-photos")).toBeHidden();   // :empty collapses an absent strip
   });
 
-  test("Month is a tab click away, with a today ring on the 12th", async ({ page }) => {
-    await page.locator('.cal-views [data-view="month"]').click();
-    await expect(page.locator('[data-cal-panel="month"]')).toBeVisible();
-    await expect(page.locator('[data-cal-panel="feed"]')).toBeHidden();
-
-    const today = page.locator('[data-cal-panel="month"] .cal__cell--today .cal__num');
-    await expect(today).toBeVisible();
-    await expect(today).toHaveText("12");
-    await expect(page.locator('.cal-views [data-view="month"]')).toHaveAttribute("aria-current", "page");
-  });
-
   test("a month chip's text matches a real feed card title", async ({ page }) => {
-    await page.locator('.cal-views [data-view="month"]').click();
     const chip = page.locator(".cal__event").first();
     await expect(chip).toBeVisible();
     const chipText = await chip.textContent();
@@ -67,27 +66,15 @@ test.describe("the /calendar feed (JS on)", () => {
     expect(await matchingTitle.count()).toBeGreaterThanOrEqual(1);
   });
 
-  test("clicking a month chip switches to Feed and highlights the card", async ({ page }) => {
-    await page.locator('.cal-views [data-view="month"]').click();
+  test("clicking a month chip scrolls to and highlights its feed card (feed is always on the page)", async ({ page }) => {
     const chip = page.locator(".cal__event").first();
     const targetId = await chip.getAttribute("data-target");
     expect(targetId).toMatch(/^evt-(note|post|event)-/);
     await chip.click();
 
-    await expect(page.locator('[data-cal-panel="feed"]')).toBeVisible();
-    await expect(page.locator('[data-cal-panel="month"]')).toBeHidden();
-    await expect(page.locator('.cal-views [data-view="feed"]')).toHaveAttribute("aria-current", "page");
-
     const card = page.locator(`#${targetId}`);
     await expect(card).toBeVisible();
     await expect(card).toHaveClass(/feed-card--highlight/, { timeout: 1000 });
-  });
-
-  test("Week view swaps in over Feed", async ({ page }) => {
-    await page.locator('.cal-views [data-view="week"]').click();
-    await expect(page.locator('[data-cal-panel="week"]')).toBeVisible();
-    await expect(page.locator('[data-cal-panel="feed"]')).toBeHidden();
-    await expect(page.locator('.cal-views [data-view="week"]')).toHaveAttribute("aria-current", "page");
   });
 
   test("feed card dates relativize against the frozen clock (absolute preserved in title)", async ({ page }) => {
@@ -113,10 +100,10 @@ test.describe("the /calendar event page (JS on)", () => {
   });
 });
 
-test.describe("the /calendar feed (no JS)", () => {
+test.describe("the /calendar app (no JS)", () => {
   test.use({ javaScriptEnabled: false });
 
-  test("the Feed renders with real datetimes; the view tabs and grids stay hidden", async ({ page }) => {
+  test("the feed is the whole page with real datetimes; the month grid stays hidden", async ({ page }) => {
     await page.goto("/calendar");
 
     const cards = page.locator(".feed-card");
@@ -128,9 +115,7 @@ test.describe("the /calendar feed (no JS)", () => {
     expect(datetimes.length).toBeGreaterThan(0);
     for (const dt of datetimes) expect(dt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 
-    await expect(page.locator("[data-cal-views]")).toBeHidden();
-    await expect(page.locator('[data-cal-panel="month"]')).toBeHidden();
-    await expect(page.locator('[data-cal-panel="week"]')).toBeHidden();
+    await expect(page.locator('[data-cal-panel="month"]')).toBeHidden();   // the month grid needs JS
     await expect(page.locator('[data-cal-panel="feed"]')).toBeVisible();
   });
 });

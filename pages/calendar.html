@@ -11,50 +11,26 @@
     <portfolio-frame />
     <main class="app-shell__main">
       <div class="board">
-        <p class="eyebrow">📅 <span class="name">The Desk</span></p>
-        <h1 class="masthead">Calendar</h1>
-        <hr class="rule">
-        <p class="lede">The desk's feed. It reads newest first: hackathons coached, talks given, student
-          projects worth showing, and the things that shipped, alongside the days notes went up. Month
-          and Week plot the same real dates, read straight off the feed below. The feed is the honest
-          list, every post is a real dated thing, so with JavaScript off it's what you get.</p>
-
-        <nav class="cal-views" data-cal-views hidden aria-label="View">
-          <button class="tab" type="button" data-view="feed" aria-current="page">Feed</button>
-          <button class="tab" type="button" data-view="month">Month</button>
-          <button class="tab" type="button" data-view="week">Week</button>
-        </nav>
-
-        <div class="cal" data-cal-panel="month" hidden>
+        <section class="cal" data-cal-panel="month" hidden aria-label="Month">
           <div class="cal__head">
             <span class="cal__month" data-cal="title">Loading…</span>
-            <span class="cal__note">read-only render</span>
+            <a class="cal__to-feed" href="#feed">Jump to feed ↓</a>
           </div>
           <div class="cal__grid" data-cal="dow"></div>
           <div class="cal__grid" data-cal="grid">
-            <noscript><p class="muted" style="padding: var(--space-5)">This panel renders the month
-              with a little JavaScript. With it off, the Agenda below has the same information as a
+            <noscript><p class="muted" style="padding: var(--space-5)">This month grid renders with a
+              little JavaScript. With it off, the feed below is the whole page, every dated thing as a
               plain list.</p></noscript>
           </div>
-        </div>
+          <p class="cal__legend">
+            <span><span class="cal__swatch" style="background: var(--color-accent-soft)"></span>notes</span>
+            <span><span class="cal__swatch" style="background: var(--paper-2); border: 1px solid var(--line-soft)"></span>shipped</span>
+            <span><span class="cal__swatch cal__swatch--event"></span>events</span>
+            <span><span class="cal__swatch" style="background: var(--color-accent)"></span>today</span>
+          </p>
+        </section>
 
-        <div class="cal cal--week" data-cal-panel="week" hidden>
-          <div class="cal__head">
-            <span class="cal__month" data-cal-week="title">Loading…</span>
-            <span class="cal__note">read-only render</span>
-          </div>
-          <div class="cal__grid" data-cal-week="dow"></div>
-          <div class="cal__grid" data-cal-week="grid"></div>
-        </div>
-
-        <p class="cal__legend">
-          <span><span class="cal__swatch" style="background: var(--color-accent-soft)"></span>notes</span>
-          <span><span class="cal__swatch" style="background: var(--paper-2); border: 1px solid var(--line-soft)"></span>shipped</span>
-          <span><span class="cal__swatch cal__swatch--event"></span>events</span>
-          <span><span class="cal__swatch" style="background: var(--color-accent)"></span>today</span>
-        </p>
-
-        <section class="feed" data-cal-panel="feed">
+        <section class="feed" id="feed" data-cal-panel="feed">
           <div class="section-head"><span>Feed</span></div>
           <ol class="feed__list"><feed-card each="calendarEvents"></feed-card></ol>
         </section>
@@ -69,18 +45,15 @@
   </div>
 
   <script>
-    // Reads the real events straight off the server-rendered Feed (one source of truth, no fetch,
-    // no second copy of the data) and plots the real current Month + Week from them. With no JS the
-    // Feed above is already the whole page; this island only adds the two other views, the tab
-    // switcher, and the relative dates on the feed cards. Every event is a real dated thing (note
-    // publish dates + shipped posts + the events collection) — nothing invented.
+    // Reads the real events straight off the server-rendered Feed (one source of truth, no fetch, no
+    // second copy of the data) and plots the current Month from them, shown ABOVE the feed. The feed
+    // itself is always on the page (it is the whole page with no JS — the month grid needs JS and
+    // ships hidden). Clicking a day's chip scrolls the feed to that post and flashes it. Every event
+    // is a real dated thing (note publish dates + shipped posts + the events collection) — nothing invented.
     (function () {
-      var viewsNav = document.querySelector('[data-cal-views]');
       var feedList = document.querySelector('.feed__list');
       var monthPanel = document.querySelector('[data-cal-panel="month"]');
-      var weekPanel = document.querySelector('[data-cal-panel="week"]');
-      var feedPanel = document.querySelector('[data-cal-panel="feed"]');
-      if (!viewsNav || !feedList || !monthPanel || !weekPanel || !feedPanel) return;
+      if (!feedList || !monthPanel) return;
 
       // ---- relative dates on the feed cards: server renders each date absolute (export-safe, in
       // title); rewrite [data-relativize] to "Today / Yesterday / N days ago", keeping the absolute. ----
@@ -120,15 +93,15 @@
         (byDate[e.date] = byDate[e.date] || []).push(e);
       });
 
-      // ---- shared: a clickable chip for one event, switches to Feed + highlights the card ----
+      // ---- shared: a clickable chip for one event; the feed is always on the page, so the chip
+      // just scrolls to its card and flashes it (no view switch anymore) ----
       function makeChip(e) {
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'cal__event cal__event--' + (e.kind || 'note');
         btn.textContent = e.title;
-        if (e.id) btn.setAttribute('data-target', e.id);   // the feed card this chip reveals
+        if (e.id) btn.setAttribute('data-target', e.id);   // the feed card this chip scrolls to
         btn.addEventListener('click', function () {
-          setView('feed');
           var row = e.id && document.getElementById(e.id);
           if (!row) return;
           row.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -182,55 +155,7 @@
         gridEl.appendChild(cell);
       }
 
-      // ---- Week (the 7 days of the current week, Sun-Sat) ----
-      var weekDowEl = document.querySelector('[data-cal-week="dow"]');
-      var weekGridEl = document.querySelector('[data-cal-week="grid"]');
-      var weekTitleEl = document.querySelector('[data-cal-week="title"]');
-
-      var weekStart = new Date(year, month, todayDate - now.getDay());
-      var weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
-      var sameMonth = weekStart.getMonth() === weekEnd.getMonth();
-      weekTitleEl.textContent = sameMonth
-        ? months[weekStart.getMonth()] + ' ' + weekStart.getDate() + '–' + weekEnd.getDate() + ', ' + weekStart.getFullYear()
-        : months[weekStart.getMonth()] + ' ' + weekStart.getDate() + ' – ' + months[weekEnd.getMonth()] + ' ' + weekEnd.getDate() + ', ' + weekEnd.getFullYear();
-
-      days.forEach(function (d) {
-        var c = document.createElement('div');
-        c.className = 'cal__dow';
-        c.textContent = d;
-        weekDowEl.appendChild(c);
-      });
-
-      for (var w = 0; w < 7; w++) {
-        var wDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + w);
-        var wCell = document.createElement('div');
-        wCell.className = 'cal__cell';
-        var wNum = document.createElement('span');
-        wNum.className = 'cal__num';
-        wNum.textContent = wDate.getDate();
-        if (isoKey(wDate) === isoKey(now)) wCell.classList.add('cal__cell--today');
-        wCell.appendChild(wNum);
-        (byDate[isoKey(wDate)] || []).forEach(function (e) { wCell.appendChild(makeChip(e)); });
-        weekGridEl.appendChild(wCell);
-      }
-
-      // ---- view tabs ----
-      var panels = { feed: feedPanel, month: monthPanel, week: weekPanel };
-      function setView(name) {
-        Object.keys(panels).forEach(function (k) { panels[k].hidden = k !== name; });
-        var buttons = viewsNav.querySelectorAll('[data-view]');
-        for (var b = 0; b < buttons.length; b++) {
-          if (buttons[b].getAttribute('data-view') === name) buttons[b].setAttribute('aria-current', 'page');
-          else buttons[b].removeAttribute('aria-current');
-        }
-      }
-      viewsNav.addEventListener('click', function (ev) {
-        var btn = ev.target.closest('[data-view]');
-        if (btn) setView(btn.getAttribute('data-view'));
-      });
-
-      viewsNav.hidden = false;   // reveal the tabs; Feed stays the default (also the no-JS view)
-      setView('feed');
+      monthPanel.hidden = false;   // reveal the month grid now that it's built (feed is always shown)
     })();
   </script>
 </body>

@@ -4,20 +4,35 @@
    `.feed-controls`/`.chips`/`.chip`, `.note-feed`, and every `.note-card__*` part. Tokens only
    (DESIGN-SYSTEM §2) — no hardcoded colors, mirrors work-card.css's convention. */
 
-/* ---- controls: New/Top + tag filter, as chip pills. Hidden until the inline island in
-   renderNotesFeedPage reveals it — see the [hidden] rule at the bottom, the no-JS default. */
-.feed-controls {
-  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4);
+/* ---- toolbar: a search field + a New/Top segmented control + the "See what's new" AI trigger on
+   one bar, then a reduced tag-chip row below. An app-like top bar, not a stack of checkbox rows.
+   Hidden until the inline island in renderNotesFeedPage reveals it — see the [hidden] rule, the
+   no-JS default. */
+.notes-toolbar {
+  display: flex; flex-direction: column; gap: var(--space-3);
   padding: var(--space-3) 0 var(--space-4);
   border-bottom: 1px solid var(--color-line);
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
 }
-/* the no-JS default: the inline island reveals this by clearing [hidden] (renderNotesFeedPage).
-   `display: flex` above matches [hidden]'s UA-stylesheet specificity, and an author rule loads
-   after the UA sheet — without this override the flex display would win and the "hidden" controls
-   would still show up on a no-JS load. */
-.feed-controls[hidden] { display: none; }
-.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+/* the no-JS default: the inline island reveals this by clearing [hidden] (renderNotesFeedPage). The
+   flex display above matches [hidden]'s UA-sheet specificity, and an author rule loads after the UA
+   sheet — without this override the flex display would win and the "hidden" toolbar would show on a
+   no-JS load. */
+.notes-toolbar[hidden] { display: none; }
+.notes-toolbar__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.notes-toolbar__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-left: auto; }
+.notes-toolbar__ai { flex: 0 0 auto; }
+
+.notes-search {
+  flex: 1 1 16rem; min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  background: var(--paper, var(--color-bg)); color: var(--color-fg); font: inherit; font-size: var(--text-sm);
+}
+.notes-search::placeholder { color: var(--color-muted); }
+.notes-search:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
 .chip {
   display: inline-flex; align-items: center; gap: var(--space-1);
   font-size: var(--text-xs); color: var(--color-muted);
@@ -27,6 +42,20 @@
 }
 .chip:has(input:checked) { color: var(--color-fg); border-color: var(--color-fg); }
 .chip input { accent-color: var(--color-accent); }
+
+/* New/Top as a compact segmented pill */
+.notes-sort { gap: 0; border: 1px solid var(--color-line); border-radius: var(--radius-pill); padding: 2px; }
+.notes-sort .chip { border: 0; }
+.notes-sort .chip:has(input:checked) { background: var(--color-accent-soft); color: var(--color-fg); }
+
+/* reduced tag chips: a handful up front, the rest behind the "+N more" toggle (island-driven) */
+.notes-tags__rest { display: contents; }
+.notes-tags__rest[hidden] { display: none; }
+.notes-tags__more {
+  font-size: var(--text-xs); color: var(--color-accent);
+  border: 0; background: none; cursor: pointer; padding: var(--space-1) var(--space-2);
+}
+.notes-tags__more:hover { text-decoration: underline; }
 
 /* ---- the feed: a plain vertical list, one hairline separator per card (content-index's own
    convention) rather than a boxed tile — the "front page" read is a rule-separated column, not
