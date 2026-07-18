@@ -1,6 +1,6 @@
 ---
 id: d6-archive-standards-repo
-status: todo
+status: done
 track: D
 depends: [d5-standards-home]
 touches: []
@@ -8,6 +8,11 @@ owner: human
 ---
 
 # Archive the vestigial tjakoen/standards repo
+
+> **Done (moot) 2026-07-18.** `github.com/tjakoen/standards` does not resolve — the repo no longer
+> exists (already deleted, or never pushed under that name), and no repo under `tjakoen` matches
+> "standard". There is nothing left to archive or redirect: the canon is served from the portfolio's
+> own `standards/` dir at <https://tjakoen.github.io/standards>. Closing the box.
 
 Split out from `d5-standards-home` so that done-plan didn't carry a permanently-open box. The
 `d5` fold-in (2026-07-09) moved the standards source into this repo's `standards/` dir; the

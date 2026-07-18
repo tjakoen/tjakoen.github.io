@@ -22,6 +22,7 @@ six.
 | Read this when you're… | Standard | In one line |
 |---|---|---|
 | **Building anything with an AI** | [AI-DEVELOPMENT.md](AI-DEVELOPMENT.md) | The working relationship, the definition of done, the conventions and pitfalls every change is held to. The rulebook. |
+| **Structuring a repo so AI sessions compound** | [AI-REPO-STANDARD.md](AI-REPO-STANDARD.md) | The repo-side companion to AI-DEVELOPMENT: the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned. AI-DEVELOPMENT owns the working relationship; this owns the repo. |
 | **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
 | **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard — cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built — frontmatter, structure, footer — plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
