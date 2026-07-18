@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Native GitHub Classroom · TJ's Desk</title>
-  <meta name="description" content="Native GitHub Classroom: classroom tooling for the teaching side of my week, built on top of GitHub Classroom. Landing soon; no course internals or student data here.">
+  <meta name="description" content="A GitHub-native course platform: the repo is the LMS, a push is a submission, grading is a GitHub Action. One engine across every course, and the machine never writes to a student's own work. No course internals or student data here.">
 </head>
 <body data-screen="classroom" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="classroom" data-rail-collapsed="false" data-surface="screen">
@@ -12,18 +12,90 @@
     <main class="app-shell__main">
       <div class="board">
         <p class="eyebrow">🎓 <span class="name">Native GitHub Classroom</span></p>
-        <h1 class="masthead">Native GitHub Classroom</h1>
+        <h1 class="masthead">GitHub is the LMS. A repo is the coursework. A push is a submission.</h1>
         <hr class="rule">
-        <p class="lede">Alongside dev management and tech lead work, I teach software engineering
-          part-time. Native GitHub Classroom is tooling I'm building on top of GitHub Classroom for
-          that side of the week. The write-up is landing here soon. What it will not have: course
-          internals or student data, those stay private.</p>
+        <p class="lede">Alongside dev management and tech lead work, I teach software engineering part-time.
+          Native GitHub Classroom is the platform I run that side of the week on, and it started out of pure
+          cheapness: no hosted app, no server to babysit between semesters, no budget. A school email quietly
+          unlocks GitHub Education, so I asked what happens if the repo <em>is</em> the platform, not GitHub
+          plus an LMS but GitHub <em>as</em> the LMS. Coursework is a repo, submitting is a push, grading is a
+          GitHub Action, and feedback is a Markdown file that lands in the student's own repo. The only outside
+          system is Canvas, right at the end, to receive final grades.</p>
 
-        <div class="section-head"><span>In the meantime</span></div>
+        <svg viewBox="-53 0 364 348" width="100%" role="img"
+             aria-label="A teacher control repo (engine, private tests, gradebook) publishes content to each student repo. A push is a submission: GitHub Actions grades off a snapshot and writes scores to the gradebook, the single source of truth. Scores flow back to student repos in a deliberate publish step, and out to Canvas as one CSV at term end."
+             style="display:block;width:100%;max-width:480px;height:auto;margin:0 auto 1.75rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+          <defs>
+            <marker id="fl-classroom0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+            </marker>
+          </defs>
+          <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+            <rect x="35" y="16" width="210" height="52" rx="6"/>
+            <rect x="16" y="86" width="108" height="36" rx="6"/>
+            <rect x="158" y="86" width="108" height="36" rx="6"/>
+            <rect x="71" y="156" width="140" height="52" rx="6"/>
+            <path d="M68,233 a73,7 0 0 1 146,0 v50 a73,7 0 0 1 -146,0 z M68,233 a73,7 0 0 0 146,0"/>
+            <rect x="103" y="296" width="76" height="36" rx="6"/>
+          </g>
+          <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+            <line x1="111" y1="68" x2="90" y2="86" marker-end="url(#fl-classroom0)"/>
+            <line x1="170" y1="68" x2="191" y2="86" marker-end="url(#fl-classroom0)"/>
+            <line x1="86" y1="122" x2="117" y2="156" marker-end="url(#fl-classroom0)"/>
+            <line x1="195" y1="122" x2="164" y2="156" marker-end="url(#fl-classroom0)"/>
+            <line x1="141" y1="208" x2="141" y2="226" marker-end="url(#fl-classroom0)"/>
+            <path d="M68,258 C-14,258 -14,104 16,104" marker-end="url(#fl-classroom0)"/>
+            <path d="M213,258 C295,258 295,104 265,104" marker-end="url(#fl-classroom0)"/>
+            <line x1="141" y1="290" x2="141" y2="296" marker-end="url(#fl-classroom0)"/>
+          </g>
+          <g text-anchor="middle">
+            <text x="141" y="38.3" style="fill:var(--color-fg)">Teacher control repo</text>
+            <text x="141" y="54.8" style="fill:var(--color-muted);font-size:12px">engine · private tests · gradebook</text>
+            <text x="70" y="108.3" style="fill:var(--color-fg)">Student repo</text>
+            <text x="211" y="108.3" style="fill:var(--color-fg)">Student repo</text>
+            <text x="141" y="178.3" style="fill:var(--color-fg)">GitHub Actions</text>
+            <text x="141" y="194.8" style="fill:var(--color-muted);font-size:12px">grade off a snapshot</text>
+            <text x="141" y="254.3" style="fill:var(--color-fg)">Gradebook</text>
+            <text x="141" y="270.8" style="fill:var(--color-muted);font-size:12px">single source of truth</text>
+            <text x="141" y="318.3" style="fill:var(--color-fg)">Canvas</text>
+          </g>
+          <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+            <text x="100" y="72">publish content</text>
+            <text x="101" y="134">push = submit</text>
+            <text x="141" y="212">write scores</text>
+            <text x="141" y="288">one CSV, term end</text>
+            <text x="-23" y="181" transform="rotate(-90 -23 181)">deliberate publish step</text>
+          </g>
+        </svg>
+
+        <div class="section-head"><span>The whole design in one breath</span></div>
+        <p class="lede">The trick that keeps it sane is one idea repeated, so four live classes never quietly
+          drift into four snowflakes I can no longer maintain.</p>
+        <div class="card-grid" style="--card-min: 15rem">
+          <div class="card" data-pad="sm"><h3 class="card__title">One org per course</h3><p class="card__body">Locked down so a student sees only their own repos.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">One teacher control repo</h3><p class="card__body">The engine: the scripts, the workflows, the private grader tests, and the gradebook. The gradebook is the single source of truth. If it is not in the gradebook, it did not happen.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">One workspace repo per student</h3><p class="card__body">Both their graded coursework and their personal scratch space, which is exactly why the next rule matters so much.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Grading and publishing, separately</h3><p class="card__body">The grader scores off a snapshot of the student's repo, against my tests, and never writes back. Delivering grades is a second, deliberate step that dry-runs by default.</p></div>
+        </div>
+
+        <div class="section-head"><span>The rules I will not break</span></div>
+        <p class="lede">The engine is identical across every course. Only the tests and a small config file
+          change: edit once, copy everywhere. And the machine never writes to a student's own work during
+          grading. Anything that writes to a student repo or the gradebook dry-runs first and shows me the
+          plan, so I read what is about to happen before it happens. Those two rules are the reason I can let
+          automation this close to real grades sleep at night.</p>
+
+        <div class="section-head"><span>Read more</span></div>
         <div class="docs-list">
-          <div class="docs-list__item"><a class="docs-list__name" href="/native-github-classroom/docs">Docs</a><span class="docs-list__what">documentation stub, also landing soon.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/notes/how-i-turned-github-into-a-classroom">The full build story</a><span class="docs-list__what">how the "repo is the platform" reframe fell out of having no budget, and the unglamorous access-control bugs that turned out to be the real work.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/native-github-classroom/docs">Docs</a><span class="docs-list__what">how the system is put together: the four repos, the safety model, and the audits.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/projects">Projects</a><span class="docs-list__what">back to the rest of what I've been building.</span></div>
         </div>
+
+        <p class="lede">This is not a product, and that is the point. It is a teacher's tool that happens to
+          be built like real software, with tests and dry runs and audits, because that is the only way I
+          trust a machine anywhere near my students' grades. What it will never have here: course internals
+          or student data. Those stay private.</p>
 
         <div class="page-foot">
           Part of <a href="/">tjakoen.github.io</a>.
