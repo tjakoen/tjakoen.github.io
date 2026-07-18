@@ -12,8 +12,6 @@
     <main class="app-shell__main">
       <div class="board">
     <p class="eyebrow">⚙ <span class="name">MILL</span> · Content engine</p>
-    <!-- diagram-first: the shared four-layers stack (see components/molecules/stack-diagram) -->
-    <stack-diagram current="mill"></stack-diagram>
     <h1 class="masthead">Markdown in, living layouts.</h1>
     <hr class="rule">
     <p class="lede">MILL is a reusable Markdown-to-pages CMS. Feed it <em>markdown and images</em> and it renders
@@ -32,6 +30,10 @@
     <div class="section-head"><span>The design</span></div>
     <p class="lede">MILL is the proof that BATCH and GRAIN compose into a real, reusable tool. The canonical design,
       the seams, the mapping model, and the build pieces are written up in the MILL plan that ships beside the code.</p>
+
+    <!-- the shared four-layers stack now CLOSES the page (headline leads; owner 2026-07-18) -->
+    <div class="section-head"><span>Where it sits in the stack</span></div>
+    <stack-diagram current="mill"></stack-diagram>
 
     <div class="page-foot">
       Part of <a href="/">tjakoen.github.io</a>. Built on <a href="/grain"><span class="name">GRAIN</span></a>
