@@ -8,13 +8,13 @@
   "author": "Tjakoen Stolk <tjakoen.s@gmail.com> (https://tjakoen.github.io)",
   "homepage": "https://tjakoen.github.io",
   "dependencies": {
-    "@tjakoen/batch": "github:tjakoen/batch#5d04be0",
+    "@tjakoen/batch": "^0.1.0",
     "@tjakoen/grain": "^0.1.0",
     "@tjakoen/mill": "^0.1.0",
     "@tjakoen/proof": "^0.1.0"
   },
   "scripts": {
-    "deps:refresh": "for p in batch; do bun add @tjakoen/$p@github:tjakoen/$p#$(git ls-remote https://github.com/tjakoen/$p.git main | cut -c1-7); done && bun update @tjakoen/grain @tjakoen/mill @tjakoen/proof",
+    "deps:refresh": "bun update @tjakoen/batch @tjakoen/grain @tjakoen/mill @tjakoen/proof",
     "dev": "bun --hot server.ts",
     "start": "bun server.ts",
     "test": "bun test",
