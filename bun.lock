@@ -6,7 +6,7 @@
       "name": "tjakoen.github.io",
       "dependencies": {
         "@tjakoen/batch": "github:tjakoen/batch#5d04be0",
-        "@tjakoen/grain": "github:tjakoen/grain#cba253a",
+        "@tjakoen/grain": "github:tjakoen/grain#f37f7f4",
         "@tjakoen/mill": "github:tjakoen/mill#080aaf5",
         "@tjakoen/proof": "github:tjakoen/proof#a23832d",
       },
@@ -22,7 +22,7 @@
 
     "@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#5d04be0", {}, "tjakoen-batch-5d04be0", "sha512-VHK0qDeZ5L0OVPZnb0zbk2jixC2LqwoeDnjiTZfZ2GXyHbAZDAqU0e9uSERku0IpyeTWvsaxiAsrpIlHj6/7sQ=="],
 
-    "@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#cba253a", {}, "tjakoen-grain-cba253a", "sha512-DDz6+47gAJI8PkrRR34Vg+GyUjUy6KpNBs540MmZ3kc32y0J4jG4iBLdQ402MKL9PuiFmwdXvVnTr6Trcvml4g=="],
+    "@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#f37f7f4", {}, "tjakoen-grain-f37f7f4", "sha512-eESb7s7g7ycAW8N1NaxBxfYhcZgMtdIfpKaeFsjFJD/4nP4Ni5Ye66faq6NHhlyZosLu3QQ9Pv32o4+aIwPKbA=="],
 
     "@tjakoen/mill": ["@tjakoen/mill@github:tjakoen/mill#080aaf5", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "github:tjakoen/grain#cba253a" } }, "tjakoen-mill-080aaf5", "sha512-ThVuxcWoe8Rbfbi2YuN/CgwJ9ct2Y5cHdAs/idgBhXwHYMJ8mU20q3pK5elPPo/khJCJwiIi6/mAedG5bWPnZA=="],
 
@@ -44,6 +44,10 @@
 
     "@tjakoen/mill/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
 
+    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#cba253a", {}, "tjakoen-grain-cba253a", "sha512-DDz6+47gAJI8PkrRR34Vg+GyUjUy6KpNBs540MmZ3kc32y0J4jG4iBLdQ402MKL9PuiFmwdXvVnTr6Trcvml4g=="],
+
     "@tjakoen/proof/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
+
+    "@tjakoen/proof/@tjakoen/grain": ["@tjakoen/grain@github:tjakoen/grain#cba253a", {}, "tjakoen-grain-cba253a", "sha512-DDz6+47gAJI8PkrRR34Vg+GyUjUy6KpNBs540MmZ3kc32y0J4jG4iBLdQ402MKL9PuiFmwdXvVnTr6Trcvml4g=="],
   }
 }

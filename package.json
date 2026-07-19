@@ -9,7 +9,7 @@
   "homepage": "https://tjakoen.github.io",
   "dependencies": {
     "@tjakoen/batch": "github:tjakoen/batch#5d04be0",
-    "@tjakoen/grain": "github:tjakoen/grain#cba253a",
+    "@tjakoen/grain": "github:tjakoen/grain#f37f7f4",
     "@tjakoen/mill": "github:tjakoen/mill#080aaf5",
     "@tjakoen/proof": "github:tjakoen/proof#a23832d"
   },
