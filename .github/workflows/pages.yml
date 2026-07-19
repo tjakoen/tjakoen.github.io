@@ -15,6 +15,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  packages: read   # to install the @tjakoen/* layers from GitHub Packages
 
 concurrency:
   group: pages
@@ -28,6 +29,9 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.14
+      # The @tjakoen/* layers live in GitHub Packages (private); auth the scope with the
+      # workflow token. The committed .npmrc already routes @tjakoen -> npm.pkg.github.com.
+      - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
       - run: bun install --frozen-lockfile
       - run: bun run export
         env:
