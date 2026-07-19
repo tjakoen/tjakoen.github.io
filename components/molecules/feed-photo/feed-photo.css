@@ -2,10 +2,11 @@
    screen). Scoped to [data-screen="calendar"]; bundled into /components.css via config.styleRoots.
    Airbnb-style gallery: one photo goes full-width 16:9; with two or more, the FIRST photo runs big
    down the left and the rest tile small on the right (up to a 2x2), so the strip reads like a photo
-   post, not a row of thumbnails. Capped at five tiles here — a full click-through carousel/lightbox
-   for a post with more photos is a deferred grain proposal; every photo still lives on the event page,
-   which the card title links to. :empty hides an absent strip; object-fit + fixed boxes hold the
-   layout so a lazy image can't shift it. */
+   post, not a row of thumbnails. Capped at five tiles here — clicking any tile opens GRAIN's image
+   viewer (scripts/lightbox.js), which walks EVERY photo in the strip (data-lightbox-group), the
+   hidden past-five ones included, so a big post is fully reachable without leaving the feed; every
+   photo also still lives on the event page, which the card title links to. :empty hides an absent
+   strip; object-fit + fixed boxes hold the layout so a lazy image can't shift it. */
 [data-screen="calendar"] .feed-photos { display: grid; grid-template-columns: 1fr;
   gap: var(--space-2); margin: 0 0 var(--space-3); }
 [data-screen="calendar"] .feed-photos:empty { display: none; }

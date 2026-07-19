@@ -4,8 +4,10 @@ One image in a feed card's photo strip, nested `each="photos"` inside `feed-card
 `photos: { src, width, height, alt }`). Parent-context requirement: a direct child of
 `div.feed-photos`.
 
-It links to the full image, which is the **no-JS-safe lightbox**: a plain navigation, no script. A
-proper `<dialog>` lightbox that degrades to this link is a deferred grain proposal (Pass E). The bound
+`data-lightbox` wires it to GRAIN's image viewer (`scripts/lightbox.js`): a click opens the full image
+in a `<dialog>` and walks every photo in the strip's `data-lightbox-group` (`feed-card.html`), the
+tiles hidden past the five-tile cap included. The `href` stays the full image, so with no JS (or a
+modified click) it degrades to a plain navigation — the **no-JS-safe** fallback. The bound
 `width`/`height` plus the CSS `aspect-ratio` reserve the box so a lazily-loaded photo can't shift the
 layout while you scroll.
 
