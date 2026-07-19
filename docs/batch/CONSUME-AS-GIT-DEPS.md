@@ -2,31 +2,42 @@
 title: "How to: consume BATCH / GRAIN as a dependency"
 ---
 
-**Today, in this monorepo, this is aspirational** — `batch`, `grain`, `mill`, and the portfolio are
-Bun **workspaces**, not separately published packages (see the root `package.json`). This page
-describes the intended shape once each layer splits into its own repo
-([`SPLIT-PLAN.md`](https://github.com/tjakoen/bread/blob/main/SPLIT-PLAN.md)); until then, build inside this monorepo (see
-[`GETTING-STARTED.md`](GETTING-STARTED.md)) and treat this as the target, not a command to run yet.
+**As of the 2026-07-19 consolidation, this is real.** `grain` is now a monorepo holding
+`packages/{grain,mill,proof,crumb}`, and `grain`, `mill`, and `proof` are **published to GitHub
+Packages** as `@tjakoen/{grain,mill,proof}`. Inside the monorepo those layers resolve as Bun
+**workspaces** (`workspace:*`); a separate app consumes the published versions. `batch` stays a
+standalone repo consumed as a **Bun git dependency** — it is the substrate, and it is not published.
 
-## The intended shape
+## The shape
 
-Once split, another app consumes a layer as a **Bun git dependency** — no npm registry, no build
-step on the dependency itself:
+A separate app pins the published layers by version and keeps `batch` as a git dependency:
 
 ```json
 {
   "dependencies": {
     "@tjakoen/batch": "github:tjakoen/batch#main",
-    "@tjakoen/grain": "github:tjakoen/grain#main"
+    "@tjakoen/grain": "^0.1.0",
+    "@tjakoen/mill": "^0.1.0",
+    "@tjakoen/proof": "^0.1.0"
   }
 }
 ```
 
+The `@tjakoen` scope resolves from GitHub Packages, so the app also needs an `.npmrc` (the auth
+token lives in the environment / `~/.npmrc`, never committed):
+
+```
+@tjakoen:registry=https://npm.pkg.github.com
+```
+
+A single monorepo git dependency cannot expose the sub-packages by their own names — that is why the
+layers are published, rather than pinned as `github:tjakoen/grain#<sha>` subpaths.
+
 ## Why this, specifically
 
-- **Layer docs travel inside the package.** `/batch/docs` and `/grain/docs` are rendered via `import.meta.resolve("@tjakoen/grain/docs/GRAIN.md")` — never a hardcoded `../grain/docs` relative path (see [`mill/serve.ts`](https://github.com/tjakoen/mill/blob/main/serve.ts)). The *same* code resolves the sibling folder in the monorepo today and the installed package after the split — zero copied files, zero drift.
+- **Layer docs travel inside the package.** `/batch/docs` and `/grain/docs` are rendered via `import.meta.resolve("@tjakoen/grain/docs/GRAIN.md")` — never a hardcoded `../grain/docs` relative path (see [`packages/mill/serve.ts`](https://github.com/tjakoen/grain/blob/main/packages/mill/serve.ts)). The *same* code resolves the workspace package inside the grain monorepo and the installed published package in a consumer — zero copied files, zero drift.
 - **`bun update`** on that dependency is how you pick up a new layer version — no publish step, no registry to keep in sync.
-- GRAIN itself only needs three things from a host (an `OpChannel`, a compatible renderer, a filesystem) — see [`grain/README.md`](https://github.com/tjakoen/grain/blob/main/README.md) §1. It names no concrete dependency beyond that.
+- GRAIN itself only needs three things from a host (an `OpChannel`, a compatible renderer, a filesystem) — see [`grain/README.md`](https://github.com/tjakoen/grain/blob/main/packages/grain/README.md) §1. It names no concrete dependency beyond that.
 
 ## Next steps
 
