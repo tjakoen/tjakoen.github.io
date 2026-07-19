@@ -86,6 +86,60 @@ test.describe("the /calendar app (JS on)", () => {
   });
 });
 
+test.describe("the calendar photo lightbox (GRAIN image viewer)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.clock.setFixedTime(FIXED_NOW);
+    await page.goto("/calendar");
+  });
+
+  test("clicking a photo opens the viewer; a multi-photo post gets prev/next + a dot rail", async ({ page }) => {
+    // the hackathon card carries two photos → a real gallery
+    const card = page.locator('.feed-card[data-event-kind="hackathon"]').first();
+    await card.locator(".feed-photo").first().click();
+
+    const box = page.locator("dialog.lightbox");
+    await expect(box).toBeVisible();
+    await expect(box.locator(".lightbox__img")).toHaveAttribute("src", /\.svg$/);
+
+    // two photos ⇒ the nav + dots + counter show, and next advances the counter
+    await expect(box.locator(".lightbox__nav--next")).toBeVisible();
+    await expect(box.locator(".lightbox__dots")).toBeVisible();
+    await expect(box.locator(".lightbox__count")).toHaveText("1 / 2");
+    await box.locator(".lightbox__nav--next").click();
+    await expect(box.locator(".lightbox__count")).toHaveText("2 / 2");
+    await box.locator(".lightbox__nav--next").click();               // wraps
+    await expect(box.locator(".lightbox__count")).toHaveText("1 / 2");
+
+    await page.keyboard.press("Escape");
+    await expect(box).toBeHidden();
+  });
+
+  test("a single-photo post opens the viewer with no gallery chrome", async ({ page }) => {
+    // a strip that holds exactly one photo (no second tile)
+    const single = page.locator(".feed-photos").filter({ has: page.locator(".feed-photo") })
+      .filter({ hasNot: page.locator(".feed-photo:nth-child(2)") }).first();
+    await single.locator(".feed-photo").first().click();
+
+    const box = page.locator("dialog.lightbox");
+    await expect(box).toBeVisible();
+    await expect(box.locator(".lightbox__nav--next")).toBeHidden();   // one image ⇒ no nav
+    await expect(box.locator(".lightbox__dots")).toBeHidden();
+    await expect(box.locator(".lightbox__count")).toBeHidden();
+  });
+});
+
+test.describe("the calendar photo lightbox (no JS)", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("a photo is still a real link to the full image (no-JS-safe fallback)", async ({ page }) => {
+    await page.goto("/calendar");
+    const photo = page.locator(".feed-card .feed-photo").first();
+    await expect(photo).toHaveAttribute("href", /\.svg$/);
+    await photo.click();
+    await expect(page).toHaveURL(/\.svg$/);                           // navigates, no dialog
+  });
+});
+
 test.describe("the /calendar event page (JS on)", () => {
   test("an event page renders the photo grid on top, then the body", async ({ page }) => {
     await page.goto("/calendar/hackathon-coaching");

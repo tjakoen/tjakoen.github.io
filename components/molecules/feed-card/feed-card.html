@@ -6,7 +6,7 @@
      The date relativizes client-side (absolute stays in title); with no JS it shows the absolute
      date. Photo strip, links row, location and tags each hide when empty. See feed-card.md. -->
 <li class="feed-card" data-bind-id="domId" data-bind-data-date="date" data-bind-data-event-kind="kind" data-bind-data-tags="tagsAttr">
-  <div class="feed-photos"><feed-photo each="photos"></feed-photo></div>
+  <div class="feed-photos" data-lightbox-group><feed-photo each="photos"></feed-photo></div>
   <div class="feed-card__body">
     <p class="feed-card__meta">
       <span class="feed-card__icon" aria-hidden="true" data-field="icon"></span>

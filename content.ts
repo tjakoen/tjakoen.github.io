@@ -565,15 +565,17 @@ export function parsePhotos(raw: unknown): EventPhoto[] {
 // The event-page photo grid (composed in shellChrome for /calendar entries). Hand-rendered rather
 // than via the feed-photo molecule because the chrome has no per-request binding context to pass the
 // photos array through; it emits the SAME .feed-photos / .feed-photo markup the molecule does, so one
-// stylesheet dresses both. Each photo links to its full image (the no-JS-safe lightbox).
+// stylesheet dresses both. data-lightbox + the group wrapper wire it to GRAIN's image viewer
+// (scripts/lightbox.js), same as the molecule; each photo's href stays the full image (the
+// no-JS-safe fallback).
 function renderPhotoGrid(photos: EventPhoto[]): string {
   if (!photos.length) return "";
   const items = photos.map((p) => {
     const src = escapeHtml(p.src);
     const dims = p.width && p.height ? ` width="${escapeHtml(p.width)}" height="${escapeHtml(p.height)}"` : "";
-    return `<a class="feed-photo" href="${src}"><img src="${src}"${dims} alt="${escapeHtml(p.alt)}" loading="lazy" decoding="async"></a>`;
+    return `<a class="feed-photo" data-lightbox href="${src}"><img src="${src}"${dims} alt="${escapeHtml(p.alt)}" loading="lazy" decoding="async"></a>`;
   }).join("");
-  return `<div class="feed-photos" data-event-photos>${items}</div>`;
+  return `<div class="feed-photos" data-event-photos data-lightbox-group>${items}</div>`;
 }
 
 // Events cross-link like notes (note:slug → /notes/slug); everything else (absolute site links)
