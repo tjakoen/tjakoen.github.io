@@ -5,7 +5,7 @@
     "": {
       "name": "tjakoen.github.io",
       "dependencies": {
-        "@tjakoen/batch": "github:tjakoen/batch#5d04be0",
+        "@tjakoen/batch": "^0.1.0",
         "@tjakoen/grain": "^0.1.0",
         "@tjakoen/mill": "^0.1.0",
         "@tjakoen/proof": "^0.1.0",
@@ -20,7 +20,7 @@
   "packages": {
     "@playwright/test": ["@playwright/test@1.61.1", "", { "dependencies": { "playwright": "1.61.1" }, "bin": { "playwright": "cli.js" } }, "sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig=="],
 
-    "@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#5d04be0", {}, "tjakoen-batch-5d04be0", "sha512-VHK0qDeZ5L0OVPZnb0zbk2jixC2LqwoeDnjiTZfZ2GXyHbAZDAqU0e9uSERku0IpyeTWvsaxiAsrpIlHj6/7sQ=="],
+    "@tjakoen/batch": ["@tjakoen/batch@0.1.0", "https://npm.pkg.github.com/download/@tjakoen/batch/0.1.0/508a1427b35683b03bc23d1ada463a28928206e5", {}, "sha512-ZC/SXl6b5Ynmyx2So8XeeWRIpF//dFSTFtA+Gocbwx9JPdsTF+HQn1j1XQpMeNhA5BWI4i6qsCemC7skvHM6LA=="],
 
     "@tjakoen/grain": ["@tjakoen/grain@0.1.0", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.0/d0499abcaeaf39d7947a5c441ffcc9f2b0471447", {}, "sha512-+dFPi0aTvMuSe8LuZxHcihLNAddsxaXlJZHtccPTZXNR5oLs3gZFf7DUoq79s42f4/sjLk9QJMtdUxp0nyFpBA=="],
 
