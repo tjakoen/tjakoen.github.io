@@ -16,8 +16,11 @@ test.describe("mobile — the assistant bottom sheet", () => {
     const closed = await aside.boundingBox();
     expect(closed && closed.y).toBeGreaterThan(400);           // near the bottom of a 720-tall viewport
 
-    // tap the header (the grab bar) to raise the full sheet
-    await page.locator(".assistant__head").click();
+    // tap the header (the grab bar) to raise the full sheet. Click the bar itself (its left grab
+    // area over the title), NOT its centre — the head also hosts the Chat/Catalog mode buttons, and
+    // a dead-centre click lands on "Catalog", which flips the panel to catalog mode (its own handler
+    // stops propagation so the sheet toggle never fires) and hides the composer.
+    await page.locator(".assistant__head").click({ position: { x: 12, y: 20 } });
     await expect(shell).toHaveAttribute("data-aside-open", "");
     await expect.poll(async () => (await aside.boundingBox())?.y ?? 9999).toBeLessThan(closed?.y ?? 0);  // slid up
     await expect(page.locator('[data-surface="chat-input"]')).toBeInViewport();   // the composer is reachable
