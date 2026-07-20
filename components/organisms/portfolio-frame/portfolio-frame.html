@@ -152,7 +152,21 @@
         </span>
         <span class="app-dock__label">Mail</span>
       </a>
-      <a class="app-dock__item" href="/about" data-section="about" data-tab-label="About" title="About" data-surface="nav:/about">
+      <!-- PROOF board: the portfolio serves its own plans/ as a kanban at /plans (@tjakoen/proof).
+           It used to be an orphan route (linked only from prose) — it belongs in the dock, grouped
+           with the other apps (Notes/Calendar/Mail) rather than split off after About. -->
+      <a class="app-dock__item" href="/plans" data-section="plans" data-tab-label="Plans" title="Plans" data-surface="nav:/plans">
+        <span class="app-dock__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="16.5" y="4" width="4" height="7" rx="1"/>
+          </svg>
+        </span>
+        <span class="app-dock__label">Plans</span>
+      </a>
+      <!-- ═══ META group: "about the site" — About + the guided Tour, divided off from the apps
+           above (owner, 2026-07-20: apps together, meta at the bottom). The divider is a border-top
+           on this first meta row. ═══ -->
+      <a class="app-dock__item app-dock__item--divide" href="/about" data-section="about" data-tab-label="About" title="About" data-surface="nav:/about">
         <span class="app-dock__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/>
@@ -160,6 +174,16 @@
         </span>
         <span class="app-dock__label">About</span>
       </a>
+      <!-- CRUMB tour launcher: an ACTION (starts the guided-tour overlay), not a route — a
+           <button> styled as a dock item. crumb-live.js binds [data-crumb-start] site-wide. -->
+      <button type="button" class="app-dock__item app-dock__item--action" data-crumb-start="portfolio" data-crumb-mode="demo" title="Take a guided tour">
+        <span class="app-dock__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>
+          </svg>
+        </span>
+        <span class="app-dock__label">Tour</span>
+      </button>
     </nav>
   </div>
 </aside>

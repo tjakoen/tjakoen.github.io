@@ -113,7 +113,9 @@
         }
         if (dock) {
           for (const a of dock.querySelectorAll(".app-dock__item")) {
-            const href = normed(a.getAttribute("href"));
+            const raw = a.getAttribute("href");
+            if (raw === null) { a.removeAttribute("aria-current"); continue; }  // an ACTION (the Tour launcher, no href) is never a "current page" — else normed(null)→"/" falsely matches home
+            const href = normed(raw);
             const isMatch = href === "/notes"
               ? (path === href || path.startsWith(href + "/"))   // Notes claims its subpages too
               : path === href;                                   // everything else is exact-only
