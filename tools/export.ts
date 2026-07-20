@@ -21,6 +21,8 @@ import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
 import { listPortfolioContentRoutes, listPortfolioRawContentRoutes } from "../content.ts";
 import { listPlanRoutes } from "../plans.ts";
+import { loadTours } from "@tjakoen/crumb/loader.ts";
+import { fileURLToPath } from "node:url";
 import { config } from "../config.ts";
 
 const PORT = Number(Bun.env.EXPORT_PORT ?? 3330);
@@ -56,13 +58,24 @@ const MODULE_ENTRIES = ["/modules/grain/ai/client-door.js", "/modules/grain/ai/m
 // grounding corpus (knowledge/notes), the SEO infra, and PROOF's stylesheet (/proof.css — every
 // /plans page links it, so now that /plans exports (Phase 2) it must travel too, or the frozen
 // board ships unstyled).
-const DATA_ROUTES = ["/components.css", "/proof.css", "/search.json", "/knowledge.json", "/notes.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
+const DATA_ROUTES = ["/components.css", "/proof.css", "/crumb.css", "/crumb-live.js", "/search.json", "/knowledge.json", "/notes.json", "/sitemap.xml", "/robots.txt", "/llms.txt"];
+
+// CRUMB's tour DATA: the guided-tour client (crumb-live.js, injected on every page) fetches
+// /crumb/tours/<id>.json at run time, so a static export must freeze those JSON blobs or the dock's
+// Tour launcher 404s on Pages. Enumerated from the same tours/ folder the server mounts, so a new
+// tour exports automatically (parallel to listPlanRoutes for PROOF). The manifest (/crumb/tours.json)
+// travels too — a future launcher lists from it.
+const CRUMB_TOURS_DIR = fileURLToPath(new URL("../tours", import.meta.url));
+async function crumbTourRoutes(): Promise<string[]> {
+  const { tours } = await loadTours(CRUMB_TOURS_DIR);
+  return ["/crumb/tours.json", ...tours.map(({ tour }) => `/crumb/tours/${tour.id}.json`)];
+}
 
 // Every content entry's raw `.md` twin (MILL's honest-source route) — a data route (literal
 // bytes, no chrome), never a page: freezing it here (not `pages`) keeps the export honest and
 // lets the entry chrome's Rendered/Source toggle resolve under the export's dead-link check.
 async function dataRoutes(): Promise<string[]> {
-  return [...DATA_ROUTES, ...await listPortfolioRawContentRoutes()];
+  return [...DATA_ROUTES, ...await listPortfolioRawContentRoutes(), ...await crumbTourRoutes()];
 }
 
 async function waitForServer(timeoutMs = 15000) {
