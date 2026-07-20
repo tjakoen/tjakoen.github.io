@@ -65,12 +65,22 @@
   border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent); }
 .app-dock__item {
   display: grid; grid-template-columns: 3.25rem 1fr; align-items: stretch;
-  /* taller rows give the dock the vertical breathing room the rows lacked — raised via min-height,
-     NOT padding-block, so the icon gutter's full-height border-right stays edge-to-edge and the
-     divider still reads as ONE continuous line from the activity-bar down (see block comment above). */
-  min-height: 2.9rem; padding-right: var(--space-3);
+  /* taller rows give the dock the vertical breathing room the rows lacked. FIXED height (not
+     min-height) + border-box so every row is EXACTLY the same regardless of a row's content, the
+     mono font's metrics, or browser zoom — no row can grow past its neighbors. Height, not
+     padding-block, so the icon gutter's full-height border-right stays edge-to-edge and the divider
+     reads as ONE continuous line from the activity-bar down (see block comment above). */
+  box-sizing: border-box; height: 2.9rem; padding: 0 var(--space-3) 0 0;
   color: var(--color-muted); text-decoration: none; position: relative;
 }
+/* a dock ACTION (the CRUMB tour launcher): a <button> wearing the dock-item layout — strip ALL
+   native button chrome (incl. the UA padding/line-height that made it 2px off the <a> rows) so it
+   reads pixel-identical to the anchors. */
+.app-dock__item--action { appearance: none; border: 0; margin: 0; padding: 0 var(--space-3) 0 0;
+  background: transparent; font: inherit; line-height: normal; text-align: left; width: 100%; cursor: pointer; }
+/* the divider that opens the META group (About + Tour) — a quiet horizontal rule, same weight as
+   the dock's own top border. Drawn as a border-top so border-box keeps the row's height uniform. */
+.app-dock__item--divide { border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent); }
 .app-dock__icon { display: flex; align-items: center; justify-content: center;
   border-right: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent); }
 .app-dock__icon svg { width: 1.15rem; height: 1.15rem; }
