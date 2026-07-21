@@ -213,9 +213,11 @@
     <div class="assistant__head">
       <span class="assistant__title assistant__title--chat">Assistant</span>
       <span class="assistant__title assistant__title--catalog">Catalog</span>
+      <span class="assistant__title assistant__title--notepad">Notepad</span>
       <nav class="assistant__modes" aria-label="Panel mode">
         <button type="button" data-shell-mode="chat" aria-selected="true">Chat</button>
         <button type="button" data-shell-mode="catalog" aria-selected="false">Catalog</button>
+        <button type="button" data-shell-mode="notepad" aria-selected="false">Notepad</button>
       </nav>
       <!-- New chat: clears the persisted conversation + the desk's memory and re-greets (site.js). -->
       <button type="button" class="assistant__newchat" data-desk-newchat title="Start a new conversation" aria-label="New conversation">New chat</button>
@@ -270,6 +272,24 @@
         <span class="catalog-pane__hint">Hover an element to see its entry.</span>
         <a class="catalog-pane__expand" href="/catalog">Full catalog ↗</a>
       </div>
+    </div>
+    <!-- Notepad pane (grain organisms/notepad + grain/scripts/notepad.js): the desk's memory as a
+         VISIBLE, EDITABLE markdown surface. The AI appends here through note.append (e.g. an "add to
+         my notes" action on a chat reply); a visitor edits the source and Commits through the SAME
+         one door (note.replace). Canonical state = the markdown source, mirrored to localStorage by
+         the island — so a note survives navigation + reload. -->
+    <div class="assistant__pane" data-pane="notepad" hidden>
+      <section class="notepad" data-mode="rendered" data-surface="notepad">
+        <header class="notepad__head">
+          <span class="notepad__title">Your notes</span>
+          <button type="button" class="notepad__toggle" aria-label="Toggle source and rendered view"></button>
+          <button type="button" class="notepad__commit"
+                  data-action="note.replace" data-target="notepad" data-from="notepad-src">Commit</button>
+        </header>
+        <div class="notepad__body" data-surface="notepad-body"></div>
+        <textarea class="notepad__source" data-surface="notepad-src" aria-label="Notepad source (markdown)"
+                  placeholder="Write markdown, then Commit…"></textarea>
+      </section>
     </div>
   </div>
 </aside>
