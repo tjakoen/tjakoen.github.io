@@ -9,6 +9,7 @@ import type { Knowledge } from "./retrieval.ts";
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
 import type { Intent, RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import * as kit from "@tjakoen/grain/ai/reasoner-kit.ts";
+import { streamChat } from "@tjakoen/grain/ai/model-chat.ts";
 
 function makeTools() {
   const ops: RenderOp[] = [];
@@ -48,6 +49,7 @@ function makeDeps(over: Partial<DeskDeps> = {}): { deps: DeskDeps; fallbackCalls
   const deps: DeskDeps = {
     probe: async () => true,
     loadEngine: async () => fakeEngine(["Hello"]).engine,
+    streamChat,                                        // GRAIN's real streaming transport over the fake engine
     loadKnowledge: async () => knowledge,
     fallback,
     markOffline: () => { box.offline++; },

@@ -16,6 +16,7 @@ import type { Intent, Decision, RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import { buildPrompt, type ChatMessage } from "./prompt.ts";
 import { retrieve, type Knowledge } from "./retrieval.ts";
 import type { DeskEngine, EngineProgress } from "./webllm-loader.ts";
+import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
 import { routeAction, SECTIONS, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
 
 // The routes the deterministic router knows by name (e.g. "/", "/grain"). Used as a safety net when
@@ -131,6 +132,11 @@ export interface DeskDeps {
   probe: () => Promise<boolean>;
   /** Load + warm the engine, reporting download progress. */
   loadEngine: (onProgress: (p: EngineProgress) => void) => Promise<DeskEngine>;
+  /** GRAIN's streaming chat transport (`@tjakoen/grain/ai/model-chat.ts` streamChat) — yields content
+   *  token deltas; BREAKING the `for await` (a stop, the loop-guard) interrupts generation for us, so
+   *  the desk never touches `interruptGenerate` directly. Injected because the browser refuses a bare
+   *  grain import (the door URL-imports it); tests pass grain's real one. */
+  streamChat: (engine: DeskEngine, messages: ChatMessage[], opts?: ChatStreamOptions) => AsyncIterable<string>;
   /** Fetch (and ideally memoize) the build-time corpus. */
   loadKnowledge: () => Promise<Knowledge>;
   /** GRAIN's stub — handles every NON-chat verb. */
@@ -283,24 +289,23 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         let acc = "";
         let looped = false;
         try {
-          const stream = await engine.chat.completions.create({
-            messages, stream: true,
-            max_tokens: maxTokens ?? deps.maxTokens ?? 220,
-            temperature: deps.temperature ?? 0.5, top_p: 0.9,
-            frequency_penalty: 0.6, presence_penalty: 0.4,   // without these a 0.5B loops badly
-          });
-          for await (const part of stream) {
-            if (tools.cancelled()) { engine.interruptGenerate(); break; }   // graceful stop → halt generation
-            const delta = part.choices?.[0]?.delta?.content;
-            if (!delta) continue;
+          // GRAIN owns the stream + interrupt: breaking this loop (cancel / loop-guard) unwinds
+          // streamChat's finally, which calls interruptGenerate — so we just stop iterating. Penalties
+          // matter a LOT on a 0.5B (without them it loops); grain maps these grain-cased knobs to the
+          // engine's wire shape.
+          for await (const delta of deps.streamChat(engine, messages, {
+            maxTokens: maxTokens ?? deps.maxTokens ?? 220,
+            temperature: deps.temperature ?? 0.5, topP: 0.9,
+            frequencyPenalty: 0.6, presencePenalty: 0.4,
+          })) {
+            if (tools.cancelled()) break;                // graceful stop → break interrupts generation
             acc += delta;
             tools.emit(deps.kit.typeToken(id, delta));
             // loop-guard: if a ~28-char tail has already recurred 3+ times ("a board, a screen, a
-            // board…"), stop, trim the display back to one instance, and settle.
+            // board…"), stop, trim the display back to one instance, and settle. The break interrupts.
             if (acc.length > 140) {
               const tail = acc.slice(-28);
               if (tail.trim().length > 10 && acc.split(tail).length - 1 >= 3) {
-                engine.interruptGenerate();
                 acc = acc.slice(0, acc.indexOf(tail) + tail.length).trimEnd();
                 looped = true;
                 break;
@@ -492,19 +497,17 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           .replace('<div class="chat-message"', `<div class="chat-message" data-surface="${arriveMsg}"`) });
       let raw = "";
       try {
-        const stream = await engine.chat.completions.create({
-          messages: [
-            { role: "system", content:
-              "You are the desk, a brief assistant on TJ's personal site. The visitor just opened a page. " +
-              "From the page CONTENT only, write ONE short friendly sentence (max 20 words) naming where they are and what is here. " +
-              "Then a new line that starts exactly with 'CHIPS:' and 2 or 3 short things a visitor might tap, each under 6 words, separated by ' | '. " +
-              "No hype, no markdown, no extra lines." },
-            { role: "user", content: `Page: ${info.title || info.route} (${info.route})\n\nCONTENT:\n${page.slice(0, 1800)}` },
-          ],
-          stream: true, max_tokens: 150, temperature: 0.4, top_p: 0.9,
-          frequency_penalty: 0.6, presence_penalty: 0.4,
-        });
-        for await (const part of stream) raw += part.choices?.[0]?.delta?.content ?? "";
+        const messages: ChatMessage[] = [
+          { role: "system", content:
+            "You are the desk, a brief assistant on TJ's personal site. The visitor just opened a page. " +
+            "From the page CONTENT only, write ONE short friendly sentence (max 20 words) naming where they are and what is here. " +
+            "Then a new line that starts exactly with 'CHIPS:' and 2 or 3 short things a visitor might tap, each under 6 words, separated by ' | '. " +
+            "No hype, no markdown, no extra lines." },
+          { role: "user", content: `Page: ${info.title || info.route} (${info.route})\n\nCONTENT:\n${page.slice(0, 1800)}` },
+        ];
+        for await (const delta of deps.streamChat(engine, messages, {
+          maxTokens: 150, temperature: 0.4, topP: 0.9, frequencyPenalty: 0.6, presencePenalty: 0.4,
+        })) raw += delta;
       } catch (err) {
         console.error("[desk] arrival generation failed", err);   // a nav is not worth a visible error
         applyOp({ target: arriveMsg, op: "remove", provenance: "ai", commit: "committed" });   // drop the thinking bubble
