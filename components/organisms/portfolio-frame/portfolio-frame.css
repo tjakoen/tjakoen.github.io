@@ -242,10 +242,12 @@ body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); 
 .catalog-pane__hint { display: none; }
 @media (hover: hover) and (pointer: fine) { .catalog-pane__hint { display: block; } }
 
-/* catalog head label: the panel is the "GRAIN Inspector" in Catalog mode, "Assistant" in Chat */
-.assistant__title--catalog { display: none; }
-.assistant[data-mode="catalog"] .assistant__title--chat { display: none; }
+/* head label: "Assistant" in Chat, "Catalog" in Catalog mode, "Notepad" in Notepad mode */
+.assistant__title--catalog, .assistant__title--notepad { display: none; }
+.assistant[data-mode="catalog"] .assistant__title--chat,
+.assistant[data-mode="notepad"] .assistant__title--chat { display: none; }
 .assistant[data-mode="catalog"] .assistant__title--catalog { display: inline; }
+.assistant[data-mode="notepad"] .assistant__title--notepad { display: inline; }
 
 /* the catalog wants a little more width than the chat column, but not so much that the main
    content gets cramped: a measured widen (the peek shows one component entry at a time). It's a
