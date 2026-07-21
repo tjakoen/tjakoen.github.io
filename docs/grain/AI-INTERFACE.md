@@ -371,6 +371,29 @@ a surface was flagged (app-agnostic), and the prompt stays tight (only marked su
 not the whole DOM). This is the **read the result** half of the observe loop: after acting, the
 reasoner reads not just what it can do next but what the surfaces now *say*.
 
+### 4b. The reasoner core — one brain, any model (M★)
+
+The manifest is what a reasoner *reads*; the **reasoner core** (`ai/model.ts`) is what turns that read
+into a safe move, and it is deliberately **transport-agnostic**. It depends on a `Model` **port**
+(`complete(prompt) → text`), never a concrete SDK — a local in-browser model (WebLLM), a cloud API, or
+a test fake all satisfy it, and *which* is the composition root's choice, exactly like the `OpChannel`
+transport. The core is three pure functions: `buildReasonerPrompt(manifestText, message)` (the contract
+preamble + the live manifest + the required JSON output shape), `parseModelMove(raw)` (pulls the move
+out of the model's text, fences and prose tolerated), and `validateMove(move, manifest)` — **the safety
+boundary**. A model may *propose* anything; only moves that are legal survive: a real verb, a target the
+manifest says accepts it *right now*, and a payload that satisfies the verb's schema (required fields
+present, right types; extras dropped). An illegal move is rejected with an informative reason that
+**echoes the valid targets** — the same self-correction a bad human intent gets (§0).
+
+`makeModelReasoner({ model, manifest })` (`ai/model-reasoner.ts`) composes the core into a drop-in
+`Reasoner`: a natural-language turn (a `chat.send` / `say.set` message) goes to the model, the chosen
+move is validated, then executed through the **same kit op-builders the stub dogfoods** — so a real
+model and the stub emit byte-identical markup. A verb the human already chose (a control click) skips
+the model and executes directly. The `manifest` provider is injected by the root
+(`() => domManifest(document)` in the browser), so grain stays DOM-free and the whole core is unit-tested
+with a fake model — no browser, no network. Swapping the stub for a real model is wiring a `Model`, not
+a rewrite: the seam was the plan all along.
+
 ---
 
 ## 5. Grade = commit state — where this doc meets the design system
