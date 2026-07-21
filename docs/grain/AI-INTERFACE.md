@@ -90,6 +90,9 @@ declares the surface **kinds** it applies to, a typed **payload**, and a routing
 | `demo.run` | `{}` | `screen` | heavy |
 | `desk.stop` | `{}` | `screen` | light |
 | `chat.send` | `{ text }` | `chat-log` | light |
+| `note.append` | `{ text }` | `notepad` | light (add one markdown entry) |
+| `note.replace` | `{ text }` | `notepad` | light (rewrite the whole pad) |
+| `navigate` | `{ href }` | `screen` | light (same-origin, root-relative only) |
 
 **Full product vocabulary — designed, not yet registered in `contract.ts`:**
 
@@ -101,7 +104,7 @@ These verbs are designed but not yet wired. When a verb lands, it moves to the b
 | `task.complete` | `{}` | `task` | light (optimistic; `item.archive` stands in today) |
 | `task.reschedule` | `{ when }` | `task` | heavy (conflict surfacing) |
 | `task.reprioritize` | `{ priority }` | `task` | heavy |
-| `view.navigate` | `{ screen }` | — | trivial (client-only) |
+| `view.navigate` | `{ screen }` | — | trivial (client-only; the built `navigate` verb above now covers server-mediated, href-validated navigation) |
 
 The built table **is** the live contract. It is defined once in TypeScript and everything else
 — validation, the manifest, the UI affordances — derives from it.
@@ -111,8 +114,8 @@ The built table **is** the live contract. It is defined once in TypeScript and e
 > is banned by `erasableSyntaxOnly`) — that union *is* the erasable enum:
 > - `ActionName` — the verbs · `ACTIONS` — the registry (depth + accepted kinds).
 > - `SurfaceKind` — the closed set of surface kinds a verb can accept (`item`,
->   `reflection`, `say-stream`, `screen`, `chat-log`). Push-only display surfaces the
->   AI only *writes* to (e.g. `console`, `timeline`) are intentionally **not** kinds — see the note in `contract.ts`.
+>   `reflection`, `say-stream`, `screen`, `chat-log`, `notepad`). Push-only display surfaces the
+>   AI only *writes* to (e.g. `console`, `timeline`, `notepad-body`) are intentionally **not** kinds — see the note in `contract.ts`.
 > - `surface(kind, id)` — the builder; always construct addresses with it, never by
 >   hand-concatenating strings, so a typo is a compile error.
 >
@@ -165,7 +168,7 @@ The interaction layer never returns "data for the client to render." It returns
 server-rendered hypermedia), so the client stays dumb and can't drift from the truth.
 
 ```ts
-type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log";
+type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log" | "navigate" | "choices";
 interface RenderOp {
   target: Surface;                // a semantic address from §1a
   op: RenderOpKind;
@@ -175,10 +178,20 @@ interface RenderOp {
   done?: boolean;                 // last token of a stream → settle (type)
   active?: boolean; click?: boolean;   // spotlight on/off; click = pulse (the "AI acts" treatment, §5c)
   message?: string;               // human-facing note (flash) — e.g. the rollback copy on a failed write
+  href?: string;                  // navigate: where to (validated — same-origin, root-relative only)
+  prompt?: string;                // choices: the question shown above the buttons (optional)
+  choices?: { label: string; value?: string }[];   // choices: the options the human picks from
   provenance: "user" | "ai" | "system";
   commit: "pending" | "committed";   // grade = commit state — see §5
 }
 ```
+
+> `navigate` changes the browser's location (the one op that leaves the page, so the
+> dispatcher validates its `href` before acting); `choices` renders an AI chat bubble with
+> a row of choice buttons — the AI *asking* and the human answering, each button a normal
+> `chat.send` through the same door. Both are first-class op kinds (not bare `append`s of
+> HTML) because each names a distinct effect the dispatcher renders + wires uniformly and
+> is conformance-testable as its own vocabulary word.
 
 > `log` appends one provenance-tagged entry to the interaction **timeline** (§5g) — the
 > unified human-and-AI history. The client caps the DOM and pins to newest; the entry's
