@@ -198,8 +198,9 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       is linked back from both (de-orphaned 2026-07-04); duplicated sentences shared with origin-story
       (Bun-for-a-reason, stale-dist, Coding2GO) were rewritten here so the joke lives in one place.
       All figures rendered (replacement-map SVG on the scaffold, 2026-07-04). Reading time corrected to
-      ~12 min (2026-07-17). **TODO before publish:** the measured companion (native-partial-updates) is
-      linked; only loose end is the bench repo's public link, pending its git push (bench P6).
+      ~12 min (2026-07-17). **Publish TODO — RESOLVED (2026-07-21):** the measured companion
+      (native-partial-updates) is linked and that note now carries the live bench repo link
+      (github.com/tjakoen/framework-bench, public since bench P6). No loose ends left on this note.
 - [~] **Feels Like an App (and It's Lying to You)** — the native-first *how it works* companion to
       the-browser-grew-up (which carries the *why*): the single-page illusion in one line of CSS (View
       Transitions), no-build/pages-are-photographs, the one script that earns its keep, one write path with
@@ -211,8 +212,9 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       "well-founded bet, not measured" seam the other two native notes used to carry: the same reference
       app built four ways and audited by one harness (`framework-bench`), the Declarative Partial Updates
       variant (streamHTMLUnsafe/setHTMLUnsafe), and the honest frame (categorical JS/bytes as the headline,
-      local timings as corroboration only). **DRAFT** at `notes/native-partial-updates.md`. **TODO before
-      publish:** fill the footer repo link once `framework-bench` is git-pushed (#8 / bench P6).
+      local timings as corroboration only). **DRAFT** at `notes/native-partial-updates.md`. **Footer repo
+      link DONE (2026-07-21):** `framework-bench` is pushed + public; the footer + inline link
+      (github.com/tjakoen/framework-bench) are live in the note.
 - [x] **~~Fifty Tiny Things Before One Big One~~ — CUT (2026-07-03).** A standalone design-philosophy
       note had no lane: the atomic/DRY/tokens core is just Brad Frost (credit + link him where design
       comes up — origin-story already does), and the genuinely-original bits (grade-as-signal,
@@ -294,5 +296,8 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
   memory `framework-comparison-methodology`. **Realized as FOUR builds (added a native+DPU variant): index
   JS for one identical filter = Astro ~744b / native ~2kb / native+DPU ~3kb / Next ~118kb (~162x), parity
   ties across all. Measured note landed: `notes/native-partial-updates.md` (DRAFT); the-browser-grew-up +
-  feels-like-an-app ledgers flipped bet→measured. Repo now at `bread-repos/framework-bench` (own repo, NOT
-  yet pushed = P6). Next = P6 (README + owner git init/push), P7 (whitepaper Evaluation section).**
+  feels-like-an-app ledgers flipped bet→measured. **P6 + P7 DONE (verified 2026-07-21):** P6 —
+  `github.com/tjakoen/framework-bench` pushed + public (README + Apache-2.0 LICENSE + badge, consumes
+  `@tjakoen/batch` from GitHub Packages), linked from native-partial-updates.md. P7 — whitepaper §5
+  Evaluation written: the 2kb-vs-118kb (~163×) number is integrated as *substrate* context (out-of-scope
+  for the modality thesis, framed honestly). **Framework-bench track fully closed.**

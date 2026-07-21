@@ -1,0 +1,254 @@
+{
+  "note": "baseline of the current build; re-run with `bun run audit`",
+  "generatedAgainst": "http://localhost:3320",
+  "pages": [
+    {
+      "path": "/",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 124,
+        "loadMs": 125,
+        "wireBytes": 513851,
+        "jsBytes": 128635,
+        "cssBytes": 338705,
+        "requests": 26
+      },
+      "dom": {
+        "title": "Welcome · TJ's Desk",
+        "titleLen": 19,
+        "metaDescription": "Portfolio of Tjakoen Stolk: AI-first interfaces, built with my own no-build hypermedia stack (BATCH · GRAIN · MILL) and served as plain static files.",
+        "canonical": "http://localhost:3320/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": false,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 4,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 54,
+        "selectorCounts": {
+          "Surfaces": 19,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/grain",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 402620,
+        "jsBytes": 133043,
+        "cssBytes": 212201,
+        "requests": 28
+      },
+      "dom": {
+        "title": "GRAIN · an AI-interaction design system",
+        "titleLen": 39,
+        "metaDescription": "One interface a person and an AI operate through the same controls. GRAIN's own site, built with GRAIN.",
+        "canonical": "http://localhost:3320/grain/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": false,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 4,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 67,
+        "selectorCounts": {
+          "Surfaces": 24,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/loop",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 9,
+        "domContentLoadedMs": 37,
+        "loadMs": 37,
+        "wireBytes": 438072,
+        "jsBytes": 179852,
+        "cssBytes": 212201,
+        "requests": 28
+      },
+      "dom": {
+        "title": "The desk · TJ's Desk",
+        "titleLen": 20,
+        "metaDescription": null,
+        "canonical": "http://localhost:3320/loop/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 3,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": true,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 4,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 54,
+        "selectorCounts": {
+          "Surfaces": 27,
+          "Kinds": 2,
+          "Accepts": 2
+        }
+      }
+    },
+    {
+      "path": "/catalog",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 30,
+        "loadMs": 61,
+        "wireBytes": 589804,
+        "jsBytes": 27827,
+        "cssBytes": 212201,
+        "requests": 18
+      },
+      "dom": {
+        "title": "Component Catalog",
+        "titleLen": 17,
+        "metaDescription": null,
+        "canonical": "http://localhost:3320/catalog/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 3,
+        "h1Count": 8,
+        "hasMain": true,
+        "hasArticle": true,
+        "hasNav": true,
+        "hasTime": true,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 4,
+        "renderBlockingJs": 1,
+        "ariaAttrs": 204,
+        "selectorCounts": {
+          "Surfaces": 19,
+          "Kinds": 2,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/about",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 31,
+        "loadMs": 31,
+        "wireBytes": 386282,
+        "jsBytes": 128635,
+        "cssBytes": 212201,
+        "requests": 26
+      },
+      "dom": {
+        "title": "About · TJ's Desk",
+        "titleLen": 17,
+        "metaDescription": "About Tjakoen Stolk: dev manager, tech lead, and part-time software engineering teacher who builds his own no-build stack. I direct, Claude types.",
+        "canonical": "http://localhost:3320/about/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": false,
+        "hasNav": true,
+        "hasTime": true,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 4,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 59,
+        "selectorCounts": {
+          "Surfaces": 17,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    }
+  ],
+  "endpoints": {
+    "/sitemap.xml": 200,
+    "/robots.txt": 200,
+    "/llms.txt": 200
+  }
+}
