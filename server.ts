@@ -35,6 +35,9 @@ import { enrichHead } from "./seo.ts";          // per-page canonical + Open Gra
 import { createProofRoutes } from "@tjakoen/proof/routes.ts";
 import { PLANS_DIR, PLANS_PREFIX, listPlanRoutes } from "./plans.ts";
 import { fileURLToPath } from "node:url";
+// --- CRUMB mount: the guided-tour layer. Serves tour DATA (tours/*.md → JSON) under /crumb; the
+// client crumb-live.js drives grain's passthrough lamp + a <dialog> popover + real navigation. ---
+import { createCrumbRoutes } from "@tjakoen/crumb/routes.ts";
 
 // --- seed a couple of tasks so the /loop demo has something to show ---
 const seed: Task[] = [
@@ -71,8 +74,8 @@ const CATALOG_ASSETS = `<link rel="stylesheet" href="/styles/cmdk.css"><script s
 // [data-open-tabs] strip), terminal.js (interactive console: only [data-terminal="interactive"]),
 // xray.js (dev x-ray: dormant until toggled), desk-commands (registers only if the terminal seam
 // exists) — all deferred/no-op where their hook is absent, so one list serves every page.
-const PAGE_HEAD = `<script src="/scripts/theme-boot.js"></script><link rel="stylesheet" href="/styles/variables.css"><link rel="stylesheet" href="/styles/global.css"><link rel="stylesheet" href="/styles/grain.css"><link rel="stylesheet" href="/components.css"><script src="/site/site.js"></script>`;
-const PAGE_ASSETS = `${CATALOG_ASSETS}<link rel="stylesheet" href="/styles/lightbox.css"><script src="/scripts/lightbox.js" defer></script><script src="/scripts/shell.js" defer></script><script src="/scripts/catalog-peek.js" defer></script><script type="module" src="/scripts/ai-dispatch.js"></script><script type="module" src="/scripts/tabs.js"></script><script type="module" src="/scripts/terminal.js"></script><script type="module" src="/scripts/xray.js"></script><script type="module" src="/site/desk-commands.js"></script>`;
+const PAGE_HEAD = `<script src="/scripts/theme-boot.js"></script><link rel="stylesheet" href="/styles/variables.css"><link rel="stylesheet" href="/styles/global.css"><link rel="stylesheet" href="/styles/grain.css"><link rel="stylesheet" href="/components.css"><script src="/site/site.js"></script><link rel="stylesheet" href="/crumb.css">`;
+const PAGE_ASSETS = `${CATALOG_ASSETS}<link rel="stylesheet" href="/styles/lightbox.css"><script src="/scripts/lightbox.js" defer></script><script src="/scripts/shell.js" defer></script><script src="/scripts/catalog-peek.js" defer></script><script type="module" src="/scripts/ai-dispatch.js"></script><script type="module" src="/scripts/tabs.js"></script><script type="module" src="/scripts/terminal.js"></script><script type="module" src="/scripts/xray.js"></script><script type="module" src="/site/desk-commands.js"></script><script type="module" src="/crumb-live.js"></script>`;
 // ONE page server now — the portfolio IS the app (composition root folded in). Every page
 // composes with LIVE data (the welcome page's Recent = the newest notes from MILL frontmatter);
 // the static export freezes what this renders (§18 — projection, not re-render). The /loop +
@@ -320,6 +323,14 @@ const proofRoutes = createProofRoutes({
 ${PAGE_ASSETS}</body>
 </html>`),
 });
+// --- CRUMB: the guided-tour layer. tours/*.md → parsed JSON under /crumb (createCrumbRoutes); the
+// client crumb-live.js + crumb.css are static assets this host serves from the package. The tour
+// never writes — it reuses grain's traveling lamp (passthrough mode, B0) to light surfaces. ---
+const CRUMB_TOURS = fileURLToPath(new URL("./tours", import.meta.url));
+const CRUMB_LIVE = fileURLToPath(import.meta.resolve("@tjakoen/crumb/crumb-live.js"));
+const CRUMB_CSS = fileURLToPath(import.meta.resolve("@tjakoen/crumb/crumb.css"));
+const crumbRoutes = createCrumbRoutes({ toursDir: CRUMB_TOURS });   // prefix defaults to /crumb
+
 // HOST-side workaround, same idiom as PROOF_CSS_OVERRIDES above (never edit the vendored
 // package): @tjakoen/proof's board.ts emits a plan card's link as the root-absolute "/plan/<id>"
 // regardless of the mount prefix it's actually given — a package bug (confirmed live: it 404s
@@ -459,6 +470,13 @@ Bun.serve({
       new Response(await styles.css(), { headers: { "Content-Type": "text/css" } }),
     "/proof.css": async () =>
       new Response((await Bun.file(PROOF_CSS).text()) + PROOF_CSS_OVERRIDES, { headers: { "Content-Type": "text/css" } }),
+    // CRUMB's client + popover CSS, served straight from the package (never vendored) — the same
+    // "host serves the layer's static asset" split as /proof.css. Injected into every app page
+    // (PAGE_HEAD/PAGE_ASSETS) so the dock's Tour launcher works and tours resume across navigation.
+    "/crumb-live.js": async () =>
+      new Response(await Bun.file(CRUMB_LIVE).text(), { headers: { "Content-Type": "text/javascript; charset=utf-8" } }),
+    "/crumb.css": async () =>
+      new Response(await Bun.file(CRUMB_CSS).text(), { headers: { "Content-Type": "text/css" } }),
     "/catalog": async (req: Request) =>
       finalizePage(req, new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } })),
     // /reference — the GENERATED developer-docs reference (DEV-DOCS.md step 5): the AI vocabulary
@@ -553,6 +571,10 @@ ${PAGE_ASSETS}</body>
     // --- PROOF mount: the plan board (/plans, /plans/plan/:id) — try before MILL/pages ---
     const fromProof = await proofRoutes(p);
     if (fromProof) return finalizePage(req, fixProofCardLinks(fromProof));
+    // --- CRUMB mount: the guided-tour DATA (/crumb/tours.json, /crumb/tours/:id.json). Pure JSON
+    // the client fetches to run a tour — NOT a page, so it skips finalizePage's HTML shell. ---
+    const fromCrumb = await crumbRoutes(p);
+    if (fromCrumb) return fromCrumb;
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
     if (fromContent) return finalizePage(req, fromContent);
