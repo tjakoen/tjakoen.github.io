@@ -394,6 +394,18 @@ the model and executes directly. The `manifest` provider is injected by the root
 with a fake model — no browser, no network. Swapping the stub for a real model is wiring a `Model`, not
 a rewrite: the seam was the plan all along.
 
+**Streaming, for a conversational surface.** The `Model` port is whole-completion for a reason: the
+strict validated-move core parses one JSON object, so streaming buys it nothing. A *chat* surface is the
+opposite — it types the reply token by token and must **stop mid-generation** (a stop button; a weak
+model spinning into a repetition loop). That transport lives beside the non-streaming adapter, not in the
+port: `streamChat(engine, messages, opts)` (`ai/model-chat.ts`) yields content deltas from any
+OpenAI-chat-shaped `StreamingChatEngine`, and **breaking the `for await` interrupts generation for you**
+(the generator's `finally` calls `interruptGenerate`) — the caller never touches the engine to halt it,
+it just stops iterating. The engine itself comes from grain's one WebGPU/CDN edge, `ai/webllm.ts`
+(`webgpuAvailable()` + `loadEngine({ modelId })`) — parameterized by model, so the app owns *which* model
+and grain owns the machinery. The portfolio's "desk" consumes exactly this: grain streams + interrupts;
+the desk keeps only its own grounding, navigation, and loop-guard.
+
 ---
 
 ## 5. Grade = commit state — where this doc meets the design system

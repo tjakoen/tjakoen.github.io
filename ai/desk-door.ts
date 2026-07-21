@@ -17,9 +17,10 @@ import type { RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
-import { webgpuAvailable, loadEngine } from "./webllm-loader.ts";
+import { MODEL_ID } from "./webllm-loader.ts";
 import { makeDeskReasoner, type DeskNote } from "./desk-reasoner.ts";
 import type { Knowledge } from "./retrieval.ts";
+import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 
 // Pull grain's door + stub by URL (build-time bare imports would be refused by the module server).
 // Top-level await: by the time the dispatcher calls createClientDoor(), these are resolved, so our
@@ -32,6 +33,13 @@ const grainKit = await import(new URL("../../grain/ai/reasoner-kit.js", import.m
   typeof import("@tjakoen/grain/ai/reasoner-kit.ts");
 const grainManifest = await import(new URL("../../grain/ai/manifest-dom.js", import.meta.url).href) as
   typeof import("@tjakoen/grain/ai/manifest-dom.ts");
+// grain's WebLLM transport (the probe + CDN loader) and streaming chat helper — lifted UP from the
+// portfolio's old webllm-loader so grain owns the reusable machinery; the desk keeps only its model
+// CHOICE (MODEL_ID, above) and its RAG/nav/chips. Same URL-import shape as the door + kit above.
+const grainWebllm = await import(new URL("../../grain/ai/webllm.js", import.meta.url).href) as
+  typeof import("@tjakoen/grain/ai/webllm.ts");
+const grainChat = await import(new URL("../../grain/ai/model-chat.js", import.meta.url).href) as
+  typeof import("@tjakoen/grain/ai/model-chat.ts");
 
 // Reach the browser globals we need without a DOM lib (the project's tsc has bun-types only).
 interface MinimalDoc {
@@ -54,7 +62,12 @@ function markOffline(): void {
 
 // One WebGPU probe, shared by the up-front UX check and the reasoner's engine load.
 let probeP: Promise<boolean> | null = null;
-const probe = (): Promise<boolean> => (probeP ??= webgpuAvailable());
+const probe = (): Promise<boolean> => (probeP ??= grainWebllm.webgpuAvailable());
+
+// Load the desk's chosen model through grain's transport: grain owns the CDN import + warm-up, the
+// desk supplies WHICH model (MODEL_ID) and forwards download progress to the load bar.
+const loadEngine = (onProgress: (p: EngineProgress) => void) =>
+  grainWebllm.loadEngine({ modelId: MODEL_ID, onProgress });
 
 // The grounding corpus, fetched once from the frozen /knowledge.json (base-path aware: resolved
 // against this module's URL, which sits under <base>/modules/portfolio/ai/).
@@ -135,6 +148,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   const reasoner = makeDeskReasoner({
     probe,
     loadEngine,
+    streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)
     loadKnowledge,
     fallback: grainReasoner.makeStubReasoner(),   // every non-chat verb (demo.run, say.*, item.archive)
     markOffline,
