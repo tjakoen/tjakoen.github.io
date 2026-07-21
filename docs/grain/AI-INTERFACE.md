@@ -44,12 +44,14 @@ not a chat channel the AI narrates through. Two things ground it, kept distinct:
 - **The index** — the space of what's *possible*: the manifest's `actions` + `targets` (§4).
 - **The snapshot** — what's *true right now*: each target's state-narrowed `accepts` + `inView` (§4).
 
-The AI reads the index for its move set and the snapshot for where it's standing. Today the door
+The AI reads the index for its move set and the snapshot for where it's standing. The door
 **validates pessimistically**: an action the surface doesn't afford is *rejected* with a `flash`
-(§3), so the AI is expected to pre-check the manifest, not probe blindly. (A more forgiving *"the
-surface has physics"* model — an unafforded action no-ops and reports what *is* available — is a
-noted direction, **not** current behavior.) The *why* behind the modality lives in
-[`PHILOSOPHY.md`](../../PHILOSOPHY.md).
+(§3), so the AI is expected to pre-check the manifest, not probe blindly. But a rejection is no
+longer a bare "no" — it **echoes the moves that would work** (the valid verbs for that surface, or
+the known vocabulary for an unknown verb) in the `Decision.reason` the reasoner reads, so a model
+can self-correct on its next turn. That's a step toward the *"the surface has physics"* model (an
+unafforded action reports what *is* available); a full no-op-and-report affordance is still a noted
+direction. The *why* behind the modality lives in [`PHILOSOPHY.md`](../../PHILOSOPHY.md).
 
 ---
 
@@ -245,6 +247,13 @@ differs. Its capabilities are inert (stub reasoner, no storage), so only service
 are honest there — the client-safe boundary (§19.2) applies to everything it imports. The static
 export freezes the door's module graph and stamps the marker; the live server keeps the server door.
 
+Because ops loop back **synchronously** into the DOM here, the client door also exposes an
+**`observe(document)`** step — the "read the result" half of an in-browser *act → observe → decide*
+loop. By the time `handleIntent` resolves, the page reflects the change; `observe()` re-harvests the
+live-DOM manifest (§4, the same `manifestForReasoner()` text) so a driving reasoner sees the new
+state without a server round-trip. This is what lets a local, in-browser model act agentically over
+the frozen static bytes — the MCP *reason-over-what's-available* loop, no protocol server required.
+
 htmx still handles the **client-initiated** half normally (initial loads,
 navigation). SSE + the dispatcher are purely additive and live **entirely in the app
 layer** — `framework/` stays app-agnostic, so the stack remains extractable.
@@ -327,13 +336,15 @@ component template surfaces at startup, not just a bad `data-accepts` declaratio
 ```
 
 Each advertised action carries its full **calling contract**: a one-line `description` (what the verb
-does / when to reach for it) and a `payload` **schema** (field → `{ type, required, note }`) — the
-[MCP](https://modelcontextprotocol.io) `inputSchema` equivalent. This is what lets a reasoner
-*construct* a valid `Intent` from the manifest alone, instead of inferring the payload shape from
-prose. Both are declared once on `ActionDef` (`contract.ts`) and derived into the manifest, the
-generated `/reference` table, and the plain-text `manifestForReasoner()` projection — one source, no
-drift. `manifestForReasoner()` renders each verb as `name [depth] (field*:type — note) — description`
-(a `*` marks a required field), a block sized to drop straight into a model prompt above the target list.
+does / when to reach for it), a `payload` **schema** (field → `{ type, required, note }`), and
+behaviour **hints** (`readOnly` / `destructive` / `idempotent`) — the
+[MCP](https://modelcontextprotocol.io) `inputSchema` + tool-annotations equivalent. The schema lets a
+reasoner *construct* a valid `Intent` from the manifest alone; the hints let it *choose and retry
+safely* (is this verb read-only? will it overwrite? is a replay harmless?). All three are declared
+once on `ActionDef` (`contract.ts`) and derived into the manifest, the generated `/reference` table,
+and the plain-text `manifestForReasoner()` projection — one source, no drift. `manifestForReasoner()`
+renders each verb as `name [depth] (field*:type — note) — description {hints}` (a `*` marks a required
+field), a block sized to drop straight into a model prompt above the target list.
 
 **The same projection, read off the live DOM (`ai/manifest-dom.ts`).** The server builds the
 manifest from component state at rest; the browser can build the *identical* shape by walking every
