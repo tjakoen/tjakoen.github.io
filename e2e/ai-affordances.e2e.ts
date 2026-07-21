@@ -61,4 +61,26 @@ test.describe("AI affordances are live — the manifest the desk reasons over", 
     const entry = page.locator('[data-surface="notepad-body"] .notepad__entry');
     await expect(entry).toContainText("hello from e2e", { timeout: 5000 });
   });
+
+  test("`context` reports the readable in-view state — the MCP-resources analog, live", async ({ page }) => {
+    await page.goto("/");
+    await doorReady(page);
+    // write into the notepad, then read the page back as the AI sees it: the note's text should now
+    // appear in the manifest's inView.readable (the notepad-body opted in with data-read). This is the
+    // observe loop end-to-end — act, then the surface's STATE is what the reasoner reads next.
+    await page.evaluate(() =>
+      (window as DoorWindow).grain!.door!.submit("note.append", "notepad", { text: "remember the milk" }));
+    await expect(page.locator('[data-surface="notepad-body"] .notepad__entry'))
+      .toContainText("remember the milk", { timeout: 5000 });
+
+    await page.keyboard.press("Control+`");
+    const input = page.locator(".console__cmd");
+    await input.fill("context");
+    await input.press("Enter");
+
+    const feed = page.locator('[data-surface="console"]');
+    await expect(feed).toContainText('"readable"');        // the inView.readable array is present
+    await expect(feed).toContainText("notepad-body");       // the surface that opted in
+    await expect(feed).toContainText("remember the milk");  // its live text, harvested into the manifest
+  });
 });

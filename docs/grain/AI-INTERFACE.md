@@ -331,7 +331,10 @@ component template surfaces at startup, not just a bad `data-accepts` declaratio
     …
   ],
   "targets": [ { "id": "task:42", "kind": "task", "accepts": ["task.complete", "task.reschedule"] }, … ],
-  "inView": { /* the state the reasoner needs for steps 2–4 */ }
+  "inView": {
+    "surfaces": ["task:42", "notepad", "notepad-body"],
+    "readable": [ { "id": "notepad-body", "kind": "notepad", "text": "## Notes  remember the milk" } ]
+  }
 }
 ```
 
@@ -356,6 +359,17 @@ two dev-mode surfaces: a terminal `context` command (prints the JSON) and **x-ra
 (`scripts/xray.js` — outlines and labels each surface with its kind + verbs). The module is
 client-safe (it imports only the pure contract + manifest builder and reaches the DOM through a
 minimal structural interface, not the global DOM lib).
+
+**`inView.readable` — the MCP *resources* analog.** `actions` + `targets` say what a reasoner can
+*invoke* and *address*; they don't say what a surface currently *contains*. A surface opts into
+exposing its live text by declaring `data-read` — exactly as `data-accepts` opts a target into a verb.
+The client projection harvests the marked surfaces' `textContent` (collapsed to one line, capped) into
+`inView.readable` as `{ id, kind, text }`; `manifestForReasoner()` renders it as an `in view:` block
+after the targets, emitted only when something is readable so an unmarked page yields the same string
+as before. The framework harvests it, never authors it — so grain never knows the *content*, only that
+a surface was flagged (app-agnostic), and the prompt stays tight (only marked surfaces, each capped —
+not the whole DOM). This is the **read the result** half of the observe loop: after acting, the
+reasoner reads not just what it can do next but what the surfaces now *say*.
 
 ---
 

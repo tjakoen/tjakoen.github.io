@@ -286,7 +286,10 @@
           <button type="button" class="notepad__commit"
                   data-action="note.replace" data-target="notepad" data-from="notepad-src">Commit</button>
         </header>
-        <div class="notepad__body" data-surface="notepad-body"></div>
+        <!-- data-read: the notepad's live text is STATE a reasoner should read, so it opts into the
+             manifest's inView.readable (the MCP-resources analog). The framework harvests it; we only
+             flag it here (grain/ai/manifest-dom.ts). -->
+        <div class="notepad__body" data-surface="notepad-body" data-read></div>
         <textarea class="notepad__source" data-surface="notepad-src" aria-label="Notepad source (markdown)"
                   placeholder="Write markdown, then Commit…"></textarea>
       </section>
