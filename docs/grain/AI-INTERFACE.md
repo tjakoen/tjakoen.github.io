@@ -112,7 +112,8 @@ The built table **is** the live contract. It is defined once in TypeScript and e
 > **Single source of truth: [`grain/ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/ai/contract.ts).**
 > The closed sets are **union types + a `const` registry**, not a TS `enum` (`enum`
 > is banned by `erasableSyntaxOnly`) — that union *is* the erasable enum:
-> - `ActionName` — the verbs · `ACTIONS` — the registry (depth + accepted kinds).
+> - `ActionName` — the verbs · `ACTIONS` — the registry (depth, accepted kinds, a one-line
+>   `description`, and a `payload` schema — the calling contract a reasoner reads to invoke a verb, §4).
 > - `SurfaceKind` — the closed set of surface kinds a verb can accept (`item`,
 >   `reflection`, `say-stream`, `screen`, `chat-log`, `notepad`). Push-only display surfaces the
 >   AI only *writes* to (e.g. `console`, `timeline`, `notepad-body`) are intentionally **not** kinds — see the note in `contract.ts`.
@@ -311,11 +312,28 @@ component template surfaces at startup, not just a bad `data-accepts` declaratio
 ```jsonc
 {
   "screen": "tasks",
-  "actions": [ { "name": "task.complete", "depth": "light", "accepts": ["task"] }, … ],
+  "actions": [
+    { "name": "task.complete", "depth": "light", "accepts": ["task"],
+      "description": "Mark a task done (optimistic).",
+      "payload": {} },
+    { "name": "note.append", "depth": "light", "accepts": ["notepad"],
+      "description": "Append one markdown entry to the notepad.",
+      "payload": { "text": { "type": "string", "required": true, "note": "markdown" } } },
+    …
+  ],
   "targets": [ { "id": "task:42", "kind": "task", "accepts": ["task.complete", "task.reschedule"] }, … ],
   "inView": { /* the state the reasoner needs for steps 2–4 */ }
 }
 ```
+
+Each advertised action carries its full **calling contract**: a one-line `description` (what the verb
+does / when to reach for it) and a `payload` **schema** (field → `{ type, required, note }`) — the
+[MCP](https://modelcontextprotocol.io) `inputSchema` equivalent. This is what lets a reasoner
+*construct* a valid `Intent` from the manifest alone, instead of inferring the payload shape from
+prose. Both are declared once on `ActionDef` (`contract.ts`) and derived into the manifest, the
+generated `/reference` table, and the plain-text `manifestForReasoner()` projection — one source, no
+drift. `manifestForReasoner()` renders each verb as `name [depth] (field*:type — note) — description`
+(a `*` marks a required field), a block sized to drop straight into a model prompt above the target list.
 
 **The same projection, read off the live DOM (`ai/manifest-dom.ts`).** The server builds the
 manifest from component state at rest; the browser can build the *identical* shape by walking every
