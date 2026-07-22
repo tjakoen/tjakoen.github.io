@@ -48,11 +48,21 @@ const OPERABLE = new Set<string>();
 // snapshot" banner and disable the free-text composer.
 // The desk door (ai/desk-door.js) is the portfolio's OWN client door — data-ai-door selects it over
 // grain's default. Freezing it as an entry crawls its static graph (desk-reasoner, webllm-loader,
-// prompt, retrieval); grain's door/reasoner are already frozen via the entry below, and WebLLM's URL
-// import is a runtime string (not followed, so esm.run never enters the export).
-// manifest-dom is URL-imported by the desk door (for "what can I do here?"), so a static crawl of the
-// door's graph won't reach it — freeze it as its own entry.
-const MODULE_ENTRIES = ["/modules/grain/ai/client-door.js", "/modules/grain/ai/manifest-dom.js", "/modules/portfolio/ai/desk-door.js"];
+// prompt, retrieval); the WebLLM CDN import inside grain's webllm.js is a runtime string (not
+// followed, so esm.run never enters the export).
+// The desk door URL-imports several grain modules via `import(new URL(...))` — a dynamic, computed
+// specifier the static crawler CANNOT follow, so each must be frozen as its OWN entry or it 404s on
+// the deployed site (the door's dynamic import then throws and the desk never comes online). These
+// are: client-door + manifest-dom + the model transport (webllm.js probe/loader, model-chat.js
+// streaming). Their static graphs (e.g. model.js) come along via the crawl of these entries. Keep
+// this list in sync with the `import(new URL("../../grain/ai/*.js"))` calls in ai/desk-door.ts.
+const MODULE_ENTRIES = [
+  "/modules/grain/ai/client-door.js",
+  "/modules/grain/ai/manifest-dom.js",
+  "/modules/grain/ai/webllm.js",
+  "/modules/grain/ai/model-chat.js",
+  "/modules/portfolio/ai/desk-door.js",
+];
 
 // Generated routes that a href/src crawler won't discover: the ⌘K palette's index, the desk's
 // grounding corpus (knowledge/notes), the SEO infra, and PROOF's stylesheet (/proof.css — every

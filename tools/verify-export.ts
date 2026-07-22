@@ -103,8 +103,58 @@ async function checkDeadLinks(): Promise<string[]> {
   return failures;
 }
 
-const [sitemapFailures, deadLinkFailures] = await Promise.all([checkSitemap(), checkDeadLinks()]);
-const failures = [...sitemapFailures, ...deadLinkFailures];
+// ---- (c) module-import walk: every relative import in a frozen module resolves ------------------
+// The dead-link walk (b) only sees href/src in HTML — it is BLIND to ES-module imports, especially
+// the desk door's `import(new URL("../../grain/ai/webllm.js", import.meta.url))` dynamic, computed
+// specifiers that the export's static crawler also can't follow. If such a module isn't listed as an
+// export entry it silently 404s and the desk dies in every browser (the import throws, the door never
+// comes online) — invisible to (a)/(b). This walk closes that gap: for every frozen module under
+// dist/modules/, resolve each RELATIVE import specifier (static `from "./x"`, dynamic `import("./x")`,
+// and `new URL("./x", import.meta.url)`) against the module's own directory and assert the file exists.
+async function findJsModules(dir: string): Promise<string[]> {
+  const out: string[] = [];
+  async function walk(d: string): Promise<void> {
+    for (const e of await readdir(d, { withFileTypes: true })) {
+      const full = join(d, e.name);
+      if (e.isDirectory()) await walk(full);
+      else if (e.name.endsWith(".js")) out.push(full);
+    }
+  }
+  await walk(dir);
+  return out;
+}
+
+async function checkModuleImports(): Promise<string[]> {
+  const failures: string[] = [];
+  const modulesDir = join(DIST, "modules");
+  if (!(await readdir(modulesDir).then(() => true).catch(() => false))) return failures;  // no frozen modules → nothing to check
+  const jsFiles = await findJsModules(modulesDir);
+  // relative specifiers only (start ./ or ../) from the three import shapes; bare/npm/http are ignored.
+  const patterns = [
+    /\bfrom\s*["'](\.\.?\/[^"']+)["']/g,               // static:  import x from "./y.js"
+    /\bimport\(\s*["'](\.\.?\/[^"']+)["']\s*\)/g,       // dynamic: import("./y.js")
+    /\bnew\s+URL\(\s*["'](\.\.?\/[^"']+)["']/g,         // URL:     new URL("../y.js", import.meta.url)
+  ];
+  for (const file of jsFiles) {
+    const src = await Bun.file(file).text();
+    const modPath = "/" + relative(DIST, file).split("/").join("/");
+    const seen = new Set<string>();
+    for (const re of patterns) {
+      for (const m of src.matchAll(re)) {
+        const spec = m[1]!.split(/[?#]/)[0]!;            // strip query/hash
+        if (seen.has(spec)) continue;
+        seen.add(spec);
+        const resolved = join(file, "..", spec);          // relative to the module's own directory
+        if (!(await Bun.file(resolved).exists()))
+          failures.push(`${modPath}: import "${spec}" → ${relative(DIST, resolved)} does not exist (unfrozen module — add it to export.ts MODULE_ENTRIES)`);
+      }
+    }
+  }
+  return failures;
+}
+
+const [sitemapFailures, deadLinkFailures, moduleFailures] = await Promise.all([checkSitemap(), checkDeadLinks(), checkModuleImports()]);
+const failures = [...sitemapFailures, ...deadLinkFailures, ...moduleFailures];
 
 if (failures.length) {
   console.error(`[verify-export] ${failures.length} problem(s) in ${DIST}/:\n`);
