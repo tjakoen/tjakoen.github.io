@@ -61,12 +61,23 @@ function markOffline(): void {
   if (b) b.dataset.desk = "offline";
 }
 
-// ONE device probe at module load, read two ways (grain owns the probe + the gate; the portfolio owns
-// the size CHOICE): `canRunModel` gates whether ANY model loads (drives the up-front offline UX + the
-// reasoner's probe dep), and `pickProfile` maps the SAME capability to a model profile — the strong
-// 1.5B on a clearly capable device (deviceMemory ≥ 8), else the weak 0.5B that runs anywhere WebGPU does.
+// ONE device probe at module load, read two ways (grain owns the probe; the portfolio owns the size
+// CHOICE): the up-front gate drives the offline UX + the reasoner's probe dep, and `pickProfile` maps
+// the SAME capability to a model profile — the strong 1.5B on a clearly capable device (deviceMemory
+// ≥ 8), else the weak 0.5B that runs anywhere WebGPU does.
 const deviceCap = await grainWebllm.probeDevice();
-const canRun = grainWebllm.canRunModel(deviceCap);
+// The up-front gate deliberately does NOT trust probeDevice()'s adapter result (`deviceCap.webgpu`).
+// On a COLD Safari load the GPU process isn't warm the instant this module evaluates, so
+// `requestAdapter()` can transiently resolve null even though WebGPU works a beat later — and a single
+// early false would strand the desk offline for the WHOLE session (sticky). So gate on the WebGPU API
+// being PRESENT (definitive: no API means no model, e.g. Firefox) plus the memory floor, and let the
+// REAL engine load on first chat.send be the true test — by then the GPU is warm, and ensureEngine
+// still degrades to offline if that load genuinely fails, so a merely-slow-to-warm browser recovers
+// while a truly incapable one still ends up offline (just on first use, not up front).
+const gpuApiPresent = typeof (globalThis as unknown as
+  { navigator?: { gpu?: { requestAdapter?: unknown } } }).navigator?.gpu?.requestAdapter === "function";
+const tooLittleMemory = typeof deviceCap.deviceMemory === "number" && deviceCap.deviceMemory < 4;
+const canRun = gpuApiPresent && !tooLittleMemory;
 // Dev knob: `?tier=weak|strong` forces a model tier so both can be exercised on one machine (the
 // auto-by-device pick only ever lands on one). Anything else → auto. The canRunModel gate still applies.
 // PERSISTED for the session: this is an MPA, so a plain URL param would evaporate on the first

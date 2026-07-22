@@ -233,6 +233,17 @@ body[data-desk="offline"] .assistant__offline {
   color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); margin: 0; }
 body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); flex: none; }
 
+/* The status-bar presence tracks the DOOR (grain's data-ai-online), which stays online when the
+   client loopback comes up — so it reads "desk online" even while the CHAT model can't run. That
+   misleads: the visitor can't actually talk to the desk. When the desk chat is offline, force the
+   offline label + faint star here, whatever the transport presence says. The `.presence` in the
+   chain lifts specificity above grain's ai.css `body[data-ai-online=...] .presence__*` rules so this
+   wins regardless of bundle order. */
+body[data-desk="offline"] .presence .presence__on,
+body[data-desk="offline"] .presence .presence__wait { display: none; }
+body[data-desk="offline"] .presence .presence__off { display: inline; }
+body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
+
 /* Catalog pane: the embedded /catalog fills the pane; the footer sits where the chat composer
    sits (the hover hint + the full-page way out). Scroll stays contained to the pane. */
 .catalog-pane__frame { flex: 1; width: 100%; border: 0; background: var(--color-bg);
