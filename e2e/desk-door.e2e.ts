@@ -84,3 +84,29 @@ test.describe("THE DESK — client transport, no WebGPU → Desk Offline (chat h
     await expect(reply).not.toContainText("Noted —");   // the stub's chat.send phrasing — never leaks through
   });
 });
+
+// A COLD Safari load can have the WebGPU API present yet return a null adapter for the first instant
+// (the GPU process isn't warm the moment the desk module evaluates), then work a beat later. The
+// up-front gate must NOT strand the desk offline on that single racy adapter — it gates on the API
+// being present and lets the real engine load (on first use, GPU warm) be the true test.
+test.describe("THE DESK — WebGPU API present, first adapter momentarily null (cold Safari)", () => {
+  test("stays optimistic: the chat is NOT hidden just because the first adapter probe came back null", async ({ page }) => {
+    await page.addInitScript(() => {
+      try {
+        Object.defineProperty(navigator, "gpu", {
+          value: { requestAdapter: () => Promise.resolve(null) },   // API present, adapter null (cold)
+          configurable: true,
+        });
+      } catch { /* already defined */ }
+    });
+    await asClientDesk(page, "**/grain");
+    await page.goto("/grain");
+
+    // the door comes up (client loopback) as always…
+    await expect(page.locator("body")).toHaveAttribute("data-ai-online", "true");
+    // …and the up-front probe().then(markOffline) must NOT have fired on the null adapter alone:
+    // the chat surface stays, the composer is usable (the real load, on first send, is the true test).
+    await expect(page.locator(".assistant__composer")).toBeVisible();
+    await expect(page.locator("body")).not.toHaveAttribute("data-desk", "offline");
+  });
+});
