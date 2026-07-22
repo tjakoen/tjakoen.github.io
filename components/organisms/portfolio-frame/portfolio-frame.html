@@ -211,9 +211,9 @@
        shows and the catalog stays hidden. -->
   <div class="assistant" data-mode="chat">
     <div class="assistant__head">
-      <span class="assistant__title assistant__title--chat">Assistant</span>
-      <span class="assistant__title assistant__title--catalog">Catalog</span>
-      <span class="assistant__title assistant__title--notepad">Notepad</span>
+      <!-- No standalone title: the mode tabs below already name the active view (Chat/Catalog/Notepad),
+           so a separate label was redundant AND its width pushed the header into a horizontal scroll in
+           the narrow panel. The tabs are the label. -->
       <nav class="assistant__modes" aria-label="Panel mode">
         <button type="button" data-shell-mode="chat" aria-selected="true">Chat</button>
         <button type="button" data-shell-mode="catalog" aria-selected="false">Catalog</button>

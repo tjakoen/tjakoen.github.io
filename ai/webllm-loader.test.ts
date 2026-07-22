@@ -17,6 +17,12 @@ test("pickProfile: unknown deviceMemory (Firefox/Safari) → weak, the conservat
   expect(pickProfile({ webgpu: true })).toBe(WEAK_PROFILE);
 });
 
+test("pickProfile: an override forces the tier regardless of the device (the ?tier= dev knob)", () => {
+  expect(pickProfile({ webgpu: true, deviceMemory: 16 }, "weak")).toBe(WEAK_PROFILE);   // capable, forced down
+  expect(pickProfile({ webgpu: true, deviceMemory: 4 }, "strong")).toBe(STRONG_PROFILE); // modest, forced up
+  expect(pickProfile({ webgpu: true, deviceMemory: 4 }, undefined)).toBe(WEAK_PROFILE);  // no override → auto
+});
+
 test("profiles carry the model id + a coherent window/budget pairing", () => {
   expect(WEAK_PROFILE.id).toContain("0.5B");
   expect(STRONG_PROFILE.id).toContain("1.5B");

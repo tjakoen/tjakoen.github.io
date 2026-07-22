@@ -200,7 +200,9 @@
 /* New chat: a quiet reset in the assistant head. Left-group the title + modes (override grain's
    space-between) and push this to the far right; hidden with the composer when the desk is offline
    (there's no conversation to reset then). */
-.assistant__head { justify-content: flex-start; gap: var(--space-2); }
+/* flex-wrap so the header (mode tabs + New chat) can never force a horizontal scroll in the narrow
+   panel — if it can't fit on one row it drops to a second instead of overflowing sideways. */
+.assistant__head { justify-content: flex-start; gap: var(--space-2); flex-wrap: wrap; }
 .assistant__newchat { margin-left: auto; font: inherit; font-size: var(--text-xs);
   font-family: var(--font-mono); color: var(--color-muted); background: none;
   border: 1px solid var(--color-line); border-radius: 999px; padding: var(--space-1) var(--space-3);
@@ -242,12 +244,7 @@ body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); 
 .catalog-pane__hint { display: none; }
 @media (hover: hover) and (pointer: fine) { .catalog-pane__hint { display: block; } }
 
-/* head label: "Assistant" in Chat, "Catalog" in Catalog mode, "Notepad" in Notepad mode */
-.assistant__title--catalog, .assistant__title--notepad { display: none; }
-.assistant[data-mode="catalog"] .assistant__title--chat,
-.assistant[data-mode="notepad"] .assistant__title--chat { display: none; }
-.assistant[data-mode="catalog"] .assistant__title--catalog { display: inline; }
-.assistant[data-mode="notepad"] .assistant__title--notepad { display: inline; }
+/* (The standalone .assistant__title label was removed — the mode tabs are the label now.) */
 
 /* the catalog wants a little more width than the chat column, but not so much that the main
    content gets cramped: a measured widen (the peek shows one component entry at a time). It's a

@@ -87,8 +87,14 @@ export const STRONG_PROFILE: ModelProfile = {
  *  machine — `navigator.deviceMemory` ≥ 8 (Chrome reports it, coarse + capped at 8). When the browser
  *  DOESN'T report memory (Firefox/Safari), or reports less, stay on the weak model — the conservative
  *  choice, since a wrong guess up means an OOM the visitor sees. grain's `canRunModel` gate still
- *  decides whether ANY model loads; this only picks WHICH once it can. */
-export function pickProfile(cap: DeviceCapability): ModelProfile {
+ *  decides whether ANY model loads; this only picks WHICH once it can.
+ *
+ *  `override` forces a tier regardless of the device — the `?tier=weak|strong` dev knob desk-door reads
+ *  from the URL, so both tiers can be exercised on one machine. Harmless in prod (a visitor would have to
+ *  set it deliberately, and the `canRunModel` gate still applies), so it stays in. */
+export function pickProfile(cap: DeviceCapability, override?: "weak" | "strong"): ModelProfile {
+  if (override === "weak") return WEAK_PROFILE;
+  if (override === "strong") return STRONG_PROFILE;
   return typeof cap.deviceMemory === "number" && cap.deviceMemory >= 8 ? STRONG_PROFILE : WEAK_PROFILE;
 }
 

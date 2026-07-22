@@ -19,6 +19,7 @@ import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
 import { pickProfile } from "./webllm-loader.ts";
 import { makeDeskReasoner, type DeskNote } from "./desk-reasoner.ts";
+import { buildCatalog, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 
@@ -66,7 +67,22 @@ function markOffline(): void {
 // 1.5B on a clearly capable device (deviceMemory ≥ 8), else the weak 0.5B that runs anywhere WebGPU does.
 const deviceCap = await grainWebllm.probeDevice();
 const canRun = grainWebllm.canRunModel(deviceCap);
-const profile = pickProfile(deviceCap);
+// Dev knob: `?tier=weak|strong` forces a model tier so both can be exercised on one machine (the
+// auto-by-device pick only ever lands on one). Anything else → auto. The canRunModel gate still applies.
+// PERSISTED for the session: this is an MPA, so a plain URL param would evaporate on the first
+// navigation and the tier would snap back to auto (visible as the model "switching on its own"). We
+// stash the override in sessionStorage on first sight and read it back on every page, so a forced tier
+// sticks across the whole visit — until a new `?tier=` overrides it or the tab closes.
+const TIER_KEY = "desk-tier";
+const tierOverride = ((): "weak" | "strong" | undefined => {
+  const valid = (v: string | null): "weak" | "strong" | undefined => (v === "weak" || v === "strong" ? v : undefined);
+  try {
+    const fromUrl = valid(new URLSearchParams((globalThis as unknown as { location?: { search?: string } }).location?.search ?? "").get("tier"));
+    if (fromUrl) { try { ss()?.setItem(TIER_KEY, fromUrl); } catch { /* no session storage */ } return fromUrl; }
+    return valid(ss()?.getItem(TIER_KEY) ?? null);
+  } catch { return undefined; }
+})();
+const profile = pickProfile(deviceCap, tierOverride);
 const probe = (): Promise<boolean> => Promise.resolve(canRun);
 
 // Load the profile's model through grain's transport: grain owns the CDN import + warm-up, the desk
@@ -86,6 +102,30 @@ const listNotes = (): Promise<DeskNote[]> =>
   (notesP ??= fetch(new URL("../../../notes.json", import.meta.url).href)
     .then((r) => r.json() as Promise<DeskNote[]>).catch(() => []));
 
+// The navigable-destination catalog (catalog.ts): the REAL sitemap enriched with titles from the
+// knowledge corpus + notes, so the desk navigates only to routes that exist and the set scales with
+// the site — no hardcoded alias table. Built once (memoized): parse /sitemap.xml for every route, then
+// label each by its known title (a note/doc) or a humanized slug. Base-path aware (module-relative).
+let catalogP: Promise<NavDest[]> | null = null;
+const loadCatalog = (): Promise<NavDest[]> =>
+  (catalogP ??= (async () => {
+    const [xml, knowledge, notes] = await Promise.all([
+      fetch(new URL("../../../sitemap.xml", import.meta.url).href).then((r) => r.text()).catch(() => ""),
+      loadKnowledge().catch(() => null),
+      listNotes().catch(() => [] as DeskNote[]),
+    ]);
+    const routes = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)]
+      .map((m) => { try { return new URL(m[1]!).pathname; } catch { return m[1]!; } });
+    const titleByRoute: Record<string, string> = {};
+    const put = (route: string, title?: string): void => {
+      const r = route.replace(/\/+$/, "") || "/";
+      if (title && title.trim() && !titleByRoute[r]) titleByRoute[r] = title.trim();
+    };
+    for (const c of knowledge?.chunks ?? []) put(c.route, c.title);
+    for (const n of notes) put(n.route, n.title);
+    return buildCatalog(routes, titleByRoute);
+  })());
+
 // ---- the desk's UI-driving capabilities (the DOM/nav contact point) ----
 const pageText = (): string => doc()?.querySelector?.(".app-shell__main")?.textContent?.trim() ?? "";
 const pageInfo = (): { route: string; title: string } => ({ route: loc()?.pathname ?? "/", title: doc()?.title ?? "" });
@@ -93,9 +133,6 @@ const pageInfo = (): { route: string; title: string } => ({ route: loc()?.pathna
 // real `document` satisfies grain's structural DomDoc (body + querySelectorAll).
 const liveDoc = (): DomDoc => (globalThis as unknown as { document?: DomDoc }).document as DomDoc;
 const pageManifest = (): Manifest => grainManifest.domManifest(liveDoc());
-// The SAME manifest, as prompt-ready prose (grain's manifestForReasoner) — the desk-reasoner pulls
-// the "nav:<route>" lines out of this to tell a real model what it can navigate to (Tier-2 nav).
-const pageManifestText = (): string => grainManifest.manifestForReasoner(liveDoc());
 // Open any collapsed file-tree folder above a nav link, so the lamp can travel to a VISIBLE target
 // before the desk "clicks" it (the bread-stack folder ships collapsed).
 interface NavEl { tagName: string; open?: boolean; parentElement: NavEl | null }
@@ -103,6 +140,14 @@ const revealNav = (route: string): void => {
   const d = (globalThis as unknown as { document?: { querySelector(s: string): NavEl | null } }).document;
   let el: NavEl | null = d?.querySelector(`[data-surface="nav:${route}"]`) ?? null;
   while (el) { if (el.tagName === "DETAILS") el.open = true; el = el.parentElement; }
+};
+// Flip the assistant panel to its Notepad view by clicking the mode tab (shell.js owns the switch —
+// the desk drives the same button a human would, no private back channel). Used after the desk writes
+// a note so the fresh entry is on screen, not hidden behind the chat pane.
+const revealNotepad = (): void => {
+  const btn = (globalThis as unknown as { document?: { querySelector(s: string): { click(): void } | null } })
+    .document?.querySelector('.assistant__modes [data-shell-mode="notepad"]');
+  btn?.click();
 };
 
 // ---- cross-page lamp: the MPA loses JS state on navigation, so before navigating the desk STASHES
@@ -159,7 +204,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     fallback: grainReasoner.makeStubReasoner(),   // every non-chat verb (demo.run, say.*, item.archive)
     markOffline,
     kit: grainKit,                                // grain's chat markup builders (no fork)
-    navigate, pageText, pageInfo, pageManifest, pageManifestText, listNotes, arrive, revealNav,   // the desk drives the UI through these
+    navigate, pageText, pageInfo, pageManifest, listNotes, loadCatalog, arrive, revealNav, revealNotepad,   // the desk drives the UI through these
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();

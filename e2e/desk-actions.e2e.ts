@@ -42,7 +42,7 @@ test.describe("THE DESK drives the page (deterministic actions, no WebGPU needed
     await ask(page, "take me to GRAIN");
 
     await page.waitForURL("**/grain");                                   // it drove the navigation
-    await expect(page.locator(".assistant__log")).toContainText("Here's GRAIN");   // arrival choreography resumed
+    await expect(page.locator(".assistant__log")).toContainText("Here's Grain");   // arrival choreography resumed (label from the sitemap catalog)
   });
 
   test("navigate home: 'take me to homepage' → drives back to / (the shipped nav-intent bug, full-stack)", async ({ page }) => {
