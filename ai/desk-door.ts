@@ -17,7 +17,7 @@ import type { RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
-import { MODEL_ID } from "./webllm-loader.ts";
+import { pickProfile } from "./webllm-loader.ts";
 import { makeDeskReasoner, type DeskNote } from "./desk-reasoner.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
@@ -35,7 +35,7 @@ const grainManifest = await import(new URL("../../grain/ai/manifest-dom.js", imp
   typeof import("@tjakoen/grain/ai/manifest-dom.ts");
 // grain's WebLLM transport (the probe + CDN loader) and streaming chat helper — lifted UP from the
 // portfolio's old webllm-loader so grain owns the reusable machinery; the desk keeps only its model
-// CHOICE (MODEL_ID, above) and its RAG/nav/chips. Same URL-import shape as the door + kit above.
+// CHOICE (the model profile, below) and its RAG/nav/chips. Same URL-import shape as the door + kit above.
 const grainWebllm = await import(new URL("../../grain/ai/webllm.js", import.meta.url).href) as
   typeof import("@tjakoen/grain/ai/webllm.ts");
 const grainChat = await import(new URL("../../grain/ai/model-chat.js", import.meta.url).href) as
@@ -60,14 +60,19 @@ function markOffline(): void {
   if (b) b.dataset.desk = "offline";
 }
 
-// One WebGPU probe, shared by the up-front UX check and the reasoner's engine load.
-let probeP: Promise<boolean> | null = null;
-const probe = (): Promise<boolean> => (probeP ??= grainWebllm.webgpuAvailable());
+// ONE device probe at module load, read two ways (grain owns the probe + the gate; the portfolio owns
+// the size CHOICE): `canRunModel` gates whether ANY model loads (drives the up-front offline UX + the
+// reasoner's probe dep), and `pickProfile` maps the SAME capability to a model profile — the strong
+// 1.5B on a clearly capable device (deviceMemory ≥ 8), else the weak 0.5B that runs anywhere WebGPU does.
+const deviceCap = await grainWebllm.probeDevice();
+const canRun = grainWebllm.canRunModel(deviceCap);
+const profile = pickProfile(deviceCap);
+const probe = (): Promise<boolean> => Promise.resolve(canRun);
 
-// Load the desk's chosen model through grain's transport: grain owns the CDN import + warm-up, the
-// desk supplies WHICH model (MODEL_ID) and forwards download progress to the load bar.
+// Load the profile's model through grain's transport: grain owns the CDN import + warm-up, the desk
+// supplies WHICH model (profile.id) + its context window and forwards download progress to the load bar.
 const loadEngine = (onProgress: (p: EngineProgress) => void) =>
-  grainWebllm.loadEngine({ modelId: MODEL_ID, onProgress });
+  grainWebllm.loadEngine({ modelId: profile.id, onProgress, contextWindow: profile.contextWindow });
 
 // The grounding corpus, fetched once from the frozen /knowledge.json (base-path aware: resolved
 // against this module's URL, which sits under <base>/modules/portfolio/ai/).
@@ -146,6 +151,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   };
 
   const reasoner = makeDeskReasoner({
+    profile,                                      // the device-chosen model + its tuning (weak 0.5B / strong 1.5B)
     probe,
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)

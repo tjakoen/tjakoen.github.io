@@ -4,7 +4,7 @@
 // coverage for both the healthy and the degraded paths.
 import { test, expect, describe } from "bun:test";
 import { makeDeskReasoner, navRoutesFromManifest, parseArrival, parseModelChoices, type DeskDeps } from "./desk-reasoner.ts";
-import type { DeskEngine } from "./webllm-loader.ts";
+import { WEAK_PROFILE, type DeskEngine } from "./webllm-loader.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
 import type { Intent, RenderOp } from "@tjakoen/grain/ai/contract.ts";
@@ -47,6 +47,7 @@ function makeDeps(over: Partial<DeskDeps> = {}): { deps: DeskDeps; fallbackCalls
   const fallback: Reasoner = { decide: async (i) => { fallbackCalls.push(i.action); return { ok: true, ops: [], reply: "stub" }; } };
   const box = { offline: 0 };
   const deps: DeskDeps = {
+    profile: WEAK_PROFILE,
     probe: async () => true,
     loadEngine: async () => fakeEngine(["Hello"]).engine,
     streamChat,                                        // GRAIN's real streaming transport over the fake engine

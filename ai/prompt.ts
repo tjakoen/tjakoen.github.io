@@ -21,10 +21,15 @@ export interface PromptInput {
    *  a consumer with no manifest still gets a valid, unchanged prompt. When present, the model gets a
    *  narrow NAVIGATE:<route> protocol scoped to ONLY these routes — never a hardcoded guess. */
   navRoutes?: string[];
+  /** The approx-token ceiling to hold the assembled prompt under — the active model profile's
+   *  `promptTokenBudget` (webllm-loader.ts). Omitted ⇒ the default below (the weak 0.5B's 2048 window);
+   *  a stronger model passes a bigger budget so more grounding + history survive the clip. */
+  tokenBudget?: number;
 }
 
-// Budget in APPROX tokens (~4 chars/token — good enough for clipping a 0.5B's 2048 window).
+// DEFAULT budget in APPROX tokens (~4 chars/token — good enough for clipping a 0.5B's 2048 window).
 // 2048 window − 256 generation − a safety margin ≈ 1500 usable; hold the assembled prompt under it.
+// A caller running a bigger model overrides this via PromptInput.tokenBudget (its profile's budget).
 const PROMPT_TOKEN_BUDGET = 1400;
 const HISTORY_TURNS = 6;        // last 3 exchanges (user+assistant)
 const approxTokens = (s: string): number => Math.ceil(s.length / 4);
@@ -93,13 +98,14 @@ function clipHistory(history: ChatMessage[], budget: number): ChatMessage[] {
  *  CONTEXT — MLC requires the system prompt to be the single first message) → clipped history → the
  *  user's query. Budget is spent persona-first, then query, then history, then context fills the rest. */
 export function buildPrompt(input: PromptInput): ChatMessage[] {
-  const { query, chunks, history, navRoutes } = input;
+  const { query, chunks, history, navRoutes, tokenBudget } = input;
+  const budget = tokenBudget ?? PROMPT_TOKEN_BUDGET;
   const nav = navRoutes && navRoutes.length > 0 ? navBlock(navRoutes) : "";
   const personaCost = approxTokens(PERSONA);
   const choicesCost = approxTokens(CHOICES_BLOCK);   // always in the system prompt
   const navCost = nav ? approxTokens(nav) : 0;
   const queryCost = approxTokens(query);
-  let remaining = PROMPT_TOKEN_BUDGET - personaCost - choicesCost - navCost - queryCost;
+  let remaining = budget - personaCost - choicesCost - navCost - queryCost;
 
   const historyBudget = Math.floor(remaining * 0.35);
   const clippedHistory = clipHistory(history, Math.max(0, historyBudget));
