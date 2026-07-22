@@ -5,7 +5,7 @@
 import { test, expect, describe } from "bun:test";
 import { makeDeskReasoner, parseArrival, parseModelChoices, type DeskDeps } from "./desk-reasoner.ts";
 import { buildCatalog } from "./catalog.ts";
-import { WEAK_PROFILE, type DeskEngine } from "./webllm-loader.ts";
+import { WEAK_PROFILE, STRONG_PROFILE, type DeskEngine } from "./webllm-loader.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
 import type { Intent, RenderOp } from "@tjakoen/grain/ai/contract.ts";
@@ -146,6 +146,54 @@ describe("makeDeskReasoner — offline (NO stub fallback for chat)", () => {
 
     expect(offline).toBeGreaterThan(0);
     expect(probes).toBe(1);                                  // sticky: no re-probe after going offline
+  });
+});
+
+describe("makeDeskReasoner — strong→weak fallback on load failure", () => {
+  test("a failed STRONG load retries the weak fallback, stays ONLINE, and streams a reply", async () => {
+    const loaded: string[] = [];
+    const { engine } = fakeEngine(["hi"]);
+    const { deps, offlineCalls } = makeDeps({
+      profile: STRONG_PROFILE,
+      fallbackProfile: WEAK_PROFILE,
+      loadEngine: async (p) => { loaded.push(p.label); if (p === STRONG_PROFILE) throw new Error("oom"); return engine; },
+    });
+    const r = makeDeskReasoner(deps);
+    const warn = console.warn; console.warn = () => {};           // the fallback path warns by design
+    let decision;
+    try { decision = await r.decide(chat(), makeTools().tools); } finally { console.warn = warn; }
+
+    expect(loaded).toEqual([STRONG_PROFILE.label, WEAK_PROFILE.label]);   // tried strong, then fell back to weak
+    expect(offlineCalls).toBe(0);                                          // never went offline
+    expect(decision!.reply).toBe("hi");
+  });
+
+  test("a failed STRONG load whose weak fallback ALSO fails goes offline", async () => {
+    const { deps } = makeDeps({
+      profile: STRONG_PROFILE,
+      fallbackProfile: WEAK_PROFILE,
+      loadEngine: async () => { throw new Error("no gpu"); },
+    });
+    let offline = 0; deps.markOffline = () => { offline++; };
+    const r = makeDeskReasoner(deps);
+    const err = console.error, warn = console.warn; console.error = () => {}; console.warn = () => {};
+    let decision;
+    try { decision = await r.decide(chat(), makeTools().tools); } finally { console.error = err; console.warn = warn; }
+
+    expect(offline).toBeGreaterThan(0);
+    expect(decision!.reply).toContain("offline");
+  });
+
+  test("no fallbackProfile (already the weak tier) → a failed load just goes offline, no retry", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({ profile: WEAK_PROFILE, loadEngine: async () => { loads++; throw new Error("cdn down"); } });
+    let offline = 0; deps.markOffline = () => { offline++; };
+    const r = makeDeskReasoner(deps);
+    const err = console.error; console.error = () => {};
+    try { await r.decide(chat(), makeTools().tools); } finally { console.error = err; }
+
+    expect(loads).toBe(1);                                        // one attempt only — nothing lighter to retry
+    expect(offline).toBeGreaterThan(0);
   });
 });
 
