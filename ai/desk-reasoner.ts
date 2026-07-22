@@ -15,7 +15,7 @@ import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
 import type { Intent, Decision, RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import { buildPrompt, type ChatMessage } from "./prompt.ts";
 import { retrieve, type Knowledge } from "./retrieval.ts";
-import type { DeskEngine, EngineProgress } from "./webllm-loader.ts";
+import type { DeskEngine, EngineProgress, ModelProfile } from "./webllm-loader.ts";
 import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
 import { routeAction, SECTIONS, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
 
@@ -115,7 +115,6 @@ export function parseArrival(raw: string): { greeting: string; chips: string[] }
   return { greeting, chips };
 }
 
-const MODEL_LABEL = "Qwen2.5-0.5B";
 const OFFLINE_LINE =
   "The desk runs a small AI model in your browser, and this browser can't run it, so the desk is offline. Everything else on the site works as usual.";
 
@@ -128,6 +127,10 @@ const OFFLINE_LINE =
 const NAV_GLIDE_MS = 550;
 
 export interface DeskDeps {
+  /** The active model profile (webllm-loader.ts) — the model id's tuning: generation caps, penalties,
+   *  the prompt budget, and the load-bar copy. desk-door picks it from grain's device probe and injects
+   *  it, so every size-dependent knob below flows from ONE choice (weak 0.5B vs. strong 1.5B). */
+  profile: ModelProfile;
   /** WebGPU (+ memory) available? */
   probe: () => Promise<boolean>;
   /** Load + warm the engine, reporting download progress. */
@@ -169,8 +172,6 @@ export interface DeskDeps {
   arrive?: (surface: string, announce: string) => void;
   /** Open the collapsed file-tree folder above a nav link, so the lamp can travel to a visible target. */
   revealNav?: (route: string) => void;
-  maxTokens?: number;
-  temperature?: number;
 }
 
 // Chat bubble markup now comes from GRAIN's reasoner-kit (deps.kit) — not forked here. This local
@@ -202,9 +203,10 @@ function pickFollowups(asked: string, history: ChatMessage[], k = 3): string[] {
 const THINKING = '<span class="desk-typing" aria-label="Thinking">Thinking<i></i><i></i><i></i></span>';
 
 // The model-load progress, as a real progress bar in the desk bubble (raw markup — no user input —
-// styled by portfolio-frame.css .desk-load). Honest about the one-time ~350MB cost.
-const loadBar = (pct: number): string =>
-  `<span class="desk-load"><span class="desk-load__title">Loading ${MODEL_LABEL}. About 350MB the first time, then cached.</span>` +
+// styled by portfolio-frame.css .desk-load). Honest about the one-time download cost; the label + size
+// note come from the active profile (webllm-loader.ts) so a bigger model reports its bigger download.
+const loadBar = (pct: number, label: string, note: string): string =>
+  `<span class="desk-load"><span class="desk-load__title">Loading ${label}. ${note}</span>` +
   `<span class="desk-load__bar" aria-hidden="true"><span class="desk-load__fill" style="width:${pct}%"></span></span>` +
   `<span class="desk-load__pct">${pct}%</span></span>`;
 
@@ -294,9 +296,9 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           // matter a LOT on a 0.5B (without them it loops); grain maps these grain-cased knobs to the
           // engine's wire shape.
           for await (const delta of deps.streamChat(engine, messages, {
-            maxTokens: maxTokens ?? deps.maxTokens ?? 220,
-            temperature: deps.temperature ?? 0.5, topP: 0.9,
-            frequencyPenalty: 0.6, presencePenalty: 0.4,
+            maxTokens: maxTokens ?? deps.profile.maxTokens,
+            temperature: deps.profile.temperature, topP: deps.profile.topP,
+            frequencyPenalty: deps.profile.frequencyPenalty, presencePenalty: deps.profile.presencePenalty,
           })) {
             if (tools.cancelled()) break;                // graceful stop → break interrupts generation
             acc += delta;
@@ -394,12 +396,13 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // 4) needs the model. Load it (implicit opt-in on first send): a real progress bar, honest
         //    about the one-time cost. No stub fallback — unavailable/failed ⇒ Desk Offline.
         if (degraded) return offline();
-        setBodyRaw(loadBar(0), "pending");
-        narrate("loads", `${MODEL_LABEL}, one time, cached, runs on your device`);
+        const { label, downloadNote } = deps.profile;
+        setBodyRaw(loadBar(0, label, downloadNote), "pending");
+        narrate("loads", `${label}, one time, cached, runs on your device`);
         let lastPct = -1;
         const engine = await ensureEngine((p) => {
           const pct = Math.round((p.progress || 0) * 100);
-          if (pct !== lastPct) { lastPct = pct; setBodyRaw(loadBar(pct), "pending"); }
+          if (pct !== lastPct) { lastPct = pct; setBodyRaw(loadBar(pct, label, downloadNote), "pending"); }
         });
         if (!engine) return offline();
         if (tools.cancelled()) { setBody(esc("Stopped."), "committed"); return { ok: true, ops: [], reply: "Stopped." }; }
@@ -413,7 +416,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const acc = await streamInto(engine, [
             { role: "system", content: "You summarize a web page for a visitor in 2 to 3 plain sentences, from the CONTENT only. No hype, no lists, no repetition." },
             { role: "user", content: `Summarize this page:\n\n${page.slice(0, 4000)}` },
-          ], 160);
+          ], deps.profile.summarizeMaxTokens);
           return { ok: true, ops: [], reply: acc };
         }
 
@@ -427,7 +430,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // on top of, not instead of, the deterministic alias table above (actions.ts stays Tier ~1.5's
         // fast, reliable path; this is the model's own judgment call for anything the aliases miss).
         const navRoutes = navRoutesFromManifest(deps.pageManifestText?.() ?? "");
-        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navRoutes }));
+        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navRoutes, tokenBudget: deps.profile.promptTokenBudget }));
 
         // The model chose to navigate. Validate TWICE before acting on generated text: it must be one
         // of the routes we actually offered (navRoutes, above — never trust the model to have stayed
@@ -506,7 +509,8 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           { role: "user", content: `Page: ${info.title || info.route} (${info.route})\n\nCONTENT:\n${page.slice(0, 1800)}` },
         ];
         for await (const delta of deps.streamChat(engine, messages, {
-          maxTokens: 150, temperature: 0.4, topP: 0.9, frequencyPenalty: 0.6, presencePenalty: 0.4,
+          maxTokens: deps.profile.arriveMaxTokens, temperature: 0.4, topP: deps.profile.topP,
+          frequencyPenalty: deps.profile.frequencyPenalty, presencePenalty: deps.profile.presencePenalty,
         })) raw += delta;
       } catch (err) {
         console.error("[desk] arrival generation failed", err);   // a nav is not worth a visible error

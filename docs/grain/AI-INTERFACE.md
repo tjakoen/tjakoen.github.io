@@ -406,6 +406,16 @@ it just stops iterating. The engine itself comes from grain's one WebGPU/CDN edg
 and grain owns the machinery. The portfolio's "desk" consumes exactly this: grain streams + interrupts;
 the desk keeps only its own grounding, navigation, and loop-guard.
 
+The same edge also **probes the device** so an app can run different-sized models on different hardware.
+`probeDevice()` returns a `DeviceCapability` (`{ webgpu, deviceMemory? }` — `deviceMemory` is Chrome-only
+and coarse, so `undefined` means *unknown*, never *small*), `canRunModel(cap)` is the pure gate that
+decides whether *any* model loads, and `webgpuAvailable()` is now just `canRunModel(probeDevice())`.
+grain reports the capability; the app maps it to a model *choice*. The desk does exactly that: a
+`ModelProfile` bundles a model id with all its size-dependent tuning (context window, prompt budget,
+generation caps, repetition penalties, the load-bar copy), and `pickProfile(cap)` selects the strong
+model on a clearly capable device (`deviceMemory ≥ 8`) or the tuned small one everywhere else — so the
+weak path keeps its guardrails while the strong path relaxes them, from one device read.
+
 ---
 
 ## 5. Grade = commit state — where this doc meets the design system
