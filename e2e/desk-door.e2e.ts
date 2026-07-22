@@ -31,21 +31,21 @@ test.describe("THE DESK — client transport, no WebGPU → Desk Offline (chat h
     });
   });
 
-  test("the desk goes offline: composer + chips hidden, Desk Offline note shown, log kept", async ({ page }) => {
+  test("the desk goes offline: whole chat surface hidden, only the centered Desk Offline note shown", async ({ page }) => {
     await asClientDesk(page, "**/grain");
     await page.goto("/grain");
 
     // the portfolio's CHAT-SPECIFIC marker flips (set by the desk door once the probe comes back false)
     await expect(page.locator("body")).toHaveAttribute("data-desk", "offline");
 
-    // the ways to TALK to the desk are hidden…
+    // the whole chat surface is hidden — the ways to TALK to the desk AND the greeting/log itself,
+    // so nothing chat-shaped lingers when there's nothing to talk to…
     await expect(page.locator(".assistant__composer")).toBeHidden();
     await expect(page.locator(".assistant__suggest")).toBeHidden();
-    // …replaced by the honest note…
+    await expect(page.locator(".assistant__log")).toBeHidden();
+    // …replaced by the honest note, centered in the pane
     await expect(page.locator(".assistant__offline")).toBeVisible();
     await expect(page.locator(".assistant__offline")).toContainText("offline");
-    // …but the chat LOG stays (a stub-driven digest still has somewhere to land)
-    await expect(page.locator(".assistant__log")).toBeVisible();
   });
 
   test("global presence stays ONLINE — the door loaded, so stub demos are unaffected", async ({ page }) => {
