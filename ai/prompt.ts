@@ -4,6 +4,7 @@
 // to fit the model's small window (context_window_size: 2048; we reserve room for generation).
 
 import type { Chunk } from "./retrieval.ts";
+import type { NavDest } from "./catalog.ts";
 
 /** One conversation turn, in the shape WebLLM's chat.completions expects. */
 export interface ChatMessage {
@@ -15,12 +16,11 @@ export interface PromptInput {
   query: string;
   chunks: Chunk[];
   history: ChatMessage[];   // prior turns (user/assistant), oldest→newest
-  /** Live navigation targets on the CURRENT page — the routes GRAIN's manifestForReasoner() reports
-   *  as "nav:<route>" surfaces (the portfolio sidebar's file-tree/dock links), already extracted to
-   *  bare routes by the caller. Optional: omitted (or empty) leaves the prompt exactly as before, so
-   *  a consumer with no manifest still gets a valid, unchanged prompt. When present, the model gets a
-   *  narrow NAVIGATE:<route> protocol scoped to ONLY these routes — never a hardcoded guess. */
-  navRoutes?: string[];
+  /** The model's real-route candidates for THIS request — a small, relevance-ranked slice of the live
+   *  sitemap catalog (catalog.ts navShortlist), each a real {route, label}. Optional: omitted or empty
+   *  leaves the prompt unchanged. When present, the model gets a NAVIGATE:<route> protocol scoped to
+   *  ONLY these real routes — it chooses from what exists, never inventing a slug. */
+  navShortlist?: NavDest[];
   /** The approx-token ceiling to hold the assembled prompt under — the active model profile's
    *  `promptTokenBudget` (webllm-loader.ts). Omitted ⇒ the default below (the weak 0.5B's 2048 window);
    *  a stronger model passes a bigger budget so more grounding + history survive the clip. */
@@ -53,15 +53,16 @@ const CHOICES_BLOCK =
   "\"CHOICES: <your one-line question> | <option 1> | <option 2> | <option 3>\" — 2 to 4 short options " +
   "(each a few words), and nothing else. Otherwise just answer. Don't offer choices for a clear question.";
 
-/** The NAVIGATE:<route> protocol block — told to the model ONLY when there are live nav targets to
- *  offer, and scoped to exactly that list (never a route the model invents). Kept terse: a 0.5B
- *  follows a short, literal instruction far more reliably than a long one. */
-function navBlock(routes: string[]): string {
-  const list = routes.join(", ");
-  return `You can also take the visitor to one of these pages, live on this site right now: ${list}. ` +
+/** The NAVIGATE:<route> protocol block — told to the model ONLY when there are real destinations to
+ *  offer, and scoped to exactly that list (never a route the model invents). Each is shown as
+ *  "route (label)" so the model can match a title, not just a slug. Kept terse: a 0.5B follows a
+ *  short, literal instruction far more reliably than a long one. */
+function navBlock(dests: NavDest[]): string {
+  const list = dests.map((d) => `${d.route} (${d.label})`).join("; ");
+  return `You can also take the visitor to one of these real pages on this site: ${list}. ` +
     `If (and only if) they ask to go to one of them, reply with EXACTLY "NAVIGATE:<route>" (the route ` +
-    `only, e.g. "NAVIGATE:${routes[0]}") and say nothing else. Never write NAVIGATE for a route that ` +
-    `isn't in that list — answer normally instead.`;
+    `only, e.g. "NAVIGATE:${dests[0]!.route}") and say nothing else. Never write NAVIGATE for a route ` +
+    `that isn't in that list — answer normally instead.`;
 }
 
 /** Render the retrieved chunks as a single CONTEXT block, each tagged with its route so the model
@@ -98,9 +99,9 @@ function clipHistory(history: ChatMessage[], budget: number): ChatMessage[] {
  *  CONTEXT — MLC requires the system prompt to be the single first message) → clipped history → the
  *  user's query. Budget is spent persona-first, then query, then history, then context fills the rest. */
 export function buildPrompt(input: PromptInput): ChatMessage[] {
-  const { query, chunks, history, navRoutes, tokenBudget } = input;
+  const { query, chunks, history, navShortlist, tokenBudget } = input;
   const budget = tokenBudget ?? PROMPT_TOKEN_BUDGET;
-  const nav = navRoutes && navRoutes.length > 0 ? navBlock(navRoutes) : "";
+  const nav = navShortlist && navShortlist.length > 0 ? navBlock(navShortlist) : "";
   const personaCost = approxTokens(PERSONA);
   const choicesCost = approxTokens(CHOICES_BLOCK);   // always in the system prompt
   const navCost = nav ? approxTokens(nav) : 0;

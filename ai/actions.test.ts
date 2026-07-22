@@ -1,7 +1,9 @@
-// portfolio/ai/actions.test.ts — the deterministic router: the chip texts and the common typed
-// phrasings must resolve to the right action; everything else falls through to chat (null).
+// portfolio/ai/actions.test.ts — the deterministic ACTION router (summarize / capabilities / clarify /
+// latest-note / note-write). Navigation is NOT here anymore — it's resolved against the sitemap catalog
+// (catalog.ts, covered by catalog.test.ts), so a nav phrase falls through this router as null.
 import { test, expect, describe } from "bun:test";
 import { routeAction, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
+import { navTarget } from "./catalog.ts";
 
 describe("routeAction", () => {
   test("summarize phrasings", () => {
@@ -9,41 +11,31 @@ describe("routeAction", () => {
       expect(routeAction(s)?.kind).toBe("summarize");
   });
 
+  test("note-write phrasings carry the instruction", () => {
+    for (const s of ["Add summary bullets to my notepad", "save this to the notepad", "jot this down", "make a note", "put a to-do in my notepad", "note that down"]) {
+      const a = routeAction(s);
+      expect(a?.kind).toBe("note-write");
+      if (a?.kind === "note-write") expect(a.instruction).toBe(s.trim());
+    }
+  });
+
+  test("note-write beats summarize when the notepad is named (writes, not just summarizes to chat)", () => {
+    expect(routeAction("summarize this page to my notepad")?.kind).toBe("note-write");
+  });
+
   test("capabilities phrasings (incl. the pinned chip)", () => {
     for (const s of [PINNED_CHIP, "what can I do here?", "what should I do next", "suggest what to do next", "what's here"])
       expect(routeAction(s)?.kind).toBe("capabilities");
   });
 
-  test("open the latest note", () => {
+  test("open the latest note (a dynamic action, not catalog nav)", () => {
     for (const s of ["Show me the latest note", "show the latest blog", "open the newest post", "read the most recent article"])
       expect(routeAction(s)?.kind).toBe("open-latest-note");
   });
 
-  test("navigate to a section resolves the route + name", () => {
-    expect(routeAction("take me to GRAIN")).toEqual({ kind: "navigate", route: "/grain", name: "GRAIN" });
-    expect(routeAction("open the notes")).toEqual({ kind: "navigate", route: "/notes", name: "Notes" });
-    expect(routeAction("go to the stack")).toEqual({ kind: "navigate", route: "/bread", name: "the BREAD stack" });
-    expect(routeAction("visit mill")?.kind).toBe("navigate");
-  });
-
-  test("'open the latest note' is a note action, NOT navigate-to-notes", () => {
-    expect(routeAction("open the latest note")?.kind).toBe("open-latest-note");
-  });
-
-  test("homepage phrasings navigate to / (the reported bug: 'homepage' != 'home')", () => {
-    for (const s of ["take me to homepage", "go to homepage", "take me to the home page", "go to the landing page", "take me home", "go back to home"])
-      expect(routeAction(s)).toEqual({ kind: "navigate", route: "/", name: "Home" });
-  });
-
-  test("a bare destination (no verb) navigates", () => {
-    expect(routeAction("homepage")).toEqual({ kind: "navigate", route: "/", name: "Home" });
-    expect(routeAction("grain")).toEqual({ kind: "navigate", route: "/grain", name: "GRAIN" });
-    expect(routeAction("the notes")).toEqual({ kind: "navigate", route: "/notes", name: "Notes" });
-  });
-
-  test("broadened verbs still resolve", () => {
-    for (const s of ["bring me to grain", "head back to the notes", "send me to mill", "return to about"])
-      expect(routeAction(s)?.kind).toBe("navigate");
+  test("navigation phrases fall through here (null) — the catalog resolves them, not this router", () => {
+    for (const s of ["take me to grain", "go to the notes", "grain", "take me home", "take me to the flagship note"])
+      expect(routeAction(s)).toBeNull();
   });
 
   test("a vague 'help me get somewhere' ask offers choices (deterministic disambiguation)", () => {
@@ -54,10 +46,11 @@ describe("routeAction", () => {
     }
   });
 
-  test("clarify's choice values re-enter the router as concrete actions", () => {
+  test("every clarify choice is actionable — an action here, or a real nav command for the catalog", () => {
     const a = routeAction("show me around");
     if (a?.kind !== "clarify") throw new Error("expected clarify");
-    for (const c of a.choices) expect(routeAction(c.value)).not.toBeNull();   // every option resolves
+    for (const c of a.choices)
+      expect(routeAction(c.value) !== null || navTarget(c.value) !== null).toBe(true);
   });
 
   test("plain questions fall through to chat (null)", () => {

@@ -3,7 +3,8 @@
 // and never delegates chat to the stub. Headless CI has no WebGPU, so this fake-driven suite IS the
 // coverage for both the healthy and the degraded paths.
 import { test, expect, describe } from "bun:test";
-import { makeDeskReasoner, navRoutesFromManifest, parseArrival, parseModelChoices, type DeskDeps } from "./desk-reasoner.ts";
+import { makeDeskReasoner, parseArrival, parseModelChoices, type DeskDeps } from "./desk-reasoner.ts";
+import { buildCatalog } from "./catalog.ts";
 import { WEAK_PROFILE, type DeskEngine } from "./webllm-loader.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
@@ -50,6 +51,7 @@ function makeDeps(over: Partial<DeskDeps> = {}): { deps: DeskDeps; fallbackCalls
     profile: WEAK_PROFILE,
     probe: async () => true,
     loadEngine: async () => fakeEngine(["Hello"]).engine,
+    loadCatalog: async () => buildCatalog(["/", "/grain/", "/batch/", "/bread/", "/notes/", "/loop/", "/about/"]),
     streamChat,                                        // GRAIN's real streaming transport over the fake engine
     loadKnowledge: async () => knowledge,
     fallback,
@@ -405,73 +407,110 @@ describe("makeDeskReasoner — clarify (AI asks, human picks)", () => {
   });
 });
 
-describe("navRoutesFromManifest", () => {
-  test("pulls bare routes out of manifestForReasoner's nav: lines, ignoring everything else", () => {
-    const text = [
-      "screen: loop",
-      "targets: (4)",
-      "- nav:/grain [nav] -> (no verb currently targets this)",
-      "- nav:/notes [nav] -> (no verb currently targets this)",
-      "- chat-log [chat-log] -> chat.send",
-      "- item:ITM-1 [item] -> item.archive",
-    ].join("\n");
-    expect(navRoutesFromManifest(text)).toEqual(["/grain", "/notes"]);
-  });
+describe("makeDeskReasoner — catalog navigation (deterministic over the real sitemap, model for the tail)", () => {
+  const CATALOG = buildCatalog(
+    ["/", "/grain/", "/notes/", "/loop/", "/notes/ten-times-zero/"],
+    { "/notes/ten-times-zero": "Ten Times Zero" },
+  );
 
-  test("no nav: lines → empty list", () => {
-    expect(navRoutesFromManifest("screen: (none)\ntargets: (none — this page declares no [data-surface] elements)")).toEqual([]);
-  });
-});
-
-describe("makeDeskReasoner — Tier-2 navigation (the model's own NAVIGATE:<route> choice)", () => {
-  const manifestWith = (...routes: string[]): string =>
-    routes.map((r) => `- nav:${r} [nav] -> (no verb currently targets this)`).join("\n");
-
-  test("model replies NAVIGATE:<route> for a route it was actually offered → the desk navigates", async () => {
-    const { engine } = fakeEngine(["NAVIGATE:/loop"]);
-    let navd = "";
-    const { deps } = makeDeps({ loadEngine: async () => engine });
+  test("a clean 'take me to X' navigates deterministically — WITHOUT loading the model", async () => {
+    let loads = 0, navd = "";
+    const { deps } = makeDeps({
+      loadEngine: async () => { loads++; return fakeEngine(["x"]).engine; },
+      loadCatalog: async () => CATALOG,
+    });
     deps.navigate = (u) => { navd = u; };
-    deps.pageManifestText = () => manifestWith("/loop", "/notes");
     const r = makeDeskReasoner(deps);
     const { tools, ops } = makeTools();
 
-    const d = await r.decide(chat("take me somewhere new"), tools);
+    const d = await r.decide(chat("take me to grain"), tools);
 
-    expect(navd).toBe("/loop");
-    expect(d.reply).toBe("Navigating to /loop");
-    // the raw sentinel never settles as the visible reply — it's replaced with a friendly line
-    const lastReplace = [...ops].reverse().find((o) => o.op === "replace");
-    expect(lastReplace!.html).not.toContain("NAVIGATE:");
-    expect(lastReplace!.html).toContain("Taking you to /loop");
-    expect(ops.some((o) => o.op === "spotlight" && o.target === "nav:/loop" && o.active)).toBe(true);
+    expect(navd).toBe("/grain");
+    expect(loads).toBe(0);                       // never downloaded the model just to navigate
+    expect(d.reply).toBe("Navigating to Grain");
+    expect(ops.some((o) => o.op === "spotlight" && o.target === "nav:/grain" && o.active)).toBe(true);
   });
 
-  test("model names a route it was NOT offered → treated as plain text, no navigation", async () => {
+  test("the model may NAVIGATE to a REAL catalog route for a fuzzy ask", async () => {
+    const { engine } = fakeEngine(["NAVIGATE:/loop"]);
+    let navd = "";
+    const { deps } = makeDeps({ loadEngine: async () => engine, loadCatalog: async () => CATALOG });
+    deps.navigate = (u) => { navd = u; };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("take me somewhere new"), makeTools().tools);
+
+    expect(navd).toBe("/loop");
+    expect(d.reply).toBe("Navigating to Loop");
+  });
+
+  test("model NAVIGATE to a route NOT in the catalog → no nav, and the raw token never leaks", async () => {
     const { engine } = fakeEngine(["NAVIGATE:/secret-admin"]);
     let navd = "";
-    const { deps } = makeDeps({ loadEngine: async () => engine });
+    const { deps } = makeDeps({ loadEngine: async () => engine, loadCatalog: async () => CATALOG });
     deps.navigate = (u) => { navd = u; };
-    deps.pageManifestText = () => manifestWith("/loop");   // "/secret-admin" was never offered
     const r = makeDeskReasoner(deps);
     const { tools } = makeTools();
 
-    const d = await r.decide(chat("take me somewhere"), tools);
+    const d = await r.decide(chat("take me to the vault"), tools);
 
-    expect(navd).toBe("");                       // never navigated
-    expect(d.reply).toBe("NAVIGATE:/secret-admin");   // fell through to a plain (if odd) reply
+    expect(navd).toBe("");                       // never navigated to an invented route
+    expect(d.reply).not.toContain("NAVIGATE:");  // the raw protocol token is never shown to the visitor
   });
 
-  test("no manifest offered (e.g. a page with no live nav) → the prompt gets no NAVIGATE protocol, model answers normally", async () => {
+  test("no catalog dep → a nav phrase falls through to plain chat (no crash), model answers normally", async () => {
     const { engine } = fakeEngine(["Just an answer."]);
     let navd = "";
-    const { deps } = makeDeps({ loadEngine: async () => engine });
+    const { deps } = makeDeps({ loadEngine: async () => engine, loadCatalog: undefined });   // no catalog
     deps.navigate = (u) => { navd = u; };
-    const r = makeDeskReasoner(deps);   // no pageManifestText dep at all
+    const r = makeDeskReasoner(deps);
 
-    const d = await r.decide(chat("who is TJ?"), makeTools().tools);
+    const d = await r.decide(chat("take me to grain"), makeTools().tools);
 
-    expect(navd).toBe("");
-    expect(d.reply).toBe("Just an answer.");
+    expect(navd).toBe("");                        // nothing to resolve against → no navigation
+    expect(d.reply).toBe("Just an answer.");      // handled as ordinary chat instead
+  });
+});
+
+describe("makeDeskReasoner — note-write (the desk composes + appends a notepad entry)", () => {
+  test("appends the composed entry to the notepad-body, reveals the pad, and confirms", async () => {
+    const { engine } = fakeEngine(["- one\n", "- two"]);
+    let revealed = 0;
+    const { deps } = makeDeps({
+      loadEngine: async () => engine,
+      pageManifest: () => ({ note: "", targets: [{ id: "notepad", kind: "notepad", accepts: ["note.append", "note.replace"] }] }) as any,
+      pageText: () => "some page content",
+      revealNotepad: () => { revealed++; },
+    });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("add summary bullets to my notepad"), tools);
+
+    expect(d.ok).toBe(true);
+    // the composed markdown landed as an AI-graded notepad entry (grain's note.append op-builder)
+    const append = ops.find((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("notepad__entry"));
+    expect(append).toBeDefined();
+    expect(append!.provenance).toBe("ai");
+    expect(append!.html).toContain('data-grade="grain"');
+    expect(revealed).toBe(1);                    // panel flipped to the Notepad view
+  });
+
+  test("no notepad on the page → honest decline, nothing appended", async () => {
+    const { engine } = fakeEngine(["- x"]);
+    let revealed = 0;
+    const { deps } = makeDeps({
+      loadEngine: async () => engine,
+      pageManifest: () => ({ note: "", targets: [{ id: "screen", kind: "screen", accepts: [] }] }) as any,
+      revealNotepad: () => { revealed++; },
+    });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("save this to my notepad"), tools);
+
+    expect(d.ok).toBe(false);
+    expect(ops.some((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("notepad__entry"))).toBe(false);
+    expect(revealed).toBe(0);
   });
 });

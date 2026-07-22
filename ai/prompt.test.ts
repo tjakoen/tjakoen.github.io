@@ -63,11 +63,12 @@ describe("buildPrompt", () => {
     expect(msgs[0]!.content).not.toContain("NAVIGATE");
   });
 
-  test("navRoutes present → the system message offers a scoped NAVIGATE:<route> protocol", () => {
-    const msgs = buildPrompt({ query: "take me to grain", chunks: [], history: [], navRoutes: ["/grain", "/notes"] });
+  test("navShortlist present → the system message offers a scoped NAVIGATE:<route> protocol with labels", () => {
+    const msgs = buildPrompt({ query: "take me to grain", chunks: [], history: [],
+      navShortlist: [{ route: "/grain", label: "GRAIN" }, { route: "/notes", label: "Notes" }] });
     const sys = msgs[0]!.content;
-    expect(sys).toContain("/grain");
-    expect(sys).toContain("/notes");
+    expect(sys).toContain("/grain (GRAIN)");     // route shown with its human label
+    expect(sys).toContain("/notes (Notes)");
     expect(sys).toContain("NAVIGATE:<route>");
     expect(sys).toContain('NAVIGATE:/grain"');   // the worked example uses the FIRST offered route
   });

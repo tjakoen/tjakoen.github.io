@@ -17,12 +17,8 @@ import { buildPrompt, type ChatMessage } from "./prompt.ts";
 import { retrieve, type Knowledge } from "./retrieval.ts";
 import type { DeskEngine, EngineProgress, ModelProfile } from "./webllm-loader.ts";
 import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
-import { routeAction, SECTIONS, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
-
-// The routes the deterministic router knows by name (e.g. "/", "/grain"). Used as a safety net when
-// the MODEL chooses a NAVIGATE target: even if that route isn't a live "nav:" surface in this page's
-// manifest (e.g. "/" is rarely a sidebar link), it's a real destination we trust, so honor it.
-const SECTION_ROUTES = new Set(SECTIONS.map((s) => s.route));
+import { routeAction, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
+import { resolveNav, navShortlist, type NavDest } from "./catalog.ts";
 // GRAIN's reasoner-kit — the chat bubble markup the desk USED to fork now comes from here (injected
 // as deps.kit at runtime; the door URL-imports it). Type-only import (erased) so this stays a
 // client-safe module. See grain/ai/reasoner-kit.ts.
@@ -54,23 +50,10 @@ function pageOperables(manifest: Manifest): string[] {
 const joinPhrases = (xs: string[]): string =>
   xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
 
-// Pull the live "nav:<route>" targets out of manifestForReasoner()'s prose (grain/ai/manifest-dom.ts)
-// — the portfolio sidebar's file-tree + dock links carry that surface prefix. Distilled to bare
-// routes (not the full manifest text, which lists every surface on the page — most irrelevant to
-// navigation and not worth the 0.5B's small context window) before it's handed to the prompt.
-const NAV_LINE_RE = /^- nav:(\/\S*) \[/;
-export function navRoutesFromManifest(manifestText: string): string[] {
-  const out: string[] = [];
-  for (const line of manifestText.split("\n")) {
-    const m = NAV_LINE_RE.exec(line);
-    if (m) out.push(m[1]!);
-  }
-  return out;
-}
-
-// The model's own navigation choice, per the NAVIGATE:<route> protocol prompt.ts offers it (scoped
-// to exactly the routes navRoutesFromManifest found — see navBlock in prompt.ts). Matched loosely
-// (case-insensitive, trims stray whitespace) since a 0.5B doesn't always hit a format byte-exact.
+// The model's own navigation choice, per the NAVIGATE:<route> protocol prompt.ts offers it (scoped to
+// the real sitemap-catalog shortlist — see navBlock in prompt.ts). Matched loosely (case-insensitive,
+// trims stray whitespace) since a 0.5B doesn't always hit a format byte-exact; the chosen route is then
+// validated against the real catalog before we act on it.
 const MODEL_NAVIGATE_RE = /^navigate:\s*(\/\S*)\s*$/i;
 
 // The model's own clarifying-question choice, per the CHOICES:<question> | <opt> | <opt> protocol
@@ -160,18 +143,20 @@ export interface DeskDeps {
   /** GRAIN's live-DOM manifest (domManifest) — what's operable on THIS page, honestly derived from
    *  the registry, so "what can I do here?" reads grain's own description instead of a hardcoded list. */
   pageManifest?: () => Manifest;
-  /** GRAIN's manifestForReasoner() — the SAME manifest, as prompt-ready prose. The desk pulls out
-   *  just the "nav:<route>" lines (the sidebar's live navigation targets) to tell the MODEL what it
-   *  can navigate to, so a real model's chat.send can choose a destination from what's actually on
-   *  screen right now — not only the hardcoded alias table in actions.ts (Tier ~1.5's fast path). */
-  pageManifestText?: () => string;
   /** Newest-first notes (from /notes.json), for "open the latest note". */
   listNotes?: () => Promise<DeskNote[]>;
+  /** The site's navigable-destination catalog (catalog.ts), built from the live sitemap + titles.
+   *  Drives BOTH deterministic navigation (resolveNav, no model needed) and the model's real-route
+   *  shortlist for the fuzzy tail. Memoized by the door; omitted → navigation falls straight to chat. */
+  loadCatalog?: () => Promise<NavDest[]>;
   /** Stash a "spotlight + announce on arrival" so the lamp RESUMES on the destination page after a
    *  navigation (the MPA loses JS state; the door replays this on load). */
   arrive?: (surface: string, announce: string) => void;
   /** Open the collapsed file-tree folder above a nav link, so the lamp can travel to a visible target. */
   revealNav?: (route: string) => void;
+  /** Flip the assistant panel to its Notepad view (clicks the [data-shell-mode="notepad"] tab), so a
+   *  note the desk just wrote is visible immediately instead of only after the visitor opens the pad. */
+  revealNotepad?: () => void;
 }
 
 // Chat bubble markup now comes from GRAIN's reasoner-kit (deps.kit) — not forked here. This local
@@ -383,14 +368,19 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           return { ok: false, ops: [], reply: "notes unavailable", reason: "notes unavailable" };
         }
 
-        if (action?.kind === "navigate") {
-          if (deps.navigate) {
-            setBody(esc(`Taking you to ${action.name}.`), "committed");
-            await travelAndNavigate(action.route, action.route, action.name, `Here's ${action.name}.`, "the navigation");
-            return { ok: true, ops: [], reply: `Navigating to ${action.name}` };
+        // Deterministic navigation over the REAL sitemap catalog (catalog.ts resolveNav) — runs before
+        // the model even loads, so "take me to X" navigates instantly, offline of the model, and only
+        // ever to a route that exists. Not a hardcoded alias table: the catalog is the live sitemap, so
+        // it scales with the site. A confident match navigates; anything fuzzier falls to the model tail
+        // below (which gets a real-route shortlist), and an unrecognized place to an honest chat reply.
+        const catalog = deps.loadCatalog ? await deps.loadCatalog().catch(() => [] as NavDest[]) : [];
+        if (!action && deps.navigate) {
+          const dest = resolveNav(text, catalog);
+          if (dest) {
+            setBody(esc(`Taking you to ${dest.label}.`), "committed");
+            await travelAndNavigate(dest.route, dest.route, dest.label, `Here's ${dest.label}.`, "the navigation");
+            return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
           }
-          setBody(esc("I can't navigate from here."), "committed");
-          return { ok: false, ops: [], reply: "navigate unavailable", reason: "navigate unavailable" };
         }
 
         // 4) needs the model. Load it (implicit opt-in on first send): a real progress bar, honest
@@ -420,33 +410,81 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           return { ok: true, ops: [], reply: acc };
         }
 
+        // 4a') write to the notepad — the desk COMPOSES a short markdown entry and appends it through
+        //      GRAIN's own note.append op-builder (kit.noteAppendOp → the notepad-body surface, graded
+        //      grain as an AI author). Only when this page actually HAS a notepad (the manifest reports a
+        //      target that accepts note.append — harvested even while the pane is hidden); otherwise an
+        //      honest decline instead of writing into the void.
+        if (action?.kind === "note-write") {
+          const hasNotepad = !!deps.pageManifest?.().targets.some((tt) => tt.accepts.includes("note.append"));
+          if (!hasNotepad) {
+            setBody(esc("I don't see a notepad on this page to write to. I can summarize the page or take you somewhere instead."), "committed");
+            return { ok: false, ops: [], reply: "no notepad here", reason: "no notepad surface" };
+          }
+          const page = (deps.pageText?.() ?? "").replace(/\s+/g, " ").trim();
+          narrate("writes", "a note to the notepad");
+          const note = (await streamInto(engine, [
+            { role: "system", content:
+              "You write a SHORT markdown note to save to the visitor's notepad. Output ONLY the note's " +
+              "markdown — prefer 2 to 5 concise '- ' bullet points (an optional one-line heading is fine) — " +
+              "with no preamble, no sign-off, and no repetition. Base it on the visitor's request; when they " +
+              "refer to 'this page' or ask for a summary, draw from the PAGE CONTENT." },
+            { role: "user", content: page
+              ? `Request: ${action.instruction}\n\nPAGE CONTENT:\n${page.slice(0, 3500)}`
+              : `Request: ${action.instruction}` },
+          ], deps.profile.summarizeMaxTokens)).trim();
+          if (!note) {
+            setBody(esc("I couldn't compose a note for that. Tell me what to jot down and I'll add it."), "committed");
+            return { ok: false, ops: [], reply: "empty note", reason: "empty note" };
+          }
+          // land the entry on the notepad, spotlight + reveal the pad so the write is visible, then
+          // settle the chat bubble to a confirmation (the streamed preview has served its purpose).
+          tools.emit(deps.kit.noteAppendOp(note, "ai"));
+          tools.emit(deps.kit.spotlightOp("notepad", { active: true }));
+          deps.revealNotepad?.();
+          setBody(esc("Added that to your notepad."), "committed");
+          await tools.delay(1400);
+          tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+          return { ok: true, ops: [], reply: "Added to the notepad." };
+        }
+
         // 4b) grounded chat (default). Retrieve grounding, stream, then swap the chips to curated
         //     follow-ups (suggestChipsHtml pins "What can I do here?" first).
         const knowledge = await deps.loadKnowledge();
         const grounding = retrieve(text, knowledge, 3);
         narrate("reads", grounding.map((c) => c.route).join(", ") || "facts");
-        // Tier-2 navigation: offer the model the page's LIVE nav targets (grain's manifestForReasoner,
-        // distilled to bare routes) so it can choose a destination from what's actually on screen —
-        // on top of, not instead of, the deterministic alias table above (actions.ts stays Tier ~1.5's
-        // fast, reliable path; this is the model's own judgment call for anything the aliases miss).
-        const navRoutes = navRoutesFromManifest(deps.pageManifestText?.() ?? "");
-        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navRoutes, tokenBudget: deps.profile.promptTokenBudget }));
+        // The fuzzy tail: hand the model a small, relevance-ranked shortlist of REAL destinations from
+        // the sitemap catalog (navShortlist), so when the deterministic resolver above wasn't confident
+        // the model still chooses from routes that exist — never an invented slug.
+        const shortlist = navShortlist(text, catalog);
+        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, tokenBudget: deps.profile.promptTokenBudget }));
 
-        // The model chose to navigate. Validate TWICE before acting on generated text: it must be one
-        // of the routes we actually offered (navRoutes, above — never trust the model to have stayed
-        // in scope), AND kit.navigateOp's own isSafeNavigateHref check (it throws on anything unsafe) —
-        // the same defense-in-depth the deterministic paths get for free from their hardcoded routes.
+        // The model chose to navigate. Validate TWICE before acting on generated text: the route must be
+        // REAL (present in the sitemap catalog — never trust the model to have stayed in scope), AND
+        // kit.navigateOp's own isSafeNavigateHref check (it throws on anything unsafe).
         const navMatch = MODEL_NAVIGATE_RE.exec(acc.trim());
-        if (navMatch && deps.navigate && (navRoutes.includes(navMatch[1]!) || SECTION_ROUTES.has(navMatch[1]!))) {
+        if (navMatch && deps.navigate) {
           const route = navMatch[1]!;
-          try {
-            deps.kit.navigateOp("screen", route);   // throws on an unsafe href — validate before acting
-            setBody(esc(`Taking you to ${route}.`), "committed");
-            await travelAndNavigate(route, route, route, `Here's ${route}.`, "the navigation");
-            return { ok: true, ops: [], reply: `Navigating to ${route}` };
-          } catch (err) {
-            console.error("[desk] model chose an unsafe navigate href", route, err);   // fall through to a plain reply
+          const dest = catalog.find((d) => d.route === route);
+          if (dest) {
+            try {
+              deps.kit.navigateOp("screen", route);   // throws on an unsafe href — validate before acting
+              setBody(esc(`Taking you to ${dest.label}.`), "committed");
+              await travelAndNavigate(route, route, dest.label, `Here's ${dest.label}.`, "the navigation");
+              return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
+            } catch (err) {
+              console.error("[desk] model chose an unsafe navigate href", route, err);   // fall through to the honest line
+            }
           }
+          // The model emitted a NAVIGATE we WON'T honor — a route it invented (not in the catalog) or an
+          // unsafe href. Never leak the raw "NAVIGATE:<route>" protocol token to the visitor. Settle an
+          // honest line pointing at what's actually reachable (the shortlist we offered).
+          const offer = shortlist.length ? shortlist.slice(0, 4).map((d) => d.label).join(", ") : "GRAIN, the notes, or the BREAD stack";
+          const line = `I'm not sure where that is on the site. I can take you to ${offer}, or answer a question about it.`;
+          setBody(esc(line), "committed");
+          history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: line });
+          setChips([...pickFollowups(text, history), "Summarize this page"]);
+          return { ok: true, ops: [], reply: line };
         }
 
         // The model chose to ASK instead of answer (CHOICES: protocol, prompt.ts). Turn the raw
