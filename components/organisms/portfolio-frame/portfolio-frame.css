@@ -218,14 +218,18 @@ body[data-desk="offline"] .assistant__newchat { display: none; }
    run — no WebGPU, or a load/generation failure). This is a portfolio-owned, CHAT-SPECIFIC marker,
    deliberately NOT the global presence flag (data-ai-online): the door + stub demos stay ONLINE, so
    "See what's new" and the /grain demo keep working; only the ways to TALK to the local model hide.
-   The chat LOG stays visible so a stub-driven digest still lands somewhere the visitor can see it. */
+   Offline hides the WHOLE chat surface — greeting, log, thinking preview, composer, chips — and
+   centers a single honest notice in the pane. Nothing to talk to, so nothing chat-shaped should
+   linger (the old "keep the log for a stub digest" behavior left the greeting bubble visible). */
 .assistant__offline { display: none; }
 body[data-desk="offline"] .assistant__composer,
 body[data-desk="offline"] .assistant__suggest,
-body[data-desk="offline"] .assistant__empty { display: none; }
+body[data-desk="offline"] .assistant__empty,
+body[data-desk="offline"] .assistant__log,
+body[data-desk="offline"] .chat-thinking { display: none; }
 body[data-desk="offline"] .assistant__offline {
-  display: flex; align-items: flex-start; gap: var(--space-2);
-  padding: var(--space-3) var(--space-4); border-top: 1px solid var(--color-line);
+  display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--space-2); text-align: center; padding: var(--space-6) var(--space-4);
   color: var(--color-muted); font-size: var(--text-sm); line-height: var(--leading-relaxed); margin: 0; }
 body[data-desk="offline"] .assistant__offline b-icon { color: var(--ink-faint); flex: none; }
 
