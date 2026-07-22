@@ -112,12 +112,17 @@ const NAV_GLIDE_MS = 550;
 export interface DeskDeps {
   /** The active model profile (webllm-loader.ts) — the model id's tuning: generation caps, penalties,
    *  the prompt budget, and the load-bar copy. desk-door picks it from grain's device probe and injects
-   *  it, so every size-dependent knob below flows from ONE choice (weak 0.5B vs. strong 1.5B). */
+   *  it, so every size-dependent knob below flows from ONE choice (weak 0.5B vs. strong 1.5B). This is
+   *  the STARTING profile; the reasoner may drop to `fallbackProfile` if it fails to load. */
   profile: ModelProfile;
+  /** The lighter profile to retry with if `profile` fails to load (commonly an OOM on a device tiered
+   *  up too far). Undefined when `profile` is already the weakest — nothing lighter to fall back to. */
+  fallbackProfile?: ModelProfile;
   /** WebGPU (+ memory) available? */
   probe: () => Promise<boolean>;
-  /** Load + warm the engine, reporting download progress. */
-  loadEngine: (onProgress: (p: EngineProgress) => void) => Promise<DeskEngine>;
+  /** Load + warm the engine for a GIVEN profile, reporting download progress. Takes the profile (not a
+   *  baked-in id) so the reasoner can retry with the fallback profile after a failed load. */
+  loadEngine: (profile: ModelProfile, onProgress: (p: EngineProgress) => void) => Promise<DeskEngine>;
   /** GRAIN's streaming chat transport (`@tjakoen/grain/ai/model-chat.ts` streamChat) — yields content
    *  token deltas; BREAKING the `for await` (a stop, the loop-guard) interrupts generation for us, so
    *  the desk never touches `interruptGenerate` directly. Injected because the browser refuses a bare
@@ -215,6 +220,10 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
   const RUN = Math.random().toString(36).slice(2, 8);
   let degraded = false;                          // sticky: once offline, chat stays offline this session
   let enginePromise: Promise<DeskEngine | null> | null = null;
+  // The CURRENT profile — starts at the device-picked one, but drops to deps.fallbackProfile if that
+  // fails to load (see ensureEngine). Mutable + read for EVERY size-dependent knob below, so a fallback
+  // swaps the model AND its tuning together (a 0.5B must not run with the 1.5B's prompt budget).
+  let profile = deps.profile;
   const history: ChatMessage[] = [];             // last turns (buildPrompt clips the window)
   // GRAIN's chat markup, via the injected kit (arg order adapted to the desk's call sites).
   const bubble = deps.kit.chatBubble;
@@ -222,12 +231,23 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
 
   // Load the engine once (probe-gated). Returns null on unavailable/failed and flips the desk
   // offline. Memoized so only the first chat.send pays the download; later sends reuse the engine.
+  // On a failed load of the STRONG tier, retry ONCE with the lighter fallback profile before giving up:
+  // a device we tiered up too far (a visible OOM) drops to the weak model instead of going offline.
   async function ensureEngine(onProgress: (p: EngineProgress) => void): Promise<DeskEngine | null> {
     if (degraded) return null;
     if (!enginePromise) {
       enginePromise = (async () => {
         if (!(await deps.probe())) return null;
-        return deps.loadEngine(onProgress);
+        try {
+          return await deps.loadEngine(profile, onProgress);
+        } catch (err) {
+          if (deps.fallbackProfile && profile !== deps.fallbackProfile) {
+            console.warn(`[desk] ${profile.label} failed to load — falling back to ${deps.fallbackProfile.label}`, err);
+            profile = deps.fallbackProfile;                     // swap model + tuning together
+            return await deps.loadEngine(profile, onProgress);  // retry once; a throw here degrades below
+          }
+          throw err;
+        }
       })();
     }
     try {
@@ -281,9 +301,9 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           // matter a LOT on a 0.5B (without them it loops); grain maps these grain-cased knobs to the
           // engine's wire shape.
           for await (const delta of deps.streamChat(engine, messages, {
-            maxTokens: maxTokens ?? deps.profile.maxTokens,
-            temperature: deps.profile.temperature, topP: deps.profile.topP,
-            frequencyPenalty: deps.profile.frequencyPenalty, presencePenalty: deps.profile.presencePenalty,
+            maxTokens: maxTokens ?? profile.maxTokens,
+            temperature: profile.temperature, topP: profile.topP,
+            frequencyPenalty: profile.frequencyPenalty, presencePenalty: profile.presencePenalty,
           })) {
             if (tools.cancelled()) break;                // graceful stop → break interrupts generation
             acc += delta;
@@ -386,7 +406,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // 4) needs the model. Load it (implicit opt-in on first send): a real progress bar, honest
         //    about the one-time cost. No stub fallback — unavailable/failed ⇒ Desk Offline.
         if (degraded) return offline();
-        const { label, downloadNote } = deps.profile;
+        const { label, downloadNote } = profile;
         setBodyRaw(loadBar(0, label, downloadNote), "pending");
         narrate("loads", `${label}, one time, cached, runs on your device`);
         let lastPct = -1;
@@ -406,7 +426,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const acc = await streamInto(engine, [
             { role: "system", content: "You summarize a web page for a visitor in 2 to 3 plain sentences, from the CONTENT only. No hype, no lists, no repetition." },
             { role: "user", content: `Summarize this page:\n\n${page.slice(0, 4000)}` },
-          ], deps.profile.summarizeMaxTokens);
+          ], profile.summarizeMaxTokens);
           return { ok: true, ops: [], reply: acc };
         }
 
@@ -432,7 +452,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             { role: "user", content: page
               ? `Request: ${action.instruction}\n\nPAGE CONTENT:\n${page.slice(0, 3500)}`
               : `Request: ${action.instruction}` },
-          ], deps.profile.summarizeMaxTokens)).trim();
+          ], profile.summarizeMaxTokens)).trim();
           if (!note) {
             setBody(esc("I couldn't compose a note for that. Tell me what to jot down and I'll add it."), "committed");
             return { ok: false, ops: [], reply: "empty note", reason: "empty note" };
@@ -457,7 +477,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // the sitemap catalog (navShortlist), so when the deterministic resolver above wasn't confident
         // the model still chooses from routes that exist — never an invented slug.
         const shortlist = navShortlist(text, catalog);
-        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, tokenBudget: deps.profile.promptTokenBudget }));
+        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, tokenBudget: profile.promptTokenBudget }));
 
         // The model chose to navigate. Validate TWICE before acting on generated text: the route must be
         // REAL (present in the sitemap catalog — never trust the model to have stayed in scope), AND
@@ -547,8 +567,8 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           { role: "user", content: `Page: ${info.title || info.route} (${info.route})\n\nCONTENT:\n${page.slice(0, 1800)}` },
         ];
         for await (const delta of deps.streamChat(engine, messages, {
-          maxTokens: deps.profile.arriveMaxTokens, temperature: 0.4, topP: deps.profile.topP,
-          frequencyPenalty: deps.profile.frequencyPenalty, presencePenalty: deps.profile.presencePenalty,
+          maxTokens: profile.arriveMaxTokens, temperature: 0.4, topP: profile.topP,
+          frequencyPenalty: profile.frequencyPenalty, presencePenalty: profile.presencePenalty,
         })) raw += delta;
       } catch (err) {
         console.error("[desk] arrival generation failed", err);   // a nav is not worth a visible error

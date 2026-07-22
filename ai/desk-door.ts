@@ -17,7 +17,7 @@ import type { RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
-import { pickProfile } from "./webllm-loader.ts";
+import { pickProfile, WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
 import { makeDeskReasoner, type DeskNote } from "./desk-reasoner.ts";
 import { buildCatalog, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
@@ -94,12 +94,16 @@ const tierOverride = ((): "weak" | "strong" | undefined => {
   } catch { return undefined; }
 })();
 const profile = pickProfile(deviceCap, tierOverride);
+// If we picked the STRONG tier, hand the reasoner the weak profile as a fallback: a device tiered up
+// too far (a first-load OOM) drops to the 0.5B instead of going offline. Already-weak → nothing lighter.
+const fallbackProfile = profile === WEAK_PROFILE ? undefined : WEAK_PROFILE;
 const probe = (): Promise<boolean> => Promise.resolve(canRun);
 
-// Load the profile's model through grain's transport: grain owns the CDN import + warm-up, the desk
+// Load a GIVEN profile's model through grain's transport: grain owns the CDN import + warm-up, the desk
 // supplies WHICH model (profile.id) + its context window and forwards download progress to the load bar.
-const loadEngine = (onProgress: (p: EngineProgress) => void) =>
-  grainWebllm.loadEngine({ modelId: profile.id, onProgress, contextWindow: profile.contextWindow });
+// Takes the profile so the reasoner can retry with the fallback profile after a failed load.
+const loadEngine = (p: ModelProfile, onProgress: (progress: EngineProgress) => void) =>
+  grainWebllm.loadEngine({ modelId: p.id, onProgress, contextWindow: p.contextWindow });
 
 // The grounding corpus, fetched once from the frozen /knowledge.json (base-path aware: resolved
 // against this module's URL, which sits under <base>/modules/portfolio/ai/).
@@ -208,6 +212,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
 
   const reasoner = makeDeskReasoner({
     profile,                                      // the device-chosen model + its tuning (weak 0.5B / strong 1.5B)
+    fallbackProfile,                              // the weak model to retry with if the strong one OOMs on load
     probe,
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)
