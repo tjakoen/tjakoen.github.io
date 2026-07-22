@@ -83,11 +83,27 @@ export const STRONG_PROFILE: ModelProfile = {
   presencePenalty: 0.2,
 };
 
+// Tiering thresholds — STRONG demands a clearly-capable device, because a wrong guess UP is an OOM the
+// visitor actually sees, so every branch stays conservative.
+const STRONG_MEMORY_GB = 8;                 // navigator.deviceMemory (Chrome; coarse, capped at 8)
+const STRONG_GPU_BYTES = 3 * 1024 ** 3;     // ~3GB: a TRUTHFUL large adapter buffer (Chrome desktop / discrete)
+const CAPABLE_CORES = 8;                     // hardwareConcurrency: a Mac/desktop is 8+, an iPhone ~6
+const MIN_GPU_BYTES = 512 * 1024 ** 2;      // ~512MB: a real (non-min-spec) GPU. Safari CAPS maxBufferSize to
+                                            // ~1GB even on a 4GB-capable Mac, so this clears its cap while
+                                            // still excluding a 256MB min-spec adapter.
+
 /** Map grain's device probe to a profile. Auto-by-device: the strong model only on a clearly capable
- *  machine — `navigator.deviceMemory` ≥ 8 (Chrome reports it, coarse + capped at 8). When the browser
- *  DOESN'T report memory (Firefox/Safari), or reports less, stay on the weak model — the conservative
- *  choice, since a wrong guess up means an OOM the visitor sees. grain's `canRunModel` gate still
- *  decides whether ANY model loads; this only picks WHICH once it can.
+ *  machine, read from whichever signals the browser exposes (a wrong guess up = an OOM the visitor sees,
+ *  so each branch is conservative):
+ *    - `deviceMemory ≥ 8` — Chrome reports it (coarse, capped at 8); the original signal.
+ *    - `maxBufferSize ≥ ~3GB` — a browser that reports the GPU's true buffer capacity (Chrome/Firefox
+ *      desktop); big buffer alone proves a capable GPU.
+ *    - `cores ≥ 8 AND maxBufferSize ≥ ~512MB` — the SAFARI path: Safari omits deviceMemory and caps
+ *      maxBufferSize (~1GB on the same Mac Chrome reports at 4GB), so the raw buffer can't separate a
+ *      Mac from an iPhone — core count does (Mac 8+, iPhone ~6), with the buffer floor confirming a real
+ *      GPU is present.
+ *  Anything else stays on the weak model. grain's `canRunModel` gate still decides whether ANY model
+ *  loads; this only picks WHICH once it can.
  *
  *  `override` forces a tier regardless of the device — the `?tier=weak|strong` dev knob desk-door reads
  *  from the URL, so both tiers can be exercised on one machine. Harmless in prod (a visitor would have to
@@ -95,7 +111,14 @@ export const STRONG_PROFILE: ModelProfile = {
 export function pickProfile(cap: DeviceCapability, override?: "weak" | "strong"): ModelProfile {
   if (override === "weak") return WEAK_PROFILE;
   if (override === "strong") return STRONG_PROFILE;
-  return typeof cap.deviceMemory === "number" && cap.deviceMemory >= 8 ? STRONG_PROFILE : WEAK_PROFILE;
+  const mem = cap.deviceMemory ?? 0;
+  const gpu = cap.maxBufferSize ?? 0;
+  const cores = cap.cores ?? 0;
+  const strong =
+    mem >= STRONG_MEMORY_GB ||
+    gpu >= STRONG_GPU_BYTES ||
+    (cores >= CAPABLE_CORES && gpu >= MIN_GPU_BYTES);
+  return strong ? STRONG_PROFILE : WEAK_PROFILE;
 }
 
 // The desk's engine handle IS grain's streaming chat engine — kept under the desk's own name so the

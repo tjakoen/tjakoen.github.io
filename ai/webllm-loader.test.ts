@@ -9,11 +9,27 @@ test("pickProfile: deviceMemory ≥ 8 → the strong 1.5B", () => {
   expect(pickProfile({ webgpu: true, deviceMemory: 16 })).toBe(STRONG_PROFILE);
 });
 
-test("pickProfile: deviceMemory < 8 → the weak 0.5B", () => {
+test("pickProfile: deviceMemory < 8 and no GPU/core signal → the weak 0.5B", () => {
   expect(pickProfile({ webgpu: true, deviceMemory: 4 })).toBe(WEAK_PROFILE);
 });
 
-test("pickProfile: unknown deviceMemory (Firefox/Safari) → weak, the conservative choice", () => {
+test("pickProfile: a truthful large GPU buffer (~4GB, Chrome desktop) → strong even without deviceMemory", () => {
+  expect(pickProfile({ webgpu: true, maxBufferSize: 4294967292 })).toBe(STRONG_PROFILE);
+});
+
+test("pickProfile: SAFARI on a Mac — no deviceMemory, 8 cores, buffer capped to ~1GB → strong", () => {
+  expect(pickProfile({ webgpu: true, cores: 8, maxBufferSize: 1073741824 })).toBe(STRONG_PROFILE);
+});
+
+test("pickProfile: an iPhone-class device — ~6 cores, capped buffer, no deviceMemory → weak", () => {
+  expect(pickProfile({ webgpu: true, cores: 6, maxBufferSize: 1073741824 })).toBe(WEAK_PROFILE);
+});
+
+test("pickProfile: 8 cores but a min-spec GPU buffer (256MB) → weak (the buffer floor guards the core path)", () => {
+  expect(pickProfile({ webgpu: true, cores: 8, maxBufferSize: 268435456 })).toBe(WEAK_PROFILE);
+});
+
+test("pickProfile: no signals at all → weak, the conservative choice", () => {
   expect(pickProfile({ webgpu: true })).toBe(WEAK_PROFILE);
 });
 
