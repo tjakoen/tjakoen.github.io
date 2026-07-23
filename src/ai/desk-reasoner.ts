@@ -289,6 +289,15 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         tools.emit({ target: "suggest-chips", op: "replace", provenance: "ai", commit: "committed", html: suggestChipsHtml(list) });
       const offline = (): Decision => { deps.markOffline(); setBody(esc(OFFLINE_LINE), "committed"); return { ok: true, ops: [], reply: OFFLINE_LINE }; };
       const narrate = (verb: string, desc: string) => tools.emit(deps.kit.narrateOp(verb, desc));   // console feed if the page shows one (else a no-op find)
+      // Even a deterministic, instant answer holds the "Thinking…" bubble for a human beat before it
+      // settles — so the desk is never jarringly instant; it always visibly reasons (the owner's ask).
+      // Measured from when the bubble appeared (above), so an answer that already took a beat waits less.
+      // The model paths (load + stream) always take longer, so they never call this.
+      const thinkStart = Date.now();
+      const minThink = (): Promise<void> => {
+        const rem = 520 - (Date.now() - thinkStart);
+        return rem > 0 ? tools.delay(rem) : Promise.resolve();
+      };
       // stream a completion into the desk bubble (chat + summarize share this). Never leaves an empty
       // bubble; penalties + a loop-guard tame the 0.5B's tendency to spin into repetition.
       const streamInto = async (engine: DeskEngine, messages: ChatMessage[], maxTokens?: number): Promise<string> => {
@@ -363,6 +372,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const operables = manifest ? pageOperables(manifest) : [];
           const pageBit = operables.length ? ` GRAIN tells me this page also lets you ${joinPhrases(operables)}.` : "";
           const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, or jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes).${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
+          await minThink();
           setBody(esc(line), "committed");
           setChips([...ACTION_CHIPS, "Take me to GRAIN", "Open the notes"]);
           return { ok: true, ops: [], reply: line };
@@ -372,6 +382,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           // Deterministic + offline: one clean bubble — the prompt with the choice buttons under it.
           // choiceGroup (trusted, self-escaping) goes INSIDE the body so it's a single message; the
           // dispatcher still resolves the group pick-once (keyed on [data-choices], not the op kind).
+          await minThink();
           setBodyRaw(esc(action.prompt) + deps.kit.choiceGroup(log, action.choices), "committed");
           return { ok: true, ops: [], reply: action.prompt };
         }
@@ -380,6 +391,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const notes = (await deps.listNotes?.()) ?? [];
           const target = notes[0];
           if (target && deps.navigate) {
+            await minThink();
             setBody(esc(`Opening the latest note, “${target.title}”.`), "committed");
             await travelAndNavigate("/notes", target.route, "Notes", `Here's the latest note, “${target.title}”.`, "the notebook");
             return { ok: true, ops: [], reply: `Opening ${target.title}` };
@@ -397,6 +409,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         if (!action && deps.navigate) {
           const dest = resolveNav(text, catalog);
           if (dest) {
+            await minThink();
             setBody(esc(`Taking you to ${dest.label}.`), "committed");
             await travelAndNavigate(dest.route, dest.route, dest.label, `Here's ${dest.label}.`, "the navigation");
             return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
