@@ -8,7 +8,7 @@ task-oriented version.
 ## Where it lives
 
 A directory under `grain/components/<layer>/<name>/` (design system) or
-`tjakoen.github.io/components/<layer>/<name>/` (app-specific), `layer` ∈ `atoms` / `molecules` /
+`tjakoen.github.io/view/components/<layer>/<name>/` (app-specific), `layer` ∈ `atoms` / `molecules` /
 `organisms`.
 
 ## The checklist

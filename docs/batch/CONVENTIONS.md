@@ -123,7 +123,7 @@ contract (the dispatcher) — both are validated server-side by the drift guard 
 ## 4. Components
 
 Each component is a self-contained directory under `grain/components/<layer>/<name>/` (design
-system) or `tjakoen.github.io/components/<layer>/<name>/` (the app's domain components), where
+system) or `tjakoen.github.io/view/components/<layer>/<name>/` (the app's domain components), where
 layer ∈ atoms / molecules / organisms.
 
 ### New-component checklist

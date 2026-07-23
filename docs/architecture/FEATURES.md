@@ -216,7 +216,7 @@ The portfolio's subject *is* this stack, so let the site be its own case study.
   **`color-mix()`** theming. The receipt lands the flex: *this animated, accessible, AI-operable site
   ships ~one JS file* (`bun run audit`). The anti-framework case made concrete — pairs with re-skin
   (both are "no rebuild" proofs). SSOT: `grain/docs/GRAIN.md` "What GRAIN gives you"; spec in
-  `pages/grain/GRAIN-PAGE.md` §5b.
+  `view/pages/grain/GRAIN-PAGE.md` §5b.
 - **The one-vocabulary explainer.** A small interactive diagram: a human click and an AI action
   both resolve to an `Intent` → one door → `RenderOp`s → DOM. Hover/click each node to see the
   real type from `contract.ts`. Turns the architecture into something you *operate*, not read.

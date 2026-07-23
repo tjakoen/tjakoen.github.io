@@ -120,7 +120,7 @@ prerender crawl that boots the app, walks its routes, and writes static files.
   sections are *teasers* that deep-link into these. Consequence, free: each source `.md` is at once
   the human docs page, the AI demo's `knowledge.json` (RAG), and the layer's own repo doc (content
   kept aligned with code by CLAUDE.md's alignment table) — one source, three consumers. See
-  `pages/grain/GRAIN-PAGE.md` and `pages/batch/BATCH-PAGE.md`.
+  `view/pages/grain/GRAIN-PAGE.md` and `view/pages/batch/BATCH-PAGE.md`.
 
 ## Architecture at a glance
 
@@ -298,7 +298,7 @@ and absorbs pieces 8–10 below.
 - **Separation of concerns:** shell **primitives** (rail incl. grouped variant, `tab-bar`,
   `sidebar-panel`, `console`, `topbar`) live in **GRAIN**, persona-neutral ("the AI", never "the
   desk"); the **portfolio frame** (composition with the BREAD nav + "TJ's Desk" branding) and any
-  **custom theme/components** live in **`tjakoen.github.io/`** — new `tjakoen.github.io/components/` (register in
+  **custom theme/components** live in **`tjakoen.github.io/`** — new `tjakoen.github.io/view/components/` (register in
   `componentRoots`/`styleRoots`) + `tjakoen.github.io/styles/` (a token-override sheet, new `assetDirs`
   prefix). Consumer path documented in [grain README §6](../../../grain/README.md).
 - **AI is UI-now, model-later:** build the shell + chat/terminal UI now; on the static deploy the
@@ -308,7 +308,7 @@ and absorbs pieces 8–10 below.
   (no docking); Calendar = *social feed* (was talks/roles timeline); the `/grain` `.surface-term`
   + `.catalog-peek` retire into the shared `console` + `sidebar-panel`.
 
-**Build order:** (0) capture — this section + `pages/grain/GRAIN-PAGE.md` + ROADMAP Track D; (1) GRAIN theming
+**Build order:** (0) capture — this section + `view/pages/grain/GRAIN-PAGE.md` + ROADMAP Track D; (1) GRAIN theming
 tokens + `theme.js` + grade conformance; (2) GRAIN shell primitives (`sidebar-panel`, `console`,
 grouped `side-rail`, `topbar`) with conformance tests; (3) portfolio frame + BREAD nav; (4) migrate
 pages (`/`, `/grain` w/ tabs incl. Themes, `/batch`, `/notes`, `/loop`-tab), retire the standalone
@@ -353,7 +353,7 @@ workspace next visit, localStorage).
    sessions' uncommitted work lands; single-thread the shell overhaul, don't worktree it.
 2. **Portfolio-frame overhaul**: compose window bar + status bar; relocate topbar-ctl; tabs
    become site navigation (decide: fixed section tabs vs "open pages" metaphor — start fixed).
-3. **Welcome page**: promote `/welcome-poc` to `/` with components in `tjakoen.github.io/components/**`,
+3. **Welcome page**: promote `/welcome-poc` to `/` with components in `tjakoen.github.io/view/components/**`,
    live Recent (MILL), wired Ask-the-desk (focus the assistant composer; scripted desk answers
    via the `data-ai-door` seam), functional startup checkbox.
 4. **Honest status**: export bakes commit sha + tsc/test counts into the status bar (they're
@@ -695,7 +695,7 @@ earlier cards wireframe IS the mobile layout). Wireframes: `screenshots/desk-sce
    `<body data-ai-transport="client" data-ai-door="/modules/tjakoen.github.io/ai/desk-door.js">` —
    the module server already serves `tjakoen.github.io/**`; grain stays persona-neutral. Colocated test.
 2. **The scene** — rebuild `tjakoen.github.io/pages/index.html` as the desk; object styling as
-   portfolio components (`tjakoen.github.io/components/**` — site-specific, NOT grain). Server-render the
+   portfolio components (`tjakoen.github.io/view/components/**` — site-specific, NOT grain). Server-render the
    sticky note + calendar content from data. Keep the desk-poc page until parity, then delete it.
 3. **The morph** — `view-transition-name: workspace` pair (PoC already stamped `/dashboard`'s
    main pane); consider `::view-transition-old/new(workspace)` timing polish.
@@ -730,11 +730,11 @@ earlier cards wireframe IS the mobile layout). Wireframes: `screenshots/desk-sce
   public seams so the extraction stays clean (nothing portfolio-specific leaks into the framework).
 - **The GRAIN showcase now lives here, at `/grain`** (`tjakoen.github.io/pages/grain/index.html`) — moved
   out of `grain/` so the framework repo is just the framework. grain keeps `/catalog` as its own
-  self-documentation; the narrative showcase is a portfolio section. See `pages/grain/GRAIN-PAGE.md`.
+  self-documentation; the narrative showcase is a portfolio section. See `view/pages/grain/GRAIN-PAGE.md`.
 - **The BATCH showcase is the companion section, at `/batch`** — the pitch for the substrate
   (no-build, request-time render, one-vocabulary/one-door). No catalog (batch has no components);
   its reference layer is rendered docs at `/batch/docs`. Planned, built after `/grain` +
-  the export pipeline. See `pages/batch/BATCH-PAGE.md`.
+  the export pipeline. See `view/pages/batch/BATCH-PAGE.md`.
 - **Course-platform landing page at `/course-platform`** (`tjakoen.github.io/pages/course-platform/`) — a
   single **showcase-only** page for an *external* project, the GitHub-native course platform
   (github.com/tjakoen/github-native-course-platform). Unlike `/grain` and `/batch`, it is **NOT a

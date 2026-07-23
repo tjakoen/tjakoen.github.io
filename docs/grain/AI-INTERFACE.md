@@ -735,7 +735,7 @@ without dragging in the full task domain yet.
 | Manifest (harvested, can't drift) | `grain/ai/manifest.ts` + `grain/ai/accepts.ts` | grain |
 | Routes (`/intent`, `/stream`, `/ai/manifest`, `/ui/loop`) | `tjakoen.github.io/routes/ai-routes.ts` | app (wiring) |
 | Dispatcher island | `grain/scripts/ai-dispatch.js` | grain |
-| Demo page + card | `tjakoen.github.io/pages/loop.html`, `tjakoen.github.io/components/molecules/loop-card/` | app |
+| Demo page + card | `tjakoen.github.io/view/pages/loop.html`, `tjakoen.github.io/view/components/molecules/loop-card/` | app |
 
 The manifest is now **harvested** (§4 realised): item targets read `data-accepts` /
 `data-kind` straight off `loop-card`; region targets are inverted from the action

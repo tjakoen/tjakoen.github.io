@@ -38,7 +38,7 @@ render ops target.
 
 ### 2. Mark the surface in markup
 
-[`components/molecules/loop-card/loop-card.html`](../../components/molecules/loop-card/loop-card.html):
+[`view/components/molecules/loop-card/loop-card.html`](../../view/components/molecules/loop-card/loop-card.html):
 
 ```html
 <article class="loop-card" data-kind="item" data-accepts="item.archive"

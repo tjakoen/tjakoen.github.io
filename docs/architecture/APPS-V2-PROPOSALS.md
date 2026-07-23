@@ -12,7 +12,7 @@ concrete reference implementation to promote.
 ## 1. Master-detail (mailbox) organism
 
 A folder rail + a message list + a reader, with the list collapsing to one open item at a time (with
-JS) and standing as a stacked page (with no JS). Right now this is hand-wired in `pages/mail.html` plus
+JS) and standing as a stacked page (with no JS). Right now this is hand-wired in `view/pages/mail.html` plus
 the `mail-folder` / `mail-row` / `mail-reader` / `mail-related` molecules and the mailbox island.
 
 **Proposal:** a grain `master-detail` organism (rail + list + detail, show-one behavior, no-JS
@@ -32,8 +32,8 @@ grid, fixed aspect box, `:empty` hides), so any consumer gets images-first cards
 
 Server renders an absolute date (export-safe, never rots, absolute stays in `title`); a small island
 rewrites `[data-relativize]` spans to "Today / Yesterday / N days ago" client-side. This logic is now
-**duplicated in two islands** (the mailbox island in `pages/mail.html` and the calendar island in
-`pages/calendar.html`) — a clear signal it should be shared.
+**duplicated in two islands** (the mailbox island in `view/pages/mail.html` and the calendar island in
+`view/pages/calendar.html`) — a clear signal it should be shared.
 
 **Proposal:** a grain client behavior (one small module or a `data-*` hook) that owns the relativize
 pass, so the two copies collapse to one and any dated list can opt in.
@@ -70,7 +70,7 @@ overlay, degrading to the plain navigation when there's no JS or no `<dialog>` s
 ## 7. Experience-entry molecule
 
 The résumé's experience entries (`.xp__entry`: role heading, meta, description, a "notes from this
-role" link) are hand-authored in `pages/resume.html`. The grain `timeline` organism was deliberately
+role" link) are hand-authored in `view/pages/resume.html`. The grain `timeline` organism was deliberately
 **not** reused — it is the AI-interaction timeline, a different contract.
 
 **Proposal:** a small grain `experience-entry` molecule (role, meta, body, an optional tagged-notes

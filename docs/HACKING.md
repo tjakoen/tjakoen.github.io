@@ -17,7 +17,7 @@ you know where to edit.
 
 | Mechanism | What it serves | Source |
 |---|---|---|
-| **Hand-authored page** | the bespoke screens | `pages/**/*.html` |
+| **Hand-authored page** | the bespoke screens | `view/pages/**/*.html` |
 | **MILL content** | notes + rendered layer docs (Markdown) | `content/notes/*.md`, and the installed `grain`/`batch` `docs/` |
 | **Generated** | catalog, CSS bundle, sitemap/robots/llms | built at request time from components + the pages tree |
 | **The AI door** | the interaction endpoints | [`src/routes/ai-routes.ts`](../src/routes/ai-routes.ts) |
@@ -25,21 +25,21 @@ you know where to edit.
 
 ## Route → source map (every URL the server answers)
 
-**Pages** — hand-authored HTML, URL mirrors the file under [`pages/`](pages/):
+**Pages** — hand-authored HTML, URL mirrors the file under [`view/pages/`](../view/pages/):
 
 | URL | File |
 |---|---|
-| `/` | `pages/index.html` |
-| `/about` | `pages/about.html` (tabbed profile app; the Lessons tab's roles + résumé roles link to `/notes?tag=<tag>`) |
-| `/resume` | `pages/resume.html` (the résumé board; each experience role links to its tagged notes) |
-| `/mail` | `pages/mail.html` + `content/data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
-| `/calendar` | `pages/calendar.html` (the feed page) + `content/data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule; see the events collection below for `/calendar/<slug>` |
-| `/loop` | `pages/loop.html` (the reference "watch the AI act" screen) |
-| `/grain` | `pages/grain/index.html` (GRAIN showcase) |
-| `/batch` | `pages/batch/index.html` (BATCH showcase) |
-| `/bread` | `pages/bread/index.html` (the stack umbrella page) |
-| `/mill` | `pages/mill/index.html` (MILL page) |
-| `/docs` | `pages/docs/index.html` (developer-docs hub — plan in [`../DEV-DOCS.md`](../../DEV-DOCS.md)) |
+| `/` | `view/pages/index.html` |
+| `/about` | `view/pages/about.html` (tabbed profile app; the Lessons tab's roles + résumé roles link to `/notes?tag=<tag>`) |
+| `/resume` | `view/pages/resume.html` (the résumé board; each experience role links to its tagged notes) |
+| `/mail` | `view/pages/mail.html` + `content/data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
+| `/calendar` | `view/pages/calendar.html` (the feed page) + `content/data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule; see the events collection below for `/calendar/<slug>` |
+| `/loop` | `view/pages/loop.html` (the reference "watch the AI act" screen) |
+| `/grain` | `view/pages/grain/index.html` (GRAIN showcase) |
+| `/batch` | `view/pages/batch/index.html` (BATCH showcase) |
+| `/bread` | `view/pages/bread/index.html` (the stack umbrella page) |
+| `/mill` | `view/pages/mill/index.html` (MILL page) |
+| `/docs` | `view/pages/docs/index.html` (developer-docs hub — plan in [`../DEV-DOCS.md`](../../DEV-DOCS.md)) |
 
 **Content** — Markdown through MILL, wired in [`src/content.ts`](../src/content.ts) (not hand-authored HTML):
 
@@ -87,12 +87,12 @@ because the look is the design system's, not the site's:
 
 | I want to… | Open | Notes |
 |---|---|---|
-| **Fix wording on a page** | the `pages/**/*.html` for that URL (table above) | plain HTML; refresh to see it |
+| **Fix wording on a page** | the `view/pages/**/*.html` for that URL (table above) | plain HTML; refresh to see it |
 | **Edit / add a note or blog post** | `content/notes/<slug>.md` | Markdown + frontmatter; see [`standards/NOTE-STANDARD.md`](../standards/NOTE-STANDARD.md). A new file = a new `/notes/<slug>` route automatically |
 | **Change a color / the theme** | `grain/styles/variables.css` (**only** here) | never hardcode a color in a component — override the token. Themes: `grain/styles/themes/*.css` |
 | **Change how a component looks** | `grain/components/<layer>/<name>/<name>.css` | one component owns its styling; edit its `.css`, not the page |
 | **Change a component's markup** | `grain/components/<layer>/<name>/<name>.html` | some layout components are CSS-only (no `.html`) — see [`../batch/docs/CONVENTIONS.md`](../../batch/docs/CONVENTIONS.md) §4 |
-| **Add a whole new page** | a new `pages/<name>/index.html` (or `pages/<name>.html`) | it's live at `/<name>` on the next refresh; add it to the sitemap? — it's derived, so no |
+| **Add a whole new page** | a new `view/pages/<name>/index.html` (or `view/pages/<name>.html`) | it's live at `/<name>` on the next refresh; add it to the sitemap? — it's derived, so no |
 | **Change the global page shell** (head, scripts) | the `PAGE_HEAD` / `PAGE_ASSETS` constants in [`src/server.ts`](../src/server.ts) | one place, injected into every page — don't hand-list assets in a page's `<head>` |
 | **Change what the AI does in a demo** | `grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [`../ROADMAP.md`](../../ROADMAP.md)) |
 | **Add / change an AI verb or surface** | `grain/ai/contract.ts` first, then walk the alignment row in [`../CLAUDE.md`](../../CLAUDE.md) | this is *not* a minor edit — it ripples into tests + docs |
@@ -120,7 +120,7 @@ because the pixels moved — that's it working. Re-bless the baseline once you'r
 1. **Colors live in exactly one file.** `grain/styles/variables.css`. A hardcoded `#hex` in a
    component is a bug the audit catches — re-skin by overriding a token, never by editing a component.
 2. **The look is up in `grain/`, not here.** If you're hunting for a style and it isn't in
-   `tjakoen.github.io/components/`, it's a GRAIN component — look in `grain/components/`. The site only
+   `tjakoen.github.io/view/components/`, it's a GRAIN component — look in `grain/components/`. The site only
    owns its *bespoke* surfaces (the frame, the `/loop` demo cards); everything reusable is the design
    system's.
 3. **No build step is a feature, not a missing step.** There's nothing to compile. If a change isn't

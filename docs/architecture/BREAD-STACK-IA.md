@@ -109,12 +109,12 @@ repo root one to one, so they belong there, not nested under a bread/ wrapper).
 
 ## Files this touches (all under tjakoen.github.io/)
 
-- `pages/bread/index.html` — rebuilt as the five-member directory.
-- `pages/proof/index.html` — new trailhead.
-- `pages/pantry/index.html` — new trailhead.
-- `pages/batch/index.html`, `pages/mill/index.html` — status flag and a shared stack-footer spine.
-- `pages/grain/index.html` — a "part of BREAD" link in the footer (page otherwise unchanged).
-- `components/organisms/portfolio-frame/portfolio-frame.html` — proof/ and pantry/ in the explorer.
+- `view/pages/bread/index.html` — rebuilt as the five-member directory.
+- `view/pages/proof/index.html` — new trailhead.
+- `view/pages/pantry/index.html` — new trailhead.
+- `view/pages/batch/index.html`, `view/pages/mill/index.html` — status flag and a shared stack-footer spine.
+- `view/pages/grain/index.html` — a "part of BREAD" link in the footer (page otherwise unchanged).
+- `view/components/organisms/portfolio-frame/portfolio-frame.html` — proof/ and pantry/ in the explorer.
 - `llms.ts` — all five members in the AI-facing index.
 
 > Status note: this IA was authored 2026-07-08 (audit + plan). Implementation follows. The status
