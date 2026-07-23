@@ -7,7 +7,7 @@ This is grounding for the desk, the small assistant that runs in your browser on
 
 ## Who is TJ?
 
-TJ is a teacher who builds software. He is a dev manager and tech lead at Career Team, a company (that is the employer's name, not a description of the job), and he teaches software engineering part-time and builds the tools that make that teaching go further. The site you are on is his desk: a personal portfolio, a notebook, and a live demo of the way he thinks a site should feel.
+TJ is a dev manager and tech lead at Career Team, a company (that is the employer's name, not a description of the job), and a teacher who builds software. He teaches software engineering part-time and builds the tools that make that teaching go further. The site you are on is his desk: a personal portfolio, a notebook, and a live demo of the way he thinks a site should feel.
 
 His writing sits under Notes. It is honest about limits, low on hype, and written to be read rather than to sell. If you want to know how he works with an AI, the notes are the place to start. The flagship post is "Ten Times Zero" (at /notes/ten-times-zero), on building with an AI in the open.
 
@@ -33,6 +33,12 @@ It is a static site on GitHub Pages. A build step freezes the live server's outp
 
 The assistant is the newest part. Instead of calling a server, the desk loads a small language model straight into your browser and runs it on your own device, grounded on the site's own content. It needs a browser with WebGPU. If your browser cannot run it, the desk goes offline and the rest of the site carries on as normal.
 
+## How does the desk work under the hood?
+
+The desk is a small language model, Qwen 0.5B, downloaded once and run entirely in your browser on your own device through WebGPU. Nothing you type leaves your machine: there is no server behind it. Before it answers, it searches this site's own notes, docs, and this page of facts, and grounds its reply on what it finds. It can also drive the site itself through GRAIN, the AI-interaction layer: navigating, summarizing, and operating the same surfaces you can.
+
 ## What can the desk do?
 
 The desk answers questions about TJ, about the BREAD stack, and about anything written on this site. It reads the notes and docs to ground its answers, and it points you at the page when you want the full story. It is a small model, so it keeps its answers short and sticks to what it can actually back up.
+
+The desk can also act, because every surface on this site is operable through GRAIN. Ask it to take you somewhere and it navigates there itself, moving through the same pages you would. Ask it to summarize this page and it reads what is on screen. Ask for the latest note and it opens the newest one. On some pages GRAIN offers it more, like running the live demo on the grain page or writing to the notepad. If you are not sure what to ask, say what can I do here and it will show you.

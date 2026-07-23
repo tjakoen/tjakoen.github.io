@@ -54,7 +54,11 @@ export const WEAK_PROFILE: ModelProfile = {
   maxTokens: 220,
   summarizeMaxTokens: 160,
   arriveMaxTokens: 150,
-  temperature: 0.5,
+  // 0.3 (down from 0.5, 2026-07-24): the desk audit showed run-to-run variance at 0.5 — the same
+  // grounded question would enumerate the stack one run and drop the enumeration the next. Grounded
+  // Q&A wants the model hugging the CONTEXT, not exploring; the penalties below stay as the anti-loop
+  // guardrails (do NOT loosen them to compensate).
+  temperature: 0.3,
   topP: 0.9,
   frequencyPenalty: 0.6,
   presencePenalty: 0.4,

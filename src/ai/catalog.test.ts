@@ -34,6 +34,13 @@ describe("navTarget", () => {
     expect(navTarget("what is grain")).toBeNull();
     expect(navTarget("who is TJ")).toBeNull();
   });
+
+  test("a polite-intent prefix is skipped ('I want to read X' is a nav command)", () => {
+    expect(navTarget("I want to read the grain docs")).toBe("the grain docs");
+    expect(navTarget("I'd like to see the notes")).toBe("the notes");
+    expect(navTarget("can you open the notes")).toBe("the notes");
+    expect(navTarget("I want a pony")).toBeNull();                 // intent without a nav verb: not one
+  });
 });
 
 describe("resolveNav — deterministic, over real routes", () => {
@@ -42,6 +49,11 @@ describe("resolveNav — deterministic, over real routes", () => {
     expect(resolveNav("go to the grain docs", catalog)?.route).toBe("/grain/docs");
     expect(resolveNav("navigate to about", catalog)?.route).toBe("/about");
     expect(resolveNav("take me home", catalog)?.route).toBe("/");
+  });
+
+  test("'documentation' finds the docs route (plural fold + prefix match)", () => {
+    expect(resolveNav("I want to read the grain documentation", catalog)?.route).toBe("/grain/docs");
+    expect(resolveNav("take me to the grain documentation", catalog)?.route).toBe("/grain/docs");
   });
 
   test("a bare place-name navigates; a question never does", () => {
@@ -70,5 +82,12 @@ describe("navShortlist — the model's real-route candidates for the fuzzy tail"
 
   test("no overlap → empty (nothing to offer)", () => {
     expect(navShortlist("xyzzy quux", catalog)).toEqual([]);
+  });
+
+  test("a nav-flavored ask with no destination tokens falls back to top-level sections", () => {
+    const list = navShortlist("Which pages can you take me to?", catalog);
+    expect(list.length).toBeGreaterThan(0);
+    expect(list.every((d) => d.route.split("/").filter(Boolean).length <= 1)).toBe(true);   // sections, not deep children
+    expect(navShortlist("tell me a story", catalog)).toEqual([]);                           // not nav-flavored → still empty
   });
 });

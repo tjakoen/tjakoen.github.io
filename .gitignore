@@ -8,3 +8,7 @@ test-results/
 # graphify's generated code+doc graph (the mindmap's source) — regenerable, host-local
 graphify-out/
 playwright-report/
+
+# desk-audit's persistent browser profile + graded reports (tools/desk-audit.ts) — host-local,
+# holds the ~350MB cached model weights
+.cache/

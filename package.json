@@ -24,6 +24,7 @@
     "shots": "bun tools/screenshots.ts",
     "og:card": "bun tools/og-card.ts",
     "audit": "bun tools/audit.ts",
+    "audit:desk": "bun tools/desk-audit.ts",
     "export": "bun tools/export.ts",
     "verify:export": "bun tools/verify-export.ts",
     "check": "tsc --noEmit"
