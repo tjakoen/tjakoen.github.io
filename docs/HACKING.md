@@ -18,7 +18,7 @@ you know where to edit.
 | Mechanism | What it serves | Source |
 |---|---|---|
 | **Hand-authored page** | the bespoke screens | `pages/**/*.html` |
-| **MILL content** | notes + rendered layer docs (Markdown) | `notes/*.md`, and the installed `grain`/`batch` `docs/` |
+| **MILL content** | notes + rendered layer docs (Markdown) | `content/notes/*.md`, and the installed `grain`/`batch` `docs/` |
 | **Generated** | catalog, CSS bundle, sitemap/robots/llms | built at request time from components + the pages tree |
 | **The AI door** | the interaction endpoints | [`src/routes/ai-routes.ts`](../src/routes/ai-routes.ts) |
 | **Static asset** | styles, scripts, fonts, images, vendor libs | mapped dirs (mostly up in `grain/`) |
@@ -32,8 +32,8 @@ you know where to edit.
 | `/` | `pages/index.html` |
 | `/about` | `pages/about.html` (tabbed profile app; the Lessons tab's roles + résumé roles link to `/notes?tag=<tag>`) |
 | `/resume` | `pages/resume.html` (the résumé board; each experience role links to its tagged notes) |
-| `/mail` | `pages/mail.html` + `data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
-| `/calendar` | `pages/calendar.html` (the feed page) + `data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule; see the events collection below for `/calendar/<slug>` |
+| `/mail` | `pages/mail.html` + `content/data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
+| `/calendar` | `pages/calendar.html` (the feed page) + `content/data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule; see the events collection below for `/calendar/<slug>` |
 | `/loop` | `pages/loop.html` (the reference "watch the AI act" screen) |
 | `/grain` | `pages/grain/index.html` (GRAIN showcase) |
 | `/batch` | `pages/batch/index.html` (BATCH showcase) |
@@ -45,9 +45,9 @@ you know where to edit.
 
 | URL | Source |
 |---|---|
-| `/notes`, `/notes/<slug>` | `notes/<slug>.md` (the `/notes` index is a portfolio-owned feed, `renderNotesFeedPage`; entries render through MILL) |
+| `/notes`, `/notes/<slug>` | `content/notes/<slug>.md` (the `/notes` index is a portfolio-owned feed, `renderNotesFeedPage`; entries render through MILL) |
 | `/notes/<slug>.md` | the same file, served raw (the "honest source" toggle) |
-| `/calendar/<slug>` | `events/<slug>.md` — the social-feed events collection (`index: false`, so the `/calendar` feed page above still wins the bare path); each entry page gets the photo-grid post template from its frontmatter (`shellChrome` `renderPhotoGrid`) |
+| `/calendar/<slug>` | `content/events/<slug>.md` — the social-feed events collection (`index: false`, so the `/calendar` feed page above still wins the bare path); each entry page gets the photo-grid post template from its frontmatter (`shellChrome` `renderPhotoGrid`) |
 | `/grain/docs`, `/grain/docs/<slug>` | the installed `@tjakoen/grain` package's `docs/*.md` (in the monorepo: `../grain/docs/`) |
 | `/batch/docs`, `/batch/docs/<slug>` | the installed `@tjakoen/batch` package's `docs/*.md` (in the monorepo: `../batch/docs/`) |
 
@@ -88,7 +88,7 @@ because the look is the design system's, not the site's:
 | I want to… | Open | Notes |
 |---|---|---|
 | **Fix wording on a page** | the `pages/**/*.html` for that URL (table above) | plain HTML; refresh to see it |
-| **Edit / add a note or blog post** | `notes/<slug>.md` | Markdown + frontmatter; see [`standards/NOTE-STANDARD.md`](../standards/NOTE-STANDARD.md). A new file = a new `/notes/<slug>` route automatically |
+| **Edit / add a note or blog post** | `content/notes/<slug>.md` | Markdown + frontmatter; see [`standards/NOTE-STANDARD.md`](../standards/NOTE-STANDARD.md). A new file = a new `/notes/<slug>` route automatically |
 | **Change a color / the theme** | `grain/styles/variables.css` (**only** here) | never hardcode a color in a component — override the token. Themes: `grain/styles/themes/*.css` |
 | **Change how a component looks** | `grain/components/<layer>/<name>/<name>.css` | one component owns its styling; edit its `.css`, not the page |
 | **Change a component's markup** | `grain/components/<layer>/<name>/<name>.html` | some layout components are CSS-only (no `.html`) — see [`../batch/docs/CONVENTIONS.md`](../../batch/docs/CONVENTIONS.md) §4 |

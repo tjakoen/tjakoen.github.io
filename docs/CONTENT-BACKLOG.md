@@ -96,7 +96,7 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
 > experience notes above and the résumé spine. Told publishably here (money vague, no litigation
 > drama, no names beyond public/LinkedIn). The private specifics that inform tone but must **not**
 > publish (exact money lost, the active dispute) live in agent memory, not in this public repo.
-> The **distilled** version already lives in `notes/ten-times-zero.md` (the "I was the zero, for
+> The **distilled** version already lives in `content/notes/ten-times-zero.md` (the "I was the zero, for
 > years" section); this is the **full** version the standalone notes will draw from.
 
 The through-line (the messaging, keep this intact): **talent and nerve got him into rooms he hadn't
@@ -153,7 +153,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
 - [x] **Origin story** — how the project happened: never finding "the thing" → stable job leaves room
       to build for myself → INTROWEB teaching accident + Coding2GO rekindles native HTML/CSS → "AI that
       manages me" (Project) → BATCH (no-build) → GRAIN (design system) → portfolio + static
-      export → MILL. **DRAFT** in the user's voice at `notes/origin-story.md`; needs the user's
+      export → MILL. **DRAFT** in the user's voice at `content/notes/origin-story.md`; needs the user's
       voice/edits + photos. (Personal blog-style companion to the technical-projects note.)
 - [~] **Ten Times Zero Is Still Zero** — the flagship AI post and **the footer target on every repo**
       (merged 2026-07-03: the old "Professional vibe coder" post was folded in). Arc = **belief →
@@ -161,7 +161,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       become worth multiplying first**) → the batch-stack receipts (33 commits all AI co-authored, a
       ~10h overnight sprint, headline stat **56% of the repo is prose, not code**) → the **playbook**
       (rails-first / memory / sync matrix / audit / tests / docs-for-the-AI). Dev/practitioner-facing;
-      classroom material moved out to the teaching post. **DRAFT** at `notes/ten-times-zero.md`.
+      classroom material moved out to the teaching post. **DRAFT** at `content/notes/ten-times-zero.md`.
       *(Numbers are a snapshot — re-pull before publishing.)*
 - [~] **How I Teach With AI, and Where I Lock It Out** — the teaching application of the multiplier
       principle (peer/educator-facing, also carries the student-facing classroom AI rules). Leads with
@@ -170,12 +170,12 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       stories (quiz-that-bans-its-builder, "name the concept never the fix," the human-signs-off wall,
       hardening off-repo grading), the classroom rules ("explain it or fail"), and where I refuse
       (proctored exam, PII kept from the model, soft authenticity flag, single front-door disclosure).
-      **DRAFT** at `notes/how-i-use-ai-in-teaching.md`. *(Numbers from the teaching repo — verify
+      **DRAFT** at `content/notes/how-i-use-ai-in-teaching.md`. *(Numbers from the teaching repo — verify
       before publishing.)*
 - [~] **I Nearly Quit Teaching. So I Automated the Part That Was Killing Me.** — the *why & how I
       teach* story: adults-like-adults, self-study lean, no-fluff/hard-parts-only, why (not money —
       **kept vague**), the near-burnout arc → built the GitHub-native platform → teaching is
-      sustainable now. **DRAFT** at `notes/why-i-teach.md`. NOTE: softened the "never told faculty I
+      sustainable now. **DRAFT** at `content/notes/why-i-teach.md`. NOTE: softened the "never told faculty I
       was leaving" detail for professionalism — restore if you want it.
 - [~] **How I Turned a GitHub Org Into My Whole Classroom** — the *maker's/build* story of the
       GitHub-native platform (distinct from why-i-teach = teacher's story, how-i-use = AI-ethics
@@ -183,7 +183,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       reframe → one-engine-many-courses design (org/teacher-repo/student-repos/Actions/gradebook/
       Canvas, carries a mermaid pipeline figure) → the unglamorous real work (access control, scoped
       tokens, names-as-data, safe-by-default) → empty-org→graded-hello-world validation loop. **DRAFT**
-      at `notes/how-i-turned-github-into-a-classroom.md`. Deep technical detail belongs in the external
+      at `content/notes/how-i-turned-github-into-a-classroom.md`. Deep technical detail belongs in the external
       repo's docs (ARCHITECTURE/LESSONS), which the planned `/course-platform` landing page links to.
 - [~] **The Browser Grew Up While I Was Busy With Frameworks** — the mildly-technical *native-first*
       companion to the origin story (which carries the narrative of *why* I left frameworks; this one
@@ -194,7 +194,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       ledger: perf is now **measured** (the framework-comparison bench, `framework-bench`: ~163× less JS
       than Next on the one interaction; the note's ledger flipped bet→measured, and the in-browser model
       claim flipped to wired, 2026-07-17), plus native-as-direction-not-religion (still uses htmx/Bun/one
-      script). **DRAFT** at `notes/the-browser-grew-up.md`. Cross-links origin-story + ten-times-zero, and
+      script). **DRAFT** at `content/notes/the-browser-grew-up.md`. Cross-links origin-story + ten-times-zero, and
       is linked back from both (de-orphaned 2026-07-04); duplicated sentences shared with origin-story
       (Bun-for-a-reason, stale-dist, Coding2GO) were rewritten here so the joke lives in one place.
       All figures rendered (replacement-map SVG on the scaffold, 2026-07-04). Reading time corrected to
@@ -207,12 +207,12 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       no server, three layers stacked one direction. Honest ledger now **closed on the benchmark** (the
       measured number is in hand; §seam retitled + opener rewritten 2026-07-17) and **the model seam is
       wired** (a small in-browser model drives the desk; scripted-scenario claim flipped 2026-07-17).
-      Cross-links native-partial-updates + ten-times-zero. **DRAFT** at `notes/feels-like-an-app.md`.
+      Cross-links native-partial-updates + ten-times-zero. **DRAFT** at `content/notes/feels-like-an-app.md`.
 - [~] **Native Partial Updates (I Finally Ran It)** — the *measured* companion that closes the
       "well-founded bet, not measured" seam the other two native notes used to carry: the same reference
       app built four ways and audited by one harness (`framework-bench`), the Declarative Partial Updates
       variant (streamHTMLUnsafe/setHTMLUnsafe), and the honest frame (categorical JS/bytes as the headline,
-      local timings as corroboration only). **DRAFT** at `notes/native-partial-updates.md`. **Footer repo
+      local timings as corroboration only). **DRAFT** at `content/notes/native-partial-updates.md`. **Footer repo
       link DONE (2026-07-21):** `framework-bench` is pushed + public; the footer + inline link
       (github.com/tjakoen/framework-bench) are live in the note.
 - [x] **~~Fifty Tiny Things Before One Big One~~ — CUT (2026-07-03).** A standalone design-philosophy
@@ -238,7 +238,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
 
 ## White paper
 
-- [x] **GRAIN + BATCH whitepaper — DRAFT written** at `notes/whitepaper-one-vocabulary.md`
+- [x] **GRAIN + BATCH whitepaper — DRAFT written** at `content/notes/whitepaper-one-vocabulary.md`
       ("One Vocabulary, Two Operators"), a research-doc *projection* of `tjakoen.github.io/PHILOSOPHY.md` with cited
       sources (AG-UI/MCP-UI/MCP Apps, GUI-agent surveys, Anthropic Computer Use, WebArena/OSWorld,
       Horvitz, Lieberman, Signifiers/HATEOAS, C2PA, Carbon for AI). To be linked from `/grain`.
@@ -252,12 +252,12 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
   full-document response (server.ts `finalizePage`, idempotent, skips fragments) with a canonical URL,
   Open Graph + Twitter Card, and schema.org JSON-LD (Person + WebSite on home, BlogPosting on notes,
   WebPage + BreadcrumbList elsewhere), derived from each page's own title/description + path. og:image
-  is a real Playwright-rendered social card (`media/og-card.png`, `bun run og:card`). The export
+  is a real Playwright-rendered social card (`content/media/og-card.png`, `bun run og:card`). The export
   origin-rewrites HTML pages too. The audit's Canon/OG/JSON-LD columns are now green across pages.
   See memory `seo-aeo-first-class-2026-07-16`.
 - Reconcile `PLAN.md` "rendering in the live app" with the CMS-as-separate-project decision.
 - **Flow diagrams: mermaid → themed inline SVG — DONE 2026-07-16.** All 22 remaining flow diagrams
-  across `notes/*.md` + `docs/batch/ARCHITECTURE.md` are now hand-converted to themed inline SVG on the
+  across `content/notes/*.md` + `docs/batch/ARCHITECTURE.md` are now hand-converted to themed inline SVG on the
   whitepaper Figure-1 pattern (`--color-*` tokens, one arrowhead marker per figure, ink-filled emphasis
   box that inverts in dark, `role="img"` + a spoken `aria-label`); verified in light + dark. No `mermaid`
   fences remain in notes/docs, so the diagrams render live everywhere with zero framework JS, and the
@@ -278,7 +278,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
   1. ✅ **Frontmatter `\"` not unescaped.** `core/frontmatter.ts` `unquote` returned the inner verbatim,
      so a double-quoted scalar with escaped quotes rendered the backslashes literally. Fixed: `unquote`
      now processes YAML escapes (`\"`, `\\`) for double-quoted scalars; single-quoted stay verbatim.
-     The `notes/ten-times-zero.md` `>` block-scalar workaround is kept (still correct).
+     The `content/notes/ten-times-zero.md` `>` block-scalar workaround is kept (still correct).
   2. ✅ **Duplicate title on frontmatter-less docs.** `core/engine.ts` `deriveTitle` derived the title
      from the first `# H1` but the body kept rendering it. Fixed: when the title is lifted from a heading,
      that node is dropped from the rendered body (returned `ast` stays whole for TOC/RAG). The 15
@@ -295,7 +295,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
   ties/wins. Becomes the whitepaper's Evaluation section. Full plan: `~/.claude/plans/framework-bench-plan.md`;
   memory `framework-comparison-methodology`. **Realized as FOUR builds (added a native+DPU variant): index
   JS for one identical filter = Astro ~744b / native ~2kb / native+DPU ~3kb / Next ~118kb (~162x), parity
-  ties across all. Measured note landed: `notes/native-partial-updates.md` (DRAFT); the-browser-grew-up +
+  ties across all. Measured note landed: `content/notes/native-partial-updates.md` (DRAFT); the-browser-grew-up +
   feels-like-an-app ledgers flipped bet→measured. **P6 + P7 DONE (verified 2026-07-21):** P6 —
   `github.com/tjakoen/framework-bench` pushed + public (README + Apache-2.0 LICENSE + badge, consumes
   `@tjakoen/batch` from GitHub Packages), linked from native-partial-updates.md. P7 — whitepaper §5

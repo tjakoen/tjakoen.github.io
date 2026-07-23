@@ -4,7 +4,7 @@
 // hidden text) that an ATS reads cleanly. /cv is the straight-to-download twin that auto-prints.
 // Expectations are derived from cv.json so they can't rot when the CV changes.
 import { test, expect } from "@playwright/test";
-import cv from "../data/cv.json" with { type: "json" };
+import cv from "../content/data/cv.json" with { type: "json" };
 
 const entryCount = cv.roles.length + cv.education.length;
 const linkedRoleIdx = cv.roles.findIndex((r) => (r.links?.length ?? 0) > 0);   // a role WITH feed posts

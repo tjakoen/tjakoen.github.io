@@ -28,7 +28,7 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
    scaffolds (data-viz + flow) and the no-mermaid-on-the-published-site rule. Use it for any diagram or chart.
 4. [NOTE-STANDARD](https://tjakoen.github.io/standards/note-standard): how a note/blog post is built
    (frontmatter, structure, the sign-off footer) + a reusable prompt to draft one. Use it for any
-   `notes/*.md`.
+   `content/notes/*.md`.
 5. [README-STANDARD](https://tjakoen.github.io/standards/readme-standard): badges + README presentation,
    with a reusable prompt to run in any repo.
    (The source of these lives in this repo's `standards/` dir — edit them there.)
@@ -49,5 +49,5 @@ Whole-repo doc map: [`../DOCS.md`](../DOCS.md).
   anything sensitive. No student data or private course internals.
 - **AI use flown proudly.** Every repo carries the "made with Claude" badge + footer
   ([README-STANDARD](https://tjakoen.github.io/standards/readme-standard)); the flagship post is
-  `notes/ten-times-zero.md`.
+  `content/notes/ten-times-zero.md`.
 - **It consumes the stack, never forks it.** New design work belongs up in grain, not here.

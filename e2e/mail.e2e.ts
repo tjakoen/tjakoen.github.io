@@ -7,7 +7,7 @@
 // the fixture so this spec can't rot when a message is added; the clock is frozen so relative dates
 // are deterministic.
 import { test, expect } from "@playwright/test";
-import mailbox from "../data/mailbox.json" with { type: "json" };
+import mailbox from "../content/data/mailbox.json" with { type: "json" };
 
 const FIXED_NOW = new Date("2026-07-16T12:00:00");
 const folderCount = (id: string) => mailbox.messages.filter((m) => m.folder === id).length;
