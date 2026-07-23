@@ -10,7 +10,7 @@ owner: human
 # Author the content backlog
 
 The canonical list of content pieces to write lives in
-[CONTENT-BACKLOG.md](../CONTENT-BACKLOG.md) (captured, not written). This plan tracks that the
+[CONTENT-BACKLOG.md](../docs/CONTENT-BACKLOG.md) (captured, not written). This plan tracks that the
 writing work is open; the backlog file stays the single source for *what* to write and the
 guardrails (public repo, neutral, VOICE).
 

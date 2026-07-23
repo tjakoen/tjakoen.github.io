@@ -21,7 +21,7 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
 
 ## Start here (reading order)
 
-1. [`PHILOSOPHY.md`](PHILOSOPHY.md): the *why* beneath the whole stack. Read first.
+1. [`PHILOSOPHY.md`](docs/PHILOSOPHY.md): the *why* beneath the whole stack. Read first.
 2. [VOICE](https://tjakoen.github.io/standards/voice): the writing standard (voice, the machine-tells to
    avoid). Match it for any prose in his name.
 3. [FIGURES](https://tjakoen.github.io/standards/figures): the figure standard, the two tokenized inline-SVG
@@ -32,9 +32,9 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
 5. [README-STANDARD](https://tjakoen.github.io/standards/readme-standard): badges + README presentation,
    with a reusable prompt to run in any repo.
    (The source of these lives in this repo's `standards/` dir — edit them there.)
-6. [`CONTENT-BACKLOG.md`](CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
+6. [`CONTENT-BACKLOG.md`](docs/CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
 7. [`PLAN.md`](docs/architecture/PLAN.md) + [`FEATURES.md`](docs/architecture/FEATURES.md): the site's *how* and *what*.
-8. [`HACKING.md`](HACKING.md): the route → source map + "which file do I open to change X" — the
+8. [`HACKING.md`](docs/HACKING.md): the route → source map + "which file do I open to change X" — the
    fast path for a *small* edit (human or AI) without cold-reading `server.ts`.
 
 Whole-repo doc map: [`../DOCS.md`](../DOCS.md).

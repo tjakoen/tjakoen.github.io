@@ -66,7 +66,7 @@ prerender crawl that boots the app, walks its routes, and writes static files.
   - **Consequence — one content source, many consumers:** the same mds render the human Notes pages,
     are chunked into `knowledge.json` for the AI's RAG ("the desk is aware of my posts", free), and
     (for `docs/*.md`) publish the doc pages. Authoring = commit: edit a `.md` → the Action reboots the
-    app, crawls, deploys. Backlog + content model live in `tjakoen.github.io/CONTENT-BACKLOG.md`.
+    app, crawls, deploys. Backlog + content model live in `tjakoen.github.io/docs/CONTENT-BACKLOG.md`.
 - **AI demo: Path B — runs entirely in the browser, no backend, no secret.** Purpose: answer
   questions about me from my fixed portfolio content. It's a portfolio *showcase*, so the "the
   assistant is running in *your* browser, nothing server-side" narrative is worth real weight.

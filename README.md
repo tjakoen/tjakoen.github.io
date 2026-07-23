@@ -14,7 +14,7 @@ lightweight AI demo that runs entirely in the visitor's browser.
 > and the zero-ops GitHub Pages deploy is live (`batch/export` via
 > [`.github/workflows/pages.yml`](.github/workflows/pages.yml)). Still planned: the productivity
 > views (calendar, contacts). New here and want to make a small edit? →
-> **[HACKING.md](HACKING.md)** (route → source map + "which file do I open").
+> **[HACKING.md](docs/HACKING.md)** (route → source map + "which file do I open").
 
 ## What it is (and isn't)
 
@@ -29,9 +29,9 @@ lightweight AI demo that runs entirely in the visitor's browser.
 
 - **[PLAN.md](docs/architecture/PLAN.md)** — the execution plan: export → Pages, in-browser AI demo, the build pieces.
 - **[FEATURES.md](docs/architecture/FEATURES.md)** — the feature menu (north star, the desk, anti-features, reuse table).
-- **[CONTENT-BACKLOG.md](CONTENT-BACKLOG.md)** — the content to author (guardrails: public repo, neutral).
+- **[CONTENT-BACKLOG.md](docs/CONTENT-BACKLOG.md)** — the content to author (guardrails: public repo, neutral).
 - **[GRAIN-PAGE.md](pages/grain/GRAIN-PAGE.md)** · **[BATCH-PAGE.md](pages/batch/BATCH-PAGE.md)** — the `/grain` and `/batch` showcase plans.
-- **[PHILOSOPHY.md](PHILOSOPHY.md)** — the beliefs the site proves.
+- **[PHILOSOPHY.md](docs/PHILOSOPHY.md)** — the beliefs the site proves.
 
 ---
 🤖 **Built with Claude, and it is also the proof.** This site is the stack's own demo: I made the calls, Claude typed them, and the same pages you are reading are the receipts. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)

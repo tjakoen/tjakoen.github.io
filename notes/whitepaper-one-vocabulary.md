@@ -16,7 +16,7 @@ summary: >
 ---
 
 > **Status: working draft, revised 2026-07-17.** This is a *projection* of
-> [PHILOSOPHY.md](../PHILOSOPHY.md): the beliefs are canonical there; this paper situates them in
+> [PHILOSOPHY.md](../docs/PHILOSOPHY.md): the beliefs are canonical there; this paper situates them in
 > the literature and argues the contribution. The narrative version of the same stance is
 > [the origin story](origin-story.md); the working method behind the claims is
 > [Ten Times Zero Is Still Zero](ten-times-zero.md). Three research passes so far: agent–UI protocols /

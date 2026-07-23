@@ -51,7 +51,7 @@ longer a bare "no" — it **echoes the moves that would work** (the valid verbs 
 the known vocabulary for an unknown verb) in the `Decision.reason` the reasoner reads, so a model
 can self-correct on its next turn. That's a step toward the *"the surface has physics"* model (an
 unafforded action reports what *is* available); a full no-op-and-report affordance is still a noted
-direction. The *why* behind the modality lives in [`PHILOSOPHY.md`](../../PHILOSOPHY.md).
+direction. The *why* behind the modality lives in [`PHILOSOPHY.md`](../PHILOSOPHY.md).
 
 ---
 

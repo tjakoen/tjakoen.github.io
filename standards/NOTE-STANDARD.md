@@ -20,7 +20,7 @@ repo READMEs).
 
 1. **Read [`VOICE.md`](VOICE.md) first.** Every word that ships under his byline matches it. If a
    draft is clean, correct, and forgettable, it isn't done.
-2. **Check [`../CONTENT-BACKLOG.md`](../CONTENT-BACKLOG.md).** See if the piece is already planned,
+2. **Check [`../docs/CONTENT-BACKLOG.md`](../docs/CONTENT-BACKLOG.md).** See if the piece is already planned,
    what its angle is, and what it must *not* say. Update the backlog when a note lands.
 3. **Notes live in [`../notes/`](../notes/)** as `kebab-case.md`. Cross-link sibling notes with a
    relative link (`[Ten Times Zero Is Still Zero](ten-times-zero.md)`), never an absolute URL, they
@@ -119,7 +119,7 @@ STEP 1 — READ THE STANDARDS FIRST, don't wing it:
   forgettable, it sounds like AI; make it mine (a confession up front, a real number, a wink at my
   own expense, a sentence that's too short).
 - tjakoen.github.io/standards/NOTE-STANDARD.md (this file) — the artifact: frontmatter, structure, footer.
-- tjakoen.github.io/CONTENT-BACKLOG.md — is this piece planned? what's its angle? what must it NOT say?
+- tjakoen.github.io/docs/CONTENT-BACKLOG.md — is this piece planned? what's its angle? what must it NOT say?
 
 STEP 2 — WRITE:
 - Frontmatter block per the template (title/subtitle/author/status: DRAFT/type/date/readingTime/
