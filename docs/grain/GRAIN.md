@@ -194,7 +194,7 @@ mechanism, so the AI layer works identically in either.
   a component, the shell and its parts (`side-rail`, `tab-bar`, `nav-item`, `tab`) are
   **layout class-contracts** (a `.css` + a `.md` example, no `.html` tag) that a page applies
   to plain elements — not data-bound tags. The app wraps them once in a domain organism,
-  **`portfolio-frame`** (`tjakoen.github.io/components/organisms/portfolio-frame`), that carries the
+  **`portfolio-frame`** (`tjakoen.github.io/view/components/organisms/portfolio-frame`), that carries the
   rail, tabs, assistant, and console as the shared chrome on every page; the whole site (incl.
   `/loop`) composes it.
 

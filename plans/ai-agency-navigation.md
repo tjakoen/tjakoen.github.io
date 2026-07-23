@@ -62,7 +62,7 @@ x-ray shows almost nothing on real pages; it is outlines-only (no panel, no lege
 list, no "here is what the AI would do"), and it is barely discoverable (no obvious affordance).
 
 ### The contact flow today
-`pages/mail.html` has a **real** `<form class="compose" data-compose>` with subject/body inputs that
+`view/pages/mail.html` has a **real** `<form class="compose" data-compose>` with subject/body inputs that
 builds a `mailto:` and hands off to the visitor's mail app. `ai/actions.ts` even maps "contact" →
 navigate to `/about`. **But the compose fields carry no `data-surface`, and there is no verb to set a
 field or submit a form.** So today the desk can get you *near* contact, but cannot fill it or send it.
