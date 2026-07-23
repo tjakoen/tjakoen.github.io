@@ -688,7 +688,7 @@ earlier cards wireframe IS the mobile layout). Wireframes: `screenshots/desk-sce
 `screenshots/desk-poc.png`.
 
 **Implementation order (for the next session; respect the seams, don't rebuild them):**
-1. **The desk reasoner** — `tjakoen.github.io/ai/desk-door.ts` (client-safe: relative imports only, no
+1. **The desk reasoner** — `tjakoen.github.io/src/ai/desk-door.ts` (client-safe: relative imports only, no
    secrets): exports `createClientDoor(applyOp)` wrapping grain's with a scripted desk scenario
    (4–6 chip questions; answers travel to the right object, stream grain, settle, RELEASE — grain
    lessons 6/7/9 apply). Page selects it via

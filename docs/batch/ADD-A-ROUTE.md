@@ -35,7 +35,7 @@ Bun.serve({
 ```
 
 For a family of related routes (methods, params), group them into a builder like
-[`routes/ai-routes.ts`](../../routes/ai-routes.ts) does (`buildAiRoutes(...)`
+[`src/routes/ai-routes.ts`](../../src/routes/ai-routes.ts) does (`buildAiRoutes(...)`
 returns a `routes` object spread into `Bun.serve`), rather than growing `server.ts` inline.
 
 ## Next steps
