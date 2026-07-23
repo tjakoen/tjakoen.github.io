@@ -161,14 +161,18 @@
    hides them (below). Sits just above the composer so it reads as "or try one of these". */
 /* Compact: the chips were eating ~5 rows above the composer (a "TRY ASKING" label + 4 chips that
    wrapped in the narrow aside). Now ONE quiet scrolling row — label dropped (the composer placeholder
-   already says "Ask the desk"), chips on a single line that scrolls sideways (scrollbar hidden), so
-   the conversation keeps the vertical space. */
+   already says "Ask the desk"), chips on a single line that scrolls sideways, with a THIN scrollbar
+   that cues the overflow (owner, 2026-07-23: a hidden bar left no hint the row scrolled), so the
+   conversation keeps the vertical space. */
 .assistant__suggest { display: flex; flex-direction: column; gap: 0;
   padding: var(--space-2) var(--space-4); }
 .assistant__suggest-label { display: none; }
 .assistant__suggest-chips { display: flex; flex-wrap: nowrap; gap: var(--space-2);
-  overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 1px; }
-.assistant__suggest-chips::-webkit-scrollbar { display: none; }
+  overflow-x: auto; scrollbar-width: thin; scrollbar-color: var(--color-line) transparent;
+  padding-bottom: 2px; }
+.assistant__suggest-chips::-webkit-scrollbar { height: 6px; }
+.assistant__suggest-chips::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 999px; }
+.assistant__suggest-chips::-webkit-scrollbar-track { background: transparent; }
 .suggest-chip { flex: 0 0 auto; }
 .suggest-chip { font: inherit; font-size: var(--text-sm); color: var(--color-fg);
   background: var(--color-bg); border: 1px solid var(--color-line); border-radius: 999px;
