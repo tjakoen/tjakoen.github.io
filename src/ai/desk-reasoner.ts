@@ -435,8 +435,10 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           if (!page) { setBody(esc("There's nothing on this page for me to summarize."), "committed"); return { ok: false, ops: [], reply: "empty page", reason: "no page text" }; }
           narrate("reads", "this page");
           const acc = await streamInto(engine, [
-            { role: "system", content: "You summarize a web page for a visitor in 2 to 3 plain sentences, from the CONTENT only. No hype, no lists, no repetition." },
-            { role: "user", content: `Summarize this page:\n\n${page.slice(0, 4000)}` },
+            // The forced "This page" opening is what actually suppresses the 0.5B's markdown-summary
+            // reflex (### headings + keyword bullets) — "no markdown" alone didn't (audit finding).
+            { role: "system", content: "You summarize a web page for a visitor in 2 to 3 plain sentences, from the CONTENT only. Start your reply with exactly \"This page\". Sentences only — no headings, no markdown, no lists, no hype, no repetition." },
+            { role: "user", content: `Page: ${deps.pageInfo?.().title ?? ""}\n\nSummarize this page:\n\n${page.slice(0, 4000)}` },
           ], profile.summarizeMaxTokens);
           return { ok: true, ops: [], reply: acc };
         }
@@ -488,7 +490,21 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // the sitemap catalog (navShortlist), so when the deterministic resolver above wasn't confident
         // the model still chooses from routes that exist — never an invented slug.
         const shortlist = navShortlist(text, catalog);
-        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, tokenBudget: profile.promptTokenBudget }));
+        // What the desk can DO here — the same capability set the deterministic route announces (its
+        // built-in actions + GRAIN's live manifest of this page), handed to the MODEL too, so a
+        // freeform "what are you able to do?" answers capability-aware instead of guessing from prose.
+        const manifest = deps.pageManifest?.();
+        // Order matters to a 0.5B: the audit showed it echoing whichever item comes first, so the
+        // self-contained actions lead and navigation (which has its own protocol block) comes last.
+        // Each item must read right inside prompt.ts's canned "I can …" sentence, so the manifest
+        // operables (phrased for "this page lets you X") get a "let you" in front.
+        const canDo = [
+          "summarize this page",
+          "open the latest note",
+          ...(manifest ? pageOperables(manifest) : []).map((p) => `let you ${p}`),
+          "take you to any page on this site",
+        ];
+        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, canDo, tokenBudget: profile.promptTokenBudget }));
 
         // The model chose to navigate. Validate TWICE before acting on generated text: the route must be
         // REAL (present in the sitemap catalog — never trust the model to have stayed in scope), AND

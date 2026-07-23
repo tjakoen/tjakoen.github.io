@@ -19,7 +19,11 @@ const STOP = new Set([
 ]);
 
 const norm = (s: string): string => s.toLowerCase().replace(/[^\w\s/-]/g, " ").replace(/\s+/g, " ").trim();
-const tokens = (s: string): string[] => norm(s).split(/[\s/-]+/).filter((w) => w && !STOP.has(w));
+// Fold a trailing plural/verb "s" so "docs" and "notes" match their singulars — combined with hit()'s
+// prefix rule this is what lets "documentation" find "/mill/docs" ("docs"→"doc", a prefix of
+// "documentation"; neither raw form is a prefix of the other). Baseline-audit finding.
+const fold = (w: string): string => (w.length > 3 && w.endsWith("s") ? w.slice(0, -1) : w);
+const tokens = (s: string): string[] => norm(s).split(/[\s/-]+/).filter((w) => w && !STOP.has(w)).map(fold);
 const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
 const routeSegs = (route: string): string[] => route.split("/").filter(Boolean);
 
@@ -54,9 +58,13 @@ const covered = (q: string[], dt: string[]): number => q.reduce((n, w) => n + (h
 
 // A nav VERB at the start of a request ("take me to", "go to", "open", "navigate to"…). Returns the
 // target phrase after the verb, or null when the text isn't a navigation command. The `home|back`
-// lookahead handles "take me home" / "go back" where there's no "to".
+// lookahead handles "take me home" / "go back" where there's no "to". A polite-intent PREFIX
+// ("I want to…", "can you…") is skipped first, so "I want to read the mill documentation" is the
+// nav command "read the mill documentation" — the baseline audit showed that phrasing falling to
+// the model, which explained the route instead of going there. "read" joined the bare verbs for the
+// same case; full-coverage matching still keeps a mere mention ("I read a note once") from firing.
 const NAV_VERB =
-  /^\s*(?:please\s+)?(?:(?:take|bring|send|get|lead|point|show)\s+me\s+(?:back\s+)?(?:to|toward|towards|into|over\s+to)\s+|(?:go|head|jump|navigate|nav|return|come)\s+(?:back\s+)?(?:to|over\s+to)\s+|(?:take|bring|send|get|lead|go|head)\s+(?:me\s+)?(?=home\b|back\b)|(?:open|show|visit|see|view|load|launch|pull\s+up)\s+)/i;
+  /^\s*(?:please\s+)?(?:i\s+(?:want|need|would\s+like|wish)\s+to\s+|i(?:'|’)?d\s+(?:like|love)\s+to\s+|i\s+wanna\s+|can\s+you\s+|could\s+you\s+|let(?:'|’)?s\s+)?(?:please\s+)?(?:(?:take|bring|send|get|lead|point|show)\s+me\s+(?:back\s+)?(?:to|toward|towards|into|over\s+to)\s+|(?:go|head|jump|navigate|nav|return|come)\s+(?:back\s+)?(?:to|over\s+to)\s+|(?:take|bring|send|get|lead|go|head)\s+(?:me\s+)?(?=home\b|back\b)|(?:open|show|visit|see|view|read|load|launch|pull\s+up)\s+)/i;
 
 /** The place phrase in a nav command, or null if `text` isn't one. */
 export function navTarget(text: string): string | null {
@@ -98,16 +106,34 @@ export function resolveNav(text: string, catalog: NavDest[]): NavDest | null {
   return bare;
 }
 
+/** The site's top-level sections (shallowest routes), for a general "where can you take me?" ask
+ *  where no specific destination scored — the model then lists REAL places instead of inventing
+ *  paths (the audit caught it offering /notes/why-i-teach/index.html when handed nothing). */
+export function sectionShortlist(catalog: NavDest[], k = 6): NavDest[] {
+  return [...catalog]
+    .sort((a, b) => routeSegs(a.route).length - routeSegs(b.route).length || a.route.length - b.route.length)
+    .slice(0, k);
+}
+
+// A query that's ABOUT navigation ("which pages can you take me to?") even though no destination
+// token survives the stopword filter — the cue to fall back to the section list above.
+const NAV_ISH = /\b(page|pages|where|go|goes|take|visit|navigate|section|sections|site)\b/i;
+
 /** The top-k real destinations most relevant to `query`, ranked by how many of its tokens they cover.
  *  Handed to the model for the fuzzy tail (a partial match the deterministic resolver won't commit to),
- *  so the model always chooses from real routes. Empty when nothing overlaps at all. */
+ *  so the model always chooses from real routes. Empty when nothing overlaps at all — unless the query
+ *  is nav-flavored, which falls back to the top-level sections so a general "where can you take me?"
+ *  still gets real destinations. */
 export function navShortlist(query: string, catalog: NavDest[], k = 6): NavDest[] {
   const q = tokens(navTarget(query) ?? query);
-  if (!q.length) return [];
-  return catalog
-    .map((d) => ({ d, hits: covered(q, destTokens(d)), depth: routeSegs(d.route).length }))
-    .filter((s) => s.hits > 0)
-    .sort((a, b) => b.hits - a.hits || a.depth - b.depth || a.d.route.length - b.d.route.length)
-    .slice(0, k)
-    .map((s) => s.d);
+  const ranked = q.length
+    ? catalog
+      .map((d) => ({ d, hits: covered(q, destTokens(d)), depth: routeSegs(d.route).length }))
+      .filter((s) => s.hits > 0)
+      .sort((a, b) => b.hits - a.hits || a.depth - b.depth || a.d.route.length - b.d.route.length)
+      .slice(0, k)
+      .map((s) => s.d)
+    : [];
+  if (ranked.length > 0) return ranked;
+  return NAV_ISH.test(query) ? sectionShortlist(catalog, k) : [];
 }

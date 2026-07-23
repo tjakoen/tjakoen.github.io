@@ -12,7 +12,7 @@ describe("routeAction", () => {
   });
 
   test("note-write phrasings carry the instruction", () => {
-    for (const s of ["Add summary bullets to my notepad", "save this to the notepad", "jot this down", "make a note", "put a to-do in my notepad", "note that down"]) {
+    for (const s of ["Add summary bullets to my notepad", "save this to the notepad", "jot this down", "jot down that grain looks promising", "make a note", "put a to-do in my notepad", "note that down"]) {
       const a = routeAction(s);
       expect(a?.kind).toBe("note-write");
       if (a?.kind === "note-write") expect(a.instruction).toBe(s.trim());
@@ -25,6 +25,11 @@ describe("routeAction", () => {
 
   test("capabilities phrasings (incl. the pinned chip)", () => {
     for (const s of [PINNED_CHIP, "what can I do here?", "what should I do next", "suggest what to do next", "what's here"])
+      expect(routeAction(s)?.kind).toBe("capabilities");
+  });
+
+  test("page-inventory asks are capabilities too (the 0.5B mangles route lists — audit finding)", () => {
+    for (const s of ["Which pages can you take me to?", "what pages are there", "where can you take me"])
       expect(routeAction(s)?.kind).toBe("capabilities");
   });
 

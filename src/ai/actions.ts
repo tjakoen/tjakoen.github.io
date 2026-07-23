@@ -39,16 +39,20 @@ export function routeAction(text: string): Action | null {
   // triggers: an explicit notepad mention with a write-ish verb, or a bare "jot this down"/"make a note".
   if (/\bnotepad\b/.test(t) && /\b(add|save|writ\w*|put|jot|note|append|record|capture|stick|drop|summari[sz]e)\b/.test(t))
     return { kind: "note-write", instruction: text.trim() };
-  if (/\b(jot (this|that|it)|note (this|that|it) down|make a note|take a note|remember (this|that))\b/.test(t))
+  if (/\b(jot (this|that|it|down)|note (this|that|it) down|make a note|take a note|remember (this|that))\b/.test(t))
     return { kind: "note-write", instruction: text.trim() };
 
   // summarize this page
   if (/\b(summari[sz]e|sum up|recap)\b/.test(t) || /tl;?dr/i.test(text)) return { kind: "summarize" };
 
-  // capabilities — "what can I do here", "what should I do next", "suggest what to do"
+  // capabilities — "what can I do here", "what should I do next", "suggest what to do". Also the
+  // page-inventory asks ("which pages can you take me to", "where can you take me"): the desk-audit
+  // showed the 0.5B mangling a route list into invented slugs, and the capabilities reply already
+  // names every section — so the model never gets this one.
   if (/\bwhat can i do\b/.test(t) || /\bwhat (should|can) i (do|try)\b/.test(t) ||
       /\bwhat to do\b/.test(t) || /\b(suggest|recommend)\b.*\b(do|next|try)\b/.test(t) ||
-      /\bwhat.?s (here|next)\b/.test(t))
+      /\bwhat.?s (here|next)\b/.test(t) ||
+      /\b(which|what) pages?\b/.test(t) || /\bwhere can you take (me|us)\b/.test(t))
     return { kind: "capabilities" };
 
   // clarify — a vague "help me get somewhere" ask with no concrete destination. Offer choices rather
