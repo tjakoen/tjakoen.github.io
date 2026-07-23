@@ -42,27 +42,6 @@
     ctx.printHtml('full record: <a href="/resume">/resume</a> · history: <a href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a> · code: <a href="https://github.com/tjakoen">GitHub</a>');
   }});
 
-  // ── model: show or switch the on-device AI model (0.5B fast / 1.5B better) ────────────────────────
-  // The desk door (ai/desk-door.js) publishes window.tjDeskModel — current tier, whether the 1.5B is
-  // supported here, the "based on your system" line, and a set() that persists the choice and reloads.
-  t.register({ name: "model", args: "[weak|strong]", help: "show or switch the on-device AI model (0.5B fast / 1.5B better)", run(ctx) {
-    const m = window.tjDeskModel;
-    if (!m || typeof m.set !== "function") { ctx.printErr("the desk model isn't wired on this page — the AI door hasn't loaded."); return; }
-    const nameOf = (tier) => tier === "strong" ? "1.5B (better)" : "0.5B (fast)";
-    const arg = (ctx.arg || "").trim().toLowerCase();
-    if (!arg) {
-      ctx.print(`current: ${nameOf(m.current)}${m.chosen ? "" : " — auto-picked for this device"}`);
-      ctx.print(m.line);
-      ctx.print(m.supported ? "switch with: model weak  ·  model strong" : "this browser only runs the 0.5B, so `model strong` isn't available here.");
-      return;
-    }
-    if (arg !== "weak" && arg !== "strong") { ctx.printErr("usage: model weak | model strong"); return; }
-    if (arg === "strong" && !m.supported) { ctx.printErr("your browser can't run the 1.5B here — staying on the 0.5B."); return; }
-    if (arg === m.current && m.chosen) { ctx.print(`already on the ${nameOf(arg)}.`); return; }
-    ctx.print(`switching to the ${nameOf(arg)} — reloading to swap it in…`);
-    m.set(arg);   // persists the choice + reloads; the new model loads on your next message
-  }});
-
   // ── easter eggs — each one honest about how this thing actually works ───────────────────────────
   t.register({ name: "sudo", args: "", help: "", run(ctx) {
     ctx.print("you're already the operator. Equal footing is the whole point here — no elevated mode to grant.");
