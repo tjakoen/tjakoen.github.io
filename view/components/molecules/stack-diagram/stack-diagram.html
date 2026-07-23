@@ -1,8 +1,12 @@
-<!-- molecules/stack-diagram — the shared "four layers, one direction" figure that opens
-     every BREAD layer page. ONE authored SVG; each page passes current="<member>" and the
-     matching layer is ink-filled (its name in paper) while the rest stay outlined. PANTRY is
-     NOT a layer — it's the frame around the stack: the app that composes the four. Omit
-     current (the /bread overview) and nothing is singled out.
+<!-- molecules/stack-diagram — the shared "layers, one direction" figure that opens every
+     BREAD layer page. ONE authored SVG; each page passes current="<member>" and the matching
+     layer is ink-filled (its name in paper) while the rest stay outlined. PANTRY is NOT a
+     layer — it's the frame around the stack: the app that composes it. Omit current (the
+     /bread overview) and nothing is singled out.
+
+     CRUMB builds on GRAIN and MILL, same as PROOF does, so it shares PROOF's altitude rather
+     than stacking a fifth, taller row: the top row splits into two half-width bars (PROOF,
+     CRUMB) side by side, MILL/GRAIN/BATCH stay full-width below them.
 
      Highlight is DRY-by-config: `prop-attr-data-current="current"` stamps data-current on the
      root (same interpolation b-icon uses for data-size); stack-diagram.css keys the fill off
@@ -12,7 +16,7 @@
      the 15/14/12.5 scale) is kept. No chromatic accent, no client JS. -->
 <svg class="stack-diagram" prop-attr-data-current="current"
      viewBox="0 0 620 240" width="100%" role="img"
-     aria-label="The BREAD stack drawn as four layers built bottom to top — BATCH, then GRAIN, then MILL, then PROOF — each resting on the ones below, all wrapped by PANTRY, the app that composes them."
+     aria-label="The BREAD stack drawn as layers built bottom to top — BATCH, then GRAIN, then MILL, then PROOF and CRUMB sharing the top row — each resting on the ones below, all wrapped by PANTRY, the app that composes them."
      xmlns="http://www.w3.org/2000/svg">
 
   <!-- PANTRY: the enclosing frame (the composition root), not a fifth layer -->
@@ -27,10 +31,14 @@
     <polyline class="dir-head" points="42,76 48,64 54,76" fill="none"/>
   </g>
 
-  <!-- the four layers, top → bottom in source (PROOF on top, BATCH the base) -->
+  <!-- the top row: PROOF and CRUMB share the same altitude (both build on GRAIN + MILL) -->
   <g data-layer="proof">
-    <rect class="bar" x="70" y="62" width="480" height="28" rx="6"/>
-    <text class="bar-label" x="310" y="76" text-anchor="middle" dominant-baseline="central">PROOF</text>
+    <rect class="bar" x="70" y="62" width="235" height="28" rx="6"/>
+    <text class="bar-label" x="187.5" y="76" text-anchor="middle" dominant-baseline="central">PROOF</text>
+  </g>
+  <g data-layer="crumb">
+    <rect class="bar" x="315" y="62" width="235" height="28" rx="6"/>
+    <text class="bar-label" x="432.5" y="76" text-anchor="middle" dominant-baseline="central">CRUMB</text>
   </g>
   <g data-layer="mill">
     <rect class="bar" x="70" y="98" width="480" height="28" rx="6"/>

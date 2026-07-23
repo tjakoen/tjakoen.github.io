@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CRUMB · a guided tour over the live app</title>
+  <meta name="description" content="CRUMB: the guided-tour, demo-mode, and AI-review layer. Tours are markdown files that highlight real, live surfaces one at a time, using GRAIN's own lamp. Live: this site's own Tour runs on this exact package.">
+</head>
+<body data-screen="crumb" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="board">
+    <p class="eyebrow">🍪 <span class="name">CRUMB</span> · Guided tours</p>
+    <h1 class="masthead">A tour of the real thing, not a copy of it.</h1>
+    <hr class="rule">
+    <p class="lede">CRUMB is the stack's guided-tour, demo-mode, and AI-review layer. A tour is one markdown
+      file; CRUMB turns it into a walkthrough that highlights real, live surfaces in your running app, one at
+      a time, using <span class="name">GRAIN</span>'s own traveling lamp. It never edits your app or your
+      data, it only reads and highlights. The same tour doubles as an AI-review walkthrough when you flip it
+      to dev mode.</p>
+    <span class="flag">Live · the "Tour" entry point on this site runs on this exact package</span>
+
+    <div class="section-head"><span>The idea</span></div>
+    <div class="card-grid">
+      <div class="card" data-pad="sm"><h3 class="card__title">Tours are markdown</h3><p class="card__body">One file, minimal frontmatter, then a body where every step heading is a step. No separate steps array to keep in sync with the prose.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Never writes, only reads</h3><p class="card__body">CRUMB highlights the live app; it never edits it, and it never writes back to the tour file. Delete CRUMB and the tours stay readable markdown.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Two modes, one component</h3><p class="card__body">Demo mode is an onboarding walkthrough. Dev mode is a post-change AI review, review/status/verify added per step. Same tour, one attribute flips.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Reuses, doesn't rebuild</h3><p class="card__body">It borrows GRAIN's lamp for the spotlight and MILL's frontmatter parser for the grammar, rather than shipping either again. A thin layer on top of both.</p></div>
+    </div>
+
+    <div class="section-head"><span>The design</span></div>
+    <p class="lede">CRUMB depends on <span class="name">GRAIN</span> and <span class="name">MILL</span>, both
+      already installed and wired into the host app. This site's own guided tour
+      (<code>content/tours/portfolio.md</code>) is the worked example: the "Tour" entry point on the desk
+      launches it through the crumb frame. The grammar, the two read-only routes it serves, and the design
+      law are written up in the CRUMB plan that ships beside the code.</p>
+    <div class="docs-list">
+      <div class="docs-list__item"><a class="docs-list__name" href="/crumb/docs/getting-started">crumb/docs: getting started</a><span class="docs-list__what">install, mount over a tours folder, and start a guided tour of a live app.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="/crumb/docs/write-a-tour">crumb/docs: write a tour</a><span class="docs-list__what">the tour markdown grammar, frontmatter, the step heading, a real worked example.</span></div>
+      <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen/grain/tree/main/packages/crumb">crumb on GitHub</a><span class="docs-list__what">the source, inside the grain monorepo.</span></div>
+    </div>
+
+    <div class="section-head"><span>Where it sits in the stack</span></div>
+    <stack-diagram current="crumb"></stack-diagram>
+
+    <div class="page-foot">
+      Part of <a href="/">tjakoen.github.io</a>. Built on <a href="/grain"><span class="name">GRAIN</span></a>
+      and <a href="/mill"><span class="name">MILL</span></a>.
+      <p>Part of the <a href="/bread">BREAD stack</a>, alongside <a href="/batch">BATCH</a>,
+        <a href="/grain">GRAIN</a>, <a href="/mill">MILL</a>, <a href="/proof">PROOF</a>, and
+        <a href="/pantry">PANTRY</a>.</p>
+      <p>🤖 Built with Claude. I don't prompt and pray, I prompt and prove. Every commit here is
+        co-authored with an AI, on purpose. <a href="/notes/ten-times-zero">How I actually work with AI, receipts and all →</a></p>
+    </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

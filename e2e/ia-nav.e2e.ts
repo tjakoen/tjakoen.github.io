@@ -41,7 +41,7 @@ test.describe("Phase 4 — IA/navigation correctness", () => {
     await page.goto("/");
     await page.evaluate(() => {
       localStorage.setItem("grain.tabs.open", JSON.stringify([
-        "/grain", "/batch", "/mill", "/proof", "/pantry", "/greenroom",
+        "/grain", "/batch", "/mill", "/proof", "/crumb", "/pantry", "/greenroom",
         "/docs", "/reference", "/notes", "/loop", "/resume", "/about",
       ]));
     });

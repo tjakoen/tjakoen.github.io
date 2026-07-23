@@ -52,6 +52,14 @@
           never the other way round. The AI maintains the files; the board is for the human watching.</p>
         <span class="work-card__go">See the board →</span>
       </a>
+      <a class="card work-card" href="/crumb">
+        <div class="work-card__head"><span class="work-card__name name">🍪 CRUMB</span><span class="work-card__kind">Guided tours</span></div>
+        <span class="flag">Live · the tour on this site runs on this exact package</span>
+        <p class="card__body">Also above GRAIN and MILL: tours are markdown files, and CRUMB turns them into a
+          guided walkthrough that highlights real, live surfaces. It never edits your app, only reads and
+          highlights it, and doubles as an AI-review mode.</p>
+        <span class="work-card__go">See the tour layer →</span>
+      </a>
     </div>
 
     <div class="section-head"><span>The app that runs them</span></div>
@@ -72,8 +80,9 @@
     <div class="section-head"><span>One direction of dependency</span></div>
     <p class="lede">Each layer builds only on the ones beneath it: <span class="name">BATCH</span> imports nothing
       inward, <span class="name">GRAIN</span> imports nothing from BATCH but one port, <span class="name">MILL</span>
-      sits above both, and <span class="name">PROOF</span> sits above MILL. That purity is what lets each become
-      its own repo once proven.</p>
+      sits above both, and <span class="name">PROOF</span> sits above MILL. <span class="name">CRUMB</span> sits
+      at that same altitude, also above GRAIN and MILL, reusing GRAIN's lamp and MILL's parser rather than
+      shipping either again. That purity is what lets each become its own repo once proven.</p>
     <div class="flow" aria-hidden="true">
       <div class="flow__node">BATCH<br><small>substrate</small></div>
       <div class="flow__arrow">→</div>
@@ -82,6 +91,8 @@
       <div class="flow__node">MILL<br><small>content engine</small></div>
       <div class="flow__arrow">→</div>
       <div class="flow__node">PROOF<br><small>plan board</small></div>
+      <div class="flow__arrow">+</div>
+      <div class="flow__node">CRUMB<br><small>guided tours</small></div>
     </div>
     <p class="lede">PANTRY (and this portfolio) mount all four into one running server: two composition roots,
       one stack, honest about which parts are live and which are still building.</p>

@@ -21,7 +21,7 @@
 
     <figure class="docs-map">
       <svg class="stack-diagram" viewBox="0 0 620 240" width="100%" role="group"
-           aria-label="The BREAD stack drawn as four layers, each a link into its docs — pick a layer."
+           aria-label="The BREAD stack drawn as layers, each a link into its docs — pick a layer."
            xmlns="http://www.w3.org/2000/svg">
         <!-- PANTRY: the enclosing frame (composition root), a link to its page. fill:none keeps the
              interior non-interactive so the layer bars inside stay independently clickable. -->
@@ -34,9 +34,14 @@
           <line class="dir-line" x1="48" y1="196" x2="48" y2="68"/>
           <polyline class="dir-head" points="42,76 48,64 54,76" fill="none"/>
         </g>
+        <!-- PROOF and CRUMB share the top row: both build on GRAIN + MILL, same altitude -->
         <a href="/proof"><g data-layer="proof"><title>PROOF — the AI plan board (trailhead)</title>
-          <rect class="bar" x="70" y="62" width="480" height="28" rx="6"/>
-          <text class="bar-label" x="310" y="76" text-anchor="middle" dominant-baseline="central">PROOF</text>
+          <rect class="bar" x="70" y="62" width="235" height="28" rx="6"/>
+          <text class="bar-label" x="187.5" y="76" text-anchor="middle" dominant-baseline="central">PROOF</text>
+        </g></a>
+        <a href="/crumb"><g data-layer="crumb"><title>CRUMB — the guided-tour layer (trailhead)</title>
+          <rect class="bar" x="315" y="62" width="235" height="28" rx="6"/>
+          <text class="bar-label" x="432.5" y="76" text-anchor="middle" dominant-baseline="central">CRUMB</text>
         </g></a>
         <a href="/mill"><g data-layer="mill"><title>MILL — the content engine (trailhead)</title>
           <rect class="bar" x="70" y="98" width="480" height="28" rx="6"/>
@@ -51,8 +56,8 @@
           <text class="bar-label" x="310" y="184" text-anchor="middle" dominant-baseline="central">BATCH</text>
         </g></a>
       </svg>
-      <figcaption>Pick a layer to open its docs. BATCH and GRAIN have full doc sets; MILL and PROOF
-        open their trailheads; PANTRY is the app that composes them.</figcaption>
+      <figcaption>Pick a layer to open its docs. BATCH and GRAIN have full doc sets; MILL, PROOF, and
+        CRUMB open their trailheads; PANTRY is the app that composes them.</figcaption>
     </figure>
 
     <div class="section-head"><span>Getting started</span></div>
