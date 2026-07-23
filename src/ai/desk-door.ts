@@ -17,7 +17,7 @@ import type { RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
-import { pickProfile, WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
+import { pickProfile, canRunStrong, WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
 import { makeDeskReasoner, type DeskNote } from "./desk-reasoner.ts";
 import { buildCatalog, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
@@ -53,6 +53,7 @@ const loc = (): { assign(u: string): void; pathname?: string } | undefined =>
   (globalThis as unknown as { location?: { assign(u: string): void; pathname?: string } }).location;
 interface WebStorage { getItem(k: string): string | null; setItem(k: string, v: string): void; removeItem(k: string): void }
 const ss = (): WebStorage | undefined => (globalThis as unknown as { sessionStorage?: WebStorage }).sessionStorage;
+const ls = (): WebStorage | undefined => (globalThis as unknown as { localStorage?: WebStorage }).localStorage;
 
 /** Mark the DESK CHAT offline (portfolio-owned marker). Not the global presence flag — the door and
  *  stub demos stay online; only the chat composer + chips hide (portfolio-frame.css). */
@@ -93,11 +94,84 @@ const tierOverride = ((): "weak" | "strong" | undefined => {
     return valid(ss()?.getItem(TIER_KEY) ?? null);
   } catch { return undefined; }
 })();
-const profile = pickProfile(deviceCap, tierOverride);
+// The visitor's own model CHOICE (the first-load picker / the `model` command), persisted in
+// localStorage so it sticks across the MPA's page loads. A saved "strong" only stands if this device
+// can actually run the 1.5B (`canRunStrong`) — a device downgrade between visits must not strand the
+// desk on an OOM. An explicit `?tier=` override still wins over the saved choice.
+const MODEL_KEY = "tj.desk-model";
+const strongSupported = canRunStrong(deviceCap);
+const savedChoice = ((): "weak" | "strong" | undefined => {
+  try {
+    const v = ls()?.getItem(MODEL_KEY);
+    if (v === "weak") return "weak";
+    if (v === "strong") return strongSupported ? "strong" : "weak";
+  } catch { /* no localStorage */ }
+  return undefined;
+})();
+const chosenTier = tierOverride ?? savedChoice;             // what the visitor asked for (if anything)
+const profile = pickProfile(deviceCap, chosenTier);         // override > saved choice > auto-by-device
+const recommendedProfile = pickProfile(deviceCap);          // the auto pick, for the "based on your system" line
 // If we picked the STRONG tier, hand the reasoner the weak profile as a fallback: a device tiered up
 // too far (a first-load OOM) drops to the 0.5B instead of going offline. Already-weak → nothing lighter.
 const fallbackProfile = profile === WEAK_PROFILE ? undefined : WEAK_PROFILE;
 const probe = (): Promise<boolean> => Promise.resolve(canRun);
+
+// A friendly "based on your system" label from the UA (browser + OS) and deviceMemory when exposed —
+// grounding the picker's recommendation in what the visitor is actually on (their ask).
+function describeSystem(): string {
+  const ua = (globalThis as unknown as { navigator?: { userAgent?: string } }).navigator?.userAgent ?? "";
+  const browser = /Edg\//.test(ua) ? "Edge" : /Firefox\//.test(ua) ? "Firefox"
+    : /Chrome\//.test(ua) ? "Chrome" : /Safari\//.test(ua) ? "Safari" : "your browser";
+  const os = /iPhone|iPad|iPod/.test(ua) ? "iOS" : /Mac/.test(ua) ? "macOS"
+    : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Linux/.test(ua) ? "Linux" : "";
+  const mem = typeof deviceCap.deviceMemory === "number" ? `~${deviceCap.deviceMemory}GB RAM` : "";
+  return [browser, os && `on ${os}`, mem].filter(Boolean).join(" ") || "your device";
+}
+const recommendationLine = ((): string => {
+  const rec = recommendedProfile === WEAK_PROFILE ? "0.5B" : "1.5B";
+  const why = recommendedProfile === WEAK_PROFILE
+    ? "light and quick, runs anywhere"
+    : "sharper answers, worth the bigger one-time download";
+  const base = `Based on your system (${describeSystem()}), I'd go with the ${rec} — ${why}.`;
+  return strongSupported ? base
+    : `${base} (Your browser can't run the 1.5B here, so it's the 0.5B either way.)`;
+})();
+
+// Persist a model choice and reload so the door re-composes with it: the profile is chosen at module
+// load, and no model is loaded yet at pick time, so a reload is the clean, cheap way to swap the tier.
+const setModel = (tier: "weak" | "strong"): void => {
+  if (tier === "strong" && !strongSupported) return;      // never strand on an unsupported strong
+  try { ls()?.setItem(MODEL_KEY, tier); } catch { /* no localStorage */ }
+  try { (globalThis as unknown as { location?: { reload(): void } }).location?.reload(); } catch { /* ignore */ }
+};
+// Expose the model state + switch for the `model` terminal command (desk-commands.js).
+(globalThis as unknown as { tjDeskModel?: unknown }).tjDeskModel = {
+  current: profile === WEAK_PROFILE ? "weak" : "strong",
+  supported: strongSupported,
+  recommended: recommendedProfile === WEAK_PROFILE ? "weak" : "strong",
+  chosen: !!chosenTier,
+  line: recommendationLine,
+  set: setModel,
+};
+
+// One delegated click handler for the first-load picker chips (data-set-model). Installed lazily the
+// first time a picker is shown; a disabled chip (unsupported 1.5B) carries no data-set-model, so it
+// never fires. Module-scoped guard so multiple door instances (unlikely) don't stack listeners.
+let pickerWired = false;
+function installPickerHandler(): void {
+  if (pickerWired) return;
+  pickerWired = true;
+  const d = (globalThis as unknown as {
+    document?: { addEventListener(t: string, h: (e: unknown) => void): void };
+  }).document;
+  d?.addEventListener("click", (e: unknown) => {
+    const target = (e as { target?: { closest?(s: string): { getAttribute(a: string): string | null } | null } }).target;
+    const btn = target?.closest?.("[data-set-model]");
+    if (!btn) return;
+    const tier = btn.getAttribute("data-set-model");
+    if (tier === "weak" || tier === "strong") setModel(tier);
+  });
+}
 
 // Load a GIVEN profile's model through grain's transport: grain owns the CDN import + warm-up, the desk
 // supplies WHICH model (profile.id) + its context window and forwards download progress to the load bar.
@@ -235,5 +309,21 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // is never forced to load the model just by navigating (this is an MPA: the engine reloads per page).
   const warm = (() => { try { return ss()?.getItem("desk-warm") === "1"; } catch { return false; } })();
   if (warm && !droveHere) void reasoner.arrive(applyOp);
+  // First-load model picker: a fresh visit (no ?tier, no saved choice) where a model CAN run gets the
+  // choice up front — the "based on your system" line + two chips (the 1.5B disabled with a note when
+  // the device can't run it). Skipped once warm (mid-conversation) or when the desk drove us here, so
+  // it never interrupts. Clicking a chip persists the choice and reloads (installPickerHandler).
+  if (!chosenTier && canRun && !warm && !droveHere) {
+    const strongChip = strongSupported
+      ? `<button type="button" class="suggest-chip" data-set-model="strong">1.5B · better (~1.1GB)</button>`
+      : `<button type="button" class="suggest-chip" disabled aria-disabled="true" title="Your browser can't run the 1.5B here">1.5B · unsupported</button>`;
+    const body = `${grainKit.esc(recommendationLine)} Pick a model to start:` +
+      `<div class="assistant__suggest-chips" data-suggest-chips>` +
+      `<button type="button" class="suggest-chip" data-set-model="weak">0.5B · fast (~350MB)</button>` +
+      strongChip + `</div>`;
+    applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
+      html: grainKit.chatBubble("ai", "grain", grainKit.chatBody(body), "Desk") });
+    installPickerHandler();
+  }
   return grainDoor.createClientDoor(applyOp, { reasoner });
 }
