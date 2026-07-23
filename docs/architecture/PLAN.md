@@ -46,7 +46,7 @@ prerender crawl that boots the app, walks its routes, and writes static files.
     folder. (Superseded model, kept for history: the docs used to ride inside each layer's package
     and resolve via `import.meta.resolve('@tjakoen/grain/docs/…')`.) The renderer is **MILL**, promoted from "a content
   route inside the BATCH app" to its **own top-level project** (memory: portfolio-cms-separate-project).
-  - **Definition — MILL = "Markdown In, Living Layouts"** *(canonical plan: [`mill/PLAN.md`](../../../mill/PLAN.md); this is the consumer view)*: a **standalone, reusable, open-source CMS**.
+  - **Definition — MILL = "Markdown In, Living Layouts"** *(canonical plan: [`mill/PLAN.md`](https://github.com/tjakoen/grain/blob/main/packages/mill/PLAN.md); this is the consumer view)*: a **standalone, reusable, open-source CMS**.
     Feed it `.md` + images and it renders **GRAIN** pages on the theme. It is the **fourth top-level
     project** alongside `batch/`, `grain/`, `project/`, `tjakoen.github.io/`, and it **depends on GRAIN (its
     components) and BATCH (the substrate), never the reverse** — a new layer *above* both

@@ -81,7 +81,7 @@ Each is a conviction, not a preference. We hold them until the code proves one w
   after. → [CONVENTIONS §6](../../batch/docs/CONVENTIONS.md)
 - **Content is Markdown; pages are a projection of it.** Human-authored content lives as `.md` +
   images and is rendered to GRAIN pages by **MILL** — one content source, many consumers (human page,
-  RAG corpus, published docs). → [mill/PLAN.md](../../mill/PLAN.md)
+  RAG corpus, published docs). → [mill/PLAN.md](https://github.com/tjakoen/grain/blob/main/packages/mill/PLAN.md)
 
 ## What we reject
 
@@ -115,7 +115,7 @@ batch/   BATCH — the substrate (Bun · Addressable · TypeScript · CSS · htm
 | AI contract (surfaces, ops, manifest, "AI acts") | [AI-INTERFACE.md](../../grain/docs/AI-INTERFACE.md) |
 | visual identity / grade-as-signal | [DESIGN-SYSTEM.md](../../grain/docs/DESIGN-SYSTEM.md) |
 | the design system overview | [GRAIN.md](../../grain/docs/GRAIN.md) |
-| the CMS | [mill/PLAN.md](../../mill/PLAN.md) |
+| the CMS | [mill/PLAN.md](https://github.com/tjakoen/grain/blob/main/packages/mill/PLAN.md) |
 | the operable SSOT (types) | `grain/ai/contract.ts` |
 
 Showcase pages (`/grain`, `/batch`) and the whitepaper are **projections** of these docs —
