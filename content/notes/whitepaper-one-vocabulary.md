@@ -542,7 +542,7 @@ human click does, through the one door, with the grade following.
 **Out of scope (measured, but not evidence for this thesis).** What is built with GRAIN, how it is bundled,
 and where it is deployed do not bear on the modality and are not evaluated here. For completeness, the
 substrate's no-build / native-first cost has since been measured directly: the same reference app built
-four ways and audited by one harness (`framework-bench`, memory `framework-comparison-methodology`). On
+four ways and audited by one harness ([framework-bench](https://tjakoen.github.io/framework-bench/), memory `framework-comparison-methodology`). On
 the one measured interaction the native / BATCH build ships about 2kb of JavaScript against Next.js's
 118kb for the identical filter, roughly 163× less, with the SEO/AEO head held identical across all four so
 the comparison is fair. Those numbers are real and we stand behind them, but they measure the *substrate*,
