@@ -72,7 +72,7 @@ const aiLayer = createInteractionLayer({
 `stream` is the `OpChannel` port (push-to-a-session); `archiveItem`/`renderSurface` are the scoped
 write capability GRAIN is handed — it never reaches storage on its own. Every request that reaches
 `POST /intent` ends up at `aiLayer.handleIntent(...)`
-([`routes/ai-routes.ts`](../../routes/ai-routes.ts)), which validates the intent
+([`src/routes/ai-routes.ts`](../../src/routes/ai-routes.ts)), which validates the intent
 against the registry from step 1 before it ever reaches your code:
 
 ```ts
@@ -102,7 +102,7 @@ branch — write, then hand back a `RenderOp` addressed at the surface it touche
 A click on the button (`data-action="item.archive"`) is turned by the client dispatcher
 (`grain/scripts/ai-dispatch.js`) into `POST /intent`. The HTTP door always stamps
 `source: "user"` — the client can never self-declare as the AI
-([`routes/ai-routes.ts`](../../routes/ai-routes.ts) `parseIntent`). What you
+([`src/routes/ai-routes.ts`](../../src/routes/ai-routes.ts) `parseIntent`). What you
 watched happen in step 4 runs identically no matter what triggered it: a plain click, or (once a
 real model is wired at M★, see [ROADMAP.md](https://github.com/tjakoen/bread/blob/main/ROADMAP.md#the-one-milestone-that-changes-what-this-is)) an in-process decision. Same door,
 same registry, same reasoner — that symmetry is the whole point.

@@ -220,7 +220,7 @@ appropriate tier(s). Run: `bun run test` (unit + integration), `bun run test:e2e
 
 **Tests travel with the code they test** (this is what makes the repo split clean, §10):
 unit tests are colocated in `batch`/`grain`/`project`; the door **integration** test lives in
-`tjakoen.github.io/routes/` (it exercises the app's composition); **e2e** lives in `tjakoen.github.io/e2e/` because
+`tjakoen.github.io/src/routes/` (it exercises the app's composition); **e2e** lives in `tjakoen.github.io/e2e/` because
 it drives the *product*. `batch`/`grain` carry only their own unit tests; a grain demo harness
 would get its own e2e when grain is extracted.
 

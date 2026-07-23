@@ -733,7 +733,7 @@ without dragging in the full task domain yet.
 | Reasoner boundary + stub | `grain/ai/reasoner.ts` | grain |
 | The one door (single writer) | `grain/ai/interaction-layer.ts` | grain |
 | Manifest (harvested, can't drift) | `grain/ai/manifest.ts` + `grain/ai/accepts.ts` | grain |
-| Routes (`/intent`, `/stream`, `/ai/manifest`, `/ui/loop`) | `tjakoen.github.io/routes/ai-routes.ts` | app (wiring) |
+| Routes (`/intent`, `/stream`, `/ai/manifest`, `/ui/loop`) | `tjakoen.github.io/src/routes/ai-routes.ts` | app (wiring) |
 | Dispatcher island | `grain/scripts/ai-dispatch.js` | grain |
 | Demo page + card | `tjakoen.github.io/view/pages/loop.html`, `tjakoen.github.io/view/components/molecules/loop-card/` | app |
 

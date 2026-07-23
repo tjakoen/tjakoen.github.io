@@ -26,9 +26,9 @@ the build starts from what's real, not a guess.
 ### The one door (this part is solid, build on it)
 Every human or AI action becomes one `Intent`, crosses one door, and comes back as `RenderOp`s
 addressed to semantic surfaces (`@tjakoen/grain/ai/contract.ts`). The portfolio wires a **real local
-model** (`Qwen2.5-0.5B` via WebLLM) behind GRAIN's `Reasoner` contract in `ai/desk-reasoner.ts`; it
+model** (`Qwen2.5-0.5B` via WebLLM) behind GRAIN's `Reasoner` contract in `src/ai/desk-reasoner.ts`; it
 handles `chat.send`, and delegates every other verb to the stub. Navigation already works two ways:
-a deterministic alias router (`ai/actions.ts`) and the model's own `NAVIGATE:<route>` choice, scoped
+a deterministic alias router (`src/ai/actions.ts`) and the model's own `NAVIGATE:<route>` choice, scoped
 to the live nav targets on the page. The traveling lamp + terminal narration make the AI's steps
 visible. **The plumbing for "the AI acts like a human" is here.** The gaps are in *what it can see*,
 *what verbs exist*, and *whether it can chain steps*.
@@ -41,14 +41,14 @@ visible. **The plumbing for "the AI acts like a human" is here.** The gaps are i
 - `nav:<route>` lines distilled from the manifest — the sidebar/dock links. This is the richest
   real signal today, and it is why navigation is the one agentic thing that works well.
 - `pageText()` — the readable content, for "summarize this page."
-- The grounding corpus (`ai/knowledge.ts`, `ai/retrieval.ts`, `ai/facts.md`) — notes + facts, RAG.
+- The grounding corpus (`src/ai/knowledge.ts`, `src/ai/retrieval.ts`, `src/ai/facts.md`) — notes + facts, RAG.
 
 **Gap:** the AI can see *where it can go* and *what the page says*, but not *what it can operate*. A
 form, a field, a button, a note card — none are addressable, so none show up as "things the AI can
 act on."
 
 ### What the AI can DO today
-`ai/desk-reasoner.ts` routes a request to: grounded chat, navigate, open-latest-note, summarize,
+`src/ai/desk-reasoner.ts` routes a request to: grounded chat, navigate, open-latest-note, summarize,
 capabilities ("what can I do here"), and clarify/choices (the AI asks, the human picks — via grain's
 first-class `choices` op). That last one is the seed of the interaction you want. **But every path is
 single-turn:** route once, act or answer, done. There is no multi-step task the AI carries across
@@ -63,7 +63,7 @@ list, no "here is what the AI would do"), and it is barely discoverable (no obvi
 
 ### The contact flow today
 `view/pages/mail.html` has a **real** `<form class="compose" data-compose>` with subject/body inputs that
-builds a `mailto:` and hands off to the visitor's mail app. `ai/actions.ts` even maps "contact" →
+builds a `mailto:` and hands off to the visitor's mail app. `src/ai/actions.ts` even maps "contact" →
 navigate to `/about`. **But the compose fields carry no `data-surface`, and there is no verb to set a
 field or submit a form.** So today the desk can get you *near* contact, but cannot fill it or send it.
 This is the exact flagship gap.
