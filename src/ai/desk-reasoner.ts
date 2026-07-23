@@ -339,6 +339,21 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         return acc;
       };
 
+      // Type a DETERMINISTIC (non-model) answer into the bubble the same way a model reply streams —
+      // word by word — so an instant answer (capabilities, a nav announce) reads as the desk chatting,
+      // not a hard drop of the whole line. Same typeToken/settleOp path as streamInto (the first token
+      // wipes "Thinking…"). Cancellable, so a "stop" mid-type settles cleanly like a real stream.
+      const typeOut = async (answer: string): Promise<void> => {
+        setBodyRaw(THINKING, "pending");
+        const parts = answer.match(/\S+\s*/g) ?? [answer];   // word-groups (trailing space kept)
+        for (const part of parts) {
+          if (tools.cancelled()) { setBody(esc("Stopped."), "committed"); return; }
+          tools.emit(deps.kit.typeToken(id, part));
+          await tools.delay(22);
+        }
+        tools.emit(deps.kit.settleOp(id));
+      };
+
       // Travel the lamp to a nav link, "click" it, then leave the page — the ONE sequence shared by
       // every navigation-driving path (deterministic latest-note, deterministic section nav, and the
       // model's own NAVIGATE:<route> choice below), so the choreography can't drift between them.
@@ -373,7 +388,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const pageBit = operables.length ? ` GRAIN tells me this page also lets you ${joinPhrases(operables)}.` : "";
           const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, or jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes).${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
           await minThink();
-          setBody(esc(line), "committed");
+          await typeOut(line);
           setChips([...ACTION_CHIPS, "Take me to GRAIN", "Open the notes"]);
           return { ok: true, ops: [], reply: line };
         }
@@ -392,7 +407,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const target = notes[0];
           if (target && deps.navigate) {
             await minThink();
-            setBody(esc(`Opening the latest note, “${target.title}”.`), "committed");
+            await typeOut(`Opening the latest note, “${target.title}”.`);
             await travelAndNavigate("/notes", target.route, "Notes", `Here's the latest note, “${target.title}”.`, "the notebook");
             return { ok: true, ops: [], reply: `Opening ${target.title}` };
           }
@@ -410,7 +425,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const dest = resolveNav(text, catalog);
           if (dest) {
             await minThink();
-            setBody(esc(`Taking you to ${dest.label}.`), "committed");
+            await typeOut(`Taking you to ${dest.label}.`);
             await travelAndNavigate(dest.route, dest.route, dest.label, `Here's ${dest.label}.`, "the navigation");
             return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
           }

@@ -251,7 +251,9 @@ describe("makeDeskReasoner — UI actions (the showcase: the desk drives the pag
 
     expect(loads).toBe(0);                                   // capabilities never downloads the model
     expect(d.reply).toContain("open the latest note");
-    expect(body(ops)!.html).toContain("GRAIN");             // page title woven in
+    expect(d.reply).toContain("GRAIN");                     // page title woven in (typed into the bubble, not dropped)
+    // typed out word by word (typeOut), not a single hard drop: more than just the pending bubble op
+    expect(ops.filter((o) => String(o.target).startsWith("chat-msg:")).length).toBeGreaterThan(1);
     expect(chipsOf(ops)!.html).toContain("Summarize this page");
     expect(chipsOf(ops)!.html).toContain("What can I do here?");   // pinned
   });
@@ -274,7 +276,8 @@ describe("makeDeskReasoner — UI actions (the showcase: the desk drives the pag
 
     expect(d.reply).toContain("archive a task");        // derived from the manifest's item target
     expect(d.reply).not.toContain("watch the desk act out a live demo");   // the generic `screen` was skipped
-    expect(body(ops)!.html).toContain("archive a task");
+    // the manifest-derived line is TYPED into the bubble (typeOut), so the answer reaches the chat
+    expect(ops.filter((o) => String(o.target).startsWith("chat-msg:")).length).toBeGreaterThan(1);
   });
 
   test("open the latest note: narrate → spotlight the note surface → navigate, no model", async () => {
