@@ -32,6 +32,6 @@ test.describe("the /docs diagram-led map", () => {
     await expect(page.locator(".board")).toContainText("Getting started");
     await expect(page.locator(".board")).toContainText("Standards");
     // the fixed Contribute links point at real GitHub blobs, not the bare profile
-    await expect(page.locator('a[href$="/blob/main/HACKING.md"]')).toBeVisible();
+    await expect(page.locator('a[href$="/blob/main/docs/HACKING.md"]')).toBeVisible();
   });
 });

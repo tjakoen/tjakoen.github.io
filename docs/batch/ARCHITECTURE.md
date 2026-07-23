@@ -97,7 +97,7 @@ This records *why* the choices were made and what they cost — so future decisi
 are made with eyes open, not by inertia.
 
 > The *values* behind these choices — the beliefs, stated crisply — live in
-> [`PHILOSOPHY.md`](../../PHILOSOPHY.md). This section is the engineering rationale and the costs.
+> [`PHILOSOPHY.md`](../PHILOSOPHY.md). This section is the engineering rationale and the costs.
 
 **Why a hypermedia / server-rendered-fragment stack.** Avoids a client framework,
 a build step, and client/server state-sync bugs; yields a standards-based stack
