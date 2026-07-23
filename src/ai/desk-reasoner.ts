@@ -110,18 +110,13 @@ const OFFLINE_LINE =
 const NAV_GLIDE_MS = 550;
 
 export interface DeskDeps {
-  /** The active model profile (webllm-loader.ts) — the model id's tuning: generation caps, penalties,
-   *  the prompt budget, and the load-bar copy. desk-door picks it from grain's device probe and injects
-   *  it, so every size-dependent knob below flows from ONE choice (weak 0.5B vs. strong 1.5B). This is
-   *  the STARTING profile; the reasoner may drop to `fallbackProfile` if it fails to load. */
+  /** The model profile (webllm-loader.ts) — the model id's tuning: generation caps, penalties, the
+   *  prompt budget, and the load-bar copy. desk-door injects it, so every size-dependent knob below
+   *  flows from ONE choice (the weak 0.5B — the only model the demo runs). */
   profile: ModelProfile;
-  /** The lighter profile to retry with if `profile` fails to load (commonly an OOM on a device tiered
-   *  up too far). Undefined when `profile` is already the weakest — nothing lighter to fall back to. */
-  fallbackProfile?: ModelProfile;
   /** WebGPU (+ memory) available? */
   probe: () => Promise<boolean>;
-  /** Load + warm the engine for a GIVEN profile, reporting download progress. Takes the profile (not a
-   *  baked-in id) so the reasoner can retry with the fallback profile after a failed load. */
+  /** Load + warm the engine for the profile, reporting download progress. */
   loadEngine: (profile: ModelProfile, onProgress: (p: EngineProgress) => void) => Promise<DeskEngine>;
   /** GRAIN's streaming chat transport (`@tjakoen/grain/ai/model-chat.ts` streamChat) — yields content
    *  token deltas; BREAKING the `for await` (a stop, the loop-guard) interrupts generation for us, so
@@ -220,10 +215,8 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
   const RUN = Math.random().toString(36).slice(2, 8);
   let degraded = false;                          // sticky: once offline, chat stays offline this session
   let enginePromise: Promise<DeskEngine | null> | null = null;
-  // The CURRENT profile — starts at the device-picked one, but drops to deps.fallbackProfile if that
-  // fails to load (see ensureEngine). Mutable + read for EVERY size-dependent knob below, so a fallback
-  // swaps the model AND its tuning together (a 0.5B must not run with the 1.5B's prompt budget).
-  let profile = deps.profile;
+  // The model profile — read for EVERY size-dependent knob below (generation caps, prompt budget, penalties).
+  const profile = deps.profile;
   const history: ChatMessage[] = [];             // last turns (buildPrompt clips the window)
   // GRAIN's chat markup, via the injected kit (arg order adapted to the desk's call sites).
   const bubble = deps.kit.chatBubble;
@@ -231,23 +224,13 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
 
   // Load the engine once (probe-gated). Returns null on unavailable/failed and flips the desk
   // offline. Memoized so only the first chat.send pays the download; later sends reuse the engine.
-  // On a failed load of the STRONG tier, retry ONCE with the lighter fallback profile before giving up:
-  // a device we tiered up too far (a visible OOM) drops to the weak model instead of going offline.
+  // A failed load just degrades to offline (the try/catch below) — there's one model, nothing lighter.
   async function ensureEngine(onProgress: (p: EngineProgress) => void): Promise<DeskEngine | null> {
     if (degraded) return null;
     if (!enginePromise) {
       enginePromise = (async () => {
         if (!(await deps.probe())) return null;
-        try {
-          return await deps.loadEngine(profile, onProgress);
-        } catch (err) {
-          if (deps.fallbackProfile && profile !== deps.fallbackProfile) {
-            console.warn(`[desk] ${profile.label} failed to load — falling back to ${deps.fallbackProfile.label}`, err);
-            profile = deps.fallbackProfile;                     // swap model + tuning together
-            return await deps.loadEngine(profile, onProgress);  // retry once; a throw here degrades below
-          }
-          throw err;
-        }
+        return await deps.loadEngine(profile, onProgress);
       })();
     }
     try {

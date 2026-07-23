@@ -59,7 +59,7 @@
   t.register({ name: "clearcache", args: "", help: "wipe everything saved here — chat, notes, tabs, the downloaded AI model — and reload", run(ctx) {
     const wipe = window.tjClearCache;
     if (typeof wipe !== "function") { ctx.printErr("the site island isn't up yet — try the Refresh button (top-left)."); return; }
-    ctx.print("this clears EVERYTHING on this device: chat, notes, open tabs, and the model weights (~350MB-1.1GB).");
+    ctx.print("this clears EVERYTHING on this device: chat, notes, open tabs, and the model weights (~350MB).");
     wipe();   // shows the are-you-sure, then wipes + reloads; a no-op on cancel
   }});
   t.register({ name: "bake", args: "", help: "", async run(ctx) {

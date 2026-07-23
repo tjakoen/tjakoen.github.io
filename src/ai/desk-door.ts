@@ -17,7 +17,7 @@ import type { RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
-import { pickProfile, WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
+import { WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
 import { makeDeskReasoner, type DeskNote } from "./desk-reasoner.ts";
 import { buildCatalog, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
@@ -61,10 +61,9 @@ function markOffline(): void {
   if (b) b.dataset.desk = "offline";
 }
 
-// ONE device probe at module load, read two ways (grain owns the probe; the portfolio owns the size
-// CHOICE): the up-front gate drives the offline UX + the reasoner's probe dep, and `pickProfile` maps
-// the SAME capability to a model profile — the strong 1.5B on a clearly capable device (deviceMemory
-// ≥ 8), else the weak 0.5B that runs anywhere WebGPU does.
+// ONE device probe at module load, used only for the up-front WebGPU/memory gate below (grain owns the
+// probe). The model choice is no longer device-derived: the demo runs a single model (the weak 0.5B),
+// so there's nothing to tier — the probe just decides whether ANY model can load here.
 const deviceCap = await grainWebllm.probeDevice();
 // The up-front gate deliberately does NOT trust probeDevice()'s adapter result (`deviceCap.webgpu`).
 // On a COLD Safari load the GPU process isn't warm the instant this module evaluates, so
@@ -78,30 +77,10 @@ const gpuApiPresent = typeof (globalThis as unknown as
   { navigator?: { gpu?: { requestAdapter?: unknown } } }).navigator?.gpu?.requestAdapter === "function";
 const tooLittleMemory = typeof deviceCap.deviceMemory === "number" && deviceCap.deviceMemory < 4;
 const canRun = gpuApiPresent && !tooLittleMemory;
-// Dev knob: `?tier=weak|strong` forces a model tier so both can be exercised on one machine (the
-// auto-by-device pick only ever lands on one). Anything else → auto. The canRunModel gate still applies.
-// PERSISTED for the session: this is an MPA, so a plain URL param would evaporate on the first
-// navigation and the tier would snap back to auto (visible as the model "switching on its own"). We
-// stash the override in sessionStorage on first sight and read it back on every page, so a forced tier
-// sticks across the whole visit — until a new `?tier=` overrides it or the tab closes.
-const TIER_KEY = "desk-tier";
-const tierOverride = ((): "weak" | "strong" | undefined => {
-  const valid = (v: string | null): "weak" | "strong" | undefined => (v === "weak" || v === "strong" ? v : undefined);
-  try {
-    const fromUrl = valid(new URLSearchParams((globalThis as unknown as { location?: { search?: string } }).location?.search ?? "").get("tier"));
-    if (fromUrl) { try { ss()?.setItem(TIER_KEY, fromUrl); } catch { /* no session storage */ } return fromUrl; }
-    return valid(ss()?.getItem(TIER_KEY) ?? null);
-  } catch { return undefined; }
-})();
-// LOCKED to the WEAK (0.5B) tier for the live demo. The 1.5B showed no visible quality gain on the
-// portfolio's short, grounded Q&A while costing a ~1.1GB download, so the first-load model picker and
-// the `model` terminal command were removed (2026-07). The `?tier=strong` dev knob still forces the
-// 1.5B for testing (tierOverride, persisted for the session); nothing a visitor does reaches it.
-const chosenTier = tierOverride ?? "weak";                  // ?tier=strong (dev) > weak default
-const profile = pickProfile(deviceCap, chosenTier);
-// If the dev knob forced STRONG, hand the reasoner the weak profile as a fallback: a device tiered up
-// too far (a first-load OOM) drops to the 0.5B instead of going offline. Already-weak → nothing lighter.
-const fallbackProfile = profile === WEAK_PROFILE ? undefined : WEAK_PROFILE;
+// The one model the desk runs. The 1.5B tier, the device-tiering, and the `?tier=` dev knob were all
+// removed 2026-07 — the demo is a single weak 0.5B, so there's nothing to pick and nothing to fall
+// back to (a failed load just degrades to offline, in ensureEngine).
+const profile = WEAK_PROFILE;
 const probe = (): Promise<boolean> => Promise.resolve(canRun);
 
 // Load a GIVEN profile's model through grain's transport: grain owns the CDN import + warm-up, the desk
@@ -216,8 +195,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   };
 
   const reasoner = makeDeskReasoner({
-    profile,                                      // the device-chosen model + its tuning (weak 0.5B / strong 1.5B)
-    fallbackProfile,                              // the weak model to retry with if the strong one OOMs on load
+    profile,                                      // the one model + its tuning (weak 0.5B)
     probe,
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)
@@ -240,8 +218,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // is never forced to load the model just by navigating (this is an MPA: the engine reloads per page).
   const warm = (() => { try { return ss()?.getItem("desk-warm") === "1"; } catch { return false; } })();
   if (warm && !droveHere) void reasoner.arrive(applyOp);
-  // No model picker: the demo is locked to the 0.5B (see the tier lock up top), so the desk just loads
-  // it on the first message — nothing to choose, no ~1.1GB download to weigh. The `?tier=strong` dev
-  // knob still swaps the profile at module load for testing; a visitor never sees a choice.
+  // No model picker: the demo runs a single 0.5B (see the model choice up top), so the desk just loads
+  // it on the first message — nothing to choose, no download size to weigh.
   return grainDoor.createClientDoor(applyOp, { reasoner });
 }
