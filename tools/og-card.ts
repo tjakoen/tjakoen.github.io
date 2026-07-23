@@ -15,7 +15,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { SITE } from "../src/seo.ts";
 
-const OUT = join(import.meta.dir, "..", "media");
+const OUT = join(import.meta.dir, "..", "content", "media");
 const W = SITE.ogImageW;   // 1200
 const H = SITE.ogImageH;   // 630
 

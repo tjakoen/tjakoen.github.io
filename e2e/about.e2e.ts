@@ -4,7 +4,7 @@
 // because the page already has its main tabs. Contact links out to /mail rather than embedding a
 // second compose form — Mail owns the one send path.
 import { test, expect } from "@playwright/test";
-import cv from "../data/cv.json" with { type: "json" };
+import cv from "../content/data/cv.json" with { type: "json" };
 
 test.describe("the /about profile app (JS on)", () => {
   test.beforeEach(async ({ page }) => {

@@ -15,12 +15,12 @@ const serve = createPortfolioContentRoutes();
 
 test("/notes lists every note in portfolio/notes", async () => {
   const body = await renderNotesFeedPage();
-  const files = (await readdir(join(import.meta.dir, "..", "notes"))).filter(f => f.endsWith(".md"));
+  const files = (await readdir(join(import.meta.dir, "..", "content", "notes"))).filter(f => f.endsWith(".md"));
   for (const f of files) expect(body).toContain(`href="/notes/${f.replace(/\.md$/, "")}"`);
 });
 
 test("every real note renders clean (human grade, no unrenderable construct)", async () => {
-  const files = (await readdir(join(import.meta.dir, "..", "notes"))).filter(f => f.endsWith(".md"));
+  const files = (await readdir(join(import.meta.dir, "..", "content", "notes"))).filter(f => f.endsWith(".md"));
   for (const f of files) {
     const res = await serve(`/notes/${f.replace(/\.md$/, "")}`);
     expect(res?.status).toBe(200);

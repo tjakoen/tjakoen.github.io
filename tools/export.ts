@@ -75,7 +75,7 @@ const DATA_ROUTES = ["/components.css", "/proof.css", "/crumb.css", "/crumb-live
 // Tour launcher 404s on Pages. Enumerated from the same tours/ folder the server mounts, so a new
 // tour exports automatically (parallel to listPlanRoutes for PROOF). The manifest (/crumb/tours.json)
 // travels too — a future launcher lists from it.
-const CRUMB_TOURS_DIR = fileURLToPath(new URL("../tours", import.meta.url));
+const CRUMB_TOURS_DIR = fileURLToPath(new URL("../content/tours", import.meta.url));
 async function crumbTourRoutes(): Promise<string[]> {
   const { tours } = await loadTours(CRUMB_TOURS_DIR);
   return ["/crumb/tours.json", ...tours.map(({ tour }) => `/crumb/tours/${tour.id}.json`)];
