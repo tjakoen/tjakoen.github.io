@@ -16,9 +16,9 @@
 
   // ---- "clear everything" — the full local wipe behind the window Refresh (top-left) and the
   // `clearcache` terminal command. Clears ALL device-local state: localStorage (chat history, notes,
-  // open tabs, the welcome setting, the saved model choice), sessionStorage (the desk's per-visit
-  // arrival/tier/warm flags), and — the heavy one — the browser Cache API + IndexedDB, where WebLLM
-  // stores the downloaded model weights (~350MB-1.1GB). So a wipe truly starts clean, model and all.
+  // open tabs, the welcome setting), sessionStorage (the desk's per-visit arrival/warm flags), and —
+  // the heavy one — the browser Cache API + IndexedDB, where WebLLM stores the downloaded model weights
+  // (~350MB). So a wipe truly starts clean, model and all.
   async function wipeAll() {
     try { window.localStorage && window.localStorage.clear(); } catch { /* private mode */ }
     try { window.sessionStorage && window.sessionStorage.clear(); } catch { /* private mode */ }
