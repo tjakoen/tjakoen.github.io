@@ -54,6 +54,14 @@
   t.register({ name: "vim", args: "", help: "", run(ctx) {
     ctx.print("no. This site already has one editor, and you're inside it.");
   }});
+
+  // ── clearcache: the full local wipe — the same "start clean" the window Refresh (top-left) runs ──
+  t.register({ name: "clearcache", args: "", help: "wipe everything saved here — chat, notes, tabs, the downloaded AI model — and reload", run(ctx) {
+    const wipe = window.tjClearCache;
+    if (typeof wipe !== "function") { ctx.printErr("the site island isn't up yet — try the Refresh button (top-left)."); return; }
+    ctx.print("this clears EVERYTHING on this device: chat, notes, open tabs, and the model weights (~350MB-1.1GB).");
+    wipe();   // shows the are-you-sure, then wipes + reloads; a no-op on cancel
+  }});
   t.register({ name: "bake", args: "", help: "", async run(ctx) {
     const theme = window.grain && window.grain.theme;
     if (!theme || !theme.themes) return ctx.printErr("the oven's cold — theming isn't loaded.");

@@ -14,6 +14,36 @@
   const put = (k, v) => { try { if (store) store.setItem(k, v); } catch { /* private mode */ } };
   const del = (k) => { try { if (store) store.removeItem(k); } catch { /* private mode */ } };
 
+  // ---- "clear everything" — the full local wipe behind the window Refresh (top-left) and the
+  // `clearcache` terminal command. Clears ALL device-local state: localStorage (chat history, notes,
+  // open tabs, the welcome setting, the saved model choice), sessionStorage (the desk's per-visit
+  // arrival/tier/warm flags), and — the heavy one — the browser Cache API + IndexedDB, where WebLLM
+  // stores the downloaded model weights (~350MB-1.1GB). So a wipe truly starts clean, model and all.
+  async function wipeAll() {
+    try { window.localStorage && window.localStorage.clear(); } catch { /* private mode */ }
+    try { window.sessionStorage && window.sessionStorage.clear(); } catch { /* private mode */ }
+    // WebLLM caches weights in the Cache API (grain webllm.ts); clearing every cache reclaims it.
+    try { if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map((k) => caches.delete(k))); } } catch { /* no CacheStorage */ }
+    // Belt-and-suspenders: some MLC builds keep config/wasm in IndexedDB too.
+    try {
+      if (window.indexedDB && indexedDB.databases) {
+        const dbs = await indexedDB.databases();
+        await Promise.all(dbs.map((d) => d && d.name ? new Promise((res) => { const r = indexedDB.deleteDatabase(d.name); r.onsuccess = r.onerror = r.onblocked = () => res(); }) : null));
+      }
+    } catch { /* no IndexedDB.databases (Safari < 14) — the Cache API clear already freed the model */ }
+  }
+  // are-you-sure → wipe → reload. `window.confirm` is the platform's own confirm primitive
+  // (native-first: no library, no bespoke modal). Exposed on window so desk-commands.js's `clearcache`
+  // runs the exact same flow. Returns false on cancel (nothing touched).
+  const CLEAR_MSG = "Clear everything saved on this device — chat history, notes, open tabs, your welcome setting, and the downloaded AI model? You'll start clean.";
+  async function clearEverything() {
+    if (!window.confirm(CLEAR_MSG)) return false;
+    await wipeAll();
+    location.reload();
+    return true;
+  }
+  window.tjClearCache = clearEverything;
+
   // ---- close every open SSE stream before a hard navigation (BEFORE ai-dispatch.js runs).
   // This site does full-document navigations (no client router), so grain/scripts/ai-dispatch.js's
   // `/stream` EventSource is still connected the instant the browser tears the page down; Chrome
@@ -72,7 +102,9 @@
 
     // ---- the window nav: back / refresh / forward (VS Code-style, our hover color)
     document.querySelector("[data-window-back]")?.addEventListener("click", () => history.back());
-    document.querySelector("[data-window-refresh]")?.addEventListener("click", () => location.reload());
+    // The window Refresh is the "start clean" control: it wipes ALL local state (incl. the cached AI
+    // model) after an are-you-sure, not a plain reload. (A plain reload is still one F5 / Cmd-R away.)
+    document.querySelector("[data-window-refresh]")?.addEventListener("click", () => { void clearEverything(); });
     document.querySelector("[data-window-forward]")?.addEventListener("click", () => history.forward());
 
     // ---- the breadcrumb (status bar, next to presence) = the open page's path, AS LINKS:
