@@ -108,17 +108,24 @@ const MIN_GPU_BYTES = 512 * 1024 ** 2;      // ~512MB: a real (non-min-spec) GPU
  *  `override` forces a tier regardless of the device — the `?tier=weak|strong` dev knob desk-door reads
  *  from the URL, so both tiers can be exercised on one machine. Harmless in prod (a visitor would have to
  *  set it deliberately, and the `canRunModel` gate still applies), so it stays in. */
-export function pickProfile(cap: DeviceCapability, override?: "weak" | "strong"): ModelProfile {
-  if (override === "weak") return WEAK_PROFILE;
-  if (override === "strong") return STRONG_PROFILE;
+/** Whether this device is judged capable of the STRONG (1.5B) model — the conservative gate above,
+ *  factored out so the desk's model picker can OFFER the 1.5B (and disable it otherwise) using the
+ *  exact same criteria `pickProfile` recommends by. A wrong guess up is a visible OOM, so it stays tight. */
+export function canRunStrong(cap: DeviceCapability): boolean {
   const mem = cap.deviceMemory ?? 0;
   const gpu = cap.maxBufferSize ?? 0;
   const cores = cap.cores ?? 0;
-  const strong =
+  return (
     mem >= STRONG_MEMORY_GB ||
     gpu >= STRONG_GPU_BYTES ||
-    (cores >= CAPABLE_CORES && gpu >= MIN_GPU_BYTES);
-  return strong ? STRONG_PROFILE : WEAK_PROFILE;
+    (cores >= CAPABLE_CORES && gpu >= MIN_GPU_BYTES)
+  );
+}
+
+export function pickProfile(cap: DeviceCapability, override?: "weak" | "strong"): ModelProfile {
+  if (override === "weak") return WEAK_PROFILE;
+  if (override === "strong") return STRONG_PROFILE;
+  return canRunStrong(cap) ? STRONG_PROFILE : WEAK_PROFILE;
 }
 
 // The desk's engine handle IS grain's streaming chat engine — kept under the desk's own name so the
