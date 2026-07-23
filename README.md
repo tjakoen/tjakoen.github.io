@@ -12,17 +12,17 @@ lightweight AI demo that runs entirely in the visitor's browser.
 > the `/grain` and `/batch` showcases, the `/loop` "watch the AI act" demo, the `/catalog`, and the
 > notes + rendered layer docs (through MILL) are all built and served today by [`server.ts`](src/server.ts),
 > and the zero-ops GitHub Pages deploy is live (`batch/export` via
-> [`.github/workflows/pages.yml`](.github/workflows/pages.yml)). Still planned: the productivity
-> views (calendar, contacts). New here and want to make a small edit? →
+> [`.github/workflows/pages.yml`](.github/workflows/pages.yml)). The productivity views — Notes,
+> Calendar, Mail, and About — are all live. New here and want to make a small edit? →
 > **[HACKING.md](docs/HACKING.md)** (route → source map + "which file do I open").
 
 ## What it is (and isn't)
 
 - It's a **consumer** of the stack — a bespoke app, re-skinning GRAIN via its public seams.
-- It **uses [MILL](../mill/PLAN.md) only for content** (the notes/blog + the rendered BATCH/GRAIN
-  docs). MILL does **not** build the site — the bespoke surfaces (hero desk, calendar, contacts) are
-  the portfolio's own work.
-- Organizing concept: a **populated productivity app** (Notes · Calendar · Contacts) with the AI
+- It **uses [MILL](https://github.com/tjakoen/grain/blob/main/packages/mill/PLAN.md) only for content**
+  (the notes/blog + the rendered BATCH/GRAIN docs). MILL does **not** build the site — the bespoke
+  surfaces (hero desk, calendar, mail) are the portfolio's own work.
+- Organizing concept: a **populated productivity app** (Notes · Calendar · Mail · About) with the AI
   **desk** as an assistant that operates them. Not the "Project" product in `project/`.
 
 ## Read next
