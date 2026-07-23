@@ -8,6 +8,7 @@ const TARGETS: Array<[string, string]> = [
   ["/grain/docs", "GRAIN"],
   ["/mill", "MILL"],
   ["/proof", "PROOF"],
+  ["/crumb", "CRUMB"],
   ["/pantry", "PANTRY"],
 ];
 

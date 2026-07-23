@@ -27,14 +27,16 @@
 .stack-diagram[data-current="batch"] [data-layer="batch"] .bar,
 .stack-diagram[data-current="grain"] [data-layer="grain"] .bar,
 .stack-diagram[data-current="mill"]  [data-layer="mill"]  .bar,
-.stack-diagram[data-current="proof"] [data-layer="proof"] .bar {
+.stack-diagram[data-current="proof"] [data-layer="proof"] .bar,
+.stack-diagram[data-current="crumb"] [data-layer="crumb"] .bar {
   fill: var(--color-fg);
   stroke: var(--color-fg);
 }
 .stack-diagram[data-current="batch"] [data-layer="batch"] .bar-label,
 .stack-diagram[data-current="grain"] [data-layer="grain"] .bar-label,
 .stack-diagram[data-current="mill"]  [data-layer="mill"]  .bar-label,
-.stack-diagram[data-current="proof"] [data-layer="proof"] .bar-label {
+.stack-diagram[data-current="proof"] [data-layer="proof"] .bar-label,
+.stack-diagram[data-current="crumb"] [data-layer="crumb"] .bar-label {
   fill: var(--color-bg);
 }
 

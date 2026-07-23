@@ -10,17 +10,19 @@ No chromatic accent; the only emphasis is ink-fill vs outline. No client JS.
 
 ## The model it draws
 
-Four layers, bottom → top: **BATCH** (the base) · **GRAIN** · **MILL** · **PROOF** (the top) —
-"one direction" meaning each rests on the ones below (the upward cue on the left). **PANTRY is
-not a fifth layer**: it is the enclosing frame, the app that composes the four.
+Bottom → top: **BATCH** (the base) · **GRAIN** · **MILL** · then **PROOF** and **CRUMB** sharing
+the top row, side by side — CRUMB builds on GRAIN and MILL exactly as PROOF does, so it shares
+PROOF's altitude rather than stacking a fifth, taller row. "One direction" means each rests on the
+ones below (the upward cue on the left). **PANTRY is not a layer**: it is the enclosing frame, the
+app that composes the four (BATCH, GRAIN, MILL, PROOF).
 
 ## The `current` prop (the highlight)
 
 Pass the member whose page this is. It is stamped onto the root as `data-current` (via
 `prop-attr-data-current`, the same interpolation `b-icon` uses for `data-size`); the CSS keys the
 ink-fill off `[data-current]` × the per-layer `data-layer`. Values: `batch` · `grain` · `mill` ·
-`proof` · `pantry`. **Omit it** for the `/bread` overview — nothing is singled out (the whole
-stack reads evenly, PANTRY frame present).
+`proof` · `crumb` · `pantry`. **Omit it** for the `/bread` overview — nothing is singled out (the
+whole stack reads evenly, PANTRY frame present).
 
 > Do **not** try to drive the highlight from `data-section`: that attribute is not unique across
 > the layer pages (bread/batch/mill/proof/pantry all resolve to `"bread"`; only grain differs).
@@ -40,7 +42,7 @@ leads without pushing the headline below the fold.
 
 ## Notes
 
-- `data-layer` values on the four `<g>` layer groups (`batch`/`grain`/`mill`/`proof`) and on the
-  PANTRY frame group are what the CSS targets — keep them in sync with the `current` values.
+- `data-layer` values on the five `<g>` layer groups (`batch`/`grain`/`mill`/`proof`/`crumb`) and
+  on the PANTRY frame group are what the CSS targets — keep them in sync with the `current` values.
 - The `aria-label` states the whole stack in words (a screen reader reads that, not the shapes);
   the current member is announced textually by the page's adjacent eyebrow.
