@@ -156,6 +156,34 @@ const collections: MillCollection[] = [
     adapter: { resolveLink: docsLink("/batch/docs") },
   },
   {
+    prefix: "/mill/docs",
+    title: "MILL docs",
+    description: "MILL's own docs, canonically homed here (option b) and rendered through MILL.",
+    source: dirSource(join(import.meta.dir, "..", "docs/mill")),
+    adapter: { resolveLink: docsLink("/mill/docs") },
+  },
+  {
+    prefix: "/proof/docs",
+    title: "PROOF docs",
+    description: "PROOF's own docs, canonically homed here (option b) and rendered through MILL.",
+    source: dirSource(join(import.meta.dir, "..", "docs/proof")),
+    adapter: { resolveLink: docsLink("/proof/docs") },
+  },
+  {
+    prefix: "/crumb/docs",
+    title: "CRUMB docs",
+    description: "CRUMB's own docs, canonically homed here (option b) and rendered through MILL.",
+    source: dirSource(join(import.meta.dir, "..", "docs/crumb")),
+    adapter: { resolveLink: docsLink("/crumb/docs") },
+  },
+  {
+    prefix: "/pantry/docs",
+    title: "PANTRY docs",
+    description: "PANTRY's own docs, canonically homed here (option b) and rendered through MILL.",
+    source: dirSource(join(import.meta.dir, "..", "docs/pantry")),
+    adapter: { resolveLink: docsLink("/pantry/docs") },
+  },
+  {
     // The canonical home of the cross-repo standards. Since 2026-07-09 the standards source lives
     // HERE (standards/), the same option-b move used for the layer docs: every repo's CLAUDE.md
     // points at https://tjakoen.github.io/standards, and THIS collection is what makes that URL real.

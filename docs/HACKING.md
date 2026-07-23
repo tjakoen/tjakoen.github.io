@@ -18,7 +18,7 @@ you know where to edit.
 | Mechanism | What it serves | Source |
 |---|---|---|
 | **Hand-authored page** | the bespoke screens | `view/pages/**/*.html` |
-| **MILL content** | notes + rendered layer docs (Markdown) | `content/notes/*.md`, and the installed `grain`/`batch` `docs/` |
+| **MILL content** | notes + rendered layer docs (Markdown) | `content/notes/*.md`, and this repo's own `docs/<layer>/` (canonical home, option b) |
 | **Generated** | catalog, CSS bundle, sitemap/robots/llms | built at request time from components + the pages tree |
 | **The AI door** | the interaction endpoints | [`src/routes/ai-routes.ts`](../src/routes/ai-routes.ts) |
 | **Static asset** | styles, scripts, fonts, images, vendor libs | mapped dirs (mostly up in `grain/`) |
@@ -39,6 +39,8 @@ you know where to edit.
 | `/batch` | `view/pages/batch/index.html` (BATCH showcase) |
 | `/bread` | `view/pages/bread/index.html` (the stack umbrella page) |
 | `/mill` | `view/pages/mill/index.html` (MILL page) |
+| `/proof` | `view/pages/proof/index.html` (PROOF page) |
+| `/pantry` | `view/pages/pantry/index.html` (PANTRY page) |
 | `/docs` | `view/pages/docs/index.html` (developer-docs hub — plan in [`../DEV-DOCS.md`](../../DEV-DOCS.md)) |
 
 **Content** — Markdown through MILL, wired in [`src/content.ts`](../src/content.ts) (not hand-authored HTML):
@@ -48,8 +50,12 @@ you know where to edit.
 | `/notes`, `/notes/<slug>` | `content/notes/<slug>.md` (the `/notes` index is a portfolio-owned feed, `renderNotesFeedPage`; entries render through MILL) |
 | `/notes/<slug>.md` | the same file, served raw (the "honest source" toggle) |
 | `/calendar/<slug>` | `content/events/<slug>.md` — the social-feed events collection (`index: false`, so the `/calendar` feed page above still wins the bare path); each entry page gets the photo-grid post template from its frontmatter (`shellChrome` `renderPhotoGrid`) |
-| `/grain/docs`, `/grain/docs/<slug>` | the installed `@tjakoen/grain` package's `docs/*.md` (in the monorepo: `../grain/docs/`) |
-| `/batch/docs`, `/batch/docs/<slug>` | the installed `@tjakoen/batch` package's `docs/*.md` (in the monorepo: `../batch/docs/`) |
+| `/grain/docs`, `/grain/docs/<slug>` | this repo's own `docs/grain/*.md` (canonically homed here, option b — not the `@tjakoen/grain` package) |
+| `/batch/docs`, `/batch/docs/<slug>` | this repo's own `docs/batch/*.md` (canonically homed here, option b — not the `@tjakoen/batch` package) |
+| `/mill/docs`, `/mill/docs/<slug>` | this repo's own `docs/mill/*.md` |
+| `/proof/docs`, `/proof/docs/<slug>` | this repo's own `docs/proof/*.md` |
+| `/crumb/docs`, `/crumb/docs/<slug>` | this repo's own `docs/crumb/*.md` |
+| `/pantry/docs`, `/pantry/docs/<slug>` | this repo's own `docs/pantry/*.md` |
 
 **Generated** — no file to edit directly; change the *inputs*:
 
