@@ -13,7 +13,7 @@
 import { chromium } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { SITE } from "../seo.ts";
+import { SITE } from "../src/seo.ts";
 
 const OUT = join(import.meta.dir, "..", "media");
 const W = SITE.ogImageW;   // 1200

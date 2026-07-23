@@ -10,7 +10,7 @@ lightweight AI demo that runs entirely in the visitor's browser.
 
 > **Status: live and running.** THE EDITOR shell (the whole site as one VS-Code-style window),
 > the `/grain` and `/batch` showcases, the `/loop` "watch the AI act" demo, the `/catalog`, and the
-> notes + rendered layer docs (through MILL) are all built and served today by [`server.ts`](server.ts),
+> notes + rendered layer docs (through MILL) are all built and served today by [`server.ts`](src/server.ts),
 > and the zero-ops GitHub Pages deploy is live (`batch/export` via
 > [`.github/workflows/pages.yml`](.github/workflows/pages.yml)). Still planned: the productivity
 > views (calendar, contacts). New here and want to make a small edit? →

@@ -11,7 +11,7 @@ import { loadPlans } from "@tjakoen/proof/loader.ts";
 import { fileURLToPath } from "node:url";
 
 /** the plans folder this repo's own board reads (also handed to createProofRoutes in server.ts) */
-export const PLANS_DIR = fileURLToPath(new URL("./plans", import.meta.url));
+export const PLANS_DIR = fileURLToPath(new URL("../plans", import.meta.url));
 
 /** mount prefix — kept here (not just in server.ts) so this file's routes always match what's
  *  actually mounted, even if the prefix ever changes. */

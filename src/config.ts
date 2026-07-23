@@ -24,25 +24,25 @@ export const config = {
 
   // components come from the GRAIN design system (b-*) and the portfolio (its own
   // frame + bespoke surfaces + the /loop demo's task-card/loop-card/task-list).
-  componentRoots: [join(GRAIN, "components"), join(HERE, "components")],
+  componentRoots: [join(GRAIN, "components"), join(HERE, "..", "components")],
   // the /components.css bundle = per-component CSS + (since this app uses the AI
   // interface) GRAIN's optional AI module CSS (grain/ai/ai.css). GRAIN's page-level
   // stylesheets (tokens / base / grade mechanism) are LINKED, not bundled — see /styles.
   // A no-AI app would simply drop the grain/ai root here.
-  styleRoots: [join(GRAIN, "components"), join(HERE, "components"), join(GRAIN, "ai")],
+  styleRoots: [join(GRAIN, "components"), join(HERE, "..", "components"), join(GRAIN, "ai")],
   // ONE pages tree now: the portfolio IS the app (the composition root folded in here).
   // It owns "/" (home), "/grain"·"/batch" (showcases), and the /loop + /about demo pages.
-  pagesDir: join(HERE, "pages"),
+  pagesDir: join(HERE, "..", "pages"),
 
   // static asset prefixes → their dir. GRAIN ships the design system's styles, fonts,
   // and islands; the portfolio keeps only its vendored libs and its own island(s).
   assetDirs: {
     "/styles": join(GRAIN, "styles"),      // GRAIN's default theme: variables (tokens) + global (base) + grain (grade mechanism)
-    "/vendor": join(HERE, "vendor"),
+    "/vendor": join(HERE, "..", "vendor"),
     "/scripts": join(GRAIN, "scripts"),
     "/assets": join(GRAIN, "assets"),      // GRAIN's shared static assets (the icon sprite → b-icon)
-    "/site": join(HERE, "scripts"),        // the portfolio's own island(s): site.js (THE EDITOR chrome behaviors)
-    "/media": join(HERE, "media"),         // the portfolio's own binary media: the og-card.png social image (tools/og-card.ts)
+    "/site": join(HERE, "..", "scripts"),  // the portfolio's own island(s): site.js (THE EDITOR chrome behaviors)
+    "/media": join(HERE, "..", "media"),   // the portfolio's own binary media: the og-card.png social image (tools/og-card.ts)
   } as Record<string, string>,
   fontsDir: join(GRAIN, "fonts"),          // the Redaction grades — GRAIN's signature (grain = AI)
 

@@ -19,11 +19,11 @@ import { join } from "node:path";
 import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
 import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
-import { listPortfolioContentRoutes, listPortfolioRawContentRoutes } from "../content.ts";
-import { listPlanRoutes } from "../plans.ts";
+import { listPortfolioContentRoutes, listPortfolioRawContentRoutes } from "../src/content.ts";
+import { listPlanRoutes } from "../src/plans.ts";
 import { loadTours } from "@tjakoen/crumb/loader.ts";
 import { fileURLToPath } from "node:url";
-import { config } from "../config.ts";
+import { config } from "../src/config.ts";
 
 const PORT = Number(Bun.env.EXPORT_PORT ?? 3330);
 const BASE = `http://localhost:${PORT}`;
@@ -121,7 +121,7 @@ function assetMounts(): AssetMount[] {
 }
 
 console.log(`[export] starting server on ${PORT}…`);
-const server = Bun.spawn(["bun", join(import.meta.dir, "..", "server.ts")], {
+const server = Bun.spawn(["bun", join(import.meta.dir, "..", "src", "server.ts")], {
   env: { ...process.env, PORT: String(PORT), NODE_ENV: "production" },
   stdout: "ignore", stderr: "ignore",
 });
