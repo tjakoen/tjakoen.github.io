@@ -1,13 +1,19 @@
 ---
 id: repo-structure-reorg
-status: proposed
+status: done
 track: D
 depends: []
-touches: [server.ts, config.ts, content.ts, render.ts, seo.ts, llms.ts, plans.ts, package.json, tsconfig.json, playwright.config.ts]
+touches: [src/, content/, view/, docs/, package.json, playwright.config.ts, tools/]
 owner: human
 ---
 
 # Repo structure reorg — tame the root
+
+> **Done (Phases 0-3) 2026-07-23.** Shipped as four gated commits: docs fold-in (`434ddcd`),
+> `src/` consolidation (`5f6703e`), `content/` grouping (`d43c8a1`), and the `view/` layer
+> (`33934e7`). Phase 4 (`standards/` relocation) was deliberately NOT done — it stays root-pinned
+> as the PANTRY package export. Final gate: tsc, 110 unit, 89 e2e, export + verify:export. The root
+> now separates code (`src/`), content (`content/`), view (`view/`), docs (`docs/`), and config.
 
 > **Proposed 2026-07-23.** The repo root carries 23 tracked top-level dirs plus 8 loose source
 > `.ts` files sitting next to config, with tests scattered across three conventions and long-form
