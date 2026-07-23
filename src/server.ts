@@ -98,7 +98,7 @@ interface DeskFeedPost {
   kind?: string; location?: string; photos?: string[]; links?: Array<{ href: string; label: string }>;
 }
 const deskFeedPosts: DeskFeedPost[] =
-  await Bun.file(join(import.meta.dir, "data", "desk-feed.json")).json();
+  await Bun.file(join(import.meta.dir, "..", "data", "desk-feed.json")).json();
 async function buildCalendarEvents(): Promise<CalendarEvent[]> {
   // Three sources merged into ONE feed (Apps-v2 Pass C): note publish dates + the hand-authored
   // desk-feed "shipped" posts + the MILL-authored events collection (hackathons/talks/highlights).
@@ -140,7 +140,7 @@ interface MailMessageRaw {
   date: string; whenLabel?: string; body: string; links: MailLink[];
 }
 interface MailboxData { folders: Array<{ id: string; label: string }>; messages: MailMessageRaw[]; }
-const mailbox: MailboxData = await Bun.file(join(import.meta.dir, "data", "mailbox.json")).json();
+const mailbox: MailboxData = await Bun.file(join(import.meta.dir, "..", "data", "mailbox.json")).json();
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 // Parse the ISO date's own digits (no Date(), so a machine timezone can't shift "Jul 14" to the 13th).
 const fmtDate = (iso: string, withYear: boolean): string => {
@@ -184,7 +184,7 @@ interface CvData {
   languages: string[];
   certs: Array<{ name: string; issuer: string; date: string }>;
 }
-const cv: CvData = await Bun.file(join(import.meta.dir, "data", "cv.json")).json();
+const cv: CvData = await Bun.file(join(import.meta.dir, "..", "data", "cv.json")).json();
 // Experience + education share the cv-entry molecule (same shape). Bullets/notes become {text}
 // objects so the nested each="bullets" binds a field (the renderer binds fields, not bare strings).
 const toCvEntry = (e: {
@@ -453,7 +453,7 @@ async function serveFont(rel: string): Promise<Response> {
 // has no .png type, so it would mistype + corrupt the image. Bun.file preserves bytes and infers the
 // type. The static EXPORT copies config.assetDirs verbatim (images byte-for-byte), so /media needs no
 // export change; only the LIVE server needs this binary short-circuit (before the static loop).
-const MEDIA_ROOT = resolve(join(fileURLToPath(import.meta.url), "..", "media"));
+const MEDIA_ROOT = resolve(join(fileURLToPath(import.meta.url), "..", "..", "media"));
 async function serveMedia(rel: string): Promise<Response> {
   const fp = resolve(normalize(join(MEDIA_ROOT, rel)));
   if (fp !== MEDIA_ROOT && !fp.startsWith(MEDIA_ROOT + sep)) return new Response("Forbidden", { status: 403 });

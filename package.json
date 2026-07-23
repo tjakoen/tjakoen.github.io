@@ -16,8 +16,8 @@
   },
   "scripts": {
     "deps:refresh": "bun update @tjakoen/batch @tjakoen/crumb @tjakoen/grain @tjakoen/mill @tjakoen/proof",
-    "dev": "bun --hot server.ts",
-    "start": "bun server.ts",
+    "dev": "bun --hot src/server.ts",
+    "start": "bun src/server.ts",
     "test": "bun test",
     "test:e2e": "playwright test",
     "test:all": "bun test && playwright test",

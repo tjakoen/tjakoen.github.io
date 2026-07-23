@@ -56,7 +56,7 @@ request.
 
 ### 3. Wire the one door — the composition root
 
-[`server.ts`](../../server.ts) (the *only* place BATCH + GRAIN meet) builds the
+[`server.ts`](../../src/server.ts) (the *only* place BATCH + GRAIN meet) builds the
 interaction layer once:
 
 ```ts

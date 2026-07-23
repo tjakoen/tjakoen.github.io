@@ -71,7 +71,7 @@ function narrate(report: AuditReport): string {
 }
 
 console.log(`[audit] starting server on ${PORT}…`);
-const server = Bun.spawn(["bun", join(import.meta.dir, "..", "server.ts")], {
+const server = Bun.spawn(["bun", join(import.meta.dir, "..", "src", "server.ts")], {
   env: { ...process.env, PORT: String(PORT), NODE_ENV: "production" },
   stdout: "ignore", stderr: "ignore",
 });

@@ -30,7 +30,7 @@ export default defineConfig({
 
   // Boot the real app for the suite; reuse an already-running dev server if one's on the port.
   webServer: {
-    command: `PORT=${PORT} bun server.ts`,
+    command: `PORT=${PORT} bun src/server.ts`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,

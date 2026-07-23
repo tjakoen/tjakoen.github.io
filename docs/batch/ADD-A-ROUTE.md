@@ -23,7 +23,7 @@ so a new page reaches SEO and the export automatically — nothing else to wire.
 
 Server-level routes (JSON endpoints, the AI door, anything that isn't a page) are added directly in
 `Bun.serve({ routes: {...} })` at the composition root
-([`server.ts`](../../server.ts)):
+([`server.ts`](../../src/server.ts)):
 
 ```ts
 Bun.serve({
