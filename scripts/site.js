@@ -393,6 +393,9 @@
         if (typeof window.deskReset === "function") window.deskReset();
         greet();                                        // fresh greeting (also re-persists a clean log)
         setDefaultChips();                              // swap the follow-ups back to page starters
+        // Re-show the model picker if the visitor cleared the log before ever choosing — otherwise the
+        // picker bubble is gone and the desk would silently fall to the auto tier (no-op once chosen).
+        if (typeof window.deskShowPicker === "function") window.deskShowPicker();
       });
     }
 
