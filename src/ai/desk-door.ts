@@ -309,11 +309,11 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // is never forced to load the model just by navigating (this is an MPA: the engine reloads per page).
   const warm = (() => { try { return ss()?.getItem("desk-warm") === "1"; } catch { return false; } })();
   if (warm && !droveHere) void reasoner.arrive(applyOp);
-  // First-load model picker: a fresh visit (no ?tier, no saved choice) where a model CAN run gets the
-  // choice up front — the "based on your system" line + two chips (the 1.5B disabled with a note when
-  // the device can't run it). Skipped once warm (mid-conversation) or when the desk drove us here, so
-  // it never interrupts. Clicking a chip persists the choice and reloads (installPickerHandler).
-  if (!chosenTier && canRun && !warm && !droveHere) {
+  // The first-load model picker, as a re-usable emit: the "based on your system" line + two chips (the
+  // 1.5B disabled with a note when the device can't run it). Clicking a chip persists the choice and
+  // reloads (installPickerHandler). No-op once a choice is saved (chosenTier) or no model can run here.
+  const showPicker = (): void => {
+    if (chosenTier || !canRun) return;
     const strongChip = strongSupported
       ? `<button type="button" class="suggest-chip" data-set-model="strong">1.5B · better (~1.1GB)</button>`
       : `<button type="button" class="suggest-chip" disabled aria-disabled="true" title="Your browser can't run the 1.5B here">1.5B · unsupported</button>`;
@@ -324,6 +324,13 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
       html: grainKit.chatBubble("ai", "grain", grainKit.chatBody(body), "Desk") });
     installPickerHandler();
-  }
+  };
+  // Expose it so "New chat" (site.js) can re-show the picker: clearing the log wiped the picker bubble,
+  // and a visitor who never chose would otherwise silently fall to the auto tier. Re-shown only while
+  // no choice is saved (showPicker's own guard).
+  (globalThis as unknown as { deskShowPicker?: () => void }).deskShowPicker = showPicker;
+  // Unprompted on load only on a fresh, self-directed arrival — never mid-conversation (warm) or on a
+  // page the desk itself navigated to (droveHere), so it can't interrupt.
+  if (!warm && !droveHere) showPicker();
   return grainDoor.createClientDoor(applyOp, { reasoner });
 }
