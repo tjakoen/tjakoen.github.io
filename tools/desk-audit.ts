@@ -44,8 +44,10 @@ const SCENARIOS: Scenario[] = [
     mustMention: [["batch"], ["grain"], ["mill"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
   { id: "who-is-tj", page: "/", ask: "Who is TJ?",
     mustMention: [["teach"], ["Career Team", "dev manager", "tech lead"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
+  // "read more" = the A3 citation: this ask's top retrieval chunk is a real page (/grain/docs/…, not
+  // facts), so the deterministic Read more link must render under the grounded answer.
   { id: "grain-built", page: "/grain", ask: "What did TJ build with grain?",
-    mustMention: [["grain"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
+    mustMention: [["grain"], ["read more"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
   { id: "how-desk-works", page: "/", ask: "How do you work under the hood?",
     mustMention: [["browser", "device", "WebGPU", "model"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
   // -- capability awareness (the grain-awareness gap: freeform phrasings that MISS the deterministic

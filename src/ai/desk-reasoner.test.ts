@@ -626,3 +626,63 @@ describe("makeDeskReasoner — A1 deep-link answers (\"show me the part about X\
     expect(d.reply).toBe("Grain is TJ's on-page AI toolkit.");
   });
 });
+
+describe("makeDeskReasoner — A3 citation (a deterministic 'Read more' under a grounded answer)", () => {
+  // one real-route chunk (with an A1 anchor) + the facts block — the retrieval floor's fallback.
+  const citeKnowledge = {
+    builtAt: "t", n: 2, df: { teach: 1, ai: 1 },
+    chunks: [
+      { id: "facts#0", route: "facts", title: "About", heading: "", text: "TJ teaches and builds" },
+      {
+        id: "notes/ten-times-zero#1", route: "/notes/ten-times-zero", title: "Ten Times Zero",
+        heading: "Teaching with AI", text: "Why teaching with AI matters to TJ.",
+        anchor: "teaching-with-ai",
+      },
+    ],
+  };
+
+  test("a grounded answer gains a code-built Read more link to the top chunk's route#anchor", async () => {
+    const { deps } = makeDeps({
+      loadKnowledge: async () => citeKnowledge as unknown as Knowledge,
+      loadEngine: async () => fakeEngine(["Teaching with AI matters because it is honest."]).engine,
+    });
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    await r.decide(chat("why teaching with ai matters"), tools);
+
+    const cite = ops.find((o) => typeof o.html === "string" && o.html.includes("desk-cite"));
+    expect(cite).toBeDefined();
+    expect(cite!.html).toContain('href="/notes/ten-times-zero#teaching-with-ai"');
+    expect(cite!.html).toContain("Read more");
+    expect(cite!.html).toContain("Ten Times Zero");
+  });
+
+  test("a facts-grounded answer carries no citation (nowhere to read more)", async () => {
+    const { deps } = makeDeps({
+      loadKnowledge: async () => knowledge,   // facts only — the floor's fallback grounding
+      loadEngine: async () => fakeEngine(["TJ is a dev manager."]).engine,
+    });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    await r.decide(chat("who is TJ?"), tools);
+
+    expect(ops.some((o) => typeof o.html === "string" && o.html.includes("desk-cite"))).toBe(false);
+  });
+
+  test("no citation when the top chunk is the page the visitor is already on", async () => {
+    const { deps } = makeDeps({
+      loadKnowledge: async () => citeKnowledge as unknown as Knowledge,
+      loadEngine: async () => fakeEngine(["Teaching with AI matters because it is honest."]).engine,
+    });
+    deps.pageInfo = () => ({ route: "/notes/ten-times-zero", title: "Ten Times Zero" });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    await r.decide(chat("why teaching with ai matters"), tools);
+
+    expect(ops.some((o) => typeof o.html === "string" && o.html.includes("desk-cite"))).toBe(false);
+  });
+});
