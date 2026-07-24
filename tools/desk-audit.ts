@@ -78,6 +78,14 @@ const SCENARIOS: Scenario[] = [
   // announce reads "Here's the part about ... from ...".
   { id: "deep-link-det", page: "/", ask: "where does TJ talk about using AI with students",
     mustNavigate: "/notes/how-i-use-ai-in-teaching", mustMention: [["part", "section", "under"]], deterministic: true },
+  // A4 theme switching — "switch to brioche" drives theme.js's own visible cycle-theme control
+  // deterministically (actions.ts + desk-reasoner.ts), no model needed; the confirmation names the
+  // flavor it landed on.
+  { id: "theme-det", page: "/", ask: "switch to brioche", mustMention: [["brioche"]], deterministic: true },
+  // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
+  // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
+  // the destination. LAST in the list on purpose — see the per-scenario cleanup below.
+  { id: "tour-det", page: "/", ask: "take the tour", mustNavigate: "/grain", mustMention: [["stop"], ["grain"]], deterministic: true },
 ];
 
 // ---- plumbing ----
@@ -273,6 +281,12 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     const timeout = s.deterministic ? 30_000 : firstModelRun ? 420_000 : 150_000;
     const { text, path: endPath } = await settle(page, startPath, timeout);
     if (!s.deterministic) firstModelRun = false;
+    // A2 guided tour cleanup: tour-det (and any future tour ask) leaves a pending "desk-tour" cursor
+    // in sessionStorage, stashed for the NEXT stop the door hasn't navigated to within this scenario's
+    // own page. A later scenario that happens to land on that pending stop's route would otherwise
+    // have the door's runTourLeg hijack it mid-grade (advancing the tour instead of settling this
+    // scenario's own reply). Each scenario gets a clean slate.
+    await page.evaluate(() => sessionStorage.removeItem("desk-tour")).catch(() => {});
     const ms = Date.now() - t0;
     const failures = grade(s, text, endPath, realRoutes);
     return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, pass: failures.length === 0, failures };

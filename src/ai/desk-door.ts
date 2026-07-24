@@ -18,10 +18,13 @@ import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
 import { WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
-import { makeDeskReasoner, type DeskNote } from "./desk-reasoner.ts";
+import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, type DeskNote } from "./desk-reasoner.ts";
 import { buildCatalog, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
+// A2 guided tour — the fixed stop list + the cursor codec (tour.ts). The door owns every leg of the
+// tour AFTER the first (no chat.send happens between stops, so the reasoner isn't in the loop then).
+import { TOUR_STOPS, TOUR_KEY, TOUR_DWELL_MS, tourCursor, stashTour } from "./tour.ts";
 
 // Pull grain's door + stub by URL (build-time bare imports would be refused by the module server).
 // Top-level await: by the time the dispatcher calls createClientDoor(), these are resolved, so our
@@ -153,6 +156,39 @@ const revealNotepad = (): void => {
   btn?.click();
 };
 
+// A4 theme switching — read GRAIN's OWN theming vocabulary straight off <html> (theme.js's
+// data-themes/data-theme/data-color-scheme), never a portfolio-side guess: the reasoner re-validates
+// against this LIVE list before acting on anything (CLAUDE.md's design law — code enumerates route/
+// flavor NAMES, but the live DOM is the truth a click gets checked against). matchMedia is the scheme
+// fallback: no forced data-color-scheme means the page is following the OS.
+interface ThemeHtmlEl { getAttribute(name: string): string | null }
+const themeState = (): { themes: string[]; flavor: string; scheme: "dark" | "light" } => {
+  const html = (globalThis as unknown as { document?: { documentElement?: ThemeHtmlEl } }).document?.documentElement;
+  const themes = (html?.getAttribute("data-themes") ?? "").split(/\s+/).filter(Boolean);
+  const flavor = html?.getAttribute("data-theme") || themes[0] || "";
+  const forced = html?.getAttribute("data-color-scheme");
+  const scheme: "dark" | "light" = forced === "dark" || forced === "light" ? forced
+    : (globalThis as unknown as { matchMedia?: (q: string) => { matches: boolean } }).matchMedia?.("(prefers-color-scheme: dark)")?.matches
+      ? "dark" : "light";
+  return { themes, flavor, scheme };
+};
+// Click the visible status-bar theme controls (theme.js's own [data-cycle-theme]/[data-toggle-scheme])
+// — the desk drives the SAME button a human would, no private channel (the revealNotepad pattern).
+// False when the control isn't on this page, so the reasoner can decline honestly instead of a no-op.
+interface ClickableEl { click(): void }
+const clickCycleTheme = (): boolean => {
+  const btn = (globalThis as unknown as { document?: { querySelector(s: string): ClickableEl | null } })
+    .document?.querySelector("[data-cycle-theme]");
+  btn?.click();
+  return !!btn;
+};
+const clickToggleScheme = (): boolean => {
+  const btn = (globalThis as unknown as { document?: { querySelector(s: string): ClickableEl | null } })
+    .document?.querySelector("[data-toggle-scheme]");
+  btn?.click();
+  return !!btn;
+};
+
 // A1 "show me the part about X" (deep-link answers): scroll the CURRENT page to a rendered heading id.
 // MILL renders every h2/h3 with `id="{anchor}"` (the Chunk.anchor contract) — a plain getElementById +
 // scrollIntoView, no framework hook needed. True when the element existed, so the reasoner can
@@ -206,6 +242,68 @@ async function runArrival(applyOp: (op: RenderOp) => void): Promise<void> {
   applyOp(grainKit.spotlightOp("screen", { active: false }));      // hand back to the visitor
 }
 
+// ---- A2 guided tour: the cursor rides sessionStorage the same way ARRIVE_KEY does above, but it
+// SURVIVES past one arrival (a multi-hop walk, not a single resume) — the reasoner (desk-reasoner.ts)
+// stashes it before driving the FIRST leg; this door drives every leg after, because no chat.send
+// happens between stops — the door itself is what's still "awake" when the dwell timer ends. ----
+const tourSet = (at: number): void => { try { ss()?.setItem(TOUR_KEY, stashTour(at)); } catch { /* no session storage */ } };
+const tourClear = (): void => { try { ss()?.removeItem(TOUR_KEY); } catch { /* no session storage */ } };
+const tourActive = (): boolean => { try { return !!ss()?.getItem(TOUR_KEY); } catch { return false; } };
+
+// Trailing-slash-insensitive route compare (also in desk-reasoner.ts — a local copy here rather than
+// a cross-module import, since it's a one-liner and this file already keeps its own small DOM shims).
+const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
+
+/** Continue an in-flight tour after a navigation lands. Runs AFTER runArrival (which already replayed
+ *  this stop's announce + spotlight via the ARRIVE_KEY stash) — this only decides whether the tour
+ *  keeps going. Mirrors the reasoner's OWN travelAndNavigate choreography (narrate → reveal → spotlight
+ *  + click → stash the next arrival → glide → navigate) on purpose: an intermediate hop needs to read
+ *  as the same continuous act as the first one, just triggered from here instead of a chat.send.
+ *  `doNavigate` is createClientDoor's own `navigate` (grain's validated navigateOp path) — passed in
+ *  rather than duplicated, since this function lives at module scope, outside that closure. */
+async function runTourLeg(applyOp: (op: RenderOp) => void, doNavigate: (url: string) => void): Promise<void> {
+  let cursor: { at: number } | null;
+  try { cursor = tourCursor(ss()?.getItem(TOUR_KEY) ?? null); } catch { return; }
+  if (!cursor) return;                              // no tour running — nothing to continue
+  const stop = TOUR_STOPS[cursor.at];
+  if (!stop) { tourClear(); return; }                // a stale/out-of-range cursor — shouldn't parse this far, but bail clean
+  // The visitor wandered off on their own (clicked a link mid-tour, or this is a stale cursor from an
+  // earlier session) — only continue a tour that's actually still standing where it left off.
+  if (stripSlash(loc()?.pathname ?? "/") !== stripSlash(stop.route)) { tourClear(); return; }
+
+  const isLast = cursor.at === TOUR_STOPS.length - 1;
+  if (isLast) {
+    tourClear();   // the tour is over — the closing line already arrived via this stop's own announce
+    applyOp({ target: "suggest-chips", op: "replace", provenance: "ai", commit: "committed",
+      html: suggestChipsHtml(["Show me the latest note", "What is GRAIN?"]) });
+    return;
+  }
+
+  // An intermediate stop: show the one visible "get out" affordance (pin: false — just this one chip,
+  // not the always-present "What can I do here?" alongside it), then let the visitor actually read the
+  // announce for TOUR_DWELL_MS before the lamp moves on.
+  applyOp({ target: "suggest-chips", op: "replace", provenance: "ai", commit: "committed",
+    html: suggestChipsHtml(["Stop the tour"], false) });
+  await new Promise<void>((r) => setTimeout(r, TOUR_DWELL_MS));
+
+  // Re-read the cursor: a chat.send during the dwell (the reasoner's tourClear, "type anything to
+  // stop") cancels the pending advance. Gone, or moved on by some other path — abort silently either
+  // way; whoever changed it already owns whatever happens next.
+  let recheck: { at: number } | null;
+  try { recheck = tourCursor(ss()?.getItem(TOUR_KEY) ?? null); } catch { return; }
+  if (!recheck || recheck.at !== cursor.at) return;
+
+  const next = cursor.at + 1;
+  const dest = TOUR_STOPS[next]!;
+  applyOp(grainKit.narrateOp("clicks", dest.label));
+  revealNav(dest.navLink);
+  applyOp(grainKit.spotlightOp(`nav:${dest.navLink}`, { active: true, click: true }));
+  tourSet(next);                                    // stash BEFORE navigating (the navigate tears the page down)
+  arrive("screen", dest.announce);                  // replayed by runArrival on the destination page
+  await new Promise<void>((r) => setTimeout(r, NAV_GLIDE_MS));   // the same glide the reasoner's own travelAndNavigate uses
+  doNavigate(dest.route);
+}
+
 /** The door the dispatcher composes (data-ai-door). grain marks presence ONLINE once this returns;
  *  the desk chat's own health rides the separate data-desk marker. */
 export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLayer {
@@ -233,6 +331,8 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     kit: grainKit,                                // grain's chat markup builders (no fork)
     navigate, pageText, pageInfo, pageManifest, listNotes, loadCatalog, arrive, revealNav, revealNotepad,   // the desk drives the UI through these
     scrollToAnchor,   // A1 deep-link answers: scroll THIS page to a rendered heading id (see desk-reasoner.ts)
+    tourSet, tourClear, tourActive,   // A2 guided tour: the reasoner's first leg + the "type anything to stop" cancel
+    themeState, clickCycleTheme, clickToggleScheme,   // A4 theme switching: read + drive theme.js's visible controls
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();
@@ -240,7 +340,8 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // Read the arrival key BEFORE runArrival consumes it, so page-arrival awareness can skip a page the
   // desk itself drove us to (runArrival already announces there — no double greeting).
   const droveHere = (() => { try { return !!ss()?.getItem(ARRIVE_KEY); } catch { return false; } })();
-  void runArrival(applyOp);
+  // A2: once the arrival replay settles, let a tour that's mid-walk continue its next leg.
+  void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate));
   // Page-arrival awareness (reasoner-driven): read the new page and offer a greeting + contextual
   // chips — but ONLY when the desk is already warm this session (site.js sets desk-warm on the first
   // chat.send) and the visitor navigated here themselves. Gated so a visitor who never opened the desk

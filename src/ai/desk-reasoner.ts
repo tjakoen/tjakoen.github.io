@@ -19,6 +19,10 @@ import type { DeskEngine, EngineProgress, ModelProfile } from "./webllm-loader.t
 import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
 import { routeAction, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
 import { resolveNav, navShortlist, type NavDest } from "./catalog.ts";
+// A2 guided tour — the fixed, code-enumerated stop list (tour.ts). Zero model: tour-start/tour-stop
+// are matched deterministically (actions.ts) and driven from this data, never from the model's own
+// judgment of "what's on the site" (CLAUDE.md design law — code enumerates routes, never the model).
+import { TOUR_STOPS } from "./tour.ts";
 // GRAIN's reasoner-kit — the chat bubble markup the desk USED to fork now comes from here (injected
 // as deps.kit at runtime; the door URL-imports it). Type-only import (erased) so this stays a
 // client-safe module. See grain/ai/reasoner-kit.ts.
@@ -123,8 +127,10 @@ const OFFLINE_LINE =
 // call). SEPARATE from grain's own NAVIGATE_SETTLE_MS (ai-dispatch.js, 220ms): that one guards the
 // navigate RenderOp itself (any settle in flight gets a beat to finish); this one is the desk's own
 // choreography BEFORE it ever emits that op. Named per grain CLAUDE.md lesson #9 — a knob with no
-// name can't be found, let alone tuned twice.
-const NAV_GLIDE_MS = 550;
+// name can't be found, let alone tuned twice. Exported: the door's OWN tour leg (desk-door.ts,
+// runTourLeg) reuses this exact knob for its intermediate-stop glide, so the two choreographies —
+// the reasoner's first leg and the door's later ones — can't drift apart in pacing.
+export const NAV_GLIDE_MS = 550;
 
 export interface DeskDeps {
   /** The model profile (webllm-loader.ts) — the model id's tuning: generation caps, penalties, the
@@ -181,7 +187,40 @@ export interface DeskDeps {
   /** Flip the assistant panel to its Notepad view (clicks the [data-shell-mode="notepad"] tab), so a
    *  note the desk just wrote is visible immediately instead of only after the visitor opens the pad. */
   revealNotepad?: () => void;
+  // ---- A2 guided tour (tour.ts) — the reasoner drives the FIRST leg only; every leg after rides the
+  // door's own runTourLeg (no chat.send happens between stops, so the reasoner isn't in the loop for
+  // those). All three ride sessionStorage under TOUR_KEY, same ARRIVE_KEY pattern as `arrive` above. ----
+  /** Stash which stop index is now pending the door's next advance. Call BEFORE navigating — the
+   *  navigate tears the page down, so the cursor must already be written. */
+  tourSet?: (at: number) => void;
+  /** Clear the pending tour cursor — any chat message during a tour cancels it (the "type anything to
+   *  stop" affordance), and tour-stop clears it explicitly. */
+  tourClear?: () => void;
+  /** Is a tour cursor currently stashed? Read BEFORE clearing, so a cancel/stop can report honestly
+   *  on whether a tour was actually running. */
+  tourActive?: () => boolean;
+  // ---- A4 theme switching (theme.js's two axes) — the desk drives the VISIBLE status-bar controls
+  // (revealNotepad's pattern: click the same button a human would, no private channel), validating
+  // against the LIVE DOM both before choosing what to click and after, to confirm a click actually
+  // landed (CLAUDE.md's "validate twice" design law). ----
+  /** The live theme state, read fresh off <html> each call: `themes` is the ordered data-themes list
+   *  (the truth, not the actions.ts FLAVORS mirror), `flavor` is the current data-theme or the list's
+   *  own default (list[0]), and `scheme` is the EFFECTIVE light/dark (data-color-scheme, falling back
+   *  to the OS via matchMedia when nothing is forced). */
+  themeState?: () => { themes: string[]; flavor: string; scheme: "dark" | "light" };
+  /** Click the visible "cycle theme" status-bar button (theme.js's [data-cycle-theme]). Returns false
+   *  when the control isn't on this page — an honest "can't reach it" beats a silent no-op. */
+  clickCycleTheme?: () => boolean;
+  /** Click the visible "light / dark" status-bar button (theme.js's [data-toggle-scheme]). Same
+   *  honesty contract as clickCycleTheme. */
+  clickToggleScheme?: () => boolean;
 }
+
+// A4 theme switching — the pause between successive cycle-theme clicks when hopping more than one
+// flavor forward. Named per CLAUDE.md lesson #9 (a knob with no name can't be found, let alone tuned
+// twice): the whole point of driving the VISIBLE control rather than a private channel is that a
+// visitor watching the demo sees the flavors step past one at a time, so this can't be zero.
+const THEME_CLICK_BEAT_MS = 180;
 
 // Chat bubble markup now comes from GRAIN's reasoner-kit (deps.kit) — not forked here. This local
 // `esc` is only for the portfolio's OWN chip labels (suggestChipsHtml below), which are portfolio
@@ -221,11 +260,14 @@ const loadBar = (pct: number, label: string, note: string): string =>
 
 // The chip row markup the desk replaces [data-surface="suggest-chips"] with. Same button shape
 // site.js builds (class + data-suggest-ask), so site.js's delegated click handler fires them; the
-// container keeps its data-surface so a later turn can replace it again.
-const suggestChipsHtml = (list: string[]): string => {
+// container keeps its data-surface so a later turn can replace it again. Exported: the door's OWN
+// tour leg (desk-door.ts, runTourLeg) composes the SAME chip markup for its during/after-tour rows,
+// rather than forking the shape.
+export const suggestChipsHtml = (list: string[], pin = true): string => {
   // Always pin "What can I do here?" first (the showcase's always-present chip), then the given set
-  // (de-duped against the pin).
-  const chips = [PINNED_CHIP, ...list.filter((s) => s.toLowerCase() !== PINNED_CHIP.toLowerCase())];
+  // (de-duped against the pin) — UNLESS `pin` is false: the tour's intermediate-stop row (door-driven)
+  // wants just its one "Stop the tour" affordance, not the full always-present chip alongside it.
+  const chips = pin ? [PINNED_CHIP, ...list.filter((s) => s.toLowerCase() !== PINNED_CHIP.toLowerCase())] : list;
   return `<div class="assistant__suggest-chips" data-suggest-chips data-surface="suggest-chips">` +
     chips.map((s) => `<button type="button" class="suggest-chip" data-suggest-ask>${esc(s)}</button>`).join("") +
     `</div>`;
@@ -394,16 +436,154 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         //    desk model is offline. The terminal narration persists across the page load (localStorage).
         const action = routeAction(text);
 
+        // A2 guided tour: "type anything to stop" — ANY message while a tour is pending cancels the
+        // door's next advance, except a fresh tour-start itself (which just restashes its own cursor).
+        // Captured BEFORE clearing so the tour-stop branch below can still report an honest "there WAS
+        // a tour running" even though this same line just cleared it for a non-tour-start message.
+        const tourWasActive = deps.tourActive?.() ?? false;
+        if (tourWasActive && action?.kind !== "tour-start") deps.tourClear?.();
+
         if (action?.kind === "capabilities") {
           const where = deps.pageInfo?.().title;
           // read what GRAIN itself says is operable here (its manifest) — not a hardcoded guess
           const manifest = deps.pageManifest?.();
           const operables = manifest ? pageOperables(manifest) : [];
           const pageBit = operables.length ? ` GRAIN tells me this page also lets you ${joinPhrases(operables)}.` : "";
-          const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, or jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes).${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
+          const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, switch the site's theme, or jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes).${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
           await minThink();
           await typeOut(line);
           setChips([...ACTION_CHIPS, "Take me to GRAIN", "Open the notes"]);
+          return { ok: true, ops: [], reply: line };
+        }
+
+        // A2 guided tour — stop. Deterministic + offline: an honest line either way, distinguishing a
+        // real cancel from "there was nothing to cancel" (tourWasActive was captured above, BEFORE the
+        // generic clear a few lines up already cleared the cursor for this very message).
+        if (action?.kind === "tour-stop") {
+          await minThink();
+          const line = tourWasActive
+            ? "Okay, stopping the tour here. Ask me anything, or wander on your own."
+            : "There's no tour running right now.";
+          await typeOut(line);
+          setChips([...ACTION_CHIPS, "Take me to GRAIN"]);
+          return { ok: true, ops: [], reply: line };
+        }
+
+        // A2 guided tour — start. Deterministic + offline: the stop list, its copy, and the pacing all
+        // come from tour.ts (code, never the model). This reasoner drives only the FIRST leg; every
+        // leg after rides the door's own runTourLeg (desk-door.ts) since no chat.send happens between
+        // stops — travelAndNavigate's `arrive` stash is what hands the announce across each page load.
+        if (action?.kind === "tour-start") {
+          if (!deps.navigate) {
+            // Matches how open-latest-note degrades when it can't drive the page: an honest decline,
+            // no crash, no pretending the tour started.
+            await minThink();
+            const line = "I can't drive the page from here, so I can't run the tour. Ask me something else instead.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "no navigate dep" };
+          }
+          const here = stripSlash(deps.pageInfo?.().route ?? "/");
+          const first = TOUR_STOPS[0]!;
+          const second = TOUR_STOPS[1]!;
+          await minThink();
+          if (here === stripSlash(first.route)) {
+            // Already standing on stop 0 — fold the intro and stop 0's own announce into one typed
+            // line (no navigation needed to "arrive" somewhere we already are), then head to stop 1.
+            const intro =
+              "Gladly. Four quick stops: this front page, GRAIN, BATCH, and the notes. Type anything to " +
+              "stop early. You're on the first stop now: TJ's front page, home of the resume and the doors into everything else.";
+            await typeOut(intro);
+            // tourSet BEFORE travelAndNavigate: navigate tears the page down, so the cursor for the
+            // NEXT stop must already be stashed before we leave.
+            deps.tourSet?.(1);
+            await travelAndNavigate(second.navLink, second.route, second.label, second.announce, "the navigation");
+            return { ok: true, ops: [], reply: intro };
+          }
+          const intro = "Gladly. Four quick stops: the front page, GRAIN, BATCH, and the notes. Type anything to stop early.";
+          await typeOut(intro);
+          deps.tourSet?.(0);
+          await travelAndNavigate(first.navLink, first.route, first.label, first.announce, "the navigation");
+          return { ok: true, ops: [], reply: intro };
+        }
+
+        // A4 theme switching — deterministic + offline (zero model, runs before the load like every
+        // other action here). The desk drives the SAME visible status-bar buttons a human would
+        // (revealNotepad's pattern, no private channel), validating against the LIVE DOM both before
+        // deciding what to click and after, to confirm the click actually landed — CLAUDE.md's
+        // "validate twice" design law, and the honest thing to do across a demo that runs on every page.
+        if (action?.kind === "theme") {
+          await minThink();
+          if (!deps.themeState || (!deps.clickCycleTheme && !deps.clickToggleScheme)) {
+            const line = "I can't reach the theme controls here.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "no theme deps" };
+          }
+          const target = action.target;
+
+          if (target === "dark" || target === "light") {
+            if (!deps.clickToggleScheme) {
+              const line = "I can't reach the theme controls here.";
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "no toggle-scheme dep" };
+            }
+            const before = deps.themeState();
+            if (before.scheme === target) {
+              const line = `It's already ${target} here.`;
+              await typeOut(line);
+              return { ok: true, ops: [], reply: line };
+            }
+            narrate("clicks", "the light and dark switch");
+            deps.clickToggleScheme();
+            const line = `There you go, ${target} mode.`;
+            await typeOut(line);
+            return { ok: true, ops: [], reply: line };
+          }
+
+          if (!deps.clickCycleTheme) {
+            const line = "I can't reach the theme controls here.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "no cycle-theme dep" };
+          }
+
+          if (target === "next") {
+            narrate("clicks", "the theme control");
+            deps.clickCycleTheme();
+            const after = deps.themeState();
+            const line = `Switched the theme to ${after.flavor}.`;
+            await typeOut(line);
+            return { ok: true, ops: [], reply: line };
+          }
+
+          // a named flavor — validated against the LIVE themes list (not actions.ts's FLAVORS mirror):
+          // this page's real data-themes is the truth.
+          const state = deps.themeState();
+          const targetIdx = state.themes.indexOf(target);
+          if (targetIdx < 0) {
+            const options = state.themes.length ? joinPhrases(state.themes) : "no themes";
+            const line = `The themes here are ${options}. Which one would you like?`;
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "unknown flavor" };
+          }
+          if (state.flavor === target) {
+            const line = `You're already on ${target}.`;
+            await typeOut(line);
+            return { ok: true, ops: [], reply: line };
+          }
+          const currentIdx = state.themes.indexOf(state.flavor);
+          const clicks = (targetIdx - (currentIdx < 0 ? 0 : currentIdx) + state.themes.length) % state.themes.length;
+          narrate("clicks", "the theme control");
+          for (let i = 0; i < clicks; i++) {
+            deps.clickCycleTheme();
+            if (i < clicks - 1) await tools.delay(THEME_CLICK_BEAT_MS);   // let the visitor SEE each flavor step past
+          }
+          const after = deps.themeState();
+          if (after.flavor !== target) {
+            const line = "Hmm, that didn't take. Try the theme button up top.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "click didn't land" };
+          }
+          const line = `Switched the theme to ${target}.`;
+          await typeOut(line);
           return { ok: true, ops: [], reply: line };
         }
 

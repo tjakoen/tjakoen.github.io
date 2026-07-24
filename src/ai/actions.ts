@@ -12,13 +12,24 @@ export type Action =
   | { kind: "note-write"; instruction: string }
   | { kind: "capabilities" }
   | { kind: "clarify"; prompt: string; choices: Choice[] }
-  | { kind: "deep-link"; query: string };
+  | { kind: "deep-link"; query: string }
+  // A2 guided tour — a fixed, code-enumerated walk through 4 top-level stops (tour.ts). Zero model:
+  // both kinds are matched here, before the model ever loads (see desk-reasoner.ts).
+  | { kind: "tour-start" }
+  | { kind: "tour-stop" }
+  // A4 theme switching — `target` is "dark", "light", "next" (cycle to whatever's next), or one of the
+  // FLAVORS names below. Zero model: matched here, then RE-VALIDATED against the live <html data-themes>
+  // list by the reasoner before it drives anything (a page could ship a different set than this file's
+  // comment promises to track).
+  | { kind: "theme"; target: string };
 
 /** The disambiguation the desk offers for a vague "where should I go?" — each choice's `value` is a
  *  phrase the desk itself resolves (catalog navigation or a capabilities ask), so a click just
- *  re-enters the router. Deterministic + offline-safe: no model needed to ASK, and none to ANSWER. */
+ *  re-enters the router. Deterministic + offline-safe: no model needed to ASK, and none to ANSWER.
+ *  "Take the tour" leads (A2) — the vague ask this offers most often ("show me around") IS the tour. */
 export const CLARIFY_PROMPT = "Sure — where would you like to go?";
 export const CLARIFY_CHOICES: Choice[] = [
+  { label: "Take the tour", value: "take the tour" },
   { label: "GRAIN", value: "take me to grain" },
   { label: "The notes", value: "take me to the notes" },
   { label: "The BREAD stack", value: "take me to the bread stack" },
@@ -27,6 +38,13 @@ export const CLARIFY_CHOICES: Choice[] = [
 ];
 
 const norm = (s: string): string => s.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+
+// A4 theme switching — the flavor axis's CODE-SIDE mirror of <html data-themes> (view/pages/*.html).
+// GRAIN itself hardcodes no theme names (theme.js reads the live attribute) — this const exists only
+// so the router can recognize a flavor word in FREE TEXT; the reasoner re-validates against the LIVE
+// list before acting, so a renamed/reordered/added flavor here never drives a click the DOM doesn't
+// back. Keep in sync with view/pages/*.html's data-themes value.
+const FLAVORS = ["sourdough", "baguette", "brioche"];
 
 // "Show me the part about X" (A1, deep-link answers) — a request for WHERE on the site something is
 // covered, distinct from navigation (a page) or summarize (this page). The captured remainder becomes
@@ -80,9 +98,40 @@ export function routeAction(text: string): Action | null {
       /\b(which|what) pages?\b/.test(t) || /\bwhere can you take (me|us)\b/.test(t))
     return { kind: "capabilities" };
 
+  // A2 guided tour — "stop the tour" BEFORE "take the tour": both share the word "tour", and a stop
+  // phrase ("stop/end/cancel/quit the tour") must never be mistaken for a start. Checked here (after
+  // deep-link/summarize/capabilities, before clarify) so a tour ask never falls into the vaguer
+  // "show me around" clarify bucket below — it's specific enough to act on directly.
+  if (/\b(?:stop|end|cancel|quit)\s+the\s+tour\b/.test(t)) return { kind: "tour-stop" };
+  if (/\b(?:take|start|begin)\s+(?:the|a)\s+tour\b/.test(t) || /\bgive me\s+(?:the|a)\s+tour\b/.test(t))
+    return { kind: "tour-start" };
+
+  // A4 theme switching — zero model, both axes GRAIN's theme.js already exposes. Checked here (after
+  // the specific intents above, before the vaguer clarify bucket below) so a theme ask never gets
+  // mistaken for "help me get somewhere".
+  //
+  // scheme (dark/light): the bare word alone isn't enough — a stray "dark" shouldn't hijack an
+  // unrelated sentence — so it needs a mode-ish companion (mode/theme/make it/switch/go). A
+  // chat-shaped question like "is dark mode supported" still fires: unambiguous enough, and the
+  // reasoner answers it honestly either way (already-dark vs. a real toggle). "dark(er)"/"light(er)"
+  // both count ("make it darker").
+  const SCHEME_WORD = /\b(dark|light)(?:er)?\b/;
+  if (SCHEME_WORD.test(t) && /\b(?:mode|theme|make it|switch|go)\b/.test(t)) {
+    const m = SCHEME_WORD.exec(t)!;
+    return { kind: "theme", target: m[1]! };
+  }
+  // cycle/next flavor — "cycle the theme", "next theme".
+  if (/\b(?:cycle|next)\b.*\btheme\b|\btheme\b.*\b(?:cycle|next)\b/.test(t)) return { kind: "theme", target: "next" };
+  // a named flavor, ANYWHERE in the message ("switch to brioche", "use the baguette theme", "change
+  // the theme to sourdough", a bare "brioche"). No switch-ish context required for the bare case — these
+  // words are unambiguous site-wide (no nav destination shares them, so this can never shadow a
+  // catalog match like "switch to grain", which isn't a flavor name and falls through below).
+  for (const f of FLAVORS) if (new RegExp(`\\b${f}\\b`).test(t)) return { kind: "theme", target: f };
+
   // clarify — a vague "help me get somewhere" ask with no concrete destination. Offer choices rather
   // than a wall of text or a guess. Kept BEFORE latest-note so "show me around" resolves here.
-  if (/\bshow me around\b/.test(t) || /\b(give me|take) a tour\b/.test(t) || /\bsurprise me\b/.test(t) ||
+  // ("give me/take a tour" used to land here — A2 now starts the tour directly, above.)
+  if (/\bshow me around\b/.test(t) || /\bsurprise me\b/.test(t) ||
       /\bwhere (should|can|do) i (go|start|look|begin)\b/.test(t) || /\bhelp me (choose|decide|navigate|find|get around)\b/.test(t) ||
       /\b(what are my |my )?options\b/.test(t) || /\bnot sure\b/.test(t))
     return { kind: "clarify", prompt: CLARIFY_PROMPT, choices: CLARIFY_CHOICES };

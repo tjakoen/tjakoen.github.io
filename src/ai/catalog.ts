@@ -63,8 +63,12 @@ const covered = (q: string[], dt: string[]): number => q.reduce((n, w) => n + (h
 // nav command "read the mill documentation" — the baseline audit showed that phrasing falling to
 // the model, which explained the route instead of going there. "read" joined the bare verbs for the
 // same case; full-coverage matching still keeps a mere mention ("I read a note once") from firing.
+// "switch" joined the (?:go|head|...) group for A4 theme switching (2026-07-24): the desk now also
+// answers "switch to X" for a THEME flavor (actions.ts, checked before this resolver ever runs — see
+// desk-reasoner.ts), so "switch to grain" (not a flavor) needs the SAME verb recognized here, or that
+// phrasing would silently stop navigating anywhere the word "switch" used to just fall through to chat.
 const NAV_VERB =
-  /^\s*(?:please\s+)?(?:i\s+(?:want|need|would\s+like|wish)\s+to\s+|i(?:'|’)?d\s+(?:like|love)\s+to\s+|i\s+wanna\s+|can\s+you\s+|could\s+you\s+|let(?:'|’)?s\s+)?(?:please\s+)?(?:(?:take|bring|send|get|lead|point|show)\s+me\s+(?:back\s+)?(?:to|toward|towards|into|over\s+to)\s+|(?:go|head|jump|navigate|nav|return|come)\s+(?:back\s+)?(?:to|over\s+to)\s+|(?:take|bring|send|get|lead|go|head)\s+(?:me\s+)?(?=home\b|back\b)|(?:open|show|visit|see|view|read|load|launch|pull\s+up)\s+)/i;
+  /^\s*(?:please\s+)?(?:i\s+(?:want|need|would\s+like|wish)\s+to\s+|i(?:'|’)?d\s+(?:like|love)\s+to\s+|i\s+wanna\s+|can\s+you\s+|could\s+you\s+|let(?:'|’)?s\s+)?(?:please\s+)?(?:(?:take|bring|send|get|lead|point|show)\s+me\s+(?:back\s+)?(?:to|toward|towards|into|over\s+to)\s+|(?:go|head|jump|navigate|nav|return|come|switch)\s+(?:back\s+)?(?:to|over\s+to)\s+|(?:take|bring|send|get|lead|go|head)\s+(?:me\s+)?(?=home\b|back\b)|(?:open|show|visit|see|view|read|load|launch|pull\s+up)\s+)/i;
 
 /** The place phrase in a nav command, or null if `text` isn't one. */
 export function navTarget(text: string): string | null {

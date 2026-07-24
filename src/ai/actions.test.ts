@@ -2,7 +2,7 @@
 // latest-note / note-write). Navigation is NOT here anymore — it's resolved against the sitemap catalog
 // (catalog.ts, covered by catalog.test.ts), so a nav phrase falls through this router as null.
 import { test, expect, describe } from "bun:test";
-import { routeAction, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
+import { routeAction, PINNED_CHIP, ACTION_CHIPS, CLARIFY_CHOICES } from "./actions.ts";
 import { navTarget } from "./catalog.ts";
 
 describe("routeAction", () => {
@@ -74,11 +74,35 @@ describe("routeAction", () => {
   });
 
   test("a vague 'help me get somewhere' ask offers choices (deterministic disambiguation)", () => {
-    for (const s of ["show me around", "give me a tour", "where should I go", "help me choose", "what are my options", "I'm not sure", "surprise me"]) {
+    // "give me a tour" / "take a tour" used to land here — A2 now starts the tour directly instead
+    // (see the tour tests below), so they're no longer in this vague-ask list.
+    for (const s of ["show me around", "where should I go", "help me choose", "what are my options", "I'm not sure", "surprise me"]) {
       const a = routeAction(s);
       expect(a?.kind).toBe("clarify");
       if (a?.kind === "clarify") { expect(a.choices.length).toBeGreaterThanOrEqual(2); expect(a.prompt).toBeTruthy(); }
     }
+  });
+
+  test("A2: tour-start phrasings", () => {
+    for (const s of ["take the tour", "start the tour", "begin the tour", "give me a tour", "take a tour", "give me the tour"])
+      expect(routeAction(s)?.kind).toBe("tour-start");
+  });
+
+  test("A2: tour-stop phrasings", () => {
+    for (const s of ["stop the tour", "end the tour", "cancel the tour", "quit the tour"])
+      expect(routeAction(s)?.kind).toBe("tour-stop");
+  });
+
+  test("A2: 'stop the tour' is never mistaken for a tour-start (both share the word 'tour')", () => {
+    expect(routeAction("stop the tour")?.kind).not.toBe("tour-start");
+  });
+
+  test("A2: 'show me around' still clarifies (it's vague, unlike a direct tour ask)", () => {
+    expect(routeAction("show me around")?.kind).toBe("clarify");
+  });
+
+  test("A2: the tour is the FIRST clarify choice", () => {
+    expect(CLARIFY_CHOICES[0]).toEqual({ label: "Take the tour", value: "take the tour" });
   });
 
   test("every clarify choice is actionable — an action here, or a real nav command for the catalog", () => {
@@ -95,5 +119,40 @@ describe("routeAction", () => {
 
   test("the action chips all route to an action (never null)", () => {
     for (const chip of [PINNED_CHIP, ...ACTION_CHIPS]) expect(routeAction(chip)).not.toBeNull();
+  });
+
+  describe("A4 theme switching", () => {
+    test("scheme phrasings (dark/light + a mode-ish companion word)", () => {
+      for (const s of ["make it dark", "dark mode", "switch to dark", "go dark", "light mode", "make it light", "make it darker"])
+        expect(routeAction(s)?.kind).toBe("theme");
+    });
+
+    test("scheme target picks the bare word (not the -er suffix)", () => {
+      expect(routeAction("make it dark")).toEqual({ kind: "theme", target: "dark" });
+      expect(routeAction("light mode")).toEqual({ kind: "theme", target: "light" });
+      expect(routeAction("make it darker")).toEqual({ kind: "theme", target: "dark" });
+    });
+
+    test("a chat-shaped scheme question still fires (unambiguous enough, per design)", () => {
+      expect(routeAction("is dark mode supported")?.kind).toBe("theme");
+    });
+
+    test("flavor phrasings, incl. a bare name (unambiguous — no nav destination shares these words)", () => {
+      for (const s of ["switch to brioche", "use the baguette theme", "change the theme to sourdough", "brioche theme", "brioche"])
+        expect(routeAction(s)).toEqual({ kind: "theme", target: s.includes("baguette") ? "baguette" : s.includes("sourdough") ? "sourdough" : "brioche" });
+    });
+
+    test("cycle/next phrasings target 'next'", () => {
+      for (const s of ["cycle the theme", "next theme"])
+        expect(routeAction(s)).toEqual({ kind: "theme", target: "next" });
+    });
+
+    test("'switch to grain' is NOT theme — grain isn't a flavor, falls through to catalog nav", () => {
+      expect(routeAction("switch to grain")).toBeNull();
+    });
+
+    test("'take me to the notes' is unaffected by the theme check", () => {
+      expect(routeAction("take me to the notes")).toBeNull();
+    });
   });
 });

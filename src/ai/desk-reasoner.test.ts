@@ -627,6 +627,237 @@ describe("makeDeskReasoner — A1 deep-link answers (\"show me the part about X\
   });
 });
 
+describe("makeDeskReasoner — A2 guided tour", () => {
+  test("tour-start from '/': sets the cursor to stop 1 BEFORE navigating to /grain", async () => {
+    const calls: string[] = [];
+    let navd = "";
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    deps.navigate = (u) => { calls.push(`navigate:${u}`); navd = u; };
+    deps.tourSet = (at) => { calls.push(`tourSet:${at}`); };
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("take the tour"), tools);
+
+    expect(navd).toBe("/grain");
+    expect(calls).toEqual(["tourSet:1", "navigate:/grain"]);   // cursor stashed BEFORE the tear-down
+    expect(d.ok).toBe(true);
+  });
+
+  test("tour-start from elsewhere (e.g. /mill/docs): sets the cursor to stop 0 and navigates home", async () => {
+    const calls: string[] = [];
+    let navd = "";
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/mill/docs", title: "MILL docs" });
+    deps.navigate = (u) => { calls.push(`navigate:${u}`); navd = u; };
+    deps.tourSet = (at) => { calls.push(`tourSet:${at}`); };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("start the tour"), makeTools().tools);
+
+    expect(navd).toBe("/");
+    expect(calls).toEqual(["tourSet:0", "navigate:/"]);
+    expect(d.ok).toBe(true);
+  });
+
+  test("no navigate dep: an honest decline, no crash, no tourSet call", async () => {
+    const { deps } = makeDeps();
+    let set = 0;
+    deps.tourSet = () => { set++; };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("take the tour"), makeTools().tools);
+
+    expect(set).toBe(0);
+    expect(d.ok).toBe(false);
+    expect((d.reply ?? "").toLowerCase()).toContain("can't drive");
+  });
+
+  test("a plain chat message while a tour is active calls tourClear (\"type anything to stop\")", async () => {
+    const { engine } = fakeEngine(["Just an answer."]);
+    const { deps } = makeDeps({ loadEngine: async () => engine });
+    let cleared = 0;
+    deps.tourActive = () => true;
+    deps.tourClear = () => { cleared++; };
+    const r = makeDeskReasoner(deps);
+
+    await r.decide(chat("who is TJ?"), makeTools().tools);
+
+    expect(cleared).toBe(1);
+  });
+
+  test("tour-start itself does NOT clear the tour cursor even while one is active (it restashes its own)", async () => {
+    const { deps } = makeDeps();
+    deps.navigate = () => {};
+    let cleared = 0;
+    deps.tourActive = () => true;
+    deps.tourClear = () => { cleared++; };
+    const r = makeDeskReasoner(deps);
+
+    await r.decide(chat("take the tour"), makeTools().tools);
+
+    expect(cleared).toBe(0);
+  });
+
+  test("tour-stop while a tour IS active: an honest stop line + chips, no model load", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    deps.tourActive = () => true;
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("stop the tour"), tools);
+
+    expect(loads).toBe(0);
+    expect(d.reply).toContain("stopping the tour");
+  });
+
+  test("tour-stop with NO tour active: an honest 'nothing running' line, not a false stop", async () => {
+    const { deps } = makeDeps();
+    deps.tourActive = () => false;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("stop the tour"), makeTools().tools);
+
+    expect(d.reply).toContain("no tour running");
+  });
+});
+
+describe("makeDeskReasoner — A4 theme switching", () => {
+  // A fake theme.js: `themes` is the fixed ordered list, and the two "clicks" actually mutate the
+  // live-read state (mirroring how the real DOM would change under theme.js), so the reasoner's
+  // post-click re-read (validate-twice) is exercised for real, not stubbed to always succeed.
+  function fakeTheme(themes: string[], startFlavor: string, startScheme: "dark" | "light") {
+    let flavor = startFlavor;
+    let scheme = startScheme;
+    let cycleClicks = 0;
+    let toggleClicks = 0;
+    return {
+      themeState: () => ({ themes, flavor, scheme }),
+      clickCycleTheme: () => { cycleClicks++; const i = themes.indexOf(flavor); flavor = themes[(i + 1) % themes.length]!; return true; },
+      clickToggleScheme: () => { toggleClicks++; scheme = scheme === "dark" ? "light" : "dark"; return true; },
+      get cycleClicks() { return cycleClicks; },
+      get toggleClicks() { return toggleClicks; },
+    };
+  }
+
+  test("'switch to brioche' from sourdough: two cycle clicks (sourdough→baguette→brioche), confirms by name", async () => {
+    const ft = fakeTheme(["sourdough", "baguette", "brioche"], "sourdough", "light");
+    const { deps } = makeDeps();
+    deps.themeState = ft.themeState; deps.clickCycleTheme = ft.clickCycleTheme; deps.clickToggleScheme = ft.clickToggleScheme;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("switch to brioche"), makeTools().tools);
+
+    expect(ft.cycleClicks).toBe(2);
+    expect(ft.toggleClicks).toBe(0);
+    expect(d.ok).toBe(true);
+    expect(d.reply).toContain("brioche");
+  });
+
+  test("already on the requested flavor: no click, honest 'already' line", async () => {
+    const ft = fakeTheme(["sourdough", "baguette", "brioche"], "brioche", "light");
+    const { deps } = makeDeps();
+    deps.themeState = ft.themeState; deps.clickCycleTheme = ft.clickCycleTheme; deps.clickToggleScheme = ft.clickToggleScheme;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("switch to brioche"), makeTools().tools);
+
+    expect(ft.cycleClicks).toBe(0);
+    expect(d.ok).toBe(true);
+    expect((d.reply ?? "").toLowerCase()).toContain("already");
+  });
+
+  test("a flavor the router knows but THIS page's live list doesn't: no click, an honest line naming the LIVE options", async () => {
+    // "brioche" is a real actions.ts FLAVORS word (so the router matches it), but this page's own
+    // live data-themes doesn't carry it — the reasoner re-validates against the LIVE list, not the
+    // router's static mirror, so it must decline honestly rather than click blind.
+    const ft = fakeTheme(["sourdough", "baguette"], "sourdough", "light");
+    const { deps } = makeDeps();
+    deps.themeState = ft.themeState; deps.clickCycleTheme = ft.clickCycleTheme; deps.clickToggleScheme = ft.clickToggleScheme;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("switch to brioche"), makeTools().tools);
+
+    expect(ft.cycleClicks).toBe(0);
+    expect(d.ok).toBe(false);
+    expect(d.reply).toContain("sourdough");
+    expect(d.reply).toContain("baguette");
+  });
+
+  test("'cycle the theme' clicks once and confirms the NEW flavor by name", async () => {
+    const ft = fakeTheme(["sourdough", "baguette", "brioche"], "sourdough", "light");
+    const { deps } = makeDeps();
+    deps.themeState = ft.themeState; deps.clickCycleTheme = ft.clickCycleTheme; deps.clickToggleScheme = ft.clickToggleScheme;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("cycle the theme"), makeTools().tools);
+
+    expect(ft.cycleClicks).toBe(1);
+    expect(d.reply).toContain("baguette");
+  });
+
+  test("'make it dark' when light: one toggle click, confirms dark mode", async () => {
+    const ft = fakeTheme(["sourdough", "baguette", "brioche"], "sourdough", "light");
+    const { deps } = makeDeps();
+    deps.themeState = ft.themeState; deps.clickCycleTheme = ft.clickCycleTheme; deps.clickToggleScheme = ft.clickToggleScheme;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("make it dark"), makeTools().tools);
+
+    expect(ft.toggleClicks).toBe(1);
+    expect((d.reply ?? "").toLowerCase()).toContain("dark");
+  });
+
+  test("'make it dark' when already dark: no click, honest 'already' line", async () => {
+    const ft = fakeTheme(["sourdough", "baguette", "brioche"], "sourdough", "dark");
+    const { deps } = makeDeps();
+    deps.themeState = ft.themeState; deps.clickCycleTheme = ft.clickCycleTheme; deps.clickToggleScheme = ft.clickToggleScheme;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("make it dark"), makeTools().tools);
+
+    expect(ft.toggleClicks).toBe(0);
+    expect((d.reply ?? "").toLowerCase()).toContain("already");
+  });
+
+  test("a click that doesn't land settles an honest 'didn't take' line instead of a false confirm", async () => {
+    const { deps } = makeDeps();
+    deps.themeState = () => ({ themes: ["sourdough", "baguette", "brioche"], flavor: "sourdough", scheme: "light" });
+    deps.clickCycleTheme = () => true;     // "clicks" but the flavor never actually moves (stubborn button)
+    deps.clickToggleScheme = () => true;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("switch to brioche"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect((d.reply ?? "").toLowerCase()).toContain("didn't take");
+  });
+
+  test("no theme deps at all: an honest decline, no crash", async () => {
+    const { deps } = makeDeps();
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("switch to brioche"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect((d.reply ?? "").toLowerCase()).toContain("can't reach");
+  });
+
+  test("theme switching never loads the model", async () => {
+    let loads = 0;
+    const ft = fakeTheme(["sourdough", "baguette", "brioche"], "sourdough", "light");
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return { chat: { completions: { create: async () => ({ [Symbol.asyncIterator]: async function* () {} }) } }, interruptGenerate() {} }; } });
+    deps.themeState = ft.themeState; deps.clickCycleTheme = ft.clickCycleTheme; deps.clickToggleScheme = ft.clickToggleScheme;
+    const r = makeDeskReasoner(deps);
+
+    await r.decide(chat("switch to brioche"), makeTools().tools);
+
+    expect(loads).toBe(0);
+  });
+});
+
 describe("makeDeskReasoner — A3 citation (a deterministic 'Read more' under a grounded answer)", () => {
   // one real-route chunk (with an A1 anchor) + the facts block — the retrieval floor's fallback.
   const citeKnowledge = {
