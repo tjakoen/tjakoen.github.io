@@ -714,9 +714,10 @@ export async function listNoteRoutesByDate(): Promise<string[]> {
   return (await sortedNoteEntries()).map((e) => `/notes/${e.slug}`);
 }
 
-/** Newest-first notes ({slug,title,route}) for the desk's "open the latest note" action — served
- *  frozen as /notes.json (a §18 data route) so the browser model can pick the newest with a real
- *  title, never the sitemap's slug-cased fallback. */
-export async function listPortfolioNotes(): Promise<Array<{ slug: string; title: string; route: string }>> {
-  return (await sortedNoteEntries()).map((e) => ({ slug: e.slug, title: e.title, route: `/notes/${e.slug}` }));
+/** Newest-first notes ({slug,title,route,tags}) for the desk's "open the latest note" action AND
+ *  (B2, 2026-07-24) notes filtering — served frozen as /notes.json (a §18 data route) so the browser
+ *  model can pick the newest with a real title, never the sitemap's slug-cased fallback, and match a
+ *  visitor's topic against the REAL tag set instead of guessing one (notes-tags.ts, law #2). */
+export async function listPortfolioNotes(): Promise<Array<{ slug: string; title: string; route: string; tags: string[] }>> {
+  return (await sortedNoteEntries()).map((e) => ({ slug: e.slug, title: e.title, route: `/notes/${e.slug}`, tags: e.tags }));
 }

@@ -155,4 +155,40 @@ describe("routeAction", () => {
       expect(routeAction("take me to the notes")).toBeNull();
     });
   });
+
+  describe("B2 notes filtering", () => {
+    test("phrasings extract the topic as `topic` (never a tag guess — the reasoner matches it, law #2)", () => {
+      const cases: [string, string][] = [
+        ["show me notes about teaching", "teaching"],
+        ["notes tagged ai", "ai"],
+        ["filter the notes by grain", "grain"],
+        ["which notes are about design systems", "design systems"],
+      ];
+      for (const [s, topic] of cases) {
+        const a = routeAction(s);
+        expect(a?.kind).toBe("notes-filter");
+        if (a?.kind === "notes-filter") expect(a.topic).toBe(topic);
+      }
+    });
+
+    test("an empty remainder falls through (null), same as deep-link's own guard", () => {
+      expect(routeAction("filter the notes by")).toBeNull();
+    });
+
+    test("'show me the latest note' still opens the latest note, not a filter (no about/tagged connector)", () => {
+      expect(routeAction("show me the latest note")?.kind).toBe("open-latest-note");
+    });
+
+    test("'make a note about grain' still writes to the notepad, not a filter (note-write fires first)", () => {
+      expect(routeAction("make a note about grain")?.kind).toBe("note-write");
+    });
+
+    test("'where does TJ write about teaching' still deep-links, not a filter (deep-link fires first)", () => {
+      expect(routeAction("where does TJ write about teaching")?.kind).toBe("deep-link");
+    });
+
+    test("'summarize the notes' still summarizes, not a filter (summarize fires first)", () => {
+      expect(routeAction("summarize the notes")?.kind).toBe("summarize");
+    });
+  });
 });

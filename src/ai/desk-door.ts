@@ -189,6 +189,37 @@ const clickToggleScheme = (): boolean => {
   return !!btn;
 };
 
+// B2 notes filtering ("show me notes about teaching") — drive the SAME tag-chip checkboxes a human
+// would tap (content.ts renderNotesFeedPage's [data-feed-controls] island), the revealNotepad pattern
+// (the real control, no private channel), validated live both before and after — same honesty contract
+// as the A4 theme deps just above. `[data-feed-controls]` only exists on /notes, so every read here is
+// naturally empty/false off that page; the reasoner checks pageInfo().route first regardless.
+interface CheckboxEl extends ClickableEl { value: string; checked: boolean; closest(sel: string): { hidden?: boolean } | null }
+// The chip boxes are found by ITERATING the checkbox list and comparing `.value` in JS — never by
+// interpolating the tag into an attribute selector. A selector build would need CSS.escape (absent
+// on file:// / old browsers), and its raw-value fallback makes querySelector THROW on any quote in a
+// tag; a plain === compare has no such failure mode, and the list is a dozen chips at most.
+const notesTagBoxes = (): CheckboxEl[] =>
+  Array.from((globalThis as unknown as { document?: { querySelectorAll(s: string): CheckboxEl[] } })
+    .document?.querySelectorAll('[data-feed-controls] input[type="checkbox"]') ?? []);
+const notesTagChips = (): string[] => notesTagBoxes().map((b) => b.value);
+const clickNotesTag = (tag: string): boolean => {
+  const box = notesTagBoxes().find((b) => b.value === tag);
+  if (!box) return false;
+  // the chip may be tucked behind the "+N more" overflow toggle — open it FIRST so the visitor SEES
+  // the chip the desk is about to check (the same "drive what's visible" law the A4 clicks follow).
+  const rest = box.closest("[data-tags-rest]");
+  if (rest?.hidden) {
+    (globalThis as unknown as { document?: { querySelector(s: string): ClickableEl | null } })
+      .document?.querySelector("[data-tags-more]")?.click();
+  }
+  box.click();
+  return box.checked === true;   // confirm the click actually landed (validate twice)
+};
+const visibleNoteCount = (): number =>
+  (globalThis as unknown as { document?: { querySelectorAll(s: string): { length: number } } })
+    .document?.querySelectorAll(".note-card:not([hidden])").length ?? 0;
+
 // A1 "show me the part about X" (deep-link answers): scroll the CURRENT page to a rendered heading id.
 // MILL renders every h2/h3 with `id="{anchor}"` (the Chunk.anchor contract) — a plain getElementById +
 // scrollIntoView, no framework hook needed. True when the element existed, so the reasoner can
@@ -333,6 +364,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     scrollToAnchor,   // A1 deep-link answers: scroll THIS page to a rendered heading id (see desk-reasoner.ts)
     tourSet, tourClear, tourActive,   // A2 guided tour: the reasoner's first leg + the "type anything to stop" cancel
     themeState, clickCycleTheme, clickToggleScheme,   // A4 theme switching: read + drive theme.js's visible controls
+    notesTagChips, clickNotesTag, visibleNoteCount,   // B2 notes filtering: read + drive the /notes tag chips
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();

@@ -19,6 +19,9 @@ import type { DeskEngine, EngineProgress, ModelProfile } from "./webllm-loader.t
 import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
 import { routeAction, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
 import { resolveNav, navShortlist, type NavDest } from "./catalog.ts";
+// B2 notes filtering — matching a visitor's free-text topic against the REAL tag set (never a model
+// guess, law #2). Pure + framework-free (notes-tags.ts), same family as catalog.ts's resolver.
+import { matchTags, uniqueTags } from "./notes-tags.ts";
 // A2 guided tour — the fixed, code-enumerated stop list (tour.ts). Zero model: tour-start/tour-stop
 // are matched deterministically (actions.ts) and driven from this data, never from the model's own
 // judgment of "what's on the site" (CLAUDE.md design law — code enumerates routes, never the model).
@@ -29,8 +32,10 @@ import { TOUR_STOPS } from "./tour.ts";
 import type * as Kit from "@tjakoen/grain/ai/reasoner-kit.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 
-/** A note the desk can open ("show the latest blog") — newest-first from /notes.json. */
-export interface DeskNote { slug: string; title: string; route: string }
+/** A note the desk can open ("show the latest blog") — newest-first from /notes.json. `tags` rides
+ *  along for B2 notes filtering (notes-tags.ts): optional so older callers/fixtures without it still
+ *  type-check (an untagged note just never matches a topic). */
+export interface DeskNote { slug: string; title: string; route: string; tags?: string[] }
 
 // Friendly phrasing for what GRAIN reports as operable on THIS page (read from domManifest, never
 // hardcoded). The generic `screen`/`chat-log` targets exist on every page (vocabulary-level), so the
@@ -214,6 +219,23 @@ export interface DeskDeps {
   /** Click the visible "light / dark" status-bar button (theme.js's [data-toggle-scheme]). Same
    *  honesty contract as clickCycleTheme. */
   clickToggleScheme?: () => boolean;
+  // ---- B2 notes filtering ("show me notes about teaching") — the desk drives the SAME tag-chip
+  // checkboxes a human would (content.ts renderNotesFeedPage's [data-feed-controls] island), validating
+  // against the LIVE DOM both before choosing what to click and after (CLAUDE.md's "validate twice" law),
+  // mirroring the A4 theme deps' honesty contract exactly. ----
+  /** The live chip checkbox VALUES on this page's /notes feed (`[data-feed-controls] input[type=
+   *  checkbox]`), empty when the controls aren't on this page. Read BEFORE clicking, so the reasoner
+   *  only ever clicks a tag that's actually a chip here — never a matched tag with nothing to click. */
+  notesTagChips?: () => string[];
+  /** Click the chip checkbox for `tag` (revealing the collapsed `[data-tags-rest]` overflow first via
+   *  `[data-tags-more]` if the chip lives there, so the visitor SEES what the desk just checked — the
+   *  revealNotepad pattern). Returns the checkbox's OWN checked state after the click, so the reasoner
+   *  can tell a real check from a stubborn control that didn't take. False when no such chip exists. */
+  clickNotesTag?: (tag: string) => boolean;
+  /** Count of `.note-card` currently visible (not `[hidden]`) — read AFTER clicking, for an honest
+   *  "N match" in the confirmation line. Optional: its absence just drops that clause, never fabricates
+   *  a count. */
+  visibleNoteCount?: () => number;
 }
 
 // A4 theme switching — the pause between successive cycle-theme clicks when hopping more than one
@@ -449,7 +471,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const manifest = deps.pageManifest?.();
           const operables = manifest ? pageOperables(manifest) : [];
           const pageBit = operables.length ? ` GRAIN tells me this page also lets you ${joinPhrases(operables)}.` : "";
-          const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, switch the site's theme, or jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes).${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
+          const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, switch the site's theme, filter the notes by topic, or jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes).${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
           await minThink();
           await typeOut(line);
           setChips([...ACTION_CHIPS, "Take me to GRAIN", "Open the notes"]);
@@ -585,6 +607,63 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const line = `Switched the theme to ${target}.`;
           await typeOut(line);
           return { ok: true, ops: [], reply: line };
+        }
+
+        // B2 notes filtering — "show me notes about teaching". Deterministic + offline: match the
+        // topic against the REAL tag set (notes-tags.ts, never a model guess — law #2) BEFORE deciding
+        // anything about the UI. A miss falls through (no return) to the model path a few lines down —
+        // same idiom as the A1 deep-link miss above: the deterministic path only claims the turn when
+        // it can actually deliver, so an unmatched topic still gets an honest grounded chat answer
+        // instead of a doomed "0 results" filter.
+        if (action?.kind === "notes-filter") {
+          const notes = (await deps.listNotes?.()) ?? [];
+          const matched = matchTags(action.topic, uniqueTags(notes));
+          if (matched.length) {
+            const tagLabel = joinPhrases(matched);
+            const onNotes = !!deps.pageInfo && stripSlash(deps.pageInfo().route) === "/notes";
+            if (onNotes) {
+              // Already standing on the feed — drive the VISIBLE tag chips a human would tap
+              // (revealNotepad's pattern, no private channel), validating twice: only click a tag the
+              // live DOM actually carries as a chip, then confirm each click actually checked the box
+              // before claiming success (CLAUDE.md's "validate twice" design law).
+              await minThink();
+              if (!deps.notesTagChips || !deps.clickNotesTag) {
+                const line = "I can't reach the tag filter here.";
+                await typeOut(line);
+                return { ok: false, ops: [], reply: line, reason: "no notes-tag deps" };
+              }
+              const live = deps.notesTagChips();
+              const onPage = matched.filter((t) => live.includes(t));
+              if (!onPage.length) {
+                const line = `I don't see a "${tagLabel}" tag on this page yet.`;
+                await typeOut(line);
+                return { ok: false, ops: [], reply: line, reason: "tag not on page" };
+              }
+              narrate("clicks", "the tag filter");
+              const landed = onPage.filter((t) => deps.clickNotesTag!(t));
+              if (!landed.length) {
+                const line = "Hmm, that didn't take. Try the tag chips above the feed.";
+                await typeOut(line);
+                return { ok: false, ops: [], reply: line, reason: "click didn't land" };
+              }
+              const count = deps.visibleNoteCount?.();
+              const countBit = count === undefined ? "." : ` — ${count} match${count === 1 ? "" : "es"}.`;
+              const line = `Filtering the notes by ${joinPhrases(landed)}${countBit} Tap the chip again to clear.`;
+              await typeOut(line);
+              return { ok: true, ops: [], reply: line };
+            }
+            // elsewhere on the site — travel to the filtered feed. The destination island's own
+            // applyQueryTags (content.ts) checks the matching chips on load, so there's no extra
+            // arrival work here beyond the announce.
+            await minThink();
+            await typeOut(`The notes have a ${tagLabel} tag — filtering the feed for you.`);
+            await travelAndNavigate(
+              "/notes", `/notes?tag=${matched.map(encodeURIComponent).join(",")}`, "Notes",
+              `Here are the notes tagged ${tagLabel}.`, "the navigation",
+            );
+            return { ok: true, ops: [], reply: `Filtering notes by ${tagLabel}` };
+          }
+          // no real tag matched — fall through, no return.
         }
 
         if (action?.kind === "clarify") {

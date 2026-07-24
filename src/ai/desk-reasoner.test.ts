@@ -3,7 +3,7 @@
 // and never delegates chat to the stub. Headless CI has no WebGPU, so this fake-driven suite IS the
 // coverage for both the healthy and the degraded paths.
 import { test, expect, describe } from "bun:test";
-import { makeDeskReasoner, parseArrival, parseModelChoices, type DeskDeps } from "./desk-reasoner.ts";
+import { makeDeskReasoner, parseArrival, parseModelChoices, type DeskDeps, type DeskNote } from "./desk-reasoner.ts";
 import { buildCatalog } from "./catalog.ts";
 import { WEAK_PROFILE, type DeskEngine } from "./webllm-loader.ts";
 import type { Knowledge } from "./retrieval.ts";
@@ -855,6 +855,83 @@ describe("makeDeskReasoner — A4 theme switching", () => {
     await r.decide(chat("switch to brioche"), makeTools().tools);
 
     expect(loads).toBe(0);
+  });
+});
+
+describe("makeDeskReasoner — B2 notes filtering (\"show me notes about teaching\")", () => {
+  const notes: DeskNote[] = [
+    { slug: "a", title: "A", route: "/notes/a", tags: ["teaching", "ai"] },
+    { slug: "b", title: "B", route: "/notes/b", tags: ["grain"] },
+  ];
+
+  test("already on /notes: clicks the LIVE chip, confirms via clickNotesTag's return, reports a count", async () => {
+    let loads = 0;
+    const clicked: string[] = [];
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    deps.listNotes = async () => notes;
+    deps.pageInfo = () => ({ route: "/notes", title: "Notes" });
+    deps.notesTagChips = () => ["teaching", "grain"];             // the LIVE chips on this page
+    deps.clickNotesTag = (t) => { clicked.push(t); return true; };
+    deps.visibleNoteCount = () => 3;
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("show me notes about teaching"), tools);
+
+    expect(loads).toBe(0);                                        // deterministic — never touched the model
+    expect(clicked).toEqual(["teaching"]);                        // only the tag notes-tags.ts actually matched
+    expect(d.ok).toBe(true);
+    expect(d.reply).toContain("teaching");
+    expect(d.reply).toContain("3 match");
+    const narrated = ops.find((o) => o.op === "append" && o.target === "console");
+    expect(narrated).toBeDefined();
+  });
+
+  test("a matched tag with no chip on this page: honest decline, no click attempted", async () => {
+    const clicked: string[] = [];
+    const { deps } = makeDeps();
+    deps.listNotes = async () => notes;
+    deps.pageInfo = () => ({ route: "/notes", title: "Notes" });
+    deps.notesTagChips = () => ["grain"];                         // "teaching" isn't a chip here
+    deps.clickNotesTag = (t) => { clicked.push(t); return true; };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("show me notes about teaching"), makeTools().tools);
+
+    expect(clicked).toEqual([]);
+    expect(d.ok).toBe(false);
+    expect(d.reply).toContain("teaching");
+  });
+
+  test("elsewhere on the site: navigates to /notes?tag=<matched> with an arrival announce naming it", async () => {
+    let navd = "";
+    const box: { arrived: { surface?: string; announce?: string } | null } = { arrived: null };
+    const { deps } = makeDeps();
+    deps.listNotes = async () => notes;
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    deps.navigate = (u) => { navd = u; };
+    deps.arrive = (surface, announce) => { box.arrived = { surface, announce }; };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("show me notes about teaching"), makeTools().tools);
+
+    expect(navd).toBe("/notes?tag=teaching");
+    expect(box.arrived?.announce).toContain("teaching");
+    expect(d.ok).toBe(true);
+  });
+
+  test("a topic that matches no real tag falls through to the model (still a grounded chat answer)", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({
+      loadEngine: async () => { loads++; return fakeEngine(["Grain is TJ's on-page AI toolkit."]).engine; },
+    });
+    deps.listNotes = async () => notes;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("show me notes about quantum physics"), makeTools().tools);
+
+    expect(loads).toBe(1);                                        // did NOT short-circuit deterministically
+    expect(d.reply).toBe("Grain is TJ's on-page AI toolkit.");
   });
 });
 

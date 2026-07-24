@@ -13,6 +13,10 @@ export type Action =
   | { kind: "capabilities" }
   | { kind: "clarify"; prompt: string; choices: Choice[] }
   | { kind: "deep-link"; query: string }
+  // B2 notes filtering — "show me notes about X". `topic` is the RAW captured phrase; the reasoner
+  // (never this router) matches it against the real tag set (notes-tags.ts matchTags) — law #2, the
+  // model/router never picks a tag itself, only extracts what the visitor said.
+  | { kind: "notes-filter"; topic: string }
   // A2 guided tour — a fixed, code-enumerated walk through 4 top-level stops (tour.ts). Zero model:
   // both kinds are matched here, before the model ever loads (see desk-reasoner.ts).
   | { kind: "tour-start" }
@@ -59,6 +63,18 @@ const DEEP_LINK_PATTERNS: RegExp[] = [
   /\bwhere\s+(?:does|do|did)\b.*?\b(?:talks?|writes?|says?|speaks?|mentions?)\b\s*(?:about\s+)?(.+)$/,
   // "take/jump me to the part/section about/on X"
   /\b(?:take|jump)\s+me\s+to\s+the\s+(?:part|section)\b.*?\b(?:about|on)\b\s+(.+)$/,
+];
+
+// B2 notes filtering — "show me notes about X" / "notes tagged X" / "filter the notes by X". The
+// captured remainder becomes `topic`, a RAW phrase the reasoner matches against the real tag set
+// (notes-tags.ts) — this router only extracts what was asked, never a tag guess (law #2). Two shapes:
+// a notes-word followed by an about/on/tagged/covering/related-to connector, or an explicit filter/
+// narrow verb aimed at the notes/feed. Checked AFTER clarify (so "show me around" still clarifies) and
+// BEFORE open-latest-note (so "show me the latest note" — no about/tagged connector here — still opens
+// the newest note instead of a doomed empty-topic filter).
+const NOTES_FILTER_PATTERNS: RegExp[] = [
+  /\b(?:notes?|posts?|articles?|entries|writings?)\b.*?\b(?:about|on|tagged(?:\s+with)?|covering|related\s+to)\b\s+(.+)$/,
+  /\b(?:filter|narrow)\b.*?\b(?:notes?|posts?|feed)\b.*?\b(?:by|to|about|on)\b\s+(.+)$/,
 ];
 
 /** Match a request to a deterministic ACTION, or null → (catalog navigation, then) grounded chat.
@@ -135,6 +151,17 @@ export function routeAction(text: string): Action | null {
       /\bwhere (should|can|do) i (go|start|look|begin)\b/.test(t) || /\bhelp me (choose|decide|navigate|find|get around)\b/.test(t) ||
       /\b(what are my |my )?options\b/.test(t) || /\bnot sure\b/.test(t))
     return { kind: "clarify", prompt: CLARIFY_PROMPT, choices: CLARIFY_CHOICES };
+
+  // B2 notes filtering — checked here (after clarify, before latest-note) so "show me the latest
+  // note" (no about/tagged connector) still falls through to the dedicated latest-note action below,
+  // while "show me notes about teaching" resolves here first. An empty remainder (nothing left to
+  // match, e.g. a stray "filter the notes by") is NOT a filter — fall through, same as deep-link's
+  // empty-remainder guard, rather than routing a doomed empty-topic lookup.
+  for (const re of NOTES_FILTER_PATTERNS) {
+    const m = re.exec(t);
+    const topic = m?.[1]?.trim();
+    if (topic) return { kind: "notes-filter", topic };
+  }
 
   // open the latest note — a "latest/newest/recent" qualifier + a note word + an intent verb. Stays a
   // dedicated action (not catalog nav) because "latest" is dynamic — it resolves to whichever note is

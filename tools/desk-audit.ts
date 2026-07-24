@@ -87,6 +87,12 @@ const SCENARIOS: Scenario[] = [
   // deterministically (actions.ts + desk-reasoner.ts), no model needed; the confirmation names the
   // flavor it landed on.
   { id: "theme-det", page: "/", ask: "switch to brioche", mustMention: [["brioche"]], deterministic: true },
+  // B2 notes filtering — "show me notes about teaching" matches the real "teaching" tag
+  // (notes-tags.ts, several real notes carry it) and drives straight to the filtered feed
+  // deterministically (actions.ts + desk-reasoner.ts): no model. mustNavigate compares
+  // location.pathname (grade(), below), which already excludes the ?tag= query string, so the
+  // "/notes?tag=teaching" landing still reads as a plain "/notes" navigation here.
+  { id: "notes-filter-det", page: "/", ask: "show me notes about teaching", mustNavigate: "/notes", mustMention: [["teaching"]], deterministic: true },
   // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
   // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
   // the destination. LAST in the list on purpose — see the per-scenario cleanup below.
