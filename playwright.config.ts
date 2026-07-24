@@ -15,7 +15,11 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
-  timeout: 30_000,
+  // 60s, not the 30s default: the demo-choreography tests (grain-page "Watch the AI act", loop
+  // "Watch the desk work", the auto-scroll follow) legitimately run ~22s of real animation, and
+  // under fullyParallel load they tip past 30s and flake (2026-07-24, measured: same tests pass on
+  // an idle machine every time). A genuinely hung test now costs 60s locally — acceptable.
+  timeout: 60_000,
   expect: { timeout: 5_000 },
 
   // A single unnamed project (no `projects:` array) — so visual snapshots stay

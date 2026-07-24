@@ -62,8 +62,13 @@ const SCENARIOS: Scenario[] = [
   // -- the desk ACTS: model-composed writes + summaries (the action paths through the real model) --
   { id: "note-write", page: "/grain", ask: "Jot down that the grain demo looks really promising",
     mustMention: [["notepad"]], mustNotMention: ["NAVIGATE:", "CHOICES:"] },
+  // The accepted-words group includes the feed's REAL topic tokens, not just "note(s)": the visible
+  // /notes main pane (the summarize input) is a tag cloud + excerpts and barely contains the word
+  // "note" at all, so the 0.5B fairly summarizes TOPICS ("native-first", "course platform") — runs
+  // that only said those used to fail on grader phrasing, not summary quality (2026-07-24 fix).
   { id: "summarize", page: "/notes", ask: "Summarize this page",
-    mustMention: [["note", "notes", "writing", "post"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 900 },
+    mustMention: [["note", "notes", "writing", "post", "native-first", "course platform", "teaching", "vibe coding", "web platform"]],
+    mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 900 },
   // -- fuzzy navigation (the model's NAVIGATE tail — no deterministic full-cover match) --
   { id: "nav-fuzzy-mill", page: "/", ask: "I want to read the mill documentation",
     mustNavigate: "/mill/docs" },
