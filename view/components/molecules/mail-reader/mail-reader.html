@@ -2,9 +2,12 @@
      (server.ts). The body is PLAIN TEXT (batch bindings escape HTML, by design) rendered with
      white-space: pre-line, so \n\n in the JSON becomes paragraph spacing; any links that used to be
      inline anchors migrate to the Related row (mail-related, nested each="links", hidden when empty).
-     Reply / Forward / Archive are honest set dressing (disabled, they say so on hover). With JS the
-     island collapses these to one visible at a time; with no JS every reader is a stacked letter.
-     See mail-reader.md. -->
+     Reply / Forward stay honest set dressing everywhere (disabled, they say so on hover). Archive is
+     the second live control WITH JS: it's server-rendered disabled here too (a no-JS reader makes no
+     archive claim), but carries data-mail-archive so the mailbox island can enable it on readers whose
+     data-folder is "inbox" and wire the click to actually move the letter to Archive, this visit only.
+     With JS the island also collapses readers to one visible at a time; with no JS every reader is a
+     stacked letter. See mail-reader.md. -->
 <article class="mailbox__reader" data-message data-bind-id="domId" data-bind-data-folder="folder">
   <div class="mailbox__reader-head">
     <h2 class="mailbox__reader-subject" data-field="subject"></h2>
@@ -13,7 +16,7 @@
   <div class="mailbox__reader-tools">
     <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Reply</button>
     <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Forward</button>
-    <button class="btn" data-variant="soft" disabled title="Set dressing. Compose is the one live control.">Archive</button>
+    <button class="btn" data-variant="soft" data-mail-archive disabled title="Set dressing. Compose is the one live control.">Archive</button>
   </div>
   <div class="mailbox__reader-body" data-field="body"></div>
   <ul class="mailbox__reader-links"><mail-related each="links"></mail-related></ul>

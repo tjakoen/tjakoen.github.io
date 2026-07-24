@@ -26,6 +26,11 @@ export type Action =
   // list by the reasoner before it drives anything (a page could ship a different set than this file's
   // comment promises to track).
   | { kind: "theme"; target: string }
+  // B3 mail batch archive — "archive everything from BREAD CI". `sender` is the RAW captured phrase;
+  // the reasoner (never this router) matches it against the real sender set the /mail inbox rows carry
+  // (mail-sender.ts matchSender) — the same law #2 split B2's `topic` follows: this router only
+  // extracts what the visitor said, never a sender guess.
+  | { kind: "mail-archive"; sender: string }
   // C1 visitor-intent onboarding — the TRIGGER only. Whether the desk actually ASKS is stateful
   // (nag-guard: at most once per session, never once an intent is already set) — that decision belongs
   // to the reasoner, not this pure router, so this kind carries no payload beyond "the trigger fired".
@@ -94,6 +99,18 @@ const NOTES_FILTER_PATTERNS: RegExp[] = [
   /\b(?:filter|narrow)\b.*?\b(?:notes?|posts?|feed)\b.*?\b(?:by|to|about|on)\b\s+(.+)$/,
 ];
 
+// B3 mail batch archive — "archive everything from BREAD CI" / "archive all mail from bread ci" /
+// "archive the emails from The Desk". The captured remainder becomes `sender`, a RAW phrase the
+// reasoner matches against the real sender set on /mail (mail-sender.ts) — this router only extracts
+// what was asked, never a sender guess (law #2, the same split B2's `topic` follows). Two shapes: a
+// blanket "everything/all/every (mail)" quantifier, or an explicit "the mail/messages/emails/letters"
+// noun — both anchored on the word "archive" (an item.archive verb) so a stray "from" in an unrelated
+// sentence never fires this.
+const MAIL_ARCHIVE_PATTERNS: RegExp[] = [
+  /\barchive\b\s+(?:everything|all(?:\s+(?:the\s+)?(?:mail|messages?|emails?|letters?))?|every\s+(?:mail|message|email|letter))\s+from\s+(.+)$/,
+  /\barchive\b\s+(?:the\s+)?(?:mail|messages?|emails?|letters?)\s+from\s+(.+)$/,
+];
+
 /** Match a request to a deterministic ACTION, or null → (catalog navigation, then) grounded chat.
  *  Order matters: the specific intents resolve before the broad ones. Navigation is handled by the
  *  caller against the sitemap catalog, not here. */
@@ -160,6 +177,17 @@ export function routeAction(text: string): Action | null {
   // words are unambiguous site-wide (no nav destination shares them, so this can never shadow a
   // catalog match like "switch to grain", which isn't a flavor name and falls through below).
   for (const f of FLAVORS) if (new RegExp(`\\b${f}\\b`).test(t)) return { kind: "theme", target: f };
+
+  // B3 mail batch archive — checked here (after theme, before the C1 intent-ask trigger below) so an
+  // archive ask never gets swallowed by a greeting/vague-opener check further down. An empty remainder
+  // (nothing left to look up, e.g. a stray "archive everything from") is NOT a mail-archive — fall
+  // through, same empty-remainder guard as deep-link and notes-filter above, rather than routing a
+  // doomed empty-sender lookup.
+  for (const re of MAIL_ARCHIVE_PATTERNS) {
+    const m = re.exec(t);
+    const sender = m?.[1]?.trim();
+    if (sender) return { kind: "mail-archive", sender };
+  }
 
   // C1 visitor-intent onboarding — the TRIGGER, checked here, BEFORE the clarify block below (per the
   // roadmap's "router pattern before the clarify check"). Two shapes: (a) a WHOLE-message greeting/vague

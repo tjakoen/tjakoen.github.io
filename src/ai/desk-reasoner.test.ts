@@ -240,7 +240,7 @@ describe("makeDeskReasoner — UI actions (the showcase: the desk drives the pag
 
     const d = await r.decide(chat("what can I do here?"), tools);
 
-    expect(d.reply).toContain("archive a task");        // derived from the manifest's item target
+    expect(d.reply).toContain("archive an item");        // derived from the manifest's item target
     expect(d.reply).not.toContain("watch the desk act out a live demo");   // the generic `screen` was skipped
     // the manifest-derived line is TYPED into the bubble (typeOut), so the answer reaches the chat
     expect(ops.filter((o) => String(o.target).startsWith("chat-msg:")).length).toBeGreaterThan(1);
@@ -932,6 +932,140 @@ describe("makeDeskReasoner — B2 notes filtering (\"show me notes about teachin
 
     expect(loads).toBe(1);                                        // did NOT short-circuit deterministically
     expect(d.reply).toBe("Grain is TJ's on-page AI toolkit.");
+  });
+});
+
+describe("makeDeskReasoner — B3 mail batch archive (\"archive everything from BREAD CI\")", () => {
+  const CI_ITEMS = [
+    { id: "ci-grain", subject: "grain release", surface: "item:mail-ci-grain" },
+    { id: "ci-pages", subject: "pages release", surface: "item:mail-ci-pages" },
+    { id: "ci-batch", subject: "batch release", surface: "item:mail-ci-batch" },
+  ];
+
+  test("on /mail, no mail deps at all: an honest decline, no crash", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("archive everything from BREAD CI"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("no mail deps");
+    expect((d.reply ?? "").toLowerCase()).toContain("can't reach the mailbox");
+  });
+
+  test("on /mail, unknown sender: a deterministic decline naming the REAL senders (never reaches the model)", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    deps.mailSenders = () => ["BREAD CI", "The Desk"];
+    deps.mailItemsFrom = () => [];
+    deps.archiveMailItem = () => true;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("archive everything from Nobody"), makeTools().tools);
+
+    expect(loads).toBe(0);                                        // an archive verb never reaches the 0.5B
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("no such sender");
+    expect(d.reply).toContain("nobody");   // the raw phrase, norm()'d lowercase like every other action
+    expect(d.reply).toContain("BREAD CI");
+    expect(d.reply).toContain("The Desk");
+  });
+
+  test("on /mail, a matched sender with nothing left in the inbox: idempotent 'nothing left' ok:true", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    deps.mailSenders = () => ["BREAD CI"];
+    deps.mailItemsFrom = () => [];
+    deps.archiveMailItem = () => true;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("archive everything from bread ci"), makeTools().tools);
+
+    expect(d.ok).toBe(true);
+    expect(d.reply).toContain("Nothing from BREAD CI");
+  });
+
+  test("happy path: archives every item in order and reports the count", async () => {
+    let loads = 0;
+    const archived: string[] = [];
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    deps.mailSenders = () => ["BREAD CI"];
+    deps.mailItemsFrom = (sender) => (sender === "BREAD CI" ? CI_ITEMS : []);
+    deps.archiveMailItem = (id) => { archived.push(id); return true; };
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("archive everything from BREAD CI"), tools);
+
+    expect(loads).toBe(0);                                        // deterministic — never touched the model
+    expect(archived).toEqual(["ci-grain", "ci-pages", "ci-batch"]);   // in order, one per item
+    expect(d.ok).toBe(true);
+    expect(d.reply).toBe("Archived 3 letters from BREAD CI. They're in the Archive folder now.");
+    // each item's own surface gets spotlighted + "clicked" before archiveMailItem is asked to confirm
+    const spots = ops.filter((o) => o.op === "spotlight" && o.active && o.click);
+    expect(spots.map((s) => s.target)).toEqual(CI_ITEMS.map((i) => i.surface));
+    // the lamp releases the screen once the batch is done
+    expect(ops.some((o) => o.op === "spotlight" && o.target === "screen" && !o.active)).toBe(true);
+  });
+
+  test("a failed click reports landed-of-total, not a false full count", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    deps.mailSenders = () => ["BREAD CI"];
+    deps.mailItemsFrom = () => CI_ITEMS;
+    deps.archiveMailItem = (id) => id !== "ci-pages";   // one of the three doesn't take
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("archive everything from BREAD CI"), makeTools().tools);
+
+    expect(d.ok).toBe(true);
+    expect(d.reply).toContain("Archived 2 of 3 letters from BREAD CI");
+  });
+
+  test("zero landed: an honest 'didn't take' decline, not a false success", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    deps.mailSenders = () => ["BREAD CI"];
+    deps.mailItemsFrom = () => CI_ITEMS;
+    deps.archiveMailItem = () => false;
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("archive everything from BREAD CI"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("click didn't land");
+    expect((d.reply ?? "").toLowerCase()).toContain("didn't take");
+  });
+
+  test("elsewhere on the site: stashes the RAW sender phrase via mailTaskSet BEFORE navigating to /mail", async () => {
+    const calls: string[] = [];
+    let navd = "";
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    deps.navigate = (u) => { calls.push(`navigate:${u}`); navd = u; };
+    deps.mailTaskSet = (sender) => { calls.push(`mailTaskSet:${sender}`); };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("archive everything from BREAD CI"), makeTools().tools);
+
+    expect(navd).toBe("/mail");
+    expect(calls).toEqual(["mailTaskSet:bread ci", "navigate:/mail"]);   // stashed BEFORE the tear-down
+    expect(d.ok).toBe(true);
+    expect(d.reply).toContain("bread ci");   // the raw phrase, norm()'d lowercase like every other action
+  });
+
+  test("elsewhere on the site, no mail-task deps: an honest decline, no crash", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("archive everything from BREAD CI"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect((d.reply ?? "").toLowerCase()).toContain("can't reach the mailbox");
   });
 });
 

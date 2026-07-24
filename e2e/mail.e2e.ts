@@ -50,13 +50,55 @@ test.describe("the /mail mailbox (JS on)", () => {
     await expect(page.locator(`a.mailbox__item[href="#msg-${firstInbox.id}"]`)).not.toHaveAttribute("aria-current", "page");
   });
 
-  test("Reply, Forward, and Archive are disabled on every reader", async ({ page }) => {
-    const tools = page.locator(".mailbox__reader-tools .btn");
-    const count = await tools.count();
-    expect(count).toBe(TOTAL * 3);
-    for (let i = 0; i < count; i++) {
-      await expect(tools.nth(i)).toBeDisabled();
+  test("Reply and Forward are disabled on every reader; Archive is live only on inbox readers", async ({ page }) => {
+    const replyForward = page.locator(".mailbox__reader-tools .btn:not([data-mail-archive])");
+    expect(await replyForward.count()).toBe(TOTAL * 2);
+    for (let i = 0; i < (await replyForward.count()); i++) {
+      await expect(replyForward.nth(i)).toBeDisabled();
     }
+
+    const archiveButtons = page.locator(".mailbox__reader-tools [data-mail-archive]");
+    await expect(archiveButtons).toHaveCount(TOTAL);
+    for (const m of mailbox.messages) {
+      const archiveBtn = page.locator(`#msg-${m.id} [data-mail-archive]`);
+      if (m.folder === "inbox") {
+        await expect(archiveBtn).toBeEnabled();
+      } else {
+        await expect(archiveBtn).toBeDisabled();
+      }
+    }
+  });
+
+  test("archiving a letter moves it to the Archive folder, updates rail counts, and persists across reload", async ({ page }) => {
+    const ciMessage = mailbox.messages.find((m) => m.from === "BREAD CI")!;
+    const inboxBefore = folderCount("inbox");
+    const archiveBefore = folderCount("archive");
+
+    const row = page.locator(`a.mailbox__item[href="#msg-${ciMessage.id}"]`);
+    await row.click();
+    const archiveBtn = page.locator(`#msg-${ciMessage.id} [data-mail-archive]`);
+    await expect(archiveBtn).toBeEnabled();
+    await archiveBtn.click();
+
+    // the row and reader both flip folder, and the row drops out of the (still active) Inbox view
+    await expect(row).toHaveAttribute("data-folder", "archive");
+    await expect(row).toBeHidden();
+    await expect(page.locator(`#msg-${ciMessage.id}`)).toHaveAttribute("data-folder", "archive");
+    await expect(archiveBtn).toBeDisabled();
+
+    // rail counts recompute live
+    await expect(page.locator('[data-mailbox-folders] [data-folder="inbox"] .mailbox__folder-count')).toHaveText(String(inboxBefore - 1));
+    await expect(page.locator('[data-mailbox-folders] [data-folder="archive"] .mailbox__folder-count')).toHaveText(String(archiveBefore + 1));
+
+    // switching to the Archive folder shows the freshly archived letter
+    await page.locator('[data-mailbox-folders] a[data-folder="archive"]').click();
+    await expect(row).toBeVisible();
+
+    // it survives a reload in the same tab (sessionStorage), rail counts included
+    await page.reload();
+    await expect(page.locator(`#msg-${ciMessage.id}`)).toHaveAttribute("data-folder", "archive");
+    await expect(page.locator('[data-mailbox-folders] [data-folder="inbox"] .mailbox__folder-count')).toHaveText(String(inboxBefore - 1));
+    await expect(page.locator('[data-mailbox-folders] [data-folder="archive"] .mailbox__folder-count')).toHaveText(String(archiveBefore + 1));
   });
 
   test("a folder filters the message list", async ({ page }) => {

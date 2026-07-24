@@ -157,6 +157,7 @@ const mailMessages = mailbox.messages.map((m) => {
     id: m.id, folder: m.folder, from: m.from, subject: m.subject, snippet: m.snippet,
     body: m.body, links: m.links,
     domId: `msg-${m.id}`, href: `#msg-${m.id}`,
+    surface: `item:mail-${m.id}`,                                        // AI target address (AI-INTERFACE §4): item.archive accepts kind "item"
     whenText: m.date ? fmtDate(m.date, false) : (m.whenLabel ?? ""),   // list column: short "Jul 14" or the literal label
     whenDate: m.date,                                                   // "" for undated → binding omits data-date (no relativize)
     whenTitle: m.date ? whenFull : "",                                  // absolute stays in title when the list span relativizes

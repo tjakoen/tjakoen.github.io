@@ -42,6 +42,36 @@
       "links": []
     },
     {
+      "id": "ci-grain",
+      "folder": "inbox",
+      "from": "BREAD CI",
+      "subject": "grain build passed",
+      "snippet": "A routine build notification, dressed the same as everything else in this mailbox.",
+      "date": "2026-07-12",
+      "body": "grain's build ran and came back clean: typecheck, lint, and the component tests, all green, in that order.\n\nThis inbox doesn't actually watch a pipeline. I wrote this letter the same way I wrote the rest of them, ahead of time, standing in for the kind of mail a real CI system would send. If you want the actual build logs, they live in grain's own repo, not here.",
+      "links": []
+    },
+    {
+      "id": "ci-pages",
+      "folder": "inbox",
+      "from": "BREAD CI",
+      "subject": "Pages deploy succeeded",
+      "snippet": "The site's latest deploy went out clean. No drama, just a push, a build, and a swap.",
+      "date": "2026-07-11",
+      "body": "The Pages deploy for this site finished and went live. A push to main, a build, a swap, the same three steps every deploy takes here.\n\nNothing on this page is watching that pipeline in real time. This letter is set dressing, same as the rest of the mailbox, written to fill out what a notifications folder usually looks like.",
+      "links": []
+    },
+    {
+      "id": "ci-batch",
+      "folder": "inbox",
+      "from": "BREAD CI",
+      "subject": "batch nightly, all green",
+      "snippet": "batch's nightly test run finished with nothing to report, which is the goal.",
+      "date": "2026-07-11",
+      "body": "batch's nightly run finished clean: every binding test and every snapshot passed, nothing flaky to chase down this time.\n\nA quiet night like this one doesn't really deserve a letter, but the folder needed a third message from a sender other than The Desk, so here it is anyway.",
+      "links": []
+    },
+    {
       "id": "sent-preview",
       "folder": "sent",
       "from": "The Desk",

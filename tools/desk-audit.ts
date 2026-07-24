@@ -93,6 +93,12 @@ const SCENARIOS: Scenario[] = [
   // location.pathname (grade(), below), which already excludes the ?tag= query string, so the
   // "/notes?tag=teaching" landing still reads as a plain "/notes" navigation here.
   { id: "notes-filter-det", page: "/", ask: "show me notes about teaching", mustNavigate: "/notes", mustMention: [["teaching"]], deterministic: true },
+  // B3 mail batch archive — "archive everything from BREAD CI" on /mail enumerates the sender's
+  // inbox rows from the live DOM and clicks each reader's real Archive button deterministically
+  // (actions.ts + mail-sender.ts + desk-reasoner.ts): no model. On-page on purpose — the cross-page
+  // stash (desk-mail-task) lands its result AFTER settle()'s 2s post-navigation read, so that path
+  // is e2e-covered (desk-mail-archive.e2e.ts) rather than audited here.
+  { id: "mail-archive-det", page: "/mail", ask: "archive everything from BREAD CI", mustMention: [["archived"], ["bread ci"]], deterministic: true },
   // C1 visitor-intent onboarding — a bare "hi" as the FIRST message this session triggers the
   // deterministic ask (actions.ts + desk-reasoner.ts), no model: the prompt copy names "visiting"
   // (the word this grader hooks on) and offers the three CHOICES. Not last on purpose — tour-det stays
@@ -308,6 +314,10 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       sessionStorage.removeItem("desk-tour");
       sessionStorage.removeItem("visitor-intent");
       sessionStorage.removeItem("desk-intent-asked");
+      // B3 mail archive: archived letters (and any pending cross-page batch) would make a re-run of
+      // mail-archive-det an honest "nothing left in the inbox" instead of a fresh 3-letter sweep.
+      sessionStorage.removeItem("tj.mail.archived");
+      sessionStorage.removeItem("desk-mail-task");
     }).catch(() => {});
     const ms = Date.now() - t0;
     const failures = grade(s, text, endPath, realRoutes);

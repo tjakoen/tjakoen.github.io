@@ -18,13 +18,17 @@ import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
 import { WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
-import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, type DeskNote } from "./desk-reasoner.ts";
+import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS, type DeskNote } from "./desk-reasoner.ts";
 import { buildCatalog, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 // A2 guided tour — the fixed stop list + the cursor codec (tour.ts). The door owns every leg of the
 // tour AFTER the first (no chat.send happens between stops, so the reasoner isn't in the loop then).
 import { TOUR_STOPS, TOUR_KEY, TOUR_DWELL_MS, tourCursor, stashTour } from "./tour.ts";
+// B3 mail batch archive — matching the stashed RAW sender phrase against the REAL sender set once the
+// cross-page task lands on /mail (never a model guess, law #2). Same matcher the reasoner's own
+// on-page branch uses (desk-reasoner.ts), so the two runs can't disagree on what counts as a hit.
+import { matchSender } from "./mail-sender.ts";
 
 // Pull grain's door + stub by URL (build-time bare imports would be refused by the module server).
 // Top-level await: by the time the dispatcher calls createClientDoor(), these are resolved, so our
@@ -220,6 +224,67 @@ const visibleNoteCount = (): number =>
   (globalThis as unknown as { document?: { querySelectorAll(s: string): { length: number } } })
     .document?.querySelectorAll(".note-card:not([hidden])").length ?? 0;
 
+// B3 mail batch archive ("archive everything from BREAD CI") — drive the SAME row link + reader
+// Archive button a human would click on /mail (the mailbox island's contract: `a.mailbox__item` rows
+// carry data-folder/data-surface/href="#msg-<id>", each reader is `#msg-<id>` and carries a
+// `[data-mail-archive]` button enabled only on an inbox message), the revealNotepad/A4/B2 pattern (the
+// real controls, no private channel), validated live both before choosing what to click and after.
+// `a.mailbox__item` only exists on /mail, so every read here is naturally empty off that page; the
+// reasoner checks pageInfo().route first regardless.
+interface MailRowEl {
+  getAttribute(name: string): string | null;
+  click(): void;
+  querySelector(sel: string): { textContent?: string | null } | null;
+}
+interface MailReaderEl { querySelector(sel: string): ClickableEl | null }
+// The rows are found by ITERATING `a.mailbox__item` and comparing attributes/text in JS — never by
+// interpolating a sender or id into an attribute selector (notesTagBoxes's own reasoning above: no
+// CSS.escape on file:// / old browsers, and a plain === compare has no quote-injection failure mode).
+const mailRows = (): MailRowEl[] =>
+  Array.from((globalThis as unknown as { document?: { querySelectorAll(s: string): MailRowEl[] } })
+    .document?.querySelectorAll("a.mailbox__item") ?? []);
+// EVERY row's sender, not just the inbox's: a sender whose mail was all just archived must still
+// MATCH on a re-ask, so the reasoner can answer the honest "Nothing from X left in the inbox" instead
+// of pretending the sender never existed (mailItemsFrom below keeps the inbox-only filter — matching
+// and having-work-to-do are different questions).
+const mailSenders = (): string[] => {
+  const out: string[] = [];
+  for (const row of mailRows()) {
+    const from = row.querySelector(".mailbox__item-from")?.textContent?.trim();
+    if (from && !out.includes(from)) out.push(from);
+  }
+  return out;
+};
+const mailItemsFrom = (sender: string): { id: string; subject: string; surface: string }[] => {
+  const out: { id: string; subject: string; surface: string }[] = [];
+  for (const row of mailRows()) {
+    if (row.getAttribute("data-folder") !== "inbox") continue;
+    const from = row.querySelector(".mailbox__item-from")?.textContent?.trim();
+    if (from !== sender) continue;
+    const id = (row.getAttribute("href") ?? "").replace(/^#msg-/, "");
+    if (!id) continue;
+    const subject = row.querySelector(".mailbox__item-subject")?.textContent?.trim() ?? "";
+    const surface = row.getAttribute("data-surface") ?? `item:mail-${id}`;
+    out.push({ id, subject, surface });
+  }
+  return out;
+};
+// Click the row (finds it by its href, never a formatted selector), then its reader's Archive button —
+// then re-read the ROW'S OWN data-folder to confirm the click actually landed (validate twice, the
+// A4/B2 honesty contract). `id`'s only external source is mailItemsFrom above, itself parsed straight
+// off a live href, so there's no interpolation risk here either.
+const archiveMailItem = (id: string): boolean => {
+  const d = (globalThis as unknown as {
+    document?: { querySelectorAll(s: string): MailRowEl[]; getElementById(elId: string): MailReaderEl | null };
+  }).document;
+  // Array.from FIRST: querySelectorAll hands back a NodeList, which iterates but has no .find —
+  // calling it directly throws mid-batch (mailRows above wraps for the same reason).
+  const row = Array.from(d?.querySelectorAll("a.mailbox__item") ?? []).find((r) => r.getAttribute("href") === `#msg-${id}`);
+  row?.click();                                                       // opens the reader
+  d?.getElementById(`msg-${id}`)?.querySelector("[data-mail-archive]")?.click();
+  return row?.getAttribute("data-folder") === "archive";
+};
+
 // A1 "show me the part about X" (deep-link answers): scroll the CURRENT page to a rendered heading id.
 // MILL renders every h2/h3 with `id="{anchor}"` (the Chunk.anchor contract) — a plain getElementById +
 // scrollIntoView, no framework hook needed. True when the element existed, so the reasoner can
@@ -284,6 +349,16 @@ const tourActive = (): boolean => { try { return !!ss()?.getItem(TOUR_KEY); } ca
 // Trailing-slash-insensitive route compare (also in desk-reasoner.ts — a local copy here rather than
 // a cross-module import, since it's a one-liner and this file already keeps its own small DOM shims).
 const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
+
+// ---- B3 mail batch archive: a cross-page batch, same ARRIVE_KEY/TOUR_KEY shape — the MPA loses this
+// reasoner instance on navigate, so the RAW sender phrase rides sessionStorage across the page load and
+// runMailTask (below) picks it up once /mail settles. ----
+const MAIL_TASK_KEY = "desk-mail-task";
+const mailTaskSet = (sender: string): void => { try { ss()?.setItem(MAIL_TASK_KEY, JSON.stringify({ sender })); } catch { /* no session storage */ } };
+// Same joinPhrases shape as desk-reasoner.ts's own (not exported there — a one-liner, kept local here
+// exactly like this file's own stripSlash copy just above).
+const joinPhrases = (xs: string[]): string =>
+  xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
 
 // ---- C1 visitor-intent onboarding: sessionStorage-backed, same try/catch-around-ss() shape as the
 // tour deps above. INTENT_KEY holds the answer (one key, per the roadmap); INTENT_ASKED_KEY is the
@@ -351,6 +426,64 @@ async function runTourLeg(applyOp: (op: RenderOp) => void, doNavigate: (url: str
   doNavigate(dest.route);
 }
 
+/** Run a stashed B3 mail-archive task once it lands on /mail. Consume-once (read + REMOVE the key,
+ *  like runArrival's ARRIVE_KEY) so a stale task can never re-fire on a later, unrelated /mail visit.
+ *  This is the door's OWN honesty contract, not the reasoner's: the reasoner instance that stashed the
+ *  task doesn't survive the navigate (the MPA tears the page down), so this function re-runs the exact
+ *  same matchSender → mailItemsFrom → archiveMailItem sequence the on-page branch would, using the SAME
+ *  MAIL_ARCHIVE_BEAT_MS pace (imported from desk-reasoner.ts) so the two choreographies can't drift. */
+async function runMailTask(applyOp: (op: RenderOp) => void): Promise<void> {
+  let stashed: { sender?: string } | null = null;
+  try {
+    const raw = ss()?.getItem(MAIL_TASK_KEY);
+    if (!raw) return;
+    ss()?.removeItem(MAIL_TASK_KEY);
+    stashed = JSON.parse(raw);
+  } catch { return; }
+  if (!stashed?.sender) return;
+  if (stripSlash(loc()?.pathname ?? "/") !== "/mail") return;   // wandered elsewhere — bail, don't chase
+
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  await wait(450);                                   // let the mailbox island settle in, arrival's own beat
+
+  // Same grain-op-builder announce idiom as runArrival's own chat bubble above — not hand-rolled markup.
+  const announce = (text: string): void => {
+    applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
+      html: grainKit.chatBubble("ai", "grain", grainKit.chatBody(grainKit.esc(text)), "Desk") });
+  };
+
+  const senders = mailSenders();
+  const matched = matchSender(stashed.sender, senders);
+  if (!matched) {
+    announce(senders.length
+      ? `I don't see any mail from "${stashed.sender}" in the inbox — the senders here are ${joinPhrases(senders)}.`
+      : `I don't see any mail from "${stashed.sender}" — there's nothing left in the inbox.`);
+    return;
+  }
+  const items = mailItemsFrom(matched);
+  if (!items.length) {
+    announce(`Nothing from ${matched} left in the inbox.`);
+    return;
+  }
+
+  applyOp(grainKit.narrateOp("archives", `the mail from ${matched}`));
+  const landed: string[] = [];
+  for (const item of items) {
+    applyOp(grainKit.spotlightOp(item.surface, { active: true, click: true }));
+    await wait(MAIL_ARCHIVE_BEAT_MS);   // let the visitor SEE each letter go, same knob the reasoner uses
+    if (archiveMailItem(item.id)) landed.push(item.id);
+  }
+  applyOp(grainKit.spotlightOp("screen", { active: false }));
+
+  if (!landed.length) {
+    announce("Hmm, that didn't take. Try the Archive button in the reader.");
+    return;
+  }
+  const n = landed.length;
+  const countBit = n === items.length ? `${n}` : `${n} of ${items.length}`;
+  announce(`Archived ${countBit} letter${n === 1 ? "" : "s"} from ${matched}. They're in the Archive folder now.`);
+}
+
 /** The door the dispatcher composes (data-ai-door). grain marks presence ONLINE once this returns;
  *  the desk chat's own health rides the separate data-desk marker. */
 export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLayer {
@@ -381,6 +514,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     tourSet, tourClear, tourActive,   // A2 guided tour: the reasoner's first leg + the "type anything to stop" cancel
     themeState, clickCycleTheme, clickToggleScheme,   // A4 theme switching: read + drive theme.js's visible controls
     notesTagChips, clickNotesTag, visibleNoteCount,   // B2 notes filtering: read + drive the /notes tag chips
+    mailSenders, mailItemsFrom, archiveMailItem, mailTaskSet,   // B3 mail batch archive: read + drive the /mail rows + reader
     intentGet, intentSet, intentAsked, intentMarkAsked,   // C1 visitor-intent onboarding: session state
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
@@ -390,7 +524,10 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // desk itself drove us to (runArrival already announces there — no double greeting).
   const droveHere = (() => { try { return !!ss()?.getItem(ARRIVE_KEY); } catch { return false; } })();
   // A2: once the arrival replay settles, let a tour that's mid-walk continue its next leg.
-  void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate));
+  // B3: once that settles too, run any stashed cross-page mail-archive task (a no-op off /mail or with
+  // nothing stashed) — chained last since it's the newest hop in this same "resume what the desk was
+  // doing" sequence.
+  void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate)).then(() => runMailTask(applyOp));
   // Page-arrival awareness (reasoner-driven): read the new page and offer a greeting + contextual
   // chips — but ONLY when the desk is already warm this session (site.js sets desk-warm on the first
   // chat.send) and the visitor navigated here themselves. Gated so a visitor who never opened the desk

@@ -17,8 +17,15 @@ Two client-only touches, both degrading cleanly to nothing:
   "N days ago". Undated rows (Sent, Drafts) carry a literal label (`Not sent`, `While you type`) and
   no `data-date`, so they're left alone.
 
+A third one isn't cosmetic: the row also carries an AI target address, `data-surface="item:mail-<id>"`
+(computed server-side alongside `href`/`domId`), plus `data-kind="item"` and `data-accepts="item.archive"`
+so it's harvested the same way loop-card's operable markup is (AI-INTERFACE §4). Archiving a letter
+through that surface and through the reader's own Archive button (mail-reader) are the same move: both
+flip `data-folder` to `"archive"` for the rest of the visit.
+
 ```html
-<a class="mailbox__item" href="#msg-welcome" data-folder="inbox">
+<a class="mailbox__item" href="#msg-welcome" data-folder="inbox"
+   data-kind="item" data-accepts="item.archive" data-surface="item:mail-welcome">
   <span class="mailbox__item-dot" aria-hidden="true"></span>
   <span class="mailbox__item-from">The Desk</span>
   <span class="mailbox__item-subject">Welcome to the mail panel</span>

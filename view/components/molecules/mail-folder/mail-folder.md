@@ -10,6 +10,10 @@ for the no-JS path (the list is already on the page). With JS, the mailbox islan
 `aria-current="page"` (it moves to whichever folder you click and filters the list to it); the server
 renders no current folder, so with no JS every folder's messages stay visible — nothing real is gated.
 
+The count itself can also move: archiving a letter (mail-reader's Archive button) recomputes every
+folder's `.mailbox__folder-count` from the live DOM, so Inbox's count drops and Archive's rises the
+moment a letter changes folder, still never drifting from the list it describes.
+
 ```html
 <nav class="mailbox__folders" data-mailbox-folders aria-label="Folders">
   <a class="mailbox__folder" href="#mailbox-list" data-folder="inbox">

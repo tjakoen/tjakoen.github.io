@@ -70,7 +70,7 @@
           </section>
         </div>
 
-        <p class="mailbox__note muted">Unread lives in your browser. Nothing here reports back.
+        <p class="mailbox__note muted">Unread and Archive live in your browser. Nothing here reports back.
           Reach me elsewhere from the <a href="/about#contact">about page</a>.</p>
 
         <div class="page-foot">
@@ -108,9 +108,11 @@
   <script>
     // The mailbox island (Apps-v2 Pass B — Mail). With no JS, every folder's items and every reader
     // are already in the DOM and visible (a stacked letters page); this only adds the collapse-to-one
-    // reading mode, folder filtering, the Compose reveal, plus two client-only touches that degrade
-    // to nothing: localStorage unread dots and relative dates. Nothing REAL is gated behind it: the
-    // compose form above is reachable and functional with this script never running at all.
+    // reading mode, folder filtering, the Compose reveal, plus three client-only touches that degrade
+    // to nothing: localStorage unread dots, relative dates, and sessionStorage Archive (moving a
+    // letter to the Archive folder for this tab only — see archiveMessage below). The compose form's
+    // real mailto hand-off above is reachable and functional with this script never running at all;
+    // Archive is the one other control that's real, and it only exists once this script runs.
     (function () {
       var foldersNav = document.querySelector('[data-mailbox-folders]');
       var list = document.querySelector('[data-mailbox-list]');
@@ -124,6 +126,7 @@
       var items = Array.prototype.slice.call(list.querySelectorAll('.mailbox__item'));
       var readers = Array.prototype.slice.call(readersWrap.querySelectorAll('.mailbox__reader'));
       var folderLinks = Array.prototype.slice.call(foldersNav.querySelectorAll('[data-folder]'));
+      var archiveButtons = Array.prototype.slice.call(readersWrap.querySelectorAll('[data-mail-archive]'));
 
       // ---- read/unread lives ONLY in this browser (localStorage), so the server renders zero dots
       // and a no-JS page makes no read-tracking claim. Fresh visitor = every row unread. ----
@@ -141,6 +144,51 @@
         var k = keyOf(item);
         if (read.indexOf(k) === -1) { read.push(k); try { localStorage.setItem(READ_KEY, JSON.stringify(read)); } catch (e) { /* private mode */ } }
         item.classList.remove('is-unread');
+      }
+
+      // ---- Archive lives ONLY in this tab (sessionStorage, not localStorage — a fresh tab starts
+      // clean), so the server renders every Archive button disabled and no message pre-archived. The
+      // one live control's own live control: clicking Archive on an inbox reader moves that letter's
+      // row + reader to data-folder="archive" for the rest of this visit. ----
+      var ARCHIVE_KEY = 'tj.mail.archived';
+      function archivedList() { try { return JSON.parse(sessionStorage.getItem(ARCHIVE_KEY) || '[]') || []; } catch (e) { return []; } }
+      var archived = archivedList();
+      function bareId(item) { return (item.getAttribute('href') || '').replace(/^#msg-/, ''); }   // "welcome", not "msg-welcome"
+      function itemById(id) { return items.filter(function (it) { return bareId(it) === id; })[0] || null; }
+      function readerById(id) { return readers.filter(function (r) { return r.id === 'msg-' + id; })[0] || null; }
+
+      // ---- rail folder counts, recomputed from the live DOM (not just the server's initial figure)
+      // so a moved letter is reflected immediately, same "never drift" promise mail-folder.md makes. ----
+      function recomputeFolderCounts() {
+        folderLinks.forEach(function (f) {
+          var folderId = f.getAttribute('data-folder');
+          var n = items.filter(function (it) { return it.getAttribute('data-folder') === folderId; }).length;
+          var countEl = f.querySelector('.mailbox__folder-count');
+          if (countEl) countEl.textContent = String(n);
+        });
+      }
+
+      // ---- Archive is enabled (dressing → live) on inbox readers only; sent/drafts/archive readers
+      // keep the disabled dressing title, since there's nowhere honest for those to move to. ----
+      function refreshArchiveButtons() {
+        archiveButtons.forEach(function (btn) {
+          var reader = btn.closest('.mailbox__reader');
+          var inbox = !!reader && reader.getAttribute('data-folder') === 'inbox';
+          btn.disabled = !inbox;
+          btn.title = inbox
+            ? 'Moves this letter to the Archive folder, for this visit only.'
+            : 'Set dressing. Compose is the one live control.';
+        });
+      }
+
+      // ---- apply any letters archived earlier in this tab before anything else paints ----
+      function applyArchived() {
+        archived.forEach(function (id) {
+          var row = itemById(id);
+          var reader = readerById(id);
+          if (row) row.setAttribute('data-folder', 'archive');
+          if (reader) reader.setAttribute('data-folder', 'archive');
+        });
       }
 
       // ---- relative dates: the server renders each list date ABSOLUTE (export-safe, never rots) with
@@ -174,7 +222,9 @@
         });
       }
 
+      var currentFolder = 'inbox';   // tracked so an archive action can re-apply whichever folder is showing
       function filterFolder(name) {
+        currentFolder = name;
         var shown = 0;
         items.forEach(function (it) {
           var match = it.getAttribute('data-folder') === name;
@@ -194,7 +244,38 @@
         if (folderCountEl) folderCountEl.textContent = shown === 1 ? '1 message' : shown + ' messages';
       }
 
-      // ---- paint unread + relative dates before the first paint of the reading mode ----
+      // ---- the Archive click handler: move the letter, persist it, and re-settle everything that
+      // depends on where it lives (rail counts, the current folder's filter, and the reader pane). ----
+      function archiveMessage(id) {
+        var row = itemById(id);
+        var reader = readerById(id);
+        if (row) row.setAttribute('data-folder', 'archive');
+        if (reader) reader.setAttribute('data-folder', 'archive');
+
+        if (archived.indexOf(id) === -1) {
+          archived.push(id);
+          try { sessionStorage.setItem(ARCHIVE_KEY, JSON.stringify(archived)); } catch (e) { /* private mode */ }
+        }
+
+        recomputeFolderCounts();
+        refreshArchiveButtons();     // the just-archived reader's Archive button falls back to disabled dressing
+        filterFolder(currentFolder); // re-apply the active filter: an archived row drops out of an Inbox view
+
+        // the reader pane follows the list: show the next visible message in the active folder, or none
+        var next = items.filter(function (it) { return !it.hidden; })[0];
+        if (next) {
+          showReader(next.getAttribute('href').slice(1));
+          selectItem(next);
+        } else {
+          readers.forEach(function (r) { r.hidden = true; });
+        }
+      }
+
+      // ---- apply any earlier archiving, paint unread + relative dates, all before the first paint
+      // of the reading mode ----
+      applyArchived();
+      recomputeFolderCounts();
+      refreshArchiveButtons();
       paintUnread();
       relativize();
 
@@ -221,6 +302,15 @@
         var link = ev.target.closest('[data-folder]');
         if (!link) return;
         filterFolder(link.getAttribute('data-folder'));
+      });
+
+      // ---- clicking an enabled Archive button moves that reader's letter (see archiveMessage above) ----
+      readersWrap.addEventListener('click', function (ev) {
+        var btn = ev.target.closest('[data-mail-archive]');
+        if (!btn || btn.disabled) return;
+        var reader = btn.closest('.mailbox__reader');
+        if (!reader) return;
+        archiveMessage(reader.id.replace(/^msg-/, ''));
       });
 
       // ---- Compose starts collapsed once the island is live, and the bright link reveals + focuses it.

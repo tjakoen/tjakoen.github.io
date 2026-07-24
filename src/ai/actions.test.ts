@@ -192,6 +192,35 @@ describe("routeAction", () => {
     });
   });
 
+  describe("B3 mail batch archive", () => {
+    test("phrasings extract the sender as `sender` (never a sender guess — the reasoner matches it, law #2)", () => {
+      const cases: [string, string][] = [
+        ["archive everything from BREAD CI", "bread ci"],
+        ["archive all mail from bread ci", "bread ci"],
+        ["archive the emails from The Desk", "the desk"],
+      ];
+      for (const [s, sender] of cases) {
+        const a = routeAction(s);
+        expect(a?.kind).toBe("mail-archive");
+        if (a?.kind === "mail-archive") expect(a.sender).toBe(sender);
+      }
+    });
+
+    test("an empty remainder falls through (null), same as deep-link/notes-filter's own guard", () => {
+      expect(routeAction("archive everything from")).toBeNull();
+    });
+
+    test("no clash: 'archive' alone doesn't fire (no 'from' target)", () => {
+      expect(routeAction("archive")?.kind).not.toBe("mail-archive");
+    });
+
+    test("no clash: unrelated actions still route as before", () => {
+      expect(routeAction("take me to the notes")).toBeNull();
+      expect(routeAction("show me notes about teaching")?.kind).toBe("notes-filter");
+      expect(routeAction("hi")?.kind).toBe("intent-ask");
+    });
+  });
+
   describe("C1 visitor-intent onboarding", () => {
     test("greeting forms route intent-ask (a WHOLE-message greeting/vague opener)", () => {
       for (const s of ["hi", "Hi", "hey!", "hello", "howdy", "yo", "good morning", "Good Afternoon.", "help"])

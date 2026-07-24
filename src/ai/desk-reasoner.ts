@@ -27,6 +27,9 @@ import { resolveNav, navShortlist, type NavDest } from "./catalog.ts";
 // B2 notes filtering — matching a visitor's free-text topic against the REAL tag set (never a model
 // guess, law #2). Pure + framework-free (notes-tags.ts), same family as catalog.ts's resolver.
 import { matchTags, uniqueTags } from "./notes-tags.ts";
+// B3 mail batch archive — matching a visitor's free-text sender phrase against the REAL sender set on
+// /mail (never a model guess, law #2). Pure + framework-free (mail-sender.ts), notes-tags.ts's sibling.
+import { matchSender } from "./mail-sender.ts";
 // A2 guided tour — the fixed, code-enumerated stop list (tour.ts). Zero model: tour-start/tour-stop
 // are matched deterministically (actions.ts) and driven from this data, never from the model's own
 // judgment of "what's on the site" (CLAUDE.md design law — code enumerates routes, never the model).
@@ -46,7 +49,9 @@ export interface DeskNote { slug: string; title: string; route: string; tags?: s
 // hardcoded). The generic `screen`/`chat-log` targets exist on every page (vocabulary-level), so the
 // caller skips them; these are the genuinely page-specific affordances.
 const VERB_PHRASE: Record<string, string> = {
-  "item.archive": "archive a task",
+  // Covers BOTH /loop tasks and /mail letters (B3) — one verb, two surfaces, so the phrase stays
+  // generic rather than naming just one of them.
+  "item.archive": "archive an item",
   "say.set": "note something to the reflection",
   "say.stream": "ask for a quick reflection",
   "demo.run": "watch the desk act out a live demo",
@@ -241,6 +246,27 @@ export interface DeskDeps {
    *  "N match" in the confirmation line. Optional: its absence just drops that clause, never fabricates
    *  a count. */
   visibleNoteCount?: () => number;
+  // ---- B3 mail batch archive ("archive everything from BREAD CI") — the desk drives the SAME row
+  // link + reader Archive button a human would click on /mail, validating against the LIVE DOM both
+  // before choosing what to click and after (CLAUDE.md's "validate twice" design law), the exact
+  // honesty contract the A4 theme + B2 notes-tag deps above already follow. ----
+  /** The distinct sender names across ALL mail rows (any folder), read fresh off the live DOM — `[]`
+   *  off /mail. Deliberately NOT inbox-only: a sender whose mail was all just archived must still
+   *  match on a re-ask, so the reasoner answers the honest "nothing left in the inbox" instead of
+   *  pretending the sender never existed (mailItemsFrom below is the inbox-only half). */
+  mailSenders?: () => string[];
+  /** The inbox rows whose sender text equals `sender` EXACTLY (the reasoner passes the already-matched
+   *  real sender name, never the visitor's raw phrase) — each with the row's message id, subject, and
+   *  the surface id the spotlight lands on while archiving it. */
+  mailItemsFrom?: (sender: string) => { id: string; subject: string; surface: string }[];
+  /** Click the row (opens its reader), then click the now-enabled `[data-mail-archive]` button in that
+   *  reader — the SAME two clicks a human would make, no private channel. Returns true only once the
+   *  row's OWN `data-folder` reads back "archive" afterward (validated, not assumed). */
+  archiveMailItem?: (id: string) => boolean;
+  /** Stash the RAW sender phrase (not yet matched) for the door to run on arrival after navigating to
+   *  /mail — same "stash BEFORE navigate" discipline tourSet follows, since the navigate tears the page
+   *  (and this reasoner instance) down before the mailbox can be reached. */
+  mailTaskSet?: (sender: string) => void;
   // ---- C1 visitor-intent onboarding (recruiter/developer/student) — sessionStorage-backed, same
   // try/catch-around-ss() shape the door gives every dep above. ONE key holds the answer, a second
   // holds the nag-guard flag. State is read ONLY to bias a code-chosen chip pool (pickFollowups below)
@@ -264,6 +290,14 @@ export interface DeskDeps {
 // twice): the whole point of driving the VISIBLE control rather than a private channel is that a
 // visitor watching the demo sees the flavors step past one at a time, so this can't be zero.
 const THEME_CLICK_BEAT_MS = 180;
+
+// B3 mail batch archive — the pause between successive letters as the desk archives them one at a
+// time. Named per CLAUDE.md lesson #9 (a knob with no name can't be found, let alone tuned twice):
+// driving the visible row + reader Archive button rather than a private channel only reads honestly if
+// the visitor actually SEES each letter go, so this can't be zero. Exported: the door's OWN cross-page
+// mail task (desk-door.ts, runMailTask) reuses this exact knob, so the reasoner's first-page run and
+// the door's cross-page run can't drift apart in pacing (the NAV_GLIDE_MS precedent, above).
+export const MAIL_ARCHIVE_BEAT_MS = 650;
 
 // Chat bubble markup now comes from GRAIN's reasoner-kit (deps.kit) — not forked here. This local
 // `esc` is only for the portfolio's OWN chip labels (suggestChipsHtml below), which are portfolio
@@ -698,6 +732,81 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             return { ok: true, ops: [], reply: `Filtering notes by ${tagLabel}` };
           }
           // no real tag matched — fall through, no return.
+        }
+
+        // B3 mail batch archive — "archive everything from BREAD CI". Deterministic + offline, unlike
+        // every OTHER deterministic action above: an archive VERB must never reach the 0.5B (a "no such
+        // sender" miss is a hard, honest decline here, not a fall-through to a grounded chat guess —
+        // the model has no business inventing whether a sender's mail exists).
+        if (action?.kind === "mail-archive") {
+          const onMail = !!deps.pageInfo && stripSlash(deps.pageInfo().route) === "/mail";
+
+          if (onMail) {
+            await minThink();
+            if (!deps.mailSenders || !deps.mailItemsFrom || !deps.archiveMailItem) {
+              const line = "I can't reach the mailbox from here.";
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "no mail deps" };
+            }
+            // Enumerate the REAL senders off the live inbox rows — never a model guess (law #2) — and
+            // match the visitor's raw phrase against them (mail-sender.ts).
+            const senders = deps.mailSenders();
+            const matched = matchSender(action.sender, senders);
+            if (!matched) {
+              const known = senders.length ? joinPhrases(senders) : "no one";
+              const line = `I don't see any mail from "${action.sender}" in the inbox — the senders here are ${known}.`;
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "no such sender" };
+            }
+            const items = deps.mailItemsFrom(matched);
+            if (!items.length) {
+              // Idempotent re-ask: a sender that's real but already fully archived is a normal, honest
+              // "nothing to do" — not an error.
+              const line = `Nothing from ${matched} left in the inbox.`;
+              await typeOut(line);
+              return { ok: true, ops: [], reply: line };
+            }
+
+            narrate("archives", `the mail from ${matched}`);
+            const landed: string[] = [];
+            for (const item of items) {
+              // Click the row, letting the visitor SEE each letter light up before it moves —
+              // MAIL_ARCHIVE_BEAT_MS is the named pace knob (same "validate twice" honesty contract as
+              // the A4 theme + B2 notes-tag clicks: the row's OWN data-folder is re-read afterward).
+              tools.emit(deps.kit.spotlightOp(item.surface, { active: true, click: true }));
+              await tools.delay(MAIL_ARCHIVE_BEAT_MS);
+              if (deps.archiveMailItem(item.id)) landed.push(item.id);
+            }
+            tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+
+            if (!landed.length) {
+              const line = "Hmm, that didn't take. Try the Archive button in the reader.";
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "click didn't land" };
+            }
+            const n = landed.length;
+            const countBit = n === items.length ? `${n}` : `${n} of ${items.length}`;
+            const line = `Archived ${countBit} letter${n === 1 ? "" : "s"} from ${matched}. They're in the Archive folder now.`;
+            await typeOut(line);
+            return { ok: true, ops: [], reply: line };
+          }
+
+          // elsewhere on the site — stash the RAW sender phrase and travel to the mailbox; this
+          // reasoner instance doesn't survive the navigate (the MPA tears the page down), so the door's
+          // OWN cross-page task (desk-door.ts, runMailTask) does the matching + archiving once the
+          // mailbox settles, using the SAME matchSender + MAIL_ARCHIVE_BEAT_MS this branch would.
+          if (deps.mailTaskSet && deps.navigate) {
+            await minThink();
+            const line = `Heading to the mail panel to archive the mail from ${action.sender}.`;
+            await typeOut(line);
+            deps.mailTaskSet(action.sender);   // stash BEFORE navigating — the navigate tears this down
+            await travelAndNavigate("/mail", "/mail", "Mail", "Here's the mailbox.", "the navigation");
+            return { ok: true, ops: [], reply: line };
+          }
+          await minThink();
+          const line = "I can't reach the mailbox from here.";
+          await typeOut(line);
+          return { ok: false, ops: [], reply: line, reason: "no mail deps" };
         }
 
         // C1 visitor-intent onboarding — the ASK. Deterministic + offline, like every action above: the
