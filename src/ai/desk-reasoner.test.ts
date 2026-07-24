@@ -531,3 +531,98 @@ describe("makeDeskReasoner — note-write (the desk composes + appends a notepad
     expect(revealed).toBe(0);
   });
 });
+
+describe("makeDeskReasoner — A1 deep-link answers (\"show me the part about X\")", () => {
+  // Chunk.anchor is a parallel, in-flight contract addition (retrieval.ts is owned elsewhere) — not
+  // type-annotated as Knowledge here so the extra `anchor` field type-checks either side of that land.
+  const deepKnowledge = {
+    builtAt: "t", n: 2, df: { teach: 1, ai: 1 },
+    chunks: [
+      { id: "facts#0", route: "facts", title: "About", heading: "", text: "TJ teaches and builds" },
+      {
+        id: "notes/ten-times-zero#1", route: "/notes/ten-times-zero", title: "Ten Times Zero",
+        heading: "Teaching with AI", text: "Why teaching with AI matters to TJ.",
+        anchor: "teaching-with-ai",
+      },
+    ],
+  };
+
+  test("hit on ANOTHER route: no model load, arrives with the anchor surface, navigates to the chunk's own route", async () => {
+    let loads = 0;
+    // a boxed capture (like makeDeps's own `box` above) — a plain `let` reassigned only inside the
+    // callback trips a known tsc control-flow quirk, narrowing the read after `await` to `never`.
+    const box: { arrived: { surface?: string; announce?: string; anchor?: string } | null } = { arrived: null };
+    let navd = "";
+    const { deps } = makeDeps({
+      loadKnowledge: async () => deepKnowledge as unknown as Knowledge,
+      loadEngine: async () => { loads++; return fakeEngine([]).engine; },
+    });
+    deps.pageInfo = () => ({ route: "/notes", title: "Notes" });
+    deps.navigate = (u) => { navd = u; };
+    deps.arrive = (surface, announce, anchor) => { box.arrived = { surface, announce, anchor }; };
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("show me the part about teaching with ai"), tools);
+
+    expect(loads).toBe(0);                                        // deterministic — never touched the model
+    expect(navd).toBe("/notes/ten-times-zero");                   // the chunk's own route, not a nav-link guess
+    expect(box.arrived?.surface).toBe("anchor:teaching-with-ai");
+    expect(box.arrived?.anchor).toBe("teaching-with-ai");
+    expect(box.arrived?.announce).toContain("Teaching with AI");
+    expect(box.arrived?.announce).toContain("Ten Times Zero");
+    expect(d.ok).toBe(true);
+  });
+
+  test("hit on THIS page: scrolls in place, spotlights the anchor, never navigates", async () => {
+    let scrolled = "";
+    let navd = "";
+    const { deps } = makeDeps({ loadKnowledge: async () => deepKnowledge as unknown as Knowledge });
+    deps.pageInfo = () => ({ route: "/notes/ten-times-zero", title: "Ten Times Zero" });
+    deps.navigate = (u) => { navd = u; };
+    deps.scrollToAnchor = (a) => { scrolled = a; return true; };
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("show me the part about teaching with ai"), tools);
+
+    expect(scrolled).toBe("teaching-with-ai");
+    expect(navd).toBe("");                                        // stayed put — no navigation
+    const spot = ops.find((o) => o.op === "spotlight" && o.target === "anchor:teaching-with-ai");
+    expect(spot?.active).toBe(true);
+    expect(d.reply).toContain("Teaching with AI");
+  });
+
+  test("hit on THIS page but no scrollToAnchor dep: spotlight still lands (a no-op find at worst) and the turn settles", async () => {
+    const { deps } = makeDeps({ loadKnowledge: async () => deepKnowledge as unknown as Knowledge });
+    deps.pageInfo = () => ({ route: "/notes/ten-times-zero", title: "Ten Times Zero" });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("show me the part about teaching with ai"), tools);
+
+    // the spotlight is emitted BEFORE the scroll (the acting chrome must land before the scroll
+    // target is measured — desk-door lesson), so it fires even without the dep, and releases.
+    const spot = ops.find((o) => o.op === "spotlight" && o.target === "anchor:teaching-with-ai");
+    expect(spot?.active).toBe(true);
+    const release = ops.find((o) => o.op === "spotlight" && o.target === "screen");
+    expect(release?.active).toBe(false);
+    expect(d.ok).toBe(true);
+    expect(d.reply).toContain("Teaching with AI");
+  });
+
+  test("a corpus MISS falls through to the model path (still a real, grounded chat answer)", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({
+      loadKnowledge: async () => knowledge,           // the default fixture — no non-facts hit for "grain"
+      loadEngine: async () => { loads++; return fakeEngine(["Grain is TJ's on-page AI toolkit."]).engine; },
+    });
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("show me the part about grain"), tools);
+
+    expect(loads).toBe(1);                                        // did NOT short-circuit deterministically
+    expect(d.reply).toBe("Grain is TJ's on-page AI toolkit.");
+  });
+});

@@ -38,6 +38,36 @@ describe("routeAction", () => {
       expect(routeAction(s)?.kind).toBe("open-latest-note");
   });
 
+  test("deep-link phrasings extract the topic as `query` (A1: show me the part about X)", () => {
+    const cases: [string, string][] = [
+      ["Show me the part about teaching with AI", "teaching with ai"],
+      ["find the section on grain's spotlight", "grain s spotlight"],
+      ["show me the bit covering BREAD", "bread"],
+      ["open the passage about MILL", "mill"],
+      ["where does TJ talk about teaching with AI", "teaching with ai"],
+      ["where do you mention BATCH", "batch"],
+      ["where did TJ write about grain", "grain"],
+      ["take me to the part about teaching with AI", "teaching with ai"],
+      ["jump me to the section on BREAD", "bread"],
+    ];
+    for (const [s, query] of cases) {
+      const a = routeAction(s);
+      expect(a?.kind).toBe("deep-link");
+      if (a?.kind === "deep-link") expect(a.query).toBe(query);
+    }
+  });
+
+  test("deep-link with an empty remainder falls through (null) rather than routing a doomed lookup", () => {
+    for (const s of ["show me the section about", "show me the section on"])
+      expect(routeAction(s)).toBeNull();
+  });
+
+  test("guard phrasings still route to their old kinds, not deep-link", () => {
+    expect(routeAction("show me the latest note")?.kind).toBe("open-latest-note");
+    expect(routeAction("show me around")?.kind).toBe("clarify");
+    expect(routeAction("what can I do here")?.kind).toBe("capabilities");
+  });
+
   test("navigation phrases fall through here (null) — the catalog resolves them, not this router", () => {
     for (const s of ["take me to grain", "go to the notes", "grain", "take me home", "take me to the flagship note"])
       expect(routeAction(s)).toBeNull();

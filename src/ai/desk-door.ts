@@ -43,10 +43,14 @@ const grainChat = await import(new URL("../../grain/ai/model-chat.js", import.me
   typeof import("@tjakoen/grain/ai/model-chat.ts");
 
 // Reach the browser globals we need without a DOM lib (the project's tsc has bun-types only).
+// A1 deep-link answers add one more shape here: an element that can scrollIntoView (getElementById
+// only needs to find + scroll it — no other DOM surface is touched).
+interface ScrollableEl { scrollIntoView(opts?: { behavior?: string; block?: string }): void }
 interface MinimalDoc {
   body?: { dataset: Record<string, string> };
   title?: string;
   querySelector?(sel: string): { textContent?: string | null } | null;
+  getElementById?(id: string): ScrollableEl | null;
 }
 const doc = (): MinimalDoc | undefined => (globalThis as unknown as { document?: MinimalDoc }).document;
 const loc = (): { assign(u: string): void; pathname?: string } | undefined =>
@@ -149,16 +153,35 @@ const revealNotepad = (): void => {
   btn?.click();
 };
 
+// A1 "show me the part about X" (deep-link answers): scroll the CURRENT page to a rendered heading id.
+// MILL renders every h2/h3 with `id="{anchor}"` (the Chunk.anchor contract) — a plain getElementById +
+// scrollIntoView, no framework hook needed. True when the element existed, so the reasoner can
+// tell a real jump from a stale/mismatched anchor (and settle on the typed line alone either way).
+// `behavior` matters: an ANIMATED scroll in flight is cancelled by any other programmatic scroll,
+// and a fresh page load has several (the chat-log restore, site.js's tab-bar scrollIntoView). "auto"
+// is no escape — .app-shell__main sets `scroll-behavior: smooth` in CSS, so "auto" animates too
+// (measured: the arrival scroll died at scrollTop 0). Only "instant" bypasses the CSS and lands
+// uncancellably — exactly what a native #fragment landing does — so the cross-page arrival path uses
+// it, and the same-page path (no load in progress) keeps the visible smooth glide.
+const scrollToAnchor = (anchor: string, behavior: "smooth" | "instant" = "smooth"): boolean => {
+  const el = doc()?.getElementById?.(anchor);
+  if (!el) return false;
+  el.scrollIntoView({ behavior, block: "start" });
+  return true;
+};
+
 // ---- cross-page lamp: the MPA loses JS state on navigation, so before navigating the desk STASHES
 // what to do on arrival; the destination page's door replays it — a chat announce + a spotlight on
 // the target surface, then release. The terminal narration already persists (localStorage), so the
 // AI's "trip" reads as one continuous act across the page load. ----
 const ARRIVE_KEY = "desk-arrival";
-const arrive = (surface: string, announce: string): void => {
-  try { ss()?.setItem(ARRIVE_KEY, JSON.stringify({ surface, announce })); } catch { /* no session storage */ }
+// `anchor` is set only by the A1 deep-link path (desk-reasoner.ts) — a section elsewhere on the site,
+// not just a page — so runArrival below can scroll to it before the spotlight lands.
+const arrive = (surface: string, announce: string, anchor?: string): void => {
+  try { ss()?.setItem(ARRIVE_KEY, JSON.stringify({ surface, announce, anchor })); } catch { /* no session storage */ }
 };
 async function runArrival(applyOp: (op: RenderOp) => void): Promise<void> {
-  let plan: { surface?: string; announce?: string } | null = null;
+  let plan: { surface?: string; announce?: string; anchor?: string } | null = null;
   try {
     const raw = ss()?.getItem(ARRIVE_KEY);
     if (!raw) return;
@@ -174,6 +197,11 @@ async function runArrival(applyOp: (op: RenderOp) => void): Promise<void> {
     applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
       html: grainKit.chatBubble("ai", "grain", grainKit.chatBody(grainKit.esc(plan.announce)), "Desk") });
   applyOp(grainKit.spotlightOp(plan.surface, { active: true }));   // the lamp lands on the destination
+  // A1: scroll AFTER the spotlight — activating the lamp raises the shell's acting chrome, and a
+  // scroll measured before that layout settles lands short (~158px, measured). "instant" because a
+  // load-time animated scroll gets cancelled (see scrollToAnchor); the lamp follows its surface
+  // through the scroll (ai-spotlight.js), so it ends up on the now-visible section.
+  if (plan.anchor) { await wait(120); scrollToAnchor(plan.anchor, "instant"); await wait(280); }
   await wait(1500);
   applyOp(grainKit.spotlightOp("screen", { active: false }));      // hand back to the visitor
 }
@@ -204,6 +232,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     markOffline,
     kit: grainKit,                                // grain's chat markup builders (no fork)
     navigate, pageText, pageInfo, pageManifest, listNotes, loadCatalog, arrive, revealNav, revealNotepad,   // the desk drives the UI through these
+    scrollToAnchor,   // A1 deep-link answers: scroll THIS page to a rendered heading id (see desk-reasoner.ts)
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();

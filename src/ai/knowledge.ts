@@ -5,6 +5,7 @@
 // Served frozen as /knowledge.json — the model never touches the repo, only this compiled shape.
 
 import { tokenize, type Chunk, type Knowledge } from "./retrieval.ts";
+import { slugifyHeading } from "./slug.ts";
 
 /** A content source to fold into the corpus: where it lives, its title, and its markdown BODY
  *  (frontmatter already stripped by the caller). */
@@ -12,6 +13,12 @@ export interface KnowledgeSource {
   route: string;
   title: string;
   markdown: string;
+  // does this source have a REAL rendered page whose ## / ### headings carry ids (content.ts's
+  // shared heading block-override)? When true, a section's chunks get `anchor` set to the SAME
+  // slug the rendered heading got — slugifyHeading is the one algorithm both sides share, so the
+  // two can never drift (A1: deep-link answers). Facts + any source with no rendered page leave
+  // this unset, and its chunks carry no anchor.
+  anchored?: boolean;
 }
 
 const MAX_CHUNK_CHARS = 1000;
@@ -31,12 +38,17 @@ function toPlainText(md: string): string {
 }
 
 /** Split a markdown body into sections at `##`/`###` headings. The prose before the first heading
- *  is the lead (heading ""). Returns [{ heading, body }] with markdown still inside body. */
+ *  is the lead (heading ""). Returns [{ heading, body }] with markdown still inside body.
+ *  Fence-aware: a `## …` line INSIDE a ``` fence is code being quoted, not a section — MILL renders
+ *  it as code (no heading, no anchor), so splitting there would emit chunks whose anchor matches no
+ *  rendered id (caught by slug-roundtrip.test.ts against the real corpus). */
 function splitSections(md: string): Array<{ heading: string; body: string }> {
   const lines = md.split("\n");
   const sections: Array<{ heading: string; body: string[] }> = [{ heading: "", body: [] }];
+  let inFence = false;
   for (const line of lines) {
-    const m = /^#{2,3}\s+(.*)$/.exec(line);
+    if (/^\s*```/.test(line)) inFence = !inFence;
+    const m = inFence ? null : /^#{2,3}\s+(.*)$/.exec(line);
     if (m) sections.push({ heading: m[1]!.trim(), body: [] });
     else sections[sections.length - 1]!.body.push(line);
   }
@@ -87,6 +99,10 @@ export function buildKnowledge(sources: KnowledgeSource[]): Knowledge {
     let seq = 0;
     for (const section of splitSections(src.markdown)) {
       const plainHeading = toPlainText(section.heading);
+      // anchor only when the source is a real rendered page AND there's a heading to point at —
+      // the lead section (plainHeading === "") sits above the page's first heading, so it has
+      // nothing to anchor to.
+      const anchor = src.anchored && plainHeading ? slugifyHeading(plainHeading) : undefined;
       for (const text of packChunks(toPlainText(section.body))) {
         chunks.push({
           id: `${src.route.replace(/^\//, "")}#${seq++}`,
@@ -94,6 +110,7 @@ export function buildKnowledge(sources: KnowledgeSource[]): Knowledge {
           title: src.title,
           heading: plainHeading,
           text,
+          ...(anchor ? { anchor } : {}),
         });
       }
     }

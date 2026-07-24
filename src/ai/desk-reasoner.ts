@@ -14,7 +14,7 @@
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
 import type { Intent, Decision, RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import { buildPrompt, type ChatMessage } from "./prompt.ts";
-import { retrieve, type Knowledge } from "./retrieval.ts";
+import { retrieve, FACTS_ROUTE, type Knowledge } from "./retrieval.ts";
 import type { DeskEngine, EngineProgress, ModelProfile } from "./webllm-loader.ts";
 import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
 import { routeAction, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
@@ -98,6 +98,23 @@ export function parseArrival(raw: string): { greeting: string; chips: string[] }
   return { greeting, chips };
 }
 
+// A1 "show me the part about X" (deep-link answers) — deriving the VISIBLE nav link above a hit's
+// route, and a slug label for narrating a click on it, without needing the full catalog loaded at this
+// point in the flow (that fetch happens further down, for the fuzzy-tail nav). The sidebar has no nav
+// item per section, so the lamp travels to the nearest real link: "/a/b" → "/a", "/a/b/c" → "/a/b"; a
+// single-segment route (a top-level section) has no shallower link to climb to, so it stays itself —
+// same rule open-latest-note follows using "/notes" as a specific note's own nav link.
+function navLinkFor(route: string): string {
+  const segs = route.split("/").filter(Boolean);
+  return segs.length < 2 ? route : "/" + segs.slice(0, -1).join("/");
+}
+function humanizeSeg(route: string): string {
+  const seg = route.split("/").filter(Boolean).pop();
+  return seg ? seg.split("-").map((w) => w[0]!.toUpperCase() + w.slice(1)).join(" ") : "Home";
+}
+// Trailing-slash-insensitive route compare — "is the hit already on the page we're standing on?".
+const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
+
 const OFFLINE_LINE =
   "The desk runs a small AI model in your browser, and this browser can't run it, so the desk is offline. Everything else on the site works as usual.";
 
@@ -150,10 +167,17 @@ export interface DeskDeps {
    *  shortlist for the fuzzy tail. Memoized by the door; omitted → navigation falls straight to chat. */
   loadCatalog?: () => Promise<NavDest[]>;
   /** Stash a "spotlight + announce on arrival" so the lamp RESUMES on the destination page after a
-   *  navigation (the MPA loses JS state; the door replays this on load). */
-  arrive?: (surface: string, announce: string) => void;
+   *  navigation (the MPA loses JS state; the door replays this on load). `anchor` is set only by the
+   *  A1 deep-link path (a section elsewhere on the site): the door's runArrival then scrolls to it
+   *  BEFORE the spotlight lands, so the lamp lights a section that's actually on screen. */
+  arrive?: (surface: string, announce: string, anchor?: string) => void;
   /** Open the collapsed file-tree folder above a nav link, so the lamp can travel to a visible target. */
   revealNav?: (route: string) => void;
+  /** Scroll the CURRENT page to a rendered heading id (MILL's anchor ids — the `data-surface="anchor:*"`
+   *  contract Chunk.anchor points at). True when the element existed. Used by "show me the part about X"
+   *  (A1, deep-link answers) when the hit is already on this page; the elsewhere case instead stashes the
+   *  anchor through `arrive` below and desk-door's runArrival does the scrolling on the destination page. */
+  scrollToAnchor?: (anchor: string) => boolean;
   /** Flip the assistant panel to its Notepad view (clicks the [data-shell-mode="notepad"] tab), so a
    *  note the desk just wrote is visible immediately instead of only after the visitor opens the pad. */
   revealNotepad?: () => void;
@@ -338,19 +362,26 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       };
 
       // Travel the lamp to a nav link, "click" it, then leave the page — the ONE sequence shared by
-      // every navigation-driving path (deterministic latest-note, deterministic section nav, and the
-      // model's own NAVIGATE:<route> choice below), so the choreography can't drift between them.
+      // every navigation-driving path (deterministic latest-note, deterministic section nav, the
+      // model's own NAVIGATE:<route> choice, and A1's deep-link elsewhere-page hit), so the
+      // choreography can't drift between them.
       // The spotlight op is grain's own kit builder, not a hand-rolled literal (CLAUDE.md lesson #1:
       // use the mechanism, don't reinvent it) — and the actual navigate RenderOp is emitted by
       // deps.navigate itself (desk-door.ts, via kit.navigateOp), not here. `navLink` is the VISIBLE
       // sidebar link the lamp travels to and "clicks" (e.g. "/notes"); `goto` is where the browser
       // actually ends up (e.g. "/notes/newest" — a specific note has no nav link of its own).
-      const travelAndNavigate = async (navLink: string, goto: string, label: string, announce: string, readDesc: string) => {
+      // `arriveSurface`/`anchor` are extra, OPTIONAL trailing params (every existing call site is
+      // unchanged): the deep-link path is the one caller that stashes a section anchor instead of the
+      // whole screen, so the lamp lands ON the part of the destination page it was asked about.
+      const travelAndNavigate = async (
+        navLink: string, goto: string, label: string, announce: string, readDesc: string,
+        arriveSurface = "screen", anchor?: string,
+      ) => {
         narrate("reads", readDesc);
         deps.revealNav?.(navLink);
         narrate("clicks", label);
         tools.emit(deps.kit.spotlightOp(`nav:${navLink}`, { active: true, click: true }));
-        deps.arrive?.("screen", announce);   // resume the lamp on arrival
+        deps.arrive?.(arriveSurface, announce, anchor);   // resume the lamp on arrival
         await tools.delay(NAV_GLIDE_MS);     // lamp opens the folder, glides, pulses
         deps.navigate?.(goto);
       };
@@ -396,6 +427,55 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           }
           setBody(esc("I couldn't reach the notebook just now."), "committed");
           return { ok: false, ops: [], reply: "notes unavailable", reason: "notes unavailable" };
+        }
+
+        // A1 "show me the part about X" (deep-link answers) — deterministic + offline-safe, like every
+        // action above: retrieve action.query against the corpus and, ONLY when the top hit actually
+        // carries a rendered heading anchor (the MILL contract — Chunk.anchor / data-surface="anchor:*"),
+        // jump straight to that section instead of answering in prose. A facts-route hit doesn't count
+        // (there's no real heading to land on) — filtered out below. A MISS is deliberately NOT settled
+        // here: the deterministic path only claims the turn when it can actually deliver, so an
+        // ungrounded ask falls straight through to the normal model path a few lines down (still a real,
+        // grounded chat answer — just not a jump).
+        if (action?.kind === "deep-link") {
+          const knowledge = await deps.loadKnowledge().catch(() => null);
+          const hit = knowledge
+            ? retrieve(action.query, knowledge, 3).find((c) => c.route !== FACTS_ROUTE && c.anchor)
+            : undefined;
+          if (hit) {
+            const heading = hit.heading || hit.title;
+            const onThisPage = deps.pageInfo && stripSlash(deps.pageInfo().route) === stripSlash(hit.route);
+            if (onThisPage) {
+              // already here — no navigation, just find + spotlight the section in place.
+              narrate("finds", heading);
+              await minThink();
+              const line = `That's under “${heading}”, right on this page.`;
+              await typeOut(line);
+              // Spotlight FIRST, scroll second: activating the lamp raises the shell's acting chrome,
+              // and a smooth scroll started before that layout settles animates to a stale target
+              // (measured ~158px short). The lamp follows its surface through the scroll by design
+              // (ai-spotlight.js), so lighting an off-screen section then gliding to it is the
+              // intended choreography. A missing anchor makes both ops no-op finds — harmless.
+              tools.emit(deps.kit.spotlightOp(`anchor:${hit.anchor}`, { active: true }));
+              await tools.delay(120);   // let the acting-chrome layout settle before measuring the scroll target
+              if (deps.scrollToAnchor?.(hit.anchor!)) await tools.delay(1500);
+              tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+              return { ok: true, ops: [], reply: line };
+            }
+            // elsewhere on the site — travel there, but land the lamp ON the section: the arrival stash
+            // carries the anchor, and desk-door's runArrival scrolls to it before the spotlight fires.
+            const navLink = navLinkFor(hit.route);
+            await minThink();
+            const line = `That's under “${heading}” in “${hit.title}”. Taking you there.`;
+            await typeOut(line);
+            await travelAndNavigate(
+              navLink, hit.route, humanizeSeg(navLink),
+              `Here's the part about “${heading}”, from “${hit.title}”.`, "the navigation",
+              `anchor:${hit.anchor}`, hit.anchor,
+            );
+            return { ok: true, ops: [], reply: line };
+          }
+          // no usable hit — fall through (no return): the model path below still gets a shot at it.
         }
 
         // Deterministic navigation over the REAL sitemap catalog (catalog.ts resolveNav) — runs before

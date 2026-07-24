@@ -69,6 +69,13 @@ const SCENARIOS: Scenario[] = [
   { id: "nav-det", page: "/", ask: "take me to the notes", mustNavigate: "/notes", deterministic: true },
   { id: "cap-det", page: "/", ask: "What can I do here?",
     mustMention: [["latest note"], ["summarize"], ["GRAIN"]], deterministic: true },
+  // A1 deep-link answers — "where does TJ talk about X" retrieves deterministically (actions.ts
+  // DEEP_LINK_PATTERNS) and jumps straight to the anchored section, never the model. Verified against
+  // the real corpus (bun -e, buildPortfolioKnowledge + retrieve): this phrasing's top-scoring anchored
+  // hit is the how-i-use-ai-in-teaching note's "The stories worth telling" section, so the arrival
+  // announce reads "Here's the part about ... from ...".
+  { id: "deep-link-det", page: "/", ask: "where does TJ talk about using AI with students",
+    mustNavigate: "/notes/how-i-use-ai-in-teaching", mustMention: [["part", "section", "under"]], deterministic: true },
 ];
 
 // ---- plumbing ----

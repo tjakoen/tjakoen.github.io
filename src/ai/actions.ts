@@ -11,7 +11,8 @@ export type Action =
   | { kind: "summarize" }
   | { kind: "note-write"; instruction: string }
   | { kind: "capabilities" }
-  | { kind: "clarify"; prompt: string; choices: Choice[] };
+  | { kind: "clarify"; prompt: string; choices: Choice[] }
+  | { kind: "deep-link"; query: string };
 
 /** The disambiguation the desk offers for a vague "where should I go?" — each choice's `value` is a
  *  phrase the desk itself resolves (catalog navigation or a capabilities ask), so a click just
@@ -27,6 +28,21 @@ export const CLARIFY_CHOICES: Choice[] = [
 
 const norm = (s: string): string => s.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
 
+// "Show me the part about X" (A1, deep-link answers) — a request for WHERE on the site something is
+// covered, distinct from navigation (a page) or summarize (this page). The captured remainder becomes
+// `query`, which the reasoner retrieves against the corpus; a hit with a rendered heading anchor scrolls
+// + spotlights straight to that section instead of answering in prose. Three phrasings the audit's
+// "where does TJ talk about teaching with AI?" family exercises; order doesn't matter (mutually exclusive
+// triggers), so first match wins.
+const DEEP_LINK_PATTERNS: RegExp[] = [
+  // "show/find/see/read/open the part/section/bit/passage/paragraph about/on/where/covering X"
+  /\b(?:show|find|see|read|open)\b.*?\b(?:part|section|bit|passage|paragraph)\b.*?\b(?:about|on|where|covering)\b\s+(.+)$/,
+  // "where does/do/did TJ talk/write/say/speak/mention(s) (about) X" — "about" is optional ("mention X")
+  /\bwhere\s+(?:does|do|did)\b.*?\b(?:talks?|writes?|says?|speaks?|mentions?)\b\s*(?:about\s+)?(.+)$/,
+  // "take/jump me to the part/section about/on X"
+  /\b(?:take|jump)\s+me\s+to\s+the\s+(?:part|section)\b.*?\b(?:about|on)\b\s+(.+)$/,
+];
+
 /** Match a request to a deterministic ACTION, or null → (catalog navigation, then) grounded chat.
  *  Order matters: the specific intents resolve before the broad ones. Navigation is handled by the
  *  caller against the sitemap catalog, not here. */
@@ -41,6 +57,15 @@ export function routeAction(text: string): Action | null {
     return { kind: "note-write", instruction: text.trim() };
   if (/\b(jot (this|that|it|down)|note (this|that|it) down|make a note|take a note|remember (this|that))\b/.test(t))
     return { kind: "note-write", instruction: text.trim() };
+
+  // deep-link — "show me the part about X" (see DEEP_LINK_PATTERNS above). An empty remainder (nothing
+  // left to look up, e.g. a stray "show me the section about") is NOT a deep-link — fall through to
+  // whatever the rest of the router decides instead of routing a doomed empty-query lookup.
+  for (const re of DEEP_LINK_PATTERNS) {
+    const m = re.exec(t);
+    const query = m?.[1]?.trim();
+    if (query) return { kind: "deep-link", query };
+  }
 
   // summarize this page
   if (/\b(summari[sz]e|sum up|recap)\b/.test(t) || /tl;?dr/i.test(text)) return { kind: "summarize" };
