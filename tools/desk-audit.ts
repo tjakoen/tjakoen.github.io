@@ -93,6 +93,12 @@ const SCENARIOS: Scenario[] = [
   // location.pathname (grade(), below), which already excludes the ?tag= query string, so the
   // "/notes?tag=teaching" landing still reads as a plain "/notes" navigation here.
   { id: "notes-filter-det", page: "/", ask: "show me notes about teaching", mustNavigate: "/notes", mustMention: [["teaching"]], deterministic: true },
+  // C1 visitor-intent onboarding — a bare "hi" as the FIRST message this session triggers the
+  // deterministic ask (actions.ts + desk-reasoner.ts), no model: the prompt copy names "visiting"
+  // (the word this grader hooks on) and offers the three CHOICES. Not last on purpose — tour-det stays
+  // the final word per the comment below; this only needs a clean (never-asked) session, which the
+  // per-scenario cleanup guarantees regardless of position.
+  { id: "intent-det", page: "/", ask: "hi", mustMention: [["visiting"]], deterministic: true },
   // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
   // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
   // the destination. LAST in the list on purpose — see the per-scenario cleanup below.
@@ -292,12 +298,17 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     const timeout = s.deterministic ? 30_000 : firstModelRun ? 420_000 : 150_000;
     const { text, path: endPath } = await settle(page, startPath, timeout);
     if (!s.deterministic) firstModelRun = false;
-    // A2 guided tour cleanup: tour-det (and any future tour ask) leaves a pending "desk-tour" cursor
-    // in sessionStorage, stashed for the NEXT stop the door hasn't navigated to within this scenario's
-    // own page. A later scenario that happens to land on that pending stop's route would otherwise
-    // have the door's runTourLeg hijack it mid-grade (advancing the tour instead of settling this
-    // scenario's own reply). Each scenario gets a clean slate.
-    await page.evaluate(() => sessionStorage.removeItem("desk-tour")).catch(() => {});
+    // Per-scenario sessionStorage cleanup: tour-det (and any future tour ask) leaves a pending
+    // "desk-tour" cursor stashed for the NEXT stop the door hasn't navigated to within this scenario's
+    // own page, and intent-det's own ask marks the C1 nag-guard as fired ("visitor-intent" /
+    // "desk-intent-asked") — either leftover would hijack or silence a LATER scenario that happens to
+    // land on that stop's route, or re-run the intent ask expecting a fresh session. Each scenario
+    // gets a clean slate.
+    await page.evaluate(() => {
+      sessionStorage.removeItem("desk-tour");
+      sessionStorage.removeItem("visitor-intent");
+      sessionStorage.removeItem("desk-intent-asked");
+    }).catch(() => {});
     const ms = Date.now() - t0;
     const failures = grade(s, text, endPath, realRoutes);
     return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, pass: failures.length === 0, failures };

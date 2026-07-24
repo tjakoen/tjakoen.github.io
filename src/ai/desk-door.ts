@@ -285,6 +285,22 @@ const tourActive = (): boolean => { try { return !!ss()?.getItem(TOUR_KEY); } ca
 // a cross-module import, since it's a one-liner and this file already keeps its own small DOM shims).
 const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
 
+// ---- C1 visitor-intent onboarding: sessionStorage-backed, same try/catch-around-ss() shape as the
+// tour deps above. INTENT_KEY holds the answer (one key, per the roadmap); INTENT_ASKED_KEY is the
+// nag-guard — has the ask already fired this session, regardless of whether it was ever answered. ----
+const INTENT_KEY = "visitor-intent";
+const INTENT_ASKED_KEY = "desk-intent-asked";
+type VisitorIntent = "recruiter" | "developer" | "student";
+const intentGet = (): VisitorIntent | null => {
+  try {
+    const v = ss()?.getItem(INTENT_KEY);
+    return v === "recruiter" || v === "developer" || v === "student" ? v : null;
+  } catch { return null; }
+};
+const intentSet = (intent: VisitorIntent): void => { try { ss()?.setItem(INTENT_KEY, intent); } catch { /* no session storage */ } };
+const intentAsked = (): boolean => { try { return ss()?.getItem(INTENT_ASKED_KEY) === "1"; } catch { return false; } };
+const intentMarkAsked = (): void => { try { ss()?.setItem(INTENT_ASKED_KEY, "1"); } catch { /* no session storage */ } };
+
 /** Continue an in-flight tour after a navigation lands. Runs AFTER runArrival (which already replayed
  *  this stop's announce + spotlight via the ARRIVE_KEY stash) — this only decides whether the tour
  *  keeps going. Mirrors the reasoner's OWN travelAndNavigate choreography (narrate → reveal → spotlight
@@ -365,6 +381,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     tourSet, tourClear, tourActive,   // A2 guided tour: the reasoner's first leg + the "type anything to stop" cancel
     themeState, clickCycleTheme, clickToggleScheme,   // A4 theme switching: read + drive theme.js's visible controls
     notesTagChips, clickNotesTag, visibleNoteCount,   // B2 notes filtering: read + drive the /notes tag chips
+    intentGet, intentSet, intentAsked, intentMarkAsked,   // C1 visitor-intent onboarding: session state
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();

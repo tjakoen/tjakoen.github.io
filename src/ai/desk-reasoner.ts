@@ -17,7 +17,12 @@ import { buildPrompt, type ChatMessage } from "./prompt.ts";
 import { retrieve, FACTS_ROUTE, type Knowledge } from "./retrieval.ts";
 import type { DeskEngine, EngineProgress, ModelProfile } from "./webllm-loader.ts";
 import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
-import { routeAction, PINNED_CHIP, ACTION_CHIPS } from "./actions.ts";
+import {
+  routeAction, PINNED_CHIP, ACTION_CHIPS,
+  // C1 visitor-intent onboarding — the ask's own copy/choices, and the CLARIFY pair it falls back to
+  // once the nag-guard says "don't ask again" (same bubble shape either way).
+  CLARIFY_PROMPT, CLARIFY_CHOICES, INTENT_PROMPT, INTENT_CHOICES,
+} from "./actions.ts";
 import { resolveNav, navShortlist, type NavDest } from "./catalog.ts";
 // B2 notes filtering — matching a visitor's free-text topic against the REAL tag set (never a model
 // guess, law #2). Pure + framework-free (notes-tags.ts), same family as catalog.ts's resolver.
@@ -236,6 +241,22 @@ export interface DeskDeps {
    *  "N match" in the confirmation line. Optional: its absence just drops that clause, never fabricates
    *  a count. */
   visibleNoteCount?: () => number;
+  // ---- C1 visitor-intent onboarding (recruiter/developer/student) — sessionStorage-backed, same
+  // try/catch-around-ss() shape the door gives every dep above. ONE key holds the answer, a second
+  // holds the nag-guard flag. State is read ONLY to bias a code-chosen chip pool (pickFollowups below)
+  // — it NEVER enters buildPrompt or any model message, so the injection surface stays at zero even
+  // after this lands (the roadmap's C1 design law). ----
+  /** The visitor's stated intent this session, or null when never asked or never answered. */
+  intentGet?: () => "recruiter" | "developer" | "student" | null;
+  /** Record the visitor's answer (one sessionStorage key: "visitor-intent" per the roadmap). */
+  intentSet?: (intent: "recruiter" | "developer" | "student") => void;
+  /** Has the ask already fired this session? The nag-guard: ask at most once, never again once
+   *  answered (intentGet covers the "already answered" half; this covers "already asked and ignored"). */
+  intentAsked?: () => boolean;
+  /** Mark the ask as fired. Call BEFORE presenting the choices — same "stash before the risky bit"
+   *  discipline tourSet follows before a navigate, so a mid-render failure can't leave the ask
+   *  unmarked and re-firing forever. */
+  intentMarkAsked?: () => void;
 }
 
 // A4 theme switching — the pause between successive cycle-theme clicks when hopping more than one
@@ -257,11 +278,24 @@ const FOLLOWUP_POOL = [
   "What is GRAIN?", "What is BREAD?", "Who is TJ?", "How is this site built?",
   "Why teach with AI?", "What does MILL do?", "Show me the latest note",
 ];
-function pickFollowups(asked: string, history: ChatMessage[], k = 3): string[] {
+// C1 visitor-intent onboarding — code-chosen questions PREPENDED to the generic pool once a visitor
+// has answered the onboarding ask, so their follow-up chips lean toward what they said they came for.
+// A couple of these overlap FOLLOWUP_POOL's own entries word-for-word (by design — they're the right
+// questions for that intent either way); pickFollowups' own de-dupe (against what's already been
+// picked, not just what's been asked) keeps a shared entry from appearing twice.
+const INTENT_FOLLOWUPS: Record<"recruiter" | "developer" | "student", string[]> = {
+  recruiter: ["Summarize TJ's experience", "What did TJ build?"],
+  developer: ["What is GRAIN?", "What does MILL do?"],
+  student: ["Why teach with AI?"],
+};
+function pickFollowups(
+  asked: string, history: ChatMessage[], intent?: "recruiter" | "developer" | "student", k = 3,
+): string[] {
   const seen = new Set([asked.trim().toLowerCase(), ...history.map((m) => m.content.trim().toLowerCase())]);
+  const pool = [...(intent ? INTENT_FOLLOWUPS[intent] : []), ...FOLLOWUP_POOL];
   const out: string[] = [];
-  for (const q of FOLLOWUP_POOL) {
-    if (seen.has(q.toLowerCase())) continue;
+  for (const q of pool) {
+    if (seen.has(q.toLowerCase()) || out.includes(q)) continue;
     out.push(q);
     if (out.length >= k) break;
   }
@@ -666,6 +700,98 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           // no real tag matched — fall through, no return.
         }
 
+        // C1 visitor-intent onboarding — the ASK. Deterministic + offline, like every action above: the
+        // router only recognized the TRIGGER (a greeting or an explicit "who's visiting" ask); whether
+        // to actually present the choices is THIS stateful call — the nag-guard. Ask at most once a
+        // session, and never again once an intent is already set: either way, a repeat trigger falls
+        // through to the ordinary CLARIFY bubble (same prompt/choiceGroup shape as the "clarify" branch
+        // just below) rather than a silent no-op, so a second "hi" still gets a useful deterministic
+        // answer instead of nothing.
+        if (action?.kind === "intent-ask") {
+          const alreadyAsked = deps.intentAsked?.() ?? false;
+          const alreadyAnswered = !!deps.intentGet?.();
+          await minThink();
+          if (alreadyAsked || alreadyAnswered) {
+            setBodyRaw(esc(CLARIFY_PROMPT) + deps.kit.choiceGroup(log, CLARIFY_CHOICES), "committed");
+            return { ok: true, ops: [], reply: CLARIFY_PROMPT };
+          }
+          deps.intentMarkAsked?.();   // mark BEFORE rendering — a mid-render throw still counts as "asked"
+          setBodyRaw(esc(INTENT_PROMPT) + deps.kit.choiceGroup(log, INTENT_CHOICES), "committed");
+          return { ok: true, ops: [], reply: INTENT_PROMPT };
+        }
+
+        // C1 visitor-intent onboarding — the ANSWER. Deterministic + offline: each branch is a fixed,
+        // code-authored effect (never model prose) per the roadmap's shape. The intent itself NEVER
+        // reaches buildPrompt or any model message — it only biases a CODE-CHOSEN chip pool
+        // (pickFollowups' intent param, below), so the injection surface stays at zero.
+        if (action?.kind === "intent-set") {
+          deps.intentSet?.(action.intent);
+
+          if (action.intent === "recruiter") {
+            const onResume = !!deps.pageInfo && stripSlash(deps.pageInfo().route) === "/resume";
+            await minThink();
+            if (onResume) {
+              // Already there — no navigation, just spotlight the role board in place (the A1 deep-link
+              // same-page idiom: spotlight first, a beat to let it register, then release).
+              const line = "Recruiter mode. You're already on the résumé — here's the role board.";
+              await typeOut(line);
+              setChips(["Summarize TJ's experience", "Open the flagship note", "What did TJ build?"]);
+              tools.emit(deps.kit.spotlightOp("role-board", { active: true }));
+              await tools.delay(1500);
+              tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+              return { ok: true, ops: [], reply: line };
+            }
+            const line = "Recruiter mode. Taking you to TJ's résumé.";
+            await typeOut(line);
+            // setChips is deliberately SKIPPED here: this branch navigates (a real MPA page load), and
+            // site.js's setDefaultChips() unconditionally rebuilds [data-suggest-chips] from the static
+            // per-page starter set on every fresh load — verified the chip row does NOT survive a
+            // navigate (unlike the chat log / terminal, which persist via localStorage). A pre-navigate
+            // setChips call here would just be overwritten a moment later, so the recruiter pool instead
+            // reaches the visitor through pickFollowups' intent bias, the first time they chat again
+            // after arriving (see the grounded-chat and fuzzy-nav-miss call sites below).
+            await travelAndNavigate(
+              "/resume", "/resume", "Résumé", "Here's TJ's résumé — recruiter view.",
+              "the navigation", "role-board",
+            );
+            return { ok: true, ops: [], reply: line };
+          }
+
+          if (action.intent === "developer") {
+            // No navigation — just an offer + chips leaning /grain, /batch, docs (the A2 tour and the
+            // catalog resolve every one of these deterministically, so tapping a chip never touches the
+            // model either).
+            await minThink();
+            const line = "Developer mode. Want the guided tour of the stack, or straight to GRAIN or the BATCH docs?";
+            await typeOut(line);
+            setChips(["Take the tour", "Take me to GRAIN", "Open the BATCH docs"]);
+            return { ok: true, ops: [], reply: line };
+          }
+
+          // student — the B2 path: match "teaching" against the REAL tag set (never hardcode the tag
+          // itself, law #2), so this still degrades honestly if a future content pass ever drops it.
+          const notes = (await deps.listNotes?.()) ?? [];
+          const matched = matchTags("teaching", uniqueTags(notes));
+          await minThink();
+          if (matched.length) {
+            const tagLabel = joinPhrases(matched);
+            const line = "Student mode. Here are TJ's notes on teaching.";
+            await typeOut(line);
+            await travelAndNavigate(
+              "/notes", `/notes?tag=${matched.map(encodeURIComponent).join(",")}`, "Notes",
+              `Here are the notes tagged ${tagLabel}.`, "the navigation",
+            );
+            return { ok: true, ops: [], reply: line };
+          }
+          // No real "teaching" tag exists (yet) — degrade to the plain notes feed rather than a doomed
+          // empty-tag filter, the same "claim only what the deterministic path can deliver" idiom B2's
+          // own no-match branch follows above.
+          const line = "Student mode. Here are TJ's notes.";
+          await typeOut(line);
+          await travelAndNavigate("/notes", "/notes", "Notes", "Here are the notes.", "the navigation");
+          return { ok: true, ops: [], reply: line };
+        }
+
         if (action?.kind === "clarify") {
           // Deterministic + offline: one clean bubble — the prompt with the choice buttons under it.
           // choiceGroup (trusted, self-escaping) goes INSIDE the body so it's a single message; the
@@ -869,7 +995,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const line = `I'm not sure where that is on the site. I can take you to ${offer}, or answer a question about it.`;
           setBody(esc(line), "committed");
           history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: line });
-          setChips([...pickFollowups(text, history), "Summarize this page"]);
+          setChips([...pickFollowups(text, history, deps.intentGet?.() ?? undefined), "Summarize this page"]);
           return { ok: true, ops: [], reply: line };
         }
 
@@ -900,7 +1026,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             "committed");
         }
         history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: acc });
-        setChips([...pickFollowups(text, history), "Summarize this page"]);
+        setChips([...pickFollowups(text, history, deps.intentGet?.() ?? undefined), "Summarize this page"]);
         return { ok: true, ops: [], reply: acc };
       } catch (err) {
         console.error("[desk] decide failed", err);          // bulletproof: never leave an empty bubble

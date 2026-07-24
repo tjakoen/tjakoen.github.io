@@ -2,7 +2,7 @@
 // latest-note / note-write). Navigation is NOT here anymore — it's resolved against the sitemap catalog
 // (catalog.ts, covered by catalog.test.ts), so a nav phrase falls through this router as null.
 import { test, expect, describe } from "bun:test";
-import { routeAction, PINNED_CHIP, ACTION_CHIPS, CLARIFY_CHOICES } from "./actions.ts";
+import { routeAction, PINNED_CHIP, ACTION_CHIPS, CLARIFY_CHOICES, INTENT_CHOICES } from "./actions.ts";
 import { navTarget } from "./catalog.ts";
 
 describe("routeAction", () => {
@@ -189,6 +189,59 @@ describe("routeAction", () => {
 
     test("'summarize the notes' still summarizes, not a filter (summarize fires first)", () => {
       expect(routeAction("summarize the notes")?.kind).toBe("summarize");
+    });
+  });
+
+  describe("C1 visitor-intent onboarding", () => {
+    test("greeting forms route intent-ask (a WHOLE-message greeting/vague opener)", () => {
+      for (const s of ["hi", "Hi", "hey!", "hello", "howdy", "yo", "good morning", "Good Afternoon.", "help"])
+        expect(routeAction(s)?.kind).toBe("intent-ask");
+    });
+
+    test("an explicit 'who's/who is visiting' ask routes intent-ask", () => {
+      for (const s of ["who's visiting", "who is visiting", "who's visiting today"])
+        expect(routeAction(s)?.kind).toBe("intent-ask");
+    });
+
+    test("an EMBEDDED 'who is visiting' (mid-sentence mention, not an ask) does not trigger", () => {
+      expect(routeAction("I wonder who is visiting")?.kind).not.toBe("intent-ask");
+    });
+
+    test("a greeting WORD embedded in a longer message does not trigger the ask", () => {
+      expect(routeAction("hi, take me to grain")).not.toEqual(expect.objectContaining({ kind: "intent-ask" }));
+      expect(routeAction("hi, take me to grain")?.kind).not.toBe("intent-ask");
+    });
+
+    test("'help me find the docs' still hits the existing clarify pattern, not the bare-'help' trigger", () => {
+      expect(routeAction("help me find the docs")?.kind).toBe("clarify");
+    });
+
+    test("the three intent-set values (and their 'i am' longhand)", () => {
+      expect(routeAction("I'm hiring")).toEqual({ kind: "intent-set", intent: "recruiter" });
+      expect(routeAction("I am hiring")).toEqual({ kind: "intent-set", intent: "recruiter" });
+      expect(routeAction("I'm a developer")).toEqual({ kind: "intent-set", intent: "developer" });
+      expect(routeAction("I am a developer")).toEqual({ kind: "intent-set", intent: "developer" });
+      expect(routeAction("I'm a student")).toEqual({ kind: "intent-set", intent: "student" });
+      expect(routeAction("I am a student")).toEqual({ kind: "intent-set", intent: "student" });
+      expect(routeAction("I'm a student of TJ's")).toEqual({ kind: "intent-set", intent: "student" });
+    });
+
+    test("every INTENT_CHOICES value round-trips through the router to its own intent", () => {
+      const expected = { "Recruiter or hiring": "recruiter", "Developer curious about the stack": "developer", "Student of TJ's": "student" } as const;
+      for (const c of INTENT_CHOICES) {
+        const a = routeAction(c.value);
+        expect(a?.kind).toBe("intent-set");
+        if (a?.kind === "intent-set") expect(a.intent).toBe(expected[c.label as keyof typeof expected]);
+      }
+    });
+
+    test("ordinary sentences merely CONTAINING 'student'/'developer' mid-sentence do not hijack", () => {
+      for (const s of [
+        "the developer conference is next week",
+        "I am a senior developer at a tech company",
+        "I'm a student of design, not code",
+        "he's a developer for our team",
+      ]) expect(routeAction(s)?.kind).not.toBe("intent-set");
     });
   });
 });

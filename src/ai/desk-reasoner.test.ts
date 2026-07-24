@@ -994,3 +994,188 @@ describe("makeDeskReasoner — A3 citation (a deterministic 'Read more' under a 
     expect(ops.some((o) => typeof o.html === "string" && o.html.includes("desk-cite"))).toBe(false);
   });
 });
+
+describe("makeDeskReasoner — C1 visitor-intent onboarding", () => {
+  // A fake sessionStorage-backed intent (mirrors desk-door.ts's own intentGet/intentSet/intentAsked/
+  // intentMarkAsked shape) so the nag-guard's statefulness is exercised for real, not stubbed away.
+  function fakeIntent(opts: { intent?: "recruiter" | "developer" | "student" | null; asked?: boolean } = {}) {
+    let intent = opts.intent ?? null;
+    let asked = opts.asked ?? false;
+    let markCalls = 0;
+    const setCalls: string[] = [];
+    return {
+      intentGet: () => intent,
+      intentSet: (i: "recruiter" | "developer" | "student") => { intent = i; setCalls.push(i); },
+      intentAsked: () => asked,
+      intentMarkAsked: () => { asked = true; markCalls++; },
+      get markCalls() { return markCalls; },
+      get setCalls() { return setCalls; },
+    };
+  }
+  const chipsOf = (ops: RenderOp[]) => ops.find((o) => o.op === "replace" && o.target === "suggest-chips");
+  const notes: DeskNote[] = [
+    { slug: "a", title: "A", route: "/notes/a", tags: ["teaching", "ai"] },
+    { slug: "b", title: "B", route: "/notes/b", tags: ["grain"] },
+  ];
+
+  test("a fresh session's first 'hi': presents the ask (choices rendered), marks asked, no model load", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    const fi = fakeIntent();
+    deps.intentGet = fi.intentGet; deps.intentSet = fi.intentSet; deps.intentAsked = fi.intentAsked; deps.intentMarkAsked = fi.intentMarkAsked;
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("hi"), tools);
+
+    expect(loads).toBe(0);                                          // deterministic — never touched the model
+    expect(fi.markCalls).toBe(1);
+    expect((d.reply ?? "").toLowerCase()).toContain("visiting");     // the audit grader hooks on this word
+    const dialog = ops.find((o) => o.op === "replace" && typeof o.html === "string" && o.html.includes("data-choices"));
+    expect(dialog).toBeDefined();
+    expect(dialog!.html).toContain("Recruiter or hiring");
+    expect(dialog!.html).toContain("Developer curious about the stack");
+    expect(dialog!.html).toContain("Student of TJ");
+  });
+
+  test("a second 'hi' this session (already asked, no answer): falls to the ordinary clarify choices", async () => {
+    const { deps } = makeDeps();
+    const fi = fakeIntent({ asked: true });
+    deps.intentGet = fi.intentGet; deps.intentAsked = fi.intentAsked; deps.intentMarkAsked = fi.intentMarkAsked;
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("hi"), tools);
+
+    expect(fi.markCalls).toBe(0);                                   // never re-marks — already asked
+    expect(d.reply).not.toContain("visiting");
+    const dialog = ops.find((o) => o.op === "replace" && typeof o.html === "string" && o.html.includes("data-choices"));
+    expect(dialog).toBeDefined();
+    expect(dialog!.html).toContain("Take the tour");                // CLARIFY_CHOICES, not INTENT_CHOICES
+  });
+
+  test("'hi' with an intent already set: also falls to clarify, never re-asks", async () => {
+    const { deps } = makeDeps();
+    const fi = fakeIntent({ intent: "developer" });
+    deps.intentGet = fi.intentGet; deps.intentAsked = fi.intentAsked; deps.intentMarkAsked = fi.intentMarkAsked;
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    await r.decide(chat("hi"), tools);
+
+    expect(fi.markCalls).toBe(0);
+    const dialog = ops.find((o) => o.op === "replace" && typeof o.html === "string" && o.html.includes("data-choices"));
+    expect(dialog!.html).toContain("Take the tour");
+  });
+
+  test("recruiter answer: navigates to /resume, stashing the role-board spotlight on arrival", async () => {
+    let navd = "";
+    const box: { arrived: { surface?: string; announce?: string } | null } = { arrived: null };
+    const { deps } = makeDeps();
+    const fi = fakeIntent();
+    deps.intentGet = fi.intentGet; deps.intentSet = fi.intentSet;
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    deps.navigate = (u) => { navd = u; };
+    deps.arrive = (surface, announce) => { box.arrived = { surface, announce }; };
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("I'm hiring"), tools);
+
+    expect(fi.setCalls).toEqual(["recruiter"]);
+    expect(navd).toBe("/resume");
+    expect(box.arrived?.surface).toBe("role-board");
+    expect(d.ok).toBe(true);
+  });
+
+  test("recruiter answer, already on /resume: no navigation, spotlights the role board in place", async () => {
+    let navd = "";
+    const { deps } = makeDeps();
+    const fi = fakeIntent();
+    deps.intentGet = fi.intentGet; deps.intentSet = fi.intentSet;
+    deps.pageInfo = () => ({ route: "/resume", title: "Résumé" });
+    deps.navigate = (u) => { navd = u; };
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("I'm hiring"), tools);
+
+    expect(navd).toBe("");
+    const spot = ops.find((o) => o.op === "spotlight" && o.target === "role-board" && o.active);
+    expect(spot).toBeDefined();
+    expect(chipsOf(ops)!.html).toContain("Summarize TJ's experience");
+    expect(d.ok).toBe(true);
+  });
+
+  test("developer answer: sets chips, no navigation, no model load", async () => {
+    let loads = 0;
+    let navd = "";
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    const fi = fakeIntent();
+    deps.intentGet = fi.intentGet; deps.intentSet = fi.intentSet;
+    deps.navigate = (u) => { navd = u; };
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("I'm a developer"), tools);
+
+    expect(fi.setCalls).toEqual(["developer"]);
+    expect(loads).toBe(0);
+    expect(navd).toBe("");
+    expect(chipsOf(ops)!.html).toContain("Take the tour");
+    expect(chipsOf(ops)!.html).toContain("Take me to GRAIN");
+    expect(chipsOf(ops)!.html).toContain("Open the BATCH docs");
+    expect(d.ok).toBe(true);
+  });
+
+  test("student answer: navigates to /notes?tag=teaching (the real tag, matched via notes-tags.ts)", async () => {
+    let navd = "";
+    const box: { arrived: { surface?: string; announce?: string } | null } = { arrived: null };
+    const { deps } = makeDeps();
+    const fi = fakeIntent();
+    deps.intentGet = fi.intentGet; deps.intentSet = fi.intentSet;
+    deps.listNotes = async () => notes;
+    deps.navigate = (u) => { navd = u; };
+    deps.arrive = (surface, announce) => { box.arrived = { surface, announce }; };
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("I'm a student"), tools);
+
+    expect(fi.setCalls).toEqual(["student"]);
+    expect(navd).toBe("/notes?tag=teaching");
+    expect(box.arrived?.announce).toContain("teaching");
+    expect(d.ok).toBe(true);
+  });
+
+  test("student answer with no real 'teaching' tag anywhere: degrades to the plain notes feed", async () => {
+    let navd = "";
+    const { deps } = makeDeps();
+    const fi = fakeIntent();
+    deps.intentGet = fi.intentGet; deps.intentSet = fi.intentSet;
+    deps.listNotes = async () => [{ slug: "b", title: "B", route: "/notes/b", tags: ["grain"] }];
+    deps.navigate = (u) => { navd = u; };
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("I'm a student"), tools);
+
+    expect(navd).toBe("/notes");
+    expect(d.ok).toBe(true);
+  });
+
+  test("pickFollowups intent bias: a set intent leads the follow-up chips after a grounded answer", async () => {
+    const { engine } = fakeEngine(["Some grounded answer."]);
+    const { deps } = makeDeps({ loadEngine: async () => engine });
+    const fi = fakeIntent({ intent: "recruiter" });
+    deps.intentGet = fi.intentGet;
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    await r.decide(chat("who is TJ?"), tools);
+
+    const chips = chipsOf(ops)!.html;
+    expect(chips).toContain("Summarize TJ's experience");
+    expect(chips).toContain("What did TJ build?");
+  });
+});
