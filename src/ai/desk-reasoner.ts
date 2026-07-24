@@ -625,6 +625,21 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           return { ok: true, ops: [], reply: asked.prompt };
         }
 
+        // A3: a deterministic "Read more" citation under the grounded answer — built by CODE from the
+        // TOP retrieval chunk (the model never writes a path; law #2). Only when the grounding came
+        // from a real page (not the hand-authored facts) the visitor isn't already on. The link rides
+        // A1's rendered heading ids when the chunk has one, so "Read more" lands on the exact section
+        // (a native #fragment jump — no desk choreography needed for a human click). Replacing the
+        // settled body with the same escaped text + the cite span reuses the one replaceBodyOp path.
+        const top = grounding[0];
+        const here = deps.pageInfo ? stripSlash(deps.pageInfo().route) : "";
+        if (acc.trim() && top && top.route !== FACTS_ROUTE && stripSlash(top.route) !== here) {
+          const href = top.anchor ? `${top.route}#${top.anchor}` : top.route;
+          setBodyRaw(
+            esc(acc.trim()) +
+            `<span class="desk-cite">Read more: <a href="${esc(href)}">${esc(top.title)}</a></span>`,
+            "committed");
+        }
         history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: acc });
         setChips([...pickFollowups(text, history), "Summarize this page"]);
         return { ok: true, ops: [], reply: acc };
