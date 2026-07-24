@@ -5,6 +5,10 @@ import { buildKnowledge, type KnowledgeSource } from "./knowledge.ts";
 import { tokenize } from "./retrieval.ts";
 
 const src = (route: string, title: string, markdown: string): KnowledgeSource => ({ route, title, markdown });
+// an "anchored" source stands in for a real MILL-rendered page — one whose ## / ### headings got
+// a real DOM id from content.ts's shared heading override (see ai/slug.ts).
+const anchoredSrc = (route: string, title: string, markdown: string): KnowledgeSource =>
+  ({ route, title, markdown, anchored: true });
 
 describe("buildKnowledge", () => {
   test("splits on ## headings and tags each chunk with route + heading + title", () => {
@@ -50,5 +54,29 @@ describe("buildKnowledge", () => {
     const k = buildKnowledge([src("/e", "E", "")]);
     expect(k.chunks.length).toBe(0);
     expect(k.n).toBe(0);
+  });
+});
+
+describe("buildKnowledge — anchors (A1: deep-link answers)", () => {
+  test("an anchored source's headed chunks carry the slugified heading as their anchor", () => {
+    const k = buildKnowledge([
+      anchoredSrc("/notes/x", "X", "lead paragraph here\n\n## What is BREAD?\nunder it"),
+    ]);
+    const under = k.chunks.find((c) => c.heading === "What is BREAD?");
+    expect(under?.anchor).toBe("what-is-bread");
+  });
+
+  test("the lead section (no heading) carries no anchor, even on an anchored source", () => {
+    const k = buildKnowledge([
+      anchoredSrc("/notes/x", "X", "lead paragraph here\n\n## First\nunder first"),
+    ]);
+    const lead = k.chunks.find((c) => c.heading === "");
+    expect(lead?.anchor).toBeUndefined();
+  });
+
+  test("a source that isn't anchored (e.g. facts) carries no anchor on any chunk", () => {
+    const k = buildKnowledge([src("facts", "About", "lead\n\n## Bio\nsome bio text")]);
+    expect(k.chunks.length).toBeGreaterThan(0);
+    expect(k.chunks.every((c) => c.anchor === undefined)).toBe(true);
   });
 });

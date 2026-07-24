@@ -19,10 +19,13 @@ import {
 } from "@tjakoen/mill/serve.ts";
 import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
 import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
+import { inlineText } from "@tjakoen/mill/core/markdown.ts";
+import type { GrainAdapterOptions } from "@tjakoen/mill/adapters/grain/grain-adapter.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
 import { FACTS_ROUTE, type Knowledge } from "./ai/retrieval.ts";
+import { slugifyHeading } from "./ai/slug.ts";
 
 // A dirSource that ignores symlinked .md files. `standards/AGENTS.md` is a symlink to CLAUDE.md
 // (the AGENTS.md tooling convention — an agent that opens the folder finds it), but dirSource
@@ -75,6 +78,30 @@ function notesLink(href: string): string {
   const local = path.match(/^(?:\.\/)?([A-Za-z0-9._-]+)\.md$/);
   if (local) return `/notes/${mdSlug(local[1])}${frag}`;
   return href;
+}
+
+// ---- heading ids for deep-link answers (A1) -----------------------------------
+// slugifyHeading (ai/slug.ts) is THE one slug algorithm — shared with the build-time corpus
+// (ai/knowledge.ts) so a rendered page's real heading id and a retrieved chunk's recorded
+// `anchor` can never drift apart. This block-override stamps that id on every level-2/3 heading
+// MILL renders, plus data-surface="anchor:{slug}" — grain's spotlight resolves any travel target
+// via [data-surface="…"] (dist/scripts/ai-dispatch.js), so a stamped heading becomes spotlightable
+// with zero grain-side change: the desk can answer "what does X say about Y" by traveling straight
+// to the section, not just the page. Level 1 (the page's own <h1>, owned by the layout, not this
+// override), level 4+ (too granular to be a citable "section"), and a heading whose text slugs to
+// "" (rare — pure punctuation) fall through to MILL's own default bare heading shape.
+const headingAnchors: NonNullable<GrainAdapterOptions["blockOverrides"]> = {
+  heading: (n, ctx) => {
+    const slug = (n.level === 2 || n.level === 3) ? slugifyHeading(inlineText(n.children)) : "";
+    if (!slug) return `<h${n.level}>${ctx.renderInline(n.children)}</h${n.level}>`;
+    return `<h${n.level} id="${ctx.escape(slug)}" data-surface="anchor:${ctx.escape(slug)}">${ctx.renderInline(n.children)}</h${n.level}>`;
+  },
+};
+
+// Every collection wants the heading override; only resolveLink differs per collection — written
+// once here so a new collection can't forget to wire it in (see the `collections` array below).
+function withHeadingAnchors(adapter: GrainAdapterOptions): GrainAdapterOptions {
+  return { ...adapter, blockOverrides: { ...adapter.blockOverrides, ...headingAnchors } };
 }
 
 // ---- the BREAD-shell chrome ---------------------------------------------------
@@ -132,7 +159,7 @@ const collections: MillCollection[] = [
     title: "Notes",
     description: "Long-form notes — how this stack got built, how I teach, and what broke along the way.",
     source: dirSource(join(import.meta.dir, "..", "content", "notes")),
-    adapter: { resolveLink: notesLink },
+    adapter: withHeadingAnchors({ resolveLink: notesLink }),
     indexVariant: "log",
     itemSurfacePrefix: "note",
     // The portfolio owns the /notes INDEX as a Reddit-style feed (renderNotesFeedPage, below) —
@@ -146,42 +173,42 @@ const collections: MillCollection[] = [
     title: "GRAIN docs",
     description: "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
     source: dirSource(join(import.meta.dir, "..", "docs/grain")),
-    adapter: { resolveLink: docsLink("/grain/docs") },
+    adapter: withHeadingAnchors({ resolveLink: docsLink("/grain/docs") }),
   },
   {
     prefix: "/batch/docs",
     title: "BATCH docs",
     description: "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
     source: dirSource(join(import.meta.dir, "..", "docs/batch")),
-    adapter: { resolveLink: docsLink("/batch/docs") },
+    adapter: withHeadingAnchors({ resolveLink: docsLink("/batch/docs") }),
   },
   {
     prefix: "/mill/docs",
     title: "MILL docs",
     description: "MILL's own docs, canonically homed here (option b) and rendered through MILL.",
     source: dirSource(join(import.meta.dir, "..", "docs/mill")),
-    adapter: { resolveLink: docsLink("/mill/docs") },
+    adapter: withHeadingAnchors({ resolveLink: docsLink("/mill/docs") }),
   },
   {
     prefix: "/proof/docs",
     title: "PROOF docs",
     description: "PROOF's own docs, canonically homed here (option b) and rendered through MILL.",
     source: dirSource(join(import.meta.dir, "..", "docs/proof")),
-    adapter: { resolveLink: docsLink("/proof/docs") },
+    adapter: withHeadingAnchors({ resolveLink: docsLink("/proof/docs") }),
   },
   {
     prefix: "/crumb/docs",
     title: "CRUMB docs",
     description: "CRUMB's own docs, canonically homed here (option b) and rendered through MILL.",
     source: dirSource(join(import.meta.dir, "..", "docs/crumb")),
-    adapter: { resolveLink: docsLink("/crumb/docs") },
+    adapter: withHeadingAnchors({ resolveLink: docsLink("/crumb/docs") }),
   },
   {
     prefix: "/pantry/docs",
     title: "PANTRY docs",
     description: "PANTRY's own docs, canonically homed here (option b) and rendered through MILL.",
     source: dirSource(join(import.meta.dir, "..", "docs/pantry")),
-    adapter: { resolveLink: docsLink("/pantry/docs") },
+    adapter: withHeadingAnchors({ resolveLink: docsLink("/pantry/docs") }),
   },
   {
     // The canonical home of the cross-repo standards. Since 2026-07-09 the standards source lives
@@ -192,7 +219,7 @@ const collections: MillCollection[] = [
     title: "Standards",
     description: "The cross-repo standards — how I build with an AI, how anything under my byline reads, and how a repo is set up. Canonically homed here and rendered through MILL.",
     source: realFilesSource(join(import.meta.dir, "..", "standards")),
-    adapter: { resolveLink: docsLink("/standards") },
+    adapter: withHeadingAnchors({ resolveLink: docsLink("/standards") }),
   },
   {
     // The /calendar social feed's EVENTS (Apps-v2 Pass C): hackathons coached, talks given, student
@@ -204,7 +231,7 @@ const collections: MillCollection[] = [
     title: "Feed",
     description: "The desk's feed: hackathons coached, talks given, and student projects worth showing, alongside what shipped.",
     source: dirSource(join(import.meta.dir, "..", "content", "events")),
-    adapter: { resolveLink: eventsLink },
+    adapter: withHeadingAnchors({ resolveLink: eventsLink }),
     index: false,
   },
 ];
@@ -257,10 +284,15 @@ export async function listKnowledgeSources(): Promise<KnowledgeSource[]> {
         route: `${col.prefix}/${slug}`,
         title: typeof data.title === "string" ? data.title : slug,
         markdown: body,
+        // this source has a REAL rendered page (col.source went through the MILL heading
+        // override above), so its ## / ### headings carry real DOM ids — let buildKnowledge
+        // stamp each chunk with the matching anchor (A1: deep-link answers).
+        anchored: true,
       });
     }
   }
   // the hand-authored grounding (bio, "What is BREAD?", how the site is built) — covers the chips.
+  // Not `anchored`: facts.md has no rendered page, so there is no DOM id for a chunk to point at.
   const factsRaw = await Bun.file(join(import.meta.dir, "ai", "facts.md")).text();
   const facts = parseFrontmatter(factsRaw);
   out.push({

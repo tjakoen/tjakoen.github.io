@@ -11,6 +11,9 @@ export interface Chunk {
   title: string;         // the page title
   heading: string;       // the "##" heading this slice sits under ("" for the lead)
   text: string;          // the prose (frontmatter stripped, ≤ ~1000 chars)
+  anchor?: string;       // the rendered heading's DOM id on the chunk's page (A1: deep-link
+                         // answers); absent for the lead section (no heading to anchor to) and
+                         // for sources with no rendered page at all (e.g. facts.md)
 }
 
 /** The build-time corpus: chunks + a precomputed document-frequency table (per token). */
