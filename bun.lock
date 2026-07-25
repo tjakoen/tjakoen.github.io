@@ -7,7 +7,7 @@
       "dependencies": {
         "@tjakoen/batch": "^0.1.0",
         "@tjakoen/crumb": "^0.1.3",
-        "@tjakoen/grain": "^0.1.11",
+        "@tjakoen/grain": "^0.1.12",
         "@tjakoen/mill": "^0.2.0",
         "@tjakoen/proof": "^0.1.2",
       },
@@ -25,7 +25,7 @@
 
     "@tjakoen/crumb": ["@tjakoen/crumb@0.1.3", "https://npm.pkg.github.com/download/@tjakoen/crumb/0.1.3/36c51e2cc913de0d7e251892b71eecf1d8dcd45f", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.1.2" }, "bin": { "crumb": "cli.ts" } }, "sha512-jEfq+UD4MYL9NvTzjFrI5ntJd6X0xEXAi3pHXTSUtR7xxKZpS4/EDm3HtjQLcVTSsfJZDSWt/3nVuABHNyKQfg=="],
 
-    "@tjakoen/grain": ["@tjakoen/grain@0.1.11", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.11/ac8f2c6342cb965f50de2366316f7710627d16e7", {}, "sha512-OmWSWOqqZ5xvm3O7BCSxsuYzKVzijKAYzmeTWjjk5/1oK1paSsF4SawVZGRvxj6G4/gFX0ySYGhnsZJFngVwFQ=="],
+    "@tjakoen/grain": ["@tjakoen/grain@0.1.12", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.12/adc4083836984b3c34d3e9632c520a1081d39c42", {}, "sha512-eBXNVidSJzFdS27+PV9wCHCXndXTqR9KMGy1HoSykndY6L941QEfcC3HGgdQMaYvaR+MbOhc93oQonvAMbRcWw=="],
 
     "@tjakoen/mill": ["@tjakoen/mill@0.2.0", "https://npm.pkg.github.com/download/@tjakoen/mill/0.2.0/dc52673076293a7e4a2742c7969732121dd16439", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-DaDbGip6GOa1YsczXPLDnDDM5CsEx7nwLShHsr2nvue0AodQadkkKyO4tCb5DhH+5qJag+C3ZYe7H9Yp0lT8NA=="],
 
