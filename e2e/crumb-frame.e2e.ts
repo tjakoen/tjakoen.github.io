@@ -21,6 +21,17 @@ test.describe("crumb — the guided-tour frame + demo|dev flip", () => {
     await expect(page.locator(".crumb-sidebar")).toBeVisible();          // the combined nav/content sidebar
     await expect(page.locator("body")).toHaveAttribute("data-crumb-frame", "");
 
+    // the SHRINK: the host body becomes a fixed box inset by the bar + sidebar, so the site
+    // lives INSIDE the framed viewport — the chrome wraps around it, it never covers it
+    const box = await page.evaluate(() => {
+      const r = document.body.getBoundingClientRect();
+      return { top: r.top, right: r.right, width: r.width, vw: innerWidth, vh: innerHeight, pos: getComputedStyle(document.body).position };
+    });
+    expect(box.pos).toBe("fixed");
+    expect(box.top).toBeGreaterThan(0);                                  // pushed below the bar
+    expect(box.right).toBeLessThan(box.vw);                              // stops left of the sidebar
+    expect(box.width).toBeLessThan(box.vw);
+
     // jump straight to step 2 (index 1 = nav:/notes), the step with review + status + verify
     await page.locator('[data-crumb-goto="1"]').click();
     await expect(page.locator(".crumb-frame__count")).toHaveText("2 / 5");
@@ -47,10 +58,13 @@ test.describe("crumb — the guided-tour frame + demo|dev flip", () => {
     await expect(frame).toHaveAttribute("data-mode", "demo");
     await expect(page.locator(".crumb-sidebar__review")).toHaveCount(0);
 
-    // exit releases the frame cleanly
+    // exit releases the frame cleanly — and the body springs back to full size
     await page.locator('.crumb-frame [data-crumb="end"]').click();
     await expect(page.locator(".crumb-frame")).toHaveCount(0);
     await expect(page.locator("body")).not.toHaveAttribute("data-crumb-frame", "");
+    await expect
+      .poll(() => page.evaluate(() => document.body.getBoundingClientRect().width === innerWidth))
+      .toBe(true);
   });
 
   test("the frame navigates for real and survives the page load", async ({ page }) => {

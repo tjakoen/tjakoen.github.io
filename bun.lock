@@ -6,7 +6,7 @@
       "name": "tjakoen.github.io",
       "dependencies": {
         "@tjakoen/batch": "^0.1.0",
-        "@tjakoen/crumb": "^0.1.2",
+        "@tjakoen/crumb": "^0.1.3",
         "@tjakoen/grain": "^0.1.9",
         "@tjakoen/mill": "^0.1.2",
         "@tjakoen/proof": "^0.1.2",
@@ -23,7 +23,7 @@
 
     "@tjakoen/batch": ["@tjakoen/batch@0.1.0", "https://npm.pkg.github.com/download/@tjakoen/batch/0.1.0/508a1427b35683b03bc23d1ada463a28928206e5", {}, "sha512-ZC/SXl6b5Ynmyx2So8XeeWRIpF//dFSTFtA+Gocbwx9JPdsTF+HQn1j1XQpMeNhA5BWI4i6qsCemC7skvHM6LA=="],
 
-    "@tjakoen/crumb": ["@tjakoen/crumb@0.1.2", "https://npm.pkg.github.com/download/@tjakoen/crumb/0.1.2/c72a467a3e7008d03cd083df5d77514eabdfbc2b", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.1.2" }, "bin": { "crumb": "cli.ts" } }, "sha512-oNWutWX8PpMnG1yOIJXU6dJU4ffBb/zbXRFSDroic3n0p/9hcWMPs3TMIUya6EvXMexLDh2MgRylCaRhfZZtaw=="],
+    "@tjakoen/crumb": ["@tjakoen/crumb@0.1.3", "https://npm.pkg.github.com/download/@tjakoen/crumb/0.1.3/36c51e2cc913de0d7e251892b71eecf1d8dcd45f", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.1.2" }, "bin": { "crumb": "cli.ts" } }, "sha512-jEfq+UD4MYL9NvTzjFrI5ntJd6X0xEXAi3pHXTSUtR7xxKZpS4/EDm3HtjQLcVTSsfJZDSWt/3nVuABHNyKQfg=="],
 
     "@tjakoen/grain": ["@tjakoen/grain@0.1.9", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.9/1698cb504abdb7f2f647c32f2e452986673b3d3f", {}, "sha512-NirY4YttC2L02ssH71V/QXccCf4drNxKwO5QQclDobRA2ce7O2kS3R2XT52NIdYr2HMburzY5trTlwpFm2NM5w=="],
 
@@ -44,8 +44,6 @@
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "undici-types": ["undici-types@8.3.0", "", {}, "sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ=="],
-
-    "@tjakoen/crumb/@tjakoen/grain": ["@tjakoen/grain@0.1.8", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.8/306508ba98b83037130eb747c8e7b7d7be78da52", {}, "sha512-zTMwg/WpQIta38n+2cK57itN5jkd5bZpxc11nqkrpb7bQVEAy4Z5BTVCbVCNGIJVZlPUCQu9uxJ0bmqkqqaRfA=="],
 
     "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@0.1.8", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.8/306508ba98b83037130eb747c8e7b7d7be78da52", {}, "sha512-zTMwg/WpQIta38n+2cK57itN5jkd5bZpxc11nqkrpb7bQVEAy4Z5BTVCbVCNGIJVZlPUCQu9uxJ0bmqkqqaRfA=="],
 
