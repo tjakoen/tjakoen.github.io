@@ -19,13 +19,11 @@ import {
 } from "@tjakoen/mill/serve.ts";
 import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
 import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
-import { inlineText } from "@tjakoen/mill/core/markdown.ts";
 import type { GrainAdapterOptions } from "@tjakoen/mill/adapters/grain/grain-adapter.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
 import { FACTS_ROUTE, type Knowledge } from "./ai/retrieval.ts";
-import { slugifyHeading } from "./ai/slug.ts";
 
 // A dirSource that ignores symlinked .md files. `standards/AGENTS.md` is a symlink to CLAUDE.md
 // (the AGENTS.md tooling convention — an agent that opens the folder finds it), but dirSource
@@ -81,27 +79,20 @@ function notesLink(href: string): string {
 }
 
 // ---- heading ids for deep-link answers (A1) -----------------------------------
-// slugifyHeading (ai/slug.ts) is THE one slug algorithm — shared with the build-time corpus
-// (ai/knowledge.ts) so a rendered page's real heading id and a retrieved chunk's recorded
-// `anchor` can never drift apart. This block-override stamps that id on every level-2/3 heading
-// MILL renders, plus data-surface="anchor:{slug}" — grain's spotlight resolves any travel target
-// via [data-surface="…"] (dist/scripts/ai-dispatch.js), so a stamped heading becomes spotlightable
-// with zero grain-side change: the desk can answer "what does X say about Y" by traveling straight
-// to the section, not just the page. Level 1 (the page's own <h1>, owned by the layout, not this
-// override), level 4+ (too granular to be a citable "section"), and a heading whose text slugs to
-// "" (rare — pure punctuation) fall through to MILL's own default bare heading shape.
-const headingAnchors: NonNullable<GrainAdapterOptions["blockOverrides"]> = {
-  heading: (n, ctx) => {
-    const slug = (n.level === 2 || n.level === 3) ? slugifyHeading(inlineText(n.children)) : "";
-    if (!slug) return `<h${n.level}>${ctx.renderInline(n.children)}</h${n.level}>`;
-    return `<h${n.level} id="${ctx.escape(slug)}" data-surface="anchor:${ctx.escape(slug)}">${ctx.renderInline(n.children)}</h${n.level}>`;
-  },
-};
-
-// Every collection wants the heading override; only resolveLink differs per collection — written
-// once here so a new collection can't forget to wire it in (see the `collections` array below).
+// MILL's default grain-adapter now stamps the slug id on every level-2/3 heading it renders
+// (upstreamed 2026-07-25, mill 0.2.0 / grain#2 — this used to be a portfolio-side block
+// override). slugifyHeading (@tjakoen/mill/core/slug.ts) is THE one slug algorithm — the
+// build-time corpus (ai/knowledge.ts) imports the same export, so a rendered page's real
+// heading id and a retrieved chunk's recorded `anchor` can never drift apart. What stays
+// portfolio-owned is the opt-in headingSurfaces flag: it adds data-surface="anchor:{slug}",
+// and grain's spotlight resolves any travel target via [data-surface="…"]
+// (dist/scripts/ai-dispatch.js), so a stamped heading becomes spotlightable with zero
+// grain-side change — the desk answers "what does X say about Y" by traveling straight to
+// the section, not just the page.
+// Every collection wants that flag; only resolveLink differs per collection — written once
+// here so a new collection can't forget to wire it in (see the `collections` array below).
 function withHeadingAnchors(adapter: GrainAdapterOptions): GrainAdapterOptions {
-  return { ...adapter, blockOverrides: { ...adapter.blockOverrides, ...headingAnchors } };
+  return { ...adapter, headingSurfaces: true };
 }
 
 // ---- the BREAD-shell chrome ---------------------------------------------------

@@ -11,7 +11,7 @@
     "@tjakoen/batch": "^0.1.0",
     "@tjakoen/crumb": "^0.1.3",
     "@tjakoen/grain": "^0.1.9",
-    "@tjakoen/mill": "^0.1.2",
+    "@tjakoen/mill": "^0.2.0",
     "@tjakoen/proof": "^0.1.2"
   },
   "scripts": {

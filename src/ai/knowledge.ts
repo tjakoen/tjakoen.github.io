@@ -5,7 +5,7 @@
 // Served frozen as /knowledge.json — the model never touches the repo, only this compiled shape.
 
 import { tokenize, type Chunk, type Knowledge } from "./retrieval.ts";
-import { slugifyHeading } from "./slug.ts";
+import { slugifyHeading } from "@tjakoen/mill/core/slug.ts";
 
 /** A content source to fold into the corpus: where it lives, its title, and its markdown BODY
  *  (frontmatter already stripped by the caller). */
@@ -13,11 +13,11 @@ export interface KnowledgeSource {
   route: string;
   title: string;
   markdown: string;
-  // does this source have a REAL rendered page whose ## / ### headings carry ids (content.ts's
-  // shared heading block-override)? When true, a section's chunks get `anchor` set to the SAME
-  // slug the rendered heading got — slugifyHeading is the one algorithm both sides share, so the
-  // two can never drift (A1: deep-link answers). Facts + any source with no rendered page leave
-  // this unset, and its chunks carry no anchor.
+  // does this source have a REAL rendered page whose ## / ### headings carry ids (MILL's
+  // default grain-adapter stamps them since 0.2.0)? When true, a section's chunks get `anchor`
+  // set to the SAME slug the rendered heading got — mill's exported slugifyHeading is the one
+  // algorithm both sides share, so the two can never drift (A1: deep-link answers). Facts + any
+  // source with no rendered page leave this unset, and its chunks carry no anchor.
   anchored?: boolean;
 }
 

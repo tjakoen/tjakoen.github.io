@@ -8,7 +8,7 @@
 // The ask/route/anchor below were verified against the REAL corpus (bun -e, buildPortfolioKnowledge +
 // retrieve): "where does TJ talk about using AI with students" tokenizes to "using ai with students",
 // and the top-scoring anchored, non-facts chunk is /notes/how-i-use-ai-in-teaching's "## The stories
-// worth telling" heading (slug "the-stories-worth-telling" per ai/slug.ts) — NOT the note's lead
+// worth telling" heading (slug "the-stories-worth-telling" per mill's core/slug.ts) — NOT the note's lead
 // section, and not a /grain/docs chunk (several more literal phrasings, e.g. "teaching with AI", land
 // there instead — this phrasing was chosen because it lands on the note).
 import { test, expect, type Page } from "@playwright/test";

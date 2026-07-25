@@ -6,7 +6,7 @@ import { tokenize } from "./retrieval.ts";
 
 const src = (route: string, title: string, markdown: string): KnowledgeSource => ({ route, title, markdown });
 // an "anchored" source stands in for a real MILL-rendered page — one whose ## / ### headings got
-// a real DOM id from content.ts's shared heading override (see ai/slug.ts).
+// a real DOM id from mill's default grain-adapter (see @tjakoen/mill/core/slug.ts).
 const anchoredSrc = (route: string, title: string, markdown: string): KnowledgeSource =>
   ({ route, title, markdown, anchored: true });
 
