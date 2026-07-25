@@ -9,7 +9,7 @@ composition note); the sub-line hides when empty.
 ```html
 <div class="cv-stats">
   <div class="stat">
-    <span class="stat__value">150+</span>
+    <span class="stat__value">150-300</span>
     <span class="stat__label">students a term</span>
     <span class="stat__sub">software engineering</span>
   </div>

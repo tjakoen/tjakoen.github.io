@@ -13,7 +13,7 @@ His writing sits under Notes. It is honest about limits, low on hype, and writte
 
 ## Is there a résumé?
 
-Yes. The working record is at /resume: a print-friendly page with what TJ does, selected work, and his roles. TJ is a dev manager and tech lead by day and a part-time software engineering teacher by evening, teaching 100 to 150 students a semester. He built a GitHub-native platform to automate the grading so the time goes back to students. The full dated history sits on LinkedIn, and the code is on GitHub. If someone asks for the résumé or the CV, point them at /resume.
+Yes. The working record is at /resume: a print-friendly page with what TJ does, selected work, and his roles. TJ is a dev manager and tech lead by day and a part-time software engineering teacher by evening, teaching 150 to 300 students a term. This term he teaches three subjects: Application and System Integration (APSI), on JavaScript and React; Introduction to Web Development (INTROWEB), on HTML, CSS, and JavaScript; and Application Development and Emerging Technologies (ADET), on Dart and Flutter. He built a GitHub-native platform to automate the grading so the time goes back to students. The full dated history sits on LinkedIn, and the code is on GitHub. If someone asks for the résumé or the CV, point them at /resume.
 
 ## What is BREAD?
 
