@@ -86,6 +86,11 @@ a capability, update this list (CLAUDE.md alignment table → `AUDIT.md` check 1
   `` Ctrl+` ``. The human's echoed command settles clean; machine output stays grain.
 - **The ⌘K palette + demo-box.** A command palette island (`scripts/cmdk.js`, fed by `/search.json`)
   and a reusable scripted-demo island (`scripts/demo-box.js`) for live, declarative walkthroughs.
+- **The handoff button.** One click hands page content to an external service instead of a
+  copy-paste round-trip (`scripts/handoff.js`): a `[data-handoff]` trigger reads a payload off the
+  page (`data-handoff-source`) and opens the host's URL template (`data-handoff-url`, `{payload}`
+  slot, https-only, new tab with noopener). GRAIN stays vendor-neutral — an AI chat
+  (`https://claude.ai/new?q={payload}`), a search engine, a translator are all the same attribute.
 - **The manifest — a drift-proof machine map.** A per-screen, machine-readable projection of what's
   addressable (`targets`) and invokable (`actions`) *right now*, **harvested** from components (never
   hand-typed) so it can't drift from the UI. This is how an AI "sees" a page. (`ai/manifest.ts`,
