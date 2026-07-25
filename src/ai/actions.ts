@@ -31,6 +31,11 @@ export type Action =
   // (mail-sender.ts matchSender) — the same law #2 split B2's `topic` follows: this router only
   // extracts what the visitor said, never a sender guess.
   | { kind: "mail-archive"; sender: string }
+  // B1 contact prefill — "tell TJ I want to talk about grain". `message` is the RAW captured phrase
+  // (original casing + punctuation — it becomes the draft's body, so norm()'s lowercasing would mangle
+  // it); the reasoner drafts it into the /mail compose body via grain's field.set — field TARGETING is
+  // a fixed registered surface in code (law #2), and the AI never submits (no submit verb exists).
+  | { kind: "contact-message"; message: string }
   // C1 visitor-intent onboarding — the TRIGGER only. Whether the desk actually ASKS is stateful
   // (nag-guard: at most once per session, never once an intent is already set) — that decision belongs
   // to the reasoner, not this pure router, so this kind carries no payload beyond "the trigger fired".
@@ -111,6 +116,14 @@ const MAIL_ARCHIVE_PATTERNS: RegExp[] = [
   /\barchive\b\s+(?:the\s+)?(?:mail|messages?|emails?|letters?)\s+from\s+(.+)$/,
 ];
 
+// B1 contact prefill — "tell TJ I want to talk about grain" / "message TJ that grain looks great" /
+// "go to contact and tell TJ …" (the tell-clause matches anywhere in the sentence). Run against the
+// RAW text (case-insensitive), not norm()'s output: the captured remainder becomes the draft's BODY,
+// so its casing and punctuation must survive. A leading "that" is connective tissue, not message text.
+const CONTACT_MESSAGE_PATTERNS: RegExp[] = [
+  /\b(?:tell|message|email|write\s+to)\s+tj\b[\s,:-]*(?:that\s+)?(.+)$/i,
+];
+
 /** Match a request to a deterministic ACTION, or null → (catalog navigation, then) grounded chat.
  *  Order matters: the specific intents resolve before the broad ones. Navigation is handled by the
  *  caller against the sitemap catalog, not here. */
@@ -187,6 +200,16 @@ export function routeAction(text: string): Action | null {
     const m = re.exec(t);
     const sender = m?.[1]?.trim();
     if (sender) return { kind: "mail-archive", sender };
+  }
+
+  // B1 contact prefill — checked here (after mail-archive: "…the mail from X" must never read as a
+  // message to send; before the C1 trigger below). Runs against the RAW text so the captured message
+  // keeps its casing + punctuation (see CONTACT_MESSAGE_PATTERNS). An empty remainder (a stray "tell
+  // TJ") is NOT a contact ask — fall through, the same empty-remainder guard every capture above uses.
+  for (const re of CONTACT_MESSAGE_PATTERNS) {
+    const m = re.exec(text);
+    const message = m?.[1]?.trim();
+    if (message) return { kind: "contact-message", message };
   }
 
   // C1 visitor-intent onboarding — the TRIGGER, checked here, BEFORE the clarify block below (per the

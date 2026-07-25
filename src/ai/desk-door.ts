@@ -18,7 +18,10 @@ import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
 import { WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
-import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS, type DeskNote } from "./desk-reasoner.ts";
+import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS, CONTACT_FILL_BEAT_MS, type DeskNote } from "./desk-reasoner.ts";
+// B1 contact prefill — the ONE registered compose-body surface (contact-draft.ts names it in code;
+// targeting is never a model pick). The message itself arrives ALREADY drafted in the stash.
+import { CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
 import { buildCatalog, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
@@ -285,6 +288,27 @@ const archiveMailItem = (id: string): boolean => {
   return row?.getAttribute("data-folder") === "archive";
 };
 
+// B1 contact prefill — open the SAME compose panel a human would (the visible ✎ Compose button; the
+// mailbox island reveals #compose on its click) and read the registered body field's live value, so
+// the reasoner can validate both before the fill (the panel opened) and after (the draft landed) —
+// the A4/B2/B3 honesty contract. The selector is a CONSTANT literal (no interpolation), and the field
+// is the one CONTACT_FIELD_SURFACE names — targeting stays deterministic (law #2).
+interface HideableEl { hidden?: boolean }
+const openCompose = (): boolean => {
+  const d = (globalThis as unknown as {
+    document?: { querySelector(s: string): ClickableEl | null; getElementById(id: string): HideableEl | null };
+  }).document;
+  d?.querySelector("[data-open-compose]")?.click();
+  const panel = d?.getElementById("compose");
+  return !!panel && panel.hidden !== true;   // confirm the panel is actually on screen (validate twice)
+};
+interface ValueEl { value?: string }
+const contactFieldValue = (): string | null => {
+  const el = (globalThis as unknown as { document?: { querySelector(s: string): ValueEl | null } })
+    .document?.querySelector(`[data-surface="${CONTACT_FIELD_SURFACE}"]`);
+  return el && typeof el.value === "string" ? el.value : null;
+};
+
 // A1 "show me the part about X" (deep-link answers): scroll the CURRENT page to a rendered heading id.
 // MILL renders every h2/h3 with `id="{anchor}"` (the Chunk.anchor contract) — a plain getElementById +
 // scrollIntoView, no framework hook needed. True when the element existed, so the reasoner can
@@ -355,6 +379,13 @@ const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
 // runMailTask (below) picks it up once /mail settles. ----
 const MAIL_TASK_KEY = "desk-mail-task";
 const mailTaskSet = (sender: string): void => { try { ss()?.setItem(MAIL_TASK_KEY, JSON.stringify({ sender })); } catch { /* no session storage */ } };
+
+// ---- B1 contact prefill: a cross-page fill, same MAIL_TASK_KEY shape — the ALREADY-DRAFTED message
+// rides sessionStorage across the page load and runContactTask (below) fills the registered compose
+// field once /mail settles. Drafted BEFORE the stash (contact-draft.ts, in the reasoner) so this side
+// only ever carries finished text — no composing on arrival. ----
+const CONTACT_TASK_KEY = "desk-contact-task";
+const contactTaskSet = (message: string): void => { try { ss()?.setItem(CONTACT_TASK_KEY, JSON.stringify({ message })); } catch { /* no session storage */ } };
 // Same joinPhrases shape as desk-reasoner.ts's own (not exported there — a one-liner, kept local here
 // exactly like this file's own stripSlash copy just above).
 const joinPhrases = (xs: string[]): string =>
@@ -484,6 +515,55 @@ async function runMailTask(applyOp: (op: RenderOp) => void): Promise<void> {
   announce(`Archived ${countBit} letter${n === 1 ? "" : "s"} from ${matched}. They're in the Archive folder now.`);
 }
 
+/** Run a stashed B1 contact-prefill task once it lands on /mail. Consume-once (read + REMOVE the key,
+ *  the runMailTask/runArrival contract) so a stale draft can never re-fill on a later, unrelated /mail
+ *  visit. Re-runs the reasoner's own on-page choreography (open the visible compose → spotlight →
+ *  grain `fill` → validate the field read the draft back → release) at the SAME CONTACT_FILL_BEAT_MS
+ *  pace, since the reasoner instance that stashed it didn't survive the navigate. The fill goes
+ *  through grainKit.fillOp → applyOp — the one door's op path, never a direct .value write from here. */
+async function runContactTask(applyOp: (op: RenderOp) => void): Promise<void> {
+  let stashed: { message?: string } | null = null;
+  try {
+    const raw = ss()?.getItem(CONTACT_TASK_KEY);
+    if (!raw) return;
+    ss()?.removeItem(CONTACT_TASK_KEY);
+    stashed = JSON.parse(raw);
+  } catch { return; }
+  if (!stashed?.message) return;
+  if (stripSlash(loc()?.pathname ?? "/") !== "/mail") return;   // wandered elsewhere — bail, don't chase
+
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  await wait(450);                                   // let the mailbox island settle in, arrival's own beat
+
+  const announce = (text: string): void => {
+    applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
+      html: grainKit.chatBubble("ai", "grain", grainKit.chatBody(grainKit.esc(text)), "Desk") });
+  };
+
+  if (!openCompose()) {
+    announce("Hmm, the compose panel won't open here. Try the ✎ Compose button.");
+    return;
+  }
+  applyOp(grainKit.narrateOp("drafts", "a message in the compose panel"));
+  applyOp(grainKit.spotlightOp(CONTACT_FIELD_SURFACE, { active: true }));
+  await wait(CONTACT_FILL_BEAT_MS);
+  try {
+    applyOp(grainKit.fillOp(CONTACT_FIELD_SURFACE, stashed.message));
+  } catch {
+    // fillOp throws at compose time on an unsafe value — decline honestly, never a silent no-op.
+    applyOp(grainKit.spotlightOp("screen", { active: false }));
+    announce("That message is too long for me to draft — shorten it and I'll fill it in.");
+    return;
+  }
+  await wait(CONTACT_FILL_BEAT_MS);
+  applyOp(grainKit.spotlightOp("screen", { active: false }));
+  if (contactFieldValue() !== stashed.message) {   // validate twice: the field must read the draft back
+    announce("Hmm, that didn't take — the message field stayed empty. Try typing it in.");
+    return;
+  }
+  announce("Drafted your message in the compose panel — read it over, edit anything, and hit Send. Sending stays yours.");
+}
+
 /** The door the dispatcher composes (data-ai-door). grain marks presence ONLINE once this returns;
  *  the desk chat's own health rides the separate data-desk marker. */
 export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLayer {
@@ -515,6 +595,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     themeState, clickCycleTheme, clickToggleScheme,   // A4 theme switching: read + drive theme.js's visible controls
     notesTagChips, clickNotesTag, visibleNoteCount,   // B2 notes filtering: read + drive the /notes tag chips
     mailSenders, mailItemsFrom, archiveMailItem, mailTaskSet,   // B3 mail batch archive: read + drive the /mail rows + reader
+    openCompose, contactFieldValue, contactTaskSet,   // B1 contact prefill: open + fill the /mail compose (the AI never submits)
     intentGet, intentSet, intentAsked, intentMarkAsked,   // C1 visitor-intent onboarding: session state
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
@@ -525,9 +606,11 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   const droveHere = (() => { try { return !!ss()?.getItem(ARRIVE_KEY); } catch { return false; } })();
   // A2: once the arrival replay settles, let a tour that's mid-walk continue its next leg.
   // B3: once that settles too, run any stashed cross-page mail-archive task (a no-op off /mail or with
-  // nothing stashed) — chained last since it's the newest hop in this same "resume what the desk was
-  // doing" sequence.
-  void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate)).then(() => runMailTask(applyOp));
+  // nothing stashed). B1: then any stashed contact-prefill draft — chained last since it's the newest
+  // hop in this same "resume what the desk was doing" sequence (the two tasks can't both be stashed:
+  // each ask stashes exactly one).
+  void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate)).then(() => runMailTask(applyOp))
+    .then(() => runContactTask(applyOp));
   // Page-arrival awareness (reasoner-driven): read the new page and offer a greeting + contextual
   // chips — but ONLY when the desk is already warm this session (site.js sets desk-warm on the first
   // chat.send) and the visitor navigated here themselves. Gated so a visitor who never opened the desk

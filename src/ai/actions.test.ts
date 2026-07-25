@@ -221,6 +221,35 @@ describe("routeAction", () => {
     });
   });
 
+  describe("B1 contact prefill", () => {
+    test("phrasings extract the message RAW — casing + punctuation survive (it becomes the draft body)", () => {
+      const cases: [string, string][] = [
+        ["tell TJ I want to talk about grain", "I want to talk about grain"],
+        ["go to contact and tell TJ I want to talk about grain", "I want to talk about grain"],
+        ["message TJ that GRAIN looks great!", "GRAIN looks great!"],
+        ["email tj I'd like a call", "I'd like a call"],
+        ["write to TJ: love the stack", "love the stack"],
+      ];
+      for (const [s, message] of cases) {
+        const a = routeAction(s);
+        expect(a?.kind).toBe("contact-message");
+        if (a?.kind === "contact-message") expect(a.message).toBe(message);
+      }
+    });
+
+    test("an empty remainder falls through (null), same as every capture's own guard", () => {
+      expect(routeAction("tell TJ")).toBeNull();
+    });
+
+    test("no clash: mail-archive still wins its own phrasings ('the mail from X' is never a message)", () => {
+      expect(routeAction("archive everything from BREAD CI")?.kind).toBe("mail-archive");
+    });
+
+    test("no clash: 'where does TJ talk about teaching' stays a deep-link, not a message", () => {
+      expect(routeAction("where does TJ talk about teaching")?.kind).toBe("deep-link");
+    });
+  });
+
   describe("C1 visitor-intent onboarding", () => {
     test("greeting forms route intent-ask (a WHOLE-message greeting/vague opener)", () => {
       for (const s of ["hi", "Hi", "hey!", "hello", "howdy", "yo", "good morning", "Good Afternoon.", "help"])

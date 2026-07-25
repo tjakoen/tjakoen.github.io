@@ -30,6 +30,10 @@ import { matchTags, uniqueTags } from "./notes-tags.ts";
 // B3 mail batch archive — matching a visitor's free-text sender phrase against the REAL sender set on
 // /mail (never a model guess, law #2). Pure + framework-free (mail-sender.ts), notes-tags.ts's sibling.
 import { matchSender } from "./mail-sender.ts";
+// B1 contact prefill — the deterministic draft (the visitor's words + a salutation) and the ONE
+// registered field surface the desk may fill (never a model-picked selector, law #2). Pure
+// (contact-draft.ts), same family as the matchers above.
+import { draftMessage, CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
 // A2 guided tour — the fixed, code-enumerated stop list (tour.ts). Zero model: tour-start/tour-stop
 // are matched deterministically (actions.ts) and driven from this data, never from the model's own
 // judgment of "what's on the site" (CLAUDE.md design law — code enumerates routes, never the model).
@@ -55,6 +59,8 @@ const VERB_PHRASE: Record<string, string> = {
   "say.set": "note something to the reflection",
   "say.stream": "ask for a quick reflection",
   "demo.run": "watch the desk act out a live demo",
+  // B1 contact prefill — the /mail compose body is a registered field: the desk drafts, you send.
+  "field.set": "have a message to TJ drafted for you",
 };
 function pageOperables(manifest: Manifest): string[] {
   const verbs = new Set<string>();
@@ -267,6 +273,21 @@ export interface DeskDeps {
    *  /mail — same "stash BEFORE navigate" discipline tourSet follows, since the navigate tears the page
    *  (and this reasoner instance) down before the mailbox can be reached. */
   mailTaskSet?: (sender: string) => void;
+  // ---- B1 contact prefill ("tell TJ I want to talk about grain") — the desk opens the SAME compose
+  // panel a human would (the visible ✎ Compose button, revealNotepad's pattern) and prefills the ONE
+  // registered field (field:contact-message) through grain's `fill` op, validating live both before
+  // (the panel opened) and after (the field's own value reads the draft back) — the A4/B2/B3 honesty
+  // contract. The AI never submits: no submit verb exists, and Send stays the visitor's. ----
+  /** Click the visible ✎ Compose button so the panel the desk is about to fill is ON SCREEN. Returns
+   *  true only when the compose panel is actually visible afterward (validated, not assumed); false
+   *  when the control isn't on this page — an honest "can't reach it" beats a silent no-op. */
+  openCompose?: () => boolean;
+  /** The compose body field's CURRENT value, read fresh off the live DOM — null when the field isn't
+   *  on this page. Read AFTER the fill, to confirm the draft actually landed (validate twice). */
+  contactFieldValue?: () => string | null;
+  /** Stash the already-drafted message for the door to fill on arrival after navigating to /mail —
+   *  same "stash BEFORE navigate" discipline mailTaskSet follows (the navigate tears this down). */
+  contactTaskSet?: (message: string) => void;
   // ---- C1 visitor-intent onboarding (recruiter/developer/student) — sessionStorage-backed, same
   // try/catch-around-ss() shape the door gives every dep above. ONE key holds the answer, a second
   // holds the nag-guard flag. State is read ONLY to bias a code-chosen chip pool (pickFollowups below)
@@ -298,6 +319,12 @@ const THEME_CLICK_BEAT_MS = 180;
 // mail task (desk-door.ts, runMailTask) reuses this exact knob, so the reasoner's first-page run and
 // the door's cross-page run can't drift apart in pacing (the NAV_GLIDE_MS precedent, above).
 export const MAIL_ARCHIVE_BEAT_MS = 650;
+
+// B1 contact prefill — the pause after the lamp lands on the compose field, before the draft fills in
+// (and again before the lamp releases, so the visitor READS what just appeared). Named per CLAUDE.md
+// lesson #9; exported so the door's OWN cross-page contact task (desk-door.ts, runContactTask) reuses
+// the exact knob and the two choreographies can't drift in pacing (the MAIL_ARCHIVE_BEAT_MS precedent).
+export const CONTACT_FILL_BEAT_MS = 650;
 
 // Chat bubble markup now comes from GRAIN's reasoner-kit (deps.kit) — not forked here. This local
 // `esc` is only for the portfolio's OWN chip labels (suggestChipsHtml below), which are portfolio
@@ -807,6 +834,78 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const line = "I can't reach the mailbox from here.";
           await typeOut(line);
           return { ok: false, ops: [], reply: line, reason: "no mail deps" };
+        }
+
+        // B1 contact prefill — "tell TJ I want to talk about grain". Deterministic + offline: the
+        // draft is the visitor's own words (contact-draft.ts, never the 0.5B), the target is the ONE
+        // registered field named in code (law #2), and the fill goes through grain's field.set/`fill`
+        // op — so Send stays the visitor's alone (no submit verb exists to call).
+        if (action?.kind === "contact-message") {
+          const draft = draftMessage(action.message);
+          if (!draft) {
+            await minThink();
+            const line = "What would you like the message to say?";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "empty draft" };
+          }
+          const onMail = !!deps.pageInfo && stripSlash(deps.pageInfo().route) === "/mail";
+
+          if (onMail) {
+            await minThink();
+            if (!deps.openCompose || !deps.contactFieldValue) {
+              const line = "I can't reach the compose panel from here.";
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "no contact deps" };
+            }
+            // Open the SAME compose panel a human would (the visible ✎ Compose button), and only
+            // fill a panel that actually opened — validate before, not just after.
+            if (!deps.openCompose()) {
+              const line = "Hmm, the compose panel won't open here. Try the ✎ Compose button.";
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "compose didn't open" };
+            }
+            narrate("drafts", "a message in the compose panel");
+            tools.emit(deps.kit.spotlightOp(CONTACT_FIELD_SURFACE, { active: true }));
+            await tools.delay(CONTACT_FILL_BEAT_MS);
+            try {
+              tools.emit(deps.kit.fillOp(CONTACT_FIELD_SURFACE, draft));
+            } catch {
+              // fillOp throws at compose time on an unsafe value (over grain's cap / control chars) —
+              // decline honestly rather than letting a too-long ask die silently at the dispatcher.
+              tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+              const line = "That message is too long for me to draft — shorten it and I'll fill it in.";
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "unsafe draft value" };
+            }
+            await tools.delay(CONTACT_FILL_BEAT_MS);
+            tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+            // Validate twice: the field's OWN value must read the draft back, or the fill didn't land.
+            if (deps.contactFieldValue() !== draft) {
+              const line = "Hmm, that didn't take — the message field stayed empty. Try typing it in.";
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "fill didn't land" };
+            }
+            const line = "Drafted your message in the compose panel — read it over, edit anything, and hit Send. Sending stays yours.";
+            await typeOut(line);
+            return { ok: true, ops: [], reply: line };
+          }
+
+          // elsewhere on the site — stash the ALREADY-DRAFTED message and travel to the mailbox; this
+          // reasoner instance doesn't survive the navigate (the MPA tears the page down), so the
+          // door's own cross-page task (desk-door.ts, runContactTask) opens the compose and fills the
+          // same field once /mail settles, at the same CONTACT_FILL_BEAT_MS pace.
+          if (deps.contactTaskSet && deps.navigate) {
+            await minThink();
+            const line = "Heading to the mail panel to draft that for you — you'll review and send it.";
+            await typeOut(line);
+            deps.contactTaskSet(draft);   // stash BEFORE navigating — the navigate tears this down
+            await travelAndNavigate("/mail", "/mail", "Mail", "Here's the compose panel.", "the navigation");
+            return { ok: true, ops: [], reply: line };
+          }
+          await minThink();
+          const line = "I can't reach the compose panel from here.";
+          await typeOut(line);
+          return { ok: false, ops: [], reply: line, reason: "no contact deps" };
         }
 
         // C1 visitor-intent onboarding — the ASK. Deterministic + offline, like every action above: the

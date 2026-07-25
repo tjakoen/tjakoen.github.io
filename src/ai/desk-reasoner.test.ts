@@ -1069,6 +1069,99 @@ describe("makeDeskReasoner — B3 mail batch archive (\"archive everything from 
   });
 });
 
+describe("makeDeskReasoner — B1 contact prefill (\"tell TJ I want to talk about grain\")", () => {
+  const DRAFT = "Hi TJ, I want to talk about grain.";
+
+  test("on /mail happy path: opens compose, fills the ONE registered field with the drafted words, validates", async () => {
+    let loads = 0, opened = 0;
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    deps.openCompose = () => { opened++; return true; };
+    deps.contactFieldValue = () => DRAFT;   // the live field reads the draft back (validate twice)
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("tell TJ I want to talk about grain"), tools);
+
+    expect(loads).toBe(0);                  // deterministic — the 0.5B never composes or targets
+    expect(opened).toBe(1);                 // the same visible ✎ Compose button a human would click
+    const fill = ops.find((o) => o.op === "fill");
+    expect(fill).toMatchObject({ target: "field:contact-message", text: DRAFT, provenance: "ai", commit: "committed" });
+    // the lamp lands on the field before the fill, and releases the screen after
+    expect(ops.some((o) => o.op === "spotlight" && o.target === "field:contact-message" && o.active)).toBe(true);
+    expect(ops.some((o) => o.op === "spotlight" && o.target === "screen" && !o.active)).toBe(true);
+    expect(d.ok).toBe(true);
+    expect(d.reply).toContain("Sending stays yours");
+  });
+
+  test("on /mail, compose won't open: an honest decline, no fill emitted", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    deps.openCompose = () => false;
+    deps.contactFieldValue = () => "";
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("tell TJ I want to talk about grain"), tools);
+
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("compose didn't open");
+    expect(ops.find((o) => o.op === "fill")).toBeUndefined();
+  });
+
+  test("on /mail, the fill doesn't land (field stays empty): an honest 'didn't take', not a false success", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    deps.openCompose = () => true;
+    deps.contactFieldValue = () => "";   // the field never took the value
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("tell TJ I want to talk about grain"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("fill didn't land");
+    expect((d.reply ?? "").toLowerCase()).toContain("didn't take");
+  });
+
+  test("on /mail, no contact deps at all: an honest decline, no crash", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("tell TJ I want to talk about grain"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("no contact deps");
+    expect((d.reply ?? "").toLowerCase()).toContain("can't reach the compose panel");
+  });
+
+  test("elsewhere on the site: stashes the ALREADY-DRAFTED message BEFORE navigating to /mail", async () => {
+    const calls: string[] = [];
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    deps.navigate = (u) => { calls.push(`navigate:${u}`); };
+    deps.contactTaskSet = (message) => { calls.push(`contactTaskSet:${message}`); };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("tell TJ I want to talk about grain"), makeTools().tools);
+
+    expect(calls).toEqual([`contactTaskSet:${DRAFT}`, "navigate:/mail"]);   // drafted + stashed BEFORE the tear-down
+    expect(d.ok).toBe(true);
+    expect((d.reply ?? "")).toContain("review and send");
+  });
+
+  test("elsewhere on the site, no contact-task deps: an honest decline, no crash", async () => {
+    const { deps } = makeDeps();
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("tell TJ I want to talk about grain"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect((d.reply ?? "").toLowerCase()).toContain("can't reach the compose panel");
+  });
+});
+
 describe("makeDeskReasoner — A3 citation (a deterministic 'Read more' under a grounded answer)", () => {
   // one real-route chunk (with an A1 anchor) + the facts block — the retrieval floor's fallback.
   const citeKnowledge = {

@@ -99,6 +99,12 @@ const SCENARIOS: Scenario[] = [
   // stash (desk-mail-task) lands its result AFTER settle()'s 2s post-navigation read, so that path
   // is e2e-covered (desk-mail-archive.e2e.ts) rather than audited here.
   { id: "mail-archive-det", page: "/mail", ask: "archive everything from BREAD CI", mustMention: [["archived"], ["bread ci"]], deterministic: true },
+  // B1 contact prefill — "tell TJ …" on /mail opens the island's real ✎ Compose and fills the ONE
+  // registered field (contact-draft.ts + grain field.set) deterministically: no model composes or
+  // targets. On-page on purpose, mail-archive-det's own reasoning: the cross-page stash
+  // (desk-contact-task) lands after settle()'s post-navigation read, so that path is e2e-covered
+  // (desk-contact-prefill.e2e.ts) rather than audited here.
+  { id: "contact-det", page: "/mail", ask: "tell TJ I want to talk about grain", mustMention: [["drafted"], ["send"]], deterministic: true },
   // C1 visitor-intent onboarding — a bare "hi" as the FIRST message this session triggers the
   // deterministic ask (actions.ts + desk-reasoner.ts), no model: the prompt copy names "visiting"
   // (the word this grader hooks on) and offers the three CHOICES. Not last on purpose — tour-det stays

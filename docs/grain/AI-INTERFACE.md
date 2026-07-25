@@ -95,6 +95,7 @@ declares the surface **kinds** it applies to, a typed **payload**, and a routing
 | `note.append` | `{ text }` | `notepad` | light (add one markdown entry) |
 | `note.replace` | `{ text }` | `notepad` | light (rewrite the whole pad) |
 | `navigate` | `{ href }` | `screen` | light (same-origin, root-relative only) |
+| `field.set` | `{ value }` | `field` | light (prefill a registered form field — the human reviews and sends; the AI never submits: no submit verb exists) |
 
 **Full product vocabulary — designed, not yet registered in `contract.ts`:**
 
@@ -117,7 +118,7 @@ The built table **is** the live contract. It is defined once in TypeScript and e
 > - `ActionName` — the verbs · `ACTIONS` — the registry (depth, accepted kinds, a one-line
 >   `description`, and a `payload` schema — the calling contract a reasoner reads to invoke a verb, §4).
 > - `SurfaceKind` — the closed set of surface kinds a verb can accept (`item`,
->   `reflection`, `say-stream`, `screen`, `chat-log`, `notepad`). Push-only display surfaces the
+>   `reflection`, `say-stream`, `screen`, `chat-log`, `notepad`, `field`). Push-only display surfaces the
 >   AI only *writes* to (e.g. `console`, `timeline`, `notepad-body`) are intentionally **not** kinds — see the note in `contract.ts`.
 > - `surface(kind, id)` — the builder; always construct addresses with it, never by
 >   hand-concatenating strings, so a typo is a compile error.
@@ -171,12 +172,12 @@ The interaction layer never returns "data for the client to render." It returns
 server-rendered hypermedia), so the client stays dumb and can't drift from the truth.
 
 ```ts
-type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log" | "navigate" | "choices";
+type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log" | "navigate" | "choices" | "fill";
 interface RenderOp {
   target: Surface;                // a semantic address from §1a
   op: RenderOpKind;
   html?: string;                  // server-rendered fragment (replace/append/flash/log)
-  text?: string;                  // a streamed token (type)
+  text?: string;                  // a streamed token (type), or the whole value to assign (fill)
   back?: number;                  // delete the last N chars (type) — the AI REVISING / overwriting
   done?: boolean;                 // last token of a stream → settle (type)
   active?: boolean; click?: boolean;   // spotlight on/off; click = pulse (the "AI acts" treatment, §5c)
@@ -195,6 +196,16 @@ interface RenderOp {
 > `chat.send` through the same door. Both are first-class op kinds (not bare `append`s of
 > HTML) because each names a distinct effect the dispatcher renders + wires uniformly and
 > is conformance-testable as its own vocabulary word.
+
+> `fill` (the effect of `field.set`) assigns a whole value into a registered form field
+> (`data-surface="field:…"`) and **persists it for human review** — a new kind on purpose:
+> `type`'s input branch appends tokens and *clears on `done`* (composer-submit physics), and
+> `replace` swaps markup where a field's value is state. The dispatcher re-checks the value
+> guard (2000-char cap, no control chars — `isSafeFieldValue`, drift-guarded like the nav
+> href), marks the field `data-grade="grain"` (AI ink) until the first *trusted* input event
+> settles it, and dispatches a bubbling `input` event so page validation stays honest. No
+> focus steal, no submit, no form access — and no submit verb exists in the vocabulary, so
+> "the AI never submits" is structural. Spec: `grain/plans/field-set-op.md`.
 
 > `log` appends one provenance-tagged entry to the interaction **timeline** (§5g) — the
 > unified human-and-AI history. The client caps the DOM and pins to newest; the entry's

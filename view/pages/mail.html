@@ -55,7 +55,12 @@
                   </span>
                 </div>
                 <div class="compose__body">
+                  <!-- data-surface="field:…" registers this textarea for grain's field.set (B1): the
+                       desk may PREFILL a draft here (it lands as grain ink until you touch it) — the
+                       Send below stays yours alone; no submit verb exists in the AI vocabulary.
+                       Deliberately no data-read: what a visitor types into a contact form is theirs. -->
                   <textarea class="compose__textarea" id="compose-body" name="body" aria-label="Message"
+                    data-surface="field:contact-message"
                     placeholder="Write your message. Send hands it to your mail app, so you get a copy in your own sent folder."></textarea>
                 </div>
 
