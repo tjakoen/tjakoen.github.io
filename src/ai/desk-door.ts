@@ -163,6 +163,30 @@ const revealNotepad = (): void => {
   btn?.click();
 };
 
+// C2 visitor memory — the notepad's WHOLE markdown right now, for memory.ts's parseMemories to read
+// "Desk memory" lines back out of. Same join grain's own notepad island does internally (notepad.js's
+// deriveSource: every `.notepad__entry`'s `data-md`, in DOM order) — reimplemented here rather than
+// imported, since that helper lives inside notepad.js's own IIFE with nothing exported. Falls back to
+// the raw localStorage blob (`grain.notepad`, the island's own persistence key — notepad.js's KEY)
+// when this page's DOM has no rendered entries: covers a page that hasn't mounted the notepad pane at
+// all yet, not the post-reload case (notepad.js's RESTORE re-renders the saved pad INTO the DOM before
+// this ever runs, so the entries are the normal path even right after a reload). try/catch like every
+// other storage-touching dep in this file — a private-mode failure is an empty string, never a crash.
+const NOTEPAD_STORAGE_KEY = "grain.notepad";
+interface EntryEl { getAttribute(name: string): string | null }
+const padMarkdown = (): string => {
+  try {
+    const entries = Array.from((globalThis as unknown as { document?: { querySelectorAll(s: string): EntryEl[] } })
+      .document?.querySelectorAll(".notepad__entry") ?? []);
+    const fromDom = entries.map((e) => e.getAttribute("data-md") ?? "").filter((s) => s.trim().length).join("\n\n");
+    if (fromDom) return fromDom;
+    return (globalThis as unknown as { localStorage?: { getItem(k: string): string | null } })
+      .localStorage?.getItem(NOTEPAD_STORAGE_KEY) ?? "";
+  } catch {
+    return "";
+  }
+};
+
 // A4 theme switching — read GRAIN's OWN theming vocabulary straight off <html> (theme.js's
 // data-themes/data-theme/data-color-scheme), never a portfolio-side guess: the reasoner re-validates
 // against this LIVE list before acting on anything (CLAUDE.md's design law — code enumerates route/
@@ -590,6 +614,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     markOffline,
     kit: grainKit,                                // grain's chat markup builders (no fork)
     navigate, pageText, pageInfo, pageManifest, listNotes, loadCatalog, arrive, revealNav, revealNotepad,   // the desk drives the UI through these
+    padMarkdown,   // C2 visitor memory: read "Desk memory" lines back off the visitor's own notepad
     scrollToAnchor,   // A1 deep-link answers: scroll THIS page to a rendered heading id (see desk-reasoner.ts)
     tourSet, tourClear, tourActive,   // A2 guided tour: the reasoner's first leg + the "type anything to stop" cancel
     themeState, clickCycleTheme, clickToggleScheme,   // A4 theme switching: read + drive theme.js's visible controls

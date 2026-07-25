@@ -34,6 +34,10 @@ import { matchSender } from "./mail-sender.ts";
 // registered field surface the desk may fill (never a model-picked selector, law #2). Pure
 // (contact-draft.ts), same family as the matchers above.
 import { draftMessage, CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
+// C2 visitor memory — the notepad IS the memory. Write-time sanitize + the one line marker
+// (sanitizeMemoryFact, memoryLine) and read-time parseMemories (re-sanitize + cap, for the VISITOR
+// NOTES prompt block). Pure (memory.ts), same family as contact-draft.ts.
+import { sanitizeMemoryFact, memoryLine, parseMemories } from "./memory.ts";
 // A2 guided tour — the fixed, code-enumerated stop list (tour.ts). Zero model: tour-start/tour-stop
 // are matched deterministically (actions.ts) and driven from this data, never from the model's own
 // judgment of "what's on the site" (CLAUDE.md design law — code enumerates routes, never the model).
@@ -208,6 +212,12 @@ export interface DeskDeps {
   /** Flip the assistant panel to its Notepad view (clicks the [data-shell-mode="notepad"] tab), so a
    *  note the desk just wrote is visible immediately instead of only after the visitor opens the pad. */
   revealNotepad?: () => void;
+  /** C2 visitor memory — the notepad's WHOLE markdown right now (the door's join of every
+   *  `.notepad__entry[data-md]` in DOM order, falling back to the raw localStorage blob after a
+   *  reload folds every entry into one — see notepad.js RESTORE). Fed through memory.ts's
+   *  parseMemories to build the VISITOR NOTES prompt block. Optional/empty-string-safe: an absent dep
+   *  or a read failure just means no memories reach the prompt, never a crash. */
+  padMarkdown?: () => string;
   // ---- A2 guided tour (tour.ts) — the reasoner drives the FIRST leg only; every leg after rides the
   // door's own runTourLeg (no chat.send happens between stops, so the reasoner isn't in the loop for
   // those). All three ride sessionStorage under TOUR_KEY, same ARRIVE_KEY pattern as `arrive` above. ----
@@ -566,7 +576,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const manifest = deps.pageManifest?.();
           const operables = manifest ? pageOperables(manifest) : [];
           const pageBit = operables.length ? ` GRAIN tells me this page also lets you ${joinPhrases(operables)}.` : "";
-          const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, switch the site's theme, filter the notes by topic, or jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes).${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
+          const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, switch the site's theme, filter the notes by topic, jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes), or remember something you tell me on your notepad — just ask.${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
           await minThink();
           await typeOut(line);
           setChips([...ACTION_CHIPS, "Take me to GRAIN", "Open the notes"]);
@@ -908,6 +918,55 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           return { ok: false, ops: [], reply: line, reason: "no contact deps" };
         }
 
+        // C2 visitor memory — "remember I'm here about grain". Deterministic + offline, like every
+        // action above: an action verb has no model tail (B3's archive, B1's draft — same idiom), so
+        // this never touches the engine. The 0.5B never composes or edits the fact — memory.ts's
+        // write-time sanitize is the only cleanup the visitor's own words get, and an over-cap or
+        // now-empty (protocol-tokens-only) fact is an honest DECLINE, never a silent truncation
+        // (fillOp's "too long to draft" precedent). Manifest-guarded on note.append, note-write's own
+        // guard, since v1 assumes the notepad is in the frame everywhere but never trusts that blindly.
+        if (action?.kind === "memory-set") {
+          const hasNotepad = !!deps.pageManifest?.().targets.some((tt) => tt.accepts.includes("note.append"));
+          await minThink();
+          if (!hasNotepad) {
+            const line = "I don't see a notepad here to remember that on.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "no notepad surface" };
+          }
+          const fact = sanitizeMemoryFact(action.fact);
+          if (!fact) {
+            const line = "That's too long (or nothing at all) for me to remember as one fact — try something shorter and plainer.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "empty or over-cap fact" };
+          }
+          narrate("writes", "a memory to the notepad");
+          tools.emit(deps.kit.noteAppendOp(memoryLine(fact), "ai"));
+          tools.emit(deps.kit.spotlightOp("notepad", { active: true }));
+          deps.revealNotepad?.();
+          const line = "Noted on your pad — it's yours to edit or remove.";
+          await typeOut(line);
+          await tools.delay(1400);
+          tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+          return { ok: true, ops: [], reply: line };
+        }
+
+        // C2 visitor memory — "forget what you know about me". Deterministic + offline: the desk
+        // NEVER deletes or edits pad content — that's the one irreversible AI action this whole
+        // feature is built to avoid (noteReplaceOp could nuke the visitor's OWN notes right alongside
+        // any memory line — rejected in the plan). So this is a fixed, code-authored explanation
+        // pointing at the pad, never a model reply: forgetting is the visitor deleting the line.
+        if (action?.kind === "memory-forget") {
+          await minThink();
+          tools.emit(deps.kit.spotlightOp("notepad", { active: true }));
+          deps.revealNotepad?.();
+          const line = "I don't delete anything on your pad. Everything I remember lives there as a " +
+            "“Desk memory” line — delete that line and I forget it too.";
+          await typeOut(line);
+          await tools.delay(1400);
+          tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+          return { ok: true, ops: [], reply: line };
+        }
+
         // C1 visitor-intent onboarding — the ASK. Deterministic + offline, like every action above: the
         // router only recognized the TRIGGER (a greeting or an explicit "who's visiting" ask); whether
         // to actually present the choices is THIS stateful call — the nag-guard. Ask at most once a
@@ -934,6 +993,13 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // (pickFollowups' intent param, below), so the injection surface stays at zero.
         if (action?.kind === "intent-set") {
           deps.intentSet?.(action.intent);
+
+          // C2 visitor memory tie-in (plan default: YES) — consent IS answering the ask, so the
+          // stated intent becomes a visible memory line from the visitor's very first interaction.
+          // SILENT: no extra chat line beyond what intent-set already says below, and manifest-guarded
+          // the same honest way memory-set is above (no notepad here ⇒ no write, never a crash).
+          if (deps.pageManifest?.().targets.some((tt) => tt.accepts.includes("note.append")))
+            tools.emit(deps.kit.noteAppendOp(memoryLine(`visiting as a ${action.intent}`), "ai"));
 
           if (action.intent === "recruiter") {
             const onResume = !!deps.pageInfo && stripSlash(deps.pageInfo().route) === "/resume";
@@ -1174,10 +1240,20 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         const canDo = [
           "summarize this page",
           "open the latest note",
+          "remember something you tell me on your notepad",
           ...(manifest ? pageOperables(manifest) : []).map((p) => `let you ${p}`),
           "take you to any page on this site",
         ];
-        const acc = await streamInto(engine, buildPrompt({ query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, canDo, tokenBudget: profile.promptTokenBudget }));
+        // C2 visitor memory (plan default: ALWAYS feed) — the sanitized "Desk memory" lines off the
+        // visitor's OWN notepad right now, re-sanitized + capped by parseMemories (defense in depth:
+        // this is the first visitor-authored free text ever entering the system prompt). Omitted
+        // entirely when empty, the same "absent/empty leaves the prompt unchanged" contract canDo/nav
+        // already follow — never an empty VISITOR NOTES block for the model to puzzle over.
+        const visitorNotes = parseMemories(deps.padMarkdown?.() ?? "");
+        const acc = await streamInto(engine, buildPrompt({
+          query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, canDo,
+          visitorNotes: visitorNotes.length ? visitorNotes : undefined, tokenBudget: profile.promptTokenBudget,
+        }));
 
         // The model chose to navigate. Validate TWICE before acting on generated text: the route must be
         // REAL (present in the sitemap catalog — never trust the model to have stayed in scope), AND

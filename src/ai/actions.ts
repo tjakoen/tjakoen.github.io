@@ -42,7 +42,16 @@ export type Action =
   | { kind: "intent-ask" }
   // The three answers to the ask, re-entering the router as chat.send text exactly like a
   // CLARIFY_CHOICES pick does — see INTENT_CHOICES below for the exact phrases that route here.
-  | { kind: "intent-set"; intent: "recruiter" | "developer" | "student" };
+  | { kind: "intent-set"; intent: "recruiter" | "developer" | "student" }
+  // C2 visitor memory — "remember I'm here about grain". `fact` is the RAW captured remainder
+  // (original casing/punctuation, B1's contact-message precedent — memory.ts's own sanitize is the
+  // only cleanup it gets); the reasoner (never this router) writes it to the notepad as a marked
+  // line and never composes or edits the wording itself (law #2).
+  | { kind: "memory-set"; fact: string }
+  // C2 visitor memory — "forget what you know about me". No payload: the desk never deletes pad
+  // content (that would be the one irreversible AI action this whole feature is built to avoid), so
+  // the reasoner's handler is a fixed, code-authored explanation, never a model-composed reply.
+  | { kind: "memory-forget" };
 
 /** The disambiguation the desk offers for a vague "where should I go?" — each choice's `value` is a
  *  phrase the desk itself resolves (catalog navigation or a capabilities ask), so a click just
@@ -124,6 +133,25 @@ const CONTACT_MESSAGE_PATTERNS: RegExp[] = [
   /\b(?:tell|message|email|write\s+to)\s+tj\b[\s,:-]*(?:that\s+)?(.+)$/i,
 ];
 
+// C2 visitor memory — "remember I'm here about grain" / "please remember that my name is Anna".
+// WHOLE-message-anchored (^), like the C1 greeting/who's-visiting triggers below: an embedded
+// "remember" mid-sentence ("I'll always remember this place") isn't a memory ask. Run against the RAW
+// text (case-insensitive), the same B1 contact-message precedent, since the remainder becomes the pad
+// line's fact VERBATIM — the 0.5B never composes or edits the visitor's own words (law #2). A leading
+// "that" is connective tissue, stripped the same way B1 drops one from "tell TJ that …".
+const MEMORY_SET_RE = /^(?:please\s+)?remember\s+(.+)$/i;
+// A DEICTIC-only remainder — "remember this", "remember that", "remember it", "remember this page",
+// "remember the page" and NOTHING else — means "remember the PAGE", not a fact about the visitor;
+// that's note-write's job (unchanged since before this feature). Checked against norm()'s output
+// (lowercased, punctuation stripped) so "This page." / "It!" still count.
+const DEICTIC_ONLY_RE = /^(?:this|that|it|this page|the page)$/;
+
+// C2 visitor memory — "forget what you know about me" / "forget everything". WHOLE-message-anchored
+// like MEMORY_SET_RE above. "forget it" / "forget that" are excluded on purpose: a casual dismissal
+// ("nah, forget it") is not a memory-forget ask, and the desk has nothing to lose by treating it as
+// ordinary chat instead of a pointed decline about pad contents.
+const FORGET_RE = /^forget\b\s*(.*)$/i;
+
 /** Match a request to a deterministic ACTION, or null → (catalog navigation, then) grounded chat.
  *  Order matters: the specific intents resolve before the broad ones. Navigation is handled by the
  *  caller against the sitemap catalog, not here. */
@@ -132,11 +160,32 @@ export function routeAction(text: string): Action | null {
   if (!t) return null;
 
   // write to the notepad — the desk COMPOSES an entry and appends it (note.append). Checked FIRST so
-  // "summarize this to my notepad" writes to the pad rather than only summarizing into the chat. Two
-  // triggers: an explicit notepad mention with a write-ish verb, or a bare "jot this down"/"make a note".
+  // "summarize this to my notepad" writes to the pad rather than only summarizing into the chat, AND
+  // so an explicit "remember to add this to my notepad" still writes to the PAGE's pad rather than
+  // being read as a C2 memory ask below (the notepad mention wins — the deliberate exception to "remember
+  // routes before note-write" documented on the memory-set Action kind above). Two triggers: an explicit
+  // notepad mention with a write-ish verb, or a bare "jot this down"/"make a note".
   if (/\bnotepad\b/.test(t) && /\b(add|save|writ\w*|put|jot|note|append|record|capture|stick|drop|summari[sz]e)\b/.test(t))
     return { kind: "note-write", instruction: text.trim() };
-  if (/\b(jot (this|that|it|down)|note (this|that|it) down|make a note|take a note|remember (this|that))\b/.test(t))
+
+  // C2 visitor memory — checked here, BEFORE the bare "remember (this|that)" note-write trigger below
+  // (the split this feature adds: a SUBSTANTIVE "remember X" is a fact about the VISITOR, a deictic-only
+  // one is still about the PAGE). Run against the RAW text so the fact keeps its casing/punctuation.
+  const memMatch = MEMORY_SET_RE.exec(text.trim());
+  if (memMatch) {
+    const fact = memMatch[1]!.trim().replace(/^that\s+/i, "").trim();
+    if (fact && !DEICTIC_ONLY_RE.test(norm(fact))) return { kind: "memory-set", fact };
+    // empty or deictic-only remainder — fall through (no return): a bare "remember"/"remember this"
+    // isn't a memory ask, and the deictic case is caught by the note-write trigger just below instead.
+  }
+  const forgetMatch = FORGET_RE.exec(text.trim());
+  if (forgetMatch) {
+    const remainder = norm(forgetMatch[1] ?? "");
+    if (remainder !== "it" && remainder !== "that") return { kind: "memory-forget" };
+    // "forget it"/"forget that" — a casual dismissal, not a pointed ask about pad contents. Fall through.
+  }
+
+  if (/\b(jot (this|that|it|down)|note (this|that|it) down|make a note|take a note|remember (this|that|it|this page|the page))\b/.test(t))
     return { kind: "note-write", instruction: text.trim() };
 
   // deep-link — "show me the part about X" (see DEEP_LINK_PATTERNS above). An empty remainder (nothing

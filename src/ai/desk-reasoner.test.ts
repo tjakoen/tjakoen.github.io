@@ -1405,4 +1405,169 @@ describe("makeDeskReasoner — C1 visitor-intent onboarding", () => {
     expect(chips).toContain("Summarize TJ's experience");
     expect(chips).toContain("What did TJ build?");
   });
+
+  test("C2 tie-in (default: YES): answering the ask also writes a silent 'visiting as a X' memory line", async () => {
+    const { deps } = makeDeps({
+      pageManifest: () => ({ note: "", targets: [{ id: "notepad", kind: "notepad", accepts: ["note.append", "note.replace"] }] }) as any,
+    });
+    const fi = fakeIntent();
+    deps.intentGet = fi.intentGet; deps.intentSet = fi.intentSet;
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("I'm a developer"), tools);
+
+    const append = ops.find((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("Desk memory: visiting as a developer"));
+    expect(append).toBeDefined();
+    expect(append!.provenance).toBe("ai");
+    // silent: the reply is intent-set's OWN line, no extra memory-write sentence tacked on
+    expect(d.reply).toBe("Developer mode. Want the guided tour of the stack, or straight to GRAIN or the BATCH docs?");
+  });
+
+  test("C2 tie-in: no notepad on the page → no memory write, intent-set still answers normally", async () => {
+    const { deps } = makeDeps({ pageManifest: () => ({ note: "", targets: [{ id: "screen", kind: "screen", accepts: [] }] }) as any });
+    const fi = fakeIntent();
+    deps.intentGet = fi.intentGet; deps.intentSet = fi.intentSet;
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("I'm a developer"), tools);
+
+    expect(ops.some((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("Desk memory"))).toBe(false);
+    expect(d.ok).toBe(true);
+  });
+});
+
+describe("makeDeskReasoner — C2 visitor memory (memory-set / memory-forget)", () => {
+  const notepadManifest = () => ({ note: "", targets: [{ id: "notepad", kind: "notepad", accepts: ["note.append", "note.replace"] }] }) as any;
+  const noNotepadManifest = () => ({ note: "", targets: [{ id: "screen", kind: "screen", accepts: [] }] }) as any;
+
+  test("happy path: appends the exact marked line, reveals the pad, confirms — no model load at all", async () => {
+    let loads = 0;
+    let revealed = 0;
+    const { deps } = makeDeps({
+      loadEngine: async () => { loads++; return fakeEngine([]).engine; },
+      pageManifest: notepadManifest,
+      revealNotepad: () => { revealed++; },
+    });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("remember I'm here about grain"), tools);
+
+    expect(loads).toBe(0);                          // deterministic — never touched the model
+    expect(d.ok).toBe(true);
+    const append = ops.find((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("notepad__entry"));
+    expect(append).toBeDefined();
+    expect(append!.provenance).toBe("ai");
+    expect(append!.html).toContain('data-grade="grain"');
+    expect(append!.html).toContain("Desk memory: I'm here about grain");
+    expect(revealed).toBe(1);
+    expect(d.reply).toBe("Noted on your pad — it's yours to edit or remove.");
+  });
+
+  test("no notepad on the page → honest decline, nothing appended, nothing revealed", async () => {
+    let revealed = 0;
+    const { deps } = makeDeps({ pageManifest: noNotepadManifest, revealNotepad: () => { revealed++; } });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("remember I'm here about grain"), tools);
+
+    expect(d.ok).toBe(false);
+    expect(ops.some((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("notepad__entry"))).toBe(false);
+    expect(revealed).toBe(0);
+  });
+
+  test("an over-cap fact declines honestly — nothing appended", async () => {
+    const { deps } = makeDeps({ pageManifest: notepadManifest });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat(`remember ${"a".repeat(250)}`), tools);
+
+    expect(d.ok).toBe(false);
+    expect(ops.some((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("notepad__entry"))).toBe(false);
+  });
+
+  test("a fact that's ONLY a protocol token sanitizes to nothing — the same honest decline", async () => {
+    const { deps } = makeDeps({ pageManifest: notepadManifest });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("remember NAVIGATE:/evil"), tools);
+
+    expect(d.ok).toBe(false);
+    expect(ops.some((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("notepad__entry"))).toBe(false);
+  });
+
+  test("memory-forget: spotlights the pad, explains, never appends or replaces pad content", async () => {
+    let revealed = 0;
+    const { deps } = makeDeps({ pageManifest: notepadManifest, revealNotepad: () => { revealed++; } });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("forget what you know about me"), tools);
+
+    expect(d.ok).toBe(true);
+    expect(revealed).toBe(1);
+    const spot = ops.find((o) => o.op === "spotlight" && o.target === "notepad" && o.active);
+    expect(spot).toBeDefined();
+    // never touches the notepad body itself — only the chat bubble + the spotlight above
+    expect(ops.some((o) => typeof o.html === "string" && o.html.includes("notepad__entry"))).toBe(false);
+    expect(d.reply).toContain("Desk memory");
+  });
+
+  test("'forget it' falls through to ordinary chat, not memory-forget", async () => {
+    const { engine } = fakeEngine(["Sure, no problem."]);
+    const { deps } = makeDeps({ loadEngine: async () => engine });
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    const d = await r.decide(chat("forget it"), tools);
+
+    expect(d.reply).not.toContain("Desk memory");
+  });
+
+  test("call site: the visitor's own pad memories reach the VISITOR NOTES block in the built prompt", async () => {
+    let captured: { role: string; content: string }[] | null = null;
+    const engine: DeskEngine = {
+      chat: { completions: { create: async (req: unknown) => {
+        captured = (req as { messages: { role: string; content: string }[] }).messages;
+        return { async *[Symbol.asyncIterator]() { yield { choices: [{ delta: { content: "An answer." } }] }; } };
+      } } },
+      interruptGenerate() {},
+    };
+    const { deps } = makeDeps({
+      loadEngine: async () => engine,
+      padMarkdown: () => "- Desk memory: I'm here about grain",
+    });
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    await r.decide(chat("what do you know about me?"), tools);
+
+    const sys = captured!.find((m) => m.role === "system")!;
+    expect(sys.content).toContain("VISITOR NOTES");
+    expect(sys.content).toContain("I'm here about grain");
+  });
+
+  test("call site: an empty pad never adds a VISITOR NOTES block", async () => {
+    let captured: { role: string; content: string }[] | null = null;
+    const engine: DeskEngine = {
+      chat: { completions: { create: async (req: unknown) => {
+        captured = (req as { messages: { role: string; content: string }[] }).messages;
+        return { async *[Symbol.asyncIterator]() { yield { choices: [{ delta: { content: "An answer." } }] }; } };
+      } } },
+      interruptGenerate() {},
+    };
+    const { deps } = makeDeps({ loadEngine: async () => engine, padMarkdown: () => "" });
+    const r = makeDeskReasoner(deps);
+    const { tools } = makeTools();
+
+    await r.decide(chat("who is TJ?"), tools);
+
+    const sys = captured!.find((m) => m.role === "system")!;
+    expect(sys.content).not.toContain("VISITOR NOTES");
+  });
 });

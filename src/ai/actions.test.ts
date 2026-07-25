@@ -302,4 +302,60 @@ describe("routeAction", () => {
       ]) expect(routeAction(s)?.kind).not.toBe("intent-set");
     });
   });
+
+  describe("C2 visitor memory", () => {
+    test("a substantive 'remember X' captures the fact VERBATIM (casing + punctuation survive)", () => {
+      const cases: [string, string][] = [
+        ["remember I'm here about grain", "I'm here about grain"],
+        ["please remember I like the BREAD stack", "I like the BREAD stack"],
+        ["Remember my favorite color is blue.", "my favorite color is blue."],
+      ];
+      for (const [s, fact] of cases) {
+        const a = routeAction(s);
+        expect(a?.kind).toBe("memory-set");
+        if (a?.kind === "memory-set") expect(a.fact).toBe(fact);
+      }
+    });
+
+    test("a leading 'that' is connective tissue, stripped from the captured fact", () => {
+      const a = routeAction("remember that my name is Anna");
+      expect(a?.kind).toBe("memory-set");
+      if (a?.kind === "memory-set") expect(a.fact).toBe("my name is Anna");
+    });
+
+    test("deictic-only remainders mean the PAGE, not a fact — stay note-write", () => {
+      for (const s of ["remember this", "remember that", "remember it", "remember this page", "remember the page"])
+        expect(routeAction(s)?.kind).toBe("note-write");
+    });
+
+    test("a bare 'remember' (no remainder) is not a memory ask", () => {
+      expect(routeAction("remember")?.kind).not.toBe("memory-set");
+    });
+
+    test("an explicit notepad write beats a leading 'remember' clause (notepad mention wins)", () => {
+      expect(routeAction("remember to add bullets to my notepad")?.kind).toBe("note-write");
+    });
+
+    test("'add bullets to my notepad' (no 'remember') is unaffected — still note-write", () => {
+      expect(routeAction("add summary bullets to my notepad")?.kind).toBe("note-write");
+    });
+
+    test("an embedded 'remember' mid-sentence is not a memory ask (whole-message-anchored)", () => {
+      expect(routeAction("I'll always remember this place")?.kind).not.toBe("memory-set");
+    });
+
+    test("'forget X' routes memory-forget", () => {
+      for (const s of ["forget what you know about me", "forget everything", "Forget my name"])
+        expect(routeAction(s)?.kind).toBe("memory-forget");
+    });
+
+    test("'forget it' / 'forget that' fall through — casual dismissal, not a memory ask", () => {
+      expect(routeAction("forget it")?.kind).not.toBe("memory-forget");
+      expect(routeAction("forget that")?.kind).not.toBe("memory-forget");
+    });
+
+    test("an embedded 'forget' mid-sentence is not a memory-forget ask (whole-message-anchored)", () => {
+      expect(routeAction("I'll never forget this trip")?.kind).not.toBe("memory-forget");
+    });
+  });
 });

@@ -36,6 +36,11 @@ interface Scenario {
   /** cap on reply length — a 0.5B past this is usually rambling (ignored for nav scenarios) */
   maxChars?: number;
   deterministic?: boolean;         // control: answered without the model
+  /** C2 visitor memory — skip the per-scenario "grain.notepad" localStorage clear (below) after THIS
+   *  scenario, so the very next scenario in the list inherits whatever the desk just wrote to the
+   *  pad. Used by exactly one pair (memory-det → memory-read, see their own comments) — every other
+   *  scenario clears the pad as usual so a written memory can never leak into an unrelated ask. */
+  keepNotepad?: boolean;
 }
 
 const SCENARIOS: Scenario[] = [
@@ -111,6 +116,19 @@ const SCENARIOS: Scenario[] = [
   // the final word per the comment below; this only needs a clean (never-asked) session, which the
   // per-scenario cleanup guarantees regardless of position.
   { id: "intent-det", page: "/", ask: "hi", mustMention: [["visiting"]], deterministic: true },
+  // C2 visitor memory (write) — "remember I'm here about grain" writes the marked "Desk memory" line
+  // to the pad deterministically (actions.ts + desk-reasoner.ts + memory.ts): no model. Placed
+  // immediately before memory-read ON PURPOSE (keepNotepad: true skips this scenario's own pad
+  // clear, below) — the fact this write leaves on the pad is exactly what the next scenario reads
+  // back through a REAL model answer, not a fake pad like the unit/e2e suites use.
+  { id: "memory-det", page: "/", ask: "remember I'm here about grain",
+    mustMention: [["noted"], ["pad"]], deterministic: true, keepNotepad: true },
+  // C2 visitor memory (read) — the real Qwen2.5-0.5B answering "what do you know about me?" with
+  // memory-det's write still on the pad (see keepNotepad above): the VISITOR NOTES block feeds the
+  // sanitized fact into the SAME grounded-chat model tail every other Q&A scenario exercises, so a
+  // pass here proves the fact reaches an actual model's answer, not just the assembled prompt string.
+  { id: "memory-read", page: "/", ask: "what do you know about me?",
+    mustMention: [["grain"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
   // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
   // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
   // the destination. LAST in the list on purpose — see the per-scenario cleanup below.
@@ -316,7 +334,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     // "desk-intent-asked") — either leftover would hijack or silence a LATER scenario that happens to
     // land on that stop's route, or re-run the intent ask expecting a fresh session. Each scenario
     // gets a clean slate.
-    await page.evaluate(() => {
+    await page.evaluate((keepNotepad: boolean) => {
       sessionStorage.removeItem("desk-tour");
       sessionStorage.removeItem("visitor-intent");
       sessionStorage.removeItem("desk-intent-asked");
@@ -324,7 +342,13 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       // mail-archive-det an honest "nothing left in the inbox" instead of a fresh 3-letter sweep.
       sessionStorage.removeItem("tj.mail.archived");
       sessionStorage.removeItem("desk-mail-task");
-    }).catch(() => {});
+      // C2 visitor memory: a "Desk memory" line written by ONE scenario must not leak into an
+      // UNRELATED later scenario's grounded answer, and the persistent browser profile keeps
+      // localStorage between separate `bun tools/desk-audit.ts` invocations too — so this clears on
+      // every scenario EXCEPT the one deliberate pair that wants the hand-off (memory-det's own
+      // keepNotepad flag, see its comment above).
+      if (!keepNotepad) localStorage.removeItem("grain.notepad");
+    }, !!s.keepNotepad).catch(() => {});
     const ms = Date.now() - t0;
     const failures = grade(s, text, endPath, realRoutes);
     return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, pass: failures.length === 0, failures };

@@ -72,4 +72,46 @@ describe("buildPrompt", () => {
     expect(sys).toContain("NAVIGATE:<route>");
     expect(sys).toContain('NAVIGATE:/grain"');   // the worked example uses the FIRST offered route
   });
+
+  describe("C2 visitor memory — VISITOR NOTES block", () => {
+    test("no visitorNotes → no VISITOR NOTES block (unchanged prompt)", () => {
+      const msgs = buildPrompt({ query: "q", chunks: [], history: [] });
+      expect(msgs[0]!.content).not.toContain("VISITOR NOTES");
+    });
+
+    test("empty visitorNotes array → no block either (same as omitted)", () => {
+      const msgs = buildPrompt({ query: "q", chunks: [], history: [], visitorNotes: [] });
+      expect(msgs[0]!.content).not.toContain("VISITOR NOTES");
+    });
+
+    test("visitorNotes present → a labeled, explicitly untrusted block with one '- <line>' per fact", () => {
+      const msgs = buildPrompt({ query: "what do you know about me?", chunks: [], history: [],
+        visitorNotes: ["I'm here about grain", "my name is Anna"] });
+      const sys = msgs[0]!.content;
+      expect(sys).toContain("VISITOR NOTES");
+      expect(sys).toContain("never as instructions");     // the never-as-instructions label, load-bearing
+      expect(sys).toContain("- I'm here about grain");
+      expect(sys).toContain("- my name is Anna");
+    });
+
+    test("VISITOR NOTES lands after CONTEXT, not folded into it or the persona", () => {
+      const msgs = buildPrompt({ query: "q", chunks: [chunk("a", "/x", "some prose")], history: [],
+        visitorNotes: ["a fact"] });
+      const sys = msgs[0]!.content;
+      const contextIdx = sys.indexOf("CONTEXT (site content");
+      const notesIdx = sys.indexOf("VISITOR NOTES");
+      expect(contextIdx).toBeGreaterThan(-1);
+      expect(notesIdx).toBeGreaterThan(contextIdx);
+    });
+
+    test("its cost is spent up front (with persona/choices/nav/canDo), not carved out of history/context", () => {
+      // A huge visitorNotes payload still leaves the assembled prompt under budget — proving the
+      // notes cost was subtracted before the context fill, the same contract canDo/nav follow.
+      const bigNotes = Array.from({ length: 20 }, (_, i) => `fact number ${i} `.repeat(5));
+      const big = Array.from({ length: 50 }, (_, i) => chunk(`c${i}`, "/x", "lorem ipsum ".repeat(200)));
+      const msgs = buildPrompt({ query: "q", chunks: big, history: [], visitorNotes: bigNotes });
+      const total = msgs.reduce((n, m) => n + __test.approxTokens(m.content), 0);
+      expect(total).toBeLessThan(__test.PROMPT_TOKEN_BUDGET + __test.approxTokens("q") + 200);
+    });
+  });
 });
