@@ -764,3 +764,44 @@ toggle per component that flips it between clean and grain.
 **What it deliberately does *not* do yet:** real judgment (the reasoner is a stub),
 the full task domain, the chat client, and heavy-path "thinking" UI. Those are later
 build-order steps — surfaced here so the scaffold isn't mistaken for more than it is.
+
+---
+
+## 8. The MCP door (host-side, over the static export)
+
+Everything above is MCP-*shaped* — same semantics, no wire protocol (§1's registries are the
+tool list, §2c's manifest is the resources analog, `ActionDef.hints` are the tool annotations).
+`packages/grain-mcp` closes the loop with an actual protocol server: a **zero-dependency MCP
+stdio server** any MCP client (Claude Code, Claude Desktop) can point at a grain app's **static
+export** — no browser, no running app, no SDK.
+
+It works because the whole harvest + validate path was already pure: `manifest-dom.ts` takes a
+structural `{querySelectorAll, getAttribute, textContent}` interface, not a real `Document`, so
+a ~200-line hand-rolled HTML scanner feeds the exported pages straight into the SAME
+`domManifest` the in-browser door uses. `ACTIONS` and `validateMove` were pure all along.
+
+| Tool | What it answers |
+|------|-----------------|
+| `grain_pages` | which routes the export contains (route + title) |
+| `grain_manifest` | what one page affords right now — targets, verbs, readable surfaces (§2c, JSON + prompt text) |
+| `grain_actions` | the whole vocabulary — verb, payload schema, hints (§1b, hints surfaced as MCP tool annotations) |
+| `grain_validate_move` | would this move be legal on this route — grain's own `validateMove`, echoing the valid targets on rejection (§0's informative rejection, over the wire) |
+
+Run it against any export:
+
+```sh
+bun packages/grain-mcp/cli.ts path/to/dist    # stdio; add via `claude mcp add`
+```
+
+All four tools are read-only (`readOnlyHint: true`) and that's the point: a RenderOp needs a
+LIVE page to land on, so the static door is an **inspection and dry-run** surface — an agent can
+learn the vocabulary, read a page's affordances, and validate a plan *before* ever driving the
+real thing through the client door (§3). One earned lesson rides in the harvester: the junk
+signal for template placeholders is the surface id itself (angle brackets), never the presence
+of `data-bind-*` — shipped, legitimate rows carry those bindings too, and the real placeholder
+leak lived inside authoring comments, which are stripped before the scanner ever runs.
+
+**What it deliberately does *not* do:** execute ops (nothing to land them on), speak
+resources/prompts/sampling capabilities, or add a dependency — the JSON-RPC subset
+(`initialize`, `tools/list`, `tools/call`, `ping`) is hand-rolled, keeping the whole stack at
+zero runtime deps.
