@@ -41,7 +41,7 @@ you know where to edit.
 | `/mill` | `view/pages/mill/index.html` (MILL page) |
 | `/proof` | `view/pages/proof/index.html` (PROOF page) |
 | `/pantry` | `view/pages/pantry/index.html` (PANTRY page) |
-| `/docs` | `view/pages/docs/index.html` (developer-docs hub — plan in [`../DEV-DOCS.md`](../../DEV-DOCS.md)) |
+| `/docs` | `view/pages/docs/index.html` (developer-docs hub — plan in [`../DEV-DOCS.md`](../../bread/DEV-DOCS.md)) |
 
 **Content** — Markdown through MILL, wired in [`src/content.ts`](../src/content.ts) (not hand-authored HTML):
 
@@ -97,11 +97,11 @@ because the look is the design system's, not the site's:
 | **Edit / add a note or blog post** | `content/notes/<slug>.md` | Markdown + frontmatter; see [`standards/NOTE-STANDARD.md`](../standards/NOTE-STANDARD.md). A new file = a new `/notes/<slug>` route automatically |
 | **Change a color / the theme** | `grain/styles/variables.css` (**only** here) | never hardcode a color in a component — override the token. Themes: `grain/styles/themes/*.css` |
 | **Change how a component looks** | `grain/components/<layer>/<name>/<name>.css` | one component owns its styling; edit its `.css`, not the page |
-| **Change a component's markup** | `grain/components/<layer>/<name>/<name>.html` | some layout components are CSS-only (no `.html`) — see [`../batch/docs/CONVENTIONS.md`](../../batch/docs/CONVENTIONS.md) §4 |
+| **Change a component's markup** | `grain/components/<layer>/<name>/<name>.html` | some layout components are CSS-only (no `.html`) — see [`../batch/docs/CONVENTIONS.md`](batch/CONVENTIONS.md) §4 |
 | **Add a whole new page** | a new `view/pages/<name>/index.html` (or `view/pages/<name>.html`) | it's live at `/<name>` on the next refresh; add it to the sitemap? — it's derived, so no |
 | **Change the global page shell** (head, scripts) | the `PAGE_HEAD` / `PAGE_ASSETS` constants in [`src/server.ts`](../src/server.ts) | one place, injected into every page — don't hand-list assets in a page's `<head>` |
-| **Change what the AI does in a demo** | `grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [`../ROADMAP.md`](../../ROADMAP.md)) |
-| **Add / change an AI verb or surface** | `grain/ai/contract.ts` first, then walk the alignment row in [`../CLAUDE.md`](../../CLAUDE.md) | this is *not* a minor edit — it ripples into tests + docs |
+| **Change what the AI does in a demo** | `grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [`../ROADMAP.md`](../../bread/ROADMAP.md)) |
+| **Add / change an AI verb or surface** | `grain/ai/contract.ts` first, then walk the alignment row in [`../CLAUDE.md`](../../bread/CLAUDE.md) | this is *not* a minor edit — it ripples into tests + docs |
 
 ## The dev loop
 

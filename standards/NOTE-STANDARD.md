@@ -22,7 +22,7 @@ repo READMEs).
    draft is clean, correct, and forgettable, it isn't done.
 2. **Check [`../docs/CONTENT-BACKLOG.md`](../docs/CONTENT-BACKLOG.md).** See if the piece is already planned,
    what its angle is, and what it must *not* say. Update the backlog when a note lands.
-3. **Notes live in [`../notes/`](../notes/)** as `kebab-case.md`. Cross-link sibling notes with a
+3. **Notes live in [`../content/notes/`](../content/notes/)** as `kebab-case.md`. Cross-link sibling notes with a
    relative link (`[Ten Times Zero Is Still Zero](ten-times-zero.md)`), never an absolute URL, they
    travel together and MILL renders them.
 
@@ -83,7 +83,7 @@ code's. Standard note:
 *The [judgment is human](ten-times-zero.md). The typing, by design, is not.*
 ```
 
-- The link on *judgment is human* points at [`ten-times-zero.md`](../notes/ten-times-zero.md), the
+- The link on *judgment is human* points at [`ten-times-zero.md`](../content/notes/ten-times-zero.md), the
   "how I actually work with AI, receipts and all" post, mirroring how every repo footer links it
   (see [`README-STANDARD.md`](README-STANDARD.md)).
 - **The flagship post, `ten-times-zero.md`, doesn't self-link** and swaps the tail:

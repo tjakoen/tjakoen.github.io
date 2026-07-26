@@ -37,7 +37,7 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
 8. [`HACKING.md`](docs/HACKING.md): the route → source map + "which file do I open to change X" — the
    fast path for a *small* edit (human or AI) without cold-reading `server.ts`.
 
-Whole-repo doc map: [`../DOCS.md`](../DOCS.md).
+Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
 
 ## Non-negotiables
 

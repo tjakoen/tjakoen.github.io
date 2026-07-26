@@ -33,6 +33,8 @@ jobs:
       # workflow token. The committed .npmrc already routes @tjakoen -> npm.pkg.github.com.
       - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
       - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun test
       - run: bun run export
         env:
           PUBLIC_ORIGIN: https://tjakoen.github.io

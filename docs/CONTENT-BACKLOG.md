@@ -1,7 +1,7 @@
 # Portfolio — content backlog
 
 > Status: **captured, not written.** The list of *content pieces* to author for the portfolio
-> (companion to [PLAN.md](docs/architecture/PLAN.md) = the *how* and [FEATURES.md](docs/architecture/FEATURES.md) = the *what*).
+> (companion to [PLAN.md](architecture/PLAN.md) = the *how* and [FEATURES.md](architecture/FEATURES.md) = the *what*).
 > These are writing/asset tasks, not code. All content is authored as **Markdown + images** and
 > rendered by the CMS (see memory `portfolio-cms-separate-project`); pages are trailheads.
 >
@@ -64,8 +64,8 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
 
 - [ ] **Career Team** — building AI "personalities" out of the top 2 tech leads for code reviews;
       talks given representing the company. *(Company name: "Career Team".)*
-- [ ] **PH Live** — made myself CTO, built the team + platform; the hard exit (**neutral, no names,
-      lessons-forward**); show the platform (was publicly available, so fine to show).
+- [ ] **The events platform** — made myself CTO, built the team + platform; the hard exit (**neutral,
+      no names, lessons-forward**); show the platform (was publicly available, so fine to show).
 - [ ] **Educator** — the classes taught (HTML/CSS/JS, React, Vue, Dart/Flutter, Node/Express, PHP,
       MySQL; Software Eng Implementation & Management); the **GitHub-native course platform** built to
       make teaching sustainable (link it — github.com/tjakoen/github-native-course-platform); talks;
@@ -95,7 +95,7 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
 > messaging* not be lost between sessions. This is the faithful, guardrail-clean source for the
 > experience notes above and the résumé spine. Told publishably here (money vague, no litigation
 > drama, no names beyond public/LinkedIn). The private specifics that inform tone but must **not**
-> publish (private specifics) live in agent memory, not in this public repo.
+> publish (private specifics, private specifics) live in agent memory, not in this public repo.
 > The **distilled** version already lives in `content/notes/ten-times-zero.md` (the "I was the zero, for
 > years" section); this is the **full** version the standalone notes will draw from.
 
@@ -129,10 +129,9 @@ The beats, in order (each feeds the note in brackets):
    private) but "learned a lot, no regrets." **This is where the maxim crystallized: you have to be
    the right person before you try the thing** — and the long-term **MBA goal** started here (later
    re-routed to a **cybersecurity master's** when the MBA priced out; see Educator note).
-6. **The events platform** [PH Live — **neutral, no names, lessons-forward**]. A friend connected him
+6. **The events platform** [**neutral, no names, lessons-forward**]. A friend connected him
    to investors; he planned it, built the team, got it to MVP/launch-ready, execs hired, money moving.
-   It **ended badly** and he wasn't treated well. *(Private, do not publish: an exit over
-   promises. Public telling stays lessons-forward.)* "Learned a lot."
+   It **ended badly** and he wasn't treated well. Public telling stays lessons-forward. "Learned a lot."
 7. **Teaching, the long thread** [Educator]. At ~21, right before graduating, his dean asked him to
    teach; he'd loved the org-president workshops/competitions. Declined then — it was an 8-year
    commitment (they'd have funded his master's) and he was too young to commit. After the events

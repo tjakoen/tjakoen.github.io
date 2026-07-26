@@ -137,10 +137,10 @@ it, used for label halos and for text on a filled node), `--color-line` (node bo
 
 ## The reference figures (built to this standard)
 
-All live in [`../notes/ten-times-zero.md`](../notes/ten-times-zero.md). Data-viz: the **docs-vs-code
+All live in [`../content/notes/ten-times-zero.md`](../content/notes/ten-times-zero.md). Data-viz: the **docs-vs-code
 ratio** bar, the **multiplier** (two rows, same AI, different baseline), and the **sprint timeline**
 (31 ticks). Flows: the **playbook loop** and the **mistakes-as-measurement loop** in the same file, plus
-the one-door flow in [`../notes/whitepaper-one-vocabulary.md`](../notes/whitepaper-one-vocabulary.md) and
+the one-door flow in [`../content/notes/whitepaper-one-vocabulary.md`](../content/notes/whitepaper-one-vocabulary.md) and
 the loop diagrams across the other notes. Copy the nearest one for the shape you need, then re-label.
 
 ## Rendering reality (know this before you build)

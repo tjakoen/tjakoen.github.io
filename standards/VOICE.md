@@ -9,8 +9,8 @@ summary: The standard for anything published in Tjakoen's name - cadence, the ma
 > social posts, product copy). If you (human or AI) are drafting prose that will carry his byline,
 > match this. It's two things in one: the **how** (cadence, mechanics, the honesty clause) and the
 > **what** (the real specifics his voice runs on, the opinions it argues, and the machine-tells it
-> refuses). Derived from his own drafts, primarily [`notes/origin-story.md`](../notes/origin-story.md)
-> (marked "my own voice") and [the whitepaper](../notes/whitepaper-one-vocabulary.md), and everything
+> refuses). Derived from his own drafts, primarily [`notes/origin-story.md`](../content/notes/origin-story.md)
+> (marked "my own voice") and [the whitepaper](../content/notes/whitepaper-one-vocabulary.md), and everything
 > concrete here is drawn from real projects.
 >
 > **It is a projection of how he already works. Update it when the work changes, not the other way
@@ -164,13 +164,13 @@ where possible, never mixed or grandiose.
   `readingTime`, `tags`, `summary`. (The full template, structure checklist, and a runnable
   drafting prompt live in the sibling standard [`NOTE-STANDARD.md`](NOTE-STANDARD.md).)
 - **The sign-off boilerplate**, at the foot of published notes:
-  > *The [judgment is human](../notes/ten-times-zero.md). The typing, by design, is not.*
+  > *The [judgment is human](../content/notes/ten-times-zero.md). The typing, by design, is not.*
 
   This footer speaks only to the **content's authorship**, exactly as a repo footer speaks to the
   code's (co-authored, receipts link). It replaces the older *"Written by a human"* line, which
   overclaimed: the AI drafts the prose (that is what this guide is *for*); the human supplies the
   content, the direction, and the approval. The honest split is the point. Link *"judgment is
-  human"* to [`notes/ten-times-zero.md`](../notes/ten-times-zero.md) the way every repo footer links
+  human"* to [`notes/ten-times-zero.md`](../content/notes/ten-times-zero.md) the way every repo footer links
   its "how I work with AI" receipts (see [`README-STANDARD.md`](README-STANDARD.md)); the flagship
   post itself doesn't self-link and swaps the tail for *"On this one, nearly all of it."*
 
@@ -193,7 +193,7 @@ Reach into this shelf instead of writing *"a modern typeface"* or *"a recent pro
 (Real ≠ automatically publishable; see the guardrails.)
 
 **Projects (the recurring cast)**
-- **TJ's Desk:** his personal site (tjakoen.github.io) — a portfolio, a notebook, and a live demo
+- **TJ's Desk:** his personal site (tjakoen.github.io), a portfolio, a notebook, and a live demo
   of the stack, built on it. E-ink / Swiss-editorial; the flagship of his aesthetic.
 - **The AI-operable design system (GRAIN + BATCH):** a docs site that doesn't just *describe*
   components, it lets the AI *drive* them: drivable catalog, build queue, token playground. The
