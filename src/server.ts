@@ -602,6 +602,13 @@ ${PAGE_ASSETS}</body>
     if ((p === "/loop" || p === "/loop/") && page.status === 200) return finalizePage(req, freezeLoopList(page));
     return finalizePage(req, page);
   },
+  // Last-resort catch for an uncaught throw in a route or the fetch handler: log it server-side,
+  // and never leak a stack to a visitor in prod. Dev keeps the stack inline for a fast diagnose.
+  error(err: Error) {
+    console.error("[server] unhandled request error:", err);
+    const body = config.isDev ? `${err.stack ?? err.message}` : "Internal Server Error";
+    return new Response(body, { status: 500, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+  },
 });
 
 console.log(`Running on http://localhost:${config.port} (${config.isDev ? "dev" : "prod"})`);
