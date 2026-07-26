@@ -269,10 +269,30 @@ chatbot.** Backticks are the loudest tell (see formatting), but they're one of a
 has a house style (smooth, balanced, eager, allergic to a rough edge), and every item below is a
 fingerprint of it.
 
+**Why a standard at all (the precedent, and the receipt).** This is not a new instinct. Structured
+writing standards predate the chatbot by decades: ASD-STE100 (Simplified Technical English, first
+issued 1986) exists so an aircraft manual reads the same in every hangar on earth, plain verbs, one
+name per thing, no decorative fog. The surprise is that the same discipline lands on a language
+model. [A 2026 experiment](https://github.com/woosal1337/blog/tree/main/videos/ep01-the-cure-for-ai-slop)
+fed an STE-derived writing skill to Claude and GPT-4 and measured the slop drop by half or more
+(roughly 50 to 74 percent) on every model tested, while a banned-word list alone barely moved the
+needle. That is this whole guide in one finding: hand the model a *system*, not a blocklist. Two
+honest caveats: the number is theirs, not a study of this voice, and STE's cockpit-manual rules
+(no contractions, twenty-word cap, one instruction per sentence) are far stricter than a warm voice
+wants. We keep the principle, borrow the one rule that fits (see *Nominalizations* below), and drop
+the starch.
+
 **Word-level tells (delete on sight):** *delve, tapestry, realm, landscape, navigate* (figuratively),
 *underscore, testament, showcase, boasts, robust, seamless, harness, elevate, unlock, empower, foster,
 myriad, plethora, ever-evolving, cutting-edge, game-changing.* If a word feels like it came free with
 the model, cut it.
+
+**Nominalizations (the verb hiding in a noun):** the machine loves *perform an analysis, provide a
+solution, conduct a review, make use of, offer support for.* Every one is a plain verb wearing a
+costume. Say *analyze, fix, review, use, support.* If a sentence has a limp verb (*perform, provide,
+conduct, carry out, make*) propping up a noun that could just *be* the verb, collapse it. Shorter,
+truer, and it drops a machine tell on the way out. (The one ASD-STE100 rule we keep, see *Why a
+standard at all* above, because it fits a warm voice instead of fighting it.)
 
 **Construction tells (the real giveaways: they're *shapes*)**
 - **"It's not just X, it's Y."** The signature cadence of generated prose. He does not talk like
@@ -346,7 +366,12 @@ A repertoire, not a template; don't hit every beat every time (see the formula t
 
 ## The off-voice smell test
 
-Fast pass before anything ships under his name. If a line trips any of these, fix it.
+Fast pass before anything ships under his name. If a line trips any of these, fix it. The purely
+mechanical rows (backticks, em-dashes, the word-tells, the not-just-X shape, eager sign-offs,
+nominalizations) can be caught by a linter before the human pass, the portfolio ships one as
+`bun run lint:voice`. It covers only the mechanical half by design; the judgment rows below (the
+missing wink, a bare credential, a benefit not shown, the formula tell) stay a human read. Ten times
+zero: the linter multiplies the eye, it does not replace it.
 
 - [ ] **A backtick in prose.** The number-one machine tell. (Code blocks + reference docs exempt.)
 - [ ] **An em-dash.** Now a top machine tell too. Rewrite with a comma, period, colon, or parentheses.
@@ -356,6 +381,7 @@ Fast pass before anything ships under his name. If a line trips any of these, fi
   its unglamorous reality, or the reason the reader needs it. Mileage, not medals.
 - [ ] **Buttoned-up all the way through.** If the whole piece is earnest, a wink is probably missing, but only a *real* one, pointing at a flaw he actually has. No real foible on hand? Skip the joke; a manufactured wink is a worse tell than an earnest paragraph.
 - [ ] **A corporate verb.** *leverage, utilize, empower, unlock, seamless.* Delete on sight.
+- [ ] **A nominalization.** *perform an analysis, provide a solution, make use of.* Collapse to the verb: *analyze, solve, use.*
 - [ ] **A benefit claimed but not shown.** Hypothesis? Say so.
 - [ ] **A specific number stated as permanent** when it's a snapshot. Flag it.
 - [ ] **Throat-clearing.** *"In today's fast-paced world…"* / *"It's worth noting that…"* Cut to the real thing.
