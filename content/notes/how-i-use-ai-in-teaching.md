@@ -10,8 +10,8 @@ tags: [teaching, education, ai, automation, github-actions, assessment]
 summary: >
   A transparent, practitioner's account of using AI to teach: building an entire GitHub-native
   course platform, drafting feedback at scale under a strict "name the concept, never the fix" rule,
-  and holding every AI grade for human review. It's grounded in receipts (537 commits, more prose
-  than code, a ~2,200-line engine) and it's honest about the limits: the proctored exam where AI is
+  and holding every AI grade for human review. It's grounded in public receipts you can open, a
+  public repo with more prose than code by the same ratio I always hit, and it's honest about the limits: the proctored exam where AI is
   banned outright, the PII I keep away from the model, and the boundaries I had to keep hardening so
   the automation could never quietly damage a real student's work.
 ---
@@ -82,12 +82,14 @@ From there it fans out across the whole job:
 
 ## The receipts
 
-I teach "keep the receipts," so here are mine. Across the workspace behind all of this, as of this
-writing: **537 commits** in about three and a half weeks, roughly **47,000 lines** added, most of it
-built with an AI at my side.
+I teach "keep the receipts," so here are mine, and the course platform is public, so you can open it
+and count for yourself. As of this writing the public repo carries **116 commits** and, once you set
+the vendored libraries aside, a little over **nine thousand lines** I wrote, most of it with an AI at my
+side. It is the sanitized slice, the part safe to show with no real student in it. The full workspace I
+run each term is larger and stays private, because it holds live class data.
 
 The number I care about most, though, is the same one that shows up when I build anything with AI:
-**there's nearly as much prose as code.** Something like 17,700 lines of Markdown against 23,800
+**there's nearly as much prose as code.** Close to 4,000 lines of Markdown against about 5,400
 lines of code, config, and workflows. For every four lines of code, about three lines of *words*:
 lessons, rubrics, READMEs, planning docs. That ratio is the whole argument for how I work, and it has
 its own post, [Ten Times Zero Is Still Zero](ten-times-zero.md); here it just says the quiet part
@@ -95,14 +97,14 @@ about teaching out loud, that it's a writing job as much as a coding one, and th
 
 A few more, because they tell the story:
 
-- **Four standalone design docs existed before the code did:** architecture, the AI-grading plan,
-  the UI plan, the onboarding file. About 1,100 lines of "here's what we're building and why" before
-  a feature was written. Same method as the rest of my work: intent first, code second.
-- **The engine itself is ~2,200 lines** across 13 tools, including a ~340-line AI-feedback module
-  and a gradebook library.
-- **A bot identity (course-bot) made 103 of those commits**, the ones that actually deliver grades
-  and materials to students. The mechanical delivery is fully automated; the *decisions* behind it
-  are not.
+- **Design docs existed before the code did:** the architecture, the AI-grading plan, the
+  onboarding guide, all sitting in the repo before a feature was written. Same method as the rest of
+  my work: intent first, code second.
+- **The console you can open is a few thousand lines of plain JavaScript**, no client framework,
+  with the grading logic and the gradebook in the open where you can read them.
+- **Delivery is automated by a bot identity in the private workspace**, the mechanical push of
+  grades and materials to students. You won't find those commits in the public slice, because they
+  run against private class repos. The *decisions* behind the delivery are never automated.
 
 ## The stories worth telling
 
@@ -194,7 +196,7 @@ This is the part most "AI in education" takes skip, so I'll be specific. The lim
   personal data; there's a comment in the code that says as much. That's a place I chose to
   constrain the tool rather than let it see everything.
 - **The disclosure is a choice, not a byproduct.** There isn't a single AI co-author trailer across
-  those 537 commits, not because the AI didn't help, but because I won't let the tooling auto-brand
+  those 116 commits, not because the AI didn't help, but because I won't let the tooling auto-brand
   my work in hundreds of quiet signatures. Instead there's one honest front-door statement: a "made
   with Claude" badge and a line saying the platform was built with its help, in the interest of
   transparency. Same principle as the classroom: use the tool out loud, once, on purpose, and own
