@@ -37,7 +37,7 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
 - **Pending work (approved, not yet done):**
   1. **Visualization rollout — mostly DONE (2026-07-04):** ten-times-zero was already done;
      origin-story now has 5 of 6 rendered (the "desk at work" figure stays a placeholder on purpose —
-     it should be a real screenshot of the live /loop demo, not a drawing); the teaching pair each
+     it should be a real screenshot of the live hero desk on `/`, not a drawing); the teaching pair each
      carry a lead mermaid (why-i-teach: the quit-loop + exit; how-i-use-ai: the feedback wall);
      the-browser-grew-up's replacement-map SVG is rendered. Remaining: capture the desk screenshot.
   2. **ten-times-zero editorial trim — first pass done (2026-07-04):** de-bolded the sprint bullets

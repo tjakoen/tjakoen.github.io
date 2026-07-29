@@ -7,7 +7,7 @@ test.describe("mobile — the assistant bottom sheet", () => {
   test.use({ viewport: { width: 375, height: 720 } });
 
   test("collapsed to a grab bar; tapping the header raises the chat", async ({ page }) => {
-    await page.goto("/loop");
+    await page.goto("/");
     const shell = page.locator(".app-shell");
     const aside = page.locator(".app-shell__aside");
 
@@ -27,7 +27,7 @@ test.describe("mobile — the assistant bottom sheet", () => {
   });
 
   test("the rail rides the off-canvas drawer; its app links (in the app dock) are reachable", async ({ page }) => {
-    await page.goto("/loop");
+    await page.goto("/");
     const shell = page.locator(".app-shell");
     const activity = page.locator(".activity-bar");
     const dock = page.locator(".app-dock");
@@ -48,7 +48,7 @@ test.describe("mobile — the assistant bottom sheet", () => {
     // modal-layering fix its peeking grab bar poked up through the open drawer and hid the dock's
     // lowest rows (About, half of Mail). Open the drawer; every dock row must be the topmost element
     // at its own centre (nothing painted over it).
-    await page.goto("/loop");
+    await page.goto("/");
     await page.locator('.app-shell__topbar [data-shell="rail-toggle"]').click();
     await expect(page.locator(".app-shell")).toHaveAttribute("data-rail-open", "true");
     await page.waitForTimeout(400);   // let the 0.3s slide-in settle before hit-testing positions

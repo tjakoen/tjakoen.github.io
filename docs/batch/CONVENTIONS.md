@@ -34,7 +34,7 @@ batch/   the no-build hypermedia substrate (render, http, assets, catalog, platf
 - `tjakoen.github.io/` wires the graph. Cross-layer dependencies are declared as **constructor/factory
   params**, and the **only place the layers meet is `tjakoen.github.io/server.ts`** (the composition root).
 - New design-system work goes **in `grain/` by default** (it's reusable). Only obviously
-  app-specific things (a one-off page layout, a domain component like `loop-card`) live in the app
+  app-specific things (a one-off page layout, a domain component like `task-card`) live in the app
   (`tjakoen.github.io/`). Test: *"would another product on GRAIN want this?"* → yes = grain, no = the app.
 
 A consuming product **re-skins by overriding token slots** in its own sheet linked after
@@ -133,7 +133,7 @@ layer ∈ atoms / molecules / organisms.
 - [ ] `<name>.ai.md` — **only if** the component has AI-mode behavior distinct enough to need its
       own panel (else the catalog grain-flips the Human view automatically).
 - [ ] If the component is an **addressable surface that accepts actions**, declare `data-kind`
-      + `data-accepts="verb …"` on its root (harvested into the AI manifest; e.g. `loop-card`).
+      + `data-accepts="verb …"` on its root (harvested into the AI manifest; e.g. `mail-row`).
 
 ### CSS-only components (layout / pattern)
 Some components have **no `.html` template** — they're a class + docs (`.css` + `.md`), composed by
@@ -176,7 +176,7 @@ A component reads "AI / in-transit" via **`[data-commit="pending"]` (live)** and
 component's own way, but keyed off those two:
 - text → grain font (inherited via `--type-font`, free);
 - controls/tags → dashed "terminal" edge (`b-button`, `b-input`, `b-badge`);
-- cards → dimmed + dashed outline (`loop-card`, `item-card`);
+- cards → dimmed + dashed outline (`task-card`, `work-card`);
 - the actively-working control adds the blinking caret (`b-button`).
 
 **The control lifecycle (one rule for any operator — human or AI).** A control the AI operates
@@ -245,7 +245,7 @@ would get its own e2e when grain is extracted.
   motion or layout it produces. See AUDIT check 12 for the matching mechanical guard.
 - **Visual regression baseline** (`tjakoen.github.io/e2e/visual.e2e.ts`): the behavior specs assert what a
   screen *does*; they don't catch a shifted margin, a dropped border, or a broken grid. `toHaveScreenshot`
-  pins the pixels of the key **static** screens (welcome, `/loop` idle, `/grain`, `/batch`, `/catalog`,
+  pins the pixels of the key **static** screens (welcome, `/grain`, `/batch`, `/catalog`,
   `/about`) so a silent visual regression fails loudly. Baselines are committed
   (`visual.e2e.ts-snapshots/`, per-OS) and CSS animation is frozen at capture; only deterministic
   screens qualify (mid-run/typing states are non-deterministic — leave those to `bun run shots`).
@@ -268,7 +268,7 @@ would get its own e2e when grain is extracted.
 
 ## 8. Naming & files
 
-- Files & directories: **kebab-case**. Component dir name = its tag (`b-button`, `loop-card`).
+- Files & directories: **kebab-case**. Component dir name = its tag (`b-button`, `task-card`).
 - One file = one concern; colocate a module's test next to it.
 - Headers everywhere (§2). Section dividers in CSS: `/* ---- label ---- */`.
 - Commit messages: imperative subject, a short body explaining *why*. No AI attribution

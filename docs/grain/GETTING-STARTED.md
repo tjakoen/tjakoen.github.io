@@ -43,5 +43,5 @@ The verbs themselves live in the closed registry, `ai/contract.ts` (`ActionName`
 - Read [`GRAIN.md`](GRAIN.md) for the full design (surfaces, one vocabulary, render ops, manifest).
 - Read [`AI-INTERFACE.md`](AI-INTERFACE.md) for the wire contract (the intent envelope, render-op kinds, the SSE push channel, the AI-acts protocol).
 - Browse every component live at [`/catalog`](/catalog) — it's self-documenting.
-- See it running end to end at [`/loop`](/loop), the reference "watch the AI act" screen.
+- See it running end to end on the [`/grain`](/grain) showcase — its "watch the AI act" demo drives a real surface through the one door.
 - Follow [`TUTORIAL.md`](TUTORIAL.md) to build one operable surface end to end, with a real captured request/response.

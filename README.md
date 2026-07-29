@@ -9,7 +9,7 @@ strongest possible proof the stack works: AI-first design, served as plain stati
 lightweight AI demo that runs entirely in the visitor's browser.
 
 > **Status: live and running.** THE EDITOR shell (the whole site as one VS-Code-style window),
-> the `/grain` and `/batch` showcases, the `/loop` "watch the AI act" demo, the `/catalog`, and the
+> the `/grain` and `/batch` showcases, the hero desk on `/` (watch the AI act), the `/catalog`, and the
 > notes + rendered layer docs (through MILL) are all built and served today by [`server.ts`](src/server.ts),
 > and the zero-ops GitHub Pages deploy is live (`batch/export` via
 > [`.github/workflows/pages.yml`](.github/workflows/pages.yml)). The productivity views — Notes,

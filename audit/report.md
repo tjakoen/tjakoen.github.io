@@ -4,20 +4,19 @@ _Current build, measured headless. Regenerate with `bun run audit`. `batch/expor
 
 ## What the numbers mean
 
-- **JavaScript shipped: 27kb–176kb per page** — the headline, and the "native-first" proof: heavy — investigate.
+- **JavaScript shipped: 30kb–177kb per page** — the headline, and the "native-first" proof: heavy — investigate.
 - **Bytes, JS and request counts are network-independent** — the robust, honest numbers to publish.
-- **TTFB / Load are LOCAL best-case** (no network hop; max load here 125ms) — use them for catching regressions, not as absolute proof. Real-world latency adds to every stack equally.
+- **TTFB / Load are LOCAL best-case** (no network hop; max load here 138ms) — use them for catching regressions, not as absolute proof. Real-world latency adds to every stack equally.
 - **The persuasive frame is comparative** — the same metrics vs Astro / Next / htmx tell the story (memory `framework-comparison-methodology`).
 
 ## Pages
 
 | Page | TTFB | Load | Wire | JS | Req | Blocking | Title | Desc | Canon | OG | 1×H1 | JSON-LD | Surfaces | Kinds | Accepts |
 |------|------|------|------|----|-----|----------|:-----:|:----:|:-----:|:--:|:----:|:-------:|:--:|:--:|:--:|
-| `/` | 10ms | 125ms | 502kb | **126kb** | 26 | 4css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 19 | 0 | 0 |
-| `/grain` | 7ms | 42ms | 393kb | **130kb** | 28 | 4css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 24 | 0 | 0 |
-| `/loop` | 9ms | 37ms | 428kb | **176kb** | 28 | 4css/2js | ✓ | ✗ | ✓ | ✓ | ✓ | ✓ | 27 | 2 | 2 |
-| `/catalog` | 8ms | 61ms | 576kb | **27kb** | 18 | 4css/1js | ✓ | ✗ | ✓ | ✓ | ✗ | ✓ | 19 | 2 | 0 |
-| `/about` | 6ms | 31ms | 377kb | **126kb** | 26 | 4css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 17 | 0 | 0 |
+| `/` | 11ms | 138ms | 618kb | **173kb** | 31 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 28 | 0 | 0 |
+| `/grain` | 9ms | 68ms | 510kb | **177kb** | 33 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 33 | 0 | 0 |
+| `/catalog` | 6ms | 83ms | 716kb | **30kb** | 19 | 4css/1js | ✓ | ✗ | ✓ | ✓ | ✗ | ✓ | 24 | 4 | 2 |
+| `/about` | 14ms | 48ms | 540kb | **173kb** | 31 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 26 | 0 | 0 |
 
 ## Endpoints
 

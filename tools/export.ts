@@ -31,10 +31,7 @@ const DIST = Bun.env.EXPORT_DIST ?? "dist";
 
 // Operable surfaces — behind the one door (/intent + SSE) — excluded from the crawl because a
 // static copy has no backend to answer them (§18). `/dashboard` + `/home` are retired; never
-// crawl them. `/loop` is NOT here (Phase 2, was `new Set(["/loop"])`): it's now exported as a
-// FROZEN SNAPSHOT — server.ts server-renders its initial task list into the page (so the crawl
-// captures a real board, not an empty shell) and this file's transformPage (below) strips the
-// live htmx auto-refresh, so the static copy never calls the (absent) `/ui/loop` backend.
+// crawl them.
 const OPERABLE = new Set<string>();
 
 // EVERY exported page is flipped to the CLIENT-SIDE door on the static copy (§19.3): the static
@@ -42,10 +39,7 @@ const OPERABLE = new Set<string>();
 // server `/stream` — on GitHub Pages that request 404s, and each page logs a stream error + goes
 // "offline". The loopback client door runs the same vocabulary in-browser, so the desk stays online
 // and quiet everywhere. The live dev server keeps the server door (no marker); only the frozen copy
-// carries it. Safe to stamp unconditionally, `/loop` included: the client door would actually run
-// the demo fine in-browser, but /loop's OWN task list is real per-deploy data with no live backend
-// behind it — so pages/loop.html's own script reads this same marker to show an honest "static
-// snapshot" banner and disable the free-text composer.
+// carries it. Safe to stamp unconditionally across every page.
 // The desk door (ai/desk-door.js) is the portfolio's OWN client door — data-ai-door selects it over
 // grain's default. Freezing it as an entry crawls its static graph (desk-reasoner, webllm-loader,
 // prompt, retrieval); the WebLLM CDN import inside grain's webllm.js is a runtime string (not
@@ -98,7 +92,7 @@ async function waitForServer(timeoutMs = 15000) {
 }
 
 // The exportable allowlist: every page route the app serves (the portfolio's one pages tree —
-// "/", "/grain", "/batch", "/mill", /loop, /about) + MILL's content routes (/notes, /grain/docs,
+// "/", "/grain", "/batch", "/mill", /about) + MILL's content routes (/notes, /grain/docs,
 // /batch/docs — content pages MUST export, §18) + PROOF's plan routes (/plans, /plans/plan/:id)
 // + /catalog + /reference, minus the operable surfaces. Derived from the same route lists the
 // server's sitemap uses, so new pages/notes/plans export automatically.
@@ -140,11 +134,6 @@ try {
     transformPage: (route, html) => {
       // client transport + the portfolio's OWN door (desk-door selects the WebLLM path over grain's default)
       let out = html.replace(/<body\b/, '<body data-ai-transport="client" data-ai-door="/modules/portfolio/ai/desk-door.js"');
-      // /loop's frozen snapshot (server.ts freezeLoopList) already carries the real list; strip
-      // the live htmx auto-refresh so the static copy never requests the backend-only /ui/loop
-      // (a 404 on GitHub Pages) — pages/loop.html documents the pairing.
-      if (route === "/loop")
-        out = out.replace(/\s+hx-get="\/ui\/loop"\s+hx-trigger="load"/, "");
       // The SEO head (seo.ts) emits ABSOLUTE canonical/OG/JSON-LD URLs at the crawl origin; swap it
       // for the deploy origin, the same rewrite sitemap.xml/robots.txt/llms.txt take (batch/export
       // only origin-rewrites .xml/.txt data routes, not pages — so pages do it here). No-op without

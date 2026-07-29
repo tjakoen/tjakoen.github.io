@@ -21,7 +21,7 @@ const BASE = `http://localhost:${PORT}`;
 const OUT = "audit";
 
 // Candidate pages; each is probed and recorded with its status (404s are reported, not fatal).
-const PAGES = ["/", "/grain", "/loop", "/catalog", "/about"];
+const PAGES = ["/", "/grain", "/catalog", "/about"];
 // Site-level machine-readability endpoints (AEO/SEO infrastructure).
 const ENDPOINTS = ["/sitemap.xml", "/robots.txt", "/llms.txt"];
 // Grain's machine-operable affordances — the vocabulary batch stays ignorant of. [data-surface]

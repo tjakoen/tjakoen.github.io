@@ -212,7 +212,7 @@ interface RenderOp {
 > colour/grade comes from `provenance`.
 
 > A surface is **overwritten** by streaming `back` ops (delete a char) then `text` ops
-> (type the new) — the AI visibly backspacing and retyping. The `/loop` demo uses this
+> (type the new) — the AI visibly backspacing and retyping. The hero desk (on `/`) uses this
 > to revise one bullet of a plan it just wrote.
 
 ### 2c. The manifest — the AI's instruction manual (generated, §4)
@@ -744,21 +744,21 @@ without dragging in the full task domain yet.
 | Reasoner boundary + stub | `grain/ai/reasoner.ts` | grain |
 | The one door (single writer) | `grain/ai/interaction-layer.ts` | grain |
 | Manifest (harvested, can't drift) | `grain/ai/manifest.ts` + `grain/ai/accepts.ts` | grain |
-| Routes (`/intent`, `/stream`, `/ai/manifest`, `/ui/loop`) | `tjakoen.github.io/src/routes/ai-routes.ts` | app (wiring) |
+| Routes (`/intent`, `/stream`, `/ai/manifest`) | `tjakoen.github.io/src/routes/ai-routes.ts` | app (wiring) |
 | Dispatcher island | `grain/scripts/ai-dispatch.js` | grain |
-| Demo page + card | `tjakoen.github.io/view/pages/loop.html`, `tjakoen.github.io/view/components/molecules/loop-card/` | app |
+| Hero desk (home) + cards | `tjakoen.github.io/view/pages/index.html`, `tjakoen.github.io/view/components/molecules/task-card/` | app |
 
 The manifest is now **harvested** (§4 realised): item targets read `data-accepts` /
-`data-kind` straight off `loop-card`; region targets are inverted from the action
+`data-kind` straight off the domain cards (`task-card`, `mail-row`); region targets are inverted from the action
 registry; a startup drift-guard warns if a component declares a verb the backend
 doesn't allow. Grade = commit state extends to **non-text atoms** too — an in-transit
 button renders a dashed "terminal" edge + block caret (the same inherited grain state,
 expressed for a button).
 
-Run it: `cd poc && bun run dev`, then open `/loop`. Click **Archive** — the card goes
+Run it: `cd poc && bun run dev`, then open `/` (the hero desk). Click **Archive** — the card goes
 grain (optimistic `pending`), the stub "reasons" (brief delay), then the confirmed
 clean card arrives **over SSE**. Set `AI_FAIL_RATE=1` to watch the rollback path.
-`GET /ai/manifest?screen=loop` returns the live manifest. `/catalog` has a **Human/AI**
+`GET /ai/manifest?screen=home` returns the live manifest. `/catalog` has a **Human/AI**
 toggle per component that flips it between clean and grain.
 
 **What it deliberately does *not* do yet:** real judgment (the reasoner is a stub),

@@ -10,13 +10,13 @@ import { test, expect, type Page } from "@playwright/test";
 const FLAVOR = "brioche";   // any non-default entry of the pages' data-themes list
 
 async function pickFlavor(page: Page) {
-  await page.goto("/loop");
+  await page.goto("/");
   // through the real vocabulary (theme.js), not raw storage writes
   await page.evaluate((t: string) => (window as any).grain.theme.setTheme(t), FLAVOR);
 }
 
 test.describe("theming — one saved flavor, every page", () => {
-  for (const route of ["/", "/loop", "/catalog", "/grain"]) {
+  for (const route of ["/", "/catalog", "/grain"]) {
     test(`saved flavor applies on ${route}`, async ({ page }) => {
       await pickFlavor(page);
       await page.goto(route);
@@ -29,7 +29,7 @@ test.describe("theming — one saved flavor, every page", () => {
     // kill the deferred script: if the attribute still lands, the render-blocking
     // theme-boot.js did it — i.e. the flavor is on <html> before first paint, no flash
     await page.route("**/scripts/theme.js", (r) => r.abort());
-    await page.goto("/loop");
+    await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-theme", FLAVOR);
   });
 

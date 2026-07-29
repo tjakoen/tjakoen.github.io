@@ -78,24 +78,13 @@ const SHOTS: Shot[] = [
       await page.waitForTimeout(300);
     },
   },
-  { name: "loop", desc: "/loop — the desk (idle)", fullPage: true, prepare: goto("/loop") },
   {
-    name: "loop-acting", desc: "/loop — “Watch the desk work”: spotlight + dim, writing the plan",
+    name: "cmdk", desc: "/ — the ⌘K command palette",
     prepare: async (page) => {
-      await page.goto(`${BASE}/loop`, { waitUntil: "networkidle" });
-      await page.getByRole("button", { name: "Watch the desk work" }).click();
-      await page.locator(".ai-backdrop.is-on").waitFor({ timeout: 8000 });
-      await page.locator('[data-surface="plan-item:1"]').waitFor({ timeout: 20000 }).catch(() => {});
-      await page.waitForTimeout(400);   // let a bullet land mid-write
-    },
-  },
-  {
-    name: "cmdk", desc: "/loop — the ⌘K command palette",
-    prepare: async (page) => {
-      await page.goto(`${BASE}/loop`, { waitUntil: "networkidle" });
+      await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
       await page.keyboard.press("ControlOrMeta+k");
       await page.locator("dialog.cmdk").waitFor({ timeout: 5000 });
-      await page.locator("dialog.cmdk input").fill("loop");
+      await page.locator("dialog.cmdk input").fill("grain");
       await page.waitForTimeout(250);
     },
   },
@@ -124,7 +113,7 @@ function escapeHtml(s: string) {
 async function waitForServer(timeoutMs = 15000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    try { if ((await fetch(`${BASE}/loop`)).ok) return; } catch { /* not up yet */ }
+    try { if ((await fetch(`${BASE}/`)).ok) return; } catch { /* not up yet */ }
     await Bun.sleep(200);
   }
   throw new Error(`server didn't come up on ${BASE}`);

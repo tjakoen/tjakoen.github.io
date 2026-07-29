@@ -311,7 +311,8 @@
     // follow-ups after each answer (desk-reasoner). A click routes through the SAME one door as the
     // composer (set the input's value, fire the existing Send). The row stays visible all conversation.
     const SUGGEST = {
-      "/":         ["What is BREAD?", "Who is TJ?", "Watch the AI act"],
+      // "/" (the welcome hero) is handled by the TRY_THIS operate-the-site rail below, not a topical
+      // Q&A row — so it carries no entry here (plan: desk-hero-demo P2a).
       "/bread":    ["Why four layers?", "What is PANTRY?", "Is this stack live?"],
       "/grain":    ["What does 'grain' mean?", "How does the one door work?", "Watch the AI act"],
       "/batch":    ["What is the substrate?", "Why no build step?", "What runs this site?"],
@@ -320,7 +321,6 @@
       "/pantry":   ["What does PANTRY compose?", "How does the app boot?", "What is the composition root?"],
       "/notes":    ["What's the flagship post?", "How does TJ use AI?", "Why teach with AI?"],
       "/about":    ["How do I reach TJ?", "What's TJ's background?", "Is there a résumé?"],
-      "/loop":     ["What is the workspace?", "Watch the AI act", "How does the desk work?"],
       "/calendar": ["What's on the calendar?", "How is this site built?", "Who is TJ?"],
       "/mail":     ["How do I reach TJ?", "What is this inbox?", "Who is TJ?"],
     };
@@ -343,11 +343,28 @@
     // page suggestion. The desk swaps these for contextual follow-ups after each answer (but keeps the
     // pin first). These strings must match the desk's action router (ai/actions.ts).
     const PINNED_CHIP = "What can I do here?";
+    // Welcome hero "try this" rail (plan: desk-hero-demo P2a): operate-the-site IMPERATIVES, not
+    // generic Q&A. Every one routes deterministically through the desk's action router (ai/actions.ts)
+    // so a click makes the desk ACT — filter, archive, draft, deep-link, theme, tour — instead of
+    // returning a canned answer. The phrasings are chosen to match routeAction exactly (law #2: the
+    // chips are code-authored, the router does the recognizing); keep them in sync with ai/actions.ts.
+    const TRY_THIS = [
+      "Show me the notes about teaching",             // B2 notes-filter
+      "Archive everything from BREAD CI",             // B3 mail-archive
+      "Tell TJ I want to talk about GRAIN",           // B1 contact field.set
+      "Where does TJ talk about teaching with AI?",   // A1 deep-link + A3 citation
+      "Make it dark",                                 // A4 theme
+      "Take the tour",                                // A2 / CRUMB
+    ];
     const setDefaultChips = () => {
       const chips = document.querySelector("[data-suggest-chips]");
       if (!chips) return;
-      const topical = (pickSuggest() || []).slice(0, 1);
-      const full = [PINNED_CHIP, "Summarize this page", "Show me the latest note", ...topical];
+      // The welcome hero shows the operate-the-site rail — one clear set, every chip acts (owner
+      // decision). Every OTHER page keeps the pinned "what can I do" + the two headline actions
+      // (summarize / open the latest note) + a topical page suggestion.
+      const full = path === "/"
+        ? TRY_THIS
+        : [PINNED_CHIP, "Summarize this page", "Show me the latest note", ...(pickSuggest() || []).slice(0, 1)];
       chips.replaceChildren(...full.map(mkChip));
     };
     setDefaultChips();

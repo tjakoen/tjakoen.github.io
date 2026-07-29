@@ -52,17 +52,50 @@ agents; decided 2026-07-26: the loop is work-triggered, standards hold AS we wor
 ## Tasks
 
 ### P0 — compliance sweep (retrofit the estate)
-- [ ] Diff the two forked standards files against canon; harvest anything worth keeping upstream,
-      then delete the forks and re-point via starter-pattern CLAUDE.md.
-- [ ] Add missing `AGENTS.md → CLAUDE.md` symlinks (batch-stack, ph-live, lakbay-ph).
-- [ ] Bootstrap bare repos from CLAUDE.starter (pocket-tickets-api, framework-bench; owner call on
-      test-results — may be scratch).
+- [x] Diff the forked standards files against canon; harvest, then delete and re-point.
+      **Done 2026-07-26.** All forks were strict older subsets of canon, nothing to upstream:
+      lakbay-ph (AI-DEVELOPMENT + AI-REPO-STANDARD), thesis-advising (AI-DEVELOPMENT +
+      AI-REPO-STANDARD + VOICE), and a third the sweep missed — batch-stack/AI-REPO-STANDARD.md.
+      lakbay-ph forks deleted + CLAUDE.md/README.md re-pointed to URL canon (commit f3456e9).
+      thesis-advising forks LEFT in place (owner call: repo is non-git, skip until git-inited).
+- [x] Add missing `AGENTS.md → CLAUDE.md` symlinks. **Done 2026-07-26.** ph-live (28356f7e),
+      lakbay-ph (in f3456e9). Correction: the sweep's "batch-stack" was stale intel — that dir was
+      the DEAD pre-split monorepo (frozen 2026-07-08, fully split into bread-repos/*); its local
+      copy was deleted (owner call) and the symlink work redirected to the live split. Added root
+      CLAUDE.md + AGENTS symlink to bread-repos/grain (336e057, had per-package files but no root
+      front door).
+- [x] Bootstrap bare repos from CLAUDE.starter. **Done 2026-07-26.**
+      bread-repos/framework-bench done (6dbe23c). test-results (bread-repos: no git, only
+      .last-run.json; Development/: empty) = confirmed scratch, skipped. pocket-tickets-api DROPPED
+      from scope — the repo was deleted by the owner mid-sweep (drafted kit discarded).
+- [x] Remote course-platform umbrellas retrofitted. **Done + PUSHED 2026-07-26.**
+      Cloned both github-native-course-platform (public umbrella + Course Console) and HAU
+      (private operational workspace, PII); both had a bespoke CLAUDE.md, no forks, but no AGENTS
+      symlink. Added AGENTS -> CLAUDE symlink to each, committed with gitmoji house style
+      (platform 07fd1b5, HAU bdff41c), owner PUSHED both; the canonical ~/Local/HAU +
+      ~/Local/HAU/github-native-course-platform copies ff-pulled the symlink; throwaway Development/
+      clones removed. Teacher/student templates
+      excluded (they are submodules of the platform; user-facing, owner call). NOT done: neither
+      CLAUDE.md references the personal standards by URL — deferred to the P4 thin-shape rollout
+      rather than editing HAU's 76KB private doc blind. NOTE: grader-ui is now a retired redirect
+      stub (folded into platform/console/); bread-repos/grader-ui is a corpse (cleanup candidate,
+      like the deleted batch-stack).
 - [ ] (Bootstrap-prompt consolidation moved to P4 — the starter is touched once, after the thin
       shape is settled in P1. P0 repos get today's starter; they pick up the thin shape in the
       P4 rollout.)
 
 ### P1 — write the standard: standards/LOOP.md
-- [ ] New standard, one floor above SESSION-LOOP (SESSION-LOOP owns one session; LOOP owns the
+> **DONE 2026-07-26** (uncommitted). Wrote `standards/LOOP.md` (6 sections: primitives 4-of-5 +
+> automations consciously-not-adopted; work-triggered two-tier heartbeat + worktrees + verify rule +
+> staleness flags; thin-CLAUDE.md kit shape + memory public-repo teeth; accountability contract
+> ledger + rails; "why a loop" research subsection w/ all 4 cites + comprehension-debt→ten-times-zero
+> + STE-style honest caveat; §12-mirror adoption checklist). Wired: standards/README.md index row +
+> fit-together note; SESSION-LOOP + AI-REPO-STANDARD reciprocal pointers; view/pages/docs/index.html
+> Standards list row. Renders at /standards/loop (dir-sourced, no route reg needed). voice-lint N/A
+> (standards exempt — backticks/em-dashes are sibling house style). VERIFY RULE MET: reviewed by a
+> fresh Sonnet agent that didn't write it → SHIP, no must-fixes (one cosmetic reword applied).
+> BLOCKED-carry: §5 research base is a living doc, revisit after owner reads the two O'Reilly books.
+- [x] New standard, one floor above SESSION-LOOP (SESSION-LOOP owns one session; LOOP owns the
       system around sessions). Contents: the loop primitives mapped to our stack — taking four
       of Osmani's five and consciously adapting the fifth: no scheduled automations (decided
       2026-07-26; no cron, no Routines, standards hold AS we work). The heartbeat is
@@ -75,34 +108,49 @@ agents; decided 2026-07-26: the loop is work-triggered, standards hold AS we wor
       for parallel sessions; the verify rule (a change is verified by a session/agent that
       didn't write it — no grading your own homework); staleness flags (audit overdue, graphify
       stale, e2e missing).
-- [ ] Define the thin-CLAUDE.md kit shape here (the standard owns the shape; P4 applies it to
+- [x] Define the thin-CLAUDE.md kit shape here (the standard owns the shape; P4 applies it to
       the starter): the irreducible cold-start minimum in CLAUDE.md (what-this-is, commands,
       five non-negotiables, "bunx pantry for the rest"), everything else in the standard
       pantry-mounted dirs (docs/, plans/, decisions/, artifacts/). Memory discipline: durable
       facts promoted to committed docs; scratch/private stays in the agent store (in-repo
       memory in a public repo would publish working context). Standards referenced by URL,
       never files in the repo.
-- [ ] The accountability contract (keeps an unattended session honest — Osmani's "human
+- [x] The accountability contract (keeps an unattended session honest — Osmani's "human
       verification non-negotiable" made mechanical): (a) the run ledger — claim a plan item before
       touching code, checkpoint at load-bearing moments, close with a run report (gate results
       verbatim, diffstat, what was NOT done, what needs human eyes); evidence-or-it-didn't-happen;
       (b) the rails — a declared envelope per run: scope cap, hard stops (no merge, no push to
       main, no deletes, nothing outward-facing), ask-triggers (scope growth, owner-only decision,
       gate red twice on the same cause → stop and file a finding, don't thrash).
-- [ ] "Why a loop at all" research subsection citing the three sources; comprehension-debt warning
+- [x] "Why a loop at all" research subsection citing the three sources; comprehension-debt warning
       tied to ten-times-zero.
-- [ ] Adoption checklist mirroring AI-REPO-STANDARD §12 (day one / first month / steady state).
+- [x] Adoption checklist mirroring AI-REPO-STANDARD §12 (day one / first month / steady state).
 
 ### P2 — PANTRY becomes the control center (work lands in pantry repo, its PLAN.md owns detail)
-- [ ] `pantry doctor`: kit compliance (CLAUDE.md present, AGENTS symlink, forked-standards
+> Spec + detail now live in pantry `PLAN.md` piece 11 (11a doctor … 11e artifacts/home/timeline).
+- [x] `pantry doctor`: kit compliance (CLAUDE.md present, AGENTS symlink, forked-standards
       detection, plans/ + config present) + staleness flags (last audit report age, graphify
       freshness, e2e suite presence) + existing drift lint, one command, CI-able nonzero exit.
+      **DONE 2026-07-26** — pantry piece 11a, branch `feat/pantry-doctor` (commit 8703b5d, NOT
+      merged/pushed — human gates). doctor.ts + doctor.test.ts (23 cases), CLI wired,
+      `standardsSource: "canon"` opt-out added to config for the standards home. error/warn/info
+      split (error fails CI, warn surfaces what's due at exit 0). Verified: 68/68 pantry suite green,
+      tsc clean, live smoke (compliant repo exit 0, bare repo exit 1). Independent Sonnet reviewer
+      (didn't write it) → found 2 must-fixes (unguarded readlink TOCTOU; drift fold-in untested),
+      BOTH FIXED + re-verified, plus should-fixes (symlink-target resolves to cwd, boundary/fresh
+      cases).
 - [ ] Doctor accountability checks: stale claims (plan item claimed, no checkpoint in N days),
       branches with no ledger entry, run reports missing gate evidence, unresolved decisions
       blocking runs.
-- [ ] `pantry init --kit` (explicit opt-in, write-if-absent only — the non-invasive rule holds):
+- [x] `pantry init --kit` (explicit opt-in, write-if-absent only — the non-invasive rule holds):
       CLAUDE.md from starter, AGENTS symlink, plans/, pantry.config.json.
-- [ ] The decision inbox: agents write decision-requests as markdown (status open/resolved,
+      **DONE 2026-07-26** — pantry piece 11b, branch `feat/pantry-doctor` (commit 456aa64, stacked on
+      doctor 8703b5d, NOT merged/pushed — human gates). Starter resolved from the portfolio package via
+      `import.meta.resolve`; CLAUDE.md + AGENTS symlink write-if-absent, never overwritten even with
+      `--force` (lstat-guarded, so a dangling host symlink is preserved). Acceptance MET: `pantry
+      doctor` green right after (live smoke exit 0). 74/74 green, tsc clean, init.test.ts (6 cases).
+      Independent reviewer → 1 must-fix (exists→lstat write-through gap) FIXED + re-verified.
+- [x] The decision inbox: agents write decision-requests as markdown (status open/resolved,
       options, a recommendation, evidence links); PANTRY renders a `/decisions` surface
       (question + flagged code + artifacts side by side) and the agent shares the localhost
       link. Resolution = the grader-ui / grain-handoff pattern: click through the options, an
@@ -113,6 +161,15 @@ agents; decided 2026-07-26: the loop is work-triggered, standards hold AS we wor
       tradeoff, accepted: clicks aren't durable until the prompt is pasted. The decision file
       doubles as a ledger entry. Autonomous runs ALWAYS ask here (chat has nobody in it);
       interactive sessions use it for artifact-heavy decisions, chat for quick ones.
+      **DONE 2026-07-26** — pantry piece 11d, branch `feat/pantry-doctor` (commit 68b3999,
+      stacked on 11b 456aa64, NOT merged/pushed — human gates). Owner call: decision files live
+      UNDER `plans/` (`plans/decisions/`, config `decisionsDir`), so PROOF tooling + `pantry
+      doctor`'s plans-present check already cover them. decisions.ts (pure data) + client
+      generate-prompt (no POST, PANTRY writes nothing) + `/decisions`·`/decisions/<id>`·
+      `/decisions.json` gated by a `decisions` surface. Open decisions LEAD `/llms.txt` +
+      `knowledge.json` `openDecisions`, so an autonomous run resolves them first. 87/87 green,
+      tsc clean, live HTTP smoke passed. Independent reviewer → no issues; hardened the one
+      caveat (evidence href scheme-validated, javascript:/data: dropped) + tested.
 - [ ] Artifacts dir per run (screenshots, HTML artifacts, audit reports, diffs) that PANTRY
       serves and decision files / run reports link into — where evidence lives.
 - [ ] Home surface: latest audit + drift reports with freshness ("audit N days old"), next to

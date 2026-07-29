@@ -2,8 +2,7 @@
 
 A row composing the type atom, a badge, and an action button. Bindings (`data-field`,
 `data-bind-*`) are filled from a task's data at render; the panels below show the
-expanded markup the component produces. This is the original direct-`hx-post` card;
-the AI-loop variant is `loop-card`.
+expanded markup the component produces.
 
 ## States
 

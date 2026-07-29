@@ -12,6 +12,61 @@
   if (!t) { console.warn("[desk-commands] window.grain.terminal not ready — is terminal.js loaded first?"); return; }
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+  // ── desk verbs: the terminal as a THIRD client of the ONE door ───────────────────────────────────
+  // (plan: desk-hero-demo P2b). grain's terminal already raises `ask`/`tour`/`stop` as real Intents
+  // through window.grain.door.submit — these commands add the operate-the-site verbs on top, each one
+  // phrasing what the visitor typed as the SAME natural-language intent the chat + the suggest chips
+  // send. So the deterministic router (ai/actions.ts) does the recognizing, the desk drives the real
+  // surface (filter/archive/deep-link/draft/theme/tour), and it narrates its steps in the chat and
+  // here. Law #2: the terminal never routes a verb itself — it only restates the ask; the router owns
+  // the recognizing. Guards mirror grain's own `ask` (door loaded + a chat to answer in + online).
+  const deskSubmit = (ctx, text, echo) => {
+    if (!ctx.door) return ctx.printErr("the door isn't loaded on this page.");
+    if (!document.querySelector('[data-surface="chat-log"]')) return ctx.printErr("no desk on this page to run that in.");
+    if (!ctx.door.online()) return ctx.printErr("the desk is offline — can't run that right now.");
+    ctx.door.submit("chat.send", "chat-log", { text });
+    if (echo) ctx.print(echo);
+    return undefined;
+  };
+
+  t.register({ name: "notes", args: "<topic>", help: "filter the notes by a topic (drives /notes)", run(ctx) {
+    if (!ctx.arg) return ctx.printErr("notes about what? try ‘notes teaching’.");
+    return deskSubmit(ctx, `show me the notes about ${ctx.arg}`, `→ filtering the notes for ‘${ctx.arg}’ — watch the chat.`);
+  }});
+  t.register({ name: "archive", args: "<sender>", help: "archive every message from a sender (drives /mail)", run(ctx) {
+    if (!ctx.arg) return ctx.printErr("archive from whom? try ‘archive BREAD CI’.");
+    return deskSubmit(ctx, `archive everything from ${ctx.arg}`, `→ archiving mail from ‘${ctx.arg}’ — watch the chat.`);
+  }});
+  t.register({ name: "find", args: "<topic>", help: "jump to where TJ covers a topic (deep-link)", run(ctx) {
+    if (!ctx.arg) return ctx.printErr("find what? try ‘find teaching with ai’.");
+    return deskSubmit(ctx, `where does TJ talk about ${ctx.arg}`, `→ looking for ‘${ctx.arg}’ — watch the chat.`);
+  }});
+  t.register({ name: "draft", args: "<message>", help: "start a message to TJ (prefills the contact form — you send it)", run(ctx) {
+    if (!ctx.arg) return ctx.printErr("draft what? try ‘draft I want to talk about GRAIN’.");
+    return deskSubmit(ctx, `tell TJ ${ctx.arg}`, "→ drafting your message — watch the chat. The desk fills it in; you send it.");
+  }});
+  t.register({ name: "tour", args: "", help: "take the guided tour", run(ctx) {
+    return deskSubmit(ctx, "take the tour", "→ starting the tour — watch the chat.");
+  }});
+
+  // theme — OVERRIDES grain's flavor-only builtin so the terminal routes theme through the desk (the
+  // one door), the same "make it dark" / "switch to brioche" the chat understands: dark/light/next is
+  // the SCHEME axis, any other word is a flavor — both handled by the desk's theme verb (ai/actions.ts,
+  // re-validated against the live <html data-themes>). Flavor switching is PRESERVED (still works, now
+  // narrated); no arg is a pure read (current flavor + the axes), so it needs no door.
+  t.register({ name: "theme", args: "<dark|light|next|flavor>", help: "switch the theme (drives the desk)", run(ctx) {
+    const th = window.grain && window.grain.theme;
+    if (!ctx.arg) {
+      if (!th || !th.themes) return ctx.printErr("theming isn't loaded on this page.");
+      return ctx.print(`flavors: ${th.themes().join(", ")} · scheme: dark/light — current flavor: ${th.theme && th.theme()}`);
+    }
+    const a = ctx.arg.toLowerCase();
+    const text = /^(dark|light)$/.test(a) ? `make it ${a}`
+      : a === "next" ? "cycle the theme"
+      : `switch to the ${ctx.arg} theme`;
+    return deskSubmit(ctx, text, `→ theme: ${ctx.arg} — watch the chat.`);
+  }});
+
   // ── whoami: the short version ───────────────────────────────────────────────────────────────────
   t.register({ name: "whoami", args: "", help: "who built this", run(ctx) {
     ctx.print("Tjakoen Stolk — I teach software engineering and build AI-first interfaces.");

@@ -226,9 +226,9 @@ describe("makeDeskReasoner — UI actions (the showcase: the desk drives the pag
 
   test("capabilities reads GRAIN's manifest for page-specific operables (not a hardcoded list)", async () => {
     const { deps } = makeDeps();
-    deps.pageInfo = () => ({ route: "/loop", title: "Loop" });
+    deps.pageInfo = () => ({ route: "/grain", title: "Grain" });
     deps.pageManifest = () => ({                       // shape of grain's domManifest
-      screen: "loop", actions: [], inView: {}, note: "",
+      screen: "grain", actions: [], inView: {}, note: "",
       targets: [
         { id: "screen", kind: "screen", accepts: ["demo.run"] },       // generic → skipped
         { id: "chat-log", kind: "chat-log", accepts: ["chat.send"] },  // the desk itself → skipped
@@ -426,7 +426,7 @@ describe("makeDeskReasoner — clarify (AI asks, human picks)", () => {
 
 describe("makeDeskReasoner — catalog navigation (deterministic over the real sitemap, model for the tail)", () => {
   const CATALOG = buildCatalog(
-    ["/", "/grain/", "/notes/", "/loop/", "/notes/ten-times-zero/"],
+    ["/", "/grain/", "/notes/", "/notes/ten-times-zero/"],
     { "/notes/ten-times-zero": "Ten Times Zero" },
   );
 
@@ -449,7 +449,7 @@ describe("makeDeskReasoner — catalog navigation (deterministic over the real s
   });
 
   test("the model may NAVIGATE to a REAL catalog route for a fuzzy ask", async () => {
-    const { engine } = fakeEngine(["NAVIGATE:/loop"]);
+    const { engine } = fakeEngine(["NAVIGATE:/notes"]);
     let navd = "";
     const { deps } = makeDeps({ loadEngine: async () => engine, loadCatalog: async () => CATALOG });
     deps.navigate = (u) => { navd = u; };
@@ -457,8 +457,8 @@ describe("makeDeskReasoner — catalog navigation (deterministic over the real s
 
     const d = await r.decide(chat("take me somewhere new"), makeTools().tools);
 
-    expect(navd).toBe("/loop");
-    expect(d.reply).toBe("Navigating to Loop");
+    expect(navd).toBe("/notes");
+    expect(d.reply).toBe("Navigating to Notes");
   });
 
   test("model NAVIGATE to a route NOT in the catalog → no nav, and the raw token never leaks", async () => {

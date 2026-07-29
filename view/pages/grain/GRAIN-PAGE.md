@@ -37,7 +37,7 @@
   is inert (ARCHITECTURE §18 — the AI loop can't be a static file). Live render (dev/prod server)
   is where it runs. See [[interaction-door-pattern]] and "The AI demo" below.
 - **AI-demo brain: scripted now, model-later** *(model tier landed 2026-07-17)*. Ship the
-  deterministic scripted reasoner first (like `/loop` — reliable showcase, zero download). Design the
+  deterministic scripted reasoner first (like the hero desk on `/` — reliable showcase, zero download). Design the
   reasoner as a seam so a real in-browser model (embeddings → optional local LLM) can drop in later as an
   upgrade tier. The upgrade tier is now live: a small WebLLM model drives nav and choice ops behind the
   same seam, with the scripted path kept as the offline/no-WebGPU fallback.
@@ -90,7 +90,7 @@ behaviours (`[data-peek]` hooks, lazy load, the hover bridge).
 
 The composed surface is operable by **both operators through the one door** — the real
 `ai-dispatch.js` posting to `POST /intent` and applying the server's `RenderOp`s over SSE (the
-same path `/loop` uses). The prior client-side `surface-demo.js` op-emitter is **deleted**
+same path the hero desk on `/` uses). The prior client-side `surface-demo.js` op-emitter is **deleted**
 (ROADMAP A.2): the page that argues "no privileged AI→DOM back channel" no longer ships one.
 
 - **Human-operable.** Ask + Send posts `chat.send` through the door → your line settles clean, the
@@ -266,7 +266,7 @@ running server, not a second renderer. The portfolio pages (`/`, `/grain`) aren'
   honor a `PUBLIC_BASE_PATH`.)
 - **`/search.json` (⌘K).** Not a linked asset — cmdk.js fetches it. Emit it (and `/sitemap.xml`,
   `/robots.txt`) as static files in the export, or the palette is empty (degrades gracefully).
-- **Outbound links.** The footer/how-it-works link to operable/dynamic routes (`/loop`,
+- **Outbound links.** The footer/how-it-works link to operable/dynamic routes (`/intent`,
   `/ai/manifest`). On the static site those are shell-only or absent — keep `/grain` self-contained
   or point such links at the live/dev instance.
 
@@ -283,7 +283,7 @@ A backend-free demo would keep the real `ai-dispatch.js` dispatcher and the `Ren
 replacing only the server leg (`/intent` + SSE) with a **client-side reasoner** that emits the same
 ops — a **seam** (`decide(intent) → RenderOp[]`) with tiers, gated on weight/WebGPU with fallback:
 
-0. **Scripted (ship first).** Deterministic op sequence, like `/loop`'s stub. Zero download,
+0. **Scripted (ship first).** Deterministic op sequence, like the hero desk's stub. Zero download,
    reliable showcase. Proves the vocabulary end-to-end client-side.
 1. **Embedding retrieval (~25MB, transformers.js MiniLM).** Semantic question→content match with a
    WASM fallback; real "runs in your browser" without generated prose. Retrieval does the real work.
@@ -316,7 +316,7 @@ AI-demo decision — the portfolio-wide chat island is the same idea, generalize
 - `grain/scripts/catalog-peek.js` — the peek island (hover → catalog scroll + highlight). *v1 fix:
   now keys off `[data-peek-root]` (was `.app-shell`, which the showcase doesn't have).*
 - The shell components (`app-shell`, `side-rail`, `tab-bar`, `nav-item`, `tab`, `shell.js`) exist in
-  grain and are used by the app's EDITOR shell (`portfolio-frame`, on every page incl. `/loop`); the
+  grain and are used by the app's EDITOR shell (`portfolio-frame`, on every page incl. the hero desk on `/`); the
   showcase shows `tab-bar`/`nav-item` in the components section (raw markup — they're CSS-only
   patterns, no Atomic template).
 - **`b-badge`/`b-list` are data-driven** (`data-field`/`each`) — they render blank from page

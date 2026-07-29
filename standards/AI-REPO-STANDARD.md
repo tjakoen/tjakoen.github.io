@@ -10,6 +10,11 @@ Distilled from a repo where this is working well
 ([the bread monorepo](https://github.com/tjakoen/bread)). Drop this file into any repo and
 build the kit below.
 
+One floor up, **[`LOOP.md`](LOOP.md) owns the workflow that runs *across* every repo** — the
+work-triggered heartbeat, the thin-`CLAUDE.md` kit shape, the accountability contract. This file owns
+what one repo commits; LOOP owns how the estate is operated the same way. The thin-kit shape LOOP
+defines is the front-door minimum for the `CLAUDE.md` described in §2.
+
 The one-line version: **treat every AI mistake as a bug in the repo's docs or architecture,
 and fix it where it compounds — in a committed contract, not in the chat.**
 
@@ -58,7 +63,7 @@ a consistent shape:
 3. **A reading order, why-first.** Numbered: philosophy/intent doc first, then the rulebook,
    then the reference docs. An AI that knows *why* the rules exist applies them to cases the
    rules never anticipated. Name the single source of truth explicitly ("the SSOT for X is
-   `path/to/file.ts`") and name the reference example ("the reference screen is `/loop`").
+   `path/to/file.ts`") and name the reference example ("the reference screen is `/`, the hero desk").
 4. **Commands** — the exact dev/check/test invocations, nothing the AI has to guess.
 5. **Non-negotiables** — a *short* list of the rules that must never break, each one line,
    pointing at the full rule elsewhere. Not the whole rulebook: the five things that, if

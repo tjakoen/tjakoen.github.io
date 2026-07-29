@@ -164,7 +164,7 @@ better than assumed:**
     `/scripts`, `/assets`) + `config.fontsDir` (binary woff2) — copy them into `dist/` verbatim.
   - The boot-and-fetch seam already exists: `tjakoen.github.io/tools/screenshots.ts` spawns the server and
     waits for the port. The exporter reuses that pattern.
-  - Data-driven fragments (`/ui/loop`, `/api/items`) freeze at build time to whatever the seed
+  - Data-driven fragments (`/api/items`) freeze at build time to whatever the seed
     data is — fine for a portfolio; just be aware they're snapshots, not live.
 - **The AI demo reuses the REAL vocabulary — the dispatcher isn't coupled to SSE.** `applyOp()` in
   `grain/scripts/ai-dispatch.js` is a pure `(RenderOp) → DOM` function; SSE is just one caller.
@@ -242,21 +242,21 @@ better than assumed:**
 
 ## Portfolio shell — the unified app-shell frame (decision 2026-07-04)
 
-**Decision: the whole portfolio adopts ONE persistent app-shell** (the `/loop` layout) as its
+**Decision: the whole portfolio adopts ONE persistent app-shell** (the app-shell first prototyped at `/loop`, now the hero desk on `/`) as its
 frame — not editorial pages beside a workspace, but *one workspace everywhere*. This commits fully
 to the workspace archetype (memory: `workspace-archetype-decision`, `portfolio-productivity-app-concept`)
 and absorbs pieces 8–10 below.
 
-- **Layout (loop's two nav surfaces):** left **`side-rail` = primary nav** (sections), top
+- **Layout (the desk's two nav surfaces):** left **`side-rail` = primary nav** (sections), top
   **`tab-bar` = the current section's leaf pages**, right sidebar = **chat (assistant)**, bottom =
   **terminal (console)**. Chat + terminal **persist across every page** (view-transition
   persistence) — the home for the site-wide AI to be plugged in later. Any "Watch the AI act"
   narrates into that *one* shared chat + terminal (no per-page terminal).
 - **Nav map:** `TJ's Desk` (home) · `Notes` (blog) · `Calendar` (social feed) · `Mail` (contact) ·
-  `BREAD Stack` → { `BATCH` [docs · architecture] · `GRAIN` [catalog · whitepaper · **loop** ·
+  `BREAD Stack` → { `BATCH` [docs · architecture] · `GRAIN` [catalog · whitepaper ·
   **themes**] · `MILL` }. Rail carries a **grouped/expandable** variant for the BREAD nesting; the
-  leaf pages are the tabs. `/loop` stays a **full-page functional demo**, mounted as the GRAIN loop
-  tab. Nav is **plain hypermedia** (real `<a>`, always-there `<nav>` fallback — static-safe, SEO).
+  leaf pages are the tabs. (`/loop` was a **full-page functional demo** mounted as a GRAIN tab;
+  it was removed 2026-07-26 — the hero desk on `/` replaces it.) Nav is **plain hypermedia** (real `<a>`, always-there `<nav>` fallback — static-safe, SEO).
 - **Right sidebar = one `sidebar-panel` primitive** (header / body / footer, optional mode-tabs),
   unifying today's `app-shell__aside` (assistant) and `.catalog-peek`. Default mode = **Chat**; on
   GRAIN it gains **Catalog ⇄ Chat** tabs, and in Catalog mode the footer (where the chat input sits)
@@ -311,7 +311,7 @@ and absorbs pieces 8–10 below.
 **Build order:** (0) capture — this section + `view/pages/grain/GRAIN-PAGE.md` + ROADMAP Track D; (1) GRAIN theming
 tokens + `theme.js` + grade conformance; (2) GRAIN shell primitives (`sidebar-panel`, `console`,
 grouped `side-rail`, `topbar`) with conformance tests; (3) portfolio frame + BREAD nav; (4) migrate
-pages (`/`, `/grain` w/ tabs incl. Themes, `/batch`, `/notes`, `/loop`-tab), retire the standalone
+pages (`/`, `/grain` w/ tabs incl. Themes, `/batch`, `/notes`), retire the standalone
 peek/terminal, re-point e2e; (5) wire chat to the door (dev/live), browser LLM as its own follow-on.
 
 ## THE EDITOR — the whole site as one editor window (owner, 2026-07-04 — CURRENT; supersedes the
@@ -359,7 +359,7 @@ workspace next visit, localStorage).
 4. **Honest status**: export bakes commit sha + tsc/test counts into the status bar (they're
    real at freeze time — "the site practises what it preaches").
 5. **Cleanup**: delete `/desk-poc` + `/welcome-poc` after promotion; update FEATURES.md desk
-   section; product pages (`/dashboard`, `/loop`) adopt the same window frame via app-frame.
+   section; product pages (`/dashboard`, the hero desk on `/`) adopt the same window frame via app-frame.
 6. Mobile: the window frame collapses (no backdrop padding, no title bar or a slim one); the
    existing drawer behavior stays.
 
@@ -519,8 +519,9 @@ resilience gaps. Built after the portfolio consolidation landed (same hot files)
   `submit()` too). Documented in AI-INTERFACE §5f.
 
 **Deviation receipt:** the approved tree preview showed `project/ → loop.html` top-level, but the
-consolidation removed `project/` entirely — so `loop.html` sits under `tjakoen.github.io/`, no
-`project/` node, no `/dashboard` entry (honesty rule: the tree mirrors real files). e2e retargeted
+consolidation removed `project/` entirely — so `loop.html` sat under `tjakoen.github.io/`, no
+`project/` node, no `/dashboard` entry (honesty rule: the tree mirrors real files). (`loop.html`
+has since been removed, 2026-07-26 — the hero desk on `/` is the live surface.) e2e retargeted
 accordingly (`editor-tabs`, `portfolio-shell`, `mobile`, `grain-page`) + new suites
 (`persistence.e2e.ts`, `ai-degradation.e2e.ts`). Gate: 165 unit + 71 e2e green.
 
@@ -539,7 +540,7 @@ Owner feedback on the v3 chrome, two rounds:
 - **File-tree flattened to mirror the repo root 1:1**: `portfolio/` (renamed from `tjakoen.github.io/`
   — tree LABEL only, the real folder on disk is untouched), `batch/`, `grain/`, `mill/` as top-level
   siblings — dropped the fake `bread/` wrapper folder. `bread.html` now sits inside `portfolio/`
-  alongside `index.html`/`notes/`/`loop.html`.
+  alongside `index.html`/`notes/`.
 - **MILL/portfolio content padding regression fixed**: `.board` (the app-shell `__main` content
   wrapper, replaced `.container` during the v2/v3 refactor) had never gotten the padding rule —
   added to `grain/styles/global.css`, mirroring `.container`.

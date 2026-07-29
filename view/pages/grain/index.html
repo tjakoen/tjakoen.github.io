@@ -11,7 +11,7 @@
        hover-a-component → reveal-in-pane bridge is its progressive enhancement. ⌘K is global. -->
   <!-- reusable demo-box island (ES module): runs the declarative scripted demos below -->
   <script type="module" src="/scripts/demo-box.js"></script>
-  <!-- THE REAL DISPATCHER — the same one client-JS island /loop uses. The composed surface below
+  <!-- THE REAL DISPATCHER — the same client-JS island the hero desk on / uses. The composed surface below
        is operated through the ONE DOOR: a human's Ask and the AI's "Watch the AI act" both post an
        Intent to POST /intent and render back over SSE. No showcase-only AI→DOM back channel. -->
 </head>
@@ -19,7 +19,7 @@
   <!-- the GRAIN section now lives in the unified BREAD shell (portfolio frame + site-wide
        assistant/console + theme toggles). Its old .site__bar chrome is retired. -->
   <!-- data-section="grain" makes the frame's GRAIN section tabs (Catalog · Demo · Themes) show in the
-       topbar here AND on /loop (the Demo), persisting across the section via the topbar transition. -->
+       topbar here (the Demo), persisting across the section via the topbar transition. -->
   <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
@@ -105,7 +105,7 @@
       <div class="section-head">
         <span>One surface, both operators</span>
         <!-- run the SAME surface as the AI would — a real Intent through the door (demo.run). The
-             server's reasoner pushes the RenderOps; the dispatcher applies them (like /loop). -->
+             server's reasoner pushes the RenderOps; the dispatcher applies them (like the hero desk). -->
         <button class="btn" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ Watch the AI act</button>
         <span class="offline-hint">desk offline: live demo unavailable</span>
       </div>
@@ -116,7 +116,6 @@
       <div class="surface" data-surface="screen" data-surface-demo>
         <nav class="surface__rail" data-surface="grain-rail" aria-label="Views">
           <a class="nav-item" aria-current="page"><b-icon sym="/assets/sprite.svg#tasks"></b-icon><span class="nav-item__label">Tasks</span></a>
-          <a class="nav-item"><b-icon sym="/assets/sprite.svg#loop"></b-icon><span class="nav-item__label">Loops</span></a>
           <a class="nav-item"><b-icon sym="/assets/sprite.svg#knowledge"></b-icon><span class="nav-item__label">Notes</span></a>
         </nav>
 
@@ -139,7 +138,7 @@
           </ul>
 
           <!-- operable controls, wired to the real door (raw input/button so they carry data-action +
-               data-surface, exactly like /loop's composer) — chat.send → your bubble + the AI's reply -->
+               data-surface, exactly like the hero desk's composer) — chat.send → your bubble + the AI's reply -->
           <div class="surface__compose" data-ai-gate>
             <label class="field">
               <span class="field__label">Ask</span>
@@ -233,7 +232,6 @@
         <a href="/bread">The BREAD stack</a>
         <a href="/catalog">Component catalog</a>
         <a href="/ai/manifest">AI manifest</a>
-        <a href="/loop">The reference screen (/loop)</a>
         <a href="https://github.com/tjakoen/grain">grain on GitHub</a>
       </div>
       <p>Built on <b class="name">BATCH</b>: no build step. <em>This site is itself built with GRAIN</em>, on the

@@ -4,40 +4,27 @@
 // asserts the resulting RenderOps actually arrive over SSE. No browser; many real modules.
 import { test, expect, afterAll } from "bun:test";
 import { buildAiRoutes } from "./ai-routes.ts";
-import { config } from "../config.ts";
 import { createStream } from "@tjakoen/batch/http/stream.ts";
 import { createInteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import { createStreamLogSink } from "@tjakoen/grain/ai/timeline-log.ts";
 import { makeStubReasoner } from "@tjakoen/grain/ai/reasoner.ts";
-import { createAccepts } from "@tjakoen/grain/ai/accepts.ts";
-import { InMemoryTaskRepository } from "../demo/data/in-memory-task-repository.ts";
-import { TaskService } from "../demo/services/task-service.ts";
-import { LoopCard } from "../demo/view/components.ts";
-import { toLoopCardView } from "../demo/services/task-views.ts";
-import { surfaceId, type Surface } from "@tjakoen/grain/ai/contract.ts";
-import type { Task } from "../demo/domain/task.ts";
 
+// The /loop demo backend is retired, so the layer's write-capabilities collapse to stubs (same as
+// server.ts): archiveItem is a no-op and renderSurface returns "". These tests exercise the CORE
+// door — provenance stamping, the SSE push channel, the demo.run scenario, the timeline log, and
+// the manifest — none of which need a live surface backend. item.archive remains a registered verb
+// (grain contract), so a crossing still commits + logs; only its host-side write is now a stub.
 function makeServer() {
-  const seed: Task[] = [{
-    id: "ITM-1", name: "Test task", description: "", status: "active",
-    createdAt: new Date(0), updatedAt: new Date(0),
-  }];
-  const service = new TaskService(new InMemoryTaskRepository(seed));
   const stream = createStream();
   const reasoner = makeStubReasoner({ thinkMs: 0 });
-  const renderSurface = async (s: Surface) => {
-    const t = await service.getTask(surfaceId(s));
-    return t ? LoopCard(toLoopCardView(t)) : "";
-  };
   const layer = createInteractionLayer({
     reasoner, stream,
-    archiveItem: (id) => service.archiveTask(id).then(() => undefined),
-    renderSurface,
+    archiveItem: async () => undefined,
+    renderSurface: async () => "",
     logSink: createStreamLogSink(stream),
   });
-  const accepts = createAccepts(config.componentRoots);
-  const server = Bun.serve({ port: 0, routes: buildAiRoutes(service, stream, layer, accepts) });
-  return { server, service, base: `http://localhost:${server.port}` };
+  const server = Bun.serve({ port: 0, routes: buildAiRoutes(stream, layer) });
+  return { server, base: `http://localhost:${server.port}` };
 }
 
 // Read SSE `data:` payloads from a live response body until `until(ops)` or a timeout.
@@ -70,21 +57,6 @@ const post = (base: string, body: unknown) =>
 
 let toStop: { stop: () => void } | null = null;
 afterAll(() => toStop?.stop());
-
-test("POST /intent (item.archive) pushes a committed replace op over /stream", async () => {
-  const { server, service, base } = makeServer();
-  toStop = server;
-  const stream = await fetch(`${base}/stream?session=s1`);   // open the SSE channel first
-  const intentRes = await post(base, { source: "user", session: "s1", screen: "loop", surface: "item:ITM-1", action: "item.archive", payload: {} });
-  expect(intentRes.status).toBe(202);                        // the door acknowledges immediately
-
-  const ops = await readOps(stream, (o) => o.some((x) => x.op === "replace" && x.commit === "committed"));
-  const replace = ops.find((o) => o.op === "replace");
-  expect(replace).toBeTruthy();
-  expect(replace.commit).toBe("committed");                  // confirmation landed over the push channel
-  expect(replace.target).toBe("item:ITM-1");
-  expect((await service.getTask("ITM-1"))?.status).toBe("archived");   // the real write happened
-});
 
 test("the door ignores a client-declared source:'ai' — HTTP intents are always 'user'", async () => {
   // Provenance can't be spoofed over the wire: a client claiming source:"ai" must NOT earn the
@@ -156,13 +128,14 @@ test("POST /intent records the crossing to the interaction timeline: log ops arr
   expect(logs.every((o) => typeof o.html === "string")).toBe(true);
 });
 
-test("GET /ai/manifest reflects the harvested vocabulary (reflection + item.archive)", async () => {
+test("GET /ai/manifest advertises the global-chrome surfaces (reflection + chat-log)", async () => {
   const { server, base } = makeServer();
   toStop = server;
-  const manifest = await (await fetch(`${base}/ai/manifest?screen=loop`)).json();
+  const manifest = await (await fetch(`${base}/ai/manifest?screen=home`)).json();
   const targets: any[] = manifest.targets ?? [];
   expect(targets.find((t) => t.id === "reflection")?.accepts).toContain("say.set");
-  expect(targets.find((t) => t.id === "item:ITM-1")?.accepts).toContain("item.archive");
   // chat-log is global chrome (app-frame) → the manifest must advertise it too (honesty guarantee)
   expect(targets.find((t) => t.id === "chat-log")?.accepts).toContain("chat.send");
+  // per-item surfaces went away with the /loop board — the manifest carries no item targets now
+  expect(targets.some((t) => String(t.id).startsWith("item:"))).toBe(false);
 });

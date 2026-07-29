@@ -24,6 +24,7 @@ six.
 | **Building anything with an AI** | [AI-DEVELOPMENT.md](AI-DEVELOPMENT.md) | The working relationship, the definition of done, the conventions and pitfalls every change is held to. The rulebook. |
 | **Structuring a repo so AI sessions compound** | [AI-REPO-STANDARD.md](AI-REPO-STANDARD.md) | The repo-side companion to AI-DEVELOPMENT: the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned. AI-DEVELOPMENT owns the working relationship; this owns the repo. |
 | **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
+| **Running one AI workflow across every repo** | [LOOP.md](LOOP.md) | The system *around* the sessions: the work-triggered heartbeat that makes skipped chores visible, the thin-kit shape, the accountability contract that keeps an unattended run honest. One floor above SESSION-LOOP. |
 | **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard — cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built — frontmatter, structure, footer — plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
 | **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard — two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
@@ -34,6 +35,10 @@ six.
 
 - **AI-DEVELOPMENT + SESSION-LOOP** are the engineering pair: the first is the standards, the second
   is the session mechanics that run against them. Start here for any building work.
+- **LOOP** sits one floor above the pair: SESSION-LOOP owns a single session, LOOP owns the system that
+  spans them — the heartbeat, the shared kit shape, the contract that holds across a whole estate of
+  repos worked the same way. Read it when the question is "how does *every* repo run," not "how does
+  this session run."
 - **VOICE + NOTE-STANDARD + README-STANDARD + FIGURES** are the writing set: VOICE owns the prose,
   the others own specific artifacts and point back at it. Start here for any published words.
 - **CLAUDE.starter** is the on-ramp: it's how a new repo inherits the whole set.

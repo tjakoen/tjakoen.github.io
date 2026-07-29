@@ -125,7 +125,7 @@ because the pixels moved — that's it working. Re-bless the baseline once you'r
    component is a bug the audit catches — re-skin by overriding a token, never by editing a component.
 2. **The look is up in `grain/`, not here.** If you're hunting for a style and it isn't in
    `tjakoen.github.io/view/components/`, it's a GRAIN component — look in `grain/components/`. The site only
-   owns its *bespoke* surfaces (the frame, the `/loop` demo cards); everything reusable is the design
+   owns its *bespoke* surfaces (the frame, the hero desk cards); everything reusable is the design
    system's.
 3. **No build step is a feature, not a missing step.** There's nothing to compile. If a change isn't
    showing, it's a stale server process or a hard-refresh away — not a build that didn't run.

@@ -6,8 +6,8 @@
 }
 .card-title { font-weight: var(--font-weight-semibold); flex: 1; margin: 0; }
 
-/* grade = commit state (same language as loop-card): in-transit reads grain — dimmed
-   with a dashed outline; the title already swaps to the grain family via --type-font. */
+/* grade = commit state: in-transit reads grain — dimmed with a dashed outline; the
+   title already swaps to the grain family via --type-font. */
 .task-card { transition: opacity .2s ease, outline-color .2s ease; }
 .task-card[data-commit="pending"],
 [data-grade="grain"] .task-card {

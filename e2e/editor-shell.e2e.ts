@@ -129,8 +129,8 @@ test.describe("THE EDITOR — one window around the whole site", () => {
 
   test("during a run: the chat shows a thinking box with 'open in terminal', and the docked terminal stays above the veil", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
-    await page.goto("/loop");
-    await page.getByRole("button", { name: "Watch the desk work" }).click();
+    await page.goto("/grain");
+    await page.getByRole("button", { name: /Watch the AI act/ }).click();   // demo.run — the surviving scripted run
     await expect(page.locator(".app-shell")).toHaveAttribute("data-acting", "true");
     // the chat's compact thinking indicator (the full narration is the terminal)
     await expect(page.locator(".chat-thinking")).toBeVisible();

@@ -37,7 +37,7 @@ export const portfolioLlmsDoc: LlmsDoc = {
       { title: "Generated reference", url: "/reference", note: "actions, surface kinds, render ops, the door's endpoints, and every token slot — read from the real source, never hand-copied" },
     ]},
     { heading: "See the AI act", links: [
-      { title: "/loop", url: "/loop", note: "the reference screen — watch the AI plan and act through the one door, its presence lit as it works" },
+      { title: "/grain — watch the AI act", url: "/grain", note: "the design-system showcase whose \"watch the AI act\" demo drives the surface through the one door, the desk's presence lit as it works" },
     ]},
     { heading: "Writing", links: [
       { title: "Notes", url: "/notes", note: "essays on the stack and on building with AI; the flagship is \"ten times zero\"" },

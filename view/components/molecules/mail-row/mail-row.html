@@ -5,7 +5,7 @@
      island can rewrite it to "N days ago", keeping the absolute date in title. Undated rows (Sent,
      Drafts) carry a literal label and no data-date, so they're never relativized. The row also
      carries its AI target address (data-surface="item:mail-<id>", AI-INTERFACE §4): data-kind="item"
-     and data-accepts="item.archive" mirror loop-card's operable markup, so the archive verb can
+     and data-accepts="item.archive" mark it as operable markup, so the archive verb can
      target this row the same way the on-page Archive button does. See mail-row.md. -->
 <a class="mailbox__item" data-kind="item" data-accepts="item.archive"
    data-bind-href="href" data-bind-data-folder="folder" data-bind-data-surface="surface">

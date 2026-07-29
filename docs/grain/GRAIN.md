@@ -201,7 +201,7 @@ mechanism, so the AI layer works identically in either.
   to plain elements — not data-bound tags. The app wraps them once in a domain organism,
   **`portfolio-frame`** (`tjakoen.github.io/view/components/organisms/portfolio-frame`), that carries the
   rail, tabs, assistant, and console as the shared chrome on every page; the whole site (incl.
-  `/loop`) composes it.
+  the hero desk on `/`) composes it.
 
 **The AI lives in the shell.** The right **aside** holds the assistant conversation
 (`chat.send` → your bubble + the AI's streamed reply, `chat-message`); when the AI *takes
@@ -228,7 +228,7 @@ grain/     the design system — ai/ (contract, interaction-layer, reasoner boun
            fonts/ (the Redaction grades). Ships its DEFAULT THEME — GRAIN looks like
            GRAIN on its own. A consumer overrides token slots to re-skin.
 mill/      the Markdown→GRAIN CMS — a reusable layer above grain+batch (batch → grain → mill).
-tjakoen.github.io/  THE app + composition root — domain components (item/loop/…), routes,
+tjakoen.github.io/  THE app + composition root — domain components (task/mail/…), routes,
            pages, vendor, server.ts (the one place the layers meet). Uses MILL for content,
            GRAIN's look; would add an override sheet only to diverge.
 project/   the AI-assistant product — PAUSED (2026-07-05), a docs-only archive.

@@ -39,7 +39,6 @@ const SHOT = { fullPage: true, animations: "disabled", maxDiffPixelRatio: 0.01 }
 // rather than an empty one.
 const screens: Array<[name: string, path: string, freeze?: Date]> = [
   ["welcome", "/"],          // THE EDITOR shell — the most-seen surface
-  ["loop", "/loop"],         // the reference "watch the AI act" screen, idle
   ["grain", "/grain"],       // the GRAIN showcase
   ["batch", "/batch"],       // the BATCH showcase
   ["catalog", "/catalog"],   // the generated component catalog

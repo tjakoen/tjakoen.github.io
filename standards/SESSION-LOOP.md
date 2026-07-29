@@ -14,6 +14,11 @@ any repo alongside [`AI-DEVELOPMENT.md`](AI-DEVELOPMENT.md).
 > owns the mechanics** — the session lifecycle, the memory format, the handoff. When they overlap,
 > AI-DEVELOPMENT wins on *what good work is*; this file wins on *how a session moves through it*.
 > Don't restate the standards here, point at them.
+>
+> One floor up: **[`LOOP.md`](LOOP.md) owns the system *around* the sessions** — the work-triggered
+> heartbeat, the shared kit shape, and the accountability contract that spans a whole estate of repos.
+> This file owns one session; LOOP owns how the sessions add up. The session-start doctor step (§1) and
+> the recurring chores (§3) are this file's end of LOOP's heartbeat.
 
 ---
 

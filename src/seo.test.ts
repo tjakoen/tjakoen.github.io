@@ -82,7 +82,7 @@ describe("enrichHead — JSON-LD per page type", () => {
 describe("enrichHead — safety + idempotency", () => {
   test("no-op on a fragment (no </head>)", () => {
     const frag = `<div class="console__feed">acting…</div>`;
-    expect(enrichHead(frag, "/ui/loop", ORIGIN)).toBe(frag);
+    expect(enrichHead(frag, "/ui/stream", ORIGIN)).toBe(frag);
   });
 
   test("idempotent — a document that already has a canonical is left untouched", () => {

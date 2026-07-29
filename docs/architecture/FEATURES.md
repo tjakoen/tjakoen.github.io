@@ -190,7 +190,7 @@ GRAIN showcase, formerly `/demo`) · `/catalog`.
   a human click or an AI decision produces — one door, one vocabulary. Clicking one visibly
   drives the same desk the free-text box does. This is the "human click == AI decision" claim
   made literal and on-screen.
-- **"Watch the desk work" on a real task.** Reuse the `/loop` demo idiom against portfolio
+- **"Watch the desk work" on a real task.** Reuse the hero desk idiom against portfolio
   content: the desk drafts a short plan (b-list), then *revises* an item (backspace/overwrite)
   — grade-as-signal in motion. Shows the AI editing a live surface, not just printing text.
 - **A visible "AI is here" grade everywhere it acts.** Anywhere the model touches the page,
@@ -305,7 +305,7 @@ The portfolio's subject *is* this stack, so let the site be its own case study.
 | **Desk: graceful interrupt offline** | interrupt asks the desk to stop; no server → releases locally via `.catch(spotlightOff)` (`ai-dispatch.js:143`) |
 | **Desk: the "lamp on paper" look** | pure CSS on existing hooks (`.ai-backdrop` / `.ai-spotlit` / `.is-click` / grain tokens / serif grain face) — styling, no new machinery |
 | **Navigate by AI (the companion clicks a nav link)** | reuses `spotlight{click}` — pulse the target like a real click (`ai-dispatch.js:73`; `click?` field `contract.ts:79`). Nav stays plain hypermedia (memory: interaction-door-pattern), so **no new `/intent` verb** — only a client-side NL→link mapping in the RAG island |
-| Watch the desk work | the `/loop` demo (`reasoner.ts` ↔ `loop.html`) |
+| Watch the desk work | the hero desk on `/` (`desk-reasoner.ts` ↔ `view/pages/index.html`) |
 | Component catalog exhibit | `/catalog` + `?annotate` overlay |
 | Re-skin live | the token system (`grain/styles/variables.css`) |
 | ⌘K palette / keyboard | `cmdk.js`, `b-kbd` atom |

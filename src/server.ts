@@ -17,16 +17,11 @@ import { createAccepts } from "@tjakoen/grain/ai/accepts.ts";
 import { makeStubReasoner } from "@tjakoen/grain/ai/reasoner.ts";
 import { createInteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import { createStreamLogSink } from "@tjakoen/grain/ai/timeline-log.ts";
-import { surfaceId, ACTIONS, type Surface } from "@tjakoen/grain/ai/contract.ts";
+import { ACTIONS } from "@tjakoen/grain/ai/contract.ts";
 import { buildVocabReference } from "@tjakoen/grain/ai/vocab-reference.ts";
-// --- portfolio (THE app) + its /loop demo domain ---
-import { InMemoryTaskRepository } from "./demo/data/in-memory-task-repository.ts";
-import { TaskService } from "./demo/services/task-service.ts";
+// --- portfolio (THE app) ---
 import { renderPage, refresh } from "./render.ts";
-import { buildAiRoutes, renderLoopListFragment } from "./routes/ai-routes.ts";
-import { LoopCard } from "./demo/view/components.ts";
-import { toLoopCardView } from "./demo/services/task-views.ts";
-import type { Task } from "./demo/domain/task.ts";
+import { buildAiRoutes } from "./routes/ai-routes.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
 import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
@@ -38,25 +33,6 @@ import { fileURLToPath } from "node:url";
 // --- CRUMB mount: the guided-tour layer. Serves tour DATA (tours/*.md → JSON) under /crumb; the
 // client crumb-live.js drives grain's passthrough lamp + a <dialog> popover + real navigation. ---
 import { createCrumbRoutes } from "@tjakoen/crumb/routes.ts";
-
-// --- seed a couple of tasks so the /loop demo has something to show ---
-const seed: Task[] = [
-  { id: "ITM-seed-1", name: "Read the architecture", description: "BATCH reference",
-    status: "active", createdAt: new Date("2026-06-25"), updatedAt: new Date("2026-06-25") },
-  { id: "ITM-seed-2", name: "Ship the POC", description: "in-memory, no build step",
-    status: "archived", createdAt: new Date("2026-06-26"), updatedAt: new Date("2026-06-26") },
-  // A dedicated fixture for the /loop "Watch the desk work" demo: the AI archives THIS task
-  // for real through the service (not a cosmetic badge flip). Excluded from the user task list
-  // (ai-routes /ui/loop) so its surface address stays unique to the demo card.
-  // NB: the ITM- id prefix + the grain "item:" surface kind are the contract vocabulary — left
-  // as-is (a generic list item); only the demo's own domain type is renamed Task.
-  { id: "ITM-demo-1", name: "Review architecture doc", description: "demo fixture",
-    status: "active", createdAt: new Date("2026-06-27"), updatedAt: new Date("2026-06-27") },
-];
-
-// --- wire the graph here, and ONLY here ---
-const repo = new InMemoryTaskRepository(seed);      // placeholder storage
-const service = new TaskService(repo);
 
 // The invariant page shell, injected here at the ONE composition root so no page (hand-authored or
 // MILL-rendered) hand-lists it — single source, zero drift. A page's own <head> carries only its
@@ -78,14 +54,19 @@ const PAGE_HEAD = `<script src="/scripts/theme-boot.js"></script><link rel="styl
 const PAGE_ASSETS = `${CATALOG_ASSETS}<link rel="stylesheet" href="/styles/lightbox.css"><script src="/scripts/lightbox.js" defer></script><script src="/scripts/shell.js" defer></script><script src="/scripts/catalog-peek.js" defer></script><script type="module" src="/scripts/ai-dispatch.js"></script><script type="module" src="/scripts/tabs.js"></script><script type="module" src="/scripts/terminal.js"></script><script type="module" src="/scripts/xray.js"></script><script type="module" src="/scripts/notepad.js"></script><script type="module" src="/site/desk-commands.js"></script><script type="module" src="/crumb-live.js"></script>`;
 // ONE page server now — the portfolio IS the app (composition root folded in). Every page
 // composes with LIVE data (the welcome page's Recent = the newest notes from MILL frontmatter);
-// the static export freezes what this renders (§18 — projection, not re-render). The /loop +
-// /about demo pages ignore the injected recentNotes; injecting it everywhere costs nothing.
-// Dev seam for the DESK's client door: the export stamps data-ai-transport="client" on the frozen
-// site (tools/export.ts); in dev the server door (SSE) is used, so the real WebLLM path is untested.
-// Set AI_DOOR=1 (`AI_DOOR=1 bun run dev`) to stamp the same client-transport + desk-door markers on
-// live pages, so the local-model path can be exercised in a WebGPU browser without exporting first.
+// the static export freezes what this renders (§18 — projection, not re-render). The /about demo
+// page ignores the injected recentNotes; injecting it everywhere costs nothing.
+// Dev seam for the DESK's client door (plan: desk-hero-demo P1): the export stamps
+// data-ai-transport="client" on the frozen site (tools/export.ts); in dev the server door (SSE
+// stub, makeStubReasoner) is the DEFAULT, so the real WebLLM path is untested and the owner sees
+// canned stub replies instead of the desk visitors get. Set DESK_CLIENT=1
+// (`DESK_CLIENT=1 bun run dev`) to stamp the same client-transport + desk-door markers on live
+// pages, so the real local-model desk runs in a WebGPU browser without exporting first. This is a
+// toggle, NOT hard-defaulted (owner decision): the stub-SSE path stays the default so the server
+// tests keep exercising it. On a machine without WebGPU the door still arms and the
+// deterministic paths (nav/filter/archive/theme — the demo-worthy ones) run model-free.
 const stampDevDoor = (html: string): string =>
-  Bun.env.AI_DOOR
+  Bun.env.DESK_CLIENT
     ? html.replace(/<body\b/, '<body data-ai-transport="client" data-ai-door="/modules/portfolio/ai/desk-door.js"')
     : html;
 // /calendar's Agenda (Pass 2 — Calendar): data/desk-feed.json is hand-authored dressing — the
@@ -250,26 +231,10 @@ const serveContent = createPortfolioContentRoutes(
   async (html: string) => stampDevDoor(await renderPage(html)),
   PAGE_ASSETS, PAGE_HEAD,
 );   // MILL mount (same global assets + head) — desk-door marker stamped so the WebLLM path can arm
-// /loop, frozen (Phase 2, §18): splice the live task list into the placeholder the composed page
-// already carries (pages/loop.html's `#loop-list` div). A static crawl has no backend to htmx-fetch
-// /ui/loop from, so without this the exported page would show the page's resting "Loading…" shell
-// forever — this makes the FIRST paint (dev server AND export alike) the real board. The live dev
-// server's own hx-get on load still re-fetches once more after this (same data, so no visible
-// change); the export strips that hx- pair (tools/export.ts transformPage) since it has nowhere to
-// fetch it from.
-async function freezeLoopList(res: Response): Promise<Response> {
-  const html = await res.text();
-  const list = await renderLoopListFragment(service);
-  const out = html.replace(
-    /(<div id="loop-list"[^>]*>)[\s\S]*?(<\/div>)/,
-    (_m, open: string, close: string) => `${open}${list}${close}`,
-  );
-  return new Response(out, { headers: res.headers });
-}
 // PROOF mount: the portfolio consumes @tjakoen/proof directly and renders its OWN plans/ folder as a
 // board at /plans, wrapped in the portfolio's page shell (proof owns the body, the host owns <head>).
 // Server-rendered only for now — the live SSE auto-refresh (watchPlans + board-live.js) is a follow-up
-// so it gets its own stream and never crosses the /loop demo's interaction stream (line ~144).
+// so it gets its own stream, kept separate from the desk's interaction stream.
 const PROOF_CSS = fileURLToPath(import.meta.resolve("@tjakoen/proof/board.css"));
 // Host-owned layer on top of the vendored board.css (never edit the package — this repo just
 // serves it, same "proof owns the body, the host owns <head>" split as the mount above). Fixes a
@@ -416,14 +381,16 @@ const modules = makeModuleServer(bunRuntime, { roots: { grain: config.grainDir, 
 // --- GRAIN interaction layer: the single door (docs/AI-INTERFACE.md) ---
 const stream = createStream();
 const reasoner = makeStubReasoner({ failRate: Number(Bun.env.AI_FAIL_RATE ?? 0) });   // AI_FAIL_RATE=1 → rollback
-const renderSurface = async (surface: Surface): Promise<string> => {
-  const task = await service.getTask(surfaceId(surface));       // committed (clean) fragment for a surface
-  return task ? LoopCard(toLoopCardView(task)) : "";
-};
+// createInteractionLayer's contract REQUIRES archiveItem + renderSurface, but with the /loop demo
+// retired nothing live crosses them: item.archive (the only verb that did) had no caller outside
+// the loop board, and the surviving demo.run scenarios (/grain, /notes) drive their own surfaces
+// and write to chat, never asking the layer to re-render a host surface. So both collapse to
+// trivial stubs — the contract is satisfied, the graph carries no demo backend. (B3 mail-archive
+// is a client-side DOM batch in desk-door.ts, not this server verb.)
 const aiLayer = createInteractionLayer({
   reasoner, stream,
-  archiveItem: (id) => service.archiveTask(id).then(() => undefined),
-  renderSurface,
+  archiveItem: async () => undefined,
+  renderSurface: async () => "",
   logSink: createStreamLogSink(stream),   // record every door crossing to the interaction timeline (§5g)
 });
 
@@ -466,7 +433,7 @@ async function serveMedia(rel: string): Promise<Response> {
 Bun.serve({
   port: config.port,
   routes: {
-    ...buildAiRoutes(service, stream, aiLayer, accepts),   // /intent, /stream, /ai/manifest, /ui/loop
+    ...buildAiRoutes(stream, aiLayer),   // /intent, /stream, /ai/manifest
     "/components.css": async () =>
       new Response(await styles.css(), { headers: { "Content-Type": "text/css" } }),
     "/proof.css": async () =>
@@ -593,13 +560,8 @@ ${PAGE_ASSETS}</body>
         return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
       }
     }
-    // the portfolio's own pages tree: "/" (home), "/grain"·"/batch" showcases, /loop + /about
+    // the portfolio's own pages tree: "/" (home), "/grain"·"/batch" showcases, /about
     const page = await servePage(p);
-    // /loop, frozen (Phase 2, §18): server-render the initial task list into the page HTML here
-    // so a crawl with no backend (the static export) captures a real board — see
-    // routes/ai-routes.ts renderLoopListFragment (the same fragment /ui/loop answers with) and
-    // pages/loop.html (the placeholder div + the banner/composer gate).
-    if ((p === "/loop" || p === "/loop/") && page.status === 200) return finalizePage(req, freezeLoopList(page));
     return finalizePage(req, page);
   },
   // Last-resort catch for an uncaught throw in a route or the fetch handler: log it server-side,

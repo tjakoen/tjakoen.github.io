@@ -19,9 +19,9 @@ Two client-only touches, both degrading cleanly to nothing:
 
 A third one isn't cosmetic: the row also carries an AI target address, `data-surface="item:mail-<id>"`
 (computed server-side alongside `href`/`domId`), plus `data-kind="item"` and `data-accepts="item.archive"`
-so it's harvested the same way loop-card's operable markup is (AI-INTERFACE §4). Archiving a letter
-through that surface and through the reader's own Archive button (mail-reader) are the same move: both
-flip `data-folder` to `"archive"` for the rest of the visit.
+so it's harvested as operable markup the same way other AI-addressable rows are (AI-INTERFACE §4).
+Archiving a letter through that surface and through the reader's own Archive button (mail-reader) are
+the same move: both flip `data-folder` to `"archive"` for the rest of the visit.
 
 ```html
 <a class="mailbox__item" href="#msg-welcome" data-folder="inbox"

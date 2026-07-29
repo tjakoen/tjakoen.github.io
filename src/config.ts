@@ -23,7 +23,7 @@ export const config = {
   grainDir: GRAIN,
 
   // components come from the GRAIN design system (b-*) and the portfolio (its own
-  // frame + bespoke surfaces + the /loop demo's task-card/loop-card/task-list).
+  // frame + bespoke surfaces).
   componentRoots: [join(GRAIN, "components"), join(HERE, "..", "view", "components")],
   // the /components.css bundle = per-component CSS + (since this app uses the AI
   // interface) GRAIN's optional AI module CSS (grain/ai/ai.css). GRAIN's page-level
@@ -31,7 +31,7 @@ export const config = {
   // A no-AI app would simply drop the grain/ai root here.
   styleRoots: [join(GRAIN, "components"), join(HERE, "..", "view", "components"), join(GRAIN, "ai")],
   // ONE pages tree now: the portfolio IS the app (the composition root folded in here).
-  // It owns "/" (home), "/grain"·"/batch" (showcases), and the /loop + /about demo pages.
+  // It owns "/" (home), "/grain"·"/batch" (showcases), and the /about page.
   pagesDir: join(HERE, "..", "view", "pages"),
 
   // static asset prefixes → their dir. GRAIN ships the design system's styles, fonts,
