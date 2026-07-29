@@ -137,7 +137,7 @@ student rushing through an activity for the sake of getting it done. The instant
 do *that.*
 
 <svg viewBox="0 0 620 250" width="100%" role="img"
-     aria-label="Four titles, one skill set. A matrix of four roles (dev manager, tech lead, teacher of 100 to 150 students, and directing an AI) running the same moves. Give direction: a clear brief, the conventions, the lesson, a prompt with docs. Verify anyway: review the pull request, the design review, grade the work, read the output. Then all four do the same last move: correct the reasoning, not just the output. Same moves down every column; only the subject changes."
+     aria-label="Four titles, one skill set. A matrix of four roles (dev manager, tech lead, teacher of 150 to 300 students, and directing an AI) running the same moves. Give direction: a clear brief, the conventions, the lesson, a prompt with docs. Verify anyway: review the pull request, the design review, grade the work, read the output. Then all four do the same last move: correct the reasoning, not just the output. Same moves down every column; only the subject changes."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
   <rect x="0.5" y="0.5" width="619" height="249" style="fill:var(--paper);stroke:var(--edge)"/>
@@ -148,7 +148,7 @@ do *that.*
   <line x1="484.5" y1="44" x2="484.5" y2="152" style="stroke:var(--edge);stroke-width:1"/>
   <text x="206" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">Dev manager</text>
   <text x="317" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">Tech lead</text>
-  <text x="429" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">Teacher (100–150)</text>
+  <text x="429" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">Teacher (150–300)</text>
   <text x="540" y="60" text-anchor="middle" style="fill:var(--muted);font-size:13px">AI</text>
   <line x1="24" y1="72" x2="596" y2="72" style="stroke:var(--edge);stroke-width:1"/>
   <text x="24" y="104" style="fill:var(--ink);font-size:14px">Give direction</text>

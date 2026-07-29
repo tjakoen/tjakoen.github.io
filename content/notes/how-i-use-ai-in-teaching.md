@@ -1,6 +1,6 @@
 ---
 title: "How I Teach With AI, and Where I Lock It Out"
-subtitle: "I used an AI to build the platform I run 100 to 150 students a semester through, and to draft their feedback at scale. I also used it to build the one exam where AI is banned from the room. Here's exactly how I use it in my teaching (with the numbers), and every place I deliberately refuse to."
+subtitle: "I used an AI to build the platform I run 150 to 300 students a semester through, and to draft their feedback at scale. I also used it to build the one exam where AI is banned from the room. Here's exactly how I use it in my teaching (with the numbers), and every place I deliberately refuse to."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note

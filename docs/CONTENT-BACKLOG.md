@@ -21,7 +21,8 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
 - **Cross-link graph is closed (2026-07-04):** the-browser-grew-up is linked from origin-story (two
   spots) and ten-times-zero; the whitepaper links into the note cluster. Every note has ≥1 inbound
   link from a sibling.
-- **Locked decisions:** teaching count is "100 to 150 students a semester" (a range, everywhere);
+- **Locked decisions:** teaching count is "150 to 300 students a semester" (a range, everywhere;
+  updated 2026-07-29, matches cv.json + homepage);
   money stays vague with no ratio-in-words; em-dashes are banned in prose (VOICE); the repo footer
   tagline is em-dash-free and canonical in `standards/README-STANDARD.md`.
 - **Visuals:** the figure standard now lives in **`standards/FIGURES.md`** (tokenized SVG scaffold,

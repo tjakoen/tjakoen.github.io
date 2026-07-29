@@ -124,9 +124,9 @@ grading. It was the plumbing around who can touch what. Every real bug I hit was
 
 **Access control is the whole ballgame.** The org has to own every repo so the engine can reach in
 and grade it. But each student has to be the admin of *their own* repo and no one else's. That is a
-narrow beam to thread, and getting it wrong is not a cosmetic bug. [Describe the specific access bug
-that bit you here, e.g. a student who could not even see their own delivered grades. Confirm the
-details before publishing.] I stopped trusting my memory of who could reach what and wrote an audit
+narrow beam to thread, and getting it wrong is not a cosmetic bug: in one direction a student cannot
+open their own workspace, in the other a student could reach into work that is not theirs. I stopped
+trusting my memory of who could reach what and wrote an audit
 that checks it directly, by actual collaborators on each repo, not by the names I *think* are there.
 
 **Tokens, not titles.** Being an org admin does not let a workflow reach into other repos. The
@@ -151,9 +151,7 @@ student, and be able to point at every step in between and say *that works*.
 That loop is now how I open every term. Lock down the org. Stand up the control repo. Get every
 student a correctly named workspace. Push a unit of content and confirm it landed everywhere. Then
 have them do the hello-world activity and watch it show up as a graded row in the gradebook. When
-that first green row appears, the platform is confirmed end to end, and I can breathe. [Add the real
-moment the first green row showed up, or a receipt you are comfortable sharing: how many courses,
-how many student repos a term. No student names or numbers.]
+that first green row appears, the platform is confirmed end to end, and I can breathe.
 
 ## It is not a product, and that is the point
 

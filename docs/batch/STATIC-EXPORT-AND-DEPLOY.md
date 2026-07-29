@@ -32,7 +32,7 @@ running server and freezes its output — it never re-renders** (ARCHITECTURE §
 ## The one boundary: operable pages don't export
 
 A static host has no backend, so anything behind the one door (`/intent` + SSE) is **excluded** from
-the crawl — see `tools/export.ts`'s `OPERABLE` set (today: `/loop`). The `/grain` showcase still
+the crawl — see `tools/export.ts`'s `OPERABLE` set (empty today, so no route is export-excluded). The `/grain` showcase still
 works in the static copy: its demo is flipped to the **client-side door** (a browser-only version of
 the same vocabulary, ARCHITECTURE §19.3, `CLIENT_DOOR_PAGES`), so the pitch ("watch the AI act")
 survives with zero server.

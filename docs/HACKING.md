@@ -34,8 +34,7 @@ you know where to edit.
 | `/resume` | `view/pages/resume.html` (the résumé board; each experience role links to its tagged notes) |
 | `/mail` | `view/pages/mail.html` + `content/data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
 | `/calendar` | `view/pages/calendar.html` (the feed page) + `content/data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule; see the events collection below for `/calendar/<slug>` |
-| `/loop` | `view/pages/loop.html` (the reference "watch the AI act" screen) |
-| `/grain` | `view/pages/grain/index.html` (GRAIN showcase) |
+| `/grain` | `view/pages/grain/index.html` (GRAIN showcase; the live "watch the AI act" surface) |
 | `/batch` | `view/pages/batch/index.html` (BATCH showcase) |
 | `/bread` | `view/pages/bread/index.html` (the stack umbrella page) |
 | `/mill` | `view/pages/mill/index.html` (MILL page) |
@@ -74,7 +73,6 @@ you know where to edit.
 | `/intent` | the single write door (a human click or an AI decision, same envelope) |
 | `/stream` | the SSE channel render ops push back over |
 | `/ai/manifest` | the machine-readable index of what's operable |
-| `/ui/loop` | the `/loop` demo's task fragment |
 | `/modules/*` | grain's TypeScript, transpiled to browser JS on request (no build) |
 
 **Static assets** — served from mapped dirs (see `config.ts` `assetDirs`); **most live up in `grain/`**,

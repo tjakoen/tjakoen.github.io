@@ -61,7 +61,7 @@ So I would bounce to the next app, learn *its* system, fall off *that* one, and 
 
 ## Build for the one user I understand
 
-Recently my life got good in a quiet way: a stable job I care about, room to be passionate about the work instead of just surviving it. But good does not mean roomy. My days are already full: a full-time job as a dev manager and a tech lead, plus teaching part-time to a hundred to a hundred and fifty students a semester. That is not a schedule with slack in it. It is exactly the situation a disorganized person should not be in.
+Recently my life got good in a quiet way: a stable job I care about, room to be passionate about the work instead of just surviving it. But good does not mean roomy. My days are already full: a full-time job as a dev manager and a tech lead, plus teaching part-time to a hundred and fifty to three hundred students a semester. That is not a schedule with slack in it. It is exactly the situation a disorganized person should not be in.
 
 Which is why I do not really have hobbies. Some people decompress with the gym, or gaming, or are into a specific sport. I do not have the hours for much of that. The little free time I do get, I spend *building*. That is my version of unwinding. So sitting in one of those rare pockets, it clicked: I had spent years trying to build things for hypothetical clients and other people. I should point that time at the one thing I actually, personally needed, and stop asking an app to reform me.
 
@@ -186,8 +186,6 @@ I landed on **Bun** for a concrete reason, not the usual hype: it is the one run
 The next step was enabling the thing I wanna build to be able to look and behave like something. I am a design-systems person to my core. After learning about it, [Brad Frost's atomic design](https://atomicdesign.bradfrost.com/) became more or less my love language when designing frontend. I am DRY (Do not repeat yourself) to a fault, and I would happily build fifty tiny parts before one big one. So as I was building, it grew up into **GRAIN**, a design system built specifically around *AI interaction*, with one non-negotiable rule: What an AI did and what a human did must be clearly visible. The AI never gets to work in the dark.
 
 Underneath the look is the part that keeps it honest. A human click and an AI decision resolve to the same intent, go through one write door, and come back as operations that redraw the surface. The AI gets no secret key I do not also hold. It plays the same piano I do, in the same room, where I can watch its hands.
-
-> *Figure (to be captured, not drawn: a real screenshot of the live loop demo): the desk's own AI cursor moves to a Plan my day button and presses it (the same button a person would click), then writes the day out in grained ink and revises a line in place. A human click and an AI decision are the exact same action.*
 
 <svg viewBox="0 0 274 388" width="100%" role="img"
      aria-label="A human click and an AI decision become the same Intent, which enters one write door (POST /intent); a single writer emits render ops, pushed over SSE, and the surface updates."
