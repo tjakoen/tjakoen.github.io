@@ -1,10 +1,10 @@
-# 🖥️ portfolio — the personal site
+# 🖥️ portfolio: the personal site
 
 [![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://tjakoen.github.io/notes/ten-times-zero)
 [![Code: Apache 2.0](https://img.shields.io/badge/code-Apache_2.0-blue)](LICENSE)
 [![Content: all rights reserved](https://img.shields.io/badge/content-all_rights_reserved-lightgrey)](NOTICE)
 
-Tjakoen's personal site (`tjakoen.github.io`) — a **custom BATCH + GRAIN app** that doubles as the
+Tjakoen's personal site (`tjakoen.github.io`), a **custom BATCH + GRAIN app** that doubles as the
 strongest possible proof the stack works: AI-first design, served as plain static files, with a
 lightweight AI demo that runs entirely in the visitor's browser.
 
@@ -12,26 +12,26 @@ lightweight AI demo that runs entirely in the visitor's browser.
 > the `/grain` and `/batch` showcases, the hero desk on `/` (watch the AI act), the `/catalog`, and the
 > notes + rendered layer docs (through MILL) are all built and served today by [`server.ts`](src/server.ts),
 > and the zero-ops GitHub Pages deploy is live (`batch/export` via
-> [`.github/workflows/pages.yml`](.github/workflows/pages.yml)). The productivity views — Notes,
-> Calendar, Mail, and About — are all live. New here and want to make a small edit? →
+> [`.github/workflows/pages.yml`](.github/workflows/pages.yml)). The productivity views (Notes,
+> Calendar, Mail, and About) are all live. New here and want to make a small edit? →
 > **[HACKING.md](docs/HACKING.md)** (route → source map + "which file do I open").
 
 ## What it is (and isn't)
 
-- It's a **consumer** of the stack — a bespoke app, re-skinning GRAIN via its public seams.
+- It's a **consumer** of the stack: a bespoke app, re-skinning GRAIN via its public seams.
 - It **uses [MILL](https://github.com/tjakoen/grain/blob/main/packages/mill/PLAN.md) only for content**
-  (the notes/blog + the rendered BATCH/GRAIN docs). MILL does **not** build the site — the bespoke
+  (the notes/blog + the rendered BATCH/GRAIN docs). MILL does **not** build the site: the bespoke
   surfaces (hero desk, calendar, mail) are the portfolio's own work.
 - Organizing concept: a **populated productivity app** (Notes · Calendar · Mail · About) with the AI
   **desk** as an assistant that operates them. Not the "Project" product in `project/`.
 
 ## Read next
 
-- **[PLAN.md](docs/architecture/PLAN.md)** — the execution plan: export → Pages, in-browser AI demo, the build pieces.
-- **[FEATURES.md](docs/architecture/FEATURES.md)** — the feature menu (north star, the desk, anti-features, reuse table).
-- **[CONTENT-BACKLOG.md](docs/CONTENT-BACKLOG.md)** — the content to author (guardrails: public repo, neutral).
-- **[GRAIN-PAGE.md](view/pages/grain/GRAIN-PAGE.md)** · **[BATCH-PAGE.md](view/pages/batch/BATCH-PAGE.md)** — the `/grain` and `/batch` showcase plans.
-- **[PHILOSOPHY.md](docs/PHILOSOPHY.md)** — the beliefs the site proves.
+- **[PLAN.md](docs/architecture/PLAN.md)**, the execution plan: export → Pages, in-browser AI demo, the build pieces.
+- **[FEATURES.md](docs/architecture/FEATURES.md)**, the feature menu (north star, the desk, anti-features, reuse table).
+- **[CONTENT-BACKLOG.md](docs/CONTENT-BACKLOG.md)**, the content to author (guardrails: public repo, neutral).
+- **[GRAIN-PAGE.md](view/pages/grain/GRAIN-PAGE.md)** · **[BATCH-PAGE.md](view/pages/batch/BATCH-PAGE.md)**, the `/grain` and `/batch` showcase plans.
+- **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**, the beliefs the site proves.
 
 ---
 🤖 **Built with Claude, and it is also the proof.** This site is the stack's own demo: I made the calls, Claude typed them, and the same pages you are reading are the receipts. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)

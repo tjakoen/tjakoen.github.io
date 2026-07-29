@@ -3,18 +3,18 @@ title: standards/ — how I build, write, and work with AI
 summary: The index - one line per standard, so a reader loads one file, not six.
 ---
 
-# 📐 standards/ — how I build, write, and work with AI
+# 📐 standards/: how I build, write, and work with AI
 
 [![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://tjakoen.github.io/notes/ten-times-zero)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE)
 [![Published](https://img.shields.io/badge/published-tjakoen.github.io%2Fstandards-2ea44f)](https://tjakoen.github.io/standards)
 
 The single source of truth for how I work across every repo: how I build software with an AI
-partner, how anything under my byline reads, and how a new repo is set up. Public and portable —
+partner, how anything under my byline reads, and how a new repo is set up. Public and portable:
 any repo of mine references this folder instead of copying its own drifting rules.
 
 **How to use this, human or AI:** read this index first, then fetch **only** the standard the task in
-front of you needs. Each line below is the whole hook — that's the point, so you load one file, not
+front of you needs. Each line below is the whole hook: that's the point, so you load one file, not
 six.
 
 ## The standards
@@ -25,9 +25,9 @@ six.
 | **Structuring a repo so AI sessions compound** | [AI-REPO-STANDARD.md](AI-REPO-STANDARD.md) | The repo-side companion to AI-DEVELOPMENT: the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned. AI-DEVELOPMENT owns the working relationship; this owns the repo. |
 | **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
 | **Running one AI workflow across every repo** | [LOOP.md](LOOP.md) | The system *around* the sessions: the work-triggered heartbeat that makes skipped chores visible, the thin-kit shape, the accountability contract that keeps an unattended run honest. One floor above SESSION-LOOP. |
-| **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard — cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
-| **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built — frontmatter, structure, footer — plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
-| **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard — two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
+| **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard: cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
+| **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built (frontmatter, structure, footer), plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
+| **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard: two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
 | **Setting up a README** | [README-STANDARD.md](README-STANDARD.md) | Title emoji, the honest badge row, the "built with Claude" footer, plus a runnable prompt. |
 | **Starting a new repo** | [CLAUDE.starter.md](CLAUDE.starter.md) | The `CLAUDE.md` template that wires a fresh repo into all of the above from day one. |
 
@@ -36,7 +36,7 @@ six.
 - **AI-DEVELOPMENT + SESSION-LOOP** are the engineering pair: the first is the standards, the second
   is the session mechanics that run against them. Start here for any building work.
 - **LOOP** sits one floor above the pair: SESSION-LOOP owns a single session, LOOP owns the system that
-  spans them — the heartbeat, the shared kit shape, the contract that holds across a whole estate of
+  spans them: the heartbeat, the shared kit shape, the contract that holds across a whole estate of
   repos worked the same way. Read it when the question is "how does *every* repo run," not "how does
   this session run."
 - **VOICE + NOTE-STANDARD + README-STANDARD + FIGURES** are the writing set: VOICE owns the prose,
@@ -47,7 +47,7 @@ six.
 
 Single source of truth, everywhere. Each fact has exactly one home here; every other mention is a
 *pointer*, never a copy. Two copies of a rule drift, and then both are suspect. If you find the same
-thing stated in two of these files, one of them is a bug — fix it to a link.
+thing stated in two of these files, one of them is a bug: fix it to a link.
 
 ---
 🤖 **Built with Claude, rules included.** The standards that govern how I work with an AI were themselves written with one, which is either very meta or very honest, and I am going with both. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)
