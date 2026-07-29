@@ -161,7 +161,7 @@ first pass. I never let it grade or speak to a student on its own.
     <text x="231" y="106.3" style="fill:var(--color-fg)">AI drafts feedback</text>
     <text x="231" y="122.8" style="fill:var(--color-muted);font-size:12px">grounded in the rubric</text>
     <text x="119" y="174.3" style="fill:var(--color-fg)">Student-facing half</text>
-    <text x="119" y="190.8" style="fill:var(--color-muted);font-size:12px">prose only — no scores, no fixes</text>
+    <text x="119" y="190.8" style="fill:var(--color-muted);font-size:12px">prose only, no scores, no fixes</text>
     <text x="344" y="174.3" style="fill:var(--color-fg)">Instructor-only half</text>
     <text x="344" y="190.8" style="fill:var(--color-muted);font-size:12px">proposed grade + soft flags</text>
     <text x="231" y="242.3" style="fill:var(--color-fg)">Held for my review</text>

@@ -172,7 +172,7 @@ The site you're reading this on was built static, but there is still a use case 
 The portfolio you are reading has no server at all. The AI is now the same way: a small language model runs in your browser, so even the assistant is static files plus your own hardware. It is small, so it fumbles the odd prompt, and it needs a recent browser with WebGPU to wake up at all, and I will not pretend otherwise. But it is no longer a promise, it is running, and it is the thesis stated plainly. A server should be something you reach for when the job actually needs one, not the ground a website is built on by default.
 
 <svg viewBox="0 0 654 306" width="100%" role="img"
-     aria-label="What does the page need? Just content (writing, pages, design) needs no server — static files. Real server work (database, API, live data) needs a server when the job needs one. The AI splits two ways: a full product with a live door and stream needs a server, while this site now runs a model in your browser with no server."
+     aria-label="What does the page need? Just content (writing, pages, design) needs no server: static files. Real server work (database, API, live data) needs a server when the job needs one. The AI splits two ways: a full product with a live door and stream needs a server, while this site now runs a model in your browser with no server."
      style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <defs>
     <marker id="fl-thebro2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
@@ -211,9 +211,9 @@ The portfolio you are reading has no server at all. The AI is now the same way: 
     <text x="285" y="186.3" style="fill:var(--color-fg)">A server</text>
     <text x="285" y="202.8" style="fill:var(--color-muted);font-size:12px">when the job needs one</text>
     <text x="520" y="186.3" style="fill:var(--color-fg)">Full product</text>
-    <text x="520" y="202.8" style="fill:var(--color-muted);font-size:12px">live door and stream — needs a server</text>
+    <text x="520" y="202.8" style="fill:var(--color-muted);font-size:12px">live door and stream, needs a server</text>
     <text x="520" y="260.3" style="fill:var(--color-fg)">This site, now</text>
-    <text x="520" y="276.8" style="fill:var(--color-muted);font-size:12px">a model in your browser — no server</text>
+    <text x="520" y="276.8" style="fill:var(--color-muted);font-size:12px">a model in your browser, no server</text>
   </g>
 </svg>
 

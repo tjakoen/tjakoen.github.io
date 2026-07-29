@@ -32,8 +32,8 @@ Contemporary systems that let an AI *operate* a user interface overwhelmingly do
 the model perceives pixels, the DOM, or the accessibility tree and emits low-level input (clicks,
 keystrokes, coordinates) under conversational instruction. We describe the inverse. In **GRAIN** (a
 design system) the interface exposes a single **closed, application-authored, semantic action-vocabulary**; a human
-click and an AI decision resolve to the *same* `Intent`, enter through *one* write door
-(`POST /intent`), and return as render operations pushed over SSE. There is no privileged AI→DOM back
+click and an AI decision resolve to the *same* Intent, enter through *one* write door
+(POST /intent), and return as render operations pushed over SSE. There is no privileged AI→DOM back
 channel: the AI has no affordance a person lacks. The AI's presence is disclosed not as a chat log but
 as an **in-surface provenance signal** ("grade-as-signal"): every operable surface shows the AI's hand
 in its own idiom (degraded type for text, a dashed edge for controls) and the mark *persists* after the
@@ -84,8 +84,8 @@ We take a stance summarized as one sentence:
 
 Concretely: the frontend publishes a small, closed set of typed **actions** over a set of semantic
 **surfaces** (addresses, never CSS selectors). Triggering an action (whether by a human click or an AI
-decision) produces the *same* `Intent`, which passes through *one* endpoint to a single writer and
-returns as `RenderOp`s applied to the addressed surfaces. The AI is thus a **modality**, not a chat
+decision) produces the *same* Intent, which passes through *one* endpoint to a single writer and
+returns as RenderOps applied to the addressed surfaces. The AI is thus a **modality**, not a chat
 channel: a finite set of real primitives that compose, read against a generated **index** of what is
 *possible* and a live **snapshot** of what is *true now*.
 
@@ -121,14 +121,14 @@ user-study track (§5), not asserted as a result.
 
 ## 2. The approach (in brief)
 
-- **Two registries.** *Surfaces* are stable semantic addresses (`kind:id` / slug); *actions* are a
+- **Two registries.** *Surfaces* are stable semantic addresses (kind:id / slug); *actions* are a
   closed, typed, depth-tagged vocabulary. What is operable is exactly their product, enumerated in a
   machine-readable **manifest** harvested from the component tree (it cannot drift from the UI because
   it *is* a projection of it).
 - **One door, one writer: CRUD is inverted.** The UI performs no direct create/update/delete. A human
-  interaction is submitted as an `Intent` to `POST /intent`, *exactly* as an AI decision is; a single
-  interaction layer validates `(surface, action)` against the registry and hands it to the **one writer**
-  (the reasoner), which holds the only mutation capability and returns `RenderOp`s over SSE. So *neither*
+  interaction is submitted as an Intent to POST /intent, *exactly* as an AI decision is; a single
+  interaction layer validates (surface, action) against the registry and hands it to the **one writer**
+  (the reasoner), which holds the only mutation capability and returns RenderOps over SSE. So *neither*
   operator has a privileged path: the human does not reach the database directly any more than the AI
   reaches the DOM directly. (One documented seam exists: *user-owned ground-truth* data, meaning the
   user's own knowledge base, notes, and preferences, may take a direct route, because the write path is
@@ -138,8 +138,8 @@ user-study track (§5), not asserted as a result.
 - **Index vs. snapshot.** The manifest is the *space of the possible*; the per-request state is *what is
   true now*. The AI needs both: the former for its move set, the latter for where it stands.
 - **Grade-as-signal (every surface, not only type).** The AI's hand is shown *in the operable surface
-  itself*, expressed per component and keyed off two orthogonal attributes: **`data-grade`** = provenance
-  (grain = AI, which **persists**; smooth = human) and **`data-commit`** = liveness (pending = in-transit,
+  itself*, expressed per component and keyed off two orthogonal attributes: **data-grade** = provenance
+  (grain = AI, which **persists**; smooth = human) and **data-commit** = liveness (pending = in-transit,
   settling on commit). Text carries it as a degraded font grade; a button or badge as a dashed "terminal"
   edge with a block caret while acting; an input as a dashed border; a card or region as a dashed outline;
   the whole workspace as a "takeover." The two axes are independent: when an AI action commits, the
@@ -151,7 +151,7 @@ user-study track (§5), not asserted as a result.
   is narrated as a running feed of those verbs: the takeover console shows *reads → types → writes →
   revises → commits*, not an opaque spinner. A stream of pixel-clicks can't be narrated meaningfully; a
   closed vocabulary can. The same vocabulary the AI acts through makes its behaviour auditable; and because *every* interaction
-  (human or AI) already enters through the one door as a `source`-tagged `Intent`, a single uniform log of
+  (human or AI) already enters through the one door as a source-tagged Intent, a single uniform log of
   human *and* AI actions is a natural, cheap extension (the door is the ideal choke point; not built today).
 
 <svg viewBox="0 0 620 486" width="100%" role="img"
@@ -194,9 +194,9 @@ user-study track (§5), not asserted as a result.
     <text x="310" y="389">RenderOps pushed over SSE</text>
     <text x="310" y="449">addressed surfaces update<tspan x="310" dy="17" style="fill:var(--color-muted);font-size:12px">AI stays grain, the human settles clean</tspan></text>
   </g>
-  <text x="310" y="186" text-anchor="middle" style="fill:var(--color-bg)">POST /intent — the one door</text>
+  <text x="310" y="186" text-anchor="middle" style="fill:var(--color-bg)">POST /intent: the one door</text>
 </svg>
-*Figure 1. One door, one writer. A human click and an AI decision are the same `Intent`; neither
+*Figure 1. One door, one writer. A human click and an AI decision are the same Intent; neither
 mutates state directly: a single writer arbitrates every change and pushes the result back.*
 
 ## 3. Related work and positioning
@@ -215,11 +215,11 @@ occupies all three at once.
 | Mixed-initiative / interface agents (Horvitz; Lieberman) | a separate agent observes & suggests | ✗ complementary; own affordances | ✗ | agent chrome (icon, dialog) |
 | Hypermedia affordances (HATEOAS; Signifiers; "web verbs") | agent discovers & invokes affordances | ✗ machine / agent-only | n/a | none |
 | Provenance systems (C2PA, SynthID, Carbon for AI, sparkle) | *disclosure only, not an interaction model* | n/a | n/a | metadata · watermark · container badge · icon |
-| **GRAIN (this work)** | **operates a closed, app-authored vocabulary** | **✓ identical primitive** | **✓ one `/intent`, one writer** | **in-surface grade (type + control edges), persistent** |
+| **GRAIN (this work)** | **operates a closed, app-authored vocabulary** | **✓ identical primitive** | **✓ one /intent, one writer** | **in-surface grade (type + control edges), persistent** |
 
 *Table 1. Positioning. The contribution is the row that is ✓ on all three axes simultaneously; no
 prior cluster is. The nearest, Agent-Native, holds the first two and none of the third, which is
-what makes the provenance axis load-bearing. (`~` = partial; `n/a` = the axis doesn't apply.)*
+what makes the provenance axis load-bearing. (~ = partial; n/a = the axis doesn't apply.)*
 
 ### 3.1 Agent–UI interaction protocols (AG-UI, MCP-UI, MCP Apps)
 
@@ -228,7 +228,7 @@ continuous, multi-transport **event stream** (≈16 event types), with generativ
 propose trees and constraints, the app validates and mounts" [AG-UI 2025]. **MCP-UI** ships UI *as*
 resources rendered in a sandboxed iframe, routing UI-originated interactions back as discrete events
 [MCP-UI 2025]. **MCP Apps** (Jan 2026, the first official MCP extension) returns interactive UIs over a
-`ui://` scheme and a JSON-RPC-over-`postMessage` channel through which "the model stays in the loop"
+ui:// scheme and a JSON-RPC-over-postMessage channel through which "the model stays in the loop"
 [MCP Apps 2026]. Google's **A2UI** (2025) is a further open protocol in the same agent-driven family
 [A2UI 2025].
 
@@ -243,7 +243,7 @@ next.
 ### 3.2 Agent-native frameworks and agent-ready design systems: the closest contemporaries
 
 **Builder.io "Agent-Native" (2026): the nearest neighbour, and the strongest validation.** An
-open-source framework (announced May 2026) whose core primitive, `defineAction()`, binds a typed
+open-source framework (announced May 2026) whose core primitive, defineAction(), binds a typed
 schema to server-side logic such that *"every action the agent can take is also a button in the UI,
 and every button the user clicks runs the same logic the agent uses"* [Builder.io 2026]. The action
 set is application-authored and closed (the agent cannot invent capabilities), and every action runs
@@ -257,7 +257,7 @@ decisive. (a) *Transport:* Agent-Native exposes its one executor through **many*
 MCP, A2A, CLI) where we keep **literally one** endpoint, and that choke point is itself
 load-bearing: provenance is stamped at the door, which is what makes the grade trustworthy (§2).
 (b) *Rendering:* Agent-Native broadcasts state to clients; we return addressed hypermedia
-`RenderOp`s against named surfaces, which is what lets the operator *watch the AI act on the real
+RenderOps against named surfaces, which is what lets the operator *watch the AI act on the real
 controls*. (c) *Decisive:* **Agent-Native has no provenance surface at all.** Agency is governed by
 permissions and audit logs (off-surface) and an agent's completed work is visually
 indistinguishable from a human's. The conjunction we claim therefore *rests* on provenance-as-grade
@@ -295,9 +295,9 @@ all.
     </marker>
   </defs>
     <rect x="3" y="-12" width="221" height="244" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 3"/>
-    <text x="13" y="1" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">IMITATION — GUI AGENTS / COMPUTER-USE</text>
+    <text x="13" y="1" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">IMITATION: GUI AGENTS / COMPUTER-USE</text>
     <rect x="65" y="262" width="242" height="301" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 3"/>
-    <text x="75" y="275" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">SHARED VOCABULARY — GRAIN / BATCH</text>
+    <text x="75" y="275" style="fill:var(--color-muted);font-size:11px;letter-spacing:.04em">SHARED VOCABULARY: GRAIN / BATCH</text>
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
     <rect x="79" y="16" width="69" height="36" rx="6"/>
     <rect x="23" y="72" width="181" height="36" rx="6"/>
@@ -405,7 +405,7 @@ defensible form is narrower, and we state it precisely: provenance rendered **in
 surface itself** (the type of the words, the edge of a control, the outline of a card) so the
 grade *is* the mark, carried by the very thing the AI produced or touched, with nothing separate to
 overlook or strip; **persistent** after the action settles (provenance, not mere liveness); and
-**coupled to the action system**, so the same door that admits the `Intent` stamps the provenance the
+**coupled to the action system**, so the same door that admits the Intent stamps the provenance the
 grade renders, and the disclosure cannot drift from the act. We do not claim it is provably better
 (whether such a cue is legible across sighted and non-sighted users is an open empirical question,
 §5) only that it is a different and, in this coupled form, unoccupied point.
@@ -444,7 +444,7 @@ grade renders, and the disclosure cannot drift from the act. We do not claim it 
   </g>
 </svg>
 *Figure 3. Grade-as-signal is not only typographic: every operable surface shows the AI's hand in its
-own idiom, all keyed off the same `data-grade` / `data-commit` attributes. The grade encodes
+own idiom, all keyed off the same data-grade / data-commit attributes. The grade encodes
 **provenance** and persists after commit; only the in-transit **liveness** (block caret, pulse) settles.*
 
 **Generative UI and the closest prior art.** Generative-UI systems have the model *assemble* the
@@ -469,9 +469,9 @@ in the design space the literature circles but does not occupy. We do not claim 
 do not need one; the value is the specific, opinionated conjunction, built and demonstrated in a
 working system:
 
-1. **Symmetry.** A human click and an AI decision resolve to the *identical* `Intent` primitive over one
+1. **Symmetry.** A human click and an AI decision resolve to the *identical* Intent primitive over one
    closed, application-authored vocabulary, not generic device input, not agent-proposed trees.
-2. **The single-writer door.** One `POST /intent`, no privileged AI→DOM channel, as an enforced
+2. **The single-writer door.** One POST /intent, no privileged AI→DOM channel, as an enforced
    architectural discipline that makes "what the AI may do" literally equal to "what the UI affords."
 3. **Provenance-as-grade.** AI presence disclosed *in the operable surface itself*, a persistent grade
    on the content and controls the AI produced or touched (type, control edges, card outlines), rather
@@ -485,7 +485,7 @@ one that does, **Builder.io Agent-Native** (§3.2), which holds properties 1 and
 provenance surface at all. The consequence is absorbed rather than resisted: symmetry and the
 single writer are no longer individually novel, and the claim now rests where the evidence puts it,
 on the **full conjunction**, in which provenance-as-grade is not a decoration on the architecture
-but *enforced by it* (the door that admits the `Intent` stamps the provenance the grade renders).
+but *enforced by it* (the door that admits the Intent stamps the provenance the grade renders).
 We regard the arrival of a well-adopted framework on two of our three axes as validation, not
 erosion: a position converged upon from independent directions is a real position. The other
 near-misses hold their earlier verdicts: "Software as Content" (2026) shares a bidirectional
@@ -507,8 +507,8 @@ evaluation has one milestone now met (a live model operating the vocabulary), on
 **What stands today: the live-model existence proof.** When this paper was first drafted the reasoner
 behind the model seam was a scripted stub, and "existence proof" referred to the architecture alone. That
 milestone is now met. A small language model runs entirely in the browser (WebLLM, no server, the
-operator's own hardware) and reads the same vocabulary the human operates, emitting `Intent`s through the
-same `POST /intent` door: it drives a subset of the vocabulary end-to-end, navigation and choice
+operator's own hardware) and reads the same vocabulary the human operates, emitting Intents through the
+same POST /intent door: it drives a subset of the vocabulary end-to-end, navigation and choice
 operations, with its presence rendered in-surface as grade exactly as the architecture requires. This
 turns the central "can a live model operate this contract at all" question from *argued* to
 *demonstrated*. We state the limits in the same breath: the model is small and its command of the *full*
@@ -542,7 +542,7 @@ human click does, through the one door, with the grade following.
 **Out of scope (measured, but not evidence for this thesis).** What is built with GRAIN, how it is bundled,
 and where it is deployed do not bear on the modality and are not evaluated here. For completeness, the
 substrate's no-build / native-first cost has since been measured directly: the same reference app built
-four ways and audited by one harness ([framework-bench](https://tjakoen.github.io/framework-bench/), memory `framework-comparison-methodology`). On
+four ways and audited by one harness ([framework-bench](https://tjakoen.github.io/framework-bench/), memory framework-comparison-methodology). On
 the one measured interaction the native / BATCH build ships about 2kb of JavaScript against Next.js's
 118kb for the identical filter, roughly 60× less (and against the lightest stack, Astro, the whole field spans about 160×), with the SEO/AEO head held identical across all four so
 the comparison is fair. Those numbers are real and we stand behind them, but they measure the *substrate*,
@@ -628,15 +628,15 @@ is enough.
 
 - Amershi, S., Weld, D., Vorvoreanu, M., et al. (2019). *Guidelines for Human-AI Interaction.* CHI '19. https://dl.acm.org/doi/10.1145/3290605.3300233
 - Anthropic (2024). *Introducing computer use, a new Claude 3.5 Sonnet, and Claude 3.5 Haiku.* https://www.anthropic.com/news/3-5-models-and-computer-use
-- Astryx / Meta (2026). *Astryx — an open source design system that's fully customizable and agent ready.* https://astryx.atmeta.com · https://astryx.atmeta.com/blog/introducing-astryx · https://github.com/facebook/astryx
+- Astryx / Meta (2026). *Astryx: an open source design system that's fully customizable and agent ready.* https://astryx.atmeta.com · https://astryx.atmeta.com/blog/introducing-astryx · https://github.com/facebook/astryx
 - Builder.io (2026). *Agent-Native architecture.* https://www.builder.io/blog/agent-native-architecture · https://github.com/BuilderIO/agent-native · https://www.agent-native.com/docs/what-is-agent-native
 - arXiv:2603.10664 (2026). *Terminal Is All You Need* (human–agent representational compatibility in the terminal medium). https://arxiv.org/abs/2603.10664
 - arXiv:2606.19116 (2026). *Towards an Agent-First Web* (position; dual-layer human/agent content, cited as the anti-symmetric foil). https://arxiv.org/abs/2606.19116
 - Zhang, Bu, Dhillon (2026). *Who Owns the Text?* (ownership-aware human–AI co-writing; point-of-decision provenance; N=176). arXiv:2601.10236. https://arxiv.org/abs/2601.10236
 - Deka, N. (2025). *The AI-Ready Design System: the 5 components your component library must update first.* Medium (Design Bootcamp). https://medium.com/design-bootcamp/the-ai-ready-design-system-the-5-components-your-component-library-must-update-first-531309f35d85
-- AG-UI (2025). *Agent-User Interaction Protocol — documentation.* https://docs.ag-ui.com/introduction · https://docs.ag-ui.com/agentic-protocols
+- AG-UI (2025). *Agent-User Interaction Protocol: documentation.* https://docs.ag-ui.com/introduction · https://docs.ag-ui.com/agentic-protocols
 - Bunt, A., Conati, C., McGrenere, J. (2007). *Supporting Interface Customization using a Mixed-Initiative Approach.* IUI 2007. https://www.sciencedirect.com/science/article/abs/pii/S1071581905001114
-- C2PA. *Content Credentials: C2PA Technical Specification — Explainer.* https://spec.c2pa.org/specifications/specifications/2.4/explainer/Explainer.html
+- C2PA. *Content Credentials: C2PA Technical Specification (Explainer).* https://spec.c2pa.org/specifications/specifications/2.4/explainer/Explainer.html
 - CopilotKit (2025). *The State of Agentic UI: comparing AG-UI, MCP-UI and A2UI.* https://www.copilotkit.ai/blog/the-state-of-agentic-ui-comparing-ag-ui-mcp-ui-and-a2ui-protocols
 - Engelbart, D. C. (1962). *Augmenting Human Intellect: A Conceptual Framework.* SRI Summary Report AFOSR-3223. https://www.dougengelbart.org/content/view/138/
 - Google (2025). *Introducing A2UI: an open project for agent-driven interfaces.* https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/
@@ -644,7 +644,7 @@ is enough.
 - Google DeepMind. *SynthID.* https://deepmind.google/technologies/synthid/
 - Horvitz, E. (1999). *Principles of Mixed-Initiative User Interfaces.* CHI '99, ACM, 159–166. http://erichorvitz.com/chi99horvitz.pdf
 - htmx. *HATEOAS* (essay). https://htmx.org/essays/hateoas/
-- IBM. *Carbon for AI — design guidelines.* https://carbondesignsystem.com/guidelines/carbon-for-ai/
+- IBM. *Carbon for AI: design guidelines.* https://carbondesignsystem.com/guidelines/carbon-for-ai/
 - Lieberman, H. (1995). *Letizia: An Agent That Assists Web Browsing.* AAAI Fall Symposium. https://cdn.aaai.org/Symposia/Fall/1995/FS-95-03/FS95-03-016.pdf
 - Licklider, J. C. R. (1960). *Man-Computer Symbiosis.* IRE Transactions on Human Factors in Electronics, HFE-1, 4–11. https://groups.csail.mit.edu/medg/people/psz/Licklider.html
 - Lieberman, H. (1997). *Autonomous Interface Agents.* CHI '97, ACM. https://dl.acm.org/doi/10.1145/258549.258592

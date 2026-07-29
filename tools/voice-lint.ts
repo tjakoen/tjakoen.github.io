@@ -38,13 +38,15 @@ const RULES: Rule[] = [
 
 type Finding = { file: string; line: number; sev: Rule["sev"]; id: string; msg: string };
 
-// Walk a file line by line, skipping the frontmatter block and any fenced code block (both legitimately
-// contain backticks and tokens). Everything else is prose and gets linted.
+// Walk a file line by line, skipping the frontmatter block, any fenced code block, and HTML comments
+// (all three legitimately contain backticks, tokens, and author notes a reader never sees). Everything
+// else is prose and gets linted.
 function lintFile(file: string): Finding[] {
   const lines = readFileSync(file, "utf8").split("\n");
   const out: Finding[] = [];
   let inFence = false;
   let inFrontmatter = false;
+  let inComment = false;
   for (let i = 0; i < lines.length; i++) {
     const raw = lines[i];
     const line = raw.trimEnd();
@@ -54,8 +56,20 @@ function lintFile(file: string): Finding[] {
     // Fenced code blocks toggle on ``` (or ~~~) at line start.
     if (/^\s*(```|~~~)/.test(line)) { inFence = !inFence; continue; }
     if (inFence) continue;
+    // HTML comments (<!-- author notes -->) are invisible to the reader, so they aren't prose. Strip
+    // any inline `<!-- ... -->` spans, then track multi-line comment blocks and skip lines inside them.
+    let scan = line;
+    if (!inComment) scan = scan.replace(/<!--.*?-->/g, "");
+    if (inComment) {
+      const close = scan.indexOf("-->");
+      if (close === -1) continue;      // still inside the comment
+      scan = scan.slice(close + 3);    // resume linting after the close marker
+      inComment = false;
+    }
+    const open = scan.lastIndexOf("<!--");
+    if (open !== -1 && scan.indexOf("-->", open) === -1) { inComment = true; scan = scan.slice(0, open); }
     for (const rule of RULES) {
-      if (rule.re.test(raw)) out.push({ file, line: i + 1, sev: rule.sev, id: rule.id, msg: rule.msg });
+      if (rule.re.test(scan)) out.push({ file, line: i + 1, sev: rule.sev, id: rule.id, msg: rule.msg });
     }
   }
   return out;

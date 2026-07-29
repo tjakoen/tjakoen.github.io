@@ -21,7 +21,7 @@ I tried the tools. All of them. Notion, Obsidian, Craft, Apple Reminders, the ca
 So I would bounce to the next app, learn *its* system, fall off *that* one, and go around again, collecting abandoned workspaces like a very tidy hoarder.
 
 <svg viewBox="-26 0 379 330" width="100%" role="img"
-     aria-label="The app-switching trap as a loop: pick a new app, learn its system, it does not fit, quit and feel guilty, back to the start — until the way out: what if it adapted to me instead?"
+     aria-label="The app-switching trap as a loop: pick a new app, learn its system, it does not fit, quit and feel guilty, back to the start, until the way out: what if it adapted to me instead?"
      style="display:block;width:100%;max-width:440px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <defs>
     <marker id="fl-origin0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
@@ -138,7 +138,7 @@ The assistant needed a surface to drive, and my no-framework rule needed a backe
 I landed on **Bun** for a concrete reason, not the usual hype: it is the one runtime that parses HTML on the server out of the box, so I could keep inventing my own tags and still have a no-build server compose them, without dragging in a whole library to do the one thing I was trying to avoid. It runs TypeScript straight, ships its own database if needed, and otherwise minds its business. Every choice paid down the same debt: fewer moving parts standing between me and a working page.
 
 <svg viewBox="0 0 428 368" width="100%" role="img"
-     aria-label="The usual way is five stages: source, build, a dist folder, a server, the browser. The BATCH way is three: the browser asks for a page, the Bun server composes templates and my own component tags, and finished HTML comes back — no build step."
+     aria-label="The usual way is five stages: source, build, a dist folder, a server, the browser. The BATCH way is three: the browser asks for a page, the Bun server composes templates and my own component tags, and finished HTML comes back, no build step."
      style="display:block;width:100%;max-width:500px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <defs>
     <marker id="fl-origin2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">

@@ -98,7 +98,7 @@ because the look is the design system's, not the site's:
 | **Change a component's markup** | `grain/components/<layer>/<name>/<name>.html` | some layout components are CSS-only (no `.html`) — see [`../batch/docs/CONVENTIONS.md`](batch/CONVENTIONS.md) §4 |
 | **Add a whole new page** | a new `view/pages/<name>/index.html` (or `view/pages/<name>.html`) | it's live at `/<name>` on the next refresh; add it to the sitemap? — it's derived, so no |
 | **Change the global page shell** (head, scripts) | the `PAGE_HEAD` / `PAGE_ASSETS` constants in [`src/server.ts`](../src/server.ts) | one place, injected into every page — don't hand-list assets in a page's `<head>` |
-| **Change what the AI does in a demo** | `grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [`../ROADMAP.md`](../../bread/ROADMAP.md)) |
+| **Change what the AI does in a demo** | `grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [ROADMAP.md](https://github.com/tjakoen/bread/blob/main/ROADMAP.md)) |
 | **Add / change an AI verb or surface** | `grain/ai/contract.ts` first, then walk the alignment row in [`../CLAUDE.md`](../../bread/CLAUDE.md) | this is *not* a minor edit — it ripples into tests + docs |
 
 ## The dev loop

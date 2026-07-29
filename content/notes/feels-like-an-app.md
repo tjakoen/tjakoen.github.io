@@ -42,7 +42,7 @@ That lives in the stylesheet every page loads. On its own it cross-fades the who
 Because the sidebar on the old page and the sidebar on the new page carry the same name, the browser understands they are one continuous element and morphs it in place rather than fading it out and back in. Only the main content area, which has no shared name, actually cross-fades. So the rail, the top bar, the status row all hold steady while the middle swaps. That is the entire single-page feel. No router, no diffing, no virtual anything. Two full documents and a promise that these boxes are the same box.
 
 <svg viewBox="0 0 457 380" width="100%" role="img"
-     aria-label="You click a link and the browser fetches a whole new HTML document. If both pages share view-transition-name regions, the named chrome (rail, topbar, status) morphs in place while the unnamed main content cross-fades — so a full page load feels like one continuous app."
+     aria-label="You click a link and the browser fetches a whole new HTML document. If both pages share view-transition-name regions, the named chrome (rail, topbar, status) morphs in place while the unnamed main content cross-fades, so a full page load feels like one continuous app."
      style="display:block;width:100%;max-width:540px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
   <defs>
     <marker id="fl-feelsl0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
@@ -178,13 +178,13 @@ The one script that is genuinely load-bearing, the one the whole design system i
     <text x="174" y="38.3" style="fill:var(--color-fg)">You act on an actionable element</text>
     <text x="174" y="54.8" style="fill:var(--color-muted);font-size:12px">a click, or Enter in a field</text>
     <text x="174" y="100.3" style="fill:var(--color-fg)">That element flips to its pending state</text>
-    <text x="174" y="116.8" style="fill:var(--color-muted);font-size:12px">optimistically — the grain look</text>
+    <text x="174" y="116.8" style="fill:var(--color-muted);font-size:12px">optimistically (the grain look)</text>
     <text x="174" y="162.3" style="fill:var(--color-fg)">It posts your intent through the one write path</text>
     <text x="174" y="224.3" style="fill:var(--color-fg)">Something decides what changes</text>
     <text x="174" y="240.8" style="fill:var(--color-muted);font-size:12px">a live server, or the same logic in the browser</text>
     <text x="174" y="286.3" style="fill:var(--color-fg)">A list of small typed edits comes back</text>
     <text x="174" y="348.3" style="fill:var(--color-fg)">Each edit finds its region by semantic address</text>
-    <text x="174" y="364.8" style="fill:var(--color-muted);font-size:12px">not a CSS selector — and updates it</text>
+    <text x="174" y="364.8" style="fill:var(--color-muted);font-size:12px">not a CSS selector, and updates it</text>
     <text x="174" y="410.3" style="fill:var(--color-fg)">The pending state releases: the surface settles</text>
   </g>
 </svg>
