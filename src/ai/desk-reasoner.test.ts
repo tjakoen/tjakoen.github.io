@@ -51,7 +51,7 @@ function makeDeps(over: Partial<DeskDeps> = {}): { deps: DeskDeps; fallbackCalls
     profile: WEAK_PROFILE,
     probe: async () => true,
     loadEngine: async () => fakeEngine(["Hello"]).engine,
-    loadCatalog: async () => buildCatalog(["/", "/grain/", "/batch/", "/bread/", "/notes/", "/loop/", "/about/"]),
+    loadCatalog: async () => buildCatalog(["/", "/grain/", "/batch/", "/bread/", "/notes/", "/about/"]),
     streamChat,                                        // GRAIN's real streaming transport over the fake engine
     loadKnowledge: async () => knowledge,
     fallback,

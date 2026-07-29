@@ -141,8 +141,17 @@ it: a plain click, or (once a real model is wired at M★) an in-process decisio
 
 On the **light path**, the grade tells the story (`AI-INTERFACE.md` §5): the moment the control is
 used it goes `data-commit="pending"` and renders grain (in transit), and when the committed
-`replace` lands over SSE the surface settles clean. That is the whole grade-as-signal contract, grain
-means AI or in-flight, clean means human and committed, expressed with one op.
+`replace` lands over SSE the surface settles clean. Grain means AI or in-flight, clean means human
+and committed, expressed with one op.
+
+**See the grade land in a live browser.** On this repo `item.archive`'s host re-render is stubbed
+(the honest note in step 3), so its committed fragment is empty and there is nothing to watch settle
+on `/mail`. The identical grade contract *is* live on the [`/grain`](/grain) showcase, driven by the
+same door: press **Ask/Send** (`chat.send`) and your message settles clean while the AI's reply
+streams into a bubble that stays grain; press **▷ Watch the AI act** (`demo.run`) and the server's
+reasoner pushes a run of `RenderOp`s back over SSE, a task badge flips to `done` and a drafted task
+stays grain. Same `POST /intent` + SSE path, same grade vocabulary as step 4, but with a live host
+effect you can watch in the browser today (pinned by `e2e/grain-page.e2e.ts`).
 
 ## Run it yourself
 
@@ -202,12 +211,13 @@ For adding a whole component or a new render-op kind, see
 
 ---
 
-`TODO(owner):` This tutorial teaches `item.archive` end to end through the real door, and the
-door-level transcript is genuinely reproducible (it's an integration test). But the *visible*
-end-to-end (a visitor watches a `/mail` letter settle grain then clean over the server SSE channel)
-is not wired on the live site: the domain backing retired with the `/loop` board, so `archiveItem` /
-`renderSurface` are stubs and the committed fragment is empty, and the `/mail` archive a visitor sees
-is a client-island DOM move driven by the desk, not a server-door re-render. If you want the "watch
-it settle over SSE" step to be literally reproducible in a browser (not only in the integration
-test), re-wire a small host-surface backing for `item.archive` against a real `/mail`-style board, or
-retarget this tutorial's piece 5 onto a verb whose live effect is already server-rendered.
+**Note on this repo's wiring.** This tutorial builds `item.archive` end to end through the real door,
+and the door-level transcript above is a genuine integration test. Its *visible* host re-render is
+intentionally a no-op on the live site: the domain backing retired with the `/loop` board
+(2026-07-26), so `archiveItem` / `renderSurface` are stubs and the committed fragment is empty, and
+the `/mail` archive a visitor sees is a client-island DOM move driven by the desk, not a server-door
+re-render. To watch a crossing settle grain then clean over the server SSE channel in a live browser,
+piece 5 points at the [`/grain`](/grain) showcase's `chat.send` / `demo.run` controls, which drive
+the same door with a live host effect. Re-wiring a host-surface backing for `item.archive` against a
+real `/mail`-style board would make *its own* visible end-to-end reproducible too, but is not
+required for the tutorial to be honest.

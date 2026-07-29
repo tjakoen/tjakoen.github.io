@@ -57,8 +57,8 @@ export interface DeskNote { slug: string; title: string; route: string; tags?: s
 // hardcoded). The generic `screen`/`chat-log` targets exist on every page (vocabulary-level), so the
 // caller skips them; these are the genuinely page-specific affordances.
 const VERB_PHRASE: Record<string, string> = {
-  // Covers BOTH /loop tasks and /mail letters (B3) — one verb, two surfaces, so the phrase stays
-  // generic rather than naming just one of them.
+  // The live surface is /mail letters (B3); the phrase stays generic ("an item") so it still reads
+  // right if another item surface registers item.archive.
   "item.archive": "archive an item",
   "say.set": "note something to the reflection",
   "say.stream": "ask for a quick reflection",

@@ -26,7 +26,7 @@ const DIST = Bun.env.EXPORT_DIST ?? "dist";
 
 // Live-only backend endpoints (§18: the operable /intent+SSE door) that legitimately appear as a
 // literal <a href> in the rendered HTML but are NEVER export candidates — there is no page to
-// freeze, only a running server to ask. `/ai/manifest` is linked from /loop's and /grain's own
+// freeze, only a running server to ask. `/ai/manifest` is linked from /grain's own
 // "manifest" action (a debugging convenience for a human reading the page); batch's own
 // exportSite() already warns about it every run ("expected for operable surfaces excluded per
 // §18") — this is the same exclusion, just promoted from a warning to a documented pass here so a

@@ -145,7 +145,7 @@ test.describe("/grain — the GRAIN showcase", () => {
 
 test.describe("/grain — the surface is operable by both a person and the AI, through ONE DOOR", () => {
   // The showcase surface is driven by the REAL dispatcher (ai-dispatch.js) against the real
-  // POST /intent + SSE — the same path /loop uses. No showcase-only AI→DOM back channel remains.
+  // POST /intent + SSE — the same path the hero desk uses. No showcase-only AI→DOM back channel remains.
   test("human: Ask/Send posts through /intent and the AI replies over SSE", async ({ page }) => {
     await page.goto("/grain");
     const s = page.locator("[data-surface-demo]");

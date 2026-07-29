@@ -42,7 +42,7 @@ test.describe("Phase 4 — IA/navigation correctness", () => {
     await page.evaluate(() => {
       localStorage.setItem("grain.tabs.open", JSON.stringify([
         "/grain", "/batch", "/mill", "/proof", "/crumb", "/pantry", "/greenroom",
-        "/docs", "/reference", "/notes", "/loop", "/resume", "/about",
+        "/docs", "/reference", "/notes", "/resume", "/about",
       ]));
     });
     await page.setViewportSize({ width: 390, height: 800 });   // narrow enough that the strip overflows

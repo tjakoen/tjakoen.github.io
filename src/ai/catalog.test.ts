@@ -7,7 +7,7 @@ import { buildCatalog, resolveNav, navShortlist, navTarget } from "./catalog.ts"
 // A representative slice of the real sitemap + titles.
 const ROUTES = [
   "/", "/about/", "/grain/", "/grain/docs/", "/grain/docs/ai-interface/", "/batch/", "/bread/",
-  "/notes/", "/notes/ten-times-zero/", "/notes/why-i-teach/", "/calendar/", "/loop/",
+  "/notes/", "/notes/ten-times-zero/", "/notes/why-i-teach/", "/calendar/",
 ];
 const TITLES: Record<string, string> = {
   "/notes/ten-times-zero": "Ten Times Zero Is Still Zero",
