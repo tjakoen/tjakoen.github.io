@@ -544,7 +544,7 @@ and where it is deployed do not bear on the modality and are not evaluated here.
 substrate's no-build / native-first cost has since been measured directly: the same reference app built
 four ways and audited by one harness ([framework-bench](https://tjakoen.github.io/framework-bench/), memory `framework-comparison-methodology`). On
 the one measured interaction the native / BATCH build ships about 2kb of JavaScript against Next.js's
-118kb for the identical filter, roughly 163× less, with the SEO/AEO head held identical across all four so
+118kb for the identical filter, roughly 60× less (and against the lightest stack, Astro, the whole field spans about 160×), with the SEO/AEO head held identical across all four so
 the comparison is fair. Those numbers are real and we stand behind them, but they measure the *substrate*,
 not the *modality*: a heavier stack could carry the same interaction model, so this is context, not proof
 of the thesis.
