@@ -25,6 +25,7 @@ six.
 | **Structuring a repo so AI sessions compound** | [AI-REPO-STANDARD.md](AI-REPO-STANDARD.md) | The repo-side companion to AI-DEVELOPMENT: the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned. AI-DEVELOPMENT owns the working relationship; this owns the repo. |
 | **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
 | **Running one AI workflow across every repo** | [LOOP.md](LOOP.md) | The system *around* the sessions: the work-triggered heartbeat that makes skipped chores visible, the thin-kit shape, the accountability contract that keeps an unattended run honest. One floor above SESSION-LOOP. |
+| **Answering a code question without burning the window** | [GRAPH.md](GRAPH.md) | Ask the code graph a scoped question before you fan out grep, reads, and subagents. Query by symbol not prose, keep it fresh with a free per-edit hook, never commit the artifact. The retrieval half of the loop. |
 | **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard: cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built (frontmatter, structure, footer), plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
 | **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard: two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
@@ -39,6 +40,9 @@ six.
   spans them: the heartbeat, the shared kit shape, the contract that holds across a whole estate of
   repos worked the same way. Read it when the question is "how does *every* repo run," not "how does
   this session run."
+- **GRAPH** is the retrieval half of that loop: a narrow rule for answering a structural code question
+  cheaply (ask the graph before you fan out) that SESSION-LOOP's model economy and LOOP's heartbeat both
+  lean on. Read it the moment you catch yourself about to grep the whole tree.
 - **VOICE + NOTE-STANDARD + README-STANDARD + FIGURES** are the writing set: VOICE owns the prose,
   the others own specific artifacts and point back at it. Start here for any published words.
 - **CLAUDE.starter** is the on-ramp: it's how a new repo inherits the whole set.
