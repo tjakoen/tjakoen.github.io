@@ -1,0 +1,8 @@
+{
+  "projectName": "tjakoen.github.io",
+  "plansDir": "./plans",
+  "docsDirs": [
+    "./docs"
+  ],
+  "standardsSource": "canon"
+}
