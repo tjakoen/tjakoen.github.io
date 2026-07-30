@@ -9,6 +9,32 @@
 > the repo is **public**. The events-platform exit is told **neutrally, no names, lessons-forward**.
 > Company name is **Career Team**. People name-drops = public professional info + LinkedIn only.
 
+## New notes drafted (2026-07-30, gap pass)
+
+Two notes added to close gaps between the published set and work that shipped since:
+
+- [~] **Every AI Grade Shows Up Grainy Until I Sign It** — the [grader-ui](https://github.com/tjakoen/grader-ui)
+      review-desk note: the hosted screen where AI-proposed grades wait in *grain* type and flip to *clean*
+      on approval, data-free-by-design (CSP one host, no server, deploy tripwire), and the single-write-door
+      shape (it emits an intent prompt, Claude Code applies it in the repo, human signs everything). Makes
+      real the "held for my review" claim in how-i-use-ai-in-teaching. **DRAFT** at
+      `content/notes/grain-until-i-sign-it.md`; inbound-linked from how-i-use-ai-in-teaching.md; cross-links
+      how-i-turned-github-into-a-classroom, /grain, ten-times-zero.
+- [~] **I Was Shipping Faster Than I Could Understand It** — the estate-wide AI-workflow consolidation note
+      (the LOOP.md/SESSION-LOOP.md/pantry-doctor story). Comprehension-debt confession, the work-triggered
+      heartbeat (doctor at session start, CI on push, no 3am cron), the accountability contract (run ledger,
+      declared rails, verify-by-second-pass), sourced from Addy Osmani's loop-engineering writing + an
+      aerospace documentation standard (the STE precedent cited in VOICE). The estate-wide sibling of
+      where-were-we (which is the PROOF/plans-as-files slice). **DRAFT** at `content/notes/one-loop-every-repo.md`;
+      inbound-linked from where-were-we.md; cross-links ten-times-zero. Honest limits: one person not a team,
+      books still being read.
+- **Stale fixes this pass:** ten-times-zero "not published yet" claim killed (site is live; numbers reframed
+      as a dated early-build snapshot, ratio held as "nearly as much prose as code" since the monorepo split
+      dropped this repo alone to ~47% prose); why-i-teach:152 "third semester / 100-150" refreshed to the
+      growth story (classes 4→7, students ~150 to nearly 300, flagged as a growing snapshot). standards/LOOP.md
+      confirmed committed + `/standards/loop` wired. Teaching-platform stats already reanchored in the
+      2026-07-29 audit (course-platform repo not local, can't re-pull further).
+
 ## Production status (in-flight, 2026-07-03)
 
 Where the notes actually stand, so a fresh session can pick up mid-stream:

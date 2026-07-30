@@ -180,9 +180,11 @@ Everything below is pulled straight from the git history of the thing you're rea
 portfolio, built on three tools I made for it. My own no-build framework (BATCH), my own design
 system (GRAIN), and a little Markdown CMS that renders these very words into the page (MILL). 
 
-Not a demo, not a tutorial repo. The thing I actually build on. Fair warning: it's still in progress and not
-published yet, so treat every number below as a snapshot I'll re-pull the day it ships. The ratio is
-the point, and the ratio won't move.
+Not a demo, not a tutorial repo. The thing I actually build on, and it's live now, so you're reading
+this on it. Fair warning: the numbers below are a snapshot from when I first built it, back when BATCH,
+GRAIN, and MILL still lived in one repo with the site. They've since moved into their own homes, so read
+every count as a dated marker of that early build, not a live readout. The ratio is the point, and the
+ratio holds: I still write nearly as much prose as code.
 
 <!-- REFRESH THESE NUMBERS (occasionally, and definitely before publishing) — the ratio + counts are a
      living git snapshot. Last measured 2026-07-03 (committed/tracked): 33 commits, 6,947 prose,

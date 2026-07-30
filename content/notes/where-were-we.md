@@ -148,6 +148,10 @@ The lopsided split held too. I glance at the wall instead of interrogating a cha
 machine keeps it current by flipping a status field in a file it was already editing. It has been a
 while since a session opened with anyone asking where we were.
 
+The board also turned out to be one piece of something bigger. Keeping plan state in files was the
+first fix; getting a whole estate of repos to work the same way was the next one, and that became
+[its own workflow I run everywhere](one-loop-every-repo.md).
+
 ---
 
 *The [judgment is human](ten-times-zero.md). The typing, by design, is not.*

@@ -149,9 +149,11 @@ with their work, and I spend my attention where it's actually useful: stepping i
 needs real context, guiding people through the parts that are genuinely hard, having the conversation
 that makes it click. The mechanical grind went to the machine. The human part came back to me.
 
-This is my third semester now, and each term it's somewhere between a hundred and a hundred and fifty students.
-A year ago that number would have buried me. Now it's fine. Not because I care less than the version
-of me staring at that 1am pile, because I finally built the thing that let me care *sustainably.*
+I'm a few semesters in now, and the load keeps climbing. My classes went from four to seven, and the
+students from about a hundred and fifty to nearly three hundred a term (a snapshot, and it's still
+growing). That kind of jump is exactly what would have buried the version of me staring at that 1am
+pile. Now it's fine. Not because I care less, because I finally built the thing that let me care
+*sustainably,* and kept building it every time the numbers grew.
 
 I almost quit. Instead I automated the part that was killing me, and kept the part I love. Turns out
 that's a decision I get to make in code.

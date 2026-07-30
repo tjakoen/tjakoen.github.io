@@ -125,9 +125,10 @@ shortcut them. It's the crutch-versus-multiplier thesis enforced in a system pro
 **A wall between the machine and the student.** Every piece of AI feedback is split in two. The
 student-facing half is prose only: no scores, no mention of a machine, reads like my own margin
 notes. The instructor-only half carries a *proposed* grade and a quiet "this looks vibe-coded" flag
-meant for my eyes. Nothing AI-generated reaches a student automatically; it's all held for my review.
-There's even a defensive line of code whose only job is to strip the instructor-only part out before
-it can leak into the student copy. **The machine drafts; the teacher signs.** I let AI write the
+meant for my eyes. Nothing AI-generated reaches a student automatically; it's all held for my review,
+on [a screen I built for exactly that](grain-until-i-sign-it.md), where every proposed grade shows up
+grainy until I sign it. There's even a defensive line of code whose only job is to strip the
+instructor-only part out before it can leak into the student copy. **The machine drafts; the teacher signs.** I let AI write the
 first pass. I never let it grade or speak to a student on its own.
 
 <svg viewBox="0 0 448 424" width="100%" role="img"
