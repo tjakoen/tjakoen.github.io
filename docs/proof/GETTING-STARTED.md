@@ -9,23 +9,21 @@ board is a projection that never writes back. The full design law and the schema
 
 ## Install
 
-PROOF is published to GitHub Packages as `@tjakoen/proof`, the same pattern as `@tjakoen/grain` and
-`@tjakoen/mill` (it depends on both):
+PROOF is published on the public npm registry as `@tjakoen/proof`, the same pattern as
+`@tjakoen/grain` and `@tjakoen/mill` (it depends on both):
 
 ```json
 {
   "dependencies": {
-    "@tjakoen/batch": "github:tjakoen/batch#main",
-    "@tjakoen/grain": "^0.1.0",
-    "@tjakoen/mill": "^0.1.0",
-    "@tjakoen/proof": "^0.1.0"
+    "@tjakoen/batch": "^0.1.0",
+    "@tjakoen/grain": "^0.1.12",
+    "@tjakoen/mill": "^0.2.0",
+    "@tjakoen/proof": "^0.1.2"
   }
 }
 ```
 
-```
-@tjakoen:registry=https://npm.pkg.github.com
-```
+No `.npmrc` and no auth token: the `@tjakoen` scope resolves from npmjs by default.
 
 ## Mount it over a plans directory
 

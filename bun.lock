@@ -19,42 +19,30 @@
     },
   },
   "packages": {
-    "@playwright/test": ["@playwright/test@1.61.1", "", { "dependencies": { "playwright": "1.61.1" }, "bin": { "playwright": "cli.js" } }, "sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig=="],
+    "@playwright/test": ["@playwright/test@1.62.0", "", { "dependencies": { "playwright": "1.62.0" }, "bin": { "playwright": "cli.js" } }, "sha512-9zOJ6ZQRAena31MpOH9VSzIz8Ou3YJ/wtY/eQm5T2uhfhG7/U3COrMS8xOtUrZrp9OgdmzEnIYODye3nY1VqzA=="],
 
-    "@tjakoen/batch": ["@tjakoen/batch@0.1.0", "https://npm.pkg.github.com/download/@tjakoen/batch/0.1.0/508a1427b35683b03bc23d1ada463a28928206e5", {}, "sha512-ZC/SXl6b5Ynmyx2So8XeeWRIpF//dFSTFtA+Gocbwx9JPdsTF+HQn1j1XQpMeNhA5BWI4i6qsCemC7skvHM6LA=="],
+    "@tjakoen/batch": ["@tjakoen/batch@0.1.0", "", {}, "sha512-NGZGnA1eKAhJJanUnqkNVWdvzXRyrzPpS1XYRDGurtiqFvoSnwX5tQ4PalSnHPnLVnkwpNJFeJ83Q1PrjRAlUw=="],
 
-    "@tjakoen/crumb": ["@tjakoen/crumb@0.1.3", "https://npm.pkg.github.com/download/@tjakoen/crumb/0.1.3/36c51e2cc913de0d7e251892b71eecf1d8dcd45f", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.1.2" }, "bin": { "crumb": "cli.ts" } }, "sha512-jEfq+UD4MYL9NvTzjFrI5ntJd6X0xEXAi3pHXTSUtR7xxKZpS4/EDm3HtjQLcVTSsfJZDSWt/3nVuABHNyKQfg=="],
+    "@tjakoen/crumb": ["@tjakoen/crumb@0.1.4", "", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "crumb": "cli.ts" } }, "sha512-Tt5NSmSR6uLzvZlspb4ea0BuyOIVaUhysxGXTGgCF7HufgRD6dBeFfwdG6K0m0YpDrnytBbJk+Q3bmfLEO5fAw=="],
 
-    "@tjakoen/grain": ["@tjakoen/grain@0.1.12", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.12/adc4083836984b3c34d3e9632c520a1081d39c42", {}, "sha512-eBXNVidSJzFdS27+PV9wCHCXndXTqR9KMGy1HoSykndY6L941QEfcC3HGgdQMaYvaR+MbOhc93oQonvAMbRcWw=="],
+    "@tjakoen/grain": ["@tjakoen/grain@0.1.12", "", {}, "sha512-zgtx5eSjYfnlQcqyt8ACyZtoIpQYHB57ecb9MSwmxBtII1AEz5GbzbWgRcO5NUlvrQVb3gzdrzV4+5KesVdrjA=="],
 
-    "@tjakoen/mill": ["@tjakoen/mill@0.2.0", "https://npm.pkg.github.com/download/@tjakoen/mill/0.2.0/dc52673076293a7e4a2742c7969732121dd16439", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-DaDbGip6GOa1YsczXPLDnDDM5CsEx7nwLShHsr2nvue0AodQadkkKyO4tCb5DhH+5qJag+C3ZYe7H9Yp0lT8NA=="],
+    "@tjakoen/mill": ["@tjakoen/mill@0.2.0", "", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-0MGtXnzXCcpKHCcO57shIHPiM796xdXsCroD79eC9pLp3+aLdlVdcWuJyMwOpqQZpX1P+BZOw3y3z4kCHWFbZw=="],
 
-    "@tjakoen/proof": ["@tjakoen/proof@0.1.2", "https://npm.pkg.github.com/download/@tjakoen/proof/0.1.2/09278e60589afe37f256a40ed3ac86f1d14d5bf2", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.1.2" }, "bin": { "proof": "cli.ts" } }, "sha512-Rkigd9vGpktBszlWjEWmhWoHfplb2nI5G9QBxFEYbIqoM54VrJtpQcpjpclNBwyc3B9zZe6rBfpq664CV//UIA=="],
+    "@tjakoen/proof": ["@tjakoen/proof@0.1.2", "", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "proof": "cli.ts" } }, "sha512-VlVndBs5a0fAR+3GJRUwpRSeV/ArkxPiFwB1c0fhtedJno4obiRNoyO5FK3yiLSZOBNvI+UGkhqtCLqDdhX7IQ=="],
 
-    "@types/node": ["@types/node@26.1.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-nxAkRSVkN1Y0JC1W8ky/fTfkGsMmcrRsbx+3XoZE+rMOX71kLYTV7fLXpqud1GpbpP5TuffXFqfX7fH2GgZREw=="],
+    "@types/node": ["@types/node@26.1.2", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-Vu4a5UFA9rIIFJ7rB/Vaafh9lrCQszopTCx6KjFboXTGQbPNasehVR5TEiithSDGyd1DEiUByggTZsg8jukeIg=="],
 
     "bun-types": ["bun-types@1.3.14", "", { "dependencies": { "@types/node": "*" } }, "sha512-4N0ig0fEomHt5R0KCFWjovxow98rIoRwKolrYdCcknNwMekCXRnWEUvgu5soYV8QXtVsrUD8B95MBOZGPvr6KQ=="],
 
     "fsevents": ["fsevents@2.3.2", "", { "os": "darwin" }, "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="],
 
-    "playwright": ["playwright@1.61.1", "", { "dependencies": { "playwright-core": "1.61.1" }, "optionalDependencies": { "fsevents": "2.3.2" }, "bin": { "playwright": "cli.js" } }, "sha512-DWnY5o3YbLWK4GovuAVwpqL+1VwGNdUGrRr++8j8PtQQzvAVZUIMjKQ90fY689sEJZJBbZVw1rXaOKSTitkzPQ=="],
+    "playwright": ["playwright@1.62.0", "", { "dependencies": { "playwright-core": "1.62.0" }, "optionalDependencies": { "fsevents": "2.3.2" }, "bin": { "playwright": "cli.js" } }, "sha512-Z14dG305dgaLu6foB1TXQagFiW8JfSUIUaUuPaKQ6NtBPKF1P/qXcqfh6c6K/icPqdy37JmjbiBXf6JNg6Sylw=="],
 
-    "playwright-core": ["playwright-core@1.61.1", "", { "bin": { "playwright-core": "cli.js" } }, "sha512-h7Qlt6m4REp25qvIdvbDtVmD4LqVXfpRxhORv9L0jzETM05p4fuPJ3dKyuSXQxDSbXnmS79HAgi9589lGSpLkg=="],
+    "playwright-core": ["playwright-core@1.62.0", "", { "bin": { "playwright-core": "cli.js" } }, "sha512-nsNRyq0r2zsG8AcRHWknc9QRA5XCueC7gWMrs+Gx2tlZn9hcl8zudfh00lhJPY1DE7NmZ6bDsT9g2yey8mXljA=="],
 
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "undici-types": ["undici-types@8.3.0", "", {}, "sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ=="],
-
-    "@tjakoen/crumb/@tjakoen/grain": ["@tjakoen/grain@0.1.9", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.9/1698cb504abdb7f2f647c32f2e452986673b3d3f", {}, "sha512-NirY4YttC2L02ssH71V/QXccCf4drNxKwO5QQclDobRA2ce7O2kS3R2XT52NIdYr2HMburzY5trTlwpFm2NM5w=="],
-
-    "@tjakoen/crumb/@tjakoen/mill": ["@tjakoen/mill@0.1.2", "https://npm.pkg.github.com/download/@tjakoen/mill/0.1.2/a39ee14641db8c369720fa6786be9a40590251df", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-Txt/4MOzWcXZX6DK+k6gVme5Aga3Xq9jCR7yy14zOvlas7bOk6tXAM7AJqfd8z5rNOLLeowXI4HdbYTg8p8B3g=="],
-
-    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@0.1.9", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.9/1698cb504abdb7f2f647c32f2e452986673b3d3f", {}, "sha512-NirY4YttC2L02ssH71V/QXccCf4drNxKwO5QQclDobRA2ce7O2kS3R2XT52NIdYr2HMburzY5trTlwpFm2NM5w=="],
-
-    "@tjakoen/proof/@tjakoen/grain": ["@tjakoen/grain@0.1.8", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.8/306508ba98b83037130eb747c8e7b7d7be78da52", {}, "sha512-zTMwg/WpQIta38n+2cK57itN5jkd5bZpxc11nqkrpb7bQVEAy4Z5BTVCbVCNGIJVZlPUCQu9uxJ0bmqkqqaRfA=="],
-
-    "@tjakoen/proof/@tjakoen/mill": ["@tjakoen/mill@0.1.2", "https://npm.pkg.github.com/download/@tjakoen/mill/0.1.2/a39ee14641db8c369720fa6786be9a40590251df", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-Txt/4MOzWcXZX6DK+k6gVme5Aga3Xq9jCR7yy14zOvlas7bOk6tXAM7AJqfd8z5rNOLLeowXI4HdbYTg8p8B3g=="],
-
-    "@tjakoen/crumb/@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@0.1.8", "https://npm.pkg.github.com/download/@tjakoen/grain/0.1.8/306508ba98b83037130eb747c8e7b7d7be78da52", {}, "sha512-zTMwg/WpQIta38n+2cK57itN5jkd5bZpxc11nqkrpb7bQVEAy4Z5BTVCbVCNGIJVZlPUCQu9uxJ0bmqkqqaRfA=="],
   }
 }

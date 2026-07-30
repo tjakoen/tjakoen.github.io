@@ -2,33 +2,37 @@
 title: "How to: consume BATCH / GRAIN as a dependency"
 ---
 
-**As of the 2026-07-19 consolidation, this is real.** `grain` is now a monorepo holding
-`packages/{grain,mill,proof,crumb}`, and `grain`, `mill`, and `proof` are **published to GitHub
-Packages** as `@tjakoen/{grain,mill,proof}`. Inside the monorepo those layers resolve as Bun
-**workspaces** (`workspace:*`); a separate app consumes the published versions. `batch` stays a
-standalone repo consumed as a **Bun git dependency** — it is the substrate, and it is not published.
+**As of the 2026-07-19 consolidation this is real, and since 2026-07-30 it needs no credentials.**
+`grain` is now a monorepo holding `packages/{grain,mill,proof,crumb}`, and all four are **published
+on the public npm registry** as `@tjakoen/{grain,mill,proof,crumb}`. Inside the monorepo those layers
+resolve as Bun **workspaces** (`workspace:*`); a separate app consumes the published versions.
+`batch` stays a standalone repo, published from there as `@tjakoen/batch`.
+
+Despite this page's title, none of the layers are git dependencies any more. They were published to
+GitHub Packages first, whose npm registry demands an auth token **even for public packages**, so
+every consumer still had to mint a `read:packages` PAT before installing anything. Moving the scope
+to npmjs removed that last step.
 
 ## The shape
 
-A separate app pins the published layers by version and keeps `batch` as a git dependency:
+A separate app pins every layer by version:
 
 ```json
 {
   "dependencies": {
-    "@tjakoen/batch": "github:tjakoen/batch#main",
-    "@tjakoen/grain": "^0.1.0",
-    "@tjakoen/mill": "^0.1.0",
-    "@tjakoen/proof": "^0.1.0"
+    "@tjakoen/batch": "^0.1.0",
+    "@tjakoen/grain": "^0.1.12",
+    "@tjakoen/mill": "^0.2.0",
+    "@tjakoen/proof": "^0.1.2",
+    "@tjakoen/crumb": "^0.1.4"
   }
 }
 ```
 
-The `@tjakoen` scope resolves from GitHub Packages, so the app also needs an `.npmrc` (the auth
-token lives in the environment / `~/.npmrc`, never committed):
-
-```
-@tjakoen:registry=https://npm.pkg.github.com
-```
+That is all of it. The `@tjakoen` scope resolves from npmjs by default, so the app carries **no
+`.npmrc`** — and should not: a committed scope mapping outranks both `publishConfig` and
+`--registry`, and a committed `_authToken=${GITHUB_TOKEN}` is worse still (unset, it resolves to an
+empty string, overrides the developer's own valid token, and 401s every install on a cold cache).
 
 A single monorepo git dependency cannot expose the sub-packages by their own names — that is why the
 layers are published, rather than pinned as `github:tjakoen/grain#<sha>` subpaths.

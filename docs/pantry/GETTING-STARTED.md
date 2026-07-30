@@ -23,18 +23,17 @@ defining them:
 
 ## Install
 
-PANTRY publishes to GitHub Packages, alongside the rest of the BREAD stack. Point npm/bun at that
-registry for the `@tjakoen` scope, then add the package as a dev dependency (it's tooling for the
-project, not something the project ships):
-
-```
-# .npmrc
-@tjakoen:registry=https://npm.pkg.github.com
-```
+Unlike the layers below it, PANTRY is not published to a registry: it is an app, consumed as a Bun
+**git dependency** pinned to a commit. Add it as a dev dependency (it's tooling for the project, not
+something the project ships):
 
 ```sh
-bun add -d @tjakoen/pantry
+bun add -d @tjakoen/pantry@github:tjakoen/pantry#main
 ```
+
+Nothing else to configure: the `@tjakoen/*` layers it pulls in behind it live on the public npm
+registry, so there is no `.npmrc` and no auth token anywhere in this. (Those layers sat on GitHub
+Packages until 2026-07-30, which required a `read:packages` token even though they were public.)
 
 That one install brings BATCH, GRAIN, MILL, and PROOF with it as regular dependencies, plus the
 portfolio package (`tjakoen.github.io`) which is where BATCH's and GRAIN's *explanatory* docs and the

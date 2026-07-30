@@ -12,13 +12,8 @@ this page is the fastest path from install to a running tour.
 
 ## Install
 
-CRUMB publishes to GitHub Packages, alongside the rest of the GRAIN stack. Point npm/bun at that
-registry for the `@tjakoen` scope, then add the package:
-
-```
-# .npmrc
-@tjakoen:registry=https://npm.pkg.github.com
-```
+CRUMB publishes to the public npm registry, alongside the rest of the GRAIN stack. There is nothing
+to configure first, no `.npmrc` and no token:
 
 ```sh
 bun add @tjakoen/crumb    # or: npm install @tjakoen/crumb
