@@ -486,6 +486,16 @@ ${PAGE_ASSETS}</body>
     "/notes": async (req: Request) =>
       finalizePage(req, new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
         { headers: { "Content-Type": "text/html; charset=utf-8" } })),
+    // /kickstart — the short, shareable twin of /standards/kickstart (the new-project prompt).
+    // Serves the SAME MILL-rendered page so the link is short to hand out, but finalizes it as if
+    // the request were /standards/kickstart: enrichHead keys the canonical off the pathname, so this
+    // points the short link's canonical at the standards home and the two never read as duplicate
+    // content (the export's origin-rewrite then swaps in the deploy URL, same as every other page).
+    "/kickstart": async (req: Request) => {
+      const hit = await serveContent("/standards/kickstart");
+      if (!hit) return new Response("Not found", { status: 404 });
+      return finalizePage(new Request(new URL("/standards/kickstart", req.url), req), hit);
+    },
     "/search.json": async () => {
       const titleOf = (p: string) => { const s = p === "/" ? "home" : p.replace(/^\//, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
       // the sitemap lists routes alphabetically; substitute the notes/ block for the SAME

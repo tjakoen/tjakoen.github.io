@@ -29,6 +29,7 @@ export const portfolioLlmsDoc: LlmsDoc = {
       { title: "PANTRY", url: "/pantry", note: "the installable dev-docs and AI cockpit app that composes BATCH, GRAIN, MILL, and PROOF into one server. v2 live: home, the board, framework docs, /reference, /catalog, and /standards, plus an install kit." },
     ]},
     { heading: "Documentation", links: [
+      { title: "Kickstart a new project", url: "/kickstart", note: "a paste-in prompt that interviews you, reads the stack and the public repos, then proposes which BREAD layers your project actually needs" },
       { title: "Developer docs", url: "/docs", note: "start here to build with it: getting started, a hands-on tutorial, how-to guides, and the live reference" },
       { title: "Tutorial: build your first operable surface", url: "/grain/docs/tutorial", note: "a real, running example — one surface, human-click and AI-decision, through the same door" },
       { title: "BATCH docs", url: "/batch/docs", note: "ARCHITECTURE (the substrate's reasoning, single source of truth) + CONVENTIONS (the build standard)" },

@@ -30,6 +30,7 @@ six.
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built (frontmatter, structure, footer), plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
 | **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard: two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
 | **Setting up a README** | [README-STANDARD.md](README-STANDARD.md) | Title emoji, the honest badge row, the "built with Claude" footer, plus a runnable prompt. |
+| **Deciding which stack layers a new project needs** | [KICKSTART.md](KICKSTART.md) | A paste-in prompt that interviews you, reads the live stack and the public repos, and proposes which BREAD layers your project actually needs (and which it does not). The on-ramp before the repo exists. |
 | **Starting a new repo** | [CLAUDE.starter.md](CLAUDE.starter.md) | The `CLAUDE.md` template that wires a fresh repo into all of the above from day one. |
 
 ## How they fit together
@@ -45,7 +46,9 @@ six.
   lean on. Read it the moment you catch yourself about to grep the whole tree.
 - **VOICE + NOTE-STANDARD + README-STANDARD + FIGURES** are the writing set: VOICE owns the prose,
   the others own specific artifacts and point back at it. Start here for any published words.
-- **CLAUDE.starter** is the on-ramp: it's how a new repo inherits the whole set.
+- **KICKSTART + CLAUDE.starter** are the two on-ramps, in order: KICKSTART runs *before the repo
+  exists*, deciding which layers the project needs; CLAUDE.starter is how the repo you then create
+  inherits the whole set from day one.
 
 ## The one rule this folder lives by
 

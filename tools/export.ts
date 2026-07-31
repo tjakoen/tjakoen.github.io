@@ -102,7 +102,9 @@ async function pageRoutes(): Promise<string[]> {
   const plans = await listPlanRoutes();                                  // PROOF's board, enumerated
   // "/cv" is not a page file — it's the auto-print résumé twin the server synthesizes from /resume
   // (server.ts fetch), so add it explicitly or the dead-link walk flags the About/résumé download link.
-  const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference", "/cv"]);
+  // "/kickstart" is the short share-link twin of the MILL page /standards/kickstart (server.ts
+  // serves the same rendered body); it is not a page file, so add it explicitly to freeze dist/kickstart/.
+  const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference", "/cv", "/kickstart"]);
   return [...all].filter((r) => !OPERABLE.has(r)).sort();
 }
 
