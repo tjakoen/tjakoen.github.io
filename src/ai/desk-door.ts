@@ -28,6 +28,7 @@ import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 // A2 guided tour — the fixed stop list + the cursor codec (tour.ts). The door owns every leg of the
 // tour AFTER the first (no chat.send happens between stops, so the reasoner isn't in the loop then).
 import { TOUR_STOPS, TOUR_KEY, TOUR_DWELL_MS, tourCursor, stashTour } from "./tour.ts";
+import { SHOWCASE_KEY, showcaseState, stashShowcaseState, type ShowcaseState } from "./showcase.ts";
 // B3 mail batch archive — matching the stashed RAW sender phrase against the REAL sender set once the
 // cross-page task lands on /mail (never a model guess, law #2). Same matcher the reasoner's own
 // on-page branch uses (desk-reasoner.ts), so the two runs can't disagree on what counts as a hit.
@@ -161,6 +162,30 @@ const revealNotepad = (): void => {
   const btn = (globalThis as unknown as { document?: { querySelector(s: string): { click(): void } | null } })
     .document?.querySelector('.assistant__modes [data-shell-mode="notepad"]');
   btn?.click();
+};
+
+// "Watch me work" agent — the live HIGHLIGHT targets on THIS page: the rendered MILL heading ids the
+// agent may spotlight (validated against exactly this list, so it can never invent a section). Reads the
+// same anchored surfaces the A1 deep-link scroll uses (data-surface="anchor:<id>"), falling back to any
+// element carrying an id — capped so a huge doc can't blow the 0.5B's prompt window.
+interface IdEl { id?: string; getAttribute(name: string): string | null }
+const pageAnchors = (): string[] => {
+  try {
+    const d = (globalThis as unknown as { document?: { querySelectorAll(s: string): IdEl[] } }).document;
+    const surfaced = Array.from(d?.querySelectorAll('[data-surface^="anchor:"]') ?? [])
+      .map((e) => (e.getAttribute("data-surface") ?? "").replace(/^anchor:/, ""));
+    const byId = Array.from(d?.querySelectorAll("h2[id], h3[id]") ?? []).map((e) => e.id ?? "");
+    return [...new Set([...surfaced, ...byId].filter((s) => s && s.length))].slice(0, 12);
+  } catch { return []; }
+};
+// The DRAFT target — is the registered contact-message compose field present on this page at all (even
+// while the compose panel is collapsed)? The agent may only DRAFT where there's a box to draft into; the
+// reasoner's own openCompose reveals it before filling, exactly as the B1 path does.
+const hasContactField = (): boolean => {
+  try {
+    return !!(globalThis as unknown as { document?: { querySelector(s: string): unknown } })
+      .document?.querySelector(`[data-surface="${CONTACT_FIELD_SURFACE}"]`);
+  } catch { return false; }
 };
 
 // C2 visitor memory — the notepad's WHOLE markdown right now, for memory.ts's parseMemories to read
@@ -394,6 +419,15 @@ const tourSet = (at: number): void => { try { ss()?.setItem(TOUR_KEY, stashTour(
 const tourClear = (): void => { try { ss()?.removeItem(TOUR_KEY); } catch { /* no session storage */ } };
 const tourActive = (): boolean => { try { return !!ss()?.getItem(TOUR_KEY); } catch { return false; } };
 
+// ---- "Watch me work" AGENT: unlike the tour's integer cursor, the showcase carries the AGENT's whole
+// state (goal + what it's done + step count) across each navigation — the 0.5B drives, and this is its
+// memory so the loop can re-hydrate on arrival. The reasoner owns the loop (it has the engine); these
+// shims are only the sessionStorage seam it reaches through (client-safe, no ss in the reasoner). ----
+const showcaseStateGet = (): ShowcaseState | null => { try { return showcaseState(ss()?.getItem(SHOWCASE_KEY) ?? null); } catch { return null; } };
+const showcaseStateSet = (s: ShowcaseState): void => { try { ss()?.setItem(SHOWCASE_KEY, stashShowcaseState(s)); } catch { /* no session storage */ } };
+const showcaseClear = (): void => { try { ss()?.removeItem(SHOWCASE_KEY); } catch { /* no session storage */ } };
+const showcaseActive = (): boolean => showcaseStateGet() !== null;
+
 // Trailing-slash-insensitive route compare (also in desk-reasoner.ts — a local copy here rather than
 // a cross-module import, since it's a one-liner and this file already keeps its own small DOM shims).
 const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
@@ -617,6 +651,8 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     padMarkdown,   // C2 visitor memory: read "Desk memory" lines back off the visitor's own notepad
     scrollToAnchor,   // A1 deep-link answers: scroll THIS page to a rendered heading id (see desk-reasoner.ts)
     tourSet, tourClear, tourActive,   // A2 guided tour: the reasoner's first leg + the "type anything to stop" cancel
+    showcaseStateGet, showcaseStateSet, showcaseClear, showcaseActive,   // "Watch me work" agent: its cross-page state relay
+    pageAnchors, hasContactField,   // "Watch me work" agent context: the live HIGHLIGHT + DRAFT targets on this page
     themeState, clickCycleTheme, clickToggleScheme,   // A4 theme switching: read + drive theme.js's visible controls
     notesTagChips, clickNotesTag, visibleNoteCount,   // B2 notes filtering: read + drive the /notes tag chips
     mailSenders, mailItemsFrom, archiveMailItem, mailTaskSet,   // B3 mail batch archive: read + drive the /mail rows + reader
@@ -634,14 +670,20 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // nothing stashed). B1: then any stashed contact-prefill draft — chained last since it's the newest
   // hop in this same "resume what the desk was doing" sequence (the two tasks can't both be stashed:
   // each ask stashes exactly one).
+  // "Watch me work" agent: if a demo is mid-flight, RE-HYDRATE the loop on this page — the reasoner
+  // (which owns the engine) reads the stashed agent state and takes the next turn. Runs last in the
+  // chain, and suppresses the ordinary page-arrival greeting below (the agent speaks for itself). A
+  // no-op when no agent state is stashed.
+  const showcaseRunning = showcaseActive();
   void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate)).then(() => runMailTask(applyOp))
-    .then(() => runContactTask(applyOp));
+    .then(() => runContactTask(applyOp))
+    .then(() => (showcaseRunning ? reasoner.showcaseResume?.(applyOp) : undefined));
   // Page-arrival awareness (reasoner-driven): read the new page and offer a greeting + contextual
   // chips — but ONLY when the desk is already warm this session (site.js sets desk-warm on the first
   // chat.send) and the visitor navigated here themselves. Gated so a visitor who never opened the desk
   // is never forced to load the model just by navigating (this is an MPA: the engine reloads per page).
   const warm = (() => { try { return ss()?.getItem("desk-warm") === "1"; } catch { return false; } })();
-  if (warm && !droveHere) void reasoner.arrive(applyOp);
+  if (warm && !droveHere && !showcaseRunning) void reasoner.arrive(applyOp);
   // No model picker: the demo runs a single 0.5B (see the model choice up top), so the desk just loads
   // it on the first message — nothing to choose, no download size to weigh.
   return grainDoor.createClientDoor(applyOp, { reasoner });

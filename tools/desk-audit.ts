@@ -79,15 +79,20 @@ const SCENARIOS: Scenario[] = [
     mustNavigate: "/mill/docs" },
   // -- deterministic controls (prove the harness end-to-end; these must never regress) --
   { id: "nav-det", page: "/", ask: "take me to the notes", mustNavigate: "/notes", deterministic: true },
+  // the flagship note — "take me to the flagship note" routes to the ONE hand-pinned note
+  // (actions.ts open-flagship-note + FLAGSHIP_NOTE_SLUG) deterministically: no model, no bare-slug
+  // echo. The pin is fixed, so unlike open-latest-note this lands on a known route every run.
+  { id: "flagship-det", page: "/", ask: "take me to the flagship note",
+    mustNavigate: "/notes/ten-times-zero", mustMention: [["flagship"]], deterministic: true },
   { id: "cap-det", page: "/", ask: "What can I do here?",
     mustMention: [["latest note"], ["summarize"], ["GRAIN"]], deterministic: true },
   // A1 deep-link answers — "where does TJ talk about X" retrieves deterministically (actions.ts
   // DEEP_LINK_PATTERNS) and jumps straight to the anchored section, never the model. Verified against
   // the real corpus (bun -e, buildPortfolioKnowledge + retrieve): this phrasing's top-scoring anchored
-  // hit is the how-i-use-ai-in-teaching note's "The stories worth telling" section, so the arrival
+  // hit is the-console-i-built-to-stop-drowning note's "So I built a scanner" section, so the arrival
   // announce reads "Here's the part about ... from ...".
-  { id: "deep-link-det", page: "/", ask: "where does TJ talk about using AI with students",
-    mustNavigate: "/notes/how-i-use-ai-in-teaching", mustMention: [["part", "section", "under"]], deterministic: true },
+  { id: "deep-link-det", page: "/", ask: "show me the part about the QR scanner",
+    mustNavigate: "/notes/the-console-i-built-to-stop-drowning", mustMention: [["part", "section", "under"]], deterministic: true },
   // A4 theme switching — "switch to brioche" drives theme.js's own visible cycle-theme control
   // deterministically (actions.ts + desk-reasoner.ts), no model needed; the confirmation names the
   // flavor it landed on.

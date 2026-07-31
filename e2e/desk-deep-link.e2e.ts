@@ -5,19 +5,20 @@
 // same fake-engine stub as desk-model-chain.e2e.ts so the desk still counts as ONLINE (deskReady()
 // gates on it), but the deep-link path itself never touches streamChat.
 //
-// The ask/route/anchor below were verified against the REAL corpus (bun -e, buildPortfolioKnowledge +
-// retrieve): "where does TJ talk about using AI with students" tokenizes to "using ai with students",
-// and the top-scoring anchored, non-facts chunk is /notes/how-i-use-ai-in-teaching's "## The stories
-// worth telling" heading (slug "the-stories-worth-telling" per mill's core/slug.ts) — NOT the note's lead
-// section, and not a /grain/docs chunk (several more literal phrasings, e.g. "teaching with AI", land
-// there instead — this phrasing was chosen because it lands on the note).
+// The ask/route/anchor below were verified against the REAL corpus (retrieve, and the desk-audit
+// deep-link-det scenario): "show me the part about the QR scanner" resolves to
+// /notes/the-console-i-built-to-stop-drowning's "## So I built a scanner" heading (slug
+// "so-i-built-a-scanner" per mill's core/slug.ts). That section sits high in the note with the rest of
+// the piece below it, so the same-page scroll can bring it to the viewport top (a section near the
+// document end bottoms out before it reaches the top) — NOT the note's lead section, and not a facts
+// block (this phrasing was chosen because it lands on the note's own scanner section).
 import { test, expect, type Page } from "@playwright/test";
 
 const DESK_DOOR = "/modules/portfolio/ai/desk-door.js";
-const NOTE_ROUTE = "/notes/how-i-use-ai-in-teaching";
-const ANCHOR = "the-stories-worth-telling";
-const HEADING_TEXT = "The stories worth telling";
-const DEEP_LINK_ASK = "where does TJ talk about using AI with students";
+const NOTE_ROUTE = "/notes/the-console-i-built-to-stop-drowning";
+const ANCHOR = "so-i-built-a-scanner";
+const HEADING_TEXT = "So I built a scanner";
+const DEEP_LINK_ASK = "show me the part about the QR scanner";
 
 // Same stub shape as desk-model-chain.e2e.ts: a capable device, an instant "download", an opaque
 // engine — the deep-link path never calls streamChat, but the desk still needs to probe ONLINE before

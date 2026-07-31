@@ -103,8 +103,23 @@ My students are adults, so I treat them like adults. That single decision drives
 - **I don't care how you get there, as long as you actually get there.** Different people learn
   differently and I'm not precious about the path. I *am* precious about the destination: you have to
   actually understand it. **If you can't explain it, you didn't build it.** That's the one line I
-  come back to more than any other. (How it plays out with AI specifically is its own post:
-  [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md).)
+  come back to more than any other.
+
+That last line is also exactly how I handle AI in the room, because the tool was never the question,
+the learning is. So the rules follow it straight down:
+
+- **In the lab, use AI all you want.** That's practice, and practice is where you're supposed to have
+  training wheels.
+- **On the major activities, you get your course material and your own previous work, nothing else.**
+  No generating your way out of the thing the activity exists to teach.
+- **Exams come straight out of your head. No tools.** If you learned it, this is easy. If you didn't,
+  no autocomplete is going to save you, and that is the whole point.
+
+And the one that makes the room go quiet: if I flag your work as vibe-coded and you cannot explain it
+back to me, that is an automatic fail on the activity. Not because you used a tool, but because you
+shipped something with your name on it that you do not understand. How I run AI on *my* side of the
+desk, drafting feedback and holding every grade for review but never letting it decide, is its own
+post: [The Console I Built to Stop Drowning](the-console-i-built-to-stop-drowning.md).
 
 That's the philosophy. The problem is that a philosophy like this still buries you in grading, and
 grading, done properly, is where the hours go.

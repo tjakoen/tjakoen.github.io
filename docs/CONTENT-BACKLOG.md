@@ -13,13 +13,17 @@
 
 Two notes added to close gaps between the published set and work that shipped since:
 
-- [~] **Every AI Grade Shows Up Grainy Until I Sign It** — the [grader-ui](https://github.com/tjakoen/grader-ui)
-      review-desk note: the hosted screen where AI-proposed grades wait in *grain* type and flip to *clean*
-      on approval, data-free-by-design (CSP one host, no server, deploy tripwire), and the single-write-door
-      shape (it emits an intent prompt, Claude Code applies it in the repo, human signs everything). Makes
-      real the "held for my review" claim in how-i-use-ai-in-teaching. **DRAFT** at
-      `content/notes/grain-until-i-sign-it.md`; inbound-linked from how-i-use-ai-in-teaching.md; cross-links
-      how-i-turned-github-into-a-classroom, /grain, ten-times-zero.
+- [x] **CONSOLIDATED (2026-07-31): teaching-with-AI notes merged 5→3.** `how-i-use-ai-in-teaching.md`
+      (was PUBLISHED) and `grain-until-i-sign-it.md` (was DRAFT) were **deleted** and merged into one
+      new note, **The Console I Built to Stop Drowning** (`content/notes/the-console-i-built-to-stop-drowning.md`,
+      **DRAFT**). It tells the journey: four classes to seven, the QR attendance scanner built first, the
+      data-free "read live, one write door" shape it taught, then that shape swallowing grading review (AI
+      grades in *grain* type until signed, intent-prompt applied by Claude Code). Canonical repo is now the
+      [github-native-course-platform console](https://github.com/tjakoen/github-native-course-platform)
+      (grader-ui absorbed into `console/`, its Scan tab is the old QR scanner). Student-rules ladder
+      (lab/activity/exam + vibe-coded fail) folded into why-i-teach. Inbound links repointed: ten-times-zero,
+      why-i-teach, how-i-turned-github-into-a-classroom, index.html walk card. Retrieval-coupled tests
+      (desk-audit deep-link-det, desk-deep-link.e2e) repointed + re-verified against the rebuilt corpus.
 - [~] **I Was Shipping Faster Than I Could Understand It** — the estate-wide AI-workflow consolidation note
       (the LOOP.md/SESSION-LOOP.md/pantry-doctor story). Comprehension-debt confession, the work-triggered
       heartbeat (doctor at session start, CI on push, no 3am cron), the accountability contract (run ledger,
@@ -189,15 +193,10 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       (rails-first / memory / sync matrix / audit / tests / docs-for-the-AI). Dev/practitioner-facing;
       classroom material moved out to the teaching post. **DRAFT** at `content/notes/ten-times-zero.md`.
       *(Numbers are a snapshot — re-pull before publishing.)*
-- [~] **How I Teach With AI, and Where I Lock It Out** — the teaching application of the multiplier
-      principle (peer/educator-facing, also carries the student-facing classroom AI rules). Leads with
-      the honest-limits hook (I built the exam that bans AI). Covers what I use AI for across teaching,
-      the receipts (537 commits, docs≈code, ~2,200-line engine, course-bot's 103 commits), the war
-      stories (quiz-that-bans-its-builder, "name the concept never the fix," the human-signs-off wall,
-      hardening off-repo grading), the classroom rules ("explain it or fail"), and where I refuse
-      (proctored exam, PII kept from the model, soft authenticity flag, single front-door disclosure).
-      **DRAFT** at `content/notes/how-i-use-ai-in-teaching.md`. *(Numbers from the teaching repo — verify
-      before publishing.)*
+- [x] **How I Teach With AI, and Where I Lock It Out** — **RETIRED 2026-07-31, merged into
+      The Console I Built to Stop Drowning** (see the consolidation entry at the top of this file). Its
+      machinery half (the human-signs-off wall, "name the concept never the fix," where I refuse) lives in
+      the console note; its student-rules ladder folded into why-i-teach. File deleted.
 - [~] **I Nearly Quit Teaching. So I Automated the Part That Was Killing Me.** — the *why & how I
       teach* story: adults-like-adults, self-study lean, no-fluff/hard-parts-only, why (not money —
       **kept vague**), the near-burnout arc → built the GitHub-native platform → teaching is
@@ -249,8 +248,7 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       whitepaper companion (pending work #3), not a design-systems 101 note.
 - **Signature lines (agreed, threaded + cross-linked across the AI/teaching set):** "I don't prompt
   and pray. I prompt and prove." · "Ten times zero is still zero." (both now in ten-times-zero) ·
-  "If you can't explain it, you didn't build it." (how-i-use-ai-in-teaching + why-i-teach, the
-  classroom rule). **Main footer link on all repos = ten-times-zero** (the merged flagship,
+  "If you can't explain it, you didn't build it." (why-i-teach, the classroom rule). **Main footer link on all repos = ten-times-zero** (the merged flagship,
   universal); others cross-link from it. Footer standard lives in `standards/README-STANDARD.md`.
 - [ ] **Lessons learned** (tabs): *as a dev manager / tech lead / educator* — e.g. trust the people
       you hire · learn the fundamentals · never stop learning · do what you love.

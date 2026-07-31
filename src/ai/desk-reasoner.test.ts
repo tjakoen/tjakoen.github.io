@@ -487,6 +487,50 @@ describe("makeDeskReasoner — catalog navigation (deterministic over the real s
     expect(navd).toBe("");                        // nothing to resolve against → no navigation
     expect(d.reply).toBe("Just an answer.");      // handled as ordinary chat instead
   });
+
+  // 1a — the flagship note: a fixed, hand-pinned target, driven deterministically (no model), never a
+  // bare slug echoed by the 0.5B. Lands on the pin regardless of what the dynamic notes list holds.
+  test("'take me to the flagship note' navigates to the pinned note without loading the model", async () => {
+    let loads = 0, navd = "";
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine(["x"]).engine; } });
+    deps.navigate = (u) => { navd = u; };
+    const r = makeDeskReasoner(deps);
+
+    await r.decide(chat("take me to the flagship note"), makeTools().tools);
+
+    expect(loads).toBe(0);                        // deterministic — never touched the model
+    expect(navd).toBe("/notes/ten-times-zero");   // the fixed pin (FLAGSHIP_NOTE_SLUG)
+  });
+
+  // 1b — the weak 0.5B echoes a bare route as its whole reply instead of the NAVIGATE protocol; treat
+  // that as the same navigate intent so the visitor never sees a raw slug as an "answer".
+  test("a bare route echoed by the model (no NAVIGATE: prefix) still navigates when it's a real route", async () => {
+    const { engine } = fakeEngine(["/notes/ten-times-zero"]);
+    let navd = "";
+    const { deps } = makeDeps({ loadEngine: async () => engine, loadCatalog: async () => CATALOG });
+    deps.navigate = (u) => { navd = u; };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("where's that big essay again"), makeTools().tools);
+
+    expect(navd).toBe("/notes/ten-times-zero");
+    expect(d.reply).toBe("Navigating to Ten Times Zero");   // narrated as a nav, not the raw slug
+  });
+
+  // 1c — a bare deictic follow-up reuses the LAST place the desk sent the visitor, so "go there" after
+  // an offer/citation lands on that target instead of re-resolving (which drifted to a different note).
+  test("'go there' after a navigate reuses the last target (no re-resolution)", async () => {
+    const navd: string[] = [];
+    const { deps } = makeDeps({ loadCatalog: async () => CATALOG });
+    deps.navigate = (u) => { navd.push(u); };
+    const r = makeDeskReasoner(deps);
+
+    await r.decide(chat("take me to grain"), makeTools().tools);   // sets the last target
+    const d = await r.decide(chat("go there"), makeTools().tools); // reuses it — no destination of its own
+
+    expect(navd).toEqual(["/grain", "/grain"]);
+    expect(d.reply).toBe("Navigating to Grain");
+  });
 });
 
 describe("makeDeskReasoner — note-write (the desk composes + appends a notepad entry)", () => {
@@ -710,17 +754,125 @@ describe("makeDeskReasoner — A2 guided tour", () => {
     const d = await r.decide(chat("stop the tour"), tools);
 
     expect(loads).toBe(0);
-    expect(d.reply).toContain("stopping the tour");
+    expect(d.reply).toContain("stopping here");
   });
 
   test("tour-stop with NO tour active: an honest 'nothing running' line, not a false stop", async () => {
     const { deps } = makeDeps();
     deps.tourActive = () => false;
+    deps.showcaseActive = () => false;
     const r = makeDeskReasoner(deps);
 
     const d = await r.decide(chat("stop the tour"), makeTools().tools);
 
-    expect(d.reply).toContain("no tour running");
+    expect(d.reply).toContain("nothing running");
+  });
+});
+
+describe("makeDeskReasoner — 'Watch me work' AGENT", () => {
+  // An engine whose successive generations are SCRIPTED (one per create() call), so a multi-turn agent
+  // loop can be driven deterministically — the plain fakeEngine replays one fixed output every turn.
+  function scriptedEngine(turns: string[]): DeskEngine {
+    let i = 0;
+    return {
+      chat: { completions: { create: async () => {
+        const text = turns[Math.min(i, turns.length - 1)] ?? "DONE"; i++;
+        return { async *[Symbol.asyncIterator]() { yield { choices: [{ delta: { content: text } }] }; } };
+      } } },
+      interruptGenerate() {},
+    };
+  }
+  // In-memory agent-state relay (the door's sessionStorage seam) + the page-context deps the loop reads.
+  function withAgentDeps(over: Partial<DeskDeps>, turns: string[]) {
+    const store: { s: import("./showcase.ts").ShowcaseState | null } = { s: null };
+    const { deps } = makeDeps({
+      loadEngine: async () => scriptedEngine(turns),
+      showcaseStateGet: () => store.s,
+      showcaseStateSet: (s) => { store.s = s; },
+      showcaseClear: () => { store.s = null; },
+      showcaseActive: () => store.s !== null,
+      pageAnchors: () => [],
+      hasContactField: () => false,
+      ...over,
+    });
+    return { deps, store };
+  }
+
+  test("the model loads FIRST, then the agent drives: a GO is validated + navigated, state stashed", async () => {
+    let navd = "";
+    let loads = 0;
+    const { deps, store } = withAgentDeps({
+      pageInfo: () => ({ route: "/", title: "Welcome" }),
+      navigate: (u) => { navd = u; },
+      // the real sitemap catalog carries note routes; the default test catalog only has top-level ones
+      loadCatalog: async () => buildCatalog(["/", "/grain/", "/notes/", "/notes/ten-times-zero/", "/mail/"], { "/notes/ten-times-zero": "Ten Times Zero" }),
+      loadEngine: async () => { loads++; return scriptedEngine(["GO /notes/ten-times-zero"]); },
+    }, ["GO /notes/ten-times-zero"]);
+    const r = makeDeskReasoner(deps);
+
+    await r.decide(chat("watch me work"), makeTools().tools);
+
+    expect(loads).toBe(1);                                   // nothing moved until the model was up
+    expect(navd).toBe("/notes/ten-times-zero");              // the model's OWN choice, validated against the catalog
+    expect(store.s?.done).toContain("GO /notes/ten-times-zero");
+    expect(store.s?.step).toBe(1);                           // state stashed for the door to resume on arrival
+  });
+
+  test("an invalid choice is REJECTED (not applied) and fed back; repeated misses end the demo", async () => {
+    let navd = "";
+    const { deps, store } = withAgentDeps({
+      pageInfo: () => ({ route: "/", title: "Welcome" }),
+      navigate: (u) => { navd = u; },
+    }, ["GO /secret-admin", "GO /nowhere", "GO /also-fake"]);   // all off the curated route list
+    const r = makeDeskReasoner(deps);
+
+    await r.decide(chat("watch me work"), makeTools().tools);
+
+    expect(navd).toBe("");                                   // never navigated to an invented route
+    expect(store.s).toBeNull();                              // the demo wrapped up after SHOWCASE_MAX_MISSES
+  });
+
+  test("no navigate dep: an honest decline, model never loads", async () => {
+    let loads = 0;
+    const { deps } = withAgentDeps({ navigate: undefined, loadEngine: async () => { loads++; return scriptedEngine(["DONE"]); } }, ["DONE"]);
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("watch me work"), makeTools().tools);
+
+    expect(loads).toBe(0);
+    expect(d.ok).toBe(false);
+    expect((d.reply ?? "").toLowerCase()).toContain("can't drive");
+  });
+
+  test("showcaseResume re-hydrates the loop on arrival: the model picks a NOTE, the harness appends it", async () => {
+    const appended: RenderOp[] = [];
+    const { deps, store } = withAgentDeps({
+      pageInfo: () => ({ route: "/notes/ten-times-zero", title: "Ten Times Zero" }),
+      pageManifest: () => ({ note: "", targets: [{ id: "notepad", kind: "notepad", accepts: ["note.append"] }] }) as any,
+      revealNotepad: () => {},
+    }, ["NOTE The judgment is human; the typing is not.", "DONE"]);
+    store.s = { goal: "g", done: ["GO /notes/ten-times-zero"], step: 1 };   // mid-demo, just arrived
+    const r = makeDeskReasoner(deps);
+
+    await r.showcaseResume((op) => appended.push(op));
+
+    // the model's chosen NOTE was applied through grain's note.append op-builder (AI ink), then DONE cleared it
+    const note = appended.find((o) => o.op === "append" && typeof o.html === "string" && o.html.includes("notepad__entry"));
+    expect(note).toBeDefined();
+    expect(store.s).toBeNull();                              // DONE ended the demo
+  });
+
+  test("a plain chat message while a demo is active calls showcaseClear (\"type anything to stop\")", async () => {
+    const { engine } = fakeEngine(["Just an answer."]);
+    const { deps } = makeDeps({ loadEngine: async () => engine });
+    let cleared = 0;
+    deps.showcaseActive = () => true;
+    deps.showcaseClear = () => { cleared++; };
+    const r = makeDeskReasoner(deps);
+
+    await r.decide(chat("who is TJ?"), makeTools().tools);
+
+    expect(cleared).toBe(1);
   });
 });
 

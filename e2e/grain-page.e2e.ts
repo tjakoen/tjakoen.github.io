@@ -19,10 +19,12 @@ test.describe("portfolio umbrella", () => {
     await expect(page.locator(".window-bar__nav button")).toHaveCount(3);   // back / refresh / forward
     await expect(page.locator(".window-bar__search")).toBeVisible();
     await expect(page.locator(".status-bar .presence")).toBeVisible();
-    // a walkthrough is a real link into the showcase — the visit opens as a tab (THE EDITOR v2)
-    await page.locator('.walk[href="/grain"]').click();
-    await expect(page).toHaveURL(/\/grain$/);
-    await expect(page.locator('[data-open-tabs] .tab[href="/grain"]')).toHaveAttribute("aria-current", "page");
+    // a walkthrough is a real link — the visit opens as a tab (THE EDITOR v2). Use the /batch walk: a
+    // plain navigation (the /grain#watch "Watch me work" walk autostarts the showcase on arrival, which
+    // isn't what this assertion is about).
+    await page.locator('.walk[href="/batch"]').click();
+    await expect(page).toHaveURL(/\/batch$/);
+    await expect(page.locator('[data-open-tabs] .tab[href="/batch"]')).toHaveAttribute("aria-current", "page");
   });
 
   test("the lean /batch and /mill landing pages render", async ({ page }) => {

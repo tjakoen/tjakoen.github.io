@@ -8,6 +8,11 @@
 export type Choice = { label: string; value: string };
 export type Action =
   | { kind: "open-latest-note" }
+  // the flagship note — the ONE hand-pinned note (content.ts FLAGSHIP_NOTE_SLUG, "ten-times-zero"),
+  // distinct from "latest" (which is dynamic — whichever note is newest). A fixed pin, so the reasoner
+  // navigates it deterministically (zero model) the same way open-latest-note does — never the 0.5B
+  // guessing a slug and echoing a bare path (the desk-audit's flagship-navigation gap).
+  | { kind: "open-flagship-note" }
   | { kind: "summarize" }
   | { kind: "note-write"; instruction: string }
   | { kind: "capabilities" }
@@ -21,6 +26,11 @@ export type Action =
   // both kinds are matched here, before the model ever loads (see desk-reasoner.ts).
   | { kind: "tour-start" }
   | { kind: "tour-stop" }
+  // "Watch me work" — the flagship showcase (showcase.ts). Like the tour it's a fixed, code-enumerated
+  // multi-stop drive, but each stop DOES something (open a note, highlight a passage, save a notepad
+  // line, prefill a message) — the desk piloting the real site end to end. Zero model. Shares the
+  // tour's "type anything to stop" cancel, so its stop reuses tour-stop (handled in the reasoner).
+  | { kind: "showcase-start" }
   // A4 theme switching — `target` is "dark", "light", "next" (cycle to whatever's next), or one of the
   // FLAVORS names below. Zero model: matched here, then RE-VALIDATED against the live <html data-themes>
   // list by the reasoner before it drives anything (a page could ship a different set than this file's
@@ -214,9 +224,15 @@ export function routeAction(text: string): Action | null {
   // phrase ("stop/end/cancel/quit the tour") must never be mistaken for a start. Checked here (after
   // deep-link/summarize/capabilities, before clarify) so a tour ask never falls into the vaguer
   // "show me around" clarify bucket below — it's specific enough to act on directly.
-  if (/\b(?:stop|end|cancel|quit)\s+the\s+tour\b/.test(t)) return { kind: "tour-stop" };
+  if (/\b(?:stop|end|cancel|quit)\s+the\s+(?:tour|demo|showcase)\b/.test(t)) return { kind: "tour-stop" };
   if (/\b(?:take|start|begin)\s+(?:the|a)\s+tour\b/.test(t) || /\bgive me\s+(?:the|a)\s+tour\b/.test(t))
     return { kind: "tour-start" };
+
+  // "Watch me work" — the flagship showcase (showcase.ts). Two shapes: "watch …" with a work/act verb
+  // (watch me work, watch the AI act, watch the desk work), or a run/play/start/show verb aimed at a
+  // "demo"/"showcase". Checked alongside the tour so it never falls into the vaguer clarify bucket.
+  if (/\bwatch\b.*\b(work|act)\b/.test(t) || /\b(?:run|play|start|show me|see)\b.*\b(?:demo|showcase)\b/.test(t))
+    return { kind: "showcase-start" };
 
   // A4 theme switching — zero model, both axes GRAIN's theme.js already exposes. Checked here (after
   // the specific intents above, before the vaguer clarify bucket below) so a theme ask never gets
@@ -309,6 +325,13 @@ export function routeAction(text: string): Action | null {
   const noteWord = /\b(note|notes|blog|post|posts|article|writing|entry)\b/;
   const latest = /\b(latest|newest|recent|last|most recent)\b/;
   const intent = /\b(show|open|read|see|go|take|latest|newest|recent)\b/;
+
+  // the flagship note — a flagship WORD + an intent verb ("take me to the flagship note", "read the
+  // flagship post"). Checked BEFORE open-latest so the pin wins over the newest-by-date note. An intent
+  // verb is required so an informational "what's the flagship post about?" still answers in prose.
+  const flagship = /\b(flagship|signature|headline|featured|marquee)\b/;
+  if (flagship.test(t) && intent.test(t)) return { kind: "open-flagship-note" };
+
   if (latest.test(t) && noteWord.test(t) && intent.test(t)) return { kind: "open-latest-note" };
 
   return null;

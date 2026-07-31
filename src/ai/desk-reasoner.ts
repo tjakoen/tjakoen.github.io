@@ -42,6 +42,11 @@ import { sanitizeMemoryFact, memoryLine, parseMemories } from "./memory.ts";
 // are matched deterministically (actions.ts) and driven from this data, never from the model's own
 // judgment of "what's on the site" (CLAUDE.md design law — code enumerates routes, never the model).
 import { TOUR_STOPS } from "./tour.ts";
+import {
+  SHOWCASE_GOAL, SHOWCASE_STEP_CAP, SHOWCASE_MAX_MISSES,
+  parseToolCall, validateToolCall, buildAgentSystemPrompt, nextStepCommand, recordDone, resolveAnchor,
+  type ShowcaseState, type AgentContext,
+} from "./showcase.ts";
 // GRAIN's reasoner-kit — the chat bubble markup the desk USED to fork now comes from here (injected
 // as deps.kit at runtime; the door URL-imports it). Type-only import (erased) so this stays a
 // client-safe module. See grain/ai/reasoner-kit.ts.
@@ -85,6 +90,18 @@ const joinPhrases = (xs: string[]): string =>
 // validated against the real catalog before we act on it.
 const MODEL_NAVIGATE_RE = /^navigate:\s*(\/\S*)\s*$/i;
 
+// The flagship note's slug — the ONE hand-pinned note. Source of truth: content.ts FLAGSHIP_NOTE_SLUG
+// (kept in sync by hand; this CLIENT-SAFE reasoner can't import the server content module without
+// dragging its Bun.serve deps into the browser bundle). Drives the deterministic open-flagship-note.
+const FLAGSHIP_NOTE_SLUG = "ten-times-zero";
+
+// 1c follow-up target — a whole-message deictic reference ("go there", "open it", "take me there")
+// with no destination of its own: it means "the place you just offered/cited". Matched against norm()'d
+// text so trailing punctuation and casing don't matter. Requires a deictic word (there/it/that/…) so a
+// bare verb ("go", "open") never fires — only a genuine "that place I just mentioned" reference does.
+const FOLLOWUP_DEICTIC_RE =
+  /^(?:(?:go|take me|bring me|open|read|see|show me|show|jump|head)\s+(?:to\s+)?)?(?:there|it|that|that one|this one|the note|the post)$/;
+
 // The model's own clarifying-question choice, per the CHOICES:<question> | <opt> | <opt> protocol
 // prompt.ts offers it. The 0.5B is loose, so parse defensively: pipe-split, trim, drop blanks, cap.
 // Returns null unless there's a question AND 2–5 usable options (a lone or over-long list is a miss).
@@ -107,6 +124,10 @@ export interface DeskReasoner extends Reasoner {
    *  chips. The DOOR calls this (with its applyOp) on load, gated on the desk being warm. No-op when
    *  offline or the page has no readable text. */
   arrive(applyOp: (op: RenderOp) => void): Promise<void>;
+  /** "Watch me work" agent: re-hydrate the demo loop on this page after a GO navigated here. The DOOR
+   *  calls this (with its applyOp) on arrival, only when agent state is stashed. Loads the engine
+   *  silently, then takes the next agent turn(s) on this page. No-op offline or with no state. */
+  showcaseResume(applyOp: (op: RenderOp) => void): Promise<void>;
 }
 
 // Parse the 0.5B's arrival reply: one greeting line, then a `CHIPS: a | b | c` line. Defensive — a
@@ -230,6 +251,22 @@ export interface DeskDeps {
   /** Is a tour cursor currently stashed? Read BEFORE clearing, so a cancel/stop can report honestly
    *  on whether a tour was actually running. */
   tourActive?: () => boolean;
+  // ---- "Watch me work" AGENT (showcase.ts) — the 0.5B drives the site itself; these carry its state
+  // across navigations and read the live targets it's allowed to reach. State (goal + trail + step)
+  // rides sessionStorage under SHOWCASE_KEY, the same seam the tour cursor uses. ----
+  /** The agent's stashed state (null when no demo is running). Read on arrival to re-hydrate the loop. */
+  showcaseStateGet?: () => ShowcaseState | null;
+  /** Persist the agent state. Call BEFORE a GO navigates — the navigate tears the page down. */
+  showcaseStateSet?: (s: ShowcaseState) => void;
+  /** End the demo — clear the stashed state. Any message during a demo cancels it ("type anything to stop"). */
+  showcaseClear?: () => void;
+  /** Is a demo currently running? Read BEFORE clearing, for an honest cancel/stop line. */
+  showcaseActive?: () => boolean;
+  /** The live HIGHLIGHT targets on THIS page — rendered heading ids the agent may spotlight (validated
+   *  against exactly this list, so it can never invent a section). */
+  pageAnchors?: () => string[];
+  /** Is the registered contact-message compose field present on this page (a DRAFT target)? */
+  hasContactField?: () => boolean;
   // ---- A4 theme switching (theme.js's two axes) — the desk drives the VISIBLE status-bar controls
   // (revealNotepad's pattern: click the same button a human would, no private channel), validating
   // against the LIVE DOM both before choosing what to click and after, to confirm a click actually
@@ -411,6 +448,10 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
   // The model profile — read for EVERY size-dependent knob below (generation caps, prompt budget, penalties).
   const profile = deps.profile;
   const history: ChatMessage[] = [];             // last turns (buildPrompt clips the window)
+  // 1c: the last place the desk navigated to OR cited ("Read more: X") this session, so a bare
+  // follow-up ("go there") reuses THAT target instead of re-retrieving (which drifted to a different
+  // note between "take me to the flagship note" and "go there"). Cleared on reset.
+  let lastTarget: { route: string; label: string } | null = null;
   // GRAIN's chat markup, via the injected kit (arg order adapted to the desk's call sites).
   const bubble = deps.kit.chatBubble;
   const bodySpan = (surface: string, inner = ""): string => deps.kit.chatBody(inner, surface);
@@ -435,6 +476,162 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       degraded = true;
       deps.markOffline();
       return null;
+    }
+  }
+
+  // ---- "Watch me work" AGENT loop. The 0.5B drives the site itself: each turn it emits ONE tool call,
+  // the harness validates it against the live page (routes/anchors must be real; law #2), applies the
+  // real op, records it, and advances. A GO ends the on-page loop (stash state + navigate; the door's
+  // showcaseResume re-hydrates on arrival). Shared by showcase-start (via tools.emit) and showcaseResume
+  // (via the door's applyOp), so `emit` is the only I/O it takes. Not a canned animation — nothing runs
+  // until the model is loaded, and every action is the model's own choice. ----
+  const agentDelay = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
+  const AGENT_MAX_TOKENS = 64;   // one action line (a NOTE/DRAFT sentence at most)
+
+  async function buildAgentContext(): Promise<AgentContext> {
+    const catalog = deps.loadCatalog ? await deps.loadCatalog().catch(() => [] as NavDest[]) : [];
+    const info = deps.pageInfo?.() ?? { route: "/", title: "" };
+    const manifest = deps.pageManifest?.();
+    const hasNotepad = !!manifest?.targets.some((tt) => tt.accepts.includes("note.append"));
+    // CURATE the routes the agent may choose from: the whole sitemap would drown the 0.5B's tiny window,
+    // so offer only the top-level sections (depth ≤ 1) plus the flagship note the goal calls for. The
+    // list stays short + coherent, and validateToolCall pins GO to exactly this set.
+    const seg = (r: string): number => (r.replace(/\/+$/, "") || "/").split("/").filter(Boolean).length;
+    const flagshipRoute = `/notes/${FLAGSHIP_NOTE_SLUG}`;
+    const routes = catalog.filter((d) => seg(d.route) <= 1 || (d.route.replace(/\/+$/, "") || "/") === flagshipRoute);
+    // Keep the anchor list SHORT (a 0.5B drowns in a dozen slugs), and float the goal's key section to
+    // the front so "HIGHLIGHT 1" (what the next-step hint suggests) lands on the part that matters.
+    const KEY_ANCHOR = "the-one-number-that-matters";
+    const rawAnchors = deps.pageAnchors?.() ?? [];
+    const anchors = (rawAnchors.includes(KEY_ANCHOR) ? [KEY_ANCHOR, ...rawAnchors.filter((a) => a !== KEY_ANCHOR)] : rawAnchors).slice(0, 6);
+    return {
+      route: info.route,
+      title: info.title || info.route,
+      routes,
+      anchors,
+      hasNotepad,
+      hasContact: deps.hasContactField?.() ?? false,
+    };
+  }
+
+  async function runAgentTurns(engine: DeskEngine, emit: (op: RenderOp) => void): Promise<void> {
+    const say = (text: string): void =>
+      emit({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
+        html: deps.kit.chatBubble("ai", "grain", deps.kit.chatBody(deps.kit.esc(text)), "Desk") });
+    const finish = (text: string): void => {
+      emit(deps.kit.spotlightOp("screen", { active: false }));
+      say(text);
+      deps.showcaseClear?.();
+      emit({ target: "suggest-chips", op: "replace", provenance: "ai", commit: "committed",
+        html: suggestChipsHtml(["Take me to the flagship note", "What is GRAIN?"]) });
+    };
+    const strip = (r: string): string => r.replace(/\/+$/, "") || "/";
+
+    const ctx = await buildAgentContext();
+    let misses = 0;
+    for (;;) {
+      const state = deps.showcaseStateGet?.() ?? null;
+      if (!state) return;   // cancelled ("type anything to stop") or finished
+      if (state.step >= SHOWCASE_STEP_CAP) { finish("That's the demo — I drove the site end to end. Ask me anything, or explore on your own."); return; }
+
+      // One agent turn, in up to two passes. Pass 1: the model chooses FREELY (a bare imperative cue —
+      // never a question, which the 0.5B parroted back as chatter). Pass 2, only if pass 1 was invalid:
+      // a HARDENED retry that asks it to output exactly the suggested command. The mechanical steps
+      // (GO/HIGHLIGHT/DONE) don't need the model's judgment, so a malformed one shouldn't wedge the demo;
+      // the authored steps (NOTE/DRAFT) seed a coherent line the model keeps or replaces. The model still
+      // drives when it produces valid output — the forced pass is a floor, not a script.
+      const runPass = async (user: string, temp: number): Promise<string> => {
+        let raw = "";
+        for await (const delta of deps.streamChat(engine, [
+          { role: "system", content: buildAgentSystemPrompt(state, ctx) },
+          { role: "user", content: user },
+        ], { maxTokens: AGENT_MAX_TOKENS, temperature: temp, topP: profile.topP,
+          frequencyPenalty: profile.frequencyPenalty, presencePenalty: profile.presencePenalty })) raw += delta;
+        return raw;
+      };
+      let call: ReturnType<typeof parseToolCall>;
+      let check: ReturnType<typeof validateToolCall>;
+      try {
+        const raw1 = await runPass("Reply now with one action line.", 0.2);
+        call = parseToolCall(raw1);
+        check = validateToolCall(call, ctx);
+        if (!check.ok) {
+          const forced = nextStepCommand(state, ctx);
+          const raw2 = await runPass(`Output exactly this line and nothing else:\n${forced}`, 0);
+          call = parseToolCall(raw2);
+          check = validateToolCall(call, ctx);
+        }
+      } catch (err) {
+        console.error("[desk] agent turn failed", err);
+        finish("Something interrupted the demo — ask me anything, or try again.");
+        return;
+      }
+
+      if (!check.ok) {
+        // even the forced pass failed — feed the reason back, bounded so a weak model can't spin forever.
+        misses++;
+        deps.showcaseStateSet?.({ ...state, done: recordDone(state.done, `rejected ${call.kind}: ${check.why}`) });
+        if (misses >= SHOWCASE_MAX_MISSES) { finish("I'll wrap the demo up there. Ask me anything, or explore on your own."); return; }
+        continue;
+      }
+      misses = 0;
+
+      if (call.kind === "done") { finish("That's me — one AI driving the whole site through the same door you use. Ask me anything."); return; }
+
+      if (call.kind === "highlight") {
+        const id = resolveAnchor(call.anchor, ctx.anchors)!;   // validated above, so it resolves
+        say("Here's the part that matters.");
+        emit(deps.kit.narrateOp("finds", `the "${id}" section`));
+        emit(deps.kit.spotlightOp(`anchor:${id}`, { active: true }));
+        await agentDelay(120);
+        deps.scrollToAnchor?.(id);
+        await agentDelay(1500);
+        emit(deps.kit.spotlightOp("screen", { active: false }));
+        deps.showcaseStateSet?.({ ...state, done: recordDone(state.done, `HIGHLIGHT ${id}`), step: state.step + 1 });
+        continue;
+      }
+
+      if (call.kind === "note") {
+        say("Saving a takeaway to your notepad.");
+        emit(deps.kit.narrateOp("writes", "a takeaway to the notepad"));
+        emit(deps.kit.noteAppendOp(call.text, "ai"));
+        deps.revealNotepad?.();
+        emit(deps.kit.spotlightOp("notepad", { active: true }));
+        await agentDelay(1400);
+        emit(deps.kit.spotlightOp("screen", { active: false }));
+        deps.showcaseStateSet?.({ ...state, done: recordDone(state.done, `NOTE ${call.text}`), step: state.step + 1 });
+        continue;
+      }
+
+      if (call.kind === "draft") {
+        // open the visible compose panel, spotlight the ONE registered field, fill it — never submit.
+        if (deps.openCompose?.()) {
+          say("Drafting a message to TJ — I'll fill it, but sending stays yours.");
+          emit(deps.kit.narrateOp("drafts", "a message to TJ (never sent)"));
+          emit(deps.kit.spotlightOp(CONTACT_FIELD_SURFACE, { active: true }));
+          await agentDelay(CONTACT_FILL_BEAT_MS);
+          try { emit(deps.kit.fillOp(CONTACT_FIELD_SURFACE, call.text)); }
+          catch (err) { console.error("[desk] agent draft rejected", err); }
+          await agentDelay(1200);
+          emit(deps.kit.spotlightOp("screen", { active: false }));
+        }
+        deps.showcaseStateSet?.({ ...state, done: recordDone(state.done, `DRAFT ${call.text}`), step: state.step + 1 });
+        continue;
+      }
+
+      // GO: the only tool that ends the page. Record + stash BEFORE navigating (the navigate tears the
+      // page down), run the same lamp-to-nav choreography the reasoner's own navigation uses, then hand
+      // off — the door's showcaseResume picks the loop back up on the destination page.
+      if (call.kind === "go") {
+        const dest = ctx.routes.find((d) => strip(d.route) === strip(call.route))!;
+        deps.showcaseStateSet?.({ ...state, done: recordDone(state.done, `GO ${dest.route}`), step: state.step + 1 });
+        emit(deps.kit.narrateOp("clicks", dest.label));
+        deps.revealNav?.(dest.route);
+        emit(deps.kit.spotlightOp(`nav:${dest.route}`, { active: true, click: true }));
+        await agentDelay(NAV_GLIDE_MS);
+        deps.navigate?.(dest.route);
+        return;
+      }
     }
   }
 
@@ -569,6 +766,24 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // a tour running" even though this same line just cleared it for a non-tour-start message.
         const tourWasActive = deps.tourActive?.() ?? false;
         if (tourWasActive && action?.kind !== "tour-start") deps.tourClear?.();
+        // "Watch me work" shares the tour's "type anything to stop": ANY message while the showcase is
+        // pending cancels the door's next advance, except a fresh showcase-start (which restashes its
+        // own cursor). Same shape as the tour clear just above.
+        const showcaseWasActive = deps.showcaseActive?.() ?? false;
+        if (showcaseWasActive && action?.kind !== "showcase-start") deps.showcaseClear?.();
+
+        // 1c follow-up: a bare deictic ("go there", "open it") after the desk offered or CITED a place
+        // navigates to THAT target — no re-retrieval, so the follow-up can't drift to a different note
+        // than the "Read more" link it's answering. Guarded on !action (a real action word still wins)
+        // and a stored target (nothing to follow up on before the first navigate/citation).
+        const nt = text.trim().toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+        if (!action && lastTarget && deps.navigate && FOLLOWUP_DEICTIC_RE.test(nt)) {
+          const dest = lastTarget;
+          await minThink();
+          await typeOut(`Taking you to ${dest.label}.`);
+          await travelAndNavigate(dest.route, dest.route, dest.label, `Here's ${dest.label}.`, "the navigation");
+          return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
+        }
 
         if (action?.kind === "capabilities") {
           const where = deps.pageInfo?.().title;
@@ -588,9 +803,9 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // generic clear a few lines up already cleared the cursor for this very message).
         if (action?.kind === "tour-stop") {
           await minThink();
-          const line = tourWasActive
-            ? "Okay, stopping the tour here. Ask me anything, or wander on your own."
-            : "There's no tour running right now.";
+          const line = (tourWasActive || showcaseWasActive)
+            ? "Okay, stopping here. Ask me anything, or wander on your own."
+            : "There's nothing running right now.";
           await typeOut(line);
           setChips([...ACTION_CHIPS, "Take me to GRAIN"]);
           return { ok: true, ops: [], reply: line };
@@ -631,6 +846,36 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           deps.tourSet?.(0);
           await travelAndNavigate(first.navLink, first.route, first.label, first.announce, "the navigation");
           return { ok: true, ops: [], reply: intro };
+        }
+
+        // "Watch me work" — the AGENT demo (showcase.ts). Unlike every deterministic action above, this
+        // NEEDS the model: nothing moves until it's loaded (the honest fix — no canned animation before
+        // the AI exists). Load it with the visible bar, then hand the 0.5B the goal and let IT drive:
+        // runAgentTurns loops on this page (the model chooses each action, the harness validates + applies
+        // it), and a GO carries the agent state across the load for the door's showcaseResume to continue.
+        if (action?.kind === "showcase-start") {
+          if (!deps.navigate) {
+            await minThink();
+            const line = "I can't drive the page from here, so I can't run the demo. Ask me something else instead.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "no navigate dep" };
+          }
+          if (degraded) return offline();
+          const { label, downloadNote } = profile;
+          setBodyRaw(loadBar(0, label, downloadNote), "pending");
+          narrate("loads", `${label}, one time, cached, runs on your device`);
+          let lastPct = -1;
+          const engine = await ensureEngine((p) => {
+            const pct = Math.round((p.progress || 0) * 100);
+            if (pct !== lastPct) { lastPct = pct; setBodyRaw(loadBar(pct, label, downloadNote), "pending"); }
+          });
+          if (!engine) return offline();
+          if (tools.cancelled()) { setBody(esc("Stopped."), "committed"); return { ok: true, ops: [], reply: "Stopped." }; }
+          // the model is up — settle the load bubble into the kickoff line, then let the agent take over.
+          setBody(esc("On it — watch me work. I'll drive the site myself, one step at a time. Type anything to stop me."), "committed");
+          deps.showcaseStateSet?.({ goal: SHOWCASE_GOAL, done: [], step: 0 });
+          await runAgentTurns(engine, (op) => tools.emit(op));
+          return { ok: true, ops: [], reply: "Running the demo." };
         }
 
         // A4 theme switching — deterministic + offline (zero model, runs before the load like every
@@ -1081,8 +1326,29 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           if (target && deps.navigate) {
             await minThink();
             await typeOut(`Opening the latest note, “${target.title}”.`);
+            lastTarget = { route: target.route, label: target.title };
             await travelAndNavigate("/notes", target.route, "Notes", `Here's the latest note, “${target.title}”.`, "the notebook");
             return { ok: true, ops: [], reply: `Opening ${target.title}` };
+          }
+          setBody(esc("I couldn't reach the notebook just now."), "committed");
+          return { ok: false, ops: [], reply: "notes unavailable", reason: "notes unavailable" };
+        }
+
+        // the flagship note — a FIXED, hand-pinned note (FLAGSHIP_NOTE_SLUG), the sibling of
+        // open-latest-note: zero model, drive the page straight to it. The title comes off the live
+        // notes list (never hardcoded here) so it can't drift from what /notes actually renders; a
+        // missing entry falls back to the known title rather than an empty quote.
+        if (action?.kind === "open-flagship-note") {
+          const route = `/notes/${FLAGSHIP_NOTE_SLUG}`;
+          if (deps.navigate) {
+            const notes = (await deps.listNotes?.()) ?? [];
+            const target = notes.find((n) => stripSlash(n.route) === stripSlash(route));
+            const title = target?.title ?? "Ten Times Zero Is Still Zero";
+            await minThink();
+            await typeOut(`Opening the flagship note, “${title}”.`);
+            lastTarget = { route, label: title };
+            await travelAndNavigate("/notes", route, "Notes", `Here's the flagship note, “${title}”.`, "the notebook");
+            return { ok: true, ops: [], reply: `Opening ${title}` };
           }
           setBody(esc("I couldn't reach the notebook just now."), "committed");
           return { ok: false, ops: [], reply: "notes unavailable", reason: "notes unavailable" };
@@ -1127,6 +1393,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             await minThink();
             const line = `That's under “${heading}” in “${hit.title}”. Taking you there.`;
             await typeOut(line);
+            lastTarget = { route: hit.route, label: hit.title };
             await travelAndNavigate(
               navLink, hit.route, humanizeSeg(navLink),
               `Here's the part about “${heading}”, from “${hit.title}”.`, "the navigation",
@@ -1148,6 +1415,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           if (dest) {
             await minThink();
             await typeOut(`Taking you to ${dest.label}.`);
+            lastTarget = { route: dest.route, label: dest.label };
             await travelAndNavigate(dest.route, dest.route, dest.label, `Here's ${dest.label}.`, "the navigation");
             return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
           }
@@ -1259,13 +1527,19 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // REAL (present in the sitemap catalog — never trust the model to have stayed in scope), AND
         // kit.navigateOp's own isSafeNavigateHref check (it throws on anything unsafe).
         const navMatch = MODEL_NAVIGATE_RE.exec(acc.trim());
-        if (navMatch && deps.navigate) {
-          const route = navMatch[1]!;
+        // 1b: the weak 0.5B sometimes ECHOES a bare route ("/notes/ten-times-zero") as its whole reply
+        // instead of the NAVIGATE:<route> protocol — treat a whole-message bare path as the same
+        // navigate intent, so the visitor never sees a raw slug as an "answer". Only when the ENTIRE
+        // trimmed reply is a single path (a path mentioned mid-sentence is left as prose).
+        const bareRoute = !navMatch && /^\/[^\s]*$/.test(acc.trim()) ? acc.trim() : null;
+        if ((navMatch || bareRoute) && deps.navigate) {
+          const route = (navMatch ? navMatch[1]! : bareRoute!).split("#")[0]!;
           const dest = catalog.find((d) => d.route === route);
           if (dest) {
             try {
               deps.kit.navigateOp("screen", route);   // throws on an unsafe href — validate before acting
               setBody(esc(`Taking you to ${dest.label}.`), "committed");
+              lastTarget = { route: dest.route, label: dest.label };
               await travelAndNavigate(route, route, dest.label, `Here's ${dest.label}.`, "the navigation");
               return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
             } catch (err) {
@@ -1308,6 +1582,8 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             esc(acc.trim()) +
             `<span class="desk-cite">Read more: <a href="${esc(href)}">${esc(top.title)}</a></span>`,
             "committed");
+          // 1c: a following "go there" now reuses THIS cited note (not a fresh retrieval that drifted).
+          lastTarget = { route: top.route, label: top.title };
         }
         history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: acc });
         setChips([...pickFollowups(text, history, deps.intentGet?.() ?? undefined), "Summarize this page"]);
@@ -1321,7 +1597,27 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     reset() {
       history.length = 0;
       seq = 0;
+      lastTarget = null;
       if (degraded) { degraded = false; enginePromise = null; }   // re-arm a degraded desk to retry loading
+    },
+
+    // "Watch me work" agent — re-hydrate the demo on this page after a GO navigated here. The door calls
+    // this on arrival ONLY when agent state is stashed (showcaseActive), so a normal navigation never
+    // triggers it. Loads the engine SILENTLY (like arrive — no bar on a nav; the visitor already opted
+    // in when they started the demo), then takes the next agent turn(s). Any failure clears the state so
+    // a dead demo can't wedge future navigations.
+    async showcaseResume(applyOp: (op: RenderOp) => void): Promise<void> {
+      if (degraded) { deps.showcaseClear?.(); return; }
+      if (!deps.showcaseStateGet?.()) return;               // no demo running — nothing to continue
+      // Each hop is a full page load (this is an MPA), so the model RE-INITS here — seconds of silence
+      // unless we say so. Drop an immediate "still driving" bubble the moment we land, before the engine
+      // comes back, so the arrival never reads as dead.
+      applyOp({ target: "chat-log", op: "append", provenance: "ai", commit: "committed",
+        html: deps.kit.chatBubble("ai", "grain", deps.kit.chatBody(deps.kit.esc("Still driving — reading this page…")), "Desk") });
+      const engine = await ensureEngine(() => {});          // the load bar showed on kickoff; re-init is quiet
+      if (!engine) { deps.showcaseClear?.(); return; }
+      try { await runAgentTurns(engine, applyOp); }
+      catch (err) { console.error("[desk] showcaseResume failed", err); deps.showcaseClear?.(); }
     },
 
     // Page-arrival awareness (reasoner-driven). Called by the door on load, only when the desk is

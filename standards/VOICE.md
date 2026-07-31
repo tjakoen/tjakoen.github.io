@@ -218,7 +218,7 @@ proudly) Claude. Never *"AI tooling"* when you can say which one.
   bolted on per component. He's *"a design-systems person to my core"*; it shows in how he reasons,
   not just how things look.
 
-**The numbers (snapshots; flag them as such):** 100 to 150 students a semester. 16-hour days. 33
+**The numbers (snapshots; flag them as such):** 150 to 300 students a semester. 16-hour days. 33
 commits. Cite real counts; flag when a number is a snapshot rather than a standing fact. The real one
 or none.
 

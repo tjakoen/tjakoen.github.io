@@ -114,8 +114,8 @@ writes dry-runs first, so I read the plan before it happens.
 What the AI was good at was the tedious structural work: keeping that shared engine identical across
 every course, and writing the very audit tools I am about to complain about needing. The parts I kept
 for myself were the ones with consequences: the access model, and deciding what must never reach a
-student automatically. The teaching side of all this, the feedback drafting and the one exam where I
-ban the tool that built it, is [its own post too](how-i-use-ai-in-teaching.md).
+student automatically. The teaching side of all this, the feedback drafting and the console where I
+review every AI grade, is [its own post too](the-console-i-built-to-stop-drowning.md).
 
 ## The unglamorous part was the actual work
 

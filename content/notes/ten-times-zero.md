@@ -19,7 +19,7 @@ summary: >
 ---
 
 > **One of my students?** If what you actually want to know is how I feel about *you* using AI, I
-> wrote that post for you: [How I Teach With AI, and Where I Lock It Out](how-i-use-ai-in-teaching.md).
+> wrote that post for you: [I Nearly Quit Teaching, So I Automated the Part That Was Killing Me](why-i-teach.md).
 > Read that first; this one is the belief underneath it.
 
 ## "Vibe coder" is used as an insult
@@ -516,7 +516,7 @@ the receipt (the commits, the ratio, the runbook) and show you it wasn't luck.
 
 That's the whole word. *Professional.* It just means I keep the receipts. Get so good at the
 fundamentals that when you finally pick up the power tool, it multiplies something real. It's the
-same discipline I drill into my students when I teach, and the same rule I turn on my own AI when it grades their work: [how I teach with AI, and where I lock it out](how-i-use-ai-in-teaching.md).
+same discipline I drill into my students when I teach, and the same rule I turn on my own AI when it grades their work: [the console I built to stop drowning](the-console-i-built-to-stop-drowning.md).
 
 Bring nothing and it multiplies nothing: ten times zero is still zero. So become a bigger number
 first, then go make it dangerous.

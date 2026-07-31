@@ -267,10 +267,13 @@
            row stays visible the whole conversation (site.js delegates the click on this stable row). -->
       <div class="assistant__suggest" data-suggest>
         <span class="assistant__suggest-label">Try asking</span>
+        <!-- Pre-JS fallback set (site.js's setDefaultChips replaces these per-page on load): one of
+             each kind, so the row DEMONSTRATES the desk's range at a glance — a grounded answer, a
+             deterministic navigate, and a page action — not three lookalike Q&A prompts. -->
         <div class="assistant__suggest-chips" data-suggest-chips data-surface="suggest-chips">
           <button type="button" class="suggest-chip" data-suggest-ask>What is BREAD?</button>
-          <button type="button" class="suggest-chip" data-suggest-ask>Who is TJ?</button>
-          <button type="button" class="suggest-chip" data-suggest-ask>How is this site built?</button>
+          <button type="button" class="suggest-chip" data-suggest-ask>Take me to the flagship note</button>
+          <button type="button" class="suggest-chip" data-suggest-ask>Summarize this page</button>
         </div>
       </div>
       <div class="assistant__composer">

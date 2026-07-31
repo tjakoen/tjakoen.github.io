@@ -319,7 +319,7 @@
       "/mill":     ["What does MILL do?", "How are the notes rendered?", "Show me a note"],
       "/proof":    ["What is a plan board?", "How does PROOF track work?", "Why plans as files?"],
       "/pantry":   ["What does PANTRY compose?", "How does the app boot?", "What is the composition root?"],
-      "/notes":    ["What's the flagship post?", "How does TJ use AI?", "Why teach with AI?"],
+      "/notes":    ["Take me to the flagship note", "How does TJ use AI?", "Why teach with AI?"],
       "/about":    ["How do I reach TJ?", "What's TJ's background?", "Is there a résumé?"],
       "/calendar": ["What's on the calendar?", "How is this site built?", "Who is TJ?"],
       "/mail":     ["How do I reach TJ?", "What is this inbox?", "Who is TJ?"],
@@ -349,6 +349,7 @@
     // returning a canned answer. The phrasings are chosen to match routeAction exactly (law #2: the
     // chips are code-authored, the router does the recognizing); keep them in sync with ai/actions.ts.
     const TRY_THIS = [
+      "Watch me work",                                // the flagship showcase: the desk pilots the real site
       "Show me the notes about teaching",             // B2 notes-filter
       "Archive everything from BREAD CI",             // B3 mail-archive
       "Tell TJ I want to talk about GRAIN",           // B1 contact field.set
@@ -364,7 +365,7 @@
       // (summarize / open the latest note) + a topical page suggestion.
       const full = path === "/"
         ? TRY_THIS
-        : [PINNED_CHIP, "Summarize this page", "Show me the latest note", ...(pickSuggest() || []).slice(0, 1)];
+        : [PINNED_CHIP, "Watch me work", "Summarize this page", ...(pickSuggest() || []).slice(0, 1)];
       chips.replaceChildren(...full.map(mkChip));
     };
     setDefaultChips();
@@ -398,6 +399,21 @@
       const t = ev.target;
       if (ev.key === "Enter" && t && t.matches && t.matches('[data-surface="chat-input"]')) markWarm();
     });
+
+    // ---- deep-link autostart: the welcome "Watch me work" card links to "/grain#watch". On arrival,
+    // kick the demo through the SAME one door a chip/typed message uses, once the desk door is up. The
+    // hash is stripped first so a plain reload doesn't re-trigger. The welcome hero's own desk is
+    // collapsed by design (you go to /grain to use it), so this is how that visible card launches it.
+    if (location.hash === "#watch") {
+      try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* no-op */ }
+      markWarm();
+      let tries = 0;
+      const iv = setInterval(() => {
+        const door = window.grain && window.grain.door;
+        if (door && typeof door.submit === "function") { clearInterval(iv); door.submit("chat.send", "chat-log", { text: "watch me work" }); }
+        else if (++tries > 80) clearInterval(iv);   // ~16s ceiling, then give up quietly
+      }, 200);
+    }
 
     // ---- New chat: clear the conversation + the desk's in-memory turns, re-greet, and restore this
     // page's starter chips. The model itself stays loaded (deskReset only forgets the turns).

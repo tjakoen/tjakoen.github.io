@@ -76,7 +76,7 @@ test.describe("A2 guided tour (deterministic, no model needed)", () => {
     // Still well inside the dwell window on /grain — stop the tour before the door would advance it.
     await ask(page, "stop the tour");
     await expect.poll(() => tourCursor(page)).toBeNull();
-    await expect(page.locator(".assistant__log")).toContainText("stopping the tour");
+    await expect(page.locator(".assistant__log")).toContainText("stopping here");
 
     // Wait past the ORIGINAL dwell + glide the door would have used to advance — confirm it didn't.
     await page.waitForTimeout(TOUR_DWELL_MS + NAV_GLIDE_MS + 1_000);

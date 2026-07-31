@@ -23,6 +23,7 @@ six.
 |---|---|---|
 | **Building anything with an AI** | [AI-DEVELOPMENT.md](AI-DEVELOPMENT.md) | The working relationship, the definition of done, the conventions and pitfalls every change is held to. The rulebook. |
 | **Structuring a repo so AI sessions compound** | [AI-REPO-STANDARD.md](AI-REPO-STANDARD.md) | The repo-side companion to AI-DEVELOPMENT: the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned. AI-DEVELOPMENT owns the working relationship; this owns the repo. |
+| **Deciding where a file lives / unbloating a root** | [TREE.md](TREE.md) | The layout standard: keep the root a readable index, only load-bearing files earn a place there, everything else folds one level down into a named home. AI-REPO-STANDARD owns *which* files exist; this owns *where* they sit. |
 | **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
 | **Running one AI workflow across every repo** | [LOOP.md](LOOP.md) | The system *around* the sessions: the work-triggered heartbeat that makes skipped chores visible, the thin-kit shape, the accountability contract that keeps an unattended run honest. One floor above SESSION-LOOP. |
 | **Answering a code question without burning the window** | [GRAPH.md](GRAPH.md) | Ask the code graph a scoped question before you fan out grep, reads, and subagents. Query by symbol not prose, keep it fresh with a free per-edit hook, never commit the artifact. The retrieval half of the loop. |
@@ -41,6 +42,9 @@ six.
   spans them: the heartbeat, the shared kit shape, the contract that holds across a whole estate of
   repos worked the same way. Read it when the question is "how does *every* repo run," not "how does
   this session run."
+- **TREE** is the layout companion to AI-REPO-STANDARD: the latter decides *which* files a repo commits,
+  TREE decides *where* each one sits and keeps the root a readable index instead of a junk drawer. Read it
+  when a root has grown past a screen or a file has no obvious home.
 - **GRAPH** is the retrieval half of that loop: a narrow rule for answering a structural code question
   cheaply (ask the graph before you fan out) that SESSION-LOOP's model economy and LOOP's heartbeat both
   lean on. Read it the moment you catch yourself about to grep the whole tree.

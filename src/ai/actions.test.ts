@@ -69,8 +69,17 @@ describe("routeAction", () => {
   });
 
   test("navigation phrases fall through here (null) — the catalog resolves them, not this router", () => {
-    for (const s of ["take me to grain", "go to the notes", "grain", "take me home", "take me to the flagship note"])
+    for (const s of ["take me to grain", "go to the notes", "grain", "take me home"])
       expect(routeAction(s)).toBeNull();
+  });
+
+  test("the flagship note routes deterministically (a fixed pin, distinct from the dynamic 'latest')", () => {
+    for (const s of ["take me to the flagship note", "read the flagship post", "open the flagship", "show me the marquee note"])
+      expect(routeAction(s)?.kind).toBe("open-flagship-note");
+    // checked BEFORE open-latest, so a flagship ask never resolves to the newest-by-date note
+    expect(routeAction("open the flagship note")?.kind).not.toBe("open-latest-note");
+    // an INFORMATIONAL ask (no intent verb) still answers in prose, not a navigate
+    expect(routeAction("what's the flagship post about?")).toBeNull();
   });
 
   test("a vague 'help me get somewhere' ask offers choices (deterministic disambiguation)", () => {
@@ -95,6 +104,16 @@ describe("routeAction", () => {
 
   test("A2: 'stop the tour' is never mistaken for a tour-start (both share the word 'tour')", () => {
     expect(routeAction("stop the tour")?.kind).not.toBe("tour-start");
+  });
+
+  test("'Watch me work' phrasings route to the showcase", () => {
+    for (const s of ["watch me work", "watch the AI act", "watch the desk work", "run the demo", "play the showcase", "show me the demo"])
+      expect(routeAction(s)?.kind).toBe("showcase-start");
+  });
+
+  test("'stop the demo' / 'stop the showcase' route to tour-stop (the shared cancel)", () => {
+    for (const s of ["stop the demo", "stop the showcase", "end the demo"])
+      expect(routeAction(s)?.kind).toBe("tour-stop");
   });
 
   test("A2: 'show me around' still clarifies (it's vague, unlike a direct tour ask)", () => {
