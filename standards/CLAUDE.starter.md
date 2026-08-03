@@ -63,9 +63,24 @@ codebase and proposes the emoji + honest badge set for you.
 
 ## Commit convention
 
-No AI attribution trailers on commits (`Co-Authored-By: Claude` etc. — enforced globally via
-`attribution` settings). The receipt behind the "built with Claude" claim is the README badge +
-footer and the flagship note, not commit metadata.
+No AI attribution trailers on commits (`Co-Authored-By: Claude` etc.). The receipt behind the
+"built with Claude" claim is the README badge + footer and the flagship note, not commit metadata.
+
+**Enforce it, do not assume it.** Set this in `~/.claude/settings.json`:
+
+```json
+{ "includeCoAuthoredBy": false }
+```
+
+Claude Code appends the trailer by default, so without that key an agent will add it while
+believing it is following house style. This paragraph used to say the rule was "enforced globally
+via `attribution` settings" and named no setting. It was set on no machine, so the rule quietly did
+not hold: one repo accumulated 28 trailered commits before anyone noticed, and clearing them meant
+rewriting published history. A convention that names no mechanism is a preference, not enforcement.
+
+Check a repo with `git log -E --grep="^Co-Authored-By:" --oneline` before trusting it is clean.
+Anchor the pattern to the line start: unanchored, it also matches any doc that merely *names* the
+trailer, this section included, so a clean repo reports itself dirty.
 
 ## Docs / structure
 
