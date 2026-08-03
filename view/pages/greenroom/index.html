@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Greenroom · TJ's Desk</title>
-  <meta name="description" content="Greenroom: a small local app that runs automated browser checks against your web app and hands developers a one-click bug bundle. No coding required. Built on the BREAD stack.">
+  <meta name="description" content="Greenroom: run automated browser checks against a live web app and read the results, with no coding required. Runs on your own machine or as one shared instance a team signs into. Built on the BREAD stack.">
 </head>
 <body data-screen="greenroom" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="greenroom" data-rail-collapsed="false" data-surface="screen">
@@ -14,34 +14,109 @@
         <p class="eyebrow">🎬 <span class="name">Greenroom</span></p>
         <h1 class="masthead">Run browser checks. Watch them pass. Hand over a bug bundle.</h1>
         <hr class="rule">
-        <p class="lede">Greenroom is a small local app that runs automated browser checks against your web
-          app and lets you review the results, with no coding required. It runs entirely on your own
-          computer, from VS Code or the terminal. Under the hood it wraps <em>Playwright</em> in a friendly
-          dashboard: point it at any site, tell it the URLs and how to log in, pick one or several
-          environments, click <em>Run</em>, and watch a live pass and fail checklist. When something breaks,
-          it hands a developer a one-click bug bundle with everything they need to reproduce it.</p>
+        <p class="lede">Greenroom runs automated browser checks against a live web app and lets anyone
+          read the results, with no coding required. Under the hood it wraps <em>Playwright</em> in a
+          plain dashboard: point it at your site, say how to log in, pick one or several environments,
+          click Run, and watch a live pass and fail checklist. When something breaks, one click
+          produces a bundle a developer can replay, with the trace, video, screenshots, logs and a
+          written summary. It runs two ways from one codebase: on your own machine, or as one shared
+          instance a whole team signs into.</p>
+
+        <figure class="shot">
+          <img class="shot__img" src="/media/greenroom/run-matrix.jpg" width="1440" height="900" loading="lazy"
+               alt="Greenroom's Run dashboard: tiles reading 6 passed, 2 failed, 2 pending, 10 total, a health bar at 75 percent, and a table of five checks scored against two environments called demo and demo2.">
+          <figcaption class="shot__cap">One run against two environments at once. Each check gets a
+            cell per environment, and the failing row carries its own Report this button.</figcaption>
+        </figure>
 
         <div class="section-head"><span>What it does</span></div>
         <div class="card-grid" style="--card-min: 15rem">
-          <div class="card" data-pad="sm"><h3 class="card__title">Run tests</h3><p class="card__body">Pick one or several environments, click Run, and watch a live pass, fail, and running checklist. More than one environment shows as a test-by-environment matrix with per-environment health.</p></div>
-          <div class="card" data-pad="sm"><h3 class="card__title">Manage tests</h3><p class="card__body">Every check, grouped by feature. Run one, run a selection, or run by tag. Filter by failing, flaky, never-run, or slowest. Record a new test by clicking through the site, and let it log itself in without ever putting credentials in the file.</p></div>
-          <div class="card" data-pad="sm"><h3 class="card__title">Report a bug</h3><p class="card__body">One-click bug bundle: the Playwright trace, video, screenshots, logs, and a plain-language summary, everything a developer needs to replay the session. Or export a single-frame PDF straight from the video.</p></div>
-          <div class="card" data-pad="sm"><h3 class="card__title">Try the demo</h3><p class="card__body">Boots read-only with example data already filled in, so you can click around a populated dashboard with zero config before you set anything up.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Run checks</h3><p class="card__body">Pick one environment or several, click Run, and watch the checklist fill in live. More than one environment turns the list into a check by environment matrix, with its own health reading per environment.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Keep them organised</h3><p class="card__body">Group by feature, tag in the title, set priority and owner. Smart filters find the failing, the flaky, the never run and the slowest, computed from real run history rather than guesswork.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Report a bug</h3><p class="card__body">One click builds a zip a developer can act on: Playwright trace, video, screenshot filmstrip, console and network logs, and a summary in plain language. Or export a single moment as a PDF.</p></div>
+          <div class="card" data-pad="sm"><h3 class="card__title">Write checks without writing code</h3><p class="card__body">Record one by clicking through the site, and it wires in the login itself without ever putting a password in the file. Already have Playwright specs? It rewrites them to fit on the way in.</p></div>
         </div>
 
-        <div class="section-head"><span>Built on the BREAD stack</span></div>
-        <p class="lede">Greenroom is being rebuilt as a full consumer of the <a href="/bread">BREAD stack</a>,
-          the same no-build stack this site runs on: a Bun composition root, a frontend rebuilt in GRAIN,
-          docs through MILL, and the plan board mounted straight from PROOF. It is honest work in progress:
-          the Run, Tests, and Settings pages are already the new GRAIN app, with History and the last
-          frozen surfaces still being migrated across. The live app and a fuller write-up are landing here
-          as that work finishes.</p>
+        <figure class="shot">
+          <img class="shot__img" src="/media/greenroom/tests.jpg" width="1440" height="900" loading="lazy"
+               alt="Greenroom's Tests page: a group called Examples showing three checks with tags, priorities and pass or fail badges, plus buttons to export, import and adapt existing tests.">
+          <figcaption class="shot__cap">The test library. Each check carries its tags, priority, owner
+            and how it has actually been doing, so a non-coder can decide what is worth running.</figcaption>
+        </figure>
 
-        <div class="section-head"><span>In the meantime</span></div>
+        <div class="section-head"><span>Handing a developer something they can act on</span></div>
+        <p class="lede">The handover is the part I care most about. A tester saying "the dashboard
+          looked wrong" costs a developer an afternoon of guessing. So Greenroom captures the whole
+          session while the check runs: a filmstrip of screenshots with timestamps, every console
+          message, every network request, and Playwright's own trace. The bug page turns that into one
+          download, and it can narrow the logs to the moment a chosen screenshot was taken, so the
+          evidence arrives already pointed at the problem.</p>
+
+        <figure class="shot">
+          <img class="shot__img" src="/media/greenroom/bug-bundle.jpg" width="1440" height="900" loading="lazy"
+               alt="Greenroom's Report a bug page listing the pages a failed check visited, its console and network findings, and the files that go into the downloadable bundle.">
+          <figcaption class="shot__cap">What goes in the bundle, spelled out before you send it.</figcaption>
+        </figure>
+
+        <div class="section-head"><span>Editing a check in the browser</span></div>
+        <p class="lede">On a hosted instance nobody has the repo checked out, so the editor comes to
+          them instead. It is a real code editor in the page, with syntax highlighting, inline errors,
+          a button that compiles a check without running it, and a version history recording who
+          changed what. Validation happens three times over: as you type, again when the server
+          refuses to save a file that does not parse, and again when Playwright itself compiles it.</p>
+
+        <figure class="shot">
+          <img class="shot__img" src="/media/greenroom/editor.jpg" width="1440" height="900" loading="lazy"
+               alt="Greenroom's Editor page showing a Playwright test open in a syntax-highlighted code editor, with Validate, History, Run this and Save buttons.">
+          <figcaption class="shot__cap">Editing a check on a hosted instance, with the version history
+            behind the History button.</figcaption>
+        </figure>
+
+        <div class="section-head"><span>Two ways to run it, one codebase</span></div>
+        <p class="lede">It started as a local tool and still runs that way by default: open the folder
+          in VS Code, use the task, and a dashboard opens on your own machine with no accounts and no
+          database. The same code also runs as one shared instance a company hosts, where the entry
+          point is just a URL. Nobody clones anything and nobody installs Node. That edition adds real
+          accounts, teams, per resource visibility, a server side queue so several people can run
+          checks at once without colliding, and an append only audit log. Which one you get is decided
+          by the environment it boots in, not by a fork.</p>
+
+        <figure class="shot">
+          <img class="shot__img" src="/media/greenroom/accounts.jpg" width="1440" height="900" loading="lazy"
+               alt="Greenroom's Accounts page showing two saved logins for the app under test, one marked Company and one marked Private, with passwords displayed only as saved.">
+          <figcaption class="shot__cap">Logins for the app under test, shared per person, team or
+            company. Encrypted at rest, and never shown again once saved.</figcaption>
+        </figure>
+
+        <figure class="shot">
+          <img class="shot__img" src="/media/greenroom/admin.jpg" width="1440" height="900" loading="lazy"
+               alt="Greenroom's Admin page listing four user accounts, one of them a superadmin, and two teams with their members.">
+          <figcaption class="shot__cap">Users and teams. Every change here lands in the audit log with
+            the name of whoever made it.</figcaption>
+        </figure>
+
+        <div class="section-head"><span>Built on the BREAD stack</span></div>
+        <p class="lede">Greenroom is a full consumer of the <a href="/bread">BREAD stack</a>, the same
+          no build stack this site runs on, and that migration is finished rather than in flight now.
+          Every page is a real GRAIN route served from a Bun composition root, the user guide renders
+          through MILL, the plan board mounts straight from PROOF, and the guided tour comes from
+          CRUMB. The hand rolled single page app it grew out of has been deleted, not wrapped.</p>
+
+        <div class="section-head"><span>Honest limits</span></div>
+        <p class="lede">The hosted edition is built for a company to run on its own network behind a
+          reverse proxy it controls. It refuses to start in an unsafe configuration, walls private
+          runs off from other people, encrypts stored credentials and rate limits sign in attempts,
+          but it has not had an independent security review and I would not put it on the open
+          internet. Signing in with a work account through Entra is designed and not yet built, so
+          people use an email address and a password for now. And the honest headline: the deployment
+          only behaviour is covered by tests that boot a real configured server, but it has not yet
+          run a single day in an actual deployment.</p>
+
+        <div class="section-head"><span>Where it lives</span></div>
         <div class="docs-list">
-          <div class="docs-list__item"><a class="docs-list__name" href="/projects">Projects</a><span class="docs-list__what">back to the rest of what I've been building.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/bread">The BREAD stack</a><span class="docs-list__what">the four layers plus PANTRY that Greenroom is being rebuilt on.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/">tjakoen.github.io</a><span class="docs-list__what">the site itself, the other app built on the same stack.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen/greenroom">greenroom on GitHub</a><span class="docs-list__what">the code, the deploy runbook and the user guide. Open source, MIT.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/projects">Projects</a><span class="docs-list__what">back to the rest of what I have been building.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/bread">The BREAD stack</a><span class="docs-list__what">the four layers plus PANTRY that Greenroom is built on.</span></div>
         </div>
 
         <div class="page-foot">
