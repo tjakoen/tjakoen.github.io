@@ -139,8 +139,8 @@ A published note on "an AI that uses the site like you do" once it ships.
 
 ## Tasks
 
-- [ ] P1: extend the manifest into one page-derived capability catalog (see / navigate / operate)
-- [ ] P1: fold `actions.ts` aliases + the capabilities sentence into that one catalog
+- [x] P1: extend the manifest into one page-derived capability catalog (see / navigate / operate)
+- [x] P1: fold `actions.ts` aliases + the capabilities sentence into that one catalog
 - [ ] P2: add `data-surface` to the mail compose fields + form
 - [ ] P2: add `field` / `form` kinds + `field.set` / `form.submit` verbs to `grain/ai/contract.ts` (+ conformance)
 - [ ] P2: dispatcher applies `field.set` / `form.submit` with the pending → committed lifecycle

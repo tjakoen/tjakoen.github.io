@@ -4,6 +4,10 @@
 // it's resolved against the live sitemap catalog (catalog.ts, resolveNav) so the desk sends a visitor
 // only to routes that actually exist and the set scales with the site — no hardcoded alias table to
 // grow. Free text that matches no action here falls through to catalog navigation, then to chat.
+//
+// This file is also the SOURCE for the desk's ONE capability catalog (capabilities.ts): ACTION_CAPABILITIES
+// below is routeAction's own vocabulary, annotated with a group + a plain phrase — never a second,
+// hand-copied description living somewhere else.
 
 export type Choice = { label: string; value: string };
 export type Action =
@@ -336,6 +340,34 @@ export function routeAction(text: string): Action | null {
 
   return null;
 }
+
+/** Presentation metadata for the Action kinds a visitor can ASK for directly, anywhere on the site
+ *  (deterministic, zero model) — folded into the desk's ONE capability catalog (capabilities.ts) so
+ *  "what can I do here?" and the model's own canDo reasoning describe EXACTLY what routeAction
+ *  recognizes, never a hand-copied second list that can drift from it. Left out on purpose:
+ *   - internal/silent kinds triggered by the conversation's own flow, not asked for as a capability
+ *     (clarify, tour-stop, intent-ask/intent-set, open-flagship-note — a pin of open-latest-note).
+ *   - note-write and memory-set/-forget: both land on the SAME notepad target the DOM-derived
+ *     note.append capability already names (capabilities.ts's OPERATE_PHRASE) — listing them again
+ *     here would just repeat it under a different word.
+ *   - contact-message and mail-archive: NOT global — a message draft only makes sense where the
+ *     compose field exists, mail archiving only where there's an inbox. Both are already covered,
+ *     honestly and per-page, by the DOM-derived operate capabilities (field.set / item.archive) —
+ *     adding them here would claim the ability on pages that don't actually carry the surface. */
+export interface ActionCapability {
+  kind: Action["kind"];
+  group: "see" | "navigate" | "operate";
+  phrase: string;
+}
+export const ACTION_CAPABILITIES: ActionCapability[] = [
+  { kind: "summarize", group: "see", phrase: "summarize this page" },
+  { kind: "deep-link", group: "see", phrase: "point you to the part of the site that covers something specific" },
+  { kind: "open-latest-note", group: "navigate", phrase: "open the latest note" },
+  { kind: "tour-start", group: "navigate", phrase: "walk you through the site on a guided tour" },
+  { kind: "notes-filter", group: "operate", phrase: "filter the notes by topic" },
+  { kind: "theme", group: "operate", phrase: "switch the site's theme" },
+  { kind: "showcase-start", group: "operate", phrase: "drive the site itself, step by step, so you can watch" },
+];
 
 /** The pinned first chip — always offered on every page (the showcase's "what can I do here?"). */
 export const PINNED_CHIP = "What can I do here?";

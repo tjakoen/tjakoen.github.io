@@ -52,35 +52,17 @@ import {
 // client-safe module. See grain/ai/reasoner-kit.ts.
 import type * as Kit from "@tjakoen/grain/ai/reasoner-kit.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
+// The desk's ONE capability catalog (capabilities.ts) — what it can see / navigate / operate, built
+// from GRAIN's live-DOM manifest + actions.ts's own closed vocabulary. Both the deterministic
+// "capabilities" reply below and the model's canDo prompt feed read from this SAME catalog, so they
+// can't drift apart into two different-shaped answers to "what can I do here?".
+import { buildCapabilityCatalog, catalogPhrases } from "./capabilities.ts";
 
 /** A note the desk can open ("show the latest blog") — newest-first from /notes.json. `tags` rides
  *  along for B2 notes filtering (notes-tags.ts): optional so older callers/fixtures without it still
  *  type-check (an untagged note just never matches a topic). */
 export interface DeskNote { slug: string; title: string; route: string; tags?: string[] }
 
-// Friendly phrasing for what GRAIN reports as operable on THIS page (read from domManifest, never
-// hardcoded). The generic `screen`/`chat-log` targets exist on every page (vocabulary-level), so the
-// caller skips them; these are the genuinely page-specific affordances.
-const VERB_PHRASE: Record<string, string> = {
-  // The live surface is /mail letters (B3); the phrase stays generic ("an item") so it still reads
-  // right if another item surface registers item.archive.
-  "item.archive": "archive an item",
-  "say.set": "note something to the reflection",
-  "say.stream": "ask for a quick reflection",
-  "demo.run": "watch the desk act out a live demo",
-  // B1 contact prefill — the /mail compose body is a registered field: the desk drafts, you send.
-  "field.set": "have a message to TJ drafted for you",
-};
-function pageOperables(manifest: Manifest): string[] {
-  const verbs = new Set<string>();
-  for (const t of manifest.targets) {
-    if (t.kind === "screen" || t.kind === "chat-log") continue;   // generic / the desk itself
-    for (const v of t.accepts) verbs.add(v);
-  }
-  const out: string[] = [];
-  for (const v of verbs) { const p = VERB_PHRASE[v]; if (p) out.push(p); }
-  return out;
-}
 const joinPhrases = (xs: string[]): string =>
   xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
 
@@ -787,11 +769,13 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
 
         if (action?.kind === "capabilities") {
           const where = deps.pageInfo?.().title;
-          // read what GRAIN itself says is operable here (its manifest) — not a hardcoded guess
+          // the ONE catalog: everything this page's live manifest reports as operable/readable, plus
+          // the desk's own built-in verbs (actions.ts's ACTION_CAPABILITIES) — never a hand-written
+          // sentence that can drift from what routeAction and the manifest actually offer.
           const manifest = deps.pageManifest?.();
-          const operables = manifest ? pageOperables(manifest) : [];
-          const pageBit = operables.length ? ` GRAIN tells me this page also lets you ${joinPhrases(operables)}.` : "";
-          const line = `Here's what I can do${where ? ` from ${where}` : ""}: open the latest note, summarize this page, switch the site's theme, filter the notes by topic, jump to a part of the stack (GRAIN, BATCH, MILL, PROOF, or the notes), or remember something you tell me on your notepad — just ask.${pageBit} Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
+          const catalog = deps.loadCatalog ? await deps.loadCatalog().catch(() => [] as NavDest[]) : [];
+          const phrases = catalogPhrases(buildCapabilityCatalog({ manifest, hasDestinations: catalog.length > 0 }));
+          const line = `Here's what I can do${where ? ` from ${where}` : ""}: ${joinPhrases(phrases)} — just ask. Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
           await minThink();
           await typeOut(line);
           setChips([...ACTION_CHIPS, "Take me to GRAIN", "Open the notes"]);
@@ -1497,21 +1481,13 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // the sitemap catalog (navShortlist), so when the deterministic resolver above wasn't confident
         // the model still chooses from routes that exist — never an invented slug.
         const shortlist = navShortlist(text, catalog);
-        // What the desk can DO here — the same capability set the deterministic route announces (its
-        // built-in actions + GRAIN's live manifest of this page), handed to the MODEL too, so a
-        // freeform "what are you able to do?" answers capability-aware instead of guessing from prose.
+        // What the desk can DO here — the SAME ONE capability catalog the deterministic route
+        // announces (capabilities.ts: this page's live manifest + actions.ts's built-in verbs),
+        // handed to the MODEL too, so a freeform "what are you able to do?" answers capability-aware
+        // instead of guessing from prose. catalogPhrases already orders self-contained (see/operate)
+        // before navigate (audit finding: a 0.5B tends to echo whichever item comes first).
         const manifest = deps.pageManifest?.();
-        // Order matters to a 0.5B: the audit showed it echoing whichever item comes first, so the
-        // self-contained actions lead and navigation (which has its own protocol block) comes last.
-        // Each item must read right inside prompt.ts's canned "I can …" sentence, so the manifest
-        // operables (phrased for "this page lets you X") get a "let you" in front.
-        const canDo = [
-          "summarize this page",
-          "open the latest note",
-          "remember something you tell me on your notepad",
-          ...(manifest ? pageOperables(manifest) : []).map((p) => `let you ${p}`),
-          "take you to any page on this site",
-        ];
+        const canDo = catalogPhrases(buildCapabilityCatalog({ manifest, hasDestinations: catalog.length > 0 }));
         // C2 visitor memory (plan default: ALWAYS feed) — the sanitized "Desk memory" lines off the
         // visitor's OWN notepad right now, re-sanitized + capped by parseMemories (defense in depth:
         // this is the first visitor-authored free text ever entering the system prompt). Omitted

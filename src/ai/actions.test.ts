@@ -2,7 +2,7 @@
 // latest-note / note-write). Navigation is NOT here anymore — it's resolved against the sitemap catalog
 // (catalog.ts, covered by catalog.test.ts), so a nav phrase falls through this router as null.
 import { test, expect, describe } from "bun:test";
-import { routeAction, PINNED_CHIP, ACTION_CHIPS, CLARIFY_CHOICES, INTENT_CHOICES } from "./actions.ts";
+import { routeAction, PINNED_CHIP, ACTION_CHIPS, CLARIFY_CHOICES, INTENT_CHOICES, ACTION_CAPABILITIES } from "./actions.ts";
 import { navTarget } from "./catalog.ts";
 
 describe("routeAction", () => {
@@ -376,5 +376,33 @@ describe("routeAction", () => {
     test("an embedded 'forget' mid-sentence is not a memory-forget ask (whole-message-anchored)", () => {
       expect(routeAction("I'll never forget this trip")?.kind).not.toBe("memory-forget");
     });
+  });
+});
+
+// ACTION_CAPABILITIES (the source the desk's ONE capability catalog folds in, capabilities.ts) must
+// never claim an ability routeAction doesn't actually recognize — a drift guard against the exact
+// scatter this feature was built to close: one representative trigger per listed kind, proven live.
+describe("ACTION_CAPABILITIES — every listed kind is a REAL, reachable routeAction outcome", () => {
+  const EXAMPLE: Partial<Record<string, string>> = {
+    summarize: "summarize this page",
+    "deep-link": "show me the part about grain",
+    "open-latest-note": "show me the latest note",
+    "tour-start": "take the tour",
+    "notes-filter": "show me notes about teaching",
+    theme: "switch to dark mode",
+    "showcase-start": "watch me work",
+  };
+
+  test("every capability's kind has an example, and the example routes to that exact kind", () => {
+    for (const cap of ACTION_CAPABILITIES) {
+      const example = EXAMPLE[cap.kind];
+      expect(example, `no example wired for "${cap.kind}"`).toBeDefined();
+      expect(routeAction(example!)?.kind).toBe(cap.kind);
+    }
+  });
+
+  test("no duplicate kinds — one capability entry per Action kind", () => {
+    const kinds = ACTION_CAPABILITIES.map((c) => c.kind);
+    expect(new Set(kinds).size).toBe(kinds.length);
   });
 });
