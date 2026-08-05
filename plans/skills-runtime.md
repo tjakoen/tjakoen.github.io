@@ -82,9 +82,14 @@ with a badly shaped description never triggers and is pure context bloat. Cheape
       emitted our `summary:` as `description:` would mount skills that never fire. S1's `when:` key is
       therefore confirmed as required, not optional — this was the assumption the pilot existed to test
       and it broke in our favour.
-- [ ] **Firing test needs a FRESH session** — skills are loaded at session start, so the session that
-      installs them cannot observe them. Next session in the portfolio: work normally, do not mention
-      the skills, and record whether each fires, at what moment, and whether it changed the output.
+- [x] **Mount confirmed loading.** Both skills appeared in the harness's available-skills list later
+      the same day, with their descriptions intact. So the install path works end to end and the
+      harness reads it — half of "do skills work here" is answered.
+- [ ] **Self-trigger test still open, and needs a FRESH session.** Appearing in the list is not the
+      same as firing unprompted. Next portfolio session: work normally on a multi-file change, do NOT
+      name the skills, then record whether `incremental-implementation` fires on its own, at what
+      moment, and whether it changed the output. `doubt-driven-development` wants a genuinely risky
+      decision to trigger against, so it may need a second sitting.
 - [ ] Record the answer in `plans/decisions/`. It gates S1's scope.
 
 **Exit:** a decision file saying fire / did-not-fire with the trigger evidence. If they do not fire,
