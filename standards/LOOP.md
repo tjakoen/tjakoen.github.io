@@ -1,6 +1,12 @@
 ---
 title: LOOP.md — one AI workflow across every repo
 summary: The system around the sessions - how every repo is worked the same way, the heartbeat that makes skipped chores visible, and the contract that keeps an unattended run honest.
+when: >
+  Read this at session start before touching anything, and again BEFORE calling work done,
+  committing, opening a PR, writing a handoff, or ending a session. Covers verify-by-second-pass, the
+  run evidence a session owes, and uncommitted or unpushed work piling up across sessions. Don't skip
+  because you wrote it and checked it yourself - that is one pass, not two - and don't rerun a
+  failing gate hoping it is flaky.
 ---
 
 # LOOP.md — one AI workflow across every repo

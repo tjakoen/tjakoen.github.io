@@ -85,26 +85,51 @@ with a badly shaped description never triggers and is pure context bloat. Cheape
 - [x] **Mount confirmed loading.** Both skills appeared in the harness's available-skills list later
       the same day, with their descriptions intact. So the install path works end to end and the
       harness reads it — half of "do skills work here" is answered.
-- [ ] **Self-trigger test still open, and needs a FRESH session.** Appearing in the list is not the
-      same as firing unprompted. Next portfolio session: work normally on a multi-file change, do NOT
-      name the skills, then record whether `incremental-implementation` fires on its own, at what
-      moment, and whether it changed the output. `doubt-driven-development` wants a genuinely risky
-      decision to trigger against, so it may need a second sitting.
-- [ ] Record the answer in `plans/decisions/`. It gates S1's scope.
+- [x] **Self-trigger test run 2026-08-05. The mechanism works; ours stayed silent.** A census of every
+      transcript in this project found 8 `Skill` invocations, and `dataviz` fired twice unprompted in a
+      main-thread session with no slash command anywhere in it — so auto-invocation demonstrably works
+      here. `incremental-implementation` and `doubt-driven-development` have fired **zero** times since
+      install, including on a clean control run: a fresh unprimed subagent touching 6 files and 328
+      tests, which matches that skill's stated trigger word for word. The discriminator is register.
+      The skills that fire are written as commands with pre-emptive placement ("read it BEFORE writing
+      the first line"), literal trigger tokens, and an anti-rationalization clause; ours are written as
+      conditions. `doubt-driven-development` never met a risky-enough decision, so it is untested rather
+      than disproven.
+- [x] Recorded in [`plans/decisions/2026-08-05-skills-self-trigger.md`](decisions/2026-08-05-skills-self-trigger.md),
+      with the census table and the register comparison.
 
-**Exit:** a decision file saying fire / did-not-fire with the trigger evidence. If they do not fire,
-the description shape is the whole lesson and S1 shrinks to "fix our frontmatter"; S2 onward still
-holds, because materializing is useful regardless.
+**Exit: met, and it did not shrink S1 — it specced it.** Because the mechanism is confirmed, the
+frontmatter *is* the whole return, so S1 grows a register requirement rather than losing scope: each
+`when:` carries a "before you X" clause, literal trigger tokens, and one anti-rationalization line
+lifted from that standard's own Rationalizations table. One question the test could not answer and S2
+should: whether subagents can invoke skills at all.
 
 ### S1 — the skill format, canon side (portfolio `standards/`)
 
 Standards stay canonical and published at `/standards`. Skill form is a *generated view*, never a
 second copy — the SSOT rule holds.
 
-- [ ] Add a `when:` frontmatter key to each standard: trigger-shaped, not summary-shaped. "Use when
-      you are about to write prose under the byline. Use before any commit that touches
-      `content/`." Current `title` + `summary` are page prose; `summary` makes a bad description.
-      Confirm MILL ignores the unknown key before touching all 15 files.
+- [~] **VOICE, GRAPH and LOOP carry `when:` as of 2026-08-05; the other 12 wait on the mount test.**
+      MILL takes it cleanly: `parseYamlish` supports `>` folded blocks, and the adapters read only
+      named keys, so nothing leaks. Verified by render, not by reading the parser — `/standards/voice`
+      returns 200 with its title and body intact and zero occurrences of the `when:` text in the HTML.
+      `voice` is mounted at `.claude/skills/voice/SKILL.md` (360-char description, 30KB body) and
+      **appeared in the live skill listing the moment it was written**. Emitted by a throwaway
+      prototype of the S2 sync: read canon, `parseFrontmatter`, `when:` becomes `description:`, body
+      copied verbatim under a "canon lives in `standards/`" pointer. GRAPH and LOOP are deliberately
+      NOT mounted, so the next fresh session is a single-variable test.
+- [ ] Add a `when:` frontmatter key to each standard: trigger-shaped, not summary-shaped. Current
+      `title` + `summary` are page prose; `summary` makes a bad description. Confirm MILL ignores the
+      unknown key before touching all 15 files. **The 2026-08-05 self-trigger decision fixes the
+      register** — the skills that actually fire here are written as commands, so every `when:` needs
+      all three of:
+      1. **Pre-emptive placement.** "Read this BEFORE writing the first line of prose under the
+         byline", not "use when writing prose". It has to fire at intent, not after.
+      2. **Literal trigger tokens.** The surface words the prompt will contain, verbatim: for VOICE,
+         "note", "post", "README", "commit message", "publish", "draft".
+      3. **One anti-rationalization line**, lifted from that standard's own Rationalizations table
+         below. "Don't skip because it is internal." The excuse gets pre-refuted in the description,
+         where it is read, rather than only in the body, which never loads if the skill never fires.
 - [ ] Add a **Rationalizations** table to the three standards that get skipped most. Named excuse,
       named rebuttal, one row each:
       - VOICE — "one em-dash reads better here", "this is internal so the voice rules are off"
@@ -359,7 +384,12 @@ before a single line of work: `CLAUDE.md` 3,685 + `MEMORY.md` 9,488 + `~/.claude
 
 ## Open questions
 
-- S0 outcome gates S1's scope — do skills fire unprompted, and at what description quality? (owner + evidence)
+- ~~S0 outcome gates S1's scope — do skills fire unprompted, and at what description quality?~~
+  **Answered 2026-08-05** (`plans/decisions/2026-08-05-skills-self-trigger.md`): yes unprompted, but
+  only for command-register descriptions. Ours never fired. S1 gains the register spec.
+- ~~Can subagents invoke skills at all?~~ **Yes, answered 2026-08-05.** A subagent asked to list its
+  own tools reports `Skill` among them. So `pantry skills sync` serves delegated work as well as
+  main-thread sessions, and the S0 control arm's silence was a real choice, not a missing tool.
 - Third-party skills: config allowlist through `pantry skills`, or per-repo by hand? (S2)
 - Thresholds for uncommitted-age and unpushed-age. The estate's real pattern is weeks, not days —
   pick numbers that flag the pile-up without crying wolf on a normal working day. (owner, S3a)

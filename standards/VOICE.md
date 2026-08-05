@@ -1,6 +1,11 @@
 ---
 title: VOICE.md — voice & tone
 summary: The standard for anything published in Tjakoen's name - cadence, the machine-tells to avoid, and the honesty clause.
+when: >
+  Read this BEFORE writing the first line of prose that carries Tjakoen's byline, and before editing
+  existing prose: a note, a blog post, a README, a page, a commit message, release copy, social copy,
+  product copy. Don't skip because it is internal, a draft, a one-liner, or "just a README" - the
+  voice rules have no off switch, and no em-dash reads better here.
 ---
 
 # Voice & Tone: how Tjakoen writes

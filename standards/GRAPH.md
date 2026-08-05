@@ -1,6 +1,12 @@
 ---
 title: GRAPH.md — navigate the code by graph, not by fan-out
 summary: The retrieval standard - ask the code graph a scoped question before you fan out grep, reads, and subagents. A small structured answer instead of a pile of files, and a free hook that keeps the graph honest.
+when: >
+  Read this BEFORE answering any question about code by searching - "where is X", "what calls Y",
+  "how does Z connect to W", "find all uses of", "map this directory" - and before firing a wide
+  grep, reading a file whole, or spawning a search subagent. Don't skip because grep feels faster or
+  because you assume the graph is stale: a stale graph is one command to refresh, and the fan-out you
+  were about to do costs more than checking.
 ---
 
 # GRAPH.md — navigate the code by graph, not by fan-out
