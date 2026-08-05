@@ -223,6 +223,15 @@ agents; decided 2026-07-26: the loop is work-triggered, standards hold AS we wor
       repo's pantry shows how that repo is worked on. Surface naming/placement (own page vs
       part of /about) is pantry PLAN.md detail.
 
+### P6 — the skills runtime + loop feedback (split out: `plans/skills-runtime.md`)
+Own plan, because it is a build not a phase. Makes the Skills primitive real (canon materialized as
+firing `.claude/skills/` through a new `pantry skills sync`, gitignored, estate-wide) and gives
+PANTRY the feedback half the heartbeat lacks: mechanical doctor checks for uncommitted/unpushed
+pile-up, and a run ledger with an actual schema. That schema is what has blocked pantry piece 11c
+since 2026-07-26 — a skill's Verification checklist is the shape 11c was waiting for. Source:
+[addyosmani/agent-skills](https://github.com/addyosmani/agent-skills), the executable form of the
+Loop Engineering post already cited above. See `plans/skills-runtime.md`.
+
 ## Non-negotiables carried into every phase
 - Portfolio standards/ stays SSOT; every repo references, never forks.
 - Human gates merge and anything outward-facing. The loop drafts; it does not land.
