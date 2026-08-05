@@ -66,14 +66,26 @@ read-only posture as the decision inbox.
 Test the one assumption everything else rests on: **do skills actually fire unprompted?** A skill
 with a badly shaped description never triggers and is pure context bloat. Cheaper to learn that now.
 
-- [ ] Install two of theirs into one repo, ours untouched:
-      `npx skills add addyosmani/agent-skills --skill doubt-driven-development` and
-      `--skill incremental-implementation`.
-- [ ] Run one real working session against actual queued work. Do not prompt for the skills.
-- [ ] Record: did each fire, at what moment, and did it change the output. Land the answer in
-      `plans/decisions/` — it gates S1.
-- [ ] Pilot repo: owner deferred the choice to the S0 result. Default to the portfolio (most standards
-      apply, and it has real uncommitted work to test the incremental red flag against).
+- [x] **Installed 2026-08-05** into the portfolio: `npx skills add addyosmani/agent-skills --skill
+      doubt-driven-development --skill incremental-implementation`. Layout is `.agents/skills/<name>/SKILL.md`
+      with `.claude/skills/<name>` symlinks pointing into it, plus a root `skills-lock.json`. The
+      installer reports "universal" coverage for 17 agents and symlinks Claude Code specifically.
+      Gitignored for the pilot (mounted, not committed) — S2 still owns the permanent call.
+- [x] **The description shape is settled, and it is the S1 finding.** Theirs are imperative trigger
+      conditions; ours are descriptive page prose. Side by side:
+      - theirs — *"Use when correctness matters more than speed, when working in unfamiliar code, when
+        stakes are high (production, security-sensitive logic, irreversible operations)…"*
+      - ours (`VOICE.md` `summary:`) — *"The standard for anything published in Tjakoen's name -
+        cadence, the machine-tells to avoid, and the honesty clause."*
+
+      Ours says what the document **is**; theirs says when to **act**. A `pantry skills sync` that
+      emitted our `summary:` as `description:` would mount skills that never fire. S1's `when:` key is
+      therefore confirmed as required, not optional — this was the assumption the pilot existed to test
+      and it broke in our favour.
+- [ ] **Firing test needs a FRESH session** — skills are loaded at session start, so the session that
+      installs them cannot observe them. Next session in the portfolio: work normally, do not mention
+      the skills, and record whether each fires, at what moment, and whether it changed the output.
+- [ ] Record the answer in `plans/decisions/`. It gates S1's scope.
 
 **Exit:** a decision file saying fire / did-not-fire with the trigger evidence. If they do not fire,
 the description shape is the whole lesson and S1 shrinks to "fix our frontmatter"; S2 onward still

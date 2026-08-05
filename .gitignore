@@ -16,3 +16,8 @@ playwright-report/
 # Nimbalyst editor state + local plans/session notes — private working material, not site content
 .nimbalyst/
 nimbalyst-local/
+
+# S0 pilot: third-party agent-skills, mounted not committed (plans/skills-runtime.md S2 owns the final call)
+.agents/
+.claude/skills/
+skills-lock.json
