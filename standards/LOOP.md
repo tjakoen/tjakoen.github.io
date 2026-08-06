@@ -229,5 +229,56 @@ cannot tell the repos apart by how they are worked.
 
 ---
 
+## 7. Rationalizations (what talks a run out of the contract)
+
+The contract in §4 is rarely rejected. It is talked out of, one reasonable-sounding sentence at a time.
+
+| Rationalization | Reality |
+|---|---|
+| "I wrote it and I checked it, that counts." | That is one pass. §2 asks for a second by someone who did not write it, because the author's eye reads what it meant to write, not what it wrote. |
+| "The gate is flaky, run it again." | A gate red twice on one cause is a stop and a finding (§4b), not a retry. Rerunning with no edit in between is burning tokens to look busy. |
+| "I'll commit at the end, it's all one change." | The end is where sessions get interrupted. Uncommitted work does not survive a crash, a context limit, or a change of mind. |
+| "Pushing is the owner's call, so I'll leave it local." | Leaving it local is right. Leaving it local and unrecorded is not: the handoff names what is unpushed and why, or the next session inherits a surprise. |
+| "The tests passed, that's the evidence." | "Tests passed" is a claim. The gate output verbatim is the evidence, and §4a treats the claim alone as unverified. |
+| "Nothing worth reporting, the run went fine." | A report listing only wins is the exact report §4a warns about. What was not done and what needs human eyes are the load-bearing lines. |
+| "The scope only grew a little." | Growth past the cap is an ask-trigger, not a judgment the run makes alone (§4b). The size of the growth does not change who owns the call. |
+| "Doctor is noisy, I'll deal with it later." | Later is the next session, which reads the same flags and makes the same excuse. That is how a flag becomes furniture. |
+
+---
+
+## 8. Red flags
+
+- **Uncommitted work spanning more than one session, in any repo.** This is the estate's real one, and
+  it is the one that keeps recurring.
+- Work committed but unpushed, with no line in the handoff saying so.
+- The same gate rerun with no edit in between.
+- A run report with no "what was not done" section.
+- "Verified" written with no gate output attached to it.
+- Scope grew past the declared cap and no ask was raised.
+- A plan item edited before it was claimed.
+- Doctor flags carried across three or more sessions untouched.
+- A session ended with no handoff because "it is obvious where this is."
+- Two sessions working the same area with no claim between them.
+
+---
+
+## 9. Verification (before a session is called done)
+
+Short, mechanical, evidence-shaped, and meant to be machine-checkable: this list is the schema the
+run ledger is checked against, not a vibe pass.
+
+- [ ] Gate output pasted verbatim in the run report, not summarized.
+- [ ] Diffstat in the report.
+- [ ] "What was not done" written, even when the answer is nothing.
+- [ ] "What needs human eyes" written, even when the answer is nothing.
+- [ ] Every touched file is either committed or named in the handoff as deliberately left dirty.
+- [ ] Unpushed commits counted and named, with the reason they are unpushed.
+- [ ] The second pass was done by a session or agent that did not write the change (§2).
+- [ ] Declared scope compared against what was actually touched, and any growth was asked about
+      rather than absorbed.
+- [ ] Doctor run, and every flag either fixed or carried forward by name.
+
+---
+
 *Living document. When the workflow changes, update this file — the same rule it asks of everything else.
 The research base (§5) is revisited after the two books are read.*

@@ -369,6 +369,51 @@ A repertoire, not a template; don't hit every beat every time (see the formula t
 6. Callback close that returns to the opening image.
 7. Sign-off boilerplate.
 
+## Rationalizations: what talks a session out of this file
+
+Every one of these has been used, and every one of them sounds reasonable at the moment it is thought.
+
+| Rationalization | Reality |
+|---|---|
+| "It's internal, nobody reads it." | Internal prose becomes published prose more often than anyone plans for. The README written in a hurry is the one people land on. |
+| "It's a draft, I'll do the voice later." | Later means sanding a machine-flat draft, and the calibration pair below says start over rather than sand. Voice is cheaper written than retrofitted. |
+| "It's only a commit message." | Commit messages ship. The next session reads them, the log keeps them, and anyone auditing how the work was done reads them first. |
+| "I already know the voice." | The things most often missed are not the vibe, they are mechanical: a backtick, an em-dash, a tidy triad, a bare credential. Knowing the voice does not catch those. |
+| "The em-dash genuinely reads better here." | It is the loudest tell in the set, and the sentence has always survived a comma, a colon, or a rewrite. This file reversed its own earlier stance on exactly this point, so the bar for keeping one is high. |
+| "There's no real foible to joke about here." | Then skip the joke, because a manufactured wink is the worse tell. But look first: "no foible available" is usually "I did not look." |
+| "The prose is clean, so it's fine." | Clean, correct, and forgettable is the definition of the failure, not the pass. |
+| "The linter came back green." | It covers the mechanical half by design. Green means nothing was misspelled in the machine's accent; it says nothing about whether the piece is his. |
+
+## Red flags: in how the session is working, not just how the prose reads
+
+The smell test below catches bad sentences. These catch a bad process, which is what produces them.
+
+- The whole piece was drafted before this file was opened.
+- A machine-flat passage is being sanded sentence by sentence instead of rewritten from the stake.
+- Every paragraph is about the same length.
+- A metaphor arrived that is not in the bank and is not something you could point at in a room.
+- A specific was invented to fill a slot ("a modern font," "a recent project") instead of pulled from the specifics bank.
+- Every signature move got used in one piece: the confession, the wink, the tricolon, the piano, the callback close.
+- A number went in without anyone asking whether it is a snapshot.
+- A credential is standing on its own with no cost attached to it.
+- The AI's involvement got softened, hedged, or quietly left out.
+- The draft argues against a row in the opinion stack, and it reads well, so it stayed.
+- His own blunt sentence came back more writerly than he wrote it.
+
+## Verification (before it ships under his name)
+
+Mechanical and evidence-shaped, so it can be checked rather than felt. The judgment pass is the
+smell test below, and one of these lines is "you actually ran it."
+
+- [ ] `bun run lint:voice` run, its output read, zero TELLs. Warns triaged, not ignored by default.
+- [ ] The smell test below run by a person, line by line, not inferred from the prose reading fine.
+- [ ] Every number in the piece either confirmed as standing or flagged in the text as a snapshot.
+- [ ] Every specific is a real name from the specifics bank, with no invented placeholder left in.
+- [ ] Every claimed benefit is either shown, or labelled a hypothesis in the sentence that makes it.
+- [ ] For a note: frontmatter complete, at least one rendered figure, the exact sign-off footer
+      present (all three per [`NOTE-STANDARD.md`](NOTE-STANDARD.md), which owns the artifact).
+- [ ] Money stays vague, no student data, company spelled "Career Team".
+
 ## The off-voice smell test
 
 Fast pass before anything ships under his name. If a line trips any of these, fix it. The purely

@@ -117,7 +117,45 @@ means picking the cheapest tool that answers *this* question, and sometimes that
 
 ---
 
-## 5. Adoption checklist
+## 5. Rationalizations (what talks a session out of asking first)
+
+| Rationalization | Reality |
+|---|---|
+| "Grep is faster." | Faster to type, not faster to answer. Grep hands back matches and you read files to turn them into an answer; the graph hands back the answer. Count the reads, not the keystrokes. |
+| "The graph is probably stale." | Refreshing is one command and the hook has usually already done it. Assuming staleness to justify a fan-out costs more than checking would have. |
+| "It's one file, I know where it is." | Then the question was not structural and this standard does not apply. If you are about to grep for callers, it was. |
+| "I'll grep first and fall back to the graph." | That is the fan-out this file exists to prevent, run in full before the cheap step. Reverse the order. |
+| "The graph won't understand this framework's magic." | Often true, which is why a graph answer is a lead to verify in source (§4). A partial lead still beats a blank page. |
+| "It's a small repo." | Then §4 already excused you. Say that is the reason, instead of reaching for one of the rows above. |
+
+---
+
+## 6. Red flags
+
+- Three or more greps fired before any graph query.
+- A query written as an English sentence instead of seeded with symbol and file names (§2).
+- A whole file read to find one caller.
+- A graph answer treated as the last word with no source opened.
+- A search subagent spawned for a question the graph answers structurally.
+- The graph report generated in every repo and read in none.
+- The graph refreshed twice with no edits in between.
+
+---
+
+## 7. Verification (per question, not per repo)
+
+Evidence-shaped, so the answer can be audited rather than taken on trust.
+
+- [ ] The query that was run is quoted, with the symbols it was seeded with (§2).
+- [ ] What came back is recorded as the nodes and edges it named, not paraphrased as "nothing much".
+- [ ] Anything acted on cites the file and line where it was confirmed in source (§4).
+- [ ] If grep, a whole-file read, or a search subagent ran, the notes say what the graph returned
+      first and why that was not enough.
+- [ ] `git status` shows nothing from the graph output directory staged.
+
+---
+
+## 8. Adoption checklist
 
 Mirrors the shape in [`AI-REPO-STANDARD.md`](AI-REPO-STANDARD.md): one small kit addition per repo.
 
@@ -128,11 +166,8 @@ Day one (a few minutes):
 - [ ] Confirm the graph output directory is git-ignored.
 - [ ] Build the graph once so day-one queries work. The same refresh command bootstraps from nothing.
 
-Steady state:
-
-- [ ] Structural questions go to the graph before grep, reads, or a search subagent.
-- [ ] Queries are seeded with symbol and file names, not English descriptions (§2).
-- [ ] The graph is trusted as a lead, verified in source, and never committed.
+Steady state is §7: that checklist runs per question, and it is the whole of what "adopted" means
+here. Nothing to add per repo once the hook is in.
 
 The proof that this landed: an agent answering "what touches this" pulls back five nodes and a diagram
 instead of five files and a scroll, and the window it saved goes to the actual work.

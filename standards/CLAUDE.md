@@ -37,6 +37,28 @@ PANTRY, out of the portfolio package. **Every other repo references this set —
 - **The starter is the on-ramp.** Changes to how a new repo is wired (badges, symlinks, the
   reference-don't-fork rule) land in `CLAUDE.starter.md` — that's the file every future repo copies.
 
+## The frontmatter contract
+
+Every standard opens with `title`, `summary`, and `when`. The first two feed the rendered page and
+the index. The third is the one that does work at runtime: it becomes the `description` of the
+mounted skill, and it is the only thing an agent reads when deciding whether to open the file at
+all. A standard with a weak `when` is a standard that never fires, so it is written as a command,
+not a description, in three parts:
+
+1. **Pre-emptive placement.** "Read this BEFORE writing the first line of prose", never "use when
+   writing prose". It has to fire at intent, before the work it governs, not after.
+2. **Literal trigger tokens.** The surface words a real prompt will contain, spelled out: note,
+   post, README, commit message, diagram, root, handoff.
+3. **One anti-rationalization line**, lifted from that standard's own Rationalizations table.
+   "Don't skip because it is internal." The excuse gets refuted where it will actually be read.
+
+Three files carry no `when` on purpose: `README.md` is the index, this file is the directory's own
+operating rules and already auto-loads, and `AGENTS.md` is a symlink to it.
+
+The heavier standards also carry **Rationalizations**, **Red flags**, and **Verification** sections.
+Verification is the load-bearing one: keep those lists short, mechanical, and evidence-shaped (gate
+output verbatim, never "tests pass"), because they are what a checker is meant to read.
+
 ## Definition of done
 
 The edit + the index (`README.md`) still true + inbound links still resolve + published rendering
