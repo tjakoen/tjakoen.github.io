@@ -17,7 +17,7 @@ summary: >
 I teach software engineering part-time, and the piece of a lab session that actually lands is never
 the explaining. It is the twenty minutes where I put my screen up and build the thing badly in front
 of everyone. I typo. I read the error out loud. I rename a variable because the first name was dumb.
-Nobody has ever learned anything from my finished repo. They learn from watching the hands.
+Nobody has ever learned anything from my finished repo.
 
 > You do not learn the piano from a recording. You learn it sitting next to someone, in the same room,
 > watching their hands.
@@ -150,24 +150,24 @@ I said this note would be the honest version, so.
 The architecture I can show you. The door is enforced, the list is validated, the grain is stamped on
 the server and tested against spoofing, and the tests are in the repo. Fine.
 
-A small language model now runs entirely in your browser, reads that same list, and drives part of it
-end to end through the same door. That was the milestone I was most nervous about, and it is met. It
-is also narrow: the model is small, it handles navigation and choices, and its command of the full
-vocabulary is unproven. It is a proof that the thing can be operated by a real model at all. It is
-not a proof that the vocabulary is a good general instruction set.
+A small model now runs entirely in your browser, on your own hardware, no server: WebLLM, reading
+that same list and driving part of it end to end through the same door. That was the milestone I was
+most nervous about, and it is met. It is also narrow. It handles navigation and choices, and its
+command of the full vocabulary is unproven: proof that a real model can operate the thing at all, not
+proof that the vocabulary is a good general instruction set.
 
 The claims I would most like to make are the ones I cannot. That watching an AI operate visible
 controls gives you better expectations of it than a chat agent does. That the grain gets noticed and
 read correctly, including by people with low vision, where the literature warns visual-only cues get
-missed constantly. That you actually learn the task from watching. Those are three hypotheses about
-human beings, and the only way to settle a hypothesis about human beings is a study with human beings
-in it, which I have not run. I have written the design for it. Writing the design costs nothing.
+missed constantly. That you actually learn the task from watching. Three hypotheses about people, and
+the only way to settle one is a study with people in it, which I have not run. I have written the
+design for it. Writing the design costs nothing.
 
-And I am not first, which I found out the hard way. My first search for prior art came back empty and
-I got briefly pleased with myself; a second sweep a few days later turned up a shipped framework
-holding two of my three pieces. It carries no provenance surface at all, so the combination still
-stands, but "nobody is near this" turned into "several people are near this" in about seventy-two
-hours, and pretending otherwise would have been the cheapest possible way to lose the argument.
+And I am not first. My first search for prior art came back empty and I got briefly pleased with
+myself; a second sweep a few days later turned up Builder.io's Agent-Native, shipped, holding two of
+my three pieces. It carries no provenance surface at all, so the combination still stands. But
+"nobody is near this" turned into "several people are near this" in about seventy-two hours, and
+pretending otherwise would have been the cheapest possible way to lose the argument.
 
 ## Watch its hands
 
