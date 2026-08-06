@@ -74,8 +74,14 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
      and the "Fast and documented" line, cut the second definition-of-professional from the
      "I've done this job before" closer, broke one vibe/professional antithesis repeat. A deeper
      pass (one driving metaphor, thinning the formula further) still deserves the user's own eye.
-  3. **"Watch Its Hands"** whitepaper companion: plain-language, in-voice, sells the paper to normal
-     people. Blueprint (hooks + concept-translations) is in this session's plan; leads with the piano.
+  3. **"Watch Its Hands"** whitepaper companion — **DRAFTED 2026-08-06** at
+     `content/notes/watch-its-hands.md`. Plain-language, in-voice retelling of the whitepaper for readers
+     who will not read a whitepaper: opens on the lab-session "watching the hands" stake, earns the piano
+     pull-quote, then the three mechanisms in plain words (same buttons / one door / it leaves its
+     handwriting), the one-door flow SVG on the flow scaffold, and an honest-limits section that carries
+     the three hypotheses as hypotheses, the small-model scope, the two legacy direct-write routes, and
+     the prior-art near-miss. Inbound-linked from the whitepaper status block; cross-links ten-times-zero.
+     **DRAFT** — needs the owner's own eye before any publish flip.
   4. **where-were-we.md — DRAFTED (2026-07-08), STALE-FLAG RESOLVED (2026-07-12):** the PROOF companion
      note (plans-as-files, board as projection; canonical `proof/PLAN.md`, ROADMAP Track E). Mermaid figure
      rendered. The note's original "none of this is built… I'm publishing the plan for the plan tool before

@@ -17,8 +17,9 @@ summary: >
 
 > **Status: working draft, revised 2026-07-17.** This is a *projection* of
 > [PHILOSOPHY.md](../docs/PHILOSOPHY.md): the beliefs are canonical there; this paper situates them in
-> the literature and argues the contribution. The narrative version of the same stance is
-> [the origin story](origin-story.md); the working method behind the claims is
+> the literature and argues the contribution. The plain-language version of this paper, for readers who
+> want the argument without the citations, is [Watch Its Hands](watch-its-hands.md). The narrative version
+> of the same stance is [the origin story](origin-story.md); the working method behind the claims is
 > [Ten Times Zero Is Still Zero](ten-times-zero.md). Three research passes so far: agent–UI protocols /
 > GUI agents / mixed-initiative HCI (verified), provenance / generative-UI (verified), and a
 > shipped-landscape sweep (2026-07-03) that added Builder.io Agent-Native and Meta Astryx as the
