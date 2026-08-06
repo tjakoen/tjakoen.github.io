@@ -109,7 +109,18 @@ should: whether subagents can invoke skills at all.
 Standards stay canonical and published at `/standards`. Skill form is a *generated view*, never a
 second copy — the SSOT rule holds.
 
-- [~] **VOICE, GRAPH and LOOP carry `when:` as of 2026-08-05; the other 12 wait on the mount test.**
+> **S1 CLOSED 2026-08-06.** The single-variable mount test passed clean: session `4218d514` was given
+> only an editorial-pass request on `content/notes/watch-its-hands.md`, named no skill anywhere, and
+> `voice` fired once at line 13 of 58 — after the first read of the target file and **before any
+> edit**, which is the pre-emptive placement the `when:` shape asks for. Nothing before line 13
+> references skills. An earlier attempt the same day (session `400d0cd7`) also fired but was thrown
+> out as void: it had read a handoff naming `voice` as the thing under observation, the repo's own
+> CLAUDE.md independently orders "read VOICE first", and the session deliberated about whether to
+> invoke. Contaminated positives were discarded rather than banked. **The register theory holds:
+> imperative `when:` text makes a standard self-trigger.** Everything below then landed in
+> `4070eb94` (the nine `when:` keys) and `d1e43c5c` (the three sections).
+
+- [x] **VOICE, GRAPH and LOOP carry `when:` as of 2026-08-05; the other 12 wait on the mount test.**
       MILL takes it cleanly: `parseYamlish` supports `>` folded blocks, and the adapters read only
       named keys, so nothing leaks. Verified by render, not by reading the parser — `/standards/voice`
       returns 200 with its title and body intact and zero occurrences of the `when:` text in the HTML.
@@ -118,7 +129,7 @@ second copy — the SSOT rule holds.
       prototype of the S2 sync: read canon, `parseFrontmatter`, `when:` becomes `description:`, body
       copied verbatim under a "canon lives in `standards/`" pointer. GRAPH and LOOP are deliberately
       NOT mounted, so the next fresh session is a single-variable test.
-- [ ] Add a `when:` frontmatter key to each standard: trigger-shaped, not summary-shaped. Current
+- [x] **DONE 2026-08-06 (`4070eb94`).** Add a `when:` frontmatter key to each standard: trigger-shaped, not summary-shaped. Current
       `title` + `summary` are page prose; `summary` makes a bad description. Confirm MILL ignores the
       unknown key before touching all 15 files. **The 2026-08-05 self-trigger decision fixes the
       register** — the skills that actually fire here are written as commands, so every `when:` needs
@@ -130,17 +141,34 @@ second copy — the SSOT rule holds.
       3. **One anti-rationalization line**, lifted from that standard's own Rationalizations table
          below. "Don't skip because it is internal." The excuse gets pre-refuted in the description,
          where it is read, rather than only in the body, which never loads if the skill never fires.
-- [ ] Add a **Rationalizations** table to the three standards that get skipped most. Named excuse,
+
+      **Landed on 9 files** (the 3 already done + these = 12 of 15). `AI-REPO-STANDARD.md` had no
+      frontmatter at all and gained a full block, which stopped MILL lifting its H1 and printed the
+      title twice, so its body heading is now distinct the way VOICE and FIGURES already were. Three
+      files carry no `when:` on purpose and this is now recorded in `standards/CLAUDE.md`: `README.md`
+      is the index, `CLAUDE.md` is the directory's own rules and already auto-loads, `AGENTS.md` is a
+      symlink to it. Verified by render: all 14 pages 200, zero frontmatter text in any HTML.
+- [x] **DONE 2026-08-06 (`d1e43c5c`).** Add a **Rationalizations** table to the three standards that get skipped most. Named excuse,
       named rebuttal, one row each:
       - VOICE — "one em-dash reads better here", "this is internal so the voice rules are off"
         (the voice-lint pass caught 41 prose TELLs; each one had an excuse behind it).
       - GRAPH — "faster to just grep", "the graph is probably stale."
       - LOOP §2/§4 — "I wrote it and I checked it, that counts", "the gate is flaky, run it again."
-- [ ] Add **Red Flags** to the same three. Ours must include the estate's real one: uncommitted or
-      unpushed work accumulating across sessions.
-- [ ] Add **Verification** checkboxes to each. This is the load-bearing one — it is the 11c ledger
+- [x] **DONE 2026-08-06 (`d1e43c5c`).** Add **Red Flags** to the same three. Ours must include the estate's real one: uncommitted or
+      unpushed work accumulating across sessions. It leads LOOP §8, called out as the one this estate
+      actually breaks. VOICE's and GRAPH's are process-shaped rather than output-shaped on purpose
+      (drafted before opening the file; three greps before any graph query), since the output-level
+      tells already had homes.
+- [x] **DONE 2026-08-06 (`d1e43c5c`).** Add **Verification** checkboxes to each. This is the load-bearing one — it is the 11c ledger
       schema, so keep the lists short, mechanical, and evidence-shaped (gate output verbatim, not
-      "tests pass").
+      "tests pass"). **LOOP §9 is the schema**: gate output verbatim, diffstat, what was not done,
+      what needs human eyes, every touched file committed or named as deliberately dirty, unpushed
+      commits counted with a reason, second pass by someone who did not write it, declared scope
+      compared against what was touched, doctor flags fixed or carried by name. GRAPH §7 is
+      per-question (quote the query, cite the file and line it was confirmed at). VOICE's is
+      per-piece and points at the smell test for the judgment half rather than restating it.
+      **SSOT fix that fell out:** GRAPH's adoption checklist had been restating its own steady-state
+      rules, so it now points at §7 instead of repeating it.
 - [ ] Do NOT import their 24-skill catalog. We have 15 standards and a thin-kit principle; take the
       format, not the inventory. Same for the Google team norms (Hyrum's Law, the Beyonce Rule,
       change-size line counts) — team-scale, and we are solo.
