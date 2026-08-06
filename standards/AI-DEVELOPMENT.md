@@ -1,6 +1,12 @@
 ---
 title: AI-DEVELOPMENT.md — how I build full stack with AI
 summary: A portable playbook for building with an AI partner - the standards, the pitfalls, and how problems become solutions.
+when: >
+  Read this BEFORE handing the typing to an AI on a real build task: a feature, a refactor, a bug
+  hunt, a migration. It sets what the human owes the AI up front, the bar every change is held to
+  before it counts as done, and the pitfalls that recur (the confident wrong answer, the silent scope
+  creep, the doc that drifts away from the code). Don't skip because you have worked this way before
+  - the pitfalls recur precisely because experience does not prevent them.
 ---
 
 # AI-DEVELOPMENT.md — how I build full stack with AI

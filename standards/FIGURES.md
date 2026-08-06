@@ -1,6 +1,13 @@
 ---
 title: FIGURES.md — figures & visualizations
 summary: The standard for every diagram and chart - two tokenized inline-SVG scaffolds (data-viz and flow), one palette each, no mermaid on the published site.
+when: >
+  Read this BEFORE drawing the first shape of any figure that will ship: a chart, a graph, a
+  timeline, a ratio, an architecture diagram, a flow, a loop, a pipeline. It gives the two inline-SVG
+  scaffolds to copy, the token palette, the type scale, and the rule that mermaid never reaches a
+  published page. Don't skip because it is "just a quick diagram" or because mermaid is faster to
+  type - a freehanded figure will not match the family, and mermaid on a published page has to be
+  hand-converted later by someone who did not draw it.
 ---
 
 # Figures & visualizations: the standard

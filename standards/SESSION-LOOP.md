@@ -1,6 +1,13 @@
 ---
 title: SESSION-LOOP.md — the working loop, memory, and handoff
 summary: How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.
+when: >
+  Read this BEFORE orienting in a repo you have not worked today, and again BEFORE writing an agent-memory
+  entry, a handoff prompt, or a plan file. It owns the inside of one session: how to orient cold, the
+  loop to repeat, the recurring chores, what belongs in memory versus a committed doc, and how to end
+  so the next session starts oriented. LOOP.md is the sibling that owns the gates across sessions and
+  repos. Don't skip because you already have the context - context is the exact thing the next session
+  will not have.
 ---
 
 # SESSION-LOOP.md — the working loop, memory, and handoff

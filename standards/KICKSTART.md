@@ -1,6 +1,12 @@
 ---
 title: KICKSTART — the new-project prompt for the BREAD stack
 summary: Paste one prompt into your AI and it interviews you, learns the stack, reads the public repos, and proposes which BREAD layers your project needs and how to wire them.
+when: >
+  Read this BEFORE proposing an architecture or scaffolding anything for a brand-new project that
+  might sit on the BREAD stack. It is an interview to run, not a reference to cite: interview the
+  person first, read the public repos, and propose which layers they actually need before writing a
+  line. Don't jump to scaffolding because the shape sounds obvious - picking layers before the
+  interview is how a project inherits a layer it never needed and carries it for years.
 ---
 
 # 🥖 KICKSTART: start a project on the BREAD stack

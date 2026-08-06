@@ -1,6 +1,12 @@
 ---
 title: TREE.md — keep the root an index, not a junk drawer
 summary: The layout standard - the repo root is the first screen an agent or a newcomer reads, so only load-bearing files earn a place there and everything else folds one level down into a named home. A lean root is cheaper to orient in and harder to get lost in.
+when: >
+  Read this BEFORE adding a file to a repo root, creating a new top-level directory, moving something
+  up out of a folder, or answering "where should this live". Covers what earns a root slot, the
+  placement map for everything else, the fold threshold, and where the rule honestly stops applying.
+  Don't skip because it is one small file - one small file at a time is exactly how a root becomes a
+  junk drawer, and nobody ever notices the turn.
 ---
 
 # TREE.md — keep the root an index, not a junk drawer

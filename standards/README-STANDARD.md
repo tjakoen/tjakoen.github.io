@@ -1,6 +1,12 @@
 ---
 title: README-STANDARD.md — the README standard
 summary: How a README presents itself across every repo - the title emoji, the badge row, and the footer, plus a reusable prompt.
+when: >
+  Read this BEFORE writing, restyling, or reviewing a README in any repo: the title emoji, the badge
+  row and which badges the repo has earned, the made-with-Claude badge, and the footer that links the
+  receipts. Don't skip because the repo is internal, half-finished, or already has a README - the
+  badge row is the one part reliably left stale, and a repo shipping without the AI-use badge is the
+  case this standard treats as a real miss rather than a nit.
 ---
 
 # README standard + reusable prompt

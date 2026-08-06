@@ -1,6 +1,13 @@
 ---
 title: NOTE-STANDARD.md — the note / blog-post standard
 summary: How a note is put together - frontmatter, structure, the sign-off footer, plus a reusable drafting prompt.
+when: >
+  Read this BEFORE creating or finishing any file under content/notes: a blog post, a note, the
+  whitepaper. It owns the artifact (the frontmatter block, the stakes-first opener, the figure
+  requirement, the exact sign-off footer, where the file lives); VOICE owns how the words read, so
+  the two are read together, not instead of each other. Don't skip because the note is only a draft
+  or because you already know the voice - a note missing its frontmatter, its figure, or its footer
+  is unfinished no matter how well it reads.
 ---
 
 # Note / blog-post standard + reusable prompt

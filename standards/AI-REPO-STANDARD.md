@@ -1,4 +1,16 @@
-# AI-REPO-STANDARD.md — structure a repo so AI sessions compound
+---
+title: AI-REPO-STANDARD.md — structure a repo so AI sessions compound
+summary: The repo-side companion to AI-DEVELOPMENT - the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned.
+when: >
+  Read this BEFORE setting up a repo for AI work, or before changing any of the machinery that
+  carries knowledge between sessions: creating or restructuring a CLAUDE.md, adding a sync table,
+  writing an AUDIT.md, deciding what belongs in agent memory versus a committed doc, or turning a
+  written rule into a machine-checkable one. Read it too the moment a session re-makes a mistake an
+  earlier session already solved, because that is the symptom this file treats. Don't skip because
+  the repo already has a CLAUDE.md - a config dump is the exact failure mode it exists to prevent.
+---
+
+# Structure a repo so AI sessions compound
 
 A portable standard for the *repo side* of AI-assisted development. Its companion,
 **AI-DEVELOPMENT.md**, covers the working relationship — how the human and the AI interact,

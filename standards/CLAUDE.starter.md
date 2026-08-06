@@ -1,6 +1,12 @@
 ---
 title: CLAUDE.starter.md — the new-repo starter template
 summary: The template every new repo copies to wire itself into these standards from day one - reference them, don't fork them.
+when: >
+  Read this BEFORE writing the CLAUDE.md for a new repo, and the first time an existing repo is wired
+  into these standards. It is a template to copy and fill, not prose to summarize: keep the pointers
+  to the published standards and never fork a standard's content into the new file. Don't skip
+  because the repo is small, private, or "just a prototype" - the wiring costs one file, and it is
+  the thing that makes every later session in that repo cheap.
 ---
 
 # CLAUDE.md: <PROJECT NAME>
