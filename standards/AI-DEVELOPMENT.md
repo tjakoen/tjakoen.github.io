@@ -9,7 +9,7 @@ when: >
   - the pitfalls recur precisely because experience does not prevent them.
 ---
 
-# AI-DEVELOPMENT.md — how I build full stack with AI
+# How I build full stack with AI
 
 A portable playbook for developing software with an AI partner. Drop this into any
 repo. It's not about a specific stack — it's about **how the human and the AI work

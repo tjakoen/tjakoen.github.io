@@ -9,7 +9,7 @@ when: >
   were about to do costs more than checking.
 ---
 
-# GRAPH.md — navigate the code by graph, not by fan-out
+# Navigate the code by graph, not by fan-out
 
 The standard for the cheapest way to answer a question about code: **ask the graph first.** Before an
 agent (or a person) fans out a wide grep, reads five files whole, or spawns a search subagent to answer

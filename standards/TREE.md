@@ -9,7 +9,7 @@ when: >
   junk drawer, and nobody ever notices the turn.
 ---
 
-# TREE.md — keep the root an index, not a junk drawer
+# Keep the root an index, not a junk drawer
 
 The standard for *where a file lives*: the repo root is a table of contents, not a shelf you drop things
 on. A first-time reader, human or AI, sees the root listing before anything else and builds their whole

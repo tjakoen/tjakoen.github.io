@@ -10,7 +10,7 @@ when: >
   will not have.
 ---
 
-# SESSION-LOOP.md — the working loop, memory, and handoff
+# The working loop, memory, and handoff
 
 How a session with an AI actually runs, start to finish: how it orients, the loop it repeats,
 what it writes down so the next session inherits it, and how it hands off. Portable — drop it into
