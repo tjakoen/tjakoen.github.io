@@ -1,0 +1,64 @@
+/* molecules/live-figure — a figure that MOVES, usable in a deck slide or in the middle of a
+   paragraph. It ships the same widget to both, which is the whole point: the talk and the post
+   argue the same thing, so they should not be arguing it with two different pictures.
+
+   Progressive enhancement, not a replacement. The markup a reader is SERVED is the static SVG
+   from FIGURES; scripts/figures.js swaps in the live version only if it runs. No JS, a crawler, a
+   print run and the static export all keep the figure that was always there.
+
+   SIZING. Every rule below is a multiple of --u, which a deck slide already defines from its own
+   box. Prose has no such box, so .live-fig supplies one in rem. That is the only difference
+   between the two contexts. */
+
+.live-fig { --u: 0.58rem; --u0: 0.58rem; margin: 0 auto var(--space-6); max-width: 34rem; }
+.live-fig .mult { margin-top: 0; }
+/* the deck sizes its verdict for the back of a room; in a paragraph that shouts */
+.live-fig .mult__verdict { font-size: calc(var(--u) * 2.1); margin-top: calc(var(--u) * 3); }
+.live-fig .mult__control { margin-top: calc(var(--u) * 4); }
+.live-fig__note { font-size: var(--text-xs); color: var(--ink-faint); margin: var(--space-2) 0 0; }
+
+.mult { margin-top: calc(var(--u) * 4); width: min(100%, calc(var(--u0) * 78)); }
+.mult__row { display: grid; grid-template-columns: calc(var(--u) * 13) 1fr calc(var(--u) * 14);
+  align-items: center; gap: calc(var(--u) * 2); margin-bottom: calc(var(--u) * 2.2); }
+.mult__label { font-size: calc(var(--u) * 1.9); color: var(--color-muted); }
+.mult__track { height: calc(var(--u) * 2.6); border: 1px solid var(--color-line); position: relative; }
+.mult__fill { position: absolute; inset: 0 auto 0 0; background: var(--ink);
+  transition: width 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.mult__fill--out { background: var(--color-accent); }
+
+/* the bracket hangs BELOW the output bar. Sitting on top of it, the label was cream text on a
+   cream fill and simply could not be read from a seat. */
+.mult__gap { position: absolute; top: 100%; height: 0; }
+.mult__gap i { position: absolute; inset: 0; border-top: 1px dashed var(--color-muted); }
+.mult__gap i::before, .mult__gap i::after {
+  content: ""; position: absolute; top: calc(var(--u) * -0.5); width: 1px; height: calc(var(--u) * 1);
+  background: var(--color-muted); }
+.mult__gap i::before { left: 0; }
+.mult__gap i::after { right: 0; }
+.mult__gap b { position: absolute; left: 50%; top: calc(var(--u) * 0.6); transform: translateX(-50%);
+  white-space: nowrap; font-size: calc(var(--u) * 1.4); font-weight: var(--font-weight-regular); color: var(--color-muted); }
+.mult__control { display: flex; align-items: center; gap: calc(var(--u) * 2.4); margin-top: calc(var(--u) * 5.5); }
+.mult__control input[type="range"] { flex: 1; accent-color: var(--color-accent); height: calc(var(--u) * 2.4); }
+.mult__verdict { font-size: calc(var(--u) * 3); margin-top: calc(var(--u) * 3.5); min-height: 1.3em; max-width: 34ch; }
+.mult__zero { font-size: calc(var(--u) * 1.7); color: var(--color-muted); margin-top: calc(var(--u) * 1.5); }
+
+
+/* --- 11 · the unglamorous thing, with an artefact per beat ------------------- */
+.did { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: calc(var(--u) * 5); align-items: start; margin-top: calc(var(--u) * 2); }
+.did .beats { margin-top: 0; }
+.did__cards { position: relative; min-height: calc(var(--u) * 26); }
+.did__card { position: absolute; inset: 0; margin: 0;
+  border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: calc(var(--u) * 2.4);
+  opacity: 0; transform: translateY(calc(var(--u) * 0.8));
+  transition: opacity 0.28s ease, transform 0.28s ease; pointer-events: none; }
+.did__card.is-on { opacity: 1; transform: none; }
+.did__lab { margin: 0 0 calc(var(--u) * 1.8); font-size: calc(var(--u) * 1.4);
+  color: var(--color-muted); letter-spacing: 0.12em; text-transform: uppercase; }
+.did__code { font-family: var(--font-mono); font-size: calc(var(--u) * 2.1);
+  margin: 0; color: var(--color-fg); white-space: pre-wrap; line-height: 1.5; }
+.did__code i { font-style: normal; color: var(--color-muted); }
+.did__card figcaption { margin-top: calc(var(--u) * 2.2);
+  font-size: calc(var(--u) * 1.7); color: var(--color-muted); line-height: 1.4; }
+.did__card figcaption b { color: var(--color-fg); font-weight: var(--font-weight-regular);
+  font-family: var(--font-mono); font-size: 0.95em; }

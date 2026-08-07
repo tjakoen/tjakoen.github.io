@@ -10,6 +10,8 @@
  * here reaches back into the deck's internals. Same split as the rest of the stack: the design
  * system owns the surface, the app owns what is on it.
  */
+import { mountMultiplier } from '/site/figure-multiplier.js';
+
 const deck = document.querySelector('.presentation[data-deck]');
 if (deck) {
   const $ = (sel, root = deck) => root.querySelector(sel);
@@ -35,37 +37,9 @@ if (deck) {
   }
 
   /* --- 4 · the multiplier ------------------------------------------------------
-     One shared scale across all three rows so the bars are honestly comparable: the input rows
-     top out at 30% of the track (a 10), the output row at 100% (a 100). That is what makes
-     multiplication visible instead of two identical-looking bars. */
-  const mult = $('[data-mult]');
-  if (mult) {
-    const input = $('[data-mult-input]', mult);
-    const gap = $('[data-mult-gap]', mult);
-    const line = (n) => {
-      if (n === 0) return 'Ten times zero is still zero.';
-      if (n <= 2) return 'A beginner who ships bugs faster and cannot tell which ones they are.';
-      if (n <= 5) return 'Faster, and now the mistakes are harder to spot.';
-      if (n <= 8) return 'A decent developer with an AI is a frighteningly fast developer.';
-      return 'This is the part everyone wants. It is also the part you cannot skip to.';
-    };
-    const draw = () => {
-      const n = Number(input.value);
-      $('[data-mult-you]', mult).style.width = `${n * 3}%`;
-      $('[data-mult-you-val]', mult).textContent = String(n);
-      $('[data-mult-out]', mult).style.width = `${n * 10}%`;
-      $('[data-mult-out-val]', mult).textContent = String(n * 10);
-      const verdict = $('[data-mult-verdict]', mult);
-      verdict.textContent = line(n);
-      verdict.setAttribute('data-grade', n === 0 ? 'smooth' : 'grain');
-      // the bracket spans from where the input bar ended to where the output bar reaches
-      gap.hidden = n < 2;
-      gap.style.left = `${n * 3}%`;
-      gap.style.width = `${n * 7}%`;
-    };
-    input.addEventListener('input', draw);
-    draw();
-  }
+     Shared with the post: site/figure-multiplier.js owns the behaviour so the slide and the
+     paragraph cannot drift into two different arguments. */
+  mountMultiplier($('[data-mult]'));
 
   /* --- 7 · the life grid ------------------------------------------------------
      Ten years, one dot per month, built here rather than in the markup because 120 hand-written

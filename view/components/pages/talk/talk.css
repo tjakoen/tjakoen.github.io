@@ -32,53 +32,6 @@ body[data-deck-only] > .presentation { height: 100dvh; }
 [data-screen="talk"] .fig { display: block; width: 100%; height: auto; margin: calc(var(--u) * 3) 0 0; }
 
 
-[data-screen="talk"] .mult { margin-top: calc(var(--u) * 4); width: min(100%, calc(var(--u0) * 78)); }
-[data-screen="talk"] .mult__row { display: grid; grid-template-columns: calc(var(--u) * 13) 1fr calc(var(--u) * 14);
-  align-items: center; gap: calc(var(--u) * 2); margin-bottom: calc(var(--u) * 2.2); }
-[data-screen="talk"] .mult__label { font-size: calc(var(--u) * 1.9); color: var(--color-muted); }
-[data-screen="talk"] .mult__track { height: calc(var(--u) * 2.6); border: 1px solid var(--color-line); position: relative; }
-[data-screen="talk"] .mult__fill { position: absolute; inset: 0 auto 0 0; background: var(--ink);
-  transition: width 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
-[data-screen="talk"] .mult__fill--out { background: var(--color-accent); }
-
-/* the bracket hangs BELOW the output bar. Sitting on top of it, the label was cream text on a
-   cream fill and simply could not be read from a seat. */
-[data-screen="talk"] .mult__gap { position: absolute; top: 100%; height: 0; }
-[data-screen="talk"] .mult__gap i { position: absolute; inset: 0; border-top: 1px dashed var(--color-muted); }
-[data-screen="talk"] .mult__gap i::before, [data-screen="talk"] .mult__gap i::after {
-  content: ""; position: absolute; top: calc(var(--u) * -0.5); width: 1px; height: calc(var(--u) * 1);
-  background: var(--color-muted); }
-[data-screen="talk"] .mult__gap i::before { left: 0; }
-[data-screen="talk"] .mult__gap i::after { right: 0; }
-[data-screen="talk"] .mult__gap b { position: absolute; left: 50%; top: calc(var(--u) * 0.6); transform: translateX(-50%);
-  white-space: nowrap; font-size: calc(var(--u) * 1.4); font-weight: var(--font-weight-regular); color: var(--color-muted); }
-[data-screen="talk"] .mult__control { display: flex; align-items: center; gap: calc(var(--u) * 2.4); margin-top: calc(var(--u) * 5.5); }
-[data-screen="talk"] .mult__control input[type="range"] { flex: 1; accent-color: var(--color-accent); height: calc(var(--u) * 2.4); }
-[data-screen="talk"] .mult__verdict { font-size: calc(var(--u) * 3); margin-top: calc(var(--u) * 3.5); min-height: 1.3em; max-width: 34ch; }
-[data-screen="talk"] .mult__zero { font-size: calc(var(--u) * 1.7); color: var(--color-muted); margin-top: calc(var(--u) * 1.5); }
-
-
-/* --- 11 · the unglamorous thing, with an artefact per beat ------------------- */
-[data-screen="talk"] .did { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: calc(var(--u) * 5); align-items: start; margin-top: calc(var(--u) * 2); }
-[data-screen="talk"] .did .beats { margin-top: 0; }
-[data-screen="talk"] .did__cards { position: relative; min-height: calc(var(--u) * 26); }
-[data-screen="talk"] .did__card { position: absolute; inset: 0; margin: 0;
-  border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: calc(var(--u) * 2.4);
-  opacity: 0; transform: translateY(calc(var(--u) * 0.8));
-  transition: opacity 0.28s ease, transform 0.28s ease; pointer-events: none; }
-[data-screen="talk"] .did__card.is-on { opacity: 1; transform: none; }
-[data-screen="talk"] .did__lab { margin: 0 0 calc(var(--u) * 1.8); font-size: calc(var(--u) * 1.4);
-  color: var(--color-muted); letter-spacing: 0.12em; text-transform: uppercase; }
-[data-screen="talk"] .did__code { font-family: var(--font-mono); font-size: calc(var(--u) * 2.1);
-  margin: 0; color: var(--color-fg); white-space: pre-wrap; line-height: 1.5; }
-[data-screen="talk"] .did__code i { font-style: normal; color: var(--color-muted); }
-[data-screen="talk"] .did__card figcaption { margin-top: calc(var(--u) * 2.2);
-  font-size: calc(var(--u) * 1.7); color: var(--color-muted); line-height: 1.4; }
-[data-screen="talk"] .did__card figcaption b { color: var(--color-fg); font-weight: var(--font-weight-regular);
-  font-family: var(--font-mono); font-size: 0.95em; }
-
-
 [data-screen="talk"] .twohands { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 5);
   align-items: center; margin-top: calc(var(--u) * 2); }
 [data-screen="talk"] .twohands .fig { max-width: 100%; margin-top: 0; }

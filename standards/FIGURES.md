@@ -81,10 +81,33 @@ Serif always (Georgia / Times, set once on the root and inherited). Sizes: **tit
   a11y, same coin.)
 - **One accent, one payoff line.** The coral appears once. If two things are "the point," neither is.
 - **Self-contained.** No external assets, no `<image>`, no web fonts. It must survive the static export.
-- **No `<style>` block, no client JS.** Tokens go on the root's `style` attribute (widely honored);
-  a `<style>` element risks being stripped by markdown sanitizers, and script would break the
-  zero-framework-JS promise.
+- **No `<style>` block, and no script inside the figure.** Tokens go on the root's `style` attribute
+  (widely honored); a `<style>` element risks being stripped by markdown sanitizers, and a figure
+  that needs script to mean anything is not a figure, it is an app.
 - **Follow it with a one-line italic caption** in the prose (`*The inversion: …*`), like the reference figure.
+
+### A figure may be upgraded, never replaced
+
+An earlier version of this rule said "no client JS" and gave as its reason that script would break
+the zero-framework-JS promise. That promise is about frameworks. A note page on this site already
+ships a dozen small vanilla islands, and one more of that shape is not the thing the rule was
+protecting against.
+
+So a figure that also exists as a live thing (the multiplier, which the talk lets you drag) may be
+**progressively enhanced**, under three conditions that are not negotiable:
+
+1. **The static figure is what gets served.** It sits in the markup, built to the scaffold above. The
+   island replaces it afterwards, or does not run at all.
+2. **The static one stands alone.** No-JS, print, a crawler and the static export all keep a figure
+   that argues the whole point by itself. If the interactive version says something the static one
+   cannot, the static one is unfinished.
+3. **The island lives in the app, never in the figure.** No `<script>` in the markdown. The upgrade
+   is opt-in through a `data-live-figure` hook, and a failed or unknown builder restores what was
+   there.
+
+Reference: `scripts/figures.js` and `view/components/molecules/live-figure/`, which serve the same
+widget to a slide and to a paragraph so the talk and the post cannot drift into two different
+pictures of one argument.
 
 ## The flow scaffold (steps, loops, relationships)
 
@@ -140,7 +163,8 @@ it, used for label halos and for text on a filled node), `--color-line` (node bo
   never strikes through the text.
 - **Size to the content.** Unlike data-viz (a fixed 620 measure), a flow's `viewBox` and `max-width`
   fit the diagram; keep `width="100%"`, `height:auto`, and center it (`margin:… auto`).
-- **Self-contained, no `<style>`, no client JS**, same as data-viz.
+- **Self-contained, no `<style>`, no script inside the figure**, same as data-viz, including the
+  upgrade rule above: a flow may be enhanced by an island, never replaced by one.
 
 ## The reference figures (built to this standard)
 

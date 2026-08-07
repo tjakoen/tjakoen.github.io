@@ -55,6 +55,9 @@ That's why "just use AI" is terrible advice for a beginner, and "never use AI" i
 a professional. The honest version is in the middle and it has an order of operations: **become worth
 multiplying first.**
 
+<!-- The static SVG is what a reader is SERVED, and what the export, a printout and a
+     no-JS visit keep. site/figures.js swaps in the live version from the talk if it runs. -->
+<div class="live-fig" data-live-figure="multiplier">
 <svg viewBox="0 0 620 200" width="100%" role="img"
      aria-label="The multiplier. A skilled developer's small baseline times AI becomes a long bar; a beginner's near-zero baseline times the same AI stays near zero. The AI is identical in both rows; the baseline is the variable."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
@@ -73,8 +76,10 @@ multiplying first.**
   <text x="308" y="132" style="fill:var(--muted);font-size:12.5px">still almost nothing</text>
   <text x="28" y="182" style="fill:var(--accent);font-size:13px">Same AI both rows. You are the variable.</text>
 </svg>
+</div>
+<p class="live-fig__note">Drag it. Same figure as the one in the talk, and the same law: the AI is 10 in every row, and the only thing that changes is what you brought.</p>
 
-*The AI multiplied by the same amount both times. The beginner's result is smaller than the skilled dev's starting point.* [Play with this one](/talks/ten-times-zero#4).
+*Take it to zero. The output does not get smaller, it disappears.*
 
 ## I was the zero, for years
 
