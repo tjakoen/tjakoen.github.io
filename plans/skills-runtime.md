@@ -294,13 +294,20 @@ Verification sections.
 
 **(c) The surface — where adherence becomes visible.**
 
-- [ ] A `/loop` surface (or a home-strip row next to the audit / doc / graph / deps freshness pills):
-      which skills fired over the last N runs, which red flags were hit, uncommitted and unpushed age,
-      run reports missing evidence.
-- [ ] Feed open loop-hygiene warnings into the AI-retrieval context pack (`/llms.txt`,
+- [ ] **BLOCKED on the owner, and it is the open question below.** A `/loop` surface (or a home-strip
+      row next to the audit / doc / graph / deps freshness pills): which skills fired over the last N
+      runs, which red flags were hit, uncommitted and unpushed age, run reports missing evidence. The
+      data layer is ready and surface-shaped; only the placement call is missing.
+- [x] **DONE 2026-08-07.** Feed open loop-hygiene warnings into the AI-retrieval context pack (`/llms.txt`,
       `/knowledge.json`), the same way open decisions already lead it. That closes the loop: the next
-      session reads its own adherence record at orientation.
-- [ ] Surface gated by config, absent dirs degrade to empty-state guidance, never a crash.
+      session reads its own adherence record at orientation. `Knowledge.incompleteRuns` + a
+      `## Loop hygiene` callout that leads the pack beside open decisions, plus `/runs.json` as the
+      machine twin. **Silent when the ledger is clean** — same rule the inbox follows, so it only ever
+      shouts when something was actually skipped. Demonstrated live rather than asserted: the first
+      report written under the schema flagged its own author's scope growth, and that warn is now the
+      first thing `/llms.txt` says.
+- [x] **DONE.** Surface gated by config (`runs`, default on — route, count, callout and surface entry
+      all go with it), absent dirs degrade to empty-state guidance, never a crash.
 
 ### S4 — maximize graphify (the doc-drift half of the feedback loop)
 
