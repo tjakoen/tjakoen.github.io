@@ -401,7 +401,12 @@ if (deck) {
      The deck already read the OS preference and already listened for D. What it never had was
      something to click, which is the only version that helps when you are standing at a lectern
      on somebody else's projector. The glyph shows what the click will DO, not where you are. */
-  const themeBtn = deck.querySelector('[data-theme-toggle]');
+  // The BUTTON is grain's: it carries data-toggle-scheme, so grain/scripts/theme.js owns the
+  // switch and persists it, exactly like the ◐ in the site's window bar. An earlier version of
+  // this file flipped the attribute itself, which worked on screen and forgot the choice the
+  // moment you left the deck, and disagreed with the preference the rest of the site had stored.
+  // All that is left here is keeping the glyph honest, since it shows what the click will DO.
+  const themeBtn = deck.querySelector('[data-toggle-scheme]');
   if (themeBtn) {
     const root = document.documentElement;
     const isDark = () => (root.dataset.colorScheme
@@ -411,11 +416,9 @@ if (deck) {
       themeBtn.textContent = isDark() ? '☀' : '☾';
       themeBtn.title = isDark() ? 'Switch to light (D)' : 'Switch to dark (D)';
     };
-    themeBtn.addEventListener('click', () => {
-      root.dataset.colorScheme = isDark() ? 'light' : 'dark';
-      paintTheme();
-    });
-    // D is handled by the deck itself; just keep the glyph honest afterwards
+    // repaint after anything that could have changed the scheme: the button, the deck's D key,
+    // or the OS flipping under us
+    themeBtn.addEventListener('click', () => requestAnimationFrame(paintTheme));
     addEventListener('keydown', (e) => {
       if (e.key === 'd' || e.key === 'D') requestAnimationFrame(paintTheme);
     });
