@@ -326,11 +326,48 @@ that actually failed us. The ten-pass doc sweep (stale claims, dead symbol names
 150-300 contradiction) is exactly what a symbol-level check catches on pass one. So: automate the
 verification, not the writing. That also keeps PANTRY's no-model constraint intact.
 
-- [ ] **`doc-symbol-drift` (doctor, error or warn).** Extend `drift.ts` past links: a doc that names a
-      symbol (backticked identifier, a `file.ts:line` ref) which no longer exists in `graph.json` is
-      drift. Keep it as narrow and high-signal as the existing link lint — backticked identifiers and
-      path refs only, never bare English words. A noisy lint would undercut the drift-free claim the
-      same way 9c warns about.
+**Measured before built, 2026-08-07.** The severity was left open pending a false-positive rate, so the
+rate came first: a throwaway probe over the portfolio's 33 docs, run against freshly rebuilt graphs,
+before a line of the lint was written. Three findings, and each one changed the design.
+
+*One:* **the shape of the reference decides everything.** Backticked bare calls (`doSomething()`) are
+the only high-signal shape. 34 spans in scope, 25 resolved, 9 flagged; grepping all 9 against every
+repo on disk, 5 were genuinely dead (`formFields`, `jsonBody`, `escHtml`, `inference` twice) and 4 were
+real symbols graphify simply does not node. **56% precision.** Path refs were measured too, against a
+better oracle than the graph (a whole-estate file index — graphify nodes no `.css` and no `.md`, so it
+can only ever say "missing"). Even so: 14% flagged, and the flags were dominated by references that are
+*correct* — generated artifacts, planned-but-unwritten notes, route payloads named without a slash.
+A lint that shouts at a backlog for naming a file it intends to write is not worth having. Path refs
+are out, and that is a closed question rather than a deferred one.
+
+**Re-measured after building, same day, and the number moved.** The probe walked `docs/` raw against a
+5-repo merge; the shipped check walks the doc *collections* the server serves (24 pages, not 33 files)
+against the full 7-repo merge. On that footing: **7 flags, 3 of them real** — `formFields()`,
+`jsonBody()`, `escHtml()`, each verified absent from all seven repos by grep — and 4 live symbols
+graphify does not node (`observe`, `spot`, `clearConsole`, `decide`). **43% precision**, not 56%.
+Recording the lower number because it is the one the shipped check actually produces. It does not
+change the severity call: info was already the floor, and 3 real finds for 4 dismissals is a trade a
+session can make in seconds.
+
+*Two:* **the merged graph is a prerequisite, not a nice-to-have.** Against the portfolio's own graph the
+flag rate was 73.5%; against a fresh 5-repo merged graph, 26.5%. The portfolio's docs are layer-doc
+mirrors of sibling repos, so its own graph structurally cannot confirm a grain symbol. This promotes
+`merge-graphs` out of the "lower priority" bucket it was filed in below.
+
+*Three:* **staleness was doing real damage to the measurement.** Every repo but the portfolio was on an
+8-day-old graph, and the false positives it produced (`manifestForReasoner`, `webgpuAvailable`,
+`probeDevice`) all vanished on a rebuild. `graphify update` finished in 2 to 4 seconds on each of the
+five estate repos, so the 2026-07-30 hang is specific to large *foreign* trees, exactly as the limit
+below says, and does not argue against refreshing our own.
+
+- [x] **DONE 2026-08-07. `doc-symbol-drift` (doctor, info).** `checkSymbolDrift` in `drift.ts`, wired as
+      a `doc-symbol-drift` info check in `doctor.ts`. Info, not warn or error: 56% precision is worth
+      SHOWING a session and not worth making anyone dismiss, and a noisy lint would undercut the
+      drift-free claim the same way 9c warns about. Owner confirmed the severity against the measured
+      rate. Bare call form only; method form, path refs and fenced code blocks are all out of scope by
+      design, and the header comment in `drift.ts` records why for each. One problem per identifier per
+      page. The check's detail line names *which* graph answered, because a count means nothing without
+      it. Raising the severity later is a config change, not a rewrite.
 - [ ] **`touches:` verification via `graphify affected` (doctor, warn).** Plan frontmatter carries a
       hand-maintained `touches:` list. `graphify affected "X" --relation ... --depth N` computes the
       real blast radius. Flag a plan whose declared touches are narrower than the graph says. This is
@@ -341,17 +378,58 @@ verification, not the writing. That also keeps PANTRY's no-model constraint inta
 - [ ] **HACKING.md verification.** The portfolio hand-maintains a route → source map ("which file do I
       open to change X"). The graph knows that mapping. Verify the hand-written map against it rather
       than generating it — generated docs rot unread, a failing check gets fixed.
-- [ ] **Read `GRAPH_REPORT.md` instead of only stat-ing it.** It already carries node/edge/community
-      counts, extraction confidence, and the built-from commit. Doctor's graphify-freshness check
-      should compare that commit against `git rev-parse HEAD` (the report literally tells you to) —
-      a far better staleness signal than file age, which is what we use now.
+- [x] **DONE 2026-08-07. Read `GRAPH_REPORT.md` instead of only stat-ing it.** Doctor's
+      graphify-freshness check now parses the report's built-from commit and compares it against
+      `git rev-parse HEAD` (the report literally tells you to), falling back to the old age check when
+      there is no report or no git. It justified itself on the first run: the portfolio's graph was
+      **zero days old and built one commit behind HEAD**, so the age check was calling a stale graph
+      fresh. It also showed the fallback is load-bearing rather than defensive, because an incremental
+      `graphify update` sometimes writes a `GRAPH_REPORT.md` with no Graph Freshness block at all.
+
+      **The first live run also caught a false positive in the check itself**, which is the part worth
+      keeping. It flagged the portfolio, whose only churn since the graph was built was one markdown
+      file. GRAPH.md §4 is explicit that the refresh re-extracts *code*, so doc commits legitimately
+      leave the graph current. The check now diffs `builtFrom..HEAD` and only warns when something
+      outside prose, images and lockfiles moved. Four outcomes, and an unreachable built-from commit
+      (after a history rewrite) warns rather than silently passing, because failing to verify is not
+      the same as verifying.
+
+      **A second defect, found by review and reproduced before it was reported.** `GRAPH_REPORT.md`
+      describes `graph.json`, the extraction. But `resolveGraphPath` *prefers* `merged-graph.json`,
+      which `pantry graph merge` writes separately and which no report describes. So the check could
+      read a report that was honestly current about a file nothing consumes, while `/map` and the
+      symbol lint read the stale merged graph beside it. That is the same lie the mtime check was
+      telling, moved one artifact over. It was live in the portfolio within minutes of the merge
+      command existing: the edit hook re-extracted `graph.json` at 16:13 and the 16:10 merged graph
+      went on being served under a clean "built from HEAD". A merge older than the extraction it should
+      have included now short-circuits to a warn naming its own remedy.
+- [ ] **First real drift the lint found (a content chore, not a tooling one).** `docs/batch/ARCHITECTURE.md`
+      names `formFields()`, `jsonBody()` and `escHtml()`. None of the three exists anywhere in the
+      estate: not in batch, not in grain, not in pantry, not here. So the layer doc describes a shape
+      the code has moved past. Left unfixed deliberately — the lint's job this session was to be built
+      and measured, and fixing the prose needs someone who knows what those three became. This is the
+      payoff line for the whole item: three dead names in a published doc, found in one run, by a check
+      that costs no model and no API call.
 - [ ] **Wire `save-result`.** Every non-trivial graph Q&A written back to `graphify-out/memory/`, so
       the graph accumulates answers instead of re-deriving them. This is a second feedback loop and it
       costs nothing. Confirm the dir stays gitignored with the rest of `graphify-out`.
-- [ ] **Estate graph via `merge-graphs`.** BREAD is the cross-repo control plane; a merged graph is the
-      map it claims to be. PANTRY already has a stray `merged-graph.json` from an earlier experiment.
-      Decide the owner (bread renders it, or `pantry --estate`), and whether cross-repo edges are real
-      enough to be worth it. Lower priority than the per-repo checks above.
+- [x] **DONE 2026-08-07. Estate graph via `merge-graphs`.** Promoted from "lower priority" by the
+      measurement above, which showed the per-repo graph cannot answer for docs that describe sibling
+      repos. `pantry graph merge [dir]` (new `graph.ts`, wired in `cli.ts`) scans the sibling repos for
+      an existing `graphify-out/graph.json` and merges them into the host's own
+      `graphify-out/merged-graph.json`, which `config.graphPath` already prefers. 7 repos in, 4735
+      nodes, 7571 edges.
+
+      **It only ever runs `merge-graphs`, never `update`.** That is the whole safety story: merging
+      reads JSON that is already on disk, so the 2026-07-30 extraction hang cannot happen here. A repo
+      without a graph is skipped and named, never built for. Capped at 120s with a kill-and-report, and
+      `doctor` does not call it — it stays an explicit operator command, per the limit below.
+
+      The payoff, measured end to end: the portfolio's `doc-symbol-drift` count went from 18
+      unresolved identifiers on its own graph to 7 on the estate graph, and doctor's detail line says
+      which graph answered so the number can be read at all. The stray `merged-graph.json` from the
+      earlier experiment is now a produced artifact with a command behind it. Cross-repo *edges* were
+      not the reason to build it and remain unevaluated; the merged **node set** is what the lint needs.
 - [ ] **Known limits to respect:** `graphify update` HANGS on large foreign trees (pocket-tickets,
       >2min, backed out 2026-07-30) — any pantry integration must be opt-in per repo with a timeout,
       never a blocking step in `doctor`. And graphify query only wins on symbol names, never English
