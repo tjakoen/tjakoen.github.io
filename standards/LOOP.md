@@ -1,6 +1,7 @@
 ---
 title: LOOP.md — one AI workflow across every repo
 summary: The system around the sessions - how every repo is worked the same way, the heartbeat that makes skipped chores visible, and the contract that keeps an unattended run honest.
+skill: loop-standard
 when: >
   Read this at session start before touching anything, and again BEFORE calling work done,
   committing, opening a PR, writing a handoff, or ending a session. Covers verify-by-second-pass, the
@@ -9,7 +10,7 @@ when: >
   failing gate hoping it is flaky.
 ---
 
-# LOOP.md — one AI workflow across every repo
+# One AI workflow across every repo
 
 The standard for how *every* project is operated with an AI, so any repo of mine runs the same way:
 the same session shape, the same recurring chores, the same evidence left behind. One person can run a

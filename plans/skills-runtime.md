@@ -178,20 +178,63 @@ second copy — the SSOT rule holds.
 The whole point of routing this through PANTRY: the owner works several repos at once, and PANTRY is
 already in all of them. One command, same surface everywhere.
 
-- [ ] `pantry skills sync [dir]` — materialize `.claude/skills/<slug>/SKILL.md` from canon. Resolve
+> **S2 CLOSED 2026-08-07** (pantry `skills.ts` + `skills.test.ts`, wired into `cli.ts`, `init.ts`,
+> `doctor.ts`; PLAN.md piece 11f). 22 new tests, tsc clean, `pantry check` 19 pages 0 problems. Live
+> in the canon home: 12 standards mounted, `pantry skills list` all ok, `pantry doctor` reports
+> `skills mounted: 12 standards mounted and current`. The three pre-existing failures in pantry's
+> suite (retrieval + app plan fixtures) were failing before this branch and are untouched by it.
+> An independent second pass caught three defects before commit, two of them a guard that existed on
+> one path and not its twin (prune refused to delete through a symlinked slot; sync would write
+> through one). Detail lives in pantry PLAN.md 11f.
+
+- [x] **DONE.** `pantry skills sync [dir]` — materialize `.claude/skills/<slug>/SKILL.md` from canon. Resolve
       the standards out of the portfolio package with `import.meta.resolve`, the exact trick 11b
       already uses for `CLAUDE.starter.md`, and degrade to a skip when the package is absent.
-- [ ] Generated, gitignored, never committed — same posture as `graphify-out`. Reference-don't-fork
-      holds: no repo carries a copy, every repo mounts the same canon.
-- [ ] Emit frontmatter as `name` (the slug) + `description` (the `when:` line from S1). Body is the
-      standard, unchanged.
-- [ ] `pantry skills list` — what is mounted, what version, how stale.
-- [ ] Fold into `pantry init --kit` so a new repo gets skills on day one.
-- [ ] Doctor gains **skills-freshness** (warn): mounted skills older than the canon they came from,
-      or absent in a kit repo. Absent package degrades to info, never a false alarm.
-- [ ] Decide whether third-party skills (theirs, if S0 is positive) are mounted by the same command
-      from a config allowlist, or installed per-repo by hand. Config allowlist is the estate-consistent
-      answer; confirm at S2.
+      **One rule the build added:** the canon home reads its OWN `standards/` dir
+      (`standardsSource: "canon"`), never its installed copy of itself. Syncing the home from a pin
+      of itself would mount yesterday's canon over today's, which is the exact drift this prevents.
+- [x] **DONE.** Generated, gitignored, never committed — same posture as `graphify-out`. Reference-don't-fork
+      holds: no repo carries a copy, every repo mounts the same canon. Implemented as a
+      **self-gitignoring mount**: sync writes `.claude/skills/.gitignore` holding `*`, so no host's
+      own `.gitignore` is edited (init.ts's non-invasive rule, extended to this command).
+- [x] **DONE.** Emit frontmatter as `name` (the slug) + `description` (the `when:` line from S1). Body is the
+      standard, unchanged. The description is JSON-encoded, since a `when:` is multi-sentence prose
+      carrying colons and quotes and SKILL.md frontmatter is read as YAML.
+- [x] **DONE.** `pantry skills list` — what is mounted, what version, how stale. Freshness is a
+      **content diff, not an mtime compare**: regenerate the expected SKILL.md in memory and compare.
+      An install rewrites mtimes for reasons that have nothing to do with canon moving, so mtime
+      would lie in both directions. Foreign skills in the same dir are listed and left alone, so the
+      output is an honest inventory of what the harness will load rather than only of what we wrote.
+- [x] **DONE.** Fold into `pantry init --kit` so a new repo gets skills on day one.
+- [x] **DONE.** Doctor gains **skills-freshness** (warn): mounted skills older than the canon they came from,
+      or absent in a kit repo. Absent package degrades to info, never a false alarm. Absence only
+      reads as due in a repo carrying a CLAUDE.md, so a host that never opted in cannot be nagged.
+- [x] **DEFERRED, on purpose.** Third-party skills stay hand-installed for now. The config allowlist is
+      still the estate-consistent answer, but nothing third-party has been adopted, and a config key
+      with no consumer is speculative surface. Revisit when the first one actually lands. Sync
+      already leaves foreign skills untouched and reports them, so hand-installing one is safe today.
+
+**Two findings worth carrying forward.**
+
+- **A name collision is silent, and it is fatal.** The harness ships its own `loop` skill. Our
+  `LOOP.md` mount was written to disk, never appeared in the skill listing, and therefore could never
+  fire, with no error anywhere. Canon now carries an optional `skill:` frontmatter key that overrides
+  the slug, `LOOP.md` uses `skill: loop-standard`, and `standards/CLAUDE.md` records the rule: check
+  the listing after mounting, because a written file is not a live skill. Worth noting that this
+  would have gone unnoticed indefinitely, since the failure looks exactly like success from the
+  sync's side.
+- **A stale pin and a missing package read identically and have different fixes.** Pantry's own
+  `tjakoen.github.io` pin predates the `when:` keys, so syncing there mounts nothing. That first
+  reported as "no standards package resolvable", which is wrong: the package is there, the pin is
+  old. They are separate messages now, one saying install and one saying bump. **This is also the
+  standing blocker on the estate-wide rollout**: every repo but the canon home mounts from its pin,
+  so the rollout lands only after the portfolio is pushed and each host runs `deps:refresh`.
+
+**Still open at S2's close:** whether subagents can invoke skills at all (S0 could not answer it, and
+neither could this). GRAPH and LOOP mounted for the first time here, but this session named both
+repeatedly while building the mount, so it is contaminated as a self-trigger test the same way
+session `400d0cd7` was. The clean test is still available to a fresh session that does graph-shaped
+or gate-shaped work without naming them.
 
 ### S3 — the feedback mechanism (what the owner asked for)
 

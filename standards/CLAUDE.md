@@ -55,6 +55,13 @@ not a description, in three parts:
 Three files carry no `when` on purpose: `README.md` is the index, this file is the directory's own
 operating rules and already auto-loads, and `AGENTS.md` is a symlink to it.
 
+A fourth key, `skill`, is optional and overrides the slug the standard mounts under. It exists for one
+reason: the agent harness ships built-in skills of its own, and a mount whose name collides is
+silently shadowed. It lands on disk, never appears in the listing, and so never fires. `LOOP.md` hit
+exactly that against the built-in `loop`, which is why it carries `skill: loop-standard`. Add the key
+only when a name actually collides, and check the listing after mounting a new standard rather than
+assuming the file being written means the skill is live.
+
 The heavier standards also carry **Rationalizations**, **Red flags**, and **Verification** sections.
 Verification is the load-bearing one: keep those lists short, mechanical, and evidence-shaped (gate
 output verbatim, never "tests pass"), because they are what a checker is meant to read.
