@@ -25,8 +25,13 @@ export const RATIO = `<div class="ratio" data-ratio>
         <p class="ratio__punch frag" data-grade="grain"><b>48% of that repo is writing, not code.</b> Plans, conventions, decisions, and notes to whoever opens it next.</p>
       </div>`;
 export function mountRatio(host) {
-  const root = h(host, RATIO + '<p class="live-fig__ctl"><button class="btn" type="button" data-ratio-reveal>Show me</button></p>');
+  const root = h(host, RATIO);
   const ratio = host.querySelector('[data-ratio]');
+  // the control goes INSIDE, above the payoff line. That line is kept in the layout while hidden
+  // so revealing it shifts nothing, and parking the button after it left a hole in the middle of
+  // the figure; this way the reserved space reads as trailing padding instead.
+  ratio?.querySelector('.ratio__punch')?.insertAdjacentHTML('beforebegin',
+    '<p class="live-fig__ctl"><button class="btn" type="button" data-ratio-reveal>Show me</button></p>');
   const btn = host.querySelector('[data-ratio-reveal]');
   const marker = host.querySelector('[data-ratio-guess]');
   if (!ratio || !btn || !marker) return false;

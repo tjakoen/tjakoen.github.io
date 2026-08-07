@@ -10,7 +10,10 @@
    box. Prose has no such box, so .live-fig supplies one in rem. That is the only difference
    between the two contexts. */
 
-.live-fig { --u: 0.58rem; --u0: 0.58rem; margin: 0 auto var(--space-6); max-width: 34rem; }
+/* space on BOTH sides. A figure that hugs the paragraph above it reads as part of that
+   paragraph, and the ratio made it worse: its guess marker and label are drawn ABOVE the bar,
+   outside the widget's own box, so they reached up into the prose. */
+.live-fig { --u: 0.58rem; --u0: 0.58rem; margin: var(--space-6) auto; max-width: 34rem; }
 .live-fig .mult { margin-top: 0; }
 /* the deck sizes its verdict for the back of a room; in a paragraph that shouts */
 .live-fig .mult__verdict { font-size: calc(var(--u) * 2.1); margin-top: calc(var(--u) * 3); }
@@ -181,7 +184,9 @@
 .live-fig__ctl { margin: var(--space-4) 0 0; }
 .live-fig .ratio__punch { opacity: 0; transition: opacity 0.3s ease; }
 .live-fig .ratio__punch.is-on { opacity: 1; }
-.live-fig .ratio, .live-fig .matrix, .live-fig .sprint, .live-fig .cycle { margin-top: 0; width: 100%; }
+.live-fig .matrix, .live-fig .sprint, .live-fig .cycle { margin-top: 0; width: 100%; }
+/* headroom for the guess marker's label, which hangs above the bar by about 4u */
+.live-fig .ratio { margin-top: 0; width: 100%; padding-top: calc(var(--u) * 4.5); }
 .live-fig .loop { margin-top: 0; }
 /* the deck sizes these for a wall; a paragraph needs them a notch down */
 .live-fig .ratio__punch { font-size: calc(var(--u) * 2.2); margin-top: calc(var(--u) * 2.5); }
