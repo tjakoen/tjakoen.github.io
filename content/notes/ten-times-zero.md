@@ -74,7 +74,7 @@ multiplying first.**
   <text x="28" y="182" style="fill:var(--accent);font-size:13px">Same AI both rows. You are the variable.</text>
 </svg>
 
-*The AI multiplied by the same amount both times. The beginner's result is smaller than the skilled dev's starting point.*
+*The AI multiplied by the same amount both times. The beginner's result is smaller than the skilled dev's starting point.* [Play with this one](/talks/ten-times-zero#4).
 
 ## I was the zero, for years
 
@@ -174,7 +174,7 @@ do *that.*
   <text x="28" y="232" style="fill:var(--accent);font-size:13px">Same moves down every column. Only the subject changes.</text>
 </svg>
 
-*Four jobs, one muscle: give direction, verify anyway, then fix the reasoning instead of the output.*
+*Four jobs, one muscle: give direction, verify anyway, then fix the reasoning instead of the output.* [Play with this one](/talks/ten-times-zero#14).
 
 Some evenings I've got five to ten Claude sessions open at once, and it feels *exactly* like running a team:
 delegate the work, keep each agent productive, and stitch what comes out into something that works.
@@ -227,11 +227,11 @@ This repo has the inverse problem: there's about as much specification as there 
 
 I didn't tidy that up after the fact. It's the method. When you work with an AI at speed, the scarce resource stops being code and becomes *intent.* The model can't know what you meant, what the rules are, or what "done" looks like, unless you wrote it down. So I do. The documentation *is* the work, the code is the cheap part the machine handles.
 
-<svg viewBox="0 0 620 190" width="100%" role="img"
-     aria-label="On this repo: 18,876 lines of code versus 17,610 lines of writing; 48% of everything written is words, not code."
+<svg viewBox="0 0 620 200" width="100%" role="img"
+     aria-label="On this repo: 18,876 lines of code versus 17,610 lines of writing. 48% of everything written is words, not code. A marker shows where the writing bar would end at the 20% a room typically guesses, well short of where it actually ends."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
-  <rect x="0.5" y="0.5" width="619" height="189" style="fill:var(--paper);stroke:var(--edge)"/>
+  <rect x="0.5" y="0.5" width="619" height="199" style="fill:var(--paper);stroke:var(--edge)"/>
   <text x="28" y="36" style="fill:var(--muted);font-size:15px">What my repo actually is</text>
   <text x="28" y="86" style="fill:var(--ink);font-size:14px">Code</text>
   <rect x="96" y="72" width="420" height="20" style="fill:var(--bar)"/>
@@ -239,10 +239,14 @@ I didn't tidy that up after the fact. It's the method. When you work with an AI 
   <text x="28" y="128" style="fill:var(--ink);font-size:14px">Writing</text>
   <rect x="96" y="114" width="392" height="20" style="fill:var(--ink)"/>
   <text x="496" y="129" style="fill:var(--ink);font-size:12.5px">17,610 lines</text>
-  <text x="28" y="170" style="fill:var(--accent);font-size:13px">48% of everything written is words, not code.</text>
+  <!-- where the writing bar would END if the room's usual guess were right. 20% of the repo is
+       7,297 lines, which on this axis (420px = 18,876 lines) lands at x = 258. -->
+  <line x1="258" y1="106" x2="258" y2="142" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3"/>
+  <text x="266" y="152" style="fill:var(--muted);font-size:12px">where a room's guess of 20% would end</text>
+  <text x="28" y="176" style="fill:var(--accent);font-size:13px">48% of everything written is words, not code.</text>
 </svg>
 
-*About as much spec as implementation: the inverse of what vibe coding is supposed to look like.*
+*About as much spec as implementation: the inverse of what vibe coding is supposed to look like.* [Play with this one](/talks/ten-times-zero#17).
 
 One honest wrinkle, since I keep the receipts either way. When I first published this the same
 count read 56%, and the writing was ahead. It has since evened out, for a boring reason: the stack
@@ -345,7 +349,7 @@ before I opened the throttle.
   <text x="28" y="146" style="fill:var(--accent);font-size:13px">4,269 lines added before it got light. Every commit co-authored.</text>
 </svg>
 
-*Ten hours, thirty-one commits: fast is safe when the rails went up first.*
+*Six and a half hours, fifty commits: fast is safe when the rails went up first.* [Play with this one](/talks/ten-times-zero#18).
 
 ## The part that actually makes it professional
 
@@ -460,7 +464,7 @@ the onboarding, make it excellent, and polish it as you go.
   </g>
 </svg>
 
-*The loop is what keeps fast from turning into fragile.*
+*The loop is what keeps fast from turning into fragile.* [Play with this one](/talks/ten-times-zero#21).
 
 ### Two of those rules have proper names, and I didn't invent either
 
@@ -576,7 +580,7 @@ and I harden the design so neither of us slips there again.
   </g>
 </svg>
 
-*Every trip the AI takes is a map of where the design isn't clear yet, and a chance to harden it.*
+*Every trip the AI takes is a map of where the design isn't clear yet, and a chance to harden it.* [Play with this one](/talks/ten-times-zero#25).
 
 ## The tell is the ratio
 
