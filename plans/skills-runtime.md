@@ -368,11 +368,38 @@ below says, and does not argue against refreshing our own.
       design, and the header comment in `drift.ts` records why for each. One problem per identifier per
       page. The check's detail line names *which* graph answered, because a count means nothing without
       it. Raising the severity later is a config change, not a rewrite.
-- [ ] **`touches:` verification via `graphify affected` (doctor, warn).** Plan frontmatter carries a
-      hand-maintained `touches:` list. `graphify affected "X" --relation ... --depth N` computes the
-      real blast radius. Flag a plan whose declared touches are narrower than the graph says. This is
-      not cosmetic: LOOP.md §4b's **scope cap** is currently a promise with no measurement, and this
-      makes it measurable.
+- [x] **DONE 2026-08-07, but NOT the check this item specified.** The rule as written ("flag a plan
+      whose declared touches are narrower than the blast radius") was measured first and **rejected on
+      the numbers**. The radius of a single `config.ts` is 22 of pantry's files, 12 of which went
+      untouched in the run that declared it. Requiring a scope to cover its radius would mean declaring
+      the whole repo every time, which makes the declaration worthless. It also aimed at the wrong
+      artifact: plan `touches:` is coarse and directory-level (`standards/`, `../pantry/`), while the
+      thing that carries a real file list is the S3b **run report's** `scope:`.
+
+      What the measurement *did* support, across all three run reports on disk: **11 of 11 files that
+      grew past a declared scope were already connected to it in the graph. Zero surprises.** So the
+      question worth asking is not "did you declare the whole radius" but "when you grew, could the
+      graph have told you up front". Two pieces:
+
+      - **`pantry scope <file...>`** — the pre-flight query. What a change to these files is likely to
+        reach, asked *before* the work, so the declaration can be right the first time. This is the
+        half that has actual leverage: the last two sessions both grew past their scope, and both
+        times the answer was one query away.
+      - **`scope-radius` (doctor, info)** — the post-hoc diagnosis, splitting each report's growth into
+        predictable and surprising. Info, not warn: the run ledger already carries the warn for growth,
+        and saying it twice at warn teaches people to skim both. It currently reports 11 predictable
+        and 0 surprising, which is the honest state and not a bug.
+
+      `graphify affected` is reimplemented in-process over `graph.json` rather than shelled out, because
+      doctor runs it once per scope file per report and a subprocess each time is far too slow for
+      something that fires at session start. Verified against the real binary on 8 seeds before being
+      trusted, including the 22-file case: exact match on every one.
+
+      **The two graph-backed checks want OPPOSITE artifacts, and getting it wrong is silent.** The
+      symbol lint wants the widest graph available, because a portfolio doc may name any sibling repo's
+      symbol. A blast radius wants the narrowest, because a run report's scope names files in *this*
+      repo. Feeding the radius the merged graph made it report every local file as "outside any blast
+      radius" on the first live run. Both call sites now name their graph explicitly and a test pins it.
 - [ ] **`undocumented-export` (doctor, info).** Exported symbol with no mention in any doc the brain
       knows. Info, not warn — not everything deserves prose, and this would cry wolf as an error.
 - [ ] **HACKING.md verification.** The portfolio hand-maintains a route → source map ("which file do I
