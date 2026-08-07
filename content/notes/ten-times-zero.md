@@ -595,6 +595,91 @@ to survive. That surrounding structure is the profession. The code is just the c
 And it's the same law as the napkin at the top: the model multiplied what I brought. I brought
 conventions, memory, tests, and taste, so it multiplied *those*.
 
+<svg viewBox="0 0 620 300" width="100%" role="img"
+     aria-label="Two identical chains of prompt, model and code. The first stands bare, and that is the whole system. The second, identical in the middle, sits inside a built loop: a brief, the conventions and the inherited memory feed the prompt; the code then has to survive the types, the tests, an end-to-end run and my own review; and what changed is recorded back into the brief, so the next session starts there instead of from nothing."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:12.5px">
+  <defs>
+    <marker id="fl-tentim2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+
+  <text x="16" y="40" style="fill:var(--color-muted)">anyone</text>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="96" y="16" width="76" height="32" rx="5"/>
+    <rect x="192" y="16" width="76" height="32" rx="5"/>
+    <rect x="288" y="16" width="76" height="32" rx="5"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="172" y1="32" x2="187" y2="32" marker-end="url(#fl-tentim2)"/>
+    <line x1="268" y1="32" x2="283" y2="32" marker-end="url(#fl-tentim2)"/>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-fg)">
+    <text x="134" y="36">prompt</text><text x="230" y="36">model</text><text x="326" y="36">code</text>
+  </g>
+  <text x="384" y="36" style="fill:var(--color-muted)">and that is the whole system</text>
+
+  <text x="16" y="180" style="fill:var(--color-muted)">me</text>
+  <rect x="80" y="72" width="524" height="222" rx="8" style="fill:none;stroke:var(--color-line);stroke-width:1"/>
+
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="100" y="90" width="146" height="26" rx="4"/>
+    <rect x="262" y="90" width="146" height="26" rx="4"/>
+    <rect x="424" y="90" width="146" height="26" rx="4"/>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-fg);font-size:11px">
+    <text x="173" y="107">the brief it reads first</text>
+    <text x="335" y="107">the conventions</text>
+    <text x="497" y="107">the memory it inherited</text>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.2;fill:none">
+    <path d="M173 116 L173 130 M335 116 L335 130 M497 116 L497 130"/>
+    <path d="M173 130 L497 130"/>
+    <path d="M335 130 L335 146" marker-end="url(#fl-tentim2)"/>
+  </g>
+
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="196" y="150" width="76" height="32" rx="5"/>
+    <rect x="292" y="150" width="76" height="32" rx="5"/>
+    <rect x="388" y="150" width="76" height="32" rx="5"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="272" y1="166" x2="287" y2="166" marker-end="url(#fl-tentim2)"/>
+    <line x1="368" y1="166" x2="383" y2="166" marker-end="url(#fl-tentim2)"/>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-fg)">
+    <text x="234" y="170">prompt</text><text x="330" y="170">model</text><text x="426" y="170">code</text>
+  </g>
+
+  <g style="stroke:var(--color-muted);stroke-width:1.2;fill:none">
+    <path d="M426 182 L426 198 M118 198 L570 198"/>
+    <path d="M154 198 L154 214 M268 198 L268 214 M382 198 L382 214 M496 198 L496 214"/>
+  </g>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="100" y="216" width="108" height="26" rx="4"/>
+    <rect x="214" y="216" width="108" height="26" rx="4"/>
+    <rect x="328" y="216" width="108" height="26" rx="4"/>
+    <rect x="442" y="216" width="108" height="26" rx="4"/>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-fg);font-size:11px">
+    <text x="154" y="233">the types</text>
+    <text x="268" y="233">the tests</text>
+    <text x="382" y="233">end to end</text>
+    <text x="496" y="233">my own review</text>
+  </g>
+
+  <g style="stroke:var(--color-muted);stroke-width:1.2;fill:none">
+    <path d="M550 229 L578 229 L578 274 L92 274 L92 103 L94 103" marker-end="url(#fl-tentim2)"/>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:11px;
+       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="330" y="262">record what changed, so the next session starts up there</text>
+  </g>
+</svg>
+
+*Nothing in the middle row is better. The whole difference is what got built around it.* [Play with this one](/talks/ten-times-zero#27).
+
 ## Don't work for the AI. Run it.
 
 If you take one idea out of all of this, take this one, because it decides which of the two
