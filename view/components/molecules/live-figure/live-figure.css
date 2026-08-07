@@ -62,3 +62,129 @@
   font-size: calc(var(--u) * 1.7); color: var(--color-muted); line-height: 1.4; }
 .did__card figcaption b { color: var(--color-fg); font-weight: var(--font-weight-regular);
   font-family: var(--font-mono); font-size: 0.95em; }
+
+.matrix { margin-top: calc(var(--u) * 4.5); width: min(100%, calc(var(--u0) * 88)); border-collapse: collapse; }
+.matrix th, .matrix td {
+  padding: calc(var(--u) * 1.6) calc(var(--u) * 1.4); text-align: left;
+  border-bottom: 1px solid var(--color-line); font-size: calc(var(--u) * 1.95);
+  font-weight: var(--font-weight-regular);
+}
+.matrix th { color: var(--color-muted); font-size: calc(var(--u) * 1.7); }
+.matrix th:first-child, .matrix td:first-child { color: var(--color-fg); }
+.matrix col { transition: background 0.3s ease; }
+.matrix col.is-lit { background: var(--paper-2); }
+.matrix__pick { background: transparent; border: 0; font: inherit; color: inherit; cursor: pointer;
+  padding: 0; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 0.3em; }
+.matrix__pick[aria-pressed="true"] { color: var(--color-accent); }
+.matrix__same { margin-top: calc(var(--u) * 3); font-size: calc(var(--u) * 2.6); }
+.matrix__same b { font-weight: var(--font-weight-regular); }
+
+
+
+/* the tree and the bar sit side by side: the point is that the ratio is not an abstraction, it is
+   what the top of the repository literally looks like when you open it */
+.ratiowrap { display: grid; grid-template-columns: auto minmax(0, 1fr);
+  gap: calc(var(--u) * 5); align-items: start; margin-top: calc(var(--u) * 3); }
+.tree s { text-decoration: none; color: var(--ink-faint); font-size: 0.9em; }
+.tree { font-family: var(--font-mono); font-size: calc(var(--u) * 1.5);
+  line-height: 1.7; margin: 0; color: var(--color-muted); white-space: pre; }
+.tree b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+.tree i { font-style: normal; color: var(--color-accent); }
+.tree u { text-decoration: none; color: var(--color-fg); }
+
+.ratiowrap .ratio { margin-top: 0; width: 100%; }
+
+.ratio { margin-top: calc(var(--u) * 4); width: min(100%, calc(var(--u0) * 80)); }
+.ratio__bar { position: relative; height: calc(var(--u) * 5.5); border: 1px solid var(--hairline); display: flex; }
+.ratio__code { background: var(--ink-faint); transition: width 0.7s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.ratio__prose { background: var(--ink); transition: width 0.7s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.ratio__guess { position: absolute; top: calc(var(--u) * -1.6); bottom: calc(var(--u) * -1.6);
+  width: 2px; background: var(--color-accent); transition: left 0.14s ease; }
+.ratio__guess::after { content: attr(data-label); position: absolute; left: calc(var(--u) * 0.9);
+  top: calc(var(--u) * -2.6); font-size: calc(var(--u) * 1.5); color: var(--color-accent); white-space: nowrap; }
+.ratio__keys { display: flex; justify-content: space-between; margin-top: calc(var(--u) * 2.4);
+  font-size: calc(var(--u) * 1.8); color: var(--color-muted); }
+.ratio__keys b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+.ratio__nudge { font-size: calc(var(--u) * 1.4); color: var(--ink-faint); }
+.ratio__punch { font-size: calc(var(--u) * 3.2); margin-top: calc(var(--u) * 4); max-width: 32ch; }
+
+.sprint { margin-top: calc(var(--u) * 5); width: min(100%, calc(var(--u0) * 86)); }
+.sprint__line { position: relative; height: calc(var(--u) * 6); border-bottom: 2px solid var(--color-line); }
+
+.sprint__night { position: absolute; left: 22%; right: 6%; top: calc(var(--u) * 1); bottom: 0;
+  background: var(--color-fg); opacity: 0.05; }
+.sprint__tick { position: absolute; bottom: 0; width: 1.5px; height: calc(var(--u) * 3.4);
+  background: var(--ink); opacity: 0; transform: scaleY(0.4); transform-origin: bottom;
+  transition: opacity 0.18s ease, transform 0.18s ease; }
+.sprint__tick.is-on { opacity: 1; transform: none; }
+.sprint__ends { display: flex; justify-content: space-between; margin-top: calc(var(--u) * 1.4);
+  font-size: calc(var(--u) * 1.7); color: var(--color-muted); font-family: var(--font-mono); }
+.sprint__count { font-size: calc(var(--u) * 3.4); margin-top: calc(var(--u) * 3.5); font-family: var(--font-mono); }
+.sprint__note { font-size: calc(var(--u) * 1.9); color: var(--color-muted); margin-top: calc(var(--u) * 1.2); }
+
+.loop { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: calc(var(--u) * 6);
+  align-items: center; margin-top: calc(var(--u) * 2); }
+.loop__ring { position: relative; width: calc(var(--u) * 37); height: calc(var(--u) * 37); flex: none; }
+.loop__ring .fig { position: absolute; inset: 0; margin: 0; }
+.loop__node {
+  position: absolute; left: 50%; top: 50%; margin: 0; cursor: pointer;
+  
+  transform: translate(-50%, -50%) rotate(calc(var(--i) * 60deg)) translateY(calc(var(--u) * -14)) rotate(calc(var(--i) * -60deg));
+  background: var(--color-bg); border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  padding: calc(var(--u) * 0.9) calc(var(--u) * 1.4); font: inherit; color: var(--color-fg);
+  font-size: calc(var(--u) * 1.75); line-height: 1.15; white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.loop__node span { display: block; font-family: var(--font-mono);
+  font-size: calc(var(--u) * 1.15); color: var(--color-muted); }
+.loop__node:hover { border-color: var(--hairline); }
+.loop__node[aria-expanded="true"] { border-color: var(--color-accent); color: var(--color-accent); }
+.loop__node[aria-expanded="true"] span { color: var(--color-accent); }
+.loop__node[data-node="0"] { --i: 0; }
+.loop__node[data-node="1"] { --i: 1; }
+.loop__node[data-node="2"] { --i: 2; }
+.loop__node[data-node="3"] { --i: 3; }
+.loop__node[data-node="4"] { --i: 4; }
+.loop__node[data-node="5"] { --i: 5; }
+.loop__hub { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  margin: 0; text-align: center; font-size: calc(var(--u) * 1.5); color: var(--color-muted); line-height: 1.35; }
+.loop__detail { min-height: calc(var(--u) * 22); }
+.loop__all { margin: 0; padding-left: calc(var(--u) * 3); list-style: decimal-leading-zero;
+  display: flex; flex-direction: column; gap: calc(var(--u) * 1.2); }
+/* the script hides this list when a node opens, but `display: flex` outranks the browser's own
+   [hidden] rule, so the list stayed up and every card landed jammed underneath it */
+.loop__all[hidden] { display: none; }
+.loop__all li { font-size: calc(var(--u) * 1.85); color: var(--color-muted); line-height: 1.25; }
+.loop__all::marker, .loop__all li::marker {
+  font-family: var(--font-mono); font-size: calc(var(--u) * 1.4); color: var(--ink-faint); }
+.loop__card h3 { font-size: calc(var(--u) * 2.8); margin: 0 0 calc(var(--u) * 2);
+  font-weight: var(--font-weight-regular); line-height: 1.15; }
+.loop__card p { font-size: calc(var(--u) * 2); color: var(--color-muted);
+  margin: 0; max-width: 40ch; line-height: 1.45; }
+.loop__card { animation: loop-card 0.3s ease both; }
+@keyframes loop-card { from { opacity: 0; transform: translateY(0.4rem); } }
+
+.trap { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 4);
+  margin-top: calc(var(--u) * 2.5); width: min(100%, calc(var(--u0) * 84)); }
+.trap__card { border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: calc(var(--u) * 2); }
+.trap__t { font-size: calc(var(--u) * 2.1); margin: 0 0 calc(var(--u) * 1.6); }
+.trap__t span { color: var(--color-muted); font-size: calc(var(--u) * 1.5); display: block;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: calc(var(--u) * 0.8); }
+.trap .btn { font-size: calc(var(--u) * 1.8); padding: calc(var(--u) * 1.2) calc(var(--u) * 2.4); }
+.trap__out { font-size: calc(var(--u) * 1.8); min-height: calc(var(--u) * 4);
+  display: flex; align-items: center; color: var(--color-muted); }
+.trap__out b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+.trap__lesson { font-size: calc(var(--u) * 2.4); margin-top: calc(var(--u) * 3); max-width: 40ch; }
+
+/* prose-only: the two figures the deck drives off slide steps need a control of their own, and
+   the ratio's payoff line is revealed by that control rather than by a fragment landing */
+.live-fig__ctl { margin: var(--space-4) 0 0; }
+.live-fig .ratio__punch { opacity: 0; transition: opacity 0.3s ease; }
+.live-fig .ratio__punch.is-on { opacity: 1; }
+.live-fig .ratio, .live-fig .matrix, .live-fig .sprint, .live-fig .cycle { margin-top: 0; width: 100%; }
+.live-fig .loop { margin-top: 0; }
+/* the deck sizes these for a wall; a paragraph needs them a notch down */
+.live-fig .ratio__punch { font-size: calc(var(--u) * 2.2); margin-top: calc(var(--u) * 2.5); }
+.live-fig .matrix__same { font-size: calc(var(--u) * 2); }
+.live-fig .sprint__count { font-size: calc(var(--u) * 2.8); }
+.live-fig .trap__lesson { font-size: calc(var(--u) * 2); }

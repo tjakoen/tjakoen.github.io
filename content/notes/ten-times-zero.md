@@ -149,6 +149,7 @@ like what it actually resembles: a fast, capable, occasionally overconfident jun
 student rushing through an activity for the sake of getting it done. The instant I framed it that way I got better at it overnight, because I already knew how to
 do *that.*
 
+<div class="live-fig" data-live-figure="matrix">
 <svg viewBox="0 0 620 250" width="100%" role="img"
      aria-label="Four titles, one skill set. A matrix of four roles (dev manager, tech lead, teacher of 150 to 300 students, and directing an AI) running the same moves. Give direction: a clear brief, the conventions, the lesson, a prompt with docs. Verify anyway: review the pull request, the design review, grade the work, read the output. Then all four do the same last move: correct the reasoning, not just the output. Same moves down every column; only the subject changes."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
@@ -178,8 +179,9 @@ do *that.*
   <text x="310" y="186" text-anchor="middle" style="fill:var(--ink);font-size:13px">Then all four: correct the reasoning, not just the output</text>
   <text x="28" y="232" style="fill:var(--accent);font-size:13px">Same moves down every column. Only the subject changes.</text>
 </svg>
+</div>
 
-*Four jobs, one muscle: give direction, verify anyway, then fix the reasoning instead of the output.* [Play with this one](/talks/ten-times-zero#14).
+*Four jobs, one muscle: give direction, verify anyway, then fix the reasoning instead of the output.*
 
 Some evenings I've got five to ten Claude sessions open at once, and it feels *exactly* like running a team:
 delegate the work, keep each agent productive, and stitch what comes out into something that works.
@@ -232,6 +234,7 @@ This repo has the inverse problem: there's about as much specification as there 
 
 I didn't tidy that up after the fact. It's the method. When you work with an AI at speed, the scarce resource stops being code and becomes *intent.* The model can't know what you meant, what the rules are, or what "done" looks like, unless you wrote it down. So I do. The documentation *is* the work, the code is the cheap part the machine handles.
 
+<div class="live-fig" data-live-figure="ratio">
 <svg viewBox="0 0 620 200" width="100%" role="img"
      aria-label="On this repo: 18,876 lines of code versus 17,610 lines of writing. 48% of everything written is words, not code. A marker shows where the writing bar would end at the 20% a room typically guesses, well short of where it actually ends."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
@@ -250,8 +253,9 @@ I didn't tidy that up after the fact. It's the method. When you work with an AI 
   <text x="266" y="152" style="fill:var(--muted);font-size:12px">where a room's guess of 20% would end</text>
   <text x="28" y="176" style="fill:var(--accent);font-size:13px">48% of everything written is words, not code.</text>
 </svg>
+</div>
 
-*About as much spec as implementation: the inverse of what vibe coding is supposed to look like.* [Play with this one](/talks/ten-times-zero#17).
+*About as much spec as implementation: the inverse of what vibe coding is supposed to look like.*
 
 One honest wrinkle, since I keep the receipts either way. When I first published this the same
 count read 56%, and the writing was ahead. It has since evened out, for a boring reason: the stack
@@ -290,6 +294,7 @@ sprint for ten hours and not wake up to a pile of nonsense isn't
 that I'm careful *instead* of fast. It's that I did the careful part *first*: I built the rails
 before I opened the throttle.
 
+<div class="live-fig" data-live-figure="sprint">
 <svg viewBox="0 0 620 160" width="100%" role="img"
      aria-label="One night, 4 July 2026: 50 commits from 9:08pm to 3:31am, about six and a half hours, roughly one commit every eight minutes, and 4,269 lines added. Every commit co-authored by a machine."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
@@ -353,8 +358,9 @@ before I opened the throttle.
   <text x="580" y="118" text-anchor="end" style="fill:var(--muted);font-size:12.5px">3:31am</text>
   <text x="28" y="146" style="fill:var(--accent);font-size:13px">4,269 lines added before it got light. Every commit co-authored.</text>
 </svg>
+</div>
 
-*Six and a half hours, fifty commits: fast is safe when the rails went up first.* [Play with this one](/talks/ten-times-zero#18).
+*Six and a half hours, fifty commits: fast is safe when the rails went up first.*
 
 ## The part that actually makes it professional
 
@@ -430,6 +436,7 @@ where the pieces the AI actually operates get a second doc written only for the 
 the thing, not how a human reads about it. You onboard this collaborator every time you spin up a new session, so you build
 the onboarding, make it excellent, and polish it as you go.
 
+<div class="live-fig" data-live-figure="loop">
 <svg viewBox="0 0 252 340" width="100%" role="img"
      aria-label="The working loop: rails (conventions and onboarding), memory (decisions carry over), a sync map (change propagates), audit (check, don't trust), and tests (the seatbelt), then back to the work."
      style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
@@ -468,8 +475,9 @@ the onboarding, make it excellent, and polish it as you go.
     <text x="222" y="170" transform="rotate(-90 222 170)">back to the work</text>
   </g>
 </svg>
+</div>
 
-*The loop is what keeps fast from turning into fragile.* [Play with this one](/talks/ten-times-zero#21).
+*The loop is what keeps fast from turning into fragile.*
 
 ### Two of those rules have proper names, and I didn't invent either
 
@@ -546,6 +554,7 @@ end-to-end runs, never "it probably looks right."
 The one-sentence version: *where the AI keeps slipping* is a map of where my design isn't clear yet,
 and I harden the design so neither of us slips there again.
 
+<div class="live-fig" data-live-figure="trap">
 <svg viewBox="0 0 231 340" width="100%" role="img"
      aria-label="Turning a mistake into a guardrail: the AI trips on a documented idiom; read it as a clarity signal, not a bug; find the silent-failure contract; design the misuse out; lock it with a test at human-equals-AI parity; and it becomes a permanent guardrail."
      style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
@@ -584,8 +593,9 @@ and I harden the design so neither of us slips there again.
     <text x="201" y="170" transform="rotate(-90 201 170)">becomes a permanent guardrail</text>
   </g>
 </svg>
+</div>
 
-*Every trip the AI takes is a map of where the design isn't clear yet, and a chance to harden it.* [Play with this one](/talks/ten-times-zero#25).
+*Every trip the AI takes is a map of where the design isn't clear yet, and a chance to harden it.*
 
 ## The tell is the ratio
 

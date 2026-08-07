@@ -11,12 +11,18 @@
 // already ships a dozen small vanilla islands (theme, cmdk, lightbox, tabs, terminal), and this is
 // one more of exactly that shape. The static fallback is what keeps the standard's real intent.
 import { MULTIPLIER_MARKUP, mountMultiplier } from "/site/figure-multiplier.js";
+import { mountRatio, mountMatrix, mountSprint, mountLoop, mountTrap } from "/site/figure-widgets.js";
 
 const BUILDERS = {
   multiplier: (host) => {
     host.innerHTML = MULTIPLIER_MARKUP;
     return mountMultiplier(host.querySelector("[data-mult]"));
   },
+  ratio: mountRatio,
+  matrix: mountMatrix,
+  sprint: mountSprint,
+  loop: mountLoop,
+  trap: mountTrap,
 };
 
 for (const host of document.querySelectorAll("[data-live-figure]")) {
