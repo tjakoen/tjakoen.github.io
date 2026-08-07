@@ -25,7 +25,7 @@ summary: >
 > Read that first; this one is the belief underneath it.
 
 > **There's a talk version of this**, built for a room full of students, and it's live:
-> [tjakoen.github.io/talks/ten-times-zero](/talks/ten-times-zero), or just [/talk](/talk) if you're typing it.
+> [tjakoen.github.io/talks/ten-times-zero](/talks/ten-times-zero).
 > Same argument, thirty-four slides, and the figures are real rather than pictures of figures. Drag
 > the multiplier to zero, run six sessions with and without the loop and watch the bill arrive, or
 > open a cold session with no brief and see what it does first. Arrow keys move it.

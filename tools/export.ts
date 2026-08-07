@@ -104,8 +104,7 @@ async function pageRoutes(): Promise<string[]> {
   // (server.ts fetch), so add it explicitly or the dead-link walk flags the About/résumé download link.
   // "/kickstart" is the short share-link twin of the MILL page /standards/kickstart (server.ts
   // serves the same rendered body); it is not a page file, so add it explicitly to freeze dist/kickstart/.
-  // "/talk" is the same shape: the one-word twin of the newest /talks/<slug>, for saying out loud.
-  const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference", "/cv", "/kickstart", "/talk"]);
+  const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference", "/cv", "/kickstart"]);
   return [...all].filter((r) => !OPERABLE.has(r)).sort();
 }
 

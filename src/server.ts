@@ -496,15 +496,6 @@ ${PAGE_ASSETS}</body>
       if (!hit) return new Response("Not found", { status: 404 });
       return finalizePage(new Request(new URL("/standards/kickstart", req.url), req), hit);
     },
-    // /talk — the short twin of the newest talk, same trick as /kickstart above. A URL you say out
-    // loud from a stage has to be short; a URL that has to survive the next talk has to be
-    // namespaced. This is both: /talks/<slug> is canonical and where every talk lives, and this
-    // one-word link points at whichever is current. Re-point it when a newer talk lands.
-    "/talk": async (req: Request) => {
-      const page = await servePage("/talks/ten-times-zero");
-      if (page.status !== 200) return new Response("Not found", { status: 404 });
-      return finalizePage(new Request(new URL("/talks/ten-times-zero", req.url), req), page);
-    },
     "/search.json": async () => {
       const titleOf = (p: string) => { const s = p === "/" ? "home" : p.replace(/^\//, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
       // the sitemap lists routes alphabetically; substitute the notes/ block for the SAME
