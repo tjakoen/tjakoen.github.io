@@ -256,15 +256,41 @@ failures we actually have:
 **(b) Self-reported — the run ledger, agent writes, PANTRY renders.** This is 11c, unblocked by S1's
 Verification sections.
 
-- [ ] Pin the run-report schema: which skills fired, the union of their verification checkboxes, gate
+> **S3b CLOSED 2026-08-07** (pantry `runs.ts` + `runs.test.ts`, the `runsDir` config key, a doctor
+> `run-report-evidence` warn, `artifacts/runs/README.md`; PLAN.md piece 11c). 29 new tests, tsc clean,
+> 212/215 suite green — the same 3 retrieval/app plan fixtures were red before this branch, confirmed
+> by stashing the change and re-running. The schema is LOOP §9 read literally: nine items, each
+> absent-or-present, no judgement call anywhere in the check.
+
+- [x] **DONE.** Pin the run-report schema: which skills fired, the union of their verification checkboxes, gate
       output **verbatim**, the diffstat, what was not done, what needs human eyes. LOOP.md §4a already
-      specifies the prose contract; this gives it a parseable shape.
-- [ ] Land reports at `artifacts/runs/<id>.md` — `artifacts/` already exists and is already served
+      specifies the prose contract; this gives it a parseable shape. **The nine §9 items map to nine
+      gap ids**; three of them are body headings (`Gate output`, `What was not done`, `What needs human
+      eyes`) matched loosely on case, punctuation and level, and `Gate output` must hold a non-empty
+      fenced block — prose where verbatim belongs is itself a gap. The S5 no-compression rule is
+      written into the schema doc as a rule, not a preference.
+      **One part of this bullet is deliberately NOT built: the union of the fired skills' own
+      Verification checkboxes.** The report carries `skills:` (which fired), and §9 is the universal
+      spine every run owes. Checking VOICE's or GRAPH's per-skill checkboxes on top would mean
+      resolving each fired standard out of canon and matching its checkbox text against the report,
+      which is a fuzzy match on prose — exactly the false-positive risk 9c warns about, and the same
+      reason `doc-symbol-drift` is scoped to backticked identifiers. Revisit when a run has actually
+      been slowed down by its absence.
+- [x] **DONE.** Land reports at `artifacts/runs/<id>.md` — `artifacts/` already exists and is already served
       (11e), so this needs no new tracked dir, same move as decisions living under `plans/`.
-- [ ] Frontmatter is the MILL-parseable subset (scalars + dash-lists), so the existing GRAIN adapter
-      renders the body with no new parser.
-- [ ] Doctor's 11c checks, now that the schema exists: report missing gate evidence, plan item claimed
-      with no checkpoint in N days, branch with no ledger entry.
+      Config key `runsDir`, default `<artifactsDir>/runs`.
+- [x] **DONE.** Frontmatter is the MILL-parseable subset (scalars + dash-lists), so the existing GRAIN adapter
+      renders the body with no new parser. A two-field entry uses 11d's `label | detail` pipe
+      convention (`gates: - bun test | 212 pass`).
+- [x] **DONE, and one of them computes.** Doctor's `run-report-evidence` (warn) names the two most
+      recent reports missing §9 items with their gaps and counts the rest; no runs dir at all is an
+      info naming where a report goes, so a host that never opted in is never nagged. The computed one
+      is **`scope-growth`**: `scope:` (declared envelope) versus `touched:` (what was hit), by prefix
+      compare. LOOP §4b's scope cap was a promise with nothing measuring it; now it has a number.
+- [ ] **Deferred to S3a, on purpose.** The other two 11c checks — plan item claimed with no checkpoint
+      in N days, branch with no ledger entry — are both age-based, and every threshold in this area is
+      one owner call. They land with uncommitted-age and unpushed-age rather than each inventing its
+      own number.
 
 **(c) The surface — where adherence becomes visible.**
 
@@ -343,9 +369,11 @@ logs, grep sweeps, doctor output across an estate. We generate a lot of that.
 lines rendered as 5 plus a retrieval hash) **and it corrupted the timestamps**: `2026-07-30` came back
 as `2026:7:30`. That is fine for scanning, and fatal for anything quoted or parsed.
 
-- [ ] **Never on run-report gate evidence.** LOOP.md §4a demands gate output *verbatim*. Compressed
-      output is not verbatim, and the timestamp mangling proves it can silently alter what it returns.
-      Write this into the S3b schema as a rule, not a preference.
+- [x] **DONE 2026-08-07, in the S3b schema.** Never on run-report gate evidence. LOOP.md §4a demands
+      gate output *verbatim*. Compressed output is not verbatim, and the timestamp mangling proves it
+      can silently alter what it returns. Written into `artifacts/runs/README.md` as a rule, not a
+      preference, and the evidence check rejects a gate section that is prose rather than a fenced
+      block — so the cheapest way to break the rule now fails a check.
 - [ ] **Never on prose or code.** Zero savings by design; calling it there is pure overhead.
 - [ ] **Where it may go:** an in-session convenience for scanning long repetitive tool output before
       reasoning over it. That is a harness habit, not estate infrastructure.
@@ -363,6 +391,10 @@ as `2026:7:30`. That is fine for scanning, and fatal for anything quoted or pars
       caveat while doing it.
 - [ ] LOOP.md §2 gains the verify *protocol* (CLAIM / EXTRACT / DOUBT / RECONCILE / STOP), and §4b's
       gate-red-twice gets the explicit cycle counter and escalation path.
+- [ ] **New, from S3b.** §4a says a run closes with a report and does not say where the report lands or
+      what shape it takes. It now has both (`artifacts/runs/<date>-<slug>.md`, the §9 items as
+      frontmatter keys and three required headings), and §9 should say so in one line rather than
+      leaving the convention to live only in PANTRY. Canon prose, so it waits for the owner's read.
 - [ ] Split the checklists out of AI-DEVELOPMENT.md (221 lines, definition-of-done inside) into
       loadable `references/`. Their progressive-disclosure split matches our own "load one file, not
       six" rule better than we currently manage.
