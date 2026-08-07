@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ten Times Zero Is Still Zero · the talk</title>
+  <meta name="description" content="The talk behind the post: AI multiplies what you already are, so become worth multiplying first. Thirty-four slides for students, with the receipts and the playbook, live and interactive.">
+</head>
+<!-- A TALK OWNS THE WINDOW. No app shell here on purpose: a file tree and a tab strip have no
+     business on a projector. `data-deck-only` is the page contract (view/components/pages/talk).
+     The deck is GRAIN's presentation organism; the figures on it are this talk's own, in
+     scripts/talk.js, hung off the organism's single seam. -->
+<body data-screen="talk" data-deck-only>
+
+<div class="presentation" data-present data-deck data-hash data-minutes="20" data-channel="tenxzero">
+
+  <div class="presentation__bar">
+    <p class="presentation__hint">← → move · <kbd>D</kbd> light/dark · <kbd>.</kbd> blank</p>
+  </div>
+
+  <!-- 1 ----------------------------------------------------------------- TITLE -->
+  <section class="presentation__slide" data-title="Title">
+    <p class="slide-eyebrow settles">A talk about working with AI</p>
+    <h1 class="slide-head" data-size="xl">Ten Times Zero Is Still&nbsp;Zero</h1>
+    <p class="slide-lede" data-grade="grain"><span data-type="Professional vibe coding, and why you cannot skip to the good part.">Professional vibe coding, and why you cannot skip to the good part.</span><span class="caret" data-caret hidden></span></p>
+    <hr class="slide-rule">
+    <p class="slide-sig settles"><b>Tjakoen Stolk</b> · engineering manager, tech lead, part-time software-engineering teacher</p>
+    <ul class="slide-notes" hidden>
+      <li>Land the title, then wait for the line to finish typing itself. Say nothing while it types.</li>
+      <li>"These slides are a component in a design system I built. Where you see the rougher typeface, a machine drafted the line. The clean one is mine. It stays honest all talk, and I am not going to point at it again."</li>
+      <li>Set the promise: one law, one confession, one receipt, one playbook you can steal.</li>
+    </ul>
+  </section>
+
+  <!-- 2 ----------------------------------------------------------------- THE INSULT -->
+  <section class="presentation__slide" data-title="Vibe coder is an insult">
+    <p class="slide-eyebrow settles">Let's start with the accusation</p>
+    <h2 class="slide-head settles">"Vibe coder."</h2>
+    <ul class="beats">
+      <li class="frag">Types a wish into a chat box.</li>
+      <li class="frag">Pastes back whatever comes out.</li>
+      <li class="frag">Ships a house of cards they couldn't explain if you held their coffee hostage.</li>
+      <li class="frag" data-grade="grain">Prompt and pray. No tests, no idea, no receipts.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>You know the tone. Somebody on this call has typed it as an insult this month.</li>
+      <li>Reveal the beats one at a time. Let the coffee line breathe, it usually gets the laugh.</li>
+      <li>Land "prompt and pray" flat. Do not sell it.</li>
+    </ul>
+  </section>
+
+  <!-- 3 ----------------------------------------------------------------- I CLAIM IT -->
+  <section class="presentation__slide" data-title="I claim it anyway">
+    <p class="slide-eyebrow settles">And yet</p>
+    <h2 class="slide-head settles">I call myself one anyway. I just add a word in&nbsp;front.</h2>
+    <p class="claim frag"><em>Professional</em> vibe coder.</p>
+    <p class="slide-lede frag">Which is the kind of claim that should turn up with evidence and not just vibes. So I did the one thing the label never does. I counted.</p>
+    <ul class="slide-notes" hidden>
+      <li>Own it. No defensiveness, no air quotes in the voice.</li>
+      <li>"Professional" is the whole talk. Everything after this is me earning that word.</li>
+      <li>Promise the number now, pay it off on slide 16. Do not leak it early.</li>
+    </ul>
+  </section>
+
+  <!-- 4 ----------------------------------------------------------------- THE NAPKIN -->
+  <section class="presentation__slide" data-title="The napkin: multiplier, not addend">
+    <p class="slide-eyebrow settles">The belief underneath everything</p>
+    <h2 class="slide-head settles" data-size="sm">AI doesn't <em>add</em> to what you can do. It <em>multiplies</em>&nbsp;it.</h2>
+
+    <div class="mult" data-mult>
+      <div class="mult__row">
+        <span class="mult__label">what you bring</span>
+        <span class="mult__track"><span class="mult__fill" data-mult-you style="width:18%"></span></span>
+        <span class="mult__val" data-mult-you-val>6</span>
+      </div>
+      <div class="mult__row">
+        <span class="mult__label">× the same AI</span>
+        <span class="mult__track"><span class="mult__fill" style="width:30%"></span></span>
+        <span class="mult__val">10</span>
+      </div>
+      <div class="mult__row">
+        <span class="mult__label">= what ships</span>
+        <span class="mult__track">
+          <span class="mult__fill mult__fill--out" data-mult-out style="width:60%"></span>
+          <span class="mult__gap" data-mult-gap hidden><i></i><b>the gap AI opened</b></span>
+        </span>
+        <span class="mult__val" data-mult-out-val>60</span>
+      </div>
+      <p class="mult__control">
+        <label for="mult-range" class="mult__label">drag me</label>
+        <input id="mult-range" type="range" min="0" max="10" step="1" value="6" data-mult-input>
+      </p>
+      <p class="mult__verdict" data-mult-verdict>A decent developer with an AI is a frighteningly fast developer.</p>
+    </div>
+
+    <ul class="slide-notes" hidden>
+      <li>THE centrepiece. Slow down here. Drag the slider up first: "watch the gap open."</li>
+      <li>Then drag it to zero and hold one beat. Let them read the output bar sitting at nothing. Dead air reads as a frozen stream, so one beat, not two.</li>
+      <li>"Same tool. Same prompt. Same model. The variable was never the AI."</li>
+      <li>If the chat is warm, ask them to type where they think they sit. Do not push it.</li>
+    </ul>
+  </section>
+
+  <!-- 5 ----------------------------------------------------------------- SAME TOOL -->
+  <section class="presentation__slide" data-align="top" data-title="Same tool, different result">
+    <p class="slide-eyebrow settles">The same tool, twice</p>
+    <div class="twohands">
+      <svg class="fig" viewBox="0 0 420 260" role="img"
+           aria-label="One identical AI feeds two people. The strong developer's output is a large solid block, shipped and understood. The beginner's is a small block plus a scatter of bugs they cannot tell apart."
+           style="font-size:13px">
+        <defs>
+          <marker id="th-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+          </marker>
+        </defs>
+        <!-- the one tool, dead centre and identical for both -->
+        <rect x="18" y="108" width="118" height="44" rx="6" data-draw style="--draw-len:330;fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+        <text x="77" y="135" text-anchor="middle" data-lit style="fill:var(--color-fg)">the same AI</text>
+        <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+          <path d="M136 130 L176 130 L176 58 L214 58" marker-end="url(#th-a)" data-draw style="--draw-len:180"/>
+          <path d="M136 130 L176 130 L176 200 L214 200" marker-end="url(#th-a)" data-draw style="--draw-len:180"/>
+        </g>
+        <!-- a strong developer: one big solid block -->
+        <text x="214" y="26" data-lit style="fill:var(--color-muted)">a strong developer</text>
+        <rect x="214" y="36" width="188" height="44" rx="4" data-lit style="fill:var(--color-fg)"/>
+        <text x="308" y="63" text-anchor="middle" data-lit style="fill:var(--color-bg)">shipped, and understood</text>
+        <!-- a beginner: a small block and a scatter of bugs that all look the same -->
+        <text x="214" y="168" data-lit style="fill:var(--color-muted)">a beginner</text>
+        <rect x="214" y="178" width="56" height="44" rx="4" data-lit style="fill:var(--color-line);stroke:var(--color-muted)"/>
+        <g data-lit style="fill:var(--color-muted)">
+          <circle cx="290" cy="186" r="4"/><circle cx="314" cy="203" r="4"/><circle cx="340" cy="184" r="4"/>
+          <circle cx="366" cy="208" r="4"/><circle cx="294" cy="218" r="4"/><circle cx="336" cy="220" r="4"/>
+          <circle cx="392" cy="190" r="4"/><circle cx="368" cy="176" r="4"/>
+        </g>
+        <text x="214" y="246" data-lit style="fill:var(--color-muted)">bugs, faster, and no way to</text>
+        <text x="214" y="260" data-lit style="fill:var(--color-muted)">tell which is which</text>
+      </svg>
+      <ul class="beats" data-size="sm">
+        <li class="frag">A strong developer plus an AI is a frighteningly fast strong developer.</li>
+        <li class="frag">A beginner plus the same AI ships bugs faster and can't tell which ones they are.</li>
+        <li class="frag" data-grade="grain">So "just use AI" is terrible advice for a beginner, and "never use AI" is terrible advice for a professional.</li>
+      </ul>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>This is the slide that makes people uncomfortable, which is the job.</li>
+      <li>Be kind about it. Nobody chose to be early in their career.</li>
+      <li>Bridge: "the honest answer is in the middle, and it has an order of operations."</li>
+    </ul>
+  </section>
+
+  <!-- 6 ----------------------------------------------------------------- PULL QUOTE -->
+  <section class="presentation__slide" data-align="center" data-title="Become worth multiplying first">
+    <p class="quote-mark settles">The order of operations</p>
+    <p class="quote settles">Become worth multiplying first.</p>
+    <ul class="slide-notes" hidden>
+      <li>One line on the screen. Say it, then hold one beat: "read that twice."</li>
+      <li>This is the sentence they will still have on Monday. Earn the silence.</li>
+    </ul>
+  </section>
+
+  <!-- 7 ----------------------------------------------------------------- WHAT THE NUMBER IS MADE OF -->
+  <section class="presentation__slide" data-align="top" data-title="What the first number is made of">
+    <p class="slide-eyebrow settles">Worth multiplying is a number. Here is what it is made of</p>
+    <h2 class="slide-head settles" data-size="sm">Not years. Four&nbsp;things.</h2>
+    <div class="bring" data-bring>
+      <ul class="bring__list">
+        <li><button class="bring__item" type="button" data-bring-item aria-pressed="false">
+          <b>You know what done looks like</b>
+          <span>so you can tell a finished answer from a plausible one</span></button></li>
+        <li><button class="bring__item" type="button" data-bring-item aria-pressed="false">
+          <b>You can smell a wrong answer before you run it</b>
+          <span>the pause before you paste. That pause is the whole job</span></button></li>
+        <li><button class="bring__item" type="button" data-bring-item aria-pressed="false">
+          <b>You have been burned by this exact thing</b>
+          <span>once. At night. In production. You only need it once</span></button></li>
+        <li><button class="bring__item" type="button" data-bring-item aria-pressed="false">
+          <b>You can say why, not just what</b>
+          <span>out loud, to a person, without the tab open</span></button></li>
+      </ul>
+      <div class="bring__meter">
+        <p class="bring__num"><span data-bring-val>0</span><i>what you bring</i></p>
+        <span class="bring__track"><span class="bring__fill" data-bring-fill style="width:0%"></span></span>
+        <p class="bring__verdict" data-bring-verdict data-grade="grain">Nothing ticked, and the machine is still a ten. Ten times zero.</p>
+        <p class="bring__foot">Not one of these can be bought, installed, or prompted for. That is the bad news and it is also the good news.</p>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Tick them one at a time as you say them, and let the number climb. Same bar as slide 4, on purpose. Do not explain the callback, they will feel it.</li>
+      <li>After each one, ask out loud: "can the model supply that one for me?" The answer is no four times. Let them hear the pattern before you name it.</li>
+      <li>"Every one of those is a scar. That is the honest word for experience."</li>
+      <li>Kill the word 'years' if it comes up in the chat. A careless five years is a smaller number than a deliberate one. That is the good news in this room.</li>
+      <li>Bridge into the confession: "I know the price of that list, because I paid it the slow way."</li>
+    </ul>
+  </section>
+
+  <!-- 8 ----------------------------------------------------------------- THE LIFE GRID -->
+  <section class="presentation__slide" data-align="top" data-title="I was the zero, for years">
+    <p class="slide-eyebrow settles">The confession</p>
+    <h2 class="slide-head settles" data-size="sm">I was the zero. For&nbsp;years.</h2>
+    <div class="years" data-years>
+      <!-- the dot matrix as a life grid: eleven years of months, and what I spent them on.
+           talk.js fills the columns and lights each row's span as it lands. The first row is the
+           one that was working, which is the whole reason the rest of the slide stings. -->
+      <div class="years__side">
+        <div class="years__grid" data-years-grid aria-hidden="true"></div>
+        <p class="years__cap">eleven years, one dot per month</p>
+      </div>
+      <div class="years__key">
+        <p class="years__row frag" data-span="0,12"><b>Torocloud, part time, still a student</b><span>my first engineering job, and I left it</span></p>
+        <p class="years__row frag" data-span="12,38"><b>Family campsite, grown into a resort</b><span>a pandemic flattened it</span></p>
+        <p class="years__row frag" data-span="38,56"><b>Marketing, for someone else's company</b><span>only works if it is mine</span></p>
+        <p class="years__row frag" data-span="56,74"><b>A cafe, with friends</b><span>broke even</span></p>
+        <p class="years__row frag" data-span="74,92"><b>A salon, with friends</b><span>sold at break-even</span></p>
+        <p class="years__row frag" data-span="92,110"><b>A marketing firm, on my own</b><span>went nowhere</span></p>
+        <p class="years__row frag" data-span="110,132"><b>An events platform, real money</b><span>ended badly</span></p>
+        <p class="years__total frag" data-grade="grain">Real money, and a few years I can't get back.</p>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Start on the first row and let it be the good news: a real engineering job, part time, while I was still a student. Same position half this room is in right now.</li>
+      <li>Then the turn, flat and without excuses: "I left it. I was sure the interesting things were somewhere else."</li>
+      <li>Deliver the rest flat too. No drama, no sad music. The weight is in the dots filling up.</li>
+      <li>Set it up: "for most of my twenties I was a talented amateur with just enough instinct to talk my way into rooms I had no business being in."</li>
+      <li>"It worked. That is the trap. It worked just enough to keep me doing it."</li>
+      <li>Do not skip the wink: "it turns out you cannot tell your friends what to do."</li>
+      <li>Point at the grid on the last beat. That is eleven years, one dot per month, and one of those rows was the job I already had.</li>
+    </ul>
+  </section>
+
+  <!-- 9 ----------------------------------------------------------------- THE COMMON CAUSE -->
+  <section class="presentation__slide" data-title="It wasn't the ideas">
+    <p class="slide-eyebrow settles">Every single one had the same root cause</p>
+    <h2 class="slide-head settles">It wasn't the ideas.</h2>
+    <p class="claim frag">It was me.</p>
+    <p class="slide-lede frag">I kept starting things I wasn't the right person to start yet.</p>
+    <ul class="slide-notes" hidden>
+      <li>Two beats. "It wasn't the ideas" ... hold ... "It was me."</li>
+      <li>Then bank the lesson and move on. No wallowing, that's the rule.</li>
+    </ul>
+  </section>
+
+  <!-- 10 ---------------------------------------------------------------- PULL QUOTE -->
+  <section class="presentation__slide" data-align="center" data-title="Be the right person first">
+    <p class="quote-mark settles">The maxim it cost me to learn</p>
+    <p class="quote settles">You have to be the right person before you try the&nbsp;thing.</p>
+    <ul class="slide-notes" hidden>
+      <li>"I paid the tuition on that one so you don't have to."</li>
+      <li>Audience is students. This is the line aimed straight at them.</li>
+    </ul>
+  </section>
+
+  <!-- 11 ---------------------------------------------------------------- THE UNGLAMOROUS THING -->
+  <section class="presentation__slide" data-align="top" data-title="So I did the unglamorous thing">
+    <p class="slide-eyebrow settles">What I did about it</p>
+    <h2 class="slide-head settles" data-size="sm">I stopped chasing the next launch and fixed the one variable I could actually&nbsp;fix.</h2>
+    <div class="did">
+      <ul class="beats" data-size="sm">
+        <li class="frag">Slowed down.</li>
+        <li class="frag">Learned the foundations properly, not just enough to pass.</li>
+        <li class="frag">Shoved myself into the parts I was worst at. Teaching. Standing on a stage.</li>
+        <li class="frag" data-grade="grain">Which is going great, thanks for asking.</li>
+      </ul>
+      <!-- one artefact per beat, and it is the SAME line of code all three times: shipped without
+           understanding, then understood, then defended out loud. The cards are absolutely
+           positioned inside a fixed box, so swapping one never moves the beats on the left. -->
+      <div class="did__cards" data-did>
+        <figure class="did__card" data-did-card="1">
+          <p class="did__lab">what I used to ship</p>
+          <pre class="did__code">const ranking = scores.sort()</pre>
+          <figcaption>Tests green. Nobody asked. I could not have told you what <b>sort</b> compares.</figcaption>
+        </figure>
+        <figure class="did__card" data-did-card="2">
+          <p class="did__lab">what an afternoon of actually reading found</p>
+          <pre class="did__code">[10, 9, 1].sort()
+<i>// [1, 10, 9]</i></pre>
+          <figcaption>It sorts them as text, not as numbers. Every language has a handful of these, and you can use them for years before one bites.</figcaption>
+        </figure>
+        <figure class="did__card" data-did-card="3">
+          <p class="did__lab">what teaching does to you</p>
+          <pre class="did__code">"Sir, why is it 1, 10, 9?"</pre>
+          <figcaption>Twenty faces waiting. That is the moment you find out whether you know a thing or just use it.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Same line of code on all three cards. Say that out loud on the second one, it is the point of the panel.</li>
+      <li>Card 1: "I shipped that. It passed. It was also wrong the moment a score hit double digits, and I would not have caught it."</li>
+      <li>Card 2: ask the room what it prints before you reveal. Somebody always says 1, 9, 10. Let them be wrong, kindly.</li>
+      <li>Card 3: "Using something and being able to teach it are two different jobs. Only one of them survives a question."</li>
+      <li>The last beat is the joke, and it is at your own expense. Underplay it.</li>
+      <li>"That is my definition of professional. Not the title. The journey that lets me stand here and say this."</li>
+    </ul>
+  </section>
+
+  <!-- 12 ---------------------------------------------------------------- WHO'S TALKING -->
+  <section class="presentation__slide" data-title="So we're clear who's talking">
+    <p class="slide-eyebrow settles">Mileage, not medals</p>
+    <h2 class="slide-head settles" data-size="sm">I could have written every line of this by&nbsp;hand.</h2>
+    <ul class="beats" data-size="sm">
+      <li class="frag">I run a team of developers, which is mostly reading other people's code and finding the problems politely.</li>
+      <li class="frag">I teach, on a platform I built because the grading was about to bury me.</li>
+      <li class="frag" data-frag="dim">And zero credentials in AI. What I have is a long list of ways I've been wrong.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Price each item, never list them clean. The point is placement on the multiplier, not applause.</li>
+      <li>If someone asks what the slides are running on, the answer is one HTML file, no build step, no framework. Do not volunteer it, it costs a minute.</li>
+      <li>The credentials admission is load-bearing. It buys everything after it.</li>
+    </ul>
+  </section>
+
+  <!-- 13 ---------------------------------------------------------------- CAN'T VS CAN -->
+  <section class="presentation__slide" data-align="center" data-title="Because I can, not because I can't">
+    <p class="quote-mark settles">The whole difference in one line</p>
+    <p class="quote settles">A beginner vibe codes because they <em>can't</em> write the code. I vibe code because I <em>can</em>.</p>
+    <p class="slide-lede frag" style="text-align:center;margin-left:auto;margin-right:auto;">The typing was never the valuable part.</p>
+    <ul class="slide-notes" hidden>
+      <li>"I'm not skipping the hard part. I did the hard part years ago, the boring way and the expensive way."</li>
+      <li>The value is knowing what to build, how it should be shaped, and when the machine has quietly done something dumb.</li>
+    </ul>
+  </section>
+
+  <!-- 14 ---------------------------------------------------------------- THE MATRIX -->
+  <section class="presentation__slide" data-align="top" data-title="A decade of rehearsal, billed as management">
+    <p class="slide-eyebrow settles">Directing an AI is not a new skill</p>
+    <h2 class="slide-head settles" data-size="sm">Four titles. One skill&nbsp;set.</h2>
+    <table class="matrix" data-matrix>
+      <colgroup><col><col data-col="0"><col data-col="1"><col data-col="2"><col data-col="3"></colgroup>
+      <thead>
+        <tr>
+          <th></th>
+          <th><button class="matrix__pick" type="button" data-pick="0" aria-pressed="false">Dev manager</button></th>
+          <th><button class="matrix__pick" type="button" data-pick="1" aria-pressed="false">Tech lead</button></th>
+          <th><button class="matrix__pick" type="button" data-pick="2" aria-pressed="false">Teacher</button></th>
+          <th><button class="matrix__pick" type="button" data-pick="3" aria-pressed="false">AI</button></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Give direction</td><td>a clear brief</td><td>the conventions</td><td>the lesson</td><td>a prompt plus docs</td></tr>
+        <tr><td>Verify anyway</td><td>review the PR</td><td>design review</td><td>grade the work</td><td>read the output</td></tr>
+      </tbody>
+    </table>
+    <p class="matrix__same frag" data-grade="grain">Then all four do the same last move: <b>correct the reasoning, not just the output.</b></p>
+    <ul class="slide-notes" hidden>
+      <li>Click across the columns as you say them. Same moves down every column, only the subject changes.</li>
+      <li>"So I stopped treating the model like a magic oracle and started treating it like a fast, capable, occasionally overconfident junior on my team."</li>
+      <li>Some evenings I have five to ten sessions open at once. It feels exactly like running a team.</li>
+      <li>Pull quote to say aloud: "I'm not learning a new skill with AI. I'm spending the one I already paid for."</li>
+    </ul>
+  </section>
+
+  <!-- 15 ---------------------------------------------------------------- ONE RULE -->
+  <section class="presentation__slide" data-align="center" data-title="If you can't explain it, you didn't build it">
+    <p class="quote-mark settles">My one rule for students, turned on the machine</p>
+    <p class="quote settles">If you can't explain it, you didn't build&nbsp;it.</p>
+    <ul class="slide-notes" hidden>
+      <li>This is the rule they already know from your class, if any of them are yours.</li>
+      <li>Point out it applies identically to a junior's PR, a student's submission, and a model's output.</li>
+    </ul>
+  </section>
+
+  <!-- 16 ---------------------------------------------------------------- THE RECEIPTS -->
+  <section class="presentation__slide" data-title="The receipts">
+    <p class="slide-eyebrow settles">Enough belief. Here is the evidence</p>
+    <h2 class="slide-head settles" data-size="sm">Seven repositories. Six weeks. 822&nbsp;commits.</h2>
+    <p class="slide-lede frag">My portfolio, tjakoen.github.io, and the six repositories standing behind it: a design system, a data layer, a documentation cockpit, a testing dashboard. Not demo repos. Not tutorials. The things I actually build on, and the thing these slides run on.</p>
+    <p class="slide-lede frag" data-frag="dim">Counted straight out of git, 27 June to 7 August. And 822 is not a brag, it is a denominator. What matters is what is inside them, which is the next slide.</p>
+    <ul class="slide-notes" hidden>
+      <li>Say the domain out loud and say it twice. Half the room will type it, and everything on the next three slides can be checked there.</li>
+      <li>Kill the applause before it starts: "the count is not the achievement. Anybody can make commits. The next slide is the one I care about."</li>
+      <li>Be scrupulous with the dates. Honesty is the credibility, and somebody will check.</li>
+      <li>Then set up the number: "there is one number in here that reframes everything else."</li>
+    </ul>
+  </section>
+
+  <!-- 17 ---------------------------------------------------------------- THE RATIO -->
+  <section class="presentation__slide" data-align="top" data-cede="ArrowUp ArrowDown" data-title="The one number that matters (guess, then reveal)">
+    <p class="slide-eyebrow settles">Guess before I show you</p>
+    <h2 class="slide-head settles" data-size="sm">How much of the portfolio repo is <em>writing</em>, and how much is&nbsp;code?</h2>
+    <div class="ratiowrap">
+      <!-- the actual root of the repo, so the ratio stops being a statistic and becomes a place -->
+      <pre class="tree" aria-label="The top level of the portfolio repository. Seven of its entries hold writing, one holds the code."><b>tjakoen.github.io/</b>
+<i>CLAUDE.md</i>       how to work in here
+<i>README.md</i>
+<i>docs/</i>           the why, and the map
+<i>standards/</i>      the rules, published
+<i>plans/</i>          what is being built, and why
+<i>content/</i>        the notes and the pages
+src/            <u>the code</u>
+e2e/            the end-to-end run
+scripts/
+<s>the lit ones are writing</s></pre>
+      <div class="ratio" data-ratio>
+        <div class="ratio__bar">
+          <span class="ratio__code" data-ratio-code style="width:100%"></span>
+          <span class="ratio__prose" data-ratio-prose style="width:0%"></span>
+          <span class="ratio__guess" data-ratio-guess data-label="the room says: 20%" style="left:20%"></span>
+        </div>
+        <p class="ratio__keys">
+          <span><b>code</b> <span data-ratio-code-val>18,876</span> lines</span>
+          <span class="ratio__nudge">↑ ↓ to move the guess</span>
+          <span><b>writing</b> <span data-ratio-prose-val>0</span> lines</span>
+        </p>
+        <p class="ratio__punch frag" data-grade="grain"><b>48% of that repo is writing, not code.</b> Plans, conventions, decisions, and notes to whoever opens it next.</p>
+      </div>
+    </div>
+    <p class="slide-lede frag">Why that is not waste: typing is the cheap part now. Deciding what should exist is the expensive part, and it has to be written somewhere the machine can read it.</p>
+    <p class="slide-lede frag" data-frag="dim">Across all seven repositories, one line in three is documentation.</p>
+    <ul class="slide-notes" hidden>
+      <li>Ask for guesses first and move the marker with ↑ / ↓ as they come in. More people will type a number than would ever shout one.</li>
+      <li>Say "writing", never "prose". Half the room will not know the word and none of them will admit it.</li>
+      <li>Press → to reveal. The writing bar comes up level with the code bar, from a room that guessed twenty. That gap is the whole talk in one animation.</li>
+      <li>The honest footnote, if anybody pushes: this counts committed files only, because that is the number they can check. Count the plans and agent notes that are deliberately not committed and it goes past half. I use the smaller number on purpose.</li>
+      <li>"This is the exact opposite of what vibe coding is supposed to look like."</li>
+      <li>Do not skip the why beat. Without it this is just a weird statistic. With it, it is the method: at speed the scarce thing stops being code and becomes intent.</li>
+      <li>Make it concrete for students: the writing is what you would have had to explain to a new teammate anyway. You are just doing it before the work instead of after, and the machine is the teammate.</li>
+      <li>If somebody challenges the count, agree instantly and give them the method. It is a rough line count, and the ratio survives any fair way of counting.</li>
+    </ul>
+  </section>
+
+  <!-- 18 ---------------------------------------------------------------- THE SPRINT -->
+  <section class="presentation__slide" data-align="top" data-steps="1" data-title="And I do go fast">
+    <p class="slide-eyebrow settles">If that made me sound slow and fussy</p>
+    <h2 class="slide-head settles" data-size="sm">One overnight sprint.</h2>
+    <div class="sprint" data-sprint>
+      <div class="sprint__line" data-sprint-line><span class="sprint__night"></span></div>
+      <p class="sprint__ends"><span>9:08pm</span><span>the small hours</span><span>3:31am</span></p>
+      <p class="sprint__count"><span data-sprint-count>0</span> / 50 commits</p>
+      <p class="sprint__note">The night of 4 July. One commit every eight minutes, 4,269 lines added before it got light, every one of them co-authored with a machine.</p>
+    </div>
+    <p class="slide-lede frag" data-grade="grain">Small commits, on purpose. Each one is a thing that already works, which is what makes the next one cheap to check.</p>
+    <ul class="slide-notes" hidden>
+      <li>Press → and let it play. Don't talk over the first few ticks.</li>
+      <li>Somebody is thinking "fifty commits means fifty tiny meaningless commits." Say it for them, then answer it: small is the point, because a commit you can check in a minute is a commit you actually check.</li>
+      <li>Co-authored is the honest word. Two sets of hands on every commit, I still write plenty myself.</li>
+      <li>"Both things are true at once, and that is the entire point. Fast and documented."</li>
+      <li>Do not explain WHY the night was possible here. That is the next slide, and it lands harder as its own line.</li>
+    </ul>
+  </section>
+
+  <!-- 19 ---------------------------------------------------------------- RAILS FIRST -->
+  <section class="presentation__slide" data-align="center" data-title="Rails before throttle">
+    <p class="quote-mark settles">Why ten hours doesn't end in a pile of nonsense</p>
+    <p class="quote settles">You don't tell a fast driver to be careful. You build the&nbsp;track.</p>
+    <p class="slide-lede frag" style="text-align:center;margin-left:auto;margin-right:auto;">I'm not careful <em>instead</em> of fast. I did the careful part <em>first</em>.</p>
+    <ul class="slide-notes" hidden>
+      <li>The bridge from receipts into the playbook. Keep it short, they want the how now.</li>
+    </ul>
+  </section>
+
+  <!-- 20 ---------------------------------------------------------------- THE DISTINCTION -->
+  <section class="presentation__slide" data-title="Amateur vs professional">
+    <p class="slide-eyebrow settles">The distinction that actually matters</p>
+    <ul class="beats">
+      <li>Amateur vibe coding is <em>unstructured improvisation</em>.</li>
+      <li class="frag">Professional vibe coding is <em>structured delegation</em>.</li>
+      <li class="frag" data-grade="grain">Same tools. Same speed. Wildly different scaffolding.</li>
+    </ul>
+    <p class="claim frag">The machine typed. I engineered.</p>
+    <ul class="slide-notes" hidden>
+      <li>It has nothing to do with whether you use AI, or how fast you type.</li>
+      <li>"I don't make the AI reliable with cleverer prompts. I make it reliable by building an environment where good work is the path of least resistance."</li>
+      <li>"And that environment is a system, which means you can copy it. Here it is."</li>
+    </ul>
+  </section>
+
+  <!-- 21 ---------------------------------------------------------------- THE PLAYBOOK LOOP -->
+  <section class="presentation__slide" data-align="top" data-title="The playbook: six rules, one loop">
+    <p class="slide-eyebrow settles">Steal this</p>
+    <h2 class="slide-head settles" data-size="sm">The playbook is a <em>loop</em>.</h2>
+    <div class="loop" data-loop>
+      <div class="loop__ring">
+        <svg class="fig" viewBox="0 0 320 320" aria-hidden="true">
+          <circle cx="160" cy="160" r="118" style="fill:none;stroke:var(--color-line);stroke-width:1.5"/>
+          <!-- the ring draws itself clockwise, so the loop reads as a direction and not a decoration -->
+          <circle cx="160" cy="160" r="118" data-draw
+                  style="--draw-len:742;fill:none;stroke:var(--color-fg);stroke-width:2;transition-duration:1.5s"/>
+          <!-- three arrowheads riding the ring, so the loop reads as a direction, not a decoration -->
+          <g data-lit style="fill:var(--color-fg)">
+            <polygon points="152,34 168,42 152,50"/>
+            <polygon points="152,34 168,42 152,50" transform="rotate(120 160 160)"/>
+            <polygon points="152,34 168,42 152,50" transform="rotate(240 160 160)"/>
+          </g>
+        </svg>
+        <button class="loop__node" type="button" data-node="0" aria-expanded="false"><span>01</span>Rails</button>
+        <button class="loop__node" type="button" data-node="1" aria-expanded="false"><span>02</span>Memory</button>
+        <button class="loop__node" type="button" data-node="2" aria-expanded="false"><span>03</span>Sync map</button>
+        <button class="loop__node" type="button" data-node="3" aria-expanded="false"><span>04</span>Audit</button>
+        <button class="loop__node" type="button" data-node="4" aria-expanded="false"><span>05</span>Tests</button>
+        <button class="loop__node" type="button" data-node="5" aria-expanded="false"><span>06</span>Docs</button>
+        <p class="loop__hub">keeps fast<br>from turning<br>into fragile</p>
+      </div>
+      <div class="loop__detail" data-loop-detail>
+        <ol class="loop__all">
+          <li>Write the rails before the features</li>
+          <li>Give the AI a memory</li>
+          <li>Make change propagate: keep a sync map</li>
+          <li>Audit relentlessly</li>
+          <li>Tests are part of the work</li>
+          <li>Document for the machine, on purpose</li>
+        </ol>
+        <div class="loop__card" data-card="0" hidden><h3>Write the rails before the features</h3><p>A conventions doc and an onboarding doc written <em>for</em> the AI, before a line of features. Any model or human joining reads the same "here is how this works, here is what not to touch."</p></div>
+        <div class="loop__card" data-card="1" hidden><h3>Give the AI a memory</h3><p>Twenty-odd small decision records of <em>why</em> things are the way they are. Next session it inherits the reasoning instead of relitigating it, or worse, quietly undoing it.</p></div>
+        <div class="loop__card" data-card="2" hidden><h3>Make change propagate: keep a sync map</h3><p>The failure mode of fast AI work isn't bad code, it's drift. An explicit "when you change this, also update that" table turns "don't forget" into a checklist a machine can follow.</p></div>
+        <div class="loop__card" data-card="3" hidden><h3>Audit relentlessly</h3><p>A model earns <em>more</em> scrutiny than a junior, not less, because it's fluent enough to sound right exactly when it's wrong. Most of my prompting isn't "build this." It's "check this."</p></div>
+        <div class="loop__card" data-card="4" hidden><h3>Tests are part of the work</h3><p>Three tiers, written <em>as</em> features, not bolted on after. Type-checker and suite green before anything is done. The least glamorous rule, and the seatbelt that lets me drive fast.</p></div>
+        <div class="loop__card" data-card="5" hidden><h3>Document for the machine, on purpose</h3><p>The AI is a first-class reader, so write <em>for</em> it, not around it. You onboard this collaborator every time you open a session, so build the onboarding and polish it as you go.</p></div>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Do NOT walk all six. Open 04 and 05, decided in advance, and stop.</li>
+      <li>For students, node 04 and node 05 are the ones that matter. Spend your time there.</li>
+      <li>Callback while the ring draws: "you don't tell a fast driver to be careful, you build the track."</li>
+      <li>Close it on the hub: it is a loop, and the loop is what keeps fast from turning into fragile.</li>
+    </ul>
+  </section>
+
+  <!-- 22 ---------------------------------------------------------------- CONTEXT ENGINEERING -->
+  <section class="presentation__slide" data-align="top" data-title="Your prompt is not the input">
+    <p class="slide-eyebrow settles">The one everybody gets wrong first</p>
+    <h2 class="slide-head settles" data-size="sm">Your prompt is not the&nbsp;input.</h2>
+    <div class="ctx" data-ctx>
+      <ul class="ctx__files">
+        <li><button class="ctx__file" type="button" data-ctx-file="brief" aria-pressed="false">CLAUDE.md <i>what this project is</i></button></li>
+        <li><button class="ctx__file" type="button" data-ctx-file="conv" aria-pressed="false">CONVENTIONS.md <i>how we write it here</i></button></li>
+        <li><button class="ctx__file" type="button" data-ctx-file="sync" aria-pressed="false">SYNC-MAP.md <i>what moves with what</i></button></li>
+      </ul>
+      <div class="ctx__run">
+        <p class="ctx__lab">cold session, no history, one sentence</p>
+        <p class="ctx__prompt">&gt; add pagination to the notes list</p>
+        <p class="ctx__lab">what it does first</p>
+        <p class="ctx__out" data-ctx-out data-good="0">Guesses the stack. Invents a folder. Writes React into a repo that has never had any.</p>
+      </div>
+    </div>
+    <p class="ctx__test frag" data-grade="grain">Same prompt every time. The only thing that changed was the room it walked into.</p>
+    <ul class="slide-notes" hidden>
+      <li>Start with all three off and read the output flat. Somebody will laugh, because everybody has had that session.</li>
+      <li>Name the trap: "everyone's instinct is to fix that with a better prompt. That is the amateur move, and I made it for months."</li>
+      <li>The line to land slowly: I stopped prompting harder and started leaving better notes.</li>
+      <li>Turn on the first two, then pause before the third. The third is the one nobody has, and it is the one that stops drift.</li>
+      <li>Student translation, say it out loud: one file at the root saying what this is, how it is built, and what not to touch. Twenty minutes, once, and every session after it starts smarter. That is the entire beginner version.</li>
+      <li>Give them the test: open a cold session, no history, one sentence. If it starts wrong, the gap is yours, not the model's.</li>
+    </ul>
+  </section>
+
+  <!-- 23 ---------------------------------------------------------------- LOOP ENGINEERING -->
+  <section class="presentation__slide" data-align="top" data-title="The prompt is the small part">
+    <p class="slide-eyebrow settles">Why the playbook is a ring and not a list</p>
+    <h2 class="slide-head settles" data-size="sm">A prompt is one turn. The loop is what happens on the other ninety&#8209;nine.</h2>
+    <!-- the four moves, named, because "the loop" on its own is a word and not an instruction -->
+    <ol class="moves">
+      <li><b>Brief</b><span>what to build, what not to touch</span></li>
+      <li><b>Build</b><span>it types, you read every line</span></li>
+      <li><b>Verify</b><span>types, tests, an end-to-end run, and somebody who is not you</span></li>
+      <li><b>Record</b><span>what changed, where the next session looks</span></li>
+    </ol>
+    <p class="claim frag" data-grade="grain">Skip <em>verify</em> once and nothing happens. Skip it for a week and you cannot answer a single question about your own code.</p>
+    <ul class="slide-notes" hidden>
+      <li>Walk the four, and spend your time on VERIFY. The other three are admin. Verify is the one that decides whether any of this was real.</li>
+      <li>Verify is not a feeling. It is four concrete things: the type-checker, the unit tests, an end-to-end run against the real thing, and somebody who is not you reading it.</li>
+      <li>"I wrote it and I checked it" is one pass, not two. A fresh session, a colleague, or a test is the second one. Otherwise you are marking your own homework.</li>
+      <li>Where students feel this: the day-two problem. You come back and it has no idea what you agreed yesterday. That is not a memory bug, that is a loop you never built.</li>
+      <li>Do not let it sound like process for its own sake. Every move in there exists because I lost a night to skipping it.</li>
+    </ul>
+  </section>
+
+  <!-- 23b --------------------------------------------------------------- THE SAME WEEK, TWICE -->
+  <section class="presentation__slide" data-align="top" data-title="Six sessions, run two ways">
+    <p class="slide-eyebrow settles">What the difference actually costs</p>
+    <h2 class="slide-head settles" data-size="sm">Six sessions, run two&nbsp;ways.</h2>
+    <div class="cycle" data-cycle>
+      <div class="cycle__cards">
+        <div class="cycle__card">
+          <p class="cycle__t"><span>no loop</span>Prompt, paste, hope</p>
+          <p class="cycle__dots" data-cycle-bad></p>
+          <p class="cycle__out" data-cycle-bad-out>Six of these and you are a stranger in your own codebase.</p>
+        </div>
+        <div class="cycle__card">
+          <p class="cycle__t"><span>the loop</span>Brief, build, verify, record</p>
+          <p class="cycle__dots" data-cycle-good></p>
+          <p class="cycle__out" data-cycle-good-out>Same six. Same speed. You can still explain all of it.</p>
+        </div>
+      </div>
+      <!-- the bill, and it only arrives once the sixth session lands. Held in a reserved box so
+           the cards never move when it shows up. -->
+      <p class="cycle__cost" data-cycle-cost>&nbsp;</p>
+      <p class="cycle__run">
+        <button class="btn" type="button" data-cycle-run>Run a session</button>
+        <button class="btn" data-variant="outline" type="button" data-cycle-reset>Reset</button>
+      </p>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Click "run a session" five or six times while you talk. Do not narrate the dots, let them count.</li>
+      <li>The left column keeps collecting things nobody checked. The right closes them as it goes. Same number of sessions, same speed, on purpose. Say that: the loop is not the slow option.</li>
+      <li>Get to six. The bill only appears on the sixth click, so do not stop at four.</li>
+      <li>When it lands, stop talking and let them read it. It is the only slide in the talk where the punchline is a consequence rather than an idea.</li>
+      <li>Say the part the line cannot: "and the agent does not remember either. Whatever you taught it five sessions ago is gone, because you never wrote it down."</li>
+      <li>If the room is quiet, ask: "which column was your last project?" Nobody answers, everybody knows.</li>
+    </ul>
+  </section>
+
+  <!-- 24 ---------------------------------------------------------------- THE BEST TRICK -->
+  <section class="presentation__slide" data-align="top" data-title="Where the AI trips, my design is unclear">
+    <p class="slide-eyebrow settles">The move I'm proudest of</p>
+    <h2 class="slide-head settles" data-size="sm">Make it fail <em>loudly</em>, or you will&nbsp;ship&nbsp;it.</h2>
+    <p class="slide-lede">A machine at speed does not produce louder bugs. It produces the same quiet ones, faster.</p>
+    <div class="trap" data-trap>
+      <div class="trap__card">
+        <p class="trap__t"><span>the trap</span>Used slightly wrong</p>
+        <p><button class="btn" type="button" data-trap-bad>Apply the texture</button></p>
+        <p class="trap__out" data-trap-out-bad>&nbsp;</p>
+      </div>
+      <div class="trap__card">
+        <p class="trap__t"><span>designed out</span>Cannot be used wrong</p>
+        <p><button class="btn" type="button" data-trap-good>Apply the texture</button></p>
+        <p class="trap__out" data-trap-out-good>&nbsp;</p>
+      </div>
+    </div>
+    <p class="trap__lesson frag" data-grade="grain">A thing that fails loudly, you fix. A thing that fails silently, you <em>ship</em>.</p>
+    <!-- the four things that do the shouting, cheapest first. This is the part students can copy
+         into a project on Monday without owning a design system. -->
+    <ol class="gates frag">
+      <li><b>Types</b><span>as you type</span></li>
+      <li><b>Unit tests</b><span>the logic</span></li>
+      <li><b>End to end</b><span>the real thing, driven like a user</span></li>
+      <li><b>Loud errors</b><span>no silent catch, no empty default</span></li>
+    </ol>
+    <ul class="slide-notes" hidden>
+      <li>Click the left button twice. Nothing happens. No error, no warning. Let that sit, it is the whole argument.</li>
+      <li>"I kept tripping on my own system. The boring move is to squash each bug and move on."</li>
+      <li>"Instead we asked: why do I keep tripping on my own system? When half a class flubs the same question, the problem is the question, not the class."</li>
+      <li>Then click the right one. Same intent, works, because the misuse was designed out.</li>
+      <li>Now the four gates, and be concrete. Types and unit tests are the ones they already half-know. Spend the time on end to end, because almost none of them have run one.</li>
+      <li>The end-to-end line to say out loud: "unit tests prove the parts agree with you. End to end proves the product agrees with the user. An AI can satisfy the first and destroy the second in the same commit."</li>
+      <li>On loud errors: an empty catch block is the most expensive line of code a student ever writes, and an AI will write it for them without blinking unless you have said not to.</li>
+      <li>"An AI working from your docs is the ultimate stress test of clarity. It has no tribal knowledge."</li>
+      <li>Land the reframe plainly: "the mistakes stopped being bugs and started being data."</li>
+    </ul>
+  </section>
+
+  <!-- 25b --------------------------------------------------------------- THE AUDIT RECEIPTS -->
+  <section class="presentation__slide" data-align="top" data-title="I audit far more than I build">
+    <p class="slide-eyebrow settles">The unglamorous half, and the reason the rest holds</p>
+    <h2 class="slide-head settles" data-size="sm">I audit far more than I&nbsp;build.</h2>
+    <dl class="stats">
+      <div><dt>104</dt><dd>test files, across the seven repositories</dd></div>
+      <div><dt>1,173</dt><dd>test cases behind them</dd></div>
+      <div><dt>40</dt><dd>end-to-end specs on the portfolio alone</dd></div>
+      <div><dt>1</dt><dd>command that runs the lot, before anything counts as done</dd></div>
+    </dl>
+    <ul class="beats audit__beats frag" data-size="sm">
+      <li>Most of my prompting is not "build this". It is <em>"check this"</em>.</li>
+      <li>The second pass is done by a session that did not write the code, because the one that wrote it already believes it.</li>
+      <li>There is even a linter for the prose. The writing is part of the product, so it gets a gate like everything else.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Read the four numbers flat, no pride in the voice. They are not an achievement, they are the cost of going fast.</li>
+      <li>The line that matters: "most of my prompting is not build this, it is check this." Say it slowly, it is the single most useful sentence in the talk for a student who already uses AI daily.</li>
+      <li>On the second pass: a session that wrote the code will defend the code. A cold one will not. That is not a trick, it is the same reason you do not mark your own exam.</li>
+      <li>The prose linter always gets a reaction. Use it: "if the writing is part of the product, and I told you half the repo is writing, then of course it gets a gate too."</li>
+      <li>Anticipate the objection: "we do not have time for that at school." Answer: you do not need 104 test files. You need one, today, on the thing most likely to break.</li>
+      <li>Do not list frameworks. Nobody remembers a tool name and all of them will change. They remember "check this".</li>
+    </ul>
+  </section>
+
+  <!-- 26 ---------------------------------------------------------------- THE CORRECTION THAT NEVER STICKS -->
+  <section class="presentation__slide" data-align="top" data-title="I got tired of repeating myself">
+    <p class="slide-eyebrow settles">Say it, write it, or check it</p>
+    <h2 class="slide-head settles" data-size="sm">A rule is only real once it can fail a&nbsp;build.</h2>
+    <div class="repeat" data-repeat>
+      <ol class="repeat__log" data-repeat-log></ol>
+      <div>
+        <p class="repeat__count"><span data-repeat-count>0</span>times I have typed the same correction</p>
+        <p class="repeat__btns">
+          <button class="btn" type="button" data-repeat-run>New session</button>
+          <button class="btn" data-variant="outline" type="button" data-repeat-fix>Write it down</button>
+          <button class="btn" data-variant="outline" type="button" data-repeat-check disabled>Make it a check</button>
+        </p>
+        <p class="repeat__fix" data-repeat-note>The second time you correct it about the same thing, that correction has stopped being a conversation and started being a rule.</p>
+      </div>
+    </div>
+    <ul class="slide-notes" hidden>
+      <li>Click "new session" three or four times in silence. The repetition is the joke and the argument at once.</li>
+      <li>Then: "so I stopped saying it and wrote it down where the machine reads it. One line. It never came back."</li>
+      <li>Three buttons, three stages, and the slide is the stages. Say it: decays. Write it down: rots quietly. Make it a check: holds.</li>
+      <li>Do not rush to the third button. Sit on stage two, because stage two is where almost every team already is, and they think they have solved it.</li>
+      <li>Now scale the problem out loud: seven repos, seven slightly different sets of rules, drifting apart quietly, and nobody reading any of them, me included.</li>
+      <li>Two lines on the tool, no more: that is PANTRY. It installs into a project, serves the plans and docs and a map of the codebase to whatever agent opens the session, and a doctor command fails the build when the docs and the code have drifted apart.</li>
+      <li>Student version, and say it plainly: you do not need my package. A test that asserts your README's example still runs is the same move, and you can write it this week.</li>
+      <li>Honest limit, say it: it is mine, it is young, and I am the main user. The habit transfers, the code might not.</li>
+      <li>Timebox this hard. Two minutes. The link is on the last slide.</li>
+    </ul>
+  </section>
+
+  <!-- 26 ---------------------------------------------------------------- THE TELL -->
+  <section class="presentation__slide" data-align="top" data-title="Same chain, different room">
+    <p class="slide-eyebrow settles">Strip all of it down</p>
+    <h2 class="slide-head settles" data-size="sm">Same prompt. Same model. Same&nbsp;code.</h2>
+    <svg class="fig scaffold" viewBox="0 0 620 296" role="img"
+         aria-label="Two identical chains of prompt, model and code. The first stands bare and that is the whole system. The second, identical, sits inside a built loop: a brief, conventions and memory feeding the prompt, and types, tests, an end-to-end run and a review the code has to survive, then a return arrow recording what changed so the next session starts from there."
+         style="font-size:12.5px">
+      <defs>
+        <marker id="sc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+        <marker id="sc-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-accent)"/>
+        </marker>
+      </defs>
+      <!-- anyone: the bare chain -->
+      <text x="16" y="40" style="fill:var(--color-muted)">anyone</text>
+      <g style="fill:none;stroke:var(--color-line);stroke-width:1.2">
+        <rect x="96" y="16" width="76" height="32" rx="5"/>
+        <rect x="192" y="16" width="76" height="32" rx="5"/>
+        <rect x="288" y="16" width="76" height="32" rx="5"/>
+      </g>
+      <g style="stroke:var(--color-muted);stroke-width:1.4;fill:none">
+        <line x1="172" y1="32" x2="187" y2="32" marker-end="url(#sc-a)"/>
+        <line x1="268" y1="32" x2="283" y2="32" marker-end="url(#sc-a)"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg)">
+        <text x="134" y="36">prompt</text><text x="230" y="36">model</text><text x="326" y="36">code</text>
+      </g>
+      <text x="384" y="36" style="fill:var(--color-muted)">and that is the whole system</text>
+
+      <!-- me: the SAME three boxes, now with everything I had to build around them. Three lanes:
+           what feeds the prompt, the identical chain, and what the code has to survive before it
+           counts, plus the return arrow that makes the whole thing a loop rather than a pipeline. -->
+      <text x="16" y="180" style="fill:var(--color-muted)">me</text>
+      <rect x="80" y="72" width="524" height="222" rx="8" data-draw
+            style="--draw-len:1500;fill:none;stroke:var(--color-accent);stroke-width:1.6"/>
+
+      <!-- lane 1: what goes in before a single word of the prompt -->
+      <g data-lit>
+        <g style="fill:none;stroke:var(--color-line);stroke-width:1.2">
+          <rect x="100" y="90" width="146" height="26" rx="4"/>
+          <rect x="262" y="90" width="146" height="26" rx="4"/>
+          <rect x="424" y="90" width="146" height="26" rx="4"/>
+        </g>
+        <g text-anchor="middle" style="fill:var(--color-fg);font-size:11px">
+          <text x="173" y="107">the brief it reads first</text>
+          <text x="335" y="107">the conventions</text>
+          <text x="497" y="107">the memory it inherited</text>
+        </g>
+        <g style="stroke:var(--color-muted);stroke-width:1.3;fill:none">
+          <path d="M173 116 L173 130 M335 116 L335 130 M497 116 L497 130"/>
+          <path d="M173 130 L497 130"/>
+          <path d="M335 130 L335 146" marker-end="url(#sc-a)"/>
+        </g>
+      </g>
+
+      <!-- lane 2: the identical chain. Nothing here is better than the row above. -->
+      <g style="fill:none;stroke:var(--color-line);stroke-width:1.2">
+        <rect x="196" y="150" width="76" height="32" rx="5"/>
+        <rect x="292" y="150" width="76" height="32" rx="5"/>
+        <rect x="388" y="150" width="76" height="32" rx="5"/>
+      </g>
+      <g style="stroke:var(--color-muted);stroke-width:1.4;fill:none">
+        <line x1="272" y1="166" x2="287" y2="166" marker-end="url(#sc-a)"/>
+        <line x1="368" y1="166" x2="383" y2="166" marker-end="url(#sc-a)"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg)">
+        <text x="234" y="170">prompt</text><text x="330" y="170">model</text><text x="426" y="170">code</text>
+      </g>
+
+      <!-- lane 3: what the code has to survive before it counts as done -->
+      <g data-lit>
+        <g style="stroke:var(--color-muted);stroke-width:1.3;fill:none">
+          <path d="M426 182 L426 198 M118 198 L570 198"/>
+          <path d="M154 198 L154 214 M268 198 L268 214 M382 198 L382 214 M496 198 L496 214"/>
+        </g>
+        <g style="fill:none;stroke:var(--color-line);stroke-width:1.2">
+          <rect x="100" y="216" width="108" height="26" rx="4"/>
+          <rect x="214" y="216" width="108" height="26" rx="4"/>
+          <rect x="328" y="216" width="108" height="26" rx="4"/>
+          <rect x="442" y="216" width="108" height="26" rx="4"/>
+        </g>
+        <g text-anchor="middle" style="fill:var(--color-fg);font-size:11px">
+          <text x="154" y="233">the types</text>
+          <text x="268" y="233">the tests</text>
+          <text x="382" y="233">end to end</text>
+          <text x="496" y="233">my own review</text>
+        </g>
+        <!-- and back to the top, which is the only reason any of it survives a second session -->
+        <g style="stroke:var(--color-accent);stroke-width:1.3;fill:none">
+          <path d="M550 229 L578 229 L578 266 L92 266 L92 103 L94 103" marker-end="url(#sc-b)"/>
+        </g>
+        <text x="330" y="280" text-anchor="middle" style="fill:var(--color-accent);font-size:11px">record what changed, so the next session starts up there</text>
+      </g>
+    </svg>
+    <p class="claim frag" data-grade="grain">The model was the same. It multiplied everything <em>around</em>&nbsp;it.</p>
+    <ul class="slide-notes" hidden>
+      <li>Callback to slide 4 and its slider. Name it, don't point: "same bars as the beginning."</li>
+      <li>The two chains are identical on purpose. Say that out loud: nothing in the middle row is better.</li>
+      <li>"That surrounding structure is the profession. The code is just the code."</li>
+    </ul>
+  </section>
+
+  <!-- 27 ---------------------------------------------------------------- MONDAY -->
+  <section class="presentation__slide" data-align="top" data-title="So what do I do on Monday">
+    <p class="slide-eyebrow settles">You are not a zero, you are early. So, concretely</p>
+    <h2 class="slide-head settles" data-size="sm">The same hour, spent two&nbsp;ways.</h2>
+    <div class="monday" data-monday>
+      <p class="monday__switch">
+        <button class="btn" type="button" data-monday-pick="produce" aria-pressed="true">Use it to produce</button>
+        <button class="btn" type="button" data-monday-pick="learn" aria-pressed="false">Use it to learn</button>
+      </p>
+      <dl class="monday__grid">
+        <div>
+          <dt>what you type</dt>
+          <dd data-mono data-monday-prompt>&gt; write me the login form</dd>
+        </div>
+        <div>
+          <dt>after an hour</dt>
+          <dd data-monday-hour>A working login form, and a tab you closed.</dd>
+        </div>
+        <div>
+          <dt>after a term</dt>
+          <dd data-monday-term>A folder of code you cannot defend, and the same first number you started the term with.</dd>
+        </div>
+      </dl>
+      <p class="monday__rule" data-monday-rule data-grade="grain">Faster output, same you. The multiplier never moved.</p>
+    </div>
+    <!-- the step that turns one good hour into a permanent one, and the only one that also
+         improves the machine rather than just the person -->
+    <p class="monday__rec frag">
+      <b>Then record it.</b> In your docs, in your audit, in the file the AI reads first.
+      Let it learn the same lesson you just did, and hold it to that lesson tomorrow.
+    </p>
+    <ul class="slide-notes" hidden>
+      <li>This is the slide they photograph. Flip the switch once, slowly, and let them read both columns.</li>
+      <li>Do not stop at the switch. The record beat is the one that compounds: the hour you spent learning something is spent once, and written down it keeps paying.</li>
+      <li>Say the accountability part plainly: "if I learned it and the model did not, I get to learn it again next week. Writing it down is how I stop repeating myself, and how I get to hold it to something."</li>
+      <li>Tie it back: this is the same move as the correction that becomes a check, at student scale. No tooling required, one file.</li>
+      <li>"I am not telling you to stay away from it. That advice is already dead, and you would ignore it anyway."</li>
+      <li>The reframe: a beginner using AI to produce is buying output. A beginner using AI to learn is buying reps. Same hour, different asset.</li>
+      <li>Answer the objection before they raise it: "but I have a deadline." Fine. Use it to produce, then pay the debt back that night by rebuilding one piece from memory.</li>
+      <li>The homework, out loud: next time it writes something for you, close the tab and rebuild it from memory. If you cannot, you did not build it, and you just found the exact thing to go and learn.</li>
+    </ul>
+  </section>
+
+  <!-- 28 ---------------------------------------------------------------- WHERE TO START -->
+  <section class="presentation__slide" data-align="top" data-title="Where to start, in order">
+    <p class="slide-eyebrow settles">If you copy one slide, copy this one</p>
+    <h2 class="slide-head settles" data-size="sm">Where to start, in&nbsp;order.</h2>
+    <ol class="start">
+      <li>
+        <b>Pick a project you already understand.</b>
+        <span>Not a new one. You cannot judge the output of a machine on a codebase you have never read, and judging the output is the entire skill.</span>
+      </li>
+      <li>
+        <b>Write the brief before the feature.</b>
+        <span>One file at the root of the repo: what this is, how it is built, what not to touch. Twenty minutes, once. Every session after it starts smarter.</span>
+      </li>
+      <li>
+        <b>Turn on the cheap gates first.</b>
+        <span>Types on and strict. One test that actually runs. No empty catch blocks. You can do all three before lunch and they will catch things all year.</span>
+      </li>
+      <li>
+        <b>Make it explain, then explain it back.</b>
+        <span>Out loud, tab closed. The moment you cannot, stop: you have just found the exact thing to go and learn, which is worth more than the feature was.</span>
+      </li>
+      <li>
+        <b>Every correction you give twice becomes a line in that file.</b>
+        <span>That is how the brief writes itself, and it is the whole of what I showed you earlier, minus my tooling.</span>
+      </li>
+    </ol>
+    <ul class="slide-notes" hidden>
+      <li>Tell them to photograph this one. Then actually pause and let them, it takes four seconds and they will not do it if you keep talking.</li>
+      <li>Order matters, say so: people always want to start at 3. Starting at 3 on a project you do not understand teaches you nothing.</li>
+      <li>Number 2 is the one that feels like a waste of time and is not. Twenty minutes, once, and you are buying every session after it.</li>
+      <li>Number 5 is the trick that costs nothing. You are already typing the correction. You are just typing it somewhere it survives.</li>
+      <li>What to go and read is on the second to last slide. Point forward, do not read the list twice.</li>
+    </ul>
+  </section>
+
+  <!-- 29 ---------------------------------------------------------------- ORCHESTRATION -->
+  <section class="presentation__slide" data-align="top" data-title="You run the session, it does not run you">
+    <p class="slide-eyebrow settles">The habit that decides which of the two you become</p>
+    <h2 class="slide-head settles" data-size="sm">Don't work <em>for</em> the AI. Run&nbsp;it.</h2>
+    <div class="orch">
+      <div class="orch__card">
+        <p class="orch__t"><span>working for it</span>You are the passenger</p>
+        <ul>
+          <li>You ask, it answers, you paste.</li>
+          <li>The shape of the project is whatever it happened to produce.</li>
+          <li>When it goes wrong you ask it again, louder.</li>
+          <li>You are waiting on one chat window, doing nothing.</li>
+        </ul>
+      </div>
+      <div class="orch__card" data-orch-good>
+        <p class="orch__t"><span>running it</span>You are the one conducting</p>
+        <ul>
+          <li>You decide what should exist, before anything is typed.</li>
+          <li>You cut it into pieces small enough to check in a minute.</li>
+          <li>You point it at one piece, and read every line that comes back.</li>
+          <li>You accept nothing you could not defend without it in the room.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="claim frag" data-grade="grain">Same tool, same day, same model. One of those is a job. The other is a habit that does not survive contact with anything real.</p>
+    <ul class="slide-notes" hidden>
+      <li>This is the last idea in the talk, so slow all the way down. Both columns get read out.</li>
+      <li>The passenger column is not a strawman, it is how almost everyone starts, me included. Say that.</li>
+      <li>The tell is the second line on each side: who decided what should exist. That is the entire difference and it happens before a single prompt.</li>
+      <li>Some evenings I have several sessions open at once. It feels exactly like running a team, and it is the same skill: brief, delegate, verify, and never accept work you cannot explain.</li>
+      <li>Aim it at their future: "the job you are training for is not typing. It is deciding, delegating and checking. That job pays more and the machine cannot take it, because it is the thing being paid to be accountable."</li>
+    </ul>
+  </section>
+
+  <!-- 30 ---------------------------------------------------------------- THE POINT -->
+  <section class="presentation__slide" data-align="center" data-title="The point">
+    <p class="quote-mark settles">The point</p>
+    <p class="quote settles">Bring nothing and it multiplies nothing.</p>
+    <p class="claim frag" style="text-align:center;">Become a bigger number first. Then go make it dangerous.</p>
+    <ul class="slide-notes" hidden>
+      <li>Say the title of the talk here, for the first time since slide 1: ten times zero is still zero.</li>
+      <li>Aimed at students: get so good at the fundamentals that when you finally pick up the power tool, it multiplies something real.</li>
+      <li>The homework, out loud: "next time AI writes something for you, close the tab and rebuild it from memory. If you can't, you didn't build it, and you just found the exact thing to go learn."</li>
+      <li>Then one breath, and the last slide.</li>
+    </ul>
+  </section>
+
+  <!-- 31 ---------------------------------------------------------------- SOURCES -->
+  <section class="presentation__slide" data-align="top" data-title="Where all of this came from">
+    <p class="slide-eyebrow settles">None of this is mine, and you should go to the sources</p>
+    <h2 class="slide-head settles" data-size="sm">What to read&nbsp;next.</h2>
+    <ul class="srcs">
+      <li>
+        <b>Loop Engineering</b> <i>Addy Osmani</i>
+        <span>The case that durable AI work is built from a few reusable parts, not a clever prompt. Where the loop on slide 23 comes from.</span>
+        <code>addyosmani.com/blog/loop-engineering</code>
+      </li>
+      <li>
+        <b>Beyond Vibe Coding</b> <i>Addy Osmani</i>
+        <span>The 70% problem: it gets you most of the way and the last stretch is where unmanaged work rots. Plan first, and treat quality gates as non-negotiable.</span>
+        <code>beyond.addy.ie</code>
+      </li>
+      <li>
+        <b>Learning AI-Native Software Engineering</b> <i>Alfonso Graziano</i>
+        <span>Context engineering, spec-driven development, verification gates. Most of slide 22 traces back to this one.</span>
+        <code>alfonsograziano.it/book</code>
+      </li>
+      <li>
+        <b>agent-skills</b> <i>Addy Osmani</i>
+        <span>The loop, in executable form: skills an agent loads on its own. Install with one command and read them even if you never run them.</span>
+        <code>github.com/addyosmani/agent-skills</code>
+      </li>
+      <li>
+        <b>Spec Kit</b> <i>GitHub</i>
+        <span>Spec-driven development, formalized and free. The most direct way to try "write the rails first" without inventing your own process.</span>
+        <code>github.com/github/spec-kit</code>
+      </li>
+      <li>
+        <b>llms.txt and MCP</b> <i>the conventions</i>
+        <span>How a project tells an agent what to read first, and how an agent reaches your tools. Worth an evening each.</span>
+        <code>llmstxt.org · modelcontextprotocol.io</code>
+      </li>
+      <li>
+        <b>My standards, in full</b> <i>free, and stealable</i>
+        <span>The written version of everything in this talk: the loop, the session rules, the writing standard. Take what is useful, ignore the rest.</span>
+        <code>tjakoen.github.io/standards</code>
+      </li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Say the honest thing first: the ideas are not mine. I read these, argued with them, and built something that runs. That is the whole method and they can do the same.</li>
+      <li>Do not read the list aloud. Name the two you would start with and move on: Beyond Vibe Coding for the why, Spec Kit for something to do on Monday.</li>
+      <li>Paste the links in the chat now, not after. Nobody types a URL off a slide.</li>
+    </ul>
+  </section>
+
+  <!-- 32 ---------------------------------------------------------------- CLOSE -->
+  <section class="presentation__slide" data-title="I prompt and prove">
+    <p class="slide-eyebrow settles">Thank you</p>
+    <h2 class="slide-head" data-grade="grain">I don't prompt and pray. I prompt and&nbsp;prove.</h2>
+    <div class="end">
+      <span class="end__qr" aria-hidden="true"><svg width="33" height="33" viewBox="0 0 33 33"><path stroke="currentColor" fill="none" d="M0 0.5h7m1 0h11m2 0h2m3 0h7m-33 1h1m5 0h1m1 0h1m1 0h1m2 0h1m1 0h4m1 0h1m1 0h1m3 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m1 0h1m3 0h1m1 0h1m1 0h2m1 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h6m1 0h2m3 0h1m1 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m3 0h1m5 0h1m1 0h4m1 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m3 0h1m2 0h1m2 0h3m1 0h1m1 0h1m3 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-23 1h7m1 0h1m1 0h1m1 0h1m-22 1h1m4 0h5m1 0h1m2 0h1m1 0h2m1 0h1m1 0h4m5 0h2m-32 1h2m1 0h2m2 0h1m8 0h3m1 0h3m4 0h3m-31 1h1m1 0h5m1 0h2m5 0h1m1 0h1m3 0h1m6 0h1m1 0h1m-30 1h1m1 0h1m4 0h3m1 0h1m9 0h11m-31 1h2m2 0h1m1 0h2m2 0h2m1 0h4m1 0h1m3 0h3m-22 1h1m1 0h1m1 0h1m2 0h10m1 0h2m1 0h2m1 0h1m1 0h2m-31 1h1m3 0h1m1 0h4m2 0h2m2 0h1m3 0h1m1 0h3m2 0h1m1 0h1m-32 1h2m2 0h2m4 0h1m4 0h1m2 0h3m1 0h2m1 0h1m1 0h4m1 0h1m-33 1h1m2 0h1m2 0h1m5 0h2m1 0h2m2 0h1m3 0h3m1 0h2m3 0h1m-33 1h1m2 0h3m2 0h1m1 0h3m2 0h1m1 0h1m1 0h3m1 0h1m1 0h2m2 0h2m1 0h1m-30 1h1m2 0h3m2 0h1m1 0h1m5 0h3m1 0h1m3 0h1m1 0h2m1 0h1m-33 1h2m2 0h2m1 0h1m2 0h5m1 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h4m-31 1h2m3 0h1m1 0h5m2 0h3m2 0h1m1 0h1m1 0h2m1 0h3m2 0h1m-33 1h1m3 0h1m2 0h1m2 0h1m6 0h1m1 0h1m1 0h3m1 0h1m1 0h3m-30 1h1m1 0h2m1 0h5m1 0h5m4 0h1m1 0h1m2 0h1m1 0h1m3 0h1m-32 1h1m2 0h2m2 0h2m1 0h1m1 0h1m4 0h2m1 0h1m6 0h1m1 0h2m1 0h1m-33 1h2m1 0h8m1 0h1m1 0h1m1 0h2m5 0h7m-22 1h8m2 0h3m3 0h1m3 0h1m1 0h1m1 0h1m-33 1h7m1 0h1m3 0h1m1 0h1m3 0h1m1 0h5m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m7 0h1m1 0h1m1 0h1m1 0h1m2 0h2m3 0h3m-31 1h1m1 0h3m1 0h1m3 0h1m3 0h4m1 0h1m2 0h1m1 0h6m1 0h2m-33 1h1m1 0h3m1 0h1m3 0h1m6 0h3m2 0h1m2 0h1m1 0h3m2 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m2 0h1m1 0h1m1 0h3m3 0h1m1 0h1m1 0h2m2 0h2m-33 1h1m5 0h1m1 0h3m1 0h1m4 0h1m1 0h1m2 0h1m2 0h1m1 0h4m-31 1h7m3 0h1m1 0h1m1 0h2m6 0h3m2 0h1m1 0h1m1 0h1"/></svg></span>
+      <div>
+        <p class="slide-lede" style="margin-top:0;">The whole post, receipts and all. Plus the playbook, in writing.</p>
+        <p class="end__url">tjakoen.github.io/notes/ten-times-zero</p>
+      </div>
+    </div>
+    <hr class="slide-rule">
+    <p class="slide-sig"><b>The judgment is human. The typing, by design, is not.</b></p>
+    <ul class="slide-notes" hidden>
+      <li>Paste the link in the chat as this slide lands. The QR is for whoever watches the recording.</li>
+      <li>Take questions. If nobody asks, ask the chat: "who has shipped something they couldn't explain?"</li>
+    </ul>
+  </section>
+
+  <!-- the deck's own chrome: the dot matrix on the left, one control cluster on the right.
+       grain/scripts/presentation.js fills the dots and wires every [data-ctl]. -->
+  <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
+  <div class="presentation__controls">
+    <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 34</span></span>
+    <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
+    <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
+    <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
+    <button class="presentation__ctl" type="button" data-ctl="presenter" title="Presenter window (P)" aria-label="Presenter window">◫</button>
+    <button class="presentation__ctl" type="button" data-theme-toggle title="Light or dark (D)" aria-label="Light or dark">☾</button>
+    <button class="presentation__ctl" type="button" data-present-toggle title="Present (F)" aria-label="Present">
+      <span class="off-present">⤢</span><span class="on-present">✕</span>
+    </button>
+  </div>
+  <div class="presentation__notes" data-inline-notes aria-live="polite"></div>
+  <div class="presentation__grid" data-grid></div>
+
+<!-- presenter view: same page, second window, synced over a BroadcastChannel. The room never
+     sees this one. -->
+<div class="presenter">
+  <div class="presenter__now">
+    <span class="presenter__pos" data-p-pos>1 / 34</span>
+    <span class="presenter__clock" data-p-clock>00:00</span>
+  </div>
+  <div>
+    <h2 class="presenter__title" data-p-title></h2>
+    <ul class="presenter__notes" data-p-notes></ul>
+  </div>
+  <div class="presenter__next">
+    <h3>Next</h3>
+    <p data-p-next></p>
+  </div>
+  <p class="presenter__hint">Arrows here drive the main window · T resets the clock · the clock turns accent past 20 minutes</p>
+</div>
+
+<script type="module" src="/scripts/presentation.js"></script>
+<script type="module" src="/site/talk.js"></script>
+</body>
+</html>

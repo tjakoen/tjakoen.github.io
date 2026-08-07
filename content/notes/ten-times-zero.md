@@ -2,25 +2,32 @@
 title: "Ten Times Zero Is Still Zero"
 subtitle: >
   "Vibe coder" gets used as an insult: prompt and pray, ship a house of cards. I claim it anyway,
-  with one word in front: professional. The receipt is the portfolio you're reading this on: I
-  wrote more documentation than code.
+  with one word in front: professional. The receipt is the portfolio you're reading this on, where
+  nearly half of everything written is words rather than code.
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
-date: 2026-07-03
-readingTime: "~13 min"
+date: 2026-08-07
+readingTime: "~18 min"
 tags: [ai, vibe-coding, workflow, fundamentals, native-first, batch, grain]
 summary: >
   How I actually work with AI, and why it holds up. AI is a multiplier, not an addend; it
   multiplies what you already are, and ten times zero is still zero, so I made sure I wasn't zero
-  first. Then the receipt, pulled from this portfolio's own git history: more documentation than
-  code, written fast, with an AI co-authoring every commit. Professional vibe coding is the human
-  writing the rails and the AI writing much of the code inside them. Includes the playbook.
+  first. Then the receipt, pulled from this portfolio's own git history: nearly as much writing as
+  code, produced fast, with an AI co-authoring every commit. Professional vibe coding is the human
+  writing the rails and the AI writing much of the code inside them. Includes the playbook, the
+  context and loop engineering underneath it, what to check before anything counts as done, and
+  where to start if you are early.
 ---
 
 > **One of my students?** If what you actually want to know is how I feel about *you* using AI, I
 > wrote that post for you: [I Nearly Quit Teaching, So I Automated the Part That Was Killing Me](why-i-teach.md).
 > Read that first; this one is the belief underneath it.
+
+> **There's a talk version of this**, built for a room full of students, and it's live: [tjakoen.github.io/talk](/talk).
+> Same argument, thirty-four slides, and the figures are real rather than pictures of figures. Drag
+> the multiplier to zero, run six sessions with and without the loop and watch the bill arrive, or
+> open a cold session with no brief and see what it does first. Arrow keys move it.
 
 ## "Vibe coder" is used as an insult
 
@@ -181,14 +188,15 @@ portfolio, built on three tools I made for it. My own no-build framework (BATCH)
 system (GRAIN), and a little Markdown CMS that renders these very words into the page (MILL). 
 
 Not a demo, not a tutorial repo. The thing I actually build on, and it's live now, so you're reading
-this on it. Fair warning: the numbers below are a snapshot from when I first built it, back when BATCH,
-GRAIN, and MILL still lived in one repo with the site. They've since moved into their own homes, so read
-every count as a dated marker of that early build, not a live readout. The ratio is the point, and the
-ratio holds: I still write nearly as much prose as code.
+this on it. Every count below was measured on 7 August 2026 from committed files only, because those
+are the ones you can go and check. Counting my working tree, where the plans and the agent-facing
+notes live deliberately uncommitted, gives me a friendlier number. I'm not using it.
 
 <!-- REFRESH THESE NUMBERS (occasionally, and definitely before publishing) — the ratio + counts are a
-     living git snapshot. Last measured 2026-07-03 (committed/tracked): 33 commits, 6,947 prose,
-     5,411 code, 56% prose, 13,395 lines added. HOW TO RECOMPUTE, run from the repo root:
+     living git snapshot. Last measured 2026-08-07 (committed/tracked): 242 commits, 17,610 prose,
+     18,876 code, 48% prose, 46,665 lines added. Previous marker, 2026-07-03: 33 commits, 6,947
+     prose, 5,411 code, 56% prose, 13,395 added — kept because the DRIFT is now part of the argument
+     in "The one number that matters". HOW TO RECOMPUTE, run from the repo root:
        commits:  git rev-list --count HEAD
        prose:    git ls-files '*.md' | xargs wc -l | tail -1
        code:     git ls-files '*.ts' '*.js' '*.css' '*.html' | xargs wc -l | tail -1
@@ -209,37 +217,45 @@ ratio holds: I still write nearly as much prose as code.
 
 Let me get the headline out of the way, because it reframes everything else:
 
-> **I wrote more documentation than code.** 6,947 lines of prose against 5,411 lines of code.
-> 56% of everything written in the repo is words, not code.
+> **Nearly half of this repo is writing, not code.** 17,610 lines of words against 18,876 lines of
+> code. Ask a room to guess and they say twenty percent.
 
-Sit with that for a second, because it's the exact opposite of what vibe coding is supposed to look
+Sit with that for a second, because it's the opposite of what vibe coding is supposed to look
 like. The caricature is a person who writes *no* docs, who couldn't produce a spec if you begged.
-My repo has the inverse problem: there's *more* specification than there is implementation.
+This repo has the inverse problem: there's about as much specification as there is implementation.
 
 I didn't tidy that up after the fact. It's the method. When you work with an AI at speed, the scarce resource stops being code and becomes *intent.* The model can't know what you meant, what the rules are, or what "done" looks like, unless you wrote it down. So I do. The documentation *is* the work, the code is the cheap part the machine handles.
 
 <svg viewBox="0 0 620 190" width="100%" role="img"
-     aria-label="On this repo: 5,411 lines of code versus 6,947 lines of prose; 56% of everything written is words, not code."
+     aria-label="On this repo: 18,876 lines of code versus 17,610 lines of writing; 48% of everything written is words, not code."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
   <rect x="0.5" y="0.5" width="619" height="189" style="fill:var(--paper);stroke:var(--edge)"/>
   <text x="28" y="36" style="fill:var(--muted);font-size:15px">What my repo actually is</text>
   <text x="28" y="86" style="fill:var(--ink);font-size:14px">Code</text>
-  <rect x="96" y="72" width="327" height="20" style="fill:var(--bar)"/>
-  <text x="431" y="87" style="fill:var(--muted);font-size:12.5px">5,411 lines</text>
-  <text x="28" y="128" style="fill:var(--ink);font-size:14px">Prose</text>
-  <rect x="96" y="114" width="420" height="20" style="fill:var(--ink)"/>
-  <text x="524" y="129" style="fill:var(--ink);font-size:12.5px">6,947 lines</text>
-  <text x="28" y="170" style="fill:var(--accent);font-size:13px">56% of everything written is words, not code.</text>
+  <rect x="96" y="72" width="420" height="20" style="fill:var(--bar)"/>
+  <text x="524" y="87" style="fill:var(--muted);font-size:12.5px">18,876 lines</text>
+  <text x="28" y="128" style="fill:var(--ink);font-size:14px">Writing</text>
+  <rect x="96" y="114" width="392" height="20" style="fill:var(--ink)"/>
+  <text x="496" y="129" style="fill:var(--ink);font-size:12.5px">17,610 lines</text>
+  <text x="28" y="170" style="fill:var(--accent);font-size:13px">48% of everything written is words, not code.</text>
 </svg>
 
-*More spec than implementation: the inverse of what vibe coding is supposed to look like.*
+*About as much spec as implementation: the inverse of what vibe coding is supposed to look like.*
+
+One honest wrinkle, since I keep the receipts either way. When I first published this the same
+count read 56%, and the writing was ahead. It has since evened out, for a boring reason: the stack
+moved into its own repos and took a big slice of its own documentation with it, while the site's
+code kept growing. Across all seven repositories I work in, one line in three is still
+documentation. The ratio moved. The habit didn't.
 
 ## Now the "vibe" part, because I do go fast
 
 <!-- LIVING NUMBERS (refresh occasionally, and definitely before publish): the counts below grow with
-     every commit. Last measured 2026-07-03: 33 commits, the ~10h sprint (31 commits, ~1 every 20 min),
-     ~13,400 lines added (13,395). HOW TO RECOMPUTE, from the repo root:
+     every commit. Last measured 2026-08-07: 242 commits, 46,665 lines added, and the sprint reset to
+     the night of 4 July 2026 measured ACROSS ALL SEVEN REPOS (21:08 to 03:31, 50 commits, 4,269 added)
+     because the old 7pm-5am/31-commit window was the single-repo era. Previous marker 2026-07-03:
+     33 commits, 31-commit sprint, 13,395 added. HOW TO RECOMPUTE, from the repo root:
        commits:  git rev-list --count HEAD
        added:    git log --numstat --pretty=tformat: | awk '{a+=$1} END{print a}'
      The sprint window (7pm-5am, 31 commits) comes from `git log --pretty='%h %ad %s' --date=format:'%H:%M'`
@@ -248,13 +264,16 @@ I didn't tidy that up after the fact. It's the method. When you work with an AI 
 
 If the docs number makes me sound slow and fussy, the tempo says otherwise. Here's the shape of the build:
 
-- 33 commits, and every single one of them was co-authored with an AI. That's not the machine
-  writing while I watched, I still write plenty of the code myself. Co-authored is the honest word:
-  two sets of hands, on every commit.
-- The core of it landed in **one overnight sprint**: 7pm to 5am, a straight ten hours, **31 commits,
-  roughly one every twenty minutes.** That's vibe coding at full tilt: in flow, moving fast, the
-  machine keeping up with the ideas as fast as I could aim them.
-- ~13,400 lines added across six calendar days. Real output.
+- 242 commits on this repo alone, and every single one of them was co-authored with an AI. That's
+  not the machine writing while I watched, I still write plenty of the code myself. Co-authored is
+  the honest word: two sets of hands, on every commit.
+- Across the seven repositories I keep, 822 commits between 27 June and 7 August. Six weeks.
+- One night in the middle of that, 4 July: **50 commits between 9pm and half past three, 4,269 lines
+  added before it got light.** One every eight minutes. That's vibe coding at full tilt, the machine
+  keeping up with the ideas as fast as I could aim them.
+- Small commits, on purpose. Each one is a thing that already works, which is what makes the next
+  one cheap to check. Fifty tiny commits you can verify beat five big ones you can't.
+- 46,665 lines added to this repo since the first one. Real output.
 
 Both things are true at once, and that's the entire point: fast *and* documented. The reason I can
 sprint for ten hours and not wake up to a pile of nonsense isn't
@@ -262,48 +281,67 @@ that I'm careful *instead* of fast. It's that I did the careful part *first*: I 
 before I opened the throttle.
 
 <svg viewBox="0 0 620 160" width="100%" role="img"
-     aria-label="One overnight sprint: 31 commits from 7:05pm to 5:19am, about ten hours, roughly one commit every twenty minutes. Every commit co-authored by a machine."
+     aria-label="One night, 4 July 2026: 50 commits from 9:08pm to 3:31am, about six and a half hours, roughly one commit every eight minutes, and 4,269 lines added. Every commit co-authored by a machine."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
   <rect x="0.5" y="0.5" width="619" height="159" style="fill:var(--paper);stroke:var(--edge)"/>
-  <text x="28" y="30" style="fill:var(--muted);font-size:15px">One overnight sprint</text>
-  <text x="310" y="60" text-anchor="middle" style="fill:var(--ink);font-size:14px">31 commits, about one every 20 minutes</text>
+  <text x="28" y="30" style="fill:var(--muted);font-size:15px">One night, 4 July 2026</text>
+  <text x="310" y="60" text-anchor="middle" style="fill:var(--ink);font-size:14px">50 commits, about one every 8 minutes</text>
   <line x1="40" y1="86" x2="580" y2="86" style="stroke:var(--edge);stroke-width:2"/>
   <line x1="40" y1="78" x2="40" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="58" y1="78" x2="58" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="76" y1="78" x2="76" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="94" y1="78" x2="94" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="112" y1="78" x2="112" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="130" y1="78" x2="130" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="148" y1="78" x2="148" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="166" y1="78" x2="166" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="184" y1="78" x2="184" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="202" y1="78" x2="202" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="220" y1="78" x2="220" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="51" y1="78" x2="51" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="62" y1="78" x2="62" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="73" y1="78" x2="73" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="84" y1="78" x2="84" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="95" y1="78" x2="95" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="106" y1="78" x2="106" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="117" y1="78" x2="117" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="128" y1="78" x2="128" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="139" y1="78" x2="139" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="150" y1="78" x2="150" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="161" y1="78" x2="161" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="172" y1="78" x2="172" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="183" y1="78" x2="183" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="194" y1="78" x2="194" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="205" y1="78" x2="205" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="216" y1="78" x2="216" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="227" y1="78" x2="227" y2="94" style="stroke:var(--ink);stroke-width:1"/>
   <line x1="238" y1="78" x2="238" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="256" y1="78" x2="256" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="274" y1="78" x2="274" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="292" y1="78" x2="292" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="310" y1="78" x2="310" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="328" y1="78" x2="328" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="346" y1="78" x2="346" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="364" y1="78" x2="364" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="249" y1="78" x2="249" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="260" y1="78" x2="260" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="271" y1="78" x2="271" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="282" y1="78" x2="282" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="293" y1="78" x2="293" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="304" y1="78" x2="304" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="316" y1="78" x2="316" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="327" y1="78" x2="327" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="338" y1="78" x2="338" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="349" y1="78" x2="349" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="360" y1="78" x2="360" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="371" y1="78" x2="371" y2="94" style="stroke:var(--ink);stroke-width:1"/>
   <line x1="382" y1="78" x2="382" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="400" y1="78" x2="400" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="418" y1="78" x2="418" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="436" y1="78" x2="436" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="454" y1="78" x2="454" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="472" y1="78" x2="472" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="490" y1="78" x2="490" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="508" y1="78" x2="508" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="526" y1="78" x2="526" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="544" y1="78" x2="544" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <line x1="562" y1="78" x2="562" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="393" y1="78" x2="393" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="404" y1="78" x2="404" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="415" y1="78" x2="415" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="426" y1="78" x2="426" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="437" y1="78" x2="437" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="448" y1="78" x2="448" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="459" y1="78" x2="459" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="470" y1="78" x2="470" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="481" y1="78" x2="481" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="492" y1="78" x2="492" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="503" y1="78" x2="503" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="514" y1="78" x2="514" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="525" y1="78" x2="525" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="536" y1="78" x2="536" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="547" y1="78" x2="547" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="558" y1="78" x2="558" y2="94" style="stroke:var(--ink);stroke-width:1"/>
+  <line x1="569" y1="78" x2="569" y2="94" style="stroke:var(--ink);stroke-width:1"/>
   <line x1="580" y1="78" x2="580" y2="94" style="stroke:var(--ink);stroke-width:1"/>
-  <text x="40" y="116" style="fill:var(--muted);font-size:12.5px">7:05pm</text>
-  <text x="310" y="116" text-anchor="middle" style="fill:var(--muted);font-size:12.5px">about ten hours</text>
-  <text x="580" y="116" text-anchor="end" style="fill:var(--muted);font-size:12.5px">5:19am</text>
-  <text x="28" y="144" style="fill:var(--accent);font-size:13px">Every tick, co-authored by a machine.</text>
+  <text x="40" y="118" style="fill:var(--muted);font-size:12.5px">9:08pm</text>
+  <text x="310" y="118" text-anchor="middle" style="fill:var(--muted);font-size:12.5px">the small hours</text>
+  <text x="580" y="118" text-anchor="end" style="fill:var(--muted);font-size:12.5px">3:31am</text>
+  <text x="28" y="146" style="fill:var(--accent);font-size:13px">4,269 lines added before it got light. Every commit co-authored.</text>
 </svg>
 
 *Ten hours, thirty-one commits: fast is safe when the rails went up first.*
@@ -359,6 +397,17 @@ commits there's a [repeatable runbook](https://github.com/tjakoen/bread/blob/mai
 one direction only? Any hardcoded values that should be design tokens? Going fast is only safe when
 there's a cheap, repeatable way to prove you didn't bend the shape of the thing.
 
+What that adds up to, counted the same day as everything else here: 104 test files across the seven
+repositories, roughly 1,173 test cases behind them, and 40 end-to-end specs on this site alone, all
+of it behind one command that has to come back green before anything counts as done. There's even a
+linter for the prose, which sounds absurd until you remember that half of what's in here is prose.
+If the writing is part of the product, the writing gets a gate.
+
+One rule I'd hand a student before any of the tooling: the second pass has to be done by someone who
+didn't write the code. A session that just wrote something already believes it, and will defend it
+convincingly. A cold session won't. That isn't a clever trick, it's the same reason you don't mark
+your own exam.
+
 **5. Tests are part of the work, not a phase after it.** Three tiers (unit, integration,
 end-to-end) written *as* features, not bolted on later. The type-checker and the test suite
 have to be green before I call anything done. It's the least glamorous rule and it does the most
@@ -411,6 +460,39 @@ the onboarding, make it excellent, and polish it as you go.
 </svg>
 
 *The loop is what keeps fast from turning into fragile.*
+
+### Two of those rules have proper names, and I didn't invent either
+
+Worth saying plainly, because I read my way here and you can too.
+
+**Context engineering** is the one everybody gets wrong first. Your prompt is not the input. The
+model reads the room: the files it was pointed at, the conventions it found, whatever the last
+session left behind. It arrives with no memory of yesterday and none of the things somebody told you
+in person. So the instinct to fix a bad answer by writing a cleverer prompt is the amateur move, and
+I made it for months before the penny dropped. I stopped prompting harder and started leaving better
+notes.
+
+There's a free test for this and it takes two minutes. Open a cold session, no chat history, give it
+one sentence of instruction, and watch what it does first. If it guesses the stack, invents a folder,
+or writes a framework into a project that has never had one, that gap is yours and not the model's.
+Alfonso Graziano's [Learning AI-Native Software Engineering](https://alfonsograziano.it/book) is
+where most of my thinking on this got sharpened, along with spec-driven work like
+[GitHub's Spec Kit](https://github.com/github/spec-kit).
+
+**Loop engineering** is the other one, and it's Addy Osmani's
+[term and framing](https://addyosmani.com/blog/loop-engineering/): durable AI work is built out of a
+few reusable parts rather than one clever prompt. His [Beyond Vibe Coding](https://beyond.addy.ie)
+carries the harder half of it, the seventy percent problem, where the machine gets you most of the
+way and the last stretch is exactly where unmanaged work rots.
+
+The shape I run per change is four moves. Brief it, which is what to build and what not to touch.
+Build, where the machine types and I read every line. **Verify**, and that word is doing all the
+work here. Then record what changed, where the next session will find it.
+
+Verify is not a feeling. It's the type checker, the tests, an end-to-end run against the real thing,
+and a pair of eyes that isn't mine. Skip it once and nothing happens, which is the trap. Skip it for
+a week and you can't answer a single question about your own repository, and neither can the machine,
+because nothing you agreed five sessions ago survived anywhere it could read.
 
 ## The best trick of all: the AI's mistakes are a measurement
 
@@ -497,8 +579,8 @@ and I harden the design so neither of us slips there again.
 
 ## The tell is the ratio
 
-Strip all of it down and you land right back at that first number. **56% prose.** More spec than
-implementation.
+Strip all of it down and you land right back at that first number. **48% writing.** About as much
+spec as implementation, in a repo whose whole reputation is supposed to be the opposite.
 
 An amateur and I could type the exact same request into the exact same model and get back the exact
 same code. The difference isn't in that moment. It's in everything I built *around* the moment: the
@@ -507,6 +589,53 @@ to survive. That surrounding structure is the profession. The code is just the c
 
 And it's the same law as the napkin at the top: the model multiplied what I brought. I brought
 conventions, memory, tests, and taste, so it multiplied *those*.
+
+## Don't work for the AI. Run it.
+
+If you take one idea out of all of this, take this one, because it decides which of the two
+developers you become.
+
+Working *for* it looks like this. You ask, it answers, you paste. The shape of the project ends up
+being whatever the machine happened to produce that afternoon. When something goes wrong you ask it
+again, louder. And you spend a lot of your day sitting in front of one chat window, waiting.
+
+Running it looks different from the first minute, before a single prompt gets typed. You decide what
+should exist. You cut it into pieces small enough to check in a minute each. You point the machine
+at one piece and read every line that comes back. And you accept nothing you couldn't defend with
+the tab closed.
+
+Same tool, same day, same model. One of those is a job. The other is a habit that does not survive
+contact with anything real. Some evenings I have several sessions open at once and it feels exactly
+like running a team, because it is the same skill: brief, delegate, verify, and never sign off on
+work you can't explain.
+
+## Where to start, if you're early
+
+Concrete, and in this order, because everybody wants to start at three.
+
+**1. Pick a project you already understand.** Not a new one. You can't judge the output of a machine
+on a codebase you've never read, and judging the output is the entire skill.
+
+**2. Write the brief before the feature.** One file at the root: what this is, how it's built, what
+not to touch. Twenty minutes, once. Every session after it starts smarter, and you'll feel it on day
+two.
+
+**3. Turn on the cheap gates first.** Types on and strict, one test that actually runs, no empty
+catch blocks. All three before lunch, and they'll keep catching things all year.
+
+**4. Make it explain, then explain it back.** Out loud, tab closed, to nobody. The moment you can't,
+stop. You've just found the exact thing to go and learn, and it's worth more than the feature was.
+
+**5. Every correction you give twice becomes a line in that file.** That's how the brief writes
+itself, and it's the whole method minus my tooling. The second time you correct a machine about the
+same thing, that correction has stopped being a conversation and started being a rule.
+
+And then the part most people skip: record it. In your docs, in your audit, in the file the model
+reads first. Let it learn the same lesson you just did, so tomorrow you get to hold it to that
+lesson instead of teaching it again.
+
+If you're early in your career and using AI to produce, you're buying output. If you're using it to
+learn, you're buying reps. Same hour, and only one of those makes you a bigger number.
 
 ## The point
 
@@ -522,6 +651,28 @@ Bring nothing and it multiplies nothing: ten times zero is still zero. So become
 first, then go make it dangerous.
 
 > I don't prompt and pray. I prompt and prove.
+
+## What I read to get here
+
+None of the ideas underneath this are mine. I read these, argued with them, and built something
+that runs, which is a method you can copy today.
+
+- [Loop Engineering](https://addyosmani.com/blog/loop-engineering/), Addy Osmani. The case that
+  durable AI work is built from a few reusable parts rather than a clever prompt, plus the warning
+  about comprehension debt that I wish I'd read two years earlier.
+- [Beyond Vibe Coding](https://beyond.addy.ie), Addy Osmani. The seventy percent problem, plan
+  first over prompt and pray, and quality gates as non-negotiable. This one is why my session
+  heartbeat and my gates exist at all.
+- [Learning AI-Native Software Engineering](https://alfonsograziano.it/book), Alfonso Graziano.
+  Context engineering, spec-driven development, verification gates.
+- [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills). The loop in executable
+  form, as skills an agent loads on its own. Worth reading even if you never run them.
+- [GitHub Spec Kit](https://github.com/github/spec-kit). Spec-driven development, formalized and
+  free. The most direct way to try "write the rails first" without inventing your own process.
+- [llms.txt](https://llmstxt.org) and [MCP](https://modelcontextprotocol.io). How a project tells an
+  agent what to read first, and how an agent reaches your tools. An evening each.
+- My own [standards](/standards), which are the written version of everything above as I actually
+  run it. Take what's useful and ignore the rest.
 
 ---
 

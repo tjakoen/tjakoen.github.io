@@ -1,0 +1,453 @@
+/* pages/talk — the furniture for ONE talk, "Ten Times Zero Is Still Zero" (bundled into
+   /components.css, scoped to the talk screen). The deck itself is GRAIN's `presentation` organism;
+   everything here is this talk's own figures: the multiplier slider, the life grid, the guess bar,
+   the sprint line, the playbook ring, the trap demo, the cold-session panel, the session dots, the
+   correction log, and the rest. None of it belongs up in grain, because none of it would be wanted
+   by a second product. The behaviour half is scripts/talk.js, which hangs off the organism's one
+   seam and reaches into nothing.
+
+   `body[data-deck-only]` is the page contract: a talk owns the window, so this page carries no app
+   shell and the deck takes the full height the shell would otherwise hand it. */
+
+body[data-deck-only] { margin: 0; padding: 0; height: 100dvh; overflow: hidden; background: var(--color-bg); }
+body[data-deck-only] > .presentation { height: 100dvh; }
+
+
+@media print {
+  body[data-deck-only] { height: auto; overflow: visible; background: none; }
+  body[data-deck-only] > .presentation { height: auto; }
+}
+
+
+[data-screen="talk"] .presentation__notes [data-grade="grain"],
+[data-screen="talk"] .years__total[data-grade="grain"] { --type-font: var(--font-grain-fine); }
+
+
+[data-screen="talk"] .claim {
+  font-size: calc(var(--u) * 4.2); line-height: 1.2; color: var(--color-fg);
+  margin: calc(var(--u) * 4) 0 0; max-width: 30ch;
+}
+
+
+[data-screen="talk"] .fig { display: block; width: 100%; height: auto; margin: calc(var(--u) * 3) 0 0; }
+
+
+[data-screen="talk"] .mult { margin-top: calc(var(--u) * 4); width: min(100%, calc(var(--u0) * 78)); }
+[data-screen="talk"] .mult__row { display: grid; grid-template-columns: calc(var(--u) * 13) 1fr calc(var(--u) * 14);
+  align-items: center; gap: calc(var(--u) * 2); margin-bottom: calc(var(--u) * 2.2); }
+[data-screen="talk"] .mult__label { font-size: calc(var(--u) * 1.9); color: var(--color-muted); }
+[data-screen="talk"] .mult__track { height: calc(var(--u) * 2.6); border: 1px solid var(--color-line); position: relative; }
+[data-screen="talk"] .mult__fill { position: absolute; inset: 0 auto 0 0; background: var(--ink);
+  transition: width 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
+[data-screen="talk"] .mult__fill--out { background: var(--color-accent); }
+
+/* the bracket hangs BELOW the output bar. Sitting on top of it, the label was cream text on a
+   cream fill and simply could not be read from a seat. */
+[data-screen="talk"] .mult__gap { position: absolute; top: 100%; height: 0; }
+[data-screen="talk"] .mult__gap i { position: absolute; inset: 0; border-top: 1px dashed var(--color-muted); }
+[data-screen="talk"] .mult__gap i::before, [data-screen="talk"] .mult__gap i::after {
+  content: ""; position: absolute; top: calc(var(--u) * -0.5); width: 1px; height: calc(var(--u) * 1);
+  background: var(--color-muted); }
+[data-screen="talk"] .mult__gap i::before { left: 0; }
+[data-screen="talk"] .mult__gap i::after { right: 0; }
+[data-screen="talk"] .mult__gap b { position: absolute; left: 50%; top: calc(var(--u) * 0.6); transform: translateX(-50%);
+  white-space: nowrap; font-size: calc(var(--u) * 1.4); font-weight: var(--font-weight-regular); color: var(--color-muted); }
+[data-screen="talk"] .mult__control { display: flex; align-items: center; gap: calc(var(--u) * 2.4); margin-top: calc(var(--u) * 5.5); }
+[data-screen="talk"] .mult__control input[type="range"] { flex: 1; accent-color: var(--color-accent); height: calc(var(--u) * 2.4); }
+[data-screen="talk"] .mult__verdict { font-size: calc(var(--u) * 3); margin-top: calc(var(--u) * 3.5); min-height: 1.3em; max-width: 34ch; }
+[data-screen="talk"] .mult__zero { font-size: calc(var(--u) * 1.7); color: var(--color-muted); margin-top: calc(var(--u) * 1.5); }
+
+
+/* --- 11 · the unglamorous thing, with an artefact per beat ------------------- */
+[data-screen="talk"] .did { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: calc(var(--u) * 5); align-items: start; margin-top: calc(var(--u) * 2); }
+[data-screen="talk"] .did .beats { margin-top: 0; }
+[data-screen="talk"] .did__cards { position: relative; min-height: calc(var(--u) * 26); }
+[data-screen="talk"] .did__card { position: absolute; inset: 0; margin: 0;
+  border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: calc(var(--u) * 2.4);
+  opacity: 0; transform: translateY(calc(var(--u) * 0.8));
+  transition: opacity 0.28s ease, transform 0.28s ease; pointer-events: none; }
+[data-screen="talk"] .did__card.is-on { opacity: 1; transform: none; }
+[data-screen="talk"] .did__lab { margin: 0 0 calc(var(--u) * 1.8); font-size: calc(var(--u) * 1.4);
+  color: var(--color-muted); letter-spacing: 0.12em; text-transform: uppercase; }
+[data-screen="talk"] .did__code { font-family: var(--font-mono); font-size: calc(var(--u) * 2.1);
+  margin: 0; color: var(--color-fg); white-space: pre-wrap; line-height: 1.5; }
+[data-screen="talk"] .did__code i { font-style: normal; color: var(--color-muted); }
+[data-screen="talk"] .did__card figcaption { margin-top: calc(var(--u) * 2.2);
+  font-size: calc(var(--u) * 1.7); color: var(--color-muted); line-height: 1.4; }
+[data-screen="talk"] .did__card figcaption b { color: var(--color-fg); font-weight: var(--font-weight-regular);
+  font-family: var(--font-mono); font-size: 0.95em; }
+
+
+[data-screen="talk"] .twohands { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 5);
+  align-items: center; margin-top: calc(var(--u) * 2); }
+[data-screen="talk"] .twohands .fig { max-width: 100%; margin-top: 0; }
+[data-screen="talk"] .twohands .beats { margin-top: 0; }
+
+
+
+[data-screen="talk"] .years { display: grid; grid-template-columns: auto 1fr; gap: calc(var(--u) * 5);
+  align-items: start; margin-top: calc(var(--u) * 4); }
+[data-screen="talk"] .years__side { display: flex; flex-direction: column; }
+[data-screen="talk"] .years__grid { display: grid; grid-template-rows: repeat(12, auto); grid-auto-flow: column;
+  gap: calc(var(--u) * 0.9); }
+[data-screen="talk"] .years__cap { font-size: calc(var(--u) * 1.4); color: var(--ink-faint);
+  margin: calc(var(--u) * 1.8) 0 0; max-width: calc(var(--u) * 26); line-height: 1.35; }
+[data-screen="talk"] .years__dot {
+  width: calc(var(--u) * 1.15); height: calc(var(--u) * 1.15); border-radius: 50%;
+  background: var(--ink-faint); opacity: 0.35;
+  transition: background 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+[data-screen="talk"] .years__dot[data-on] { background: var(--ink); opacity: 1; }
+[data-screen="talk"] .years__dot[data-now] { background: var(--color-accent); transform: scale(1.35); }
+[data-screen="talk"] .years__key { display: flex; flex-direction: column; gap: calc(var(--u) * 1.1); }
+[data-screen="talk"] .years__row { display: flex; justify-content: space-between; align-items: baseline;
+  gap: calc(var(--u) * 3); margin: 0; padding-bottom: calc(var(--u) * 0.9);
+  border-bottom: 1px solid var(--color-line); }
+[data-screen="talk"] .years__row b { font-size: calc(var(--u) * 2.1); font-weight: var(--font-weight-regular); }
+[data-screen="talk"] .years__row span { font-size: calc(var(--u) * 1.6); color: var(--color-muted); text-align: right; }
+[data-screen="talk"] .years__total { font-size: calc(var(--u) * 2.1); margin: calc(var(--u) * 1.5) 0 0; }
+
+
+[data-screen="talk"] .matrix { margin-top: calc(var(--u) * 4.5); width: min(100%, calc(var(--u0) * 88)); border-collapse: collapse; }
+[data-screen="talk"] .matrix th, [data-screen="talk"] .matrix td {
+  padding: calc(var(--u) * 1.6) calc(var(--u) * 1.4); text-align: left;
+  border-bottom: 1px solid var(--color-line); font-size: calc(var(--u) * 1.95);
+  font-weight: var(--font-weight-regular);
+}
+[data-screen="talk"] .matrix th { color: var(--color-muted); font-size: calc(var(--u) * 1.7); }
+[data-screen="talk"] .matrix th:first-child, [data-screen="talk"] .matrix td:first-child { color: var(--color-fg); }
+[data-screen="talk"] .matrix col { transition: background 0.3s ease; }
+[data-screen="talk"] .matrix col.is-lit { background: var(--paper-2); }
+[data-screen="talk"] .matrix__pick { background: transparent; border: 0; font: inherit; color: inherit; cursor: pointer;
+  padding: 0; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 0.3em; }
+[data-screen="talk"] .matrix__pick[aria-pressed="true"] { color: var(--color-accent); }
+[data-screen="talk"] .matrix__same { margin-top: calc(var(--u) * 3); font-size: calc(var(--u) * 2.6); }
+[data-screen="talk"] .matrix__same b { font-weight: var(--font-weight-regular); }
+
+
+
+/* the tree and the bar sit side by side: the point is that the ratio is not an abstraction, it is
+   what the top of the repository literally looks like when you open it */
+[data-screen="talk"] .ratiowrap { display: grid; grid-template-columns: auto minmax(0, 1fr);
+  gap: calc(var(--u) * 5); align-items: start; margin-top: calc(var(--u) * 3); }
+[data-screen="talk"] .tree s { text-decoration: none; color: var(--ink-faint); font-size: 0.9em; }
+[data-screen="talk"] .tree { font-family: var(--font-mono); font-size: calc(var(--u) * 1.5);
+  line-height: 1.7; margin: 0; color: var(--color-muted); white-space: pre; }
+[data-screen="talk"] .tree b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+[data-screen="talk"] .tree i { font-style: normal; color: var(--color-accent); }
+[data-screen="talk"] .tree u { text-decoration: none; color: var(--color-fg); }
+
+[data-screen="talk"] .ratiowrap .ratio { margin-top: 0; width: 100%; }
+[data-screen="talk"] .ratio { margin-top: calc(var(--u) * 4); width: min(100%, calc(var(--u0) * 80)); }
+[data-screen="talk"] .ratio__bar { position: relative; height: calc(var(--u) * 5.5); border: 1px solid var(--hairline); display: flex; }
+[data-screen="talk"] .ratio__code { background: var(--ink-faint); transition: width 0.7s cubic-bezier(0.22, 0.61, 0.36, 1); }
+[data-screen="talk"] .ratio__prose { background: var(--ink); transition: width 0.7s cubic-bezier(0.22, 0.61, 0.36, 1); }
+[data-screen="talk"] .ratio__guess { position: absolute; top: calc(var(--u) * -1.6); bottom: calc(var(--u) * -1.6);
+  width: 2px; background: var(--color-accent); transition: left 0.14s ease; }
+[data-screen="talk"] .ratio__guess::after { content: attr(data-label); position: absolute; left: calc(var(--u) * 0.9);
+  top: calc(var(--u) * -2.6); font-size: calc(var(--u) * 1.5); color: var(--color-accent); white-space: nowrap; }
+[data-screen="talk"] .ratio__keys { display: flex; justify-content: space-between; margin-top: calc(var(--u) * 2.4);
+  font-size: calc(var(--u) * 1.8); color: var(--color-muted); }
+[data-screen="talk"] .ratio__keys b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+[data-screen="talk"] .ratio__nudge { font-size: calc(var(--u) * 1.4); color: var(--ink-faint); }
+[data-screen="talk"] .ratio__punch { font-size: calc(var(--u) * 3.2); margin-top: calc(var(--u) * 4); max-width: 32ch; }
+
+
+[data-screen="talk"] .sprint { margin-top: calc(var(--u) * 5); width: min(100%, calc(var(--u0) * 86)); }
+[data-screen="talk"] .sprint__line { position: relative; height: calc(var(--u) * 6); border-bottom: 2px solid var(--color-line); }
+
+[data-screen="talk"] .sprint__night { position: absolute; left: 22%; right: 6%; top: calc(var(--u) * 1); bottom: 0;
+  background: var(--color-fg); opacity: 0.05; }
+[data-screen="talk"] .sprint__tick { position: absolute; bottom: 0; width: 1.5px; height: calc(var(--u) * 3.4);
+  background: var(--ink); opacity: 0; transform: scaleY(0.4); transform-origin: bottom;
+  transition: opacity 0.18s ease, transform 0.18s ease; }
+[data-screen="talk"] .sprint__tick.is-on { opacity: 1; transform: none; }
+[data-screen="talk"] .sprint__ends { display: flex; justify-content: space-between; margin-top: calc(var(--u) * 1.4);
+  font-size: calc(var(--u) * 1.7); color: var(--color-muted); font-family: var(--font-mono); }
+[data-screen="talk"] .sprint__count { font-size: calc(var(--u) * 3.4); margin-top: calc(var(--u) * 3.5); font-family: var(--font-mono); }
+[data-screen="talk"] .sprint__note { font-size: calc(var(--u) * 1.9); color: var(--color-muted); margin-top: calc(var(--u) * 1.2); }
+
+
+[data-screen="talk"] .loop { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: calc(var(--u) * 6);
+  align-items: center; margin-top: calc(var(--u) * 2); }
+[data-screen="talk"] .loop__ring { position: relative; width: calc(var(--u) * 37); height: calc(var(--u) * 37); flex: none; }
+[data-screen="talk"] .loop__ring .fig { position: absolute; inset: 0; margin: 0; }
+[data-screen="talk"] .loop__node {
+  position: absolute; left: 50%; top: 50%; margin: 0; cursor: pointer;
+  
+  transform: translate(-50%, -50%) rotate(calc(var(--i) * 60deg)) translateY(calc(var(--u) * -14)) rotate(calc(var(--i) * -60deg));
+  background: var(--color-bg); border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  padding: calc(var(--u) * 0.9) calc(var(--u) * 1.4); font: inherit; color: var(--color-fg);
+  font-size: calc(var(--u) * 1.75); line-height: 1.15; white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+[data-screen="talk"] .loop__node span { display: block; font-family: var(--font-mono);
+  font-size: calc(var(--u) * 1.15); color: var(--color-muted); }
+[data-screen="talk"] .loop__node:hover { border-color: var(--hairline); }
+[data-screen="talk"] .loop__node[aria-expanded="true"] { border-color: var(--color-accent); color: var(--color-accent); }
+[data-screen="talk"] .loop__node[aria-expanded="true"] span { color: var(--color-accent); }
+[data-screen="talk"] .loop__node[data-node="0"] { --i: 0; }
+[data-screen="talk"] .loop__node[data-node="1"] { --i: 1; }
+[data-screen="talk"] .loop__node[data-node="2"] { --i: 2; }
+[data-screen="talk"] .loop__node[data-node="3"] { --i: 3; }
+[data-screen="talk"] .loop__node[data-node="4"] { --i: 4; }
+[data-screen="talk"] .loop__node[data-node="5"] { --i: 5; }
+[data-screen="talk"] .loop__hub { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  margin: 0; text-align: center; font-size: calc(var(--u) * 1.5); color: var(--color-muted); line-height: 1.35; }
+[data-screen="talk"] .loop__detail { min-height: calc(var(--u) * 22); }
+[data-screen="talk"] .loop__all { margin: 0; padding-left: calc(var(--u) * 3); list-style: decimal-leading-zero;
+  display: flex; flex-direction: column; gap: calc(var(--u) * 1.2); }
+/* the script hides this list when a node opens, but `display: flex` outranks the browser's own
+   [hidden] rule, so the list stayed up and every card landed jammed underneath it */
+[data-screen="talk"] .loop__all[hidden] { display: none; }
+[data-screen="talk"] .loop__all li { font-size: calc(var(--u) * 1.85); color: var(--color-muted); line-height: 1.25; }
+[data-screen="talk"] .loop__all::marker, [data-screen="talk"] .loop__all li::marker {
+  font-family: var(--font-mono); font-size: calc(var(--u) * 1.4); color: var(--ink-faint); }
+[data-screen="talk"] .loop__card h3 { font-size: calc(var(--u) * 2.8); margin: 0 0 calc(var(--u) * 2);
+  font-weight: var(--font-weight-regular); line-height: 1.15; }
+[data-screen="talk"] .loop__card p { font-size: calc(var(--u) * 2); color: var(--color-muted);
+  margin: 0; max-width: 40ch; line-height: 1.45; }
+[data-screen="talk"] .loop__card { animation: loop-card 0.3s ease both; }
+@keyframes loop-card { from { opacity: 0; transform: translateY(0.4rem); } }
+
+
+[data-screen="talk"] .trap { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 4);
+  margin-top: calc(var(--u) * 2.5); width: min(100%, calc(var(--u0) * 84)); }
+[data-screen="talk"] .trap__card { border: 1px solid var(--color-line); border-radius: var(--radius-md); padding: calc(var(--u) * 2); }
+[data-screen="talk"] .trap__t { font-size: calc(var(--u) * 2.1); margin: 0 0 calc(var(--u) * 1.6); }
+[data-screen="talk"] .trap__t span { color: var(--color-muted); font-size: calc(var(--u) * 1.5); display: block;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: calc(var(--u) * 0.8); }
+[data-screen="talk"] .trap .btn { font-size: calc(var(--u) * 1.8); padding: calc(var(--u) * 1.2) calc(var(--u) * 2.4); }
+[data-screen="talk"] .trap__out { font-size: calc(var(--u) * 1.8); min-height: calc(var(--u) * 4);
+  display: flex; align-items: center; color: var(--color-muted); }
+[data-screen="talk"] .trap__out b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+[data-screen="talk"] .trap__lesson { font-size: calc(var(--u) * 2.4); margin-top: calc(var(--u) * 3); max-width: 40ch; }
+
+
+[data-screen="talk"] .scaffold { max-width: calc(var(--u0) * 74); }
+
+
+[data-screen="talk"] .end { display: flex; align-items: center; gap: calc(var(--u) * 6); margin-top: calc(var(--u) * 5); }
+[data-screen="talk"] .end__qr { width: calc(var(--u) * 20); height: calc(var(--u) * 20); color: var(--color-fg); flex: none; }
+[data-screen="talk"] .end__qr svg { width: 100%; height: 100%; shape-rendering: crispEdges; }
+[data-screen="talk"] .end__url { font-family: var(--font-mono); font-size: calc(var(--u) * 1.9);
+  color: var(--color-muted); margin-top: calc(var(--u) * 2); word-break: break-all; }
+
+
+/* --- 6a · what the first number is made of ---------------------------------
+   Four claims you can only earn. Checking them drives the same bar the napkin used, so the
+   callback is visual and nobody has to be told it is a callback. */
+[data-screen="talk"] .bring { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: calc(var(--u) * 5); align-items: start; margin-top: calc(var(--u) * 3.5); }
+[data-screen="talk"] .bring__list { list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: calc(var(--u) * 1.2); }
+[data-screen="talk"] .bring__item { display: block; width: 100%; text-align: left; cursor: pointer;
+  background: transparent; border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  padding: calc(var(--u) * 1.5) calc(var(--u) * 2); font: inherit; color: var(--color-fg);
+  transition: border-color 0.2s ease, background 0.2s ease; }
+[data-screen="talk"] .bring__item b { display: block; font-size: calc(var(--u) * 2.1);
+  font-weight: var(--font-weight-regular); line-height: 1.2; }
+[data-screen="talk"] .bring__item span { display: block; font-size: calc(var(--u) * 1.5);
+  color: var(--color-muted); margin-top: calc(var(--u) * 0.5); line-height: 1.35; }
+[data-screen="talk"] .bring__item:hover { border-color: var(--hairline); }
+[data-screen="talk"] .bring__item[aria-pressed="true"] { border-color: var(--color-accent); background: var(--paper-2); }
+[data-screen="talk"] .bring__item[aria-pressed="true"] b { color: var(--color-accent); }
+[data-screen="talk"] .bring__meter { padding-top: calc(var(--u) * 1); }
+[data-screen="talk"] .bring__num { margin: 0; display: flex; align-items: baseline; gap: calc(var(--u) * 1.6); }
+[data-screen="talk"] .bring__num span { font-size: calc(var(--u) * 6); font-family: var(--font-mono); line-height: 1; }
+[data-screen="talk"] .bring__num i { font-style: normal; font-size: calc(var(--u) * 1.7); color: var(--color-muted); }
+[data-screen="talk"] .bring__track { display: block; height: calc(var(--u) * 2.6); border: 1px solid var(--color-line);
+  position: relative; margin-top: calc(var(--u) * 2); }
+[data-screen="talk"] .bring__fill { position: absolute; inset: 0 auto 0 0; background: var(--color-accent);
+  transition: width 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
+[data-screen="talk"] .bring__verdict { font-size: calc(var(--u) * 2.3); margin-top: calc(var(--u) * 2.6);
+  min-height: 3.6em; max-width: 32ch; line-height: 1.35; }
+[data-screen="talk"] .bring__foot { font-size: calc(var(--u) * 1.6); color: var(--color-muted);
+  margin-top: calc(var(--u) * 1.5); max-width: 34ch; line-height: 1.4; }
+
+
+/* --- 20a · context engineering ---------------------------------------------
+   Three files, one cold session, eight honest outcomes. The point is that the prompt never
+   changes: only the room does. */
+[data-screen="talk"] .ctx { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: calc(var(--u) * 5); align-items: start; margin-top: calc(var(--u) * 3); }
+[data-screen="talk"] .ctx__files { list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: calc(var(--u) * 1.2); }
+[data-screen="talk"] .ctx__file { display: flex; align-items: center; gap: calc(var(--u) * 1.4); width: 100%;
+  cursor: pointer; background: transparent; border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  padding: calc(var(--u) * 1.3) calc(var(--u) * 1.8); font: inherit; color: var(--color-muted);
+  font-family: var(--font-mono); font-size: calc(var(--u) * 1.7); text-align: left;
+  transition: border-color 0.2s ease, color 0.2s ease; }
+[data-screen="talk"] .ctx__file::before { content: "○"; font-size: calc(var(--u) * 1.5); }
+[data-screen="talk"] .ctx__file[aria-pressed="true"] { border-color: var(--color-accent); color: var(--color-accent); }
+[data-screen="talk"] .ctx__file[aria-pressed="true"]::before { content: "●"; }
+[data-screen="talk"] .ctx__file i { font-style: normal; font-family: var(--font-sans, inherit);
+  font-size: calc(var(--u) * 1.4); color: var(--ink-faint); }
+[data-screen="talk"] .ctx__run { border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  padding: calc(var(--u) * 2.2); }
+[data-screen="talk"] .ctx__lab { margin: 0; font-size: calc(var(--u) * 1.4); color: var(--color-muted);
+  letter-spacing: 0.12em; text-transform: uppercase; }
+[data-screen="talk"] .ctx__prompt { font-family: var(--font-mono); font-size: calc(var(--u) * 1.9);
+  margin: calc(var(--u) * 1.2) 0 calc(var(--u) * 2.4); color: var(--color-fg); }
+[data-screen="talk"] .ctx__out { font-size: calc(var(--u) * 2.1); margin: calc(var(--u) * 1.2) 0 0;
+  min-height: 4.2em; line-height: 1.35; }
+[data-screen="talk"] .ctx__out[data-good="1"] { color: var(--color-accent); }
+[data-screen="talk"] .ctx__test { font-size: calc(var(--u) * 2.2); margin-top: calc(var(--u) * 3); max-width: 46ch; }
+
+
+/* --- the four moves, and the four gates: same shape, used twice -------------
+   A numbered row of steps. Counters rather than list markers, so the number can sit above the
+   label at a size that still reads from the back of a room. */
+[data-screen="talk"] .moves, [data-screen="talk"] .gates {
+  list-style: none; counter-reset: step; margin: calc(var(--u) * 3) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(var(--u) * 3);
+}
+[data-screen="talk"] .moves li, [data-screen="talk"] .gates li { counter-increment: step;
+  border-top: 1px solid var(--color-line); padding-top: calc(var(--u) * 1.4); }
+[data-screen="talk"] .moves li::before, [data-screen="talk"] .gates li::before {
+  content: "0" counter(step); display: block; font-family: var(--font-mono);
+  font-size: calc(var(--u) * 1.3); color: var(--ink-faint); margin-bottom: calc(var(--u) * 0.8); }
+[data-screen="talk"] .moves b, [data-screen="talk"] .gates b { display: block;
+  font-size: calc(var(--u) * 2.2); font-weight: var(--font-weight-regular); line-height: 1.15; }
+[data-screen="talk"] .moves span, [data-screen="talk"] .gates span { display: block;
+  font-size: calc(var(--u) * 1.45); color: var(--color-muted); line-height: 1.35;
+  margin-top: calc(var(--u) * 0.8); }
+[data-screen="talk"] .gates { margin-top: calc(var(--u) * 2.5); }
+/* the third column is the one nobody runs, so it is the one that gets the accent */
+[data-screen="talk"] .moves li:nth-child(3) b, [data-screen="talk"] .gates li:nth-child(3) b { color: var(--color-accent); }
+
+
+/* --- 20b · loop engineering -------------------------------------------------
+   Same six sessions, run two ways. The dots are the whole argument: one column keeps
+   collecting things nobody checked, the other keeps closing them. */
+[data-screen="talk"] .cycle { margin-top: calc(var(--u) * 3); width: min(100%, calc(var(--u0) * 88)); }
+[data-screen="talk"] .cycle__cards { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 4); }
+[data-screen="talk"] .cycle__card { border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  padding: calc(var(--u) * 2.2); }
+[data-screen="talk"] .cycle__t { font-size: calc(var(--u) * 2.1); margin: 0 0 calc(var(--u) * 1.8); }
+[data-screen="talk"] .cycle__t span { display: block; color: var(--color-muted); font-size: calc(var(--u) * 1.4);
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: calc(var(--u) * 0.7); }
+[data-screen="talk"] .cycle__dots { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 1); margin: 0;
+  min-height: calc(var(--u) * 5.2); align-content: flex-start; }
+[data-screen="talk"] .cycle__dot { width: calc(var(--u) * 1.5); height: calc(var(--u) * 1.5); border-radius: 50%;
+  border: 1px solid var(--color-line); background: transparent;
+  transition: background 0.25s ease, border-color 0.25s ease, opacity 0.25s ease; }
+[data-screen="talk"] .cycle__dot[data-on="open"] { background: var(--ink-faint); border-color: var(--ink-faint); }
+[data-screen="talk"] .cycle__dot[data-on="closed"] { background: var(--color-accent); border-color: var(--color-accent); }
+[data-screen="talk"] .cycle__leg { font-size: calc(var(--u) * 1.35); color: var(--ink-faint);
+  margin: calc(var(--u) * 1.1) 0 0; }
+[data-screen="talk"] .cycle__out { font-size: calc(var(--u) * 1.75); color: var(--color-muted);
+  margin: calc(var(--u) * 1.8) 0 0; min-height: 4.4em; line-height: 1.4; }
+[data-screen="talk"] .cycle__out b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+[data-screen="talk"] .cycle__cost { font-size: calc(var(--u) * 2.4); line-height: 1.3;
+  margin: calc(var(--u) * 3) 0 0; min-height: 2.6em; max-width: 54ch;
+  color: var(--color-muted); opacity: 0; transition: opacity 0.3s ease; }
+[data-screen="talk"] .cycle__cost[data-on] { opacity: 1; color: var(--color-fg); }
+[data-screen="talk"] .cycle__run { display: flex; gap: calc(var(--u) * 1.6); margin-top: calc(var(--u) * 2.2); }
+[data-screen="talk"] .cycle .btn { font-size: calc(var(--u) * 1.7); padding: calc(var(--u) * 1.1) calc(var(--u) * 2.2); }
+
+
+/* --- 20c · the correction that never sticks ---------------------------------
+   Click "new session" and say the same sentence again. The fix is one line long and the
+   demo is the argument, so the tool gets two lines and no more. */
+[data-screen="talk"] .repeat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  gap: calc(var(--u) * 5); align-items: start; margin-top: calc(var(--u) * 3); }
+[data-screen="talk"] .repeat__log { list-style: none; margin: 0; padding: 0; min-height: calc(var(--u) * 20);
+  display: flex; flex-direction: column; gap: calc(var(--u) * 1); }
+[data-screen="talk"] .repeat__log li { font-family: var(--font-mono); font-size: calc(var(--u) * 1.6);
+  color: var(--color-muted); line-height: 1.35; animation: loop-card 0.25s ease both; }
+[data-screen="talk"] .repeat__log li[data-fixed] { color: var(--color-accent); }
+[data-screen="talk"] .repeat__log li b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+[data-screen="talk"] .repeat__count { font-size: calc(var(--u) * 2.1); margin: 0 0 calc(var(--u) * 2.4); }
+[data-screen="talk"] .repeat__count span { font-family: var(--font-mono); font-size: calc(var(--u) * 4.4);
+  display: block; line-height: 1.05; }
+[data-screen="talk"] .repeat__btns { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 1.4); margin: 0; }
+[data-screen="talk"] .repeat .btn { font-size: calc(var(--u) * 1.7); padding: calc(var(--u) * 1.1) calc(var(--u) * 2.2); }
+[data-screen="talk"] .repeat__fix { font-size: calc(var(--u) * 1.75); color: var(--color-muted);
+  margin: calc(var(--u) * 2.4) 0 0; min-height: 4.2em; line-height: 1.4; max-width: 34ch; }
+[data-screen="talk"] .repeat__fix b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
+
+
+/* --- 25b · the audit receipts ------------------------------------------------
+   Four numbers, read flat. The mono face is doing the work: these are counts out of a repo,
+   not a claim about how diligent anybody is. */
+[data-screen="talk"] .stats { display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: calc(var(--u) * 3.5); margin: calc(var(--u) * 3.5) 0 0; }
+[data-screen="talk"] .stats div { border-top: 1px solid var(--color-line); padding-top: calc(var(--u) * 1.4); }
+[data-screen="talk"] .stats dt { font-family: var(--font-mono); font-size: calc(var(--u) * 4.6);
+  line-height: 1; color: var(--color-fg); }
+[data-screen="talk"] .stats dd { margin: calc(var(--u) * 1.2) 0 0; font-size: calc(var(--u) * 1.5);
+  color: var(--color-muted); line-height: 1.35; }
+/* the three lines under the counts run wider than a normal beat list, so the slide does not sit
+   in its own left-hand column with half the wall empty */
+[data-screen="talk"] .audit__beats { display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--u) * 4); margin-top: calc(var(--u) * 4.5); }
+[data-screen="talk"] .audit__beats li { max-width: none; }
+
+
+/* --- 28 · where to start ----------------------------------------------------
+   A single ordered column rather than a grid: the order is the content, and a grid invites the
+   room to read number three first, which is exactly the mistake the slide is about. */
+[data-screen="talk"] .start { list-style: none; counter-reset: st; margin: calc(var(--u) * 3) 0 0;
+  padding: 0; display: flex; flex-direction: column; gap: calc(var(--u) * 1.6); }
+[data-screen="talk"] .start li { counter-increment: st; display: grid;
+  grid-template-columns: calc(var(--u) * 5) minmax(0, 26ch) minmax(0, 1fr);
+  gap: calc(var(--u) * 2); align-items: baseline;
+  border-top: 1px solid var(--color-line); padding-top: calc(var(--u) * 1.3); }
+[data-screen="talk"] .start li::before { content: "0" counter(st); font-family: var(--font-mono);
+  font-size: calc(var(--u) * 1.5); color: var(--ink-faint); }
+[data-screen="talk"] .start b { font-size: calc(var(--u) * 2.05); font-weight: var(--font-weight-regular);
+  line-height: 1.2; }
+[data-screen="talk"] .start span { font-size: calc(var(--u) * 1.6); color: var(--color-muted); line-height: 1.35; }
+
+
+/* --- 29 · orchestration ----------------------------------------------------- */
+[data-screen="talk"] .orch { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 4);
+  margin-top: calc(var(--u) * 3); }
+[data-screen="talk"] .orch__card { border: 1px solid var(--color-line); border-radius: var(--radius-md);
+  padding: calc(var(--u) * 2.4); }
+[data-screen="talk"] .orch__card[data-orch-good] { border-color: var(--color-accent); }
+[data-screen="talk"] .orch__t { font-size: calc(var(--u) * 2.2); margin: 0 0 calc(var(--u) * 2); }
+[data-screen="talk"] .orch__t span { display: block; color: var(--color-muted); font-size: calc(var(--u) * 1.4);
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: calc(var(--u) * 0.7); }
+[data-screen="talk"] .orch ul { list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: calc(var(--u) * 1.3); }
+[data-screen="talk"] .orch li { font-size: calc(var(--u) * 1.7); line-height: 1.35; color: var(--color-muted);
+  padding-left: calc(var(--u) * 2); position: relative; }
+[data-screen="talk"] .orch li::before { content: "\2014"; position: absolute; left: 0; color: var(--ink-faint); }
+[data-screen="talk"] .orch__card[data-orch-good] li { color: var(--color-fg); }
+
+
+/* --- 31 · sources ------------------------------------------------------------ */
+[data-screen="talk"] .srcs { list-style: none; margin: calc(var(--u) * 2.5) 0 0; padding: 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 2) calc(var(--u) * 4); }
+[data-screen="talk"] .srcs li { border-top: 1px solid var(--color-line); padding-top: calc(var(--u) * 1.1); }
+[data-screen="talk"] .srcs b { font-size: calc(var(--u) * 1.85); font-weight: var(--font-weight-regular); }
+[data-screen="talk"] .srcs i { font-style: normal; font-size: calc(var(--u) * 1.45); color: var(--color-muted); }
+[data-screen="talk"] .srcs span { display: block; font-size: calc(var(--u) * 1.35); color: var(--color-muted);
+  line-height: 1.35; margin: calc(var(--u) * 0.5) 0; }
+[data-screen="talk"] .srcs code { font-family: var(--font-mono); font-size: calc(var(--u) * 1.3);
+  color: var(--color-accent); }
+
+
+/* --- 24a · Monday ----------------------------------------------------------
+   The same hour, spent two ways. Nothing here is about my repo. */
+[data-screen="talk"] .monday { margin-top: calc(var(--u) * 3); width: min(100%, calc(var(--u0) * 90)); }
+[data-screen="talk"] .monday__switch { display: flex; gap: calc(var(--u) * 1.6); margin: 0 0 calc(var(--u) * 3); }
+[data-screen="talk"] .monday__switch .btn { font-size: calc(var(--u) * 1.8); padding: calc(var(--u) * 1.2) calc(var(--u) * 2.4); }
+[data-screen="talk"] .monday__switch .btn[aria-pressed="false"] { color: var(--color-muted);
+  border-color: var(--color-line); background: transparent; }
+[data-screen="talk"] .monday__switch .btn[aria-pressed="true"] { color: var(--color-fg);
+  border-color: var(--color-fg); background: var(--paper-2); }
+[data-screen="talk"] .monday__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 3.5); margin: 0; }
+[data-screen="talk"] .monday__grid dt { font-size: calc(var(--u) * 1.4); color: var(--color-muted);
+  letter-spacing: 0.12em; text-transform: uppercase; }
+[data-screen="talk"] .monday__grid dd { margin: calc(var(--u) * 1.2) 0 0; font-size: calc(var(--u) * 1.95);
+  line-height: 1.35; min-height: 5em; }
+[data-screen="talk"] .monday__grid dd[data-mono] { font-family: var(--font-mono); font-size: calc(var(--u) * 1.7); }
+[data-screen="talk"] .monday__rule { font-size: calc(var(--u) * 2.6); margin-top: calc(var(--u) * 3.5); max-width: 44ch; }
+[data-screen="talk"] .monday__rec { font-size: calc(var(--u) * 2); line-height: 1.4; max-width: 62ch;
+  margin: calc(var(--u) * 3) 0 0; padding-top: calc(var(--u) * 2);
+  border-top: 1px solid var(--color-line); color: var(--color-muted); }
+[data-screen="talk"] .monday__rec b { color: var(--color-fg); font-weight: var(--font-weight-regular); }
