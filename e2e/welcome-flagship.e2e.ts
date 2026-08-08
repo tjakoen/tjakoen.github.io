@@ -25,10 +25,26 @@ test.describe("flagship featured", () => {
   });
 
   test("the flagship is pinned in the FEED only — 'Recent' on Welcome stays date-ordered", async ({ page }) => {
-    // ten-times-zero (2026-07-03) is not the newest note, so it must NOT lead the Welcome Recent list
+    // This used to assert "the first Recent row is not the flagship", which only held while the
+    // flagship happened to be an older note. It was re-dated 2026-08-07 and is now the newest, so
+    // that assertion could no longer tell pinning apart from date order. Check the property itself:
+    // read each note's date off the feed cards, then require Recent to be non-increasing by date.
+    await page.goto("/notes");
+    const dates = new Map(await page.locator(".note-feed .note-card").evaluateAll((cards) =>
+      cards.map((c) => [
+        `/notes/${(c.getAttribute("data-surface") ?? "").replace(/^note:/, "")}`,
+        c.getAttribute("data-date") ?? "",
+      ] as [string, string])));
+
     await page.goto("/");
-    const firstRecent = page.locator(".recent .recent__item, .recent [href^='/notes/']").first();
-    await expect(firstRecent).not.toHaveAttribute("href", "/notes/ten-times-zero");
+    // the column also carries a plain "/notes" row (see all), which has no card and no date
+    const hrefs = (await page.locator(".recent .recent__item, .recent [href^='/notes/']")
+      .evaluateAll((rows) => rows.map((r) => r.getAttribute("href") ?? "")))
+      .filter((h) => /^\/notes\/.+/.test(h));
+    expect(hrefs.length).toBeGreaterThan(1);
+
+    const seen = hrefs.map((h) => { const d = dates.get(h); expect(d, `no feed date for ${h}`).toBeTruthy(); return d!; });
+    expect(seen).toEqual([...seen].sort().reverse());   // ISO dates sort lexically
   });
 });
 

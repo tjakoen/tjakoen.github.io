@@ -1,9 +1,20 @@
+---
+id: watch-me-work
+status: done
+track: ""
+depends: []
+touches: [src/ai/showcase.ts, src/ai/desk-reasoner.ts, src/ai/desk-door.ts, src/ai/actions.ts, scripts/site.js]
+owner: ai
+---
+
 # Storyboard — "Watch me work" (demo.run showcase)
 
-**Status:** REWORK — the canned version was rejected as dishonest (it ran a hardcoded animation
-before the model even loaded; the AI did nothing). Owner call: make it **fully agentic** — the 0.5B
-CHOOSES each action, the harness validates + applies. "Give the AI a script (a goal), not a
-choreography."
+**Status:** DONE — shipped agentic in `9a1bc4e`. The canned version was rejected as dishonest (it ran
+a hardcoded animation before the model even loaded; the AI did nothing). Owner call: make it **fully
+agentic** — the 0.5B CHOOSES each action, the harness validates + applies. "Give the AI a script (a
+goal), not a choreography." That rework is what is on disk: `src/ai/showcase.ts` is the tool protocol
++ validator, the driver loop lives in `desk-reasoner.ts`, and the tuning log below ends at v4 with a
+full run completing. 15 unit tests in `showcase.test.ts` pass.
 
 ## Agentic design (the honest version)
 

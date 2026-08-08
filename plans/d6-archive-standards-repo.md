@@ -2,7 +2,7 @@
 id: d6-archive-standards-repo
 status: done
 track: D
-depends: [d5-standards-home]
+depends: []
 touches: []
 owner: human
 ---
@@ -14,7 +14,9 @@ owner: human
 > "standard". There is nothing left to archive or redirect: the canon is served from the portfolio's
 > own `standards/` dir at <https://tjakoen.github.io/standards>. Closing the box.
 
-Split out from `d5-standards-home` so that done-plan didn't carry a permanently-open box. The
+Split out from `d5-standards-home` so that done-plan didn't carry a permanently-open box. That parent
+is now archived under `plans/done/`, which the board does not index, so the `depends` edge is recorded
+here in prose rather than in frontmatter where it cannot resolve. The
 `d5` fold-in (2026-07-09) moved the standards source into this repo's `standards/` dir; the
 `tjakoen/standards` repo has consumed nothing back into it since and is now vestigial — nothing
 resolves from it (the portfolio serves `/standards` from its own `dirSource`, and PANTRY resolves
@@ -25,5 +27,7 @@ not code, which is why it's `owner`-owned rather than `ai`-owned.
 
 ## Tasks
 
-- [ ] Archive (or clearly redirect) `github.com/tjakoen/standards` — point its README at
-      `https://tjakoen.github.io/standards` as the new canonical home
+- [x] Archive (or clearly redirect) `github.com/tjakoen/standards` — point its README at
+      `https://tjakoen.github.io/standards` as the new canonical home. **Moot 2026-07-18:** the repo
+      does not resolve, so there is nothing to archive or redirect. Closed on that basis, not on a
+      GitHub action actually taken.
