@@ -67,7 +67,8 @@ These fire on a trigger, not on being asked. Standardize them so no session forg
 | Trigger | Do, every time |
 |---|---|
 | Behavior changed | Add/adjust the test at the right tier *as you build*, not after. |
-| About to say "done" | Run the green gate (AI-DEVELOPMENT §8). Red gate = stop-the-line. |
+| Something that renders changed | Leave a CRUMB dev tour: one step per changed surface, what moved, and a verify line the reviewer can run. The rule and its limits are LOOP §4a. No rendered surface, no tour. |
+| About to say "done" | Run the green gate (AI-DEVELOPMENT §8). Red gate = stop-the-line. Where the repo runs a plans board, `proof verify` reads the diff against the plan's `touches`. |
 | Gate green on a real change | Commit — `type: imperative summary`, body only when the *why* isn't obvious. No AI-attribution trailers. Branch off main for anything non-trivial. |
 | A non-obvious decision got made | Write a memory (§4). |
 | A repeatable task finished | Emit a handoff (§5). |

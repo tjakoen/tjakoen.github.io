@@ -8,8 +8,9 @@ touches:
   - content/tours/
   - docs/crumb/
   - e2e/
-  - standards/LOOP.md
-  - standards/SESSION-LOOP.md
+  - standards/
+  - package.json
+  - bun.lock
   - ../grain/packages/crumb/
   - ../grain/packages/proof/
 owner: ai
@@ -80,7 +81,9 @@ test, and they only start after this one lands.
 - [ ] Owner call: dev tours ship to the live public site. Keep them public or hide them.
 - [x] Owner call answered: review tours stay public. Already the behaviour, no change needed.
 - [x] The linkable tour. `?crumb=<id>&crumb-mode=dev&crumb-frame` on any host URL, built in CRUMB.
-- [ ] Publish `@tjakoen/crumb` and bump the portfolio, or the link only works against a staged copy.
+- [x] Publish `@tjakoen/crumb` 0.1.5 and `@tjakoen/proof` 0.1.3, bump the portfolio, rerun the e2e
+      against the published copy. This closed a documented trap the session had walked straight into.
+- [ ] Tighten `crumb check` so a `mode: dev` step missing `review` or `status` is an error.
 - [ ] Tighten `crumb check` so a `mode: dev` step missing `review` or `status` is an error, not a shrug.
 
 ### What C1 taught
@@ -151,12 +154,15 @@ plan that is already `done`. That one is fair and left standing.
 
 ## L1 to L3 — the wiring (only after C1 lands)
 
-- [ ] L1. LOOP and SESSION-LOOP carry the rule: a change to a rendered surface owes a dev tour before
-      it counts as done. Add it to the SESSION-LOOP chores table, which already has the right shape.
-- [ ] L1b. LOOP section 2's heartbeat table has two mechanical triggers, push and session start. The
-      hook adds a third, turn end. Grow the table and say so rather than letting it drift.
-- [ ] L1c. LOOP section 1's primitives table maps PROOF to persistent state and omits CRUMB entirely.
-      If dev tours become run evidence, CRUMB earns a row.
+- [x] L1. The rule lands in LOOP section 4a, the run ledger, where the rest of the evidence contract
+      lives. SESSION-LOOP's chores table points at it rather than restating it, per the SSOT rule.
+      LOOP section 9 gains two boxes: scope compared mechanically, and a tour left or excused.
+- [x] L1b. LOOP section 2's heartbeat table grew its third mechanical trigger, turn end.
+- [x] L1c. CRUMB is named in LOOP section 1 as the run evidence a rendered change leaves behind. It
+      went into the persistent-state row rather than getting its own, because that table maps
+      Osmani's five primitives and CRUMB is not a sixth.
+- [x] L1d. The verify rule in section 2 now says outright that a tour is not the second pass, so the
+      one thing that could quietly weaken the contract is refused in the place people will read it.
 - [ ] L2. A `review-changes` skill in the standards set: how to pick the surfaces, how to write a
       `verify` line a human can actually execute, which status to stamp.
 - [ ] L3. A Stop hook that fires only when the diff touches a file that renders a `[data-surface]`.

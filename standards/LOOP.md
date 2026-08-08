@@ -40,7 +40,7 @@ them map cleanly onto what this estate already runs; the fifth is adapted on pur
 | Primitive | What it is | Where it lives here |
 |---|---|---|
 | **Skills** | Reusable instructions the agent loads on demand | The standards set + the per-repo `CLAUDE.md` kit ([`AI-REPO-STANDARD.md`](AI-REPO-STANDARD.md)). Load the one the task needs, not all six. |
-| **Persistent state** | Memory that survives a session | Memory discipline + the PROOF board (SESSION-LOOP §4). Durable facts get promoted to committed docs; scratch stays in the agent store. |
+| **Persistent state** | Memory that survives a session | Memory discipline + the PROOF board (SESSION-LOOP §4), and CRUMB dev tours as the run evidence a rendered change leaves behind (§4a). Durable facts get promoted to committed docs; scratch stays in the agent store. |
 | **Sub-agents** | Delegate scoped work to a cheaper brain | The model economy (SESSION-LOOP §6): plan in the top tier, execute in the mid tier, push wide reads to a small-tier subagent. |
 | **Worktrees** | Isolated checkouts so parallel work doesn't collide | Git worktrees for parallel sessions (§2). One branch, one worktree, one run — no two agents editing the same tree. |
 | **Connectors** | Tools the agent reaches out through | grain-mcp + PANTRY retrieval. Built, and standardized here rather than left per-repo. |
@@ -65,6 +65,7 @@ every push and every session *show what's due*. Two tiers.
 |---|---|---|
 | Push | The doctor + typecheck + tests + e2e + lint (CI, where the repo is on GitHub). | CI fails the push visibly. Nonzero exit, no merge. |
 | Session start | The doctor, as the first orientation step (SESSION-LOOP §1 grows this rule). | Its findings land in `plans/` triage — the session sees them before touching code. |
+| Turn end | `proof verify` over the diff, and a nudge for the dev tour §4a asks of a rendered change. | The run does not get to say "done" yet. Both are cheap, so this fires often and stays quiet when there is nothing to say. |
 
 The mechanical tier never needs a model. It is grep, exit codes, and file-age math. Its whole job is to
 *surface*: kit compliance, drift, and staleness flags (audit overdue, graphify stale, e2e suite missing).
@@ -91,6 +92,12 @@ two agents mutating the same tree. This is the `worktrees` primitive doing real 
 not write it*. The author's own "looks right" does not count as verification — a second pass walks the run
 report against the diff before human review. This is the one rule that keeps an autonomous loop from
 confidently shipping its own mistakes.
+
+The dev tour in §4a does **not** satisfy this rule and must never be sold as though it does. The agent that
+wrote the change writes the tour, so a tour is still the first pass wearing better clothes. What it changes
+is the cost of the second: the reviewing session walks named surfaces instead of cold-reading a patch, and
+the human walks the live page instead of trusting a screenshot. Cheaper to verify is not the same as
+verified.
 
 ---
 
@@ -140,8 +147,15 @@ satisfy. Two halves.
 - **Close with a run report.** Gate results *verbatim* (not "tests pass" — the actual output), the
   diffstat, **what was not done**, and **what needs human eyes**. A report that only lists wins is a
   report that is hiding something.
+- **A change a person can see owes a tour.** When the diff touches something that renders, the run
+  closes with a CRUMB dev tour as well as the report: one step per changed surface, each carrying
+  what moved and a verify line the reviewer can actually execute. A diff describes the edit; a tour
+  shows the thing. The reviewer walks the real page instead of reconstructing it from a patch, and
+  the per-step status is a machine-readable form of "what needs human eyes". Nothing else in this
+  list is replaced by it. A change with no rendered surface, a parser, a CLI flag, a doc, owes no
+  tour, and asking for one anyway is how the habit gets muted.
 
-The rule underneath all three: **evidence or it didn't happen.** A claim of "verified" with no gate output
+The rule underneath all four: **evidence or it didn't happen.** A claim of "verified" with no gate output
 attached is treated as unverified.
 
 ### (b) The rails — a declared envelope per run
@@ -276,7 +290,9 @@ run ledger is checked against, not a vibe pass.
 - [ ] Unpushed commits counted and named, with the reason they are unpushed.
 - [ ] The second pass was done by a session or agent that did not write the change (§2).
 - [ ] Declared scope compared against what was actually touched, and any growth was asked about
-      rather than absorbed.
+      rather than absorbed. `proof verify` does this mechanically against a plan's `touches`; a run
+      that reasoned it out by hand instead should say so.
+- [ ] A change that renders left a dev tour, or the report says why it did not owe one.
 - [ ] Doctor run, and every flag either fixed or carried forward by name.
 
 ---
