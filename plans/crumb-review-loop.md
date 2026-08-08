@@ -6,6 +6,8 @@ depends: []
 touches:
   - content/notes/ten-times-zero.md
   - content/tours/
+  - docs/crumb/
+  - e2e/
   - standards/LOOP.md
   - standards/SESSION-LOOP.md
   - ../grain/packages/crumb/
@@ -114,19 +116,38 @@ It is verified against a copy staged into `node_modules`, not against a release.
 has to be published and the portfolio bumped before the link works anywhere but this machine.**
 Nothing about that is done, and the plan should not read as though it is.
 
-## C2 — `proof verify` (independent, can run in parallel)
+## C2 — `proof verify` (built 2026-08-08)
 
 `proof check` lints plan files and never looks at a diff. `proof verify` adds the diff pass and turns
 two LOOP checklist items mechanical.
 
-- [ ] Changed files not in the active plan's `touches`, reported as scope growth.
-- [ ] A ticked checklist item with no matching change in the diff, reported as an unbacked claim.
-- [ ] A `touches` entry never touched, reported as a claim of done that nothing supports.
-- [ ] Nonzero exit, so CI can run it the way it runs `proof check`.
+- [x] Changed files not in a `doing` plan's `touches`, reported as scope growth.
+- [x] A tick the diff itself added, with no change under that plan, reported as an unbacked claim.
+- [x] A plan moved to `done` by the diff with nothing under its `touches`, reported as unsupported.
+- [x] Nonzero exit, so CI can run it the way it runs `proof check`. `--base` verifies a whole branch.
+- [x] 24 tests, pure core plus an injected `GitReader`, so the suite never shells out to git.
 
 `touches` is already a declared envelope in every plan on this board and nothing has ever enforced it.
 LOOP section 4b asks for the scope cap to be enforced mechanically where the tooling allows. This is
 that, and the tooling allows it.
+
+**Only the unbacked tick fails the gate.** Scope growth and an untouched done are warnings, because
+both have honest explanations: work legitimately grows, and code often lands in an earlier commit
+than the one being verified. A gate that cries wolf gets muted, and a muted gate is worse than none.
+
+**What it refuses to do quietly.** A `doing` plan with no `touches`, or one whose `touches` all point
+outside the repo, cannot be judged at all. Both are reported rather than passed, because a checker
+that stays silent about what it skipped reads as "all clear".
+
+**One check was redesigned on contact.** The original bullet said "a ticked checklist item with no
+matching change in the diff". A checklist item is prose; nothing mechanically maps it to a hunk. What
+IS mechanical is the tick the diff itself adds: if this change ticks a box in plan X, this change had
+better touch something in X's `touches`. Narrower than the bullet promised, and actually true.
+
+**First real run found two things, in this plan.** Pointed at the C1 commit it flagged
+`e2e/crumb-review-tour.e2e.ts` as outside every plan's `touches`, which was a genuine gap in this
+file's own frontmatter, now fixed. It also flagged `docs/crumb/GETTING-STARTED.md` as belonging to a
+plan that is already `done`. That one is fair and left standing.
 
 ## L1 to L3 — the wiring (only after C1 lands)
 
