@@ -1,6 +1,6 @@
 ---
 id: crumb-review-loop
-status: doing
+status: done
 track: ai
 depends: []
 touches:
@@ -9,6 +9,8 @@ touches:
   - docs/crumb/
   - e2e/
   - standards/
+  - tools/review-gate.sh
+  - .claude/settings.json
   - package.json
   - bun.lock
   - ../grain/packages/crumb/
@@ -78,13 +80,19 @@ test, and they only start after this one lands.
 - [x] Confirm the lamp lights a figure and the popover lands somewhere readable next to it.
 - [x] Author the review tour, `mode: dev`, one step per figure that changed.
 - [x] Pin it with an e2e spec, `e2e/crumb-review-tour.e2e.ts`, three tests, green.
-- [ ] Owner call: dev tours ship to the live public site. Keep them public or hide them.
 - [x] Owner call answered: review tours stay public. Already the behaviour, no change needed.
 - [x] The linkable tour. `?crumb=<id>&crumb-mode=dev&crumb-frame` on any host URL, built in CRUMB.
 - [x] Publish `@tjakoen/crumb` 0.1.5 and `@tjakoen/proof` 0.1.3, bump the portfolio, rerun the e2e
       against the published copy. This closed a documented trap the session had walked straight into.
-- [ ] Tighten `crumb check` so a `mode: dev` step missing `review` or `status` is an error.
-- [ ] Tighten `crumb check` so a `mode: dev` step missing `review` or `status` is an error, not a shrug.
+- [x] Tighten `crumb check` so a `mode: dev` step missing `review` or `status` is an error, not a
+      shrug. Shipped in crumb 0.1.6. `verify` stays optional, since plenty of steps are a look rather
+      than a do and requiring a line there just produces filler. This also gave `check.ts` its first
+      tests, which it had never had.
+- [x] Fix `bunx crumb check`, which had never worked. `cli.ts` shipped without a shebang, so the bin
+      symlink had nothing to tell the shell how to run it and the command failed silently, exit 1 and
+      no output. Running the same file through `bun` directly always worked, which is how it survived
+      since the package first shipped. Found by following the new standard's own verification step.
+      Shipped in crumb 0.1.7.
 
 ### What C1 taught
 
@@ -163,10 +171,12 @@ plan that is already `done`. That one is fair and left standing.
       Osmani's five primitives and CRUMB is not a sixth.
 - [x] L1d. The verify rule in section 2 now says outright that a tour is not the second pass, so the
       one thing that could quietly weaken the contract is refused in the place people will read it.
-- [ ] L2. A `review-changes` skill in the standards set: how to pick the surfaces, how to write a
-      `verify` line a human can actually execute, which status to stamp.
-- [ ] L3. A Stop hook that fires only when the diff touches a file that renders a `[data-surface]`.
-      Advisory, never blocking.
+- [x] L2. `standards/TOUR-STANDARD.md`, mounted as the `tour-standard` skill and confirmed live in
+      the listing. It owns the artifact, LOOP section 4a owns the rule, so neither restates the
+      other. Named for the artifact rather than `review-changes`, matching its siblings.
+- [x] L3. A Stop hook, `tools/review-gate.sh`, wired in `.claude/settings.json`. Runs
+      `proof verify` and asks for a tour, advisory only, exit always 0. Tested in both directions:
+      silent on a standards-and-tools diff, fires on a rendered one, silent again once a tour exists.
 
 ## The failure mode this is designed against
 
@@ -174,6 +184,23 @@ LOOP section 7 is the table of rationalizations that talk a run out of the contr
 dies is not rejection, it is noise: the hook asking for a tour after a docs edit, a parser change, a
 CLI flag. Three false asks and it gets muted, and a muted gate is worse than no gate. L3's trigger
 condition stays narrow from the first day it exists.
+
+## What using the gates on themselves exposed
+
+**A plan that closes itself warns on its own files.** `proof verify` counts coverage from `doing`
+plans, so the moment this one flipped to `done`, the very commit doing the flipping started reporting
+its own files as belonging to a plan nobody has claimed. Warnings, not failures, so the gate still
+passes, and the alternative is worse: counting `done` plans as coverage would let a closed plan
+launder any change forever. It is a real edge, it is left standing, and anyone closing a plan should
+expect to read past it.
+
+**Two bugs surfaced only because something finally ran the commands.** `verify.ts` was in neither
+proof's `files` nor its `exports`, so the tarball would have shipped a `cli.ts` importing a file that
+was not there, breaking every `proof` command rather than only the new one. Separately, `bunx crumb
+check` had never worked at all: `cli.ts` shipped without a shebang, so the bin symlink had nothing to
+tell the shell how to run it, and it exited 1 in silence. Both were found by following this plan's
+own verification steps rather than by a test, which is an argument for writing verification steps
+someone can actually execute.
 
 ## The honest limit
 

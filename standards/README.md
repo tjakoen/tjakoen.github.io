@@ -29,6 +29,7 @@ six.
 | **Answering a code question without burning the window** | [GRAPH.md](GRAPH.md) | Ask the code graph a scoped question before you fan out grep, reads, and subagents. Query by symbol not prose, keep it fresh with a free per-edit hook, never commit the artifact. The retrieval half of the loop. |
 | **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard: cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built (frontmatter, structure, footer), plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
+| **Handing over a change someone has to look at** | [TOUR-STANDARD.md](TOUR-STANDARD.md) | How a CRUMB review tour is built: one step per changed surface, a verify line the reviewer can actually run, an honest status. Owns the *artifact*; LOOP owns the rule that a rendered change owes one. |
 | **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard: two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
 | **Setting up a README** | [README-STANDARD.md](README-STANDARD.md) | Title emoji, the honest badge row, the "built with Claude" footer, plus a runnable prompt. |
 | **Deciding which stack layers a new project needs** | [KICKSTART.md](KICKSTART.md) | A paste-in prompt that interviews you, reads the live stack and the public repos, and proposes which BREAD layers your project actually needs (and which it does not). The on-ramp before the repo exists. |
@@ -50,6 +51,10 @@ six.
   lean on. Read it the moment you catch yourself about to grep the whole tree.
 - **VOICE + NOTE-STANDARD + README-STANDARD + FIGURES** are the writing set: VOICE owns the prose,
   the others own specific artifacts and point back at it. Start here for any published words.
+- **TOUR-STANDARD** is the handover half of the engineering pair: LOOP's contract says a change that
+  renders owes a review tour, and this says how to write one worth walking. Read it when the thing you
+  changed is something a person can look at, and read LOOP section 2 with it for the limit, because a
+  tour you wrote about your own change makes review cheap without making it done.
 - **KICKSTART + CLAUDE.starter** are the two on-ramps, in order: KICKSTART runs *before the repo
   exists*, deciding which layers the project needs; CLAUDE.starter is how the repo you then create
   inherits the whole set from day one.

@@ -1,0 +1,132 @@
+---
+title: TOUR-STANDARD.md — the review-tour standard
+summary: How a CRUMB dev tour is built - picking surfaces, writing a verify line someone can run, stamping the status, and handing it over.
+when: >
+  Read this BEFORE writing a review tour, and BEFORE saying a change that renders is done: a UI
+  change, a new component, a page, a figure, anything a person can look at. It owns the artifact
+  (which surfaces become steps, what a review line says, what a verify line must let someone do,
+  the status vocabulary, the handoff link); LOOP section 4a owns the rule that a rendered change
+  owes one at all. Don't skip because you can describe the change in a sentence - the sentence is
+  what the reviewer already cannot check, and a tour with vague verify lines is worse than none
+  because it looks like evidence.
+---
+
+# 🍪 TOUR-STANDARD.md: the review-tour standard
+
+A diff describes an edit. A tour shows the thing. When a change is something a person can look at,
+the review should happen on the page, not in a patch, and the walk should be written by whoever just
+made the change while they still remember what to be nervous about.
+
+This owns the artifact. [LOOP.md](LOOP.md) section 4a owns the rule that a rendered change owes one,
+and section 2 owns the limit: a tour you wrote about your own change is not a second pass. Read them
+together, not instead of each other.
+
+## What a tour is
+
+A markdown file in the host's tours folder, rendered by CRUMB. Frontmatter, an intro, then one
+`## <surface>` heading per step. The surface is a `data-surface` address on the page, which is what
+the lamp lights.
+
+```markdown
+---
+id: review-live-figures
+mode: dev
+title: "Review: the figures went live"
+route: /notes/ten-times-zero
+---
+The intro. What changed, in two or three sentences, and anything true of the whole change.
+
+## figure:ratio
+- at: /notes/ten-times-zero
+- status: needs-verification
+- review: What moved here, and why it is the risky one.
+- verify: Scroll into it from the paragraph above. Nothing should overlap, at desktop and phone width.
+The demo-mode narration. Shown in both modes; the review and verify lines are the dev half.
+```
+
+`mode: dev` is what makes it a review tour. Without it the review, verify and status lines still
+parse but the tour opens as a demo.
+
+## The five rules
+
+**One step per surface that changed, not one per commit.** The reviewer is checking the app, not
+your history. Two commits that both touched the same figure are one step. A commit that touched
+six figures is six.
+
+**The surface has to exist before the tour does.** A step points at a `data-surface` address. If the
+thing you changed has no address, give it one first. That is usually a single attribute next to
+whatever hook the element already carries, and it is worth doing on its own: an addressable region is
+what makes anything, a tour or an agent, able to point at it later.
+
+**A verify line is an instruction, not a description.** The test is whether someone who has never
+seen the code can follow it and end up knowing whether it worked. "Check the spacing" fails. "Scroll
+slowly into this figure from the paragraph above; nothing should overlap, at desktop width and at
+phone width" passes. Name the interaction, name the widths or states that matter, and say what the
+correct outcome looks like, especially when the correct outcome is that nothing happens.
+
+**Stamp the status honestly, and use `needs-verification` more than feels comfortable.** The five are
+`new`, `changed`, `needs-verification`, `verified`, `known-issue`. `verified` means someone who did
+not write it has actually walked it. Marking your own work verified is the exact move the standard
+above refuses, so on a tour you wrote about your own change, `verified` is almost always wrong.
+`known-issue` is not an admission of failure, it is the cheapest way to stop a reviewer filing
+something you already know about.
+
+**Say what is riskiest, not what is most impressive.** The step most worth a careful look is usually
+the smallest one: the spacing fix landed at the end, the edge case nobody asked for. Put the honest
+nervousness in the review line. A tour that reads like a changelog of wins is hiding the same thing a
+run report full of wins is hiding.
+
+## The handoff
+
+A review tour is written for one change and handed to one person, so the handoff is a link. Any URL
+on the host takes the tour id as a query parameter, plus the mode and the framed presentation:
+
+```
+https://example.com/notes/my-post?crumb=review-my-change&crumb-mode=dev&crumb-frame
+```
+
+End the run report with that link. A tour nobody was handed is a file, not a review.
+
+## Where it lives, and who sees it
+
+Flat, in the host's tours folder, named `review-<slug>.md`. Not in a subfolder: the loader reads the
+folder without recursing, so a tour one level down is invisible to the board and fails silently,
+which is the worst of both.
+
+Check whether the host publishes its tours before writing anything you would not put on the live
+site. On tjakoen.github.io the tours folder is exported, so a review tour ships publicly, and that is
+deliberate: it is a receipt. On a host where that is not wanted, the folder has to move out of the
+exported tree first.
+
+## Rationalizations
+
+| Rationalization | Reality |
+|---|---|
+| "The diff is small and obvious." | Small and obvious is where spacing, focus order and mobile break, because nobody looked. The tour costs a paragraph. |
+| "I will write the tour after review." | Then it is documentation, not review. The point is that it exists before someone else looks. |
+| "There is no surface for it." | Then add one. That is a one-line change and it is the same work that makes the region addressable to anything else later. |
+| "I checked it myself, so it is verified." | You are the author. Section 2 of LOOP is explicit: that is one pass. Stamp `needs-verification`. |
+| "Everything is fine, so every step is `verified`." | A tour with no `needs-verification` anywhere is a tour nobody will read carefully, including the reviewer. |
+
+## Red flags
+
+- A verify line that starts with "Check" or "Make sure" and names no interaction.
+- Every step stamped `changed`, with no sense of which one to look at first.
+- A step whose review line restates the commit message.
+- A tour whose steps outnumber the surfaces that actually changed.
+- A tour written but never linked in the run report.
+
+## Verification
+
+- [ ] Every changed rendered surface has exactly one step, and no step points at an unchanged one.
+- [ ] Every step's surface address resolves on the page the step names.
+- [ ] Every verify line names an interaction and the outcome that means it worked.
+- [ ] No step the author wrote about their own change is stamped `verified`.
+- [ ] `crumb check` passes on the tours folder.
+- [ ] The handoff link is in the run report.
+
+---
+🤖 **Built with Claude, and the tour is how I make it check the work rather than take my word for
+it.** I decided what "reviewed" has to mean; Claude typed the parser that enforces it. **I don't
+prompt and pray, I prompt and prove.**
+[How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)

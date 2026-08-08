@@ -9,7 +9,7 @@
   "homepage": "https://tjakoen.github.io",
   "dependencies": {
     "@tjakoen/batch": "^0.1.0",
-    "@tjakoen/crumb": "^0.1.5",
+    "@tjakoen/crumb": "^0.1.7",
     "@tjakoen/grain": "^0.1.17",
     "@tjakoen/mill": "^0.2.0",
     "@tjakoen/proof": "^0.1.3"
