@@ -57,7 +57,7 @@ multiplying first.**
 
 <!-- The static SVG is what a reader is SERVED, and what the export, a printout and a
      no-JS visit keep. site/figures.js swaps in the live version from the talk if it runs. -->
-<div class="live-fig" data-live-figure="multiplier">
+<div class="live-fig" data-live-figure="multiplier" data-surface="figure:multiplier">
 <svg viewBox="0 0 620 200" width="100%" role="img"
      aria-label="The multiplier. A skilled developer's small baseline times AI becomes a long bar; a beginner's near-zero baseline times the same AI stays near zero. The AI is identical in both rows; the baseline is the variable."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
@@ -149,7 +149,7 @@ like what it actually resembles: a fast, capable, occasionally overconfident jun
 student rushing through an activity for the sake of getting it done. The instant I framed it that way I got better at it overnight, because I already knew how to
 do *that.*
 
-<div class="live-fig" data-live-figure="matrix">
+<div class="live-fig" data-live-figure="matrix" data-surface="figure:matrix">
 <svg viewBox="0 0 620 250" width="100%" role="img"
      aria-label="Four titles, one skill set. A matrix of four roles (dev manager, tech lead, teacher of 150 to 300 students, and directing an AI) running the same moves. Give direction: a clear brief, the conventions, the lesson, a prompt with docs. Verify anyway: review the pull request, the design review, grade the work, read the output. Then all four do the same last move: correct the reasoning, not just the output. Same moves down every column; only the subject changes."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
@@ -234,7 +234,7 @@ This repo has the inverse problem: there's about as much specification as there 
 
 I didn't tidy that up after the fact. It's the method. When you work with an AI at speed, the scarce resource stops being code and becomes *intent.* The model can't know what you meant, what the rules are, or what "done" looks like, unless you wrote it down. So I do. The documentation *is* the work, the code is the cheap part the machine handles.
 
-<div class="live-fig" data-live-figure="ratio">
+<div class="live-fig" data-live-figure="ratio" data-surface="figure:ratio">
 <svg viewBox="0 0 620 200" width="100%" role="img"
      aria-label="On this repo: 18,876 lines of code versus 17,610 lines of writing. 48% of everything written is words, not code. A marker shows where the writing bar would end at the 20% a room typically guesses, well short of where it actually ends."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
@@ -294,7 +294,7 @@ sprint for ten hours and not wake up to a pile of nonsense isn't
 that I'm careful *instead* of fast. It's that I did the careful part *first*: I built the rails
 before I opened the throttle.
 
-<div class="live-fig" data-live-figure="sprint">
+<div class="live-fig" data-live-figure="sprint" data-surface="figure:sprint">
 <svg viewBox="0 0 620 160" width="100%" role="img"
      aria-label="One night, 4 July 2026: 50 commits from 9:08pm to 3:31am, about six and a half hours, roughly one commit every eight minutes, and 4,269 lines added. Every commit co-authored by a machine."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
@@ -436,7 +436,7 @@ where the pieces the AI actually operates get a second doc written only for the 
 the thing, not how a human reads about it. You onboard this collaborator every time you spin up a new session, so you build
 the onboarding, make it excellent, and polish it as you go.
 
-<div class="live-fig" data-live-figure="loop">
+<div class="live-fig" data-live-figure="loop" data-surface="figure:loop">
 <svg viewBox="0 0 252 340" width="100%" role="img"
      aria-label="The working loop: rails (conventions and onboarding), memory (decisions carry over), a sync map (change propagates), audit (check, don't trust), and tests (the seatbelt), then back to the work."
      style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
@@ -554,7 +554,7 @@ end-to-end runs, never "it probably looks right."
 The one-sentence version: *where the AI keeps slipping* is a map of where my design isn't clear yet,
 and I harden the design so neither of us slips there again.
 
-<div class="live-fig" data-live-figure="trap">
+<div class="live-fig" data-live-figure="trap" data-surface="figure:trap">
 <svg viewBox="0 0 231 340" width="100%" role="img"
      aria-label="Turning a mistake into a guardrail: the AI trips on a documented idiom; read it as a clarity signal, not a bug; find the silent-failure contract; design the misuse out; lock it with a test at human-equals-AI parity; and it becomes a permanent guardrail."
      style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">

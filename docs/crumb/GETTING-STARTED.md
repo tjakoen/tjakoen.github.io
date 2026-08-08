@@ -94,6 +94,22 @@ programmatically as `window.crumb.start(id, { mode, frame })`, plus `window.crum
 `.prev()`, `.end()`, and `.setMode("demo" | "dev")`. Progress lives in `sessionStorage`, so a tour
 step that requires a real page navigation survives the reload.
 
+## Starting a tour from a link
+
+A launcher works when the control is already on the page, which suits a demo tour and not a review
+one: a `dev` tour is written for one change and handed to one person, so the handoff is a link. Any
+URL on the host can carry one.
+
+```
+https://example.com/notes/my-post?crumb=review-my-change&crumb-mode=dev&crumb-frame
+```
+
+`crumb` is the tour id; `crumb-mode` and `crumb-frame` mirror the attributes above and are both
+optional. The parameters are stripped from the URL before the tour starts, so the link fires once
+rather than resetting the tour to its intro card at every step that navigates. A link also wins over
+a tour already in progress, because the tour's own navigation never carries the parameter, so one
+that is present is always a deliberate click.
+
 ## Lint your tours
 
 ```sh
