@@ -87,6 +87,13 @@ https://example.com/notes/my-post?crumb=review-my-change&crumb-mode=dev&crumb-fr
 
 End the run report with that link. A tour nobody was handed is a file, not a review.
 
+**Close the loop in the tour, not in chat.** A tour may end with a `## prompt` section: the questions
+the walk could not answer itself, and a template that composes the answers into a prompt to paste
+back into a session. Use it for the judgements only the reviewer can make (does this read right, which
+piece comes next), never for something the walk already showed. Two or three questions is the size
+that gets answered; a form of eight is a survey, and a survey gets closed. The grammar is in
+[WRITE-A-TOUR](https://tjakoen.github.io/crumb/docs/write-a-tour).
+
 ## Where it lives, and who sees it
 
 Flat, in the host's tours folder, named `review-<slug>.md`. Not in a subfolder: the loader reads the

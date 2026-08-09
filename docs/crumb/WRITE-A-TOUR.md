@@ -10,9 +10,10 @@ example. See [`GETTING-STARTED.md`](GETTING-STARTED.md) for how a host mounts an
 
 ## The one design law
 
-Tours are markdown data. CRUMB reads them and highlights, it never writes to your app, and it never
-writes back to the tour file either (a human-authored tour stays exactly what you wrote). Delete
-CRUMB and the tour files are still readable markdown.
+Tours are markdown data. CRUMB reads them and highlights. Where a tour changes anything in your app
+it goes through the app's own door, with a verb that exists, on a surface the page registered, and it
+never submits a form. It never writes back to the tour file either (a human-authored tour stays
+exactly what you wrote). Delete CRUMB and the tour files are still readable markdown.
 
 ## Frontmatter
 
@@ -77,6 +78,41 @@ Under a heading, lines are split into two buckets:
 | `review` | Dev-mode-only narration: what changed here. Shown only when the tour is in (or switched to) `dev` mode. |
 | `status` | One of `new`, `changed`, `needs-verification`, `verified`, `known-issue` (CRUMB's verification vocabulary, deliberately separate from GRAIN's `data-grade`, which is provenance, not review state). An unrecognized value is dropped with a parse warning; it does not fail the tour. |
 | `verify` | The concrete action that confirms the step: "Open the drawer on mobile; the dock shouldn't clip it." Shown alongside `review` in dev mode. |
+
+**A step's `at` may carry query state**, e.g. `at: /mail?subject=grain`. The client navigates once and
+settles: it decides by comparing pathnames, then assigns the whole target, so the query survives. A
+step whose `at` declares nothing about the query leaves the page's own parameters alone.
+
+## The last card: `## prompt`
+
+One heading is reserved. A `## prompt` section is not a step; it is the card the tour ends on, where
+it asks the reviewer what the walk could not check and hands back a prompt to paste into a session.
+`prompt` can never collide with a real address, because it is not one of GRAIN's surface kinds.
+
+```markdown
+## prompt
+Two things the walk above cannot check for me.
+- ask: reads-wrong | Anything here that reads wrong?
+- ask: next | What should change?
+- template: Continue the {title} review (tour {tour}).\nWrong: {reads-wrong}\nNext: {next}
+- handoff: https://claude.ai/new?q={payload}
+```
+
+| Key | Meaning |
+|---|---|
+| `ask` | `<id> \| <question>`. The id is the token the answer fills; it must be token-safe (letters, digits, `-`, `_`). A malformed, unlabelled or duplicate ask is dropped with a warning. |
+| `template` | The text composed from the answers. `{id}` per ask, plus `{title}` and `{tour}` for the tour's own title and id. `\n` becomes a real line break. Required: without it there is nothing to hand back. |
+| `handoff` | Optional. A URL template with `{payload}`, the same contract as GRAIN's `handoff.js`, so one click opens the composed prompt in a session. The button only appears when the host has loaded that script; the text stands on its own without it. |
+
+Prose in the section (any line that is not one of those keys) is the card's intro.
+
+An answer left blank leaves its `{token}` visible in the composed text, so a half-answered card still
+reads as something a person can finish by hand. `crumb check` fails an ask the template never uses
+(its answer would be thrown away), and the parser reports a `{token}` that is not an ask id.
+
+Nothing here is submitted. The answers live in memory for the length of the walk, compose into text
+in the browser, and go wherever the tour's own URL template says, which is the host's decision, not
+CRUMB's.
 
 A tour with zero `## ` steps still parses, but is flagged by `crumb check` ("no steps, a tour needs
 at least one"). Nothing a parser encounters is silently dropped: an invalid `mode`, a mismatched

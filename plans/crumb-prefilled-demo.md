@@ -29,13 +29,19 @@ submits" rather than carving out an exception. That is an owner call, and P2 is 
 
 ## Phases
 
-- [ ] **P0. Fix the route comparison in `crumb-live.js`.** A step whose `at` carries a query string or
-      fragment reloads forever. E2e first, so the loop is observed rather than argued. Independent of
-      this feature and worth landing alone.
-- [ ] **P1. The tour that writes the next prompt.** A trailing `## prompt` section (`- ask:` lines plus
-      a `- template:`), rendered as the card after the last step, composed client side, handed off with
-      grain's existing `data-handoff` contract, plus a textarea for anyone who does not want a new tab.
-      Two new `check.ts` failures. Additive, no doctrine change.
+- [x] **P0. Fix the route comparison in `crumb-live.js`.** Done 2026-08-09, crumb `core/nav.ts` plus a
+      drift-guarded mirror in the client. A step's `at` may now carry query state and reaches it in one
+      navigation. Verified in a browser against the local package: one navigation for the query-state
+      step, and the URL settles.
+- [x] **P1. The tour that writes the next prompt.** Done 2026-08-09. The reserved `## prompt` section,
+      rendered as the card after the last step in both presentations, composed live, offered as a
+      readonly field that selects on focus plus a handoff button when the host loaded grain's
+      `handoff.js`. `check.ts` fails an ask the template never uses. Walked in a browser, both
+      presentations, and the tour for it is `content/tours/review-prompt-card.md`.
+- [ ] **P1b. The portfolio e2e, and the publish it waits on.** The portfolio consumes a real published
+      `@tjakoen/crumb`, so an e2e for P0 and P1 can only be committed green after crumb `0.1.8` is
+      published and the pin bumped. The npm token returns E401 as of 2026-08-09, so this is owner-gated.
+      Until then the review link works locally and shows the old parse on the live site.
 - [ ] **P2. Prefill one registered field through the door.** Blocked on the law amendment. Pilot on
       `field:contact-message`, refuse to fill a field the human has already touched, and say in the
       step's prose that the state was staged.
