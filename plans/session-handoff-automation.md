@@ -79,6 +79,11 @@ posture as every other mechanical check here.
       seen by actually reaching 700k, so nobody had ever watched it work. Verified across all four
       branches — silent at ok, dirty tree, clean-with-upstream, and unpushed/no-upstream (the last two
       in a throwaway repo, since this tree cannot be clean and dirty at once).
-- [ ] Amend SESSION-LOOP §5 with the trigger, keeping the shape of the brief where it already is.
+- [x] Amend SESSION-LOOP §5 with the trigger, keeping the shape of the brief where it already is.
+      Two touches, both additive: the durable-state paragraph now says the precondition is checked
+      rather than recited, and a new paragraph after the measurement one records that the trigger is
+      built, where the two lines sit, and that they are one machine's measurement rather than a
+      number to inherit. The brief's shape is untouched. voice-lint holds at 42 pre-existing flags,
+      so nothing new was added; the file path is italicised rather than backticked for that reason.
 - [ ] Only then, and only if the autonomy plan puts it in a lane that allows it, let the trigger call
       `spawn_session` itself rather than offering.

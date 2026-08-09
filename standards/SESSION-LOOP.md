@@ -131,7 +131,11 @@ a fresh context would be cheaper and clearer than continuing (long threads drift
 turn), or the *next* step is genuinely a different job (e.g. "code landed → now write the note").
 
 **Before emitting, make state durable:** gate green, work committed, decisions written to memory
-(§4). A handoff that points at uncommitted, untested work is a trap.
+(§4). A handoff that points at uncommitted, untested work is a trap. Treat this as a precondition
+rather than a reminder, which means it is checked and not recited: the same turn-end hook that
+reports the window is filling reports alongside it whether the tree is clean, whether anything is
+unpushed, and whether the gate is green. A trigger that tells a session to make its state durable
+without naming what is currently undurable is giving advice, and advice is what gets nodded at.
 
 **The handoff prompt contains, tightly:**
 - **Where things stand** — what just landed, what's committed, gate status.
@@ -153,6 +157,14 @@ right, because both have already been got wrong here. Count the cached reads: on
 the raw `input_tokens` field is single digits, so a reader that trusts it reports a full session as
 empty. And measure the window before setting a line in it: the remembered figure for a context limit
 is usually an older model's, and a threshold set there fires halfway through an ordinary session.
+
+The trigger is built rather than proposed: in the portfolio it is *tools/context-usage.ts*, called
+from the turn-end hook in a quiet mode that prints nothing until the reading crosses the warn line.
+The defaults are the measurement and not a memory. Sessions in this estate have carried 835k, so the
+lines sit at 700k to warn, leaving room to close cleanly, and 900k to stop. Both are overridable per
+run, which is also the only way to watch the trigger fire without waiting to fill a window, so a
+repo adopting it can confirm it works on the day it lands instead of hoping. Re-measure before
+trusting those two numbers anywhere else, because they describe one model on one machine.
 
 Whatever the trigger, **the handoff is still emitted, not acted on.** Opening the next session
 unasked is an action taken with nobody in the loop, which is LOOP §4b's territory, not this one's.
