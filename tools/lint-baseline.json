@@ -1,0 +1,29 @@
+{
+  "//": [
+    "Committed lint baseline for the turn-end gate (tools/review-gate.sh) and LOOP section 7's",
+    "baseline-and-regress design: this repo shipped with pre-existing oxlint warnings and, once",
+    "voice-lint's default scope grew to cover standards/, pre-existing voice-lint flags too. The",
+    "gate does not ask for zero; it asks that today's count never becomes tomorrow's problem.",
+    "Regenerate with `bun run lint:baseline` — never hand-edit the numbers below. A deliberate",
+    "increase (a real new warning you're accepting on purpose) is updated here by rerunning that",
+    "command, not argued with in review."
+  ],
+  "generated": "2026-08-10",
+  "counts": {
+    "oxlint:eslint(no-unused-vars)": 1,
+    "oxlint:promise(always-return)": 2,
+    "oxlint:unicorn(no-array-reverse)": 1,
+    "oxlint:unicorn(no-array-sort)": 11,
+    "oxlint:unicorn(prefer-add-event-listener)": 1,
+    "oxlint:unicorn(prefer-array-find)": 2,
+    "voice:backtick": 273,
+    "voice:corporate-verb": 5,
+    "voice:eager-signoff": 2,
+    "voice:em-dash": 144,
+    "voice:emoji": 22,
+    "voice:nominalization": 3,
+    "voice:not-just-x": 7,
+    "voice:throat-clearing": 3,
+    "voice:word-tell": 17
+  }
+}

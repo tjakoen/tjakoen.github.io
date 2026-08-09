@@ -10,12 +10,17 @@
 // slop" experiment): lint only the mechanical rules, and say plainly that you're only covering the
 // mechanical rules. Everything else is the smell test in VOICE.md, run by a person.
 //
-//   bun run lint:voice                 # default: content/notes/*.md
+//   bun run lint:voice                 # default: content/notes/*.md + standards/*.md
 //   bun run lint:voice path/to/file.md # explicit files
 //
 // Exit code is nonzero when anything is flagged, so it can gate a publish/CI step like `bun run audit`.
-// It targets PROSE only — reference docs and standards/ legitimately use backticks for literal tokens
-// (VOICE.md says so), so they are not the default target. Point it at a file to check that file anyway.
+// It targets PROSE only. standards/ used to be left out of the default on the theory that backticks
+// there usually mark a literal token rather than a slop tell (VOICE.md says so) — but standards/ is
+// published prose, written to the standard it defines, so leaving it unlinted by default was the
+// bigger miss. It is in scope now. The resulting noise (mostly backtick and em-dash flags on
+// legitimate literal tokens) is real and is not being fixed or suppressed here; it is exactly what
+// tools/lint-baseline.json exists to absorb, so the turn-end gate in review-gate.sh complains only
+// when a count rises above that baseline, not about the noise that was already there.
 import { readFileSync } from "node:fs";
 import { Glob } from "bun";
 
@@ -76,7 +81,9 @@ function lintFile(file: string): Finding[] {
 }
 
 const args = Bun.argv.slice(2);
-const targets = args.length ? args : [...new Glob("content/notes/*.md").scanSync(".")];
+const targets = args.length
+  ? args
+  : [...new Glob("content/notes/*.md").scanSync("."), ...new Glob("standards/*.md").scanSync(".")];
 
 if (!targets.length) { console.log("voice-lint: no files to check."); process.exit(0); }
 
