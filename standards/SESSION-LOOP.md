@@ -176,8 +176,21 @@ One exclusion is worth stating out loud, since a machine-level hook runs everywh
 any path that is off limits stays off limits, and a check that only prints is still contact. The
 guard excludes it by prefix before it reads anything at all, including git.
 
-Whatever the trigger, **the handoff is still emitted, not acted on.** Opening the next session
-unasked is an action taken with nobody in the loop, which is LOOP §4b's territory, not this one's.
+Whatever the trigger, **the handoff is emitted by default, and opening the next session is a lane
+call rather than a hard stop.** Run it through LOOP §4b: a sibling session is reversible (close it)
+and inward-facing (it writes nothing anyone else can see), so it lands in the gated lane, not the
+human one. Gated means a person is in the loop for the decision, not that the decision is forbidden.
+Emit the brief; open the next session when asked, or when the human is present to see it happen.
+
+There is a mechanical limit worth knowing before designing around it, because it is easy to plan a
+trigger that cannot exist. **The thing that detects the moment and the thing that can act on it are
+not the same process.** The trigger is a shell hook, and spawning a session is a tool the model
+holds, so the hook cannot reach it: the honest shape is the hook printing and the model offering.
+Some harnesses do expose spawning to the model. This estate runs on Nimbalyst, whose `spawn_session`
+opens the next session as a sibling in the same workstream, inheriting the working directory and the
+model, which is how a handoff here goes from a brief to an open tab without a copy and paste. On a
+harness without that, the brief is the deliverable and the human opens the tab, which is the same
+loop with one more step and no less rigour.
 
 ---
 
@@ -250,6 +263,15 @@ buys parallelism, and parallelism costs coherence.
 **Merging is the main thread's job**, and it is real work: de-duplicate across scopes, rank, drop
 whatever came back without evidence, and reconcile two agents that disagree by reading the code
 yourself. A subagent result is a claim, held to the same bar as any other (AI-DEVELOPMENT §1).
+
+**You will delegate more when you can see it happening.** A fan-out that reports only at the end is
+trusted less than one whose agents are visible while they run, and less trust means smaller
+delegations than the work deserves. That is a property of the harness rather than the standard, so
+the standard states the requirement and not the product: prefer a setup that shows subagents and
+parallel sessions as they work, and that groups related sessions rather than leaving one flat list to
+scan. This estate gets it from Nimbalyst, which puts sibling sessions in a workstream with their
+tabs and their edited files together. Where a harness does not offer it, ask for narrower fan-outs
+and a fixed output format, since the format is what buys back the confidence the view would have.
 
 The audit is the worked example of all of this: [`AUDIT-STANDARD.md`](AUDIT-STANDARD.md) §4.
 

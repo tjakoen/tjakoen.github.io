@@ -19,6 +19,17 @@ and the standards. It uses MILL to render Markdown content into GRAIN pages — 
 live** (`/notes`, `/grain/docs`, `/batch/docs` render through it); content is authored as `.md`. It
 uses the stack; it does not build it. Pages are trailheads to the canonical docs, never forks of them.
 
+## What this is worked in
+
+The harness is **Nimbalyst**: sessions grouped into workstreams with their subagents, tabs and
+edited files visible together, per-action permission judged rather than blanket-approved, and
+`spawn_session` so a handoff opens the next session instead of being pasted into one. It matters to
+anyone working here for three practical reasons: uncommitted work is attributed **per session**, so a
+dirty tree is not automatically yours (LOOP §4b); a rendered change can be screenshotted and shown
+inline rather than described; and `.nimbalyst/` plus `nimbalyst-local/` are gitignored private
+working material, never site content. None of this is required by the standards, which state the
+capability and name the tool only as the example. See [`plans/nimbalyst-in-the-loop.md`](plans/nimbalyst-in-the-loop.md).
+
 ## Start here (reading order)
 
 1. [`PHILOSOPHY.md`](docs/PHILOSOPHY.md): the *why* beneath the whole stack. Read first.

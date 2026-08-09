@@ -39,6 +39,36 @@ Two notes added to close gaps between the published set and work that shipped si
       confirmed committed + `/standards/loop` wired. Teaching-platform stats already reanchored in the
       2026-07-29 audit (course-platform repo not local, can't re-pull further).
 
+## The harness half of the AI-setup story (added 2026-08-10)
+
+- [ ] **Whatever note next describes the AI setup covers the harness, not just the loop.** The
+      obvious home is `one-loop-every-repo.md` (still DRAFT above), which today tells the standards
+      half and treats the thing running them as a given. The gap is deliberate to name: every rule in
+      LOOP and SESSION-LOOP assumes a harness, and for a long time this estate never said which.
+      It is **Nimbalyst**, and the beats worth writing, in the owner's own framing:
+      - **Seeing the subagents work.** The point is not the visual, it is that watching a fan-out is
+        what makes the next fan-out bigger. Trust sets the size of the delegation.
+      - **Sessions organised into workstreams, with tabs**, instead of a flat list of transcripts.
+      - **Control from a phone, over the whole setup rather than one session at a time.** The honest
+        comparison is not "nicer mobile app": the unit of control is the workstream, not the
+        conversation, which is the thing that has no equivalent elsewhere. Worth being specific here
+        rather than superlative, per VOICE.
+      - **Permission judged per action by a model**, rather than one blanket approval at the start.
+        Include the failure mode or it reads as an advert: a gate that never fires and a gate that is
+        off look identical from inside the run.
+      - **Per-session tracking of committed and uncommitted files.** The concrete story is already in
+        the estate: the machine-level durable-state guard reads the tree, a tree cannot say who
+        dirtied it, and with two sessions open it reported one session's mess as the other's.
+      - **The automations, the previews, the inline viewing.** A rendered change gets shown rather
+        than described, which is exactly what TOUR-STANDARD asks for and what a chat summary cannot
+        do.
+      - **The honest limit**, which the note must carry to be worth reading: this is one person's
+        setup on one machine, tool preference is not evidence, and the standards deliberately name
+        the capability rather than the product so the loop survives a change of harness. See
+        [`plans/nimbalyst-in-the-loop.md`](../plans/nimbalyst-in-the-loop.md) for that decision.
+      - Figure per FIGURES if one earns its place: the flow scaffold, brief to spawned session to
+        workstream, is the shape most likely to.
+
 ## Production status (in-flight, 2026-07-03)
 
 Where the notes actually stand, so a fresh session can pick up mid-stream:

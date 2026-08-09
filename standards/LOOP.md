@@ -279,6 +279,24 @@ Two rules keep this from turning into a permissions system that quietly grants i
   gate exists that would actually catch it going wrong. Missing coverage is not neutral, it drops the
   change to gated, because "the tests pass" means nothing when the tests do not reach the change.
 
+**A lane the harness enforces beats a lane the run remembers.** Rails that live only in a document
+are followed by whoever read the document, which on a long run is a coin flip. Two harness
+capabilities carry real weight here, and both are worth asking for by name when choosing one:
+
+- **Per-action approval decided per action, not per session.** A blanket yes at the start is the
+  binary rail this section replaces, one lane wide and always the widest. Better is a harness that
+  judges each action and interrupts only for the ones that earn it, which is the three lanes running
+  as a mechanism instead of a promise. The failure mode to watch is drift toward always-approve,
+  because a gate that never fires and a gate that is off look identical from inside the run.
+- **Uncommitted and unpushed work attributed to the session that made it.** The §9 durable-state
+  check reads the tree, and a tree cannot say who dirtied it, so with two sessions open in one repo
+  the check reports the other one's mess as yours and a session goes looking for work it never did.
+  A harness that tracks edited files per session answers that directly.
+
+This estate runs on Nimbalyst, which does both. The requirement is the standard; the product is an
+example, and a harness that does neither is not disqualified so much as owed more discipline
+elsewhere: read the paths before believing a dirty count, and keep the ask-triggers in front of you.
+
 ---
 
 ## 5. Why a loop at all (the precedent, and the receipt)
