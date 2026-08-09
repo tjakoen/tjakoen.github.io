@@ -68,7 +68,17 @@ posture as every other mechanical check here.
       keeps it silent until it crosses the line. Verified end to end through the hook with a real
       payload on stdin.
 - [ ] Carry the reader to the other repos, or move it somewhere all of them mount.
-- [ ] Add the durable-state precondition, so the trigger runs the gate before it suggests anything.
+- [x] Add the durable-state precondition, so the trigger runs the gate before it suggests anything.
+      Lives in `tools/review-gate.sh`, not in the reader: the reader stays pure over a transcript and
+      keeps its unit tests, and git is the gate's business. A non-empty `--quiet` capture is the
+      warn/stop signal, which avoids both a second read of a file that runs to tens of megabytes and a
+      verdict string this script would have to keep in step with the tool. It reports three facts
+      (uncommitted paths, unpushed commits or a missing upstream, proof verdict) and says so plainly
+      when all three are green, because a gate that only ever complains gets skimmed.
+      `CONTEXT_WARN` / `CONTEXT_STOP` were added alongside it: without them the fire path could only be
+      seen by actually reaching 700k, so nobody had ever watched it work. Verified across all four
+      branches — silent at ok, dirty tree, clean-with-upstream, and unpushed/no-upstream (the last two
+      in a throwaway repo, since this tree cannot be clean and dirty at once).
 - [ ] Amend SESSION-LOOP §5 with the trigger, keeping the shape of the brief where it already is.
 - [ ] Only then, and only if the autonomy plan puts it in a lane that allows it, let the trigger call
       `spawn_session` itself rather than offering.

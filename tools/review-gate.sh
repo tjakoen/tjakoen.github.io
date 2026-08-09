@@ -16,15 +16,56 @@ set -uo pipefail
 
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
 
-# ---- (0) how much context is left ------------------------------------------
+# ---- (0) how much context is left, and whether the state is safe to leave ---
 # Runs FIRST and before the git guards, because it is the one nudge here that has nothing to do with
 # the diff: a session with a clean tree can still be one turn from the end of its window. The payload
 # hooks pass on stdin carries transcript_path, so forward it rather than letting the tool guess by
 # mtime, which picks the wrong file when two sessions share a repo. --quiet says nothing until the
-# reading crosses the warn line. SESSION-LOOP section 5 owns what to do about it.
+# reading crosses the warn line, so a non-empty capture IS the warn/stop signal — no second read of a
+# file that can run to tens of megabytes, and no parsing of a verdict this script would then have to
+# keep in step with the tool. SESSION-LOOP section 5 owns what to do about it.
+#
+# CONTEXT_WARN / CONTEXT_STOP exist so the fire path can be exercised on demand. A trigger that can
+# only be seen by actually reaching 700k is a trigger nobody has watched work.
 payload=$(cat 2>/dev/null || true)
+context_note=""
 if command -v bun >/dev/null 2>&1 && [ -f tools/context-usage.ts ]; then
-  printf '%s' "$payload" | bun tools/context-usage.ts --quiet 2>/dev/null || true
+  context_note=$(printf '%s' "$payload" | bun tools/context-usage.ts --quiet \
+    ${CONTEXT_WARN:+--warn "$CONTEXT_WARN"} ${CONTEXT_STOP:+--stop "$CONTEXT_STOP"} 2>/dev/null || true)
+fi
+
+if [ -n "$context_note" ]; then
+  printf '%s\n' "$context_note"
+
+  # The durable-state precondition (SESSION-LOOP section 5): a handoff written over an uncommitted
+  # tree hands the next session a trap, and telling a run to "make the state durable" without saying
+  # what is currently undurable is advice, not a check. So the moment the window matters, report the
+  # three facts that decide whether this session can actually be left — and say so plainly when it
+  # can, because a gate that only ever complains teaches people to skim it.
+  blockers=""
+  if command -v git >/dev/null 2>&1 && git rev-parse --git-dir >/dev/null 2>&1; then
+    dirty=$(git status --porcelain 2>/dev/null | grep -c . | tr -d ' ')
+    [ "$dirty" -gt 0 ] 2>/dev/null && blockers="${blockers}  - ${dirty} uncommitted path(s). Commit by pathspec; another session may share this tree.\n"
+    if upstream=$(git rev-parse --abbrev-ref '@{u}' 2>/dev/null); then
+      ahead=$(git rev-list --count "${upstream}..HEAD" 2>/dev/null || echo 0)
+      [ "$ahead" -gt 0 ] 2>/dev/null && blockers="${blockers}  - ${ahead} commit(s) unpushed to ${upstream}.\n"
+    else
+      blockers="${blockers}  - no upstream for this branch, so nothing here is durable off this machine.\n"
+    fi
+  fi
+  if [ -d plans ] && command -v bunx >/dev/null 2>&1; then
+    case "$(bunx --bun proof verify plans 2>/dev/null | tail -n 2)" in
+      *FAIL*) blockers="${blockers}  - proof verify FAILS on the working diff. Green the gate before handing over.\n" ;;
+    esac
+  fi
+
+  if [ -n "$blockers" ]; then
+    printf '\n  Not safe to hand off yet:\n'
+    printf '%b' "$blockers"
+  else
+    printf '\n  State is durable: tree clean, nothing unpushed, gate green. Safe to write the handoff.\n'
+  fi
+  printf '\n'
 fi
 
 command -v git >/dev/null 2>&1 || exit 0
