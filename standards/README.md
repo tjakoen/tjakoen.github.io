@@ -35,6 +35,7 @@ six.
 | **Setting up a README** | [README-STANDARD.md](README-STANDARD.md) | Title emoji, the honest badge row, the "built with Claude" footer, plus a runnable prompt. |
 | **Deciding which stack layers a new project needs** | [KICKSTART.md](KICKSTART.md) | A paste-in prompt that interviews you, reads the live stack and the public repos, and proposes which BREAD layers your project actually needs (and which it does not). The on-ramp before the repo exists. |
 | **Starting a new repo** | [CLAUDE.starter.md](CLAUDE.starter.md) | The `CLAUDE.md` template that wires a fresh repo into all of the above from day one. |
+| **Checking a repo is still wired** | [CONFORMANCE.md](CONFORMANCE.md) | A paste-in prompt for a repo that already exists: run the mechanical doctor, then judge the eight things it cannot, above all whether the loop is automated or only remembered. The upkeep pass for everything the other two on-ramps set up. |
 
 ## How they fit together
 
@@ -60,9 +61,11 @@ six.
   renders owes a review tour, and this says how to write one worth walking. Read it when the thing you
   changed is something a person can look at, and read LOOP section 2 with it for the limit, because a
   tour you wrote about your own change makes review cheap without making it done.
-- **KICKSTART + CLAUDE.starter** are the two on-ramps, in order: KICKSTART runs *before the repo
-  exists*, deciding which layers the project needs; CLAUDE.starter is how the repo you then create
-  inherits the whole set from day one.
+- **KICKSTART + CLAUDE.starter + CONFORMANCE** are the on-ramps and the upkeep, in order: KICKSTART
+  runs *before the repo exists*, deciding which layers the project needs; CLAUDE.starter is how the
+  repo you then create inherits the whole set from day one; CONFORMANCE is what you run months later
+  to find out whether any of it is still running. The first two are wiring, the third is the only one
+  that catches wiring going quietly dead.
 
 ## The one rule this folder lives by
 
