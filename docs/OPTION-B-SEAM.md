@@ -1,7 +1,8 @@
 # docs/ — the option (b) docs home
 
 Decision (2026-07-09): the portfolio is the physical home of the stack's explanatory docs
-(option b). The layer docs now live here under `docs/<layer>/` (`docs/batch/`, `docs/grain/`);
+(option b). The layer docs now live here under `docs/<layer>/` (`docs/batch/`, `docs/grain/`,
+`docs/mill/`, `docs/proof/`, `docs/crumb/`, `docs/pantry/`);
 the layer repos keep a thin README pointer and no longer ship a `docs/` folder.
 
 - This site renders them through MILL: `content.ts` resolves `/batch/docs` and `/grain/docs` with

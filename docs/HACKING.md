@@ -21,7 +21,7 @@ you know where to edit.
 | **MILL content** | notes + rendered layer docs (Markdown) | `content/notes/*.md`, and this repo's own `docs/<layer>/` (canonical home, option b) |
 | **Generated** | catalog, CSS bundle, sitemap/robots/llms | built at request time from components + the pages tree |
 | **The AI door** | the interaction endpoints | [`src/routes/ai-routes.ts`](../src/routes/ai-routes.ts) |
-| **Static asset** | styles, scripts, fonts, images, vendor libs | mapped dirs (mostly up in `grain/`) |
+| **Static asset** | styles, scripts, fonts, images, vendor libs | mapped dirs (mostly up in `grain/packages/grain/`) |
 
 ## Route → source map (every URL the server answers)
 
@@ -75,15 +75,15 @@ you know where to edit.
 | `/ai/manifest` | the machine-readable index of what's operable |
 | `/modules/*` | grain's TypeScript, transpiled to browser JS on request (no build) |
 
-**Static assets** — served from mapped dirs (see `config.ts` `assetDirs`); **most live up in `grain/`**,
-because the look is the design system's, not the site's:
+**Static assets** — served from mapped dirs (see `config.ts` `assetDirs`); **most live up in
+`grain/packages/grain/`**, because the look is the design system's, not the site's:
 
 | Prefix | Directory |
 |---|---|
-| `/styles/*` | `grain/styles` (tokens, base, grade mechanism, themes) |
-| `/scripts/*` | `grain/scripts` (the client islands) |
-| `/assets/*` | `grain/assets` (the icon sprite) |
-| `/fonts/*` | `grain/fonts` (the Redaction grades — grain = AI) |
+| `/styles/*` | `grain/packages/grain/styles` (tokens, base, grade mechanism, themes) |
+| `/scripts/*` | `grain/packages/grain/scripts` (the client islands) |
+| `/assets/*` | `grain/packages/grain/assets` (the icon sprite) |
+| `/fonts/*` | `grain/packages/grain/fonts` (the Redaction grades — grain = AI) |
 | `/site/*` | `tjakoen.github.io/scripts` (the site's own island: `site.js`, `desk-commands.js`) |
 | `/vendor/*` | `tjakoen.github.io/vendor` (vendored libs) |
 
@@ -93,13 +93,13 @@ because the look is the design system's, not the site's:
 |---|---|---|
 | **Fix wording on a page** | the `view/pages/**/*.html` for that URL (table above) | plain HTML; refresh to see it |
 | **Edit / add a note or blog post** | `content/notes/<slug>.md` | Markdown + frontmatter; see [`standards/NOTE-STANDARD.md`](../standards/NOTE-STANDARD.md). A new file = a new `/notes/<slug>` route automatically |
-| **Change a color / the theme** | `grain/styles/variables.css` (**only** here) | never hardcode a color in a component — override the token. Themes: `grain/styles/themes/*.css` |
-| **Change how a component looks** | `grain/components/<layer>/<name>/<name>.css` | one component owns its styling; edit its `.css`, not the page |
-| **Change a component's markup** | `grain/components/<layer>/<name>/<name>.html` | some layout components are CSS-only (no `.html`) — see [`../batch/docs/CONVENTIONS.md`](batch/CONVENTIONS.md) §4 |
+| **Change a color / the theme** | `grain/packages/grain/styles/variables.css` (**only** here) | never hardcode a color in a component — override the token. Themes: `grain/packages/grain/styles/themes/*.css` |
+| **Change how a component looks** | `grain/packages/grain/components/<layer>/<name>/<name>.css` | one component owns its styling; edit its `.css`, not the page |
+| **Change a component's markup** | `grain/packages/grain/components/<layer>/<name>/<name>.html` | some layout components are CSS-only (no `.html`) — see [`../batch/docs/CONVENTIONS.md`](batch/CONVENTIONS.md) §4 |
 | **Add a whole new page** | a new `view/pages/<name>/index.html` (or `view/pages/<name>.html`) | it's live at `/<name>` on the next refresh; add it to the sitemap? — it's derived, so no |
 | **Change the global page shell** (head, scripts) | the `PAGE_HEAD` / `PAGE_ASSETS` constants in [`src/server.ts`](../src/server.ts) | one place, injected into every page — don't hand-list assets in a page's `<head>` |
-| **Change what the AI does in a demo** | `grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [ROADMAP.md](https://github.com/tjakoen/bread/blob/main/ROADMAP.md)) |
-| **Add / change an AI verb or surface** | `grain/ai/contract.ts` first, then walk the alignment row in [`../CLAUDE.md`](../../bread/CLAUDE.md) | this is *not* a minor edit — it ripples into tests + docs |
+| **Change what the AI does in a demo** | `grain/packages/grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [ROADMAP.md](https://github.com/tjakoen/bread/blob/main/ROADMAP.md)) |
+| **Add / change an AI verb or surface** | `grain/packages/grain/ai/contract.ts` first, then walk the alignment row in [`../CLAUDE.md`](../../bread/CLAUDE.md) | this is *not* a minor edit — it ripples into tests + docs |
 
 ## The dev loop
 
@@ -121,10 +121,10 @@ because the pixels moved — that's it working. Re-bless the baseline once you'r
 
 ## The three things that will trip you
 
-1. **Colors live in exactly one file.** `grain/styles/variables.css`. A hardcoded `#hex` in a
+1. **Colors live in exactly one file.** `grain/packages/grain/styles/variables.css`. A hardcoded `#hex` in a
    component is a bug the audit catches — re-skin by overriding a token, never by editing a component.
-2. **The look is up in `grain/`, not here.** If you're hunting for a style and it isn't in
-   `tjakoen.github.io/view/components/`, it's a GRAIN component — look in `grain/components/`. The site only
+2. **The look is up in `grain/packages/grain/`, not here.** If you're hunting for a style and it isn't in
+   `tjakoen.github.io/view/components/`, it's a GRAIN component — look in `grain/packages/grain/components/`. The site only
    owns its *bespoke* surfaces (the frame, the hero desk cards); everything reusable is the design
    system's.
 3. **No build step is a feature, not a missing step.** There's nothing to compile. If a change isn't

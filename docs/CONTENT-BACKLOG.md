@@ -62,7 +62,7 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
   the OTHER notes is still PENDING.
 - **Owed from the 2026-07-07 fable audit (owner-deferred, no urgency):**
   1. ~~**about.html:33** — LinkedIn link is a `REPLACE-ME` stub~~ **DONE (2026-07-08)** — real handle wired.
-  2. **DRAFT flip** — all 10 notes still carry `status: DRAFT`; owner to name which are ready to
+  2. **DRAFT flip** — 8 of 12 notes still carry `status: DRAFT`; owner to name which are ready to
      publish (or flip individually as each is finished).
 - **Pending work (approved, not yet done):**
   1. **Visualization rollout — mostly DONE (2026-07-04):** ten-times-zero was already done;

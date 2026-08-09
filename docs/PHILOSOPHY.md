@@ -116,7 +116,7 @@ batch/   BATCH — the substrate (Bun · Addressable · TypeScript · CSS · htm
 | visual identity / grade-as-signal | [DESIGN-SYSTEM.md](grain/DESIGN-SYSTEM.md) |
 | the design system overview | [GRAIN.md](grain/GRAIN.md) |
 | the CMS | [mill/PLAN.md](https://github.com/tjakoen/grain/blob/main/packages/mill/PLAN.md) |
-| the operable SSOT (types) | `grain/ai/contract.ts` |
+| the operable SSOT (types) | `grain/packages/grain/ai/contract.ts` |
 
 Showcase pages (`/grain`, `/batch`) and the whitepaper are **projections** of these docs —
 teasers that link back, never forks.
