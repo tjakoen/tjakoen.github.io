@@ -1,6 +1,6 @@
 ---
 id: session-handoff-automation
-status: todo
+status: done
 track: ai
 depends: []
 touches:
@@ -103,16 +103,22 @@ posture as every other mechanical check here.
       built, where the two lines sit, and that they are one machine's measurement rather than a
       number to inherit. The brief's shape is untouched. voice-lint holds at 42 pre-existing flags,
       so nothing new was added; the file path is italicised rather than backticked for that reason.
-- [ ] Only then, and only if the autonomy plan puts it in a lane that allows it, let the trigger call
-      `spawn_session` itself rather than offering. **Blocked on something the lane question cannot
-      fix, found 2026-08-10.** The lane part came out fine: LOOP §4b now classifies by
-      irreversibility, and a spawned sibling session is reversible (close the tab) and not
-      outward-facing, so it is gated rather than human. But the trigger cannot make the call
-      regardless. `session-guard.sh` is a bash Stop hook, and `spawn_session` is an MCP tool exposed
-      to the model, not a command a shell can run. So "the trigger spawns" is not implementable as
-      written: the only available shape is the hook printing and the model choosing to spawn, which
-      is a model deciding, not a trigger firing, and it is exactly the thing SESSION-LOOP §5 already
-      says to keep in a human's hands.
-      Leave this open rather than closing it. It needs either a CLI entry point for spawning, or an
-      honest rewrite of the task to "the hook recommends and the model asks", which is close enough
-      to what already happens that it may not be worth building at all.
+- [x] ~~Only then, and only if the autonomy plan puts it in a lane that allows it, let the trigger
+      call `spawn_session` itself rather than offering.~~ **Rewritten and closed 2026-08-10: the hook
+      recommends, the model asks, and nobody builds a spawning CLI.**
+      The lane question came out fine and was not the blocker: LOOP §4b classifies by
+      irreversibility, and a spawned sibling is reversible (close the tab) and inward-facing, so it
+      sits in the gated lane rather than the human one. What blocks it is plumbing. `session-guard.sh`
+      is a bash Stop hook and `spawn_session` is an MCP tool held by the model, so a shell cannot
+      call it at all.
+      Of the two ways out, the CLI entry point was rejected. It would put a committed hook in this
+      estate on the private internals of one editor, on one machine, to automate a step that the
+      gated lane says a human confirms anyway. The saving is a sentence; the cost is a coupling that
+      breaks whenever the host changes and that no other repo here would ever be able to use.
+      So the task becomes the shape that was already true: the hook reports the reading and the
+      durable-state facts, and the model reads that and offers. One line was owed to make the offer
+      real rather than implied, and `context-usage.ts` now carries it in the stop message: offer to
+      open the sibling, and opening one unasked is not that line's call.
+      What this deliberately does not do is fire on its own. A session that opens tabs without being
+      asked is a session nobody is watching, and the whole point of §5 is that the handoff is the
+      moment a human is still holding the thread.
