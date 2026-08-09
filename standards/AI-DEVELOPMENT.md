@@ -60,8 +60,11 @@ premise. That's the whole value of a second reader.
   If there's an obvious default, it picks and tells me.
 - **Act when the info is there.** Don't re-ask what's already answered. Don't re-litigate
   a settled decision. When there's enough to act, act.
-- **Delegate wide reading.** "Where is X used, what calls Y, map this dir" is exactly
-  what to hand off — I want the conclusion, not the file dumps.
+- **Delegate wide reading, and delegate it in parallel.** "Where is X used, what calls Y,
+  map this dir" is exactly what to hand off. So is anything wide with a small answer: a
+  rubric run across four repos, one convention checked at every call site. I want the
+  conclusion, not the file dumps. When to fan out, what a subagent prompt owes it, and who
+  merges the results is **[`SESSION-LOOP.md`](SESSION-LOOP.md) §7**.
 - **Demand faithful reports.** Tests fail → say so with the output. Step skipped → say
   that. Done and verified → say it plainly, no hedging.
 

@@ -23,6 +23,7 @@ six.
 |---|---|---|
 | **Building anything with an AI** | [AI-DEVELOPMENT.md](AI-DEVELOPMENT.md) | The working relationship, the definition of done, the conventions and pitfalls every change is held to. The rulebook. |
 | **Structuring a repo so AI sessions compound** | [AI-REPO-STANDARD.md](AI-REPO-STANDARD.md) | The repo-side companion to AI-DEVELOPMENT: the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned. AI-DEVELOPMENT owns the working relationship; this owns the repo. |
+| **Auditing a repo (or writing its AUDIT.md)** | [AUDIT-STANDARD.md](AUDIT-STANDARD.md) | The whole-repo pass: the nine quality dimensions, the severity words, the parallel subagent fan-out that runs it, and the report it owes. AI-REPO-STANDARD owns the per-repo runbook file; this owns what an audit actually looks at. |
 | **Deciding where a file lives / unbloating a root** | [TREE.md](TREE.md) | The layout standard: keep the root a readable index, only load-bearing files earn a place there, everything else folds one level down into a named home. AI-REPO-STANDARD owns *which* files exist; this owns *where* they sit. |
 | **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
 | **Running one AI workflow across every repo** | [LOOP.md](LOOP.md) | The system *around* the sessions: the work-triggered heartbeat that makes skipped chores visible, the thin-kit shape, the accountability contract that keeps an unattended run honest. One floor above SESSION-LOOP. |
@@ -43,6 +44,10 @@ six.
   spans them: the heartbeat, the shared kit shape, the contract that holds across a whole estate of
   repos worked the same way. Read it when the question is "how does *every* repo run," not "how does
   this session run."
+- **AUDIT-STANDARD** is the checking half of that same pair: AI-REPO-STANDARD says a repo commits an
+  `AUDIT.md` of its own mechanical checks, and this says what a real pass looks at beyond them, how
+  severe a finding is, and how to fan the reading out across subagents instead of grinding it
+  serially. Read it before any full pass, and before writing a repo's runbook.
 - **TREE** is the layout companion to AI-REPO-STANDARD: the latter decides *which* files a repo commits,
   TREE decides *where* each one sits and keeps the root a readable index instead of a junk drawer. Read it
   when a root has grown past a screen or a file has no obvious home.

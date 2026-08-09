@@ -183,4 +183,42 @@ Carry the model recommendation into the handoff (§5): the next task's shape usu
 
 ---
 
+## 7. Delegation (fan out, don't grind)
+
+§6 asks which brain runs. This asks how many. The default is wrong in one direction far more often
+than the other: a session grinds through work serially that it could have handed to four subagents,
+because delegating feels like overhead right up until the point it obviously was not.
+
+**Fan out when the work is wide and the answer is small.** Reading twelve files to answer one
+question, auditing four repos against one rubric, checking a convention across every call site,
+drafting three independent approaches to compare. The main thread eats a compressed result instead of
+the file dumps, which is the same win as §6 from a different angle.
+
+**Stay inline when the work is deep and stateful.** A single tricky fix, anything where each step
+depends on what the last one found, anything touching files another agent is already in. Delegation
+buys parallelism, and parallelism costs coherence.
+
+**What a subagent prompt owes** (a vague one comes back vague, and the round trip is wasted):
+
+- **A bounded scope, named as paths.** Which files are yours, which explicitly are not. Overlapping
+  scopes produce duplicate work and findings that have to be merged by hand.
+- **Read-only stated outright when it is read-only.** Parallel agents writing to one tree is how a
+  fan-out becomes a merge conflict.
+- **The full rubric or question, not a slice.** An agent asked only about types reports only types,
+  including in the file where the real problem was something else.
+- **The output format, fixed.** Same columns from every agent merges for free. Prose from six agents
+  gets re-read and re-typed by the main thread, which is the cost the fan-out was supposed to avoid.
+- **Evidence rules.** Cite `file:line`, no speculation. Without that line, a subagent will happily
+  return something plausible, and plausible is the failure mode that survives review.
+- **The context it cannot see.** It starts cold. Name the repo's `CLAUDE.md`, the constraint, the
+  decision already made, or it will rediscover them badly.
+
+**Merging is the main thread's job**, and it is real work: de-duplicate across scopes, rank, drop
+whatever came back without evidence, and reconcile two agents that disagree by reading the code
+yourself. A subagent result is a claim, held to the same bar as any other (AI-DEVELOPMENT §1).
+
+The audit is the worked example of all of this: [`AUDIT-STANDARD.md`](AUDIT-STANDARD.md) §4.
+
+---
+
 *Living document. When the loop changes, update it — the same rule it asks of everything else.*

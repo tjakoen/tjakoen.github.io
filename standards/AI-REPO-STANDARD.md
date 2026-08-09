@@ -164,10 +164,13 @@ design rules that make it work:
 
 - **A findings template:** ✅ passing / ⚠️ findings as `file:line` — what — fix-or-flag /
   deferred-and-accepted. "Done" = all green + every finding fixed or explicitly flagged.
-- **When to run:** before a commit, after a big change — and periodically as a **full pass
-  with your strongest model**, including an adversarial review of recent landings. Fix the
-  findings in the same session and commit the report; the report doubles as a dated
-  snapshot of the repo's health.
+
+This file owns the *runbook*: the committed list of this repo's own mechanical checks, which
+are repo-specific because the rules they enforce are. It does not own the audit itself.
+**[`AUDIT-STANDARD.md`](AUDIT-STANDARD.md)** does: the nine quality dimensions every repo is
+read against, the severity vocabulary, the parallel subagent fan-out that runs the pass, the
+report the audit owes, and when to run one. `AUDIT.md` is the alignment half; that standard is
+the quality half, and a pass that runs only one of them is the most common way an audit lies.
 
 ---
 
