@@ -202,6 +202,55 @@ human. A two-hundred-line refactor of pure functions under test is not. Sorting 
 looks is how the dangerous small ones get waved through, because they are the ones that never look
 like much.
 
+<svg viewBox="-1 0 463 330" width="100%" role="img"
+     aria-label="Two questions decide the lane. A proposed change is asked whether it touches an irreversible path; if yes it goes to the human lane, where the owner decides first. If no, it is asked whether a gate exists that would catch it going wrong; if no it goes to the gated lane, which means automated checks and then a targeted review of the diff. Only if yes does it reach the high lane, where the run proceeds alone. Push, merge, publish and delete are hard stops rather than lanes, and sit outside this diagram."
+     style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto 1.5rem;
+            font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-lanes0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="30" y="14" width="200" height="34" rx="6"/>
+    <rect x="30" y="84" width="200" height="48" rx="6"/>
+    <rect x="30" y="168" width="200" height="48" rx="6"/>
+    <rect x="270" y="84" width="190" height="48" rx="6"/>
+    <rect x="270" y="168" width="190" height="48" rx="6"/>
+  </g>
+  <rect x="30" y="252" width="200" height="34" rx="6"
+        style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="130" y1="48" x2="130" y2="84" marker-end="url(#fl-lanes0)"/>
+    <line x1="130" y1="132" x2="130" y2="168" marker-end="url(#fl-lanes0)"/>
+    <line x1="130" y1="216" x2="130" y2="252" marker-end="url(#fl-lanes0)"/>
+    <line x1="230" y1="108" x2="270" y2="108" marker-end="url(#fl-lanes0)"/>
+    <line x1="230" y1="192" x2="270" y2="192" marker-end="url(#fl-lanes0)"/>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-fg)">
+    <text x="130" y="36.3">A proposed change</text>
+    <text x="130" y="103">Does it touch an</text>
+    <text x="130" y="119">irreversible path?</text>
+    <text x="130" y="187">Would a gate catch</text>
+    <text x="130" y="203">it going wrong?</text>
+    <text x="365" y="103">Human</text>
+    <text x="365" y="119">the owner decides first</text>
+    <text x="365" y="187">Gated</text>
+    <text x="365" y="203">checks, then a review</text>
+  </g>
+  <g text-anchor="middle">
+    <text x="130" y="274.3" style="fill:var(--color-bg)">High: the run proceeds alone</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
+       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="250" y="104">yes</text>
+    <text x="250" y="188">no</text>
+    <text x="130" y="153">no</text>
+    <text x="130" y="237">yes</text>
+    <text x="230" y="318">Push, merge, publish, delete: hard stops, not lanes.</text>
+  </g>
+</svg>
+
 The classifier is paths first, because paths are checkable and a judgement call can be talked into
 anything. A change is in the human lane if it touches any of these, and the lane is the worst thing
 in the diff rather than the average of it:
