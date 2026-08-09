@@ -20,8 +20,8 @@
   // the heavy one — the browser Cache API + IndexedDB, where WebLLM stores the downloaded model weights
   // (~350MB). So a wipe truly starts clean, model and all.
   async function wipeAll() {
-    try { window.localStorage && window.localStorage.clear(); } catch { /* private mode */ }
-    try { window.sessionStorage && window.sessionStorage.clear(); } catch { /* private mode */ }
+    try { if (window.localStorage) window.localStorage.clear(); } catch { /* private mode */ }
+    try { if (window.sessionStorage) window.sessionStorage.clear(); } catch { /* private mode */ }
     // WebLLM caches weights in the Cache API (grain webllm.ts); clearing every cache reclaims it.
     try { if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map((k) => caches.delete(k))); } } catch { /* no CacheStorage */ }
     // Belt-and-suspenders: some MLC builds keep config/wasm in IndexedDB too.
@@ -171,7 +171,7 @@
           }
         }
         markCurrent();
-        window.grain && window.grain.tabs && window.grain.tabs.refresh();   // labels may resolve now
+        window.grain?.tabs?.refresh();   // labels may resolve now
       }).catch(() => { /* corpus unreachable → the static tree still navigates */ });
     }
 
@@ -204,11 +204,11 @@
       addEventListener("storage", (e) => { if (e.key === SCHEME_KEY) syncBox(); });   // another tab changed it
       schemeAuto.addEventListener("change", () => {
         if (schemeAuto.checked) {
-          theme ? theme.setScheme("auto") : del(SCHEME_KEY);
+          if (theme) theme.setScheme("auto"); else del(SCHEME_KEY);
         } else {
           const cur = theme ? theme.scheme() : (get(SCHEME_KEY) || "auto");
           const eff = cur === "auto" ? (prefersDark() ? "dark" : "light") : cur;   // pin what's on screen now
-          theme ? theme.setScheme(eff) : put(SCHEME_KEY, eff);
+          if (theme) theme.setScheme(eff); else put(SCHEME_KEY, eff);
         }
       });
     }
@@ -405,7 +405,7 @@
     // hash is stripped first so a plain reload doesn't re-trigger. The welcome hero's own desk is
     // collapsed by design (you go to /grain to use it), so this is how that visible card launches it.
     if (location.hash === "#watch") {
-      try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* no-op */ }
+      try { history.replaceState(null, "", location.pathname + location.search); } catch { /* no-op */ }
       markWarm();
       let tries = 0;
       const iv = setInterval(() => {

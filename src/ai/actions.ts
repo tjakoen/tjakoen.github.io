@@ -99,6 +99,7 @@ const norm = (s: string): string => s.toLowerCase().replace(/[^\w\s]/g, " ").rep
 // list before acting, so a renamed/reordered/added flavor here never drives a click the DOM doesn't
 // back. Keep in sync with view/pages/*.html's data-themes value.
 const FLAVORS = ["sourdough", "baguette", "brioche"];
+const FLAVOR_RES = FLAVORS.map((f) => new RegExp(`\\b${f}\\b`));
 
 // "Show me the part about X" (A1, deep-link answers) — a request for WHERE on the site something is
 // covered, distinct from navigation (a page) or summarize (this page). The captured remainder becomes
@@ -165,6 +166,13 @@ const DEICTIC_ONLY_RE = /^(?:this|that|it|this page|the page)$/;
 // ("nah, forget it") is not a memory-forget ask, and the desk has nothing to lose by treating it as
 // ordinary chat instead of a pointed decline about pad contents.
 const FORGET_RE = /^forget\b\s*(.*)$/i;
+
+// C1 visitor-intent onboarding — the three ANSWERS (INTENT_CHOICES above), hoisted to module scope
+// (built fresh from the same template strings on every routeAction call otherwise).
+const IM = "(?:m|am)";
+const INTENT_SET_HIRING_RE = new RegExp(`^i\\s+${IM}\\s+hiring$`);
+const INTENT_SET_DEVELOPER_RE = new RegExp(`^i\\s+${IM}\\s+a\\s+developer$`);
+const INTENT_SET_STUDENT_RE = new RegExp(`^i\\s+${IM}\\s+a\\s+student(?:\\s+of\\s+tj(?:\\s*s)?)?$`);
 
 /** Match a request to a deterministic ACTION, or null → (catalog navigation, then) grounded chat.
  *  Order matters: the specific intents resolve before the broad ones. Navigation is handled by the
@@ -258,7 +266,7 @@ export function routeAction(text: string): Action | null {
   // the theme to sourdough", a bare "brioche"). No switch-ish context required for the bare case — these
   // words are unambiguous site-wide (no nav destination shares them, so this can never shadow a
   // catalog match like "switch to grain", which isn't a flavor name and falls through below).
-  for (const f of FLAVORS) if (new RegExp(`\\b${f}\\b`).test(t)) return { kind: "theme", target: f };
+  for (let i = 0; i < FLAVORS.length; i++) if (FLAVOR_RES[i].test(t)) return { kind: "theme", target: FLAVORS[i] };
 
   // B3 mail batch archive — checked here (after theme, before the C1 intent-ask trigger below) so an
   // archive ask never gets swallowed by a greeting/vague-opener check further down. An empty remainder
@@ -299,10 +307,9 @@ export function routeAction(text: string): Action | null {
   // "student" or "developer" ("I'm a student of design, not code") never hijacks — only a complete
   // "I'm a/am a student/developer[...]" sentence does. The student form tolerates a trailing
   // "of tj's" (also apostrophe-stripped to "of tj s"), since that's the exact label/value text.
-  const IM = "(?:m|am)";
-  if (new RegExp(`^i\\s+${IM}\\s+hiring$`).test(t)) return { kind: "intent-set", intent: "recruiter" };
-  if (new RegExp(`^i\\s+${IM}\\s+a\\s+developer$`).test(t)) return { kind: "intent-set", intent: "developer" };
-  if (new RegExp(`^i\\s+${IM}\\s+a\\s+student(?:\\s+of\\s+tj(?:\\s*s)?)?$`).test(t)) return { kind: "intent-set", intent: "student" };
+  if (INTENT_SET_HIRING_RE.test(t)) return { kind: "intent-set", intent: "recruiter" };
+  if (INTENT_SET_DEVELOPER_RE.test(t)) return { kind: "intent-set", intent: "developer" };
+  if (INTENT_SET_STUDENT_RE.test(t)) return { kind: "intent-set", intent: "student" };
 
   // clarify — a vague "help me get somewhere" ask with no concrete destination. Offer choices rather
   // than a wall of text or a guess. Kept BEFORE latest-note so "show me around" resolves here.

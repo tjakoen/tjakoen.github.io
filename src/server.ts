@@ -1,5 +1,5 @@
 // portfolio/server.ts — the composition root: the ONLY place BATCH + GRAIN + MILL + portfolio meet.
-import { join, normalize, resolve, sep } from "path";
+import { join, normalize, resolve, sep } from "node:path";
 import { config } from "./config.ts";
 // --- BATCH (substrate) ---
 import { bunRuntime } from "@tjakoen/batch/platform/bun-runtime.ts";
@@ -308,7 +308,7 @@ async function fixProofCardLinks(res: Response): Promise<Response> {
   if (!ct.includes("text/html")) return res;   // /plans.json etc. carry no such href
   const html = await res.text();
   const fixed = html.replaceAll('href="/plan/', `href="${PLANS_PREFIX}/plan/`);
-  return new Response(fixed, { headers: res.headers });
+  return new Response(fixed, { status: res.status, headers: res.headers });
 }
 const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-component CSS + GRAIN's AI module → /components.css
 // The sitemap covers EVERYTHING this server actually serves: the portfolio pages tree + MILL's

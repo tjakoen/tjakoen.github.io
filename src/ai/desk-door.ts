@@ -677,7 +677,8 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   const showcaseRunning = showcaseActive();
   void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate)).then(() => runMailTask(applyOp))
     .then(() => runContactTask(applyOp))
-    .then(() => (showcaseRunning ? reasoner.showcaseResume?.(applyOp) : undefined));
+    .then(() => (showcaseRunning ? reasoner.showcaseResume?.(applyOp) : undefined))
+    .catch((err) => console.error("[desk] arrival chain failed", err));
   // Page-arrival awareness (reasoner-driven): read the new page and offer a greeting + contextual
   // chips — but ONLY when the desk is already warm this session (site.js sets desk-warm on the first
   // chat.send) and the visitor navigated here themselves. Gated so a visitor who never opened the desk

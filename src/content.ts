@@ -469,7 +469,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
         var boxes = Array.prototype.slice.call(form.querySelectorAll('input[type="checkbox"]:checked'));
         var wanted = boxes.map(function (b) { return b.value; });
         var url = location.pathname + (wanted.length ? "?tag=" + wanted.join(",") : "") + location.hash;
-        try { history.replaceState(null, "", url); } catch (e) { /* file:// — leave the URL be */ }
+        try { history.replaceState(null, "", url); } catch { /* file:// — leave the URL be */ }
       }
 
       function revealRest(open) {

@@ -25,7 +25,7 @@ export const RATIO = `<div class="ratio" data-ratio>
         <p class="ratio__punch frag" data-grade="grain"><b>48% of that repo is writing, not code.</b> Plans, conventions, decisions, and notes to whoever opens it next.</p>
       </div>`;
 export function mountRatio(host) {
-  const root = h(host, RATIO);
+  h(host, RATIO);
   const ratio = host.querySelector('[data-ratio]');
   // the control goes INSIDE, above the payoff line. That line is kept in the layout while hidden
   // so revealing it shifts nothing, and parking the button after it left a hole in the middle of
@@ -60,7 +60,7 @@ export function mountRatio(host) {
     btn.textContent = shown ? 'Hide it again' : 'Show me';
   });
   setGuess(20);
-  return !!root;
+  return true;
 }
 
 /* --- four titles, one skill set: click a column ------------------------------ */
@@ -81,7 +81,7 @@ export const MATRIX = `<table class="matrix" data-matrix>
       </tbody>
     </table>`;
 export function mountMatrix(host) {
-  const root = h(host, MATRIX);
+  h(host, MATRIX);
   const matrix = host.querySelector('[data-matrix]');
   if (!matrix) return false;
   matrix.addEventListener('click', (e) => {
@@ -94,7 +94,7 @@ export function mountMatrix(host) {
     pick.setAttribute('aria-pressed', 'true');
     matrix.querySelector('col[data-col="' + pick.dataset.pick + '"]')?.classList.add('is-lit');
   });
-  return !!root;
+  return true;
 }
 
 /* --- the overnight sprint: a button, since prose has no slide steps ---------- */
@@ -105,7 +105,7 @@ export const SPRINT = `<div class="sprint" data-sprint>
       <p class="sprint__note">The night of 4 July. One commit every eight minutes, 4,269 lines added before it got light, every one of them co-authored with a machine.</p>
     </div>`;
 export function mountSprint(host) {
-  const root = h(host, SPRINT + '<p class="live-fig__ctl"><button class="btn" type="button" data-sprint-play>Play the night</button></p>');
+  h(host, SPRINT + '<p class="live-fig__ctl"><button class="btn" type="button" data-sprint-play>Play the night</button></p>');
   const line = host.querySelector('[data-sprint-line]');
   const count = host.querySelector('[data-sprint-count]');
   const btn = host.querySelector('[data-sprint-play]');
@@ -125,7 +125,7 @@ export function mountSprint(host) {
       count.textContent = String((i += 1));
     }, 70);
   });
-  return !!root;
+  return true;
 }
 
 /* --- the playbook ring: one node open at a time ------------------------------ */
@@ -169,7 +169,7 @@ export const LOOP = `<div class="loop" data-loop>
       </div>
     </div>`;
 export function mountLoop(host) {
-  const root = h(host, LOOP);
+  h(host, LOOP);
   const loop = host.querySelector('[data-loop]');
   if (!loop) return false;
   loop.addEventListener('click', (e) => {
@@ -187,7 +187,7 @@ export function mountLoop(host) {
   });
   // the ring and its arrowheads only draw once the deck marks them; in prose, draw immediately
   loop.querySelectorAll('[data-draw], [data-lit]').forEach((el) => el.classList.add('is-drawn'));
-  return !!root;
+  return true;
 }
 
 /* --- the silent-failure demo: click the left one twice ----------------------- */
@@ -204,7 +204,7 @@ export const TRAP = `<div class="trap" data-trap>
       </div>
     </div>`;
 export function mountTrap(host) {
-  const root = h(host, TRAP);
+  h(host, TRAP);
   const trap = host.querySelector('[data-trap]');
   if (!trap) return false;
   let clicks = 0;
@@ -217,5 +217,5 @@ export function mountTrap(host) {
     trap.querySelector('[data-trap-out-good]').innerHTML =
       '<b data-grade="grain">The texture lands. Same click, same intent.</b>';
   });
-  return !!root;
+  return true;
 }

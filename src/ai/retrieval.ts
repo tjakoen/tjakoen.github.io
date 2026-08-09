@@ -78,6 +78,10 @@ export function score(queryTokens: string[], chunk: Chunk, df: Record<string, nu
   return total;
 }
 
+// The relevance floor: a single query term matching once in an average-idf chunk clears ~1.7, so a
+// floor of 1 keeps genuine single-word hits and rejects pure-stopword / no-overlap queries.
+const FLOOR = 1;
+
 /** Top-k chunks for a query. Below the relevance floor (no meaningful lexical overlap) we return
  *  the facts chunks instead of low-signal noise — the grounded-only persona then leans on bio/BREAD
  *  facts rather than an unrelated note. k defaults to 3 (fits the 2048-token window, see prompt.ts). */
@@ -94,7 +98,3 @@ export function retrieve(query: string, knowledge: Knowledge, k = 3): Chunk[] {
   const facts = chunks.filter((c) => c.route === FACTS_ROUTE).slice(0, k);
   return facts.length > 0 ? facts : scored.slice(0, k).map((x) => x.c);
 }
-
-// The relevance floor: a single query term matching once in an average-idf chunk clears ~1.7, so a
-// floor of 1 keeps genuine single-word hits and rejects pure-stopword / no-overlap queries.
-const FLOOR = 1;

@@ -28,6 +28,16 @@ function parseIntent(b: unknown, sessionFallback: string): Intent | null {
   };
 }
 
+// accepts are DERIVED, never hand-typed (AI-INTERFACE §4): regions are inverted from the action
+// registry (actionsForKind). The global-chrome surfaces (reflection + the app-frame chat-log) are
+// operable on every screen; per-item surfaces went away with the /loop board. Module scope: this
+// doesn't close over anything in buildAiRoutes or the request.
+const targets: ManifestTarget[] = [
+  { id: surface("reflection"), kind: "reflection", accepts: actionsForKind("reflection") },
+  // chat-log is part of the global chrome (app-frame), so it's operable on every screen
+  { id: surface("chat-log"), kind: "chat-log", accepts: actionsForKind("chat-log") },
+];
+
 export function buildAiRoutes(stream: Stream, layer: InteractionLayer) {
   return {
     "/intent": {
@@ -53,14 +63,6 @@ export function buildAiRoutes(stream: Stream, layer: InteractionLayer) {
     "/ai/manifest": {
       GET: async (req: Request) => {
         const screen = new URL(req.url).searchParams.get("screen") ?? "home";
-        // accepts are DERIVED, never hand-typed (AI-INTERFACE §4): regions are inverted from the
-        // action registry (actionsForKind). The global-chrome surfaces (reflection + the app-frame
-        // chat-log) are operable on every screen; per-item surfaces went away with the /loop board.
-        const targets: ManifestTarget[] = [
-          { id: surface("reflection"), kind: "reflection", accepts: actionsForKind("reflection") },
-          // chat-log is part of the global chrome (app-frame), so it's operable on every screen
-          { id: surface("chat-log"), kind: "chat-log", accepts: actionsForKind("chat-log") },
-        ];
         return Response.json(buildManifest(screen, targets, { itemCount: 0 }));
       },
     },

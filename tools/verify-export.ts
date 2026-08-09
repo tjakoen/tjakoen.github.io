@@ -92,7 +92,7 @@ async function checkDeadLinks(): Promise<string[]> {
   const htmlFiles = await findHtmlFiles(DIST);
   for (const file of htmlFiles) {
     const html = await Bun.file(file).text();
-    const page = "/" + relative(DIST, file).split("/").join("/");
+    const page = "/" + relative(DIST, file);
     for (const ref of extractRefs(html)) {
       if (OPERABLE_ONLY_REFS.has(ref)) continue;
       const r = await resolves(ref);
@@ -137,7 +137,7 @@ async function checkModuleImports(): Promise<string[]> {
   ];
   for (const file of jsFiles) {
     const src = await Bun.file(file).text();
-    const modPath = "/" + relative(DIST, file).split("/").join("/");
+    const modPath = "/" + relative(DIST, file);
     const seen = new Set<string>();
     for (const re of patterns) {
       for (const m of src.matchAll(re)) {

@@ -33,7 +33,7 @@ fi
 # What counts as rendered here: view templates and their styles, the client scripts that drive them,
 # and note bodies (which carry raw HTML that MILL passes straight through, so a figure in a post is
 # a real surface). Everything else — src/, tools/, docs/, plans/, standards/, e2e/ — is not.
-rendered=$(printf '%s\n' "$changed" | grep -E '^(view/|content/notes/|scripts/|site/).*\.(html|css|js|md)$' || true)
+rendered=$(printf '%s\n' "$changed" | grep -E '^(view/|content/notes/|scripts/).*\.(html|css|js|md)$' || true)
 [ -n "$rendered" ] || exit 0
 
 # already toured this turn? then the run has done what section 4a asks.
