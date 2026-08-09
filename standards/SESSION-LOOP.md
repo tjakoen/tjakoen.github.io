@@ -166,11 +166,19 @@ agent config, every repo on the machine inherits both, and the config being a re
 carries the trigger to a second device. A per-repo copy is the version that covers one repo today and
 becomes three drifting copies later.
 
-The defaults are the measurement and not a memory. Sessions in this estate have carried 835k, so the
-lines sit at 700k to warn, leaving room to close cleanly, and 900k to stop. Both are overridable per
-run, which is also the only way to watch the trigger fire without waiting to fill a window, so a repo
-adopting it can confirm it works on the day it lands instead of hoping. Re-measure before trusting
-those two numbers anywhere else, because they describe one model on one machine.
+The defaults are the measurement and not a memory, and the two lines deliberately answer different
+questions. The stop line is a fact about the window: 900k of the 1M this model carries, past which
+continuing risks losing work. The warn line is a judgment about productivity, and it sits far lower,
+at 200k. A thread longer than that starts re-litigating decisions it already made, and every turn
+re-reads a prefix that only grows, so handing off there buys sharpness rather than survival. The gap
+between the two is the point. A session may sail past the first line for good reasons, and one that
+did exactly that produced this paragraph; no session should sail past the second.
+
+Both are overridable per run, which is also the only way to watch the trigger fire without waiting to
+fill a window, so a repo adopting it can confirm it works on the day it lands instead of hoping.
+Re-measure before trusting either number anywhere else, because they describe one model on one
+machine, and check the window rather than recalling it: the remembered figure for a context limit is
+usually an older model's, and both of these numbers mean something different against a smaller one.
 
 One exclusion is worth stating out loud, since a machine-level hook runs everywhere by definition:
 any path that is off limits stays off limits, and a check that only prints is still contact. The
