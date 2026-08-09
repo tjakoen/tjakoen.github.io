@@ -70,11 +70,11 @@ is worse than a missing one because it still looks like it was read. Two sentenc
 line and one instruction for the verify line is the size that gets used. The rule is not a word count
 so much as a test: if the card has to be scrolled, the step is doing something a step should not.
 
-Long context is not banned, it is relocated. The reasoning behind a change, the history, the thing
-you nearly did instead, all of it belongs where a reviewer can choose it: the rail beside the frame
-when one is hosting the tour, the plan, or the run report. Moving a wall of text three inches to the
-left is not the point either. The point is that the card is for what to do next and the rail is for
-why, and a reviewer who wants neither should be able to walk the whole tour without opening one.
+Long context is not banned, it is relocated, and the place is not another panel on the same screen.
+The reasoning behind a change, the history, the thing you nearly did instead: that is the plan and
+the run report, which a reviewer reads when they want it and skips when they do not. A review chrome
+that mirrors the step's prose beside the card has not solved anything, it has printed it twice, and
+the second copy is the one nobody reads. If a step will not fit its card, shorten the step.
 
 **Stamp the status honestly, and use `needs-verification` more than feels comfortable.** The five are
 `new`, `changed`, `needs-verification`, `verified`, `known-issue`. `verified` means someone who did
