@@ -84,7 +84,13 @@ the inputs it needs, which is the whole reason this is worth building rather tha
       source post leaves implicit: evidence can only narrow the high lane, never widen it, so a
       change with no gate that would catch it going wrong drops to gated rather than passing by
       default.
-- [ ] Add a `lane:` field to the run-report schema, and teach `runs.ts` to read it.
+- [x] Add a `lane:` field to the run-report schema, and teach `runs.ts` to read it. Optional,
+      `high | gated | human`, any case, rendered in the run detail's summary strip. Two calls came
+      with it, both following from the rules above: an **unrecognised value reads as absent** rather
+      than defaulting, because there is no safe default and taking a typo for `high` is the widening
+      §4b exists to prevent; and **a missing lane is not a tenth §9 gap**, because the nine items are
+      the nine items and the lane is a classification, not evidence of one. PANTRY classifies
+      nothing — it reads the word the run wrote.
 - [ ] Only then consider computing a lane suggestion from the ledger. Building the promotion
       mechanism before the classification is settled is how it becomes a number nobody trusts.
 - [ ] A figure for the standard, per FIGURES, since the source is a figure and the three lanes are
