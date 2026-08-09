@@ -1,6 +1,6 @@
 ---
 id: runs-surface-polish
-status: todo
+status: doing
 track: ai
 depends: []
 touches:
@@ -54,14 +54,34 @@ What it needs on top of that:
 ## Known rough edges, already seen live
 
 - A long diffstat runs three lines on a card and squashes its neighbour. Truncating it was rejected
-  (this page does not shorten evidence), so the fix is layout.
-- The meta definition list wraps into ragged columns at some widths.
+  (this page does not shorten evidence), so the fix is layout. **Fixed:** its own line on the card.
+- The meta definition list wraps into ragged columns at some widths. **Fixed:** each fact is capped
+  at 60ch and the row aligns to the top, so a long verified-by line stops stranding its neighbours.
 
 ## Tasks
 
-- [ ] Decide: a runs layer on `/timeline`, or a separate view. Answer this before drawing anything.
-- [ ] The detail summary block first. It is the smallest change and the one that pays every visit.
-- [ ] Grouping for the middle sections, accordions unless there is a reason to take a script.
-- [ ] Keep gate output out of any collapse, and add a test that asserts it.
-- [ ] The card layout fix for long diffstats.
+- [x] Decide: a runs layer on `/timeline`, or a separate view. **A layer on `/timeline`, and not yet.**
+      The two arguments settle it together: the timeline already draws dated, dependency-linked bars
+      from real git commits, and a run is the same kind of dated thing, so a second view would be a
+      fork of a drawing that exists. And the ledger holds five reports. Building either shape against
+      five produces a chart that looks like a chart and says nothing, which is this plan's own
+      warning. The decision is made; the drawing waits for the data.
+- [x] The detail summary block first. Five facts — outcome, closed, diffstat, evidence carried, scope
+      held or grown — as a strip above everything else. Label over value, the same way round as the
+      meta list below it.
+- [x] Grouping for the middle sections, accordions unless there is a reason to take a script.
+      `<details>` on Plans claimed, Declared scope, Touched and Skills, each carrying its count in the
+      summary line so a shut section still informs. No script: this stays the static surface it was.
+- [x] Keep gate output out of any collapse, and add a test that asserts it. Nothing folds above the
+      body: the gap list, the scope growth, the gates and their results and the report's own prose all
+      stay open. The test asserts the gate output sits after the last `</details>` and that no fold is
+      open across any of the four sections above it.
+- [x] The card layout fix for long diffstats. The diffstat gets its own line rather than trailing the
+      date run; truncating it stays rejected.
 - [ ] Revisit the timeline once the ledger has enough entries to have a shape.
+
+## What is still rough
+
+The strip's diffstat repeats the one in the meta list a screen below. That is the summary doing its
+job (it is the fact most likely to decide whether to read on) rather than a duplication to remove,
+but if the meta list is ever reworked, this is the pair to look at.
