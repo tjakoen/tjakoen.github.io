@@ -100,10 +100,23 @@ Two consequences worth stating, because both have already been got wrong here:
   of the one that asked. An entry that is only a choice, with no reference to what was being chosen
   between, is not actionable.
 
-**Where this stands today, honestly:** the inbox is built and renders. The single answer log is a
-decision, not a mechanism - nothing writes to it yet, so an answer currently comes back by paste. The
-contract above is what the mechanism has to satisfy when it is built, not a description of something
-running.
+**Where this stands today, honestly:** the mechanism exists as of 2026-08-10. PANTRY owns one
+append-only log, three surfaces write to it (the decision inbox, a review tour's decision card, and
+one command for an answer that arrived by paste), and a session both reads it and blocks on it
+through PANTRY's answers command. What is NOT yet true is the habit: no loop step obliges a session
+to read the log at start, so it is a channel that works and is not yet one that is always checked.
+
+Three things building it settled that were not obvious from the design.
+
+- **An answer needs a choice or a note, never both required.** "None of these, and here is why" is
+  the answer a decision card exists to catch, and refusing it pushes the reader into picking an
+  option they do not mean.
+- **An ack is an entry, not an edit.** Whether an answer has been acted on is derived by appending an
+  acknowledgement rather than by marking the answer, which keeps the log append-only and keeps
+  "what is still unread" answerable from the file alone.
+- **The log needs a name git will keep.** The obvious one, ending in dot log, was silently ignored on
+  its first write, because that extension is wildcarded in nearly every ignore file ever written. A
+  log the repo never commits is a log the next clone does not have.
 
 ---
 

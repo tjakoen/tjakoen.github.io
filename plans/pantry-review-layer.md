@@ -1,20 +1,26 @@
 ---
 id: pantry-review-layer
-status: todo
+status: doing
 track: ai
 depends: [crumb-prefilled-demo, agent-autonomy-tiers]
 touches:
+  - ../pantry/answers.ts
+  - ../pantry/answers.test.ts
   - ../pantry/app.ts
   - ../pantry/cli.ts
   - ../pantry/config.ts
+  - ../pantry/decisions.ts
   - ../pantry/doctor.ts
   - ../pantry/preview.ts
+  - ../pantry/pantry-decisions.js
   - ../pantry/pantry-review-client.js
   - ../pantry/pantry-review.js
   - ../pantry/pantry.css
   - ../pantry/pantry-cmdk.js
   - ../pantry/pantry-map.js
   - ../pantry/INSTALL.md
+  - content/tours/review-answer-channel.md
+  - decisions/answers.jsonl
   - standards/DECISIONS.md
   - standards/TOUR-STANDARD.md
 owner: unassigned
@@ -122,9 +128,20 @@ later hardening pass:
 - Loopback targets only, and the route is off unless a target is configured.
 - The write-back refuses anything that is not a loopback request, caps the body, appends only, and
   writes to a path from config rather than one the client names.
+  **Amended after P2 was reviewed, and for the same reason the bullet above was.** "Caps the body"
+  was true of what got written and false of what got read: the handler buffered the whole request and
+  then measured it, so an oversized body was already in memory when the refusal was decided. The read
+  now stops at the cap. The rule is therefore stated as the stronger thing it has to be: the bytes are
+  never taken, not merely never used.
 - PANTRY keeps its promise not to mutate the plan corpus. It may append answers; it may never write
   `plans/*.md`, content, or code. That boundary is what made the read-only stance worth having, and
   it survives.
+  **Amended after P2 was reviewed.** The check written to enforce this refused markdown and nothing
+  else, so a mistyped config key would have appended into a source file, a package manifest or a
+  dotfile, all of which the sentence above names and none of which the code caught. "Everything
+  except the corpus" is not a list anyone finishes writing. It is now an allowlist of two log
+  extensions, plus a refusal to write through a symlink, because a name check is a string check and
+  a link is exactly what makes a string check wrong.
 
 ## Phases
 
@@ -144,14 +161,68 @@ later hardening pass:
       `/crumb/tours.json`, which keeps the "one parser, never a second" rule by having none rather
       than by having the right one, and means the shell needs no new config key. The card and the
       lamp stay CRUMB's, drawn inside the frame.
-- [ ] **P2. The decision card and the write-back.** The option-ask card, and the append-only answer
+- [x] **P2. The decision card and the write-back.** The option-ask card, and the append-only answer
       log that satisfies DECISIONS section 4. Half of the card already exists in crumb's prompt card
       and should move rather than be rewritten.
-- [ ] **P3. The wait and the read on wake.** The session-side half: wait while awake, read on wake,
+      **Done 2026-08-10.** The card did not move and should not have: CRUMB still draws it, and
+      PANTRY's injected client reads it. `pantry/answers.ts` owns the log, one POST route owns the
+      write, and both the decision inbox and the review rail write through it. Two surfaces, one path
+      back, exactly as section 4 asks.
+- [x] **P3. The wait and the read on wake.** The session-side half: wait while awake, read on wake,
       and an entry that carries its own question. SESSION-LOOP section 1 already tells a session to
       look; this gives it something to find.
+      **Done 2026-08-10** as `pantry answers`, `answers wait`, `answers ack` and `answers record`.
+      Built with P2 because neither is testable alone.
 - [ ] **P4. Tier 1 on a non-GRAIN project.** Attributes into pocket-tickets, capture at run time,
       review at leisure. This is the phase that proves the whole thing is not portfolio-shaped.
+
+## What P2 found that reading would not have
+
+**A closed card is still a card.** CRUMB's popover is a `<dialog>`, and ending a tour closes it
+rather than removing it, so the selector that finds the card kept finding one after the walk was
+over, with the last answers still sitting in its fields. PANTRY would have offered to record an
+answer to a tour nobody was on. The fix is to ask whether the dialog is open, and the reason it took
+a walk to find is that every reading of the code says a card is present exactly when a tour is
+running. The frame presentation has no such trap, because ending removes the element.
+
+**A childList observer never sees a dialog close**, since `open` is an attribute. The same watcher
+that missed it had been shipping since P1 for the fold control, which had the same lingering bug and
+nobody had noticed, because a stale Fold button does nothing when clicked.
+
+**The composed text is a contract worth keeping and the labels are not.** An answer is recorded with
+the question read from the TOUR FILE and the choice read from the SCREEN. Scraping the label off the
+card would agree with the file almost always, and the once it did not, the disagreement would land in
+a log read by a session that can check neither.
+
+**And eleven more from two independent reviewers who did not write it.** The count is not the point;
+the shape is. Every one of them lived in a place the author had already written a confident sentence
+about:
+
+- **The refusal that protected one file type.** The check enforcing "never writes plan corpus"
+  refused markdown and let `.ts`, `.json`, `.env` and extensionless paths through, so a mistyped
+  config key would have appended into source. A denylist of what must not be written cannot be
+  finished; it is an allowlist of two log extensions now. A symlink also walked straight past the
+  name check, which is what a name check does.
+- **The cap that measured instead of stopping.** The body was read whole and then compared to the
+  cap, which caps what gets written and nothing else. The same mistake the proxy made about
+  Content-Length in P0, made again one layer up, by the person who had written the P0 note.
+- **The comment that named the bug it did not prevent.** The argument parser guessed whether a flag
+  took a value by looking at the next token, and its own comment said "getting this wrong would make
+  `pantry answers --json ack x` eat `ack`". It ate `ack`. Which flags take values is declared now,
+  because arity cannot be inferred from an argument list.
+- **A wait that could never end.** A non-numeric timeout became NaN, a NaN deadline is never past,
+  and a NaN sleep returns instantly, so the command became a silent hot loop with no error and no
+  exit. Found by a reviewer running it, not by reading it. This is the worst failure shape available
+  to an unattended loop, and it was three characters of validation away.
+- **A wait that could not see the answer.** It matched answers newer than the moment it started, so
+  one given in the seconds before the session got round to waiting was invisible: the command blocked
+  its full timeout and reported nothing while the list showed it unread. Unacked is the right test,
+  since an ack is already the record of what has been consumed.
+- **A retry that wrote twice.** Two asks, one POST fails, the reviewer presses the button again, and
+  the ask that succeeded is appended a second time to a log with no way to retract it.
+
+The count worth remembering is not eleven. It is that the walk found two, the reviewers found eleven,
+and the author found none of the thirteen while writing them.
 
 ## What this costs that nothing else here costs
 
@@ -172,7 +243,14 @@ none of it.
   localStorage and both read GRAIN's keys, so today it does, and the review bar says so rather than
   leaving it to be discovered. Stopping it means PANTRY not using GRAIN's theme script unmodified,
   which is a fork, so it is a real trade and not an oversight.
-- Whether the answer log lives per repo or once per machine. Per repo keeps it with the evidence;
-  per machine means a session only ever watches one path.
+- ~~Whether the answer log lives per repo or once per machine.~~ **Settled 2026-08-10 by the owner:
+  per repo, with the path in config.** The default sits beside the decision requests and rides the
+  same git history as the change it unblocks; an absolute path outside the repo makes it per machine
+  for anyone who wants that, and neither is a mode with its own code.
+  **What building it changed about it.** The default was `answers.log` until the first write, when
+  git ignored it: `*.log` is in this repo's .gitignore and in most others ever written. A per-repo
+  log that git never sees gives up the whole reason for choosing per repo, so the default is
+  `answers.jsonl`. The choice was the owner's; the extension was the part nobody could have decided
+  in advance, because it only appears once a real repo ignores a real file.
 - Whether a review can be walked against a deployed URL rather than localhost. Everything above
   assumes local, deliberately, and the security section is only sound under that assumption.
