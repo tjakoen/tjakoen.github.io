@@ -23,6 +23,7 @@ import type { GrainAdapterOptions } from "@tjakoen/mill/adapters/grain/grain-ada
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
+import { SITE } from "./seo.ts";
 import { FACTS_ROUTE, type Knowledge } from "./ai/retrieval.ts";
 
 // A dirSource that ignores symlinked .md files. `standards/AGENTS.md` is a symlink to CLAUDE.md
@@ -107,6 +108,9 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // card read identically.
     const photoGrid = kind === "entry" && collection.prefix === "/calendar" && frontmatter
       ? renderPhotoGrid(parsePhotos(frontmatter.photos)) : "";
+    // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key).
+    const shareBlock = kind === "entry" && collection.prefix === "/calendar" && frontmatter && slug
+      ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`) : "";
     // THE EDITOR section (rail active + tab group): notes → its own; layer docs live under BREAD.
     const sectionName = collection.prefix === "/notes" ? "notes" : "bread";
     const section = ` data-section="${sectionName}"`;
@@ -134,7 +138,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
   <div class="app-shell app-window"${section} data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
-      <div class="board">${sourceToggle}${photoGrid}${body}</div>
+      <div class="board">${sourceToggle}${photoGrid}${body}${shareBlock}</div>
     </main>
   </div>
 ${inject}</body>
@@ -619,6 +623,47 @@ export function parsePhotos(raw: unknown): EventPhoto[] {
 // stylesheet dresses both. data-lightbox + the group wrapper wire it to GRAIN's image viewer
 // (scripts/lightbox.js), same as the molecule; each photo's href stays the full image (the
 // no-JS-safe fallback).
+// The event page's share block (molecules/share-block): the ready-to-post copy for LinkedIn and the
+// canonical link back, straight off the entry's own `social:` frontmatter — one source of truth, so
+// the page and the post it becomes cannot drift. Opt-in per event: no `social:` key, no block. A
+// <details> so it stays folded away from the reader (it is a tool, not part of the post), and so it
+// still works with no JS: open it, the text is selectable and the link is a real anchor.
+function renderShareBlock(social: unknown, url: string): string {
+  if (typeof social !== "string" || !social.trim()) return "";
+  // Unwrap the authoring line breaks: the source file is hard-wrapped at 110 columns like every
+  // other file here, but a paste into LinkedIn must break only where a paragraph does. Blank lines
+  // stay, single newlines inside a paragraph become spaces.
+  const unwrapped = social.trim().split(/\n{2,}/)
+    .map((para) => para.split("\n").map((l) => l.trim()).join(" ").trim())
+    .filter(Boolean).join("\n\n");
+  const text = escapeHtml(unwrapped);
+  const href = escapeHtml(url);
+  return `<details class="share-block" data-share>
+  <summary class="share-block__head">Social post copy</summary>
+  <pre class="share-block__text" data-share-text>${text}</pre>
+  <p class="share-block__row">
+    <button class="share-block__copy" type="button" data-share-copy>Copy</button>
+    <a class="share-block__link" href="${href}">${href}</a>
+  </p>
+</details>
+<script>
+  (function () {
+    var block = document.querySelector('[data-share]');
+    if (!block || !navigator.clipboard) return;
+    var button = block.querySelector('[data-share-copy]');
+    var text = block.querySelector('[data-share-text]');
+    if (!button || !text) return;
+    button.addEventListener('click', function () {
+      navigator.clipboard.writeText(text.textContent || '').then(function () {
+        button.textContent = 'Copied';
+        button.setAttribute('data-copied', '');
+        setTimeout(function () { button.textContent = 'Copy'; button.removeAttribute('data-copied'); }, 1600);
+      }).catch(function () { button.textContent = 'Copy failed, select it instead'; });
+    });
+  })();
+</script>`;
+}
+
 function renderPhotoGrid(photos: EventPhoto[]): string {
   if (!photos.length) return "";
   const items = photos.map((p) => {

@@ -1,0 +1,17 @@
+<!-- molecules/share-block — the ready-to-post version of a /calendar event, straight off the entry's
+     own `social:` frontmatter (one source of truth: the page and the LinkedIn post never drift).
+     Rendered by shellChrome under the event body (src/content.ts renderShareBlock), the same
+     hand-render arrangement feed-photo has, because chrome has no per-request binding context.
+     A <details> so it stays folded: it is a tool for the author, not part of the post a reader came
+     for. No JS: open it, the text is selectable and the link is a real anchor. With JS: one button
+     puts the whole thing on the clipboard. See share-block.md. -->
+<details class="share-block" data-share>
+  <summary class="share-block__head">Social post copy</summary>
+  <pre class="share-block__text" data-share-text>I spoke at the general assembly of …
+
+https://tjakoen.github.io/calendar/some-event</pre>
+  <p class="share-block__row">
+    <button class="share-block__copy" type="button" data-share-copy>Copy</button>
+    <a class="share-block__link" href="https://tjakoen.github.io/calendar/some-event">https://tjakoen.github.io/calendar/some-event</a>
+  </p>
+</details>

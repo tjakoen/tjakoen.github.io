@@ -48,7 +48,7 @@ you know where to edit.
 |---|---|
 | `/notes`, `/notes/<slug>` | `content/notes/<slug>.md` (the `/notes` index is a portfolio-owned feed, `renderNotesFeedPage`; entries render through MILL) |
 | `/notes/<slug>.md` | the same file, served raw (the "honest source" toggle) |
-| `/calendar/<slug>` | `content/events/<slug>.md` — the social-feed events collection (`index: false`, so the `/calendar` feed page above still wins the bare path); each entry page gets the photo-grid post template from its frontmatter (`shellChrome` `renderPhotoGrid`) |
+| `/calendar/<slug>` | `content/events/<slug>.md` — the social-feed events collection (`index: false`, so the `/calendar` feed page above still wins the bare path); each entry page gets the photo-grid post template from its frontmatter (`shellChrome` `renderPhotoGrid`), plus the copy-and-post share block when the entry has a `social:` block (`renderShareBlock`, `molecules/share-block`) |
 | `/grain/docs`, `/grain/docs/<slug>` | this repo's own `docs/grain/*.md` (canonically homed here, option b — not the `@tjakoen/grain` package) |
 | `/batch/docs`, `/batch/docs/<slug>` | this repo's own `docs/batch/*.md` (canonically homed here, option b — not the `@tjakoen/batch` package) |
 | `/mill/docs`, `/mill/docs/<slug>` | this repo's own `docs/mill/*.md` |

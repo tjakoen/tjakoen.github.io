@@ -1,0 +1,21 @@
+/* molecules/share-block — the ready-to-post copy of a /calendar event. Bundled into /components.css
+   via config.styleRoots. Not screen-scoped: it renders inside a MILL entry page's .board, and the
+   only thing that puts one there is an event with a `social:` block. */
+.share-block { margin: var(--space-6) 0 0; padding: var(--space-4); background: var(--paper-2);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
+/* folded by default: the copy is a tool for the author, not part of what a reader came to read. */
+.share-block__head { font-size: var(--text-xs); font-family: var(--font-mono); text-transform: uppercase;
+  letter-spacing: .04em; color: var(--ink-muted); cursor: pointer; }
+.share-block__head:hover { color: var(--ink); }
+.share-block[open] .share-block__head { margin: 0 0 var(--space-3); }
+.share-block__text { margin: 0; white-space: pre-wrap; font-family: inherit; font-size: var(--text-sm);
+  line-height: var(--leading-relaxed); color: var(--ink); }
+.share-block__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+  margin: var(--space-3) 0 0; }
+.share-block__copy { font: inherit; font-size: var(--text-xs); font-family: var(--font-mono);
+  padding: var(--space-1) var(--space-3); border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); cursor: pointer; }
+.share-block__copy:hover { border-color: var(--color-accent); }
+.share-block__copy[data-copied] { border-color: var(--color-accent); color: var(--color-accent); }
+.share-block__link { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-faint);
+  overflow-wrap: anywhere; }
