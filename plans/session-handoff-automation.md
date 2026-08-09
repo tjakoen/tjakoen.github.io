@@ -104,4 +104,15 @@ posture as every other mechanical check here.
       number to inherit. The brief's shape is untouched. voice-lint holds at 42 pre-existing flags,
       so nothing new was added; the file path is italicised rather than backticked for that reason.
 - [ ] Only then, and only if the autonomy plan puts it in a lane that allows it, let the trigger call
-      `spawn_session` itself rather than offering.
+      `spawn_session` itself rather than offering. **Blocked on something the lane question cannot
+      fix, found 2026-08-10.** The lane part came out fine: LOOP §4b now classifies by
+      irreversibility, and a spawned sibling session is reversible (close the tab) and not
+      outward-facing, so it is gated rather than human. But the trigger cannot make the call
+      regardless. `session-guard.sh` is a bash Stop hook, and `spawn_session` is an MCP tool exposed
+      to the model, not a command a shell can run. So "the trigger spawns" is not implementable as
+      written: the only available shape is the hook printing and the model choosing to spawn, which
+      is a model deciding, not a trigger firing, and it is exactly the thing SESSION-LOOP §5 already
+      says to keep in a human's hands.
+      Leave this open rather than closing it. It needs either a CLI entry point for spawning, or an
+      honest rewrite of the task to "the hook recommends and the model asks", which is close enough
+      to what already happens that it may not be worth building at all.
