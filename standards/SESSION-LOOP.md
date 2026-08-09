@@ -145,6 +145,18 @@ turn), or the *next* step is genuinely a different job (e.g. "code landed → no
 If the harness has a handoff generator (Claude Code exposes a `/handoff` skill), use it; the shape
 above is what it should produce. If not, write the prompt by hand to that shape.
 
+**The "long enough" half is measurable, so measure it rather than feeling it.** Claude Code writes a
+`usage` block on every assistant turn of its transcript, and the input side of the newest one is the
+context the session is actually carrying. That makes the second trigger above a number, not a hunch,
+and it belongs on the turn-end hook with the rest of the mechanical tier (LOOP §2). Two things to get
+right, because both have already been got wrong here. Count the cached reads: once the cache is warm
+the raw `input_tokens` field is single digits, so a reader that trusts it reports a full session as
+empty. And measure the window before setting a line in it: the remembered figure for a context limit
+is usually an older model's, and a threshold set there fires halfway through an ordinary session.
+
+Whatever the trigger, **the handoff is still emitted, not acted on.** Opening the next session
+unasked is an action taken with nobody in the loop, which is LOOP §4b's territory, not this one's.
+
 ---
 
 ## 6. Model economy (be smart about which brain runs)

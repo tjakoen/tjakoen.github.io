@@ -15,6 +15,18 @@
 set -uo pipefail
 
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
+
+# ---- (0) how much context is left ------------------------------------------
+# Runs FIRST and before the git guards, because it is the one nudge here that has nothing to do with
+# the diff: a session with a clean tree can still be one turn from the end of its window. The payload
+# hooks pass on stdin carries transcript_path, so forward it rather than letting the tool guess by
+# mtime, which picks the wrong file when two sessions share a repo. --quiet says nothing until the
+# reading crosses the warn line. SESSION-LOOP section 5 owns what to do about it.
+payload=$(cat 2>/dev/null || true)
+if command -v bun >/dev/null 2>&1 && [ -f tools/context-usage.ts ]; then
+  printf '%s' "$payload" | bun tools/context-usage.ts --quiet 2>/dev/null || true
+fi
+
 command -v git >/dev/null 2>&1 || exit 0
 git rev-parse --git-dir >/dev/null 2>&1 || exit 0
 
