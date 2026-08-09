@@ -78,7 +78,12 @@ What it needs on top of that:
       open across any of the four sections above it.
 - [x] The card layout fix for long diffstats. The diffstat gets its own line rather than trailing the
       date run; truncating it stays rejected.
-- [ ] Revisit the timeline once the ledger has enough entries to have a shape.
+- [ ] Revisit the timeline once the ledger has enough entries to have a shape. **Checked 2026-08-10:
+      six reports, one more than the five this plan already called not a series, so it stays
+      deferred.** Counting again every session and re-arguing it is its own small waste, so the bar
+      is a number now: twelve reports, or a ledger spanning two calendar months, whichever comes
+      first. Twelve is roughly a quarter of sessions at the current rate, which is the point where a
+      run of gaps or a climb in evidence carried would be a trend rather than a coincidence.
 
 ## What is still rough
 
