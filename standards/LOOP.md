@@ -185,6 +185,51 @@ the tooling allows — Claude Code hooks blocking the forbidden commands; P3):
 Autonomous runs route every ask through the decision inbox (P2) — chat has nobody in it. Interactive
 sessions use the inbox for artifact-heavy decisions and chat for the quick ones.
 
+**Those three are a floor, and a floor applied identically to every change is a blunt instrument.**
+The same envelope governs a typo fix and a schema migration, so it is either too tight to work under
+or too loose to trust. Autonomy is a property of the change, its evidence and the harness around it,
+not a setting on the model, so a change is classified into one of three lanes and the envelope
+follows from the lane.
+
+| Lane | The change | What happens |
+|---|---|---|
+| High | Routine, reversible, covered by a gate that would catch it going wrong | The run proceeds alone |
+| Gated | Real blast radius, but a mistake can be walked back | Automated checks, then a targeted human review of the diff |
+| Human | Irreversible, or novel with weak evidence | The human decides before anything is written |
+
+**Irreversibility, not difficulty, puts a change in the human lane.** A one-character migration is
+human. A two-hundred-line refactor of pure functions under test is not. Sorting by how hard a change
+looks is how the dangerous small ones get waved through, because they are the ones that never look
+like much.
+
+The classifier is paths first, because paths are checkable and a judgement call can be talked into
+anything. A change is in the human lane if it touches any of these, and the lane is the worst thing
+in the diff rather than the average of it:
+
+```
+.github/**                      CI, workflow permissions, anything holding a secret
+**/migrations/**  **/*.sql      schema changes, which outlive the run that made them
+**/auth/**  **/*permission*     who can do what
+**/*secret*  **/*credential*  **/.npmrc  **/*.pem
+**/billing/**  **/*payment*     money
+package.json (version, publishConfig, exports)
+wrangler.*  Dockerfile  **/*.tf deploy and infrastructure surface
+deletions under content/**      published pages someone may already be linking to
+```
+
+Some irreversible things are not paths at all, and those stay where they already are: pushing,
+merging, publishing, rewriting history, deleting anything, and every outward-facing action remain
+**hard stops** rather than lanes. A hard stop is not the top of the ladder, it is off the ladder.
+
+Two rules keep this from turning into a permissions system that quietly grants itself more:
+
+- **The lane is computed per change and never stored.** There is no ladder, so there is nothing to
+  ratchet. This also sidesteps the question of what track record earns and over what window, which is
+  genuinely unsettled here and should not be answered by accident.
+- **Evidence can only narrow the high lane, never widen it.** A change qualifies as high only if a
+  gate exists that would actually catch it going wrong. Missing coverage is not neutral, it drops the
+  change to gated, because "the tests pass" means nothing when the tests do not reach the change.
+
 ---
 
 ## 5. Why a loop at all (the precedent, and the receipt)

@@ -111,6 +111,11 @@ PHASE 2 - Judge the eight things the doctor cannot. One row per check. Cite file
        - CI on push                     (.github/workflows/, where the repo is on GitHub)
        - graph freshness on edit/commit (a PostToolUse or post-commit hook)
        - lint and typecheck as scripts  (package.json, not a command someone recalls)
+       - the human lane guarded         (LOOP section 4b: is anything actually stopping a
+                                         run from landing a change under .github/, a
+                                         migration, or a credential file on its own? A
+                                         hook, a CODEOWNERS entry, or a required review
+                                         all count. "The agent knows not to" does not.)
      A rule that lives only in prose is rung 2 of the hardening ladder
      (AI-REPO-STANDARD section 7). Say for each which rung it is actually on.
   C7 GRAPHIFY IN THE DEFAULT PLAN. Not just "is graphify-out present". Four parts,
