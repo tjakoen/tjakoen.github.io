@@ -67,7 +67,25 @@ posture as every other mechanical check here.
       guards, because a clean tree can still be one turn from the end of the window, and `--quiet`
       keeps it silent until it crosses the line. Verified end to end through the hook with a real
       payload on stdin.
-- [ ] Carry the reader to the other repos, or move it somewhere all of them mount.
+- [x] Carry the reader to the other repos, or move it somewhere all of them mount. **Mounted, not
+      carried.** Copying was the wrong half of the "or": the reader takes its transcript path off the
+      hook payload and derives the rest from the cwd, so a per-repo copy would have been the same
+      file three times. It lives at `~/.claude/tools/context-usage.ts` with its test, run by
+      `~/.claude/tools/session-guard.sh` from a user-level Stop hook, which also took the
+      durable-state half out of the portfolio's gate for the same reason. Owner asked what happens on
+      a new device: `~/.claude` is itself a repo (`tjakoen/claude-config`), so the trigger travels
+      with a clone. The portfolio's `tools/review-gate.sh` keeps only what is actually its business,
+      proof verify and the tour reminder, and the two hooks are additive so both still fire.
+      Verified in four repos at a forced threshold: portfolio (5 uncommitted), pantry (2 unpushed),
+      bread and grain (both green), plus silence at the default threshold.
+- [x] Exclude the off-limits path. A machine-level hook runs everywhere by definition, and the edge
+      rule is "do not read it either", so the guard exits on a prefix match before it touches git or
+      the transcript. Verified: forced warn in that tree prints nothing. Overridable by env, since
+      the path is this machine's fact rather than a rule anyone else should inherit.
+      NOT DONE, and deliberately: the owner asked for that checkout to be deleted. Its remote is
+      2FA-gated and unreachable from here, so deletion cannot be undone and cannot be verified safe
+      without reading the repo, which is the thing the rule forbids. Left for the owner to do by hand
+      from a machine that can reach the remote.
 - [x] Add the durable-state precondition, so the trigger runs the gate before it suggests anything.
       Lives in `tools/review-gate.sh`, not in the reader: the reader stays pure over a transcript and
       keeps its unit tests, and git is the gate's business. A non-empty `--quiet` capture is the

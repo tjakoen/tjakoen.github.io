@@ -158,13 +158,23 @@ the raw `input_tokens` field is single digits, so a reader that trusts it report
 empty. And measure the window before setting a line in it: the remembered figure for a context limit
 is usually an older model's, and a threshold set there fires halfway through an ordinary session.
 
-The trigger is built rather than proposed: in the portfolio it is *tools/context-usage.ts*, called
-from the turn-end hook in a quiet mode that prints nothing until the reading crosses the warn line.
+The trigger is built rather than proposed: a reader that tails the transcript, called from the
+turn-end hook in a quiet mode that prints nothing until the reading crosses the warn line. It belongs
+at machine level rather than in any one repo, and so does the durable-state check beside it, because
+neither is about the repo it runs in: one reads a transcript, the other reads git. Wired once in the
+agent config, every repo on the machine inherits both, and the config being a repo of its own is what
+carries the trigger to a second device. A per-repo copy is the version that covers one repo today and
+becomes three drifting copies later.
+
 The defaults are the measurement and not a memory. Sessions in this estate have carried 835k, so the
 lines sit at 700k to warn, leaving room to close cleanly, and 900k to stop. Both are overridable per
-run, which is also the only way to watch the trigger fire without waiting to fill a window, so a
-repo adopting it can confirm it works on the day it lands instead of hoping. Re-measure before
-trusting those two numbers anywhere else, because they describe one model on one machine.
+run, which is also the only way to watch the trigger fire without waiting to fill a window, so a repo
+adopting it can confirm it works on the day it lands instead of hoping. Re-measure before trusting
+those two numbers anywhere else, because they describe one model on one machine.
+
+One exclusion is worth stating out loud, since a machine-level hook runs everywhere by definition:
+any path that is off limits stays off limits, and a check that only prints is still contact. The
+guard excludes it by prefix before it reads anything at all, including git.
 
 Whatever the trigger, **the handoff is still emitted, not acted on.** Opening the next session
 unasked is an action taken with nobody in the loop, which is LOOP §4b's territory, not this one's.
