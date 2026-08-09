@@ -93,5 +93,7 @@ the inputs it needs, which is the whole reason this is worth building rather tha
       nothing — it reads the word the run wrote.
 - [ ] Only then consider computing a lane suggestion from the ledger. Building the promotion
       mechanism before the classification is settled is how it becomes a number nobody trusts.
-- [ ] A figure for the standard, per FIGURES, since the source is a figure and the three lanes are
-      exactly the shape a flow scaffold renders.
+- [x] A figure for the standard, per FIGURES, since the source is a figure and the three lanes are
+      exactly the shape a flow scaffold renders. Shipped in `178066b` — the two-question flow above
+      the classifier in LOOP §4b, inline SVG on the flow scaffold, hard stops named outside the
+      diagram so they cannot read as a fourth lane. Ticked 2026-08-10; the box was stale, not open.
