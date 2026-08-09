@@ -85,12 +85,37 @@ this parser does not support and should keep not supporting rather than half-sup
 Then grain publishes and this repo bumps the pin, which is a hard stop under LOOP section 4b and the
 owner's call, not a session's.
 
+## The pass bar was wrong, and the measurement says so
+
+`</li></ul><p>` is not a defect signature. It is also what ordinary Markdown produces when a list is
+followed by a new paragraph, which these documents do constantly. So "zero" was never reachable and
+would have been the wrong thing to chase.
+
+Measured on the fixed parser, swapped into `node_modules/@tjakoen/mill` and served locally, same
+method as the table above:
+
+| page | before | after | page | before | after |
+|---|---|---|---|---|---|
+| ai-development | 26 | 0 | note-standard | 9 | 1 |
+| ai-repo-standard | 24 | 8 | graph | 8 | 3 |
+| voice | 33 | 5 | tree | 8 | 4 |
+| audit-standard | 18 | 2 | readme-standard | 5 | 2 |
+| loop | 17 | 5 | conformance | 2 | 1 |
+| session-loop | 14 | 4 | kickstart | 0 | 0 |
+| figures | 10 | 0 | tour-standard | 0 | 0 |
+
+174 to 35 on the standards, and `ten-times-zero` 11 to 1. Every one of the 35 was read: each is a
+list whose last item ends on a full stop, followed by a genuine new paragraph. None is a truncated
+item. **The real bar is no item cut mid-clause**, and that is met.
+
 ## Tasks
 
-- [ ] Fix the list branch in `grain/packages/mill/core/markdown.ts` and add the four cases to
-      `core/markdown.test.ts`.
-- [ ] Publish grain, bump the pin here, and re-run the count above. The pass bar is zero
-      `</li></ul><p>` across all fourteen standards pages.
+- [x] Fix the list branch in `grain/packages/mill/core/markdown.ts` and add the four cases to
+      `core/markdown.test.ts`. Continuation lines are consumed into the current item on the same
+      `startsBlock` test the paragraph branch uses; nested items stay flat, as before. 562 grain
+      tests green.
+- [ ] Publish `@tjakoen/mill` (not grain — the parser ships in its own package, pinned here at
+      `^0.2.0`), bump the pin, re-run the count. Blocked on the npm token and the owner's call.
 - [x] Check the notes as well as the standards. They are rendered by the same engine and nobody had
       counted them. `ten-times-zero`, the flagship post, has **11**. `watch-its-hands` has none. So
       this is not a standards-only defect, it reaches the published writing, and the pass bar above
