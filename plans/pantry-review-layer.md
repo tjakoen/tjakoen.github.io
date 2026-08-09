@@ -5,9 +5,15 @@ track: ai
 depends: [crumb-prefilled-demo, agent-autonomy-tiers]
 touches:
   - ../pantry/app.ts
+  - ../pantry/cli.ts
   - ../pantry/config.ts
   - ../pantry/doctor.ts
+  - ../pantry/preview.ts
+  - ../pantry/pantry-review-client.js
+  - ../pantry/pantry-cmdk.js
+  - ../pantry/pantry-map.js
   - ../pantry/pantry.css
+  - ../pantry/INSTALL.md
   - standards/DECISIONS.md
   - standards/TOUR-STANDARD.md
 owner: unassigned
@@ -87,6 +93,16 @@ port will not see them through PANTRY's origin, so a logged-in session can vanis
 forwarded Set-Cookie away, but it is the thing most likely to make the first attempt look broken for
 a reason unrelated to the proxy logic.
 
+**What P0 found when it got there, since this paragraph half-predicted it.** Cookies were the easy
+half: cookies ignore port, so a target on `localhost:3000` and PANTRY on `localhost:4400` are the
+same cookie host and a login survives untouched. Two smaller things did bite, and both are the same
+shape, PANTRY addressing the root it just gave away. A framework that builds an absolute redirect
+from the upstream request sends the browser back to the raw target, off PANTRY's origin and out of
+the review, so a Location on the target's own origin is rewritten to a path. And PANTRY's own
+stylesheet loads its display font from `url("/fonts/...")`, which under the prefix is a request
+fired at the reviewed app, so CSS is rebased alongside the HTML. Neither was visible by reading; the
+browser walk found both.
+
 ## Security, stated rather than implied
 
 The proxy fetches a URL and serves it same-origin, and the write-back accepts a POST and appends to
@@ -103,10 +119,15 @@ later hardening pass:
 
 ## Phases
 
-- [ ] **P0. The proxy.** Reserved prefix for PANTRY's own routes, everything else passed through at
+- [x] **P0. The proxy.** Reserved prefix for PANTRY's own routes, everything else passed through at
       root, one injected script tag into HTML responses, target from config and off by default.
       Prove it on the portfolio first because it is a plain Bun server, then on a Next.js production
       build because that is the harder target and the one that generalises.
+      **Done 2026-08-10** (`pantry/preview.ts`, `previewTarget` in the host config, PANTRY under
+      `/__pantry`). Both targets walked in a browser: the portfolio and a Next 15 production build
+      each came back byte-identical to a direct fetch apart from the 63-byte script tag, React
+      hydrated through the proxy, and a cookie login survived the origin change. Report:
+      `../pantry/artifacts/runs/2026-08-10-pantry-preview-proxy.md`.
 - [ ] **P1. The review surface.** PANTRY renders a tour file (importing `@tjakoen/crumb/core`, one
       parser, never a second) as chrome around the embed: step rail, the pane, the card.
 - [ ] **P2. The decision card and the write-back.** The option-ask card, and the append-only answer
