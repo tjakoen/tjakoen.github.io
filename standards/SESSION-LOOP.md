@@ -39,9 +39,15 @@ any repo alongside [`AI-DEVELOPMENT.md`](AI-DEVELOPMENT.md).
    Code wins over any memory (→ AI-DEVELOPMENT §1).
 3. **Orient from the graph, not a cold read.** If the repo has a knowledge-graph index (graphify;
    AI-DEVELOPMENT §4), query it to place the work before grepping raw files.
-4. **Restate the goal in one line.** What "done" means for *this* task, and the non-negotiables you
+4. **Check for answers you did not ask for.** A question an earlier session raised may have been
+   answered while nothing was running, and the session that reads the answer is rarely the one that
+   asked. Read the repo's pending answers before starting new work, act on what is now settled, or
+   say plainly that it is being deferred (→ [DECISIONS](DECISIONS.md) §4). Usually there is nothing
+   there, and it costs one file read to know.
+5. **Restate the goal in one line.** What "done" means for *this* task, and the non-negotiables you
    were handed. If that line is fuzzy and the choice is genuinely the human's, ask once — with a
-   recommendation, not a survey.
+   recommendation, not a survey. Which surface that ask belongs on is DECISIONS §1; in a session
+   someone is watching, the chat is almost always right.
 
 ---
 

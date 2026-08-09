@@ -31,6 +31,7 @@ six.
 | **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard: cadence, the honesty clause, the machine-tells to refuse. Owns *how it reads*. |
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built (frontmatter, structure, footer), plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
 | **Handing over a change someone has to look at** | [TOUR-STANDARD.md](TOUR-STANDARD.md) | How a CRUMB review tour is built: one step per changed surface, a verify line the reviewer can actually run, an honest status. Owns the *artifact*; LOOP owns the rule that a rendered change owes one. |
+| **Asking the human something a run can't decide** | [DECISIONS.md](DECISIONS.md) | The four surfaces a question can land on (chat, the inbox, a tour's decision card, the handoff), what picks between them, what a request has to carry, and the one channel an answer comes back on. LOOP owns how much scrutiny a change earns; this owns where the question goes. |
 | **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard: two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
 | **Setting up a README** | [README-STANDARD.md](README-STANDARD.md) | Title emoji, the honest badge row, the "built with Claude" footer, plus a runnable prompt. |
 | **Deciding which stack layers a new project needs** | [KICKSTART.md](KICKSTART.md) | A paste-in prompt that interviews you, reads the live stack and the public repos, and proposes which BREAD layers your project actually needs (and which it does not). The on-ramp before the repo exists. |
@@ -61,6 +62,11 @@ six.
   renders owes a review tour, and this says how to write one worth walking. Read it when the thing you
   changed is something a person can look at, and read LOOP section 2 with it for the limit, because a
   tour you wrote about your own change makes review cheap without making it done.
+- **DECISIONS** sits across the three of them and answers a question none of them owns: where a
+  question goes. LOOP section 4b says how much scrutiny a change earns, TOUR-STANDARD says what a
+  tour is, SESSION-LOOP section 5 says what a handoff contains, and DECISIONS says which of those a
+  given question belongs on and how the answer gets back. Read it when you are about to interrupt a
+  human, which is the moment the choice is actually made.
 - **KICKSTART + CLAUDE.starter + CONFORMANCE** are the on-ramps and the upkeep, in order: KICKSTART
   runs *before the repo exists*, deciding which layers the project needs; CLAUDE.starter is how the
   repo you then create inherits the whole set from day one; CONFORMANCE is what you run months later
