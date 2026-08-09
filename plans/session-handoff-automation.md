@@ -58,10 +58,16 @@ posture as every other mechanical check here.
 
 ## Tasks
 
-- [ ] Write the reader: a small script that takes a transcript path and prints the current context
-      total. Test it against a finished session with a known length before wiring anything to it.
-- [ ] Decide the two thresholds and which one is loud.
-- [ ] Wire it as a hook and confirm it fires: the notification has to reach the session, not a log.
+- [x] Write the reader: `tools/context-usage.ts`, with `tools/context-usage.test.ts` (10). Verified
+      against a real 1083-turn session, cross-checked against an independent count: 834,960 both ways.
+- [x] Decide the two thresholds and which one is loud. **The 200k premise was wrong** and the
+      measurement is the finding: twelve recent sessions here reach 835k, 458k, 267k, 264k. The
+      window is 1M on claude-opus-5, so the defaults are warn 700k, stop 900k, both overridable.
+- [x] Wire it as a hook and confirm it fires. It runs inside `tools/review-gate.sh` ahead of the git
+      guards, because a clean tree can still be one turn from the end of the window, and `--quiet`
+      keeps it silent until it crosses the line. Verified end to end through the hook with a real
+      payload on stdin.
+- [ ] Carry the reader to the other repos, or move it somewhere all of them mount.
 - [ ] Add the durable-state precondition, so the trigger runs the gate before it suggests anything.
 - [ ] Amend SESSION-LOOP §5 with the trigger, keeping the shape of the brief where it already is.
 - [ ] Only then, and only if the autonomy plan puts it in a lane that allows it, let the trigger call
