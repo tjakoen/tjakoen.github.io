@@ -10,6 +10,7 @@ touches:
   - ../pantry/doctor.ts
   - ../pantry/preview.ts
   - ../pantry/pantry-review-client.js
+  - ../pantry/pantry-review.js
   - ../pantry/pantry-cmdk.js
   - ../pantry/pantry-map.js
   - ../pantry/pantry.css
@@ -110,6 +111,14 @@ disk. Both are only safe because of what bounds them, so the bounds are part of 
 later hardening pass:
 
 - The preview target comes from config and never from the request. No open relay.
+  **Amended after P0 was reviewed, because this bullet was true and the code still had the hole it
+  was meant to prevent.** The target was read from config, and then the request's own pathname was
+  concatenated onto it. A pathname beginning with a double slash resolves scheme-relative, so
+  `//example.com/x` against the target origin became `http://example.com/x`, and the loopback check
+  passed at boot while a request walked around it. The rule is therefore stated one level lower:
+  the origin actually fetched is asserted to equal the configured target, every time, and the
+  path is normalized before it is joined. A bullet about where a value comes from does not cover
+  what a URL constructor does with it later.
 - Loopback targets only, and the route is off unless a target is configured.
 - The write-back refuses anything that is not a loopback request, caps the body, appends only, and
   writes to a path from config rather than one the client names.
