@@ -47,7 +47,7 @@ The demo-mode narration. Shown in both modes; the review and verify lines are th
 `mode: dev` is what makes it a review tour. Without it the review, verify and status lines still
 parse but the tour opens as a demo.
 
-## The six rules
+## The seven rules
 
 **One step per surface that changed, not one per commit.** The reviewer is checking the app, not
 your history. Two commits that both touched the same figure are one step. A commit that touched
@@ -63,6 +63,18 @@ seen the code can follow it and end up knowing whether it worked. "Check the spa
 slowly into this figure from the paragraph above; nothing should overlap, at desktop width and at
 phone width" passes. Name the interaction, name the widths or states that matter, and say what the
 correct outcome looks like, especially when the correct outcome is that nothing happens.
+
+**A step is read standing up, so it is short.** The card sits over the thing it points at, and the
+reviewer is looking past it at the app. A step that fills the card gets skimmed, and a skimmed step
+is worse than a missing one because it still looks like it was read. Two sentences for the review
+line and one instruction for the verify line is the size that gets used. The rule is not a word count
+so much as a test: if the card has to be scrolled, the step is doing something a step should not.
+
+Long context is not banned, it is relocated. The reasoning behind a change, the history, the thing
+you nearly did instead, all of it belongs where a reviewer can choose it: the rail beside the frame
+when one is hosting the tour, the plan, or the run report. Moving a wall of text three inches to the
+left is not the point either. The point is that the card is for what to do next and the rail is for
+why, and a reviewer who wants neither should be able to walk the whole tour without opening one.
 
 **Stamp the status honestly, and use `needs-verification` more than feels comfortable.** The five are
 `new`, `changed`, `needs-verification`, `verified`, `known-issue`. `verified` means someone who did
