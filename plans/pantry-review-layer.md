@@ -14,7 +14,6 @@ touches:
   - ../pantry/pantry.css
   - ../pantry/pantry-cmdk.js
   - ../pantry/pantry-map.js
-  - ../pantry/pantry.css
   - ../pantry/INSTALL.md
   - standards/DECISIONS.md
   - standards/TOUR-STANDARD.md
