@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "promise"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/graphify-out/**",
+    "**/vendor/**",
+    "**/test-results/**",
+    "**/playwright-report/**",
+    "**/screenshots/**",
+    "**/nimbalyst-local/**"
+  ],
+  "rules": {
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "caughtErrors": "all" }],
+    "eqeqeq": ["error", "smart"],
+    "no-console": "off",
+    "unicorn/prefer-node-protocol": "error",
+    "promise/no-callback-in-promise": "off",
+
+    "no-await-in-loop": "off",
+    "unicorn/consistent-function-scoping": "off",
+    "no-underscore-dangle": "off"
+  }
+}

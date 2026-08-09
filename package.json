@@ -8,7 +8,7 @@
   "author": "Tjakoen Stolk <tjakoen.s@gmail.com> (https://tjakoen.github.io)",
   "homepage": "https://tjakoen.github.io",
   "dependencies": {
-    "@tjakoen/batch": "^0.1.0",
+    "@tjakoen/batch": "^0.2.0",
     "@tjakoen/crumb": "^0.1.7",
     "@tjakoen/grain": "^0.1.18",
     "@tjakoen/mill": "^0.2.0",
@@ -28,11 +28,13 @@
     "audit:desk": "bun tools/desk-audit.ts",
     "export": "bun tools/export.ts",
     "verify:export": "bun tools/verify-export.ts",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "lint": "oxlint"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
     "bun-types": "^1.3.14",
+    "oxlint": "1.77.0",
     "typescript": "^5.8.0"
   },
   "exports": {
