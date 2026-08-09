@@ -65,7 +65,17 @@ every push and every session *show what's due*. Two tiers.
 |---|---|---|
 | Push | The doctor + typecheck + tests + e2e + lint (CI, where the repo is on GitHub). | CI fails the push visibly. Nonzero exit, no merge. |
 | Session start | The doctor, as the first orientation step (SESSION-LOOP §1 grows this rule). | Its findings land in `plans/` triage — the session sees them before touching code. |
-| Turn end | `proof verify` over the diff, and a nudge for the dev tour §4a asks of a rendered change. | The run does not get to say "done" yet. Both are cheap, so this fires often and stays quiet when there is nothing to say. |
+| Turn end | The typecheck when a typed file moved this turn, `proof verify` over the diff, a nudge for the dev tour §4a asks of a rendered change, and a lint count graded against a committed baseline. | The run does not get to say "done" yet. Ordered by what each catches: a type error is broken code, a lint flag is a preference. |
+
+**Two rules keep the turn-end tier from being deleted, and both were learned by nearly deleting it.**
+**Gate an expensive check on the thing that makes it necessary.** A typecheck costs several times
+everything else in that row combined, so it runs only when a typed file actually changed, which makes
+it free on a prose turn and present on every turn that could break the build. A gate that feels slow
+gets removed rather than tuned (§7). **Grade a noisy check against a baseline rather than zero.** A
+repo with existing lint debt fails a from-zero check on its first run and has it muted inside a week,
+so the count is compared to a committed baseline and only a rise is worth saying out loud. The debt
+stays visible as a number instead of a wall, and accepting a real increase is a deliberate command
+rather than an argument.
 
 The mechanical tier never needs a model. It is grep, exit codes, and file-age math. Its whole job is to
 *surface*: kit compliance, drift, and staleness flags (audit overdue, graphify stale, e2e suite missing).
