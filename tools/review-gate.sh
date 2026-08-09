@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # tools/review-gate.sh — the Stop hook behind LOOP section 2's third mechanical trigger, turn end.
 #
-# Three nudges:
+# Four nudges:
+#   0. tsc, but only when a TypeScript file changed this turn. The one check here that catches an
+#      outright defect rather than a preference, and the one with a cost worth gating on.
 #   1. proof verify over the working diff, when this repo runs a plans board.
 #   2. a reminder that a change which RENDERS owes a CRUMB dev tour (LOOP section 4a).
-#   3. a lint baseline-and-regress report (oxlint + voice-lint), unlike (1) and (2) this one is NOT
+#   3. a lint baseline-and-regress report (oxlint + voice-lint), unlike the others this one is NOT
 #      silent when clean — see its own section below for why.
 #
 # The trigger for (2) is deliberately narrow and stays that way. LOOP section 7 is a table of the
@@ -35,6 +37,27 @@ changed=$( { git diff --name-only HEAD; git ls-files --others --exclude-standard
 # is a property of the whole tree, not of one turn's edits — so it runs unconditionally below, past
 # this point. Each of (1)/(2) is now an `if` rather than a mid-script `exit 0` for exactly that reason:
 # a script that bails out on a quiet turn would bail out before (3) ever got to speak.
+
+# ---- (0) the types still check, when a type could have moved ----------------
+# This runs first because it is the only check here that catches an outright defect rather than a
+# preference or a missing follow-up. A type error is broken code; `prefer-array-find` is an opinion,
+# and for a while this gate carried the opinion and not the defect.
+#
+# It is gated on a TypeScript file having actually changed this turn, and that gate is the whole
+# reason it can be here at all: tsc costs about three seconds against roughly one for everything
+# else in this script combined. Paying that at the end of a turn that only touched prose is how a
+# gate starts feeling slow, and a gate that feels slow gets deleted rather than tuned (LOOP section
+# 7). Gated this way it is free on a docs turn and present on every turn that could break the build.
+#
+# Silent when it passes, like (1) and unlike (3): a check whose normal state is "fine" earns nothing
+# by saying so every time, while a count that always exists (lint) earns the confirmation.
+if printf '%s\n' "$changed" | grep -qE '\.tsx?$' \
+   && command -v bun >/dev/null 2>&1 && [ -f package.json ] \
+   && grep -q '"check"' package.json; then
+  if ! types=$(bun run check 2>&1); then
+    printf 'tsc FAILED, and a TypeScript file changed this turn:\n%s\n\n' "$types"
+  fi
+fi
 
 # ---- (1) the scope cap, read ------------------------------------------------
 if [ -n "$changed" ] && [ -d plans ] && command -v bunx >/dev/null 2>&1; then
