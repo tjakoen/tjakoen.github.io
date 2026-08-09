@@ -27,7 +27,21 @@
   color: var(--color-accent); margin: var(--space-1) 0 0; }
 [data-screen="calendar"] .feed-card__tags:empty { display: none; }
 
-/* per-kind accent on the meta line's kind label — mirrors the Month/Week chip colours (calendar.css). */
-[data-screen="calendar"] .feed-card[data-event-kind="hackathon"] .feed-card__kind { color: var(--color-accent); }
-[data-screen="calendar"] .feed-card[data-event-kind="talk"] .feed-card__kind { color: var(--color-accent); }
+/* Per-kind colour, so a note and an event are told apart at a glance. Same ORDER of emphasis as the
+   Month grid's chips (events loudest, then notes, then shipped) but not the same values: a 3px stripe
+   in accent-soft is invisible on paper, so notes take a mid-grey instead. A card carries the signal
+   twice — the edge stripe down the left and the kind label — because the stripe survives a skim and
+   the label survives a screenshot. */
+[data-screen="calendar"] .feed-card { border-left: 3px solid var(--line-soft); }
+[data-screen="calendar"] .feed-card[data-event-kind="note"] { border-left-color: var(--ink-muted); }
+[data-screen="calendar"] .feed-card[data-event-kind="note"] .feed-card__kind { color: var(--ink-muted); }
+[data-screen="calendar"] .feed-card[data-event-kind="shipped"] .feed-card__kind { color: var(--ink-faint); }
+[data-screen="calendar"] .feed-card[data-event-kind="hackathon"],
+[data-screen="calendar"] .feed-card[data-event-kind="talk"],
+[data-screen="calendar"] .feed-card[data-event-kind="student-highlight"] { border-left-color: var(--color-accent); }
+[data-screen="calendar"] .feed-card[data-event-kind="hackathon"] .feed-card__kind,
+[data-screen="calendar"] .feed-card[data-event-kind="talk"] .feed-card__kind,
 [data-screen="calendar"] .feed-card[data-event-kind="student-highlight"] .feed-card__kind { color: var(--color-accent); }
+
+/* a hidden card is filtered out by the feed tabs, not merely spaced away (the list is a flex column). */
+[data-screen="calendar"] .feed-card[hidden] { display: none; }

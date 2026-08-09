@@ -32,7 +32,16 @@
 
         <section class="feed" id="feed" data-cal-panel="feed">
           <div class="section-head"><span>Feed</span></div>
+          <!-- Filter tabs over the ONE feed list below (no second dataset, no fetch): the script hides
+               the cards whose data-event-kind is out of scope. Events is the default WITH JS; with JS
+               off the whole feed shows, which is the honest fallback (All). -->
+          <div class="feed__tabs" role="tablist" aria-label="Filter the feed" data-feed-tabs hidden>
+            <button class="feed__tab" type="button" role="tab" data-feed-tab="events" aria-selected="true">Events</button>
+            <button class="feed__tab" type="button" role="tab" data-feed-tab="notes" aria-selected="false">Notes</button>
+            <button class="feed__tab" type="button" role="tab" data-feed-tab="all" aria-selected="false">All</button>
+          </div>
           <ol class="feed__list"><feed-card each="calendarEvents"></feed-card></ol>
+          <p class="feed__empty" data-feed-empty hidden>Nothing under this tab yet.</p>
         </section>
 
         <div class="page-foot">
@@ -75,6 +84,46 @@
 
       // ---- read events off the feed DOM ----
       var cards = Array.prototype.slice.call(feedList.querySelectorAll('.feed-card'));
+
+      // ---- the feed's filter tabs: Events (default) / Notes / All ----
+      // One list, hidden rows — no second dataset. "events" means the events collection (talk,
+      // hackathon, student-highlight, anything authored as content/events/*.md); "notes" means note
+      // publish dates; the shipped posts have no tab of their own and live under All. The tabs are
+      // hidden until this runs, so with JS off the reader gets the whole feed instead of a dead control.
+      var tabsEl = document.querySelector('[data-feed-tabs]');
+      var emptyEl = document.querySelector('[data-feed-empty]');
+      var currentTab = 'events';
+
+      function inTab(kind, tab) {
+        if (tab === 'all') return true;
+        if (tab === 'notes') return kind === 'note';
+        return kind !== 'note' && kind !== 'shipped';
+      }
+
+      function applyTab(tab) {
+        currentTab = tab;
+        var shown = 0;
+        cards.forEach(function (li) {
+          var visible = inTab(li.getAttribute('data-event-kind') || 'note', tab);
+          li.hidden = !visible;
+          if (visible) shown++;
+        });
+        if (tabsEl) {
+          Array.prototype.forEach.call(tabsEl.querySelectorAll('[data-feed-tab]'), function (btn) {
+            btn.setAttribute('aria-selected', btn.getAttribute('data-feed-tab') === tab ? 'true' : 'false');
+          });
+        }
+        if (emptyEl) emptyEl.hidden = shown > 0;
+      }
+
+      if (tabsEl) {
+        tabsEl.addEventListener('click', function (ev) {
+          var btn = ev.target.closest('[data-feed-tab]');
+          if (btn) applyTab(btn.getAttribute('data-feed-tab'));
+        });
+        tabsEl.hidden = false;
+        applyTab(currentTab);
+      }
       var events = cards.map(function (li) {
         var titleEl = li.querySelector('.feed-card__title');
         return {
@@ -104,6 +153,9 @@
         btn.addEventListener('click', function () {
           var row = e.id && document.getElementById(e.id);
           if (!row) return;
+          // the month plots everything, so a chip can point at a card the current tab is hiding —
+          // fall back to All rather than scrolling to nothing.
+          if (row.hidden) applyTab('all');
           row.scrollIntoView({ behavior: 'smooth', block: 'center' });
           row.classList.add('feed-card--highlight');
           setTimeout(function () { row.classList.remove('feed-card--highlight'); }, 1600);

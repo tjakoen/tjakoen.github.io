@@ -53,6 +53,21 @@
   vertical-align: -1px; margin-right: var(--space-1); }
 [data-screen="calendar"] .cal__swatch--event { background: var(--color-accent); }
 
+/* the feed's filter tabs (Events / Notes / All). Ship hidden and are revealed by the island, so a
+   no-JS reader gets the whole feed rather than a control that does nothing. */
+[data-screen="calendar"] .feed__tabs { display: flex; gap: var(--space-1); margin: var(--space-4) 0 0; }
+[data-screen="calendar"] .feed__tabs[hidden] { display: none; }
+[data-screen="calendar"] .feed__tab { font: inherit; font-size: var(--text-xs); font-family: var(--font-mono);
+  text-transform: uppercase; letter-spacing: .04em; cursor: pointer;
+  padding: var(--space-1) var(--space-3); border: 1px solid var(--line-soft);
+  border-radius: var(--radius-pill); background: transparent; color: var(--ink-muted); }
+[data-screen="calendar"] .feed__tab:hover { color: var(--ink); border-color: var(--ink-faint); }
+[data-screen="calendar"] .feed__tab[aria-selected="true"] { background: var(--color-accent);
+  border-color: var(--color-accent); color: var(--color-accent-contrast); }
+[data-screen="calendar"] .feed__empty { margin: var(--space-5) 0 0; color: var(--ink-muted);
+  font-size: var(--text-sm); }
+[data-screen="calendar"] .feed__empty[hidden] { display: none; }
+
 @media (max-width: 640px) {
   [data-screen="calendar"] .cal__cell { min-height: 3.6rem; }
   [data-screen="calendar"] .cal__event { padding: 1px var(--space-1); }

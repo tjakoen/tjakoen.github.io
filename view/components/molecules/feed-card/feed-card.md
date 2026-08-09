@@ -8,8 +8,14 @@ row is a real dated thing, never an invented event.
 Parent-context requirement: a direct child of `<ol class="feed__list">`. **Images first, then text**,
 the same shape as an event's own page (`/calendar/<slug>`), so a card and its page read identically.
 
+Each kind carries a colour: a left edge stripe plus the kind label, loudest for events (accent), a
+mid-grey for notes, and the quietest for shipped posts. Same order of emphasis as the Month grid's
+chips, different values, because a 3px stripe in `--color-accent-soft` is invisible on paper.
+
 The root carries the fields the Month + Week islands read straight off this DOM (one source of truth,
 no fetch): `data-date`, `data-event-kind`, `data-tags`, and the `#evt-…` `id` a chip scrolls to. The
+feed's filter tabs (Events / Notes / All) hide a card by setting `hidden` on this same root, so there
+is one list and no second dataset. The
 date relativizes client-side to "N days ago" (absolute stays in `title`); with no JS it shows the
 absolute date, and the feed is the whole no-JS page. The photo strip, links row, location and tags
 each hide when their data is empty.
