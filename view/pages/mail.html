@@ -318,21 +318,34 @@
         archiveMessage(reader.id.replace(/^msg-/, ''));
       });
 
-      // ---- Compose starts collapsed once the island is live, and the bright link reveals + focuses it.
+      // ---- Compose starts collapsed once the island is live, and the reveal has two callers, so it
+      // lives in one function: the bright Compose link, and a cold load of /mail#compose. The panel's
+      // own href is #compose, but until now only the click handler ever unhid it, so arriving on that
+      // fragment from outside (a pasted link, a bookmark, a tour step that names the field surface as
+      // its target) landed on a hidden panel and read as a dead link. ----
+      function revealCompose() {
+        readers.forEach(function (r) { r.hidden = true; });   // Compose takes over the reader pane
+        items.forEach(function (it) { it.removeAttribute('aria-current'); });
+        composePanel.hidden = false;
+        composePanel.scrollIntoView({ block: 'nearest' });
+      }
+
       // preventDefault + a manual scrollIntoView, rather than the native anchor jump: the browser's
       // own fragment-navigation also tries to move focus to the target element, and it runs AFTER
-      // this click handler, so it was winning the race and stealing focus back off the subject field. ----
+      // this click handler, so it was winning the race and stealing focus back off the subject field.
+      // The cold-load path below deliberately differs on both counts. There is no event to cancel,
+      // and it does not focus the subject field either: a deep link is not a click, nobody asked for
+      // the caret, and a load that grabs focus fights whatever else is arriving with the page (a tour
+      // card focuses its own control the moment it opens, and the last one to run would win). ----
       if (composeLink && composePanel) {
         composePanel.hidden = true;
         composeLink.addEventListener('click', function (ev) {
           ev.preventDefault();
-          readers.forEach(function (r) { r.hidden = true; });   // Compose takes over the reader pane
-          items.forEach(function (it) { it.removeAttribute('aria-current'); });
-          composePanel.hidden = false;
-          composePanel.scrollIntoView({ block: 'nearest' });
+          revealCompose();
           var subjectField = composePanel.querySelector('#compose-subject');
           if (subjectField) subjectField.focus({ preventScroll: true });
         });
+        if (location.hash === '#compose') revealCompose();
       }
     })();
   </script>

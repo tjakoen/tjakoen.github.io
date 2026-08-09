@@ -6,6 +6,7 @@ depends: []
 touches:
   - docs/CRUMB-PREFILL-FEASIBILITY-2026-08-09.md
   - content/tours/
+  - docs/crumb/WRITE-A-TOUR.md
   - standards/TOUR-STANDARD.md
   - view/pages/
   - e2e/
@@ -25,7 +26,8 @@ reaches the live site until the npm token clears (`grain-0-1-18-bump`).
 
 **The one thing to settle before code.** Prefill is a write, and CRUMB's design law says the tour
 never writes. The audit recommends amending the law to "writes only through the door, and never
-submits" rather than carving out an exception. That is an owner call, and P2 is blocked on it.
+submits" rather than carving out an exception. Settled, and settled before P2 needed it: the amended
+law is the one design law in `docs/crumb/WRITE-A-TOUR.md`.
 
 ## Phases
 
@@ -42,9 +44,19 @@ submits" rather than carving out an exception. That is an owner call, and P2 is 
       `@tjakoen/crumb`, so an e2e for P0 and P1 can only be committed green after crumb `0.1.8` is
       published and the pin bumped. The npm token returns E401 as of 2026-08-09, so this is owner-gated.
       Until then the review link works locally and shows the old parse on the live site.
-- [ ] **P2. Prefill one registered field through the door.** Blocked on the law amendment. Pilot on
-      `field:contact-message`, refuse to fill a field the human has already touched, and say in the
-      step's prose that the state was staged.
+- [x] **P2. Prefill one registered field through the door.** Done 2026-08-10, the portfolio half. The
+      law question was not a blocker in the end: it was settled before this phase started, and the
+      amended law already stands in `docs/crumb/WRITE-A-TOUR.md`, so `TOUR-STANDARD.md` only gained
+      the authoring rule that falls out of it (a step that stages state says so in its own prose,
+      because a staged screen otherwise reads as one the app reached by itself). The pilot tour is
+      `content/tours/say-hello.md`, three steps, ending on `field:contact-message` with a staged
+      draft. Getting there needed a fix nobody had planned: the compose panel starts collapsed and
+      CRUMB has no flow verbs, so `/mail#compose` had to actually open the panel on a cold load before
+      a tour could reach the field at all. That is now one reveal function with two callers, and it
+      fixes a real defect for people too, since the panel's own href had only ever worked after a
+      click. `prefill` is documented in `docs/crumb/WRITE-A-TOUR.md`. The walk itself is unverified and
+      stays that way: the pinned `@tjakoen/crumb` predates the key and reads the line as prose, so the
+      e2e sits behind the same publish as P1b.
 - [ ] **P3. Preset a page's own state via URL state.** One page, after P0.
 - [ ] **Deferred: flow verbs.** No `drawer.open` or `tab.select` until a real change needs one.
 

@@ -47,7 +47,7 @@ The demo-mode narration. Shown in both modes; the review and verify lines are th
 `mode: dev` is what makes it a review tour. Without it the review, verify and status lines still
 parse but the tour opens as a demo.
 
-## The five rules
+## The six rules
 
 **One step per surface that changed, not one per commit.** The reviewer is checking the app, not
 your history. Two commits that both touched the same figure are one step. A commit that touched
@@ -70,6 +70,15 @@ not write it has actually walked it. Marking your own work verified is the exact
 above refuses, so on a tour you wrote about your own change, `verified` is almost always wrong.
 `known-issue` is not an admission of failure, it is the cheapest way to stop a reviewer filing
 something you already know about.
+
+**A step that stages state says so, in its own prose.** A tour may write into the app, through the
+app's own door, and a `prefill` line is the first thing that does it. The moment it does, the screen
+the reviewer is looking at is no longer one the app reached by itself, and a screen with words already
+in it reads exactly like one that did. So the step says plainly that the tour put them there, and what
+the tour then refused to do (the message is staged, sending it is yours). The client draws a staged
+label of its own, which is a label, and labels get skipped. Saying it in the narration is the part
+someone actually reads, and a review tour that lets a staged state pass for a real one has inverted
+the only thing it is for.
 
 **Say what is riskiest, not what is most impressive.** The step most worth a careful look is usually
 the smallest one: the spacing fix landed at the end, the edge case nobody asked for. Put the honest

@@ -78,10 +78,52 @@ Under a heading, lines are split into two buckets:
 | `review` | Dev-mode-only narration: what changed here. Shown only when the tour is in (or switched to) `dev` mode. |
 | `status` | One of `new`, `changed`, `needs-verification`, `verified`, `known-issue` (CRUMB's verification vocabulary, deliberately separate from GRAIN's `data-grade`, which is provenance, not review state). An unrecognized value is dropped with a parse warning; it does not fail the tour. |
 | `verify` | The concrete action that confirms the step: "Open the drawer on mobile; the dock shouldn't clip it." Shown alongside `review` in dev mode. |
+| `prefill` | Text to stage into this step's surface. Legal only when the surface is a `field:` address; anywhere else it is dropped with a warning. `\n` becomes a real line break, the same as in `template` below. |
 
 **A step's `at` may carry query state**, e.g. `at: /mail?subject=grain`. The client navigates once and
 settles: it decides by comparing pathnames, then assigns the whole target, so the query survives. A
 step whose `at` declares nothing about the query leaves the page's own parameters alone.
+
+## Staging a field: `prefill`
+
+A demo of a form is a poor demo when the form is empty, so a step may arrive with the field already
+written in:
+
+```markdown
+## field:contact-message
+- at: /mail#compose
+- prefill: Hi Tjakoen,\n\nI came in through the notes and ended up taking the tour.
+Here is the compose window, and the draft in it is the tour's, not yours.
+```
+
+Four things bound it, and all four are the design law above rather than politeness:
+
+- **It only works on a `field:` surface.** That is a real registration the page made, not an address a
+  tour invented. On any other kind of surface the key stages nothing.
+- **It goes through the door.** The text is handed to grain's `field.set`, the same verb the assistant
+  writes with, on the same channel, with the same audit trail behind it. There is no direct DOM write
+  and no second path into the page.
+- **It never submits.** No verb in the vocabulary presses a button, so the field can be filled and the
+  send stays the human's move. That is the whole point of staging rather than demonstrating.
+- **It yields to the human.** A field the person has already typed into is left alone. A tour that
+  overwrote a half-written message would be worse than one that did nothing.
+
+The client also renders a visible line on the step saying the text was staged by the tour, so a
+screen with words in it never reads as a screen the app arrived at by itself. Write the step's prose
+to say the same thing in its own words: the note about staging is a label, and a label is easy to
+skip past.
+
+One practical trap, learned on this site's own pilot. The field has to be reachable on arrival,
+because CRUMB has no flow verbs and cannot click anything to reveal it. The compose panel on `/mail`
+starts collapsed, so the pilot only worked once `/mail#compose` opened the panel on a cold load. If
+the surface you want to prefill lives behind a click today, fix the deep link first. That fix is
+worth having on its own: a fragment in an href that only works after a click is a broken link for
+people too.
+
+The honest limit, while it is true: this site pins a published CRUMB that predates the key, and an
+older parser reads the line as ordinary prose rather than as a staged write. The worked example is
+[`content/tours/say-hello.md`](https://github.com/tjakoen/tjakoen.github.io/blob/main/content/tours/say-hello.md),
+and it walks as a plain three-step tour until the pin moves.
 
 ## The last card: `## prompt`
 
