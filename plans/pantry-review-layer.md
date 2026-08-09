@@ -11,6 +11,7 @@ touches:
   - ../pantry/preview.ts
   - ../pantry/pantry-review-client.js
   - ../pantry/pantry-review.js
+  - ../pantry/pantry.css
   - ../pantry/pantry-cmdk.js
   - ../pantry/pantry-map.js
   - ../pantry/pantry.css
@@ -168,6 +169,10 @@ none of it.
   the card and the lamp inside it. Nothing is deleted, the standalone path for a GRAIN host with no
   PANTRY alongside survives, and the duplication is two different jobs rather than two chromes: the
   rail says where you are in the walk, the card says what the step is.
+- Whether PANTRY forcing a theme should reach the app it is reviewing. Same origin means one
+  localStorage and both read GRAIN's keys, so today it does, and the review bar says so rather than
+  leaving it to be discovered. Stopping it means PANTRY not using GRAIN's theme script unmodified,
+  which is a fork, so it is a real trade and not an oversight.
 - Whether the answer log lives per repo or once per machine. Per repo keeps it with the evidence;
   per machine means a session only ever watches one path.
 - Whether a review can be walked against a deployed URL rather than localhost. Everything above
