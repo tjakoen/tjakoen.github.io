@@ -128,8 +128,13 @@ later hardening pass:
       each came back byte-identical to a direct fetch apart from the 63-byte script tag, React
       hydrated through the proxy, and a cookie login survived the origin change. Report:
       `../pantry/artifacts/runs/2026-08-10-pantry-preview-proxy.md`.
-- [ ] **P1. The review surface.** PANTRY renders a tour file (importing `@tjakoen/crumb/core`, one
+- [x] **P1. The review surface.** PANTRY renders a tour file (importing `@tjakoen/crumb/core`, one
       parser, never a second) as chrome around the embed: step rail, the pane, the card.
+      **Done 2026-08-10** at `/__pantry/review`, and with one correction to the shape above: PANTRY
+      parses no tour at all. The rail reads the reviewed project's OWN manifest through the proxy at
+      `/crumb/tours.json`, which keeps the "one parser, never a second" rule by having none rather
+      than by having the right one, and means the shell needs no new config key. The card and the
+      lamp stay CRUMB's, drawn inside the frame.
 - [ ] **P2. The decision card and the write-back.** The option-ask card, and the append-only answer
       log that satisfies DECISIONS section 4. Half of the card already exists in crumb's prompt card
       and should move rather than be rewritten.
@@ -149,9 +154,11 @@ none of it.
 
 ## Open, and genuinely not decided
 
-- Whether CRUMB's frame presentation should be deleted once PANTRY draws the chrome, or kept as the
-  standalone path for a GRAIN host with no PANTRY alongside. Building more into it before this is
-  answered is wasted work either way.
+- ~~Whether CRUMB's frame presentation should be deleted once PANTRY draws the chrome.~~ **Settled
+  2026-08-10 by the owner: kept.** PANTRY draws the rail outside the frame and CRUMB keeps drawing
+  the card and the lamp inside it. Nothing is deleted, the standalone path for a GRAIN host with no
+  PANTRY alongside survives, and the duplication is two different jobs rather than two chromes: the
+  rail says where you are in the walk, the card says what the step is.
 - Whether the answer log lives per repo or once per machine. Per repo keeps it with the evidence;
   per machine means a session only ever watches one path.
 - Whether a review can be walked against a deployed URL rather than localhost. Everything above
