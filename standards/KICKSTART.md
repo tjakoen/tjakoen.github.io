@@ -62,6 +62,8 @@ PHASE 1 — Interview me. Ask these, a few at a time, and wait for my answers:
 PHASE 2 — Learn the stack for yourself. Do not rely on your training data; go read:
   - https://tjakoen.github.io/llms.txt          (the map of the whole stack)
   - https://tjakoen.github.io/standards          (how repos are built + how prose reads)
+  - https://tjakoen.github.io/standards/loop     (the loop every repo runs: the work-triggered
+                                                  heartbeat, the run ledger, the rails)
   - https://tjakoen.github.io/pantry/docs/getting-started   (install + scaffold + run)
   - https://tjakoen.github.io/grain/docs         (the design system + the AI interface)
   - https://tjakoen.github.io/batch/docs         (the no-build substrate, if the app is operable)
@@ -89,7 +91,17 @@ PHASE 3 — Plan, then stop. Given my answers and what you read, come back with:
      conventions in the standards you just read (the CLAUDE.starter template, the README
      standard with the "Made with Claude" badge, the AI-repo standard). Write prose in
      my voice unless I chose Tjakoen's VOICE.
-  c) OPEN QUESTIONS and honest trade-offs. Flag anything you are unsure about or where
+  c) THE LOOP, WIRED ON DAY ONE, not left as prose for a future session to remember. Name
+     the file that carries each one, and say plainly where the answer is "not worth it here":
+       - the doctor at session start, and CI on push where the project is on GitHub
+       - the gate on turn end, and lint plus typecheck as scripts rather than recalled commands
+       - a code graph, if the project will grow past what grep answers cheaply: the
+         query-first rule in CLAUDE.md, the freshness hook, the output gitignored, and a
+         line in the first plan telling a session to ask the graph before it greps
+       - where a run report goes, and whether PANTRY is the surface I get linked to on an
+         update instead of a summary in chat. If I am not going to read it, say so and skip it.
+     A rule that lives only in prose gets skipped by the third session. Wire it or drop it.
+  d) OPEN QUESTIONS and honest trade-offs. Flag anything you are unsure about or where
      the stack is a poor fit, instead of pretending it fits.
 
 Give me the phase-3 plan as something I can approve or edit. Only after I say go do you
@@ -105,6 +117,14 @@ stack behind one dependency and scaffolds the plan board for you: see
 [Getting started with PANTRY](https://tjakoen.github.io/pantry/docs/getting-started). The repo-wiring
 details the plan will follow live in [the standards](https://tjakoen.github.io/standards), starting
 with the [CLAUDE.starter template](https://tjakoen.github.io/standards/claude.starter).
+
+**Then, months later, check it is all still running.** Everything phase 3c wires is wired once and
+decays quietly: the hook that never got installed on the second machine, the audit runbook nobody has
+executed, the standards link that broke when a standard was renamed. The
+[conformance prompt](https://tjakoen.github.io/standards/conformance) is the other end of this page.
+It runs on the repo you now have, checks the mechanical half with one command, and judges the eight
+things that command cannot, above all whether the loop is wired or only remembered. Run it when a
+project has not been worked in a month, and before rolling any new rule out across more than one repo.
 
 ---
 🤖 **Built with Claude, stack and all.** The prompt above was written the same way I build everything else: with an AI, out loud, on purpose. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)

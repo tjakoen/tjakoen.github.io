@@ -42,3 +42,20 @@ available that the check is worth having.
 - verify: Copy the C4 command out of the page and run it in this repo. Every line should read 200. If any line reads 301, the copy lost the -L flag.
 Worth stating plainly: this check was written, run, found to be wrong, and rewritten, which is the
 only reason it works. A command in a standard that nobody ever executed is a suggestion.
+
+## screen:loop-handover
+- at: /standards/loop
+- status: changed
+- review: Backlog item 2 lands here as one paragraph in section 4a and one Rationalizations row. Where a repo runs PANTRY, a session hands over the link rather than pasting its own account of the run into chat, because the rendered ledger names the evidence items the report is missing and a summary never will. Localhost is the link, the same call the decision inbox already made, and that limit is stated rather than glossed.
+- verify: Load /standards/loop, find section 4a, and read the paragraph after "evidence or it didn't happen". It should say localhost out loud and say what happens in a repo with no PANTRY. Then check section 7 for the new row about summarising in chat.
+The paragraph is deliberately not a new rule about reports. The report was always owed; this only
+changes how it reaches you.
+
+## screen:kickstart-loop-wiring
+- at: /kickstart
+- status: changed
+- review: The new-project prompt now carries both items. Phase 2 reads the loop standard, phase 3 gains a section c that makes the plan name the file wiring each part of the loop on day one (doctor at session start, CI on push, the turn-end gate, the code graph, where a run report goes and whether PANTRY is the surface you get linked to), and the old open-questions section moved to d. The page footer now points at the conformance prompt as the other end of the same on-ramp.
+- verify: Load /kickstart and find "THE LOOP, WIRED ON DAY ONE" inside the fenced prompt. Check the list ends at d, not two c's. Then scroll to the closing section and confirm the conformance link is there.
+This is the part worth arguing with. Section c makes the prompt longer, and a longer prompt is a
+prompt more people paste half of. The trade was made on the grounds that a loop retrofitted later is
+the thing this whole page exists to prevent.

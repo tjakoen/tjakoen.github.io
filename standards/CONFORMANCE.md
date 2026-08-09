@@ -118,11 +118,11 @@ PHASE 2 - Judge the eight things the doctor cannot. One row per check. Cite file
      freshness hook installed, (c) is graphify-out gitignored rather than committed,
      (d) does a plan file or the session-start routine actually tell a session to query
      the graph before grepping. A graph nobody is told to ask is a graph nobody asks.
-  C8 PANTRY AS THE REPORTING SURFACE. Is PANTRY installed here, is a run report ever
-     written to artifacts/runs, and would a deployed PANTRY page be a better place to
-     hand the owner an update than chat? Applicability is per project, not universal:
-     if this repo has no operable surfaces or no owner reading updates, say plainly
-     that it does not apply here and why. Do not manufacture a finding.
+  C8 PANTRY AS THE REPORTING SURFACE. Is PANTRY installed here, has any run ever closed
+     with a report under artifacts/runs, and do sessions hand the owner the /runs link
+     rather than a chat summary (LOOP section 4a)? Applicability is per project, not
+     universal: if this repo has no owner reading updates, say plainly that it does not
+     apply here and why. Do not manufacture a finding.
 
 PHASE 3 - Report, then stop.
   a) The doctor output verbatim (or the one line saying it could not run).

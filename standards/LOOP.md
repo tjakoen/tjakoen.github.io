@@ -158,6 +158,16 @@ satisfy. Two halves.
 The rule underneath all four: **evidence or it didn't happen.** A claim of "verified" with no gate output
 attached is treated as unverified.
 
+**Where the repo runs PANTRY, hand over the link, not the summary.** The cockpit renders the run
+ledger at `/runs`, the plan board at `/plans`, the open questions at `/decisions` and the evidence at
+`/artifacts`, all read-only and all from the files the run already wrote. A session that closes by
+pasting its own account into chat has written the one version of events it controls; a link points at
+the parsed report, including the §9 items it is missing and any scope it grew past. Localhost is the
+link, the same call the decision inbox already made, so this applies while the owner is at the machine
+the work happened on and not from a phone. Where a repo does not run PANTRY, the report file itself is
+the handover and chat carries the path to it. Neither replaces the report: the surface only renders
+what the run was already honest enough to write down.
+
 ### (b) The rails — a declared envelope per run
 
 Before an autonomous run starts, it declares its envelope, and the envelope is enforced (mechanically where
@@ -256,6 +266,7 @@ The contract in §4 is rarely rejected. It is talked out of, one reasonable-soun
 | "Pushing is the owner's call, so I'll leave it local." | Leaving it local is right. Leaving it local and unrecorded is not: the handoff names what is unpushed and why, or the next session inherits a surprise. |
 | "The tests passed, that's the evidence." | "Tests passed" is a claim. The gate output verbatim is the evidence, and §4a treats the claim alone as unverified. |
 | "Nothing worth reporting, the run went fine." | A report listing only wins is the exact report §4a warns about. What was not done and what needs human eyes are the load-bearing lines. |
+| "I'll summarize the run in chat, it is faster to read." | Faster, and written by the party with an interest in how it reads. §4a asks for the link where the repo runs PANTRY, because the rendered ledger names the evidence items the report is missing and the summary never will. |
 | "The scope only grew a little." | Growth past the cap is an ask-trigger, not a judgment the run makes alone (§4b). The size of the growth does not change who owns the call. |
 | "Doctor is noisy, I'll deal with it later." | Later is the next session, which reads the same flags and makes the same excuse. That is how a flag becomes furniture. |
 
