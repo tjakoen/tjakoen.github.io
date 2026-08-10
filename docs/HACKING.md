@@ -33,7 +33,7 @@ you know where to edit.
 | `/about` | `view/pages/about.html` (tabbed profile app; the Lessons tab's roles + résumé roles link to `/notes?tag=<tag>`) |
 | `/resume` | `view/pages/resume.html` (the résumé board; each experience role links to its tagged notes) |
 | `/mail` | `view/pages/mail.html` + `content/data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
-| `/calendar` | `view/pages/calendar.html` (the feed page, incl. the Events/Notes/All filter tabs) + `content/data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule, coloured per kind; see the events collection below for `/calendar/<slug>` |
+| `/calendar` | `view/pages/calendar.html` (the feed page, incl. the Events/Notes/All filter tabs, whose choice lives in the URL as `?feed=notes|all` so a filtered feed is linkable) + `content/data/desk-feed.json` (shipped posts) — the feed cards are the `feed-card` molecule, coloured per kind; see the events collection below for `/calendar/<slug>` |
 | `/grain` | `view/pages/grain/index.html` (GRAIN showcase; the live "watch the AI act" surface) |
 | `/batch` | `view/pages/batch/index.html` (BATCH showcase) |
 | `/bread` | `view/pages/bread/index.html` (the stack umbrella page) |
