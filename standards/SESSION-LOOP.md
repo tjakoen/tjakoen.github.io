@@ -222,6 +222,27 @@ model acting on it, and the hook's text is therefore the only channel that instr
 as an instruction rather than as a note, and hold it with a test, because a reword that softens it
 turns the loop back into a copy and paste without anything going red.
 
+**Which hook event, though, is the part that decides whether any of this happens at all, and it is
+not the obvious one.** The turn-end event is where a fill check belongs by intuition, and it is the
+wrong place: at exit 0 its output goes to the transcript, for a person, and never enters the next
+turn's context. There is no third exit code. The one that does block reaches the model by refusing to
+let the session stop, which is a trap rather than a channel. So a turn-end hook can tell the human
+the window is filling and it cannot tell the session, and an instruction written there is addressed
+to a reader who cannot act on it. The event that reaches the model is the one that fires after a tool
+call and can return context with its result. That is also better timing, since it fires while the
+session is working rather than as it stops.
+
+Two consequences fall out of that choice and both have to be designed for. It fires often, so the
+expensive read needs a cheap gate in front of it: re-read only once the transcript has grown enough
+to change the answer, and stat the file the rest of the time. And a verdict gets announced once, not
+on every call, because a line that repeats is noise and noise is how a gate gets muted (LOOP §7).
+
+None of this is guessable from documentation, and the estate has now got it wrong once in each
+direction: a trigger written on the turn-end event that could not be received, and before that a
+conclusion that the loop was impossible because that one event could not spawn. **Probe the channel
+before writing the instruction into it.** One throwaway hook that emits a nonce and one tool call is
+the whole test, and it is cheaper than either mistake.
+
 This estate runs on Nimbalyst, whose `spawn_session` opens the next session as a sibling in the same
 workstream, inheriting the working directory and the model. Nothing committed here depends on that:
 the standard states the capability, a session either has it or does not, and the tool is named as the
