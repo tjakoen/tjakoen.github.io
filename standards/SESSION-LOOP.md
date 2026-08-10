@@ -193,21 +193,43 @@ One exclusion is worth stating out loud, since a machine-level hook runs everywh
 any path that is off limits stays off limits, and a check that only prints is still contact. The
 guard excludes it by prefix before it reads anything at all, including git.
 
-Whatever the trigger, **the handoff is emitted by default, and opening the next session is a lane
-call rather than a hard stop.** Run it through LOOP §4b: a sibling session is reversible (close it)
-and inward-facing (it writes nothing anyone else can see), so it lands in the gated lane, not the
-human one. Gated means a person is in the loop for the decision, not that the decision is forbidden.
-Emit the brief; open the next session when asked, or when the human is present to see it happen.
+Whatever the trigger, **the handoff is emitted by default, and the session opens the next one
+itself.** Run it through LOOP §4b: a sibling session is reversible (close it) and inward-facing (it
+writes nothing anyone else can see), so the thing standing between a session and its successor is
+durable state, not permission. A session that stops to ask at the point its window is filling is
+spending the room it has left on the question.
+
+**What the successor may be handed is the piece of work in flight, and nothing else.** The chain ends
+when that piece is done, not when the plans run dry. This is the whole bound, and it is what separates
+a handoff from an agent that runs the backlog: picking up something new is a decision with a human in
+it, and a session that finishes its task hands the choice back rather than helping itself to the next
+one.
+
+Handing off early is worth more than it looks, for a reason that has nothing to do with running out of
+room. **A new session runs this whole file from the top.** It orients, reads the plans, runs the
+doctor, meets the gates cold. A thread that keeps going instead skips every one of those, because it
+already did them once and remembers doing them. So the choice at the warn line is not "continue, or
+lose context" but "continue with the checks behind me, or continue with them re-run", and the second
+is the one that catches the thing that changed underneath.
 
 There is a mechanical limit worth knowing before designing around it, because it is easy to plan a
-trigger that cannot exist. **The thing that detects the moment and the thing that can act on it are
-not the same process.** The trigger is a shell hook, and spawning a session is a tool the model
-holds, so the hook cannot reach it: the honest shape is the hook printing and the model offering.
-Some harnesses do expose spawning to the model. This estate runs on Nimbalyst, whose `spawn_session`
-opens the next session as a sibling in the same workstream, inheriting the working directory and the
-model, which is how a handoff here goes from a brief to an open tab without a copy and paste. On a
-harness without that, the brief is the deliverable and the human opens the tab, which is the same
-loop with one more step and no less rigour.
+trigger that cannot exist, and easy to read the limit as bigger than it is. **The thing that detects
+the moment and the thing that can act on it are not the same process.** The trigger is a shell hook,
+and spawning a session is a tool the model holds, so the hook cannot reach it. That rules out one
+design and only one: a hook that spawns. It does not rule out the loop, because the hook's output is
+read by the thing that does hold the tool. The honest shape is the hook naming the moment and the
+model acting on it, and the hook's text is therefore the only channel that instruction has. Write it
+as an instruction rather than as a note, and hold it with a test, because a reword that softens it
+turns the loop back into a copy and paste without anything going red.
+
+This estate runs on Nimbalyst, whose `spawn_session` opens the next session as a sibling in the same
+workstream, inheriting the working directory and the model. Nothing committed here depends on that:
+the standard states the capability, a session either has it or does not, and the tool is named as the
+example rather than the requirement. On a harness without it the brief is the deliverable and the
+human opens the tab, which is the same loop with one more step and no less rigour. A scheduler is a
+third shape and a worse one for this job. It fires whether or not there is work, where a handoff
+fires because a piece of work outgrew its session, and only the second one is a loop rather than a
+clock.
 
 ---
 

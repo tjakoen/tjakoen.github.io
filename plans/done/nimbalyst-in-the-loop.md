@@ -1,6 +1,6 @@
 ---
 id: nimbalyst-in-the-loop
-status: doing
+status: done
 track: ai
 depends: []
 touches:
@@ -72,9 +72,30 @@ Recorded because a plan that lists features loses the reason six months later:
       recommends, the model asks".** The spawning CLI was the other option and was rejected: it
       would couple a committed hook to one editor's internals to save a sentence, in a lane where a
       human confirms anyway. That plan is done and now lives in `plans/done/`.
-- [ ] Decide whether the automations surface belongs in the loop at all, or stays a personal
+- [x] Decide whether the automations surface belongs in the loop at all, or stays a personal
       convenience like caveman. Not urgent, and not to be answered by enthusiasm: the test is whether
-      a standard is worse without it.
+      a standard is worse without it. **Answered 2026-08-10: it stays out, and the question turned
+      out to be aimed at the wrong surface.** A standard is not worse without automations, because an
+      automation is a clock. It fires whether or not there is work, where the thing the loop actually
+      needs fires because a piece of work outgrew the session carrying it. Two smaller facts settle
+      it beyond the argument: an automation lives in `nimbalyst-local/`, which is gitignored, so it
+      can never be committed machinery that another repo or another device inherits; and the caveman
+      precedent applies unchanged.
+
+      What the surface question was really pointing at is `spawn_session`, and that needed no new
+      decision at all. It is a tool the model already holds, so nothing committed learns about
+      Nimbalyst by using it, and the lane call was settled on 2026-08-10 at the stop line. The gap
+      was that the same rule stopped at 900k. Extended to the warn line this session, on the owner's
+      call: a session whose task will not fit in the room it has left commits, opens the successor,
+      and hands it that same task. The bound is the task and not the backlog, so the chain ends when
+      the piece of work is done rather than when the plans run dry.
+
+      The reason for putting it at the warn line rather than leaving it at the stop line is the one
+      the owner named, and it is not about running out of room. A new session runs SESSION-LOOP from
+      the top: it orients, reads the plans, runs the doctor, meets the gates cold. A thread that
+      keeps going skips all of that, because it remembers doing it once. Handing off early is how the
+      checks get re-run. Built in `~/.claude/tools/context-usage.ts`, held by a test, and watched
+      firing through `CONTEXT_WARN=1`.
 - [x] Check the other repos' CLAUDE.md files. **Walked 2026-08-10: none of them earns the section,
       and the reason is not that the harness is decoration but that the premise was wrong.** Six
       sibling repos carry a `CLAUDE.md` (batch, bread, grain, greenroom, pantry, project;
