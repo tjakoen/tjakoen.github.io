@@ -2,9 +2,9 @@
   "tour": "tmp-capture-failure-proof",
   "title": "Temporary: capture's three failure verdicts",
   "mode": "dev",
-  "capturedAt": "2026-08-10T06:48:43.445Z",
+  "capturedAt": "2026-08-10T07:11:25.432Z",
   "previewTarget": "http://localhost:5210",
-  "via": "http://localhost:57994",
+  "via": "http://localhost:58331",
   "startedProject": "bunx next start -p 5210",
   "viewport": {
     "width": 1280,
@@ -23,14 +23,14 @@
       "at": "/",
       "status": "needs-verification",
       "verify": "The capture dir says missing, and names the address and the URL.",
-      "url": "http://localhost:57994/",
+      "url": "http://localhost:58331/",
       "navigated": true,
       "verdict": "missing",
       "matches": 0,
       "box": null,
       "page": "01-page-nowhere.png",
       "element": null,
-      "problem": "No element carries data-surface=\"page:nowhere\" on http://localhost:57994/. Either the attribute was never added, or the markup that carried it moved."
+      "problem": "No element carries data-surface=\"page:nowhere\" on http://localhost:58331/. Either the attribute was never added, or the markup that carried it moved."
     },
     {
       "index": 1,
@@ -38,14 +38,14 @@
       "at": "/",
       "status": "needs-verification",
       "verify": "The capture dir says ambiguous and says how many matched.",
-      "url": "http://localhost:57994/",
+      "url": "http://localhost:58331/",
       "navigated": false,
       "verdict": "ambiguous",
       "matches": 2,
       "box": null,
       "page": "02-note-tier.png",
       "element": null,
-      "problem": "2 elements carry data-surface=\"note:tier\" on http://localhost:57994/. An address that resolves to more than one element resolves to whichever copy the query reaches first, which is the drift this layer exists to avoid. Give the one under review its own address."
+      "problem": "2 elements carry data-surface=\"note:tier\" on http://localhost:58331/. An address that resolves to more than one element resolves to whichever copy the query reaches first, which is the drift this layer exists to avoid. Give the one under review its own address."
     },
     {
       "index": 2,
@@ -53,14 +53,14 @@
       "at": "/",
       "status": "needs-verification",
       "verify": "The capture dir says not-visible rather than passing with an empty image.",
-      "url": "http://localhost:57994/",
+      "url": "http://localhost:58331/",
       "navigated": false,
       "verdict": "not-visible",
       "matches": 1,
       "box": null,
       "page": "03-note-hidden.png",
       "element": null,
-      "problem": "data-surface=\"note:hidden\" resolved to one element on http://localhost:57994/ and that element has no box: it is hidden, collapsed, or not yet rendered when the page settled."
+      "problem": "data-surface=\"note:hidden\" resolved to one element on http://localhost:58331/ and that element has no box: it is hidden, collapsed, or not yet rendered when the page settled."
     }
   ],
   "failures": 3

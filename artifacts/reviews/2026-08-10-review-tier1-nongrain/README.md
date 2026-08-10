@@ -1,8 +1,8 @@
 # Capture: Review: a tour on a project that never heard of us
 
-Tour review-tier1-nongrain, dev mode. Captured 2026-08-10T06:48:13.257Z.
+Tour review-tier1-nongrain, dev mode. Captured 2026-08-10T07:09:33.016Z.
 
-The app under review was http://localhost:5210, loaded through PANTRY at http://localhost:57969, so these are
+The app under review was http://localhost:5210, loaded through PANTRY at http://localhost:58283, so these are
 the bytes the review serves, injection included, rather than the ones the app serves directly.
 The box is not the review's: this is a plain 1280 by 800 window, while the live
 embed sits in a frame beside the rail and is narrower than that. A layout that turns on a
@@ -18,7 +18,7 @@ All 3 steps resolved.
 
 - verdict: ok
 - status: needs-verification
-- url: http://localhost:57969/
+- url: http://localhost:58283/
 - page shot: 01-page-tickets.png
 - element shot: 01-page-tickets-element.png
 - verify: The lamp is on the Tickets heading, not floating over the page corner. Nothing about the app's own layout moved to make room for it.
@@ -27,7 +27,7 @@ All 3 steps resolved.
 
 - verdict: ok
 - status: needs-verification
-- url: http://localhost:57969/tickets/t-1042
+- url: http://localhost:58283/tickets/t-1042
 - page shot: 02-ticket-refund-state.png
 - element shot: 02-ticket-refund-state-element.png
 - verify: The page is the T-1042 detail, and the lit element is the refund badge reading "refunded" — not the heading above it.
@@ -36,7 +36,7 @@ All 3 steps resolved.
 
 - verdict: ok
 - status: known-issue
-- url: http://localhost:57969/tickets/t-1042 (no navigation; the page the step before it left)
+- url: http://localhost:58283/tickets/t-1042 (no navigation; the page the step before it left)
 - page shot: 03-ticket-total.png
 - element shot: 03-ticket-total-element.png
 - verify: The lamp moves down to the total line without a page reload. The text says the total is hidden, which is the known issue rather than a bug in the lamp.

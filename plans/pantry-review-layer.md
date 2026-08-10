@@ -25,8 +25,19 @@ touches:
   - ../pantry/pantry-cmdk.js
   - ../pantry/pantry-map.js
   - ../pantry/INSTALL.md
+  - ../pantry/fixtures.ts
+  - ../pantry/graph.ts
+  - ../pantry/package.json
+  - ../pantry/paths.ts
+  - ../pantry/paths.test.ts
+  - ../pantry/runs.test.ts
+  - ../pantry/retrieval.test.ts
+  - ../pantry/drift.test.ts
+  - ../pantry/app.test.ts
   - content/tours/review-answer-channel.md
   - content/tours/review-tier1-nongrain.md
+  - artifacts/reviews/2026-08-10-review-tier1-nongrain
+  - artifacts/reviews/2026-08-10-tmp-capture-failure-proof
   - decisions/answers.jsonl
   - standards/DECISIONS.md
   - standards/TOUR-STANDARD.md
@@ -247,6 +258,26 @@ later hardening pass:
         then moved to the total line without a reload; the decision card rendered both asks and the
         composed prompt, and PANTRY's injected client read it. Two defects found on the way, both
         recorded above.
+  - [x] **P4f. The containment rule, once.** Not a phase this plan planned. P4d's report named it as
+        deliberate scope growth left for a session that could carry it with its own tests, and this
+        is that session. **Done 2026-08-10** as `pantry/paths.ts`: `isInside` for the rule itself and
+        `linkContained` for the read-side lstat-then-realpath pattern that artifacts.ts and runs.ts
+        had each written out.
+        **It was seven sites, not the four the report counted.** artifacts.ts, app.ts twice (the raw
+        artifact route and the font route), runs.ts, capture.ts twice (the write boundary and the
+        driver guard), and — the one nobody had connected to the others — graph.ts's "never touch the
+        edge repo" exclusion, which is the copy where being wrong costs the most. Two of the seven
+        turned out not to be equivalent to the rule they were imitating: graph.ts compared an
+        unresolved `dir` against an absolute edge path, so a relative siblings root would have made
+        the exclusion silently not fire, and capture.ts's driver guard let a specifier resolving to
+        `node_modules` itself through. Both are stricter now. Neither was reachable from a current
+        call path, which is exactly why seven hand-written copies is not seven checks.
+        **And the three tests failing at HEAD were a false green, not just a red.** They read
+        `../proof/example`, a sibling checkout that stopped existing when proof folded into grain.
+        Three assertions failed loudly; a fourth file walked the same empty corpus and PASSED over
+        nothing. The fixture resolves through the package now (`pantry/fixtures.ts`, test-only, absent
+        from the published files list) and throws at import if it is not there, because a fixture that
+        resolves to nowhere is worse than one that is missing.
 
 ## The owner call P4 was built around
 
