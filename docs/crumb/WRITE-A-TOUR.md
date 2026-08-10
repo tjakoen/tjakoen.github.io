@@ -84,6 +84,17 @@ Under a heading, lines are split into two buckets:
 settles: it decides by comparing pathnames, then assigns the whole target, so the query survives. A
 step whose `at` declares nothing about the query leaves the page's own parameters alone.
 
+That is only half of a preset, and the other half is the page's. A tour can ask for any address it
+likes; whether the page arrives in the right condition is the page's own doing. The worked example on
+this site is the calendar's feed, where the filter tabs keep their choice in the URL, so
+`at: /calendar?feed=notes` lands on a feed already narrowed to notes
+([`content/tours/review-calendar-feed-state.md`](https://github.com/tjakoen/tjakoen.github.io/blob/main/content/tours/review-calendar-feed-state.md)).
+
+The bar to hold when you add one is the same bar the prefill rules hold. The state must be one a
+person can reach without the tour, and the URL must be one ordinary use produces, which on the
+calendar means clicking a tab writes that tab into the address bar. A parameter only a tour would
+ever set is a back channel wearing a query string, and the tour is better off without it.
+
 ## Staging a field: `prefill`
 
 A demo of a form is a poor demo when the form is empty, so a step may arrive with the field already

@@ -57,7 +57,22 @@ law is the one design law in `docs/crumb/WRITE-A-TOUR.md`.
       click. `prefill` is documented in `docs/crumb/WRITE-A-TOUR.md`. The walk itself is unverified and
       stays that way: the pinned `@tjakoen/crumb` predates the key and reads the line as prose, so the
       e2e sits behind the same publish as P1b.
-- [ ] **P3. Preset a page's own state via URL state.** One page, after P0.
+- [x] **P3. Preset a page's own state via URL state.** Done 2026-08-10, on the calendar's feed. The
+      page picked itself: its three filter tabs were the only real page state on the site that a
+      person could reach and a link could not, and unlike the mail folders (the other candidate) the
+      feed is a pure filter over a server-rendered list, so the same address gives everyone the same
+      view. The tab now lives in the URL as `?feed=notes|all`, read on boot and written back on every
+      click with the same replaceState the notes feed already uses for `?tag=`. The default drops the
+      parameter, an unknown value lands on the default rather than an empty page, and every parameter
+      the island does not own is carried through, because a tour arrives with its own. That last
+      detail is what makes the preset honest: a person clicking a tab produces the address, so
+      `at: /calendar?feed=notes` asks for nothing a visitor could not have asked for. The tour is
+      `content/tours/review-calendar-feed-state.md`, walked in a browser: one navigation, the URL
+      settles, the Notes tab is selected on arrival, twelve note cards visible and nine hidden. Four
+      e2e cases in `e2e/calendar.e2e.ts`, and a fifth spec that had been red since the tabs landed in
+      `c359d35` is green again, fixed by the very thing this phase built. Cost: two hours, no new
+      CRUMB vocabulary, no new verb. Unlike P1 and P2 this needed nothing unpublished, so its e2e is
+      committed green rather than parked behind the pin.
 - [ ] **Deferred: flow verbs.** No `drawer.open` or `tab.select` until a real change needs one.
 
 ## Verification

@@ -50,7 +50,10 @@ test.describe("the /calendar app (JS on)", () => {
     await expect(photo).toHaveAttribute("href", /\.svg$/);      // links to the full image (no-JS lightbox)
   });
 
+  // Note cards live under the Notes tab, not the default Events one — this spec predates the filter
+  // tabs and had been red since they landed. Now that the tab is addressable, the fixture is a URL.
   test("a note-publish-date card is in the feed too, with no photo strip", async ({ page }) => {
+    await page.goto("/calendar?feed=notes");
     const noteCard = page.locator('.feed-card[data-event-kind="note"]').first();
     await expect(noteCard).toBeVisible();
     await expect(noteCard.locator(".feed-card__title a")).toHaveAttribute("href", /^\/notes\//);
@@ -75,6 +78,54 @@ test.describe("the /calendar app (JS on)", () => {
     const card = page.locator(`#${targetId}`);
     await expect(card).toBeVisible();
     await expect(card).toHaveClass(/feed-card--highlight/, { timeout: 1000 });
+  });
+
+  // The feed's filter tabs are page state carried in the URL (?feed=notes|all), so a filtered feed is
+  // linkable, survives a reload, and is a state a CRUMB step can land on with its own `at`. The default
+  // tab (events) carries no parameter. These four cover both directions: the URL presets the page, and
+  // the page writes what a person clicked back into the URL.
+  test("clicking a tab writes it into the URL; the default tab drops the parameter", async ({ page }) => {
+    await expect(page).toHaveURL(/\/calendar$/);                       // events is the default → no ?feed=
+
+    await page.locator('[data-feed-tab="notes"]').click();
+    await expect(page).toHaveURL(/\/calendar\?feed=notes$/);
+
+    await page.locator('[data-feed-tab="all"]').click();
+    await expect(page).toHaveURL(/\/calendar\?feed=all$/);
+
+    await page.locator('[data-feed-tab="events"]').click();
+    await expect(page).toHaveURL(/\/calendar$/);
+  });
+
+  test("?feed=notes presets the feed on arrival: tab selected, only notes shown, no click", async ({ page }) => {
+    await page.goto("/calendar?feed=notes");
+
+    await expect(page.locator('[data-feed-tab="notes"]')).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator('[data-feed-tab="events"]')).toHaveAttribute("aria-selected", "false");
+    await expect(page).toHaveURL(/\/calendar\?feed=notes$/);           // the preset survives the boot sync
+
+    const visible = page.locator(".feed-card:not([hidden])");
+    expect(await visible.count()).toBeGreaterThan(0);
+    const kinds = await visible.evaluateAll((els) => els.map((el) => el.getAttribute("data-event-kind")));
+    expect(new Set(kinds)).toEqual(new Set(["note"]));
+  });
+
+  test("an unknown ?feed= value lands on the default rather than on an empty feed", async ({ page }) => {
+    await page.goto("/calendar?feed=banana");
+
+    await expect(page.locator('[data-feed-tab="events"]')).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator("[data-feed-empty]")).toBeHidden();
+    expect(await page.locator(".feed-card:not([hidden])").count()).toBeGreaterThan(0);
+    await expect(page).toHaveURL(/\/calendar$/);                       // the bad value is dropped, not kept
+  });
+
+  test("a parameter the feed does not own survives a tab change (a tour arrives with its own)", async ({ page }) => {
+    await page.goto("/calendar?ref=tour");
+    await page.locator('[data-feed-tab="notes"]').click();
+
+    const url = new URL(page.url());
+    expect(url.searchParams.get("ref")).toBe("tour");
+    expect(url.searchParams.get("feed")).toBe("notes");
   });
 
   test("feed card dates relativize against the frozen clock (absolute preserved in title)", async ({ page }) => {

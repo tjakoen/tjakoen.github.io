@@ -34,7 +34,8 @@
           <div class="section-head"><span>Feed</span></div>
           <!-- Filter tabs over the ONE feed list below (no second dataset, no fetch): the script hides
                the cards whose data-event-kind is out of scope. Events is the default WITH JS; with JS
-               off the whole feed shows, which is the honest fallback (All). -->
+               off the whole feed shows, which is the honest fallback (All). The chosen tab lives in
+               the URL as ?feed=notes|all, so a filtered feed is linkable and survives a reload. -->
           <div class="feed__tabs" role="tablist" aria-label="Filter the feed" data-feed-tabs hidden>
             <button class="feed__tab" type="button" role="tab" data-feed-tab="events" aria-selected="true">Events</button>
             <button class="feed__tab" type="button" role="tab" data-feed-tab="notes" aria-selected="false">Notes</button>
@@ -92,12 +93,32 @@
       // hidden until this runs, so with JS off the reader gets the whole feed instead of a dead control.
       var tabsEl = document.querySelector('[data-feed-tabs]');
       var emptyEl = document.querySelector('[data-feed-empty]');
-      var currentTab = 'events';
+      var TABS = ['events', 'notes', 'all'];
+      var DEFAULT_TAB = 'events';
+      var currentTab = DEFAULT_TAB;
 
       function inTab(kind, tab) {
         if (tab === 'all') return true;
         if (tab === 'notes') return kind === 'note';
         return kind !== 'note' && kind !== 'shipped';
+      }
+
+      // The chosen tab is page state, so it belongs in the URL: a filtered feed can then be linked,
+      // reloaded, and arrived at directly instead of only clicked into. Same replaceState the notes
+      // feed uses for ?tag= (filtering isn't navigation), and the default drops the parameter so a
+      // plain /calendar stays plain. Every OTHER parameter is carried through untouched, because a
+      // tour arrives with its own (?crumb=) and it is not this island's to throw away.
+      function tabFromUrl() {
+        var q = new URLSearchParams(location.search).get('feed');
+        return q && TABS.indexOf(q) !== -1 ? q : DEFAULT_TAB;   // an unknown value is not an error, just the default
+      }
+
+      function syncUrl(tab) {
+        var q = new URLSearchParams(location.search);
+        if (tab === DEFAULT_TAB) q.delete('feed'); else q.set('feed', tab);
+        var qs = q.toString();
+        try { history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); }
+        catch { /* file:// — leave the URL be */ }
       }
 
       function applyTab(tab) {
@@ -114,6 +135,7 @@
           });
         }
         if (emptyEl) emptyEl.hidden = shown > 0;
+        syncUrl(tab);
       }
 
       if (tabsEl) {
@@ -122,7 +144,7 @@
           if (btn) applyTab(btn.getAttribute('data-feed-tab'));
         });
         tabsEl.hidden = false;
-        applyTab(currentTab);
+        applyTab(tabFromUrl());
       }
       var events = cards.map(function (li) {
         var titleEl = li.querySelector('.feed-card__title');
