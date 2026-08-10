@@ -111,6 +111,17 @@ fi
 # asks for it, and the handoff has nothing. It is the step whose absence costs the most, because the
 # price is not paid by the session that skipped it.
 #
+# THE AUDIENCE IS THE HUMAN, and that is a measured fact rather than a preference, so the wording
+# addresses a person on purpose. A Stop hook fires when the agent stops. At exit 0 its output is
+# recorded in the transcript and never enters the model's context: watched on 2026-08-10 from both
+# ends at once, a spawned session got the nudge as a `hook_success` attachment on its last line and
+# could not have acted on it if it wanted to, and this session's own turn end appended to the marker
+# while the text never arrived in its next turn. So nothing here can tell a session to do anything.
+# Writing it as an instruction to the agent would be a message addressed to the one party in the room
+# who cannot read it, which is also why the original ask said "nothing tells a HUMAN to run
+# /handoff". The only way to reach the model is exit 2, which blocks the stop, and that trades an
+# advisory gate for one that can trap an unattended run in a loop it cannot leave.
+#
 # The trigger is the same shape as (2)'s and narrow for the same reason. "Have you handed over yet"
 # asked at the end of every turn is the definition of a muted gate, so this asks only when the turn
 # did something a SESSION closes rather than something a turn closes: wrote a run report, or ticked a
@@ -231,15 +242,15 @@ if [ -n "$closed" ]; then
     printf '%s\n' "$fresh" >>"$marker" 2>/dev/null || true
     cat <<EOF
 
-This turn closed something and no handoff has been written for it:
+This session closed something and no handoff has been written for it:
 $fresh
 
 SESSION-LOOP section 5: the next session either starts oriented or re-derives what this one already
-knows. Run /handoff.
+knows. Type /handoff here before you let this session go.
 
 Whether the state is durable enough to hand over is a different question, and
 ~/.claude/tools/session-guard.sh answers it. This only says one is owed.
-Still mid-session? Ignore it. It fires once per closed thing, not once per turn.
+Still working? Ignore it. It fires once per closed thing, not once per turn.
 EOF
   fi
 fi
