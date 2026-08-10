@@ -243,15 +243,34 @@ Two halves, matching the doctor's existing error/warn split and the no-model con
 **(a) Mechanical — doctor checks, pure git and file stat, no model, no self-report.** These catch the
 failures we actually have:
 
-- [ ] **uncommitted-age** (warn): working tree dirty, and the oldest unstaged change is older than N
+> **S3a CLOSED 2026-08-11** (pantry `hygiene.ts` + `hygiene.test.ts`, four checks in `doctor.ts`, the
+> `hygiene` config key; PLAN.md piece 11g). 41 new tests, tsc clean, 611/611 green. The thresholds are
+> the owner's, answered through the answer channel rather than decided by the run that needed them
+> (ref `2026-08-11-loop-hygiene-thresholds`), which is the part of this task that was not about code.
+> **It earned itself on the first live run:** 42 commits in the portfolio since its newest run report,
+> against a line of 15, and nothing before this said so.
+
+- [x] **DONE. uncommitted-age** (warn): working tree dirty, and the oldest unstaged change is older than N
       days. This is the estate's number-one observed smell and nothing currently surfaces it.
-- [ ] **unpushed-age** (warn): local branch ahead of its remote by N commits or M days. Directly
-      targets the "LOCAL, push owner-gated" pile-up across passes 7 through 10.
-- [ ] **no-remote** (info, not warn): mill and proof are 404 upstream by design as of the last sweep;
-      this must not read as a failure.
-- [ ] **run-report-presence** (warn): a branch with commits and no run report under `artifacts/runs/`.
-- [ ] Every threshold config-driven in `pantry.config`, defaults sane, deterministic `now` injection
-      for the age math — same discipline as 11a.
+      **The age is an mtime and mtime is a FLOOR**, so a file first written three weeks ago and touched
+      this morning reads as fresh. That is the right direction for a warn: the check under-reports and
+      cannot cry wolf, and what it actually measures is written, untouched since, and still uncommitted.
+- [x] **DONE. unpushed-age** (warn): local branch ahead of its remote by N commits or M days. Directly
+      targets the "LOCAL, push owner-gated" pile-up across passes 7 through 10. Count and age are an OR:
+      one commit sitting a fortnight is a pile-up, and so is forty from this afternoon. A branch with no
+      upstream is unmeasurable rather than maximally behind, since counting its whole history against
+      nothing produces a number that is true and useless.
+- [x] **DONE. no-remote** (info, not warn): mill and proof were 404 upstream by design when this was
+      written; this must not read as a failure. Info in BOTH directions, so there is no state of this
+      check that can be read as a fault.
+- [x] **DONE. run-report-presence** (warn): a branch with commits and no run report under
+      `artifacts/runs/`. Measured as commits since the newest DATED report, so it scales with work
+      rather than the calendar; a host with no runs dir is silent, same as the evidence check.
+- [x] **DONE. Every threshold config-driven** in `pantry.config` under `hygiene`, deterministic `now`
+      injection for the age math, same discipline as 11a. **A key set to null MUTES its check** and says
+      so in the detail line, while an absent key takes the estate default: a host that never mentioned a
+      check has not opted out of it, and a host that said something must never be warned on a line its
+      config appears to have turned off. A check nobody can turn off is a check everybody mutes.
 
 **(b) Self-reported — the run ledger, agent writes, PANTRY renders.** This is 11c, unblocked by S1's
 Verification sections.
@@ -287,10 +306,12 @@ Verification sections.
       info naming where a report goes, so a host that never opted in is never nagged. The computed one
       is **`scope-growth`**: `scope:` (declared envelope) versus `touched:` (what was hit), by prefix
       compare. LOOP §4b's scope cap was a promise with nothing measuring it; now it has a number.
-- [ ] **Deferred to S3a, on purpose.** The other two 11c checks — plan item claimed with no checkpoint
-      in N days, branch with no ledger entry — are both age-based, and every threshold in this area is
-      one owner call. They land with uncommitted-age and unpushed-age rather than each inventing its
-      own number.
+- [ ] **Half landed 2026-08-11 with S3a, half deliberately not.** Of the two 11c checks held back for
+      the threshold call: **branch with no ledger entry IS `run-report-presence`** and shipped. **Plan
+      item claimed with no checkpoint in N days did not**, and it is not a threshold problem: a plan
+      item has no timestamp of its own, so "claimed" would have to be derived from git history per item
+      (timeline.ts's per-file walk), which is a git call per plan file at every session start and the
+      cost this module refuses to pay. It needs a cheaper signal before it needs a number.
 
 **(c) The surface — where adherence becomes visible.**
 
@@ -606,8 +627,13 @@ before a single line of work: `CLAUDE.md` 3,685 + `MEMORY.md` 9,488 + `~/.claude
   own tools reports `Skill` among them. So `pantry skills sync` serves delegated work as well as
   main-thread sessions, and the S0 control arm's silence was a real choice, not a missing tool.
 - Third-party skills: config allowlist through `pantry skills`, or per-repo by hand? (S2)
-- Thresholds for uncommitted-age and unpushed-age. The estate's real pattern is weeks, not days —
-  pick numbers that flag the pile-up without crying wolf on a normal working day. (owner, S3a)
+- ~~Thresholds for uncommitted-age and unpushed-age. The estate's real pattern is weeks, not days —
+  pick numbers that flag the pile-up without crying wolf on a normal working day.~~ **Answered by the
+  owner 2026-08-11** through the answer channel (ref `2026-08-11-loop-hygiene-thresholds`): option B, a
+  working week. 5 days uncommitted, 5 days or 25 commits unpushed, a run report every 15 commits.
+  Decided against measured commit rate (9.9 per active day in the portfolio, peak 42), and the known
+  cost was stated when it was chosen: pushes here are authorised in bursts days apart, so unpushed-age
+  will sometimes warn about the gap between authorisations rather than about the work.
 - Does `/loop` earn its own surface, or is it a home-strip row? (S3c)
 - `doc-symbol-drift` severity: error (fails CI, like the link lint it extends) or warn (surfaced, the
   cognitive tier acts)? Depends entirely on the false-positive rate on a first run. (S4)
