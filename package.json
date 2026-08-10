@@ -9,9 +9,9 @@
   "homepage": "https://tjakoen.github.io",
   "dependencies": {
     "@tjakoen/batch": "^0.2.0",
-    "@tjakoen/crumb": "^0.1.7",
+    "@tjakoen/crumb": "^0.1.9",
     "@tjakoen/grain": "^0.1.19",
-    "@tjakoen/mill": "^0.2.0",
+    "@tjakoen/mill": "^0.2.1",
     "@tjakoen/proof": "^0.1.3"
   },
   "scripts": {
