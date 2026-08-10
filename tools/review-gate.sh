@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # tools/review-gate.sh — the Stop hook behind LOOP section 2's third mechanical trigger, turn end.
 #
-# Four nudges:
+# Five nudges:
 #   0. tsc, but only when a TypeScript file changed this turn. The one check here that catches an
 #      outright defect rather than a preference, and the one with a cost worth gating on.
 #   1. proof verify over the working diff, when this repo runs a plans board.
 #   2. a reminder that a change which RENDERS owes a CRUMB dev tour (LOOP section 4a).
 #   3. a lint baseline-and-regress report (oxlint + voice-lint), unlike the others this one is NOT
 #      silent when clean — see its own section below for why.
+#   4. a reminder that a session which CLOSED something owes a handoff (SESSION-LOOP section 5).
 #
 # The trigger for (2) is deliberately narrow and stays that way. LOOP section 7 is a table of the
 # sentences that talk a run out of the contract, and the way this particular gate dies is not
@@ -103,6 +104,88 @@ fi
 if command -v bun >/dev/null 2>&1 && [ -f tools/lint-gate.ts ]; then
   printf '\n'
   bun tools/lint-gate.ts 2>/dev/null
+fi
+
+# ---- (4) a closed session owes a handoff ------------------------------------
+# The one gap the 2026-08-10 loop simulation found: every other step of the loop has something that
+# asks for it, and the handoff has nothing. It is the step whose absence costs the most, because the
+# price is not paid by the session that skipped it.
+#
+# The trigger is the same shape as (2)'s and narrow for the same reason. "Have you handed over yet"
+# asked at the end of every turn is the definition of a muted gate, so this asks only when the turn
+# did something a SESSION closes rather than something a turn closes: wrote a run report, or ticked a
+# phase box on the plans board. Both are once-per-session events, and the plan trigger is what makes
+# this fire for work whose code lives in another repo, since the plans board for the whole estate is
+# here.
+#
+# A run report counts only when its bytes differ from HEAD's, which is a stricter test than "the path
+# changed" and the difference is not academic. This repo carries a staged deletion under
+# artifacts/runs/ whose file is still sitting on disk unmodified, so git reports the path as both
+# deleted and untracked while nothing about it was written. Existing on disk does not distinguish
+# that from a fresh report; differing from HEAD does.
+#
+# It nudges ONCE per closed thing, not once per turn. There is no artifact to check for — a handoff
+# is a prompt, not a file — so "already done" cannot be read off the tree the way (2) reads a tour.
+# The marker therefore lives in .git/, which is per worktree, never staged, and never in status.
+#
+# Which makes every remembered item's TEXT load-bearing, and the first draft of this got it wrong in
+# the way that is invisible until months later: the plan trigger recorded the fixed sentence "a phase
+# closed on the plans board", so the first phase ever ticked wrote that line and every phase after it
+# matched a line already there. One nudge, ever, from a gate whose comment claimed one per phase. An
+# item now carries the plan path and the phase text, because a dedupe key that does not name the
+# thing it deduplicates is a mute button on a delay.
+#
+# The run-report item stays path-only on purpose, and that asymmetry is the trade rather than an
+# oversight: keying it on content would re-nudge on every save while a report is still being drafted,
+# which is a whole session's worth of noise to catch the case of a date-stamped filename being reused
+# for different work.
+if [ -n "$changed" ]; then
+  closed=$(printf '%s\n' "$changed" | grep -E '^artifacts/runs/[^/]+\.md$' 2>/dev/null \
+    | while read -r f; do
+        [ -f "$f" ] || continue
+        now=$(git hash-object "$f" 2>/dev/null)
+        was=$(git rev-parse "HEAD:$f" 2>/dev/null || true)
+        [ -n "$now" ] && [ "$now" != "$was" ] && printf 'a run report: %s\n' "$f"
+      done)
+  # Anchored to a list item at the start of an added line, not `- [x]` anywhere in one, so a sentence
+  # that quotes the syntax (this repo's plans and standards discuss checkboxes in prose) is not a
+  # phase closing. Every matching line becomes its own item, so two phases ticked in one turn are two
+  # things to hand over rather than one.
+  plans_closed=$(git diff --name-only HEAD -- plans 2>/dev/null \
+    | while read -r p; do
+        git diff HEAD -- "$p" 2>/dev/null \
+          | grep -E '^\+[[:space:]]*- \[x\]' \
+          | sed 's/^\+[[:space:]]*- \[x\][[:space:]]*//' \
+          | cut -c1-60 \
+          | while read -r line; do printf 'a phase closed: %s — %s\n' "$p" "$line"; done
+      done)
+  closed=$(printf '%s\n%s\n' "$closed" "$plans_closed" | grep -v '^[[:space:]]*$' || true)
+  if [ -n "$closed" ]; then
+    gitdir=$(git rev-parse --git-dir 2>/dev/null || true)
+    [ -n "$gitdir" ] || gitdir=.git
+    marker="$gitdir/handoff-nudged"
+    # Remembered per item rather than per turn's set, which is the difference between the sentence
+    # above being true and being nearly true: a turn that writes a report AND ticks a box is one set,
+    # and the moment the report is committed the set shrinks to the box alone and would read as new.
+    fresh=$(printf '%s\n' "$closed" | while read -r item; do
+      grep -qxF "$item" "$marker" 2>/dev/null || printf '%s\n' "$item"
+    done)
+    if [ -n "$fresh" ]; then
+      printf '%s\n' "$fresh" >>"$marker" 2>/dev/null || true
+      cat <<EOF
+
+This turn closed something and no handoff has been written for it:
+$fresh
+
+SESSION-LOOP section 5: the next session either starts oriented or re-derives what this one already
+knows. Run /handoff.
+
+Whether the state is durable enough to hand over is a different question, and
+~/.claude/tools/session-guard.sh answers it. This only says one is owed.
+Still mid-session? Ignore it. It fires once per closed thing, not once per turn.
+EOF
+    fi
+  fi
 fi
 
 exit 0
