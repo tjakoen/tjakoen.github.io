@@ -182,12 +182,17 @@ test.describe("the calendar photo lightbox (GRAIN image viewer)", () => {
 test.describe("the calendar photo lightbox (no JS)", () => {
   test.use({ javaScriptEnabled: false });
 
+  // Unscoped .first(), so this one lands on whichever post sorts newest — a real event with real
+  // photos, not a placeholder. The claim is that the link resolves to an image file at all, so the
+  // extension stays open: pinning it to .svg only held while every fixture was a placeholder.
+  const anImageFile = /\.(svg|jpe?g|png|webp)$/;
+
   test("a photo is still a real link to the full image (no-JS-safe fallback)", async ({ page }) => {
     await page.goto("/calendar");
     const photo = page.locator(".feed-card .feed-photo").first();
-    await expect(photo).toHaveAttribute("href", /\.svg$/);
+    await expect(photo).toHaveAttribute("href", anImageFile);
     await photo.click();
-    await expect(page).toHaveURL(/\.svg$/);                           // navigates, no dialog
+    await expect(page).toHaveURL(anImageFile);                        // navigates, no dialog
   });
 });
 
