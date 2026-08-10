@@ -75,5 +75,26 @@ Recorded because a plan that lists features loses the reason six months later:
 - [ ] Decide whether the automations surface belongs in the loop at all, or stays a personal
       convenience like caveman. Not urgent, and not to be answered by enthusiasm: the test is whether
       a standard is worse without it.
-- [ ] Check the other repos' CLAUDE.md files. If the harness is worth naming here it is worth naming
-      where the same work happens, and if it is not worth naming there, this section is decoration.
+- [x] Check the other repos' CLAUDE.md files. **Walked 2026-08-10: none of them earns the section,
+      and the reason is not that the harness is decoration but that the premise was wrong.** Six
+      sibling repos carry a `CLAUDE.md` (batch, bread, grain, greenroom, pantry, project;
+      `graphify-out/` and `test-results/` are outputs, not repos). The same work does not happen in
+      them. Since Nimbalyst was adopted around 2026-07-23, every session has rooted in the portfolio
+      (81 transcripts, still today), the sibling repos are reached across by relative path from that
+      root, and exactly one session outside it ever ran under the harness at all: greenroom,
+      2026-08-01, one of six. The parent `bread-repos/` root has been cold since 2026-07-24, and no
+      session has ever rooted in grain, batch, bread, pantry or project.
+
+      That places the three consequences the portfolio's section names in the workspace root rather
+      than in each repo. `.nimbalyst/` and `nimbalyst-local/` exist in one tree and are named in one
+      `.gitignore`, the portfolio's; a reader of grain's front door will never meet those paths.
+      Per-session attribution is a fact about the repo a session is rooted in. So the section is
+      correctly placed and stays, but the conditional in this task never fires, because "where the
+      same work happens" turned out to be one repo.
+
+      There is a second reason not to pad it in, and it is the caveman precedent again. Four of the
+      six publish: grain and batch ship to npm, pantry installs into someone else's project, and
+      greenroom's whole promise is a non-coder pressing a VS Code task button. Naming this estate's
+      editor in their front doors would tell a contributor about a harness they are not running.
+      PANTRY makes the point hardest by building capture itself (P4d) rather than borrowing the
+      harness's, precisely so a host without one still gets it.
