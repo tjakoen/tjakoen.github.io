@@ -1,0 +1,82 @@
+{
+  "tour": "review-tier1-nongrain",
+  "title": "Review: a tour on a project that never heard of us",
+  "mode": "dev",
+  "capturedAt": "2026-08-10T06:48:13.257Z",
+  "previewTarget": "http://localhost:5210",
+  "via": "http://localhost:57969",
+  "startedProject": "bunx next start -p 5210",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "motion": "css-disabled",
+  "driver": {
+    "package": "playwright",
+    "path": "/Users/tjakoenstolk/Local/Development/bread-repos/tjakoen.github.io/node_modules/playwright/index.mjs",
+    "version": "1.62.0"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "surface": "page:tickets",
+      "at": "/",
+      "status": "needs-verification",
+      "verify": "The lamp is on the Tickets heading, not floating over the page corner. Nothing about the app's own layout moved to make room for it.",
+      "url": "http://localhost:57969/",
+      "navigated": true,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 48,
+        "y": 48,
+        "width": 544,
+        "height": 38
+      },
+      "page": "01-page-tickets.png",
+      "element": "01-page-tickets-element.png",
+      "problem": null
+    },
+    {
+      "index": 1,
+      "surface": "ticket:refund-state",
+      "at": "/tickets/t-1042",
+      "status": "needs-verification",
+      "verify": "The page is the T-1042 detail, and the lit element is the refund badge reading \"refunded\" — not the heading above it.",
+      "url": "http://localhost:57969/tickets/t-1042",
+      "navigated": true,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 48,
+        "y": 104,
+        "width": 98,
+        "height": 30.78125
+      },
+      "page": "02-ticket-refund-state.png",
+      "element": "02-ticket-refund-state-element.png",
+      "problem": null
+    },
+    {
+      "index": 2,
+      "surface": "ticket:total",
+      "at": "/tickets/t-1042",
+      "status": "known-issue",
+      "verify": "The lamp moves down to the total line without a page reload. The text says the total is hidden, which is the known issue rather than a bug in the lamp.",
+      "url": "http://localhost:57969/tickets/t-1042",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 48,
+        "y": 158.78125,
+        "width": 544,
+        "height": 18
+      },
+      "page": "03-ticket-total.png",
+      "element": "03-ticket-total-element.png",
+      "problem": null
+    }
+  ],
+  "failures": 0
+}

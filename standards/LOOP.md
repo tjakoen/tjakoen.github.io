@@ -64,7 +64,7 @@ every push and every session *show what's due*. Two tiers.
 | Trigger | What runs | On red |
 |---|---|---|
 | Push | The doctor + typecheck + tests + e2e + lint (CI, where the repo is on GitHub). | CI fails the push visibly. Nonzero exit, no merge. |
-| Session start | The doctor, as the first orientation step (SESSION-LOOP §1 grows this rule). | Its findings land in `plans/` triage — the session sees them before touching code. |
+| Session start | The doctor, as the first orientation step (SESSION-LOOP §1 grows this rule). Its answer-log check reads the decision channel in the same pass. | Its findings land in `plans/` triage — the session sees them before touching code. An answer nobody has acted on is named there too, so it is acted on or acked, never simply not seen. |
 | Turn end | The typecheck when a typed file moved this turn, `proof verify` over the diff, a nudge for the dev tour §4a asks of a rendered change, and a lint count graded against a committed baseline. | The run does not get to say "done" yet. Ordered by what each catches: a type error is broken code, a lint flag is a preference. |
 
 **Two rules keep the turn-end tier from being deleted, and both were learned by nearly deleting it.**
@@ -80,6 +80,15 @@ rather than an argument.
 The mechanical tier never needs a model. It is grep, exit codes, and file-age math. Its whole job is to
 *surface*: kit compliance, drift, and staleness flags (audit overdue, graphify stale, e2e suite missing).
 This is what PANTRY's `doctor` command is for (P2).
+
+**Reading the answer channel is a step here rather than a habit, and the difference is the point.**
+[DECISIONS](DECISIONS.md) §4 built a channel where a question raised by one run is answered and read
+by another, and then said out loud that nothing obliged anyone to look at it. A sentence in a standard
+does not make a session read a file; a line in the report it already runs at session start does. So
+the count of answers no session has acted on sits beside the staleness flags, warn rather than error,
+for the same reason every other warn here is a warn: CI has nobody to act on a pending decision, and a
+check that blocks a push on one gets muted within a week. Acting on an answer or deferring it are both
+one command, and both make the count go down honestly.
 
 **Tier 2 — cognitive (a normal working session, human-run).**
 
@@ -426,6 +435,7 @@ run ledger is checked against, not a vibe pass.
       rather than absorbed. `proof verify` does this mechanically against a plan's `touches`; a run
       that reasoned it out by hand instead should say so.
 - [ ] A change that renders left a dev tour, or the report says why it did not owe one.
+- [ ] Every answer in the log this run acted on was acked, so the next session's count is honest.
 - [ ] Doctor run, and every flag either fixed or carried forward by name.
 
 ---

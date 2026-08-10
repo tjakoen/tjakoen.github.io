@@ -7,8 +7,12 @@ touches:
   - ../pantry/answers.ts
   - ../pantry/answers.test.ts
   - ../pantry/app.ts
+  - ../pantry/artifacts.ts
+  - ../pantry/capture.ts
+  - ../pantry/capture.test.ts
   - ../pantry/cli.ts
   - ../pantry/config.ts
+  - ../pantry/doctor.test.ts
   - ../pantry/crumb-mount.test.ts
   - ../pantry/preview.test.ts
   - ../pantry/decisions.ts
@@ -214,13 +218,25 @@ later hardening pass:
         PANTRY's, because a reviewer who wants to edit a step will otherwise go looking in the
         project, and on Tier 1 the file is not there — it is in the repo running PANTRY, which is the
         whole arrangement that let the project stay untouched.
-  - [ ] **P4d. Capture at run time.** The harness drives the app step by step, fails loudly on a
+  - [x] **P4d. Capture at run time.** The harness drives the app step by step, fails loudly on a
         surface that is not there, and writes the states into `artifacts/reviews/<id>/`.
-        **Deliberately not started 2026-08-10.** It needs a browser driver, and that is the first
-        thing in this plan that would make PANTRY need to know how to RUN a project rather than read
-        one, which the cost section below names as the line to watch. The shape that respects it:
-        borrow the host's driver rather than owning one, so a project with Playwright already
-        installed gets capture and a project without gets a message naming what to install.
+        **Done 2026-08-10** as `pantry capture <tour-id>` (`pantry/capture.ts`). The driver is
+        borrowed exactly as planned, and the guard that makes that real is the part worth naming:
+        PANTRY carries `@playwright/test` for its own tests, so resolving from PANTRY's node_modules
+        would have satisfied every host during development and none of them the day PANTRY installs
+        as a git dependency, which strips devDependencies. That resolution is refused by path, with a
+        message that says why rather than "you have no Playwright".
+        **The failure paths are the feature and they were proved, not asserted.** A surface that
+        matches nothing, matches more than one element, or matches an element with no box all exit
+        nonzero. Proved against the fixture by deliberately breaking it: three verdicts, three
+        failures, exit 1, evidence in
+        `artifacts/reviews/2026-08-10-tmp-capture-failure-proof/` (portfolio). The ambiguous case is
+        the one this phase existed to catch, because an address on a component that appears on many
+        screens is the selector drift the plan rejected selectors to avoid, arriving as an attribute.
+        **What capture will not do, which is the cost section holding.** It does not ship a browser,
+        and it does not guess how to start a project: a target already answering is left alone, and
+        one that is not is started only from a `previewCommand` a human wrote. See the owner call
+        below, because that key crosses a line this plan drew.
   - [ ] **P4e. The proof, and the diff nobody applied yet.** A scratch Next app carrying real
         `data-surface` attributes, walked in a browser; and the attribute diff for ph-live handed
         over rather than committed — see the owner call below.
@@ -346,6 +362,17 @@ install contract than reading files. A preview URL in config is the small versio
 should start. If that key starts growing into a launcher, a process manager, or a build step, that is
 the signal this went too far, and the honest retreat is back to committed screenshots, which need
 none of it.
+
+**The line above was crossed on 2026-08-10, deliberately, by the owner.** Asked which of three shapes
+P4d should take, with this paragraph's warning stated in the option text, they chose the one where
+PANTRY starts the project. So `previewCommand` exists and it is a launcher, which is the first of the
+three things named above. What was built to keep the retreat open rather than to argue the cost away:
+the command is never inferred, only ever the string a human wrote; only `pantry capture` reads it,
+never the server and never a route; the process is started in its own group and killed on every exit
+path including a signal; a target that already answers is left alone, so capture never starts a
+second copy; and deleting the key leaves a capture that still works against a project you started
+yourself. It is not a process manager, and the day it needs to become one is the day this paragraph
+should win instead.
 
 ## Open, and genuinely not decided
 

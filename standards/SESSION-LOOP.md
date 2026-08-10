@@ -43,7 +43,10 @@ any repo alongside [`AI-DEVELOPMENT.md`](AI-DEVELOPMENT.md).
    answered while nothing was running, and the session that reads the answer is rarely the one that
    asked. Read the repo's pending answers before starting new work, act on what is now settled, or
    say plainly that it is being deferred (→ [DECISIONS](DECISIONS.md) §4). Usually there is nothing
-   there, and it costs one file read to know.
+   there, and it costs one file read to know. The doctor you run in step 3's neighbourhood already
+   counts them, so this step is normally reading a line you have, not opening a file you have not
+   (→ [LOOP](LOOP.md) §2). Whichever you did, ack what you acted on: an unacked answer reads to the
+   next session as one nobody has seen.
 5. **Restate the goal in one line.** What "done" means for *this* task, and the non-negotiables you
    were handed. If that line is fuzzy and the choice is genuinely the human's, ask once — with a
    recommendation, not a survey. Which surface that ask belongs on is DECISIONS §1; in a session

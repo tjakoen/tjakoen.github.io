@@ -103,8 +103,15 @@ Two consequences worth stating, because both have already been got wrong here:
 **Where this stands today, honestly:** the mechanism exists as of 2026-08-10. PANTRY owns one
 append-only log, three surfaces write to it (the decision inbox, a review tour's decision card, and
 one command for an answer that arrived by paste), and a session both reads it and blocks on it
-through PANTRY's answers command. What is NOT yet true is the habit: no loop step obliges a session
-to read the log at start, so it is a channel that works and is not yet one that is always checked.
+through PANTRY's answers command. The habit was the missing half and it is a step now: the doctor
+report a session already runs at start counts the answers nobody has acted on and names them, so
+[LOOP](LOOP.md) §2's mechanical tier surfaces an unread answer the same way it surfaces an overdue
+audit. It warns rather than fails, because CI has no session to act on a pending decision.
+
+What is still not proven is the surface with the shortest path and the least evidence: nobody has
+ever pressed the review rail's Record answer button. Confirmed by the owner on 2026-08-10, and worth
+writing down rather than assuming, because the two write paths that HAVE been exercised are the two
+that a session can drive itself.
 
 Three things building it settled that were not obvious from the design.
 
