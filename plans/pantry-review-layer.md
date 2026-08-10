@@ -405,6 +405,30 @@ second copy; and deleting the key leaves a capture that still works against a pr
 yourself. It is not a process manager, and the day it needs to become one is the day this paragraph
 should win instead.
 
+## P5. The demo, asked for by the owner 2026-08-11
+
+**The ask, in their words: the AI opens PANTRY, tours me, then awaits my decision.** Every piece of
+that exists and the whole chain has never been run end to end with a human in it. That is the point
+of doing it: P0 through P4 were each proved on their own, and the one step nobody has ever taken is
+the one a person takes.
+
+- [ ] **The rehearsal, in one sitting.** A session brings the target up, serves PANTRY with
+      `previewTarget` pointing at it, opens the review at `/__pantry/review`, and hands the owner a
+      URL rather than a description. The owner walks the tour. The last step is a decision card. They
+      answer it. The session, which has been sitting in `pantry answers wait <ref>`, unblocks and acts.
+- [ ] **The unproven link is the card's Record answer button**, and it has been unproven for two runs
+      running. Confirmed by the owner 2026-08-10 and still true: nobody has ever pressed it. The two
+      write paths that HAVE been exercised are the two a session can drive itself, which is exactly
+      why this one is the demo. **Automation cannot stand in for the press:** the review shell's
+      same-origin iframe wedges it, so a headless click proves nothing about the path a human takes.
+- [ ] **Pick the tour before the target.** `content/tours/review-answer-channel.md` is the one written
+      for this and is the honest choice, since it is the tour whose own Record step has never been
+      pressed. `say-hello.md` is the gentler one if the demo is about the feel rather than the proof.
+- [ ] **What would make it a demo rather than a test:** the session says out loud what it is waiting
+      for and what the answer unblocks, then genuinely blocks. A run that asks and carries on is the
+      failure DECISIONS section 4 names, and it would be invisible in a demo unless the waiting is
+      shown.
+
 ## Open, and genuinely not decided
 
 - ~~Whether CRUMB's frame presentation should be deleted once PANTRY draws the chrome.~~ **Settled
