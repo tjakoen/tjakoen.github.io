@@ -11,6 +11,8 @@ summary: >
   like a compliment until you look at it: vibe coding, and where it stops working.
 photos:
   - "/media/feed/gdgoc-hau-speaker-card.jpg | 1080x1350 | The organizers' speaker card announcing me for the infosession, captioned current adviser of GDGoC, software engineering leader, computer science instructor"
+  - "/media/feed/gdgoc-hau-call-the-point.jpg | 1600x744 | Screenshot from the call: the slide reading Bring nothing and it multiplies nothing, become a bigger number first, with the students' video tiles blurred down the right side"
+  - "/media/feed/gdgoc-hau-call-multiplier.jpg | 1919x885 | Screenshot from the call: the multiplier slide, AI does not add to what you can do, it multiplies it, with the live bar chart, and the participant panel blurred beside a count of 62"
   - "/media/feed/gdgoc-hau-infosession-poster.jpg | 2048x2048 | The event poster: Infosession, Navigating Tech, August 8 2026, 7 PM on Google Meet, on a corkboard of stickers and polaroids"
 social: |
   I am grateful to have spoken at Infosession: Navigating Tech, the general assembly of @GDGoC Holy
@@ -34,7 +36,9 @@ Three of us split the same question. Ma'am Louella Salenga took the ethics of AI
 teaching. Sir Macky, Marc Samuel Pabilona, took security in the age of AI. I got the one that sounds
 like a compliment until you look at it: *vibe coding.*
 
-The two images up top are the organizers' work, not mine: the speaker card they posted
+The two wide pictures up top are from the call itself, mid-slide, with the room down the right side,
+faces blurred because none of those students signed up to be on my website.
+The other two are the organizers' work, not mine: the speaker card they posted
 [announcing me](https://www.facebook.com/gdsc.hau/posts/pfbid02nh9HUQH6ZFr7GaYC2j4CnfwSSdDdPXTQVH5x1s5eLRv75mNN7VBGEiHCzCvBouJzl)
 and the poster from [the event post](https://www.facebook.com/gdsc.hau/posts/pfbid02k55TvGb5LEvWH3jVcAxgFZRWtawn7HaZXm4jPZuPtuVR2orf4X6GfvsoZA2rGrYl).
 They are visibly better at posters than I am.
@@ -86,5 +90,5 @@ that survives contact with a real system.
 This is a talk, not evidence. I can tell you what I've watched teams do well and badly, and I can show
 my own receipts, but I haven't run a study on students and I'm not going to pretend I have. The deck
 is the same one I gave: [ten times zero](/talks/ten-times-zero/#1), and the long version lives in
-[the note](note:ten-times-zero). The pictures here are still the promo graphics rather than the night
-itself, until a screenshot from the call reaches me.
+[the note](note:ten-times-zero). Slide 32 of it is up top, which is as close to a receipt as a talk
+gets.
