@@ -226,9 +226,30 @@ already in all of them. One command, same surface everywhere.
 - **A stale pin and a missing package read identically and have different fixes.** Pantry's own
   `tjakoen.github.io` pin predates the `when:` keys, so syncing there mounts nothing. That first
   reported as "no standards package resolvable", which is wrong: the package is there, the pin is
-  old. They are separate messages now, one saying install and one saying bump. **This is also the
-  standing blocker on the estate-wide rollout**: every repo but the canon home mounts from its pin,
-  so the rollout lands only after the portfolio is pushed and each host runs `deps:refresh`.
+  old. They are separate messages now, one saying install and one saying bump. ~~This is also the
+  standing blocker on the estate-wide rollout: every repo but the canon home mounts from its pin, so
+  the rollout lands only after the portfolio is pushed and each host runs `deps:refresh`.~~
+  **WRONG, and it was carried from 2026-08-07 to 2026-08-11.** No repo needs a portfolio pin of its
+  own. `import.meta.resolve` runs against the PANTRY module, not the host, so canon resolves through
+  pantry's own dependency while the mount lands in the host's `.claude/skills`. One pin, pantry's, is
+  the only one that has ever mattered. Checked before a line was written, on the strength of the S2
+  finding that a written file is not a live skill: the same discipline says an assumed blocker is not
+  a measured one. The real prerequisite was one `bun add` in pantry.
+
+> **ROLLED OUT 2026-08-11, all seven repos.** portfolio, pantry, grain, batch, bread, greenroom and
+> project each report `16 skills in canon, 0 stale or unmounted, 0 shadowed`, and no repo's tree was
+> dirtied by it (the self-gitignoring mount holds). Two things it took to get there, neither of them
+> the thing the plan expected. **The canon home was itself four standards stale and one standard
+> short:** `DECISIONS.md` had NEVER been mounted, which is why nothing has ever auto-fired on
+> decision-shaped work, including the session that wrote the decision request for S3a. It appeared in
+> the harness listing the moment it was written, which is the confirmation S2 asks for. And pantry's
+> pin needed one `bun add` to `aa9334d`; every other repo needed nothing at all.
+>
+> **The caveat, stated because it is the part that will bite:** the mounts are current because the
+> sync ran from the sibling checkout. Only bread installs `@tjakoen/pantry` of its own, and that copy
+> predates S2 so completely that `bunx pantry skills` there answers `unknown command "skills"`. A host
+> running its own installed pantry gets whatever its pin carries, which is the ordinary pin-drift
+> story and not a new one.
 
 **Still open at S2's close:** whether subagents can invoke skills at all (S0 could not answer it, and
 neither could this). GRAPH and LOOP mounted for the first time here, but this session named both
