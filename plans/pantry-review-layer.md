@@ -216,6 +216,11 @@ later hardening pass:
         whole arrangement that let the project stay untouched.
   - [ ] **P4d. Capture at run time.** The harness drives the app step by step, fails loudly on a
         surface that is not there, and writes the states into `artifacts/reviews/<id>/`.
+        **Deliberately not started 2026-08-10.** It needs a browser driver, and that is the first
+        thing in this plan that would make PANTRY need to know how to RUN a project rather than read
+        one, which the cost section below names as the line to watch. The shape that respects it:
+        borrow the host's driver rather than owning one, so a project with Playwright already
+        installed gets capture and a project without gets a message naming what to install.
   - [ ] **P4e. The proof, and the diff nobody applied yet.** A scratch Next app carrying real
         `data-surface` attributes, walked in a browser; and the attribute diff for ph-live handed
         over rather than committed — see the owner call below.
