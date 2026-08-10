@@ -9,6 +9,8 @@ touches:
   - ../pantry/app.ts
   - ../pantry/cli.ts
   - ../pantry/config.ts
+  - ../pantry/crumb-mount.test.ts
+  - ../pantry/preview.test.ts
   - ../pantry/decisions.ts
   - ../pantry/doctor.ts
   - ../pantry/preview.ts
@@ -20,6 +22,7 @@ touches:
   - ../pantry/pantry-map.js
   - ../pantry/INSTALL.md
   - content/tours/review-answer-channel.md
+  - content/tours/review-tier1-nongrain.md
   - decisions/answers.jsonl
   - standards/DECISIONS.md
   - standards/TOUR-STANDARD.md
@@ -175,6 +178,113 @@ later hardening pass:
       Built with P2 because neither is testable alone.
 - [ ] **P4. Tier 1 on a non-GRAIN project.** Attributes into pocket-tickets, capture at run time,
       review at leisure. This is the phase that proves the whole thing is not portfolio-shaped.
+  - [x] **P4a. PANTRY carries CRUMB instead of expecting it.** `@tjakoen/crumb` is a PANTRY
+        dependency now, `createCrumbRoutes` is mounted at `/__pantry/crumb` over a new `toursDir`
+        config key, and `crumb-live.js` + `crumb.css` are served as PANTRY's own assets.
+        **Done 2026-08-10.** The one thing that needed a decision rather than plumbing: CRUMB's client
+        carries a single absolute import, `/scripts/ai-spotlight.js`, because it is a host-served asset
+        and cannot import a `.ts` sibling. On a GRAIN host that path is right. On a non-GRAIN target it
+        is a request fired at the reviewed app for a file that app has never heard of, so PANTRY
+        rebases it onto its own prefix — the same move P0 made for GRAIN's font `url()`, and the third
+        time now that "PANTRY moved off the root, so PANTRY pays" has been the answer.
+        A test reads the real package file and asserts that import is still the ONLY absolute one,
+        because a rebase that moves one specifier by name stops being complete the day a second
+        appears, and the symptom would be a 404 against the reviewed app rather than an error here.
+  - [x] **P4b. The injection, and what it must not do twice.** A page with no CRUMB gets three tags
+        rather than P0's one: the stylesheet, the prefix, the client.
+        **Done 2026-08-10**, with two corrections to what was assumed.
+        **The prefix is set by an inline script, not by rewriting `<html>`.** CRUMB reads
+        `data-crumb-prefix` off the document element, and the obvious implementation edits that tag,
+        which would have given the proxy a second insertion point and a second thing to get wrong.
+        One insertion point, still immediately before `</body>`, and the deferred module reads the
+        attribute the inline script set.
+        **A page that already runs CRUMB gets nothing added, and that is decided per PAGE.** Two
+        clients on one document drive the same `crumb:active` sessionStorage key from two places; the
+        symptom is a tour that flickers between steps, which nobody traces back to a duplicated
+        script tag. Per page rather than per boot because one route of a host can mount CRUMB and
+        another not, and the config cannot know which.
+        **A meta CSP is now stripped when PANTRY injects.** The response HEADER was already dropped in
+        P0; the same policy in markup was not, and it blocks the inline prefix script specifically.
+        The failure it produces is a tour that does not start with no failed request to point at.
+  - [x] **P4c. The rail asks the project first and PANTRY second.** The manifest fetch was hardcoded
+        at the project's `/crumb/tours.json`, which is exactly the portfolio-shaped assumption P4
+        exists to break. **Done 2026-08-10.** The project still wins where it answers, because a GRAIN
+        host owns its own tours and a copy carried by PANTRY would be a second source that disagrees
+        the first time either is edited. The rail says whose tours it is showing when they are
+        PANTRY's, because a reviewer who wants to edit a step will otherwise go looking in the
+        project, and on Tier 1 the file is not there — it is in the repo running PANTRY, which is the
+        whole arrangement that let the project stay untouched.
+  - [ ] **P4d. Capture at run time.** The harness drives the app step by step, fails loudly on a
+        surface that is not there, and writes the states into `artifacts/reviews/<id>/`.
+  - [ ] **P4e. The proof, and the diff nobody applied yet.** A scratch Next app carrying real
+        `data-surface` attributes, walked in a browser; and the attribute diff for ph-live handed
+        over rather than committed — see the owner call below.
+        **The walk is done 2026-08-10** against a Next 15.5 production build in `/tmp/tier1-proof`
+        carrying five `data-surface` attributes and nothing else. All three steps of
+        `content/tours/review-tier1-nongrain.md` resolved: the lamp landed on the list heading, then
+        navigated a real route change and landed on the refund badge to within six pixels of its box,
+        then moved to the total line without a reload; the decision card rendered both asks and the
+        composed prompt, and PANTRY's injected client read it. Two defects found on the way, both
+        recorded above.
+
+## The owner call P4 was built around
+
+**ph-live is the target, and nothing was written into it.** Asked on 2026-08-10 and answered: build
+the whole PANTRY side, prove Tier 1 on a scratch app, hand over the attribute diff rather than commit
+it. So the proof is a fixture and the real target is untouched, which is the right way round — the
+attributes are the only thing Tier 1 asks a project for, and asking is the owner's to do.
+
+Worth stating because the plan's own wording invited the wrong repo: two checkouts answer to
+"pocket-tickets" on this machine, and the one the plan meant is `~/Local/Development/ph-live`
+(remote `tjakoen/pocket-tickets`, a Next 15 app under `apps/web`, already carrying a
+`pantry.config.json`). The other sits next to the employer repo that is off limits and is not part of
+this estate.
+
+**What the survey of it turned up, since that is the part the owner is being asked to decide on.**
+Ten attributes proposed, on `pantry/artifacts/reviews/2026-08-10-tier1-nongrain/`. The route to walk
+first is the create-event wizard's media step, because it is the work in flight, it is the only
+wizard step that is real rather than a disabled preview, and it runs against a local production build
+with no auth and no backend: the save degrades to an amber banner rather than throwing when the API
+is unreachable, which makes it reviewable on a laptop with nothing else running.
+
+Two things that would have bitten later. **The app already has its own `data-tour` convention** for an
+internal tour engine, so `data-surface` arrives beside a thing that looks like it and is not; there
+is no literal collision, and there is a real chance of someone conflating them. And the obvious
+candidate for a shared attribute, the placeholder notice reused across six-plus routes, is exactly
+the wrong one: a single address on a component that appears on many screens resolves to whichever
+copy the query hits first, which is the selector-drift failure this plan rejected selectors to avoid,
+arriving through an attribute instead.
+
+## What P4's walk found that reading would not have
+
+Both of these were invisible from the code, both were found by looking at the screen, and both have
+the same shape: **the server was doing exactly what it was written to do, and the page was wrong.**
+
+**A stylesheet served is not a stylesheet that applies.** `crumb.css` is written against GRAIN's token
+vocabulary, so on a host that defines none of those names the card renders with no background, no
+border and no radius: transparent text lying over the app. Every server-side check said the sheet was
+served, 200, fourteen kilobytes. Then one level down, the same thing again and worse — the lamp's
+geometry lives in GRAIN's `ai.css`, which nothing was serving at all, so the lamp was a static div in
+the body flow two hundred pixels below the element it claimed to be lighting, while the card, the
+step counter, the status badge and the navigation all looked correct. A tour that lights the wrong
+place while reporting the right element is precisely the failure the plan's addressability argument
+exists to prevent, arriving through the one door nobody had guarded.
+
+The fix is one composed stylesheet, in cascade order, and the reason it is safe had to be checked
+rather than assumed: all three files declare custom properties, `@font-face`, and rules scoped to
+class and attribute names a foreign app does not use. That was then measured rather than argued — the
+app's own computed styles and element geometry are identical served directly and served through
+PANTRY with the tour layer injected.
+
+**A production build's cache headers describe bytes nobody served.** A change to the injected block
+did not appear in the browser, and the reason is that reviewing a production build — the deliberate
+choice from P0 — means meeting a long `Cache-Control` and a strong `ETag`, both computed upstream and
+both now lying about what went out. The page kept being served from cache with a previous run's
+client in it, and revalidation agreed, because the target's bytes really had not changed. The symptom
+is the worst available to a review: the reviewer is looking at an older build of the review layer and
+nothing on screen says so. An injected response is `no-store` with its validators dropped now, and a
+conditional request for a document is stripped on the way up so the target cannot answer 304 with no
+body to inject into. Assets keep the caching the app shipped; only the page PANTRY changed pays.
 
 ## What P2 found that reading would not have
 
@@ -243,6 +353,13 @@ none of it.
   localStorage and both read GRAIN's keys, so today it does, and the review bar says so rather than
   leaving it to be discovered. Stopping it means PANTRY not using GRAIN's theme script unmodified,
   which is a fork, so it is a real trade and not an oversight.
+  **Narrowed by P4, in the half that turned out to be answerable.** For a NON-GRAIN target there is
+  nothing to leak into: PANTRY now injects GRAIN's token sheet so its own card has tokens to read,
+  and a token sheet is a set of names an app that never heard of GRAIN does not read. Measured rather
+  than argued — the reviewed app's computed styles and element geometry are byte-identical served
+  directly and served through PANTRY with the tour layer in it. The question survives only for a
+  GRAIN target, which is the case where both ends really do read the same keys, and a GRAIN target is
+  also the one PANTRY injects nothing into.
 - ~~Whether the answer log lives per repo or once per machine.~~ **Settled 2026-08-10 by the owner:
   per repo, with the path in config.** The default sits beside the decision requests and rides the
   same git history as the change it unblocks; an absolute path outside the repo makes it per machine
