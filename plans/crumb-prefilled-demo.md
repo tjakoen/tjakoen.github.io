@@ -40,10 +40,20 @@ law is the one design law in `docs/crumb/WRITE-A-TOUR.md`.
       readonly field that selects on focus plus a handoff button when the host loaded grain's
       `handoff.js`. `check.ts` fails an ask the template never uses. Walked in a browser, both
       presentations, and the tour for it is `content/tours/review-prompt-card.md`.
-- [ ] **P1b. The portfolio e2e, and the publish it waits on.** The portfolio consumes a real published
-      `@tjakoen/crumb`, so an e2e for P0 and P1 can only be committed green after crumb `0.1.8` is
-      published and the pin bumped. The npm token returns E401 as of 2026-08-09, so this is owner-gated.
-      Until then the review link works locally and shows the old parse on the live site.
+- [x] **P1b. The portfolio e2e, and the publish it waits on.** Done 2026-08-10. The gate lifted
+      without anyone announcing it: `@tjakoen/crumb` `0.1.9` is on the registry, pinned here with a
+      real integrity hash, and it ships all three of `needsNavigation`, the prompt card and `prefill`.
+      So this phase turned out to be the e2e alone, and it covers P2 as well rather than P0 and P1
+      only. Twelve cases in `e2e/crumb-prompt-and-prefill.e2e.ts`, all green, against the two real
+      review tours rather than fixtures. The loop regression is held by counting document navigations,
+      which is the only assertion that tells a fixed hop from a loop that happens to be paused when
+      the expect runs. Three things the walk taught that the plan had wrong: `crumb.start` honours the
+      tour's own `route:` and goes home first, so no test may jump straight to a step on another page;
+      the popover has no step list, so the only way to the prompt card is Next off the last step, the
+      way a reader gets there; and the compose panel is not measurably visible inside the frame
+      presentation, so P2's walk is the popover, which is also the presentation a visitor uses. The
+      refusal is held too, and it needed the honest sequence: stage, type over the draft (which strips
+      the door's ink), re-render, and the card stops claiming the field.
 - [x] **P2. Prefill one registered field through the door.** Done 2026-08-10, the portfolio half. The
       law question was not a blocker in the end: it was settled before this phase started, and the
       amended law already stands in `docs/crumb/WRITE-A-TOUR.md`, so `TOUR-STANDARD.md` only gained
@@ -54,9 +64,11 @@ law is the one design law in `docs/crumb/WRITE-A-TOUR.md`.
       CRUMB has no flow verbs, so `/mail#compose` had to actually open the panel on a cold load before
       a tour could reach the field at all. That is now one reveal function with two callers, and it
       fixes a real defect for people too, since the panel's own href had only ever worked after a
-      click. `prefill` is documented in `docs/crumb/WRITE-A-TOUR.md`. The walk itself is unverified and
-      stays that way: the pinned `@tjakoen/crumb` predates the key and reads the line as prose, so the
-      e2e sits behind the same publish as P1b.
+      click. `prefill` is documented in `docs/crumb/WRITE-A-TOUR.md`. The walk was unverified when
+      this phase closed and is not any more: the pin turned out to be past the key already, so P1b's
+      e2e covers this phase too. Walking it found one thing the tour had claimed wrongly, and the
+      step's verify line now says so, because Back leaves /mail entirely and so can never be the test
+      of whether your own words survive.
 - [x] **P3. Preset a page's own state via URL state.** Done 2026-08-10, on the calendar's feed. The
       page picked itself: its three filter tabs were the only real page state on the site that a
       person could reach and a link could not, and unlike the mail folders (the other candidate) the
