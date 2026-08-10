@@ -139,6 +139,37 @@ fi
 # oversight: keying it on content would re-nudge on every save while a report is still being drafted,
 # which is a whole session's worth of noise to catch the case of a date-stamped filename being reused
 # for different work.
+#
+# THE WORKING DIFF IS NOT ENOUGH, and the first version of this shipped believing it was. It was
+# watched on a real spawned session that ticked a real phase box, and it never fired: the session
+# edited the plan and committed it inside the same turn, so by the time the Stop hook ran there was
+# no working diff left to read. The gate was nudging the session that leaves a mess at a turn
+# boundary and staying silent for the one that commits promptly, which is exactly backwards. So a
+# close is looked for in unpushed COMMITS as well, and the commit item is keyed by its sha, which is
+# the one identifier a close already carries and cannot collide.
+#
+# The commit scan is bounded, path-filtered and baselined, and each of the three has a stated cost.
+#
+# BOUNDED to 30 commits with an upstream and 5 without. The push here is owner-gated so the unpushed
+# range grows for weeks, and a close that scrolls past the bound is never nudged at all rather than
+# nudged late. That is a real hole and the honest mitigation is pushing, not a bigger number. Five
+# without an upstream because "unpushed" has nothing to mean there, so the window is the recent past
+# rather than all of history: a repo whose upstream ref is pruned mid-life falls into that case, and
+# five stale items is a nuisance where thirty is a wall of text.
+#
+# PATH-FILTERED in the log call rather than in the loop. Unfiltered this ran up to two `git show`
+# calls against every one of thirty commits at every turn end, which is the cost profile the comment
+# on (0) says gets a gate deleted rather than tuned. Most commits touch neither path, so the loop is
+# usually empty. `-m --first-parent` because `git show --name-only` prints nothing at all for a merge
+# by default, and a close that arrives through a merge is exactly as closed as any other.
+#
+# BASELINED because a gate whose first run prints every close since the last push is a gate
+# uninstalled on day one: if the marker is absent, the current items are written to it silently. Say
+# what that actually costs rather than the softer version: it is not "the first close", it is the
+# whole current backlog, up to the bound, plus anything uncommitted at that moment. Same bargain
+# tools/lint-baseline.json already makes in this repo, and it is paid again by anyone who deletes
+# the marker or clones fresh.
+closed=""
 if [ -n "$changed" ]; then
   closed=$(printf '%s\n' "$changed" | grep -E '^artifacts/runs/[^/]+\.md$' 2>/dev/null \
     | while read -r f; do
@@ -159,20 +190,46 @@ if [ -n "$changed" ]; then
           | cut -c1-60 \
           | while read -r line; do printf 'a phase closed: %s — %s\n' "$p" "$line"; done
       done)
-  closed=$(printf '%s\n%s\n' "$closed" "$plans_closed" | grep -v '^[[:space:]]*$' || true)
-  if [ -n "$closed" ]; then
-    gitdir=$(git rev-parse --git-dir 2>/dev/null || true)
-    [ -n "$gitdir" ] || gitdir=.git
-    marker="$gitdir/handoff-nudged"
-    # Remembered per item rather than per turn's set, which is the difference between the sentence
-    # above being true and being nearly true: a turn that writes a report AND ticks a box is one set,
-    # and the moment the report is committed the set shrinks to the box alone and would read as new.
-    fresh=$(printf '%s\n' "$closed" | while read -r item; do
-      grep -qxF "$item" "$marker" 2>/dev/null || printf '%s\n' "$item"
+  closed=$(printf '%s\n%s\n' "$closed" "$plans_closed")
+fi
+
+# Unpushed when there is an upstream, the last few commits when there is not, since without one
+# nothing on this branch is durable off the machine and "unpushed" has no meaning to measure against.
+if git rev-parse --abbrev-ref '@{u}' >/dev/null 2>&1; then
+  range="@{u}..HEAD"
+  depth=30
+else
+  range="HEAD"
+  depth=5
+fi
+committed=$(git log --format='%h %s' -n "$depth" "$range" -- artifacts/runs plans 2>/dev/null \
+  | while read -r sha subject; do
+      hit=""
+      if git show --format='' --name-only -m --first-parent "$sha" 2>/dev/null \
+         | grep -qE '^artifacts/runs/[^/]+\.md$'; then hit=yes; fi
+      if [ -z "$hit" ] && git show --format='' -m --first-parent "$sha" -- plans 2>/dev/null \
+         | grep -qE '^\+[[:space:]]*- \[x\]'; then hit=yes; fi
+      [ -n "$hit" ] && printf 'a commit that closed something: %s %s\n' "$sha" "$subject"
     done)
-    if [ -n "$fresh" ]; then
-      printf '%s\n' "$fresh" >>"$marker" 2>/dev/null || true
-      cat <<EOF
+
+closed=$(printf '%s\n%s\n' "$closed" "$committed" | grep -v '^[[:space:]]*$' || true)
+if [ -n "$closed" ]; then
+  gitdir=$(git rev-parse --git-dir 2>/dev/null || true)
+  [ -n "$gitdir" ] || gitdir=.git
+  marker="$gitdir/handoff-nudged"
+  if [ ! -f "$marker" ]; then
+    printf '%s\n' "$closed" >"$marker" 2>/dev/null || true
+    closed=""
+  fi
+  # Remembered per item rather than per turn's set, which is the difference between the sentence
+  # above being true and being nearly true: a turn that writes a report AND ticks a box is one set,
+  # and the moment the report is committed the set shrinks to the box alone and would read as new.
+  fresh=$(printf '%s\n' "$closed" | grep -v '^[[:space:]]*$' | while read -r item; do
+    grep -qxF "$item" "$marker" 2>/dev/null || printf '%s\n' "$item"
+  done)
+  if [ -n "$fresh" ]; then
+    printf '%s\n' "$fresh" >>"$marker" 2>/dev/null || true
+    cat <<EOF
 
 This turn closed something and no handoff has been written for it:
 $fresh
@@ -184,7 +241,6 @@ Whether the state is durable enough to hand over is a different question, and
 ~/.claude/tools/session-guard.sh answers it. This only says one is owed.
 Still mid-session? Ignore it. It fires once per closed thing, not once per turn.
 EOF
-    fi
   fi
 fi
 
