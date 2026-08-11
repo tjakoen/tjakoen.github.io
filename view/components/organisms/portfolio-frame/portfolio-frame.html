@@ -351,6 +351,11 @@
   </span>
   <span class="status-bar__crumb" data-breadcrumb>tjakoen.github.io</span>
   <span class="status-bar__spacer"></span>
+  <!-- The view counts. EMPTY in the markup on purpose: src/analytics.ts fills this at render time
+       from the counts pulled at build time, and leaves it empty when there is no data (a local run,
+       a fresh deploy before the first pull). An empty span collapses to nothing, so the bar reads
+       exactly as it did before whenever the numbers are missing. -->
+  <span class="status-bar__views" data-views></span>
   <a class="status-bar__byline" href="/notes/ten-times-zero" title="How this site is built">🤖 I direct, Claude types.</a>
   <a class="status-bar__contact" href="/about#contact">Contact</a>
 </footer>

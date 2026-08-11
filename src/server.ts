@@ -23,9 +23,10 @@ import { buildVocabReference } from "@tjakoen/grain/ai/vocab-reference.ts";
 import { renderPage, refresh } from "./render.ts";
 import { buildAiRoutes } from "./routes/ai-routes.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
+import { injectViews } from "./analytics.ts";   // the status bar's view counts, baked in at build time
 // --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
 import { createProofRoutes } from "@tjakoen/proof/routes.ts";
 import { PLANS_DIR, PLANS_PREFIX, listPlanRoutes } from "./plans.ts";
@@ -199,7 +200,8 @@ const cvSummary = cv.summary;
 
 const renderAppPage = async (html: string) =>
   stampDevDoor(await renderPage(html, {
-    recentNotes: await listRecentNotes(), calendarEvents: await buildCalendarEvents(),
+    recentNotes: await listRecentNotes(), latestEvents: await listLatestEvents(),
+    calendarEvents: await buildCalendarEvents(),
     mailFolders, mailMessages,
     cvRoles, cvEducation, cvSkills, cvCerts, cvStats, cvPrimary, cvLanguages, cvSummary,
   }));
@@ -217,14 +219,16 @@ function withPeekRoot(html: string): string {
 
 // Finalize every full-document HTML response: (1) enrich the head (seo.ts) with canonical + Open
 // Graph + Twitter + schema.org JSON-LD derived from the page's own title/description + path; (2) mark
-// the content region as a catalog hover-root. No-op on non-HTML and on fragments (enrichHead needs a
-// </head>), so it is safe to wrap broadly; the static export inherits both (it crawls this server)
-// and rewrites the origin to the deploy URL.
+// the content region as a catalog hover-root; (3) fill the status bar's view counts (analytics.ts)
+// from the counts pulled at build time. All three no-op on non-HTML and on fragments (enrichHead
+// needs a </head>, injectViews needs the frame's span), so it is safe to wrap broadly; the static
+// export inherits all of them (it crawls this server) and rewrites the origin to the deploy URL.
 async function finalizePage(req: Request, res: Response | Promise<Response>): Promise<Response> {
   const r = await res;
   if (!r.headers.get("content-type")?.includes("text/html")) return r;
   let html = enrichHead(await r.text(), new URL(req.url).pathname, new URL(req.url).origin);
   html = withPeekRoot(html);
+  html = injectViews(html, new URL(req.url).pathname);
   return new Response(html, { status: r.status, headers: r.headers });
 }
 const serveContent = createPortfolioContentRoutes(

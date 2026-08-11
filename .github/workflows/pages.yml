@@ -10,6 +10,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # The status bar's view counts are baked in at export time, so they are only as fresh as the last
+  # deploy — this daily run refreshes them without anyone pushing. It rebuilds and redeploys the
+  # whole site, which is cheap here (the export is a crawl of a booted server, no build step).
+  schedule:
+    - cron: "17 4 * * *"
 
 permissions:
   contents: read
@@ -33,6 +38,15 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run check
       - run: bun test
+      # Pull the view counts into .cache/analytics.json for the export below to bake into the status
+      # bar. Unlike the beacon token in src/seo.ts, CF_ANALYTICS_TOKEN is a REAL secret (it can read
+      # the account's analytics), so it lives in GitHub Secrets. Both unset — on a fork, or before
+      # they are configured — and this step logs a skip and the site renders no numbers.
+      - run: bun run analytics:pull
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_ANALYTICS_TOKEN: ${{ secrets.CF_ANALYTICS_TOKEN }}
+
       # The Cloudflare Web Analytics beacon needs nothing here: its token lives in src/seo.ts (it is
       # public either way) and export.ts spawns the server with NODE_ENV=production, which is the
       # switch that makes the beacon ship on the deployed pages but never on a local run.
