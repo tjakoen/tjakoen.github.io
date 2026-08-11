@@ -15,16 +15,17 @@ photos:
   - "/media/feed/gdgoc-hau-call-multiplier.jpg | 1919x885 | Screenshot from the call: the multiplier slide, AI does not add to what you can do, it multiplies it, with the live bar chart, and the participant panel blurred beside a count of 62"
   - "/media/feed/gdgoc-hau-infosession-poster.jpg | 2048x2048 | The event poster: Infosession, Navigating Tech, August 8 2026, 7 PM on Google Meet, on a corkboard of stickers and polaroids"
 social: |
-  I am grateful to have spoken at Infosession: Navigating Tech, the general assembly of @GDGoC Holy
-  Angel University, alongside @Louella Salenga on the ethics of AI in learning and teaching and
-  @Marc Samuel Pabilona on security in the age of AI.
+  I am grateful to have spoken at Infosession: Navigating Tech, the general assembly of Google
+  Developers Group on Campus - Holy Angel University, alongside Louella Salenga on the ethics of AI
+  in learning and teaching and Marc Samuel Pabilona on security in the age of AI.
 
-  Mine was on vibe coding, and it came down to one line: don't vibe anything you can't code yourself.
+  Mine was on vibe coding and the difference between doing it blindly and doing it structurally.
 
-  Thanks to the team for having me on a Saturday night, and to the 60 students who asked better
-  questions than I had answers for.
+  Thanks to the team for having me on a Saturday night, and to the 60 students who attended and
+  asked better questions than I had answers for.
 
-  Slides and the writeup: https://tjakoen.github.io/calendar/gdgoc-hau-general-assembly
+  Writeup and links to the presentation can be found here:
+  https://tjakoen.github.io/calendar/gdgoc-hau-general-assembly
 ---
 
 ## Saturday night, and they showed up anyway
