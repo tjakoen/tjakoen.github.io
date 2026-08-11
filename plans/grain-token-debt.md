@@ -8,6 +8,8 @@ touches:
   - ../grain/packages/grain/styles/variables.css
   - ../grain/packages/crumb/crumb.css
   - content/tours/review-grain-status.md
+  - view/pages/review/grain-status.html
+  - tools/export.ts
   - grain-token-debt.md
 owner: unassigned
 ---
@@ -62,11 +64,23 @@ That question is what the review tour asks, with both answers rendered rather th
 
 ## Slices
 
-- [ ] **G0. The tour, and the two states rendered.** `content/tours/review-grain-status.md`, walked
-      through PANTRY against the catalog: the status buttons as they are today (indistinguishable),
-      and a proposed non-hue treatment beside them. The card asks the question above. Nothing is
-      changed in grain until it is answered, because both live defects resolve differently depending
-      on the answer and guessing costs a published package.
+- [x] **G0. The tour, and the states rendered. Done 2026-08-11, and it is waiting on the owner.**
+      `content/tours/review-grain-status.md` walks `/review/grain-status`: the row as it ships today
+      (three intents, one rendering) and four candidates beside it, then a card that asks which one.
+      Four rather than the two this bullet first imagined, because "a proposed treatment" turned out
+      to be three genuinely different answers plus the honest fifth option of no answer at all.
+      **Where the proposal surface lives, and the two homes that did not work.** It is a page in the
+      portfolio's own tree, excluded from the static export in `tools/export.ts`, so it is served
+      locally and ships nowhere. PANTRY's `/artifacts/raw` was the obvious home and is not one:
+      probed rather than assumed, it serves review files with `Content-Security-Policy: sandbox` and
+      no client injection, so no card would ever open on one. A grain-side home was rejected for the
+      opposite reason: putting candidate CSS in the package to look at candidate CSS is the debt this
+      plan exists to pay down. The candidate rules are scoped to the page and define no token, so
+      nothing here can leak into the design system by being left behind.
+      **What the walk itself found**, which is the argument for walking rather than reading: CRUMB's
+      card renders markdown inline code as literal backticks, so the first draft's prose showed them
+      to the reviewer. The other tours have none, which is now visibly a convention rather than a
+      coincidence.
 - [ ] **G1. Whatever the answer says, in `b-button.css`.** Either the accent chain is consumed and
       given a treatment that survives a monochrome palette, or it is deleted and `data-status` keeps
       its meaning without claiming a colour. One of the two, not a compromise that leaves the tokens

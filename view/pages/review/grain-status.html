@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review: what status looks like without a hue · TJ's Desk</title>
+  <meta name="description" content="A proposal surface for one decision: what data-status should look like on a control in a palette that collapses every status to ink. Dev only, never exported.">
+</head>
+<body data-screen="review" class="app-window-backdrop">
+  <!-- A REVIEW SURFACE, not a page of the site. It exists to be walked through PANTRY by
+       content/tours/review-grain-status.md, and it is excluded from the static export in
+       tools/export.ts, so it ships nowhere. It renders candidates side by side because the
+       question underneath grain-token-debt is a design call, and a design call made from a
+       description is the thing this whole layer exists to stop.
+
+       Everything below uses GRAIN's real tokens and GRAIN's real .btn. The candidate rules are
+       scoped to this page (.proposal[data-candidate]) and define no token, so nothing here can
+       leak into the design system by being left behind. Whichever one wins moves INTO
+       b-button.css as slice G1; the rest are deleted with this file. -->
+  <div class="app-shell app-window" data-section="review" data-rail-collapsed="false" data-surface="screen">
+    <main class="app-shell__main">
+      <div class="board" style="max-width: 60rem; margin-inline: auto; padding: var(--space-6) var(--space-4);">
+
+        <h1 style="font-size: var(--text-2xl); margin-bottom: var(--space-2);">What status looks like without a hue</h1>
+        <p style="max-width: 46rem; color: var(--ink-2, var(--ink)); margin-bottom: var(--space-6);">
+          GRAIN is monochrome on purpose: <code>--color-success</code> and <code>--color-danger</code>
+          both resolve to <code>--ink</code>. A button carries <code>data-status</code>, four accent
+          tokens are repointed for it, and nothing consumes them, so the attribute renders as nothing.
+          Connecting the tokens would render as nothing too. The question is not how to wire it. The
+          question is what a status should look like when there is no hue to spend.
+        </p>
+
+        <section class="proposal" data-candidate="asis" data-surface="status:asis"
+                 style="margin-bottom: var(--space-7);">
+          <h2 style="font-size: var(--text-lg);">As it ships today</h2>
+          <p class="proposal__note">Three different intents, one rendering. This is the defect, live.</p>
+          <div class="proposal__row">
+            <button class="btn">Default</button>
+            <button class="btn" data-status="success">Save</button>
+            <button class="btn" data-status="danger">Delete</button>
+          </div>
+        </section>
+
+        <section class="proposal" data-candidate="fill" data-surface="status:fill"
+                 style="margin-bottom: var(--space-7);">
+          <h2 style="font-size: var(--text-lg);">A. Fill</h2>
+          <p class="proposal__note">
+            Destructive takes the solid ink fill and a paper label; everything else keeps the hairline.
+            The loudest control on the page becomes the one that cannot be undone, which is either
+            exactly right or exactly backwards depending on whether you think a Delete should attract
+            the eye or avoid it.
+          </p>
+          <div class="proposal__row">
+            <button class="btn">Default</button>
+            <button class="btn" data-status="success">Save</button>
+            <button class="btn" data-status="danger">Delete</button>
+          </div>
+        </section>
+
+        <section class="proposal" data-candidate="weight" data-surface="status:weight"
+                 style="margin-bottom: var(--space-7);">
+          <h2 style="font-size: var(--text-lg);">B. Rule weight</h2>
+          <p class="proposal__note">
+            Same ink, same fill, a doubled border on the destructive one. Quieter than A and it reads
+            at a glance only once you know the vocabulary. It also survives a theme that changes the
+            hairline colour, because it is a ratio rather than a value.
+          </p>
+          <div class="proposal__row">
+            <button class="btn">Default</button>
+            <button class="btn" data-status="success">Save</button>
+            <button class="btn" data-status="danger">Delete</button>
+          </div>
+        </section>
+
+        <section class="proposal" data-candidate="mark" data-surface="status:mark"
+                 style="margin-bottom: var(--space-7);">
+          <h2 style="font-size: var(--text-lg);">C. A mark</h2>
+          <p class="proposal__note">
+            The destructive one carries a small filled block before its label, in the current colour.
+            It reads in greyscale, in print and at any weight, and it is the only candidate that still
+            works for someone who cannot see the difference between a 1px and a 2px rule. The cost is
+            a new glyph vocabulary to keep consistent everywhere else.
+          </p>
+          <div class="proposal__row">
+            <button class="btn">Default</button>
+            <button class="btn" data-status="success">Save</button>
+            <button class="btn" data-status="danger">Delete</button>
+          </div>
+        </section>
+
+        <section class="proposal" data-candidate="semantic" data-surface="status:semantic"
+                 style="margin-bottom: var(--space-7);">
+          <h2 style="font-size: var(--text-lg);">D. Semantics only</h2>
+          <p class="proposal__note">
+            Identical rendering, on purpose. <code>data-status</code> stops claiming a look and keeps
+            its meaning for assistive tech and for the AI layer, while visual ranking stays
+            <code>data-variant</code>'s job, which is the axis that already works in a monochrome
+            palette. This is the honest outcome if the answer is that a hueless status simply has
+            nothing to say visually, and it is the only candidate that makes the code smaller.
+          </p>
+          <div class="proposal__row">
+            <button class="btn">Default</button>
+            <button class="btn" data-status="success">Save</button>
+            <button class="btn" data-status="danger">Delete</button>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <style>
+    /* Page-scoped. No token is defined here, and no rule reaches a .btn outside .proposal. */
+    .proposal__row { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-3); }
+    .proposal__note { max-width: 46rem; color: var(--ink-2, var(--ink)); font-size: var(--text-sm); }
+
+    /* A. Fill — uses the contrast token that already exists and is already just --paper. */
+    .proposal[data-candidate="fill"] .btn[data-status="danger"] {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+    .proposal[data-candidate="fill"] .btn[data-status="danger"]:hover {
+      background: color-mix(in srgb, var(--ink) 88%, var(--paper));
+    }
+
+    /* B. Rule weight — a ratio, not a value, so a theme swap cannot break it. */
+    .proposal[data-candidate="weight"] .btn[data-status="danger"] { border-width: 2px; }
+
+    /* C. A mark — currentColor, so it inverts with the label wherever the button ends up.
+       NOT a dashed border: dashed already means "the AI is using this control" (grain.css). */
+    .proposal[data-candidate="mark"] .btn[data-status="danger"]::before {
+      content: ""; display: inline-block;
+      width: 0.5em; height: 0.5em; margin-right: 0.5ch;
+      background: currentColor;
+    }
+  </style>
+</body>
+</html>
