@@ -1,0 +1,38 @@
+name: Analytics probe (temporary)
+
+# TEMPORARY. Verifies the Cloudflare GraphQL query in tools/analytics-pull.ts against the live
+# schema WITHOUT deploying anything: no export, no Pages job. Delete this file, and the branch it
+# lives on, once the query in analytics-pull.ts is confirmed.
+#
+# It prints the introspected schema and the pulled counts. Neither exposes the token.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+
+      - name: Introspect the RUM dataset
+        run: bun run analytics:pull --probe
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_ANALYTICS_TOKEN: ${{ secrets.CF_ANALYTICS_TOKEN }}
+
+      - name: Run the real pull
+        run: bun run analytics:pull
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_ANALYTICS_TOKEN: ${{ secrets.CF_ANALYTICS_TOKEN }}
+
+      - name: Show what it wrote
+        run: cat .cache/analytics.json || echo "no file written"
