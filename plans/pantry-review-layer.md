@@ -259,6 +259,14 @@ later hardening pass:
         then moved to the total line without a reload; the decision card rendered both asks and the
         composed prompt, and PANTRY's injected client read it. Two defects found on the way, both
         recorded above.
+        **PARKED 2026-08-11 by the owner, and the half that is parked is the half that touches
+        somebody else's repo.** The proof is done; what is left is applying the `data-surface`
+        attributes to ph-live for real, and the owner's call is to wait until this layer has settled
+        rather than push attributes into a live app to prove a tool that is still changing shape.
+        P5 is the argument for waiting: it rewrote the write path on the day of its first human use.
+        Attributes are cheap to add and awkward to take back out of a codebase other people work in,
+        so the order is deliberate rather than a delay. Unparking needs nothing from this plan — the
+        diff, the capture harness and the tour all exist and are proved on a scratch app.
   - [x] **P4f. The containment rule, once.** Not a phase this plan planned. P4d's report named it as
         deliberate scope growth left for a session that could carry it with its own tests, and this
         is that session. **Done 2026-08-10** as `pantry/paths.ts`: `isInside` for the rule itself and
