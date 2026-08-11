@@ -34,6 +34,14 @@ const DIST = Bun.env.EXPORT_DIST ?? "dist";
 // crawl them.
 const OPERABLE = new Set<string>();
 
+// Review surfaces — pages that exist to be WALKED through PANTRY and answered, never to be read by
+// a visitor. They live in the page tree because a tour steps through routes the reviewed app
+// serves, and PANTRY proxies that app; PANTRY's own /artifacts/raw is not an option, because it
+// serves review files sandboxed and uninjected (probed, not assumed), so no card would ever open on
+// one. The page tree is enumerated wholesale by `createSitemap`, so without this set a scratch
+// proposal would ship to the live site the next time anyone exported.
+const REVIEW_ONLY = new Set<string>(["/review/grain-status"]);
+
 // EVERY exported page is flipped to the CLIENT-SIDE door on the static copy (§19.3): the static
 // host has no backend, so ai-dispatch (loaded on every page via PAGE_ASSETS) must NOT open a
 // server `/stream` — on GitHub Pages that request 404s, and each page logs a stream error + goes
@@ -105,7 +113,7 @@ async function pageRoutes(): Promise<string[]> {
   // "/kickstart" is the short share-link twin of the MILL page /standards/kickstart (server.ts
   // serves the same rendered body); it is not a page file, so add it explicitly to freeze dist/kickstart/.
   const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference", "/cv", "/kickstart"]);
-  return [...all].filter((r) => !OPERABLE.has(r)).sort();
+  return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).sort();
 }
 
 // Asset mounts copied verbatim: everything the config serves statically + the fonts dir.
