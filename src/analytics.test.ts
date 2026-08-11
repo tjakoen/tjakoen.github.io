@@ -47,6 +47,17 @@ describe("viewsLabel", () => {
   test("no data at all → empty, so the span collapses", () => {
     expect(viewsLabel("/", null)).toBe("");
   });
+
+  // a count of one is the NORMAL case on a young page, not an edge case
+  test("a count of one reads singular on both halves", () => {
+    const one: AnalyticsData = { visits: 1, paths: { "/grain/": 1 }, pulledAt: "2026-08-11" };
+    expect(viewsLabel("/grain", one)).toBe("1 visit · 1 view here");
+  });
+
+  test("two stays plural", () => {
+    const two: AnalyticsData = { visits: 2, paths: { "/grain/": 2 }, pulledAt: "2026-08-11" };
+    expect(viewsLabel("/grain", two)).toBe("2 visits · 2 views here");
+  });
 });
 
 describe("injectViews", () => {
