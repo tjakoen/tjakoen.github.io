@@ -54,11 +54,15 @@ export function formatCount(n: number): string {
 
 // The status-bar text for one page: the site total, then this page's own views when it has any.
 // Returns "" when there is no data at all, so the caller can leave the span empty.
+// "1 visit" not "1 visits" — a count of one is common on a young page, so the singular is the
+// normal case here rather than an edge case worth skipping.
+const plural = (n: number, one: string, many: string) => `${formatCount(n)} ${n === 1 ? one : many}`;
+
 export function viewsLabel(pathname: string, data: AnalyticsData | null = analytics): string {
   if (!data) return "";
   const here = data.paths[canonicalPath(pathname)];
-  const site = `${formatCount(data.visits)} visits`;
-  return here === undefined ? site : `${site} · ${formatCount(here)} views here`;
+  const site = plural(data.visits, "visit", "visits");
+  return here === undefined ? site : `${site} · ${plural(here, "view", "views")} here`;
 }
 
 // Fill the frame's empty [data-views] span. Idempotent (a filled span is left alone) and a no-op on
