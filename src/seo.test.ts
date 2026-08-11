@@ -1,6 +1,6 @@
 // portfolio/seo.test.ts — the machine-readable head (canonical + Open Graph + Twitter + JSON-LD).
 import { test, expect, describe } from "bun:test";
-import { enrichHead, canonicalPath, SITE } from "./seo.ts";
+import { enrichHead, canonicalPath, analyticsBeacon, CF_BEACON_TOKEN, SITE } from "./seo.ts";
 
 const ORIGIN = "https://example.test";
 const doc = (head: string, body = "<p>hi</p>") =>
@@ -76,6 +76,86 @@ describe("enrichHead — JSON-LD per page type", () => {
       ["Docs", `${ORIGIN}/grain/docs/`],
       ["Tutorial", `${ORIGIN}/grain/docs/tutorial/`],   // leaf carries the real title
     ]);
+  });
+});
+
+describe("analyticsBeacon", () => {
+  // pull the token back out of data-cf-beacon the way a browser would: read the attribute value,
+  // decode the entities, parse the JSON.
+  const readToken = (tag: string) => {
+    const m = tag.match(/data-cf-beacon="([^"]*)"/);
+    if (!m) throw new Error("no beacon attribute");
+    const json = m[1].replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+    return JSON.parse(json).token;
+  };
+
+  test("outside production nothing ships — a dev run never inflates the numbers", () => {
+    expect(analyticsBeacon(CF_BEACON_TOKEN, false)).toBe("");
+  });
+
+  // CF_BEACON_TOKEN="" in the env is the off switch: ?? keeps the empty string (it is not nullish),
+  // so it reaches the trim check and nothing ships. Passing undefined does NOT disable it — that is
+  // the default parameter, which falls back to the shipped token.
+  test("an empty token → nothing ships even in production", () => {
+    expect(analyticsBeacon("", true)).toBe("");
+    expect(analyticsBeacon("   ", true)).toBe("");
+  });
+
+  test("an empty CF_BEACON_TOKEN in the env turns the beacon off", () => {
+    const beforeTok = Bun.env.CF_BEACON_TOKEN, beforeEnv = Bun.env.NODE_ENV;
+    Bun.env.CF_BEACON_TOKEN = "";
+    Bun.env.NODE_ENV = "production";
+    try {
+      expect(enrichHead(doc(`<title>Home</title>`), "/", ORIGIN)).not.toContain("cloudflareinsights");
+    } finally {
+      if (beforeTok === undefined) delete Bun.env.CF_BEACON_TOKEN; else Bun.env.CF_BEACON_TOKEN = beforeTok;
+      if (beforeEnv === undefined) delete Bun.env.NODE_ENV; else Bun.env.NODE_ENV = beforeEnv;
+    }
+  });
+
+  test("production + token → the cookieless Cloudflare beacon, token carried as JSON", () => {
+    const tag = analyticsBeacon(CF_BEACON_TOKEN, true);
+    expect(tag).toContain(`src="https://static.cloudflareinsights.com/beacon.min.js"`);
+    expect(tag).toContain(`type="module"`);
+    expect(readToken(tag)).toBe(CF_BEACON_TOKEN);
+  });
+
+  test("the shipped token is the real site token Cloudflare issued", () => {
+    expect(CF_BEACON_TOKEN).toBe("7bdae9b661934ea3a86792c0206d89f6");
+  });
+
+  test("an overridden token stays inert data — it can't end the attribute or open a tag", () => {
+    const hostile = `" onload="alert(1)" x="<script>`;
+    const tag = analyticsBeacon(hostile, true);
+    // every quote left in the tag is an attribute delimiter (src=, data-cf-beacon=); the token's
+    // own quotes all came through as &quot;, so none of them can close an attribute and start a new one
+    expect(tag.match(/"/g)!.length).toBe(6);   // type=, src=, data-cf-beacon=
+    expect(tag.indexOf("<script")).toBe(tag.lastIndexOf("<script"));  // no second tag opened
+    expect(readToken(tag)).toBe(hostile);                             // survives only as a value
+  });
+
+  test("enrichHead ships no beacon outside production", () => {
+    const before = Bun.env.NODE_ENV;
+    Bun.env.NODE_ENV = "development";
+    try {
+      expect(enrichHead(doc(`<title>Home</title>`), "/", ORIGIN)).not.toContain("cloudflareinsights");
+    } finally {
+      if (before === undefined) delete Bun.env.NODE_ENV;
+      else Bun.env.NODE_ENV = before;
+    }
+  });
+
+  test("enrichHead ships the beacon in production, inside the head", () => {
+    const before = Bun.env.NODE_ENV;
+    Bun.env.NODE_ENV = "production";
+    try {
+      const html = enrichHead(doc(`<title>Home</title>`), "/", ORIGIN);
+      expect(html).toContain("static.cloudflareinsights.com/beacon.min.js");
+      expect(html.indexOf("cloudflareinsights")).toBeLessThan(html.indexOf("</head>"));
+    } finally {
+      if (before === undefined) delete Bun.env.NODE_ENV;
+      else Bun.env.NODE_ENV = before;
+    }
   });
 });
 
