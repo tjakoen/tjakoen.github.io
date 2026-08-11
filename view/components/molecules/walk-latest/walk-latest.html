@@ -1,0 +1,12 @@
+<!-- molecules/walk-latest — the Welcome page's feed walkthrough: a door to /calendar whose body is
+     whatever was posted most recently (server-provided `latestEvents`, a one-item array from
+     content.ts listLatestEvents). The card's identity is fixed ("The feed") and only its subject
+     changes, so it stays a walkthrough rather than becoming a second feed. The href is the feed
+     anchored at that post, not the post's own page: the point is to land someone in /calendar.
+     No events means the binding renders nothing and the card is simply absent. See walk-latest.md. -->
+<a class="walk walk--latest" href="/calendar" data-bind-href="href">
+  <span class="walk__head"><b-icon sym="/assets/sprite.svg#pin" size="sm"></b-icon>The feed
+    <span class="walk__badge" data-field="kindLabel">latest</span></span>
+  <p class="walk__body"><span class="walk-latest__title" data-field="title">The newest post's title</span>
+    <span class="walk-latest__date" data-field="dateLabel">2026-08-08</span></p>
+</a>

@@ -29,7 +29,7 @@ you know where to edit.
 
 | URL | File |
 |---|---|
-| `/` | `view/pages/index.html` |
+| `/` | `view/pages/index.html` — Recent binds `recentNotes` (notes AND calendar posts merged, `content.ts` `listRecentNotes`) and the feed walkthrough binds `latestEvents` (`listLatestEvents`, the newest event as a one-item array, `molecules/walk-latest`) |
 | `/about` | `view/pages/about.html` (tabbed profile app; the Lessons tab's roles + résumé roles link to `/notes?tag=<tag>`) |
 | `/resume` | `view/pages/resume.html` (the résumé board; each experience role links to its tagged notes) |
 | `/mail` | `view/pages/mail.html` + `content/data/mailbox.json` (the messages) — bound through the `mail-folder`/`mail-row`/`mail-reader`/`mail-related` molecules |
