@@ -489,10 +489,17 @@ the one a person takes.
   in advance, because it only appears once a real repo ignores a real file.
 - Whether a review can be walked against a deployed URL rather than localhost. Everything above
   assumes local, deliberately, and the security section is only sound under that assumption.
-- **What a session should wait ON.** Opened by P5 rather than reasoned about: `pantry answers wait`
-  takes one ref, a ref is `<tour>#<ask>`, and a card with two asks has two of them. A run that picks
-  the wrong one blocks while its answer sits on disk, which is exactly what happened. A wait on the
-  TOUR — satisfied by any answer whose ref starts `<tour>#`, or by all of them — matches what a
-  session is really waiting for. The reason it is not simply done is that "any" and "all" are
-  different promises and the difference only shows up on a card someone half-answers, which is the
-  case that produced this bullet.
+- ~~**What a session should wait ON.**~~ **Settled 2026-08-11 by the owner; the build is the next
+  task.** Opened by P5 rather than reasoned about: `pantry answers wait` takes one ref, a ref is
+  `<tour>#<ask>`, and a card with two asks has two of them. A run that picks the wrong one blocks
+  while its answer sits on disk, which is exactly what happened — nine minutes on `#reads-right`
+  while `#keep-both` was already written.
+  **The rule: a wait names the TOUR, and it is satisfied when the card is FINISHED — unblocking on
+  whatever asks were actually answered, not on every ask the tour declares.** The two rejected
+  readings are rejected for opposite reasons. "Any answer to the tour" would have worked today and
+  still moves a run on after reading half of a card answered over two sittings. "Every ask the tour
+  declares" would still be blocked right now, because `#reads-right` was never filled, and a
+  reviewer who deliberately skips a question should not deadlock a run.
+  What makes the chosen rule implementable rather than a guess is P5's own change: finishing writes
+  every answered ask in one go, so "the card is finished" is observable as a batch of entries sharing
+  a tour prefix, and the wait ends when the walk does. A skipped ask is simply absent from the batch.
