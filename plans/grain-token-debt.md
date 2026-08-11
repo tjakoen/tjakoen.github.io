@@ -1,6 +1,6 @@
 ---
 id: grain-token-debt
-status: doing
+status: done
 track: design
 depends: [pantry-review-layer]
 touches:
@@ -81,19 +81,42 @@ That question is what the review tour asks, with both answers rendered rather th
       card renders markdown inline code as literal backticks, so the first draft's prose showed them
       to the reviewer. The other tours have none, which is now visibly a convention rather than a
       coincidence.
-- [ ] **G1. Whatever the answer says, in `b-button.css`.** Either the accent chain is consumed and
-      given a treatment that survives a monochrome palette, or it is deleted and `data-status` keeps
-      its meaning without claiming a colour. One of the two, not a compromise that leaves the tokens
-      declared and unused, which is the state that produced this plan.
-- [ ] **G2. The five undefined tokens in `crumb.css`.** `--ok` and `--warn` follow G1's answer, since
-      a chip and a button are the same question wearing different clothes. `--accent`, `--font-ui` and
-      `--ink-soft` are resolved to real tokens or removed. A missing token with a plausible fallback is
-      worse than a missing token with none, because the fallback is what hides it.
-- [ ] **G3. A check, so this cannot come back quietly.** Every `var(--…)` reference in a published
-      stylesheet resolves to a token defined somewhere in the package set, or the build says so. This
-      whole plan exists because five undefined references shipped and rendered, and no gate noticed.
-- [ ] **G4. The primitive leaks, with a definition first.** What counts as a leak, then the pass. Not
-      started until G1 to G3 land, because it is the only slice here that is not rendering-visible.
+- [x] **G1. The answer, in `b-button.css`. Done 2026-08-11.** The owner walked the tour and answered
+      **B, rule weight, with a fill on hover for the destructive one**. So `data-status="danger"` takes
+      `border-width: 2px` at rest and a solid ink fill with a paper label on hover, and the four
+      `--btn-accent*` tokens are DELETED rather than wired, because connecting them could not have
+      rendered a difference. `data-status="success"` gets no visual rule at all: the answered candidate
+      showed Default and Save identical, so success stays semantic and visual ranking stays
+      `data-variant`'s job. Only the action you cannot undo is marked.
+- [x] **G2. The five undefined tokens in `crumb.css`. Done 2026-08-11.** `--accent` to `--color-accent`,
+      `--ink-soft` to `--ink-muted`, `--font-ui` to `--font-smooth` (NOT `--type-font`: that is the grade
+      switch and would flip the review chrome to the grain face under a `data-grade` ancestor). The
+      owner answered **same answer** for the chips, so `--ok` and `--warn` are gone: verified goes denser
+      in the ink ramp, known-issue takes the doubled rule the danger button now carries. One vocabulary,
+      used twice. The three `--ink-soft` fallbacks had drifted to 55%, 60% and 62% of ink while all
+      meaning "secondary text"; collapsing them onto one token removes the drift as well as the phantom.
+- [x] **G3. The check. Done 2026-08-11** — `packages/grain/styles/vars-defined.test.ts`, across the whole
+      package set rather than one package, because the vocabulary is shared and a per-package check would
+      have called crumb's references external and passed. A fallback is NOT an excuse: `var(--nope)` is
+      noticed within the hour and `var(--nope, green)` ships, which is exactly how the five survived.
+      **It found three more of the same class on its first run**, all hidden by fallbacks: `--editor-header-h`
+      (three organisms agreeing on a magic 2.9rem none of them defined), `--z-presentation` (a z-index
+      absent from the ladder it belongs to), and `--color-grain` (one reference in the whole estate, and
+      no hue to point it at — the grade vocabulary is carried by the font). All three now resolve, at the
+      values that already rendered, so the fix changes nothing visually and makes the agreement real.
+      Seven more references are allowlisted with a receipt each: three written at runtime by
+      `cmdk.js`, four documented per-instance knobs a caller supplies inline.
+      **The check's own first run was wrong and that is worth keeping:** it read `--ok` and `--warn` out
+      of a comment explaining they had just been removed. It now blanks comments before scanning.
+- [x] **G4. The primitive leaks, with the definition first. Done 2026-08-11.** Defining "leak" was the
+      whole job. A leak is a raw px/rem literal that RESTATES a token on the spacing, radius or type
+      scale. Not a leak: rule thicknesses (no token expresses 1px), media breakpoints, layout dimensions,
+      em/ch values, calc offsets, and one-offs matching no token — a considered one-off is not a
+      restatement, and counting it as one is where "100" and "292" both came from.
+      **Measured against that: 7 leaks in 2 files**, all now fixed (`app-window.css`, `presentation.css`).
+      Of the 291 raw occurrences, 28 were inside comments and never code at all; the rest are borders (89),
+      layout dimensions (71), calc offsets (12), breakpoints (2), and 28 considered one-offs. The audit's
+      "100 primitive leaks" was not a measurement, and neither was the re-count.
 
 ## What this must not turn into
 
