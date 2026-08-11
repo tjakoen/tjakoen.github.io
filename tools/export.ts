@@ -40,7 +40,11 @@ const OPERABLE = new Set<string>();
 // serves review files sandboxed and uninjected (probed, not assumed), so no card would ever open on
 // one. The page tree is enumerated wholesale by `createSitemap`, so without this set a scratch
 // proposal would ship to the live site the next time anyone exported.
-const REVIEW_ONLY = new Set<string>(["/review/grain-status"]);
+// Dev-only review surfaces: served locally, never exported. The page tree is enumerated wholesale,
+// so ANY new page under view/pages/ ships to the live site unless it is listed here.
+// Empty right now — /review/grain-status was the one entry and it was deleted with its tour once the
+// owner answered its card (plans/grain-token-debt.md G1).
+const REVIEW_ONLY = new Set<string>([]);
 
 // EVERY exported page is flipped to the CLIENT-SIDE door on the static copy (§19.3): the static
 // host has no backend, so ai-dispatch (loaded on every page via PAGE_ASSETS) must NOT open a
