@@ -139,8 +139,36 @@ function jsonLd(origin: string, path: string, url: string, title: string, desc: 
   });
 }
 
-// Inject canonical + Open Graph + Twitter Card + JSON-LD before </head>. Idempotent; no-op on
-// fragments (no </head>) and on any document that already carries a canonical link.
+// Cloudflare Web Analytics — a cookieless beacon that counts page views without storing anything
+// about the reader, so there is nothing to disclose in a banner. It rides the same head injection
+// as everything above, which is why a new page is counted with nothing extra to author.
+//
+// The token is PUBLIC by design — it is readable in the page source of every site that uses it — so
+// it lives here in the source rather than in a repo variable: hiding it would buy nothing and would
+// only make what actually ships harder to see. CF_BEACON_TOKEN overrides it for a rotation or a
+// local trial without a code edit.
+//
+// Honest limit worth knowing: this counts only readers who run JS and are not blocking the beacon,
+// which for a developer audience is a real undercount. Read it as a trend, not a census.
+export const CF_BEACON_TOKEN = "7bdae9b661934ea3a86792c0206d89f6";
+
+// Production ONLY, so a `bun run dev` session never inflates the numbers. The static export spawns
+// the server with NODE_ENV=production (tools/export.ts), so the deployed pages carry the beacon and
+// a local run does not — the same switch config.ts reads for isDev, kept local here so the pure
+// head transform needs no config import.
+export function analyticsBeacon(
+  token: string | undefined = Bun.env.CF_BEACON_TOKEN ?? CF_BEACON_TOKEN,
+  isProd: boolean = (Bun.env.NODE_ENV ?? "development") === "production",
+): string {
+  const t = token?.trim();
+  if (!t || !isProd) return "";
+  // escapeHtml on the serialized JSON keeps an overridden token inside the attribute — it can add
+  // markup neither by closing the quote (") nor by opening a tag (<).
+  return `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="${escapeHtml(JSON.stringify({ token: t }))}"></script>`;
+}
+
+// Inject canonical + Open Graph + Twitter Card + JSON-LD + the analytics beacon before </head>.
+// Idempotent; no-op on fragments (no </head>) and on any document that already carries a canonical.
 export function enrichHead(html: string, pathname: string, origin: string): string {
   const at = html.indexOf("</head>");
   if (at === -1) return html;
@@ -172,6 +200,7 @@ export function enrichHead(html: string, pathname: string, origin: string): stri
     descEsc ? `<meta name="twitter:description" content="${descEsc}">` : "",
     `<meta name="twitter:image" content="${image}">`,
     jsonLd(origin, path, url, titleText, descText),
+    analyticsBeacon(),
   ].filter(Boolean);
 
   return `${html.slice(0, at)}${tags.join("\n  ")}\n${html.slice(at)}`;

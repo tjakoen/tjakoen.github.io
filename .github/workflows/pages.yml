@@ -33,6 +33,9 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run check
       - run: bun test
+      # The Cloudflare Web Analytics beacon needs nothing here: its token lives in src/seo.ts (it is
+      # public either way) and export.ts spawns the server with NODE_ENV=production, which is the
+      # switch that makes the beacon ship on the deployed pages but never on a local run.
       - run: bun run export
         env:
           PUBLIC_ORIGIN: https://tjakoen.github.io
