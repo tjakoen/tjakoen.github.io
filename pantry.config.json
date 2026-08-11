@@ -4,5 +4,6 @@
   "docsDirs": [
     "./docs"
   ],
-  "standardsSource": "canon"
+  "standardsSource": "canon",
+  "previewTarget": "http://localhost:3001"
 }

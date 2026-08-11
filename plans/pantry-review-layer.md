@@ -39,6 +39,7 @@ touches:
   - artifacts/reviews/2026-08-10-review-tier1-nongrain
   - artifacts/reviews/2026-08-10-tmp-capture-failure-proof
   - decisions/answers.jsonl
+  - pantry.config.json
   - standards/DECISIONS.md
   - standards/TOUR-STANDARD.md
 owner: unassigned
@@ -412,22 +413,44 @@ that exists and the whole chain has never been run end to end with a human in it
 of doing it: P0 through P4 were each proved on their own, and the one step nobody has ever taken is
 the one a person takes.
 
-- [ ] **The rehearsal, in one sitting.** A session brings the target up, serves PANTRY with
-      `previewTarget` pointing at it, opens the review at `/__pantry/review`, and hands the owner a
-      URL rather than a description. The owner walks the tour. The last step is a decision card. They
-      answer it. The session, which has been sitting in `pantry answers wait <ref>`, unblocks and acts.
-- [ ] **The unproven link is the card's Record answer button**, and it has been unproven for two runs
-      running. Confirmed by the owner 2026-08-10 and still true: nobody has ever pressed it. The two
-      write paths that HAVE been exercised are the two a session can drive itself, which is exactly
-      why this one is the demo. **Automation cannot stand in for the press:** the review shell's
-      same-origin iframe wedges it, so a headless click proves nothing about the path a human takes.
-- [ ] **Pick the tour before the target.** `content/tours/review-answer-channel.md` is the one written
-      for this and is the honest choice, since it is the tour whose own Record step has never been
-      pressed. `say-hello.md` is the gentler one if the demo is about the feel rather than the proof.
-- [ ] **What would make it a demo rather than a test:** the session says out loud what it is waiting
-      for and what the answer unblocks, then genuinely blocks. A run that asks and carries on is the
-      failure DECISIONS section 4 names, and it would be invisible in a demo unless the waiting is
-      shown.
+- [x] **The rehearsal, in one sitting. Done 2026-08-11, and the demo is the reason four things are
+      different now.** The owner walked `review-answer-channel` against the portfolio on 3001, and the
+      press landed at `06:33:52Z` — the first human answer in the log. Everything below was found by
+      that walk and nothing below was visible from reading the code, which is the argument for the
+      phase existing.
+- [x] **The Record answer button is gone, and its absence is the finding.** It existed because CRUMB
+      owns the card and PANTRY owns the chrome, so the card's own Finish could not write and a second
+      button out here had to. That is an implementation boundary handed to the reviewer, and the first
+      person to meet it answered the card, pressed Finish and lost what they typed. **Finishing the
+      card is the answer now.** The boundary is unchanged: PANTRY still only watches the card close.
+      Closing it is not finishing it — an × or Escape is an abandon, marked by `data-crumb="end"`, and
+      it writes nothing and says so, because an append-only log cannot take back a draft somebody
+      changed their mind about.
+- [x] **The outcome is said where the reviewer is looking.** It WAS said before: 14px, muted grey, in
+      the bar at the top of the pane, six hundred pixels from the card at the bottom of the frame. The
+      owner read that as silence and asked whether anything had been written. There is a receipt over
+      the frame now, and it says what the write MEANT rather than a row count: a session waiting on
+      this is unblocked. `data-kind` had been set since P2 and styled nowhere, so a success and a
+      failure rendered as the same grey sentence. Hueless, because GRAIN collapses `--color-success`
+      and `--color-danger` to `--ink` on purpose; the eyebrow carries the word.
+- [x] **`?tour=<id>` opens the walk it names.** A handoff could only ever be a URL plus a sentence
+      about which rail entry to click, and the sentence is the half that goes stale.
+- [x] **The rail reads the answer log, not just the tour file.** Step statuses are written before the
+      walk and no answer arriving later edits them, so the rail said "2 of 3 awaiting you" about a
+      review answered an hour earlier. Answered-and-unacked now reads "answered, waiting on the AI";
+      answered-and-acked folds into a Closed group. Folded, not deleted: "where did the one I answered
+      go" is the next question. The queue empties, which it never did before.
+- [x] **The waiting was real and it still went wrong.** The session said what it was waiting for and
+      blocked in `pantry answers wait`. It waited on `review-answer-channel#reads-right`; the owner
+      answered `#keep-both`. One card, two asks, two refs, and the run sat there while the answer it
+      asked for was already on disk. **A wait keyed to a single ask is the wrong grain** — the thing
+      a session is actually waiting for is the card. Open, below.
+- [x] **What the owner decided, through the tour, about the tour.** "Keep the paste prompt, but
+      collapse it." Both return paths survive on the decision page, because DECISIONS section 2 puts
+      the chat above every surface below it and pasting is right when someone is already in it. Two
+      equal buttons made the durable channel and the transient one read as a matter of taste, so the
+      paste is a folded `<details>` and Record answer is the only top-level action. Acked as
+      `k-20260811T065319Z-fb83f979`.
 
 ## Open, and genuinely not decided
 
@@ -458,3 +481,10 @@ the one a person takes.
   in advance, because it only appears once a real repo ignores a real file.
 - Whether a review can be walked against a deployed URL rather than localhost. Everything above
   assumes local, deliberately, and the security section is only sound under that assumption.
+- **What a session should wait ON.** Opened by P5 rather than reasoned about: `pantry answers wait`
+  takes one ref, a ref is `<tour>#<ask>`, and a card with two asks has two of them. A run that picks
+  the wrong one blocks while its answer sits on disk, which is exactly what happened. A wait on the
+  TOUR — satisfied by any answer whose ref starts `<tour>#`, or by all of them — matches what a
+  session is really waiting for. The reason it is not simply done is that "any" and "all" are
+  different promises and the difference only shows up on a card someone half-answers, which is the
+  case that produced this bullet.
