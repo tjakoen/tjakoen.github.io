@@ -27,6 +27,7 @@
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:baseline": "bun tools/lint-gate.ts --write",
     "audit:desk": "bun tools/desk-audit.ts",
+    "analytics:pull": "bun tools/analytics-pull.ts",
     "export": "bun tools/export.ts",
     "verify:export": "bun tools/verify-export.ts",
     "check": "tsc --noEmit",

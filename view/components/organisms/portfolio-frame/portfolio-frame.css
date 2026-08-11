@@ -147,6 +147,11 @@
    bar's font if a more specific `a` rule ever lands ahead of them in the bundle */
 .status-bar__byline, .status-bar__contact { font-family: var(--font-mono); color: inherit; text-decoration: none; }
 .status-bar__byline:hover, .status-bar__contact:hover { color: var(--color-fg); }
+/* the view counts (src/analytics.ts fills them at build time): the quietest thing on the bar, so
+   the numbers are there to be looked up rather than announcing themselves. :empty collapses the
+   gap entirely when there is no data, which is the normal state on a local run. */
+.status-bar__views { font-family: var(--font-mono); color: var(--color-muted); }
+.status-bar__views:empty { display: none; }
 
 
 /* assistant empty-state: centered prompt shown until the first message lands. The higher
