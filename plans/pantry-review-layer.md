@@ -452,7 +452,8 @@ the one a person takes.
       blocked in `pantry answers wait`. It waited on `review-answer-channel#reads-right`; the owner
       answered `#keep-both`. One card, two asks, two refs, and the run sat there while the answer it
       asked for was already on disk. **A wait keyed to a single ask is the wrong grain** — the thing
-      a session is actually waiting for is the card. Open, below.
+      a session is actually waiting for is the card. Settled by the owner and built the next morning;
+      the rule and what building it changed are below.
 - [x] **What the owner decided, through the tour, about the tour.** "Keep the paste prompt, but
       collapse it." Both return paths survive on the decision page, because DECISIONS section 2 puts
       the chat above every surface below it and pasting is right when someone is already in it. Two
@@ -489,8 +490,8 @@ the one a person takes.
   in advance, because it only appears once a real repo ignores a real file.
 - Whether a review can be walked against a deployed URL rather than localhost. Everything above
   assumes local, deliberately, and the security section is only sound under that assumption.
-- ~~**What a session should wait ON.**~~ **Settled 2026-08-11 by the owner; the build is the next
-  task.** Opened by P5 rather than reasoned about: `pantry answers wait` takes one ref, a ref is
+- ~~**What a session should wait ON.**~~ **Settled 2026-08-11 by the owner, and built the same day.**
+  Opened by P5 rather than reasoned about: `pantry answers wait` takes one ref, a ref is
   `<tour>#<ask>`, and a card with two asks has two of them. A run that picks the wrong one blocks
   while its answer sits on disk, which is exactly what happened — nine minutes on `#reads-right`
   while `#keep-both` was already written.
@@ -503,3 +504,14 @@ the one a person takes.
   What makes the chosen rule implementable rather than a guess is P5's own change: finishing writes
   every answered ask in one go, so "the card is finished" is observable as a batch of entries sharing
   a tour prefix, and the wait ends when the walk does. A skipped ask is simply absent from the batch.
+  **What building it changed about it, on 2026-08-11.** Two things the rule could not have said in
+  advance, both of them about the word "batch". The first: those entries are one POST each, because
+  the log's unit is a decision and not a card, so "written in one go" is one go from the reviewer's
+  side and several appends from the file's. A poll that lands between two of them reads a finished
+  card as a half-answered one and hands the run one answer out of two — so after the first match the
+  wait re-reads until the count stops growing, and it does that past the deadline on purpose, since
+  abandoning a batch halfway is the exact failure the tour form exists to remove. The second: a bare
+  target cannot simply mean "prefix", because a decision request's ref has no `#` either, and
+  `pantry answers wait 2026-08-11-loop-hygiene-thresholds` had to keep meaning the one thing it has
+  always meant. A target with no `#` therefore matches its own exact ref AND everything under
+  `<target>#`; a target with one is the single-ask form, untouched.
