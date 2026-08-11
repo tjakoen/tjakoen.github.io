@@ -33,10 +33,11 @@
 [data-screen="calendar"] .feed-photos:has(.feed-photo:nth-child(4)) .feed-photo:first-child {
   grid-column: 1; grid-row: 1 / span 2; }
 
-/* EXACTLY four: that layout has five slots, so a fourth photo leaves one cell empty and the strip
-   reads as broken. Four tile as an even 2x2 instead, which also gives a wide photo a box it fits. */
+/* EXACTLY four: the 2x2-on-the-right layout has five slots, so a fourth photo leaves one cell empty.
+   Keep the first photo the hero it is everywhere else and stack the other three beside it, one column
+   of three, so nothing is empty and the lead photo still carries the post. */
 [data-screen="calendar"] .feed-photos:has(.feed-photo:nth-child(4)):not(:has(.feed-photo:nth-child(5))) {
-  grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; aspect-ratio: 3 / 2; }
+  grid-template-columns: 1.8fr 1fr; grid-template-rows: repeat(3, 1fr); aspect-ratio: 3 / 2; }
 [data-screen="calendar"] .feed-photos:has(.feed-photo:nth-child(4)):not(:has(.feed-photo:nth-child(5))) .feed-photo:first-child {
-  grid-column: auto; grid-row: auto; }
+  grid-column: 1; grid-row: 1 / span 3; }
 [data-screen="calendar"] .feed-photos .feed-photo:nth-child(n+6) { display: none; }
