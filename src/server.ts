@@ -23,7 +23,7 @@ import { buildVocabReference } from "@tjakoen/grain/ai/vocab-reference.ts";
 import { renderPage, refresh } from "./render.ts";
 import { buildAiRoutes } from "./routes/ai-routes.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
 import { injectViews } from "./analytics.ts";   // the status bar's view counts, baked in at build time
@@ -200,7 +200,7 @@ const cvSummary = cv.summary;
 
 const renderAppPage = async (html: string) =>
   stampDevDoor(await renderPage(html, {
-    recentNotes: await listRecentNotes(),
+    recentNotes: await listRecentNotes(), latestEvents: await listLatestEvents(),
     calendarEvents: await buildCalendarEvents(),
     mailFolders, mailMessages,
     cvRoles, cvEducation, cvSkills, cvCerts, cvStats, cvPrimary, cvLanguages, cvSummary,

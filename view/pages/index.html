@@ -28,9 +28,11 @@
             </nav>
 
             <h2>Recent</h2>
+            <!-- notes AND calendar posts, newest first (content.ts listRecentNotes merges them):
+                 "Recent" means the newest real things, and /calendar is the full version. -->
             <div class="recent" data-surface="welcome-recent">
               <welcome-recent each="recentNotes"></welcome-recent>
-              <a class="recent__item" href="/notes"><span class="recent__name">More…</span></a>
+              <a class="recent__item" href="/calendar"><span class="recent__name">More…</span></a>
             </div>
           </div>
 
@@ -55,6 +57,7 @@
                 <p class="walk__body">BATCH the substrate, GRAIN the design system, MILL the content
                   engine, PROOF the plan board. The no-build stack this site runs on.</p>
               </a>
+              <walk-latest each="latestEvents"></walk-latest>
               <a class="walk" href="/notes/the-console-i-built-to-stop-drowning">
                 <span class="walk__head"><b-icon sym="/assets/sprite.svg#traces" size="sm"></b-icon>The console I built to stop drowning
                   <span class="walk__badge">teaching</span></span>

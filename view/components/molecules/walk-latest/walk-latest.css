@@ -1,0 +1,7 @@
+/* molecules/walk-latest — the feed walkthrough on the Welcome page. It IS a .walk (see
+   walkthrough-card.css for the card itself); the only thing this file adds is how the bound title
+   and date sit inside the body, since the text comes from the newest post rather than a sentence
+   someone wrote for the card. */
+.walk--latest .walk-latest__title { display: block; color: var(--ink); }
+.walk--latest .walk-latest__date { display: block; margin-top: 0.15rem;
+  font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-faint); }

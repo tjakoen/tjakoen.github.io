@@ -3,7 +3,7 @@
 import { test, expect } from "bun:test";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, renderNotesFeedPage, FLAGSHIP_NOTE_SLUG } from "./content.ts";
+import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, listLatestEvents, listEventCalendarEvents, renderNotesFeedPage, FLAGSHIP_NOTE_SLUG } from "./content.ts";
 
 const serve = createPortfolioContentRoutes();
 
@@ -73,8 +73,23 @@ test("the /notes feed = the flagship pinned to the front of the date order — t
   expect(inPageOrder).toEqual(expectedFeed);
 });
 
-test("listRecentNotes is a prefix of listNoteRoutesByDate (same order, just truncated)", async () => {
-  const all = await listNoteRoutesByDate();
-  const recent = await listRecentNotes(2);
-  expect(recent.map((n) => n.href)).toEqual(all.slice(0, 2));
+test("the welcome page's Recent = notes AND calendar posts merged newest-first, and the notes in it keep the date order", async () => {
+  const recent = await listRecentNotes(4);
+  const hrefs = recent.map((n) => n.href);
+  // every row is a real route, one kind or the other
+  expect(hrefs.every((h) => h.startsWith("/notes/") || h.startsWith("/calendar/"))).toBe(true);
+  // the notes among them appear in the same relative order the pure date list has
+  const dateOrder = await listNoteRoutesByDate();
+  const notesInRecent = hrefs.filter((h) => h.startsWith("/notes/"));
+  expect(notesInRecent).toEqual(dateOrder.filter((r) => notesInRecent.includes(r)));
+});
+
+test("the feed walkthrough card gets ONE event, the newest, pointing at the feed anchored on it", async () => {
+  const latest = await listLatestEvents();
+  const events = await listEventCalendarEvents();
+  expect(latest).toHaveLength(events.length ? 1 : 0);
+  if (!latest[0]) return;
+  const newest = [...events].sort((a, b) => b.date.localeCompare(a.date))[0]!;
+  expect(latest[0].title).toBe(newest.title);
+  expect(latest[0].href).toBe(`/calendar#${newest.domId}`);
 });

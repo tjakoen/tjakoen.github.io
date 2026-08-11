@@ -551,14 +551,38 @@ ${cards}
   });
 }
 
-/** The welcome page's "Recent" feed: the newest notes, straight from MILL frontmatter —
- *  server-composed live data (the export freezes it, §18). Shape matches the
- *  <welcome-recent> component's bindings. */
+/** The welcome page's "Recent" feed: the newest dated things, notes AND calendar events, newest
+ *  first — server-composed live data (the export freezes it, §18). It says "Recent", so a talk
+ *  given last week belongs in it as much as a note published last week; /calendar is the full
+ *  version of the same merge. Shape matches the <welcome-recent> component's bindings. */
 export interface RecentNote { title: string; href: string; path: string; }
 export async function listRecentNotes(limit = 4): Promise<RecentNote[]> {
-  const entries = await sortedNoteEntries();
-  return entries.slice(0, limit).map((e) => ({
-    title: e.title, href: `/notes/${e.slug}`, path: `notes/${e.slug}.md`,
+  const notes = (await sortedNoteEntries()).filter((e) => e.date).map((e) => ({
+    date: e.date, title: e.title, href: `/notes/${e.slug}`, path: `notes/${e.slug}.md`,
+  }));
+  const events = (await listEventCalendarEvents()).map((e) => ({
+    date: e.date, title: e.title, href: e.link, path: `calendar/${e.id.replace(/^event-/, "")}.md`,
+  }));
+  return [...notes, ...events]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, limit)
+    .map(({ title, href, path }) => ({ title, href, path }));
+}
+
+/** The welcome page's feed walkthrough: the single newest calendar event, as a one-item array so
+ *  the card binds with the same each= every other data-bound card uses. One item, because the card
+ *  is a door to /calendar rather than a second feed; no events means no card, which is the right
+ *  empty state. */
+export interface LatestEvent { title: string; href: string; kindLabel: string; dateLabel: string; }
+export async function listLatestEvents(limit = 1): Promise<LatestEvent[]> {
+  // listEventCalendarEvents returns the collection in the source's own order, so sort here rather
+  // than trusting it: "latest" is the whole point of this card.
+  const events = [...await listEventCalendarEvents()].sort((a, b) => b.date.localeCompare(a.date));
+  return events.slice(0, limit).map((e) => ({
+    title: e.title,
+    href: `/calendar#${e.domId}`,     // the feed, scrolled to this post — not the post's own page
+    kindLabel: e.kindLabel,
+    dateLabel: e.dateLabel,
   }));
 }
 
