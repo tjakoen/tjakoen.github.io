@@ -58,11 +58,29 @@ export function formatCount(n: number): string {
 // normal case here rather than an edge case worth skipping.
 const plural = (n: number, one: string, many: string) => `${formatCount(n)} ${n === 1 ? one : many}`;
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// "2026-08-11" → "11 Aug". Parsed by hand rather than through Date, so the rendered day cannot
+// shift under the build machine's timezone: `new Date("2026-08-11")` is UTC midnight, which is the
+// 10th anywhere west of Greenwich. Anything unparseable yields "" and the suffix is simply dropped.
+export function shortDate(iso: string | undefined): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso ?? "");
+  if (!m) return "";
+  const month = MONTHS[Number(m[2]) - 1];
+  return month ? `${Number(m[3])} ${month}` : "";
+}
+
+// The counts are a SNAPSHOT taken when the site was last built, so the bar says "as of <date>".
+// Not "since last deploy": these are cumulative since the beacon went live and do not reset on a
+// deploy, so that phrasing would claim something false. The date is the honest version of the same
+// reassurance — it tells a reader who just visited why their own view is not in the number yet.
 export function viewsLabel(pathname: string, data: AnalyticsData | null = analytics): string {
   if (!data) return "";
   const here = data.paths[canonicalPath(pathname)];
   const site = plural(data.visits, "visit", "visits");
-  return here === undefined ? site : `${site} · ${plural(here, "view", "views")} here`;
+  const counts = here === undefined ? site : `${site} · ${plural(here, "view", "views")} here`;
+  const asOf = shortDate(data.pulledAt);
+  return asOf ? `${counts} · as of ${asOf}` : counts;
 }
 
 // Fill the frame's empty [data-views] span. Idempotent (a filled span is left alone) and a no-op on
