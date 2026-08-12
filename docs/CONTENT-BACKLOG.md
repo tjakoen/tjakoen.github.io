@@ -129,23 +129,26 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
 
 ## Experience notes (blog-style, the user's own voice + photos)
 
-- [ ] **Career Team** — building AI "personalities" out of the top 2 tech leads for code reviews;
-      talks given representing the company. *(Company name: "Career Team".)*
+- [ ] **Career Team** — the day job, at the altitude that is safe to write about: what a dev manager
+      and tech lead actually does with AI in a review loop, kept to method rather than to any
+      internal initiative, plus the talks given representing the company. Specifics of internal
+      tooling stay out of this repo, which is public. *(Company name: "Career Team".)*
 - [ ] **The events platform** — made myself CTO, built the team + platform; the hard exit (**neutral,
       no names, lessons-forward**); show the platform (was publicly available, so fine to show).
 - [ ] **Educator** — the classes taught (HTML/CSS/JS, React, Vue, Dart/Flutter, Node/Express, PHP,
       MySQL; Software Eng Implementation & Management); the **GitHub-native course platform** built to
       make teaching sustainable (link it — github.com/tjakoen/github-native-course-platform); talks;
       thesis paneling + advising; **3rd semester, ~120–150 students/term** (this term 4 classes ≈150);
-      *why* (not for money — paid a **fraction** of the day job, kept vague publicly; does it for
-      mentoring + public-speaking practice + professional/portfolio value); the master's story
+      *why* (not for the money, and the comparison to the day job stays out of this repo as well as
+      out of the post; does it for mentoring + public-speaking practice + professional/portfolio
+      value); the master's story
       (wanted an MBA, too expensive → chose **cybersecurity**: initially
       not the draw, but it's the elusive-to-me piece, has lots of depth, and aligns with the goal of
       being a **systems architect**).
 - [ ] **The business I tried and failed to start** — lessons learned.
-- [ ] **TaskForce** — marketing-manager era (with photos).
+- [ ] **The BPO** — marketing-manager era (with photos), employer unnamed.
 - [ ] **Family resort** — why I shifted careers.
-- [ ] **Toroclous** — first job; recruited in 3rd year, before graduation.
+- [ ] **The first dev job** — recruited in 3rd year, before graduation; employer unnamed.
 - [ ] **Best thesis** award.
 - [ ] **Org president**.
 - [ ] **Technical projects** — GRAIN, BATCH, the CMS, **the GitHub-native course platform**
@@ -180,13 +183,15 @@ The beats, in order (each feeds the note in brackets):
    + awards** [Best thesis], aced the programming subjects, coasted/barely-passed the minors he didn't
    care for. Became **CS org president** [Org president] — ran workshops, hackathons, competed a lot.
 2. **First dev job while still a student.** Recruited start of 3rd year as a part-time developer
-   [Toroclous]; ~2 years' experience by graduation. But realized he didn't *enjoy* pure dev work, and
+   [employer unnamed]; ~2 years' experience by graduation. But realized he didn't *enjoy* pure dev
+   work, and
    he has a real trait: he struggles to be productive on things he doesn't enjoy.
 3. **Shift to business via the family resort** [Family resort]. Family opened a little beachside
    campsite; he joined and helped grow it into a full resort — online marketing, ops systems, ran it
    with his siblings; his CS background was a big lever. Then the **pandemic crashed it**; he moved
    back to the city. (This is "why I shifted careers.")
-4. **Corporate marketing manager at a BPO** [TaskForce]. Took it because he'd lost dev confidence/edge
+4. **Corporate marketing manager at a BPO** [employer unnamed, as with the events platform below].
+   Took it because he'd lost dev confidence/edge
    and had done successful marketing for the resort. Stayed ~6 months; learned he dislikes doing
    marketing *for other people* and disliked the office politics.
 5. **Serial entrepreneur with friends** [The business I tried and failed to start]. A **cafe** (broke
