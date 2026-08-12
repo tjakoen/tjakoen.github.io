@@ -15,6 +15,7 @@ photos:
   - "/media/feed/gdg-hau-ai-hack-workshop-call.jpg | 1600x836 | The ideation workshop on Google Meet, every student tile blurred, my own tile sharp in the bottom corner"
   - "/media/feed/gdg-hau-ai-hack-group.jpg | 1600x1200 | Organizers, judges and teams lined up in front of the Beyond Limits: The AI Hack title slide after the demos"
   - "/media/feed/gdg-hau-ai-hack-badge.jpg | 1050x1400 | My faculty badge for the first Regional AI Conference, themed Reinventing Learning through AI"
+deck: "Beyond Limits, the ideation workshop | PDF | /decks/gdg-hau-ai-hack-ideation | 32 slides · 2.7 MB · opens here on the site"
 video: "https://web.facebook.com/reel/880926974473813 | /media/feed/gdg-hau-ai-hack-reel-poster.jpg | 1600x900 | Watch the student council's recap of the day on Facebook | A student pitching to the room with a legal database open on the screen behind him"
 gallery:
   - "/media/feed/gdg-hau-ai-hack-rubric.jpg | 1050x1400 | The judging sheet before the first team went up: five criteria, weights running from 25 percent down to 15, my name in the blank at the top and my email blurred out under it"
@@ -134,8 +135,7 @@ finishing. It is good advice, and it produces solid, small, safe projects that l
 took the swing I would have talked them out of. So the honest amendment to the workshop is: know
 exactly which rule you are breaking, and pay for it in preparation rather than in optimism.
 
-The whole deck, ideation playbook and all:
-[Beyond Limits, the ideation workshop](/media/decks/gdg-hau-ai-hack-ideation.pdf). The hackathon was
+The deck is at the top of this page, ideation playbook and all. The hackathon was
 one room inside the
 [first Regional AI Conference](https://web.facebook.com/story.php?story_fbid=1347845863807500&id=100057462968690),
 which the School of Computing

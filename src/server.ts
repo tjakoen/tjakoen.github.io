@@ -23,7 +23,7 @@ import { buildVocabReference } from "@tjakoen/grain/ai/vocab-reference.ts";
 import { renderPage, refresh } from "./render.ts";
 import { buildAiRoutes } from "./routes/ai-routes.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
 import { injectViews } from "./analytics.ts";   // the status bar's view counts, baked in at build time
@@ -234,7 +234,11 @@ async function finalizePage(req: Request, res: Response | Promise<Response>): Pr
 const serveContent = createPortfolioContentRoutes(
   async (html: string) => stampDevDoor(await renderPage(html)),
   PAGE_ASSETS, PAGE_HEAD,
-);   // MILL mount (same global assets + head) — desk-door marker stamped so the WebLLM path can arm
+);
+const serveDecks = createPortfolioDeckRoutes(
+  async (html: string) => stampDevDoor(await renderPage(html)),
+  PAGE_ASSETS, PAGE_HEAD,
+);   // the deck viewer shares the content mount's shell, assets and head   // MILL mount (same global assets + head) — desk-door marker stamped so the WebLLM path can arm
 // PROOF mount: the portfolio consumes @tjakoen/proof directly and renders its OWN plans/ folder as a
 // board at /plans, wrapped in the portfolio's page shell (proof owns the body, the host owns <head>).
 // Server-rendered only for now — the live SSE auto-refresh (watchPlans + board-live.js) is a follow-up
@@ -320,8 +324,9 @@ const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-c
 // and the export derives its allowlist from the same lists). Routes are computed at boot;
 // authoring a note/plan = a restart/redeploy anyway (the export freezes per deploy).
 const contentRoutes = await listPortfolioContentRoutes();
+const deckRoutes = await listPortfolioDeckRoutes();          // /decks/<file>, the in-shell PDF viewer
 const planRoutes = await listPlanRoutes();
-const sitemap = createSitemap(config.pagesDir, () => [...contentRoutes, ...planRoutes, "/reference"]);   // pages tree + MILL content + PROOF's plans + the generated reference
+const sitemap = createSitemap(config.pagesDir, () => [...contentRoutes, ...deckRoutes, ...planRoutes, "/reference"]);   // pages tree + MILL content + PROOF's plans + the generated reference
 // the catalog builds its own shell, so it receives the SAME global assets — otherwise it's the
 // one page that ignores the saved theme (the bug this seam fixed)
 const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
@@ -560,6 +565,11 @@ ${PAGE_ASSETS}</body>
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
     if (fromContent) return finalizePage(req, fromContent);
+    // --- the deck viewer: /decks/<file> renders a PDF this site serves INSIDE the shell, so a deck
+    // is an ordinary page and therefore an ordinary open tab, instead of the browser's viewer
+    // swallowing the window. Mounted after content so a collection route always wins. ---
+    const fromDeck = await serveDecks(p);
+    if (fromDeck) return finalizePage(req, fromDeck);
     // /cv — the "straight to download" twin of /resume: serve the exact same rendered résumé sheet
     // (single source, no markup fork) plus a tiny script that fires the browser print/save-as-PDF
     // dialog on load. The résumé's own @media print rules produce the clean white ATS sheet. Exported

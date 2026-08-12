@@ -19,7 +19,9 @@ import {
 } from "@tjakoen/mill/serve.ts";
 import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
 import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
-import type { GrainAdapterOptions } from "@tjakoen/mill/adapters/grain/grain-adapter.ts";
+import {
+  externalLinkAttrs, type GrainAdapterOptions,
+} from "@tjakoen/mill/adapters/grain/grain-adapter.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
@@ -92,8 +94,13 @@ function notesLink(href: string): string {
 // the section, not just the page.
 // Every collection wants that flag; only resolveLink differs per collection — written once
 // here so a new collection can't forget to wire it in (see the `collections` array below).
+// The same choke point carries the OFF-SITE LINK POLICY (MILL 0.2.2 `linkAttrs`): a link that
+// leaves tjakoen.github.io opens in a new tab, so the reader keeps the page they were reading and
+// the shell's own open-tabs strip stays meaningful. `externalLinkAttrs` decides what counts as
+// external (absolute http(s), different host) so the answer is the layer's and not ten copies of a
+// regex here; mailto: and in-page anchors are deliberately untouched.
 function withHeadingAnchors(adapter: GrainAdapterOptions): GrainAdapterOptions {
-  return { ...adapter, headingSurfaces: true };
+  return { ...adapter, headingSurfaces: true, linkAttrs: externalLinkAttrs(SITE.origin) };
 }
 
 // ---- the BREAD-shell chrome ---------------------------------------------------
@@ -108,8 +115,13 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // card read identically.
     const photoGrid = kind === "entry" && collection.prefix === "/calendar" && frontmatter
       ? renderPhotoGrid(parsePhotos(frontmatter.photos)) : "";
-    // …the featured video, if the entry has one: a poster still that links out to where the video
-    // actually lives (`video:`). Sits under the hero strip, above the prose.
+    // …the deck, if the entry hangs off one (`deck:`): a quiet attachment row directly under the
+    // hero, because for a talk the deck is often the thing a reader came for.
+    const deck = kind === "entry" && frontmatter
+      ? renderDeckAttachment(frontmatter.deck) : "";
+    // …the video, if there is one (`video:`), a poster still linking out to the platform it lives
+    // on. It sits DOWN with the gallery, not under the hero: a full-width poster at the top reads
+    // as the subject of the page and shouts over the prose the page is actually made of.
     const videoCard = kind === "entry" && collection.prefix === "/calendar" && frontmatter
       ? renderVideoCard(frontmatter.video) : "";
     // …and the rest of the day's photos (`gallery:`), a quieter grid below the body, so the strip on
@@ -133,7 +145,22 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // NOTE: the /notes index's "See what's new" AI trigger (data-ai-run demo.run) used to render
     // here, above the body. It now lives INSIDE renderNotesFeedPage's toolbar (grouped with New/Top
     // + search), so shellChrome no longer emits it — the notes feed owns its own top bar.
-    return `<!DOCTYPE html>
+    return shellPage({
+      title, description, screen, section, inject, injectHead,
+      board: `${sourceToggle}${photoGrid}${deck}${body}${videoCard}${gallery}${shareBlock}`,
+    });
+  };
+}
+
+/** The app-shell skeleton every content page is: head, portfolio-frame, one `.board`. Extracted so
+ *  a page that is NOT a MILL entry can be the same page (the deck viewer below is the first), and
+ *  so there is exactly one copy of this markup to keep in step with `pages/mill/index.html`. */
+function shellPage(input: {
+  title: string; description?: string; screen: string; section: string;
+  board: string; inject: string; injectHead: string;
+}): string {
+  const { title, description, screen, section, board, inject, injectHead } = input;
+  return `<!DOCTYPE html>
 <html lang="en" data-themes="sourdough baguette brioche">
 <head>
   <meta charset="utf-8">
@@ -146,12 +173,11 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
   <div class="app-shell app-window"${section} data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
-      <div class="board">${sourceToggle}${photoGrid}${videoCard}${body}${gallery}${shareBlock}</div>
+      <div class="board">${board}</div>
     </main>
   </div>
 ${inject}</body>
 </html>`;
-  };
 }
 
 // The three collections — module-level so the routes AND the route list derive from
@@ -250,6 +276,71 @@ export function createPortfolioContentRoutes(
   injectHead = "",
 ): MillRequestHandler {
   return createMillRoutes({ compose, chrome: shellChrome(inject, injectHead), collections });
+}
+
+// ---- the deck viewer: a PDF that stays inside the site ------------------------------------
+// A link straight to a .pdf hands the tab to the browser's viewer, and the shell is gone: no rail,
+// no open tabs, no way back except the back button. `/decks/<file>` renders the same document
+// inside the app shell (GRAIN's doc-frame molecule), so it is an ordinary page, which makes it an
+// ordinary open tab, which is the whole ask. Same origin only: the file is one this site serves.
+const DECKS_DIR = join(import.meta.dir, "..", "content", "media", "decks");
+
+/** Deck slug → the page title shown in the tab and the frame's caption. Kept beside the files
+ *  rather than parsed out of the PDF: a title is editorial, and pdf metadata is usually wrong. */
+const DECK_TITLES: Record<string, string> = {
+  "gdg-hau-ai-hack-ideation": "Beyond Limits: the ideation workshop",
+  "reality-check-ai-ethics": "Re: AI-lity Check",
+};
+
+const deckTitle = (slug: string): string =>
+  DECK_TITLES[slug] ?? slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+
+/** Every deck route, so the sitemap and the static export carry the viewer pages too — a page that
+ *  only exists on the dev server is a 404 on Pages, which is exactly the bug this shape invites. */
+export async function listPortfolioDeckRoutes(): Promise<string[]> {
+  try {
+    const files = await readdir(DECKS_DIR);
+    return files.filter((f) => f.endsWith(".pdf")).map((f) => `/decks/${basename(f, ".pdf")}`);
+  } catch { return []; }                                   // no decks dir ⇒ no routes, not a crash
+}
+
+/** The viewer route handler, mounted beside the content routes at the composition root. */
+export function createPortfolioDeckRoutes(
+  compose?: (html: string) => Promise<string>,
+  inject = "",
+  injectHead = "",
+): MillRequestHandler {
+  return async (pathname: string): Promise<Response | null> => {
+    const match = /^\/decks\/([a-z0-9-]+)$/i.exec(pathname);
+    if (!match) return null;
+    const slug = match[1]!;
+    const file = Bun.file(join(DECKS_DIR, `${slug}.pdf`));
+    if (!(await file.exists())) return null;               // unknown deck ⇒ the 404 page, not a shell
+    const src = `/media/decks/${slug}.pdf`;
+    const title = deckTitle(slug);
+    const size = `${(file.size / 1_000_000).toFixed(1)} MB`;
+    // The escape link is NOT redundant with the <object> fallback: iOS Safari neither renders a
+    // multi-page PDF inline nor triggers that fallback, so the direct link stays visible for
+    // everyone (doc-frame.md says the same thing, in the component that owns the markup).
+    const board = `<h1 class="deck-page__title">${escapeHtml(title)}</h1>
+<figure class="doc-frame">
+  <object class="doc-frame__object" data="${escapeHtml(src)}" type="application/pdf"
+          aria-label="${escapeHtml(`${title}, rendered in the page`)}">
+    <p class="doc-frame__fallback">This browser will not display the deck inline. Open it directly instead.</p>
+  </object>
+  <figcaption class="doc-frame__escape">
+    <a href="${escapeHtml(src)}">Open the PDF directly</a>
+    <span>${escapeHtml(size)}</span>
+  </figcaption>
+</figure>`;
+    const html = shellPage({
+      title: `${title} · the deck`,
+      description: `${title}, the deck, readable here on the site.`,
+      screen: "calendar", section: ` data-section="bread"`, board, inject, injectHead,
+    });
+    const composed = compose ? await compose(html) : html;
+    return new Response(composed, { headers: { "content-type": "text/html; charset=utf-8" } });
+  };
 }
 
 /** Every content route (index + entries per collection) — content pages are exportable
@@ -742,7 +833,12 @@ function renderVideoCard(raw: unknown): string {
   if (!href || !poster) return "";
   const [width = "", height = ""] = dim.split(/x/i).map((x) => x.trim());
   const dims = width && height ? ` width="${escapeHtml(width)}" height="${escapeHtml(height)}"` : "";
-  return `<a class="media-card" data-layout="overlay" href="${escapeHtml(href)}" rel="noopener">
+  // The video lives on someone else's platform, so the click leaves the site: new tab, same policy
+  // the prose links follow (MILL's externalLinkAttrs). Hand-rendered, so the attributes are written
+  // here rather than inherited.
+  return `<section class="event-video" aria-labelledby="event-video-heading">
+  <h2 class="event-video__heading" id="event-video-heading">On video</h2>
+  <a class="media-card" data-layout="overlay" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">
   <span class="media-card__media">
     <img class="media-card__image" src="${escapeHtml(poster)}"${dims} alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
     <span class="media-card__play" aria-hidden="true">▶</span>
@@ -750,6 +846,30 @@ function renderVideoCard(raw: unknown): string {
   <span class="media-card__body">
     <span class="media-card__title">${escapeHtml(label)}</span>
   </span>
+</a>
+</section>`;
+}
+
+// The deck an event or a note hangs off itself (`deck:`), rendered as GRAIN's `attachment` row just
+// under the hero and above the prose — near the top, because for a talk the deck is often what a
+// reader came for, and buried in the last paragraph is where it used to be.
+// Flat frontmatter, one string, the same encoding idiom as a photo:
+//   "Title | KIND | href | meta line"
+// `href` is an IN-SITE route by design: a PDF points at /decks/<file>, which renders the document
+// inside the shell (renderDeckPage) instead of handing the tab to the browser's viewer. A talk that
+// already lives here points straight at its own route.
+function renderDeckAttachment(raw: unknown): string {
+  if (typeof raw !== "string" || !raw.trim()) return "";
+  const [title = "", kind = "", href = "", meta = ""] = raw.split("|").map((x) => x.trim());
+  if (!title || !href) return "";
+  const metaLine = meta ? `<span class="attachment__meta">${escapeHtml(meta)}</span>` : "";
+  return `<a class="attachment event-deck" href="${escapeHtml(href)}">
+  <span class="attachment__kind">${escapeHtml(kind || "Deck")}</span>
+  <span class="attachment__body">
+    <span class="attachment__title">${escapeHtml(title)}</span>
+    ${metaLine}
+  </span>
+  <span class="attachment__action">Open →</span>
 </a>`;
 }
 

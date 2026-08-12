@@ -9,6 +9,7 @@ status: PUBLISHED
 type: note
 date: 2026-08-07
 readingTime: "~18 min"
+deck: "Ten times zero | Talk | /talks/ten-times-zero | 34 slides · runs in the browser, no download"
 tags: [ai, vibe-coding, workflow, fundamentals, native-first, batch, grain]
 summary: >
   How I actually work with AI, and why it holds up. AI is a multiplier, not an addend; it
