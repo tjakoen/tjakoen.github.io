@@ -46,14 +46,28 @@ test.describe("the /about profile app (JS on)", () => {
     await expect(page.locator('.about-tabs [href="#profile"]')).not.toHaveAttribute("aria-current", "page");
   });
 
-  test("the Contact tab's CTA links to /mail, not an embedded compose form", async ({ page }) => {
+  test("the Contact tab carries the data-driven form, and it still hands off rather than posting", async ({ page }) => {
     await page.locator('.about-tabs [href="#contact"]').click();
 
     const contact = page.locator("#contact");
     await expect(contact).toBeVisible();
     await expect(contact.locator('a[href="/mail"]').first()).toBeVisible();
-    // no second compose path lives on this page — Mail owns the one send path
-    await expect(page.locator("form")).toHaveCount(0);
+
+    // This page used to assert there was NO form here, because Mail owned the one send path. That
+    // changed on 2026-08-13: the Contact tab now renders a real form from content/data/contact-form.json
+    // through grain's b-field/b-choice atoms. The invariant that actually mattered survives, and it is
+    // the one asserted now: exactly one form, rendered from the spec, with nowhere to post to. Send
+    // builds a mail draft in the visitor's own client, exactly as Mail's compose does.
+    const form = page.locator("form.contact-form");
+    await expect(form).toHaveCount(1);
+    await expect(page.locator("form")).toHaveCount(1);
+    await expect(form).not.toHaveAttribute("action", /./);
+    await expect(form).not.toHaveAttribute("method", /./);
+    // the three controls came from the spec, not from hand-typed markup
+    await expect(form.locator('[data-surface="field:contact-name"]')).toHaveCount(1);
+    await expect(form.locator('[data-surface="field:contact-email"]')).toHaveCount(1);
+    await expect(form.locator('[data-surface="field:contact-topic"]')).toHaveCount(1);
+    await expect(form.locator('select[name="topic"] option')).toHaveCount(5);
   });
 
   test("the Now tab lists dated, real entries", async ({ page }) => {
@@ -175,9 +189,11 @@ test.describe("the /about CV tab (real timeline + download)", () => {
     if (linkedSkill) await expect(page.locator(`#resume .cv-core .cv-chip__link[href="${linkedSkill.href}"]`)).toHaveText(linkedSkill.text);
   });
 
-  test("Download PDF points at /cv and Open-the-full-page at /resume; still no form on the page", async ({ page }) => {
+  test("Download PDF points at /cv and Open-the-full-page at /resume; the CV tab itself carries no form", async ({ page }) => {
     await expect(page.locator('#resume a[href="/cv"]')).toBeVisible();
     await expect(page.locator('#resume a[href="/resume"]')).toBeVisible();
-    await expect(page.locator("form")).toHaveCount(0);   // Mail still owns the one send path
+    // The page gained a form on 2026-08-13, but it belongs to the Contact tab. Scoping the assertion
+    // to this panel keeps what this test was really guarding: the CV is a document, not a form.
+    await expect(page.locator("#resume form")).toHaveCount(0);
   });
 });

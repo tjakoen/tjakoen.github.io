@@ -115,6 +115,19 @@ const SCENARIOS: Scenario[] = [
   // (desk-contact-task) lands after settle()'s post-navigation read, so that path is e2e-covered
   // (desk-contact-prefill.e2e.ts) rather than audited here.
   { id: "contact-det", page: "/mail", ask: "tell TJ I want to talk about grain", mustMention: [["drafted"], ["send"]], deterministic: true },
+  // D1 form builder demo — "build me a form that asks for a name, an email and what they want to
+  // talk about" matches the closed set (field-matcher.ts's matchSpec: name + email fields, a topic
+  // choice) and navigates to /builder?ask=… deterministically (actions.ts + desk-reasoner.ts): no
+  // model composes or targets the fields. mustNavigate compares location.pathname (grade(), below),
+  // which already excludes the ?ask= query string, so the "/builder?ask=…" landing still reads as a
+  // plain "/builder" navigation here, the same idiom notes-filter-det's own ?tag= comment follows.
+  // mustMention checks the LAST chat bubble, which by the time settle() reads it is the arrival
+  // announce ("Here's the form.") — the field/choice content itself lives on the PAGE, not in chat,
+  // so "form" is the honest thing to grade here (deep-link-det's own reasoning, same settle() timing).
+  // The cross-page fill itself (desk-form-task + runFormTask) lands AFTER settle()'s post-navigation
+  // read, so THAT path is e2e-covered (desk-form-build.e2e.ts) rather than audited here.
+  { id: "form-build-det", page: "/", ask: "build me a form that asks for a name, an email and what they want to talk about",
+    mustNavigate: "/builder", mustMention: [["form"]], deterministic: true },
   // C1 visitor-intent onboarding — a bare "hi" as the FIRST message this session triggers the
   // deterministic ask (actions.ts + desk-reasoner.ts), no model: the prompt copy names "visiting"
   // (the word this grader hooks on) and offers the three CHOICES. Not last on purpose — tour-det stays

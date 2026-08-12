@@ -1,0 +1,74 @@
+// portfolio/contact-form.test.ts — guards content/data/contact-form.json against the two renderer
+// contracts b-field/b-choice/b-option actually enforce (probed in batch/render/render.ts, not
+// re-probed here): an absent key on an each item logs a dev warning where an explicit null stays
+// quiet, and a boolean attribute can't bind as "" so required/selected must be the literal string
+// or null. A spec that violates either one still renders, just with a console warning nobody reads
+// and a form that silently drops "required" or "selected" — this test is the thing that would catch
+// the drift before a person ever opens /about.
+import { test, expect, describe } from "bun:test";
+import { join } from "node:path";
+
+interface ContactField {
+  surface: string; label: string; name: string; type: string;
+  placeholder: string | null; value: string | null; required: string | null;
+}
+interface ContactOption { value: string; label: string; selected: string | null }
+interface ContactChoice { surface: string; label: string; name: string; options: ContactOption[] }
+interface ContactForm { fields: ContactField[]; choices: ContactChoice[] }
+
+const path = join(import.meta.dir, "..", "content", "data", "contact-form.json");
+const spec: ContactForm = await Bun.file(path).json();
+
+const FIELD_KEYS = ["surface", "label", "name", "type", "placeholder", "value", "required"];
+const CHOICE_KEYS = ["surface", "label", "name", "options"];
+const OPTION_KEYS = ["value", "label", "selected"];
+
+describe("contact-form.json shape", () => {
+  test("has at least one field and one choice", () => {
+    expect(spec.fields.length).toBeGreaterThan(0);
+    expect(spec.choices.length).toBeGreaterThan(0);
+  });
+
+  test("every field item carries every key as its own property (no absent-key warning)", () => {
+    for (const field of spec.fields) {
+      for (const key of FIELD_KEYS) expect(Object.prototype.hasOwnProperty.call(field, key)).toBe(true);
+    }
+  });
+
+  test("every choice item, and every option inside it, carries every key", () => {
+    for (const choice of spec.choices) {
+      for (const key of CHOICE_KEYS) expect(Object.prototype.hasOwnProperty.call(choice, key)).toBe(true);
+      for (const option of choice.options) {
+        for (const key of OPTION_KEYS) expect(Object.prototype.hasOwnProperty.call(option, key)).toBe(true);
+      }
+    }
+  });
+
+  test("required is the literal string \"required\" or null, never \"\" or true", () => {
+    for (const field of spec.fields) {
+      expect(field.required === "required" || field.required === null).toBe(true);
+    }
+  });
+
+  test("selected is the literal string \"selected\" or null, at most one per choice", () => {
+    for (const choice of spec.choices) {
+      let selectedCount = 0;
+      for (const option of choice.options) {
+        expect(option.selected === "selected" || option.selected === null).toBe(true);
+        if (option.selected === "selected") selectedCount += 1;
+      }
+      expect(selectedCount).toBeLessThanOrEqual(1);
+    }
+  });
+
+  test("every surface starts with field: and all surfaces in the file are unique", () => {
+    const surfaces = [...spec.fields.map((f) => f.surface), ...spec.choices.map((c) => c.surface)];
+    for (const surface of surfaces) expect(surface.startsWith("field:")).toBe(true);
+    expect(new Set(surfaces).size).toBe(surfaces.length);
+  });
+
+  test("surfaces don't collide with /mail's registered field:contact-message", () => {
+    const surfaces = [...spec.fields.map((f) => f.surface), ...spec.choices.map((c) => c.surface)];
+    expect(surfaces).not.toContain("field:contact-message");
+  });
+});

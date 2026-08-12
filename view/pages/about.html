@@ -111,9 +111,23 @@
 
         <section class="about-panel" id="contact">
           <div class="section-head"><span>Contact</span></div>
-          <p>The one live control on this site is the mail panel: one compose form, one send
-            path, addressed to me. <a href="/mail">Send a message</a> and it hands off to your
-            own mail app.</p>
+          <p>This form and the fuller <a href="/mail">mail panel</a> are the two ways to reach me
+            from here, and neither is backed by a server: this is a static site, so nothing here
+            can receive a submission. Send builds a message from what you type below and hands it
+            to your own mail app, addressed to me, exactly the way the mail panel's compose does.</p>
+          <!-- The region gets its own address so a review tour can point at the form as a whole,
+               separately from the three field addresses the spec carries. "contact-form" is not a
+               registered surface kind, so it is push-only and no verb targets it. -->
+          <form class="contact-form" data-contact-form data-surface="contact-form">
+            <b-field each="contactFields" size="sm"></b-field>
+            <b-choice each="contactChoices" size="sm"></b-choice>
+            <div class="contact-form__foot">
+              <button class="btn" type="submit">Send</button>
+              <span class="contact-form__hint">Opens in your mail app, addressed to me.
+                <noscript>JavaScript is off, so Send can't compose for you:
+                <a href="mailto:tjakoen.s&#64;gmail.com">email me directly</a> instead.</noscript></span>
+            </div>
+          </form>
           <div class="docs-list">
             <div class="docs-list__item"><a class="docs-list__name" href="/mail">Send a message</a><span class="docs-list__what">opens the compose panel, addressed to me.</span></div>
             <div class="docs-list__item"><a class="docs-list__name" href="https://www.linkedin.com/in/tjakoenstolk" target="_blank" rel="noopener noreferrer">LinkedIn</a><span class="docs-list__what">professional history and contact.</span></div>
@@ -199,6 +213,31 @@
         setOpen(false);
         toggle.hidden = false;
         toggle.addEventListener('click', function () { setOpen(entry.classList.contains('is-collapsed')); });
+      });
+    })();
+  </script>
+
+  <script>
+    // Contact tab's form: same static-site limit as /mail's compose, same fix. No backend receives
+    // this submission, so Send reads the three fields, builds a mailto: link, and hands off to the
+    // visitor's own mail app. The address is assembled from parts rather than sitting in the page
+    // source as harvestable plaintext, matching mail.html's compose script exactly.
+    (function () {
+      var form = document.querySelector('[data-contact-form]');
+      if (!form) return;
+      var to = ['tjakoen.s', 'gmail.com'].join('@');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = form.querySelector('[name="name"]').value.trim();
+        var email = form.querySelector('[name="email"]').value.trim();
+        var topicSelect = form.querySelector('[name="topic"]');
+        var topicLabel = topicSelect.options[topicSelect.selectedIndex].text;
+        var subject = 'Contact from the site: ' + topicLabel;
+        var body = 'From: ' + name + (email ? ' <' + email + '>' : '') + '\n\n';
+        window.location.href = 'mailto:' + to +
+          '?subject=' + encodeURIComponent(subject) +
+          '&body=' + encodeURIComponent(body);
       });
     })();
   </script>

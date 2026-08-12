@@ -34,6 +34,12 @@ import { matchSender } from "./mail-sender.ts";
 // registered field surface the desk may fill (never a model-picked selector, law #2). Pure
 // (contact-draft.ts), same family as the matchers above.
 import { draftMessage, CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
+// D1 form builder demo — the closed-set matcher (field-matcher.ts, "Read first" — the ONE thing that
+// decides which fields/choices ever exist) plus the demo values drafted for its TEXT fields only
+// (form-draft.ts — never a `choices` item, see that file's own banner on why). KNOWN_FIELD_LABELS/
+// KNOWN_CHOICE_LABELS name the closed set honestly when a description matches nothing at all.
+import { matchSpec, KNOWN_FIELD_LABELS, KNOWN_CHOICE_LABELS } from "./field-matcher.ts";
+import { draftFieldValues } from "./form-draft.ts";
 // C2 visitor memory — the notepad IS the memory. Write-time sanitize + the one line marker
 // (sanitizeMemoryFact, memoryLine) and read-time parseMemories (re-sanitize + cap, for the VISITOR
 // NOTES prompt block). Pure (memory.ts), same family as contact-draft.ts.
@@ -317,6 +323,17 @@ export interface DeskDeps {
   /** Stash the already-drafted message for the door to fill on arrival after navigating to /mail —
    *  same "stash BEFORE navigate" discipline mailTaskSet follows (the navigate tears this down). */
   contactTaskSet?: (message: string) => void;
+  // ---- D1 form builder demo ("build me a form that asks for a name and an email") — the desk
+  // navigates to /builder?ask=<the description>, a plain GET the server answers with matchSpec's own
+  // rendered form (this reasoner never renders anything itself). It then prefills the TEXT fields
+  // matchSpec matched with form-draft.ts's demo values through the SAME cross-page-stash idiom
+  // mailTaskSet/contactTaskSet use — the navigate tears this reasoner instance down before /builder
+  // ever loads. Never stashes a value for a `choices` item — see form-draft.ts's own banner on why a
+  // <select> is never a fill target here. ----
+  /** Stash the ALREADY-DRAFTED demo values (surface → text, form-draft.ts) for the door to fill on
+   *  arrival after navigating to /builder — same "stash BEFORE navigate" discipline every other
+   *  cross-page task here follows (the navigate tears this down). */
+  formTaskSet?: (values: Record<string, string>) => void;
   // ---- C1 visitor-intent onboarding (recruiter/developer/student) — sessionStorage-backed, same
   // try/catch-around-ss() shape the door gives every dep above. ONE key holds the answer, a second
   // holds the nag-guard flag. State is read ONLY to bias a code-chosen chip pool (pickFollowups below)
@@ -354,6 +371,12 @@ export const MAIL_ARCHIVE_BEAT_MS = 650;
 // lesson #9; exported so the door's OWN cross-page contact task (desk-door.ts, runContactTask) reuses
 // the exact knob and the two choreographies can't drift in pacing (the MAIL_ARCHIVE_BEAT_MS precedent).
 export const CONTACT_FILL_BEAT_MS = 650;
+
+// D1 form builder demo — the pause between successive field fills as the desk drafts each demo value
+// in on /builder, so a visitor watching sees each one land rather than the whole form snapping full
+// at once. Named per CLAUDE.md lesson #9; exported so the door's OWN cross-page fill (desk-door.ts,
+// runFormTask) reuses the exact knob, the CONTACT_FILL_BEAT_MS/MAIL_ARCHIVE_BEAT_MS precedent.
+export const FORM_FILL_BEAT_MS = 650;
 
 // Chat bubble markup now comes from GRAIN's reasoner-kit (deps.kit) — not forked here. This local
 // `esc` is only for the portfolio's OWN chip labels (suggestChipsHtml below), which are portfolio
@@ -1145,6 +1168,38 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           const line = "I can't reach the compose panel from here.";
           await typeOut(line);
           return { ok: false, ops: [], reply: line, reason: "no contact deps" };
+        }
+
+        // D1 form builder demo — "build me a form that asks for a name and an email". Deterministic +
+        // offline: matchSpec (field-matcher.ts) is the ONE thing that ever decides which fields/choices
+        // exist — this handler never picks a field itself (law #2). Unlike B1/B3, there's no on-page
+        // branch: /builder renders from its OWN query string on a plain GET, so every ask is a fresh
+        // navigation, even when the visitor is already standing on /builder.
+        if (action?.kind === "form-build") {
+          const spec = matchSpec(action.description);
+          await minThink();
+          if (!spec.fields.length && !spec.choices.length) {
+            // Nothing matched at all — an honest decline naming the REAL closed set, never a vague
+            // "I don't understand". An action verb never falls through to the model.
+            const known = joinPhrases([...KNOWN_FIELD_LABELS, ...KNOWN_CHOICE_LABELS]);
+            const line = spec.unsupported.length
+              ? `I can't build that yet. ${spec.unsupported.map((u) => u.reason).join(" ")} I can add ${known}.`
+              : `I build forms from a fixed list of fields, and nothing in that asked for one of them. I can add ${known}.`;
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "no fields matched" };
+          }
+          if (!deps.navigate) {
+            const line = "I can't navigate from here, so I can't build the form. Ask me something else instead.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "no navigate dep" };
+          }
+          const href = `/builder?ask=${encodeURIComponent(action.description)}`;
+          const values = draftFieldValues(spec.fields);   // TEXT fields only — never a `choices` item
+          const line = "Building that form now, and I'll fill in a few demo values so you can see it live.";
+          await typeOut(line);
+          if (Object.keys(values).length) deps.formTaskSet?.(values);   // stash BEFORE navigating
+          await travelAndNavigate("/builder", href, "Builder", "Here's the form.", "the navigation");
+          return { ok: true, ops: [], reply: line };
         }
 
         // C2 visitor memory — "remember I'm here about grain". Deterministic + offline, like every

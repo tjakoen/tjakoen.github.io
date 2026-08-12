@@ -1314,6 +1314,73 @@ describe("makeDeskReasoner — B1 contact prefill (\"tell TJ I want to talk abou
   });
 });
 
+describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks for a name and an email\")", () => {
+  const ASK = "build me a form that asks for a name, an email and what they want to talk about";
+
+  test("happy path: drafts demo values for the TEXT fields only, stashes BEFORE navigating to /builder", async () => {
+    let loads = 0;
+    const calls: string[] = [];
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
+    deps.navigate = (u) => { calls.push(`navigate:${u}`); };
+    deps.formTaskSet = (values) => { calls.push(`formTaskSet:${JSON.stringify(values)}`); };
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat(ASK), tools);
+
+    expect(loads).toBe(0);   // deterministic — matchSpec decides the structure, no model involved
+    expect(d.ok).toBe(true);
+    expect(calls[1]).toBe(`navigate:/builder?ask=${encodeURIComponent(ASK)}`);
+    const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
+    // name + email are the matched TEXT fields; "what they want to talk about" matched the topic
+    // CHOICE, and a choice's surface must never appear here (see form-draft.ts's own banner).
+    expect(Object.keys(stashed).sort()).toEqual(["field:builder-email", "field:builder-name"]);
+    expect(stashed["field:builder-topic"]).toBeUndefined();
+    // the lamp travels to the /builder nav link before the navigate fires
+    expect(ops.some((o) => o.op === "spotlight" && o.target === "nav:/builder" && o.active)).toBe(true);
+  });
+
+  test("nothing matched: an honest decline naming the real closed set, no navigate, no stash", async () => {
+    const calls: string[] = [];
+    const { deps } = makeDeps();
+    deps.navigate = (u) => { calls.push(`navigate:${u}`); };
+    deps.formTaskSet = (values) => { calls.push(`formTaskSet:${JSON.stringify(values)}`); };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("build me a form about quantum physics and a haiku"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("no fields matched");
+    expect(calls).toEqual([]);   // no navigate, no stash — never a doomed empty-form trip
+    expect((d.reply ?? "")).toContain("Name");   // a real closed-set label, not a vague apology
+  });
+
+  test("a matched-but-unsupported ask (a message box only): the decline names the refusal reason", async () => {
+    const { deps } = makeDeps();
+    deps.navigate = () => {};
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat("build me a form with a big message box"), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("no fields matched");
+    expect((d.reply ?? "").toLowerCase()).toContain("textarea");
+  });
+
+  test("no navigate dep: an honest decline, no crash, no stash", async () => {
+    const calls: string[] = [];
+    const { deps } = makeDeps();
+    deps.formTaskSet = (values) => { calls.push(JSON.stringify(values)); };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(chat(ASK), makeTools().tools);
+
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("no navigate dep");
+    expect(calls).toEqual([]);
+  });
+});
+
 describe("makeDeskReasoner — A3 citation (a deterministic 'Read more' under a grounded answer)", () => {
   // one real-route chunk (with an A1 anchor) + the facts block — the retrieval floor's fallback.
   const citeKnowledge = {

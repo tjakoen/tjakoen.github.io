@@ -269,6 +269,62 @@ describe("routeAction", () => {
     });
   });
 
+  describe("D1 form builder demo", () => {
+    test("build/make/create/design a form phrasings all route form-build, description is the WHOLE message", () => {
+      const cases = [
+        "build me a form that asks for a name and an email",
+        "Make a form for a signup",
+        "create a contact form",
+        "design a form asking for phone and budget",
+        "whip up a form with a name field",
+      ];
+      for (const s of cases) {
+        const a = routeAction(s);
+        expect(a?.kind).toBe("form-build");
+        if (a?.kind === "form-build") expect(a.description).toBe(s);
+      }
+    });
+
+    test("casing/punctuation survive verbatim in the description (it feeds matchSpec, not norm())", () => {
+      const s = "Build me a form that asks for a Name, an Email, and what they want to talk about!";
+      const a = routeAction(s);
+      expect(a?.kind).toBe("form-build");
+      if (a?.kind === "form-build") expect(a.description).toBe(s);
+    });
+
+    test("no clash: contact-message still wins 'tell TJ' phrasings even when 'form' appears nearby", () => {
+      expect(routeAction("tell TJ I liked the form on your site")?.kind).toBe("contact-message");
+    });
+
+    test("a bare mention of 'form' with no build-ish verb does not trigger", () => {
+      expect(routeAction("what's this form for")?.kind).not.toBe("form-build");
+    });
+
+    test("a QUESTION about building a form never navigates — it has the verb and the noun, and it is still a question", () => {
+      const questions = [
+        "how did you build this form",
+        "why would you create a form that way",
+        "what makes a form addressable",
+        "did you build the form on the about page yourself",
+        "does the desk make a form from the spec or the other way round",
+      ];
+      for (const s of questions) expect(routeAction(s)?.kind).not.toBe("form-build");
+    });
+
+    test("a polite opener is still a request: can/could/would never disqualify a build ask", () => {
+      const requests = [
+        "can you build me a form with a name and an email",
+        "could you make a signup form",
+        "would you create a form asking for a phone number",
+      ];
+      for (const s of requests) {
+        const a = routeAction(s);
+        expect(a?.kind).toBe("form-build");
+        if (a?.kind === "form-build") expect(a.description).toBe(s);
+      }
+    });
+  });
+
   describe("C1 visitor-intent onboarding", () => {
     test("greeting forms route intent-ask (a WHOLE-message greeting/vague opener)", () => {
       for (const s of ["hi", "Hi", "hey!", "hello", "howdy", "yo", "good morning", "Good Afternoon.", "help"])
@@ -391,6 +447,7 @@ describe("ACTION_CAPABILITIES — every listed kind is a REAL, reachable routeAc
     "notes-filter": "show me notes about teaching",
     theme: "switch to dark mode",
     "showcase-start": "watch me work",
+    "form-build": "build me a form that asks for a name and an email",
   };
 
   test("every capability's kind has an example, and the example routes to that exact kind", () => {

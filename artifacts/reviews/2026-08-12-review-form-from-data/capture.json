@@ -1,0 +1,82 @@
+{
+  "tour": "review-form-from-data",
+  "title": "Review: the contact form comes from a data file",
+  "mode": "dev",
+  "capturedAt": "2026-08-12T20:04:34.704Z",
+  "previewTarget": "http://localhost:3000",
+  "via": "http://localhost:57232",
+  "startedProject": null,
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "motion": "css-disabled",
+  "driver": {
+    "package": "playwright",
+    "path": "/Users/tjakoenstolk/Local/Development/bread-repos/tjakoen.github.io/node_modules/playwright/index.mjs",
+    "version": "1.62.0"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "surface": "field:contact-name",
+      "at": "/about#contact",
+      "status": "new",
+      "verify": "Tab from Name into Email, then press Send with both empty. The browser should stop you on Name first, then on Email, and the email field should reject a value with no at sign. If either one submits, the required flag did not survive the render.",
+      "url": "http://localhost:57232/about#contact",
+      "navigated": true,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 297,
+        "y": 257.40625,
+        "width": 416,
+        "height": 52.6875
+      },
+      "page": "01-field-contact-name.png",
+      "element": "01-field-contact-name-element.png",
+      "problem": null
+    },
+    {
+      "index": 1,
+      "surface": "field:contact-topic",
+      "at": "/about#contact",
+      "status": "known-issue",
+      "verify": "Choose Hiring, fill the two fields above, and press Send. The draft your mail app opens should carry the subject \"Contact from the site: Hiring\". Change the choice and send again; the subject should follow it. If the subject keeps the old topic, the select and the handoff have come apart.",
+      "url": "http://localhost:57232/about#contact",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 297,
+        "y": 386.78125,
+        "width": 416,
+        "height": 54.6875
+      },
+      "page": "02-field-contact-topic.png",
+      "element": "02-field-contact-topic-element.png",
+      "problem": null
+    },
+    {
+      "index": 2,
+      "surface": "contact-form",
+      "at": "/about#contact",
+      "status": "needs-verification",
+      "verify": "Fill both fields, press Send, and watch what opens. It should be a draft in your own mail client, addressed to me, with the subject set from the choice and the body starting with From. Nothing should leave the browser before you press send there yourself. Then reload the page: the fields should be empty again, because nothing was stored.",
+      "url": "http://localhost:57232/about#contact",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 297,
+        "y": 257.40625,
+        "width": 416,
+        "height": 240.0625
+      },
+      "page": "03-contact-form.png",
+      "element": "03-contact-form-element.png",
+      "problem": null
+    }
+  ],
+  "failures": 0
+}

@@ -18,7 +18,7 @@ import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
 import { WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
-import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS, CONTACT_FILL_BEAT_MS, type DeskNote } from "./desk-reasoner.ts";
+import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS, CONTACT_FILL_BEAT_MS, FORM_FILL_BEAT_MS, type DeskNote } from "./desk-reasoner.ts";
 // B1 contact prefill — the ONE registered compose-body surface (contact-draft.ts names it in code;
 // targeting is never a model pick). The message itself arrives ALREADY drafted in the stash.
 import { CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
@@ -449,6 +449,18 @@ const contactTaskSet = (message: string): void => { try { ss()?.setItem(CONTACT_
 const joinPhrases = (xs: string[]): string =>
   xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
 
+// ---- D1 form builder demo: a cross-page fill, same MAIL_TASK_KEY/CONTACT_TASK_KEY shape — the
+// ALREADY-DRAFTED demo values (surface → text, form-draft.ts, computed in the reasoner before the
+// stash) ride sessionStorage across the page load and runFormTask (below) fills each one in once
+// /builder settles. Every surface in the map is a `field:builder-<name>` TEXT input — form-draft.ts
+// only ever drafts a value for a matchSpec `fields` entry, never a `choices` one, so this never has a
+// <select>'s surface to accidentally target. That matters here specifically: a surface's kind is
+// derived from its address prefix alone ("field:"), so nothing about a `field:builder-topic` string
+// itself would tell this function it's actually a <select> — the guarantee has to come from upstream
+// (form-draft.ts) never putting one in the map, not from a check down here. ----
+const FORM_TASK_KEY = "desk-form-task";
+const formTaskSet = (values: Record<string, string>): void => { try { ss()?.setItem(FORM_TASK_KEY, JSON.stringify(values)); } catch { /* no session storage */ } };
+
 // ---- C1 visitor-intent onboarding: sessionStorage-backed, same try/catch-around-ss() shape as the
 // tour deps above. INTENT_KEY holds the answer (one key, per the roadmap); INTENT_ASKED_KEY is the
 // nag-guard — has the ask already fired this session, regardless of whether it was ever answered. ----
@@ -622,6 +634,35 @@ async function runContactTask(applyOp: (op: RenderOp) => void): Promise<void> {
   announce("Drafted your message in the compose panel — read it over, edit anything, and hit Send. Sending stays yours.");
 }
 
+/** Run a stashed D1 form-build fill once it lands on /builder. Consume-once (read + REMOVE the key,
+ *  the runMailTask/runContactTask/runArrival contract) so a stale fill can never re-apply on a later,
+ *  unrelated /builder visit. `stashed` is a surface → text map computed once, in the reasoner, before
+ *  the stash (form-draft.ts) — this function composes NO text of its own, it only applies what it was
+ *  handed, through grainKit.fillOp → applyOp, the one door's op path (never a direct .value write). */
+async function runFormTask(applyOp: (op: RenderOp) => void): Promise<void> {
+  let stashed: Record<string, string> | null = null;
+  try {
+    const raw = ss()?.getItem(FORM_TASK_KEY);
+    if (!raw) return;
+    ss()?.removeItem(FORM_TASK_KEY);
+    stashed = JSON.parse(raw);
+  } catch { return; }
+  if (!stashed || !Object.keys(stashed).length) return;
+  if (stripSlash(loc()?.pathname ?? "/") !== "/builder") return;   // wandered elsewhere, bail, don't chase
+
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  await wait(450);                                   // let the rendered form settle in, arrival's own beat
+
+  applyOp(grainKit.narrateOp("drafts", "a few demo values into the form"));
+  for (const [surface, value] of Object.entries(stashed)) {
+    applyOp(grainKit.spotlightOp(surface, { active: true }));
+    await wait(FORM_FILL_BEAT_MS);   // let the visitor SEE each value land, the mail/contact beat's own pace
+    try { applyOp(grainKit.fillOp(surface, value)); }
+    catch (err) { console.error("[desk] form-build fill rejected", surface, err); }   // one bad value never aborts the rest
+  }
+  applyOp(grainKit.spotlightOp("screen", { active: false }));
+}
+
 /** The door the dispatcher composes (data-ai-door). grain marks presence ONLINE once this returns;
  *  the desk chat's own health rides the separate data-desk marker. */
 export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLayer {
@@ -657,6 +698,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     notesTagChips, clickNotesTag, visibleNoteCount,   // B2 notes filtering: read + drive the /notes tag chips
     mailSenders, mailItemsFrom, archiveMailItem, mailTaskSet,   // B3 mail batch archive: read + drive the /mail rows + reader
     openCompose, contactFieldValue, contactTaskSet,   // B1 contact prefill: open + fill the /mail compose (the AI never submits)
+    formTaskSet,   // D1 form builder demo: stash the demo values for the door to fill once /builder settles
     intentGet, intentSet, intentAsked, intentMarkAsked,   // C1 visitor-intent onboarding: session state
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
@@ -677,6 +719,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   const showcaseRunning = showcaseActive();
   void runArrival(applyOp).then(() => runTourLeg(applyOp, navigate)).then(() => runMailTask(applyOp))
     .then(() => runContactTask(applyOp))
+    .then(() => runFormTask(applyOp))
     .then(() => (showcaseRunning ? reasoner.showcaseResume?.(applyOp) : undefined))
     .catch((err) => console.error("[desk] arrival chain failed", err));
   // Page-arrival awareness (reasoner-driven): read the new page and offer a greeting + contextual
