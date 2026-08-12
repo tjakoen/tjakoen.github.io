@@ -53,6 +53,10 @@ gates:
   - bunx crumb check content/tours | review-builder-demo 3 steps dev, review-form-from-data 3 steps dev
   - pantry capture review-form-from-data | all 3 steps resolved, verdict ok on each
   - pantry capture review-builder-demo | all 3 steps resolved, verdict ok on each
+  - bun test (after the preflight landed) | 420 pass, 0 fail, 1585 expect() calls, 27 files
+  - bun run export (published grain swapped in, proving the guard) | 4 unresolved refs, FAILED before starting the server, nothing written
+  - bun test (grain, at 0.1.22) | 317 pass, 0 fail, 973 expect() calls, 38 files
+  - bunx tsc --noEmit (grain) | exit 0
 diffstat: 24 files changed across the portfolio (10 tracked modified, 14 new), plus 1 file in grain (the plan only, never a component)
 dirty: everything below is uncommitted at the time of writing; the commit is this session's, the push is not
 unpushed: 1 before this run, and this run adds its own commits; pushing stays the owner's call
@@ -107,8 +111,9 @@ added content rather than a layout break.
   it has never been executed, because it needs a real GPU run the owner drives. The scenario is
   written and untested. Do not read it as a passing scenario.
 - **The wording seam is not wired.** The wording function exists, is unit-tested, and no page calls it.
-- **Nothing was pushed or published.** Grain stays unpushed with its atoms, per the owner's hold, and
-  the portfolio cannot consume them from npm until that changes.
+- **Nothing was pushed or published.** Grain is bumped to 0.1.22 and committed, and both the push and
+  the publish are left for the owner, because an outward-facing action is a hard stop rather than a
+  lane. The runbook above is the whole of what is left.
 - **The five open questions in the plan's section 9 stay open**, including whether the textarea atom
   jumps the queue, which is the one this work kept running into.
 - **No grain component source was touched.** The label addressing is recorded in the plan and left
@@ -133,6 +138,42 @@ asserts the three addresses exist, and only if someone runs the suite against th
 
 So the state to be aware of before anything gets pushed: main is committed against a dependency that
 exists only as a local symlink, and the failure mode is silent rather than loud.
+
+## The answer, and what it cost: options 1 and 3
+
+The owner chose both the loud guard and the publish, so the guard is built and the release is staged
+to the line where an outward-facing action starts.
+
+**Option 1 is in.** src/component-refs.ts walks every page and component template, collects the
+hyphenated tags they use, and resolves each against the component roots. No hand-maintained list of
+important components: a template declares its own dependency by using one, and comments, code
+examples and script blocks are stripped first so the builder page can print the very tag it renders
+without that reading as a use. It runs in two places, a unit test so every gate run catches it, and a
+preflight in the export before the server starts, so a hollow build cannot be written at all.
+
+It was proved by making it fail. With the published grain swapped in it names all four references
+across both pages, says an unknown tag does not throw and the page ships hollow, and tells the reader
+to check what the grain package resolves to. The export then stops before writing anything.
+
+**Option 3 is staged, not done.** Grain is committed at 0.1.22 with its own gates green: 317 pass, 0
+fail, and tsc clean. Publishing and pushing are outward-facing, so they stay the owner's, and the
+portfolio's dependency range already accepts 0.1.22, so nothing there needs editing first.
+
+The order matters and it is the one the release flow already records. Push grain, publish grain, then
+refresh the portfolio's copy and re-run its gates against the real package rather than the symlink,
+then push the portfolio.
+
+```
+cd ../grain && git push && cd packages/grain && npm publish
+cd ../../../tjakoen.github.io
+rm node_modules/@tjakoen/grain && bun update @tjakoen/grain     # drops the symlink for the real thing
+bun test && bun run export && bun run verify:export             # the preflight now proves the atoms arrived
+git push
+```
+
+The symlink is the thing to remember: node_modules/@tjakoen/grain currently points at the grain
+working tree, with the installed 0.1.21 parked beside it as .grain-0.1.21-npm. Until that is replaced
+by a real install, a green gate here says nothing about the published package.
 
 ## What needs human eyes
 
