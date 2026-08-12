@@ -369,7 +369,11 @@ export async function listKnowledgeSources(): Promise<KnowledgeSource[]> {
   const out: KnowledgeSource[] = [];
   for (const col of collections) {
     if (col.prefix === "/standards") continue;           // internal standards — not desk grounding
-    if (col.prefix === "/calendar") continue;            // feed events are short social posts (currently placeholders) — not grounding
+    // Events stay out of the corpus, but the REASON changed when the placeholders were deleted: they
+    // are real writeups now, not set dressing. They are excluded because they are episodic (one day,
+    // one room) where the corpus answers "what does he think about X", and a note already carries the
+    // argument an event only gestures at. Worth revisiting deliberately, not by default.
+    if (col.prefix === "/calendar") continue;
     for (const slug of await col.source.list()) {
       const raw = await col.source.read(slug);
       if (raw === null) continue;

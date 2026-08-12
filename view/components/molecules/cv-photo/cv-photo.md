@@ -10,6 +10,6 @@ printed/ATS résumé stays flat text. Styling lives in `cv-entry.css` (`.cv-entr
 
 ```html
 <div class="cv-entry__media">
-  <img class="cv-photo" src="/media/feed/talk.svg" alt="Technical Team Lead, Career Team">
+  <img class="cv-photo" src="/media/feed/gdg-hau-ai-hack-nameplate.jpg" alt="Technical Team Lead, Career Team">
 </div>
 ```

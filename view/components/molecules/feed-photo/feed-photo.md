@@ -19,12 +19,13 @@ frontmatter to retire that encoding.
 
 ```html
 <div class="feed-photos">
-  <a class="feed-photo" href="/media/feed/hackathon-1.svg">
-    <img loading="lazy" decoding="async" src="/media/feed/hackathon-1.svg" width="1200" height="675"
-         alt="Placeholder photo standing in for a hackathon team photo">
+  <a class="feed-photo" href="/media/feed/gdg-hau-ai-hack-group.jpg">
+    <img loading="lazy" decoding="async" src="/media/feed/gdg-hau-ai-hack-group.jpg" width="1600" height="1200"
+         alt="Organizers, judges and teams lined up in front of the hackathon title slide after the demos">
   </a>
 </div>
 ```
 
-**Alt-text discipline:** real photos get a real one-sentence alt. The placeholder SVGs under
-`media/feed/` say they are placeholders in their own alt text.
+**Alt-text discipline:** one real sentence, saying what is actually in the frame. Every photo under
+`media/feed/` is a real photograph now; the placeholder SVGs that used to stand in for them were
+deleted with the placeholder posts they served.
