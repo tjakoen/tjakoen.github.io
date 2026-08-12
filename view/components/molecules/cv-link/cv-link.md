@@ -6,5 +6,5 @@ may carry several posts; the row hides when it has none, and it is stripped from
 Styling lives in `cv-entry.css` (`.cv-link`).
 
 ```html
-<li class="cv-link-item"><a class="cv-link" href="/calendar/hackathon-coaching">Coached a hackathon team</a></li>
+<li class="cv-link-item"><a class="cv-link" href="/calendar/gdg-hau-ai-hack">Judged an AI hackathon</a></li>
 ```

@@ -22,15 +22,15 @@ each hide when their data is empty.
 
 ```html
 <ol class="feed__list">
-  <li class="feed-card" id="evt-event-hackathon-coaching" data-date="2026-07-08"
-      data-event-kind="hackathon" data-tags="hackathon coaching placeholder">
+  <li class="feed-card" id="evt-event-gdg-hau-ai-hack" data-date="2025-12-05"
+      data-event-kind="hackathon" data-tags="hackathon judging talk students ai gdg">
     <div class="feed-photos"><!-- feed-photo per photo, or empty (hidden) --></div>
     <div class="feed-card__body">
-      <p class="feed-card__meta">🗓️ Hackathon <time datetime="2026-07-08">2026-07-08</time> Placeholder venue</p>
-      <h3 class="feed-card__title"><a href="/calendar/hackathon-coaching">Coached a hackathon team (placeholder)</a></h3>
+      <p class="feed-card__meta">🗓️ Hackathon <time datetime="2025-12-05">2025-12-05</time> PGN 310, Holy Angel University</p>
+      <h3 class="feed-card__title"><a href="/calendar/gdg-hau-ai-hack">I handed out the criteria, then had to score them</a></h3>
       <p class="feed-card__summary">…</p>
       <ul class="feed-card__links"><!-- feed-link per link, or empty (hidden) --></ul>
-      <p class="feed-card__tags">hackathon, coaching, placeholder</p>
+      <p class="feed-card__tags">hackathon, judging, talk, students, ai, gdg</p>
     </div>
   </li>
 </ol>

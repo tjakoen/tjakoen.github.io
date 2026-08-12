@@ -5,7 +5,7 @@ One related link under a feed card, nested `each="links"` inside `feed-card` (bo
 
 The row hides itself when an event has no links (`.feed-card__links:empty { display: none }`), so a
 card without links shows no empty affordance. Desk-feed "shipped" posts carry a link to what shipped;
-note events and placeholder events currently carry none.
+note events carry none, and an `events/*.md` post puts its links in the prose instead.
 
 ```html
 <ul class="feed-card__links">

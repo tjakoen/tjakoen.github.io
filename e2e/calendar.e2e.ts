@@ -46,8 +46,8 @@ test.describe("the /calendar app (JS on)", () => {
     await expect(img).toHaveAttribute("width", /^\d+$/);       // bound dims → no layout shift
     await expect(img).toHaveAttribute("height", /^\d+$/);
     const alt = await img.getAttribute("alt");
-    expect(alt && alt.trim().length).toBeGreaterThan(0);        // a real (placeholder) alt, never empty
-    await expect(photo).toHaveAttribute("href", /\.svg$/);      // links to the full image (no-JS lightbox)
+    expect(alt && alt.trim().length).toBeGreaterThan(0);        // a real one-sentence alt, never empty
+    await expect(photo).toHaveAttribute("href", /\.(svg|jpe?g|png|webp)$/);  // the full image (no-JS lightbox)
   });
 
   // Note cards live under the Notes tab, not the default Events one — this spec predates the filter
@@ -144,22 +144,27 @@ test.describe("the calendar photo lightbox (GRAIN image viewer)", () => {
   });
 
   test("clicking a photo opens the viewer; a multi-photo post gets prev/next + a dot rail", async ({ page }) => {
-    // the hackathon card carries two photos → a real gallery
-    const card = page.locator('.feed-card[data-event-kind="hackathon"]').first();
+    // Counts come from the CARD, not from a number typed here: this used to assert "1 / 2" against a
+    // placeholder post that carried exactly two photos, and deleting that post broke a test that was
+    // really only describing the fixture. Whatever the newest multi-photo event holds, the viewer has
+    // to walk all of it — including tiles the strip hides past its five-tile cap.
+    const card = page.locator(".feed-card").filter({ has: page.locator(".feed-photo:nth-child(2)") }).first();
+    const total = await card.locator(".feed-photo").count();
+    expect(total).toBeGreaterThan(1);
     await card.locator(".feed-photo").first().click();
 
     const box = page.locator("dialog.lightbox");
     await expect(box).toBeVisible();
-    await expect(box.locator(".lightbox__img")).toHaveAttribute("src", /\.svg$/);
+    await expect(box.locator(".lightbox__img")).toHaveAttribute("src", /\.(svg|jpe?g|png|webp)$/);
 
-    // two photos ⇒ the nav + dots + counter show, and next advances the counter
+    // more than one photo ⇒ the nav + dots + counter show, and next advances the counter
     await expect(box.locator(".lightbox__nav--next")).toBeVisible();
     await expect(box.locator(".lightbox__dots")).toBeVisible();
-    await expect(box.locator(".lightbox__count")).toHaveText("1 / 2");
+    await expect(box.locator(".lightbox__count")).toHaveText(`1 / ${total}`);
     await box.locator(".lightbox__nav--next").click();
-    await expect(box.locator(".lightbox__count")).toHaveText("2 / 2");
-    await box.locator(".lightbox__nav--next").click();               // wraps
-    await expect(box.locator(".lightbox__count")).toHaveText("1 / 2");
+    await expect(box.locator(".lightbox__count")).toHaveText(`2 / ${total}`);
+    for (let i = 2; i <= total; i++) await box.locator(".lightbox__nav--next").click();
+    await expect(box.locator(".lightbox__count")).toHaveText(`1 / ${total}`);   // wraps
 
     await page.keyboard.press("Escape");
     await expect(box).toBeHidden();
@@ -169,6 +174,10 @@ test.describe("the calendar photo lightbox (GRAIN image viewer)", () => {
     // a strip that holds exactly one photo (no second tile)
     const single = page.locator(".feed-photos").filter({ has: page.locator(".feed-photo") })
       .filter({ hasNot: page.locator(".feed-photo:nth-child(2)") }).first();
+    // Every event on the feed carries several photos today; the placeholder posts that used to
+    // supply the one-photo case were deleted. Skip loudly rather than assert against nothing, so
+    // this reads as "the content stopped providing the case" and not as a passing test.
+    test.skip(await single.count() === 0, "no single-photo post on the feed right now");
     await single.locator(".feed-photo").first().click();
 
     const box = page.locator("dialog.lightbox");
@@ -198,13 +207,13 @@ test.describe("the calendar photo lightbox (no JS)", () => {
 
 test.describe("the /calendar event page (JS on)", () => {
   test("an event page renders the photo grid on top, then the body", async ({ page }) => {
-    await page.goto("/calendar/hackathon-coaching");
+    await page.goto("/calendar/gdg-hau-ai-hack");
     // the post-template photo grid comes from the entry's frontmatter (shellChrome renderPhotoGrid)
     const photos = page.locator(".feed-photos .feed-photo");
     expect(await photos.count()).toBeGreaterThan(0);
-    await expect(photos.first()).toHaveAttribute("href", /\.svg$/);
+    await expect(photos.first()).toHaveAttribute("href", /\.(jpg|jpeg|png|svg)$/);
     // and the MILL-rendered body is below it
-    await expect(page.locator("h2", { hasText: "This is a placeholder" }).first()).toBeVisible();
+    await expect(page.locator("h2").first()).toBeVisible();
     // it is a real MILL entry (carries the Rendered/Source toggle)
     await expect(page.locator(".content-source")).toBeVisible();
   });
