@@ -2,13 +2,13 @@
 title: "Don't vibe anything you can't code yourself"
 kind: talk
 date: 2026-08-08
-location: "GDGoC Holy Angel University, on Google Meet"
+location: "Google Developers Group on Campus - Holy Angel University, on Google Meet"
 tags: [talk, students, ai, gdgoc]
 summary: >
-  Infosession: Navigating Tech, the general assembly of Google Developer Groups on Campus at Holy Angel
-  University, about 60 students on a Saturday-night call. Ma'am Louella Salenga took the ethics of AI
-  in learning and teaching, Sir Macky took security in the age of AI, and I got the one that sounds
-  like a compliment until you look at it: vibe coding, and where it stops working.
+  Infosession: Navigating Tech, the general assembly of Google Developers Group on Campus - Holy Angel
+  University, about 60 students on a Saturday-night call. Louella Salenga took the ethics of AI in
+  learning and teaching, Marc Samuel Pabilona took security in the age of AI, and I got the one that
+  sounds like a compliment until you look at it: vibe coding, and where it stops working.
 photos:
   - "/media/feed/gdgoc-hau-speaker-card.jpg | 1080x1350 | The organizers' speaker card announcing me for the infosession, captioned current adviser of GDGoC, software engineering leader, computer science instructor"
   - "/media/feed/gdgoc-hau-call-the-point.jpg | 1600x744 | Screenshot from the call: the slide reading Bring nothing and it multiplies nothing, become a bigger number first, with the students' video tiles blurred down the right side"
@@ -33,9 +33,9 @@ social: |
 Seven in the evening. On a Saturday. That's when about 60 students got on a Google Meet for their
 general assembly, which is either heartening or proof that I should have been funnier.
 
-Three of us split the same question. Ma'am Louella Salenga took the ethics of AI in learning and
-teaching. Sir Macky, Marc Samuel Pabilona, took security in the age of AI. I got the one that sounds
-like a compliment until you look at it: *vibe coding.*
+Three of us split the same question. Louella Salenga took the ethics of AI in learning and teaching.
+Marc Samuel Pabilona took security in the age of AI. I got the one that sounds like a compliment
+until you look at it: *vibe coding.*
 
 The two wide pictures up top are from the call itself, mid-slide, with the room down the right side,
 faces blurred because none of those students signed up to be on my website.
