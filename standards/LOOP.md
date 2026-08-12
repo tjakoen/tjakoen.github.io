@@ -208,6 +208,24 @@ the tooling allows — Claude Code hooks blocking the forbidden commands; P3):
 Autonomous runs route every ask through the decision inbox (P2) — chat has nobody in it. Interactive
 sessions use the inbox for artifact-heavy decisions and chat for the quick ones.
 
+**An ask stops the run.** Not a pause you promise to honor, a stop: put the question where it belongs
+and end the turn. A wait is not passive, because nothing interrupts a session when the answer lands,
+so a run that asks and carries on gets its answer after the decision it was meant to inform. State
+this in the envelope explicitly rather than assuming it, since the pull to keep making progress while
+a question is outstanding is exactly what a run that wants to look busy will follow. Leave the tree
+clean before stopping, so the answer arrives to a session that can act on it instead of one that has
+to tidy up first.
+
+**The envelope travels with the handoff, and the session that opens the next one declares it.** A
+successor opened at the context line inherits the task automatically and inherits nothing else, so an
+envelope that lives only in the outgoing session's head is an envelope the chain loses on its first
+hop. The rule: the same message that carries the task carries the lane, the scope cap, the hard
+stops, the ask-triggers, and whether an ask stops the run. **Show it to the owner and let them adjust
+it if they are in the room, declare it yourself if they are not, and never leave it unsaid.** This
+does not reopen the no-confirmation rule for the spawn itself: durable state is still the gate, and a
+session that stops to ask permission at the stop line is spending the room it has left on the
+question. What needs a human is the shape of the envelope, not the decision to hand off.
+
 **Those three are a floor, and a floor applied identically to every change is a blunt instrument.**
 The same envelope governs a typo fix and a schema migration, so it is either too tight to work under
 or too loose to trust. Autonomy is a property of the change, its evidence and the harness around it,
