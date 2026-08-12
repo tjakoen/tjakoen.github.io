@@ -23,6 +23,7 @@ import {
   listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes,
 } from "../src/content.ts";
 import { listPlanRoutes } from "../src/plans.ts";
+import { findMissingComponents, missingReport } from "../src/component-refs.ts";
 import { loadTours } from "@tjakoen/crumb/loader.ts";
 import { fileURLToPath } from "node:url";
 import { config } from "../src/config.ts";
@@ -130,6 +131,22 @@ function assetMounts(): AssetMount[] {
     { prefix: "/fonts", dir: config.fontsDir },
   ];
 }
+
+// Preflight BEFORE the crawl, because the failure this guards against is silent on the other side of
+// it. An unknown component tag does not throw: the renderer walks only known tags, leaves the rest
+// alone, and the page ships with the control missing. The crawl would then freeze that hollow page,
+// the dead-link walk would pass it, and the first person to notice would be a visitor. Measured on
+// 2026-08-13 against the published grain, which predates the form atoms. See src/component-refs.ts.
+const missingComponents = await findMissingComponents(
+  [config.pagesDir, join(import.meta.dir, "..", "view", "components")],
+  config.componentRoots,
+);
+if (missingComponents.length) {
+  console.error(missingReport(missingComponents));
+  console.error(`\n[export] FAILED before starting the server — nothing was written to ${DIST}/`);
+  process.exit(1);
+}
+console.log(`[export] preflight: every component the templates reference resolves`);
 
 console.log(`[export] starting server on ${PORT}…`);
 const server = Bun.spawn(["bun", join(import.meta.dir, "..", "src", "server.ts")], {
