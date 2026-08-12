@@ -113,6 +113,18 @@ alignment row, conformance tests for release + narration (lessons 6–7).
 Place the mechanism in grain (persona-neutral "compose from vocabulary" engine) only if
 another GRAIN product would want it (it would); the showcase page stays portfolio.
 
+**The form builder is the first instance to build, and it is the cheapest one this piece has**
+(spec: `grain/packages/grain/plans/form-from-data.md` §8, added 2026-08-13). A form generator
+emits **no markup at all**: `b-field`/`b-choice`/`b-option` render a whole form from a JSON field
+spec, so the generator's only job is picking kinds, names, types and surfaces from a closed set.
+The close is the part no code generator can copy — the desk then fills in the form it just
+generated, through `field.set`, against the surfaces the spec carried. Two revisions to the tiers
+above, both because the ground moved: the tier split is no longer "no model / model", it is
+**deterministic code selects, the model composes wording** (the 0.5B lock rule, which invents
+slugs the moment it is allowed to enumerate); and it does not wait for M★, since the in-browser
+0.5B has shipped and B1 already drives `field.set` from it. Honest limit to state on the page:
+nothing in this stack has anywhere to submit to, so the demo generates and prefills, never sends.
+
 ### 5. Theme builder (sliders + AI)
 
 A `/grain` Themes-tab upgrade: sliders/pickers bound to the token slots (`--color-accent`,
