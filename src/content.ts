@@ -711,20 +711,22 @@ function renderPhotoGrid(photos: EventPhoto[]): string {
 // captioned by its own alt text, in a SEPARATE data-lightbox-group so walking the gallery does not
 // walk back into the hero. Same flat "src | WxH | alt" frontmatter encoding as `photos:`, same
 // parser, same no-JS fallback (each tile is a real link to the full image).
+// The grid itself is GRAIN's `gallery` molecule (design work belongs up in grain, not here): this
+// emits grain's class names and owns only the section around them, the heading and the frontmatter.
 function renderGallery(photos: EventPhoto[]): string {
   if (!photos.length) return "";
   const items = photos.map((p) => {
     const src = escapeHtml(p.src);
     const dims = p.width && p.height ? ` width="${escapeHtml(p.width)}" height="${escapeHtml(p.height)}"` : "";
     const alt = escapeHtml(p.alt);
-    return `<figure class="event-gallery__item">
-      <a class="event-gallery__link" data-lightbox href="${src}"><img src="${src}"${dims} alt="${alt}" loading="lazy" decoding="async"></a>
-      <figcaption class="event-gallery__caption">${alt}</figcaption>
+    return `<figure class="gallery__item">
+      <a class="gallery__link" data-lightbox href="${src}"><img src="${src}"${dims} alt="${alt}" loading="lazy" decoding="async"></a>
+      <figcaption class="gallery__caption">${alt}</figcaption>
     </figure>`;
   }).join("");
   return `<section class="event-gallery" aria-labelledby="event-gallery-heading">
   <h2 class="event-gallery__heading" id="event-gallery-heading">The rest of the roll</h2>
-  <div class="event-gallery__grid" data-lightbox-group>${items}</div>
+  <div class="gallery" data-lightbox-group>${items}</div>
 </section>`;
 }
 

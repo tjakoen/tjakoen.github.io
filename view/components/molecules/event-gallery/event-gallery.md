@@ -14,6 +14,12 @@ alt text, under the prose where a reader can skip them.
 Photos use the same flat `"src | 1400x788 | alt"` frontmatter encoding and the same `parsePhotos`
 parser as `photos:` (MILL's frontmatter is flat; a grain proposal tracks nested frontmatter).
 
+**The grid is GRAIN's, not this repo's.** The tiles carry grain's `gallery` molecule class names;
+this component owns only the frame around them (the rule, the spacing, the small uppercase heading).
+The `.gallery` rules currently sitting at the bottom of the stylesheet here are a stopgap copy,
+because the molecule was authored after `@tjakoen/grain` 0.1.19 shipped. Delete that tail once 0.1.20
+is installed and the grain stylesheet bundles them itself.
+
 **Its own `data-lightbox-group`.** GRAIN's viewer (`scripts/lightbox.js`) walks a group, so a separate
 one keeps the gallery and the hero strip from spilling into each other. Each tile's `href` is the full
 image, so with no JS it degrades to a plain navigation.

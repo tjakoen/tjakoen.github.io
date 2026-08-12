@@ -107,9 +107,11 @@ I last talk to them" is a claim with a source attached to it. And feasible turne
 different number than I had guessed, because four people who had already decided what they were
 building on day one had a lot more hours than the teams still arguing about it on day two.
 
-Credit where it goes: Jansen Cruz, Elicia Klyde Martigne Apostol, Jose Gian Tubera and Paul Andrei
-Calma, advised by Ms. Melissa Pantig. And worth noting for the host school, they were not from it.
-That is the good version of a regional event.
+Credit where it goes: [Jansen Cruz](https://ph.linkedin.com/in/jansen-cruz-480a47ba),
+[Elicia Klyde Martigne Apostol](https://ph.linkedin.com/in/ekm-apostol),
+[Jose Gian Tubera](https://ph.linkedin.com/in/josegiantubera) and
+[Paul Andrei Calma](https://ph.linkedin.com/in/paul-andrei-calma), advised by Ms. Melissa Pantig. And
+worth noting for the host school, they were not from it. That is the good version of a regional event.
 
 ## What I would flag
 

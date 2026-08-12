@@ -1,31 +1,30 @@
-/* molecules/event-gallery — the SECONDARY photo grid of a /calendar event, below the body (rendered
-   by content.ts renderGallery from the entry's `gallery:` frontmatter). Bundled into /components.css
+/* molecules/event-gallery — the frame around a /calendar event's secondary photo grid (rendered by
+   content.ts renderGallery from the entry's `gallery:` frontmatter). Bundled into /components.css
    via config.styleRoots. Not screen-scoped: it renders inside a MILL entry page's .board, and the
    only thing that puts one there is an event with a `gallery:` key.
 
-   Deliberately NOT the .feed-photos layout. That strip is a hero: one big photo carrying the post.
-   This is the roll the hero was picked from, so every tile is equal, evenly sized, and captioned by
-   its own alt text — a reader scanning it should be able to skip it, which is the whole point of it
-   sitting under the prose instead of over it. Its own data-lightbox-group, so walking this gallery
-   never walks back up into the hero strip. */
+   The GRID inside it is GRAIN's `gallery` molecule. This file owns only what is genuinely the
+   portfolio's: the rule above it, the spacing that separates it from the prose, and the small
+   uppercase heading that matches the share block's. New design work belongs up in grain.
+
+   STOPGAP, delete when @tjakoen/grain 0.1.20 is installed: the `.gallery` rules at the bottom are a
+   copy of grain's molecule, here only because the component was authored after 0.1.19 shipped. Once
+   the bump lands, the grain stylesheet bundles them and this tail is a duplicate. */
 .event-gallery { margin: var(--space-7) 0 0; padding: var(--space-5) 0 0;
   border-top: 1px solid var(--line-soft); }
 .event-gallery__heading { margin: 0 0 var(--space-4); font-size: var(--text-xs);
   font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .04em;
   color: var(--ink-muted); font-weight: 500; }
 
-.event-gallery__grid { display: grid; gap: var(--space-4);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
-.event-gallery__item { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
-
-/* fixed 3:2 box per tile: the roll mixes portrait phone shots with 16:9 event-photographer frames,
-   and a ragged grid reads like a mistake. object-fit crops to the box, the box reserves the space, so
-   a lazily-loaded photo can't shift the page under someone mid-scroll. */
-.event-gallery__link { display: block; overflow: hidden; border-radius: var(--radius-md);
-  border: 1px solid var(--line-soft); background: var(--paper-2); }
-.event-gallery__link img { display: block; width: 100%; height: 100%; aspect-ratio: 3 / 2;
-  object-fit: cover; }
-.event-gallery__link:hover { border-color: var(--color-accent); }
-
-.event-gallery__caption { font-size: var(--text-xs); line-height: var(--leading-relaxed);
-  color: var(--ink-faint); }
+/* ---- stopgap copy of grain/components/molecules/gallery ------------------------------------- */
+.gallery { display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(var(--gallery-min, 15rem), 1fr)); }
+.gallery__item { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.gallery__link { display: block; overflow: hidden; border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md); background: var(--paper-2); }
+.gallery__link img { display: block; width: 100%; height: 100%;
+  aspect-ratio: var(--gallery-ratio, 3 / 2); object-fit: cover; }
+a.gallery__link { transition: border-color .15s; }
+a.gallery__link:hover { border-color: var(--color-accent); }
+.gallery__caption { color: var(--ink-faint); font-size: var(--text-xs);
+  line-height: var(--leading-relaxed); }
