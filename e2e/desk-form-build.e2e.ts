@@ -16,6 +16,12 @@ const EMAIL_FIELD = '[data-surface="field:builder-email"]';
 // select accepts the write and empties itself on anything that is not an option value. So the select
 // is located by its address AND asserted untouched, which is the pairing that keeps meaning something.
 const TOPIC_SELECT = 'select[data-surface="field:builder-topic"]';
+// The message box, added 2026-08-13: matchSpec used to REFUSE this ask because grain had no textarea
+// rule. It renders through b-memo now, and unlike the select it IS a fill target — the dispatcher
+// types into INPUT and TEXTAREA through one branch, and no string a caller sends can empty it.
+const MESSAGE_ASK =
+  "build me a form that asks for a name, an email, a big message box and what they want to talk about";
+const MESSAGE_BOX = 'textarea[data-surface="field:builder-message"]';
 
 async function clientDeskEverywhere(page: Page) {
   await page.route("**/*", async (route, req) => {
@@ -73,6 +79,27 @@ test.describe("D1 form builder demo (deterministic, no model needed)", () => {
 
     // the desk never submits: no form action exists here, and no navigation happened beyond /builder.
     expect(new URL(page.url()).pathname).toBe("/builder");
+  });
+
+  test("a message box is generated AND filled: a textarea takes the same fill path as a text field", async ({ page }) => {
+    await clientDeskEverywhere(page);
+    await page.goto("/");
+    await deskReady(page);
+
+    await ask(page, MESSAGE_ASK);
+
+    await page.waitForURL(/\/builder\?ask=/);
+    await expect(page.locator(MESSAGE_BOX)).toBeVisible();
+    // it is a real multi-line box, not a text input wearing the label — the whole point of the atom
+    await expect(page.locator(MESSAGE_BOX)).toHaveAttribute("rows", "6");
+    // and the desk writes into it, carrying the same grain ink every other filled control gets
+    await expect(page.locator(MESSAGE_BOX)).toHaveValue(/GRAIN write-up/, { timeout: 15_000 });
+    await expect(page.locator(MESSAGE_BOX)).toHaveAttribute("data-grade", "grain");
+    // the select is still never a fill target, even with a message box in the same run
+    await expect(page.locator(TOPIC_SELECT)).toHaveValue("other");
+    await expect(page.locator(TOPIC_SELECT)).not.toHaveAttribute("data-grade", "grain");
+    // the address rule holds for the new atom too: no label anywhere carries one
+    await expect(page.locator("label[data-surface]")).toHaveCount(0);
   });
 
   test("on /builder already: an ask still round-trips through a fresh GET", async ({ page }) => {

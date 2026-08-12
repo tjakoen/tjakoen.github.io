@@ -27,21 +27,24 @@
           <p class="builder-prompt"><q data-field="ask"></q></p>
           <p class="builder-none" data-bind-data-matched-nothing="matchedNothing">Nothing in the
             closed set matched that. Try one of the prompts below, or ask for a name, an email, a
-            phone number, a company, a role, a subject, a website, or a rough budget, or a topic, a
-            preferred contact method, or a timeline.</p>
+            phone number, a company, a role, a subject, a website, or a rough budget, or a message
+            box, or a topic, a preferred contact method, or a timeline.</p>
           <p><a href="/builder">Try another prompt →</a></p>
 
           <div class="builder-form-block" data-bind-data-has-fields="hasFields">
             <div class="section-head"><span>Live form</span></div>
-            <p class="muted">One tag renders whatever matchSpec decided, every time. It never
-              changes between runs:</p>
+            <p class="muted">One tag per kind of control renders whatever matchSpec decided, every
+              time. They never change between runs:</p>
             <pre class="builder-tag">&lt;b-field each="fields"&gt;&lt;/b-field&gt;
+&lt;b-memo each="messages" rows="6"&gt;&lt;/b-memo&gt;
 &lt;b-choice each="choices"&gt;&lt;/b-choice&gt;</pre>
             <form class="builder-form" data-surface="builder-form" onsubmit="return false">
               <b-field each="fields" size="sm"></b-field>
+              <b-memo each="messages" size="sm" rows="6"></b-memo>
               <b-choice each="choices" size="sm"></b-choice>
             </form>
-            <p class="muted">Fields are grouped by kind, text fields first and choices after.
+            <p class="muted">Fields are grouped by kind, text fields first, then a message box, then
+              choices.
               Interleaving them in the order you asked isn't supported, on purpose, a v1 limit. Labels
               above are the closed set's own defaults; a model could reword them (matchSpec's
               applyWording seam exists for exactly that), but it isn't wired into this live page,
@@ -57,6 +60,12 @@
               nothing to write into, and the write was dropped without a word. Building this found it
               and the atoms were fixed, which is the whole argument for building a demo rather than
               describing one.</p>
+            <p class="muted">Ask for a message box and you get one now. Until this page was built the
+              demo refused that request, and the refusal was honest: the design system had no rule for
+              a textarea at all, so the only thing it could have rendered was a single-line input that
+              swallows a paragraph. Two atoms closed that, the box you see is a real textarea in the
+              same frame as every other control, and the desk types into it the same way it types into
+              a name. The refusal below is what is left, and it is a shorter list than it was.</p>
           </div>
 
           <div class="builder-unsupported-block" data-bind-data-has-unsupported="hasUnsupported">
@@ -69,8 +78,9 @@
           </div>
 
           <div class="section-head"><span>Spec</span></div>
-          <p class="muted">Exactly what matchSpec returned: the fields, the choices, and any refusal
-            above all come straight from this, never a second hand-typed description of it. The
+          <p class="muted">Exactly what matchSpec returned: the fields, the message box, the choices
+            and any refusal above all come straight from this, never a second hand-typed description
+            of it. The
             choices are addressable too, and the desk still leaves them alone: a select accepts a
             write that a text field would, and anything that is not one of its option values empties
             it rather than failing. So the code that drafts these demo values refuses to draft one for
@@ -86,7 +96,8 @@
           <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20what%20they%20want%20to%20talk%20about">A contact form with a name, an email, and what they want to talk about</a><span class="docs-list__what">two fields, one choice.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=Name%2C%20email%2C%20phone%2C%20and%20a%20rough%20budget">Name, email, phone, and a rough budget</a><span class="docs-list__what">four fields, no choices.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20event%20signup%20with%20an%20email%20and%20a%20timeline">An event signup with an email and a timeline</a><span class="docs-list__what">one field, one choice.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details">A form with a name, an email, and a big message box for details</a><span class="docs-list__what">the message box is refused, honestly.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details">A form with a name, an email, and a big message box for details</a><span class="docs-list__what">two fields and the message box, which used to be refused.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20an%20email%20and%20a%20file%20upload%20for%20their%20portfolio">A form with an email and a file upload for their portfolio</a><span class="docs-list__what">the upload is refused, honestly.</span></div>
         </div>
 
         <div class="page-foot">

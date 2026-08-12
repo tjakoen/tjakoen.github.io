@@ -3,6 +3,9 @@
     { "surface": "field:contact-name", "label": "Name", "name": "name", "type": "text", "placeholder": "Jane Doe", "value": null, "required": "required" },
     { "surface": "field:contact-email", "label": "Email", "name": "email", "type": "email", "placeholder": "jane@example.com", "value": null, "required": "required" }
   ],
+  "messages": [
+    { "surface": "field:about-message", "label": "Message", "name": "message", "placeholder": "What would you like to say?", "value": null, "required": null }
+  ],
   "choices": [
     {
       "surface": "field:contact-topic",

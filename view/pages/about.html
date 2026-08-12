@@ -121,6 +121,13 @@
           <form class="contact-form" data-contact-form data-surface="contact-form">
             <b-field each="contactFields" size="sm"></b-field>
             <b-choice each="contactChoices" size="sm"></b-choice>
+            <!-- The message box is addressed field:about-message, NOT field:contact-message: that
+                 second name belongs to /mail's compose textarea, which the desk's own draft flow
+                 resolves in code (contact-draft.ts's CONTACT_FIELD_SURFACE). A second control
+                 answering to it here would make "is there a draft target on this page" true on a
+                 page that flow never drafts on. Rows is form-wide config on the tag, the way size
+                 is: height is presentation, not per-item data. -->
+            <b-memo each="contactMessages" size="sm" rows="6"></b-memo>
             <div class="contact-form__foot">
               <button class="btn" type="submit">Send</button>
               <span class="contact-form__hint">Opens in your mail app, addressed to me.
@@ -219,7 +226,7 @@
 
   <script>
     // Contact tab's form: same static-site limit as /mail's compose, same fix. No backend receives
-    // this submission, so Send reads the three fields, builds a mailto: link, and hands off to the
+    // this submission, so Send reads the four controls, builds a mailto: link, and hands off to the
     // visitor's own mail app. The address is assembled from parts rather than sitting in the page
     // source as harvestable plaintext, matching mail.html's compose script exactly.
     (function () {
@@ -233,8 +240,13 @@
         var email = form.querySelector('[name="email"]').value.trim();
         var topicSelect = form.querySelector('[name="topic"]');
         var topicLabel = topicSelect.options[topicSelect.selectedIndex].text;
+        var messageBox = form.querySelector('[name="message"]');
+        var message = messageBox ? messageBox.value.trim() : '';
         var subject = 'Contact from the site: ' + topicLabel;
-        var body = 'From: ' + name + (email ? ' <' + email + '>' : '') + '\n\n';
+        // What the visitor wrote goes in the body under the From line. Before the message box
+        // existed the draft opened empty and the writing all happened in the mail client; it can
+        // happen here now, and an empty box still opens the same draft rather than blocking Send.
+        var body = 'From: ' + name + (email ? ' <' + email + '>' : '') + '\n\n' + message;
         window.location.href = 'mailto:' + to +
           '?subject=' + encodeURIComponent(subject) +
           '&body=' + encodeURIComponent(body);

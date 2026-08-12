@@ -9,7 +9,7 @@ describe("buildBuilderView: no ask", () => {
   test("empty string -> the empty state, nothing else", () => {
     const v = buildBuilderView("");
     expect(v).toEqual({
-      ask: "", builderState: "empty", fields: [], choices: [], unsupported: [],
+      ask: "", builderState: "empty", fields: [], choices: [], messages: [], unsupported: [],
       hasFields: null, hasUnsupported: null, matchedNothing: null, specJson: "",
     });
   });
@@ -29,6 +29,7 @@ describe("buildBuilderView: a real ask", () => {
     expect(v.builderState).toBe("result");
     expect(v.fields).toEqual(spec.fields);
     expect(v.choices).toEqual(spec.choices);
+    expect(v.messages).toEqual(spec.messages);
     expect(v.unsupported).toEqual(spec.unsupported);
     expect(v.hasFields).toBe("hasfields");
     expect(v.hasUnsupported).toBeNull();
@@ -43,11 +44,21 @@ describe("buildBuilderView: a real ask", () => {
   });
 
   test("an unsupported-only ask: no fields, hasUnsupported set, not matchedNothing", () => {
-    const v = buildBuilderView("a big message box");
+    // A file upload, since the message box stopped being a refusal on 2026-08-13 and became a
+    // control. Picking an ask that still refuses is the whole point of this case.
+    const v = buildBuilderView("let them attach a file");
     expect(v.hasFields).toBeNull();
     expect(v.hasUnsupported).toBe("hasunsupported");
     expect(v.matchedNothing).toBeNull();
     expect(v.unsupported.length).toBeGreaterThan(0);
+  });
+
+  test("a message-box-only ask counts as fields to render, so the form block shows", () => {
+    const v = buildBuilderView("a big message box");
+    expect(v.messages.map((m) => m.name)).toEqual(["message"]);
+    expect(v.hasFields).toBe("hasfields");
+    expect(v.hasUnsupported).toBeNull();
+    expect(v.matchedNothing).toBeNull();
   });
 
   test("a real ask that matches nothing at all: matchedNothing set, everything else empty", () => {
@@ -57,5 +68,6 @@ describe("buildBuilderView: a real ask", () => {
     expect(v.matchedNothing).toBe("matchednothing");
     expect(v.fields).toEqual([]);
     expect(v.choices).toEqual([]);
+    expect(v.messages).toEqual([]);
   });
 });

@@ -3,7 +3,7 @@
 // JSON the page prints, which CSS state a section's visibility keys off) unit-tests headless and
 // server.ts stays a thin wire-the-request-in, hand-the-file-out. matchSpec (field-matcher.ts) still
 // decides every field/choice/refusal; this only shapes ITS result into view data.
-import { matchSpec, type FieldItem, type ChoiceItem } from "./field-matcher.ts";
+import { matchSpec, type FieldItem, type ChoiceItem, type MessageItem } from "./field-matcher.ts";
 
 export interface BuilderView {
   /** The trimmed ask, echoed back on the page as "the prompt that produced this" — "" when none. */
@@ -13,8 +13,10 @@ export interface BuilderView {
   builderState: "empty" | "result";
   fields: FieldItem[];
   choices: ChoiceItem[];
+  messages: MessageItem[];
   unsupported: Array<{ token: string; reason: string }>;
-  /** Present (truthy marker string) only when there's at least one field or choice to render —
+  /** Present (truthy marker string) only when there's at least one field, message box or choice to
+   *  render —
    *  field-matcher.ts's own "a literal marker string or null, never boolean text" convention, so a
    *  `data-bind-` attribute can toggle CSS visibility by the attribute's mere presence. */
   hasFields: "hasfields" | null;
@@ -35,17 +37,18 @@ export function buildBuilderView(rawAsk: string): BuilderView {
   const ask = rawAsk.trim();
   if (!ask) {
     return {
-      ask: "", builderState: "empty", fields: [], choices: [], unsupported: [],
+      ask: "", builderState: "empty", fields: [], choices: [], messages: [], unsupported: [],
       hasFields: null, hasUnsupported: null, matchedNothing: null, specJson: "",
     };
   }
   const spec = matchSpec(ask);
-  const hasFields = spec.fields.length > 0 || spec.choices.length > 0;
+  const hasFields = spec.fields.length > 0 || spec.messages.length > 0 || spec.choices.length > 0;
   return {
     ask,
     builderState: "result",
     fields: spec.fields,
     choices: spec.choices,
+    messages: spec.messages,
     unsupported: spec.unsupported,
     hasFields: hasFields ? "hasfields" : null,
     hasUnsupported: spec.unsupported.length > 0 ? "hasunsupported" : null,

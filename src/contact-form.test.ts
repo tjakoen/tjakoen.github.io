@@ -12,21 +12,35 @@ interface ContactField {
   surface: string; label: string; name: string; type: string;
   placeholder: string | null; value: string | null; required: string | null;
 }
+interface ContactMessage {
+  surface: string; label: string; name: string;
+  placeholder: string | null; value: string | null; required: string | null;
+}
 interface ContactOption { value: string; label: string; selected: string | null }
 interface ContactChoice { surface: string; label: string; name: string; options: ContactOption[] }
-interface ContactForm { fields: ContactField[]; choices: ContactChoice[] }
+interface ContactForm { fields: ContactField[]; messages: ContactMessage[]; choices: ContactChoice[] }
 
 const path = join(import.meta.dir, "..", "content", "data", "contact-form.json");
 const spec: ContactForm = await Bun.file(path).json();
 
 const FIELD_KEYS = ["surface", "label", "name", "type", "placeholder", "value", "required"];
+// No "type": a textarea has none, and b-memo binds no such attribute.
+const MESSAGE_KEYS = ["surface", "label", "name", "placeholder", "value", "required"];
 const CHOICE_KEYS = ["surface", "label", "name", "options"];
 const OPTION_KEYS = ["value", "label", "selected"];
 
 describe("contact-form.json shape", () => {
-  test("has at least one field and one choice", () => {
+  test("has at least one field, one message box and one choice", () => {
     expect(spec.fields.length).toBeGreaterThan(0);
+    expect(spec.messages.length).toBeGreaterThan(0);
     expect(spec.choices.length).toBeGreaterThan(0);
+  });
+
+  test("every message item carries every key as its own property (no absent-key warning)", () => {
+    for (const message of spec.messages) {
+      for (const key of MESSAGE_KEYS) expect(Object.prototype.hasOwnProperty.call(message, key)).toBe(true);
+      expect(message.required === "required" || message.required === null).toBe(true);
+    }
   });
 
   test("every field item carries every key as its own property (no absent-key warning)", () => {
@@ -62,13 +76,20 @@ describe("contact-form.json shape", () => {
   });
 
   test("every surface starts with field: and all surfaces in the file are unique", () => {
-    const surfaces = [...spec.fields.map((f) => f.surface), ...spec.choices.map((c) => c.surface)];
+    const surfaces = [...spec.fields.map((f) => f.surface), ...spec.messages.map((m) => m.surface),
+      ...spec.choices.map((c) => c.surface)];
     for (const surface of surfaces) expect(surface.startsWith("field:")).toBe(true);
     expect(new Set(surfaces).size).toBe(surfaces.length);
   });
 
+  // This one matters more now than it did, because the form HAS a message box since 2026-08-13 and
+  // the obvious name for its address is the one /mail's compose textarea already answers to. The
+  // desk's draft flow resolves field:contact-message in code (contact-draft.ts) and asks the live
+  // DOM whether a draft target is present; a second control wearing that name on another page makes
+  // that question answer true where the flow never drafts. Hence field:about-message here.
   test("surfaces don't collide with /mail's registered field:contact-message", () => {
-    const surfaces = [...spec.fields.map((f) => f.surface), ...spec.choices.map((c) => c.surface)];
+    const surfaces = [...spec.fields.map((f) => f.surface), ...spec.messages.map((m) => m.surface),
+      ...spec.choices.map((c) => c.surface)];
     expect(surfaces).not.toContain("field:contact-message");
   });
 });

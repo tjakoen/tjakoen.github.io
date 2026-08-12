@@ -63,11 +63,42 @@ test.describe("the /about profile app (JS on)", () => {
     await expect(page.locator("form")).toHaveCount(1);
     await expect(form).not.toHaveAttribute("action", /./);
     await expect(form).not.toHaveAttribute("method", /./);
-    // the three controls came from the spec, not from hand-typed markup
+    // the four controls came from the spec, not from hand-typed markup
     await expect(form.locator('[data-surface="field:contact-name"]')).toHaveCount(1);
     await expect(form.locator('[data-surface="field:contact-email"]')).toHaveCount(1);
     await expect(form.locator('[data-surface="field:contact-topic"]')).toHaveCount(1);
     await expect(form.locator('select[name="topic"] option')).toHaveCount(5);
+    // The message box, added 2026-08-13 with grain's b-memo. Three things are asserted rather than
+    // its mere presence: it is a real TEXTAREA (a single-line input pretending to be one was the
+    // failure this atom exists to prevent), its address sits on the control the desk would write
+    // into, and it is NOT /mail's registered field:contact-message, which the desk's own draft flow
+    // resolves by name. The form-wide rows config reaching the item is what makes it a box at all.
+    const message = form.locator('[data-surface="field:about-message"]');
+    await expect(message).toHaveCount(1);
+    await expect(message).toHaveJSProperty("tagName", "TEXTAREA");
+    await expect(message).toHaveAttribute("rows", "6");
+    await expect(form.locator('[data-surface="field:contact-message"]')).toHaveCount(0);
+    // and no address anywhere on this page sits on a label: the rule the atoms got wrong once.
+    await expect(page.locator("label[data-surface]")).toHaveCount(0);
+  });
+
+  test("the message box takes real typing, and Send still leaves the page where it is", async ({ page }) => {
+    await page.locator('.about-tabs [href="#contact"]').click();
+    const form = page.locator("form.contact-form");
+    const message = form.locator('[data-surface="field:about-message"]');
+
+    await form.locator('[data-surface="field:contact-name"]').fill("Ada Rivers");
+    await form.locator('[data-surface="field:contact-email"]').fill("ada@example.com");
+    await message.fill("Two lines about GRAIN,\nthe second one proving a textarea holds them.");
+    await expect(message).toHaveValue(/second one proving/);
+
+    // Send builds a mailto: and hands off to the visitor's own mail client. Chromium has no handler
+    // registered, so the handoff itself cannot be observed here and the tour's verify line is what
+    // checks it with a human watching. What IS asserted is the half that would be a real defect:
+    // nothing is posted, and the page the visitor typed into is still in front of them afterwards.
+    await form.locator('button[type="submit"]').click();
+    await expect(message).toHaveValue(/second one proving/);
+    expect(new URL(page.url()).pathname).toBe("/about");
   });
 
   test("the Now tab lists dated, real entries", async ({ page }) => {

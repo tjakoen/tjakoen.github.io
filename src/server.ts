@@ -214,11 +214,22 @@ interface ContactChoiceRaw {
   surface: string; label: string; name: string;
   options: Array<{ value: string; label: string; selected: "selected" | null }>;
 }
-interface ContactFormData { fields: ContactFieldRaw[]; choices: ContactChoiceRaw[] }
+// A message box is its own array rather than a field with a type, because `each` renders one
+// component per item and a component cannot choose which component it is: b-memo renders a textarea,
+// b-field an input (the grain plan's section 4). No `type` key here for the same reason a textarea
+// has no type attribute.
+interface ContactMessageRaw {
+  surface: string; label: string; name: string;
+  placeholder: string | null; value: string | null; required: "required" | null;
+}
+interface ContactFormData {
+  fields: ContactFieldRaw[]; messages: ContactMessageRaw[]; choices: ContactChoiceRaw[];
+}
 const contactForm: ContactFormData = await Bun.file(
   join(import.meta.dir, "..", "content", "data", "contact-form.json"),
 ).json();
 const contactFields = contactForm.fields;
+const contactMessages = contactForm.messages;
 const contactChoices = contactForm.choices;
 
 const renderAppPage = async (html: string) =>
@@ -227,7 +238,7 @@ const renderAppPage = async (html: string) =>
     calendarEvents: await buildCalendarEvents(),
     mailFolders, mailMessages,
     cvRoles, cvEducation, cvSkills, cvCerts, cvStats, cvPrimary, cvLanguages, cvSummary,
-    contactFields, contactChoices,
+    contactFields, contactMessages, contactChoices,
   }));
 
 // /builder demo: the same shell every page gets, but rendered by hand rather than through
