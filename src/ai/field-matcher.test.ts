@@ -1,6 +1,6 @@
 // portfolio/ai/field-matcher.test.ts — pins the closed-set contract matchSpec/applyWording promise:
-// a description picks from a fixed list of fields and choices, never invents one, and the model's
-// only seam (applyWording) can reword a label or placeholder and nothing structural.
+// a description picks from a fixed list of fields, message boxes and choices, never invents one, and
+// the model's only seam (applyWording) can reword a label or placeholder and nothing structural.
 import { test, expect, describe } from "bun:test";
 import { matchSpec, applyWording, type FieldSpec } from "./field-matcher.ts";
 
@@ -76,47 +76,65 @@ describe("matchSpec: dedup", () => {
   });
 });
 
-describe("matchSpec: unsupported", () => {
-  test("a message box is refused, not rendered as a field", () => {
+describe("matchSpec: the message box", () => {
+  // This ask was a REFUSAL until 2026-08-13, when grain gained b-textarea and b-memo. It renders now,
+  // and it renders as its own kind rather than as a text field, because a component cannot choose
+  // which component it is: a message goes through b-memo, a field through b-field.
+  test("a message box renders, as a message and never as a text field", () => {
     const spec = matchSpec("a contact form with a name, an email, and a big message box for details");
     expect(spec.fields.map((f) => f.name)).toEqual(["name", "email"]);
     expect(spec.fields.some((f) => f.name === "message")).toBe(false);
-    expect(spec.unsupported).toEqual([
-      {
-        token: "message",
-        reason:
-          "no textarea atom exists yet, and grain's .field frame has no textarea rule, so a long message would " +
-          "have to render as a single-line text input that truncates whatever gets typed into it.",
-      },
-    ]);
+    expect(spec.messages.map((m) => m.name)).toEqual(["message"]);
+    expect(spec.messages[0]!.surface).toBe("field:builder-message");
+    expect(spec.unsupported).toEqual([]);
   });
 
-  test("a file upload ask is refused too, and both refusals can appear together", () => {
+  test("message items: every key present, no type key, never required", () => {
+    const spec = matchSpec("a message box");
+    expect(spec.messages.length).toBe(1);
+    for (const m of spec.messages) {
+      expect(Object.keys(m).sort()).toEqual(["label", "name", "placeholder", "required", "surface", "value"].sort());
+      expect(m.value).toBeNull();
+      expect(m.required).toBeNull();
+    }
+  });
+
+  test("one message however many of its phrases hit", () => {
+    const spec = matchSpec("a message box, a comments box, and space to write a long message");
+    expect(spec.messages.map((m) => m.name)).toEqual(["message"]);
+  });
+});
+
+describe("matchSpec: unsupported", () => {
+  test("a file upload is still refused, and it is the only refusal left", () => {
     const spec = matchSpec("name, email, a message box, and let them attach a file");
-    expect(spec.unsupported.map((u) => u.token)).toEqual(["message", "file upload"]);
+    expect(spec.messages.map((m) => m.name)).toEqual(["message"]);
+    expect(spec.unsupported.map((u) => u.token)).toEqual(["file upload"]);
+    expect(spec.unsupported[0]!.reason).toContain("no file-input atom is built yet");
   });
 });
 
 describe("matchSpec: empty or nonsense input", () => {
   test("empty string yields empty everything", () => {
     const spec = matchSpec("");
-    expect(spec).toEqual({ fields: [], choices: [], unsupported: [] });
+    expect(spec).toEqual({ fields: [], choices: [], messages: [], unsupported: [] });
   });
 
   test("nonsense unrelated text yields empty everything, never a guessed default form", () => {
     const spec = matchSpec("quantum physics and a haiku about the weather");
-    expect(spec).toEqual({ fields: [], choices: [], unsupported: [] });
+    expect(spec).toEqual({ fields: [], choices: [], messages: [], unsupported: [] });
   });
 });
 
 describe("matchSpec: surfaces are unique across the whole spec", () => {
-  test("every field + choice surface is distinct", () => {
+  test("every field + message + choice surface is distinct", () => {
     const spec = matchSpec(
-      "name, email, phone, company, role, subject, website, budget, topic, contact method, timeline",
+      "name, email, phone, company, role, subject, website, budget, a message box, topic, contact method, timeline",
     );
-    const surfaces = [...spec.fields.map((f) => f.surface), ...spec.choices.map((c) => c.surface)];
+    const surfaces = [...spec.fields.map((f) => f.surface), ...spec.messages.map((m) => m.surface),
+      ...spec.choices.map((c) => c.surface)];
     expect(new Set(surfaces).size).toBe(surfaces.length);
-    expect(surfaces.length).toBe(11);
+    expect(surfaces.length).toBe(12);
   });
 });
 
@@ -129,6 +147,15 @@ describe("applyWording", () => {
     const name = out.fields.find((f) => f.name === "name")!;
     expect(name.label).toBe("What should we call you?");
     expect(name.placeholder).toBe("First name is fine");
+  });
+
+  test("replaces a message box's label and placeholder", () => {
+    const out = applyWording(matchSpec("a message box"), {
+      message: { label: "Anything else?", placeholder: "As much or as little as you like" },
+    });
+    expect(out.messages[0]!.label).toBe("Anything else?");
+    expect(out.messages[0]!.placeholder).toBe("As much or as little as you like");
+    expect(out.messages[0]!.surface).toBe("field:builder-message");
   });
 
   test("replaces a choice's label", () => {

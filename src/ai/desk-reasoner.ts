@@ -38,7 +38,7 @@ import { draftMessage, CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
 // decides which fields/choices ever exist) plus the demo values drafted for its TEXT fields only
 // (form-draft.ts — never a `choices` item, see that file's own banner on why). KNOWN_FIELD_LABELS/
 // KNOWN_CHOICE_LABELS name the closed set honestly when a description matches nothing at all.
-import { matchSpec, KNOWN_FIELD_LABELS, KNOWN_CHOICE_LABELS } from "./field-matcher.ts";
+import { matchSpec, KNOWN_FIELD_LABELS, KNOWN_MESSAGE_LABELS, KNOWN_CHOICE_LABELS } from "./field-matcher.ts";
 import { draftFieldValues } from "./form-draft.ts";
 // C2 visitor memory — the notepad IS the memory. Write-time sanitize + the one line marker
 // (sanitizeMemoryFact, memoryLine) and read-time parseMemories (re-sanitize + cap, for the VISITOR
@@ -1178,10 +1178,10 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         if (action?.kind === "form-build") {
           const spec = matchSpec(action.description);
           await minThink();
-          if (!spec.fields.length && !spec.choices.length) {
+          if (!spec.fields.length && !spec.messages.length && !spec.choices.length) {
             // Nothing matched at all — an honest decline naming the REAL closed set, never a vague
             // "I don't understand". An action verb never falls through to the model.
-            const known = joinPhrases([...KNOWN_FIELD_LABELS, ...KNOWN_CHOICE_LABELS]);
+            const known = joinPhrases([...KNOWN_FIELD_LABELS, ...KNOWN_MESSAGE_LABELS, ...KNOWN_CHOICE_LABELS]);
             const line = spec.unsupported.length
               ? `I can't build that yet. ${spec.unsupported.map((u) => u.reason).join(" ")} I can add ${known}.`
               : `I build forms from a fixed list of fields, and nothing in that asked for one of them. I can add ${known}.`;
@@ -1194,7 +1194,9 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             return { ok: false, ops: [], reply: line, reason: "no navigate dep" };
           }
           const href = `/builder?ask=${encodeURIComponent(action.description)}`;
-          const values = draftFieldValues(spec.fields);   // TEXT fields only — never a `choices` item
+          // Every control the dispatcher can TYPE into: the text fields and the message box, which is
+          // a textarea and travels the same fill path. Never a `choices` item — see form-draft.ts.
+          const values = draftFieldValues([...spec.fields, ...spec.messages]);
           const line = "Building that form now, and I'll fill in a few demo values so you can see it live.";
           await typeOut(line);
           if (Object.keys(values).length) deps.formTaskSet?.(values);   // stash BEFORE navigating

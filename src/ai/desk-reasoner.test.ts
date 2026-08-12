@@ -1355,16 +1355,39 @@ describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks
     expect((d.reply ?? "")).toContain("Name");   // a real closed-set label, not a vague apology
   });
 
-  test("a matched-but-unsupported ask (a message box only): the decline names the refusal reason", async () => {
+  // A file upload, not a message box: the message box became a real control on 2026-08-13 (grain's
+  // b-memo), so an ask for one now BUILDS. This case only means something while its ask still refuses.
+  test("a matched-but-unsupported ask (a file upload only): the decline names the refusal reason", async () => {
     const { deps } = makeDeps();
     deps.navigate = () => {};
     const r = makeDeskReasoner(deps);
 
-    const d = await r.decide(chat("build me a form with a big message box"), makeTools().tools);
+    const d = await r.decide(chat("build me a form where they can attach a file"), makeTools().tools);
 
     expect(d.ok).toBe(false);
     expect(d.reason).toBe("no fields matched");
-    expect((d.reply ?? "").toLowerCase()).toContain("textarea");
+    expect((d.reply ?? "").toLowerCase()).toContain("file-input atom");
+  });
+
+  // The message box travels the same fill path as a text field: it is a textarea, and the dispatcher
+  // types into INPUT and TEXTAREA through one branch. A choice still never appears in the stash.
+  test("a message box is built and stashed for the fill, alongside the text fields", async () => {
+    const calls: string[] = [];
+    const { deps } = makeDeps();
+    deps.navigate = (u) => { calls.push(`navigate:${u}`); };
+    deps.formTaskSet = (values) => { calls.push(`formTaskSet:${JSON.stringify(values)}`); };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(
+      chat("build me a form with a name, an email, a big message box and what they want to talk about"),
+      makeTools().tools);
+
+    expect(d.ok).toBe(true);
+    const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
+    expect(Object.keys(stashed).sort())
+      .toEqual(["field:builder-email", "field:builder-message", "field:builder-name"]);
+    expect(stashed["field:builder-topic"]).toBeUndefined();
+    expect(stashed["field:builder-message"].length).toBeGreaterThan(0);
   });
 
   test("no navigate dep: an honest decline, no crash, no stash", async () => {

@@ -33,9 +33,22 @@ export interface ChoiceItem {
   options: Array<{ value: string; label: string; selected: "selected" | null }>;
 }
 
+/** One rendered message box (a textarea, grain's b-memo). Same always-present-keys contract as
+ *  FieldItem, minus `type`: a textarea has none. Height is deliberately absent too — it is
+ *  presentation, so it rides on the tag as a form-wide config prop rather than per item. */
+export interface MessageItem {
+  surface: string;
+  label: string;
+  name: string;
+  placeholder: string | null;
+  value: string | null;
+  required: "required" | null;
+}
+
 export interface FieldSpec {
   fields: FieldItem[];
   choices: ChoiceItem[];
+  messages: MessageItem[];
   unsupported: Array<{ token: string; reason: string }>;
 }
 
@@ -154,6 +167,55 @@ const FIELD_TABLE: FieldEntry[] = [
 ];
 
 // ---------------------------------------------------------------------------------------------
+// The closed set of known message boxes
+// ---------------------------------------------------------------------------------------------
+// This table was the `unsupported` entry until 2026-08-13. The refusal it carried was true and
+// specific — grain's .field frame had no textarea rule, so a message box could only have rendered as
+// a single-line input that truncates what gets typed into it — and it stopped being true the day
+// grain gained b-textarea and b-memo. A refusal outliving its cause is worse than no refusal at all,
+// because it reads as a considered limit rather than a stale line, so the entry moved here rather
+// than being softened where it stood.
+//
+// Its own table rather than a `kind` key on FIELD_TABLE, for the same reason the spec carries
+// separate arrays: `each` renders one component per item and a component cannot choose which
+// component it is (the grain plan's section 4). A message renders through b-memo, a text field
+// through b-field, so they are two arrays and the page composes two tags.
+
+interface MessageEntry {
+  name: string;
+  label: string;
+  placeholder: string | null;
+  required: boolean;
+  tokens: string[];
+}
+
+const MESSAGE_TABLE: MessageEntry[] = [
+  {
+    name: "message",
+    label: "Message",
+    placeholder: "What would you like to say?",
+    // Never required: a form that refuses to be sent until someone writes a paragraph is a form
+    // people abandon, and this demo has nowhere to send to anyway.
+    required: false,
+    tokens: [
+      "message",
+      "message box",
+      "comments box",
+      "comment box",
+      "long message",
+      "detailed message",
+      "text area",
+      "textarea",
+      "additional comments",
+      "tell us more",
+      "big message",
+      "space to write",
+      "what they want to say",
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------------------------
 // The closed set of known choices
 // ---------------------------------------------------------------------------------------------
 
@@ -239,25 +301,6 @@ interface UnsupportedEntry {
 // honest about the limit rather than silently dropping the request.
 const UNSUPPORTED_TABLE: UnsupportedEntry[] = [
   {
-    token: "message",
-    reason:
-      "no textarea atom exists yet, and grain's .field frame has no textarea rule, so a long message would " +
-      "have to render as a single-line text input that truncates whatever gets typed into it.",
-    tokens: [
-      "message box",
-      "comments box",
-      "comment box",
-      "long message",
-      "detailed message",
-      "text area",
-      "textarea",
-      "additional comments",
-      "tell us more",
-      "big message",
-      "space to write",
-    ],
-  },
-  {
     token: "file upload",
     reason: "no file-input atom is built yet, and there is nowhere safe on this stack to store an uploaded file.",
     tokens: ["file upload", "upload a file", "attach a file", "attachment", "upload files", "file attachment"],
@@ -273,18 +316,21 @@ const UNSUPPORTED_TABLE: UnsupportedEntry[] = [
 // hand-typed list that can drift from the table above.
 export const KNOWN_FIELD_LABELS: string[] = FIELD_TABLE.map((e) => e.label);
 export const KNOWN_CHOICE_LABELS: string[] = CHOICE_TABLE.map((e) => e.label);
+export const KNOWN_MESSAGE_LABELS: string[] = MESSAGE_TABLE.map((e) => e.label);
 
 // ---------------------------------------------------------------------------------------------
 // matchSpec
 // ---------------------------------------------------------------------------------------------
 
-/** Turn a plain-English description into a FieldSpec: which fields and choices to render, and which
- *  recognized-but-unsupported asks got refused instead of faked. Matching a field's whole token list
+/** Turn a plain-English description into a FieldSpec: which fields, message boxes and choices to
+ *  render, and which recognized-but-unsupported asks got refused instead of faked. Matching a field's
+ *  whole token list
  *  against the description means a field/choice is emitted AT MOST ONCE regardless of how many of
  *  its tokens hit or how many times the description repeats them — dedup falls out of the closed set
- *  having one entry per name, not a separate dedup pass. Output order is FIELD_TABLE / CHOICE_TABLE
- *  declaration order, not the order words appeared in the description (see the comment on
- *  FIELD_TABLE). No match at all returns empty arrays; this function never guesses a default form. */
+ *  having one entry per name, not a separate dedup pass. Output order is FIELD_TABLE /
+ *  MESSAGE_TABLE / CHOICE_TABLE declaration order, not the order words appeared in the description
+ *  (see the comment on FIELD_TABLE). No match at all returns empty arrays; this function never
+ *  guesses a default form. */
 export function matchSpec(description: string): FieldSpec {
   const desc = padded(description);
 
@@ -296,6 +342,19 @@ export function matchSpec(description: string): FieldSpec {
       label: entry.label,
       name: entry.name,
       type: entry.type,
+      placeholder: entry.placeholder,
+      value: null,
+      required: entry.required ? "required" : null,
+    });
+  }
+
+  const messages: MessageItem[] = [];
+  for (const entry of MESSAGE_TABLE) {
+    if (!anyTokenHits(desc, entry.tokens)) continue;
+    messages.push({
+      surface: surfaceFor(entry.name),
+      label: entry.label,
+      name: entry.name,
       placeholder: entry.placeholder,
       value: null,
       required: entry.required ? "required" : null,
@@ -319,7 +378,7 @@ export function matchSpec(description: string): FieldSpec {
     unsupported.push({ token: entry.token, reason: entry.reason });
   }
 
-  return { fields, choices, unsupported };
+  return { fields, choices, messages, unsupported };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -365,6 +424,18 @@ export function applyWording(
     };
   });
 
+  const messages = spec.messages.map((item) => {
+    const w = wording[item.name];
+    if (!w) return { ...item };
+    const label = sanitizeOverride(w.label, MAX_LABEL);
+    const placeholder = sanitizeOverride(w.placeholder, MAX_PLACEHOLDER);
+    return {
+      ...item,
+      label: label ?? item.label,
+      placeholder: placeholder ?? item.placeholder,
+    };
+  });
+
   const choices = spec.choices.map((item) => {
     const w = wording[item.name];
     if (!w) return { ...item, options: item.options.map((o) => ({ ...o })) };
@@ -376,5 +447,5 @@ export function applyWording(
     };
   });
 
-  return { fields, choices, unsupported: spec.unsupported.map((u) => ({ ...u })) };
+  return { fields, choices, messages, unsupported: spec.unsupported.map((u) => ({ ...u })) };
 }
