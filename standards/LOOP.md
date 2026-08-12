@@ -75,7 +75,11 @@ gets removed rather than tuned (§7). **Grade a noisy check against a baseline r
 repo with existing lint debt fails a from-zero check on its first run and has it muted inside a week,
 so the count is compared to a committed baseline and only a rise is worth saying out loud. The debt
 stays visible as a number instead of a wall, and accepting a real increase is a deliberate command
-rather than an argument.
+rather than an argument. **A baseline is a high water mark, not a settled state.** The failure mode
+found on 2026-08-12 is the one this clause now closes: a baseline that can only grow, absorbing every
+new count in silence, reports level forever while the debt underneath it triples. So the regenerate
+command accepts any decrease for free and refuses any increase, naming each count that would climb;
+taking one on needs a second flag on the command line. Whoever lowers a number lowers it for good.
 
 The mechanical tier never needs a model. It is grep, exit codes, and file-age math. Its whole job is to
 *surface*: kit compliance, drift, and staleness flags (audit overdue, graphify stale, e2e suite missing).

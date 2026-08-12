@@ -10,7 +10,7 @@
 // slop" experiment): lint only the mechanical rules, and say plainly that you're only covering the
 // mechanical rules. Everything else is the smell test in VOICE.md, run by a person.
 //
-//   bun run lint:voice                 # default: content/notes/*.md + standards/*.md
+//   bun run lint:voice                 # default: every prose surface in the repo, see SCOPE below
 //   bun run lint:voice path/to/file.md # explicit files
 //
 // Exit code is nonzero when anything is flagged, so it can gate a publish/CI step like `bun run audit`.
@@ -41,6 +41,14 @@ const RULES: Rule[] = [
   { id: "emoji", sev: "warn", re: /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2728}]/u, msg: "emoji in published prose — keep it clean." },
 ];
 
+// The rules that are safe to run against a .ts file. A source file is mostly not prose, and most of
+// these patterns match code as readily as writing: every template literal trips `backtick`, a route
+// named "showcase" trips `word-tell`, a helper called `provideSupport` trips `nominalization`. The
+// five below can only fire inside a string or a comment, which in a source file is exactly the prose
+// this repo used to leave unlinted. Keeping the list short is the point: a src pass that cries wolf
+// gets switched off, and then the page copy goes unread again.
+const SRC_RULES = new Set(["em-dash", "emoji", "not-just-x", "throat-clearing", "eager-signoff"]);
+
 type Finding = { file: string; line: number; sev: Rule["sev"]; id: string; msg: string };
 
 // Walk a file line by line, skipping the frontmatter block, any fenced code block, and HTML comments
@@ -49,6 +57,24 @@ type Finding = { file: string; line: number; sev: Rule["sev"]; id: string; msg: 
 function lintFile(file: string): Finding[] {
   const lines = readFileSync(file, "utf8").split("\n");
   const out: Finding[] = [];
+  // A source file gets the reduced rule set and none of the Markdown structure handling: there is no
+  // frontmatter to skip, and a ``` fence inside a template literal is HTML being emitted, not code
+  // being quoted, so the toggle below would mute half the file.
+  if (!file.endsWith(".md")) {
+    for (let i = 0; i < lines.length; i++) {
+      // Comment lines are skipped. What is worth linting in a source file is the copy that reaches a
+      // page, and this estate's house comment style leans on the em-dash heavily enough that grading
+      // comments would bury the page copy under several hundred flags nobody intends to act on.
+      // Comments are still held to VOICE by a reader; they are not held to it by this tool.
+      const t = lines[i].trimStart();
+      if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*")) continue;
+      for (const rule of RULES) {
+        if (!SRC_RULES.has(rule.id)) continue;
+        if (rule.re.test(lines[i])) out.push({ file, line: i + 1, sev: rule.sev, id: rule.id, msg: rule.msg });
+      }
+    }
+    return out;
+  }
   let inFence = false;
   let inFrontmatter = false;
   let inComment = false;
@@ -80,10 +106,28 @@ function lintFile(file: string): Finding[] {
   return out;
 }
 
+// SCOPE. Every surface in this repo that a person reads as prose. The default used to be
+// content/notes plus standards, which was about a third of it: content/tours and content/events were
+// unlinted, docs/ was unlinted and had accumulated over a thousand em-dashes, the README was
+// unlinted, and the page copy that lives inside src/*.ts was unlinted even though it is the most
+// public prose here. Tests are excluded because their strings are fixtures, not writing.
+const SCOPE = [
+  "content/notes/*.md",
+  "content/tours/*.md",
+  "content/events/*.md",
+  "standards/*.md",
+  "docs/**/*.md",
+  "README.md",
+  "CLAUDE.md",
+  "src/**/*.ts",
+];
+
 const args = Bun.argv.slice(2);
 const targets = args.length
   ? args
-  : [...new Glob("content/notes/*.md").scanSync("."), ...new Glob("standards/*.md").scanSync(".")];
+  : SCOPE.flatMap((g) => Array.from(new Glob(g).scanSync(".")))
+      .filter((f) => !f.endsWith(".test.ts"))
+      .toSorted();
 
 if (!targets.length) { console.log("voice-lint: no files to check."); process.exit(0); }
 

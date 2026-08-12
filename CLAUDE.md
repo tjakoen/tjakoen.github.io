@@ -32,20 +32,35 @@ capability and name the tool only as the example. See [`plans/nimbalyst-in-the-l
 
 ## Start here (reading order)
 
+The standards are installed here as **skills**. Invoke them, do not fetch them: `Skill(voice)`,
+`Skill(figures)`, `Skill(note-standard)`, `Skill(readme-standard)`, and the rest of the eighteen
+under `.claude/skills/`. The published URLs below are the human-readable copy of the same file and
+are there for a reader, not for a session: a web fetch to read a standard this repo already ships
+is a wasted round trip. The source of every one lives in this repo's `standards/` dir, so edits go
+there and then get regenerated into the gitignored, never-committed skills dir by running
+`bun cli.ts skills sync ../tjakoen.github.io` from the pantry repo. That package does name a pantry
+binary, but it is not installed on PATH here, so reach for it through bun rather than assuming the
+short command exists.
+
 1. [`PHILOSOPHY.md`](docs/PHILOSOPHY.md): the *why* beneath the whole stack. Read first.
-2. [VOICE](https://tjakoen.github.io/standards/voice): the writing standard (voice, the machine-tells to
-   avoid). Match it for any prose in his name.
-3. [FIGURES](https://tjakoen.github.io/standards/figures): the figure standard, the two tokenized inline-SVG
-   scaffolds (data-viz + flow) and the no-mermaid-on-the-published-site rule. Use it for any diagram or chart.
-4. [NOTE-STANDARD](https://tjakoen.github.io/standards/note-standard): how a note/blog post is built
-   (frontmatter, structure, the sign-off footer) + a reusable prompt to draft one. Use it for any
-   `content/notes/*.md`.
-5. [README-STANDARD](https://tjakoen.github.io/standards/readme-standard): badges + README presentation,
-   with a reusable prompt to run in any repo.
-   (The source of these lives in this repo's `standards/` dir — edit them there.)
-6. [`CONTENT-BACKLOG.md`](docs/CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
-7. [`PLAN.md`](docs/architecture/PLAN.md) + [`FEATURES.md`](docs/architecture/FEATURES.md): the site's *how* and *what*.
-8. [`HACKING.md`](docs/HACKING.md): the route → source map + "which file do I open to change X" — the
+2. `Skill(voice)` ([published](https://tjakoen.github.io/standards/voice)): the writing standard
+   (voice, the machine-tells to avoid). Match it for any prose in his name.
+3. `Skill(figures)` ([published](https://tjakoen.github.io/standards/figures)): the figure standard,
+   the two tokenized inline-SVG scaffolds (data-viz + flow) and the no-mermaid-on-the-published-site
+   rule. Use it for any diagram or chart.
+4. `Skill(note-standard)` ([published](https://tjakoen.github.io/standards/note-standard)): how a
+   note/blog post is built (frontmatter, structure, the sign-off footer) + a reusable prompt to
+   draft one. Use it for any `content/notes/*.md`.
+5. `Skill(readme-standard)` ([published](https://tjakoen.github.io/standards/readme-standard)):
+   badges + README presentation, with a reusable prompt to run in any repo.
+6. `Skill(graph)` ([published](https://tjakoen.github.io/standards/graph)): read it before answering
+   any "where is X", "what calls Y" or "map this directory" question. This repo carries a live code
+   graph, rebuilt by a PostToolUse hook on every edit, so `graphify query <symbol>` answers those in
+   one call where a grep sweep costs many. Seed the query with a symbol the code actually contains:
+   a partial name returns a bare "No matching nodes found." and reads like a broken tool.
+7. [`CONTENT-BACKLOG.md`](docs/CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
+8. [`PLAN.md`](docs/architecture/PLAN.md) + [`FEATURES.md`](docs/architecture/FEATURES.md): the site's *how* and *what*.
+9. [`HACKING.md`](docs/HACKING.md): the route → source map + "which file do I open to change X" — the
    fast path for a *small* edit (human or AI) without cold-reading `server.ts`.
 
 Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
@@ -56,6 +71,19 @@ Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
   [NOTE-STANDARD](https://tjakoen.github.io/standards/note-standard)** (how a note is built:
   frontmatter, structure, footer). No em-dashes and no backticks in prose, money stays vague
   (no ratios), visuals per [FIGURES](https://tjakoen.github.io/standards/figures). Honest limits over hype.
+- **A terse-output mode never reaches the page.** Any style rule that compresses replies (the caveman
+  plugin is the one installed here, and its reminder arrives on every turn, where VOICE has to be
+  pulled once) governs chat and nothing else. Files under `content/`, `standards/`, `docs/`, any
+  README, any page copy inside `src/`, and every commit message are full prose under VOICE. If the
+  two ever seem to disagree about something being written down, VOICE wins and the compression rule
+  is off for that file. Code comments are held to VOICE by a reader rather than by
+  `bun run lint:voice`: see the note in `tools/voice-lint.ts` on why grading them buries the page copy.
+- **A rendered change is shown before it is called done.** Anything a person can end up looking at, a
+  page, a component, a figure, a note, a calendar post, closes with a screenshot in the session or a
+  CRUMB dev tour. Saying in the run report that it renders correctly is not the same claim as letting
+  someone see it, and the turn-end nudge reaches a human reading the transcript rather than the
+  session that still could act. The tour-standard skill says which surfaces count and how a step is
+  written.
 - **Public-repo guardrails.** Company is "Career Team". Neutral, no names, lessons-forward on
   anything sensitive. No student data or private course internals.
 - **AI use flown proudly.** Every repo carries the "made with Claude" badge + footer
