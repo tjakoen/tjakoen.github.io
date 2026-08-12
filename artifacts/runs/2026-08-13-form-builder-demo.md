@@ -57,6 +57,11 @@ gates:
   - bun run export (published grain swapped in, proving the guard) | 4 unresolved refs, FAILED before starting the server, nothing written
   - bun test (grain, at 0.1.22) | 317 pass, 0 fail, 973 expect() calls, 38 files
   - bunx tsc --noEmit (grain) | exit 0
+  - bun test (grain, after the atom fix) | form-from-data conformance 6 pass, 0 fail
+  - bun test (portfolio, after the atom fix) | 420 pass, 0 fail, 27 files
+  - bunx playwright test (full suite, after the atom fix) | 1 skipped, 238 passed (1.3m)
+  - bun run export + verify:export (after the atom fix) | preflight resolved, wrote dist, verifier OK
+  - pantry capture, both tours re-run after the fix | 3 of 3 steps resolved on each, verdict ok
 diffstat: 24 files changed across the portfolio (10 tracked modified, 14 new), plus 1 file in grain (the plan only, never a component)
 dirty: everything below is uncommitted at the time of writing; the commit is this session's, the push is not
 unpushed: 1 before this run, and this run adds its own commits; pushing stays the owner's call
@@ -174,6 +179,27 @@ git push
 The symlink is the thing to remember: node_modules/@tjakoen/grain currently points at the grain
 working tree, with the installed 0.1.21 parked beside it as .grain-0.1.21-npm. Until that is replaced
 by a real install, a green gate here says nothing about the published package.
+
+## The addressing defect is closed, and the demo lost its workaround
+
+The owner chose the atom fix. The surface binding moved onto the input in b-field and onto the select
+in b-choice, grain's conformance test now asserts where the address lands rather than only that the
+binding exists, and both atom docs say what the fix taught. b-choice's carries the warning that
+outlives it: a select accepts a write a text field would, and anything that is not one of its option
+values empties it silently, so a caller sends values rather than labels.
+
+The portfolio deleted the script it had been carrying to move each address down by hand, and the page
+copy that explained the workaround is gone with it. Measured on the live page afterwards: all three
+About addresses now resolve to a fillable control, no label carries an address, and the desk writes
+into a generated field with nothing registered by hand. The plan's original payoff is true for the
+first time, and it took building the thing to get there.
+
+Both tours were corrected and re-captured, because the evidence had to stop describing a workaround
+that no longer exists. The catalog baseline was re-blessed a second time, since the catalog renders
+the two atom docs and the docs changed.
+
+The owner is holding the publish until this fix is in, so 0.1.22 now carries it. The runbook above is
+unchanged.
 
 ## What needs human eyes
 

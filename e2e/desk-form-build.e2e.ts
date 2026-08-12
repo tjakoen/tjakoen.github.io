@@ -11,12 +11,11 @@ const DESK_DOOR = "/modules/portfolio/ai/desk-door.js";
 const ASK = "build me a form that asks for a name, an email and what they want to talk about";
 const NAME_FIELD = '[data-surface="field:builder-name"]';
 const EMAIL_FIELD = '[data-surface="field:builder-email"]';
-// The topic select is located by its NAME, not by its surface, and that is the assertion: /builder
-// relocates a field's address onto its own control for text inputs only, so a choice's address stays
-// on the wrapping label where a fill resolves to an element with no .value and no-ops. Locating the
-// select by surface here would pass today and stop meaning anything the moment that changes.
-const TOPIC_SELECT = 'select[name="topic"]';
-const TOPIC_LABEL_SURFACE = 'label[data-surface="field:builder-topic"]';
+// The topic select carries its own address since grain 0.1.22 moved every surface onto the control.
+// It is still never a fill target: form-draft.ts refuses to draft a value for a choice, because a
+// select accepts the write and empties itself on anything that is not an option value. So the select
+// is located by its address AND asserted untouched, which is the pairing that keeps meaning something.
+const TOPIC_SELECT = 'select[data-surface="field:builder-topic"]';
 
 async function clientDeskEverywhere(page: Page) {
   await page.route("**/*", async (route, req) => {
@@ -67,10 +66,10 @@ test.describe("D1 form builder demo (deterministic, no model needed)", () => {
     // It still carries matchSpec's own default ("other" — "Something else") and no AI ink at all.
     await expect(page.locator(TOPIC_SELECT)).toHaveValue("other");
     await expect(page.locator(TOPIC_SELECT)).not.toHaveAttribute("data-grade", "grain");
-    // and the second guard is asserted directly: the choice's address is still on the label, which is
-    // what makes a stray fill inert rather than destructive. The select itself carries no address.
-    await expect(page.locator(TOPIC_LABEL_SURFACE)).toHaveCount(1);
-    await expect(page.locator('select[data-surface]')).toHaveCount(0);
+    // and the addressing rule itself is asserted, because it is what the atoms got wrong once: every
+    // field address sits on a control that can actually be written to, never on the label around it.
+    await expect(page.locator('label[data-surface]')).toHaveCount(0);
+    await expect(page.locator('input[data-surface^="field:builder-"]')).toHaveCount(2);
 
     // the desk never submits: no form action exists here, and no navigation happened beyond /builder.
     expect(new URL(page.url()).pathname).toBe("/builder");

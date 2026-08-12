@@ -51,12 +51,12 @@
               drafted by code as well, because an action the desk performs never gets a model tail.
               What you are watching is selection and operation, which is the part a small model cannot
               do, and the wording pass is still an open seam rather than a shipped one.</p>
-            <p class="muted">One more thing worth knowing before you trust the live fill: the atoms
-              put the field's address on the wrapping label, and a label has nothing to write into, so
-              this page moves each address down onto its own control before the desk reads it. Until
-              that moves upstream, a generated form is addressable the moment it renders but not yet
-              fillable without that one adjustment. The choices are left alone on purpose, and the
-              note under the spec says why.</p>
+            <p class="muted">The address each field carries sits on the control itself, so the desk
+              writes into a generated field with nothing registered by hand. That was not true when
+              this page was first built: the atoms addressed the label around the control, a label has
+              nothing to write into, and the write was dropped without a word. Building this found it
+              and the atoms were fixed, which is the whole argument for building a demo rather than
+              describing one.</p>
           </div>
 
           <div class="builder-unsupported-block" data-bind-data-has-unsupported="hasUnsupported">
@@ -71,10 +71,11 @@
           <div class="section-head"><span>Spec</span></div>
           <p class="muted">Exactly what matchSpec returned: the fields, the choices, and any refusal
             above all come straight from this, never a second hand-typed description of it. The
-            choices keep their address on the label rather than on the select, which leaves them
-            visible here and out of reach of the desk. A write aimed at a select does nothing useful:
-            anything that is not one of its option values empties it instead, and it does that
-            quietly, so the safer default is a control the desk cannot reach at all.</p>
+            choices are addressable too, and the desk still leaves them alone: a select accepts a
+            write that a text field would, and anything that is not one of its option values empties
+            it rather than failing. So the code that drafts these demo values refuses to draft one for
+            a choice at all. Knowing the difference is the caller's job, and that is the honest state
+            of it rather than a solved problem.</p>
           <pre class="builder-json" data-surface="builder-spec" data-field="specJson"></pre>
         </section>
 
@@ -97,34 +98,5 @@
     </main>
   </div>
 
-  <script>
-    // The desk's field.set fill targets a data-surface attribute DIRECTLY on the fillable control —
-    // B1's contact prefill precedent (/mail's compose body) is a bare <textarea data-surface="…">,
-    // and grain's own dispatcher guard (ai-dispatch.js) is `"value" in el`, checked on WHATEVER
-    // element carries that exact data-surface. grain's b-field/b-choice atoms (unedited here — grain
-    // ships as-is) put data-surface on the WRAPPING <label> instead, one level above the actual
-    // <input>/<select> — a label has no `.value`, so the guard would silently no-op there. This
-    // moves each label's surface down onto its own control right after render, before the desk (or
-    // grain's own manifest walk) ever reads a data-surface on this page — the one portfolio-owned
-    // adjustment the live form needs; grain's templates and dispatcher stay untouched.
-    //
-    // INPUTS ONLY, and a <select> is excluded on purpose. The same `"value" in el` guard PASSES on a
-    // select, and assigning it anything that is not one of its option values sets .value to "" — the
-    // control goes blank and nothing warns (measured on /about's contact panel, 2026-08-13). Leaving
-    // a choice's surface on its label means a fill aimed at it resolves to an element with no .value
-    // and no-ops instead. Upstream (form-draft.ts) already refuses to draft a value for a choices
-    // entry, so this is the second of two independent guards: inert beats silently destructive, and
-    // the two failure modes are not equally cheap to recover from.
-    (function () {
-      var labels = document.querySelectorAll('.builder-form [data-surface]');
-      Array.prototype.forEach.call(labels, function (label) {
-        var surface = label.getAttribute('data-surface');
-        var ctrl = label.querySelector('input');
-        if (!surface || !ctrl) return;
-        ctrl.setAttribute('data-surface', surface);
-        label.removeAttribute('data-surface');
-      });
-    })();
-  </script>
 </body>
 </html>
