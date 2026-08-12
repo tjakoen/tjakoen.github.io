@@ -11,7 +11,7 @@ summary: >
   scoring sheet, marking the same teams against roughly the same list. The team that won broke my
   advice on purpose.
 photos:
-  - "/media/feed/gdg-hau-ai-hack-nameplate.jpg | 1600x1200 | Me at the judging table behind a nameplate reading Tjakoen Stolk, Tech Lead CareerTeam, the room still filling up behind me"
+  - "/media/feed/gdg-hau-ai-hack-nameplate.jpg | 1600x1200 | Me at the judging table behind a nameplate reading Tjakoen Stolk, Tech Lead, Career Team, the room still filling up behind me"
   - "/media/feed/gdg-hau-ai-hack-workshop-call.jpg | 1600x836 | The ideation workshop on Google Meet, every student tile blurred, my own tile sharp in the bottom corner"
   - "/media/feed/gdg-hau-ai-hack-group.jpg | 1600x1200 | Organizers, judges and teams lined up in front of the Beyond Limits: The AI Hack title slide after the demos"
   - "/media/feed/gdg-hau-ai-hack-badge.jpg | 1050x1400 | My faculty badge for the first Regional AI Conference, themed Reinventing Learning through AI"
@@ -34,7 +34,7 @@ social: |
   made you go quiet.
 
   Congratulations to Jansen Cruz, Elicia Klyde Martigne Apostol, Jose Gian Tubera and Paul Andrei
-  Calma, and to Ms. Melissa Pantig for advising them.
+  Calma, and to their faculty adviser.
 
   Writeup, the deck and the photos: https://tjakoen.github.io/calendar/gdg-hau-ai-hack
 ---
@@ -110,8 +110,9 @@ building on day one had a lot more hours than the teams still arguing about it o
 Credit where it goes: [Jansen Cruz](https://ph.linkedin.com/in/jansen-cruz-480a47ba),
 [Elicia Klyde Martigne Apostol](https://ph.linkedin.com/in/ekm-apostol),
 [Jose Gian Tubera](https://ph.linkedin.com/in/josegiantubera) and
-[Paul Andrei Calma](https://ph.linkedin.com/in/paul-andrei-calma), advised by Ms. Melissa Pantig. And
-worth noting for the host school, they were not from it. That is the good version of a regional event.
+[Paul Andrei Calma](https://ph.linkedin.com/in/paul-andrei-calma), with a faculty adviser behind them.
+And worth noting for the host school, they were not from it. That is the good version of a regional
+event.
 
 ## What I would flag
 
@@ -120,10 +121,13 @@ half of my professional life is spent. Three days of code cannot be assessed in 
 someone watching a screen from twelve feet away, and I want to be honest that the scores reflect what
 was *shown* more than what was *built*.
 
-The weights bothered me too. Innovation and technical execution took half the sheet between them, and
-responsible AI took fifteen percent, which is roughly the inverse of the argument I make everywhere
-else. I scored the sheet I was given, because that is the job when you are a guest, but the sheet is a
-statement about what a competition values, and it deserves an argument it did not get.
+The weights are the part I am still thinking about. Innovation and technical execution took half the
+sheet between them, and responsible AI took fifteen percent, which is close to the inverse of the
+argument I make everywhere else. That is not a complaint about the sheet, which has to be built before
+anyone knows what will walk through the door, and a hackathon that weighted governance highest would
+be a different and probably duller event. It is a question I would like to have asked out loud while
+there was still time to discuss it: what does a competition say it values, and does the arithmetic
+agree. I scored the sheet I was given, because that is the job when you are a guest.
 
 And the last one, which is the reason this is worth writing down at all. My advice biases toward
 finishing. It is good advice, and it produces solid, small, safe projects that lose. The team that won
