@@ -733,18 +733,23 @@ function renderGallery(photos: EventPhoto[]): string {
 // The event page's featured video (`video:`), a flat "href | poster | WxH | label | alt" string in
 // the same spirit as a photo. The site embeds nothing: an embed would mean a third-party iframe and
 // its scripts on a page that has never carried one, and the video lives on someone else's platform
-// anyway. So this is a poster still with a play badge over it, and the whole tile is one link out —
-// which means it is also the no-JS case, because there is no JS in it at all.
+// anyway. So this is a poster still with a play badge over it, and the whole tile is one link out.
+// The component is GRAIN's `media-card`, in its `data-layout="overlay"` shape: this file composes
+// it from the frontmatter string rather than owning the markup.
 function renderVideoCard(raw: unknown): string {
   if (typeof raw !== "string" || !raw.trim()) return "";
   const [href = "", poster = "", dim = "", label = "", alt = ""] = raw.split("|").map((x) => x.trim());
   if (!href || !poster) return "";
   const [width = "", height = ""] = dim.split(/x/i).map((x) => x.trim());
   const dims = width && height ? ` width="${escapeHtml(width)}" height="${escapeHtml(height)}"` : "";
-  return `<a class="event-video" href="${escapeHtml(href)}" rel="noopener">
-  <img class="event-video__poster" src="${escapeHtml(poster)}"${dims} alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
-  <span class="event-video__play" aria-hidden="true">▶</span>
-  <span class="event-video__label">${escapeHtml(label)}</span>
+  return `<a class="media-card" data-layout="overlay" href="${escapeHtml(href)}" rel="noopener">
+  <span class="media-card__media">
+    <img class="media-card__image" src="${escapeHtml(poster)}"${dims} alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
+    <span class="media-card__play" aria-hidden="true">▶</span>
+  </span>
+  <span class="media-card__body">
+    <span class="media-card__title">${escapeHtml(label)}</span>
+  </span>
 </a>`;
 }
 
