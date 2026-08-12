@@ -115,6 +115,25 @@ added content rather than a layout break.
   for the owner to decide.
 - **The b-list defect recorded in the plan is still there**, untouched and out of scope.
 
+## Measured after the report was written: what main now depends on
+
+The commit above is on main and it needs a grain that is not published. I swapped the symlink back to
+the installed 0.1.21, started the server, and read what happens. It does not fail. That is the
+problem.
+
+Both pages answer 200. Nothing is logged, no warning, no thrown component. The unknown tags pass
+straight through to the browser, so the Contact tab renders its heading, its copy telling a visitor to
+fill the fields in, a Send button, and zero fields. The builder page renders its whole argument, the
+spec as JSON, and an empty form under it. The count of rendered field addresses on About goes from
+three to zero without a single line of output anywhere.
+
+The export gate does not catch it either: the dead-link walk and the sitemap check both pass on an
+empty form. The one thing that does catch it is the About end-to-end test rewritten in this run, which
+asserts the three addresses exist, and only if someone runs the suite against the published package.
+
+So the state to be aware of before anything gets pushed: main is committed against a dependency that
+exists only as a local symlink, and the failure mode is silent rather than loud.
+
 ## What needs human eyes
 
 1. **The label addressing.** Three ways to close it: move the binding onto the control in each atom,
