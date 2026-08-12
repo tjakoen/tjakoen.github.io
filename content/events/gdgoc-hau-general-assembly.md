@@ -33,9 +33,10 @@ social: |
 Seven in the evening. On a Saturday. That's when about 60 students got on a Google Meet for their
 general assembly, which is either heartening or proof that I should have been funnier.
 
-Three of us split the same question. Louella Salenga took the ethics of AI in learning and teaching.
-Marc Samuel Pabilona took security in the age of AI. I got the one that sounds like a compliment
-until you look at it: *vibe coding.*
+Three of us split the same question. [Louella Salenga](https://www.linkedin.com/in/louellasalenga/)
+took the ethics of AI in learning and teaching.
+[Marc Samuel Pabilona](https://www.linkedin.com/in/cloudsecurityguy/) took security in the age of AI.
+I got the one that sounds like a compliment until you look at it: *vibe coding.*
 
 The two wide pictures up top are from the call itself, mid-slide, with the room down the right side,
 faces blurred because none of those students signed up to be on my website.
