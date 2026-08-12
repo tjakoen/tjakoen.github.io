@@ -108,6 +108,14 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // card read identically.
     const photoGrid = kind === "entry" && collection.prefix === "/calendar" && frontmatter
       ? renderPhotoGrid(parsePhotos(frontmatter.photos)) : "";
+    // …the featured video, if the entry has one: a poster still that links out to where the video
+    // actually lives (`video:`). Sits under the hero strip, above the prose.
+    const videoCard = kind === "entry" && collection.prefix === "/calendar" && frontmatter
+      ? renderVideoCard(frontmatter.video) : "";
+    // …and the rest of the day's photos (`gallery:`), a quieter grid below the body, so the strip on
+    // top stays the four that carry the post.
+    const gallery = kind === "entry" && collection.prefix === "/calendar" && frontmatter
+      ? renderGallery(parsePhotos(frontmatter.gallery)) : "";
     // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key).
     const shareBlock = kind === "entry" && collection.prefix === "/calendar" && frontmatter && slug
       ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`) : "";
@@ -138,7 +146,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
   <div class="app-shell app-window"${section} data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
-      <div class="board">${sourceToggle}${photoGrid}${body}${shareBlock}</div>
+      <div class="board">${sourceToggle}${photoGrid}${videoCard}${body}${gallery}${shareBlock}</div>
     </main>
   </div>
 ${inject}</body>
@@ -696,6 +704,46 @@ function renderPhotoGrid(photos: EventPhoto[]): string {
     return `<a class="feed-photo" data-lightbox href="${src}"><img src="${src}"${dims} alt="${escapeHtml(p.alt)}" loading="lazy" decoding="async"></a>`;
   }).join("");
   return `<div class="feed-photos" data-event-photos data-lightbox-group>${items}</div>`;
+}
+
+// The event page's SECONDARY photo grid (`gallery:`), rendered below the body. The hero strip on top
+// is the four photos that carry the post; everything else from the day lands here, evenly tiled and
+// captioned by its own alt text, in a SEPARATE data-lightbox-group so walking the gallery does not
+// walk back into the hero. Same flat "src | WxH | alt" frontmatter encoding as `photos:`, same
+// parser, same no-JS fallback (each tile is a real link to the full image).
+function renderGallery(photos: EventPhoto[]): string {
+  if (!photos.length) return "";
+  const items = photos.map((p) => {
+    const src = escapeHtml(p.src);
+    const dims = p.width && p.height ? ` width="${escapeHtml(p.width)}" height="${escapeHtml(p.height)}"` : "";
+    const alt = escapeHtml(p.alt);
+    return `<figure class="event-gallery__item">
+      <a class="event-gallery__link" data-lightbox href="${src}"><img src="${src}"${dims} alt="${alt}" loading="lazy" decoding="async"></a>
+      <figcaption class="event-gallery__caption">${alt}</figcaption>
+    </figure>`;
+  }).join("");
+  return `<section class="event-gallery" aria-labelledby="event-gallery-heading">
+  <h2 class="event-gallery__heading" id="event-gallery-heading">The rest of the roll</h2>
+  <div class="event-gallery__grid" data-lightbox-group>${items}</div>
+</section>`;
+}
+
+// The event page's featured video (`video:`), a flat "href | poster | WxH | label | alt" string in
+// the same spirit as a photo. The site embeds nothing: an embed would mean a third-party iframe and
+// its scripts on a page that has never carried one, and the video lives on someone else's platform
+// anyway. So this is a poster still with a play badge over it, and the whole tile is one link out —
+// which means it is also the no-JS case, because there is no JS in it at all.
+function renderVideoCard(raw: unknown): string {
+  if (typeof raw !== "string" || !raw.trim()) return "";
+  const [href = "", poster = "", dim = "", label = "", alt = ""] = raw.split("|").map((x) => x.trim());
+  if (!href || !poster) return "";
+  const [width = "", height = ""] = dim.split(/x/i).map((x) => x.trim());
+  const dims = width && height ? ` width="${escapeHtml(width)}" height="${escapeHtml(height)}"` : "";
+  return `<a class="event-video" href="${escapeHtml(href)}" rel="noopener">
+  <img class="event-video__poster" src="${escapeHtml(poster)}"${dims} alt="${escapeHtml(alt)}" loading="lazy" decoding="async">
+  <span class="event-video__play" aria-hidden="true">▶</span>
+  <span class="event-video__label">${escapeHtml(label)}</span>
+</a>`;
 }
 
 // Events cross-link like notes (note:slug → /notes/slug); everything else (absolute site links)
