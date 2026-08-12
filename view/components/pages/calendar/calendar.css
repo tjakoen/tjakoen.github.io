@@ -6,6 +6,13 @@
    / feed-photo / feed-link). */
 [data-screen="calendar"] .board { max-width: 68rem; }   /* a feed with big Airbnb-style photo strips + the month grid needs the room */
 
+/* An event entry's featured video (content.ts renderVideoCard) is GRAIN's media-card in its overlay
+   layout, and a GRAIN molecule owns no outer spacing on purpose: where it sits relative to the prose
+   under it is this page's layout decision, not the component's. So this page owns that gap. The
+   molecule it retired carried the same value as its own bottom margin, which is why it disappeared
+   the moment the composition changed. */
+[data-screen="calendar"] .board > .media-card { margin: 0 0 var(--space-5); }
+
 [data-screen="calendar"] .cal { border: 1px solid var(--line-soft); border-radius: var(--radius-md);
   overflow: hidden; margin: 0 0 var(--space-6); }
 [data-screen="calendar"] .cal[hidden] { display: none; }
