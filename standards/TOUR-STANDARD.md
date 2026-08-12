@@ -53,6 +53,15 @@ parse but the tour opens as a demo.
 your history. Two commits that both touched the same figure are one step. A commit that touched
 six figures is six.
 
+A surface is anything a reader ends up looking at: a view template or the styles that dress it, a
+client script that drives one, a note body, a calendar post under content/events, and the JSON
+collections under content/data that a page reads straight through. Media is not on that list; a deck
+or a photograph earns a step through the post or the view that mounts it, never on its own. The list
+is written out because leaving it implied cost something real: the events collection arrived months
+after the checks that look for a rendered path, nobody widened them, and every calendar post in that
+window shipped without a tour while the loop reported nothing wrong. Any check that greps for a
+rendered path implements this list and does not get to hold its own private version of it.
+
 **The surface has to exist before the tour does.** A step points at a `data-surface` address. If the
 thing you changed has no address, give it one first. That is usually a single attribute next to
 whatever hook the element already carries, and it is worth doing on its own: an addressable region is

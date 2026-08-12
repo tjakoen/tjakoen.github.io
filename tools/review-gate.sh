@@ -69,11 +69,18 @@ if [ -n "$changed" ] && [ -d plans ] && command -v bunx >/dev/null 2>&1; then
 fi
 
 # ---- (2) a rendered change owes a tour --------------------------------------
-# What counts as rendered here: view templates and their styles, the client scripts that drive them,
-# and note bodies (which carry raw HTML that MILL passes straight through, so a figure in a post is
-# a real surface). Everything else — src/, tools/, docs/, plans/, standards/, e2e/ — is not.
+# What counts as rendered is NOT decided here. standards/TOUR-STANDARD.md, first of the seven rules,
+# owns that list; the regex below is one implementation of it and the standard says so explicitly, so
+# when the two disagree the standard is right and this line is the bug. Everything outside it, src/,
+# tools/, docs/, plans/, standards/, e2e/, is not a surface.
+#
+# content/events/ and content/data/ were added to the regex on 2026-08-12. Both arrived after the
+# filter was first written (the events collection in Apps-v2 Pass C) and nobody widened it, so every
+# calendar post in between was a rendered change this gate treated as invisible. Verified by piping the
+# real paths through both versions, before and after. content/media/ stays out on purpose, matching the
+# standard: a deck or a photograph earns the nudge through the post that mounts it, not on its own.
 if [ -n "$changed" ]; then
-  rendered=$(printf '%s\n' "$changed" | grep -E '^(view/|content/notes/|scripts/).*\.(html|css|js|md)$' || true)
+  rendered=$(printf '%s\n' "$changed" | grep -E '^(view/|content/notes/|content/events/|content/data/|scripts/).*\.(html|css|js|json|md)$' || true)
   # already toured this turn? then the run has done what section 4a asks, and nothing is printed.
   if [ -n "$rendered" ] && ! printf '%s\n' "$changed" | grep -q '^content/tours/'; then
     count=$(printf '%s\n' "$rendered" | wc -l | tr -d ' ')

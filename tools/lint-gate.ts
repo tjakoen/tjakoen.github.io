@@ -55,9 +55,9 @@ function oxlintCounts(): Counts {
 
 // voice-lint has no machine-readable output mode and doesn't need one just for this — its stdout
 // lines are already `file:line: TAG [id] message`, so the id is pulled straight out of the bracket
-// rather than reimplementing its rule table here. Running it with no args uses ITS default scope
-// (content/notes/*.md + standards/*.md), so this stays in step automatically if that scope ever
-// changes again.
+// rather than reimplementing its rule table here. Running it with no args uses ITS default scope,
+// which is the SCOPE list at the foot of that file, so this stays in step automatically when the
+// scope changes again (it has twice: standards/ in August, then docs/ and src/ page copy).
 function voiceCounts(): Counts {
   const res = spawnSync("bun", ["tools/voice-lint.ts"], { cwd: root, encoding: "utf8" });
   const counts: Counts = {};
@@ -84,18 +84,55 @@ function loadBaseline(): { generated: string; counts: Counts } | undefined {
   }
 }
 
-function writeBaseline(counts: Counts): void {
+// The ratchet, and why it exists. For its first three months this baseline could only ever grow: any
+// run of `bun run lint:baseline` absorbed whatever the current output happened to be, and the gate
+// then reported "level" forever. The 2026-08-12 audit found the predictable result, several hundred
+// amnestied flags sitting inside the standards that define the rule, with nobody owning them and no
+// date by which they were meant to be gone. Baseline-and-regress is still the right design; what was
+// missing is that a baseline is a HIGH WATER MARK. So a rewrite may lower a count freely and may not
+// raise one without someone saying so out loud:
+//
+//   bun run lint:baseline             # accepts every DECREASE, refuses on any increase and names it
+//   bun run lint:baseline --accept    # accepts increases too, which is the deliberate act
+//
+// A run that lowers counts is the normal case and needs no ceremony. A run that raises them is a
+// decision, and the flag is there to make it one.
+function writeBaseline(counts: Counts, accept: boolean): void {
+  const previous = loadBaseline();
+  const rising: { key: string; base: number; now: number }[] = [];
+  if (previous) {
+    for (const key of new Set([...Object.keys(counts), ...Object.keys(previous.counts)])) {
+      const base = previous.counts[key] ?? 0;
+      const now = counts[key] ?? 0;
+      if (now > base) rising.push({ key, base, now });
+    }
+  }
+  if (rising.length && !accept) {
+    console.log("lint gate: refusing to raise the baseline. These counts would go UP:");
+    for (const r of rising.toSorted((a, b) => b.now - b.base - (a.now - a.base))) {
+      console.log(`  ${r.key}: baseline ${r.base} -> now ${r.now} (+${r.now - r.base})`);
+    }
+    console.log(
+      "\nFix them, or rerun with `bun run lint:baseline --accept` to take them on deliberately.\n" +
+        "A baseline is a high water mark: it falls for free and rises only when someone says so.",
+    );
+    process.exit(1);
+  }
+
   const sorted: Counts = {};
   for (const key of Object.keys(counts).sort()) sorted[key] = counts[key];
   const doc = {
     "//": [
       "Committed lint baseline for the turn-end gate (tools/review-gate.sh) and LOOP section 7's",
       "baseline-and-regress design: this repo shipped with pre-existing oxlint warnings and, once",
-      "voice-lint's default scope grew to cover standards/, pre-existing voice-lint flags too. The",
-      "gate does not ask for zero; it asks that today's count never becomes tomorrow's problem.",
-      "Regenerate with `bun run lint:baseline` — never hand-edit the numbers below. A deliberate",
-      "increase (a real new warning you're accepting on purpose) is updated here by rerunning that",
-      "command, not argued with in review.",
+      "voice-lint's scope grew to cover standards/ and then docs/, content/tours, the README and the",
+      "page copy inside src/, a great many pre-existing voice-lint flags too. The gate does not ask",
+      "for zero; it asks that today's count never becomes tomorrow's problem.",
+      "Regenerate with `bun run lint:baseline` — never hand-edit the numbers below. That command now",
+      "accepts any DECREASE and refuses any increase; an increase you mean to take on is accepted",
+      "with `--accept`, which is a decision made out loud rather than argued with in review.",
+      "The counts below are debt with a direction, not a settled state. Whoever lowers one lowers it",
+      "for good: the ratchet will not let it climb back quietly.",
     ],
     // Local date, not UTC: this machine's UTC offset crosses midnight relative to its wall clock, and
     // "generated" is read by a person deciding whether the baseline is stale, not machine-compared.
@@ -146,9 +183,9 @@ function report(): void {
   );
 }
 
-const args = process.argv.slice(2);
-if (args.includes("--write")) {
-  writeBaseline(currentCounts());
+const args = new Set(process.argv.slice(2));
+if (args.has("--write")) {
+  writeBaseline(currentCounts(), args.has("--accept"));
   console.log(`lint gate: wrote ${baselinePath}`);
 } else {
   report();
