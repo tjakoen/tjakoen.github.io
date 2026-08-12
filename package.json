@@ -19,6 +19,7 @@
     "dev": "bun --hot src/server.ts",
     "start": "bun src/server.ts",
     "test": "bun test",
+    "coverage": "bun test --coverage",
     "test:e2e": "playwright test",
     "test:all": "bun test && playwright test",
     "shots": "bun tools/screenshots.ts",

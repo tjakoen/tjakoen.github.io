@@ -1,0 +1,78 @@
+name: CI
+
+# LOOP section 2, Tier 1, the push row: "the doctor + typecheck + tests + e2e + lint". Until now the
+# only workflow here was pages.yml, which runs the typecheck and the unit tests on its way to a
+# deploy. The e2e suite, forty-four specs, ran on nobody's machine but a laptop, and the lint count
+# ran only at turn end. The 2026-08-13 audit filed that as F4: the standard described a CI that did
+# not exist, which is worse than describing a weaker one, because a conformance pass asks "is CI on
+# push wired" and the answer was yes.
+#
+# Separate from pages.yml on purpose. That file is the deploy path and is kept fast, so a flaky
+# browser test can never be the reason the site fails to redeploy. This one is the gate; it fails
+# visibly and blocks nothing else.
+#
+# WHAT IS DELIBERATELY NOT HERE:
+#
+# The doctor. `pantry doctor` is the mechanical tier and it belongs in this file, but @tjakoen/pantry
+# is not on the public registry and this repo does not vendor it, so there is nothing for a runner to
+# resolve. Adding a step that silently skips would be worse than the honest absence. The session-start
+# hook at ~/.claude/tools/session-doctor.sh covers the doctor for now, which is a person's machine
+# rather than a runner, and that limit is stated rather than papered over.
+#
+# A blocking lint gate. tools/lint-gate.ts runs here in report mode and exits 0 even when a count has
+# risen. That is the owner's call of 2026-08-13: the only place the loop was given teeth is the
+# human-lane path deny, and everything else stays advisory. The count is in the log, where a person
+# reading a failed or passing run can see it, and no push is ever refused over a style flag.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: typecheck, tests, lint count
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun test
+      # Advisory, and it says so above. `|| true` is not used: the gate already exits 0 by design,
+      # and swallowing an exit code here would hide the day that design changes.
+      - name: lint count against the committed baseline
+        run: bun tools/lint-gate.ts
+
+  e2e:
+    name: end to end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium
+      # --ignore-snapshots because the committed baselines are darwin-only: every file in
+      # e2e/visual.e2e.ts-snapshots ends -darwin.png, so a linux runner would look for names that do
+      # not exist and fail nine assertions for the wrong reason. The rest of visual.e2e.ts still
+      # runs. Cross-platform baselines are a real gap and belong to whoever wants visual regression
+      # in CI, not to this file pretending it already has it.
+      - run: bunx playwright test --ignore-snapshots
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
