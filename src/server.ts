@@ -22,6 +22,9 @@ import { buildVocabReference } from "@tjakoen/grain/ai/vocab-reference.ts";
 // --- portfolio (THE app) ---
 import { renderPage, refresh } from "./render.ts";
 import { buildAiRoutes } from "./routes/ai-routes.ts";
+// /builder demo: the ONE pure seam that turns a raw `?ask=` query param into everything the page
+// renders (matchSpec's own result + the CSS state flags) — see builder-page.ts's own banner.
+import { buildBuilderView } from "./ai/builder-page.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
 import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
@@ -198,13 +201,47 @@ const cvPrimary = cv.primarySkills.map((s) => ({ text: s.text, href: s.href ?? "
 const cvLanguages = cv.languages.join(" · ");
 const cvSummary = cv.summary;
 
+// /about's Contact tab: the same data-first move as cv.json above, one JSON spec instead of a
+// hand-typed form. grain's b-field/b-choice/b-option atoms render one item per array entry; every
+// item carries every key so the renderer never logs an unknown-binding warning (an absent key warns,
+// an explicit null stays quiet). required/selected are bound as the literal string, never "",
+// because a bound empty value drops the attribute outright.
+interface ContactFieldRaw {
+  surface: string; label: string; name: string; type: string;
+  placeholder: string | null; value: string | null; required: "required" | null;
+}
+interface ContactChoiceRaw {
+  surface: string; label: string; name: string;
+  options: Array<{ value: string; label: string; selected: "selected" | null }>;
+}
+interface ContactFormData { fields: ContactFieldRaw[]; choices: ContactChoiceRaw[] }
+const contactForm: ContactFormData = await Bun.file(
+  join(import.meta.dir, "..", "content", "data", "contact-form.json"),
+).json();
+const contactFields = contactForm.fields;
+const contactChoices = contactForm.choices;
+
 const renderAppPage = async (html: string) =>
   stampDevDoor(await renderPage(html, {
     recentNotes: await listRecentNotes(), latestEvents: await listLatestEvents(),
     calendarEvents: await buildCalendarEvents(),
     mailFolders, mailMessages,
     cvRoles, cvEducation, cvSkills, cvCerts, cvStats, cvPrimary, cvLanguages, cvSummary,
+    contactFields, contactChoices,
   }));
+
+// /builder demo: the same shell every page gets, but rendered by hand rather than through
+// servePage()->makePageServer() (registered below), because it needs the REQUEST's own `?ask=` query
+// string and makePageServer only ever sees a bare pathname. Reads the same physical file
+// view/pages/builder.html would otherwise serve untouched, injects PAGE_HEAD/PAGE_ASSETS the same way
+// makePageServer's own injectBeforeHeadEnd/injectBeforeBodyEnd do (so it carries every global script
+// and style every other page gets), then expands it through the same component engine (renderPage).
+const renderBuilderPage = async (html: string, data: Record<string, unknown>) => {
+  let out = await renderPage(html, data);
+  if (out.includes("</head>")) out = out.replace("</head>", `${PAGE_HEAD}</head>`);
+  if (out.includes("</body>")) out = out.replace("</body>", `${PAGE_ASSETS}</body>`);
+  return stampDevDoor(out);
+};
 const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAGE_ASSETS, PAGE_HEAD);
 // Give every page's main content region a catalog hover-root so grain's usage→specimen bridge
 // (grain/scripts/catalog-peek.js) works SITE-WIDE, not only on /grain: with the Catalog pane open,
@@ -495,6 +532,19 @@ ${PAGE_ASSETS}</body>
     "/notes": async (req: Request) =>
       finalizePage(req, new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
         { headers: { "Content-Type": "text/html; charset=utf-8" } })),
+    // /builder — the form-builder demo: describe a form in plain English, matchSpec (field-matcher.ts)
+    // decides the closed set of fields/choices on the SERVER, and the page renders the prompt, the
+    // spec as JSON, and the live form from that one result — a GET round trip, nothing client-side
+    // decides structure. A dedicated route (not the generic pages-tree fallback further down) because
+    // it needs this request's own `?ask=` query string; the sitemap still lists it automatically
+    // (createSitemap walks view/pages/ on disk, not this route table) the same way it lists /about.
+    "/builder": async (req: Request) => {
+      const ask = new URL(req.url).searchParams.get("ask") ?? "";
+      const view = buildBuilderView(ask);
+      const raw = await Bun.file(join(config.pagesDir, "builder.html")).text();
+      const html = await renderBuilderPage(raw, { ...view });
+      return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+    },
     // /kickstart — the short, shareable twin of /standards/kickstart (the new-project prompt).
     // Serves the SAME MILL-rendered page so the link is short to hand out, but finalizes it as if
     // the request were /standards/kickstart: enrichHead keys the canonical off the pathname, so this

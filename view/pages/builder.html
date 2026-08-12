@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Builder · TJ's Desk</title>
+  <meta name="description" content="Describe a form in plain English. A closed, code-owned set of fields decides what actually renders: the model never picks a field, a name, or a type.">
+</head>
+<body data-screen="builder" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="builder" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="board" data-bind-data-builder-state="builderState">
+        <p class="eyebrow">Builder</p>
+        <h1 class="masthead">Describe a form. Get one back.</h1>
+        <p class="lede">Type what a form should ask for, and a fixed, code-owned list of fields and
+          choices decides what actually renders. Picking field names is exactly what a small model
+          gets wrong, so it never gets to pick one. Nothing here submits anywhere: this is a static
+          site, and the demo only builds a form and prefills it, never sends one.</p>
+
+        <section class="builder-empty">
+          <p>No prompt yet. Pick one of the examples below, or ask the desk to build one for you.</p>
+        </section>
+
+        <section class="builder-result">
+          <div class="section-head"><span>Prompt</span></div>
+          <p class="builder-prompt"><q data-field="ask"></q></p>
+          <p class="builder-none" data-bind-data-matched-nothing="matchedNothing">Nothing in the
+            closed set matched that. Try one of the prompts below, or ask for a name, an email, a
+            phone number, a company, a role, a subject, a website, or a rough budget, or a topic, a
+            preferred contact method, or a timeline.</p>
+          <p><a href="/builder">Try another prompt →</a></p>
+
+          <div class="builder-form-block" data-bind-data-has-fields="hasFields">
+            <div class="section-head"><span>Live form</span></div>
+            <p class="muted">One tag renders whatever matchSpec decided, every time. It never
+              changes between runs:</p>
+            <pre class="builder-tag">&lt;b-field each="fields"&gt;&lt;/b-field&gt;
+&lt;b-choice each="choices"&gt;&lt;/b-choice&gt;</pre>
+            <form class="builder-form" data-surface="builder-form" onsubmit="return false">
+              <b-field each="fields" size="sm"></b-field>
+              <b-choice each="choices" size="sm"></b-choice>
+            </form>
+            <p class="muted">Fields are grouped by kind, text fields first and choices after.
+              Interleaving them in the order you asked isn't supported, on purpose, a v1 limit. Labels
+              above are the closed set's own defaults; a model could reword them (matchSpec's
+              applyWording seam exists for exactly that), but it isn't wired into this live page,
+              because the in-browser model runs after the page has already rendered.</p>
+            <p class="muted">So be clear about who wrote what here: nothing on this page was written
+              by the model. The labels are the closed set's, and the demo values the desk types in are
+              drafted by code as well, because an action the desk performs never gets a model tail.
+              What you are watching is selection and operation, which is the part a small model cannot
+              do, and the wording pass is still an open seam rather than a shipped one.</p>
+            <p class="muted">One more thing worth knowing before you trust the live fill: the atoms
+              put the field's address on the wrapping label, and a label has nothing to write into, so
+              this page moves each address down onto its own control before the desk reads it. Until
+              that moves upstream, a generated form is addressable the moment it renders but not yet
+              fillable without that one adjustment. The choices are left alone on purpose, and the
+              note under the spec says why.</p>
+          </div>
+
+          <div class="builder-unsupported-block" data-bind-data-has-unsupported="hasUnsupported">
+            <div class="section-head"><span>Can't build yet</span></div>
+            <!-- Addressed so a review tour can point at the refusal itself. Not a registered surface
+                 kind, so it is push-only and no verb targets it. -->
+            <ul class="builder-unsupported" data-surface="builder-refusals">
+              <builder-refusal each="unsupported"></builder-refusal>
+            </ul>
+          </div>
+
+          <div class="section-head"><span>Spec</span></div>
+          <p class="muted">Exactly what matchSpec returned: the fields, the choices, and any refusal
+            above all come straight from this, never a second hand-typed description of it. The
+            choices keep their address on the label rather than on the select, which leaves them
+            visible here and out of reach of the desk. A write aimed at a select does nothing useful:
+            anything that is not one of its option values empties it instead, and it does that
+            quietly, so the safer default is a control the desk cannot reach at all.</p>
+          <pre class="builder-json" data-surface="builder-spec" data-field="specJson"></pre>
+        </section>
+
+        <div class="section-head"><span>Examples</span></div>
+        <p class="muted">Real links, real query strings. Every state on this page is shareable and
+          reproducible: the same prompt always builds the same form.</p>
+        <div class="docs-list">
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20what%20they%20want%20to%20talk%20about">A contact form with a name, an email, and what they want to talk about</a><span class="docs-list__what">two fields, one choice.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=Name%2C%20email%2C%20phone%2C%20and%20a%20rough%20budget">Name, email, phone, and a rough budget</a><span class="docs-list__what">four fields, no choices.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20event%20signup%20with%20an%20email%20and%20a%20timeline">An event signup with an email and a timeline</a><span class="docs-list__what">one field, one choice.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details">A form with a name, an email, and a big message box for details</a><span class="docs-list__what">the message box is refused, honestly.</span></div>
+        </div>
+
+        <div class="page-foot">
+          Part of <a href="/">tjakoen.github.io</a>, built with itself.
+          <p>🤖 Built with Claude. I don't prompt and pray, I prompt and prove. Every commit here is
+            co-authored with an AI, on purpose. <a href="/notes/ten-times-zero">How I actually work with AI, receipts and all →</a></p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // The desk's field.set fill targets a data-surface attribute DIRECTLY on the fillable control —
+    // B1's contact prefill precedent (/mail's compose body) is a bare <textarea data-surface="…">,
+    // and grain's own dispatcher guard (ai-dispatch.js) is `"value" in el`, checked on WHATEVER
+    // element carries that exact data-surface. grain's b-field/b-choice atoms (unedited here — grain
+    // ships as-is) put data-surface on the WRAPPING <label> instead, one level above the actual
+    // <input>/<select> — a label has no `.value`, so the guard would silently no-op there. This
+    // moves each label's surface down onto its own control right after render, before the desk (or
+    // grain's own manifest walk) ever reads a data-surface on this page — the one portfolio-owned
+    // adjustment the live form needs; grain's templates and dispatcher stay untouched.
+    //
+    // INPUTS ONLY, and a <select> is excluded on purpose. The same `"value" in el` guard PASSES on a
+    // select, and assigning it anything that is not one of its option values sets .value to "" — the
+    // control goes blank and nothing warns (measured on /about's contact panel, 2026-08-13). Leaving
+    // a choice's surface on its label means a fill aimed at it resolves to an element with no .value
+    // and no-ops instead. Upstream (form-draft.ts) already refuses to draft a value for a choices
+    // entry, so this is the second of two independent guards: inert beats silently destructive, and
+    // the two failure modes are not equally cheap to recover from.
+    (function () {
+      var labels = document.querySelectorAll('.builder-form [data-surface]');
+      Array.prototype.forEach.call(labels, function (label) {
+        var surface = label.getAttribute('data-surface');
+        var ctrl = label.querySelector('input');
+        if (!surface || !ctrl) return;
+        ctrl.setAttribute('data-surface', surface);
+        label.removeAttribute('data-surface');
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{
+  "tour": "review-builder-demo",
+  "title": "Review: the builder page, and who actually wrote what",
+  "mode": "dev",
+  "capturedAt": "2026-08-12T20:04:57.830Z",
+  "previewTarget": "http://localhost:3000",
+  "via": "http://localhost:57252",
+  "startedProject": null,
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "motion": "css-disabled",
+  "driver": {
+    "package": "playwright",
+    "path": "/Users/tjakoenstolk/Local/Development/bread-repos/tjakoen.github.io/node_modules/playwright/index.mjs",
+    "version": "1.62.0"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "surface": "builder-form",
+      "at": "/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details",
+      "status": "new",
+      "verify": "Ask the desk in the chat panel to build you a form with a name, an email and a phone number. It should travel here on a fresh address, and the text fields should fill in one at a time, each carrying the grain treatment that marks AI ink. The choice, if the prompt produced one, should not move and should not get that treatment.",
+      "url": "http://localhost:57252/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details",
+      "navigated": true,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 297,
+        "y": 681.78125,
+        "width": 480,
+        "height": 117.375
+      },
+      "page": "01-builder-form.png",
+      "element": "01-builder-form-element.png",
+      "problem": null
+    },
+    {
+      "index": 1,
+      "surface": "builder-refusals",
+      "at": "/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details",
+      "status": "needs-verification",
+      "verify": "Edit the address to drop the words message box and reload. This block should disappear entirely rather than render empty, and the form above should still hold the name and the email.",
+      "url": "http://localhost:57252/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 297,
+        "y": 1121.390625,
+        "width": 606,
+        "height": 89.1875
+      },
+      "page": "02-builder-refusals.png",
+      "element": "02-builder-refusals-element.png",
+      "problem": null
+    },
+    {
+      "index": 2,
+      "surface": "builder-spec",
+      "at": "/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details",
+      "status": "needs-verification",
+      "verify": "Change the description in the address to ask for a name, a phone number and a timeline, then reload. The JSON should list the fields in the closed set's own order rather than the order you typed, and the form above should match it item for item.",
+      "url": "http://localhost:57252/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 297,
+        "y": 646.8125,
+        "width": 606,
+        "height": 591.5
+      },
+      "page": "03-builder-spec.png",
+      "element": "03-builder-spec-element.png",
+      "problem": null
+    }
+  ],
+  "failures": 0
+}

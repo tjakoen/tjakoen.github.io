@@ -1,0 +1,9 @@
+<!-- molecules/builder-refusal: one "can't build yet" line on the /builder demo, the exact token the
+     description asked for, and matchSpec's own reason it was refused rather than faked (never a
+     silently dropped field). Nested each="unsupported" on the page, over field-matcher.ts's
+     FieldSpec.unsupported. Styled by builder.css (.builder-unsupported__item, scoped to
+     [data-screen="builder"]). -->
+<li class="builder-unsupported__item">
+  <span class="builder-unsupported__token" data-field="token"></span>
+  <span class="builder-unsupported__reason" data-field="reason"></span>
+</li>

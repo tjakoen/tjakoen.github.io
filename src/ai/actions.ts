@@ -65,7 +65,15 @@ export type Action =
   // C2 visitor memory — "forget what you know about me". No payload: the desk never deletes pad
   // content (that would be the one irreversible AI action this whole feature is built to avoid), so
   // the reasoner's handler is a fixed, code-authored explanation, never a model-composed reply.
-  | { kind: "memory-forget" };
+  | { kind: "memory-forget" }
+  // D1 form builder demo — "build me a form that asks for a name and an email". `description` is
+  // the WHOLE raw message (not a captured remainder, unlike B1/B3's `message`/`sender`): matchSpec
+  // (field-matcher.ts) tokenizes free text robustly regardless of surrounding phrasing ("build me a
+  // form that asks for X" vs. "a form asking for X, please"), and the /builder page echoes this
+  // exact text back as "the prompt that produced this" — keeping the visitor's whole sentence, never
+  // a trimmed-down capture group, is the honest choice there. The reasoner (never this router) runs
+  // matchSpec against it — law #2, this router only recognizes the TRIGGER, never a field/choice.
+  | { kind: "form-build"; description: string };
 
 /** The disambiguation the desk offers for a vague "where should I go?" — each choice's `value` is a
  *  phrase the desk itself resolves (catalog navigation or a capabilities ask), so a click just
@@ -147,6 +155,24 @@ const MAIL_ARCHIVE_PATTERNS: RegExp[] = [
 const CONTACT_MESSAGE_PATTERNS: RegExp[] = [
   /\b(?:tell|message|email|write\s+to)\s+tj\b[\s,:-]*(?:that\s+)?(.+)$/i,
 ];
+
+// D1 form builder demo — "build me a form that asks for a name and an email" / "make a form for a
+// signup" / "create a contact form". No captured remainder (see the Action kind's own comment for
+// why the description carries the WHOLE message) — this only needs to recognize a build-ish verb
+// aimed at a form, not extract anything from it.
+const FORM_BUILD_RE = /\b(?:build|make|create|design|whip up)\b.*\bforms?\b/;
+// A question ABOUT a form is not a request to build one. "how did you build this form", "what makes
+// a form addressable", "why would you create a form this way" all satisfy the verb-then-noun shape
+// above, and an action verb that navigates on a question is the worst kind of false positive: it
+// takes the page away from someone who asked to be told something. Whole-message anchored, so a
+// leading interrogative disqualifies the ask and it falls through to the grounded model tail, which
+// is where a question about how this works belongs anyway.
+//
+// The polite openers stay OUT of this list on purpose: "can you build me a form", "could you make a
+// signup form", "would you build a form with a name" are all requests wearing a question mark, and
+// the catalog's NAV_VERB polite prefixes settled that argument once already ("can you open X" is a
+// navigation, not a question about navigation). So can/could/would/will/please never disqualify.
+const FORM_BUILD_QUESTION_RE = /^(?:how|why|what|who|when|where|which|is|are|was|were|does|did|do)\b/;
 
 // C2 visitor memory — "remember I'm here about grain" / "please remember that my name is Anna".
 // WHOLE-message-anchored (^), like the C1 greeting/who's-visiting triggers below: an embedded
@@ -289,6 +315,11 @@ export function routeAction(text: string): Action | null {
     if (message) return { kind: "contact-message", message };
   }
 
+  // D1 form builder demo — checked here (after contact-message, before the C1 trigger below) so a
+  // build ask never gets swallowed by anything vaguer further down. The WHOLE raw message becomes
+  // `description` — see the Action kind's own comment for why.
+  if (FORM_BUILD_RE.test(t) && !FORM_BUILD_QUESTION_RE.test(t)) return { kind: "form-build", description: text.trim() };
+
   // C1 visitor-intent onboarding — the TRIGGER, checked here, BEFORE the clarify block below (per the
   // roadmap's "router pattern before the clarify check"). Two shapes: (a) a WHOLE-message greeting/vague
   // opener — nothing else in the message, so "help me find the docs" still falls through to the
@@ -360,7 +391,9 @@ export function routeAction(text: string): Action | null {
  *   - contact-message and mail-archive: NOT global — a message draft only makes sense where the
  *     compose field exists, mail archiving only where there's an inbox. Both are already covered,
  *     honestly and per-page, by the DOM-derived operate capabilities (field.set / item.archive) —
- *     adding them here would claim the ability on pages that don't actually carry the surface. */
+ *     adding them here would claim the ability on pages that don't actually carry the surface.
+ *   - form-build IS listed, unlike those two: it never depends on a DOM surface already being on
+ *     the page (it navigates to /builder itself), so it's honestly available everywhere navigate is. */
 export interface ActionCapability {
   kind: Action["kind"];
   group: "see" | "navigate" | "operate";
@@ -374,6 +407,7 @@ export const ACTION_CAPABILITIES: ActionCapability[] = [
   { kind: "notes-filter", group: "operate", phrase: "filter the notes by topic" },
   { kind: "theme", group: "operate", phrase: "switch the site's theme" },
   { kind: "showcase-start", group: "operate", phrase: "drive the site itself, step by step, so you can watch" },
+  { kind: "form-build", group: "operate", phrase: "build a form live from a plain description" },
 ];
 
 /** The pinned first chip — always offered on every page (the showcase's "what can I do here?"). */

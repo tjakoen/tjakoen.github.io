@@ -55,3 +55,14 @@
 /* CV tab: the summary line + the download/actions row above the shared cv-* molecules. */
 [data-screen="about"] .cv-tab__intro { margin: 0 0 var(--space-4); color: var(--ink-muted); }
 [data-screen="about"] .cv-tab__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0 0 var(--space-5); }
+
+/* Contact tab's form: b-field/b-choice each render a .field label, which is display:flex so it
+   blockifies on its own — this just stacks the fields with a shared gap and gives the Send row the
+   same bar shape as /mail's compose__foot, without pulling in mail.css (that block is scoped to
+   [data-screen="mail"] and never loads here). */
+[data-screen="about"] .contact-form { display: flex; flex-direction: column; gap: var(--space-3);
+  max-width: 26rem; margin: var(--space-3) 0 var(--space-5); }
+[data-screen="about"] .contact-form__foot { display: flex; align-items: center; flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4); }
+[data-screen="about"] .contact-form__hint { font-size: var(--text-xs); color: var(--ink-faint); }
+[data-screen="about"] .contact-form__hint a { color: var(--ink-muted); }
