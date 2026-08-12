@@ -14,7 +14,7 @@ checked, because it is the difference between a demo and a claim.
 ## builder-form
 - at: /builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details
 - status: new
-- review: The tag above the form never changes between runs, which is the thing worth seeing. What I am nervous about is underneath it: the atoms address the wrapping label, so this page moves each address down onto its own control after render, and it skips selects when it does. Without that one adjustment the desk cannot fill a generated field at all.
+- review: The tag above the form never changes between runs, which is the thing worth seeing. Underneath it is the thing this page found: the atoms addressed the label around each control, so nothing generated could be filled, and the page carried a script to move every address down by hand. Grain 0.1.22 fixed the atoms and that script is gone, so what you are looking at now is the plain claim with nothing propping it up.
 - verify: Ask the desk in the chat panel to build you a form with a name, an email and a phone number. It should travel here on a fresh address, and the text fields should fill in one at a time, each carrying the grain treatment that marks AI ink. The choice, if the prompt produced one, should not move and should not get that treatment.
 The live form, rendered from the description in the address bar.
 

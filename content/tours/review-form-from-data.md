@@ -20,7 +20,7 @@ The two text fields, rendered from the first array in the spec.
 ## field:contact-topic
 - at: /about#contact
 - status: known-issue
-- review: The select renders from a nested array, one option per entry, and the preselected one is Something else because presuming why you are writing felt worse than asking. The known issue is on the AI side, and it is bigger than this one control. The atoms put the address on the wrapping label, so every field on this page resolves to a label, and a label has nothing to write into. Measured here: all three addresses resolve to a label element, so the desk cannot fill any of them. The builder page works around it by moving each address down onto its own control, and it excludes selects when it does, because a write aimed at a select empties it instead of failing.
+- review: The select renders from a nested array, one option per entry, and the preselected one is Something else because presuming why you are writing felt worse than asking. What is worth knowing is what this control taught us. The atoms first addressed the wrapping label, so every field here resolved to a label, a label has nothing to write into, and the desk could not fill any of them. That is fixed in grain 0.1.22 and the address now sits on the control itself. The remaining sharp edge is this control specifically: a select accepts a write that a text field would, and anything that is not one of its option values empties it rather than failing.
 - verify: Choose Hiring, fill the two fields above, and press Send. The draft your mail app opens should carry the subject "Contact from the site: Hiring". Change the choice and send again; the subject should follow it. If the subject keeps the old topic, the select and the handoff have come apart.
 The choice, rendered by the sibling atom that owns the select.
 
@@ -33,8 +33,8 @@ The form as a whole, and the one honest limit it has to state out loud.
 
 ## prompt
 Three questions the walk cannot answer, because they are calls rather than checks.
-- ask: textarea | The form has no message box because the textarea atom is not built. Does it jump the queue now, or does this form ship with the gap stated?
-- ask: surface-on-label | The atoms address the label, so no generated field is fillable without the workaround the builder page carries. Move the address onto the control in grain, guard the dispatcher against an unwritable target, or keep the workaround in the page?
+- ask: textarea-shape | The textarea atom is now next in the queue. When it lands, does this form grow a message field and stop handing the body to a mail client, or does the handoff stay as it is?
+- ask: choice-write | The addressing is fixed, so a choice is now reachable and a bad write empties it silently. Guard the dispatcher against that, leave it to every caller to send option values, or keep choices out of reach some other way?
 - ask: placement | Is the Contact tab the permanent home for this form, or is it standing in until the builder demo has a page of its own?
-- template: Continue the form builder work in the portfolio (tour {tour}).\nTextarea call: {textarea}\nSurface-on-label call: {surface-on-label}\nPlacement call: {placement}\nThe plan is grain/packages/grain/plans/form-from-data.md section 8. Grain is committed and held unpushed on purpose, and the portfolio resolves it through a local symlink.
+- template: Continue the form builder work in the portfolio (tour {tour}).\nTextarea shape: {textarea-shape}\nChoice write call: {choice-write}\nPlacement call: {placement}\nThe plan is grain/packages/grain/plans/form-from-data.md section 8. Grain is committed and held unpushed on purpose, and the portfolio resolves it through a local symlink.
 - handoff: https://claude.ai/new?q={payload}
