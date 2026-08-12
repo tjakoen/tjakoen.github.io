@@ -25,7 +25,7 @@ export const SITE = {
     jobTitle: "Software engineering manager, tech lead, and part-time software-engineering teacher",
     sameAs: [
       "https://github.com/tjakoen",
-      "https://www.linkedin.com/in/tjakoen-stolk-53b449126/",
+      "https://www.linkedin.com/in/tjakoenstolk",
     ],
   },
   ogImage: "/media/og-card.png",

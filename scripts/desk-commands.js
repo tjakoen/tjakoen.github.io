@@ -94,7 +94,7 @@
     ctx.print("Tjakoen Stolk — dev manager, tech lead, and part-time software engineering teacher.");
     ctx.print("I build AI-first, no-build interfaces (this whole site is one) and teach 100 to 150 students a semester.");
     ctx.print("I direct, Claude types.");
-    ctx.printHtml('full record: <a href="/resume">/resume</a> · history: <a href="https://www.linkedin.com/in/tjakoen-stolk-53b449126/">LinkedIn</a> · code: <a href="https://github.com/tjakoen">GitHub</a>');
+    ctx.printHtml('full record: <a href="/resume">/resume</a> · history: <a href="https://www.linkedin.com/in/tjakoenstolk">LinkedIn</a> · code: <a href="https://github.com/tjakoen">GitHub</a>');
   }});
 
   // ── easter eggs — each one honest about how this thing actually works ───────────────────────────
