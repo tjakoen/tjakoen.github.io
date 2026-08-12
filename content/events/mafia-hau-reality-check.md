@@ -14,6 +14,7 @@ photos:
   - "/media/feed/mafia-hau-reality-check-qa.jpg | 1200x1600 | The three speakers seated on stage under a slide reading Question and Answer, taking questions from the floor"
   - "/media/feed/mafia-hau-reality-check-title.jpg | 1200x1600 | The three of us doing finger hearts in front of the Re: AI-lity Check title slide after the session"
   - "/media/feed/mafia-hau-reality-check-certificate.jpg | 1200x1600 | The organizers handing me the certificate of recognition on stage, four of them in their org shirts"
+deck: "Re: AI-lity Check | PDF | /decks/reality-check-ai-ethics | 27 slides · 2.0 MB · opens here on the site"
 social: |
   I spoke at Re: AI-lity Check, a seminar on originality and integrity amidst AI-driven media, hosted
   by MAFIA (Multimedia Aficionados), the student organization for the Entertainment and Multimedia
@@ -100,5 +101,5 @@ next to proof of the second.
 Also, I was a guest in someone else's industry. They know their field better than I do. I held my
 conclusions loosely on purpose.
 
-The whole deck, footnotes and all: [Re: AI-lity Check](/media/decks/reality-check-ai-ethics.pdf).
+The whole deck, footnotes and all, is at the top of this page.
 Thanks to the officers for the invitation, the certificate, and the questions.

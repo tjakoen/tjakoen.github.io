@@ -19,7 +19,9 @@ import { join } from "node:path";
 import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
 import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
-import { listPortfolioContentRoutes, listPortfolioRawContentRoutes } from "../src/content.ts";
+import {
+  listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes,
+} from "../src/content.ts";
 import { listPlanRoutes } from "../src/plans.ts";
 import { loadTours } from "@tjakoen/crumb/loader.ts";
 import { fileURLToPath } from "node:url";
@@ -111,12 +113,13 @@ async function waitForServer(timeoutMs = 15000) {
 async function pageRoutes(): Promise<string[]> {
   const pages = createSitemap(config.pagesDir).routes();
   const content = await listPortfolioContentRoutes();                    // MILL collections, enumerated
+  const decks = await listPortfolioDeckRoutes();                         // the in-shell deck viewer pages
   const plans = await listPlanRoutes();                                  // PROOF's board, enumerated
   // "/cv" is not a page file — it's the auto-print résumé twin the server synthesizes from /resume
   // (server.ts fetch), so add it explicitly or the dead-link walk flags the About/résumé download link.
   // "/kickstart" is the short share-link twin of the MILL page /standards/kickstart (server.ts
   // serves the same rendered body); it is not a page file, so add it explicitly to freeze dist/kickstart/.
-  const all = new Set([...pages, ...content, ...plans, "/catalog", "/reference", "/cv", "/kickstart"]);
+  const all = new Set([...pages, ...content, ...decks, ...plans, "/catalog", "/reference", "/cv", "/kickstart"]);
   return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).sort();
 }
 

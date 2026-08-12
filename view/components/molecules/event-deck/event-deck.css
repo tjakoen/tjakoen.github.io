@@ -1,0 +1,26 @@
+/* molecules/event-deck — where a deck, and the video, sit on a content page. The components
+   themselves are GRAIN's (`attachment` for the deck row, `media-card` for the video, `doc-frame`
+   for the viewer page); a GRAIN molecule owns no outer spacing, so the placement is here, which is
+   where a consumer's layout decision belongs. Bundled into /components.css via config.styleRoots.
+
+   Two placements, and they are opposites on purpose:
+
+   - The DECK sits directly under the hero and above the prose, because for a talk the deck is often
+     the thing the reader came for, and it used to be a link in the last paragraph.
+   - The VIDEO sits below the prose, next to the gallery. It was under the hero, and a full-width
+     16:9 poster there reads as the subject of the page and shouts over the writing the page is
+     actually made of. Down here it is what it is: another thing from the day. It is also capped, so
+     a wide screen does not hand it the whole column. */
+.event-deck { margin: 0 0 var(--space-6); }
+
+.event-video { margin: var(--space-7) 0 0; padding: var(--space-5) 0 0;
+  border-top: 1px solid var(--line-soft); }
+.event-video__heading, .event-gallery__heading { margin: 0 0 var(--space-4);
+  font-size: var(--text-xs); font-family: var(--font-mono); text-transform: uppercase;
+  letter-spacing: .04em; color: var(--ink-muted); font-weight: 500; }
+/* the gallery below already opens with its own rule; two hairlines a screen apart read as a mistake */
+.event-video + .event-gallery { border-top: 0; padding-top: var(--space-6); }
+.event-video .media-card { max-width: 32rem; }
+
+/* the viewer page (/decks/<file>): the document is the page, so the title stays quiet above it */
+.deck-page__title { margin: 0 0 var(--space-4); font-size: var(--text-lg); font-weight: 500; }
