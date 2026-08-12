@@ -1,0 +1,30 @@
+/* molecules/event-video — the featured video of a /calendar event (rendered by content.ts
+   renderVideoCard from the entry's flat `video:` string). Bundled into /components.css via
+   config.styleRoots. Not screen-scoped: it renders inside a MILL entry page's .board.
+
+   It is a poster still and a link, never an embed. An embed would put a third-party iframe and its
+   scripts on a page that has never carried one, to play a video that lives on someone else's
+   platform regardless. So: one anchor, one image, no script — which also makes it the no-JS case by
+   construction. The play badge is decorative (aria-hidden); the label carries the meaning for a
+   screen reader, and the anchor is the whole tile so the tap target is the picture. */
+.event-video { position: relative; display: block; margin: 0 0 var(--space-5);
+  border-radius: var(--radius-md); border: 1px solid var(--line-soft); background: var(--paper-2);
+  overflow: hidden; text-decoration: none; }
+.event-video:hover { border-color: var(--color-accent); }
+
+.event-video__poster { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
+  object-fit: cover; }
+
+/* the badge sits centred over the poster; a scrim behind it so it survives a bright frame */
+.event-video__play { position: absolute; inset: 0; margin: auto; width: 4rem; height: 4rem;
+  display: grid; place-items: center; border-radius: 50%; background: rgb(0 0 0 / .55);
+  color: #fff; font-size: 1.5rem; line-height: 1; padding-left: .15em; }
+.event-video:hover .event-video__play { background: rgb(0 0 0 / .75); }
+
+.event-video__label { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--space-3);
+  font-size: var(--text-sm); color: #fff;
+  background: linear-gradient(to top, rgb(0 0 0 / .75), rgb(0 0 0 / 0)); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .event-video__play { transition: background 120ms ease; }
+}
