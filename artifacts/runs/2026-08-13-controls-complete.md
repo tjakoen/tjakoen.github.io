@@ -12,6 +12,13 @@ scope:
   - ../grain/packages/grain/components/atoms/b-check/
   - ../grain/packages/grain/components/atoms/b-input/
   - ../grain/packages/grain/components/molecules/form-grid/
+  # The two message slots belong to the FRAME, so every atom that sits in it carries them. That
+  # reaches the four siblings below, which is inside the intent of "the control atoms named in
+  # section 5" and was simply missing from this list on the first write.
+  - ../grain/packages/grain/components/atoms/b-field/
+  - ../grain/packages/grain/components/atoms/b-choice/
+  - ../grain/packages/grain/components/atoms/b-memo/
+  - ../grain/packages/grain/components/atoms/b-textarea/
   - ../grain/packages/grain/components/form-from-data.test.ts
   - ../grain/packages/grain/plans/form-from-data.md
   - src/
