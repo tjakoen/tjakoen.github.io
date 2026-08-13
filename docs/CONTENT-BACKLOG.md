@@ -36,6 +36,16 @@ link dead-ends.
       restatement, the "the stack is not anti-server, static is a choice" paragraph that the parent
       note makes with two figures, was cut down to a single deferring clause. The freezability rule
       that follows it is unique to this note and stays.
+- [x] **Publish status settled (2026-08-14, owner call).** Four drafts flipped to PUBLISHED:
+      whitepaper-one-vocabulary, the-browser-grew-up, feels-like-an-app, one-loop-every-repo. Eight
+      of ten notes are now PUBLISHED; the two still DRAFT are the-console-i-built-to-stop-drowning
+      (in flight) and watch-its-hands (waiting on the owner's own read). This closes the flip owed
+      since the 2026-07-07 fable audit. **Every inline "DRAFT at content/notes/..." claim further
+      down this file predates that call and several were already stale before it. A note's own
+      frontmatter is the only status worth trusting; read it there, not here.** The field itself
+      stays decorative on purpose, also an owner call: no code reads it, and a note goes live when
+      its file lands. Gating /notes on it was considered and declined, because it would have hidden
+      work that is already published and linked.
 - **Still open, deliberately:** the teaching cluster is three notes (why-i-teach,
   how-i-turned-github-into-a-classroom, the-console-i-built-to-stop-drowning) where two of the
   three tell the platform build story. It was left alone because the cluster was merged 5 to 3 on
@@ -200,6 +210,10 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
       reference; runs in production across live courses) — etc. Also gets its **own picture-led
       landing page** at `/course-platform` (see PLAN.md) — screenshots + gifs, links out to the repo,
       **no docs** (the write-up lives in the repo). Asset task: capture the screenshots/gifs.
+      **PARTLY DONE (2026-08-14):** the page exists as `/native-github-classroom` and now carries an
+      "Open the console yourself" section: a demo-mode screenshot plus links out to the live console
+      (`?demo=1`), the public repo and the two repo templates. `/notes/the-console-i-built-to-stop-drowning`
+      carries four demo captures. Still open: gifs, and whether the page moves to `/course-platform`.
 - [ ] **People I worked with** — what they contributed, LinkedIn links (public professional info only; names go in only with each person's consent, per the no-names guardrail above).
 
 ### Captured narrative — the raw career arc (in the user's words, 2026-07-03)
