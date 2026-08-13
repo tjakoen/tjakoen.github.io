@@ -31,7 +31,13 @@ Two notes added to close gaps between the published set and work that shipped si
       aerospace documentation standard (the STE precedent cited in VOICE). The estate-wide sibling of
       where-were-we (which is the PROOF/plans-as-files slice). **DRAFT** at `content/notes/one-loop-every-repo.md`;
       inbound-linked from where-were-we.md; cross-links ten-times-zero. Honest limits: one person not a team,
-      books still being read.
+      books still being read. **Sources ledger: [LOOP-SOURCES](LOOP-SOURCES.md)** — every outside source
+      the loop was built from, what each contributed, and where it already appears. Written 2026-08-13 because
+      the credits were scattered across a standard, two file headers, a lockfile and this note. The note owes
+      three or four of them in prose and a single link at the end for the rest; a bibliography inside a personal
+      note reads as a citation performance. Newest addition is Osmani's *Agentic Code Quality*, which produced
+      [the 2026-08-13 loop audit](AUDIT-AI-LOOP-2026-08-13.md) rather than a feature, and whose finding is
+      the sharpest line available to the note: ahead of the article on process, behind it on measurement.
 - **Stale fixes this pass:** ten-times-zero "not published yet" claim killed (site is live; numbers reframed
       as a dated early-build snapshot, ratio held as "nearly as much prose as code" since the monorepo split
       dropped this repo alone to ~47% prose); why-i-teach:152 "third semester / 100-150" refreshed to the

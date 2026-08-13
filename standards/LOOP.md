@@ -365,6 +365,19 @@ spec-driven development — a versioned spec becomes a plan becomes atomic tasks
 validation, and *constitution* is a good word for what the five non-negotiables in every `CLAUDE.md`
 already are.
 
+**The quality half is named too, and this estate is behind on it.** Osmani's
+[Agentic Code Quality](https://addyo.substack.com/p/agentic-code-quality) makes the argument the rest
+of this file assumes: human code review does not scale to machine-speed output, so quality stops being
+a review activity and becomes a systems design problem. Constraints sit at three points, before the
+work, during it, and at the production boundary, which is the shape §2 and §4 already have. What it
+adds is the list of signals a harness owes and this one does not yet carry: mutation testing, a
+complexity ceiling, architecture rules in the linter, a security scan, and back-pressure, meaning a
+way to slow agent output when verification is the bottleneck rather than quietly lowering the bar.
+The 2026-08-13 audit found the asymmetry and named its cause: every gate here was written after a
+process failure that actually happened, and none after a quality failure, because quality failures
+were caught by a human reading the diff. That works at one person and one repo, which is exactly the
+condition the article says it stops working under.
+
 Two honest caveats, the same posture as the STE cite in [`VOICE.md`](VOICE.md): the two books are being
 read as this is written, so this section is a living base, not a finished literature review — it gets
 revisited after the read. And none of these sources is a study of *this* estate; they are the shape the
