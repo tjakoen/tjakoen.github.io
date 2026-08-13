@@ -1,11 +1,12 @@
 // portfolio/e2e/calendar.e2e.ts — CONFORMANCE: the /calendar app (Apps-v2 Pass C, reworked to read
 // like a standalone calendar app). The Feed is server-rendered (content.ts merges note publish dates
 // + data/desk-feed.json "shipped" posts + the events collection events/*.md in server.ts, composed
-// via batch's each="calendarEvents" through the feed-card molecule, images-first). The Month grid is a
+// via batch's each="calendarEvents" through the feed-card molecule, images-first). The year strip is a
 // client-side island reading the SAME events straight off the feed DOM (no fetch) and renders ABOVE
-// the feed; the feed is always on the page (the whole page with no JS — the month grid ships hidden).
-// Week view and the view tabs were removed. Time is frozen so this spec stays deterministic past July
-// 2026, when the fixture dates stop overlapping the real calendar.
+// the feed; the feed is always on the page (the whole page with no JS — the strip ships hidden).
+// Week view and the view tabs were removed, and the month-of-days grid was replaced by the strip: most
+// months here hold nothing, so a day grid spent its whole area proving that. Time is frozen so this
+// spec stays deterministic past July 2026, when the fixture dates stop overlapping the real calendar.
 import { test, expect } from "@playwright/test";
 
 const FIXED_NOW = new Date("2026-07-12T12:00:00");   // after every fixture event, same month as all of them
@@ -16,14 +17,33 @@ test.describe("the /calendar app (JS on)", () => {
     await page.goto("/calendar");
   });
 
-  test("the month grid renders above the always-present feed, today ring on the 12th", async ({ page }) => {
-    await expect(page.locator('[data-cal-panel="month"]')).toBeVisible();
+  test("the year strip renders above the always-present feed, July 2026 marked as this month", async ({ page }) => {
+    await expect(page.locator('[data-cal-panel="years"]')).toBeVisible();
     await expect(page.locator('[data-cal-panel="feed"]')).toBeVisible();
 
-    const today = page.locator('[data-cal-panel="month"] .cal__cell--today .cal__num');
-    await expect(today).toBeVisible();
-    await expect(today).toHaveText("12");
-    await expect(page.locator('[data-cal="title"]')).toHaveText("July 2026");
+    // Exactly one cell is the current month, and under the frozen clock it is July.
+    const now = page.locator(".cal__mon--now");
+    await expect(now).toHaveCount(1);
+    await expect(now.locator(".cal__mon-label")).toHaveText("Jul");
+
+    // Twelve months per year row, whether or not anything happened in them: the gaps are the point.
+    const rows = page.locator(".cal__year");
+    expect(await rows.count()).toBeGreaterThanOrEqual(1);
+    await expect(rows.first().locator(".cal__mon")).toHaveCount(12);
+
+    // The heading states the real span rather than one month, so it always names two dates.
+    await expect(page.locator('[data-cal="title"]')).toHaveText(/^[A-Z][a-z]+ \d{4} to [A-Z][a-z]+ \d{4}$/);
+  });
+
+  test("years run newest first and every row that exists holds something", async ({ page }) => {
+    const labels = await page.locator(".cal__year-label").allTextContents();
+    expect(labels.length).toBeGreaterThanOrEqual(1);
+    expect([...labels]).toEqual([...labels].sort().reverse());          // newest year at the top
+
+    for (const year of labels) {                                        // no year row is entirely blank
+      const row = page.locator(".cal__year", { has: page.locator(`.cal__year-label:text-is("${year}")`) });
+      expect(await row.locator(".cal__dot").count()).toBeGreaterThan(0);
+    }
   });
 
   test("a jump-to-feed link points at the feed section", async ({ page }) => {
@@ -60,24 +80,41 @@ test.describe("the /calendar app (JS on)", () => {
     await expect(noteCard.locator(".feed-photos")).toBeHidden();   // :empty collapses an absent strip
   });
 
-  test("a month chip's text matches a real feed card title", async ({ page }) => {
-    const chip = page.locator(".cal__event").first();
-    await expect(chip).toBeVisible();
-    const chipText = await chip.textContent();
+  // A dot carries no visible text (a 44px month cell has no room for a sentence), so its accessible
+  // name is the whole label. If that ever drifts from the card title the strip goes mute for anyone
+  // not using a mouse, which is exactly the regression worth a test.
+  test("a dot's accessible name matches a real feed card title", async ({ page }) => {
+    const dot = page.locator(".cal__dot").first();
+    await expect(dot).toBeVisible();
+    const name = await dot.getAttribute("aria-label");
+    expect(name && name.trim().length).toBeGreaterThan(0);
+    await expect(dot).toHaveAttribute("title", name!);                  // hover says the same thing
 
-    const matchingTitle = page.locator(".feed-card__title", { hasText: chipText!.trim() });
+    const matchingTitle = page.locator(".feed-card__title", { hasText: name!.trim() });
     expect(await matchingTitle.count()).toBeGreaterThanOrEqual(1);
   });
 
-  test("clicking a month chip scrolls to and highlights its feed card (feed is always on the page)", async ({ page }) => {
-    const chip = page.locator(".cal__event").first();
-    const targetId = await chip.getAttribute("data-target");
+  test("clicking a dot scrolls to and highlights its feed card (feed is always on the page)", async ({ page }) => {
+    const dot = page.locator(".cal__dot").first();
+    const targetId = await dot.getAttribute("data-target");
     expect(targetId).toMatch(/^evt-(note|post|event)-/);
-    await chip.click();
+    await dot.click();
 
     const card = page.locator(`#${targetId}`);
     await expect(card).toBeVisible();
     await expect(card).toHaveClass(/feed-card--highlight/, { timeout: 1000 });
+  });
+
+  // A busy month caps its dots so one heavy month cannot drag the year row four rows deep. The
+  // remainder is a count, and it has to stay clickable or those items are unreachable from the strip.
+  test("a capped month's overflow count lands on a real feed card", async ({ page }) => {
+    const more = page.locator(".cal__more").first();
+    if (await more.count() === 0) test.skip(true, "no month in the fixtures exceeds the dot cap");
+
+    await expect(more).toHaveText(/^\+\d+$/);
+    await expect(more).toHaveAttribute("aria-label", /^\d+ more in [A-Z][a-z]+ \d{4}$/);
+    await more.click();
+    await expect(page.locator(".feed-card--highlight")).toHaveCount(1, { timeout: 1000 });
   });
 
   // The feed's filter tabs are page state carried in the URL (?feed=notes|all), so a filtered feed is
@@ -234,7 +271,12 @@ test.describe("the /calendar app (no JS)", () => {
     expect(datetimes.length).toBeGreaterThan(0);
     for (const dt of datetimes) expect(dt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 
-    await expect(page.locator('[data-cal-panel="month"]')).toBeHidden();   // the month grid needs JS
+    await expect(page.locator('[data-cal-panel="years"]')).toBeHidden();   // the year strip needs JS
     await expect(page.locator('[data-cal-panel="feed"]')).toBeVisible();
+    // …and the noscript explaining why is a SIBLING of that panel, not a child of it. Nested inside,
+    // it inherited the panel's own `hidden` and could never reach the reader it was written for.
+    // Placement only: this context reports a noscript's text as empty, so asserting the wording here
+    // would test the harness rather than the page.
+    await expect(page.locator(".board > noscript")).toHaveCount(1);
   });
 });

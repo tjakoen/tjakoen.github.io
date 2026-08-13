@@ -11,24 +11,30 @@
     <portfolio-frame />
     <main class="app-shell__main">
       <div class="board">
-        <section class="cal" data-cal-panel="month" hidden aria-label="Month">
+        <!-- The time view is a YEAR strip, not a month grid. A month of days is the wrong unit for
+             how often things actually happen here: most months are empty, so the grid spent its
+             whole area proving nothing had happened, and it was pinned to the current month with no
+             way to reach the rest. A year per row, twelve months per year, one dot per dated thing
+             says the same truth in a shape that is never blank. -->
+        <section class="cal" data-cal-panel="years" hidden aria-label="Years">
           <div class="cal__head">
             <span class="cal__month" data-cal="title">Loading…</span>
             <a class="cal__to-feed" href="#feed">Jump to feed ↓</a>
           </div>
-          <div class="cal__grid" data-cal="dow"></div>
-          <div class="cal__grid" data-cal="grid">
-            <noscript><p class="muted" style="padding: var(--space-5)">This month grid renders with a
-              little JavaScript. With it off, the feed below is the whole page, every dated thing as a
-              plain list.</p></noscript>
-          </div>
+          <div data-cal="years"></div>
+          <!-- The legend keys the DOTS, so it stops at the three dot colours. The current month is
+               marked by highlighting its label instead, and a fourth swatch here was a filled circle
+               identical to the events one: a key that pointed at nothing on the strip. -->
           <p class="cal__legend">
             <span><span class="cal__swatch" style="background: var(--color-accent-soft)"></span>notes</span>
             <span><span class="cal__swatch" style="background: var(--paper-2); border: 1px solid var(--line-soft)"></span>shipped</span>
             <span><span class="cal__swatch cal__swatch--event"></span>events</span>
-            <span><span class="cal__swatch" style="background: var(--color-accent)"></span>today</span>
           </p>
         </section>
+        <!-- Outside the panel above on purpose: that section ships hidden and is only revealed by the
+             script, so a noscript INSIDE it could never be read by the reader it is written for. -->
+        <noscript><p class="muted">The year strip needs a little JavaScript. With it off, the feed
+          below is the whole page, every dated thing as a plain list.</p></noscript>
 
         <section class="feed" id="feed" data-cal-panel="feed">
           <div class="section-head"><span>Feed</span></div>
@@ -62,8 +68,8 @@
     // is a real dated thing (note publish dates + shipped posts + the events collection) — nothing invented.
     (function () {
       var feedList = document.querySelector('.feed__list');
-      var monthPanel = document.querySelector('[data-cal-panel="month"]');
-      if (!feedList || !monthPanel) return;
+      var yearsPanel = document.querySelector('[data-cal-panel="years"]');
+      if (!feedList || !yearsPanel) return;
 
       // ---- relative dates on the feed cards: server renders each date absolute (export-safe, in
       // title); rewrite [data-relativize] to "Today / Yesterday / N days ago", keeping the absolute. ----
@@ -156,80 +162,123 @@
         };
       }).filter(function (e) { return e.date; });
 
-      function isoKey(d) {
-        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      // ---- scrolling to a feed card: the feed is always on the page, so a dot just scrolls to its
+      // card and flashes it. The strip plots EVERYTHING, so a dot can point at a card the current
+      // tab is hiding — fall back to All rather than scrolling to nothing. ----
+      function goToCard(id) {
+        var row = id && document.getElementById(id);
+        if (!row) return;
+        if (row.hidden) applyTab('all');
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        row.classList.add('feed-card--highlight');
+        setTimeout(function () { row.classList.remove('feed-card--highlight'); }, 1600);
       }
-      var byDate = {};
-      events.forEach(function (e) {
-        (byDate[e.date] = byDate[e.date] || []).push(e);
-      });
 
-      // ---- shared: a clickable chip for one event; the feed is always on the page, so the chip
-      // just scrolls to its card and flashes it (no view switch anymore) ----
-      function makeChip(e) {
+      // One dot per dated thing, coloured by kind, labelled with its title. A dot rather than a
+      // named chip because a month cell in a twelve-across row has no room for a sentence, and the
+      // title is one hover or one screen-reader stop away either way.
+      function makeDot(e) {
         var btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'cal__event cal__event--' + (e.kind || 'note');
-        btn.textContent = e.title;
-        if (e.id) btn.setAttribute('data-target', e.id);   // the feed card this chip scrolls to
-        btn.addEventListener('click', function () {
-          var row = e.id && document.getElementById(e.id);
-          if (!row) return;
-          // the month plots everything, so a chip can point at a card the current tab is hiding —
-          // fall back to All rather than scrolling to nothing.
-          if (row.hidden) applyTab('all');
-          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          row.classList.add('feed-card--highlight');
-          setTimeout(function () { row.classList.remove('feed-card--highlight'); }, 1600);
-        });
+        btn.className = 'cal__dot cal__dot--' + (e.kind || 'note');
+        btn.setAttribute('aria-label', e.title);
+        btn.setAttribute('title', e.title);
+        if (e.id) btn.setAttribute('data-target', e.id);   // the feed card this dot scrolls to
+        btn.addEventListener('click', function () { goToCard(e.id); });
         return btn;
       }
 
-      // ---- Month ----
-      var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+      // ---- Years ----
+      var monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var monthsLong = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
         'August', 'September', 'October', 'November', 'December'];
 
-      var dowEl = document.querySelector('[data-cal="dow"]');
-      var gridEl = document.querySelector('[data-cal="grid"]');
+      var yearsEl = document.querySelector('[data-cal="years"]');
       var titleEl = document.querySelector('[data-cal="title"]');
 
-      var now = new Date();
-      var year = now.getFullYear(), month = now.getMonth(), todayDate = now.getDate();
-      titleEl.textContent = months[month] + ' ' + year;
-
-      days.forEach(function (d) {
-        var c = document.createElement('div');
-        c.className = 'cal__dow';
-        c.textContent = d;
-        dowEl.appendChild(c);
+      // year → twelve buckets. Only years that actually contain something get a row, so the strip
+      // never invents a blank year to sit between two real ones.
+      var byYear = {};
+      events.forEach(function (e) {
+        var p = e.date.split('-');
+        if (p.length !== 3) return;
+        if (!byYear[p[0]]) {
+          byYear[p[0]] = [];
+          for (var m = 0; m < 12; m++) byYear[p[0]].push([]);
+        }
+        byYear[p[0]][+p[1] - 1].push(e);
       });
 
-      var first = new Date(year, month, 1).getDay();
-      var inMonth = new Date(year, month + 1, 0).getDate();
-      var prevMonth = new Date(year, month, 0).getDate();
+      var years = Object.keys(byYear).sort();
+      var now = new Date();
+      var thisYear = String(now.getFullYear()), thisMonth = now.getMonth();
 
-      for (var i = 0; i < 42; i++) {
-        var cell = document.createElement('div');
-        cell.className = 'cal__cell';
-        var num = document.createElement('span');
-        num.className = 'cal__num';
-
-        var dateNum, out = false, cellDate;
-        if (i < first) { dateNum = prevMonth - first + 1 + i; out = true; cellDate = new Date(year, month - 1, dateNum); }
-        else if (i >= first + inMonth) { dateNum = i - first - inMonth + 1; out = true; cellDate = new Date(year, month + 1, dateNum); }
-        else { dateNum = i - first + 1; cellDate = new Date(year, month, dateNum); }
-
-        if (out) cell.classList.add('cal__cell--out');
-        if (!out && dateNum === todayDate) cell.classList.add('cal__cell--today');
-        num.textContent = dateNum;
-        cell.appendChild(num);
-
-        (byDate[isoKey(cellDate)] || []).forEach(function (e) { cell.appendChild(makeChip(e)); });
-        gridEl.appendChild(cell);
+      // The heading states the real span rather than a single month, because the span is the thing
+      // the strip is for: it says how far back this record goes without anyone counting rows.
+      if (years.length) {
+        var firstYear = years[0], lastYear = years[years.length - 1];
+        var firstMonth = byYear[firstYear].findIndex(function (b) { return b.length; });
+        var lastBuckets = byYear[lastYear];
+        var lastMonth = 0;
+        for (var k = 0; k < 12; k++) if (lastBuckets[k].length) lastMonth = k;
+        titleEl.textContent = monthsLong[firstMonth] + ' ' + firstYear +
+          ' to ' + monthsLong[lastMonth] + ' ' + lastYear;
+      } else {
+        titleEl.textContent = 'Nothing dated yet';
       }
 
-      monthPanel.hidden = false;   // reveal the month grid now that it's built (feed is always shown)
+      years.slice().reverse().forEach(function (y) {     // newest year first: the top of the page is the recent end
+        var row = document.createElement('div');
+        row.className = 'cal__year';
+
+        var label = document.createElement('span');
+        label.className = 'cal__year-label';
+        label.textContent = y;
+        row.appendChild(label);
+
+        var strip = document.createElement('div');
+        strip.className = 'cal__months';
+
+        byYear[y].forEach(function (bucket, m) {
+          var cell = document.createElement('div');
+          cell.className = 'cal__mon';
+          if (!bucket.length) cell.classList.add('cal__mon--empty');
+          if (y === thisYear && m === thisMonth) cell.classList.add('cal__mon--now');
+
+          var name = document.createElement('span');
+          name.className = 'cal__mon-label';
+          name.textContent = monthsShort[m];
+          cell.appendChild(name);
+
+          var dots = document.createElement('span');
+          dots.className = 'cal__dots';
+          // A cell is about 44px wide at twelve months across, so it holds three dots per row. Six
+          // keeps a busy month to two rows; the rest becomes one count that lands on the first of
+          // them in the feed, where they are all listed anyway.
+          var SHOWN = 6;
+          bucket.slice(0, SHOWN).forEach(function (e) { dots.appendChild(makeDot(e)); });
+          if (bucket.length > SHOWN) {
+            var more = document.createElement('button');
+            var rest = bucket.length - SHOWN;
+            more.type = 'button';
+            more.className = 'cal__more';
+            more.textContent = '+' + rest;
+            more.setAttribute('aria-label', rest + ' more in ' + monthsLong[m] + ' ' + y);
+            more.setAttribute('title', more.getAttribute('aria-label'));
+            more.addEventListener('click', function () { goToCard(bucket[SHOWN].id); });
+            dots.appendChild(more);
+          }
+          cell.appendChild(dots);
+
+          strip.appendChild(cell);
+        });
+
+        row.appendChild(strip);
+        yearsEl.appendChild(row);
+      });
+
+      yearsPanel.hidden = false;   // reveal the strip now that it's built (feed is always shown)
     })();
   </script>
 </body>
