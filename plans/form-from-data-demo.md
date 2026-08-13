@@ -74,8 +74,11 @@ text field would, and anything that is not one of its option values empties it w
 - **The push and the publish are the owner's**, and both are deliberately not taken. The runbook is
   in the form-builder run report. Until it runs, the portfolio resolves grain through a symlink and a
   green gate here says nothing about the published package.
-- **The remaining control gaps**, grain plan section 5: checkbox and radio, the hint and error slots,
-  the required marker, the form grid. The owner asked for all of them.
+- **The remaining control gaps are closed**, grain plan section 5b, built 2026-08-13. What came out of
+  that build and is still open is a verb: a tick box is the one control the AI cannot operate, because
+  the only field verb writes the value and a checkbox's value is what it submits rather than whether
+  it is ticked, so the atom ships unaddressable on purpose. Adding a verb grows the vocabulary and is
+  the owner's call.
 - **The builder becomes a sandbox**: see plans/builder-sandbox.md, which is the live plan.
 - **The audit scenario has never run.** form-build-det is written and needs a GPU pass.
 - **Two specs flake under parallel load** and pass alone, now including the catalog visual baseline,
@@ -89,5 +92,5 @@ text field would, and anything that is not one of its option values empties it w
 - [x] The hollow-page guard
 - [x] The textarea atoms, and the refusal they retired
 - [ ] Publish and push, owner
-- [ ] The rest of the control gaps
+- [x] The rest of the control gaps (2026-08-13, artifacts/runs/2026-08-13-controls-complete.md)
 - [ ] The sandbox, see plans/builder-sandbox.md

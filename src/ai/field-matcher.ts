@@ -22,6 +22,14 @@ export interface FieldItem {
   placeholder: string | null;
   value: string | null;
   required: "required" | null;
+  /** The frame's two message slots, added to the field family on 2026-08-13. Always emitted and
+   *  always `null` here, which is the point rather than a stub: the matcher SELECTS, it does not
+   *  compose, and a hint is composed prose. They are in the type because the same always-present-keys
+   *  contract governs them (an absent key warns in dev), and a generator that quietly omitted them
+   *  would make every generated form noisy. If a hint ever gets written, it belongs on the wording
+   *  seam with the labels, not here. */
+  hint: string | null;
+  error: string | null;
 }
 
 /** One rendered choice group (a select or radio set). Same always-present-keys contract as FieldItem;
@@ -30,6 +38,9 @@ export interface ChoiceItem {
   surface: string;
   label: string;
   name: string;
+  /** See FieldItem: always present, always null from this matcher. */
+  hint: string | null;
+  error: string | null;
   options: Array<{ value: string; label: string; selected: "selected" | null }>;
 }
 
@@ -43,6 +54,9 @@ export interface MessageItem {
   placeholder: string | null;
   value: string | null;
   required: "required" | null;
+  /** See FieldItem: always present, always null from this matcher. */
+  hint: string | null;
+  error: string | null;
 }
 
 export interface FieldSpec {
@@ -345,6 +359,8 @@ export function matchSpec(description: string): FieldSpec {
       placeholder: entry.placeholder,
       value: null,
       required: entry.required ? "required" : null,
+      hint: null,
+      error: null,
     });
   }
 
@@ -358,6 +374,8 @@ export function matchSpec(description: string): FieldSpec {
       placeholder: entry.placeholder,
       value: null,
       required: entry.required ? "required" : null,
+      hint: null,
+      error: null,
     });
   }
 
@@ -368,6 +386,8 @@ export function matchSpec(description: string): FieldSpec {
       surface: surfaceFor(entry.name),
       label: entry.label,
       name: entry.name,
+      hint: null,
+      error: null,
       options: entry.options.map((o) => ({ value: o.value, label: o.label, selected: o.selected ? "selected" : null })),
     });
   }

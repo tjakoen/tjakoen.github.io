@@ -24,7 +24,7 @@ describe("matchSpec: every emitted item carries the full key set", () => {
     const spec = matchSpec("name, email, phone, company, role, subject, website, budget");
     expect(spec.fields.length).toBe(8);
     for (const f of spec.fields) {
-      expect(Object.keys(f).sort()).toEqual(["label", "name", "placeholder", "required", "surface", "type", "value"].sort());
+      expect(Object.keys(f).sort()).toEqual(["error", "hint", "label", "name", "placeholder", "required", "surface", "type", "value"].sort());
       expect(f.value).toBeNull();
       expect(f.required === "required" || f.required === null).toBe(true);
     }
@@ -37,7 +37,7 @@ describe("matchSpec: every emitted item carries the full key set", () => {
     const spec = matchSpec("topic, contact method, timeline");
     expect(spec.choices.length).toBe(3);
     for (const c of spec.choices) {
-      expect(Object.keys(c).sort()).toEqual(["label", "name", "options", "surface"].sort());
+      expect(Object.keys(c).sort()).toEqual(["error", "hint", "label", "name", "options", "surface"].sort());
       const selectedFlags = c.options.map((o) => o.selected);
       for (const s of selectedFlags) expect(s === "selected" || s === null).toBe(true);
       expect(selectedFlags.filter((s) => s === "selected").length).toBe(1);
@@ -93,7 +93,7 @@ describe("matchSpec: the message box", () => {
     const spec = matchSpec("a message box");
     expect(spec.messages.length).toBe(1);
     for (const m of spec.messages) {
-      expect(Object.keys(m).sort()).toEqual(["label", "name", "placeholder", "required", "surface", "value"].sort());
+      expect(Object.keys(m).sort()).toEqual(["error", "hint", "label", "name", "placeholder", "required", "surface", "value"].sort());
       expect(m.value).toBeNull();
       expect(m.required).toBeNull();
     }
