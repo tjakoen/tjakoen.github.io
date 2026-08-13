@@ -7,8 +7,8 @@ tags: [workshop, students, frontend, tailwind, codegeeks]
 summary: >
   Sleek & Swift, a hands-on Tailwind and shadcn/ui workshop run by Code Geeks, the student
   organization for the computing programs at Holy Angel University. Two hours in a full lab on a
-  Wednesday afternoon. The registration closed before the day arrived, which is flattering right up
-  until you realize every one of those seats now expects the two hours to be worth it.
+  Wednesday afternoon, registration closed a day early. Written up a year to the day afterwards,
+  which is late enough that I say so in the post rather than pretending otherwise.
 photos:
   - "/media/feed/codegeeks-hau-sleek-and-swift-poster.jpg | 1440x1440 | The Code Geeks poster for Sleek & Swift, a hands-on Tailwind and Shadcn workshop, August 13 2025, 2 to 4 PM in SJH 703, with a line at the bottom reading all slots have been taken"
   - "/media/feed/codegeeks-hau-sleek-and-swift-intro.jpg | 1440x960 | Me at the front of the lab, mid-sentence, under the organizers' introduction slide listing my name and a column of job titles"
@@ -22,12 +22,12 @@ social: |
   Geeks, the student organization for the computing programs at Holy Angel University. Two hours,
   one full lab, registration closed before the day arrived.
 
-  My own site is vanilla HTML and CSS, which makes me an odd choice to teach a utility framework
-  and a component library. I took the invitation anyway. What a student needs is a job, and the
-  jobs are asking for these.
+  Slides for as long as slides were useful. Tailwind first, then shadcn/ui on top of it. Then the
+  part that made it a workshop instead of a talk: everybody building on their own machine while I
+  walked the lab and read screens over shoulders.
 
-  So the session was the hands-on kind. Slides for as long as slides were useful, then everybody
-  building on their own machine while I walked the room and read screens over shoulders.
+  A year on I build in vanilla HTML and CSS and argue about it in public. In that room I had none
+  of that to defend, which probably made me a better guest.
 
   Thanks to Code Geeks for the invitation and the packed lab, and to Kyle Payawal for the photos
   and the recap video.
@@ -35,56 +35,40 @@ social: |
   Writeup and the photos: https://tjakoen.github.io/calendar/codegeeks-hau-sleek-and-swift
 ---
 
-## Registration closed before I got there
+## Registration closed a day early
 
-The poster went up the day before with a line at the bottom saying all slots had been taken. I would
-love to tell you that was about me. It was a free hands-on workshop on the two things every front-end
-job posting in the country currently asks for, held in a lab with a fixed number of chairs, and the
-students did the arithmetic faster than I did.
+The poster went up the day before with a line across the bottom saying all slots had been taken. A free
+hands-on workshop, two hours, one lab with a fixed number of chairs. I would love to read something
+into that. Mostly it means [Code Geeks](https://www.facebook.com/TheCodeGeeks) did their job.
 
-It is still the good version of a problem. A full room on a Wednesday afternoon means nobody is there
-for the attendance sheet, and it means the two hours have to earn the seat.
+Still the good version of a problem. Nobody in that room was there for an attendance sheet.
 
 ## The two hours
 
 The organizers opened with an introduction slide carrying my name and a column of job titles under it,
-which is a generous way to describe a person who has mostly just failed to say no to things. Then we
-got to the actual reason everyone was there.
+which is a generous way to describe a man who has mostly failed to say no to things.
 
-First, what Tailwind is, on every machine at once. The slide up there in the photos puts it plainly:
-a utility-first framework, a pile of small ready-made styles you compose in the markup instead of
-writing your own. Then shadcn/ui on top of it, which is the component half of the same idea.
+Then Tailwind, on every machine at once. The slide in the photos above puts it plainly: a utility-first
+framework, small ready-made styles you compose in the markup instead of writing your own. Then
+shadcn/ui, the component half of the same idea.
 
-Then the part that made it a workshop rather than a talk: everyone building on their own machine while
-I walked the lab. That is the whole reason to book a room with computers in it. Slides are how you
-find out whether someone has heard of a thing. A screen with their own half-finished layout on it is
-how you find out whether they can use it, and it is the only version of the question that matters.
+Then the part that made it a workshop instead of a talk. Everyone building on their own machine, me
+walking the lab and reading screens over shoulders. That is the whole reason to book a room with
+computers in it.
 
-## Teaching a framework I do not use
+## Written up a year late
 
-Worth saying out loud, since anyone who has looked at this site will notice: I build in vanilla HTML
-and CSS by choice, and I have written more than once about why. So there is a fair question about the
-guy with no frameworks on his own site spending an afternoon on somebody else's.
+I build in vanilla HTML and CSS now, and I argue about it in public. In August 2025 I had none of that
+to defend, which probably made me a better guest.
 
-I took the invitation without much of an argument. My preference is a preference, earned on projects
-where I own the whole surface and get to live with the consequences. A student is optimizing for a
-different thing: getting hired. The job postings ask for Tailwind, teams ship on shadcn, and a
-graduate who has never touched either is answering an interview question with a philosophy. Learn the
-tools the industry is actually using. Have opinions later, once you have paid for them.
+This is going up a year to the day after it happened, so I am not going to invent exchanges I do not
+remember. What I have is the poster, the photos, and the shape of the afternoon.
 
-## What I cannot tell you
+I also do not know what stuck. The last photo below is the room lined up at the end, every monitor in
+front of them showing the QR code for the post-evaluation form. That form went to the organizers, which
+is the correct place for it. So I know how the two hours felt from the front of the lab. The people who
+know how they landed were the ones sitting down.
 
-This is being written up a year to the day after it happened, which is late enough that I am not going
-to pretend to remember specific exchanges. What I have is the poster, the photos, and the shape of the
-afternoon. Anything sharper than that would be me writing a better story than the one I can back up.
-
-I also do not know what stuck. The last photo in the roll below is the whole room lined up at the end,
-and every monitor in front of them is showing a QR code for the post-evaluation form. That form went
-to the organizers, which is the correct place for it. So the honest position is that I know how the
-two hours felt from the front of the lab, and the people who know how they landed are the ones who
-were sitting down.
-
-Sleek & Swift was put together by [Code Geeks](https://www.facebook.com/TheCodeGeeks), the student
-organization for the computing programs at Holy Angel University, who filled the room, ran the day,
-and handled every part of it that was not me talking. The photos and the recap video above are Kyle
-Payawal's work, not mine.
+Code Geeks is the student organization for the computing programs at Holy Angel University. They filled
+the room, ran the day, and handled every part of it that was not me talking. The photos and the recap
+video above are Kyle Payawal's work, not mine.
