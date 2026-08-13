@@ -77,6 +77,9 @@ gates:
   - bunx crumb check content/tours | review-controls-complete 5 steps dev, 14 tours all valid
   - pantry capture review-controls-complete | 5 of 5 steps resolved, ok on each
   - bun tools/lint-gate.ts | 4 counters regressed, all four pre-existing, see the doctor line
+  - bun test (grain, after the doc rewrite) | 603 pass, 0 fail, 65 files
+  - bunx playwright test e2e/visual.e2e.ts --workers=1 (after the doc rewrite, re-blessed) | 9 passed
+  - pantry capture review-controls-complete (re-run against the rewritten docs) | 5 of 5, ok on each
 diffstat: grain 23 files changed (761 insertions, 21 deletions) across two commits, of which 9 files are new; portfolio 5 files changed (36 insertions, 8 deletions) plus a new tour, a new capture folder and this report
 dirty: nothing of this session's is uncommitted at the time of writing. The portfolio tree is shared with at least one other session, so the counts below were taken by pathspec rather than from a whole-tree read.
 unpushed: 19 | grain 9, portfolio 10. Pushing stays the owner's call and was not taken.
@@ -292,6 +295,29 @@ the changed band runs from row 2408 to row 16376 of a 92610 row image, and bands
 screens are pixel-identical, which is the check that actually matters here, because the frame
 stylesheet changed and every page carrying a field could have shifted.
 
+## The docs came back, and what that turned up
+
+The owner sent the component descriptions back as too long. They were: the four new intros ran
+between 1400 and 2100 characters against a catalog median of about 620, and the catalog joins every
+prose line before the first heading into one paragraph, so they arrived as a wall.
+
+Two worse things came out of reading the parser rather than the file. **Prose under a heading is
+dropped, but the heading is still emitted**, so a prose-only section renders as a heading with
+nothing under it. Two of those were mine and one was already shipped on the choice doc, and a tour
+verify line written this session pointed a reviewer at one of them. **And a fence that is not html
+has its lines swept into the intro when it sits before the first heading**, which is how raw JSON
+braces ended up mid-sentence in the shipped field and choice intros.
+
+So the rule for a doc in this family is now: a short intro, then groups that each hold at least one
+live panel. Intros are cut to between 750 and 1100 rendered characters, the prose-only sections are
+folded back into their intros as the caller rules they always were, and every spec block moved under
+a heading that also holds a panel. Three conformance tests hold it, each proved by mutation, and the
+first of them caught the form grid at 1146 before a human did.
+
+They are scoped to the field family deliberately. Six other components carry the same empty-heading
+defect, presentation.md alone with seven, and fixing those is a different piece of work than this one.
+A green run here reads "the field family is clean", not "the catalog is".
+
 ## What was NOT done
 
 - **The sandbox, all five pieces.** Not started. The plan is claimed and its first piece is named for
@@ -303,9 +329,12 @@ stylesheet changed and every page carrying a field could have shifted.
   vocabulary.
 - **The About form was not otherwise touched**, per the owner's answer that it stays as it is. The
   required marker appearing there is the frame reaching it, not an edit to that page.
-- **The catalog does not render links inside a component doc.** The markdown link syntax prints raw.
-  This is pre-existing and visible on the shipped memo doc as much as on the new ones; it was found
-  on the way and not fixed, because the catalog renderer is outside this run's scope cap.
+- **The catalog does not render links inside a component doc.** The markdown link syntax prints raw,
+  because the formatter's link rule only accepts an absolute URL, a root path or an anchor, and a
+  sibling doc reference is a relative .md path. Pre-existing and visible on every doc that links a
+  sibling. The fix is one line in the formatter, to print the link TEXT and drop a relative target
+  rather than printing the raw syntax, and it is not taken here because catalog.ts is outside this
+  run's scope cap. It is the one thing still making these intros read badly.
 - **The lint gate baseline was not accepted.** All four regressed counters predate this run and none
   of them is this session's work to approve.
 
