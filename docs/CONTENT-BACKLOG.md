@@ -9,6 +9,40 @@
 > the repo is **public**. The events-platform exit is told **neutrally, no names, lessons-forward**.
 > Company name is **Career Team**. People name-drops = public professional info + LinkedIn only.
 
+## Consolidated (2026-08-14, notes audit)
+
+The set had grown to twelve notes across four clusters, two of which carried a note that was a
+slice of a longer one rather than an argument of its own. Two folds, 12 down to 10. Both old URLs
+stay live as stub pages (`FOLDED_NOTES` in `src/content.ts`, exported and `noindex`), so no shared
+link dead-ends.
+
+- [x] **`where-were-we.md` DELETED, folded into `one-loop-every-repo.md`.** This backlog already
+      described it as "the PROOF/plans-as-files slice" of the estate-wide note, its subject had
+      folded into grain as a package, and it closed by handing the reader to its sibling. The
+      plans-as-files argument, the "output has provenance, the intent has none" pull-quote and the
+      parser/board flow SVG now live in a new section, *The first thing I fixed was where the plan
+      lives*. The old note's opening beat, which one-loop-every-repo used to link out to, was
+      rewritten in place. `desk-feed.json`'s closed-loop post repointed. Reading time ~8 to ~10 min.
+- [x] **`native-partial-updates.md` DELETED, folded into `the-browser-grew-up.md`.** The parent
+      note's own summary already promised "the benchmark I finally ran" and then linked away to it.
+      The setup, the four-way bar chart, the honest asterisks, the DPU variant and the bench-repo
+      link are now a section of the note that owes them, *The benchmark I kept promising*. Reading
+      time ~12 to ~16 min. **Bug fixed in the move:** the bar-chart SVG referenced `--paper`,
+      `--ink`, `--muted` and `--accent` without ever defining them, unlike its sibling
+      replacement-map figure, so it had been rendering with unresolved custom properties. It now
+      carries the same inline palette, per FIGURES' one-family rule.
+- [x] **`feels-like-an-app.md` trimmed.** Audited for the same overlap and found mostly innocent:
+      the note already defers to the-browser-grew-up in four places by name. The one genuine
+      restatement, the "the stack is not anti-server, static is a choice" paragraph that the parent
+      note makes with two figures, was cut down to a single deferring clause. The freezability rule
+      that follows it is unique to this note and stays.
+- **Still open, deliberately:** the teaching cluster is three notes (why-i-teach,
+  how-i-turned-github-into-a-classroom, the-console-i-built-to-stop-drowning) where two of the
+  three tell the platform build story. It was left alone because the cluster was merged 5 to 3 on
+  2026-07-31 and a second pass over that fresh work is churn, not consolidation. Revisit once the
+  console note settles. The whitepaper/watch-its-hands pair is correct as two: same argument, two
+  registers, two readers.
+
 ## New notes drafted (2026-07-30, gap pass)
 
 Two notes added to close gaps between the published set and work that shipped since:
@@ -118,7 +152,10 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
      the three hypotheses as hypotheses, the small-model scope, the two legacy direct-write routes, and
      the prior-art near-miss. Inbound-linked from the whitepaper status block; cross-links ten-times-zero.
      **DRAFT** — needs the owner's own eye before any publish flip.
-  4. **where-were-we.md — DRAFTED (2026-07-08), STALE-FLAG RESOLVED (2026-07-12):** the PROOF companion
+  4. **where-were-we.md — SUPERSEDED (2026-08-14): folded into one-loop-every-repo.md, see the
+     consolidation entry at the top of this file. The history below is kept for the record; the open
+     question it ends on (whether to name PANTRY) travels with the fold and is still the owner's.**
+     Originally: **DRAFTED (2026-07-08), STALE-FLAG RESOLVED (2026-07-12):** the PROOF companion
      note (plans-as-files, board as projection; canonical `proof/PLAN.md`, ROADMAP Track E). Mermaid figure
      rendered. The note's original "none of this is built… I'm publishing the plan for the plan tool before
      the plan tool exists" confession has since gained a dated **"Update, 2026-07-12: it's on the wall"**
@@ -280,7 +317,9 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
       measured number is in hand; §seam retitled + opener rewritten 2026-07-17) and **the model seam is
       wired** (a small in-browser model drives the desk; scripted-scenario claim flipped 2026-07-17).
       Cross-links native-partial-updates + ten-times-zero. **DRAFT** at `content/notes/feels-like-an-app.md`.
-- [~] **Native Partial Updates (I Finally Ran It)** — the *measured* companion that closes the
+- [x] **Native Partial Updates (I Finally Ran It) — SUPERSEDED (2026-08-14): folded into
+      the-browser-grew-up.md as its own section, see the consolidation entry at the top of this
+      file. History kept below.** Originally: the *measured* companion that closes the
       "well-founded bet, not measured" seam the other two native notes used to carry: the same reference
       app built four ways and audited by one harness (`framework-bench`), the Declarative Partial Updates
       variant (streamHTMLUnsafe/setHTMLUnsafe), and the honest frame (categorical JS/bytes as the headline,

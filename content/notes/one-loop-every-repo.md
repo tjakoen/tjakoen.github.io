@@ -5,15 +5,17 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-07-30
-readingTime: "~8 min"
-tags: [ai, workflow, process, developer-tools, standards]
+readingTime: "~10 min"
+tags: [ai, workflow, process, developer-tools, standards, planning]
 summary: >
   How I got back on top of AI-assisted work across a dozen repos: one shared workflow instead of a
-  dozen improvised ones. A work-triggered heartbeat (a doctor at every session start, CI on every
-  push) that makes skipped chores visible, an accountability contract (a run ledger, declared rails,
-  and verification by a second pass) that keeps an unattended run honest, and a documentation
-  discipline borrowed from aerospace manuals and from Addy Osmani's writing on loop engineering. One
-  person applying the shape the field agrees on, honest that it isn't proof it scales to a team.
+  dozen improvised ones. Plan state moved out of chat and into markdown files the AI already edits,
+  with a board that renders them and writes nothing back. A work-triggered heartbeat (a doctor at
+  every session start, CI on every push) that makes skipped chores visible. An accountability
+  contract (a run ledger, declared rails, and verification by a second pass) that keeps an
+  unattended run honest, and a documentation discipline borrowed from aerospace manuals and from
+  Addy Osmani's writing on loop engineering. One person applying the shape the field agrees on,
+  honest that it isn't proof it scales to a team.
 ---
 
 ## The week I couldn't explain my own work
@@ -38,9 +40,9 @@ comprehension was.
 The embarrassing part is that I had built the trap myself, one reasonable decision at a time.
 
 Every repo worked a little differently. This one kept its plans in a document, that one in my head,
-a third in whatever the last session's handoff prompt happened to capture. I have
-[written before](where-were-we.md) about opening a chat every morning and asking the machine to please
-describe, in prose, what it thought the plan was. That was one symptom. The deeper one was that
+a third in whatever the last session's handoff prompt happened to capture. Every session opened with
+me asking the machine where we were, and the machine reading four notebooks to work out an answer it
+had worked out yesterday. That was one symptom. The deeper one was that
 "how I work with AI here" was a different answer in every folder, so nothing I learned in one repo
 made the next one safer. Twelve repos, twelve slightly different workflows, and me the only thing they
 had in common. One person can run a dozen repos only if the twelfth one behaves exactly like the
@@ -66,6 +68,84 @@ whether the reader is a mechanic or a model.
 
 So I did not invent a workflow. I stole the shape the field already agreed on, and made every one of
 my repos run it.
+
+## The first thing I fixed was where the plan lives
+
+The obvious move would have been a better handoff prompt. I went the other way and took the plan out
+of the conversation entirely.
+
+One plan per markdown file, in a plans folder, with a small frontmatter: an id, a status (todo,
+doing, done, blocked), an optional track, what it depends on, what code it touches, and whose plan it
+is. The body is prose and a checklist. That is the whole format, and the smallness is the design.
+
+The AI already edits markdown. It is the most native motion it has. So keeping a plan current costs
+it one line: flip the status field in the file it is already working in. No plugin, no API, no new
+tool for the machine to learn. The discipline rides on a motion that already exists, which is the
+only kind of discipline that survives a long session.
+
+Then a separate little tool reads that folder and renders it as a kanban board in the browser, built
+out of my own design system. The board writes nothing. It is a window, not a database. Delete the
+tool and the plans are still sitting there as readable markdown in git, which is exactly where they
+were all along. I called it [PROOF](/proof), because the stack it joins is already named batch,
+grain and mill, and I have committed to the bread thing well past the point of dignity.
+
+> The output has provenance. The intent has none.
+
+That line is why I bothered. I had spent months on a design system where the machine's work is
+visible on the surface: text the AI wrote renders with a grain to it, text a human settled renders
+clean. The whole thesis is that you should be able to *look* at software and see whose hand did
+what. Meanwhile the most important artifact in the room, the plan, lived wherever the last
+conversation happened to leave it. I could watch the AI's hands on the keys and still had to ask it
+what it thought it was doing.
+
+<svg viewBox="0 0 467 266" width="100%" role="img"
+     aria-label="The AI edits plans markdown files and a human edits the same files; a parser turns them into a derived index, which becomes the board in the browser, alongside the git log. The board is a window onto the index, never a store."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-plans0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="16" y="16" width="153" height="36" rx="6"/>
+    <rect x="203" y="16" width="207" height="36" rx="6"/>
+    <rect x="165" y="82" width="69" height="36" rx="6"/>
+    <rect x="122" y="214" width="155" height="36" rx="6"/>
+    <rect x="380" y="161" width="71" height="36" rx="6"/>
+  </g>
+  <rect x="143" y="148" width="113" height="36" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="121" y1="52" x2="171" y2="82" marker-end="url(#fl-plans0)"/>
+    <line x1="278" y1="52" x2="228" y2="82" marker-end="url(#fl-plans0)"/>
+    <line x1="200" y1="118" x2="200" y2="148" marker-end="url(#fl-plans0)"/>
+    <line x1="200" y1="184" x2="200" y2="214" marker-end="url(#fl-plans0)"/>
+    <line x1="380" y1="188" x2="272" y2="214" marker-end="url(#fl-plans0)"/>
+    <path d="M122,232 C92,232 92,166 143,166" marker-end="url(#fl-plans0)" stroke-dasharray="5 4"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="93" y="38.3" style="fill:var(--color-fg)">AI edits plans/*.md</text>
+    <text x="307" y="38.3" style="fill:var(--color-fg)">a human edits the same files</text>
+    <text x="200" y="104.3" style="fill:var(--color-fg)">parser</text>
+    <text x="200" y="170.3" style="fill:var(--color-bg)">derived index</text>
+    <text x="200" y="236.3" style="fill:var(--color-fg)">board in the browser</text>
+    <text x="415" y="183.5" style="fill:var(--color-fg)">git log</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="83" y="199" transform="rotate(-90 83 199)">a window, never a store</text>
+  </g>
+</svg>
+
+The first thing on [that board](/plans) was the plan for building the board, which is either a good
+sign or a closed loop with delusions of grandeur. Either way it has been a while since a session
+opened with anyone asking where we were.
+
+I should be honest about who this helps, because the split is lopsided. The AI never looks at the
+board. Its share is real but modest: a cheaper start to each session, a ground truth two parallel
+sessions cannot argue about, and plans forced into pieces small enough to have a status at all. The
+rest lands on me. I get to glance at a wall instead of interrogating a chat window. If I sold this as
+an AI productivity tool I would be lying about which side of it the value falls on.
+
+The wall fixed where the plan lives. It did nothing about the chores nobody flips a status field for.
 
 ## One heartbeat, and it fires while I'm already working
 

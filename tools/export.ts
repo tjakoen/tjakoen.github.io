@@ -20,7 +20,7 @@ import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
 import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
 import {
-  listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes,
+  listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes, FOLDED_NOTES,
 } from "../src/content.ts";
 import { listPlanRoutes } from "../src/plans.ts";
 import { findMissingComponents, missingReport } from "../src/component-refs.ts";
@@ -120,7 +120,12 @@ async function pageRoutes(): Promise<string[]> {
   // (server.ts fetch), so add it explicitly or the dead-link walk flags the About/résumé download link.
   // "/kickstart" is the short share-link twin of the MILL page /standards/kickstart (server.ts
   // serves the same rendered body); it is not a page file, so add it explicitly to freeze dist/kickstart/.
-  const all = new Set([...pages, ...content, ...decks, ...plans, "/catalog", "/reference", "/cv", "/kickstart"]);
+  // A folded note's old URL is served as a stub page (content.ts FOLDED_NOTES), not a 301, so it
+  // has to be frozen like any other page or the old link dead-ends on Pages. Its own `noindex` keeps
+  // it out of search; it stays out of the sitemap for the same reason, which is why it is added here
+  // rather than travelling in with `content`.
+  const folded = Object.keys(FOLDED_NOTES);
+  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, "/catalog", "/reference", "/cv", "/kickstart"]);
   return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).sort();
 }
 
