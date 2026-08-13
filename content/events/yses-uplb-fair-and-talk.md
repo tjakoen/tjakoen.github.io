@@ -57,8 +57,11 @@ It is also not a result. 130 people wrote their names down. That is not 130 inte
 certainly not 130 jobs, and any recruiting number quoted without that caveat is being asked to do a
 job it cannot do.
 
-Five of us behind one table, all team leads: Christelle Salceda, Jun Bolotaolo, Beili Cepe, Jake
-Regunay, and me. Students came from across the region, not only the host campus. Almost none of them asked about pay.
+Five of us behind one table, all team leads: Christelle Salceda,
+[Jun Bolotaolo](https://www.linkedin.com/in/jun-welmer-bolotaolo-b683a01a4/),
+[Beili Cepe](https://www.linkedin.com/in/claizel-coubeili/),
+[Jake Regunay](https://www.linkedin.com/in/aifel-jake-regunay-690666270/), and me. Students came
+from across the region, not only the host campus. Almost none of them asked about pay.
 They asked whether we take interns and what they were expected to already know, which are better
 questions than the ones I was asking at their age.
 
