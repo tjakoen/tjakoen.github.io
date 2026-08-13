@@ -60,7 +60,7 @@ was: who did you build this for, and can you point at them.
 
 ## Two teams could
 
-**ACTS, the Automated Civic Triage System, from team CodeBlooded.** A resident chats or posts on the
+**ACTS, the AI Civic Triage System, from team CodeBlooded.** A resident chats or posts on the
 Facebook page their local government unit already runs. The system reads the report, classifies it as
 a road accident or whatever it is, and drops it onto a map that the people who have to respond can
 actually work from. The app is on the government side. The public side is the page they were already
@@ -70,6 +70,11 @@ That last part is the whole reason it won. The reflex in a hackathon is a new ap
 new account for somebody to create and forget. This team went and found where their users already
 were and built behind them instead of in front of them. Serving people where they are is unglamorous
 and it works.
+
+Something I only learned afterwards, from
+[one of them writing it up](https://www.linkedin.com/posts/neilbsn_wildcard-podium-finish-last-saturday-ugcPost-7444777276463869952-rFlP/):
+they came in through the wildcard round and built the thing in three days. I did not know that while
+I was judging, and it does not change the decision, but it does change how the decision reads.
 
 **Pathag, from team Iterate.** Walking routes for people with visual or mobility impairments, in
 cities that were not built with them in mind. Computer vision plus community crowdsourcing to map the
