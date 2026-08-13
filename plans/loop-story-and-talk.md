@@ -67,6 +67,11 @@ different halves: teaching the AI loop is the transferable part, and PANTRY as a
 concrete one. Do not let the second eat the first, because a talk that turns into a product pitch
 stops teaching at the slide where it turns.
 
+**6. The tutorial, which is a separate plan.** `loop-tutorial` is the follow-along version: a reader
+builds this loop on a small project of their own, PANTRY included. It waits on this plan rather than
+running beside it, because a tutorial is a set of commands the reader executes and cannot be as
+honest about a half-built step as a note can.
+
 ## The honest blockers, named now so they do not surprise the talk
 
 - **PANTRY is unpublished** and its install docs say so truthfully. Selling it as a concept is fine;
