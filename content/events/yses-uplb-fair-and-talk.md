@@ -78,8 +78,12 @@ One slide is the reason I was glad to give it:
 Next to it, AI as a multiplier and not a crutch: use it to move faster, do not lean on it to find the
 solution. And above both, the claim that hiring is going up rather than down as these tools arrive.
 
-I have argued that at length in [ten times zero](/notes/ten-times-zero), so finding it printed in a
-corporate recruiting deck was a strange sort of confirmation. It holds in exactly the room where a
+Full disclosure, since it would be easy to read that slide as somebody else backing me up: I wrote
+the deck. It is the same argument I make at length in [ten times zero](/notes/ten-times-zero), put in
+front of the people it is actually about.
+
+What is not mine is the sign-off. A company agreed to say that to a room it recruits from, which
+turns an opinion into something a candidate can hold it to. And it holds in exactly the room where a
 student most wants it to be false, because from a lecture hall the shortcut looks extremely
 available.
 
@@ -110,8 +114,11 @@ thing as a list of questions to ask rather than a set of answers.
 
 I also had a microphone, a stage and nobody with a rebuttal. Comfortable place to be right from.
 
-EXPE21ENCE is run by [YSES](https://yses.org), the Young Software Engineers' Society at UP Los Baños,
-and this was their twenty-first year of it: job fair, hackfest and company talks in one stretch, with
-AWS Philippines and Accenture in the other speaking slots. The officers ran the day, handed over the
-certificate in the photos, and did it between their own classes. The hackfest end of the same
-programme has [its own post](/calendar/yses-uplb-hackfest).
+Thank you to [YSES](https://yses.org), the Young Software Engineers' Society at UP Los Baños, for
+having us. EXPE21ENCE was their twenty-first year of this, and it is not a small thing: a job fair, a
+hackfest and a day of company talks in one stretch, with AWS Philippines and Accenture in the other
+speaking slots, sponsors to wrangle, a venue to fill and a schedule to hold. The officers did all of
+it between their own classes, and the only reason I got a stage and a table full of students to talk
+to is that they built both.
+
+The hackfest end of the same programme has [its own post](/calendar/yses-uplb-hackfest).

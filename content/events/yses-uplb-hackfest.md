@@ -120,9 +120,14 @@ The second slide is why I keep coming back to this deck:
 > principles. AI just helps us type the solution faster.
 
 That last sentence sits about a centimetre from the line at the bottom of every note on this site:
-the judgment is human, the typing, by design, is not. Two different rooms, two different reasons, one
-argument. I did not write the deck's version and it arrived at the same place I did, which is either
-reassuring or a sign that it was always the obvious conclusion and I have been slow.
+the judgment is human, the typing, by design, is not. Which is less of a coincidence than it looks,
+because I wrote the deck. So this is not two sources agreeing, it is one person saying the same thing
+twice, and you should discount it accordingly.
+
+The signature is the part I did not supply. Career Team agreed to put that on a hiring slide and
+stand behind it in front of a room of students it might actually hire. An opinion on my own site
+costs me nothing. The same sentence in a recruiting deck is a promise somebody can hold you to at an
+interview.
 
 The same slide adds the part people miss: hiring is going up, not down. The human element gets more
 valuable, not less, once the boring half is automated. That is [ten times zero](/notes/ten-times-zero)
@@ -140,8 +145,12 @@ projects are in. Both of them are ideas with a working slice attached. Whether e
 contact with a real local government or a real user with a white cane is a question the weekend could
 not answer, and neither can I.
 
-The Hackfest is part of EXPE21ENCE, run by [YSES](https://yses.org), the Young Software Engineers'
-Society at UP Los Baños, in their twenty-first year. They ran a junior and a collegiate bracket, kept
-a full day of pitches on schedule, and handed us a certificate at the end for turning up. The job
-fair and company talks end of the same programme has
+Thank you to [YSES](https://yses.org), the Young Software Engineers' Society at UP Los Baños, for the
+invitation and for the event itself. The Hackfest is part of EXPE21ENCE, their twenty-first year of
+this, and running two brackets, a wildcard round and a full day of pitches on schedule is a
+considerable amount of work to do on top of being a student. They also fed and watered a room of
+sponsors and kept the whole thing to time, which is the part nobody thanks anyone for.
+
+Sitting on that judging panel was a privilege, and the certificate they handed us is on the wall. The
+job fair and company talks end of the same programme has
 [its own post](/calendar/yses-uplb-fair-and-talk).
