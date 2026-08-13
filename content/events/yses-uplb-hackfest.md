@@ -71,8 +71,11 @@ new account for somebody to create and forget. This team went and found where th
 were and built behind them instead of in front of them. Serving people where they are is unglamorous
 and it works.
 
+CodeBlooded was [Neil Aldous Biason](https://www.linkedin.com/in/neilbsn/), Christian Naguio, Jaren
+Marcelino and Adara Rei Dimatulac. One link out of four, because one profile is what I could find.
+
 Something I only learned afterwards, from
-[one of them writing it up](https://www.linkedin.com/posts/neilbsn_wildcard-podium-finish-last-saturday-ugcPost-7444777276463869952-rFlP/):
+[Neil's write-up](https://www.linkedin.com/posts/neilbsn_wildcard-podium-finish-last-saturday-ugcPost-7444777276463869952-rFlP/):
 they came in through the wildcard round and built the thing in three days. I did not know that while
 I was judging, and it does not change the decision, but it does change how the decision reads.
 
@@ -89,8 +92,9 @@ This one also documents the breakage and hands you an argument.
 Iterate was [Galvin Gonzales](https://www.linkedin.com/in/galvin-gonzales-884838375/),
 [Aro Caabay](https://www.linkedin.com/in/aro-caabay/),
 [Hanna Macasarte](https://www.linkedin.com/in/hanna-macasarte-65413016b/) and Rein Matthew Malonzo.
-Three of the four are linked because three profiles are what I could find. The fourth name is here
-unlinked rather than left out, which is the correct way round.
+Three links out of four. Everyone who built either of these projects is named whether or not I could
+find them online, because a missing link is a gap in my searching and a missing name would be a
+person cut out of their own work.
 
 Iterate took the collegiate championship as well, and CodeBlooded took second runner up. Both of
 those were the organizers' calls, not ours, and the
