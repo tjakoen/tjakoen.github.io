@@ -58,6 +58,12 @@ batches into a summary. Then it publishes one file back to each student, an atte
 holds only their own dates. A student can see that they were marked present on the days they were
 present. A student never sees a classmate's attendance, because that was never theirs to see.
 
+<figure class="shot">
+  <img class="shot__img" src="/media/console/scanner.jpg" width="729" height="1120" loading="lazy" data-lightbox
+       alt="The attendance scanner at phone width: a section picked, a roster of 24 loaded, three students checked in with times, and the CSV path the batch will be written to shown underneath.">
+  <figcaption class="shot__cap">The scanner at the width I actually hold it, camera off, running on synthetic students. The three names went in by hand, which is the fallback for a code that will not read, and the file the batch commits to is named before anything is written to it.</figcaption>
+</figure>
+
 <svg viewBox="0 0 360 404" width="100%" role="img"
      aria-label="A signed QR code lives in each student's workspace. I scan the room with my phone on the Scan tab. The session commits as a CSV batch in my private teacher repo. A workflow verifies every signature and flags forgeries. Each student is published a record holding only their own attendance."
      style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
@@ -130,6 +136,12 @@ a draft nobody has stood behind yet. The moment I approve it or edit it, the gra
 goes clean, because now a human wrote it. I cannot mistake a thing the machine guessed for a thing I
 decided, because the two do not look the same.
 
+<figure class="shot">
+  <img class="shot__img" src="/media/console/review.jpg" width="1440" height="900" loading="lazy" data-lightbox
+       alt="One student open in the review queue: the student's submitted work on the left, and on the right an approve button, a score override, the AI-drafted student-facing feedback, and a separate instructor-only panel holding the proposed total and the AI-authored read.">
+  <figcaption class="shot__cap">One student, mid-review. The feedback on the right is the machine's draft, sitting in grain type until I approve or edit it, and the panel below it is the instructor-only half that never leaves my screen.</figcaption>
+</figure>
+
 And the console does not grade. It never reaches into a repo and writes a score, which sounds like a
 limitation until you see what it buys. When I finish reviewing, it does not push my decisions anywhere.
 It gathers every call I made into a single prompt, a plain file that says give this student this score,
@@ -139,6 +151,12 @@ actual typing: the gradebook, the feedback files, the push to Canvas. I watch it
 last say. This is the single write door again, the same one the scanner uses. Instead of a dozen
 places where something can quietly write a grade, there is one way in, and it runs a prompt I have
 already read. The review is not a checkbox at the end. It is the only door, and I am standing in it.
+
+<figure class="shot">
+  <img class="shot__img" src="/media/console/intent.jpg" width="1440" height="900" loading="lazy" data-lightbox
+       alt="The apply-grades prompt the console generates: a plain Markdown brief naming the teacher repo, the rules that must not be violated, the numbered steps to run, and a reminder that the held activities stay out of this push.">
+  <figcaption class="shot__cap">What the console writes instead of a grade. It files this in the repo and stops, and nothing moves until I run it in a session and read what it did.</figcaption>
+</figure>
 
 <svg viewBox="0 0 360 492" width="100%" role="img"
      aria-label="The console reads my gradebooks live in my browser. AI-proposed grades show up in grain type. I approve or edit, which flips grain to clean. The console then writes an intent, not a grade, holding every decision in one file. A Claude Code session runs the intent in the repo while I keep the last say. Only then does it reach the student's repo and Canvas."
@@ -212,10 +230,19 @@ purpose, and those limits are the design, not a gap in it.
 ## You can open the thing
 
 The last piece I am proud of is that none of this is a story you have to take on faith. The console
-ships a demo mode you can open in your own browser, and it is not a mock-up. It runs the real code,
-with one part swapped: the connection to GitHub is replaced with an in-memory stand-in full of
-synthetic students. Everything else is the actual page, the actual grain type, the actual review flow,
-just with nobody real inside it. The claims in this post are a URL, not a paragraph.
+ships a [demo mode](https://tjakoen.github.io/github-native-course-platform/?demo=1) you can open in
+your own browser, and it is not a mock-up. It runs the real code, with one part swapped: the connection
+to GitHub is replaced with an in-memory stand-in full of synthetic students. Everything else is the
+actual page, the actual grain type, the actual review flow, just with nobody real inside it. Every
+screenshot in this post came straight out of it, and the
+[code is public](https://github.com/tjakoen/github-native-course-platform) if you would rather read it
+than click it. The claims in this post are a URL, not a paragraph.
+
+<figure class="shot">
+  <img class="shot__img" src="/media/console/demo.jpg" width="1440" height="900" loading="lazy" data-lightbox
+       alt="The console dashboard in demo mode, with a demo badge in the sidebar, a banner explaining that three invented classes were generated in this browser with no GitHub connection and no token, and a footer repeating that writes go through intents.">
+  <figcaption class="shot__cap">The front door of the demo, which says out loud what it is. Three invented classes, no token, no connection, and every write simulated in the tab and gone when you close it.</figcaption>
+</figure>
 
 ## What I am honest about
 

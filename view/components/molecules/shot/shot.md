@@ -18,6 +18,11 @@ and a screenshot never blocks first paint.
 </figure>
 ```
 
+Add `data-lightbox` to the image when the capture carries UI text a reader has to be able to read.
+GRAIN's viewer (`scripts/lightbox.js`) then opens it full size on a click, and the alt text becomes
+the viewer's caption. A note's content column is narrower than a project page's, so a dense console
+screenshot needs it there and a single wide dashboard usually does not.
+
 There is no side-by-side variant on purpose. The board's content column is around 688px, so a two-up
 grid renders each capture near 340px wide, and the UI text a screenshot exists to show stops being
 readable at that size. Stack them full width and let the captions do the pairing.
