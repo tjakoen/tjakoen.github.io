@@ -80,41 +80,85 @@ test.describe("the /calendar app (JS on)", () => {
     await expect(noteCard.locator(".feed-photos")).toBeHidden();   // :empty collapses an absent strip
   });
 
-  // A dot carries no visible text (a 44px month cell has no room for a sentence), so its accessible
-  // name is the whole label. If that ever drifts from the card title the strip goes mute for anyone
-  // not using a mouse, which is exactly the regression worth a test.
-  test("a dot's accessible name matches a real feed card title", async ({ page }) => {
-    const dot = page.locator(".cal__dot").first();
-    await expect(dot).toBeVisible();
-    const name = await dot.getAttribute("aria-label");
-    expect(name && name.trim().length).toBeGreaterThan(0);
-    await expect(dot).toHaveAttribute("title", name!);                  // hover says the same thing
+  // The marks in the strip are marks, not controls: the cell around them is the button, so there is
+  // one click target per month instead of a dozen 9px ones. The cell's accessible name is therefore
+  // the whole label, and it has to name the month and say whether anything is in it.
+  test("a month cell is the control, and says what it holds", async ({ page }) => {
+    const cell = page.locator(".cal__mon:not(.cal__mon--empty)").first();
+    await expect(cell).toBeVisible();
+    await expect(cell).toHaveAttribute("data-month", /^\d{4}-\d{2}$/);
+    await expect(cell).toHaveAttribute("aria-label", /^[A-Z][a-z]+ \d{4}, \d+ (entry|entries)$/);
 
-    const matchingTitle = page.locator(".feed-card__title", { hasText: name!.trim() });
-    expect(await matchingTitle.count()).toBeGreaterThanOrEqual(1);
+    const empty = page.locator(".cal__mon--empty").first();               // an empty month still opens
+    await expect(empty).toHaveAttribute("aria-label", /^[A-Z][a-z]+ \d{4}, nothing$/);
+    await expect(page.locator(".cal__dot")).toHaveCount(await page.locator(".cal__dot").count());
   });
 
-  test("clicking a dot scrolls to and highlights its feed card (feed is always on the page)", async ({ page }) => {
-    const dot = page.locator(".cal__dot").first();
-    const targetId = await dot.getAttribute("data-target");
+  test("clicking a month opens its grid, and Back returns to the years", async ({ page }) => {
+    const cell = page.locator(".cal__mon:not(.cal__mon--empty)").first();
+    const key = await cell.getAttribute("data-month");
+    await cell.click();
+
+    await expect(page.locator('[data-cal-panel="month"]')).toBeVisible();
+    await expect(page.locator('[data-cal-panel="years"]')).toBeHidden();
+    await expect(page.locator('[data-cal="month-title"]')).toHaveText(/^[A-Z][a-z]+ \d{4}$/);
+    await expect(page).toHaveURL(new RegExp(`month=${key}`));            // the month is linkable
+
+    await page.locator('[data-cal="back"]').click();
+    await expect(page.locator('[data-cal-panel="years"]')).toBeVisible();
+    await expect(page).not.toHaveURL(/month=/);                          // …and dropped on the way out
+  });
+
+  test("a month in the URL boots straight onto that grid", async ({ page }) => {
+    const key = await page.locator(".cal__mon:not(.cal__mon--empty)").first().getAttribute("data-month");
+    await page.goto(`/calendar?month=${key}`);
+    await expect(page.locator('[data-cal-panel="month"]')).toBeVisible();
+    await expect(page.locator('[data-cal-panel="years"]')).toBeHidden();
+  });
+
+  // Stepping is clamped to the months the record actually spans: a control that steps into 2031 works
+  // perfectly and can only ever show nothing, which is worse than one that stops.
+  test("prev and next step through months and stop at the ends of the record", async ({ page }) => {
+    await page.locator(".cal__mon:not(.cal__mon--empty)").first().click();
+    const title = page.locator('[data-cal="month-title"]');
+    const prev = page.locator('[data-cal="prev"]');
+    const next = page.locator('[data-cal="next"]');
+
+    const start = await title.textContent();
+    if (!(await next.isDisabled())) {
+      await next.click();
+      expect(await title.textContent()).not.toBe(start);                 // it actually moved
+    }
+
+    for (let i = 0; i < 40 && !(await prev.isDisabled()); i++) await prev.click();
+    await expect(prev).toBeDisabled();                                   // the record has a first month
+    for (let i = 0; i < 40 && !(await next.isDisabled()); i++) await next.click();
+    await expect(next).toBeDisabled();                                   // …and a last one
+  });
+
+  test("clicking a chip in the month grid scrolls to and highlights its feed card", async ({ page }) => {
+    await page.locator(".cal__mon:not(.cal__mon--empty)").first().click();
+    const chip = page.locator(".cal__event").first();
+    await expect(chip).toBeVisible();
+
+    const chipText = (await chip.textContent())!.trim();
+    expect(await page.locator(".feed-card__title", { hasText: chipText }).count()).toBeGreaterThanOrEqual(1);
+
+    const targetId = await chip.getAttribute("data-target");
     expect(targetId).toMatch(/^evt-(note|post|event)-/);
-    await dot.click();
+    await chip.click();
 
     const card = page.locator(`#${targetId}`);
     await expect(card).toBeVisible();
     await expect(card).toHaveClass(/feed-card--highlight/, { timeout: 1000 });
   });
 
-  // A busy month caps its dots so one heavy month cannot drag the year row four rows deep. The
-  // remainder is a count, and it has to stay clickable or those items are unreachable from the strip.
-  test("a capped month's overflow count lands on a real feed card", async ({ page }) => {
-    const more = page.locator(".cal__more").first();
-    if (await more.count() === 0) test.skip(true, "no month in the fixtures exceeds the dot cap");
-
-    await expect(more).toHaveText(/^\+\d+$/);
-    await expect(more).toHaveAttribute("aria-label", /^\d+ more in [A-Z][a-z]+ \d{4}$/);
-    await more.click();
-    await expect(page.locator(".feed-card--highlight")).toHaveCount(1, { timeout: 1000 });
+  test("an empty month says so instead of looking broken", async ({ page }) => {
+    const empty = page.locator(".cal__mon--empty").first();
+    if (await empty.count() === 0) test.skip(true, "every month in the fixtures holds something");
+    await empty.click();
+    await expect(page.locator('[data-cal="month-note"]')).toContainText("Nothing this month");
+    await expect(page.locator(".cal__event")).toHaveCount(0);
   });
 
   // The feed's filter tabs are page state carried in the URL (?feed=notes|all), so a filtered feed is
@@ -271,7 +315,8 @@ test.describe("the /calendar app (no JS)", () => {
     expect(datetimes.length).toBeGreaterThan(0);
     for (const dt of datetimes) expect(dt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 
-    await expect(page.locator('[data-cal-panel="years"]')).toBeHidden();   // the year strip needs JS
+    await expect(page.locator('[data-cal-panel="years"]')).toBeHidden();   // both time views need JS
+    await expect(page.locator('[data-cal-panel="month"]')).toBeHidden();
     await expect(page.locator('[data-cal-panel="feed"]')).toBeVisible();
     // …and the noscript explaining why is a SIBLING of that panel, not a child of it. Nested inside,
     // it inherited the panel's own `hidden` and could never reach the reader it was written for.
