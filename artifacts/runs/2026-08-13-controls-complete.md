@@ -21,6 +21,9 @@ scope:
   - ../grain/packages/grain/components/atoms/b-textarea/
   - ../grain/packages/grain/components/form-from-data.test.ts
   - ../grain/packages/grain/plans/form-from-data.md
+  # Added mid-run on the owner's answer: the empty-heading and raw-link defects were the RENDERER's,
+  # and fixing six more docs to fit a broken parser would have deleted prose to work around a bug.
+  - ../grain/packages/grain/catalog/catalog.ts
   - src/
   - content/data/
   - content/tours/
@@ -78,8 +81,12 @@ gates:
   - pantry capture review-controls-complete | 5 of 5 steps resolved, ok on each
   - bun tools/lint-gate.ts | 4 counters regressed, all four pre-existing, see the doctor line
   - bun test (grain, after the doc rewrite) | 603 pass, 0 fail, 65 files
-  - bunx playwright test e2e/visual.e2e.ts --workers=1 (after the doc rewrite, re-blessed) | 9 passed
-  - pantry capture review-controls-complete (re-run against the rewritten docs) | 5 of 5, ok on each
+  - bun test (grain, after the catalog renderer fix) | 602 pass, 0 fail, 65 files
+  - bun run check (grain, after the renderer fix) | 5 packages, all exited 0
+  - bunx playwright test --grep-invert "visual baseline" (final) | 231 passed, 1 skipped, 0 failed
+  - bunx playwright test e2e/visual.e2e.ts --workers=1 (final, re-blessed + verified) | 9 passed
+  - bun run export (final) | 112/112 pages, 82/82 data routes, 75 asset files
+  - pantry capture review-controls-complete (re-run twice) | 5 of 5, ok on each
 diffstat: grain 23 files changed (761 insertions, 21 deletions) across two commits, of which 9 files are new; portfolio 5 files changed (36 insertions, 8 deletions) plus a new tour, a new capture folder and this report
 dirty: nothing of this session's is uncommitted at the time of writing. The portfolio tree is shared with at least one other session, so the counts below were taken by pathspec rather than from a whole-tree read.
 unpushed: 19 | grain 9, portfolio 10. Pushing stays the owner's call and was not taken.
@@ -314,9 +321,29 @@ folded back into their intros as the caller rules they always were, and every sp
 a heading that also holds a panel. Three conformance tests hold it, each proved by mutation, and the
 first of them caught the form grid at 1146 before a human did.
 
-They are scoped to the field family deliberately. Six other components carry the same empty-heading
-defect, presentation.md alone with seven, and fixing those is a different piece of work than this one.
-A green run here reads "the field family is clean", not "the catalog is".
+### Then the owner authorized the renderer, and that was the better fix
+
+The first pass fixed the docs to fit the parser. Asked about the raw links and the six other
+components carrying the same empty-heading defect, the owner took both. At which point rewriting six
+more docs was clearly the wrong move: the parser was the thing that was wrong, and mutilating prose
+to fit it would have deleted documentation to work around a bug.
+
+So catalog.ts changed instead. Paragraphs survive as paragraphs, a group carries its own prose, any
+non-html fence is skipped whole rather than read as text, and a relative link prints its text rather
+than its markdown. It cannot become an anchor, because a path to a file on disk is not a route this
+site serves and doc-links.test.ts exists to stop docs inventing routes, but printing the raw syntax
+was never the alternative anyone wanted.
+
+Measured on the rendered page afterwards: **206 prose paragraphs that had been written and never
+displayed now appear**, 32 of them on the presentation doc alone, which had seven empty headings.
+Intro paragraphs went from 62 joined blobs to 390 real ones. Raw markdown links remaining: zero. No
+component doc outside the field family was edited to achieve it.
+
+The conformance tests moved with it. Two of the three original rules are designed out at the parser
+now, so what survives is the one thing no parser can fix: a single paragraph too long to read,
+asserted across every component doc at an 800 character ceiling against a catalog median under 400.
+Three legacy offenders (console, app-shell, app-window) are named in the test rather than excluded
+silently, as a debt to shrink and never grow.
 
 ## What was NOT done
 
@@ -329,12 +356,9 @@ A green run here reads "the field family is clean", not "the catalog is".
   vocabulary.
 - **The About form was not otherwise touched**, per the owner's answer that it stays as it is. The
   required marker appearing there is the frame reaching it, not an edit to that page.
-- **The catalog does not render links inside a component doc.** The markdown link syntax prints raw,
-  because the formatter's link rule only accepts an absolute URL, a root path or an anchor, and a
-  sibling doc reference is a relative .md path. Pre-existing and visible on every doc that links a
-  sibling. The fix is one line in the formatter, to print the link TEXT and drop a relative target
-  rather than printing the raw syntax, and it is not taken here because catalog.ts is outside this
-  run's scope cap. It is the one thing still making these intros read badly.
+- **The three long-paragraph legacy docs** (console, app-shell, app-window) were not rewritten. They
+  belong to components nobody asked about, and shortening someone else's prose is its own judgment
+  call. Named in the conformance test so they cannot be forgotten.
 - **The lint gate baseline was not accepted.** All four regressed counters predate this run and none
   of them is this session's work to approve.
 
