@@ -29,7 +29,7 @@ The radio, and the trap that made it its own file.
 - at: /catalog
 - status: known-issue
 - review: The data-first sibling, and the one place the family's AI half stops. Every other atom here binds an address, because field.set can operate its control: it resolves the address and writes the value. A tick box has a value too, and that is the problem. A checkbox's value is what the form submits when it is ticked, not whether it is ticked. So a write would pass the dispatcher's guard, land, report success, change what the form means, and leave the control looking untouched. Measured on a live page rather than reasoned. That is worse than the choice hazard, where a bad write at least visibly empties the control, and it cannot be fixed by moving the binding because there is no element to move it to. So this atom ships with no address at all, and the absence is a test with the reason written next to it.
-- verify: Read the section headed why this one carries no address, then open the markup panel underneath and look for a data-surface. There should not be one. Compare it against the Field or Memo entries, which both carry one on their control. If a surface has appeared here, someone tidied away a limit rather than closing it.
+- verify: Read the second paragraph of the entry, then open the markup panel underneath and look for a data-surface. There should not be one. Compare it against the Field or Memo entries, which both carry one on their control. If a surface has appeared here, someone tidied away a limit rather than closing it.
 The tick box from data, and the verb the vocabulary does not have.
 
 ## catalog:input
