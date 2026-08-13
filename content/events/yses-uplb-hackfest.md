@@ -39,7 +39,8 @@ social: |
 ## Sponsor, speaker, judge, all in one afternoon
 
 Career Team came in as a premier sponsor of EXPE21ENCE: The Hackfest, which bought a talk slot and a
-special prize with our name on it. I went with Christelle Salceda, Jun Bolotaolo and Beili Cepe.
+special prize with our name on it. I went with fellow team leads Christelle Salceda, Jun Bolotaolo
+and Beili Cepe.
 
 Worth putting the conflict on the table early. I was not a neutral judge. I was a sponsor's
 representative handing out a sponsor's award against a sponsor's criteria, and the criteria were
