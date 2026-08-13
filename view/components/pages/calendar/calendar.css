@@ -24,35 +24,57 @@
 [data-screen="calendar"] .cal__to-feed { font-size: var(--text-sm); font-family: var(--font-mono);
   color: var(--color-accent); text-decoration: none; }
 [data-screen="calendar"] .cal__to-feed:hover { text-decoration: underline; }
-[data-screen="calendar"] .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); }
-[data-screen="calendar"] .cal__dow { padding: var(--space-2); text-align: center; font-size: var(--text-xs);
-  font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;
-  letter-spacing: .04em; border-bottom: 1px solid var(--line-soft); }
-[data-screen="calendar"] .cal__cell { min-width: 0; min-height: 5.2rem; padding: var(--space-2);
-  border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft);
-  display: flex; flex-direction: column; gap: var(--space-1); }
-[data-screen="calendar"] .cal__cell:nth-child(7n) { border-right: 0; }
-[data-screen="calendar"] .cal__cell--out { background: var(--paper-2); }
-[data-screen="calendar"] .cal__num { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-muted); }
-[data-screen="calendar"] .cal__cell--out .cal__num { color: var(--ink-faint); }
-[data-screen="calendar"] .cal__cell--today .cal__num { color: var(--color-accent-contrast);
-  background: var(--color-accent); border-radius: var(--radius-pill);
-  width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center;
-  justify-content: center; font-weight: var(--font-weight-semibold); }
-[data-screen="calendar"] .cal__event { display: block; width: 100%; text-align: left; font: inherit;
-  font-size: var(--text-xs); line-height: var(--leading-tight); cursor: pointer;
-  padding: 2px var(--space-2); border-radius: var(--radius-sm); border: 0;
-  background: var(--color-accent-soft); color: var(--ink);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* per-kind month/week chips: notes (base accent-soft), shipped posts (bordered), and events
-   (hackathon / talk / student-highlight) as a filled accent so the coached/taught days stand out. */
-[data-screen="calendar"] .cal__event--shipped { background: var(--paper-2); color: var(--ink-muted);
+/* The year strip. One row per year that actually holds something, twelve month cells across, and a
+   dot per dated thing inside the cell. It replaced a month-of-days grid, which was the wrong unit:
+   most months here are empty, so that grid spent its area proving nothing had happened. */
+[data-screen="calendar"] .cal__year { display: flex; align-items: stretch;
+  border-bottom: 1px solid var(--line-soft); }
+[data-screen="calendar"] .cal__year:last-child { border-bottom: 0; }
+[data-screen="calendar"] .cal__year-label { flex: 0 0 auto; display: flex; align-items: center;
+  padding: 0 var(--space-4); font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--ink-muted); background: var(--paper-2);
+  border-right: 1px solid var(--line-soft); }
+[data-screen="calendar"] .cal__months { flex: 1 1 auto; min-width: 0;
+  display: grid; grid-template-columns: repeat(12, 1fr); }
+[data-screen="calendar"] .cal__mon { min-width: 0; min-height: 4.4rem;
+  padding: var(--space-2) var(--space-1);
+  display: flex; flex-direction: column; gap: var(--space-2);
+  border-right: 1px solid var(--line-soft); }
+[data-screen="calendar"] .cal__mon:last-child { border-right: 0; }
+/* An empty month is dimmed rather than hidden: the gaps between things are part of the record. */
+[data-screen="calendar"] .cal__mon--empty { background: var(--paper-2); }
+[data-screen="calendar"] .cal__mon-label { font-size: var(--text-xs); font-family: var(--font-mono);
+  color: var(--ink-muted); }
+[data-screen="calendar"] .cal__mon--empty .cal__mon-label { color: var(--ink-faint); }
+[data-screen="calendar"] .cal__mon--now .cal__mon-label { color: var(--color-accent-contrast);
+  background: var(--color-accent); border-radius: var(--radius-sm);
+  padding: 0 var(--space-1); align-self: flex-start;
+  font-weight: var(--font-weight-semibold); }
+[data-screen="calendar"] .cal__dots { display: flex; flex-wrap: wrap; gap: 3px; align-content: flex-start; }
+/* 50% rather than a radius token: a month cell is about 44px wide at twelve across, so the dot is
+   under 9px and every rounding token in the scale is large enough to square it off. */
+[data-screen="calendar"] .cal__dot { width: .55rem; height: .55rem; padding: 0; border: 0;
+  border-radius: 50%; cursor: pointer; background: var(--color-accent-soft); }
+/* A busy month would otherwise stack ten dots four rows deep and drag the whole year row down with
+   it, so the dots cap and the remainder becomes one count that jumps to the first of them. */
+[data-screen="calendar"] .cal__more { font: inherit; font-size: 9px; font-family: var(--font-mono);
+  line-height: .55rem; height: .55rem; padding: 0; border: 0; background: transparent;
+  color: var(--ink-muted); cursor: pointer; }
+[data-screen="calendar"] .cal__more:hover { color: var(--color-accent); }
+/* per-kind dots: notes (base accent-soft), shipped posts (bordered), and events (hackathon / talk /
+   student-highlight / workshop / career-fair) filled accent, so the taught and coached days read
+   loudest in the strip. */
+[data-screen="calendar"] .cal__dot--shipped { background: var(--paper-2);
   border: 1px solid var(--line-soft); }
-[data-screen="calendar"] .cal__event--hackathon,
-[data-screen="calendar"] .cal__event--talk,
-[data-screen="calendar"] .cal__event--student-highlight {
-  background: var(--color-accent); color: var(--color-accent-contrast); }
-[data-screen="calendar"] .cal__event:hover { outline: 1px solid var(--color-accent); }
+[data-screen="calendar"] .cal__dot--hackathon,
+[data-screen="calendar"] .cal__dot--talk,
+[data-screen="calendar"] .cal__dot--workshop,
+[data-screen="calendar"] .cal__dot--career-fair,
+[data-screen="calendar"] .cal__dot--student-highlight {
+  background: var(--color-accent); }
+[data-screen="calendar"] .cal__dot:hover,
+[data-screen="calendar"] .cal__dot:focus-visible { outline: 2px solid var(--color-accent);
+  outline-offset: 1px; }
 [data-screen="calendar"] .cal__legend { display: flex; flex-wrap: wrap; gap: var(--space-4);
   font-size: var(--text-xs); color: var(--ink-muted); margin: 0;
   padding: var(--space-3) var(--space-5); border-top: 1px solid var(--line-soft); background: var(--paper-2); }
@@ -75,7 +97,14 @@
   font-size: var(--text-sm); }
 [data-screen="calendar"] .feed__empty[hidden] { display: none; }
 
+/* Twelve months across is too many on a phone, so the year wraps to two rows of six and the year
+   label moves above its own months rather than squeezing the strip from the side. */
 @media (max-width: 640px) {
-  [data-screen="calendar"] .cal__cell { min-height: 3.6rem; }
-  [data-screen="calendar"] .cal__event { padding: 1px var(--space-1); }
+  [data-screen="calendar"] .cal__year { flex-direction: column; }
+  [data-screen="calendar"] .cal__year-label { border-right: 0;
+    border-bottom: 1px solid var(--line-soft); padding: var(--space-2) var(--space-4); }
+  [data-screen="calendar"] .cal__months { grid-template-columns: repeat(6, 1fr); }
+  [data-screen="calendar"] .cal__mon { min-height: 3.6rem; }
+  [data-screen="calendar"] .cal__mon:nth-child(6n) { border-right: 0; }
+  [data-screen="calendar"] .cal__mon:nth-child(-n+6) { border-bottom: 1px solid var(--line-soft); }
 }
