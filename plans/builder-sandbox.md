@@ -10,6 +10,12 @@ touches:
   - src/ai/field-matcher.ts
   - src/server.ts
   - src/ai/desk-reasoner.ts
+  - content/data/contact-form.json
+  - ../grain/packages/grain/components/atoms/b-checkbox/
+  - ../grain/packages/grain/components/atoms/b-radio/
+  - ../grain/packages/grain/components/atoms/b-check/
+  - ../grain/packages/grain/components/atoms/b-input/b-input.css
+  - ../grain/packages/grain/components/molecules/form-grid/
 owner: ai
 ---
 
@@ -80,9 +86,19 @@ grid. Those are grain work rather than sandbox work, and they are worth doing fi
 because a sandbox that can only compose three controls is a thin sandbox. The textarea, the first of
 the five, shipped on 2026-08-13.
 
+**All four shipped later the same day**, so the vocabulary a sandbox has to compose from is complete
+for forms. See grain plan section 5b and artifacts/runs/2026-08-13-controls-complete.md. One thing
+came back out of that build and belongs on this page's list of open calls rather than in the grain
+plan alone: a tick box is the one control the AI cannot operate, because the only field verb writes
+the value and a checkbox's value is what it submits rather than whether it is ticked. Closing it
+needs a new verb. Until it is closed, a sandbox that offers to compose a checkbox is offering a
+control the AI half of the demo cannot touch, which is worth knowing before piece 2 widens the
+matcher's table.
+
 - [ ] 1. The prompt area becomes a real composer
 - [ ] 2. The spec generalizes past forms
 - [ ] 3. The AI narrates its selection
 - [ ] 4. The preview tab, with the code switcher
 - [ ] 5. The catalog sidebar default
-- [ ] The remaining control gaps, grain plan section 5
+- [x] The remaining control gaps, grain plan section 5 (2026-08-13,
+      artifacts/runs/2026-08-13-controls-complete.md)

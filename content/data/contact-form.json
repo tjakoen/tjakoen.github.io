@@ -1,16 +1,18 @@
 {
   "fields": [
-    { "surface": "field:contact-name", "label": "Name", "name": "name", "type": "text", "placeholder": "Jane Doe", "value": null, "required": "required" },
-    { "surface": "field:contact-email", "label": "Email", "name": "email", "type": "email", "placeholder": "jane@example.com", "value": null, "required": "required" }
+    { "surface": "field:contact-name", "label": "Name", "name": "name", "type": "text", "placeholder": "Jane Doe", "value": null, "required": "required", "hint": null, "error": null },
+    { "surface": "field:contact-email", "label": "Email", "name": "email", "type": "email", "placeholder": "jane@example.com", "value": null, "required": "required", "hint": null, "error": null }
   ],
   "messages": [
-    { "surface": "field:about-message", "label": "Message", "name": "message", "placeholder": "What would you like to say?", "value": null, "required": null }
+    { "surface": "field:about-message", "label": "Message", "name": "message", "placeholder": "What would you like to say?", "value": null, "required": null, "hint": null, "error": null }
   ],
   "choices": [
     {
       "surface": "field:contact-topic",
       "label": "What's this about",
       "name": "topic",
+      "hint": null,
+      "error": null,
       "options": [
         { "value": "grain", "label": "GRAIN", "selected": null },
         { "value": "batch", "label": "BATCH", "selected": null },

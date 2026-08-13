@@ -1,0 +1,122 @@
+{
+  "tour": "review-controls-complete",
+  "title": "Review: the field frame covers every control",
+  "mode": "dev",
+  "capturedAt": "2026-08-13T04:03:59.527Z",
+  "previewTarget": "http://localhost:3111",
+  "via": "http://localhost:55837",
+  "startedProject": null,
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "motion": "css-disabled",
+  "driver": {
+    "package": "playwright",
+    "path": "/Users/tjakoenstolk/Local/Development/bread-repos/tjakoen.github.io/node_modules/playwright/index.mjs",
+    "version": "1.62.0"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "surface": "catalog:checkbox",
+      "at": "/catalog",
+      "status": "new",
+      "verify": "Look at the Required panel and the Default panel side by side. In both, the label should sit beside the box and wrap inside itself rather than falling to the line underneath. Then click anywhere on the label text, not on the box: it should tick. If only the box itself responds, the tap target has shrunk to the box and the phone case is broken.",
+      "url": "http://localhost:55837/catalog",
+      "navigated": true,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 272,
+        "y": 3677.125,
+        "width": 836,
+        "height": 1463.84375
+      },
+      "page": "01-catalog-checkbox.png",
+      "element": "01-catalog-checkbox-element.png",
+      "problem": null
+    },
+    {
+      "index": 1,
+      "surface": "catalog:radio",
+      "at": "/catalog",
+      "status": "new",
+      "verify": "In the group panel, click each of the three in turn. Exactly one should stay filled, because they share a name. Then tab into the group and use the arrow keys: they should move the selection, which is the native behaviour a drawn replacement would have cost. Check the dots are round and the tick boxes above are square, so the two controls are still telling you apart.",
+      "url": "http://localhost:55837/catalog",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 272,
+        "y": 12294,
+        "width": 836,
+        "height": 1249.765625
+      },
+      "page": "02-catalog-radio.png",
+      "element": "02-catalog-radio-element.png",
+      "problem": null
+    },
+    {
+      "index": 2,
+      "surface": "catalog:check-from-data",
+      "at": "/catalog",
+      "status": "known-issue",
+      "verify": "Read the section headed why this one carries no address, then open the markup panel underneath and look for a data-surface. There should not be one. Compare it against the Field or Memo entries, which both carry one on their control. If a surface has appeared here, someone tidied away a limit rather than closing it.",
+      "url": "http://localhost:55837/catalog",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 272,
+        "y": -14171.859375,
+        "width": 836,
+        "height": 1304.984375
+      },
+      "page": "03-catalog-check-from-data.png",
+      "element": "03-catalog-check-from-data-element.png",
+      "problem": null
+    },
+    {
+      "index": 3,
+      "surface": "catalog:input",
+      "at": "/catalog",
+      "status": "new",
+      "verify": "Compare the Required panel with the Default one: the required label should carry a marker and the default should not, with no difference in the markup underneath except the attribute. Then go to the About page, open the Contact tab, and check the same marker has appeared on Name and Email without that page being edited. If it has not, the frame is not reaching a form rendered from data.",
+      "url": "http://localhost:55837/catalog",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 272,
+        "y": 7754.734375,
+        "width": 836,
+        "height": 1690.171875
+      },
+      "page": "04-catalog-input.png",
+      "element": "04-catalog-input-element.png",
+      "problem": null
+    },
+    {
+      "index": 4,
+      "surface": "catalog:form-grid",
+      "at": "/catalog",
+      "status": "needs-verification",
+      "verify": "Narrow the window slowly and watch the default example. Columns should drop one at a time and nothing should ever scroll sideways, at any width down to a phone. The message box should stay full width the whole way. Then look at the two-column example inside its panel and see the limit above for yourself: it keeps both columns even though the panel is narrow, which is the case the doc tells you to avoid.",
+      "url": "http://localhost:55837/catalog",
+      "navigated": false,
+      "verdict": "ok",
+      "matches": 1,
+      "box": {
+        "x": 272,
+        "y": 35333.265625,
+        "width": 836,
+        "height": 2135.46875
+      },
+      "page": "05-catalog-form-grid.png",
+      "element": "05-catalog-form-grid-element.png",
+      "problem": null
+    }
+  ],
+  "failures": 0
+}
