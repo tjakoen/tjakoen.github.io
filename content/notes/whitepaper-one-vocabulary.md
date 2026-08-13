@@ -2,7 +2,7 @@
 title: "One Vocabulary, Two Operators"
 subtitle: "An alternative modality for human–AI interaction: one shared vocabulary, operated as peers (the GRAIN design system)"
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: whitepaper
 date: 2026-07-02
 updated: 2026-07-17
