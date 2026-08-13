@@ -86,6 +86,12 @@ local government to get the pavement fixed.
 That second half is the part I liked. Most accessibility tools help you cope with a broken city.
 This one also documents the breakage and hands you an argument.
 
+Iterate was [Galvin Gonzales](https://www.linkedin.com/in/galvin-gonzales-884838375/),
+[Aro Caabay](https://www.linkedin.com/in/aro-caabay/),
+[Hanna Macasarte](https://www.linkedin.com/in/hanna-macasarte-65413016b/) and Rein Matthew Malonzo.
+Three of the four are linked because three profiles are what I could find. The fourth name is here
+unlinked rather than left out, which is the correct way round.
+
 Iterate took the collegiate championship as well, and CodeBlooded took second runner up. Both of
 those were the organizers' calls, not ours, and the
 [full board across both brackets](https://www.facebook.com/share/p/19M4Tzmhxj/) is theirs to
