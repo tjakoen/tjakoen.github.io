@@ -69,6 +69,10 @@ front of them showing the QR code for the post-evaluation form. That form went t
 is the correct place for it. So I know how the two hours felt from the front of the lab. The people who
 know how they landed were the ones sitting down.
 
-Code Geeks is the student organization for the computing programs at Holy Angel University. They filled
-the room, ran the day, and handled every part of it that was not me talking. The photos and the recap
-video above are Kyle Payawal's work, not mine.
+Thank you to Code Geeks, the student organization for the computing programs at Holy Angel
+University, for the invitation. They picked the topic, booked the lab, filled it a day early, and
+handled every part of the afternoon that was not me talking. Getting a room of students to give up a
+Wednesday for a workshop is harder than giving the workshop, and they had already done it before I
+arrived.
+
+The photos and the recap video above are Kyle Payawal's work, not mine.
