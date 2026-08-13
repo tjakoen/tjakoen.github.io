@@ -360,6 +360,60 @@ export function listPortfolioRawContentRoutes(): Promise<string[]> {
   return listMillRawRoutes(collections);
 }
 
+// ---- folded notes ------------------------------------------------------------
+// When one note is consolidated into another the file goes away, but the URL does not: it is
+// live, indexed, and linked from wherever it was shared. So a folded note keeps its route as a
+// stub that names where the writing went. Deliberately a rendered PAGE with a canonical + a
+// meta refresh, NOT a 301: the static export freezes response BODIES, so a redirect the crawler
+// followed would write the destination's full text at both URLs and hand search engines two
+// copies of the same note. Add a line here when a note is folded; both the sitemap and the
+// export allowlist read this map, so the stub travels to Pages automatically.
+export const FOLDED_NOTES: Record<string, { to: string; title: string }> = {
+  "/notes/where-were-we": {
+    to: "/notes/one-loop-every-repo",
+    title: "I Was Shipping Faster Than I Could Understand It",
+  },
+  "/notes/native-partial-updates": {
+    to: "/notes/the-browser-grew-up",
+    title: "The Browser Grew Up While I Was Busy With Frameworks",
+  },
+};
+
+/** The stub page served at a folded note's old URL. Plain, short, and honest about what happened:
+ *  a reader who followed an old link should understand it in one sentence and land in one click. */
+export function renderFoldedNotePage(from: string, inject = "", injectHead = ""): string {
+  const moved = FOLDED_NOTES[from]!;
+  return `<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>This note moved · tjakoen.github.io</title>
+  <meta name="description" content="This note was folded into a longer one. It now lives at ${moved.to}.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="${moved.to}">
+  <meta http-equiv="refresh" content="3; url=${moved.to}">
+${injectHead}</head>
+<body data-screen="note-moved" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="notes" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main">
+      <div class="board">
+        <p class="eyebrow">📝 <span class="name">Notes</span> · this one moved</p>
+        <h1 class="masthead">This note was folded into a longer one.</h1>
+        <hr class="rule">
+        <p class="lede">It said one part of a bigger argument, so it now lives inside that argument
+          instead of beside it. Nothing was thrown away. You are on your way to
+          <a href="${moved.to}">${moved.title}</a>, or you can
+          <a href="${moved.to}">go there now</a>.</p>
+        <p><a href="/notes">All notes</a></p>
+      </div>
+    </main>
+  </div>
+${inject}</body>
+</html>`;
+}
+
 // ---- the desk's build-time knowledge corpus (ai/knowledge.ts) -----------------
 // The local browser model is grounded on the SITE'S OWN CONTENT: every note + the layer docs, plus
 // a hand-authored facts block. /standards is skipped (internal), and the PLAN/FEATURES/CONTENT docs

@@ -26,7 +26,7 @@ import { buildAiRoutes } from "./routes/ai-routes.ts";
 // renders (matchSpec's own result + the CSS state flags) — see builder-page.ts's own banner.
 import { buildBuilderView } from "./ai/builder-page.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
 import { injectViews } from "./analytics.ts";   // the status bar's view counts, baked in at build time
@@ -61,16 +61,19 @@ const PAGE_ASSETS = `${CATALOG_ASSETS}<link rel="stylesheet" href="/styles/light
 // the static export freezes what this renders (§18 — projection, not re-render). The /about demo
 // page ignores the injected recentNotes; injecting it everywhere costs nothing.
 // Dev seam for the DESK's client door (plan: desk-hero-demo P1): the export stamps
-// data-ai-transport="client" on the frozen site (tools/export.ts); in dev the server door (SSE
-// stub, makeStubReasoner) is the DEFAULT, so the real WebLLM path is untested and the owner sees
-// canned stub replies instead of the desk visitors get. Set DESK_CLIENT=1
-// (`DESK_CLIENT=1 bun run dev`) to stamp the same client-transport + desk-door markers on live
-// pages, so the real local-model desk runs in a WebGPU browser without exporting first. This is a
-// toggle, NOT hard-defaulted (owner decision): the stub-SSE path stays the default so the server
-// tests keep exercising it. On a machine without WebGPU the door still arms and the
-// deterministic paths (nav/filter/archive/theme — the demo-worthy ones) run model-free.
+// data-ai-transport="client" on the frozen site (tools/export.ts), so a visitor always gets the
+// real WebLLM desk. The server's own SSE door runs grain's makeStubReasoner, whose chat.send
+// answers "Noted, I'll fold that into your plan" to anything you type. That stub is demo plumbing
+// for the /grain scenarios, and in the desk sidebar it reads as the desk making things up, with no
+// way to ever show the honest offline state (only the desk door sets body[data-desk="offline"]).
+// So `bun run dev` now sets DESK_CLIENT=1 and gets the SAME door visitors get (2026-08-14, owner
+// call). `bun run dev:stub` sets STUB_DESK=1 to force the SSE stub back, and STUB_DESK wins over
+// DESK_CLIENT so the override works on any command. The bare `bun src/server.ts` (what
+// `bun run start` and the Playwright webServer boot) stamps NOTHING, so every e2e spec keeps
+// driving the transport it stamps for itself. On a machine without WebGPU the door still arms and
+// the deterministic paths (nav, filter, archive, theme, the demo-worthy ones) run model-free.
 const stampDevDoor = (html: string): string =>
-  Bun.env.DESK_CLIENT
+  Bun.env.DESK_CLIENT && !Bun.env.STUB_DESK
     ? html.replace(/<body\b/, '<body data-ai-transport="client" data-ai-door="/modules/portfolio/ai/desk-door.js"')
     : html;
 // /calendar's Agenda (Pass 2 — Calendar): data/desk-feed.json is hand-authored dressing — the
@@ -623,6 +626,12 @@ ${PAGE_ASSETS}</body>
     // the client fetches to run a tour — NOT a page, so it skips finalizePage's HTML shell. ---
     const fromCrumb = await crumbRoutes(p);
     if (fromCrumb) return fromCrumb;
+    // --- folded notes: an old note URL whose writing now lives inside another note. Before MILL,
+    // because the .md is gone and MILL would answer this with a plain 404 (content.ts FOLDED_NOTES). ---
+    const folded = p.endsWith("/") ? p.slice(0, -1) : p;
+    if (FOLDED_NOTES[folded])
+      return finalizePage(req, new Response(renderFoldedNotePage(folded, PAGE_ASSETS, PAGE_HEAD),
+        { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     // --- MILL mount: live content routes (/notes, /grain/docs, /batch/docs) ---
     const fromContent = await serveContent(p);
     if (fromContent) return finalizePage(req, fromContent);

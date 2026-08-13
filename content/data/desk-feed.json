@@ -39,8 +39,8 @@
     "title": "Closed a loop I called at the top of a note",
     "body": "The plan for building PROOF was the first thing on its own board. I published the plan for the plan tool before the tool existed, and it held.",
     "tags": ["writing", "planning"],
-    "links": [{ "href": "/notes/where-were-we", "label": "Read the note" }],
-    "link": "/notes/where-were-we",
+    "links": [{ "href": "/notes/one-loop-every-repo", "label": "Read the note" }],
+    "link": "/notes/one-loop-every-repo",
     "icon": "📝"
   },
   {

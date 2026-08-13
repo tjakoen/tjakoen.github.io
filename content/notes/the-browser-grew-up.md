@@ -5,13 +5,16 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-07-04
-readingTime: "~12 min"
-tags: [native-first, css, no-build, batch, web-platform]
+readingTime: "~16 min"
+tags: [native-first, css, no-build, batch, web-platform, performance]
 summary: >
   I spent years inside frameworks because the native web platform couldn't do the job. It can now.
   Here is the specific, mildly technical account of the browser features (View Transitions, the dialog
   element, details, has, color-mix) that let me build a whole stack with no framework and no build
-  step, what that actually buys you, and the honest limits, plus the benchmark I finally ran.
+  step, what that actually buys you, and the honest limits. Including the benchmark I kept promising
+  and finally ran: the same small blog built four ways, where Next ships about 118 kilobytes of
+  JavaScript for one filter and my stack ships about two, plus Declarative Partial Updates, the new
+  browser primitive that hands the last piece of glue back to the browser.
 ---
 
 I have a graveyard of side projects, and for a long time they all died in the same place. Not at the idea. Not at the design. Somewhere around the third day, when the build config broke and I could not remember why. A framework upgrade here, a plugin that stopped talking to another plugin there, a node_modules folder heavier than the app it was supposed to serve. I would lose an evening to the machinery and never get back to the thing I actually wanted to make.
@@ -106,7 +109,7 @@ And when I do reach for a library, I am picky in one specific way: I want the on
 
 Most frameworks will not promise you that. Anyone who has limped a codebase across a major version, or watched a favorite library go unmaintained, knows the tax. The closer a dependency stays to the standards, the less of that tax I will ever pay.
 
-There is a coda to the htmx part that I did not expect to be writing this soon. The one job I still hand to a library, taking a piece of HTML from the server and slotting it into the page, the browser is starting to do on its own. There is a proposal called Declarative Partial Updates, behind a flag in Chrome this year, that adds native ways to stream and patch HTML into a page: methods with plain names like setHTML and streamHTML, and a way to mark a slot in the markup and fill it later in the same response. Firefox already ships the smallest piece of it, setHTML, in a normal release. I want to be honest about how early this is: it is one browser behind a flag for the full thing, the others have not committed yet, and none of it is safe to put in front of a real visitor before roughly 2027. So I have not moved onto it, and I am not about to. But it is this whole note in miniature. The platform is reaching down and picking up the last small library I was still holding. htmx does not simply disappear the day it lands, the triggers, the request, the history handling are still real work it does well, and I expect small libraries like it to sit on top of these new primitives rather than fight them. What changes is that the swap itself, the one bit of glue I had to import, is on its way to being something the browser just does. I did end up building it and pointing the benchmark at it, which is a story for [its own note](native-partial-updates.md).
+There is a coda to the htmx part that I did not expect to be writing this soon. The one job I still hand to a library, taking a piece of HTML from the server and slotting it into the page, the browser is starting to do on its own. There is a proposal called Declarative Partial Updates, behind a flag in Chrome this year, that adds native ways to stream and patch HTML into a page: methods with plain names like setHTML and streamHTML, and a way to mark a slot in the markup and fill it later in the same response. Firefox already ships the smallest piece of it, setHTML, in a normal release. I want to be honest about how early this is: it is one browser behind a flag for the full thing, the others have not committed yet, and none of it is safe to put in front of a real visitor before roughly 2027. So I have not moved onto it, and I am not about to. But it is this whole note in miniature. The platform is reaching down and picking up the last small library I was still holding. htmx does not simply disappear the day it lands, the triggers, the request, the history handling are still real work it does well, and I expect small libraries like it to sit on top of these new primitives rather than fight them. What changes is that the swap itself, the one bit of glue I had to import, is on its way to being something the browser just does. I did end up building that version and pointing the benchmark at it, and the number surprised me. That is further down.
 
 If it helps to see the whole trade in one view, here is my stack next to a typical React app. Not the most optimized setup a React expert could hand-tune, just the normal one most projects actually run.
 
@@ -258,9 +261,58 @@ The honest, checkable advantages first.
 
 *The replacement map: every row is a dependency I no longer own.*
 
-## The honest ledger
+## The benchmark I kept promising
 
-Now the part the framework crowd will, fairly, push on. Is it actually *faster*? For a long time my honest answer was that I had not published a benchmark, so I would not print a number I could not back. I have run it now. The same small blog, built four ways and measured by one script: my native stack, the same stack with the browser doing the HTML swap instead of a script I ship, one on Astro, one on Next. The categorical result, the one I actually trust, is stark. For a single identical filter on the page, Next ships around 118 kilobytes of JavaScript where my stack ships about two, roughly sixty times more, with the same rendered HTML and the same SEO on every build so the comparison is not rigged. Astro, fairly, ships even less than I do on a page this static, so across the whole field the spread runs to something like a hundred and sixty times end to end, and I say so plainly. The performance timings point the same way, and I am treating them as corroboration, not proof. The full story, the four builds, the honest asterisks, and the new browser primitive that pushes the cost lower still, is its own note: [I Finally Ran the Benchmark I Kept Promising](native-partial-updates.md).
+Now the part the framework crowd will, fairly, push on. Is it actually *faster*?
+
+For a long time my honest answer was that I had not published a benchmark, so I would not print a number I could not back. I said it in this note, and I said it again in the follow-up, and at some point a bet you keep calling well-founded and never test is just a thing you are afraid to measure.
+
+So I measured it. Here is the honest version of what I built. One small blog, the same content, rendered four ways: my own native stack on Bun, the same stack with the browser doing the HTML swap, then Astro, then Next. Every one of them renders the same HTML, ships the same stylesheet byte for byte, and carries the same page metadata, the title and description and canonical link and the structured data. If one of them had better SEO, that would be a flaw in the test, not a win for the stack, so I handed all four the same head on purpose. Then one script boots each build, measures it the same way, and writes the table.
+
+The only thing I let vary is the one piece of real interactivity on the page: a filter that narrows the post list as you type and pick tags. That filter is the whole fight. It is the exact small interaction people reach for a framework to build, so the JavaScript each stack ships to make it work is the number worth staring at.
+
+<svg viewBox="0 0 620 250" width="100%" role="img"
+     aria-label="Bar chart of JavaScript shipped for one identical filter: Astro about 744 bytes, native stack about 2 kilobytes, native with Declarative Partial Updates about 3 kilobytes, and Next about 118 kilobytes."
+     style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
+     xmlns="http://www.w3.org/2000/svg">
+  <rect x="0.5" y="0.5" width="619" height="249" style="fill:var(--paper);stroke:var(--edge)"/>
+  <text x="28" y="32" style="fill:var(--muted);font-size:15px">JavaScript shipped for one identical filter</text>
+  <line x1="24" y1="46" x2="596" y2="46" style="stroke:var(--edge);stroke-width:1"/>
+
+  <text x="28" y="78" style="fill:var(--ink);font-size:14px">Astro</text>
+  <rect x="150" y="66" width="3" height="18" style="fill:var(--accent)"/>
+  <text x="162" y="79" style="fill:var(--muted);font-size:13px">744 b</text>
+
+  <text x="28" y="114" style="fill:var(--ink);font-size:14px">native / BATCH</text>
+  <rect x="150" y="102" width="7" height="18" style="fill:var(--accent)"/>
+  <text x="166" y="115" style="fill:var(--muted);font-size:13px">2 kb</text>
+
+  <text x="28" y="150" style="fill:var(--ink);font-size:14px">native + DPU</text>
+  <rect x="150" y="138" width="11" height="18" style="fill:var(--accent)"/>
+  <text x="170" y="151" style="fill:var(--muted);font-size:13px">3 kb</text>
+
+  <text x="28" y="186" style="fill:var(--ink);font-size:14px">Next.js</text>
+  <rect x="150" y="174" width="430" height="18" style="fill:var(--ink)"/>
+  <text x="574" y="187" style="fill:var(--paper);font-size:13px;text-anchor:end">118 kb</text>
+
+  <text x="28" y="228" style="fill:var(--accent);font-size:13px">Same filter, same HTML, same SEO. About 162 times the JavaScript.</text>
+</svg>
+
+*The bars are to scale. That is the whole point: three of them are slivers.*
+
+For the same filter, on the same page, Next ships about 118 kilobytes of JavaScript, the React runtime plus the work of waking it up in the browser. My native stack ships about two. Astro, to its real credit, ships even less than I do, a few hundred bytes, because its filter is a small script with nothing underneath it, and on a page this static that is a genuinely strong showing. I am not going to pretend otherwise. But the shape is the argument: against my native two kilobytes that is about sixty times the code, and against Astro's few hundred bytes the whole field spreads to roughly a hundred and sixty times, for the identical thing the reader does.
+
+A few honest asterisks, because this only means something if I do not cook it. Astro inlines its little script into the page, so a naive count would report zero, and measured properly it is those few hundred bytes, which I counted. My own server does not compress its responses in this test, which makes my numbers look slightly worse than they would behind a real CDN, so if anything the gap is wider than I am claiming. And the load times, which I did record, I am treating as corroboration and not proof, because they come off my machine with no real network in the way. The bytes are the case. The clock just nods along.
+
+There is a fourth bar in that chart I slid past: my stack, with one change. In the normal version, a small script I ship does the swap, taking the filtered list and putting it on the page. In this one, the browser does the swap itself. That is Declarative Partial Updates, the proposal from a few sections up, built for real and measured. The server sends a piece of HTML and the page slots it in with plain native methods, no swap library in between. The interactive filter came in around three kilobytes of glue, and the streamed-in fill shipped, for the swap itself, nothing. The browser did it.
+
+Which is why I checked the browser support myself rather than trusting a changelog, and it is as early as I said: the full feature in Chrome only, behind a flag you turn on by hand, the plain setHTML setter shipping in a normal Firefox release, and not a word from Safari. There is also a trade I am not hiding. The native-swap version asks the server for each fragment, so it spends a round-trip where my plain client-side filter spends none. Fewer bytes, one more request. On that one I took the measurement, not a side.
+
+*(The full numbers live on the [bench results page](https://tjakoen.github.io/framework-bench/), a static page that itself ships no JavaScript at all. The harness and the four builds live in the [framework bench repo](https://github.com/tjakoen/framework-bench), so you can run it yourself and get your own numbers.)*
+
+> The bet I kept calling well-founded is measured now. It held.
+
+## The honest ledger
 
 Two more edges worth owning. Native as possible is a direction, not a religion, and it never meant no JavaScript. JavaScript is part of the platform. The line I hold is no client framework, not no code, so the script I write for the AI is plain JavaScript on standard browser APIs, the Fetch call and the event stream and the DOM, as native as the HTML around it. The one genuine dependency I lean on is htmx, and I picked it because it barely leaves the platform at all. Purity for its own sake is just a different dogma wearing nicer clothes. And the trade is real: the moment you want genuinely rich client behavior, drag-and-drop, optimistic offline editing, the stuff a heavy client framework is actually great at, you are swimming against this current. I took that trade on purpose, because the apps I build do not need it. Yours might, and that is a fair reason to choose differently.
 
