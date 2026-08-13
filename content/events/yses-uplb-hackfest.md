@@ -71,8 +71,10 @@ new account for somebody to create and forget. This team went and found where th
 were and built behind them instead of in front of them. Serving people where they are is unglamorous
 and it works.
 
-CodeBlooded was [Neil Aldous Biason](https://www.linkedin.com/in/neilbsn/), Christian Naguio, Jaren
-Marcelino and Adara Rei Dimatulac. One link out of four, because one profile is what I could find.
+CodeBlooded was [Neil Aldous Biason](https://www.linkedin.com/in/neilbsn/),
+[Christian Naguio](https://www.linkedin.com/in/christian-naguio-b6623822a/),
+[Jaren Marcelino](https://www.linkedin.com/in/jaren-marcelino-669582333/) and
+[Adara Rei Dimatulac](https://www.linkedin.com/in/adara-rei-dimatulac/).
 
 Something I only learned afterwards, from
 [Neil's write-up](https://www.linkedin.com/posts/neilbsn_wildcard-podium-finish-last-saturday-ugcPost-7444777276463869952-rFlP/):
@@ -91,10 +93,9 @@ This one also documents the breakage and hands you an argument.
 
 Iterate was [Galvin Gonzales](https://www.linkedin.com/in/galvin-gonzales-884838375/),
 [Aro Caabay](https://www.linkedin.com/in/aro-caabay/),
-[Hanna Macasarte](https://www.linkedin.com/in/hanna-macasarte-65413016b/) and Rein Matthew Malonzo.
-Three links out of four. Everyone who built either of these projects is named whether or not I could
-find them online, because a missing link is a gap in my searching and a missing name would be a
-person cut out of their own work.
+[Hanna Macasarte](https://www.linkedin.com/in/hanna-macasarte-65413016b/) and Rein Matthew Malonzo,
+the one name across both teams I could not find a profile for. He is here anyway. A missing link is
+a gap in my searching; a missing name would be a person cut out of their own work.
 
 Iterate took the collegiate championship as well, and CodeBlooded took second runner up. Both of
 those were the organizers' calls, not ours, and the
