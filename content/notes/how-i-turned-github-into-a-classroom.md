@@ -161,6 +161,15 @@ students' grades. What is next is more of the boring, good kind of work: more ac
 same careful way, quizzes moving cleanly into Canvas, whichever audit I write the next time a repo
 surprises me.
 
+You can go and look, which I would rather do than ask you to believe me. The
+[code is public](https://github.com/tjakoen/github-native-course-platform): the engine, the workflows,
+and the two repo templates a course gets stamped from. The teacher side of it, the console I run all
+this from, [opens in your own browser in demo
+mode](https://tjakoen.github.io/github-native-course-platform/?demo=1), real code against invented
+students, no token and no connection. Course internals and student data stay in a private repo, where
+they belong. The console got its own story later, in
+[the console I built to stop drowning](the-console-i-built-to-stop-drowning.md).
+
 I started this because I was too cheap to pay for an LMS and too tired to run a server. I ended up
 with a classroom that boots from an empty org and leaves a receipt at every step. Cheapest thing I
 ever built. Best decision I made all year.
