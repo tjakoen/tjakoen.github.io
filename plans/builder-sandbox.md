@@ -95,6 +95,13 @@ needs a new verb. Until it is closed, a sandbox that offers to compose a checkbo
 control the AI half of the demo cannot touch, which is worth knowing before piece 2 widens the
 matcher's table.
 
+**The owner answered on 2026-08-13: add the verb.** So that is a real unit of work now rather than an
+open question, and it is the one thing on this page that is not sandbox work at all. It belongs
+before piece 2 for a practical reason: piece 2 widens the matcher's closed set past text fields, and
+the moment a checkbox can be generated, the demo's closing move of the AI filling in what it just
+generated has a hole in it. The shape is written up in the grain plan's section 5b, including why the
+atom's own address is the last step rather than the first.
+
 - [ ] 1. The prompt area becomes a real composer
 - [ ] 2. The spec generalizes past forms
 - [ ] 3. The AI narrates its selection
