@@ -5,6 +5,8 @@ status: complete
 lane: gated
 branch: main
 scope:
+  - artifacts/runs/
+  - artifacts/reviews/
   - ../grain/packages/grain/components/atoms/b-textarea/
   - ../grain/packages/grain/components/atoms/b-memo/
   - ../grain/packages/grain/components/form-from-data.test.ts
@@ -63,7 +65,7 @@ gates:
   - pantry capture review-builder-demo | all 3 steps resolved, verdict ok on each
 diffstat: 17 files changed in the portfolio (375 insertions, 107 deletions) plus 2 new capture folders, and 2 files changed in grain (115 insertions, 20 deletions) plus 5 new component files
 dirty: everything below was uncommitted while this was written; the commits are this session's, the push is not
-unpushed: 5 in the portfolio before this run and 2 in grain, and this run adds its own; pushing stays the owner's call
+unpushed: 14 | portfolio 7, grain 7, counted after this run; pushing stays the owner's call
 verifiedBy: nobody yet. Both tours are written by the author of the change, so the new steps are stamped new or needs-verification and none is stamped verified.
 doctor: not run this session
 ---
@@ -217,3 +219,44 @@ The symlink is still the thing to remember: node_modules/@tjakoen/grain points a
 tree, with the installed 0.1.21 parked beside it as .grain-0.1.21-npm. Until that is a real install,
 a green gate here says nothing about the published package. The component preflight would now name
 b-memo as well, which is the check working rather than a new problem.
+
+## Gate output
+
+The session that did this work did not leave its output in the report, and inventing what it saw
+would be worse than the gap. So these were re-run against the same tree by the following session on
+2026-08-13, and this is that output rather than a reconstruction of the original run.
+
+```
+$ bun run check
+$ tsc --noEmit
+
+$ bun test
+ 426 pass
+ 0 fail
+ 1616 expect() calls
+Ran 426 tests across 27 files. [2.90s]
+
+$ bun test          # grain, with the textarea atoms
+ 322 pass
+ 0 fail
+ 991 expect() calls
+Ran 322 tests across 38 files. [724.00ms]
+
+$ bunx playwright test
+  ✘  153 e2e/grain-page.e2e.ts:182:3 › AI: 'Watch the AI act' drives the surface through the door
+  ✘  230 e2e/visual.e2e.ts:53:3 › catalog (/catalog) matches its visual baseline
+  2 failed
+  1 skipped
+  238 passed (4.2m)
+
+# both pass alone, so this is the parallel-load flake family rather than a regression
+$ bunx playwright test e2e/grain-page.e2e.ts:182
+  1 passed (10.8s)
+
+$ bunx playwright test e2e/visual.e2e.ts -g "catalog"
+  1 passed (16.6s)
+```
+
+The catalog baseline joining that family is new. It has only ever flaked on choreography-heavy specs
+before, and a visual baseline flaking under parallel load is worth watching rather than re-blessing:
+a re-bless would bake whatever the loaded run rendered into the committed baseline.

@@ -7,6 +7,8 @@ branch: main
 scope:
   - content/data/
   - content/tours/
+  - artifacts/runs/
+  - artifacts/reviews/
   - src/
   - view/
   - e2e/
@@ -64,7 +66,7 @@ gates:
   - pantry capture, both tours re-run after the fix | 3 of 3 steps resolved on each, verdict ok
 diffstat: 24 files changed across the portfolio (10 tracked modified, 14 new), plus 1 file in grain (the plan only, never a component)
 dirty: everything below is uncommitted at the time of writing; the commit is this session's, the push is not
-unpushed: 1 before this run, and this run adds its own commits; pushing stays the owner's call
+unpushed: 14 | portfolio 7, grain 7; pushing stays the owner's call and the publish is held so the atoms and the demo ship as one bundle
 verifiedBy: nobody yet. The tours are written by the author of the change, so every step is stamped new or needs-verification and none is stamped verified.
 doctor: not run this session
 ---
@@ -109,6 +111,60 @@ rather than posting. The third failure was the catalog visual baseline, which gr
 gained three components. It was re-blessed deliberately, and the diff was read first: the top of the
 page is unchanged and everything below the insertion point is shifted, which is the signature of
 added content rather than a layout break.
+
+## Gate output
+
+```
+$ bun run check
+$ tsc --noEmit
+
+$ bun test
+ 420 pass
+ 0 fail
+ 1585 expect() calls
+Ran 420 tests across 27 files. [2.60s]
+
+$ bunx playwright test
+  1 skipped
+  238 passed (1.3m)
+
+$ bun run export
+[export] preflight: every component the templates reference resolves
+[export] wrote /Users/tjakoenstolk/Local/Development/bread-repos/tjakoen.github.io/dist
+
+$ bun run verify:export
+[verify-export] sitemap.xml: every <loc> resolves to a real file, all trailing-slash canonical
+[verify-export] dead-link walk: every internal href/src across the exported HTML resolves
+[verify-export] OK
+
+$ bunx crumb check content/tours
+✓ review-builder-demo — 3 step(s), dev
+✓ review-form-from-data — 3 step(s), dev
+
+$ bun ../pantry/cli.ts capture review-form-from-data --preview http://localhost:3000
+All 3 steps resolved.
+
+$ bun ../pantry/cli.ts capture review-builder-demo --preview http://localhost:3000
+All 3 steps resolved.
+
+# the guard, proved by making it fail: published grain swapped in for the symlink
+$ bun run export
+[preflight] 4 unresolved component reference(s):
+  ✗ <b-field> is used by view/pages/builder.html and no component root has it
+  ✗ <b-choice> is used by view/pages/builder.html and no component root has it
+  ✗ <b-field> is used by view/pages/about.html and no component root has it
+  ✗ <b-choice> is used by view/pages/about.html and no component root has it
+[export] FAILED before starting the server — nothing was written to dist/
+
+# grain, at 0.1.22 with the addressing fix
+$ bun test
+ 317 pass
+ 0 fail
+ 973 expect() calls
+Ran 317 tests across 38 files. [716.00ms]
+
+$ bunx tsc --noEmit
+```
 
 ## What was not done
 
