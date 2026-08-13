@@ -39,8 +39,9 @@ social: |
 ## Sponsor, speaker, judge, all in one afternoon
 
 Career Team came in as a premier sponsor of EXPE21ENCE: The Hackfest, which bought a talk slot and a
-special prize with our name on it. I went with fellow team leads Christelle Salceda, Jun Bolotaolo
-and Beili Cepe.
+special prize with our name on it. I went with fellow team leads Christelle Salceda,
+[Jun Bolotaolo](https://www.linkedin.com/in/jun-welmer-bolotaolo-b683a01a4/) and
+[Beili Cepe](https://www.linkedin.com/in/claizel-coubeili/).
 
 Worth putting the conflict on the table early. I was not a neutral judge. I was a sponsor's
 representative handing out a sponsor's award against a sponsor's criteria, and the criteria were
@@ -81,7 +82,9 @@ That second half is the part I liked. Most accessibility tools help you cope wit
 This one also documents the breakage and hands you an argument.
 
 Iterate took the collegiate championship as well, and CodeBlooded took second runner up. Both of
-those were the organizers' calls, not ours.
+those were the organizers' calls, not ours, and the
+[full board across both brackets](https://www.facebook.com/share/p/19M4Tzmhxj/) is theirs to
+announce, so it is worth reading rather than taking my two names for the whole field.
 
 ## The slide, and the sentence I have been writing for a year
 
