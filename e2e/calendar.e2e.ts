@@ -38,7 +38,7 @@ test.describe("the /calendar app (JS on)", () => {
   test("years run newest first and every row that exists holds something", async ({ page }) => {
     const labels = await page.locator(".cal__year-label").allTextContents();
     expect(labels.length).toBeGreaterThanOrEqual(1);
-    expect([...labels]).toEqual([...labels].sort().reverse());          // newest year at the top
+    expect(labels).toEqual(labels.toSorted().toReversed());             // newest year at the top
 
     for (const year of labels) {                                        // no year row is entirely blank
       const row = page.locator(".cal__year", { has: page.locator(`.cal__year-label:text-is("${year}")`) });
