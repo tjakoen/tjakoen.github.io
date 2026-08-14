@@ -1,173 +1,77 @@
-// portfolio/ai/block-command.test.ts — the chooser, and what it refuses to guess.
+// portfolio/ai/block-command.test.ts — the routing question, and only that.
 //
-// The behaviour worth pinning is in two halves. One is that the flagship sentence resolves: "drop
-// the second card" has to become block.remove on the second CARD's id, not on the second block. The
-// other is that everything ambiguous comes back as a refusal, because a builder that edits the
-// wrong block is worse than one that says it did not understand.
+// The choosing moved to block-reasoner.ts when the model took it over. What is left here is the one
+// decision made without a model, so it has to hold on a machine that cannot run one: does this
+// prompt point at a block that already exists, or is it asking for one that does not?
+//
+// The cases that matter most are the descriptions carrying verb words. Every one of them is a real
+// shape of prompt, and one of them is the defect that bought this rule: "a form to sign up" was read
+// as a move, went looking for a form to move, and refused to build the form it was asked for.
 import { test, expect, describe } from "bun:test";
-import { readBlockCommand, MOVE_DIRECTIONS, type BlockRef } from "./block-command.ts";
+import { looksLikeAnEdit, MOVE_DIRECTIONS } from "./block-command.ts";
 
-/** A page: a lede, two cards, a stat and a form, in that order. Ids are what the rail prints. */
-const PAGE: BlockRef[] = [
-  { id: "b1", component: "block-lede" },
-  { id: "b2", component: "block-card" },
-  { id: "b3", component: "block-card" },
-  { id: "b4", component: "block-stat" },
-  { id: "b5", component: "block-form" },
-];
+const onAPage = (prompt: string) => looksLikeAnEdit(prompt, 4);
 
-const cmd = (prompt: string, blocks: BlockRef[] = PAGE) => {
-  const read = readBlockCommand(prompt, blocks);
-  if (read.kind !== "command") throw new Error(`expected a command, got ${read.kind}: ${"said" in read ? read.said : ""}`);
-  return read.command;
-};
-
-const refusal = (prompt: string, blocks: BlockRef[] = PAGE) => {
-  const read = readBlockCommand(prompt, blocks);
-  if (read.kind !== "refusal") throw new Error(`expected a refusal, got ${read.kind}`);
-  return read.said;
-};
-
-describe("removing", () => {
-  test("the sentence this phase is named after", () => {
-    expect(cmd("drop the second card")).toMatchObject({ action: "block.remove", surface: "block:b3", payload: {} });
-  });
-
-  test("a kind with only one of it needs no ordinal", () => {
-    expect(cmd("remove the form").surface).toBe("block:b5");
-  });
-
-  test("an ordinal with no kind counts blocks, not cards", () => {
-    expect(cmd("delete the second one").surface).toBe("block:b2");
-  });
-
-  test("the id printed in the rail names it exactly", () => {
-    expect(cmd("get rid of b4").surface).toBe("block:b4");
-  });
-
-  test("the last one", () => {
-    expect(cmd("scrap the last block").surface).toBe("block:b5");
-  });
-
-  test("on a page holding one block, it is unambiguous", () => {
-    expect(cmd("delete it", [{ id: "b1", component: "block-card" }]).surface).toBe("block:b1");
+describe("an edit points at something already here", () => {
+  test.each([
+    "drop the second card",
+    "remove the form",
+    "delete the second one",
+    "get rid of b4",
+    "scrap the last block",
+    "make the callout half",
+    "move the form up",
+    "delete it",
+    "make that one full width",
+  ])("%s", (prompt) => {
+    expect(onAPage(prompt)).toBe(true);
   });
 });
 
-describe("width", () => {
-  test("a width word after the target", () => {
-    expect(cmd("make the second card half")).toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "half" } });
+describe("a description asks for something that is not here yet", () => {
+  test.each([
+    "an intro, two cards side by side and a contact form",
+    "another card",
+    "a stat",
+    "a form to sign up",                    // " up " is a direction word
+    "a card above the fold",                // so is " above "
+    "a callout below an intro",             // and " below "
+    "a full width hero and two stats",      // " full " is a width word
+    "a card sized for a phone",             // " size " is a resize word
+    "a registration form",
+  ])("%s", (prompt) => {
+    expect(onAPage(prompt)).toBe(false);
   });
 
-  test("third reads as the width when it comes last and as the position when it comes first", () => {
-    expect(cmd("make the second one a third")).toMatchObject({ surface: "block:b2", payload: { span: "third" } });
-    expect(cmd("set the third block to half")).toMatchObject({ surface: "block:b3", payload: { span: "half" } });
-  });
-
-  test("full width", () => {
-    expect(cmd("make the stat full width").payload).toEqual({ span: "full" });
-  });
-});
-
-describe("moving", () => {
-  test("up", () => {
-    expect(cmd("move the form up")).toMatchObject({ action: "block.move", surface: "block:b5", payload: { direction: "up" } });
-  });
-
-  test("down, said as later", () => {
-    expect(cmd("move the lede later").payload).toEqual({ direction: "down" });
-  });
-
-  test("a direction word needs a move verb with it", () => {
-    expect(cmd("shift the stat one place up").payload).toEqual({ direction: "up" });
+  test("the pair that states the rule", () => {
+    expect(onAPage("remove a card")).toBe(false);
+    expect(onAPage("remove the card")).toBe(true);
   });
 });
 
-describe("what is not an edit at all", () => {
-  test("a description of a page composes rather than edits", () => {
-    expect(readBlockCommand("an intro, two cards side by side and a contact form", PAGE).kind).toBe("none");
-  });
-
-  test("an empty page never yields a command, so drop in a card still means add", () => {
-    expect(readBlockCommand("drop in a card", []).kind).toBe("none");
+describe("the guards", () => {
+  test("an empty page is never an edit, so drop in a card still means add", () => {
+    expect(looksLikeAnEdit("drop the card", 0)).toBe(false);
   });
 
   test("an empty prompt", () => {
-    expect(readBlockCommand("   ", PAGE).kind).toBe("none");
+    expect(looksLikeAnEdit("   ", 4)).toBe(false);
   });
 
-  // The defect this rule was bought with. Every one of these carries a word from a verb list and
-  // every one of them is somebody describing a page, so every one of them must compose.
-  test.each([
-    "a form to sign up",                    // " up " is a direction word
-    "a card above the fold",                // so is " above "
-    "a callout below the intro",            // and " below "
-    "a full width hero and two stats",      // " full " is a width word
-    "a card sized for a phone",             // " size " is a resize word
-    "a stat about dropped frames",          // " drop " is a remove word, folded or not
-  ])("a description carrying a verb word still composes: %s", (prompt) => {
-    expect(readBlockCommand(prompt, PAGE).kind).toBe("none");
+  test("an id off the rail counts on its own, with no article anywhere", () => {
+    expect(onAPage("b3 full width")).toBe(true);
   });
 
-  test("an edit points at something already here, a description asks for something new", () => {
-    expect(readBlockCommand("remove a card", PAGE).kind).toBe("none");
-    expect(readBlockCommand("remove the card", PAGE).kind).toBe("refusal");
-  });
-});
-
-describe("refusals: it will not guess", () => {
-  test("two cards and no ordinal says how many it counted", () => {
-    expect(refusal("remove the card")).toContain("2 cards");
+  // The order is the whole rule. Both sentences carry "the" and both carry "card"; only one of them
+  // is pointing the article at the card.
+  test("a definite marker only counts when a block noun follows it", () => {
+    expect(onAPage("a card above the fold")).toBe(false);
+    expect(onAPage("drop the second card")).toBe(true);
   });
 
-  test("a kind that is not on the page", () => {
-    expect(refusal("delete the callout")).toContain("no callout");
-  });
-
-  test("an id that is not on the page", () => {
-    expect(refusal("remove b9")).toContain("no b9");
-  });
-
-  test("a position past the end", () => {
-    expect(refusal("delete the sixth one")).toContain("5 blocks");
-  });
-
-  test("a nudge is refused with the three words, because span is a set", () => {
-    const said = refusal("make the form wider");
-    expect(said).toContain("full, half or third");
-  });
-
-  test("a resize with no width named", () => {
-    expect(refusal("change the width of the form")).toContain("full, half or third");
-  });
-
-  test("a move with no direction", () => {
-    expect(refusal("move the form")).toContain("up or down");
-  });
-
-  test("a move further than one place", () => {
-    expect(refusal("move the form to the top")).toContain("one place at a time");
-  });
-
-  test("two changes in one sentence", () => {
-    expect(refusal("remove the lede and move the form up")).toContain("more than one change");
-  });
-
-  test("no target at all on a page holding several", () => {
-    expect(refusal("delete it")).toContain("Which block");
-  });
-});
-
-describe("the closed sets", () => {
   // The same drift guard grain puts on ai-dispatch.js's copies: this module re-states the contract's
   // direction words rather than importing them, so a third one appearing in grain has to fail here.
   test("a move is up or down and there is no third direction", () => {
     expect([...MOVE_DIRECTIONS]).toEqual(["up", "down"]);
-  });
-
-  test("every command names a real block address", () => {
-    for (const prompt of ["drop the second card", "make the stat full", "move the form up"]) {
-      expect(cmd(prompt).surface).toMatch(/^block:b\d+$/);
-    }
   });
 });

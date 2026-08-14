@@ -307,99 +307,156 @@ test.describe("the AI operates a block, and the page notices", () => {
     expect(doc.blocks.map((b: { id: string }) => b.id)).toEqual(["b2", "b3"]);
   });
 });
+// D3b: the MODEL chooses the verb, and code decides whether it was allowed to.
+//
+// Two describes, because there are two honest states. Without a desk there is no model, and the page
+// says so rather than reaching for something that is not one: that is the owner's call of
+// 2026-08-14 and it is what the first block pins. With a scripted model the whole chain runs, and
+// nothing below applies an op by hand — the prompt bar is the only thing touched, so a pass means
+// the router asked, grain built the prompt, the model answered, grain validated it against the live
+// manifest, the door took the Intent, the dispatcher moved the DOM, and the page read its
+// composition back off it.
+const SAID = '[data-surface="builder-said"]';
 
-// D3b: something CHOOSES the verbs. The tests above prove a block can be operated; these prove a
-// sentence gets turned into one of those operations and sent out the one door. Nothing here applies
-// an op by hand: the prompt bar is the only thing touched, so a passing test means the whole chain
-// ran — the chooser resolved a target, the door validated the Intent, grain's reasoner answered with
-// a render op, the dispatcher applied it, and the page derived its composition back off the DOM.
-test.describe("a sentence chooses a verb", () => {
-  const SAID = '[data-surface="builder-said"]';
-  const cellIds = (page: Page) => page.locator(CELL).evaluateAll(
-    (cells) => cells.map((c) => (c as HTMLElement).dataset.blockId));
+const submitPrompt = async (page: Page, prompt: string): Promise<void> => {
+  await page.locator(COMPOSER).fill(prompt);
+  await page.locator(SUBMIT).click();
+};
 
-  const submit = async (page: Page, prompt: string): Promise<void> => {
-    await page.locator(COMPOSER).fill(prompt);
-    await page.locator(SUBMIT).click();
-  };
+const canvasIds = (page: Page) => page.locator(CELL).evaluateAll(
+  (cells) => cells.map((c) => (c as HTMLElement).dataset.blockId));
 
-  /** A page holding TWO cards, which takes two prompts to reach: one description emits each block at
-   *  most once, so "two cards" is one card block at half span. That is the shape this whole phase is
-   *  named after, because "drop the second card" only means anything where a second card exists.
-   *
-   *  It also waits for the door's reply channel to actually be up. Presence here is set by outcome
-   *  rather than assumed, so a test that typed before the stream said `ready` would be exercising the
-   *  offline path and reading it as a failure.
-   *
-   *  The page ends as b1 lede, b2 card, b3 callout, b4 card. */
-  async function twoCardPage(page: Page): Promise<void> {
-    await page.goto(ask("An intro, a card and a callout"));
-    await expect(page.locator("body")).toHaveAttribute("data-ai-online", "true");
-    await submit(page, "another card");
-    await expect(page.locator(CELL)).toHaveCount(4);
-  }
+/** A page holding TWO cards, which takes two prompts: one description emits each block at most once,
+ *  so "two cards" is one card block at half span. That is the shape this phase is named after,
+ *  because "drop the second card" only means anything where a second card exists.
+ *  Ends as b1 lede, b2 card, b3 callout, b4 card. */
+async function twoCardPage(page: Page): Promise<void> {
+  await page.goto(ask("An intro, a card and a callout"));
+  await expect(page.locator(CELL)).toHaveCount(3);
+  await submitPrompt(page, "another card");
+  await expect(page.locator(CELL)).toHaveCount(4);
+}
 
-  test("drop the second card removes the second CARD, not the second block", async ({ page }) => {
+test.describe("with no desk, the page says so instead of guessing", () => {
+  test("a description still composes, because building never needed a model", async ({ page }) => {
     await twoCardPage(page);
-    expect(await cellIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
-
-    await submit(page, "drop the second card");
-
-    await expect(page.locator(CELL)).toHaveCount(3);
-    expect(await cellIds(page)).toEqual(["b1", "b2", "b3"]);
-    await expect(page.locator(SAID)).toHaveText("Dropping b4.");
-  });
-
-  test("a width is set through the prompt, and the rail's pressed chip follows", async ({ page }) => {
-    await twoCardPage(page);
-    await submit(page, "make the first card full width");
-    await expect(page.locator('[data-block="b2"] [data-op="span:full"]')).toHaveAttribute("data-on", "on");
-  });
-
-  test("a block moves through the prompt", async ({ page }) => {
-    await twoCardPage(page);
-    await submit(page, "move the callout up");
-    await expect(page.locator(`${CELL}:nth-child(2)`)).toHaveAttribute("data-block-id", "b3");
-    expect(await cellIds(page)).toEqual(["b1", "b3", "b2", "b4"]);
-  });
-
-  // The refusal half, and it is the half that keeps the demo honest. An ambiguous edit must change
-  // nothing at all: not the canvas, and not by quietly falling through to the matcher and adding a
-  // card because "remove the card" happened to contain the word card.
-  test("an ambiguous edit changes nothing and says what it counted", async ({ page }) => {
-    await twoCardPage(page);
-    await submit(page, "remove the card");
-
-    await expect(page.locator(SAID)).toContainText("2 cards");
-    expect(await cellIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
-  });
-
-  test("a width that is not one of the three is refused with the three", async ({ page }) => {
-    await twoCardPage(page);
-    await submit(page, "make the callout wider");
-    await expect(page.locator(SAID)).toContainText("full, half or third");
-    expect(await cellIds(page)).toHaveLength(4);
-  });
-
-  // The path that must NOT change: a description of a page is still a description of a page, and
-  // adding is still not a verb.
-  test("a description still composes rather than being read as an edit", async ({ page }) => {
-    await twoCardPage(page);
-    await submit(page, "a stat");
+    await submitPrompt(page, "a stat");
     await expect(page.locator(CELL)).toHaveCount(5);
-    expect(await cellIds(page)).toEqual(["b1", "b2", "b3", "b4", "b5"]);
     await expect(page.locator(SAID)).toBeHidden();
   });
 
-  test("an edit does not relabel the page: the address still names what produced it", async ({ page }) => {
+  // The honest-offline rule. The temptation is a word list that answers when the model cannot, and
+  // it was deliberately refused: a page claiming an AI edit for something no AI touched is the same
+  // silent-success shape every other bug in this estate has had.
+  test("an edit says the desk cannot run, and changes nothing", async ({ page }) => {
     await twoCardPage(page);
-    const before = new URL(page.url()).searchParams.get("ask");
-    await submit(page, "drop the second card");
-    await expect(page.locator(CELL)).toHaveCount(3);
-    expect(new URL(page.url()).searchParams.get("ask")).toBe(before);
+    await submitPrompt(page, "drop the second card");
+    await expect(page.locator(SAID)).toContainText("desk cannot run");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
   });
 });
 
+// The scripted model. Headless CI has no WebGPU, so the two grain transport modules the desk door
+// URL-imports are stubbed at the network layer — everything else runs real, including grain's
+// parser, grain's validator and grain's dispatcher. The stub answers by what the human asked, which
+// is the one thing a real 0.5B would also be doing.
+const WEBLLM_STUB = `
+export async function probeDevice() { return { webgpu: true, deviceMemory: 8, cores: 8, maxBufferSize: 4 * 1024 ** 3 }; }
+export function canRunModel() { return true; }
+export async function webgpuAvailable() { return true; }
+export async function loadEngine({ onProgress }) { onProgress?.({ progress: 1, text: "fake engine ready" }); return { fake: true }; }
+`;
+
+// makeChatModel is the seam /builder uses (desk-reasoner's `complete`). The scripted answers below
+// include the ones a small model really gets wrong: a verb that does not exist, a block that is not
+// on the page, and a width outside the closed three.
+const MODEL_CHAT_STUB = `
+export async function* streamChat() { yield "unused"; }
+export function makeChatModel() {
+  return {
+    async complete(prompt) {
+      sessionStorage.setItem("__builderPrompt", prompt);
+      if (/drop the second card/i.test(prompt)) return '{"action":"block.remove","target":"block:b4"}';
+      if (/make the callout full/i.test(prompt)) return 'Sure!\\n{"action":"block.span","target":"block:b3","payload":{"span":"full"}}';
+      if (/move the form up/i.test(prompt)) return '{"action":"block.move","target":"block:b3","payload":{"direction":"up"}}';
+      if (/widen/i.test(prompt)) return '{"action":"block.span","target":"block:b2","payload":{"span":"wide"}}';
+      if (/duplicate/i.test(prompt)) return '{"action":"block.duplicate","target":"block:b2"}';
+      if (/ninth/i.test(prompt)) return '{"action":"block.remove","target":"block:b9"}';
+      return '{"action":null,"reply":"There is no verb that rewrites what a block says."}';
+    },
+  };
+}
+`;
+
+async function scriptedDesk(page: Page): Promise<void> {
+  await page.route("**/*", async (route, req) => {
+    const url = new URL(req.url());
+    if (url.pathname === "/modules/grain/ai/webllm.js")
+      return route.fulfill({ contentType: "text/javascript", body: WEBLLM_STUB });
+    if (url.pathname === "/modules/grain/ai/model-chat.js")
+      return route.fulfill({ contentType: "text/javascript", body: MODEL_CHAT_STUB });
+    if (req.resourceType() !== "document") return route.continue();
+    const res = await route.fetch();
+    if (!(res.headers()["content-type"] || "").includes("text/html")) return route.fulfill({ response: res });
+    const html = (await res.text()).replace(/<body\b/,
+      '<body data-ai-transport="client" data-ai-door="/modules/portfolio/ai/desk-door.js"');
+    return route.fulfill({ response: res, body: html });
+  });
+  await page.addInitScript(() => {
+    try { Object.defineProperty(navigator, "gpu", { value: { requestAdapter: async () => ({}) }, configurable: true }); }
+    catch { /* already present */ }
+  });
+}
+
+test.describe("the model chooses the verb", () => {
+  test.beforeEach(async ({ page }) => { await scriptedDesk(page); });
+
+  test("a sentence becomes a real op on a real block, through the one door", async ({ page }) => {
+    await twoCardPage(page);
+    await submitPrompt(page, "drop the second card");
+
+    await expect(page.locator(SAID)).toHaveText("Dropping b4.");
+    await expect(page.locator(CELL)).toHaveCount(3);
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+    // the rail follows, which is the page deriving its state back off the DOM the dispatcher wrote
+    await expect(page.locator(RAIL_ROW)).toHaveCount(3);
+  });
+
+  test("the model is handed the ids that are actually on the page", async ({ page }) => {
+    await twoCardPage(page);
+    await submitPrompt(page, "make the callout full");
+    await expect(page.locator('[data-block="b3"] [data-op="span:full"]')).toHaveAttribute("data-on", "on");
+
+    // A 0.5B copies far better than it counts, so the prompt names the blocks rather than leaving
+    // "the second card" to be filtered and counted.
+    const prompt = await page.evaluate(() => sessionStorage.getItem("__builderPrompt") ?? "");
+    expect(prompt).toContain("b1, b2, b3, b4");
+    expect(prompt).toContain("block.remove");
+  });
+
+  // Three things grain's validation catches, and one it does not. The last is the important one:
+  // "wide" is a string where a string was required, so validateMove passes it and only the closed
+  // word list stops it before the page announces a change it is not going to make.
+  for (const [what, prompt, expected] of [
+    ["a verb that does not exist", "duplicate the card", "will not work here"],
+    ["a block that is not here", "drop the ninth card", "will not work here"],
+    ["a width outside the three", "widen the card", "full, half, third"],
+  ] as const) {
+    test(`${what} is refused and nothing moves`, async ({ page }) => {
+      await twoCardPage(page);
+      await submitPrompt(page, prompt);
+      await expect(page.locator(SAID)).toContainText(expected);
+      expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    });
+  }
+
+  test("the model may answer without acting, and that is not a failure", async ({ page }) => {
+    await twoCardPage(page);
+    await submitPrompt(page, "the card should mention pricing");
+    await expect(page.locator(SAID)).toContainText("no verb that rewrites");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+  });
+});
 // The rail collapses, because a tool panel that cannot get out of the way charges a permanent tax
 // on the thing you are actually looking at.
 test.describe("the rail collapses, and the canvas takes the width back", () => {

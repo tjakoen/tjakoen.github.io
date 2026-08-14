@@ -90,14 +90,24 @@ into the terminal that is already there.
       something can reach it. What is left is the half that chooses: nothing turns "drop the second
       card" into `block.remove` on `b2` yet, and that is where the small model earns its place.
       The original note follows.
-- [x] **D3b. Something chooses the verbs** (2026-08-14). `src/ai/block-command.ts` resolves a sentence
-      against the blocks actually on the canvas and answers with one of the three verbs, addressed to
-      one of the ids the rail prints. It goes out through `window.grain.door`, never through the
-      page's own `applyOp`: sending a verb and an address down the same wire a rail button uses is
-      the whole claim, and applying the op locally would look identical on screen and prove nothing.
-      Deterministic, per the owner's call and the law block-set.ts and field-matcher.ts already
-      state. Anything it cannot resolve to exactly one block is a refusal that says what it counted,
-      and a refusal composes nothing. The line under the prompt bar says which reading won.
+- [x] **D5. The model does the choosing** (2026-08-14, same day, owner's reversal). D3b's word list
+      worked and the owner's read was that a page whose whole argument is building with AI should not
+      be reaching its decisions without one. It is the right read: the demo's claim was doing less
+      than the page said. The 0.5B now reads grain's live manifest and answers with one move;
+      grain parses it, grain validates it against that same manifest, and `src/ai/block-reasoner.ts`
+      narrows the survivors to the three block verbs and checks their closed word lists, which
+      validation does not. Only then does an Intent go out the door. **No fallback**: when the model
+      cannot run, the page says so and stops, which was the owner's explicit call over a word list
+      that would let the page claim an AI edit for something no AI touched. What survives of D3b is
+      the ROUTER, the one question that cannot wait on a model, because building a page has to keep
+      working where editing does not.
+- [x] **D3b. Something chooses the verbs** (2026-08-14, commit `f6a1df6`, superseded by D5 the same
+      day). A deterministic word list resolved a sentence against the blocks on the canvas and
+      answered with one of the three verbs. Two things it established survived the reversal and are
+      the reason it was worth building: the Intent goes out through `window.grain.door` and never
+      through the page's own `applyOp`, because sending a verb and an address down the same wire a
+      rail button uses is the whole claim; and a reading that cannot be resolved changes nothing and
+      says so, on the line under the prompt bar. What did not survive is the choosing.
 - [x] **The kind question, settled 2026-08-14.** Option 1: `block` stays. The estate's own precedent
       decided it, not generality: `check` was made its own kind rather than folded into `field`
       exactly so the advertisement stayed honest per control, every kind grain has is concrete, and
@@ -158,34 +168,55 @@ first on 2026-08-14:
 3. **Nothing in grain.** The blocks stay push-only addresses with no verbs, the model keeps its one
    lever, and the honest version of this page says the AI can compose but not edit.
 
-## What chooses, and what it will not guess
+## What the model is not allowed to have chosen
 
-The chooser is a word list, and every part of the sentence it reads is closed. Three verbs, three
-width words, two directions, and a target that is either a kind, a position, or an id the rail is
-already printing. There is nothing left in that for a small model to invent, which is the same law
-block-set.ts states about component names.
+grain's `validateMove` is the safety boundary and it is not the whole fence. Measured on 2026-08-14
+rather than assumed: it checks that the verb exists, that the target is a surface on this screen,
+that the surface accepts the verb, and that the payload matches the SCHEMA. It does not check the
+payload's closed WORD list, so `span: "wide"` is a string where a string was required and passes.
+The dispatcher would refuse it a beat later into the console, which a visitor reads as nothing
+happening after the page announced a change. So `block-reasoner.ts` checks the three width words and
+the two directions itself, before the page says anything.
 
-Four ways to name a target, in this order. A literal id wins, because someone reading `b3` off the
-rail is naming exactly one thing. A kind plus an ordinal is "the second card", which resolves within
-that kind rather than across the page, and getting that distinction right is the difference between
-dropping b4 and dropping b2. A kind alone resolves only when there is one of them. A position alone
-counts blocks. Anything else, including "it" on a page holding more than one block, is a refusal.
+Two more narrowings live there. A validated move that is not one of the three block verbs is
+refused, because `field.set` on this page's own prompt box is a perfectly legal move and would have
+the model type into the box you asked the question in. And a reply-without-acting is a first-class
+answer rather than a failure, because "the card should mention pricing" has no verb and saying so is
+the correct response.
 
-Three things it refuses on purpose, and each one records a rule rather than a gap:
+**The limit that cannot be engineered away.** Nothing catches a move that is legal and WRONG. Asked
+for the second card, a small model may hand back the first, and b2 is as real an address as b4. The
+page therefore names the block it is about to touch before the op lands. The honest demo is the one
+where you can watch it pick the wrong block, not the one that cannot.
 
-- **A nudge.** "Wider" is refused with the three words, because `block.span` is a SET for the reason
-  `check.set` is: a verb that changes whatever is there lands somewhere else on a replay and cannot
-  honestly carry `idempotent: true`.
-- **A move further than one place.** "To the top" is a loop rather than a verb, and answering it
-  would put a clamp and a counter inside something advertised as one press.
-- **Two changes in one sentence.** The door takes one Intent, and doing the first half of what was
-  asked is worse than doing none of it.
+## What routes, and what it will not guess
 
-Two guards are load-bearing and neither is obvious. An EMPTY page never yields a command, because
-"drop in a card" is an ordinary way to ask for a card and on a page with nothing to drop it can only
-mean the add it sounds like. And the width word is read as the LAST of the three to appear, because
-`third` is both a width and a position: "make the second one a third" and "make the third card half"
-both read correctly under that rule and both read wrong under first-match.
+Something has to decide whether a prompt is describing a page or editing the one already here, and
+that decision cannot go to the model. A description has to compose on a machine that cannot run a
+model at all: that is this page's whole no-JavaScript, no-WebGPU, static-host story and it predates
+the desk by months. If every prompt waited on a completion to find out what kind of prompt it was,
+building a page would stop working wherever editing does. So the router runs first, it runs on
+nothing, and only what it routes to an edit ever reaches the model.
+
+**It is grammar rather than vocabulary, and that was bought with a defect.** The first version asked
+whether the sentence carried a verb word, and a real prompt broke it the day it shipped: "a form to
+sign up" contains " up ", so it was read as a move, went looking for a form to move, found none, and
+refused to build the form it was being asked for. A word list can only ever grow another hole. You
+edit "the card" and you ask for "a card", so the question is which one the sentence said.
+
+Three ways to be pointing at something here. A bare id, because the rail prints them and nothing
+else looks like one. A pronoun, because a page that does not exist yet has no "it". Or a definite
+marker with a block noun AFTER it, and the order is the whole rule: "the second card" points at a
+card, while "a card above the fold" carries both words and points at nothing, because the card comes
+first and what follows "the" is a fold.
+
+Both mistakes cost something real, which is why the rule tightened once before it was right. A false
+NO sends an edit to the matcher, which adds rather than edits. A false YES sends a description to
+the model, which answers that no verb applies, and the description is never built at all.
+
+One guard is load-bearing and not obvious: an EMPTY page is never an edit whatever the words say,
+because "drop in a card" is an ordinary way to ask for a card and where there is nothing to drop it
+can only mean the add it sounds like.
 
 ## Verification
 
@@ -197,12 +228,16 @@ both read correctly under that rule and both read wrong under first-match.
 - **The form path keeps working at its own address**, which is the same rule P2 and P3 kept:
   `desk-form-build.e2e.ts` passes, and the tour step that asks the desk in the chat is rewritten to
   press the assistant toggle first, since that is now the honest flow.
-- **D3b:** nothing in its e2e applies an op by hand. Only the prompt bar is touched, so a passing
-  test means the whole chain ran: the chooser resolved a target, the door validated the Intent,
-  grain's reasoner answered with a render op, the dispatcher applied it, and the page derived its
-  composition back off the DOM. Seven cases in `builder-canvas.e2e.ts`, twenty-seven in
-  `block-command.test.ts`, and the ones that matter most are the refusals, because a refusal that
-  quietly fell through to the matcher would ADD a card on being asked to remove one.
+- **D5:** nothing in its e2e applies an op by hand. Only the prompt bar is touched, so a passing test
+  means the whole chain ran: the router asked, grain built the prompt, the model answered, grain
+  validated it against the live manifest, the door took the Intent, the dispatcher moved the DOM, and
+  the page read its composition back off it. Seven e2e cases split across the two honest states, a
+  scripted engine standing in for the 0.5B because headless CI has no WebGPU, and the refusals are
+  the ones that matter: a bad move must change nothing at all.
+- **What the gates cannot reach:** the REAL 0.5B choosing a REAL verb. `bun run audit:desk` is the
+  harness that drives a live model through WebGPU, and it scores desk chat scenarios rather than
+  builder edits. Until it grows one, the honest claim is that everything around the model is proved
+  and the model's own hit rate on "the second card" is unmeasured.
 - **D4:** read only the four-line list in the drawer and try to operate the page from it. Then check
   the drawer was shut on arrival.
 

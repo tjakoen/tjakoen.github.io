@@ -116,6 +116,17 @@ export interface DeskReasoner extends Reasoner {
    *  calls this (with its applyOp) on arrival, only when agent state is stashed. Loads the engine
    *  silently, then takes the next agent turn(s) on this page. No-op offline or with no state. */
   showcaseResume(applyOp: (op: RenderOp) => void): Promise<void>;
+  /** ONE structured completion, for a caller that wants a MOVE rather than a conversation.
+   *
+   *  /builder is the first user: the model reads the live manifest and answers with one JSON move,
+   *  which grain then parses and validates before anything touches the page. It is here rather than
+   *  in the builder's own island for one reason that matters on a laptop — the desk owns the engine,
+   *  and a second island calling loadEngine would put a second 0.5B on the GPU.
+   *
+   *  Returns null when the model cannot run at all, which the caller is expected to say out loud
+   *  rather than paper over. Silent: no progress bar and no chat bubble, because the caller has its
+   *  own surface and this is not a conversation turn. */
+  complete(prompt: string): Promise<string | null>;
 }
 
 // Parse the 0.5B's arrival reply: one greeting line, then a `CHIPS: a | b | c` line. Defensive — a
@@ -180,6 +191,14 @@ export interface DeskDeps {
    *  the desk never touches `interruptGenerate` directly. Injected because the browser refuses a bare
    *  grain import (the door URL-imports it); tests pass grain's real one. */
   streamChat: (engine: DeskEngine, messages: ChatMessage[], opts?: ChatStreamOptions) => AsyncIterable<string>;
+  /** GRAIN's chat-model adapter (makeChatModel), for a ONE-SHOT structured completion rather than a
+   *  streamed conversation. Injected on the same grounds as streamChat: the browser refuses a bare
+   *  grain import, and a test passes grain's real one. Optional, and the consequence of leaving it
+   *  out is stated rather than hidden — `complete` returns null, which its caller reports as the
+   *  desk being unable to run. JSON mode lives in here, and on a 0.5B it is most of the difference
+   *  between a parseable move and a paragraph about the move. */
+  makeChatModel?: (engine: DeskEngine, opts?: { temperature?: number; jsonMode?: boolean })
+    => { complete(prompt: string): Promise<string> };
   /** Fetch (and ideally memoize) the build-time corpus. */
   loadKnowledge: () => Promise<Knowledge>;
   /** GRAIN's stub — handles every NON-chat verb. */
@@ -1637,6 +1656,26 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       seq = 0;
       lastTarget = null;
       if (degraded) { degraded = false; enginePromise = null; }   // re-arm a degraded desk to retry loading
+    },
+
+    // ONE structured completion — the seam /builder uses to have the model pick a block verb. It
+    // shares the desk's engine rather than loading its own, and it shares nothing else: no history,
+    // no bubble, no progress bar, because this is a move being chosen rather than a turn being
+    // taken. Null on every failure path, and the caller says so out loud: a builder that quietly did
+    // nothing when the model could not run would be indistinguishable from a broken one.
+    async complete(prompt: string): Promise<string | null> {
+      if (!deps.makeChatModel) return null;
+      const engine = await ensureEngine(() => {});   // SILENT: the caller owns the surface, not the chat
+      if (!engine) return null;
+      try {
+        // Low temperature and JSON mode: picking a move from a fixed vocabulary wants determinism,
+        // and on a 0.5B the format flag is most of the difference between a move and a paragraph
+        // about a move. Both are grain's own defaults for this adapter, named here so they are tunable.
+        return await deps.makeChatModel(engine, { temperature: 0.2, jsonMode: true }).complete(prompt);
+      } catch (err) {
+        console.error("[desk] structured completion failed", err);
+        return null;
+      }
     },
 
     // "Watch me work" agent — re-hydrate the demo on this page after a GO navigated here. The door calls

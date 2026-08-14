@@ -121,21 +121,27 @@
           <summary>What it builds, what it edits, and where it stops</summary>
           <p>Describe a page and press Build it. A fixed, code-owned set of GRAIN blocks decides what
             renders, expanded by the same renderer every other page on this site goes through. Once
-            there are blocks on the canvas, the same box edits them: say drop the second card, and
-            the sentence is resolved against what is actually there and sent out as one verb aimed at
-            one id the rail is printing.</p>
+            there are blocks on the canvas, the same box edits them: say drop the second card, and a
+            half-billion-parameter model running in this browser reads what is on the page and picks
+            one verb aimed at one id the rail is printing.</p>
+          <p>The model chooses and code holds the fence. It is shown the blocks that exist and the
+            verbs each one takes, and everything it answers is checked against that same list before
+            anything moves: a verb that is not in the vocabulary, a block that is not here, a width
+            outside the three. What no check can catch is a choice that is legal and wrong, so the
+            page names the block it is about to touch before it touches it. If the model cannot run
+            on your machine, this box says so rather than falling back to something that is not the
+            model and calling it one.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
-            <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">adds blocks. The only way to add one, so no verb ever names a component.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">adds blocks. Code picks the components, never the model, and this is the only way to add one.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Drop the second card</span><span class="docs-list__what">removes one block, by kind, by position, or by its id.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Make the callout half</span><span class="docs-list__what">sets a width. Full, half and third, and there is no fourth word.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Move the form up</span><span class="docs-list__what">shifts one block one place, clamped at the ends rather than wrapped.</span></div>
           </div>
-          <p>An edit that names two blocks, or none, changes nothing and says what it counted. That
-            is the part worth trusting: a builder that quietly edits the wrong block is worse than
-            one that admits it did not understand, because the first kind of mistake is the kind you
-            find later.</p>
+          <p>An edit the model gets wrong changes nothing and says why. That is the part worth
+            trusting: a builder that quietly edits the wrong block is worse than one that admits it
+            did not understand, because the first kind of mistake is the kind you find later.</p>
           <p>Nothing on this page was written by the model. Which components appear is the block
             set's decision, and the words inside each one are sample content the same table carries,
             drafted by code. A wording pass is an open seam rather than a shipped feature.</p>
