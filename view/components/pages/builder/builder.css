@@ -1,9 +1,10 @@
-/* pages/builder: the form-builder demo. Empty vs. result is a data attribute the SERVER sets
-   (builder-page.ts's buildBuilderView, bound via data-bind-data-builder-state on .board), never a
-   client script: with no JS the right section is already the only one visible. Same convention for
-   the finer-grained flags (matched-nothing / has-fields / has-unsupported): each is a marker string
-   or an absent attribute, field-matcher.ts's own "never boolean text a boolean HTML attribute can't
-   bind from" rule, so a plain attribute-presence selector is all any of this needs. */
+/* pages/builder: the page-builder demo. Empty vs. result is a data attribute the SERVER sets
+   (builder-page.ts's buildBuilderView, bound via data-bind-data-builder-state on .board), and the
+   browser sets the same one when it composes without a server: with no JS at all the right section
+   is already the only one visible. Same convention for the finer-grained flags (matched-nothing /
+   has-blocks / has-form / has-unsupported): each is a marker string or an absent attribute,
+   field-matcher.ts's own "never boolean text a boolean HTML attribute can't bind from" rule, so a
+   plain attribute-presence selector is all any of this needs. */
 [data-screen="builder"] .builder-result { display: none; }
 [data-screen="builder"] [data-builder-state="result"] .builder-result { display: block; }
 [data-screen="builder"] [data-builder-state="result"] .builder-empty { display: none; }
@@ -11,8 +12,35 @@
 [data-screen="builder"] .builder-none { display: none; }
 [data-screen="builder"] .builder-none[data-matched-nothing] { display: block; }
 
+[data-screen="builder"] .builder-canvas-block { display: none; }
+[data-screen="builder"] .builder-canvas-block[data-has-blocks] { display: block; }
+
 [data-screen="builder"] .builder-form-block { display: none; }
-[data-screen="builder"] .builder-form-block[data-has-fields] { display: block; }
+[data-screen="builder"] .builder-form-block[data-has-form] { display: block; }
+
+/* The canvas: the one grid the whole composition lays out in. Six columns because it is the
+   smallest count the three layout words divide into cleanly (full 6, half 3, third 2), so a span is
+   a span rather than a rounding. The cell carries the span and the block inside stays layout-free,
+   which is what grain's card and stat-tile docs each ask of their component.
+   Below the reading width there are no columns left to divide, so every block goes full: a third of
+   a phone screen is not a layout decision anyone made, it is one the grid made for them. */
+[data-screen="builder"] .canvas {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-4); align-items: start; margin: var(--space-3) 0 var(--space-5);
+}
+[data-screen="builder"] .canvas__cell { min-width: 0; }
+[data-screen="builder"] .canvas__cell[data-span="full"] { grid-column: span 6; }
+[data-screen="builder"] .canvas__cell[data-span="half"] { grid-column: span 3; }
+[data-screen="builder"] .canvas__cell[data-span="third"] { grid-column: span 2; }
+@media (max-width: 40rem) {
+  [data-screen="builder"] .canvas__cell[data-span] { grid-column: span 6; }
+}
+
+/* The pre-rendered block library P3 clones from. It is real markup produced by the real renderer,
+   parked in the document rather than in a template element so the browser has nodes to clone
+   without parsing a string. Hidden from sight, from layout and from the accessibility tree, and
+   `display: none` is what keeps it out of all three at once. */
+[data-screen="builder"] .builder-library { display: none; }
 
 [data-screen="builder"] .builder-unsupported-block { display: none; }
 [data-screen="builder"] .builder-unsupported-block[data-has-unsupported] { display: block; }
