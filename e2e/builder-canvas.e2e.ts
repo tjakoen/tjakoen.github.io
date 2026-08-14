@@ -308,6 +308,98 @@ test.describe("the AI operates a block, and the page notices", () => {
   });
 });
 
+// D3b: something CHOOSES the verbs. The tests above prove a block can be operated; these prove a
+// sentence gets turned into one of those operations and sent out the one door. Nothing here applies
+// an op by hand: the prompt bar is the only thing touched, so a passing test means the whole chain
+// ran — the chooser resolved a target, the door validated the Intent, grain's reasoner answered with
+// a render op, the dispatcher applied it, and the page derived its composition back off the DOM.
+test.describe("a sentence chooses a verb", () => {
+  const SAID = '[data-surface="builder-said"]';
+  const cellIds = (page: Page) => page.locator(CELL).evaluateAll(
+    (cells) => cells.map((c) => (c as HTMLElement).dataset.blockId));
+
+  const submit = async (page: Page, prompt: string): Promise<void> => {
+    await page.locator(COMPOSER).fill(prompt);
+    await page.locator(SUBMIT).click();
+  };
+
+  /** A page holding TWO cards, which takes two prompts to reach: one description emits each block at
+   *  most once, so "two cards" is one card block at half span. That is the shape this whole phase is
+   *  named after, because "drop the second card" only means anything where a second card exists.
+   *
+   *  It also waits for the door's reply channel to actually be up. Presence here is set by outcome
+   *  rather than assumed, so a test that typed before the stream said `ready` would be exercising the
+   *  offline path and reading it as a failure.
+   *
+   *  The page ends as b1 lede, b2 card, b3 callout, b4 card. */
+  async function twoCardPage(page: Page): Promise<void> {
+    await page.goto(ask("An intro, a card and a callout"));
+    await expect(page.locator("body")).toHaveAttribute("data-ai-online", "true");
+    await submit(page, "another card");
+    await expect(page.locator(CELL)).toHaveCount(4);
+  }
+
+  test("drop the second card removes the second CARD, not the second block", async ({ page }) => {
+    await twoCardPage(page);
+    expect(await cellIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+
+    await submit(page, "drop the second card");
+
+    await expect(page.locator(CELL)).toHaveCount(3);
+    expect(await cellIds(page)).toEqual(["b1", "b2", "b3"]);
+    await expect(page.locator(SAID)).toHaveText("Dropping b4.");
+  });
+
+  test("a width is set through the prompt, and the rail's pressed chip follows", async ({ page }) => {
+    await twoCardPage(page);
+    await submit(page, "make the first card full width");
+    await expect(page.locator('[data-block="b2"] [data-op="span:full"]')).toHaveAttribute("data-on", "on");
+  });
+
+  test("a block moves through the prompt", async ({ page }) => {
+    await twoCardPage(page);
+    await submit(page, "move the callout up");
+    await expect(page.locator(`${CELL}:nth-child(2)`)).toHaveAttribute("data-block-id", "b3");
+    expect(await cellIds(page)).toEqual(["b1", "b3", "b2", "b4"]);
+  });
+
+  // The refusal half, and it is the half that keeps the demo honest. An ambiguous edit must change
+  // nothing at all: not the canvas, and not by quietly falling through to the matcher and adding a
+  // card because "remove the card" happened to contain the word card.
+  test("an ambiguous edit changes nothing and says what it counted", async ({ page }) => {
+    await twoCardPage(page);
+    await submit(page, "remove the card");
+
+    await expect(page.locator(SAID)).toContainText("2 cards");
+    expect(await cellIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+  });
+
+  test("a width that is not one of the three is refused with the three", async ({ page }) => {
+    await twoCardPage(page);
+    await submit(page, "make the callout wider");
+    await expect(page.locator(SAID)).toContainText("full, half or third");
+    expect(await cellIds(page)).toHaveLength(4);
+  });
+
+  // The path that must NOT change: a description of a page is still a description of a page, and
+  // adding is still not a verb.
+  test("a description still composes rather than being read as an edit", async ({ page }) => {
+    await twoCardPage(page);
+    await submit(page, "a stat");
+    await expect(page.locator(CELL)).toHaveCount(5);
+    expect(await cellIds(page)).toEqual(["b1", "b2", "b3", "b4", "b5"]);
+    await expect(page.locator(SAID)).toBeHidden();
+  });
+
+  test("an edit does not relabel the page: the address still names what produced it", async ({ page }) => {
+    await twoCardPage(page);
+    const before = new URL(page.url()).searchParams.get("ask");
+    await submit(page, "drop the second card");
+    await expect(page.locator(CELL)).toHaveCount(3);
+    expect(new URL(page.url()).searchParams.get("ask")).toBe(before);
+  });
+});
+
 // The rail collapses, because a tool panel that cannot get out of the way charges a permanent tax
 // on the thing you are actually looking at.
 test.describe("the rail collapses, and the canvas takes the width back", () => {

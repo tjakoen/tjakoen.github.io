@@ -28,6 +28,7 @@ import {
   type PageComposition,
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
+import { readBlockCommand } from "./block-command.ts";
 import { viewOf, type BuilderView } from "./builder-page.ts";
 import {
   BLOCK_ID_ATTR, CANVAS_SURFACE, CELL_CLASS, LIBRARY_CLASS, REPEATS, SPAN_ATTR, SURFACE_ATTR,
@@ -40,6 +41,21 @@ import {
 const FILL_SKIP = `.canvas, .wb__rows, .${LIBRARY_CLASS}, .builder-composer`;
 
 const $ = <T extends Element>(sel: string, root: ParentNode = document): T | null => root.querySelector<T>(sel);
+
+/** The one door, as the dispatcher island publishes it (grain's ai-dispatch.js, `window.grain.door`).
+ *
+ *  Reached through the public seam rather than by importing a door module, because that seam is the
+ *  point: a click on a rail button, an Intent from the desk and an Intent from this page's prompt
+ *  bar all go out the same wire, inherit the same validation and come back as the same render ops.
+ *  A page that composed its own door would be a second way in, and this page has argued against
+ *  having one since the composer was written. */
+interface GrainDoor {
+  submit(action: string, target: string, payload?: Record<string, unknown>, trigger?: Element | null): void;
+  /** Whether the reply channel actually came up. Honest, set by outcome, never assumed. */
+  online(): boolean;
+}
+const grainDoor = (): GrainDoor | null =>
+  (window as unknown as { grain?: { door?: GrainDoor } }).grain?.door ?? null;
 
 // ---------------------------------------------------------------------------------------------
 // Cloning and filling one block
@@ -213,22 +229,84 @@ function boot(): void {
     if (box && !box.value) box.value = askInURL;
   }
 
-  // Every later prompt ADDS to what is already there, which is the whole difference from the form
-  // demo: a page you build up rather than one you keep re-rolling. Intercepted rather than left to
-  // the plain GET, because a round trip would throw the composition away and, on a static host,
-  // would come back to the same frozen file.
+  /** The prompt that last COMPOSED this page, which is not the same thing as what is in the box.
+   *
+   *  A repaint needs the page's own prompt: the one the canvas is showing, echoed back as "this is
+   *  what produced it" and run past the refusal tables for anything the description asked for and
+   *  did not get. An edit command is typed into the same box and is none of those things, so a
+   *  repaint that read the box would relabel the page with "drop the second card" and then hand
+   *  that sentence to a matcher looking for components in it. */
+  let pageAsk = askInURL;
+
+  /** What the last prompt was READ as, said in one line above the note.
+   *
+   *  Written straight to the element rather than bound through the view, because the view is
+   *  repainted every time an op lands, and the op that lands is the one this line is announcing: a
+   *  bound line would blank itself at the exact moment it came true. */
+  const saidLine = $('[data-surface="builder-said"]');
+  const say = (text: string, read: "command" | "refusal"): void => {
+    if (!saidLine) return;
+    saidLine.textContent = text;
+    saidLine.setAttribute("data-read", read);
+    saidLine.removeAttribute("hidden");
+  };
+  const clearSaid = (): void => {
+    if (!saidLine) return;
+    saidLine.textContent = "";
+    saidLine.removeAttribute("data-read");
+    saidLine.setAttribute("hidden", "");
+  };
+
+  // A prompt is read TWICE, and the first reading is the one D3 was missing.
+  //
+  // Over a page that already holds blocks, a prompt may be an EDIT of it: "drop the second card" is
+  // a sentence the matcher can do nothing with, because adding is the only thing it knows how to do.
+  // block-command.ts resolves that sentence against the blocks actually on the page and answers with
+  // one of grain's three block verbs, addressed to one of the ids the rail is printing. Anything it
+  // cannot resolve comes back as a refusal that says what it counted, and a refusal composes
+  // nothing: silently adding a card because "remove the card" was ambiguous is the failure this
+  // whole page argues against.
+  //
+  // Everything else still ADDS, which is the whole difference from the form demo: a page you build
+  // up rather than one you keep re-rolling. Intercepted rather than left to the plain GET, because a
+  // round trip would throw the composition away and, on a static host, would come back to the same
+  // frozen file.
   composer.addEventListener("submit", (e) => {
     const box = $<HTMLTextAreaElement>("textarea", composer);
     const ask = box?.value.trim() ?? "";
     if (!ask) return;
     e.preventDefault();
+
+    const read = readBlockCommand(ask, state.blocks);
+    if (read.kind === "refusal") { say(read.said, "refusal"); return; }
+    if (read.kind === "command") {
+      // Through the one door, never through applyOp. Calling this module's own op function here
+      // would be quicker and would prove nothing: the point of D3 is that a block can be operated by
+      // something that only knows a verb and an address, and the way to show that is to send exactly
+      // those two things out the same wire a rail button uses. The dispatcher answers by mutating
+      // the addressed cell, and the watcher below derives the composition back off the DOM.
+      const door = grainDoor();
+      if (!door || !door.online()) {
+        // Honest rather than helpful. Applying the op locally would look identical on screen and
+        // would be a demo of the rail wearing a prompt bar, which is not what this page claims.
+        say("The door is not up, so a block verb has nowhere to go. The rail's own controls still work.", "refusal");
+        return;
+      }
+      say(read.command.said, "command");
+      door.submit(read.command.action, read.command.surface, read.command.payload);
+      return;
+    }
+
+    clearSaid();
     const before = state.blocks.length;
     state = addFromDescription(state, ask);
+    pageAsk = ask;
     repaint(viewOf(state, ask, state.blocks.length - before));
     // The URL keeps carrying the LATEST prompt, so an example link and a shared address still work.
     // The composition does not go in it: a whole page of blocks grows past what a link can carry.
     // The honest consequence, said on the page as well as here, is that reloading rebuilds from
-    // that last prompt alone rather than from everything you added.
+    // that last prompt alone rather than from everything you added. An EDIT never touches the
+    // address, because the address names what produced the page rather than what was done to it.
     history.replaceState(null, "", `${location.pathname}?ask=${encodeURIComponent(ask)}`);
   });
 
@@ -249,7 +327,7 @@ function boot(): void {
     state = next;
     // The chrome only. The canvas is already right, and rebuilding it would throw away the AI ink
     // the dispatcher just put on the cell it touched.
-    repaintChrome(board, rail, library, viewOf(state, currentAsk(), null));
+    repaintChrome(board, rail, library, viewOf(state, pageAsk, null));
   });
   // `subtree: true` is load-bearing rather than cautious: a span op sets the attribute on a CELL,
   // and an attributeFilter without a subtree only ever watches the canvas element's own attributes.
@@ -308,14 +386,8 @@ function boot(): void {
     // up arrow on the first row, is a no-op rather than a flicker.
     if (next === state) return;
     state = next;
-    repaint(viewOf(state, currentAsk(), null));
+    repaint(viewOf(state, pageAsk, null));
   });
-
-  /** The prompt as it currently stands, for a repaint that no prompt caused. The composer holds the
-   *  page's own prompt, so an op reads it back rather than the view carrying a stale copy of it. */
-  function currentAsk(): string {
-    return $<HTMLTextAreaElement>("textarea", composer!)?.value.trim() ?? "";
-  }
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
