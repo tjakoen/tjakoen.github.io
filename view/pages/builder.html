@@ -35,7 +35,12 @@
           address carries the latest one, so a page here is still a link you can send, and reloading
           rebuilds from that prompt alone.</p>
 
-        <div class="wb">
+        <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
+             is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
+             Same shape as the shell's own aside and console toggles: an attribute the CSS reads,
+             not a class a script paints. Starts open, and builder-canvas.ts remembers a press for
+             the session. -->
+        <div class="wb" data-rail-collapsed="false">
           <section class="wb__canvas mk-pane" aria-label="Canvas">
             <div class="mk-pane__head">
               <span class="wb__file">untitled.html</span>
@@ -60,15 +65,22 @@
           </section>
 
           <aside class="wb__rail mk-pane" aria-label="Blocks">
+            <!-- Collapsed, this head IS the rail: the count stays readable, so you never lose track
+                 of what is on the page, and one press brings the controls back. The count rather
+                 than the id range, because a range means nothing when the rows it describes are not
+                 on screen. With JavaScript off the button does nothing and the rail stays open,
+                 which is the honest state rather than a control that lies. -->
             <div class="mk-pane__head">
+              <button class="wb__collapse" type="button" data-rail-toggle
+                      aria-expanded="true" aria-controls="wb-rows" title="Collapse the block list">&#9666;</button>
               <span class="mk-pane__name">Blocks</span>
-              <span class="mk-pane__meta" data-field="railRange"></span>
+              <span class="mk-pane__meta" data-field="blockCount"></span>
             </div>
             <!-- Addressed so a review tour can point at the rail, and so builder-canvas.ts can bind
                  one delegated listener here rather than one per button. Not a registered surface
                  kind, so it is push-only and no verb targets it: the vocabulary gets a way to
                  operate a block in D3, after the verb exists, which is the tick box's lesson. -->
-            <div class="wb__rows" data-surface="builder-rail">
+            <div class="wb__rows" id="wb-rows" data-surface="builder-rail">
               <block-row each="rows"></block-row>
             </div>
             <p class="wb__rail-empty">No blocks yet.</p>

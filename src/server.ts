@@ -4,6 +4,7 @@ import { config } from "./config.ts";
 // --- BATCH (substrate) ---
 import { bunRuntime } from "@tjakoen/batch/platform/bun-runtime.ts";
 import { watchComponents } from "@tjakoen/batch/platform/watch.ts";
+import { watch } from "node:fs";   // the portfolio's own client modules: see the hot-reload block below
 import { makeStatic } from "@tjakoen/batch/http/static.ts";
 import { makePageServer } from "@tjakoen/batch/http/pages.ts";
 import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
@@ -477,6 +478,18 @@ if (config.hotReload) {
   watchComponents(join(config.grainDir, "ai"), () => { styles.refresh(); modules.refresh(); });   // ai.css (bundled) + client modules
 
   watchComponents(config.pagesDir, () => { sitemap.refresh(); catalog.refresh(); });
+
+  // The portfolio's OWN client modules (src/ai/*.ts served through /modules). watchComponents above
+  // deliberately ignores anything that is not .html/.css/.md, so it cannot cover these, and the
+  // module server caches every transpile: without this, editing a browser-side module leaves the
+  // page running the previous one until someone restarts the server. It cost a debugging round on
+  // 2026-08-14, and the failure is the bad kind — the code is right, the browser is running last
+  // week's, and nothing says so. Dev only, like every watcher here.
+  watch(import.meta.dir, { recursive: true }, (_event, file) => {
+    const name = file ? String(file) : "";
+    if (!name.endsWith(".ts") || name.endsWith(".test.ts")) return;
+    modules.refresh();
+  });
 }
 
 // per-prefix static (each concern owns its assets); strip the prefix, serve from the mapped dir.

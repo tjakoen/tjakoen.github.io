@@ -267,6 +267,32 @@ function boot(): void {
     watcher.takeRecords();
   };
 
+  // Collapsing the rail. A workbench whose tool panel cannot get out of the way charges a permanent
+  // 20rem tax on the thing you are actually looking at. The attribute lands on the workbench rather
+  // than the rail because collapsing is a layout change and the grid owns layout, which is the same
+  // shape the shell's own aside and console toggles use.
+  //
+  // Remembered for the session, not forever: this is a preference someone expressed by pressing a
+  // button, so it should survive a rebuild of the page and not outlive the visit. sessionStorage is
+  // exactly that, and it is wrapped because a browser with storage denied must still toggle.
+  const RAIL_KEY = "portfolio.builder.rail-collapsed";
+  const workbench = board.querySelector(".wb");
+  const railToggle = $<HTMLButtonElement>("[data-rail-toggle]", board);
+  if (workbench && railToggle) {
+    const setCollapsed = (on: boolean): void => {
+      workbench.setAttribute("data-rail-collapsed", String(on));
+      railToggle.setAttribute("aria-expanded", String(!on));
+      railToggle.textContent = on ? "\u25B8" : "\u25C2";     // ▸ closed, ◂ open: the arrow points where a press goes
+      railToggle.title = on ? "Show the block list" : "Collapse the block list";
+    };
+    try { if (sessionStorage.getItem(RAIL_KEY) === "1") setCollapsed(true); } catch { /* storage denied */ }
+    railToggle.addEventListener("click", () => {
+      const next = workbench.getAttribute("data-rail-collapsed") !== "true";
+      setCollapsed(next);
+      try { sessionStorage.setItem(RAIL_KEY, next ? "1" : "0"); } catch { /* storage denied */ }
+    });
+  }
+
   // The rail's buttons, through ONE delegated listener on the rail itself rather than one per
   // button. The rows are replaced on every repaint, so a listener bound to a button would be bound
   // to a node that no longer exists by the time you pressed the next one, and rebinding after each

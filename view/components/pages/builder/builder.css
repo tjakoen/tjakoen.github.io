@@ -84,6 +84,11 @@
   font-size: var(--text-sm); color: var(--ink-faint); }
 [data-screen="builder"] [data-builder-state="result"] .wb__rail-empty { display: none; }
 
+/* One row, and it is deliberately QUIET at rest. Every control stays present, clickable, tabbable
+   and testable: what changes is weight, not function. Hiding a remove button until hover would read
+   as tidy and cost a touch user the control entirely, so the row keeps all seven hit targets and
+   simply stops shouting about six of them. The active span is the one thing that carries ink,
+   because it is the only per-row state worth reading at a glance. */
 [data-screen="builder"] .wb-row { display: flex; align-items: center; gap: var(--space-2);
   padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--line-soft);
   font-family: var(--font-mono); font-size: var(--text-xs); }
@@ -91,19 +96,58 @@
 [data-screen="builder"] .wb-row__id { color: var(--ink-faint); width: 2rem; flex: 0 0 auto; }
 [data-screen="builder"] .wb-row__name { color: var(--ink); flex: 1 1 auto; min-width: 0;
   overflow: hidden; text-overflow: ellipsis; }
-[data-screen="builder"] .wb-row__spans { display: flex; gap: 1px; flex: 0 0 auto; }
-[data-screen="builder"] .wb-chip { font: inherit; color: var(--ink-faint); background: transparent;
-  border: 1px solid var(--line-soft); border-radius: var(--radius-sm);
-  padding: 0 var(--space-1); cursor: pointer; }
-[data-screen="builder"] .wb-chip:hover { color: var(--ink); }
-/* The pressed span is weight and border, never hue: status on this site is weight, not colour. */
-[data-screen="builder"] .wb-chip[data-on] { color: var(--ink); border-color: var(--ink);
-  font-weight: var(--font-weight-semibold); }
+[data-screen="builder"] .wb-row__spans { display: flex; gap: var(--space-1); flex: 0 0 auto; }
+
+/* Borderless at rest. Three bordered chips per row turned a 20rem column into a wall of boxes, and
+   the border was never the information: which one is ON is. Status here is weight, not a frame and
+   not a hue, which is the same rule the rest of this estate follows. */
+[data-screen="builder"] .wb-chip,
 [data-screen="builder"] .wb-row__move,
-[data-screen="builder"] .wb-row__x { font: inherit; color: var(--ink-faint); background: transparent;
-  border: 0; padding: 0 var(--space-1); cursor: pointer; flex: 0 0 auto; }
+[data-screen="builder"] .wb-row__x {
+  font: inherit; color: var(--ink-faint); background: transparent; border: 0;
+  padding: 0; cursor: pointer; flex: 0 0 auto; opacity: 0.55; transition: opacity 120ms, color 120ms;
+}
+[data-screen="builder"] .wb-row__move,
+[data-screen="builder"] .wb-row__x { padding: 0 var(--space-1); }
+/* The whole row lifts together, so one hover reveals every control on the block you are aiming at
+   rather than making you find each one. focus-within does the same for a keyboard, which is the
+   half a hover-only treatment always forgets. */
+[data-screen="builder"] .wb-row:hover .wb-chip,
+[data-screen="builder"] .wb-row:hover .wb-row__move,
+[data-screen="builder"] .wb-row:hover .wb-row__x,
+[data-screen="builder"] .wb-row:focus-within .wb-chip,
+[data-screen="builder"] .wb-row:focus-within .wb-row__move,
+[data-screen="builder"] .wb-row:focus-within .wb-row__x { opacity: 1; }
+[data-screen="builder"] .wb-chip:hover,
 [data-screen="builder"] .wb-row__move:hover,
 [data-screen="builder"] .wb-row__x:hover { color: var(--ink); }
+[data-screen="builder"] .wb-chip:focus-visible,
+[data-screen="builder"] .wb-row__move:focus-visible,
+[data-screen="builder"] .wb-row__x:focus-visible { opacity: 1; color: var(--ink);
+  outline: 2px solid var(--color-accent); outline-offset: 1px; }
+/* The pressed span is full ink and full weight, at rest and always: it is the row's state, not a
+   control you have to go looking for. */
+[data-screen="builder"] .wb-chip[data-on] { color: var(--ink); opacity: 1;
+  font-weight: var(--font-weight-semibold); text-decoration: underline; text-underline-offset: 3px; }
+
+/* --- collapsing the rail ----------------------------------------------------------------------
+   A workbench where the tool panel cannot get out of the way is a workbench with a permanent 20rem
+   tax on the thing you are actually looking at. Collapsed, the rail becomes its own head: the count
+   stays readable, so you never lose track of what is on the page, and one press brings the controls
+   back. Driven by an attribute on the workbench so the CSS owns the layout change, which is the same
+   shape grain's own aside and console toggles use. */
+[data-screen="builder"] .wb__collapse { font: inherit; font-family: var(--font-mono);
+  font-size: var(--text-xs); color: var(--ink-faint); background: transparent; border: 0;
+  padding: 0 var(--space-1); cursor: pointer; }
+[data-screen="builder"] .wb__collapse:hover { color: var(--ink); }
+[data-screen="builder"] .wb[data-rail-collapsed="true"] { grid-template-columns: minmax(0, 1fr) auto; }
+[data-screen="builder"] .wb[data-rail-collapsed="true"] .wb__rows,
+[data-screen="builder"] .wb[data-rail-collapsed="true"] .wb__rail-empty,
+[data-screen="builder"] .wb[data-rail-collapsed="true"] .wb__refusals { display: none; }
+/* Only as tall as its own head. Without align-self the pane keeps the grid row's full height and
+   collapses into a tall empty box, which reads as something broken rather than something put away. */
+[data-screen="builder"] .wb[data-rail-collapsed="true"] .wb__rail { width: max-content; align-self: start; }
+[data-screen="builder"] .wb[data-rail-collapsed="true"] .mk-pane__head { gap: var(--space-2); }
 
 /* The refusals: a second head inside the rail rather than a pane of its own, because it is the same
    list about the same prompt and a third box would be a third thing to look at. */
