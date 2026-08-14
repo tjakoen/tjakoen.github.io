@@ -16,7 +16,8 @@
   },
   "scripts": {
     "deps:refresh": "bun update @tjakoen/batch @tjakoen/crumb @tjakoen/grain @tjakoen/mill @tjakoen/proof",
-    "dev": "bun --hot src/server.ts",
+    "dev": "DESK_CLIENT=1 bun --hot src/server.ts",
+    "dev:stub": "STUB_DESK=1 bun --hot src/server.ts",
     "start": "bun src/server.ts",
     "test": "bun test",
     "coverage": "bun test --coverage",
