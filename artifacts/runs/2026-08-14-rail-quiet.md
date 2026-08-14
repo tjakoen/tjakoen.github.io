@@ -119,6 +119,24 @@ current`, one behind on purpose while grain 0.1.22 is held. `run ledger`, older 
 that are gone. `unpushed work`, now 55 in the portfolio and 15 in grain, both held on the owner's
 standing call.
 
+## What was not done
+
+Gathered on 2026-08-15 by a later session clearing the run ledger. Every item below was already
+stated somewhere above; the section is the part this report was missing, and nothing here is new.
+
+1. **Hiding the rail's controls until hover.** It reads as tidy and it costs a touch user the control
+   outright, so all six ops stay visible and an e2e case asserts it.
+2. **Tuning the catalog visual spec's timeout.** It fails under full-suite load and passes alone,
+   with no pixel diff. Raising a timeout until a gate goes green is the owner's call rather than a
+   session's, so it was filed instead of retried and instead of fixed.
+3. **A fourth review tour.** This run changed the weight and the width of a surface that two existing
+   tours already step through, and both of those steps still resolve.
+4. **Pushing, and publishing.** Fifty-five portfolio commits and fifteen in grain were left held on
+   the owner's standing call.
+5. **Fixing any of the four due doctor flags.** They are carried by name above rather than closed.
+6. **Repairing the answer channel.** Three rounds of tour answers not reaching the log is reported
+   here and nothing was changed to stop the fourth.
+
 ## What needs human eyes
 
 1. **The catalog visual spec's 5s timeout under full-suite load.** Raise it, or accept a suite that

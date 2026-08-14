@@ -1,4 +1,58 @@
+---
+title: Grain's token debt, G1 to G4, and the card that unblocked it
+date: 2026-08-11
+status: complete
+lane: gated
+branch: main
+skills:
+scope:
+  - ../grain/packages/crumb/
+  - ../grain/packages/grain/components/atoms/b-button/
+  - ../grain/packages/grain/components/organisms/
+  - ../grain/packages/grain/styles/
+  - plans/grain-token-debt.md
+  - plans/decisions/answers.jsonl
+  - content/tours/review-grain-status.md
+  - view/pages/review/grain-status.html
+  - tools/export.ts
+  - artifacts/runs/
+touched:
+  - ../grain/packages/crumb/crumb-live.js
+  - ../grain/packages/crumb/crumb.css
+  - ../grain/packages/grain/components/atoms/b-button/b-button.css
+  - ../grain/packages/grain/components/organisms/app-window/app-window.css
+  - ../grain/packages/grain/components/organisms/notepad/notepad.css
+  - ../grain/packages/grain/components/organisms/presentation/presentation.css
+  - ../grain/packages/grain/styles/variables.css
+  - ../grain/packages/grain/styles/vars-defined.test.ts
+  - plans/grain-token-debt.md
+  - plans/decisions/answers.jsonl
+  - content/tours/review-grain-status.md
+  - view/pages/review/grain-status.html
+  - tools/export.ts
+  - artifacts/runs/2026-08-11-grain-token-debt-g1-g4.md
+plans:
+  - grain-token-debt, G1 to G4 | plans/grain-token-debt.md
+gates:
+  - grain, bun run --filter '*' test | 577 pass, 0 fail across 5 packages
+  - portfolio, bun test | 365 pass, 0 fail
+  - bunx proof verify plans | OK, three warnings, none from this work
+  - the tour, walked in both presentations | screenshots of G1 at rest and on hover, the chip treatment, the collapsed paste block, and a card forced past the viewport
+diffstat: 6 files changed, 144 insertions, 214 deletions in the portfolio (50d5be2), and 8 files
+  changed, 242 insertions, 71 deletions in grain (a05ed9f). Read off git on 2026-08-15; the session
+  itself recorded none.
+unpushed: 1 | the one held grain commit this report names, a05ed9f. The portfolio count for that day
+  was never written down and is gone. Both repos have since pushed through 2026-08-11.
+verifiedBy: the owner, who walked review-grain-status and answered both asks; the answers are in
+  plans/decisions/answers.jsonl. Nobody read the code.
+doctor: not recorded by the session that ran this, and not recoverable.
+---
+
 # Grain's token debt, G1 to G4, and the card that unblocked it
+
+> This report was written as prose with no frontmatter. The block above was retrofitted on
+> 2026-08-15 by a later session clearing the run ledger: every field is either copied from the body
+> below or read off git, and the two facts git could not answer say so instead of carrying a number.
 
 2026-08-11. Closes `plans/grain-token-debt.md`. G0 shipped in the previous session and waited on one
 answer; this run spent that answer and finished the plan.
@@ -85,7 +139,22 @@ back to the published state.
   hover, the chip treatment, the collapsed paste block, and the scroll under a card forced past the
   viewport (content 1348px clamped to 846px, body scrolled, Finish still on screen).
 
-## Left open, deliberately
+The terminal output behind those four lines was never captured and is not recoverable. What follows
+is written out from the list above so a reader can see what was claimed, and it is labelled so that
+nobody mistakes it for a paste.
+
+```
+NOT A PASTE. Reconstructed 2026-08-15 from the four gate lines in this section.
+The original terminal output was not kept.
+
+$ bun run --filter '*' test    (grain)       577 pass, 0 fail across 5 packages
+$ bun test                     (portfolio)   365 pass, 0 fail
+$ bunx proof verify plans                    OK, 3 warnings, none from this work
+
+the tour, walked in both presentations   popover and framed sidebar, screenshots at each stage
+```
+
+## What was not done, and what was left open deliberately
 
 - **Grain is committed but NOT pushed.** Pushing to main publishes any package whose version changed,
   and whether to cut a grain release is the owner's call, not this session's. Until then G1 to G4 are
@@ -96,3 +165,14 @@ back to the published state.
 - A visual overlap between the nav rail and the detail pane in the framed sidebar, seen in the
   screenshot when the rail is long. Not touched: it is outside what this run changed, and it is
   reported rather than quietly fixed or quietly ignored.
+
+## What needs human eyes
+
+Retrofitted on 2026-08-15 out of the section above. These are the two things the run itself left for
+a person, restated under the heading the report was missing, and neither is a new ask.
+
+1. **Whether to cut a grain release.** Pushing grain's main publishes any package whose version
+   moved, so G1 to G4 were real in the repo and invisible on the site until someone decided. Settled
+   since: the commit is on origin/main.
+2. **The rail overlapping the detail pane in the framed sidebar.** Reported from a screenshot,
+   outside this run's scope, and still nobody's fix.
