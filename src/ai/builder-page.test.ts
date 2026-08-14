@@ -6,11 +6,17 @@ import { matchSpec } from "./field-matcher.ts";
 import { buildBuilderView } from "./builder-page.ts";
 
 describe("buildBuilderView: no ask", () => {
-  test("empty string -> the empty state, nothing else", () => {
+  // The composer is the one thing the empty state DOES carry, because a page that asks you to
+  // describe a form and gives you nowhere to type it is the whole reason piece 1 exists. Its value
+  // is null rather than "" so it follows the same spec convention every other item here does.
+  test("empty string -> the empty state, plus an empty composer and nothing else", () => {
     const v = buildBuilderView("");
     expect(v).toEqual({
       ask: "", builderState: "empty", fields: [], choices: [], messages: [], unsupported: [],
       hasFields: null, hasUnsupported: null, matchedNothing: null, specJson: "",
+      composer: [{ surface: "field:builder-ask", label: "Describe a form", name: "ask",
+        placeholder: "A contact form with a name, an email, and what they want to talk about",
+        value: null, required: null, hint: null, error: null }],
     });
   });
 
@@ -41,6 +47,28 @@ describe("buildBuilderView: a real ask", () => {
     const v = buildBuilderView("  name and email  ");
     expect(v.ask).toBe("name and email");
     expect(v.fields.map((f) => f.name)).toEqual(["name", "email"]);
+  });
+
+  // The round trip, asserted where it can be: the composer comes back holding the TRIMMED ask, so
+  // the box a visitor sees after a build holds what produced the page and they edit rather than
+  // retype. Its name is `ask` because submitting the form has to rebuild the same query string the
+  // example links carry, which is what keeps every state on this page a shareable address.
+  test("the composer comes back seeded with the ask, under the name the query string uses", () => {
+    const v = buildBuilderView("  name and email  ");
+    expect(v.composer).toHaveLength(1);
+    expect(v.composer[0]!.value).toBe("name and email");
+    expect(v.composer[0]!.name).toBe("ask");
+    expect(v.composer[0]!.surface).toBe("field:builder-ask");
+  });
+
+  // The generated message boxes and the composer are the same atom over different data, so a
+  // collision here would put two controls on one address and make "did the desk write into the
+  // composer" unanswerable. Nothing enforces that but this.
+  test("the composer's address never collides with a generated message box's", () => {
+    const v = buildBuilderView("a name, an email and a big message box");
+    const generated = v.messages.map((m) => m.surface);
+    expect(generated.length).toBeGreaterThan(0);
+    expect(generated).not.toContain(v.composer[0]!.surface);
   });
 
   test("an unsupported-only ask: no fields, hasUnsupported set, not matchedNothing", () => {

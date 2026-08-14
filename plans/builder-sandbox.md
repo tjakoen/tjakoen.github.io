@@ -110,7 +110,8 @@ feature rather than a fixture, and it is the surface the e2e drives, so the verb
 something a person also uses. Worth an owner's minute as a product call, since it is a new control on
 a published page: cheap to drop, one entry in one JSON file plus its tag.
 
-- [ ] 1. The prompt area becomes a real composer
+- [x] 1. The prompt area becomes a real composer (2026-08-14, a GET form back to the same route, so
+      the prompt is still the address and the box still works with JavaScript off)
 - [ ] 2. The spec generalizes past forms
 - [ ] 3. The AI narrates its selection
 - [ ] 4. The preview tab, with the code switcher

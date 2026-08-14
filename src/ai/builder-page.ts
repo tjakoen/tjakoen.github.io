@@ -26,7 +26,30 @@ export interface BuilderView {
   matchedNothing: "matchednothing" | null;
   /** Pretty-printed JSON of exactly what matchSpec returned — "" in the empty state (nothing ran). */
   specJson: string;
+  /** The composer, as a one-item spec so the page can render it through the SAME b-memo the
+   *  generated message boxes use. It is one item rather than a bare string for two reasons that both
+   *  bite: a textarea has no value attribute, so the current ask has to arrive as CONTENT through
+   *  `data-field`, which is exactly what b-memo already does; and the box carries a real
+   *  `field:` surface, so the desk can draft a prompt into it through the one door instead of the
+   *  page growing a second way in. The value is the current ask, so the composer comes up holding
+   *  what produced the page and a visitor edits rather than retypes. */
+  composer: MessageItem[];
 }
+
+/** The composer's spec, built around whatever ask is in play. `name` is `ask` because the whole
+ *  round trip is a plain GET form posting back to /builder: submitting produces `/builder?ask=…`,
+ *  which is the same shareable, reproducible address the example links carry, and it needs no
+ *  JavaScript to work. */
+const composerFor = (ask: string): MessageItem[] => [{
+  surface: "field:builder-ask",
+  label: "Describe a form",
+  name: "ask",
+  placeholder: "A contact form with a name, an email, and what they want to talk about",
+  value: ask || null,
+  required: null,
+  hint: null,
+  error: null,
+}];
 
 /** Build the /builder page's whole view from a raw `ask` query param. Safe to call with the
  *  untrimmed `URLSearchParams` value directly — this does its own trim, so server.ts never has to
@@ -39,6 +62,7 @@ export function buildBuilderView(rawAsk: string): BuilderView {
     return {
       ask: "", builderState: "empty", fields: [], choices: [], messages: [], unsupported: [],
       hasFields: null, hasUnsupported: null, matchedNothing: null, specJson: "",
+      composer: composerFor(""),
     };
   }
   const spec = matchSpec(ask);
@@ -54,5 +78,6 @@ export function buildBuilderView(rawAsk: string): BuilderView {
     hasUnsupported: spec.unsupported.length > 0 ? "hasunsupported" : null,
     matchedNothing: !hasFields && spec.unsupported.length === 0 ? "matchednothing" : null,
     specJson: JSON.stringify(spec, null, 2),
+    composer: composerFor(ask),
   };
 }
