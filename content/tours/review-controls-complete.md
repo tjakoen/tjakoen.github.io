@@ -27,10 +27,10 @@ The radio, and the trap that made it its own file.
 
 ## catalog:check-from-data
 - at: /catalog
-- status: known-issue
-- review: The data-first sibling, and the one place the family's AI half stops. Every other atom here binds an address, because field.set can operate its control: it resolves the address and writes the value. A tick box has a value too, and that is the problem. A checkbox's value is what the form submits when it is ticked, not whether it is ticked. So a write would pass the dispatcher's guard, land, report success, change what the form means, and leave the control looking untouched. Measured on a live page rather than reasoned. That is worse than the choice hazard, where a bad write at least visibly empties the control, and it cannot be fixed by moving the binding because there is no element to move it to. So this atom ships with no address at all, and the absence is a test with the reason written next to it.
-- verify: Read the second paragraph of the entry, then open the markup panel underneath and look for a data-surface. There should not be one. Compare it against the Field or Memo entries, which both carry one on their control. If a surface has appeared here, someone tidied away a limit rather than closing it.
-The tick box from data, and the verb the vocabulary does not have.
+- status: changed
+- review: This step recorded the one place the family's AI half stopped, and the limit is closed as of 2026-08-14, so what is here now is the history rather than the check. The atom shipped with no address because a checkbox's value is what the form submits when it is ticked, not whether it is ticked, so the only verb the vocabulary had would have landed, reported success and moved nothing. A verb that sets the checked state exists now, on a surface kind of its own, and the address arrived with it. Walk review-tick-box-verb for the current state of this entry; this step is left standing because a tour is a receipt for the day it was written, and rewriting it to look right afterwards is the one thing a receipt must not do.
+- verify: Nothing to check here any more. Open the markup panel if you want to see the difference: the address that was deliberately absent is present now and reads check:, which is the same reasoning arriving at the opposite answer rather than the limit being tidied away.
+The tick box from data, and the verb the vocabulary did not have yet.
 
 ## catalog:input
 - at: /catalog
