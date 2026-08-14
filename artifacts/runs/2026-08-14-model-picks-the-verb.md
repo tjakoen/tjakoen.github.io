@@ -36,7 +36,7 @@ gates:
   - bunx playwright test e2e/builder-canvas.e2e.ts | 35 passed
   - live sweep | 20 form-shaped prompts, rail and canvas in sync, no false refusals
 diffstat: 11 files changed across two commits
-unpushed: 57 | portfolio 57, grain 15. Both held. Pushing was not taken and stays the owner's call.
+unpushed: 58 | portfolio 58, grain 15. Both held. Pushing was not taken and stays the owner's call.
 verifiedBy: nobody yet, and one claim is UNPROVEN by design — see "What the gates cannot reach".
 doctor: four flags due, carried by name in the sibling report for this day, none fixed.
 ---
