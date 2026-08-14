@@ -27,6 +27,11 @@ export const CELL_CLASS = "canvas__cell";
 export const SPAN_ATTR = "data-span";
 /** The block's stable id, so a later reorder or delete can find the cell without matching content. */
 export const BLOCK_ID_ATTR = "data-block-id";
+/** One BLOCK's address, and it arrives now rather than earlier because grain grew the verbs that
+ *  can reach it (block.remove, block.span, block.move). An address that lands before a working verb
+ *  advertises an operation nothing can perform, and it fails at the moment nobody is watching: that
+ *  is the tick box's lesson, and it is why D1 and D2 shipped with no `block:` surface at all. */
+export const blockSurface = (id: string): string => `block:${id}`;
 /** The canvas surface, the one address the composed page hangs off. Not a registered surface KIND,
  *  so it is push-only and no verb targets it, the same footing as builder-form and builder-spec. */
 export const CANVAS_SURFACE = "builder-canvas";
