@@ -84,7 +84,13 @@ into the terminal that is already there.
 - [x] **D2. The ops** (2026-08-14). The block rail with a remove and three span chips per row, wired to the
       `removeBlock`, `moveBlock` and `setSpan` functions that already exist and have never been
       called by anything but a test. This is the phase that changes how the page feels.
-- [ ] **D3. The desk operates it.** Addresses on the blocks and the vocabulary to reach them, so the
+- [~] **D3. The desk operates it.** The VOCABULARY half shipped 2026-08-14 (grain d1a5993, portfolio
+      2b3f08f): `block` is a kind in grain's contract, `block.remove` / `block.span` / `block.move`
+      are verbs, both new ops are in the dispatcher, and every cell carries its address now that
+      something can reach it. What is left is the half that chooses: nothing turns "drop the second
+      card" into `block.remove` on `b2` yet, and that is where the small model earns its place.
+      The original note follows.
+- [ ] **D3b. Something chooses the verbs.** Addresses on the blocks and the vocabulary to reach them, so the
       small model can build a page rather than only navigate to a prompt. Deliberately last, and the
       ordering is the tick box's lesson: an address that lands before a working verb advertises an
       operation nothing can perform. No `block:` surface ships until the verb does. **The shape is
