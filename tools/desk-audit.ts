@@ -23,10 +23,43 @@ const PROFILE_DIR = `${OUT_DIR}/profile`;
 // the model tail (grounded chat / fuzzy nav / capability awareness) unless marked deterministic —
 // those run as controls, proving the harness itself drives the full chain. Graders are honest
 // minimums, not prose taste: a pass means "not broken", the captured text is what the retune reads.
+/** A /builder edit rather than a chat ask, and the only scenario shape that grades the PAGE.
+ *
+ *  The rest of this file asks the desk a question and reads the reply. The builder's edit path does
+ *  not go through chat at all: the sentence is typed into the canvas composer, the router decides it
+ *  is an edit, grain hands the live manifest to the model, and what comes back moves a block. So the
+ *  honest grader here is which blocks are on the canvas afterwards, in what order, at what span —
+ *  the reply line is a claim about the op and the canvas is whether the op happened.
+ *
+ *  This is also the ONE thing the e2e suite cannot measure. `builder-canvas.e2e.ts` scripts the
+ *  engine, so it proves every link in the chain around the model and nothing about the model: it
+ *  answers `block:b4` because the test told it to. A real 0.5B asked for "the second card" may hand
+ *  back the first, and b2 is as real an address as b4. That is the number these scenarios exist to
+ *  produce. */
+interface BuilderEdit {
+  /** The description the page opens on, as `?ask=`. Composed by the matcher, no model involved. */
+  compose: string;
+  /** Further composer prompts run before the edit, each of them an ADD the router never sends to the
+   *  model. One description emits each block at most once, so a page with two cards on it takes two
+   *  prompts, and "the second card" means nothing until it does.
+   *
+   *  Named `andThen` rather than the `then` it wants to be, because an object carrying a `then` key
+   *  is a thenable: anything that ever `await`s one of these gets its own field called as a promise
+   *  resolver. The lint gate caught it, and it was the only lint this change added. */
+  andThen?: string[];
+  /** The block ids that must be on the canvas, in order, after the edit lands. */
+  wantIds: string[];
+  /** Spans that must hold after the edit, by block id. Only the blocks worth naming. */
+  wantSpans?: Record<string, string>;
+}
+
 interface Scenario {
   id: string;
   page: string;                    // where the question is asked from
   ask: string;
+  /** Present on a /builder edit: `page` and `ask` still name where and what, but the ask is typed
+   *  into the canvas composer and the canvas is what gets graded. */
+  builder?: BuilderEdit;
   /** every group must have ≥1 case-insensitive hit in the reply (AND of ORs) */
   mustMention?: string[][];
   /** the browser must END on this pathname (a navigation scenario) */
@@ -147,6 +180,50 @@ const SCENARIOS: Scenario[] = [
   // pass here proves the fact reaches an actual model's answer, not just the assembled prompt string.
   { id: "memory-read", page: "/", ask: "what do you know about me?",
     mustMention: [["grain"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
+  // D5 the builder's edit path — the REAL 0.5B choosing a REAL verb on a REAL block. Everything
+  // around the model is proved by builder-canvas.e2e.ts and none of the model is, because that suite
+  // scripts the engine: it answers `block:b4` because the test told it to. These four are the
+  // measurement, and a failure here is a RESULT rather than a broken harness — the page is built so
+  // you can watch it pick the wrong block.
+  //
+  // All four open on the same page: an intro, a card and a callout, plus a second card from a second
+  // prompt (b1 lede, b2 card, b3 callout, b4 card). One description emits each block at most once, so
+  // "the second card" needs that second prompt to mean anything.
+  //
+  // The graders are the CANVAS rather than the words. mustMention rides along on the said line
+  // because the page names the block before the op lands, and reading it in the report is how a near
+  // miss ("Dropping b2.") is told apart from a refusal.
+  { id: "builder-drop", page: "/builder", ask: "drop the second card",
+    builder: { compose: "An intro, a card and a callout", andThen: ["another card"], wantIds: ["b1", "b2", "b3"] },
+    mustMention: [["b4"]] },
+  // The control, and it is the one that tells you WHICH thing is broken. "the second card" asks the
+  // model to resolve a reference and then use the vocabulary; "drop b4" asks only for the second.
+  // A page that fails both is failing at the vocabulary, and no amount of better referring language
+  // would save it.
+  { id: "builder-bare-id", page: "/builder", ask: "drop b4",
+    builder: { compose: "An intro, a card and a callout", andThen: ["another card"], wantIds: ["b1", "b2", "b3"] },
+    mustMention: [["b4"]] },
+  { id: "builder-span", page: "/builder", ask: "make the callout full width",
+    builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
+      wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "full" } },
+    mustMention: [["b3"]] },
+  { id: "builder-move", page: "/builder", ask: "move the callout up",
+    builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
+      wantIds: ["b1", "b3", "b2", "b4"] },
+    mustMention: [["b3"]] },
+  // The reply-without-acting case, which is a first-class answer rather than a failure: there is no
+  // verb that rewrites what a block says. Graded on the canvas NOT moving, because the way a small
+  // model gets this wrong is to reach for a verb anyway and remove the thing it was asked about.
+  //
+  // mustNotMention is the whole difference between this scenario measuring something and measuring
+  // nothing, and it was added because the first run scored a hit it had not earned: the model
+  // answered `block.remove` on `builder-said`, grain refused it for not being a block, and a refusal
+  // leaves the canvas exactly as still as the right answer does. "The desk had nothing to change" and
+  // "the desk tried something illegal" are opposite outcomes that look identical to a canvas grader.
+  { id: "builder-no-verb", page: "/builder", ask: "the card should mention pricing",
+    builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
+      wantIds: ["b1", "b2", "b3", "b4"] },
+    mustNotMention: ["will not work here", "does not edit a block"] },
   // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
   // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
   // the destination. LAST in the list on purpose — see the per-scenario cleanup below.
@@ -187,12 +264,99 @@ const lastReply = (page: Page): Promise<string> =>
     return (last?.textContent ?? "").trim();
   }).catch(() => "");   // navigation mid-poll tears the context — caller handles it
 
-const BUSY = /Thinking|Loading Qwen|\d+%$/;
+// ---- the builder's own surfaces. Its edit path never touches chat, so it needs its own reader and
+// its own idea of what "the reply" is: one line above the canvas that names the block before the op
+// lands. The selectors are the ones builder-canvas.e2e.ts drives, deliberately the same strings.
+const COMPOSER = ".builder-composer textarea";
+const SUBMIT = ".builder-composer button[type=submit]";
+const CELL = '[data-surface="builder-canvas"] .canvas__cell';
+const SAID = '[data-surface="builder-said"]';
+
+/** The builder's said line, "" while it is still hidden. Shaped like `lastReply` so `settle` can be
+ *  handed either one. */
+const lastSaid = (page: Page): Promise<string> =>
+  page.evaluate((sel) => (document.querySelector(sel)?.textContent ?? "").trim(), SAID).catch(() => "");
+
+/** The canvas as the grader sees it: every cell's id and span, in document order. This is the honest
+ *  measurement of a model's choice — the said line is a CLAIM about the op, and this is whether the
+ *  op happened and to which block. */
+const canvasState = (page: Page): Promise<Array<{ id: string; span: string }>> =>
+  page.evaluate((sel) => [...document.querySelectorAll(sel)].map((c) => ({
+    id: (c as HTMLElement).dataset.blockId ?? "?",
+    span: c.getAttribute("data-span") ?? "?",
+  })), CELL).catch(() => []);
+
+/** Record what the model was ASKED and what it ANSWERED, verbatim, by wrapping the desk's one
+ *  completion seam before any page script runs.
+ *
+ *  The report needs the raw answer, not the page's reading of it. Two builder scenarios came back
+ *  with the identical refusal line on the first run of these scenarios, and a refusal line cannot
+ *  tell you whether the model said the same wrong thing twice or whether the harness handed it the
+ *  same prompt twice. `builder-canvas.e2e.ts` stashes the prompt for exactly this reason; this does
+ *  the same for both halves, against the real model.
+ *
+ *  A property definition rather than a patch after load, because desk-door.ts assigns `window.desk`
+ *  once, whenever the engine finishes coming up, and there is no event to wait for. */
+const recordModel = (page: Page) => page.addInitScript(() => {
+  let real: { complete(p: string): Promise<string | null> } | undefined;
+  Object.defineProperty(window, "desk", {
+    configurable: true,
+    get: () => real,
+    set: (v: { complete(p: string): Promise<string | null> } | undefined) => {
+      real = v && typeof v.complete === "function"
+        ? { ...v, complete: async (p: string) => {
+            sessionStorage.setItem("__auditPrompt", p);
+            const raw = await v.complete(p);
+            sessionStorage.setItem("__auditRaw", raw === null ? "(the model did not run)" : raw);
+            return raw;
+          } }
+        : v;
+    },
+  });
+});
+
+const recorded = (page: Page) => page.evaluate(() => ({
+  prompt: sessionStorage.getItem("__auditPrompt") ?? "",
+  raw: sessionStorage.getItem("__auditRaw") ?? "",
+})).catch(() => ({ prompt: "", raw: "" }));
+
+/** Type a prompt into the canvas composer and submit it. The composer's own submit handler is what
+ *  routes it, so this is the same way in a visitor has and the only one this scenario shape uses. */
+async function submitPrompt(page: Page, text: string): Promise<void> {
+  await page.fill(COMPOSER, text);
+  await page.click(SUBMIT);
+}
+
+/** Compose the starting page, then leave the edit prompt submitted and unread.
+ *
+ *  The `then` prompts are ADDs: the router sends them to the matcher, no model runs, and each one is
+ *  waited on by CELL COUNT rather than a timeout, because a count is the thing that actually changed
+ *  and a sleep here would either be slow or flaky on the first load. */
+async function composeFor(page: Page, b: BuilderEdit): Promise<void> {
+  await page.goto(`${BASE}/builder?ask=${encodeURIComponent(b.compose)}`, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector(CELL, { timeout: 20_000 });
+  for (const prompt of b.andThen ?? []) {
+    const before = (await canvasState(page)).length;
+    await submitPrompt(page, prompt);
+    await page.waitForFunction(
+      ([sel, n]) => document.querySelectorAll(sel as string).length > (n as number),
+      [CELL, before] as [string, number], { timeout: 20_000 },
+    );
+  }
+}
+
+// "Reading the page…" is the builder's thinking state, and it belongs here for the same reason
+// "Thinking" does: it is a settled, unchanging string, so without it `settle` would return the
+// moment the page said it had started rather than when the model answered.
+const BUSY = /Thinking|Loading Qwen|Reading the page|\d+%$/;
 
 /** Wait until the desk's reply settles: non-empty, not a load/thinking state, and UNCHANGED for
  *  `stableMs`. A cross-page navigation also ends the wait (nav scenarios). Returns the final text
- *  and the pathname we ended on. */
-async function settle(page: Page, startPath: string, timeoutMs: number): Promise<{ text: string; path: string }> {
+ *  and the pathname we ended on. `read` is where the reply is: the chat log by default, the
+ *  builder's own said line for a builder edit. */
+async function settle(
+  page: Page, startPath: string, timeoutMs: number, read: (p: Page) => Promise<string> = lastReply,
+): Promise<{ text: string; path: string }> {
   const stableMs = 2_500;
   const t0 = Date.now();
   let prev = "";
@@ -204,9 +368,9 @@ async function settle(page: Page, startPath: string, timeoutMs: number): Promise
     if (p !== startPath) {                       // the desk navigated: let the arrival settle, then read
       await page.waitForLoadState("domcontentloaded").catch(() => {});
       await page.waitForTimeout(2_000);
-      return { text: await lastReply(page), path: await path(page) };
+      return { text: await read(page), path: await path(page) };
     }
-    const text = await lastReply(page);
+    const text = await read(page);
     if (text !== prev) { prev = text; stableSince = Date.now(); }
     else if (text && !BUSY.test(text) && Date.now() - stableSince > stableMs) return { text, path: p };
     if (Date.now() - lastLog > 10_000) {         // heartbeat: show download %, long generations
@@ -223,12 +387,38 @@ const path = (page: Page): Promise<string> =>
 interface Result {
   id: string; ask: string; page: string; deterministic: boolean;
   reply: string; endPath: string; ms: number;
+  /** Builder scenarios only: the canvas the edit actually left behind. Recorded even on a pass,
+   *  because the point of the report is a diff between two runs and "which block did it pick" is
+   *  the number being tracked. */
+  canvas?: Array<{ id: string; span: string }>;
+  /** Builder scenarios only: what the model was handed and what it said back, verbatim. The report's
+   *  most useful field when a scenario fails — the page's reading of a bad answer looks the same
+   *  whatever the bad answer was. */
+  model?: { prompt: string; raw: string };
   pass: boolean; failures: string[];
 }
 
-function grade(s: Scenario, reply: string, endPath: string, realRoutes: Set<string>): string[] {
+const shownAs = (cells: Array<{ id: string; span: string }>): string =>
+  cells.length ? cells.map((c) => c.id).join(", ") : "an empty canvas";
+
+function grade(
+  s: Scenario, reply: string, endPath: string, realRoutes: Set<string>,
+  canvas: Array<{ id: string; span: string }> = [],
+): string[] {
   const failures: string[] = [];
   const low = reply.toLowerCase();
+  // The builder's real grader. Order matters as much as membership: `block.move` changes nothing
+  // else, so a move that landed on the wrong block leaves the same four ids in a different sequence.
+  if (s.builder) {
+    const ids = canvas.map((c) => c.id);
+    if (ids.join(",") !== s.builder.wantIds.join(","))
+      failures.push(`canvas is ${shownAs(canvas)}, wanted ${s.builder.wantIds.join(", ")}`);
+    for (const [id, span] of Object.entries(s.builder.wantSpans ?? {})) {
+      const got = canvas.find((c) => c.id === id);
+      if (!got) failures.push(`no ${id} on the canvas to check its span`);
+      else if (got.span !== span) failures.push(`${id} is ${got.span}, wanted ${span}`);
+    }
+  }
   if (s.mustNavigate) {
     if (endPath.replace(/\/+$/, "") !== s.mustNavigate) failures.push(`ended on ${endPath}, wanted ${s.mustNavigate}`);
   }
@@ -285,6 +475,12 @@ async function launchWithWebgpu(forceHeaded: boolean): Promise<BrowserContext> {
     { name: "system Chrome, headed", channel: "chrome", headless: false },
   ];
   const attempts = forceHeaded ? ladder.filter((a) => !a.headless) : ladder;
+  // Whether ANY rung got as far as asking for an adapter. Without this the final throw says the
+  // machine has no WebGPU when what really happened is that no browser started at all, which sends
+  // whoever reads it looking at their GPU. Measured the honest way: an interrupted run left a
+  // Chromium holding the profile lock, all four rungs failed on ProcessSingleton, and the tool
+  // reported "no WebGPU adapter available in any launch mode".
+  let launched = false;
   for (const a of attempts) {
     let ctx: BrowserContext;
     try {
@@ -293,6 +489,7 @@ async function launchWithWebgpu(forceHeaded: boolean): Promise<BrowserContext> {
         args: GPU_ARGS,
       });
     } catch (err) { console.log(`launch failed (${a.name}): ${String(err).split("\n")[0]}`); continue; }
+    launched = true;
     const probe = await ctx.newPage();
     // navigator.gpu only exists in a SECURE context — about:blank doesn't count, so probe on the site
     await probe.goto(BASE, { waitUntil: "domcontentloaded" }).catch(() => {});
@@ -306,7 +503,10 @@ async function launchWithWebgpu(forceHeaded: boolean): Promise<BrowserContext> {
     console.log(`no WebGPU adapter (${a.name})`);
     await ctx.close();
   }
-  throw new Error("no WebGPU adapter available in any launch mode");
+  throw new Error(launched
+    ? "no WebGPU adapter available in any launch mode"
+    : `no browser would start in any launch mode — see the launch errors above. A stale Chromium `
+      + `holding ${PROFILE_DIR} is the usual cause (an interrupted run): pkill -f desk-audit/profile`);
 }
 
 // ---- main ----
@@ -337,15 +537,25 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
   const page = await c.newPage();
   try {
     await clientDeskEverywhere(page);
-    await page.goto(BASE + s.page, { waitUntil: "domcontentloaded" });
+    if (s.builder) await recordModel(page);
+    // A builder edit brings its own landing: the page has to be COMPOSED before there is anything to
+    // edit, and the composing is a query param plus a prompt or two, none of which touches the model.
+    if (s.builder) await composeFor(page, s.builder);
+    else await page.goto(BASE + s.page, { waitUntil: "domcontentloaded" });
     await deskReady(page);
     const startPath = await path(page);
     const t0 = Date.now();
-    await ask(page, s.ask);
+    // Two ways in, and they are different on purpose. Chat goes through the door's `chat.send`; the
+    // builder's edit is typed into the canvas composer, because that composer's own submit handler
+    // is the router, and going round it would skip the question this scenario exists to ask.
+    if (s.builder) await submitPrompt(page, s.ask);
+    else await ask(page, s.ask);
     // first model scenario may include the one-time ~350MB download; be patient once
     const timeout = s.deterministic ? 30_000 : firstModelRun ? 420_000 : 150_000;
-    const { text, path: endPath } = await settle(page, startPath, timeout);
+    const { text, path: endPath } = await settle(page, startPath, timeout, s.builder ? lastSaid : lastReply);
     if (!s.deterministic) firstModelRun = false;
+    const canvas = s.builder ? await canvasState(page) : undefined;
+    const model = s.builder ? await recorded(page) : undefined;
     // Per-scenario sessionStorage cleanup: tour-det (and any future tour ask) leaves a pending
     // "desk-tour" cursor stashed for the NEXT stop the door hasn't navigated to within this scenario's
     // own page, and intent-det's own ask marks the C1 nag-guard as fired ("visitor-intent" /
@@ -368,8 +578,8 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       if (!keepNotepad) localStorage.removeItem("grain.notepad");
     }, !!s.keepNotepad).catch(() => {});
     const ms = Date.now() - t0;
-    const failures = grade(s, text, endPath, realRoutes);
-    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, pass: failures.length === 0, failures };
+    const failures = grade(s, text, endPath, realRoutes, canvas);
+    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, model, pass: failures.length === 0, failures };
   } finally {
     await page.close().catch(() => {});
   }
@@ -400,6 +610,8 @@ try {
     results.push(res);
     console.log(`  ${res.pass ? "PASS" : "FAIL"} (${Math.round(res.ms / 1000)}s)${res.failures.length ? " — " + res.failures.join("; ") : ""}`);
     if (res.reply) console.log(`  reply: ${res.reply.slice(0, 220).replace(/\s+/g, " ")}${res.reply.length > 220 ? "…" : ""}`);
+    if (res.canvas) console.log(`  canvas: ${res.canvas.map((c) => `${c.id}/${c.span}`).join(" ") || "(empty)"}`);
+    if (res.model?.raw) console.log(`  model said: ${res.model.raw.slice(0, 200).replace(/\s+/g, " ")}`);
   }
 } finally {
   await ctx.close();
