@@ -23,7 +23,7 @@ gates:
   - bun tools/lint-gate.ts | net ZERO on this diff, measured against a stash
   - bun tools/desk-audit.ts | 0 of 5 builder scenarios pass, which is the finding rather than a gate
 diffstat: 2 files changed, 261 insertions, 16 deletions
-unpushed: 59 | portfolio 59, grain 15. Both held. Pushing stays the owner's call and was not taken.
+unpushed: 61 | portfolio 61, grain 15. Both held. Pushing stays the owner's call and was not taken.
 verifiedBy: nobody yet, and no tour is owed. Nothing a person looks at changed: /builder, its canvas, its rail and its drawer are untouched, and the whole diff is a local-only measuring tool plus two documents. The evidence a reader wants here is the numbers below and the reports under .cache/desk-audit/.
 doctor: four flags due, carried by name below, none fixed.
 ---
@@ -144,11 +144,32 @@ or `src/server.ts` changed: the diff is a local-only audit tool and two document
 known-red catalog visual spec under full-suite load, filed in the plan's Open as the owner's call,
 and running it here would produce that same red against a diff that cannot have caused it.
 
+## What was not done
+
+- **Nothing was fixed.** This session measured and did not repair. The 0.5B still cannot use the
+  vocabulary, and the five `/builder` scenarios are five reds, deliberately left red because a red
+  that is a finding is not a gate to tune. Do not read the new scenarios as passing scenarios.
+- **The manifest was not narrowed**, which is the direction the owner took the same day. It is
+  grain's `manifestForReasoner` and therefore outside this session's cap. It needs a grain scope cap
+  and its own session, and the five reds are the before number it gets judged against.
+- **The answer channel was not touched.** It was the second task on the handoff that opened this
+  session and it carries its own cap (`pantry/answers.ts`, `pantry/app.ts`, `pantry/cli.ts`).
+  Starting it under the builder's cap was explicitly forbidden, so it was not started. Four rounds of
+  tour answers are still missing from `plans/decisions/answers.jsonl`.
+- **Playwright was not run**, and the reasoning is in the gate section above rather than an omission.
+- **Neither red gate's timeout was touched.** The catalog visual spec and `grain-page.e2e.ts:182` are
+  one load-edge item with two instances and remain the owner's call.
+- **Nothing was pushed or published.** 61 portfolio commits and 15 grain, grain 0.1.22 unpublished.
+  An outward-facing action is a hard stop rather than a lane.
+- **The stale lint baseline was not refreshed.** Four regressions are pre-existing at HEAD from a
+  baseline another session left behind. Accepting them is a deliberate act (`bun run lint:baseline`)
+  and belongs to whoever caused them, not to this diff, which measured net zero against a stash.
+
 ## Session doctor flags, carried by name
 
 Four due, none fixed, the same four as the last several runs. `graphify freshness`. `layer pins
 current`, one behind on purpose while grain 0.1.22 is held. `run ledger`, older reports from sessions
-that are gone. `unpushed work`, now 59 in the portfolio and 15 in grain, both held on the owner's
+that are gone. `unpushed work`, now 61 in the portfolio and 15 in grain, both held on the owner's
 standing call.
 
 ## What needs human eyes
@@ -160,4 +181,4 @@ standing call.
    one load-edge item with two instances.
 3. **The answer channel.** Four rounds of tour answers have not reached `plans/decisions/answers.jsonl`.
    It is its own task with its own scope, and it was not started under this one's cap.
-4. **Push, and publish.** 59 portfolio commits, 15 grain, and grain 0.1.22 still unpublished.
+4. **Push, and publish.** 61 portfolio commits, 15 grain, and grain 0.1.22 still unpublished.
