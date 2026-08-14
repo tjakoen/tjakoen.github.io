@@ -81,6 +81,21 @@ export interface ModelMoveLike {
  *  copies far better than it computes, and "pick one of b1, b2, b3, b4" is a copy where "the second
  *  card" is a filter and a count. Naming them does not make the model right, it makes it possible.
  *
+ *  THE BARE ID IS DELIBERATE AND IT WAS TRIED THE OTHER WAY. This line names `b2` while the manifest
+ *  a few lines above addresses the same block `block:b2`, which reads like a contradiction worth
+ *  fixing, and on 2026-08-15 it was fixed: the ids were printed as `block:b1` through `block:b4` to
+ *  match. It made the model strictly worse, measured over 25 answers across two variants. On bare
+ *  ids, seven of fifteen answers aimed at a block and six named a real block verb. On prefixed ids,
+ *  zero of fifteen aimed at a block, and the model collapsed to answering `move` on `builder`, a
+ *  token off the screen name. Dropping the extra "copy it exactly" instruction and keeping only the
+ *  prefix did not recover it: zero of ten aimed at a block. So the change was reverted whole.
+ *
+ *  The reading that survives the data is that a 0.5B can copy `b2` and cannot copy `block:b2`, and
+ *  that being handed an address it cannot reproduce is worse than being handed a short one that
+ *  needs a prefix added. The contradiction is real and the fix is on the other side: normalize a
+ *  bare id UP to `block:<id>` when reading the answer, rather than pushing the long form down into
+ *  the prompt. That is a decision rather than a cleanup, so it is filed and not taken here.
+ *
  *  The reply-without-acting escape is spelled out on purpose. Without it a small model handed a verb
  *  list treats every message as a command to be answered with a verb, and "what is this page for"
  *  becomes a removal. */
