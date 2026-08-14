@@ -307,3 +307,52 @@ test.describe("the AI operates a block, and the page notices", () => {
     expect(doc.blocks.map((b: { id: string }) => b.id)).toEqual(["b2", "b3"]);
   });
 });
+
+// The rail collapses, because a tool panel that cannot get out of the way charges a permanent tax
+// on the thing you are actually looking at.
+test.describe("the rail collapses, and the canvas takes the width back", () => {
+  const TOGGLE = "[data-rail-toggle]";
+  const stageWidth = (page: Page) =>
+    page.locator(".wb__stage").evaluate((el) => Math.round(el.getBoundingClientRect().width));
+
+  test("collapsing widens the canvas and hides the rows, keeping the count readable", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, a callout and a stat"));
+    const open = await stageWidth(page);
+
+    await page.locator(TOGGLE).click();
+    await expect(page.locator(".wb")).toHaveAttribute("data-rail-collapsed", "true");
+    await expect(page.locator(".wb__rows")).toBeHidden();
+    // the count survives collapse: you never lose track of what is on the page
+    await expect(page.locator('.wb__rail [data-field="blockCount"]')).toHaveText("4 blocks");
+    expect(await stageWidth(page)).toBeGreaterThan(open);
+  });
+
+  test("the toggle says which way it goes, for a screen reader as well as an eye", async ({ page }) => {
+    await page.goto(ask("An intro and a card"));
+    await expect(page.locator(TOGGLE)).toHaveAttribute("aria-expanded", "true");
+    await page.locator(TOGGLE).click();
+    await expect(page.locator(TOGGLE)).toHaveAttribute("aria-expanded", "false");
+    await page.locator(TOGGLE).click();
+    await expect(page.locator(TOGGLE)).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator(".wb__rows")).toBeVisible();
+  });
+
+  // A preference someone expressed by pressing a button should survive a rebuild of the page and
+  // not outlive the visit, which is exactly what sessionStorage is.
+  test("a collapse is remembered for the session", async ({ page }) => {
+    await page.goto(ask("An intro and a card"));
+    await page.locator(TOGGLE).click();
+    await page.goto(ask("An intro, a card and a stat"));
+    await expect(page.locator(".wb")).toHaveAttribute("data-rail-collapsed", "true");
+  });
+
+  // Every control stays present and clickable at rest: the row went quiet, not hidden. A remove
+  // button that only exists on hover is one a touch user does not have.
+  test("the row's controls are all still there and all still work without hovering", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    for (const op of ["span:full", "span:half", "span:third", "move:up", "move:down", "remove"])
+      await expect(page.locator(`[data-block="b2"] [data-op="${op}"]`)).toBeVisible();
+    await page.locator('[data-block="b2"] [data-op="remove"]').click();
+    await expect(page.locator(RAIL_ROW)).toHaveCount(2);
+  });
+});
