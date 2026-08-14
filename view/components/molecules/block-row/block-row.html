@@ -1,0 +1,25 @@
+<!-- molecules/block-row — one block in the builder's rail, as a thing you can operate rather than a
+     thing you can read. This row is what makes /builder a builder: composition.ts has had
+     removeBlock, moveBlock and setSpan since the day it was written and nothing but a test had ever
+     called one, so the canvas was append-only and every mistake was permanent.
+     Per-item DATA: id, label, span, isFull, isHalf, isThird. The three flags are marker strings, the
+     same convention every flag on this page follows, so the pressed chip lights off an attribute's
+     mere presence rather than off text a boolean attribute cannot bind from.
+     The buttons carry their intent as data rather than as a class, and the row carries the block id
+     once: builder-canvas.ts reads both by delegation from the rail, so a rebuilt row needs nothing
+     registered and a row rendered by the server behaves the same as one cloned in the browser.
+     With JavaScript off the buttons do nothing, which is why they are buttons rather than links: a
+     link that goes nowhere is a broken promise, a button with no script is visibly inert. The row
+     still reads as a list of what is on the canvas, which is the honest no-JS state. -->
+<div class="wb-row" data-bind-data-block="id">
+  <span class="wb-row__id" data-field="id">b0</span>
+  <span class="wb-row__name" data-field="label">block</span>
+  <span class="wb-row__spans">
+    <button class="wb-chip" type="button" data-op="span:full" data-bind-data-on="isFull">full</button>
+    <button class="wb-chip" type="button" data-op="span:half" data-bind-data-on="isHalf">half</button>
+    <button class="wb-chip" type="button" data-op="span:third" data-bind-data-on="isThird">third</button>
+  </span>
+  <button class="wb-row__move" type="button" data-op="move:up" title="Move up" aria-label="Move up">&#8593;</button>
+  <button class="wb-row__move" type="button" data-op="move:down" title="Move down" aria-label="Move down">&#8595;</button>
+  <button class="wb-row__x" type="button" data-op="remove" title="Remove" aria-label="Remove">&times;</button>
+</div>

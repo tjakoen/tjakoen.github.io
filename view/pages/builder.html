@@ -6,124 +6,140 @@
   <title>Builder · TJ's Desk</title>
   <meta name="description" content="Describe a page in plain English. A closed, code-owned set of GRAIN blocks decides what actually renders: the model never picks a component, a layout, or a name.">
 </head>
+<!-- data-aside-hidden: this screen gives up the assistant column by default, the same call /plans
+     makes for the same reason. The prompt lives in the workbench now, so the chat is not the way in;
+     it is still how you ask the desk to build one, and the shell's own ◫ toggle brings it straight
+     back. Set in markup rather than by script so it is the screen's default rather than a stored
+     preference: press the toggle and it stays open for the session. -->
 <body data-screen="builder" class="app-window-backdrop">
-  <div class="app-shell app-window" data-section="builder" data-rail-collapsed="false" data-surface="screen">
+  <div class="app-shell app-window" data-section="builder" data-rail-collapsed="false" data-aside-hidden="true" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main">
       <div class="board" data-bind-data-builder-state="builderState">
-        <p class="eyebrow">Builder</p>
-        <h1 class="masthead">Describe a page. Get one back.</h1>
-        <p class="lede">Type what a page should hold, and a fixed, code-owned set of GRAIN blocks
-          decides what actually renders. A block is a real component expanded by the same renderer
-          every other page on this site goes through, so what you are looking at is the design
-          system rather than a picture of it. Picking component names is exactly what a small model
-          gets wrong, so it never gets to pick one. A form is one block among the others now, and it
-          still works the way it always did.</p>
 
-        <!-- The composer, and it sits OUTSIDE both the empty and the result section on purpose: it
-             is the one control that belongs on this page in either state, holding nothing before a
-             prompt and holding the current one after, so a visitor edits what produced the page
-             rather than retyping it. A plain GET form back to this same route, which is what keeps
-             every state shareable: submitting builds /builder?ask=… exactly as the example links
-             below do, and it works with JavaScript off because nothing here is JavaScript. The box
-             renders through b-memo rather than b-textarea because a textarea has no value
-             attribute, so the current ask has to arrive as content, which is the data-first atom's
-             whole job. It carries field:builder-ask so the desk can draft a prompt into it through
-             the one door instead of this page growing a second way in. -->
-        <form class="builder-composer" method="get" action="/builder">
-          <b-memo each="composer" size="sm" rows="3"></b-memo>
-          <div class="builder-composer__foot">
-            <button class="btn" type="submit">Build it</button>
-            <span class="muted">Each prompt adds to the page rather than replacing it. The address
-              carries the latest one, so a page here is still a link you can send, and reloading
-              rebuilds from that prompt alone.</span>
-          </div>
+        <!-- The prompt bar, and it sits at the TOP of the workbench for a reason a mockup found: a
+             command line under the canvas lands exactly where the terminal dock already lives, and
+             two things wanting the same edge of the screen is not a styling problem.
+             A plain GET form back to this same route, which is what keeps every state shareable:
+             submitting builds /builder?ask=… exactly as the example links do, and it works with
+             JavaScript off because nothing here is JavaScript. The box renders through b-memo rather
+             than b-textarea because a textarea has no value attribute, so the current ask has to
+             arrive as content, which is the data-first atom's whole job. It carries
+             field:builder-ask so the desk can draft a prompt into it through the one door instead of
+             this page growing a second way in. -->
+        <form class="wb-bar builder-composer" method="get" action="/builder">
+          <b-memo each="composer" size="sm" rows="2"></b-memo>
+          <button class="btn" type="submit">Build it</button>
         </form>
+        <p class="wb-bar__note muted">Each prompt adds to the page rather than replacing it. The
+          address carries the latest one, so a page here is still a link you can send, and reloading
+          rebuilds from that prompt alone.</p>
 
-        <section class="builder-empty">
-          <p>No prompt yet. Type one above, pick one of the examples below, or ask the desk to build
-            one for you.</p>
-        </section>
+        <div class="wb">
+          <section class="wb__canvas mk-pane" aria-label="Canvas">
+            <div class="mk-pane__head">
+              <span class="wb__file">untitled.html</span>
+              <span class="mk-pane__meta"><span data-field="blockCount">0</span> · 6 col</span>
+            </div>
+            <div class="mk-pane__body wb__stage">
+              <div class="builder-empty">
+                <p>Nothing on the page yet. Describe one above, pick an example below, or ask the
+                  desk to build one for you.</p>
+                <p class="muted">It knows five blocks: an intro paragraph, a card, a callout, a stat
+                  tile and a form. Say "side by side" and it puts two of them in a row.</p>
+              </div>
+              <p class="builder-none" data-bind-data-matched-nothing="matchedNothing">Nothing in the
+                closed set matched that. Try asking for an intro, a card, a callout, a stat or a
+                form.</p>
+              <!-- The canvas itself. Server-rendered into the marker below by server.ts (renderCanvas
+                   in ai/canvas.ts), because a component name here is a RUNTIME string and a page
+                   template can only name components literally. The marker is a comment rather than
+                   an empty element so an ordinary read of this file shows where the blocks land. -->
+              <div class="canvas" data-surface="builder-canvas"><!--canvas--></div>
+            </div>
+          </section>
 
-        <section class="builder-result">
-          <div class="section-head"><span>Prompt</span></div>
-          <p class="builder-prompt"><q data-field="ask"></q></p>
-          <p class="builder-none" data-bind-data-matched-nothing="matchedNothing">Nothing in the
-            closed set matched that. The blocks it knows are an intro paragraph, a card, a callout, a
-            stat tile and a form, and a form can hold a name, an email, a phone number, a company, a
-            role, a subject, a website, a rough budget, a message box, a topic, a preferred contact
-            method, a timeline, or a box to tick.</p>
-          <p><a href="/builder">Start a new page →</a></p>
+          <aside class="wb__rail mk-pane" aria-label="Blocks">
+            <div class="mk-pane__head">
+              <span class="mk-pane__name">Blocks</span>
+              <span class="mk-pane__meta" data-field="railRange"></span>
+            </div>
+            <!-- Addressed so a review tour can point at the rail, and so builder-canvas.ts can bind
+                 one delegated listener here rather than one per button. Not a registered surface
+                 kind, so it is push-only and no verb targets it: the vocabulary gets a way to
+                 operate a block in D3, after the verb exists, which is the tick box's lesson. -->
+            <div class="wb__rows" data-surface="builder-rail">
+              <block-row each="rows"></block-row>
+            </div>
+            <p class="wb__rail-empty">No blocks yet.</p>
 
-          <div class="builder-canvas-block" data-bind-data-has-blocks="hasBlocks">
-            <div class="section-head"><span>Canvas</span></div>
-            <p class="muted">Every block below came out of one loop over the composition, and the
-              loop is the whole engine:</p>
-            <pre class="builder-tag">for (const block of composition.blocks)
-  render(block.component, block.data, block.props)</pre>
-            <!-- The canvas itself. Server-rendered into the marker below by server.ts (renderCanvas
-                 in ai/canvas.ts), because a component name here is a RUNTIME string and a page
-                 template can only name components literally. The marker is a comment rather than an
-                 empty element so an ordinary read of this file shows where the blocks land. -->
-            <div class="canvas" data-surface="builder-canvas"><!--canvas--></div>
-            <p class="muted">Layout is three words and only three: full, half and third. A
-              description can ask for two things beside each other and get half, and it can never
-              ask for a grid, a column count or a width, because layout is the part a matcher gets
-              wrong first. Every block sits in a cell that carries its span, so the block itself
-              stays layout-free, which is what grain's own component docs ask of a card or a stat
-              tile.</p>
-            <p class="muted">Nothing on this page was written by the model. The block set decides
-              which components appear, and the words inside each one are the sample content the same
-              table carries, drafted by code. A wording pass is an open seam rather than a shipped
-              feature, and until it exists what lands on a composed page is a developer's writing
-              rather than a generated paragraph.</p>
-          </div>
+            <div class="wb__refusals" data-bind-data-has-unsupported="hasUnsupported">
+              <div class="mk-pane__head">
+                <span class="mk-pane__name">Can't build</span>
+              </div>
+              <ul class="builder-unsupported" data-surface="builder-refusals">
+                <builder-refusal each="unsupported"></builder-refusal>
+              </ul>
+            </div>
+          </aside>
+        </div>
 
-          <div class="builder-form-block" data-bind-data-has-form="hasForm">
-            <div class="section-head"><span>About the form on this page</span></div>
-            <p class="muted">The form above is one block, and its insides are the same closed set of
-              fields this page used to be entirely about. Ask for a box to tick and you get one, and
-              the desk can tick it: until 2026-08-14 the vocabulary had no verb that could, because
-              the only verb for a form control writes the control's value, and a tick box's value is
-              what the form submits rather than whether it is ticked, so the write landed, reported
-              success and moved nothing. A tick box carries a different kind of address for exactly
-              that reason.</p>
-            <p class="muted">Fields are grouped by kind, text fields first, then a message box, then
-              choices, then anything to tick. Interleaving them in the order you asked is not
-              supported, on purpose, a v1 limit. The address each field carries sits on the control
-              itself, so the desk writes into a generated field with nothing registered by hand. That
-              was not true when this page was first built: the atoms addressed the label around the
-              control, a label has nothing to write into, and the write was dropped without a word.
-              Building this found it and the atoms were fixed, which is the whole argument for
-              building a demo rather than describing one.</p>
-            <p class="muted">Nothing here submits anywhere. This is a static site, there is no submit
-              control on a generated form, and there is no verb in the vocabulary that could press
-              one.</p>
-          </div>
-
-          <div class="builder-unsupported-block" data-bind-data-has-unsupported="hasUnsupported">
-            <div class="section-head"><span>Can't build yet</span></div>
-            <!-- Addressed so a review tour can point at the refusal itself. Not a registered surface
-                 kind, so it is push-only and no verb targets it. -->
-            <ul class="builder-unsupported" data-surface="builder-refusals">
-              <builder-refusal each="unsupported"></builder-refusal>
-            </ul>
-            <p class="muted">Two different reasons live in that list and the difference is worth
-              reading. A shell, a side rail or a top bar is the frame a page sits in rather than
-              content it can hold, so it is refused on principle. Everything else is a gap with a
-              date on it: the component exists, it is documented, and the block set has not grown a
-              template for it yet. A picture is the honest example, because a generated page has no
-              real image to point at and an invented one is a broken picture with a confident
-              name.</p>
-          </div>
-
-          <div class="section-head"><span>Spec</span></div>
-          <p class="muted">The composition, exactly as it would leave here. This is the document an
-            export writes and an import reads back, so what you are reading is the artifact rather
-            than a description of one. A form block's data is what matchSpec returned, one level in,
-            so the field spec is still here for anyone who came for it.</p>
+        <details class="wb-drawer">
+          <summary>The composition, as JSON</summary>
+          <p class="muted">Exactly what an export writes and an import reads back, so this is the
+            artifact rather than a description of one. A form block's data is what matchSpec
+            returned, one level in. The page reads its own state back out of here on load, which is
+            how a static host can tell a fresh visit from one a server already composed.</p>
           <pre class="builder-json" data-surface="builder-spec" data-field="specJson"></pre>
-        </section>
+        </details>
+
+        <details class="wb-drawer">
+          <summary>How this works, and what it will not do</summary>
+          <p>Type what a page should hold, and a fixed, code-owned set of GRAIN blocks decides what
+            actually renders. A block is a real component expanded by the same renderer every other
+            page on this site goes through, so what you are looking at is the design system rather
+            than a picture of it. Picking component names is exactly what a small model gets wrong,
+            so it never gets to pick one.</p>
+          <p>Every block below came out of one loop, and the loop is the whole engine:</p>
+          <pre class="builder-tag">for (const block of composition.blocks)
+  render(block.component, block.data, block.props)</pre>
+          <p>Layout is three words and only three: full, half and third. A description can ask for
+            two things beside each other and get half, and it can never ask for a grid, a column
+            count or a width, because layout is the part a matcher gets wrong first. Every block sits
+            in a cell that carries its span, so the block itself stays layout-free, which is what
+            grain's own component docs ask of a card or a stat tile.</p>
+          <p>Nothing on this page was written by the model. The block set decides which components
+            appear, and the words inside each one are the sample content the same table carries,
+            drafted by code. A wording pass is an open seam rather than a shipped feature, and until
+            it exists what lands on a composed page is a developer's writing rather than a generated
+            paragraph.</p>
+          <p>Two different reasons live in the "Can't build" list and the difference is worth
+            reading. A shell, a side rail or a top bar is the frame a page sits in rather than
+            content it can hold, so it is refused on principle. Everything else is a gap with a date
+            on it: the component exists, it is documented, and the block set has not grown a template
+            for it yet. A picture is the honest example, because a generated page has no real image
+            to point at and an invented one is a broken picture with a confident name.</p>
+        </details>
+
+        <details class="wb-drawer" data-bind-data-has-form="hasForm">
+          <summary>About the form on this page</summary>
+          <p>The form on the canvas is one block, and its insides are the same closed set of fields
+            this page used to be entirely about. Ask for a box to tick and you get one, and the desk
+            can tick it: until 2026-08-14 the vocabulary had no verb that could, because the only
+            verb for a form control writes the control's value, and a tick box's value is what the
+            form submits rather than whether it is ticked, so the write landed, reported success and
+            moved nothing. A tick box carries a different kind of address for exactly that reason.</p>
+          <p>Fields are grouped by kind, text fields first, then a message box, then choices, then
+            anything to tick. Interleaving them in the order you asked is not supported, on purpose,
+            a v1 limit. The address each field carries sits on the control itself, so the desk writes
+            into a generated field with nothing registered by hand. That was not true when this page
+            was first built: the atoms addressed the label around the control, a label has nothing to
+            write into, and the write was dropped without a word. Building this found it and the
+            atoms were fixed, which is the whole argument for building a demo rather than describing
+            one.</p>
+          <p>Nothing here submits anywhere. This is a static site, there is no submit control on a
+            generated form, and there is no verb in the vocabulary that could press one.</p>
+        </details>
 
         <div class="section-head"><span>Examples</span></div>
         <p class="muted">Real links, real query strings. Every state on this page is shareable and
@@ -137,12 +153,12 @@
           <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20an%20email%20and%20a%20file%20upload%20for%20their%20portfolio">A form with an email and a file upload for their portfolio</a><span class="docs-list__what">the upload is refused, honestly.</span></div>
         </div>
 
-        <!-- The template library: every block in the set and every control atom a form nests, each
-             pre-rendered ONCE by the real server-side renderer and parked here hidden. The browser
-             clones from it and fills the clone through the same data-field and data-bind-*
-             attributes the template already carries, which is how this page composes on a static
-             host without a second renderer existing anywhere. Injected into the marker by server.ts
-             (renderLibrary in ai/canvas.ts); hidden by builder.css. -->
+        <!-- The template library: every block in the set, every control atom a form nests, and the
+             rail's own row, each pre-rendered ONCE by the real server-side renderer and parked here
+             hidden. The browser clones from it and fills the clone through the same data-field and
+             data-bind-* attributes the template already carries, which is how this page composes on
+             a static host without a second renderer existing anywhere. Injected into the marker by
+             server.ts (renderLibrary in ai/canvas.ts); hidden by builder.css. -->
         <!--library-->
 
         <div class="page-foot">
@@ -157,9 +173,10 @@
   <!-- Composing in the browser. Imports the SAME matcher, composition and view modules the server
        calls (no-build client modules, ARCHITECTURE §19), so the closed set is decided once and the
        two sides cannot disagree. It exists because this site exports to a static host, where no
-       server sees the ?ask= in the address: without this, every example link below lands on an
-       empty page, which is what the published /builder did for its whole life. With JavaScript off
-       nothing here runs and the live server still renders the same canvas. -->
+       server sees the ?ask= in the address: without this, every example link above lands on an empty
+       page, which is what the published /builder did for its whole life. It is also what makes the
+       rail's buttons do anything. With JavaScript off nothing here runs, the live server still
+       renders the same canvas, and the rail reads as a list of what is on it. -->
   <script type="module" src="/modules/portfolio/ai/builder-canvas.js"></script>
 </body>
 </html>

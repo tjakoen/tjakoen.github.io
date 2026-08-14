@@ -23,7 +23,7 @@ The canvas: a composition, rendered by the same engine as every other page here.
 - at: /builder?ask=An%20intro%2C%20a%20card%2C%20and%20a%20form%20with%20a%20name%2C%20an%20email%20and%20a%20box%20to%20agree%20to%20the%20terms
 - status: changed
 - review: The form stopped being the subject of this page and became one block on it, and this address is the claim that costs nothing: field-matcher.ts is untouched, every control keeps the address it had, and the tick box still carries a check: address rather than a field: one. The surface moved from the page template onto the block template so a tour and two e2e specs would keep resolving, which is the part most likely to have quietly broken.
-- verify: Find the form at the bottom of the canvas. Ask the desk in the chat to build me a form with a name, an email and a box to agree to the terms, and watch it fill the fields and tick the box. If the desk fills nothing, the addresses moved with the markup and the door lost them.
+- verify: Find the form at the bottom of the canvas. This screen gives up the assistant column by default, so press the panel toggle in the title bar to bring the chat back, then ask the desk to build me a form with a name, an email and a box to agree to the terms, and watch it fill the fields and tick the box. If the desk fills nothing, the addresses moved with the markup and the door lost them.
 A form is one block now, at the same address, operable the same way.
 
 ## field:builder-ask

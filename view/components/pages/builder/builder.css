@@ -1,64 +1,135 @@
-/* pages/builder: the page-builder demo. Empty vs. result is a data attribute the SERVER sets
-   (builder-page.ts's buildBuilderView, bound via data-bind-data-builder-state on .board), and the
-   browser sets the same one when it composes without a server: with no JS at all the right section
-   is already the only one visible. Same convention for the finer-grained flags (matched-nothing /
-   has-blocks / has-form / has-unsupported): each is a marker string or an absent attribute,
-   field-matcher.ts's own "never boolean text a boolean HTML attribute can't bind from" rule, so a
-   plain attribute-presence selector is all any of this needs. */
-[data-screen="builder"] .builder-result { display: none; }
-[data-screen="builder"] [data-builder-state="result"] .builder-result { display: block; }
-[data-screen="builder"] [data-builder-state="result"] .builder-empty { display: none; }
+/* pages/builder: the page-builder demo, as a WORKBENCH rather than an essay.
+   Why this file changed shape on 2026-08-14: the page was built out of the same parts as a note, a
+   masthead and a lede and five muted paragraphs down the shared reading column, so it read as an
+   article that happened to contain a builder. The tool vocabulary it wants already existed on this
+   site (see mail.css: a wider board, a full-height grid, panes with their own scroll and heads, mono
+   for counts), and this borrows it rather than inventing a second one.
+   Empty vs. result is a data attribute the SERVER sets (builder-page.ts's buildBuilderView, bound
+   via data-bind-data-builder-state on .board), and the browser sets the same one when it composes
+   without a server: with no JS at all the right section is already the only one visible. Same
+   convention for the finer-grained flags (matched-nothing / has-form / has-unsupported): each is a
+   marker string or an absent attribute, field-matcher.ts's own "never boolean text a boolean HTML
+   attribute can't bind from" rule, so a plain attribute-presence selector is all any of this needs. */
+[data-screen="builder"] .board { max-width: 82rem; }
 
-[data-screen="builder"] .builder-none { display: none; }
-[data-screen="builder"] .builder-none[data-matched-nothing] { display: block; }
+/* --- the workbench: prompt bar on top, canvas beside the block rail ---------------------------
+   The prompt sits at the TOP rather than under the canvas, and that was a mockup's finding: a
+   command line below the work area lands exactly where the terminal dock already is, and two things
+   wanting the same edge of the screen is not something styling fixes. */
+[data-screen="builder"] .wb {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, 21rem);
+  gap: var(--space-4); align-items: stretch;
+  height: calc(100dvh - 16rem); min-height: 26rem; margin: 0 0 var(--space-5);
+}
+[data-screen="builder"] .wb-bar { display: flex; align-items: flex-end; gap: var(--space-3);
+  margin: 0 0 var(--space-2); }
+[data-screen="builder"] .wb-bar .field { flex: 1 1 auto; }
+/* The prompt is a bar, not a document. b-textarea sets a comfortable min-height for a message box,
+   which is right where it is used and wrong here, so the one control that is a toolbar gets a
+   toolbar's height back and keeps the drag handle for anyone typing a long description. */
+[data-screen="builder"] .wb-bar .field__textarea { min-height: 0; height: 3.4rem; resize: vertical; }
+[data-screen="builder"] .wb-bar__note { font-size: var(--text-xs); margin: 0 0 var(--space-4); }
 
-[data-screen="builder"] .builder-canvas-block { display: none; }
-[data-screen="builder"] .builder-canvas-block[data-has-blocks] { display: block; }
+/* The pane: one treatment, three users (canvas, rail, and the rail's own refusal block). Borrowed
+   from mail.css rather than forked from it, down to the --paper-2 head, because two tool screens
+   that dress their panes differently read as two apps. */
+[data-screen="builder"] .mk-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0;
+  overflow: hidden; background: var(--paper);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
+[data-screen="builder"] .mk-pane__head { display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--space-3); padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--line-soft); background: var(--paper-2); }
+[data-screen="builder"] .mk-pane__name { font-size: var(--text-sm); font-weight: var(--font-weight-semibold);
+  color: var(--ink); }
+[data-screen="builder"] .mk-pane__meta { font-size: var(--text-xs); color: var(--ink-faint);
+  font-family: var(--font-mono); }
+[data-screen="builder"] .mk-pane__body { flex: 1 1 auto; min-height: 0; overflow-y: auto;
+  padding: var(--space-4); }
 
-[data-screen="builder"] .builder-form-block { display: none; }
-[data-screen="builder"] .builder-form-block[data-has-form] { display: block; }
+/* The file name, and it is the one piece of the artboard mockup worth keeping: a single mono line
+   saying what you are building does more than a plate and a drop shadow. */
+[data-screen="builder"] .wb__file { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink); }
 
-/* The canvas: the one grid the whole composition lays out in. Six columns because it is the
-   smallest count the three layout words divide into cleanly (full 6, half 3, third 2), so a span is
-   a span rather than a rounding. The cell carries the span and the block inside stays layout-free,
-   which is what grain's card and stat-tile docs each ask of their component.
-   Below the reading width there are no columns left to divide, so every block goes full: a third of
-   a phone screen is not a layout decision anyone made, it is one the grid made for them. */
+/* --- the canvas: the one grid the whole composition lays out in -------------------------------
+   Six columns because it is the smallest count the three layout words divide into cleanly (full 6,
+   half 3, third 2), so a span is a span rather than a rounding. The cell carries the span and the
+   block inside stays layout-free, which is what grain's card and stat-tile docs each ask.
+   The breakpoint is a CONTAINER query, not a media query, and that is the whole point: half has to
+   mean half of what you can SEE. The canvas pane is not the window. It shrinks when the assistant
+   column opens, when the preview-width toggle goes to tablet, and when the rail is beside it, and a
+   viewport breakpoint is wrong in all three. Below the reading width there are no columns left to
+   divide, so every block goes full: a third of a phone screen is not a layout decision anyone made. */
+[data-screen="builder"] .wb__stage { container-type: inline-size; container-name: canvas; }
 [data-screen="builder"] .canvas {
-  display: grid; grid-template-columns: repeat(6, 1fr);
-  gap: var(--space-4); align-items: start; margin: var(--space-3) 0 var(--space-5);
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-4); align-items: start;
 }
 [data-screen="builder"] .canvas__cell { min-width: 0; }
 [data-screen="builder"] .canvas__cell[data-span="full"] { grid-column: span 6; }
 [data-screen="builder"] .canvas__cell[data-span="half"] { grid-column: span 3; }
 [data-screen="builder"] .canvas__cell[data-span="third"] { grid-column: span 2; }
-@media (max-width: 40rem) {
+@container canvas (max-width: 34rem) {
   [data-screen="builder"] .canvas__cell[data-span] { grid-column: span 6; }
 }
 
-/* The pre-rendered block library P3 clones from. It is real markup produced by the real renderer,
-   parked in the document rather than in a template element so the browser has nodes to clone
-   without parsing a string. Hidden from sight, from layout and from the accessibility tree, and
-   `display: none` is what keeps it out of all three at once. */
-[data-screen="builder"] .builder-library { display: none; }
+[data-screen="builder"] [data-builder-state="result"] .builder-empty { display: none; }
+[data-screen="builder"] .builder-none { display: none; }
+[data-screen="builder"] .builder-none[data-matched-nothing] { display: block; }
 
-[data-screen="builder"] .builder-unsupported-block { display: none; }
-[data-screen="builder"] .builder-unsupported-block[data-has-unsupported] { display: block; }
+/* --- the rail: the blocks, as things you can operate -----------------------------------------
+   This is what makes the page a builder rather than a page that renders a result. It lives in the
+   main column and deliberately NOT as a fourth mode of the assistant panel: these are controls, and
+   a control a chrome toggle can close is a control you cannot rely on. */
+[data-screen="builder"] .wb__rows { flex: 0 1 auto; min-height: 0; overflow-y: auto; }
+[data-screen="builder"] .wb__rail-empty { margin: 0; padding: var(--space-4);
+  font-size: var(--text-sm); color: var(--ink-faint); }
+[data-screen="builder"] [data-builder-state="result"] .wb__rail-empty { display: none; }
 
-/* The composer: the same stacked column the live form below uses, at the same width cap, so the box
-   a visitor types into and the boxes the demo generates read as one family rather than two widgets.
-   It is the one control on this page that shows in BOTH states, so it carries no visibility rule of
-   its own. The foot puts the button and its note on one line and lets them wrap on a narrow screen,
-   the treatment .contact-form__foot already sets on About. */
-[data-screen="builder"] .builder-composer { display: flex; flex-direction: column; gap: var(--space-3);
-  max-width: 30rem; margin: 0 0 var(--space-5); }
-[data-screen="builder"] .builder-composer__foot { display: flex; align-items: center; flex-wrap: wrap;
-  gap: var(--space-3); }
+[data-screen="builder"] .wb-row { display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--line-soft);
+  font-family: var(--font-mono); font-size: var(--text-xs); }
+[data-screen="builder"] .wb-row:last-child { border-bottom: 0; }
+[data-screen="builder"] .wb-row__id { color: var(--ink-faint); width: 2rem; flex: 0 0 auto; }
+[data-screen="builder"] .wb-row__name { color: var(--ink); flex: 1 1 auto; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; }
+[data-screen="builder"] .wb-row__spans { display: flex; gap: 1px; flex: 0 0 auto; }
+[data-screen="builder"] .wb-chip { font: inherit; color: var(--ink-faint); background: transparent;
+  border: 1px solid var(--line-soft); border-radius: var(--radius-sm);
+  padding: 0 var(--space-1); cursor: pointer; }
+[data-screen="builder"] .wb-chip:hover { color: var(--ink); }
+/* The pressed span is weight and border, never hue: status on this site is weight, not colour. */
+[data-screen="builder"] .wb-chip[data-on] { color: var(--ink); border-color: var(--ink);
+  font-weight: var(--font-weight-semibold); }
+[data-screen="builder"] .wb-row__move,
+[data-screen="builder"] .wb-row__x { font: inherit; color: var(--ink-faint); background: transparent;
+  border: 0; padding: 0 var(--space-1); cursor: pointer; flex: 0 0 auto; }
+[data-screen="builder"] .wb-row__move:hover,
+[data-screen="builder"] .wb-row__x:hover { color: var(--ink); }
 
-/* The prompt echoed back, and the two <pre> blocks (the literal render tag, the pretty-printed
-   spec): a quiet monospace panel, the same treatment a code sample gets everywhere else on the
-   site (var(--font-mono), a hairline border, no syntax color since neither block is highlighted). */
-[data-screen="builder"] .builder-prompt { font-size: var(--text-base); margin: 0 0 var(--space-3); }
+/* The refusals: a second head inside the rail rather than a pane of its own, because it is the same
+   list about the same prompt and a third box would be a third thing to look at. */
+[data-screen="builder"] .wb__refusals { display: none; border-top: 1px solid var(--line-soft); }
+[data-screen="builder"] .wb__refusals[data-has-unsupported] { display: block; }
+[data-screen="builder"] .builder-unsupported { margin: 0; padding: var(--space-2) var(--space-3);
+  list-style: none; }
+[data-screen="builder"] .builder-unsupported__item { padding: var(--space-2) 0; }
+[data-screen="builder"] .builder-unsupported__item + .builder-unsupported__item {
+  border-top: 1px solid var(--line-soft); }
+[data-screen="builder"] .builder-unsupported__token { display: block; font-family: var(--font-mono);
+  font-size: var(--text-xs); margin: 0 0 var(--space-1); }
+[data-screen="builder"] .builder-unsupported__reason { color: var(--ink-muted); font-size: var(--text-xs); }
+
+/* --- below the tool: the drawers ---------------------------------------------------------------
+   The honest-limits prose is good writing aimed at a reader of an argument, and this page's job
+   changed. It stays here for anyone who came for it, closed, under the thing they came to use. */
+[data-screen="builder"] .wb-drawer { margin: 0 0 var(--space-3); border-top: 1px solid var(--line-soft);
+  padding-top: var(--space-3); max-width: var(--content-max); }
+[data-screen="builder"] .wb-drawer > summary { cursor: pointer; color: var(--ink);
+  font-size: var(--text-sm); font-weight: var(--font-weight-semibold); }
+[data-screen="builder"] .wb-drawer[data-has-form] { display: block; }
+[data-screen="builder"] .wb-drawer:not([open]) > *:not(summary) { display: none; }
+
+/* The composer, and the two <pre> blocks (the render loop, the pretty-printed spec): a quiet
+   monospace panel, the same treatment a code sample gets everywhere else on the site. */
 [data-screen="builder"] .builder-tag,
 [data-screen="builder"] .builder-json {
   font-family: var(--font-mono); font-size: var(--text-xs); line-height: var(--leading-normal);
@@ -67,17 +138,23 @@
   overflow-x: auto; white-space: pre;
 }
 
-/* The live form: b-field/b-choice each render a .field label, display:flex, so it blockifies on its
-   own; this just stacks the fields with a shared gap and caps the column width (about.css's own
-   .contact-form treatment, reused rather than forked). No submit control here (onsubmit="return
-   false" on the tag itself); the page says why in prose, this just never renders a button. */
+/* The live form inside a form block: b-field/b-choice each render a .field label, display:flex, so
+   it blockifies on its own; this just stacks the fields with a shared gap. No submit control (the
+   template carries onsubmit="return false"); the drawer below says why. */
 [data-screen="builder"] .builder-form { display: flex; flex-direction: column; gap: var(--space-3);
-  max-width: 30rem; margin: 0 0 var(--space-3); }
+  margin: 0; }
 
-/* Can't-build-yet refusals: the token asked for, and matchSpec's own reason, stacked — a quiet list,
-   the docs-list__item hairline-row treatment reused rather than forked. */
-[data-screen="builder"] .builder-unsupported { margin: var(--space-2) 0 var(--space-4); padding: 0; list-style: none; }
-[data-screen="builder"] .builder-unsupported__item { padding: var(--space-2) 0; border-top: 1px solid var(--color-line); }
-[data-screen="builder"] .builder-unsupported__token { display: block; font-family: var(--font-mono);
-  font-size: var(--text-sm); margin: 0 0 var(--space-1); }
-[data-screen="builder"] .builder-unsupported__reason { color: var(--color-muted); font-size: var(--text-sm); }
+/* The pre-rendered template library the browser clones from. Real markup produced by the real
+   renderer, parked in the document rather than in a template element so the browser has nodes to
+   clone without parsing a string. Hidden from sight, from layout and from the accessibility tree,
+   and `display: none` is what keeps it out of all three at once. */
+[data-screen="builder"] .builder-library { display: none; }
+
+/* Narrow: the rail goes under the canvas rather than beside it, and the whole thing stops trying to
+   be one screen tall. A workbench that scrolls is fine; a workbench squeezed into a phone-height
+   grid is two panes of nothing. */
+@media (max-width: 60rem) {
+  [data-screen="builder"] .wb { grid-template-columns: 1fr; height: auto; min-height: 0; }
+  [data-screen="builder"] .wb__rows { max-height: 18rem; }
+  [data-screen="builder"] .wb__stage { max-height: none; }
+}

@@ -81,6 +81,20 @@ export const BLOCK_LIBRARY: LibraryEntry[] = [
   { name: FORM_COMPONENT, placeholder: { fields: [], messages: [], choices: [], checks: [] }, props: {} },
 ];
 
+/** The page's own chrome that the browser also clones: the rail's row.
+ *
+ *  It is here rather than in BLOCK_LIBRARY because it is not a block. It never lands on a composed
+ *  page and it would never be exported. It is in the library at all for the same reason the blocks
+ *  are: the rail is rebuilt on every prompt, and a rail assembled from a string in the browser would
+ *  be the second implementation this whole design exists to avoid. */
+export const CHROME_LIBRARY: LibraryEntry[] = [
+  {
+    name: "block-row",
+    placeholder: { id: null, label: null, span: null, isFull: null, isHalf: null, isThird: null },
+    props: {},
+  },
+];
+
 /** The four control atoms a form block nests, plus the option a choice nests. Per-item data keys
  *  come from each atom's own doc in grain; the props come from block-form.html's tags. */
 export const ATOM_LIBRARY: LibraryEntry[] = [
