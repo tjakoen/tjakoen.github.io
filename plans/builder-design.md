@@ -96,6 +96,14 @@ into the terminal that is already there.
       operation nothing can perform. No `block:` surface ships until the verb does. **The shape is
       sketched in the section below and the decision under it is the owner's**, because the kinds and
       the verbs live in grain's contract rather than here, and adding one is a fleet-wide change.
+- [x] **The rail pass** (2026-08-14, commit `4561a9d`). Owner's read after D2: the blocks panel
+      should be simplified and collapsible. Simplified by WEIGHT rather than by hiding, so all seven
+      controls per row stay present, clickable and tabbable and six of them stop shouting; the chips
+      lost their borders because the border was never the information. Collapsible from the rail's
+      own head, which becomes the rail: the count stays readable and the canvas takes 167px back.
+      A dev-loop defect surfaced and was fixed with it: the module server caches every transpile and
+      only grain's `ai/` was watched, so editing one of the portfolio's own browser modules left the
+      page running the previous build.
 - [ ] **D4. The copy.** The honest-limits prose rewritten for a tool rather than an essay. It is good
       writing aimed at a reader of an argument, and the page it now sits on has a different job.
 
@@ -149,6 +157,10 @@ fleet-wide one. Three ways to go, and the choice is the owner's:
 
 ## Open
 
+0. **The catalog visual spec fails in the FULL e2e suite and passes alone.** `Timeout 5000ms
+   exceeded`, no pixel diff, measured at HEAD and with the diff, alone and in the suite. It is load,
+   not a regression: this work added fifteen tests to the parallel run. Raising that timeout is
+   tuning a gate until it passes, so it is the owner's call and was left red rather than nudged.
 1. **Whether the collapsed assistant column should persist across visits.** The screen sets it in
    markup, so the shell's toggle wins for the session and the screen's default wins on the next load.
    That is a per-screen default rather than a preference, and someone who wants the chat pinned on
