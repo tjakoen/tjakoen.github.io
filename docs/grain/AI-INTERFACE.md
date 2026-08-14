@@ -96,6 +96,7 @@ declares the surface **kinds** it applies to, a typed **payload**, and a routing
 | `note.replace` | `{ text }` | `notepad` | light (rewrite the whole pad) |
 | `navigate` | `{ href }` | `screen` | light (same-origin, root-relative only) |
 | `field.set` | `{ value }` | `field` | light (prefill a registered form field — the human reviews and sends; the AI never submits: no submit verb exists) |
+| `check.set` | `{ checked }` | `check` | light (tick or clear a registered tick box: a set, never a toggle, so a replay is harmless) |
 
 **Full product vocabulary — designed, not yet registered in `contract.ts`:**
 
@@ -118,7 +119,9 @@ The built table **is** the live contract. It is defined once in TypeScript and e
 > - `ActionName` — the verbs · `ACTIONS` — the registry (depth, accepted kinds, a one-line
 >   `description`, and a `payload` schema — the calling contract a reasoner reads to invoke a verb, §4).
 > - `SurfaceKind` — the closed set of surface kinds a verb can accept (`item`,
->   `reflection`, `say-stream`, `screen`, `chat-log`, `notepad`, `field`). Push-only display surfaces the
+>   `reflection`, `say-stream`, `screen`, `chat-log`, `notepad`, `field`, `check`). A kind is a
+>   promise about which verbs work on it, which is why a text field and a tick box are two kinds and
+>   not one: see the `check.set` note under the render ops below. Push-only display surfaces the
 >   AI only *writes* to (e.g. `console`, `timeline`, `notepad-body`) are intentionally **not** kinds — see the note in `contract.ts`.
 > - `surface(kind, id)` — the builder; always construct addresses with it, never by
 >   hand-concatenating strings, so a typo is a compile error.
@@ -172,7 +175,7 @@ The interaction layer never returns "data for the client to render." It returns
 server-rendered hypermedia), so the client stays dumb and can't drift from the truth.
 
 ```ts
-type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log" | "navigate" | "choices" | "fill";
+type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log" | "navigate" | "choices" | "fill" | "tick";
 interface RenderOp {
   target: Surface;                // a semantic address from §1a
   op: RenderOpKind;
@@ -185,6 +188,7 @@ interface RenderOp {
   href?: string;                  // navigate: where to (validated — same-origin, root-relative only)
   prompt?: string;                // choices: the question shown above the buttons (optional)
   choices?: { label: string; value?: string }[];   // choices: the options the human picks from
+  checked?: boolean;              // tick: the state to assign to a registered tick box
   provenance: "user" | "ai" | "system";
   commit: "pending" | "committed";   // grade = commit state — see §5
 }
@@ -206,6 +210,20 @@ interface RenderOp {
 > settles it, and dispatches a bubbling `input` event so page validation stays honest. No
 > focus steal, no submit, no form access — and no submit verb exists in the vocabulary, so
 > "the AI never submits" is structural. Spec: `grain/plans/field-set-op.md`.
+
+> `tick` (the effect of `check.set`) assigns a tick box's `checked` state
+> (`data-surface="check:…"`). It is a **separate kind from `fill`, and `check` a separate kind
+> from `field`**, for one reason worth stating plainly: a tick box's `value` is what the form
+> *submits* when it is ticked, not whether it is ticked. So `field.set` aimed at one lands,
+> passes every guard, reports success, changes what the form means and leaves the control looking
+> untouched. Since a manifest target's `accepts` is derived from the registry, sharing a kind
+> would *advertise* that write. Two kinds keep each control offering only the verb that can
+> operate it. The dispatcher guards on the element **type** rather than on a `checked` property,
+> because every input carries that property and the property check would let a tick land silently
+> on a text field. A radio may be ticked and never cleared, since a group with nothing selected is
+> a state no click can reach, and the refusal is logged rather than silent. The box wears
+> `data-grade="grain"` until the first *trusted* input settles it, and both `input` and `change`
+> fire, since a real tick fires both. Spec: `grain/plans/check-set-op.md`.
 
 > `log` appends one provenance-tagged entry to the interaction **timeline** (§5g) — the
 > unified human-and-AI history. The client caps the DOM and pins to newest; the entry's
