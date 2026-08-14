@@ -222,6 +222,14 @@
         el.disabled = off;
         if (off && el.matches("input")) el.placeholder = "The desk is offline";
       }
+      // A disabled composer is a weak signal: the pane still LOOKS like a live chat. On a client
+      // door (the desk's own, data-ai-transport="client"), data-ai-online="false" means the door
+      // module itself failed to load, so nothing can answer and nothing will mark the chat offline
+      // from the inside (markOffline lives in that module). Say it on the pane instead, through the
+      // marker the desk already owns: the composer and chips hide and the offline notice shows.
+      // Client transport only, deliberately: the SSE door flips presence off on a transient drop
+      // and back on reconnect, and a blip must not strand the chat behind a permanent notice.
+      if (off && document.body.dataset.aiTransport === "client") document.body.dataset.desk = "offline";
     };
     new MutationObserver(applyPresence).observe(document.body, { attributes: true, attributeFilter: ["data-ai-online"] });
     applyPresence();
