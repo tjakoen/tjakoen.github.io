@@ -9,8 +9,8 @@
 import { render } from "../render.ts";
 import type { Block } from "./block-set.ts";
 import {
-  ATOM_LIBRARY, BLOCK_ID_ATTR, BLOCK_LIBRARY, CELL_CLASS, CHROME_LIBRARY, LIBRARY_CLASS, SPAN_ATTR, SURFACE_ATTR,
-  TEMPLATE_ATTR, TEMPLATE_SURFACE_ATTR, type LibraryEntry,
+  ATOM_LIBRARY, BLOCK_ID_ATTR, BLOCK_LIBRARY, CELL_CLASS, CHROME_LIBRARY, LIBRARY_CLASS, SPAN_ATTR,
+  SURFACE_ATTR, TEMPLATE_ATTR, TEMPLATE_SURFACE_ATTR, blockSurface, type LibraryEntry,
 } from "./canvas-dom.ts";
 
 /** Strip HTML comments from rendered block markup.
@@ -36,7 +36,8 @@ export const stripBlockComments = (html: string): string => html.replace(/<!--[\
  *  out of a description into an attribute. */
 export async function renderCell(block: Block): Promise<string> {
   const html = stripBlockComments(await render(block.component, block.data, block.props));
-  return `<div class="${CELL_CLASS}" ${SPAN_ATTR}="${block.span}" ${BLOCK_ID_ATTR}="${block.id}">${html}</div>`;
+  return `<div class="${CELL_CLASS}" ${SPAN_ATTR}="${block.span}" ${BLOCK_ID_ATTR}="${block.id}"`
+    + ` ${SURFACE_ATTR}="${blockSurface(block.id)}">${html}</div>`;
 }
 
 /** The whole canvas: every block in composition order. An empty composition renders nothing at all

@@ -30,8 +30,8 @@ import {
 import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
 import { viewOf, type BuilderView } from "./builder-page.ts";
 import {
-  BLOCK_ID_ATTR, CANVAS_SURFACE, CELL_CLASS, LIBRARY_CLASS, REPEATS, SPAN_ATTR, TEMPLATE_ATTR,
-  fillTree, restoreSurfaces,
+  BLOCK_ID_ATTR, CANVAS_SURFACE, CELL_CLASS, LIBRARY_CLASS, REPEATS, SPAN_ATTR, SURFACE_ATTR,
+  TEMPLATE_ATTR, blockSurface, fillTree, restoreSurfaces,
 } from "./canvas-dom.ts";
 
 /** The page's own chrome binds over the VIEW; a block binds over its own DATA; the composer binds
@@ -82,6 +82,10 @@ function cellFor(library: Element, block: Block): Element | null {
   cell.className = CELL_CLASS;
   cell.setAttribute(SPAN_ATTR, block.span);
   cell.setAttribute(BLOCK_ID_ATTR, block.id);
+  // The address, and it is here because the verbs exist: block.remove, block.span and block.move
+  // landed in grain's contract first. An address that arrives before a working verb advertises an
+  // operation nothing can perform, which is the tick box's lesson (grain plans/check-set-op.md).
+  cell.setAttribute(SURFACE_ATTR, blockSurface(block.id));
   cell.append(inner);
   return cell;
 }
@@ -95,6 +99,13 @@ function cellFor(library: Element, block: Block): Element | null {
  *  delete (a later phase) need the whole-rebuild path anyway. */
 function paint(board: Element, canvas: Element, rail: Element, library: Element, view: BuilderView): void {
   canvas.replaceChildren(...view.blocks.map((b) => cellFor(library, b)).filter((c): c is Element => c !== null));
+  repaintChrome(board, rail, library, view);
+}
+
+/** Everything about the page EXCEPT the canvas: the rail's rows, the counts, the flags, the spec.
+ *  Split out because reconciling after an AI op must not rebuild the canvas — the dispatcher already
+ *  changed it, and rebuilding would throw away the AI ink it put on the cell it touched. */
+function repaintChrome(board: Element, rail: Element, library: Element, view: BuilderView): void {
   rail.replaceChildren(...view.rows.map((r) => build(library, "block-row", r)).filter((n): n is Element => n !== null));
   fillTree(board, view, FILL_SKIP);
 }
@@ -119,6 +130,39 @@ function applyOp(comp: PageComposition, op: string, id: string): PageComposition
   }
   return comp;
 }
+
+/** Read the composition back off the canvas.
+ *
+ *  THE REASON THIS EXISTS, and it is the whole of what wiring the AI to a block costs. The AI does
+ *  not call these functions. It raises an Intent, grain's reasoner answers with a render op, and
+ *  grain's dispatcher applies that op to the addressed cell — because a reasoner reaching into this
+ *  module's variables would be the privileged AI-to-DOM back channel the architecture refuses. So
+ *  after an op the DOM is right and this module's `state` is stale, and a stale state is not a
+ *  cosmetic problem: the next prompt would append to a composition that still holds the block the
+ *  AI just removed, and it would come back.
+ *
+ *  The split is deliberate. The DOM is the authority on WHICH blocks are here, in what order, at
+ *  what span, because that is exactly what the three verbs change. `known` stays the authority on
+ *  each block's DATA, because rendered markup cannot be read back into a block's data object
+ *  without guessing, and guessing is how a form block loses its spec. */
+function readComposition(canvas: Element, known: PageComposition): PageComposition {
+  const byId = new Map(known.blocks.map((b) => [b.id, b]));
+  const blocks: Block[] = [];
+  for (const cell of canvas.children) {
+    const id = cell.getAttribute(BLOCK_ID_ATTR);
+    const block = id ? byId.get(id) : undefined;
+    if (!block) continue;                       // a cell this build did not put there is not a block
+    const span = cell.getAttribute(SPAN_ATTR);
+    blocks.push(isSpan(span) ? { ...block, span } : block);
+  }
+  return { blocks, refusals: known.refusals };
+}
+
+/** Whether two compositions differ in anything the canvas can show. Cheap and total: ids in order,
+ *  plus each span. Data cannot change under us, because no verb changes it. */
+const sameShape = (a: PageComposition, b: PageComposition): boolean =>
+  a.blocks.length === b.blocks.length &&
+  a.blocks.every((x, i) => x.id === b.blocks[i]!.id && x.span === b.blocks[i]!.span);
 
 // ---------------------------------------------------------------------------------------------
 // Boot
@@ -180,13 +224,48 @@ function boot(): void {
     e.preventDefault();
     const before = state.blocks.length;
     state = addFromDescription(state, ask);
-    paint(board, canvas, rail, library, viewOf(state, ask, state.blocks.length - before));
+    repaint(viewOf(state, ask, state.blocks.length - before));
     // The URL keeps carrying the LATEST prompt, so an example link and a shared address still work.
     // The composition does not go in it: a whole page of blocks grows past what a link can carry.
     // The honest consequence, said on the page as well as here, is that reloading rebuilds from
     // that last prompt alone rather than from everything you added.
     history.replaceState(null, "", `${location.pathname}?ask=${encodeURIComponent(ask)}`);
   });
+
+  // THE HANDSHAKE, and it is what makes an AI-driven block edit real rather than cosmetic.
+  //
+  // The AI never calls this module. It raises an Intent, grain's reasoner answers with a render op,
+  // and grain's dispatcher applies that op to the addressed cell. So the DOM changes underneath us,
+  // and without this the page would keep composing against a block the AI had already removed and
+  // paint it straight back on the next prompt: a delete that lands, reports success and undoes
+  // itself, which is exactly the class of silent lie the tick box verb was invented to close.
+  //
+  // A MutationObserver rather than the `change` event the span and move ops fire, because the third
+  // verb does not fire one: block.remove rides the generic `remove` op, which deletes the element
+  // and announces nothing. One watcher that sees all three beats two mechanisms and a gap.
+  const watcher = new MutationObserver(() => {
+    const next = readComposition(canvas, state);
+    if (sameShape(state, next)) return;          // an attribute we do not read changed; nothing to do
+    state = next;
+    // The chrome only. The canvas is already right, and rebuilding it would throw away the AI ink
+    // the dispatcher just put on the cell it touched.
+    repaintChrome(board, rail, library, viewOf(state, currentAsk(), null));
+  });
+  // `subtree: true` is load-bearing rather than cautious: a span op sets the attribute on a CELL,
+  // and an attributeFilter without a subtree only ever watches the canvas element's own attributes.
+  // Without it the remove and move ops were noticed and the span op silently was not, which is a
+  // worse failure than none of them working, because two out of three looks like it works.
+  watcher.observe(canvas, { childList: true, subtree: true, attributes: true, attributeFilter: [SPAN_ATTR] });
+
+  /** Paint, then DRAIN the watcher's queue. Our own paint is not news, and draining is how that is
+   *  said rather than with a flag: a MutationObserver callback runs in a microtask, so a flag set
+   *  and cleared around a synchronous paint would already be false by the time the callback read
+   *  it. `takeRecords` empties the queue in the same tick, so the callback never sees a mutation
+   *  this module made. */
+  const repaint = (view: BuilderView): void => {
+    paint(board, canvas, rail, library, view);
+    watcher.takeRecords();
+  };
 
   // The rail's buttons, through ONE delegated listener on the rail itself rather than one per
   // button. The rows are replaced on every repaint, so a listener bound to a button would be bound
@@ -203,7 +282,7 @@ function boot(): void {
     // up arrow on the first row, is a no-op rather than a flicker.
     if (next === state) return;
     state = next;
-    paint(board, canvas, rail, library, viewOf(state, currentAsk(), null));
+    repaint(viewOf(state, currentAsk(), null));
   });
 
   /** The prompt as it currently stands, for a repaint that no prompt caused. The composer holds the

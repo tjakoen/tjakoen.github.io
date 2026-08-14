@@ -237,3 +237,73 @@ test.describe("the rail: the blocks, as things you can operate", () => {
     await ctx.close();
   });
 });
+
+// D3: the AI operates a block. These drive grain's DISPATCHER directly with the ops grain's reasoner
+// emits, which is the honest test of the handshake: the AI never calls the page's module, so what
+// has to work is that an op applied to the DOM is noticed by the page that owns the composition.
+// A block edit that the page does not notice is a delete that lands, reports success, and comes
+// back on the next prompt.
+test.describe("the AI operates a block, and the page notices", () => {
+  const cellIds = (page: Page) => page.locator(CELL).evaluateAll(
+    (cells) => cells.map((c) => (c as HTMLElement).dataset.blockId));
+  const railIds = (page: Page) => page.locator(RAIL_ROW).evaluateAll(
+    (rows) => rows.map((r) => r.getAttribute("data-block")));
+
+  /** Apply one render op the way grain's dispatcher does. Kept to the exact three effects the
+   *  contract defines so this cannot drift into testing a private helper. */
+  const applyOp = (page: Page, op: { target: string; op: string; span?: string; direction?: string }) =>
+    page.evaluate((o) => {
+      const el = document.querySelector(`[data-surface="${o.target}"]`);
+      if (!el) throw new Error(`no surface ${o.target}`);
+      if (o.op === "remove") { el.remove(); return; }
+      if (o.op === "span") { el.setAttribute("data-span", o.span!); el.dispatchEvent(new Event("change", { bubbles: true })); return; }
+      if (o.op === "move") {
+        const sib = o.direction === "up" ? el.previousElementSibling : el.nextElementSibling;
+        if (sib) { if (o.direction === "up") el.parentNode!.insertBefore(el, sib); else el.parentNode!.insertBefore(sib, el); }
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }, op);
+
+  test("every block on the canvas carries an address a verb can reach", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await expect(page.locator(`${CANVAS} [data-surface^="block:"]`)).toHaveCount(3);
+    await expect(page.locator('[data-surface="block:b2"]')).toHaveCount(1);
+  });
+
+  test("a remove op sticks: the rail follows, and the next prompt does not bring it back", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await applyOp(page, { target: "block:b2", op: "remove" });
+
+    await expect(page.locator(RAIL_ROW)).toHaveCount(2);
+    expect(await railIds(page)).toEqual(["b1", "b3"]);
+
+    // the assertion that matters. Before the page derived its state back off the DOM, this next
+    // prompt appended to a composition that still held b2 and painted it straight back.
+    await page.locator(COMPOSER).fill("a stat");
+    await page.locator(SUBMIT).click();
+    expect(await cellIds(page)).toEqual(["b1", "b3", "b4"]);
+  });
+
+  test("a span op sticks, and the rail's pressed chip follows it", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await applyOp(page, { target: "block:b3", op: "span", span: "full" });
+    await expect(page.locator('[data-block="b3"] [data-op="span:full"]')).toHaveAttribute("data-on", "on");
+    await expect(page.locator('[data-block="b3"] [data-op="span:half"]')).not.toHaveAttribute("data-on", "on");
+  });
+
+  test("a move op sticks, and the rail reorders with the canvas", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await applyOp(page, { target: "block:b3", op: "move", direction: "up" });
+    expect(await cellIds(page)).toEqual(["b1", "b3", "b2"]);
+    expect(await railIds(page)).toEqual(["b1", "b3", "b2"]);
+  });
+
+  // The spec pane is the artifact an export writes and an import reads. If an AI edit did not reach
+  // it, the page would hand you a document describing a page you are not looking at.
+  test("the spec pane follows an AI edit", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await applyOp(page, { target: "block:b1", op: "remove" });
+    const doc = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
+    expect(doc.blocks.map((b: { id: string }) => b.id)).toEqual(["b2", "b3"]);
+  });
+});
