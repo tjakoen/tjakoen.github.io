@@ -28,7 +28,34 @@ import {
   type PageComposition,
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
-import { readBlockCommand } from "./block-command.ts";
+import { looksLikeAnEdit } from "./block-command.ts";
+import { blockMessage, readModelMove } from "./block-reasoner.ts";
+
+// grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
+// a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
+// transport.
+//
+// These are grain's, deliberately: the prompt the model is handed, the parser that pulls a move out
+// of whatever it says, and the validator that checks that move against what is actually on the
+// screen. A portfolio copy of any of the three would be a second opinion about what is legal, and
+// the manifest is the only thing that knows.
+//
+// LAZY, and that was measured rather than preferred. Loading them at the top means a top-level
+// await, which defers this whole module's evaluation and therefore `boot()` — and boot is what
+// installs the MutationObserver that notices an AI edit. An op that lands in that gap is silently
+// missed, which is exactly the failure the observer exists to close. A span test that had been
+// green all day went red on the first version of this file. Nothing needs grain until an edit is
+// actually being read, and by then a model call is about to cost far more than an import.
+type GrainModel = typeof import("@tjakoen/grain/ai/model.ts");
+type GrainManifest = typeof import("@tjakoen/grain/ai/manifest-dom.ts");
+let grainPair: Promise<[GrainModel, GrainManifest]> | null = null;
+const loadGrain = (): Promise<[GrainModel, GrainManifest]> => {
+  grainPair ??= Promise.all([
+    import(new URL("../../grain/ai/model.js", import.meta.url).href) as Promise<GrainModel>,
+    import(new URL("../../grain/ai/manifest-dom.js", import.meta.url).href) as Promise<GrainManifest>,
+  ]);
+  return grainPair;
+};
 import { viewOf, type BuilderView } from "./builder-page.ts";
 import {
   BLOCK_ID_ATTR, CANVAS_SURFACE, CELL_CLASS, LIBRARY_CLASS, REPEATS, SPAN_ATTR, SURFACE_ATTR,
@@ -56,6 +83,16 @@ interface GrainDoor {
 }
 const grainDoor = (): GrainDoor | null =>
   (window as unknown as { grain?: { door?: GrainDoor } }).grain?.door ?? null;
+
+/** The DESK's model, as desk-door.ts publishes it. One structured completion, no conversation.
+ *
+ *  Its absence is the honest offline signal and is treated as one: this page says the desk cannot
+ *  run rather than reaching for a word list that is not the model. That was the owner's call on
+ *  2026-08-14, and the reason is that a silent fallback would let the page claim an AI edit for
+ *  something no AI touched. */
+interface DeskModel { complete(prompt: string): Promise<string | null> }
+const deskModel = (): DeskModel | null =>
+  (window as unknown as { desk?: DeskModel }).desk ?? null;
 
 // ---------------------------------------------------------------------------------------------
 // Cloning and filling one block
@@ -244,7 +281,7 @@ function boot(): void {
    *  repainted every time an op lands, and the op that lands is the one this line is announcing: a
    *  bound line would blank itself at the exact moment it came true. */
   const saidLine = $('[data-surface="builder-said"]');
-  const say = (text: string, read: "command" | "refusal"): void => {
+  const say = (text: string, read: "command" | "refusal" | "thinking" | "reply"): void => {
     if (!saidLine) return;
     saidLine.textContent = text;
     saidLine.setAttribute("data-read", read);
@@ -257,43 +294,87 @@ function boot(): void {
     saidLine.setAttribute("hidden", "");
   };
 
-  // A prompt is read TWICE, and the first reading is the one D3 was missing.
+  /** An edit, from the sentence to the op. The model chooses; nothing it says is trusted.
+   *
+   *  The order matters and every step of it is somebody else's code. grain harvests the manifest
+   *  from the live DOM, so the model is told which blocks are here and which verbs each one accepts,
+   *  read off the page rather than off this module's state. grain builds the prompt. The desk runs
+   *  the model. grain parses whatever came back and validates it against that same manifest.
+   *  block-reasoner.ts narrows the survivors to the three verbs that edit a page and checks their
+   *  closed word lists, which validation does not. Only then does an Intent go out the one door.
+   *
+   *  What is NOT here is a fallback. If the model cannot run, this says so and stops. */
+  async function runEdit(ask: string): Promise<void> {
+    const desk = deskModel();
+    if (!desk) {
+      say("The desk cannot run here, so there is nothing to read your sentence. The rail's own controls still work.", "refusal");
+      return;
+    }
+    const door = grainDoor();
+    if (!door || !door.online()) {
+      // Applying the op locally would look identical on screen and would be a demo of the rail
+      // wearing a prompt bar, which is not what this page claims.
+      say("The door is not up, so a block verb has nowhere to go. The rail's own controls still work.", "refusal");
+      return;
+    }
+
+    say("Reading the page…", "thinking");
+    const [grainModel, grainManifest] = await loadGrain();
+    const manifest = grainManifest.domManifest(document);
+    const prompt = grainModel.buildReasonerPrompt(
+      grainManifest.manifestForReasoner(document),
+      blockMessage(ask, state.blocks.map((b) => b.id)),
+    );
+
+    const raw = await desk.complete(prompt);
+    if (raw === null) {
+      say("The desk could not run the model here, so it did not guess. The rail's own controls still work.", "refusal");
+      return;
+    }
+
+    const read = readModelMove(raw, manifest, grainModel);
+    if (read.kind === "refusal") {
+      console.info("[builder] refused the desk's move:", read.because, raw);
+      say(read.said, "refusal");
+      return;
+    }
+    if (read.kind === "reply") { say(read.said, "reply"); return; }
+
+    // Through the one door, never through applyOp. Calling this module's own op function here would
+    // be quicker and would prove nothing: the point is that a block can be operated by something
+    // that only knows a verb and an address, and the way to show that is to send exactly those two
+    // things out the same wire a rail button uses. The dispatcher answers by mutating the addressed
+    // cell, and the watcher below derives the composition back off the DOM.
+    //
+    // The line says which block BEFORE the op lands, and that is the one guard against the failure
+    // validation cannot see: a move that is legal and wrong. Asked for the second card, a small
+    // model may hand back the first, and b2 is as real an address as b4.
+    say(read.command.said, "command");
+    door.submit(read.command.action, read.command.surface, read.command.payload);
+  }
+
+  // A prompt is ROUTED before it is read, and the router runs on nothing.
   //
   // Over a page that already holds blocks, a prompt may be an EDIT of it: "drop the second card" is
   // a sentence the matcher can do nothing with, because adding is the only thing it knows how to do.
-  // block-command.ts resolves that sentence against the blocks actually on the page and answers with
-  // one of grain's three block verbs, addressed to one of the ids the rail is printing. Anything it
-  // cannot resolve comes back as a refusal that says what it counted, and a refusal composes
-  // nothing: silently adding a card because "remove the card" was ambiguous is the failure this
-  // whole page argues against.
+  // looksLikeAnEdit answers that one question by grammar, which is why it needs no model and no word
+  // list: you edit "the card" and you ask for "a card". Everything it routes to an edit goes to the
+  // model; everything else still ADDS, which is the whole difference from the form demo and the part
+  // that has to keep working on a machine that cannot run a model at all.
   //
-  // Everything else still ADDS, which is the whole difference from the form demo: a page you build
-  // up rather than one you keep re-rolling. Intercepted rather than left to the plain GET, because a
-  // round trip would throw the composition away and, on a static host, would come back to the same
-  // frozen file.
+  // Intercepted rather than left to the plain GET, because a round trip would throw the composition
+  // away and, on a static host, would come back to the same frozen file.
   composer.addEventListener("submit", (e) => {
     const box = $<HTMLTextAreaElement>("textarea", composer);
     const ask = box?.value.trim() ?? "";
     if (!ask) return;
     e.preventDefault();
 
-    const read = readBlockCommand(ask, state.blocks);
-    if (read.kind === "refusal") { say(read.said, "refusal"); return; }
-    if (read.kind === "command") {
-      // Through the one door, never through applyOp. Calling this module's own op function here
-      // would be quicker and would prove nothing: the point of D3 is that a block can be operated by
-      // something that only knows a verb and an address, and the way to show that is to send exactly
-      // those two things out the same wire a rail button uses. The dispatcher answers by mutating
-      // the addressed cell, and the watcher below derives the composition back off the DOM.
-      const door = grainDoor();
-      if (!door || !door.online()) {
-        // Honest rather than helpful. Applying the op locally would look identical on screen and
-        // would be a demo of the rail wearing a prompt bar, which is not what this page claims.
-        say("The door is not up, so a block verb has nowhere to go. The rail's own controls still work.", "refusal");
-        return;
-      }
-      say(read.command.said, "command");
-      door.submit(read.command.action, read.command.surface, read.command.payload);
+    if (looksLikeAnEdit(ask, state.blocks.length)) {
+      void runEdit(ask).catch((err) => {
+        console.error("[builder] the edit path failed", err);
+        say("Something went wrong reading that. The rail's own controls still work.", "refusal");
+      });
       return;
     }
 

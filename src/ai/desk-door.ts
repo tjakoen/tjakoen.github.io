@@ -701,6 +701,13 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     probe,
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)
+    // grain's one-shot JSON-mode adapter — /builder's verb picking. The cast is the honest kind: one
+    // WebLLM MLCEngine satisfies BOTH of grain's engine shapes, because `chat.completions.create`
+    // streams or does not depending on the request it is handed, and grain types the two uses
+    // separately (StreamingChatEngine carries interruptGenerate; ChatEngine returns a completion).
+    // The desk holds the engine as the streaming one because that is what a conversation needs.
+    makeChatModel: (engine, opts) =>
+      grainChat.makeChatModel(engine as unknown as Parameters<typeof grainChat.makeChatModel>[0], opts),
     loadKnowledge,
     fallback: grainReasoner.makeStubReasoner(),   // every non-chat verb (demo.run, say.*, item.archive)
     markOffline,
@@ -720,6 +727,19 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();
+  // The desk's MODEL, as a seam for an island that needs a move rather than a conversation.
+  // /builder is the only user: it hands over a prompt built from grain's live manifest and gets one
+  // JSON move back, which grain then validates before anything reaches the page. Published the same
+  // way deskReset is, and for the same reason — an island cannot import this module, and the
+  // alternative is a second 0.5B on the GPU for the sake of one call.
+  //
+  // Its ABSENCE is meaningful and must stay so: on a page with no desk door stamped, /builder finds
+  // nothing here and says the desk cannot run rather than falling back to something that is not the
+  // model. That was the owner's call on 2026-08-14, and a silent fallback is the shape of every
+  // silent-success bug this estate has recorded.
+  (globalThis as unknown as { desk?: { complete(prompt: string): Promise<string | null> } }).desk = {
+    complete: (prompt: string) => reasoner.complete(prompt),
+  };
   // If we arrived here from a desk navigation, resume the lamp on this page (cross-page continuity).
   // Read the arrival key BEFORE runArrival consumes it, so page-arrival awareness can skip a page the
   // desk itself drove us to (runArrival already announces there — no double greeting).

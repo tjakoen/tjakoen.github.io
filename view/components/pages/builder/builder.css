@@ -35,7 +35,11 @@
    a chosen verb reads muted, since the refusal is the one that wants reading. */
 [data-screen="builder"] .wb-bar__said { font-family: var(--font-mono); font-size: var(--text-xs);
   margin: 0 0 var(--space-2); color: var(--ink); }
-[data-screen="builder"] .wb-bar__said[data-read="command"] { color: var(--ink-muted); }
+/* A chosen verb, the desk waiting, and the desk answering without acting all read quiet. A refusal
+   is the only one that keeps full ink, because it is the only one asking to be read. */
+[data-screen="builder"] .wb-bar__said[data-read="command"],
+[data-screen="builder"] .wb-bar__said[data-read="thinking"],
+[data-screen="builder"] .wb-bar__said[data-read="reply"] { color: var(--ink-muted); }
 [data-screen="builder"] .wb-bar__said[hidden] { display: none; }
 
 /* The pane: one treatment, three users (canvas, rail, and the rail's own refusal block). Borrowed
