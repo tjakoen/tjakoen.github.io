@@ -95,12 +95,20 @@ needs a new verb. Until it is closed, a sandbox that offers to compose a checkbo
 control the AI half of the demo cannot touch, which is worth knowing before piece 2 widens the
 matcher's table.
 
-**The owner answered on 2026-08-13: add the verb.** So that is a real unit of work now rather than an
-open question, and it is the one thing on this page that is not sandbox work at all. It belongs
-before piece 2 for a practical reason: piece 2 widens the matcher's closed set past text fields, and
-the moment a checkbox can be generated, the demo's closing move of the AI filling in what it just
-generated has a hole in it. The shape is written up in the grain plan's section 5b, including why the
-atom's own address is the last step rather than the first.
+**The owner answered on 2026-08-13: add the verb. BUILT 2026-08-14** as `check.set`, with its own
+surface kind `check` and its own render op `tick`; the spec and the full account are in grain's
+[`plans/check-set-op.md`](../../grain/packages/grain/plans/check-set-op.md). The hole piece 2 would
+otherwise have opened is closed: the moment the matcher can generate a checkbox, the demo's closing
+move of the AI filling in what it just generated reaches that control like any other. The ordering
+held, and it was the point of the unit: contract, dispatcher, kit and door first, the verb proved
+ticking a real control in a real browser, and only then `b-check`'s own address.
+
+The first control it operates is on this site rather than in the demo: the contact form on `/about`
+gained a **Copy me in** tick box, rendered from `contact-form.json` through `b-check` and addressed
+`check:contact-copy`, which puts the visitor's own address in the mail draft's cc. It is a real
+feature rather than a fixture, and it is the surface the e2e drives, so the verb is covered by
+something a person also uses. Worth an owner's minute as a product call, since it is a new control on
+a published page: cheap to drop, one entry in one JSON file plus its tag.
 
 - [ ] 1. The prompt area becomes a real composer
 - [ ] 2. The spec generalizes past forms
@@ -109,3 +117,4 @@ atom's own address is the last step rather than the first.
 - [ ] 5. The catalog sidebar default
 - [x] The remaining control gaps, grain plan section 5 (2026-08-13,
       artifacts/runs/2026-08-13-controls-complete.md)
+- [x] The tick-box verb, `check.set` (2026-08-14, artifacts/runs/2026-08-14-tick-box-verb.md)

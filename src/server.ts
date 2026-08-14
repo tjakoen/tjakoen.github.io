@@ -225,8 +225,18 @@ interface ContactMessageRaw {
   surface: string; label: string; name: string;
   placeholder: string | null; value: string | null; required: "required" | null;
 }
+// A tick box is its own array for the same reason a message box is: b-check renders one, b-field
+// cannot. Its `surface` is a check: address rather than a field: one, because check.set is the verb
+// that operates a tick box and field.set would write the value the form submits instead of the state
+// it shows. `checked` takes the literal string or null, the boolean-attribute rule the required key
+// already follows.
+interface ContactCheckRaw {
+  surface: string; label: string; name: string; type: "checkbox" | "radio"; value: string | null;
+  checked: "checked" | null; required: "required" | null; hint: string | null; error: string | null;
+}
 interface ContactFormData {
   fields: ContactFieldRaw[]; messages: ContactMessageRaw[]; choices: ContactChoiceRaw[];
+  checks: ContactCheckRaw[];
 }
 const contactForm: ContactFormData = await Bun.file(
   join(import.meta.dir, "..", "content", "data", "contact-form.json"),
@@ -234,6 +244,7 @@ const contactForm: ContactFormData = await Bun.file(
 const contactFields = contactForm.fields;
 const contactMessages = contactForm.messages;
 const contactChoices = contactForm.choices;
+const contactChecks = contactForm.checks;
 
 const renderAppPage = async (html: string) =>
   stampDevDoor(await renderPage(html, {
@@ -241,7 +252,7 @@ const renderAppPage = async (html: string) =>
     calendarEvents: await buildCalendarEvents(),
     mailFolders, mailMessages,
     cvRoles, cvEducation, cvSkills, cvCerts, cvStats, cvPrimary, cvLanguages, cvSummary,
-    contactFields, contactMessages, contactChoices,
+    contactFields, contactMessages, contactChoices, contactChecks,
   }));
 
 // /builder demo: the same shell every page gets, but rendered by hand rather than through

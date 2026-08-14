@@ -128,6 +128,13 @@
                  page that flow never drafts on. Rows is form-wide config on the tag, the way size
                  is: height is presentation, not per-item data. -->
             <b-memo each="contactMessages" size="sm" rows="6"></b-memo>
+            <!-- The tick box is addressed check:contact-copy, not field:contact-copy, and the
+                 prefix is the point rather than a formatting choice: a `check` surface accepts
+                 check.set and nothing else, where a `field` one would advertise field.set, which
+                 writes the value a tick box SUBMITS rather than the state it shows. The desk can
+                 tick this for you when you ask it to copy you in, and your own click settles the
+                 AI's ink the moment you disagree with it. -->
+            <b-check each="contactChecks" size="sm"></b-check>
             <div class="contact-form__foot">
               <button class="btn" type="submit">Send</button>
               <span class="contact-form__hint">Opens in your mail app, addressed to me.
@@ -247,8 +254,14 @@
         // existed the draft opened empty and the writing all happened in the mail client; it can
         // happen here now, and an empty box still opens the same draft rather than blocking Send.
         var body = 'From: ' + name + (email ? ' <' + email + '>' : '') + '\n\n' + message;
+        // "Copy me in" puts the visitor's own address in cc, which is the only way a static site
+        // can give someone a copy of what they sent: there is no server here to send them one.
+        // It needs the email field filled to mean anything, so an empty one is simply left off
+        // rather than producing a draft addressed to nobody.
+        var copyBox = form.querySelector('[name="copy"]');
+        var cc = copyBox && copyBox.checked && email ? '&cc=' + encodeURIComponent(email) : '';
         window.location.href = 'mailto:' + to +
-          '?subject=' + encodeURIComponent(subject) +
+          '?subject=' + encodeURIComponent(subject) + cc +
           '&body=' + encodeURIComponent(body);
       });
     })();

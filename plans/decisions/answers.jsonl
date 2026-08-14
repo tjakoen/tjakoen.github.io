@@ -39,3 +39,4 @@
 {"kind":"answer","id":"a-20260813T2212Z-controls","at":"2026-08-13T00:00:00.000Z","via":"decision-widget","request":{"source":"chat","ref":"review-controls-complete","question":"Two naming calls are open: b-check for the data-first tick box, and b-memo from the textarea round.","options":["Keep both names","Rename one or both"],"unblocks":"the grain publish, after which a rename is expensive"},"choice":"Keep both names"}
 {"kind":"ack","id":"k-20260813T131955Z-0b02a9cd","at":"2026-08-13T13:19:55.784Z","for":"a-20260813T2211Z-controls"}
 {"kind":"ack","id":"k-20260813T131955Z-d7e405d9","at":"2026-08-13T13:19:55.831Z","for":"a-20260813T2212Z-controls"}
+{"kind":"ack","id":"k-20260814T040227Z-f81a5ba4","at":"2026-08-14T04:02:27.262Z","for":"a-20260813T2210Z-controls"}

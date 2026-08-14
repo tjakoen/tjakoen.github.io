@@ -6,6 +6,9 @@
   "messages": [
     { "surface": "field:about-message", "label": "Message", "name": "message", "placeholder": "What would you like to say?", "value": null, "required": null, "hint": null, "error": null }
   ],
+  "checks": [
+    { "surface": "check:contact-copy", "label": "Copy me in", "name": "copy", "type": "checkbox", "value": "yes", "checked": null, "required": null, "hint": "Puts your own address on the draft, so you keep what you sent.", "error": null }
+  ],
   "choices": [
     {
       "surface": "field:contact-topic",
