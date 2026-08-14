@@ -383,16 +383,22 @@ export const FOLDED_NOTES: Record<string, { to: string; title: string }> = {
  *  a reader who followed an old link should understand it in one sentence and land in one click. */
 export function renderFoldedNotePage(from: string, inject = "", injectHead = ""): string {
   const moved = FOLDED_NOTES[from]!;
+  // Trailing slash on the canonical and the refresh target, matching the sitemap's own convention
+  // (see server.ts /sitemap.xml): GitHub Pages serves dist/<route>/index.html at the directory URL
+  // and 301-redirects the extensionless form to it. Pointing a stub at the extensionless form would
+  // spend a second redirect hop on a page whose entire job is one hop. enrichHead leaves an existing
+  // canonical alone, which is what this page needs — it points at the DESTINATION, not at itself.
+  const dest = `${moved.to}/`;
   return `<!DOCTYPE html>
 <html lang="en" data-themes="sourdough baguette brioche">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>This note moved · tjakoen.github.io</title>
-  <meta name="description" content="This note was folded into a longer one. It now lives at ${moved.to}.">
+  <meta name="description" content="This note was folded into a longer one. It now lives at ${dest}.">
   <meta name="robots" content="noindex, follow">
-  <link rel="canonical" href="${moved.to}">
-  <meta http-equiv="refresh" content="3; url=${moved.to}">
+  <link rel="canonical" href="${dest}">
+  <meta http-equiv="refresh" content="3; url=${dest}">
 ${injectHead}</head>
 <body data-screen="note-moved" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="notes" data-rail-collapsed="false" data-surface="screen">
@@ -404,8 +410,8 @@ ${injectHead}</head>
         <hr class="rule">
         <p class="lede">It said one part of a bigger argument, so it now lives inside that argument
           instead of beside it. Nothing was thrown away. You are on your way to
-          <a href="${moved.to}">${moved.title}</a>, or you can
-          <a href="${moved.to}">go there now</a>.</p>
+          <a href="${dest}">${moved.title}</a>, or you can
+          <a href="${dest}">go there now</a>.</p>
         <p><a href="/notes">All notes</a></p>
       </div>
     </main>
