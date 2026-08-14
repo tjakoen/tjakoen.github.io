@@ -117,13 +117,14 @@
         <!-- D4: written for someone operating a tool rather than reading an argument. The order is
              what you can type, what the vocabulary is, and where it stops. The long-form version of
              the same case is the note this page links from, which is where an argument belongs. -->
-        <details class="wb-drawer">
+        <details class="wb-drawer" data-surface="builder-help">
           <summary>What it builds, what it edits, and where it stops</summary>
           <p>Describe a page and press Build it. A fixed, code-owned set of GRAIN blocks decides what
             renders, expanded by the same renderer every other page on this site goes through. Once
-            there are blocks on the canvas, the same box edits them: say drop the second card, and a
-            half-billion-parameter model running in this browser reads what is on the page and picks
-            one verb aimed at one id the rail is printing.</p>
+            there are blocks on the canvas, the same box aims at them: say drop the second card, and a
+            half-billion-parameter model running in this browser reads what is on the page and answers
+            with one verb pointed at one id the rail is printing. Whether it answers well is a
+            separate question, it has been measured, and this drawer says so below.</p>
           <p>The model chooses and code holds the fence. It is shown the blocks that exist and the
             verbs each one takes, and everything it answers is checked against that same list before
             anything moves: a verb that is not in the vocabulary, a block that is not here, a width
@@ -139,9 +140,26 @@
             <div class="docs-list__item"><span class="docs-list__name">Make the callout half</span><span class="docs-list__what">sets a width. Full, half and third, and there is no fourth word.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Move the form up</span><span class="docs-list__what">shifts one block one place, clamped at the ends rather than wrapped.</span></div>
           </div>
-          <p>An edit the model gets wrong changes nothing and says why. That is the part worth
-            trusting: a builder that quietly edits the wrong block is worse than one that admits it
-            did not understand, because the first kind of mistake is the kind you find later.</p>
+          <p>Those four lines are the whole vocabulary, and only the first one currently works end to
+            end. The editing half was measured on 2026-08-15 rather than assumed, over thirty-three
+            answers from the real model, and it has not landed a correct edit yet. The first eighteen
+            never aimed at a block at all. Then the list the model reads was narrowed to only the
+            things a verb can touch, and seven of the next fifteen named a block, five of those named
+            the right block and the right verb, and every one of the five was refused for writing b2
+            where this page addresses that block as block:b2. Those numbers are a snapshot of this
+            build rather than a standing fact about small models.</p>
+          <p>This drawer used to promise that the honest demo is the one where you watch it pick the
+            wrong block. It does not get that far, and a promise you cannot keep is worse than a limit
+            you state. What the same runs do show is the other half, and it is the half worth
+            trusting: the canvas came back byte-identical every single time. Every wrong answer was
+            caught, nothing moved, and the page said which refusal it was. An edit the model gets
+            wrong changes nothing and says why, because a builder that quietly edits the wrong block
+            is worse than one that admits it did not understand: the first kind of mistake is the kind
+            you find later.</p>
+          <p>So describing a page is the part that works, and it works on a machine that cannot run a
+            model at all. Editing one is the model's job and this model cannot do it yet. Both halves
+            are on this page on purpose, and the line under the prompt box is where you watch the
+            second one fail.</p>
           <p>Nothing on this page was written by the model. Which components appear is the block
             set's decision, and the words inside each one are sample content the same table carries,
             drafted by code. A wording pass is an open seam rather than a shipped feature.</p>
