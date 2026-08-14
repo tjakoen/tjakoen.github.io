@@ -125,13 +125,26 @@ Each is a session's worth and each ends with something you can look at.
       markup grain's own doc for that molecule documents and declaring no class of its own. A test
       renders every block in the set through the real renderer and fails if one of them expands to
       nothing.
-- [ ] **P2. The canvas renders a composition server-side.** `/builder` renders a spec into a grid
-      keyed on `span`, through `render(name, data, props)` in a loop. Reframed page copy and title:
-      the page is about GRAIN, and a form is one block. The old `?ask=` form path keeps working,
-      since a form-shaped ask now produces a `form` block at the same address.
-- [ ] **P3. The browser composes.** The hidden template library, the client-side fill, and the door
-      wiring so a prompt appends a block to what is already there. This is the phase that makes the
-      demo work where it actually lives, and the one to be nervous about.
+- [x] **P2. The canvas renders a composition server-side** (2026-08-14). `/builder` renders a
+      composition into a six-column grid keyed on `span`, through `render(name, data, props)` in a
+      loop. The page copy, the title and the examples all argue about blocks now. The form path is
+      unchanged at its own address: the `builder-form` surface moved onto the block template so the
+      review tour and both e2e specs keep resolving. **One decision came with it that P4 was going
+      to have to make anyway:** the renderer leaves a component's HTML comment in its output, which
+      is fine for a page whose components carry a line and wrong for one whose block templates carry
+      a paragraph of design commentary, so the canvas strips comments at its own edge. The
+      `data-field` and `data-bind-*` directives are deliberately kept, because P3 reads them.
+- [x] **P3. The browser composes** (2026-08-14). The hidden template library, the client-side fill,
+      and the composer appending rather than round-tripping. Proved the honest way: `bun run export`,
+      then a plain static file server over `dist/`, then a five-block page built with no app server
+      running. Two things the plan did not foresee. A library entry cannot carry a live
+      `data-surface`, because a hidden template answering to an address puts a second element on a
+      name meant to name one thing, so an address is parked on the way in and renamed back on clone.
+      And the export crawler seeds its module graph from `MODULE_ENTRIES` only, never from a page's
+      own script tag, so the island had to be listed there or the frozen page 404s on the very
+      script that makes it work. The **desk appending to the canvas through the door is NOT wired**:
+      the desk still drives this page the way it always did, by navigating to `?ask=`, which now
+      works on the static host too.
 - [ ] **P4. Take it away.** Three exports off one spec: the JSON (round-trips through import), the
       rendered HTML with grain's stylesheet, and the tag source a developer would have hand-written.
       Every exported page carries the byline. Import is a file picker plus the same validation the
