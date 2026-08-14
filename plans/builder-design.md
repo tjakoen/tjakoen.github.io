@@ -90,12 +90,20 @@ into the terminal that is already there.
       something can reach it. What is left is the half that chooses: nothing turns "drop the second
       card" into `block.remove` on `b2` yet, and that is where the small model earns its place.
       The original note follows.
-- [ ] **D3b. Something chooses the verbs.** Addresses on the blocks and the vocabulary to reach them, so the
-      small model can build a page rather than only navigate to a prompt. Deliberately last, and the
-      ordering is the tick box's lesson: an address that lands before a working verb advertises an
-      operation nothing can perform. No `block:` surface ships until the verb does. **The shape is
-      sketched in the section below and the decision under it is the owner's**, because the kinds and
-      the verbs live in grain's contract rather than here, and adding one is a fleet-wide change.
+- [x] **D3b. Something chooses the verbs** (2026-08-14). `src/ai/block-command.ts` resolves a sentence
+      against the blocks actually on the canvas and answers with one of the three verbs, addressed to
+      one of the ids the rail prints. It goes out through `window.grain.door`, never through the
+      page's own `applyOp`: sending a verb and an address down the same wire a rail button uses is
+      the whole claim, and applying the op locally would look identical on screen and prove nothing.
+      Deterministic, per the owner's call and the law block-set.ts and field-matcher.ts already
+      state. Anything it cannot resolve to exactly one block is a refusal that says what it counted,
+      and a refusal composes nothing. The line under the prompt bar says which reading won.
+- [x] **The kind question, settled 2026-08-14.** Option 1: `block` stays. The estate's own precedent
+      decided it, not generality: `check` was made its own kind rather than folded into `field`
+      exactly so the advertisement stayed honest per control, every kind grain has is concrete, and
+      `region.resize` taking full, half or third reads wrong because those are grid words rather than
+      bounds. Renaming later costs one contract edit and one attribute, and by then a second
+      rearrangeable surface would be shaping the name instead of a guess.
 - [x] **The rail pass** (2026-08-14, commit `4561a9d`). Owner's read after D2: the blocks panel
       should be simplified and collapsible. Simplified by WEIGHT rather than by hiding, so all seven
       controls per row stay present, clickable and tabbable and six of them stop shouting; the chips
@@ -104,8 +112,12 @@ into the terminal that is already there.
       A dev-loop defect surfaced and was fixed with it: the module server caches every transpile and
       only grain's `ai/` was watched, so editing one of the portfolio's own browser modules left the
       page running the previous build.
-- [ ] **D4. The copy.** The honest-limits prose rewritten for a tool rather than an essay. It is good
-      writing aimed at a reader of an argument, and the page it now sits on has a different job.
+- [x] **D4. The copy** (2026-08-14). The honest-limits drawer rewritten for someone operating a tool
+      rather than reading an argument: what you can type first, the vocabulary as a four-line list
+      rather than five paragraphs, the editing sentence in it at all, and the two kinds of refusal
+      kept because they are the honest half. Shorter than what it replaced. Closed by default, which
+      was the owner's call the same day: still there for anyone who came for the argument, out of the
+      way of anyone who came to build.
 
 ## D3's shape, and the asymmetry it closes
 
@@ -133,16 +145,47 @@ on the page, because that is the whole of what a 0.5B does reliably.
 building, which is `field.set` plus a control the human or the model presses. That keeps the closed
 set closed: the model never names a component, which is the one rule this whole demo rests on.
 
-**Where this lands is the question.** The kinds and verbs live in `grain/ai/contract.ts`, and the
-portfolio consumes the stack rather than forking it, so a `block` kind is a GRAIN change and a
-fleet-wide one. Three ways to go, and the choice is the owner's:
+**Where this lands was the question, and it is answered.** The kinds and verbs live in
+`grain/ai/contract.ts`, and the portfolio consumes the stack rather than forking it, so a `block`
+kind is a GRAIN change and a fleet-wide one. Three ways were on the table and the owner took the
+first on 2026-08-14:
 
 1. **A `block` kind in grain**, on the argument that an ordered list of components a person
-   rearranges is a general GRAIN pattern rather than this page's private idea.
+   rearranges is a general GRAIN pattern rather than this page's private idea. **Taken.**
 2. **A more general kind**, `region` or `slot`, with `region.remove` / `region.move` /
    `region.resize`, covering any rearrangeable list including a dashboard or a form designer.
+   Rejected as generalizing before a second consumer exists to shape the name.
 3. **Nothing in grain.** The blocks stay push-only addresses with no verbs, the model keeps its one
    lever, and the honest version of this page says the AI can compose but not edit.
+
+## What chooses, and what it will not guess
+
+The chooser is a word list, and every part of the sentence it reads is closed. Three verbs, three
+width words, two directions, and a target that is either a kind, a position, or an id the rail is
+already printing. There is nothing left in that for a small model to invent, which is the same law
+block-set.ts states about component names.
+
+Four ways to name a target, in this order. A literal id wins, because someone reading `b3` off the
+rail is naming exactly one thing. A kind plus an ordinal is "the second card", which resolves within
+that kind rather than across the page, and getting that distinction right is the difference between
+dropping b4 and dropping b2. A kind alone resolves only when there is one of them. A position alone
+counts blocks. Anything else, including "it" on a page holding more than one block, is a refusal.
+
+Three things it refuses on purpose, and each one records a rule rather than a gap:
+
+- **A nudge.** "Wider" is refused with the three words, because `block.span` is a SET for the reason
+  `check.set` is: a verb that changes whatever is there lands somewhere else on a replay and cannot
+  honestly carry `idempotent: true`.
+- **A move further than one place.** "To the top" is a loop rather than a verb, and answering it
+  would put a clamp and a counter inside something advertised as one press.
+- **Two changes in one sentence.** The door takes one Intent, and doing the first half of what was
+  asked is worse than doing none of it.
+
+Two guards are load-bearing and neither is obvious. An EMPTY page never yields a command, because
+"drop in a card" is an ordinary way to ask for a card and on a page with nothing to drop it can only
+mean the add it sounds like. And the width word is read as the LAST of the three to appear, because
+`third` is both a width and a position: "make the second one a third" and "make the third card half"
+both read correctly under that rule and both read wrong under first-match.
 
 ## Verification
 
@@ -154,6 +197,14 @@ fleet-wide one. Three ways to go, and the choice is the owner's:
 - **The form path keeps working at its own address**, which is the same rule P2 and P3 kept:
   `desk-form-build.e2e.ts` passes, and the tour step that asks the desk in the chat is rewritten to
   press the assistant toggle first, since that is now the honest flow.
+- **D3b:** nothing in its e2e applies an op by hand. Only the prompt bar is touched, so a passing
+  test means the whole chain ran: the chooser resolved a target, the door validated the Intent,
+  grain's reasoner answered with a render op, the dispatcher applied it, and the page derived its
+  composition back off the DOM. Seven cases in `builder-canvas.e2e.ts`, twenty-seven in
+  `block-command.test.ts`, and the ones that matter most are the refusals, because a refusal that
+  quietly fell through to the matcher would ADD a card on being asked to remove one.
+- **D4:** read only the four-line list in the drawer and try to operate the page from it. Then check
+  the drawer was shut on arrival.
 
 ## Open
 

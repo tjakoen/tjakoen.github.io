@@ -31,7 +31,16 @@
           <b-memo each="composer" size="sm" rows="2"></b-memo>
           <button class="btn" type="submit">Build it</button>
         </form>
-        <p class="wb-bar__note muted">Each prompt adds to the page rather than replacing it. The
+        <!-- What the prompt was read AS, and it only ever has something to say once a page exists.
+             A prompt over an empty canvas describes a page and gets composed; a prompt over a page
+             that already holds blocks may instead be an edit, and this is where that reading is said
+             out loud before the door acts on it. Written by builder-canvas.ts rather than bound
+             through the view, because the view is repainted every time an op lands and a line that
+             blanked itself the moment it came true would be worse than none. With JavaScript off
+             nothing reads a prompt as an edit, so an empty line here is the honest state. -->
+        <p class="wb-bar__said" data-surface="builder-said" role="status" hidden></p>
+        <p class="wb-bar__note muted">Each prompt adds to the page rather than replacing it, unless it
+          asks to change one that is already there: drop a block, set its width, or move it. The
           address carries the latest one, so a page here is still a link you can send, and reloading
           rebuilds from that prompt alone.</p>
 
@@ -105,32 +114,37 @@
           <pre class="builder-json" data-surface="builder-spec" data-field="specJson"></pre>
         </details>
 
+        <!-- D4: written for someone operating a tool rather than reading an argument. The order is
+             what you can type, what the vocabulary is, and where it stops. The long-form version of
+             the same case is the note this page links from, which is where an argument belongs. -->
         <details class="wb-drawer">
-          <summary>How this works, and what it will not do</summary>
-          <p>Type what a page should hold, and a fixed, code-owned set of GRAIN blocks decides what
-            actually renders. A block is a real component expanded by the same renderer every other
-            page on this site goes through, so what you are looking at is the design system rather
-            than a picture of it. Picking component names is exactly what a small model gets wrong,
-            so it never gets to pick one.</p>
-          <p>Every block below came out of one loop, and the loop is the whole engine:</p>
+          <summary>What it builds, what it edits, and where it stops</summary>
+          <p>Describe a page and press Build it. A fixed, code-owned set of GRAIN blocks decides what
+            renders, expanded by the same renderer every other page on this site goes through. Once
+            there are blocks on the canvas, the same box edits them: say drop the second card, and
+            the sentence is resolved against what is actually there and sent out as one verb aimed at
+            one id the rail is printing.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
-          <p>Layout is three words and only three: full, half and third. A description can ask for
-            two things beside each other and get half, and it can never ask for a grid, a column
-            count or a width, because layout is the part a matcher gets wrong first. Every block sits
-            in a cell that carries its span, so the block itself stays layout-free, which is what
-            grain's own component docs ask of a card or a stat tile.</p>
-          <p>Nothing on this page was written by the model. The block set decides which components
-            appear, and the words inside each one are the sample content the same table carries,
-            drafted by code. A wording pass is an open seam rather than a shipped feature, and until
-            it exists what lands on a composed page is a developer's writing rather than a generated
-            paragraph.</p>
-          <p>Two different reasons live in the "Can't build" list and the difference is worth
-            reading. A shell, a side rail or a top bar is the frame a page sits in rather than
-            content it can hold, so it is refused on principle. Everything else is a gap with a date
-            on it: the component exists, it is documented, and the block set has not grown a template
-            for it yet. A picture is the honest example, because a generated page has no real image
-            to point at and an invented one is a broken picture with a confident name.</p>
+          <div class="docs-list">
+            <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">adds blocks. The only way to add one, so no verb ever names a component.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Drop the second card</span><span class="docs-list__what">removes one block, by kind, by position, or by its id.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Make the callout half</span><span class="docs-list__what">sets a width. Full, half and third, and there is no fourth word.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Move the form up</span><span class="docs-list__what">shifts one block one place, clamped at the ends rather than wrapped.</span></div>
+          </div>
+          <p>An edit that names two blocks, or none, changes nothing and says what it counted. That
+            is the part worth trusting: a builder that quietly edits the wrong block is worse than
+            one that admits it did not understand, because the first kind of mistake is the kind you
+            find later.</p>
+          <p>Nothing on this page was written by the model. Which components appear is the block
+            set's decision, and the words inside each one are sample content the same table carries,
+            drafted by code. A wording pass is an open seam rather than a shipped feature.</p>
+          <p>The Can't build list holds two different answers. A shell, a side rail or a top bar is
+            the frame a page sits in rather than content it can hold, so it is refused on principle.
+            Everything else is a gap with a date on it: the component exists, it is documented, and
+            the block set has not grown a template for it. A picture is the honest example, because a
+            generated page has no real image to point at and an invented one is a broken picture with
+            a confident name.</p>
         </details>
 
         <details class="wb-drawer" data-bind-data-has-form="hasForm">

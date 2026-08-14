@@ -29,6 +29,14 @@
    toolbar's height back and keeps the drag handle for anyone typing a long description. */
 [data-screen="builder"] .wb-bar .field__textarea { min-height: 0; height: 3.4rem; resize: vertical; }
 [data-screen="builder"] .wb-bar__note { font-size: var(--text-xs); margin: 0 0 var(--space-4); }
+/* What the last prompt was read as: the verb it chose, or the reason it chose none. Mono, because
+   everything on this page that names an id or a count is mono and this line names both. Status is
+   weight here rather than hue, the same rule the span chips follow: a refusal reads at full ink and
+   a chosen verb reads muted, since the refusal is the one that wants reading. */
+[data-screen="builder"] .wb-bar__said { font-family: var(--font-mono); font-size: var(--text-xs);
+  margin: 0 0 var(--space-2); color: var(--ink); }
+[data-screen="builder"] .wb-bar__said[data-read="command"] { color: var(--ink-muted); }
+[data-screen="builder"] .wb-bar__said[hidden] { display: none; }
 
 /* The pane: one treatment, three users (canvas, rail, and the rail's own refusal block). Borrowed
    from mail.css rather than forked from it, down to the --paper-2 head, because two tool screens
