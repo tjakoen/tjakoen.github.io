@@ -27,7 +27,9 @@ import { buildAiRoutes } from "./routes/ai-routes.ts";
 import { buildBuilderView } from "./ai/builder-page.ts";
 // The composition, rendered: a loop over the blocks calling the one renderer, because
 // `render(name, data, props)` takes the component name as a runtime string.
-import { renderCanvas } from "./ai/canvas.ts";
+// plus the hidden template library the browser clones from, which is what lets /builder compose on
+// a static host where no server sees the ?ask= in the address.
+import { renderCanvas, renderLibrary } from "./ai/canvas.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
 import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
@@ -577,11 +579,11 @@ ${PAGE_ASSETS}</body>
       const ask = new URL(req.url).searchParams.get("ask") ?? "";
       const view = buildBuilderView(ask);
       const raw = await Bun.file(join(config.pagesDir, "builder.html")).text();
-      const canvas = await renderCanvas(view.blocks);
+      const [canvas, library] = await Promise.all([renderCanvas(view.blocks), renderLibrary()]);
       let html = await renderBuilderPage(raw, { ...view });
-      // A function replacement: rendered block markup can contain $& and friends, which a string
+      // Function replacements: rendered block markup can contain $& and friends, which a string
       // replacement would read as patterns and splice back in mangled.
-      html = html.replace("<!--canvas-->", () => canvas);
+      html = html.replace("<!--canvas-->", () => canvas).replace("<!--library-->", () => library);
       return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     },
     // /kickstart — the short, shareable twin of /standards/kickstart (the new-project prompt).
