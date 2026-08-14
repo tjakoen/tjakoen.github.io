@@ -127,3 +127,49 @@ test.describe("D1 form builder demo (deterministic, no model needed)", () => {
     await expect(page.locator(".assistant__log")).toContainText("Name");   // names the real closed set
   });
 });
+
+// The composer, sandbox piece 1. The desk is not involved in any of these: the whole point of the
+// box is that a visitor types a prompt themselves, and the round trip behind it is a plain GET form
+// back to the same route. So the page still produces a shareable address, and it still works with
+// no JavaScript at all, which is why none of these tests boots a door.
+test.describe("the composer: a typed prompt is still an address", () => {
+  const COMPOSER = '[data-surface="field:builder-ask"]';
+
+  test("the empty page offers the box, and a typed prompt builds the form through a GET", async ({ page }) => {
+    await page.goto("/builder");
+    const composer = page.locator(COMPOSER);
+    await expect(composer).toHaveJSProperty("tagName", "TEXTAREA");
+    await expect(composer).toHaveValue("");            // nothing asked yet
+    await expect(composer).toHaveAttribute("name", "ask");
+
+    await composer.fill("a name, an email and a big message box");
+    await page.locator(".builder-composer button[type=submit]").click();
+
+    // the address is the prompt, exactly as the example links are
+    await page.waitForURL(/\/builder\?ask=/);
+    expect(new URL(page.url()).searchParams.get("ask")).toBe("a name, an email and a big message box");
+    await expect(page.locator(NAME_FIELD)).toHaveCount(1);
+    await expect(page.locator(MESSAGE_BOX)).toHaveCount(1);
+  });
+
+  test("the box comes back holding the prompt that produced the page, so it is edited not retyped", async ({ page }) => {
+    await page.goto("/builder?ask=a%20name%20and%20an%20email");
+    await expect(page.locator(COMPOSER)).toHaveValue("a name and an email");
+
+    await page.locator(COMPOSER).fill("a name and an email and a phone number");
+    await page.locator(".builder-composer button[type=submit]").click();
+    await page.waitForURL(/phone/);
+    await expect(page.locator('[data-surface="field:builder-phone"]')).toHaveCount(1);
+  });
+
+  test("with JavaScript off the box is still there and still builds", async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto("/builder?ask=a%20name%20and%20an%20email");
+    await expect(page.locator(COMPOSER)).toHaveValue("a name and an email");
+    await page.locator(".builder-composer button[type=submit]").click();
+    await page.waitForURL(/\/builder\?ask=/);
+    await expect(page.locator(NAME_FIELD)).toHaveCount(1);
+    await ctx.close();
+  });
+});

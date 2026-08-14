@@ -17,6 +17,16 @@
 [data-screen="builder"] .builder-unsupported-block { display: none; }
 [data-screen="builder"] .builder-unsupported-block[data-has-unsupported] { display: block; }
 
+/* The composer: the same stacked column the live form below uses, at the same width cap, so the box
+   a visitor types into and the boxes the demo generates read as one family rather than two widgets.
+   It is the one control on this page that shows in BOTH states, so it carries no visibility rule of
+   its own. The foot puts the button and its note on one line and lets them wrap on a narrow screen,
+   the treatment .contact-form__foot already sets on About. */
+[data-screen="builder"] .builder-composer { display: flex; flex-direction: column; gap: var(--space-3);
+  max-width: 30rem; margin: 0 0 var(--space-5); }
+[data-screen="builder"] .builder-composer__foot { display: flex; align-items: center; flex-wrap: wrap;
+  gap: var(--space-3); }
+
 /* The prompt echoed back, and the two <pre> blocks (the literal render tag, the pretty-printed
    spec): a quiet monospace panel, the same treatment a code sample gets everywhere else on the
    site (var(--font-mono), a hairline border, no syntax color since neither block is highlighted). */
