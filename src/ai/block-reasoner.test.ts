@@ -60,6 +60,7 @@ describe("what the model is not allowed to have chosen", () => {
     const r = read('{"action":"block.remove","target":"block:b9"}');
     if (r.kind !== "refusal") throw new Error("expected a refusal");
     expect(r.because).toContain("block:b9");
+    expect(r.said).toContain("b1, b2, b3 and b4");
   });
 
   // grain validates the payload's SCHEMA, not its word list, so "wide" is a string where a string
@@ -69,7 +70,7 @@ describe("what the model is not allowed to have chosen", () => {
   test("a width that is a string but not one of the three", () => {
     const r = read('{"action":"block.span","target":"block:b2","payload":{"span":"wide"}}');
     if (r.kind !== "refusal") throw new Error("expected a refusal");
-    expect(r.said).toContain("full, half, third");
+    expect(r.said).toContain("full, half or third");
   });
 
   test("a direction that is neither up nor down", () => {
@@ -92,6 +93,53 @@ describe("what the model is not allowed to have chosen", () => {
     const r = read("I would be happy to help you with that!");
     if (r.kind !== "refusal") throw new Error("expected a refusal");
     expect(r.said).toContain("drop b2");
+  });
+});
+
+// A refusal has two readers and they are not the same person. grain's reason is written for a
+// console; the said line is page copy, and it was reaching a visitor as `no surface "b2" on this
+// screen` before this. What is asserted here is that the two stay separate and that neither one
+// starts claiming something moved.
+describe("a refusal a visitor can read", () => {
+  test("the developer sentence stays in because and never in said", () => {
+    const r = read('{"action":"block.remove","target":"block:b9"}');
+    if (r.kind !== "refusal") throw new Error("expected a refusal");
+    expect(r.because).toContain("no surface");
+    expect(r.said).not.toContain("no surface");
+    expect(r.said).not.toContain("screen");
+  });
+
+  // The measured majority case: the live model names the right block and writes the address short.
+  // The refusal says so and still refuses, because normalizing b2 up to block:b2 is an open decision
+  // rather than something this file gets to take (plans/builder-design.md, Open 3).
+  test("a bare id is named as one word short, and is still refused", () => {
+    const r = read('{"action":"block.remove","target":"b2"}');
+    if (r.kind !== "refusal") throw new Error("expected a refusal");
+    expect(r.said).toContain("block:b2");
+    expect(r.said).toContain("nothing moved");
+  });
+
+  test("a verb with no target says so instead of printing an empty address", () => {
+    const r = read('{"action":"block.remove"}');
+    if (r.kind !== "refusal") throw new Error("expected a refusal");
+    expect(r.said).toContain("drop a block");
+    expect(r.said).toContain("which one");
+  });
+
+  test("no refusal ever says a change happened", () => {
+    const raws = [
+      '{"action":"block.remove","target":"block:b9"}',
+      '{"action":"block.remove","target":"b2"}',
+      '{"action":"block.remove"}',
+      '{"action":"block.span","target":"block:b2","payload":{"span":"wide"}}',
+      '{"action":"field.set","target":"field:builder-ask","payload":{"value":"a card"}}',
+      "I would be happy to help you with that!",
+    ];
+    for (const raw of raws) {
+      const r = read(raw);
+      if (r.kind !== "refusal") throw new Error(`expected a refusal for ${raw}`);
+      expect(r.said).not.toMatch(/\b(Dropping|Setting|Moving|done|changed it)\b/i);
+    }
   });
 });
 
