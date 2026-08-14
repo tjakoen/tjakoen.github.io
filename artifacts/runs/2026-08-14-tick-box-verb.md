@@ -211,10 +211,12 @@ while the bundle is held), `run ledger` (three older reports missing evidence), 
   purpose, and the owner's answer this run was that the verb goes **inside the held bundle** rather
   than shipping after it. So the bundle now carries the controls and the verb that operates them, and
   there is no published window in which a tick box exists that nothing can tick.
-- **`docs/grain/AI-INTERFACE.md` was not updated.** It carries the published verb and render-op
-  tables, and it now describes a vocabulary one verb and one op smaller than the code. `docs/` was
-  outside this run's scope cap, so the drift is reported rather than quietly fixed. It is small and
-  wants doing before the bundle publishes.
+- **Nothing, on the docs.** `docs/grain/AI-INTERFACE.md` was outside the scope cap and was reported
+  as drift rather than quietly fixed; the owner extended the cap mid-run, so the verb table, the
+  surface-kind list, the `RenderOpKind` union, the `RenderOp` shape and a note explaining why the
+  two kinds are separate all landed there in the same run. The ten backticks that added to the lint
+  ratchet are the file's own convention for a literal token, which VOICE allows; the one em-dash the
+  first draft added was removed rather than absorbed.
 - **Sandbox pieces 1 and 2 were not started.** The verb was the whole of this unit, and piece 2 in
   particular now has what it was waiting for.
 
@@ -225,6 +227,5 @@ while the bundle is held), `run ledger` (three older reports missing evidence), 
    entry in `content/data/contact-form.json` and one tag in `view/pages/about.html`.
 2. **The names.** Kind `check`, verb `check.set`, op `tick`, alongside the `b-memo` and `b-check`
    naming calls already recorded as open. Cheap to change while nothing is published, expensive after.
-3. **The `AI-INTERFACE.md` scope extension** named above.
-4. **Push.** 36 commits ahead at session start plus this run's, oldest more than a day old. Still the
+3. **Push.** 36 commits ahead at session start plus this run's, oldest more than a day old. Still the
    owner's call, and still blocking the skills rollout.
