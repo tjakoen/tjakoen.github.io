@@ -437,10 +437,16 @@ test.describe("the model chooses the verb", () => {
   // Three things grain's validation catches, and one it does not. The last is the important one:
   // "wide" is a string where a string was required, so validateMove passes it and only the closed
   // word list stops it before the page announces a change it is not going to make.
+  //
+  // The expected strings changed on 2026-08-15 and the reason is the point of the assertion. The
+  // first two used to read "will not work here", the prefix on grain's own console reason, so the
+  // line a visitor got was `no surface "b9" on this screen`. Each refusal now says which refusal it
+  // is in words, and grain's sentence still goes to the console through `because`. What is asserted
+  // is the visitor's half; block-reasoner.test.ts asserts that the developer's half stayed out of it.
   for (const [what, prompt, expected] of [
-    ["a verb that does not exist", "duplicate the card", "will not work here"],
-    ["a block that is not here", "drop the ninth card", "will not work here"],
-    ["a width outside the three", "widen the card", "full, half, third"],
+    ["a verb that does not exist", "duplicate the card", "not a change anything on this page can make"],
+    ["a block that is not here", "drop the ninth card", "not on this page. The blocks here are b1, b2, b3 and b4"],
+    ["a width outside the three", "widen the card", "full, half or third"],
   ] as const) {
     test(`${what} is refused and nothing moves`, async ({ page }) => {
       await twoCardPage(page);
