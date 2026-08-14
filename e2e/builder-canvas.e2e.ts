@@ -12,6 +12,7 @@ import { test, expect, type Page } from "@playwright/test";
 const CANVAS = '[data-surface="builder-canvas"]';
 const CELL = `${CANVAS} .canvas__cell`;
 const COMPOSER = ".builder-composer textarea";
+const RAIL_ROW = '[data-surface="builder-rail"] [data-block]';
 const SUBMIT = ".builder-composer button[type=submit]";
 
 const ask = (s: string) => `/builder?ask=${encodeURIComponent(s)}`;
@@ -58,7 +59,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
     const library = page.locator(".builder-library");
     await expect(library).toHaveCount(1);
     await expect(library).toBeHidden();
-    await expect(page.locator("[data-block-template]")).toHaveCount(10);
+    await expect(page.locator("[data-block-template]")).toHaveCount(11);
     // the form entry is an empty SHELL: its controls are separate entries the browser appends into
     // it, one clone per item the matcher returned
     await expect(page.locator('[data-block-template="block-form"] input, [data-block-template="block-form"] textarea'))
@@ -81,7 +82,8 @@ test.describe("the browser composes: each prompt adds to what is already there",
     await expect(page.locator(CELL)).toHaveCount(2);
     // the page's own state flags moved with it, through the same bindings the server fills
     await expect(page.locator(".board")).toHaveAttribute("data-builder-state", "result");
-    await expect(page.locator(".builder-canvas-block")).toHaveAttribute("data-has-blocks", "hasblocks");
+    // and the rail knows what is on the canvas, which is what makes it a builder rather than a page
+    await expect(page.locator(RAIL_ROW)).toHaveCount(2);
   });
 
   test("a second prompt appends rather than re-rolling the page", async ({ page }) => {
@@ -124,7 +126,8 @@ test.describe("the static host: one frozen file, and it composes anyway", () => 
 
     await expect(page.locator(CELL)).toHaveCount(3);
     await expect(page.locator(".board")).toHaveAttribute("data-builder-state", "result");
-    await expect(page.locator(".builder-prompt")).toContainText("An intro, two cards side by side");
+    // the composer holds the prompt that produced the page: it is the echo now, and it is editable
+    await expect(page.locator(COMPOSER)).toHaveValue("An intro, two cards side by side, and a callout");
     // the spec pane is the artifact, rebuilt in the browser from the same document shape
     expect(JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!).blocks)
       .toHaveLength(3);
@@ -159,6 +162,78 @@ test.describe("the static host: one frozen file, and it composes anyway", () => 
     await page.goto(ask("an intro and a card"));
     await expect(page.locator(CELL)).toHaveCount(0);
     await expect(page.locator(".builder-empty")).toBeVisible();
+    await ctx.close();
+  });
+});
+
+// The rail, and it is what makes this a builder rather than a page that renders a result.
+// composition.ts has had removeBlock, moveBlock and setSpan since the day it was written, and until
+// 2026-08-14 nothing but a unit test had ever called one: the canvas was append-only, so every
+// mistake was permanent until you started the page over.
+test.describe("the rail: the blocks, as things you can operate", () => {
+  const rowOp = (id: string, op: string) => `[data-block="${id}"] [data-op="${op}"]`;
+  const cellIds = (page: Page) => page.locator(CELL).evaluateAll(
+    (cells) => cells.map((c) => (c as HTMLElement).dataset.blockId));
+
+  test("one row per block, in composition order, with the current span pressed", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await expect(page.locator(RAIL_ROW)).toHaveCount(3);
+    await expect(page.locator(`${RAIL_ROW} .wb-row__name`).first()).toHaveText("lede");
+    // the pressed chip is the block's own span, and only that one
+    await expect(page.locator('[data-block="b1"] .wb-chip[data-on]')).toHaveCount(1);
+    await expect(page.locator('[data-block="b1"] [data-op="span:half"]')).toHaveAttribute("data-on", "on");
+  });
+
+  test("a span chip resizes one block and moves none of the others", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await page.locator(rowOp("b2", "span:full")).click();
+    await expect(page.locator('[data-block-id="b2"]')).toHaveAttribute("data-span", "full");
+    await expect(page.locator('[data-block-id="b1"]')).toHaveAttribute("data-span", "half");
+    expect(await cellIds(page)).toEqual(["b1", "b2", "b3"]);
+  });
+
+  test("remove drops one block and leaves every other id alone", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await page.locator(rowOp("b2", "remove")).click();
+    expect(await cellIds(page)).toEqual(["b1", "b3"]);
+    await expect(page.locator(RAIL_ROW)).toHaveCount(2);
+    // ids are NOT renumbered: b3 stays b3, so a later op still names the block it means
+    await expect(page.locator('[data-block="b3"]')).toHaveCount(1);
+  });
+
+  test("move reorders the canvas, and the ends are clamped rather than wrapped", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await page.locator(rowOp("b3", "move:up")).click();
+    expect(await cellIds(page)).toEqual(["b1", "b3", "b2"]);
+    // the first row's up arrow is a no-op, not a wrap to the bottom
+    await page.locator(rowOp("b1", "move:up")).click();
+    expect(await cellIds(page)).toEqual(["b1", "b3", "b2"]);
+  });
+
+  test("removing the last block returns the empty state, not a matched-nothing notice", async ({ page }) => {
+    await page.goto(ask("An opening paragraph"));
+    await page.locator(rowOp("b1", "remove")).click();
+    await expect(page.locator(CELL)).toHaveCount(0);
+    await expect(page.locator(".board")).toHaveAttribute("data-builder-state", "empty");
+    // you emptied the page; your prompt did not fail, and the page must not say it did
+    await expect(page.locator(".builder-none")).toBeHidden();
+  });
+
+  test("a prompt after an op adds to what survived", async ({ page }) => {
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await page.locator(rowOp("b2", "remove")).click();
+    await page.locator(COMPOSER).fill("a stat");
+    await page.locator(SUBMIT).click();
+    // b4, not b3: ids come from the ids already issued, never from the array length, so an add
+    // after a delete cannot reuse a name a later op would resolve to the wrong block
+    expect(await cellIds(page)).toEqual(["b1", "b3", "b4"]);
+  });
+
+  test("with JavaScript off the rail is still a readable list of what is on the canvas", async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto(ask("An intro, two cards side by side, and a callout"));
+    await expect(page.locator(RAIL_ROW)).toHaveCount(3);
     await ctx.close();
   });
 });

@@ -9,7 +9,7 @@
 import { render } from "../render.ts";
 import type { Block } from "./block-set.ts";
 import {
-  ATOM_LIBRARY, BLOCK_ID_ATTR, BLOCK_LIBRARY, CELL_CLASS, LIBRARY_CLASS, SPAN_ATTR, SURFACE_ATTR,
+  ATOM_LIBRARY, BLOCK_ID_ATTR, BLOCK_LIBRARY, CELL_CLASS, CHROME_LIBRARY, LIBRARY_CLASS, SPAN_ATTR, SURFACE_ATTR,
   TEMPLATE_ATTR, TEMPLATE_SURFACE_ATTR, type LibraryEntry,
 } from "./canvas-dom.ts";
 
@@ -65,6 +65,6 @@ export async function renderLibrary(): Promise<string> {
       .replaceAll(` ${SURFACE_ATTR}="`, ` ${TEMPLATE_SURFACE_ATTR}="`);
     return `<div ${TEMPLATE_ATTR}="${e.name}">${html}</div>`;
   };
-  const entries = await Promise.all([...BLOCK_LIBRARY, ...ATOM_LIBRARY].map(one));
+  const entries = await Promise.all([...BLOCK_LIBRARY, ...ATOM_LIBRARY, ...CHROME_LIBRARY].map(one));
   return `<div class="${LIBRARY_CLASS}" aria-hidden="true">${entries.join("")}</div>`;
 }

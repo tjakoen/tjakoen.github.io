@@ -23,8 +23,11 @@
 // WITH JAVASCRIPT OFF, on the live server, nothing here runs and nothing is lost: the composer is a
 // plain GET form and the server renders the same canvas. On a static host with JavaScript off the
 // page stays empty and honest, which is what it always was.
-import { addFromDescription, emptyComposition, fromDocument, type PageComposition } from "./composition.ts";
-import { BLOCK_COMPONENTS, type Block } from "./block-set.ts";
+import {
+  addFromDescription, emptyComposition, fromDocument, moveBlock, removeBlock, setSpan,
+  type PageComposition,
+} from "./composition.ts";
+import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
 import { viewOf, type BuilderView } from "./builder-page.ts";
 import {
   BLOCK_ID_ATTR, CANVAS_SURFACE, CELL_CLASS, LIBRARY_CLASS, REPEATS, SPAN_ATTR, TEMPLATE_ATTR,
@@ -34,7 +37,7 @@ import {
 /** The page's own chrome binds over the VIEW; a block binds over its own DATA; the composer binds
  *  over its one-item spec. Filling the board must therefore stop at all three, or the view's data
  *  would be walked into markup that means something else and every label would quietly go blank. */
-const FILL_SKIP = `.canvas, .${LIBRARY_CLASS}, .builder-composer`;
+const FILL_SKIP = `.canvas, .wb__rows, .${LIBRARY_CLASS}, .builder-composer`;
 
 const $ = <T extends Element>(sel: string, root: ParentNode = document): T | null => root.querySelector<T>(sel);
 
@@ -90,9 +93,31 @@ function cellFor(library: Element, block: Block): Element | null {
 /** Rebuild the canvas and re-apply the page's own bindings. The canvas is rebuilt whole rather than
  *  appended to: a composition is small, one code path is easier to trust than two, and reorder and
  *  delete (a later phase) need the whole-rebuild path anyway. */
-function paint(board: Element, canvas: Element, library: Element, view: BuilderView): void {
+function paint(board: Element, canvas: Element, rail: Element, library: Element, view: BuilderView): void {
   canvas.replaceChildren(...view.blocks.map((b) => cellFor(library, b)).filter((c): c is Element => c !== null));
+  rail.replaceChildren(...view.rows.map((r) => build(library, "block-row", r)).filter((n): n is Element => n !== null));
   fillTree(board, view, FILL_SKIP);
+}
+
+/** Apply one rail button to the composition. The ops are the pure functions composition.ts has had
+ *  since the day it was written, and until now nothing but a test had ever called one: the canvas
+ *  was append-only, so every mistake was permanent until you started the page over. That, more than
+ *  any amount of chrome, is what stopped this page feeling like a builder.
+ *
+ *  An unrecognized op returns the composition unchanged rather than throwing, which matches what
+ *  every function it calls already does with an id that is not there. */
+function applyOp(comp: PageComposition, op: string, id: string): PageComposition {
+  if (op === "remove") return removeBlock(comp, id);
+  if (op.startsWith("span:")) {
+    const span = op.slice("span:".length);
+    return isSpan(span) ? setSpan(comp, id, span) : comp;
+  }
+  if (op === "move:up" || op === "move:down") {
+    const from = comp.blocks.findIndex((b) => b.id === id);
+    if (from === -1) return comp;
+    return moveBlock(comp, id, op === "move:up" ? from - 1 : from + 1);
+  }
+  return comp;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -121,9 +146,10 @@ function stateFromPage(): PageComposition {
 function boot(): void {
   const board = $(".board");
   const canvas = $(`[data-surface="${CANVAS_SURFACE}"]`);
+  const rail = $('[data-surface="builder-rail"]');
   const library = $(`.${LIBRARY_CLASS}`);
   const composer = $<HTMLFormElement>(".builder-composer");
-  if (!board || !canvas || !library || !composer) return;
+  if (!board || !canvas || !rail || !library || !composer) return;
 
   let state = stateFromPage();
   const askInURL = new URLSearchParams(location.search).get("ask")?.trim() ?? "";
@@ -133,7 +159,14 @@ function boot(): void {
   // the query string says. Compose it here.
   if (askInURL && state.blocks.length === 0) {
     state = addFromDescription(state, askInURL);
-    paint(board, canvas, library, viewOf(state, askInURL));
+    paint(board, canvas, rail, library, viewOf(state, askInURL));
+    // The composer holds the prompt that produced the page, so a visitor edits rather than retypes.
+    // It is set here rather than through the fill, because the composer binds over its own one-item
+    // spec and the fill walking it with the view's data would blank it. On the live server the
+    // server already seeded it; on a static host nobody had, and the box came up empty under a page
+    // it had supposedly built.
+    const box = $<HTMLTextAreaElement>("textarea", composer);
+    if (box && !box.value) box.value = askInURL;
   }
 
   // Every later prompt ADDS to what is already there, which is the whole difference from the form
@@ -147,13 +180,37 @@ function boot(): void {
     e.preventDefault();
     const before = state.blocks.length;
     state = addFromDescription(state, ask);
-    paint(board, canvas, library, viewOf(state, ask, state.blocks.length - before));
+    paint(board, canvas, rail, library, viewOf(state, ask, state.blocks.length - before));
     // The URL keeps carrying the LATEST prompt, so an example link and a shared address still work.
     // The composition does not go in it: a whole page of blocks grows past what a link can carry.
     // The honest consequence, said on the page as well as here, is that reloading rebuilds from
     // that last prompt alone rather than from everything you added.
     history.replaceState(null, "", `${location.pathname}?ask=${encodeURIComponent(ask)}`);
   });
+
+  // The rail's buttons, through ONE delegated listener on the rail itself rather than one per
+  // button. The rows are replaced on every repaint, so a listener bound to a button would be bound
+  // to a node that no longer exists by the time you pressed the next one, and rebinding after each
+  // paint is a bookkeeping job with nothing to gain. The row carries the block id, the button
+  // carries the op, and neither needs registering.
+  rail.addEventListener("click", (e) => {
+    const button = (e.target as Element | null)?.closest("[data-op]");
+    const id = button?.closest("[data-block]")?.getAttribute("data-block");
+    const op = button?.getAttribute("data-op");
+    if (!op || !id) return;
+    const next = applyOp(state, op, id);
+    // A press that changes nothing repaints nothing: pressing the span a block already has, or the
+    // up arrow on the first row, is a no-op rather than a flicker.
+    if (next === state) return;
+    state = next;
+    paint(board, canvas, rail, library, viewOf(state, currentAsk(), null));
+  });
+
+  /** The prompt as it currently stands, for a repaint that no prompt caused. The composer holds the
+   *  page's own prompt, so an op reads it back rather than the view carrying a stale copy of it. */
+  function currentAsk(): string {
+    return $<HTMLTextAreaElement>("textarea", composer!)?.value.trim() ?? "";
+  }
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

@@ -14,7 +14,8 @@ describe("buildBuilderView: no ask", () => {
   test("empty string -> the empty state, plus an empty composer and nothing else", () => {
     const v = buildBuilderView("");
     expect(v).toEqual({
-      ask: "", builderState: "empty", blocks: [], unsupported: [],
+      ask: "", builderState: "empty", blocks: [], rows: [], blockCount: "0 blocks", railRange: "",
+      unsupported: [],
       hasBlocks: null, hasForm: null, hasUnsupported: null, matchedNothing: null, specJson: "",
       composer: [{ surface: "field:builder-ask", label: "Describe a page", name: "ask",
         placeholder: "An intro, two cards side by side, and a contact form with a name and an email",

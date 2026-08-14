@@ -9,8 +9,36 @@
 // is untouched and still decides every field, choice, message box and tick box; it is simply asked
 // through the form block now rather than being the subject of the page.
 import { matchSpec, type MessageItem } from "./field-matcher.ts";
-import { FORM_COMPONENT, type Block, type BlockRefusal } from "./block-set.ts";
+import { FORM_COMPONENT, type Block, type BlockRefusal, type Span } from "./block-set.ts";
 import { addFromDescription, emptyComposition, toDocument, type PageComposition } from "./composition.ts";
+
+/** One row in the block rail: the same block the canvas is showing, as a thing you can operate.
+ *
+ *  The rail is what makes this page a builder rather than a page that renders a result, so its rows
+ *  are view data rather than markup assembled in the browser: the server renders them, the browser
+ *  re-renders them from the same shape, and with JavaScript off they are still a readable list of
+ *  what is on the canvas. The three span flags are marker strings rather than booleans, the same
+ *  convention every other flag on this page follows, so a `data-bind-` attribute can light the
+ *  pressed chip by the attribute's mere presence. */
+export interface BlockRow {
+  id: string;
+  /** The component without its `block-` prefix. The prefix is an implementation detail of where the
+   *  template lives, and a rail that showed it would be naming files rather than blocks. */
+  label: string;
+  span: Span;
+  isFull: "on" | null;
+  isHalf: "on" | null;
+  isThird: "on" | null;
+}
+
+const rowFor = (b: Block): BlockRow => ({
+  id: b.id,
+  label: b.component.replace(/^block-/, ""),
+  span: b.span,
+  isFull: b.span === "full" ? "on" : null,
+  isHalf: b.span === "half" ? "on" : null,
+  isThird: b.span === "third" ? "on" : null,
+});
 
 export interface BuilderView {
   /** The trimmed ask, echoed back on the page as "the prompt that produced this" — "" when none. */
@@ -21,6 +49,14 @@ export interface BuilderView {
   /** The composition, in order. server.ts renders these through the one renderer; the page template
    *  never names a component, because naming components is what the closed set is for. */
   blocks: Block[];
+  /** The same blocks as rows in the rail, one per block, in composition order. */
+  rows: BlockRow[];
+  /** The canvas head's own count, worded rather than numeric, because "1 blocks" is the kind of
+   *  thing a tool says when nobody looked at it. */
+  blockCount: string;
+  /** The rail head's range, "b1-b5", or "" when there is nothing to range over. Ids rather than a
+   *  count, because the ids are what the rows show and what a later verb will name. */
+  railRange: string;
   unsupported: BlockRefusal[];
   /** Present (truthy marker string) only when there is something to show —
    *  field-matcher.ts's own "a literal marker string or null, never boolean text" convention, so a
@@ -96,7 +132,8 @@ export function buildBuilderView(rawAsk: string): BuilderView {
  *  carries, because a page that asks you to describe a page and gives you nowhere to type it is the
  *  whole reason the composer exists. */
 export const emptyView = (): BuilderView => ({
-  ask: "", builderState: "empty", blocks: [], unsupported: [],
+  ask: "", builderState: "empty", blocks: [], rows: [], blockCount: "0 blocks", railRange: "",
+  unsupported: [],
   hasBlocks: null, hasForm: null, hasUnsupported: null, matchedNothing: null,
   specJson: "", composer: composerFor(""),
 });
@@ -112,20 +149,33 @@ export const emptyView = (): BuilderView => ({
  *  `added` is how many blocks the LAST prompt contributed, and it is the only thing a running
  *  composition knows that a fresh one does not. It decides `matchedNothing`: on a page already
  *  holding four blocks, a prompt that matched nothing has still matched nothing, and a flag derived
- *  from the total would quietly tell the visitor their prompt worked. */
-export function viewOf(comp: PageComposition, rawAsk: string, added = comp.blocks.length): BuilderView {
+ *  from the total would quietly tell the visitor their prompt worked. Pass NULL when no prompt
+ *  caused this view at all, which is every repaint the rail's own buttons trigger. */
+export function viewOf(
+  comp: PageComposition, rawAsk: string, added: number | null = comp.blocks.length,
+): BuilderView {
   const ask = rawAsk.trim();
   if (!ask && comp.blocks.length === 0) return emptyView();
   const unsupported = refusalsFor(ask, comp.refusals);
+  // Only a PROMPT can match nothing. An op cannot: removing the last block leaves an empty page,
+  // which is a page you emptied rather than a prompt that failed, and a "nothing matched that"
+  // notice there would blame the visitor for pressing the button they meant to press.
+  const matchedNothing = added === 0 && unsupported.length === 0;
+  const showing = comp.blocks.length > 0 || unsupported.length > 0 || matchedNothing;
   return {
     ask,
-    builderState: "result",
+    builderState: showing ? "result" : "empty",
     blocks: comp.blocks,
+    rows: comp.blocks.map(rowFor),
+    blockCount: `${comp.blocks.length} ${comp.blocks.length === 1 ? "block" : "blocks"}`,
+    railRange: comp.blocks.length === 0 ? ""
+      : comp.blocks.length === 1 ? comp.blocks[0]!.id
+      : `${comp.blocks[0]!.id}\u2013${comp.blocks.at(-1)!.id}`,
     unsupported,
     hasBlocks: comp.blocks.length > 0 ? "hasblocks" : null,
     hasForm: comp.blocks.some((b) => b.component === FORM_COMPONENT) ? "hasform" : null,
     hasUnsupported: unsupported.length > 0 ? "hasunsupported" : null,
-    matchedNothing: added === 0 && unsupported.length === 0 ? "matchednothing" : null,
+    matchedNothing: matchedNothing ? "matchednothing" : null,
     specJson: JSON.stringify(toDocument(comp), null, 2),
     composer: composerFor(ask),
   };
