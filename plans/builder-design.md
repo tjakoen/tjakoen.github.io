@@ -1,6 +1,6 @@
 ---
 id: builder-design
-status: todo
+status: doing
 track: demo
 depends: [site-builder]
 touches:
@@ -78,10 +78,10 @@ into the terminal that is already there.
 
 ## Phases
 
-- [ ] **D1. The shell.** The workbench grid, the panes, the file-name head, the prompt bar, the
+- [x] **D1. The shell** (2026-08-14). The workbench grid, the panes, the file-name head, the prompt bar, the
       container query, the collapsed aside, and the prose into a disclosure. No behaviour change: the
       same composition, in a tool instead of an essay.
-- [ ] **D2. The ops.** The block rail with a remove and three span chips per row, wired to the
+- [x] **D2. The ops** (2026-08-14). The block rail with a remove and three span chips per row, wired to the
       `removeBlock`, `moveBlock` and `setSpan` functions that already exist and have never been
       called by anything but a test. This is the phase that changes how the page feels.
 - [ ] **D3. The desk operates it.** Addresses on the blocks and the vocabulary to reach them, so the
