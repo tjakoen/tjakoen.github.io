@@ -10,6 +10,7 @@ scope:
   - view/components/pages/builder/
   - e2e/
   - plans/
+  - content/tours/
   - artifacts/runs/
 touched:
   - src/ai/field-matcher.ts
@@ -24,6 +25,8 @@ touched:
   - view/components/pages/builder/builder.css
   - e2e/desk-form-build.e2e.ts
   - plans/builder-sandbox.md
+  - content/tours/review-tick-box-verb.md
+  - content/tours/review-controls-complete.md
 skills:
   - loop-standard
   - voice
@@ -36,7 +39,7 @@ gates:
   - bun tools/lint-gate.ts | unchanged from the pre-existing four, this diff adds none
 diffstat: portfolio 17 files changed across two commits (459 insertions, 32 deletions), plus this report
 unpushed: 40 | portfolio 40, grain 14. Both predate this run in part. Pushing stays the owner's call and was not taken.
-verifiedBy: nobody yet. Both pieces render, and both were driven in a real browser with a screenshot in the session rather than described, but a second reader has not looked at the closed set's new entries or the wording on the page.
+verifiedBy: nobody yet. Both pieces were driven in a real browser and shown in the session, and there is a review tour (content/tours/review-tick-box-verb.md, link at the end) covering this run and the verb's. Every step is new, changed or needs-verification: none is stamped verified, because the author wrote it.
 doctor: no new flags. The four carried in the tick-box verb's own report this morning are unchanged and still carried by name there.
 ---
 
@@ -90,10 +93,35 @@ grain-graded, and the first click of the visitor's own settles the ink to theirs
 
 ## Shown, not described
 
-Both pieces were driven in a real browser and screenshotted in the session rather than reported as
+Both pieces were driven in a real browser and shown inline in the session rather than reported as
 working: the composer holding a typed prompt with the built form below it, and a generated consent
 box carrying the required marker and wearing the tick the desk put there, beside an untouched
 newsletter box.
+
+**The screenshots were the weaker half and they were nearly the whole of it.** They were captured and
+read by the author rather than displayed, which is the author looking at their own work twice, and it
+took the owner asking to catch. The review tour below is what the loop actually asks for here, and it
+was written after that prompt rather than before it. Worth recording, because a run that shows its
+work only when asked has not learned the rule.
+
+## The review tour
+
+`content/tours/review-tick-box-verb.md`, four steps and a hand-back, covering both this run and the
+verb's own. Every step's surface was checked to resolve on the page it names, `crumb check` passes on
+the folder, and the walk was stepped through in a browser rather than assumed to load. Nothing is
+stamped `verified`, because the author wrote it.
+
+**Hand it over:**
+
+```
+http://localhost:3000/about?crumb=review-tick-box-verb&crumb-mode=dev&crumb-frame#contact
+```
+
+One older tour was corrected rather than left to mislead: `review-controls-complete`'s
+`catalog:check-from-data` step told a reviewer that finding an address on that atom meant someone had
+tidied away a limit. That is now exactly what correct looks like. The step keeps its history and says
+the limit closed, because a tour is a receipt for the day it was written and rewriting it to look
+right afterwards is the one thing a receipt must not do.
 
 ## Gate output
 
