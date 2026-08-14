@@ -2,9 +2,19 @@
 // it. block-render.test.ts already proves each block expands; this proves the CANVAS around them:
 // that a cell carries its span and its block id, that the order is the composition's, and that a
 // block template's design commentary stops at the edge of the page.
-import { test, expect, describe } from "bun:test";
+import { test, expect, describe, afterEach } from "bun:test";
 import { addFromDescription, emptyComposition } from "./composition.ts";
-import { renderCanvas, renderCell, stripBlockComments } from "./canvas.ts";
+import { BLOCK_COMPONENTS } from "./block-set.ts";
+import { ATOM_LIBRARY, BLOCK_LIBRARY, REPEATS } from "./canvas-dom.ts";
+import { renderCanvas, renderCell, renderLibrary, stripBlockComments } from "./canvas.ts";
+
+// The renderer warns on an unknown binding path rather than throwing (missingBindings is "warn" in
+// dev), so a placeholder that forgot a key is invisible unless something listens. This listens.
+const warnings: string[] = [];
+const realWarn = console.warn;
+console.warn = (...args: unknown[]) => { warnings.push(args.map(String).join(" ")); };
+afterEach(() => { warnings.length = 0; });
+process.on("exit", () => { console.warn = realWarn; });
 
 const canvasFor = (ask: string) => renderCanvas(addFromDescription(emptyComposition(), ask).blocks);
 
@@ -76,5 +86,86 @@ describe("the form is one cell like any other", () => {
     expect(html).toContain('class="canvas__cell"');
     expect(html).toContain('data-span="third"');
     expect(html).toContain('data-block-id="b1"');
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// The template library — the thing that lets the browser compose without a second renderer
+// ---------------------------------------------------------------------------------------------
+
+describe("the library covers the whole closed set", () => {
+  test("every block the set can name has a library entry", () => {
+    expect(BLOCK_LIBRARY.map((e) => e.name).toSorted()).toEqual(BLOCK_COMPONENTS.toSorted());
+  });
+
+  test("every template a repeat rule names has one too", () => {
+    const needed = Object.values(REPEATS).flat().map((r) => r.template);
+    const have = new Set(ATOM_LIBRARY.map((e) => e.name));
+    for (const name of needed) expect(have.has(name), `${name} repeats but is not in the library`).toBe(true);
+  });
+
+  test("each entry renders real markup, with no unknown-binding warning", async () => {
+    const html = await renderLibrary();
+    for (const e of [...BLOCK_LIBRARY, ...ATOM_LIBRARY]) {
+      expect(html, `${e.name} is missing from the library`).toContain(`data-block-template="${e.name}"`);
+      expect(html, `${e.name} rendered an unexpanded tag`).not.toContain(`<${e.name}`);
+    }
+    // a placeholder key left out would warn here rather than ship an empty block to the browser
+    expect(warnings.filter((w) => w.includes("unknown binding"))).toEqual([]);
+  });
+
+  test("the library is hidden and carries no template commentary", async () => {
+    const html = await renderLibrary();
+    expect(html).toContain('class="builder-library"');
+    expect(html).toContain('aria-hidden="true"');
+    expect(html).not.toContain("<!--");
+  });
+
+  // The placeholder is null everywhere, not sample content. A fill that silently did nothing then
+  // shows as an empty block rather than as last month's sample text under this month's prompt.
+  test("a placeholder renders empty, and keeps the directives the browser fills through", async () => {
+    const html = await renderLibrary();
+    expect(html).toContain('<span class="stat__value" data-field="value"></span>');
+    expect(html).toContain('data-bind-data-status="status"');
+    expect(html).not.toContain("No build step");          // block-card's sample title
+  });
+
+  test("the form ships as an empty shell for the browser to append controls into", async () => {
+    const html = await renderLibrary();
+    const form = html.slice(html.indexOf('data-block-template="block-form"'));
+    // parked rather than live, so the hidden shell never answers to the address the canvas does
+    expect(form).toContain('data-template-surface="builder-form"');
+    expect(form.slice(0, form.indexOf("</form>"))).not.toContain("<input");
+  });
+});
+
+// The one real drift risk in the design: the library renders each atom standalone with props it
+// declares, and block-form.html writes those same props as literal attributes on its own tags. A
+// rows count changed in one place would make a cloned message box a different shape from a
+// server-rendered one, and nothing would say so. This reads the template and compares.
+describe("the atoms are used the same way in both places", () => {
+  test("each atom's declared props match its tag in block-form.html", async () => {
+    const tpl = await Bun.file(
+      new URL("../../view/components/molecules/block-form/block-form.html", import.meta.url),
+    ).text();
+    for (const atom of ATOM_LIBRARY) {
+      const tag = new RegExp(`<${atom.name}\\b([^>]*)>`).exec(tpl);
+      if (!tag) continue;                                  // b-option is nested by b-choice, not by the form
+      const literal = Object.fromEntries(
+        [...tag[1]!.matchAll(/([\w-]+)="([^"]*)"/g)].map((m) => [m[1]!, m[2]!]).filter(([k]) => k !== "each"),
+      );
+      expect(atom.props, `${atom.name} is used with different props than the library renders`).toEqual(literal);
+    }
+  });
+});
+
+// A library entry is markup that is not on the page yet. An address on it would put a second,
+// invisible element on a name meant to point at one thing: the manifest would list it, and a review
+// tour's lamp could light a node nobody can see. Both failures are the quiet kind.
+describe("the library advertises no address", () => {
+  test("no live data-surface anywhere in it, and the parked one is there instead", async () => {
+    const html = await renderLibrary();
+    expect(html).not.toContain(' data-surface="');
+    expect(html).toContain(' data-template-surface="builder-form"');
   });
 });

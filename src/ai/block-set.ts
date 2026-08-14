@@ -183,6 +183,14 @@ export const KNOWN_BLOCK_LABELS: string[] = BLOCK_TABLE.map((e) => e.label);
  *  the set can never advertise a block the renderer would fail to expand. */
 export const BLOCK_COMPONENTS: string[] = [...BLOCK_TABLE.map((e) => e.component), FORM_COMPONENT];
 
+/** What a pre-rendered template library needs to know about each block: the component to render,
+ *  the data keys it binds (read off the sample, which is the same set), and the props it is used
+ *  with. Exported as data rather than as a second hand-written list so a block added to the table
+ *  above joins the library the moment it exists — the same rule BLOCK_COMPONENTS follows.
+ *  canvas-dom.ts turns this into the placeholder each library entry renders with. */
+export const BLOCK_TEMPLATE_SPECS: Array<{ component: string; keys: string[]; props: Record<string, string> }> =
+  BLOCK_TABLE.map((e) => ({ component: e.component, keys: Object.keys(e.sample), props: { ...e.props } }));
+
 // ---------------------------------------------------------------------------------------------
 // matchBlocks
 // ---------------------------------------------------------------------------------------------

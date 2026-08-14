@@ -34,7 +34,9 @@
           <b-memo each="composer" size="sm" rows="3"></b-memo>
           <div class="builder-composer__foot">
             <button class="btn" type="submit">Build it</button>
-            <span class="muted">The prompt becomes the address, so any page here is a link you can send.</span>
+            <span class="muted">Each prompt adds to the page rather than replacing it. The address
+              carries the latest one, so a page here is still a link you can send, and reloading
+              rebuilds from that prompt alone.</span>
           </div>
         </form>
 
@@ -135,6 +137,14 @@
           <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20an%20email%20and%20a%20file%20upload%20for%20their%20portfolio">A form with an email and a file upload for their portfolio</a><span class="docs-list__what">the upload is refused, honestly.</span></div>
         </div>
 
+        <!-- The template library: every block in the set and every control atom a form nests, each
+             pre-rendered ONCE by the real server-side renderer and parked here hidden. The browser
+             clones from it and fills the clone through the same data-field and data-bind-*
+             attributes the template already carries, which is how this page composes on a static
+             host without a second renderer existing anywhere. Injected into the marker by server.ts
+             (renderLibrary in ai/canvas.ts); hidden by builder.css. -->
+        <!--library-->
+
         <div class="page-foot">
           Part of <a href="/">tjakoen.github.io</a>, built with itself.
           <p>🤖 Built with Claude. I don't prompt and pray, I prompt and prove. Every commit here is
@@ -144,5 +154,12 @@
     </main>
   </div>
 
+  <!-- Composing in the browser. Imports the SAME matcher, composition and view modules the server
+       calls (no-build client modules, ARCHITECTURE §19), so the closed set is decided once and the
+       two sides cannot disagree. It exists because this site exports to a static host, where no
+       server sees the ?ask= in the address: without this, every example link below lands on an
+       empty page, which is what the published /builder did for its whole life. With JavaScript off
+       nothing here runs and the live server still renders the same canvas. -->
+  <script type="module" src="/modules/portfolio/ai/builder-canvas.js"></script>
 </body>
 </html>

@@ -65,12 +65,19 @@ const REVIEW_ONLY = new Set<string>([]);
 // are: client-door + manifest-dom + the model transport (webllm.js probe/loader, model-chat.js
 // streaming). Their static graphs (e.g. model.js) come along via the crawl of these entries. Keep
 // this list in sync with the `import(new URL("../../grain/ai/*.js"))` calls in ai/desk-door.ts.
+// /builder's own island (ai/builder-canvas.js) is an entry for a different reason: it is reached by
+// a plain <script type="module"> in builder.html, and this crawler follows href/src for PAGES and
+// module imports only from the entries below, so a page's own script tag does not seed the module
+// graph. Without it the frozen /builder ships the island's URL and 404s on it, which is precisely
+// the failure that phase exists to fix. Its static graph (composition, block-set, field-matcher,
+// builder-page, canvas-dom) comes along with the crawl.
 const MODULE_ENTRIES = [
   "/modules/grain/ai/client-door.js",
   "/modules/grain/ai/manifest-dom.js",
   "/modules/grain/ai/webllm.js",
   "/modules/grain/ai/model-chat.js",
   "/modules/portfolio/ai/desk-door.js",
+  "/modules/portfolio/ai/builder-canvas.js",
 ];
 
 // Generated routes that a href/src crawler won't discover: the ⌘K palette's index, the desk's

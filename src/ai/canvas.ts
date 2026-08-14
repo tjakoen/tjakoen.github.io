@@ -8,7 +8,10 @@
 // hold the same composition; this module is the half that cannot travel.
 import { render } from "../render.ts";
 import type { Block } from "./block-set.ts";
-import { BLOCK_ID_ATTR, CELL_CLASS, SPAN_ATTR } from "./canvas-dom.ts";
+import {
+  ATOM_LIBRARY, BLOCK_ID_ATTR, BLOCK_LIBRARY, CELL_CLASS, LIBRARY_CLASS, SPAN_ATTR, SURFACE_ATTR,
+  TEMPLATE_ATTR, TEMPLATE_SURFACE_ATTR, type LibraryEntry,
+} from "./canvas-dom.ts";
 
 /** Strip HTML comments from rendered block markup.
  *
@@ -42,4 +45,26 @@ export async function renderCell(block: Block): Promise<string> {
 export async function renderCanvas(blocks: readonly Block[]): Promise<string> {
   const cells = await Promise.all(blocks.map(renderCell));
   return cells.join("");
+}
+
+/** The hidden template library: every block in the set and every control atom a form nests,
+ *  pre-rendered ONCE by this renderer, with a placeholder for data.
+ *
+ *  This is what makes /builder work where it actually lives. A static host has no server to
+ *  interpret a prompt, so the browser composes; and the browser has no renderer, so it clones from
+ *  here and fills what it cloned. The markup it clones came out of the one engine, which is the
+ *  difference between reading a contract in a second place and writing a second implementation of
+ *  one. The comment strip applies here for the same reason it applies to the canvas, and it matters
+ *  more: the library ships on every load of this page, composed or not. */
+export async function renderLibrary(): Promise<string> {
+  const one = async (e: LibraryEntry) => {
+    const html = stripBlockComments(await render(e.name, e.placeholder, e.props))
+      // Park every address. A template is markup that is not on the page yet, so an address on it
+      // would put a second, invisible element on a name meant to point at one thing: the manifest
+      // would list it and a tour's lamp could light it. The browser renames them back as it clones.
+      .replaceAll(` ${SURFACE_ATTR}="`, ` ${TEMPLATE_SURFACE_ATTR}="`);
+    return `<div ${TEMPLATE_ATTR}="${e.name}">${html}</div>`;
+  };
+  const entries = await Promise.all([...BLOCK_LIBRARY, ...ATOM_LIBRARY].map(one));
+  return `<div class="${LIBRARY_CLASS}" aria-hidden="true">${entries.join("")}</div>`;
 }

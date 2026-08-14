@@ -10,7 +10,7 @@
 // through the form block now rather than being the subject of the page.
 import { matchSpec, type MessageItem } from "./field-matcher.ts";
 import { FORM_COMPONENT, type Block, type BlockRefusal } from "./block-set.ts";
-import { addFromDescription, emptyComposition, toDocument } from "./composition.ts";
+import { addFromDescription, emptyComposition, toDocument, type PageComposition } from "./composition.ts";
 
 export interface BuilderView {
   /** The trimmed ask, echoed back on the page as "the prompt that produced this" — "" when none. */
@@ -88,25 +88,44 @@ function refusalsFor(ask: string, blockRefusals: BlockRefusal[]): BlockRefusal[]
  *  "something was asked and matched nothing" honestly distinct in the returned view. */
 export function buildBuilderView(rawAsk: string): BuilderView {
   const ask = rawAsk.trim();
-  if (!ask) {
-    return {
-      ask: "", builderState: "empty", blocks: [], unsupported: [],
-      hasBlocks: null, hasForm: null, hasUnsupported: null, matchedNothing: null,
-      specJson: "", composer: composerFor(""),
-    };
-  }
-  const comp = addFromDescription(emptyComposition(), ask);
+  if (!ask) return emptyView();
+  return viewOf(addFromDescription(emptyComposition(), ask), ask);
+}
+
+/** The empty state, which is a real state rather than an absence: the composer is the one thing it
+ *  carries, because a page that asks you to describe a page and gives you nowhere to type it is the
+ *  whole reason the composer exists. */
+export const emptyView = (): BuilderView => ({
+  ask: "", builderState: "empty", blocks: [], unsupported: [],
+  hasBlocks: null, hasForm: null, hasUnsupported: null, matchedNothing: null,
+  specJson: "", composer: composerFor(""),
+});
+
+/** The view for a composition that ALREADY EXISTS, and the prompt that last touched it.
+ *
+ *  Split out from buildBuilderView so the browser can call it, which is exactly what P3 needs: on a
+ *  static host the server froze the empty page, so the browser composes and then has to answer the
+ *  same questions the server answered — which sections show, what the spec pane prints, whether
+ *  anything matched at all. Answering them twice would be two implementations of one page's state,
+ *  so there is one, and it runs on both sides.
+ *
+ *  `added` is how many blocks the LAST prompt contributed, and it is the only thing a running
+ *  composition knows that a fresh one does not. It decides `matchedNothing`: on a page already
+ *  holding four blocks, a prompt that matched nothing has still matched nothing, and a flag derived
+ *  from the total would quietly tell the visitor their prompt worked. */
+export function viewOf(comp: PageComposition, rawAsk: string, added = comp.blocks.length): BuilderView {
+  const ask = rawAsk.trim();
+  if (!ask && comp.blocks.length === 0) return emptyView();
   const unsupported = refusalsFor(ask, comp.refusals);
-  const hasBlocks = comp.blocks.length > 0;
   return {
     ask,
     builderState: "result",
     blocks: comp.blocks,
     unsupported,
-    hasBlocks: hasBlocks ? "hasblocks" : null,
+    hasBlocks: comp.blocks.length > 0 ? "hasblocks" : null,
     hasForm: comp.blocks.some((b) => b.component === FORM_COMPONENT) ? "hasform" : null,
     hasUnsupported: unsupported.length > 0 ? "hasunsupported" : null,
-    matchedNothing: !hasBlocks && unsupported.length === 0 ? "matchednothing" : null,
+    matchedNothing: added === 0 && unsupported.length === 0 ? "matchednothing" : null,
     specJson: JSON.stringify(toDocument(comp), null, 2),
     composer: composerFor(ask),
   };
