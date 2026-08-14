@@ -1,0 +1,16 @@
+<!-- molecules/block-card — a card, as a renderable BLOCK for the page builder.
+     Why this lives in the portfolio rather than in grain: grain's molecules are CSS-only. Not one of
+     them ships an .html template, because a molecule there is a documented class convention a page
+     author writes by hand, and only the atoms are components the renderer can expand. The builder
+     needs a component it can name at runtime, so the portfolio writes the template and emits exactly
+     the markup grain's card.md documents. That is consuming the stack, not forking it: every class
+     here belongs to grain, this file adds none, and if the block set proves out these templates are
+     what would graduate upward.
+     Per-item DATA: title, body, href. An item with an href would be grain's navigable card, where
+     the whole tile is the link; that variant is deliberately NOT here yet, because a block set that
+     can emit a link needs a decision about where a generated page is allowed to point.
+     Form-wide CONFIG props: pad. -->
+<div class="card" prop-attr-data-pad="pad">
+  <h3 class="card__title" data-field="title">Title</h3>
+  <p class="card__body" data-field="body">Body</p>
+</div>

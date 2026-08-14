@@ -1334,7 +1334,7 @@ describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks
     const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
     // name + email are the matched TEXT fields; "what they want to talk about" matched the topic
     // CHOICE, and a choice's surface must never appear here (see form-draft.ts's own banner).
-    expect(Object.keys(stashed.values).sort()).toEqual(["field:builder-email", "field:builder-name"]);
+    expect(Object.keys(stashed.values).toSorted()).toEqual(["field:builder-email", "field:builder-name"]);
     expect(stashed.values["field:builder-topic"]).toBeUndefined();
     // Nothing in that ask asked for a box to tick, so the tick half of the stash is empty rather
     // than absent: the two halves take two different verbs and both are always on the wire.
@@ -1387,7 +1387,7 @@ describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks
 
     expect(d.ok).toBe(true);
     const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
-    expect(Object.keys(stashed.values).sort())
+    expect(Object.keys(stashed.values).toSorted())
       .toEqual(["field:builder-email", "field:builder-message", "field:builder-name"]);
     expect(stashed.values["field:builder-topic"]).toBeUndefined();
     expect(stashed.values["field:builder-message"].length).toBeGreaterThan(0);
@@ -1409,7 +1409,7 @@ describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks
 
     expect(d.ok).toBe(true);
     const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
-    expect(Object.keys(stashed.values).sort()).toEqual(["field:builder-email", "field:builder-name"]);
+    expect(Object.keys(stashed.values).toSorted()).toEqual(["field:builder-email", "field:builder-name"]);
     // The tick box is in the OTHER half, under a check: address, and its state is a real boolean.
     // A check: surface appearing among the values would send it through field.set, which writes the
     // value the form submits rather than the state it shows.
