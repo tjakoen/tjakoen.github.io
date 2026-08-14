@@ -20,6 +20,26 @@ owner: ai
 
 # The builder becomes a page builder, not a form builder
 
+## What this is, and what it is not
+
+**A proof of concept: GRAIN composed by an AI.** That is the claim being tested, and it is the
+reason the scope is ONE page. It is not a website builder, it is not a CMS, and multi-page is not a
+missing feature to be added later. One page is enough to answer the question, and the question is
+whether a design system can be shaped so a model picks from it rather than inventing against it.
+
+**The bar is a SMALL model, not a good one.** The 0.5B in the browser is the target, and it is the
+target on purpose: anything that only works when the model is large is a demo of the model rather
+than of the design system. So every decision here is shaped by what a small model can do reliably,
+which is choose from a closed list and fill a tiny payload, and by what it cannot, which is invent a
+name or write a paragraph. The closed block set, the three layout words and the code-owned sample
+content are all that rule applied.
+
+**The route to getting there is the one the tick box took.** Prove no existing verb can do the job,
+add a KIND (a kind is a promise about which verbs work), add the verb shaped as a SET rather than a
+toggle so a replay is safe, add the render op, and put the address on the element LAST. An address
+that lands before a working verb advertises an operation nothing can perform, and it fails at the
+moment nobody is watching. See `grain/packages/grain/plans/check-set-op.md`.
+
 ## Context
 
 Two different things have been sharing one word, and this plan separates them.
