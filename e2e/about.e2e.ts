@@ -101,6 +101,48 @@ test.describe("the /about profile app (JS on)", () => {
     expect(new URL(page.url()).pathname).toBe("/about");
   });
 
+  // The tick box, added with grain's check.set verb. Its address is the assertion that carries the
+  // design: a tick box addressed field: would advertise field.set, and field.set writes el.value —
+  // which on a tick box is what the form SUBMITS rather than whether it is ticked, so the write
+  // would land, report success and move nothing. The check: prefix names a kind that accepts
+  // check.set and no other verb, which is why the two are separate kinds at all.
+  test("the tick box is a real checkbox, addressed check: and never field:", async ({ page }) => {
+    await page.locator('.about-tabs [href="#contact"]').click();
+    const box = page.locator('form.contact-form [data-surface="check:contact-copy"]');
+    await expect(box).toHaveCount(1);
+    await expect(box).toHaveJSProperty("tagName", "INPUT");
+    await expect(box).toHaveJSProperty("type", "checkbox");
+    await expect(box).not.toBeChecked();
+    // the address is on the CONTROL, not the label wrapping it — the rule the atoms got wrong once
+    await expect(page.locator('label[data-surface="check:contact-copy"]')).toHaveCount(0);
+    // and no tick box anywhere on this page wears a field: address
+    await expect(page.locator('input[type="checkbox"][data-surface^="field:"]')).toHaveCount(0);
+  });
+
+  test("check.set ticks the box through the one door; field.set aimed at it does nothing", async ({ page }) => {
+    await page.locator('.about-tabs [href="#contact"]').click();
+    const box = page.locator('form.contact-form [data-surface="check:contact-copy"]');
+    await page.waitForFunction(() => Boolean((window as unknown as { grain?: { door?: unknown } }).grain?.door));
+
+    await page.evaluate(() => (window as unknown as { grain: { door: { submit(a: string, s: string, p: unknown): void } } })
+      .grain.door.submit("check.set", "check:contact-copy", { checked: true }));
+    await expect(box).toBeChecked();
+    await expect(box).toHaveAttribute("data-grade", "grain");   // AI ink until the human touches it
+
+    // The write that would have lied, refused by the closed vocabulary rather than by a guard the
+    // page had to remember: field.set is not legal on a check surface, so the submit value stays
+    // exactly what the spec set it to.
+    await page.evaluate(() => (window as unknown as { grain: { door: { submit(a: string, s: string, p: unknown): void } } })
+      .grain.door.submit("field.set", "check:contact-copy", { value: "OVERWRITTEN" }));
+    await expect(box).toHaveJSProperty("value", "yes");
+    await expect(box).toBeChecked();
+
+    // a human click settles the AI's ink, the same rule a prefilled text field follows
+    await box.click();
+    await expect(box).not.toBeChecked();
+    await expect(box).not.toHaveAttribute("data-grade", /./);
+  });
+
   test("the Now tab lists dated, real entries", async ({ page }) => {
     await page.locator('.about-tabs [href="#now"]').click();
 
