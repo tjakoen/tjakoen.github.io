@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Builder · TJ's Desk</title>
-  <meta name="description" content="Describe a form in plain English. A closed, code-owned set of fields decides what actually renders: the model never picks a field, a name, or a type.">
+  <meta name="description" content="Describe a page in plain English. A closed, code-owned set of GRAIN blocks decides what actually renders: the model never picks a component, a layout, or a name.">
 </head>
 <body data-screen="builder" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="builder" data-rail-collapsed="false" data-surface="screen">
@@ -12,11 +12,13 @@
     <main class="app-shell__main">
       <div class="board" data-bind-data-builder-state="builderState">
         <p class="eyebrow">Builder</p>
-        <h1 class="masthead">Describe a form. Get one back.</h1>
-        <p class="lede">Type what a form should ask for, and a fixed, code-owned list of fields and
-          choices decides what actually renders. Picking field names is exactly what a small model
-          gets wrong, so it never gets to pick one. Nothing here submits anywhere: this is a static
-          site, and the demo only builds a form and prefills it, never sends one.</p>
+        <h1 class="masthead">Describe a page. Get one back.</h1>
+        <p class="lede">Type what a page should hold, and a fixed, code-owned set of GRAIN blocks
+          decides what actually renders. A block is a real component expanded by the same renderer
+          every other page on this site goes through, so what you are looking at is the design
+          system rather than a picture of it. Picking component names is exactly what a small model
+          gets wrong, so it never gets to pick one. A form is one block among the others now, and it
+          still works the way it always did.</p>
 
         <!-- The composer, and it sits OUTSIDE both the empty and the result section on purpose: it
              is the one control that belongs on this page in either state, holding nothing before a
@@ -32,7 +34,7 @@
           <b-memo each="composer" size="sm" rows="3"></b-memo>
           <div class="builder-composer__foot">
             <button class="btn" type="submit">Build it</button>
-            <span class="muted">The prompt becomes the address, so any form here is a link you can send.</span>
+            <span class="muted">The prompt becomes the address, so any page here is a link you can send.</span>
           </div>
         </form>
 
@@ -45,56 +47,56 @@
           <div class="section-head"><span>Prompt</span></div>
           <p class="builder-prompt"><q data-field="ask"></q></p>
           <p class="builder-none" data-bind-data-matched-nothing="matchedNothing">Nothing in the
-            closed set matched that. Try one of the prompts below, or ask for a name, an email, a
-            phone number, a company, a role, a subject, a website, or a rough budget, or a message
-            box, or a topic, a preferred contact method, or a timeline.</p>
-          <p><a href="/builder">Try another prompt →</a></p>
+            closed set matched that. The blocks it knows are an intro paragraph, a card, a callout, a
+            stat tile and a form, and a form can hold a name, an email, a phone number, a company, a
+            role, a subject, a website, a rough budget, a message box, a topic, a preferred contact
+            method, a timeline, or a box to tick.</p>
+          <p><a href="/builder">Start a new page →</a></p>
 
-          <div class="builder-form-block" data-bind-data-has-fields="hasFields">
-            <div class="section-head"><span>Live form</span></div>
-            <p class="muted">One tag per kind of control renders whatever matchSpec decided, every
-              time. They never change between runs:</p>
-            <pre class="builder-tag">&lt;b-field each="fields"&gt;&lt;/b-field&gt;
-&lt;b-memo each="messages" rows="6"&gt;&lt;/b-memo&gt;
-&lt;b-choice each="choices"&gt;&lt;/b-choice&gt;
-&lt;b-check each="checks"&gt;&lt;/b-check&gt;</pre>
-            <form class="builder-form" data-surface="builder-form" onsubmit="return false">
-              <b-field each="fields" size="sm"></b-field>
-              <b-memo each="messages" size="sm" rows="6"></b-memo>
-              <b-choice each="choices" size="sm"></b-choice>
-              <b-check each="checks" size="sm"></b-check>
-            </form>
-            <p class="muted">Ask for a box to tick and you get one, and this is the newest thing on
-              the page. Until 2026-08-14 the vocabulary had no verb that could operate a tick box:
+          <div class="builder-canvas-block" data-bind-data-has-blocks="hasBlocks">
+            <div class="section-head"><span>Canvas</span></div>
+            <p class="muted">Every block below came out of one loop over the composition, and the
+              loop is the whole engine:</p>
+            <pre class="builder-tag">for (const block of composition.blocks)
+  render(block.component, block.data, block.props)</pre>
+            <!-- The canvas itself. Server-rendered into the marker below by server.ts (renderCanvas
+                 in ai/canvas.ts), because a component name here is a RUNTIME string and a page
+                 template can only name components literally. The marker is a comment rather than an
+                 empty element so an ordinary read of this file shows where the blocks land. -->
+            <div class="canvas" data-surface="builder-canvas"><!--canvas--></div>
+            <p class="muted">Layout is three words and only three: full, half and third. A
+              description can ask for two things beside each other and get half, and it can never
+              ask for a grid, a column count or a width, because layout is the part a matcher gets
+              wrong first. Every block sits in a cell that carries its span, so the block itself
+              stays layout-free, which is what grain's own component docs ask of a card or a stat
+              tile.</p>
+            <p class="muted">Nothing on this page was written by the model. The block set decides
+              which components appear, and the words inside each one are the sample content the same
+              table carries, drafted by code. A wording pass is an open seam rather than a shipped
+              feature, and until it exists what lands on a composed page is a developer's writing
+              rather than a generated paragraph.</p>
+          </div>
+
+          <div class="builder-form-block" data-bind-data-has-form="hasForm">
+            <div class="section-head"><span>About the form on this page</span></div>
+            <p class="muted">The form above is one block, and its insides are the same closed set of
+              fields this page used to be entirely about. Ask for a box to tick and you get one, and
+              the desk can tick it: until 2026-08-14 the vocabulary had no verb that could, because
               the only verb for a form control writes the control's value, and a tick box's value is
               what the form submits rather than whether it is ticked, so the write landed, reported
-              success and moved nothing. Generating one before that would have put a control here the
-              desk could not touch. A tick box carries a different kind of address from every other
-              control on this page for exactly that reason, and the desk ticks it with a different
-              verb.</p>
+              success and moved nothing. A tick box carries a different kind of address for exactly
+              that reason.</p>
             <p class="muted">Fields are grouped by kind, text fields first, then a message box, then
-              choices, then anything to tick.
-              Interleaving them in the order you asked isn't supported, on purpose, a v1 limit. Labels
-              above are the closed set's own defaults; a model could reword them (matchSpec's
-              applyWording seam exists for exactly that), but it isn't wired into this live page,
-              because the in-browser model runs after the page has already rendered.</p>
-            <p class="muted">So be clear about who wrote what here: nothing on this page was written
-              by the model. The labels are the closed set's, and the demo values the desk types in are
-              drafted by code as well, because an action the desk performs never gets a model tail.
-              What you are watching is selection and operation, which is the part a small model cannot
-              do, and the wording pass is still an open seam rather than a shipped one.</p>
-            <p class="muted">The address each field carries sits on the control itself, so the desk
-              writes into a generated field with nothing registered by hand. That was not true when
-              this page was first built: the atoms addressed the label around the control, a label has
-              nothing to write into, and the write was dropped without a word. Building this found it
-              and the atoms were fixed, which is the whole argument for building a demo rather than
-              describing one.</p>
-            <p class="muted">Ask for a message box and you get one now. Until this page was built the
-              demo refused that request, and the refusal was honest: the design system had no rule for
-              a textarea at all, so the only thing it could have rendered was a single-line input that
-              swallows a paragraph. Two atoms closed that, the box you see is a real textarea in the
-              same frame as every other control, and the desk types into it the same way it types into
-              a name. The refusal below is what is left, and it is a shorter list than it was.</p>
+              choices, then anything to tick. Interleaving them in the order you asked is not
+              supported, on purpose, a v1 limit. The address each field carries sits on the control
+              itself, so the desk writes into a generated field with nothing registered by hand. That
+              was not true when this page was first built: the atoms addressed the label around the
+              control, a label has nothing to write into, and the write was dropped without a word.
+              Building this found it and the atoms were fixed, which is the whole argument for
+              building a demo rather than describing one.</p>
+            <p class="muted">Nothing here submits anywhere. This is a static site, there is no submit
+              control on a generated form, and there is no verb in the vocabulary that could press
+              one.</p>
           </div>
 
           <div class="builder-unsupported-block" data-bind-data-has-unsupported="hasUnsupported">
@@ -104,28 +106,32 @@
             <ul class="builder-unsupported" data-surface="builder-refusals">
               <builder-refusal each="unsupported"></builder-refusal>
             </ul>
+            <p class="muted">Two different reasons live in that list and the difference is worth
+              reading. A shell, a side rail or a top bar is the frame a page sits in rather than
+              content it can hold, so it is refused on principle. Everything else is a gap with a
+              date on it: the component exists, it is documented, and the block set has not grown a
+              template for it yet. A picture is the honest example, because a generated page has no
+              real image to point at and an invented one is a broken picture with a confident
+              name.</p>
           </div>
 
           <div class="section-head"><span>Spec</span></div>
-          <p class="muted">Exactly what matchSpec returned: the fields, the message box, the choices
-            and any refusal above all come straight from this, never a second hand-typed description
-            of it. The
-            choices are addressable too, and the desk still leaves them alone: a select accepts a
-            write that a text field would, and anything that is not one of its option values empties
-            it rather than failing. So the code that drafts these demo values refuses to draft one for
-            a choice at all. Knowing the difference is the caller's job, and that is the honest state
-            of it rather than a solved problem.</p>
+          <p class="muted">The composition, exactly as it would leave here. This is the document an
+            export writes and an import reads back, so what you are reading is the artifact rather
+            than a description of one. A form block's data is what matchSpec returned, one level in,
+            so the field spec is still here for anyone who came for it.</p>
           <pre class="builder-json" data-surface="builder-spec" data-field="specJson"></pre>
         </section>
 
         <div class="section-head"><span>Examples</span></div>
         <p class="muted">Real links, real query strings. Every state on this page is shareable and
-          reproducible: the same prompt always builds the same form.</p>
+          reproducible: the same prompt always builds the same page.</p>
         <div class="docs-list">
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20what%20they%20want%20to%20talk%20about">A contact form with a name, an email, and what they want to talk about</a><span class="docs-list__what">two fields, one choice.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=Name%2C%20email%2C%20phone%2C%20and%20a%20rough%20budget">Name, email, phone, and a rough budget</a><span class="docs-list__what">four fields, no choices.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20event%20signup%20with%20an%20email%20and%20a%20timeline">An event signup with an email and a timeline</a><span class="docs-list__what">one field, one choice.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20a%20name%2C%20an%20email%2C%20and%20a%20big%20message%20box%20for%20details">A form with a name, an email, and a big message box for details</a><span class="docs-list__what">two fields and the message box, which used to be refused.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">An intro, two cards side by side, and a callout</a><span class="docs-list__what">three blocks, and the layout word does the placing.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20opening%20paragraph%20and%20a%20stat">An opening paragraph and a stat</a><span class="docs-list__what">the smallest page the set can make.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20what%20they%20want%20to%20talk%20about">A contact form with a name, an email, and what they want to talk about</a><span class="docs-list__what">a form, as one block.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20intro%2C%20a%20card%2C%20and%20a%20form%20with%20a%20name%2C%20an%20email%20and%20a%20box%20to%20agree%20to%20the%20terms">An intro, a card, and a form with a name, an email and a box to agree to the terms</a><span class="docs-list__what">a page that ends in a form the desk can operate.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20card%2C%20a%20gallery%20of%20screenshots%2C%20and%20a%20side%20rail">A card, a gallery of screenshots, and a side rail</a><span class="docs-list__what">one block, and two refusals of different kinds.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20an%20email%20and%20a%20file%20upload%20for%20their%20portfolio">A form with an email and a file upload for their portfolio</a><span class="docs-list__what">the upload is refused, honestly.</span></div>
         </div>
 

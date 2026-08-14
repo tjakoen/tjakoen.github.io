@@ -25,6 +25,9 @@ import { buildAiRoutes } from "./routes/ai-routes.ts";
 // /builder demo: the ONE pure seam that turns a raw `?ask=` query param into everything the page
 // renders (matchSpec's own result + the CSS state flags) — see builder-page.ts's own banner.
 import { buildBuilderView } from "./ai/builder-page.ts";
+// The composition, rendered: a loop over the blocks calling the one renderer, because
+// `render(name, data, props)` takes the component name as a runtime string.
+import { renderCanvas } from "./ai/canvas.ts";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
 import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
@@ -557,17 +560,28 @@ ${PAGE_ASSETS}</body>
     "/notes": async (req: Request) =>
       finalizePage(req, new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
         { headers: { "Content-Type": "text/html; charset=utf-8" } })),
-    // /builder — the form-builder demo: describe a form in plain English, matchSpec (field-matcher.ts)
-    // decides the closed set of fields/choices on the SERVER, and the page renders the prompt, the
-    // spec as JSON, and the live form from that one result — a GET round trip, nothing client-side
+    // /builder — the page-builder demo: describe a page in plain English, block-set.ts decides the
+    // closed set of BLOCKS on the SERVER, and the page renders the prompt, the composition as JSON,
+    // and the composed page itself from that one result — a GET round trip, nothing client-side
     // decides structure. A dedicated route (not the generic pages-tree fallback further down) because
     // it needs this request's own `?ask=` query string; the sitemap still lists it automatically
     // (createSitemap walks view/pages/ on disk, not this route table) the same way it lists /about.
+    //
+    // The canvas is spliced in rather than bound, and that is not a shortcut: `render` takes the
+    // component name as a RUNTIME string, which is the finding this whole feature rests on, and a
+    // page template can only name a component literally. So the blocks are rendered here in a loop
+    // (ai/canvas.ts) and dropped into the marker builder.html carries. Binding rendered HTML through
+    // `data-field` would mean a binding that does not escape, which is a hole in the exact place
+    // this design closes one.
     "/builder": async (req: Request) => {
       const ask = new URL(req.url).searchParams.get("ask") ?? "";
       const view = buildBuilderView(ask);
       const raw = await Bun.file(join(config.pagesDir, "builder.html")).text();
-      const html = await renderBuilderPage(raw, { ...view });
+      const canvas = await renderCanvas(view.blocks);
+      let html = await renderBuilderPage(raw, { ...view });
+      // A function replacement: rendered block markup can contain $& and friends, which a string
+      // replacement would read as patterns and splice back in mangled.
+      html = html.replace("<!--canvas-->", () => canvas);
       return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     },
     // /kickstart — the short, shareable twin of /standards/kickstart (the new-project prompt).

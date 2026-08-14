@@ -6,8 +6,11 @@
      component so the composition can name a form the way it names a card.
      No submit control, on purpose and not by omission: no submit verb exists in the AI vocabulary
      and there is nothing on a static site to submit to. onsubmit is stopped here so a stray Enter in
-     a generated field cannot reload the page and take the composition with it. -->
-<form class="builder-form" onsubmit="return false">
+     a generated field cannot reload the page and take the composition with it.
+     The builder-form surface moved onto this tag when the form became a block, so the address a
+     review tour and two e2e specs already point at keeps resolving. Not a registered surface kind,
+     so it is push-only and no verb targets it; the addressable things are the controls inside. -->
+<form class="builder-form" data-surface="builder-form" onsubmit="return false">
   <b-field each="fields" size="sm"></b-field>
   <b-memo each="messages" size="sm" rows="6"></b-memo>
   <b-choice each="choices" size="sm"></b-choice>
