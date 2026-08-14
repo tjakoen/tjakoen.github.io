@@ -85,11 +85,50 @@ into the terminal that is already there.
       `removeBlock`, `moveBlock` and `setSpan` functions that already exist and have never been
       called by anything but a test. This is the phase that changes how the page feels.
 - [ ] **D3. The desk operates it.** Addresses on the blocks and the vocabulary to reach them, so the
-      2GB model can build a page rather than only navigate to a prompt. Deliberately last, and the
+      small model can build a page rather than only navigate to a prompt. Deliberately last, and the
       ordering is the tick box's lesson: an address that lands before a working verb advertises an
-      operation nothing can perform. No `block:` surface ships until the verb does.
+      operation nothing can perform. No `block:` surface ships until the verb does. **The shape is
+      sketched in the section below and the decision under it is the owner's**, because the kinds and
+      the verbs live in grain's contract rather than here, and adding one is a fleet-wide change.
 - [ ] **D4. The copy.** The honest-limits prose rewritten for a tool rather than an essay. It is good
       writing aimed at a reader of an argument, and the page it now sits on has a different job.
+
+## D3's shape, and the asymmetry it closes
+
+As of D2 a human can remove a block, reorder one and change its span. The model cannot. Its only
+lever on this page is writing a description into `field:builder-ask`, which is the right lever for
+picking components and the wrong one for everything else: there is no phrase that means "drop the
+second card" because the matcher only ever adds. That asymmetry is the gap, and it is exactly the
+one the tick box had before `check.set`.
+
+**Why an existing verb will not do.** `field.set` writes text into a control. `navigate` changes
+screen. Neither can drop a block from a composition, and stretching one to try is the mistake
+`check.set` exists to record: a kind is a promise about which verbs work, so a block wearing a
+`field:` address would advertise a write that lands, reports success and changes nothing.
+
+**The verbs, shaped for a SMALL model.** Every payload is either a closed enum or something visible
+on the page, because that is the whole of what a 0.5B does reliably.
+
+| Verb | Payload | Why this shape |
+| --- | --- | --- |
+| `block.remove` | none | Idempotent by construction: `removeBlock` on an id that is gone already returns the same composition. |
+| `block.span` | `span: "full" \| "half" \| "third"` | Three words, the same closed set the human presses. A SET, not a cycle, so a replay lands in the state it names. |
+| `block.move` | `direction: "up" \| "down"` | Two words rather than a target index. An index is a number a small model drifts on, and the rail's own buttons are already up and down, so the verb matches the affordance rather than the data structure. |
+
+**Adding stays out of the vocabulary on purpose.** A block is added by writing the composer and
+building, which is `field.set` plus a control the human or the model presses. That keeps the closed
+set closed: the model never names a component, which is the one rule this whole demo rests on.
+
+**Where this lands is the question.** The kinds and verbs live in `grain/ai/contract.ts`, and the
+portfolio consumes the stack rather than forking it, so a `block` kind is a GRAIN change and a
+fleet-wide one. Three ways to go, and the choice is the owner's:
+
+1. **A `block` kind in grain**, on the argument that an ordered list of components a person
+   rearranges is a general GRAIN pattern rather than this page's private idea.
+2. **A more general kind**, `region` or `slot`, with `region.remove` / `region.move` /
+   `region.resize`, covering any rearrangeable list including a dashboard or a form designer.
+3. **Nothing in grain.** The blocks stay push-only addresses with no verbs, the model keeps its one
+   lever, and the honest version of this page says the AI can compose but not edit.
 
 ## Verification
 
