@@ -78,8 +78,8 @@ describe("moving", () => {
     expect(cmd("move the lede later").payload).toEqual({ direction: "down" });
   });
 
-  test("a direction with no move verb still moves", () => {
-    expect(cmd("the stat one place up").payload).toEqual({ direction: "up" });
+  test("a direction word needs a move verb with it", () => {
+    expect(cmd("shift the stat one place up").payload).toEqual({ direction: "up" });
   });
 });
 
@@ -94,6 +94,24 @@ describe("what is not an edit at all", () => {
 
   test("an empty prompt", () => {
     expect(readBlockCommand("   ", PAGE).kind).toBe("none");
+  });
+
+  // The defect this rule was bought with. Every one of these carries a word from a verb list and
+  // every one of them is somebody describing a page, so every one of them must compose.
+  test.each([
+    "a form to sign up",                    // " up " is a direction word
+    "a card above the fold",                // so is " above "
+    "a callout below the intro",            // and " below "
+    "a full width hero and two stats",      // " full " is a width word
+    "a card sized for a phone",             // " size " is a resize word
+    "a stat about dropped frames",          // " drop " is a remove word, folded or not
+  ])("a description carrying a verb word still composes: %s", (prompt) => {
+    expect(readBlockCommand(prompt, PAGE).kind).toBe("none");
+  });
+
+  test("an edit points at something already here, a description asks for something new", () => {
+    expect(readBlockCommand("remove a card", PAGE).kind).toBe("none");
+    expect(readBlockCommand("remove the card", PAGE).kind).toBe("refusal");
   });
 });
 

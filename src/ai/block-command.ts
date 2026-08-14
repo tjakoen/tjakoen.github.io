@@ -80,10 +80,14 @@ const hits = (text: string, tokens: readonly string[]): boolean => tokens.some((
 const REMOVE_TOKENS = ["remove", "delete", "drop", "lose", "scrap", "bin", "ditch", "take out", "get rid of", "kill"];
 
 /** Moving, split by direction. `earlier` and `later` are here because the rail's arrows are up and
- *  down but a page is read top to bottom, and both descriptions of the same press are honest. */
+ *  down but a page is read top to bottom, and both descriptions of the same press are honest.
+ *
+ *  A direction word on its own is NOT a move, and that rule was bought with a real defect: "a form
+ *  to sign up" contains " up ", so it was read as a move, found no form on the page to move, and
+ *  refused a perfectly ordinary description of a form. A direction says which way, never that. */
 const UP_TOKENS = ["up", "earlier", "sooner", "higher", "above"];
 const DOWN_TOKENS = ["down", "later", "lower", "below"];
-const MOVE_TOKENS = ["move", "shift", "reorder", "swap", "promote", "demote", "push", "pull", "bump"];
+const MOVE_TOKENS = ["move", "shift", "reorder", "swap", "promote", "demote", "bump"];
 
 /** Resizing, as an intent rather than as a width. The width itself is one of three words, found
  *  separately, because "make it wider" is a real sentence that this verb cannot answer. */
@@ -186,6 +190,23 @@ function readKind(text: string, before = text.length): (typeof TARGET_TOKENS)[nu
 // Resolving the target
 // ---------------------------------------------------------------------------------------------
 
+/** Does the sentence point at something that ALREADY EXISTS?
+ *
+ *  This is the one discriminator between an edit and a description, and it is grammar rather than
+ *  vocabulary: you edit "the card" and you ask for "a card". Without it, every verb word is a trap
+ *  waiting for an innocent description to step on it, and one already did: "a form to sign up" was
+ *  read as a move because it contains a direction word.
+ *
+ *  A definite article, a demonstrative, an ordinal, "last", or a bare id off the rail. Anything
+ *  else is a description of something to build, and descriptions go to the matcher untouched. */
+const DEFINITE = [
+  " the ", " it ", " it.", " that ", " this ", " its ",
+  " first ", " 1st ", " second ", " 2nd ", " third ", " 3rd ", " fourth ", " 4th ",
+  " fifth ", " 5th ", " sixth ", " 6th ", " last ", " final ", " bottom ",
+];
+const pointsAtSomethingHere = (text: string): boolean =>
+  DEFINITE.some((d) => text.includes(d)) || / b\d+ /.test(text);
+
 const nth = <T>(list: T[], where: number | "last"): T | undefined =>
   where === "last" ? list.at(-1) : list[where - 1];
 
@@ -244,14 +265,16 @@ export function readBlockCommand(prompt: string, blocks: BlockRef[]): BlockRead 
   const text = padded(prompt);
   if (!text.trim()) return { kind: "none" };
 
+  // An edit has to point at something already on the page. A description never does, so this is
+  // what keeps the verb words from ambushing one. It comes FIRST because it is cheap and total: no
+  // definite reference, no command, whatever words the sentence happens to contain.
+  if (!pointsAtSomethingHere(text)) return { kind: "none" };
+
   const span = readSpan(text);
   const wantsRemove = hits(text, REMOVE_TOKENS);
   const wantsSpan = hits(text, SPAN_TOKENS) || span !== null;
   const wantsNudge = hits(text, NUDGE_TOKENS);
-  // A direction word only signals a move when nothing else claimed the sentence. "Remove the block
-  // below the lede" carries "below", and reading that as a move would refuse a perfectly clear
-  // removal for being two operations. An explicit move verb always counts.
-  const wantsMove = hits(text, MOVE_TOKENS) || (!wantsRemove && !wantsSpan && (hits(text, UP_TOKENS) || hits(text, DOWN_TOKENS)));
+  const wantsMove = hits(text, MOVE_TOKENS);
 
   // Not an edit at all. The composer takes it and adds, which is what every prompt did before this
   // module existed and what most prompts still should do.
