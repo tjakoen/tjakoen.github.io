@@ -273,22 +273,43 @@ can only mean the add it sounds like.
    this page cannot have it.
 2. **Whether a composition should have a name.** The canvas head says `untitled.html`, which is a
    promise D4 either keeps or drops.
-3. **What to do about a model that cannot use the vocabulary, settled 2026-08-14: narrow the
-   manifest.** Three directions were put to the owner and the first was taken. The manifest this page
-   hands the model is 14 actions and 53 targets, 17 of which are chat message ids, and the model
-   reliably picks a plausible-looking surface out of that list rather than a block. It is the
-   strongest lead in the data and it is GRAIN's: `manifestForReasoner` is grain's function and
-   narrowing what a screen offers a small model is a fleet-wide change rather than one page's fix.
-   **So it is not this plan's to do.** It needs a grain scope cap and its own session, and the audit's
-   five `/builder` scenarios are already the measuring stick it will be judged against: five reds
-   today, run the same command after.
+3. **What to do about a model that cannot use the vocabulary, settled 2026-08-14 and DONE
+   2026-08-15: narrow the manifest.** Three directions were put to the owner and the first was
+   taken. Shipped in grain, default-on for every screen, commits `4ab5d1b` and `d44bf5a`, with the
+   survey and the numbers in `grain/packages/grain/plans/reasoner-manifest-narrowing.md` and the run
+   report in `artifacts/runs/2026-08-15-manifest-narrowing.md`. `manifestToText` now lists only
+   targets that accept a verb, and the `in view` block was reshaped so it stops reading as a second
+   target list. Fifty-three targets became eight.
 
-   The two that were not taken, kept because they are the fallbacks if narrowing does not land.
-   **Retune `blockMessage` here**, portfolio-owned and therefore cheap, on the bet that a shorter,
-   more repetitive user turn beats a long manifest. **Or say so on the page**: the drawer already
-   promises that the honest demo is one where you watch it pick the wrong block, and a demo where it
-   never picks a block at all is a different sentence.
-4. **Nobody has ever watched this work.** Confirmed by the owner 2026-08-14: `/builder` has never
-   been opened on a WebGPU machine and asked to drop a card by hand. So the audit is not
-   contradicting an earlier observation, it is the first observation there has been, and there is no
-   machine or build where this is known to have behaved differently.
+   **The five scenarios are still five reds, and the picture underneath them changed.** Answers
+   aimed at a block went from none of eighteen to seven of fifteen, `builder-rail` took none where it
+   had taken fifteen, and five answers picked a real block verb AND the right block, which had never
+   happened. Every one of those five was refused because it said `b2` where the manifest addresses
+   `block:b2`.
+
+   **The first fallback was then tried and is now closed, not open.** Retuning `blockMessage` to
+   print the prefixed ids was authorized on the strength of that refusal and made the model strictly
+   worse: zero of fifteen aimed at a block, collapsing to `move` on `builder`. Keeping the prefix and
+   dropping the added instruction did not recover it, zero of ten. Reverted whole; the comment on
+   `blockMessage` carries the numbers so nobody fixes the same contradiction again. Do not retry it.
+
+   **What is open instead**, and it is the one direction with measured evidence behind it: normalize
+   a bare id UP to `block:<id>` when the answer is READ, rather than pushing the long form down into
+   the prompt. Five of fifteen answers were one prefix from a pass. It is a decision about how
+   forgiving the fence should be rather than a cleanup, so it is the owner's.
+
+   **The other original fallback still stands. Say so on the page**: the drawer promises that the
+   honest demo is one where you watch it pick the wrong block, and a demo where it never lands one is
+   a different sentence.
+4. **Nobody has ever watched this work.** Confirmed by the owner 2026-08-14 and still true on
+   2026-08-15: `/builder` has never been opened on a WebGPU machine and asked to drop a card by hand.
+   So the audit is not contradicting an earlier observation, it is the first observation there has
+   been, and there is no machine or build where this is known to have behaved differently.
+
+   **Asked on 2026-08-15 whether the edit path is ready for an earnest live test, the answer is no.**
+   `desk-audit` already drives the real 0.5B over real WebGPU, so a live run adds a human hand and a
+   non-headless GPU and nothing else on that path. The canvas was byte-identical in every run of
+   every configuration measured. What a live test WOULD settle is whether the refusals read well to a
+   visitor, which no audit can grade: half the answers now produce `no surface "b2" on this screen`,
+   a developer-facing sentence on a page a visitor is reading. The compose path is a separate
+   question and the answer there is yes.
