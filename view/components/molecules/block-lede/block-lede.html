@@ -1,0 +1,8 @@
+<!-- molecules/block-lede — a lede paragraph, as a renderable BLOCK for the page builder. See
+     block-card.html for why these templates live in the portfolio rather than in grain.
+     Per-item DATA: body. Form-wide CONFIG props: size.
+     The body arrives as TEXT and is escaped by the renderer, which costs the emphasis grain's own
+     lede examples show. That is the right trade for a generated page: a block whose body accepted
+     markup would be a hole a description could write tags through, and the block set exists to keep
+     what lands on the page inside a closed vocabulary. -->
+<p class="lede" prop-attr-data-size="size" data-field="body">Body</p>

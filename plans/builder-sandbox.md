@@ -21,6 +21,12 @@ owner: ai
 
 # The builder becomes a sandbox, not a form page
 
+> **Pieces 2 to 5 are superseded by [`site-builder.md`](site-builder.md), 2026-08-14.** The owner's
+> clarification that day separated two things this file had been using one word for: building forms
+> from data, which is done and lives in grain, and the builder on the site, which means prompt to
+> GRAIN and is a page builder. Piece 1, the composer, shipped and carries over. The rest of this file
+> is kept as the reasoning that got there, not as the live plan.
+
 The owner answered the builder tour's wording question on 2026-08-13 by redirecting it, and the
 answer is worth quoting rather than paraphrasing: the builder page should be about general GRAIN
 rather than forms alone, and it should feel like a sandbox rather than a markdown form. A prompt area

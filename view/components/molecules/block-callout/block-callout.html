@@ -1,0 +1,8 @@
+<!-- molecules/block-callout — a callout, as a renderable BLOCK for the page builder. See
+     block-card.html for why these templates live in the portfolio rather than in grain.
+     Per-item DATA: body, status. The status binds rather than riding as a config prop, because a
+     composition may hold several callouts and each one's tone is its own: a config prop reaches
+     every item of an each identically, which is right for presentation the whole block shares and
+     wrong for a per-item judgment. grain's callout.md documents data-status as the tone attribute
+     and names no second class for it. -->
+<blockquote class="callout" data-bind-data-status="status" data-field="body">Body</blockquote>

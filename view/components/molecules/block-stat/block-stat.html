@@ -1,0 +1,13 @@
+<!-- molecules/block-stat — a stat tile, as a renderable BLOCK for the page builder. See
+     block-card.html for why these templates live in the portfolio rather than in grain.
+     Per-item DATA: value, label, sub. The sub-line is optional in grain's doc and it stays optional
+     here through the null contract rather than through a second template: an explicit null renders
+     an empty span, which the stylesheet has no rule to hide, so the block set always supplies the
+     key and the sample data carries a real sub-line. A key left out entirely warns in dev.
+     grain's stat-tile.md is explicit that a tile is laid out by its parent and stays layout-free
+     itself, which is exactly why this is a block the canvas grid can place at any span. -->
+<div class="stat">
+  <span class="stat__value" data-field="value">0</span>
+  <span class="stat__label" data-field="label">label</span>
+  <span class="stat__sub" data-field="sub"></span>
+</div>
