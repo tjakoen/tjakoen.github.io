@@ -298,13 +298,34 @@ can only mean the add it sounds like.
    the prompt. Five of fifteen answers were one prefix from a pass. It is a decision about how
    forgiving the fence should be rather than a cleanup, so it is the owner's.
 
-   **The other original fallback still stands. Say so on the page**: the drawer promises that the
-   honest demo is one where you watch it pick the wrong block, and a demo where it never lands one is
-   a different sentence.
+   **The other original fallback is DONE, 2026-08-15: the page says so.** The drawer promised that
+   the honest demo is one where you watch it pick the wrong block, and a demo where it never lands
+   one is a different sentence. Three paragraphs after the vocabulary list now carry the counts,
+   retract the promise by name, and split the page into the half that works without a model and the
+   half the model cannot do yet. The same retraction replaced the closing line of the block-reasoner
+   header comment, which was the other place that sentence lived. Shown, not asserted: the tour is
+   `content/tours/review-builder-honest-copy.md` and the screenshots are in the run report.
+
+   **The refusals were rewritten at the same time, because they are what the page actually shows.**
+   Roughly half the live model's answers land on grain's `no surface "b2" on this screen`, and that
+   sentence was reaching a visitor verbatim. `refusalSaid` in `block-reasoner.ts` now derives the
+   said line from the move and the live manifest, and grain's reason still goes to the console
+   through `because` word for word. Derived rather than matched against grain's prose: grain owns
+   those strings and page copy that degrades to a generic sentence the day one moves is worse than
+   copy that never read it. Nothing was softened. The near-miss branch names the prefix the answer
+   was short and still refuses, because the fix below is not taken.
 4. **Nobody has ever watched this work.** Confirmed by the owner 2026-08-14 and still true on
    2026-08-15: `/builder` has never been opened on a WebGPU machine and asked to drop a card by hand.
    So the audit is not contradicting an earlier observation, it is the first observation there has
    been, and there is no machine or build where this is known to have behaved differently.
+
+   **The model itself is not the unknown, and that was asked and answered 2026-08-15.** The owner
+   confirms the 0.5B has run in a real browser on this machine, outside the bundled headless
+   Chromium the audit drives. So WebGPU here is real and the model loads outside the harness, which
+   means the audit numbers are not an artifact of a headless-only graphics stack. What has never
+   happened is narrower than it looked and is still the gap: nobody has driven `/builder`'s EDIT
+   path by hand. That is what `content/tours/review-builder-honest-copy.md` is for, and its second
+   step is written so a walk on a WebGPU machine settles it.
 
    **Asked on 2026-08-15 whether the edit path is ready for an earnest live test, the answer is no.**
    `desk-audit` already drives the real 0.5B over real WebGPU, so a live run adds a human hand and a
