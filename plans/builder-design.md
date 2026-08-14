@@ -234,10 +234,30 @@ can only mean the add it sounds like.
   the page read its composition back off it. Seven e2e cases split across the two honest states, a
   scripted engine standing in for the 0.5B because headless CI has no WebGPU, and the refusals are
   the ones that matter: a bad move must change nothing at all.
-- **What the gates cannot reach:** the REAL 0.5B choosing a REAL verb. `bun run audit:desk` is the
-  harness that drives a live model through WebGPU, and it scores desk chat scenarios rather than
-  builder edits. Until it grows one, the honest claim is that everything around the model is proved
-  and the model's own hit rate on "the second card" is unmeasured.
+- **The REAL 0.5B, measured 2026-08-14, and it does not choose right.** `tools/desk-audit.ts` grew
+  five `/builder` scenarios, and they are the first thing that has ever asked the live model to edit
+  a page: the sentence goes into the canvas composer rather than into chat, and the CANVAS is what
+  gets graded, because the said line is a claim about an op and the canvas is whether the op
+  happened. Eighteen model answers across five runs. Not one of them landed a correct op, and not one
+  of them targeted a block at all. Sixteen of eighteen answered `move`, which is not a verb in the
+  vocabulary; fifteen aimed it at `builder-rail`, which is a real surface on the page that accepts no
+  verb. One answered `block.remove` on `builder-said`, the line the page writes its own status to.
+  One ran away into a payload nesting `builder-rail` inside itself until it hit the token cap. The
+  payload key drifted between `direction` and `move`, and every answer carried a confident reply
+  saying the page had been changed.
+- **It is the vocabulary, not the reference.** The obvious reading is that "the second card" is a
+  filter and a count and a 0.5B cannot do either, so `builder-bare-id` asks the same thing the other
+  way: "drop b4", the address handed over literally, nothing left to resolve. Same answer, `move` on
+  `builder-rail`. No amount of better referring language reaches this, which is worth knowing before
+  anyone spends a day on the phrasing.
+- **The prompt is not the problem either.** It was read rather than assumed: the manifest handed over
+  lists `block:b1` through `block:b4` against all three block verbs, and this page's own line under it
+  names the four ids, the three width words and the two directions.
+- **What the same runs DO prove, and it is not nothing.** Every failure was caught. The router routed
+  the sentence to the edit path, grain built the prompt off the live manifest, grain refused what came
+  back, the page said which refusal it was, and the canvas was byte-identical in all eighteen runs.
+  The honest claim is now the other way around from the one this section used to make: the fence is
+  measured and holds, and the thing inside it cannot yet do the job.
 - **D4:** read only the four-line list in the drawer and try to operate the page from it. Then check
   the drawer was shut on arrival.
 
@@ -253,3 +273,17 @@ can only mean the add it sounds like.
    this page cannot have it.
 2. **Whether a composition should have a name.** The canvas head says `untitled.html`, which is a
    promise D4 either keeps or drops.
+3. **What to do about a model that cannot use the vocabulary.** The measurement above is a result
+   rather than a bug report, and the fix is a design call rather than a session's. Three directions
+   are visible from the data and they are not equally cheap:
+   - **Narrow what the screen offers the reasoner.** The manifest this page hands the model is 14
+     actions and 53 targets, 17 of which are chat message ids, and the model reliably picks a
+     plausible-looking surface out of that list rather than a block. That is the strongest lead, and
+     it is GRAIN's: `manifestForReasoner` is grain's function and narrowing it is a fleet-wide
+     change, not one page's fix.
+   - **Retune `blockMessage` here**, which is the portfolio's own and therefore the cheap one, on the
+     bet that a shorter, more repetitive user turn beats a longer manifest. Worth one attempt, and
+     the audit now measures whether it worked.
+   - **Say so on the page.** The page already argues that the honest demo is one where you can watch
+     it pick the wrong block. A demo where it never picks a block at all is a different sentence, and
+     if the first two directions do not land, that sentence is what the drawer should say.
