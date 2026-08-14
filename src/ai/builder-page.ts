@@ -3,7 +3,7 @@
 // JSON the page prints, which CSS state a section's visibility keys off) unit-tests headless and
 // server.ts stays a thin wire-the-request-in, hand-the-file-out. matchSpec (field-matcher.ts) still
 // decides every field/choice/refusal; this only shapes ITS result into view data.
-import { matchSpec, type FieldItem, type ChoiceItem, type MessageItem } from "./field-matcher.ts";
+import { matchSpec, type FieldItem, type ChoiceItem, type MessageItem, type CheckItem } from "./field-matcher.ts";
 
 export interface BuilderView {
   /** The trimmed ask, echoed back on the page as "the prompt that produced this" — "" when none. */
@@ -14,6 +14,7 @@ export interface BuilderView {
   fields: FieldItem[];
   choices: ChoiceItem[];
   messages: MessageItem[];
+  checks: CheckItem[];
   unsupported: Array<{ token: string; reason: string }>;
   /** Present (truthy marker string) only when there's at least one field, message box or choice to
    *  render —
@@ -60,19 +61,24 @@ export function buildBuilderView(rawAsk: string): BuilderView {
   const ask = rawAsk.trim();
   if (!ask) {
     return {
-      ask: "", builderState: "empty", fields: [], choices: [], messages: [], unsupported: [],
+      ask: "", builderState: "empty", fields: [], choices: [], messages: [], checks: [],
+      unsupported: [],
       hasFields: null, hasUnsupported: null, matchedNothing: null, specJson: "",
       composer: composerFor(""),
     };
   }
   const spec = matchSpec(ask);
-  const hasFields = spec.fields.length > 0 || spec.messages.length > 0 || spec.choices.length > 0;
+  // A tick box counts as something to render, like every other control: an ask that matched only a
+  // consent box has built a form, and the block that shows it must not stay hidden.
+  const hasFields = spec.fields.length > 0 || spec.messages.length > 0 || spec.choices.length > 0
+    || spec.checks.length > 0;
   return {
     ask,
     builderState: "result",
     fields: spec.fields,
     choices: spec.choices,
     messages: spec.messages,
+    checks: spec.checks,
     unsupported: spec.unsupported,
     hasFields: hasFields ? "hasfields" : null,
     hasUnsupported: spec.unsupported.length > 0 ? "hasunsupported" : null,

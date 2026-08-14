@@ -56,14 +56,24 @@
               time. They never change between runs:</p>
             <pre class="builder-tag">&lt;b-field each="fields"&gt;&lt;/b-field&gt;
 &lt;b-memo each="messages" rows="6"&gt;&lt;/b-memo&gt;
-&lt;b-choice each="choices"&gt;&lt;/b-choice&gt;</pre>
+&lt;b-choice each="choices"&gt;&lt;/b-choice&gt;
+&lt;b-check each="checks"&gt;&lt;/b-check&gt;</pre>
             <form class="builder-form" data-surface="builder-form" onsubmit="return false">
               <b-field each="fields" size="sm"></b-field>
               <b-memo each="messages" size="sm" rows="6"></b-memo>
               <b-choice each="choices" size="sm"></b-choice>
+              <b-check each="checks" size="sm"></b-check>
             </form>
+            <p class="muted">Ask for a box to tick and you get one, and this is the newest thing on
+              the page. Until 2026-08-14 the vocabulary had no verb that could operate a tick box:
+              the only verb for a form control writes the control's value, and a tick box's value is
+              what the form submits rather than whether it is ticked, so the write landed, reported
+              success and moved nothing. Generating one before that would have put a control here the
+              desk could not touch. A tick box carries a different kind of address from every other
+              control on this page for exactly that reason, and the desk ticks it with a different
+              verb.</p>
             <p class="muted">Fields are grouped by kind, text fields first, then a message box, then
-              choices.
+              choices, then anything to tick.
               Interleaving them in the order you asked isn't supported, on purpose, a v1 limit. Labels
               above are the closed set's own defaults; a model could reword them (matchSpec's
               applyWording seam exists for exactly that), but it isn't wired into this live page,

@@ -458,8 +458,13 @@ const joinPhrases = (xs: string[]): string =>
 // derived from its address prefix alone ("field:"), so nothing about a `field:builder-topic` string
 // itself would tell this function it's actually a <select> — the guarantee has to come from upstream
 // (form-draft.ts) never putting one in the map, not from a check down here. ----
+// The stash carries two maps rather than one because the two kinds of control take two different
+// verbs: a value goes through field.set and lands as el.value, a tick goes through check.set and
+// lands as el.checked. Keeping them apart on the wire means the filler below never has to guess
+// which verb a surface wants, which is the guess the two surface kinds exist to remove.
 const FORM_TASK_KEY = "desk-form-task";
-const formTaskSet = (values: Record<string, string>): void => { try { ss()?.setItem(FORM_TASK_KEY, JSON.stringify(values)); } catch { /* no session storage */ } };
+interface FormTask { values: Record<string, string>; checks: Record<string, boolean> }
+const formTaskSet = (task: FormTask): void => { try { ss()?.setItem(FORM_TASK_KEY, JSON.stringify(task)); } catch { /* no session storage */ } };
 
 // ---- C1 visitor-intent onboarding: sessionStorage-backed, same try/catch-around-ss() shape as the
 // tour deps above. INTENT_KEY holds the answer (one key, per the roadmap); INTENT_ASKED_KEY is the
@@ -640,25 +645,37 @@ async function runContactTask(applyOp: (op: RenderOp) => void): Promise<void> {
  *  the stash (form-draft.ts) — this function composes NO text of its own, it only applies what it was
  *  handed, through grainKit.fillOp → applyOp, the one door's op path (never a direct .value write). */
 async function runFormTask(applyOp: (op: RenderOp) => void): Promise<void> {
-  let stashed: Record<string, string> | null = null;
+  let stashed: FormTask | null = null;
   try {
     const raw = ss()?.getItem(FORM_TASK_KEY);
     if (!raw) return;
     ss()?.removeItem(FORM_TASK_KEY);
     stashed = JSON.parse(raw);
   } catch { return; }
-  if (!stashed || !Object.keys(stashed).length) return;
+  const values = stashed?.values ?? {};
+  const checks = stashed?.checks ?? {};
+  if (!Object.keys(values).length && !Object.keys(checks).length) return;
   if (stripSlash(loc()?.pathname ?? "/") !== "/builder") return;   // wandered elsewhere, bail, don't chase
 
   const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
   await wait(450);                                   // let the rendered form settle in, arrival's own beat
 
   applyOp(grainKit.narrateOp("drafts", "a few demo values into the form"));
-  for (const [surface, value] of Object.entries(stashed)) {
+  for (const [surface, value] of Object.entries(values)) {
     applyOp(grainKit.spotlightOp(surface, { active: true }));
     await wait(FORM_FILL_BEAT_MS);   // let the visitor SEE each value land, the mail/contact beat's own pace
     try { applyOp(grainKit.fillOp(surface, value)); }
     catch (err) { console.error("[desk] form-build fill rejected", surface, err); }   // one bad value never aborts the rest
+  }
+  // The tick boxes, last and through their own verb. Same beat and same spotlight as a value, so the
+  // visitor sees a box move exactly the way they saw a field fill: the point of the whole closing
+  // move is that the AI operates what it generated, and until 2026-08-14 this was the one control it
+  // could not. tickOp throws on a non-boolean at compose time rather than sending one.
+  for (const [surface, state] of Object.entries(checks)) {
+    applyOp(grainKit.spotlightOp(surface, { active: true }));
+    await wait(FORM_FILL_BEAT_MS);
+    try { applyOp(grainKit.tickOp(surface, state)); }
+    catch (err) { console.error("[desk] form-build tick rejected", surface, err); }
   }
   applyOp(grainKit.spotlightOp("screen", { active: false }));
 }

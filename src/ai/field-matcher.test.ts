@@ -117,24 +117,63 @@ describe("matchSpec: unsupported", () => {
 describe("matchSpec: empty or nonsense input", () => {
   test("empty string yields empty everything", () => {
     const spec = matchSpec("");
-    expect(spec).toEqual({ fields: [], choices: [], messages: [], unsupported: [] });
+    expect(spec).toEqual({ fields: [], choices: [], messages: [], checks: [], unsupported: [] });
   });
 
   test("nonsense unrelated text yields empty everything, never a guessed default form", () => {
     const spec = matchSpec("quantum physics and a haiku about the weather");
-    expect(spec).toEqual({ fields: [], choices: [], messages: [], unsupported: [] });
+    expect(spec).toEqual({ fields: [], choices: [], messages: [], checks: [], unsupported: [] });
   });
 });
 
 describe("matchSpec: surfaces are unique across the whole spec", () => {
-  test("every field + message + choice surface is distinct", () => {
+  test("every field + message + choice + tick box surface is distinct", () => {
     const spec = matchSpec(
-      "name, email, phone, company, role, subject, website, budget, a message box, topic, contact method, timeline",
+      "name, email, phone, company, role, subject, website, budget, a message box, topic, " +
+      "contact method, timeline, consent, newsletter, copy me in",
     );
     const surfaces = [...spec.fields.map((f) => f.surface), ...spec.messages.map((m) => m.surface),
-      ...spec.choices.map((c) => c.surface)];
+      ...spec.choices.map((c) => c.surface), ...spec.checks.map((c) => c.surface)];
     expect(new Set(surfaces).size).toBe(surfaces.length);
-    expect(surfaces.length).toBe(12);
+    expect(surfaces.length).toBe(15);
+  });
+});
+
+// The whole reason a tick box is a fourth array rather than a field with a type, and the whole
+// reason the verb had to exist before the matcher could offer one. Each of these was made to fail
+// before it was kept.
+describe("matchSpec: tick boxes", () => {
+  test("a consent ask generates a required tick box, unticked", () => {
+    const spec = matchSpec("a name, an email, and a box to agree to the terms");
+    expect(spec.checks.map((c) => c.name)).toEqual(["consent"]);
+    const consent = spec.checks[0]!;
+    expect(consent.type).toBe("checkbox");
+    expect(consent.required).toBe("required");
+    // Never pre-ticked: a generated form must not claim a visitor agreed to something. The desk
+    // ticks it afterwards, visibly, which is the demo's closing move.
+    expect(consent.checked).toBeNull();
+    expect(consent.value).toBe("agreed");
+  });
+
+  // The correctness key. A field: address advertises field.set, which writes el.value, and a tick
+  // box's value is what the form SUBMITS rather than whether it is ticked: the write would land,
+  // report success and move nothing. check: names the kind that accepts the verb which can.
+  test("a tick box is addressed check:, and nothing else in the spec is", () => {
+    const spec = matchSpec("a name, an email, a message box, a topic, and a newsletter checkbox");
+    expect(spec.checks.map((c) => c.surface)).toEqual(["check:builder-newsletter"]);
+    for (const item of [...spec.fields, ...spec.messages, ...spec.choices]) {
+      expect(item.surface.startsWith("field:")).toBe(true);
+    }
+  });
+
+  test("the matcher never emits a radio: a group is a choice, and a choice is already a select", () => {
+    const spec = matchSpec("consent, newsletter, copy me in, a topic, a preferred contact method");
+    for (const check of spec.checks) expect(check.type).toBe("checkbox");
+    expect(spec.checks).toHaveLength(3);
+  });
+
+  test("a form with no tick-box words in it generates none", () => {
+    expect(matchSpec("a name and an email").checks).toEqual([]);
   });
 });
 

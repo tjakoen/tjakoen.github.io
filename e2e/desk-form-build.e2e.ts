@@ -173,3 +173,41 @@ test.describe("the composer: a typed prompt is still an address", () => {
     await ctx.close();
   });
 });
+
+// Piece 2, and the reason piece 1 of the verb had to come first. A generated tick box is the one
+// control this demo could not operate until 2026-08-14: field.set writes el.value, and a tick box's
+// value is what the form submits rather than whether it is ticked. The address is the assertion that
+// carries it — check:, not field: — because that prefix is what decides which verb the manifest
+// offers on the control.
+test.describe("D1 form builder: a generated tick box, and the desk ticks it", () => {
+  const CONSENT = '[data-surface="check:builder-consent"]';
+  const CHECK_ASK = "build me a form with a name, an email and a box to agree to the terms";
+
+  test("the matcher generates it, and the desk ticks what it just built", async ({ page }) => {
+    await clientDeskEverywhere(page);
+    await page.goto("/");
+    await deskReady(page);
+
+    await ask(page, CHECK_ASK);
+    await page.waitForURL(/\/builder\?ask=/);
+
+    const consent = page.locator(CONSENT);
+    await expect(consent).toHaveCount(1);
+    await expect(consent).toHaveJSProperty("type", "checkbox");
+    // Generated unticked: a form nobody has filled in must not claim they agreed to anything.
+    // Then the desk ticks it, visibly, through check.set — the demo's closing move reaching the last
+    // control it could not reach.
+    await expect(consent).toBeChecked({ timeout: 15_000 });
+    await expect(consent).toHaveAttribute("data-grade", "grain");   // AI ink, not the visitor's
+    await expect(page.locator(NAME_FIELD)).toHaveValue("Ada Rivers");
+  });
+
+  test("the tick box is the ONLY control on the page wearing a check: address", async ({ page }) => {
+    await page.goto(`/builder?ask=${encodeURIComponent(CHECK_ASK)}`);
+    const checkSurfaces = await page.locator('[data-surface^="check:"]').evaluateAll(
+      (els) => els.map((el) => el.getAttribute("data-surface")));
+    expect(checkSurfaces).toEqual(["check:builder-consent"]);
+    // and no generated tick box wears a field: address, which would advertise the write that lies
+    await expect(page.locator('input[type="checkbox"][data-surface^="field:"]')).toHaveCount(0);
+  });
+});

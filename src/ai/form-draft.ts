@@ -17,7 +17,7 @@
 // on. Filling a select with a value that isn't one of its options sets it BLANK, silently — measured
 // live, not theoretical (see desk-reasoner.ts's and desk-door.ts's own comments on the same hazard).
 // This module has no export that can reach a choice's surface, so that mistake can't happen here.
-import type { FieldItem, MessageItem } from "./field-matcher.ts";
+import type { FieldItem, MessageItem, CheckItem } from "./field-matcher.ts";
 
 // One short, honest demo value per name in the closed set (field-matcher.ts's FIELD_TABLE and
 // MESSAGE_TABLE) — every
@@ -44,6 +44,31 @@ export function draftFieldValues(fields: Array<FieldItem | MessageItem>): Record
   for (const f of fields) {
     const sample = SAMPLE_BY_NAME[f.name];
     if (sample) out[f.surface] = sample;
+  }
+  return out;
+}
+
+// A tick box's demo state, and it is a separate function returning a separate map for the same
+// reason the spec keeps tick boxes in their own array: they take a DIFFERENT verb. A value goes
+// through field.set and lands as el.value; a tick goes through check.set and lands as el.checked.
+// Handing both to one caller as one map would put the caller back in the business of guessing which
+// verb a surface wants, which is exactly the guess the two kinds exist to remove.
+const CHECK_STATE_BY_NAME: Record<string, boolean> = {
+  // Ticked, all three: the demo's point is showing a control move, and a box the desk leaves alone
+  // shows nothing. Consent is the one worth a second thought, and it is still right here: this form
+  // submits nowhere, and the state is grain-graded AI ink that any click of the visitor's settles.
+  consent: true,
+  newsletter: true,
+  copy: true,
+};
+
+/** Draft a demo tick state for every matched tick box, keyed by the exact `check:` surface
+ *  `check.set` targets. A name outside the closed set ticks nothing rather than guessing. */
+export function draftCheckStates(checks: CheckItem[]): Record<string, boolean> {
+  const out: Record<string, boolean> = {};
+  for (const c of checks) {
+    const state = CHECK_STATE_BY_NAME[c.name];
+    if (state !== undefined) out[c.surface] = state;
   }
   return out;
 }

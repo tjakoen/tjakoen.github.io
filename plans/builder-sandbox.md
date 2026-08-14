@@ -51,7 +51,13 @@ points rather than four form descriptions.
    new textarea atom, with the current query-string round trip behind it so a typed prompt still
    produces a shareable address. This is the smallest piece and it is the one that changes how the
    page feels most.
-2. **The spec generalizes past forms.** The matcher's closed set grows a component dimension: what
+2. **The spec generalizes past forms. Half of this shipped 2026-08-14** and it is worth being
+   precise about which half. The closed set grew a **fourth control**, the tick box, so a
+   description can now ask for one and the desk ticks what it just generated through `check.set`.
+   That is the matcher's table widening within forms, which is the safe move this bullet warned
+   about getting wrong by going too fast. The ambitious half, a component dimension past forms
+   entirely, is untouched and still the real work below.
+   The matcher's closed set grows a component dimension: what
    the description asks for is a composition of GRAIN components, of which a form is one. This is
    the real work, and it is the piece most likely to be got wrong by widening the table too fast.
    Start with the components the catalog already documents and refuse everything else out loud.
@@ -112,7 +118,9 @@ a published page: cheap to drop, one entry in one JSON file plus its tag.
 
 - [x] 1. The prompt area becomes a real composer (2026-08-14, a GET form back to the same route, so
       the prompt is still the address and the box still works with JavaScript off)
-- [ ] 2. The spec generalizes past forms
+- [~] 2. The spec generalizes past forms. **The first widening landed 2026-08-14:** the closed set
+      grew a fourth control, the tick box, and the demo's closing move reaches it. What is left of
+      this piece is the bigger move it describes, a component dimension past forms entirely.
 - [ ] 3. The AI narrates its selection
 - [ ] 4. The preview tab, with the code switcher
 - [ ] 5. The catalog sidebar default
