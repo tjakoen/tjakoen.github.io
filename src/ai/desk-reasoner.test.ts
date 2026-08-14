@@ -1334,8 +1334,11 @@ describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks
     const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
     // name + email are the matched TEXT fields; "what they want to talk about" matched the topic
     // CHOICE, and a choice's surface must never appear here (see form-draft.ts's own banner).
-    expect(Object.keys(stashed).sort()).toEqual(["field:builder-email", "field:builder-name"]);
-    expect(stashed["field:builder-topic"]).toBeUndefined();
+    expect(Object.keys(stashed.values).sort()).toEqual(["field:builder-email", "field:builder-name"]);
+    expect(stashed.values["field:builder-topic"]).toBeUndefined();
+    // Nothing in that ask asked for a box to tick, so the tick half of the stash is empty rather
+    // than absent: the two halves take two different verbs and both are always on the wire.
+    expect(stashed.checks).toEqual({});
     // the lamp travels to the /builder nav link before the navigate fires
     expect(ops.some((o) => o.op === "spotlight" && o.target === "nav:/builder" && o.active)).toBe(true);
   });
@@ -1384,10 +1387,34 @@ describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks
 
     expect(d.ok).toBe(true);
     const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
-    expect(Object.keys(stashed).sort())
+    expect(Object.keys(stashed.values).sort())
       .toEqual(["field:builder-email", "field:builder-message", "field:builder-name"]);
-    expect(stashed["field:builder-topic"]).toBeUndefined();
-    expect(stashed["field:builder-message"].length).toBeGreaterThan(0);
+    expect(stashed.values["field:builder-topic"]).toBeUndefined();
+    expect(stashed.values["field:builder-message"].length).toBeGreaterThan(0);
+  });
+
+  // The closing move the tick-box verb unlocked: the desk generates a control it can also operate.
+  // Before check.set existed this ask either refused or produced a box nothing could touch, so the
+  // two halves of the stash being separate is the design and not bookkeeping.
+  test("a tick box is built and stashed under its own half, keyed by a check: surface", async () => {
+    const calls: string[] = [];
+    const { deps } = makeDeps();
+    deps.navigate = (u) => { calls.push(`navigate:${u}`); };
+    deps.formTaskSet = (task) => { calls.push(`formTaskSet:${JSON.stringify(task)}`); };
+    const r = makeDeskReasoner(deps);
+
+    const d = await r.decide(
+      chat("build me a form with a name, an email and a box to agree to the terms"),
+      makeTools().tools);
+
+    expect(d.ok).toBe(true);
+    const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
+    expect(Object.keys(stashed.values).sort()).toEqual(["field:builder-email", "field:builder-name"]);
+    // The tick box is in the OTHER half, under a check: address, and its state is a real boolean.
+    // A check: surface appearing among the values would send it through field.set, which writes the
+    // value the form submits rather than the state it shows.
+    expect(stashed.checks).toEqual({ "check:builder-consent": true });
+    for (const surface of Object.keys(stashed.values)) expect(surface.startsWith("field:")).toBe(true);
   });
 
   test("no navigate dep: an honest decline, no crash, no stash", async () => {

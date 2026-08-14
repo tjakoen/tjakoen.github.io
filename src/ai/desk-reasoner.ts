@@ -39,7 +39,7 @@ import { draftMessage, CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
 // (form-draft.ts — never a `choices` item, see that file's own banner on why). KNOWN_FIELD_LABELS/
 // KNOWN_CHOICE_LABELS name the closed set honestly when a description matches nothing at all.
 import { matchSpec, KNOWN_FIELD_LABELS, KNOWN_MESSAGE_LABELS, KNOWN_CHOICE_LABELS } from "./field-matcher.ts";
-import { draftFieldValues } from "./form-draft.ts";
+import { draftFieldValues, draftCheckStates } from "./form-draft.ts";
 // C2 visitor memory — the notepad IS the memory. Write-time sanitize + the one line marker
 // (sanitizeMemoryFact, memoryLine) and read-time parseMemories (re-sanitize + cap, for the VISITOR
 // NOTES prompt block). Pure (memory.ts), same family as contact-draft.ts.
@@ -333,7 +333,7 @@ export interface DeskDeps {
   /** Stash the ALREADY-DRAFTED demo values (surface → text, form-draft.ts) for the door to fill on
    *  arrival after navigating to /builder — same "stash BEFORE navigate" discipline every other
    *  cross-page task here follows (the navigate tears this down). */
-  formTaskSet?: (values: Record<string, string>) => void;
+  formTaskSet?: (task: { values: Record<string, string>; checks: Record<string, boolean> }) => void;
   // ---- C1 visitor-intent onboarding (recruiter/developer/student) — sessionStorage-backed, same
   // try/catch-around-ss() shape the door gives every dep above. ONE key holds the answer, a second
   // holds the nag-guard flag. State is read ONLY to bias a code-chosen chip pool (pickFollowups below)
@@ -1197,9 +1197,14 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           // Every control the dispatcher can TYPE into: the text fields and the message box, which is
           // a textarea and travels the same fill path. Never a `choices` item — see form-draft.ts.
           const values = draftFieldValues([...spec.fields, ...spec.messages]);
+          // The tick boxes, and they are drafted separately because they take check.set rather than
+          // field.set: a tick box's value is what the form submits, not whether it is ticked.
+          const checks = draftCheckStates(spec.checks);
           const line = "Building that form now, and I'll fill in a few demo values so you can see it live.";
           await typeOut(line);
-          if (Object.keys(values).length) deps.formTaskSet?.(values);   // stash BEFORE navigating
+          if (Object.keys(values).length || Object.keys(checks).length) {
+            deps.formTaskSet?.({ values, checks });   // stash BEFORE navigating
+          }
           await travelAndNavigate("/builder", href, "Builder", "Here's the form.", "the navigation");
           return { ok: true, ops: [], reply: line };
         }

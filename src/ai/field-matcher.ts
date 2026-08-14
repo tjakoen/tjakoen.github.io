@@ -59,10 +59,40 @@ export interface MessageItem {
   error: string | null;
 }
 
+/** One rendered tick box (grain's b-check). Same always-present-keys contract as the rest, plus two
+ *  keys that carry the whole reason this is a fourth array rather than a field with a type.
+ *
+ *  `surface` is a `check:` address, NEVER a `field:` one, and that is a correctness key rather than
+ *  a naming one: a `field:` address advertises `field.set`, which writes `el.value`, and a tick
+ *  box's value is what the form SUBMITS rather than whether it is ticked. The write would land,
+ *  report success and move nothing. `check.set` is the verb that operates one, and it accepts the
+ *  `check` kind alone.
+ *
+ *  `type` is `"checkbox"` and this matcher never emits `"radio"`. A radio group is a choice, and a
+ *  choice already renders through CHOICE_TABLE as a select: two ways to ask the same question would
+ *  make the spec ambiguous about which one a description meant. b-check can render a radio; this
+ *  demo has no description that should produce one. */
+export interface CheckItem {
+  surface: string;
+  label: string;
+  name: string;
+  type: "checkbox";
+  value: string;
+  /** "checked" or null, the same boolean-attribute rule `required` and `selected` follow. Always
+   *  null here: a generated form comes up with nothing pre-agreed to, and a tick box the visitor
+   *  never touched must never claim they did. The DESK ticks it afterwards, visibly, through
+   *  check.set, which is the demo's whole closing move. */
+  checked: "checked" | null;
+  required: "required" | null;
+  hint: string | null;
+  error: string | null;
+}
+
 export interface FieldSpec {
   fields: FieldItem[];
   choices: ChoiceItem[];
   messages: MessageItem[];
+  checks: CheckItem[];
   unsupported: Array<{ token: string; reason: string }>;
 }
 
@@ -101,6 +131,11 @@ interface FieldEntry {
 }
 
 const surfaceFor = (name: string): string => `field:builder-${name}`;
+/** A tick box's address, and the prefix is the point. See CheckItem: a `field:` address advertises
+ *  `field.set`, which writes the value the form submits rather than the state it shows, so the one
+ *  verb that can operate this control is the one a `check:` address names. Kept as its own builder
+ *  beside `surfaceFor` so nobody reaches for the wrong one by habit. */
+const checkSurfaceFor = (name: string): string => `check:builder-${name}`;
 
 // Declaration order here IS the output order (see matchSpec below) — never the order the words
 // appeared in the description. That's a deliberate, honest limit: a description that asks for
@@ -302,6 +337,66 @@ const CHOICE_TABLE: ChoiceEntry[] = [
 ];
 
 // ---------------------------------------------------------------------------------------------
+// The closed set of known tick boxes
+// ---------------------------------------------------------------------------------------------
+// Added 2026-08-14, and it could not have been added a day earlier. Until grain grew `check.set`
+// there was no verb in the vocabulary that could operate a tick box, so generating one would have
+// put a control on this page that the demo's closing move, the desk filling in what it just built,
+// could not touch. Offering it then would have been the page quietly overselling itself.
+//
+// Its own table for the same reason MESSAGE_TABLE is its own: `each` renders one component per item
+// and a component cannot choose which component it is. A tick box renders through b-check, so it is
+// a fourth array and a fourth tag.
+//
+// `value` is what the form would submit when the box IS ticked, and it is a real string rather than
+// null on purpose: that value is the entire hazard this control taught the stack, so a generated
+// tick box carrying an obviously meaningful one makes the field.set-lands-and-lies demonstration
+// visible rather than abstract.
+
+interface CheckEntry {
+  name: string;
+  label: string;
+  value: string;
+  required: boolean;
+  tokens: string[];
+}
+
+const CHECK_TABLE: CheckEntry[] = [
+  {
+    name: "consent",
+    label: "I agree to the terms",
+    value: "agreed",
+    // The one control in this whole closed set that is honestly required: a consent box nobody has
+    // to tick is not consent. It costs nothing here, since the demo submits nowhere.
+    required: true,
+    tokens: [
+      "consent", "agree to the term", "agree to term", "terms checkbox", "accept the term",
+      "tick to agree", "agreement checkbox", "privacy consent", "gdpr",
+    ],
+  },
+  {
+    name: "newsletter",
+    label: "Send me occasional updates",
+    value: "yes",
+    required: false,
+    tokens: [
+      "newsletter", "mailing list", "subscribe", "subscription", "opt in", "opt into email",
+      "occasional update", "keep me posted", "email updates", "sign up for update",
+    ],
+  },
+  {
+    name: "copy",
+    label: "Copy me in",
+    value: "yes",
+    required: false,
+    tokens: [
+      "copy me", "copy me in", "send me a copy", "cc me", "copy of what they sent",
+      "copy of their message", "carbon copy",
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------------------------
 // The closed set of things this stack recognizes but refuses to render
 // ---------------------------------------------------------------------------------------------
 
@@ -331,6 +426,7 @@ const UNSUPPORTED_TABLE: UnsupportedEntry[] = [
 export const KNOWN_FIELD_LABELS: string[] = FIELD_TABLE.map((e) => e.label);
 export const KNOWN_CHOICE_LABELS: string[] = CHOICE_TABLE.map((e) => e.label);
 export const KNOWN_MESSAGE_LABELS: string[] = MESSAGE_TABLE.map((e) => e.label);
+export const KNOWN_CHECK_LABELS: string[] = CHECK_TABLE.map((e) => e.label);
 
 // ---------------------------------------------------------------------------------------------
 // matchSpec
@@ -392,13 +488,29 @@ export function matchSpec(description: string): FieldSpec {
     });
   }
 
+  const checks: CheckItem[] = [];
+  for (const entry of CHECK_TABLE) {
+    if (!anyTokenHits(desc, entry.tokens)) continue;
+    checks.push({
+      surface: checkSurfaceFor(entry.name),
+      label: entry.label,
+      name: entry.name,
+      type: "checkbox",
+      value: entry.value,
+      checked: null,
+      required: entry.required ? "required" : null,
+      hint: null,
+      error: null,
+    });
+  }
+
   const unsupported: Array<{ token: string; reason: string }> = [];
   for (const entry of UNSUPPORTED_TABLE) {
     if (!anyTokenHits(desc, entry.tokens)) continue;
     unsupported.push({ token: entry.token, reason: entry.reason });
   }
 
-  return { fields, choices, messages, unsupported };
+  return { fields, choices, messages, checks, unsupported };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -467,5 +579,15 @@ export function applyWording(
     };
   });
 
-  return { fields, choices, messages, unsupported: spec.unsupported.map((u) => ({ ...u })) };
+  // A tick box's label is the sentence someone agrees to, so it takes a wording override like any
+  // other label. Nothing else about it does: the value it submits, the type and the address are
+  // selection, and this seam only ever touches wording.
+  const checks = spec.checks.map((item) => {
+    const w = wording[item.name];
+    if (!w) return { ...item };
+    const label = sanitizeOverride(w.label, MAX_LABEL);
+    return { ...item, label: label ?? item.label };
+  });
+
+  return { fields, choices, messages, checks, unsupported: spec.unsupported.map((u) => ({ ...u })) };
 }
