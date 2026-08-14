@@ -80,6 +80,24 @@ The walk itself is proven end to end: the rail lists five steps, the intro card 
 `?tour=review-grain-status`, and step one spotlights the as-it-ships row with the rest of the page
 dimmed. Screenshots taken at each stage rather than described.
 
+## Gate output
+
+The terminal output of this run was never captured, and no amount of git history brings it back. What
+follows is written out from this report's own gates list, which is the only record the session left,
+and it is labelled so that nobody mistakes it for a paste. Retrofitted on 2026-08-15 by a later
+session clearing the run ledger, which changed no claim and added no number that was not already here.
+
+```
+NOT A PASTE. Reconstructed 2026-08-15 from the gates: list in this report's own frontmatter.
+The original terminal output was not kept.
+
+$ bun test                          (portfolio)   360 pass, 0 fail
+$ bunx proof verify plans           (portfolio)   OK, 2 warnings, neither this run's
+
+the export exclusion, measured   the sitemap emits /review/grain-status exactly, so the filter matches
+the tour, walked in a browser    rail, card, lamp and step 1 verified by screenshot
+```
+
 ## What was not done
 
 Nothing in grain was touched, deliberately. All four candidates resolve the same question and the

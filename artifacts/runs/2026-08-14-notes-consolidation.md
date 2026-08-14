@@ -43,7 +43,7 @@ diffstat: 15 files changed (292 insertions, 283 deletions) across two commits pl
 dirty: nothing of this session's is uncommitted except the canonical fix described below, which is
   staged for a third commit. The tree is shared with four sibling sessions in the same workstream,
   so every count here was taken by pathspec rather than from a whole-tree read.
-unpushed: 34 portfolio commits, of which 3 are this session's. Pushing stays the owner's call and
+unpushed: 34 | portfolio commits, of which 3 are this session's. Pushing stays the owner's call and
   was not taken. The doctor's own threshold of 25 was already crossed before this session started.
 verifiedBy: nobody yet. Everything below was checked by the session that wrote it, which is one
   pass, not two. The rendered surfaces were screenshotted rather than described, which is evidence a
