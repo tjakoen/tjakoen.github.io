@@ -13,7 +13,7 @@ scope:
   - content/tours/
   - plans/
   - artifacts/runs/
-  - tools/export.ts (ONE line, outside the scope cap, called out below)
+  - tools/export.ts
 touched:
   - src/ai/builder-page.ts
   - src/ai/builder-page.test.ts
@@ -36,6 +36,11 @@ skills:
   - voice
 plans:
   - site-builder, P2 and P3 | plans/site-builder.md
+scopeNote: |
+  tools/export.ts is ONE line and sits outside the run envelope's scope cap. It is declared above as
+  a real path rather than as a path with a caveat attached, because the scope list is read by a
+  machine and a caveat in it reads as an undeclared file. The caveat itself is prose, and it is in
+  the body, in the commit message and in the tour's handoff.
 gates:
   - bunx tsc --noEmit | exit 0, no output
   - bun test | 504 pass, 0 fail, 1827 expect() calls, 31 files
