@@ -273,17 +273,22 @@ can only mean the add it sounds like.
    this page cannot have it.
 2. **Whether a composition should have a name.** The canvas head says `untitled.html`, which is a
    promise D4 either keeps or drops.
-3. **What to do about a model that cannot use the vocabulary.** The measurement above is a result
-   rather than a bug report, and the fix is a design call rather than a session's. Three directions
-   are visible from the data and they are not equally cheap:
-   - **Narrow what the screen offers the reasoner.** The manifest this page hands the model is 14
-     actions and 53 targets, 17 of which are chat message ids, and the model reliably picks a
-     plausible-looking surface out of that list rather than a block. That is the strongest lead, and
-     it is GRAIN's: `manifestForReasoner` is grain's function and narrowing it is a fleet-wide
-     change, not one page's fix.
-   - **Retune `blockMessage` here**, which is the portfolio's own and therefore the cheap one, on the
-     bet that a shorter, more repetitive user turn beats a longer manifest. Worth one attempt, and
-     the audit now measures whether it worked.
-   - **Say so on the page.** The page already argues that the honest demo is one where you can watch
-     it pick the wrong block. A demo where it never picks a block at all is a different sentence, and
-     if the first two directions do not land, that sentence is what the drawer should say.
+3. **What to do about a model that cannot use the vocabulary, settled 2026-08-14: narrow the
+   manifest.** Three directions were put to the owner and the first was taken. The manifest this page
+   hands the model is 14 actions and 53 targets, 17 of which are chat message ids, and the model
+   reliably picks a plausible-looking surface out of that list rather than a block. It is the
+   strongest lead in the data and it is GRAIN's: `manifestForReasoner` is grain's function and
+   narrowing what a screen offers a small model is a fleet-wide change rather than one page's fix.
+   **So it is not this plan's to do.** It needs a grain scope cap and its own session, and the audit's
+   five `/builder` scenarios are already the measuring stick it will be judged against: five reds
+   today, run the same command after.
+
+   The two that were not taken, kept because they are the fallbacks if narrowing does not land.
+   **Retune `blockMessage` here**, portfolio-owned and therefore cheap, on the bet that a shorter,
+   more repetitive user turn beats a long manifest. **Or say so on the page**: the drawer already
+   promises that the honest demo is one where you watch it pick the wrong block, and a demo where it
+   never picks a block at all is a different sentence.
+4. **Nobody has ever watched this work.** Confirmed by the owner 2026-08-14: `/builder` has never
+   been opened on a WebGPU machine and asked to drop a card by hand. So the audit is not
+   contradicting an earlier observation, it is the first observation there has been, and there is no
+   machine or build where this is known to have behaved differently.
