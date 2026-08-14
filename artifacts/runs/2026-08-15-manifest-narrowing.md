@@ -134,6 +134,50 @@ a decision rather than a cleanup, so it was filed and not taken.
 What ships from that attempt is the comment in `src/ai/block-reasoner.ts` recording it, because a
 contradiction that looks worth fixing and is not will otherwise be fixed again by the next reader.
 
+## Gate output
+
+```
+$ bunx tsc --noEmit                                             # portfolio
+(no output, exit 0)
+
+$ bun test src/                                                 # portfolio
+ 539 pass  0 fail            Ran 539 tests across 32 files.
+
+$ bun run check                                                 # grain, all five packages
+ @tjakoen/grain check: Exited with code 0
+ @tjakoen/mill check: Exited with code 0
+ @tjakoen/grain-mcp check: Exited with code 0
+ @tjakoen/crumb check: Exited with code 0
+ @tjakoen/proof check: Exited with code 0
+
+$ bun run test                                                  # grain, all five packages
+ @tjakoen/grain      365 pass  0 fail
+ @tjakoen/mill        79 pass  0 fail
+ @tjakoen/crumb       61 pass  0 fail
+ @tjakoen/grain-mcp   55 pass  0 fail
+ @tjakoen/proof       75 pass  0 fail
+
+$ bun run lint                                                  # grain
+  no warning on manifest-dom.ts; every warning printed is pre-existing elsewhere
+
+$ bun tools/lint-gate.ts                                        # with this session's diff
+  4 regressed: voice:backtick +75, no-array-sort +10, voice:emoji +2, no-control-regex +1
+
+$ git stash && bun tools/lint-gate.ts && git stash pop           # the same gate at HEAD
+  identical, line for line
+
+  So this diff is NET ZERO and all four are a baseline another session left stale. Not refreshed:
+  it belongs to whoever caused it.
+
+$ bun tools/desk-audit.ts --only=builder-drop,builder-bare-id,builder-span,builder-move,builder-no-verb
+  0/5 passed, every configuration, seven runs of the set in total
+```
+
+**Playwright was not run and that is deliberate**, not skipped. The only portfolio change that ships
+is a comment, and nothing under `view/`, `e2e/` or `src/server.ts` changed. The suite has a known-red
+catalog visual spec under full-suite load, filed as the owner's call, and running it here would
+produce that red against a diff that cannot have caused it.
+
 ## What was not done
 
 - **The five reds are still red.** Narrowing was the strongest lead in the data and it was not
@@ -159,7 +203,28 @@ Four were due at session start and none was fixed, because none is this run's.
 
 - **graphify freshness**, the merged graph predates this repo's own extraction.
 - **layer pins current**, grain 0.1.21 against 0.1.22, which is deliberate while the publish is held.
-- **run ledger**, four of twenty reports missing evidence. This report is the twenty-first and is
-  written to the standard; the four earlier ones belong to their own sessions.
+- **run ledger**, four of twenty reports missing evidence. This report was the twenty-first and was
+  itself flagged on the next check for missing a `Gate output` section and an empty
+  `What needs human eyes`; both are now written. The four earlier ones belong to their own sessions.
 - **unpushed work**, now eighty-one across the two repos, said above with the number rather than
   around it.
+
+## What needs human eyes
+
+1. **Is the edit path ready for an earnest live test? No, and the audit already says why.** The
+   scenarios drive the real 0.5B over real WebGPU, so the only thing a live test adds on the edit
+   path is a human hand and a non-headless GPU. The canvas was byte-identical in every run of every
+   configuration: a person typing "drop the second card" would read a refusal line every time and
+   watch nothing move. That is worth doing once to see whether the refusals READ well, and it is not
+   worth doing to find out whether the edit lands.
+2. **The compose path is a different question and the answer there is yes.** It is not what this run
+   touched, it works on the static host, and it has never been the thing that was broken.
+3. **Normalizing a bare id up to `block:<id>` when the answer is read.** The open direction, and the
+   only change with measured evidence behind it: five of fifteen answers were one prefix from a pass.
+   It is a decision about how forgiving the fence should be, so it was not taken here.
+4. **The catalog visual spec's 5s timeout, and `grain-page.e2e.ts:182`.** Unchanged and untouched,
+   still one load-edge item with two instances.
+5. **Push, and publish.** Sixty-two portfolio commits, nineteen grain, and grain 0.1.22 unpublished.
+   The symlink means the measurement never needed the publish; a real visitor would.
+6. **Nobody has still watched `/builder` work by hand on a WebGPU machine.** True yesterday, true
+   today, and not fixed by a better manifest.
