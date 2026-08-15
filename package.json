@@ -10,7 +10,7 @@
   "dependencies": {
     "@tjakoen/batch": "^0.2.1",
     "@tjakoen/crumb": "^0.1.9",
-    "@tjakoen/grain": "^0.1.21",
+    "@tjakoen/grain": "^0.1.22",
     "@tjakoen/mill": "^0.2.2",
     "@tjakoen/proof": "^0.1.3"
   },
