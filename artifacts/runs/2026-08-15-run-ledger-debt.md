@@ -10,7 +10,11 @@ skills:
 scope:
   - artifacts/runs/
   - src/ai/builder-canvas.ts
+  - package.json
+  - bun.lock
 touched:
+  - package.json
+  - bun.lock
   - artifacts/runs/2026-08-11-grain-token-debt-g1-g4.md
   - artifacts/runs/2026-08-11-status-without-a-hue.md
   - artifacts/runs/2026-08-14-notes-consolidation.md
@@ -24,8 +28,8 @@ gates:
   - bun tools/lint-gate.ts | net ZERO on this diff, measured against a stash of it
   - bun ../pantry/cli.ts doctor . | run ledger went from warn to info, 22 of 22 carrying evidence
 diffstat: 5 files changed, 125 insertions, 4 deletions, plus this report.
-unpushed: 69 | unchanged by this run, which added commits to a count that was already 69 before it
-  started. Pushing stays the owner's call and was not taken.
+unpushed: 0 | the run started with 69 held and ended with the owner asking for all of it out. Grain
+  went first because publishing it is what makes the portfolio's pin real. See the push section below.
 verifiedBy: nobody yet. No tour: nothing here renders. Four run reports and one code comment changed,
   and a reader checking this work reads the diff rather than a page.
 doctor: run ledger FIXED and graphify freshness FIXED, the other two carried by name below and
@@ -130,8 +134,8 @@ $ bun ../pantry/cli.ts doctor .
    fix with evidence behind it and it is the owner's, not a session's.
 4. **The catalog visual timeout was not tuned**, and one green full-suite run last session is still
    not a fix.
-5. **Nothing was pushed, published or merged.** Sixty-nine portfolio commits and nineteen in grain
-   stay held, and grain 0.1.22 stays unpublished.
+5. ~~**Nothing was pushed, published or merged.**~~ Overtaken: the owner asked for the release and it
+   went out. See the push section above.
 6. **`content/tours/review-builder-honest-copy.md` was not walked.** It is still waiting on a person.
 
 ## Session doctor flags, carried by name
@@ -142,8 +146,33 @@ graph and left the merged one behind it, so `pantry graph merge` ran and `graphi
 again. Still open, and neither is this run's to take: `layer pins current`, one behind while grain
 0.1.22 is held, and `unpushed work`, 69 commits with the oldest two days old.
 
+## The push, added to this run after the fact
+
+The owner asked for everything committed and pushed, which turned a held run into a release. Checked
+before anything went out: Pages installs with a frozen lockfile, and the lockfile pinned grain
+`0.1.21`. The block kind, the tick-box verb and the narrowed manifest all live in `0.1.22`, so a
+portfolio push on its own would have deployed a `/builder` whose block library cannot render. The
+proof of that is a literal one: on `0.1.21` the builder e2e file dies with
+`Component not found: <b-field>` before it reaches a single assertion.
+
+So the order was grain first. Grain's push publishes any package whose version moved, so `4b61600`
+put `@tjakoen/grain 0.1.22` on the public registry, `deps:refresh` moved the pin and the lockfile, and
+the portfolio followed. mill, proof and crumb all matched the registry already, so nothing else
+published. Greenroom was deliberately left alone: its seventy-two local commits are the pre-rewrite
+lineage.
+
+**A red e2e went out with it, and it is not this run's.** Two specs in the `the model chooses the
+verb` describe fail, and the failure moves depending on what else is running, which is the shape of a
+race rather than a break. Measured rather than assumed, in a clean worktree at `de913e6`, the previous
+session's own HEAD, with `0.1.22` installed: `builder-canvas.e2e.ts:425` fails there alone, twice, and
+the whole-file run fails `414` instead. The previous run's report claims the full suite came back 287
+pass, 0 fail. That claim does not reproduce today at its own commit.
+
 ## What needs human eyes
 
+0. **The unstable builder describe, now on CI.** `builder-canvas.e2e.ts` 414 and 425 fail in a
+   changing combination, on both trees, on the same grain. Neither is a stub problem the site can
+   feel, since both script the model, but CI is red until someone reads the race.
 1. **The two reconstructed gate blocks.** They are honest about being reconstructions and they are
    still the only place in the ledger where a fence is not a paste. If that reads as too clever, the
    alternative is leaving both reports permanently in the warn list, and that is a call worth making
