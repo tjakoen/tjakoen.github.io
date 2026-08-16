@@ -4,19 +4,19 @@ _Current build, measured headless. Regenerate with `bun run audit`. `batch/expor
 
 ## What the numbers mean
 
-- **JavaScript shipped: 30kb–177kb per page** — the headline, and the "native-first" proof: heavy — investigate.
+- **JavaScript shipped: 30kb–219kb per page** — the headline, and the "native-first" proof: heavy — investigate.
 - **Bytes, JS and request counts are network-independent** — the robust, honest numbers to publish.
-- **TTFB / Load are LOCAL best-case** (no network hop; max load here 138ms) — use them for catching regressions, not as absolute proof. Real-world latency adds to every stack equally.
+- **TTFB / Load are LOCAL best-case** (no network hop; max load here 361ms) — use them for catching regressions, not as absolute proof. Real-world latency adds to every stack equally.
 - **The persuasive frame is comparative** — the same metrics vs Astro / Next / htmx tell the story (memory `framework-comparison-methodology`).
 
 ## Pages
 
 | Page | TTFB | Load | Wire | JS | Req | Blocking | Title | Desc | Canon | OG | 1×H1 | JSON-LD | Surfaces | Kinds | Accepts |
 |------|------|------|------|----|-----|----------|:-----:|:----:|:-----:|:--:|:----:|:-------:|:--:|:--:|:--:|
-| `/` | 11ms | 138ms | 618kb | **173kb** | 31 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 28 | 0 | 0 |
-| `/grain` | 9ms | 68ms | 510kb | **177kb** | 33 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 33 | 0 | 0 |
-| `/catalog` | 6ms | 83ms | 716kb | **30kb** | 19 | 4css/1js | ✓ | ✗ | ✓ | ✓ | ✗ | ✓ | 24 | 4 | 2 |
-| `/about` | 14ms | 48ms | 540kb | **173kb** | 31 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 26 | 0 | 0 |
+| `/` | 21ms | 361ms | 789kb | **215kb** | 36 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 29 | 0 | 0 |
+| `/grain` | 8ms | 50ms | 679kb | **219kb** | 38 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 34 | 0 | 0 |
+| `/catalog` | 10ms | 84ms | 1317kb | **30kb** | 21 | 4css/1js | ✓ | ✗ | ✓ | ✓ | ✗ | ✓ | 129 | 4 | 2 |
+| `/about` | 18ms | 50ms | 723kb | **215kb** | 36 | 5css/2js | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | 33 | 0 | 0 |
 
 ## Endpoints
 
