@@ -7,13 +7,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 137,
-        "loadMs": 138,
-        "wireBytes": 632696,
-        "jsBytes": 176973,
-        "cssBytes": 400824,
-        "requests": 31
+        "ttfbMs": 21,
+        "domContentLoadedMs": 351,
+        "loadMs": 361,
+        "wireBytes": 807744,
+        "jsBytes": 220234,
+        "cssBytes": 525521,
+        "requests": 36
       },
       "dom": {
         "title": "Welcome · TJ's Desk",
@@ -43,9 +43,9 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 68,
+        "ariaAttrs": 69,
         "selectorCounts": {
-          "Surfaces": 28,
+          "Surfaces": 29,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -56,13 +56,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 68,
-        "loadMs": 68,
-        "wireBytes": 521996,
-        "jsBytes": 181381,
-        "cssBytes": 274320,
-        "requests": 33
+        "ttfbMs": 8,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 695259,
+        "jsBytes": 224642,
+        "cssBytes": 399017,
+        "requests": 38
       },
       "dom": {
         "title": "GRAIN · an AI-interaction design system",
@@ -94,7 +94,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 82,
         "selectorCounts": {
-          "Surfaces": 33,
+          "Surfaces": 34,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -105,13 +105,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 31,
-        "loadMs": 83,
-        "wireBytes": 732984,
-        "jsBytes": 30212,
-        "cssBytes": 258839,
-        "requests": 19
+        "ttfbMs": 10,
+        "domContentLoadedMs": 34,
+        "loadMs": 84,
+        "wireBytes": 1348415,
+        "jsBytes": 30244,
+        "cssBytes": 379278,
+        "requests": 21
       },
       "dom": {
         "title": "Component Catalog",
@@ -140,9 +140,9 @@
         ],
         "renderBlockingCss": 4,
         "renderBlockingJs": 1,
-        "ariaAttrs": 242,
+        "ariaAttrs": 308,
         "selectorCounts": {
-          "Surfaces": 24,
+          "Surfaces": 129,
           "Kinds": 4,
           "Accepts": 2
         }
@@ -153,13 +153,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 14,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 552893,
-        "jsBytes": 176973,
-        "cssBytes": 274320,
-        "requests": 31
+        "ttfbMs": 18,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 740364,
+        "jsBytes": 220234,
+        "cssBytes": 399017,
+        "requests": 36
       },
       "dom": {
         "title": "About · TJ's Desk",
@@ -191,7 +191,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 88,
         "selectorCounts": {
-          "Surfaces": 26,
+          "Surfaces": 33,
           "Kinds": 0,
           "Accepts": 0
         }
