@@ -115,9 +115,14 @@ once a second repo has been measured. Hosts can move it, or mute it and get a ro
 The owner chose exit 2 for the loud-command hook, so that it reaches the session rather than only
 the transcript. The premise is right and the mechanism was wrong: a PostToolUse hook already reaches
 the model at exit 0 through additionalContext, probed and measured on 2026-08-10, and the rule that
-an exit-0 hook cannot reach the model belongs to Stop hooks. Exit 2 would have blocked the tool
-result as well as spoken, trading a warning for a run that can trap itself, and there is nothing
-left to block: the output has already been produced and paid for. Built the intent, not the letter.
+an exit-0 hook cannot reach the model belongs to Stop hooks. Built the intent, not the letter.
+
+The second reader on 2026-08-18 confirmed the decision and struck the reason this paragraph first
+gave for it. It said exit 2 would have blocked the tool result. It would not: a PostToolUse hook
+runs after the tool has already produced its output, which is the same fact the paragraph used in
+its next breath to say there was nothing left to block. What exit 2 does there is hand the warning
+back as an error on the tool call, which reads as a failure and invites a session to work around
+advice. That is still a good reason to prefer exit 0, and it is the reason now.
 
 ## Gate output
 

@@ -1,6 +1,8 @@
 ---
 title: What should the cold-start context budget be?
-status: open
+status: decided
+decided: 2026-08-18
+answer: A, 20,000 characters. The number stands and is now agreed rather than assumed.
 options:
   - A, 20,000 characters — the shipped first guess, roughly 5,000 tokens
   - B, 16,000 characters — tighter, and the portfolio is over it today
@@ -72,3 +74,37 @@ The reading, live, on the day the check landed:
 
 The four files are this repo's CLAUDE.md, the agent memory index for this project, the machine-wide
 CLAUDE.md and the RTK file it imports. Only the first two are this repo's to fix.
+
+## What the second reader added, before the answer
+
+An independent pass on 2026-08-18 recounted those four files by hand, without pantry, and got 19,693
+exactly. The file set, the import walk and the arithmetic all hold.
+
+It also found what the row does not see. A session in this repo loads three SessionStart hook
+outputs before it does any work, and those are injected context in the same way a front door is:
+
+```
+3,187  the style rule from the caveman plugin
+  535  session-doctor.sh
+  499  config-sync.sh
+4,221  total, none of it counted
+```
+
+So the real fixed cost of opening this repo is near 23,900 characters, before the skills listing and
+the tool schemas, and the reading that was called bloated on 2026-08-17 was 24,243. That does not
+move the number being chosen here, but it does say what the number is about: the files a repo owns
+and can fix, not what a session pays.
+
+One correction to option A above. The 307 characters of headroom is closer to two memory index lines
+than to one.
+
+## The answer
+
+**A. Twenty thousand stands, and it is now agreed rather than assumed.** The row is a trend line for
+the part of the cold start a repo can act on, and at that job the number works at the portfolio's
+current size. The hook preamble stays outside it deliberately: a session cannot fix the machine's
+front door from inside a repo, and folding it in would make the row red on a machine-wide cost the
+repo does not own, which is how a check gets muted.
+
+It keeps the retune-after-a-second-repo note. What changed is that quoting it no longer means
+quoting somebody's first guess.
