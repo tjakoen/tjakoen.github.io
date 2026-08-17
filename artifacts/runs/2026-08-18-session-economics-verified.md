@@ -11,18 +11,31 @@ skills:
 scope:
   - artifacts/runs/
   - plans/decisions/
-  - pantry/context.ts and its test
-  - claude-config/shared/tools/bash-output-bound.sh and its test
+  - pantry/context.ts
+  - claude-config/shared/tools/bash-output-bound.sh
+  - claude-config/shared/tools/bash-output-bound.test.ts
+  - claude-config memory for this project
 touched:
   - artifacts/runs/2026-08-18-session-economics-verified.md
-plans: none. This run verifies plans/decisions/2026-08-17-context-budget.md rather than answering it.
+  - artifacts/runs/2026-08-17-session-economics.md
+  - plans/decisions/2026-08-17-context-budget.md
+  - pantry/context.ts
+  - claude-config/shared/tools/bash-output-bound.sh
+  - claude-config/shared/tools/bash-output-bound.test.ts
+  - claude-config memory for this project
+plans: plans/decisions/2026-08-17-context-budget.md, verified during this run and answered by the
+  owner at the end of it. Option A, kept and now agreed.
 gates:
   - bash bash-output-bound.sh, six hand-built payloads | three silent where the design says they should speak
   - hand recount of the four cold-start files | 19,693, identical to the doctor row
-  - bun ../pantry/cli.ts doctor . | 21 checks, 0 failing, 1 due (graphify freshness, the known treadmill)
-diffstat: portfolio, this report only. Nothing else was written.
-unpushed: 3 | portfolio 2, this report plus one from a concurrent session, and pantry 1, also that
-  session's. Neither of theirs was touched and nothing was pushed.
+  - bun test (claude-config hook suite) | 19 pass, 0 fail, after the fixes
+  - bunx tsc --noEmit (pantry) | exit 0, no output
+  - bun test (pantry) | 643 pass, 0 fail, 23 files
+  - bun tools/lint-gate.ts | +4 backtick, identical with this run's diff and without it
+  - bun ../pantry/cli.ts doctor . | 21 checks, 0 failing, 0 due after the graph merge
+diffstat: three repos. Portfolio 3 files, pantry 1, claude-config 2 plus the project memory.
+unpushed: 5 | portfolio 3, two of them this run's and one from a concurrent session, pantry 2, one
+  each, and claude-config 1. Nothing was pushed and the concurrent session's commits were not touched.
 verifiedBy: this session, which wrote none of the work it is checking.
 doctor: 21 checks, 0 failing, 1 due. The graphify row is carried by name and cleared as the last action.
 ---
@@ -196,3 +209,37 @@ unpushed, neither this session's to send out.
 3. **The budget decision now has one more fact in it.** The uncounted hook preamble is 4,221
    characters, which is a fifth again on top of the number under discussion.
 4. **The hook is still not wired**, so all of the above is about a script nothing calls yet.
+
+## After the findings went to the owner
+
+All four went as one ask and came back in the same turn, which is why this section exists rather
+than a second report: it is the same run, still going. Three of the four were answered yes and are
+done. The fourth, wiring, stays where it was.
+
+**The three silences are fixed and covered.** The script reads its fields one per line, so a space
+in a path is just a space. The dedupe key walks past segments that only change directory and past a
+wrapper word before choosing, so a compound command is filed under what it ran and a rewritten
+command is filed under the tool rather than the rewriter. The suite went from fifteen cases to
+nineteen and the four new ones are the three silences plus the cd-on-its-own fallback. Re-run
+against the original six payloads afterwards, every one now speaks where the design says it should,
+and the one that stayed quiet stayed quiet correctly, because cat had already been named that
+session.
+
+**The exit-2 sentence is corrected in all three places**, plus a fourth found on the way: the
+comment on the exit-code assertion in the suite carried it too.
+
+**The budget is option A, kept and now agreed.** The decision file records the answer and the
+reason: the row measures the front door a repo owns and can act on, and folding the machine-wide
+hook preamble into it would turn it red on a bill no session can pay down from inside a repo. The
+code comment says decision rather than first guess, names the file, and now states plainly what the
+count leaves out and that it is bytes rather than characters.
+
+**Nothing was pushed**, which was the fourth answer. Six commits are held across three repos: three
+in the portfolio, two in pantry and one in the config repo, and two of those are the concurrent
+session's rather than this one's.
+
+One line of the scope above was not in the envelope this run started with. The agent memory for this
+project carried the same wrong exit-2 reason as the report and the script, so correcting it was part
+of the second answered ask rather than new work, and it is declared here rather than left implicit.
+The config repo is also two commits behind its remote, which was true at session start and is left
+that way: pulling would move files under a running session.
