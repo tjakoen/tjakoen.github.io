@@ -66,6 +66,14 @@ session mechanics around them:
    The full checklist is AI-DEVELOPMENT §8; run it, don't paraphrase it.
 4. **The gate is also the commit trigger.** Once it's green, commit (see §3 below). Don't leave
    finished, verified work sitting uncommitted.
+5. **A commit is the cheapest place to start over.** When the unit that just landed and the unit
+   about to start have nothing to do with each other, the second one belongs in a fresh session. Not
+   because the thread is long, which is what §5's warn line measures, but because everything the
+   first task loaded is now carried into the second and re-read on every turn of it, and none of it
+   is about the new problem. The two triggers are different questions and either one alone leaves a
+   real case uncovered: a session can cross four unrelated tasks without ever getting long, and a
+   session can grind one task until it is enormous. Same-subject work continues here; a genuinely
+   different job starts clean, which is the handoff in §5 rather than a decision to make twice.
 
 ---
 
@@ -157,6 +165,15 @@ without naming what is currently undurable is giving advice, and advice is what 
 
 If the harness has a handoff generator (Claude Code exposes a `/handoff` skill), use it; the shape
 above is what it should produce. If not, write the prompt by hand to that shape.
+
+**Summarise before you walk away, not after.** Where the harness can compact a conversation down to
+a summary and carry on (Claude Code's compact command), the cost of doing it depends on something invisible
+from inside the session: the prompt cache behind the conversation is still warm for a short while after the
+last turn, and once it has expired the same compaction re-reads the whole thread from cold. So the
+cheap moment to compact is the moment you are stepping away, and the expensive one is the moment you
+come back. The window is generous on a subscription and short on an API key, which is worth knowing
+because it decides whether "I will do it when I sit down again" is free or not. This is a habit no
+check can see: a session cannot know whether a person is leaving, so nothing here fires it for you.
 
 **The "long enough" half is measurable, so measure it rather than feeling it.** Claude Code writes a
 `usage` block on every assistant turn of its transcript, and the input side of the newest one is the
@@ -285,6 +302,17 @@ the plan→execute half).
 - **Ask for the switch when the phase turns.** When a session crosses from "figuring out" into "grind
   it out" (or the reverse), the AI says so: *"plan's approved and the rest is mechanical — consider
   `/model sonnet`"*. One sentence, real money.
+
+**What the switch costs, which the advice above does not price.** A conversation is served from a
+prompt cache, and the model and the reasoning effort are part of what the cache is keyed on. Switch
+either one halfway through and the whole session ahead of that point is prefilled again at full
+price, so a switch made late in a long thread can cost more than the tier it was meant to save. The
+lesson is not that switching is wrong; it is that the tier is cheapest to choose at the start, when
+there is nothing behind it to re-pay for. So pick it when the task is picked, prefer the harness
+mode that does the plan-then-execute switch on its own, and where a session really is about to cross
+from thinking into grinding, weigh the switch against how much conversation sits behind it. Late
+enough in a thread, the honest answer is to finish here and start the grind in a fresh session at
+the tier it wanted (§2, item 5).
 
 Carry the model recommendation into the handoff (§5): the next task's shape usually implies its tier.
 
