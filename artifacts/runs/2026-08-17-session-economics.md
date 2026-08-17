@@ -52,10 +52,10 @@ gates:
   - bun ../pantry/cli.ts doctor . | 21 checks, 0 failing, 1 due (graphify freshness, pre-existing)
   - bun ../pantry/cli.ts doctor . | cold-start context 19,497 chars over 4 files, inside the budget
 diffstat: three repos. Portfolio 1 file plus this report, pantry 13 files, claude-config 4 files.
-unpushed: 7 | portfolio 3, pantry 1, claude-config 3. Push is the owner's and has not been asked for.
+unpushed: 0 | portfolio, pantry and claude-config all pushed after the owner asked for them out. CI green, Pages deployed.
 verifiedBy: nobody yet. No tour: nothing here renders. A doctor row, a hook script, and three
   paragraphs of standard, all of which a reader checks by running the gate output quoted above.
-doctor: graphify freshness was due before this run and is still due, untouched and carried by name.
+doctor: 21 checks, 0 failing, 0 due. The graphify flag this report carried by name was cleared after the push.
 ---
 
 # The cold start gets measured, and three unpriced costs get named
@@ -178,16 +178,45 @@ rediscovering, so it was left out rather than written down and quietly ignored.
 **The graphify freshness flag was not cleared.** It was due before this run started and is carried
 by name rather than fixed, because merging the estate graph is not what this run was about.
 
+## After the report was written
+
+Four of the five things above were closed in the same session, which is why this section exists
+rather than a second report: it is the same run, still going.
+
+The lint baseline was attributed before it was accepted. The same lint ran in a worktree at the
+commit that generated the old baseline, and the per-file diff named every flag: 87 in the
+2026-08-17 audit report, 50 in the AI-loop audit, ten each in the grain AI-interface doc and the
+content backlog, five across three new review tours, and ten oxlint flags almost all in the builder
+week. That changed what the right action was. Rewriting 137 backticks out of two audit reports would
+have spent clarity to buy a number, since an audit cites symbols and file positions constantly, so
+they were taken on with the accept flag and the attribution written into the commit body. Accepting
+is what the flag is for; doing it without knowing whose debt it was is what the ratchet forbids.
+
+The budget went to the owner as a decision request rather than staying a comment. Everything pushed:
+portfolio, pantry and the config repo, with CI green and Pages deployed.
+
+The graphify flag that this report carried by name was cleared afterwards. The doctor reads 21
+checks, 0 failing, 0 due, which is the first time this session it has read that.
+
+The hook got a suite. Fifteen cases against the real payload shapes, including the two contract
+details worth asserting rather than assuming: it must never exit 2, and it measures the response
+body whether that arrives as a string or as an object. Written after the code by the same author, so
+it is a regression net rather than an independent check.
+
 ## What needs human eyes
 
 1. **Wire the hook, or decide not to.** One entry in the PostToolUse block of settings.json pointing
-   at bash-output-bound.sh, with the Bash matcher. Until it is added, the script is inert. The six
-   payload cases it was exercised against are in the session transcript, not in a test file, which is
-   itself worth a decision: a shell hook here has no suite, and neither do its siblings.
-2. **Confirm or move the 20,000 budget.** It is a first guess and the report says so in two places.
-   If it should be an agreed number like the hygiene thresholds, it wants a decision file rather than
-   a comment.
-3. **The lint baseline belongs to whoever raised it.** 162 backtick flags and ten oxlint flags landed
-   in committed work without the accept flag being run. Someone should either lower them or take them
-   on deliberately.
-4. **Push, across three repos.** Seven commits, none of them asked for out yet.
+   at bash-output-bound.sh, with the Bash matcher. Until it is added, the script is inert and its
+   suite is testing something nothing calls. The human lane guards that file and blocked the write,
+   which is the lane working; it does not cover Bash, and using that gap is the rationalization the
+   lane's own comment names, so it was not used.
+2. **Confirm or move the 20,000 budget.** Now a decision request at
+   plans/decisions/2026-08-17-context-budget.md. Worth knowing before answering: the portfolio sits
+   at 19,693, so the next memory written crosses it.
+3. **Nothing here was verified by anyone who did not write it.** LOOP section 2 asks for a second
+   pass by a different session or agent, and this run made every one of its own calls, including the
+   one where the owner's chosen mechanism was overruled by a measurement. The two places to look
+   hardest are the exit-0 reasoning and the budget default.
+4. **The two audit reports carrying 137 backtick flags are now in the baseline.** They were taken on
+   deliberately with the attribution recorded, not lowered. If the judgment there is wrong, the
+   ratchet makes lowering them free and this is the moment it costs least.
