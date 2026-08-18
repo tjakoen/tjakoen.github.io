@@ -16,7 +16,7 @@ summary: >
 ---
 
 > **Status: working draft, revised 2026-07-17.** This is a *projection* of
-> [PHILOSOPHY.md](../docs/PHILOSOPHY.md): the beliefs are canonical there; this paper situates them in
+> [PHILOSOPHY.md](https://github.com/tjakoen/tjakoen.github.io/blob/main/docs/PHILOSOPHY.md): the beliefs are canonical there; this paper situates them in
 > the literature and argues the contribution. The plain-language version of this paper, for readers who
 > want the argument without the citations, is [Watch Its Hands](watch-its-hands.md). The narrative version
 > of the same stance is [the origin story](origin-story.md); the working method behind the claims is
