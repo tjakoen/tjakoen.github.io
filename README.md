@@ -1,6 +1,7 @@
 # 🖥️ portfolio: the personal site
 
-[![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://tjakoen.github.io/notes/ten-times-zero)
+[![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](content/notes/ten-times-zero.md)
+[![CI](https://github.com/tjakoen/tjakoen.github.io/actions/workflows/ci.yml/badge.svg)](https://github.com/tjakoen/tjakoen.github.io/actions/workflows/ci.yml)
 [![Code: Apache 2.0](https://img.shields.io/badge/code-Apache_2.0-blue)](LICENSE)
 [![Content: all rights reserved](https://img.shields.io/badge/content-all_rights_reserved-lightgrey)](NOTICE)
 
@@ -34,4 +35,4 @@ lightweight AI demo that runs entirely in the visitor's browser.
 - **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**, the beliefs the site proves.
 
 ---
-🤖 **Built with Claude, and it is also the proof.** This site is the stack's own demo: I made the calls, Claude typed them, and the same pages you are reading are the receipts. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)
+🤖 **Built with Claude, and it is also the proof.** This site is the stack's own demo: I made the calls, Claude typed them, and the same pages you are reading are the receipts. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](content/notes/ten-times-zero.md)

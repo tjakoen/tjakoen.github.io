@@ -20,7 +20,7 @@
       plans stay readable markdown.</p>
     <span class="flag">Live · the core parser, the board, and the check/init tooling are shipped</span>
 
-    <div class="section-head"><span>The idea</span></div>
+    <h2 class="section-head"><span>The idea</span></h2>
     <div class="card-grid">
       <div class="card" data-pad="sm"><h3 class="card__title">Plans are files</h3><p class="card__body">Each plan is a markdown file with a small frontmatter (id, status, track, depends, touches, owner). The AI edits them with its native tools, no new workflow.</p></div>
       <div class="card" data-pad="sm"><h3 class="card__title">The board never edits</h3><p class="card__body">The machine index is derived by the parser, never hand-maintained. A hand-edited index beside the markdown would be dual bookkeeping, so PROOF refuses to let that happen.</p></div>
@@ -28,7 +28,7 @@
       <div class="card" data-pad="sm"><h3 class="card__title">Mostly for the human</h3><p class="card__body">The honest split: most of the value is a person watching the AI's intent, not the AI going faster. The AI never reads the board itself, only the files.</p></div>
     </div>
 
-    <div class="section-head"><span>Where it stands</span></div>
+    <h2 class="section-head"><span>Where it stands</span></h2>
     <p class="lede">Shipped: the core parser, the kanban-style board, and the check/init command-line tooling. The
       PROOF package also ships a live SSE board (<code>live.ts</code>), but this site doesn't mount it yet, so
       this page's own <a href="/plans">/plans</a> board is server-rendered and wants a manual refresh. The
@@ -40,7 +40,7 @@
     </div>
 
     <!-- the shared four-layers stack now CLOSES the page (headline leads; owner 2026-07-18) -->
-    <div class="section-head"><span>Where it sits in the stack</span></div>
+    <h2 class="section-head"><span>Where it sits in the stack</span></h2>
     <stack-diagram current="proof"></stack-diagram>
 
     <div class="page-foot">

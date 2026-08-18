@@ -7,7 +7,7 @@ Adding a new *kind* of effect (today's set: `replace` / `append` / `remove` / `f
 
 ## 1. Add the kind to the contract
 
-[`ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/ai/contract.ts):
+[`ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/packages/grain/ai/contract.ts):
 
 ```ts
 export type RenderOpKind = /* … */ | "my-op";
@@ -24,7 +24,7 @@ export interface RenderOp {
 
 ## 2. Teach the client dispatcher
 
-[`scripts/ai-dispatch.js`](https://github.com/tjakoen/grain/blob/main/scripts/ai-dispatch.js), inside `applyOneOp`'s `switch (op.op)`:
+[`scripts/ai-dispatch.js`](https://github.com/tjakoen/grain/blob/main/packages/grain/scripts/ai-dispatch.js), inside `applyOneOp`'s `switch (op.op)`:
 
 ```js
 case "my-op":

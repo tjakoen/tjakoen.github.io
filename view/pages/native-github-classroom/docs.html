@@ -20,7 +20,7 @@
           content: no student data and no private course internals live here, and the canonical grader tests
           and the gradebook stay in the private control repo.</p>
 
-        <div class="section-head"><span>The four repos</span></div>
+        <h2 class="section-head"><span>The four repos</span></h2>
         <div class="docs-list">
           <div class="docs-list__item"><span class="docs-list__name">The org</span><span class="docs-list__what">one per course, owned by the org so the engine can reach in and grade, and locked down so a student sees only their own repos.</span></div>
           <div class="docs-list__item"><span class="docs-list__name">The teacher control repo</span><span class="docs-list__what">the engine: the scripts, the workflows, the private grader tests, and the gradebook. The gradebook is the single source of truth. If it is not in the gradebook, it did not happen.</span></div>
@@ -28,7 +28,7 @@
           <div class="docs-list__item"><span class="docs-list__name">Canvas</span><span class="docs-list__what">the only outside system, and only at the end, to receive final grades as one CSV.</span></div>
         </div>
 
-        <div class="section-head"><span>The parts that were the real work</span></div>
+        <h2 class="section-head"><span>The parts that were the real work</span></h2>
         <p class="lede">The interesting engineering was never the grading. It was the plumbing around who can
           touch what. Every real bug was a boundary bug.</p>
         <div class="card-grid" style="--card-min: 15rem">
@@ -38,14 +38,14 @@
           <div class="card" data-pad="sm"><h3 class="card__title">Safe by default, or not at all</h3><p class="card__body">Anything that writes to a student repo or the gradebook dry-runs first and shows me the plan. I read what is about to happen before it happens. That one rule is why I can let automation this close to real grades sleep at night.</p></div>
         </div>
 
-        <div class="section-head"><span>Booting a term</span></div>
+        <h2 class="section-head"><span>Booting a term</span></h2>
         <p class="lede">The operating loop I open every term with, each step something I can point at and say
           <em>that works</em>: lock down the org, stand up the control repo, get every student a correctly
           named workspace, push a unit of content and confirm it landed everywhere, then have them do the
           hello-world activity and watch it show up as a graded row in the gradebook. When that first green
           row appears, the platform is confirmed end to end.</p>
 
-        <div class="section-head"><span>Read more</span></div>
+        <h2 class="section-head"><span>Read more</span></h2>
         <div class="docs-list">
           <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen/github-native-course-platform" target="_blank" rel="noopener noreferrer">github-native-course-platform on GitHub</a><span class="docs-list__what">the public code and the architecture docs behind this page.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="https://tjakoen.github.io/github-native-course-platform/?demo=1" target="_blank" rel="noopener noreferrer">The Course Console, in demo mode</a><span class="docs-list__what">the teacher side running in your own browser, on synthetic students.</span></div>
