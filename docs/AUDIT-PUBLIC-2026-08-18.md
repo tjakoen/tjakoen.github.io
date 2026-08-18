@@ -56,9 +56,9 @@ session.
 
 | file:line | severity | dimension | problem | status |
 | --- | --- | --- | --- | --- |
-| `standards/LOOP.md:402,404,417` | blocker | unwired | Day one tells a public reader to run `pantry init --kit` and `pantry doctor`, with no fallback and no hedge. That package is not on npm, and the unscoped `pantry` name there belongs to an unrelated caching library with no binary. A stranger following the published standard installs someone else's package. This repo's own CI comment already records that the package is unpublished. | open, needs a decision |
-| `view/pages/about.html:159` | blocker | claims | The Now log says PROOF's board went live streaming over server-sent events. `/proof` says the opposite in its own words, and the rendered `/plans` HTML carries no such wiring, so `/proof` is the honest one. The site contradicts itself about a capability it ships. | open, needs a decision |
-| `standards/VOICE.md:207-210,231` | blocker | employer | The published specifics bank names two internal Career Team artifacts, each tagged internal by the author and then published anyway. The same file forbids exactly this at line 350. | open, needs a decision |
+| `standards/LOOP.md:402,404,417` | blocker | unwired | Day one tells a public reader to run `pantry init --kit` and `pantry doctor`, with no fallback and no hedge. That package is not on npm, and the unscoped `pantry` name there belongs to an unrelated caching library with no binary. A stranger following the published standard installs someone else's package. This repo's own CI comment already records that the package is unpublished. | **fixed**, fallback added |
+| `view/pages/about.html:159` | blocker | claims | The Now log says PROOF's board went live streaming over server-sent events. `/proof` says the opposite in its own words, and the rendered `/plans` HTML carries no such wiring, so `/proof` is the honest one. The site contradicts itself about a capability it ships. | **fixed**, About corrected |
+| `standards/VOICE.md:207-210,231` | blocker | employer | The published specifics bank names two internal Career Team artifacts, each tagged internal by the author and then published anyway. The same file forbids exactly this at line 350. | **fixed**, both genericized, held uncommitted |
 | `content/notes/ten-times-zero.md:200-206,282` | major | claims | The flagship receipt publishes 242 commits and 48 percent prose, dated eleven days ago. Recounted today with the note's own documented commands: 437 commits, roughly 51 percent prose. The whole argument of the piece is that a reader can check, and a reader who checks now gets a different answer. | open, needs a recount |
 | `content/media/feed/gdgoc-hau-call-the-point.jpg` | major | student-data | The Safari tab strip above the shared slide is legible at zoom and shows classroom repository tabs. Downgraded from the auditor's blocker after inspection: no student name or identifier is readable, every title is truncated, and the institution is named openly in the post by design. What leaks is the course repo naming pattern. | open, wants a re-crop |
 | `view/components/organisms/portfolio-frame/portfolio-frame.html:14-33` | major | a11y-keyboard | No skip link anywhere on the site, and the always-expanded explorer rail sits before `main` in tab order. Measured by real Tab presses: the page's own content is the 119th stop on `/about` and the 65th on `/`. Every page, every load. | open, wants a design call |
@@ -67,7 +67,7 @@ session.
 | 16 templates under `view/pages/` | major | a11y-semantics | Every section label on the site was a `div`, not a heading, so `/about`, `/resume`, `/grain` and `/batch` jumped straight from h1 to h3 and a screen reader's heading list showed nothing for any section. | **fixed**, 68 labels |
 | `docs/grain/TUTORIAL.md:26,93,111,135`, `ADD-A-RENDER-OP-KIND.md:10,27`, `MAKE-A-SURFACE-OPERABLE.md:11,37`, `AI-INTERFACE.md:116` | major | dead-link-external | Nine links to grain source files 404 since the repo folded into `packages/`. All live on the public `/grain/docs/*` pages. | **fixed**, paths verified on disk |
 | `standards/FIGURES.md:171,174` | major | dead-link-internal | Relative `../content/notes/*.md` links resolve against the page's own URL once rendered, so they 404 on the live site. `src/content.ts:60` already documents this exact gap. | **fixed** |
-| `standards/VOICE.md:17,18,173,179`, `standards/NOTE-STANDARD.md:35,172` | major | dead-link-internal | The same broken pattern, in two files another session is holding uncommitted. **Recurs from 2026-08-17 unfixed.** | deferred, see below |
+| `standards/VOICE.md:17,18,173,179`, `standards/NOTE-STANDARD.md:33,35,172` | major | dead-link-internal | The same broken pattern, in two files another session is holding uncommitted. **Recurs from 2026-08-17 unfixed.** | **fixed**, held uncommitted |
 | `standards/KICKSTART.md:73` | major | cross-ref | Phase 2 pointed a reader at `github.com/tjakoen/tjakoen`, which 404s. The correct repo is used one file over in `CLAUDE.starter.md`. | **fixed** |
 | `docs/batch/CONSUME-AS-GIT-DEPS.md:49` | major | dead-link-external | A link to a `SPLIT-PLAN.md` that no longer exists. **Recurs from 2026-07-29**, where it was already filed as a phantom reference and shipped unfixed. | open, target is a judgment call |
 | `docs/grain/AI-INTERFACE.md:9,10` | major | dead-link-external | Two links into `tjakoen/project`, a repo that no longer exists. No successor path is confirmed. | open, needs a decision |
@@ -170,7 +170,35 @@ links with a `../` path, which would have caught all ten occurrences and will ca
 Nothing checks NOTE-STANDARD conformance mechanically either, which is why a missing footer and a
 stale frontmatter row both reached a second audit.
 
-That check is not written in this session, and saying so is the point of this section.
+That check is now written. `tools/link-lint.ts` fails on any relative Markdown link under a rendered
+directory that the renderer does not resolve, wired as `bun run lint:links` with nine tests of its
+own. It earned its place immediately: run against a tree the seven auditors had already read, it
+found three more instances they had all missed, in `docs/batch/ADD-A-ROUTE.md` and
+`docs/batch/CONVENTIONS.md`. Fifty-three rendered files now pass it.
+
+One piece is deliberately not done. The CI step that runs the check on every push was refused by the
+human lane, which guards `.github/` because a workflow change is the owner's to make. The tool runs
+green locally and the step is written out for a hand that is allowed to write it. A check that only
+runs when someone remembers is a weaker rung than a check on push, and that is the honest state of
+it today.
+
+## After the owner's calls
+
+Four decisions came back the same day and landed:
+
+- **The pantry day-one steps** kept their shape and gained the fallback CONFORMANCE already uses,
+  naming the missing package and telling the reader to mark the doctor rows not run.
+- **The About log** was corrected to match `/proof`, since `/proof` and the rendered HTML agreed
+  with each other and About did not.
+- **The two internal artifacts in VOICE** were genericized rather than deleted, so the specifics
+  bank keeps the teaching value and loses the identifying detail. A third reference, an internal
+  team name two sections down, was found and genericized in the same pass.
+- **The gate** was written, tested and wired to a script, and is described above.
+
+Two files carry those edits and stay uncommitted: `standards/VOICE.md` and
+`standards/NOTE-STANDARD.md` both hold substantial work from another session in the same tree, a new
+register row and a 92 line addition. Committing either would sweep in work this session did not
+review. They are applied on disk and the commit is the owner's.
 
 ## What this pass did not cover
 
