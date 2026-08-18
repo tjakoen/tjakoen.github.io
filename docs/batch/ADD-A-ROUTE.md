@@ -23,7 +23,7 @@ so a new page reaches SEO and the export automatically — nothing else to wire.
 
 Server-level routes (JSON endpoints, the AI door, anything that isn't a page) are added directly in
 `Bun.serve({ routes: {...} })` at the composition root
-([`server.ts`](../../src/server.ts)):
+([`server.ts`](https://github.com/tjakoen/tjakoen.github.io/blob/main/src/server.ts)):
 
 ```ts
 Bun.serve({
@@ -35,7 +35,7 @@ Bun.serve({
 ```
 
 For a family of related routes (methods, params), group them into a builder like
-[`src/routes/ai-routes.ts`](../../src/routes/ai-routes.ts) does (`buildAiRoutes(...)`
+[`src/routes/ai-routes.ts`](https://github.com/tjakoen/tjakoen.github.io/blob/main/src/routes/ai-routes.ts) does (`buildAiRoutes(...)`
 returns a `routes` object spread into `Bun.serve`), rather than growing `server.ts` inline.
 
 ## Next steps

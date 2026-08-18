@@ -399,9 +399,15 @@ Mirrors [`AI-REPO-STANDARD.md`](AI-REPO-STANDARD.md) §12 — one floor up, for 
 
 Day one (an hour):
 
-- [ ] `pantry init --kit` (or by hand): thin `CLAUDE.md` from the starter, `AGENTS.md → CLAUDE.md` symlink,
+- [ ] `pantry init --kit`, or by hand: thin `CLAUDE.md` from the starter, `AGENTS.md → CLAUDE.md` symlink,
       `plans/`, config. Standards referenced by URL, not forked.
 - [ ] Run `pantry doctor` once. Fix what it flags. Green doctor is day-one done.
+
+> PANTRY is not on the public registry yet, so `pantry` and `bunx pantry` will not resolve on a
+> machine that has not cloned it, and the unscoped name on npm belongs to an unrelated package.
+> Install it from its repo, or do day one by hand and mark the doctor rows **not run** by name,
+> the way [`CONFORMANCE.md`](CONFORMANCE.md) does. A checklist step that cannot run is worth more
+> said out loud than left looking green.
 - [ ] Wire the mechanical heartbeat: CI on push where the repo is on GitHub; doctor at session start
       everywhere.
 

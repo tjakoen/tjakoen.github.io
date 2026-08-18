@@ -27,6 +27,7 @@
     "og:card": "bun tools/og-card.ts",
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
+    "lint:links": "bun tools/link-lint.ts",
     "lint:baseline": "bun tools/lint-gate.ts --write",
     "audit:desk": "bun tools/desk-audit.ts",
     "analytics:pull": "bun tools/analytics-pull.ts",
