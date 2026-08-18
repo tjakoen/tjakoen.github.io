@@ -1,6 +1,6 @@
 ---
 id: loop-practice-gaps
-status: todo
+status: doing
 track: ai
 depends:
   - ai-workflow-loop
@@ -51,7 +51,7 @@ another session edited a component doc, and the rule to use `git commit <path>` 
 in a shared tree. Both are workarounds for a collision the written standard already forbids.
 
 To build:
-- Decide whether the worktree is per session or per task, and write the answer into SESSION-LOOP.
+- Write the per session unit into SESSION-LOOP, so the rule is stated where a session reads it.
 - Wire the session start path so a session that will edit code opens in its own worktree. The
   harness offers `EnterWorktree`, so this may be an instruction rather than a script.
 - Add a doctor check that names how many worktrees exist against how many sessions are live, so the
@@ -77,8 +77,8 @@ pass that implementation. Nothing in the estate says test first.
 To build:
 - Add a test run to the turn end gate, gated the way tsc is gated, so a turn that touched no code
   pays nothing.
-- Decide whether the failure is advisory like everything else in that file or blocking like the
-  human lane deny.
+- Route the failure through the PostToolUse path so the session receives it, and never block. See
+  the design constraint below, which is the reason the advisory-or-blocking binary was refused.
 - Add the test first ordering to AI-DEVELOPMENT as an explicit line rather than an implication.
 
 Design constraint that governs this and gap 4 both: a Stop hook that exits zero prints to the
@@ -101,8 +101,8 @@ The machine level `settings.json` sets `model` to `opus[1m]`, flat, for every ta
 Nothing in the estate has ever run the split the standard recommends.
 
 To build:
-- Decide whether `opusplan` becomes the machine default or stays a per session choice, weighing that
-  a flat Opus default is also what makes the caveman token accounting legible.
+- Set `opusplan` as the machine default in `settings.json` and start the week of measurement against
+  the flat baseline. Accounting across two tiers is harder to read, and that is the accepted cost.
 - Where subagents are defined, pin the read only ones to the small tier, which section 6 already
   calls free savings.
 - Have the session name the switch when a task crosses from thinking into grinding, which section 6
@@ -146,12 +146,19 @@ That connects directly to `content/notes/ten-times-zero.md`, which is about hone
 work. This is the same argument turned on the process instead of the output. Drafted after the four
 gaps close, so the note reports what happened rather than what was intended.
 
-## Open for the owner
+## Decided, 2026-08-18
 
-1. Blocking or advisory for the test gate in gap 2. Everything in `review-gate.sh` is advisory today
-   and the file argues for that in its own header.
-2. Machine default or per session for `opusplan` in gap 3.
-3. Whether the worktree in gap 1 is per session or per task.
+All three open calls settled as recommended, and the reasoning is in
+`plans/decisions/2026-08-18-loop-practice-gaps.md` rather than repeated here.
+
+1. The test gate in gap 2 reaches the model through PostToolUse and never blocks. The binary between
+   advisory and blocking was the wrong frame: advisory means the transcript, where nobody acts, and
+   blocking means Stop exit 2, which can strand an unattended run.
+2. `opusplan` becomes the machine default in gap 3, measured for a week against the flat baseline.
+   Section 6's cache warning does not bite, because the switch lands at the plan-to-execute boundary
+   with little behind it to re-pay for.
+3. The worktree in gap 1 is per session, matching the unit Nimbalyst already attributes work to.
+   Worth revisiting if gap 4 makes the task boundary cheap to see.
 
 ## Tasks
 
