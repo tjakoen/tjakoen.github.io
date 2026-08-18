@@ -23,7 +23,7 @@ what the archive verb targets.
 ### 1. Name the surface and the verb, the contract
 
 Everything operable is declared in one closed registry,
-[`ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/ai/contract.ts), never a magic string
+[`ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/packages/grain/ai/contract.ts), never a magic string
 elsewhere:
 
 ```ts
@@ -90,7 +90,7 @@ scoped write capability the reasoner is handed, so GRAIN never reaches storage o
 request that reaches `POST /intent` ends up at `aiLayer.handleIntent(...)`
 ([`src/routes/ai-routes.ts`](https://github.com/tjakoen/tjakoen.github.io/blob/main/src/routes/ai-routes.ts)),
 which validates the intent against the registry from step 1 before it reaches your code
-([`ai/interaction-layer.ts`](https://github.com/tjakoen/grain/blob/main/ai/interaction-layer.ts)):
+([`ai/interaction-layer.ts`](https://github.com/tjakoen/grain/blob/main/packages/grain/ai/interaction-layer.ts)):
 
 ```ts
 if (!isAction(intent.action)) { /* reject: unknown verb, echo the known ones */ }
@@ -108,7 +108,7 @@ else decision = await reasoner.decide(intent, tools);
 
 ### 4. Teach the reasoner the verb
 
-[`ai/reasoner.ts`](https://github.com/tjakoen/grain/blob/main/ai/reasoner.ts) is the single writer,
+[`ai/reasoner.ts`](https://github.com/tjakoen/grain/blob/main/packages/grain/ai/reasoner.ts) is the single writer,
 the only place a verb's effect gets decided. It reaches storage and rendering through **scoped
 tools** (`ReasonTools`), never directly. `item.archive` is the light path:
 
@@ -132,7 +132,7 @@ write, so the optimistic state clears and the failure surfaces.
 ### 5. Drive it, grade-as-signal made visible
 
 A click on a control marked `data-action="item.archive"` is turned by the client dispatcher
-([`grain/scripts/ai-dispatch.js`](https://github.com/tjakoen/grain/blob/main/scripts/ai-dispatch.js))
+([`grain/scripts/ai-dispatch.js`](https://github.com/tjakoen/grain/blob/main/packages/grain/scripts/ai-dispatch.js))
 into `POST /intent`. The HTTP door always stamps `source: "user"`; the client can never self-declare
 as the AI (`parseIntent` in
 [`src/routes/ai-routes.ts`](https://github.com/tjakoen/tjakoen.github.io/blob/main/src/routes/ai-routes.ts)

@@ -394,7 +394,7 @@ const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-c
 const contentRoutes = await listPortfolioContentRoutes();
 const deckRoutes = await listPortfolioDeckRoutes();          // /decks/<file>, the in-shell PDF viewer
 const planRoutes = await listPlanRoutes();
-const sitemap = createSitemap(config.pagesDir, () => [...contentRoutes, ...deckRoutes, ...planRoutes, "/reference"]);   // pages tree + MILL content + PROOF's plans + the generated reference
+const sitemap = createSitemap(config.pagesDir, () => [...contentRoutes, ...deckRoutes, ...planRoutes, "/reference", "/catalog"]);   // pages tree + MILL content + PROOF's plans + the generated reference
 // the catalog builds its own shell, so it receives the SAME global assets — otherwise it's the
 // one page that ignores the saved theme (the bug this seam fixed)
 const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
@@ -691,7 +691,7 @@ ${PAGE_ASSETS}</body>
           "</body>",
           `<script>addEventListener("load",function(){setTimeout(function(){try{window.print();}catch(e){}},350);});</script></body>`,
         );
-        return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+        return finalizePage(new Request(new URL("/resume", req.url), req), new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
       }
     }
     // the portfolio's own pages tree: "/" (home), "/grain"·"/batch" showcases, /about

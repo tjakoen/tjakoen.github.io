@@ -150,8 +150,8 @@ user-study track (§5), not asserted as a result.
   badge.
 - **Legible by construction: the action log.** Because every action is a *named verb*, the AI's activity
   is narrated as a running feed of those verbs: the takeover console shows *reads → types → writes →
-  revises → commits*, not an opaque spinner. A stream of pixel-clicks can't be narrated meaningfully; a
-  closed vocabulary can. The same vocabulary the AI acts through makes its behaviour auditable; and because *every* interaction
+  revises → commits*, not an opaque spinner. A stream of pixel-clicks cannot be narrated meaningfully; a
+  closed vocabulary can. The same vocabulary the AI acts through makes its behavior auditable; and because *every* interaction
   (human or AI) already enters through the one door as a source-tagged Intent, a single uniform log of
   human *and* AI actions is a natural, cheap extension (the door is the ideal choke point; not built today).
 
@@ -220,7 +220,7 @@ occupies all three at once.
 
 *Table 1. Positioning. The contribution is the row that is ✓ on all three axes simultaneously; no
 prior cluster is. The nearest, Agent-Native, holds the first two and none of the third, which is
-what makes the provenance axis load-bearing. (~ = partial; n/a = the axis doesn't apply.)*
+what makes the provenance axis load-bearing. (~ = partial; n/a = the axis does not apply.)*
 
 ### 3.1 Agent–UI interaction protocols (AG-UI, MCP-UI, MCP Apps)
 

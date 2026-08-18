@@ -187,7 +187,7 @@ and after a standard is renamed. Not on a schedule: this estate does not run sch
 - [ ] Every claimed defect carries a `file:line`.
 - [ ] The link check was actually executed and its status codes are in the report.
 - [ ] At least two AUDIT.md checks were run, or the report says why none were.
-- [ ] C6 names a file and line for each of its five rows, or says "remembered only".
+- [ ] C6 names a file and line for each of its six rows, or says "remembered only".
 - [ ] The working tree is unchanged: `git status --short` is empty of anything the pass wrote.
 
 ---

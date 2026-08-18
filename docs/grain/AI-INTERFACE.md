@@ -113,7 +113,7 @@ These verbs are designed but not yet wired. When a verb lands, it moves to the b
 The built table **is** the live contract. It is defined once in TypeScript and everything else
 — validation, the manifest, the UI affordances — derives from it.
 
-> **Single source of truth: [`grain/ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/ai/contract.ts).**
+> **Single source of truth: [`grain/ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/packages/grain/ai/contract.ts).**
 > The closed sets are **union types + a `const` registry**, not a TS `enum` (`enum`
 > is banned by `erasableSyntaxOnly`) — that union *is* the erasable enum:
 > - `ActionName` — the verbs · `ACTIONS` — the registry (depth, accepted kinds, a one-line

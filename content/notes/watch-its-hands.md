@@ -110,7 +110,7 @@ actually change anything. One door, one writer.
   <text x="310" y="186" text-anchor="middle" style="fill:var(--color-bg)">one door</text>
 </svg>
 
-*Figure: one door, one writer. My click and its decision are the same object, and neither of us gets
+*One door, one writer. My click and its decision are the same object, and neither of us gets
 to change anything on our own.*
 
 A single door sounds like a bottleneck and it is. That is the feature. Every action that has ever

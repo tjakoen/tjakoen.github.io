@@ -70,7 +70,7 @@ PHASE 2 — Learn the stack for yourself. Do not rely on your training data; go 
   - https://tjakoen.github.io/crumb/docs         (the guided-tour layer, if I asked for a tour)
   Then skim the public reference implementations on GitHub for how a real repo wires
   these together: github.com/tjakoen/pantry (the cockpit that composes the stack) and
-  github.com/tjakoen/tjakoen (the portfolio, a real consumer of every layer). Look at
+  github.com/tjakoen/tjakoen.github.io (the portfolio, a real consumer of every layer). Look at
   github.com/tjakoen/batch and github.com/tjakoen/grain for the layers themselves.
 
 PHASE 3 — Plan, then stop. Given my answers and what you read, come back with:
