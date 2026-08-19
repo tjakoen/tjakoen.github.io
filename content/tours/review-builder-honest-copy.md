@@ -15,15 +15,17 @@ review is reading, and reading is the one thing a passing test cannot do for you
 Read on 2026-08-19 or later, one thing behind this tour has moved. The bare-id question below was
 answered, and the fence now reads a short address up to the long one when exactly one block answers
 to it. So the near-miss refusal the second step tells you to be suspicious of is gone, and the
-drawer carries a paragraph saying that the model has not been run against the new fence yet. That
-paragraph is the thing worth reviewing hardest now, because an unverified improvement is exactly
-where a page starts flattering itself.
+drawer used to carry a paragraph saying the model had not been run against the new fence. It has
+now, on 2026-08-19, and the paragraph says what it earned instead of what it hoped: one scenario
+lands and four still do not, and the same run caught the loosened fence letting a destructive answer
+through. That trade is the thing worth reviewing hardest, because a page reporting a win it half
+earned is exactly where one starts flattering itself.
 
 ## builder-help
 - at: /builder
 - status: needs-verification
-- review: The drawer, and the riskiest step of the two. Three paragraphs after the four-line vocabulary list are new, and they carry hard numbers: thirty-three answers, eighteen before the manifest was narrowed and fifteen after, seven that named a block, five that named the right block and the right verb and were refused on the address form. If any of those disagree with the run reports, the page is now lying with more precision than it used to.
-- verify: Open the drawer and read from the four-line list to the end of it. The numbers should match artifacts/runs/2026-08-15-manifest-narrowing.md, and every one of them should read as a dated measurement rather than as a description of today. The paragraph after them should say the fence changed on 2026-08-19, that the five near misses would pass it, and that this is a deduction because nobody has re-run the model. No sentence anywhere in the drawer should claim an edit works.
+- review: The drawer, and the riskiest step of the two. Four paragraphs after the four-line vocabulary list carry hard numbers, and they now come from two runs rather than one: the 2026-08-15 counts (thirty-three answers, eighteen before the manifest was narrowed and fifteen after, seven that named a block, five refused on the address form) and the 2026-08-19 re-run against the loosened fence. If any of those disagree with the run reports, the page is lying with more precision than it used to. Read the second run's paragraphs hardest, because they are the ones reporting a change the page itself asked for.
+- verify: Open the drawer and read from the four-line list to the end of it. The 2026-08-15 numbers should still match artifacts/runs/2026-08-15-manifest-narrowing.md and should still read as a dated measurement. The paragraph after them should now carry a measured result rather than a deduction: drop b4 landing two times in three, the four referring-expression scenarios landing none, and an unrelated block removed once in four on the ask no verb can serve. Every one of those should be traceable to the reports under .cache/desk-audit. The drawer may claim exactly one edit works, the simplest one, and no sentence should widen that to editing in general.
 The drawer that tells you what this page can and cannot do.
 
 ## builder-said
