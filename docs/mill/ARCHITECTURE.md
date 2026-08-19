@@ -8,9 +8,16 @@ host's own composer. Two mappings, one seam, one escape hatch: that's the whole 
 
 ## Where it sits
 
+```mermaid label="The layer order runs one way: BATCH, then GRAIN on top of it, then MILL on top of that, and a project consumes the pages MILL renders."
+flowchart LR
+  batch[BATCH] --> grain[GRAIN] --> mill[MILL] --> project[a project]
 ```
-batch → grain → MILL → (consumed by a project)
-```
+
+That diagram is rendered by MILL, from a mermaid fence in this file, and the sentence on the fence
+is what makes it publishable. A generated picture with no accessible name is decorative, so MILL
+refuses an unlabelled diagram and degrades it to a code block rather than shipping one. The
+sentence becomes the SVG's accessible name, which is the figure as far as a screen reader is
+concerned, and as far as anything else reading the page as text.
 
 MILL depends on **GRAIN** (components) and **BATCH** (substrate), never the reverse, so it's an
 extension of neither, a new layer over both. The core (`core/`) imports nothing from grain or

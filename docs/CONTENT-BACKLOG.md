@@ -499,8 +499,10 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
      renderer. It was closed as not-planned for content because no content mermaid remained, and that
      reasoning was sound. It was built anyway, for a future consumer that generates diagrams rather
      than drawing them, and published as mill 0.3.0 with the accessible-name requirement following in
-     0.4.0. The portfolio wires none of it and ships a gate that fails the build if a mermaid fence
-     ever reaches served content without a rendered SVG beside it.
+     0.4.0. The portfolio wired it on 2026-08-19, gate first: an uncached or unnamed mermaid fence in
+     served content fails the build rather than publishing as raw source, and the renderer the site
+     serves with reads only the committed cache, so no deploy ever needs a browser. The first
+     rendered diagram is the layer chain on the MILL architecture page.
 - **Framework comparison / Evaluation** (public proof of native-first + no-build) — **SCOPED + approach
   confirmed 2026-07-16. BUILT + MEASURED 2026-07-17.** Own public repo `framework-bench`; reference app = a small blog
   (index + article detail + one client-side filter); targets = **native/BATCH vs Astro vs Next.js** (htmx

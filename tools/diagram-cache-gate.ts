@@ -16,6 +16,18 @@
 //      and watches whether the probe gets called: a call means cachedRenderer looked for the file
 //      and did not find it, which is the definition of a miss, whatever the key formula is.
 //
+// ---- The second door, and why the cache check alone cannot see it ------------------------
+// Since mill 0.4.0 a diagram fence must carry label="…", and MILL refuses an unlabelled one
+// BEFORE the renderer is called: it warns and degrades the fence to a code block. That refusal
+// never reaches cachedRenderer, so the miss-counting above sees nothing and the gate would stay
+// green while the page publishes raw mermaid source. Exactly the failure this gate exists to
+// stop, arriving through a different door.
+//
+// So the gate makes a second pass, over MILL's own parse, and fails a diagram fence with no
+// accessible name. That pass does read the AST, which bends rule 1 above as little as it can:
+// it uses MILL's parser, MILL's DIAGRAM_LANGS and MILL's parseDiagramMeta, so the definition of
+// "a diagram fence" and of "labelled" are still MILL's rather than this file's.
+//
 // Scope is the served collections and nothing wider. A mermaid fence in an unserved file, and
 // docs/AUDIT-AI-LOOP-2026-08-13.md holds two of them today, reaches no page and is not a risk.
 // Failing on it would train people to work around the gate.
@@ -24,8 +36,11 @@
 //   bun run verify:export                  # what pages.yml actually calls
 import { readdir } from "node:fs/promises";
 import { basename, join, relative } from "node:path";
-import { prepareDiagrams } from "@tjakoen/mill/diagrams/prepare.ts";
+import { prepareDiagrams, DIAGRAM_LANGS } from "@tjakoen/mill/diagrams/prepare.ts";
 import { cachedRenderer } from "@tjakoen/mill/diagrams/cache.ts";
+import { parseDiagramMeta } from "@tjakoen/mill/diagrams/label.ts";
+import { parseMarkdown } from "@tjakoen/mill/core/markdown.ts";
+import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
 import type { ContentSource } from "@tjakoen/mill/serve.ts";
 import { collectionSources } from "../src/content.ts";
 import { DIAGRAM_CACHE_DIR, DIAGRAM_VERSION_TAG, WARM_COMMAND, cacheFileNameFor } from "./diagram-cache.ts";
@@ -79,6 +94,27 @@ function fenceLine(raw: string, source: string): number | null {
 }
 
 /**
+ * Every diagram fence in this document that carries no accessible name, with any near-miss keys it
+ * did spell. MILL's own parser and its own meta reader, so a fence counts as a diagram here exactly
+ * when it counts as one there.
+ */
+function unlabelledFences(raw: string): { lang: string; source: string; unknownKeys: string[] }[] {
+  const handled = new Set(DIAGRAM_LANGS.map((l) => l.toLowerCase()));
+  const found: { lang: string; source: string; unknownKeys: string[] }[] = [];
+
+  for (const node of parseMarkdown(parseFrontmatter(raw).body)) {
+    if (node.type !== "code") continue;
+    const lang = node.lang.toLowerCase();
+    if (!handled.has(lang)) continue;
+    const { label, unknownKeys } = parseDiagramMeta(node.meta);
+    if (label) continue;
+    found.push({ lang, source: node.value, unknownKeys });
+  }
+
+  return found;
+}
+
+/**
  * Walk every served collection, find every diagram fence, and report the ones with no cache entry.
  * Returns a failure line per uncached fence, in the shape tools/verify-export.ts prints.
  *
@@ -111,6 +147,22 @@ export async function checkDiagramCache(opts: DiagramCacheGateOptions = {}): Pro
 
       await prepareDiagrams(raw, probe);
 
+      for (const fence of unlabelledFences(raw)) {
+        const file = relative(REPO_ROOT, await fileForSlug(dir, slug));
+        const line = fenceLine(raw, fence.source);
+        const at = line === null ? file : `${file}:${line}`;
+        const nearMiss = fence.unknownKeys.length
+          ? ` The fence spells ${fence.unknownKeys.join(", ")}; the accessible name is spelled label.`
+          : "";
+
+        failures.push(
+          `${at} (served at ${prefix}/${slug}): a ${fence.lang} fence has no accessible name, ` +
+          `so MILL refuses it and the page publishes the source.${nearMiss} ` +
+          `Add label="…" to the fence, saying in words what the diagram shows, ` +
+          `then run ${warmCommand} and commit the SVG.`,
+        );
+      }
+
       const seen = new Set<string>();
       for (const miss of misses) {
         const dedupe = `${miss.lang}\0${miss.source}`;
@@ -138,10 +190,10 @@ export async function checkDiagramCache(opts: DiagramCacheGateOptions = {}): Pro
 /** The standalone report. Exported so a run against a fixture prints exactly what CI would print. */
 export function printDiagramCacheReport(failures: string[]): void {
   if (!failures.length) {
-    console.log(`[diagram-cache] every diagram fence in served content has a committed SVG`);
+    console.log(`[diagram-cache] every diagram fence in served content is named and has a committed SVG`);
     return;
   }
-  console.error(`[diagram-cache] ${failures.length} uncached diagram fence(s):\n`);
+  console.error(`[diagram-cache] ${failures.length} diagram fence(s) that would publish as raw source:\n`);
   for (const f of failures) console.error(`  ✗ ${f}`);
   console.error(
     `\n[diagram-cache] The deploy installs no browser, so an uncached fence publishes as raw source.` +

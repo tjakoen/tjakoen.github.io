@@ -1,7 +1,10 @@
-// portfolio/tools/diagram-cache.ts — where the committed diagram cache lives, and how its
-// filenames are derived. One definition, shared by the gate that reads the cache
-// (tools/diagram-cache-gate.ts), the tool that fills it (tools/diagram-warm.ts), and whatever
-// later wires MILL's mermaid renderer into src/content.ts.
+// portfolio/tools/diagram-cache.ts — how a cache filename is derived, for the tools that report
+// one to a person.
+//
+// The cache location and its version tag moved to src/diagrams.ts when the renderer was wired
+// into the content routes, because the server became the primary reader of the cache and a tool
+// importing from src/ is the right direction here. They are re-exported below, so the gate and
+// the warm tool still import them from this module.
 //
 // ---- Why this cache is a correctness device and not a speed one --------------------------
 // tools/export.ts spawns src/server.ts and crawls it, so the static export renders every entry
@@ -19,27 +22,11 @@
 import { mkdtemp, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { cachedRenderer, CACHE_VERSION } from "@tjakoen/mill/diagrams/cache.ts";
-import { MERMAID_VERSION_TAG } from "@tjakoen/mill/diagrams/mermaid-playwright.ts";
+import { cachedRenderer } from "@tjakoen/mill/diagrams/cache.ts";
+import { DIAGRAM_CACHE_DIR, DIAGRAM_VERSION_TAG, WARM_COMMAND } from "../src/diagrams.ts";
 
-/**
- * The committed cache directory. It sits under content/ because these SVGs belong to the content
- * that produced them, and it is deliberately NOT under .cache/, which .gitignore drops: a cache
- * this repo does not commit is a cache the deploy does not have.
- */
-export const DIAGRAM_CACHE_DIR = join(import.meta.dir, "..", "content", "diagrams");
+export { DIAGRAM_CACHE_DIR, DIAGRAM_VERSION_TAG, WARM_COMMAND };
 
-/**
- * The version tag folded into every cache key. MILL splits the versioning in two on purpose:
- * CACHE_VERSION covers MILL's own post-processing, MERMAID_VERSION_TAG covers the sentinel
- * palette that makes one cached SVG follow the theme, and the consumer joins them. Bumping
- * either upstream invalidates every committed SVG, which is the intended behaviour: a stored SVG
- * is only valid for the transformation that produced it.
- */
-export const DIAGRAM_VERSION_TAG = `${CACHE_VERSION}+${MERMAID_VERSION_TAG}`;
-
-/** The command a person runs to fill the cache for a fence the gate found uncached. */
-export const WARM_COMMAND = "bun run diagrams:warm";
 
 /**
  * The cache filename MILL would use for this fence, derived by ASKING MILL rather than by
