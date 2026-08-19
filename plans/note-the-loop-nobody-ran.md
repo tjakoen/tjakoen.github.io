@@ -35,7 +35,14 @@ ever wrote a run report:
 | admin-interface | 26 | 0 | 0 |
 
 288 sessions outside the portfolio. One ran the doctor. None wrote a run report. Four of those repos
-already carried `pantry.config.json`, so it was installed and never fired.
+already carried `pantry.config.json`.
+
+**Do not write the note around adoption, because that reading was checked and is wrong.** The
+machine-level session-start hook resolves pantry through `../pantry/cli.ts`, which only exists
+relative to `bread-repos/`. From ph-live every resolution path fails and the hook prints
+`doctor NOT RUN`. The loop was never reachable outside one directory, so the one doctor run in
+ph-live's 165 sessions was a human typing it. The honest subject is a diagnosis that survived six
+weeks because the usage numbers looked like an answer.
 
 **The loop's cost was paid inside the loop.** 53 of 148 portfolio sessions were about the loop, the
 standards, pantry or an audit rather than about the product. That is 36%. Across the estate, 93 of
@@ -52,6 +59,11 @@ one repo. Mean session length runs 605 to 920 messages; the longest is 11,396.
 The interesting failure is not that the loop was built badly. It is that it was built in the repo
 whose job is to demonstrate it, measured there, and therefore always looked like it was working. A
 tool adopted only by its author is a tool with no evidence behind it.
+
+The sharper half arrived late and is better: the diagnosis itself was wrong for most of a day. The
+usage numbers were read as a story about discipline, when a single command run from the wrong
+directory would have shown the tool could not start. A measurement tells you what did not happen.
+It never tells you why, and the gap between those two is where a confident wrong answer lives.
 
 The half that generalizes: machinery that never fires is usually machinery whose cost lands now and
 whose benefit lands later, on somebody else. Handing off costs a brief today. Not handing off costs
