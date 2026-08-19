@@ -12,7 +12,7 @@
 ## The AI implementation roadmap note (drafted 2026-08-18)
 
 **Everybody Wants the Agent. Somebody Has to Build the Floor.**
-(content/notes/build-the-floor.md, **DRAFT**, ~24 min). The deck shipped alongside it:
+(content/notes/build-the-floor.md, **PUBLISHED** 2026-08-19, ~24 min). The deck shipped alongside it:
 [/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 27 slides.
 
 **Know what this note is for.** It sells an AI implementation roadmap, and it positions Tjakoen as
