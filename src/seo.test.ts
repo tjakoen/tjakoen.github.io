@@ -182,3 +182,12 @@ describe("enrichHead — safety + idempotency", () => {
     expect(j["@graph"][0].name).toBe("Batch & Grain");
   });
 });
+
+// Routing is case-insensitive, so /GRAIN and /grain serve the same page. They must not each claim a
+// canonical of their own, which is the duplicate-content trap the 2026-08-18 audit found.
+test("canonicalPath collapses case variants onto one URL", () => {
+  expect(canonicalPath("/GRAIN")).toBe("/grain/");
+  expect(canonicalPath("/Grain/")).toBe("/grain/");
+  expect(canonicalPath("/notes/TEN-TIMES-ZERO")).toBe("/notes/ten-times-zero/");
+  expect(canonicalPath("/")).toBe("/");
+});

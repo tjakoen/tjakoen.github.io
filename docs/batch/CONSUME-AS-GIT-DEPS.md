@@ -46,4 +46,4 @@ layers are published, rather than pinned as `github:tjakoen/grain#<sha>` subpath
 ## Next steps
 
 - [`GETTING-STARTED.md`](GETTING-STARTED.md) (this layer) and [`../../grain/docs/GETTING-STARTED.md`](../../grain/docs/GETTING-STARTED.md) for what you get once installed.
-- [`SPLIT-PLAN.md`](https://github.com/tjakoen/bread/blob/main/SPLIT-PLAN.md) for the full repo-split plan and timeline.
+- [`SPLIT-PLAN.md`](https://github.com/tjakoen/bread/blob/main/docs/history/SPLIT-PLAN.md) for the full repo-split plan and timeline.

@@ -354,7 +354,7 @@ const proofRoutes = createProofRoutes({
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title} · Plans</title>
+  <title>${title === "Plans" ? title : `${title} · Plans`}</title>
   ${PAGE_HEAD}<link rel="stylesheet" href="/proof.css">
 </head>
 <body data-screen="plans" class="app-window-backdrop">
