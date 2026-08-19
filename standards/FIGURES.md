@@ -233,6 +233,15 @@ is refused, it warns, and it degrades to a code block. The old blanket sentence,
 Tjakoen's byline publishes as mermaid, no longer holds. What holds is that nothing publishes as an
 unnamed figure.
 
+**A host that serves them owes a committed cache and a gate.** The rendering needs a browser, and a
+deploy usually has none, so the picture is rendered once on the machine that authored it and the SVG
+is committed beside the Markdown. The site then serves from that cache and never launches anything.
+The failure this guards against is silent in both directions: a missing cache entry and a missing
+label both degrade to a code block, and a page that publishes raw diagram source looks finished from
+every angle except a reader's. So the gate fails the build on either, rather than leaving it to be
+noticed. The portfolio's lives in its tools directory as the diagram cache gate, wired into its export
+verifier, and the worked example is the layer chain on the MILL architecture page.
+
 ---
 
 *A projection of how the stack already thinks (tokens, DRY, design-tells-the-truth) applied to

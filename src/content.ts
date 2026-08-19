@@ -22,6 +22,7 @@ import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
 import {
   externalLinkAttrs, type GrainAdapterOptions,
 } from "@tjakoen/mill/adapters/grain/grain-adapter.ts";
+import { servedDiagramRenderer } from "./diagrams.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
@@ -312,7 +313,15 @@ export function createPortfolioContentRoutes(
   inject = "",
   injectHead = "",
 ): MillRequestHandler {
-  return createMillRoutes({ compose, chrome: shellChrome(inject, injectHead), collections });
+  // The diagram renderer is shared by every collection and reads only the committed cache — see
+  // src/diagrams.ts for why nothing here launches a browser, and tools/diagram-cache-gate.ts for
+  // what stops an uncached fence reaching the site as raw source.
+  return createMillRoutes({
+    compose,
+    chrome: shellChrome(inject, injectHead),
+    collections,
+    diagrams: servedDiagramRenderer(),
+  });
 }
 
 // ---- the deck viewer: a PDF that stays inside the site ------------------------------------

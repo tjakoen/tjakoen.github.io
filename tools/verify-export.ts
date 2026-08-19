@@ -173,5 +173,5 @@ if (failures.length) {
 
 console.log(`[verify-export] sitemap.xml: every <loc> resolves to a real file, all trailing-slash canonical`);
 console.log(`[verify-export] dead-link walk: every internal href/src across the exported HTML resolves`);
-console.log(`[verify-export] diagram cache: every mermaid fence in served content has a committed SVG`);
+console.log(`[verify-export] diagram cache: every mermaid fence in served content is named and has a committed SVG`);
 console.log(`[verify-export] OK`);

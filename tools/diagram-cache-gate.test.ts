@@ -1,9 +1,10 @@
 // portfolio/tools/diagram-cache-gate.test.ts — the gate has to be seen going RED.
 //
-// There are zero mermaid fences in served content today, so the gate passes trivially against the
-// real repo. A green run proves nothing: a gate that always returns an empty array would pass the
-// same way. Every test here builds a fixture collection with a real fence and an empty cache, shows
-// the failure, then fills the cache and shows it clear.
+// Served content holds one mermaid fence today, in docs/mill/ARCHITECTURE.md, and its SVG is
+// committed, so the gate passes against the real repo. A green run proves nothing on its own: a
+// gate that always returned an empty array would pass the same way. Every test here builds a
+// fixture collection with a real fence and an empty cache, shows the failure, then fills the cache
+// and shows it clear.
 //
 // The cache is filled the way tools/diagram-warm.ts fills it, through MILL's own cachedRenderer,
 // rather than by writing a filename this test computed. Deriving the key twice from the same helper
@@ -146,18 +147,16 @@ test("the gate never writes to the cache it checks", async () => {
   });
 });
 
-// ---- the other negative case: a fence MILL itself refuses -------------------------------------
-// Since mill 0.4.0 an unlabelled mermaid fence never reaches the renderer at all. MILL warns and
-// degrades it to a code block, so no diagram is produced and there is nothing for a cache to hold.
-// That is why the gate stays quiet here, and the quiet is safe rather than blind: the page ships a
-// code block, which is honest, instead of raw source pretending to be a figure.
+// ---- the second door: a fence MILL itself refuses ---------------------------------------------
+// Since mill 0.4.0 an unlabelled mermaid fence never reaches the renderer. MILL warns and degrades
+// it to a code block, so no diagram is produced and nothing is ever looked up in the cache. The
+// miss-counting half of this gate therefore cannot see it, and for a while the gate stayed green
+// while such a page published raw mermaid source, which is the exact failure it exists to stop.
 //
-// This case is pinned because the two versions behave in OPPOSITE directions and the difference is
-// invisible from the gate's own output. Under the pinned 0.3.0 a bare fence failed the gate and a
-// LABELLED one was silently skipped, because that parser stopped treating a line as a fence the
-// moment it carried any info string. Anyone reading a quiet gate has to know which of those two
-// worlds they are in.
-test("an unlabelled fence is refused by MILL, so it never reaches the gate", async () => {
+// The gate now makes a second pass over MILL's own parse and fails an unnamed diagram fence. These
+// two tests are the ones that would go quiet if that pass were ever removed, so they assert the
+// message a person acts on rather than only the count.
+test("RED: an unlabelled fence fails the gate, because MILL refuses it and the page ships the source", async () => {
   const unlabelled = `---
 title: No label
 ---
@@ -167,8 +166,41 @@ ${FENCE_SOURCE}
 \`\`\`
 `;
   await withFixture({ "a.md": unlabelled }, async ({ run, cacheDir }) => {
-    expect(await run()).toEqual([]);                          // nothing to cache, so nothing to fail
+    const failures = await run();
+
+    expect(failures.length).toBe(1);
+    const [f] = failures as [string];
+
+    expect(f).toContain("a.md:5");                            // the line the fence opens on
+    expect(f).toContain("served at /fixture/a");
+    expect(f).toContain("has no accessible name");
+    expect(f).toContain('Add label="…"');                     // what to do about it
+    expect(f).not.toContain("has no committed SVG");          // this is the other door, not a cache miss
+
     expect(await readdir(cacheDir)).toEqual([]);              // and nothing was written either
+  });
+});
+
+test("RED: a near-miss key is named, because caption= is the obvious thing to type", async () => {
+  const captioned = `---
+title: Near miss
+---
+
+\`\`\`mermaid caption="A goes to B"
+${FENCE_SOURCE}
+\`\`\`
+`;
+  await withFixture({ "a.md": captioned }, async ({ run }) => {
+    const [f] = (await run()) as [string];
+    expect(f).toContain("The fence spells caption");
+    expect(f).toContain("the accessible name is spelled label");
+  });
+});
+
+test("GREEN: adding the label and the SVG clears both doors", async () => {
+  await withFixture({ "fixture-note.md": NOTE }, async ({ cacheDir, run }) => {
+    await cachedRenderer(cacheDir, async () => "<svg data-fixture></svg>", TAG)("mermaid", FENCE_SOURCE);
+    expect(await run()).toEqual([]);
   });
 });
 
