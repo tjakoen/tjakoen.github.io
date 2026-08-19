@@ -28,9 +28,6 @@ function boot(): void {
   const empty = document.querySelector<HTMLElement>(".preview-empty");
   if (!stage || !markup) return;
 
-  // The handover, read once and then cleared. Cleared because it is a message rather than a store:
-  // leaving it would mean a later visit to this address showed a page the visitor had moved on from,
-  // which is the stale-preview failure the whole route exists to avoid.
   // The handover, read once and then deleted, before anything is rendered from it. Deleted because
   // it is a message rather than a store: leaving it would mean a later visit to this address showed
   // a page the visitor had moved on from, which is the stale-preview failure the whole route exists

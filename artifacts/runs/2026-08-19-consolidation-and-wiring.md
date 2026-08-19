@@ -65,16 +65,19 @@ gates:
   - "greenroom bun run check | tsc, exit 0"
   - "greenroom bun test lib | 68 pass, 0 fail, 225 expect() calls"
 diffstat: 7 portfolio commits, plus 1 in greenroom and 2 in claude-config. See the log from 8ad8a88.
-unpushed: 2 | the two builder commits. The first five were pushed mid-run on the owner's word, along
-  with greenroom's and claude-config's; these two landed after that and need the same call.
+unpushed: 0 | all 8 portfolio commits are on origin/main, pushed in two batches on the owner's word.
+  Greenroom's 1 and claude-config's 3 are pushed too. CI and the Pages deploy are green on beaa3cb.
 verifiedBy: nobody yet. This is the author's own account. Three claims in it were checked by a route
   independent of the thing making the claim: the diagram gate was probed by hand in both directions
   rather than observed passing, the greenroom reconciliation was re-measured from git rather than
   read out of the prior session's report, and the builder numbers come from ten runs of the live
   model rather than from a deduction.
-doctor: 21 checks, 0 failing, 0 due. Both flags standing at session start were closed rather than
-  carried: the cold-start context budget and the run-ledger evidence. Graphify freshness was cleared
-  by a merge during the run.
+doctor: 21 checks, 0 failing, 1 due. Both flags standing at session start were closed rather than
+  carried: the cold-start context budget and the run-ledger evidence. Graphify freshness is the one
+  left, and it is a treadmill rather than debt: a PostToolUse hook re-extracts on every edit, so the
+  merged graph goes stale again the moment anything is touched. It was cleared three times during
+  this run and is due again. Worth a look at whether the check should compare against the last merge
+  rather than the last extraction.
 ---
 
 # What this run was
