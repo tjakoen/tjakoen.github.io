@@ -250,6 +250,11 @@ I can explain what shipped this week again. That is the whole win, and it is the
 classroom, pointed at myself: the multiplier is real, and it is only worth having if you stay worth
 multiplying.
 
+Since writing this I have taken the same shape and asked what it would look like at the scale of an
+engineering organization rather than one person with a dozen repositories. That is
+[Everybody Wants the Agent](build-the-floor.md): the same argument about verification and legibility,
+turned into a roadmap, with the research behind it and the parts that broke on me left in.
+
 ---
 
 *The [judgment is human](ten-times-zero.md). The typing, by design, is not.*

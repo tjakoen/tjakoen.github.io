@@ -404,3 +404,72 @@ export function mountAgentLoop(host) {
   host.__runLoop = (full) => { if (full) { clearInterval(timer); paint(RUN.length - 1); btn.textContent = 'Run it again'; } else paint(-1); };
   return true;
 }
+
+/* ============================================================================
+   6 · THE FOUR GATES
+   The last static SVG in the note, and the one with the most obvious reason to
+   move: a ladder you can only look at tells you the four gates exist, while one
+   you can tick tells you which of them YOU fail. Same shape, turned into a
+   two-minute self-assessment.
+   ========================================================================= */
+
+const GATE_LIST = [
+  { key: 'vis',  name: 'Visibility',    ask: 'Can you say what is happening today, with numbers?' },
+  { key: 'ver',  name: 'Verifiability', ask: 'Can a machine decide whether a change is correct?' },
+  { key: 'leg',  name: 'Legibility',    ask: 'Can an agent read the codebase without a human explaining it?' },
+  { key: 'con',  name: 'Containment',   ask: 'If it is wrong, do you know what breaks, and have you tested that?' },
+];
+
+export const GATES_FIG = `<div class="gates" data-gates>
+  <p class="gates__title">Four gates. Tick the ones you would pass today.</p>
+  <ul class="gates__list" data-gates-list></ul>
+  <p class="gates__verdict" data-gates-verdict></p>
+  <p class="gates__punch" data-grade="grain">Assisted development needs visibility and legibility. Anything unattended needs all four, and skipping one means finding out which in production.</p>
+</div>`;
+
+export function mountGates(host) {
+  h(host, GATES_FIG);
+  const list = host.querySelector('[data-gates-list]');
+  if (!list) return false;
+
+  list.innerHTML = GATE_LIST.map((g) => `
+    <li class="gates__gate" data-gate="${g.key}">
+      <button class="gates__btn" type="button" aria-pressed="false" data-gate-toggle>
+        <span class="gates__box" aria-hidden="true"></span>
+        <span class="gates__text"><b>${g.name}</b><em>${g.ask}</em></span>
+      </button>
+    </li>`).join('');
+
+  const state = { vis: false, ver: false, leg: false, con: false };
+  const render = () => {
+    const on = Object.values(state).filter(Boolean).length;
+    host.querySelectorAll('.gates__gate').forEach((el) => {
+      const yes = state[el.dataset.gate];
+      el.toggleAttribute('data-on', yes);
+      el.querySelector('[data-gate-toggle]').setAttribute('aria-pressed', String(yes));
+    });
+    // Two named destinations rather than a score, because a score invites arguing with the number
+    // instead of with the gap.
+    const assisted = state.vis && state.leg;
+    const v = host.querySelector('[data-gates-verdict]');
+    v.innerHTML = on === 4
+      ? '<b>All four.</b> Unattended loops are defensible on work a machine can verify.'
+      : assisted
+        ? `<b>Assisted development, yes. Unattended, not yet.</b> Missing: ${GATE_LIST.filter((g) => !state[g.key]).map((g) => g.name.toLowerCase()).join(' and ')}.`
+        : on === 0
+          ? 'Nothing ticked yet. Start with visibility, because it is the cheapest and everything else is judged against it.'
+          : `<b>Not ready for either yet.</b> Missing: ${GATE_LIST.filter((g) => !state[g.key]).map((g) => g.name.toLowerCase()).join(', ')}.`;
+    host.querySelector('[data-gates]').toggleAttribute('data-all', on === 4);
+  };
+
+  host.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-gate-toggle]');
+    if (!btn) return;
+    const key = btn.closest('[data-gate]').dataset.gate;
+    state[key] = !state[key];
+    render();
+  });
+  render();
+  host.__setGates = (n) => { GATE_LIST.forEach((g, i) => { state[g.key] = i < n; }); render(); };
+  return true;
+}

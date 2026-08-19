@@ -8,14 +8,14 @@
  * cannot drift from the paragraph. What differs is only the trigger: in prose you drag the dial
  * yourself, and here the slide steps drive it, because a room does not have a mouse.
  */
-import { mountWhiplash, mountBuildOrder, mountRuleGate, mountRoadmap, mountAgentLoop } from '/site/figure-floor.js';
+import { mountWhiplash, mountBuildOrder, mountRuleGate, mountRoadmap, mountAgentLoop, mountGates } from '/site/figure-floor.js';
 
 const deck = document.querySelector('.presentation[data-deck]');
 if (deck) {
   const hosts = {};
   for (const host of deck.querySelectorAll('[data-live-figure]')) {
     const name = host.dataset.liveFigure;
-    const build = { whiplash: mountWhiplash, buildorder: mountBuildOrder, rulegate: mountRuleGate, roadmap: mountRoadmap, agentloop: mountAgentLoop }[name];
+    const build = { whiplash: mountWhiplash, buildorder: mountBuildOrder, rulegate: mountRuleGate, roadmap: mountRoadmap, agentloop: mountAgentLoop, gates: mountGates }[name];
     if (!build) continue;
     const fallback = host.innerHTML;                  // the static SVG stays the safety net
     try { if (build(host)) hosts[name] = host; else host.innerHTML = fallback; }
@@ -36,6 +36,9 @@ if (deck) {
     }
     if (title === 'The roadmap' && hosts.roadmap?.__setMonth) {
       hosts.roadmap.__setMonth([0, 2, 6, 12, 18][Math.min(step, 4)]);
+    }
+    if (title === 'Four gates' && hosts.gates?.__setGates) {
+      hosts.gates.__setGates(Math.min(step, 4));
     }
     if (title === 'Loop architecture' && hosts.agentloop?.__runLoop) {
       hosts.agentloop.__runLoop(step >= 1);
