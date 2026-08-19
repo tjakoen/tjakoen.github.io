@@ -165,10 +165,28 @@ Each is a session's worth and each ends with something you can look at.
       script that makes it work. The **desk appending to the canvas through the door is NOT wired**:
       the desk still drives this page the way it always did, by navigating to `?ask=`, which now
       works on the static host too.
-- [ ] **P4. Take it away.** Three exports off one spec: the JSON (round-trips through import), the
-      rendered HTML with grain's stylesheet, and the tag source a developer would have hand-written.
-      Every exported page carries the byline. Import is a file picker plus the same validation the
-      matcher uses, so a hand-edited JSON degrades to a named refusal rather than a broken page.
+- [x] **P4. Take it away** (2026-08-19). Three exports off one spec, at the file-name edge: the JSON
+      (which round-trips through Open), the rendered page with grain's stylesheet, and the tag source
+      a developer would have hand-written. `src/ai/builder-export.ts` is pure and string-in
+      string-out, so the browser feeds it markup read off the canvas and a test feeds it markup the
+      same renderer produced. Proved the honest way, the same way P3 was: `bun run export`, a plain
+      static file server over `dist/`, and the whole round trip driven there with no app server
+      running. The canvas came back byte-identical.
+      **Three things the plan did not foresee.** The byline could not be written into the page,
+      because grain's `madeWith()` owns the wording and a copy here is the drift the signature
+      section argues against; so server.ts injects grain's markup into an inert `<template>` and the
+      browser reads it back, which also survives the freeze. Both HTML exports have to STRIP the
+      builder's own instrumentation, because an exported page ships no dispatcher and an address on
+      it advertises an operation nothing can perform, which is the tick box's lesson pointed at the
+      export rather than at the page. And refusals were rendered by the SERVER only: a prompt typed
+      into the page raised the Can't build head over an empty list, so `builder-refusal` joined the
+      template library and the browser now names what it will not build. That was a hole the import
+      could not have shipped around, since a named refusal is the whole of what import owes a
+      hand-edited file.
+      **What an export deliberately does NOT carry.** The six-column grid is this page's CSS rather
+      than grain's, so the page export writes it inline and the tag export names it in a comment; and
+      the page export LINKS this site's stylesheets rather than copying them, so it needs the network
+      to look right. Both are said in the drawer rather than discovered.
 - [ ] **P5. The preview tab and the catalog sidebar**, the sandbox plan's pieces 4 and 5, unchanged
       in intent. The sidebar already has a catalog pane
       ([`portfolio-frame.html`](../view/components/organisms/portfolio-frame/portfolio-frame.html)),
@@ -222,9 +240,18 @@ the fleet. Pantry, greenroom, proof and mill import it.
 - **P3:** the honest one, and it is `bun run export`, then serving `dist/` and building a page there
   with no server running. That is the test the current demo would fail today.
 - **P4:** export a composition, import the JSON back, and diff the rendered output against the
-  original. Byline present in all three export forms.
+  original. Byline present in all three export forms. **DONE 2026-08-19, and driven twice.** The
+  round trip is asserted on the FILE rather than on the function, because export writes bytes: the
+  unit test parses those bytes and imports them, and the e2e builds a page in the browser, downloads
+  the JSON, opens it on a page that has never seen the prompt, and compares the two canvases as
+  markup. Then the same walk on a plain static file server over `dist/`, no app server anywhere:
+  four cells built from the address, three files downloaded, opened back, byte-identical. Eleven e2e
+  cases and twenty-three unit tests, and the refusal cases are the ones that matter, since a file
+  with nothing renderable in it must leave the page exactly as it was.
 - **e2e** through `desk-form-build.e2e.ts`'s existing harness, plus a review tour whose steps are the
-  canvas, one generated block, and the export dialog.
+  canvas, one generated block, and the export dialog. The P4 tour is
+  `content/tours/review-builder-take-it-away.md`, and its three steps are the export controls, the
+  named refusal an opened file earns, and the drawer that says what does not travel.
 
 ## Open, and they are the owner's
 

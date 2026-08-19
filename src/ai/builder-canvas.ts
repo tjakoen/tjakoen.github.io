@@ -28,6 +28,10 @@ import {
   type PageComposition,
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
+import {
+  bylineFrom, exportJson, exportPage, exportTags,
+  type Byline, type ExportBlock, type ExportFile,
+} from "./builder-export.ts";
 import { looksLikeAnEdit } from "./block-command.ts";
 import { blockMessage, readModelMove } from "./block-reasoner.ts";
 
@@ -65,7 +69,7 @@ import {
 /** The page's own chrome binds over the VIEW; a block binds over its own DATA; the composer binds
  *  over its one-item spec. Filling the board must therefore stop at all three, or the view's data
  *  would be walked into markup that means something else and every label would quietly go blank. */
-const FILL_SKIP = `.canvas, .wb__rows, .${LIBRARY_CLASS}, .builder-composer`;
+const FILL_SKIP = `.canvas, .wb__rows, .builder-unsupported, .${LIBRARY_CLASS}, .builder-composer`;
 
 const $ = <T extends Element>(sel: string, root: ParentNode = document): T | null => root.querySelector<T>(sel);
 
@@ -160,6 +164,15 @@ function paint(board: Element, canvas: Element, rail: Element, library: Element,
  *  changed it, and rebuilding would throw away the AI ink it put on the cell it touched. */
 function repaintChrome(board: Element, rail: Element, library: Element, view: BuilderView): void {
   rail.replaceChildren(...view.rows.map((r) => build(library, "block-row", r)).filter((n): n is Element => n !== null));
+  // The Can't build list, rebuilt from the library the same way the rail's rows are. It was
+  // server-only until 2026-08-19, which meant a prompt typed into the page raised the Can't build
+  // head over an empty list: the page that argues hardest about saying out loud what it will not
+  // fake was, in the browser, saying nothing. An imported file is where that had to be fixed, since
+  // a named refusal is the whole of what import owes a hand-edited document.
+  const refusals = $('[data-surface="builder-refusals"]', board);
+  refusals?.replaceChildren(
+    ...view.unsupported.map((r) => build(library, "builder-refusal", r)).filter((n): n is Element => n !== null),
+  );
   fillTree(board, view, FILL_SKIP);
 }
 
@@ -281,7 +294,7 @@ function boot(): void {
    *  repainted every time an op lands, and the op that lands is the one this line is announcing: a
    *  bound line would blank itself at the exact moment it came true. */
   const saidLine = $('[data-surface="builder-said"]');
-  const say = (text: string, read: "command" | "refusal" | "thinking" | "reply"): void => {
+  const say = (text: string, read: "command" | "refusal" | "thinking" | "reply" | "file"): void => {
     if (!saidLine) return;
     saidLine.textContent = text;
     saidLine.setAttribute("data-read", read);
@@ -476,6 +489,127 @@ function boot(): void {
     if (next === state) return;
     state = next;
     repaint(viewOf(state, pageAsk, null));
+  });
+
+  // -------------------------------------------------------------------------------------------
+  // Take it away: three files off the one composition, and the one that comes back
+  // -------------------------------------------------------------------------------------------
+  // All of it runs here rather than on a server, for the reason the rest of this file exists: the
+  // site this page lives on has none. A composition is client state, so the only place that can
+  // turn it into a file is the browser holding it.
+
+  /** The byline, read off the template server.ts parked in the page. Read rather than written,
+   *  because grain's madeWith() owns the wording and a copy of the line in this file would be the
+   *  drift the whole arrangement exists to prevent. Null means the page did not carry it, and the
+   *  answer to that is to refuse the export: a page that quietly went out unsigned is worse than
+   *  one that did not go out. */
+  const byline: Byline | null = bylineFrom($<HTMLTemplateElement>("template.builder-byline")?.innerHTML);
+
+  /** Every block on the canvas as markup, read off the DOM, which is the same authority the AI
+   *  handshake reads: the canvas is what is on the page, and an export is a picture of that rather
+   *  than of what this module thinks is there. The cell wrapper is deliberately NOT handed over.
+   *  builder-export.ts writes it, and a wrapper written on both sides is a wrapper that drifts. */
+  const blocksForExport = (): ExportBlock[] => {
+    const out: ExportBlock[] = [];
+    for (const cell of canvas.children) {
+      const span = cell.getAttribute(SPAN_ATTR);
+      const inner = cell.firstElementChild;
+      if (isSpan(span) && inner) out.push({ span, html: inner.outerHTML });
+    }
+    return out;
+  };
+
+  /** Hand a file over. An object URL and a synthetic click, because a static host has nothing to
+   *  post to and nothing to ask for a file back: the download is the browser's own, and the bytes
+   *  never leave the machine. The anchor joins the document before the press and leaves after,
+   *  since a detached anchor does not download everywhere. */
+  const handOver = (file: ExportFile): void => {
+    const url = URL.createObjectURL(new Blob([file.body], { type: `${file.type};charset=utf-8` }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name;
+    a.style.display = "none";
+    document.body.append(a);
+    a.click();
+    a.remove();
+    // Deferred, not immediate: the revoke races the download in more than one browser, and a
+    // revoked URL is a download that silently produces nothing.
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const take = $(".wb__take", board);
+  const filePicker = $<HTMLInputElement>(".wb__take-file", board);
+
+  take?.addEventListener("click", (e) => {
+    const button = (e.target as Element | null)?.closest("button");
+    if (!button) return;
+    if (button.hasAttribute("data-import")) { filePicker?.click(); return; }
+
+    const which = button.getAttribute("data-export");
+    if (!which) return;
+    if (!byline) {
+      say("This page is not carrying the GRAIN byline, so there is nothing to sign an export with.", "refusal");
+      return;
+    }
+    const blocks = blocksForExport();
+    const file = which === "json" ? exportJson(state, byline)
+      : which === "page" ? exportPage(blocks, byline, location.origin)
+      : which === "tags" ? exportTags(blocks, byline)
+      : null;
+    if (!file) return;
+    handOver(file);
+    say(`${file.name}, ${state.blocks.length} ${state.blocks.length === 1 ? "block" : "blocks"}, signed ${byline.text}.`, "file");
+  });
+
+  // Reading one back in. The same validation the matcher uses, which is what makes a hand-edited
+  // file degrade to a named refusal rather than to a broken page: fromDocument keeps every block
+  // this build can render and refuses the rest BY NAME.
+  //
+  // An import REPLACES the canvas, which is the opposite of what a prompt does, so the button says
+  // Open. And an import that yields no blocks at all replaces nothing: opening the wrong file is a
+  // mistake anyone makes, and a builder that answers it by emptying the page you spent ten minutes
+  // on has turned a misclick into lost work.
+  // An arrow rather than a declaration, and not by taste: a function declaration does not keep the
+  // narrowing the guard at the top of boot() already did, so `composer` reads as possibly null
+  // inside one and the reference below stops type-checking.
+  const openFile = async (chosen: File): Promise<void> => {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(await chosen.text());
+    } catch {
+      say(`${chosen.name} is not JSON, so there was nothing to read. The page is as you left it.`, "refusal");
+      return;
+    }
+    const opened = fromDocument(parsed, BLOCK_COMPONENTS);
+    if (opened.blocks.length === 0) {
+      const named = opened.refusals.map((r) => r.token).join(", ") || "nothing at all";
+      say(`Nothing in ${chosen.name} this build can render: ${named}. The page is as you left it.`, "refusal");
+      return;
+    }
+    state = opened;
+    // The prompt that produced the page did not produce THIS page, so it stops being echoed and
+    // stops riding in the address. A shared link that claimed to rebuild an imported file would
+    // rebuild whatever the old prompt matched instead, which is a link that lies quietly.
+    pageAsk = "";
+    const box = $<HTMLTextAreaElement>("textarea", composer);
+    if (box) box.value = "";
+    repaint(viewOf(state, "", null));
+    history.replaceState(null, "", location.pathname);
+    const refused = opened.refusals.length;
+    say(`${chosen.name}: ${state.blocks.length} ${state.blocks.length === 1 ? "block" : "blocks"} opened`
+      + `${refused ? `, ${refused} refused by name under Can't build` : ""}.`, "file");
+  };
+
+  filePicker?.addEventListener("change", () => {
+    const chosen = filePicker.files?.[0];
+    // Cleared here rather than after reading, so choosing the same file twice fires a change both
+    // times. Without it a second Open on the same path is silently nothing happening.
+    filePicker.value = "";
+    if (!chosen) return;
+    void openFile(chosen).catch((err: unknown) => {
+      console.error("[builder] the file could not be read", err);
+      say(`${chosen.name} could not be read. The page is as you left it.`, "refusal");
+    });
   });
 }
 

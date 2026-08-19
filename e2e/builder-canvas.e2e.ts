@@ -8,6 +8,7 @@
 // below reproduce that host exactly, by answering the request for /builder?ask=… with the response
 // for /builder, and then assert the page composes anyway.
 import { test, expect, type Page } from "@playwright/test";
+import { readFile } from "node:fs/promises";   // P4: reading a download back off disk
 
 const CANVAS = '[data-surface="builder-canvas"]';
 const CELL = `${CANVAS} .canvas__cell`;
@@ -59,7 +60,9 @@ test.describe("the canvas: a composition, server-rendered", () => {
     const library = page.locator(".builder-library");
     await expect(library).toHaveCount(1);
     await expect(library).toBeHidden();
-    await expect(page.locator("[data-block-template]")).toHaveCount(11);
+    // Twelve since 2026-08-19: the Can't build line joined the chrome entries with the import, so
+    // the browser can name a refusal instead of raising an empty head over one.
+    await expect(page.locator("[data-block-template]")).toHaveCount(12);
     // the form entry is an empty SHELL: its controls are separate entries the browser appends into
     // it, one clone per item the matcher returned
     await expect(page.locator('[data-block-template="block-form"] input, [data-block-template="block-form"] textarea'))
@@ -427,6 +430,12 @@ test.describe("the model chooses the verb", () => {
     await submitPrompt(page, "make the callout full");
     await expect(page.locator('[data-block="b3"] [data-op="span:full"]')).toHaveAttribute("data-on", "on");
 
+    // WAITED FOR rather than read straight, and the reason is a race this test hid until the suite
+    // grew: the callout above is at full span ALREADY, so the assertion before this one passes on
+    // arrival and waits for nothing. The read then landed before the model had answered, which is
+    // invisible on an idle machine and a red on a loaded one. What this test is about is the prompt,
+    // so the prompt is what it waits for.
+    await page.waitForFunction(() => sessionStorage.getItem("__builderPrompt") !== null);
     // A 0.5B copies far better than it counts, so the prompt names the blocks rather than leaving
     // "the second card" to be filtered and counted.
     const prompt = await page.evaluate(() => sessionStorage.getItem("__builderPrompt") ?? "");
@@ -509,5 +518,192 @@ test.describe("the rail collapses, and the canvas takes the width back", () => {
       await expect(page.locator(`[data-block="b2"] [data-op="${op}"]`)).toBeVisible();
     await page.locator('[data-block="b2"] [data-op="remove"]').click();
     await expect(page.locator(RAIL_ROW)).toHaveCount(2);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// P4: take it away, and bring it back
+// ---------------------------------------------------------------------------------------------
+// The round trip is the claim, so the round trip is what these drive: a page is built, the JSON is
+// downloaded, a FRESH page opens it, and the two canvases are compared as markup. A test that only
+// checked the download happened would not be testing the claim.
+//
+// Both sides are composed by the BROWSER on purpose. A server-rendered canvas and a browser-cloned
+// one carry the same contract and not the same whitespace, so comparing one of each would be a test
+// about line breaks. Building both the same way makes the comparison mean what it says.
+const TAKE = ".wb__take";
+const PICKER = ".wb__take-file";
+
+/** Press one of the three export buttons and hand back what came down. */
+async function exportFile(page: Page, which: string): Promise<{ name: string; body: string }> {
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.locator(`${TAKE} [data-export="${which}"]`).click(),
+  ]);
+  const path = await download.path();
+  return { name: download.suggestedFilename(), body: await readFile(path, "utf8") };
+}
+
+/** Build a page the way a visitor builds one: type it, press the button, let the browser compose. */
+async function build(page: Page, prompt: string): Promise<void> {
+  await page.goto("/builder");
+  await page.locator(COMPOSER).fill(prompt);
+  await page.locator(SUBMIT).click();
+  await expect(page.locator(CELL).first()).toBeVisible();
+}
+
+test.describe("taking the page away", () => {
+  test("there is nothing to export until there is something on the page", async ({ page }) => {
+    await page.goto("/builder");
+    await expect(page.locator(`${TAKE} [data-export="json"]`)).toBeHidden();
+    // Open is not in that group, because reading a composition in is exactly what you do to a page
+    // with nothing on it yet.
+    await expect(page.locator(`${TAKE} [data-import]`)).toBeVisible();
+
+    await page.locator(COMPOSER).fill("an intro and a card");
+    await page.locator(SUBMIT).click();
+    await expect(page.locator(`${TAKE} [data-export="json"]`)).toBeVisible();
+  });
+
+  test("the JSON is the composition, and it says it was made with GRAIN", async ({ page }) => {
+    await build(page, "an intro, two cards side by side, and a callout");
+    const file = await exportFile(page, "json");
+    expect(file.name).toBe("untitled.json");
+    const doc = JSON.parse(file.body);
+    expect(doc.madeWith).toBe("made with GRAIN by tjakoen");
+    expect(doc.blocks.map((b: { component: string }) => b.component))
+      .toEqual(["block-lede", "block-card", "block-callout"]);
+  });
+
+  // THE round trip. Export, open it on a page that has never seen the prompt, and compare the two
+  // canvases as markup. Byte-identical or it is not the same page.
+  test("a page exported and opened again is the same page, markup for markup", async ({ page }) => {
+    await build(page, "an intro, a card, a callout and a stat");
+    const before = await page.locator(CANVAS).innerHTML();
+    const file = await exportFile(page, "json");
+
+    await page.goto("/builder");
+    await expect(page.locator(CELL)).toHaveCount(0);
+    await page.locator(PICKER).setInputFiles({ name: file.name, mimeType: "application/json", buffer: Buffer.from(file.body) });
+
+    await expect(page.locator(CELL)).toHaveCount(4);
+    expect(await page.locator(CANVAS).innerHTML()).toBe(before);
+    // and the rail followed it, which is what makes the opened page operable rather than a picture
+    await expect(page.locator(RAIL_ROW)).toHaveCount(4);
+  });
+
+  test("a form survives the trip with every control it had", async ({ page }) => {
+    await build(page, "a contact form with a name, an email and what they want to talk about");
+    const file = await exportFile(page, "json");
+
+    await page.goto("/builder");
+    await page.locator(PICKER).setInputFiles({ name: file.name, mimeType: "application/json", buffer: Buffer.from(file.body) });
+    await expect(page.locator(`${CELL} form[data-surface="builder-form"]`)).toHaveCount(1);
+    await expect(page.locator('[data-surface="field:builder-name"]')).toHaveCount(1);
+    await expect(page.locator('[data-surface="field:builder-topic"]')).toHaveCount(1);
+  });
+
+  test("the rendered page is a whole document, carrying grain's stylesheet and the byline", async ({ page }) => {
+    await build(page, "an intro, a card and a stat");
+    const file = await exportFile(page, "page");
+    expect(file.name).toBe("untitled.html");
+    expect(file.body).toContain("<!DOCTYPE html>");
+    expect(file.body).toContain("/styles/variables.css");
+    expect(file.body).toContain("/components.css");
+    expect(file.body).toContain('data-made-with="GRAIN"');
+    expect(file.body).toContain('<footer class="made-with">');
+    expect(file.body).toContain("<!-- made with GRAIN by tjakoen -->");
+    // grain's own markup, and three cells that know how wide they are
+    expect(file.body).toContain('class="card__title"');
+    expect([...file.body.matchAll(/class="canvas__cell"/g)]).toHaveLength(3);
+  });
+
+  test("the tag source is the markup on its own, with the builder's fingerprints off it", async ({ page }) => {
+    await build(page, "an intro, a card and a callout");
+    const file = await exportFile(page, "tags");
+    expect(file.name).toBe("untitled.tags.html");
+    expect(file.body).not.toContain("<!DOCTYPE");
+    expect(file.body).toContain('<div class="canvas" data-made-with="GRAIN">');
+    expect(file.body).toContain('<blockquote class="callout">');
+    // An exported page ships no dispatcher, so an address on it would advertise an operation
+    // nothing can perform. Off they come, along with the directives that fill a cloned block.
+    for (const gone of ["data-surface", "data-block-id", "data-field=", "data-bind-"]) {
+      expect(file.body).not.toContain(gone);
+    }
+  });
+});
+
+test.describe("opening one back in, honestly", () => {
+  test("opening replaces the canvas rather than adding to it, and drops the prompt from the address", async ({ page }) => {
+    await build(page, "an intro, a card, a callout and a stat");
+    const file = await exportFile(page, "json");
+
+    await build(page, "a stat");
+    await expect(page.locator(CELL)).toHaveCount(1);
+    await page.locator(PICKER).setInputFiles({ name: file.name, mimeType: "application/json", buffer: Buffer.from(file.body) });
+
+    await expect(page.locator(CELL)).toHaveCount(4);
+    expect(new URL(page.url()).search).toBe("");
+    await expect(page.locator(COMPOSER)).toHaveValue("");
+  });
+
+  // The honest import: a hand-edited file degrades to the blocks that survive, each casualty named,
+  // rather than to a thrown error or a page with silent holes in it.
+  test("a hand-edited file loses the block this build cannot render, by name, and keeps the rest", async ({ page }) => {
+    const doc = {
+      version: 1,
+      blocks: [
+        { id: "b1", component: "block-lede", span: "full", data: { body: "An opening line." }, props: {} },
+        { id: "b2", component: "block-hologram", span: "full", data: {}, props: {} },
+        { id: "b3", component: "block-stat", span: "third", data: { value: "3", label: "blocks", sub: "two of them real" }, props: {} },
+      ],
+    };
+    await page.goto("/builder");
+    await page.locator(PICKER).setInputFiles({ name: "hand-edited.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(doc)) });
+
+    await expect(page.locator(CELL)).toHaveCount(2);
+    const refusal = page.locator('[data-surface="builder-refusals"] li');
+    await expect(refusal).toHaveCount(1);
+    await expect(refusal).toContainText("block-hologram");
+    await expect(page.locator(SAID)).toContainText("1 refused");
+  });
+
+  test("a file that is not JSON says so and changes nothing", async ({ page }) => {
+    await build(page, "an intro and a card");
+    const before = await page.locator(CANVAS).innerHTML();
+    await page.locator(PICKER).setInputFiles({ name: "notes.json", mimeType: "application/json", buffer: Buffer.from("this is not JSON at all") });
+
+    await expect(page.locator(SAID)).toContainText("is not JSON");
+    await expect(page.locator(SAID)).toHaveAttribute("data-read", "refusal");
+    expect(await page.locator(CANVAS).innerHTML()).toBe(before);
+  });
+
+  // Opening the wrong file is a mistake anyone makes. A builder that answers it by emptying the page
+  // you spent ten minutes on has turned a misclick into lost work.
+  test("a file with nothing renderable in it leaves the page exactly as it was", async ({ page }) => {
+    await build(page, "an intro and a card");
+    const before = await page.locator(CANVAS).innerHTML();
+    const doc = { version: 1, blocks: [{ id: "b1", component: "block-hologram", span: "full", data: {}, props: {} }] };
+    await page.locator(PICKER).setInputFiles({ name: "wrong.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(doc)) });
+
+    await expect(page.locator(SAID)).toContainText("The page is as you left it");
+    expect(await page.locator(CANVAS).innerHTML()).toBe(before);
+  });
+
+  test("an opened page is still a page you can operate", async ({ page }) => {
+    await build(page, "an intro, a card, a callout and a stat");
+    const file = await exportFile(page, "json");
+
+    await page.goto("/builder");
+    await page.locator(PICKER).setInputFiles({ name: file.name, mimeType: "application/json", buffer: Buffer.from(file.body) });
+    await expect(page.locator(CELL)).toHaveCount(4);
+
+    await page.locator('[data-block="b2"] [data-op="remove"]').click();
+    await expect(page.locator(CELL)).toHaveCount(3);
+    // and a prompt after an open adds to what was opened, with an id that cannot collide with it
+    await page.locator(COMPOSER).fill("a callout");
+    await page.locator(SUBMIT).click();
+    await expect(page.locator(CELL)).toHaveCount(4);
+    await expect(page.locator(`${RAIL_ROW}`).last()).toContainText("b5");
   });
 });
