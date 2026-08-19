@@ -293,10 +293,20 @@ can only mean the add it sounds like.
    dropping the added instruction did not recover it, zero of ten. Reverted whole; the comment on
    `blockMessage` carries the numbers so nobody fixes the same contradiction again. Do not retry it.
 
-   **What is open instead**, and it is the one direction with measured evidence behind it: normalize
-   a bare id UP to `block:<id>` when the answer is READ, rather than pushing the long form down into
-   the prompt. Five of fifteen answers were one prefix from a pass. It is a decision about how
-   forgiving the fence should be rather than a cleanup, so it is the owner's.
+   **The one direction with measured evidence behind it was TAKEN on 2026-08-19: normalize a bare id
+   UP to `block:<id>` when the answer is READ**, rather than pushing the long form down into the
+   prompt. Five of fifteen answers were one prefix from a pass. `resolveBareId` and `normalizeTarget`
+   in `block-reasoner.ts` resolve the short form before grain validates the move, and only when the
+   live manifest holds exactly one target at that address: ambiguous and absent both still refuse,
+   because a fence that picked one of two blocks for the model would be claiming an intent nothing
+   expressed. Read side only. The prompt side and `blockMessage` are untouched, and that door stays
+   shut for the reason the comment on it carries.
+
+   **Nobody has re-run the live 0.5B against the new fence, and that is the open part now.** The five
+   near misses would pass it, which is a deduction rather than a measurement, so the page copy says
+   exactly that: the 2026-08-15 counts stay as a dated record and the drawer states plainly that no
+   run has happened since. The next honest move is one `tools/desk-audit.ts` pass over the same five
+   scenarios, and until it happens nothing here or on the page may say the model can edit a page.
 
    **The other original fallback is DONE, 2026-08-15: the page says so.** The drawer promised that
    the honest demo is one where you watch it pick the wrong block, and a demo where it never lands
