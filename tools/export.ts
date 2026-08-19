@@ -78,6 +78,7 @@ const MODULE_ENTRIES = [
   "/modules/grain/ai/model-chat.js",
   "/modules/portfolio/ai/desk-door.js",
   "/modules/portfolio/ai/builder-canvas.js",
+  "/modules/portfolio/ai/preview-view.js",
 ];
 
 // Generated routes that a href/src crawler won't discover: the ⌘K palette's index, the desk's

@@ -21,11 +21,15 @@ const ask = (s: string) => `/builder?ask=${encodeURIComponent(s)}`;
 /** Serve /builder?ask=… the bytes of /builder, which is what GitHub Pages does with a frozen page:
  *  one file, served whatever the address carries. Nothing else about the page is touched. */
 async function pretendStaticHost(page: Page): Promise<void> {
-  await page.route("**/builder?*", async (route) => {
-    const url = new URL(route.request().url());
-    url.search = "";
-    route.fulfill({ response: await route.fetch({ url: url.toString() }) });
-  });
+  // Both builder addresses, because a frozen host strips the query from every one of them and a
+  // helper that covered only the workbench would let the preview quietly keep its server.
+  for (const pattern of ["**/builder?*", "**/builder/preview?*"]) {
+    await page.route(pattern, async (route) => {
+      const url = new URL(route.request().url());
+      url.search = "";
+      route.fulfill({ response: await route.fetch({ url: url.toString() }) });
+    });
+  }
 }
 
 test.describe("the canvas: a composition, server-rendered", () => {
@@ -769,5 +773,95 @@ test.describe("undo", () => {
     await page.locator(`${RAIL_ROW}[data-block="b1"] [data-op="span:full"]`).click();
     await page.locator(`${RAIL_ROW}[data-block="b1"] [data-op="move:up"]`).click();
     await expect(page.locator("[data-undo]")).toBeHidden();
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// P5: the preview route
+// ---------------------------------------------------------------------------------------------
+// A REAL ROUTE rather than a framed sandbox, which was the owner's call on 2026-08-19 out of the two
+// the sandbox plan left open. So these tests check the three things a route buys that a frame does
+// not: it is an address you can open cold, it carries the prompt, and the export freezes it.
+test.describe("the preview route", () => {
+  const PREVIEW_STAGE = '[data-surface="builder-preview-canvas"]';
+  const PREVIEW_MARKUP = '[data-surface="builder-preview-markup"]';
+
+  test("opening the address cold composes from the prompt it carries", async ({ page }) => {
+    await page.goto(`/builder/preview?ask=${encodeURIComponent("An intro, a card and a callout")}`);
+    await expect(page.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(3);
+    await expect(page.locator(".preview-empty")).toBeHidden();
+  });
+
+  test("the workbench hands over the canvas, so an edit the address cannot carry survives", async ({ page, context }) => {
+    await page.goto(ask("An intro, a card and a callout"));
+    await page.locator(`${RAIL_ROW}[data-block="b2"] [data-op="remove"]`).click();
+    await expect(page.locator(CELL)).toHaveCount(2);
+
+    const [preview] = await Promise.all([context.waitForEvent("page"), page.locator("[data-preview]").click()]);
+    await preview.waitForLoadState("networkidle");
+
+    // Two, not three. Three would mean the handover was lost and the preview fell back to the
+    // prompt in the address, which is the bug that sent this from session storage to local: a tab
+    // opened with noopener does not inherit its opener's session storage.
+    await expect(preview.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(2);
+
+    // Read once. A handover left behind would show up as somebody's stale page later.
+    expect(await preview.evaluate(() => localStorage.getItem("portfolio.builder.preview"))).toBeNull();
+  });
+
+  test("the switch shows the markup without fetching anything", async ({ page }) => {
+    await page.goto(`/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
+    await expect(page.locator(PREVIEW_MARKUP)).toBeHidden();
+
+    // Both views ship in the document, so this must not put a request on the wire.
+    let requests = 0;
+    page.on("request", () => { requests += 1; });
+    await page.locator('[data-view="markup"]').click();
+
+    await expect(page.locator(PREVIEW_MARKUP)).toBeVisible();
+    await expect(page.locator(PREVIEW_STAGE)).toBeHidden();
+    expect(requests).toBe(0);
+    expect(await page.locator(PREVIEW_MARKUP).innerText()).toContain("canvas__cell");
+  });
+
+  test("the markup pane is there with the script off", async ({ browser }) => {
+    // The toggle needs a script. Having something to toggle TO does not, so the source ships filled.
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto(`/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
+    expect(await page.locator(PREVIEW_MARKUP).innerHTML()).toContain("canvas__cell");
+    await ctx.close();
+  });
+
+  // The sandbox plan's fifth piece, and it is a default rather than a mechanism: the pane is already
+  // sitewide. Asserted on the SSR state rather than after a click, because the point of doing it on
+  // the server was that the chat pane never flashes first.
+  test("the catalog pane is the one that is open", async ({ page }) => {
+    await page.goto(`/builder/preview?ask=${encodeURIComponent("a card")}`);
+    await expect(page.locator(".assistant")).toHaveAttribute("data-mode", "catalog");
+    await expect(page.locator('[data-shell-mode="catalog"]')).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator('.assistant__pane[data-pane="catalog"]')).toBeVisible();
+  });
+
+  test("an empty preview says so rather than showing a blank stage", async ({ page }) => {
+    await page.goto("/builder/preview");
+    await expect(page.locator(".preview-empty")).toBeVisible();
+    await expect(page.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(0);
+  });
+
+  // THE KNOWN LIMIT, pinned so it stays known. On a static host this page is a frozen file with no
+  // block templates on it, so a prompt in a shared address composes nothing here even though the
+  // same prompt still composes on the workbench, which P3 gave a hidden library for. Measured
+  // against the real export before it was written down, and said on the page in those words.
+  //
+  // Asserted rather than left implicit because the failure is invisible from the live server, where
+  // every one of these tests passes and the link works. If somebody later carries the library onto
+  // this page, this test goes red, and that is the correct alarm rather than a surprise.
+  test("on a static host a shared link arrives empty, and the page says so", async ({ page }) => {
+    await pretendStaticHost(page);
+    await page.goto(`/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
+    await expect(page.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(0);
+    await expect(page.locator(".preview-empty")).toBeVisible();
+    await expect(page.locator(".preview-empty")).toContainText("frozen file");
   });
 });

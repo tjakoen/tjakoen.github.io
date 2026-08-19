@@ -29,7 +29,8 @@ import {
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
 import {
-  bylineFrom, exportJson, exportPage, exportTags,
+  bylineFrom, exportJson, exportPage, exportTags, PREVIEW_HANDOVER_KEY,
+  type PreviewHandover,
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { looksLikeAnEdit } from "./block-command.ts";
@@ -618,6 +619,27 @@ function boot(): void {
     const button = (e.target as Element | null)?.closest("button");
     if (!button) return;
     if (button.hasAttribute("data-import")) { filePicker?.click(); return; }
+
+    // P5. Preview hands the CANVAS over rather than the composition, because the preview route
+    // would otherwise need the hidden template library and a second copy of the paint loop to
+    // render one. The cells are already rendered here and are already read for the Tags export, so
+    // the handover is the markup, and the preview shows what was on the canvas because it is what
+    // was on the canvas.
+    //
+    // The address still carries the prompt, so the new tab is a page in its own right and works if
+    // the storage write fails or the visitor shares the link. What it cannot carry is an edit made
+    // after composing, which is exactly the gap the handover fills and exactly what the preview
+    // page says out loud.
+    if (button.hasAttribute("data-preview")) {
+      const handover: PreviewHandover = { cells: [...canvas.children].map((cell) => cell.outerHTML), at: Date.now() };
+      // Local rather than session storage, and builder-export.ts carries the measurement behind that:
+      // a tab opened with noopener does not inherit session storage, so the preview came up showing
+      // the prompt's page where the canvas held an edited one. The reader deletes this before it
+      // renders and refuses it once it is stale.
+      try { localStorage.setItem(PREVIEW_HANDOVER_KEY, JSON.stringify(handover)); } catch { /* storage denied: the ask in the address still composes one */ }
+      window.open(`/builder/preview?ask=${encodeURIComponent(pageAsk)}`, "_blank", "noopener");
+      return;
+    }
 
     const which = button.getAttribute("data-export");
     if (!which) return;

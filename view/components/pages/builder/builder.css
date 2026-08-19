@@ -244,3 +244,42 @@
   [data-screen="builder"] .wb__rows { max-height: 18rem; }
   [data-screen="builder"] .wb__stage { max-height: none; }
 }
+
+/* ---- /builder/preview (P5) --------------------------------------------------------------------
+   The composed page on its own. Almost nothing here is new styling: the blocks bring their own, the
+   pane is the same mk-pane every workbench section uses, and the point of the screen is that what
+   you see is the page rather than a frame around it. So this file only says the three things the
+   preview needs and the workbench does not. */
+
+/* The stage is the canvas grid with the workbench's own six-column layout, because a preview that
+   laid the blocks out differently would be previewing a page that does not exist. Kept as its own
+   selector rather than reusing .canvas: the canvas is a surface a verb can address and this is not,
+   and giving them one class would advertise an operation nothing here can perform. */
+[data-screen="builder-preview"] .preview-stage {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-4);
+}
+[data-screen="builder-preview"] .preview-stage > * { grid-column: span 6; }
+[data-screen="builder-preview"] .preview-stage > [data-span="half"] { grid-column: span 3; }
+[data-screen="builder-preview"] .preview-stage > [data-span="third"] { grid-column: span 2; }
+[data-screen="builder-preview"] .preview-stage[hidden] { display: none; }
+
+/* The markup pane. Monospace, wrapped rather than scrolling sideways, because reading a long tag is
+   what this pane is for and a horizontal scrollbar is where that stops happening. */
+[data-screen="builder-preview"] .preview-markup {
+  font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word; margin: 0;
+  color: var(--ink-muted); background: var(--color-surface);
+  padding: var(--space-4); border-radius: var(--radius-sm);
+}
+
+/* The switch. Which one is ON is weight, not a frame and not a hue, the same rule the rail's chips
+   follow: aria-pressed is the state, so the attribute a screen reader reads is the attribute the
+   stylesheet reads, and there is no class shadowing it that could disagree. */
+[data-screen="builder-preview"] .preview-switch { display: inline-flex; gap: var(--space-3); }
+[data-screen="builder-preview"] .preview-switch .wb-chip { opacity: 0.55; }
+[data-screen="builder-preview"] .preview-switch .wb-chip[aria-pressed="true"] {
+  opacity: 1; color: var(--ink); font-weight: var(--weight-medium);
+}
+[data-screen="builder-preview"] .preview-empty[hidden],
+[data-screen="builder-preview"] .preview-empty[data-empty="false"] { display: none; }
+[data-screen="builder-preview"] .preview-note { font-size: var(--text-xs); margin-top: var(--space-4); }

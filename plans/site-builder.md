@@ -187,10 +187,30 @@ Each is a session's worth and each ends with something you can look at.
       than grain's, so the page export writes it inline and the tag export names it in a comment; and
       the page export LINKS this site's stylesheets rather than copying them, so it needs the network
       to look right. Both are said in the drawer rather than discovered.
-- [ ] **P5. The preview tab and the catalog sidebar**, the sandbox plan's pieces 4 and 5, unchanged
-      in intent. The sidebar already has a catalog pane
-      ([`portfolio-frame.html`](../view/components/organisms/portfolio-frame/portfolio-frame.html)),
-      so that piece is close to a default flip.
+- [x] **P5. The preview tab and the catalog sidebar** (2026-08-19), the sandbox plan's pieces 4 and
+      5. `/builder/preview` renders the composition with the workbench gone, with a rendered-versus-
+      markup switch; the catalog pane opens by default there. The sidebar piece was the default flip
+      the plan expected, done on the server (`src/ai/builder-preview.ts`) rather than by clicking the
+      tab from a script, so the chat pane never flashes first.
+
+      **A real route, not a framed sandbox.** That was the owner's call on 2026-08-19, out of the two
+      the sandbox plan left open. It buys three things a frame does not: a preview becomes an
+      ordinary open tab, the address carries the prompt, and the export freezes it.
+
+      **The handover is the canvas, in local storage.** The address carries the prompt that composed
+      a page and cannot carry a page you then edited, so the Preview button hands the rendered cells
+      over. Local rather than session storage, and that was measured: a tab opened with `noopener`
+      does not inherit its opener's session storage, so the preview came up showing three blocks
+      where the canvas held two. The reader deletes the key before rendering and refuses one older
+      than a minute.
+
+      **The known limit, measured against the real export rather than assumed.** P3 gave the
+      workbench a hidden template library so a frozen page composes from a prompt in the address with
+      no server. This page has no library, so on the published site a shared preview link arrives
+      empty. The Preview button works there, because the handover is storage rather than a round
+      trip. So the supported path is whole on both hosts and only the shared link is not. It is said
+      on the page. Closing it means carrying the library and the paint loop onto the preview, which
+      is a bigger piece than P5 asked for and belongs in its own phase if it is ever wanted.
 
 ## The signature, and how to keep it across GRAIN
 
