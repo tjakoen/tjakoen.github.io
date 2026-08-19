@@ -29,7 +29,7 @@ title: A fixture note
 
 Some prose above the figure.
 
-\`\`\`mermaid
+\`\`\`mermaid label="A goes to B"
 ${FENCE_SOURCE}
 \`\`\`
 
@@ -100,15 +100,15 @@ test("every uncached fence is reported, and the same fence twice is reported onc
 title: Two fences
 ---
 
-\`\`\`mermaid
+\`\`\`mermaid label="A goes to B"
 ${FENCE_SOURCE}
 \`\`\`
 
-\`\`\`mermaid
+\`\`\`mermaid label="A goes to B"
 ${FENCE_SOURCE}
 \`\`\`
 
-\`\`\`mermaid
+\`\`\`mermaid label="C goes to D"
 flowchart LR
   C --> D
 \`\`\`
@@ -143,6 +143,32 @@ test("the gate never writes to the cache it checks", async () => {
     await run();
     await run();
     expect(await readdir(cacheDir)).toEqual([]);              // a probe render is null, and null is never stored
+  });
+});
+
+// ---- the other negative case: a fence MILL itself refuses -------------------------------------
+// Since mill 0.4.0 an unlabelled mermaid fence never reaches the renderer at all. MILL warns and
+// degrades it to a code block, so no diagram is produced and there is nothing for a cache to hold.
+// That is why the gate stays quiet here, and the quiet is safe rather than blind: the page ships a
+// code block, which is honest, instead of raw source pretending to be a figure.
+//
+// This case is pinned because the two versions behave in OPPOSITE directions and the difference is
+// invisible from the gate's own output. Under the pinned 0.3.0 a bare fence failed the gate and a
+// LABELLED one was silently skipped, because that parser stopped treating a line as a fence the
+// moment it carried any info string. Anyone reading a quiet gate has to know which of those two
+// worlds they are in.
+test("an unlabelled fence is refused by MILL, so it never reaches the gate", async () => {
+  const unlabelled = `---
+title: No label
+---
+
+\`\`\`mermaid
+${FENCE_SOURCE}
+\`\`\`
+`;
+  await withFixture({ "a.md": unlabelled }, async ({ run, cacheDir }) => {
+    expect(await run()).toEqual([]);                          // nothing to cache, so nothing to fail
+    expect(await readdir(cacheDir)).toEqual([]);              // and nothing was written either
   });
 });
 
