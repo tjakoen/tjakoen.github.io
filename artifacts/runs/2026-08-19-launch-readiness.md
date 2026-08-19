@@ -18,6 +18,13 @@ scope:
   - artifacts/posts/
   - grain/packages/mill/
   - greenroom (reconciliation, separate session)
+scopeGrowth: six paths outside the list above, each one reached by following a defect the declared
+  work uncovered rather than by drifting. standards/FIGURES.md and standards/VOICE.md and
+  docs/CONTENT-BACKLOG.md carried the false claim that MILL's renderer does not exist, found while
+  investigating whether to wire it. package.json and bun.lock took mill 0.4.0, which the diagram
+  gate needed to see a labelled fence at all. tools/diagram-cache-gate.test.ts had four fixtures
+  that only passed against the old parser. e2e/visual.e2e.ts-snapshots holds three baselines that
+  had been red since before this session and were diagnosed and re-recorded here.
 touched:
   - view/pages/bread/index.html
   - README.md
@@ -27,8 +34,20 @@ touched:
   - src/ai/builder-canvas.ts
   - docs/grain/AI-INTERFACE.md
   - tools/screenshots.ts
-  - tools/diagram-cache-gate.ts
+  - tools/diagram-cache-gate.test.ts
+  - standards/FIGURES.md
+  - standards/VOICE.md
+  - docs/CONTENT-BACKLOG.md
+  - package.json
+  - bun.lock
+  - e2e/visual.e2e.ts-snapshots/{welcome,resume,catalog}-darwin.png
   - artifacts/posts/2026-08-19-appbuildersph-bread.md
+  - artifacts/runs/2026-08-19-launch-readiness.md
+unpushed: 0 commits. Everything this run produced is on origin/main, and all six estate repos read
+  ahead=0 and clean at the close.
+verifiedBy: nobody yet. This is the author's own account. The diagram gate is the one claim in it
+  that was checked by an independent method rather than by its own tests, probed by hand in both
+  directions against real served content.
 plans: none opened. plans/site-builder.md P4 was executed by a child session.
 gates:
   - bun run check | clean

@@ -1,13 +1,13 @@
 ---
 title: FIGURES.md — figures & visualizations
-summary: The standard for every diagram and chart - HTML when a figure has state, two tokenized inline-SVG scaffolds when it does not, one palette each, no mermaid on the published site.
+summary: The standard for every diagram and chart - HTML when a figure has state, two tokenized inline-SVG scaffolds when it does not, one palette each, and a generated diagram carries the same accessible name a hand-drawn one does.
 when: >
   Read this BEFORE drawing the first shape of any figure that will ship: a chart, a graph, a
   timeline, a ratio, an architecture diagram, a flow, a loop, a pipeline. It gives the two inline-SVG
-  scaffolds to copy, the token palette, the type scale, and the rule that mermaid never reaches a
-  published page. Don't skip because it is "just a quick diagram" or because mermaid is faster to
-  type - a freehanded figure will not match the family, and mermaid on a published page has to be
-  hand-converted later by someone who did not draw it.
+  scaffolds to copy, the token palette, the type scale, and the rule that no figure publishes
+  without an accessible name. Don't skip because it is "just a quick diagram" or because a mermaid
+  fence is faster to type - a freehanded figure will not match the family, and a mermaid fence
+  without a label is refused and degrades to a code block rather than rendering.
 ---
 
 # Figures & visualizations: the standard
