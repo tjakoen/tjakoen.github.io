@@ -26,6 +26,8 @@ import { buildAiRoutes } from "./routes/ai-routes.ts";
 // /builder demo: the ONE pure seam that turns a raw `?ask=` query param into everything the page
 // renders (matchSpec's own result + the CSS state flags) — see builder-page.ts's own banner.
 import { buildBuilderView } from "./ai/builder-page.ts";
+// P5: the preview route's two string jobs, the catalog default and the markup pane. See its banner.
+import { openCatalogPane, markupPane } from "./ai/builder-preview.ts";
 // The composition, rendered: a loop over the blocks calling the one renderer, because
 // `render(name, data, props)` takes the component name as a runtime string.
 // plus the hidden template library the browser clones from, which is what lets /builder compose on
@@ -606,6 +608,31 @@ ${PAGE_ASSETS}</body>
         // is what keeps one wording across the fleet; on a static host the frozen file carries it
         // for the same reason it carries the template library.
         .replace("<!--byline-->", () => madeWith());
+      return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+    },
+    // /builder/preview — P5. The composed page on its own, with the workbench gone.
+    //
+    // The SAME canvas render as /builder above, from the same `?ask=`, so the preview cannot drift
+    // from the thing it previews. It is a real route rather than a frame, which was the owner's call
+    // and which is what makes it an ordinary open tab, a shareable address and an exported page.
+    //
+    // What the address can and cannot carry is stated on the page rather than discovered: a prompt
+    // fits in a query string and a whole edited composition does not, so opening this link directly
+    // rebuilds from the prompt, and a page you edited after composing reaches the preview through
+    // the workbench's own button, which hands the composition over in session storage.
+    "/builder/preview": async (req: Request) => {
+      const ask = new URL(req.url).searchParams.get("ask") ?? "";
+      const view = buildBuilderView(ask);
+      const raw = await Bun.file(join(config.pagesDir, "builder", "preview.html")).text();
+      const canvas = await renderCanvas(view.blocks);
+      let html = await renderBuilderPage(raw, { isEmpty: view.blocks.length === 0 });
+      html = html
+        .replace("<!--canvas-->", () => canvas)
+        // The markup pane ships FILLED rather than written by the browser, so the source is there to
+        // read with JavaScript off. The toggle needs a script; having something to toggle to does not.
+        .replace('data-surface="builder-preview-markup" hidden></pre>',
+                 () => `data-surface="builder-preview-markup" hidden>${markupPane(canvas)}</pre>`);
+      html = openCatalogPane(html);
       return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     },
     // /kickstart — the short, shareable twin of /standards/kickstart (the new-project prompt).

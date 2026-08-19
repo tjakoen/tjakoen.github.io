@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preview · the builder</title>
+  <meta name="description" content="A page composed on /builder, on its own, with nothing of the workbench around it. Toggle between the rendered page and the markup behind it.">
+</head>
+<!-- THE PREVIEW IS A REAL ROUTE, not a panel and not a frame, and that was the owner's call on
+     2026-08-19 out of the two the sandbox plan left open. It costs more than a frame and buys three
+     things a frame does not: the tab strip is a projection of where you have been, so a preview
+     becomes an ordinary open tab; the address carries the prompt; and the static export freezes it
+     like any other page.
+
+     WHAT IT DOES NOT CLEAR, and /builder does. P3 gave the workbench a hidden template library so a
+     frozen page could compose from a prompt in the address with no server. This page has no library,
+     so on the published site a shared preview link arrives empty. Measured against the real export,
+     not assumed. The Preview button works there, because the handover is storage rather than a
+     round trip, so the supported path is whole on both hosts and only the shared link is not. That
+     is a real limit and it is written on the page rather than left for a visitor to find. Closing it
+     means carrying the library and the paint loop here, which is a bigger piece than P5 asked for.
+
+     The catalog pane opens by DEFAULT here, which is the sandbox plan's fifth piece and a default
+     rather than a mechanism: the pane is already sitewide. A preview is the one screen where you are
+     looking at composed GRAIN components and nothing else, so the pane earns its width here in a way
+     it does not on a page you are reading. -->
+<body data-screen="builder-preview" data-aside="catalog" class="app-window-backdrop">
+  <div class="app-shell app-window" data-section="builder" data-rail-collapsed="true" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main" id="main-content">
+      <div class="board">
+
+        <section class="mk-pane preview-pane">
+          <div class="mk-pane__head">
+            <h1 class="mk-pane__title">Preview</h1>
+            <!-- Rendered and Markup, and the switch is a real pair of buttons rather than a link to
+                 a second route. Both views are the same composition and the markup is already in the
+                 document, so a round trip would fetch a page it is holding. With JavaScript off the
+                 rendered view is what you get, which is the honest default: it is the page. -->
+            <span class="preview-switch" role="group" aria-label="What to show">
+              <button class="wb-chip" type="button" data-view="rendered" aria-pressed="true">Rendered</button>
+              <button class="wb-chip" type="button" data-view="markup" aria-pressed="false">Markup</button>
+            </span>
+          </div>
+
+          <div class="mk-pane__body">
+            <p class="preview-empty" data-bind-data-empty="isEmpty">Nothing to preview. Compose a page
+              on <a href="/builder">the builder</a> and press Preview, which carries whatever is on
+              the canvas over to here. An address with a prompt in it composes one too, but only
+              where the app server is running: on the published site this page is a frozen file, so
+              a link like that arrives empty and the button is the way through.</p>
+
+            <!-- The composed page, rendered by the same loop /builder uses (ai/canvas.ts into this
+                 marker), so the preview cannot drift from the thing it is previewing. -->
+            <div class="preview-stage" data-surface="builder-preview-canvas"><!--canvas--></div>
+
+            <!-- The markup behind it. Written by builder-preview.ts from the same tag export the
+                 workbench hands you, so what you read here is what you would get in the file rather
+                 than a prettied version of it. -->
+            <pre class="preview-markup" data-surface="builder-preview-markup" hidden></pre>
+          </div>
+        </section>
+
+        <p class="preview-note muted">This is the page on its own. <a href="/builder" data-preview-back>Back
+          to the workbench</a> to keep editing, or take it away as a file from there. Two things this
+          address cannot do, and both are stated rather than discovered: it carries the prompt that
+          composed a page and not a page you edited afterwards, which is what the Preview button
+          hands over instead; and on the published site it is a frozen file, so a prompt in a shared
+          link composes nothing here even though the same prompt still composes on the workbench,
+          which carries the block templates and this page does not.</p>
+
+      </div>
+    </main>
+  </div>
+  <!-- Listed in tools/export.ts MODULE_ENTRIES as well as here: the export crawler seeds its module
+       graph from that list and never from a page's own script tag, so a module named only here 404s
+       on the frozen page. -->
+  <script type="module" src="/modules/portfolio/ai/preview-view.js"></script>
+</body>
+</html>

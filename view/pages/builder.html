@@ -86,6 +86,13 @@
                 </span>
                 <button class="wb-chip" type="button" data-import
                         title="Read a composition JSON back in. It replaces what is on the canvas.">Open</button>
+                <!-- P5. Preview is not an export, so it sits outside the group that needs blocks to
+                     mean anything, next to Open for the same reason: it is a way in and out of the
+                     page rather than a file off it. It opens a real route in a new tab and hands the
+                     canvas over in session storage, because the address can carry the prompt that
+                     composed a page and cannot carry a page you then edited. -->
+                <button class="wb-chip" type="button" data-preview
+                        title="Open this page on its own, in a new tab, with the workbench gone.">Preview</button>
                 <input class="wb__take-file" type="file" accept="application/json,.json" hidden
                        aria-label="Open a composition JSON">
               </span>

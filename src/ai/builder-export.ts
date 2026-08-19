@@ -72,6 +72,40 @@ export interface ExportFile {
  *  composition should have a name of its own is an open question the design plan is holding. */
 export const EXPORT_STEM = "untitled";
 
+/** The storage key the workbench writes a canvas to and /builder/preview reads it back from.
+ *
+ *  It lives in this module rather than in either side of the handover, because both sides import it
+ *  and a constant declared in one of them would make the other depend on a module it has no other
+ *  reason to load. This one is pure: importing it starts nothing. The value is a preview rather than
+ *  an export, but it is the same subject, handing a composition out of the page it was built on.
+ *
+ *  LOCAL storage, and that was measured rather than chosen. Session storage is the better fit on
+ *  paper, since a handover is one visit's working state, and it does not work here: the preview
+ *  opens in a new tab with `noopener`, and a context opened that way does not inherit its opener's
+ *  session storage. Driven in a real browser, the preview came up with three blocks where the canvas
+ *  held two. Dropping `noopener` would fix it by giving the new tab a handle back on this one, which
+ *  is a worse trade for a page whose whole subject is what a page is allowed to do.
+ *
+ *  So it is local storage used as a message: the reader deletes it before it renders anything, and
+ *  it carries a timestamp the reader checks, so a key left behind by a tab that never opened cannot
+ *  come back as somebody's page an hour later. */
+export const PREVIEW_HANDOVER_KEY = "portfolio.builder.preview";
+
+/** How long a handover is worth reading, in milliseconds. A new tab opens in well under a second;
+ *  a minute is generous enough to survive a slow first paint and short enough that nothing stale
+ *  ever renders. */
+export const PREVIEW_HANDOVER_TTL = 60_000;
+
+/** What the workbench writes and the preview reads. Versioned by shape rather than by a number: the
+ *  reader checks every field, so a value this build did not write fails the check and the preview
+ *  falls back to composing from the address. */
+export interface PreviewHandover {
+  /** Each canvas cell's outer markup, in order. */
+  cells: string[];
+  /** When it was written, so the reader can refuse a stale one. */
+  at: number;
+}
+
 // ---------------------------------------------------------------------------------------------
 // Cleaning
 // ---------------------------------------------------------------------------------------------
