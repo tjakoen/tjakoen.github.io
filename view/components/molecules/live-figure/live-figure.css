@@ -193,3 +193,276 @@
 .live-fig .matrix__same { font-size: calc(var(--u) * 2); }
 .live-fig .sprint__count { font-size: calc(var(--u) * 2.8); }
 .live-fig .trap__lesson { font-size: calc(var(--u) * 2); }
+
+/* --- the whiplash dial (notes/build-the-floor, talks/build-the-floor) ---------
+   Generation scales, review capacity does not. The dots past the line are the queue, and the
+   figure only turns accent once that queue exists, so the colour is the finding rather than
+   decoration. */
+.whip { display: grid; gap: .7rem; }
+.whip__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.whip__grid {
+  display: flex; flex-wrap: wrap; gap: 5px;
+  padding: .8rem; border: 1px solid var(--color-line); border-radius: 6px;
+}
+.whip__dot {
+  width: 12px; height: 12px; border-radius: 2px;
+  border: 1px solid var(--color-line); background: transparent; opacity: .35;
+  transition: background-color .12s linear, border-color .12s linear, opacity .12s linear;
+}
+/* produced and inside capacity: solid ink, the work that actually got looked at */
+.whip__dot[data-on] { background: var(--color-fg); border-color: var(--color-fg); opacity: 1; }
+/* produced and past capacity: the queue. Hollow at full strength, because in this design language
+   status is WEIGHT and not hue (--color-accent resolves to ink here, so colour would say nothing).
+   Filled means somebody looked at it. Hollow means it exists and nobody has. */
+.whip__dot[data-wait] {
+  background: transparent; border-color: var(--color-fg); border-width: 2px; opacity: 1;
+}
+/* the boundary, in the flow rather than floating over it */
+.whip__mark {
+  flex: 0 0 100%; display: flex; align-items: center; gap: .5rem;
+  margin: .25rem 0; font-size: .72rem; color: var(--color-muted);
+}
+.whip__mark::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--color-line); }
+.whip__mark b { font-weight: 400; }
+.whip__keys { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 0; font-size: .88rem; color: var(--color-muted); }
+.whip__keys b { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.whip__wait { opacity: .45; transition: opacity .15s linear; }
+.whip[data-over] .whip__wait { opacity: 1; }
+.whip[data-over] .whip__wait b { text-decoration: underline; text-underline-offset: 3px; }
+.whip__ctl { display: flex; align-items: center; gap: .7rem; }
+.whip__lab { font-size: .85rem; color: var(--color-muted); }
+.whip__dial { flex: 1 1 auto; max-width: 320px; accent-color: var(--color-fg); }
+.whip__out { font-size: .85rem; color: var(--color-fg); font-variant-numeric: tabular-nums; min-width: 3ch; }
+.whip__punch { margin: 0; opacity: .35; transition: opacity .2s linear; }
+.whip[data-over] .whip__punch { opacity: 1; }
+
+/* --- build order -------------------------------------------------------------
+   Four lanes of supervision and one human lane. In coder-first the four sit idle and every dot
+   lands on the person, which is the point being made by absence rather than by a label. */
+.border { display: grid; gap: .7rem; }
+.border__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.border__lanes { display: grid; gap: .35rem; }
+.border__lane {
+  display: grid; grid-template-columns: 8.5rem 1fr auto; align-items: center; gap: .7rem;
+  padding: .38rem .6rem; border: 1px solid var(--color-line); border-radius: 6px;
+  transition: opacity .15s linear;
+}
+.border__lane[data-idle] { opacity: .38; }
+.border__lane--human { border-color: var(--color-fg); }
+.border__name { font-size: .88rem; color: var(--color-fg); }
+.border__why { font-size: .74rem; color: var(--color-muted); text-align: right; }
+.border__dots { display: flex; flex-wrap: wrap; gap: 4px; min-height: 12px; }
+.border__dot { width: 11px; height: 11px; border-radius: 2px; background: var(--color-fg); }
+.border__dot[data-kind="caught"] { background: transparent; border: 2px solid var(--color-fg); }
+.border__keys { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 0; font-size: .88rem; color: var(--color-muted); }
+.border__keys b { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.border__caught { opacity: .4; transition: opacity .15s linear; }
+.border[data-floor] .border__caught { opacity: 1; }
+.border[data-floor] .border__caught b { text-decoration: underline; text-underline-offset: 3px; }
+.border__ctl { display: flex; gap: .5rem; }
+.border__ctl .btn[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+.border__punch { margin: 0; opacity: .35; transition: opacity .2s linear; }
+.border[data-floor] .border__punch { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .whip__dot, .whip__wait, .whip__punch, .border__lane, .border__caught, .border__punch { transition: none; }
+}
+
+/* --- instruction versus hook -------------------------------------------------
+   Ten sessions against one rule. A kept run is a filled mark; a broken one is hollow, which is the
+   same weight-not-hue encoding the whiplash grid uses. Under a hook the broken ones are struck
+   through instead of removed, because the point is that the attempt still happened and the write
+   is what did not land. */
+.rule { display: grid; gap: .7rem; }
+.rule__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.rule__runs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: .9rem; border: 1px solid var(--color-line); border-radius: 6px;
+}
+.rule__run {
+  position: relative; width: 34px; height: 34px; border-radius: 4px;
+  border: 1px solid var(--color-line); display: grid; place-items: center;
+}
+.rule__mark { width: 14px; height: 14px; border-radius: 2px; background: var(--color-fg); }
+/* honoured the rule under an instruction, or blocked before it could break it */
+.rule__run[data-broke] .rule__mark { background: transparent; border: 2px solid var(--color-fg); }
+.rule__run[data-broke] { border-style: dashed; }
+.rule__run[data-blocked]::after {
+  content: ""; position: absolute; inset: 6px auto 6px 50%;
+  width: 2px; background: var(--color-fg); transform: rotate(45deg);
+}
+.rule__run[data-blocked] .rule__mark { opacity: .25; }
+.rule__keys { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 0; font-size: .88rem; color: var(--color-muted); }
+.rule__keys b { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.rule__broke b { text-decoration: underline; text-underline-offset: 3px; }
+.rule[data-hooked] .rule__broke { opacity: .4; }
+.rule[data-hooked] .rule__broke b { text-decoration: none; }
+.rule__ctl { display: flex; gap: .5rem; }
+.rule__ctl .btn[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+.rule__punch { margin: 0; opacity: .35; transition: opacity .2s linear; }
+.rule[data-hooked] .rule__punch { opacity: 1; }
+
+/* --- a figure slide gives the figure the stage --------------------------------
+   Measured 2026-08-18: figures on this deck were occupying 7 to 17 percent of the slide area,
+   because they inherited the prose column and because an earlier fix for a heading collision
+   shrank the picture instead of changing the layout. On a figure slide the heading is a caption
+   and the figure is the content, so it gets the width and the type scales with it. */
+.presentation__slide[data-figure] {
+  /* The organism sizes every slide as a one-column grid at a reading measure. That is right for
+     prose and wrong for a picture, and it is the single thing that was making these figures small.
+     Overriding the ROWS axis (the first attempt) did nothing, because the measure lives on the
+     columns. */
+  grid-template-columns: 1fr;
+  align-content: start;
+}
+.presentation__slide[data-figure] .slide-eyebrow { margin-bottom: 0; }
+.presentation__slide[data-figure] .slide-head {
+  font-size: clamp(1.3rem, 2.4vw, 2.1rem); line-height: 1.15; margin: 0 0 .6rem;
+}
+.presentation__slide[data-figure] .live-fig,
+.presentation__slide[data-figure] > svg[role="img"] {
+  width: 100%; max-width: none; margin: 0; align-self: stretch;
+}
+.presentation__slide[data-figure] svg[role="img"] { width: 100%; max-width: none; max-height: 62vh; }
+
+/* the widgets scale with the stage rather than sitting at reading size */
+.presentation__slide[data-figure] .whip,
+.presentation__slide[data-figure] .border,
+.presentation__slide[data-figure] .rule { gap: 1.1rem; font-size: 1.15rem; }
+.presentation__slide[data-figure] .whip__title,
+.presentation__slide[data-figure] .border__title,
+.presentation__slide[data-figure] .rule__title { font-size: 1.05rem; }
+.presentation__slide[data-figure] .whip__grid { gap: 10px; padding: 1.4rem; }
+.presentation__slide[data-figure] .whip__dot { width: 26px; height: 26px; border-radius: 4px; }
+.presentation__slide[data-figure] .whip__mark { font-size: .95rem; margin: .5rem 0; }
+.presentation__slide[data-figure] .whip__keys,
+.presentation__slide[data-figure] .border__keys,
+.presentation__slide[data-figure] .rule__keys { font-size: 1.15rem; gap: 2rem; }
+.presentation__slide[data-figure] .whip__dial { max-width: 480px; }
+.presentation__slide[data-figure] .border__lane { grid-template-columns: 12rem 1fr auto; padding: .7rem 1rem; }
+.presentation__slide[data-figure] .border__name { font-size: 1.15rem; }
+.presentation__slide[data-figure] .border__why { font-size: .95rem; }
+.presentation__slide[data-figure] .border__dot { width: 20px; height: 20px; border-radius: 3px; }
+.presentation__slide[data-figure] .border__dots { gap: 8px; }
+.presentation__slide[data-figure] .rule__runs { gap: 14px; padding: 1.4rem; }
+.presentation__slide[data-figure] .rule__run { width: 62px; height: 62px; border-radius: 8px; }
+.presentation__slide[data-figure] .rule__mark { width: 26px; height: 26px; }
+.presentation__slide[data-figure] .rule__run[data-blocked]::after { inset: 10px auto 10px 50%; width: 3px; }
+.presentation__slide[data-figure] .whip__punch,
+.presentation__slide[data-figure] .border__punch,
+.presentation__slide[data-figure] .rule__punch { font-size: 1.1rem; }
+
+/* The organism wraps slide content in .presentation__body at a reading measure (~414px on a
+   1440 stage). That is correct for prose and wrong for a figure, so a figure slide opts out of it.
+   This was the actual cause of the tiny figures; the SVG max-widths were a symptom. */
+.presentation__slide[data-figure] .presentation__body { max-width: none; width: 100%; }
+
+/* --- the roadmap, in HTML rather than SVG ------------------------------------
+   A viewBox fixes a figure's proportions to whatever the author guessed; HTML lets the same figure
+   fill a slide and a paragraph without two drawings. The month cursor is the reason it is worth the
+   swap: a gantt you can only look at answers "how long", and this one answers "where am I". */
+.road { display: grid; gap: .8rem; }
+.road__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.road__scale { position: relative; height: 1.1em; margin-left: 11rem; font-size: .78rem; color: var(--color-muted); }
+.road__scale span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.road__scale span:first-child { transform: none; }
+.road__scale span:last-child { transform: translateX(-100%); }
+.road__rows { position: relative; display: grid; gap: .3rem; }
+.road__row {
+  display: grid; grid-template-columns: 11rem 1fr 7rem; align-items: center; gap: .8rem;
+  padding: .3rem 0; transition: opacity .15s linear;
+}
+.road__row[data-state="not started"] { opacity: .4; }
+.road__name { font-size: .95rem; color: var(--color-fg); display: grid; }
+.road__name em { font-style: normal; font-size: .76rem; color: var(--color-muted); }
+.road__track { position: relative; height: 22px; border-bottom: 1px solid var(--color-line); }
+.road__bar {
+  position: absolute; top: 2px; height: 18px; border-radius: 3px;
+  background: var(--color-fg); transition: opacity .15s linear;
+}
+/* running is hollow, done is filled: weight, not hue, same as every other figure here */
+.road__row[data-state="running"] .road__bar { background: transparent; border: 2px solid var(--color-fg); }
+.road__row[data-state="not started"] .road__bar { background: transparent; border: 1px dashed var(--color-line); }
+.road__state { font-size: .76rem; color: var(--color-muted); text-align: right; }
+.road__row[data-state="running"] .road__state { text-decoration: underline; text-underline-offset: 3px; }
+/* The cursor rides a lane that mirrors the row grid, so its middle cell IS the track and a
+   percentage inside it means a month. Positioning it against the row container put month 18 off
+   the right edge, behind the label column's offset. */
+.road__lane {
+  position: absolute; inset: 0; display: grid; gap: .8rem; pointer-events: none;
+  grid-template-columns: 11rem 1fr 7rem;
+}
+.road__lanetrack { position: relative; }
+.road__cursor {
+  position: absolute; top: 0; bottom: 0; width: 2px; background: var(--color-fg);
+  transition: left .12s linear;
+}
+.road__ctl { display: flex; align-items: center; gap: .7rem; }
+.road__lab { font-size: .85rem; color: var(--color-muted); }
+.road__dial { flex: 1 1 auto; max-width: 340px; accent-color: var(--color-fg); }
+.road__out { font-size: .85rem; font-variant-numeric: tabular-nums; }
+.road__now { margin: 0; font-size: .9rem; color: var(--color-muted); min-height: 2.6em; }
+.road__now b { color: var(--color-fg); }
+.road__punch { margin: 0; opacity: .4; transition: opacity .2s linear; }
+.road[data-moved] .road__punch { opacity: 1; }
+
+/* on a slide the roadmap gets the stage, like the other live figures */
+.presentation__slide[data-figure] .road { gap: 1.1rem; font-size: 1.15rem; }
+.presentation__slide[data-figure] .road__title { font-size: 1.05rem; }
+.presentation__slide[data-figure] .road__scale { margin-left: 15rem; font-size: .95rem; }
+.presentation__slide[data-figure] .road__row { grid-template-columns: 15rem 1fr 9rem; padding: .5rem 0; }
+.presentation__slide[data-figure] .road__name { font-size: 1.2rem; }
+.presentation__slide[data-figure] .road__name em { font-size: .92rem; }
+.presentation__slide[data-figure] .road__track { height: 34px; }
+.presentation__slide[data-figure] .road__bar { top: 3px; height: 28px; }
+.presentation__slide[data-figure] .road__state { font-size: .92rem; }
+.presentation__slide[data-figure] .road__lane { grid-template-columns: 15rem 1fr 9rem; }
+.presentation__slide[data-figure] .road__cursor { width: 3px; }
+.presentation__slide[data-figure] .road__now { font-size: 1.05rem; }
+.presentation__slide[data-figure] .road__dial { max-width: 460px; }
+
+@media (prefers-reduced-motion: reduce) { .road__cursor, .road__row, .road__bar { transition: none; } }
+
+/* --- the agent loop, running rather than drawn --------------------------------
+   Horizontal so it suits a 16:9 stage, where the vertical SVG it replaces was 13% of the area.
+   Node kind is carried by border weight, not hue: a model node is the heavy one, because "which
+   boxes cost money" is the claim the figure exists to make. */
+.loopfig { display: grid; gap: .8rem; }
+.loopfig__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.loopfig__nodes {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: .5rem;
+}
+.loopfig__node {
+  display: grid; gap: .15rem; padding: .6rem .7rem; border-radius: 6px;
+  border: 1px solid var(--color-line); opacity: .45;
+  transition: opacity .15s linear, border-color .15s linear, background-color .15s linear;
+}
+.loopfig__node[data-kind="model"] { border-width: 2px; }
+.loopfig__node[data-kind="human"] { border-color: var(--color-fg); }
+.loopfig__node[data-visited] { opacity: 1; }
+.loopfig__node[data-active] { background: var(--color-fg); }
+.loopfig__node[data-active] .loopfig__name,
+.loopfig__node[data-active] .loopfig__sub,
+.loopfig__node[data-active] .loopfig__tag { color: var(--color-bg); }
+/* the second visit to the tests is the retry, and it has to be visible or the cap means nothing */
+.loopfig__node[data-again]::after {
+  content: "second pass"; font-size: .68rem; color: var(--color-muted);
+}
+.loopfig__name { font-size: .92rem; color: var(--color-fg); }
+.loopfig__sub { font-size: .72rem; color: var(--color-muted); }
+.loopfig__tag { font-size: .66rem; color: var(--color-muted); letter-spacing: .06em; text-transform: uppercase; }
+.loopfig__keys { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 0; font-size: .88rem; color: var(--color-muted); }
+.loopfig__keys b { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.loopfig__state { font-style: italic; }
+.loopfig__punch { margin: 0; opacity: .35; transition: opacity .2s linear; }
+.loopfig[data-done] .loopfig__punch { opacity: 1; }
+
+.presentation__slide[data-figure] .loopfig { gap: 1.1rem; font-size: 1.15rem; }
+.presentation__slide[data-figure] .loopfig__title { font-size: 1.05rem; }
+.presentation__slide[data-figure] .loopfig__nodes { grid-template-columns: repeat(7, 1fr); gap: .7rem; }
+.presentation__slide[data-figure] .loopfig__node { padding: 1rem .8rem; }
+.presentation__slide[data-figure] .loopfig__name { font-size: 1.05rem; }
+.presentation__slide[data-figure] .loopfig__sub { font-size: .85rem; }
+.presentation__slide[data-figure] .loopfig__keys { font-size: 1.15rem; gap: 2rem; }
+.presentation__slide[data-figure] .loopfig__punch { font-size: 1.1rem; }
