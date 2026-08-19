@@ -4,7 +4,7 @@
 // text into its own field, through the app's door, and says so).
 //
 // This file could not be committed green until `@tjakoen/crumb` shipped all three, because the
-// portfolio consumes the published package rather than a workspace copy. It does now (0.1.9), so the
+// portfolio consumes the published package rather than a workspace copy. It did at 0.1.9, so the
 // version guard below is not ceremony: if a future pin regresses past any of these, the guard names
 // the reason instead of leaving six assertions failing for no stated cause.
 //
@@ -22,9 +22,16 @@ const PREFILL_TOUR = "say-hello";           // P2: three steps, the last one sta
 const FIELD = '[data-surface="field:contact-message"]';
 const DESK_DOOR = "/modules/portfolio/ai/desk-door.js";
 
-// The published package is the thing under test here, so state the floor once.
+// The published package is the thing under test here, so state the floor once. This was written as
+// an equality against "^0.1.9" and duly failed the moment crumb went to 0.1.10, which is the one
+// thing a floor must never do: it reported a routine upgrade as a broken feature. Compare the
+// numbers instead, so the guard fires when the pin goes BACKWARDS and stays quiet when it moves on.
+const CRUMB_FLOOR = [0, 1, 9];
 test("the pinned crumb is new enough to have heard of any of this", () => {
-  expect(pkg.dependencies["@tjakoen/crumb"]).toBe("^0.1.9");
+  const pinned = String(pkg.dependencies["@tjakoen/crumb"]).replace(/^\D+/, "").split(".").map(Number);
+  expect(pinned).toHaveLength(3);
+  const [a, b, c] = pinned, [x, y, z] = CRUMB_FLOOR;
+  expect(a * 1e6 + b * 1e3 + c).toBeGreaterThanOrEqual(x * 1e6 + y * 1e3 + z);
 });
 
 const endTour = (page: Page) =>
@@ -88,6 +95,14 @@ test.describe("crumb P1 — the tour hands back a prompt", () => {
     // index 2 on a two-step tour: the card, not a step
     await page.locator('[data-crumb-goto="2"]').click();
     await expect(page.locator(".crumb-frame__count")).toHaveCount(0);
+
+    // The paste block ships COLLAPSED (crumb 0.1.10, owner's call): open, it pushed Finish off the
+    // bottom of a card with no scroll of its own. The textarea stays in the DOM either way, so both
+    // halves are worth asserting — shut by default, and reachable in one press.
+    const paste = page.locator("details.crumb-sidebar__paste");
+    await expect(paste).not.toHaveAttribute("open", "");
+    await expect(page.locator(".crumb-sidebar__composed")).toBeHidden();
+    await paste.locator("summary").click();
     await expect(page.locator(".crumb-sidebar__composed")).toBeVisible();
     await expect(page.locator(".crumb-sidebar__composed")).toHaveAttribute("readonly", "");
 
@@ -129,8 +144,11 @@ test.describe("crumb P1 — the tour hands back a prompt", () => {
     await expect(page.locator(".crumb-pop__count")).toHaveText("2 / 2");
     await page.locator('[data-crumb="next"]').click();                        // step 2 → the card
 
-    await expect(page.locator(".crumb-pop__composed")).toBeVisible();
     await expect(page.locator(".crumb-pop__count")).toHaveCount(0);
+    // Collapsed here too — the popover is the tighter of the two presentations, so it needs it more.
+    await expect(page.locator(".crumb-pop__composed")).toBeHidden();
+    await page.locator("details.crumb-pop__paste summary").click();
+    await expect(page.locator(".crumb-pop__composed")).toBeVisible();
     await expect(page.locator('.crumb-pop [data-crumb-ask="reads-wrong"]')).toBeVisible();
 
     await endTour(page);
