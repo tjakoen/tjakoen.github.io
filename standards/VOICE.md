@@ -189,9 +189,11 @@ He loves visuals, so a note should carry them, not lean on walls of prose. The f
 tool-by-job rule, the **tokenized SVG scaffold** (palette as CSS custom properties, one canonical
 spec so figures are a family and not one-offs), the type scale, and the render matrix, lives in
 [`FIGURES.md`](FIGURES.md). The short version: **quantitative data-viz (bars, timelines, ratios, the
-multiplier) is inline SVG built to the scaffold; flows and loops are mermaid.** Early on a figure can
-be a prose placeholder (`> *Figure: what it shows*`); render it to SVG or mermaid before publish.
-Placeholders are a to-do list, not a finished state, don't ship an all-prose note.
+multiplier) is inline SVG built to the scaffold, and so are flows and loops.** A hand-built flow is
+the default rather than mermaid, and a mermaid fence that does reach a page has to carry a label
+naming what it shows. Early on a figure can be a prose placeholder (`> *Figure: what it shows*`);
+render it before publish. Placeholders are a to-do list, not a finished state, don't ship an
+all-prose note.
 
 ## The specifics bank
 
