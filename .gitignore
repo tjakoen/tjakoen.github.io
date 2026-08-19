@@ -21,3 +21,7 @@ nimbalyst-local/
 .agents/
 .claude/skills/
 skills-lock.json
+
+# Intake briefs (standards/INTAKE.md section 6). A brief quotes whatever was pasted, which has
+# not been read for publication; this repo is public. The run report carries the envelope block.
+artifacts/briefs/
