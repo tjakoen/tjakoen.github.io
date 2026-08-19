@@ -639,7 +639,13 @@ ${PAGE_ASSETS}</body>
       const escXml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;").replace(/'/g, "&apos;");
       const canonical = (p: string) => p === "/" ? "/" : `${p}/`;
-      const urls = sitemap.routes().map((p) => `  <url><loc>${escXml(origin + canonical(p))}</loc></url>`).join("\n");
+      // /404 lives in the pages tree so it renders in the same shell as everything else, but it is
+      // not a destination: it answers 404 and carries noindex, so listing it here would advertise a
+      // dead URL as a live one. Excluded by name rather than by convention, because a second such
+      // page should have to make the same decision out loud.
+      const urls = sitemap.routes()
+        .filter((p) => p !== "/404")
+        .map((p) => `  <url><loc>${escXml(origin + canonical(p))}</loc></url>`).join("\n");
       const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
       return new Response(xml, { headers: { "Content-Type": "application/xml" } });
     },
@@ -696,6 +702,17 @@ ${PAGE_ASSETS}</body>
     }
     // the portfolio's own pages tree: "/" (home), "/grain"·"/batch" showcases, /about
     const page = await servePage(p);
+    // An unknown URL used to end here as a bare text/plain "Not found": right status, no chrome, no
+    // nav, no way home. view/pages/404.html is a real page in the same shell as every other one, so
+    // a mistyped path or a stale inbound link lands somewhere a person can act from. The STATUS
+    // stays 404, because a soft 404 that answers 200 is worse than the blank page it replaces: it
+    // tells a crawler the page exists.
+    if (page.status === 404) {
+      const notFound = await servePage("/404");
+      if (notFound.status === 200) {
+        return finalizePage(req, new Response(await notFound.text(), { status: 404, headers: notFound.headers }));
+      }
+    }
     return finalizePage(req, page);
   },
   // Last-resort catch for an uncaught throw in a route or the fetch handler: log it server-side,
