@@ -12,15 +12,30 @@
 <body data-screen="talks" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="talks" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
-    <main class="app-shell__main">
+    <main class="app-shell__main" id="main-content">
       <div class="board">
         <p class="eyebrow">🎤 <span class="name">Talks</span></p>
         <h1 class="masthead">Things I've stood up and said out loud.</h1>
         <hr class="rule">
-        <p class="lede">One so far. Each deck is a live page on this stack rather than a slide
+        <p class="lede">Two so far. Each deck is a live page on this stack rather than a slide
           export, so the figures still work: drag them, click them, run them.</p>
 
         <ul class="content-index">
+          <li class="content-index__item">
+            <p class="content-index__meta">2026-08-18 · 27 slides · ~20 min</p>
+            <h2 class="content-index__title"><a href="/talks/build-the-floor">Everybody Wants the Agent. Somebody Has to Build the Floor.</a></h2>
+            <p class="content-index__summary">
+              How an organization goes from developers holding AI subscriptions to real automation,
+              in five stages over eighteen months. Skills before automation, and the coder built
+              last, once the four skills that supervise work can catch it being wrong. The evidence
+              is the public research; the failure modes are mine.
+            </p>
+            <div class="note__tags">
+              <span class="badge" data-status="active">ai</span>
+              <span class="badge">workflow</span>
+              <span class="badge">architecture</span>
+            </div>
+          </li>
           <li class="content-index__item">
             <p class="content-index__meta">2026-08-07 · 34 slides · ~30 min</p>
             <h2 class="content-index__title"><a href="/talks/ten-times-zero">Ten Times Zero Is Still Zero</a></h2>
@@ -39,9 +54,10 @@
           </li>
         </ul>
 
-        <p class="lede" data-size="sm">Prefer to read it? The post this came from is
-          <a href="/notes/ten-times-zero">Ten Times Zero Is Still Zero</a>, with the same argument
-          and the receipts written out.</p>
+        <p class="lede" data-size="sm">Prefer to read them? Each deck has a post behind it, with the
+          same argument and the receipts written out:
+          <a href="/notes/build-the-floor">Everybody Wants the Agent</a> and
+          <a href="/notes/ten-times-zero">Ten Times Zero Is Still Zero</a>.</p>
       </div>
     </main>
   </div>

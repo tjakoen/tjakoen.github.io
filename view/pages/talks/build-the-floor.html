@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Everybody Wants the Agent · the talk</title>
+  <meta name="description" content="The talk behind the post: how an organization goes from developers with AI subscriptions to real automation. Five stages, skills before automation, and the coder built last.">
+</head>
+<!-- A TALK OWNS THE WINDOW. Same contract as ten-times-zero: no app shell, `data-deck-only`, the
+     deck is GRAIN's presentation organism, and the live figures come from site/figure-floor.js,
+     which the POST imports too. The behaviour is written once and shared; only the trigger differs,
+     because a room has arrow keys and a paragraph has a mouse. Every live host wraps the static SVG
+     it upgrades, so a blocked script degrades to the figure the note ships. -->
+<body data-screen="talk" data-deck-only>
+
+<div class="presentation" data-present data-deck data-hash data-minutes="20" data-channel="floor">
+
+  <div class="presentation__bar">
+    <p class="presentation__meta"><a href="/talks">← all talks</a></p>
+    <p class="presentation__hint">← → move · <kbd>D</kbd> light/dark · <kbd>.</kbd> blank</p>
+  </div>
+
+  <!-- 1 ----------------------------------------------------------------- TITLE -->
+  <section class="presentation__slide" data-title="Title">
+    <p class="slide-eyebrow settles">A talk about implementing AI in an engineering org</p>
+    <h1 class="slide-head" data-size="xl">Everybody Wants the&nbsp;Agent</h1>
+    <p class="slide-lede" data-grade="grain">Somebody has to build the floor.</p>
+    <hr class="slide-rule">
+    <p class="slide-sig settles"><b>Tjakoen Stolk</b> · development manager, technical lead</p>
+    <ul class="slide-notes" hidden>
+      <li>Land the title. Wait a beat before the second line.</li>
+      <li>Set the promise: one roadmap, one ordering argument, and the parts that broke on me.</li>
+      <li>"Nothing in this talk is about picking a model."</li>
+    </ul>
+  </section>
+
+  <!-- 2 ----------------------------------------------------------------- THE WANT -->
+  <section class="presentation__slide" data-align="center" data-title="What everybody wants">
+    <p class="slide-eyebrow settles">The thing we all actually want</p>
+    <h2 class="slide-head" data-size="xl">An agent that opens pull requests while you&nbsp;sleep.</h2>
+    <p class="slide-lede frag" data-grade="grain">I want it too. It is the most interesting thing to happen to this job in my career.</p>
+    <ul class="slide-notes" hidden>
+      <li>Be genuinely enthusiastic. Do not set it up as a straw man.</li>
+      <li>Describe the loop out loud instead of listing it: you describe the ticket, it reads the codebase, writes the change, runs the tests, opens the PR.</li>
+      <li>The talk only lands if the room believes you want the same thing they do.</li>
+    </ul>
+  </section>
+
+  <!-- 3 ----------------------------------------------------------------- THE FLOOR -->
+  <section class="presentation__slide" data-title="What nobody wants to build">
+    <p class="slide-eyebrow settles">And now the part nobody puts on a slide</p>
+    <h2 class="slide-head settles">Almost nobody wants to build the thing&nbsp;underneath&nbsp;it.</h2>
+    <p class="claim frag">Unglamorous. Takes a quarter. Mostly consists of making a codebase legible to a machine that has never met you.</p>
+    <ul class="slide-notes" hidden>
+      <li>Flat delivery. This is the thesis and it should sound like a fact, not a warning.</li>
+    </ul>
+  </section>
+
+  <!-- 4 ----------------------------------------------------------------- DORA -->
+  <section class="presentation__slide" data-align="center" data-title="AI amplifies">
+    <p class="quote-mark settles">DORA, roughly five thousand technology professionals</p>
+    <p class="quote settles">AI amplifies whatever an organization already&nbsp;is.</p>
+    <p class="slide-lede frag">Strong engineering organizations get faster. Weak ones fail faster.</p>
+    <ul class="slide-notes" hidden>
+      <li>The most useful published sentence in the field. Say it once, slowly, then stop.</li>
+      <li>Add the consequence out loud: right now it correlates with higher throughput AND lower stability, at the same time.</li>
+      <li>Do not editorialise. The next slide does the work.</li>
+    </ul>
+  </section>
+
+  <!-- 5 ----------------------------------------------------------------- THE WHIPLASH -->
+  <!-- The dial is driven by the arrow key, not by a mouse: site/talk-floor.js maps each step to an
+       adoption level. The static bar chart from the post stays inside as the fallback, so a dead
+       projector or a blocked script still argues the point. -->
+  <section class="presentation__slide" data-figure data-title="The whiplash">
+    <p class="slide-eyebrow settles">Faros AI · two years, 22,000 developers, 4,000 teams</p>
+    <h2 class="slide-head settles" data-size="sm">Generation is elastic. Review&nbsp;is&nbsp;not.</h2>
+    <div class="live-fig" data-live-figure="whiplash" data-surface="figure:whiplash">
+      <svg viewBox="0 0 620 268" width="100%" role="img"
+         aria-label="Faros AI telemetry across 22,000 developers comparing low and high AI adoption. Epics completed per developer rose 66 percent and task throughput rose 34 percent. Against that, bugs per developer rose 54 percent, incidents per pull request rose 243 percent, median time in code review rose 442 percent, and code churn rose 861 percent."
+         style="height:auto;display:block;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
+         xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.5" y="0.5" width="619" height="267" style="fill:var(--paper);stroke:var(--edge)"/>
+      <text x="28" y="30" style="fill:var(--muted);font-size:15px">What high AI adoption bought, and what it cost</text>
+      <text x="28" y="58" style="fill:var(--muted);font-size:12.5px">the gains</text>
+      <text x="28" y="82" style="fill:var(--ink);font-size:14px">Epics per developer</text>
+      <rect x="230" y="68" width="46" height="18" style="fill:var(--bar)"/>
+      <text x="284" y="82" style="fill:var(--muted);font-size:12.5px">+66%</text>
+      <text x="28" y="110" style="fill:var(--ink);font-size:14px">Task throughput</text>
+      <rect x="230" y="96" width="24" height="18" style="fill:var(--bar)"/>
+      <text x="262" y="110" style="fill:var(--muted);font-size:12.5px">+34%</text>
+      <text x="28" y="146" style="fill:var(--muted);font-size:12.5px">the bill</text>
+      <text x="28" y="170" style="fill:var(--ink);font-size:14px">Bugs per developer</text>
+      <rect x="230" y="156" width="38" height="18" style="fill:var(--ink)"/>
+      <text x="276" y="170" style="fill:var(--muted);font-size:12.5px">+54%</text>
+      <text x="28" y="198" style="fill:var(--ink);font-size:14px">Incidents per pull request</text>
+      <rect x="230" y="184" width="169" height="18" style="fill:var(--ink)"/>
+      <text x="407" y="198" style="fill:var(--muted);font-size:12.5px">+243%</text>
+      <text x="28" y="226" style="fill:var(--ink);font-size:14px">Median time in review</text>
+      <rect x="230" y="212" width="307" height="18" style="fill:var(--ink)"/>
+      <text x="545" y="226" style="fill:var(--muted);font-size:12.5px">+442%</text>
+      <text x="28" y="252" style="fill:var(--accent);font-size:13px">Code churn rose 861%, which is off this scale entirely.</text>
+    </svg>
+    </div>
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Arrow key walks adoption: 0, then 35, then 70, then 100. Do not touch the mouse.</li>
+      <li>At 35 everything is still fine. That is the slide most rooms think they are on.</li>
+      <li>At 70 the queue appears. At 100 say nothing for a beat and let them read the waiting count.</li>
+      <li>"Review capacity never moved. It is a property of your team, not of the tool you bought."</li>
+      <li>Then the numbers: median time in review up 442%, incidents per pull request up 243%, churn up 861%.</li>
+    </ul>
+  </section>
+
+  <!-- 6 ----------------------------------------------------------------- MECHANISM -->
+  
+
+  <!-- 7 ----------------------------------------------------------------- NAME IT -->
+  <section class="presentation__slide" data-title="The substrate gap">
+    <p class="slide-eyebrow settles">So here is the thing I would name</p>
+    <h2 class="slide-head" data-size="xl" data-grade="grain">The substrate&nbsp;gap</h2>
+    <p class="slide-lede frag">The distance between what your tools can do and what your codebase can absorb.</p>
+    <hr class="slide-rule">
+    <p class="slide-sig frag">The models are the same for everyone. This part is not.</p>
+    <ul class="slide-notes" hidden>
+      <li>This is the handle. Everything after this refers back to it by name.</li>
+      <li>"Nobody sells you a substrate. That is why it does not get bought."</li>
+    </ul>
+  </section>
+
+  <!-- 8 ----------------------------------------------------------------- STRIPE -->
+  <section class="presentation__slide" data-align="center" data-title="Stripe">
+    <p class="slide-eyebrow settles">The reference everybody points at</p>
+    <h2 class="slide-head settles">A thousand pull requests a week, no human-written&nbsp;code.</h2>
+    <p class="claim frag" data-grade="grain">Running on standardized environments, dense internal docs and large test suites, built for humans, over years, before agents existed.</p>
+    <ul class="slide-notes" hidden>
+      <li>Give the number first, let it impress, then take it apart.</li>
+      <li>Stripe are open about where the agents fail: undocumented subsystems, and thin CI.</li>
+      <li>"The reference implementation everyone points at is a substrate story wearing an agent costume."</li>
+    </ul>
+  </section>
+
+  <!-- 9 ----------------------------------------------------------------- ROADMAP -->
+  <section class="presentation__slide" data-figure data-title="The roadmap">
+    <h2 class="slide-head settles" data-size="sm">Five stages. Eighteen&nbsp;months.</h2>
+    <div class="live-fig" data-live-figure="roadmap" data-surface="figure:roadmap">
+<p><em>Five stages over eighteen months. Instrument and make one repository legible, months 0 to 2.
+Extract skills and run them by hand, 1 to 5. Daily use with scored outcomes, 3 to 9. The same skills
+fired by triggers, 6 to 12. Chained unattended loops, 10 to 18. Each stage opens on scored runs
+behind it rather than on the date.</em></p>
+</div>
+    <!-- four steps drive the month cursor: 0, 2, 6, 12, 18. site/talk-floor.js maps them. -->
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Land at month zero, everything dashed. "This is the room. Nobody has started."</li>
+      <li>Arrow to month 2: instrumenting is done. Then 6, then 12, then 18.</li>
+      <li>Read the line under it each time. It says what should already hold and what is in flight.</li>
+      <li>"Most organizations have bought the first bar and are hoping the last one arrives on its own."</li>
+    </ul>
+  </section>
+
+  <!-- 10 ---------------------------------------------------------------- THE SPINE -->
+  <section class="presentation__slide" data-align="center" data-title="One artifact">
+    <p class="slide-eyebrow settles">The spine of the whole roadmap</p>
+    <h2 class="slide-head" data-size="xl">A skill is written once, and then&nbsp;promoted.</h2>
+    <p class="claim frag" data-grade="grain">You never build a second system. There is never a migration project.</p>
+    <ul class="slide-notes" hidden>
+      <li>Walk the five stages out loud against the roadmap they just saw: by hand, scored, triggered, unattended, chained.</li>
+      <li>"The command a developer runs today is the loop that runs unattended in six months. Same file."</li>
+    </ul>
+  </section>
+
+  <!-- 11 ---------------------------------------------------------------- THE WRONG ORDER -->
+  <section class="presentation__slide" data-align="center" data-title="The obvious order is wrong">
+    <p class="slide-eyebrow settles">And here is where almost everybody goes wrong</p>
+    <h2 class="slide-head" data-size="xl">Everybody builds the coder&nbsp;first.</h2>
+    <p class="claim frag" data-grade="grain">It is the one you are least equipped to supervise on day one.</p>
+    <ul class="slide-notes" hidden>
+      <li>Say why they do it: exciting, demos well, it is why the budget got approved. All fair.</li>
+      <li>Then the turn, flat: "which is how you get the numbers I showed you."</li>
+    </ul>
+  </section>
+
+  <!-- 12 ---------------------------------------------------------------- BUILD ORDER -->
+  <!-- One arrow press flips it from coder-first to supervision-first. Same twelve changes, same
+       coder; what changes is how many land on a person. The static flow from the post is the
+       fallback underneath. -->
+  <section class="presentation__slide" data-figure data-title="Build order">
+    <p class="slide-eyebrow settles">So build them in this order instead</p>
+    <h2 class="slide-head settles" data-size="sm">Supervision first. Coder&nbsp;last.</h2>
+    <div class="live-fig" data-live-figure="buildorder" data-surface="figure:buildorder">
+      <svg viewBox="0 0 252 348" width="100%" role="img"
+         aria-label="Five skills in build order. Plan turns a ticket into a testable spec. Code review checks a diff against house standards. Docs catch drift on merge. QA writes tests to house convention. The coder comes last, and only once the four above can catch it being wrong."
+         style="display:block;width:100%;height:auto;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+      <defs>
+        <marker id="tf-order" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+        <rect x="31" y="16" width="190" height="52" rx="6"/>
+        <rect x="31" y="80" width="190" height="52" rx="6"/>
+        <rect x="31" y="144" width="190" height="52" rx="6"/>
+        <rect x="31" y="208" width="190" height="52" rx="6"/>
+      </g>
+      <rect x="16" y="284" width="220" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+      <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+        <line x1="126" y1="68" x2="126" y2="80" marker-end="url(#tf-order)"/>
+        <line x1="126" y1="132" x2="126" y2="144" marker-end="url(#tf-order)"/>
+        <line x1="126" y1="196" x2="126" y2="208" marker-end="url(#tf-order)"/>
+        <line x1="126" y1="260" x2="126" y2="284" marker-end="url(#tf-order)"/>
+      </g>
+      <g text-anchor="middle">
+        <text x="126" y="38.3" style="fill:var(--color-fg)">Plan</text>
+        <text x="126" y="54.8" style="fill:var(--color-muted);font-size:12px">a ticket becomes a testable spec</text>
+        <text x="126" y="102.3" style="fill:var(--color-fg)">Code review</text>
+        <text x="126" y="118.8" style="fill:var(--color-muted);font-size:12px">a diff against house standards</text>
+        <text x="126" y="166.3" style="fill:var(--color-fg)">Docs</text>
+        <text x="126" y="182.8" style="fill:var(--color-muted);font-size:12px">drift caught on merge</text>
+        <text x="126" y="230.3" style="fill:var(--color-fg)">QA</text>
+        <text x="126" y="246.8" style="fill:var(--color-muted);font-size:12px">tests to house convention</text>
+        <text x="126" y="306.3" style="fill:var(--color-bg)">Coder</text>
+        <text x="126" y="322.8" style="fill:var(--color-bg);font-size:12px">last, once the others can catch it</text>
+      </g>
+    </svg>
+    </div>
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Land on coder-first. Twelve changes, twelve landing on a human. Let them look at it.</li>
+      <li>"This is what buying the exciting one first actually looks like on a Tuesday."</li>
+      <li>Arrow once to flip it. Four lanes wake up, eight get caught, four reach a person.</li>
+      <li>"Same coder. The difference is entirely what is standing in front of it."</li>
+    </ul>
+  </section>
+
+  <!-- 13 ---------------------------------------------------------------- WHY THAT ORDER -->
+  <section class="presentation__slide" data-align="center" data-title="Why that order">
+    <p class="quote-mark settles">Read the order downwards and it is one sentence</p>
+    <p class="quote settles">Each of the first four builds a piece of the supervision the fifth one&nbsp;needs.</p>
+    <p class="slide-lede frag" data-grade="grain">Get those four good enough to defend in a code review, and the coder becomes an ordinary engineering problem.</p>
+    <ul class="slide-notes" hidden>
+      <li>Name them against the figure still in their heads: plan gives it a spec, review a standard, docs a codebase it can read, QA a verdict that is not an opinion.</li>
+      <li>"Build the coder first and you have bought a very fast way to generate work nobody has time to check."</li>
+    </ul>
+  </section>
+
+  <!-- 14 ---------------------------------------------------------------- NOW -->
+  <section class="presentation__slide" data-align="center" data-title="What you can do now">
+    <p class="slide-eyebrow settles">Weeks, not months. No procurement conversation.</p>
+    <h2 class="slide-head settles">Mark every agent-authored change. This&nbsp;week.</h2>
+    <p class="claim frag" data-grade="grain">It is the join key for every comparison worth making, and it cannot be backfilled.</p>
+    <ul class="slide-notes" hidden>
+      <li>A label, a branch prefix, a bot author, commit trailers. Whatever your forge supports.</li>
+      <li>Then the other two out loud: make one repository legible, extract two skills from people who do the work.</li>
+      <li>"None of this is impressive. All of it is the foundation."</li>
+    </ul>
+  </section>
+
+  <!-- 15 ---------------------------------------------------------------- SIX MONTHS -->
+  <section class="presentation__slide" data-align="center" data-title="Six months">
+    <p class="slide-eyebrow settles">Six months in, the question you can finally answer</p>
+    <h2 class="slide-head settles">Is agent-authored change failure rate worse than&nbsp;human-authored?</h2>
+    <p class="claim frag" data-grade="grain">Six months of marked changes is what makes that computable. Nothing else you report will land as hard.</p>
+    <ul class="slide-notes" hidden>
+      <li>Set the scene first: skills in daily use, a catalog with a maintainer, the first triggers firing.</li>
+      <li>This is also where the headless requirement pays off or bites. Same files, no rewrite.</li>
+    </ul>
+  </section>
+
+  <!-- 16 ---------------------------------------------------------------- A YEAR -->
+  <section class="presentation__slide" data-align="center" data-title="A year">
+    <p class="slide-eyebrow settles">A year in</p>
+    <h2 class="slide-head settles">Two or three loops, running on the most boring work you&nbsp;have.</h2>
+    <p class="claim frag" data-grade="grain">Notice that none of them demo well. That is the selection criterion, not an apology.</p>
+    <ul class="slide-notes" hidden>
+      <li>Name them: dependency upgrades with test verification, security findings off your existing scanner, flaky test triage.</li>
+      <li>Human review before merge, always. Nobody is starting the work.</li>
+      <li>Expect "that is not very ambitious." Agree, then say why boring is the point.</li>
+    </ul>
+  </section>
+
+  <!-- 17 ---------------------------------------------------------------- HOOKS -->
+  <section class="presentation__slide" data-title="Hooks beat instructions">
+    <p class="slide-eyebrow settles">One distinction, if I could only teach you one</p>
+    <h2 class="slide-head settles">An instruction is a request. A hook is&nbsp;enforcement.</h2>
+    <p class="slide-lede frag">They feel identical when you write them. They are not remotely the same object.</p>
+    <ul class="slide-notes" hidden>
+      <li>Set this up, then immediately go to the confession on the next slide. Do not explain it abstractly.</li>
+    </ul>
+  </section>
+
+  <!-- 18 ---------------------------------------------------------------- THE CONFESSION -->
+  <section class="presentation__slide" data-figure data-title="Instruction or hook">
+    <p class="slide-eyebrow settles">Ten sessions, one written rule</p>
+    <h2 class="slide-head settles" data-size="sm">An instruction is a request.</h2>
+    <div class="live-fig" data-live-figure="rulegate" data-surface="figure:rulegate">
+      <p class="slide-lede">Six sessions honoured the rule. Four did not, and nothing said so. Under a hook the same four never land the write at all.</p>
+    </div>
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Land on instruction mode. Four dashed cells. "These four ignored it, and they look exactly like the ones that did not."</li>
+      <li>Arrow once to flip to the hook. Same four, struck through, zero violations.</li>
+      <li>Then the confession: my standard requires a worktree per run. Written twice, published, linked from every repo. I ran the command that lists them. One entry. Never used one.</li>
+      <li>"A standard that is written, published and never executed looks exactly like a standard that works."</li>
+    </ul>
+  </section>
+
+  <!-- 19 ---------------------------------------------------------------- TRIAGE -->
+  <section class="presentation__slide" data-align="center" data-title="Score on structure">
+    <p class="slide-eyebrow settles">Before an agent takes a task unattended</p>
+    <h2 class="slide-head settles">Do not ask the model whether it can do&nbsp;it.</h2>
+    <p class="claim frag" data-grade="grain">Models are badly calibrated about their own capability. They will say yes.</p>
+    <ul class="slide-notes" hidden>
+      <li>Score the substrate instead: files touched, coverage on those paths, is there a context file, are the criteria testable. Mostly computable without a model.</li>
+      <li>"Amber means the coverage is missing. That is a fact about your repo, not a guess about difficulty."</li>
+      <li>The percentage you can classify green, tracked monthly, beats any published benchmark because it is measured against your codebase.</li>
+    </ul>
+  </section>
+
+  <!-- 20 ---------------------------------------------------------------- LOOP -->
+  <section class="presentation__slide" data-figure data-title="Loop architecture">
+    <h2 class="slide-head settles" data-size="sm">Two boxes cost&nbsp;tokens.</h2>
+    <div class="live-fig" data-live-figure="agentloop" data-surface="figure:agentloop">
+<p><em>A trigger fires, a disposable sandbox is provisioned, a model implements the change, then
+plain code lints and tests it. On a failure a model gets a capped number of attempts and returns to
+the tests. On success a pull request is opened and a human reviews it, which is never skipped. Only
+the implement and fix nodes call a model.</em></p>
+</div>
+    <!-- one step: land idle, then arrow once to walk a change all the way through. -->
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Land idle. Read the seven nodes across, and point out the two heavy borders: those are the model calls.</li>
+      <li>Arrow once and let it run. It fails its tests, takes one fix, comes back, passes, opens a PR, lands on a person.</li>
+      <li>"Two model calls. Five deterministic steps. That split is what makes a loop cheap and predictable at the same time."</li>
+      <li>Worth stealing from Stripe, and available to a one-person project on day one.</li>
+    </ul>
+  </section>
+
+  <!-- 21 ---------------------------------------------------------------- CONTAINMENT -->
+  <section class="presentation__slide" data-align="center" data-title="Containment">
+    <p class="quote-mark settles">The rule that decides whether any of this is safe</p>
+    <p class="quote settles">Contain at the environment boundary, not the action&nbsp;boundary.</p>
+    <p class="slide-lede frag" data-grade="grain">Approval-prompt safety is neither safe nor fast. It trains people to click yes without reading.</p>
+    <ul class="slide-notes" hidden>
+      <li>Name the four out loud: hard retry cap, disposable sandbox with real permissions inside it, scoped short-lived credentials, a tested kill switch.</li>
+      <li>The click-yes line usually gets a rueful laugh. Everyone has done it.</li>
+      <li>"Untested rollback is a plan, not a control."</li>
+    </ul>
+  </section>
+
+  <!-- 22 ---------------------------------------------------------------- SILENT FAILURE -->
+  <section class="presentation__slide" data-title="They fail quietly">
+    <p class="slide-eyebrow settles">Now the part I am most qualified to talk about</p>
+    <h2 class="slide-head settles">A broken check and a clean input produce identical&nbsp;output.</h2>
+    <p class="claim frag" data-size="xl">Silence.</p>
+    <p class="slide-lede frag">I have shipped several of these. A column index off by one. A pipeline signal that never arrived. A regex that never matched anything.</p>
+    <ul class="slide-notes" hidden>
+      <li>Let "Silence." sit on its own for a second.</li>
+      <li>Every one of these was invisible until something measured it. This is the most dangerous mode, because the system reports success the whole time.</li>
+    </ul>
+  </section>
+
+  <!-- 23 ---------------------------------------------------------------- THE RULE -->
+  <section class="presentation__slide" data-title="A silent pass is not a pass">
+    <p class="slide-eyebrow settles">So the design rule</p>
+    <p class="quote-mark settles">“</p>
+    <p class="quote settles">Every automated check must distinguish “I ran and found nothing” from “I did not run.”</p>
+    <p class="slide-lede frag">Make each run emit what executed and what was skipped. A silent pass is not a pass.</p>
+    <ul class="slide-notes" hidden>
+      <li>Short slide. Say it, let them write it down, move on.</li>
+    </ul>
+  </section>
+
+  <!-- 24 ---------------------------------------------------------------- THE LEAF -->
+  <section class="presentation__slide" data-align="center" data-title="Verify the leaf">
+    <p class="slide-eyebrow settles">And the one that cost me the most</p>
+    <h2 class="slide-head settles">It has never completed a single&nbsp;run.</h2>
+    <p class="claim frag" data-grade="grain">Every layer above it is correct, and useless.</p>
+    <ul class="slide-notes" hidden>
+      <li>Describe it first: layered credentials, multiple fallback paths, each layer documented, several individually verified. Elegant.</li>
+      <li>Then the reveal. Then: "the lesson is not be careful. I WAS careful. Being rigorous everywhere else bought me nothing."</li>
+      <li>Verify the leaf before you build the tree.</li>
+    </ul>
+  </section>
+
+  <!-- 25 ---------------------------------------------------------------- WHAT TO MEASURE -->
+  <section class="presentation__slide" data-align="center" data-title="What to measure">
+    <p class="slide-eyebrow settles">One number, if you only instrument one</p>
+    <h2 class="slide-head" data-size="xl">Change failure rate, split agent against&nbsp;human.</h2>
+    <p class="claim frag" data-grade="grain">Individual-level metrics never feed a performance review. Say it once in writing, then honour it.</p>
+    <ul class="slide-notes" hidden>
+      <li>The others out loud: review latency, edit distance before merge, percentage of tickets classifiable green.</li>
+      <li>Edit distance is the sneaky one. Merged as-is and rewritten-by-half look identical in every standard metric.</li>
+      <li>The moment people suspect the numbers feed a review, you are measuring the gaming rather than the work.</li>
+    </ul>
+  </section>
+
+      <!-- EXPIRY ------------------------------------------------------------------
+       The honest limit, and the one that stops the talk sounding like "build machinery forever". -->
+  <section class="presentation__slide" data-align="center" data-title="Scaffolding expires">
+    <p class="quote-mark settles">Anthropic, on their own harness</p>
+    <p class="quote settles">Every component encodes an assumption about what the model can't do on its&nbsp;own.</p>
+    <p class="slide-lede frag" data-grade="grain">They deleted their own sprint mechanism a model generation later. It was load-bearing, then it was dead weight.</p>
+    <ul class="slide-notes" hidden>
+      <li>Name what in this talk is a bet: the triage classifier, the retry cap, the evaluator skills. All compensations for today's limits.</li>
+      <li>Then name what is not: verification, documentation, containment, the marker. A better model makes those MORE valuable, not less.</li>
+      <li>"Once a model generation, take a component out and see if the outcome degrades. Otherwise you are paying a tax for a problem that went away."</li>
+      <li>This is also the answer to "should we just wait for better models". No: better models widen what a harness can reach.</li>
+    </ul>
+  </section>
+
+<!-- ACTION ITEMS ------------------------------------------------------------
+       The slide the room photographs. Five items, one of them marked as the one that cannot wait,
+       and nothing on it that needs a budget. -->
+  <section class="presentation__slide" data-align="center" data-title="Where to start">
+    <p class="slide-eyebrow settles">If you take one slide away, take this one</p>
+    <h2 class="slide-head settles">Five things. None of them need a budget&nbsp;line.</h2>
+    <ol class="beats">
+      <li class="frag"><b>Mark every agent-authored change.</b> Today. It cannot be backfilled.</li>
+      <li class="frag"><b>Publish ninety days of delivery history</b> before anything changes.</li>
+      <li class="frag"><b>Make one repository legible.</b> Your busiest, with a senior in the room.</li>
+      <li class="frag"><b>Extract two skills</b> from people who do the work. Manual only.</li>
+      <li class="frag"><b>Start the outcome log</b> on the very first run.</li>
+    </ol>
+    <p class="claim frag" data-grade="grain">If you can only do one this week, do the marker. Everything else can start in month three and still work.</p>
+    <ul class="slide-notes" hidden>
+      <li>This is the slide people photograph. Slow down and let them.</li>
+      <li>Say what is NOT on it: buying anything, picking a model, writing a policy. Those get easier once these five are behind you.</li>
+      <li>The marker is the only irreversible one. Everything downstream is a join against it.</li>
+    </ul>
+  </section>
+
+<!-- 26 ---------------------------------------------------------------- CLOSE -->
+  <section class="presentation__slide" data-title="Build the floor">
+    <p class="slide-eyebrow settles">So, to close</p>
+    <h2 class="slide-head settles">The agents are already better than the codebases they are pointed&nbsp;at.</h2>
+    <p class="claim frag" data-grade="grain">Everybody wants the agent. I would rather be the one who builds the floor.</p>
+    <hr class="slide-rule">
+    <div class="end">
+      <div>
+        <p class="slide-lede" style="margin-top:0;">The whole thing in writing, with the sources and the parts that broke.</p>
+        <p class="end__url">tjakoen.github.io/notes/build-the-floor</p>
+      </div>
+    </div>
+    <p class="slide-sig"><b>The judgment is human. The typing, by design, is not.</b></p>
+    <ul class="slide-notes" hidden>
+      <li>Paste the link as this slide lands.</li>
+      <li>If nobody asks a question, ask them: "what would it take to mark every agent-authored change in your repos this week?"</li>
+    </ul>
+  </section>
+
+  <!-- deck chrome: dots on the left, one control cluster on the right. -->
+  <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
+  <div class="presentation__controls">
+    <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 26</span></span>
+    <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
+    <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
+    <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
+    <button class="presentation__ctl" type="button" data-ctl="presenter" title="Presenter window (P)" aria-label="Presenter window">◫</button>
+    <button class="presentation__ctl" type="button" data-toggle-scheme title="Light or dark (D)" aria-label="Light or dark">☾</button>
+    <button class="presentation__ctl" type="button" data-present-toggle title="Present (F)" aria-label="Present">
+      <span class="off-present">⤢</span><span class="on-present">✕</span>
+    </button>
+  </div>
+  <div class="presentation__notes" data-inline-notes aria-live="polite"></div>
+  <div class="presentation__grid" data-grid></div>
+
+<div class="presenter">
+  <div class="presenter__now">
+    <span class="presenter__pos" data-p-pos>1 / 26</span>
+    <span class="presenter__clock" data-p-clock>00:00</span>
+  </div>
+  <div>
+    <h2 class="presenter__title" data-p-title></h2>
+    <ul class="presenter__notes" data-p-notes></ul>
+  </div>
+  <div class="presenter__next">
+    <h3>Next</h3>
+    <p data-p-next></p>
+  </div>
+  <p class="presenter__hint">Arrows here drive the main window · T resets the clock · the clock turns accent past 20 minutes</p>
+</div>
+
+<script type="module" src="/scripts/presentation.js"></script>
+<script type="module" src="/site/talk-floor.js"></script>
+</body>
+</html>
