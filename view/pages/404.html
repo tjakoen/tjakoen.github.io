@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not found · TJ's Desk</title>
+  <meta name="description" content="That page is not here. The notes, the standards and the stack pages are all one click away.">
+  <meta name="robots" content="noindex">
+</head>
+<body data-screen="not-found" class="app-window-backdrop">
+  <!-- Served for any unknown URL, with a real 404 status (src/server.ts swaps this body in and keeps
+       the status). Before this, an unknown path returned a bare text/plain "Not found": correct
+       status, no chrome, no nav, no way back. A mistyped URL or a stale external link dropped a
+       visitor on a blank page, which the 2026-08-18 audit filed as a dead end on a main path. -->
+  <div class="app-shell app-window" data-section="desk" data-rail-collapsed="false" data-surface="screen">
+    <portfolio-frame />
+    <main class="app-shell__main" id="main-content">
+      <div class="board">
+        <h1 class="masthead">That page is not here.</h1>
+        <p class="lede">Either it moved, or the link that brought you here was already out of date.
+          Nothing is broken on your end. Here is the short way back to the parts worth reading.</p>
+
+        <h2 class="section-head"><span>Where to go instead</span></h2>
+        <ul class="role-list">
+          <li><a href="/">The desk</a>, which is the front door and the fastest way to see what this is.</li>
+          <li><a href="/notes">The notes</a>, including <a href="/notes/ten-times-zero">the one about working with an AI</a>, receipts and all.</li>
+          <li><a href="/standards">The standards</a>, the written rules everything here is held to.</li>
+          <li><a href="/bread">The stack</a>, if you came for the layers rather than the writing.</li>
+          <li><a href="/about">About</a>, or <a href="/mail">a message</a> if something here is worth telling me about.</li>
+        </ul>
+
+        <p class="lede">If a link on this site brought you here, that is a defect rather than an
+          inconvenience, and I would like to know which one.</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

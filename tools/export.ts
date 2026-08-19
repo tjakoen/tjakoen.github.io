@@ -192,6 +192,20 @@ try {
     log: (m) => console.log(m),
   });
 
+  // GitHub Pages serves ONE file for an unknown URL, and it looks for `404.html` at the deploy
+  // root. Every other route freezes as `<route>/index.html`, so without this copy the site would
+  // ship a real 404 page that Pages never reaches, and a visitor with a stale link would still get
+  // GitHub's default. The route version stays too: it is what the dead-link walk and any direct
+  // link to /404 resolve against.
+  const notFound = Bun.file(join(DIST, "404", "index.html"));
+  if (await notFound.exists()) {
+    await Bun.write(join(DIST, "404.html"), await notFound.text());
+    console.log("[export] 404.html written at the root, which is the only one GitHub Pages serves");
+  } else {
+    console.error("[export] no dist/404/index.html: the 404 page did not export, so Pages will fall back to its own");
+    process.exitCode = 1;
+  }
+
   const failed = report.pages.filter((p) => !p.ok);
   console.log(`\n[export] wrote ${report.distDir}`);
   console.log(`[export] serve it with e.g.  bunx serve ${DIST}   (or push to GitHub Pages)`);
