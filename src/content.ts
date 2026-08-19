@@ -172,7 +172,7 @@ function shellPage(input: {
 <body data-screen="${escapeHtml(screen)}" class="app-window-backdrop">
   <div class="app-shell app-window"${section} data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
-    <main class="app-shell__main">
+    <main class="app-shell__main" id="main-content">
       <div class="board">${board}</div>
     </main>
   </div>
@@ -403,7 +403,7 @@ ${injectHead}</head>
 <body data-screen="note-moved" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="notes" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
-    <main class="app-shell__main">
+    <main class="app-shell__main" id="main-content">
       <div class="board">
         <p class="eyebrow">📝 <span class="name">Notes</span> · this one moved</p>
         <h1 class="masthead">This note was folded into a longer one.</h1>

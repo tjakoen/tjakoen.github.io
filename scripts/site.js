@@ -95,9 +95,20 @@
     // memory of position; with enough open tabs the active one can render off-screen on load,
     // clipped with no visible cue it's just a scroll away. rAF, not immediate: tabs.js's own
     // render() (also deferred) must land first so `aria-current="page"` actually exists yet.
+    // scrollLeft, NOT scrollIntoView, and the reason is not style. scrollIntoView also sets the
+    // document's sequential focus navigation starting point to the element it scrolls to, so this
+    // one line moved the start of the tab order into the tab strip on every page load. The skip
+    // link and the whole window-bar nav sat before it and became unreachable by keyboard: present
+    // in the DOM, focusable by script, never reached by Tab. Found on 2026-08-19 while checking
+    // that a newly added skip link actually worked, which it did not, for this reason.
     requestAnimationFrame(() => {
-      document.querySelector('.tab-bar[data-open-tabs] [aria-current="page"]')
-        ?.scrollIntoView({ block: "nearest", inline: "nearest" });
+      const active = document.querySelector('.tab-bar[data-open-tabs] [aria-current="page"]');
+      const strip = active?.closest("[data-open-tabs]");
+      if (!active || !strip) return;
+      const tab = active.getBoundingClientRect();
+      const rail = strip.getBoundingClientRect();
+      if (tab.left < rail.left) strip.scrollLeft += tab.left - rail.left;
+      else if (tab.right > rail.right) strip.scrollLeft += tab.right - rail.right;
     });
 
     // ---- the window nav: back / refresh / forward (VS Code-style, our hover color)

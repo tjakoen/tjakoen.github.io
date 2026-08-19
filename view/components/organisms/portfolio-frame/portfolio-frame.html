@@ -10,6 +10,14 @@
      site.js marks the open file in the tree and the active app in the dock). Compose inside
      `.app-shell.app-window` (body carries .app-window-backdrop), sibling of <main>. -->
 
+<!-- The skip link, and it earns its place here rather than being a checkbox item. This chrome is an
+     editor: the explorer rail lists every note, every standard and every calendar entry as its own
+     link, and all of it sits before <main> in tab order. The 2026-08-18 audit walked it with real
+     Tab presses and reached the page's own content on the 119th stop on /about, on every load. The
+     rail is the design and it is staying, so the way out is the escape hatch every editor already
+     has. First focusable thing on the page, invisible until it is focused. -->
+<a class="skip-link" href="#main-content">Skip to content</a>
+
 <!-- ═══ the TITLE BAR: window nav (back/refresh/forward) · view controls · the search field ═══ -->
 <header class="app-shell__window window-bar">
   <!-- LEFT: only the OS-window circle buttons (back / refresh / forward) -->

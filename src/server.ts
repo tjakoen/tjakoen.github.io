@@ -278,7 +278,7 @@ const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAG
 // (grain/scripts/catalog-peek.js) works SITE-WIDE, not only on /grain: with the Catalog pane open,
 // hovering any catalogued GRAIN component (a button, field, list, badge, tab…) reveals its entry in
 // the pane. Pages that already declare their OWN [data-peek-root] (only /grain, scoped to its
-// showcase) are left alone, so their tuned scope is preserved. `<main class="app-shell__main">` is
+// showcase) are left alone, so their tuned scope is preserved. `<main class="app-shell__main" id="main-content">` is
 // the one content wrapper every page (static + MILL + the reference/plans chrome) shares.
 function withPeekRoot(html: string): string {
   if (html.includes("data-peek-root")) return html;
@@ -360,7 +360,7 @@ const proofRoutes = createProofRoutes({
 <body data-screen="plans" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
-    <main class="app-shell__main"><div class="board">${body}</div></main>
+    <main class="app-shell__main" id="main-content"><div class="board">${body}</div></main>
   </div>
 ${PAGE_ASSETS}</body>
 </html>`),
@@ -552,7 +552,7 @@ Bun.serve({
 <body data-screen="reference" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
-    <main class="app-shell__main">
+    <main class="app-shell__main" id="main-content">
       <div class="board">
         <p class="eyebrow">📚 <span class="name">Reference</span></p>
         <h1 class="masthead">Generated, not hand-copied.</h1>
