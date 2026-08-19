@@ -33,6 +33,8 @@ const goto = (path: string) => async (page: import("@playwright/test").Page) => 
 const SHOTS: Shot[] = [
   { name: "welcome", desc: "/ — THE EDITOR's Welcome page (the whole site as one editor window)", fullPage: true, prepare: goto("/") },
   { name: "notes", desc: "/notes — the notes index (MILL), inside the editor window", fullPage: true, prepare: goto("/notes") },
+  { name: "talks", desc: "/talks — the talks index: every deck is a live page on this stack, never a slide export", fullPage: true, prepare: goto("/talks") },
+  { name: "standards", desc: "/standards — the published standards index, rendered by MILL out of this repo's own standards/ folder", fullPage: true, prepare: goto("/standards") },
   { name: "calendar", desc: "/calendar — Month/Week/Agenda over the real note dates + desk-feed posts (Pass 2 — Calendar)", fullPage: true, prepare: goto("/calendar") },
   { name: "mail", desc: "/mail — folders + a message list over a letters page of desk dispatches, Compose is the one live control (Pass 3 — Mail)", fullPage: true, prepare: goto("/mail") },
   { name: "bread", desc: "/bread — the BREAD Stack directory: all five members, one card shape", fullPage: true, prepare: goto("/bread") },
@@ -41,6 +43,8 @@ const SHOTS: Shot[] = [
   { name: "mill", desc: "/mill — the lean content-engine landing page", fullPage: true, prepare: goto("/mill") },
   { name: "proof", desc: "/proof — the AI plan board trailhead (building)", fullPage: true, prepare: goto("/proof") },
   { name: "pantry", desc: "/pantry — the installable dev-docs cockpit trailhead (building)", fullPage: true, prepare: goto("/pantry") },
+  { name: "crumb", desc: "/crumb — the CRUMB layer: a guided tour that runs over the live app rather than a copy of it", fullPage: true, prepare: goto("/crumb") },
+  { name: "greenroom", desc: "/greenroom — the Greenroom app: browser checks anyone can watch, ending in a bug bundle a developer can replay", fullPage: true, prepare: goto("/greenroom") },
   {
     name: "grain-peek", desc: "/grain — Inspect: the Catalog peek bridges usage → specimen",
     prepare: async (page) => {
@@ -77,6 +81,16 @@ const SHOTS: Shot[] = [
       await page.locator("[data-surface-demo] .ai-spotlit").first().waitFor({ timeout: 8000 });
       await page.waitForTimeout(300);
     },
+  },
+  {
+    // Shot with one of the page's own example prompts already in the address, not the bare route:
+    // /builder cold is an empty canvas, and an empty canvas is the one thing this screen is not
+    // about. The composition is decided server-side (ai/block-set.ts) from the ?ask= string, so the
+    // same URL renders the same three blocks every run.
+    name: "builder",
+    desc: "/builder — the page-builder workbench: describe a page in plain English, and a closed, code-owned set of GRAIN blocks decides what actually renders",
+    fullPage: true,
+    prepare: goto("/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout"),
   },
   {
     name: "cmdk", desc: "/ — the ⌘K command palette",

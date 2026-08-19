@@ -17,6 +17,34 @@ lightweight AI demo that runs entirely in the visitor's browser.
 > Calendar, Mail, and About) are all live. New here and want to make a small edit? →
 > **[HACKING.md](docs/HACKING.md)** (route → source map + "which file do I open").
 
+## Quick start
+
+Needs [Bun](https://bun.sh), pinned to 1.3.14, the same version CI runs. There
+is no bundler and no build step: Bun runs the TypeScript straight from source, so the dev server is
+the whole toolchain.
+
+```sh
+bun install
+bun run dev              # http://localhost:3000  (hot reload, no build)
+```
+
+Then visit:
+
+| Route | What |
+|---|---|
+| `/` | the hero desk: watch the AI drive the real surfaces |
+| `/bread` | the stack directory: every layer, one card shape |
+| `/notes` | the blog and the whitepaper, rendered through MILL |
+| `/catalog` | the live GRAIN component catalog |
+
+The checks this repo holds itself to, all runnable locally:
+
+```sh
+bun test                 # the unit suite
+bun run check            # TypeScript, no emit
+bun run export           # the static build GitHub Pages publishes
+```
+
 ## What it is (and isn't)
 
 - It's a **consumer** of the stack: a bespoke app, re-skinning GRAIN via its public seams.
