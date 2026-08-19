@@ -6,4 +6,4 @@
   text-decoration: none; font-size: var(--text-base); }
 .recent__name { color: var(--color-accent, var(--ink)); }
 .recent__item:hover .recent__name { text-decoration: underline; }
-.recent__path { color: var(--ink-faint); font-size: var(--text-sm); font-family: var(--font-mono); }
+.recent__path { color: var(--ink-muted); font-size: var(--text-sm); font-family: var(--font-mono); }

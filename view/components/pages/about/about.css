@@ -26,7 +26,7 @@
 [data-screen="about"] .now-list { list-style: none; margin: var(--space-3) 0 var(--space-5); padding: 0;
   display: flex; flex-direction: column; gap: var(--space-2); }
 [data-screen="about"] .now-list li { font-size: var(--text-sm); color: var(--ink-muted); }
-[data-screen="about"] .now-list time { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint);
+[data-screen="about"] .now-list time { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-muted);
   margin-right: var(--space-2); }
 
 /* Profile quotes-hero: a first-person manifesto that leads the Profile panel. First three lines deep-link
@@ -64,5 +64,5 @@
   max-width: 26rem; margin: var(--space-3) 0 var(--space-5); }
 [data-screen="about"] .contact-form__foot { display: flex; align-items: center; flex-wrap: wrap;
   gap: var(--space-2) var(--space-4); }
-[data-screen="about"] .contact-form__hint { font-size: var(--text-xs); color: var(--ink-faint); }
+[data-screen="about"] .contact-form__hint { font-size: var(--text-xs); color: var(--ink-muted); }
 [data-screen="about"] .contact-form__hint a { color: var(--ink-muted); }

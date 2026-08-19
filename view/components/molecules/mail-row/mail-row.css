@@ -23,8 +23,8 @@
 [data-screen="mail"] .mailbox__item-from { grid-column: 2; grid-row: 1; font-size: var(--text-xs);
   color: var(--ink-muted); }
 [data-screen="mail"] .mailbox__item-when { grid-column: 3; grid-row: 1; font-size: var(--text-xs);
-  color: var(--ink-faint); font-family: var(--font-mono); white-space: nowrap; text-align: right; }
+  color: var(--ink-muted); font-family: var(--font-mono); white-space: nowrap; text-align: right; }
 [data-screen="mail"] .mailbox__item-subject { grid-column: 2 / -1; grid-row: 2; font-size: var(--text-sm);
   color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 [data-screen="mail"] .mailbox__item-snippet { grid-column: 2 / -1; grid-row: 3; font-size: var(--text-xs);
-  color: var(--ink-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
