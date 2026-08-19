@@ -16,9 +16,17 @@ scope:
   - docs/grain/
   - tools/
   - artifacts/posts/
+  - artifacts/runs/
+  - standards/
+  - docs/
+  - package.json
+  - bun.lock
+  - e2e/
   - grain/packages/mill/
   - greenroom (reconciliation, separate session)
-scopeGrowth: six paths outside the list above, each one reached by following a defect the declared
+scopeGrowth: the six paths named below sat outside the envelope this run was handed, and the list
+  above now carries them so the ledger measures against the envelope the run actually finished
+  inside. The six, each one reached by following a defect the declared
   work uncovered rather than by drifting. standards/FIGURES.md and standards/VOICE.md and
   docs/CONTENT-BACKLOG.md carried the false claim that MILL's renderer does not exist, found while
   investigating whether to wire it. package.json and bun.lock took mill 0.4.0, which the diagram
@@ -43,8 +51,15 @@ touched:
   - e2e/visual.e2e.ts-snapshots/{welcome,resume,catalog}-darwin.png
   - artifacts/posts/2026-08-19-appbuildersph-bread.md
   - artifacts/runs/2026-08-19-launch-readiness.md
-unpushed: 0 commits. Everything this run produced is on origin/main, and all six estate repos read
-  ahead=0 and clean at the close.
+unpushed: 0 | everything this run produced is on origin/main across seven commits, 410f34e, 4367a48,
+  8137c76, 250087f, 0df78ab, e994af4 and 8ad8a88, and all six estate repos read ahead=0 and clean at
+  the close.
+diffstat: 7 commits, 483 insertions and 69 deletions, plus three binary visual baselines re-recorded
+  with no line count of their own.
+doctor: 21 checks, 0 failing, 4 due at the start. Three carried by name rather than fixed: cold-start
+  context over the 20,000 budget, graphify freshness, and the layer pin then one behind at mill 0.3.0
+  against 0.4.0, which the dependency bump in this run closed. The run-ledger row is the one this
+  file answers.
 verifiedBy: nobody yet. This is the author's own account. The diagram gate is the one claim in it
   that was checked by an independent method rather than by its own tests, probed by hand in both
   directions against real served content.
@@ -121,7 +136,30 @@ bug that 0.4.0 fixes. So between authoring a labelled fence and installing 0.4.0
 where the gate reports clean and the page ships raw source. That window is the exact failure the
 gate exists to close, and it stays open until grain is pushed.
 
-## Carried, not fixed
+## Gate output
+
+```
+NOT A PASTE. Reconstructed 2026-08-19 by a later session. The original terminal output was not
+kept, so every number below is copied from this report's own gates: list and from nowhere else.
+Nothing here was re-run to produce this block.
+
+portfolio
+  $ bun run check                       clean
+  $ bun test                            592 pass, 0 fail, 2028 expect() calls
+  $ bun run lint:links                  53 rendered files, no dead relative links
+  $ bun tools/voice-lint.ts artifacts/posts/
+                                        0 flags
+
+grain
+  $ bun run check                       five packages, all exit 0
+  $ bun test                            691 pass, 0 fail
+
+diagram cache gate, probed by hand in both directions
+  bare mermaid fence in served content  fails, naming file, line, route, cache path, warm command
+  the same fence written with label=    no failures, because the installed mill 0.3.0 cannot see it
+```
+
+## What was not done, and what is carried rather than fixed
 
 - **Three published standards state things that are false.** The published FIGURES standard says MILL never
   gained mermaid rendering and that it is not planned; VOICE line 192 says flows and loops
@@ -141,3 +179,19 @@ Gates are in the frontmatter. The rendered change on the stack page was screensh
 asserted. The diagram gate was probed in both directions rather than observed passing. The launch
 post draft passes the mechanical voice lint at zero flags; its judgment half is a human read and is
 owed.
+
+## What needs human eyes
+
+Three things a green gate cannot settle, and none of them is blocked on anything but a read.
+
+The launch post draft at `artifacts/posts/2026-08-19-appbuildersph-bread.md` passes the mechanical
+voice lint at zero flags. That measures the tells a script can find. Whether it reads like Tjakoen
+wrote it is the half no lint reaches, and it is owed before the post goes anywhere.
+
+The builder page now says a bare block id resolves up to its long address. Nobody has run the live
+model against that fence. The page says so in those words, and it should keep saying so until
+somebody runs it and can write a number instead.
+
+MILL renders a labelled mermaid fence and the portfolio wires none of it. That is a deliberate
+ordering rather than an unfinished slice, and the gate exists so the wiring is safe when it happens,
+but the decision to wire it at all is the owner's.

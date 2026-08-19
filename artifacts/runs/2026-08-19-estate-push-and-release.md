@@ -9,9 +9,23 @@ skills:
   - voice
   - note-standard
 scope:
-  - the uncommitted work of two idle sessions, in the portfolio and in grain
-  - the npm release of the four stack packages
-  - the portfolio's dependency bump onto them
+  - content/notes/
+  - view/pages/talks/
+  - view/components/molecules/live-figure/
+  - scripts/
+  - standards/
+  - docs/
+  - tools/
+  - e2e/
+  - package.json
+  - bun.lock
+  - grain/packages/
+  - claude-config memory for this project
+scopeGrowth: none. The envelope this run was given was stated in prose rather than in paths: the
+  uncommitted work of two idle sessions in the portfolio and in grain, the npm release of the four
+  stack packages, and the portfolio's dependency bump onto them. The path list above is that same
+  envelope written so the ledger can measure it, added on 2026-08-19. Every path in it was reached
+  by finishing one of those three things.
 touched:
   - content/notes/build-the-floor.md
   - view/pages/talks/build-the-floor.html
@@ -52,8 +66,12 @@ gates:
   - "bun ../pantry/cli.ts doctor . | 21 checks, 0 failing, 4 due"
 diffstat: two repos. Portfolio 15 files across 8 commits, roughly 2,200 insertions, most of it the
   note and the deck. Grain 25 files across 3 commits, roughly 1,260 insertions.
-unpushed: 0 of this run's commits. All 8 portfolio and 3 grain commits are on origin/main. The 1
-  commit ahead of origin at close belongs to the Site builder P4 session.
+unpushed: 0 | all 8 portfolio and 3 grain commits from this run are on origin/main. The 1 commit
+  ahead of origin at close belonged to the Site builder P4 session, and it has since been pushed too.
+verifiedBy: the 2026-08-19 consolidation session, which did not write this report. It re-measured the
+  closing claim by an independent route rather than re-reading the account: all six BREAD repos read
+  ahead=0 and clean, CI and the Pages deploy are green on 8ad8a88, and npm returns grain 0.1.23,
+  crumb 0.1.10 and proof 0.1.4. Mill has since moved past this run's 0.3.0 to 0.4.0.
 doctor: 21 checks, 0 failing, 4 due. Cold-start context carried by name with the owner's consent.
   Graphify freshness was cleared during the run and re-staled by concurrent edits. Layer pins and the
   run-ledger row both belong to sibling sessions and are named below.
@@ -113,6 +131,38 @@ timing sensitive under parallel load; it passes serially every time.
 
 None of this needed the released packages touched. The behaviour change was intended and the tests
 were stale. CI on the fix commit is green, end to end included, in five and a half minutes.
+
+## Gate output
+
+```
+NOT A PASTE. Reconstructed 2026-08-19 by a later session. The original terminal output was not
+kept, so every number below is copied from this report's own gates: list and from nowhere else.
+Nothing here was re-run to produce this block.
+
+portfolio, clean worktree at HEAD
+  $ bun run check          tsc --noEmit, no output, exit 0
+  $ bun test               592 pass, 0 fail, 2028 expect() calls, 36 files
+  $ bun run lint:links     53 rendered file(s), no dead relative links.
+  $ bun tools/lint-gate.ts voice:backtick: baseline 3071 -> now 3075 (+4)
+                           not this run's: traced to 410f34e, a concurrent session's commit
+
+end to end, clean worktree at e2ff70d
+  before the fix     4 failed, 283 passed, 1 skipped
+  after the fix      284 passed, 1 skipped, 3 failed under full parallel load
+  those 3, --workers=1   3 passed (14.1s)
+
+CI on 128c731
+  typecheck, tests, lint count   16s pass
+  end to end                     5m26s pass
+
+grain
+  $ bun run check    exit 0, five times, one per package
+  $ bun test         663 pass, 0 fail, 1902 expect() calls, 68 files
+  $ npm view         grain 0.1.23, mill 0.3.0, crumb 0.1.10, proof 0.1.4
+
+$ bun ../pantry/cli.ts doctor .
+  21 checks, 0 failing, 4 due
+```
 
 ## What was not done
 

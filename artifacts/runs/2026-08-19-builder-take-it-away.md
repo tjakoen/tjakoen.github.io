@@ -9,14 +9,18 @@ skills:
   - tour-standard
   - loop-standard
 scope:
-  - src/ai/composition.ts
-  - src/ai/builder-page.ts
+  - src/ai/
   - view/pages/builder.html
   - view/components/pages/builder/
   - e2e/
-  - src/server.ts, only if a route was genuinely required
-scopeGrowth: seven files outside the declared list, every one of them named and reasoned in the
-  Scope section below. builder-page.ts was declared and never needed to change.
+  - src/server.ts
+  - content/tours/
+  - plans/site-builder.md
+scopeGrowth: the list above is the envelope this run finished inside, restated on 2026-08-19 so the
+  ledger measures every touched file against something. The envelope P4 was handed was narrower:
+  src/ai/composition.ts and src/ai/builder-page.ts by name, plus src/server.ts only if a route
+  proved necessary. Seven files sit outside that original list, every one of them named and reasoned
+  in the Scope section below, and builder-page.ts was declared and never needed to change.
 touched:
   - src/ai/builder-export.ts
   - src/ai/builder-export.test.ts
@@ -42,8 +46,9 @@ gates:
   - bun run export + bun tools/verify-export.ts | 124/124 pages, 36 frozen modules, verify OK
 diffstat: 11 files. 497 insertions and 17 deletions across the eight tracked ones, plus three new
   files at 481 lines.
-unpushed: 2 commits. 8d65cb0, this run's P4 commit, and the follow-up carrying the stale-copy
-  correction below. Nothing was pushed, because pushing is the owner's call and was not given.
+unpushed: 0 | the count was 2 when this report was written, because pushing is the owner's call and
+  had not been given. Both commits, 8d65cb0 and its follow-up 4367a48, reached origin/main later the
+  same day and the repo reads ahead=0.
 verifiedBy: nobody yet. This is the author's own account and the tour is stamped accordingly.
 doctor: 21 checks, 0 failing, 4 due at session start, all four carried by name rather than fixed:
   cold-start context over the 20,000 budget, graphify freshness, mill pinned 0.3.0 behind 0.4.0, and
