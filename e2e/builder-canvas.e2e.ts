@@ -707,3 +707,67 @@ test.describe("opening one back in, honestly", () => {
     await expect(page.locator(`${RAIL_ROW}`).last()).toContainText("b5");
   });
 });
+
+// ---------------------------------------------------------------------------------------------
+// Undo
+// ---------------------------------------------------------------------------------------------
+// This is the one control on the page that exists because of a MEASUREMENT rather than a design.
+// On 2026-08-19 the live model, asked for a change no verb can serve, reached for a verb anyway and
+// removed a block nobody had mentioned, once in four tries. The guard that would have forbidden it
+// was written and measured too, and it took the one edit the model does land with it. So a wrong
+// drop is made reversible instead of impossible, and these tests are what says it stays that way.
+//
+// Driven through the RAIL rather than the model, deliberately. The e2e suite is model-offline by
+// design, and undo does not care what produced the change: the handshake records before it adopts
+// the DOM's new shape, so a desk drop and a press take the same path through the stack.
+test.describe("undo", () => {
+  test("the button is absent until there is something behind it", async ({ page }) => {
+    await page.goto(ask("An intro, a card and a callout"));
+    await expect(page.locator(CELL)).toHaveCount(3);
+    await expect(page.locator("[data-undo]")).toBeHidden();
+  });
+
+  test("a dropped block comes back with its content, not as a placeholder", async ({ page }) => {
+    await page.goto(ask("An intro, a card and a callout"));
+    const before = await page.locator(CELL).allInnerTexts();
+
+    await page.locator(`${RAIL_ROW}[data-block="b2"] [data-op="remove"]`).click();
+    await expect(page.locator(CELL)).toHaveCount(2);
+    await expect(page.locator("[data-undo]")).toBeVisible();
+
+    await page.locator("[data-undo]").click();
+    await expect(page.locator(CELL)).toHaveCount(3);
+    // The whole claim. A stack of compositions restores the block's DATA; an inverse-op log would
+    // have had to guess it back, and guessing is what readComposition refuses to do.
+    expect(await page.locator(CELL).allInnerTexts()).toEqual(before);
+  });
+
+  test("it covers a width as well as a drop", async ({ page }) => {
+    await page.goto(ask("An intro, a card and a callout"));
+    const spans = () => page.locator(CELL).evaluateAll((els) => els.map((e) => e.getAttribute("data-span")));
+    const before = await spans();
+
+    await page.locator(`${RAIL_ROW}[data-block="b3"] [data-op="span:half"]`).click();
+    expect(await spans()).not.toEqual(before);
+
+    await page.locator("[data-undo]").click();
+    expect(await spans()).toEqual(before);
+  });
+
+  test("the button goes away again once the stack is empty", async ({ page }) => {
+    await page.goto(ask("An intro, a card and a callout"));
+    await page.locator(`${RAIL_ROW}[data-block="b2"] [data-op="remove"]`).click();
+    await page.locator("[data-undo]").click();
+    await expect(page.locator("[data-undo]")).toBeHidden();
+  });
+
+  // A press that changes nothing must not fill the stack, or undo would have to be pressed twice to
+  // get past a no-op and the second press would land somewhere the visitor did not expect.
+  test("a press that changes nothing records nothing", async ({ page }) => {
+    await page.goto(ask("An intro, a card and a callout"));
+    // b1 is already full width, and it is the first row, so neither of these moves anything.
+    await page.locator(`${RAIL_ROW}[data-block="b1"] [data-op="span:full"]`).click();
+    await page.locator(`${RAIL_ROW}[data-block="b1"] [data-op="move:up"]`).click();
+    await expect(page.locator("[data-undo]")).toBeHidden();
+  });
+});

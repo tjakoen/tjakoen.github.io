@@ -30,6 +30,15 @@
         <form class="wb-bar builder-composer" method="get" action="/builder">
           <b-memo each="composer" size="sm" rows="2"></b-memo>
           <button class="btn" type="submit">Build it</button>
+          <!-- Undo, and it is a correctness device rather than a convenience.
+               Measured on 2026-08-19: the live model, asked for a change no verb can make, reached
+               for a verb anyway and removed a block nobody mentioned, once in four tries. The fence
+               resolves a short address for a drop because that is the one edit the model lands, so
+               the answer to a wrong drop is to make it reversible rather than to forbid it. Hidden
+               until there is something to undo, and inert with JavaScript off, which is the same
+               honest state the rail's collapse button is in. -->
+          <button class="wb-chip" type="button" data-undo hidden
+                  title="Put back the last change, whether you made it or the desk did.">Undo</button>
         </form>
         <!-- What the prompt was read AS, and it only ever has something to say once a page exists.
              A prompt over an empty canvas describes a page and gets composed; a prompt over a page
@@ -218,9 +227,14 @@
           <p>The same run turned up something the deduction would never have found. Asked for a change
             no verb can make, the model reached for a verb anyway and removed an unrelated block, once
             in four tries. Under the strict fence that answer was refused for its address and nothing
-            moved. Loosening the fence is what let it through, so the honest reading is that this
-            change bought one working edit and widened the blast radius of a wrong one. Both numbers
-            are one afternoon against a model that answers differently every time, not a rate.</p>
+            moved. Loosening the fence is what let it through. Both numbers are one afternoon against
+            a model that answers differently every time, not a rate.</p>
+          <p>The obvious guard was to stop resolving a short address for a verb that removes something.
+            That was built, and then measured, and it took the one edit that works with it, because
+            the edit that works is a drop written short. So the answer here is Undo instead. A wrong
+            drop is one press to put back, with the block's own content intact, and the same button
+            covers a width or a move. That is the trade this page is willing to make: an edit that
+            lands, next to a mistake that costs a keystroke rather than the page.</p>
           <p>This drawer used to promise that the honest demo is the one where you watch it pick the
             wrong block. Under the strict fence it never got that far, and a promise you cannot keep
             is worse than a limit you state. Under the loose one it got there once, in the worst way,
