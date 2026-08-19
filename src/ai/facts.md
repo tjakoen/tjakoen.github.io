@@ -17,13 +17,13 @@ Yes. The working record is at /resume: a print-friendly page with what TJ does, 
 
 ## What is BREAD?
 
-BREAD is TJ's personal software stack. It is five members, built to depend on each other in one direction, so each layer only knows about the ones below it.
+BREAD is TJ's personal software stack. It is four layers plus PANTRY, built to depend on each other in one direction, so each layer only knows about the ones below it.
 
-The four layers, in dependency order, are BATCH, GRAIN, MILL, and PROOF. BATCH is the bottom: a no-build, server-rendered hypermedia substrate that runs this site. GRAIN sits on top of it, an AI-interaction design system whose whole idea is that every surface can be operated by both a human and an AI through one shared vocabulary, with the AI's presence shown as a visible grain. MILL is a content engine that turns Markdown into GRAIN pages, and it renders the notes and the layer docs you read here. PROOF is an AI plan board, where plans are Markdown files and the board is a projection of them.
+The four layers, in dependency order, are BATCH, GRAIN, MILL, then PROOF and CRUMB sharing the top altitude. BATCH is the bottom: a no-build, server-rendered hypermedia substrate that runs this site. GRAIN sits on top of it, an AI-interaction design system whose whole idea is that every surface can be operated by both a human and an AI through one shared vocabulary, with the AI's presence shown as a visible grain. MILL is a content engine that turns Markdown into GRAIN pages, and it renders the notes and the layer docs you read here. PROOF is an AI plan board, where plans are Markdown files and the board is a projection of them, and it renders this site's own plans at /plans. CRUMB stands beside PROOF at the same altitude: it runs a guided tour over the live app, so a walkthrough is a file rather than a video that goes stale.
 
-PANTRY is the fifth member, but it is not a link in that chain. It is an app that composes the layers into one dev-docs and AI cockpit you can install and run. This portfolio is its neutral sibling: another app built on the same layers.
+PANTRY is not a link in that chain at all. It is an app that composes the layers into one dev-docs and AI cockpit you can install and run. This portfolio is its neutral sibling: another app built on the same layers.
 
-You can read each member's own story from its trailhead, at /grain, /batch, and the docs under /grain/docs and /batch/docs.
+You can read each member's own story from its trailhead, at /bread, /batch, /grain, /mill, /proof, /crumb and /pantry, and the docs under /grain/docs, /batch/docs, /mill/docs, /proof/docs, /crumb/docs and /pantry/docs.
 
 ## How is this site built?
 

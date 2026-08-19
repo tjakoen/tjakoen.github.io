@@ -351,9 +351,12 @@ function boot(): void {
     // that far. Over thirty-three answers, eighteen before grain's reasoner manifest was narrowed
     // and fifteen after, zero edits landed, seven named a block at all, and five of those named the
     // right block AND the right verb and were refused on the address form, since the answer says b2
-    // where the manifest addresses block:b2. So this guard covers a failure nothing here has yet
-    // produced, and it stays because the address is the one thing a reader can check before the
-    // page moves rather than after.
+    // where the manifest addresses block:b2. That last refusal is gone as of 2026-08-19: the reasoner
+    // resolves a short address up to the long one when the page holds exactly one block at it, so
+    // answers of that shape now reach this line instead of the refusal above, and no live run has
+    // been done since. So this guard covers a failure nothing here has yet produced, and it stays
+    // because the address is the one thing a reader can check before the page moves rather than
+    // after.
     say(read.command.said, "command");
     door.submit(read.command.action, read.command.surface, read.command.payload);
   }

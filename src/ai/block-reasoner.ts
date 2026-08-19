@@ -28,6 +28,15 @@
 // which is why the said lines below are page copy rather than debug output. The numbers and the
 // reverted prompt-side fix are in plans/builder-design.md, Open 3.
 //
+// THOSE FIVE ARE NO LONGER REFUSED FOR THE ADDRESS, SINCE 2026-08-19. The counts above stand as a
+// measurement of what the live model said on 2026-08-15. What changed under them is the fence:
+// readModelMove now resolves a bare id UP to its prefixed address when the live manifest carries
+// exactly one block at that address, so an answer of b2 on a page holding one block:b2 is read as
+// block:b2 and goes out the door. That is the read side of the direction filed as Open 3, and it is
+// the only side taken: the prompt side was tried, measured strictly worse, and stays reverted. What
+// has NOT happened is a fresh run of the live model against the new fence, so "not one correct edit"
+// describes the runs that exist rather than what this build would do today.
+//
 // GRAIN OWNS THE MACHINERY. buildReasonerPrompt, parseModelMove and validateMove are grain's, passed
 // in rather than imported so this module stays pure and headless: the browser refuses a bare grain
 // import, and a test should not need a URL import to check a refusal.
@@ -126,6 +135,37 @@ export function blockMessage(message: string, blockIds: string[]): string {
 
 const idOf = (surface: string): string => surface.replace(/^block:/, "");
 
+/** The prefixed address a bare id means, when the live manifest leaves no doubt about which one.
+ *
+ *  WHY THIS EXISTS, AND WHY IT IS ON THIS SIDE. The prompt hands the model short ids because that is
+ *  the only form a 0.5B reliably copies back, and the manifest addresses the same blocks long. That
+ *  gap was measured rather than argued: five of fifteen answers named the right block AND a real
+ *  block verb and were refused for writing b2 where the page addresses block:b2. Printing the long
+ *  form in the prompt was the obvious fix, it was taken on 2026-08-15, and it made the model strictly
+ *  worse, so the comment on blockMessage keeps those numbers and that door stays shut. This is the
+ *  other side of the same problem: widen what the fence will READ, and leave what the model is told
+ *  alone.
+ *
+ *  IT RESOLVES, IT DOES NOT GUESS. Exactly one block at block:<id> and nothing already answering to
+ *  the short form, or it returns null and the refusal path runs untouched. Two blocks at one address
+ *  is a page where the short form has no single meaning, and a fence that picks one of them for the
+ *  model would be claiming an intent nothing expressed. */
+function resolveBareId(target: string, manifest: Manifest): string | null {
+  if (!target || target.includes(":")) return null;
+  if (manifest.targets.some((t) => t.id === target)) return null;
+  const matches = manifest.targets.filter((t) => t.id === `block:${target}`);
+  return matches.length === 1 ? `block:${target}` : null;
+}
+
+/** The move as the page will act on it: the same move, with a resolvable short address written out.
+ *  Everything downstream, grain's validation, the refusal copy and the said line, sees this one, so
+ *  the page never describes an address it did not use. */
+function normalizeTarget(move: ModelMoveLike, manifest: Manifest): ModelMoveLike {
+  if (typeof move.target !== "string") return move;
+  const resolved = resolveBareId(move.target, manifest);
+  return resolved === null ? move : { ...move, target: resolved };
+}
+
 /** The short ids the rail prints, from the addresses the manifest carries. */
 const blockIdsIn = (manifest: Manifest): string[] =>
   manifest.targets.filter((t) => t.id.startsWith("block:")).map((t) => idOf(t.id));
@@ -145,19 +185,20 @@ const VERB_WORDS: Record<BlockVerb, string> = {
  *
  *  grain's reason is written for whoever is debugging the vocabulary. `no surface "b2" on this
  *  screen` is the right sentence in a console and the wrong one on a page a visitor is reading, and
- *  it was reaching the page verbatim: about half the live model's answers land in exactly that
- *  branch. So the reason still goes to `because` word for word, and the line the page SHOWS is
- *  derived here from the move and the live manifest instead.
+ *  it was reaching the page verbatim: about half the live model's answers landed in exactly that
+ *  branch, back when a bare id was still refused. So the reason still goes to `because` word for
+ *  word, and the line the page SHOWS is derived here from the move and the live manifest instead.
  *
  *  Derived rather than pattern-matched against grain's wording, because grain owns those strings and
  *  is free to change them, and copy that silently degrades to a generic sentence the day an upstream
  *  string moves is worse than copy that never read it.
  *
  *  NOTHING HERE FORGIVES A MOVE. Every branch describes a refusal that has already happened and only
- *  chooses the words for it. The near-miss branch especially: it says the address was one prefix
- *  short and it still says nothing moved, because normalizing a bare id up to block:<id> is a
- *  decision about how forgiving the fence should be, it is filed in plans/builder-design.md as Open
- *  3, and it is not taken here. */
+ *  chooses the words for it. The forgiving happens one step earlier and in the open: readModelMove
+ *  resolves a bare id up to its prefixed address before grain ever sees the move, so the answer that
+ *  used to reach the near-miss branch is now an edit rather than a sentence about an edit. What is
+ *  left of that branch is the case the resolver will not guess at, a page carrying two blocks at one
+ *  address, and it still says nothing moved. */
 function refusalSaid(move: ModelMoveLike, manifest: Manifest): string {
   const action = move.action ?? null;
   if (action === null) return "The desk answered without a change and without anything to say, so nothing moved.";
@@ -176,10 +217,11 @@ function refusalSaid(move: ModelMoveLike, manifest: Manifest): string {
 
   const surface = manifest.targets.find((t) => t.id === target);
   if (!surface) {
-    // The measured majority case, and the one that used to print grain's console sentence. The model
-    // names the block correctly and writes the address short.
+    // What is left of the near-miss case. A short address the page carries once is resolved before
+    // validation and never arrives here; one the page carries twice does, because there is no single
+    // block it can mean and the fence will not pick for the model.
     if (manifest.targets.some((t) => t.id === `block:${target}`))
-      return `The desk aimed at ${target}, and this page addresses that block as block:${target}. An address that is one word short is still not the address, so nothing moved.`;
+      return `The desk aimed at ${target}, and this page holds more than one block at that address, so nothing moved.`;
     const ids = blockIdsIn(manifest);
     return ids.length
       ? `The desk aimed at ${target}, which is not on this page. The blocks here are ${inWords(ids)}.`
@@ -217,14 +259,19 @@ export function readModelMove(raw: string, manifest: Manifest, grain: GrainModel
     };
   }
 
-  const checked = grain.validateMove(parsed.move, manifest);
+  // A short address is written out here, before grain validates and before any copy is derived, so
+  // every reader downstream sees the one move the page will actually make. See resolveBareId for why
+  // this is done on the way IN and not by teaching the prompt to print the long form.
+  const asked = normalizeTarget(parsed.move, manifest);
+
+  const checked = grain.validateMove(asked, manifest);
   if (!checked.ok) {
     return {
       kind: "refusal",
       // Two audiences, two sentences. grain's reason names the legal targets and is the most useful
       // thing a developer can read in the console, so it goes to `because` untouched; refusalSaid
       // writes the same refusal for the person looking at the page.
-      said: refusalSaid(parsed.move, manifest),
+      said: refusalSaid(asked, manifest),
       because: checked.reason,
     };
   }

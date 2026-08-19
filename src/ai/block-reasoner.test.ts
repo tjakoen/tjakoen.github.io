@@ -109,16 +109,6 @@ describe("a refusal a visitor can read", () => {
     expect(r.said).not.toContain("screen");
   });
 
-  // The measured majority case: the live model names the right block and writes the address short.
-  // The refusal says so and still refuses, because normalizing b2 up to block:b2 is an open decision
-  // rather than something this file gets to take (plans/builder-design.md, Open 3).
-  test("a bare id is named as one word short, and is still refused", () => {
-    const r = read('{"action":"block.remove","target":"b2"}');
-    if (r.kind !== "refusal") throw new Error("expected a refusal");
-    expect(r.said).toContain("block:b2");
-    expect(r.said).toContain("nothing moved");
-  });
-
   test("a verb with no target says so instead of printing an empty address", () => {
     const r = read('{"action":"block.remove"}');
     if (r.kind !== "refusal") throw new Error("expected a refusal");
@@ -129,7 +119,7 @@ describe("a refusal a visitor can read", () => {
   test("no refusal ever says a change happened", () => {
     const raws = [
       '{"action":"block.remove","target":"block:b9"}',
-      '{"action":"block.remove","target":"b2"}',
+      '{"action":"block.remove","target":"b9"}',
       '{"action":"block.remove"}',
       '{"action":"block.span","target":"block:b2","payload":{"span":"wide"}}',
       '{"action":"field.set","target":"field:builder-ask","payload":{"value":"a card"}}',
@@ -140,6 +130,52 @@ describe("a refusal a visitor can read", () => {
       if (r.kind !== "refusal") throw new Error(`expected a refusal for ${raw}`);
       expect(r.said).not.toMatch(/\b(Dropping|Setting|Moving|done|changed it)\b/i);
     }
+  });
+});
+
+// The measured majority case, and since 2026-08-19 it is an edit rather than a sentence about one.
+// The live model names the right block and writes the address short, because b2 is the form it is
+// handed and the only form it copies back reliably. The fence reads it up to block:b2 when the page
+// holds exactly one block at that address, and refuses everywhere the short form is not decisive.
+// The prompt is deliberately not part of this: printing the long form there was measured strictly
+// worse and stays reverted (plans/builder-design.md, Open 3).
+describe("a bare id the page can resolve", () => {
+  test("a bare id the page holds exactly once becomes an edit on the long address", () => {
+    const r = read('{"action":"block.remove","target":"b2"}');
+    expect(r).toMatchObject({ kind: "command", command: { action: "block.remove", surface: "block:b2", said: "Dropping b2." } });
+  });
+
+  test("a resolved id still has to pass the word lists", () => {
+    const r = read('{"action":"block.span","target":"b2","payload":{"span":"wide"}}');
+    if (r.kind !== "refusal") throw new Error("expected a refusal");
+    expect(r.said).toContain("full, half or third");
+  });
+
+  test("a bare id no block answers to is still refused, and the refusal names the real ones", () => {
+    const r = read('{"action":"block.remove","target":"b9"}');
+    if (r.kind !== "refusal") throw new Error("expected a refusal");
+    expect(r.said).toContain("b1, b2, b3 and b4");
+    expect(r.said).not.toMatch(/Dropping/);
+  });
+
+  // Resolving is not guessing. Two blocks at one address is a page where the short form means no one
+  // thing, and a fence that picked one of them would be inventing an intent the model never had.
+  test("a bare id two blocks answer to is refused rather than picked between", () => {
+    const twice = {
+      ...MANIFEST,
+      targets: [...MANIFEST.targets, { id: "block:b2", kind: "block", label: "block b2 again", accepts: ["block.remove"] }],
+    } as unknown as Manifest;
+    const r = readModelMove('{"action":"block.remove","target":"b2"}', twice, GRAIN);
+    if (r.kind !== "refusal") throw new Error("expected a refusal");
+    expect(r.said).toContain("more than one block");
+    expect(r.said).toContain("nothing moved");
+  });
+
+  // A field is addressed field:builder-ask and nothing on this page answers to block:builder-ask, so
+  // there is no path where a short form quietly widens what this file lets through.
+  test("resolving only ever reaches a block", () => {
+    const r = read('{"action":"field.set","target":"builder-ask","payload":{"value":"a card"}}');
+    expect(r.kind).toBe("refusal");
   });
 });
 
