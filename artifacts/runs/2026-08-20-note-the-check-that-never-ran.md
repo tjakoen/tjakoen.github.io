@@ -1,4 +1,44 @@
+---
+title: "The parked note gets written"
+date: 2026-08-20
+status: complete
+lane: gated
+branch: main
+skills:
+  - note-standard
+  - voice
+  - figures
+scope:
+  - content/notes/
+  - plans/note-the-loop-nobody-ran.md
+  - artifacts/runs/
+touched:
+  - artifacts/runs/2026-08-20-note-the-check-that-never-ran.md
+  - content/notes/the-check-that-never-ran.md
+  - plans/note-the-loop-nobody-ran.md
+diffstat: 3 files changed, 408 insertions(+), 1 deletion(-)
+unpushed: 0
+verifiedBy: the parent session, which did not write the note, 2026-08-20
+doctor: 0 failing, 2 due and carried by name, cold-start context and graphify freshness
+---
+
 # Run report: the parked note gets written
+
+> Frontmatter retrofitted 2026-08-20 by the parent session, which did not write this run. The
+> diffstat and touched list are `git show` on commit `cbaf621`. **The Result line below says "Not
+> pushed" and that is no longer true:** the owner was told that `status: DRAFT` is metadata with no
+> publish gate behind it, chose to publish anyway, and the note went out in `b231909`. It is live at
+> `/notes/the-check-that-never-ran`. The line is left as the author wrote it rather than edited,
+> because what a run believed at the time it closed is worth keeping.
+>
+> Two headings below were extended, not renamed, so the ledger's alias matcher can see them. The
+> author's wording is still the first thing each one says.
+>
+> Verification the parent ran rather than took on trust: the eleven-repo count (this session
+> corrected the parent's twelve, and eleven is right, since claude-config carries neither
+> `CLAUDE.md` nor `pantry.config.json`), `797a67a` as the reach fix (it touches
+> `shared/tools/session-doctor.sh`), the no-repo-named guardrail, and that all three contested
+> figures are handled in the prose as agreed.
 
 **Date:** 2026-08-20
 **Lane:** gated (published prose under the owner's byline)
@@ -138,7 +178,7 @@ Served HTML confirmed to carry all six section headings, the page title, both co
 `role="img"` SVG, the pull-quote as a callout blockquote, the sign-off footer with its link to
 `ten-times-zero`, and the cross-link resolving to `/notes/one-loop-every-repo`.
 
-## What this run did NOT do, and why
+## What was not done by this run, and why
 
 - **No push.** Hard stop in the envelope.
 - **No publish flip.** `status: DRAFT`. The owner's read is owed on every note and a session cannot
@@ -149,7 +189,7 @@ Served HTML confirmed to carry all six section headings, the page title, both co
 - **No edits to the standards the note describes.** Quoting them was the job.
 - **No pickup of the next backlog item.** The bound was one note.
 
-## What needs the owner's eyes
+## What needs human eyes, which on a note is the owner's own read
 
 1. **The judgment half of the smell test.** The linter covers the mechanical half only. The rows a
    human has to read are the texture, the wink, whether the honest limits are honest, and the formula
