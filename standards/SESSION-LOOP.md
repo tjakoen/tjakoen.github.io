@@ -147,6 +147,23 @@ A handoff is worth emitting when: a self-contained task completed, or the sessio
 a fresh context would be cheaper and clearer than continuing (long threads drift and cost more per
 turn), or the *next* step is genuinely a different job (e.g. "code landed → now write the note").
 
+**One of those is not a judgment call, and it was made hard on 2026-08-19 because the judgment
+version does not fire. Bounded work in a sibling repo is ALWAYS a spawn.** If the next piece is
+scoped, and it lives in a repo other than the one this session is working in, it gets its own
+session and its own envelope. No weighing, no asking, no finishing it here because it looks small.
+
+The measurement that made it a rule, taken across the whole session store: **21 handoffs in 454
+sessions, which is 4.6%, and 20 of those 21 are in one repo.** Mean session length runs from 605 to
+920 messages depending on the repo, and the longest is 11,396. The machinery had existed for weeks.
+So the advisory version above, which is the wording that governed all 454, produces a marathon and a
+sibling repo edited from inside a session that was working on something else.
+
+The reason it fails is worth naming, because it is not laziness and a reminder will not fix it. The
+cost of handing off lands NOW, on the session, as a brief that has to be written. The cost of not
+handing off lands LATER, on the reader, as work buried in a thread they cannot see the shape of. Any
+rule that leaves that trade to the session at the moment of the decision resolves the same way every
+time. So it is not left to the session.
+
 **Before emitting, make state durable:** gate green, work committed, decisions written to memory
 (§4). A handoff that points at uncommitted, untested work is a trap. Treat this as a precondition
 rather than a reminder, which means it is checked and not recited: the same turn-end hook that
