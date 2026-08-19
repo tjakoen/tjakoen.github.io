@@ -1,7 +1,7 @@
 ---
 title: Nine sessions consolidated, the ledger cleared, and two claims that were deductions became measurements
 date: 2026-08-19
-status: partial
+status: complete
 lane: gated
 branch: main
 scope:
@@ -13,6 +13,11 @@ scope:
   - docs/
   - standards/
   - view/pages/builder.html
+  - view/pages/builder/preview.html
+  - view/components/pages/builder/builder.css
+  - e2e/builder-canvas.e2e.ts
+  - plans/site-builder.md
+  - src/server.ts
   - package.json
   - bun.lock
   - greenroom (its run-report convention)
@@ -34,6 +39,11 @@ touched:
   - tools/diagram-cache-gate.test.ts
   - tools/verify-export.ts
   - view/pages/builder.html
+  - view/pages/builder/preview.html
+  - view/components/pages/builder/builder.css
+  - e2e/builder-canvas.e2e.ts
+  - plans/site-builder.md
+  - src/server.ts
   - package.json
   - bun.lock
 skills:
@@ -41,11 +51,12 @@ skills:
   - loop-standard
   - figures
   - tour-standard
-plans: plans/site-builder.md P5 is the one item opened and not taken. It needs an owner call that
-  the plan itself flags, so it stopped rather than guessing.
+plans: plans/site-builder.md P5, marked done. It was opened, stopped on the owner call the plan
+  flags, answered as a real route, and built.
 gates:
   - "bun run check | $ tsc --noEmit, no output, exit 0"
-  - "bun test | 595 pass, 0 fail, 2038 expect() calls, 36 files"
+  - "bun test | 600 pass, 0 fail, 2050 expect() calls, 37 files"
+  - "bunx playwright test e2e/builder-canvas.e2e.ts | 58 passed"
   - "bun run lint:links | 53 rendered file(s), no dead relative links."
   - "bun tools/lint-gate.ts | level, 4455 flags against a 4455 baseline"
   - "bun run verify:export | sitemap, dead-link walk and diagram cache all OK"
@@ -53,10 +64,9 @@ gates:
   - "bun ../pantry/cli.ts doctor . | 21 checks, 0 failing, 0 due"
   - "greenroom bun run check | tsc, exit 0"
   - "greenroom bun test lib | 68 pass, 0 fail, 225 expect() calls"
-diffstat: 18 files changed, 601 insertions(+), 89 deletions(-) across 4 portfolio commits, plus 1
-  commit in greenroom and 2 in claude-config.
-unpushed: 4 | the four portfolio commits below. Greenroom's and claude-config's are pushed. Pushing
-  the portfolio is the owner's call and had not been given when this was written.
+diffstat: 7 portfolio commits, plus 1 in greenroom and 2 in claude-config. See the log from 8ad8a88.
+unpushed: 2 | the two builder commits. The first five were pushed mid-run on the owner's word, along
+  with greenroom's and claude-config's; these two landed after that and need the same call.
 verifiedBy: nobody yet. This is the author's own account. Three claims in it were checked by a route
   independent of the thing making the claim: the diagram gate was probed by hand in both directions
   rather than observed passing, the greenroom reconciliation was re-measured from git rather than
@@ -212,11 +222,11 @@ Ran 68 tests across 9 files. [5.52s]
 
 ## What was not done
 
-**Builder P5, the preview tab and the catalog sidebar.** Opened and stopped rather than guessed. The
-plan carries an open question the owner has never answered, whether the preview is a real route on
-this site or a framed sandbox, and the two answers produce different work. The sandbox plan's own
-piece 4 asserts a route, which reads like an answer but sits alongside the question rather than
-closing it. Nothing was built.
+**Nothing from the build order.** P5 was the item that stopped for a decision, the owner answered it
+as a real route, and it was built. What P5 deliberately does NOT close is written into the plan and
+onto the page: a shared preview link arrives empty on the published site, because that page carries
+no template library where the workbench does. Closing it means carrying the library and the paint
+loop onto the preview, which is its own phase.
 
 **The launch post's judgment read.** Two stale facts in it were corrected, which is a different job.
 The mechanical voice lint reads zero flags, and that measures the tells a script can find.
@@ -235,11 +245,29 @@ order to make it green, and it was done deliberately and in the open. Either the
 field for accepted growth, or sessions keep clearing the row by rewriting the envelope, and the
 second outcome is the one that arrives by default.
 
-**The builder's new failure mode.** One in four is a real rate on a small sample and the page says
-so, but the question underneath it is a design call: whether a fence forgiving enough to land the
-easy edit is worth a fence that can now destroy a block on an ask it should have refused. Reverting
-the normalization is one answer. Refusing any destructive verb whose target was resolved from a bare
-id, rather than written in full, is another and probably the better one.
+**The builder's new failure mode: answered, and the first answer was wrong.** The recommendation this
+report originally carried, refusing a destructive verb on a resolved bare id, was built and then
+measured. It took the one edit the model lands with it, three runs to zero, because that edit is a
+drop written short. Forbidding the mistake cost the feature, so it was reverted and the canvas got an
+Undo instead: a wrong drop is one press to put back, with the block's data intact.
+
+The lesson is the one this run keeps relearning. The guard was recommended from a deduction, in the
+same report that spends a section on a deduction being replaced by a measurement. Measuring it took
+about three minutes.
 
 **The launch post.** It is ready as far as anything mechanical can tell. Whether it sounds like him
 is the read that is still owed, and it is the last thing between the draft and appbuildersph.com.
+
+## What the second half added, after the decisions
+
+The owner answered three calls mid-run and the work followed them.
+
+**An Undo on the builder canvas**, in place of the guard above. A stack of whole compositions rather
+than inverse ops, so a restored block comes back with its own data; it records what the desk did as
+well as what a press did. Writing it surfaced a real pre-existing bug: the rail compared the next
+composition to the current one by identity, but two of the three verbs build a new object
+unconditionally and clamp rather than refuse, so the check only ever caught the id-not-found case.
+Harmless while it cost a repaint, not harmless once a no-op press could stack a step that undoes
+nothing visible. It compares by shape now.
+
+**Builder P5**, as a real route. The details and its one known limit are in the plan and above.
