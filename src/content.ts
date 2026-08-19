@@ -53,6 +53,47 @@ function realFilesSource(dir: string): ContentSource {
   };
 }
 
+/**
+ * A note's `status` frontmatter, read as a publish decision. NOTE-STANDARD has told authors for
+ * months to mark an unfinished note `status: DRAFT`, and until 2026-08-20 nothing here ever
+ * compared that field to anything: every draft was served, listed, sitemapped and exported exactly
+ * like a finished note. This is the comparison that was missing.
+ *
+ * It hides on an explicit DRAFT and on nothing else, which is deliberately the loose reading. A
+ * gate that hid every value it did not recognise would take a live page down over a typo in a
+ * status line or a vocabulary word invented later, and a page vanishing by accident is a worse
+ * failure than a draft staying up one more day. A missing `status` publishes for the same reason.
+ */
+export function isPublishedStatus(status: unknown): boolean {
+  return !(typeof status === "string" && status.trim().toUpperCase() === "DRAFT");
+}
+
+/**
+ * A ContentSource that serves only the entries whose frontmatter says they are publishable. It
+ * wraps the source rather than filtering at each caller because everything downstream, the feed,
+ * the per-note route, the raw `.md` twin, the sitemap, the static export, the search tree, the
+ * calendar and the desk's grounding corpus, reaches its entries through `source.list()` and
+ * `source.read()`. Hiding a slug here hides it from all of them at once, and a consumer added
+ * tomorrow inherits the gate without knowing it exists.
+ *
+ * `read()` returns null for a draft, which is the same answer MILL already gives for a slug that
+ * is not there, so `/notes/<draft>` and `/notes/<draft>.md` both answer 404 rather than rendering.
+ */
+function publishedSource(base: ContentSource): ContentSource {
+  const publishable = async (slug: string): Promise<boolean> => {
+    const raw = await base.read(slug);
+    return raw !== null && isPublishedStatus(parseFrontmatter(raw).data.status);
+  };
+  return {
+    list: async () => {
+      const slugs = await base.list();
+      const keep = await Promise.all(slugs.map(publishable));
+      return slugs.filter((_, i) => keep[i]!);
+    },
+    read: async (slug) => ((await publishable(slug)) ? base.read(slug) : null),
+  };
+}
+
 // ---- link resolution --------------------------------------------------------
 // Docs cross-link each other as relative .md paths (./AI-INTERFACE.md,
 // ../../batch/docs/ARCHITECTURE.md). Rewrite the ones we render; the rest
@@ -211,7 +252,9 @@ const collections: MillCollection[] = [
     prefix: "/notes",
     title: "Notes",
     description: "Long-form notes — how this stack got built, how I teach, and what broke along the way.",
-    source: dirSource(COLLECTION_DIRS["/notes"]),
+    // The only collection with a publish gate over it, because notes are the only content that
+    // carries a `status` field (the layer docs, the standards and the calendar posts do not).
+    source: publishedSource(dirSource(COLLECTION_DIRS["/notes"])),
     adapter: withHeadingAnchors({ resolveLink: notesLink }),
     indexVariant: "log",
     itemSurfacePrefix: "note",

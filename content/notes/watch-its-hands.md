@@ -2,7 +2,7 @@
 title: "Watch Its Hands"
 subtitle: "I wrote a research paper about letting an AI press the same buttons I press. This is the version I would say out loud, to someone who has no intention of reading a research paper."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-08-06
 readingTime: "~7 min"
