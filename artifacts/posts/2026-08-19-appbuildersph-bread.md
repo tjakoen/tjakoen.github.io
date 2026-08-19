@@ -42,7 +42,7 @@ quietly goes stale.
 
 **PANTRY** is not in that chain at all. It is the app that composes the layers into one server.
 
-Four of those are on npm. PANTRY deliberately is not, and the docs say so rather than pretending
+All five are on npm. PANTRY deliberately is not, and the docs say so rather than pretending
 otherwise. Worth knowing if you go looking: the unscoped name *pantry* on npm belongs to a stranger's
 package, so do not install it expecting mine.
 
@@ -54,10 +54,17 @@ model. A half-billion parameter model, on your machine, driving a design system.
 
 Here is the honest part. Building a page from a description works. Editing one afterwards mostly does
 not. I measured it: the model picked the right block and the right verb five times out of fifteen,
-and every one of those five was rejected on a technicality in how it wrote the address. I have since
-made the fence more forgiving, and I have not re-run the model against it, so I am not going to stand
-here and tell you it works now. The page itself says the same thing, in the same words, to anyone who
-opens it.
+and every one of those five was rejected on a technicality in how it wrote the address. So I made the
+fence more forgiving and ran it again.
+
+The simplest edit now lands. Say drop b4 and it drops b4, two times in three. That is the first
+correct edit this model has ever completed on that page. Ask it to work out which block you meant,
+the second card, the callout, move that one up, and it still lands none of them. And the same run
+caught the cost of loosening the fence: asked for a change no verb can make, the model reached for a
+verb anyway and removed a block nobody mentioned, once in four tries. The strict version had refused
+that same answer. So I bought one working edit and widened the blast radius of a wrong one, which is
+a real trade and not a win. The page itself says all of that, in the same words, to anyone who opens
+it.
 
 I could have shipped a demo that only ever shows the good path. That version would be a better
 advertisement and a worse thing to have built.
