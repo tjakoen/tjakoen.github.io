@@ -8,7 +8,7 @@
         "@tjakoen/batch": "^0.2.1",
         "@tjakoen/crumb": "^0.1.10",
         "@tjakoen/grain": "^0.1.23",
-        "@tjakoen/mill": "^0.3.0",
+        "@tjakoen/mill": "^0.4.0",
         "@tjakoen/proof": "^0.1.4",
       },
       "devDependencies": {
@@ -66,7 +66,7 @@
 
     "@tjakoen/grain": ["@tjakoen/grain@0.1.23", "", {}, "sha512-TsRetdKqKnjax4/0nZDQdJnYEuDOpNnQSyjOgKNIN2+DVoTtEqzoYWFEiuU4/WLZjTluKIfu1furcEFKuhOG3g=="],
 
-    "@tjakoen/mill": ["@tjakoen/mill@0.3.0", "", { "dependencies": { "@tjakoen/grain": "^0.1.23" } }, "sha512-g4gZS9tK4bb+qG5EoQF3nbkorV7wcWgwOmYrrIf62eC8TXXPMp5fYPXru1cdrDBUDG9l1QwQnxnlia7sTlT2yg=="],
+    "@tjakoen/mill": ["@tjakoen/mill@0.4.0", "", { "dependencies": { "@tjakoen/grain": "^0.1.23" } }, "sha512-D7VCW/uIFC8yobE6uHccTHPiPReKT8p/qtx3q/BEj1iESdK3ffFYzmI1BfstsIwEhJ31Ggzh4H5j4Esrd6/WrQ=="],
 
     "@tjakoen/proof": ["@tjakoen/proof@0.1.4", "", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "proof": "cli.ts" } }, "sha512-TWr3pqngUCzBJH9RuL+P34TjnPBgNYQ2nSo3D8BNm6vKI4aFsRUBDQmFpKRzwECd50+5AlQk+KpiC8tAz8IBKQ=="],
 
