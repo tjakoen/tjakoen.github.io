@@ -17,5 +17,5 @@
   border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); cursor: pointer; }
 .share-block__copy:hover { border-color: var(--color-accent); }
 .share-block__copy[data-copied] { border-color: var(--color-accent); color: var(--color-accent); }
-.share-block__link { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-faint);
+.share-block__link { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--ink-muted);
   overflow-wrap: anywhere; }

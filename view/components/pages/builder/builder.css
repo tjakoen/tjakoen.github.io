@@ -53,7 +53,7 @@
   border-bottom: 1px solid var(--line-soft); background: var(--paper-2); }
 [data-screen="builder"] .mk-pane__name { font-size: var(--text-sm); font-weight: var(--font-weight-semibold);
   color: var(--ink); }
-[data-screen="builder"] .mk-pane__meta { font-size: var(--text-xs); color: var(--ink-faint);
+[data-screen="builder"] .mk-pane__meta { font-size: var(--text-xs); color: var(--ink-muted);
   font-family: var(--font-mono); }
 [data-screen="builder"] .mk-pane__body { flex: 1 1 auto; min-height: 0; overflow-y: auto;
   padding: var(--space-4); }
@@ -93,7 +93,7 @@
    a control a chrome toggle can close is a control you cannot rely on. */
 [data-screen="builder"] .wb__rows { flex: 0 1 auto; min-height: 0; overflow-y: auto; }
 [data-screen="builder"] .wb__rail-empty { margin: 0; padding: var(--space-4);
-  font-size: var(--text-sm); color: var(--ink-faint); }
+  font-size: var(--text-sm); color: var(--ink-muted); }
 [data-screen="builder"] [data-builder-state="result"] .wb__rail-empty { display: none; }
 
 /* One row, and it is deliberately QUIET at rest. Every control stays present, clickable, tabbable
@@ -105,7 +105,7 @@
   padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--line-soft);
   font-family: var(--font-mono); font-size: var(--text-xs); }
 [data-screen="builder"] .wb-row:last-child { border-bottom: 0; }
-[data-screen="builder"] .wb-row__id { color: var(--ink-faint); width: 2rem; flex: 0 0 auto; }
+[data-screen="builder"] .wb-row__id { color: var(--ink-muted); width: 2rem; flex: 0 0 auto; }
 [data-screen="builder"] .wb-row__name { color: var(--ink); flex: 1 1 auto; min-width: 0;
   overflow: hidden; text-overflow: ellipsis; }
 [data-screen="builder"] .wb-row__spans { display: flex; gap: var(--space-1); flex: 0 0 auto; }
@@ -116,7 +116,7 @@
 [data-screen="builder"] .wb-chip,
 [data-screen="builder"] .wb-row__move,
 [data-screen="builder"] .wb-row__x {
-  font: inherit; color: var(--ink-faint); background: transparent; border: 0;
+  font: inherit; color: var(--ink-muted); background: transparent; border: 0;
   padding: 0; cursor: pointer; flex: 0 0 auto; opacity: 0.55; transition: opacity 120ms, color 120ms;
 }
 [data-screen="builder"] .wb-row__move,
@@ -149,7 +149,7 @@
    back. Driven by an attribute on the workbench so the CSS owns the layout change, which is the same
    shape grain's own aside and console toggles use. */
 [data-screen="builder"] .wb__collapse { font: inherit; font-family: var(--font-mono);
-  font-size: var(--text-xs); color: var(--ink-faint); background: transparent; border: 0;
+  font-size: var(--text-xs); color: var(--ink-muted); background: transparent; border: 0;
   padding: 0 var(--space-1); cursor: pointer; }
 [data-screen="builder"] .wb__collapse:hover { color: var(--ink); }
 [data-screen="builder"] .wb[data-rail-collapsed="true"] { grid-template-columns: minmax(0, 1fr) auto; }

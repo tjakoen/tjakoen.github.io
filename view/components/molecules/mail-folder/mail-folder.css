@@ -7,4 +7,4 @@
 [data-screen="mail"] .mailbox__folder:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--ink); }
 [data-screen="mail"] .mailbox__folder[aria-current="page"] { background: var(--color-accent-soft); color: var(--ink);
   border-color: var(--color-accent); font-weight: var(--font-weight-semibold); }
-[data-screen="mail"] .mailbox__folder-count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-faint); }
+[data-screen="mail"] .mailbox__folder-count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-muted); }

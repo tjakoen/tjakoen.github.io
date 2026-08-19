@@ -31,7 +31,7 @@
   gap: var(--space-3); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--line-soft);
   background: var(--paper-2); }
 [data-screen="mail"] .mailbox__list-folder { font-size: var(--text-sm); font-weight: var(--font-weight-semibold); color: var(--ink); }
-[data-screen="mail"] .mailbox__list-count { font-size: var(--text-xs); color: var(--ink-faint); font-family: var(--font-mono); }
+[data-screen="mail"] .mailbox__list-count { font-size: var(--text-xs); color: var(--ink-muted); font-family: var(--font-mono); }
 [data-screen="mail"] .mailbox__rows { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 
 /* --- pane: the reading surface; readers render borderless inside it, and Compose swaps in here --- */
@@ -69,13 +69,13 @@
 [data-screen="mail"] .compose__key { flex: 0 0 auto; min-width: 4rem; font-size: var(--text-sm);
   font-family: var(--font-mono); color: var(--ink-muted); }
 [data-screen="mail"] .compose__to { font-size: var(--text-sm); font-weight: var(--font-weight-semibold); color: var(--ink); }
-[data-screen="mail"] .compose__to small { font-weight: var(--font-weight-regular); color: var(--ink-faint);
+[data-screen="mail"] .compose__to small { font-weight: var(--font-weight-regular); color: var(--ink-muted);
   font-family: var(--font-mono); }
 [data-screen="mail"] .compose__field { flex: 1; min-width: 0; }
 [data-screen="mail"] .compose__input, [data-screen="mail"] .compose__textarea { width: 100%; border: 0; padding: 0; margin: 0;
   background: transparent; color: var(--ink); font-family: var(--type-font);
   font-size: var(--text-base); }
-[data-screen="mail"] .compose__input::placeholder, [data-screen="mail"] .compose__textarea::placeholder { color: var(--ink-faint); }
+[data-screen="mail"] .compose__input::placeholder, [data-screen="mail"] .compose__textarea::placeholder { color: var(--ink-muted); }
 [data-screen="mail"] .compose__input:focus-visible, [data-screen="mail"] .compose__textarea:focus-visible {
   outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: var(--radius-sm); }
 [data-screen="mail"] .compose__body { padding: var(--space-4); }
@@ -83,5 +83,5 @@
 
 [data-screen="mail"] .compose__foot { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3) var(--space-4);
   padding: var(--space-3) var(--space-4); border-top: 1px solid var(--line-soft); background: var(--paper-2); }
-[data-screen="mail"] .compose__hint { font-size: var(--text-xs); color: var(--ink-faint); flex: 1; min-width: 12rem; }
+[data-screen="mail"] .compose__hint { font-size: var(--text-xs); color: var(--ink-muted); flex: 1; min-width: 12rem; }
 [data-screen="mail"] .compose__hint a { color: var(--ink-muted); }
