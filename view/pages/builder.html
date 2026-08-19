@@ -54,6 +54,32 @@
             <div class="mk-pane__head">
               <span class="wb__file">untitled.html</span>
               <span class="mk-pane__meta"><span data-field="blockCount">0</span> · 6 col</span>
+              <!-- Taking it away, at the file-name edge, because that is the line already saying
+                   what you are building. The three exports hide until there is something to export:
+                   a button that writes an empty file is a control that lies about having worked.
+                   Open stays out of that group on purpose, since reading a composition back in is
+                   exactly what you do to a page with nothing on it yet.
+                   With JavaScript off none of these do anything, which is the same honest state the
+                   rail's own collapse button is in: a button with no script is visibly inert, where
+                   a link that went nowhere would be a broken promise.
+                   Addressed so a review tour can point at it, and push-only like the rail and the
+                   spec pane: not a registered surface kind, so no verb targets it. A composition
+                   leaves through a human press, and an address that said otherwise would advertise
+                   an operation nothing can perform. -->
+              <span class="wb__take" data-surface="builder-export">
+                <span class="wb__take-group" data-bind-data-has-blocks="hasBlocks">
+                  <button class="wb-chip" type="button" data-export="json"
+                          title="The composition itself. This is the one that comes back through Open.">JSON</button>
+                  <button class="wb-chip" type="button" data-export="page"
+                          title="A whole page you can open, carrying grain's stylesheet.">Page</button>
+                  <button class="wb-chip" type="button" data-export="tags"
+                          title="The markup on its own, to paste into a page you already have.">Tags</button>
+                </span>
+                <button class="wb-chip" type="button" data-import
+                        title="Read a composition JSON back in. It replaces what is on the canvas.">Open</button>
+                <input class="wb__take-file" type="file" accept="application/json,.json" hidden
+                       aria-label="Open a composition JSON">
+              </span>
             </div>
             <div class="mk-pane__body wb__stage">
               <div class="builder-empty">
@@ -107,11 +133,44 @@
 
         <details class="wb-drawer">
           <summary>The composition, as JSON</summary>
-          <p class="muted">Exactly what an export writes and an import reads back, so this is the
-            artifact rather than a description of one. A form block's data is what matchSpec
-            returned, one level in. The page reads its own state back out of here on load, which is
-            how a static host can tell a fresh visit from one a server already composed.</p>
+          <p class="muted">The artifact rather than a description of one, and what Open reads back
+            in. A form block's data is what matchSpec returned, one level in. The page reads its own
+            state back out of here on load, which is how a static host can tell a fresh visit from
+            one a server already composed. The exported file is this plus one line naming GRAIN,
+            because a file you take away should say where it came from and a pane showing you your
+            own state does not need signing.</p>
           <pre class="builder-json" data-surface="builder-spec" data-field="specJson"></pre>
+        </details>
+
+        <details class="wb-drawer" data-surface="builder-take">
+          <summary>Taking the page away</summary>
+          <p>Three files off the one composition, and they answer three different questions. The
+            JSON is the composition, and it is the only one that comes back: Open reads it and the
+            page is the page again, which makes it the file to keep. The page is a whole document
+            you can open or send, and it links this site's stylesheets rather than copying them, so
+            it needs the network to look like what you built. The tags are the markup on its own,
+            for pasting into a page that already loads GRAIN.</p>
+          <p>The tag source is the interesting one, because it is not a translation. Every class in
+            it belongs to GRAIN, and a molecule in GRAIN is a documented class convention a page
+            author writes by hand, so what a composed page produced and what a developer would have
+            typed are the same markup. The builder did the choosing, not the inventing. The one
+            thing that does not travel with it is the six-column grid the widths key off, which is
+            this page's own CSS rather than GRAIN's, so it ships with the page export and is named
+            in a comment on the tag export.</p>
+          <p>Both HTML forms come out without the builder's fingerprints on them: the block
+            addresses, the block ids, and the binding directives the browser uses to fill a cloned
+            block. An exported page ships no dispatcher, so an address on it would advertise an
+            operation nothing can perform, and that is the one mistake this whole design keeps
+            saying out loud that it will not make.</p>
+          <p>All three carry the GRAIN byline, and two of them carry it twice. The footer is the
+            half you can see and the half someone will eventually delete; the comment at the top of
+            the file and the attribute on the root element are the half that survives that. They are
+            named here rather than hidden, because a mark you have to find is a different thing from
+            a mark you are told about.</p>
+          <p>Open replaces the canvas rather than adding to it, which is the opposite of what a
+            prompt does and the reason the button says Open rather than Import. A hand-edited file
+            gets the same treatment a description gets: anything this build cannot render is listed
+            by name under Can't build, and the rest of the page still comes up.</p>
         </details>
 
         <!-- D4: written for someone operating a tool rather than reading an argument. The order is
@@ -210,6 +269,16 @@
              a static host without a second renderer existing anywhere. Injected into the marker by
              server.ts (renderLibrary in ai/canvas.ts); hidden by builder.css. -->
         <!--library-->
+
+        <!-- The GRAIN byline every export carries, rendered once by grain's own madeWith() and
+             injected here by server.ts. It is parked in a template rather than written into this
+             file because grain owns the wording: a line each app retypes for itself is a line that
+             drifts, and this is the estate's canonical answer to holding one signature across the
+             fleet. A template is inert, invisible and out of the accessibility tree, which is
+             exactly what markup waiting to be cloned should be. The browser reads it back when you
+             press one of the three export buttons; on a static host the frozen file carries it for
+             the same reason it carries the template library. -->
+        <template class="builder-byline"><!--byline--></template>
 
         <div class="page-foot">
           Part of <a href="/">tjakoen.github.io</a>, built with itself.

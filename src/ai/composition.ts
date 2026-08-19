@@ -81,11 +81,22 @@ export const COMPOSITION_VERSION = 1;
 
 export interface CompositionDocument {
   version: number;
+  /** The GRAIN byline, present only on a document that was EXPORTED. The page's own spec pane
+   *  prints the composition without it, because the pane is showing state rather than handing over
+   *  a file, and a signature on something nobody is taking away signs nothing. Import ignores it in
+   *  either case: the byline travels with the composition and the composition never depends on it,
+   *  which is what keeps a hand-edited file that dropped the line a valid file rather than a
+   *  refusal. */
+  madeWith?: string;
   blocks: Block[];
 }
 
-export const toDocument = (comp: PageComposition): CompositionDocument =>
-  ({ version: COMPOSITION_VERSION, blocks: comp.blocks });
+/** The composition as a document. `madeWith` is grain's own byline, passed in by whoever is writing
+ *  a file rather than known here, because this module is pure and the line belongs to grain. */
+export const toDocument = (comp: PageComposition, madeWith?: string): CompositionDocument =>
+  madeWith
+    ? { version: COMPOSITION_VERSION, madeWith, blocks: comp.blocks }
+    : { version: COMPOSITION_VERSION, blocks: comp.blocks };
 
 /** Read a document back into a composition, dropping anything that is not a block this build can
  *  render. A hand-edited or older file degrades to the blocks that survive, WITH a named refusal for

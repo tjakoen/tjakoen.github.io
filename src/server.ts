@@ -31,6 +31,10 @@ import { buildBuilderView } from "./ai/builder-page.ts";
 // plus the hidden template library the browser clones from, which is what lets /builder compose on
 // a static host where no server sees the ?ask= in the address.
 import { renderCanvas, renderLibrary } from "./ai/canvas.ts";
+// GRAIN's own byline, and this is the ONE place the portfolio says it. /builder hands every export
+// a signature, and a signature each app writes for itself is a signature that drifts, so the line
+// comes from grain and the page parks the markup for the browser to read back.
+import { madeWith } from "@tjakoen/grain/scripts/made-with.js";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
 import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
@@ -596,7 +600,12 @@ ${PAGE_ASSETS}</body>
       let html = await renderBuilderPage(raw, { ...view });
       // Function replacements: rendered block markup can contain $& and friends, which a string
       // replacement would read as patterns and splice back in mangled.
-      html = html.replace("<!--canvas-->", () => canvas).replace("<!--library-->", () => library);
+      html = html.replace("<!--canvas-->", () => canvas).replace("<!--library-->", () => library)
+        // The byline every export carries, rendered once by grain's own helper and parked in an
+        // inert template. The browser reads it back rather than holding a copy of the line, which
+        // is what keeps one wording across the fleet; on a static host the frozen file carries it
+        // for the same reason it carries the template library.
+        .replace("<!--byline-->", () => madeWith());
       return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     },
     // /kickstart — the short, shareable twin of /standards/kickstart (the new-project prompt).

@@ -98,6 +98,17 @@ export const CHROME_LIBRARY: LibraryEntry[] = [
     placeholder: { id: null, label: null, span: null, isFull: null, isHalf: null, isThird: null },
     props: {},
   },
+  {
+    // The Can't build line. It joined the library on 2026-08-19 with the import, and it closed a
+    // hole that had been open since the browser started composing: refusals were rendered by the
+    // SERVER only, so a prompt typed into the page raised the Can't build head over an empty list
+    // and a page that means to say what it will not fake said nothing at all. An imported file is
+    // where that stops being a blemish, because a named refusal is the whole of what import owes a
+    // hand-edited document.
+    name: "builder-refusal",
+    placeholder: { token: null, reason: null },
+    props: {},
+  },
 ];
 
 /** The four control atoms a form block nests, plus the option a choice nests. Per-item data keys
