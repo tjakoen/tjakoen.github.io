@@ -9,6 +9,78 @@
 > the repo is **public**. The events-platform exit is told **neutrally, no names, lessons-forward**.
 > Company name is **Career Team**. People name-drops = public professional info + LinkedIn only.
 
+## The AI implementation roadmap note (drafted 2026-08-18)
+
+**Everybody Wants the Agent. Somebody Has to Build the Floor.**
+(content/notes/build-the-floor.md, **DRAFT**, ~24 min). The deck shipped alongside it:
+[/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 27 slides.
+
+**Know what this note is for.** It sells an AI implementation roadmap, and it positions Tjakoen as
+the person who can lead one. **The roadmap is the product.** The technical depth behind each stage is
+the credential, not the pitch. The close states what he would want to build and what he is not (no
+ML background, no model shipped), because under VOICE that honesty is the credibility.
+
+**The roadmap, which is the thing to protect.** Five overlapping stages over eighteen months, taking
+an organization from developers holding subscriptions to real automation:
+
+0. Instrument, including the disclosure marker, and make one repository legible. Months 0 to 2.
+1. Extract skills from the people who do the work. Run by hand only. Months 1 to 5.
+2. Daily use, outcomes logged and scored. Months 3 to 9.
+3. The same skills fired by triggers, headless. Months 6 to 12.
+4. Chained, unattended loops. Months 10 to 18.
+
+**The tooling plan inside stage one is the owner's own, and it is the second thing to protect.**
+Build the four skills that supervise work before the one that produces work: plan, code review, docs,
+QA, and the coder last, only once those four are polished enough to defend human-supervised output.
+It carries a figure and a table, and the right-hand column of the table is the argument: each of the
+first four builds a piece of the supervision the fifth one needs. Do not reorder it to put the coder
+first because it demos better. That is the mistake the section exists to name.
+
+**The spine is that one artifact travels all five stages.** A skill is written once and then
+promoted: run by hand, scored, triggered, unattended, chained. No second system, no migration
+project where the manual thing gets rewritten as the automated one. That is why the order is skills
+first and automation last, and it is the owner's own framing rather than something imported.
+
+The roadmap section carries a gantt figure and three explicit horizons the owner asked for by name:
+what we can do now, what we are doing in six months, where we are in a year. Everything after it is
+one section per stage, in build order.
+
+**Five figures**, all live HTML mounted by `scripts/figure-floor.js` rather than inline SVG: the
+whiplash bar, the roadmap gantt, the skill build order ending on the coder, the four gates, and the
+loop architecture. A sixth (the five-stage skill lifecycle) was cut because the roadmap gantt now
+carries the same argument. The owner called the switch away from SVG on 2026-08-18, and it is what
+let the roadmap stay readable at the back of a room when it was lifted into the deck.
+
+**Five earlier drafts were wrong, and the reasons are worth keeping.** (1) Personal essay with a plan
+attached, opening on his own worktree failure. (2) A guide addressed to a peer engineer. (3) A guide
+addressed to a CEO, which drifted into board, Monday, invoices and procurement language. (4) Split
+into a short argument plus a long companion, which fixed length and not audience. (5) Technical and
+first person, but with no roadmap in it, which is the thing being sold. **Do not reframe toward an
+executive audience, do not remove the roadmap or its figure, and do not replace the stages with a
+week-by-week calendar.**
+
+- **Skill results stay vague.** No posted-finding counts, no precision claims, nothing naming what is
+  implemented where he works. The six failure modes carry the credibility instead.
+- **Time claims are deliberately modest.** "The last few months", not years. Corrected by the owner
+  on 2026-08-18 and it is a factual limit, not modesty to be edited out.
+- **Each stage carries an Objective line and a Done when gate**, which is what makes the steps read
+  as a plan rather than as essay sections. Keep that shape if stages are added or reordered.
+- **The worktree confession stays** as one paragraph inside the hooks-beat-instructions argument,
+  where it is evidence rather than the frame.
+- **Evidence is trimmed to what changes an implementation decision:** DORA's amplifier finding,
+  Faros on the review tax, Veracode's 56% security pass rate, METR on why not to instrument with a
+  survey, GitClear on duplication.
+- **Watch the Faros unreviewed-merge figure.** They report merges without review *rose* 31.3%.
+  Several write-ups render that as "31.3% of pull requests merge unreviewed", which is wrong. The
+  note states it correctly and flags the misreading.
+- **Inbound links: one out, none in.** It links one-loop-every-repo and ten-times-zero. Nothing links
+  back, so the closed cross-link graph in *Production status* does not cover it.
+- **The talk exists.** The roadmap gantt and the four gates were built to lift into slides, and they
+  did: 27 of them, at [/talks/build-the-floor](../view/pages/talks/build-the-floor.html), built the
+  way the ten-times-zero deck was. It is a separate artifact from
+  [plans/loop-story-and-talk.md](../plans/loop-story-and-talk.md), whose gate is still the loop
+  demonstrably running rather than a date.
+
 ## Consolidated (2026-08-14, notes audit)
 
 The set had grown to twelve notes across four clusters, two of which carried a note that was a
