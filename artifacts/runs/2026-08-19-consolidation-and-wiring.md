@@ -74,10 +74,8 @@ verifiedBy: nobody yet. This is the author's own account. Three claims in it wer
   model rather than from a deduction.
 doctor: 21 checks, 0 failing, 1 due. Both flags standing at session start were closed rather than
   carried: the cold-start context budget and the run-ledger evidence. Graphify freshness is the one
-  left, and it is a treadmill rather than debt: a PostToolUse hook re-extracts on every edit, so the
-  merged graph goes stale again the moment anything is touched. It was cleared three times during
-  this run and is due again. Worth a look at whether the check should compare against the last merge
-  rather than the last extraction.
+  left, and it cannot be closed by running what it tells you to run. Diagnosed at the end of the run
+  and written up in the section below, because a first attempt at explaining it was wrong.
 ---
 
 # What this run was
@@ -274,3 +272,35 @@ Harmless while it cost a repaint, not harmless once a no-op press could stack a 
 nothing visible. It compares by shape now.
 
 **Builder P5**, as a real route. The details and its one known limit are in the plan and above.
+
+## The graphify check asks for a command that cannot clear it
+
+Carried into this report as a treadmill, which was wrong, and measured properly afterwards.
+
+The check compares the commit the graph was built from against HEAD, and warns when any file that is
+not documentation changed in between. It is careful everywhere else: it prefers the commit to the
+mtime, and it deliberately lets a docs-only commit pass.
+
+**The last commit of this run changed three lines, and all three were a comment being deleted from a
+TypeScript file.** The check reported code moved. Then `graphify update .` answered:
+
+```
+[graphify watch] No code-graph topology changes detected; outputs left untouched.
+```
+
+It left the recorded commit where it was, correctly, because the graph really is current. So the
+warning stands, and the remedy the warning names is a no-op that will never clear it. That is worse
+than a noisy check: a check whose fix does nothing teaches people to ignore it, and this one sits in
+the session-start report every session reads first.
+
+**The disagreement is one word.** Pantry asks whether a code FILE changed. Graphify asks whether the
+code GRAPH changed. A comment, a string, a reordered import and a formatting pass all move the first
+and none of them move the second, and graphify is the one that is right about its own artifact.
+
+**Not fixable in graphify:** it is a third-party tool installed with uv, not part of this estate.
+
+**The shape a fix would take, and it is a design call rather than a patch.** Pantry cannot cheaply
+tell a topology change from a comment, so it has to record a verdict rather than infer one: a command
+that runs graphify update, reads that no-topology-change line, and stamps a host-local sidecar with
+the HEAD it verified. The doctor then measures from the later of the built-from commit and that
+stamp. It is a real feature in a sibling repo, so it is left for the owner rather than started here.
