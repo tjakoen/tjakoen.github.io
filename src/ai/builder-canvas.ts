@@ -288,6 +288,46 @@ function boot(): void {
    *  that sentence to a matcher looking for components in it. */
   let pageAsk = askInURL;
 
+  // -------------------------------------------------------------------------------------------
+  // Undo
+  // -------------------------------------------------------------------------------------------
+  // WHY THIS IS HERE, and it is a correctness device rather than a convenience. Measured on
+  // 2026-08-19 against the live model: asked for a change no verb can serve, it reached for a verb
+  // anyway and removed a block nobody had mentioned, once in four tries. The obvious guard, refusing
+  // to resolve a short address for a destructive verb, was written and then measured too, and it
+  // took the one edit the model does land with it, because that edit is a drop written short. So the
+  // answer is not to forbid the wrong drop but to make it cost a keystroke, which is the same
+  // argument that already let a width and a move resolve a short address.
+  //
+  // A STACK OF WHOLE COMPOSITIONS, not a log of inverse ops. A composition is a small immutable
+  // value and every mutation here already produces a new one, so keeping the old one is free and
+  // exact. An inverse-op log would have to reconstruct where a removed block sat and what data it
+  // held, which is the same guessing readComposition refuses to do.
+  //
+  // It records what the DESK did as well as what a press did, and that is the whole point: the
+  // handshake below pushes before it adopts the DOM's new shape, so a block the model removed comes
+  // back with its data intact.
+  // Named for what it is rather than `history`, which is the global this file also uses to keep
+  // the address in step with the latest prompt. One of those two shadowing the other is a bug that
+  // typechecks in plenty of codebases; here tsc caught it, and the fix is the clearer name anyway.
+  const undoStack: PageComposition[] = [];
+  const undoButton = $<HTMLButtonElement>("[data-undo]", composer);
+
+  /** Show the button exactly when there is something behind it. Visible therefore means pressable,
+   *  which is why nothing here is ever disabled: a permanently greyed control is furniture. */
+  const showUndo = (): void => {
+    if (undoButton) undoButton.hidden = undoStack.length === 0;
+  };
+
+  /** Remember the composition as it stands, before something changes it. Capped, because a session
+   *  that composes for an hour should not hold every intermediate page in memory, and nobody undoes
+   *  fifty steps on a demo. */
+  const remember = (before: PageComposition): void => {
+    undoStack.push(before);
+    if (undoStack.length > 20) undoStack.shift();
+    showUndo();
+  };
+
   /** What the last prompt was READ as, said in one line above the note.
    *
    *  Written straight to the element rather than bound through the view, because the view is
@@ -401,6 +441,7 @@ function boot(): void {
 
     clearSaid();
     const before = state.blocks.length;
+    remember(state);
     state = addFromDescription(state, ask);
     pageAsk = ask;
     repaint(viewOf(state, ask, state.blocks.length - before));
@@ -426,6 +467,10 @@ function boot(): void {
   const watcher = new MutationObserver(() => {
     const next = readComposition(canvas, state);
     if (sameShape(state, next)) return;          // an attribute we do not read changed; nothing to do
+    // Recorded BEFORE the new shape is adopted, so what goes on the stack is the page as it stood
+    // before the desk touched it, with every block's data still on it. This is the branch undo
+    // exists for: a press is a thing you meant, and this is a thing a model did.
+    remember(state);
     state = next;
     // The chrome only. The canvas is already right, and rebuilding it would throw away the AI ink
     // the dispatcher just put on the cell it touched.
@@ -446,6 +491,27 @@ function boot(): void {
     paint(board, canvas, rail, library, view);
     watcher.takeRecords();
   };
+
+  /** Put the last composition back, whatever produced the change.
+   *
+   *  A FULL repaint rather than the chrome-only one the handshake uses, because this is the one case
+   *  where the canvas is wrong and this module is right: the DOM holds the page after the change and
+   *  the stack holds the page before it, so the canvas has to be rebuilt from the composition. The
+   *  AI ink the dispatcher put on a cell goes with it, which is correct. The change it marked is the
+   *  change being undone.
+   *
+   *  Undo is not itself undoable. A redo would need a second stack and a rule for what happens when
+   *  you compose after undoing, and neither is worth the surface on a page whose point is elsewhere.
+   *  Nothing here pretends otherwise: the button disappears when the stack is empty. */
+  undoButton?.addEventListener("click", () => {
+    const previous = undoStack.pop();
+    showUndo();
+    if (!previous) return;
+    state = previous;
+    repaint(viewOf(state, pageAsk, null));
+    say("Put back.", "command");
+  });
+  showUndo();
 
   // Collapsing the rail. A workbench whose tool panel cannot get out of the way charges a permanent
   // 20rem tax on the thing you are actually looking at. The attribute lands on the workbench rather
@@ -485,8 +551,16 @@ function boot(): void {
     if (!op || !id) return;
     const next = applyOp(state, op, id);
     // A press that changes nothing repaints nothing: pressing the span a block already has, or the
-    // up arrow on the first row, is a no-op rather than a flicker.
-    if (next === state) return;
+    // up arrow on the first row, is a no-op rather than a flicker. It also records nothing, so undo
+    // never has to be pressed twice to get past a press that did not move anything.
+    //
+    // Compared by SHAPE and not by identity, which is a correction. setSpan and moveBlock both build
+    // a new composition unconditionally, clamping rather than refusing, so an identity check only
+    // ever caught the id-not-found case and the comment above was describing an intent rather than
+    // the code. Harmless while it only cost a repaint; not harmless once a no-op press could put a
+    // step on the undo stack that undoes nothing a visitor can see.
+    if (sameShape(state, next)) return;
+    remember(state);
     state = next;
     repaint(viewOf(state, pageAsk, null));
   });

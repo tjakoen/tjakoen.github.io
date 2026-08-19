@@ -62,9 +62,13 @@ correct edit this model has ever completed on that page. Ask it to work out whic
 the second card, the callout, move that one up, and it still lands none of them. And the same run
 caught the cost of loosening the fence: asked for a change no verb can make, the model reached for a
 verb anyway and removed a block nobody mentioned, once in four tries. The strict version had refused
-that same answer. So I bought one working edit and widened the blast radius of a wrong one, which is
-a real trade and not a win. The page itself says all of that, in the same words, to anyone who opens
-it.
+that same answer.
+
+My first instinct was to put the fence back for anything destructive. I built that, measured it, and
+it took the working edit with it, because the edit that works is a drop. So the page got an Undo
+button instead: a wrong drop is one press to put back, content and all. Forbidding the mistake would
+have cost the feature. Making it cheap did not. The page says all of this to anyone who opens it, in
+the same words.
 
 I could have shipped a demo that only ever shows the good path. That version would be a better
 advertisement and a worse thing to have built.
