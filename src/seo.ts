@@ -36,9 +36,14 @@ export const SITE = {
 
 // Canonical path: root stays "/", every other route gets a single trailing slash — identical to the
 // sitemap (server.ts /sitemap.xml) so there is exactly one canonical URL per page.
+//
+// Lowercased, because routing is case-insensitive: /GRAIN, /Grain and /grain all serve the same page
+// with a 200. Without this each variant claimed its own canonical and the set read as duplicates to
+// a crawler. Nothing in the repo links a non-lowercase path today, so this closes a trap rather than
+// a live bug, which is the cheapest moment to close one.
 export function canonicalPath(pathname: string): string {
   if (!pathname || pathname === "/") return "/";
-  return pathname.replace(/\/+$/, "") + "/";
+  return pathname.replace(/\/+$/, "").toLowerCase() + "/";
 }
 
 // A note ENTRY (/notes/<slug>/) is an article; the /notes/ feed and everything else is not.

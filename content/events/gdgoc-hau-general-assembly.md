@@ -11,8 +11,8 @@ summary: >
   sounds like a compliment until you look at it: vibe coding, and where it stops working.
 photos:
   - "/media/feed/gdgoc-hau-speaker-card.jpg | 1080x1350 | The organizers' speaker card announcing me for the infosession, captioned current adviser of GDGoC, software engineering leader, computer science instructor"
-  - "/media/feed/gdgoc-hau-call-the-point.jpg | 1600x744 | Screenshot from the call: the slide reading Bring nothing and it multiplies nothing, become a bigger number first, with the students' video tiles blurred down the right side"
-  - "/media/feed/gdgoc-hau-call-multiplier.jpg | 1919x885 | Screenshot from the call: the multiplier slide, AI does not add to what you can do, it multiplies it, with the live bar chart, and the participant panel blurred beside a count of 62"
+  - "/media/feed/gdgoc-hau-call-the-point.jpg | 1600x604 | Screenshot from the call: the slide reading Bring nothing and it multiplies nothing, become a bigger number first, with the students' video tiles blurred down the right side"
+  - "/media/feed/gdgoc-hau-call-multiplier.jpg | 1919x700 | Screenshot from the call: the multiplier slide, AI does not add to what you can do, it multiplies it, with the live bar chart, and the participant panel blurred beside a count of 62"
   - "/media/feed/gdgoc-hau-infosession-poster.jpg | 2048x2048 | The event poster: Infosession, Navigating Tech, August 8 2026, 7 PM on Google Meet, on a corkboard of stickers and polaroids"
 deck: "Ten times zero | Talk | /talks/ten-times-zero | 34 slides · runs in the browser, no download"
 social: |
