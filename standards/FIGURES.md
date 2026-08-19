@@ -56,12 +56,16 @@ Which of the two SVG scaffolds you copy, when SVG is still right, is decided by 
 | **Quantitative data-viz** — bars, ratios, timelines, the multiplier | the **data-viz scaffold** below | self-contained e-ink palette, hardcoded on the root | Precise proportions, exact labels, one fixed measure down the page; it carries its own palette so it looks identical everywhere, even committed as an image. |
 | **A flow, loop, relationship, or architecture** — steps, cycles, "A → B → C" | the **flow scaffold** below | inherits the page's `--color-*` theme tokens | It sizes to its own content and themes with the site (it inverts in dark), so a diagram reads as part of the page it lives on, not a pasted-in light rectangle. |
 
-**On mermaid.** It used to be the tool for flows, but the published site ships zero framework JS and
-MILL never gained server-side `mermaid`→SVG rendering, so a `mermaid` block renders in your editor
-preview and on GitHub but is **blank on the live site**. Practice converged on hand-built flow SVGs
-instead (see the references below), and that is now the standard. Mermaid is fine as an **optional
-source draft** you keep for your own readability, but it is never the published form: hand-convert it
-to the flow scaffold before it ships. Don't reach for it to chart a proportional bar either, that has
+**On mermaid.** For most of this standard's life it could not be published at all: the site ships
+zero framework JS, MILL had no server-side renderer, and a mermaid block that looked right in an
+editor preview arrived **blank on the live site**. Practice converged on hand-built flow SVGs, and
+that is still the default. **This changed on 2026-08-16.** MILL renders a mermaid fence to inline
+SVG on the server, styled with the page's own theme tokens, and since mill 0.4.0 the fence has to
+carry a label saying in words what the diagram shows. A fence with no label is refused, warned
+about, and degraded to a code block, which is why an unlabelled diagram cannot reach a page by
+accident. Reach for the flow scaffold first anyway: a hand-built flow is smaller, it needs no
+render step, and it is the family the rest of the site is drawn in. Mermaid earns its place when a
+diagram is generated rather than drawn. Don't reach for it to chart a proportional bar either, that has
 always been an SVG.
 
 ## The data-viz scaffold (copy this, don't freehand)
@@ -212,12 +216,22 @@ both scaffolds are SVG.
 | GitHub.com markdown viewer | **stripped** (commit a `.svg` as an image if a figure must show there) |
 | **MILL / the published site** | yes |
 
-**Mermaid (source-draft only).** A `mermaid` fenced block renders in the VSCode preview (with the
-Mermaid extension) and on GitHub, but the published site ships zero framework JS and MILL does **not**
-render mermaid server-side, so it is blank on the live site. That server-side capability was considered
-and is **not planned** (there is no content mermaid left to justify it, tracked in
-`CONTENT-BACKLOG.md`). So mermaid is fine only as a private, editable draft of a flow's structure;
-convert it to the flow scaffold before it ships. Nothing under Tjakoen's byline publishes as mermaid.
+**Mermaid (renders since 2026-08-16, and it owes a label).** A `mermaid` fenced block renders in the
+VSCode preview and on GitHub, and MILL now also renders it to inline SVG server-side. The line this
+standard used to carry, that the capability was considered and is not planned, was true when it was
+written and stopped being true when mill shipped it. The rule that replaced it is narrower and it is
+about access, not about mermaid: **a generated diagram has to carry the same accessible name a
+hand-drawn one does.** Write it on the fence itself:
+
+```
+```mermaid label="BATCH serves the request, GRAIN dresses it, MILL renders the Markdown"
+```
+
+MILL puts that sentence on the SVG root as `role="img"` plus `aria-label`, which is exactly what the
+flow scaffold's non-negotiable above asks for. Leave the label off and the fence does not render: it
+is refused, it warns, and it degrades to a code block. The old blanket sentence, that nothing under
+Tjakoen's byline publishes as mermaid, no longer holds. What holds is that nothing publishes as an
+unnamed figure.
 
 ---
 

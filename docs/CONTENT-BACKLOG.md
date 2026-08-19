@@ -473,6 +473,10 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
   - This supersedes the earlier "MILL must render mermaid server-side" requirement *for content*: there
     is no content mermaid left to render. If mermaid authoring is ever wanted again, that MILL capability
     is still unbuilt.
+  - **CORRECTION 2026-08-19.** The last sentence stopped being true on 2026-08-16. MILL built the
+    renderer, and mill 0.4.0 requires the fence to carry a label that becomes the SVG's accessible
+    name. Nothing on this site renders through it yet, so the decision below still stands on its own
+    terms; what is wrong is only the claim that the capability does not exist.
   - **Owner decision RESOLVED 2026-07-16 (SVG-first for flows too):** FIGURES.md reconciled to the
     SVG-flow reality. The "one rule" is now *two figure shapes, one medium (inline SVG)* — a **data-viz
     scaffold** (self-contained e-ink palette, light-only) and a new **flow scaffold** (inherits the page's
@@ -491,8 +495,12 @@ name luck as luck, keep money vague, keep the events-platform telling neutral. S
      that node is dropped from the rendered body (returned `ast` stays whole for TOC/RAG). The 15
      `docs/{grain,batch}/*.md` explicit-title workarounds are kept (still correct). No live page changed —
      every served collection already had frontmatter titles; the fix only benefits future title-less content.
-  3. **(Was fix #3, now moot)** server-side mermaid→SVG renderer: closed as NOT-planned for content per
-     the FIGURES reconcile — no content mermaid remains. Capability stays unbuilt unless mermaid authoring returns.
+  3. **(Was fix #3, closed as moot 2026-07-16, then BUILT 2026-08-16)** server-side mermaid→SVG
+     renderer. It was closed as not-planned for content because no content mermaid remained, and that
+     reasoning was sound. It was built anyway, for a future consumer that generates diagrams rather
+     than drawing them, and published as mill 0.3.0 with the accessible-name requirement following in
+     0.4.0. The portfolio wires none of it and ships a gate that fails the build if a mermaid fence
+     ever reaches served content without a rendered SVG beside it.
 - **Framework comparison / Evaluation** (public proof of native-first + no-build) — **SCOPED + approach
   confirmed 2026-07-16. BUILT + MEASURED 2026-07-17.** Own public repo `framework-bench`; reference app = a small blog
   (index + article detail + one client-side filter); targets = **native/BATCH vs Astro vs Next.js** (htmx
