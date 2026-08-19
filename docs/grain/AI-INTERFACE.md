@@ -3,11 +3,11 @@ title: "AI ↔ UI Interface — the GRAIN action vocabulary contract"
 ---
 
 > This is the detailed contract for **GRAIN**, the AI-interaction layer (overview:
-> [GRAIN.md](./GRAIN.md)). GRAIN is built on BATCH and headed for its own repo.
+> [GRAIN.md](./GRAIN.md)). GRAIN is built on BATCH and now lives in its own repo.
 
 **Status:** Design + reference scaffold (running in the monorepo).
-**Depends on:** [MVP.md](https://github.com/tjakoen/project/blob/main/docs/MVP.md) §"One interface, one path" and §"The Interaction Flow";
-[PROJECT-PLAN.md](https://github.com/tjakoen/project/blob/main/PROJECT-PLAN.md) §9 (control plane / single-writer);
+**Depends on:** MVP.md §"One interface, one path" and §"The Interaction Flow", and
+PROJECT-PLAN.md §9 (control plane / single-writer), both in a private repo and so unlinked here;
 [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) §3 (grade as signal).
 
 This doc cashes out the MVP's hardest principle — *the AI acts through the same
