@@ -9,10 +9,10 @@
   "homepage": "https://tjakoen.github.io",
   "dependencies": {
     "@tjakoen/batch": "^0.2.1",
-    "@tjakoen/crumb": "^0.1.9",
-    "@tjakoen/grain": "^0.1.22",
-    "@tjakoen/mill": "^0.2.2",
-    "@tjakoen/proof": "^0.1.3"
+    "@tjakoen/crumb": "^0.1.10",
+    "@tjakoen/grain": "^0.1.23",
+    "@tjakoen/mill": "^0.3.0",
+    "@tjakoen/proof": "^0.1.4"
   },
   "scripts": {
     "deps:refresh": "bun update @tjakoen/batch @tjakoen/crumb @tjakoen/grain @tjakoen/mill @tjakoen/proof",
