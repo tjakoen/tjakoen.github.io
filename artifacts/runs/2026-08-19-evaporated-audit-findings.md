@@ -14,9 +14,17 @@ scope:
   - artifacts/runs/
 touched:
   - artifacts/runs/2026-08-19-evaporated-audit-findings.md
+diffstat: 1 file changed, 253 insertions(+)
+unpushed: 0
+verifiedBy: a later session that did not write the run, 2026-08-20
+doctor: 0 failing, 2 due and carried by name, cold-start context and run ledger
 ---
 
 # The audit findings that evaporated
+
+> Four frontmatter fields and the two sections at the foot were retrofitted on 2026-08-20 by a session
+> that did not write this run. The diffstat is `git show` on commit `74c7136`, and the unpushed count
+> is 0 because that commit is on `origin/main`. Nothing in the findings above was edited.
 
 Sixty-one of the four hundred and fifty-four sessions since 2026-07-04 were audits or sweeps. Two
 repos keep a run ledger. The worry that prompted this pass was that the other repos ran audits whose
@@ -233,7 +241,21 @@ worse. It is that an open finding here stays legible as open, so it neither gets
 forgotten on purpose. That column is the whole mechanism, and it is what the other five repos are
 missing.
 
-## What this pass did not cover
+## Gate output
+
+```
+NOT A PASTE. Reconstructed 2026-08-20 by a later session; the original was never captured because
+there was nothing to capture. This run was read-only against the Nimbalyst session store and the
+working trees. It changed no code, so no gate was run by the session that wrote this report, and
+none is being invented here. The one file it produced is this report.
+
+Confirmed today instead, on the commit that carries it:
+$ git show --stat --format='' 74c7136 -- artifacts/runs/2026-08-19-evaporated-audit-findings.md
+ .../runs/2026-08-19-evaporated-audit-findings.md   | 253 +++++++++++++++++++++
+ 1 file changed, 253 insertions(+)
+```
+
+## What was not done, and what this pass did not cover
 
 Twelve of the sixty-one audit sessions have no messages at all and were not read. Of the forty-nine
 that ran, only the closing assistant messages were sampled, so a finding stated in the middle of a
@@ -247,6 +269,18 @@ partly an artifact of what could be verified here rather than a claim that seven
 findings were resolved.
 
 No repo was modified. Nothing was fixed. One file was written, this one.
+
+## What needs human eyes
+
+Every open finding listed above, by repo. This pass counted and verified them; it fixed none of them
+and had no mandate to. The list is the deliverable and the triage is the owner's.
+
+Two judgments in particular are not the reader's to inherit unchecked. HAU's seventy percent drop
+rate is partly an artifact of what could be verified from a read-only pass, as the section above
+says, so it should not be read as seventy percent of its findings being resolved. And the findings
+touching GitHub state, Canvas grades and org membership were dropped rather than checked, which means
+they are unknown rather than clear, and confirming them needs live calls against student data that
+only a human should authorize.
 
 ---
 
