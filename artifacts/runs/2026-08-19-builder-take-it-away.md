@@ -15,6 +15,8 @@ scope:
   - view/components/pages/builder/
   - e2e/
   - src/server.ts, only if a route was genuinely required
+scopeGrowth: seven files outside the declared list, every one of them named and reasoned in the
+  Scope section below. builder-page.ts was declared and never needed to change.
 touched:
   - src/ai/builder-export.ts
   - src/ai/builder-export.test.ts
@@ -40,8 +42,13 @@ gates:
   - bun run export + bun tools/verify-export.ts | 124/124 pages, 36 frozen modules, verify OK
 diffstat: 11 files. 497 insertions and 17 deletions across the eight tracked ones, plus three new
   files at 481 lines.
-unpushed: 1, this run's commit. Nothing was pushed, because pushing is the owner's call.
+unpushed: 2 commits. 8d65cb0, this run's P4 commit, and the follow-up carrying the stale-copy
+  correction below. Nothing was pushed, because pushing is the owner's call and was not given.
 verifiedBy: nobody yet. This is the author's own account and the tour is stamped accordingly.
+doctor: 21 checks, 0 failing, 4 due at session start, all four carried by name rather than fixed:
+  cold-start context over the 20,000 budget, graphify freshness, mill pinned 0.3.0 behind 0.4.0, and
+  the run-ledger row that this file itself was the subject of. None is in P4's path. The ledger row
+  is the one this revision answers.
 ---
 
 # What P4 is, in one line
@@ -109,6 +116,67 @@ ROUND TRIP identical markup: true
 said: untitled.json: 4 blocks opened.
 ```
 
+## Gate output
+
+Verbatim, so the claim above is checkable rather than summarized.
+
+```
+$ bun run check
+$ tsc --noEmit
+(no output, exit 0)
+
+$ bun test
+ 592 pass
+ 0 fail
+ 2028 expect() calls
+Ran 592 tests across 36 files. [2.74s]
+
+$ bun run lint:links
+link-lint: 53 rendered file(s), no dead relative links.
+
+$ bunx playwright test e2e/builder-canvas.e2e.ts
+  46 passed (10.2s)
+
+$ bunx playwright test
+  3 failed
+    e2e/visual.e2e.ts:53:3 > welcome (/) matches its visual baseline
+    e2e/visual.e2e.ts:53:3 > catalog (/catalog) matches its visual baseline
+    e2e/visual.e2e.ts:53:3 > resume (/resume) matches its visual baseline
+  1 skipped
+  295 passed (2.8m)
+
+$ bun tools/lint-gate.ts
+lint gate: 1 lint(s) regressed against tools/lint-baseline.json:
+  voice:backtick: baseline 3071 -> now 3075 (+4)
+
+$ bunx crumb check content/tours
+(every tour parses; review-builder-take-it-away, 3 step(s), dev)
+
+$ bun tools/verify-export.ts
+[verify-export] sitemap.xml: every <loc> resolves to a real file, all trailing-slash canonical
+[verify-export] dead-link walk: every internal href/src across the exported HTML resolves
+[verify-export] OK
+```
+
+## Scope, and where it grew
+
+The brief named six paths. Seven files outside them were touched and each one is named here rather
+than absorbed, because growth past the cap is the run's to declare and not the run's to judge.
+
+- **src/ai/builder-export.ts and its test.** The new module. The brief named the files P4 would
+  change and not the file it would add, so this is growth in the letter rather than in the spirit.
+- **src/ai/builder-canvas.ts.** The browser island. Nothing on this page can hand over a file without
+  it, and it was not in the held list.
+- **src/ai/canvas-dom.ts.** One entry in the template library, for the refusal line the browser could
+  not render. Genuinely unforeseen and genuinely required: import owes a named refusal.
+- **src/server.ts.** Two lines in the existing /builder route to inject grain's byline. The brief
+  allowed server.ts for a route, and this modifies one rather than adding one.
+- **content/tours/review-builder-take-it-away.md and plans/site-builder.md.** The tour a rendered
+  change owes, and the plan phase it closes. Both are the standard's own asks rather than scope.
+
+Nothing declared was left untouched except src/ai/builder-page.ts, which turned out not to need a
+change: the view already carried the flag the export controls bind their visibility to.
+
 ## What was not done
 
 - **P5 is untouched**, which was the brief. No preview tab, no catalog sidebar.
@@ -160,9 +228,31 @@ needs-verification, and neither is a bug: one is the misclick-safety path, the o
 http://localhost:3000/builder?crumb=review-builder-take-it-away&crumb-mode=dev&crumb-frame
 ```
 
+## A correction landed after the commit, and it is not this run's change
+
+A parallel agent took the owner's decision on the AI edit path while this was finishing: a bare
+block id now resolves up to the long address on the READ side, when and only when the live manifest
+holds exactly one target at it. That made three pieces of copy stale, one of them in a file this run
+held, so this run fixed all three rather than editing around a sentence it had made wrong to leave.
+
+- **The drawer on /builder** described a fence that no longer exists. The 2026-08-15 counts stay, as
+  a dated measurement, and a new paragraph says the fence changed, that the five near misses would
+  pass it, and that this is a deduction because **nobody has run the live model against the new
+  fence.** The two sentences that had drifted from measured to unverified, only the first line works
+  end to end and this model cannot do it yet, now say what was last measured rather than what is.
+- **content/tours/review-builder-honest-copy.md**, whose second step told a reviewer to be suspicious
+  of a refusal that is gone, and whose closing ask was the decision that has now been answered. The
+  ask is now the re-run.
+- **plans/builder-design.md Open 3**, which described the normalization as untaken.
+
+**No copy anywhere claims the model can now edit a page.** That claim has no run behind it, and an
+unverified improvement is exactly the case honest limits over hype exists for. The next honest move
+is one desk-audit pass over the same five scenarios.
+
 ## Doctor
 
 Four rows were due at session start and all four are carried by name rather than fixed: cold-start
-context over budget, graphify freshness, run reports behind the commit count (this file is one
-answer to that row), and two uncommitted paths in the config repo. None of them is in P4's path and
-none was touched.
+context over budget, graphify freshness, mill pinned one minor behind, and the run-ledger row this
+file was itself the subject of. That last one is answered here rather than carried: the ledger
+wanted a verbatim gate section, a real number for the unpushed count, the scope growth named, and a
+doctor line. All four are above. The other three are not in P4's path and were not touched.
