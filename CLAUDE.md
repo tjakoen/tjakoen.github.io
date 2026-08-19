@@ -33,7 +33,7 @@ capability and name the tool only as the example. See [`plans/nimbalyst-in-the-l
 ## Start here (reading order)
 
 The standards are installed here as **skills**. Invoke them, do not fetch them: `Skill(voice)`,
-`Skill(figures)`, `Skill(note-standard)`, `Skill(readme-standard)`, and the rest of the eighteen
+`Skill(figures)`, `Skill(note-standard)`, `Skill(readme-standard)`, and the rest of the seventeen
 under `.claude/skills/`. The published URLs below are the human-readable copy of the same file and
 are there for a reader, not for a session: a web fetch to read a standard this repo already ships
 is a wasted round trip. The source of every one lives in this repo's `standards/` dir, so edits go
@@ -43,24 +43,29 @@ binary, but it is not installed on PATH here, so reach for it through bun rather
 short command exists.
 
 1. [`PHILOSOPHY.md`](docs/PHILOSOPHY.md): the *why* beneath the whole stack. Read first.
-2. `Skill(voice)` ([published](https://tjakoen.github.io/standards/voice)): the writing standard
+2. *Skill(intake)* ([published](https://tjakoen.github.io/standards/intake)): read it BEFORE
+   starting work on a pasted document, a forwarded brief or a handoff that runs longer than a
+   screen and wants something changed. It turns the blob into the lane, the scope cap, the hard
+   stops, the ask-triggers and a finish line by putting four questions to the owner, and it says
+   plainly when no brief is needed so it does not fire on a one-line ask.
+3. `Skill(voice)` ([published](https://tjakoen.github.io/standards/voice)): the writing standard
    (voice, the machine-tells to avoid). Match it for any prose in his name.
-3. `Skill(figures)` ([published](https://tjakoen.github.io/standards/figures)): the figure standard,
+4. `Skill(figures)` ([published](https://tjakoen.github.io/standards/figures)): the figure standard,
    the two tokenized inline-SVG scaffolds (data-viz + flow) and the no-mermaid-on-the-published-site
    rule. Use it for any diagram or chart.
-4. `Skill(note-standard)` ([published](https://tjakoen.github.io/standards/note-standard)): how a
+5. `Skill(note-standard)` ([published](https://tjakoen.github.io/standards/note-standard)): how a
    note/blog post is built (frontmatter, structure, the sign-off footer) + a reusable prompt to
    draft one. Use it for any `content/notes/*.md`.
-5. `Skill(readme-standard)` ([published](https://tjakoen.github.io/standards/readme-standard)):
+6. `Skill(readme-standard)` ([published](https://tjakoen.github.io/standards/readme-standard)):
    badges + README presentation, with a reusable prompt to run in any repo.
-6. `Skill(graph)` ([published](https://tjakoen.github.io/standards/graph)): read it before answering
+7. `Skill(graph)` ([published](https://tjakoen.github.io/standards/graph)): read it before answering
    any "where is X", "what calls Y" or "map this directory" question. This repo carries a live code
    graph, rebuilt by a PostToolUse hook on every edit, so `graphify query <symbol>` answers those in
    one call where a grep sweep costs many. Seed the query with a symbol the code actually contains:
    a partial name returns a bare "No matching nodes found." and reads like a broken tool.
-7. [`CONTENT-BACKLOG.md`](docs/CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
-8. [`PLAN.md`](docs/architecture/PLAN.md) + [`FEATURES.md`](docs/architecture/FEATURES.md): the site's *how* and *what*.
-9. [`HACKING.md`](docs/HACKING.md): the route → source map + "which file do I open to change X" — the
+8. [`CONTENT-BACKLOG.md`](docs/CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
+9. [`PLAN.md`](docs/architecture/PLAN.md) + [`FEATURES.md`](docs/architecture/FEATURES.md): the site's *how* and *what*.
+10. [`HACKING.md`](docs/HACKING.md): the route → source map + "which file do I open to change X" — the
    fast path for a *small* edit (human or AI) without cold-reading `server.ts`.
 
 Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
