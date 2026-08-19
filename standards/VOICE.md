@@ -14,8 +14,8 @@ when: >
 > social posts, product copy). If you (human or AI) are drafting prose that will carry his byline,
 > match this. It's two things in one: the **how** (cadence, mechanics, the honesty clause) and the
 > **what** (the real specifics his voice runs on, the opinions it argues, and the machine-tells it
-> refuses). Derived from his own drafts, primarily [`notes/origin-story.md`](../content/notes/origin-story.md)
-> (marked "my own voice") and [the whitepaper](../content/notes/whitepaper-one-vocabulary.md), and everything
+> refuses). Derived from his own drafts, primarily [`notes/origin-story.md`](/notes/origin-story)
+> (marked "my own voice") and [the whitepaper](/notes/whitepaper-one-vocabulary), and everything
 > concrete here is drawn from real projects.
 >
 > **It is a projection of how he already works. Update it when the work changes, not the other way
@@ -95,6 +95,7 @@ Same voice, different dial settings. Contractions are resolved here: this is the
 |---|---|---|---|
 | **Whitepaper / formal docs** | Expanded (*do not*, *cannot*) | Longest, measured | Literary, deliberate. The origin-story cadence. |
 | **Blog / notes** | Contract freely (*I'm*, *here's*) | Medium, narrative | Loose, warm, a little irreverent. A vibe-coding blog should *read* like vibe coding. |
+| **Guide / outward-facing** | Contract | Medium, structured | Same warmth, no first person. The reader has a decision and a budget, so the thesis lands in sentence one and the skim path carries the argument. Shape owned by [NOTE-STANDARD.md](NOTE-STANDARD.md). |
 | **README prose** | Contract | Short, oriented | Get them running fast. Still human (italics not backticks, a wink in the intro) but skip the story arc. |
 | **Social posts** | Contract, hard | Very short | One confession or one sharp claim, one specific, done. The pull-quote *is* the post. No thread throat-clearing, no "a 🧵". Lead with the hook, land in one line. |
 | **Reference docs** (ARCHITECTURE, CONVENTIONS) | N/A | As long as needed | The one place backticks and literal tokens are correct. Precision over personality. |
@@ -169,13 +170,13 @@ where possible, never mixed or grandiose.
   `readingTime`, `tags`, `summary`. (The full template, structure checklist, and a runnable
   drafting prompt live in the sibling standard [`NOTE-STANDARD.md`](NOTE-STANDARD.md).)
 - **The sign-off boilerplate**, at the foot of published notes:
-  > *The [judgment is human](../content/notes/ten-times-zero.md). The typing, by design, is not.*
+  > *The [judgment is human](/notes/ten-times-zero). The typing, by design, is not.*
 
   This footer speaks only to the **content's authorship**, exactly as a repo footer speaks to the
   code's (co-authored, receipts link). It replaces the older *"Written by a human"* line, which
   overclaimed: the AI drafts the prose (that is what this guide is *for*); the human supplies the
   content, the direction, and the approval. The honest split is the point. Link *"judgment is
-  human"* to [`notes/ten-times-zero.md`](../content/notes/ten-times-zero.md) the way every repo footer links
+  human"* to [`notes/ten-times-zero.md`](/notes/ten-times-zero) the way every repo footer links
   its "how I work with AI" receipts (see [`README-STANDARD.md`](README-STANDARD.md)); the flagship
   post itself doesn't self-link and swaps the tail for *"On this one, nearly all of it."*
 
@@ -203,10 +204,10 @@ Reach into this shelf instead of writing *"a modern typeface"* or *"a recent pro
 - **The AI-operable design system (GRAIN + BATCH):** a docs site that doesn't just *describe*
   components, it lets the AI *drive* them: drivable catalog, build queue, token playground. The
   thesis project.
-- **Spark Plan:** the operating document and deck for his engineering team. Swiss-editorial house
-  style, vermilion ember accent. *(Internal Career Team; reference only.)*
-- **Spark Birdie:** a Google Apps Script bot posting daily Time In/Out cards to Google Chat, logging
-  to Sheets. Homemade-tool energy: small, useful, his. *(Internal Career Team; reference only.)*
+- **An internal planning document:** the operating doc and deck for his engineering team.
+  Swiss-editorial house style, vermilion ember accent. *(Internal; unnamed on purpose.)*
+- **A small internal automation:** a Google Apps Script bot posting daily attendance cards to chat,
+  logging to Sheets. Homemade-tool energy: small, useful, his. *(Internal; unnamed on purpose.)*
 - **The ETA-9130 mock generator:** a self-contained HTML prototype for demo / sales engineering. The
   "I built the whole thing in one file" flex, done straight.
 
@@ -227,7 +228,7 @@ proudly) Claude. Never *"AI tooling"* when you can say which one.
 commits. Cite real counts; flag when a number is a snapshot rather than a standing fact. The real one
 or none.
 
-**The roles (all true, all at once):** Dev Manager and de facto tech lead on the Spark team at
+**The roles (all true, all at once):** Dev Manager and de facto tech lead on his engineering team at
 **Career Team**. Software-engineering instructor. Thesis advisor. Interim product lead. The *"one
 person wearing four hats"* reality is a genuine recurring stake, honest-open material, never a
 humble-brag.
@@ -359,7 +360,10 @@ not earned yet."
 
 ## Structure of a typical piece
 
-A repertoire, not a template; don't hit every beat every time (see the formula tell).
+A repertoire, not a template; don't hit every beat every time (see the formula tell). **This is the
+shape of a personal note.** A piece written for a company follows a different one, and the two are
+set out side by side in [NOTE-STANDARD.md](NOTE-STANDARD.md) under *Two kinds of note*. Drafting a
+guide to the beats below is how a company-facing piece turns into a memoir with a plan attached.
 
 1. Confessional / stakes-first open (rotate: sometimes a number, sometimes the pull-quote, sometimes mid-problem).
 2. The problem, made concrete with real specifics.
