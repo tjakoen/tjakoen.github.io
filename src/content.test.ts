@@ -1,11 +1,26 @@
 // portfolio/content.test.ts — piece 4 integration: the REAL content through the real wiring.
 // Run from the repo root (dirSource("tjakoen.github.io/notes") is root-relative, like config.ts).
 import { test, expect } from "bun:test";
-import { readdir } from "node:fs/promises";
+import { readdir, unlink } from "node:fs/promises";
 import { join } from "node:path";
-import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, listLatestEvents, listEventCalendarEvents, renderNotesFeedPage, FLAGSHIP_NOTE_SLUG } from "./content.ts";
+import { parseFrontmatter } from "@tjakoen/mill/core/frontmatter.ts";
+import { createPortfolioContentRoutes, listNoteRoutesByDate, listRecentNotes, listLatestEvents, listEventCalendarEvents, renderNotesFeedPage, listPortfolioNotes, listPortfolioContentRoutes, listPortfolioRawContentRoutes, listNoteCalendarEvents, buildPortfolioKnowledge, isPublishedStatus, FLAGSHIP_NOTE_SLUG } from "./content.ts";
 
 const serve = createPortfolioContentRoutes();
+
+// The notes on disk, split by what their frontmatter says about publishing. Tests that walk the
+// folder use this rather than every *.md, so that starting a real draft tomorrow does not turn the
+// suite red: a draft is EXPECTED to be missing from the feed and to 404, and that is asserted below.
+async function notesOnDisk(): Promise<{ published: string[]; drafts: string[] }> {
+  const dir = join(import.meta.dir, "..", "content", "notes");
+  const published: string[] = [], drafts: string[] = [];
+  for (const f of (await readdir(dir)).filter((n) => n.endsWith(".md"))) {
+    const status = parseFrontmatter(await Bun.file(join(dir, f)).text()).data.status;
+    (isPublishedStatus(status) ? published : drafts).push(f.replace(/\.md$/, ""));
+  }
+  return { published, drafts };
+}
+
 
 // The /notes INDEX is a portfolio route override (content.ts renderNotesFeedPage), not served by
 // MILL's own listing (the /notes collection's `index: false`) — `serve("/notes")` is null by
@@ -13,16 +28,17 @@ const serve = createPortfolioContentRoutes();
 // exercise renderNotesFeedPage() directly instead. Individual entries (`serve("/notes/:slug")`,
 // below) are still MILL, untouched.
 
-test("/notes lists every note in portfolio/notes", async () => {
+test("/notes lists every PUBLISHED note in portfolio/notes, and no draft", async () => {
   const body = await renderNotesFeedPage();
-  const files = (await readdir(join(import.meta.dir, "..", "content", "notes"))).filter(f => f.endsWith(".md"));
-  for (const f of files) expect(body).toContain(`href="/notes/${f.replace(/\.md$/, "")}"`);
+  const { published, drafts } = await notesOnDisk();
+  for (const slug of published) expect(body).toContain(`href="/notes/${slug}"`);
+  for (const slug of drafts) expect(body).not.toContain(`href="/notes/${slug}"`);
 });
 
-test("every real note renders clean (human grade, no unrenderable construct)", async () => {
-  const files = (await readdir(join(import.meta.dir, "..", "content", "notes"))).filter(f => f.endsWith(".md"));
-  for (const f of files) {
-    const res = await serve(`/notes/${f.replace(/\.md$/, "")}`);
+test("every published note renders clean (human grade, no unrenderable construct)", async () => {
+  const { published } = await notesOnDisk();
+  for (const slug of published) {
+    const res = await serve(`/notes/${slug}`);
     expect(res?.status).toBe(200);
     const body = await res!.text();
     expect(body).toContain(`<article class="note" data-grade="smooth">`);
@@ -92,4 +108,70 @@ test("the feed walkthrough card gets ONE event, the newest, pointing at the feed
   const newest = [...events].sort((a, b) => b.date.localeCompare(a.date))[0]!;
   expect(latest[0].title).toBe(newest.title);
   expect(latest[0].href).toBe(`/calendar#${newest.domId}`);
+});
+
+// ---- the publish gate (content.ts publishedSource / isPublishedStatus) ------------------------
+// `status: DRAFT` was documentation that lied until 2026-08-20: NOTE-STANDARD asked for it, every
+// unfinished note carried it, and nothing in src/ ever compared it to anything. These tests are
+// the comparison, held from both sides: a draft reaches none of the surfaces, and the loose
+// readings (a missing status, an unrecognised one) still publish, because a gate that hides a page
+// by accident is the worse failure.
+
+test("isPublishedStatus hides an explicit DRAFT and publishes everything else", () => {
+  expect(isPublishedStatus("DRAFT")).toBe(false);
+  expect(isPublishedStatus("draft")).toBe(false);
+  expect(isPublishedStatus("  Draft  ")).toBe(false);
+  expect(isPublishedStatus("PUBLISHED")).toBe(true);
+  expect(isPublishedStatus(undefined)).toBe(true);          // a missing status still publishes
+  expect(isPublishedStatus("PARKED")).toBe(true);           // an unknown value is not a hide
+});
+
+test("a DRAFT note reaches no surface: not the feed, not its own route, not the raw twin, not the export list", async () => {
+  const slug = "gate-fixture-draft-note";
+  const file = join(import.meta.dir, "..", "content", "notes", `${slug}.md`);
+  await Bun.write(file, [
+    "---",
+    'title: "A Fixture That Must Never Publish"',
+    'author: "Tjakoen Stolk"',
+    "status: DRAFT",
+    "type: note",
+    "date: 2026-08-20",
+    'summary: "Written by the publish-gate test and deleted by it."',
+    "---",
+    "",
+    "## A heading",
+    "",
+    "A paragraph, so the fixture renders like a real note if the gate ever lets it through.",
+    "",
+  ].join("\n"));
+  try {
+    expect(await renderNotesFeedPage()).not.toContain(`href="/notes/${slug}"`);
+    expect(await listNoteRoutesByDate()).not.toContain(`/notes/${slug}`);
+    expect((await listPortfolioNotes()).map((n) => n.slug)).not.toContain(slug);
+    expect(await listPortfolioContentRoutes()).not.toContain(`/notes/${slug}`);
+    expect((await listPortfolioRawContentRoutes())).not.toContain(`/notes/${slug}.md`);
+    expect((await listNoteCalendarEvents()).map((e) => e.id)).not.toContain(`note-${slug}`);
+    expect((await listRecentNotes(50)).map((n) => n.href)).not.toContain(`/notes/${slug}`);
+    expect((await buildPortfolioKnowledge()).chunks.some((c) => c.route === `/notes/${slug}`)).toBe(false);
+    expect((await serve(`/notes/${slug}`))?.status).toBe(404);
+    expect((await serve(`/notes/${slug}.md`))?.status).toBe(404);
+  } finally {
+    await unlink(file);
+  }
+});
+
+test("the gate takes nothing that is live off the site: every published note is still reachable, and any draft 404s", async () => {
+  const { published, drafts } = await notesOnDisk();
+  const routes = await listPortfolioContentRoutes();
+  for (const slug of published) {
+    expect(routes).toContain(`/notes/${slug}`);
+    expect((await serve(`/notes/${slug}`))?.status).toBe(200);
+  }
+  for (const slug of drafts) {
+    expect(routes).not.toContain(`/notes/${slug}`);
+    expect((await serve(`/notes/${slug}`))?.status).toBe(404);
+  }
+  // The one the owner published on purpose, named rather than counted, because a gate that took it
+  // down would have silently undone a decision made the same day the gate was written.
+  expect((await serve("/notes/the-check-that-never-ran"))?.status).toBe(200);
 });
