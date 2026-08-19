@@ -180,6 +180,29 @@ ${inject}</body>
 </html>`;
 }
 
+/**
+ * Where every served collection's Markdown lives on disk, keyed by its route prefix. The
+ * collection definitions below take their directories from here, so a folder cannot be served
+ * without appearing in this map.
+ *
+ * It is exported because tools have to walk exactly the content MILL serves, and no more.
+ * tools/diagram-cache-gate.ts is the first: it fails the build on a mermaid fence that has no
+ * committed SVG, and a fence in a file outside every one of these folders is not a risk. Restating
+ * the list inside the tool would let the two drift, and the direction of that drift is a new
+ * collection served without a gate over it.
+ */
+export const COLLECTION_DIRS = {
+  "/notes": join(import.meta.dir, "..", "content", "notes"),
+  "/grain/docs": join(import.meta.dir, "..", "docs/grain"),
+  "/batch/docs": join(import.meta.dir, "..", "docs/batch"),
+  "/mill/docs": join(import.meta.dir, "..", "docs/mill"),
+  "/proof/docs": join(import.meta.dir, "..", "docs/proof"),
+  "/crumb/docs": join(import.meta.dir, "..", "docs/crumb"),
+  "/pantry/docs": join(import.meta.dir, "..", "docs/pantry"),
+  "/standards": join(import.meta.dir, "..", "standards"),
+  "/calendar": join(import.meta.dir, "..", "content", "events"),
+} as const;
+
 // The three collections — module-level so the routes AND the route list derive from
 // one definition (a new note or doc automatically reaches the sitemap and the export).
 const collections: MillCollection[] = [
@@ -187,7 +210,7 @@ const collections: MillCollection[] = [
     prefix: "/notes",
     title: "Notes",
     description: "Long-form notes — how this stack got built, how I teach, and what broke along the way.",
-    source: dirSource(join(import.meta.dir, "..", "content", "notes")),
+    source: dirSource(COLLECTION_DIRS["/notes"]),
     adapter: withHeadingAnchors({ resolveLink: notesLink }),
     indexVariant: "log",
     itemSurfacePrefix: "note",
@@ -201,42 +224,42 @@ const collections: MillCollection[] = [
     prefix: "/grain/docs",
     title: "GRAIN docs",
     description: "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-    source: dirSource(join(import.meta.dir, "..", "docs/grain")),
+    source: dirSource(COLLECTION_DIRS["/grain/docs"]),
     adapter: withHeadingAnchors({ resolveLink: docsLink("/grain/docs") }),
   },
   {
     prefix: "/batch/docs",
     title: "BATCH docs",
     description: "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
-    source: dirSource(join(import.meta.dir, "..", "docs/batch")),
+    source: dirSource(COLLECTION_DIRS["/batch/docs"]),
     adapter: withHeadingAnchors({ resolveLink: docsLink("/batch/docs") }),
   },
   {
     prefix: "/mill/docs",
     title: "MILL docs",
     description: "MILL's own docs, canonically homed here (option b) and rendered through MILL.",
-    source: dirSource(join(import.meta.dir, "..", "docs/mill")),
+    source: dirSource(COLLECTION_DIRS["/mill/docs"]),
     adapter: withHeadingAnchors({ resolveLink: docsLink("/mill/docs") }),
   },
   {
     prefix: "/proof/docs",
     title: "PROOF docs",
     description: "PROOF's own docs, canonically homed here (option b) and rendered through MILL.",
-    source: dirSource(join(import.meta.dir, "..", "docs/proof")),
+    source: dirSource(COLLECTION_DIRS["/proof/docs"]),
     adapter: withHeadingAnchors({ resolveLink: docsLink("/proof/docs") }),
   },
   {
     prefix: "/crumb/docs",
     title: "CRUMB docs",
     description: "CRUMB's own docs, canonically homed here (option b) and rendered through MILL.",
-    source: dirSource(join(import.meta.dir, "..", "docs/crumb")),
+    source: dirSource(COLLECTION_DIRS["/crumb/docs"]),
     adapter: withHeadingAnchors({ resolveLink: docsLink("/crumb/docs") }),
   },
   {
     prefix: "/pantry/docs",
     title: "PANTRY docs",
     description: "PANTRY's own docs, canonically homed here (option b) and rendered through MILL.",
-    source: dirSource(join(import.meta.dir, "..", "docs/pantry")),
+    source: dirSource(COLLECTION_DIRS["/pantry/docs"]),
     adapter: withHeadingAnchors({ resolveLink: docsLink("/pantry/docs") }),
   },
   {
@@ -247,7 +270,7 @@ const collections: MillCollection[] = [
     prefix: "/standards",
     title: "Standards",
     description: "The cross-repo standards — how I build with an AI, how anything under my byline reads, and how a repo is set up. Canonically homed here and rendered through MILL.",
-    source: realFilesSource(join(import.meta.dir, "..", "standards")),
+    source: realFilesSource(COLLECTION_DIRS["/standards"]),
     adapter: withHeadingAnchors({ resolveLink: docsLink("/standards") }),
   },
   {
@@ -259,11 +282,25 @@ const collections: MillCollection[] = [
     prefix: "/calendar",
     title: "Feed",
     description: "The desk's feed: hackathons coached, talks given, and student projects worth showing, alongside what shipped.",
-    source: dirSource(join(import.meta.dir, "..", "content", "events")),
+    source: dirSource(COLLECTION_DIRS["/calendar"]),
     adapter: withHeadingAnchors({ resolveLink: eventsLink }),
     index: false,
   },
 ];
+
+/**
+ * Every served collection paired with the folder it reads. Tools that must walk exactly what MILL
+ * serves take the REAL ContentSource from here rather than rebuilding one, which matters for
+ * /standards: realFilesSource drops the symlinked AGENTS.md alias, and a tool that rebuilt the
+ * source with plain dirSource would walk that alias as a second document.
+ */
+export function collectionSources(): { prefix: string; dir: string; source: ContentSource }[] {
+  return collections.map((c) => ({
+    prefix: c.prefix,
+    dir: COLLECTION_DIRS[c.prefix as keyof typeof COLLECTION_DIRS],
+    source: c.source,
+  }));
+}
 
 /**
  * The portfolio's content routes, ready to mount at the composition root:

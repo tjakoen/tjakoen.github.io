@@ -31,6 +31,8 @@
     "lint:baseline": "bun tools/lint-gate.ts --write",
     "audit:desk": "bun tools/desk-audit.ts",
     "analytics:pull": "bun tools/analytics-pull.ts",
+    "diagrams:warm": "bun tools/diagram-warm.ts",
+    "diagrams:check": "bun tools/diagram-cache-gate.ts",
     "export": "bun tools/export.ts",
     "verify:export": "bun tools/verify-export.ts",
     "check": "tsc --noEmit",

@@ -16,11 +16,17 @@
 // "does this file exist" is unambiguous — so it can be a hard, CI-blocking gate (wired into
 // pages.yml between export and the Pages upload).
 //
+// Since the mermaid gate landed there is a THIRD kind of check here, and it is the one exception
+// to "against dist/ on disk": (d) reads the SOURCE content and the committed diagram cache. It
+// belongs in this tool anyway, because pages.yml calls exactly one verifier after the export and a
+// gate wired anywhere else would not run on the deploy that needs it. See tools/diagram-cache-gate.ts.
+//
 //   bun run verify:export        # after `bun run export` (reads ./dist by default)
 //   EXPORT_DIST=dist bun run verify-export.ts
 import { join, relative } from "node:path";
 import { readdir } from "node:fs/promises";
 import { extractRefs } from "@tjakoen/batch/export/rewrite.ts";
+import { checkDiagramCache } from "./diagram-cache-gate.ts";
 
 const DIST = Bun.env.EXPORT_DIST ?? "dist";
 
@@ -153,8 +159,10 @@ async function checkModuleImports(): Promise<string[]> {
   return failures;
 }
 
-const [sitemapFailures, deadLinkFailures, moduleFailures] = await Promise.all([checkSitemap(), checkDeadLinks(), checkModuleImports()]);
-const failures = [...sitemapFailures, ...deadLinkFailures, ...moduleFailures];
+const [sitemapFailures, deadLinkFailures, moduleFailures, diagramFailures] = await Promise.all([
+  checkSitemap(), checkDeadLinks(), checkModuleImports(), checkDiagramCache(),
+]);
+const failures = [...sitemapFailures, ...deadLinkFailures, ...moduleFailures, ...diagramFailures];
 
 if (failures.length) {
   console.error(`[verify-export] ${failures.length} problem(s) in ${DIST}/:\n`);
@@ -165,4 +173,5 @@ if (failures.length) {
 
 console.log(`[verify-export] sitemap.xml: every <loc> resolves to a real file, all trailing-slash canonical`);
 console.log(`[verify-export] dead-link walk: every internal href/src across the exported HTML resolves`);
+console.log(`[verify-export] diagram cache: every mermaid fence in served content has a committed SVG`);
 console.log(`[verify-export] OK`);
