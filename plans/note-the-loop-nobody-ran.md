@@ -1,11 +1,36 @@
 ---
 title: "Note: the loop nobody ran"
-status: ready
+status: done
 owner: unassigned
+written: 2026-08-20
 created: 2026-08-19
 ---
 
 # Note: the loop nobody ran
+
+> **WRITTEN 2026-08-20** as `content/notes/the-check-that-never-ran.md`, status DRAFT. The owner's
+> read is still owed; no session flips a note to PUBLISHED. Three of the figures below were
+> re-derived from the store before drafting and needed correction, and the corrections are recorded
+> in this file rather than only in the note:
+>
+> - **288 is exact, its label was wrong.** It is the sum of the four other workspaces this brief's
+>   own table names (165 + 55 + 42 + 26). Sessions genuinely outside the portfolio are 306, because
+>   the bread-repos root (13), grain (4) and greenroom (1) never made the table. The note says "the
+>   four other repositories my table named" rather than presenting it as a total.
+> - **87 doctor runs and 62 run reports are 2026-08-19 snapshots**, and the note date-stamps them in
+>   the sentence that makes them. A precise match on the doctor command in the store returns 52 and
+>   a match on edited run-report paths returns 45; the original pass used a broader rule that a
+>   second pass could not reconstruct. The parts that reproduce exactly are the ones the argument
+>   rests on: ph-live 165 sessions with 1 doctor run, and zero run reports in any workspace outside
+>   the portfolio.
+> - **53 of 148 is a 2026-08-19 snapshot with a moving denominator.** The store held 454 sessions
+>   that night and holds 460 now; all six are portfolio sessions spawned on the night of the 19th,
+>   and five of the six are work about the loop. The note prints that rather than restating the
+>   ratio, because re-deriving it today makes it worse and that is the honest ending.
+>
+> Exact on re-check and used as standing facts: 454 sessions across 8 workspaces since 2026-07-04,
+> 59 sessions named a variant of "Review pasted text", the longest session at 11,396 messages, and
+> four non-portfolio repos carrying `pantry.config.json` at the time of the claim.
 
 A note for `content/notes/`, briefed and queued rather than started. The owner approved it on
 2026-08-19 alongside three other pieces; the harness caps a session at four children in flight and
