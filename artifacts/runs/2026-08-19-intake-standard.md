@@ -1,4 +1,40 @@
+---
+title: "INTAKE, turning a pasted blob into a scoped brief"
+date: 2026-08-19
+status: complete
+lane: gated
+branch: main
+skills:
+  - intake
+  - voice
+  - loop-standard
+scope:
+  - standards/
+  - CLAUDE.md
+  - .gitignore
+  - artifacts/runs/
+touched:
+  - .gitignore
+  - CLAUDE.md
+  - artifacts/runs/2026-08-19-intake-standard.md
+  - standards/INTAKE.md
+  - standards/README.md
+diffstat: 5 files changed, 444 insertions(+), 9 deletions(-)
+unpushed: 0
+verifiedBy: a later session that did not write the run, 2026-08-20
+doctor: 0 failing, 2 due and carried by name, cold-start context and run ledger
+---
+
 # Run report: INTAKE, turning a pasted blob into a scoped brief
+
+> The frontmatter above was retrofitted on 2026-08-20 by a session that did not write this run. Every
+> field comes from git or from the report's own text, never from a guess: the diffstat and the touched
+> list are `git show` on commit `0dab776`, the unpushed count is 0 because the commit is on
+> `origin/main`, and the scope is the envelope this report already declared below, written out as
+> paths because the ledger reads paths and the original wrote "the portfolio's own docs". The gate fences
+> further down are the original session's own pastes and were not touched or re-run. The in-body
+> diffstat under *Gate results* was taken before the final edits and reads 245 lines for INTAKE.md
+> where git records 256; git is the one to trust.
 
 Date: 2026-08-19
 Session: blob-to-brief intake skill
