@@ -367,3 +367,37 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
   font-family: var(--font-mono); font-size: var(--text-xs);
   color: var(--color-muted); letter-spacing: 0.02em; text-transform: none; white-space: normal;
 }
+
+/* ── the skip link ──────────────────────────────────────────────────────────────
+   Hidden by clipping, not by moving it off-screen, and the difference is the whole fix. The first
+   attempt parked it at translateY(-120%), which reads fine and tests fine in isolation. But
+   `.app-shell` is `overflow: hidden`, so an element pushed above it is clipped with no way to
+   scroll back to it, and Chromium drops a permanently-clipped element out of sequential focus
+   navigation. It stayed focusable by script and unreachable by Tab, which is the exact failure a
+   skip link exists to avoid, and only a real Tab press caught it. A 1px clipped box stays rendered
+   inside the container, so it keeps its place in the tab order, and focus restores it to full size.
+   Tokens only, so it follows the theme like everything else. */
+.skip-link {
+  position: absolute; top: 0; left: 0; z-index: 100;
+  width: 1px; height: 1px; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+  background: var(--paper); color: var(--ink);
+  font-size: var(--text-sm); text-decoration: underline;
+}
+.skip-link:focus {
+  width: auto; height: auto; overflow: visible; clip-path: none;
+  padding: var(--space-2) var(--space-4);
+  border: var(--border); border-radius: 0 0 var(--radius-md) 0;
+}
+
+/* ── window-bar control hit areas ───────────────────────────────────────────────
+   grain's `.window-bar__ctl button { all: unset }` leaves each control hugging its glyph, so the
+   light/dark toggle measured 8 by 20 CSS pixels: a real miss for a finger or a shaky hand. This
+   brings every one of them to 24 by 24, which is WCAG 2.5.8 at AA. It deliberately does NOT go to
+   44, the 2.5.5 AAA figure the audit graded against, because the whole bar is 34 pixels tall and a
+   44 pixel target would either burst it or overlap the tab strip below. The honest state is AA met,
+   AAA not, rather than a number chosen to make a report look clean. */
+.app-shell.app-window .window-bar__ctl button {
+  min-width: 24px; min-height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
