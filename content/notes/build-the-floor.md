@@ -27,9 +27,11 @@ Almost nobody wants to build the thing underneath it, which is unglamorous, take
 mostly consists of making a codebase legible to a machine that has never met you.
 
 I have been building this across about a dozen repositories over the last few months, and I have
-gotten a useful amount of it wrong in public. This is the shape that works, the parts that broke, and what I
+gotten a useful amount of it wrong in public. The smaller, one-person version of it is written up in
+[I Was Shipping Faster Than I Could Understand It](one-loop-every-repo.md), including the week I
+could not explain half of what had shipped. This is the shape that works, the parts that broke, and what I
 would do with an organization's worth of it. It is an implementation note, not a business case, so
-there is no slide here about what AI means for your industry.
+there is no section here about what AI means for your industry.
 
 One thing before the build, because it is the reason the build is shaped this way.
 
@@ -80,6 +82,15 @@ that a third of everything goes unreviewed.
 I call the thing that decides which side you land on the substrate gap. It is the distance between
 what your tools can do and what your codebase can absorb, and every technique below is a way of
 closing some of it.
+
+The industry has landed on a word for the machinery that closes it: a **harness**. The definition
+worth borrowing is [Anthropic's](https://www.anthropic.com/engineering/harness-design-long-running-apps),
+who use it for the structured system you build around a model: the scaffolding that decides what it
+sees, what it may touch, and who checks the result. Everything in the second half of this note is harness work
+by that definition, and it is worth knowing the term because it is what the good writing on this is
+filed under. Watch the ambiguity, though. Plenty of people use the same word for the tool you work
+inside, the editor or agent runtime, which is a thing you buy rather than a thing you build. The one
+that decides your outcome is the one you build.
 
 Two more numbers worth carrying into the build, then I will stop citing things. Veracode's 2026
 report puts unguided AI-generated code at a 56% security pass rate, flat for two years while
@@ -274,40 +285,10 @@ you end up with the Faros numbers: plenty of output, no capacity to check it.
 **Build the four skills that supervise work before the one that produces work.**
 
 <div class="live-fig" data-live-figure="buildorder" data-surface="figure:buildorder">
-<svg viewBox="0 0 252 348" width="100%" role="img"
-     aria-label="Five skills in build order. Plan turns a ticket into a testable spec. Code review checks a diff against house standards. Docs catch drift on merge. QA writes tests to house convention. The coder comes last, and only once the four above can catch it being wrong."
-     style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
-  <defs>
-    <marker id="fl-floor3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-    </marker>
-  </defs>
-  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="31" y="16" width="190" height="52" rx="6"/>
-    <rect x="31" y="80" width="190" height="52" rx="6"/>
-    <rect x="31" y="144" width="190" height="52" rx="6"/>
-    <rect x="31" y="208" width="190" height="52" rx="6"/>
-  </g>
-  <rect x="16" y="284" width="220" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
-  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="126" y1="68" x2="126" y2="80" marker-end="url(#fl-floor3)"/>
-    <line x1="126" y1="132" x2="126" y2="144" marker-end="url(#fl-floor3)"/>
-    <line x1="126" y1="196" x2="126" y2="208" marker-end="url(#fl-floor3)"/>
-    <line x1="126" y1="260" x2="126" y2="284" marker-end="url(#fl-floor3)"/>
-  </g>
-  <g text-anchor="middle">
-    <text x="126" y="38.3" style="fill:var(--color-fg)">Plan</text>
-    <text x="126" y="54.8" style="fill:var(--color-muted);font-size:12px">a ticket becomes a testable spec</text>
-    <text x="126" y="102.3" style="fill:var(--color-fg)">Code review</text>
-    <text x="126" y="118.8" style="fill:var(--color-muted);font-size:12px">a diff against house standards</text>
-    <text x="126" y="166.3" style="fill:var(--color-fg)">Docs</text>
-    <text x="126" y="182.8" style="fill:var(--color-muted);font-size:12px">drift caught on merge</text>
-    <text x="126" y="230.3" style="fill:var(--color-fg)">QA</text>
-    <text x="126" y="246.8" style="fill:var(--color-muted);font-size:12px">tests to house convention</text>
-    <text x="126" y="306.3" style="fill:var(--color-bg)">Coder</text>
-    <text x="126" y="322.8" style="fill:var(--color-bg);font-size:12px">last, once the others can catch it</text>
-  </g>
-</svg>
+<p><em>Five skills in build order. Plan turns a ticket into a testable spec. Code review checks a diff
+against house standards. Docs catch drift on merge. QA writes tests to house convention. The coder
+comes last, and only once the four above can catch it being wrong.</em></p>
+<p class="live-fig__note">Tick the ones you would pass today. It will tell you which kind of AI work you can currently defend, and which gate is in the way.</p>
 </div>
 <p class="live-fig__note">Flip it. Twelve changes either way, the same coder both times. What changes is how many of them a person has to catch by reading.</p>
 
@@ -461,42 +442,14 @@ computable against human-authored.
 
 **Before anything runs unattended, four things have to be true.** All four are things you build.
 
-<svg viewBox="0 0 252 348" width="100%" role="img"
-     aria-label="Four gates in sequence. Visibility, meaning you know what is happening today. Verifiability, meaning a machine can judge whether a change is correct. Legibility, meaning an agent can understand the codebase without a human explaining it. Containment, meaning you know what breaks if the agent is wrong. Unattended loops need all four."
-     style="display:block;width:100%;max-width:430px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
-  <defs>
-    <marker id="fl-floor0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-    </marker>
-  </defs>
-  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="31" y="16" width="190" height="52" rx="6"/>
-    <rect x="31" y="80" width="190" height="52" rx="6"/>
-    <rect x="31" y="144" width="190" height="52" rx="6"/>
-    <rect x="31" y="208" width="190" height="52" rx="6"/>
-  </g>
-  <rect x="16" y="284" width="220" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
-  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="126" y1="68" x2="126" y2="80" marker-end="url(#fl-floor0)"/>
-    <line x1="126" y1="132" x2="126" y2="144" marker-end="url(#fl-floor0)"/>
-    <line x1="126" y1="196" x2="126" y2="208" marker-end="url(#fl-floor0)"/>
-    <line x1="126" y1="260" x2="126" y2="284" marker-end="url(#fl-floor0)"/>
-  </g>
-  <g text-anchor="middle">
-    <text x="126" y="38.3" style="fill:var(--color-fg)">Visibility</text>
-    <text x="126" y="54.8" style="fill:var(--color-muted);font-size:12px">what is happening today</text>
-    <text x="126" y="102.3" style="fill:var(--color-fg)">Verifiability</text>
-    <text x="126" y="118.8" style="fill:var(--color-muted);font-size:12px">can a machine judge it</text>
-    <text x="126" y="166.3" style="fill:var(--color-fg)">Legibility</text>
-    <text x="126" y="182.8" style="fill:var(--color-muted);font-size:12px">can an agent read it</text>
-    <text x="126" y="230.3" style="fill:var(--color-fg)">Containment</text>
-    <text x="126" y="246.8" style="fill:var(--color-muted);font-size:12px">what breaks if it is wrong</text>
-    <text x="126" y="306.3" style="fill:var(--color-bg)">Unattended loops</text>
-    <text x="126" y="322.8" style="fill:var(--color-bg);font-size:12px">need all four</text>
-  </g>
-</svg>
-
-*Assisted development needs visibility and legibility. Anything unattended needs all four.*
+<div class="live-fig" data-live-figure="gates" data-surface="figure:gates">
+<p><em>Four gates in sequence. Visibility, meaning you can say what is happening today.
+Verifiability, meaning a machine can decide whether a change is correct. Legibility, meaning an
+agent can read the codebase without a human explaining it. Containment, meaning you know what
+breaks if it is wrong and have tested that. Assisted development needs the first and third.
+Anything unattended needs all four.</em></p>
+</div>
+<p class="live-fig__note">Tick the ones you would pass today. It will tell you which kind of AI work you can currently defend, and which gate is standing in the way.</p>
 
 I like this framing because it turns "we're not ready" into a list somebody owns. Nobody argues with
 "our CI is too flaky for a machine to adjudicate a change." That is a number.

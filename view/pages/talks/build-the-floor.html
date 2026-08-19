@@ -130,7 +130,21 @@
     </ul>
   </section>
 
-  <!-- 8 ----------------------------------------------------------------- STRIPE -->
+    <!-- THE WORD ------------------------------------------------------------------
+       Plant the term so the room can go and read about it, and disambiguate it in the same breath. -->
+  <section class="presentation__slide" data-align="center" data-title="The word for it">
+    <p class="slide-eyebrow settles">There is a word for the thing you build</p>
+    <h2 class="slide-head" data-size="xl">A harness.</h2>
+    <p class="slide-lede frag">The scaffolding that decides what a model sees, what it may touch, and who checks the result.</p>
+    <p class="claim frag" data-grade="grain">Not the editor you work in. That one you buy. This one you build, and it is the one that decides your outcome.</p>
+    <ul class="slide-notes" hidden>
+      <li>Plant the term deliberately, and credit it: this is Anthropic's usage, and their two harness write-ups are where to send people who want more.</li>
+      <li>Disambiguate in the same breath. Half the room uses "harness" for Claude Code or Cursor. That is the runtime, not the harness.</li>
+      <li>"Everything after this slide is harness work."</li>
+    </ul>
+  </section>
+
+<!-- 8 ----------------------------------------------------------------- STRIPE -->
   <section class="presentation__slide" data-align="center" data-title="Stripe">
     <p class="slide-eyebrow settles">The reference everybody points at</p>
     <h2 class="slide-head settles">A thousand pull requests a week, no human-written&nbsp;code.</h2>
@@ -194,40 +208,9 @@ behind it rather than on the date.</em></p>
     <p class="slide-eyebrow settles">So build them in this order instead</p>
     <h2 class="slide-head settles" data-size="sm">Supervision first. Coder&nbsp;last.</h2>
     <div class="live-fig" data-live-figure="buildorder" data-surface="figure:buildorder">
-      <svg viewBox="0 0 252 348" width="100%" role="img"
-         aria-label="Five skills in build order. Plan turns a ticket into a testable spec. Code review checks a diff against house standards. Docs catch drift on merge. QA writes tests to house convention. The coder comes last, and only once the four above can catch it being wrong."
-         style="display:block;width:100%;height:auto;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
-      <defs>
-        <marker id="tf-order" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-        </marker>
-      </defs>
-      <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-        <rect x="31" y="16" width="190" height="52" rx="6"/>
-        <rect x="31" y="80" width="190" height="52" rx="6"/>
-        <rect x="31" y="144" width="190" height="52" rx="6"/>
-        <rect x="31" y="208" width="190" height="52" rx="6"/>
-      </g>
-      <rect x="16" y="284" width="220" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
-      <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-        <line x1="126" y1="68" x2="126" y2="80" marker-end="url(#tf-order)"/>
-        <line x1="126" y1="132" x2="126" y2="144" marker-end="url(#tf-order)"/>
-        <line x1="126" y1="196" x2="126" y2="208" marker-end="url(#tf-order)"/>
-        <line x1="126" y1="260" x2="126" y2="284" marker-end="url(#tf-order)"/>
-      </g>
-      <g text-anchor="middle">
-        <text x="126" y="38.3" style="fill:var(--color-fg)">Plan</text>
-        <text x="126" y="54.8" style="fill:var(--color-muted);font-size:12px">a ticket becomes a testable spec</text>
-        <text x="126" y="102.3" style="fill:var(--color-fg)">Code review</text>
-        <text x="126" y="118.8" style="fill:var(--color-muted);font-size:12px">a diff against house standards</text>
-        <text x="126" y="166.3" style="fill:var(--color-fg)">Docs</text>
-        <text x="126" y="182.8" style="fill:var(--color-muted);font-size:12px">drift caught on merge</text>
-        <text x="126" y="230.3" style="fill:var(--color-fg)">QA</text>
-        <text x="126" y="246.8" style="fill:var(--color-muted);font-size:12px">tests to house convention</text>
-        <text x="126" y="306.3" style="fill:var(--color-bg)">Coder</text>
-        <text x="126" y="322.8" style="fill:var(--color-bg);font-size:12px">last, once the others can catch it</text>
-      </g>
-    </svg>
+      <p><em>Five skills in build order. Plan turns a ticket into a testable spec. Code review checks a diff
+against house standards. Docs catch drift on merge. QA writes tests to house convention. The coder
+comes last, and only once the four above can catch it being wrong.</em></p>
     </div>
     <p class="frag" hidden></p>
     <ul class="slide-notes" hidden>
@@ -430,6 +413,7 @@ the implement and fix nodes call a model.</em></p>
     <p class="claim frag" data-grade="grain">If you can only do one this week, do the marker. Everything else can start in month three and still work.</p>
     <ul class="slide-notes" hidden>
       <li>This is the slide people photograph. Slow down and let them.</li>
+      <li>The first item is a deliberate reprise of the earlier slide. Say so: "you have seen this one already, and that is because it is the one that cannot wait."</li>
       <li>Say what is NOT on it: buying anything, picking a model, writing a policy. Those get easier once these five are behind you.</li>
       <li>The marker is the only irreversible one. Everything downstream is a join against it.</li>
     </ul>

@@ -45,11 +45,22 @@ The roadmap section carries a gantt figure and three explicit horizons the owner
 what we can do now, what we are doing in six months, where we are in a year. Everything after it is
 one section per stage, in build order.
 
-**Five figures**, all live HTML mounted by `scripts/figure-floor.js` rather than inline SVG: the
-whiplash bar, the roadmap gantt, the skill build order ending on the coder, the four gates, and the
-loop architecture. A sixth (the five-stage skill lifecycle) was cut because the roadmap gantt now
-carries the same argument. The owner called the switch away from SVG on 2026-08-18, and it is what
-let the roadmap stay readable at the back of a room when it was lifted into the deck.
+**Six live HTML figures, zero SVG.** All in scripts/figure-floor.js and mounted by BOTH the note and
+the deck so the surfaces cannot drift: the whiplash dial (drag adoption, watch the review queue
+form), the roadmap with a draggable month cursor, the build-order flip, the four gates as a tickable
+self-assessment, instruction-versus-hook, and the agent loop that runs a change end to end. Five of
+the six wrap a prose fallback rather than a second drawing. **The whiplash keeps its static bar
+chart as its fallback on purpose**, because that figure is quantitative and a bar chart is the
+honest still image of it; the other five are structural and a sentence says more than a frozen
+diagram would.
+
+**FIGURES was updated to match on 2026-08-19**, on the owner's 2026-08-18 call to stop using SVG for
+these. The rule is now: a figure with state is HTML, a figure without is one of the two SVG
+scaffolds. The fallback rule survives in spirit, so what the server sends must still argue the point
+by itself. Do not convert this note back to SVG.
+
+**Inbound link closed 2026-08-19:** one-loop-every-repo now links here from its closing section, so
+the cross-link graph in *Production status* covers this note.
 
 **Five earlier drafts were wrong, and the reasons are worth keeping.** (1) Personal essay with a plan
 attached, opening on his own worktree failure. (2) A guide addressed to a peer engineer. (3) A guide

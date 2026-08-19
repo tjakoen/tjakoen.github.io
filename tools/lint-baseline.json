@@ -20,7 +20,7 @@
     "oxlint:unicorn(no-array-sort)": 24,
     "oxlint:unicorn(prefer-add-event-listener)": 1,
     "oxlint:unicorn(prefer-array-find)": 2,
-    "voice:backtick": 3067,
+    "voice:backtick": 3071,
     "voice:corporate-verb": 5,
     "voice:eager-signoff": 2,
     "voice:em-dash": 1197,

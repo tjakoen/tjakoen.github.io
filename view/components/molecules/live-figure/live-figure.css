@@ -466,3 +466,41 @@
 .presentation__slide[data-figure] .loopfig__sub { font-size: .85rem; }
 .presentation__slide[data-figure] .loopfig__keys { font-size: 1.15rem; gap: 2rem; }
 .presentation__slide[data-figure] .loopfig__punch { font-size: 1.1rem; }
+
+/* --- the four gates, as a self-assessment ------------------------------------
+   The last SVG in the note became this. A ladder you can only look at says the gates exist; one you
+   can tick says which of them YOU fail, which is the question a reader actually has. */
+.gates { display: grid; gap: .8rem; }
+.gates__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.gates__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; }
+.gates__btn {
+  width: 100%; display: grid; grid-template-columns: auto 1fr; align-items: start; gap: .8rem;
+  padding: .7rem .9rem; border: 1px solid var(--color-line); border-radius: 6px;
+  background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer;
+  transition: border-color .15s linear, opacity .15s linear;
+}
+.gates__box {
+  width: 18px; height: 18px; margin-top: .15rem; border-radius: 3px;
+  border: 2px solid var(--color-line); transition: background-color .12s linear, border-color .12s linear;
+}
+.gates__gate[data-on] .gates__box {
+  background: var(--color-fg); border-color: var(--color-fg);
+  box-shadow: inset 0 0 0 3px var(--color-bg), inset 0 0 0 6px var(--color-fg);
+}
+.gates__gate[data-on] .gates__btn { border-color: var(--color-fg); }
+.gates__gate:not([data-on]) .gates__btn { opacity: .62; }
+.gates__text { display: grid; gap: .15rem; }
+.gates__text b { font-weight: 600; }
+.gates__text em { font-style: normal; font-size: .8rem; color: var(--color-muted); }
+.gates__verdict { margin: 0; font-size: .92rem; color: var(--color-muted); min-height: 2.4em; }
+.gates__verdict b { color: var(--color-fg); }
+.gates__punch { margin: 0; opacity: .4; transition: opacity .2s linear; }
+.gates[data-all] .gates__punch { opacity: 1; }
+
+.presentation__slide[data-figure] .gates { gap: 1.1rem; font-size: 1.15rem; }
+.presentation__slide[data-figure] .gates__title { font-size: 1.05rem; }
+.presentation__slide[data-figure] .gates__btn { padding: 1rem 1.2rem; gap: 1.1rem; }
+.presentation__slide[data-figure] .gates__box { width: 26px; height: 26px; }
+.presentation__slide[data-figure] .gates__text b { font-size: 1.25rem; }
+.presentation__slide[data-figure] .gates__text em { font-size: .95rem; }
+.presentation__slide[data-figure] .gates__verdict { font-size: 1.1rem; }

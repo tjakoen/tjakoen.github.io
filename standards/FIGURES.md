@@ -1,6 +1,6 @@
 ---
 title: FIGURES.md — figures & visualizations
-summary: The standard for every diagram and chart - two tokenized inline-SVG scaffolds (data-viz and flow), one palette each, no mermaid on the published site.
+summary: The standard for every diagram and chart - HTML when a figure has state, two tokenized inline-SVG scaffolds when it does not, one palette each, no mermaid on the published site.
 when: >
   Read this BEFORE drawing the first shape of any figure that will ship: a chart, a graph, a
   timeline, a ratio, an architecture diagram, a flow, a loop, a pipeline. It gives the two inline-SVG
@@ -20,9 +20,36 @@ when: >
 > never by editing shapes. Same philosophy as the rest of the stack: tokens are the theme, DRY to a
 > fault, design tells the truth.
 
-## Two figure shapes, one medium (the one rule)
+## Three figure shapes, two media (the one rule)
 
-Everything is inline SVG. Which of the two scaffolds you copy is decided by what the figure *is*:
+**A figure that has state is HTML. A figure that does not is inline SVG.** That is the whole
+decision, and it was settled on 2026-08-18 after the fourth attempt at a note whose figures had to
+work at reading size and at the back of a room.
+
+| The figure is… | Build it as | Why |
+|---|---|---|
+| **Something a reader can change** (a dial, a toggle, a cursor, a run) | **HTML + CSS**, in a shared module, mounted by both the post and the deck | An SVG viewBox fixes proportions to whatever the author guessed. HTML scales with its container, so one figure serves a paragraph and a projector without two drawings, and the state lives where state belongs. |
+| **Quantitative data-viz** (bars, ratios, timelines, the multiplier) | the **data-viz scaffold** below | Precise proportions, exact labels, one fixed measure down the page; it carries its own palette so it looks identical everywhere, even committed as an image. |
+| **A flow, loop, relationship, or architecture** (steps, cycles, one box into the next) | the **flow scaffold** below | It sizes to its own content and themes with the site (it inverts in dark), so a diagram reads as part of the page it lives on. |
+
+**What changed, and what did not.** The earlier rule said "everything is inline SVG", with a live
+version allowed only as a progressive enhancement layered over a static one. That inverted in
+practice: on `notes/build-the-floor.md` five of six figures are HTML and the fallback is a sentence
+of prose rather than a second drawing, because maintaining a picture and its interactive twin means
+they drift. **The fallback rule still stands in spirit: what the server sends must argue the point
+by itself.** For an HTML figure that means the host wraps a real sentence describing what the figure
+shows, not an empty div. No-JS, print, a crawler and the static export all still get the argument.
+
+**Where the live modules live.** `scripts/figure-*.js`, one mount per figure, registered in
+`scripts/figures.js` for prose and imported by the deck's own driver for slides. The behaviour is
+written once so a slide and a paragraph cannot argue two different things from the same picture.
+Every mount returns `false` on unexpected markup so the caller can restore the fallback.
+
+**Status is weight, not hue.** `--color-accent` resolves to ink in this theme, so colour carries no
+signal. Filled, hollow and faint are the three states available, and they mean something: filled is
+done or counted, hollow is present but unabsorbed, faint is not yet.
+
+Which of the two SVG scaffolds you copy, when SVG is still right, is decided by what the figure *is*:
 
 | The figure is… | Copy | Palette | Why |
 |---|---|---|---|
