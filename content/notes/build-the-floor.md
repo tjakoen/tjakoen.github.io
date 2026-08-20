@@ -5,8 +5,8 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-08-18
-readingTime: "~24 min"
-deck: "Build the floor | Talk | /talks/build-the-floor | 27 slides · runs in the browser, no download"
+readingTime: "~28 min"
+deck: "Build the floor | Talk | /talks/build-the-floor | 29 slides · runs in the browser, no download"
 tags: [ai, workflow, standards, developer-tools, architecture]
 summary: >
   Most organizations have bought AI subscriptions and are hoping the automation arrives on its own.
@@ -181,6 +181,204 @@ human to explain the system, and review capacity that scales, because human revi
 and is therefore the binding constraint. Organizations demonstrating this today built that substrate
 over years, for humans, before agents existed. Starting now means doing both at once. That is
 achievable. It is not faster.
+
+## I had a parts list, not an architecture
+
+For months I described all of this as skills and hooks and a context file. Somebody asked me what
+the layer actually *is*, as one thing, and I gave them the parts list again, slightly slower. It
+took a diagram out of somebody else's workshop, [Cole Medin's AI-native starter
+pack](https://github.com/coleam00/ai-native-starter-pack), for me to notice I had been building this
+for months and could not draw it.
+
+Start with what it buys, because the cross-section is easier to care about afterwards.
+
+<div class="live-fig" data-live-figure="twopath" data-surface="figure:twopath">
+<p><em>One epic walked twice, five stops each time, the same model doing the typing. Without a
+layer, two stops are cut by hand up front and two come back as repairs after the code exists.
+With one, the same two stops are cut by a skill, the gate runs before the pull request, and the
+only thing left for a person is one spot-check.</em></p>
+</div>
+<p class="live-fig__note">Flip it. Watch which rows stay hollow, because hollow is a person.</p>
+
+*Same epic, same model. The difference is entirely in what was written down beforehand.*
+
+So here is the cross-section, because the five stages above build this thing and never once stop to
+say what it is.
+
+<svg viewBox="-1 0 522 486" width="100%" role="img"
+     aria-label="The AI layer in three layers. Layer one, what it knows before it starts: rules that sit in context every session, carrying the stack and the conventions, kept short and acting as a router; and context loaded only when it is relevant, holding architecture and API contracts, pulled by rule or by a skill. The same rules also sit at the repository root in the cross-tool file every other agent reads. Layer two, what it knows how to do: skills, whose one line is always in context while the body loads only when it runs, invoked by you or by the agent; and subagents, with their own context window, delegated to by a skill and run in parallel to cut wall clock. Layer three, what it can reach and what stops it: MCP connections to the tracker, the spec pages and the forge; hooks that fire on edit and commit to format, lint and block, and are never the model's choice; and a code graph that answers where a symbol is and what calls what in one query rather than a grep sweep. All of it is files, committed and reviewed like code."
+     style="display:block;width:100%;max-width:500px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px"
+     xmlns="http://www.w3.org/2000/svg">
+  <g style="fill:var(--color-muted);font-size:11.5px">
+    <text x="0" y="18">One. What it knows before it starts</text>
+    <text x="0" y="142">Cross-tool: the same rules at the repository root, read by every other agent too.</text>
+    <text x="0" y="172">Two. What it knows how to do</text>
+    <text x="0" y="302">Three. What it can reach, and what stops it</text>
+  </g>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="0" y="26" width="250" height="96" rx="6"/>
+    <rect x="270" y="26" width="250" height="96" rx="6"/>
+    <rect x="0" y="180" width="250" height="96" rx="6"/>
+    <rect x="270" y="180" width="250" height="96" rx="6"/>
+    <rect x="0" y="310" width="160" height="96" rx="6"/>
+    <rect x="180" y="310" width="160" height="96" rx="6"/>
+    <rect x="360" y="310" width="160" height="96" rx="6"/>
+  </g>
+  <rect x="0" y="430" width="520" height="40" rx="6"
+        style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g text-anchor="middle" style="fill:var(--color-fg)">
+    <text x="125" y="48.3">Rules</text>
+    <text x="395" y="48.3">Context</text>
+    <text x="125" y="202.3">Skills</text>
+    <text x="395" y="202.3">Subagents</text>
+    <text x="80" y="332.3">MCP</text>
+    <text x="260" y="332.3">Hooks</text>
+    <text x="440" y="332.3">Code graph</text>
+    <text x="260" y="454.3" style="fill:var(--color-bg)">All of it is files, committed and reviewed like code.</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:11px">
+    <text x="125" y="70">in context every session</text>
+    <text x="125" y="86">the stack and the conventions</text>
+    <text x="125" y="102">short, and a router</text>
+    <text x="395" y="70">loaded when it is relevant</text>
+    <text x="395" y="86">architecture, API contracts</text>
+    <text x="395" y="102">pulled by rule or by a skill</text>
+    <text x="125" y="224">one line always in context</text>
+    <text x="125" y="240">the body loads when it runs</text>
+    <text x="125" y="256">invoked by you or by the agent</text>
+    <text x="395" y="224">their own context window</text>
+    <text x="395" y="240">delegated to by a skill</text>
+    <text x="395" y="256">parallel, to cut wall clock</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:10.5px">
+    <text x="80" y="354">the tracker</text>
+    <text x="80" y="369">the spec pages</text>
+    <text x="80" y="384">the forge</text>
+    <text x="260" y="354">fire on edit, commit</text>
+    <text x="260" y="369">format, lint, block</text>
+    <text x="260" y="384">never the model's choice</text>
+    <text x="440" y="354">where a symbol is</text>
+    <text x="440" y="369">what calls what</text>
+    <text x="440" y="384">one query, not a grep</text>
+  </g>
+</svg>
+
+*Three layers, and not one of them is a setting in somebody's editor.*
+
+**Layer one is what the machine knows before it does anything.** One context file loaded into every
+session, and a set of deeper guides loaded only when the task touches them. The discipline is in the
+split, not in either half. Everything in the always-on file is paid for on every session in that
+repository forever, so it stays short, two hundred lines at the outside, and its job is to be a
+router rather than an encyclopedia: the stack, the conventions, the commands, and where the real
+detail lives. The architecture walkthrough and the API contracts sit behind a reference the agent
+pulls when it needs them.
+
+Write that file twice while you are in there. The cross-tool version is one extra file at the
+repository root carrying the same content, which Copilot, Cursor, Codex and Amp read natively. It
+costs an afternoon and it means the layer belongs to the repository rather than to whichever tool
+you happened to pick in month one. That is the cheapest insurance in this entire note, and I did not
+buy it until embarrassingly late.
+
+**Layer two is what it knows how to do.** The skills from stage one, plus subagents. A skill is
+cheap to have and expensive to ignore: its one-line description sits in context permanently and the
+body only loads when it runs, which is why a catalog of forty skills is affordable and a context
+file of forty topics is not. Subagents are the parallel version, each with its own context window,
+useful when a task splits into pieces that do not need to watch each other work.
+
+**Layer three is what it can reach, and what will stop it.** Three different things that get filed
+together because they are all wiring. MCP connections are how a skill reads the actual ticket
+instead of a paraphrase of it. Hooks are the enforcement, and stage three below is entirely about
+why they beat instructions. Code intelligence is the one people skip: a language server, or in my
+case a code graph rebuilt on every edit, so the answer to "what calls this" is one query rather than
+a grep sweep and a guess. In a large repository that is the difference between an agent that
+navigates and an agent that reads twelve files hoping.
+
+### It does not live in the editor
+
+The version of this that most teams build stops at the repository boundary, and that is the mistake
+I made for the longest. The layer is worth more at the edges than in the middle.
+
+<svg viewBox="-1 0 380 412" width="100%" role="img"
+     aria-label="The same layer wired into four stops down the delivery chain. At the spec document, an epic becomes tickets that carry acceptance criteria. At the tracker, the agent reads the real ticket rather than a paraphrase of it. In the codebase, it plans, builds, and runs the gate before the pull request. At the forge, the review skill goes first and a person spot-checks after. The change ships having been reviewed and validated, and a return path carries every bug back to the top as a new rule, so the layer is worth more after the bug than before it."
+     style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="fl-chain0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="0" y="16" width="310" height="58" rx="6"/>
+    <rect x="0" y="98" width="310" height="58" rx="6"/>
+    <rect x="0" y="180" width="310" height="58" rx="6"/>
+    <rect x="0" y="262" width="310" height="58" rx="6"/>
+  </g>
+  <rect x="0" y="344" width="310" height="48" rx="6"
+        style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="155" y1="74" x2="155" y2="98" marker-end="url(#fl-chain0)"/>
+    <line x1="155" y1="156" x2="155" y2="180" marker-end="url(#fl-chain0)"/>
+    <line x1="155" y1="238" x2="155" y2="262" marker-end="url(#fl-chain0)"/>
+    <line x1="155" y1="320" x2="155" y2="344" marker-end="url(#fl-chain0)"/>
+    <path d="M310,368 C352,368 358,338 358,200 C358,74 352,45 316,45" marker-end="url(#fl-chain0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="155" y="39.3" style="fill:var(--color-fg)">The spec document</text>
+    <text x="155" y="56.8" style="fill:var(--color-muted);font-size:12px">an epic becomes tickets with criteria</text>
+    <text x="155" y="121.3" style="fill:var(--color-fg)">The tracker</text>
+    <text x="155" y="138.8" style="fill:var(--color-muted);font-size:12px">it reads the real ticket, not a paraphrase</text>
+    <text x="155" y="203.3" style="fill:var(--color-fg)">The codebase</text>
+    <text x="155" y="220.8" style="fill:var(--color-muted);font-size:12px">plan, build, gate before the pull request</text>
+    <text x="155" y="285.3" style="fill:var(--color-fg)">The forge</text>
+    <text x="155" y="302.8" style="fill:var(--color-muted);font-size:12px">the review skill goes first</text>
+    <text x="155" y="373.3" style="fill:var(--color-bg)">Ships, and a person spot-checked it</text>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px;
+       stroke:var(--color-bg);stroke-width:3;paint-order:stroke">
+    <text x="358" y="205" transform="rotate(-90 358 205)">every bug comes back as a rule</text>
+  </g>
+</svg>
+
+*Four stops, one catalog, and the only edge pointing backwards is the one that makes it compound.*
+
+Wire it into the spec document and an epic becomes well-formed tickets with acceptance criteria and
+edge cases, which is the plan skill from stage one doing its work two steps earlier than anybody
+expects. Wire it into the tracker and the agent reads the real ticket, comments included, rather
+than the title somebody pasted into a prompt. Wire it into the forge and the review skill runs
+before a human opens the diff. Same files, same catalog, four different stops. The tooling for this
+is unglamorous plumbing, mostly MCP connections somebody has already written, and the payoff is that
+the work arrives well-formed instead of being repaired downstream by the most expensive people you
+have.
+
+### The loop everybody is passing around, and where I get off
+
+The shape currently circulating is prime, plan, implement, validate: read the real ticket, produce a
+plan a human approves in minutes, build one ticket at a time, then run the gate before the pull
+request rather than after it. I have no argument with any of that. The gate before the pull request
+in particular is exactly right, because a failing check inside a review thread has already cost two
+people their attention.
+
+My disagreement is narrow and it is about what you build first, not about the shape. The packaged
+version hands you the implementer on day one, because that is the part that demos. Build the four
+supervision skills first and the same loop still assembles, just in an order where the thing
+producing work arrives after the things that can catch it being wrong. Fast is the same either way.
+Only the failure mode differs, and one of them is the Faros numbers.
+
+### The edge that makes it compound
+
+Here is the piece I want to steal outright, because it is the difference between a layer that grows
+and a folder that rots.
+
+Every bug gets a root cause. The root cause becomes a rule in layer one, a regression test, and a
+sweep across the repository for the same shape everywhere else it occurs. The bug is not closed when
+the symptom goes away. It is closed when the class of bug is gone and the rule that prevents it is
+committed. That single edge is what turns the layer from a static configuration into something that
+is worth more in month twelve than in month two, and it is also the honest answer to why anybody
+should maintain this.
+
+I do the first two thirds of that. The rule gets written and the test gets added, and then I move on
+without the sweep, which is precisely why the same shape keeps arriving with a different filename.
+Naming the failure in a published note is, I am told, one way to make yourself do the third part.
 
 The rest of this note is each stage in detail, in the order you build them.
 
@@ -679,4 +877,5 @@ Everybody wants the agent. I would rather be the one who builds the floor.
 - [Stripe, Minions: one-shot end-to-end coding agents](https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents)
 - [Anthropic, Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) and [Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps), on planner/generator/evaluator separation, structured handoffs, and why a harness component is a bet with an expiry date
 - [Addy Osmani, Loop Engineering](https://addyosmani.com/blog/loop-engineering/)
+- [Cole Medin, AI-native starter pack](https://github.com/coleam00/ai-native-starter-pack) and the accompanying [workshop](https://www.youtube.com/watch?v=Tliio-33w4g), on the three-layer anatomy of the layer, wiring it across the whole delivery chain, and closing every bug with a rule rather than a patch
 - My own version of this loop, smaller and more honest about its limits: [I Was Shipping Faster Than I Could Understand It](one-loop-every-repo.md)

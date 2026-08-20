@@ -12,8 +12,27 @@
 ## The AI implementation roadmap note (drafted 2026-08-18)
 
 **Everybody Wants the Agent. Somebody Has to Build the Floor.**
-(content/notes/build-the-floor.md, **PUBLISHED** 2026-08-19, ~24 min). The deck shipped alongside it:
-[/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 27 slides.
+(content/notes/build-the-floor.md, **PUBLISHED** 2026-08-19, ~28 min after the 2026-08-20 pass). The
+deck shipped alongside it: [/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 29 slides.
+
+**2026-08-20 pass, uncommitted at time of writing.** A section was added between the roadmap and
+stage zero, *I had a parts list, not an architecture*, giving the cross-section the five stages build
+but never name: the three layers, the wiring across the delivery chain, the loop that is circulating
+and where this note disagrees with it, and the root-cause edge that makes the layer compound. Three
+figures came with it. Two are static SVG on the flow scaffold, the layer cross-section and the
+delivery chain. One is live, `twopath`, in scripts/figure-floor.js and registered in
+scripts/figures.js: one epic walked twice, five stops, showing work moving from repair to
+specification. The deck caught up in the same pass: two
+slides went in after *One artifact*, the layer cross-section and a live *Two paths* driven off the
+slide step through the `__setPath` seam, taking it from 27 slides to 29. Sources gained Cole Medin's starter pack and workshop, which is where
+the anatomy and the root-cause edge came from.
+
+**The split is an open question, deliberately not taken.** The owner asked on 2026-08-20 whether to
+move the architecture and implementation into a second note and leave this one high level. That is
+the same cut as rejected draft (4) below. The agreed order was diagrams first, then look at length
+again, on the reasoning that a figure usually deletes prose. The test to apply before splitting:
+**do the two halves have different readers, or the same reader with less patience?** Same reader
+means it is draft (4) again.
 
 **Know what this note is for.** It sells an AI implementation roadmap, and it positions Tjakoen as
 the person who can lead one. **The roadmap is the product.** The technical depth behind each stage is

@@ -473,3 +473,84 @@ export function mountGates(host) {
   host.__setGates = (n) => { GATE_LIST.forEach((g, i) => { state[g.key] = i < n; }); render(); };
   return true;
 }
+
+/* ============================================================================
+   7 · THE TWO PATHS
+   One epic, two systems, the same model doing the typing. The claim is not that
+   the layered path is faster at any single stop. It is that the work moves from
+   repair, which happens after the code exists and lands on a person, to
+   specification, which happens before it and lands on a file. Same argument as
+   "push work left" further down the note, made walkable.
+   ========================================================================= */
+
+// Five stops from an epic to a shipped change. `hand` is what a person has to do at that stop on
+// each path: "spec" is work done before code exists, "repair" is work done after it. The split is
+// illustrative and the figure says so; the claim is the direction it moves, not the count.
+const STOPS = [
+  { name: 'Slice the epic',   bare: { kind: 'spec',   note: 'cut by hand, inconsistently' },
+                              layer:{ kind: 'skill',  note: 'a skill cuts them to one shape' } },
+  { name: 'Write the ticket', bare: { kind: 'spec',   note: 'title and a paragraph of hope' },
+                              layer:{ kind: 'skill',  note: 'acceptance criteria, edge cases' } },
+  { name: 'Build it',         bare: { kind: 'pass',   note: 'pasted into an agent with no rules' },
+                              layer:{ kind: 'pass',   note: 'reads the real ticket, plans first' } },
+  { name: 'Check it',         bare: { kind: 'repair', note: 'a person finds it in review' },
+                              layer:{ kind: 'skill',  note: 'the gate runs before the pull request' } },
+  { name: 'Ship it',          bare: { kind: 'repair', note: 'cleaned up after merge' },
+                              layer:{ kind: 'human',  note: 'one spot-check by a person' } },
+];
+
+const PATH_LABEL = { spec: 'by hand, up front', skill: 'a skill did it', pass: 'the model typed it', repair: 'repaired after the fact', human: 'a person approved it' };
+
+export const TWOPATH = `<div class="path" data-path>
+  <p class="path__title">One epic, five stops, the same model doing the typing</p>
+  <ol class="path__stops" data-path-stops></ol>
+  <p class="path__keys">
+    <span class="path__spec"><b data-path-spec>0</b> stops a skill handled up front</span>
+    <span class="path__repair"><b data-path-repair>2</b> repaired after the code existed</span>
+  </p>
+  <p class="live-fig__ctl path__ctl">
+    <button class="btn" type="button" data-path-mode="bare" aria-pressed="true">No layer</button>
+    <button class="btn" type="button" data-path-mode="layer" aria-pressed="false">With the layer</button>
+  </p>
+  <p class="path__punch" data-grade="grain" data-path-punch><b>Same epic. Same model.</b> The work moved from repair, which lands on a person, to specification, which lands on a file.</p>
+</div>`;
+
+export function mountTwoPath(host) {
+  h(host, TWOPATH);
+  const list = host.querySelector('[data-path-stops]');
+  if (!list) return false;
+
+  list.innerHTML = STOPS.map((s, i) => `<li class="path__stop" data-stop="${i}">
+      <span class="path__mark" aria-hidden="true"></span>
+      <span class="path__body"><b class="path__name">${s.name}</b><em class="path__note" data-stop-note></em></span>
+      <span class="path__tag" data-stop-tag></span>
+    </li>`).join('');
+
+  const render = (mode) => {
+    const root = host.querySelector('[data-path]');
+    STOPS.forEach((s, i) => {
+      const cell = s[mode];
+      const li = list.querySelector(`[data-stop="${i}"]`);
+      li.dataset.kind = cell.kind;
+      li.querySelector('[data-stop-note]').textContent = cell.note;
+      li.querySelector('[data-stop-tag]').textContent = PATH_LABEL[cell.kind];
+    });
+    const count = (k) => STOPS.filter((s) => s[mode].kind === k).length;
+    host.querySelector('[data-path-spec]').textContent = count('skill');
+    host.querySelector('[data-path-repair]').textContent = count('repair');
+    root.toggleAttribute('data-layered', mode === 'layer');
+    for (const btn of host.querySelectorAll('[data-path-mode]')) {
+      btn.setAttribute('aria-pressed', String(btn.dataset.pathMode === mode));
+    }
+  };
+
+  host.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-path-mode]');
+    if (btn) render(btn.dataset.pathMode);
+  });
+  render('bare');
+
+  // The deck walks it with the arrow key rather than a mouse, same seam as every other figure here.
+  host.__setPath = (layered) => render(layered ? 'layer' : 'bare');
+  return true;
+}

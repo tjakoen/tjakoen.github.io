@@ -504,3 +504,65 @@
 .presentation__slide[data-figure] .gates__text b { font-size: 1.25rem; }
 .presentation__slide[data-figure] .gates__text em { font-size: .95rem; }
 .presentation__slide[data-figure] .gates__verdict { font-size: 1.1rem; }
+
+/* --- the two paths -----------------------------------------------------------
+   Five stops down one epic, walked twice. The encoding is the same weight-not-hue rule the whiplash
+   grid uses: a filled mark is work a machine did, a hollow one is work that landed on a person, and
+   a struck one is a repair, which is the only kind the figure is arguing against. The counters read
+   in opposite directions on purpose, so flipping the toggle moves both at once. */
+.path { display: grid; gap: .7rem; }
+.path__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.path__stops {
+  display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none;
+}
+.path__stop {
+  display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: .7rem;
+  padding: .5rem .8rem; border: 1px solid var(--color-line); border-radius: 6px;
+  transition: opacity .15s linear, border-color .15s linear;
+}
+.path__mark {
+  width: 12px; height: 12px; border-radius: 2px; justify-self: center;
+  border: 2px solid var(--color-fg); background: transparent;
+}
+/* a skill or the model did it: filled, and the row carries no weight for the reader */
+.path__stop[data-kind="skill"] .path__mark,
+.path__stop[data-kind="pass"] .path__mark { background: var(--color-fg); }
+.path__stop[data-kind="pass"] { opacity: .72; }
+/* work done by hand before the code exists: hollow, because a person did it. Same three-state
+   encoding as everywhere else here: filled is a machine, hollow is a person, struck is a repair. */
+.path__stop[data-kind="spec"] .path__mark { opacity: .55; }
+/* the repair: the only state the figure is arguing against, so it is the only one that is marked */
+.path__stop[data-kind="repair"] { border-color: var(--color-fg); }
+.path__stop[data-kind="repair"] .path__mark {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--color-bg), inset 0 -5px 0 0 var(--color-fg);
+}
+.path__stop[data-kind="human"] .path__mark { background: transparent; border-style: solid; }
+.path__body { display: grid; gap: .1rem; min-width: 0; }
+.path__name { font-size: .88rem; font-weight: 400; color: var(--color-fg); }
+.path__note { font-size: .76rem; color: var(--color-muted); font-style: normal; }
+.path__tag { font-size: .72rem; color: var(--color-muted); text-align: right; }
+.path__keys { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 0; font-size: .88rem; color: var(--color-muted); }
+.path__keys b { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.path__spec { opacity: .4; transition: opacity .15s linear; }
+.path[data-layered] .path__spec { opacity: 1; }
+.path[data-layered] .path__spec b { text-decoration: underline; text-underline-offset: 3px; }
+.path[data-layered] .path__repair { opacity: .4; }
+.path__ctl { display: flex; gap: .5rem; }
+.path__ctl .btn[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+.path__punch { margin: 0; opacity: .35; transition: opacity .2s linear; }
+.path[data-layered] .path__punch { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .path__stop, .path__spec, .path__repair, .path__punch { transition: none; }
+}
+
+/* Five rows plus a title, a key line, two buttons and a punch is the tallest figure on this deck, so
+   it scales up less than the others do. Anything roomier pushed the punch line under the slide nav,
+   which is the one line the room is meant to leave with. */
+.presentation__slide[data-figure] .path { gap: .6rem; font-size: 1.05rem; }
+.presentation__slide[data-figure] .path__title { font-size: .95rem; }
+.presentation__slide[data-figure] .path__stop { padding: .45rem 1rem; }
+.presentation__slide[data-figure] .path__name { font-size: 1.05rem; }
+.presentation__slide[data-figure] .path__note { font-size: .85rem; }
+.presentation__slide[data-figure] .path__tag { font-size: .8rem; }
