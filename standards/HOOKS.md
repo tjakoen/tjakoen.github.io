@@ -120,10 +120,12 @@ config or exports field is stopped. A script or a dependency edit passes. Blocki
 would put every dependency bump in the human lane, which is the blunt instrument section 4b opens by
 naming.
 
-**Blocking is right here and nowhere else.** Every other gate in this estate exits 0, and that
-reasoning is sound: a gate that fails a turn over a soft signal gets removed within the week. This is
-not a soft signal. The path list is a rule LOOP already states as absolute, so blocking makes the
-mechanism match the prose instead of adding a constraint of its own.
+**Blocking is rare here, and this was the first of it.** Every gate in this estate exits 0 except the
+two PreToolUse denials in this file, and that default is sound: a gate that fails a turn over a soft
+signal gets removed within the week. A path on this list is not a soft signal. It is a rule LOOP
+already states as absolute, so blocking makes the mechanism match the prose instead of adding a
+constraint of its own. When this hook was written on 2026-08-13 it was the only teeth in the estate;
+section 4 is the second set, added a week later, and the bar for a third is the same argument.
 
 **The escape hatch is a file the owner writes.** A file in the machine's config directory holds one
 extended regular expression per line, and a path matching one is allowed through. The file is itself
@@ -131,6 +133,11 @@ in the blocked list, so a session cannot approve its own way past the guard. Wri
 the human deciding before anything is written, which is what section 4b asks for, and it leaves a
 record of what was approved. **As of 2026-08-20 that file does not exist on this machine**, so nothing
 is approved and every listed path blocks.
+
+One fragility in that hatch, named rather than fixed: the approval file is read *before* the rules
+that protect the guard and the hatch itself, so a pattern broad enough to match everything would
+unprotect both. The self-protection holds exactly as far as the owner writes narrow patterns. Write
+the path, not a wildcard.
 
 **What it cannot do, and this is known rather than discovered.**
 
@@ -201,6 +208,45 @@ standard reads the settings rather than the script.
 - Entirely: remove the matcher entry from the machine settings.
 - There is no per-repo exclusion, on purpose. A spawn is not a path, so there is nothing to exclude
   against.
+
+---
+
+## 4b. The output gates, built and not wired
+
+**Would fire on:** PostToolUse. Three scripts sit in the tools directory, tested and switched off:
+bash-output-bound.sh, tool-output-bound.sh and code-discovery.sh.
+
+**What they would do.** The first two say once, per command or per tool per session, that something
+returned more characters than a bound. The third says once per session that a repo carrying a code
+graph has been searched four times without one being queried. All three exit 0 and speak through the
+additional-context channel described in section 5, so none of them can stop anything, and each says
+so in its own message: a PostToolUse hook cannot save the call it fires on, only the next one.
+
+**Why they are a group rather than three notes.** They were built from one measurement rather than
+three hunches. token-burn.ts in the same directory attributes every character in a transcript to the
+tool call, the reply or the image that put it there, and run across twelve sessions in the portfolio
+it put the shell at roughly sixty percent of everything carried, the session-listing tools at ten,
+and the assistant's own replies at five. The compression rule installed on this machine, restated on
+every turn, governs that last slice. Two of these gates aim at the first two numbers. The third aims
+at three percent and says so in its header, because what a graph query buys is a bounded answer
+rather than a smaller one, and a gate that overstated itself would be muted within the week.
+
+**The bound is the whole design question.** Set too high a gate never fires and reads as coverage;
+set too low it becomes furniture. Both output gates take an environment variable, and both were
+retuned from measured averages rather than round numbers.
+
+**What they cannot do.** Nothing about images, deliberately. A screenshot arrives as several hundred
+thousand characters of base64 and is billed by pixel area instead, so any bound counting characters
+fires on every screenshot ever taken while telling the session something false. Both output gates
+skip an image result rather than judging it.
+
+**Why they are off.** The settings file sits in the human lane, and so does the approval file that
+would let a session past it. Switching these on is the owner's act, which section 6 says is the
+right shape for a gate rather than an obstacle to one. Until then their suites test something
+nothing calls, which is the honest description of every gate in this state.
+
+**How to turn them off.** They are off. Wiring one is three separate acts, as section 8 asks: the
+entry in the machine settings, a real session watched firing, and a line here saying it is live.
 
 ---
 
