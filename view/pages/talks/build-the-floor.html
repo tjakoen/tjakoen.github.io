@@ -189,6 +189,93 @@ behind it rather than on the date.</em></p>
     </ul>
   </section>
 
+  <!-- 10b --------------------------------------------------------------- THE LAYER, IN CROSS-SECTION -->
+  <section class="presentation__slide" data-figure data-title="The layer">
+    <p class="slide-eyebrow settles">And here is the whole thing that artifact belongs to</p>
+    <h2 class="slide-head settles" data-size="sm">Three layers. All of them&nbsp;files.</h2>
+      <svg viewBox="-1 0 522 486" width="100%" role="img"
+           aria-label="The AI layer in three layers. Layer one, what it knows before it starts: rules that sit in context every session, carrying the stack and the conventions, kept short and acting as a router; and context loaded only when it is relevant, holding architecture and API contracts, pulled by rule or by a skill. The same rules also sit at the repository root in the cross-tool file every other agent reads. Layer two, what it knows how to do: skills, whose one line is always in context while the body loads only when it runs, invoked by you or by the agent; and subagents, with their own context window, delegated to by a skill and run in parallel to cut wall clock. Layer three, what it can reach and what stops it: MCP connections to the tracker, the spec pages and the forge; hooks that fire on edit and commit to format, lint and block, and are never the model's choice; and a code graph that answers where a symbol is and what calls what in one query rather than a grep sweep. All of it is files, committed and reviewed like code."
+           style="display:block;width:100%;max-width:740px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:14px"
+           xmlns="http://www.w3.org/2000/svg">
+        <g style="fill:var(--color-muted);font-size:11.5px">
+          <text x="0" y="18">One. What it knows before it starts</text>
+          <text x="0" y="142">Cross-tool: the same rules at the repository root, read by every other agent too.</text>
+          <text x="0" y="172">Two. What it knows how to do</text>
+          <text x="0" y="302">Three. What it can reach, and what stops it</text>
+        </g>
+        <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+          <rect x="0" y="26" width="250" height="96" rx="6"/>
+          <rect x="270" y="26" width="250" height="96" rx="6"/>
+          <rect x="0" y="180" width="250" height="96" rx="6"/>
+          <rect x="270" y="180" width="250" height="96" rx="6"/>
+          <rect x="0" y="310" width="160" height="96" rx="6"/>
+          <rect x="180" y="310" width="160" height="96" rx="6"/>
+          <rect x="360" y="310" width="160" height="96" rx="6"/>
+        </g>
+        <rect x="0" y="430" width="520" height="40" rx="6"
+              style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+        <g text-anchor="middle" style="fill:var(--color-fg)">
+          <text x="125" y="48.3">Rules</text>
+          <text x="395" y="48.3">Context</text>
+          <text x="125" y="202.3">Skills</text>
+          <text x="395" y="202.3">Subagents</text>
+          <text x="80" y="332.3">MCP</text>
+          <text x="260" y="332.3">Hooks</text>
+          <text x="440" y="332.3">Code graph</text>
+          <text x="260" y="454.3" style="fill:var(--color-bg)">All of it is files, committed and reviewed like code.</text>
+        </g>
+        <g text-anchor="middle" style="fill:var(--color-muted);font-size:11px">
+          <text x="125" y="70">in context every session</text>
+          <text x="125" y="86">the stack and the conventions</text>
+          <text x="125" y="102">short, and a router</text>
+          <text x="395" y="70">loaded when it is relevant</text>
+          <text x="395" y="86">architecture, API contracts</text>
+          <text x="395" y="102">pulled by rule or by a skill</text>
+          <text x="125" y="224">one line always in context</text>
+          <text x="125" y="240">the body loads when it runs</text>
+          <text x="125" y="256">invoked by you or by the agent</text>
+          <text x="395" y="224">their own context window</text>
+          <text x="395" y="240">delegated to by a skill</text>
+          <text x="395" y="256">parallel, to cut wall clock</text>
+        </g>
+        <g text-anchor="middle" style="fill:var(--color-muted);font-size:10.5px">
+          <text x="80" y="354">the tracker</text>
+          <text x="80" y="369">the spec pages</text>
+          <text x="80" y="384">the forge</text>
+          <text x="260" y="354">fire on edit, commit</text>
+          <text x="260" y="369">format, lint, block</text>
+          <text x="260" y="384">never the model's choice</text>
+          <text x="440" y="354">where a symbol is</text>
+          <text x="440" y="369">what calls what</text>
+          <text x="440" y="384">one query, not a grep</text>
+        </g>
+      </svg>
+    <ul class="slide-notes" hidden>
+      <li>Read the three bands out loud: what it knows before it starts, what it knows how to do, what it can reach and what stops it.</li>
+      <li>Land on the bar at the bottom. Every box above it is a file in the repository, reviewed like code, and that is the whole reason any of it survives a person leaving.</li>
+      <li>"Nothing on this slide is a setting in somebody's editor. That is the point of it."</li>
+    </ul>
+  </section>
+
+  <!-- 10c --------------------------------------------------------------- TWO PATHS -->
+  <section class="presentation__slide" data-figure data-title="Two paths">
+    <p class="slide-eyebrow settles">One epic, walked twice, the same model doing the typing</p>
+    <h2 class="slide-head settles" data-size="sm">Repair after. Or specification&nbsp;before.</h2>
+    <div class="live-fig" data-live-figure="twopath" data-surface="figure:twopath">
+      <p><em>One epic walked twice, five stops each time, the same model doing the typing. Without a
+layer, two stops are cut by hand up front and two come back as repairs after the code exists.
+With one, the same two stops are cut by a skill, the gate runs before the pull request, and the
+only thing left for a person is one spot-check.</em></p>
+    </div>
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Land on the bare path. Two rows hollow at the top, two outlined at the bottom, and hollow means a person.</li>
+      <li>"Nobody chose this. It is what happens when the only thing you gave the agent was the prompt."</li>
+      <li>Arrow once. The two outlined rows go away and three rows fill in, which is the same work done earlier by a file.</li>
+      <li>"Same epic. Same model. The work moved from repair, which lands on a person, to specification, which lands on a file."</li>
+    </ul>
+  </section>
+
   <!-- 11 ---------------------------------------------------------------- THE WRONG ORDER -->
   <section class="presentation__slide" data-align="center" data-title="The obvious order is wrong">
     <p class="slide-eyebrow settles">And here is where almost everybody goes wrong</p>

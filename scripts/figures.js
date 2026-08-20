@@ -12,7 +12,7 @@
 // one more of exactly that shape. The static fallback is what keeps the standard's real intent.
 import { MULTIPLIER_MARKUP, mountMultiplier } from "/site/figure-multiplier.js";
 import { mountRatio, mountMatrix, mountSprint, mountLoop, mountTrap } from "/site/figure-widgets.js";
-import { mountWhiplash, mountBuildOrder, mountRuleGate, mountRoadmap, mountAgentLoop, mountGates } from "/site/figure-floor.js";
+import { mountWhiplash, mountBuildOrder, mountRuleGate, mountRoadmap, mountAgentLoop, mountGates, mountTwoPath } from "/site/figure-floor.js";
 
 const BUILDERS = {
   multiplier: (host) => {
@@ -30,6 +30,7 @@ const BUILDERS = {
   roadmap: mountRoadmap,
   agentloop: mountAgentLoop,
   gates: mountGates,
+  twopath: mountTwoPath,
 };
 
 for (const host of document.querySelectorAll("[data-live-figure]")) {
