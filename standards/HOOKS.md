@@ -197,10 +197,12 @@ threshold passes unjudged.
 **Deliberately absent:** denying a push or a publish. The hook cannot tell the owner's push from a
 run's, and a gate that blocks the owner is a gate about to be switched off.
 
-**One thing to read past.** The script's own header still opens with a banner saying it is not wired,
-written before the decision that wired it. The live settings file is what is true. A comment written
-at build time and a wire added later is the ordinary way a file starts lying, and it is the reason a
-standard reads the settings rather than the script.
+**Wired on one machine, and the script used to disagree.** The other machine here carries its own
+settings copy and does not run this check, because it cannot be tested from where the decision was
+made. Writing this standard also caught the script's own header still saying NOT WIRED a day after
+the wire went in, which is now corrected in place with the mistake left visible rather than erased. A
+comment written at build time and a wire added later is the ordinary way a file starts lying about
+itself, and it is the reason this file tells a reader to check the settings rather than the banner.
 
 **How to turn it off.**
 
