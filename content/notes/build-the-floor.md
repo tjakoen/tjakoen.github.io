@@ -5,7 +5,7 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-08-18
-readingTime: "~28 min"
+readingTime: "~27 min"
 deck: "Build the floor | Talk | /talks/build-the-floor | 29 slides · runs in the browser, no download"
 tags: [ai, workflow, standards, developer-tools, architecture]
 summary: >
@@ -182,15 +182,15 @@ and is therefore the binding constraint. Organizations demonstrating this today 
 over years, for humans, before agents existed. Starting now means doing both at once. That is
 achievable. It is not faster.
 
-## I had a parts list, not an architecture
+## The floor has a shape, and it is worth naming
 
-For months I described all of this as skills and hooks and a context file. Somebody asked me what
-the layer actually *is*, as one thing, and I gave them the parts list again, slightly slower. It
-took a diagram out of somebody else's workshop, [Cole Medin's AI-native starter
-pack](https://github.com/coleam00/ai-native-starter-pack), for me to notice I had been building this
-for months and could not draw it.
+Five stages is a build order, not a description. Somebody asked me what the thing being built
+actually *is*, as one artifact rather than as a list of parts, and the answer took me longer to say
+than it should have. The clearest drawing of it I have seen is in [Cole Medin's AI-native starter
+pack](https://github.com/coleam00/ai-native-starter-pack), and I have borrowed its cross-section
+here because it is better than the one I was carrying around in my head.
 
-Start with what it buys, because the cross-section is easier to care about afterwards.
+Start with what the thing buys, because the cross-section is easier to care about afterwards.
 
 <div class="live-fig" data-live-figure="twopath" data-surface="figure:twopath">
 <p><em>One epic walked twice, five stops each time, the same model doing the typing. Without a
@@ -265,33 +265,24 @@ say what it is.
 
 *Three layers, and not one of them is a setting in somebody's editor.*
 
-**Layer one is what the machine knows before it does anything.** One context file loaded into every
-session, and a set of deeper guides loaded only when the task touches them. The discipline is in the
-split, not in either half. Everything in the always-on file is paid for on every session in that
-repository forever, so it stays short, two hundred lines at the outside, and its job is to be a
-router rather than an encyclopedia: the stack, the conventions, the commands, and where the real
-detail lives. The architecture walkthrough and the API contracts sit behind a reference the agent
-pulls when it needs them.
+The boxes are the easy part. Three things about them are not obvious and cost real money to learn.
 
-Write that file twice while you are in there. The cross-tool version is one extra file at the
-repository root carrying the same content, which Copilot, Cursor, Codex and Amp read natively. It
-costs an afternoon and it means the layer belongs to the repository rather than to whichever tool
-you happened to pick in month one. That is the cheapest insurance in this entire note, and I did not
-buy it until embarrassingly late.
+**The always-on file is a router, not an encyclopedia.** Everything in it is paid for on every
+session in that repository forever, which is why two hundred lines is a ceiling rather than a
+target: the stack, the conventions, the commands, and where the real detail lives. Put the same
+content in a second copy at the repository root, in the file every other tool reads natively, and
+the layer belongs to the repository rather than to whichever vendor you happened to pick in month
+one. That costs an afternoon and I did not spend it until embarrassingly late.
 
-**Layer two is what it knows how to do.** The skills from stage one, plus subagents. A skill is
-cheap to have and expensive to ignore: its one-line description sits in context permanently and the
-body only loads when it runs, which is why a catalog of forty skills is affordable and a context
-file of forty topics is not. Subagents are the parallel version, each with its own context window,
-useful when a task splits into pieces that do not need to watch each other work.
+**A skill is cheap to have and expensive to ignore.** Its one line sits in context permanently and
+the body only loads when it runs, which is why a catalog of forty skills is affordable and a context
+file of forty topics is not. That asymmetry is the whole reason the catalog from stage one can keep
+growing without the cost growing with it.
 
-**Layer three is what it can reach, and what will stop it.** Three different things that get filed
-together because they are all wiring. MCP connections are how a skill reads the actual ticket
-instead of a paraphrase of it. Hooks are the enforcement, and stage three below is entirely about
-why they beat instructions. Code intelligence is the one people skip: a language server, or in my
-case a code graph rebuilt on every edit, so the answer to "what calls this" is one query rather than
-a grep sweep and a guess. In a large repository that is the difference between an agent that
-navigates and an agent that reads twelve files hoping.
+**Code intelligence is the leg everybody drops.** A language server, or in my case a code graph
+rebuilt on every edit, so "what calls this" is one query instead of a grep sweep and a guess. In a
+large repository it is the difference between an agent that navigates and an agent that reads twelve
+files hoping.
 
 ### It does not live in the editor
 
@@ -341,44 +332,36 @@ I made for the longest. The layer is worth more at the edges than in the middle.
 
 *Four stops, one catalog, and the only edge pointing backwards is the one that makes it compound.*
 
-Wire it into the spec document and an epic becomes well-formed tickets with acceptance criteria and
-edge cases, which is the plan skill from stage one doing its work two steps earlier than anybody
-expects. Wire it into the tracker and the agent reads the real ticket, comments included, rather
-than the title somebody pasted into a prompt. Wire it into the forge and the review skill runs
-before a human opens the diff. Same files, same catalog, four different stops. The tooling for this
-is unglamorous plumbing, mostly MCP connections somebody has already written, and the payoff is that
-the work arrives well-formed instead of being repaired downstream by the most expensive people you
-have.
+Read the figure as four uses of one catalog rather than four integrations. The plan skill from stage
+one is the same file whether it runs in the spec document or in the editor, and running it at the
+first stop means it does its work two steps earlier than anybody expects. The plumbing is unglamorous
+and mostly already written by somebody else. The payoff is that work arrives well-formed instead of
+being repaired downstream by the most expensive people you have.
 
 ### The loop everybody is passing around, and where I get off
 
-The shape currently circulating is prime, plan, implement, validate: read the real ticket, produce a
-plan a human approves in minutes, build one ticket at a time, then run the gate before the pull
-request rather than after it. I have no argument with any of that. The gate before the pull request
-in particular is exactly right, because a failing check inside a review thread has already cost two
-people their attention.
+The shape circulating is prime, plan, implement, validate, with the gate running before the pull
+request rather than after it. I have no argument with the shape, and the gate placement is exactly
+right, because a failing check inside a review thread has already cost two people their attention.
 
-My disagreement is narrow and it is about what you build first, not about the shape. The packaged
-version hands you the implementer on day one, because that is the part that demos. Build the four
-supervision skills first and the same loop still assembles, just in an order where the thing
-producing work arrives after the things that can catch it being wrong. Fast is the same either way.
-Only the failure mode differs, and one of them is the Faros numbers.
+My disagreement is about what you build first. The packaged version hands you the implementer on day
+one, because that is the part that demos. Build the four supervision skills first and the same loop
+still assembles, just in an order where the thing producing work arrives after the things that can
+catch it being wrong. Fast is the same either way. Only the failure mode differs, and one of them is
+the Faros numbers.
 
 ### The edge that makes it compound
 
-Here is the piece I want to steal outright, because it is the difference between a layer that grows
+This is the piece I would steal outright, because it is the difference between a layer that grows
 and a folder that rots.
 
-Every bug gets a root cause. The root cause becomes a rule in layer one, a regression test, and a
-sweep across the repository for the same shape everywhere else it occurs. The bug is not closed when
-the symptom goes away. It is closed when the class of bug is gone and the rule that prevents it is
-committed. That single edge is what turns the layer from a static configuration into something that
-is worth more in month twelve than in month two, and it is also the honest answer to why anybody
-should maintain this.
+Every bug gets a root cause, and the root cause becomes a rule, a regression test, and a sweep for
+the same shape everywhere else it occurs. The bug is not closed when the symptom goes away. It is
+closed when the class is gone. That single edge is why the layer is worth more in month twelve than
+in month two, and it is the honest answer to who should maintain it and why.
 
-I do the first two thirds of that. The rule gets written and the test gets added, and then I move on
-without the sweep, which is precisely why the same shape keeps arriving with a different filename.
-Naming the failure in a published note is, I am told, one way to make yourself do the third part.
+I do two thirds of that. The rule gets written and the test gets added, and then I move on without
+the sweep, which is precisely why the same shape keeps arriving with a different filename.
 
 The rest of this note is each stage in detail, in the order you build them.
 
