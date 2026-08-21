@@ -1,6 +1,6 @@
 ---
 title: "The Check Ran Once in 165 Sessions, and I Got the Reason Wrong"
-subtitle: "Six weeks after I published a note saying every one of my repos runs the same workflow, I finally measured it. It was living in one. I spent most of a day building a thoughtful theory about why, and the real answer was a relative file path."
+subtitle: "Three weeks after I published a note saying every one of my repos runs the same workflow, I finally measured it. It was living in one. I spent most of a day building a thoughtful theory about why, and the real answer was a relative file path."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
@@ -9,17 +9,17 @@ readingTime: "~7 min"
 tags: [ai, workflow, measurement, process, standards]
 summary: >
   I built a check that fires when I sit down to work, rolled it across a dozen repositories, and
-  wrote a note about it. Six weeks later my session store said it had run exactly once outside the
+  wrote a note about it. Three weeks later my session store said it had run exactly once outside the
   repo where it was built. The obvious reading was a discipline problem, and I argued myself into
   it for most of a day before running the check by hand from the wrong folder and watching it fail
   to find its own program. It had never been able to start, in any repo but the one it was written
   beside. What the numbers measured was real. The reason I hung on them was invented, and it held up
-  for six weeks because it was plausible and nobody ran the command that would have killed it.
+  for three weeks because it was plausible and nobody ran the command that would have killed it.
 ---
 
 ## One run in a hundred and sixty-five sessions
 
-Here is the query I ran on a Wednesday night, six weeks after publishing a note about how well my
+Here is the query I ran on a Wednesday night, three weeks after publishing a note about how well my
 workflow was going.
 
 One hundred and sixty-five AI sessions in my largest client project since early July. One of them
@@ -155,7 +155,7 @@ than the theory I built:
 > those two is exactly the size of a confident wrong answer.
 
 Every number in that first section was correct. The reading laid over the top of them was invented,
-and it survived six weeks because it was plausible and because nobody, including me, ran the one
+and it survived three weeks because it was plausible and because nobody, including me, ran the one
 command that would have killed it in five seconds.
 
 ## What I still cannot reproduce, including one I got wrong twice
@@ -206,7 +206,7 @@ still quiet, then my discipline theory was right all along and I owe it an apolo
 the check was simply never in the room. I do not know which yet, and the honest version of this note
 is the one that says so rather than the one that ties a bow on it.
 
-What I do know is that for six weeks I had a number that looked exactly like an answer. One run in a
+What I do know is that for three weeks I had a number that looked exactly like an answer. One run in a
 hundred and sixty-five. It was never an answer. It was a symptom, and I read it as a verdict, and the
 difference cost me a day and a published sentence I now have to live with.
 
