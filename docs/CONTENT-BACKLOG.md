@@ -105,7 +105,13 @@ week-by-week calendar.**
 - **Skill results stay vague.** No posted-finding counts, no precision claims, nothing naming what is
   implemented where he works. The six failure modes carry the credibility instead.
 - **Time claims are deliberately modest.** "The last few months", not years. Corrected by the owner
-  on 2026-08-18 and it is a factual limit, not modesty to be edited out.
+  on 2026-08-18 and it is a factual limit, not modesty to be edited out. **The roadmap figure broke
+  this rule for three days and nobody caught it.** Its punch line read *"The months are what it took
+  me"*, which is an eighteen-month claim from somebody who has been at this a few months, in the same
+  note that says "the last few months" twice. Corrected 2026-08-21 in scripts/figure-floor.js, where
+  a comment above the model now says why, and the roadmap section intro now separates the two halves
+  out loud: the stage **order** is the defensible argument, the month **durations** are an estimate.
+  Any future edit that makes the durations sound measured is the same defect returning.
 - **Each stage carries an Objective line and a Done when gate**, which is what makes the steps read
   as a plan rather than as essay sections. Keep that shape if stages are added or reordered.
 - **The worktree confession stays** as one paragraph inside the hooks-beat-instructions argument,

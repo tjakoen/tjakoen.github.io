@@ -101,8 +101,9 @@ controlled trial found experienced maintainers were 19% slower with AI while bel
 ## The roadmap
 
 Here is the whole thing on one page. Eighteen months from a room full of developers with
-subscriptions to an organization with real automation, and the honest version of how long each part
-takes.
+subscriptions to an organization with real automation. The order of the stages is the argument and I
+will defend it. The month numbers are an estimate, because I have not run this at organizational
+scale for eighteen months, and a roadmap that hides which half is measured is not worth following.
 
 <div class="live-fig" data-live-figure="roadmap" data-surface="figure:roadmap">
 <p><em>Five stages over eighteen months. Instrument and make one repository legible, months 0 to 2.

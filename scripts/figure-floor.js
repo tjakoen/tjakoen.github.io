@@ -234,6 +234,12 @@ export function mountRuleGate(host) {
    month cursor that tells you what should already be true and what you may
    start next. A gantt you can only look at answers "how long"; this one answers
    "where am I", which is the question a room actually has.
+
+   The month numbers are an ESTIMATE and the punch line has to keep saying so.
+   It once read "what it took me", which is an eighteen-month claim from somebody
+   who has been at this a few months, and the note itself says "the last few
+   months" twice. The stage ORDER is the defensible part. The durations are not
+   measured and nothing here should imply they are.
    ========================================================================= */
 
 const MONTHS = 18;
@@ -264,7 +270,7 @@ export const ROADMAP = `<div class="road" data-road>
     <output class="road__out" data-road-out>month 0</output>
   </p>
   <p class="road__now" data-road-now></p>
-  <p class="road__punch" data-grade="grain"><b>A stage opens on scored runs behind it, never on the date.</b> The months are what it took me, not a schedule to hold anyone to.</p>
+  <p class="road__punch" data-grade="grain"><b>A stage opens on scored runs behind it, never on the date.</b> The months are an estimate, not a measurement, and not a schedule to hold anyone to.</p>
 </div>`;
 
 export function mountRoadmap(host) {
