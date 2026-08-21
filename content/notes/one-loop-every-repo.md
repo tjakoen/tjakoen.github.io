@@ -234,6 +234,18 @@ five of those humans is a real open question, and I have not earned an answer to
 I leaned on are still being read as I write this, so this is a living base, not a finished theory.
 I am reporting a change that worked for me, with the seams showing.
 
+**A correction, dated the twentieth of August.** The subtitle of this note says every one of my
+repositories runs the same workflow, and I wrote that sentence believing it. Three weeks later I
+queried my own session store and found the doctor had run once in a hundred and sixty-five sessions
+in my largest client project, and not at all in three of the others. It was not a discipline problem.
+The script could not find its own program from any directory except the one it was written beside, so
+it announced itself unavailable and exited quietly with a success code. The path is fixed and the
+rollout is real now, but a rollout is not a result, which is exactly the mistake the sentence above
+makes. I am leaving it as published rather than editing it, because the gap between what I claimed
+and what was running is the more useful artifact. The whole thing, including the day I spent
+explaining the silence with a theory about discipline, is in
+[The Check Ran Once in 165 Sessions](the-check-that-never-ran.md).
+
 I also chose *not* to build the one piece everyone assumes you want: the scheduled agent that runs at
 night. I do not have one, on purpose. A check I will actually act on is a check that fires while I am
 already at the desk. A check that fires while I am asleep is a report I will read the way I read every

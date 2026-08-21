@@ -124,6 +124,43 @@ week-by-week calendar.**
   [plans/loop-story-and-talk.md](../plans/loop-story-and-talk.md), whose gate is still the loop
   demonstrably running rather than a date.
 
+## The measurement-misread note (published 2026-08-20)
+
+**The Check Ran Once in 165 Sessions, and I Got the Reason Wrong.**
+(content/notes/the-check-that-never-ran.md, **PUBLISHED** 2026-08-20, ~7 min).
+
+**Know what this note is for.** It is the only thing on this site where a published claim gets
+retracted with numbers by the person who made it. Everything else argues that verification matters;
+this one is verification happening to him. For the audience build-the-floor is written for, that is
+worth more than another roadmap section, because it is the evidence that the discipline is real
+rather than recommended. **Do not delete it and do not fold it into build-the-floor as a failure
+mode.** Failure mode one there carries the plumbing half, that a silent pass is not a pass. The
+lesson that lives only here is the other half:
+
+> A measurement tells you what did not happen. It will never tell you why, and the distance between
+> those two is exactly the size of a confident wrong answer.
+
+**It was an orphan until 2026-08-21.** Nothing in the estate linked to it, so it sat at a URL doing
+nothing, which is what made it read as unnecessary. Three links went in: one-loop-every-repo now
+carries a dated correction in *What I am honest about*, build-the-floor's failure mode one points
+here for the worked instance, and this entry exists so the next session knows why.
+
+**The correction in one-loop-every-repo annotates, it does not edit.** Its subtitle still claims
+every repo runs the same workflow. That was believed when written on 2026-07-30 and the owner's call
+on 2026-08-21 was to leave it standing with a dated correction beneath it, because the gap between
+the claim and what was running is the artifact. **Do not quietly fix that subtitle.**
+
+**"Six weeks" was wrong in six places and is now "three weeks."** The note dates itself precisely,
+published 2026-07-30 and measured 2026-08-19, which is twenty days. It said six weeks throughout. In
+the one note whose subject is not trusting figures you have not checked, that is the worst possible
+place for an unchecked figure. Corrected 2026-08-21. The Wednesday-night detail was verified and is
+right.
+
+**The October hypothesis is live and nothing tracks it.** The note commits to re-running the same
+query in October, and says plainly that if the four quiet repos are still quiet then the discipline
+theory was right after all. Somebody has to actually run it. A note that promises a follow-up
+measurement and never publishes one fails in exactly the way this note is about.
+
 ## Consolidated (2026-08-14, notes audit)
 
 The set had grown to twelve notes across four clusters, two of which carried a note that was a

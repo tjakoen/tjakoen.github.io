@@ -714,6 +714,11 @@ time.
 > Every automated check has to distinguish "I ran and found nothing" from "I did not run." Make each
 > run emit what executed and what was skipped. A silent pass is not a pass.
 
+The most expensive one I have shipped is written up on its own, because the broken check was the
+cheap half. The costly half was the day I spent explaining its silence with a confident theory about
+discipline, when the answer was a relative path:
+[The Check Ran Once in 165 Sessions](the-check-that-never-ran.md).
+
 **2. Architecture built on an unverified capability.** I once designed something with a layered
 credential system, multiple fallback paths, each layer documented and several individually verified.
 It was elegant. It has never completed a single run, because the whole structure rested on one
