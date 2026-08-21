@@ -566,3 +566,131 @@
 .presentation__slide[data-figure] .path__name { font-size: 1.05rem; }
 .presentation__slide[data-figure] .path__note { font-size: .85rem; }
 .presentation__slide[data-figure] .path__tag { font-size: .8rem; }
+
+/* --- six failures, one report -------------------------------------------------
+   The marks never change between the two modes, and that is the entire figure: what turns out to
+   have been wrong is the sentence, not the signal. So the mark stays a filled pass in both states
+   and only the row's weight shifts, because a mark that went red on the flip would be telling the
+   reader something the real report never told anybody. */
+/* The queries below are @container, not @media, for the same reason welcome.css gives: what starves
+   these columns is the SHELL's reading column, not the viewport. At a 1000px window with the file
+   tree and the chat panel open, the column is about 380px, and a viewport query happily applies the
+   wide layout to it. */
+.fail { display: grid; gap: .7rem; container-type: inline-size; container-name: fig; }
+.fail__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.fail__rows { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.fail__row {
+  display: grid; grid-template-columns: 14px 8.5rem 1fr; align-items: baseline; gap: .6rem;
+  padding: .4rem .7rem; border: 1px solid var(--color-line); border-radius: 6px;
+  transition: border-color .15s linear;
+}
+/* Six rows stacked is already the tallest figure in the note. Below the measure where the third
+   column starts wrapping to three lines, drop the name onto its own row instead: two short lines
+   read faster than one column squeezed to four words. */
+@container fig (max-width: 30rem) {
+  .fail__row { grid-template-columns: 14px 1fr; row-gap: .15rem; }
+  .fail__line { grid-column: 2; }
+}
+.fail__mark {
+  width: 10px; height: 10px; border-radius: 2px; align-self: center; justify-self: center;
+  background: var(--color-fg);
+}
+.fail__name { font-size: .88rem; color: var(--color-fg); }
+.fail__line { font-size: .8rem; color: var(--color-muted); }
+/* in the truth state the row is outlined, the way the two-path figure marks a repair */
+.fail[data-real] .fail__row { border-color: var(--color-fg); }
+.fail[data-real] .fail__line { color: var(--color-fg); }
+.fail__keys { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 0; font-size: .88rem; color: var(--color-muted); }
+.fail__keys b { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.fail__real { opacity: .4; transition: opacity .15s linear; }
+.fail[data-real] .fail__real { opacity: 1; }
+.fail[data-real] .fail__real b { text-decoration: underline; text-underline-offset: 3px; }
+.fail[data-real] .fail__pass { opacity: .45; }
+.fail__ctl { display: flex; gap: .5rem; flex-wrap: wrap; }
+.fail__ctl .btn[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+.fail__punch { margin: 0; opacity: .35; transition: opacity .2s linear; }
+.fail[data-real] .fail__punch { opacity: 1; }
+
+/* --- the cost of waiting ------------------------------------------------------
+   Four bars that never move and one that fills. The flat rows are not decoration: the argument only
+   lands because four of the five visibly do nothing while the dial travels. */
+.wait { display: grid; gap: .7rem; }
+.wait__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.wait__rows { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.wait__row {
+  display: grid; grid-template-columns: 4rem 1fr; align-items: center; gap: .8rem;
+  padding: .45rem .8rem; border: 1px solid var(--color-line); border-radius: 6px;
+}
+.wait__row[data-flat] { opacity: .6; }
+.wait__bar { display: block; height: 6px; background: var(--color-line); border-radius: 3px; overflow: hidden; }
+.wait__bar > span { display: block; height: 100%; width: 0; background: var(--color-fg); transition: width .12s linear; }
+.wait__body { display: grid; gap: .1rem; min-width: 0; }
+.wait__name { font-size: .88rem; font-weight: 400; color: var(--color-fg); }
+.wait__cost { font-size: .78rem; color: var(--color-muted); font-style: normal; }
+.wait__row[data-losing] { border-color: var(--color-fg); opacity: 1; }
+.wait__row[data-losing] .wait__cost { color: var(--color-fg); }
+.wait__ctl { display: flex; align-items: center; gap: .7rem; }
+.wait__lab { font-size: .85rem; color: var(--color-muted); }
+.wait__dial { flex: 1 1 auto; max-width: 300px; accent-color: var(--color-fg); }
+.wait__out { font-size: .85rem; color: var(--color-fg); font-variant-numeric: tabular-nums; min-width: 7ch; }
+.wait__punch { margin: 0; opacity: .35; transition: opacity .2s linear; }
+.wait[data-late] .wait__punch { opacity: 1; }
+
+/* --- the promotion gate -------------------------------------------------------
+   One dial, three bars at three places. The bar marker is an element on the track rather than a
+   background gradient, so it stays put when the fill animates past it. */
+.promo { display: grid; gap: .7rem; container-type: inline-size; container-name: fig; }
+.promo__title { margin: 0; color: var(--color-muted); font-size: .9rem; }
+.promo__rows { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+/* Narrow first, and that is not caution. Inside the desk shell the reading column measures about
+   380px, where a fixed 13rem name column plus a 6rem state column left the track 25 pixels and the
+   figure became unreadable while every number in it stayed correct. The single-row version is the
+   enhancement, not the base. */
+.promo__row {
+  display: grid; gap: .3rem .8rem; align-items: center;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "body state" "track track";
+  padding: .5rem .8rem; border: 1px solid var(--color-line); border-radius: 6px;
+}
+.promo__body { grid-area: body; }
+.promo__track { grid-area: track; }
+.promo__state { grid-area: state; }
+@container fig (min-width: 30rem) {
+  .promo__row {
+    /* minmax on the name column, so a long skill name wraps instead of eating the track */
+    grid-template-columns: minmax(6rem, 12rem) minmax(90px, 1fr) auto;
+    grid-template-areas: "body track state";
+    gap: .8rem;
+  }
+}
+.promo__body { display: grid; gap: .1rem; min-width: 0; }
+.promo__name { font-size: .88rem; font-weight: 400; color: var(--color-fg); }
+.promo__blast { font-size: .74rem; color: var(--color-muted); font-style: normal; }
+.promo__track { position: relative; display: block; height: 8px; background: var(--color-line); border-radius: 4px; }
+.promo__fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--color-fg); border-radius: 4px; transition: width .12s linear; }
+.promo__bar { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--color-fg); opacity: .55; }
+.promo__state { font-size: .78rem; color: var(--color-muted); text-align: right; font-variant-numeric: tabular-nums; }
+.promo__row[data-ready] { border-color: var(--color-fg); }
+.promo__row[data-ready] .promo__state { color: var(--color-fg); }
+.promo__keys { display: flex; gap: 1.1rem; margin: 0; font-size: .88rem; color: var(--color-muted); }
+.promo__keys b { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.promo__ctl { display: flex; align-items: center; gap: .7rem; }
+.promo__lab { font-size: .85rem; color: var(--color-muted); }
+.promo__dial { flex: 1 1 auto; max-width: 300px; accent-color: var(--color-fg); }
+.promo__out { font-size: .85rem; color: var(--color-fg); font-variant-numeric: tabular-nums; min-width: 4ch; }
+.promo__punch { margin: 0; opacity: .35; transition: opacity .2s linear; }
+.promo[data-any] .promo__punch { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fail__row, .fail__real, .fail__punch, .wait__bar > span, .wait__punch,
+  .promo__fill, .promo__punch { transition: none; }
+}
+
+.presentation__slide[data-figure] :is(.fail, .wait, .promo) { gap: 1rem; font-size: 1.05rem; }
+.presentation__slide[data-figure] :is(.fail__title, .wait__title, .promo__title) { font-size: .95rem; }
+.presentation__slide[data-figure] .fail__row { padding: .5rem 1rem; grid-template-columns: 16px 12rem 1fr; }
+.presentation__slide[data-figure] .fail__name { font-size: 1.05rem; }
+.presentation__slide[data-figure] .fail__line { font-size: .92rem; }
+.presentation__slide[data-figure] :is(.wait__row, .promo__row) { padding: .55rem 1rem; }
+.presentation__slide[data-figure] :is(.wait__name, .promo__name) { font-size: 1.05rem; }
+.presentation__slide[data-figure] :is(.wait__cost, .promo__blast, .promo__state) { font-size: .9rem; }

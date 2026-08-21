@@ -6,7 +6,7 @@ status: PUBLISHED
 type: note
 date: 2026-08-18
 readingTime: "~27 min"
-deck: "Build the floor | Talk | /talks/build-the-floor | 29 slides · runs in the browser, no download"
+deck: "Build the floor | Talk | /talks/build-the-floor | 32 slides · runs in the browser, no download"
 tags: [ai, workflow, standards, developer-tools, architecture]
 summary: >
   Most organizations have bought AI subscriptions and are hoping the automation arrives on its own.
@@ -521,6 +521,17 @@ Log every run: what it was invoked on, what it produced, and whether the outcome
 sample by hand. It is tedious and there is no way around it, because the whole promotion mechanism
 downstream is built on a count of scored runs, and "it seems to be working well" is not a threshold.
 
+<div class="live-fig" data-live-figure="promotion" data-surface="figure:promotion">
+<p><em>Three skills against three different bars. Release notes graduate on a handful of scored runs
+because a wrong one is embarrassing. Review comments need more, because a wrong one wastes an
+engineer an hour. A skill that opens pull requests against production needs far more again, because
+a wrong one is an incident. The bars are illustrative; what is not illustrative is that they differ,
+and that all three are agreed before the runs start.</em></p>
+</div>
+<p class="live-fig__note">Drag the count. Watch how far apart the three bars sit, and which one is still not promotable when the other two are.</p>
+
+*The threshold is not a number you feel your way to. It is set by what it costs when the skill is wrong.*
+
 Two things I would fix early, both learned the hard way. **Decide the required count per stage in
 advance**, sized to blast radius: a documentation skill can graduate on a handful, a skill that
 opens pull requests against production code should not. And **keep the log where it survives a
@@ -706,6 +717,17 @@ I have built a few of these end to end, some at work and some for myself. I am k
 vague, because what is implemented where I work is not mine to publish and the outcomes are not the
 interesting part anyway. The failure modes are. I have hit all six.
 
+<div class="live-fig" data-live-figure="failreport" data-surface="figure:failreport">
+<p><em>Six systems failing six different ways in one week. Every one of them produced a report that
+read as a pass: the check said nothing was found, the architecture said every layer was verified,
+the query said zero results, the rule said verified, the flag said documented, the doc said read
+this first. Not one of those reports was false on its face, and not one of them could be caught by
+reading it.</em></p>
+</div>
+<p class="live-fig__note">Flip it. The marks do not change, because in the real thing they never did.</p>
+
+*Six different disasters. One artifact, and it looks like the artifact of a good week.*
+
 **1. Checks that fail by going quiet.** A broken check and a clean input produce identical output:
 silence. I have shipped several of these. A column index that was off by one. A pipeline signal that
 never arrived. A regex that never matched anything. Every one was invisible until something measured
@@ -821,6 +843,18 @@ have enough scored rows to say which skill works rather than which one feels goo
 That is roughly the first two months, and it is entirely unglamorous. Notice what is not on the
 list: buying anything, choosing a model, or writing a policy document. Those come after, and they
 are easier decisions once the first five are behind you.
+
+<div class="live-fig" data-live-figure="costwait" data-surface="figure:costwait">
+<p><em>Five ways to start, and what waiting costs each one. Publishing the delivery history, making
+a repository legible and extracting two skills cost exactly the same whether you begin this week or
+in month six. Starting the outcome log costs a little more each month, because the early runs cannot
+be reconstructed. Marking every agent-authored change is the one that decays fastest, because a
+marker cannot be applied to work already merged: every month of delay is a month of changes nobody
+will ever be able to attribute.</em></p>
+</div>
+<p class="live-fig__note">Drag the start month. Four of the five bars never move.</p>
+
+*Four of these wait perfectly well. One is a door closing behind you.*
 
 **If you can only do one thing this week, do the marker.** Everything else on this list can be
 started in month three and still work. That one gets harder every day you wait, and its absence is

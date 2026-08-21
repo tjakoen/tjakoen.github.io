@@ -560,3 +560,201 @@ export function mountTwoPath(host) {
   host.__setPath = (layered) => render(layered ? 'layer' : 'bare');
   return true;
 }
+
+/* ============================================================================
+   8 · SIX FAILURES, ONE REPORT
+   The failure-modes section's argument is not that six things can go wrong. It
+   is that all six produce the same artifact: a report that reads as a pass. The
+   figure is that claim as a motion — flip it and the marks stay identical while
+   the sentences underneath turn out to have been describing six different
+   disasters the whole time.
+   ========================================================================= */
+
+const FAILURES = [
+  { name: 'The check',        said: 'passed, nothing found',        real: 'never ran, and exited zero saying so' },
+  { name: 'The architecture', said: 'every layer verified',         real: 'the one leaf underneath was never probed' },
+  { name: 'The query',        said: 'zero results found',           real: 'nobody asked whether it had looked' },
+  { name: 'The rule',         said: 'verified as instructed',       real: 'the environment cannot verify that at all' },
+  { name: 'The flag',         said: 'documented in the usage text', real: 'nothing implements it, nothing errors' },
+  { name: 'The doc',          said: 'read this one first',          real: 'accurate when written, months ago' },
+];
+
+export const FAILREPORT = `<div class="fail" data-fail>
+  <p class="fail__title">Six systems, six reports, one week</p>
+  <ul class="fail__rows" data-fail-rows></ul>
+  <p class="fail__keys">
+    <span class="fail__pass"><b data-fail-pass>6</b> of 6 reported a pass</span>
+    <span class="fail__real"><b data-fail-real>0</b> of 6 were actually fine</span>
+  </p>
+  <p class="live-fig__ctl fail__ctl">
+    <button class="btn" type="button" data-fail-mode="said" aria-pressed="true">What the report said</button>
+    <button class="btn" type="button" data-fail-mode="real" aria-pressed="false">What was true</button>
+  </p>
+  <p class="fail__punch" data-grade="grain" data-fail-punch><b>Six different failures. Six identical reports.</b> Not one of them could be caught by reading the thing it produced, which is why the list is failure modes rather than bugs.</p>
+</div>`;
+
+export function mountFailReport(host) {
+  h(host, FAILREPORT);
+  const rows = host.querySelector('[data-fail-rows]');
+  if (!rows) return false;
+
+  rows.innerHTML = FAILURES.map((f, i) => `<li class="fail__row" data-row="${i}">
+      <span class="fail__mark" aria-hidden="true"></span>
+      <span class="fail__name">${f.name}</span>
+      <span class="fail__line" data-row-line></span>
+    </li>`).join('');
+
+  const render = (mode) => {
+    const root = host.querySelector('[data-fail]');
+    FAILURES.forEach((f, i) => {
+      const row = rows.querySelector(`[data-row="${i}"]`);
+      row.querySelector('[data-row-line]').textContent = mode === 'said' ? f.said : f.real;
+    });
+    root.toggleAttribute('data-real', mode === 'real');
+    for (const btn of host.querySelectorAll('[data-fail-mode]')) {
+      btn.setAttribute('aria-pressed', String(btn.dataset.failMode === mode));
+    }
+  };
+
+  host.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-fail-mode]');
+    if (btn) render(btn.dataset.failMode);
+  });
+  render('said');
+  host.__setFail = (real) => render(real ? 'real' : 'said');
+  return true;
+}
+
+/* ============================================================================
+   9 · THE COST OF WAITING
+   "Where to start" ends on a claim worth testing rather than asserting: four of
+   the five moves cost the same whenever you make them, and one is a door
+   closing. The dial is honest arithmetic rather than an invented curve — delay
+   the marker by N months and you have N months of changes nobody can ever
+   attribute, because a marker cannot be backfilled onto work already merged.
+   ========================================================================= */
+
+const MOVES = [
+  { name: 'Mark every agent-authored change', decays: true,
+    same: 'an afternoon, whenever you do it',
+    lost: (m) => `${m} month${m === 1 ? '' : 's'} of changes nobody can ever attribute` },
+  { name: 'Publish ninety days of delivery history', decays: false,
+    same: 'the same query, and the same afternoon' },
+  { name: 'Make one repository legible', decays: false,
+    same: 'the same day with a senior in the room' },
+  { name: 'Extract two skills from the people who do the work', decays: false,
+    same: 'the same shoulder-surfing, no harder later' },
+  { name: 'Start the outcome log', decays: 'mild',
+    same: 'free from the first run',
+    lost: (m) => `the first ${m} month${m === 1 ? '' : 's'} of runs cannot be reconstructed` },
+];
+
+export const COSTWAIT = `<div class="wait" data-wait>
+  <p class="wait__title">Five ways to start, and what waiting costs each one</p>
+  <ul class="wait__rows" data-wait-rows></ul>
+  <p class="live-fig__ctl wait__ctl">
+    <label class="wait__lab" for="wait-dial">You start in</label>
+    <input class="wait__dial" id="wait-dial" type="range" min="0" max="12" value="0" step="1" data-wait-dial>
+    <output class="wait__out" data-wait-out>month 0</output>
+  </p>
+  <p class="wait__punch" data-grade="grain" data-wait-punch><b>Four of these wait perfectly well.</b> The marker is the one that cannot be backfilled, which is why it is the item to do this week even though it is the least interesting one on the list.</p>
+</div>`;
+
+export function mountCostWait(host) {
+  h(host, COSTWAIT);
+  const rows = host.querySelector('[data-wait-rows]');
+  const dial = host.querySelector('[data-wait-dial]');
+  if (!rows || !dial) return false;
+
+  rows.innerHTML = MOVES.map((mv, i) => `<li class="wait__row" data-move="${i}"${mv.decays ? '' : ' data-flat'}>
+      <span class="wait__bar" aria-hidden="true"><span></span></span>
+      <span class="wait__body"><b class="wait__name">${mv.name}</b><em class="wait__cost" data-move-cost></em></span>
+    </li>`).join('');
+
+  const render = (month) => {
+    MOVES.forEach((mv, i) => {
+      const row = rows.querySelector(`[data-move="${i}"]`);
+      const decaying = mv.decays && month > 0;
+      row.toggleAttribute('data-losing', Boolean(decaying));
+      // A flat move's bar never moves; the marker's fills with the months it can no longer see.
+      const share = !mv.decays ? 0 : mv.decays === 'mild' ? (month / 12) * 0.45 : month / 12;
+      row.querySelector('.wait__bar > span').style.width = `${share * 100}%`;
+      row.querySelector('[data-move-cost]').textContent = decaying ? mv.lost(month) : mv.same;
+    });
+    host.querySelector('[data-wait-out]').textContent = month === 0 ? 'this week' : `month ${month}`;
+    host.querySelector('[data-wait]').toggleAttribute('data-late', month > 0);
+  };
+
+  dial.addEventListener('input', () => render(Number(dial.value)));
+  render(0);
+  // __setStart, not __setMonth: the roadmap figure already owns that name and a reader skimming
+  // talk-floor.js should not have to check which host it is looking at.
+  host.__setStart = (n) => { dial.value = String(clamp(n, 0, 12)); render(Number(dial.value)); };
+  return true;
+}
+
+/* ============================================================================
+   10 · THE PROMOTION GATE
+   Stage two is the shortest section in the note and the one it says programmes
+   die at, because it is the stage with no artifact to show. Its actual claim is
+   that promotion runs off a COUNT, agreed in advance and sized to blast radius,
+   and that "it seems to be working well" is not a threshold. Drag the count and
+   the three skills cross their bars at three different places.
+   ========================================================================= */
+
+// Illustrative bars, and the figure says so. The claim is that the number is agreed BEFORE the runs
+// start and scales with what a wrong answer costs, not that a docs skill graduates at exactly ten.
+const PROMOTABLE = [
+  { name: 'Release notes', blast: 'a wrong one is embarrassing', need: 10 },
+  { name: 'Review comments', blast: 'a wrong one wastes an engineer an hour', need: 40 },
+  { name: 'Pull requests against production', blast: 'a wrong one is an incident', need: 120 },
+];
+
+export const PROMOTION = `<div class="promo" data-promo>
+  <p class="promo__title">Scored runs behind a skill, and the bar each one has to clear</p>
+  <ul class="promo__rows" data-promo-rows></ul>
+  <p class="promo__keys"><span><b data-promo-ready>0</b> of 3 promotable</span></p>
+  <p class="live-fig__ctl promo__ctl">
+    <label class="promo__lab" for="promo-dial">Scored runs logged</label>
+    <input class="promo__dial" id="promo-dial" type="range" min="0" max="140" value="0" step="1" data-promo-dial>
+    <output class="promo__out" data-promo-out>0</output>
+  </p>
+  <p class="promo__punch" data-grade="grain" data-promo-punch><b>Same evidence. Three different bars.</b> The bar is set by what it costs when the skill is wrong, and it is agreed before the runs start, because a threshold picked afterwards is just the number you already have.</p>
+</div>`;
+
+export function mountPromotion(host) {
+  h(host, PROMOTION);
+  const rows = host.querySelector('[data-promo-rows]');
+  const dial = host.querySelector('[data-promo-dial]');
+  if (!rows || !dial) return false;
+
+  const CEIL = 140;
+  rows.innerHTML = PROMOTABLE.map((p, i) => `<li class="promo__row" data-promo-row="${i}">
+      <span class="promo__body"><b class="promo__name">${p.name}</b><em class="promo__blast">${p.blast}</em></span>
+      <span class="promo__track" aria-hidden="true">
+        <span class="promo__fill"></span>
+        <span class="promo__bar" style="left:${(p.need / CEIL) * 100}%"></span>
+      </span>
+      <span class="promo__state" data-promo-state></span>
+    </li>`).join('');
+
+  const render = (runs) => {
+    let ready = 0;
+    PROMOTABLE.forEach((p, i) => {
+      const row = rows.querySelector(`[data-promo-row="${i}"]`);
+      const ok = runs >= p.need;
+      if (ok) ready += 1;
+      row.toggleAttribute('data-ready', ok);
+      row.querySelector('.promo__fill').style.width = `${Math.min(1, runs / CEIL) * 100}%`;
+      row.querySelector('[data-promo-state]').textContent = ok ? 'promotable' : `${p.need - runs} to go`;
+    });
+    host.querySelector('[data-promo-ready]').textContent = String(ready);
+    host.querySelector('[data-promo-out]').textContent = String(runs);
+    host.querySelector('[data-promo]').toggleAttribute('data-any', ready > 0);
+  };
+
+  dial.addEventListener('input', () => render(Number(dial.value)));
+  render(0);
+  host.__setRuns = (n) => { dial.value = String(clamp(n, 0, CEIL)); render(Number(dial.value)); };
+  return true;
+}

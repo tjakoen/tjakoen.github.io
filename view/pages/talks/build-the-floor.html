@@ -355,6 +355,23 @@ comes last, and only once the four above can catch it being wrong.</em></p>
   </section>
 
   <!-- 17 ---------------------------------------------------------------- HOOKS -->
+  <section class="presentation__slide" data-figure data-title="The promotion gate">
+    <p class="slide-eyebrow settles">This is the stage everybody skips, because it has no demo</p>
+    <h2 class="slide-head settles" data-size="sm">A skill nobody scored cannot be&nbsp;promoted.</h2>
+    <div class="live-fig" data-live-figure="promotion" data-surface="figure:promotion">
+      <p><em>Three skills against three different bars. Release notes graduate on a handful of scored runs because a wrong one is embarrassing. Review comments need more, because a wrong one wastes an engineer an hour. A skill that opens pull requests against production needs far more again, because a wrong one is an incident. The bars are illustrative; that they differ, and that all three are agreed before the runs start, is not.</em></p>
+    </div>
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Start at zero. Nothing is promotable, and "it seems to be working well" is not a count.</li>
+      <li>Arrow up. Release notes clears first, review comments next, and the third one is still nowhere near.</li>
+      <li>"Same evidence. Three bars. The bar is what it costs when the skill is wrong."</li>
+      <li>"Agree the number before the runs start. A threshold picked afterwards is just the number you already have."</li>
+    </ul>
+  </section>
+
   <section class="presentation__slide" data-title="Hooks beat instructions">
     <p class="slide-eyebrow settles">One distinction, if I could only teach you one</p>
     <h2 class="slide-head settles">An instruction is a request. A hook is&nbsp;enforcement.</h2>
@@ -436,6 +453,21 @@ the implement and fix nodes call a model.</em></p>
   </section>
 
   <!-- 23 ---------------------------------------------------------------- THE RULE -->
+  <section class="presentation__slide" data-figure data-title="Six reports">
+    <p class="slide-eyebrow settles">And it is not one failure mode, it is six wearing one coat</p>
+    <h2 class="slide-head settles" data-size="sm">Six failures. Six identical&nbsp;reports.</h2>
+    <div class="live-fig" data-live-figure="failreport" data-surface="figure:failreport">
+      <p><em>Six systems failing six different ways in one week. Every one produced a report that read as a pass: the check said nothing was found, the architecture said every layer was verified, the query said zero results, the rule said verified, the flag said documented, the doc said read this first. Not one of them could be caught by reading the thing it produced.</em></p>
+    </div>
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Land on the report column. Six systems, one week, and every line is something you would sign off on.</li>
+      <li>"Nothing on this screen is false. That is the problem."</li>
+      <li>Arrow once. Same marks, same rows, six different disasters underneath them.</li>
+      <li>"Reading the report is not checking. That is the whole section in one sentence."</li>
+    </ul>
+  </section>
+
   <section class="presentation__slide" data-title="A silent pass is not a pass">
     <p class="slide-eyebrow settles">So the design rule</p>
     <p class="quote-mark settles">“</p>
@@ -507,6 +539,23 @@ the implement and fix nodes call a model.</em></p>
   </section>
 
 <!-- 26 ---------------------------------------------------------------- CLOSE -->
+  <section class="presentation__slide" data-figure data-title="The cost of waiting">
+    <p class="slide-eyebrow settles">And here is why the dullest item on it is the urgent one</p>
+    <h2 class="slide-head settles" data-size="sm">Four of these wait. One is a door&nbsp;closing.</h2>
+    <div class="live-fig" data-live-figure="costwait" data-surface="figure:costwait">
+      <p><em>Five ways to start, and what waiting costs each one. Publishing the delivery history, making a repository legible and extracting two skills cost the same whether you begin this week or in month six. The outcome log costs a little more each month, because early runs cannot be reconstructed. The marker decays fastest: it cannot be applied to work already merged, so every month of delay is a month of changes nobody will ever attribute.</em></p>
+    </div>
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <p class="frag" hidden></p>
+    <ul class="slide-notes" hidden>
+      <li>Start at this week. Every bar flat, nothing lost, and that is the only moment this picture looks like that.</li>
+      <li>Arrow through month three, six, twelve. Four bars never move. Watch the top one.</li>
+      <li>"A marker cannot be backfilled. Those months are not late, they are gone."</li>
+      <li>"So if the meeting funds one thing, fund the boring one. It is the only item with an expiry date."</li>
+    </ul>
+  </section>
+
   <section class="presentation__slide" data-title="Build the floor">
     <p class="slide-eyebrow settles">So, to close</p>
     <h2 class="slide-head settles">The agents are already better than the codebases they are pointed&nbsp;at.</h2>
