@@ -7,7 +7,15 @@ branch: main
 scope:
   - standards/HOOKS.md
   - standards/README.md
+  - artifacts/runs/
+touched:
+  - standards/HOOKS.md
+  - standards/README.md
+  - artifacts/runs/2026-08-21-hooks-standard.md
+diffstat: standards/HOOKS.md 320 insertions; standards/README.md 10 insertions; 1 run report added
+unpushed: 0
 verifiedBy: a Sonnet subagent that did not write the standard, plus the served HTML
+doctor: 21 checks, 0 failing, 2 due and carried by name, cold-start context and graphify freshness
 ---
 
 # The hooks standard, verified rather than described
