@@ -8,14 +8,14 @@
  * cannot drift from the paragraph. What differs is only the trigger: in prose you drag the dial
  * yourself, and here the slide steps drive it, because a room does not have a mouse.
  */
-import { mountWhiplash, mountBuildOrder, mountRuleGate, mountRoadmap, mountAgentLoop, mountGates, mountTwoPath } from '/site/figure-floor.js';
+import { mountWhiplash, mountBuildOrder, mountRuleGate, mountRoadmap, mountAgentLoop, mountGates, mountTwoPath, mountFailReport, mountCostWait, mountPromotion } from '/site/figure-floor.js';
 
 const deck = document.querySelector('.presentation[data-deck]');
 if (deck) {
   const hosts = {};
   for (const host of deck.querySelectorAll('[data-live-figure]')) {
     const name = host.dataset.liveFigure;
-    const build = { whiplash: mountWhiplash, buildorder: mountBuildOrder, rulegate: mountRuleGate, roadmap: mountRoadmap, agentloop: mountAgentLoop, gates: mountGates, twopath: mountTwoPath }[name];
+    const build = { whiplash: mountWhiplash, buildorder: mountBuildOrder, rulegate: mountRuleGate, roadmap: mountRoadmap, agentloop: mountAgentLoop, gates: mountGates, twopath: mountTwoPath, failreport: mountFailReport, costwait: mountCostWait, promotion: mountPromotion }[name];
     if (!build) continue;
     const fallback = host.innerHTML;                  // the static SVG stays the safety net
     try { if (build(host)) hosts[name] = host; else host.innerHTML = fallback; }
@@ -45,6 +45,17 @@ if (deck) {
     }
     if (title === 'Two paths' && hosts.twopath?.__setPath) {
       hosts.twopath.__setPath(step >= 1);
+    }
+    if (title === 'Six reports' && hosts.failreport?.__setFail) {
+      hosts.failreport.__setFail(step >= 1);
+    }
+    // Both of these walk a dial rather than flip a state, so the steps are the stops worth pausing
+    // on rather than every value in between: a room reads three positions, not thirteen.
+    if (title === 'The cost of waiting' && hosts.costwait?.__setStart) {
+      hosts.costwait.__setStart([0, 3, 6, 12][Math.min(step, 3)]);
+    }
+    if (title === 'The promotion gate' && hosts.promotion?.__setRuns) {
+      hosts.promotion.__setRuns([0, 10, 45, 120][Math.min(step, 3)]);
     }
     if (title === 'Instruction or hook' && hosts.rulegate?.__setMode) {
       hosts.rulegate.__setMode(step >= 1 ? 'hook' : 'instruction');

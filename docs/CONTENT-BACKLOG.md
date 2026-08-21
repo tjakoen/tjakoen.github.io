@@ -13,7 +13,7 @@
 
 **Everybody Wants the Agent. Somebody Has to Build the Floor.**
 (content/notes/build-the-floor.md, **PUBLISHED** 2026-08-19, ~28 min after the 2026-08-20 pass). The
-deck shipped alongside it: [/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 29 slides.
+deck shipped alongside it: [/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 32 slides.
 
 **2026-08-20 pass, uncommitted at time of writing.** A section was added between the roadmap and
 stage zero, *I had a parts list, not an architecture*, giving the cross-section the five stages build
@@ -26,6 +26,25 @@ specification. The deck caught up in the same pass: two
 slides went in after *One artifact*, the layer cross-section and a live *Two paths* driven off the
 slide step through the `__setPath` seam, taking it from 27 slides to 29. Sources gained Cole Medin's starter pack and workshop, which is where
 the anatomy and the root-cause edge came from.
+
+**Three more figures went in on 2026-08-22, taking the note to twelve.** All live, all in
+scripts/figure-floor.js: `failreport` under the failure-modes heading (six systems, one week, and a
+toggle between what each report said and what was true, because the section's claim is that all six
+produced an artifact you would sign off on); `costwait` under *Where to start* (a start-month dial
+where four of five bars never move, which is the note's own claim about the marker made checkable
+rather than asserted); and `promotion` in stage two (three skills, three bars, sized to blast
+radius). Stage two had no figure and no deck slide at all before this, which is the section the note
+says programmes quietly die at. The deck took all three as new slides and went 29 to 32.
+
+**Both new row-based figures use `@container`, not `@media`, and that is not a preference.** Inside
+the desk shell with the file tree and chat panel open, the reading column is about 380px at a
+1000px window. A viewport query cheerfully applies the wide layout to it, and the promotion figure's
+track collapsed to 25 pixels while every number in it stayed correct. welcome.css already documents
+the same lesson. Do not convert these back.
+
+**The bars in `promotion` are illustrative and the figure says so.** The note gives no numbers, only
+that a docs skill graduates on a handful and a production-PR skill should not. The claim being drawn
+is that the bars differ and are agreed in advance, not that release notes clears at exactly ten.
 
 **The split was asked for on 2026-08-20 and declined on 2026-08-21, with the note trimmed instead.**
 The reason is the *Know what this note is for* paragraph above: the technical depth is the
