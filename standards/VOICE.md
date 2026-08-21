@@ -290,6 +290,19 @@ honest caveats: the number is theirs, not a study of this voice, and STE's cockp
 wants. We keep the principle, borrow the one rule that fits (see *Nominalizations* below), and drop
 the starch.
 
+**A second borrowed source (and what was left behind).**
+[no-ai-slop](https://github.com/petergyang/no-ai-slop) (petergyang, MIT-licensed) is a 2026 editing
+skill that catalogues generated prose as *shapes* rather than as words, and that framing is what
+earned the borrow. This guide had already banned *underscore* and *testament* as vocabulary while
+leaving the sentence shapes those words live inside unnamed. Six of its patterns are folded into the
+construction tells below (the colon reveal, the superficial-analysis clause, the faux-insight setup,
+importance puffery, interpretive metadiscourse, synonym cycling), along with the portability test
+further down and the editing pass that follows this section. What was declined matters as much: it
+asks for complete sentences in place of dramatic fragments, and it deletes a closing metaphor
+outright rather than rewriting it. Both would sand off moves this voice is built on, the hard
+variation in sentence length, the callback close, the metaphor bank. Borrow the shapes, keep the
+punch.
+
 **Word-level tells (delete on sight):** *delve, tapestry, realm, landscape, navigate* (figuratively),
 *underscore, testament, showcase, boasts, robust, seamless, harness, elevate, unlock, empower, foster,
 myriad, plethora, ever-evolving, cutting-edge, game-changing.* If a word feels like it came free with
@@ -317,6 +330,28 @@ standard at all* above, because it fits a warm voice instead of fighting it.)
   Great question!"* Gone.
 - **Both-sides mush.** *"On one hand… on the other hand…"* with no landing. Take the side.
 - **Emoji as seasoning.** ✨🚀, no. Chat can be loose; published work stays clean.
+- **The colon reveal.** A noun phrase, a colon, then a lowercase drama beat: *"The detail that makes
+  it work: a separate agent grades it."* This is a trap the guide sets for itself, because the
+  em-dash rule sends every pivot looking for a colon to live in. Rewrite it as a plain sentence. A
+  colon introduces a list, a label or a quote; it does not hold suspense.
+- **The superficial-analysis clause.** A trailing *-ing* clause that pretends to explain what a fact
+  means: *"…, highlighting the team's commitment to better workflows."* Also *underscoring,
+  reflecting, showcasing, demonstrating.* The word-tells above catch some of that vocabulary; this
+  catches the move. Replace it with the actual consequence: *"…, so a reader finds an old draft
+  without leaving the page."*
+- **The faux-insight setup.** *"What nobody tells you…" / "The part everyone misses" / "What most
+  people get wrong."* Every one of these flatters the writer as the only person in the room who sees
+  it, which is the same boast the bare-credential rule bans. Cut the setup and let the claim stand by
+  itself.
+- **Importance puffery.** *"Stands as a testament to" / "marks a pivotal moment" / "plays a vital
+  role" / "solidifies its position."* State the fact and let a reader decide whether it matters.
+  *"The launch marks a pivotal moment"* becomes *"The launch is the first thing anyone paid for."*
+- **Interpretive metadiscourse.** Prose stepping outside itself to direct the reader: *"This
+  distinction matters," "the key point is," "as you can see,"* and a redundant *"in other words."* If
+  the point is already clear, delete the aside. If it is not, the repair is a fact, not a nudge.
+- **Synonym cycling.** Rotating names for one thing so a paragraph looks varied: *the agent* reviews
+  the draft, *the assistant* scores it, *the tool* suggests fixes. One name per thing, repeated. (The
+  second ASD-STE100 rule that survives a warm voice, and one this guide had skipped.)
 
 **The formula tell (the trap this very guide creates):** the signature moves are a repertoire, not a
 checklist. A piece that completes every move (confession open, wink by paragraph two, one tricolon,
@@ -340,9 +375,36 @@ whole guide: a confession up front, one genuine stake, a real number, a wink, a 
 
 > **If a passage is clean, correct, and forgettable, it sounds like AI. Make it his.**
 
+**The portability test, for one sentence at a time.** The texture tell is easy to state and hard to
+act on, so here is the per-sentence version. Move the sentence, unchanged, to another person, another
+company, another product. If it still reads as true, it was never about this subject and it is
+filler. Replace it with a fact, a mechanism, a consequence or a judgment that only survives here.
+*"The integration improved efficiency"* travels anywhere. *"The integration cut the deploy from forty
+minutes to four"* cannot leave the building.
+
 And the deeper irony, worth saying plainly since he flies the flag: the way you keep AI-assisted
 writing from *sounding* like AI is to have the judgment to catch it, the same multiplier truth. Ten
 times zero is still zero. The voice is the part the machine cannot supply.
+
+## Editing a draft that already exists
+
+Most of this guide describes writing. Half the real work is the other job: prose already on the page,
+his or a model's, that has to come up to the standard. The de-em-dashing backlog in the older drafts
+is the standing example, and it is where an over-eager pass does the most damage.
+
+- **Make the minimum effective edit.** Fix the tells, the errors, the repetition and anything
+  genuinely hard to follow. Then stop. A strong human sentence stays as it is even when a tidier one
+  is available, and a rough draft with a real voice should sound like the same person afterwards.
+- **Even tidiness is the failure, not the goal.** A pass that leaves every paragraph the same length
+  and every point equally balanced has swapped one machine texture for another. Unevenness is the
+  evidence a person was here.
+- **Cut in proportion to the actual slop.** Aggressive compression takes the character out along with
+  the filler. If a pass removed a third of the words, go back and look at what left with them.
+- **Keep the edge.** Blunt phrasing, a self-interruption, an admission that does not flatter him:
+  these are the lines most likely to look like problems to a model, and usually the reason the piece
+  works at all. They stay.
+- **Say what changed, and why.** An editing pass owes a short list of what moved, not just the new
+  file. A reorganized structure owes its reason in a sentence.
 
 ## Content guardrails (this repo is public)
 
@@ -420,14 +482,26 @@ smell test below, and one of these lines is "you actually ran it."
       present (all three per [`NOTE-STANDARD.md`](NOTE-STANDARD.md), which owns the artifact).
 - [ ] Money stays vague, no student data, company spelled "Career Team".
 
+**Detection is naming, not scoring.** When the job is judging whether a piece is off-voice (an audit,
+a review, a lint triage), the output is a named pattern, the line it sits on, and the fix. Never a
+percentage, never a grade, and never a claim about whether a machine wrote it. A detector guesses; a
+named pattern is evidence someone else can check and argue with, which is the same reason an audit
+finding carries a file and a line. That is also the honest limit on `bun run lint:voice`: it reports
+which rule matched where, and it holds no opinion at all on how the piece reads.
+
 ## The off-voice smell test
 
 Fast pass before anything ships under his name. If a line trips any of these, fix it. The purely
 mechanical rows (backticks, em-dashes, the word-tells, the not-just-X shape, eager sign-offs,
-nominalizations) can be caught by a linter before the human pass, the portfolio ships one as
-`bun run lint:voice`. It covers only the mechanical half by design; the judgment rows below (the
-missing wink, a bare credential, a benefit not shown, the formula tell) stay a human read. Ten times
-zero: the linter multiplies the eye, it does not replace it.
+nominalizations, and four of the borrowed shapes: the superficial-analysis clause, the faux-insight
+setup, importance puffery, interpretive metadiscourse) can be caught by a linter before the human
+pass, the portfolio ships one as `bun run lint:voice`. It covers only the mechanical half by design;
+the judgment rows below (the missing wink, a bare credential, a benefit not shown, the formula tell,
+the portability test, synonym cycling) stay a human read. The colon reveal belongs with them rather
+than with the linter, and that is a measured result and not a preference: the shape is a *fragment*
+before the colon, separating a fragment from a clause needs a parser, and the regex written for it
+flagged 318 lines of this repo where the sampled ones were ordinary sentence colons. Ten times zero:
+the linter multiplies the eye, it does not replace it.
 
 - [ ] **A backtick in prose.** The number-one machine tell. (Code blocks + reference docs exempt.)
 - [ ] **An em-dash.** Now a top machine tell too. Rewrite with a comma, period, colon, or parentheses.
@@ -444,6 +518,12 @@ zero: the linter multiplies the eye, it does not replace it.
 - [ ] **The AI use hedged or buried.** It's a badge, not a confession. Fly it.
 - [ ] **A thesis-first open** instead of a stakes-first one. Lead human; argue after.
 - [ ] **A dollar figure or exact ratio.** Money stays vague, always.
+- [ ] **A colon reveal.** *"The part that makes it work: it grades itself."* Rewrite as a plain sentence.
+- [ ] **A trailing *-ing* clause explaining what a fact means.** *"…, highlighting the commitment to…"* Give the consequence instead.
+- [ ] **A faux-insight setup.** *"What nobody tells you…"* Cut it; the claim is stronger alone.
+- [ ] **A sentence that survives being moved to another company.** The portability test. Replace it with something only true here.
+- [ ] **The reader being told what to notice.** *"This distinction matters."* Show it, or cut it.
+- [ ] **Three names for one thing.** *agent / assistant / tool.* Pick one and repeat it.
 
 ## Calibration pair: same facts, two writers
 

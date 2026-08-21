@@ -39,6 +39,20 @@ const RULES: Rule[] = [
   { id: "corporate-verb", sev: "warn", re: /\b(leverage|utilize|streamline)\b/i, msg: "corporate verb — use a plain strong one (build, prove, ship, use)." },
   { id: "nominalization", sev: "warn", re: /\b(perform|provide|conduct|carry out|make use of|offer support)\b\s+(an?\s+)?\w*(analysis|solution|review|assessment|evaluation|support|utili)/i, msg: "nominalization — collapse to the verb (analyze, solve, review, use)." },
   { id: "emoji", sev: "warn", re: /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2728}]/u, msg: "emoji in published prose — keep it clean." },
+  // The four below are shapes rather than words, borrowed from petergyang/no-ai-slop (MIT) and
+  // documented in VOICE.md under "Do not sound like the machine". All warn: each has a legitimate
+  // use (a participle that carries a real consequence, a source genuinely worth naming), so a human
+  // triages rather than a build failing.
+  //
+  // A fifth shape from that source, the colon reveal ("The detail that makes it work: it grades
+  // itself"), was written, measured and pulled back out. The pattern is a *fragment* before the
+  // colon, and telling a fragment from a clause needs a parser: the regex flagged 318 lines across
+  // this repo and the sampled ones were ordinary sentence colons. It stays a smell-test row that a
+  // person reads, which is the same call the src pass made below for the same reason.
+  { id: "ing-clause", sev: "warn", re: /,\s+(highlight|underscor|reflect|showcas|demonstrat|emphasiz|signal|mark)ing\b/i, msg: "superficial-analysis clause — say the consequence, not what the fact supposedly means." },
+  { id: "faux-insight", sev: "warn", re: /\b(what (nobody|no one) tells you|what most people get wrong|the part (that )?(everyone|most people|nobody) miss(es)?|most people (don'?t|do not) (realize|know)|here'?s what nobody)\b/i, msg: "faux-insight setup — it flatters the writer. Cut it and let the claim stand." },
+  { id: "puffery", sev: "warn", re: /\b(stands? as a testament|marks? a (pivotal|defining|watershed) moment|plays? a (vital|crucial|key|pivotal) role|solidif\w+ its position|underscores? (its|the) (significance|importance))\b/i, msg: "importance puffery — state the fact and let the reader judge it." },
+  { id: "metadiscourse", sev: "warn", re: /\b(this distinction matters|the key (point|thing|takeaway)( here)? is|as you can see|that (last )?part matters|in other words,)/i, msg: "interpretive metadiscourse — telling the reader what to notice. Show it or cut it." },
 ];
 
 // The rules that are safe to run against a .ts file. A source file is mostly not prose, and most of
