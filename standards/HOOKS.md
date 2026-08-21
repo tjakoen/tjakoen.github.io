@@ -64,6 +64,11 @@ PostToolUse that carries the handoff. The last of those belongs to
 [SESSION-LOOP.md](SESSION-LOOP.md) section 5 and is not repeated here. The three below are the ones
 that decide whether work proceeds, which is why they earn a standard and a shell alias does not.
 
+Section 4b is the exception to that split. The three output gates decide nothing and only print, so
+by the rule above they would be housekeeping. They are here because they were built from a
+measurement rather than an intuition, and because the way the first one misread its own payload is a
+lesson about gates in general rather than about those three scripts.
+
 ---
 
 ## 2. session-doctor.sh, at session start
@@ -131,8 +136,14 @@ section 4 is the second set, added a week later, and the bar for a third is the 
 extended regular expression per line, and a path matching one is allowed through. The file is itself
 in the blocked list, so a session cannot approve its own way past the guard. Writing a line in it is
 the human deciding before anything is written, which is what section 4b asks for, and it leaves a
-record of what was approved. **As of 2026-08-20 that file does not exist on this machine**, so nothing
-is approved and every listed path blocks.
+record of what was approved. **It was first written on 2026-08-21**, carrying one anchored pattern
+for the settings file so the output gates in section 4b could be wired. Every other listed path
+still blocks, and the guard, the settings-local variant and the approval file itself stay protected.
+
+That first use is worth reading as the shape the hatch was built for rather than as a weakening of
+it. A session proposed the change, hit the block, and stopped. The owner wrote the line. The session
+then made the edit and watched it work. Three acts, three different hands on them, and a line in a
+file saying what was approved and when.
 
 One fragility in that hatch, named rather than fixed: the approval file is read *before* the rules
 that protect the guard and the hatch itself, so a pattern broad enough to match everything would
@@ -213,12 +224,12 @@ itself, and it is the reason this file tells a reader to check the settings rath
 
 ---
 
-## 4b. The output gates, built and not wired
+## 4b. The output gates
 
-**Would fire on:** PostToolUse. Three scripts sit in the tools directory, tested and switched off:
-bash-output-bound.sh, tool-output-bound.sh and code-discovery.sh.
+**Fires on:** PostToolUse. Three scripts, wired 2026-08-21: bash-output-bound.sh at a 4,000
+character bound, tool-output-bound.sh, and code-discovery.sh.
 
-**What they would do.** The first two say once, per command or per tool per session, that something
+**What they do.** The first two say once, per command or per tool per session, that something
 returned more characters than a bound. The third says once per session that a repo carrying a code
 graph has been searched four times without one being queried. All three exit 0 and speak through the
 additional-context channel described in section 5, so none of them can stop anything, and each says
@@ -242,13 +253,21 @@ thousand characters of base64 and is billed by pixel area instead, so any bound 
 fires on every screenshot ever taken while telling the session something false. Both output gates
 skip an image result rather than judging it.
 
-**Why they are off.** The settings file sits in the human lane, and so does the approval file that
-would let a session past it. Switching these on is the owner's act, which section 6 says is the
-right shape for a gate rather than an obstacle to one. Until then their suites test something
-nothing calls, which is the honest description of every gate in this state.
+**Measure what reaches the model, not what the payload contains, and this cost a false positive to
+learn.** Within minutes of being wired, tool-output-bound.sh reported an ordinary edit at 23,626
+characters. What an edit returns to the conversation is a one-line confirmation near 160. The rest,
+the file's prior contents above all, is bookkeeping the harness keeps for undo and never puts in
+context. The first version summed every field of the response. **A gate that nags about characters
+nobody is paying for is worse than no gate**, because the advice cannot be followed and the session
+correctly learns to ignore it. The fields are now named and skipped, with the case in the suite.
 
-**How to turn them off.** They are off. Wiring one is three separate acts, as section 8 asks: the
-entry in the machine settings, a real session watched firing, and a line here saying it is live.
+That defect was invisible to eleven passing tests and surfaced on the first real firing, which is
+section 5's last lesson arriving on schedule: a gate nobody has watched fire has not been tested, it
+has been described.
+
+**How to turn them off.** Three levels, per section 6. The bounds move with BASH_OUTPUT_MAX and
+TOOL_OUTPUT_MAX, the sweep threshold with CODE_DISCOVERY_SWEEP, and all three honour the exclusion
+prefix. Unwiring is removing the entry from the machine settings, which is the owner's act.
 
 ---
 
