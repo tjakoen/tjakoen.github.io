@@ -1024,10 +1024,16 @@ function renderVideoCard(raw: unknown): string {
 // every note and until now was only ever seen on the /notes index card, which is a waste of the
 // best-written paragraph most notes have) and a collapsed list of its own sections.
 //
-// The threshold is section COUNT, not word count, because what makes a note hard to navigate is how
-// many places it goes rather than how long it spends getting there. Eight is where this corpus
-// splits cleanly: seven notes sit at or above it and every one is a long read; the rest are at six
-// or fewer, where a contents block would list most of what is already on screen.
+// EVERY note gets one. This shipped on 2026-08-21 behind an eight-section threshold, on the
+// argument that a short note's contents would list most of what was already on screen. The owner
+// overrode that the same day and the override is right for a reason the threshold missed: the
+// summary is the valuable half and it has nothing to do with length. It exists on all twelve notes,
+// it is usually the best-written paragraph in the file, and until this block it was visible only on
+// the /notes index card. Withholding it from the short notes was withholding the good part.
+//
+// What survives of the threshold is a floor of two sections, because a contents list of one item is
+// not a list. The two decisions are independent now: a note with a summary gets the summary, and a
+// note with something to jump between gets the jump links.
 //
 // Collapsed on purpose. build-the-floor opens on a confession, and thirteen links between the
 // subtitle and that first line would kill the entrance. The summary is what a reader needs in order
@@ -1042,7 +1048,7 @@ function renderVideoCard(raw: unknown): string {
 // list means scrolling back to the top, which makes the first section current again. The sticky
 // rule is the only part of this still on screen once somebody is actually reading, so it is the
 // only place a "you are here" can be seen.
-const CONTENTS_MIN_SECTIONS = 8;
+const CONTENTS_MIN_SECTIONS = 2;
 
 const stripTags = (html: string) => html.replace(/<[^>]*>/g, "");
 
@@ -1050,10 +1056,12 @@ function renderNoteContents(body: string, frontmatter: Record<string, unknown> |
   const heads = [...body.matchAll(/<h2 id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
     .map((m) => ({ id: m[1] ?? "", label: stripTags(m[2] ?? "").trim() }))
     .filter((h) => h.id && h.label);
-  if (heads.length < CONTENTS_MIN_SECTIONS) return "";
 
   const summary = typeof frontmatter?.summary === "string" ? frontmatter.summary.trim() : "";
   const reading = typeof frontmatter?.readingTime === "string" ? frontmatter.readingTime.trim() : "";
+  // Nothing to say and nowhere to go: emit no block at all rather than an empty frame.
+  if (!summary && heads.length < CONTENTS_MIN_SECTIONS) return "";
+
   const meta = [`${heads.length} sections`, reading].filter(Boolean).join(" \u00b7 ");
   const lede = summary ? `<p class="note-contents__summary">${escapeHtml(summary)}</p>` : "";
   const items = heads
@@ -1063,10 +1071,10 @@ function renderNoteContents(body: string, frontmatter: Record<string, unknown> |
   return `<div class="note-progress" data-note-progress><span class="note-progress__fill" aria-hidden="true"></span><span class="note-progress__where" data-note-where hidden></span></div>
 <aside class="note-contents" data-note-contents aria-label="Summary and contents">
   ${lede}
-  <details class="note-contents__more">
+  ${heads.length < CONTENTS_MIN_SECTIONS ? "" : `<details class="note-contents__more">
     <summary class="note-contents__toggle">Contents <span class="note-contents__meta">${escapeHtml(meta)}</span></summary>
     <ol class="note-contents__list">${items}</ol>
-  </details>
+  </details>`}
 </aside>`;
 }
 

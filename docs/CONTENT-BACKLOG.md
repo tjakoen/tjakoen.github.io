@@ -132,15 +132,16 @@ week-by-week calendar.**
 
 ## Long-note navigation (added 2026-08-21)
 
-**Any /notes entry with eight or more level-2 sections gets a contents block**, emitted by
-`renderNoteContents` in src/content.ts and styled by the `note-contents` molecule. Seven notes are
-over the line today (ten-times-zero, build-the-floor, whitepaper-one-vocabulary, origin-story,
-the-browser-grew-up, the-console-i-built-to-stop-drowning, one-loop-every-repo) and three are under
-it. Nothing is authored in Markdown: **a note gets one by being long, not by remembering to ask.**
+**Every /notes entry gets a contents block**, emitted by `renderNoteContents` in src/content.ts and
+styled by the `note-contents` molecule. All twelve carry one. Nothing is authored in Markdown, so
+**no note can forget to have one.**
 
-**The threshold is section count, not word count.** What makes a note hard to navigate is how many
-places it goes, not how long it spends getting there. Eight is where this corpus splits cleanly;
-below it a contents block would list most of what is already on screen.
+**It shipped behind an eight-section threshold and the owner removed it the same day.** The
+threshold argued that a short note's contents would list most of what was already on screen, which
+is true and beside the point: the summary is the valuable half and has nothing to do with length.
+Withholding it from the five short notes was withholding the good part. What survives is a floor of
+two sections on the **jump links only**, because a list of one item is not a list. The two halves
+are decided independently now.
 
 **The frontmatter `summary` now renders on the page.** Every note has one and until this it was seen
 only on the /notes index card, which wasted the best-written paragraph most notes have. It is set
@@ -164,7 +165,7 @@ ancestor whether it actually scrolls. Do not simplify that back to `window`.
 
 **Degrades cleanly.** No JavaScript means the fill has zero width and the chip never appears; the
 `<details>` still opens, because that is an element rather than a script. Verified in the static
-export: `dist/site/note-progress.js` ships, build-the-floor carries the block, why-i-teach does not.
+export at 129 pages, with `dist/site/note-progress.js` shipping.
 
 ## The measurement-misread note (published 2026-08-20)
 
