@@ -27,12 +27,25 @@ slides went in after *One artifact*, the layer cross-section and a live *Two pat
 slide step through the `__setPath` seam, taking it from 27 slides to 29. Sources gained Cole Medin's starter pack and workshop, which is where
 the anatomy and the root-cause edge came from.
 
-**The split is an open question, deliberately not taken.** The owner asked on 2026-08-20 whether to
-move the architecture and implementation into a second note and leave this one high level. That is
-the same cut as rejected draft (4) below. The agreed order was diagrams first, then look at length
-again, on the reasoning that a figure usually deletes prose. The test to apply before splitting:
-**do the two halves have different readers, or the same reader with less patience?** Same reader
-means it is draft (4) again.
+**The split was asked for on 2026-08-20 and declined on 2026-08-21, with the note trimmed instead.**
+The reason is the *Know what this note is for* paragraph above: the technical depth is the
+credential, not the pitch. Split it out and the roadmap half becomes a plan anyone could have
+written while the implementation half has no reason to be trusted, which is rejected draft (4)
+arriving by a different route. What was actually wrong was proportion, not length: the added section
+was 14% of the note, larger than any stage and larger than the roadmap, and a third of it explained
+what a rules file and a subagent are. That teaching was cut, since the cross-section figure carries
+the parts list, and the opener was reframed because *"I could not draw it"* is a competence
+admission about the exact thing this note sells, which is a different order of confession from the
+no-ML-background line in the close. The section is now 825 words against stage one's 832, so it sits
+in the pack rather than on top of it. **Do not re-inflate it into a tutorial on the three layers.**
+
+**Reading time is measured at the note's own established rate, 261 words a minute**, which is what
+its original ~24 min claim over 6,258 words implies. The note is 7,103 words, so ~27 min. Two
+earlier bumps this week (~28, then ~30) used a slower rate and were wrong.
+
+**The split, if it is ever revisited.** The test to apply first: **do the two
+halves have different readers, or the same reader with less patience?** Same reader means it is
+draft (4) again, and on 2026-08-21 the answer was the same reader.
 
 **Know what this note is for.** It sells an AI implementation roadmap, and it positions Tjakoen as
 the person who can lead one. **The roadmap is the product.** The technical depth behind each stage is
