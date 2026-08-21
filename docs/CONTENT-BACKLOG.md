@@ -130,6 +130,42 @@ week-by-week calendar.**
   [plans/loop-story-and-talk.md](../plans/loop-story-and-talk.md), whose gate is still the loop
   demonstrably running rather than a date.
 
+## Long-note navigation (added 2026-08-21)
+
+**Any /notes entry with eight or more level-2 sections gets a contents block**, emitted by
+`renderNoteContents` in src/content.ts and styled by the `note-contents` molecule. Seven notes are
+over the line today (ten-times-zero, build-the-floor, whitepaper-one-vocabulary, origin-story,
+the-browser-grew-up, the-console-i-built-to-stop-drowning, one-loop-every-repo) and three are under
+it. Nothing is authored in Markdown: **a note gets one by being long, not by remembering to ask.**
+
+**The threshold is section count, not word count.** What makes a note hard to navigate is how many
+places it goes, not how long it spends getting there. Eight is where this corpus splits cleanly;
+below it a contents block would list most of what is already on screen.
+
+**The frontmatter `summary` now renders on the page.** Every note has one and until this it was seen
+only on the /notes index card, which wasted the best-written paragraph most notes have. It is set
+behind a rule and in muted type so it reads as an abstract, which is the one thing it must not be
+mistaken for: the opening line of the note.
+
+**Collapsed on purpose, and that is an editorial call rather than a space one.** build-the-floor
+opens on a confession and thirteen links between the subtitle and that line would kill the entrance.
+
+**Two things were built wrong first and are worth not rebuilding.** (1) Marking the current section
+inside the contents list is unobservable in this shell: reading the list means scrolling back to the
+top, which makes the first section current again. The position marker lives in the sticky rule
+instead, because that is the only part still on screen once somebody is reading. (2) The progress
+track was a visible hairline and sat two pixels under the note head's own rule, which read as a
+duplicate. Only the fill is drawn now.
+
+**The document does not scroll; `.app-shell__main` does.** A `window.scrollY` implementation runs
+without error and reports zero forever, which looks exactly like a working progress bar parked at
+the start. scripts/note-progress.js discovers its scroll container by walking up and asking each
+ancestor whether it actually scrolls. Do not simplify that back to `window`.
+
+**Degrades cleanly.** No JavaScript means the fill has zero width and the chip never appears; the
+`<details>` still opens, because that is an element rather than a script. Verified in the static
+export: `dist/site/note-progress.js` ships, build-the-floor carries the block, why-i-teach does not.
+
 ## The measurement-misread note (published 2026-08-20)
 
 **The Check Ran Once in 165 Sessions, and I Got the Reason Wrong.**
