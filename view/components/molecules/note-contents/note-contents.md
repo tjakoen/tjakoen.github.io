@@ -3,9 +3,13 @@
 The summary and section list under a long note's masthead, plus the reading-progress rule that
 sticks to the top of the reading pane.
 
-Emitted by `src/content.ts` (`renderNoteContents`) for any `/notes` entry with eight or more
-level-2 sections, spliced into the rendered body after the note head. Not authored in Markdown:
-a note gets one by being long, not by remembering to ask.
+Emitted by `src/content.ts` (`renderNoteContents`) for **every** `/notes` entry, spliced into the
+rendered body after the note head. Not authored in Markdown, so no note can forget to have one.
+
+The two halves are decided separately. The summary renders whenever the frontmatter has one, which
+is all twelve notes. The jump links render at two or more sections, because a contents list of one
+item is not a list. It shipped behind an eight-section threshold and the owner removed it the same
+day, correctly: the summary is the valuable half and it has nothing to do with length.
 
 ## Why the two elements are siblings
 
