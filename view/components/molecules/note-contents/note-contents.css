@@ -1,0 +1,92 @@
+/* note-contents — the summary and section list that sit under a long note's masthead.
+ *
+ * Emitted by src/content.ts (renderNoteContents) for any /notes entry with eight or more sections,
+ * spliced in after the note head. Two elements, deliberately siblings: the progress rule sticks to
+ * the top of the reading pane for the whole article, which it can only do while its parent box is
+ * the full-height board rather than the short aside beside it.
+ *
+ * Everything here is theme tokens, so it inverts with the page like the flow figures do. No colour
+ * carries meaning: the summary is set apart by a rule and a measure, not by a tint.
+ */
+
+/* --- the progress rule -------------------------------------------------------
+   Sticky rather than fixed, so it belongs to the reading column and cannot end up floating over
+   the shell chrome on a narrow window. The fill is driven by --read, set by scripts/note-progress.js;
+   with no JS the custom property never resolves, the fill is zero-width, and what is left is a
+   hairline that reads as part of the rule under the masthead. */
+/* The TRACK is transparent, not a hairline. The note head already ends in a rule, and a second
+   full-width line two pixels under it reads as a mistake rather than as a control. Only the fill
+   is ever drawn, so at the top of a note there is nothing there at all. */
+.note-progress {
+  position: relative;
+  position: sticky; top: 0; z-index: 4;
+  height: 2px; margin: 0 0 var(--space-5);
+}
+.note-progress__fill {
+  display: block; height: 100%;
+  width: calc(var(--read, 0) * 100%);
+  background: var(--color-fg);
+}
+/* Where you are, pinned to the rule because the rule is the only part of this block still on screen
+   once somebody is reading. Hidden at the top, where the masthead already answers the question. */
+.note-progress__where {
+  position: absolute; right: 0; top: 0;
+  font-size: .72rem; line-height: 1; color: var(--color-muted);
+  /* It overlays flowing prose, so it needs a solid ground and real padding. Without both, the
+     paragraph behind it shows through the gaps and the whole thing reads as a rendering fault
+     rather than as a control. */
+  background: var(--color-bg);
+  border: 1px solid var(--color-line); border-top: 0;
+  border-radius: 0 0 4px 4px;
+  padding: .35rem .6rem;
+  max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.note-progress__where[hidden] { display: none; }
+
+/* --- the summary -------------------------------------------------------------
+   The frontmatter summary, which every note already has and which used to be visible only on the
+   index card. Indented behind a rule so it reads as an abstract rather than as the first paragraph
+   of the note, which is the one thing it must not be mistaken for. */
+.note-contents { margin: 0 0 var(--space-6); }
+.note-contents__summary {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-line);
+  color: var(--color-muted);
+  max-width: 34rem;
+}
+
+/* --- the contents ------------------------------------------------------------
+   A details element, so it costs one line closed and needs no script to open. The marker is the
+   browser's own, rotated by the open state, because a hand-drawn triangle is one more thing to keep
+   in step with a theme. */
+.note-contents__more { margin: 0; }
+.note-contents__toggle {
+  cursor: pointer; list-style: none;
+  display: flex; align-items: baseline; gap: .6rem;
+  font-size: .92rem; color: var(--color-fg);
+  padding: .35rem 0;
+}
+.note-contents__toggle::-webkit-details-marker { display: none; }
+.note-contents__toggle::before {
+  content: "›"; display: inline-block;
+  transition: transform .15s linear;
+  color: var(--color-muted);
+}
+.note-contents__more[open] .note-contents__toggle::before { transform: rotate(90deg); }
+.note-contents__toggle:hover { text-decoration: underline; text-underline-offset: 3px; }
+.note-contents__meta { color: var(--color-muted); font-size: .85rem; }
+
+.note-contents__list {
+  margin: .4rem 0 0; padding: 0 0 0 1.9rem;
+  display: grid; gap: .3rem;
+  font-size: .92rem;
+}
+.note-contents__list a { color: var(--color-muted); text-decoration: none; }
+.note-contents__list a:hover { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; }
+/* A jumped-to heading should not land under the sticky rule. */
+.board :is(h2, h3)[id] { scroll-margin-top: var(--space-5); }
+
+@media (prefers-reduced-motion: reduce) {
+  .note-contents__toggle::before { transition: none; }
+}

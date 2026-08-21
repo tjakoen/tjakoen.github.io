@@ -187,9 +187,15 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // NOTE: the /notes index's "See what's new" AI trigger (data-ai-run demo.run) used to render
     // here, above the body. It now lives INSIDE renderNotesFeedPage's toolbar (grouped with New/Top
     // + search), so shellChrome no longer emits it — the notes feed owns its own top bar.
+    // …the summary + contents block, for a note with enough sections to be worth navigating. It is
+    // spliced INTO the body after the note head rather than emitted before it, because it belongs
+    // under the masthead and above the first section, not above the title.
+    const contents = kind === "entry" && collection.prefix === "/notes" && frontmatter
+      ? renderNoteContents(body, frontmatter) : "";
+    const readable = contents ? body.replace("</header>", `</header>${contents}`) : body;
     return shellPage({
       title, description, screen, section, inject, injectHead,
-      board: `${sourceToggle}${photoGrid}${deck}${body}${videoCard}${gallery}${shareBlock}`,
+      board: `${sourceToggle}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}`,
     });
   };
 }
@@ -1011,6 +1017,59 @@ function renderVideoCard(raw: unknown): string {
 // `href` is an IN-SITE route by design: a PDF points at /decks/<file>, which renders the document
 // inside the shell (renderDeckPage) instead of handing the tab to the browser's viewer. A talk that
 // already lives here points straight at its own route.
+// ---- the contents block for a long note --------------------------------------
+// A note with a dozen sections is a document, not a page, and a reader arriving on a link has no
+// way to see its shape without scrolling the whole thing first. So an entry past the threshold gets
+// two things above the opening line: its frontmatter `summary` rendered ON the page (it exists on
+// every note and until now was only ever seen on the /notes index card, which is a waste of the
+// best-written paragraph most notes have) and a collapsed list of its own sections.
+//
+// The threshold is section COUNT, not word count, because what makes a note hard to navigate is how
+// many places it goes rather than how long it spends getting there. Eight is where this corpus
+// splits cleanly: seven notes sit at or above it and every one is a long read; the rest are at six
+// or fewer, where a contents block would list most of what is already on screen.
+//
+// Collapsed on purpose. build-the-floor opens on a confession, and thirteen links between the
+// subtitle and that first line would kill the entrance. The summary is what a reader needs in order
+// to decide whether to commit; the section list is what they need only once they have.
+//
+// The progress rule is a SIBLING of the aside rather than a child of it, because sticky is bounded
+// by its parent's box: nested inside the short aside it would unstick a screen later and read as
+// broken. Both are injected after `</header>`, so both are children of the full-height board.
+//
+// The rule also carries the current section's name, and that is not decoration. Marking the current
+// item inside the contents list was the obvious design and it is unobservable here: reading the
+// list means scrolling back to the top, which makes the first section current again. The sticky
+// rule is the only part of this still on screen once somebody is actually reading, so it is the
+// only place a "you are here" can be seen.
+const CONTENTS_MIN_SECTIONS = 8;
+
+const stripTags = (html: string) => html.replace(/<[^>]*>/g, "");
+
+function renderNoteContents(body: string, frontmatter: Record<string, unknown> | undefined): string {
+  const heads = [...body.matchAll(/<h2 id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
+    .map((m) => ({ id: m[1] ?? "", label: stripTags(m[2] ?? "").trim() }))
+    .filter((h) => h.id && h.label);
+  if (heads.length < CONTENTS_MIN_SECTIONS) return "";
+
+  const summary = typeof frontmatter?.summary === "string" ? frontmatter.summary.trim() : "";
+  const reading = typeof frontmatter?.readingTime === "string" ? frontmatter.readingTime.trim() : "";
+  const meta = [`${heads.length} sections`, reading].filter(Boolean).join(" \u00b7 ");
+  const lede = summary ? `<p class="note-contents__summary">${escapeHtml(summary)}</p>` : "";
+  const items = heads
+    .map((h) => `<li><a href="#${escapeHtml(h.id)}">${escapeHtml(h.label)}</a></li>`)
+    .join("");
+
+  return `<div class="note-progress" data-note-progress><span class="note-progress__fill" aria-hidden="true"></span><span class="note-progress__where" data-note-where hidden></span></div>
+<aside class="note-contents" data-note-contents aria-label="Summary and contents">
+  ${lede}
+  <details class="note-contents__more">
+    <summary class="note-contents__toggle">Contents <span class="note-contents__meta">${escapeHtml(meta)}</span></summary>
+    <ol class="note-contents__list">${items}</ol>
+  </details>
+</aside>`;
+}
+
 function renderDeckAttachment(raw: unknown): string {
   if (typeof raw !== "string" || !raw.trim()) return "";
   const [title = "", kind = "", href = "", meta = ""] = raw.split("|").map((x) => x.trim());
