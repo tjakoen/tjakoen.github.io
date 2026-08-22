@@ -12,7 +12,10 @@ test.describe("the portfolio workspace shell (BREAD frame, on /)", () => {
     // real <a href> (works with no JS; SEO-safe) — plus the fixed APP links at the bottom.
     await expect(page.locator(".side-rail .file-tree")).toBeAttached();
     await expect(page.locator('.file-tree a[href="/"]')).toContainText("index.html");
-    await expect(page.locator('.file-tree a[href="/grain"]')).toContainText("grain.html");
+    // GRAIN is a FOLDER in the tree now, not a leaf: the builder moved under it (/grain/builder),
+    // so the section's own page is the folder's index.html and the workbench sits beside it.
+    await expect(page.locator('.file-tree a[href="/grain"]')).toContainText("index.html");
+    await expect(page.locator('.file-tree a[href="/grain/builder"]')).toContainText("builder.html");
     // the activity-bar is icon-only (aria-label is the Explorer toggle) — it's ONLY the Explorer
     // toggle now; the fixed APP links live below it in the labeled .app-dock instead, never
     // hidden by the explorer's own collapse/mobile-drawer state.
