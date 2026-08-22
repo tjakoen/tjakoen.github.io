@@ -202,8 +202,9 @@ are the ones you can go and check. Counting my working tree, where the plans and
 notes live deliberately uncommitted, gives me a friendlier number. I'm not using it.
 
 <!-- REFRESH THESE NUMBERS (occasionally, and definitely before publishing) — the ratio + counts are a
-     living git snapshot. Last measured 2026-08-19 (committed/tracked): 440 commits, 31,228 prose,
-     30,082 code, 51% prose, 76,497 lines added. Previous marker, 2026-08-07: 242 commits, 17,610
+     living git snapshot. Last measured 2026-08-22 (committed/tracked): 503 commits, 36,837 prose,
+     34,595 code, 52% prose, 88,018 lines added. Previous marker, 2026-08-19: 440 commits, 31,228
+     prose, 30,082 code, 51% prose, 76,497 added. Marker before that, 2026-08-07: 242 commits, 17,610
      prose, 18,876 code, 48% prose, 46,665 added, the pass where writing first passed code.
      Earliest marker, 2026-07-03: 33 commits, 6,947
      prose, 5,411 code, 56% prose, 13,395 added — kept because the DRIFT is now part of the argument
@@ -228,7 +229,7 @@ notes live deliberately uncommitted, gives me a friendlier number. I'm not using
 
 Let me get the headline out of the way, because it reframes everything else:
 
-> **More than half of this repo is writing, not code.** 31,228 lines of words against 30,082 lines
+> **More than half of this repo is writing, not code.** 36,837 lines of words against 34,595 lines
 > of code. Ask a room to guess and they say twenty percent.
 
 Sit with that for a second, because it's the opposite of what vibe coding is supposed to look
@@ -239,23 +240,23 @@ I didn't tidy that up after the fact. It's the method. When you work with an AI 
 
 <div class="live-fig" data-live-figure="ratio" data-surface="figure:ratio">
 <svg viewBox="0 0 620 200" width="100%" role="img"
-     aria-label="On this repo: 30,082 lines of code versus 31,228 lines of writing. 51% of everything written is words, not code. A marker shows where the writing bar would end at the 20% a room typically guesses, well short of where it actually ends."
+     aria-label="On this repo: 34,595 lines of code versus 36,837 lines of writing. 52% of everything written is words, not code. A marker shows where the writing bar would end at the 20% a room typically guesses, well short of where it actually ends."
      style="max-width:560px;height:auto;font-family:Georgia,'Times New Roman',serif;--paper:#faf7f1;--edge:#e6ddd0;--ink:#2b2b2b;--muted:#6b6259;--bar:#cbc1b3;--accent:#d97757"
      xmlns="http://www.w3.org/2000/svg">
   <rect x="0.5" y="0.5" width="619" height="199" style="fill:var(--paper);stroke:var(--edge)"/>
   <text x="28" y="36" style="fill:var(--muted);font-size:15px">What my repo actually is</text>
   <text x="28" y="86" style="fill:var(--ink);font-size:14px">Code</text>
-  <rect x="96" y="72" width="405" height="20" style="fill:var(--bar)"/>
-  <text x="509" y="87" style="fill:var(--muted);font-size:12.5px">30,082 lines</text>
+  <rect x="96" y="72" width="394" height="20" style="fill:var(--bar)"/>
+  <text x="498" y="87" style="fill:var(--muted);font-size:12.5px">34,595 lines</text>
   <text x="28" y="128" style="fill:var(--ink);font-size:14px">Writing</text>
   <rect x="96" y="114" width="420" height="20" style="fill:var(--ink)"/>
-  <text x="524" y="129" style="fill:var(--ink);font-size:12.5px">31,228 lines</text>
+  <text x="524" y="129" style="fill:var(--ink);font-size:12.5px">36,837 lines</text>
   <!-- where the writing bar would END if the room's usual guess were right. 20% of the repo is
-       12,262 lines, which on this axis (420px = 31,228 lines) lands at x = 261. The writing bar is
+       14,286 lines, which on this axis (420px = 36,837 lines) lands at x = 259. The writing bar is
        now the longer of the two, so it carries the full 420 and code is scaled against it. -->
-  <line x1="261" y1="106" x2="261" y2="142" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3"/>
-  <text x="269" y="152" style="fill:var(--muted);font-size:12px">where a room's guess of 20% would end</text>
-  <text x="28" y="176" style="fill:var(--accent);font-size:13px">51% of everything written is words, not code.</text>
+  <line x1="259" y1="106" x2="259" y2="142" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3"/>
+  <text x="267" y="152" style="fill:var(--muted);font-size:12px">where a room's guess of 20% would end</text>
+  <text x="28" y="176" style="fill:var(--accent);font-size:13px">52% of everything written is words, not code.</text>
 </svg>
 </div>
 
@@ -270,7 +271,7 @@ documentation. The ratio moved. The habit didn't.
 ## Now the "vibe" part, because I do go fast
 
 <!-- LIVING NUMBERS (refresh occasionally, and definitely before publish): the counts below grow with
-     every commit. Last measured 2026-08-19: 440 commits, 76,497 lines added, and the sprint reset to
+     every commit. Last measured 2026-08-22: 503 commits, 88,018 lines added, and the sprint reset to
      the night of 4 July 2026 measured ACROSS ALL SEVEN REPOS (21:08 to 03:31, 50 commits, 4,269 added)
      because the old 7pm-5am/31-commit window was the single-repo era. Previous marker 2026-07-03:
      33 commits, 31-commit sprint, 13,395 added. HOW TO RECOMPUTE, from the repo root:
@@ -282,16 +283,16 @@ documentation. The ratio moved. The habit didn't.
 
 If the docs number makes me sound slow and fussy, the tempo says otherwise. Here's the shape of the build:
 
-- 440 commits on this repo alone, and every single one of them was co-authored with an AI. That's
+- 503 commits on this repo alone, and every single one of them was co-authored with an AI. That's
   not the machine writing while I watched, I still write plenty of the code myself. Co-authored is
   the honest word: two sets of hands, on every commit.
-- Across the seven repositories I keep, 1,150 commits between 27 June and 19 August. Eight weeks.
+- Across the seven repositories I keep, 1,246 commits between 27 June and 22 August. Eight weeks.
 - One night in the middle of that, 4 July: **50 commits between 9pm and half past three, 4,269 lines
   added before it got light.** One every eight minutes. That's vibe coding at full tilt, the machine
   keeping up with the ideas as fast as I could aim them.
 - Small commits, on purpose. Each one is a thing that already works, which is what makes the next
   one cheap to check. Fifty tiny commits you can verify beat five big ones you can't.
-- 76,497 lines added to this repo since the first one. Real output.
+- 88,018 lines added to this repo since the first one. Real output.
 
 Both things are true at once, and that's the entire point: fast *and* documented. The reason I can
 sprint for ten hours and not wake up to a pile of nonsense isn't
@@ -603,7 +604,7 @@ and I harden the design so neither of us slips there again.
 
 ## The tell is the ratio
 
-Strip all of it down and you land right back at that first number. **51% writing.** About as much
+Strip all of it down and you land right back at that first number. **52% writing.** About as much
 spec as implementation, in a repo whose whole reputation is supposed to be the opposite.
 
 An amateur and I could type the exact same request into the exact same model and get back the exact
