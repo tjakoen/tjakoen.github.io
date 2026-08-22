@@ -8,6 +8,26 @@
   if (window.tjSite) return;   // idempotent
   window.tjSite = true;
 
+  // ---- HTTPS guard (BEFORE anything else, and before first paint). GitHub Pages already answers
+  // a plain http:// request for tjakoen.github.io with a 301, so on the deployed site this never
+  // fires. It is here for the case the site is ever served from a host that does not redirect for
+  // us, and it is a correctness guard rather than a security control: by the time this line runs
+  // the page has already travelled over the wire in the clear, so the only thing it buys is that
+  // every subsequent request goes out encrypted. Local development is exempt, otherwise the dev
+  // server on port 3000 would bounce to an https origin that nothing is listening on.
+  const insecure = location.protocol === "http:";
+  const localHost = /^(localhost|127\.0\.0\.1|\[?::1\]?|.*\.local)$/i.test(location.hostname)
+    || /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname)
+    || !location.hostname.includes(".");
+  if (insecure && !localHost) {
+    // Port 80 is the http default and must be dropped rather than carried over to the https URL.
+    // Any other explicit port is kept, because a host that picked one is the only thing that knows
+    // whether it also listens for TLS there.
+    const target = location.port === "80" ? location.hostname : location.host;
+    location.replace("https://" + target + location.pathname + location.search + location.hash);
+    return;
+  }
+
   const KEY = { startup: "tj.welcome-startup", lastPage: "tj.last-page", chat: "tj.chat", term: "tj.terminal" };
   const store = (() => { try { return window.localStorage; } catch { return null; } })();
   const get = (k) => { try { return store && store.getItem(k); } catch { return null; } };
