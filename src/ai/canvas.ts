@@ -51,7 +51,7 @@ export async function renderCanvas(blocks: readonly Block[]): Promise<string> {
 /** The hidden template library: every block in the set and every control atom a form nests,
  *  pre-rendered ONCE by this renderer, with a placeholder for data.
  *
- *  This is what makes /builder work where it actually lives. A static host has no server to
+ *  This is what makes /grain/builder work where it actually lives. A static host has no server to
  *  interpret a prompt, so the browser composes; and the browser has no renderer, so it clones from
  *  here and fills what it cloned. The markup it clones came out of the one engine, which is the
  *  difference between reading a contract in a second place and writing a second implementation of

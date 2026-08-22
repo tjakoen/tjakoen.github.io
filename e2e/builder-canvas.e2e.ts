@@ -1,12 +1,12 @@
-// e2e/builder-canvas.e2e.ts — /builder as a PAGE builder: the canvas, and the browser composing on
+// e2e/builder-canvas.e2e.ts — /grain/builder as a PAGE builder: the canvas, and the browser composing on
 // a host with no server.
 //
-// The second half is the one that matters. The published /builder has never done anything: the demo
+// The second half is the one that matters. The published /grain/builder has never done anything: the demo
 // is a GET round trip the server interprets, this site exports to static hosting, and a static host
 // serves one frozen file whatever the query string says. So every Examples link and every
 // desk-driven build has landed on an empty page for the page's whole life. The static-host tests
-// below reproduce that host exactly, by answering the request for /builder?ask=… with the response
-// for /builder, and then assert the page composes anyway.
+// below reproduce that host exactly, by answering the request for /grain/builder?ask=… with the response
+// for /grain/builder, and then assert the page composes anyway.
 import { test, expect, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";   // P4: reading a download back off disk
 
@@ -16,14 +16,14 @@ const COMPOSER = ".builder-composer textarea";
 const RAIL_ROW = '[data-surface="builder-rail"] [data-block]';
 const SUBMIT = ".builder-composer button[type=submit]";
 
-const ask = (s: string) => `/builder?ask=${encodeURIComponent(s)}`;
+const ask = (s: string) => `/grain/builder?ask=${encodeURIComponent(s)}`;
 
-/** Serve /builder?ask=… the bytes of /builder, which is what GitHub Pages does with a frozen page:
+/** Serve /grain/builder?ask=… the bytes of /grain/builder, which is what GitHub Pages does with a frozen page:
  *  one file, served whatever the address carries. Nothing else about the page is touched. */
 async function pretendStaticHost(page: Page): Promise<void> {
   // Both builder addresses, because a frozen host strips the query from every one of them and a
   // helper that covered only the workbench would let the preview quietly keep its server.
-  for (const pattern of ["**/builder?*", "**/builder/preview?*"]) {
+  for (const pattern of ["**/grain/builder?*", "**/grain/builder/preview?*"]) {
     await page.route(pattern, async (route) => {
       const url = new URL(route.request().url());
       url.search = "";
@@ -60,7 +60,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
   // The library ships on every load of this page, composed or not, because the browser needs it
   // before it has anything to compose. It must never be visible or reachable.
   test("the template library ships hidden, with one entry per block and control", async ({ page }) => {
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     const library = page.locator(".builder-library");
     await expect(library).toHaveCount(1);
     await expect(library).toBeHidden();
@@ -80,7 +80,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
 
 test.describe("the browser composes: each prompt adds to what is already there", () => {
   test("a typed prompt builds without leaving the page", async ({ page }) => {
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await expect(page.locator(CELL)).toHaveCount(0);
 
     await page.locator(COMPOSER).fill("an intro and two cards side by side");
@@ -94,7 +94,7 @@ test.describe("the browser composes: each prompt adds to what is already there",
   });
 
   test("a second prompt appends rather than re-rolling the page", async ({ page }) => {
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await page.locator(COMPOSER).fill("an intro");
     await page.locator(SUBMIT).click();
     await expect(page.locator(CELL)).toHaveCount(1);
@@ -110,7 +110,7 @@ test.describe("the browser composes: each prompt adds to what is already there",
   });
 
   test("a generated form is filled by cloning, controls, options and all", async ({ page }) => {
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await page.locator(COMPOSER).fill("a form with a name, an email, a topic and a box to agree to the terms");
     await page.locator(SUBMIT).click();
 
@@ -374,7 +374,7 @@ export async function webgpuAvailable() { return true; }
 export async function loadEngine({ onProgress }) { onProgress?.({ progress: 1, text: "fake engine ready" }); return { fake: true }; }
 `;
 
-// makeChatModel is the seam /builder uses (desk-reasoner's `complete`). The scripted answers below
+// makeChatModel is the seam /grain/builder uses (desk-reasoner's `complete`). The scripted answers below
 // include the ones a small model really gets wrong: a verb that does not exist, a block that is not
 // on the page, and a width outside the closed three.
 const MODEL_CHAT_STUB = `
@@ -550,7 +550,7 @@ async function exportFile(page: Page, which: string): Promise<{ name: string; bo
 
 /** Build a page the way a visitor builds one: type it, press the button, let the browser compose. */
 async function build(page: Page, prompt: string): Promise<void> {
-  await page.goto("/builder");
+  await page.goto("/grain/builder");
   await page.locator(COMPOSER).fill(prompt);
   await page.locator(SUBMIT).click();
   await expect(page.locator(CELL).first()).toBeVisible();
@@ -558,7 +558,7 @@ async function build(page: Page, prompt: string): Promise<void> {
 
 test.describe("taking the page away", () => {
   test("there is nothing to export until there is something on the page", async ({ page }) => {
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await expect(page.locator(`${TAKE} [data-export="json"]`)).toBeHidden();
     // Open is not in that group, because reading a composition in is exactly what you do to a page
     // with nothing on it yet.
@@ -586,7 +586,7 @@ test.describe("taking the page away", () => {
     const before = await page.locator(CANVAS).innerHTML();
     const file = await exportFile(page, "json");
 
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await expect(page.locator(CELL)).toHaveCount(0);
     await page.locator(PICKER).setInputFiles({ name: file.name, mimeType: "application/json", buffer: Buffer.from(file.body) });
 
@@ -600,7 +600,7 @@ test.describe("taking the page away", () => {
     await build(page, "a contact form with a name, an email and what they want to talk about");
     const file = await exportFile(page, "json");
 
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await page.locator(PICKER).setInputFiles({ name: file.name, mimeType: "application/json", buffer: Buffer.from(file.body) });
     await expect(page.locator(`${CELL} form[data-surface="builder-form"]`)).toHaveCount(1);
     await expect(page.locator('[data-surface="field:builder-name"]')).toHaveCount(1);
@@ -662,7 +662,7 @@ test.describe("opening one back in, honestly", () => {
         { id: "b3", component: "block-stat", span: "third", data: { value: "3", label: "blocks", sub: "two of them real" }, props: {} },
       ],
     };
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await page.locator(PICKER).setInputFiles({ name: "hand-edited.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(doc)) });
 
     await expect(page.locator(CELL)).toHaveCount(2);
@@ -698,7 +698,7 @@ test.describe("opening one back in, honestly", () => {
     await build(page, "an intro, a card, a callout and a stat");
     const file = await exportFile(page, "json");
 
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await page.locator(PICKER).setInputFiles({ name: file.name, mimeType: "application/json", buffer: Buffer.from(file.body) });
     await expect(page.locator(CELL)).toHaveCount(4);
 
@@ -787,7 +787,7 @@ test.describe("the preview route", () => {
   const PREVIEW_MARKUP = '[data-surface="builder-preview-markup"]';
 
   test("opening the address cold composes from the prompt it carries", async ({ page }) => {
-    await page.goto(`/builder/preview?ask=${encodeURIComponent("An intro, a card and a callout")}`);
+    await page.goto(`/grain/builder/preview?ask=${encodeURIComponent("An intro, a card and a callout")}`);
     await expect(page.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(3);
     await expect(page.locator(".preview-empty")).toBeHidden();
   });
@@ -810,7 +810,7 @@ test.describe("the preview route", () => {
   });
 
   test("the switch shows the markup without fetching anything", async ({ page }) => {
-    await page.goto(`/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
+    await page.goto(`/grain/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
     await expect(page.locator(PREVIEW_MARKUP)).toBeHidden();
 
     // Both views ship in the document, so this must not put a request on the wire.
@@ -828,7 +828,7 @@ test.describe("the preview route", () => {
     // The toggle needs a script. Having something to toggle TO does not, so the source ships filled.
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
-    await page.goto(`/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
+    await page.goto(`/grain/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
     expect(await page.locator(PREVIEW_MARKUP).innerHTML()).toContain("canvas__cell");
     await ctx.close();
   });
@@ -837,14 +837,14 @@ test.describe("the preview route", () => {
   // sitewide. Asserted on the SSR state rather than after a click, because the point of doing it on
   // the server was that the chat pane never flashes first.
   test("the catalog pane is the one that is open", async ({ page }) => {
-    await page.goto(`/builder/preview?ask=${encodeURIComponent("a card")}`);
+    await page.goto(`/grain/builder/preview?ask=${encodeURIComponent("a card")}`);
     await expect(page.locator(".assistant")).toHaveAttribute("data-mode", "catalog");
     await expect(page.locator('[data-shell-mode="catalog"]')).toHaveAttribute("aria-selected", "true");
     await expect(page.locator('.assistant__pane[data-pane="catalog"]')).toBeVisible();
   });
 
   test("an empty preview says so rather than showing a blank stage", async ({ page }) => {
-    await page.goto("/builder/preview");
+    await page.goto("/grain/builder/preview");
     await expect(page.locator(".preview-empty")).toBeVisible();
     await expect(page.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(0);
   });
@@ -859,7 +859,7 @@ test.describe("the preview route", () => {
   // this page, this test goes red, and that is the correct alarm rather than a surprise.
   test("on a static host a shared link arrives empty, and the page says so", async ({ page }) => {
     await pretendStaticHost(page);
-    await page.goto(`/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
+    await page.goto(`/grain/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
     await expect(page.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(0);
     await expect(page.locator(".preview-empty")).toBeVisible();
     await expect(page.locator(".preview-empty")).toContainText("frozen file");

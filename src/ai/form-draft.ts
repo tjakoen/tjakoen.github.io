@@ -1,6 +1,6 @@
-// portfolio/ai/form-draft.ts — the /builder demo's D1 fill: turn matchSpec's own matched TYPEABLE
+// portfolio/ai/form-draft.ts — the /grain/builder demo's D1 fill: turn matchSpec's own matched TYPEABLE
 // controls (its `fields`, and since 2026-08-13 its `messages` too) into the demo values the desk
-// prefills once it lands on /builder. Same family as
+// prefills once it lands on /grain/builder. Same family as
 // contact-draft.ts (PURE + deterministic — CLIENT-SAFE §19.2): the "compose" step is code, not a
 // live model call, because the closed field-name set (field-matcher.ts's FIELD_TABLE) already IS
 // the model-proof boundary this whole demo exists to show off. A canned, honest sample value per

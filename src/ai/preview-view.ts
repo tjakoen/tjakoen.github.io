@@ -1,4 +1,4 @@
-// portfolio/src/ai/preview-view.ts — the browser half of /builder/preview. Two jobs: the
+// portfolio/src/ai/preview-view.ts — the browser half of /grain/builder/preview. Two jobs: the
 // rendered-versus-markup switch, and picking up a composition the workbench handed over.
 //
 // P5 of plans/site-builder.md. Served at /modules/portfolio/ai/preview-view.js, and it must be in

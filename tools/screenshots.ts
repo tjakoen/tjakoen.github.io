@@ -84,13 +84,13 @@ const SHOTS: Shot[] = [
   },
   {
     // Shot with one of the page's own example prompts already in the address, not the bare route:
-    // /builder cold is an empty canvas, and an empty canvas is the one thing this screen is not
+    // /grain/builder cold is an empty canvas, and an empty canvas is the one thing this screen is not
     // about. The composition is decided server-side (ai/block-set.ts) from the ?ask= string, so the
     // same URL renders the same three blocks every run.
     name: "builder",
-    desc: "/builder — the page-builder workbench: describe a page in plain English, and a closed, code-owned set of GRAIN blocks decides what actually renders",
+    desc: "/grain/builder — the page-builder workbench: describe a page in plain English, and a closed, code-owned set of GRAIN blocks decides what actually renders",
     fullPage: true,
-    prepare: goto("/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout"),
+    prepare: goto("/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout"),
   },
   {
     name: "cmdk", desc: "/ — the ⌘K command palette",

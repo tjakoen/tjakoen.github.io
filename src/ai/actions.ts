@@ -69,7 +69,7 @@ export type Action =
   // D1 form builder demo — "build me a form that asks for a name and an email". `description` is
   // the WHOLE raw message (not a captured remainder, unlike B1/B3's `message`/`sender`): matchSpec
   // (field-matcher.ts) tokenizes free text robustly regardless of surrounding phrasing ("build me a
-  // form that asks for X" vs. "a form asking for X, please"), and the /builder page echoes this
+  // form that asks for X" vs. "a form asking for X, please"), and the /grain/builder page echoes this
   // exact text back as "the prompt that produced this" — keeping the visitor's whole sentence, never
   // a trimmed-down capture group, is the honest choice there. The reasoner (never this router) runs
   // matchSpec against it — law #2, this router only recognizes the TRIGGER, never a field/choice.
@@ -393,7 +393,7 @@ export function routeAction(text: string): Action | null {
  *     honestly and per-page, by the DOM-derived operate capabilities (field.set / item.archive) —
  *     adding them here would claim the ability on pages that don't actually carry the surface.
  *   - form-build IS listed, unlike those two: it never depends on a DOM surface already being on
- *     the page (it navigates to /builder itself), so it's honestly available everywhere navigate is. */
+ *     the page (it navigates to /grain/builder itself), so it's honestly available everywhere navigate is. */
 export interface ActionCapability {
   kind: Action["kind"];
   group: "see" | "navigate" | "operate";

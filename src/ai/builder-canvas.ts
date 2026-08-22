@@ -1,8 +1,8 @@
-// portfolio/ai/builder-canvas.ts — /builder, composing in the browser. This is the phase that makes
+// portfolio/ai/builder-canvas.ts — /grain/builder, composing in the browser. This is the phase that makes
 // the demo work where it actually lives.
 //
-// WHAT WAS BROKEN. The published /builder has never done anything. The demo is a GET round trip the
-// SERVER interprets and this site exports to static hosting, so dist/builder/index.html is a single
+// WHAT WAS BROKEN. The published /grain/builder has never done anything. The demo is a GET round trip the
+// SERVER interprets and this site exports to static hosting, so dist/grain/builder/index.html is a single
 // file frozen at the empty state, no ?ask= variant is exported, and GitHub Pages has no server to
 // interpret one. Every Examples link and every desk-driven build has landed on an empty page for
 // the page's whole life. It worked in dev and only in dev.
@@ -637,7 +637,7 @@ function boot(): void {
       // the prompt's page where the canvas held an edited one. The reader deletes this before it
       // renders and refuses it once it is stale.
       try { localStorage.setItem(PREVIEW_HANDOVER_KEY, JSON.stringify(handover)); } catch { /* storage denied: the ask in the address still composes one */ }
-      window.open(`/builder/preview?ask=${encodeURIComponent(pageAsk)}`, "_blank", "noopener");
+      window.open(`/grain/builder/preview?ask=${encodeURIComponent(pageAsk)}`, "_blank", "noopener");
       return;
     }
 

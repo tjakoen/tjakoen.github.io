@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Preview · the builder</title>
-  <meta name="description" content="A page composed on /builder, on its own, with nothing of the workbench around it. Toggle between the rendered page and the markup behind it.">
+  <meta name="description" content="A page composed on /grain/builder, on its own, with nothing of the workbench around it. Toggle between the rendered page and the markup behind it.">
 </head>
 <!-- THE PREVIEW IS A REAL ROUTE, not a panel and not a frame, and that was the owner's call on
      2026-08-19 out of the two the sandbox plan left open. It costs more than a frame and buys three
@@ -12,7 +12,7 @@
      becomes an ordinary open tab; the address carries the prompt; and the static export freezes it
      like any other page.
 
-     WHAT IT DOES NOT CLEAR, and /builder does. P3 gave the workbench a hidden template library so a
+     WHAT IT DOES NOT CLEAR, and /grain/builder does. P3 gave the workbench a hidden template library so a
      frozen page could compose from a prompt in the address with no server. This page has no library,
      so on the published site a shared preview link arrives empty. Measured against the real export,
      not assumed. The Preview button works there, because the handover is storage rather than a
@@ -45,12 +45,12 @@
 
           <div class="mk-pane__body">
             <p class="preview-empty" data-bind-data-empty="isEmpty">Nothing to preview. Compose a page
-              on <a href="/builder">the builder</a> and press Preview, which carries whatever is on
+              on <a href="/grain/builder">the builder</a> and press Preview, which carries whatever is on
               the canvas over to here. An address with a prompt in it composes one too, but only
               where the app server is running: on the published site this page is a frozen file, so
               a link like that arrives empty and the button is the way through.</p>
 
-            <!-- The composed page, rendered by the same loop /builder uses (ai/canvas.ts into this
+            <!-- The composed page, rendered by the same loop /grain/builder uses (ai/canvas.ts into this
                  marker), so the preview cannot drift from the thing it is previewing. -->
             <div class="preview-stage" data-surface="builder-preview-canvas"><!--canvas--></div>
 
@@ -61,7 +61,7 @@
           </div>
         </section>
 
-        <p class="preview-note muted">This is the page on its own. <a href="/builder" data-preview-back>Back
+        <p class="preview-note muted">This is the page on its own. <a href="/grain/builder" data-preview-back>Back
           to the workbench</a> to keep editing, or take it away as a file from there. Two things this
           address cannot do, and both are stated rather than discovered: it carries the prompt that
           composed a page and not a page you edited afterwards, which is what the Preview button

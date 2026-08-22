@@ -1,4 +1,4 @@
-// portfolio/ai/builder-page.ts — the /builder route's own pure seam: turn a raw `?ask=` query
+// portfolio/ai/builder-page.ts — the /grain/builder route's own pure seam: turn a raw `?ask=` query
 // param into everything the page renders, so the query-param handling (trim, the empty state, the
 // JSON the page prints, which CSS state a section's visibility keys off) unit-tests headless and
 // server.ts stays a thin wire-the-request-in, hand-the-file-out.
@@ -84,7 +84,7 @@ export interface BuilderView {
 }
 
 /** The composer's spec, built around whatever ask is in play. `name` is `ask` because the whole
- *  round trip is a plain GET form posting back to /builder: submitting produces `/builder?ask=…`,
+ *  round trip is a plain GET form posting back to /grain/builder: submitting produces `/grain/builder?ask=…`,
  *  which is the same shareable, reproducible address the example links carry, and it needs no
  *  JavaScript to work. */
 const composerFor = (ask: string): MessageItem[] => [{
@@ -117,7 +117,7 @@ function refusalsFor(ask: string, blockRefusals: BlockRefusal[]): BlockRefusal[]
   return out;
 }
 
-/** Build the /builder page's whole view from a raw `ask` query param. Safe to call with the
+/** Build the /grain/builder page's whole view from a raw `ask` query param. Safe to call with the
  *  untrimmed `URLSearchParams` value directly — this does its own trim, so server.ts never has to
  *  agree with a second copy of that rule. An empty (or whitespace-only) ask never runs the matcher:
  *  it would return empty everything anyway, and skipping the call keeps "nothing was asked" and

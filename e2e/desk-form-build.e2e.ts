@@ -46,15 +46,15 @@ async function deskReady(page: Page) {
 }
 
 test.describe("D1 form builder demo (deterministic, no model needed)", () => {
-  test("from '/': navigates to /builder?ask=..., the form renders, and the TEXT fields fill in — the select stays untouched", async ({ page }) => {
+  test("from '/': navigates to /grain/builder?ask=..., the form renders, and the TEXT fields fill in — the select stays untouched", async ({ page }) => {
     await clientDeskEverywhere(page);
     await page.goto("/");
     await deskReady(page);
 
     await ask(page, ASK);
 
-    await page.waitForURL(/\/builder\?ask=/);
-    expect(new URL(page.url()).pathname).toBe("/builder");
+    await page.waitForURL(/\/grain\/builder\?ask=/);
+    expect(new URL(page.url()).pathname).toBe("/grain/builder");
     expect(new URL(page.url()).searchParams.get("ask")).toBe(ASK);
 
     // the closed set rendered exactly what matchSpec decided: name + email fields, a topic choice.
@@ -77,8 +77,8 @@ test.describe("D1 form builder demo (deterministic, no model needed)", () => {
     await expect(page.locator('label[data-surface]')).toHaveCount(0);
     await expect(page.locator('input[data-surface^="field:builder-"]')).toHaveCount(2);
 
-    // the desk never submits: no form action exists here, and no navigation happened beyond /builder.
-    expect(new URL(page.url()).pathname).toBe("/builder");
+    // the desk never submits: no form action exists here, and no navigation happened beyond /grain/builder.
+    expect(new URL(page.url()).pathname).toBe("/grain/builder");
   });
 
   test("a message box is generated AND filled: a textarea takes the same fill path as a text field", async ({ page }) => {
@@ -88,7 +88,7 @@ test.describe("D1 form builder demo (deterministic, no model needed)", () => {
 
     await ask(page, MESSAGE_ASK);
 
-    await page.waitForURL(/\/builder\?ask=/);
+    await page.waitForURL(/\/grain\/builder\?ask=/);
     await expect(page.locator(MESSAGE_BOX)).toBeVisible();
     // it is a real multi-line box, not a text input wearing the label — the whole point of the atom
     await expect(page.locator(MESSAGE_BOX)).toHaveAttribute("rows", "6");
@@ -102,14 +102,14 @@ test.describe("D1 form builder demo (deterministic, no model needed)", () => {
     await expect(page.locator("label[data-surface]")).toHaveCount(0);
   });
 
-  test("on /builder already: an ask still round-trips through a fresh GET", async ({ page }) => {
+  test("on /grain/builder already: an ask still round-trips through a fresh GET", async ({ page }) => {
     await clientDeskEverywhere(page);
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     await deskReady(page);
 
     await ask(page, ASK);
 
-    await page.waitForURL(/\/builder\?ask=/);
+    await page.waitForURL(/\/grain\/builder\?ask=/);
     await expect(page.locator(NAME_FIELD)).toHaveValue("Ada Rivers", { timeout: 15_000 });
     await expect(page.locator(TOPIC_SELECT)).toHaveValue("other");
     await expect(page.locator(TOPIC_SELECT)).not.toHaveAttribute("data-grade", "grain");
@@ -136,7 +136,7 @@ test.describe("the composer: a typed prompt is still an address", () => {
   const COMPOSER = '[data-surface="field:builder-ask"]';
 
   test("the empty page offers the box, and a typed prompt builds the form through a GET", async ({ page }) => {
-    await page.goto("/builder");
+    await page.goto("/grain/builder");
     const composer = page.locator(COMPOSER);
     await expect(composer).toHaveJSProperty("tagName", "TEXTAREA");
     await expect(composer).toHaveValue("");            // nothing asked yet
@@ -146,14 +146,14 @@ test.describe("the composer: a typed prompt is still an address", () => {
     await page.locator(".builder-composer button[type=submit]").click();
 
     // the address is the prompt, exactly as the example links are
-    await page.waitForURL(/\/builder\?ask=/);
+    await page.waitForURL(/\/grain\/builder\?ask=/);
     expect(new URL(page.url()).searchParams.get("ask")).toBe("a name, an email and a big message box");
     await expect(page.locator(NAME_FIELD)).toHaveCount(1);
     await expect(page.locator(MESSAGE_BOX)).toHaveCount(1);
   });
 
   test("the box comes back holding the prompt that produced the page, so it is edited not retyped", async ({ page }) => {
-    await page.goto("/builder?ask=a%20name%20and%20an%20email");
+    await page.goto("/grain/builder?ask=a%20name%20and%20an%20email");
     await expect(page.locator(COMPOSER)).toHaveValue("a name and an email");
 
     await page.locator(COMPOSER).fill("a name and an email and a phone number");
@@ -165,10 +165,10 @@ test.describe("the composer: a typed prompt is still an address", () => {
   test("with JavaScript off the box is still there and still builds", async ({ browser }) => {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
-    await page.goto("/builder?ask=a%20name%20and%20an%20email");
+    await page.goto("/grain/builder?ask=a%20name%20and%20an%20email");
     await expect(page.locator(COMPOSER)).toHaveValue("a name and an email");
     await page.locator(".builder-composer button[type=submit]").click();
-    await page.waitForURL(/\/builder\?ask=/);
+    await page.waitForURL(/\/grain\/builder\?ask=/);
     await expect(page.locator(NAME_FIELD)).toHaveCount(1);
     await ctx.close();
   });
@@ -189,7 +189,7 @@ test.describe("D1 form builder: a generated tick box, and the desk ticks it", ()
     await deskReady(page);
 
     await ask(page, CHECK_ASK);
-    await page.waitForURL(/\/builder\?ask=/);
+    await page.waitForURL(/\/grain\/builder\?ask=/);
 
     const consent = page.locator(CONSENT);
     await expect(consent).toHaveCount(1);
@@ -203,7 +203,7 @@ test.describe("D1 form builder: a generated tick box, and the desk ticks it", ()
   });
 
   test("the tick box is the ONLY control on the page wearing a check: address", async ({ page }) => {
-    await page.goto(`/builder?ask=${encodeURIComponent(CHECK_ASK)}`);
+    await page.goto(`/grain/builder?ask=${encodeURIComponent(CHECK_ASK)}`);
     const checkSurfaces = await page.locator('[data-surface^="check:"]').evaluateAll(
       (els) => els.map((el) => el.getAttribute("data-surface")));
     expect(checkSurfaces).toEqual(["check:builder-consent"]);

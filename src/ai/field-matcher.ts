@@ -419,7 +419,7 @@ const UNSUPPORTED_TABLE: UnsupportedEntry[] = [
 // ---------------------------------------------------------------------------------------------
 // The closed set's own names, for an honest decline
 // ---------------------------------------------------------------------------------------------
-// Additive export for the /builder demo's desk intent (desk-reasoner.ts's form-build handler): when
+// Additive export for the /grain/builder demo's desk intent (desk-reasoner.ts's form-build handler): when
 // a description matches nothing at all, the desk declines and names what it CAN build instead of a
 // vague "I don't understand" — and the names it lists have to be these exact labels, not a second,
 // hand-typed list that can drift from the table above.
