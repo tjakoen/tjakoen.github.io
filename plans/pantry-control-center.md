@@ -1,6 +1,6 @@
 ---
 id: pantry-control-center
-status: todo
+status: doing
 track: ai
 depends: [pantry-review-layer, runs-surface-polish]
 touches:
@@ -9,10 +9,19 @@ touches:
   - ../pantry/sessions.ts
   - ../pantry/sessions.test.ts
   - ../pantry/config.ts
+  - ../pantry/config.test.ts
+  - ../pantry/context.ts
   - ../pantry/doctor.ts
+  - ../pantry/capture.test.ts
+  - ../pantry/crumb-mount.test.ts
+  - ../pantry/drift.test.ts
+  - ../pantry/init.test.ts
+  - ../pantry/preview.test.ts
+  - ../pantry/retrieval.test.ts
+  - ../pantry/skills.test.ts
   - ../pantry/pantry.css
   - ../pantry/pantry-control.js
-  - ~/.claude/tools/session-event.ts
+  - ~/.claude/tools/session-event.sh
 owner: unassigned
 ---
 
@@ -126,12 +135,15 @@ and nothing in C0 through C5 depends on the answer.
 
 ## Tasks
 
-- [ ] C0. Design the event line and write it down before any code, including what is deliberately
-      absent from it.
+- [x] C0. Design the event line and write it down before any code, including what is deliberately
+      absent from it. **The schema and every "why not" is the header of `pantry/sessions.ts`.**
 - [ ] C0. The emitter as a machine-level hook, mounted once, listed in the loop manifest.
-- [ ] C0. `pantry/sessions.ts`, pure over parsed events, file IO isolated the way `map.ts` isolates
-      the graph load.
-- [ ] C0. `/sessions.json`, and the doctor check that the emitter is mounted.
+      **Written and exercised against a scratch config dir; NOT mounted, because wiring it edits
+      every session on this machine and that is the owner's call, not the build order's.**
+- [x] C0. `pantry/sessions.ts`, pure over parsed events, file IO isolated the way `map.ts` isolates
+      the graph load. **15 tests, and the clock is passed in so a payload is reproducible.**
+- [x] C0. `/sessions.json`, and the doctor check that the emitter is mounted. **The check is info
+      rather than warn, and the guard against a calm empty page is `present` on the payload.**
 - [ ] C1. `/control`, static, replayable, linked from `/runs` and `/plans` rather than living alone.
 - [ ] C1. The loop lamps: doctor at start, graphify, the gate, the handoff. Lit means it ran in this
       session, not that it is configured.
