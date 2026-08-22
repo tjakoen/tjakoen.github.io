@@ -1,9 +1,9 @@
 // portfolio/ai/canvas-dom.ts — the canvas cell contract, the pre-rendered template library, and
-// the browser-side fill. This is the module that lets /builder work on a static host.
+// the browser-side fill. This is the module that lets /grain/builder work on a static host.
 //
 // THE PROBLEM, and it is worth stating because the answer looks like over-engineering otherwise:
-// the published /builder has never done anything. The demo is a GET round trip the SERVER
-// interprets, and this site exports to static hosting, so dist/builder/index.html is one file
+// the published /grain/builder has never done anything. The demo is a GET round trip the SERVER
+// interprets, and this site exports to static hosting, so dist/grain/builder/index.html is one file
 // frozen at the empty state and no ?ask= variant exists for Pages to serve. Every example link and
 // every desk-driven build lands on an empty page. It works in dev and only in dev.
 //

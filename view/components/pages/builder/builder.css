@@ -245,7 +245,7 @@
   [data-screen="builder"] .wb__stage { max-height: none; }
 }
 
-/* ---- /builder/preview (P5) --------------------------------------------------------------------
+/* ---- /grain/builder/preview (P5) --------------------------------------------------------------------
    The composed page on its own. Almost nothing here is new styling: the blocks bring their own, the
    pane is the same mk-pane every workbench section uses, and the point of the screen is that what
    you see is the page rather than a frame around it. So this file only says the three things the

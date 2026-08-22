@@ -452,7 +452,7 @@ const joinPhrases = (xs: string[]): string =>
 // ---- D1 form builder demo: a cross-page fill, same MAIL_TASK_KEY/CONTACT_TASK_KEY shape — the
 // ALREADY-DRAFTED demo values (surface → text, form-draft.ts, computed in the reasoner before the
 // stash) ride sessionStorage across the page load and runFormTask (below) fills each one in once
-// /builder settles. Every surface in the map is a `field:builder-<name>` TEXT input — form-draft.ts
+// /grain/builder settles. Every surface in the map is a `field:builder-<name>` TEXT input — form-draft.ts
 // only ever drafts a value for a matchSpec `fields` entry, never a `choices` one, so this never has a
 // <select>'s surface to accidentally target. That matters here specifically: a surface's kind is
 // derived from its address prefix alone ("field:"), so nothing about a `field:builder-topic` string
@@ -639,9 +639,9 @@ async function runContactTask(applyOp: (op: RenderOp) => void): Promise<void> {
   announce("Drafted your message in the compose panel — read it over, edit anything, and hit Send. Sending stays yours.");
 }
 
-/** Run a stashed D1 form-build fill once it lands on /builder. Consume-once (read + REMOVE the key,
+/** Run a stashed D1 form-build fill once it lands on /grain/builder. Consume-once (read + REMOVE the key,
  *  the runMailTask/runContactTask/runArrival contract) so a stale fill can never re-apply on a later,
- *  unrelated /builder visit. `stashed` is a surface → text map computed once, in the reasoner, before
+ *  unrelated /grain/builder visit. `stashed` is a surface → text map computed once, in the reasoner, before
  *  the stash (form-draft.ts) — this function composes NO text of its own, it only applies what it was
  *  handed, through grainKit.fillOp → applyOp, the one door's op path (never a direct .value write). */
 async function runFormTask(applyOp: (op: RenderOp) => void): Promise<void> {
@@ -655,7 +655,7 @@ async function runFormTask(applyOp: (op: RenderOp) => void): Promise<void> {
   const values = stashed?.values ?? {};
   const checks = stashed?.checks ?? {};
   if (!Object.keys(values).length && !Object.keys(checks).length) return;
-  if (stripSlash(loc()?.pathname ?? "/") !== "/builder") return;   // wandered elsewhere, bail, don't chase
+  if (stripSlash(loc()?.pathname ?? "/") !== "/grain/builder") return;   // wandered elsewhere, bail, don't chase
 
   const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
   await wait(450);                                   // let the rendered form settle in, arrival's own beat
@@ -701,7 +701,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     probe,
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)
-    // grain's one-shot JSON-mode adapter — /builder's verb picking. The cast is the honest kind: one
+    // grain's one-shot JSON-mode adapter — /grain/builder's verb picking. The cast is the honest kind: one
     // WebLLM MLCEngine satisfies BOTH of grain's engine shapes, because `chat.completions.create`
     // streams or does not depending on the request it is handed, and grain types the two uses
     // separately (StreamingChatEngine carries interruptGenerate; ChatEngine returns a completion).
@@ -722,18 +722,18 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     notesTagChips, clickNotesTag, visibleNoteCount,   // B2 notes filtering: read + drive the /notes tag chips
     mailSenders, mailItemsFrom, archiveMailItem, mailTaskSet,   // B3 mail batch archive: read + drive the /mail rows + reader
     openCompose, contactFieldValue, contactTaskSet,   // B1 contact prefill: open + fill the /mail compose (the AI never submits)
-    formTaskSet,   // D1 form builder demo: stash the demo values for the door to fill once /builder settles
+    formTaskSet,   // D1 form builder demo: stash the demo values for the door to fill once /grain/builder settles
     intentGet, intentSet, intentAsked, intentMarkAsked,   // C1 visitor-intent onboarding: session state
   });
   // "New chat" (site.js) forgets the conversation + re-arms a degraded desk, without a page reload.
   (globalThis as unknown as { deskReset?: () => void }).deskReset = () => reasoner.reset();
   // The desk's MODEL, as a seam for an island that needs a move rather than a conversation.
-  // /builder is the only user: it hands over a prompt built from grain's live manifest and gets one
+  // /grain/builder is the only user: it hands over a prompt built from grain's live manifest and gets one
   // JSON move back, which grain then validates before anything reaches the page. Published the same
   // way deskReset is, and for the same reason — an island cannot import this module, and the
   // alternative is a second 0.5B on the GPU for the sake of one call.
   //
-  // Its ABSENCE is meaningful and must stay so: on a page with no desk door stamped, /builder finds
+  // Its ABSENCE is meaningful and must stay so: on a page with no desk door stamped, /grain/builder finds
   // nothing here and says the desk cannot run rather than falling back to something that is not the
   // model. That was the owner's call on 2026-08-14, and a silent fallback is the shape of every
   // silent-success bug this estate has recorded.

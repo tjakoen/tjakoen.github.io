@@ -21,13 +21,13 @@
              command line under the canvas lands exactly where the terminal dock already lives, and
              two things wanting the same edge of the screen is not a styling problem.
              A plain GET form back to this same route, which is what keeps every state shareable:
-             submitting builds /builder?ask=… exactly as the example links do, and it works with
+             submitting builds /grain/builder?ask=… exactly as the example links do, and it works with
              JavaScript off because nothing here is JavaScript. The box renders through b-memo rather
              than b-textarea because a textarea has no value attribute, so the current ask has to
              arrive as content, which is the data-first atom's whole job. It carries
              field:builder-ask so the desk can draft a prompt into it through the one door instead of
              this page growing a second way in. -->
-        <form class="wb-bar builder-composer" method="get" action="/builder">
+        <form class="wb-bar builder-composer" method="get" action="/grain/builder">
           <b-memo each="composer" size="sm" rows="2"></b-memo>
           <button class="btn" type="submit">Build it</button>
           <!-- Undo, and it is a correctness device rather than a convenience.
@@ -141,7 +141,7 @@
                 <span class="mk-pane__name">Can't build</span>
               </div>
               <ul class="builder-unsupported" data-surface="builder-refusals">
-                <builder-refusal each="unsupported"></builder-refusal>
+                <builder-refusal each="unsupported"></grain/builder-refusal>
               </ul>
             </div>
           </aside>
@@ -290,12 +290,12 @@
         <p class="muted">Real links, real query strings. Every state on this page is shareable and
           reproducible: the same prompt always builds the same page.</p>
         <div class="docs-list">
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">An intro, two cards side by side, and a callout</a><span class="docs-list__what">three blocks, and the layout word does the placing.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20opening%20paragraph%20and%20a%20stat">An opening paragraph and a stat</a><span class="docs-list__what">the smallest page the set can make.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20what%20they%20want%20to%20talk%20about">A contact form with a name, an email, and what they want to talk about</a><span class="docs-list__what">a form, as one block.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=An%20intro%2C%20a%20card%2C%20and%20a%20form%20with%20a%20name%2C%20an%20email%20and%20a%20box%20to%20agree%20to%20the%20terms">An intro, a card, and a form with a name, an email and a box to agree to the terms</a><span class="docs-list__what">a page that ends in a form the desk can operate.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20card%2C%20a%20gallery%20of%20screenshots%2C%20and%20a%20side%20rail">A card, a gallery of screenshots, and a side rail</a><span class="docs-list__what">one block, and two refusals of different kinds.</span></div>
-          <div class="docs-list__item"><a class="docs-list__name" href="/builder?ask=A%20form%20with%20an%20email%20and%20a%20file%20upload%20for%20their%20portfolio">A form with an email and a file upload for their portfolio</a><span class="docs-list__what">the upload is refused, honestly.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">An intro, two cards side by side, and a callout</a><span class="docs-list__what">three blocks, and the layout word does the placing.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20opening%20paragraph%20and%20a%20stat">An opening paragraph and a stat</a><span class="docs-list__what">the smallest page the set can make.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20what%20they%20want%20to%20talk%20about">A contact form with a name, an email, and what they want to talk about</a><span class="docs-list__what">a form, as one block.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20intro%2C%20a%20card%2C%20and%20a%20form%20with%20a%20name%2C%20an%20email%20and%20a%20box%20to%20agree%20to%20the%20terms">An intro, a card, and a form with a name, an email and a box to agree to the terms</a><span class="docs-list__what">a page that ends in a form the desk can operate.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=A%20card%2C%20a%20gallery%20of%20screenshots%2C%20and%20a%20side%20rail">A card, a gallery of screenshots, and a side rail</a><span class="docs-list__what">one block, and two refusals of different kinds.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=A%20form%20with%20an%20email%20and%20a%20file%20upload%20for%20their%20portfolio">A form with an email and a file upload for their portfolio</a><span class="docs-list__what">the upload is refused, honestly.</span></div>
         </div>
 
         <!-- The template library: every block in the set, every control atom a form nests, and the
@@ -329,7 +329,7 @@
        calls (no-build client modules, ARCHITECTURE §19), so the closed set is decided once and the
        two sides cannot disagree. It exists because this site exports to a static host, where no
        server sees the ?ask= in the address: without this, every example link above lands on an empty
-       page, which is what the published /builder did for its whole life. It is also what makes the
+       page, which is what the published /grain/builder did for its whole life. It is also what makes the
        rail's buttons do anything. With JavaScript off nothing here runs, the live server still
        renders the same canvas, and the rail reads as a list of what is on it. -->
   <script type="module" src="/modules/portfolio/ai/builder-canvas.js"></script>

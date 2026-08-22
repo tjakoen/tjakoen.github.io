@@ -23,17 +23,17 @@ import { buildVocabReference } from "@tjakoen/grain/ai/vocab-reference.ts";
 // --- portfolio (THE app) ---
 import { renderPage, refresh } from "./render.ts";
 import { buildAiRoutes } from "./routes/ai-routes.ts";
-// /builder demo: the ONE pure seam that turns a raw `?ask=` query param into everything the page
+// /grain/builder demo: the ONE pure seam that turns a raw `?ask=` query param into everything the page
 // renders (matchSpec's own result + the CSS state flags) — see builder-page.ts's own banner.
 import { buildBuilderView } from "./ai/builder-page.ts";
 // P5: the preview route's two string jobs, the catalog default and the markup pane. See its banner.
 import { openCatalogPane, markupPane } from "./ai/builder-preview.ts";
 // The composition, rendered: a loop over the blocks calling the one renderer, because
 // `render(name, data, props)` takes the component name as a runtime string.
-// plus the hidden template library the browser clones from, which is what lets /builder compose on
+// plus the hidden template library the browser clones from, which is what lets /grain/builder compose on
 // a static host where no server sees the ?ask= in the address.
 import { renderCanvas, renderLibrary } from "./ai/canvas.ts";
-// GRAIN's own byline, and this is the ONE place the portfolio says it. /builder hands every export
+// GRAIN's own byline, and this is the ONE place the portfolio says it. /grain/builder hands every export
 // a signature, and a signature each app writes for itself is a signature that drifts, so the line
 // comes from grain and the page parks the markup for the browser to read back.
 import { madeWith } from "@tjakoen/grain/scripts/made-with.js";
@@ -267,10 +267,10 @@ const renderAppPage = async (html: string) =>
     contactFields, contactMessages, contactChoices, contactChecks,
   }));
 
-// /builder demo: the same shell every page gets, but rendered by hand rather than through
+// /grain/builder demo: the same shell every page gets, but rendered by hand rather than through
 // servePage()->makePageServer() (registered below), because it needs the REQUEST's own `?ask=` query
 // string and makePageServer only ever sees a bare pathname. Reads the same physical file
-// view/pages/builder.html would otherwise serve untouched, injects PAGE_HEAD/PAGE_ASSETS the same way
+// view/pages/grain/builder.html would otherwise serve untouched, injects PAGE_HEAD/PAGE_ASSETS the same way
 // makePageServer's own injectBeforeHeadEnd/injectBeforeBodyEnd do (so it carries every global script
 // and style every other page gets), then expands it through the same component engine (renderPage).
 const renderBuilderPage = async (html: string, data: Record<string, unknown>) => {
@@ -581,7 +581,7 @@ ${PAGE_ASSETS}</body>
     "/notes": async (req: Request) =>
       finalizePage(req, new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
         { headers: { "Content-Type": "text/html; charset=utf-8" } })),
-    // /builder — the page-builder demo: describe a page in plain English, block-set.ts decides the
+    // /grain/builder — the page-builder demo: describe a page in plain English, block-set.ts decides the
     // closed set of BLOCKS on the SERVER, and the page renders the prompt, the composition as JSON,
     // and the composed page itself from that one result — a GET round trip, nothing client-side
     // decides structure. A dedicated route (not the generic pages-tree fallback further down) because
@@ -594,10 +594,10 @@ ${PAGE_ASSETS}</body>
     // (ai/canvas.ts) and dropped into the marker builder.html carries. Binding rendered HTML through
     // `data-field` would mean a binding that does not escape, which is a hole in the exact place
     // this design closes one.
-    "/builder": async (req: Request) => {
+    "/grain/builder": async (req: Request) => {
       const ask = new URL(req.url).searchParams.get("ask") ?? "";
       const view = buildBuilderView(ask);
-      const raw = await Bun.file(join(config.pagesDir, "builder.html")).text();
+      const raw = await Bun.file(join(config.pagesDir, "grain", "builder.html")).text();
       const [canvas, library] = await Promise.all([renderCanvas(view.blocks), renderLibrary()]);
       let html = await renderBuilderPage(raw, { ...view });
       // Function replacements: rendered block markup can contain $& and friends, which a string
@@ -610,9 +610,9 @@ ${PAGE_ASSETS}</body>
         .replace("<!--byline-->", () => madeWith());
       return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     },
-    // /builder/preview — P5. The composed page on its own, with the workbench gone.
+    // /grain/builder/preview — P5. The composed page on its own, with the workbench gone.
     //
-    // The SAME canvas render as /builder above, from the same `?ask=`, so the preview cannot drift
+    // The SAME canvas render as /grain/builder above, from the same `?ask=`, so the preview cannot drift
     // from the thing it previews. It is a real route rather than a frame, which was the owner's call
     // and which is what makes it an ordinary open tab, a shareable address and an exported page.
     //
@@ -620,10 +620,10 @@ ${PAGE_ASSETS}</body>
     // fits in a query string and a whole edited composition does not, so opening this link directly
     // rebuilds from the prompt, and a page you edited after composing reaches the preview through
     // the workbench's own button, which hands the composition over in session storage.
-    "/builder/preview": async (req: Request) => {
+    "/grain/builder/preview": async (req: Request) => {
       const ask = new URL(req.url).searchParams.get("ask") ?? "";
       const view = buildBuilderView(ask);
-      const raw = await Bun.file(join(config.pagesDir, "builder", "preview.html")).text();
+      const raw = await Bun.file(join(config.pagesDir, "grain", "builder", "preview.html")).text();
       const canvas = await renderCanvas(view.blocks);
       let html = await renderBuilderPage(raw, { isEmpty: view.blocks.length === 0 });
       html = html

@@ -23,7 +23,7 @@ const PROFILE_DIR = `${OUT_DIR}/profile`;
 // the model tail (grounded chat / fuzzy nav / capability awareness) unless marked deterministic —
 // those run as controls, proving the harness itself drives the full chain. Graders are honest
 // minimums, not prose taste: a pass means "not broken", the captured text is what the retune reads.
-/** A /builder edit rather than a chat ask, and the only scenario shape that grades the PAGE.
+/** A /grain/builder edit rather than a chat ask, and the only scenario shape that grades the PAGE.
  *
  *  The rest of this file asks the desk a question and reads the reply. The builder's edit path does
  *  not go through chat at all: the sentence is typed into the canvas composer, the router decides it
@@ -57,7 +57,7 @@ interface Scenario {
   id: string;
   page: string;                    // where the question is asked from
   ask: string;
-  /** Present on a /builder edit: `page` and `ask` still name where and what, but the ask is typed
+  /** Present on a /grain/builder edit: `page` and `ask` still name where and what, but the ask is typed
    *  into the canvas composer and the canvas is what gets graded. */
   builder?: BuilderEdit;
   /** every group must have ≥1 case-insensitive hit in the reply (AND of ORs) */
@@ -150,17 +150,17 @@ const SCENARIOS: Scenario[] = [
   { id: "contact-det", page: "/mail", ask: "tell TJ I want to talk about grain", mustMention: [["drafted"], ["send"]], deterministic: true },
   // D1 form builder demo — "build me a form that asks for a name, an email and what they want to
   // talk about" matches the closed set (field-matcher.ts's matchSpec: name + email fields, a topic
-  // choice) and navigates to /builder?ask=… deterministically (actions.ts + desk-reasoner.ts): no
+  // choice) and navigates to /grain/builder?ask=… deterministically (actions.ts + desk-reasoner.ts): no
   // model composes or targets the fields. mustNavigate compares location.pathname (grade(), below),
-  // which already excludes the ?ask= query string, so the "/builder?ask=…" landing still reads as a
-  // plain "/builder" navigation here, the same idiom notes-filter-det's own ?tag= comment follows.
+  // which already excludes the ?ask= query string, so the "/grain/builder?ask=…" landing still reads as a
+  // plain "/grain/builder" navigation here, the same idiom notes-filter-det's own ?tag= comment follows.
   // mustMention checks the LAST chat bubble, which by the time settle() reads it is the arrival
   // announce ("Here's the form.") — the field/choice content itself lives on the PAGE, not in chat,
   // so "form" is the honest thing to grade here (deep-link-det's own reasoning, same settle() timing).
   // The cross-page fill itself (desk-form-task + runFormTask) lands AFTER settle()'s post-navigation
   // read, so THAT path is e2e-covered (desk-form-build.e2e.ts) rather than audited here.
   { id: "form-build-det", page: "/", ask: "build me a form that asks for a name, an email and what they want to talk about",
-    mustNavigate: "/builder", mustMention: [["form"]], deterministic: true },
+    mustNavigate: "/grain/builder", mustMention: [["form"]], deterministic: true },
   // C1 visitor-intent onboarding — a bare "hi" as the FIRST message this session triggers the
   // deterministic ask (actions.ts + desk-reasoner.ts), no model: the prompt copy names "visiting"
   // (the word this grader hooks on) and offers the three CHOICES. Not last on purpose — tour-det stays
@@ -193,21 +193,21 @@ const SCENARIOS: Scenario[] = [
   // The graders are the CANVAS rather than the words. mustMention rides along on the said line
   // because the page names the block before the op lands, and reading it in the report is how a near
   // miss ("Dropping b2.") is told apart from a refusal.
-  { id: "builder-drop", page: "/builder", ask: "drop the second card",
+  { id: "builder-drop", page: "/grain/builder", ask: "drop the second card",
     builder: { compose: "An intro, a card and a callout", andThen: ["another card"], wantIds: ["b1", "b2", "b3"] },
     mustMention: [["b4"]] },
   // The control, and it is the one that tells you WHICH thing is broken. "the second card" asks the
   // model to resolve a reference and then use the vocabulary; "drop b4" asks only for the second.
   // A page that fails both is failing at the vocabulary, and no amount of better referring language
   // would save it.
-  { id: "builder-bare-id", page: "/builder", ask: "drop b4",
+  { id: "builder-bare-id", page: "/grain/builder", ask: "drop b4",
     builder: { compose: "An intro, a card and a callout", andThen: ["another card"], wantIds: ["b1", "b2", "b3"] },
     mustMention: [["b4"]] },
-  { id: "builder-span", page: "/builder", ask: "make the callout full width",
+  { id: "builder-span", page: "/grain/builder", ask: "make the callout full width",
     builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
       wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "full" } },
     mustMention: [["b3"]] },
-  { id: "builder-move", page: "/builder", ask: "move the callout up",
+  { id: "builder-move", page: "/grain/builder", ask: "move the callout up",
     builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
       wantIds: ["b1", "b3", "b2", "b4"] },
     mustMention: [["b3"]] },
@@ -220,7 +220,7 @@ const SCENARIOS: Scenario[] = [
   // answered `block.remove` on `builder-said`, grain refused it for not being a block, and a refusal
   // leaves the canvas exactly as still as the right answer does. "The desk had nothing to change" and
   // "the desk tried something illegal" are opposite outcomes that look identical to a canvas grader.
-  { id: "builder-no-verb", page: "/builder", ask: "the card should mention pricing",
+  { id: "builder-no-verb", page: "/grain/builder", ask: "the card should mention pricing",
     builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
       wantIds: ["b1", "b2", "b3", "b4"] },
     mustNotMention: ["will not work here", "does not edit a block"] },
@@ -333,7 +333,7 @@ async function submitPrompt(page: Page, text: string): Promise<void> {
  *  waited on by CELL COUNT rather than a timeout, because a count is the thing that actually changed
  *  and a sleep here would either be slow or flaky on the first load. */
 async function composeFor(page: Page, b: BuilderEdit): Promise<void> {
-  await page.goto(`${BASE}/builder?ask=${encodeURIComponent(b.compose)}`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${BASE}/grain/builder?ask=${encodeURIComponent(b.compose)}`, { waitUntil: "domcontentloaded" });
   await page.waitForSelector(CELL, { timeout: 20_000 });
   for (const prompt of b.andThen ?? []) {
     const before = (await canvasState(page)).length;

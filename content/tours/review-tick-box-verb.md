@@ -21,14 +21,14 @@ grain.
 The tick box on a real form, and the address that decides which verb can reach it.
 
 ## field:builder-ask
-- at: /builder
+- at: /grain/builder
 - status: new
 - review: The builder asked you to describe a form and then gave you nowhere to describe one: the only ways in were an example link or the desk. This is a plain GET form back to the same route, which is the part worth checking rather than the box itself. The prompt becomes the address, so every state here stays a link you can send, and none of it is JavaScript.
 - verify: Type a prompt and press Build it. The address bar should carry it as ?ask=, and the box below should come back holding what you typed rather than empty. Then turn JavaScript off and reload that address: the box should still be there, still hold the prompt, and Build it should still work. If it does not, this became a script and stopped being hypermedia.
 The composer, and the round trip behind it.
 
 ## check:builder-consent
-- at: /builder?ask=a%20name%2C%20an%20email%20and%20a%20box%20to%20agree%20to%20the%20terms
+- at: /grain/builder?ask=a%20name%2C%20an%20email%20and%20a%20box%20to%20agree%20to%20the%20terms
 - status: needs-verification
 - review: The demo generates a tick box now, and this is the step that only makes sense in the order the work was done: generating one before the verb existed would have put a control on this page that the demo's closing move could not touch, which is the page overselling itself. Nothing generated comes up pre-ticked, because a form nobody has filled in must not claim they agreed to anything. Ask the desk to build this same form and it ticks the box afterwards, visibly, in AI ink. Whether it should be ticking a consent box at all is a real question and it is in the prompt below.
 - verify: On this address the box should be clear and carry the required marker. Now ask the desk in the chat to build me a form with a name, an email and a box to agree to the terms. Watch it land: the box should tick itself after the fields fill, and stay ticked. Then click it yourself twice: the AI grade should drop off on the first click and never come back. If it comes up already ticked before the desk acts, a generated form is claiming consent nobody gave.

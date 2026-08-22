@@ -118,7 +118,7 @@ export interface DeskReasoner extends Reasoner {
   showcaseResume(applyOp: (op: RenderOp) => void): Promise<void>;
   /** ONE structured completion, for a caller that wants a MOVE rather than a conversation.
    *
-   *  /builder is the first user: the model reads the live manifest and answers with one JSON move,
+   *  /grain/builder is the first user: the model reads the live manifest and answers with one JSON move,
    *  which grain then parses and validates before anything touches the page. It is here rather than
    *  in the builder's own island for one reason that matters on a laptop — the desk owns the engine,
    *  and a second island calling loadEngine would put a second 0.5B on the GPU.
@@ -343,14 +343,14 @@ export interface DeskDeps {
    *  same "stash BEFORE navigate" discipline mailTaskSet follows (the navigate tears this down). */
   contactTaskSet?: (message: string) => void;
   // ---- D1 form builder demo ("build me a form that asks for a name and an email") — the desk
-  // navigates to /builder?ask=<the description>, a plain GET the server answers with matchSpec's own
+  // navigates to /grain/builder?ask=<the description>, a plain GET the server answers with matchSpec's own
   // rendered form (this reasoner never renders anything itself). It then prefills the TEXT fields
   // matchSpec matched with form-draft.ts's demo values through the SAME cross-page-stash idiom
-  // mailTaskSet/contactTaskSet use — the navigate tears this reasoner instance down before /builder
+  // mailTaskSet/contactTaskSet use — the navigate tears this reasoner instance down before /grain/builder
   // ever loads. Never stashes a value for a `choices` item — see form-draft.ts's own banner on why a
   // <select> is never a fill target here. ----
   /** Stash the ALREADY-DRAFTED demo values (surface → text, form-draft.ts) for the door to fill on
-   *  arrival after navigating to /builder — same "stash BEFORE navigate" discipline every other
+   *  arrival after navigating to /grain/builder — same "stash BEFORE navigate" discipline every other
    *  cross-page task here follows (the navigate tears this down). */
   formTaskSet?: (task: { values: Record<string, string>; checks: Record<string, boolean> }) => void;
   // ---- C1 visitor-intent onboarding (recruiter/developer/student) — sessionStorage-backed, same
@@ -392,7 +392,7 @@ export const MAIL_ARCHIVE_BEAT_MS = 650;
 export const CONTACT_FILL_BEAT_MS = 650;
 
 // D1 form builder demo — the pause between successive field fills as the desk drafts each demo value
-// in on /builder, so a visitor watching sees each one land rather than the whole form snapping full
+// in on /grain/builder, so a visitor watching sees each one land rather than the whole form snapping full
 // at once. Named per CLAUDE.md lesson #9; exported so the door's OWN cross-page fill (desk-door.ts,
 // runFormTask) reuses the exact knob, the CONTACT_FILL_BEAT_MS/MAIL_ARCHIVE_BEAT_MS precedent.
 export const FORM_FILL_BEAT_MS = 650;
@@ -1192,8 +1192,8 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // D1 form builder demo — "build me a form that asks for a name and an email". Deterministic +
         // offline: matchSpec (field-matcher.ts) is the ONE thing that ever decides which fields/choices
         // exist — this handler never picks a field itself (law #2). Unlike B1/B3, there's no on-page
-        // branch: /builder renders from its OWN query string on a plain GET, so every ask is a fresh
-        // navigation, even when the visitor is already standing on /builder.
+        // branch: /grain/builder renders from its OWN query string on a plain GET, so every ask is a fresh
+        // navigation, even when the visitor is already standing on /grain/builder.
         if (action?.kind === "form-build") {
           const spec = matchSpec(action.description);
           await minThink();
@@ -1212,7 +1212,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             await typeOut(line);
             return { ok: false, ops: [], reply: line, reason: "no navigate dep" };
           }
-          const href = `/builder?ask=${encodeURIComponent(action.description)}`;
+          const href = `/grain/builder?ask=${encodeURIComponent(action.description)}`;
           // Every control the dispatcher can TYPE into: the text fields and the message box, which is
           // a textarea and travels the same fill path. Never a `choices` item — see form-draft.ts.
           const values = draftFieldValues([...spec.fields, ...spec.messages]);
@@ -1224,7 +1224,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           if (Object.keys(values).length || Object.keys(checks).length) {
             deps.formTaskSet?.({ values, checks });   // stash BEFORE navigating
           }
-          await travelAndNavigate("/builder", href, "Builder", "Here's the form.", "the navigation");
+          await travelAndNavigate("/grain/builder", href, "Builder", "Here's the form.", "the navigation");
           return { ok: true, ops: [], reply: line };
         }
 
@@ -1658,7 +1658,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
       if (degraded) { degraded = false; enginePromise = null; }   // re-arm a degraded desk to retry loading
     },
 
-    // ONE structured completion — the seam /builder uses to have the model pick a block verb. It
+    // ONE structured completion — the seam /grain/builder uses to have the model pick a block verb. It
     // shares the desk's engine rather than loading its own, and it shares nothing else: no history,
     // no bubble, no progress bar, because this is a move being chosen rather than a turn being
     // taken. Null on every failure path, and the caller says so out loud: a builder that quietly did

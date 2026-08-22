@@ -72,7 +72,7 @@ export interface ExportFile {
  *  composition should have a name of its own is an open question the design plan is holding. */
 export const EXPORT_STEM = "untitled";
 
-/** The storage key the workbench writes a canvas to and /builder/preview reads it back from.
+/** The storage key the workbench writes a canvas to and /grain/builder/preview reads it back from.
  *
  *  It lives in this module rather than in either side of the handover, because both sides import it
  *  and a constant declared in one of them would make the other depend on a module it has no other

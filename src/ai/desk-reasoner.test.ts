@@ -1317,7 +1317,7 @@ describe("makeDeskReasoner — B1 contact prefill (\"tell TJ I want to talk abou
 describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks for a name and an email\")", () => {
   const ASK = "build me a form that asks for a name, an email and what they want to talk about";
 
-  test("happy path: drafts demo values for the TEXT fields only, stashes BEFORE navigating to /builder", async () => {
+  test("happy path: drafts demo values for the TEXT fields only, stashes BEFORE navigating to /grain/builder", async () => {
     let loads = 0;
     const calls: string[] = [];
     const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
@@ -1330,7 +1330,7 @@ describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks
 
     expect(loads).toBe(0);   // deterministic — matchSpec decides the structure, no model involved
     expect(d.ok).toBe(true);
-    expect(calls[1]).toBe(`navigate:/builder?ask=${encodeURIComponent(ASK)}`);
+    expect(calls[1]).toBe(`navigate:/grain/builder?ask=${encodeURIComponent(ASK)}`);
     const stashed = JSON.parse(calls[0]!.replace(/^formTaskSet:/, ""));
     // name + email are the matched TEXT fields; "what they want to talk about" matched the topic
     // CHOICE, and a choice's surface must never appear here (see form-draft.ts's own banner).
@@ -1339,8 +1339,8 @@ describe("makeDeskReasoner — D1 form builder demo (\"build me a form that asks
     // Nothing in that ask asked for a box to tick, so the tick half of the stash is empty rather
     // than absent: the two halves take two different verbs and both are always on the wire.
     expect(stashed.checks).toEqual({});
-    // the lamp travels to the /builder nav link before the navigate fires
-    expect(ops.some((o) => o.op === "spotlight" && o.target === "nav:/builder" && o.active)).toBe(true);
+    // the lamp travels to the /grain/builder nav link before the navigate fires
+    expect(ops.some((o) => o.op === "spotlight" && o.target === "nav:/grain/builder" && o.active)).toBe(true);
   });
 
   test("nothing matched: an honest decline naming the real closed set, no navigate, no stash", async () => {
