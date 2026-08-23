@@ -142,9 +142,17 @@ and nothing in C0 through C5 depends on the answer.
       every session on this machine and that is the owner's call, not the build order's.**
 - [x] C0. `pantry/sessions.ts`, pure over parsed events, file IO isolated the way `map.ts` isolates
       the graph load. **15 tests, and the clock is passed in so a payload is reproducible.**
-- [x] C0. `/sessions.json`, and the doctor check that the emitter is mounted. **The check is info
-      rather than warn, and the guard against a calm empty page is `present` on the payload.**
+- [x] C0. `/sessions.json`, and a doctor check on the log. **It measures whether events have
+      ARRIVED, not whether the hook is mounted: the wiring lives in a settings file PANTRY has no
+      business reading. Info when the log is absent, warn when it exists and cannot be read or
+      carries a bad line that is not the last one.**
+- [x] C0. The surface is off by default and the route refuses anything but loopback. **A row names
+      the operator's home directory and every file a session wrote, none of which is in the repo
+      being served, and `Bun.serve` binds every interface.**
 - [ ] C1. `/control`, static, replayable, linked from `/runs` and `/plans` rather than living alone.
+- [ ] C1. List the twin in `knowledge.json` and `llms.txt` when the surface is on and something is
+      alive, beside the run-ledger entry. The one surface built for a machine reader is invisible to
+      the index that reader consults.
 - [ ] C1. The loop lamps: doctor at start, graphify, the gate, the handoff. Lit means it ran in this
       session, not that it is configured.
 - [ ] C2. The live channel, extending PROOF's rather than adding a second one.
@@ -156,13 +164,21 @@ and nothing in C0 through C5 depends on the answer.
 
 ## What is still rough
 
-The privacy posture needs settling before C0 ships, not after. Session events name repos, files and
-timings, and a transcript would carry prompts outright. PANTRY publishes to npm into other people's
-projects, so this surface is loopback only and off unless switched on, the same posture the preview
-target already takes.
+The privacy posture is settled and implemented rather than promised: the surface is off unless the
+host asks for it, the route refuses anything that is not loopback, only a write-shaped tool
+contributes a file path, and the off-limits tree is excluded by the working directory and by the path
+being recorded. Two independent reviewers were pointed at C0 and between them found three blockers,
+nine majors and five minors; every one is either fixed with a test or written down here.
 
-Volume is unmeasured. A long session's transcript runs to megabytes, and the heartbeat log is small
-by design, but nobody has counted either. Count before building the reader, not after.
+The one that mattered most was not a leak. The harness fires its Stop event at the end of every
+turn, not at the end of a session, so a stop taken as final made every live session read as ended
+from its first turn onward. That is the single claim this whole layer exists to make. It now maps
+SessionEnd instead, and a stop followed by later events is a session that carried on.
+
+Volume is bounded rather than measured. The reader caps what it reads and says when it read only the
+tail, and the emitter no longer records a path for every read, which was what made a read-heavy
+session exempt itself from the throttle. Nobody has yet counted a real session's log, and that is
+still owed before C1 renders it on a page.
 
 The honest risk is that this is a dashboard nobody opens. Replay-first is the hedge, and the second
 hedge is that it must earn its place from the pages people already visit. If `/control` needs to be
