@@ -154,7 +154,17 @@ and nothing in C0 through C5 depends on the answer.
       alive, beside the run-ledger entry. The one surface built for a machine reader is invisible to
       the index that reader consults.
 - [ ] C1. The loop lamps: doctor at start, graphify, the gate, the handoff. Lit means it ran in this
-      session, not that it is configured.
+      session, not that it is configured. **Three of the four cannot honestly light today, checked
+      2026-08-23: only the context trigger leaves a per-session trace (`~/.claude/state/ctx-<id>`).
+      The gate and the handoff share one repo-level marker (`.git/handoff-nudged`), so neither can
+      say WHICH session it fired for, and the session doctor leaves no trace at all. Draw the ones
+      that are real and draw the rest as unknown rather than as unlit.**
+- [ ] C1. Decide how a lamp becomes derivable at all. The cheap answer reuses C0: a hook fire is
+      another event, the log is already per session, and this reader already skips a kind it does not
+      know, so an emitter can start writing them before PANTRY learns the word. The alternative is a
+      marker file per hook per session, which is four more files nothing sweeps.
+- [ ] C1. PANTRY has to load the plans itself for the join. `/plans` is mounted from `@tjakoen/proof`
+      and the board is that package's projection, so there is no plan model in this repo to read.
 - [ ] C2. The live channel, extending PROOF's rather than adding a second one.
 - [ ] C3. Mark the graph nodes a run touched, on `/map`.
 - [ ] C4. The registry outside the repos, keyed on the pair of repo and id.
