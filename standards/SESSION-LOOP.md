@@ -331,6 +331,28 @@ from thinking into grinding, weigh the switch against how much conversation sits
 enough in a thread, the honest answer is to finish here and start the grind in a fresh session at
 the tier it wanted (§2, item 5).
 
+**Measured 2026-08-22, and the rule above had never once fired.** Twelve sessions in the portfolio:
+2,492 assistant turns, every one on the main thread at the top tier. Turns that ran in a subagent:
+**zero**. The table, the pinning advice and the switch-cost warning were all written, all correct,
+and all inert. That is the same shape the graph standard was in before anything enforced it, and it
+is why `delegate-gate.sh` now exists (HOOKS.md §4b): after fifteen reads or searches in a session
+with nothing delegated, it says so once, and goes permanently quiet the moment the session delegates
+anything.
+
+**The same measurement retunes why the rule is worth following.** The table above argues from price,
+and on the current tiers that argument has weakened: the top and mid tiers are about forty percent
+apart, not the five-fold gap the older generations trained everyone to expect. The stronger argument
+is structural, and it is much larger. Cache reads were **94.3 percent of all input** across those
+sessions, 355 million read against 1.9 million generated. Nothing leaves a conversation once it
+enters, so every result is re-read on every turn after it: a search that lands early in a long
+session is paid for hundreds of times. **A subagent carries its own window.** What it reads to answer
+one question never enters the main thread and is never re-read; only the answer comes back. So
+delegate for the carry, and treat the cheaper tier as the smaller bonus it now is.
+
+Which also sharpens what the tier is worth choosing for. On a subscription rather than per-token
+billing the prices are only a ranking, and the real budget is turns per rate-limit window and room
+left in the context. Carry is what spends both.
+
 Carry the model recommendation into the handoff (§5): the next task's shape usually implies its tier.
 
 ---
