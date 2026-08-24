@@ -227,7 +227,8 @@ itself, and it is the reason this file tells a reader to check the settings rath
 ## 4b. The output gates
 
 **Fires on:** PostToolUse. Three scripts, wired 2026-08-21: bash-output-bound.sh at a 4,000
-character bound, tool-output-bound.sh, and code-discovery.sh.
+character bound, tool-output-bound.sh, and code-discovery.sh. A fourth, delegate-gate.sh, was built
+2026-08-22 and is not wired: see the end of this section.
 
 **What they do.** The first two say once, per command or per tool per session, that something
 returned more characters than a bound. The third says once per session that a repo carrying a code
@@ -265,9 +266,30 @@ That defect was invisible to eleven passing tests and surfaced on the first real
 section 5's last lesson arriving on schedule: a gate nobody has watched fire has not been tested, it
 has been described.
 
+**The fourth gate aims at the other half, and the first three were the smaller one.** All three
+above ask whether a result is too big. token-burn.ts then measured what a result actually costs:
+cache reads were 94.3 percent of all input across twelve sessions, 355 million read against 1.9
+million generated. Nothing leaves a conversation once it enters, so a result is re-read on every
+turn after it and is priced by WHEN it lands as much as by how big it is. delegate-gate.sh acts on
+that: after fifteen reads or searches in a session that has delegated nothing, it says so once, and
+goes permanently silent the moment the session spawns anything.
+
+**It argues from carry, not from price, and that distinction is the whole design.** A subagent
+carries its own window, so what it reads to answer a question never enters the main thread and is
+never re-read; only the answer returns. The cheaper-tier argument is the weaker one now, since the
+top and mid tiers sit about forty percent apart rather than the five-fold gap older generations
+taught. The gate therefore never suggests switching the main loop's model, because doing so
+invalidates the entire prefix cache (SESSION-LOOP section 6 prices that), and a gate whose advice
+costs more than it saves is worse than none.
+
+**Same measurement, same verdict as the graph standard.** SESSION-LOOP section 6 had the pinning
+advice, the tier table and the cache warning written and correct. Delegated turns across those
+twelve sessions: zero. Rung two again.
+
 **How to turn them off.** Three levels, per section 6. The bounds move with BASH_OUTPUT_MAX and
-TOOL_OUTPUT_MAX, the sweep threshold with CODE_DISCOVERY_SWEEP, and all three honour the exclusion
-prefix. Unwiring is removing the entry from the machine settings, which is the owner's act.
+TOOL_OUTPUT_MAX, the sweep thresholds with CODE_DISCOVERY_SWEEP and DELEGATE_SWEEP, and all four
+honour the exclusion prefix. Unwiring is removing the entry from the machine settings, which is the
+owner's act.
 
 ---
 
