@@ -149,22 +149,41 @@ and nothing in C0 through C5 depends on the answer.
 - [x] C0. The surface is off by default and the route refuses anything but loopback. **A row names
       the operator's home directory and every file a session wrote, none of which is in the repo
       being served, and `Bun.serve` binds every interface.**
-- [ ] C1. `/control`, static, replayable, linked from `/runs` and `/plans` rather than living alone.
-- [ ] C1. List the twin in `knowledge.json` and `llms.txt` when the surface is on and something is
-      alive, beside the run-ledger entry. The one surface built for a machine reader is invisible to
-      the index that reader consults.
-- [ ] C1. The loop lamps: doctor at start, graphify, the gate, the handoff. Lit means it ran in this
-      session, not that it is configured. **Three of the four cannot honestly light today, checked
+- [x] C1. `/control`, static, replayable, linked from `/runs` and `/plans` rather than living alone.
+      **The nav entry is the link, so it reaches every mounted surface at once. Same two gates as
+      the twin: off by default, loopback only. A session id in the query string replays a run that
+      has already ended, and a session the log never saw falls back and says so in every lamp.**
+- [x] C1. List the twin in `knowledge.json` and `llms.txt` when the surface is on and something is
+      alive, beside the run-ledger entry. **Alive is the gate, not recorded: an entry for a repo
+      whose last session ended three weeks ago is noise in an index whose job is to be short. An
+      unreadable log costs the entry and never the pack.**
+- [x] C1. The loop lamps: doctor at start, graphify, the gate, the handoff. **Three of the four
+      cannot honestly light today, checked
       2026-08-23: only the context trigger leaves a per-session trace (`~/.claude/state/ctx-<id>`).
       The gate and the handoff share one repo-level marker (`.git/handoff-nudged`), so neither can
       say WHICH session it fired for, and the session doctor leaves no trace at all. Draw the ones
       that are real and draw the rest as unknown rather than as unlit.**
+      **Built on exactly that reading, and independently re-measured on 2026-09-03 against the same
+      three files. A lamp therefore has three states and not two: lit is a claim about this session,
+      dark is a claim about the run, and unobserved is a claim about the observer. A repo-level lamp
+      carries a shared mark so the page never presents it as proof, and the gate and the handoff both
+      say in their own text that they are reading one marker between them. The lamps stat and never
+      read a probe file, which is a privacy posture rather than an optimisation. On a machine
+      carrying none of this tooling every lamp reads unobserved, which is the correct degrade for
+      something that ships into other people's projects.**
 - [ ] C1. Decide how a lamp becomes derivable at all. The cheap answer reuses C0: a hook fire is
       another event, the log is already per session, and this reader already skips a kind it does not
       know, so an emitter can start writing them before PANTRY learns the word. The alternative is a
       marker file per hook per session, which is four more files nothing sweeps.
-- [ ] C1. PANTRY has to load the plans itself for the join. `/plans` is mounted from `@tjakoen/proof`
+      **STILL OPEN, and now with the cost of not deciding visible on the page: four lamps, one of
+      which can light. C1 shipped the reading half against the markers that happen to exist, which is
+      as far as a reader can get on its own. The emitter half is the only thing that makes the other
+      three derivable, and it is an owner decision because it edits every session on this machine.**
+- [x] C1. PANTRY has to load the plans itself for the join. `/plans` is mounted from `@tjakoen/proof`
       and the board is that package's projection, so there is no plan model in this repo to read.
+      **`sessions.ts` calls `loadPlans` from that package directly, passing a `lastModified` that
+      answers null: the board spawns git once per file for plan ages, and this page shows none, so a
+      page load stays off the process table.**
 - [ ] C2. The live channel, extending PROOF's rather than adding a second one.
 - [ ] C3. Mark the graph nodes a run touched, on `/map`.
 - [ ] C4. The registry outside the repos, keyed on the pair of repo and id.
@@ -185,10 +204,30 @@ turn, not at the end of a session, so a stop taken as final made every live sess
 from its first turn onward. That is the single claim this whole layer exists to make. It now maps
 SessionEnd instead, and a stop followed by later events is a session that carried on.
 
-Volume is bounded rather than measured. The reader caps what it reads and says when it read only the
-tail, and the emitter no longer records a path for every read, which was what made a read-heavy
-session exempt itself from the throttle. Nobody has yet counted a real session's log, and that is
-still owed before C1 renders it on a page.
+Volume is measured now, and the number that was written down was wrong. The reader caps what it
+reads and says when it read only the tail, and the emitter no longer records a path for every read,
+which was what made a read-heavy session exempt itself from the throttle.
+
+The emitter is not mounted, so there is no real log to count. Instead the eight largest harness
+transcripts in the portfolio repo were replayed through the emitter's own rules, taking only the
+structural fields it acts on: the tool names, the timestamps and the write-tool paths. No prompt and
+no output was read or kept. That gives the log those sessions would in fact have written.
+
+A mean of 275 lines and 56 KiB a session, 120 KiB for the heaviest, and 27 percent of tool calls
+thrown away by the ten-second throttle. Both this plan and the header of `sessions.ts` claimed a few
+hundred bytes a session, which is wrong by about two orders of magnitude and is corrected in both
+places.
+
+The consequence is the cap. Four mebibytes holds roughly seventy sessions, and this repo started 146
+of them in a month with nothing rotating the log, so it crosses the cap in about a fortnight. The
+truncated flag is the normal state of an active repo rather than a guard against a pathological one,
+which is why the page says so where a reader will see it rather than only in the JSON.
+
+One thing C1 found that the design had not anticipated. The lamps are the part of this page that can
+most easily become a lie, and the reason is that the loop's own mechanisms mostly leave no trace an
+observer can read. That is not a gap in PANTRY. It is a gap in the mechanisms, and it is the same
+gap the enforcement audits keep reaching from the other direction: a loop that cannot show its work
+cannot be checked by anything except the person who watched it happen.
 
 The honest risk is that this is a dashboard nobody opens. Replay-first is the hedge, and the second
 hedge is that it must earn its place from the pages people already visit. If `/control` needs to be
