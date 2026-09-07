@@ -23,9 +23,10 @@
 // are `bun run check` / `bun test`, not lint, and are not what a turn-end gate should carry.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 
-const root = dirname(dirname(new URL(import.meta.url).pathname));
+const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const baselinePath = join(root, "tools", "lint-baseline.json");
 
 type Counts = Record<string, number>;
@@ -35,15 +36,21 @@ type Counts = Record<string, number>;
 // so it can never collide with a voice-lint id in the same flat map.
 function oxlintCounts(): Counts {
   const bin = join(root, "node_modules", ".bin", "oxlint");
-  if (!existsSync(bin)) return {};
+  // A silent empty map here reads as zero findings, which the ratchet below then treats as level —
+  // or as an improvement worth lowering the baseline to. A linter that could not run must fail loud,
+  // never quietly report clean, or the gate this file exists to be is defeated by its own input.
+  if (!existsSync(bin)) throw new Error(`lint gate: oxlint binary not found at ${bin} — run bun install`);
   const res = spawnSync(bin, ["--format", "json"], { cwd: root, encoding: "utf8" });
   // oxlint writes its JSON to stdout and exits nonzero when it found anything — that's expected, not
-  // a failure of this script, so the exit code is never checked.
+  // a failure of this script, so the exit code is never checked. A spawn error or empty stdout is a
+  // different thing: it means oxlint never produced a report, and that must not read as clean.
+  if (res.error) throw new Error(`lint gate: failed to run oxlint — ${res.error.message}`);
+  if (!res.stdout?.trim()) throw new Error("lint gate: oxlint produced no output — cannot trust a zero count");
   let parsed: { diagnostics?: { code: string }[] };
   try {
-    parsed = JSON.parse(res.stdout || "{}");
-  } catch {
-    return {};
+    parsed = JSON.parse(res.stdout);
+  } catch (e) {
+    throw new Error(`lint gate: oxlint output was not valid JSON — ${(e as Error).message}`);
   }
   const counts: Counts = {};
   for (const d of parsed.diagnostics ?? []) {
