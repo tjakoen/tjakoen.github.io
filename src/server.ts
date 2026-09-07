@@ -300,9 +300,10 @@ function withPeekRoot(html: string): string {
 async function finalizePage(req: Request, res: Response | Promise<Response>): Promise<Response> {
   const r = await res;
   if (!r.headers.get("content-type")?.includes("text/html")) return r;
-  let html = enrichHead(await r.text(), new URL(req.url).pathname, new URL(req.url).origin);
+  const u = new URL(req.url);
+  let html = enrichHead(await r.text(), u.pathname, u.origin);
   html = withPeekRoot(html);
-  html = injectViews(html, new URL(req.url).pathname);
+  html = injectViews(html, u.pathname);
   return new Response(html, { status: r.status, headers: r.headers });
 }
 const serveContent = createPortfolioContentRoutes(
