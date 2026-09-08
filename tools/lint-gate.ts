@@ -91,6 +91,21 @@ function loadBaseline(): { generated: string; counts: Counts } | undefined {
   }
 }
 
+// The one piece of arithmetic the ratchet turns on: which keys are higher now than they were in the
+// baseline, and by how much, sorted worst-first. Both the write path (refuse to raise) and the read
+// path (report a regression) ask exactly this question, so it lives here once and is exported for a
+// test — the gate that guards the repo's lint debt is itself worth a RED/GREEN test.
+export type Rise = { key: string; base: number; now: number };
+export function risingCounts(previous: Counts, current: Counts): Rise[] {
+  const rising: Rise[] = [];
+  for (const key of new Set([...Object.keys(current), ...Object.keys(previous)])) {
+    const base = previous[key] ?? 0;
+    const now = current[key] ?? 0;
+    if (now > base) rising.push({ key, base, now });
+  }
+  return rising.toSorted((a, b) => b.now - b.base - (a.now - a.base));
+}
+
 // The ratchet, and why it exists. For its first three months this baseline could only ever grow: any
 // run of `bun run lint:baseline` absorbed whatever the current output happened to be, and the gate
 // then reported "level" forever. The 2026-08-12 audit found the predictable result, several hundred
@@ -106,17 +121,10 @@ function loadBaseline(): { generated: string; counts: Counts } | undefined {
 // decision, and the flag is there to make it one.
 function writeBaseline(counts: Counts, accept: boolean): void {
   const previous = loadBaseline();
-  const rising: { key: string; base: number; now: number }[] = [];
-  if (previous) {
-    for (const key of new Set([...Object.keys(counts), ...Object.keys(previous.counts)])) {
-      const base = previous.counts[key] ?? 0;
-      const now = counts[key] ?? 0;
-      if (now > base) rising.push({ key, base, now });
-    }
-  }
+  const rising = previous ? risingCounts(previous.counts, counts) : [];
   if (rising.length && !accept) {
     console.log("lint gate: refusing to raise the baseline. These counts would go UP:");
-    for (const r of rising.toSorted((a, b) => b.now - b.base - (a.now - a.base))) {
+    for (const r of rising) {
       console.log(`  ${r.key}: baseline ${r.base} -> now ${r.now} (+${r.now - r.base})`);
     }
     console.log(
@@ -161,13 +169,7 @@ function report(): void {
     return;
   }
 
-  const keys = new Set([...Object.keys(current), ...Object.keys(baseline.counts)]);
-  const regressions: { key: string; base: number; now: number }[] = [];
-  for (const key of keys) {
-    const base = baseline.counts[key] ?? 0;
-    const now = current[key] ?? 0;
-    if (now > base) regressions.push({ key, base, now });
-  }
+  const regressions = risingCounts(baseline.counts, current);
 
   const totalNow = Object.values(current).reduce((a, b) => a + b, 0);
   const totalBase = Object.values(baseline.counts).reduce((a, b) => a + b, 0);
@@ -181,7 +183,7 @@ function report(): void {
   }
 
   console.log(`lint gate: ${regressions.length} lint(s) regressed against tools/lint-baseline.json:`);
-  for (const r of regressions.sort((a, b) => b.now - b.base - (a.now - a.base))) {
+  for (const r of regressions) {
     console.log(`  ${r.key}: baseline ${r.base} -> now ${r.now} (+${r.now - r.base})`);
   }
   console.log(
@@ -190,10 +192,14 @@ function report(): void {
   );
 }
 
-const args = new Set(process.argv.slice(2));
-if (args.has("--write")) {
-  writeBaseline(currentCounts(), args.has("--accept"));
-  console.log(`lint gate: wrote ${baselinePath}`);
-} else {
-  report();
+// Guarded so a test can import risingCounts without spawning oxlint/voice-lint or touching the
+// baseline file: this runs only when the file is the entrypoint (bun tools/lint-gate.ts), not on import.
+if (import.meta.main) {
+  const args = new Set(process.argv.slice(2));
+  if (args.has("--write")) {
+    writeBaseline(currentCounts(), args.has("--accept"));
+    console.log(`lint gate: wrote ${baselinePath}`);
+  } else {
+    report();
+  }
 }

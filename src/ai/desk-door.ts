@@ -104,17 +104,28 @@ const probe = (): Promise<boolean> => Promise.resolve(canRun);
 const loadEngine = (p: ModelProfile, onProgress: (progress: EngineProgress) => void) =>
   grainWebllm.loadEngine({ modelId: p.id, onProgress, contextWindow: p.contextWindow });
 
+// A fetch whose failure is loud, not silent. Every one of the frozen artifacts below resolves to a
+// 404 HTML error page on a broken deploy rather than rejecting, so an unchecked status quietly parses
+// garbage into an empty catalog and the desk goes permanently no-op with nothing to debug from. This
+// throws on a bad status so the catch sites can log the URL, the same way runFormTask and navigate do.
+const fetchArtifact = async (url: string): Promise<Response> => {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`desk artifact fetch ${r.status} for ${url}`);
+  return r;
+};
+
 // The grounding corpus, fetched once from the frozen /knowledge.json (base-path aware: resolved
 // against this module's URL, which sits under <base>/modules/portfolio/ai/).
 let knowledgeP: Promise<Knowledge> | null = null;
 const loadKnowledge = (): Promise<Knowledge> =>
-  (knowledgeP ??= fetch(new URL("../../../knowledge.json", import.meta.url).href).then((r) => r.json() as Promise<Knowledge>));
+  (knowledgeP ??= fetchArtifact(new URL("../../../knowledge.json", import.meta.url).href).then((r) => r.json() as Promise<Knowledge>));
 
 // Newest-first notes for "open the latest note" — the frozen /notes.json (base-path aware). Memoized.
 let notesP: Promise<DeskNote[]> | null = null;
 const listNotes = (): Promise<DeskNote[]> =>
-  (notesP ??= fetch(new URL("../../../notes.json", import.meta.url).href)
-    .then((r) => r.json() as Promise<DeskNote[]>).catch(() => []));
+  (notesP ??= fetchArtifact(new URL("../../../notes.json", import.meta.url).href)
+    .then((r) => r.json() as Promise<DeskNote[]>)
+    .catch((e) => { console.error("desk: notes.json load failed, falling back to no notes", e); return []; }));
 
 // The navigable-destination catalog (catalog.ts): the REAL sitemap enriched with titles from the
 // knowledge corpus + notes, so the desk navigates only to routes that exist and the set scales with
@@ -124,8 +135,10 @@ let catalogP: Promise<NavDest[]> | null = null;
 const loadCatalog = (): Promise<NavDest[]> =>
   (catalogP ??= (async () => {
     const [xml, knowledge, notes] = await Promise.all([
-      fetch(new URL("../../../sitemap.xml", import.meta.url).href).then((r) => r.text()).catch(() => ""),
-      loadKnowledge().catch(() => null),
+      fetchArtifact(new URL("../../../sitemap.xml", import.meta.url).href)
+        .then((r) => r.text())
+        .catch((e) => { console.error("desk: sitemap.xml load failed, navigation catalog will be empty", e); return ""; }),
+      loadKnowledge().catch((e) => { console.error("desk: knowledge.json load failed, catalog titles degraded", e); return null; }),
       listNotes().catch(() => [] as DeskNote[]),
     ]);
     const routes = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)]
