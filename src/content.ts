@@ -203,7 +203,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
 /** The app-shell skeleton every content page is: head, portfolio-frame, one `.board`. Extracted so
  *  a page that is NOT a MILL entry can be the same page (the deck viewer below is the first), and
  *  so there is exactly one copy of this markup to keep in step with `pages/mill/index.html`. */
-function shellPage(input: {
+export function shellPage(input: {
   title: string; description?: string; screen: string; section: string;
   board: string; inject: string; injectHead: string;
 }): string {
@@ -583,7 +583,17 @@ export interface NoteFeedEntry {
   tags: string[];
   sections: number;
 }
-async function sortedNoteEntries(): Promise<NoteFeedEntry[]> {
+// Memoized. The note corpus is read and parsed from disk in here, and one page render asks for it
+// two or three times over (the Recent feed, the calendar merge, the sitemap allowlist). The files do
+// not change under a running server — the static export freezes them, and dev `--hot` reloads this
+// whole module on edit, which resets the cache — so the first call's promise is the answer for the
+// rest of the process. Every caller treats the result as read-only (filter/map/spread, never an
+// in-place sort), which is what makes one shared array safe to hand out; keep it that way.
+let sortedNoteEntriesP: Promise<NoteFeedEntry[]> | null = null;
+function sortedNoteEntries(): Promise<NoteFeedEntry[]> {
+  return (sortedNoteEntriesP ??= computeSortedNoteEntries());
+}
+async function computeSortedNoteEntries(): Promise<NoteFeedEntry[]> {
   const notes = collections[0]!;                     // the "/notes" collection above
   const entries: NoteFeedEntry[] = [];
   for (const slug of await notes.source.list()) {
@@ -1128,7 +1138,11 @@ export async function listNoteCalendarEvents(): Promise<CalendarEvent[]> {
  *  own MILL page /calendar/<slug>). Reads frontmatter only (title/date/kind/location/tags/summary +
  *  the flat photo strings), same idiom as sortedNoteEntries. Newest-first; undated events are
  *  dropped (nothing to place on a calendar). */
-export async function listEventCalendarEvents(): Promise<CalendarEvent[]> {
+let eventCalendarEventsP: Promise<CalendarEvent[]> | null = null;
+export function listEventCalendarEvents(): Promise<CalendarEvent[]> {
+  return (eventCalendarEventsP ??= computeEventCalendarEvents());
+}
+async function computeEventCalendarEvents(): Promise<CalendarEvent[]> {
   const events = collections.find((c) => c.prefix === "/calendar");
   if (!events) return [];
   const out: CalendarEvent[] = [];
