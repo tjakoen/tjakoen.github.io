@@ -38,7 +38,7 @@ import { renderCanvas, renderLibrary } from "./ai/canvas.ts";
 // comes from grain and the page parks the markup for the browser to read back.
 import { madeWith } from "@tjakoen/grain/scripts/made-with.js";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, shellPage, type CalendarEvent } from "./content.ts";
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
 import { injectViews } from "./analytics.ts";   // the status bar's view counts, baked in at build time
@@ -356,21 +356,14 @@ body[data-screen="plans"] .board { max-width: none; }
 const proofRoutes = createProofRoutes({
   plansDir: PLANS_DIR,
   prefix: PLANS_PREFIX,
-  chrome: (title, body) => renderAppPage(`<!DOCTYPE html>
-<html lang="en" data-themes="sourdough baguette brioche">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${title === "Plans" ? title : `${title} · Plans`}</title>
-  ${PAGE_HEAD}<link rel="stylesheet" href="/proof.css">
-</head>
-<body data-screen="plans" class="app-window-backdrop">
-  <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">
-    <portfolio-frame />
-    <main class="app-shell__main" id="main-content"><div class="board">${body}</div></main>
-  </div>
-${PAGE_ASSETS}</body>
-</html>`),
+  chrome: (title, body) => renderAppPage(shellPage({
+    title: title === "Plans" ? title : `${title} · Plans`,
+    screen: "plans",
+    section: ` data-section="docs"`,
+    board: body,
+    inject: PAGE_ASSETS,
+    injectHead: `${PAGE_HEAD}<link rel="stylesheet" href="/proof.css">`,
+  })),
 });
 // --- CRUMB: the guided-tour layer. tours/*.md → parsed JSON under /crumb (createCrumbRoutes); the
 // client crumb-live.js + crumb.css are static assets this host serves from the package. The tour
@@ -503,11 +496,20 @@ if (config.hotReload) {
 const staticServers = Object.entries(config.assetDirs).map(([prefix, dir]) =>
   [prefix, makeStatic(bunRuntime, dir)] as const);
 
+// The one containment check both binary short-circuits below lean on: a caller-supplied `rel` must
+// resolve to a path inside `root`, never escape it through `../` or an absolute segment. Exported so
+// the traversal guard — the security-relevant line in this file — is testable without booting the
+// server. The `+ sep` on the prefix is what stops a sibling like `<root>-evil` reading as inside.
+export function withinRoot(root: string, rel: string): boolean {
+  const fp = resolve(normalize(join(root, rel)));
+  return fp === root || fp.startsWith(root + sep);
+}
+
 // Binary static (fonts): Bun.file preserves bytes; makeStatic's text read would corrupt woff2.
 const FONTS_ROOT = resolve(config.fontsDir);
 async function serveFont(rel: string): Promise<Response> {
+  if (!withinRoot(FONTS_ROOT, rel)) return new Response("Forbidden", { status: 403 });
   const fp = resolve(normalize(join(FONTS_ROOT, rel)));
-  if (fp !== FONTS_ROOT && !fp.startsWith(FONTS_ROOT + sep)) return new Response("Forbidden", { status: 403 });
   const file = Bun.file(fp);
   if (!(await file.exists())) return new Response("Not found", { status: 404 });
   return new Response(file, { headers: { "Content-Type": "font/woff2", "Cache-Control": "public, max-age=31536000, immutable" } });
@@ -519,13 +521,16 @@ async function serveFont(rel: string): Promise<Response> {
 // export change; only the LIVE server needs this binary short-circuit (before the static loop).
 const MEDIA_ROOT = resolve(join(fileURLToPath(import.meta.url), "..", "..", "content", "media"));
 async function serveMedia(rel: string): Promise<Response> {
+  if (!withinRoot(MEDIA_ROOT, rel)) return new Response("Forbidden", { status: 403 });
   const fp = resolve(normalize(join(MEDIA_ROOT, rel)));
-  if (fp !== MEDIA_ROOT && !fp.startsWith(MEDIA_ROOT + sep)) return new Response("Forbidden", { status: 403 });
   const file = Bun.file(fp);
   if (!(await file.exists())) return new Response("Not found", { status: 404 });
   return new Response(file, { headers: { "Cache-Control": "public, max-age=31536000, immutable" } });
 }
 
+// Guarded so a test can import this module (for withinRoot, the traversal guard) without opening a
+// port: the server boots only when this file is the entrypoint (bun src/server.ts), not on import.
+if (import.meta.main) {
 Bun.serve({
   port: config.port,
   routes: {
@@ -547,20 +552,14 @@ Bun.serve({
     // + token slots read from the real registries (grain/ai/vocab-reference.ts), never hand-copied.
     "/reference": async (req: Request) => {
       const body = await buildVocabReference(join(config.grainDir, "styles", "variables.css"));
-      const page = `<!DOCTYPE html>
-<html lang="en" data-themes="sourdough baguette brioche">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reference · Developer docs</title>
-  <meta name="description" content="Generated reference: the AI vocabulary (actions, surface kinds, render ops), the one door's endpoints, and GRAIN's token slots — read from the real source, never hand-copied.">
-  ${PAGE_HEAD}
-</head>
-<body data-screen="reference" class="app-window-backdrop">
-  <div class="app-shell app-window" data-section="docs" data-rail-collapsed="false" data-surface="screen">
-    <portfolio-frame />
-    <main class="app-shell__main" id="main-content">
-      <div class="board">
+      const page = shellPage({
+        title: "Reference · Developer docs",
+        description: "Generated reference: the AI vocabulary (actions, surface kinds, render ops), the one door's endpoints, and GRAIN's token slots — read from the real source, never hand-copied.",
+        screen: "reference",
+        section: ` data-section="docs"`,
+        inject: PAGE_ASSETS,
+        injectHead: PAGE_HEAD,
+        board: `
         <p class="eyebrow">📚 <span class="name">Reference</span></p>
         <h1 class="masthead">Generated, not hand-copied.</h1>
         <hr class="rule">
@@ -568,11 +567,8 @@ Bun.serve({
           <a href="/grain/docs/ai-interface">AI vocabulary</a> contract and GRAIN's token slots.
           Change the source, this page changes with it.</p>
         ${body}
-      </div>
-    </main>
-  </div>
-${PAGE_ASSETS}</body>
-</html>`;
+      `,
+      });
       return finalizePage(req, new Response(await renderAppPage(page), { headers: { "Content-Type": "text/html; charset=utf-8" } }));
     },
     // /notes — the portfolio-owned feed (content.ts renderNotesFeedPage): the /notes collection
@@ -762,3 +758,4 @@ ${PAGE_ASSETS}</body>
 });
 
 console.log(`Running on http://localhost:${config.port} (${config.isDev ? "dev" : "prod"})`);
+}
