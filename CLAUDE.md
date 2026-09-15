@@ -95,3 +95,21 @@ Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
   ([README-STANDARD](https://tjakoen.github.io/standards/readme-standard)); the flagship post is
   `content/notes/ten-times-zero.md`.
 - **It consumes the stack, never forks it.** New design work belongs up in grain, not here.
+
+## Running the gates
+
+The gates run in a container rather than against whatever is installed on the host, from the
+BREAD workspace repo that sits one directory up and holds the compose file:
+
+```sh
+MSYS_NO_PATHCONV=1 docker compose --profile gates run --rm gates-portfolio
+```
+
+It installs from the frozen lockfile, then runs the typecheck, the tests and the linter. The
+baseline is 618 pass, 0 fail; anything less is a real regression rather than a local
+quirk.
+The reason it is not a host run belongs to that workspace README rather than here, so it has
+one home: a Windows host without Developer Mode cannot create the symlink these fixtures
+build, and a host run therefore reports failures that do not exist. The `MSYS_NO_PATHCONV=1`
+prefix is not optional from Git Bash, which otherwise rewrites a container path into a
+Windows one and kills the run before it starts.
