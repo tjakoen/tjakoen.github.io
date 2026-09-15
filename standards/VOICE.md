@@ -1,6 +1,6 @@
 ---
 title: VOICE.md — voice & tone
-summary: The standard for anything published in Tjakoen's name - cadence, the machine-tells to avoid, and the honesty clause.
+summary: The standard for anything published in Tjakoen's name - cadence, the machine-tells to avoid, the honesty clause, and what a reader meets first.
 when: >
   Read this BEFORE writing the first line of prose that carries Tjakoen's byline, and before editing
   existing prose: a note, a blog post, a README, a page, a commit message, release copy, social copy,
@@ -99,6 +99,7 @@ Same voice, different dial settings. Contractions are resolved here: this is the
 | **README prose** | Contract | Short, oriented | Get them running fast. Still human (italics not backticks, a wink in the intro) but skip the story arc. |
 | **Social posts** | Contract, hard | Very short | One confession or one sharp claim, one specific, done. The pull-quote *is* the post. No thread throat-clearing, no "a 🧵". Lead with the hook, land in one line. |
 | **Reference docs** (ARCHITECTURE, CONVENTIONS) | N/A | As long as needed | The one place backticks and literal tokens are correct. Precision over personality. |
+| **Code review comment** | Contract | Very short | Ask, don't declare. State the mechanism in plain words, then put the fix as a question the author can say no to. Backticks are correct here, a file and a line have to be exact. The claim and the ask stay visible, the proof folds (see *What a reader meets first*). |
 | **Chat / casual** | Contract, typo-tolerant | Whatever | Fast, high energy. Keep its directness and honesty; never import chat looseness into published work. |
 
 **Social, specifically**, it's the origin-story open with the essay amputated. Take the single most
@@ -182,6 +183,52 @@ where possible, never mixed or grandiose.
 
   **Not in this footer:** *"Rendered by the stack it is about"* and the grain legend describe the
   *page*, not the post, so they live in the site/page chrome footer (rendered once), never per-note.
+
+## What a reader meets first
+
+Twenty-five code reviews went out with the verdict on the last line. Every one of them opened with
+my reasoning, so the developer had to walk past two thousand characters of me explaining why I was
+right before reaching the sentence that told them whether they could merge. The one part I had
+thought to fold away was the evidence table, which is the part nobody needed. That is the whole
+lesson, and it is not about code review: **a reader decides whether to read a thing from its first
+screen, so the first screen holds what they have to act on, and everything that only proves it folds
+behind that.**
+
+The numbers, from two days of real output and therefore a snapshot rather than a standing fact: 25
+review bodies, verdict last in 25 of them. Forty-one comments alongside, averaging 694 visible
+characters, where the claim and the ask together ran a median of 253. Two of the 41 folded anything
+at all. So roughly two thirds of what I was putting in front of people was proof they had not asked
+for yet.
+
+The repair is four rules, and they apply to a README, a note, a pull request, a message to a
+colleague, anything a person meets in a narrow column on a phone:
+
+- **Front what they do, fold what proves it.** Sort by whether the reader has to act on it, never by
+  category or by how hard it was to work out. A test gap that blocks the merge is visible; an
+  accessibility finding that deserves its own ticket folds. Both are real, and only one of them is
+  today's business.
+- **Fix the fold's label, and keep it short.** Those 25 documents used fourteen different labels on
+  the fold for two actual kinds of block. A label that changes every time is a label nobody learns,
+  so the fold gets opened every time or never, and both are failures. Three labels is a set; fourteen
+  is a shrug.
+- **Put a count on the label when there is one.** *Also worth doing (3)* tells a reader whether the
+  tap is worth it. *Three smaller things, folded* does not, and it is the same number of characters.
+- **A hedge is never folded.** This is the honesty clause meeting the layout rule, and the layout
+  rule loses. If a claim rests on something I have not run, or on a reading I am not sure of, that
+  caveat sits in the visible region next to the claim it qualifies. Fold *"I have not tested this"*
+  and a careful finding becomes a flat assertion, which is exactly the overclaim the clause below
+  exists to prevent. If the visible region will not hold the claim, the ask and the caveat together,
+  the claim sentence is too long. Trim the claim. Never bury the caveat.
+
+And the first line is the only line you are guaranteed. Collapsed views, notification digests and
+link previews all show line one and drop the rest, so line one carries the claim on its own. Never
+open with setup, and never open with a restatement of the thing the reader is already looking at.
+
+**What I have not shown.** Whether folding actually raises the odds of feedback being acted on is
+still open on my own numbers: the folded items ran well below the visible ones for adoption before
+the change, and the sample since is small. The argument here is that a reader who never reaches the
+ask cannot act on it, which is a floor rather than a proof. If the next pass says otherwise, the
+problem was volume all along and the fix is writing less, not folding more.
 
 ## Figures & visualizations
 
@@ -515,6 +562,7 @@ the linter multiplies the eye, it does not replace it.
 - [ ] **A benefit claimed but not shown.** Hypothesis? Say so.
 - [ ] **A specific number stated as permanent** when it's a snapshot. Flag it.
 - [ ] **Throat-clearing.** *"In today's fast-paced world…"* / *"It's worth noting that…"* Cut to the real thing.
+- [ ] **The reader reaches the reasoning before the ask.** Front what they do, fold what proves it, and check that no hedge went into the fold with it. See *What a reader meets first*.
 - [ ] **The AI use hedged or buried.** It's a badge, not a confession. Fly it.
 - [ ] **A thesis-first open** instead of a stakes-first one. Lead human; argue after.
 - [ ] **A dollar figure or exact ratio.** Money stays vague, always.
