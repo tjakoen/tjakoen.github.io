@@ -51,6 +51,14 @@ any repo alongside [`AI-DEVELOPMENT.md`](AI-DEVELOPMENT.md).
    were handed. If that line is fuzzy and the choice is genuinely the human's, ask once — with a
    recommendation, not a survey. Which surface that ask belongs on is DECISIONS §1; in a session
    someone is watching, the chat is almost always right.
+6. **Open your own tree before you edit.** The unit is one worktree per session, matching the
+   unit work is attributed to: a dirty tree is not automatically yours. A session that will only
+   read can stay in the main checkout. A session that will edit code opens its own worktree
+   first, so two sessions never mutate the same tree and neither one's `git status` hides the
+   other's diff (→ [LOOP](LOOP.md) §2). The harness offers `EnterWorktree`; where it does not,
+   `git worktree add` before the first edit. If you are already several edits into a shared tree,
+   finish the piece in flight and open the next session in its own, rather than moving a dirty
+   tree mid-run.
 
 ---
 
