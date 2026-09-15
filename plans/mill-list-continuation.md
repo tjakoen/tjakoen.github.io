@@ -1,6 +1,6 @@
 ---
 id: mill-list-continuation
-status: doing
+status: done
 track: ai
 depends: []
 touches:
@@ -114,8 +114,17 @@ item. **The real bar is no item cut mid-clause**, and that is met.
       `core/markdown.test.ts`. Continuation lines are consumed into the current item on the same
       `startsBlock` test the paragraph branch uses; nested items stay flat, as before. 562 grain
       tests green.
-- [ ] Publish `@tjakoen/mill` (not grain — the parser ships in its own package, pinned here at
-      `^0.2.0`), bump the pin, re-run the count. Blocked on the npm token and the owner's call.
+- [x] Publish `@tjakoen/mill` (not grain — the parser ships in its own package), bump the pin,
+      re-run the count. This shipped without the box being ticked: `0.2.2` went to npm on
+      2026-08-12, `latest` is now `0.4.0`, and this repo pins `^0.4.0` rather than the `^0.2.0`
+      written above. Confirmed 2026-09-16 against the PUBLISHED package rather than grain's source,
+      since that was the thing in doubt: parsing a soft-wrapped item through
+      `node_modules/@tjakoen/mill` returns two items with the continuation folded into the first.
+      The count re-run on the rendered site reads 39 across the standards against the 35 recorded
+      above, and `ten-times-zero` reads 1, which matches exactly. The four extra sit in `voice`,
+      `loop` and `note-standard`, all edited since the measurement; every boundary on those three
+      was read and each is a finished item followed by a real paragraph. The bar that matters, no
+      item cut mid-clause, holds.
 - [x] Check the notes as well as the standards. They are rendered by the same engine and nobody had
       counted them. `ten-times-zero`, the flagship post, has **11**. `watch-its-hands` has none. So
       this is not a standards-only defect, it reaches the published writing, and the pass bar above
