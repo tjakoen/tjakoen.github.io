@@ -78,6 +78,11 @@ premise. That's the whole value of a second reader.
   code should read like it was always there, not like a graft.
 - **Tests are part of the work, written as you build** — not a chore bolted on after.
   If behavior changed and no test covers it, the work isn't finished.
+- **Write the test before the implementation.** The ordering is the point, not a preference:
+  a test written once the code exists is shaped to pass the code that exists, so it certifies
+  the implementation instead of the behavior. Write the failing test first, confirm it fails for
+  the reason you expect, then make it pass. Where that is genuinely impractical, say so in the
+  run report and name what covers the behavior instead.
 - **Keep the green gate green.** Typecheck + tests pass *before* calling something done,
   every time. A red build is a stop-the-line event.
 - **Single source of truth per fact.** Every concept has one home. Everything else
