@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" data-themes="sourdough baguette brioche">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Every Time It Was Wrong · the talk</title>
+  <meta name="description" content="A knowledge-sharing session on the PR reviewer I run: how a finding earns the right to be posted, what the outcome log measured, why polling became event-driven, and the rule that stops the loop tuning itself.">
+</head>
+<!-- A TALK OWNS THE WINDOW. Same page contract as the other two decks (view/components/pages/talk):
+     no app shell, `data-deck-only`, GRAIN's presentation organism doing the work.
+
+     THIS ONE IS A KNOWLEDGE-SHARE, NOT A KEYNOTE, and the markup follows from that. The room is
+     engineers who already know what a pull request is, so no slide argues them into the topic and
+     no slide carries a paragraph. A heading and a figure, or a heading and three short lines. The
+     detail lives in slide-notes, which is where a working session wants it: the deck is the
+     artifact on the wall and the talking is the talk.
+
+     Figures are inline SVG on the shared theme tokens (they invert with the deck), carrying
+     GRAIN's own .fig rule for full slide width. `.live-fig` is deliberately NOT used: it is a
+     prose-width molecule capped at 34rem, which is right in a note and far too small here. The
+     data-live-figure hook rides on the svg instead, so a later session can still mount a live
+     widget on the organism's one seam without touching this file. -->
+<body data-screen="talk" data-deck-only>
+
+<div class="presentation" data-present data-deck data-hash data-minutes="25" data-channel="wrongonce">
+
+  <div class="presentation__bar">
+    <p class="presentation__meta"><a href="/talks">← all talks</a></p>
+    <p class="presentation__hint">← → move · <kbd>D</kbd> light/dark · <kbd>.</kbd> blank</p>
+  </div>
+
+  <!-- 1 ----------------------------------------------------------------- TITLE -->
+  <section class="presentation__slide" data-title="Title">
+    <p class="slide-eyebrow settles">Knowledge sharing</p>
+    <h1 class="slide-head" data-size="xl">Every Time It Was&nbsp;Wrong</h1>
+    <p class="slide-lede" data-grade="grain">How the PR reviewer decides what it has earned the right to say.</p>
+    <hr class="slide-rule">
+    <p class="slide-sig settles"><b>Tjakoen Stolk</b></p>
+    <ul class="slide-notes" hidden>
+      <li>Frame it in one line: this is what I built on top of our review harness, what it measured, and the three things it taught me that I did not expect.</li>
+      <li>Say up front that questions mid-way are fine. This is a working session, not a keynote.</li>
+      <li>The rougher typeface means a machine drafted the line. Mention once, do not come back to it.</li>
+    </ul>
+  </section>
+
+  <!-- 2 ----------------------------------------------------------------- WHAT IT IS -->
+  <section class="presentation__slide" data-align="top" data-title="What it does">
+    <p class="slide-eyebrow settles">The thing itself</p>
+    <h2 class="slide-head settles" data-size="sm">Reads a PR, posts up to six line&nbsp;comments.</h2>
+    <ul class="beats">
+      <li>No draft step. It posts.</li>
+      <li>It can block a merge. It cannot approve one.</li>
+      <li>Every comment it posts gets graded later.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Three facts, no defence yet. The rest of the session is why each one is the way it is.</li>
+      <li>If somebody objects to the no-draft-step now, park it: slide 12 is exactly that.</li>
+    </ul>
+  </section>
+
+  <!-- 3 ----------------------------------------------------------------- INHERITED -->
+  <section class="presentation__slide" data-align="top" data-title="What I inherited">
+    <p class="slide-eyebrow settles">Credit where it belongs</p>
+    <h2 class="slide-head settles" data-size="sm">Most of the machine is&nbsp;ours already.</h2>
+    <ul class="beats">
+      <li>The harness, the worktree, the six lenses, the checklists: all team-built.</li>
+      <li>I added the part that asks whether a finding was right.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Be specific about the inheritance: target resolution, isolated checkout, parallel dispatch, one assembled verdict. The lens set is the TypeScript reviewer set, one for one.</li>
+      <li>What is mine: the precedence ladder, the verification pass, anchors resolved from excerpts, the volume discipline, and the outcome log.</li>
+      <li>Do not oversell the delta. The interesting half is the measurement and that is the only part worth this room's time.</li>
+    </ul>
+  </section>
+
+  <!-- 4 ----------------------------------------------------------------- THE SHAPE -->
+  <section class="presentation__slide" data-align="top" data-title="The shape">
+    <p class="slide-eyebrow settles">One run</p>
+    <svg class="fig" data-live-figure="funnel" data-surface="figure:funnel" viewBox="0 0 640 300" role="img"
+         aria-label="A funnel. A diff enters at the top. It passes through intent, prior art and a context pack, fans out to six parallel lenses, then narrows through a verification pass, five gates and a pre-post check, leaving at most six posted comments at the bottom. Each stage is drawn narrower than the one above it."
+         style="font-size:12px">
+      <defs>
+        <marker id="fn-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <g style="stroke:var(--color-muted);stroke-width:1.4;fill:none">
+        <path d="M320 40 L320 62" marker-end="url(#fn-a)"/>
+        <path d="M320 92 L320 114" marker-end="url(#fn-a)"/>
+        <path d="M320 186 L320 208" marker-end="url(#fn-a)"/>
+        <path d="M320 238 L320 258" marker-end="url(#fn-a)"/>
+      </g>
+      <rect x="236" y="14" width="168" height="26" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="320" y="31" text-anchor="middle" style="fill:var(--color-fg)">the diff</text>
+      <rect x="196" y="62" width="248" height="30" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="320" y="81" text-anchor="middle" style="fill:var(--color-muted)">intent · prior art · context pack</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="96" y="114" width="72" height="30" rx="3"/><rect x="176" y="114" width="72" height="30" rx="3"/>
+        <rect x="256" y="114" width="72" height="30" rx="3"/><rect x="336" y="114" width="72" height="30" rx="3"/>
+        <rect x="416" y="114" width="72" height="30" rx="3"/><rect x="496" y="114" width="72" height="30" rx="3"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-muted);font-size:11px">
+        <text x="132" y="133">security</text><text x="212" y="133">a11y</text><text x="292" y="133">staff</text>
+        <text x="372" y="133">tests</text><text x="452" y="133">migrations</text><text x="532" y="133">frontend</text>
+      </g>
+      <text x="320" y="164" text-anchor="middle" style="fill:var(--color-muted)">six lenses, parallel, each on its own slice of the rules</text>
+      <path d="M132 144 L132 172 L532 172 L532 144" style="fill:none;stroke:var(--color-line)"/>
+      <path d="M320 172 L320 186" style="fill:none;stroke:var(--color-muted);stroke-width:1.4"/>
+      <rect x="216" y="208" width="208" height="30" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="320" y="227" text-anchor="middle" style="fill:var(--color-fg)">verify · five gates · pre-post</text>
+      <rect x="252" y="258" width="136" height="30" rx="4" style="fill:var(--color-fg)"/>
+      <text x="320" y="277" text-anchor="middle" style="fill:var(--color-bg)">at most six comments</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Do not walk the boxes. Point at the narrowing and say the design is subtractive: everything below the lenses exists to remove findings.</li>
+      <li>Volume caps are hard. Six inline, three on a small or incremental diff. Anything over the cap folds into the body or gets deleted.</li>
+      <li>Costs, if asked: roughly 57k tokens of instruction load before it reads a diff, six lens agents in parallel, then a verification pass that is the single most expensive step.</li>
+    </ul>
+  </section>
+
+  <!-- 5 ----------------------------------------------------------------- THE GATES -->
+  <section class="presentation__slide" data-align="top" data-title="Five gates">
+    <p class="slide-eyebrow settles">Every finding clears all five, or it is dropped</p>
+    <ul class="beats" data-size="sm">
+      <li><b>Intent.</b> Traced to the ticket and the epic. A change that was asked for is not a finding.</li>
+      <li><b>Prior art.</b> Not already raised, not already answered.</li>
+      <li><b>Cross-pattern.</b> The convention is grepped and cited, never asserted.</li>
+      <li><b>Line accuracy.</b> The anchor is resolved from the excerpt, not read off a hunk header.</li>
+      <li><b>Necessity.</b> Worth the author's time.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Move fast here. Only the third one is interesting and the next two slides are about it.</li>
+      <li>Worth one line: a finding that fails a gate is dropped or downgraded to a question. Never softened and posted anyway.</li>
+    </ul>
+  </section>
+
+  <!-- 6 ----------------------------------------------------------------- THE TRAP -->
+  <section class="presentation__slide" data-align="top" data-title="The convention trap">
+    <p class="slide-eyebrow settles">Gate three, and where it went wrong</p>
+    <h2 class="slide-head settles" data-size="sm">It grepped the file it was&nbsp;reviewing.</h2>
+    <ul class="beats">
+      <li class="frag">Found the pattern. Cited it. Approved the code.</li>
+      <li class="frag" data-grade="grain">A file contains the pattern it is about to bless, by construction.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Give them two seconds before the second beat. Most people get there.</li>
+      <li>The fix: count across the owning service, and put the count in the finding. "The idiom here is X" and "X appears 546 times against this shape's 2" are different claims and only the second survives disagreement.</li>
+      <li>The case that produced the rule: 872 permission checks against 2 role-gate call sites service-wide, and the wrong one sat 18 lines away in the same file, which is why it passed. A human requested changes on that line the next morning.</li>
+      <li>Second failure worth naming: where the code has drifted, the neighbours certify the drift, so a reviewer that only greps will defend the pattern our own reviewers keep rejecting.</li>
+    </ul>
+  </section>
+
+  <!-- 7 ----------------------------------------------------------------- THE LADDER -->
+  <section class="presentation__slide" data-align="top" data-title="The ladder">
+    <p class="slide-eyebrow settles">So the surrounding code is the weakest evidence, not the strongest</p>
+    <svg class="fig" data-live-figure="ladder" data-surface="figure:ladder" viewBox="0 0 620 292" role="img"
+         aria-label="A precedence ladder, strongest at the top. First, findings already proven wrong once, which are dropped on sight. Second, a pattern the team has rejected in review in their own words. Third, the written standard. Fourth and weakest, a pattern grepped from neighbouring code, and a neighbour inside the file under review carries no weight at all. Beside the ladder, outside it, sits an external conformance standard, which the team does not get a vote on."
+         style="font-size:12.5px">
+      <text x="24" y="20" style="fill:var(--color-muted);font-size:11.5px">strongest</text>
+      <rect x="24" y="30" width="360" height="40" rx="4" style="fill:var(--color-fg)"/>
+      <text x="40" y="48" style="fill:var(--color-bg)">proven wrong once before</text>
+      <text x="40" y="63" style="fill:var(--color-bg);font-size:11px">dropped on sight, no argument</text>
+
+      <rect x="24" y="78" width="360" height="40" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="40" y="96" style="fill:var(--color-fg)">a pattern the team rejected in review</text>
+      <text x="40" y="111" style="fill:var(--color-muted);font-size:11px">their own words, quoted, with the link</text>
+
+      <rect x="24" y="126" width="360" height="40" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="40" y="144" style="fill:var(--color-fg)">the written standard</text>
+      <text x="40" y="159" style="fill:var(--color-muted);font-size:11px">quoted with its scope, or not cited at all</text>
+
+      <rect x="24" y="174" width="360" height="40" rx="4" style="fill:none;stroke:var(--color-line)"/>
+      <text x="40" y="192" style="fill:var(--color-muted)">a neighbour in the surrounding code</text>
+      <text x="40" y="207" style="fill:var(--color-muted);font-size:11px">only where the history above is silent</text>
+      <text x="24" y="228" style="fill:var(--color-muted);font-size:11.5px">weakest</text>
+
+      <line x1="24" y1="248" x2="384" y2="248" style="stroke:var(--color-line)"/>
+      <text x="24" y="266" style="fill:var(--color-muted);font-size:11.5px">a neighbour inside the file under review:</text>
+      <text x="24" y="282" style="fill:var(--color-fg);font-size:11.5px">not evidence. The file contains it by construction.</text>
+
+      <line x1="412" y1="30" x2="412" y2="214" style="stroke:var(--color-line);stroke-dasharray:3 3"/>
+      <text x="432" y="48" style="fill:var(--color-fg)">outside the ladder</text>
+      <text x="432" y="70" style="fill:var(--color-muted);font-size:11.5px">an external standard, such as an</text>
+      <text x="432" y="86" style="fill:var(--color-muted);font-size:11.5px">accessibility success criterion.</text>
+      <text x="432" y="112" style="fill:var(--color-muted);font-size:11.5px">Nobody here gets a vote on it, so</text>
+      <text x="432" y="128" style="fill:var(--color-muted);font-size:11.5px">"the neighbour does it too" means</text>
+      <text x="432" y="144" style="fill:var(--color-fg);font-size:11.5px">there are two failures, not a pass.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Read it bottom to top: that is the order of temptation, because grepping is the easiest thing to do and it is the bottom rung.</li>
+      <li>The top rung is fed only by findings measured wrong, and nothing else can write to it. That is the highest-precedence rule in the whole skill and it has five entries.</li>
+      <li>The right-hand panel is the carve-out that cost us a real accessibility finding before it existed. Let them read it rather than reading it out.</li>
+    </ul>
+  </section>
+
+  <!-- 8 ----------------------------------------------------------------- FACTS AND CLAIMS -->
+  <section class="presentation__slide" data-align="top" data-title="Facts and claims">
+    <p class="slide-eyebrow settles">Everything that survives gets sorted</p>
+    <ul class="beats">
+      <li><b>Fact about the diff.</b> No spec file for this changed service. A script proves it every time. Straight through.</li>
+      <li><b>Claim about the world.</b> This is an authorization hole. That is reasoning. Always verified.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>This split came from our own plugin work and it was the best idea I took. Handing a fact to a model only risks it talking you out of something true.</li>
+      <li>Third case if asked: the pattern is certain but the impact is not. Verified like a claim.</li>
+    </ul>
+  </section>
+
+  <!-- 9 ----------------------------------------------------------------- THE SKEPTIC -->
+  <section class="presentation__slide" data-align="top" data-title="The skeptic">
+    <p class="slide-eyebrow settles">Every claim goes to a second reader</p>
+    <h2 class="slide-head settles" data-size="sm">Whose only job is to refute&nbsp;it.</h2>
+    <ul class="beats">
+      <li>Handed the claim with the reasoning stripped out.</li>
+      <li>Uncertain defaults to refuted.</li>
+      <li class="frag" data-grade="grain">Refuted means dropped. Not softened.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Stripping the evidence matters: a verifier shown the original argument tends to agree with it.</li>
+      <li>What it is asked: is the failure reachable, is it already handled in the same file, does the cited sibling actually support the claim, is it the ticket's intent.</li>
+      <li>Batching: capped on wall clock rather than tokens, because one reader holding a dozen claims stops attacking and starts summarizing.</li>
+    </ul>
+  </section>
+
+  <!-- 10 ---------------------------------------------------------------- THE BAR -->
+  <section class="presentation__slide" data-align="top" data-title="The confidence bar">
+    <p class="slide-eyebrow settles">Then one question per finding</p>
+    <h2 class="slide-head settles" data-size="sm">Name what&nbsp;breaks.</h2>
+    <ul class="beats">
+      <li>"This looks wrong" is not a finding.</li>
+      <li>"Delete this and every caller reads the wrong tenant" is.</li>
+      <li>Short of that: downgraded to a question, or cut.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>This is the rule that replaced me reading each review before it went out. Say that plainly.</li>
+      <li>The tie-break, and it never moves: a wrong comment is permanent and a missed one is one PR, so when the two are close, drop it.</li>
+    </ul>
+  </section>
+
+  <!-- 11 ---------------------------------------------------------------- THE RACE -->
+  <section class="presentation__slide" data-align="top" data-title="The race window">
+    <p class="slide-eyebrow settles">The one nobody warns you about</p>
+    <h2 class="slide-head settles" data-size="sm">The PR is alive while the run is&nbsp;thinking.</h2>
+    <ul class="beats">
+      <li>A run takes minutes. Reviewers and authors act inside those minutes.</li>
+      <li>So the last step before posting is reading the PR again and dropping anything that got answered.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Real case: a human requested changes about thirty seconds before this thing posted a clean verdict on the same commit. Two contradictory reviews, one minute apart.</li>
+      <li>The subtle bug: compare against when you last read the threads, not when the run started. Different timestamps, and only one of them catches this.</li>
+      <li>Also worth knowing: a review submitted with no inline comments exists only on the reviews endpoint and is invisible on the comments listing. That is how the above went unseen.</li>
+    </ul>
+  </section>
+
+  <!-- 12 ---------------------------------------------------------------- POSTS / APPROVES -->
+  <section class="presentation__slide" data-align="top" data-title="Posts without asking, never approves">
+    <p class="slide-eyebrow settles">The two halves of one decision</p>
+    <h2 class="slide-head settles" data-size="sm">It publishes on its own. It holds no&nbsp;vote.</h2>
+    <ul class="beats">
+      <li>A review I have to read before it posts is one I would not have time to run.</li>
+      <li>Merging needs human approving reviews, and the posting account would satisfy that gate.</li>
+      <li class="frag" data-grade="grain">So it can block a merge. Only I can release one.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Expect the pushback here. The answer is the pre-post gate, not confidence.</li>
+      <li>This is a control, not a preference. No precision number would change it.</li>
+      <li>Consequence worth flagging: a change request does not clear itself on a fix push, so blocking is spent only where you mean to hold the PR until a person acts.</li>
+    </ul>
+  </section>
+
+  <!-- 13 ---------------------------------------------------------------- RIGHT AND UNREAD -->
+  <section class="presentation__slide" data-align="top" data-title="Right and unread">
+    <p class="slide-eyebrow settles">Then we measured it, and this was the surprise</p>
+    <svg class="fig" data-live-figure="placement" data-surface="figure:placement" viewBox="0 0 620 236" role="img"
+         aria-label="Two bars comparing where a finding was printed. Comments attached to a line of code were acted on 96 percent of the time. The same quality of finding, folded into the review summary instead, was acted on between 24 and 43 percent of the time depending on the section. Both groups were right about as often, at 98 and 100 percent."
+         style="font-size:12.5px">
+      <text x="24" y="26" style="fill:var(--color-muted)">Was the finding right?</text>
+      <text x="24" y="52" style="fill:var(--color-fg)">on a line</text>
+      <rect x="128" y="38" width="380" height="18" style="fill:var(--color-line)"/>
+      <text x="516" y="52" style="fill:var(--color-muted)">98%</text>
+      <text x="24" y="80" style="fill:var(--color-fg)">in the summary</text>
+      <rect x="128" y="66" width="388" height="18" style="fill:var(--color-line)"/>
+      <text x="524" y="80" style="fill:var(--color-muted)">100%</text>
+
+      <line x1="24" y1="102" x2="596" y2="102" style="stroke:var(--color-line)"/>
+
+      <text x="24" y="128" style="fill:var(--color-muted)">Did anybody act on it?</text>
+      <text x="24" y="154" style="fill:var(--color-fg)">on a line</text>
+      <rect x="128" y="140" width="372" height="18" style="fill:var(--color-fg)"/>
+      <text x="508" y="154" style="fill:var(--color-fg)">96%</text>
+      <text x="24" y="182" style="fill:var(--color-fg)">in the summary</text>
+      <rect x="128" y="168" width="128" height="18" style="fill:var(--color-fg)"/>
+      <text x="264" y="182" style="fill:var(--color-fg)">24 to 43%</text>
+
+      <text x="24" y="216" style="fill:var(--color-fg)">Same run. Same quality of finding. Only the placement differs.</text>
+      <text x="24" y="232" style="fill:var(--color-muted);font-size:11.5px">753 scored findings, September 2026. A snapshot, and it moves.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Top half first: both groups were right. This is not an accuracy story.</li>
+      <li>405 of the logged findings sit in the body against 285 inline, so the majority of what it says lands in the region nobody reads.</li>
+      <li>Direct evidence that the fold is the cause: on one PR a confirmed bug folded into a details block was the one item the author missed while fixing all four inline comments.</li>
+    </ul>
+  </section>
+
+  <!-- 14 ---------------------------------------------------------------- TWO NUMBERS -->
+  <section class="presentation__slide" data-align="top" data-title="Precision is not adoption">
+    <p class="slide-eyebrow settles">Which I had as one number for months</p>
+    <ul class="beats">
+      <li><b>Precision.</b> Was it right? Fixed over fixed plus proven wrong.</li>
+      <li><b>Adoption.</b> Did anyone act? Fixed over fixed plus ignored.</li>
+      <li class="frag" data-grade="grain">Fused, an author merging past a correct comment scores as the reviewer being wrong.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>The consequence is the point: every time it got ignored, my own dashboard told me to make it stricter. It was learning to say less for being read less.</li>
+      <li>They want opposite repairs. Low precision is a lens to tighten. Low adoption is a placement problem, and tightening the lens there throws away true findings.</li>
+      <li>Generalize it once: any metric that fuses "was I right" with "did anyone listen" will tell you to shut up.</li>
+      <li>Honest caveat: three changes aimed at that number inside eight days, so I cannot yet say which one worked. That is a measurement I broke.</li>
+    </ul>
+  </section>
+
+  <!-- 15 ---------------------------------------------------------------- POLL VS EVENT -->
+  <section class="presentation__slide" data-align="top" data-title="Poll versus event">
+    <p class="slide-eyebrow settles">Posting is not the end. Somebody replies</p>
+    <svg class="fig" data-live-figure="lanes" data-surface="figure:lanes" viewBox="0 0 620 216" role="img"
+         aria-label="Two lanes on one timeline. In the event lane, a reply and a push each wake the session immediately and cost nothing in between, but a thread resolved in silence raises nothing at all and is missed. In the poll lane, a check runs on a fixed cadence and mostly finds nothing, and it is the only lane that catches the silent resolve."
+         style="font-size:12px">
+      <text x="24" y="24" style="fill:var(--color-fg)">events</text>
+      <line x1="24" y1="56" x2="596" y2="56" style="stroke:var(--color-line)"/>
+      <g style="fill:var(--color-fg)">
+        <circle cx="150" cy="56" r="5"/><circle cx="330" cy="56" r="5"/>
+      </g>
+      <text x="150" y="44" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">a reply</text>
+      <text x="330" y="44" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">a push</text>
+      <text x="150" y="76" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">wakes instantly</text>
+      <text x="330" y="76" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">wakes instantly</text>
+      <circle cx="500" cy="56" r="5" style="fill:none;stroke:var(--color-muted);stroke-dasharray:2 2"/>
+      <text x="500" y="44" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">resolved in silence</text>
+      <text x="500" y="76" text-anchor="middle" style="fill:var(--color-fg);font-size:11px">nothing fires</text>
+
+      <text x="24" y="124" style="fill:var(--color-fg)">the poll</text>
+      <line x1="24" y1="156" x2="596" y2="156" style="stroke:var(--color-line)"/>
+      <g style="stroke:var(--color-muted);stroke-width:1.4">
+        <line x1="90" y1="148" x2="90" y2="164"/><line x1="200" y1="148" x2="200" y2="164"/>
+        <line x1="310" y1="148" x2="310" y2="164"/><line x1="420" y1="148" x2="420" y2="164"/>
+        <line x1="530" y1="148" x2="530" y2="164"/>
+      </g>
+      <text x="90" y="178" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">quiet</text>
+      <text x="200" y="178" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">quiet</text>
+      <text x="310" y="178" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">quiet</text>
+      <text x="420" y="178" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">quiet</text>
+      <rect x="500" y="140" width="60" height="32" rx="4" style="fill:var(--color-fg)"/>
+      <text x="530" y="160" text-anchor="middle" style="fill:var(--color-bg);font-size:11px">caught</text>
+      <text x="24" y="208" style="fill:var(--color-fg)">Neither is enough, so both are wired.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Where it started: a timer every thirty minutes. Forty-eight wake-ups a day, each a fresh session holding one line of output, filed nowhere.</li>
+      <li>The event half is strictly better for the common case, because the wake arrives at the session that already holds the review in context. Answering a reply costs a fraction of re-running anything.</li>
+      <li>The silent resolve is why the poll survives. Nothing moves, so nothing can notify, and around here silence is how people agree. Five of five silently-resolved threads turned out to be real fixes.</li>
+      <li>The poll is shell, one call per PR, and prints nothing when nothing changed. A poll that talks every tick is a poll nobody reads.</li>
+    </ul>
+  </section>
+
+  <!-- 16 ---------------------------------------------------------------- THE CONFESSION -->
+  <section class="presentation__slide" data-align="top" data-title="The file that never existed">
+    <p class="slide-eyebrow settles">And a caution about all of this</p>
+    <h2 class="slide-head settles" data-size="sm">My own docs described that poller in detail. It had never&nbsp;existed.</h2>
+    <ul class="beats">
+      <li class="frag">Nothing referenced it. The directory was never created.</li>
+      <li class="frag" data-grade="grain">It survived weeks because it was plausible and nobody ran the command.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Second time I have been caught by exactly this shape. Mention that there is a whole post about the first one, do not retell it.</li>
+      <li>The lesson is the one that matters most for anyone building this kind of thing: write down what a system does and you will start believing the writing. Measure instead of reading.</li>
+    </ul>
+  </section>
+
+  <!-- 17 ---------------------------------------------------------------- THE LOOP -->
+  <section class="presentation__slide" data-align="top" data-title="The loop">
+    <p class="slide-eyebrow settles">What the log is actually for</p>
+    <svg class="fig" data-live-figure="loop" data-surface="figure:loop" viewBox="0 0 620 250" role="img"
+         aria-label="A ring of five stages. A review posts its findings. Every posted finding is logged. Each one is later scored from the thread, or from reading the code itself when there is no thread. The scores are read back as precision per theme rather than one average. That points at one lens to change, the change is tested against a fixed set of past pull requests, and the loop returns to the review. A bar across the arrow into the change marks the point where a human decides."
+         style="font-size:12px">
+      <defs>
+        <marker id="lp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
+        <path d="M148 40 L232 40" marker-end="url(#lp-a)"/>
+        <path d="M360 40 L444 40" marker-end="url(#lp-a)"/>
+        <path d="M512 62 L512 108" marker-end="url(#lp-a)"/>
+        <path d="M444 130 L360 130" marker-end="url(#lp-a)"/>
+        <path d="M232 130 L148 130" marker-end="url(#lp-a)"/>
+        <path d="M84 108 L84 62" marker-end="url(#lp-a)"/>
+      </g>
+      <rect x="24" y="22" width="124" height="36" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="86" y="44" text-anchor="middle" style="fill:var(--color-fg)">the review posts</text>
+      <rect x="232" y="22" width="128" height="36" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="296" y="44" text-anchor="middle" style="fill:var(--color-muted)">every finding logged</text>
+      <rect x="444" y="22" width="136" height="36" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="512" y="39" text-anchor="middle" style="fill:var(--color-muted)">scored later, from the</text>
+      <text x="512" y="52" text-anchor="middle" style="fill:var(--color-muted)">thread or from the code</text>
+      <rect x="444" y="112" width="136" height="36" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="512" y="129" text-anchor="middle" style="fill:var(--color-muted)">precision per theme,</text>
+      <text x="512" y="142" text-anchor="middle" style="fill:var(--color-muted)">never one average</text>
+      <rect x="232" y="112" width="128" height="36" rx="4" style="fill:var(--color-fg)"/>
+      <text x="296" y="134" text-anchor="middle" style="fill:var(--color-bg)">change one lens</text>
+      <rect x="24" y="112" width="124" height="36" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="86" y="129" text-anchor="middle" style="fill:var(--color-muted)">re-run against old</text>
+      <text x="86" y="142" text-anchor="middle" style="fill:var(--color-muted)">pull requests</text>
+
+      <line x1="402" y1="116" x2="402" y2="144" style="stroke:var(--color-fg);stroke-width:2"/>
+      <text x="402" y="172" text-anchor="middle" style="fill:var(--color-fg);font-size:11.5px">a human decides here</text>
+      <text x="24" y="224" style="fill:var(--color-fg)">One average hides the thing worth fixing: a lens can be excellent on migrations</text>
+      <text x="24" y="240" style="fill:var(--color-fg)">and noisy on frontend performance, and the mean looks fine.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>The scoring-from-code half matters: most items have no thread, so reading thread state alone measures the quarter of the output you were most confident about.</li>
+      <li>The re-run step is the one people skip. Report recall, precision and volume together: a change that raises what you catch while doubling what you say is not an improvement.</li>
+      <li>Precision scoring is blind to a miss by construction, so there is a separate recall pass that reads human comments on files the reviewer looked at and never flagged.</li>
+    </ul>
+  </section>
+
+  <!-- 18 ---------------------------------------------------------------- THE FENCE -->
+  <section class="presentation__slide" data-align="center" data-title="The fence">
+    <p class="quote-mark settles">The rule that keeps the loop honest</p>
+    <p class="quote settles">A loop allowed to tighten itself on its own output can only ever learn to say less.</p>
+    <ul class="slide-notes" hidden>
+      <li>Concretely: it cannot raise its own severity bar, cannot widen its own volume caps, and cannot add to the list that silences a class of finding. Those stop and ask, every time.</li>
+      <li>"It can tell me it is wrong. It does not get to decide what to do about being wrong."</li>
+    </ul>
+  </section>
+
+  <!-- 19 ---------------------------------------------------------------- THE REVERSALS -->
+  <section class="presentation__slide" data-align="top" data-title="None of this arrived designed">
+    <p class="slide-eyebrow settles">For anyone building something similar</p>
+    <ul class="beats" data-size="sm">
+      <li>Polling on a timer, before events.</li>
+      <li>One verifier per finding, before somebody priced a twelve-finding review.</li>
+      <li>The whole standards file loaded into every lens, seven times a run.</li>
+      <li>Precision and adoption as one number.</li>
+      <li>Logging only the inline comments, which measured the quarter it was surest about.</li>
+      <li>An increment range that would have reviewed two thousand files of somebody else's work.</li>
+      <li class="frag" data-grade="grain">Every one of those needed shipping the wrong version and then measuring it.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>This is the slide worth the room's time. Offer it as the actual takeaway: none of this was designed up front and it could not have been.</li>
+      <li>If there is time, the volume sub-caps are the sharpest one: written once on an authority nobody had granted, and reverted for it.</li>
+      <li>Open the floor here rather than at the end.</li>
+    </ul>
+  </section>
+
+  <!-- 20 ---------------------------------------------------------------- CLOSE -->
+  <section class="presentation__slide" data-align="top" data-title="Where it is written up">
+    <p class="slide-eyebrow settles">If you want the detail</p>
+    <h2 class="slide-head settles" data-size="sm">The written version has the mechanism in full and the numbers you can argue&nbsp;with.</h2>
+    <div class="end">
+      <div>
+        <p class="end__url">tjakoen.github.io/notes/every-time-it-was-wrong</p>
+      </div>
+    </div>
+    <p class="slide-lede" data-size="sm">Reading behind it: Addy Osmani on loop engineering and quality gates, Alfonso Graziano on verification gates, and GitHub's Spec Kit.</p>
+    <hr class="slide-rule">
+    <p class="slide-sig"><b>The judgment is human. The typing, by design, is not.</b></p>
+    <ul class="slide-notes" hidden>
+      <li>Paste the link rather than expecting anyone to type it.</li>
+      <li>Do not read the reading list aloud. Name the one you would start with and stop.</li>
+    </ul>
+  </section>
+
+  <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
+  <div class="presentation__controls">
+    <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 20</span></span>
+    <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
+    <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
+    <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
+    <button class="presentation__ctl" type="button" data-ctl="presenter" title="Presenter window (P)" aria-label="Presenter window">◫</button>
+    <button class="presentation__ctl" type="button" data-toggle-scheme title="Light or dark (D)" aria-label="Light or dark">☾</button>
+    <button class="presentation__ctl" type="button" data-present-toggle title="Present (F)" aria-label="Present">
+      <span class="off-present">⤢</span><span class="on-present">✕</span>
+    </button>
+  </div>
+  <div class="presentation__notes" data-inline-notes aria-live="polite"></div>
+  <div class="presentation__grid" data-grid></div>
+
+<div class="presenter">
+  <div class="presenter__now">
+    <span class="presenter__pos" data-p-pos>1 / 20</span>
+    <span class="presenter__clock" data-p-clock>00:00</span>
+  </div>
+  <div>
+    <h2 class="presenter__title" data-p-title></h2>
+    <ul class="presenter__notes" data-p-notes></ul>
+  </div>
+  <div class="presenter__next">
+    <h3>Next</h3>
+    <p data-p-next></p>
+  </div>
+  <p class="presenter__hint">Arrows here drive the main window · T resets the clock · the clock turns accent past 20 minutes</p>
+</div>
+
+<script type="module" src="/scripts/presentation.js"></script>
+</body>
+</html>
