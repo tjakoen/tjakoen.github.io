@@ -230,46 +230,73 @@
 
   <!-- 8 ----------------------------------------------------------------- FACTS AND CLAIMS -->
   <section class="presentation__slide" data-title="Facts and opinions">
-    <p class="slide-eyebrow settles">What survives gets sorted into two piles</p>
-    <svg class="fig" viewBox="0 0 700 200" role="img"
-         aria-label="What the reviewers found splits into two paths. A fact about the diff, such as a changed service with no test file, is proved by a script and goes straight to posting. An opinion about the code, such as this lets the wrong user in, goes to a second reader first and is only posted if it survives."
+    <p class="slide-eyebrow settles">What survives gets sorted into three piles</p>
+    <svg class="fig" viewBox="0 0 700 218" role="img"
+         aria-label="What the reviewers found splits three ways. A fact about the diff, such as a changed service with no test file, is proved by a script and goes straight to posting. An opinion about the code, such as this lets the wrong user in, goes to a second reader first. A third kind, where the pattern is certainly there but the cost is not visible in the diff, goes to the second reader with the pattern already granted, so the only question asked is whether it matters."
          style="font-size:12px">
       <defs>
         <marker id="fk-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
           <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
         </marker>
       </defs>
-      <rect x="8" y="76" width="112" height="44" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="64" y="94" text-anchor="middle" style="fill:var(--color-fg)">what the</text>
-      <text x="64" y="110" text-anchor="middle" style="fill:var(--color-fg)">reviewers found</text>
+      <rect x="8" y="82" width="104" height="44" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="60" y="100" text-anchor="middle" style="fill:var(--color-fg)">what the</text>
+      <text x="60" y="116" text-anchor="middle" style="fill:var(--color-fg)">lenses found</text>
       <g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
-        <path d="M120 98 L152 98 L152 48 L184 48" marker-end="url(#fk-a)"/>
-        <path d="M120 98 L152 98 L152 150 L184 150" marker-end="url(#fk-a)"/>
-        <path d="M356 48 L560 48" marker-end="url(#fk-a)"/>
-        <path d="M356 150 L404 150" marker-end="url(#fk-a)"/>
-        <path d="M528 150 L560 150" marker-end="url(#fk-a)"/>
+        <path d="M112 104 L140 104 L140 34 L172 34" marker-end="url(#fk-a)"/>
+        <path d="M112 104 L140 104 L140 104 L172 104" marker-end="url(#fk-a)"/>
+        <path d="M112 104 L140 104 L140 174 L172 174" marker-end="url(#fk-a)"/>
+        <path d="M356 34 L556 34" marker-end="url(#fk-a)"/>
+        <path d="M356 104 L400 104" marker-end="url(#fk-a)"/>
+        <path d="M356 174 L400 174" marker-end="url(#fk-a)"/>
+        <path d="M524 104 L556 104" marker-end="url(#fk-a)"/>
+        <path d="M524 174 L556 174" marker-end="url(#fk-a)"/>
       </g>
-      <rect x="184" y="26" width="172" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="270" y="44" text-anchor="middle" style="fill:var(--color-fg)">a fact about the diff</text>
-      <text x="270" y="60" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">no test file for this change</text>
-      <text x="456" y="34" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">a script proves it</text>
-      <text x="456" y="66" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">the same way every time</text>
 
-      <rect x="184" y="128" width="172" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="270" y="146" text-anchor="middle" style="fill:var(--color-fg)">an opinion about it</text>
-      <text x="270" y="162" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">this lets the wrong user in</text>
-      <rect x="404" y="128" width="124" height="44" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="466" y="146" text-anchor="middle" style="fill:var(--color-fg)">second reader</text>
-      <text x="466" y="162" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">argues it down first</text>
+      <rect x="172" y="14" width="184" height="40" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="264" y="31" text-anchor="middle" style="fill:var(--color-fg)">a fact about the diff</text>
+      <text x="264" y="46" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">no test file for this change</text>
+      <text x="456" y="26" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">a script gives the same</text>
+      <text x="456" y="48" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">answer every time</text>
 
-      <rect x="560" y="76" width="132" height="44" rx="4" style="fill:var(--color-fg)"/>
-      <text x="626" y="102" text-anchor="middle" style="fill:var(--color-bg)">posted</text>
-      <path d="M560 48 L586 48 L586 76" style="fill:none;stroke:var(--color-line)"/>
-      <path d="M560 150 L586 150 L586 120" style="fill:none;stroke:var(--color-line)"/>
+      <rect x="172" y="84" width="184" height="40" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="264" y="101" text-anchor="middle" style="fill:var(--color-fg)">an opinion about it</text>
+      <text x="264" y="116" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">this lets the wrong user in</text>
+
+      <rect x="172" y="154" width="184" height="40" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="264" y="171" text-anchor="middle" style="fill:var(--color-fg)">there, but does it cost?</text>
+      <text x="264" y="186" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">upload added, limit off the diff</text>
+
+      <rect x="400" y="84" width="124" height="40" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="462" y="108" text-anchor="middle" style="fill:var(--color-fg)">second reader</text>
+      <rect x="400" y="154" width="124" height="40" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="462" y="171" text-anchor="middle" style="fill:var(--color-fg)">second reader,</text>
+      <text x="462" y="186" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">pattern already granted</text>
+
+      <rect x="556" y="82" width="136" height="44" rx="4" style="fill:var(--color-fg)"/>
+      <text x="624" y="108" text-anchor="middle" style="fill:var(--color-bg)">posted, or dropped</text>
+      <path d="M556 34 L586 34 L586 82" style="fill:none;stroke:var(--color-line)"/>
+      <path d="M556 174 L586 174 L586 126" style="fill:none;stroke:var(--color-line)"/>
     </svg>
     <ul class="slide-notes" hidden>
-      <li>This split came out of our own plugin work and it was the best idea I took. Asking a model to second-guess a fact only risks it talking you out of something true.</li>
-      <li>Third case if asked: the pattern is certain but the impact is not. Treated as an opinion.</li>
+      <li>This split came out of our own plugin work and it was the best idea I took.</li>
+      <li>Say why it is precision before it is cost: the second reader says no when it cannot decide, which is right for an opinion and wrong for a fact. Hand it a script result it cannot re-run and it drops the most reproducible finding in the review.</li>
+      <li>The third pile is the subtle one. The regex matched half its own condition: the upload really was added, and whether there is a size limit is not in the diff. Conceding the pattern is what stops the reader arguing about the half we can see.</li>
+    </ul>
+  </section>
+
+  <!-- 8b --------------------------------------------------------------- BLOCKING VS SEVERITY -->
+  <section class="presentation__slide" data-title="Blocking is not severity">
+    <p class="slide-eyebrow settles">Two questions I had as one word</p>
+    <h2 class="slide-head settles" data-size="sm">How bad is it, and does policy stop the&nbsp;merge?</h2>
+    <ul class="beats">
+      <li>They shared one field, so a small defect with policy behind it had one way to say so: lie about how bad it was.</li>
+      <li class="frag" data-grade="grain">The test reviewer was told to do exactly that, and it taught every other reviewer that a severity word is negotiable.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>Concrete: a missing integration test is not a critical bug, but we stop a merge over it. Now it sets blocking on policy grounds and rates the severity honestly underneath, which is usually High.</li>
+      <li>The knock-on was in the slots. Inflated severity fought the six-comment cap it shared slots with. The order is now blocking first, then severity.</li>
+      <li>Why it was worth doing rather than deferring: replaying about nine hundred logged comments turned up four blocking findings recorded under three different spellings of the tag, so they were invisible to every reading of how blocking findings scored. A marker you have to spell exactly right is one keystroke from silence.</li>
     </ul>
   </section>
 
@@ -332,6 +359,57 @@
       <li>Expect the pushback here. The answer is the re-read before posting, not confidence.</li>
       <li>This is a control, not a preference. No accuracy number would change it.</li>
       <li>Consequence worth flagging: blocking does not clear itself when the author pushes a fix, so it is only spent where we mean to hold the PR until a person acts.</li>
+    </ul>
+  </section>
+
+  <!-- 12b -------------------------------------------------------------- THE CLOCK -->
+  <section class="presentation__slide" data-title="The run has a clock">
+    <p class="slide-eyebrow settles">Nothing bounded how long a run could take</p>
+    <svg class="fig" viewBox="0 0 700 204" role="img"
+         aria-label="A bar split into five phases with their budgets in minutes. Preflight and context eight, the lenses ten, verification ten, gate and post five, closing out six, thirty-nine in total against a hard ceiling of sixty. Underneath, the three rules: never wait on an agent without a bound, abandon whatever is still running when its phase is up, and stop launching after two failures in a row."
+         style="font-size:12px">
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="8" y="34" width="137" height="38"/>
+        <rect x="145" y="34" width="171" height="38"/>
+        <rect x="316" y="34" width="171" height="38"/>
+        <rect x="487" y="34" width="86" height="38"/>
+        <rect x="573" y="34" width="103" height="38"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg);font-size:11.5px">
+        <text x="76" y="52">context</text><text x="76" y="66">8 min</text>
+        <text x="230" y="52">the lenses</text><text x="230" y="66">10 min</text>
+        <text x="401" y="52">arguing back</text><text x="401" y="66">10 min</text>
+        <text x="530" y="52">post</text><text x="530" y="66">5 min</text>
+        <text x="624" y="52">close out</text><text x="624" y="66">6 min</text>
+      </g>
+      <line x1="8" y1="88" x2="676" y2="88" style="stroke:var(--color-line)"/>
+      <text x="8" y="104" style="fill:var(--color-muted);font-size:11.5px">39 minutes of phases, against a hard ceiling of 60. The ceiling is for illness, not the target.</text>
+
+      <text x="8" y="140" style="fill:var(--color-fg)">Never wait on a reviewer with no time limit.</text>
+      <text x="8" y="162" style="fill:var(--color-fg)">When the phase is up, stop whatever is still running and carry on without it.</text>
+      <text x="8" y="184" style="fill:var(--color-fg)">Two failures in a row and it stops launching anything else.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Why it exists: a run of ours sat parked over two hours at a single step, and the plugin these budgets come from was built after a seven and a half hour run in which about six percent of the time was productive.</li>
+      <li>Be honest that the numbers are borrowed and not yet measured here. Nothing records how long a phase actually takes, so no run can say whether ten minutes is generous or tight. Treat an overrun as a signal to go and look.</li>
+      <li>The important half is the next slide: a run that gave up on something has to say so.</li>
+    </ul>
+  </section>
+
+  <!-- 12c -------------------------------------------------------------- DEGRADED -->
+  <section class="presentation__slide" data-title="A partial run says so">
+    <p class="slide-eyebrow settles">And the half that makes the clock safe</p>
+    <h2 class="slide-head settles" data-size="sm">A run that gave up on something never says&nbsp;PASS.</h2>
+    <ul class="beats">
+      <li>Passing is a claim about coverage, and it gave up on some.</li>
+      <li>The summary says what did not finish, and what that leaves uncovered.</li>
+      <li class="frag" data-grade="grain">Partial beats nothing. Partial that reads as complete is worse than both.</li>
+    </ul>
+    <ul class="slide-notes" hidden>
+      <li>The whole cost of a degraded run is paid by a reader who trusts it more than it deserves. That is the line to land.</li>
+      <li>In the author's terms, not the run's: "the accessibility check did not finish, so nothing here covers the new dialog."</li>
+      <li>It is enforced rather than remembered: the validator refuses a review claiming full coverage while carrying a finding nobody checked.</li>
+      <li>Each abandoned reviewer also writes a row saying so, which is the only cheap signal we get about what was missed rather than what was wrong.</li>
     </ul>
   </section>
 
@@ -520,6 +598,96 @@
     </ul>
   </section>
 
+  <!-- 18b -------------------------------------------------------------- THE WHOLE THING -->
+  <section class="presentation__slide" data-title="The whole thing">
+    <p class="slide-eyebrow settles">All of it, on one page</p>
+    <svg class="fig" data-live-figure="workflow" data-surface="figure:workflow" viewBox="0 0 700 262" role="img"
+         aria-label="The whole process in three bands. The review band, which runs on a clock: claim the pull request so no second session starts, work out what was asked for and what people already said, read the code around the change, run six reviewers in parallel, sort the findings and argue back against the ones that can be wrong, then check five rules and recompute the verdict from what survived. The after-it-posts band: post, answer anything asked back, verify claimed fixes against the current code, log every comment, and hand the pull request to a monitor and a timer. The tuning band, which happens later: grade each comment, read the scores per topic, change one reviewer, and replay the change against old pull requests. That feeds back into the review."
+         style="font-size:10.5px">
+      <defs>
+        <marker id="wf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+        <marker id="wf-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-line)"/>
+        </marker>
+      </defs>
+
+      <text x="70" y="20" style="fill:var(--color-fg);font-size:11.5px">the review, on a clock</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="70" y="28" width="92" height="44" rx="3"/>
+        <rect x="171" y="28" width="92" height="44" rx="3"/>
+        <rect x="272" y="28" width="92" height="44" rx="3"/>
+        <rect x="373" y="28" width="92" height="44" rx="3"/>
+        <rect x="474" y="28" width="92" height="44" rx="3"/>
+        <rect x="575" y="28" width="92" height="44" rx="3"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg)">
+        <text x="116" y="47">claim the PR</text><text x="116" y="60">so nobody doubles</text>
+        <text x="217" y="47">what was asked,</text><text x="217" y="60">what was said</text>
+        <text x="318" y="47">read around</text><text x="318" y="60">the change</text>
+        <text x="419" y="47">six reviewers,</text><text x="419" y="60">in parallel</text>
+        <text x="520" y="47">sort, then</text><text x="520" y="60">argue back</text>
+        <text x="621" y="47">five rules, then</text><text x="621" y="60">recheck the verdict</text>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M162 50 L167 50" marker-end="url(#wf-a)"/><path d="M263 50 L268 50" marker-end="url(#wf-a)"/>
+        <path d="M364 50 L369 50" marker-end="url(#wf-a)"/><path d="M465 50 L470 50" marker-end="url(#wf-a)"/>
+        <path d="M566 50 L571 50" marker-end="url(#wf-a)"/>
+        <path d="M667 50 L684 50 L684 78 L46 78 L46 132 L66 132" marker-end="url(#wf-a)"/>
+      </g>
+
+      <text x="70" y="102" style="fill:var(--color-fg);font-size:11.5px">after it posts</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="70" y="110" width="92" height="44" rx="3"/>
+        <rect x="171" y="110" width="92" height="44" rx="3"/>
+        <rect x="272" y="110" width="92" height="44" rx="3"/>
+        <rect x="373" y="110" width="92" height="44" rx="3"/>
+        <rect x="474" y="110" width="92" height="44" rx="3"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg)">
+        <text x="116" y="136">post</text>
+        <text x="217" y="129">answer anything</text><text x="217" y="142">asked back</text>
+        <text x="318" y="129">verify fixes against</text><text x="318" y="142">the code now</text>
+        <text x="419" y="129">log every</text><text x="419" y="142">comment</text>
+        <text x="520" y="129">hand it to a</text><text x="520" y="142">monitor and a timer</text>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M162 132 L167 132" marker-end="url(#wf-a)"/><path d="M263 132 L268 132" marker-end="url(#wf-a)"/>
+        <path d="M364 132 L369 132" marker-end="url(#wf-a)"/><path d="M465 132 L470 132" marker-end="url(#wf-a)"/>
+        <path d="M566 132 L684 132 L684 160 L46 160 L46 214 L66 214" marker-end="url(#wf-a)"/>
+      </g>
+
+      <text x="70" y="184" style="fill:var(--color-fg);font-size:11.5px">tuning, later and separately</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="70" y="192" width="92" height="44" rx="3"/>
+        <rect x="171" y="192" width="92" height="44" rx="3"/>
+        <rect x="373" y="192" width="92" height="44" rx="3"/>
+      </g>
+      <rect x="272" y="192" width="92" height="44" rx="3" style="fill:var(--color-fg)"/>
+      <g text-anchor="middle" style="fill:var(--color-fg)">
+        <text x="116" y="211">grade each</text><text x="116" y="224">comment</text>
+        <text x="217" y="211">read the score</text><text x="217" y="224">per topic</text>
+        <text x="419" y="211">replay it on</text><text x="419" y="224">old pull requests</text>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-bg)">
+        <text x="318" y="211">change one</text><text x="318" y="224">reviewer</text>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M162 214 L167 214" marker-end="url(#wf-a)"/><path d="M263 214 L268 214" marker-end="url(#wf-a)"/>
+        <path d="M364 214 L369 214" marker-end="url(#wf-a)"/>
+      </g>
+      <path d="M465 214 L560 214 L560 250 L26 250 L26 50 L66 50" style="fill:none;stroke:var(--color-line);stroke-width:1.2;stroke-dasharray:4 3" marker-end="url(#wf-b)"/>
+      <text x="692" y="254" text-anchor="end" style="fill:var(--color-muted)">filled: the one a person decides</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Do not narrate the boxes. Say the three bands, then point at the two things that matter about the picture.</li>
+      <li>First: the top band is the only part on a clock, and it is the only part that talks to the pull request while anyone is waiting.</li>
+      <li>Second: the dashed return is the whole argument of this session. Without it the top band is just a reviewer with opinions, and there is no way to find out whether any of them were good.</li>
+      <li>The filled box is the only place the loop is allowed to change itself, and a person stands in front of it.</li>
+    </ul>
+  </section>
+
   <!-- 19 ---------------------------------------------------------------- THE REVERSALS -->
   <section class="presentation__slide" data-title="None of this arrived designed">
     <p class="slide-eyebrow settles">If you are building something like this</p>
@@ -530,22 +698,24 @@
       <text x="372" y="16" style="fill:var(--color-fg);font-size:11.5px">what it is now</text>
       <line x1="8" y1="26" x2="692" y2="26" style="stroke:var(--color-line)"/>
       <g style="fill:var(--color-muted)">
-        <text x="8" y="48">a timer, every half hour</text>
-        <text x="8" y="76">one checker per finding</text>
-        <text x="8" y="104">the whole rulebook, to all six</text>
-        <text x="8" y="132">one number for right and acted on</text>
-        <text x="8" y="160">logging only the line comments</text>
+        <text x="8" y="44">a timer, every half hour</text>
+        <text x="8" y="68">the whole rulebook, to all six</text>
+        <text x="8" y="92">one number for right and acted on</text>
+        <text x="8" y="116">logging only the line comments</text>
+        <text x="8" y="140">severity and blocking as one word</text>
+        <text x="8" y="164">no limit on how long a run could take</text>
       </g>
       <g text-anchor="middle" style="fill:var(--color-line)">
-        <text x="348" y="48">→</text><text x="348" y="76">→</text><text x="348" y="104">→</text>
-        <text x="348" y="132">→</text><text x="348" y="160">→</text>
+        <text x="348" y="44">→</text><text x="348" y="68">→</text><text x="348" y="92">→</text>
+        <text x="348" y="116">→</text><text x="348" y="140">→</text><text x="348" y="164">→</text>
       </g>
       <g style="fill:var(--color-fg)">
-        <text x="372" y="48">it tells us the moment it happens</text>
-        <text x="372" y="76">a few claims each, capped on time</text>
-        <text x="372" y="104">one slice each, for its own job</text>
-        <text x="372" y="132">two numbers, kept apart</text>
-        <text x="372" y="160">logging every comment it posts</text>
+        <text x="372" y="44">it tells us the moment it happens</text>
+        <text x="372" y="68">one slice each, for its own job</text>
+        <text x="372" y="92">two numbers, kept apart</text>
+        <text x="372" y="116">logging every comment it posts</text>
+        <text x="372" y="140">two questions, answered separately</text>
+        <text x="372" y="164">a clock, and it gives up out loud</text>
       </g>
       <line x1="8" y1="180" x2="692" y2="180" style="stroke:var(--color-line)"/>
       <text x="8" y="202" style="fill:var(--color-fg)">Every one of those needed shipping the wrong version first, then measuring it.</text>
@@ -577,7 +747,7 @@
   <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
   <div class="presentation__controls">
     <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
-    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 20</span></span>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 24</span></span>
     <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
     <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
     <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
@@ -592,7 +762,7 @@
 
 <div class="presenter">
   <div class="presenter__now">
-    <span class="presenter__pos" data-p-pos>1 / 20</span>
+    <span class="presenter__pos" data-p-pos>1 / 24</span>
     <span class="presenter__clock" data-p-clock>00:00</span>
   </div>
   <div>
