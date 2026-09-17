@@ -138,13 +138,31 @@
   <!-- 5 ----------------------------------------------------------------- THE GATES -->
   <section class="presentation__slide" data-title="Five rules">
     <p class="slide-eyebrow settles">A comment has to pass all five, or it is dropped</p>
-    <ul class="beats" data-size="sm">
-      <li><b>Was it asked for?</b> If the ticket wanted this change, it is not a bug.</li>
-      <li><b>Has someone said it?</b> Not if a reviewer raised it or the author already answered.</li>
-      <li><b>Is that really the convention?</b> Proved by searching the code, never assumed.</li>
-      <li><b>Is it on the right line?</b> The line is found by searching for the code, not read off the diff.</li>
-      <li><b>Is it worth the author's time?</b></li>
-    </ul>
+    <svg class="fig" viewBox="0 0 700 198" role="img"
+         aria-label="Five checks in a row, each one a question. Was it asked for. Has someone said it. Is that really the convention. Is it on the right line. Is it worth the author's time. Underneath, a band tapers from wide to narrow, showing everything the reviewers found on the left and the few comments that get posted on the right."
+         style="font-size:12px">
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="8" y="16" width="124" height="74" rx="4"/>
+        <rect x="142" y="16" width="124" height="74" rx="4"/>
+        <rect x="276" y="16" width="124" height="74" rx="4"/>
+        <rect x="410" y="16" width="124" height="74" rx="4"/>
+        <rect x="544" y="16" width="124" height="74" rx="4"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-muted);font-size:11px">
+        <text x="70" y="36">1</text><text x="204" y="36">2</text><text x="338" y="36">3</text>
+        <text x="472" y="36">4</text><text x="606" y="36">5</text>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg);font-size:12.5px">
+        <text x="70" y="58">was it</text><text x="70" y="74">asked for?</text>
+        <text x="204" y="58">has someone</text><text x="204" y="74">said it?</text>
+        <text x="338" y="58">is that really</text><text x="338" y="74">the convention?</text>
+        <text x="472" y="58">is it on the</text><text x="472" y="74">right line?</text>
+        <text x="606" y="58">is it worth</text><text x="606" y="74">their time?</text>
+      </g>
+      <path d="M8 118 L668 136 L668 152 L8 168 Z" style="fill:var(--color-line)"/>
+      <text x="16" y="190" style="fill:var(--color-muted);font-size:11.5px">everything the reviewers found</text>
+      <text x="668" y="190" text-anchor="end" style="fill:var(--color-fg);font-size:11.5px">what gets posted</text>
+    </svg>
     <ul class="slide-notes" hidden>
       <li>Move fast. Only the third one is interesting and the next two slides are about it.</li>
       <li>Worth one line: a comment that fails a rule is dropped, or turned into a question. It is never softened and posted anyway.</li>
@@ -213,10 +231,42 @@
   <!-- 8 ----------------------------------------------------------------- FACTS AND CLAIMS -->
   <section class="presentation__slide" data-title="Facts and opinions">
     <p class="slide-eyebrow settles">What survives gets sorted into two piles</p>
-    <ul class="beats">
-      <li><b>A fact about the diff.</b> This service changed and has no test file. A script proves it the same way every time, so it goes straight through.</li>
-      <li><b>An opinion about the code.</b> This lets the wrong user in. That is reasoning, so it always gets argued against first.</li>
-    </ul>
+    <svg class="fig" viewBox="0 0 700 200" role="img"
+         aria-label="What the reviewers found splits into two paths. A fact about the diff, such as a changed service with no test file, is proved by a script and goes straight to posting. An opinion about the code, such as this lets the wrong user in, goes to a second reader first and is only posted if it survives."
+         style="font-size:12px">
+      <defs>
+        <marker id="fk-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <rect x="8" y="76" width="112" height="44" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="64" y="94" text-anchor="middle" style="fill:var(--color-fg)">what the</text>
+      <text x="64" y="110" text-anchor="middle" style="fill:var(--color-fg)">reviewers found</text>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
+        <path d="M120 98 L152 98 L152 48 L184 48" marker-end="url(#fk-a)"/>
+        <path d="M120 98 L152 98 L152 150 L184 150" marker-end="url(#fk-a)"/>
+        <path d="M356 48 L560 48" marker-end="url(#fk-a)"/>
+        <path d="M356 150 L404 150" marker-end="url(#fk-a)"/>
+        <path d="M528 150 L560 150" marker-end="url(#fk-a)"/>
+      </g>
+      <rect x="184" y="26" width="172" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="270" y="44" text-anchor="middle" style="fill:var(--color-fg)">a fact about the diff</text>
+      <text x="270" y="60" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">no test file for this change</text>
+      <text x="456" y="34" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">a script proves it</text>
+      <text x="456" y="66" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">the same way every time</text>
+
+      <rect x="184" y="128" width="172" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="270" y="146" text-anchor="middle" style="fill:var(--color-fg)">an opinion about it</text>
+      <text x="270" y="162" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">this lets the wrong user in</text>
+      <rect x="404" y="128" width="124" height="44" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="466" y="146" text-anchor="middle" style="fill:var(--color-fg)">second reader</text>
+      <text x="466" y="162" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">argues it down first</text>
+
+      <rect x="560" y="76" width="132" height="44" rx="4" style="fill:var(--color-fg)"/>
+      <text x="626" y="102" text-anchor="middle" style="fill:var(--color-bg)">posted</text>
+      <path d="M560 48 L586 48 L586 76" style="fill:none;stroke:var(--color-line)"/>
+      <path d="M560 150 L586 150 L586 120" style="fill:none;stroke:var(--color-line)"/>
+    </svg>
     <ul class="slide-notes" hidden>
       <li>This split came out of our own plugin work and it was the best idea I took. Asking a model to second-guess a fact only risks it talking you out of something true.</li>
       <li>Third case if asked: the pattern is certain but the impact is not. Treated as an opinion.</li>
@@ -322,11 +372,27 @@
   <!-- 14 ---------------------------------------------------------------- TWO NUMBERS -->
   <section class="presentation__slide" data-title="Two different questions">
     <p class="slide-eyebrow settles">Which I had as one number for months</p>
-    <ul class="beats">
-      <li><b>Was it right?</b> Fixed, out of fixed plus proved wrong.</li>
-      <li><b>Did anyone act?</b> Fixed, out of fixed plus ignored.</li>
-      <li class="frag" data-grade="grain">Added together, an author merging past a correct comment looks the same as the reviewer being wrong.</li>
-    </ul>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="Two separate measures side by side. Was it right is fixed divided by fixed plus proved wrong, and a low score there means tighten the reviewer. Did anyone act is fixed divided by fixed plus ignored, and a low score there means move the comment somewhere people read. Added together, an author merging past a correct comment counts the same as the reviewer being wrong."
+         style="font-size:12px">
+      <rect x="8" y="14" width="330" height="120" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="173" y="38" text-anchor="middle" style="fill:var(--color-fg);font-size:14px">Was it right?</text>
+      <text x="173" y="68" text-anchor="middle" style="fill:var(--color-fg)">fixed</text>
+      <line x1="88" y1="76" x2="258" y2="76" style="stroke:var(--color-fg)"/>
+      <text x="173" y="94" text-anchor="middle" style="fill:var(--color-fg)">fixed + proved wrong</text>
+      <text x="173" y="120" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">low here: tighten the reviewer</text>
+
+      <rect x="362" y="14" width="330" height="120" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="527" y="38" text-anchor="middle" style="fill:var(--color-fg);font-size:14px">Did anyone act?</text>
+      <text x="527" y="68" text-anchor="middle" style="fill:var(--color-fg)">fixed</text>
+      <line x1="442" y1="76" x2="612" y2="76" style="stroke:var(--color-fg)"/>
+      <text x="527" y="94" text-anchor="middle" style="fill:var(--color-fg)">fixed + ignored</text>
+      <text x="527" y="120" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">low here: move it where people read</text>
+
+      <text x="350" y="166" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">Add them together and an author merging past a correct comment</text>
+      <text x="350" y="184" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">counts exactly the same as the reviewer being wrong.</text>
+      <text x="350" y="206" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">Which is what I was measuring, and it told me to say less.</text>
+    </svg>
     <ul class="slide-notes" hidden>
       <li>The consequence is the point: every time it got ignored, my own numbers told me to make it stricter. It was learning to say less for being read less.</li>
       <li>They need opposite fixes. Being wrong means tighten the reviewer. Being ignored means move the comment somewhere people read, and tightening there just throws away true findings.</li>
@@ -457,14 +523,33 @@
   <!-- 19 ---------------------------------------------------------------- THE REVERSALS -->
   <section class="presentation__slide" data-title="None of this arrived designed">
     <p class="slide-eyebrow settles">If you are building something like this</p>
-    <ul class="beats" data-size="sm">
-      <li>A timer, before we could just be told.</li>
-      <li>One checker per finding, until someone priced a twelve-finding review.</li>
-      <li>The whole rulebook loaded into every reviewer, seven times a run.</li>
-      <li>"Was it right" and "did anyone act" added into one number.</li>
-      <li>Logging only the line comments, which measured the quarter it was surest about.</li>
-      <li class="frag" data-grade="grain">Every one of those needed shipping the wrong version and then measuring it.</li>
-    </ul>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="Two columns comparing the first version of five things against what each became. A timer every half hour became being told the moment it happens. One checker per finding became a few claims each, capped on time. The whole rulebook to every reviewer became one slice each. One number for right and acted on became two numbers kept apart. Logging only the line comments became logging every comment posted."
+         style="font-size:12px">
+      <text x="8" y="16" style="fill:var(--color-muted);font-size:11.5px">what I shipped first</text>
+      <text x="372" y="16" style="fill:var(--color-fg);font-size:11.5px">what it is now</text>
+      <line x1="8" y1="26" x2="692" y2="26" style="stroke:var(--color-line)"/>
+      <g style="fill:var(--color-muted)">
+        <text x="8" y="48">a timer, every half hour</text>
+        <text x="8" y="76">one checker per finding</text>
+        <text x="8" y="104">the whole rulebook, to all six</text>
+        <text x="8" y="132">one number for right and acted on</text>
+        <text x="8" y="160">logging only the line comments</text>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-line)">
+        <text x="348" y="48">→</text><text x="348" y="76">→</text><text x="348" y="104">→</text>
+        <text x="348" y="132">→</text><text x="348" y="160">→</text>
+      </g>
+      <g style="fill:var(--color-fg)">
+        <text x="372" y="48">it tells us the moment it happens</text>
+        <text x="372" y="76">a few claims each, capped on time</text>
+        <text x="372" y="104">one slice each, for its own job</text>
+        <text x="372" y="132">two numbers, kept apart</text>
+        <text x="372" y="160">logging every comment it posts</text>
+      </g>
+      <line x1="8" y1="180" x2="692" y2="180" style="stroke:var(--color-line)"/>
+      <text x="8" y="202" style="fill:var(--color-fg)">Every one of those needed shipping the wrong version first, then measuring it.</text>
+    </svg>
     <ul class="slide-notes" hidden>
       <li>This is the slide worth the room's time. Offer it as the real takeaway: none of it was designed up front, and it could not have been.</li>
       <li>If there is time, the volume caps are the sharpest one: written once on an authority nobody had given, and reverted for it.</li>
