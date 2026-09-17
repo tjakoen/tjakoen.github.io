@@ -1,0 +1,43 @@
+{
+  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "id": "https://tjakoen.github.io/badges/apsi-2209-prelim--aegyog.json",
+  "type": [
+    "VerifiableCredential",
+    "OpenBadgeCredential"
+  ],
+  "issuer": {
+    "id": "https://tjakoen.github.io/teaching",
+    "type": [
+      "Profile"
+    ],
+    "name": "Tjakoen Stolk",
+    "url": "https://tjakoen.github.io/teaching",
+    "description": "Instructor, Application and System Integration, School of Computing, Holy Angel University, Angeles City"
+  },
+  "validFrom": "2026-09-16T00:00:00+08:00",
+  "credentialSubject": {
+    "type": [
+      "AchievementSubject"
+    ],
+    "identifier": [
+      {
+        "type": "IdentityObject",
+        "identityHash": "sha256$72e9fd8d3d3aef08051c008cf3e69f4d2a622f90f6bf1fd917d7cd142c5355cc",
+        "identityType": "emailAddress",
+        "hashed": true,
+        "salt": "hau-badges-v1"
+      }
+    ],
+    "achievement": {
+      "id": "https://tjakoen.github.io/badges/apsi-2209-prelim",
+      "type": [
+        "Achievement"
+      ],
+      "name": "Frontend Design with Cloud",
+      "description": "Completion of the prelim block (m1 to m2 to m3) of Application and System Integration (6APSI).",
+      "criteria": {
+        "id": "https://tjakoen.github.io/badges/apsi-2209-prelim"
+      }
+    }
+  }
+}

@@ -181,7 +181,10 @@ export function enrichHead(html: string, pathname: string, origin: string): stri
 
   const path = canonicalPath(pathname);
   const url = origin + path;
-  const image = origin + SITE.ogImage;
+  // A page may supply its own share image with <meta name="x-og-image" content="/path.png"> (the badge
+  // cert + class pages do, so a shared credential unfurls with its own badge card, not the site card).
+  const pageImg = html.match(/<meta name="x-og-image" content="([^"]+)"/i)?.[1];
+  const image = origin + (pageImg || SITE.ogImage);
   const titleEsc = firstTitle(html);                       // already attribute-safe
   const descEsc = metaDescription(html);
   const titleAttr = titleEsc ?? escapeHtml(SITE.name);

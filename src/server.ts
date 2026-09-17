@@ -4,7 +4,7 @@ import { config } from "./config.ts";
 // --- BATCH (substrate) ---
 import { bunRuntime } from "@tjakoen/batch/platform/bun-runtime.ts";
 import { watchComponents } from "@tjakoen/batch/platform/watch.ts";
-import { watch } from "node:fs";   // the portfolio's own client modules: see the hot-reload block below
+import { watch, readFileSync } from "node:fs";   // the portfolio's own client modules: see the hot-reload block below
 import { makeStatic } from "@tjakoen/batch/http/static.ts";
 import { makePageServer } from "@tjakoen/batch/http/pages.ts";
 import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
@@ -38,7 +38,31 @@ import { renderCanvas, renderLibrary } from "./ai/canvas.ts";
 // comes from grain and the page parks the markup for the browser to read back.
 import { madeWith } from "@tjakoen/grain/scripts/made-with.js";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, shellPage, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, shellPage, COLLECTION_DIRS, type CalendarEvent } from "./content.ts";
+const BADGES_DIR = COLLECTION_DIRS["/badges"];
+// Short share aliases: /b/<id> → the full cert. The generator writes this map on --emit. Loaded once
+// at boot (authoring a badge = a redeploy anyway). A miss is a 404, not a crash.
+const SHORTLINKS: Record<string, string> = (() => {
+  try { return JSON.parse(readFileSync(join(BADGES_DIR, "shortlinks.json"), "utf8")); }
+  catch { return {}; }
+})();
+// The redirect page a shortlink serves: it carries the badge's own OG card + title so the SHORT url
+// unfurls with the badge on LinkedIn, then sends a real visitor on to the full cert. A rendered page,
+// not a 301, so the OG tags are actually served (and the static export freezes the body).
+function shortlinkPage(certSlug: string, origin: string): string {
+  const cls = certSlug.split("--")[0];
+  const dest = `/badges/${certSlug}`;
+  const img = `${origin}/media/badges/og-${cls}.png`;
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>Badge credential</title>
+<link rel="canonical" href="${origin}${dest}">
+<meta http-equiv="refresh" content="0; url=${dest}">
+<meta property="og:type" content="article"><meta property="og:image" content="${img}">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${img}">
+<meta name="robots" content="noindex"></head>
+<body><p>Redirecting to <a href="${dest}">your credential</a>.</p></body></html>`;
+}
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
 import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
 import { injectViews } from "./analytics.ts";   // the status bar's view counts, baked in at build time
@@ -394,7 +418,13 @@ const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-c
 const contentRoutes = await listPortfolioContentRoutes();
 const deckRoutes = await listPortfolioDeckRoutes();          // /decks/<file>, the in-shell PDF viewer
 const planRoutes = await listPlanRoutes();
-const sitemap = createSitemap(config.pagesDir, () => [...contentRoutes, ...deckRoutes, ...planRoutes, "/reference", "/catalog"]);   // pages tree + MILL content + PROOF's plans + the generated reference
+// Individual badge CERT pages (/badges/<class>--<handle>) are kept OUT of the sitemap and, since
+// /search.json reads sitemap.routes() too, out of search: a recipient's cert is reachable by its
+// own link (from the badge-class roster or a LinkedIn share), not enumerated as a crawlable list of
+// student names. Badge-CLASS pages (no "--") stay listed. The `--` is the cert-slug marker.
+const isBadgeCertRoute = (p: string) => /^\/badges\/[^/]*--[^/]*$/.test(p);
+const listableContentRoutes = contentRoutes.filter((r) => !isBadgeCertRoute(r));
+const sitemap = createSitemap(config.pagesDir, () => [...listableContentRoutes, ...deckRoutes, ...planRoutes, "/reference", "/catalog"]);   // pages tree + MILL content (minus per-recipient certs) + PROOF's plans + the generated reference
 // the catalog builds its own shell, so it receives the SAME global assets — otherwise it's the
 // one page that ignores the saved theme (the bug this seam fixed)
 const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
@@ -696,6 +726,26 @@ Bun.serve({
     if (p.startsWith("/fonts/")) return serveFont(p.slice("/fonts".length));   // binary: bytes preserved
     if (p.startsWith("/media/")) return serveMedia(p.slice("/media".length));  // binary: the og-card.png
     if (p.startsWith("/modules/")) return modules.serve(p);                    // client-safe TS → browser JS
+    // --- Open Badges assertion: /badges/<cert-slug>.json → the .ob.json twin the generator wrote
+    // next to the cert's .md. A DATA route (raw JSON, no shell), so a credential is verifiable by a
+    // machine, not only readable as a page. Guarded to the badges dir; no traversal. ---
+    // --- short share alias: /b/<id> → cert redirect page (carries the badge OG card) ---
+    if (p.startsWith("/b/")) {
+      const id = p.slice("/b/".length).replace(/\/$/, "");
+      const certSlug = SHORTLINKS[id];
+      if (certSlug) return new Response(shortlinkPage(certSlug, new URL(req.url).origin),
+        { headers: { "Content-Type": "text/html; charset=utf-8" } });
+      return new Response("Not found", { status: 404 });
+    }
+    if (p.startsWith("/badges/") && p.endsWith(".json")) {
+      const slug = p.slice("/badges/".length, -".json".length);
+      if (/^[A-Za-z0-9._-]+$/.test(slug)) {
+        const file = Bun.file(join(BADGES_DIR, `${slug}.ob.json`));
+        if (await file.exists())
+          return new Response(file, { headers: { "Content-Type": "application/ld+json; charset=utf-8" } });
+      }
+      return new Response("Not found", { status: 404 });
+    }
     for (const [prefix, serve] of staticServers)
       if (p.startsWith(prefix + "/")) return serve(p.slice(prefix.length));    // strip prefix → mapped dir
     // --- PROOF mount: the plan board (/plans, /plans/plan/:id) — try before MILL/pages ---

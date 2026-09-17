@@ -1,0 +1,43 @@
+{
+  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "id": "https://tjakoen.github.io/badges/introweb-2106-prelim--nasuuu-p.json",
+  "type": [
+    "VerifiableCredential",
+    "OpenBadgeCredential"
+  ],
+  "issuer": {
+    "id": "https://tjakoen.github.io/teaching",
+    "type": [
+      "Profile"
+    ],
+    "name": "Tjakoen Stolk",
+    "url": "https://tjakoen.github.io/teaching",
+    "description": "Instructor, Basic Programming in Web Development, School of Computing, Holy Angel University, Angeles City"
+  },
+  "validFrom": "2026-09-16T00:00:00+08:00",
+  "credentialSubject": {
+    "type": [
+      "AchievementSubject"
+    ],
+    "identifier": [
+      {
+        "type": "IdentityObject",
+        "identityHash": "sha256$81f6976d82e57eb1392b1b549df08c126988e680c43ca1a77a90a46322658a96",
+        "identityType": "emailAddress",
+        "hashed": true,
+        "salt": "hau-badges-v1"
+      }
+    ],
+    "achievement": {
+      "id": "https://tjakoen.github.io/badges/introweb-2106-prelim",
+      "type": [
+        "Achievement"
+      ],
+      "name": "Web Foundations",
+      "description": "Completion of the prelim block (m1 to m2 to m3 to m4 to m5) of Basic Programming in Web Development (6INTROWEB).",
+      "criteria": {
+        "id": "https://tjakoen.github.io/badges/introweb-2106-prelim"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+---
+title: "Flutter App Development · Allain Stephanie S. Marimla (6ADET 2125)"
+type: cert
+badgeName: "Flutter App Development"
+subtitle: "Flutter App Development"
+course: adet
+monogram: 6ADET
+term: midterm
+badgeClass: adet-2125-midterm
+shortUrl: /b/dc95e56e
+issuer: "Tjakoen Stolk"
+issuerRole: "Instructor, Application Development and Emerging Technologies · School of Computing, Holy Angel University, Angeles City"
+recipientName: "Allain Stephanie S. Marimla"
+recipientHandle: "allain"
+recipientRepo: "https://github.com/HAU-6ADET/m4a1-2125-allain"
+recipientPortfolio: ""
+issuedOn: 2026-09-16
+certId: "hau-adet-2125-midterm-dc95e56e"
+criteriaUrl: /badges/adet-2125-midterm
+social: |
+  I earned the Flutter App Development badge for Application Development and Emerging Technologies (6ADET, section 2125) at Holy Angel
+  University, issued by my instructor Tjakoen Stolk.
+
+  It attests that I completed the midterm coursework of Application Development and Emerging Technologies, awarded on the work I
+  actually submitted rather than a grade cutoff.
+
+  Verify it here: https://tjakoen.github.io/b/dc95e56e
+---
+
+This credential attests completion of the midterm block of Application Development and Emerging Technologies. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/adet-2125-midterm).

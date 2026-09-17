@@ -173,6 +173,17 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key).
     const shareBlock = kind === "entry" && collection.prefix === "/calendar" && frontmatter && slug
       ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`) : "";
+    // /badges entry pages: a badge-CLASS page (roster of recipients) or a per-recipient CERT page.
+    // The template (art + issuer + verification + roster/share) sits above the MILL-rendered body.
+    const badgeCard = kind === "entry" && collection.prefix === "/badges" && frontmatter && slug
+      ? renderBadgeEntry(frontmatter, slug) : "";
+    // Badge pages carry their OWN share card (enrichHead reads x-og-image), so a shared credential
+    // unfurls with its badge on LinkedIn rather than the site card. The class slug names the image:
+    // a cert points at its badgeClass, a class page at its own slug.
+    const ogClass = collection.prefix === "/badges" && frontmatter
+      ? (frontmatter.type === "cert" ? String(frontmatter.badgeClass || "") : frontmatter.type === "badge-class" ? slug : "")
+      : "";
+    const badgeHead = ogClass ? `<meta name="x-og-image" content="/media/badges/og-${escapeHtml(ogClass)}.png">` : "";
     // THE EDITOR section (rail active + tab group): notes → its own; layer docs live under BREAD.
     const sectionName = collection.prefix === "/notes" ? "notes" : "bread";
     const section = ` data-section="${sectionName}"`;
@@ -194,8 +205,8 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       ? renderNoteContents(body, frontmatter) : "";
     const readable = contents ? body.replace("</header>", `</header>${contents}`) : body;
     return shellPage({
-      title, description, screen, section, inject, injectHead,
-      board: `${sourceToggle}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}`,
+      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}`,
+      board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}`,
     });
   };
 }
@@ -249,6 +260,7 @@ export const COLLECTION_DIRS = {
   "/pantry/docs": join(import.meta.dir, "..", "docs/pantry"),
   "/standards": join(import.meta.dir, "..", "standards"),
   "/calendar": join(import.meta.dir, "..", "content", "events"),
+  "/badges": join(import.meta.dir, "..", "content", "badges"),
 } as const;
 
 // The three collections — module-level so the routes AND the route list derive from
@@ -334,6 +346,21 @@ const collections: MillCollection[] = [
     description: "The desk's feed: hackathons coached, talks given, and student projects worth showing, alongside what shipped.",
     source: dirSource(COLLECTION_DIRS["/calendar"]),
     adapter: withHeadingAnchors({ resolveLink: eventsLink }),
+    index: false,
+  },
+  {
+    // The course BADGES: two per course section (prelim and midterm), earned from the activities a
+    // student completed in the HAU course platform. Like /calendar this opts OUT of MILL's own index
+    // (the /badges hub is a hand page); MILL renders each entry. Two entry shapes, both driven off
+    // frontmatter in shellChrome: a badge-CLASS page (type: badge-class) lists every recipient, and a
+    // per-recipient CERT page (type: cert) is the verifiable URL a student shares. The individual cert
+    // routes are kept OUT of the sitemap and /search.json at the server (link-only discovery), so this
+    // collection is the issuer surface, not something a crawler enumerates a roster of names from.
+    prefix: "/badges",
+    title: "Badges",
+    description: "Course badges issued by Tjakoen Stolk, instructor at Holy Angel University: what each one attests, and a verifiable credential for each recipient.",
+    source: dirSource(COLLECTION_DIRS["/badges"]),
+    adapter: withHeadingAnchors({ resolveLink: badgesLink }),
     index: false,
   },
 ];
@@ -973,6 +1000,261 @@ function renderPhotoGrid(photos: EventPhoto[]): string {
 // parser, same no-JS fallback (each tile is a real link to the full image).
 // The grid itself is GRAIN's `gallery` molecule (design work belongs up in grain, not here): this
 // emits grain's class names and owns only the section around them, the heading and the frontmatter.
+// ---- course badges -----------------------------------------------------------
+// The badge medallion, drawn from GRAIN tokens (no hardcoded hex — the audit catches those). The
+// course sets the monogram; the term sets the ring (prelim = soft, midterm = solid) and the label.
+// Wrap a short title into <= maxLines lines of about `perLine` chars, on word boundaries. SVG has no
+// auto-wrap, so the badge title is split here and emitted as stacked <tspan>s.
+function wrapTitle(s: string, perLine = 16, maxLines = 3): string[] {
+  const words = s.trim().split(/\s+/);
+  const lines: string[] = [];
+  let cur = "";
+  for (const w of words) {
+    if (cur && (cur + " " + w).length > perLine) { lines.push(cur); cur = w; }
+    else cur = cur ? cur + " " + w : w;
+  }
+  if (cur) lines.push(cur);
+  return lines.slice(0, maxLines);
+}
+
+// Full course name per course key, for the medallion's top line. The badge is issued for a named
+// course, not a course code, so the card carries the name a reader recognises.
+export const BADGE_COURSE_NAMES: Record<string, string> = {
+  apsi: "Application and System Integration",
+  adet: "Application Development and Emerging Technologies",
+  introweb: "Basic Programming in Web Development",
+};
+
+// What each badge attests, and the technologies it exercises, keyed by course and term. One source
+// for both surfaces: the criteria (class) page and every recipient's cert page render the same words,
+// so a student's badge states its own criteria inline rather than only linking out to them.
+export const BADGE_CRITERIA: Record<string, Record<string, { attests: string; technologies: string }>> = {
+  apsi: {
+    prelim: {
+      attests: "JavaScript fundamentals, then React components, state and effects, building and deploying a front end. Covers modules 1 to 3, mapped to course outcomes CO1 to CO3.",
+      technologies: "JavaScript, React, component state and effects, a frontend build and a cloud deploy.",
+    },
+    midterm: {
+      attests: "Node and Express REST APIs and PostgreSQL data modelling, building and deploying a backend service. Covers modules 4 to 5, mapped to course outcomes CO1 to CO3.",
+      technologies: "Node, Express, REST APIs, PostgreSQL data modelling and a cloud deploy.",
+    },
+  },
+  adet: {
+    prelim: {
+      attests: "Dart and object-oriented programming, then Flutter widgets, layout and state, building an interactive mobile UI. Covers modules 1 to 3.",
+      technologies: "Dart, object-oriented programming, Flutter widgets, layout and state.",
+    },
+    midterm: {
+      attests: "Stateful Flutter apps: navigation, forms, lists and detail screens, building a multi-screen application. Covers modules 4 to 5.",
+      technologies: "Flutter navigation, forms, lists and detail screens, and multi-screen app structure.",
+    },
+  },
+  introweb: {
+    prelim: {
+      attests: "HTML structure and semantic markup, CSS layout with grid and flexbox, responsive design and visual hierarchy following web standards. Covers modules 1 to 5, mapped to course outcomes CO1 and CO2.",
+      technologies: "HTML semantics, CSS grid and flexbox, and responsive layout.",
+    },
+    midterm: {
+      attests: "Client-side JavaScript: DOM manipulation, events and behaviour, building and deploying interactive pages. Covers modules 6 to 8.",
+      technologies: "JavaScript, DOM manipulation, browser events and deploying interactive pages.",
+    },
+  },
+};
+
+// The badge, as a self-describing certification card (like Credly / Lumify): the course it belongs to
+// on top, the curriculum skill it certifies in the centre, and the issuer at the foot — an instructor
+// awarding it, with the school named as affiliation, NOT as the issuing body. Shared so the image tool
+// rasters the EXACT same art headless. All colours come in as CSS values and are emitted via style= (a
+// var() resolves in a style declaration but NOT in a bare SVG presentation attribute), so the page
+// passes custom-property refs (--badge-hue etc.) and the image tool passes hex literals.
+export function badgeMedallionSvg(opts: {
+  courseName: string; subtitle: string; year: string; issuerName?: string; recipient?: string;
+  hue: string; ink?: string; muted?: string; paper?: string; font?: string; size?: number;
+}): string {
+  const ink = opts.ink ?? "var(--ink)", muted = opts.muted ?? "var(--ink-muted)";
+  const paper = opts.paper ?? "var(--paper)", font = opts.font ?? "var(--font-accent)";
+  const serif = "Georgia, 'Times New Roman', serif", size = opts.size ?? 300;
+  const issuerName = escapeHtml(opts.issuerName ?? "Tjakoen Stolk");
+  // Course name across the top, up to two lines, settled around y84.
+  const courseLines = wrapTitle(opts.courseName, 26, 2).map(escapeHtml);
+  const courseY = 84 - (courseLines.length - 1) * 7;
+  const course = courseLines.map((l, i) =>
+    `<tspan x="150" y="${courseY + i * 14}">${l}</tspan>`).join("");
+  // The certified skill as the headline, up to three lines, settled around y165.
+  const titleLines = wrapTitle(opts.subtitle, 16, 3).map(escapeHtml);
+  const titleY = 165 - (titleLines.length - 1) * 14;
+  const title = titleLines.map((l, i) =>
+    `<tspan x="150" y="${titleY + i * 28}">${l}</tspan>`).join("");
+  return `<svg viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(opts.courseName)} badge: ${escapeHtml(opts.subtitle)}, issued by ${issuerName}, ${escapeHtml(opts.year)}" width="${size}" height="${Math.round(size * 340 / 300)}">
+    <rect x="8" y="8" width="284" height="324" rx="26" style="fill:${paper};stroke:${opts.hue}" stroke-width="6"/>
+    <rect x="19" y="19" width="262" height="302" rx="17" fill="none" style="stroke:${opts.hue}" stroke-width="1" opacity="0.35"/>
+    <text x="150" y="54" text-anchor="middle" font-family="${font}" font-size="24" style="fill:${opts.hue}">&#10023;</text>
+    <text text-anchor="middle" font-family="${serif}" font-size="10.5" letter-spacing="1.5" style="fill:${muted}">${course}</text>
+    <text text-anchor="middle" font-family="${serif}" font-size="22" style="fill:${ink}">${title}</text>
+    ${opts.recipient ? `<text x="150" y="212" text-anchor="middle" font-family="${serif}" font-size="9" letter-spacing="3" style="fill:${muted}">AWARDED TO</text>
+    <text x="150" y="234" text-anchor="middle" font-family="${serif}" font-size="17" style="fill:${ink}">${escapeHtml(opts.recipient)}</text>` : ""}
+    <line x1="70" y1="248" x2="230" y2="248" style="stroke:${muted}" stroke-width="1" opacity="0.3"/>
+    <text x="150" y="273" text-anchor="middle" font-family="${font}" font-size="15" font-weight="700" style="fill:${opts.hue}">${issuerName}</text>
+    <text x="150" y="291" text-anchor="middle" font-family="${serif}" font-size="8.5" letter-spacing="1.2" style="fill:${muted}">INSTRUCTOR &#183; HOLY ANGEL UNIVERSITY</text>
+    <text x="150" y="306" text-anchor="middle" font-family="${serif}" font-size="8" letter-spacing="1.2" style="fill:${muted}">SCHOOL OF COMPUTING &#183; ${escapeHtml(opts.year)}</text>
+  </svg>`;
+}
+
+function renderBadgeArt(courseKey: unknown, term: unknown, subtitle: unknown, year: string, issuerName: string, recipient?: unknown): string {
+  const key = String(courseKey || "course");
+  const courseName = BADGE_COURSE_NAMES[key] || String(courseKey || "");
+  // On the page the hue is --badge-hue (set per course by BADGE_STYLE via data-course); every colour is
+  // already emitted through style=, so the custom property resolves without post-processing.
+  const svg = badgeMedallionSvg({
+    courseName, subtitle: String(subtitle || ""), year, issuerName,
+    recipient: recipient ? String(recipient) : undefined,
+    hue: "var(--badge-hue)", ink: "var(--ink)", muted: "var(--ink-muted)", paper: "var(--paper)", font: "var(--font-accent)", size: 220,
+  });
+  return `<figure class="badge-art" data-course="${escapeHtml(key)}" data-term="${escapeHtml(String(term || ""))}">
+  ${svg}
+</figure>`;
+}
+
+function renderIssuer(frontmatter: Record<string, unknown>): string {
+  const issuer = escapeHtml(String(frontmatter.issuer || "Tjakoen Stolk"));
+  const role = escapeHtml(String(frontmatter.issuerRole || ""));
+  return `<p class="badge-issuer"><span class="badge-issuer__name">${issuer}</span>${role ? `<span class="badge-issuer__role">${role}</span>` : ""}<a class="badge-issuer__link" href="/teaching">About the issuer</a></p>`;
+}
+
+// What the badge attests plus its technologies, inline on the page. Drawn from BADGE_CRITERIA by
+// course and term so every recipient's cert states its own criteria without a click-through. Renders
+// nothing for a course/term the map does not cover.
+function renderBadgeCriteria(frontmatter: Record<string, unknown>): string {
+  const c = BADGE_CRITERIA[String(frontmatter.course || "")]?.[String(frontmatter.term || "")];
+  if (!c) return "";
+  return `<section class="badge-criteria">
+    <h3 class="badge-criteria__heading">What this badge attests</h3>
+    <p>${escapeHtml(c.attests)}</p>
+    <h3 class="badge-criteria__heading">Technologies</h3>
+    <p>${escapeHtml(c.technologies)}</p>
+  </section>`;
+}
+
+// Bespoke styling for the badge templates. Site surface, not a reusable GRAIN component, so it rides
+// with the markup like renderShareBlock's script does. Tokens only — no hardcoded colour (the audit
+// catches hex), so it re-skins with the rest of the site.
+const BADGE_STYLE = `<style>
+/* Per-course hue. The one place colour enters this monochrome site, scoped to the medallion so it
+   cannot leak into the rest of the page. A course sets --badge-hue on the figure; the SVG inherits
+   it. Unknown course falls back to the site accent (staying monochrome). */
+.badge-art { --badge-hue: var(--color-accent); }
+.badge-art[data-course="apsi"] { --badge-hue: #d07f4a; }
+.badge-art[data-course="adet"] { --badge-hue: #3fa89e; }
+.badge-art[data-course="introweb"] { --badge-hue: #8877d6; }
+.badge-cert, .badge-class { margin: var(--space-l, 1.5rem) 0; }
+.badge-criteria { margin: var(--space-l, 1.5rem) 0; }
+.badge-criteria__heading { font-size: var(--text-md); margin: var(--space-m, 1rem) 0 0.35em; }
+.badge-cert__head, .badge-class__head { display: flex; gap: var(--space-l, 1.5rem); align-items: center; flex-wrap: wrap; }
+.badge-art svg { display: block; }
+.badge-cert__awarded { color: var(--ink-muted); margin: 0; }
+.badge-cert__name, .badge-class__name { margin: 0.15em 0; }
+.badge-issuer { display: flex; flex-direction: column; margin: 0.5em 0; }
+.badge-issuer__name { font-weight: 700; }
+.badge-issuer__role { color: var(--ink-muted); font-size: var(--text-sm); }
+.badge-verify { display: grid; grid-template-columns: max-content 1fr; gap: 0.35em 1em; margin: var(--space-l, 1.5rem) 0; }
+.badge-verify dt { color: var(--ink-muted); }
+.badge-verify dd { margin: 0; }
+.badge-roster { width: 100%; border-collapse: collapse; margin: var(--space-m, 1rem) 0; }
+.badge-roster th, .badge-roster td { text-align: left; padding: 0.5em 0.75em; border-bottom: 1px solid var(--border); }
+.badge-roster th { color: var(--ink-muted); font-size: var(--text-sm); }
+.badge-subtitle { font-size: var(--text-lg); margin: 0.15em 0; }
+.badge-actions { display: flex; gap: 0.6em; flex-wrap: wrap; margin: var(--space-m, 1rem) 0; }
+.badge-btn { display: inline-block; padding: 0.5em 1em; border: 1px solid var(--border); border-radius: 6px; background: var(--color-surface); color: var(--ink); font: inherit; cursor: pointer; text-decoration: none; }
+.badge-btn:hover { border-color: var(--badge-hue, var(--color-accent)); }
+</style>`;
+
+// The /badges entry template: a CERT page (one recipient's verifiable award) or a badge-CLASS page
+// (the roster). Both open with the medallion and the issuer; they diverge below.
+function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): string {
+  const type = String(frontmatter.type || "");
+  const issuerName = String(frontmatter.issuer || "Tjakoen Stolk");
+  const year = (String(frontmatter.year || frontmatter.issuedOn || "").slice(0, 4)) || String(new Date().getFullYear());
+  const art = renderBadgeArt(frontmatter.course, frontmatter.term, frontmatter.subtitle, year, issuerName);
+  const issuer = renderIssuer(frontmatter);
+  const badgeName = escapeHtml(String(frontmatter.badgeName || frontmatter.title || ""));
+
+  // The badge name now IS the skill, so a subtitle line identical to it would just repeat; show it
+  // only when it says something the name does not.
+  const subtitle = frontmatter.subtitle && String(frontmatter.subtitle) !== String(frontmatter.badgeName || "")
+    ? `<p class="badge-subtitle">${escapeHtml(String(frontmatter.subtitle))}</p>` : "";
+
+  if (type === "cert") {
+    const name = escapeHtml(String(frontmatter.recipientName || ""));
+    const handle = String(frontmatter.recipientHandle || "");
+    // The cert badge bakes the recipient's name into the medallion itself (the criteria/class page's
+    // art stays generic, no name); recomputed here so only the cert carries PII in the image.
+    const certArt = renderBadgeArt(frontmatter.course, frontmatter.term, frontmatter.subtitle, year, issuerName, frontmatter.recipientName);
+    const issuedOn = escapeHtml(String(frontmatter.issuedOn || ""));
+    const certId = escapeHtml(String(frontmatter.certId || ""));
+    const criteria = escapeHtml(String(frontmatter.criteriaUrl || "/badges"));
+    const fullUrl = `${SITE.origin}/badges/${slug}`;
+    // The share URL is the short alias when the generator minted one, else the full cert URL.
+    const shareUrl = frontmatter.shortUrl ? `${SITE.origin}${String(frontmatter.shortUrl)}` : fullUrl;
+    const pngHref = `/media/badges/${escapeHtml(slug)}.png`;
+    const share = renderShareBlock(frontmatter.social, shareUrl);
+    return `${BADGE_STYLE}<section class="badge-cert">
+  <header class="badge-cert__head">${certArt}
+    <div class="badge-cert__meta">
+      <p class="badge-cert__awarded">This certifies that</p>
+      <h2 class="badge-cert__name">${name}</h2>
+      <p class="badge-cert__earned">earned the <strong>${badgeName}</strong> badge${handle ? ` · <a href="https://github.com/${escapeHtml(handle)}">@${escapeHtml(handle)}</a>` : ""}</p>
+      ${subtitle}
+      ${issuer}
+    </div>
+  </header>
+  <p class="badge-actions">
+    <a class="badge-btn" href="${pngHref}" download>Download badge (PNG)</a>
+    <button class="badge-btn" type="button" data-copy-url="${escapeHtml(shareUrl)}">Copy share link</button>
+  </p>
+  <dl class="badge-verify">
+    <dt>Issued</dt><dd>${issuedOn}</dd>
+    <dt>Credential id</dt><dd>${certId}</dd>
+    <dt>Criteria</dt><dd><a href="${criteria}">Criteria page</a></dd>
+    <dt>Verification</dt><dd><a href="/badges/${escapeHtml(slug)}.json">Open Badges assertion</a></dd>
+  </dl>
+  ${renderBadgeCriteria(frontmatter)}
+  ${share}
+  ${BADGE_COPY_SCRIPT}
+</section>`;
+  }
+
+  // badge-class: the CRITERIA page. It is the issuer surface a cert links to for "what this badge
+  // attests" — deliberately NOT a roster. Recipient names are PII and live only on each recipient's
+  // own direct-link cert page, never aggregated into a listing a crawler could enumerate. The count is
+  // the only recipient fact shown here, and it names no one.
+  const count = Array.isArray(frontmatter.recipients) ? frontmatter.recipients.length : 0;
+  return `${BADGE_STYLE}<section class="badge-class">
+  <header class="badge-class__head">${art}
+    <div class="badge-class__meta">
+      <h2 class="badge-class__name">${badgeName}</h2>
+      ${subtitle}
+      ${issuer}
+      <p class="badge-class__count">Awarded to ${count} recipient${count === 1 ? "" : "s"}.</p>
+    </div>
+  </header>
+</section>`;
+}
+
+// Copy-link behaviour for the cert action button. One handler, delegated, so every cert page's button
+// works without per-page script. Mirrors the share-block copy affordance.
+const BADGE_COPY_SCRIPT = `<script>
+  (function () {
+    var btn = document.querySelector('[data-copy-url]');
+    if (!btn || !navigator.clipboard) return;
+    btn.addEventListener('click', function () {
+      navigator.clipboard.writeText(btn.getAttribute('data-copy-url') || '').then(function () {
+        var t = btn.textContent; btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = t; }, 1600);
+      });
+    });
+  })();
+</script>`;
+
 function renderGallery(photos: EventPhoto[]): string {
   if (!photos.length) return "";
   const items = photos.map((p) => {
@@ -1107,6 +1389,12 @@ function renderDeckAttachment(raw: unknown): string {
 // passes through untouched.
 function eventsLink(href: string): string {
   return href.startsWith("note:") ? "/notes/" + href.slice(5) : href;
+}
+
+function badgesLink(href: string): string {
+  const local = href.match(/^(?:\.\/)?([A-Za-z0-9._-]+)\.md$/);
+  if (local) return `/badges/${mdSlug(local[1])}`;
+  return href;
 }
 
 /** Note publish dates as calendar events — every note WITH a real date (undated notes have

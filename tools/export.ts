@@ -20,8 +20,21 @@ import { createSitemap } from "@tjakoen/batch/http/sitemap.ts";
 import { exportSite, type AssetMount } from "@tjakoen/batch/export/export.ts";
 import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
 import {
-  listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes, FOLDED_NOTES,
+  listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes, FOLDED_NOTES, COLLECTION_DIRS,
 } from "../src/content.ts";
+import { readdirSync, readFileSync } from "node:fs";
+
+// Badge extras the crawler won't discover: the /b/<id> short aliases (a redirect page each) and the
+// /badges/<slug>.json Open Badges assertions (data routes). Both are generator output, read off disk.
+const BADGES_DIR = COLLECTION_DIRS["/badges"];
+function badgeShortlinkRoutes(): string[] {
+  try { return Object.keys(JSON.parse(readFileSync(join(BADGES_DIR, "shortlinks.json"), "utf8"))).map((id) => `/b/${id}`); }
+  catch { return []; }
+}
+function badgeObJsonRoutes(): string[] {
+  try { return readdirSync(BADGES_DIR).filter((f) => f.endsWith(".ob.json")).map((f) => `/badges/${f.replace(/\.ob\.json$/, "")}.json`); }
+  catch { return []; }
+}
 import { listPlanRoutes } from "../src/plans.ts";
 import { findMissingComponents, missingReport } from "../src/component-refs.ts";
 import { loadTours } from "@tjakoen/crumb/loader.ts";
@@ -102,7 +115,7 @@ async function crumbTourRoutes(): Promise<string[]> {
 // bytes, no chrome), never a page: freezing it here (not `pages`) keeps the export honest and
 // lets the entry chrome's Rendered/Source toggle resolve under the export's dead-link check.
 async function dataRoutes(): Promise<string[]> {
-  return [...DATA_ROUTES, ...await listPortfolioRawContentRoutes(), ...await crumbTourRoutes()];
+  return [...DATA_ROUTES, ...await listPortfolioRawContentRoutes(), ...await crumbTourRoutes(), ...badgeObJsonRoutes()];
 }
 
 async function waitForServer(timeoutMs = 15000) {
@@ -133,7 +146,7 @@ async function pageRoutes(): Promise<string[]> {
   // it out of search; it stays out of the sitemap for the same reason, which is why it is added here
   // rather than travelling in with `content`.
   const folded = Object.keys(FOLDED_NOTES);
-  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, "/catalog", "/reference", "/cv", "/kickstart"]);
+  const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, ...badgeShortlinkRoutes(), "/catalog", "/reference", "/cv", "/kickstart"]);
   return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).sort();
 }
 
