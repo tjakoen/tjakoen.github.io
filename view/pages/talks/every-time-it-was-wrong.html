@@ -4,34 +4,41 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Every Time It Was Wrong · the talk</title>
-  <meta name="description" content="A knowledge-sharing session on the PR reviewer I run: how a comment earns the right to be posted, what happened when every comment got graded, why the thirty-minute poll became event-driven, and the rule that stops the thing tuning itself.">
+  <meta name="description" content="Introducing the PR reviewer to the team: what it does on your pull requests, why it says so little, what happens when you reply to it, and how we know whether it is any good.">
 </head>
 <!-- A TALK OWNS THE WINDOW. Same page contract as the other two decks (view/components/pages/talk):
      no app shell, `data-deck-only`, GRAIN's presentation organism doing the work.
 
-     THIS ONE IS A KNOWLEDGE-SHARE, NOT A KEYNOTE, and the markup follows from that. The room is
-     engineers, so no slide argues them into the topic and no slide carries a paragraph. A heading
-     and a figure, or a heading and three short lines, in plain words rather than the vocabulary
-     the skill files use internally. The detail lives in slide-notes, which is where a working
-     session wants it: the deck is the artifact on the wall and the talking is the talk.
+     THIS IS AN INTRODUCTION, NOT A TOUR OF THE INTERNALS. An earlier version ran to twenty-six
+     slides organised the way the skill file is organised, and it read as complicated because it
+     enumerated every mechanism before saying why anyone should care. This one is built for a
+     teammate who is about to find comments on their pull request and wants three things: what is
+     this, can I trust it, and what do I do when it is wrong. The order answers those in that
+     sequence, and the measurement that makes the whole thing worth discussing is the payoff rather
+     than a footnote buried two thirds of the way in.
 
-     FIGURE HEIGHT IS A LAYOUT CONSTRAINT, NOT A TASTE. A slide scales itself to fit by shrinking
-     its own `--u`, and its padding is written in `--u` while the fixed chrome (the top bar, the
-     dot strip, the control cluster) is positioned against the UNSCALED unit. So an over-tall slide
-     shrinks its own margins while the furniture stays put, and the content ends up jammed against
-     both. Measured on the first draft: a 640x300 and a 620x292 figure drove `--fit` to 0.72 and
-     0.68, leaving 6px and 3px of clearance under the top bar. Every figure here is therefore a
-     wide, shallow landscape, roughly 700x230, which holds `--fit` at 1 and keeps about 40px of air
-     top and bottom. Check that before adding a row to any of them.
+     Everything cut from the long version lives in slide-notes: the evidence ladder, the three
+     classes before verification, blocking as an axis of its own, the phase clock, the convention
+     trap, the file that never existed. Those are a second session for whoever wants them.
 
-     Figures are inline SVG on the shared theme tokens, so they invert with the deck, and they
-     carry GRAIN's own .fig rule for full slide width. `.live-fig` is deliberately NOT used: it is
-     a prose-width molecule capped at 34rem, right in a note and far too small here. The
-     data-live-figure hook rides on the svg instead, so a later session can still mount a live
-     widget on the organism's one seam without touching this file. -->
+     EVERY SLIDE IS A PICTURE OR TWO SHORT LINES. A box with a sentence in it is not a diagram, and
+     the previous version had several pretending to be. A figure earns its place by being spatial or
+     quantitative: a funnel narrows, forty dots are visibly more than six, one bar is shorter than
+     another. If a figure would only be bullets with rectangles around them, write plain lines.
+
+     FIGURE HEIGHT IS A LAYOUT CONSTRAINT. A slide scales itself to fit by shrinking its own `--u`,
+     and slide padding is written in `--u` while the fixed chrome (top bar, dot strip, controls) is
+     positioned against the UNSCALED unit. An over-tall slide shrinks its own margins while the
+     furniture stays put, and the content jams against both. Measured once at 640x300: `--fit` fell
+     to 0.72 and left 6px under the top bar. Keep every figure a wide, shallow landscape around
+     700x210, which holds `--fit` at 1 and keeps about 50px of air top and bottom.
+
+     Figures are inline SVG on the shared theme tokens, so they invert with the deck, and carry
+     GRAIN's own .fig rule for full slide width. `.live-fig` is deliberately NOT used: it is a
+     prose-width molecule capped at 34rem, right in a note and far too small here. -->
 <body data-screen="talk" data-deck-only>
 
-<div class="presentation" data-present data-deck data-hash data-minutes="25" data-channel="wrongonce">
+<div class="presentation" data-present data-deck data-hash data-minutes="15" data-channel="wrongonce">
 
   <div class="presentation__bar">
     <p class="presentation__meta"><a href="/talks">← all talks</a></p>
@@ -40,555 +47,376 @@
 
   <!-- 1 ----------------------------------------------------------------- TITLE -->
   <section class="presentation__slide" data-title="Title">
-    <p class="slide-eyebrow settles">Knowledge sharing</p>
+    <p class="slide-eyebrow settles">Something new on your pull requests</p>
     <h1 class="slide-head" data-size="xl">Every Time It Was&nbsp;Wrong</h1>
-    <p class="slide-lede" data-grade="grain">How the PR reviewer decides what it is allowed to say.</p>
+    <p class="slide-lede" data-grade="grain">What the reviewer does to your PR, and how we know whether it is any good.</p>
     <hr class="slide-rule">
     <p class="slide-sig settles"><b>Tjakoen Stolk</b></p>
     <ul class="slide-notes" hidden>
-      <li>One line of framing: this is what I built on top of our review harness, what happened when I started grading its comments, and the things it taught me that I did not expect.</li>
-      <li>Questions mid-way are fine. This is a working session.</li>
-      <li>The rougher typeface means a machine drafted the line. Say it once and move on.</li>
+      <li>Shape it in one sentence: fifteen minutes, three questions. What is it, can you trust it, what do you do when it is wrong.</li>
+      <li>Interrupt whenever. This is a working session, not a presentation.</li>
+      <li>The title is about the log and it lands at the end. Do not explain it now.</li>
     </ul>
   </section>
 
-  <!-- 2 ----------------------------------------------------------------- WHAT IT IS -->
-  <section class="presentation__slide" data-title="What it does">
-    <p class="slide-eyebrow settles">The thing itself</p>
-    <h2 class="slide-head settles" data-size="sm">It reads a pull request and leaves up to six&nbsp;comments.</h2>
-    <ul class="beats">
-      <li>It posts them itself. I do not see them first.</li>
-      <li>It can block a merge. It cannot approve one.</li>
-      <li>Later, every comment it left gets marked right or wrong.</li>
-    </ul>
+  <!-- 2 ----------------------------------------------------------------- WHAT YOU WILL SEE -->
+  <section class="presentation__slide" data-title="What you will see">
+    <p class="slide-eyebrow settles">Starting now, on pull requests in our repo</p>
+    <svg class="fig" viewBox="0 0 700 214" role="img"
+         aria-label="A pull request with six review comments marked down the side of the diff. Beside it, what the reviewer can do: leave up to six comments on the lines they are about, and hold the merge. And what it cannot do: approve. That stays with a person."
+         style="font-size:12px">
+      <rect x="8" y="16" width="404" height="182" rx="5" style="fill:none;stroke:var(--color-line)"/>
+      <g style="fill:var(--color-line)">
+        <rect x="46" y="38" width="300" height="7" rx="3"/>
+        <rect x="46" y="56" width="248" height="7" rx="3"/>
+        <rect x="46" y="74" width="326" height="7" rx="3"/>
+        <rect x="46" y="92" width="196" height="7" rx="3"/>
+        <rect x="46" y="110" width="286" height="7" rx="3"/>
+        <rect x="46" y="128" width="232" height="7" rx="3"/>
+        <rect x="46" y="146" width="310" height="7" rx="3"/>
+        <rect x="46" y="164" width="174" height="7" rx="3"/>
+      </g>
+      <g style="fill:var(--color-fg)">
+        <circle cx="28" cy="41" r="5"/><circle cx="28" cy="77" r="5"/><circle cx="28" cy="95" r="5"/>
+        <circle cx="28" cy="131" r="5"/><circle cx="28" cy="149" r="5"/><circle cx="28" cy="167" r="5"/>
+      </g>
+      <text x="460" y="42" style="fill:var(--color-fg);font-size:14px">it leaves up to six comments</text>
+      <text x="460" y="62" style="fill:var(--color-muted);font-size:12px">on the lines they are about</text>
+      <text x="460" y="102" style="fill:var(--color-fg);font-size:14px">it can hold the merge</text>
+      <text x="460" y="122" style="fill:var(--color-muted);font-size:12px">when something really is broken</text>
+      <line x1="460" y1="144" x2="692" y2="144" style="stroke:var(--color-line)"/>
+      <text x="460" y="170" style="fill:var(--color-fg);font-size:14px">it cannot approve</text>
+      <text x="460" y="190" style="fill:var(--color-muted);font-size:12px">ever. That is still a person.</text>
+    </svg>
     <ul class="slide-notes" hidden>
-      <li>Three facts, no defence yet. The rest of the session is why each one is the way it is.</li>
-      <li>If somebody objects to the no-draft-step now, park it. There is a slide for exactly that.</li>
+      <li>Land the three facts and stop. No defence yet and no mechanism.</li>
+      <li>If someone asks why it cannot approve, say "two slides from now" and move on.</li>
     </ul>
   </section>
 
-  <!-- 3 ----------------------------------------------------------------- INHERITED -->
-  <section class="presentation__slide" data-title="What I inherited">
-    <p class="slide-eyebrow settles">Credit where it belongs</p>
-    <h2 class="slide-head settles" data-size="sm">Most of this was already ours.</h2>
-    <ul class="beats">
-      <li>The team built the review harness and the six specialist reviewers.</li>
-      <li>I added the part that checks whether a comment was any good.</li>
-    </ul>
+  <!-- 3 ----------------------------------------------------------------- IS IT RIGHT -->
+  <section class="presentation__slide" data-title="Is it right">
+    <p class="slide-eyebrow settles">First, the boring question</p>
+    <svg class="fig" viewBox="0 0 700 192" role="img"
+         aria-label="Ninety-eight percent of the comments the reviewer has left were correct, measured across 753 of them graded one at a time against what happened to the code afterwards. Which turned out to be the least interesting thing about it."
+         style="font-size:12px">
+      <text x="8" y="92" style="fill:var(--color-fg);font-size:76px">98%</text>
+      <text x="252" y="66" style="fill:var(--color-fg);font-size:18px">of its comments were right.</text>
+      <text x="252" y="96" style="fill:var(--color-muted);font-size:13px">753 of them, graded one at a time against</text>
+      <text x="252" y="116" style="fill:var(--color-muted);font-size:13px">what actually happened to the code.</text>
+      <line x1="8" y1="142" x2="692" y2="142" style="stroke:var(--color-line)"/>
+      <text x="8" y="174" style="fill:var(--color-fg);font-size:16px">Which is the least interesting thing about it.</text>
+    </svg>
     <ul class="slide-notes" hidden>
-      <li>Be specific: our harness resolves the target, checks it out in isolation, runs the reviewers in parallel and assembles one verdict. The six lenses are our TypeScript reviewer set, one for one.</li>
-      <li>Mine: the order of evidence, the second reader, finding the right line, keeping the volume down, and the log.</li>
-      <li>Do not oversell the delta. The measurement is the only part worth this room's time.</li>
+      <li>Say the number flatly. It is not a boast, it is a way of clearing accuracy off the table so the rest of the session is about the real problem.</li>
+      <li>Flag it as a September snapshot and say it moves.</li>
+      <li>Do not explain the grading yet. That is the last third.</li>
     </ul>
   </section>
 
-  <!-- 4 ----------------------------------------------------------------- THE SHAPE -->
-  <section class="presentation__slide" data-title="The shape">
-    <p class="slide-eyebrow settles">One run, left to right</p>
-    <svg class="fig" data-live-figure="funnel" data-surface="figure:funnel" viewBox="0 0 700 220" role="img"
-         aria-label="A pipeline running left to right. The diff goes in. It is checked against what the ticket asked for and what people have already said. Six specialist reviewers then read it in parallel. Everything they find is argued against, checked against five rules, and read once more just before posting. At most six comments come out the other end."
+  <!-- 4 ----------------------------------------------------------------- THE REAL PROBLEM -->
+  <section class="presentation__slide" data-title="The real problem">
+    <p class="slide-eyebrow settles">Because we have all been sent the accurate one</p>
+    <svg class="fig" viewBox="0 0 700 212" role="img"
+         aria-label="Two pull requests side by side. The first carries about forty comments from a tool, drawn as a dense field of faint dots, and you scroll past all of it. The second carries six solid dots, and you read all of it."
+         style="font-size:12px">
+      <text x="8" y="20" style="fill:var(--color-muted);font-size:13px">a tool that comments on everything</text>
+      <g style="fill:var(--color-line)">
+        <circle cx="22" cy="52" r="6"/><circle cx="52" cy="52" r="6"/><circle cx="82" cy="52" r="6"/><circle cx="112" cy="52" r="6"/><circle cx="142" cy="52" r="6"/><circle cx="172" cy="52" r="6"/><circle cx="202" cy="52" r="6"/><circle cx="232" cy="52" r="6"/>
+        <circle cx="22" cy="80" r="6"/><circle cx="52" cy="80" r="6"/><circle cx="82" cy="80" r="6"/><circle cx="112" cy="80" r="6"/><circle cx="142" cy="80" r="6"/><circle cx="172" cy="80" r="6"/><circle cx="202" cy="80" r="6"/><circle cx="232" cy="80" r="6"/>
+        <circle cx="22" cy="108" r="6"/><circle cx="52" cy="108" r="6"/><circle cx="82" cy="108" r="6"/><circle cx="112" cy="108" r="6"/><circle cx="142" cy="108" r="6"/><circle cx="172" cy="108" r="6"/><circle cx="202" cy="108" r="6"/><circle cx="232" cy="108" r="6"/>
+        <circle cx="22" cy="136" r="6"/><circle cx="52" cy="136" r="6"/><circle cx="82" cy="136" r="6"/><circle cx="112" cy="136" r="6"/><circle cx="142" cy="136" r="6"/><circle cx="172" cy="136" r="6"/><circle cx="202" cy="136" r="6"/><circle cx="232" cy="136" r="6"/>
+        <circle cx="22" cy="164" r="6"/><circle cx="52" cy="164" r="6"/><circle cx="82" cy="164" r="6"/><circle cx="112" cy="164" r="6"/><circle cx="142" cy="164" r="6"/><circle cx="172" cy="164" r="6"/><circle cx="202" cy="164" r="6"/><circle cx="232" cy="164" r="6"/>
+      </g>
+      <text x="8" y="200" style="fill:var(--color-muted);font-size:14px">you scroll past all of it</text>
+
+      <line x1="330" y1="14" x2="330" y2="200" style="stroke:var(--color-line)"/>
+
+      <text x="380" y="20" style="fill:var(--color-muted);font-size:13px">this one</text>
+      <g style="fill:var(--color-fg)">
+        <circle cx="394" cy="52" r="6"/><circle cx="424" cy="52" r="6"/><circle cx="454" cy="52" r="6"/>
+        <circle cx="394" cy="80" r="6"/><circle cx="424" cy="80" r="6"/><circle cx="454" cy="80" r="6"/>
+      </g>
+      <text x="380" y="200" style="fill:var(--color-fg);font-size:14px">you read all of it</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Show of hands on the review-bomb. Everyone has one.</li>
+      <li>The point in a sentence: the hard problem was never finding things. It is everything it finds and should not say.</li>
+    </ul>
+  </section>
+
+  <!-- 5 ----------------------------------------------------------------- THE FUNNEL -->
+  <section class="presentation__slide" data-title="How it gets to six">
+    <p class="slide-eyebrow settles">So most of the work is throwing things away</p>
+    <svg class="fig" viewBox="0 0 700 208" role="img"
+         aria-label="Six specialist reviewers read the change at the same time. What they find passes through checks that throw things out, then through the reviewer arguing against its own findings, and at most six comments come out. A band underneath tapers from everything it could have said down to what it actually says."
          style="font-size:12px">
       <defs>
         <marker id="fn-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
           <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
         </marker>
       </defs>
-      <g style="stroke:var(--color-muted);stroke-width:1.4;fill:none">
-        <path d="M92 100 L120 100" marker-end="url(#fn-a)"/>
-        <path d="M244 100 L272 100" marker-end="url(#fn-a)"/>
-        <path d="M400 100 L428 100" marker-end="url(#fn-a)"/>
-        <path d="M556 100 L584 100" marker-end="url(#fn-a)"/>
-      </g>
-
-      <rect x="8" y="80" width="84" height="40" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="50" y="104" text-anchor="middle" style="fill:var(--color-fg)">the diff</text>
-
-      <rect x="120" y="66" width="124" height="68" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="182" y="88" text-anchor="middle" style="fill:var(--color-fg)">what was asked</text>
-      <text x="182" y="104" text-anchor="middle" style="fill:var(--color-fg)">for, and what</text>
-      <text x="182" y="120" text-anchor="middle" style="fill:var(--color-fg)">people said already</text>
-
-      <rect x="272" y="46" width="128" height="108" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="336" y="64" text-anchor="middle" style="fill:var(--color-fg)">six reviewers,</text>
-      <text x="336" y="79" text-anchor="middle" style="fill:var(--color-fg)">at the same time</text>
-      <g text-anchor="middle" style="fill:var(--color-muted);font-size:11px">
-        <text x="306" y="99">security</text><text x="306" y="115">tests</text>
-        <text x="306" y="131">migrations</text>
-        <text x="372" y="99">access</text><text x="372" y="115">design</text>
-        <text x="372" y="131">frontend</text>
-      </g>
-
-      <rect x="428" y="66" width="128" height="68" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="492" y="88" text-anchor="middle" style="fill:var(--color-fg)">argue against it,</text>
-      <text x="492" y="104" text-anchor="middle" style="fill:var(--color-fg)">check five rules,</text>
-      <text x="492" y="120" text-anchor="middle" style="fill:var(--color-fg)">re-read the PR</text>
-
-      <rect x="584" y="80" width="108" height="40" rx="4" style="fill:var(--color-fg)"/>
-      <text x="638" y="104" text-anchor="middle" style="fill:var(--color-bg)">six comments</text>
-
-      <text x="8" y="188" style="fill:var(--color-fg)">Everything after the reviewers exists to take findings away, never to add them.</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>Do not walk the boxes. Point at the last panel and say the design is subtractive.</li>
-      <li>Volume caps are hard: six comments, three on a small change. Anything over the cap goes in the summary or gets deleted.</li>
-      <li>Cost, if asked: about 57k tokens of instructions load before it reads a line, six reviewers run in parallel, and the arguing-against step is the most expensive thing it does.</li>
-    </ul>
-  </section>
-
-  <!-- 5 ----------------------------------------------------------------- THE GATES -->
-  <section class="presentation__slide" data-title="Five rules">
-    <p class="slide-eyebrow settles">A comment has to pass all five, or it is dropped</p>
-    <svg class="fig" viewBox="0 0 700 198" role="img"
-         aria-label="Five checks in a row, each one a question. Was it asked for. Has someone said it. Is that really the convention. Is it on the right line. Is it worth the author's time. Underneath, a band tapers from wide to narrow, showing everything the reviewers found on the left and the few comments that get posted on the right."
-         style="font-size:12px">
-      <g style="fill:none;stroke:var(--color-muted)">
-        <rect x="8" y="16" width="124" height="74" rx="4"/>
-        <rect x="142" y="16" width="124" height="74" rx="4"/>
-        <rect x="276" y="16" width="124" height="74" rx="4"/>
-        <rect x="410" y="16" width="124" height="74" rx="4"/>
-        <rect x="544" y="16" width="124" height="74" rx="4"/>
-      </g>
-      <g text-anchor="middle" style="fill:var(--color-muted);font-size:11px">
-        <text x="70" y="36">1</text><text x="204" y="36">2</text><text x="338" y="36">3</text>
-        <text x="472" y="36">4</text><text x="606" y="36">5</text>
-      </g>
-      <g text-anchor="middle" style="fill:var(--color-fg);font-size:12.5px">
-        <text x="70" y="58">was it</text><text x="70" y="74">asked for?</text>
-        <text x="204" y="58">has someone</text><text x="204" y="74">said it?</text>
-        <text x="338" y="58">is that really</text><text x="338" y="74">the convention?</text>
-        <text x="472" y="58">is it on the</text><text x="472" y="74">right line?</text>
-        <text x="606" y="58">is it worth</text><text x="606" y="74">their time?</text>
-      </g>
-      <path d="M8 118 L668 136 L668 152 L8 168 Z" style="fill:var(--color-line)"/>
-      <text x="16" y="190" style="fill:var(--color-muted);font-size:11.5px">everything the reviewers found</text>
-      <text x="668" y="190" text-anchor="end" style="fill:var(--color-fg);font-size:11.5px">what gets posted</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>Move fast. Only the third one is interesting and the next two slides are about it.</li>
-      <li>Worth one line: a comment that fails a rule is dropped, or turned into a question. It is never softened and posted anyway.</li>
-    </ul>
-  </section>
-
-  <!-- 6 ----------------------------------------------------------------- THE TRAP -->
-  <section class="presentation__slide" data-title="The convention trap">
-    <p class="slide-eyebrow settles">Rule three, and how it fooled me</p>
-    <h2 class="slide-head settles" data-size="sm">It searched the file it was&nbsp;reviewing.</h2>
-    <ul class="beats">
-      <li class="frag">Found the pattern. Quoted it. Said the code was fine.</li>
-      <li class="frag" data-grade="grain">Of course the file matches itself. That is what made the check feel like proof.</li>
-    </ul>
-    <ul class="slide-notes" hidden>
-      <li>Give them a beat before the second line. Most people get there on their own.</li>
-      <li>The fix: count across the whole service, and put the count in the comment. "We do it this way here" and "we do it that way 546 times and this way twice" are different claims, and only the second one survives someone disagreeing.</li>
-      <li>The case behind the rule: 872 of the right pattern against 2 of the wrong one across the service, and the wrong one sat 18 lines away in the same file, which is why it passed. A human asked for changes on that line the next morning.</li>
-      <li>Second failure: where the code has drifted, the neighbours are the drift, so a reviewer that only searches will defend the exact pattern our reviewers keep rejecting.</li>
-    </ul>
-  </section>
-
-  <!-- 7 ----------------------------------------------------------------- THE LADDER -->
-  <section class="presentation__slide" data-title="What beats what">
-    <p class="slide-eyebrow settles">So the code around the change is the weakest evidence, not the strongest</p>
-    <svg class="fig" data-live-figure="ladder" data-surface="figure:ladder" viewBox="0 0 700 232" role="img"
-         aria-label="Four kinds of evidence, strongest first. One, something already proved wrong once, which is dropped without argument. Two, a pattern the team rejected in a real review, in their own words. Three, the written standard. Four and weakest, whatever the surrounding code happens to do, and code inside the file being reviewed does not count at all. Separately, an accessibility rule sits outside this order entirely, because nobody here gets a vote on it."
-         style="font-size:12.5px">
-      <text x="8" y="16" style="fill:var(--color-muted);font-size:11.5px">strongest</text>
-
-      <rect x="8" y="24" width="392" height="34" rx="4" style="fill:var(--color-fg)"/>
-      <text x="22" y="39" style="fill:var(--color-bg)">we already proved this one wrong</text>
-      <text x="22" y="52" style="fill:var(--color-bg);font-size:11px">dropped on sight, no argument</text>
-
-      <rect x="8" y="62" width="392" height="34" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="22" y="77" style="fill:var(--color-fg)">a reviewer rejected this in a real review</text>
-      <text x="22" y="90" style="fill:var(--color-muted);font-size:11px">their words, quoted, with the link</text>
-
-      <rect x="8" y="100" width="392" height="34" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="22" y="115" style="fill:var(--color-fg)">the written standard</text>
-      <text x="22" y="128" style="fill:var(--color-muted);font-size:11px">quoted with what it actually covers</text>
-
-      <rect x="8" y="138" width="392" height="34" rx="4" style="fill:none;stroke:var(--color-line)"/>
-      <text x="22" y="153" style="fill:var(--color-muted)">whatever the nearby code does</text>
-      <text x="22" y="166" style="fill:var(--color-muted);font-size:11px">only when nothing above it applies</text>
-      <text x="8" y="188" style="fill:var(--color-muted);font-size:11.5px">weakest</text>
-
-      <text x="8" y="212" style="fill:var(--color-fg);font-size:11.5px">Code inside the file being reviewed is not evidence at all.</text>
-
-      <line x1="430" y1="24" x2="430" y2="172" style="stroke:var(--color-line);stroke-dasharray:3 3"/>
-      <text x="452" y="39" style="fill:var(--color-fg)">outside this order</text>
-      <text x="452" y="62" style="fill:var(--color-muted);font-size:11.5px">An accessibility rule is not a</text>
-      <text x="452" y="78" style="fill:var(--color-muted);font-size:11.5px">convention. Nobody here gets</text>
-      <text x="452" y="94" style="fill:var(--color-muted);font-size:11.5px">a vote on it.</text>
-      <text x="452" y="122" style="fill:var(--color-muted);font-size:11.5px">So "the file next door does it</text>
-      <text x="452" y="138" style="fill:var(--color-muted);font-size:11.5px">too" means there are two</text>
-      <text x="452" y="154" style="fill:var(--color-fg);font-size:11.5px">problems, not zero.</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>Read it bottom to top: that is the order of temptation, because searching the code is the easiest thing to do and it is the bottom rung.</li>
-      <li>The top rung is fed only by comments we measured as wrong, and nothing else can add to it. It has five entries.</li>
-      <li>The right-hand panel exists because we lost a real accessibility finding to a neighbouring file before it did.</li>
-    </ul>
-  </section>
-
-  <!-- 8 ----------------------------------------------------------------- FACTS AND CLAIMS -->
-  <section class="presentation__slide" data-title="Facts and opinions">
-    <p class="slide-eyebrow settles">What survives gets sorted into three piles</p>
-    <svg class="fig" viewBox="0 0 700 218" role="img"
-         aria-label="What the reviewers found splits three ways. A fact about the diff, such as a changed service with no test file, is proved by a script and goes straight to posting. An opinion about the code, such as this lets the wrong user in, goes to a second reader first. A third kind, where the pattern is certainly there but the cost is not visible in the diff, goes to the second reader with the pattern already granted, so the only question asked is whether it matters."
-         style="font-size:12px">
-      <defs>
-        <marker id="fk-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-        </marker>
-      </defs>
-      <rect x="8" y="82" width="104" height="44" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="60" y="100" text-anchor="middle" style="fill:var(--color-fg)">what the</text>
-      <text x="60" y="116" text-anchor="middle" style="fill:var(--color-fg)">lenses found</text>
       <g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
-        <path d="M112 104 L140 104 L140 34 L172 34" marker-end="url(#fk-a)"/>
-        <path d="M112 104 L140 104 L140 104 L172 104" marker-end="url(#fk-a)"/>
-        <path d="M112 104 L140 104 L140 174 L172 174" marker-end="url(#fk-a)"/>
-        <path d="M356 34 L556 34" marker-end="url(#fk-a)"/>
-        <path d="M356 104 L400 104" marker-end="url(#fk-a)"/>
-        <path d="M356 174 L400 174" marker-end="url(#fk-a)"/>
-        <path d="M524 104 L556 104" marker-end="url(#fk-a)"/>
-        <path d="M524 174 L556 174" marker-end="url(#fk-a)"/>
+        <path d="M156 56 L186 56" marker-end="url(#fn-a)"/>
+        <path d="M368 56 L398 56" marker-end="url(#fn-a)"/>
+        <path d="M540 56 L570 56" marker-end="url(#fn-a)"/>
       </g>
+      <rect x="8" y="30" width="148" height="52" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="82" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">six reviewers</text>
+      <text x="82" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">reading at the same time</text>
 
-      <rect x="172" y="14" width="184" height="40" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="264" y="31" text-anchor="middle" style="fill:var(--color-fg)">a fact about the diff</text>
-      <text x="264" y="46" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">no test file for this change</text>
-      <text x="456" y="26" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">a script gives the same</text>
-      <text x="456" y="48" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">answer every time</text>
+      <rect x="186" y="30" width="182" height="52" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="277" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">checks that throw things out</text>
+      <text x="277" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">the next slide</text>
 
-      <rect x="172" y="84" width="184" height="40" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="264" y="101" text-anchor="middle" style="fill:var(--color-fg)">an opinion about it</text>
-      <text x="264" y="116" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">this lets the wrong user in</text>
+      <rect x="398" y="30" width="142" height="52" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="469" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">it argues back</text>
+      <text x="469" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">against its own findings</text>
 
-      <rect x="172" y="154" width="184" height="40" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="264" y="171" text-anchor="middle" style="fill:var(--color-fg)">there, but does it cost?</text>
-      <text x="264" y="186" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">upload added, limit off the diff</text>
+      <rect x="570" y="30" width="122" height="52" rx="4" style="fill:var(--color-fg)"/>
+      <text x="631" y="62" text-anchor="middle" style="fill:var(--color-bg);font-size:13px">six comments</text>
 
-      <rect x="400" y="84" width="124" height="40" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="462" y="108" text-anchor="middle" style="fill:var(--color-fg)">second reader</text>
-      <rect x="400" y="154" width="124" height="40" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="462" y="171" text-anchor="middle" style="fill:var(--color-fg)">second reader,</text>
-      <text x="462" y="186" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">pattern already granted</text>
-
-      <rect x="556" y="82" width="136" height="44" rx="4" style="fill:var(--color-fg)"/>
-      <text x="624" y="108" text-anchor="middle" style="fill:var(--color-bg)">posted, or dropped</text>
-      <path d="M556 34 L586 34 L586 82" style="fill:none;stroke:var(--color-line)"/>
-      <path d="M556 174 L586 174 L586 126" style="fill:none;stroke:var(--color-line)"/>
+      <text x="8" y="124" style="fill:var(--color-muted);font-size:12px">everything it could have said</text>
+      <text x="692" y="124" text-anchor="end" style="fill:var(--color-fg);font-size:12px">what it actually says</text>
+      <path d="M8 134 L692 162 L692 184 L8 194 Z" style="fill:var(--color-line)"/>
     </svg>
     <ul class="slide-notes" hidden>
-      <li>This split came out of our own plugin work and it was the best idea I took.</li>
-      <li>Say why it is precision before it is cost: the second reader says no when it cannot decide, which is right for an opinion and wrong for a fact. Hand it a script result it cannot re-run and it drops the most reproducible finding in the review.</li>
-      <li>The third pile is the subtle one. The regex matched half its own condition: the upload really was added, and whether there is a size limit is not in the diff. Conceding the pattern is what stops the reader arguing about the half we can see.</li>
+      <li>Point at the taper, not the boxes. The design is subtractive and that is the whole trick.</li>
+      <li>The cap is hard: six comments, three on a small change. Over the cap the weakest one is deleted rather than all of them being shortened.</li>
+      <li>The six, only if asked: security, tests, migrations, access, design, frontend.</li>
     </ul>
   </section>
 
-  <!-- 8b --------------------------------------------------------------- BLOCKING VS SEVERITY -->
-  <section class="presentation__slide" data-title="Blocking is not severity">
-    <p class="slide-eyebrow settles">Two questions I had as one word</p>
-    <h2 class="slide-head settles" data-size="sm">How bad is it, and does policy stop the&nbsp;merge?</h2>
-    <ul class="beats">
-      <li>They shared one field, so a small defect with policy behind it had one way to say so: lie about how bad it was.</li>
-      <li class="frag" data-grade="grain">The test reviewer was told to do exactly that, and it taught every other reviewer that a severity word is negotiable.</li>
-    </ul>
-    <ul class="slide-notes" hidden>
-      <li>Concrete: a missing integration test is not a critical bug, but we stop a merge over it. Now it sets blocking on policy grounds and rates the severity honestly underneath, which is usually High.</li>
-      <li>The knock-on was in the slots. Inflated severity fought the six-comment cap it shared slots with. The order is now blocking first, then severity.</li>
-      <li>Why it was worth doing rather than deferring: replaying about nine hundred logged comments turned up four blocking findings recorded under three different spellings of the tag, so they were invisible to every reading of how blocking findings scored. A marker you have to spell exactly right is one keystroke from silence.</li>
-    </ul>
-  </section>
-
-  <!-- 9 ----------------------------------------------------------------- THE SKEPTIC -->
-  <section class="presentation__slide" data-title="The second reader">
-    <p class="slide-eyebrow settles">Every opinion goes to a second reader</p>
-    <h2 class="slide-head settles" data-size="sm">Whose whole job is to prove it&nbsp;wrong.</h2>
-    <ul class="beats">
-      <li>It gets the claim on its own, with the reasoning removed, so it cannot just agree.</li>
-      <li>If it cannot decide, the answer is no.</li>
-      <li class="frag" data-grade="grain">A comment that loses is deleted, not reworded more gently.</li>
-    </ul>
-    <ul class="slide-notes" hidden>
-      <li>Removing the reasoning matters. Show a verifier the original argument and it tends to agree with it.</li>
-      <li>What it is asked: can this code path actually be reached, is it already handled further down the file, does the quoted example really support the claim, and did the ticket ask for it.</li>
-      <li>We cap how many claims one reader gets, on wall-clock rather than cost, because a reader holding a dozen of them stops arguing and starts summarizing.</li>
-    </ul>
-  </section>
-
-  <!-- 10 ---------------------------------------------------------------- THE BAR -->
-  <section class="presentation__slide" data-title="Say what breaks">
-    <p class="slide-eyebrow settles">Then one last question per comment</p>
-    <h2 class="slide-head settles" data-size="sm">What actually&nbsp;breaks?</h2>
-    <ul class="beats">
-      <li>"This looks wrong" does not count.</li>
-      <li>"Delete this and every caller reads the wrong customer's data" does.</li>
-      <li>Anything in between becomes a question, or nothing.</li>
-    </ul>
-    <ul class="slide-notes" hidden>
-      <li>This rule is what replaced me reading every review before it went out. Say that plainly.</li>
-      <li>The tie-break never moves: a wrong comment sticks around and a missed one costs you one PR, so when it is close, say nothing.</li>
-    </ul>
-  </section>
-
-  <!-- 11 ---------------------------------------------------------------- THE RACE -->
-  <section class="presentation__slide" data-title="The PR keeps moving">
-    <p class="slide-eyebrow settles">The one nobody warns you about</p>
-    <h2 class="slide-head settles" data-size="sm">The pull request carries on while the run is&nbsp;thinking.</h2>
-    <ul class="beats">
-      <li>A run takes minutes, and people keep working through those minutes.</li>
-      <li>So the last step before posting is reading the PR again and dropping whatever got answered.</li>
-    </ul>
-    <ul class="slide-notes" hidden>
-      <li>Real case: a person asked for changes about thirty seconds before this thing posted a clean verdict on the same commit. Two opposite reviews, a minute apart.</li>
-      <li>The subtle part: compare against when you last read the comments, not when the run started. Two different times, and only one of them catches this.</li>
-      <li>Also worth knowing: a review submitted with no line comments shows up on one API endpoint and not the other, which is how we missed that one.</li>
-    </ul>
-  </section>
-
-  <!-- 12 ---------------------------------------------------------------- POSTS / APPROVES -->
-  <section class="presentation__slide" data-title="It posts, it cannot approve">
-    <p class="slide-eyebrow settles">Two halves of the same decision</p>
-    <h2 class="slide-head settles" data-size="sm">It posts on its own. It gets no&nbsp;vote.</h2>
-    <ul class="beats">
-      <li>A review I have to read before it goes out is one I would never find time to run.</li>
-      <li>Merging needs human approvals, and an approval from this account would count as one.</li>
-      <li class="frag" data-grade="grain">So it can hold a merge. Only I can let one through.</li>
-    </ul>
-    <ul class="slide-notes" hidden>
-      <li>Expect the pushback here. The answer is the re-read before posting, not confidence.</li>
-      <li>This is a control, not a preference. No accuracy number would change it.</li>
-      <li>Consequence worth flagging: blocking does not clear itself when the author pushes a fix, so it is only spent where we mean to hold the PR until a person acts.</li>
-    </ul>
-  </section>
-
-  <!-- 12b -------------------------------------------------------------- THE CLOCK -->
-  <section class="presentation__slide" data-title="The run has a clock">
-    <p class="slide-eyebrow settles">Nothing bounded how long a run could take</p>
-    <svg class="fig" viewBox="0 0 700 204" role="img"
-         aria-label="A bar split into five phases with their budgets in minutes. Preflight and context eight, the lenses ten, verification ten, gate and post five, closing out six, thirty-nine in total against a hard ceiling of sixty. Underneath, the three rules: never wait on an agent without a bound, abandon whatever is still running when its phase is up, and stop launching after two failures in a row."
-         style="font-size:12px">
-      <g style="fill:none;stroke:var(--color-muted)">
-        <rect x="8" y="34" width="137" height="38"/>
-        <rect x="145" y="34" width="171" height="38"/>
-        <rect x="316" y="34" width="171" height="38"/>
-        <rect x="487" y="34" width="86" height="38"/>
-        <rect x="573" y="34" width="103" height="38"/>
-      </g>
-      <g text-anchor="middle" style="fill:var(--color-fg);font-size:11.5px">
-        <text x="76" y="52">context</text><text x="76" y="66">8 min</text>
-        <text x="230" y="52">the lenses</text><text x="230" y="66">10 min</text>
-        <text x="401" y="52">arguing back</text><text x="401" y="66">10 min</text>
-        <text x="530" y="52">post</text><text x="530" y="66">5 min</text>
-        <text x="624" y="52">close out</text><text x="624" y="66">6 min</text>
-      </g>
-      <line x1="8" y1="88" x2="676" y2="88" style="stroke:var(--color-line)"/>
-      <text x="8" y="104" style="fill:var(--color-muted);font-size:11.5px">39 minutes of phases, against a hard ceiling of 60. The ceiling is for illness, not the target.</text>
-
-      <text x="8" y="140" style="fill:var(--color-fg)">Never wait on a reviewer with no time limit.</text>
-      <text x="8" y="162" style="fill:var(--color-fg)">When the phase is up, stop whatever is still running and carry on without it.</text>
-      <text x="8" y="184" style="fill:var(--color-fg)">Two failures in a row and it stops launching anything else.</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>Why it exists: a run of ours sat parked over two hours at a single step, and the plugin these budgets come from was built after a seven and a half hour run in which about six percent of the time was productive.</li>
-      <li>Be honest that the numbers are borrowed and not yet measured here. Nothing records how long a phase actually takes, so no run can say whether ten minutes is generous or tight. Treat an overrun as a signal to go and look.</li>
-      <li>The important half is the next slide: a run that gave up on something has to say so.</li>
-    </ul>
-  </section>
-
-  <!-- 12c -------------------------------------------------------------- DEGRADED -->
-  <section class="presentation__slide" data-title="A partial run says so">
-    <p class="slide-eyebrow settles">And the half that makes the clock safe</p>
-    <h2 class="slide-head settles" data-size="sm">A run that gave up on something never says&nbsp;PASS.</h2>
-    <ul class="beats">
-      <li>Passing is a claim about coverage, and it gave up on some.</li>
-      <li>The summary says what did not finish, and what that leaves uncovered.</li>
-      <li class="frag" data-grade="grain">Partial beats nothing. Partial that reads as complete is worse than both.</li>
-    </ul>
-    <ul class="slide-notes" hidden>
-      <li>The whole cost of a degraded run is paid by a reader who trusts it more than it deserves. That is the line to land.</li>
-      <li>In the author's terms, not the run's: "the accessibility check did not finish, so nothing here covers the new dialog."</li>
-      <li>It is enforced rather than remembered: the validator refuses a review claiming full coverage while carrying a finding nobody checked.</li>
-      <li>Each abandoned reviewer also writes a row saying so, which is the only cheap signal we get about what was missed rather than what was wrong.</li>
-    </ul>
-  </section>
-
-  <!-- 13 ---------------------------------------------------------------- RIGHT AND UNREAD -->
-  <section class="presentation__slide" data-title="Right and unread">
-    <p class="slide-eyebrow settles">Then we graded them, and this was the surprise</p>
-    <svg class="fig" data-live-figure="placement" data-surface="figure:placement" viewBox="0 0 700 214" role="img"
-         aria-label="Two pairs of bars. Comments attached to a line of code were right 98 percent of the time and acted on 96 percent of the time. The same findings written into the review summary instead were right 100 percent of the time and acted on only 24 to 43 percent of the time."
-         style="font-size:12.5px">
-      <text x="8" y="20" style="fill:var(--color-muted)">Was it right?</text>
-      <text x="8" y="44" style="fill:var(--color-fg)">on a line</text>
-      <rect x="128" y="32" width="420" height="16" style="fill:var(--color-line)"/>
-      <text x="558" y="44" style="fill:var(--color-muted)">98%</text>
-      <text x="8" y="70" style="fill:var(--color-fg)">in the summary</text>
-      <rect x="128" y="58" width="428" height="16" style="fill:var(--color-line)"/>
-      <text x="566" y="70" style="fill:var(--color-muted)">100%</text>
-
-      <line x1="8" y1="90" x2="692" y2="90" style="stroke:var(--color-line)"/>
-
-      <text x="8" y="114" style="fill:var(--color-muted)">Did anyone do anything about it?</text>
-      <text x="8" y="138" style="fill:var(--color-fg)">on a line</text>
-      <rect x="128" y="126" width="412" height="16" style="fill:var(--color-fg)"/>
-      <text x="550" y="138" style="fill:var(--color-fg)">96%</text>
-      <text x="8" y="164" style="fill:var(--color-fg)">in the summary</text>
-      <rect x="128" y="152" width="140" height="16" style="fill:var(--color-fg)"/>
-      <text x="278" y="164" style="fill:var(--color-fg)">24 to 43%</text>
-
-      <text x="8" y="196" style="fill:var(--color-fg)">Same run, same quality of finding. The only difference is where it was printed.</text>
-      <text x="8" y="210" style="fill:var(--color-muted);font-size:11px">753 graded comments, September 2026. A snapshot, and it moves.</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>Top half first: both groups were right. This is not an accuracy problem.</li>
-      <li>405 of the logged comments sit in the summary against 285 on a line, so most of what it says lands in the part nobody reads.</li>
-      <li>Clearest single case: a confirmed bug tucked into a collapsed summary block was the one thing an author missed while fixing all four of the line comments.</li>
-    </ul>
-  </section>
-
-  <!-- 14 ---------------------------------------------------------------- TWO NUMBERS -->
-  <section class="presentation__slide" data-title="Two different questions">
-    <p class="slide-eyebrow settles">Which I had as one number for months</p>
+  <!-- 6 ----------------------------------------------------------------- WHAT IT DROPS -->
+  <section class="presentation__slide" data-title="What it throws out">
+    <p class="slide-eyebrow settles">Three ways a comment dies before you ever see it</p>
     <svg class="fig" viewBox="0 0 700 214" role="img"
-         aria-label="Two separate measures side by side. Was it right is fixed divided by fixed plus proved wrong, and a low score there means tighten the reviewer. Did anyone act is fixed divided by fixed plus ignored, and a low score there means move the comment somewhere people read. Added together, an author merging past a correct comment counts the same as the reviewer being wrong."
+         aria-label="A stream of findings runs left to right and three fall out along the way. One falls out because the ticket asked for exactly that change. One because a reviewer already raised it or the author already answered it. One because it cannot say what would actually break."
          style="font-size:12px">
-      <rect x="8" y="14" width="330" height="120" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="173" y="38" text-anchor="middle" style="fill:var(--color-fg);font-size:14px">Was it right?</text>
-      <text x="173" y="68" text-anchor="middle" style="fill:var(--color-fg)">fixed</text>
-      <line x1="88" y1="76" x2="258" y2="76" style="stroke:var(--color-fg)"/>
-      <text x="173" y="94" text-anchor="middle" style="fill:var(--color-fg)">fixed + proved wrong</text>
-      <text x="173" y="120" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">low here: tighten the reviewer</text>
-
-      <rect x="362" y="14" width="330" height="120" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="527" y="38" text-anchor="middle" style="fill:var(--color-fg);font-size:14px">Did anyone act?</text>
-      <text x="527" y="68" text-anchor="middle" style="fill:var(--color-fg)">fixed</text>
-      <line x1="442" y1="76" x2="612" y2="76" style="stroke:var(--color-fg)"/>
-      <text x="527" y="94" text-anchor="middle" style="fill:var(--color-fg)">fixed + ignored</text>
-      <text x="527" y="120" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">low here: move it where people read</text>
-
-      <text x="350" y="166" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">Add them together and an author merging past a correct comment</text>
-      <text x="350" y="184" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">counts exactly the same as the reviewer being wrong.</text>
-      <text x="350" y="206" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">Which is what I was measuring, and it told me to say less.</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>The consequence is the point: every time it got ignored, my own numbers told me to make it stricter. It was learning to say less for being read less.</li>
-      <li>They need opposite fixes. Being wrong means tighten the reviewer. Being ignored means move the comment somewhere people read, and tightening there just throws away true findings.</li>
-      <li>Say it once as a general rule: any measure that mixes "was I right" with "did anyone listen" will tell you to shut up.</li>
-      <li>Honest caveat: three changes aimed at that number inside eight days, so I cannot say which one worked. I broke my own measurement.</li>
-    </ul>
-  </section>
-
-  <!-- 15 ---------------------------------------------------------------- POLL VS EVENT -->
-  <section class="presentation__slide" data-title="Waiting for a reply">
-    <p class="slide-eyebrow settles">Posting is not the end. Somebody answers</p>
-    <svg class="fig" data-live-figure="lanes" data-surface="figure:lanes" viewBox="0 0 700 206" role="img"
-         aria-label="Two rows on one timeline. On the top row, a reply and a push each wake the session straight away and cost nothing in between, but a thread closed without a comment raises nothing at all. On the bottom row, a check runs every half hour and usually finds nothing, and it is the only one that catches the silently closed thread."
-         style="font-size:12px">
-      <text x="8" y="22" style="fill:var(--color-fg)">it tells us</text>
-      <line x1="8" y1="56" x2="692" y2="56" style="stroke:var(--color-line)"/>
-      <g style="fill:var(--color-fg)">
-        <circle cx="180" cy="56" r="5"/><circle cx="380" cy="56" r="5"/>
-      </g>
-      <text x="180" y="42" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">someone replies</text>
-      <text x="380" y="42" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">someone pushes a fix</text>
-      <text x="180" y="76" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">we hear about it at once</text>
-      <text x="380" y="76" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">we hear about it at once</text>
-      <circle cx="580" cy="56" r="5" style="fill:none;stroke:var(--color-muted);stroke-dasharray:2 2"/>
-      <text x="580" y="42" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">thread just closed</text>
-      <text x="580" y="76" text-anchor="middle" style="fill:var(--color-fg);font-size:11px">nothing happens</text>
-
-      <text x="8" y="118" style="fill:var(--color-fg)">we go and look</text>
-      <line x1="8" y1="152" x2="692" y2="152" style="stroke:var(--color-line)"/>
-      <g style="stroke:var(--color-muted);stroke-width:1.4">
-        <line x1="100" y1="144" x2="100" y2="160"/><line x1="220" y1="144" x2="220" y2="160"/>
-        <line x1="340" y1="144" x2="340" y2="160"/><line x1="460" y1="144" x2="460" y2="160"/>
-      </g>
-      <text x="100" y="174" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">nothing</text>
-      <text x="220" y="174" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">nothing</text>
-      <text x="340" y="174" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">nothing</text>
-      <text x="460" y="174" text-anchor="middle" style="fill:var(--color-muted);font-size:11px">nothing</text>
-      <rect x="546" y="136" width="68" height="30" rx="4" style="fill:var(--color-fg)"/>
-      <text x="580" y="155" text-anchor="middle" style="fill:var(--color-bg);font-size:11px">caught it</text>
-
-      <text x="8" y="200" style="fill:var(--color-fg)">Neither one is enough on its own, so both are running.</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>Where it started: a timer every thirty minutes. Forty-eight wake-ups a day, each one a fresh session holding a single line of output, filed nowhere.</li>
-      <li>Being told is far better for the normal case, because the message arrives at the session that already has the whole review in its head. Answering a reply costs a fraction of starting over.</li>
-      <li>The silent close is why the timer survives. Nothing moves, so nothing can tell us, and around here going quiet is how people agree. Five out of five silently closed threads turned out to be real fixes.</li>
-      <li>The timer half is a shell script, one call per PR, and it prints nothing when nothing changed. A check that talks every time is a check nobody reads.</li>
-    </ul>
-  </section>
-
-  <!-- 15b -------------------------------------------------------------- THE DELTAS -->
-  <section class="presentation__slide" data-title="Five things can happen">
-    <p class="slide-eyebrow settles">Whichever way we hear about it, there are only five outcomes</p>
-    <svg class="fig" data-live-figure="deltas" data-surface="figure:deltas" viewBox="0 0 700 236" role="img"
-         aria-label="Our open threads on a pull request lead to five outcomes. Someone replied and the thread is open, so the pull request is now waiting on us and we answer it. Someone replied and closed the thread, so the code still gets read. The thread closed with no reply, which is nearly always a real fix and is never assumed to be one. Someone pushed while our findings were open, which triggers a review of just the new work. Or it merged or closed, and it drops out of the checking and its comments go to grading."
-         style="font-size:11.5px">
       <defs>
-        <marker id="dl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <marker id="dr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-line)"/>
+        </marker>
+        <marker id="dr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
           <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
         </marker>
       </defs>
-      <rect x="8" y="90" width="124" height="56" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="70" y="112" text-anchor="middle" style="fill:var(--color-fg)">our threads,</text>
-      <text x="70" y="128" text-anchor="middle" style="fill:var(--color-fg)">still open</text>
-      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
-        <path d="M132 118 L158 118 L158 24 L186 24" marker-end="url(#dl-a)"/>
-        <path d="M132 118 L158 118 L158 70 L186 70" marker-end="url(#dl-a)"/>
-        <path d="M132 118 L158 118 L186 118" marker-end="url(#dl-a)"/>
-        <path d="M132 118 L158 118 L158 166 L186 166" marker-end="url(#dl-a)"/>
-        <path d="M132 118 L158 118 L158 212 L186 212" marker-end="url(#dl-a)"/>
-        <path d="M368 24 L400 24" marker-end="url(#dl-a)"/>
-        <path d="M368 70 L400 70" marker-end="url(#dl-a)"/>
-        <path d="M368 118 L400 118" marker-end="url(#dl-a)"/>
-        <path d="M368 166 L400 166" marker-end="url(#dl-a)"/>
-        <path d="M368 212 L400 212" marker-end="url(#dl-a)"/>
+      <text x="8" y="28" style="fill:var(--color-muted);font-size:12px">what the reviewers found</text>
+      <line x1="8" y1="46" x2="556" y2="46" style="stroke:var(--color-muted);stroke-width:1.4"/>
+      <path d="M556 46 L582 46" style="fill:none;stroke:var(--color-muted);stroke-width:1.4" marker-end="url(#dr-b)"/>
+      <rect x="586" y="28" width="106" height="36" rx="4" style="fill:var(--color-fg)"/>
+      <text x="639" y="51" text-anchor="middle" style="fill:var(--color-bg);font-size:13px">what is left</text>
+
+      <g style="fill:none;stroke:var(--color-line);stroke-width:1.4">
+        <path d="M118 46 L118 96" marker-end="url(#dr-a)"/>
+        <path d="M298 46 L298 96" marker-end="url(#dr-a)"/>
+        <path d="M468 46 L468 96" marker-end="url(#dr-a)"/>
       </g>
-      <g style="fill:var(--color-fg)">
-        <text x="190" y="28">they replied, still open</text>
-        <text x="190" y="74">they replied and closed it</text>
-        <text x="190" y="122">closed with no reply</text>
-        <text x="190" y="170">they pushed a fix</text>
-        <text x="190" y="216">merged, or closed</text>
+      <g text-anchor="middle" style="fill:var(--color-fg);font-size:14px">
+        <text x="118" y="122">the ticket asked</text><text x="118" y="140">for exactly this</text>
+        <text x="298" y="122">someone already</text><text x="298" y="140">said it</text>
+        <text x="468" y="122">it cannot say what</text><text x="468" y="140">would break</text>
       </g>
-      <g style="fill:var(--color-muted)">
-        <text x="404" y="28">the PR is waiting on us. Answer it.</text>
-        <text x="404" y="74">read the code before agreeing it landed</text>
-        <text x="404" y="122">nearly always a real fix. Never assumed.</text>
-        <text x="404" y="170">review just the new work</text>
-        <text x="404" y="216">stop checking, start grading</text>
+      <g text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">
+        <text x="118" y="164">that is the point of the PR</text>
+        <text x="298" y="164">a reviewer, or you, in a reply</text>
+        <text x="468" y="164">"this looks wrong" is not enough</text>
+      </g>
+      <text x="8" y="202" style="fill:var(--color-fg);font-size:14px">On a close call it stays quiet. A wrong comment costs more than a missed one.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>The third one is a good rule for people too. "Delete this and every caller reads the wrong customer's data" is a comment. "This looks wrong" is not.</li>
+      <li>The bottom line is the design in one sentence. A wrong comment sticks around and costs the next real one its audience. A missed one costs one PR.</li>
+      <li>If asked what else it checks: it proves a convention by counting across the whole service rather than asserting it, and it will not accept the file it is reviewing as evidence about itself. That is its own session.</li>
+    </ul>
+  </section>
+
+  <!-- 7 ----------------------------------------------------------------- IT ARGUES BACK -->
+  <section class="presentation__slide" data-title="It argues with itself">
+    <p class="slide-eyebrow settles">Then whatever survived gets attacked on purpose</p>
+    <svg class="fig" viewBox="0 0 700 196" role="img"
+         aria-label="A surviving finding goes to a second reader whose only job is to kill it, and which cannot see the argument that was made for it. What survives that is posted and what does not is deleted and nobody ever sees it. If the second reader cannot decide, the answer is no."
+         style="font-size:12px">
+      <defs>
+        <marker id="ar-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
+        <path d="M164 76 L196 76" marker-end="url(#ar-a)"/>
+        <path d="M400 76 L434 52" marker-end="url(#ar-a)"/>
+        <path d="M400 76 L434 112" marker-end="url(#ar-a)"/>
+      </g>
+      <rect x="8" y="52" width="156" height="48" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="86" y="82" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">a surviving finding</text>
+
+      <rect x="196" y="42" width="204" height="68" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="298" y="66" text-anchor="middle" style="fill:var(--color-fg);font-size:14px">a second reader</text>
+      <text x="298" y="86" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">whose only job is to kill it,</text>
+      <text x="298" y="101" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">and which cannot see the case for it</text>
+
+      <rect x="438" y="32" width="112" height="40" rx="4" style="fill:var(--color-fg)"/>
+      <text x="494" y="57" text-anchor="middle" style="fill:var(--color-bg);font-size:13px">it survives</text>
+      <rect x="438" y="94" width="112" height="40" rx="4" style="fill:none;stroke:var(--color-line)"/>
+      <text x="494" y="119" text-anchor="middle" style="fill:var(--color-muted);font-size:13px">it is deleted</text>
+
+      <text x="566" y="57" style="fill:var(--color-muted);font-size:12px">you see it</text>
+      <text x="566" y="119" style="fill:var(--color-muted);font-size:12px">nobody ever does</text>
+
+      <text x="8" y="176" style="fill:var(--color-fg);font-size:14px">If the second reader cannot decide, the answer is no.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Hiding the original argument is the part worth explaining. Show a checker the case that was made and it tends to agree with it.</li>
+      <li>Default-to-no is a deliberate bias. It loses real findings, and that is the trade, because the other mistake is louder and lasts longer.</li>
+      <li>One exception if asked: a fact a script already proved skips this. Sending a grep result to something that says no when unsure just deletes your most reliable finding.</li>
+    </ul>
+  </section>
+
+  <!-- 8 ----------------------------------------------------------------- WHEN YOU REPLY -->
+  <section class="presentation__slide" data-title="When you reply">
+    <p class="slide-eyebrow settles">It is not fire and forget</p>
+    <svg class="fig" viewBox="0 0 700 206" role="img"
+         aria-label="Three things you can do with a comment and what the reviewer does back. Ask it a question and it answers before the pull request sits waiting on it. Push a fix and it reads the code as it is now, then closes the thread. Close the thread without saying anything and it still reads the code before believing you."
+         style="font-size:12px">
+      <defs>
+        <marker id="rp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <text x="8" y="22" style="fill:var(--color-muted);font-size:12px">you</text>
+      <text x="356" y="22" style="fill:var(--color-muted);font-size:12px">it</text>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
+        <path d="M314 54 L348 54" marker-end="url(#rp-a)"/>
+        <path d="M314 112 L348 112" marker-end="url(#rp-a)"/>
+        <path d="M314 170 L348 170" marker-end="url(#rp-a)"/>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="8" y="34" width="306" height="40" rx="4"/>
+        <rect x="8" y="92" width="306" height="40" rx="4"/>
+        <rect x="8" y="150" width="306" height="40" rx="4"/>
+      </g>
+      <g style="fill:var(--color-fg);font-size:14px">
+        <text x="24" y="60">ask it a question</text>
+        <text x="24" y="118">push a fix</text>
+        <text x="24" y="176">close the thread, say nothing</text>
+      </g>
+      <g style="fill:none;stroke:var(--color-fg);stroke-width:1.6">
+        <rect x="348" y="34" width="344" height="40" rx="4"/>
+        <rect x="348" y="92" width="344" height="40" rx="4"/>
+        <rect x="348" y="150" width="344" height="40" rx="4"/>
+      </g>
+      <g style="fill:var(--color-fg);font-size:13.5px">
+        <text x="364" y="60">it answers you</text>
+        <text x="364" y="118">it reads the code as it is now, then closes it</text>
+        <text x="364" y="176">it still reads the code before believing you</text>
       </g>
     </svg>
     <ul class="slide-notes" hidden>
-      <li>The first row is the one that matters: an open thread ending in their question makes a correct finding worse than no finding, because the PR is now blocked on us.</li>
-      <li>Row three is the one people get wrong. Reading a silent close as "we were wrong" would have written five false entries into the one list that outranks every other rule.</li>
-      <li>Row five is why the timer stops polling a merged PR: nothing can move again, so the comments belong to grading from that point on.</li>
-      <li>Only one session may hold a pull request at a time, taken as a real lock rather than a note in a file. Two sessions reading a file a second apart both decide they are first.</li>
+      <li>Row one matters most. An open thread ending in your question makes a correct finding worse than no finding, because now the PR is blocked on it.</li>
+      <li>Row two: never on the strength of a "done" reply. It checks the actual code at the current commit.</li>
+      <li>Row three is how most people will use it, and reading a silent close as "it was wrong" would have taught it five wrong lessons. Every silent close we checked turned out to be a real fix.</li>
     </ul>
   </section>
 
-  <!-- 16 ---------------------------------------------------------------- THE CONFESSION -->
-  <section class="presentation__slide" data-title="The file that never existed">
-    <p class="slide-eyebrow settles">And a warning about all of this</p>
-    <h2 class="slide-head settles" data-size="sm">My own docs described that timer in detail. It had never&nbsp;existed.</h2>
-    <ul class="beats">
-      <li class="frag">Nothing pointed at it. The folder was never created. It had not run once.</li>
-      <li class="frag" data-grade="grain">It lasted weeks because it sounded right and nobody ran the command.</li>
-    </ul>
+  <!-- 9 ----------------------------------------------------------------- BLOCK, NOT APPROVE -->
+  <section class="presentation__slide" data-title="It cannot approve">
+    <p class="slide-eyebrow settles">The one limit that is not going to move</p>
+    <svg class="fig" viewBox="0 0 700 188" role="img"
+         aria-label="Two things a review can do to a merge. Holding it is available to the reviewer, shown switched on. Letting it through is shown switched off, because merging here needs human approvals and an approval from the reviewing account would count as one of them."
+         style="font-size:12px">
+      <rect x="8" y="24" width="332" height="62" rx="5" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <circle cx="44" cy="55" r="11" style="fill:var(--color-fg)"/>
+      <text x="72" y="51" style="fill:var(--color-fg);font-size:15px">hold the merge</text>
+      <text x="72" y="71" style="fill:var(--color-muted);font-size:12px">it can, and it does</text>
+
+      <rect x="8" y="100" width="332" height="62" rx="5" style="fill:none;stroke:var(--color-line)"/>
+      <circle cx="44" cy="131" r="11" style="fill:none;stroke:var(--color-line)"/>
+      <text x="72" y="127" style="fill:var(--color-muted);font-size:15px">let it through</text>
+      <text x="72" y="147" style="fill:var(--color-muted);font-size:12px">never. Not once, not on a clean run.</text>
+
+      <text x="380" y="50" style="fill:var(--color-fg);font-size:15px">Merging here needs human approvals.</text>
+      <text x="380" y="80" style="fill:var(--color-muted);font-size:13px">An approval from the account doing the reviewing</text>
+      <text x="380" y="100" style="fill:var(--color-muted);font-size:13px">would count as one of them, which is exactly the</text>
+      <text x="380" y="120" style="fill:var(--color-muted);font-size:13px">gate that exists to require a person.</text>
+      <text x="380" y="152" style="fill:var(--color-fg);font-size:14px">So the last call is always ours.</text>
+    </svg>
     <ul class="slide-notes" hidden>
-      <li>Second time this exact shape has caught me. Mention there is a whole post about the first one, do not retell it.</li>
-      <li>The lesson for anyone building this kind of thing: write down what a system does and you will start believing your own writing. Go and measure instead.</li>
+      <li>This is a control, not a preference. No accuracy number would change it.</li>
+      <li>It posts without me reading it first, and it cannot approve. Those are the same decision from both ends, and the second is what makes the first safe.</li>
+      <li>Worth flagging: a hold does not clear itself when you push, so it is only used where we mean to stop the merge until a person acts.</li>
     </ul>
   </section>
 
-  <!-- 17 ---------------------------------------------------------------- THE LOOP -->
-  <section class="presentation__slide" data-title="What the log is for">
-    <p class="slide-eyebrow settles">What the grading is actually for</p>
-    <svg class="fig" data-live-figure="loop" data-surface="figure:loop" viewBox="0 0 700 228" role="img"
-         aria-label="A loop of five steps. The review posts. Every comment is written to a log. Each one is graded later, from the reply or by reading the code. The grades are read back per topic rather than as one average. That points at one reviewer to change, the change is tried against a set of old pull requests, and the loop returns to the start. A mark on the arrow into the change shows where a person decides."
+  <!-- 10 ---------------------------------------------------------------- IT SAYS WHEN IT FAILED -->
+  <section class="presentation__slide" data-title="If it did not finish">
+    <p class="slide-eyebrow settles">And when something goes wrong on its side</p>
+    <svg class="fig" viewBox="0 0 700 190" role="img"
+         aria-label="Six reviewers shown in a row, five finished and one did not. Because one did not finish, the review cannot tell you the pull request passed, and the summary names the missing check and what it leaves uncovered."
+         style="font-size:12px">
+      <text x="8" y="22" style="fill:var(--color-muted);font-size:12px">the six reviewers on your change</text>
+      <g style="fill:none;stroke:var(--color-fg);stroke-width:1.4">
+        <rect x="8" y="32" width="104" height="42" rx="4"/>
+        <rect x="120" y="32" width="104" height="42" rx="4"/>
+        <rect x="232" y="32" width="104" height="42" rx="4"/>
+        <rect x="344" y="32" width="104" height="42" rx="4"/>
+        <rect x="456" y="32" width="104" height="42" rx="4"/>
+      </g>
+      <rect x="568" y="32" width="104" height="42" rx="4" style="fill:none;stroke:var(--color-line);stroke-dasharray:4 3"/>
+      <g text-anchor="middle" style="fill:var(--color-fg);font-size:12px">
+        <text x="60" y="58">done</text><text x="172" y="58">done</text><text x="284" y="58">done</text>
+        <text x="396" y="58">done</text><text x="508" y="58">done</text>
+      </g>
+      <text x="620" y="58" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">did not finish</text>
+
+      <text x="8" y="118" style="fill:var(--color-fg);font-size:17px">Then it cannot tell you the PR passed.</text>
+      <text x="8" y="150" style="fill:var(--color-muted);font-size:13px">Passing is a claim about coverage and it just lost some. The summary names the</text>
+      <text x="8" y="170" style="fill:var(--color-muted);font-size:13px">missing check and what it leaves uncovered, in your terms rather than its own.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Every run is on a clock, and anything still going when its phase is up gets stopped rather than waited on forever. That is where this case comes from.</li>
+      <li>The line to land: partial beats nothing, and partial that reads as complete is worse than both. The cost is paid by whoever trusts it more than it deserves.</li>
+      <li>It is enforced rather than remembered. A check refuses a review claiming full coverage while carrying something nobody verified.</li>
+    </ul>
+  </section>
+
+  <!-- 11 ---------------------------------------------------------------- THE SURPRISE -->
+  <section class="presentation__slide" data-title="Right and unread">
+    <p class="slide-eyebrow settles">Now the part we did not expect</p>
+    <svg class="fig" viewBox="0 0 700 212" role="img"
+         aria-label="Two pairs of bars. Comments left on a line of code were right 98 percent of the time and acted on 96 percent of the time. The same findings written into the review summary instead were right 100 percent of the time and acted on only 24 to 43 percent of the time."
+         style="font-size:13px">
+      <text x="8" y="20" style="fill:var(--color-muted)">was it right?</text>
+      <text x="8" y="46" style="fill:var(--color-fg)">on a line</text>
+      <rect x="150" y="33" width="398" height="17" style="fill:var(--color-line)"/>
+      <text x="558" y="46" style="fill:var(--color-muted)">98%</text>
+      <text x="8" y="74" style="fill:var(--color-fg)">in the summary</text>
+      <rect x="150" y="61" width="406" height="17" style="fill:var(--color-line)"/>
+      <text x="566" y="74" style="fill:var(--color-muted)">100%</text>
+
+      <line x1="8" y1="94" x2="692" y2="94" style="stroke:var(--color-line)"/>
+
+      <text x="8" y="118" style="fill:var(--color-muted)">did anyone do anything about it?</text>
+      <text x="8" y="144" style="fill:var(--color-fg)">on a line</text>
+      <rect x="150" y="131" width="390" height="17" style="fill:var(--color-fg)"/>
+      <text x="550" y="144" style="fill:var(--color-fg)">96%</text>
+      <text x="8" y="172" style="fill:var(--color-fg)">in the summary</text>
+      <rect x="150" y="159" width="134" height="17" style="fill:var(--color-fg)"/>
+      <text x="294" y="172" style="fill:var(--color-fg)">24 to 43%</text>
+
+      <text x="8" y="202" style="fill:var(--color-fg);font-size:14px">Same run, same quality. The only difference is where it was printed.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Top half first: both groups were right. This is not an accuracy story, which is why slide three cleared accuracy off the table.</li>
+      <li>Most of what it said was landing in the summary, which is the part nobody reads. So the repair was placement, not a stricter reviewer.</li>
+      <li>The trap worth naming: we had "was it right" and "did anyone act" as one number, so every time you ignored a correct comment the dashboard told us to make it stricter. It was learning to say less for being read less.</li>
+    </ul>
+  </section>
+
+  <!-- 12 ---------------------------------------------------------------- THE LOOP -->
+  <section class="presentation__slide" data-title="How we know any of this">
+    <p class="slide-eyebrow settles">We only know that because of this</p>
+    <svg class="fig" viewBox="0 0 700 224" role="img"
+         aria-label="A loop. It leaves a comment, every one is written down, each is graded later by whether you fixed it or it was wrong, the scores are read per topic so a bad one cannot hide in an average, and that points at one reviewer to fix. A heavy bar across the arrow into that change marks the point it cannot pass on its own. Then it is re-run on old pull requests and the loop returns to the start."
          style="font-size:12px">
       <defs>
         <marker id="lp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
@@ -596,269 +424,99 @@
         </marker>
       </defs>
       <g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
-        <path d="M160 46 L206 46" marker-end="url(#lp-a)"/>
-        <path d="M358 46 L404 46" marker-end="url(#lp-a)"/>
-        <path d="M556 68 L556 100" marker-end="url(#lp-a)"/>
-        <path d="M404 122 L358 122" marker-end="url(#lp-a)"/>
-        <path d="M206 122 L160 122" marker-end="url(#lp-a)"/>
-        <path d="M100 100 L100 68" marker-end="url(#lp-a)"/>
+        <path d="M172 48 L212 48" marker-end="url(#lp-a)"/>
+        <path d="M374 48 L414 48" marker-end="url(#lp-a)"/>
+        <path d="M528 72 L528 104" marker-end="url(#lp-a)"/>
+        <path d="M414 126 L374 126" marker-end="url(#lp-a)"/>
+        <path d="M212 126 L172 126" marker-end="url(#lp-a)"/>
+        <path d="M100 104 L100 72" marker-end="url(#lp-a)"/>
       </g>
-      <rect x="40" y="28" width="120" height="36" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="100" y="50" text-anchor="middle" style="fill:var(--color-fg)">the review posts</text>
+      <rect x="28" y="26" width="144" height="44" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="100" y="53" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">it leaves a comment</text>
 
-      <rect x="206" y="28" width="152" height="36" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="282" y="50" text-anchor="middle" style="fill:var(--color-fg)">every comment logged</text>
+      <rect x="212" y="26" width="162" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="293" y="53" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">every one is written down</text>
 
-      <rect x="404" y="28" width="152" height="36" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="480" y="44" text-anchor="middle" style="fill:var(--color-fg)">graded later, from the</text>
-      <text x="480" y="58" text-anchor="middle" style="fill:var(--color-fg)">reply or from the code</text>
+      <rect x="414" y="26" width="228" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="528" y="45" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">graded later: did you fix it,</text>
+      <text x="528" y="62" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">or was it wrong?</text>
 
-      <rect x="404" y="104" width="152" height="36" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="480" y="120" text-anchor="middle" style="fill:var(--color-fg)">read back per topic,</text>
-      <text x="480" y="134" text-anchor="middle" style="fill:var(--color-fg)">never as one average</text>
+      <rect x="414" y="106" width="228" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="528" y="125" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">scored per topic, so a bad one</text>
+      <text x="528" y="142" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">cannot hide in an average</text>
 
-      <rect x="206" y="104" width="152" height="36" rx="4" style="fill:var(--color-fg)"/>
-      <text x="282" y="126" text-anchor="middle" style="fill:var(--color-bg)">change one reviewer</text>
+      <rect x="212" y="106" width="162" height="44" rx="4" style="fill:var(--color-fg)"/>
+      <text x="293" y="133" text-anchor="middle" style="fill:var(--color-bg);font-size:13px">fix one reviewer</text>
 
-      <rect x="40" y="104" width="120" height="36" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-      <text x="100" y="120" text-anchor="middle" style="fill:var(--color-fg)">try it on old</text>
-      <text x="100" y="134" text-anchor="middle" style="fill:var(--color-fg)">pull requests</text>
+      <rect x="28" y="106" width="144" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+      <text x="100" y="125" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">re-run it on</text>
+      <text x="100" y="142" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">old pull requests</text>
 
-      <line x1="382" y1="108" x2="382" y2="136" style="stroke:var(--color-fg);stroke-width:2"/>
-      <text x="382" y="160" text-anchor="middle" style="fill:var(--color-fg);font-size:11.5px">a person decides here</text>
+      <line x1="394" y1="108" x2="394" y2="148" style="stroke:var(--color-fg);stroke-width:2.6"/>
+      <text x="394" y="170" text-anchor="middle" style="fill:var(--color-fg);font-size:12.5px">it cannot get past this on its own</text>
 
-      <text x="8" y="196" style="fill:var(--color-fg)">One average hides the thing worth fixing. A reviewer can be excellent on database</text>
-      <text x="8" y="212" style="fill:var(--color-fg)">changes and noisy on frontend speed, and the average of the two looks fine.</text>
+      <text x="8" y="208" style="fill:var(--color-fg);font-size:15px">It can tell me it was wrong. It does not get to decide what to do about that.</text>
     </svg>
     <ul class="slide-notes" hidden>
-      <li>Grading from the code matters: most items get no reply at all, so going by replies alone measures the quarter you were surest about.</li>
-      <li>The try-it-on-old-PRs step is the one people skip. Report what it caught, how often it was right and how much it said, all three: catching more while saying twice as much is not an improvement.</li>
-      <li>Grading only what got posted is blind to what it missed, so there is a separate pass that reads human comments on files the reviewer looked at and said nothing about.</li>
+      <li>This is the slide the title is about. Every comment it has ever left is written down and graded afterwards.</li>
+      <li>The bar is the point. Making itself stricter, quieter or narrower always stops and asks. Making itself noisier does not, because that failure is one you would all see and this one is invisible.</li>
+      <li>Per topic, never one average: it can be excellent on database changes and noisy on frontend performance, and the mean of those looks fine.</li>
     </ul>
   </section>
 
-  <!-- 17b -------------------------------------------------------------- THE CALIBRATION GATES -->
-  <section class="presentation__slide" data-title="What the loop may change on its own">
-    <p class="slide-eyebrow settles">The tuning pass runs by itself until it reaches one of four things</p>
-    <svg class="fig" data-live-figure="calibration" data-surface="figure:calibration" viewBox="0 0 700 244" role="img"
-         aria-label="Three feeds go into the tuning pass: comments graded from the reply or the code, notes each run leaves about itself, and misses found by reading human comments on files the reviewer looked at and said nothing about. From there, work splits. On the left, things it does alone: grade the rows, read the score per topic, refresh the committed summary, replay the fixtures. On the right, four things that stop and ask a person: silencing a class of finding, moving a severity bar, changing a volume cap, and any topic scoring under fifty percent. Everything on the right is a decision about saying less."
-         style="font-size:11.5px">
-      <defs>
-        <marker id="cb-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-        </marker>
-      </defs>
-      <text x="8" y="16" style="fill:var(--color-muted);font-size:11px">three feeds in</text>
-      <g style="fill:none;stroke:var(--color-muted)">
-        <rect x="8" y="24" width="150" height="34" rx="3"/>
-        <rect x="8" y="64" width="150" height="34" rx="3"/>
-        <rect x="8" y="104" width="150" height="34" rx="3"/>
-      </g>
-      <g style="fill:var(--color-fg)">
-        <text x="18" y="39">every comment, graded</text>
-        <text x="18" y="53" style="fill:var(--color-muted);font-size:10.5px">from the reply, or the code</text>
-        <text x="18" y="79">what each run noticed</text>
-        <text x="18" y="93" style="fill:var(--color-muted);font-size:10.5px">about itself, while it ran</text>
-        <text x="18" y="119">what it missed</text>
-        <text x="18" y="133" style="fill:var(--color-muted);font-size:10.5px">comments we stayed quiet on</text>
-      </g>
-      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
-        <path d="M158 41 L182 41 L182 81 L206 81" marker-end="url(#cb-a)"/>
-        <path d="M158 81 L206 81" marker-end="url(#cb-a)"/>
-        <path d="M158 121 L182 121 L182 81 L206 81"/>
-        <path d="M330 81 L360 60 L384 60" marker-end="url(#cb-a)"/>
-        <path d="M330 81 L360 148 L384 148" marker-end="url(#cb-a)"/>
-      </g>
-      <rect x="206" y="60" width="124" height="42" rx="3" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <text x="268" y="78" text-anchor="middle" style="fill:var(--color-fg)">the tuning pass</text>
-      <text x="268" y="93" text-anchor="middle" style="fill:var(--color-muted);font-size:10.5px">two numbers, per topic</text>
-
-      <text x="384" y="30" style="fill:var(--color-fg);font-size:11px">it does these on its own</text>
+  <!-- 13 ---------------------------------------------------------------- WHAT I GOT WRONG -->
+  <section class="presentation__slide" data-title="What I got wrong">
+    <p class="slide-eyebrow settles">And none of it was designed up front</p>
+    <svg class="fig" viewBox="0 0 700 206" role="img"
+         aria-label="Two columns comparing the first version of four things against what each became. Going to look every half hour became being told the moment it happens. One number for right and acted on became two numbers kept apart. Writing down only the line comments became writing down all of them. No limit on how long a run could take became a clock that gives up out loud."
+         style="font-size:13px">
+      <text x="8" y="18" style="fill:var(--color-muted);font-size:12px">the first version</text>
+      <text x="380" y="18" style="fill:var(--color-fg);font-size:12px">what it is now</text>
+      <line x1="8" y1="28" x2="692" y2="28" style="stroke:var(--color-line)"/>
       <g style="fill:var(--color-muted)">
-        <text x="392" y="52">grade the rows, refresh the summary</text>
-        <text x="392" y="68">replay the change on old pull requests</text>
-        <text x="392" y="84">write down what moved, and what did not</text>
-      </g>
-
-      <line x1="384" y1="102" x2="692" y2="102" style="stroke:var(--color-line)"/>
-      <text x="384" y="122" style="fill:var(--color-fg);font-size:11px">these four stop and ask a person</text>
-      <rect x="384" y="130" width="308" height="82" rx="3" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <g style="fill:var(--color-fg)">
-        <text x="394" y="148">silence a whole class of finding</text>
-        <text x="394" y="165">move a severity bar</text>
-        <text x="394" y="182">change how many comments it may leave</text>
-        <text x="394" y="199">any topic scoring under half</text>
-      </g>
-      <text x="8" y="234" style="fill:var(--color-fg)">Every one of them is a decision to say less. That is the whole pattern.</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>The left column is bookkeeping and it can run unattended. The right column is the box the loop is not allowed to open.</li>
-      <li>Point at the shape rather than the list: everything that stops is a way of making the reviewer quieter. Nothing that makes it noisier needs my permission, because that failure is visible and this one is not.</li>
-      <li>The fourth one is the subtle one. A topic scoring badly is surfaced with a proposed cause and nothing is changed, because the obvious fix is to tighten it and the obvious fix is usually wrong.</li>
-      <li>The third feed is the recall half. Grading what got posted can never see what was never said, so something has to go looking.</li>
-    </ul>
-  </section>
-
-  <!-- 18 ---------------------------------------------------------------- THE FENCE -->
-  <section class="presentation__slide" data-align="center" data-title="The rule that keeps it honest">
-    <p class="quote-mark settles">The one rule I will not move</p>
-    <p class="quote settles">Let it tune itself on its own output and it will only ever learn to say less.</p>
-    <ul class="slide-notes" hidden>
-      <li>Concretely: it cannot raise its own bar, cannot give itself more comments, and cannot add to the list that silences a whole class of finding. Each of those stops and asks.</li>
-      <li>"It can tell me it was wrong. It does not get to decide what to do about that."</li>
-    </ul>
-  </section>
-
-  <!-- 18b -------------------------------------------------------------- THE WHOLE THING -->
-  <section class="presentation__slide" data-title="The whole thing">
-    <p class="slide-eyebrow settles">All of it, on one page</p>
-    <svg class="fig" data-live-figure="workflow" data-surface="figure:workflow" viewBox="0 0 700 262" role="img"
-         aria-label="The whole process in three bands. The review band, which runs on a clock: claim the pull request so no second session starts, work out what was asked for and what people already said, read the code around the change, run six reviewers in parallel, sort the findings and argue back against the ones that can be wrong, then check five rules and recompute the verdict from what survived. The after-it-posts band: post, answer anything asked back, verify claimed fixes against the current code, log every comment, and hand the pull request to a monitor and a timer. The tuning band, which happens later: grade each comment, read the scores per topic, change one reviewer, and replay the change against old pull requests. That feeds back into the review."
-         style="font-size:10.5px">
-      <defs>
-        <marker id="wf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-        </marker>
-        <marker id="wf-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-line)"/>
-        </marker>
-      </defs>
-
-      <text x="70" y="20" style="fill:var(--color-fg);font-size:11.5px">the review, on a clock</text>
-      <g style="fill:none;stroke:var(--color-muted)">
-        <rect x="70" y="28" width="92" height="44" rx="3"/>
-        <rect x="171" y="28" width="92" height="44" rx="3"/>
-        <rect x="272" y="28" width="92" height="44" rx="3"/>
-        <rect x="373" y="28" width="92" height="44" rx="3"/>
-        <rect x="474" y="28" width="92" height="44" rx="3"/>
-        <rect x="575" y="28" width="92" height="44" rx="3"/>
-      </g>
-      <g text-anchor="middle" style="fill:var(--color-fg)">
-        <text x="116" y="47">claim the PR</text><text x="116" y="60">so nobody doubles</text>
-        <text x="217" y="47">what was asked,</text><text x="217" y="60">what was said</text>
-        <text x="318" y="47">read around</text><text x="318" y="60">the change</text>
-        <text x="419" y="47">six reviewers,</text><text x="419" y="60">in parallel</text>
-        <text x="520" y="47">sort, then</text><text x="520" y="60">argue back</text>
-        <text x="621" y="47">five rules, then</text><text x="621" y="60">recheck the verdict</text>
-      </g>
-      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
-        <path d="M162 50 L167 50" marker-end="url(#wf-a)"/><path d="M263 50 L268 50" marker-end="url(#wf-a)"/>
-        <path d="M364 50 L369 50" marker-end="url(#wf-a)"/><path d="M465 50 L470 50" marker-end="url(#wf-a)"/>
-        <path d="M566 50 L571 50" marker-end="url(#wf-a)"/>
-        <path d="M667 50 L684 50 L684 78 L46 78 L46 132 L66 132" marker-end="url(#wf-a)"/>
-      </g>
-
-      <text x="70" y="102" style="fill:var(--color-fg);font-size:11.5px">after it posts</text>
-      <g style="fill:none;stroke:var(--color-muted)">
-        <rect x="70" y="110" width="92" height="44" rx="3"/>
-        <rect x="171" y="110" width="92" height="44" rx="3"/>
-        <rect x="272" y="110" width="92" height="44" rx="3"/>
-        <rect x="373" y="110" width="92" height="44" rx="3"/>
-        <rect x="474" y="110" width="92" height="44" rx="3"/>
-      </g>
-      <g text-anchor="middle" style="fill:var(--color-fg)">
-        <text x="116" y="136">post</text>
-        <text x="217" y="129">answer anything</text><text x="217" y="142">asked back</text>
-        <text x="318" y="129">verify fixes against</text><text x="318" y="142">the code now</text>
-        <text x="419" y="129">log every</text><text x="419" y="142">comment</text>
-        <text x="520" y="129">hand it to a</text><text x="520" y="142">monitor and a timer</text>
-      </g>
-      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
-        <path d="M162 132 L167 132" marker-end="url(#wf-a)"/><path d="M263 132 L268 132" marker-end="url(#wf-a)"/>
-        <path d="M364 132 L369 132" marker-end="url(#wf-a)"/><path d="M465 132 L470 132" marker-end="url(#wf-a)"/>
-        <path d="M566 132 L684 132 L684 160 L46 160 L46 214 L66 214" marker-end="url(#wf-a)"/>
-      </g>
-
-      <text x="70" y="184" style="fill:var(--color-fg);font-size:11.5px">tuning, later and separately</text>
-      <g style="fill:none;stroke:var(--color-muted)">
-        <rect x="70" y="192" width="92" height="44" rx="3"/>
-        <rect x="171" y="192" width="92" height="44" rx="3"/>
-        <rect x="373" y="192" width="92" height="44" rx="3"/>
-      </g>
-      <rect x="272" y="192" width="92" height="44" rx="3" style="fill:var(--color-fg)"/>
-      <g text-anchor="middle" style="fill:var(--color-fg)">
-        <text x="116" y="211">grade each</text><text x="116" y="224">comment</text>
-        <text x="217" y="211">read the score</text><text x="217" y="224">per topic</text>
-        <text x="419" y="211">replay it on</text><text x="419" y="224">old pull requests</text>
-      </g>
-      <g text-anchor="middle" style="fill:var(--color-bg)">
-        <text x="318" y="211">change one</text><text x="318" y="224">reviewer</text>
-      </g>
-      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
-        <path d="M162 214 L167 214" marker-end="url(#wf-a)"/><path d="M263 214 L268 214" marker-end="url(#wf-a)"/>
-        <path d="M364 214 L369 214" marker-end="url(#wf-a)"/>
-      </g>
-      <path d="M465 214 L560 214 L560 250 L26 250 L26 50 L66 50" style="fill:none;stroke:var(--color-line);stroke-width:1.2;stroke-dasharray:4 3" marker-end="url(#wf-b)"/>
-      <text x="692" y="254" text-anchor="end" style="fill:var(--color-muted)">filled: the one a person decides</text>
-    </svg>
-    <ul class="slide-notes" hidden>
-      <li>Do not narrate the boxes. Say the three bands, then point at the two things that matter about the picture.</li>
-      <li>First: the top band is the only part on a clock, and it is the only part that talks to the pull request while anyone is waiting.</li>
-      <li>Second: the dashed return is the whole argument of this session. Without it the top band is just a reviewer with opinions, and there is no way to find out whether any of them were good.</li>
-      <li>The filled box is the only place the loop is allowed to change itself, and a person stands in front of it.</li>
-    </ul>
-  </section>
-
-  <!-- 19 ---------------------------------------------------------------- THE REVERSALS -->
-  <section class="presentation__slide" data-title="None of this arrived designed">
-    <p class="slide-eyebrow settles">If you are building something like this</p>
-    <svg class="fig" viewBox="0 0 700 214" role="img"
-         aria-label="Two columns comparing the first version of five things against what each became. A timer every half hour became being told the moment it happens. One checker per finding became a few claims each, capped on time. The whole rulebook to every reviewer became one slice each. One number for right and acted on became two numbers kept apart. Logging only the line comments became logging every comment posted."
-         style="font-size:12px">
-      <text x="8" y="16" style="fill:var(--color-muted);font-size:11.5px">what I shipped first</text>
-      <text x="372" y="16" style="fill:var(--color-fg);font-size:11.5px">what it is now</text>
-      <line x1="8" y1="26" x2="692" y2="26" style="stroke:var(--color-line)"/>
-      <g style="fill:var(--color-muted)">
-        <text x="8" y="44">a timer, every half hour</text>
-        <text x="8" y="68">the whole rulebook, to all six</text>
-        <text x="8" y="92">one number for right and acted on</text>
-        <text x="8" y="116">logging only the line comments</text>
-        <text x="8" y="140">severity and blocking as one word</text>
-        <text x="8" y="164">no limit on how long a run could take</text>
+        <text x="8" y="56">going to look every half hour</text>
+        <text x="8" y="88">one number for right and acted on</text>
+        <text x="8" y="120">writing down only the line comments</text>
+        <text x="8" y="152">no limit on how long a run could take</text>
       </g>
       <g text-anchor="middle" style="fill:var(--color-line)">
-        <text x="348" y="44">→</text><text x="348" y="68">→</text><text x="348" y="92">→</text>
-        <text x="348" y="116">→</text><text x="348" y="140">→</text><text x="348" y="164">→</text>
+        <text x="356" y="56">→</text><text x="356" y="88">→</text>
+        <text x="356" y="120">→</text><text x="356" y="152">→</text>
       </g>
       <g style="fill:var(--color-fg)">
-        <text x="372" y="44">it tells us the moment it happens</text>
-        <text x="372" y="68">one slice each, for its own job</text>
-        <text x="372" y="92">two numbers, kept apart</text>
-        <text x="372" y="116">logging every comment it posts</text>
-        <text x="372" y="140">two questions, answered separately</text>
-        <text x="372" y="164">a clock, and it gives up out loud</text>
+        <text x="380" y="56">it tells us the moment it happens</text>
+        <text x="380" y="88">two numbers, kept apart</text>
+        <text x="380" y="120">writing down all of them</text>
+        <text x="380" y="152">a clock, and it gives up out loud</text>
       </g>
-      <line x1="8" y1="180" x2="692" y2="180" style="stroke:var(--color-line)"/>
-      <text x="8" y="202" style="fill:var(--color-fg)">Every one of those needed shipping the wrong version first, then measuring it.</text>
+      <line x1="8" y1="170" x2="692" y2="170" style="stroke:var(--color-line)"/>
+      <text x="8" y="194" style="fill:var(--color-fg);font-size:14px">Each one needed shipping the wrong version first, then measuring it.</text>
     </svg>
     <ul class="slide-notes" hidden>
-      <li>This is the slide worth the room's time. Offer it as the real takeaway: none of it was designed up front, and it could not have been.</li>
-      <li>If there is time, the volume caps are the sharpest one: written once on an authority nobody had given, and reverted for it.</li>
+      <li>Offer this as the real takeaway for anyone building something similar. None of it could have been designed up front.</li>
+      <li>Row two is the one with teeth and anyone can make it: a metric that fuses "was I right" with "did anyone listen" will always tell you to shut up.</li>
       <li>Open the floor here rather than at the end.</li>
     </ul>
   </section>
 
-  <!-- 20 ---------------------------------------------------------------- CLOSE -->
-  <section class="presentation__slide" data-title="Where it is written up">
-    <p class="slide-eyebrow settles">If you want the detail</p>
-    <h2 class="slide-head settles" data-size="sm">A written version is coming, with the whole mechanism and the numbers you can argue&nbsp;with.</h2>
-    <div class="end">
-      <div>
-        <p class="end__url">tjakoen.github.io/notes</p>
-      </div>
-    </div>
+  <!-- 14 ---------------------------------------------------------------- CLOSE -->
+  <section class="presentation__slide" data-title="Close">
+    <p class="slide-eyebrow settles">That is the whole thing</p>
+    <h2 class="slide-head settles" data-size="sm">It will be wrong sometimes. Tell it, and the next one gets&nbsp;better.</h2>
+    <p class="slide-lede">Reply the way you would to a person. That reply is what gets graded, and it is the only thing that says which reviewer to fix.</p>
     <hr class="slide-rule">
     <p class="slide-sig"><b>The judgment is human. The typing, by design, is not.</b></p>
     <ul class="slide-notes" hidden>
-      <li>Reading behind it, if anyone asks: Addy Osmani on loop engineering and quality gates, Alfonso Graziano on verification gates, and GitHub's Spec Kit. Name one, do not list them.</li>
-      <li>Paste the link rather than expecting anyone to type it.</li>
+      <li>End on the ask rather than the architecture: disagree with it out loud, in the thread, because that is the input.</li>
+      <li>A written version with the full mechanism is coming. Offer it rather than putting a URL on the wall.</li>
+      <li>Take questions.</li>
     </ul>
   </section>
 
   <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
   <div class="presentation__controls">
     <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
-    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 26</span></span>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 14</span></span>
     <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
     <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
     <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
@@ -873,7 +531,7 @@
 
 <div class="presenter">
   <div class="presenter__now">
-    <span class="presenter__pos" data-p-pos>1 / 26</span>
+    <span class="presenter__pos" data-p-pos>1 / 14</span>
     <span class="presenter__clock" data-p-clock>00:00</span>
   </div>
   <div>
