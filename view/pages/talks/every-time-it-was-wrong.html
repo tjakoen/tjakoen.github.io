@@ -521,6 +521,55 @@
     </ul>
   </section>
 
+  <!-- 15b -------------------------------------------------------------- THE DELTAS -->
+  <section class="presentation__slide" data-title="Five things can happen">
+    <p class="slide-eyebrow settles">Whichever way we hear about it, there are only five outcomes</p>
+    <svg class="fig" data-live-figure="deltas" data-surface="figure:deltas" viewBox="0 0 700 236" role="img"
+         aria-label="Our open threads on a pull request lead to five outcomes. Someone replied and the thread is open, so the pull request is now waiting on us and we answer it. Someone replied and closed the thread, so the code still gets read. The thread closed with no reply, which is nearly always a real fix and is never assumed to be one. Someone pushed while our findings were open, which triggers a review of just the new work. Or it merged or closed, and it drops out of the checking and its comments go to grading."
+         style="font-size:11.5px">
+      <defs>
+        <marker id="dl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <rect x="8" y="90" width="124" height="56" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="70" y="112" text-anchor="middle" style="fill:var(--color-fg)">our threads,</text>
+      <text x="70" y="128" text-anchor="middle" style="fill:var(--color-fg)">still open</text>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M132 118 L158 118 L158 24 L186 24" marker-end="url(#dl-a)"/>
+        <path d="M132 118 L158 118 L158 70 L186 70" marker-end="url(#dl-a)"/>
+        <path d="M132 118 L158 118 L186 118" marker-end="url(#dl-a)"/>
+        <path d="M132 118 L158 118 L158 166 L186 166" marker-end="url(#dl-a)"/>
+        <path d="M132 118 L158 118 L158 212 L186 212" marker-end="url(#dl-a)"/>
+        <path d="M368 24 L400 24" marker-end="url(#dl-a)"/>
+        <path d="M368 70 L400 70" marker-end="url(#dl-a)"/>
+        <path d="M368 118 L400 118" marker-end="url(#dl-a)"/>
+        <path d="M368 166 L400 166" marker-end="url(#dl-a)"/>
+        <path d="M368 212 L400 212" marker-end="url(#dl-a)"/>
+      </g>
+      <g style="fill:var(--color-fg)">
+        <text x="190" y="28">they replied, still open</text>
+        <text x="190" y="74">they replied and closed it</text>
+        <text x="190" y="122">closed with no reply</text>
+        <text x="190" y="170">they pushed a fix</text>
+        <text x="190" y="216">merged, or closed</text>
+      </g>
+      <g style="fill:var(--color-muted)">
+        <text x="404" y="28">the PR is waiting on us. Answer it.</text>
+        <text x="404" y="74">read the code before agreeing it landed</text>
+        <text x="404" y="122">nearly always a real fix. Never assumed.</text>
+        <text x="404" y="170">review just the new work</text>
+        <text x="404" y="216">stop checking, start grading</text>
+      </g>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>The first row is the one that matters: an open thread ending in their question makes a correct finding worse than no finding, because the PR is now blocked on us.</li>
+      <li>Row three is the one people get wrong. Reading a silent close as "we were wrong" would have written five false entries into the one list that outranks every other rule.</li>
+      <li>Row five is why the timer stops polling a merged PR: nothing can move again, so the comments belong to grading from that point on.</li>
+      <li>Only one session may hold a pull request at a time, taken as a real lock rather than a note in a file. Two sessions reading a file a second apart both decide they are first.</li>
+    </ul>
+  </section>
+
   <!-- 16 ---------------------------------------------------------------- THE CONFESSION -->
   <section class="presentation__slide" data-title="The file that never existed">
     <p class="slide-eyebrow settles">And a warning about all of this</p>
@@ -585,6 +634,68 @@
       <li>Grading from the code matters: most items get no reply at all, so going by replies alone measures the quarter you were surest about.</li>
       <li>The try-it-on-old-PRs step is the one people skip. Report what it caught, how often it was right and how much it said, all three: catching more while saying twice as much is not an improvement.</li>
       <li>Grading only what got posted is blind to what it missed, so there is a separate pass that reads human comments on files the reviewer looked at and said nothing about.</li>
+    </ul>
+  </section>
+
+  <!-- 17b -------------------------------------------------------------- THE CALIBRATION GATES -->
+  <section class="presentation__slide" data-title="What the loop may change on its own">
+    <p class="slide-eyebrow settles">The tuning pass runs by itself until it reaches one of four things</p>
+    <svg class="fig" data-live-figure="calibration" data-surface="figure:calibration" viewBox="0 0 700 244" role="img"
+         aria-label="Three feeds go into the tuning pass: comments graded from the reply or the code, notes each run leaves about itself, and misses found by reading human comments on files the reviewer looked at and said nothing about. From there, work splits. On the left, things it does alone: grade the rows, read the score per topic, refresh the committed summary, replay the fixtures. On the right, four things that stop and ask a person: silencing a class of finding, moving a severity bar, changing a volume cap, and any topic scoring under fifty percent. Everything on the right is a decision about saying less."
+         style="font-size:11.5px">
+      <defs>
+        <marker id="cb-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <text x="8" y="16" style="fill:var(--color-muted);font-size:11px">three feeds in</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="8" y="24" width="150" height="34" rx="3"/>
+        <rect x="8" y="64" width="150" height="34" rx="3"/>
+        <rect x="8" y="104" width="150" height="34" rx="3"/>
+      </g>
+      <g style="fill:var(--color-fg)">
+        <text x="18" y="39">every comment, graded</text>
+        <text x="18" y="53" style="fill:var(--color-muted);font-size:10.5px">from the reply, or the code</text>
+        <text x="18" y="79">what each run noticed</text>
+        <text x="18" y="93" style="fill:var(--color-muted);font-size:10.5px">about itself, while it ran</text>
+        <text x="18" y="119">what it missed</text>
+        <text x="18" y="133" style="fill:var(--color-muted);font-size:10.5px">comments we stayed quiet on</text>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M158 41 L182 41 L182 81 L206 81" marker-end="url(#cb-a)"/>
+        <path d="M158 81 L206 81" marker-end="url(#cb-a)"/>
+        <path d="M158 121 L182 121 L182 81 L206 81"/>
+        <path d="M330 81 L360 60 L384 60" marker-end="url(#cb-a)"/>
+        <path d="M330 81 L360 148 L384 148" marker-end="url(#cb-a)"/>
+      </g>
+      <rect x="206" y="60" width="124" height="42" rx="3" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="268" y="78" text-anchor="middle" style="fill:var(--color-fg)">the tuning pass</text>
+      <text x="268" y="93" text-anchor="middle" style="fill:var(--color-muted);font-size:10.5px">two numbers, per topic</text>
+
+      <text x="384" y="30" style="fill:var(--color-fg);font-size:11px">it does these on its own</text>
+      <g style="fill:var(--color-muted)">
+        <text x="392" y="52">grade the rows, refresh the summary</text>
+        <text x="392" y="68">replay the change on old pull requests</text>
+        <text x="392" y="84">write down what moved, and what did not</text>
+      </g>
+
+      <line x1="384" y1="102" x2="692" y2="102" style="stroke:var(--color-line)"/>
+      <text x="384" y="122" style="fill:var(--color-fg);font-size:11px">these four stop and ask a person</text>
+      <rect x="384" y="130" width="308" height="82" rx="3" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <g style="fill:var(--color-fg)">
+        <text x="394" y="148">silence a whole class of finding</text>
+        <text x="394" y="165">move a severity bar</text>
+        <text x="394" y="182">change how many comments it may leave</text>
+        <text x="394" y="199">any topic scoring under half</text>
+      </g>
+      <text x="8" y="234" style="fill:var(--color-fg)">Every one of them is a decision to say less. That is the whole pattern.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>The left column is bookkeeping and it can run unattended. The right column is the box the loop is not allowed to open.</li>
+      <li>Point at the shape rather than the list: everything that stops is a way of making the reviewer quieter. Nothing that makes it noisier needs my permission, because that failure is visible and this one is not.</li>
+      <li>The fourth one is the subtle one. A topic scoring badly is surfaced with a proposed cause and nothing is changed, because the obvious fix is to tighten it and the obvious fix is usually wrong.</li>
+      <li>The third feed is the recall half. Grading what got posted can never see what was never said, so something has to go looking.</li>
     </ul>
   </section>
 
@@ -747,7 +858,7 @@
   <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
   <div class="presentation__controls">
     <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
-    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 24</span></span>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 26</span></span>
     <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
     <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
     <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
@@ -762,7 +873,7 @@
 
 <div class="presenter">
   <div class="presenter__now">
-    <span class="presenter__pos" data-p-pos>1 / 24</span>
+    <span class="presenter__pos" data-p-pos>1 / 26</span>
     <span class="presenter__clock" data-p-clock>00:00</span>
   </div>
   <div>
