@@ -1,0 +1,165 @@
+name: Heartbeat
+
+# LOOP section 2b, the scheduled rows. This is the estate's first time-based loop, adopted
+# 2026-09-16 (plans/decisions/2026-09-16-proactive-loops.md) after seven weeks of a blanket no.
+#
+# THE ENVELOPE, which LOOP section 4b asks a scheduled run to make legible in the file rather than
+# leave to the script behaving well:
+#
+#   Scope cap    the permissions block below. contents: read and issues: write, nothing else.
+#   Hard stops   enforced by absence. This job cannot commit, cannot push, cannot open a pull
+#                request and cannot delete, because it was never granted the ability to. A run that
+#                could merge and declines to is one edit away from merging.
+#   Ask-trigger  the issue. A scheduled run has no way to stop and ask, so filing the finding and
+#                going quiet IS its ask. It never tries to fix what it found.
+#   Attribution  every finding carries the workflow, the run URL and the commit.
+#
+# THE CHECKS, and what each one earns its rung with (LOOP section 2a, condition 1: an exit code, not
+# a judgment):
+#
+#   lint:links   nonzero on a dead relative link. No threshold where some are acceptable.
+#   check + test the same suite CI runs on push. Here it runs on a cold checkout against freshly
+#                resolved dependencies, which is the only way the breakage that arrives from
+#                OUTSIDE a diff ever gets caught: nothing in this repo changed, and it went red.
+#   answers      the unacked count in the decision log, which the session-start doctor already
+#                reports. This covers the week nobody opened a session, which is exactly the week
+#                an answer sits longest.
+#
+# WHAT IS DELIBERATELY NOT HERE:
+#
+#   The e2e suite. It is forty-four specs and a browser download, and CI already runs it on every
+#   push. A weekly rerun of a check that already fires on the trigger that matters buys nothing and
+#   makes this job slow enough to be worth switching off.
+#
+#   The audit. Its findings need the cognitive tier (LOOP section 2, tier 2). Filing them from a
+#   runner produces a list nobody can act on, which is the 3am objection wearing a better outfit.
+#
+#   The uncommitted-work sweep, the estate's own recurring red flag. It cannot run here: the repos
+#   are on a laptop and a hosted runner cannot see them. It stays at session start. Named rather
+#   than omitted, because LOOP section 2b's table reading all-green is worse than it reading short.
+#
+# ONE ISSUE, REOPENED. A weekly job filing a fresh issue every Monday teaches you to close them
+# unread by about the fourth Monday. This maintains exactly one, rewrites its body with what is true
+# now, and closes it when the body would be empty. How long that issue has been open is then a real
+# number about the estate rather than a number about the scheduler.
+
+on:
+  schedule:
+    # Monday 07:00 UTC. Early enough in the week that a finding has somewhere to go.
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: heartbeat
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  ISSUE_TITLE: "Heartbeat: open findings"
+  ISSUE_LABEL: heartbeat
+
+jobs:
+  sweep:
+    name: weekly sweep
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      # Not --frozen-lockfile, unlike ci.yml. That file is a gate on a diff and wants the exact tree
+      # the author committed. This one is looking for drift, so it resolves fresh on purpose: a
+      # transitive dependency that changed under a caret range is a thing worth learning about on a
+      # Monday rather than on the next push.
+      - run: bun install
+
+      # Every check below records its own result and none of them fail the job. A red step here
+      # would abort the sweep and hide the findings of the steps after it, which is the opposite of
+      # what this job is for. The findings file is the output; the exit code is not.
+      - name: link rot
+        run: |
+          set +e
+          out=$(bun run lint:links 2>&1)
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ]; then
+            {
+              printf '%s\n' '### Dead links' ''
+              printf '%s\n' '```' "$out" '```' ''
+            } >> findings.md
+          fi
+
+      - name: cold build
+        run: |
+          set +e
+          check_out=$(bun run check 2>&1)
+          check_code=$?
+          test_out=$(bun test 2>&1)
+          test_code=$?
+          set -e
+          if [ "$check_code" -ne 0 ] || [ "$test_code" -ne 0 ]; then
+            printf '%s\n' '### Cold build is red' '' \
+              'Nothing in this repository changed. Something it depends on did.' '' >> findings.md
+          fi
+          if [ "$check_code" -ne 0 ]; then
+            printf '%s\n' '<details><summary>bun run check</summary>' '' '```' "$check_out" '```' '</details>' '' >> findings.md
+          fi
+          if [ "$test_code" -ne 0 ]; then
+            printf '%s\n' '<details><summary>bun test</summary>' '' '```' "$test_out" '```' '</details>' '' >> findings.md
+          fi
+
+      # This one exits 1 by design when something is stale, and its markdown goes to stdout, so the
+      # redirect has to survive the nonzero. Nothing else about the step cares.
+      - name: answers nobody acted on
+        run: bun tools/answers-check.ts --markdown >> findings.md || true
+
+      # The upsert. Three outcomes and no fourth: there are findings and no issue, so open one;
+      # there are findings and an issue, so rewrite its body; there are none, so close whatever is
+      # open. Rewriting rather than commenting is the point, because a thread of thirty weekly
+      # comments is a log and what is wanted is a current state.
+      - name: file or close the findings issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SHA: ${{ github.sha }}
+        run: |
+          # --force is create-or-update, so a first run on a repo that has never had this label
+          # does not fail, and a later run does not fail either.
+          gh label create "$ISSUE_LABEL" --force \
+            --color BFD4F2 --description "Filed by the scheduled heartbeat sweep (LOOP 2b)"
+
+          existing=$(gh issue list --state open --label "$ISSUE_LABEL" --limit 1 --json number --jq '.[0].number // empty')
+
+          if [ ! -s findings.md ]; then
+            if [ -n "$existing" ]; then
+              gh issue close "$existing" --comment "Clean sweep on $SHA. Every finding this issue carried is gone. [Run]($RUN_URL)"
+              echo "closed #$existing"
+            else
+              echo "clean, nothing open"
+            fi
+            exit 0
+          fi
+
+          {
+            echo "Filed by the weekly heartbeat (LOOP section 2b). This body is rewritten every run,"
+            echo "so it always describes now rather than a history of Mondays."
+            echo
+            cat findings.md
+            echo "---"
+            echo
+            echo "Sweep of \`$SHA\` &middot; [run log]($RUN_URL)"
+            echo
+            echo "This run drafted nothing and fixed nothing. It holds no permission to."
+          } > body.md
+
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file body.md
+            echo "updated #$existing"
+          else
+            gh issue create --title "$ISSUE_TITLE" --label "$ISSUE_LABEL" --body-file body.md
+          fi

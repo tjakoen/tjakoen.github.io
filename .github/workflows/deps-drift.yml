@@ -1,0 +1,140 @@
+name: Dependency drift
+
+# LOOP section 2b, the dependency row. The only scheduled job in this repo that writes anything, and
+# section 2b is explicit about why that is allowed: the failure mode is loud. A bad bump goes red on
+# the branch it was proposed on, in front of the review it was already going to get.
+#
+# THE ENVELOPE (LOOP section 4b, made legible in the file rather than left to the script):
+#
+#   Scope cap    package.json and bun.lock, on a branch named below and nowhere else.
+#   Hard stops   it does not merge and it never pushes to main. --draft is not politeness, it is the
+#                mechanism: the loop drafts and a human lands. The permissions block grants exactly
+#                what a branch and a pull request need and nothing more.
+#   Ask-trigger  the pull request. It opens one whether the suite went green or red, because a
+#                refresh that breaks the build is a finding worth seeing, not a run worth hiding.
+#   Attribution  the run URL and the diff of resolved versions are in the body.
+#
+# THE CHECK THAT EARNS THE RUNG (LOOP section 2a, condition 1): the suite. The refresh itself proves
+# nothing. What proves something is bun run check and bun test passing against the bumped tree, and
+# the output goes into the pull request body verbatim, because LOOP section 4a treats "tests passed"
+# as a claim and the gate output as the evidence.
+#
+# WHY THE SUITE RUNS HERE RATHER THAN ON THE PULL REQUEST, which looks like duplication and is not:
+# a pull request opened with GITHUB_TOKEN does not trigger workflow runs. If this job only pushed a
+# branch and opened a pull request, ci.yml would never fire on it and the review would arrive with no
+# gate behind it at all. That is a platform rule rather than a preference, and designing around it
+# quietly is how a green-looking pull request ends up ungated.
+#
+# The e2e suite is not run. It needs a browser download and CI covers it on the push that lands the
+# merge, which is the moment that matters for a dependency bump.
+
+on:
+  schedule:
+    # Monday 07:30 UTC, half an hour behind the heartbeat, so a week where both have something to
+    # say does not produce two notifications in the same minute.
+    - cron: "30 7 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: deps-drift
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  BRANCH: chore/deps-refresh
+
+jobs:
+  refresh:
+    name: refresh and propose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      # deps:refresh is the repo's own script and names the packages it is willing to move. Keeping
+      # the list in package.json rather than here means the scheduled job cannot widen its own scope
+      # by editing a workflow file, which is the kind of quiet grant LOOP section 4b warns about.
+      - name: refresh
+        run: bun run deps:refresh
+
+      - name: did anything move
+        id: moved
+        run: |
+          if git diff --quiet -- package.json bun.lock; then
+            echo "moved=false" >> "$GITHUB_OUTPUT"
+            echo "nothing moved, every pinned package is already current"
+          else
+            echo "moved=true" >> "$GITHUB_OUTPUT"
+            git diff --stat -- package.json bun.lock
+          fi
+
+      - name: gate the bump
+        if: steps.moved.outputs.moved == 'true'
+        id: gate
+        run: |
+          set +e
+          check_out=$(bun run check 2>&1)
+          check_code=$?
+          test_out=$(bun test 2>&1)
+          test_code=$?
+          set -e
+          {
+            printf '%s\n' '<details open><summary>bun run check</summary>' '' '```' "$check_out" '```' '</details>' ''
+            printf '%s\n' '<details open><summary>bun test</summary>' '' '```' "$test_out" '```' '</details>' ''
+          } > gate.md
+          if [ "$check_code" -eq 0 ] && [ "$test_code" -eq 0 ]; then
+            echo "verdict=green" >> "$GITHUB_OUTPUT"
+          else
+            echo "verdict=red" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: propose
+        if: steps.moved.outputs.moved == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          VERDICT: ${{ steps.gate.outputs.verdict }}
+        run: |
+          git config user.name "heartbeat"
+          git config user.email "heartbeat@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add package.json bun.lock
+          git commit -m "chore(deps): weekly refresh of the pinned @tjakoen packages"
+          # Force, because this branch is a proposal that is replaced each week rather than a line of
+          # work that accumulates. If last week's proposal was worth keeping it was merged.
+          git push --force origin "$BRANCH"
+
+          {
+            if [ "$VERDICT" = "green" ]; then
+              echo "Weekly refresh of the pinned packages. The suite is green against the bumped tree."
+            else
+              echo "Weekly refresh of the pinned packages. **The suite is red against the bumped tree.**"
+              echo "Opened anyway: a refresh that breaks the build is the finding, and hiding the run"
+              echo "would mean learning about it on somebody else's push instead."
+            fi
+            echo
+            echo "## Gate output, verbatim"
+            echo
+            cat gate.md
+            echo "## What this run did not do"
+            echo
+            echo "It did not merge, did not push to \`main\`, and did not read the diff. The bump is"
+            echo "proposed, not reviewed. Draft on purpose: the loop drafts, a human lands."
+            echo
+            echo "Proposed by [Dependency drift]($RUN_URL)."
+          } > body.md
+
+          if gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "$BRANCH" --body-file body.md
+          else
+            gh pr create --draft --base main --head "$BRANCH" \
+              --title "chore(deps): weekly refresh ($VERDICT)" --body-file body.md
+          fi
