@@ -414,8 +414,8 @@
   </section>
 
   <!-- 12 ---------------------------------------------------------------- THE LOOP -->
-  <section class="presentation__slide" data-title="How we know any of this">
-    <p class="slide-eyebrow settles">We only know that because of this</p>
+  <section class="presentation__slide" data-title="The loop">
+    <p class="slide-eyebrow settles">We only know that because of this loop</p>
     <svg class="fig" viewBox="0 0 700 224" role="img"
          aria-label="A loop. It leaves a comment, every one is written down, each is graded later by whether you fixed it or it was wrong, the scores are read per topic so a bad one cannot hide in an average, and that points at one reviewer to fix. A heavy bar across the arrow into that change marks the point it cannot pass on its own. Then it is re-run on old pull requests and the loop returns to the start."
          style="font-size:12px">
@@ -466,7 +466,97 @@
     </ul>
   </section>
 
-  <!-- 13 ---------------------------------------------------------------- WHAT I GOT WRONG -->
+  <!-- 13 ---------------------------------------------------------------- THE WHOLE THING -->
+  <section class="presentation__slide" data-title="The whole thing">
+    <p class="slide-eyebrow settles">Everything you have just seen, joined up</p>
+    <svg class="fig" viewBox="0 0 700 262" role="img"
+         aria-label="The whole process in three rows. The review, which runs on a clock: your pull request is picked up, it works out what was asked for and what people already said, reads the code around the change, runs six reviewers at the same time, sorts the findings and argues back against them, then checks five rules and checks itself. After it posts: it posts, answers anything you ask, checks your fixes against the code as it is now, writes down every comment, and watches for your reply. Later and separately: each comment is graded, the scores are read per topic, one reviewer gets fixed, and the change is re-run on old pull requests. A dashed line returns from there to the start."
+         style="font-size:10.5px">
+      <defs>
+        <marker id="wf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+        <marker id="wf-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-line)"/>
+        </marker>
+      </defs>
+
+      <text x="70" y="20" style="fill:var(--color-fg);font-size:11.5px">the review, on a clock</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="70" y="28" width="92" height="44" rx="3"/>
+        <rect x="171" y="28" width="92" height="44" rx="3"/>
+        <rect x="272" y="28" width="92" height="44" rx="3"/>
+        <rect x="373" y="28" width="92" height="44" rx="3"/>
+        <rect x="474" y="28" width="92" height="44" rx="3"/>
+        <rect x="575" y="28" width="92" height="44" rx="3"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg)">
+        <text x="116" y="47">your PR is</text><text x="116" y="60">picked up</text>
+        <text x="217" y="47">what was asked,</text><text x="217" y="60">what was said</text>
+        <text x="318" y="47">read around</text><text x="318" y="60">the change</text>
+        <text x="419" y="47">six reviewers,</text><text x="419" y="60">at the same time</text>
+        <text x="520" y="47">sort, then</text><text x="520" y="60">argue back</text>
+        <text x="621" y="47">five rules, then</text><text x="621" y="60">check itself</text>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M162 50 L167 50" marker-end="url(#wf-a)"/><path d="M263 50 L268 50" marker-end="url(#wf-a)"/>
+        <path d="M364 50 L369 50" marker-end="url(#wf-a)"/><path d="M465 50 L470 50" marker-end="url(#wf-a)"/>
+        <path d="M566 50 L571 50" marker-end="url(#wf-a)"/>
+        <path d="M667 50 L684 50 L684 78 L46 78 L46 132 L66 132" marker-end="url(#wf-a)"/>
+      </g>
+
+      <text x="70" y="102" style="fill:var(--color-fg);font-size:11.5px">after it posts</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="70" y="110" width="92" height="44" rx="3"/>
+        <rect x="171" y="110" width="92" height="44" rx="3"/>
+        <rect x="272" y="110" width="92" height="44" rx="3"/>
+        <rect x="373" y="110" width="92" height="44" rx="3"/>
+        <rect x="474" y="110" width="92" height="44" rx="3"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg)">
+        <text x="116" y="136">it posts</text>
+        <text x="217" y="129">it answers what</text><text x="217" y="142">you ask</text>
+        <text x="318" y="129">it checks your fix</text><text x="318" y="142">against the code</text>
+        <text x="419" y="129">every comment</text><text x="419" y="142">written down</text>
+        <text x="520" y="129">it watches for</text><text x="520" y="142">your reply</text>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M162 132 L167 132" marker-end="url(#wf-a)"/><path d="M263 132 L268 132" marker-end="url(#wf-a)"/>
+        <path d="M364 132 L369 132" marker-end="url(#wf-a)"/><path d="M465 132 L470 132" marker-end="url(#wf-a)"/>
+        <path d="M566 132 L684 132 L684 160 L46 160 L46 214 L66 214" marker-end="url(#wf-a)"/>
+      </g>
+
+      <text x="70" y="184" style="fill:var(--color-fg);font-size:11.5px">later, and separately</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="70" y="192" width="92" height="44" rx="3"/>
+        <rect x="171" y="192" width="92" height="44" rx="3"/>
+        <rect x="373" y="192" width="92" height="44" rx="3"/>
+      </g>
+      <rect x="272" y="192" width="92" height="44" rx="3" style="fill:var(--color-fg)"/>
+      <g text-anchor="middle" style="fill:var(--color-fg)">
+        <text x="116" y="211">each one is</text><text x="116" y="224">graded</text>
+        <text x="217" y="211">the score,</text><text x="217" y="224">per topic</text>
+        <text x="419" y="211">re-run it on</text><text x="419" y="224">old pull requests</text>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-bg)">
+        <text x="318" y="211">fix one</text><text x="318" y="224">reviewer</text>
+      </g>
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M162 214 L167 214" marker-end="url(#wf-a)"/><path d="M263 214 L268 214" marker-end="url(#wf-a)"/>
+        <path d="M364 214 L369 214" marker-end="url(#wf-a)"/>
+      </g>
+      <path d="M465 214 L560 214 L560 250 L26 250 L26 50 L66 50" style="fill:none;stroke:var(--color-line);stroke-width:1.2;stroke-dasharray:4 3" marker-end="url(#wf-b)"/>
+      <text x="692" y="254" text-anchor="end" style="fill:var(--color-muted)">filled: the one a person decides</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>Do not narrate the boxes. Say the three rows, then point at two things.</li>
+      <li>First: only the top row is on a clock, and it is the only part talking to your pull request while you are waiting. Everything below it happens after you have moved on.</li>
+      <li>Second: the dashed line back is the whole argument. Without it the top row is just a reviewer with opinions and no way of finding out whether any of them were good.</li>
+      <li>The filled box is the only place it is allowed to change itself, and a person is standing in front of it.</li>
+    </ul>
+  </section>
+
+  <!-- 14 ---------------------------------------------------------------- WHAT I GOT WRONG -->
   <section class="presentation__slide" data-title="What I got wrong">
     <p class="slide-eyebrow settles">And none of it was designed up front</p>
     <svg class="fig" viewBox="0 0 700 206" role="img"
@@ -518,7 +608,7 @@
   <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
   <div class="presentation__controls">
     <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
-    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 14</span></span>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 15</span></span>
     <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
     <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
     <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
@@ -533,7 +623,7 @@
 
 <div class="presenter">
   <div class="presenter__now">
-    <span class="presenter__pos" data-p-pos>1 / 14</span>
+    <span class="presenter__pos" data-p-pos>1 / 15</span>
     <span class="presenter__clock" data-p-clock>00:00</span>
   </div>
   <div>
