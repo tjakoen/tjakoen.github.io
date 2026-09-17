@@ -61,7 +61,7 @@
 
   <!-- 2 ----------------------------------------------------------------- WHAT YOU WILL SEE -->
   <section class="presentation__slide" data-title="What you will see">
-    <p class="slide-eyebrow settles">Starting now, on pull requests in our repo</p>
+    <p class="slide-eyebrow settles">When your PR is sitting waiting for review</p>
     <svg class="fig" viewBox="0 0 700 214" role="img"
          aria-label="A pull request with six review comments marked down the side of the diff. Beside it, what the reviewer can do: leave up to six comments on the lines they are about, and hold the merge. And what it cannot do: approve. That stays with a person."
          style="font-size:12px">
@@ -90,6 +90,7 @@
     </svg>
     <ul class="slide-notes" hidden>
       <li>Land the three facts and stop. No defence yet and no mechanism.</li>
+      <li>Answer the obvious question before it is asked: not every PR, and not instantly. A check runs every half hour, finds the ones waiting on a review, and queues them. Someone still clicks to start it.</li>
       <li>If someone asks why it cannot approve, say "two slides from now" and move on.</li>
     </ul>
   </section>
@@ -98,11 +99,11 @@
   <section class="presentation__slide" data-title="Is it right">
     <p class="slide-eyebrow settles">First, the boring question</p>
     <svg class="fig" viewBox="0 0 700 192" role="img"
-         aria-label="Ninety-eight percent of the comments the reviewer has left were correct, measured across 753 of them graded one at a time against what happened to the code afterwards. Which turned out to be the least interesting thing about it."
+         aria-label="Ninety-eight percent of the comments the reviewer has left were correct, measured across 816 of them graded one at a time against what happened to the code afterwards. Which turned out to be the least interesting thing about it."
          style="font-size:12px">
       <text x="8" y="92" style="fill:var(--color-fg);font-size:76px">98%</text>
       <text x="252" y="66" style="fill:var(--color-fg);font-size:18px">of its comments were right.</text>
-      <text x="252" y="96" style="fill:var(--color-muted);font-size:13px">753 of them, graded one at a time against</text>
+      <text x="252" y="96" style="fill:var(--color-muted);font-size:13px">816 of them, graded one at a time against</text>
       <text x="252" y="116" style="fill:var(--color-muted);font-size:13px">what actually happened to the code.</text>
       <line x1="8" y1="142" x2="692" y2="142" style="stroke:var(--color-line)"/>
       <text x="8" y="174" style="fill:var(--color-fg);font-size:16px">Which is the least interesting thing about it.</text>
@@ -383,22 +384,22 @@
   <section class="presentation__slide" data-title="Right and unread">
     <p class="slide-eyebrow settles">Now the part we did not expect</p>
     <svg class="fig" viewBox="0 0 700 212" role="img"
-         aria-label="Two pairs of bars. Comments left on a line of code were right 98 percent of the time and acted on 96 percent of the time. The same findings written into the review summary instead were right 100 percent of the time and acted on only 24 to 43 percent of the time."
+         aria-label="Two pairs of bars. Comments left on a line of code were right 98 percent of the time and acted on 95 percent of the time. The same findings written into the review summary instead were right 99 percent of the time and acted on only 24 to 43 percent of the time."
          style="font-size:13px">
       <text x="8" y="20" style="fill:var(--color-muted)">was it right?</text>
       <text x="8" y="46" style="fill:var(--color-fg)">on a line</text>
       <rect x="150" y="33" width="398" height="17" style="fill:var(--color-line)"/>
       <text x="558" y="46" style="fill:var(--color-muted)">98%</text>
       <text x="8" y="74" style="fill:var(--color-fg)">in the summary</text>
-      <rect x="150" y="61" width="406" height="17" style="fill:var(--color-line)"/>
-      <text x="566" y="74" style="fill:var(--color-muted)">100%</text>
+      <rect x="150" y="61" width="402" height="17" style="fill:var(--color-line)"/>
+      <text x="562" y="74" style="fill:var(--color-muted)">99%</text>
 
       <line x1="8" y1="94" x2="692" y2="94" style="stroke:var(--color-line)"/>
 
       <text x="8" y="118" style="fill:var(--color-muted)">did anyone do anything about it?</text>
       <text x="8" y="144" style="fill:var(--color-fg)">on a line</text>
-      <rect x="150" y="131" width="390" height="17" style="fill:var(--color-fg)"/>
-      <text x="550" y="144" style="fill:var(--color-fg)">96%</text>
+      <rect x="150" y="131" width="386" height="17" style="fill:var(--color-fg)"/>
+      <text x="546" y="144" style="fill:var(--color-fg)">95%</text>
       <text x="8" y="172" style="fill:var(--color-fg)">in the summary</text>
       <rect x="150" y="159" width="134" height="17" style="fill:var(--color-fg)"/>
       <text x="294" y="172" style="fill:var(--color-fg)">24 to 43%</text>
@@ -461,6 +462,7 @@
       <li>This is the slide the title is about. Every comment it has ever left is written down and graded afterwards.</li>
       <li>The bar is the point. Making itself stricter, quieter or narrower always stops and asks. Making itself noisier does not, because that failure is one you would all see and this one is invisible.</li>
       <li>Per topic, never one average: it can be excellent on database changes and noisy on frontend performance, and the mean of those looks fine.</li>
+      <li>Not every comment resolves cleanly. A PR that gets abandoned and reimplemented somewhere else leaves comments on code that never shipped, and those are marked as such rather than counted either way. Guessing would poison the numbers in the one direction nobody would notice.</li>
     </ul>
   </section>
 
