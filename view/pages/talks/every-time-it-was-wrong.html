@@ -556,7 +556,71 @@
     </ul>
   </section>
 
-  <!-- 14 ---------------------------------------------------------------- WHAT I GOT WRONG -->
+  <!-- 14 ---------------------------------------------------------------- WHAT SETS IT OFF -->
+  <section class="presentation__slide" data-title="What sets it off">
+    <p class="slide-eyebrow settles">Nobody starts any of this by hand</p>
+    <svg class="fig" viewBox="0 0 700 246" role="img"
+         aria-label="Five things that happen, how each one is noticed, and what runs as a result. A ticket moving to code review is found by a check every thirty minutes and queued for someone to click. A reply on a thread is heard straight away and answered. A pushed fix is heard straight away and the new code is reviewed. A thread closed without a word raises nothing at all, so a check every thirty minutes catches it and the code is read. A merged pull request is picked up overnight and its comments are graded."
+         style="font-size:11.5px">
+      <defs>
+        <marker id="tg-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+      </defs>
+      <text x="8" y="20" style="fill:var(--color-muted);font-size:11px">what happens</text>
+      <text x="268" y="20" style="fill:var(--color-muted);font-size:11px">how it is noticed</text>
+      <text x="470" y="20" style="fill:var(--color-muted);font-size:11px">what runs</text>
+      <line x1="8" y1="28" x2="692" y2="28" style="stroke:var(--color-line)"/>
+
+      <g style="fill:var(--color-fg);font-size:12.5px">
+        <text x="8" y="56">a ticket moves to code review</text>
+        <text x="8" y="98">you reply to a comment</text>
+        <text x="8" y="140">you push a fix</text>
+        <text x="8" y="182">you close a thread, saying nothing</text>
+        <text x="8" y="224">the PR merges</text>
+      </g>
+
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="268" y="38" width="132" height="24" rx="3"/>
+        <rect x="268" y="164" width="132" height="24" rx="3" style="stroke:var(--color-line);stroke-dasharray:3 2"/>
+        <rect x="268" y="206" width="132" height="24" rx="3"/>
+      </g>
+      <rect x="268" y="80" width="132" height="24" rx="3" style="fill:var(--color-fg)"/>
+      <rect x="268" y="122" width="132" height="24" rx="3" style="fill:var(--color-fg)"/>
+
+      <g text-anchor="middle" style="font-size:11.5px">
+        <text x="334" y="55" style="fill:var(--color-muted)">a check, every 30 min</text>
+        <text x="334" y="97" style="fill:var(--color-bg)">straight away</text>
+        <text x="334" y="139" style="fill:var(--color-bg)">straight away</text>
+        <text x="334" y="181" style="fill:var(--color-muted)">nothing fires. 30 min.</text>
+        <text x="334" y="223" style="fill:var(--color-muted)">overnight</text>
+      </g>
+
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M404 50 L436 50" marker-end="url(#tg-a)"/>
+        <path d="M404 92 L436 92" marker-end="url(#tg-a)"/>
+        <path d="M404 134 L436 134" marker-end="url(#tg-a)"/>
+        <path d="M404 176 L436 176" marker-end="url(#tg-a)"/>
+        <path d="M404 218 L436 218" marker-end="url(#tg-a)"/>
+      </g>
+
+      <g style="fill:var(--color-fg);font-size:12.5px">
+        <text x="444" y="55">it is queued, someone clicks</text>
+        <text x="444" y="97">it answers you</text>
+        <text x="444" y="139">it reviews just the new code</text>
+        <text x="444" y="181">it reads the code anyway</text>
+        <text x="444" y="223">your comments get graded</text>
+      </g>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>The filled rows are the ones you will feel: you type, and it is already reacting. The outlined rows are the safety net running on a timer.</li>
+      <li>Row four is the important one and it is why the timers still exist. Closing a thread in silence moves nothing, so nothing can tell us, and that is how most of you will agree with a comment.</li>
+      <li>Row three is deliberately not a question. A push means code no reviewer has seen, which is the normal life of a PR, so asking permission every time would break the loop at its most common event.</li>
+      <li>Row one is the answer to "will this happen to everything". It starts from the ticket being ready for review, not from the branch existing.</li>
+    </ul>
+  </section>
+
+  <!-- 15 ---------------------------------------------------------------- WHAT I GOT WRONG -->
   <section class="presentation__slide" data-title="What I got wrong">
     <p class="slide-eyebrow settles">And none of it was designed up front</p>
     <svg class="fig" viewBox="0 0 700 206" role="img"
@@ -608,7 +672,7 @@
   <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
   <div class="presentation__controls">
     <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
-    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 15</span></span>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 16</span></span>
     <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
     <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
     <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
@@ -623,7 +687,7 @@
 
 <div class="presenter">
   <div class="presenter__now">
-    <span class="presenter__pos" data-p-pos>1 / 15</span>
+    <span class="presenter__pos" data-p-pos>1 / 16</span>
     <span class="presenter__clock" data-p-clock>00:00</span>
   </div>
   <div>
