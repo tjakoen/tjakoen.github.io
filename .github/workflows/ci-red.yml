@@ -1,0 +1,122 @@
+name: CI red responder
+
+# LOOP section 2b, the CI-red row, and the only genuinely PROACTIVE rung in this repo under the
+# four-rung ladder in section 2a. The other scheduled jobs hand off the trigger; this one hands off
+# the prompt. An event starts the work with nobody in the room.
+#
+# What it does is deliberately almost nothing, and that is the design. CI going red on main is
+# already visible in the Actions tab and in an email nobody reads. What is not already true is that
+# the failure has a home: an issue, in the tracker, where the next session meets it. LOOP section 2a
+# condition 3 is the whole reason this file exists, because the finding already existed and only the
+# destination was missing.
+#
+# THE ENVELOPE (LOOP section 4b):
+#
+#   Scope cap    it reads one workflow run and writes one issue.
+#   Hard stops   no checkout. This job never sees the source, which makes "it drafted a fix" not a
+#                thing it declined to do but a thing it cannot do. That is the stricter reading of
+#                a hard stop and the right one for the rung with no human in the room.
+#   Ask-trigger  the issue is the ask. Diagnosing the failure is a session's job and fixing it is a
+#                session's job, and a human still gates the merge of whatever that session writes.
+#   Attribution  the failing run, the commit and the first red job are all named.
+#
+# THE CHECK THAT EARNS THE RUNG (LOOP section 2a, condition 1): none is run here. The check already
+# ran and already went red, which is the trigger. Nothing is rerun, because rerunning a red gate
+# with no edit in between is the exact thing LOOP section 7 names as burning tokens to look busy.
+#
+# One open issue at a time, same as the heartbeat, for the same reason: thirty of these is a log and
+# what is wanted is a current state.
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: ci-red
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  respond:
+    name: file the failure
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - name: file it
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # Nothing is checked out, so gh has no git remote to infer the repository from. Both of
+          # these are needed: GH_REPO for the issue commands, REPO for the api paths below.
+          GH_REPO: ${{ github.repository }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          TITLE: ${{ github.event.workflow_run.head_commit.message }}
+          LABEL: ci-red
+        run: |
+          gh label create "$LABEL" --force \
+            --color D93F0B --description "CI red on main, filed by the responder (LOOP 2b)"
+
+          first_red=$(gh api "repos/$REPO/actions/runs/$RUN_ID/jobs" \
+            --jq '[.jobs[] | select(.conclusion == "failure")] | .[0].name // "unknown"')
+          failed_steps=$(gh api "repos/$REPO/actions/runs/$RUN_ID/jobs" \
+            --jq '.jobs[] | select(.conclusion == "failure") | .name as $j | .steps[] | select(.conclusion == "failure") | "- \($j) / \(.name)"')
+
+          {
+            echo "CI went red on \`main\`."
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| First red job | \`$first_red\` |"
+            echo "| Commit | \`$SHA\` |"
+            echo "| Message | $(printf '%s' "$TITLE" | head -n 1) |"
+            echo "| Run | [log]($RUN_URL) |"
+            echo
+            if [ -n "$failed_steps" ]; then
+              echo "**Steps that failed**"
+              echo
+              printf '%s\n' "$failed_steps"
+              echo
+            fi
+            echo "This responder read the run and filed it. It did not check out the source, did not"
+            echo "diagnose anything and did not rerun the gate, which LOOP section 7 calls burning"
+            echo "tokens to look busy. A session picks this up, drafts on a branch, and a human gates"
+            echo "the merge."
+          } > body.md
+
+          existing=$(gh issue list --state open --label "$LABEL" --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file body.md
+            gh issue comment "$existing" --body "Still red as of \`$SHA\`. [Run]($RUN_URL)"
+          else
+            gh issue create --title "CI red on main" --label "$LABEL" --body-file body.md
+          fi
+
+  close:
+    name: close when it goes green again
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      # Without this the issue is a tombstone: opened by a machine, closed by a person who happened
+      # to remember. A responder that can only open is half a loop.
+      - name: close the open one
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          LABEL: ci-red
+        run: |
+          existing=$(gh issue list --state open --label "$LABEL" --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Green again on \`$SHA\`. [Run]($RUN_URL)"
+          else
+            echo "nothing open"
+          fi

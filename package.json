@@ -29,6 +29,7 @@
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",
     "lint:baseline": "bun tools/lint-gate.ts --write",
+    "answers:check": "bun tools/answers-check.ts",
     "audit:desk": "bun tools/desk-audit.ts",
     "analytics:pull": "bun tools/analytics-pull.ts",
     "diagrams:warm": "bun tools/diagram-warm.ts",
