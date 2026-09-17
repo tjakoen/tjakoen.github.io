@@ -1,0 +1,43 @@
+{
+  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "id": "https://tjakoen.github.io/badges/apsi-2209-midterm--fromhelio.json",
+  "type": [
+    "VerifiableCredential",
+    "OpenBadgeCredential"
+  ],
+  "issuer": {
+    "id": "https://tjakoen.github.io/teaching",
+    "type": [
+      "Profile"
+    ],
+    "name": "Tjakoen Stolk",
+    "url": "https://tjakoen.github.io/teaching",
+    "description": "Instructor, Application and System Integration, School of Computing, Holy Angel University, Angeles City"
+  },
+  "validFrom": "2026-09-16T00:00:00+08:00",
+  "credentialSubject": {
+    "type": [
+      "AchievementSubject"
+    ],
+    "identifier": [
+      {
+        "type": "IdentityObject",
+        "identityHash": "sha256$d6841419f69761ca6e8eabae95bfe76628a85e29f45454a3f19b7ea10e3bd6f7",
+        "identityType": "emailAddress",
+        "hashed": true,
+        "salt": "hau-badges-v1"
+      }
+    ],
+    "achievement": {
+      "id": "https://tjakoen.github.io/badges/apsi-2209-midterm",
+      "type": [
+        "Achievement"
+      ],
+      "name": "Backend Development with Cloud",
+      "description": "Completion of the midterm block (m4 to m5) of Application and System Integration (6APSI).",
+      "criteria": {
+        "id": "https://tjakoen.github.io/badges/apsi-2209-midterm"
+      }
+    }
+  }
+}

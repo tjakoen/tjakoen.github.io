@@ -1,0 +1,43 @@
+{
+  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "id": "https://tjakoen.github.io/badges/adet-2134-prelim--aistwobig.json",
+  "type": [
+    "VerifiableCredential",
+    "OpenBadgeCredential"
+  ],
+  "issuer": {
+    "id": "https://tjakoen.github.io/teaching",
+    "type": [
+      "Profile"
+    ],
+    "name": "Tjakoen Stolk",
+    "url": "https://tjakoen.github.io/teaching",
+    "description": "Instructor, Application Development and Emerging Technologies, School of Computing, Holy Angel University, Angeles City"
+  },
+  "validFrom": "2026-09-16T00:00:00+08:00",
+  "credentialSubject": {
+    "type": [
+      "AchievementSubject"
+    ],
+    "identifier": [
+      {
+        "type": "IdentityObject",
+        "identityHash": "sha256$55c3080f7cad00778cea44b14799aa242f68f943b30271114028b41bf55855dd",
+        "identityType": "emailAddress",
+        "hashed": true,
+        "salt": "hau-badges-v1"
+      }
+    ],
+    "achievement": {
+      "id": "https://tjakoen.github.io/badges/adet-2134-prelim",
+      "type": [
+        "Achievement"
+      ],
+      "name": "Dart and Flutter Foundations",
+      "description": "Completion of the prelim block (m1 to m2 to m3) of Application Development and Emerging Technologies (6ADET).",
+      "criteria": {
+        "id": "https://tjakoen.github.io/badges/adet-2134-prelim"
+      }
+    }
+  }
+}

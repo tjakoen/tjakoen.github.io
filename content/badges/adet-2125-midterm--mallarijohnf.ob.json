@@ -1,0 +1,43 @@
+{
+  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "id": "https://tjakoen.github.io/badges/adet-2125-midterm--mallarijohnf.json",
+  "type": [
+    "VerifiableCredential",
+    "OpenBadgeCredential"
+  ],
+  "issuer": {
+    "id": "https://tjakoen.github.io/teaching",
+    "type": [
+      "Profile"
+    ],
+    "name": "Tjakoen Stolk",
+    "url": "https://tjakoen.github.io/teaching",
+    "description": "Instructor, Application Development and Emerging Technologies, School of Computing, Holy Angel University, Angeles City"
+  },
+  "validFrom": "2026-09-16T00:00:00+08:00",
+  "credentialSubject": {
+    "type": [
+      "AchievementSubject"
+    ],
+    "identifier": [
+      {
+        "type": "IdentityObject",
+        "identityHash": "sha256$f774b79f70c13b92d0463bee60da64f741f33c450c17de1b413d0db8bd37c23a",
+        "identityType": "emailAddress",
+        "hashed": true,
+        "salt": "hau-badges-v1"
+      }
+    ],
+    "achievement": {
+      "id": "https://tjakoen.github.io/badges/adet-2125-midterm",
+      "type": [
+        "Achievement"
+      ],
+      "name": "Flutter App Development",
+      "description": "Completion of the midterm block (m4 to m5) of Application Development and Emerging Technologies (6ADET).",
+      "criteria": {
+        "id": "https://tjakoen.github.io/badges/adet-2125-midterm"
+      }
+    }
+  }
+}
