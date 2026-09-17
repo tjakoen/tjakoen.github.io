@@ -45,19 +45,24 @@ them map cleanly onto what this estate already runs; the fifth is adapted on pur
 | **Worktrees** | Isolated checkouts so parallel work doesn't collide | Git worktrees for parallel sessions (§2). One branch, one worktree, one run — no two agents editing the same tree. |
 | **Connectors** | Tools the agent reaches out through | grain-mcp + PANTRY retrieval. Built, and standardized here rather than left per-repo. |
 
-The fifth primitive is **automations** — a scheduled agent that runs on a timer. **We consciously do not
-adopt it** (decided 2026-07-26). No cron, no Routines, no nightly agent. The reasoning is in §2: the
-heartbeat is work-triggered instead, because a check that fires *when you are already working* is a check
-you will act on, and a check that fires at 3am is a report nobody reads. If the estate ever outgrows
-in-session cadence, scheduled automations are the researched fallback — revisit then, not before.
+The fifth primitive is **automations**, a scheduled agent that runs on a timer. It was rejected outright
+on 2026-07-26, and that rejection stood for seven weeks and was right for all of them. **It is now adopted
+under a gate**, decided 2026-09-16 and recorded in
+[the decision](https://github.com/tjakoen/tjakoen.github.io/blob/main/plans/decisions/2026-09-16-proactive-loops.md):
+a chore may run on a timer once a deterministic check exists that can tell whether its output is right,
+and not one day before. The original reasoning still holds for every chore that has not passed that gate,
+and it is in §2. What changed is not the appetite for autonomy. It is that a handful of chores finally
+grew a check worth trusting, and §2a is the ladder that says which ones.
 
 ---
 
-## 2. The heartbeat (work-triggered, two tiers)
+## 2. The heartbeat (work-triggered first, then scheduled where a check earns it)
 
 The chores that get skipped are the boring recurring ones: the e2e suite, the lint pass, the audit that's
-three weeks overdue. A heartbeat makes skipping *visible*. Not by running a robot at night — by making
-every push and every session *show what's due*. Two tiers.
+three weeks overdue. A heartbeat makes skipping *visible*, and for most of this estate's life it did that
+by making every push and every session *show what's due*, with nothing running unattended at all. That is
+still the default and still where a new chore starts. A chore leaves it only by passing the gate in §2a.
+Two tiers of check, and the machine tier now has four triggers rather than three.
 
 **Tier 1 — mechanical (no model, fires on a machine trigger).**
 
@@ -66,6 +71,8 @@ every push and every session *show what's due*. Two tiers.
 | Push | The doctor + typecheck + tests + e2e + lint (CI, where the repo is on GitHub). | CI fails the push visibly. Nonzero exit, no merge. |
 | Session start | The doctor, as the first orientation step (SESSION-LOOP §1 grows this rule). Its answer-log check reads the decision channel in the same pass. | Its findings land in `plans/` triage — the session sees them before touching code. An answer nobody has acted on is named there too, so it is acted on or acked, never simply not seen. |
 | Turn end | The typecheck when a typed file moved this turn, `proof verify` over the diff, a nudge for the dev tour §4a asks of a rendered change, and a lint count graded against a committed baseline. | The run does not get to say "done" yet. Ordered by what each catches: a type error is broken code, a lint flag is a preference. |
+| Schedule (weekly, §2b) | Only the chores that passed the §2a gate: link rot, a cold build on a clean checkout, the unacked-answer count, a dependency refresh. | It files a finding where the next session will meet it. It never fails a push, because there is no push to fail, and it never lands anything. |
+| CI red on main | Nothing is rerun. The responder reads which job went red and files it. | Same. A finding, not a fix. The fix is a session's job, and a human still gates the merge. |
 
 **Two rules keep the turn-end tier from being deleted, and both were learned by nearly deleting it.**
 **Gate an expensive check on the thing that makes it necessary.** A typecheck costs several times
@@ -101,11 +108,20 @@ A session picks up what the doctor flagged. When a staleness flag says the audit
 gates it. The cognitive tier is where judgment lives; it always leaves evidence (board findings, a branch,
 a run report). It does not land anything.
 
-**Why work-triggered and not scheduled.** A scheduled agent that finds a problem at 3am has nobody to hand
-it to; its output is a notification that competes with every other notification. A check that fires at
-session start hands its finding to the one context that is *already about to change the code*. Skipping
-stays impossible not because something runs unattended, but because the due work is in front of whoever is
-working. Cheaper, honest, and no unattended agent making changes nobody asked for.
+**Why work-triggered first, and what the 2026-07-26 objection actually was.** A scheduled agent that finds
+a problem at 3am has nobody to hand it to, and its output is a notification competing with every other
+notification. A check that fires at session start hands its finding to the one context that is *already
+about to change the code*. Skipping stays impossible not because something runs unattended, but because
+the due work is in front of whoever is working.
+
+Read that again and the objection is not to the timer. It is to the *destination*. A scheduled run whose
+finding lands in a notification is worthless for exactly the reason given; a scheduled run whose finding
+lands in the issue tracker, in a draft pull request, or in the triage file the session-start doctor
+already reads is the same finding arriving at the same desk, just earlier. That distinction was available
+in July and went unmade, which is why the call came out as a blanket no rather than a condition. §2a is
+the condition, written out. The part of the original reasoning that survives intact is the harder part:
+the run still may not land anything, and nothing here creates an unattended agent making changes nobody
+asked for.
 
 **Worktree isolation.** Parallel sessions get parallel worktrees — one branch each, isolated checkouts, no
 two agents mutating the same tree. This is the `worktrees` primitive doing real work: it is what makes
@@ -121,6 +137,89 @@ wrote the change writes the tour, so a tour is still the first pass wearing bett
 is the cost of the second: the reviewing session walks named surfaces instead of cold-reading a patch, and
 the human walks the live page instead of trusting a screenshot. Cheaper to verify is not the same as
 verified.
+
+---
+
+## 2a. The four rungs, and what earns the fourth
+
+Osmani's second frame on loops, after the five primitives in §1, sorts them by *what you hand off*. Four
+rungs, each one handing over a thing the previous rung kept.
+
+| Rung | What you hand off | What stops it | Where this estate is |
+|---|---|---|---|
+| **Turn-based** | the verification check | the agent decides it is done, or that it needs you | Every session, by default. SESSION-LOOP §2 is this rung written out. |
+| **Goal-based** | the stop condition | a measurable target is met | The gate loop. Green typecheck, green tests, a lint count at or under baseline. |
+| **Time-based** | the trigger | the schedule, until you stop it | §2b, from 2026-09-16. Weekly sweep, weekly dependency refresh. |
+| **Proactive** | the prompt | you do, explicitly | §2b, the CI responder. An event starts the work with nobody in the room. |
+
+**More autonomy is not the upgrade. The check is.** That is the source's own sharpest line, and it is the
+same claim the verify rule above and the evidence rule in §4 already make from the other direction. A weak
+check at the turn-based rung produces a mistake you catch on the next turn, because you are sitting there.
+The identical weak check at the proactive rung produces that mistake on a schedule, in a report nobody
+opened, for as long as the schedule runs. Climbing a rung does not improve a loop. It multiplies whatever
+the loop already was, and nothing in the mechanism cares about the sign.
+
+So a chore does not climb because it is tedious. It climbs when it can be checked.
+
+**The promotion gate.** Four conditions, all of them, before a chore may run on a trigger you are not
+present for:
+
+1. **A deterministic check decides the outcome.** An exit code, a count against a committed baseline, a
+   diff against a known-good. Not a model's read of whether it went well. This is §4b's high-lane test
+   moved up a level, and it fails the same way: if the only thing that can tell you the run was fine is
+   the run itself, the answer is no.
+2. **The check would catch the chore going wrong, not merely that it ran.** A workflow reporting success
+   because it completed is a green light wired to the ignition rather than to the engine.
+3. **The finding lands where the next session will meet it.** An issue, a draft pull request, or a file
+   the session-start doctor already reads. Not a notification, not an email, not a message into an empty
+   room. This is the whole of the 2026-07-26 objection, kept as a condition it is possible to satisfy
+   rather than a veto it was not.
+4. **The run cannot land anything.** Every hard stop in §4b applies without amendment: no merge, no push
+   to a default branch, no deletes, nothing outward-facing. The loop drafts and a human lands, and this
+   rung is where that sentence stops being a slogan and becomes the only thing standing between a timer
+   and a repository.
+
+**Demotion is part of the design, and it has to be, or the ladder only goes one way.** A proactive chore
+drops back to work-triggered when either of two things happens, and both are countable rather than felt:
+its findings go three cycles with nobody acting on them, or its check goes red twice on the same cause.
+The first means it is producing noise, and the honest response is to stop producing it rather than to
+tune the threshold until it is quiet. The second is §4b's ask-trigger, which does not get a weaker reading
+because the run was unattended when it fired. A ladder with no way down is a ratchet, and §4b already
+explains why this estate does not build those.
+
+---
+
+## 2b. What actually runs unattended
+
+The promotion table. Every row names its trigger, the check that earned it the rung, what it may produce,
+and whether it is wired today. Rows that are not wired say so by name, the same honesty
+[the conformance standard](CONFORMANCE.md) asks for, because a promotion table reading as all-green is
+the one thing worse than a short one.
+
+| Chore | Trigger | The check that earns the rung | May produce | State |
+|---|---|---|---|---|
+| Link rot on published content | Weekly | bun run lint:links, which exits nonzero on a dead relative link and has no threshold where some are acceptable | One issue, one line per dead link | Wired |
+| Cold build drift | Weekly | bun run check and bun test on a clean checkout, which catches breakage arriving from outside rather than from a diff | A line in the same issue | Wired |
+| Unacked answers in the decision log | Weekly | The answer log read against its acks and counted past a threshold. Already a session-start check; the schedule catches the weeks nobody opened a session | A line in the same issue | Wired |
+| Dependency upgrades | Weekly | CI on the branch it opens. The refresh is not the check, the suite is | One draft pull request, never merged | Wired |
+| CI red on the default branch | The failing run | The suite that already went red. Nothing is rerun and nothing is diagnosed | One issue naming the first red job | Wired |
+| Uncommitted work across the estate | Session start | git status across every repo, which is §8's standing red flag and the estate's real recurring one | A triage line the session reads | **Not wired as a schedule**, and it cannot be: the repos are local and a runner cannot see them. It stays at the session-start trigger, where it already works. |
+
+**One issue, reopened, rather than one issue per run.** A weekly job filing a fresh issue every Monday
+teaches you to close them unread by about the fourth Monday. The sweep maintains a single issue, rewrites
+its body with what is true now, and closes it when the body would be empty. How long that issue has been
+open is then a real number about the estate rather than a number about the scheduler.
+
+**The dependency row is the only one that writes, and it is worth being exact about why that is allowed.**
+It opens a branch and a draft pull request. It does not merge, and the branch it pushes is never the
+default one. Under §4b's lanes that is a gated change rather than a high one, and the gate is the suite
+plus a person reading the diff. The reason it is allowed at all is that its failure mode is loud: a bad
+bump goes red in CI, on the branch it was proposed on, in front of the review it was already going to get.
+
+**What is deliberately not here.** No chore that edits source on a schedule. No chore whose output is a
+judgment. No chore that runs the audit unattended, because the audit's findings need the cognitive tier
+and filing them without it produces a list nobody can act on. Adding one of these later means passing
+§2a's four conditions in writing first, in a decision record, not in a commit message.
 
 ---
 
@@ -338,6 +437,27 @@ This estate runs on Nimbalyst, which does both. The requirement is the standard;
 example, and a harness that does neither is not disqualified so much as owed more discipline
 elsewhere: read the paths before believing a dirty count, and keep the ask-triggers in front of you.
 
+**A scheduled run declares its envelope in the workflow file, because there is no session to declare
+it in.** Everything above assumes a run that can be told something at the start. A job on a timer
+cannot, so the envelope has to be legible in the thing that defines the job, and that is a stricter
+requirement than it sounds: it means the scope cap, the hard stops and the ask-triggers are readable
+by a person opening the file in the tracker, not inferred from what the script happens to do.
+
+- **The scope cap is the permissions block.** Read-only unless the row in §2b says otherwise, and the
+  one row that writes is capped at a branch and a pull request. A workflow that grants itself more
+  than its row needs is the finding, whether or not it ever uses the grant.
+- **The hard stops are enforced by not having the permission, not by the script choosing well.** A run
+  that could merge and declines to is one edit away from merging. A run with no merge permission is
+  not.
+- **The ask-trigger is the issue it files.** A scheduled run has no way to stop and ask, so its
+  equivalent of asking is filing the finding and going quiet. That is the same shape as *an ask stops
+  the run*, and it matters that it is the same shape: a job that files a finding and then tries to
+  fix it has carried on past the point where it should have stopped, exactly like a session that
+  asks a question and keeps typing.
+- **Every unattended run is attributable.** Which workflow, which run, which commit, on every finding
+  it files. This is the §4a ledger for a run with no session behind it, and it is the difference
+  between a finding you can trace and a finding you can only believe.
+
 ---
 
 ## 5. Why a loop at all (the precedent, and the receipt)
@@ -353,6 +473,17 @@ case that durable AI work is built from a small set of composable parts, not a c
 most of the way and the last stretch is where unmanaged work rots), plan-first over prompt-and-pray, and
 quality gates as non-negotiable. That book is why the heartbeat (§2) and the gate (SESSION-LOOP §2) exist
 at all.
+
+**The ladder is named, and it settled an argument this file had been having with itself.** Osmani's
+*four kinds of loops* sorts loops by what you hand off: the verification check, then the stop
+condition, then the trigger, then the prompt itself. §2a is that ladder applied here. Two things came
+out of reading it. The first is vocabulary, which sounds minor and was not: this file had been
+describing rungs one and two at length without a name for either, so every discussion of going further
+turned into an argument about autonomy in general rather than about which specific thing was being
+handed over. The second is the line the whole of §2a is built on, *more autonomy is not the upgrade,
+the check is*, which is the same claim as the verify rule and the run ledger and arrives at it from
+the direction this estate had not tried. The 2026-07-26 rejection of scheduled work was reopened on
+2026-09-16 on the strength of it, and the reopening is recorded rather than quietly performed.
 
 **The verification discipline is named.** Alfonso Graziano's
 [Learning AI-Native Software Engineering](https://alfonsograziano.it/book) is where the context-engineering
@@ -441,6 +572,10 @@ The contract in §4 is rarely rejected. It is talked out of, one reasonable-soun
 | "I'll summarize the run in chat, it is faster to read." | Faster, and written by the party with an interest in how it reads. §4a asks for the link where the repo runs PANTRY, because the rendered ledger names the evidence items the report is missing and the summary never will. |
 | "The scope only grew a little." | Growth past the cap is an ask-trigger, not a judgment the run makes alone (§4b). The size of the growth does not change who owns the call. |
 | "Doctor is noisy, I'll deal with it later." | Later is the next session, which reads the same flags and makes the same excuse. That is how a flag becomes furniture. |
+| "Put it on a schedule, then it definitely gets done." | Scheduled means it definitely *runs*. Whether it gets done is the check, and §2a will not promote a chore that has not got one. A timer on an unchecked chore automates the appearance of the work. |
+| "It is only a small thing to also fix while it is in there." | The scheduled run drafts. Every hard stop in §4b applies to it unchanged, and it has fewer ways to notice it was wrong than a session does, not more. |
+| "The weekly job has been green for a month, so that area is fine." | Green means the check passed. §2a condition 2 is the question worth asking instead: would this check have gone red if the thing it watches broke? A job that reports success for completing is furniture with a schedule. |
+| "Nobody has closed the sweep issue, so there is nothing in it." | Or there is, and it is being scrolled past. Three cycles unacted is a demotion trigger in §2a, not a sign the chore is working quietly. |
 
 ---
 
@@ -457,6 +592,10 @@ The contract in §4 is rarely rejected. It is talked out of, one reasonable-soun
 - Doctor flags carried across three or more sessions untouched.
 - A session ended with no handoff because "it is obvious where this is."
 - Two sessions working the same area with no claim between them.
+- A scheduled workflow holding a permission no row in §2b asks for.
+- The sweep issue open and untouched for three cycles, which is the §2a demotion trigger rather than good news.
+- A scheduled run that fixed something instead of filing it.
+- A chore promoted to a timer with no decision record naming the check that earned it.
 
 ---
 
@@ -478,6 +617,8 @@ run ledger is checked against, not a vibe pass.
 - [ ] A change that renders left a dev tour, or the report says why it did not owe one.
 - [ ] Every answer in the log this run acted on was acked, so the next session's count is honest.
 - [ ] Doctor run, and every flag either fixed or carried forward by name.
+- [ ] Open findings from the unattended sweep read, and each one either acted on or carried forward
+      by name. An unattended run only pays for itself at the point someone reads it.
 
 ---
 

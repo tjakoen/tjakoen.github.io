@@ -25,10 +25,36 @@ persistent state. The case that durable AI work is assembled from a small set of
 rather than found in a clever prompt.
 
 Landed in LOOP section 1, which maps four of the five onto what this estate already ran. The fifth,
-automations, was consciously rejected on 2026-07-26 and the rejection is the more interesting half: a
-scheduled agent that finds a problem at 3am has nobody to hand it to, so the heartbeat here is
-work-triggered instead. That decision is the spine of LOOP section 2 and it is an argument with the
+automations, was consciously rejected on 2026-07-26 and the rejection was the more interesting half: a
+scheduled agent that finds a problem at 3am has nobody to hand it to, so the heartbeat here was
+work-triggered instead. That decision was the spine of LOOP section 2 and it was an argument with the
 source rather than an application of it.
+
+**It was reopened on 2026-09-16 and the reopening is worth reading before the paragraph above is
+quoted anywhere.** The full record is in
+[the decision](https://github.com/tjakoen/tjakoen.github.io/blob/main/plans/decisions/2026-09-16-proactive-loops.md),
+and the short version is that the July argument was about where a finding LANDS and was written as
+though it were about timers. A scheduled run whose output is a notification is worthless for exactly
+the reason given. A scheduled run whose output is an issue, a draft pull request, or a line in the
+file the session-start doctor already reads is the same finding at the same desk, earlier. LOOP
+section 2a keeps the true part as one of four conditions a chore must pass before it may run
+unattended, and five chores now do.
+
+**Addy Osmani, the four kinds of loops** ([post](https://www.linkedin.com/posts/addyosmani_the-four-kinds-of-loops-ugcPost-7502269314499084288-EX2A/)).
+Read 2026-09-16, and the reason the July call got reopened. Loops sorted by what you hand off: the
+verification check, then the stop condition, then the trigger, then the prompt itself. Turn-based,
+goal-based, time-based, proactive.
+
+Landed as LOOP section 2a, the ladder and the promotion gate, and section 2b, the table of what
+actually runs unattended. Two things came out of it and the smaller-sounding one mattered more. The
+first is vocabulary: this estate had been operating at rungs one and two for months with no name for
+either, so every conversation about going further collapsed into an argument about autonomy in
+general rather than about which specific thing was being handed over. Naming the rungs made it
+possible to say yes to one and no to another. The second is the load-bearing line, *more autonomy is
+not the upgrade, the check is*, which is the same claim as the verify rule in LOOP section 2 and the
+run ledger in section 4, reached from a direction this estate had not tried. A weak check at the
+turn-based rung is a mistake you catch next turn because you are sitting there. The same weak check
+on a schedule is that mistake repeated into a report nobody opened.
 
 **Addy Osmani, [Beyond Vibe Coding](https://beyond.addy.ie).**
 The seventy percent problem: an AI gets you most of the way and the last stretch is where unmanaged
