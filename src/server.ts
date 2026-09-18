@@ -142,8 +142,18 @@ interface DeskFeedPost {
   id: string; date: string; title: string; body: string; tags: string[]; link: string; icon: string;
   kind?: string; location?: string; photos?: string[]; links?: Array<{ href: string; label: string }>;
 }
-const deskFeedPosts: DeskFeedPost[] =
-  await Bun.file(join(import.meta.dir, "..", "content", "data", "desk-feed.json")).json();
+// Boot-time loads of the hand-authored content/data/*.json dressing. A missing or malformed file
+// otherwise throws a bare SyntaxError with no path, so name the file that failed: a broken deploy
+// then says which spec to fix rather than a stack trace pointing at Bun's JSON parser.
+async function loadDataJson<T>(name: string): Promise<T> {
+  const path = join(import.meta.dir, "..", "content", "data", name);
+  try {
+    return (await Bun.file(path).json()) as T;
+  } catch (err) {
+    throw new Error(`server: failed to load content/data/${name} — ${(err as Error).message}`);
+  }
+}
+const deskFeedPosts: DeskFeedPost[] = await loadDataJson<DeskFeedPost[]>("desk-feed.json");
 async function buildCalendarEvents(): Promise<CalendarEvent[]> {
   // Three sources merged into ONE feed (Apps-v2 Pass C): note publish dates + the hand-authored
   // desk-feed "shipped" posts + the MILL-authored events collection (hackathons/talks/highlights).
@@ -185,7 +195,7 @@ interface MailMessageRaw {
   date: string; whenLabel?: string; body: string; links: MailLink[];
 }
 interface MailboxData { folders: Array<{ id: string; label: string }>; messages: MailMessageRaw[]; }
-const mailbox: MailboxData = await Bun.file(join(import.meta.dir, "..", "content", "data", "mailbox.json")).json();
+const mailbox: MailboxData = await loadDataJson<MailboxData>("mailbox.json");
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 // Parse the ISO date's own digits (no Date(), so a machine timezone can't shift "Jul 14" to the 13th).
 const fmtDate = (iso: string, withYear: boolean): string => {
@@ -230,7 +240,7 @@ interface CvData {
   languages: string[];
   certs: Array<{ name: string; issuer: string; date: string }>;
 }
-const cv: CvData = await Bun.file(join(import.meta.dir, "..", "content", "data", "cv.json")).json();
+const cv: CvData = await loadDataJson<CvData>("cv.json");
 // Experience + education share the cv-entry molecule (same shape). Bullets/notes become {text}
 // objects so the nested each="bullets" binds a field (the renderer binds fields, not bare strings).
 const toCvEntry = (e: {
@@ -295,9 +305,7 @@ interface ContactFormData {
   fields: ContactFieldRaw[]; messages: ContactMessageRaw[]; choices: ContactChoiceRaw[];
   checks: ContactCheckRaw[];
 }
-const contactForm: ContactFormData = await Bun.file(
-  join(import.meta.dir, "..", "content", "data", "contact-form.json"),
-).json();
+const contactForm: ContactFormData = await loadDataJson<ContactFormData>("contact-form.json");
 const contactFields = contactForm.fields;
 const contactMessages = contactForm.messages;
 const contactChoices = contactForm.choices;
