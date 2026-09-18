@@ -208,9 +208,9 @@ social: |
 ${social}
 ---
 
-This credential attests completion of the ${term} block of ${s.title} (${s.monogram}) at Holy Angel
-University: ${meta.subtitle}. See [what this badge attests](/badges/${classSlug}) for the criteria
-and the full recipient roster.
+This credential attests completion of the ${term} block of ${s.title}. The criteria this badge
+certifies, and how it sits alongside the other badge in the course, are on the
+[criteria page](/badges/${classSlug}).
 `;
 }
 

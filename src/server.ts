@@ -53,13 +53,34 @@ function shortlinkPage(certSlug: string, origin: string): string {
   const cls = certSlug.split("--")[0];
   const dest = `/badges/${certSlug}`;
   const img = `${origin}/media/badges/og-${cls}.png`;
+  // Read the cert's own title + skill so the SHORT url unfurls with a headline, not just a picture:
+  // a LinkedIn card with an image and no title reads as broken. Falls back to a neutral title.
+  let title = "Badge credential", desc = "A verified course credential.";
+  try {
+    const md = readFileSync(join(BADGES_DIR, `${certSlug}.md`), "utf8");
+    const fm = md.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
+    const pick = (k: string) => fm.match(new RegExp(`^${k}:\\s*(.*)$`, "m"))?.[1]?.replace(/^"(.*)"$/, "$1").trim();
+    const badgeName = pick("badgeName"), who = pick("recipientName"), skill = pick("subtitle");
+    if (badgeName && who) title = `${badgeName} · ${who}`;
+    else if (badgeName) title = badgeName;
+    if (skill) desc = `${skill} — issued by Tjakoen Stolk, Instructor, School of Computing, Holy Angel University.`;
+  } catch { /* fall back to the neutral wording above */ }
+  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  const t = esc(title), d = esc(desc);
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
-<title>Badge credential</title>
+<title>${t}</title>
+<meta name="description" content="${d}">
 <link rel="canonical" href="${origin}${dest}">
 <meta http-equiv="refresh" content="0; url=${dest}">
-<meta property="og:type" content="article"><meta property="og:image" content="${img}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="${t}"><meta property="og:description" content="${d}">
+<meta property="og:url" content="${origin}${dest}">
+<meta property="og:image" content="${img}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${img}">
+<meta property="og:image:alt" content="${t}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${t}"><meta name="twitter:description" content="${d}">
+<meta name="twitter:image" content="${img}">
 <meta name="robots" content="noindex"></head>
 <body><p>Redirecting to <a href="${dest}">your credential</a>.</p></body></html>`;
 }
