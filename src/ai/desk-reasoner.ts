@@ -18,7 +18,7 @@ import { retrieve, FACTS_ROUTE, type Knowledge } from "./retrieval.ts";
 import type { DeskEngine, EngineProgress, ModelProfile } from "./webllm-loader.ts";
 import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
 import {
-  routeAction, PINNED_CHIP, ACTION_CHIPS,
+  routeAction, type Action, PINNED_CHIP, ACTION_CHIPS,
   // C1 visitor-intent onboarding — the ask's own copy/choices, and the CLARIFY pair it falls back to
   // once the nag-guard says "don't ask again" (same bubble shape either way).
   CLARIFY_PROMPT, CLARIFY_CHOICES, INTENT_PROMPT, INTENT_CHOICES,
@@ -68,6 +68,28 @@ import { buildCapabilityCatalog, catalogPhrases } from "./capabilities.ts";
  *  along for B2 notes filtering (notes-tags.ts): optional so older callers/fixtures without it still
  *  type-check (an untagged note just never matches a topic). */
 export interface DeskNote { slug: string; title: string; route: string; tags?: string[] }
+
+/** Per-turn context threaded to the hoisted turn handlers. It carries the shared per-call helpers and
+ *  state a branch needs, so each handler is a plain function rather than a closure inside decide(). */
+interface Turn {
+  tools: ReasonTools;
+  log: string;
+  id: string;
+  text: string;
+  action: Action | null;
+  catalog: NavDest[];
+  tourWasActive: boolean;
+  showcaseWasActive: boolean;
+  setBody: (inner: string, commit: "pending" | "committed") => void;
+  setBodyRaw: (inner: string, commit: "pending" | "committed") => void;
+  setChips: (list: string[]) => void;
+  offline: () => Decision;
+  narrate: (verb: string, desc: string) => void;
+  minThink: () => Promise<void>;
+  streamInto: (engine: DeskEngine, messages: ChatMessage[], maxTokens?: number) => Promise<string>;
+  typeOut: (answer: string) => Promise<void>;
+  travelAndNavigate: (navLink: string, goto: string, label: string, announce: string, readDesc: string, arriveSurface?: string, anchor?: string) => Promise<void>;
+}
 
 const joinPhrases = (xs: string[]): string =>
   xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
@@ -659,163 +681,19 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     }
   }
 
-  return {
-    async decide(intent: Intent, tools: ReasonTools): Promise<Decision> {
-      // Non-chat verbs are the stub's job, unchanged (the /grain demo, notes "see what's new", …).
-      if (intent.action !== "chat.send") return deps.fallback.decide(intent, tools);
-
-      const text = String(intent.payload.text ?? "").trim();
-      const log = intent.surface;
-
-      // 1) your message — clean, committed. Committed on the chat-log target RELEASES the composer
-      //    trigger immediately (dispatcher clearTrigger) and stands the op-silence watchdog down, so
-      //    the long model load that follows can't trip it. GRAIN's own op-builder (reasoner-kit) —
-      //    not hand-rolled markup — so the desk can't drift from the exact shape the dispatcher expects.
-      tools.emit(deps.kit.userMessageOp(log, text));
-
-      // 2) an empty desk bubble to stream into — grain (AI), pending until it settles.
-      const id = `chat-msg:${RUN}-${++seq}`;
-      tools.emit({ target: log, op: "append", provenance: "ai", commit: "pending",
-        html: bubble("ai", "grain", bodySpan(id, THINKING), "Desk") });   // never blank — shows "Thinking…" at once
-
-      // replace the bubble body (status / progress / final) — same op-builder either way; the two
-      // names just document intent at the call site (escaped text vs. already-trusted markup).
-      const setBody = (inner: string, commit: "pending" | "committed") => tools.emit(deps.kit.replaceBodyOp(id, inner, commit));
-      const setBodyRaw = setBody;   // trusted markup (load bar) — same op, kept as a distinct name for readability
-      const setChips = (list: string[]) =>
-        tools.emit({ target: "suggest-chips", op: "replace", provenance: "ai", commit: "committed", html: suggestChipsHtml(list) });
-      const offline = (): Decision => { deps.markOffline(); setBody(esc(OFFLINE_LINE), "committed"); return { ok: true, ops: [], reply: OFFLINE_LINE }; };
-      const narrate = (verb: string, desc: string) => tools.emit(deps.kit.narrateOp(verb, desc));   // console feed if the page shows one (else a no-op find)
-      // Even a deterministic, instant answer holds the "Thinking…" bubble for a human beat before it
-      // settles — so the desk is never jarringly instant; it always visibly reasons (the owner's ask).
-      // Measured from when the bubble appeared (above), so an answer that already took a beat waits less.
-      // The model paths (load + stream) always take longer, so they never call this.
-      const thinkStart = Date.now();
-      const minThink = (): Promise<void> => {
-        const rem = 520 - (Date.now() - thinkStart);
-        return rem > 0 ? tools.delay(rem) : Promise.resolve();
-      };
-      // stream a completion into the desk bubble (chat + summarize share this). Never leaves an empty
-      // bubble; penalties + a loop-guard tame the 0.5B's tendency to spin into repetition.
-      const streamInto = async (engine: DeskEngine, messages: ChatMessage[], maxTokens?: number): Promise<string> => {
-        setBodyRaw(THINKING, "pending");               // keep "Thinking…" until the first token wipes it
-        let acc = "";
-        let looped = false;
-        try {
-          // GRAIN owns the stream + interrupt: breaking this loop (cancel / loop-guard) unwinds
-          // streamChat's finally, which calls interruptGenerate — so we just stop iterating. Penalties
-          // matter a LOT on a 0.5B (without them it loops); grain maps these grain-cased knobs to the
-          // engine's wire shape.
-          for await (const delta of deps.streamChat(engine, messages, {
-            maxTokens: maxTokens ?? profile.maxTokens,
-            temperature: profile.temperature, topP: profile.topP,
-            frequencyPenalty: profile.frequencyPenalty, presencePenalty: profile.presencePenalty,
-          })) {
-            if (tools.cancelled()) break;                // graceful stop → break interrupts generation
-            acc += delta;
-            tools.emit(deps.kit.typeToken(id, delta));
-            // loop-guard: if a ~28-char tail has already recurred 3+ times ("a board, a screen, a
-            // board…"), stop, trim the display back to one instance, and settle. The break interrupts.
-            if (acc.length > 140) {
-              const tail = acc.slice(-28);
-              if (tail.trim().length > 10 && acc.split(tail).length - 1 >= 3) {
-                acc = acc.slice(0, acc.indexOf(tail) + tail.length).trimEnd();
-                looped = true;
-                break;
-              }
-            }
-          }
-        } catch (err) {
-          console.error("[desk] generation failed", err);   // a per-message failure — desk stays online (retry-able)
-          setBody(esc(acc.trim() ? acc : "The desk hit an error answering that. Try again, or ask something else."), "committed");
-          return acc;
-        }
-        if (looped) setBody(esc(acc || "…"), "committed");                  // clean up the repeated junk
-        else if (acc.trim()) tools.emit(deps.kit.settleOp(id));
-        else setBody(esc(tools.cancelled() ? "Stopped." : "The desk didn't have an answer for that. Try asking about TJ, the BREAD stack, or this site."), "committed");
-        return acc;
-      };
-
-      // Type a DETERMINISTIC (non-model) answer into the bubble the same way a model reply streams —
-      // word by word — so an instant answer (capabilities, a nav announce) reads as the desk chatting,
-      // not a hard drop of the whole line. Same typeToken/settleOp path as streamInto (the first token
-      // wipes "Thinking…"). Cancellable, so a "stop" mid-type settles cleanly like a real stream.
-      const typeOut = async (answer: string): Promise<void> => {
-        setBodyRaw(THINKING, "pending");
-        const parts = answer.match(/\S+\s*/g) ?? [answer];   // word-groups (trailing space kept)
-        for (const part of parts) {
-          if (tools.cancelled()) { setBody(esc("Stopped."), "committed"); return; }
-          tools.emit(deps.kit.typeToken(id, part));
-          await tools.delay(22);
-        }
-        tools.emit(deps.kit.settleOp(id));
-      };
-
-      // Travel the lamp to a nav link, "click" it, then leave the page — the ONE sequence shared by
-      // every navigation-driving path (deterministic latest-note, deterministic section nav, the
-      // model's own NAVIGATE:<route> choice, and A1's deep-link elsewhere-page hit), so the
-      // choreography can't drift between them.
-      // The spotlight op is grain's own kit builder, not a hand-rolled literal (CLAUDE.md lesson #1:
-      // use the mechanism, don't reinvent it) — and the actual navigate RenderOp is emitted by
-      // deps.navigate itself (desk-door.ts, via kit.navigateOp), not here. `navLink` is the VISIBLE
-      // sidebar link the lamp travels to and "clicks" (e.g. "/notes"); `goto` is where the browser
-      // actually ends up (e.g. "/notes/newest" — a specific note has no nav link of its own).
-      // `arriveSurface`/`anchor` are extra, OPTIONAL trailing params (every existing call site is
-      // unchanged): the deep-link path is the one caller that stashes a section anchor instead of the
-      // whole screen, so the lamp lands ON the part of the destination page it was asked about.
-      const travelAndNavigate = async (
-        navLink: string, goto: string, label: string, announce: string, readDesc: string,
-        arriveSurface = "screen", anchor?: string,
-      ) => {
-        narrate("reads", readDesc);
-        deps.revealNav?.(navLink);
-        narrate("clicks", label);
-        tools.emit(deps.kit.spotlightOp(`nav:${navLink}`, { active: true, click: true }));
-        deps.arrive?.(arriveSurface, announce, anchor);   // resume the lamp on arrival
-        await tools.delay(NAV_GLIDE_MS);     // lamp opens the folder, glides, pulses
-        deps.navigate?.(goto);
-      };
-
-      // Everything past the bubble is guarded: any unexpected throw settles an honest line rather
-      // than leaving the empty pending bubble the visitor saw before.
-      try {
-        // 3) ROUTE the request. Deterministic actions (navigate / open a note / capabilities) drive
-        //    the UI through GRAIN and need NO model — they run before the load and work even when the
-        //    desk model is offline. The terminal narration persists across the page load (localStorage).
-        const action = routeAction(text);
-
-        // A2 guided tour: "type anything to stop" — ANY message while a tour is pending cancels the
-        // door's next advance, except a fresh tour-start itself (which just restashes its own cursor).
-        // Captured BEFORE clearing so the tour-stop branch below can still report an honest "there WAS
-        // a tour running" even though this same line just cleared it for a non-tour-start message.
-        const tourWasActive = deps.tourActive?.() ?? false;
-        if (tourWasActive && action?.kind !== "tour-start") deps.tourClear?.();
-        // "Watch me work" shares the tour's "type anything to stop": ANY message while the showcase is
-        // pending cancels the door's next advance, except a fresh showcase-start (which restashes its
-        // own cursor). Same shape as the tour clear just above.
-        const showcaseWasActive = deps.showcaseActive?.() ?? false;
-        if (showcaseWasActive && action?.kind !== "showcase-start") deps.showcaseClear?.();
-
-        // 1c follow-up: a bare deictic ("go there", "open it") after the desk offered or CITED a place
-        // navigates to THAT target — no re-retrieval, so the follow-up can't drift to a different note
-        // than the "Read more" link it's answering. Guarded on !action (a real action word still wins)
-        // and a stored target (nothing to follow up on before the first navigate/citation).
-        const nt = text.trim().toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
-        if (!action && lastTarget && deps.navigate && FOLLOWUP_DEICTIC_RE.test(nt)) {
-          const dest = lastTarget;
-          await minThink();
-          await typeOut(`Taking you to ${dest.label}.`);
-          await travelAndNavigate(dest.route, dest.route, dest.label, `Here's ${dest.label}.`, "the navigation");
-          return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
-        }
-
+    // The deterministic turn: every action that needs no model (theme, tours, nav, memory, the
+    // showcase, deep-links). It is offline safe, returns a Decision when it claims the turn, and
+    // returns null to fall through to the model path. It takes the per-turn Turn and captures deps,
+    // profile, lastTarget, ensureEngine and runAgentTurns from the reasoner, the way runAgentTurns does.
+    const deterministicTurn = async (turn: Turn): Promise<Decision | null> => {
+      const { tools, log, text, action, catalog, tourWasActive, showcaseWasActive,
+        setBody, setBodyRaw, setChips, offline, narrate, minThink, typeOut, travelAndNavigate } = turn;
         if (action?.kind === "capabilities") {
           const where = deps.pageInfo?.().title;
           // the ONE catalog: everything this page's live manifest reports as operable/readable, plus
           // the desk's own built-in verbs (actions.ts's ACTION_CAPABILITIES) — never a hand-written
           // sentence that can drift from what routeAction and the manifest actually offer.
           const manifest = deps.pageManifest?.();
-          const catalog = deps.loadCatalog ? await deps.loadCatalog().catch(() => [] as NavDest[]) : [];
           const phrases = catalogPhrases(buildCapabilityCatalog({ manifest, hasDestinations: catalog.length > 0 }));
           const line = `Here's what I can do${where ? ` from ${where}` : ""}: ${joinPhrases(phrases)} — just ask. Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
           await minThink();
@@ -1474,7 +1352,6 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // ever to a route that exists. Not a hardcoded alias table: the catalog is the live sitemap, so
         // it scales with the site. A confident match navigates; anything fuzzier falls to the model tail
         // below (which gets a real-route shortlist), and an unrecognized place to an honest chat reply.
-        const catalog = deps.loadCatalog ? await deps.loadCatalog().catch(() => [] as NavDest[]) : [];
         if (!action && deps.navigate) {
           const dest = resolveNav(text, catalog);
           if (dest) {
@@ -1486,6 +1363,15 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           }
         }
 
+      return null;
+    };
+
+    // The model turn: load the local model (an implicit opt-in on first send), then summarize, write
+    // to the notepad, or answer a grounded chat. There is no stub fallback: an unavailable or failed
+    // model marks the desk offline.
+    const modelTurn = async (turn: Turn): Promise<Decision> => {
+      const { tools, log, text, action, catalog,
+        setBody, setBodyRaw, setChips, offline, narrate, streamInto, travelAndNavigate } = turn;
         // 4) needs the model. Load it (implicit opt-in on first send): a real progress bar, honest
         //    about the one-time cost. No stub fallback — unavailable/failed ⇒ Desk Offline.
         if (degraded) return offline();
@@ -1645,6 +1531,168 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: acc });
         setChips([...pickFollowups(text, history, deps.intentGet?.() ?? undefined), "Summarize this page"]);
         return { ok: true, ops: [], reply: acc };
+    };
+
+  return {
+    async decide(intent: Intent, tools: ReasonTools): Promise<Decision> {
+      // Non-chat verbs are the stub's job, unchanged (the /grain demo, notes "see what's new", …).
+      if (intent.action !== "chat.send") return deps.fallback.decide(intent, tools);
+
+      const text = String(intent.payload.text ?? "").trim();
+      const log = intent.surface;
+
+      // 1) your message — clean, committed. Committed on the chat-log target RELEASES the composer
+      //    trigger immediately (dispatcher clearTrigger) and stands the op-silence watchdog down, so
+      //    the long model load that follows can't trip it. GRAIN's own op-builder (reasoner-kit) —
+      //    not hand-rolled markup — so the desk can't drift from the exact shape the dispatcher expects.
+      tools.emit(deps.kit.userMessageOp(log, text));
+
+      // 2) an empty desk bubble to stream into — grain (AI), pending until it settles.
+      const id = `chat-msg:${RUN}-${++seq}`;
+      tools.emit({ target: log, op: "append", provenance: "ai", commit: "pending",
+        html: bubble("ai", "grain", bodySpan(id, THINKING), "Desk") });   // never blank — shows "Thinking…" at once
+
+      // replace the bubble body (status / progress / final) — same op-builder either way; the two
+      // names just document intent at the call site (escaped text vs. already-trusted markup).
+      const setBody = (inner: string, commit: "pending" | "committed") => tools.emit(deps.kit.replaceBodyOp(id, inner, commit));
+      const setBodyRaw = setBody;   // trusted markup (load bar) — same op, kept as a distinct name for readability
+      const setChips = (list: string[]) =>
+        tools.emit({ target: "suggest-chips", op: "replace", provenance: "ai", commit: "committed", html: suggestChipsHtml(list) });
+      const offline = (): Decision => { deps.markOffline(); setBody(esc(OFFLINE_LINE), "committed"); return { ok: true, ops: [], reply: OFFLINE_LINE }; };
+      const narrate = (verb: string, desc: string) => tools.emit(deps.kit.narrateOp(verb, desc));   // console feed if the page shows one (else a no-op find)
+      // Even a deterministic, instant answer holds the "Thinking…" bubble for a human beat before it
+      // settles — so the desk is never jarringly instant; it always visibly reasons (the owner's ask).
+      // Measured from when the bubble appeared (above), so an answer that already took a beat waits less.
+      // The model paths (load + stream) always take longer, so they never call this.
+      const thinkStart = Date.now();
+      const minThink = (): Promise<void> => {
+        const rem = 520 - (Date.now() - thinkStart);
+        return rem > 0 ? tools.delay(rem) : Promise.resolve();
+      };
+      // stream a completion into the desk bubble (chat + summarize share this). Never leaves an empty
+      // bubble; penalties + a loop-guard tame the 0.5B's tendency to spin into repetition.
+      const streamInto = async (engine: DeskEngine, messages: ChatMessage[], maxTokens?: number): Promise<string> => {
+        setBodyRaw(THINKING, "pending");               // keep "Thinking…" until the first token wipes it
+        let acc = "";
+        let looped = false;
+        try {
+          // GRAIN owns the stream + interrupt: breaking this loop (cancel / loop-guard) unwinds
+          // streamChat's finally, which calls interruptGenerate — so we just stop iterating. Penalties
+          // matter a LOT on a 0.5B (without them it loops); grain maps these grain-cased knobs to the
+          // engine's wire shape.
+          for await (const delta of deps.streamChat(engine, messages, {
+            maxTokens: maxTokens ?? profile.maxTokens,
+            temperature: profile.temperature, topP: profile.topP,
+            frequencyPenalty: profile.frequencyPenalty, presencePenalty: profile.presencePenalty,
+          })) {
+            if (tools.cancelled()) break;                // graceful stop → break interrupts generation
+            acc += delta;
+            tools.emit(deps.kit.typeToken(id, delta));
+            // loop-guard: if a ~28-char tail has already recurred 3+ times ("a board, a screen, a
+            // board…"), stop, trim the display back to one instance, and settle. The break interrupts.
+            if (acc.length > 140) {
+              const tail = acc.slice(-28);
+              if (tail.trim().length > 10 && acc.split(tail).length - 1 >= 3) {
+                acc = acc.slice(0, acc.indexOf(tail) + tail.length).trimEnd();
+                looped = true;
+                break;
+              }
+            }
+          }
+        } catch (err) {
+          console.error("[desk] generation failed", err);   // a per-message failure — desk stays online (retry-able)
+          setBody(esc(acc.trim() ? acc : "The desk hit an error answering that. Try again, or ask something else."), "committed");
+          return acc;
+        }
+        if (looped) setBody(esc(acc || "…"), "committed");                  // clean up the repeated junk
+        else if (acc.trim()) tools.emit(deps.kit.settleOp(id));
+        else setBody(esc(tools.cancelled() ? "Stopped." : "The desk didn't have an answer for that. Try asking about TJ, the BREAD stack, or this site."), "committed");
+        return acc;
+      };
+
+      // Type a DETERMINISTIC (non-model) answer into the bubble the same way a model reply streams —
+      // word by word — so an instant answer (capabilities, a nav announce) reads as the desk chatting,
+      // not a hard drop of the whole line. Same typeToken/settleOp path as streamInto (the first token
+      // wipes "Thinking…"). Cancellable, so a "stop" mid-type settles cleanly like a real stream.
+      const typeOut = async (answer: string): Promise<void> => {
+        setBodyRaw(THINKING, "pending");
+        const parts = answer.match(/\S+\s*/g) ?? [answer];   // word-groups (trailing space kept)
+        for (const part of parts) {
+          if (tools.cancelled()) { setBody(esc("Stopped."), "committed"); return; }
+          tools.emit(deps.kit.typeToken(id, part));
+          await tools.delay(22);
+        }
+        tools.emit(deps.kit.settleOp(id));
+      };
+
+      // Travel the lamp to a nav link, "click" it, then leave the page — the ONE sequence shared by
+      // every navigation-driving path (deterministic latest-note, deterministic section nav, the
+      // model's own NAVIGATE:<route> choice, and A1's deep-link elsewhere-page hit), so the
+      // choreography can't drift between them.
+      // The spotlight op is grain's own kit builder, not a hand-rolled literal (CLAUDE.md lesson #1:
+      // use the mechanism, don't reinvent it) — and the actual navigate RenderOp is emitted by
+      // deps.navigate itself (desk-door.ts, via kit.navigateOp), not here. `navLink` is the VISIBLE
+      // sidebar link the lamp travels to and "clicks" (e.g. "/notes"); `goto` is where the browser
+      // actually ends up (e.g. "/notes/newest" — a specific note has no nav link of its own).
+      // `arriveSurface`/`anchor` are extra, OPTIONAL trailing params (every existing call site is
+      // unchanged): the deep-link path is the one caller that stashes a section anchor instead of the
+      // whole screen, so the lamp lands ON the part of the destination page it was asked about.
+      const travelAndNavigate = async (
+        navLink: string, goto: string, label: string, announce: string, readDesc: string,
+        arriveSurface = "screen", anchor?: string,
+      ) => {
+        narrate("reads", readDesc);
+        deps.revealNav?.(navLink);
+        narrate("clicks", label);
+        tools.emit(deps.kit.spotlightOp(`nav:${navLink}`, { active: true, click: true }));
+        deps.arrive?.(arriveSurface, announce, anchor);   // resume the lamp on arrival
+        await tools.delay(NAV_GLIDE_MS);     // lamp opens the folder, glides, pulses
+        deps.navigate?.(goto);
+      };
+
+      // Everything past the bubble is guarded: any unexpected throw settles an honest line rather
+      // than leaving the empty pending bubble the visitor saw before.
+      try {
+        // 3) ROUTE the request. Deterministic actions (navigate / open a note / capabilities) drive
+        //    the UI through GRAIN and need NO model — they run before the load and work even when the
+        //    desk model is offline. The terminal narration persists across the page load (localStorage).
+        const action = routeAction(text);
+
+        // A2 guided tour: "type anything to stop" — ANY message while a tour is pending cancels the
+        // door's next advance, except a fresh tour-start itself (which just restashes its own cursor).
+        // Captured BEFORE clearing so the tour-stop branch below can still report an honest "there WAS
+        // a tour running" even though this same line just cleared it for a non-tour-start message.
+        const tourWasActive = deps.tourActive?.() ?? false;
+        if (tourWasActive && action?.kind !== "tour-start") deps.tourClear?.();
+        // "Watch me work" shares the tour's "type anything to stop": ANY message while the showcase is
+        // pending cancels the door's next advance, except a fresh showcase-start (which restashes its
+        // own cursor). Same shape as the tour clear just above.
+        const showcaseWasActive = deps.showcaseActive?.() ?? false;
+        if (showcaseWasActive && action?.kind !== "showcase-start") deps.showcaseClear?.();
+
+        // 1c follow-up: a bare deictic ("go there", "open it") after the desk offered or CITED a place
+        // navigates to THAT target — no re-retrieval, so the follow-up can't drift to a different note
+        // than the "Read more" link it's answering. Guarded on !action (a real action word still wins)
+        // and a stored target (nothing to follow up on before the first navigate/citation).
+        const nt = text.trim().toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+        if (!action && lastTarget && deps.navigate && FOLLOWUP_DEICTIC_RE.test(nt)) {
+          const dest = lastTarget;
+          await minThink();
+          await typeOut(`Taking you to ${dest.label}.`);
+          await travelAndNavigate(dest.route, dest.route, dest.label, `Here's ${dest.label}.`, "the navigation");
+          return { ok: true, ops: [], reply: `Navigating to ${dest.label}` };
+        }
+
+        // Route the request. The deterministic actions run first, need no model, and work offline; a
+        // null result falls through to the model path. Both phases read one shared catalog load.
+        const catalog = deps.loadCatalog ? await deps.loadCatalog().catch(() => [] as NavDest[]) : [];
+        const turn: Turn = {
+          tools, log, id, text, action, catalog, tourWasActive, showcaseWasActive,
+          setBody, setBodyRaw, setChips, offline, narrate, minThink, streamInto, typeOut, travelAndNavigate,
+        };
+        const det = await deterministicTurn(turn);
+        if (det) return det;
+        return await modelTurn(turn);
       } catch (err) {
         console.error("[desk] decide failed", err);          // bulletproof: never leave an empty bubble
         setBody(esc("Something went wrong on my end. Try again, or ask something else."), "committed");
