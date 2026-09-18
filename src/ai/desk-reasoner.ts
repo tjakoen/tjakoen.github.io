@@ -77,7 +77,9 @@ interface Turn {
   id: string;
   text: string;
   action: Action | null;
-  catalog: NavDest[];
+  /** Memoized catalog load: at most one loadCatalog per turn, and only when a handler asks for it, so
+   *  the deterministic paths that need no catalog (clarify, theme, memory) stay a fetch cheaper. */
+  getCatalog: () => Promise<NavDest[]>;
   tourWasActive: boolean;
   showcaseWasActive: boolean;
   setBody: (inner: string, commit: "pending" | "committed") => void;
@@ -686,7 +688,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     // returns null to fall through to the model path. It takes the per-turn Turn and captures deps,
     // profile, lastTarget, ensureEngine and runAgentTurns from the reasoner, the way runAgentTurns does.
     const deterministicTurn = async (turn: Turn): Promise<Decision | null> => {
-      const { tools, log, text, action, catalog, tourWasActive, showcaseWasActive,
+      const { tools, log, text, action, getCatalog, tourWasActive, showcaseWasActive,
         setBody, setBodyRaw, setChips, offline, narrate, minThink, typeOut, travelAndNavigate } = turn;
         if (action?.kind === "capabilities") {
           const where = deps.pageInfo?.().title;
@@ -694,6 +696,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           // the desk's own built-in verbs (actions.ts's ACTION_CAPABILITIES) — never a hand-written
           // sentence that can drift from what routeAction and the manifest actually offer.
           const manifest = deps.pageManifest?.();
+          const catalog = await getCatalog();
           const phrases = catalogPhrases(buildCapabilityCatalog({ manifest, hasDestinations: catalog.length > 0 }));
           const line = `Here's what I can do${where ? ` from ${where}` : ""}: ${joinPhrases(phrases)} — just ask. Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.`;
           await minThink();
@@ -1353,6 +1356,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // it scales with the site. A confident match navigates; anything fuzzier falls to the model tail
         // below (which gets a real-route shortlist), and an unrecognized place to an honest chat reply.
         if (!action && deps.navigate) {
+          const catalog = await getCatalog();
           const dest = resolveNav(text, catalog);
           if (dest) {
             await minThink();
@@ -1370,7 +1374,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     // to the notepad, or answer a grounded chat. There is no stub fallback: an unavailable or failed
     // model marks the desk offline.
     const modelTurn = async (turn: Turn): Promise<Decision> => {
-      const { tools, log, text, action, catalog,
+      const { tools, log, text, action, getCatalog,
         setBody, setBodyRaw, setChips, offline, narrate, streamInto, travelAndNavigate } = turn;
         // 4) needs the model. Load it (implicit opt-in on first send): a real progress bar, honest
         //    about the one-time cost. No stub fallback — unavailable/failed ⇒ Desk Offline.
@@ -1441,6 +1445,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
 
         // 4b) grounded chat (default). Retrieve grounding, stream, then swap the chips to curated
         //     follow-ups (suggestChipsHtml pins "What can I do here?" first).
+        const catalog = await getCatalog();
         const knowledge = await deps.loadKnowledge();
         const grounding = retrieve(text, knowledge, 3);
         narrate("reads", grounding.map((c) => c.route).join(", ") || "facts");
@@ -1684,10 +1689,13 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         }
 
         // Route the request. The deterministic actions run first, need no model, and work offline; a
-        // null result falls through to the model path. Both phases read one shared catalog load.
-        const catalog = deps.loadCatalog ? await deps.loadCatalog().catch(() => [] as NavDest[]) : [];
+        // null result falls through to the model path. The catalog is loaded lazily and memoized, so a
+        // turn that never needs it (clarify, theme, memory) pays no fetch, and one that does pays once.
+        let catalogPromise: Promise<NavDest[]> | null = null;
+        const getCatalog = (): Promise<NavDest[]> =>
+          (catalogPromise ??= deps.loadCatalog ? deps.loadCatalog().catch(() => [] as NavDest[]) : Promise.resolve([]));
         const turn: Turn = {
-          tools, log, id, text, action, catalog, tourWasActive, showcaseWasActive,
+          tools, log, id, text, action, getCatalog, tourWasActive, showcaseWasActive,
           setBody, setBodyRaw, setChips, offline, narrate, minThink, streamInto, typeOut, travelAndNavigate,
         };
         const det = await deterministicTurn(turn);
