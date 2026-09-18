@@ -23,7 +23,7 @@ import {
   // once the nag-guard says "don't ask again" (same bubble shape either way).
   CLARIFY_PROMPT, CLARIFY_CHOICES, INTENT_PROMPT, INTENT_CHOICES,
 } from "./actions.ts";
-import { resolveNav, navShortlist, type NavDest } from "./catalog.ts";
+import { resolveNav, navShortlist, stripSlash, joinPhrases, type NavDest } from "./catalog.ts";
 // B2 notes filtering — matching a visitor's free-text topic against the REAL tag set (never a model
 // guess, law #2). Pure + framework-free (notes-tags.ts), same family as catalog.ts's resolver.
 import { matchTags, uniqueTags } from "./notes-tags.ts";
@@ -93,8 +93,6 @@ interface Turn {
   travelAndNavigate: (navLink: string, goto: string, label: string, announce: string, readDesc: string, arriveSurface?: string, anchor?: string) => Promise<void>;
 }
 
-const joinPhrases = (xs: string[]): string =>
-  xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
 
 // The model's own navigation choice, per the NAVIGATE:<route> protocol prompt.ts offers it (scoped to
 // the real sitemap-catalog shortlist — see navBlock in prompt.ts). Matched loosely (case-insensitive,
@@ -186,7 +184,6 @@ function humanizeSeg(route: string): string {
   return seg ? seg.split("-").map((w) => w[0]!.toUpperCase() + w.slice(1)).join(" ") : "Home";
 }
 // Trailing-slash-insensitive route compare — "is the hit already on the page we're standing on?".
-const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
 
 const OFFLINE_LINE =
   "The desk runs a small AI model in your browser, and this browser can't run it, so the desk is offline. Everything else on the site works as usual.";

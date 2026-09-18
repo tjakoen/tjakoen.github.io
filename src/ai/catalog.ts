@@ -24,7 +24,11 @@ const norm = (s: string): string => s.toLowerCase().replace(/[^\w\s/-]/g, " ").r
 // "documentation"; neither raw form is a prefix of the other). Baseline-audit finding.
 const fold = (w: string): string => (w.length > 3 && w.endsWith("s") ? w.slice(0, -1) : w);
 const tokens = (s: string): string[] => norm(s).split(/[\s/-]+/).filter((w) => w && !STOP.has(w)).map(fold);
-const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
+/** Trailing-slash-insensitive route compare, shared by the reasoner and the door. */
+export const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
+/** Join a list into "a, b or c" prose — the shared one-liner the reasoner and the door both need. */
+export const joinPhrases = (xs: string[]): string =>
+  xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
 const routeSegs = (route: string): string[] => route.split("/").filter(Boolean);
 
 function humanize(route: string): string {

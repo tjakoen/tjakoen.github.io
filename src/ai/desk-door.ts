@@ -22,7 +22,7 @@ import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS,
 // B1 contact prefill — the ONE registered compose-body surface (contact-draft.ts names it in code;
 // targeting is never a model pick). The message itself arrives ALREADY drafted in the stash.
 import { CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
-import { buildCatalog, type NavDest } from "./catalog.ts";
+import { buildCatalog, stripSlash, joinPhrases, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 // A2 guided tour — the fixed stop list + the cursor codec (tour.ts). The door owns every leg of the
@@ -441,10 +441,6 @@ const showcaseStateSet = (s: ShowcaseState): void => { try { ss()?.setItem(SHOWC
 const showcaseClear = (): void => { try { ss()?.removeItem(SHOWCASE_KEY); } catch { /* no session storage */ } };
 const showcaseActive = (): boolean => showcaseStateGet() !== null;
 
-// Trailing-slash-insensitive route compare (also in desk-reasoner.ts — a local copy here rather than
-// a cross-module import, since it's a one-liner and this file already keeps its own small DOM shims).
-const stripSlash = (r: string): string => r.replace(/\/+$/, "") || "/";
-
 // ---- B3 mail batch archive: a cross-page batch, same ARRIVE_KEY/TOUR_KEY shape — the MPA loses this
 // reasoner instance on navigate, so the RAW sender phrase rides sessionStorage across the page load and
 // runMailTask (below) picks it up once /mail settles. ----
@@ -457,10 +453,6 @@ const mailTaskSet = (sender: string): void => { try { ss()?.setItem(MAIL_TASK_KE
 // only ever carries finished text — no composing on arrival. ----
 const CONTACT_TASK_KEY = "desk-contact-task";
 const contactTaskSet = (message: string): void => { try { ss()?.setItem(CONTACT_TASK_KEY, JSON.stringify({ message })); } catch { /* no session storage */ } };
-// Same joinPhrases shape as desk-reasoner.ts's own (not exported there — a one-liner, kept local here
-// exactly like this file's own stripSlash copy just above).
-const joinPhrases = (xs: string[]): string =>
-  xs.length <= 1 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
 
 // ---- D1 form builder demo: a cross-page fill, same MAIL_TASK_KEY/CONTACT_TASK_KEY shape — the
 // ALREADY-DRAFTED demo values (surface → text, form-draft.ts, computed in the reasoner before the
