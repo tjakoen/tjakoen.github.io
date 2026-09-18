@@ -150,7 +150,7 @@ async function loadDataJson<T>(name: string): Promise<T> {
   try {
     return (await Bun.file(path).json()) as T;
   } catch (err) {
-    throw new Error(`server: failed to load content/data/${name} — ${(err as Error).message}`);
+    throw new Error(`server: failed to load content/data/${name} — ${(err as Error).message}`, { cause: err });
   }
 }
 const deskFeedPosts: DeskFeedPost[] = await loadDataJson<DeskFeedPost[]>("desk-feed.json");
