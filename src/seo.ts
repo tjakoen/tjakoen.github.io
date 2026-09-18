@@ -185,6 +185,10 @@ export function enrichHead(html: string, pathname: string, origin: string): stri
   // cert + class pages do, so a shared credential unfurls with its own badge card, not the site card).
   const pageImg = html.match(/<meta name="x-og-image" content="([^"]+)"/i)?.[1];
   const image = origin + (pageImg || SITE.ogImage);
+  // A page that brings its own share image describes it too: the site-wide alt would describe the
+  // stack under a badge card. Falls back to the page title, then to the site alt.
+  const pageImgAlt = html.match(/<meta name="x-og-image-alt" content="([^"]+)"/i)?.[1];
+  const imageAlt = pageImgAlt || (pageImg ? (firstTitle(html) ?? SITE.ogImageAlt) : SITE.ogImageAlt);
   const titleEsc = firstTitle(html);                       // already attribute-safe
   const descEsc = metaDescription(html);
   const titleAttr = titleEsc ?? escapeHtml(SITE.name);
@@ -202,7 +206,7 @@ export function enrichHead(html: string, pathname: string, origin: string): stri
     `<meta property="og:image" content="${image}">`,
     `<meta property="og:image:width" content="${SITE.ogImageW}">`,
     `<meta property="og:image:height" content="${SITE.ogImageH}">`,
-    `<meta property="og:image:alt" content="${escapeHtml(SITE.ogImageAlt)}">`,
+    `<meta property="og:image:alt" content="${imageAlt === SITE.ogImageAlt ? escapeHtml(SITE.ogImageAlt) : imageAlt}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
     `<meta name="twitter:title" content="${titleAttr}">`,
     descEsc ? `<meta name="twitter:description" content="${descEsc}">` : "",

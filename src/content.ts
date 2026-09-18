@@ -203,7 +203,12 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // under the masthead and above the first section, not above the title.
     const contents = kind === "entry" && collection.prefix === "/notes" && frontmatter
       ? renderNoteContents(body, frontmatter) : "";
-    const readable = contents ? body.replace("</header>", `</header>${contents}`) : body;
+    let readable = contents ? body.replace("</header>", `</header>${contents}`) : body;
+    // A badge page's own template already states the title, the skill and the recipient, so MILL's
+    // entry header underneath it would be the same words a second time at h1 size. Drop that header
+    // (the rest of the body still renders) — badge pages only.
+    if (kind === "entry" && collection.prefix === "/badges")
+      readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
       title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}`,
       board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}`,
@@ -1028,38 +1033,112 @@ export const BADGE_COURSE_NAMES: Record<string, string> = {
 // What each badge attests, and the technologies it exercises, keyed by course and term. One source
 // for both surfaces: the criteria (class) page and every recipient's cert page render the same words,
 // so a student's badge states its own criteria inline rather than only linking out to them.
-export const BADGE_CRITERIA: Record<string, Record<string, { attests: string; technologies: string }>> = {
+export const BADGE_CRITERIA: Record<string, Record<string, {
+  attests: string; skills: string[]; covers: string[]; technologies: string;
+}>> = {
   apsi: {
     prelim: {
-      attests: "JavaScript fundamentals, then React components, state and effects, building and deploying a front end. Covers modules 1 to 3, mapped to course outcomes CO1 to CO3.",
+      attests: "Holders built and deployed a working front end, writing the JavaScript behind it and composing it as React components with their own state.",
+      skills: [
+        "Write modern JavaScript: values, functions, arrays and objects, and asynchronous code",
+        "Compose a user interface from reusable React components",
+        "Manage component state and side effects, and pass data through props",
+        "Build a front end and deploy it to a cloud host",
+      ],
+      covers: ["Modules 1 to 3 of Application and System Integration", "Course outcomes CO1 to CO3"],
       technologies: "JavaScript, React, component state and effects, a frontend build and a cloud deploy.",
     },
     midterm: {
-      attests: "Node and Express REST APIs and PostgreSQL data modelling, building and deploying a backend service. Covers modules 4 to 5, mapped to course outcomes CO1 to CO3.",
+      attests: "Holders built and deployed a working backend service: an HTTP API over a relational database they designed themselves.",
+      skills: [
+        "Model relational data and write SQL against PostgreSQL",
+        "Build a REST API with Node and Express, with routes, and handlers",
+        "Connect an API to a database and return real query results",
+        "Deploy a backend service to a cloud host",
+      ],
+      covers: ["Modules 4 to 5 of Application and System Integration", "Course outcomes CO1 to CO3"],
       technologies: "Node, Express, REST APIs, PostgreSQL data modelling and a cloud deploy.",
     },
   },
   adet: {
     prelim: {
-      attests: "Dart and object-oriented programming, then Flutter widgets, layout and state, building an interactive mobile UI. Covers modules 1 to 3.",
+      attests: "Holders built an interactive mobile interface in Flutter, writing the Dart behind it with object-oriented structure.",
+      skills: [
+        "Write Dart: types, collections, classes and object-oriented structure",
+        "Compose a mobile interface from Flutter widgets",
+        "Lay out screens with rows, columns and constraints that adapt to the device",
+        "Hold and update state so the interface responds to input",
+      ],
+      covers: ["Modules 1 to 3 of Application Development and Emerging Technologies"],
       technologies: "Dart, object-oriented programming, Flutter widgets, layout and state.",
     },
     midterm: {
-      attests: "Stateful Flutter apps: navigation, forms, lists and detail screens, building a multi-screen application. Covers modules 4 to 5.",
+      attests: "Holders built a multi-screen Flutter application: navigation between screens, forms that take input, and lists that open into detail views.",
+      skills: [
+        "Navigate between screens and pass data along the route",
+        "Build forms that capture and validate user input",
+        "Render scrolling lists from data and open each item into a detail screen",
+        "Structure an application across several screens and shared state",
+      ],
+      covers: ["Modules 4 to 5 of Application Development and Emerging Technologies"],
       technologies: "Flutter navigation, forms, lists and detail screens, and multi-screen app structure.",
     },
   },
   introweb: {
     prelim: {
-      attests: "HTML structure and semantic markup, CSS layout with grid and flexbox, responsive design and visual hierarchy following web standards. Covers modules 1 to 5, mapped to course outcomes CO1 and CO2.",
+      attests: "Holders built responsive web pages from scratch: semantic HTML structure styled with modern CSS layout that adapts to any screen.",
+      skills: [
+        "Structure a page with semantic HTML that follows web standards",
+        "Style a page with CSS: the box model, typography and colour",
+        "Lay out a page with CSS grid and flexbox",
+        "Make a layout responsive, with a clear visual hierarchy on any screen size",
+      ],
+      covers: ["Modules 1 to 5 of Basic Programming in Web Development", "Course outcomes CO1 and CO2"],
       technologies: "HTML semantics, CSS grid and flexbox, and responsive layout.",
     },
     midterm: {
-      attests: "Client-side JavaScript: DOM manipulation, events and behaviour, building and deploying interactive pages. Covers modules 6 to 8.",
+      attests: "Holders made their pages interactive with client-side JavaScript, and deployed them to the live web.",
+      skills: [
+        "Write client-side JavaScript to drive page behaviour",
+        "Read and change the DOM in response to program logic",
+        "Handle browser events from user interaction",
+        "Deploy an interactive page to the live web",
+      ],
+      covers: ["Modules 6 to 8 of Basic Programming in Web Development"],
       technologies: "JavaScript, DOM manipulation, browser events and deploying interactive pages.",
     },
   },
 };
+
+// The subject mark at the badge's crest, drawn per course rather than a generic star, so the badge
+// says something about the craft before a word is read. Centred on (150, 46), about 30px tall.
+//   apsi     — a browser window joined to a database cylinder: an app wired front to back
+//   adet     — a phone handset with a play-arrow: a mobile app
+//   introweb — an angle bracket pair around a slash: markup and the web
+function badgeCourseIcon(course: string | undefined, hue: string): string {
+  const s = `style="stroke:${hue}" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"`;
+  if (course === "adet") {
+    return `<g ${s}>
+      <rect x="138" y="30" width="24" height="34" rx="4"/>
+      <line x1="145" y1="36" x2="155" y2="36"/>
+      <path d="M146 50 l9 -5 -9 -5 z" style="fill:${hue};stroke:${hue}"/>
+    </g>`;
+  }
+  if (course === "introweb") {
+    return `<g ${s}>
+      <path d="M140 36 l-9 10 9 10"/>
+      <path d="M160 36 l9 10 -9 10"/>
+      <line x1="154" y1="32" x2="146" y2="60"/>
+    </g>`;
+  }
+  // apsi (and the fallback): a window over a database
+  return `<g ${s}>
+    <rect x="131" y="28" width="26" height="20" rx="3"/>
+    <line x1="131" y1="34" x2="157" y2="34"/>
+    <ellipse cx="160" cy="49" rx="9" ry="3.4"/>
+    <path d="M151 49 v9 a9 3.4 0 0 0 18 0 v-9"/>
+  </g>`;
+}
 
 // The badge, as a self-describing certification card (like Credly / Lumify): the course it belongs to
 // on top, the curriculum skill it certifies in the centre, and the issuer at the foot — an instructor
@@ -1069,6 +1148,7 @@ export const BADGE_CRITERIA: Record<string, Record<string, { attests: string; te
 // passes custom-property refs (--badge-hue etc.) and the image tool passes hex literals.
 export function badgeMedallionSvg(opts: {
   courseName: string; subtitle: string; year: string; issuerName?: string; recipient?: string;
+  course?: string;   // course key (apsi/adet/introweb) — picks the subject icon
   hue: string; ink?: string; muted?: string; paper?: string; font?: string; size?: number;
 }): string {
   const ink = opts.ink ?? "var(--ink)", muted = opts.muted ?? "var(--ink-muted)";
@@ -1088,7 +1168,7 @@ export function badgeMedallionSvg(opts: {
   return `<svg viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(opts.courseName)} badge: ${escapeHtml(opts.subtitle)}, issued by ${issuerName}, ${escapeHtml(opts.year)}" width="${size}" height="${Math.round(size * 340 / 300)}">
     <rect x="8" y="8" width="284" height="324" rx="26" style="fill:${paper};stroke:${opts.hue}" stroke-width="6"/>
     <rect x="19" y="19" width="262" height="302" rx="17" fill="none" style="stroke:${opts.hue}" stroke-width="1" opacity="0.35"/>
-    <text x="150" y="54" text-anchor="middle" font-family="${font}" font-size="24" style="fill:${opts.hue}">&#10023;</text>
+    ${badgeCourseIcon(opts.course, opts.hue)}
     <text text-anchor="middle" font-family="${serif}" font-size="10.5" letter-spacing="1.5" style="fill:${muted}">${course}</text>
     <text text-anchor="middle" font-family="${serif}" font-size="22" style="fill:${ink}">${title}</text>
     ${opts.recipient ? `<text x="150" y="212" text-anchor="middle" font-family="${serif}" font-size="9" letter-spacing="3" style="fill:${muted}">AWARDED TO</text>
@@ -1106,7 +1186,7 @@ function renderBadgeArt(courseKey: unknown, term: unknown, subtitle: unknown, ye
   // On the page the hue is --badge-hue (set per course by BADGE_STYLE via data-course); every colour is
   // already emitted through style=, so the custom property resolves without post-processing.
   const svg = badgeMedallionSvg({
-    courseName, subtitle: String(subtitle || ""), year, issuerName,
+    courseName, subtitle: String(subtitle || ""), year, issuerName, course: key,
     recipient: recipient ? String(recipient) : undefined,
     hue: "var(--badge-hue)", ink: "var(--ink)", muted: "var(--ink-muted)", paper: "var(--paper)", font: "var(--font-accent)", size: 220,
   });
@@ -1127,11 +1207,17 @@ function renderIssuer(frontmatter: Record<string, unknown>): string {
 function renderBadgeCriteria(frontmatter: Record<string, unknown>): string {
   const c = BADGE_CRITERIA[String(frontmatter.course || "")]?.[String(frontmatter.term || "")];
   if (!c) return "";
+  const skills = c.skills.map((s) => `<li>${escapeHtml(s)}</li>`).join("");
+  const covers = c.covers.map((s) => `<li>${escapeHtml(s)}</li>`).join("");
   return `<section class="badge-criteria">
     <h3 class="badge-criteria__heading">What this badge attests</h3>
-    <p>${escapeHtml(c.attests)}</p>
+    <p class="badge-criteria__lede">${escapeHtml(c.attests)}</p>
+    <h3 class="badge-criteria__heading">What the holder can do</h3>
+    <ul class="badge-criteria__list">${skills}</ul>
+    <h3 class="badge-criteria__heading">What it covers</h3>
+    <ul class="badge-criteria__list">${covers}</ul>
     <h3 class="badge-criteria__heading">Technologies</h3>
-    <p>${escapeHtml(c.technologies)}</p>
+    <p class="badge-criteria__tech">${escapeHtml(c.technologies)}</p>
   </section>`;
 }
 
@@ -1166,6 +1252,14 @@ const BADGE_STYLE = `<style>
 .badge-actions { display: flex; gap: 0.6em; flex-wrap: wrap; margin: var(--space-m, 1rem) 0; }
 .badge-btn { display: inline-block; padding: 0.5em 1em; border: 1px solid var(--border); border-radius: 6px; background: var(--color-surface); color: var(--ink); font: inherit; cursor: pointer; text-decoration: none; }
 .badge-btn:hover { border-color: var(--badge-hue, var(--color-accent)); }
+/* The criteria block: what the badge attests, as scannable bullets rather than a wall of prose. */
+.badge-criteria { margin: var(--space-l, 1.5rem) 0; padding-top: var(--space-m, 1rem); border-top: 1px solid var(--border); }
+.badge-criteria__heading { font-size: var(--text-sm); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin: 1.4em 0 0.5em; }
+.badge-criteria__heading:first-child { margin-top: 0; }
+.badge-criteria__lede { font-size: var(--text-lg); margin: 0; }
+.badge-criteria__list { margin: 0; padding-left: 1.2em; }
+.badge-criteria__list li { margin: 0.3em 0; }
+.badge-criteria__tech { color: var(--ink-muted); margin: 0; }
 </style>`;
 
 // The /badges entry template: a CERT page (one recipient's verifiable award) or a badge-CLASS page

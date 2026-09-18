@@ -78,7 +78,7 @@ function badgeYear(fm: Record<string, string>): string {
 function badgeSvg(fm: Record<string, string>, size: number): string {
   return badgeMedallionSvg({
     courseName: BADGE_COURSE_NAMES[fm.course!] || fm.course || "", subtitle: fm.subtitle || "",
-    year: badgeYear(fm), issuerName: fm.issuer || "Tjakoen Stolk",
+    year: badgeYear(fm), issuerName: fm.issuer || "Tjakoen Stolk", course: fm.course,
     recipient: fm.recipientName || undefined,   // a cert file carries the recipient; a class file does not
     hue: HUE[fm.course!] ?? INK, ink: INK, muted: MUTED, paper: "#FFFFFF", font: FONT, size,
   });
@@ -109,7 +109,7 @@ function ogCardHtml(fm: Record<string, string>): string {
   </style></head><body>
     <div class="card">
       <div class="txt">
-        <p class="brand"><span class="star">&#10023;</span> ${courseName}</p>
+        <p class="brand">${courseName}</p>
         <p class="eyebrow">Course badge</p>
         <h1 class="skill">${skill}</h1>
         <p class="issuer">Issued by ${fm.issuer || "Tjakoen Stolk"} · Instructor, Holy Angel University</p>
