@@ -1,5 +1,6 @@
 // portfolio/tools/screenshots.ts — visual review for headless/remote work.
 import { join } from "node:path";
+import { parsePort, waitForServer } from "./_server.ts";
 //
 // Boots the app, drives a real browser (Playwright + chromium), and captures the key
 // screens AND the interesting *states* you can't see from a page load — the desk mid-act
@@ -13,7 +14,7 @@ import { join } from "node:path";
 import { chromium } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 
-const PORT = Number(Bun.env.SHOTS_PORT ?? 3310);
+const PORT = parsePort(Bun.env.SHOTS_PORT, 3310, "SHOTS_PORT");
 const BASE = `http://localhost:${PORT}`;
 const OUT = "screenshots";
 const VIEWPORT = { width: 1200, height: 850 };
@@ -124,14 +125,6 @@ function escapeHtml(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-async function waitForServer(timeoutMs = 15000) {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    try { if ((await fetch(`${BASE}/`)).ok) return; } catch { /* not up yet */ }
-    await Bun.sleep(200);
-  }
-  throw new Error(`server didn't come up on ${BASE}`);
-}
 
 console.log(`[shots] starting server on ${PORT}…`);
 const server = Bun.spawn(["bun", join(import.meta.dir, "..", "src", "server.ts")], {
@@ -139,7 +132,7 @@ const server = Bun.spawn(["bun", join(import.meta.dir, "..", "src", "server.ts")
   stdout: "ignore", stderr: "ignore",
 });
 try {
-  await waitForServer();
+  await waitForServer(BASE);
   await mkdir(OUT, { recursive: true });
   const browser = await chromium.launch();
   // motion ON so live simulations (e.g. /grain's grade-as-signal) render as users see them —
