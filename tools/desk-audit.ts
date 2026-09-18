@@ -12,8 +12,9 @@
 // adapter shows up we relaunch headed) and the first run downloads ~350MB of weights — a PERSISTENT
 // browser profile (.cache/desk-audit/profile) keeps them cached across runs.
 import { chromium, type BrowserContext, type Page } from "@playwright/test";
+import { parsePort } from "./_server.ts";
 
-const PORT = Number(process.env.PORT ?? 3131);
+const PORT = parsePort(process.env.PORT, 3131, "PORT");
 const BASE = `http://localhost:${PORT}`;
 const DESK_DOOR = "/modules/portfolio/ai/desk-door.js";
 const OUT_DIR = ".cache/desk-audit";

@@ -1,5 +1,6 @@
 // portfolio/tools/export.ts — freeze THIS app to a static dist/ for GitHub Pages / any static host.
 import { join } from "node:path";
+import { parsePort, waitForServer } from "./_server.ts";
 //
 // A thin consumer of the framework-generic exporter (batch/export), exactly parallel to
 // portfolio/tools/audit.ts: this file owns everything app-specific — booting portfolio/server.ts,
@@ -41,7 +42,7 @@ import { loadTours } from "@tjakoen/crumb/loader.ts";
 import { fileURLToPath } from "node:url";
 import { config } from "../src/config.ts";
 
-const PORT = Number(Bun.env.EXPORT_PORT ?? 3330);
+const PORT = parsePort(Bun.env.EXPORT_PORT, 3330, "EXPORT_PORT");
 const BASE = `http://localhost:${PORT}`;
 const DIST = Bun.env.EXPORT_DIST ?? "dist";
 
@@ -118,14 +119,6 @@ async function dataRoutes(): Promise<string[]> {
   return [...DATA_ROUTES, ...await listPortfolioRawContentRoutes(), ...await crumbTourRoutes(), ...badgeObJsonRoutes()];
 }
 
-async function waitForServer(timeoutMs = 15000) {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    try { if ((await fetch(`${BASE}/`)).ok) return; } catch { /* not up yet */ }
-    await Bun.sleep(200);
-  }
-  throw new Error(`server didn't come up on ${BASE}`);
-}
 
 // The exportable allowlist: every page route the app serves (the portfolio's one pages tree —
 // "/", "/grain", "/batch", "/mill", /about) + MILL's content routes (/notes, /grain/docs,
@@ -180,7 +173,7 @@ const server = Bun.spawn(["bun", join(import.meta.dir, "..", "src", "server.ts")
   stdout: "ignore", stderr: "ignore",
 });
 try {
-  await waitForServer();
+  await waitForServer(BASE);
   const pages = await pageRoutes();
   console.log(`[export] pages: ${pages.join(", ")}`);
 

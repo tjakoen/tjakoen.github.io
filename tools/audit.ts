@@ -1,5 +1,6 @@
 // portfolio/tools/audit.ts — audit THIS product against its native-first / SEO / AEO baseline.
 import { join } from "node:path";
+import { parsePort, waitForServer } from "./_server.ts";
 //
 // A thin consumer of the framework-generic auditor (batch/audit). This file owns everything
 // product-specific: booting portfolio/server.ts, the page list, the grain affordance selectors, and
@@ -16,7 +17,7 @@ import { join } from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
 import { audit, renderTables, kb, type AuditReport } from "@tjakoen/batch/audit/audit.ts";
 
-const PORT = Number(Bun.env.AUDIT_PORT ?? 3320);
+const PORT = parsePort(Bun.env.AUDIT_PORT, 3320, "AUDIT_PORT");
 const BASE = `http://localhost:${PORT}`;
 const OUT = "audit";
 
@@ -28,14 +29,6 @@ const ENDPOINTS = ["/sitemap.xml", "/robots.txt", "/llms.txt"];
 // doubles as an AEO signal (an addressable, agent-operable region). "Surfaces" = [data-surface].
 const SELECTORS = { Surfaces: "[data-surface]", Kinds: "[data-kind]", Accepts: "[data-accepts]" };
 
-async function waitForServer(timeoutMs = 15000) {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    try { if ((await fetch(`${BASE}/`)).ok) return; } catch { /* not up yet */ }
-    await Bun.sleep(200);
-  }
-  throw new Error(`server didn't come up on ${BASE}`);
-}
 
 const endpointLine = (e: string, status: number) => `\`${e}\` ${status === 200 ? "✓" : `✗ (${status})`}`;
 
@@ -76,7 +69,7 @@ const server = Bun.spawn(["bun", join(import.meta.dir, "..", "src", "server.ts")
   stdout: "ignore", stderr: "ignore",
 });
 try {
-  await waitForServer();
+  await waitForServer(BASE);
   await mkdir(OUT, { recursive: true });
 
   const report = await audit({ baseURL: BASE, pages: PAGES, endpoints: ENDPOINTS, selectors: SELECTORS });
