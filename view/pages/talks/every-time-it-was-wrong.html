@@ -90,7 +90,7 @@
     </svg>
     <ul class="slide-notes" hidden>
       <li>Land the three facts and stop. No defence yet and no mechanism.</li>
-      <li>Answer the obvious question before it is asked: not every PR, and not instantly. A check runs every half hour, finds the ones waiting on a review, and queues them. Someone still clicks to start it.</li>
+      <li>Answer the obvious question before it is asked: not every PR, and not instantly. A check runs every hour, finds the ones waiting on a review, and queues them. Someone still clicks to start it.</li>
       <li>If someone asks why it cannot approve, say "two slides from now" and move on.</li>
     </ul>
   </section>
@@ -99,11 +99,11 @@
   <section class="presentation__slide" data-title="Is it right">
     <p class="slide-eyebrow settles">First, the boring question</p>
     <svg class="fig" viewBox="0 0 700 192" role="img"
-         aria-label="Ninety-eight percent of the comments the reviewer has left were correct, measured across 816 of them graded one at a time against what happened to the code afterwards. Which turned out to be the least interesting thing about it."
+         aria-label="Ninety-eight percent of the comments the reviewer has left were correct, measured across 842 of them graded one at a time against what happened to the code afterwards. Which turned out to be the least interesting thing about it."
          style="font-size:12px">
       <text x="8" y="92" style="fill:var(--color-fg);font-size:76px">98%</text>
       <text x="252" y="66" style="fill:var(--color-fg);font-size:18px">of its comments were right.</text>
-      <text x="252" y="96" style="fill:var(--color-muted);font-size:13px">816 of them, graded one at a time against</text>
+      <text x="252" y="96" style="fill:var(--color-muted);font-size:13px">842 of them, graded one at a time against</text>
       <text x="252" y="116" style="fill:var(--color-muted);font-size:13px">what actually happened to the code.</text>
       <line x1="8" y1="142" x2="692" y2="142" style="stroke:var(--color-line)"/>
       <text x="8" y="174" style="fill:var(--color-fg);font-size:16px">Which is the least interesting thing about it.</text>
@@ -384,7 +384,7 @@
   <section class="presentation__slide" data-title="Right and unread">
     <p class="slide-eyebrow settles">Now the part we did not expect</p>
     <svg class="fig" viewBox="0 0 700 212" role="img"
-         aria-label="Two pairs of bars. Comments left on a line of code were right 98 percent of the time and acted on 95 percent of the time. The same findings written into the review summary instead were right 99 percent of the time and acted on only 24 to 43 percent of the time."
+         aria-label="Two pairs of bars. Comments left on a line of code were right 98 percent of the time and acted on 96 percent of the time. The same findings written into the review summary instead were right 99 percent of the time and acted on only 23 to 43 percent of the time."
          style="font-size:13px">
       <text x="8" y="20" style="fill:var(--color-muted)">was it right?</text>
       <text x="8" y="46" style="fill:var(--color-fg)">on a line</text>
@@ -398,11 +398,11 @@
 
       <text x="8" y="118" style="fill:var(--color-muted)">did anyone do anything about it?</text>
       <text x="8" y="144" style="fill:var(--color-fg)">on a line</text>
-      <rect x="150" y="131" width="386" height="17" style="fill:var(--color-fg)"/>
-      <text x="546" y="144" style="fill:var(--color-fg)">95%</text>
+      <rect x="150" y="131" width="390" height="17" style="fill:var(--color-fg)"/>
+      <text x="550" y="144" style="fill:var(--color-fg)">96%</text>
       <text x="8" y="172" style="fill:var(--color-fg)">in the summary</text>
       <rect x="150" y="159" width="134" height="17" style="fill:var(--color-fg)"/>
-      <text x="294" y="172" style="fill:var(--color-fg)">24 to 43%</text>
+      <text x="294" y="172" style="fill:var(--color-fg)">23 to 43%</text>
 
       <text x="8" y="202" style="fill:var(--color-fg);font-size:14px">Same run, same quality. The only difference is where it was printed.</text>
     </svg>
@@ -466,7 +466,124 @@
     </ul>
   </section>
 
-  <!-- 13 ---------------------------------------------------------------- THE WHOLE THING -->
+  <!-- 13 ---------------------------------------------------------------- HOW IT SCORES -->
+  <section class="presentation__slide" data-title="How it scores">
+    <p class="slide-eyebrow settles">Every comment ends up in one of these, and they do not all count</p>
+    <svg class="fig" viewBox="0 0 700 244" role="img"
+         aria-label="Five things that can become of a comment, feeding two separate fractions. You fixed it counts in both. It was wrong counts only in was it right. You merged past it counts only in did anyone act. You explained and the pull request was abandoned count in neither, because neither one says whether the comment was any good."
+         style="font-size:11.5px">
+      <defs>
+        <marker id="sc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+        </marker>
+        <marker id="sc-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-line)"/>
+        </marker>
+      </defs>
+      <text x="8" y="20" style="fill:var(--color-muted);font-size:11px">what became of it</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="8" y="30" width="178" height="28" rx="3"/>
+        <rect x="8" y="66" width="178" height="28" rx="3"/>
+        <rect x="8" y="102" width="178" height="28" rx="3"/>
+      </g>
+      <g style="fill:none;stroke:var(--color-line);stroke-dasharray:3 2">
+        <rect x="8" y="138" width="178" height="28" rx="3"/>
+        <rect x="8" y="174" width="178" height="28" rx="3"/>
+      </g>
+      <g style="fill:var(--color-fg);font-size:12.5px">
+        <text x="20" y="49">you fixed it</text>
+        <text x="20" y="85">it was wrong</text>
+        <text x="20" y="121">you merged past it</text>
+      </g>
+      <g style="fill:var(--color-muted);font-size:12.5px">
+        <text x="20" y="157">you explained, fairly</text>
+        <text x="20" y="193">the PR was abandoned</text>
+      </g>
+
+      <g style="fill:none;stroke:var(--color-muted);stroke-width:1.2">
+        <path d="M186 44 L250 44 L250 68 L286 68" marker-end="url(#sc-a)"/>
+        <path d="M186 44 L250 44 L250 160 L286 160" marker-end="url(#sc-a)"/>
+        <path d="M186 80 L286 80" marker-end="url(#sc-a)"/>
+        <path d="M186 116 L236 116 L236 172 L286 172" marker-end="url(#sc-a)"/>
+      </g>
+      <g style="fill:none;stroke:var(--color-line);stroke-width:1.2;stroke-dasharray:3 2">
+        <path d="M186 152 L226 152 L226 220 L286 220" marker-end="url(#sc-b)"/>
+        <path d="M186 188 L226 188 L226 220 L286 220" marker-end="url(#sc-b)"/>
+      </g>
+
+      <rect x="286" y="34" width="406" height="62" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="300" y="56" style="fill:var(--color-fg);font-size:14px">Was it right?</text>
+      <text x="300" y="80" style="fill:var(--color-muted);font-size:12.5px">fixed, out of fixed plus wrong. Low here means fix the reviewer.</text>
+
+      <rect x="286" y="126" width="406" height="62" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+      <text x="300" y="148" style="fill:var(--color-fg);font-size:14px">Did anyone act?</text>
+      <text x="300" y="172" style="fill:var(--color-muted);font-size:12.5px">fixed, out of fixed plus ignored. Low here means move the comment.</text>
+
+      <rect x="286" y="204" width="406" height="32" rx="4" style="fill:none;stroke:var(--color-line);stroke-dasharray:3 2"/>
+      <text x="300" y="224" style="fill:var(--color-muted);font-size:12.5px">counted in neither, because neither says the comment was any good</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>The two fractions are the whole instrument, and keeping them apart is the lesson. Fused, an author merging past a correct comment looks identical to the reviewer being wrong.</li>
+      <li>The dashed row is the honest part. "You explained and I accept that" is not a win or a loss, and a PR that got abandoned and rebuilt elsewhere left comments on code that never shipped. Counting either would flatter the numbers.</li>
+      <li>Every fraction is read per topic, never as one average. A reviewer can be excellent on database changes and noisy on frontend speed, and the mean of those looks fine.</li>
+      <li>If asked who decides: nothing here is automatic. A score under half is surfaced with a proposed cause and changed only when I agree.</li>
+    </ul>
+  </section>
+
+  <!-- 14 ---------------------------------------------------------------- THE PARTS -->
+  <section class="presentation__slide" data-title="The parts">
+    <p class="slide-eyebrow settles">Eight pieces, and only three of them run on their own</p>
+    <svg class="fig" viewBox="0 0 700 236" role="img"
+         aria-label="Eight components in two groups. Three run on a schedule with nobody present: one finds pull requests waiting for review, hourly; one chases threads a notification should have caught, hourly; one settles the log for pull requests that landed, at five in the morning. Five run only when a person is there: queueing the waiting ones as clickable chips, producing and posting the review, answering replies and verifying fixes, tuning the reviewer, and filing finished sessions away."
+         style="font-size:11.5px">
+      <text x="8" y="20" style="fill:var(--color-fg);font-size:12.5px">runs on its own</text>
+      <text x="180" y="20" style="fill:var(--color-muted);font-size:11px">nobody is watching</text>
+      <g style="fill:none;stroke:var(--color-muted)">
+        <rect x="8" y="30" width="220" height="46" rx="3"/>
+        <rect x="240" y="30" width="220" height="46" rx="3"/>
+        <rect x="472" y="30" width="220" height="46" rx="3"/>
+      </g>
+      <g style="fill:var(--color-fg);font-size:12.5px">
+        <text x="22" y="50">finds PRs waiting on review</text>
+        <text x="254" y="50">chases threads nothing told us about</text>
+        <text x="486" y="50">settles the log once a PR lands</text>
+      </g>
+      <g style="fill:var(--color-muted);font-size:11px">
+        <text x="22" y="66">hourly</text>
+        <text x="254" y="66">hourly</text>
+        <text x="486" y="66">05:00</text>
+      </g>
+
+      <line x1="8" y1="98" x2="692" y2="98" style="stroke:var(--color-line)"/>
+
+      <text x="8" y="122" style="fill:var(--color-fg);font-size:12.5px">runs only with a person there</text>
+      <text x="228" y="122" style="fill:var(--color-muted);font-size:11px">because each one either costs real money or makes a decision</text>
+      <g style="fill:none;stroke:var(--color-fg);stroke-width:1.4">
+        <rect x="8" y="132" width="132" height="44" rx="3"/>
+        <rect x="150" y="132" width="132" height="44" rx="3"/>
+        <rect x="292" y="132" width="132" height="44" rx="3"/>
+        <rect x="434" y="132" width="132" height="44" rx="3"/>
+        <rect x="576" y="132" width="116" height="44" rx="3"/>
+      </g>
+      <g text-anchor="middle" style="fill:var(--color-fg);font-size:12px">
+        <text x="74" y="152">queues them as</text><text x="74" y="167">chips to click</text>
+        <text x="216" y="152">reviews the PR</text><text x="216" y="167">and posts</text>
+        <text x="358" y="152">answers you, checks</text><text x="358" y="167">your fixes</text>
+        <text x="500" y="152">tunes the</text><text x="500" y="167">reviewer</text>
+        <text x="634" y="152">files finished</text><text x="634" y="167">sessions</text>
+      </g>
+      <text x="8" y="206" style="fill:var(--color-fg);font-size:13.5px">Nothing in the top row can write a comment, change a rule, or touch the repo.</text>
+      <text x="8" y="226" style="fill:var(--color-muted);font-size:12px">They notice things and hand them over. Everything that speaks needs somebody present.</text>
+    </svg>
+    <ul class="slide-notes" hidden>
+      <li>The split is the governance story in one picture: the cheap watching is automatic, everything that costs money or makes a judgement waits for a person.</li>
+      <li>Each piece owns exactly one job and the boundaries are written down, because eight things touching one pull request is how you get two of them replying at once.</li>
+      <li>Only the reviewer may invent a finding. The answering one is explicitly forbidden from it: if it spots something new while checking your fix, it says so and stops.</li>
+      <li>Two of these can reach the same PR, so they take a lock first. They differ on what to do when it is held, and that difference is deliberate.</li>
+    </ul>
+  </section>
+
+  <!-- 15 ---------------------------------------------------------------- THE WHOLE THING -->
   <section class="presentation__slide" data-title="The whole thing">
     <p class="slide-eyebrow settles">Everything you have just seen, joined up</p>
     <svg class="fig" viewBox="0 0 700 262" role="img"
@@ -560,7 +677,7 @@
   <section class="presentation__slide" data-title="What sets it off">
     <p class="slide-eyebrow settles">Nobody starts any of this by hand</p>
     <svg class="fig" viewBox="0 0 700 246" role="img"
-         aria-label="Five things that happen, how each one is noticed, and what runs as a result. A ticket moving to code review is found by a check every thirty minutes and queued for someone to click. A reply on a thread is heard straight away and answered. A pushed fix is heard straight away and the new code is reviewed. A thread closed without a word raises nothing at all, so a check every thirty minutes catches it and the code is read. A merged pull request is picked up overnight and its comments are graded."
+         aria-label="Five things that happen, how each one is noticed, and what runs as a result. A ticket moving to code review is found by an hourly check and queued for someone to click. A reply on a thread is heard straight away and answered. A pushed fix is heard straight away and the new code is reviewed. A thread closed without a word raises nothing at all, so an hourly check catches it and the code is read. A merged pull request is picked up overnight and its comments are graded."
          style="font-size:11.5px">
       <defs>
         <marker id="tg-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -589,10 +706,10 @@
       <rect x="268" y="122" width="132" height="24" rx="3" style="fill:var(--color-fg)"/>
 
       <g text-anchor="middle" style="font-size:11.5px">
-        <text x="334" y="55" style="fill:var(--color-muted)">a check, every 30 min</text>
+        <text x="334" y="55" style="fill:var(--color-muted)">a check, every hour</text>
         <text x="334" y="97" style="fill:var(--color-bg)">straight away</text>
         <text x="334" y="139" style="fill:var(--color-bg)">straight away</text>
-        <text x="334" y="181" style="fill:var(--color-muted)">nothing fires. 30 min.</text>
+        <text x="334" y="181" style="fill:var(--color-muted)">nothing fires. Hourly.</text>
         <text x="334" y="223" style="fill:var(--color-muted)">overnight</text>
       </g>
 
@@ -672,7 +789,7 @@
   <nav class="presentation__dots" data-dots aria-label="Slides"></nav>
   <div class="presentation__controls">
     <button class="presentation__ctl" type="button" data-ctl="prev" title="Back (←)" aria-label="Back">‹</button>
-    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 16</span></span>
+    <span class="presentation__ctl" data-wide aria-hidden="true"><span data-pos>1 / 18</span></span>
     <button class="presentation__ctl" type="button" data-ctl="next" title="Forward (→)" aria-label="Forward">›</button>
     <button class="presentation__ctl" type="button" data-ctl="grid" aria-pressed="false" title="Overview (O)" aria-label="Overview">⊞</button>
     <button class="presentation__ctl" type="button" data-ctl="notes" aria-pressed="false" title="Speaker notes (N)" aria-label="Speaker notes">☰</button>
@@ -687,7 +804,7 @@
 
 <div class="presenter">
   <div class="presenter__now">
-    <span class="presenter__pos" data-p-pos>1 / 16</span>
+    <span class="presenter__pos" data-p-pos>1 / 18</span>
     <span class="presenter__clock" data-p-clock>00:00</span>
   </div>
   <div>
