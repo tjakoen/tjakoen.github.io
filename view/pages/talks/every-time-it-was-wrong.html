@@ -320,31 +320,42 @@
   </section>
 
   <!-- 9 ----------------------------------------------------------------- BLOCK, NOT APPROVE -->
-  <section class="presentation__slide" data-title="It cannot approve">
-    <p class="slide-eyebrow settles">The one limit that is not going to move</p>
-    <svg class="fig" viewBox="0 0 700 188" role="img"
-         aria-label="Two things a review can do to a merge. Holding it is available to the reviewer, shown switched on. Letting it through is shown switched off, because merging here needs human approvals and an approval from the reviewing account would count as one of them."
+  <section class="presentation__slide" data-title="What it is not allowed to do">
+    <p class="slide-eyebrow settles">The limits, and they are not going to move</p>
+    <svg class="fig" viewBox="0 0 700 222" role="img"
+         aria-label="A wall down the middle. On the left, the two things the reviewer may do: leave comments on lines, and hold a merge open. On the right, blocked, the things it may not: approve, merge, push anything at all, and close or reopen your pull request. Underneath: these are not refused by instruction, they are blocked before they run, in every mode, whoever is asking, including me."
          style="font-size:12px">
-      <rect x="8" y="24" width="332" height="62" rx="5" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-      <circle cx="44" cy="55" r="11" style="fill:var(--color-fg)"/>
-      <text x="72" y="51" style="fill:var(--color-fg);font-size:15px">hold the merge</text>
-      <text x="72" y="71" style="fill:var(--color-muted);font-size:12px">it can, and it does</text>
+      <text x="8" y="22" style="fill:var(--color-fg);font-size:13px">it may</text>
+      <g style="fill:var(--color-fg)">
+        <circle cx="20" cy="52" r="7"/><circle cx="20" cy="88" r="7"/>
+      </g>
+      <text x="40" y="57" style="fill:var(--color-fg);font-size:14.5px">leave comments on lines</text>
+      <text x="40" y="93" style="fill:var(--color-fg);font-size:14.5px">hold a merge open</text>
 
-      <rect x="8" y="100" width="332" height="62" rx="5" style="fill:none;stroke:var(--color-line)"/>
-      <circle cx="44" cy="131" r="11" style="fill:none;stroke:var(--color-line)"/>
-      <text x="72" y="127" style="fill:var(--color-muted);font-size:15px">let it through</text>
-      <text x="72" y="147" style="fill:var(--color-muted);font-size:12px">never. Not once, not on a clean run.</text>
+      <line x1="330" y1="14" x2="330" y2="160" style="stroke:var(--color-fg);stroke-width:3"/>
 
-      <text x="380" y="50" style="fill:var(--color-fg);font-size:15px">Merging here needs human approvals.</text>
-      <text x="380" y="80" style="fill:var(--color-muted);font-size:13px">An approval from the account doing the reviewing</text>
-      <text x="380" y="100" style="fill:var(--color-muted);font-size:13px">would count as one of them, which is exactly the</text>
-      <text x="380" y="120" style="fill:var(--color-muted);font-size:13px">gate that exists to require a person.</text>
-      <text x="380" y="152" style="fill:var(--color-fg);font-size:14px">So the last call is always ours.</text>
+      <text x="366" y="22" style="fill:var(--color-muted);font-size:13px">it may not</text>
+      <g style="fill:none;stroke:var(--color-line);stroke-width:1.6">
+        <circle cx="378" cy="46" r="7"/><circle cx="378" cy="76" r="7"/>
+        <circle cx="378" cy="106" r="7"/><circle cx="378" cy="136" r="7"/>
+      </g>
+      <g style="fill:var(--color-muted);font-size:14.5px">
+        <text x="398" y="51">approve</text>
+        <text x="398" y="81">merge</text>
+        <text x="398" y="111">push anything, ever</text>
+        <text x="398" y="141">close or reopen your PR</text>
+      </g>
+
+      <line x1="8" y1="176" x2="692" y2="176" style="stroke:var(--color-line)"/>
+      <text x="8" y="198" style="fill:var(--color-fg);font-size:14px">The right-hand column is not a promise. It is blocked before it runs.</text>
+      <text x="8" y="216" style="fill:var(--color-muted);font-size:12.5px">In every mode, whoever is asking, including me asking for it directly in writing.</text>
     </svg>
     <ul class="slide-notes" hidden>
-      <li>This is a control, not a preference. No accuracy number would change it.</li>
-      <li>It posts without me reading it first, and it cannot approve. Those are the same decision from both ends, and the second is what makes the first safe.</li>
-      <li>Worth flagging: a hold does not clear itself when you push, so it is only used where we mean to stop the merge until a person acts.</li>
+      <li>The distinction that matters to anyone worried about this: the left column is behaviour and the right column is a wall. Behaviour can drift, and a wall cannot.</li>
+      <li>Say why it is enforced rather than written: a session was once told to commit and push and got as far as a push on a branch here. Nothing bad shipped, and a rule that depends on the model remembering it is not a rule.</li>
+      <li>On approve specifically: merging needs human approvals, and an approval from the reviewing account would satisfy the exact gate that exists to require a person.</li>
+      <li>It posts without me reading it first, and it can do none of these. Those are the same decision from both ends, and the wall is what makes the posting safe.</li>
+      <li>A hold does not clear itself when you push, so it is spent only where we mean to stop the merge until a person acts.</li>
     </ul>
   </section>
 
