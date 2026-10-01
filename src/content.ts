@@ -825,7 +825,8 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
   </script>`;
 
   const deskTrigger = `<button class="btn notes-toolbar__ai" data-variant="soft" data-ai-run data-action="demo.run" data-target="screen" type="button">▷ See what's new</button>`;
-  const body = `<form class="notes-toolbar" data-feed-controls hidden>
+  const body = `<h1 class="masthead">Notes</h1>
+    <form class="notes-toolbar" data-feed-controls hidden>
       <div class="notes-toolbar__bar">
         <input class="notes-search" type="search" placeholder="Search notes" aria-label="Search notes"
                autocomplete="off" data-notes-search>

@@ -411,6 +411,7 @@ const proofRoutes = createProofRoutes({
   prefix: PLANS_PREFIX,
   chrome: (title, body) => renderAppPage(shellPage({
     title: title === "Plans" ? title : `${title} · Plans`,
+    description: proofDescription(title, body),
     screen: "plans",
     section: ` data-section="docs"`,
     board: body,
@@ -418,6 +419,26 @@ const proofRoutes = createProofRoutes({
     injectHead: `${PAGE_HEAD}<link rel="stylesheet" href="/proof.css">`,
   })),
 });
+
+function proofDescription(title: string, body: string): string {
+  if (title === "Plans")
+    return "The public work board for this site and its software stack, generated from the underlying plan files.";
+  const firstParagraph = body.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i)?.[1] ?? "";
+  const summary = firstParagraph
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!summary) return `Implementation plan for ${title} on TJ Stolk's portfolio.`;
+  if (summary.length <= 180) return summary;
+  const clipped = summary.slice(0, 177).replace(/\s+\S*$/, "");
+  return `${clipped}…`;
+}
 // --- CRUMB: the guided-tour layer. tours/*.md → parsed JSON under /crumb (createCrumbRoutes); the
 // client crumb-live.js + crumb.css are static assets this host serves from the package. The tour
 // never writes — it reuses grain's traveling lamp (passthrough mode, B0) to light surfaces. ---
