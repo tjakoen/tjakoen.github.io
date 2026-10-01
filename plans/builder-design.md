@@ -4,7 +4,7 @@ status: done
 track: demo
 depends: [site-builder]
 touches:
-  - view/pages/builder.html
+  - view/pages/grain/builder.html
   - view/components/pages/builder/builder.css
   - src/ai/builder-page.ts
   - src/ai/builder-canvas.ts

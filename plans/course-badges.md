@@ -1,6 +1,6 @@
 ---
 id: course-badges
-status: todo
+status: doing
 track: credentials
 depends: []
 owner: human
@@ -16,6 +16,14 @@ every recipient with links to their course repo and their personal portfolio.
 
 This plan spans two repositories: this portfolio (the public issuer and verification surface) and the
 HAU course platform (the private source of grades and the writer into teacher and student repos).
+
+## Current state (2026-10-02)
+
+The portfolio side is live: the issuer page, the badges hub, fourteen badge-class pages, and 512
+individual certificate pages with Open Badges assertions are in this repository. The remaining
+scope is the controlled release work across teacher and student repositories, plus the course
+announcements. Those steps stay open until their human review and approval are recorded. External
+repository updates need their own evidence on this plan.
 
 ## Decisions taken (2026-09-16)
 

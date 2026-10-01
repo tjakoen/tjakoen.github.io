@@ -1,8 +1,8 @@
 ---
 id: site-builder
-status: todo
+status: done
 track: demo
-depends: [builder-sandbox]
+depends: []
 touches:
   - src/ai/block-set.ts
   - src/ai/composition.ts
@@ -10,7 +10,7 @@ touches:
   - src/ai/field-matcher.ts
   - src/ai/desk-reasoner.ts
   - src/server.ts
-  - view/pages/builder.html
+  - view/pages/grain/builder.html
   - view/components/pages/builder/
   - view/components/molecules/page-foot/
   - scripts/
@@ -214,9 +214,11 @@ Each is a session's worth and each ends with something you can look at.
 
 ## The signature, and how to keep it across GRAIN
 
-The owner asked for "built with GRAIN" on every builder-exported page, and for suggestions on holding
-the signature across GRAIN generally. There is already a canonical answer in the estate, and the
-portfolio is the one repo not using it.
+The owner asked for "built with GRAIN" on every builder-exported page and for suggestions on holding
+the signature across GRAIN generally. The builder exports now use GRAIN's `madeWith()` markup,
+include its wording in the source comment, and carry a `data-made-with` marker on the exported root.
+The export drawer says what travels with the file and what still depends on this portfolio's
+stylesheet.
 
 **What exists.** `madeWith()` in
 [`grain/scripts/made-with.js`](../../grain/packages/grain/scripts/made-with.js) returns
@@ -226,17 +228,16 @@ the fleet. Pantry, greenroom, proof and mill import it.
 
 **Four things worth doing, smallest first.**
 
-1. **Mount it on the portfolio.** Grep finds no use of `madeWith` or `made-with` anywhere in `src/`
-   or `view/`. The site that owns GRAIN is the one app not carrying GRAIN's byline, which is the
-   funniest possible gap and close to a one-line fix in the shell.
+1. **The shell still needs a consistent site-wide signature.** The builder exports use GRAIN's
+   byline, but the live portfolio shell does not mount GRAIN's `made-with` molecule, and several
+   page files repeat the same provenance copy. The portfolio finish-line plan owns that pass so the
+   introductions to the stack and the site's own attribution can be reviewed together.
 2. **Stop hand-copying the footer.** The `page-foot` prose ("Part of tjakoen.github.io, built with
-   itself", plus the Built-with-Claude paragraph) is duplicated verbatim in five page files. It has a
+   itself", plus the Built-with-Claude paragraph) appears in several page files. It has a
    CSS file and a doc but no template. Make it a real component so the two signatures, GRAIN
    provenance and AI provenance, can never drift page to page.
-3. **Every builder export carries it, and carries it in the source.** The footer is the visible half
-   and someone will delete it; an HTML comment at the top of the exported file, and a
-   `data-made-with` attribute on the root, are the half that survives a deletion without being a dark
-   pattern. Say in the export copy that it is there.
+3. **Every builder export carries it, and carries it in the source.** This is complete: an HTML
+   comment and a `data-made-with` attribute preserve the signature if the visible footer is removed.
 4. **A signature is more than a line, and the rest is already there.** The default flavour, the mono
    voice, the grain-against-clean grade: an exported page that ships with the token file carries the
    look even where the byline gets stripped. Worth stating once in the export copy rather than
@@ -257,8 +258,9 @@ the fleet. Pantry, greenroom, proof and mill import it.
   add/remove/reorder are pure and order-stable.
 - **P2:** an ask for two blocks side by side renders both at half span; a form-shaped ask still
   renders a form. Shown in the session, not just asserted.
-- **P3:** the honest one, and it is `bun run export`, then serving `dist/` and building a page there
-  with no server running. That is the test the current demo would fail today.
+- **P3:** `bun run export`, then serve `dist/` and build a page there with no application server
+  running. This check caught the original static-host defect and now passes against the exported
+  page.
 - **P4:** export a composition, import the JSON back, and diff the rendered output against the
   original. Byline present in all three export forms. **DONE 2026-08-19, and driven twice.** The
   round trip is asserted on the FILE rather than on the function, because export writes bytes: the
@@ -273,11 +275,10 @@ the fleet. Pantry, greenroom, proof and mill import it.
   `content/tours/review-builder-take-it-away.md`, and its three steps are the export controls, the
   named refusal an opened file earns, and the drawer that says what does not travel.
 
-## Open, and they are the owner's
+## What moved into the next pass
 
-1. **Whether P3's static-host fix is worth its complexity**, or whether `/builder` should honestly
-   say it needs the live app. The demo has been silently empty on the published site for its whole
-   life, so doing nothing is also a choice, it is just not the current one by intent.
-2. **What a block's `data` comes from** when a description does not supply it. Sample content from
-   the block table is the deterministic answer; the model composing it is the wording seam, and on a
-   0.5B that is where invention starts.
+The static-host question is settled: the exported builder composes, previews, and exports without an
+application server. The remaining work is whether the browser model can reliably compose and revise
+a page, and how it supplies useful content without inventing details. Those questions now live in
+[builder-ai-depth.md](builder-ai-depth.md), where each claim has to be measured against the canvas
+and the live model.

@@ -1,10 +1,10 @@
 ---
 id: builder-sandbox
-status: todo
+status: done
 track: demo
 depends: []
 touches:
-  - view/pages/builder.html
+  - view/pages/grain/builder.html
   - view/components/pages/builder/
   - src/ai/builder-page.ts
   - src/ai/field-matcher.ts
@@ -52,6 +52,12 @@ prose that argues about fields specifically. The examples list becomes a set of 
 points rather than four form descriptions.
 
 ## The five pieces, smallest first
+
+> **Closed as a superseded plan on 2026-10-02.** The prompt, component vocabulary, preview route,
+> and catalog default moved into [`site-builder.md`](site-builder.md), whose five phases are now
+> complete. The selection narration and the measured limits of natural-language editing continue
+> in [`builder-ai-depth.md`](builder-ai-depth.md). This file remains as the history of the first
+> proposal; it is no longer an active work item.
 
 1. **The prompt area becomes a real composer.** A text area rather than a link list, using grain's
    new textarea atom, with the current query-string round trip behind it so a typed prompt still
@@ -122,14 +128,10 @@ feature rather than a fixture, and it is the surface the e2e drives, so the verb
 something a person also uses. Worth an owner's minute as a product call, since it is a new control on
 a published page: cheap to drop, one entry in one JSON file plus its tag.
 
-- [x] 1. The prompt area becomes a real composer (2026-08-14, a GET form back to the same route, so
-      the prompt is still the address and the box still works with JavaScript off)
-- [~] 2. The spec generalizes past forms. **The first widening landed 2026-08-14:** the closed set
-      grew a fourth control, the tick box, and the demo's closing move reaches it. What is left of
-      this piece is the bigger move it describes, a component dimension past forms entirely.
-- [ ] 3. The AI narrates its selection
-- [ ] 4. The preview tab, with the code switcher
-- [ ] 5. The catalog sidebar default
-- [x] The remaining control gaps, grain plan section 5 (2026-08-13,
-      artifacts/runs/2026-08-13-controls-complete.md)
-- [x] The tick-box verb, `check.set` (2026-08-14, artifacts/runs/2026-08-14-tick-box-verb.md)
+- [x] The prompt became a real composer on 2026-08-14, with a GET round trip that works without
+      JavaScript.
+- [x] The form controls and the tick-box verb shipped, so generated forms remain AI-operable.
+- [x] The component composition, preview route, exports, and catalog default shipped in the
+      successor plan's P1 through P5.
+- [x] The remaining selection and model-reliability work moved to `builder-ai-depth.md` rather than
+      staying open under a plan the successor replaced.

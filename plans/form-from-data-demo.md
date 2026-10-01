@@ -1,12 +1,12 @@
 ---
 id: form-from-data-demo
-status: blocked
+status: done
 track: demo
 depends: []
 touches:
   - content/data/contact-form.json
   - view/pages/about.html
-  - view/pages/builder.html
+  - view/pages/grain/builder.html
   - src/ai/field-matcher.ts
   - src/ai/form-draft.ts
   - src/ai/builder-page.ts
@@ -29,8 +29,9 @@ two run reports and four capture folders.
 ## What shipped
 
 **The atoms, in grain.** b-field, b-choice and b-option render a form from JSON with no
-renderer change, and b-textarea and b-memo draw the message box the field frame never had. Grain
-sits at 0.1.22, committed, deliberately unpublished so the atoms and the demo travel as one bundle.
+renderer change, and b-textarea and b-memo draw the message box the field frame never had. GRAIN
+0.1.23 is published, and the portfolio lockfile resolves it so the atoms and the demo travel as one
+bundle.
 
 **A real form, on a real page.** The About Contact tab renders its controls from
 content/data/contact-form.json. It was built before any generator touched the atoms, which is what
@@ -40,7 +41,7 @@ made the next line possible.
 refuses what it cannot build rather than faking it. Deterministic code selects; the model does not
 pick a slug, because picking slugs is the thing a small model gets wrong.
 
-**The demo.** /builder takes a description in its address, renders the spec, the live form and the
+**The demo.** /grain/builder takes a description in its address, renders the spec, the live form and the
 refusals from one call, and the desk fills the text fields it just generated.
 
 **A guard the work earned.** component-refs.ts fails loudly when a template references a component
@@ -71,16 +72,14 @@ text field would, and anything that is not one of its option values empties it w
 
 ## What stays open, and who owns it
 
-- **The push and the publish are the owner's**, and both are deliberately not taken. The runbook is
-  in the form-builder run report. Until it runs, the portfolio resolves grain through a symlink and a
-  green gate here says nothing about the published package.
-- **The remaining control gaps are closed**, grain plan section 5b, built 2026-08-13. What came out of
-  that build and is still open is a verb: a tick box is the one control the AI cannot operate, because
-  the only field verb writes the value and a checkbox's value is what it submits rather than whether
-  it is ticked, so the atom ships unaddressable on purpose. Adding a verb grows the vocabulary and is
-  the owner's call.
-- **The builder becomes a sandbox**: see plans/builder-sandbox.md, which is the live plan.
-- **The audit scenario has never run.** form-build-det is written and needs a GPU pass.
+- **The push and the publish are complete.** GRAIN 0.1.23 is published, and the portfolio lockfile
+  resolves it. The earlier local-symlink limitation no longer applies to this work.
+- **The remaining control gaps and tick-box verb are closed.** GRAIN's check.set operation lets the
+  AI tick a generated checkbox. The builder's component composition and export shipped under
+  [`site-builder.md`](site-builder.md).
+- **The live-model audit remains useful follow-up evidence.** The form-build-det scenario has no
+  recorded GPU pass. The builder reliability plan includes a fresh baseline across composition and
+  editing, so it can be run as part of that measured pass.
 - **Two specs flake under parallel load** and pass alone, now including the catalog visual baseline,
   which is new. Recorded rather than re-blessed.
 
@@ -91,6 +90,5 @@ text field would, and anything that is not one of its option values empties it w
 - [x] The addressing defect, found and fixed
 - [x] The hollow-page guard
 - [x] The textarea atoms, and the refusal they retired
-- [ ] Publish and push, owner
+- [x] Publish and push, owner. GRAIN 0.1.23 shipped, and the portfolio lockfile resolves it.
 - [x] The rest of the control gaps (2026-08-13, artifacts/runs/2026-08-13-controls-complete.md)
-The sandbox is tracked separately in plans/builder-sandbox.md.
