@@ -1,6 +1,6 @@
 ---
 id: runs-surface-polish
-status: todo
+status: done
 track: ai
 depends: []
 touches:
@@ -78,9 +78,12 @@ What it needs on top of that:
       open across any of the four sections above it.
 - [x] The card layout fix for long diffstats. The diffstat gets its own line rather than trailing the
       date run; truncating it stays rejected.
-- [ ] Revisit the timeline now that the ledger has enough entries to have a shape. **Threshold
-      crossed 2026-10-02: PANTRY has 27 run reports, above the 12-report bar.** Decide whether the
-      timeline layer still answers a useful question before building it.
+- [x] Revisit the timeline now that the ledger has enough entries to have a shape. **Threshold
+      crossed 2026-10-02: PANTRY has 26 parseable run reports, above the 12-report bar.** The
+      reports add a different signal from commit density: they mark when evidenced work was closed.
+      `/timeline` now shows run closes in the same day/week buckets as commit density and links
+      directly to `/runs`. The chart's left edge includes the earliest dated run, so older reports
+      remain visible when plan history begins later.
 
 ## What is still rough
 
