@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("portfolio page headings", () => {
   for (const route of [
+    "/notes/",
     "/calendar/",
     "/mail/",
     "/grain/builder/",

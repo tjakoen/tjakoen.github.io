@@ -42,6 +42,13 @@ test.describe("SEO/AEO head — served live", () => {
     expect(types).toContain("BreadcrumbList");
   });
 
+  test("plan routes publish descriptions drawn from their page content", async ({ page }) => {
+    await page.goto("/plans/plan/000-welcome/");
+    const description = await page.locator('meta[name="description"]').getAttribute("content");
+    expect(description).toContain("PROOF plan");
+    expect(description!.length).toBeLessThanOrEqual(180);
+  });
+
   test("the og-card image serves as a real PNG (not corrupted by the text static server)", async ({ request, baseURL }) => {
     const res = await request.get(`${baseURL}/media/og-card.png`);
     expect(res.status()).toBe(200);

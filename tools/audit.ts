@@ -21,8 +21,6 @@ const PORT = parsePort(Bun.env.AUDIT_PORT, 3320, "AUDIT_PORT");
 const BASE = `http://localhost:${PORT}`;
 const OUT = "audit";
 
-// Candidate pages; each is probed and recorded with its status (404s are reported, not fatal).
-const PAGES = ["/", "/grain", "/catalog", "/about"];
 // Site-level machine-readability endpoints (AEO/SEO infrastructure).
 const ENDPOINTS = ["/sitemap.xml", "/robots.txt", "/llms.txt"];
 // Grain's machine-operable affordances — the vocabulary batch stays ignorant of. [data-surface]
@@ -42,10 +40,28 @@ function narrate(report: AuditReport): string {
   const jsVerdict = jsMax <= 50 * 1024 ? "**excellent — native-first** (a typical React/Next page ships several× this)"
     : jsMax <= 150 * 1024 ? "moderate" : "heavy — investigate";
   const skipped = report.pages.filter((p) => !p.ok).map((p) => `\`${p.path}\` (${p.error})`).join(", ") || "none";
+  const finding = (passes: (dom: NonNullable<(typeof report.pages)[number]["dom"]>) => boolean) =>
+    report.pages.filter((p) => p.ok && !passes(p.dom!)).map((p) => p.path);
+  const findings = [
+    ["Exactly one page heading", finding((d) => d.h1Count === 1)],
+    ["Meta description", finding((d) => !!d.metaDescription)],
+    ["Canonical URL", finding((d) => !!d.canonical)],
+    ["Open Graph metadata", finding((d) => d.og.length > 0)],
+    ["Structured data", finding((d) => d.jsonLd.length > 0)],
+  ] as const;
+  const findingLines = findings.map(([label, paths]) =>
+    `- **${label}:** ${paths.length ? `${paths.length} page(s): ${paths.map((p) => `\`${p}\``).join(", ")}` : "all pages pass"}`,
+  ).join("\n");
   const epLines = ENDPOINTS.map((e) => `- ${endpointLine(e, report.endpoints[e])}`).join("\n");
-  return `# Performance & SEO/AEO audit — baseline\n\n` +
-    `_Current build, measured headless. Regenerate with \`bun run audit\`. \`batch/export\` freezes the same ` +
-    `bytes, so these are a fair proxy for the static site._\n\n` +
+  return `# Portfolio-wide performance & SEO/AEO audit\n\n` +
+    `_Measured headless against the current build. Regenerate with \`bun run audit\`. ` +
+    `This report covers every canonical URL in the sitemap and checks document metadata and delivery. ` +
+    `It complements the visual and editorial review of each page._\n\n` +
+    `## Coverage\n\n` +
+    `- Canonical pages: ${report.pages.length}\n` +
+    `- Pages that returned successfully: ${okp.length}\n` +
+    `- Pages that need follow-up: ${report.pages.length - okp.length}\n\n` +
+    `## Document checks\n\n${findingLines}\n\n` +
     `## What the numbers mean\n\n` +
     `- **JavaScript shipped: ${kb(jsMin)}–${kb(jsMax)} per page** — the headline, and the "native-first" proof: ${jsVerdict}.\n` +
     `- **Bytes, JS and request counts are network-independent** — the robust, honest numbers to publish.\n` +
@@ -72,7 +88,14 @@ try {
   await waitForServer(BASE);
   await mkdir(OUT, { recursive: true });
 
-  const report = await audit({ baseURL: BASE, pages: PAGES, endpoints: ENDPOINTS, selectors: SELECTORS });
+  const sitemapResponse = await fetch(`${BASE}/sitemap.xml`);
+  if (!sitemapResponse.ok) throw new Error(`Could not load sitemap.xml (${sitemapResponse.status})`);
+  const sitemap = await sitemapResponse.text();
+  const pages = Array.from(sitemap.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g), (match) => new URL(match[1], BASE))
+    .filter((url) => url.origin === BASE)
+    .map((url) => url.pathname);
+  if (pages.length === 0) throw new Error("sitemap.xml did not contain any canonical page URLs");
+  const report = await audit({ baseURL: BASE, pages, endpoints: ENDPOINTS, selectors: SELECTORS });
 
   await writeFile(`${OUT}/report.json`, JSON.stringify({ note: "baseline of the current build; re-run with `bun run audit`", ...report }, null, 2));
   await writeFile(`${OUT}/report.md`, narrate(report));
