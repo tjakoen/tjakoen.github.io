@@ -231,6 +231,7 @@ interface CvRoleRaw {
   links?: Array<{ href: string; label: string }>;
   photo?: string; photoAlt?: string;   // optional experience photo (0..1); empty today, fill in cv.json later
 }
+interface CvProjectRaw { name: string; href: string; summary: string }
 interface CvData {
   summary: string; roles: CvRoleRaw[];
   education: Array<{ school: string; credential: string; start: string; end: string; notes: string[] }>;
@@ -239,6 +240,7 @@ interface CvData {
   skills: Array<{ group: string; items: string[] }>;
   languages: string[];
   certs: Array<{ name: string; issuer: string; date: string }>;
+  projects: CvProjectRaw[];
 }
 const cv: CvData = await loadDataJson<CvData>("cv.json");
 // Experience + education share the cv-entry molecule (same shape). Bullets/notes become {text}
@@ -254,7 +256,7 @@ const toCvEntry = (e: {
 });
 const cvRoles = cv.roles.map((r, i) => toCvEntry({
   domId: `xp-${i}`, roleTag: r.roleTag, title: r.title, company: r.company,
-  dateRange: `${r.start} to ${r.end}`, location: r.location, summary: r.summary,
+  dateRange: `${r.start} – ${r.end}`, location: r.location, summary: r.summary,
   bullets: r.bullets, links: r.links,
   // optional experience photo: a role with a "photo" path in cv.json renders one, none renders nothing
   // (same 0..n gate as links[]). Every role is photoless today; drop a path in later with no code change.
@@ -262,7 +264,10 @@ const cvRoles = cv.roles.map((r, i) => toCvEntry({
 }));
 const cvEducation = cv.education.map((e, i) => toCvEntry({
   domId: `edu-${i}`, title: e.credential, company: e.school,
-  dateRange: `${e.start} to ${e.end}`, bullets: e.notes ?? [],
+  dateRange: `${e.start} – ${e.end}`, bullets: e.notes ?? [],
+}));
+const cvProjects = cv.projects.map((project) => ({
+  name: project.name, href: project.href, summary: project.summary,
 }));
 const cvSkills = cv.skills.map((s) => ({ group: s.group, itemsLabel: s.items.join(" · ") }));
 const cvCerts = cv.certs.map((c) => ({ text: `${c.name} (${c.issuer}), ${c.date}` }));
@@ -316,7 +321,7 @@ const renderAppPage = async (html: string) =>
     recentNotes: await listRecentNotes(), latestEvents: await listLatestEvents(),
     calendarEvents: await buildCalendarEvents(),
     mailFolders, mailMessages,
-    cvRoles, cvEducation, cvSkills, cvCerts, cvStats, cvPrimary, cvLanguages, cvSummary,
+    cvRoles, cvEducation, cvSkills, cvCerts, cvStats, cvPrimary, cvLanguages, cvSummary, cvProjects,
     contactFields, contactMessages, contactChoices, contactChecks,
   }));
 

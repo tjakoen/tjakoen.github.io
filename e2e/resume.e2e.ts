@@ -23,12 +23,17 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
     // skill -> evidence: a primary skill with an href links out; one without stays a plain, hrefless label
     const linkedSkill = cv.primarySkills.find((s) => s.href);
     const plainSkill = cv.primarySkills.find((s) => !s.href);
-    if (linkedSkill) await expect(page.locator(`.cv-core .cv-chip__link[href="${linkedSkill.href}"]`)).toHaveText(linkedSkill.text);
+    if (linkedSkill) {
+      await expect(page.locator(".cv-core .cv-chip__link", { hasText: linkedSkill.text })).toHaveAttribute("href", linkedSkill.href);
+    }
     if (plainSkill) await expect(page.locator(".cv-core .cv-chip", { hasText: plainSkill.text }).locator(".cv-chip__link")).not.toHaveAttribute("href", /./);
     await expect(page.locator(".cv-skill")).toHaveCount(cv.skills.length);
     await expect(page.locator(".cv-languages")).toContainText("English");
     await expect(page.locator(".cv-certs .cv-bullet")).toHaveCount(cv.certs.length);
-    await expect(page.locator(".board")).toContainText("Selected work");
+    await expect(page.locator(".cv-project")).toHaveCount(cv.projects.length);
+    for (const project of cv.projects) {
+      await expect(page.locator(".cv-project", { hasText: project.name })).toContainText(project.summary);
+    }
     await expect(page.locator("[data-resume-print]")).toBeVisible();
   });
 

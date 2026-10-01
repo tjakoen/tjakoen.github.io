@@ -6,6 +6,9 @@
 [data-screen="resume"] .cv-languages { margin: var(--space-2) 0 var(--space-5); color: var(--ink-muted); }
 [data-screen="resume"] .cv-certs { list-style: none; margin: var(--space-2) 0 var(--space-5); padding: 0;
   display: flex; flex-direction: column; gap: var(--space-1); }
+[data-screen="resume"] .resume-contact { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3);
+  margin: var(--space-3) 0 var(--space-5); color: var(--ink-muted); font-size: var(--text-xs); }
+[data-screen="resume"] .resume-contact a { color: inherit; text-decoration: none; }
 
 /* PRINT: drop the editor chrome + all interactive bits and print a flat, single-column résumé on white.
    The point is an ATS-readable sheet: the cv-entry accordions are FORCED OPEN regardless of their
@@ -13,28 +16,77 @@
    grid collapses to one column. <portfolio-frame/> expands into the app-shell's chrome children, so hide
    every app-shell child EXCEPT the main column. Scoped to the résumé screen (also serves /cv). */
 @media print {
-  body[data-screen="resume"].app-window-backdrop { background: #fff !important; }
+  @page { size: letter; margin: 0.42in 0.48in; }
+  body[data-screen="resume"].app-window-backdrop { background: var(--color-surface) !important; color: var(--color-fg) !important;
+    font-family: Arial, Helvetica, sans-serif !important; font-size: 8.5pt; line-height: 1.22; }
   body[data-screen="resume"] .app-shell > *:not(.app-shell__main) { display: none !important; }
-  body[data-screen="resume"] .app-shell { display: block !important; height: auto !important; }
-  body[data-screen="resume"] .app-shell__main { display: block !important; overflow: visible !important; height: auto !important; }
+  body[data-screen="resume"] .app-shell,
+  body[data-screen="resume"] .app-shell__main,
+  body[data-screen="resume"] .board { display: block !important; width: auto !important; max-width: none !important;
+    height: auto !important; min-height: 0 !important; overflow: visible !important; margin: 0 !important; padding: 0 !important;
+    background: var(--color-surface) !important; box-shadow: none !important; border: 0 !important;
+    font-family: Arial, Helvetica, sans-serif !important; }
+  body[data-screen="resume"] .board * { font-family: Arial, Helvetica, sans-serif !important; }
   body[data-screen="resume"] .profile-card__actions,
+  body[data-screen="resume"] .profile-card__avatar,
+  body[data-screen="resume"] .profile-card__tagline,
   body[data-screen="resume"] .cv-entry__toggle,
   body[data-screen="resume"] .cv-entry__links,
   body[data-screen="resume"] .cv-entry__media,
   body[data-screen="resume"] .page-foot { display: none !important; }
+  body[data-screen="resume"] .board > p.lede:last-of-type { display: none !important; }
   /* force every accordion open no matter its screen state, so no bullet is hidden from the PDF/ATS */
   body[data-screen="resume"] .cv-entry.is-collapsed .cv-entry__detail,
   body[data-screen="resume"] .cv-entry__detail { display: block !important; }
-  /* single column, no card chrome — the plain look ATS parsers prefer */
-  body[data-screen="resume"] .cv-skills { grid-template-columns: 1fr !important; }
+  /* Compact typography and hierarchy keep the page readable while matching the source résumé. */
+  body[data-screen="resume"] .section-head { break-after: avoid; }
+  body[data-screen="resume"] .profile-card { display: block !important; margin: 0 0 2pt !important; padding: 0 !important; }
+  body[data-screen="resume"] .profile-card__name { margin: 0 !important; font: 700 19pt/1.08 Arial, Helvetica, sans-serif !important;
+    letter-spacing: 0.04em; color: var(--color-fg) !important; }
+  body[data-screen="resume"] .profile-card__role { margin: 2pt 0 0 !important; font-size: 9pt !important; color: var(--color-fg) !important; }
+  body[data-screen="resume"] .profile-card .eyebrow { margin: 0 0 2pt !important; font-size: 8pt !important;
+    text-transform: uppercase; letter-spacing: 0.08em; }
+  body[data-screen="resume"] .resume-contact { gap: 2pt 9pt; margin: 4pt 0 9pt !important; font-size: 7.2pt !important;
+    line-height: 1.2; }
+  body[data-screen="resume"] .section-head { margin: 8pt 0 3pt !important; padding: 0 0 2pt !important;
+    border-bottom: 1px solid var(--color-accent) !important; font: 700 9pt/1.2 Arial, Helvetica, sans-serif !important;
+    color: var(--color-accent) !important; text-transform: uppercase; letter-spacing: 0.045em; }
+  body[data-screen="resume"] .lede { margin: 0 0 4pt !important; max-width: none !important; font-size: 8.4pt !important; line-height: 1.25 !important; }
+  body[data-screen="resume"] .cv-core { display: block !important; margin: 0 0 2pt !important; padding: 0 !important;
+    font-size: 8pt !important; line-height: 1.25 !important; }
+  body[data-screen="resume"] .cv-list { display: block !important; margin: 2pt 0 5pt !important; }
+  body[data-screen="resume"] .cv-entry { margin: 0 0 4pt !important; break-inside: avoid; }
+  body[data-screen="resume"] .cv-entry__title { margin: 0 !important; font-size: 9pt !important; line-height: 1.15 !important; }
+  body[data-screen="resume"] .cv-entry__meta { gap: 0 5pt !important; font: 7.3pt/1.2 Arial, Helvetica, sans-serif !important; }
+  body[data-screen="resume"] .cv-entry__where { margin: 1pt 0 0 !important; font: 7pt/1.2 Arial, Helvetica, sans-serif !important; }
+  body[data-screen="resume"] .cv-entry__summary { display: none !important; }
+  body[data-screen="resume"] .cv-entry__detail { margin: 2pt 0 0 !important; }
+  body[data-screen="resume"] .cv-entry__bullets { gap: 1pt !important; padding-left: 13pt !important; }
+  body[data-screen="resume"] .cv-bullet { font-size: 7.8pt !important; line-height: 1.2 !important; }
+  body[data-screen="resume"] .cv-entry__bullets:empty { display: none !important; }
+  body[data-screen="resume"] .cv-projects,
+  body[data-screen="resume"] .docs-list { margin: 2pt 0 4pt !important; }
+  body[data-screen="resume"] .docs-list__item { display: grid !important; grid-template-columns: 1.45in minmax(0, 1fr) !important;
+    width: 100% !important; box-sizing: border-box; gap: 5pt !important; margin: 2pt 0 !important; padding: 3pt 0 !important;
+    font-size: 8pt !important; }
+  body[data-screen="resume"] .docs-list__name { min-width: 0 !important; font-size: 8.4pt !important; }
+  body[data-screen="resume"] .docs-list__what { min-width: 0 !important; font-size: 7.8pt !important; line-height: 1.2 !important; }
+  body[data-screen="resume"] .cv-skills { grid-template-columns: 1fr 1fr !important; gap: 2pt 12pt !important; margin: 2pt 0 4pt !important; }
+  body[data-screen="resume"] .cv-skill { padding: 0 !important; }
+  body[data-screen="resume"] .cv-skill__group { margin: 0 !important; font-size: 8pt !important; }
+  body[data-screen="resume"] .cv-skill__items { margin: 0 !important; font-size: 7.6pt !important; line-height: 1.2 !important; }
+  body[data-screen="resume"] .cv-certs { margin: 2pt 0 3pt !important; gap: 1pt !important; }
+  body[data-screen="resume"] .cv-languages { margin: 2pt 0 0 !important; font-size: 8pt !important; }
+  /* Single-column flow, no card chrome; links remain visible to ATS parsers. */
   body[data-screen="resume"] .profile-card,
   body[data-screen="resume"] .cv-entry,
-  body[data-screen="resume"] .cv-skill { background: #fff !important; border: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }
+  body[data-screen="resume"] .cv-skill { background: var(--color-surface) !important; border: 0 !important; }
+  body[data-screen="resume"] .cv-entry { padding-top: 0 !important; padding-bottom: 0 !important; }
   /* the primary-skill chips flatten to a plain comma list (no pills), so the print/ATS sheet stays text */
   body[data-screen="resume"] .cv-core { gap: 0 !important; }
   body[data-screen="resume"] .cv-chip { border: 0 !important; padding: 0 !important; color: inherit !important; font-family: inherit !important; }
   body[data-screen="resume"] .cv-chip:not(:last-child)::after { content: ", "; }
   /* the chip label is a nested <a>; in the flat comma list it must read as plain text, not a link */
   body[data-screen="resume"] .cv-chip__link { color: inherit !important; text-decoration: none !important; }
-  body[data-screen="resume"] a { color: inherit; text-decoration: underline; }
+  body[data-screen="resume"] a { color: inherit !important; text-decoration: none !important; }
 }

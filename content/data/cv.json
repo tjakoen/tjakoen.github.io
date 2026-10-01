@@ -1,41 +1,38 @@
 {
-  "summary": "Software engineering lead and part-time computer science teacher. I build production software and AI-first interfaces, lead engineers as a manager and tech lead, and teach the next batch of developers on the side.",
+  "summary": "Filipino–Dutch software engineering leader who builds high-velocity teams and cloud-native platforms. I lead 0-to-1 product development, AI-first workflows, and engineering mentorship. As Senior Technical Team Lead at Career Team, a part-time computer science instructor, and creator of the open-source BREAD stack, I accelerate delivery and teach 150 to 300 students each term. The work mostly involves growing engineers, shipping platforms, and keeping the layers pointed in one direction.",
   "roles": [
     {
-      "title": "Technical Team Lead",
+      "title": "Senior Technical Team Lead",
       "company": "Career Team",
-      "location": "United States, remote",
-      "start": "Sep 2025",
+      "location": "United States (remote from the Philippines)",
+      "start": "Sept 2025",
       "end": "Present",
       "current": true,
       "roleTag": "ai",
-      "summary": "Both people-manager and technical lead for the team, working AI-first.",
+      "summary": "Manage and mentor 16 Software Engineers and Product Specialists, and lead the team's AI-first development culture.",
       "bullets": [
-        "Worked as both people-manager and technical lead, a scope usually split across two roles, connecting day-to-day engineering with longer-term architecture.",
-        "Manage and mentor a team of engineers and product specialists, working AI-first to ship faster.",
-        "Build full-stack solutions (Next, Nest, MongoDB) on AWS microservices.",
-        "Made key architectural calls on the architecture team and ran code reviews across engineering to hold a consistent bar for quality and maintainability.",
-        "Built solutions for US government and education clients aimed at lowering barriers to employment.",
-        "Turned social-impact goals into concrete technical specs, working with product, design, and leadership."
+        "Spearheaded scalable full-stack solutions with Next.js, NestJS, and MongoDB on AWS microservices for U.S. government and education clients.",
+        "Rolled out AI coding assistants, set review standards for AI-generated code, and integrated AI-assisted workflows into delivery.",
+        "Turned social-impact goals into technical specifications with product, design, and leadership."
       ],
       "links": [
         { "href": "/calendar/gdg-hau-ai-hack", "label": "Judged an AI hackathon" }
       ]
     },
     {
-      "title": "College Instructor",
+      "title": "Part-Time Instructor",
       "company": "Holy Angel University",
-      "location": "Angeles, Philippines, on-site",
-      "start": "Jun 2025",
+      "location": "Angeles City, Philippines",
+      "start": "Jul 2025",
       "end": "Present",
       "current": true,
       "roleTag": "teaching",
-      "summary": "Teach software engineering to 150 to 300 students a term.",
+      "summary": "Teach software engineering to 150 to 300 students a term across up to seven classes.",
       "bullets": [
-        "Teach and mentor 150 to 300 students a term on software engineering, modern frameworks, design systems, and architecture.",
-        "Teach three subjects this term: Application and System Integration (APSI), front-end work in JavaScript and React; Introduction to Web Development (INTROWEB), first code in HTML, CSS, and JavaScript; and Application Development and Emerging Technologies (ADET), Dart through Flutter.",
-        "Built full-stack web and mobile curricula: Dart, Flutter, Web, React, Vue on the frontend; Node, Express, PHP, MySQL on the backend.",
-        "Previously taught Software Engineering Implementation and Management, connecting theory to real agile practice."
+        "Lecture and mentor 150 to 300 students each term across up to seven classes on software engineering, modern frameworks, and architecture.",
+        "Designed full-stack web and mobile curricula with React, Vue, Node.js, Express, PHP, MySQL, and PostgreSQL.",
+        "Built a GitHub-native course platform with signed QR attendance and human-reviewed AI grading. AI drafts; I sign. Student data stays off servers.",
+        "Spoke on responsible AI-assisted development at the GDGoC General Assembly in August 2026."
       ],
       "links": [
         { "href": "/calendar/mafia-hau-reality-check", "label": "Talked AI to a room of artists" },
@@ -45,7 +42,7 @@
     {
       "title": "Chief Technology Officer",
       "company": "PH Live Music",
-      "location": "Remote, hybrid",
+      "location": "Philippines (remote); joined through Broadheader's full-team acquisition",
       "start": "Oct 2024",
       "end": "Jun 2025",
       "current": false,
@@ -59,7 +56,7 @@
       "links": []
     },
     {
-      "title": "Director of Information Technology",
+      "title": "IT Director and Co-Founder",
       "company": "Broadheader IT Solutions",
       "location": "Angeles, Philippines",
       "start": "Oct 2024",
@@ -144,7 +141,14 @@
       "links": []
     }
   ],
-  "education": [
+      "education": [
+    {
+      "school": "Holy Angel University",
+      "credential": "Professional Science Master's (PSM) in Cybersecurity",
+      "start": "2026",
+      "end": "2028 (expected)",
+      "notes": []
+    },
     {
       "school": "Holy Angel University",
       "credential": "BS Computer Science",
@@ -160,26 +164,32 @@
   "stats": [
     { "value": "150-300", "label": "students a term", "sub": "software engineering" },
     { "value": "9 yrs", "label": "building software", "sub": "since 2017" },
-    { "value": "0-to-1", "label": "platforms from zero", "sub": "CTO and lead roles" },
+    { "value": "16", "label": "engineers and product specialists", "sub": "led at Career Team" },
     { "value": "no build", "label": "my own stack", "sub": "this site runs on it" }
   ],
   "primarySkills": [
-    { "text": "AI-first development", "href": "/notes/ten-times-zero" },
-    { "text": "No-build hypermedia", "href": "/bread" },
-    { "text": "Next", "href": "" },
-    { "text": "Nest", "href": "" },
-    { "text": "Design systems", "href": "/grain" },
-    { "text": "Team leadership", "href": "/about#role-manager" }
+    { "text": "0-to-1 product and platform engineering", "href": "/projects" },
+    { "text": "AI-first development and workflow optimization", "href": "/notes/ten-times-zero" },
+    { "text": "Driving AI adoption in engineering teams", "href": "/notes/ten-times-zero" },
+    { "text": "Full-stack microservices architecture", "href": "/projects" },
+    { "text": "Engineering mentorship and technical education", "href": "/teaching" }
   ],
   "skills": [
-    { "group": "Frontend and Mobile", "items": ["Next", "React", "Flutter", "Dart"] },
-    { "group": "Backend", "items": ["Nest", "Node", "Express", "PHP", "REST"] },
-    { "group": "Databases", "items": ["MongoDB", "MySQL", "PostgreSQL", "Supabase", "Firebase"] },
-    { "group": "Tools and Methods", "items": ["Git", "Agile/Scrum", "Jira", "Apache DevLake", "Notion"] },
-    { "group": "Build and AI", "items": ["No-build hypermedia", "WebLLM / WebGPU", "Design systems"] }
+    { "group": "Frontend and Mobile", "items": ["Next.js", "React", "Vue", "Flutter", "Dart"] },
+    { "group": "Backend and Frameworks", "items": ["NestJS", "Node.js", "Express", "PHP", "RESTful APIs"] },
+    { "group": "Databases and Storage", "items": ["MongoDB", "MySQL", "PostgreSQL", "Supabase", "Firebase"] },
+    { "group": "Cloud and Infrastructure", "items": ["AWS microservices"] },
+    { "group": "AI and Developer Tooling", "items": ["Claude Code", "GitHub Copilot", "Apache DevLake"] },
+    { "group": "Tools and Methodologies", "items": ["Git", "Agile/Scrum", "Jira", "Notion"] }
   ],
   "languages": ["English (native)", "Filipino (fluent)", "Dutch (conversational)"],
   "certs": [
-    { "name": "Developing on AWS", "issuer": "EnterOne", "date": "Oct 2025" }
+    { "name": "Developing on AWS", "issuer": "EnterOne", "date": "Oct 2025" },
+    { "name": "Cloud Foundations", "issuer": "AWS", "date": "Jul 2026" }
+  ],
+  "projects": [
+    { "name": "BREAD Stack", "href": "/bread", "summary": "Creator of an open-source, no-build, server-rendered hypermedia stack in Bun and TypeScript. It powers this site." },
+    { "name": "GRAIN", "href": "/grain", "summary": "An AI-interaction design system where people and AI use the same controls, and human review marks AI-authored content." },
+    { "name": "Course Console", "href": "/native-github-classroom", "summary": "A GitHub-native course platform with signed QR attendance and reviewed AI grading. Student data stays off servers." }
   ]
 }
