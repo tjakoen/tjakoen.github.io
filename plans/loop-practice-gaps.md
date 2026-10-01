@@ -1,6 +1,6 @@
 ---
 id: loop-practice-gaps
-status: doing
+status: todo
 track: ai
 depends:
   - ai-workflow-loop

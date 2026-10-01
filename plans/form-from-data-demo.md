@@ -1,6 +1,6 @@
 ---
 id: form-from-data-demo
-status: done
+status: blocked
 track: demo
 depends: []
 touches:
@@ -93,4 +93,4 @@ text field would, and anything that is not one of its option values empties it w
 - [x] The textarea atoms, and the refusal they retired
 - [ ] Publish and push, owner
 - [x] The rest of the control gaps (2026-08-13, artifacts/runs/2026-08-13-controls-complete.md)
-- [ ] The sandbox, see plans/builder-sandbox.md
+The sandbox is tracked separately in plans/builder-sandbox.md.

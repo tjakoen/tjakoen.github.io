@@ -1,6 +1,6 @@
 ---
 id: pantry-review-layer
-status: doing
+status: blocked
 track: ai
 depends: [crumb-prefilled-demo, agent-autonomy-tiers]
 touches:
@@ -42,7 +42,7 @@ touches:
   - pantry.config.json
   - standards/DECISIONS.md
   - standards/TOUR-STANDARD.md
-owner: unassigned
+owner: human
 ---
 
 # PANTRY hosts the review, CRUMB makes it addressable

@@ -8,7 +8,7 @@ touches:
   - standards/LOOP.md
   - standards/SESSION-LOOP.md
   - docs/CONTENT-BACKLOG.md
-owner: unassigned
+owner: human
 ---
 
 # The harness is part of the loop, so say which one

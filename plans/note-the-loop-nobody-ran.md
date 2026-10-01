@@ -1,7 +1,10 @@
 ---
 title: "Note: the loop nobody ran"
+id: note-the-loop-nobody-ran
 status: done
-owner: unassigned
+track: content
+depends: []
+owner: human
 written: 2026-08-20
 created: 2026-08-19
 ---

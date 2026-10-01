@@ -4,14 +4,13 @@ status: todo
 track: content
 depends:
   - agent-autonomy-tiers
-  - session-handoff-automation
   - runs-surface-polish
 touches:
   - docs/CONTENT-BACKLOG.md
   - content/notes/
   - standards/
   - ../pantry/README.md
-owner: unassigned
+owner: human
 ---
 
 # Say what the loop actually does, once it actually does it
