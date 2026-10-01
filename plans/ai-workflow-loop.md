@@ -1,6 +1,6 @@
 ---
 id: ai-workflow-loop
-status: doing
+status: todo
 track: ai
 depends: []
 touches:

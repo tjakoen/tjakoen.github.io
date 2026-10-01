@@ -11,7 +11,7 @@ touches:
   - view/pages/review/grain-status.html
   - tools/export.ts
   - grain-token-debt.md
-owner: unassigned
+owner: human
 ---
 
 # The design system's own status colour, and the hue it does not have

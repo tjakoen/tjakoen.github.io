@@ -11,7 +11,7 @@ touches:
   - ../pantry/app.test.ts
   - ../pantry/pantry-map.js
   - ../pantry/pantry.css
-owner: unassigned
+owner: ai
 ---
 
 # The map nobody opens, and the question that would fix it

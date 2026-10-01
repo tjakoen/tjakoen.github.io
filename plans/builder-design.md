@@ -1,6 +1,6 @@
 ---
 id: builder-design
-status: doing
+status: done
 track: demo
 depends: [site-builder]
 touches:

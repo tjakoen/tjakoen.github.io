@@ -1,6 +1,6 @@
 ---
 id: crumb-prefilled-demo
-status: doing
+status: done
 track: ai
 depends: []
 touches:
@@ -85,7 +85,7 @@ law is the one design law in `docs/crumb/WRITE-A-TOUR.md`.
       `c359d35` is green again, fixed by the very thing this phase built. Cost: two hours, no new
       CRUMB vocabulary, no new verb. Unlike P1 and P2 this needed nothing unpublished, so its e2e is
       committed green rather than parked behind the pin.
-- [ ] **Deferred: flow verbs.** No `drawer.open` or `tab.select` until a real change needs one.
+Flow verbs such as `drawer.open` and `tab.select` remain deferred until a real change needs them.
 
 ## Verification
 

@@ -1,3 +1,11 @@
+---
+id: course-badges
+status: todo
+track: credentials
+depends: []
+owner: human
+---
+
 # Plan: course credentials and badges
 
 A self-hosted badging system on this portfolio, replacing something like Credly. Two badges per

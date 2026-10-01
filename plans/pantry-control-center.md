@@ -1,6 +1,6 @@
 ---
 id: pantry-control-center
-status: doing
+status: blocked
 track: ai
 depends: [pantry-review-layer, runs-surface-polish]
 touches:
@@ -22,7 +22,7 @@ touches:
   - ../pantry/pantry.css
   - ../pantry/pantry-control.js
   - ~/.claude/tools/session-event.sh
-owner: unassigned
+owner: human
 ---
 
 # The control center: one place that knows where the project is

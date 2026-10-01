@@ -7,7 +7,7 @@ touches:
   - .claude/settings.json
   - tools/
   - standards/SESSION-LOOP.md
-owner: unassigned
+owner: human
 ---
 
 # Hand off without being asked
