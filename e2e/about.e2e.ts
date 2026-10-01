@@ -13,7 +13,7 @@ test.describe("the /about profile app (JS on)", () => {
 
   test("the profile card shows the real name, role, and the AI-proud tagline", async ({ page }) => {
     await expect(page.locator(".profile-card__name")).toHaveText("Tjakoen Stolk");
-    await expect(page.locator(".profile-card__role")).toContainText("Dev manager");
+    await expect(page.locator(".profile-card__role")).toContainText("Senior Technical Team Lead");
     await expect(page.locator(".profile-card__tagline")).toHaveText("I direct, Claude types.");
   });
 
@@ -255,11 +255,13 @@ test.describe("the /about CV tab (real timeline + download)", () => {
   test("renders the full CV timeline inline, with headline skill chips", async ({ page }) => {
     await expect(page.locator("#resume .cv-entry").first()).toBeVisible();
     await expect(page.locator("#resume")).toContainText("Career Team");
-    await expect(page.locator("#resume")).toContainText("Experience");
+    await expect(page.locator("#resume")).toContainText("Professional experience");
     await expect(page.locator("#resume .cv-core .cv-chip")).toHaveCount(cv.primarySkills.length);
     // a primary skill with evidence links out from the CV tab too (same cv.json source as /resume)
     const linkedSkill = cv.primarySkills.find((s) => s.href);
-    if (linkedSkill) await expect(page.locator(`#resume .cv-core .cv-chip__link[href="${linkedSkill.href}"]`)).toHaveText(linkedSkill.text);
+    if (linkedSkill) {
+      await expect(page.locator(`#resume .cv-core .cv-chip__link[href="${linkedSkill.href}"]`).filter({ hasText: linkedSkill.text })).toHaveText(linkedSkill.text);
+    }
   });
 
   test("Download PDF points at /cv and Open-the-full-page at /resume; the CV tab itself carries no form", async ({ page }) => {
