@@ -62,6 +62,7 @@
    item, so the divider reads as ONE continuous vertical line from the activity-bar down through
    every dock row — not a line that stops partway. ---- */
 .app-dock { flex: 0 0 auto; display: flex; flex-direction: column;
+  padding-top: var(--space-2);
   border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent); }
 .app-dock__item {
   display: grid; grid-template-columns: 3.25rem 1fr; align-items: stretch;
@@ -94,14 +95,52 @@
    activity-bar's floating chip. The rail has no left padding down here, so the bar sits at x=0
    with no offset needed to cancel it (unlike the tree's ::before, which cancels the tree's own
    padding). */
-.app-dock__item[aria-current="page"] { color: var(--color-fg); background: var(--color-bg); }
+.app-dock__item[aria-current="page"] { color: var(--color-fg); background: transparent; }
 .app-dock__item[aria-current="page"]::before {
   content: ""; position: absolute; top: 0; bottom: 0; left: 0;
   width: 2px; background: var(--color-accent);
 }
+.app-dock__item:focus-visible { outline-offset: -3px; }
 /* collapsed rail: labels are noise at icon-only width (mirrors the file-tree's own collapsed rule
    in grain's file-tree.css) */
 [data-rail-collapsed="true"] .app-dock__label { display: none; }
+
+/* Project pages share a compact set of next steps below the introduction. Long case studies add a
+   separate jump list, so the useful paths stay near the top without turning every page into a card. */
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-4) 0 var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-line);
+}
+.project-links a {
+  color: var(--color-fg);
+  text-decoration-color: var(--color-line);
+  text-underline-offset: 0.22em;
+}
+.project-links a:hover { text-decoration-color: currentColor; }
+.project-toc {
+  margin: 0 0 var(--space-7);
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid var(--color-accent, var(--color-muted));
+  background: color-mix(in srgb, var(--color-surface) 55%, transparent);
+}
+.project-toc__label {
+  margin: 0 0 var(--space-2);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.project-toc__links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+.project-toc__links a { text-underline-offset: 0.22em; }
+.project-toc--compact { margin: var(--space-2) 0 var(--space-4); padding: 0; border: 0; background: transparent; }
+.project-toc--compact .project-toc__links { gap: var(--space-2) var(--space-4); font-size: var(--text-sm); }
+.project-toc ~ [id] { scroll-margin-top: var(--space-5); }
 
 /* the open-tabs strip (grain's tab-bar, overflow-x: auto, native scrollbar hidden): two
    affordance fixes for when it overflows (owner, 2026-07-13).
@@ -138,19 +177,21 @@
 
 /* status bar: the breadcrumb (moved here from the title bar) reads as quiet mono meta next to
    presence; the byline + contact keep the muted register and sharpen on hover. */
-.status-bar__crumb { font-family: var(--font-mono); color: var(--color-muted); }
+.status-bar { font-family: var(--type-font); }
+.status-bar__crumb { color: var(--color-muted); }
 /* the breadcrumb's segments are LINKS (site.js builds them): quiet until hovered, like the rest
    of the status bar; the current (last) segment stays plain text. */
 .status-bar__crumb a { color: inherit; text-decoration: none; }
 .status-bar__crumb a:hover { color: var(--color-fg); text-decoration: underline; }
 /* explicit mono (not just inherited) so the byline/contact links can't drift off the status
    bar's font if a more specific `a` rule ever lands ahead of them in the bundle */
-.status-bar__byline, .status-bar__contact { font-family: var(--font-mono); color: inherit; text-decoration: none; }
+.status-bar__byline, .status-bar__contact { color: inherit; text-decoration: none; }
+.status-bar__byline { display: inline-flex; align-items: center; gap: var(--space-1); }
 .status-bar__byline:hover, .status-bar__contact:hover { color: var(--color-fg); }
 /* the view counts (src/analytics.ts fills them at build time): the quietest thing on the bar, so
    the numbers are there to be looked up rather than announcing themselves. :empty collapses the
    gap entirely when there is no data, which is the normal state on a local run. */
-.status-bar__views { font-family: var(--font-mono); color: var(--color-muted); }
+.status-bar__views { color: var(--color-muted); }
 .status-bar__views:empty { display: none; }
 
 
@@ -400,4 +441,9 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
 .app-shell.app-window .window-bar__ctl button {
   min-width: 24px; min-height: 24px;
   display: inline-flex; align-items: center; justify-content: center;
+}
+.app-shell.app-window .window-bar__ctl button[data-cycle-theme],
+.app-shell.app-window .window-bar__ctl button[data-shell="viewport-toggle"] {
+  gap: var(--space-1);
+  white-space: nowrap;
 }

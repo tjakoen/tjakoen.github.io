@@ -436,7 +436,16 @@ async function fixProofCardLinks(res: Response): Promise<Response> {
   const ct = res.headers.get("content-type") ?? "";
   if (!ct.includes("text/html")) return res;   // /plans.json etc. carry no such href
   const html = await res.text();
-  const fixed = html.replaceAll('href="/plan/', `href="${PLANS_PREFIX}/plan/`);
+  const pageTitle = html.match(/<title>([\s\S]*?) · Plans<\/title>/)?.[1];
+  let fixed = html.replaceAll('href="/plan/', `href="${PLANS_PREFIX}/plan/`);
+  fixed = fixed.replace(
+    /(<p class="proof-lede">\d+ plans?\. )The files are the source of truth; this board is a window\./,
+    "$1This is the public work board for this site and its stack. Status describes work in progress; the plan files are the source of truth.",
+  );
+  if (pageTitle && !/<h1\b/i.test(fixed)) {
+    fixed = fixed.replace(/(<a class="proof-back"[^>]*>[\s\S]*?<\/a>)/,
+      `$1\n<h1 class="proof-masthead">${pageTitle}</h1>`);
+  }
   return new Response(fixed, { status: res.status, headers: res.headers });
 }
 const styles = createStyleBundle(bunRuntime, config.styleRoots);        // per-component CSS + GRAIN's AI module → /components.css
@@ -459,6 +468,62 @@ const sitemap = createSitemap(config.pagesDir, () => [...listableContentRoutes, 
 const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
   { headEnd: CATALOG_HEAD, bodyEnd: CATALOG_ASSETS });  // .md docs across grain+portfolio → /catalog
 const accepts = createAccepts(config.componentRoots);           // harvest data-kind/data-accepts → AI manifest
+
+const catalogPage = async (req: Request) => finalizePage(req,
+  new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+const referencePage = async (req: Request) => {
+  const body = await buildVocabReference(join(config.grainDir, "styles", "variables.css"));
+  const page = shellPage({
+    title: "Reference · Developer docs",
+    description: "Generated reference: the AI vocabulary (actions, surface kinds, render ops), the one door's endpoints, and GRAIN's token slots — read from the real source, never hand-copied.",
+    screen: "reference",
+    section: ` data-section="docs"`,
+    inject: PAGE_ASSETS,
+    injectHead: PAGE_HEAD,
+    board: `
+      <p class="eyebrow">📚 <span class="name">Reference</span></p>
+      <h1 class="masthead">Generated, not hand-copied.</h1>
+      <hr class="rule">
+      <p class="lede">Everything below is read from the real source at request time — the
+        <a href="/grain/docs/ai-interface">AI vocabulary</a> contract and GRAIN's token slots.
+        Change the source, this page changes with it.</p>
+      ${body}
+    `,
+  });
+  return finalizePage(req, new Response(await renderAppPage(page),
+    { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+};
+const notesIndexPage = async (req: Request) => finalizePage(req,
+  new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
+    { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+const deckPage = async (req: Request) => {
+  const pathname = new URL(req.url).pathname.replace(/\/+$/, "");
+  const response = await serveDecks(pathname);
+  return response ? finalizePage(req, response) : new Response("Not found", { status: 404 });
+};
+const deckSlashRoutes = Object.fromEntries(deckRoutes.map((route) => [`${route}/`, deckPage]));
+const builderPage = async (req: Request) => {
+  const ask = new URL(req.url).searchParams.get("ask") ?? "";
+  const view = buildBuilderView(ask);
+  const raw = await Bun.file(join(config.pagesDir, "grain", "builder.html")).text();
+  const [canvas, library] = await Promise.all([renderCanvas(view.blocks), renderLibrary()]);
+  let html = await renderBuilderPage(raw, { ...view });
+  html = html.replace("<!--canvas-->", () => canvas).replace("<!--library-->", () => library)
+    .replace("<!--byline-->", () => madeWith());
+  return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+};
+const builderPreviewPage = async (req: Request) => {
+  const ask = new URL(req.url).searchParams.get("ask") ?? "";
+  const view = buildBuilderView(ask);
+  const raw = await Bun.file(join(config.pagesDir, "grain", "builder", "preview.html")).text();
+  const canvas = await renderCanvas(view.blocks);
+  let html = await renderBuilderPage(raw, { isEmpty: view.blocks.length === 0 });
+  html = html.replace("<!--canvas-->", () => canvas)
+    .replace('data-surface="builder-preview-markup" hidden></pre>',
+             () => `data-surface="builder-preview-markup" hidden>${markupPane(canvas)}</pre>`);
+  html = openCatalogPane(html);
+  return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+};
 
 // drift guard: every verb a component references — whether DECLARED (data-accepts, the
 // manifest surface) or WIRED (data-action, the actual trigger, e.g. chat.send on app-frame) —
@@ -605,38 +670,19 @@ Bun.serve({
       new Response(await Bun.file(CRUMB_LIVE).text(), { headers: { "Content-Type": "text/javascript; charset=utf-8" } }),
     "/crumb.css": async () =>
       new Response(await Bun.file(CRUMB_CSS).text(), { headers: { "Content-Type": "text/css" } }),
-    "/catalog": async (req: Request) =>
-      finalizePage(req, new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } })),
+    "/catalog": catalogPage,
+    "/catalog/": catalogPage,
     // /reference — the GENERATED developer-docs reference (DEV-DOCS.md step 5): the AI vocabulary
     // + token slots read from the real registries (grain/ai/vocab-reference.ts), never hand-copied.
-    "/reference": async (req: Request) => {
-      const body = await buildVocabReference(join(config.grainDir, "styles", "variables.css"));
-      const page = shellPage({
-        title: "Reference · Developer docs",
-        description: "Generated reference: the AI vocabulary (actions, surface kinds, render ops), the one door's endpoints, and GRAIN's token slots — read from the real source, never hand-copied.",
-        screen: "reference",
-        section: ` data-section="docs"`,
-        inject: PAGE_ASSETS,
-        injectHead: PAGE_HEAD,
-        board: `
-        <p class="eyebrow">📚 <span class="name">Reference</span></p>
-        <h1 class="masthead">Generated, not hand-copied.</h1>
-        <hr class="rule">
-        <p class="lede">Everything below is read from the real source at request time — the
-          <a href="/grain/docs/ai-interface">AI vocabulary</a> contract and GRAIN's token slots.
-          Change the source, this page changes with it.</p>
-        ${body}
-      `,
-      });
-      return finalizePage(req, new Response(await renderAppPage(page), { headers: { "Content-Type": "text/html; charset=utf-8" } }));
-    },
+    "/reference": referencePage,
+    "/reference/": referencePage,
     // /notes — the portfolio-owned feed (content.ts renderNotesFeedPage): the /notes collection
     // opts OUT of MILL's own index serving (index: false, content.ts), so this route wins over
     // the MILL mount below (registered `routes` beat the `fetch` chain in Bun.serve). Individual
     // entries (/notes/:slug) still go through MILL untouched.
-    "/notes": async (req: Request) =>
-      finalizePage(req, new Response(await renderAppPage(await renderNotesFeedPage(PAGE_ASSETS, PAGE_HEAD)),
-        { headers: { "Content-Type": "text/html; charset=utf-8" } })),
+    "/notes": notesIndexPage,
+    "/notes/": notesIndexPage,
+    ...deckSlashRoutes,
     // /grain/builder — the page-builder demo: describe a page in plain English, block-set.ts decides the
     // closed set of BLOCKS on the SERVER, and the page renders the prompt, the composition as JSON,
     // and the composed page itself from that one result — a GET round trip, nothing client-side
@@ -650,22 +696,8 @@ Bun.serve({
     // (ai/canvas.ts) and dropped into the marker builder.html carries. Binding rendered HTML through
     // `data-field` would mean a binding that does not escape, which is a hole in the exact place
     // this design closes one.
-    "/grain/builder": async (req: Request) => {
-      const ask = new URL(req.url).searchParams.get("ask") ?? "";
-      const view = buildBuilderView(ask);
-      const raw = await Bun.file(join(config.pagesDir, "grain", "builder.html")).text();
-      const [canvas, library] = await Promise.all([renderCanvas(view.blocks), renderLibrary()]);
-      let html = await renderBuilderPage(raw, { ...view });
-      // Function replacements: rendered block markup can contain $& and friends, which a string
-      // replacement would read as patterns and splice back in mangled.
-      html = html.replace("<!--canvas-->", () => canvas).replace("<!--library-->", () => library)
-        // The byline every export carries, rendered once by grain's own helper and parked in an
-        // inert template. The browser reads it back rather than holding a copy of the line, which
-        // is what keeps one wording across the fleet; on a static host the frozen file carries it
-        // for the same reason it carries the template library.
-        .replace("<!--byline-->", () => madeWith());
-      return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
-    },
+    "/grain/builder": builderPage,
+    "/grain/builder/": builderPage,
     // /grain/builder/preview — P5. The composed page on its own, with the workbench gone.
     //
     // The SAME canvas render as /grain/builder above, from the same `?ask=`, so the preview cannot drift
@@ -676,21 +708,8 @@ Bun.serve({
     // fits in a query string and a whole edited composition does not, so opening this link directly
     // rebuilds from the prompt, and a page you edited after composing reaches the preview through
     // the workbench's own button, which hands the composition over in session storage.
-    "/grain/builder/preview": async (req: Request) => {
-      const ask = new URL(req.url).searchParams.get("ask") ?? "";
-      const view = buildBuilderView(ask);
-      const raw = await Bun.file(join(config.pagesDir, "grain", "builder", "preview.html")).text();
-      const canvas = await renderCanvas(view.blocks);
-      let html = await renderBuilderPage(raw, { isEmpty: view.blocks.length === 0 });
-      html = html
-        .replace("<!--canvas-->", () => canvas)
-        // The markup pane ships FILLED rather than written by the browser, so the source is there to
-        // read with JavaScript off. The toggle needs a script; having something to toggle to does not.
-        .replace('data-surface="builder-preview-markup" hidden></pre>',
-                 () => `data-surface="builder-preview-markup" hidden>${markupPane(canvas)}</pre>`);
-      html = openCatalogPane(html);
-      return finalizePage(req, new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
-    },
+    "/grain/builder/preview": builderPreviewPage,
+    "/grain/builder/preview/": builderPreviewPage,
     // /kickstart — the short, shareable twin of /standards/kickstart (the new-project prompt).
     // Serves the SAME MILL-rendered page so the link is short to hand out, but finalizes it as if
     // the request were /standards/kickstart: enrichHead keys the canonical off the pathname, so this

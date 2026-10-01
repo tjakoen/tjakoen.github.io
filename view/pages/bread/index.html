@@ -14,14 +14,28 @@
     <p class="eyebrow">🍞 <span class="name">BREAD</span> · The stack</p>
     <h1 class="masthead">Four layers, one direction, and the app that runs them.</h1>
     <hr class="rule">
-    <p class="lede">BREAD is a <em>no-build, server-rendered hypermedia</em> stack, built in four layers that each
-      stand only on the ones below: <span class="name">BATCH</span>, <span class="name">GRAIN</span>,
-      <span class="name">MILL</span>, then <span class="name">PROOF</span> and <span class="name">CRUMB</span>
-      sharing the top altitude. <span class="name">PANTRY</span> is not a layer in that chain: it's the app that
-      composes them into one running server, the same job this site does. This whole site runs on the same
-      stack. Start here, then open any member from the cards below.</p>
+    <p class="lede">Every page here runs on BREAD. <span class="name">BATCH</span> serves the pages;
+      <span class="name">GRAIN</span> supplies the design system; <span class="name">MILL</span> renders the content;
+      <span class="name">PROOF</span> holds the plans; <span class="name">CRUMB</span> runs the guided tour.
+      <span class="name">PANTRY</span> composes those layers into an installable docs app.</p>
+    <nav class="project-links" aria-label="BREAD stack links">
+      <a href="https://github.com/tjakoen/bread" target="_blank" rel="noopener noreferrer">Browse the stack source on GitHub</a>
+      <a href="/projects">Return to all projects</a>
+    </nav>
 
-    <h2 class="section-head"><span>Want to start building?</span></h2>
+    <nav class="project-toc project-toc--compact" aria-label="On this page">
+      <div class="project-toc__links">
+        <a href="#start-building">Start a project</a>
+        <a href="#layers">The layers</a>
+        <a href="#pantry-app">PANTRY</a>
+        <a href="#architecture">Dependency direction</a>
+      </div>
+    </nav>
+
+    <h2 class="section-head" id="diagram"><span>The stack at a glance</span></h2>
+    <stack-diagram></stack-diagram>
+
+    <h2 class="section-head" id="start-building"><span>Want to start building?</span></h2>
     <p class="lede">Learn the stack as you build your own thing on it. Drop this one link into the coding
       agent on an empty project and it will interview you, read the stack for itself, and propose which
       layers you actually need before writing a line: <a href="/kickstart">tjakoen.github.io/kickstart</a>.</p>
@@ -29,7 +43,7 @@
       <span class="work-card__go">Start a project with KICKSTART →</span>
     </a></p>
 
-    <h2 class="section-head"><span>The layers</span></h2>
+    <h2 class="section-head" id="layers"><span>The layers</span></h2>
     <div class="card-grid" style="--card-min: 16rem">
       <a class="card work-card" href="/batch">
         <div class="work-card__head"><span class="work-card__name name">🥖 BATCH</span><span class="work-card__kind">Substrate</span></div>
@@ -48,21 +62,21 @@
       </a>
       <a class="card work-card" href="/mill">
         <div class="work-card__head"><span class="work-card__name name">⚙ MILL</span><span class="work-card__kind">Content engine</span></div>
-        <span class="flag">Live · renders the notes and layer docs</span>
+        <span class="flag">Live · renders site docs</span>
         <p class="card__body">Above both: a Markdown-to-pages engine that renders GRAIN pages from content.
           It manages this site's notes and docs, a layer above BATCH and GRAIN, an extension of neither.</p>
         <span class="work-card__go">See the engine →</span>
       </a>
       <a class="card work-card" href="/proof">
         <div class="work-card__head"><span class="work-card__name name">📋 PROOF</span><span class="work-card__kind">AI plan board</span></div>
-        <span class="flag">Live · the /plans board on this site runs on it</span>
+        <span class="flag">Live · powers the plans board</span>
         <p class="card__body">Above MILL: plans are markdown files, and PROOF's board is a projection of them,
           never the other way round. The AI maintains the files; the board is for the human watching.</p>
         <span class="work-card__go">See the board →</span>
       </a>
       <a class="card work-card" href="/crumb">
         <div class="work-card__head"><span class="work-card__name name">🍪 CRUMB</span><span class="work-card__kind">Guided tours</span></div>
-        <span class="flag">Live · the tour on this site runs on this exact package</span>
+        <span class="flag">Live · powers the site Tour</span>
         <p class="card__body">Also above GRAIN and MILL: tours are markdown files, and CRUMB turns them into a
           guided walkthrough that highlights real, live surfaces. It never edits your app, only reads and
           highlights it, and doubles as an AI-review mode.</p>
@@ -70,11 +84,11 @@
       </a>
     </div>
 
-    <h2 class="section-head"><span>The app that runs them</span></h2>
+    <h2 class="section-head" id="pantry-app"><span>The app that runs them</span></h2>
     <div class="card-grid" style="--card-min: 16rem">
       <a class="card work-card" href="/pantry">
         <div class="work-card__head"><span class="work-card__name name">🥫 PANTRY</span><span class="work-card__kind">Dev-docs cockpit</span></div>
-        <span class="flag">Live · the plan board as home, AI-retrieval (/llms.txt, /knowledge.json), the /map mindmap, ⌘K search, plus docs, reference, catalog, and standards</span>
+        <span class="flag">Live · installable app</span>
         <p class="card__body">PANTRY is an installable server, AI-legible not AI-powered (it runs no model), that composes
           BATCH, GRAIN, MILL, and PROOF into one project's docs and plan board. Drop it into any repo; it's the
           neutral, project-agnostic sibling of this site.</p>
@@ -85,29 +99,14 @@
       stack. PANTRY is the neutral, installable one; this site is the personal one, with its own résumé and
       notes on top.</p>
 
-    <h2 class="section-head"><span>One direction of dependency</span></h2>
+    <h2 class="section-head" id="architecture"><span>One direction of dependency</span></h2>
     <p class="lede">Each layer builds only on the ones beneath it: <span class="name">BATCH</span> imports nothing
       inward, <span class="name">GRAIN</span> imports nothing from BATCH but one port, <span class="name">MILL</span>
       sits above both, and <span class="name">PROOF</span> sits above MILL. <span class="name">CRUMB</span> sits
       at that same altitude, also above GRAIN and MILL, reusing GRAIN's lamp and MILL's parser rather than
       shipping either again. That purity is what lets each become its own repo once proven.</p>
-    <div class="flow" aria-hidden="true">
-      <div class="flow__node">BATCH<br><small>substrate</small></div>
-      <div class="flow__arrow">→</div>
-      <div class="flow__node">GRAIN<br><small>design system</small></div>
-      <div class="flow__arrow">→</div>
-      <div class="flow__node">MILL<br><small>content engine</small></div>
-      <div class="flow__arrow">→</div>
-      <div class="flow__node">PROOF<br><small>plan board</small></div>
-      <div class="flow__arrow">+</div>
-      <div class="flow__node">CRUMB<br><small>guided tours</small></div>
-    </div>
     <p class="lede">PANTRY (and this portfolio) mount all four into one running server: two composition roots,
       one stack, honest about which parts are live and which are still building.</p>
-
-    <!-- the shared four-layers stack now CLOSES the page (headline leads; owner 2026-07-18) -->
-    <h2 class="section-head"><span>The stack at a glance</span></h2>
-    <stack-diagram></stack-diagram>
 
     <div class="page-foot">
       Part of <a href="/">tjakoen.github.io</a>, built with itself, on the very stack it describes.

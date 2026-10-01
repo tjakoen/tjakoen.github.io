@@ -24,7 +24,7 @@ test.describe("THE EDITOR — one window around the whole site", () => {
   test("the breadcrumb sits in the status bar; the title-bar search opens the palette", async ({ page }) => {
     await page.goto("/notes");
     await expect(page.locator(".status-bar [data-breadcrumb]")).toContainText("notes");
-    await expect(page.locator(".window-bar__search")).toContainText("Tjakoen.github.io");   // static label, no breadcrumb
+    await expect(page.locator(".window-bar__search")).toContainText("tjakoen.github.io");   // static label, no breadcrumb
     await page.locator(".window-bar__search").click();
     await expect(page.locator(".cmdk[open]")).toBeVisible();   // the palette dropped from the search
   });
@@ -112,6 +112,20 @@ test.describe("THE EDITOR — one window around the whole site", () => {
     await page.locator("[data-cycle-theme]").first().click();
     await expect(page.locator("[data-theme-name]").first()).toHaveText("baguette");
     await page.evaluate(() => localStorage.removeItem("grain-theme"));
+  });
+
+  test("window controls separate their symbols from labels and the status bar uses one typeface", async ({ page }) => {
+    await page.goto("/projects");
+    for (const control of ['[data-cycle-theme]', '[data-shell="viewport-toggle"]']) {
+      await expect(page.locator(control).first()).toHaveCSS("gap", "4px");
+    }
+
+    const font = await page.locator(".status-bar").evaluate((el) => getComputedStyle(el).fontFamily);
+    for (const selector of [".status-bar__crumb", ".status-bar__byline", ".status-bar__contact"]) {
+      await expect(page.locator(selector)).toHaveCSS("font-family", font);
+    }
+    await expect(page.locator(".status-bar__byline")).not.toContainText("🤖");
+    await expect(page.locator(".status-bar__byline")).toContainText("I direct, Claude types.");
   });
 
   test("fresh cache: the desk greets in the chat, and the conversation persists across navigation", async ({ page }) => {

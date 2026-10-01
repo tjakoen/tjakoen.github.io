@@ -24,17 +24,18 @@
 // plain GET form and the server renders the same canvas. On a static host with JavaScript off the
 // page stays empty and honest, which is what it always was.
 import {
-  addFromDescription, emptyComposition, fromDocument, moveBlock, removeBlock, setSpan,
+  addFromDescription, addFromPlan, emptyComposition, fromDocument, moveBlock, removeBlock, setSpan,
   type PageComposition,
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
+import { completeWithin, composeMessage, readModelPlan } from "./block-composer.ts";
 import {
   bylineFrom, exportJson, exportPage, exportTags, PREVIEW_HANDOVER_KEY,
   type PreviewHandover,
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { looksLikeAnEdit } from "./block-command.ts";
-import { blockMessage, readModelMove } from "./block-reasoner.ts";
+import { blockMessage, inWords, readModelMove } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -380,7 +381,9 @@ function boot(): void {
       blockMessage(ask, state.blocks.map((b) => b.id)),
     );
 
-    const raw = await desk.complete(prompt);
+    // Bounded, because this is the exact line the page used to hang on. See completeWithin for the
+    // measured failure: a repetition loop that never closes its own JSON object and never returns.
+    const raw = await completeWithin(desk, prompt);
     if (raw === null) {
       say("The desk could not run the model here, so it did not guess. The rail's own controls still work.", "refusal");
       return;
@@ -426,6 +429,80 @@ function boot(): void {
   //
   // Intercepted rather than left to the plain GET, because a round trip would throw the composition
   // away and, on a static host, would come back to the same frozen file.
+  /** Land a composition and tell the address about it. Shared by both build paths so the model
+   *  route can never drift from the word-list route on the parts that are not about choosing. */
+  const landBuild = (next: typeof state, ask: string, before: number): void => {
+    state = next;
+    pageAsk = ask;
+    repaint(viewOf(state, ask, state.blocks.length - before));
+    // The URL keeps carrying the LATEST prompt, so an example link and a shared address still work.
+    // The composition does not go in it: a whole page of blocks grows past what a link can carry.
+    // The honest consequence, said on the page as well as here, is that reloading rebuilds from
+    // that last prompt alone rather than from everything you added. An EDIT never touches the
+    // address, because the address names what produced the page rather than what was done to it.
+    history.replaceState(null, "", `${location.pathname}?ask=${encodeURIComponent(ask)}`);
+  };
+
+  /** Compose by word list, which is the floor rather than a fallback. See the header of
+   *  block-composer.ts for why the build path is allowed a floor where the edit path is not. */
+  const buildByWordList = (ask: string): void => {
+    const before = state.blocks.length;
+    remember(state);
+    landBuild(addFromDescription(state, ask), ask, before);
+  };
+
+  /** A build, read by the model.
+   *
+   *  This is the answer to the oldest complaint about this page: that a demo arguing about building
+   *  with AI reached every decision about what to build without one. The word list could match a
+   *  sentence and could never read it, which showed up most plainly in counting, since "two cards"
+   *  produced exactly one card however many times you asked.
+   *
+   *  What the model decides is WHICH blocks and in WHAT ORDER, from a closed set of five names it is
+   *  handed in the prompt. What it never decides is what a block says, which stays with the samples
+   *  in block-set.ts, or what the page declines to build, which `refusalsFor` reads off the sentence
+   *  on both paths. A name it invents is dropped rather than corrected.
+   *
+   *  It says WHICH path composed the page, every time, and that line is not decoration. A page that
+   *  quietly fell back to the word list while the drawer next to it claims the model chose would be
+   *  the exact failure this page was built to argue against. */
+  async function runBuild(ask: string): Promise<void> {
+    const desk = deskModel();
+    if (!desk) {
+      buildByWordList(ask);
+      say("Composed from the words in that sentence. The desk cannot run here, so nothing read it.", "reply");
+      return;
+    }
+
+    say("Reading that…", "thinking");
+    const raw = await completeWithin(desk, composeMessage(ask));
+    if (raw === null) {
+      buildByWordList(ask);
+      say("Composed from the words in that sentence. The desk did not answer in time, so nothing read it.", "reply");
+      return;
+    }
+
+    const plan = readModelPlan(raw);
+    if (plan.kind === "unusable") {
+      console.info("[builder] the desk's plan was unusable:", plan.because, raw);
+      buildByWordList(ask);
+      say("Composed from the words in that sentence. The desk answered with nothing this set can build.", "reply");
+      return;
+    }
+
+    if (plan.dropped.length) console.info("[builder] dropped names outside the set:", plan.dropped);
+    const before = state.blocks.length;
+    remember(state);
+    landBuild(addFromPlan(state, plan.names, ask, plan.span), ask, before);
+    const added = state.blocks.length - before;
+    // The names are said out loud for the same reason the edit path names a block before touching
+    // it: a plan that is legal and wrong is the one failure no validation can see, and the only
+    // guard against it is a reader who can check what was chosen against what they asked for.
+    say(added === 0
+      ? `The desk read that as ${inWords(plan.names)}, and nothing in it had content to build from.`
+      : `The desk read that as ${inWords(plan.names)}.`, "command");
+  }
+
   composer.addEventListener("submit", (e) => {
     const box = $<HTMLTextAreaElement>("textarea", composer);
     const ask = box?.value.trim() ?? "";
@@ -441,17 +518,11 @@ function boot(): void {
     }
 
     clearSaid();
-    const before = state.blocks.length;
-    remember(state);
-    state = addFromDescription(state, ask);
-    pageAsk = ask;
-    repaint(viewOf(state, ask, state.blocks.length - before));
-    // The URL keeps carrying the LATEST prompt, so an example link and a shared address still work.
-    // The composition does not go in it: a whole page of blocks grows past what a link can carry.
-    // The honest consequence, said on the page as well as here, is that reloading rebuilds from
-    // that last prompt alone rather than from everything you added. An EDIT never touches the
-    // address, because the address names what produced the page rather than what was done to it.
-    history.replaceState(null, "", `${location.pathname}?ask=${encodeURIComponent(ask)}`);
+    void runBuild(ask).catch((err) => {
+      console.error("[builder] the build path failed", err);
+      buildByWordList(ask);
+      say("Composed from the words in that sentence. Something went wrong reading it.", "reply");
+    });
   });
 
   // THE HANDSHAKE, and it is what makes an AI-driven block edit real rather than cosmetic.

@@ -11,6 +11,8 @@
    marker string or an absent attribute, field-matcher.ts's own "never boolean text a boolean HTML
    attribute can't bind from" rule, so a plain attribute-presence selector is all any of this needs. */
 [data-screen="builder"] .board { max-width: 82rem; }
+.builder__heading { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 
 /* --- the workbench: prompt bar on top, canvas beside the block rail ---------------------------
    The prompt sits at the TOP rather than under the canvas, and that was a mockup's finding: a

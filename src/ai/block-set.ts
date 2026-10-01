@@ -183,6 +183,12 @@ export const KNOWN_BLOCK_LABELS: string[] = BLOCK_TABLE.map((e) => e.label);
  *  the set can never advertise a block the renderer would fail to expand. */
 export const BLOCK_COMPONENTS: string[] = [...BLOCK_TABLE.map((e) => e.component), FORM_COMPONENT];
 
+/** The names a model may answer with, which is the same closed set spelled the way a sentence spells
+ *  it. Derived from the table rather than written out a second time, so a block added above becomes
+ *  something the model can ask for in the same commit that makes it buildable. block-composer.ts
+ *  prints these into the prompt and checks every answer against them. */
+export const BLOCK_NAMES: string[] = [...BLOCK_TABLE.map((e) => e.name), "form"];
+
 /** What a pre-rendered template library needs to know about each block: the component to render,
  *  the data keys it binds (read off the sample, which is the same set), and the props it is used
  *  with. Exported as data rather than as a second hand-written list so a block added to the table
@@ -244,4 +250,73 @@ export function matchBlocks(description: string, startIndex = 0): Composition {
   }
 
   return { blocks, refusals };
+}
+
+/** What a description refuses, whichever path composed it.
+ *
+ *  Split out of `matchBlocks` so the model path gets the same honest "can't build" list. A refusal is
+ *  a fact about the SENTENCE rather than about the composition: a page that asked for a gallery
+ *  asked for one whether the blocks were chosen by a word list or by a model, and a model that
+ *  quietly omits the gallery from its plan has not declined it out loud. Reading the description
+ *  here rather than trusting the plan is what keeps that promise on both paths. */
+export function refusalsFor(description: string): BlockRefusal[] {
+  const desc = padded(description);
+  return REFUSAL_TABLE.filter((entry) => anyTokenHits(desc, entry.tokens))
+    .map((entry) => ({ token: entry.token, reason: entry.reason }));
+}
+
+/** Build a composition from names a model chose, in the order it chose them.
+ *
+ *  ORDER IS THE MODEL'S HERE, and that is a deliberate departure from `matchBlocks`, which returns
+ *  BLOCK_TABLE's declaration order and says in its own comment that page order is a decision the
+ *  table owns. The reason that rule existed is that the word list never knew where a word appeared:
+ *  it scans for tokens and has no reading of the sentence, so a fixed order was the only defensible
+ *  one available. A model does know, and taking its order is the difference between a page that
+ *  matched a sentence and a page that read one. The table's order still governs the word-list path,
+ *  untouched.
+ *
+ *  A NAME IS NOT A GUARANTEE OF A BLOCK. The form is the case: it is the one entry whose content
+ *  comes from the description rather than from a sample, so a plan naming `form` over a sentence with
+ *  no fields and no form words in it produces nothing. That is code enumerating, exactly as intended.
+ *  The model can ask for a form; only `matchFormBlock` can say what is in it. */
+export function composeFromNames(
+  names: readonly string[],
+  description: string,
+  startIndex = 0,
+  planSpan: Span | null = null,
+): Composition {
+  const desc = padded(description);
+  // The description's own layout word outranks the model's. A phrase like "side by side" is a fact
+  // about the sentence that needs no reading, and the word list has always honoured it; letting a
+  // model's span override it would make the page ignore something the person wrote down plainly.
+  const forced: Span | null = anyTokenHits(desc, THREE_UP) ? "third"
+    : anyTokenHits(desc, SIDE_BY_SIDE) ? "half"
+    : planSpan;
+
+  const blocks: Block[] = [];
+  for (const name of names) {
+    if (name === "form") {
+      const form = matchFormBlock(description);
+      if (!form) continue;
+      blocks.push({
+        id: `b${startIndex + blocks.length + 1}`,
+        component: FORM_COMPONENT,
+        span: forced ?? "full",
+        data: form as unknown as Record<string, unknown>,
+        props: {},
+      });
+      continue;
+    }
+    const entry = BLOCK_TABLE.find((e) => e.name === name);
+    if (!entry) continue;
+    blocks.push({
+      id: `b${startIndex + blocks.length + 1}`,
+      component: entry.component,
+      span: forced ?? entry.defaultSpan,
+      data: { ...entry.sample },
+      props: { ...entry.props },
+    });
+  }
+
+  return { blocks, refusals: refusalsFor(description) };
 }

@@ -171,7 +171,7 @@ const blockIdsIn = (manifest: Manifest): string[] =>
   manifest.targets.filter((t) => t.id.startsWith("block:")).map((t) => idOf(t.id));
 
 /** A list a person reads, rather than a comma-joined array. */
-const inWords = (items: string[], last: "and" | "or" = "and"): string =>
+export const inWords = (items: string[], last: "and" | "or" = "and"): string =>
   items.length < 2 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} ${last} ${items[items.length - 1]}`;
 
 /** The three verbs in the words the rest of the page uses for them. */
