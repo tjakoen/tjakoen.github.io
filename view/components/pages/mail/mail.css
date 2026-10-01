@@ -10,6 +10,8 @@
    open letter (island). Nothing here is real except Compose. Grid areas keep the HTML order (rail,
    list, pane) while laying the rail across the top. */
 [data-screen="mail"] .board { max-width: 78rem; }
+.mailbox__heading { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 
 [data-screen="mail"] .mailbox { display: grid;
   grid-template-columns: minmax(13rem, 20rem) 1fr;

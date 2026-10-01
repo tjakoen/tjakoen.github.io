@@ -209,6 +209,10 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // (the rest of the body still renders) — badge pages only.
     if (kind === "entry" && collection.prefix === "/badges")
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
+    // Standards already carry their reader-facing title as the first Markdown h1. Keep that as
+    // the page's one h1 instead of repeating it beneath MILL's generated filename masthead.
+    if (kind === "entry" && collection.prefix === "/standards")
+      readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
       title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}`,
       board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}`,
@@ -1238,7 +1242,7 @@ const BADGE_STYLE = `<style>
 .badge-cert__head, .badge-class__head { display: flex; gap: var(--space-l, 1.5rem); align-items: center; flex-wrap: wrap; }
 .badge-art svg { display: block; }
 .badge-cert__awarded { color: var(--ink-muted); margin: 0; }
-.badge-cert__name, .badge-class__name { margin: 0.15em 0; }
+.badge-cert__name, .badge-class__name { margin: 0.15em 0; font-size: var(--text-xl); }
 .badge-issuer { display: flex; flex-direction: column; margin: 0.5em 0; }
 .badge-issuer__name { font-weight: 700; }
 .badge-issuer__role { color: var(--ink-muted); font-size: var(--text-sm); }
@@ -1295,7 +1299,7 @@ function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): s
   <header class="badge-cert__head">${certArt}
     <div class="badge-cert__meta">
       <p class="badge-cert__awarded">This certifies that</p>
-      <h2 class="badge-cert__name">${name}</h2>
+      <h1 class="badge-cert__name">${name}</h1>
       <p class="badge-cert__earned">earned the <strong>${badgeName}</strong> badge${handle ? ` · <a href="https://github.com/${escapeHtml(handle)}">@${escapeHtml(handle)}</a>` : ""}</p>
       ${subtitle}
       ${issuer}
@@ -1325,7 +1329,7 @@ function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): s
   return `${BADGE_STYLE}<section class="badge-class">
   <header class="badge-class__head">${art}
     <div class="badge-class__meta">
-      <h2 class="badge-class__name">${badgeName}</h2>
+      <h1 class="badge-class__name">${badgeName}</h1>
       ${subtitle}
       ${issuer}
       <p class="badge-class__count">Awarded to ${count} recipient${count === 1 ? "" : "s"}.</p>

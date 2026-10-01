@@ -345,11 +345,17 @@ async function twoCardPage(page: Page): Promise<void> {
 }
 
 test.describe("with no desk, the page says so instead of guessing", () => {
-  test("a description still composes, because building never needed a model", async ({ page }) => {
+  // The line this asserts is new, and it replaces a silence. Building used to say nothing at all
+  // when it composed, which was fine while there was only one way a page could get built. Now there
+  // are two, and a visitor who cannot tell which one ran cannot tell whether the model chose these
+  // blocks or a word list matched them. So the page names the path every time, and the case with no
+  // desk at all is the one where saying so matters most.
+  test("a description still composes, and the page says the words did it", async ({ page }) => {
     await twoCardPage(page);
     await submitPrompt(page, "a stat");
     await expect(page.locator(CELL)).toHaveCount(5);
-    await expect(page.locator(SAID)).toBeHidden();
+    await expect(page.locator(SAID)).toContainText("Composed from the words");
+    await expect(page.locator(SAID)).toContainText("desk cannot run here");
   });
 
   // The honest-offline rule. The temptation is a word list that answers when the model cannot, and

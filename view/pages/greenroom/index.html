@@ -14,22 +14,38 @@
         <p class="eyebrow">🎬 <span class="name">Greenroom</span></p>
         <h1 class="masthead">Run browser checks. Watch them pass. Hand over a bug bundle.</h1>
         <hr class="rule">
-        <p class="lede">Greenroom runs automated browser checks against a live web app and lets anyone
-          read the results, with no coding required. Under the hood it wraps <em>Playwright</em> in a
-          plain dashboard: point it at your site, say how to log in, pick one or several environments,
-          click Run, and watch a live pass and fail checklist. When something breaks, one click
-          produces a bundle a developer can replay, with the trace, video, screenshots, logs and a
-          written summary. It runs two ways from one codebase: on your own machine, or as one shared
-          instance a whole team signs into.</p>
+        <p class="lede">Greenroom runs browser checks against a live web app. A non-coder can pick an
+          environment, press Run, and read what passed. When a check fails, Greenroom bundles the trace,
+          video, screenshots, logs, and a written summary for a developer. It runs on one machine or as
+          a shared team instance.</p>
 
-        <figure class="shot">
+        <figure class="shot" id="run-preview">
           <img class="shot__img" src="/media/greenroom/run-matrix.jpg" width="1440" height="900" loading="lazy"
                alt="Greenroom's Run dashboard: tiles reading 6 passed, 2 failed, 2 pending, 10 total, a health bar at 75 percent, and a table of five checks scored against two environments called demo and demo2.">
           <figcaption class="shot__cap">One run against two environments at once. Each check gets a
             cell per environment, and the failing row carries its own Report this button.</figcaption>
         </figure>
 
-        <h2 class="section-head"><span>What it does</span></h2>
+        <nav class="project-links" aria-label="Greenroom links">
+          <a href="#run-preview">See a run</a>
+          <a href="#try-it">See how to try Greenroom</a>
+          <a href="https://github.com/tjakoen/greenroom" target="_blank" rel="noopener noreferrer">Open the source on GitHub</a>
+          <a href="/projects">Return to all projects</a>
+        </nav>
+        <nav class="project-toc" aria-label="On this page">
+          <p class="project-toc__label">On this page</p>
+          <div class="project-toc__links">
+            <a href="#capabilities">What it does</a>
+            <a href="#bug-handover">Bug handover</a>
+            <a href="#hosted-editor">Browser editor</a>
+            <a href="#run-modes">Run modes</a>
+            <a href="#try-it">Try it locally</a>
+            <a href="#limits">Limits</a>
+            <a href="#source">Source and docs</a>
+          </div>
+        </nav>
+
+        <h2 class="section-head" id="capabilities"><span>What it does</span></h2>
         <div class="card-grid" style="--card-min: 15rem">
           <div class="card" data-pad="sm"><h3 class="card__title">Run checks</h3><p class="card__body">Pick one environment or several, click Run, and watch the checklist fill in live. More than one environment turns the list into a check by environment matrix, with its own health reading per environment.</p></div>
           <div class="card" data-pad="sm"><h3 class="card__title">Keep them organised</h3><p class="card__body">Group by feature, tag in the title, set priority and owner. Smart filters find the failing, the flaky, the never run and the slowest, computed from real run history rather than guesswork.</p></div>
@@ -44,7 +60,7 @@
             and how it has actually been doing, so a non-coder can decide what is worth running.</figcaption>
         </figure>
 
-        <h2 class="section-head"><span>Handing a developer something they can act on</span></h2>
+        <h2 class="section-head" id="bug-handover"><span>Handing a developer something they can act on</span></h2>
         <p class="lede">The handover is the part I care most about. A tester saying "the dashboard
           looked wrong" costs a developer an afternoon of guessing. So Greenroom captures the whole
           session while the check runs: a filmstrip of screenshots with timestamps, every console
@@ -58,7 +74,7 @@
           <figcaption class="shot__cap">What goes in the bundle, spelled out before you send it.</figcaption>
         </figure>
 
-        <h2 class="section-head"><span>Editing a check in the browser</span></h2>
+        <h2 class="section-head" id="hosted-editor"><span>Editing a check in the browser</span></h2>
         <p class="lede">On a hosted instance nobody has the repo checked out, so the editor comes to
           them instead. It is a real code editor in the page, with syntax highlighting, inline errors,
           a button that compiles a check without running it, and a version history recording who
@@ -72,7 +88,7 @@
             behind the History button.</figcaption>
         </figure>
 
-        <h2 class="section-head"><span>Two ways to run it, one codebase</span></h2>
+        <h2 class="section-head" id="run-modes"><span>Two ways to run it, one codebase</span></h2>
         <p class="lede">It started as a local tool and still runs that way by default: open the folder
           in VS Code, use the task, and a dashboard opens on your own machine with no accounts and no
           database. The same code also runs as one shared instance a company hosts, where the entry
@@ -81,7 +97,7 @@
           checks at once without colliding, and an append only audit log. Which one you get is decided
           by the environment it boots in, not by a fork.</p>
 
-        <p class="lede">There is no hosted instance of Greenroom to click, and there will not be one here.
+        <p class="lede" id="try-it">There is no hosted instance of Greenroom to click, and there will not be one here.
           A shared instance belongs on a company's own network behind its own proxy, so the version I could
           put on the open internet is the version I said above I would not put there. The way to see it for
           yourself is to clone the repo and run <code>npm run demo</code>, which boots the dashboard against
@@ -110,7 +126,7 @@
           through MILL, the plan board mounts straight from PROOF, and the guided tour comes from
           CRUMB. The hand rolled single page app it grew out of has been deleted, not wrapped.</p>
 
-        <h2 class="section-head"><span>Honest limits</span></h2>
+        <h2 class="section-head" id="limits"><span>Honest limits</span></h2>
         <p class="lede">The hosted edition is built for a company to run on its own network behind a
           reverse proxy it controls. It refuses to start in an unsafe configuration, walls private
           runs off from other people, encrypts stored credentials and rate limits sign in attempts,
@@ -120,7 +136,7 @@
           only behaviour is covered by tests that boot a real configured server, but it has not yet
           run a single day in an actual deployment.</p>
 
-        <h2 class="section-head"><span>Where it lives</span></h2>
+        <h2 class="section-head" id="source"><span>Where it lives</span></h2>
         <div class="docs-list">
           <div class="docs-list__item"><a class="docs-list__name" href="https://github.com/tjakoen/greenroom" target="_blank" rel="noopener noreferrer">greenroom on GitHub</a><span class="docs-list__what">the code, the deploy runbook and the user guide. Open source, MIT.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/projects">Projects</a><span class="docs-list__what">back to the rest of what I have been building.</span></div>

@@ -7,7 +7,7 @@
 // returns a NEW one, which is what makes the same code correct on the server (rendering a spec) and
 // in the browser (holding the live one) without a second implementation. Where the state PERSISTS is
 // a later phase's problem and deliberately not this file's.
-import { matchBlocks, isSpan, type Block, type BlockRefusal, type Span } from "./block-set.ts";
+import { composeFromNames, matchBlocks, isSpan, type Block, type BlockRefusal, type Span } from "./block-set.ts";
 
 /** A composed page. `blocks` is ordered and the order is what renders. `refusals` is what the last
  *  add was asked for and would not build, kept beside the blocks rather than thrown away, because a
@@ -38,6 +38,23 @@ export function nextIndex(comp: PageComposition): number {
  *  be showing a visitor what they were refused three prompts ago as though it just happened. */
 export function addFromDescription(comp: PageComposition, description: string): PageComposition {
   const { blocks, refusals } = matchBlocks(description, nextIndex(comp));
+  return { blocks: [...comp.blocks, ...blocks], refusals };
+}
+
+/** Add the blocks a MODEL planned, holding to every rule `addFromDescription` holds to.
+ *
+ *  The same append, the same id continuation, and the same replace-rather-than-accumulate refusals,
+ *  so which path composed a page is never something a reader has to infer from how the canvas
+ *  behaves afterwards. The names have already been checked against the closed set by the time they
+ *  arrive here; `composeFromNames` checks them again anyway, because a composition function that
+ *  trusts its caller is one refactor away from building a block that does not exist. */
+export function addFromPlan(
+  comp: PageComposition,
+  names: readonly string[],
+  description: string,
+  span: Span | null = null,
+): PageComposition {
+  const { blocks, refusals } = composeFromNames(names, description, nextIndex(comp), span);
   return { blocks: [...comp.blocks, ...blocks], refusals };
 }
 

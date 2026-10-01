@@ -1,11 +1,12 @@
 /* organisms/welcome — portfolio: the editor's Welcome page layout (the VS Code start screen,
    re-spoken in GRAIN). Owns the page scaffold only; the lists inside are welcome-start /
    welcome-recent / walkthrough-card. Tokens only. */
-.welcome { max-width: 72rem; margin: 0 auto; padding: clamp(2rem, 8vh, 6rem) var(--page-pad) 3rem; }
+.welcome { max-width: 72rem; margin: 0 auto; padding: clamp(var(--space-8), 8vh, 6rem) var(--page-pad) var(--space-8); }
 .welcome__title { font-family: var(--font-accent); font-size: clamp(2.2rem, 5vw, 3.4rem); margin: 0; }
-.welcome__sub { color: var(--ink-muted); font-size: var(--text-lg); margin: 0.4rem 0 3rem; }
+.welcome__sub { color: var(--ink-muted); font-size: var(--text-lg); margin: 0.4rem 0 var(--space-3); }
+.welcome__proof { max-width: 68ch; margin: 0 0 var(--space-8); color: var(--ink-muted); font-size: var(--text-sm); }
 
-.welcome__cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(2rem, 6vw, 6rem); }
+.welcome__cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(var(--space-8), 6vw, 6rem); }
 /* collapse to one column when the SHELL FRAME is narrow — a @container query, not @media, so the
    viewport-toggle's mobile PREVIEW (which clamps the frame, not the real viewport) also collapses
    it. Under plain @media the two columns stayed side by side in the preview and the Walkthroughs
@@ -15,7 +16,7 @@
 .welcome h2 { font-size: var(--text-xl); font-weight: var(--font-weight-regular); margin: 0 0 1rem; }
 
 /* bottom: the pill CTA + the (functional) startup checkbox */
-.welcome__foot { display: flex; flex-direction: column; align-items: center; gap: 1.6rem; margin-top: 4.5rem; }
+.welcome__foot { display: flex; flex-direction: column; align-items: center; gap: var(--space-5); margin-top: calc(var(--space-8) * 2); }
 .welcome__cta { display: inline-flex; align-items: center; gap: 0.6rem; font-size: var(--text-base);
   border: 1px solid var(--ink); border-radius: 999px; padding: 0.7rem 1.6rem;
   color: var(--ink); text-decoration: none; background: var(--panel); }

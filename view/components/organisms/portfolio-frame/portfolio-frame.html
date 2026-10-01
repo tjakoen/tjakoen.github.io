@@ -28,16 +28,16 @@
   </span>
   <!-- CENTER: the search field -->
   <button class="window-bar__search" type="button" data-cmdk-open title="Search the site (⌘K)">
-    <svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#search"></use></svg>Tjakoen.github.io
+    <svg class="icon" aria-hidden="true"><use href="/assets/sprite.svg#search"></use></svg>tjakoen.github.io
   </button>
   <!-- RIGHT: theme + view controls -->
   <span class="window-bar__ctl">
-    <button type="button" data-cycle-theme title="Cycle theme">◆ <span data-theme-name>sourdough</span></button>
+    <button type="button" data-cycle-theme title="Cycle theme"><span aria-hidden="true">◆</span><span data-theme-name>sourdough</span></button>
     <button type="button" data-toggle-scheme title="Light / dark" aria-label="Light or dark">◐</button>
     <button type="button" data-shell="aside-toggle" title="Toggle the assistant panel" aria-label="Toggle the assistant panel">◫</button>
 <button type="button" data-shell="console-toggle" title="Expand or collapse the terminal" aria-label="Expand or collapse the terminal">▭</button>
     <button type="button" data-xray-toggle title="X-ray — see the page as the AI sees it" aria-label="X-ray, see the page as the AI sees it">⊹</button>
-    <button type="button" data-shell="viewport-toggle" title="Preview width: desktop / tablet / mobile">⬚ <span data-viewport-name>desktop</span></button>
+    <button type="button" data-shell="viewport-toggle" title="Preview width: desktop / tablet / mobile"><span aria-hidden="true">⬚</span><span data-viewport-name>desktop</span></button>
   </span>
 </header>
 
@@ -97,6 +97,14 @@
               <a class="file-tree__file" href="/pantry" data-tab-label="PANTRY" data-surface="nav:/pantry">pantry.html</a>
               <a class="file-tree__file" href="/greenroom" data-tab-label="Greenroom">greenroom.html</a>
               <a class="file-tree__file" href="/native-github-classroom" data-tab-label="Classroom">classroom.html</a>
+            </div>
+          </details>
+          <details class="file-tree__dir">
+            <summary>Experience/</summary>
+            <div class="file-tree__children">
+              <a class="file-tree__file" href="/teaching" data-tab-label="Teaching" data-surface="nav:/teaching">teaching.html</a>
+              <a class="file-tree__file" href="/talks" data-variant="index" data-tab-label="Talks" data-surface="nav:/talks">talks.html</a>
+              <a class="file-tree__file" href="/badges" data-tab-label="Course badges" data-surface="nav:/badges">badges.html</a>
             </div>
           </details>
           <details class="file-tree__dir">
@@ -166,6 +174,14 @@
          Each row is a full-width <a>; site.js marks the current one aria-current="page" (prefix
          match for Notes, exact for the rest). ═══ -->
     <nav class="app-dock" aria-label="Apps">
+      <a class="app-dock__item" href="/projects" data-section="projects" data-tab-label="Projects" title="Projects" data-surface="nav:/projects">
+        <span class="app-dock__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="4" width="7" height="7" rx="1"/><rect x="13.5" y="4" width="7" height="7" rx="1"/><rect x="3.5" y="13" width="7" height="7" rx="1"/><rect x="13.5" y="13" width="7" height="7" rx="1"/>
+          </svg>
+        </span>
+        <span class="app-dock__label">Projects</span>
+      </a>
       <a class="app-dock__item" href="/notes" data-section="notes" data-tab-label="Notes" title="Notes" data-surface="nav:/notes">
         <span class="app-dock__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -370,7 +386,7 @@
        a fresh deploy before the first pull). An empty span collapses to nothing, so the bar reads
        exactly as it did before whenever the numbers are missing. -->
   <span class="status-bar__views" data-views></span>
-  <a class="status-bar__byline" href="/notes/ten-times-zero" title="How this site is built">🤖 I direct, Claude types.</a>
+  <a class="status-bar__byline" href="/notes/ten-times-zero" title="How this site is built"><span aria-hidden="true">✶</span><span>I direct, Claude types.</span></a>
   <a class="status-bar__contact" href="/about#contact">Contact</a>
 </footer>
 

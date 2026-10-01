@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v graphify >/dev/null 2>&1 && nohup graphify update \"$CLAUDE_PROJECT_DIR\" >/dev/null 2>&1 &"
+          }
+        ]
+      }
+    ]
+  }
+}

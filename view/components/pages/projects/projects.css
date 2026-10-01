@@ -1,0 +1,98 @@
+/* Selected work hub: a short path from the portfolio overview to each project story. */
+[data-screen="projects"] .projects-board { max-width: 1080px; }
+[data-screen="projects"] .app-shell__main { container: projects-main / inline-size; }
+
+[data-screen="projects"] .projects-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 var(--space-7);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-line);
+}
+
+[data-screen="projects"] .projects-index a,
+[data-screen="projects"] .project-feature__secondary {
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--color-line);
+  text-underline-offset: 0.22em;
+}
+
+[data-screen="projects"] .projects-index a:hover,
+[data-screen="projects"] .project-feature__secondary:hover { color: var(--color-fg); }
+
+[data-screen="projects"] .projects-group { margin: 0 0 var(--space-8); scroll-margin-top: var(--space-4); }
+[data-screen="projects"] .projects-group > .eyebrow { margin-bottom: var(--space-1); }
+[data-screen="projects"] .section-head { margin-top: 0; }
+
+[data-screen="projects"] .project-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+  gap: clamp(var(--space-4), 5vw, var(--space-7));
+  align-items: center;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+[data-screen="projects"] .project-feature__visual {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-bg-subtle, var(--color-surface));
+}
+
+[data-screen="projects"] .project-feature__visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  object-fit: cover;
+}
+
+[data-screen="projects"] .project-feature__visual--diagram {
+  display: grid;
+  min-height: 260px;
+  padding: var(--space-4);
+  place-items: center;
+}
+
+[data-screen="projects"] .project-feature__visual--diagram .stack-diagram { max-width: 620px; }
+[data-screen="projects"] .project-feature__copy h3,
+[data-screen="projects"] .project-related h3 { margin: 0 0 var(--space-2); font-size: var(--type-3, 1.5rem); }
+[data-screen="projects"] .project-feature__copy h3 a,
+[data-screen="projects"] .project-related h3 a { color: var(--color-fg); text-decoration: none; }
+[data-screen="projects"] .project-feature__copy h3 a:hover,
+[data-screen="projects"] .project-related h3 a:hover { text-decoration: underline; text-underline-offset: 0.16em; }
+[data-screen="projects"] .project-feature__copy p,
+[data-screen="projects"] .project-related p { max-width: 58ch; }
+[data-screen="projects"] .project-feature__kicker { margin: 0 0 var(--space-1); color: var(--color-muted); font-size: var(--type--1, 0.875rem); }
+[data-screen="projects"] .project-proof { padding-left: var(--space-3); border-left: 2px solid var(--color-accent, var(--color-muted)); }
+[data-screen="projects"] .project-feature__link { display: inline-block; margin-top: var(--space-2); font-weight: 600; }
+[data-screen="projects"] .project-feature__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: baseline; }
+[data-screen="projects"] .project-feature__actions .project-feature__link { margin-top: var(--space-2); }
+[data-screen="projects"] .project-feature__secondary { font-size: var(--type--1, 0.875rem); }
+
+[data-screen="projects"] .project-related {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-top: 0;
+  background: var(--color-bg-subtle, var(--color-surface));
+}
+
+[data-screen="projects"] .project-related p:last-child { margin-bottom: 0; }
+[data-screen="projects"] .project-related .project-feature__link { margin-top: 0; }
+
+@container projects-main (max-width: 52rem) {
+  [data-screen="projects"] .projects-index { gap: var(--space-2) var(--space-3); }
+  [data-screen="projects"] .project-feature { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+  [data-screen="projects"] .project-feature__copy { order: 2; }
+  [data-screen="projects"] .project-feature__visual { order: 1; }
+  [data-screen="projects"] .project-feature__visual--diagram { min-height: 200px; }
+}

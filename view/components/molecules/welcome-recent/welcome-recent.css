@@ -1,9 +1,16 @@
 /* molecules/welcome-recent — portfolio: the Welcome page's "Recent" feed rows (name + muted
    mono path — the notes as the editor's recent files). The wrapping .recent column is part
    of this component's vocabulary; each row is the data-bound welcome-recent tag. */
-.recent { display: flex; flex-direction: column; gap: 0.55rem; }
-.recent__item { display: flex; gap: 1rem; align-items: baseline; width: fit-content;
+.recent { display: flex; flex-direction: column; gap: 0.55rem; container: recent-list / inline-size; }
+.recent__item { display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline; gap: var(--space-1) var(--space-4); width: 100%; min-width: 0;
   text-decoration: none; font-size: var(--text-base); }
 .recent__name { color: var(--color-accent, var(--ink)); }
 .recent__item:hover .recent__name { text-decoration: underline; }
-.recent__path { color: var(--ink-muted); font-size: var(--text-sm); font-family: var(--font-mono); }
+.recent__path { max-width: min(40vw, 18rem); overflow: hidden; color: var(--ink-muted);
+  font-size: var(--text-sm); font-family: var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
+
+@container recent-list (max-width: 32rem) {
+  .recent__item { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+  .recent__path { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+}
