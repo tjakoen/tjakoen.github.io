@@ -57,10 +57,10 @@
             <button class="wb-chip" type="button" data-proposal-cancel>Cancel</button>
           </div>
         </div>
-        <p class="wb-bar__note muted">Each prompt adds to the page. The desk can remove, resize or
-          move a block. It can pick the wrong change, so it shows the block and operation first.
-          Review the proposal before applying it. Copy edits are not available yet. Reloading starts
-          from the last prompt in the address.</p>
+        <p class="wb-bar__note muted">Each prompt adds blocks. The local model may draft copy into
+          supported fields, but its format and writing quality are still experimental. Check the
+          visible result before export. The desk can also remove, resize or move a block; review that
+          proposal before applying it. Existing block copy cannot be revised yet.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -204,7 +204,11 @@
         <details class="wb-drawer" data-surface="builder-help">
           <summary>What it builds, what it edits, and where it stops</summary>
           <p>Describe a page and press Build it. A fixed, code-owned set of GRAIN blocks decides what
-            renders, expanded by the same renderer every other page on this site goes through. Once
+            renders, and the desk may draft text only into the registered copy fields on those new
+            blocks. The live model has not yet produced a reliable draft, so check the visible result
+            before using or exporting the page. Existing block copy cannot be revised yet. The blocks
+            are expanded by the same renderer every other page on this
+            site goes through. Once
             there are blocks on the canvas, the same box aims at them: say drop the second card, and a
             half-billion-parameter model running in this browser reads what is on the page and answers
             with one verb pointed at one id the rail is printing. Whether it answers well is a
@@ -216,6 +220,11 @@
             page names the block it is about to touch before it touches it. If the model cannot run
             on your machine, this box says so rather than falling back to something that is not the
             model and calling it one.</p>
+          <p>Copy drafting is the unfinished part. In a live WebGPU check on October 3, 2026, the
+            0.5B model returned a different JSON shape and added details the brief did not support, so
+            the Builder kept its example copy. A temporary 1.5B trial timed out before it produced a
+            draft. The bounded copy path is covered with a scripted model, but that is not evidence
+            that the local model can write a useful page.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
@@ -269,9 +278,11 @@
             model at all. Editing one is the model's job, and it can now do the easiest version of it
             and none of the rest. Both halves are on this page on purpose, and the line under the
             prompt box is where you watch the second one land or fail in front of you.</p>
-          <p>Nothing on this page was written by the model. Which components appear is the block
-            set's decision, and the words inside each one are sample content the same table carries,
-            drafted by code. A wording pass is an open seam rather than a shipped feature.</p>
+          <p>The model can now suggest wording for the registered text fields on newly composed
+            blocks. That copy is included in the composition and should be checked before export.
+            This browser test does not show that the local model writes useful or accurate copy. A
+            wording pass for blocks already on the canvas remains an open seam because GRAIN does
+            not yet expose a content-edit operation.</p>
           <p>The Can't build list holds two different answers. A shell, a side rail or a top bar is
             the frame a page sits in rather than content it can hold, so it is refused on principle.
             Everything else is a gap with a date on it: the component exists, it is documented, and
@@ -301,8 +312,9 @@
         </details>
 
         <h2 class="section-head"><span>Examples</span></h2>
-        <p class="muted">Real links, real query strings. Every state on this page is shareable and
-          reproducible: the same prompt always builds the same page.</p>
+        <p class="muted">These links carry the prompt in the address, so you can share or revisit
+          an example. When the local model is available, the structure and wording can vary; without
+          it, the code-owned examples provide the static fallback.</p>
         <div class="docs-list">
           <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">An intro, two cards side by side, and a callout</a><span class="docs-list__what">three blocks, and the layout word does the placing.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20opening%20paragraph%20and%20a%20stat">An opening paragraph and a stat</a><span class="docs-list__what">the smallest page the set can make.</span></div>

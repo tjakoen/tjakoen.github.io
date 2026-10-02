@@ -44,6 +44,13 @@ interface BuilderEdit {
   wantSpans?: Record<string, string>;
 }
 
+interface BuilderDraft {
+  /** Copy must retain these supplied facts in the visible new blocks. */
+  mustMention: string[][];
+  /** The prompt should produce this many content blocks. */
+  minimumBlocks: number;
+}
+
 interface Scenario {
   id: string;
   page: string;                    // where the question is asked from
@@ -51,6 +58,8 @@ interface Scenario {
   /** Present on a /grain/builder edit: `page` and `ask` still name where and what, but the ask is typed
    *  into the canvas composer and the canvas is what gets graded. */
   builder?: BuilderEdit;
+  /** Present on a /grain/builder initial composition; grades both structure and visitor-supplied facts. */
+  builderDraft?: BuilderDraft;
   /** every group must have ≥1 case-insensitive hit in the reply (AND of ORs) */
   mustMention?: string[][];
   /** the browser must END on this pathname (a navigation scenario) */
@@ -219,6 +228,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-no-verb", page: "/grain/builder", ask: "the card should mention pricing",
     builder: { wantIds: ["b1", "b2", "b3", "b4"] },
     mustNotMention: ["will not work here", "does not edit a block"] },
+  { id: "builder-draft", page: "/grain/builder",
+    ask: "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.",
+    builderDraft: { minimumBlocks: 2, mustMention: [["Hearth Bakery"], ["Utrecht"], ["neighborhood bakery"], ["Sourdough"], ["baked fresh each morning", "fresh each morning"]] } },
   // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
   // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
   // the destination. LAST in the list on purpose — see the per-scenario cleanup below.
@@ -277,7 +289,7 @@ const EDIT_FIXTURE = {
   blocks: [
     { id: "b1", component: "block-lede", span: "full", data: { body: "A page about this work." }, props: {} },
     { id: "b2", component: "block-card", span: "half", data: { title: "First card", body: "The first piece of work." }, props: { pad: "sm" } },
-    { id: "b3", component: "block-callout", span: "full", data: { body: "A useful detail.", status: null }, props: {} },
+    { id: "b3", component: "block-callout", span: "half", data: { body: "A useful detail.", status: null }, props: {} },
     { id: "b4", component: "block-card", span: "half", data: { title: "Second card", body: "The second piece of work." }, props: { pad: "sm" } },
   ],
 };
@@ -339,7 +351,8 @@ async function submitPrompt(page: Page, text: string): Promise<void> {
 
 /** Open a known page through the builder's supported import control. This leaves the live model to
  *  answer only the scenario under test, and the artifact exercises the same import path a visitor
- *  uses to continue work on an exported composition. */
+ *  uses to continue work on an exported composition. The callout starts at half width so the
+ *  `builder-span` scenario measures a change instead of grading an unchanged full-width block. */
 async function composeFor(page: Page): Promise<void> {
   await page.goto(`${BASE}/grain/builder`, { waitUntil: "domcontentloaded" });
   await page.locator(PICKER).setInputFiles({
@@ -357,7 +370,7 @@ async function composeFor(page: Page): Promise<void> {
 // "Reading the page…" is the builder's thinking state, and it belongs here for the same reason
 // "Thinking" does: it is a settled, unchanging string, so without it `settle` would return the
 // moment the page said it had started rather than when the model answered.
-const BUSY = /Thinking|Loading Qwen|Reading the page|Applying the approved edit|\d+%$/;
+const BUSY = /Thinking|Loading Qwen|Reading (?:the page|that)|Applying the approved edit|\d+%$/;
 
 /** Wait until the desk's reply settles: non-empty, not a load/thinking state, and UNCHANGED for
  *  `stableMs`. A cross-page navigation also ends the wait (nav scenarios). Returns the final text
@@ -400,6 +413,8 @@ interface Result {
    *  because the point of the report is a diff between two runs and "which block did it pick" is
    *  the number being tracked. */
   canvas?: Array<{ id: string; span: string }>;
+  /** Builder draft scenarios only: visible block text used to grade retained visitor-supplied facts. */
+  draftText?: string[];
   /** Builder scenarios only: what the model was handed and what it said back, verbatim. The report's
    *  most useful field when a scenario fails — the page's reading of a bad answer looks the same
    *  whatever the bad answer was. */
@@ -413,6 +428,7 @@ const shownAs = (cells: Array<{ id: string; span: string }>): string =>
 function grade(
   s: Scenario, reply: string, endPath: string, realRoutes: Set<string>,
   canvas: Array<{ id: string; span: string }> = [],
+  draftText: string[] = [],
 ): string[] {
   const failures: string[] = [];
   const low = reply.toLowerCase();
@@ -426,6 +442,15 @@ function grade(
       const got = canvas.find((c) => c.id === id);
       if (!got) failures.push(`no ${id} on the canvas to check its span`);
       else if (got.span !== span) failures.push(`${id} is ${got.span}, wanted ${span}`);
+    }
+  }
+  if (s.builderDraft) {
+    if (canvas.length < s.builderDraft.minimumBlocks)
+      failures.push(`draft has ${canvas.length} blocks, wanted at least ${s.builderDraft.minimumBlocks}`);
+    const visibleCopy = draftText.join(" ").toLowerCase();
+    for (const group of s.builderDraft.mustMention) {
+      if (!group.some((value) => visibleCopy.includes(value.toLowerCase())))
+        failures.push(`draft copy is missing any of [${group.join(", ")}]`);
     }
   }
   if (s.mustNavigate) {
@@ -546,7 +571,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
   const page = await c.newPage();
   try {
     await clientDeskEverywhere(page);
-    if (s.builder) await recordModel(page);
+    if (s.builder || s.builderDraft) await recordModel(page);
     // A builder edit brings its own landing: the page has to be COMPOSED before there is anything to
     // edit. Importing a known composition keeps the setup out of the model's score.
     if (s.builder) await composeFor(page);
@@ -557,11 +582,12 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     // Two ways in, and they are different on purpose. Chat goes through the door's `chat.send`; the
     // builder's edit is typed into the canvas composer, because that composer's own submit handler
     // is the router, and going round it would skip the question this scenario exists to ask.
-    if (s.builder) await submitPrompt(page, s.ask);
+    if (s.builder || s.builderDraft) await submitPrompt(page, s.ask);
     else await ask(page, s.ask);
     // first model scenario may include the one-time ~350MB download; be patient once
     const timeout = s.deterministic ? 30_000 : firstModelRun ? 420_000 : 150_000;
-    let { text, path: endPath } = await settle(page, startPath, timeout, s.builder ? lastSaid : lastReply);
+    const builderPage = Boolean(s.builder || s.builderDraft);
+    let { text, path: endPath } = await settle(page, startPath, timeout, builderPage ? lastSaid : lastReply);
     // The real visitor now approves each proposed edit. The audit does the same only after the
     // proposal is visible, then grades the canvas after the ordinary approval path runs.
     if (s.builder && await page.locator("[data-proposal-apply]").isVisible().catch(() => false)) {
@@ -569,8 +595,9 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       ({ text, path: endPath } = await settle(page, startPath, timeout, lastSaid));
     }
     if (!s.deterministic) firstModelRun = false;
-    const canvas = s.builder ? await canvasState(page) : undefined;
-    const model = s.builder ? await recorded(page) : undefined;
+    const canvas = builderPage ? await canvasState(page) : undefined;
+    const draftText = s.builderDraft ? await page.locator(CELL).allTextContents() : undefined;
+    const model = builderPage ? await recorded(page) : undefined;
     // Per-scenario sessionStorage cleanup: tour-det (and any future tour ask) leaves a pending
     // "desk-tour" cursor stashed for the NEXT stop the door hasn't navigated to within this scenario's
     // own page, and intent-det's own ask marks the C1 nag-guard as fired ("visitor-intent" /
@@ -593,8 +620,8 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       if (!keepNotepad) localStorage.removeItem("grain.notepad");
     }, !!s.keepNotepad).catch(() => {});
     const ms = Date.now() - t0;
-    const failures = grade(s, text, endPath, realRoutes, canvas);
-    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, model, pass: failures.length === 0, failures };
+    const failures = grade(s, text, endPath, realRoutes, canvas, draftText);
+    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, model, pass: failures.length === 0, failures };
   } finally {
     await page.close().catch(() => {});
   }
@@ -626,6 +653,7 @@ try {
     console.log(`  ${res.pass ? "PASS" : "FAIL"} (${Math.round(res.ms / 1000)}s)${res.failures.length ? " — " + res.failures.join("; ") : ""}`);
     if (res.reply) console.log(`  reply: ${res.reply.slice(0, 220).replace(/\s+/g, " ")}${res.reply.length > 220 ? "…" : ""}`);
     if (res.canvas) console.log(`  canvas: ${res.canvas.map((c) => `${c.id}/${c.span}`).join(" ") || "(empty)"}`);
+    if (res.draftText) console.log(`  draft: ${res.draftText.join(" | ").replace(/\s+/g, " ").slice(0, 220)}`);
     if (res.model?.raw) console.log(`  model said: ${res.model.raw.slice(0, 200).replace(/\s+/g, " ")}`);
   }
 } finally {
@@ -634,7 +662,7 @@ try {
 }
 
 const passed = results.filter((r) => r.pass).length;
-const report = { label, base: BASE, model: "Qwen2.5-0.5B (WEAK_PROFILE)", passed, total: results.length, results };
+const report = { label, base: BASE, model: process.env.AUDIT_MODEL ?? "unspecified", passed, total: results.length, results };
 await Bun.write(`${OUT_DIR}/report-${label}.json`, JSON.stringify(report, null, 2));
 console.log(`\n== ${passed}/${results.length} passed — ${OUT_DIR}/report-${label}.json ==`);
 for (const r of results) console.log(`  ${r.pass ? "✓" : "✗"} ${r.id}${r.failures.length ? " — " + r.failures.join("; ") : ""}`);

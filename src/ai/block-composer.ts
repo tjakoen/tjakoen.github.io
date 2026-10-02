@@ -10,10 +10,10 @@
 //
 // So the division of labour here is the same one block-reasoner.ts already states for editing, and
 // it is the whole rule: THE MODEL UNDERSTANDS, THE CODE ENUMERATES. The model reads the sentence and
-// answers with a list of names. It never invents a name, because every name it returns is checked
-// against the closed set before anything is built, and anything unrecognised is dropped and counted
-// rather than guessed at. It never writes a word of the page either: the sample content stays where
-// block-set.ts put it, for the reason stated there.
+// answers with an ordered list of names and optional copy for the visible text fields the code
+// allows. Every name is checked against the closed set before anything is built, and anything
+// unrecognised is dropped rather than guessed at. Copy fields are stripped of control characters and
+// bounded before they can replace a block's example text.
 //
 // WHY THE WORD LIST IS STILL HERE, which reads like the fallback the edit path explicitly refuses.
 // It is not the same call. On the edit path a fallback would let the page claim an AI edit no AI
@@ -22,7 +22,7 @@
 // link with "the desk cannot run here" would be a link that only works on the author's laptop. The
 // page says which one composed it, every time, so the two are never confused for each other.
 
-import { BLOCK_NAMES, isSpan, type Span } from "./block-set.ts";
+import { BLOCK_NAMES, isSpan, sanitizeBlockCopy, type Span } from "./block-set.ts";
 
 /** How many blocks one sentence may produce. A repetition loop is the 0.5B's documented failure
  *  shape on this page (an answer of `{"move": {"move": {"move": …` ran to the token cap on
@@ -33,7 +33,7 @@ export const MAX_PLANNED_BLOCKS = 8;
 export type PlanRead =
   /** Names, in the model's own order, every one of them in the closed set. `dropped` carries what
    *  was thrown away so the console can say what the model asked for and did not get. */
-  | { kind: "plan"; names: string[]; span: Span | null; dropped: string[] }
+  | { kind: "plan"; names: string[]; span: Span | null; dropped: string[]; copies: Record<string, string>[] }
   /** Nothing usable came back. The caller composes by word list and says so. */
   | { kind: "unusable"; because: string };
 
@@ -59,11 +59,12 @@ export function composeMessage(ask: string, names: readonly string[] = BLOCK_NAM
   return [
     ask.trim(),
     "",
-    "(Answer with the blocks that sentence asks for, as JSON: {\"blocks\": [\"lede\", \"card\"]}.",
-    `The only block names are: ${names.join(", ")}. Use no other word.`,
-    "Repeat a name to ask for more than one, so two cards is [\"card\", \"card\"].",
-    "Put them in the order the sentence puts them.",
-    "Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+    "(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)",
+    `The only block names are: ${names.join(", ")}. Use no other name.`,
+    "Repeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.",
+    "Use only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.",
+    "Write brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.",
+    "Put blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
   ].join("\n");
 }
 
@@ -134,17 +135,25 @@ export function readModelPlan(raw: string, names: readonly string[] = BLOCK_NAME
 
   const kept: string[] = [];
   const dropped: string[] = [];
+  const copies: Record<string, string>[] = [];
   for (const item of listed) {
     if (kept.length >= MAX_PLANNED_BLOCKS) break;
-    const name = canonical(item, names);
+    const block = item && typeof item === "object" && !Array.isArray(item)
+      ? item as Record<string, unknown>
+      : null;
+    const rawName = block ? block.name : item;
+    const name = canonical(rawName, names);
     if (name === null) dropped.push(typeof item === "string" ? item : JSON.stringify(item));
-    else kept.push(name);
+    else {
+      kept.push(name);
+      copies.push(sanitizeBlockCopy(name, block?.copy));
+    }
   }
   if (kept.length === 0) {
     return { kind: "unusable", because: `no name in the answer is in the set: ${dropped.join(", ") || "the list was empty"}` };
   }
 
-  return { kind: "plan", names: kept, span: isSpan(record.span) ? record.span : null, dropped };
+  return { kind: "plan", names: kept, span: isSpan(record.span) ? record.span : null, dropped, copies };
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -45,6 +45,39 @@ export interface Composition {
   refusals: BlockRefusal[];
 }
 
+/** Copy fields the model may draft for a new block. Component identity, layout, props, and every
+ *  field not listed here remain owned by the code. */
+const BLOCK_COPY_LIMITS: Record<string, Record<string, number>> = {
+  lede: { body: 280 },
+  card: { title: 60, body: 280 },
+  callout: { body: 240 },
+  stat: { value: 24, label: 60, sub: 120 },
+};
+
+/** Keep generated copy inside the visible text fields the matching component already exposes.
+ *  Text is filled through `textContent` in the browser; stripping controls and limiting each field
+ *  also prevents a model response from turning one short brief into a very large exported page. */
+export function sanitizeBlockCopy(name: string, raw: unknown): Record<string, string> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const limits = BLOCK_COPY_LIMITS[name];
+  if (!limits) return {};
+  const input = raw as Record<string, unknown>;
+  const copy: Record<string, string> = {};
+  for (const [field, maxLength] of Object.entries(limits)) {
+    const value = input[field];
+    if (typeof value !== "string") continue;
+    const cleaned = [...value]
+      .map((character) => character.charCodeAt(0) <= 0x1f || character.charCodeAt(0) === 0x7f ? " " : character)
+      .join("")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, maxLength)
+      .trim();
+    if (cleaned) copy[field] = cleaned;
+  }
+  return copy;
+}
+
 // ---------------------------------------------------------------------------------------------
 // Normalizing + phrase matching — the same idiom field-matcher.ts uses, imported in spirit rather
 // than in code because that module's helpers are private to it and this one needs the same three.
@@ -74,11 +107,10 @@ interface BlockEntry {
   props?: Record<string, string>;
 }
 
-// Sample content is DETERMINISTIC and it is the honest answer to "what does a block say when the
-// description did not say". The alternative is the model composing it, and on a 0.5B that is exactly
-// where invention starts: a generated page whose prose the model wrote is a text generator wearing a
-// composition generator's clothes. Wording is a seam that already exists (field-matcher's
-// applyWording) and it can reach these later; until it does, what lands on the page is code's.
+// Sample content is deterministic and remains the fallback when the model does not provide a safe
+// value for one of the text fields registered below. Model copy is accepted only for those fields,
+// after `sanitizeBlockCopy` strips controls and bounds its length. It cannot change a component name,
+// field shape, span, or prop.
 const BLOCK_TABLE: BlockEntry[] = [
   {
     name: "lede",
@@ -284,6 +316,7 @@ export function composeFromNames(
   description: string,
   startIndex = 0,
   planSpan: Span | null = null,
+  copies: readonly Record<string, string>[] = [],
 ): Composition {
   const desc = padded(description);
   // The description's own layout word outranks the model's. A phrase like "side by side" is a fact
@@ -294,7 +327,7 @@ export function composeFromNames(
     : planSpan;
 
   const blocks: Block[] = [];
-  for (const name of names) {
+  for (const [index, name] of names.entries()) {
     if (name === "form") {
       const form = matchFormBlock(description);
       if (!form) continue;
@@ -313,7 +346,7 @@ export function composeFromNames(
       id: `b${startIndex + blocks.length + 1}`,
       component: entry.component,
       span: forced ?? entry.defaultSpan,
-      data: { ...entry.sample },
+      data: { ...entry.sample, ...sanitizeBlockCopy(name, copies[index]) },
       props: { ...entry.props },
     });
   }

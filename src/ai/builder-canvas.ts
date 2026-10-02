@@ -552,10 +552,11 @@ function boot(): void {
    *  sentence and could never read it, which showed up most plainly in counting, since "two cards"
    *  produced exactly one card however many times you asked.
    *
-   *  What the model decides is WHICH blocks and in WHAT ORDER, from a closed set of five names it is
-   *  handed in the prompt. What it never decides is what a block says, which stays with the samples
-   *  in block-set.ts, or what the page declines to build, which `refusalsFor` reads off the sentence
-   *  on both paths. A name it invents is dropped rather than corrected.
+   *  What the model decides is WHICH blocks and in WHAT ORDER, from the closed set of names it is
+   *  handed in the prompt. It may also draft copy for the registered text fields on those blocks.
+   *  Code checks every name, ignores unknown copy fields, strips control characters, and limits each
+   *  accepted value. What the page declines to build still comes from `refusalsFor`, which reads the
+   *  sentence on both paths.
    *
    *  It says WHICH path composed the page, every time, and that line is not decoration. A page that
    *  quietly fell back to the word list while the drawer next to it claims the model chose would be
@@ -587,14 +588,17 @@ function boot(): void {
     if (plan.dropped.length) console.info("[builder] dropped names outside the set:", plan.dropped);
     const before = state.blocks.length;
     remember(state);
-    landBuild(addFromPlan(state, plan.names, ask, plan.span), ask, before);
+    landBuild(addFromPlan(state, plan.names, ask, plan.span, plan.copies), ask, before);
     const added = state.blocks.length - before;
+    const draftedFields = plan.copies.reduce((count, copy) => count + Object.keys(copy).length, 0);
     // The names are said out loud for the same reason the edit path names a block before touching
     // it: a plan that is legal and wrong is the one failure no validation can see, and the only
     // guard against it is a reader who can check what was chosen against what they asked for.
     say(added === 0
       ? `The desk read that as ${inWords(plan.names)}, and nothing in it had content to build from.`
-      : `The desk read that as ${inWords(plan.names)}.`, "command");
+      : draftedFields
+        ? `The desk read that as ${inWords(plan.names)} and drafted copy from your brief.`
+        : `The desk read that as ${inWords(plan.names)}.`, "command");
   }
 
   composer.addEventListener("submit", (e) => {

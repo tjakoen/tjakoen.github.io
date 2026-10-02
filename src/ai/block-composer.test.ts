@@ -9,7 +9,7 @@ import { test, expect, describe } from "bun:test";
 import {
   completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
 } from "./block-composer.ts";
-import { BLOCK_NAMES, composeFromNames } from "./block-set.ts";
+import { BLOCK_NAMES, composeFromNames, sanitizeBlockCopy } from "./block-set.ts";
 
 const plan = (raw: string) => readModelPlan(raw);
 const names = (raw: string) => {
@@ -21,6 +21,8 @@ describe("the prompt hands over the closed set", () => {
   test("every buildable name appears in it, so the model is never asked to guess one", () => {
     const message = composeMessage("a page about bread");
     for (const name of BLOCK_NAMES) expect(message).toContain(name);
+    expect(message).toContain("Do not invent claims, testimonials, guarantees or statistics.");
+    expect(message).toContain("card.title and card.body");
   });
 
   test("the sentence itself leads, because a small model reads the top of a prompt best", () => {
@@ -89,6 +91,43 @@ describe("nothing the model says is trusted", () => {
     const read = plan('{"blocks": ["card"], "span": "half"}');
     expect(read.kind === "plan" && read.span).toBe("half");
   });
+
+  test("block objects keep only recognized names and bounded copy for their own text fields", () => {
+    const read = plan(JSON.stringify({ blocks: [
+      { name: "lede", copy: { body: "A page about Hearth Bakery.", html: "<img>" } },
+      { name: "invented", copy: { body: "Drop this with the block." } },
+      { name: "card", copy: { title: "Sourdough", body: "Baked fresh each morning." } },
+    ] }));
+    expect(read.kind).toBe("plan");
+    if (read.kind !== "plan") return;
+    expect(read.names).toEqual(["lede", "card"]);
+    expect(read.copies).toEqual([
+      { body: "A page about Hearth Bakery." },
+      { title: "Sourdough", body: "Baked fresh each morning." },
+    ]);
+    expect(read.dropped).toEqual([JSON.stringify({ name: "invented", copy: { body: "Drop this with the block." } })]);
+  });
+});
+
+describe("generated block copy is bounded by each component's visible text contract", () => {
+  test("unknown fields and components are ignored, and controls are stripped", () => {
+    expect(sanitizeBlockCopy("card", {
+      title: "Fresh\n bread\t today",
+      body: "Made with <grain> flour.",
+      href: "javascript:alert(1)",
+    })).toEqual({ title: "Fresh bread today", body: "Made with <grain> flour." });
+    expect(sanitizeBlockCopy("form", { body: "Not a form field." })).toEqual({});
+  });
+
+  test("field values are capped and empty values fall back to the component sample", () => {
+    const long = "x".repeat(400);
+    const copy = sanitizeBlockCopy("card", { title: long, body: "  \n\t  " });
+    expect(copy.title).toHaveLength(60);
+    expect(copy.body).toBeUndefined();
+    const { blocks } = composeFromNames(["card"], "a card", 0, null, [copy]);
+    expect(blocks[0]?.data.title).toBe("x".repeat(60));
+    expect(blocks[0]?.data.body).toBe("Nothing between source and server: no bundler, no transpiler, no watcher.");
+  });
 });
 
 describe("the answers that used to hang or mislead the page", () => {
@@ -135,6 +174,20 @@ describe("composeFromNames enumerates what the model only named", () => {
   test("the model's span is used when the sentence names no layout", () => {
     const { blocks } = composeFromNames(["card"], "a card", 0, "third");
     expect(blocks[0]?.span).toBe("third");
+  });
+
+  test("generated copy replaces examples only on its matching block", () => {
+    const { blocks } = composeFromNames(
+      ["lede", "card"],
+      "a bakery page with an intro and a card",
+      0,
+      null,
+      [{ body: "Fresh bread from Hearth Bakery." }, { title: "Sourdough", body: "Baked daily." }],
+    );
+    expect(blocks.map((block) => block.data)).toEqual([
+      { body: "Fresh bread from Hearth Bakery." },
+      { title: "Sourdough", body: "Baked daily." },
+    ]);
   });
 
   test("refusals are read off the SENTENCE, so a plan that omits a gallery still declines it", () => {

@@ -401,6 +401,13 @@ export function makeChatModel() {
   return {
     async complete(prompt) {
       sessionStorage.setItem("__builderPrompt", prompt);
+      if (/Hearth Bakery page/i.test(prompt)) return JSON.stringify({ blocks: [
+        { name: "lede", copy: { body: "Hearth Bakery bakes sourdough fresh each morning." } },
+        { name: "card", copy: { title: "Coffee", body: "Freshly brewed to go with the bread." } },
+      ] });
+      if (/generated image tag/i.test(prompt)) return JSON.stringify({ blocks: [
+        { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
+      ] });
       if (/drop the second card/i.test(prompt)) return '{"action":"block.remove","target":"block:b4"}';
       if (/make the callout full/i.test(prompt)) return 'Sure!\\n{"action":"block.span","target":"block:b3","payload":{"span":"full"}}';
       if (/move the callout up/i.test(prompt)) return '{"action":"block.move","target":"block:b3","payload":{"direction":"up"}}';
@@ -436,6 +443,35 @@ async function scriptedDesk(page: Page): Promise<void> {
 test.describe("the model chooses the verb", () => {
   test.beforeEach(async ({ page }) => { await scriptedDesk(page); });
 
+  test("a page brief drafts copy into the closed block set and keeps it in the composition", async ({ page }) => {
+    await page.goto("/grain/builder");
+    await waitForDesk(page);
+    await submitPrompt(page, "Build a Hearth Bakery page with an intro and a card about coffee.");
+
+    await expect(page.locator(CELL)).toHaveCount(2);
+    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery bakes sourdough fresh each morning.");
+    await expect(page.locator(`${CELL} .card__title`)).toHaveText("Coffee");
+    await expect(page.locator(`${CELL} .card__body`)).toHaveText("Freshly brewed to go with the bread.");
+    await expect(page.locator(SAID)).toContainText("drafted copy from your brief");
+
+    const spec = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
+    expect(spec.blocks.map((block: { data: Record<string, string> }) => block.data)).toEqual([
+      { body: "Hearth Bakery bakes sourdough fresh each morning." },
+      { title: "Coffee", body: "Freshly brewed to go with the bread." },
+    ]);
+  });
+
+  test("generated markup remains literal text inside the live block", async ({ page }) => {
+    await page.goto("/grain/builder");
+    await waitForDesk(page);
+    await submitPrompt(page, "Build a page with a lede about a generated image tag.");
+
+    const lede = page.locator(`${CELL} .lede`);
+    await expect(lede).toHaveText("<img src=x onerror=window.__builderXss=true>");
+    await expect(page.locator(`${CELL} img`)).toHaveCount(0);
+    expect(await page.evaluate(() => (window as unknown as { __builderXss?: boolean }).__builderXss)).toBeUndefined();
+  });
+
   test("a sentence becomes a real op on a real block, through the one door", async ({ page }) => {
     await twoCardPage(page);
     await waitForDesk(page);
@@ -458,6 +494,9 @@ test.describe("the model chooses the verb", () => {
     await twoCardPage(page);
     await page.locator('[data-block="b3"] [data-op="span:half"]').click();
     await waitForDesk(page);
+    // Seeding the page now uses the same local model seam as build prompts, so clear its captured
+    // request before checking that the following edit includes the live block IDs.
+    await page.evaluate(() => sessionStorage.removeItem("__builderPrompt"));
     await submitPrompt(page, "make the callout full");
     await expect(page.locator('[data-block="b3"] [data-op="span:half"]')).toHaveAttribute("data-on", "on");
 

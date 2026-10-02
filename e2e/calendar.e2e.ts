@@ -332,6 +332,29 @@ test.describe("the /calendar event page (JS on)", () => {
     // it is a real MILL entry (carries the Rendered/Source toggle)
     await expect(page.locator(".content-source")).toBeVisible();
   });
+
+  test("an event share block reports copy success and stays useful without clipboard access", async ({ page }) => {
+    await page.goto("/calendar/gdg-hau-ai-hack");
+    const share = page.locator("[data-share]");
+    await share.locator("summary").click();
+    const copy = share.locator("[data-share-copy]");
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(page.url()).origin });
+    await copy.click();
+    await expect(copy).toHaveText("Copied");
+
+    const fallbackPage = await page.context().newPage();
+    await fallbackPage.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+      document.execCommand = () => false;
+    });
+    await fallbackPage.goto("/calendar/gdg-hau-ai-hack");
+    const fallbackShare = fallbackPage.locator("[data-share]");
+    await fallbackShare.locator("summary").click();
+    const fallbackCopy = fallbackShare.locator("[data-share-copy]");
+    await fallbackCopy.click();
+    await expect(fallbackCopy).toHaveText("Copy failed, select it instead");
+    await expect(fallbackShare.locator("[data-share-text]")).toBeVisible();
+  });
 });
 
 test.describe("the /calendar app (no JS)", () => {

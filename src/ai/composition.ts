@@ -53,8 +53,9 @@ export function addFromPlan(
   names: readonly string[],
   description: string,
   span: Span | null = null,
+  copies: readonly Record<string, string>[] = [],
 ): PageComposition {
-  const { blocks, refusals } = composeFromNames(names, description, nextIndex(comp), span);
+  const { blocks, refusals } = composeFromNames(names, description, nextIndex(comp), span, copies);
   return { blocks: [...comp.blocks, ...blocks], refusals };
 }
 
