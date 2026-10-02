@@ -81,6 +81,9 @@ check follows the source-to-board links and verifies the completed status.
 The CRUMB introduction now leads with a direct link into the live portfolio tour. A browser check
 starts that tour from the project page and confirms the first guided step appears.
 
+The PANTRY introduction now includes the documented install, scaffold, check, and serve commands next
+to its verified-install claim. It also states that the board reads the host project's plans in place.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need
@@ -98,7 +101,7 @@ individual checks before the audit can be called complete.
 | `/mill` | Tie the content-engine explanation to one note or documentation page rendered by the live site. | Implemented: the project links include a direct rendered-note example, covered by the landing-page browser check. |
 | `/proof` and `/plans` | Explain the relationship between markdown plans and the board with one current, completed portfolio example; keep the manual-refresh limitation explicit until live updates ship. | Implemented: the PROOF page links the completed site-builder markdown to its board detail, states the manual-refresh limit, and has a browser check for both links and the rendered status. |
 | `/crumb` | Lead with the live portfolio tour so visitors can experience the layer before reading its file format. | Implemented: the first project link starts the guided tour on the live portfolio, covered by a browser check. |
-| `/pantry` | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Next |
+| `/pantry` | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Implemented: the page shows the documented install, scaffold, validation, and serve commands, then explains that the board reads the host project's plans in place. |
 | `/greenroom` | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Next |
 | `/native-github-classroom` and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Next |
 | `/grain/builder` | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. The present measured edit score is only 2/5. | Open in `builder-ai-depth.md`. |
