@@ -111,6 +111,21 @@ fields, but the live writing check scored 0/1 for both the 0.5B and temporary 1.
 current model used the wrong JSON shape and added unsupported details; the larger profile timed out.
 Copy on blocks already in the canvas cannot yet be edited.
 
+The Builder now follows the part of Puck's AI approach that fits this site: a model chooses from
+GRAIN's code-owned blocks and can draft copy only for registered text fields on new blocks. The
+builder bounds and sanitizes that text, then renders it as text rather than markup. A visitor can
+inspect the result in the canvas before export. Model quality remains an open gap: the live writing
+check scored 0/1 for both tested profiles, and the current profile's edits can still target the wrong
+block. Existing copy cannot be revised because GRAIN does not yet expose a bounded text-write
+operation. The Builder names these limits in its visible guidance; the work is a tested assembly
+path, not yet a reliable AI page writer.
+
+The current release checks passed after the Builder changes. The unit suite passed 681 tests. The
+full browser suite passed 392 tests with one skipped calendar lightbox case. The static export
+built 1,174 pages, and its verifier found every sitemap destination and internal link in the export.
+The changes are committed on main, pushed, and present on the live Builder page. The complete
+route-by-route visual review remains open, as does the Builder's live model reliability work.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need
