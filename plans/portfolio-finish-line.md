@@ -89,7 +89,7 @@ individual checks before the audit can be called complete.
 | `/greenroom` | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Next |
 | `/native-github-classroom` and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Next |
 | `/grain/builder` | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. The present measured edit score is only 2/5. | Open in `builder-ai-depth.md`. |
-| `/grain/builder/preview` | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Next |
+| `/grain/builder/preview` | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Implemented: the empty state now opens the workbench with a representative page composed; the static-host limitation remains explicit. |
 | `/teaching` | Add an anonymized sample activity or rubric so the course and assessment claims have inspectable teaching evidence. | Next |
 | `/badges` and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | Next |
 | `/talks` and talk decks | Keep the live-deck format, verify each index fact against its deck, and link each talk to its related note or a recording where one exists. The slide-count mismatch is fixed. | Count consistency fixed; remaining links need review. |

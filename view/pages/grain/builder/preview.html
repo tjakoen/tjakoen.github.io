@@ -44,11 +44,12 @@
           </div>
 
           <div class="mk-pane__body">
-            <p class="preview-empty" data-bind-data-empty="isEmpty">Nothing to preview. Compose a page
-              on <a href="/grain/builder">the builder</a> and press Preview, which carries whatever is on
-              the canvas over to here. An address with a prompt in it composes one too, but only
-              where the app server is running: on the published site this page is a frozen file, so
-              a link like that arrives empty and the button is the way through.</p>
+            <div class="preview-empty" data-bind-data-empty="isEmpty">
+              <p>Nothing to preview yet. Open the workbench with a sample page already composed, then
+                adjust it and preview your version here.</p>
+              <a class="btn" data-variant="soft" data-preview-example
+                 href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">Try an intro, two cards, and a callout</a>
+            </div>
 
             <!-- The composed page, rendered by the same loop /grain/builder uses (ai/canvas.ts into this
                  marker), so the preview cannot drift from the thing it is previewing. -->
