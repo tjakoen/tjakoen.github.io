@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { readdir } from "node:fs/promises";
 
 test.describe("Projects presentation in the editor shell", () => {
   test("stacks project visuals when the desktop main pane is narrow", async ({ page }) => {
@@ -88,9 +89,69 @@ test.describe("Projects presentation in the editor shell", () => {
     expect(copy!.y + copy!.height).toBeGreaterThan(visual!.y);
   });
 
+  test("teaching page shows an illustrative, privacy-safe assessment example on desktop and phone", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/teaching");
+    const example = page.getByRole("heading", { name: "What that looks like" });
+    await expect(example).toBeVisible();
+    await expect(page.locator("main")).toContainText("not a copy of a current assignment or a student submission");
+    await expect(page.locator('a[href="/badges"]').filter({ hasText: "Basic Programming in Web Development badge criteria" })).toBeVisible();
+    await expect(page.locator('[aria-label="Illustrative assessment evidence"]')).toContainText("Small screens");
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(example).toBeVisible();
+    const content = page.locator('[aria-label="Illustrative assessment evidence"]');
+    expect(await content.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await content.evaluate((el) => el.clientWidth));
+  });
+
+  test("badge hub groups awards clearly and explains the current threshold", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/badges");
+    await expect(page.locator("main")).toContainText("grouped by course, section, and term");
+    await expect(page.locator("main")).toContainText("published 75% threshold after instructor review");
+    await expect(page.locator("main")).toContainText("historical participation awards are still being reconciled");
+    await expect(page.getByRole("heading", { name: /6APSI/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /6ADET/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /6INTROWEB/ })).toBeVisible();
+    await expect(page.locator('a[href^="/badges/"]')).toHaveCount(14);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    const list = page.locator(".docs-list").first();
+    expect(await list.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await list.evaluate((el) => el.clientWidth));
+
+    await page.goto("/badges/apsi-2215-prelim");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByRole("link", { name: "All badge criteria" })).toHaveAttribute("href", "/badges");
+    const badge = page.locator(".badge-class");
+    expect(await badge.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await badge.evaluate((el) => el.clientWidth));
+  });
+
+  test("a recipient certificate links to its criteria and fits a phone", async ({ page }) => {
+    const files = await readdir(new URL("../content/badges", import.meta.url));
+    const certificate = files.find((file) => file.endsWith(".md") && file.includes("--"));
+    expect(certificate).toBeDefined();
+    const certificateSlug = certificate!.slice(0, -3);
+    const classSlug = certificateSlug.split("--")[0]!;
+
+    await page.goto("/sitemap.xml");
+    expect(await page.content()).not.toContain(certificateSlug);
+    await page.goto(`/badges/${classSlug}`);
+    await expect(page.locator(`.badge-class a[href*="--"]`)).toHaveCount(0);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`/badges/${certificateSlug}`);
+    await expect(page.locator(".badge-cert h1")).toBeVisible();
+    await expect(page.locator('.badge-verify a[href^="/badges/"]:not([href$=".json"])')).toBeVisible();
+    await expect(page.getByRole("link", { name: "All badge criteria" })).toHaveAttribute("href", "/badges");
+
+    const badge = page.locator(".badge-cert");
+    expect(await badge.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await badge.evaluate((el) => el.clientWidth));
+  });
+
   test("project detail pages put useful next steps near the introduction", async ({ page }) => {
     const pages = [
       ["/greenroom", "#try-it"],
+      ["/greenroom", "#sample-run"],
       ["/pantry", "https://github.com/tjakoen/pantry"],
       ["/bread", "https://github.com/tjakoen/bread"],
       ["/batch", "/batch/docs/architecture"],
@@ -98,6 +159,8 @@ test.describe("Projects presentation in the editor shell", () => {
       ["/proof", "/plans"],
       ["/crumb", "/crumb/docs/getting-started"],
       ["/native-github-classroom", "https://tjakoen.github.io/github-native-course-platform/?demo=1"],
+      ["/native-github-classroom", "#architecture"],
+      ["/native-github-classroom", "/native-github-classroom/docs"],
     ] as const;
 
     await page.setViewportSize({ width: 390, height: 844 });
@@ -121,8 +184,8 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(page.locator('.hero__cta a[href="/projects"]')).toBeVisible();
 
     for (const [path, ids] of [
-      ["/greenroom", ["capabilities", "bug-handover", "hosted-editor", "run-modes", "try-it", "limits", "source"]],
-      ["/native-github-classroom", ["design", "safety", "demo", "read-more"]],
+      ["/greenroom", ["capabilities", "sample-run", "bug-handover", "hosted-editor", "run-modes", "try-it", "limits", "source"]],
+      ["/native-github-classroom", ["architecture", "design", "safety", "demo", "read-more"]],
       ["/bread", ["start-building", "layers", "pantry-app", "architecture"]],
     ] as const) {
       await page.goto(path);
@@ -133,5 +196,25 @@ test.describe("Projects presentation in the editor shell", () => {
         await expect(toc.locator(`a[href="#${id}"]`)).toHaveCount(1);
       }
     }
+
+    await page.goto("/native-github-classroom");
+    const classroomActions = page.locator('nav.project-links[aria-label="Course platform links"]');
+    await expect(classroomActions.locator("a").nth(0)).toHaveAttribute("href", "#architecture");
+    await expect(classroomActions.locator("a").nth(1)).toHaveAttribute("href", "https://tjakoen.github.io/github-native-course-platform/?demo=1");
+    await expect(classroomActions.locator("a").nth(2)).toHaveAttribute("href", "/native-github-classroom/docs");
+    await expect(page.getByRole("img", { name: /A teacher control repo/ })).toBeVisible();
+
+    await page.goto("/greenroom");
+    const sampleHeading = page.locator("#sample-run");
+    const sampleCopy = page.locator("#sample-run + p");
+    const sampleTable = page.locator("#sample-run + p + table");
+    await expect(sampleHeading).toBeVisible();
+    await expect(sampleCopy).toContainText("ten-check matrix");
+    await expect(sampleCopy).toContainText("seeded data");
+    await expect(sampleCopy).toContainText("not a result from a live application");
+    await expect(sampleTable.getByRole("row")).toHaveCount(5);
+    await expect(sampleTable.getByRole("cell", { name: "Intentional failure" })).toHaveCount(2);
+    await expect(page.locator('a[href*="demo%2Bdemo2-failed/index.html"]')).toBeVisible();
+    await expect(sampleTable.evaluate((el) => el.scrollWidth <= el.clientWidth)).resolves.toBe(true);
   });
 });

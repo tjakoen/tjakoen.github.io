@@ -56,6 +56,9 @@
   border: 0; background: none; cursor: pointer; padding: var(--space-1) var(--space-2);
 }
 .notes-tags__more:hover { text-decoration: underline; }
+.notes-tag-filters { font-size: var(--text-xs); }
+.notes-tag-filters > summary { width: fit-content; color: var(--color-muted); cursor: pointer; }
+.notes-tag-filters[open] > summary { margin-bottom: var(--space-2); }
 
 /* ---- the feed: a plain vertical list, one hairline separator per card (content-index's own
    convention) rather than a boxed tile — the "front page" read is a rule-separated column, not
@@ -74,6 +77,27 @@
 }
 .note-card:last-child { border-bottom: 0; }
 .note-card[hidden] { display: none; }
+
+/* A small bridge from the writing shelf to the work it documents. It sits after the pinned
+   flagship so the first note stays the first thing to read. */
+.notes-paths {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-line);
+}
+.notes-paths nav { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-4); }
+.notes-paths__label { color: var(--color-muted); font-size: var(--text-xs); }
+.notes-paths a { color: var(--color-fg); font-size: var(--text-sm); }
+.notes-paths a:hover { color: var(--color-accent); }
+
+@media (max-width: 40rem) {
+  .notes-paths nav { gap: var(--space-2) var(--space-3); }
+  .notes-paths__label { flex-basis: 100%; }
+}
+
+@media (min-width: 40.001rem) {
+  /* The feed script opens filters on desktop, where the full toolbar still fits comfortably. */
+  .notes-tag-filters > summary { display: none; }
+}
 
 /* the flagship, pinned to the top of the feed (content.ts FLAGSHIP_NOTE_SLUG): a quiet "featured"
    inset — an accent rule down the left edge + an accent-colored pin tag in the byline. Subtle

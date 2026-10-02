@@ -33,14 +33,17 @@ async function deskReady(page: Page) {
 test.describe("B2 notes filtering (deterministic, no model needed)", () => {
   test("on /notes: checks the teaching chip, hides non-teaching cards, mirrors ?tag= into the URL", async ({ page }) => {
     await clientDeskEverywhere(page);
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/notes");
     await deskReady(page);
+    await expect(page.locator("[data-tag-filters]")).not.toHaveAttribute("open", "");
     const totalCards = await page.locator(".note-card").count();
 
     await ask(page, "show me notes about teaching");
 
     const teachingChip = page.locator('[data-feed-controls] input[type="checkbox"][value="teaching"]');
     await expect(teachingChip).toBeChecked({ timeout: 10_000 });
+    await expect(page.locator("[data-tag-filters]")).toHaveAttribute("open", "");
     await expect(page).toHaveURL(/[?&]tag=teaching\b/);
     // at least one card stays visible (the real teaching-tagged notes) and at least one hides —
     // proves the island's own applyFilters actually ran, not just the checkbox flipping in isolation.
@@ -59,6 +62,7 @@ test.describe("B2 notes filtering (deterministic, no model needed)", () => {
     await page.waitForURL(/\/notes\?tag=teaching\b/);
     const teachingChip = page.locator('[data-feed-controls] input[type="checkbox"][value="teaching"]');
     await expect(teachingChip).toBeChecked({ timeout: 10_000 });   // the destination island's own applyQueryTags
+    await expect(page.locator("[data-tag-filters]")).toHaveAttribute("open", "");
     await expect(page.locator(".assistant__log")).toContainText("teaching");   // the arrival announce named it
   });
 });

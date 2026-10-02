@@ -13,6 +13,9 @@ The single source of truth for how I work across every repo: how I build softwar
 partner, how anything under my byline reads, and how a new repo is set up. Public and portable:
 any repo of mine references this folder instead of copying its own drifting rules.
 
+I maintain these as the current working standards for repositories that adopt this folder. The
+applicability line on each page says when it applies; read the linked file before relying on a rule.
+
 **How to use this, human or AI:** read this index first, then fetch **only** the standard the task in
 front of you needs. Each line below is the whole hook: that's the point, so you load one file, not
 six.

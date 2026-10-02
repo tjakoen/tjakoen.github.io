@@ -3,10 +3,10 @@
 // Two outputs, both headless via Playwright (already a devDependency, same path as tools/og-card.ts,
 // no new runtime dep):
 //   1. media/badges/og-<class>.png   — the 1200x630 unfurl card (og:image) for each badge class:
-//      medallion + course name + what it covers + issuer. One per class (14), not per recipient.
+//      medallion + course name + what it covers + issuer. One per class, not per recipient.
 //   2. media/badges/<cert>.png        — the downloadable badge for each cert: the medallion on paper,
-//      with that cert's Open Badges v3 assertion BAKED into a PNG iTXt "openbadges" chunk (the OB
-//      image-baking spec), so the downloaded file is itself a verifiable credential.
+//      with that cert's Open Badges assertion BAKED into a PNG iTXt "openbadges" chunk (the OB
+//      image-baking spec), for approved hosted OB2 awards. Historical images do not gain a portable assertion.
 //
 // It reads the EMITTED content/badges/*.md (so it runs after tools/issue-badges.ts --emit) and the
 // sibling *.ob.json for the assertion. Nothing here reads the gradebooks.
@@ -14,6 +14,7 @@
 //   bun tools/badge-images.ts            # render everything found in content/badges/
 //   bun tools/badge-images.ts --og-only  # just the class unfurl cards (skip per-cert baking)
 
+import { YAML } from "bun";
 import { chromium, type Browser } from "@playwright/test";
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -30,18 +31,21 @@ const OG_ONLY = process.argv.includes("--og-only");
 const HUE: Record<string, string> = { apsi: "#d07f4a", adet: "#3fa89e", introweb: "#8877d6" };
 const PAPER = "#E2E0D8", INK = "#1C1B17", MUTED = "#6E6C64";
 
-// Minimal front-matter reader: these files are generator-written, so the keys are flat "key: value"
-// (quotes optional). Enough to pull the scalars the images need.
-function frontmatter(md: string): Record<string, string> {
+// The issuer writes JSON-quoted YAML scalars. Parse them rather than stripping their quotes.
+export function frontmatter(md: string): Record<string, string> {
   const m = md.match(/^---\n([\s\S]*?)\n---/);
   if (!m) return {};
+  const parsed = YAML.parse(m[1]!) as Record<string, unknown>;
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Expected badge frontmatter object");
   const out: Record<string, string> = {};
-  for (const line of m[1]!.split("\n")) {
-    const kv = line.match(/^([A-Za-z][\w]*):\s*(.*)$/);
-    if (kv) out[kv[1]!] = kv[2]!.replace(/^"(.*)"$/, "$1").trim();
+  for (const key of ["type", "course", "subtitle", "badgeName", "issuer", "year", "issuedOn", "recipientName"]) {
+    const value = parsed[key]; if (value === undefined || value === null) continue;
+    if (typeof value !== "string" && typeof value !== "number") throw new Error(`Expected scalar badge field: ${key}`);
+    out[key] = String(value);
   }
   return out;
 }
+const escapeHtml = (value: string): string => value.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]!);
 
 // --- PNG iTXt baking (Open Badges) -------------------------------------------
 const CRC_TABLE = (() => {
@@ -55,7 +59,8 @@ function crc32(buf: Uint8Array): number {
   return (c ^ 0xffffffff) >>> 0;
 }
 // Insert an iTXt chunk (keyword "openbadges") carrying the assertion, right before IEND.
-function bakeOpenBadge(png: Buffer, assertion: string): Buffer {
+export function bakeOpenBadge(png: Buffer, assertion: string): Buffer {
+  if (png.length < 20 || !png.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) || png.subarray(png.length-8,png.length-4).toString("ascii") !== "IEND") throw new Error("Expected PNG with terminal IEND chunk");
   const keyword = "openbadges";
   const data = Buffer.concat([
     Buffer.from(keyword, "latin1"), Buffer.from([0, 0, 0, 0, 0]), // keyword\0 compFlag compMethod lang\0 transKeyword\0
@@ -68,6 +73,13 @@ function bakeOpenBadge(png: Buffer, assertion: string): Buffer {
   // IEND is the last 12 bytes; splice the new chunk before it.
   const iendAt = png.length - 12;
   return Buffer.concat([png.subarray(0, iendAt), chunk, png.subarray(iendAt)]);
+}
+
+export function bakeHostedBadge(png: Buffer, assertion: string): Buffer {
+  if (!assertion) return png;
+  const parsed = JSON.parse(assertion) as {type?: unknown; verification?: {type?:unknown}; "@context"?:unknown};
+  if (parsed.type !== "Assertion" || parsed.verification?.type !== "HostedBadge" || parsed["@context"] !== "https://w3id.org/openbadges/v2") return png;
+  return bakeOpenBadge(png, assertion);
 }
 
 // --- render helpers ----------------------------------------------------------
@@ -83,7 +95,7 @@ function badgeSvg(fm: Record<string, string>, size: number): string {
     hue: HUE[fm.course!] ?? INK, ink: INK, muted: MUTED, paper: "#FFFFFF", font: FONT, size,
   });
 }
-function medallionHtml(fm: Record<string, string>, size: number): string {
+export function medallionHtml(fm: Record<string, string>, size: number): string {
   return `<!doctype html><html><head><meta charset="utf-8"><style>
     html,body{margin:0} .wrap{width:${size}px;height:${Math.round(size * 340 / 300) + 40}px;background:${PAPER};display:flex;align-items:center;justify-content:center}
   </style></head><body><div class="wrap">${badgeSvg(fm, size - 40)}</div></body></html>`;
@@ -91,7 +103,7 @@ function medallionHtml(fm: Record<string, string>, size: number): string {
 // The unfurl card, in the Claude-Academy layout: the course name as the eyebrow + the skill as the
 // headline on the left, the badge on the right, on the course hue. The foot names the instructor who
 // issues it, with the school as affiliation rather than as the issuing body.
-function ogCardHtml(fm: Record<string, string>): string {
+export function ogCardHtml(fm: Record<string, string>): string {
   const hue = HUE[fm.course!] ?? INK;
   const courseName = BADGE_COURSE_NAMES[fm.course!] || fm.course || "";
   const skill = fm.subtitle || fm.badgeName || "";
@@ -109,10 +121,10 @@ function ogCardHtml(fm: Record<string, string>): string {
   </style></head><body>
     <div class="card">
       <div class="txt">
-        <p class="brand">${courseName}</p>
+        <p class="brand">${escapeHtml(courseName)}</p>
         <p class="eyebrow">Course badge</p>
-        <h1 class="skill">${skill}</h1>
-        <p class="issuer">Issued by ${fm.issuer || "Tjakoen Stolk"} · Instructor, Holy Angel University</p>
+        <h1 class="skill">${escapeHtml(skill)}</h1>
+        <p class="issuer">Issued by ${escapeHtml(fm.issuer || "Tjakoen Stolk")} · Instructor, Holy Angel University</p>
       </div>
       <div class="art">${badgeSvg(fm, 300)}</div>
     </div></body></html>`;
@@ -127,6 +139,7 @@ async function shot(browser: Browser, html: string, w: number, h: number): Promi
 }
 
 // --- run ---------------------------------------------------------------------
+if (import.meta.main) {
 mkdirSync(OUT, { recursive: true });
 const files = readdirSync(BADGES).filter((f) => f.endsWith(".md"));
 const classes = files.filter((f) => frontmatter(readFileSync(join(BADGES, f), "utf8")).type === "badge-class");
@@ -144,19 +157,21 @@ for (const f of classes) {
 console.log(`  wrote ${classes.length} og-*.png`);
 
 if (!OG_ONLY) {
-  let baked = 0;
+  let rendered = 0, baked = 0;
   for (const f of certs) {
     const fm = frontmatter(readFileSync(join(BADGES, f), "utf8"));
     const slug = f.replace(/\.md$/, "");
     const medallion = await shot(browser, medallionHtml(fm, 600), 600, 600); // per cert: carries the name
     const obPath = join(BADGES, `${slug}.ob.json`);
     const assertion = existsSync(obPath) ? readFileSync(obPath, "utf8") : "";
-    const png = assertion ? bakeOpenBadge(medallion, assertion) : medallion;
+    const png = bakeHostedBadge(medallion, assertion);
     writeFileSync(join(OUT, `${slug}.png`), png);
-    baked++;
-    if (baked % 100 === 0) console.log(`  ...${baked} cert badges`);
+    rendered++; if (png !== medallion) baked++;
+    if (rendered % 100 === 0) console.log(`  ...${rendered} cert badges`);
   }
-  console.log(`  wrote ${baked} per-cert badge PNGs (Open Badges baked, recipient name in image)`);
+  console.log(`  wrote ${rendered} per-cert PNGs: ${baked} hosted OB2 assertions baked; ${rendered-baked} historical images without portable assertions`);
 }
 await browser.close();
 console.log("done.");
+
+}

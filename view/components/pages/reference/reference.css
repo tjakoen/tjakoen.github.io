@@ -1,0 +1,21 @@
+[data-screen="reference"] .reference-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin: var(--space-4) 0 var(--space-6);
+  font-size: var(--text-sm);
+}
+
+[data-screen="reference"] .reference-context span { color: var(--color-muted); }
+
+[data-screen="reference"] .reference-table-scroll {
+  max-width: 100%;
+  margin: var(--space-3) 0 var(--space-6);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+[data-screen="reference"] .reference-table-scroll table {
+  min-width: 100%;
+  width: max-content;
+}

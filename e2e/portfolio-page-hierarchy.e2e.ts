@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("portfolio page headings", () => {
   for (const route of [
+    "/catalog/",
     "/notes/",
     "/calendar/",
     "/mail/",
@@ -13,7 +14,7 @@ test.describe("portfolio page headings", () => {
   ]) {
     test(`${route} has one page heading`, async ({ page }) => {
       await page.goto(route);
-      await expect(page.locator("main h1")).toHaveCount(1);
+      await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     });
   }
 });

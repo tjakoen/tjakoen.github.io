@@ -636,8 +636,8 @@ is enough.
 - Zhang, Bu, Dhillon (2026). *Who Owns the Text?* (ownership-aware human–AI co-writing; point-of-decision provenance; N=176). arXiv:2601.10236. https://arxiv.org/abs/2601.10236
 - Deka, N. (2025). *The AI-Ready Design System: the 5 components your component library must update first.* Medium (Design Bootcamp). https://medium.com/design-bootcamp/the-ai-ready-design-system-the-5-components-your-component-library-must-update-first-531309f35d85
 - AG-UI (2025). *Agent-User Interaction Protocol: documentation.* https://docs.ag-ui.com/introduction · https://docs.ag-ui.com/agentic-protocols
-- Bunt, A., Conati, C., McGrenere, J. (2007). *Supporting Interface Customization using a Mixed-Initiative Approach.* IUI 2007. https://www.sciencedirect.com/science/article/abs/pii/S1071581905001114
-- C2PA. *Content Credentials: C2PA Technical Specification (Explainer).* https://spec.c2pa.org/specifications/specifications/2.4/explainer/Explainer.html
+- Bunt, A., Conati, C., McGrenere, J. (2007). *Supporting Interface Customization using a Mixed-Initiative Approach.* IUI 2007. [Article abstract](https://www.sciencedirect.com/science/article/abs/pii/S1071581905001114).
+- C2PA. *Content Credentials: C2PA Technical Specification (Explainer).* [Technical explainer](https://spec.c2pa.org/specifications/specifications/2.4/explainer/Explainer.html).
 - CopilotKit (2025). *The State of Agentic UI: comparing AG-UI, MCP-UI and A2UI.* https://www.copilotkit.ai/blog/the-state-of-agentic-ui-comparing-ag-ui-mcp-ui-and-a2ui-protocols
 - Engelbart, D. C. (1962). *Augmenting Human Intellect: A Conceptual Framework.* SRI Summary Report AFOSR-3223. https://www.dougengelbart.org/content/view/138/
 - Google (2025). *Introducing A2UI: an open project for agent-driven interfaces.* https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/
@@ -645,11 +645,11 @@ is enough.
 - Google DeepMind. *SynthID.* https://deepmind.google/technologies/synthid/
 - Horvitz, E. (1999). *Principles of Mixed-Initiative User Interfaces.* CHI '99, ACM, 159–166. http://erichorvitz.com/chi99horvitz.pdf
 - htmx. *HATEOAS* (essay). https://htmx.org/essays/hateoas/
-- IBM. *Carbon for AI: design guidelines.* https://carbondesignsystem.com/guidelines/carbon-for-ai/
+- IBM. *Carbon for AI: design guidelines.* [Guidelines](https://carbondesignsystem.com/guidelines/carbon-for-ai/).
 - Lieberman, H. (1995). *Letizia: An Agent That Assists Web Browsing.* AAAI Fall Symposium. https://cdn.aaai.org/Symposia/Fall/1995/FS-95-03/FS95-03-016.pdf
-- Licklider, J. C. R. (1960). *Man-Computer Symbiosis.* IRE Transactions on Human Factors in Electronics, HFE-1, 4–11. https://groups.csail.mit.edu/medg/people/psz/Licklider.html
+- Licklider, J. C. R. (1960). *Man-Computer Symbiosis.* IRE Transactions on Human Factors in Electronics, HFE-1, 4–11. [Text](https://groups.csail.mit.edu/medg/people/psz/Licklider.html).
 - Lieberman, H. (1997). *Autonomous Interface Agents.* CHI '97, ACM. https://dl.acm.org/doi/10.1145/258549.258592
-- MCP Apps (2026). *Bringing Interactive UIs to MCP* (SEP-1865). https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/ · https://modelcontextprotocol.io/extensions/apps/overview
+- MCP Apps (2026). *Bringing Interactive UIs to MCP* (SEP-1865). [Announcement](https://blog.modelcontextprotocol.io/posts/2026-01-26-mcp-apps/) · [Specification overview](https://modelcontextprotocol.io/extensions/apps/overview).
 - MCP-UI (2025). https://github.com/MCP-UI-Org/mcp-ui · https://mcpui.dev/guide/client/resource-renderer
 - Nielsen Norman Group. *Generative UI.* https://www.nngroup.com/articles/generative-ui/
 - Shneiderman, B. (2022). *Human-Centered AI.* Oxford University Press. (See also *Human-Centered AI: Three Fresh Ideas*, AIS THCI 12(3), 2020.) https://global.oup.com/academic/product/human-centered-ai-9780192845290

@@ -13,7 +13,13 @@ const FIGURES = ["multiplier", "matrix", "ratio", "sprint", "loop", "trap"];
 
 test.describe("crumb — the review tour over the live figures", () => {
   test("the CRUMB introduction opens the live portfolio tour", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/crumb");
+    await expect(page.locator("main")).toContainText("the Tour button starts the portfolio walkthrough");
+    await expect(page.locator("main")).toContainText("other dev-mode tours are implementation reviews");
+    await expect(page.locator("main")).toContainText("Say Hello is a separate mail demo");
+    const board = page.locator("main .board");
+    expect(await board.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await board.evaluate((el) => el.clientWidth));
     await page.getByRole("link", { name: "Take a tour of the live portfolio" }).click();
     await expect(page).toHaveURL(/\/$/);
     await expect(page.locator(".crumb-frame__bar").last()).toBeVisible();

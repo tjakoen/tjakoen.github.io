@@ -201,6 +201,8 @@ That door is also where the more interesting idea lives: a human and the AI oper
 
 ## Three layers, stacked one direction
 
+The [BREAD stack diagram](/bread) shows how the layers fit together across the portfolio; here is the request path in detail.
+
 None of the above lives in one big pile. It is three layers, and dependency only ever flows one way.
 
 <svg viewBox="0 0 620 290" width="100%" role="img"

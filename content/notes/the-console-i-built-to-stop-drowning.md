@@ -238,6 +238,10 @@ screenshot in this post came straight out of it, and the
 [code is public](https://github.com/tjakoen/github-native-course-platform) if you would rather read it
 than click it. The claims in this post are a URL, not a paragraph.
 
+The [classroom project page](/native-github-classroom) traces the system's architecture and safety
+boundaries. The [teaching page](/teaching) explains the courses and the public badge criteria it
+supports.
+
 <figure class="shot">
   <img class="shot__img" src="/media/console/demo.jpg" width="1440" height="900" loading="lazy" data-lightbox
        alt="The console dashboard in demo mode, with a demo badge in the sidebar, a banner explaining that three invented classes were generated in this browser with no GitHub connection and no token, and a footer repeating that writes go through intents.">

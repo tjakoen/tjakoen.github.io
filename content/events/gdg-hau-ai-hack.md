@@ -117,6 +117,8 @@ event.
 
 ## What I would flag
 
+The same scoring tension appears in [Ten Times Zero Is Still Zero](/notes/ten-times-zero): automation can scale the work, but a person still has to own the judgment.
+
 I judged demos, not systems. A demo is a performance of a system, and the gap between the two is where
 half of my professional life is spent. Three days of code cannot be assessed in five minutes by
 someone watching a screen from twelve feet away, and I want to be honest that the scores reflect what

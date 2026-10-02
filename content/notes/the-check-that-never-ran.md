@@ -183,7 +183,8 @@ Measuring the loop is loop work. The ratio got worse because I looked at it.
 
 ## What it says now
 
-The path is fixed. There is a fourth rung on that ladder that resolves by absolute path, so the
+The path is fixed. The [Pantry CLI source](https://github.com/tjakoen/pantry/blob/main/cli.ts) now
+resolves that tool from an absolute path as the fourth rung on the ladder, so the
 script can find its tooling from anywhere on this machine, and it sits last on purpose so that a repo
 carrying its own copy still wins.
 

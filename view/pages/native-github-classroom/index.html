@@ -23,14 +23,16 @@
           system is Canvas, right at the end, to receive final grades.</p>
 
         <nav class="project-links" aria-label="Course platform links">
+          <a href="#architecture">See the architecture</a>
           <a href="https://tjakoen.github.io/github-native-course-platform/?demo=1" target="_blank" rel="noopener noreferrer">Open the interactive demo</a>
-          <a href="https://github.com/tjakoen/github-native-course-platform" target="_blank" rel="noopener noreferrer">Browse the public source</a>
           <a href="/native-github-classroom/docs">Read the architecture and safety docs</a>
+          <a href="https://github.com/tjakoen/github-native-course-platform" target="_blank" rel="noopener noreferrer">Browse the public source</a>
           <a href="/projects">Return to all projects</a>
         </nav>
         <nav class="project-toc" aria-label="On this page">
           <p class="project-toc__label">On this page</p>
           <div class="project-toc__links">
+            <a href="#architecture">Architecture map</a>
             <a href="#design">How the course works</a>
             <a href="#safety">Safety rules</a>
             <a href="#demo">Try the demo</a>
@@ -38,7 +40,7 @@
           </div>
         </nav>
 
-        <svg viewBox="-53 0 364 348" width="100%" role="img"
+        <svg id="architecture" viewBox="-53 0 364 348" width="100%" role="img"
              aria-label="A teacher control repo (engine, private tests, gradebook) publishes content to each student repo. A push is a submission: GitHub Actions grades off a snapshot and writes scores to the gradebook, the single source of truth. Scores flow back to student repos in a deliberate publish step, and out to Canvas as one CSV at term end."
              style="display:block;width:100%;max-width:480px;height:auto;margin:0 auto 1.75rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
           <defs>

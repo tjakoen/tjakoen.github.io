@@ -1,6 +1,17 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("the plans board keeps every status reachable", () => {
+  test("the board distinguishes finished portfolio work from the full planning backlog", async ({ page }) => {
+    await page.goto("/plans");
+
+    await expect(page.locator(".proof-lede")).toContainText("including ideas and work in progress");
+    await expect(page.getByRole("link", { name: "selected projects" })).toHaveAttribute("href", "/projects");
+    await expect(page.getByRole("link", { name: "portfolio plan" })).toHaveAttribute(
+      "href",
+      "/plans/plan/portfolio-finish-line",
+    );
+  });
+
   test("PROOF connects a markdown plan to its board projection and names the refresh limit", async ({ page }) => {
     await page.goto("/proof");
     await expect(page.getByRole("link", { name: "plans/site-builder.md" })).toHaveAttribute(

@@ -40,6 +40,23 @@ test.describe("the /mail mailbox (JS on)", () => {
     }
   });
 
+  test("the phone view explains the mailbox dressing and keeps the real contact action in view", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.locator("#msg-welcome")).toContainText("Every letter here was written by me ahead of time");
+    await expect(page.locator("#msg-welcome")).toContainText("The one live control is Compose");
+    await expect(page.locator("[data-open-compose]")).toBeVisible();
+
+    const width = await page.locator(".app-shell__main").evaluate((element) => ({
+      client: element.clientWidth,
+      scroll: element.scrollWidth,
+    }));
+    expect(width.scroll).toBeLessThanOrEqual(width.client + 1);
+
+    await page.locator("[data-open-compose]").click();
+    await expect(page.locator("#compose")).toBeVisible();
+    await expect(page.locator(".compose__hint")).toContainText("Opens in your mail app");
+  });
+
   test("clicking a message swaps the reader and marks it current", async ({ page }) => {
     const shippedItem = page.locator('a.mailbox__item[href="#msg-shipped"]');
     await shippedItem.click();

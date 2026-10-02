@@ -93,6 +93,8 @@ students want and the only one that survives contact with real work.
 
 ## What I would flag
 
+The question of who stays in control when AI enters the room runs through [Watch Its Hands](/notes/watch-its-hands), the plain-language version of my GRAIN argument.
+
 The wallets line is a bet, not evidence. I am claiming something about what audiences do over years,
 and my own example cuts both ways: that remake made a fortune, which is exactly why studios keep
 green-lighting them. Survives is not the same as sells, and I was arguing the first one while standing

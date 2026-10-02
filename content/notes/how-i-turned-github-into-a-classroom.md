@@ -167,7 +167,8 @@ and the two repo templates a course gets stamped from. The teacher side of it, t
 this from, [opens in your own browser in demo
 mode](https://tjakoen.github.io/github-native-course-platform/?demo=1), real code against invented
 students, no token and no connection. Course internals and student data stay in a private repo, where
-they belong. The console got its own story later, in
+they belong. The portfolio's [classroom project page](/native-github-classroom) connects the public
+demo to the architecture and safety docs. The console got its own story later, in
 [the console I built to stop drowning](the-console-i-built-to-stop-drowning.md).
 
 I started this because I was too cheap to pay for an LMS and too tired to run a server. I ended up

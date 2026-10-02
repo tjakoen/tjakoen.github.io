@@ -169,6 +169,13 @@ test.describe("/grain — the GRAIN showcase", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/catalog");
     await expect(page.locator(".cat-navtoggle")).toBeVisible();
+    await expect(page.locator(".cat-nav__title")).toHaveText("Catalog");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("GRAIN component catalog");
+    await expect(page.locator(".cat-main h1")).toHaveCount(1);
+    const specimens = page.locator('.panel__live [role="presentation"]');
+    expect(await specimens.count()).toBeGreaterThan(0);
+    expect(await specimens.evaluateAll((items) => items.every((item) => item.tagName !== "H1"))).toBe(true);
     const consoleControls = page.locator(".cat .console__grow");
     await expect(consoleControls).toHaveCount(2);
     expect(await consoleControls.evaluateAll((buttons) => buttons.every((button) => button.getAttribute("aria-label") === "Expand console"))).toBe(true);
