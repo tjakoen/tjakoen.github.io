@@ -38,16 +38,6 @@ const PROFILE_DIR = `${OUT_DIR}/profile`;
  *  back the first, and b2 is as real an address as b4. That is the number these scenarios exist to
  *  produce. */
 interface BuilderEdit {
-  /** The description the page opens on, as `?ask=`. Composed by the matcher, no model involved. */
-  compose: string;
-  /** Further composer prompts run before the edit, each of them an ADD the router never sends to the
-   *  model. One description emits each block at most once, so a page with two cards on it takes two
-   *  prompts, and "the second card" means nothing until it does.
-   *
-   *  Named `andThen` rather than the `then` it wants to be, because an object carrying a `then` key
-   *  is a thenable: anything that ever `await`s one of these gets its own field called as a promise
-   *  resolver. The lint gate caught it, and it was the only lint this change added. */
-  andThen?: string[];
   /** The block ids that must be on the canvas, in order, after the edit lands. */
   wantIds: string[];
   /** Spans that must hold after the edit, by block id. Only the blocks worth naming. */
@@ -195,22 +185,20 @@ const SCENARIOS: Scenario[] = [
   // because the page names the block before the op lands, and reading it in the report is how a near
   // miss ("Dropping b2.") is told apart from a refusal.
   { id: "builder-drop", page: "/grain/builder", ask: "drop the second card",
-    builder: { compose: "An intro, a card and a callout", andThen: ["another card"], wantIds: ["b1", "b2", "b3"] },
+    builder: { wantIds: ["b1", "b2", "b3"] },
     mustMention: [["b4"]] },
   // The control, and it is the one that tells you WHICH thing is broken. "the second card" asks the
   // model to resolve a reference and then use the vocabulary; "drop b4" asks only for the second.
   // A page that fails both is failing at the vocabulary, and no amount of better referring language
   // would save it.
   { id: "builder-bare-id", page: "/grain/builder", ask: "drop b4",
-    builder: { compose: "An intro, a card and a callout", andThen: ["another card"], wantIds: ["b1", "b2", "b3"] },
+    builder: { wantIds: ["b1", "b2", "b3"] },
     mustMention: [["b4"]] },
   { id: "builder-span", page: "/grain/builder", ask: "make the callout full width",
-    builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
-      wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "full" } },
+    builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "full" } },
     mustMention: [["b3"]] },
   { id: "builder-move", page: "/grain/builder", ask: "move the callout up",
-    builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
-      wantIds: ["b1", "b3", "b2", "b4"] },
+    builder: { wantIds: ["b1", "b3", "b2", "b4"] },
     mustMention: [["b3"]] },
   // The reply-without-acting case, which is a first-class answer rather than a failure: there is no
   // verb that rewrites what a block says. Graded on the canvas NOT moving, because the way a small
@@ -222,8 +210,7 @@ const SCENARIOS: Scenario[] = [
   // leaves the canvas exactly as still as the right answer does. "The desk had nothing to change" and
   // "the desk tried something illegal" are opposite outcomes that look identical to a canvas grader.
   { id: "builder-no-verb", page: "/grain/builder", ask: "the card should mention pricing",
-    builder: { compose: "An intro, a card and a callout", andThen: ["another card"],
-      wantIds: ["b1", "b2", "b3", "b4"] },
+    builder: { wantIds: ["b1", "b2", "b3", "b4"] },
     mustNotMention: ["will not work here", "does not edit a block"] },
   // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
   // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
@@ -270,8 +257,23 @@ const lastReply = (page: Page): Promise<string> =>
 // lands. The selectors are the ones builder-canvas.e2e.ts drives, deliberately the same strings.
 const COMPOSER = ".builder-composer textarea";
 const SUBMIT = ".builder-composer button[type=submit]";
+const PICKER = ".wb__take-file";
 const CELL = '[data-surface="builder-canvas"] .canvas__cell';
 const SAID = '[data-surface="builder-said"]';
+
+/** A fixed page imported through the builder's public Open control, so this audit measures the edit
+ *  model rather than asking the same model to prepare its own test fixture. The repeated cards make
+ *  references such as "the second card" meaningful, and every block uses a real component and its
+ *  documented data shape. */
+const EDIT_FIXTURE = {
+  version: 1,
+  blocks: [
+    { id: "b1", component: "block-lede", span: "full", data: { body: "A page about this work." }, props: {} },
+    { id: "b2", component: "block-card", span: "half", data: { title: "First card", body: "The first piece of work." }, props: { pad: "sm" } },
+    { id: "b3", component: "block-callout", span: "full", data: { body: "A useful detail.", status: null }, props: {} },
+    { id: "b4", component: "block-card", span: "half", data: { title: "Second card", body: "The second piece of work." }, props: { pad: "sm" } },
+  ],
+};
 
 /** The builder's said line, "" while it is still hidden. Shaped like `lastReply` so `settle` can be
  *  handed either one. */
@@ -328,22 +330,21 @@ async function submitPrompt(page: Page, text: string): Promise<void> {
   await page.click(SUBMIT);
 }
 
-/** Compose the starting page, then leave the edit prompt submitted and unread.
- *
- *  The `then` prompts are ADDs: the router sends them to the matcher, no model runs, and each one is
- *  waited on by CELL COUNT rather than a timeout, because a count is the thing that actually changed
- *  and a sleep here would either be slow or flaky on the first load. */
-async function composeFor(page: Page, b: BuilderEdit): Promise<void> {
-  await page.goto(`${BASE}/grain/builder?ask=${encodeURIComponent(b.compose)}`, { waitUntil: "domcontentloaded" });
-  await page.waitForSelector(CELL, { timeout: 20_000 });
-  for (const prompt of b.andThen ?? []) {
-    const before = (await canvasState(page)).length;
-    await submitPrompt(page, prompt);
-    await page.waitForFunction(
-      ([sel, n]) => document.querySelectorAll(sel as string).length > (n as number),
-      [CELL, before] as [string, number], { timeout: 20_000 },
-    );
-  }
+/** Open a known page through the builder's supported import control. This leaves the live model to
+ *  answer only the scenario under test, and the artifact exercises the same import path a visitor
+ *  uses to continue work on an exported composition. */
+async function composeFor(page: Page): Promise<void> {
+  await page.goto(`${BASE}/grain/builder`, { waitUntil: "domcontentloaded" });
+  await page.locator(PICKER).setInputFiles({
+    name: "builder-audit.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(EDIT_FIXTURE)),
+  });
+  await page.waitForFunction(
+    ([sel, count]) => document.querySelectorAll(sel as string).length === count,
+    [CELL, EDIT_FIXTURE.blocks.length] as [string, number],
+    { timeout: 20_000 },
+  );
 }
 
 // "Reading the page…" is the builder's thinking state, and it belongs here for the same reason
@@ -540,8 +541,8 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     await clientDeskEverywhere(page);
     if (s.builder) await recordModel(page);
     // A builder edit brings its own landing: the page has to be COMPOSED before there is anything to
-    // edit, and the composing is a query param plus a prompt or two, none of which touches the model.
-    if (s.builder) await composeFor(page, s.builder);
+    // edit. Importing a known composition keeps the setup out of the model's score.
+    if (s.builder) await composeFor(page);
     else await page.goto(BASE + s.page, { waitUntil: "domcontentloaded" });
     await deskReady(page);
     const startPath = await path(page);

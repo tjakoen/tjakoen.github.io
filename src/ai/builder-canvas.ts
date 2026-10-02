@@ -34,8 +34,8 @@ import {
   type PreviewHandover,
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
-import { looksLikeAnEdit } from "./block-command.ts";
-import { blockMessage, inWords, readModelMove } from "./block-reasoner.ts";
+import { isCopyEditRequest, looksLikeAnEdit } from "./block-command.ts";
+import { blockEditManifest, blockMessage, inWords, readModelMove } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -377,8 +377,8 @@ function boot(): void {
     const [grainModel, grainManifest] = await loadGrain();
     const manifest = grainManifest.domManifest(document);
     const prompt = grainModel.buildReasonerPrompt(
-      grainManifest.manifestForReasoner(document),
-      blockMessage(ask, state.blocks.map((b) => b.id)),
+      grainManifest.manifestToText(blockEditManifest(manifest)),
+      blockMessage(ask, state.blocks),
     );
 
     // Bounded, because this is the exact line the page used to hang on. See completeWithin for the
@@ -510,6 +510,10 @@ function boot(): void {
     e.preventDefault();
 
     if (looksLikeAnEdit(ask, state.blocks.length)) {
+      if (isCopyEditRequest(ask)) {
+        say("This builder cannot revise block copy yet, so nothing changed. Use the block controls to move, resize, or remove a block.", "refusal");
+        return;
+      }
       void runEdit(ask).catch((err) => {
         console.error("[builder] the edit path failed", err);
         say("Something went wrong reading that. The rail's own controls still work.", "refusal");

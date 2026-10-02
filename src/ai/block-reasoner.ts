@@ -40,7 +40,7 @@
 // GRAIN OWNS THE MACHINERY. buildReasonerPrompt, parseModelMove and validateMove are grain's, passed
 // in rather than imported so this module stays pure and headless: the browser refuses a bare grain
 // import, and a test should not need a URL import to check a refusal.
-import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
+import type { Manifest, ManifestTarget } from "@tjakoen/grain/ai/manifest.ts";
 import { SPANS, isSpan } from "./block-set.ts";
 import { MOVE_DIRECTIONS, type MoveDirection } from "./block-command.ts";
 
@@ -54,6 +54,22 @@ const isDirection = (d: unknown): d is MoveDirection =>
 export const BLOCK_VERBS = ["block.remove", "block.span", "block.move"] as const;
 export type BlockVerb = (typeof BLOCK_VERBS)[number];
 const isBlockVerb = (a: string): a is BlockVerb => (BLOCK_VERBS as readonly string[]).includes(a);
+
+/** The edit prompt is a view of the live manifest, narrowed to the three operations this composer
+ *  supports. The original manifest remains the validator's authority. Hiding unrelated actions and
+ *  readable status text keeps the small model focused on the block controls it can actually use. */
+export function blockEditManifest(manifest: Manifest): Manifest {
+  const actions = manifest.actions.filter((action) => isBlockVerb(action.name));
+  const targets: ManifestTarget[] = manifest.targets
+    .filter((target) => target.kind === "block" && target.accepts.some(isBlockVerb));
+  return {
+    ...manifest,
+    actions,
+    targets,
+    inView: {},
+    note: "Live builder targets and actions, narrowed to the block edits this page supports.",
+  };
+}
 
 export interface BlockIntent {
   action: BlockVerb;
@@ -92,40 +108,48 @@ export interface ModelMoveLike {
 // The prompt
 // ---------------------------------------------------------------------------------------------
 
-/** The human's message, with the page's own constraint attached.
+/** The human's message, with the page's current blocks and editing limits attached.
  *
- *  It rides in the USER turn rather than the system preamble because grain owns the preamble and
- *  this is one page's rule rather than the vocabulary's. It names the block ids literally: a 0.5B
- *  copies far better than it computes, and "pick one of b1, b2, b3, b4" is a copy where "the second
- *  card" is a filter and a count. Naming them does not make the model right, it makes it possible.
+ *  It rides in the USER turn because this page's rules do not belong in GRAIN's shared preamble.
+ *  Each live block is named by its short ID, type and position among blocks of that type. The IDs
+ *  give the model something concrete to copy; the labels give requests such as "the second card" a
+ *  little more context. Neither makes a small model reliable, so the browser announces the action
+ *  before it runs and keeps Undo available.
  *
- *  THE BARE ID IS DELIBERATE AND IT WAS TRIED THE OTHER WAY. This line names `b2` while the manifest
- *  a few lines above addresses the same block `block:b2`, which reads like a contradiction worth
- *  fixing, and on 2026-08-15 it was fixed: the ids were printed as `block:b1` through `block:b4` to
- *  match. It made the model strictly worse, measured over 25 answers across two variants. On bare
- *  ids, seven of fifteen answers aimed at a block and six named a real block verb. On prefixed ids,
- *  zero of fifteen aimed at a block, and the model collapsed to answering `move` on `builder`, a
- *  token off the screen name. Dropping the extra "copy it exactly" instruction and keeping only the
- *  prefix did not recover it: zero of ten aimed at a block. So the change was reverted whole.
- *
- *  The reading that survives the data is that a 0.5B can copy `b2` and cannot copy `block:b2`, and
- *  that being handed an address it cannot reproduce is worse than being handed a short one that
- *  needs a prefix added. The contradiction is real and the fix is on the other side: normalize a
- *  bare id UP to `block:<id>` when reading the answer, rather than pushing the long form down into
- *  the prompt. That is a decision rather than a cleanup, so it is filed and not taken here.
- *
- *  The reply-without-acting escape is spelled out on purpose. Without it a small model handed a verb
- *  list treats every message as a command to be answered with a verb, and "what is this page for"
- *  becomes a removal. */
-export function blockMessage(message: string, blockIds: string[]): string {
-  const ids = blockIds.length ? blockIds.join(", ") : "none";
+ *  The model receives only the block operations this page can currently perform. Copy editing is
+ *  not one of them, and the browser refuses clear copy-writing requests before reaching the model.
+ *  The reply-without-acting escape is also explicit: a model given a verb list may otherwise turn a
+ *  question about the page into an unrelated removal. */
+export function blockMessage(
+  message: string,
+  blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
+): string {
+  const counts = new Map<string, number>();
+  const descriptions = blocks.map((block) => {
+    if (typeof block === "string") return block;
+    const component = block.component.replace(/^block-/, "");
+    const ordinal = (counts.get(component) ?? 0) + 1;
+    counts.set(component, ordinal);
+    const order = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth"][ordinal - 1]
+      ?? `${ordinal}th`;
+    const label = component === "lede" ? "intro paragraph"
+      : component === "card" ? `${order} card`
+      : component === "callout" ? "callout"
+      : component === "stat" ? "stat tile"
+      : component === "form" ? "form"
+      : "block";
+    return `${block.id} (${label})`;
+  });
+  const ids = descriptions.length ? descriptions.join(", ") : "none";
   return [
     message.trim(),
     "",
-    "(You are editing a page that is already built. The only verbs that change it are block.remove,",
-    `block.span and block.move, and each one targets exactly one block. The blocks here are: ${ids}.`,
-    "block.span takes span: full, half or third. block.move takes direction: up or down.",
-    "If the message is not asking for one of those three changes, reply without acting.)",
+    "(You are editing a page that is already built. The blocks from top to bottom are:",
+    `${ids}. The only action names are block.remove, block.span and block.move.`,
+    "Use the full action name, not a shortened word such as move.",
+    "block.remove drops its target. block.span takes span: full, half or third.",
+    "block.move takes direction: up or down. Each action targets exactly one listed block.",
+    "If the request cannot be done with these actions, reply without acting and use action: null.)",
   ].join("\n");
 }
 
