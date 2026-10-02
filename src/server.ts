@@ -102,7 +102,19 @@ import { createCrumbRoutes } from "@tjakoen/crumb/routes.ts";
 // The CATALOG is a self-contained GRAIN page (it lists its OWN design-system styles and needs no
 // shell/door), so it gets a LIGHTER set — just the FOUC guard (head) + ⌘K/theming islands (body).
 const CATALOG_HEAD = `<script src="/scripts/theme-boot.js"></script>`;
-const CATALOG_ASSETS = `<link rel="stylesheet" href="/styles/cmdk.css"><script src="/scripts/cmdk.js" defer></script><script src="/scripts/theme.js" defer></script>`;
+const CATALOG_ASSETS = `<link rel="stylesheet" href="/styles/cmdk.css"><script src="/scripts/cmdk.js" defer></script><script src="/scripts/theme.js" defer></script><style>
+/* Live component examples belong to their specimen. Contain fixed-position demos so they cannot
+   float over the rest of the catalog while someone scrolls through the entries. */
+.cat .panel__live { contain: paint; }
+@media (max-width: 640px) {
+  /* Long example markup must scroll inside its code panel, not widen the whole page. */
+  .cat { min-width: 0; overflow-x: clip; }
+  .cat-main { min-width: 0; width: 100%; box-sizing: border-box; }
+}
+</style><script>
+/* The catalog renders the console specimen from GRAIN, whose icon-only expand button needs a name. */
+document.querySelectorAll(".cat .console__grow:not([aria-label])").forEach((button) => button.setAttribute("aria-label", "Expand console"));
+</script>`;
 // The full page shell for every rendered page (portfolio + MILL content). HEAD (render-
 // blocking): theme-boot FOUC guard → design-system styles (tokens → base → grade → per-component
 // bundle) → site.js (the portfolio startup redirect, must run before first paint). BODY-END: the

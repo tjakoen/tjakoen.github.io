@@ -143,6 +143,16 @@ test.describe("/grain — the GRAIN showcase", () => {
     await back.click();
     await expect(page).toHaveURL(/\/grain$/);   // history-back returns to the showcase
   });
+
+  test("the full-page catalog fits a phone and labels its live console control", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/catalog");
+    await expect(page.locator(".cat-navtoggle")).toBeVisible();
+    const consoleControls = page.locator(".cat .console__grow");
+    await expect(consoleControls).toHaveCount(2);
+    expect(await consoleControls.evaluateAll((buttons) => buttons.every((button) => button.getAttribute("aria-label") === "Expand console"))).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  });
 });
 
 test.describe("/grain — the surface is operable by both a person and the AI, through ONE DOOR", () => {
