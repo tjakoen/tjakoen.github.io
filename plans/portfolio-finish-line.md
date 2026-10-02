@@ -63,6 +63,59 @@ integration boundary, leaving GRAIN and BATCH internals untouched. Browser check
 width and full-page catalog navigation after the change. This sweep is a structural baseline; the
 page-by-page visual and story review remains open.
 
+The first desktop and phone review of the main visitor journey also found a stale fact in the talks
+section: the “Build the Floor” deck contains 33 slides, while the talks index said 27 and its note
+attachment said 32. Both public counts now match the deck, and a browser check compares every talk
+index count with its slide sections and checks the linked note's count.
+
+### Page recommendations in progress
+
+These recommendations come from the routes reviewed so far. The shared content families still need
+individual checks before the audit can be called complete.
+
+| Page or family | Recommendation | State |
+| --- | --- | --- |
+| `/` | Choose one primary next step in the first screen and keep the résumé, selected work, and notes as secondary paths. The six equal “Start” links currently compete for attention. | Next |
+| `/about` | Put one inspectable proof link beside each leadership claim, especially team delivery, teaching scale, and shipped systems. | Next |
+| `/resume` | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Current résumé content was updated; visual PDF comparison remains part of release review. |
+| `/projects` | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Next |
+| `/bread` | Add one end-to-end example that shows a visitor how the layers work together in a real request, alongside the layer diagram. | Next |
+| `/batch` | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Next |
+| `/grain` | Keep the shared-control and visible-provenance demonstration prominent, then give the visitor a single guided action to try it. | Next |
+| `/mill` | Tie the content-engine explanation to one note or documentation page rendered by the live site. | Next |
+| `/proof` and `/plans` | Explain the relationship between markdown plans and the board with one current, completed portfolio example; keep the manual-refresh limitation explicit until live updates ship. | Next |
+| `/crumb` | Lead with the live portfolio tour so visitors can experience the layer before reading its file format. | Next |
+| `/pantry` | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Next |
+| `/greenroom` | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Next |
+| `/native-github-classroom` and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Next |
+| `/grain/builder` | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. The present measured edit score is only 2/5. | Open in `builder-ai-depth.md`. |
+| `/grain/builder/preview` | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Next |
+| `/teaching` | Add an anonymized sample activity or rubric so the course and assessment claims have inspectable teaching evidence. | Next |
+| `/badges` and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | Next |
+| `/talks` and talk decks | Keep the live-deck format, verify each index fact against its deck, and link each talk to its related note or a recording where one exists. The slide-count mismatch is fixed. | Count consistency fixed; remaining links need review. |
+| `/talks/every-time-it-was-wrong` | Link the measured reviewer result to the note or public method that explains how comments were graded. | Next |
+| `/talks/build-the-floor` | Keep the corrected 33-slide count and link the roadmap to the corresponding note. | Count fixed; link review remains. |
+| `/talks/ten-times-zero` | Keep the live figures and connect the talk to its written playbook so visitors can take the method away. | Next |
+| `/notes` | Build a few guided reading paths into projects, teaching, and talks; reduce the amount of filter UI competing with the first article on a phone. | Next |
+| `/notes/build-the-floor` | Keep its deck attachment in sync with the actual 33-slide talk and link the roadmap's stages to inspectable examples. | Slide count fixed; link review remains. |
+| `/notes/feels-like-an-app` | Add a direct route to the stack diagram or project page that demonstrates the full-page-load architecture described in the note. | Next |
+| `/notes/how-i-turned-github-into-a-classroom` | Link the account to the public classroom project and architecture page as the inspectable version of the story. | Next |
+| `/notes/one-loop-every-repo` | Link the workflow claims to the public plans or documentation that shows how the loop is enforced. | Next |
+| `/notes/origin-story` | Use this as a guided starting point into the stack and project pages, rather than leaving the origin story as a self-contained essay. | Next |
+| `/notes/ten-times-zero` | Reconcile the pinned excerpt's “AI co-authoring every commit” statement with the more carefully scoped AI attribution used elsewhere, or give the claim a clear measurement basis. | Next |
+| `/notes/the-browser-grew-up` | Put the benchmark method and the compared page implementations one click from the result in the summary. | Next |
+| `/notes/the-check-that-never-ran` | Link the diagnosis to the corrected workflow or a public follow-up so the failure story ends with evidence of the fix. | Next |
+| `/notes/the-console-i-built-to-stop-drowning` | Keep the teaching-console story connected to the classroom and teaching pages, while avoiding details that could expose student data. | Next |
+| `/notes/watch-its-hands` | Connect the plain-language interaction argument to the GRAIN demonstration and clearly label the parts still unproven. | Next |
+| `/notes/whitepaper-one-vocabulary` | Keep the working-draft status visible and offer the short GRAIN explanation before the research-length paper. | Next |
+| `/notes/why-i-teach` | Connect the teaching motivation to the course platform and badge criteria so readers can verify what changed in practice. | Next |
+| `/calendar` | Keep the year strip and feed as complementary ways through the history; review the event and note empty states against the live data on both phone and desktop. | Next |
+| `/tour` and tour routes | Review the entry tour as the visitor's guided route through the portfolio; label the remaining tours as implementation reviews so they do not read like public showcases. | Next |
+| `/404` | Keep the recovery links, and check that each suggested destination still exists and matches its description. | Next |
+| `/docs`, `/reference`, and `/catalog` | Preserve these as working references, and provide a direct route back to the project story for visitors who land in documentation first. The catalog's mobile overflow, escaping specimen, and unnamed console control are fixed. | Catalog fix verified; remaining entry paths need review. |
+| `/kickstart` | Clarify what the coding agent will create and what the visitor must have ready before they hand it a project link. | Next |
+| `/mail` and contact paths | Make the real contact route and any local-only demo state clear before asking visitors to enter a message. | Next |
+
 ## Work
 
 - [x] Reconcile the portfolio's purpose and the visitor journey with the owner on 2026-10-02.
