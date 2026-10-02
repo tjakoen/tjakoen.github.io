@@ -40,6 +40,33 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(page.locator('.file-tree a[href="/badges"]')).toBeVisible();
   });
 
+  test("introduces GRAIN beside PANTRY in the project index, then stacks both on narrow screens", async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await page.goto("/projects");
+
+    const grain = page.locator('.project-related a.project-feature__link[href="/grain"]');
+    const pantry = page.locator('.project-related a.project-feature__link[href="/pantry"]');
+    await expect(grain).toHaveText("Explore the design system →");
+    await expect(pantry).toHaveText("Explore PANTRY →");
+    await expect(page.locator(".project-related-grid")).toContainText("Every action passes through one door");
+    const cards = page.locator(".project-related");
+    const first = await cards.nth(0).boundingBox();
+    const second = await cards.nth(1).boundingBox();
+    expect(first).not.toBeNull();
+    expect(second).not.toBeNull();
+    expect(second!.x).toBeGreaterThan(first!.x);
+    expect(Math.abs(second!.y - first!.y)).toBeLessThan(1);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    const narrowFirst = await cards.nth(0).boundingBox();
+    const narrowSecond = await cards.nth(1).boundingBox();
+    expect(narrowFirst).not.toBeNull();
+    expect(narrowSecond).not.toBeNull();
+    expect(narrowSecond!.y).toBeGreaterThan(narrowFirst!.y);
+    expect(await page.locator(".project-related-grid").evaluate((el) => el.scrollWidth))
+      .toBeLessThanOrEqual(await page.locator(".project-related-grid").evaluate((el) => el.clientWidth));
+  });
+
   test("uses side-by-side features when the main pane has enough room", async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.goto("/projects");
