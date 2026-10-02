@@ -43,9 +43,9 @@ test.describe("SEO/AEO head — served live", () => {
   });
 
   test("plan routes publish descriptions drawn from their page content", async ({ page }) => {
-    await page.goto("/plans/plan/000-welcome/");
+    await page.goto("/plans/plan/portfolio-finish-line/");
     const description = await page.locator('meta[name="description"]').getAttribute("content");
-    expect(description).toContain("PROOF plan");
+    expect(description).toContain("This portfolio should make it easy to understand who I am");
     expect(description!.length).toBeLessThanOrEqual(180);
   });
 

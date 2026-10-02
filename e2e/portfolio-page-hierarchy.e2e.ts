@@ -6,7 +6,7 @@ test.describe("portfolio page headings", () => {
     "/calendar/",
     "/mail/",
     "/grain/builder/",
-    "/plans/plan/000-welcome/",
+    "/plans/plan/portfolio-finish-line/",
     "/plans/plan/note-the-loop-nobody-ran/",
     "/badges/adet-2125-midterm/",
     "/standards/voice/",
