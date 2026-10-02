@@ -41,10 +41,11 @@ this plan owns the final path across them.
 ## Current progress (2026-10-02)
 
 The first project-index pass now gives GRAIN a direct introduction beside PANTRY instead of leaving
-the design system visible only as one layer inside the BREAD story. The two related entries share a
-responsive layout and link directly to their project pages. The browser check covers their links,
-content, wide-screen alignment and narrow-screen stacking. This closes that presentation gap, while
-the wider audit of project roles, outcomes, evidence and next steps remains open.
+the design system visible only as one layer inside the BREAD story. The index names TJ's role across
+the featured products, stack, design system, app and teaching platform. The related entries share a
+responsive layout and link directly to their project pages. Browser checks cover their ownership
+copy, links, wide-screen alignment and narrow-screen stacking. This closes those index gaps, while
+the wider audit of each project's outcomes, evidence and next steps remains open.
 
 ## Work
 
