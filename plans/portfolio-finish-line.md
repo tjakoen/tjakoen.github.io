@@ -39,7 +39,7 @@ BATCH and GRAIN, but it does not change their internal implementations. That dee
 work has its own later review. Existing page-level plans remain the source of implementation details;
 this plan owns the final path across them.
 
-## Current progress (2026-10-02)
+## Current progress (2026-10-03)
 
 The first project-index pass now gives GRAIN a direct introduction beside PANTRY instead of leaving
 the design system visible only as one layer inside the BREAD story. The index names TJ's role across
@@ -86,6 +86,31 @@ starts that tour from the project page and confirms the first guided step appear
 The PANTRY introduction now includes the documented install, scaffold, check, and serve commands next
 to its verified-install claim. It also states that the board reads the host project's plans in place.
 
+The cross-page read of BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, and PANTRY confirms they now tell one
+consistent story: the BREAD page explains the dependency direction and the portfolio request path;
+BATCH, GRAIN, and MILL each state their own layer and link to adjacent layers; PROOF and CRUMB are
+shown at the same level above GRAIN and MILL; and PANTRY is clearly an installable app that mounts the
+stack rather than another layer. Each introduction links back to BREAD, documentation, and source or
+a live demonstration where applicable. Existing route and phone-layout checks cover the responsive
+presentation; deeper GRAIN and BATCH implementation work remains deferred.
+
+The badge certificate template pass found that “Copy share link” silently failed when clipboard
+access was missing or denied. It now tries the browser clipboard, then a copy-command fallback, and
+shows a selectable manual link if neither works. The phone-width browser check covers the normal
+copy and the unavailable-clipboard state. I reviewed the rendered certificate with personal fields
+masked; recipient records stay out of the audit notes. The same silent no-clipboard exit existed in
+event share blocks. They now try the same copy-command fallback and tell the reader to select the
+visible post text if copying still fails; the event-page browser check covers both paths.
+
+The corrected live Builder edit audit scored 2/7 with the current 0.5B model and 6/7 with a tested
+1.5B profile on the static export. The larger model handled both width changes and both move
+requests, but continued to remove the first card instead of the second and took 13 to 23 seconds per
+warm request. Its first request did not run until the model had loaded. The comparison is recorded
+in `builder-ai-depth.md`. The Builder now passes generated copy for new blocks through registered
+fields, but the live writing check scored 0/1 for both the 0.5B and temporary 1.5B profiles. The
+current model used the wrong JSON shape and added unsupported details; the larger profile timed out.
+Copy on blocks already in the canvas cannot yet be edited.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need
@@ -106,10 +131,10 @@ individual checks before the audit can be called complete.
 | `/pantry` | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Implemented: the page shows the documented install, scaffold, validation, and serve commands, then explains that the board reads the host project's plans in place. |
 | `/greenroom` | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Implemented: the page summarizes and links to Greenroom's archived seeded report, distinguishing its four practice-environment results from the separate ten-check screenshot and calling out the intentional failures. The phone layout and route links are covered by `e2e/projects-layout.e2e.ts`. |
 | `/native-github-classroom` and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Implemented: the first links now move from the architecture diagram to the working demo, safety docs, and public source. The copy keeps course internals and student records private; browser checks cover the phone navigation and confirm the docs route resolves. |
-| `/grain/builder` | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in `builder-ai-depth.md`. The workbench now shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. The 61-case browser suite passes, but the seven-case live model audit scores 1/7. The review step catches risky suggestions; it does not make the model reliable enough to call this a finished AI demonstration. |
+| `/grain/builder` | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in `builder-ai-depth.md`. The workbench shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. New blocks can receive bounded generated copy through registered fields, covered by unit and browser tests; the live writing check scored 0/1 for both tested profiles. The current model returned the wrong JSON shape and unsupported details; the larger profile timed out. The corrected live edit audit scores 2/7 for 0.5B and 6/7 for 1.5B, with a repeat confirming the larger model still selects the wrong card for “the second card.” Existing block copy cannot yet be edited. |
 | `/grain/builder/preview` | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Implemented: the empty state now opens the workbench with a representative page composed; the static-host limitation remains explicit. |
 | `/teaching` | Add an anonymized sample activity or rubric so the course and assessment claims have inspectable teaching evidence. | Implemented: an explicitly illustrative responsive-web assessment slice maps observable repository evidence to the published badge criteria without exposing student work or private assignments. |
-| `/badges` and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | The hub explains the activity threshold and historical reconciliation accurately, and groups class links under each course. Class pages link back to all badge criteria. A representative certificate has a phone-width check, while an index test confirms recipient certificates stay out of the sitemap and class pages do not enumerate recipients. |
+| `/badges` and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | The hub explains the activity threshold and historical reconciliation accurately, and groups class links under each course. Class pages link back to all badge criteria. The shared certificate template has been reviewed at phone width: share-link copying reports success, falls back when clipboard access is unavailable, and exposes a manual link if copying still fails. Browser checks confirm recipient certificates stay out of the sitemap and class pages do not enumerate recipients. |
 | `/talks` and talk decks | Keep the live-deck format, verify each index fact against its deck, and link each talk to its related note or a recording where one exists. The slide-count mismatch is fixed. | Implemented for the current three talks: the browser check matches every index count to its deck. The two finished talks link to their notes from both the index and closing slide; the reviewer talk links directly to its scoring method while the companion note is still in progress. |
 | `/talks/every-time-it-was-wrong` | Link the measured reviewer result to the note or public method that explains how comments were graded. | Implemented: the talk index links to slide 13, “How it scores,” and a browser check confirms the direct link opens that slide. |
 | `/talks/build-the-floor` | Keep the corrected 33-slide count and link the roadmap to the corresponding note. | Implemented: the index count matches the 33-slide deck, and the closing slide now links to the written roadmap. |
@@ -128,7 +153,7 @@ individual checks before the audit can be called complete.
 | `/notes/whitepaper-one-vocabulary` | Keep the working-draft status visible and offer the short GRAIN explanation before the research-length paper. | Implemented: the opening labels the working draft and links to the plain-language companion before the paper's abstract. |
 | `/notes/why-i-teach` | Connect the teaching motivation to the course platform and badge criteria so readers can verify what changed in practice. | Implemented: the note links to the teaching page for the current courses and the badge hub for criteria and verification. |
 | `/calendar` | Keep the year strip and feed as complementary ways through the history; review the event and note empty states against the live data on both phone and desktop. | Implemented: the year strip, month navigation, feed filters, and no-JavaScript fallback have focused coverage; the phone range heading now stacks cleanly above its feed link. |
-| `/calendar/{event}` (six event pages) | Keep the event pages connected to the feed, and make the next link point to a related talk, course, or note where one exists. | Implemented: each event page links back to the Calendar feed; all six now lead to related teaching, note, or talk evidence where it exists. The phone-width check covers every route. |
+| `/calendar/{event}` (six event pages) | Keep the event pages connected to the feed, and make the next link point to a related talk, course, or note where one exists. | Implemented: each event page links back to the Calendar feed; all six now lead to related teaching, note, or talk evidence where it exists. The phone-width check covers every route. The social-copy control reports success when copied and tells readers the text remains selectable if clipboard access is unavailable; browser checks cover both states. |
 | `/tour` and tour routes | Review the entry tour as the visitor's guided route through the portfolio; label the remaining tours as implementation reviews so they do not read like public showcases. | Implemented: the desk button starts the portfolio walkthrough; the separate Say Hello demo stages an unsent draft; every other tour is a dev-mode implementation review reached by a direct review link. The CRUMB page explains those paths, and tests guard the tour inventory and visitor launch. |
 | `/404` | Keep the recovery links, and check that each suggested destination still exists and matches its description. | Implemented: an unknown route retains status 404, the recovery links all return 200, and the page fits at phone width. |
 | `/docs`, `/reference`, and `/catalog` | Preserve these as working references, and provide a direct route back to the project story for visitors who land in documentation first. The catalog's mobile overflow, escaping specimen, unnamed console control, and missing search description are fixed. | The docs index now stacks its long descriptions at phone widths. The generated reference contains wide tables inside their own scroll regions and links back to BREAD and GRAIN. The catalog links to the GRAIN introduction and has one page heading; specimen titles remain visually styled but are no longer heading elements. Long source examples scroll inside their code panels while the page stays within the phone viewport. Browser checks cover the heading structure, phone width, named console control, and the portfolio audit's one-heading criterion. |
@@ -147,16 +172,28 @@ individual checks before the audit can be called complete.
 - [x] Archive the empty welcome-plan template so it no longer reads as unfinished portfolio work.
 - [x] Close the completed builder v1 plan and move its remaining model-quality work into
       [`builder-ai-depth.md`](builder-ai-depth.md).
-- [ ] Audit the entry pages and the project stories together. Each should explain its purpose, my
-      role, the hard part, the outcome, and where a visitor can inspect the work.
-- [ ] Review the BREAD, BATCH, GRAIN, MILL, PROOF, and Pantry introductions as one explanation of
-      the stack. Make their relationships legible without turning each page into a package manual.
+- [x] Audit the entry pages and project stories together. The home page establishes my role and
+      course-platform scale; Projects names my ownership of the stack and teaching platform, then
+      links to the detail pages. BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, PANTRY, Greenroom, and the
+      classroom page explain their purpose and design constraints, with a live use, measured result,
+      public source, documentation, or interactive demo to inspect. The portfolio and projects
+      pages were reviewed at desktop and phone widths; `e2e/projects-layout.e2e.ts` covers the key
+      evidence links and responsive group layout.
+- [x] Review the BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, and PANTRY introductions as one explanation
+      of the stack. Their dependency direction, the request path through the portfolio, PANTRY's
+      role as an app, and cross-links to adjacent layers are consistent; existing route and
+      phone-layout checks cover their presentation. Deeper GRAIN and BATCH implementation work stays
+      deferred.
 - [x] Review the repeated page-footer copy and GRAIN attribution as one system. Keep the authorship
       claim honest and consistent across the portfolio and the pages visitors can export. The
       portfolio footer now uses one tested statement; exported pages retain GRAIN's generated
       framework attribution and are covered by the builder export checks.
-- [ ] Review Notes, Talks, Teaching, Calendar, and Badges as evidence of engineering, communication,
-      teaching, and the path between them. Give each page a clear next link into the relevant proof.
+- [x] Review Notes, Talks, Teaching, Calendar, and Badges as evidence of engineering, communication,
+      teaching, and the path between them. Notes point into projects and teaching, talks link to their
+      written methods, Teaching explains its issuing authority and links to the platform, calendar,
+      and criteria, Calendar entries point to related proof where available, and badge pages link
+      back to their issuer and criteria. The talk counts, teaching evidence, calendar links, badge
+      privacy, and responsive routes have focused browser coverage.
 - [ ] Complete the builder's AI reliability work in [`builder-ai-depth.md`](builder-ai-depth.md),
       then make the builder a convincing demonstration of the same system the portfolio introduces.
 - [x] Keep every `/plans` status column readable at desktop and phone widths. The narrow desktop

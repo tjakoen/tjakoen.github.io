@@ -143,9 +143,25 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(page.locator(".badge-cert h1")).toBeVisible();
     await expect(page.locator('.badge-verify a[href^="/badges/"]:not([href$=".json"])')).toBeVisible();
     await expect(page.getByRole("link", { name: "All badge criteria" })).toHaveAttribute("href", "/badges");
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: new URL(page.url()).origin });
+    const copyLink = page.locator("[data-copy-url]");
+    await copyLink.click();
+    await expect(copyLink).toHaveText("Copied");
 
     const badge = page.locator(".badge-cert");
     expect(await badge.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await badge.evaluate((el) => el.clientWidth));
+
+    const fallbackPage = await page.context().newPage();
+    await fallbackPage.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+      document.execCommand = () => false;
+    });
+    await fallbackPage.setViewportSize({ width: 390, height: 844 });
+    await fallbackPage.goto(`/badges/${certificateSlug}`);
+    await fallbackPage.locator("[data-copy-url]").click();
+    await expect(fallbackPage.locator("[data-copy-url]")).toHaveText("Copy failed");
+    await expect(fallbackPage.locator("[data-copy-fallback]")).toBeVisible();
+    await expect(fallbackPage.locator("[data-copy-fallback] input")).toBeFocused();
   });
 
   test("project detail pages put useful next steps near the introduction", async ({ page }) => {

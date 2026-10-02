@@ -997,23 +997,45 @@ function renderShareBlock(social: unknown, url: string): string {
   <summary class="share-block__head">Social post copy</summary>
   <pre class="share-block__text" data-share-text>${text}</pre>
   <p class="share-block__row">
-    <button class="share-block__copy" type="button" data-share-copy>Copy</button>
+    <button class="share-block__copy" type="button" data-share-copy aria-live="polite">Copy</button>
     <a class="share-block__link" href="${href}">${href}</a>
   </p>
 </details>
 <script>
   (function () {
     var block = document.querySelector('[data-share]');
-    if (!block || !navigator.clipboard) return;
+    if (!block) return;
     var button = block.querySelector('[data-share-copy]');
     var text = block.querySelector('[data-share-text]');
     if (!button || !text) return;
-    button.addEventListener('click', function () {
-      navigator.clipboard.writeText(text.textContent || '').then(function () {
+    function legacyCopy(value) {
+      var field = document.createElement('textarea');
+      field.value = value;
+      field.setAttribute('readonly', '');
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.appendChild(field);
+      field.select();
+      var copied = false;
+      try { copied = document.execCommand('copy'); } catch (_) { copied = false; }
+      field.remove();
+      return copied;
+    }
+    button.addEventListener('click', async function () {
+      var value = text.textContent || '';
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try { await navigator.clipboard.writeText(value); }
+          catch (_) { if (!legacyCopy(value)) throw new Error('Clipboard write failed'); }
+        } else if (!legacyCopy(value)) {
+          throw new Error('Clipboard is unavailable');
+        }
         button.textContent = 'Copied';
         button.setAttribute('data-copied', '');
         setTimeout(function () { button.textContent = 'Copy'; button.removeAttribute('data-copied'); }, 1600);
-      }).catch(function () { button.textContent = 'Copy failed, select it instead'; });
+      } catch (_) {
+        button.textContent = 'Copy failed, select it instead';
+      }
     });
   })();
 </script>`;
@@ -1304,6 +1326,9 @@ const BADGE_STYLE = `<style>
 .badge-actions { display: flex; gap: 0.6em; flex-wrap: wrap; margin: var(--space-m, 1rem) 0; }
 .badge-btn { display: inline-block; padding: 0.5em 1em; border: 1px solid var(--border); border-radius: 6px; background: var(--color-surface); color: var(--ink); font: inherit; cursor: pointer; text-decoration: none; }
 .badge-btn:hover { border-color: var(--badge-hue, var(--color-accent)); }
+.badge-copy-fallback { display: grid; gap: 0.35em; max-width: 100%; margin: var(--space-s, 0.5rem) 0; color: var(--ink-muted); font-size: var(--text-sm); }
+.badge-copy-fallback[hidden] { display: none; }
+.badge-copy-fallback input { box-sizing: border-box; width: min(100%, 32rem); min-width: 0; }
 /* The criteria block: what the badge attests, as scannable bullets rather than a wall of prose. */
 .badge-criteria { margin: var(--space-l, 1.5rem) 0; padding-top: var(--space-m, 1rem); border-top: 1px solid var(--border); }
 .badge-criteria__heading { font-size: var(--text-sm); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin: 1.4em 0 0.5em; }
@@ -1356,9 +1381,13 @@ export function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: str
   </header>
   <p class="badge-actions">
     <a class="badge-btn" href="${pngHref}" download>${legacy ? "Download historical badge (PNG)" : "Download badge (PNG)"}</a>
-    <button class="badge-btn" type="button" data-copy-url="${escapeHtml(shareUrl)}">Copy share link</button>
+    <button class="badge-btn" type="button" data-copy-url="${escapeHtml(shareUrl)}" aria-live="polite">Copy share link</button>
     <a class="badge-btn" href="/badges">All badge criteria</a>
   </p>
+  <label class="badge-copy-fallback" data-copy-fallback hidden>
+    <span>Clipboard access failed. Copy this link manually.</span>
+    <input type="text" readonly value="${escapeHtml(shareUrl)}">
+  </label>
   <dl class="badge-verify">
     <dt>Issued</dt><dd>${issuedOn}</dd>
     <dt>Credential id</dt><dd>${certId}</dd>
@@ -1397,12 +1426,51 @@ export function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: str
 const BADGE_COPY_SCRIPT = `<script>
   (function () {
     var btn = document.querySelector('[data-copy-url]');
-    if (!btn || !navigator.clipboard) return;
-    btn.addEventListener('click', function () {
-      navigator.clipboard.writeText(btn.getAttribute('data-copy-url') || '').then(function () {
-        var t = btn.textContent; btn.textContent = 'Copied';
-        setTimeout(function () { btn.textContent = t; }, 1600);
-      });
+    if (!btn) return;
+    var fallback = document.querySelector('[data-copy-fallback]');
+    var fallbackField = fallback && fallback.querySelector('input');
+    var label = btn.textContent || 'Copy share link';
+    var resetTimer;
+    function legacyCopy(value) {
+      var field = document.createElement('textarea');
+      field.value = value;
+      field.setAttribute('readonly', '');
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.appendChild(field);
+      field.select();
+      var copied = false;
+      try { copied = document.execCommand('copy'); } catch (_) { copied = false; }
+      field.remove();
+      return copied;
+    }
+    function showResult(text, state) {
+      btn.textContent = text;
+      btn.dataset.copyState = state;
+      if (fallback) fallback.hidden = state !== 'failed';
+      clearTimeout(resetTimer);
+      if (state === 'copied') resetTimer = setTimeout(function () {
+        btn.textContent = label;
+        delete btn.dataset.copyState;
+      }, 1600);
+    }
+    btn.addEventListener('click', async function () {
+      var value = btn.getAttribute('data-copy-url') || '';
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try { await navigator.clipboard.writeText(value); }
+          catch (_) { if (!legacyCopy(value)) throw new Error('Clipboard write failed'); }
+        } else if (!legacyCopy(value)) {
+          throw new Error('Clipboard is unavailable');
+        }
+        showResult('Copied', 'copied');
+      } catch (_) {
+        showResult('Copy failed', 'failed');
+        if (fallbackField) {
+          fallbackField.focus();
+          fallbackField.select();
+        }
+      }
     });
   })();
 </script>`;

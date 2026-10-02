@@ -24,8 +24,9 @@ owner: human
 
 The page builder already composes a one-page GRAIN layout from a closed set, works on the static
 site, lets a person rearrange and resize blocks, and exports JSON, HTML, or tag source. The model
-chooses the component names and order, while the code supplies each block's sample copy. The visitor
-can build a structure with AI, but cannot yet ask it to write or revise the page's content.
+chooses the component names and order and can now draft bounded copy for supported fields on newly
+added blocks. Existing block copy cannot yet be revised. Scripted browser coverage proves that the
+copy moves through the composition and renders as text; live-model quality has not yet been measured.
 
 The recorded live-model audit on 2026-08-14 asked the 0.5B model to edit existing blocks eighteen
 times. None of the answers produced a valid edit. The safety boundary held in every case, so the
@@ -49,7 +50,7 @@ The existing one-door contract stays in place. The model may choose among suppor
 closed vocabulary; it may not invent components, addresses, or arbitrary markup. The public page
 must say when the browser cannot run the model.
 
-## Current evidence (2026-10-02)
+## Current evidence (2026-10-03)
 
 The first five-scenario audit could not be scored: its setup added a second card through the model-
 driven build path, so the starting canvas varied and some cases timed out before their edit ran. The
@@ -105,10 +106,97 @@ the builder would bypass GRAIN's one-door contract. A later GRAIN design review 
 addressed, bounded text operation before the builder can revise existing copy. This plan does not
 change GRAIN or write around that boundary.
 
-The builder now refuses clear copy-edit requests before calling the model. This closes the specific
-failure where a request to change a card's wording removed the intro instead. The page explains that
-copy editing is not available yet, and the refusal leaves the composition unchanged. A separate
-browser check verifies that the model was not called for that request.
+The builder refuses clear copy-edit requests before calling the model. This closes the specific
+failure where a request to change a card's wording removed the intro instead. Newly composed blocks
+can now receive bounded copy in explicitly registered text fields. Unknown fields are ignored,
+controls and excess length are removed, and ordinary rendering escapes the resulting text. Scripted
+browser checks cover brief-specific copy, its presence in the composition, and markup-like text
+rendering literally. This verifies the application boundary, not whether the local model writes
+useful or accurate copy. Existing blocks still cannot be edited for text because GRAIN has no
+registered operation for that change.
+
+I corrected the live Builder audit fixture on 2026-10-03 after finding that its callout-width case
+started with the callout already full width. The callout now starts at half width, so both model
+profiles have a real span change to perform. On the corrected seven-case audit, the current 0.5B
+profile scored 2/7. It removed the explicitly named `b4` and correctly refused a request to change
+copy; it could not remove the second card, chose removal for both width requests, and returned the
+unsupported shortened action `move` for both move requests. One first-use case also timed out at the
+builder's 45-second completion limit before the model produced an answer. The captured result is in
+`.cache/desk-audit/report-builder-qwen-0.5b-fixed-2026-10-03.json`.
+
+I then exported the 1.5B profile and ran the same audit against that frozen static site in WebGPU
+Chromium. It scored 6/7: both width changes, both move requests, the explicit `b4` removal, and the
+copy-edit refusal passed. It still removed `b2`, the first card, when asked to drop the second card.
+The first request on the cold profile did not run; after the model loaded, a separate repeat of that
+same request again removed `b2`. Warm responses in this run took 13 to 23 seconds. The static-site
+result is in `.cache/desk-audit/report-builder-qwen-1.5b-static-2026-10-03.json`; the repeated target
+case is in `.cache/desk-audit/report-builder-qwen-1.5b-drop-repeat-2026-10-03.json`. WebLLM lists
+about 1.63 GB of required GPU memory for this model, compared with about 0.94 GB for the current
+0.5B model ([WebLLM model configuration](https://github.com/mlc-ai/web-llm/blob/main/src/config.ts)).
+The model's exact first-visit download size has not yet been measured. This is a promising editing
+result, not proof of reliable page writing: the wrong-card choice remains, and the cold-load
+experience needs review before selecting a model for visitors.
+
+On October 3, 2026, I added a real-model composition scenario that grades the visible blocks and
+checks whether the draft retains the visitor's supplied names and facts. The current 0.5B model
+returned JSON with component names as top-level keys instead of the required `blocks` list. It also
+added unsupported details, including a claim about fresh bread and omitted the supplied location.
+The code rejected that shape and kept its example copy. A temporary 1.5B profile timed out at the
+Builder's 45-second completion limit before returning a draft. The live writing scenario therefore
+scored 0/1 for both profiles. The report files are
+`.cache/desk-audit/report-builder-draft-0.5b-2026-10-03.json` and
+`.cache/desk-audit/report-builder-draft-1.5b-2026-10-03.json`. These results mean that bounded copy
+is a tested application path, not a useful writing capability of either tested local profile.
+
+## What to take from Puck AI
+
+Puck's current pattern combines constrained assembly from application-owned components, business
+context that grounds each prompt, and an editor where people review and adjust generated pages. Its
+separate design mode can invent new component types. The portfolio should start with assembly: its
+point is to show GRAIN as a design system, so the Builder should demonstrate what GRAIN's existing
+blocks can do before it tries to invent new ones. Puck also offers configuration and tools that keep
+generation tied to the host application. The portfolio already has a closed block set, but still
+needs explicit portfolio context, stronger grounded copy, and a clear way to inspect and refine a
+draft. Puck's documentation describes these parts in its [AI overview](https://puckeditor.com/docs/ai/overview),
+[business context guide](https://puckeditor.com/docs/ai/business-context), and
+[AI configuration guide](https://puckeditor.com/docs/ai/ai-configuration).
+
+The Builder already has several pieces of that shape: a closed component set, a live canvas, a block
+rail, preview and export, and a JSON composition. It now passes model-proposed copy for registered
+fields through the same page composition, while leaving components, fields, and rendering
+code-owned. The scripted path is covered, but the live local model has not been measured for writing
+quality, and the measured edit path remains unreliable. The next Builder milestone should turn this
+initial draft path into a grounded, inspectable workflow:
+
+1. Give the model a short, explicit context pack: what the visitor is making, who the page is for,
+   the requested tone, the approved facts, and the components and fields it may use.
+2. Ask for a structured page draft using only registered GRAIN-backed blocks and bounded content
+   fields. Reject unknown components, fields, props, and oversized values before they reach the
+   canvas.
+3. Keep the generated structure and copy visible in the live preview and JSON composition, identify
+   that wording as a draft, and make checking or replacing it straightforward before export. The
+   current path applies a draft directly; a review/accept step is a possible next interaction to
+   evaluate, rather than a capability the current Builder already has.
+4. Measure composition and revision against named scenarios. The current small model has not earned
+   a claim of dependable natural-language editing; keep its quality result visible beside the demo.
+
+There is a model-capability decision before this becomes a Puck-like writing tool. The portfolio
+currently wires one local Qwen2.5-0.5B profile through WebLLM. There is no hosted-provider adapter in
+the app. The existing model stays on the visitor's device. The corrected 0.5B and 1.5B edit
+comparison is recorded above; the 1.5B model performs the registered edits more often, but it still
+misses the natural-language second-card target and carries a larger cold-start cost. WebLLM
+documents custom model registration and client-side generation, so the larger local model can run
+without introducing a server. The remaining comparison work is to measure its exact first-visit
+download size and cold-start behavior on representative desktop and phone hardware, then test a
+grounded initial page draft with visitor-supplied copy. A hosted model remains a separate
+architectural choice because it would add a server or provider, deployment and secret handling, and
+a new data path. Do not treat a larger model as a win based on one good screenshot.
+
+Revising text in an already composed page also crosses a GRAIN boundary: the portfolio has no
+registered operation for changing a block's content. The separate GRAIN design review remains
+deferred as requested. Until that review happens, this Builder milestone can explore grounded initial
+drafts and their review flow, but it must not write around GRAIN's one-door contract to make later
+copy edits appear to work.
 
 ## Work
 
@@ -116,13 +204,14 @@ browser check verifies that the model was not called for that request.
       block edits, refusals, and unsupported browser hardware. The builder edit baseline and refusal
       path are recorded above; composition and an unavailable-WebGPU live run remain to be measured.
 - [x] Trace how generated copy could travel through the existing composition and GRAIN contracts.
-      Keep component names, addresses, and allowed fields code-owned. The current GRAIN boundary and
-      the later design-review requirement are recorded above; no DOM bypass was added.
+      Keep component names, addresses, and allowed fields code-owned. Generated text is bounded to
+      registered fields on new blocks; the later GRAIN design-review requirement remains for edits
+      to existing block copy. No DOM bypass was added.
 - [x] Trace each edit from the visitor's words through the model answer, validation, GRAIN's door,
       the dispatcher, and the final canvas. The scripted browser path still exercises the full chain.
 - [ ] Improve the model's edit choices using the live manifest and the block IDs already visible on
       the page. The prompt now contains only live block actions and identifies each block's type and
-      order, but the current 2/5 result leaves three supported scenarios unreliable. Do not add a
+      order, but the 2026-10-03 result still leaves five of seven scenarios unreliable. Do not add a
       deterministic fallback that makes the interface claim the AI acted.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
@@ -130,6 +219,15 @@ browser check verifies that the model was not called for that request.
       and applied states.
 - [ ] Give the builder a small set of examples that demonstrates composing and then revising a real
       GRAIN page, including one honest refusal.
+- [x] Let a page brief draft text into registered fields on newly composed blocks. Unit and browser
+      tests cover validation, composition data, visible output, and literal rendering of markup-like
+      input. Measure real-model writing quality before presenting this as reliable copywriting.
+- [ ] Finish the model comparison by measuring the larger profile's first-visit download and cold
+      start on desktop and phone hardware, then compare a grounded draft from the visitor's brief.
+      The corrected edit comparison records 0.5B at 2/7 and 1.5B at 6/7 in WebGPU Chromium on the
+      static export; 1.5B still targets the wrong card when asked to remove the second card. Use the
+      remaining results to choose the scope of a Puck-informed draft flow; do not promise natural-
+      language page writing until it passes measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
       builder browser suite passes all 61 scenarios, including the static-host, one-door, proposal,

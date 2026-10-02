@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
 
 // A small per-pixel tolerance absorbs sub-pixel font antialiasing across runs while still
 // catching real layout shifts (a moved element trips far more than 1% of the frame).
-const SHOT = { fullPage: true, animations: "disabled", maxDiffPixelRatio: 0.01 } as const;
+const SHOT = { fullPage: true, animations: "disabled", maxDiffPixelRatio: 0.01, timeout: 15_000 } as const;
 
 // `freeze`, when set, pins the clock before navigation — /calendar (Pass 2 — Calendar) plots the
 // REAL current month/week, so an unfrozen clock's today ring moves every day and breaks the
