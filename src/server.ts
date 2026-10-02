@@ -405,6 +405,9 @@ body[data-screen="plans"] .board { max-width: none; }
 .proof-board::-webkit-scrollbar-thumb { background: var(--ink-faint, #999); border-radius: var(--radius-sm, 3px); }
 .proof-board::-webkit-scrollbar-track { background: transparent; }
 
+/* Changed-file chips are metadata, not the board's width. Allow long paths to wrap inside a card. */
+.proof-card__chip { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+
 /* mobile: stack the columns instead of a sideways scroll — a thumb doesn't have the horizontal
    room a mouse-driven overflow assumes. */
 @media (max-width: 640px) {
