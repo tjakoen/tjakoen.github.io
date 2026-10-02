@@ -59,9 +59,11 @@ overflow outside `/catalog`. The catalog's mobile grid had been allowed to size 
 component examples, its fixed-position live specimens could float over other entries, and its empty
 console-expand control had no accessible name. The portfolio now clamps that generated page to the
 phone viewport, confines each live specimen to its card, and names the control at the host
-integration boundary, leaving GRAIN and BATCH internals untouched. Browser checks cover the phone
-width and full-page catalog navigation after the change. This sweep is a structural baseline; the
-page-by-page visual and story review remains open.
+integration boundary and supplies the catalog's missing search description, leaving GRAIN and
+BATCH internals untouched. Browser checks cover the phone width, full-page catalog navigation, and
+description. A refreshed headless audit returned all 145 routes successfully, with canonical, Open
+Graph, structured-data, and description metadata present. It still flags the catalog's generated
+H1 specimens, and the page-family review remains open.
 
 The first desktop and phone review of the main visitor journey also found a stale fact in the talks
 section: the “Build the Floor” deck contains 33 slides, while the talks index said 27 and its note
@@ -80,8 +82,8 @@ individual checks before the audit can be called complete.
 | `/resume` | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Implemented: the print sheet now uses the source's letter size, navy hierarchy, inline role headings, and first-page role grouping. The rendered export matches the two-page structure, and a browser check guards the print styles. |
 | `/projects` | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Implemented: the Greenroom, BREAD, GRAIN, PANTRY, and classroom entries pair a specific capability or outcome with a project page or live demo. Responsive group layout and direct links are covered by `e2e/projects-layout.e2e.ts`. |
 | `/bread` | Add one end-to-end example that shows a visitor how the layers work together in a real request, alongside the layer diagram. | Implemented: the page follows a public note from its request through MILL and GRAIN composition to the returned HTML, and explains that PROOF and CRUMB serve other paths. |
-| `/batch` | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Next |
-| `/grain` | Keep the shared-control and visible-provenance demonstration prominent, then give the visitor a single guided action to try it. | Next |
+| `/batch` | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Implemented: the page reports the dated portfolio-wide `/batch` measurement (267,606 bytes of JavaScript, 795,638 total bytes, 38 requests), links to the complete 145-route report, and gives the rerun command. The copy distinguishes shared-shell JavaScript from a BATCH-only benchmark. |
+| `/grain` | Keep the shared-control and visible-provenance demonstration prominent, then give the visitor a single guided action to try it. | Implemented: the first hero action now jumps directly to the two-operator demo; a browser check confirms the destination and working AI action. |
 | `/mill` | Tie the content-engine explanation to one note or documentation page rendered by the live site. | Next |
 | `/proof` and `/plans` | Explain the relationship between markdown plans and the board with one current, completed portfolio example; keep the manual-refresh limitation explicit until live updates ship. | Next |
 | `/crumb` | Lead with the live portfolio tour so visitors can experience the layer before reading its file format. | Next |
@@ -113,7 +115,7 @@ individual checks before the audit can be called complete.
 | `/calendar/{event}` (six event pages) | Keep the event pages connected to the feed, and make the next link point to a related talk, course, or note where one exists. | Next |
 | `/tour` and tour routes | Review the entry tour as the visitor's guided route through the portfolio; label the remaining tours as implementation reviews so they do not read like public showcases. | Next |
 | `/404` | Keep the recovery links, and check that each suggested destination still exists and matches its description. | Next |
-| `/docs`, `/reference`, and `/catalog` | Preserve these as working references, and provide a direct route back to the project story for visitors who land in documentation first. The catalog's mobile overflow, escaping specimen, and unnamed console control are fixed. | Catalog fix verified; remaining entry paths need review. |
+| `/docs`, `/reference`, and `/catalog` | Preserve these as working references, and provide a direct route back to the project story for visitors who land in documentation first. The catalog's mobile overflow, escaping specimen, unnamed console control, and missing search description are fixed. | Catalog now has metadata and its prior mobile/accessibility fixes; the audit still flags multiple H1s in generated live examples. Other entry paths need review. |
 | `/batch/docs/*`, `/grain/docs/*`, `/mill/docs/*`, `/crumb/docs/*`, `/proof/docs/*`, and `/pantry/docs/*` | Review each documentation set's landing path, project context, and links back to its owning introduction. These routes share documentation templates, but their instructions need their own content check. | Next |
 | `/standards` and its 20 standard pages | Keep standards discoverable as evidence of engineering practice, and give each page clear ownership, current status, and a route back to the portfolio. | Next |
 | `/plans/plan/*` (29 plan pages) | Separate public evidence of shipped work from internal or stale backlog detail; link the completed portfolio plan to its finished pages and evidence. | Next |

@@ -510,8 +510,13 @@ const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
   { headEnd: CATALOG_HEAD, bodyEnd: CATALOG_ASSETS });  // .md docs across grain+portfolio → /catalog
 const accepts = createAccepts(config.componentRoots);           // harvest data-kind/data-accepts → AI manifest
 
-const catalogPage = async (req: Request) => finalizePage(req,
-  new Response(await catalog.html(), { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+const catalogPage = async (req: Request) => {
+  const html = await catalog.html();
+  const described = html.replace("</head>",
+    '<meta name="description" content="Browse GRAIN components, their documented controls, live examples, and the actions available to people and AI."></head>');
+  return finalizePage(req,
+    new Response(described, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+};
 const referencePage = async (req: Request) => {
   const body = await buildVocabReference(join(config.grainDir, "styles", "variables.css"));
   const page = shellPage({

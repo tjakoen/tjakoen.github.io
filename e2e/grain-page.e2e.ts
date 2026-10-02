@@ -43,6 +43,8 @@ test.describe("/grain — the GRAIN showcase", () => {
     await expect(page.locator(".rail-head")).toContainText("TJ's Desk");   // the unified shell, not its own bar
     await expect(page.locator('[data-open-tabs] .tab[data-pinned]')).toContainText("Welcome");  // the open-pages strip
     await expect(page.locator(".hero__head")).toContainText("same controls");
+    await expect(page.locator(".hero__cta a").first()).toHaveAttribute("href", "#surface-demo");
+    await expect(page.locator(".hero__cta a").first()).toContainText("Try the shared-control demo");
     await expect(page.locator("#how .flow__node--door")).toContainText("/intent");
     // no components showcase by design (the sidebar catalog is the reference) — but the page is
     // still built FROM grain atoms, whose expanded custom elements leave their classes behind:
@@ -135,6 +137,14 @@ test.describe("/grain — the GRAIN showcase", () => {
     await expect(pane.locator(".catalog-pane__expand")).toHaveAttribute("href", "/catalog");
   });
 
+  test("the primary hero action takes a visitor straight to the shared-control demo", async ({ page }) => {
+    await page.goto("/grain");
+    await page.locator('.hero__cta a[href="#surface-demo"]').click();
+    await expect(page).toHaveURL(/\/grain#surface-demo$/);
+    await expect(page.locator("#surface-demo [data-surface-demo]")).toBeVisible();
+    await expect(page.locator('#surface-demo button[data-ai-run][data-action="demo.run"]')).toBeVisible();
+  });
+
   test("the full-page catalog has a Back control that returns to the prior page", async ({ page }) => {
     // Arrive from the showcase via real navigations (not a chained in-page link click: the site's
     // global `scroll-behavior: smooth` makes Playwright's click auto-scroll never settle mid-nav).
@@ -144,6 +154,14 @@ test.describe("/grain — the GRAIN showcase", () => {
     await expect(back).toBeVisible();   // shown on the full page (hidden when embedded in the peek)
     await back.click();
     await expect(page).toHaveURL(/\/grain$/);   // history-back returns to the showcase
+  });
+
+  test("the full-page catalog carries a search description for visitors and crawlers", async ({ page }) => {
+    await page.goto("/catalog");
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      "content",
+      "Browse GRAIN components, their documented controls, live examples, and the actions available to people and AI.",
+    );
   });
 
   test("the full-page catalog fits a phone and labels its live console control", async ({ page }) => {

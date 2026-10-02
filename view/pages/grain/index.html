@@ -42,6 +42,7 @@
       </div>
 
       <div class="hero__cta">
+        <b-button as="a" href="#surface-demo" label="Try the shared-control demo"></b-button>
         <!-- opens the Catalog sidebar (a behaviour hook → hand-authored .btn, like the Inspect toggle;
              b-button forwards only config props, not data-peek). Full-page catalog is one click on
              from inside the sidebar. -->
@@ -103,7 +104,7 @@
 
     <!-- 3 · A REAL SURFACE — not a specimen grid: one believable composition that USES the
          components in context, so hovering any piece reveals it in the sidebar catalog. -->
-    <section class="site__section" aria-label="A surface composed from GRAIN">
+    <section class="site__section" id="surface-demo" aria-label="A surface composed from GRAIN">
       <h2 class="section-head">
         <span>One surface, both operators</span>
         <!-- run the SAME surface as the AI would — a real Intent through the door (demo.run). The
