@@ -864,6 +864,10 @@ test.describe("the preview route", () => {
   test("an empty preview says so rather than showing a blank stage", async ({ page }) => {
     await page.goto("/grain/builder/preview");
     await expect(page.locator(".preview-empty")).toBeVisible();
+    await expect(page.locator("[data-preview-example]")).toHaveAttribute(
+      "href",
+      "/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout",
+    );
     await expect(page.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(0);
   });
 

@@ -284,4 +284,6 @@
 }
 [data-screen="builder-preview"] .preview-empty[hidden],
 [data-screen="builder-preview"] .preview-empty[data-empty="false"] { display: none; }
+[data-screen="builder-preview"] .preview-empty { display: grid; justify-items: start; gap: var(--space-3); }
+[data-screen="builder-preview"] .preview-empty p { margin: 0; }
 [data-screen="builder-preview"] .preview-note { font-size: var(--text-xs); margin-top: var(--space-4); }
