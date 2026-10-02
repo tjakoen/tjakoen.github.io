@@ -28,6 +28,7 @@
         <a href="#start-building">Start a project</a>
         <a href="#layers">The layers</a>
         <a href="#pantry-app">PANTRY</a>
+        <a href="#request">One request, end to end</a>
         <a href="#architecture">Dependency direction</a>
       </div>
     </nav>
@@ -98,6 +99,19 @@
     <p class="lede">This portfolio is the other consumer of the same four layers: two composition roots, one
       stack. PANTRY is the neutral, installable one; this site is the personal one, with its own résumé and
       notes on top.</p>
+
+    <section id="request" aria-labelledby="request-heading">
+    <h2 class="section-head" id="request-heading"><span>One request, end to end</span></h2>
+    <p class="lede">Open <a href="/notes/ten-times-zero">Ten Times Zero Is Still Zero</a>, then use its Source tab
+      to follow the same page back to Markdown. This is what happens to that request:</p>
+    <ol class="bread-flow">
+      <li><strong><a href="/batch">BATCH</a></strong><span>The server receives the URL and hands the note route to MILL.</span></li>
+      <li><strong><a href="/mill">MILL</a></strong><span>It reads the Markdown, renders the content, checks its grade, and wraps the result in the portfolio shell.</span></li>
+      <li><strong><a href="/grain">GRAIN</a></strong><span>BATCH's renderer expands the shared interface components used by the note and shell.</span></li>
+      <li><strong>BATCH</strong><span>The server returns a complete HTML document. The browser follows an ordinary page link; no client-side router takes over.</span></li>
+    </ol>
+    <p class="muted">The stack is composed where a request needs it. PROOF serves the plans board, while CRUMB serves the tour data used by the guided walkthrough.</p>
+    </section>
 
     <h2 class="section-head" id="architecture"><span>One direction of dependency</span></h2>
     <p class="lede">Each layer builds only on the ones beneath it: <span class="name">BATCH</span> imports nothing
