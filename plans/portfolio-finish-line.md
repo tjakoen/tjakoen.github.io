@@ -78,6 +78,9 @@ The PROOF introduction now pairs the source markdown for a completed site-builde
 board's rendered plan detail. Its existing manual-refresh limitation remains visible, and a browser
 check follows the source-to-board links and verifies the completed status.
 
+The CRUMB introduction now leads with a direct link into the live portfolio tour. A browser check
+starts that tour from the project page and confirms the first guided step appears.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need
@@ -94,7 +97,7 @@ individual checks before the audit can be called complete.
 | `/grain` | Keep the shared-control and visible-provenance demonstration prominent, then give the visitor a single guided action to try it. | Implemented: the first hero action now jumps directly to the two-operator demo; a browser check confirms the destination and working AI action. |
 | `/mill` | Tie the content-engine explanation to one note or documentation page rendered by the live site. | Implemented: the project links include a direct rendered-note example, covered by the landing-page browser check. |
 | `/proof` and `/plans` | Explain the relationship between markdown plans and the board with one current, completed portfolio example; keep the manual-refresh limitation explicit until live updates ship. | Implemented: the PROOF page links the completed site-builder markdown to its board detail, states the manual-refresh limit, and has a browser check for both links and the rendered status. |
-| `/crumb` | Lead with the live portfolio tour so visitors can experience the layer before reading its file format. | Next |
+| `/crumb` | Lead with the live portfolio tour so visitors can experience the layer before reading its file format. | Implemented: the first project link starts the guided tour on the live portfolio, covered by a browser check. |
 | `/pantry` | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Next |
 | `/greenroom` | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Next |
 | `/native-github-classroom` and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Next |
