@@ -6,7 +6,7 @@ status: PUBLISHED
 type: note
 date: 2026-08-18
 readingTime: "~27 min"
-deck: "Build the floor | Talk | /talks/build-the-floor | 32 slides · runs in the browser, no download"
+deck: "Build the floor | Talk | /talks/build-the-floor | 33 slides · runs in the browser, no download"
 tags: [ai, workflow, standards, developer-tools, architecture]
 summary: >
   Most organizations have bought AI subscriptions and are hoping the automation arrives on its own.
