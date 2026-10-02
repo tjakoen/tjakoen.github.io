@@ -36,6 +36,15 @@
       <div class="card" data-pad="sm"><h3 class="card__title">The install kit reads the host repo</h3><p class="card__body">The kit adds the project instructions, standards, and initial plan structure. I tested it in a separate project, where it read that project's own plans folder.</p></div>
     </div>
 
+    <h2 class="section-head"><span>From install to first use</span></h2>
+    <p class="lede">PANTRY is installed inside the project you want to work on. These are the documented
+      commands I used to scaffold its plan board, check the starter plan, and start the local cockpit.</p>
+    <div class="docs-list" aria-label="PANTRY first-run steps">
+      <div class="docs-list__item"><span class="docs-list__name">1. Install in the host project</span><code>bun add -d @tjakoen/pantry@github:tjakoen/pantry#main</code></div>
+      <div class="docs-list__item"><span class="docs-list__name">2. Scaffold and check the plan</span><code>bunx pantry init</code><code>bunx proof check</code></div>
+      <div class="docs-list__item"><span class="docs-list__name">3. Start the cockpit</span><code>bunx pantry serve</code><span class="docs-list__what">Open the printed local URL. The board reads the host project's plans folder; PANTRY does not copy or replace the plan files.</span></div>
+    </div>
+
     <h2 class="section-head"><span>The design</span></h2>
     <p class="lede">The board-forward reshape, the AI-legible-not-AI-powered framing, and what PANTRY mounts
       are written up in the PANTRY plan that ships beside the code.</p>
