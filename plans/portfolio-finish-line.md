@@ -53,6 +53,16 @@ export checks; the two credits describe different kinds of authorship. The `/pla
 all four status columns readable: narrow desktop users can scroll the final column into view, and
 long path chips wrap so phone layouts do not gain sideways page overflow.
 
+The first full route sweep covered 145 public routes at desktop and phone widths (290 checks). It
+found no route-level navigation failures, missing or duplicate page headings, or horizontal page
+overflow outside `/catalog`. The catalog's mobile grid had been allowed to size itself from wide
+component examples, its fixed-position live specimens could float over other entries, and its empty
+console-expand control had no accessible name. The portfolio now clamps that generated page to the
+phone viewport, confines each live specimen to its card, and names the control at the host
+integration boundary, leaving GRAIN and BATCH internals untouched. Browser checks cover the phone
+width and full-page catalog navigation after the change. This sweep is a structural baseline; the
+page-by-page visual and story review remains open.
+
 ## Work
 
 - [x] Reconcile the portfolio's purpose and the visitor journey with the owner on 2026-10-02.
