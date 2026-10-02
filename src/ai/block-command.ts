@@ -94,3 +94,16 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
   const noun = firstIndexOf(text.slice(pointer), BLOCK_NOUNS.map((n) => ` ${n} `));
   return noun !== -1;
 }
+
+/** Does an edit ask to change prose, for which the builder has no GRAIN operation yet?
+ *
+ *  This check is deliberately narrow. A small model once removed an unrelated block when asked to
+ *  change a card's wording, and an unsupported content request must not reach a destructive verb
+ *  chooser. Clear writing verbs are enough on their own; broader change verbs need a copy-bearing
+ *  noun so a width or order request still reaches the model. */
+export function isCopyEditRequest(prompt: string): boolean {
+  const text = ` ${normalize(prompt)} `;
+  if (/\b(?:mention|say|write|rewrite|rephrase|word)\b/.test(text)) return true;
+  return /\b(?:change|edit|revise|replace|update|improve|make)\b/.test(text)
+    && /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content)\b/.test(text);
+}

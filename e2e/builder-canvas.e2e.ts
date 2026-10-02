@@ -344,6 +344,14 @@ async function twoCardPage(page: Page): Promise<void> {
   await expect(page.locator(CELL)).toHaveCount(4);
 }
 
+async function waitForDesk(page: Page): Promise<void> {
+  await page.waitForFunction(
+    () => typeof (window as unknown as { desk?: { complete?: unknown } }).desk?.complete === "function",
+    null,
+    { timeout: 20_000 },
+  );
+}
+
 test.describe("with no desk, the page says so instead of guessing", () => {
   // The line this asserts is new, and it replaces a silence. Building used to say nothing at all
   // when it composed, which was fine while there was only one way a page could get built. Now there
@@ -426,6 +434,7 @@ test.describe("the model chooses the verb", () => {
 
   test("a sentence becomes a real op on a real block, through the one door", async ({ page }) => {
     await twoCardPage(page);
+    await waitForDesk(page);
     await submitPrompt(page, "drop the second card");
 
     await expect(page.locator(SAID)).toHaveText("Dropping b4.");
@@ -437,6 +446,7 @@ test.describe("the model chooses the verb", () => {
 
   test("the model is handed the ids that are actually on the page", async ({ page }) => {
     await twoCardPage(page);
+    await waitForDesk(page);
     await submitPrompt(page, "make the callout full");
     await expect(page.locator('[data-block="b3"] [data-op="span:full"]')).toHaveAttribute("data-on", "on");
 
@@ -449,7 +459,7 @@ test.describe("the model chooses the verb", () => {
     // A 0.5B copies far better than it counts, so the prompt names the blocks rather than leaving
     // "the second card" to be filtered and counted.
     const prompt = await page.evaluate(() => sessionStorage.getItem("__builderPrompt") ?? "");
-    expect(prompt).toContain("b1, b2, b3, b4");
+    expect(prompt).toContain("b1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card)");
     expect(prompt).toContain("block.remove");
   });
 
@@ -475,11 +485,13 @@ test.describe("the model chooses the verb", () => {
     });
   }
 
-  test("the model may answer without acting, and that is not a failure", async ({ page }) => {
+  test("a request to change block copy cannot reach a destructive model choice", async ({ page }) => {
     await twoCardPage(page);
+    await page.evaluate(() => sessionStorage.removeItem("__builderPrompt"));
     await submitPrompt(page, "the card should mention pricing");
-    await expect(page.locator(SAID)).toContainText("no verb that rewrites");
+    await expect(page.locator(SAID)).toContainText("cannot revise block copy yet");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    expect(await page.evaluate(() => sessionStorage.getItem("__builderPrompt"))).toBeNull();
   });
 });
 // The rail collapses, because a tool panel that cannot get out of the way charges a permanent tax

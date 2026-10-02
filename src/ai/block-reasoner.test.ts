@@ -7,23 +7,19 @@
 // stubs, because the point of injecting them is that the contract does the deciding.
 import { test, expect, describe } from "bun:test";
 import { parseModelMove, validateMove } from "@tjakoen/grain/ai/model.ts";
-import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
-import { blockMessage, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
+import { buildManifest, type Manifest } from "@tjakoen/grain/ai/manifest.ts";
+import { blockEditManifest, blockMessage, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
 
 const GRAIN: GrainModelPort = { parseModelMove, validateMove } as unknown as GrainModelPort;
 
 /** A page with four blocks and a prompt box, in the shape a live-DOM harvest produces. */
-const MANIFEST: Manifest = {
-  screen: "builder",
-  targets: [
-    { id: "block:b1", kind: "block", label: "block b1", accepts: ["block.remove", "block.span", "block.move"] },
-    { id: "block:b2", kind: "block", label: "block b2", accepts: ["block.remove", "block.span", "block.move"] },
-    { id: "block:b3", kind: "block", label: "block b3", accepts: ["block.remove", "block.span", "block.move"] },
-    { id: "block:b4", kind: "block", label: "block b4", accepts: ["block.remove", "block.span", "block.move"] },
-    { id: "field:builder-ask", kind: "field", label: "Describe a page", accepts: ["field.set"] },
-  ],
-  readable: [],
-} as unknown as Manifest;
+const MANIFEST: Manifest = buildManifest("builder", [
+    { id: "block:b1", kind: "block", accepts: ["block.remove", "block.span", "block.move"] },
+    { id: "block:b2", kind: "block", accepts: ["block.remove", "block.span", "block.move"] },
+    { id: "block:b3", kind: "block", accepts: ["block.remove", "block.span", "block.move"] },
+    { id: "block:b4", kind: "block", accepts: ["block.remove", "block.span", "block.move"] },
+    { id: "field:builder-ask", kind: "field", accepts: ["field.set"] },
+], { readable: [{ id: "builder-said", kind: "status", text: "Reading the page…" }] });
 
 const read = (raw: string) => readModelMove(raw, MANIFEST, GRAIN);
 
@@ -47,6 +43,26 @@ describe("a move the model got right", () => {
   test("JSON wrapped in the prose a small model adds anyway", () => {
     const r = read('Sure! Here is the move:\n```json\n{"action":"block.remove","target":"block:b1"}\n```');
     expect(r.kind).toBe("command");
+  });
+});
+
+describe("the edit prompt projection", () => {
+  test("keeps live block targets and block verbs, and omits unrelated actions and status text", () => {
+    const narrow = blockEditManifest(MANIFEST);
+    expect(narrow.actions.map((action) => action.name)).toEqual([...BLOCK_VERBS]);
+    expect(narrow.targets.map((target) => target.id)).toEqual(["block:b1", "block:b2", "block:b3", "block:b4"]);
+    expect(narrow.inView).toEqual({});
+  });
+
+  test("names the block kinds and order so a reference can resolve to a visible id", () => {
+    const prompt = blockMessage("make the callout full", [
+      { id: "b1", component: "block-lede" },
+      { id: "b2", component: "block-card" },
+      { id: "b3", component: "block-callout" },
+      { id: "b4", component: "block-card" },
+    ]);
+    expect(prompt).toContain("b1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card)");
+    expect(prompt).toContain("The only action names are block.remove, block.span and block.move");
   });
 });
 

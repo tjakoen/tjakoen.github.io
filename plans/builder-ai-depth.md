@@ -1,6 +1,6 @@
 ---
 id: builder-ai-depth
-status: todo
+status: doing
 track: demo
 depends: [form-from-data-demo, site-builder, builder-design]
 touches:
@@ -8,6 +8,9 @@ touches:
   - src/ai/block-reasoner.ts
   - src/ai/builder-canvas.ts
   - src/ai/builder-page.ts
+  - src/ai/block-command.ts
+  - src/ai/block-command.test.ts
+  - src/ai/block-reasoner.test.ts
   - src/ai/desk-reasoner.ts
   - view/pages/grain/builder.html
   - e2e/builder-canvas.e2e.ts
@@ -44,24 +47,57 @@ The existing one-door contract stays in place. The model may choose among suppor
 closed vocabulary; it may not invent components, addresses, or arbitrary markup. The public page
 must say when the browser cannot run the model.
 
+## Current evidence (2026-10-02)
+
+The first five-scenario audit could not be scored: its setup added a second card through the model-
+driven build path, so the starting canvas varied and some cases timed out before their edit ran. The
+audit now opens a fixed four-block composition through the builder's own import control. That keeps
+the setup outside the score while exercising the same path a visitor uses to reopen a page.
+
+On that stable fixture, the original edit prompt scored 0/5. It chose an unrelated block-removal
+operation for a request to change copy. The prompt was then narrowed to the live block actions and
+targets, stripped of the unrelated status text, and given the visible block types and order beside
+their IDs. The revised prompt scored 1/5, correctly removing b4 when asked to drop b4. The current
+pass scores 2/5: that same exact-ID edit works, and a copy-edit request is now refused before it can
+reach the model. The model still removes the first card when asked for the second, and it misses the
+callout-width and move requests. The 2/5 result is evidence of a safer refusal and one reliable
+operation, not evidence that natural-language editing is ready.
+
+The portfolio-side boundary is also clear. GRAIN registers block removal, span, and move operations.
+Its field operation fills registered form controls; it does not write text into page-content blocks.
+The builder's templates expose text as escaped `data-field` values, but writing those values from
+the builder would bypass GRAIN's one-door contract. A later GRAIN design review must define an
+addressed, bounded text operation before the builder can revise existing copy. This plan does not
+change GRAIN or write around that boundary.
+
+The builder now refuses clear copy-edit requests before calling the model. This closes the specific
+failure where a request to change a card's wording removed the intro instead. The page explains that
+copy editing is not available yet, and the refusal leaves the composition unchanged. A separate
+browser check verifies that the model was not called for that request.
+
 ## Work
 
 - [ ] Re-run the live-model scenarios on the current code and record a baseline for composition,
-      block edits, refusals, and unsupported browser hardware.
-- [ ] Trace how generated copy could travel through the existing composition and GRAIN contracts.
-      Keep component names, addresses, and allowed fields code-owned. If a safe text-edit operation
-      requires a GRAIN change, write that boundary down for its later design review instead of
-      changing the DOM around the one-door contract.
-- [ ] Trace each edit from the visitor's words through the model answer, validation, GRAIN's door,
-      the dispatcher, and the final canvas. Keep a refusal's reason attached to that full path.
+      block edits, refusals, and unsupported browser hardware. The builder edit baseline and refusal
+      path are recorded above; composition and an unavailable-WebGPU live run remain to be measured.
+- [x] Trace how generated copy could travel through the existing composition and GRAIN contracts.
+      Keep component names, addresses, and allowed fields code-owned. The current GRAIN boundary and
+      the later design-review requirement are recorded above; no DOM bypass was added.
+- [x] Trace each edit from the visitor's words through the model answer, validation, GRAIN's door,
+      the dispatcher, and the final canvas. The scripted browser path still exercises the full chain.
 - [ ] Improve the model's edit choices using the live manifest and the block IDs already visible on
-      the page. Do not add a deterministic fallback that makes the interface claim the AI acted.
+      the page. The prompt now contains only live block actions and identifies each block's type and
+      order, but the current 2/5 result leaves three supported scenarios unreliable. Do not add a
+      deterministic fallback that makes the interface claim the AI acted.
 - [ ] Make the narration a projection of validated operations and observed canvas changes. A failed
       operation must leave the canvas alone and tell the visitor what stopped it.
 - [ ] Give the builder a small set of examples that demonstrates composing and then revising a real
       GRAIN page, including one honest refusal.
-- [ ] Cover the supported path with browser tests on the exported static site, and keep the real
-      model audit as a separate measured check because headless CI does not provide WebGPU.
+- [x] Cover the supported path with browser tests on the exported static site, and keep the real
+      model audit as a separate measured check because headless CI does not provide WebGPU. The
+      builder browser suite passes all 58 scenarios, including the static-host, one-door, and copy-
+      edit refusal paths. The real-model audit remains a separate score because headless CI has no
+      WebGPU.
 - [ ] Review the published workbench at desktop and narrow widths, then show the rendered result
       before calling the plan done.
 

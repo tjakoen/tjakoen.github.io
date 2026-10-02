@@ -49,10 +49,10 @@
              blanked itself the moment it came true would be worse than none. With JavaScript off
              nothing reads a prompt as an edit, so an empty line here is the honest state. -->
         <p class="wb-bar__said" data-surface="builder-said" role="status" hidden></p>
-        <p class="wb-bar__note muted">Each prompt adds to the page rather than replacing it, unless it
-          asks to change one that is already there: drop a block, set its width, or move it. The
-          address carries the latest one, so a page here is still a link you can send, and reloading
-          rebuilds from that prompt alone.</p>
+        <p class="wb-bar__note muted">Each prompt adds to the page. The desk can remove, resize or
+          move a block, but the small model sometimes picks the wrong one; check the ID it announces
+          and use Undo if needed. Copy edits are not available yet. Reloading starts from the last
+          prompt in the address.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.

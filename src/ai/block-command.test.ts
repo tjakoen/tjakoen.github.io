@@ -8,7 +8,7 @@
 // shape of prompt, and one of them is the defect that bought this rule: "a form to sign up" was read
 // as a move, went looking for a form to move, and refused to build the form it was asked for.
 import { test, expect, describe } from "bun:test";
-import { looksLikeAnEdit, MOVE_DIRECTIONS } from "./block-command.ts";
+import { isCopyEditRequest, looksLikeAnEdit, MOVE_DIRECTIONS } from "./block-command.ts";
 
 const onAPage = (prompt: string) => looksLikeAnEdit(prompt, 4);
 
@@ -73,5 +73,24 @@ describe("the guards", () => {
   // direction words rather than importing them, so a third one appearing in grain has to fail here.
   test("a move is up or down and there is no third direction", () => {
     expect([...MOVE_DIRECTIONS]).toEqual(["up", "down"]);
+  });
+});
+
+describe("copy edits wait for a real content operation", () => {
+  test.each([
+    "the card should mention pricing",
+    "rewrite the intro paragraph",
+    "change the callout text",
+    "make the heading more direct",
+  ])("%s", (prompt) => {
+    expect(isCopyEditRequest(prompt)).toBe(true);
+  });
+
+  test.each([
+    "make the callout full width",
+    "move the second card up",
+    "change the card to half width",
+  ])("%s remains an available block operation", (prompt) => {
+    expect(isCopyEditRequest(prompt)).toBe(false);
   });
 });
