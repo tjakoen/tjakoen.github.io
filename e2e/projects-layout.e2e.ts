@@ -49,6 +49,11 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(grain).toHaveText("Explore the design system →");
     await expect(pantry).toHaveText("Explore PANTRY →");
     await expect(page.locator(".project-related-grid")).toContainText("Every action passes through one door");
+    await expect(page.locator(".project-related-grid")).toContainText("I designed GRAIN");
+    await expect(page.locator(".project-related-grid")).toContainText("I built PANTRY");
+    await expect(page.locator("#tools .project-proof")).toContainText("I built it");
+    await expect(page.locator("#platform .project-feature__copy")).toContainText("I built BATCH");
+    await expect(page.locator("#teaching .project-feature__copy")).toContainText("I designed and built");
     const cards = page.locator(".project-related");
     const first = await cards.nth(0).boundingBox();
     const second = await cards.nth(1).boundingBox();
