@@ -38,6 +38,14 @@ BATCH and GRAIN, but it does not change their internal implementations. That dee
 work has its own later review. Existing page-level plans remain the source of implementation details;
 this plan owns the final path across them.
 
+## Current progress (2026-10-02)
+
+The first project-index pass now gives GRAIN a direct introduction beside PANTRY instead of leaving
+the design system visible only as one layer inside the BREAD story. The two related entries share a
+responsive layout and link directly to their project pages. The browser check covers their links,
+content, wide-screen alignment and narrow-screen stacking. This closes that presentation gap, while
+the wider audit of project roles, outcomes, evidence and next steps remains open.
+
 ## Work
 
 - [x] Reconcile the portfolio's purpose and the visitor journey with the owner on 2026-10-02.
