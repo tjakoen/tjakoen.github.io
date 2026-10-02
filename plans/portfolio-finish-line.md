@@ -75,7 +75,7 @@ individual checks before the audit can be called complete.
 
 | Page or family | Recommendation | State |
 | --- | --- | --- |
-| `/` | Choose one primary next step in the first screen and keep the résumé, selected work, and notes as secondary paths. The six equal “Start” links currently compete for attention. | Next |
+| `/` | Make selected work the primary next step and keep the résumé, notes, and other destinations as secondary paths. The six equal “Start” links competed for attention. | Implemented: the projects link is now the first-screen button, and the secondary list no longer repeats it. |
 | `/about` | Put one inspectable proof link beside each leadership claim, especially team delivery, teaching scale, and shipped systems. | Next |
 | `/resume` | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Current résumé content was updated; visual PDF comparison remains part of release review. |
 | `/projects` | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Next |
