@@ -319,11 +319,15 @@ test.describe("the AI operates a block, and the page notices", () => {
 // Two describes, because there are two honest states. Without a desk there is no model, and the page
 // says so rather than reaching for something that is not one: that is the owner's call of
 // 2026-08-14 and it is what the first block pins. With a scripted model the whole chain runs, and
-// nothing below applies an op by hand — the prompt bar is the only thing touched, so a pass means
-// the router asked, grain built the prompt, the model answered, grain validated it against the live
-// manifest, the door took the Intent, the dispatcher moved the DOM, and the page read its
-// composition back off it.
+// nothing below applies an op by hand. The prompt bar is the only input, and a pass means the
+// router asked, GRAIN built the prompt, the model answered, and GRAIN validated it against the live
+// manifest. The page then showed the proposal; only approval sent the Intent through the door, and
+// the test checked the resulting canvas.
 const SAID = '[data-surface="builder-said"]';
+const PROPOSAL = '[data-surface="builder-edit-proposal"]';
+const PROPOSAL_COPY = '[data-surface="builder-edit-proposal-copy"]';
+const APPLY_PROPOSAL = "[data-proposal-apply]";
+const CANCEL_PROPOSAL = "[data-proposal-cancel]";
 
 const submitPrompt = async (page: Page, prompt: string): Promise<void> => {
   await page.locator(COMPOSER).fill(prompt);
@@ -399,7 +403,7 @@ export function makeChatModel() {
       sessionStorage.setItem("__builderPrompt", prompt);
       if (/drop the second card/i.test(prompt)) return '{"action":"block.remove","target":"block:b4"}';
       if (/make the callout full/i.test(prompt)) return 'Sure!\\n{"action":"block.span","target":"block:b3","payload":{"span":"full"}}';
-      if (/move the form up/i.test(prompt)) return '{"action":"block.move","target":"block:b3","payload":{"direction":"up"}}';
+      if (/move the callout up/i.test(prompt)) return '{"action":"block.move","target":"block:b3","payload":{"direction":"up"}}';
       if (/widen/i.test(prompt)) return '{"action":"block.span","target":"block:b2","payload":{"span":"wide"}}';
       if (/duplicate/i.test(prompt)) return '{"action":"block.duplicate","target":"block:b2"}';
       if (/ninth/i.test(prompt)) return '{"action":"block.remove","target":"block:b9"}';
@@ -437,7 +441,13 @@ test.describe("the model chooses the verb", () => {
     await waitForDesk(page);
     await submitPrompt(page, "drop the second card");
 
-    await expect(page.locator(SAID)).toHaveText("Dropping b4.");
+    await expect(page.locator(SAID)).toHaveText("Review this edit: Drop b4.");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Drop b4.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     await expect(page.locator(CELL)).toHaveCount(3);
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
     // the rail follows, which is the page deriving its state back off the DOM the dispatcher wrote
@@ -446,21 +456,60 @@ test.describe("the model chooses the verb", () => {
 
   test("the model is handed the ids that are actually on the page", async ({ page }) => {
     await twoCardPage(page);
+    await page.locator('[data-block="b3"] [data-op="span:half"]').click();
     await waitForDesk(page);
     await submitPrompt(page, "make the callout full");
-    await expect(page.locator('[data-block="b3"] [data-op="span:full"]')).toHaveAttribute("data-on", "on");
+    await expect(page.locator('[data-block="b3"] [data-op="span:half"]')).toHaveAttribute("data-on", "on");
 
-    // WAITED FOR rather than read straight, and the reason is a race this test hid until the suite
-    // grew: the callout above is at full span ALREADY, so the assertion before this one passes on
-    // arrival and waits for nothing. The read then landed before the model had answered, which is
-    // invisible on an idle machine and a red on a loaded one. What this test is about is the prompt,
-    // so the prompt is what it waits for.
+    // The callout starts half width so the approved span edit has a visible result. The test still
+    // waits for the recorded prompt before reading it, because the prompt is what this scenario
+    // measures and the model answer may arrive later on a loaded machine.
     await page.waitForFunction(() => sessionStorage.getItem("__builderPrompt") !== null);
     // A 0.5B copies far better than it counts, so the prompt names the blocks rather than leaving
     // "the second card" to be filtered and counted.
     const prompt = await page.evaluate(() => sessionStorage.getItem("__builderPrompt") ?? "");
     expect(prompt).toContain("b1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card)");
     expect(prompt).toContain("block.remove");
+    await expect(page.locator(SAID)).toHaveText("Review this edit: Set b3 to full width.");
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Set b3 to full width.");
+    await expect(page.locator('[data-block="b3"] [data-op="span:full"]')).toHaveAttribute("data-on", "on");
+  });
+
+  test("canceling a proposal leaves the canvas unchanged", async ({ page }) => {
+    await twoCardPage(page);
+    await waitForDesk(page);
+    await submitPrompt(page, "drop the second card");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+
+    await page.locator(CANCEL_PROPOSAL).click();
+    await expect(page.locator(PROPOSAL)).toBeHidden();
+    await expect(page.locator(SAID)).toHaveText("Canceled. The page did not change.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+  });
+
+  test("an approved move is reported after the observed order changes", async ({ page }) => {
+    await twoCardPage(page);
+    await waitForDesk(page);
+    await submitPrompt(page, "move the callout up");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Move b3 up.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Move b3 up.");
+    expect(await canvasIds(page)).toEqual(["b1", "b3", "b2", "b4"]);
+  });
+
+  test("a proposal is canceled when the canvas changes before approval", async ({ page }) => {
+    await twoCardPage(page);
+    await waitForDesk(page);
+    await submitPrompt(page, "drop the second card");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+
+    await page.locator('[data-block="b2"] [data-op="remove"]').click();
+    await expect(page.locator(PROPOSAL)).toBeHidden();
+    await expect(page.locator(SAID)).toHaveText("The page changed. The pending proposal was canceled.");
+    expect(await canvasIds(page)).toEqual(["b1", "b3", "b4"]);
   });
 
   // Three things grain's validation catches, and one it does not. The last is the important one:

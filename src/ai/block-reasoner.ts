@@ -16,7 +16,7 @@
 // not exist, a target that is not on the page, a payload of the wrong shape, and a verb the target
 // does not accept. It cannot catch a move that is legal and WRONG: asked for the second card, a
 // small model may hand back the first one, and b2 is as real an address as b4. That is why every
-// command carries the id it is about to touch in words the page shows before the op lands.
+// command is shown as a proposal with its block id before a visitor sends it through the door.
 //
 // THAT GUARD HAS NEVER BEEN NEEDED, AND THE REASON IS WORSE THAN THE GUARD. This comment used to
 // close by saying the honest demo is one where you can see it pick the wrong block. Measured on
@@ -75,8 +75,8 @@ export interface BlockIntent {
   action: BlockVerb;
   surface: string;
   payload: Record<string, unknown>;
-  /** What the page says before the op lands. It NAMES the block, because a legal-but-wrong target is
-   *  the one failure validation cannot see, and a demo that hides it is worse than one that does not. */
+  /** A readable description for the proposal. It names the block, because validation cannot tell
+   *  a legal-but-wrong target from the one the visitor meant. */
   said: string;
 }
 

@@ -51,6 +51,12 @@
 [data-screen="builder"] .wb-bar__said[data-read="reply"],
 [data-screen="builder"] .wb-bar__said[data-read="file"] { color: var(--ink-muted); }
 [data-screen="builder"] .wb-bar__said[hidden] { display: none; }
+[data-screen="builder"] .wb-bar__proposal { display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-3); margin: 0 0 var(--space-2); padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--paper-2); }
+[data-screen="builder"] .wb-bar__proposal[hidden] { display: none; }
+[data-screen="builder"] .wb-bar__proposal p { margin: 0; font-size: var(--text-sm); color: var(--ink); }
+[data-screen="builder"] .wb-bar__proposal-actions { display: flex; align-items: center; gap: var(--space-2); flex: 0 0 auto; }
 
 /* The pane: one treatment, three users (canvas, rail, and the rail's own refusal block). Borrowed
    from mail.css rather than forked from it, down to the --paper-2 head, because two tool screens
@@ -243,6 +249,13 @@
    grid is two panes of nothing. */
 @media (max-width: 60rem) {
   [data-screen="builder"] .wb { grid-template-columns: 1fr; height: auto; min-height: 0; }
+  [data-screen="builder"] .wb__canvas .mk-pane__head { flex-wrap: wrap; align-items: center; row-gap: var(--space-2); }
+  [data-screen="builder"] .wb__file { flex: 1 1 auto; }
+  [data-screen="builder"] .wb__canvas .mk-pane__head > .mk-pane__meta { margin-left: auto; }
+  [data-screen="builder"] .wb__take { flex: 1 0 100%; justify-content: space-between; flex-wrap: wrap;
+    gap: var(--space-2); margin-left: 0; }
+  [data-screen="builder"] .wb-bar__proposal { align-items: stretch; flex-direction: column; }
+  [data-screen="builder"] .wb-bar__proposal-actions { justify-content: flex-start; }
   [data-screen="builder"] .wb__rows { max-height: 18rem; }
   [data-screen="builder"] .wb__stage { max-height: none; }
 }

@@ -182,8 +182,9 @@ const SCENARIOS: Scenario[] = [
   // "the second card" needs that second prompt to mean anything.
   //
   // The graders are the CANVAS rather than the words. mustMention rides along on the said line
-  // because the page names the block before the op lands, and reading it in the report is how a near
-  // miss ("Dropping b2.") is told apart from a refusal.
+  // because the page names the proposed block, and reading it in the report is how a near
+  // miss ("Dropping b2.") is told apart from a refusal. The additional exact-ID span and move cases
+  // separate operation choice from block-reference resolution.
   { id: "builder-drop", page: "/grain/builder", ask: "drop the second card",
     builder: { wantIds: ["b1", "b2", "b3"] },
     mustMention: [["b4"]] },
@@ -197,7 +198,13 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-span", page: "/grain/builder", ask: "make the callout full width",
     builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "full" } },
     mustMention: [["b3"]] },
+  { id: "builder-span-id", page: "/grain/builder", ask: "make b2 full width",
+    builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b2: "full" } },
+    mustMention: [["b2"]] },
   { id: "builder-move", page: "/grain/builder", ask: "move the callout up",
+    builder: { wantIds: ["b1", "b3", "b2", "b4"] },
+    mustMention: [["b3"]] },
+  { id: "builder-move-id", page: "/grain/builder", ask: "move b3 up",
     builder: { wantIds: ["b1", "b3", "b2", "b4"] },
     mustMention: [["b3"]] },
   // The reply-without-acting case, which is a first-class answer rather than a failure: there is no
@@ -253,8 +260,8 @@ const lastReply = (page: Page): Promise<string> =>
   }).catch(() => "");   // navigation mid-poll tears the context — caller handles it
 
 // ---- the builder's own surfaces. Its edit path never touches chat, so it needs its own reader and
-// its own idea of what "the reply" is: one line above the canvas that names the block before the op
-// lands. The selectors are the ones builder-canvas.e2e.ts drives, deliberately the same strings.
+// its own idea of what "the reply" is: one status line above the canvas that reports the proposal and
+// its eventual result. The selectors are the ones builder-canvas.e2e.ts drives, deliberately the same strings.
 const COMPOSER = ".builder-composer textarea";
 const SUBMIT = ".builder-composer button[type=submit]";
 const PICKER = ".wb__take-file";
@@ -350,7 +357,7 @@ async function composeFor(page: Page): Promise<void> {
 // "Reading the page…" is the builder's thinking state, and it belongs here for the same reason
 // "Thinking" does: it is a settled, unchanging string, so without it `settle` would return the
 // moment the page said it had started rather than when the model answered.
-const BUSY = /Thinking|Loading Qwen|Reading the page|\d+%$/;
+const BUSY = /Thinking|Loading Qwen|Reading the page|Applying the approved edit|\d+%$/;
 
 /** Wait until the desk's reply settles: non-empty, not a load/thinking state, and UNCHANGED for
  *  `stableMs`. A cross-page navigation also ends the wait (nav scenarios). Returns the final text
@@ -554,7 +561,13 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     else await ask(page, s.ask);
     // first model scenario may include the one-time ~350MB download; be patient once
     const timeout = s.deterministic ? 30_000 : firstModelRun ? 420_000 : 150_000;
-    const { text, path: endPath } = await settle(page, startPath, timeout, s.builder ? lastSaid : lastReply);
+    let { text, path: endPath } = await settle(page, startPath, timeout, s.builder ? lastSaid : lastReply);
+    // The real visitor now approves each proposed edit. The audit does the same only after the
+    // proposal is visible, then grades the canvas after the ordinary approval path runs.
+    if (s.builder && await page.locator("[data-proposal-apply]").isVisible().catch(() => false)) {
+      await page.locator("[data-proposal-apply]").click();
+      ({ text, path: endPath } = await settle(page, startPath, timeout, lastSaid));
+    }
     if (!s.deterministic) firstModelRun = false;
     const canvas = s.builder ? await canvasState(page) : undefined;
     const model = s.builder ? await recorded(page) : undefined;
