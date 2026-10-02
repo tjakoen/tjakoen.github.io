@@ -76,7 +76,7 @@ individual checks before the audit can be called complete.
 | Page or family | Recommendation | State |
 | --- | --- | --- |
 | `/` | Make selected work the primary next step and keep the résumé, notes, and other destinations as secondary paths. The six equal “Start” links competed for attention. | Implemented: the projects link is now the first-screen button, and the secondary list no longer repeats it. |
-| `/about` | Put one inspectable proof link beside each leadership claim, especially team delivery, teaching scale, and shipped systems. | Next |
+| `/about` | Put one inspectable proof link beside each leadership claim, especially team delivery, teaching scale, and shipped systems. | Implemented: manager, technical lead, and educator sections now link directly to a talk, the BREAD architecture, and the public classroom project. |
 | `/resume` | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Implemented: the print sheet now uses the source's letter size, navy hierarchy, inline role headings, and first-page role grouping. The rendered export matches the two-page structure, and a browser check guards the print styles. |
 | `/projects` | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Next |
 | `/bread` | Add one end-to-end example that shows a visitor how the layers work together in a real request, alongside the layer diagram. | Next |
