@@ -34,6 +34,7 @@ test.describe("portfolio umbrella", () => {
     await expect(page.locator(".masthead")).toContainText("No build");
     await page.goto("/mill");
     await expect(page.locator(".masthead")).toContainText("Markdown");
+    await expect(page.getByRole("link", { name: "Read a note rendered by MILL" })).toHaveAttribute("href", "/notes/ten-times-zero");
   });
 });
 
