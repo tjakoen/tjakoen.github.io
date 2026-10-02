@@ -42,27 +42,39 @@
   body[data-screen="resume"] .section-head { break-after: avoid; }
   body[data-screen="resume"] .profile-card { display: block !important; margin: 0 0 2pt !important; padding: 0 !important; }
   body[data-screen="resume"] .profile-card__name { margin: 0 !important; font: 700 19pt/1.08 Arial, Helvetica, sans-serif !important;
-    letter-spacing: 0.04em; color: var(--color-fg) !important; }
+    letter-spacing: 0.04em; color: #213f6b !important; text-transform: uppercase; }
   body[data-screen="resume"] .profile-card__role { margin: 2pt 0 0 !important; font-size: 9pt !important; color: var(--color-fg) !important; }
   body[data-screen="resume"] .profile-card .eyebrow { margin: 0 0 2pt !important; font-size: 8pt !important;
     text-transform: uppercase; letter-spacing: 0.08em; }
-  body[data-screen="resume"] .resume-contact { gap: 2pt 9pt; margin: 4pt 0 9pt !important; font-size: 7.2pt !important;
+  body[data-screen="resume"] .resume-contact { gap: 2pt 9pt; margin: 4pt 0 9pt !important; font-size: 8.3pt !important;
     line-height: 1.2; }
+  body[data-screen="resume"] .resume-contact a { color: #1456a0 !important; }
   body[data-screen="resume"] .section-head { margin: 8pt 0 3pt !important; padding: 0 0 2pt !important;
-    border-bottom: 1px solid var(--color-accent) !important; font: 700 9pt/1.2 Arial, Helvetica, sans-serif !important;
-    color: var(--color-accent) !important; text-transform: uppercase; letter-spacing: 0.045em; }
-  body[data-screen="resume"] .lede { margin: 0 0 4pt !important; max-width: none !important; font-size: 8.4pt !important; line-height: 1.25 !important; }
+    border-bottom: 1px solid #213f6b !important; font: 700 10pt/1.2 Arial, Helvetica, sans-serif !important;
+    color: #213f6b !important; text-transform: uppercase; letter-spacing: 0.045em; }
+  body[data-screen="resume"] .lede { margin: 0 0 4pt !important; max-width: none !important; font-size: 9.3pt !important; line-height: 1.25 !important; color: #222 !important; }
   body[data-screen="resume"] .cv-core { display: block !important; margin: 0 0 2pt !important; padding: 0 !important;
-    font-size: 8pt !important; line-height: 1.25 !important; }
+    font-size: 9.5pt !important; line-height: 1.3 !important; }
+  body[data-screen="resume"] .cv-core { display: flex !important; flex-wrap: wrap !important; gap: 0 5pt !important; }
+  body[data-screen="resume"] .cv-chip { display: inline !important; }
+  body[data-screen="resume"] .cv-chip:not(:last-child)::after { content: " • "; }
   body[data-screen="resume"] .cv-list { display: block !important; margin: 2pt 0 5pt !important; }
   body[data-screen="resume"] .cv-entry { margin: 0 0 4pt !important; break-inside: avoid; }
-  body[data-screen="resume"] .cv-entry__title { margin: 0 !important; font-size: 9pt !important; line-height: 1.15 !important; }
-  body[data-screen="resume"] .cv-entry__meta { gap: 0 5pt !important; font: 7.3pt/1.2 Arial, Helvetica, sans-serif !important; }
-  body[data-screen="resume"] .cv-entry__where { margin: 1pt 0 0 !important; font: 7pt/1.2 Arial, Helvetica, sans-serif !important; }
+  /* Keep the current leadership and teaching roles on page one; move earlier work together to page two. */
+  body[data-screen="resume"] .cv-list > .cv-entry:nth-child(5) { break-before: page; }
+  body[data-screen="resume"] .cv-entry__head { display: block !important; font-size: 0 !important; }
+  body[data-screen="resume"] .cv-entry__title { display: inline !important; margin: 0 !important; font-size: 10.5pt !important;
+    line-height: 1.15 !important; font-weight: 700 !important; color: #111 !important; }
+  body[data-screen="resume"] .cv-entry__meta { display: contents !important; }
+  body[data-screen="resume"] .cv-entry__company { display: inline !important; font-size: 10.5pt !important;
+    font-weight: 700 !important; color: #111 !important; }
+  body[data-screen="resume"] .cv-entry__company::before { content: ", "; }
+  body[data-screen="resume"] .cv-entry__dates { float: right; font-size: 9pt !important; font-weight: 700 !important; }
+  body[data-screen="resume"] .cv-entry__where { clear: both; margin: 1pt 0 0 !important; font: 8.3pt/1.2 Arial, Helvetica, sans-serif !important; }
   body[data-screen="resume"] .cv-entry__summary { display: none !important; }
   body[data-screen="resume"] .cv-entry__detail { margin: 2pt 0 0 !important; }
   body[data-screen="resume"] .cv-entry__bullets { gap: 1pt !important; padding-left: 13pt !important; }
-  body[data-screen="resume"] .cv-bullet { font-size: 7.8pt !important; line-height: 1.2 !important; }
+  body[data-screen="resume"] .cv-bullet { color: #222 !important; font-size: 9.8pt !important; line-height: 1.25 !important; }
   body[data-screen="resume"] .cv-entry__bullets:empty { display: none !important; }
   body[data-screen="resume"] .cv-projects,
   body[data-screen="resume"] .docs-list { margin: 2pt 0 4pt !important; }
@@ -70,22 +82,23 @@
     width: 100% !important; box-sizing: border-box; gap: 5pt !important; margin: 2pt 0 !important; padding: 3pt 0 !important;
     font-size: 8pt !important; }
   body[data-screen="resume"] .docs-list__name { min-width: 0 !important; font-size: 8.4pt !important; }
-  body[data-screen="resume"] .docs-list__what { min-width: 0 !important; font-size: 7.8pt !important; line-height: 1.2 !important; }
+  body[data-screen="resume"] .docs-list__what { min-width: 0 !important; color: #222 !important; font-size: 8.8pt !important; line-height: 1.2 !important; }
   body[data-screen="resume"] .cv-skills { grid-template-columns: 1fr 1fr !important; gap: 2pt 12pt !important; margin: 2pt 0 4pt !important; }
   body[data-screen="resume"] .cv-skill { padding: 0 !important; }
   body[data-screen="resume"] .cv-skill__group { margin: 0 !important; font-size: 8pt !important; }
-  body[data-screen="resume"] .cv-skill__items { margin: 0 !important; font-size: 7.6pt !important; line-height: 1.2 !important; }
-  body[data-screen="resume"] .cv-certs { margin: 2pt 0 3pt !important; gap: 1pt !important; }
-  body[data-screen="resume"] .cv-languages { margin: 2pt 0 0 !important; font-size: 8pt !important; }
+  body[data-screen="resume"] .cv-skill__items { margin: 0 !important; color: #222 !important; font-size: 7.6pt !important; line-height: 1.2 !important; }
+  body[data-screen="resume"] .cv-certs { flex-direction: row !important; flex-wrap: wrap !important; gap: 0 7pt !important; margin: 2pt 0 3pt !important; }
+  body[data-screen="resume"] .cv-certs .cv-bullet:not(:last-child)::after { content: " • "; }
+  body[data-screen="resume"] .cv-languages { margin: 0 !important; font-size: 8pt !important; }
   /* Single-column flow, no card chrome; links remain visible to ATS parsers. */
   body[data-screen="resume"] .profile-card,
   body[data-screen="resume"] .cv-entry,
   body[data-screen="resume"] .cv-skill { background: var(--color-surface) !important; border: 0 !important; }
   body[data-screen="resume"] .cv-entry { padding-top: 0 !important; padding-bottom: 0 !important; }
-  /* the primary-skill chips flatten to a plain comma list (no pills), so the print/ATS sheet stays text */
+  /* the primary-skill chips flatten to a plain bullet-separated list, not a row of screen-only pills */
   body[data-screen="resume"] .cv-core { gap: 0 !important; }
   body[data-screen="resume"] .cv-chip { border: 0 !important; padding: 0 !important; color: inherit !important; font-family: inherit !important; }
-  body[data-screen="resume"] .cv-chip:not(:last-child)::after { content: ", "; }
+  body[data-screen="resume"] .cv-chip:not(:last-child)::after { content: " • "; }
   /* the chip label is a nested <a>; in the flat comma list it must read as plain text, not a link */
   body[data-screen="resume"] .cv-chip__link { color: inherit !important; text-decoration: none !important; }
   body[data-screen="resume"] a { color: inherit !important; text-decoration: none !important; }

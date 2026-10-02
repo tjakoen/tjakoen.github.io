@@ -77,7 +77,7 @@ individual checks before the audit can be called complete.
 | --- | --- | --- |
 | `/` | Make selected work the primary next step and keep the résumé, notes, and other destinations as secondary paths. The six equal “Start” links competed for attention. | Implemented: the projects link is now the first-screen button, and the secondary list no longer repeats it. |
 | `/about` | Put one inspectable proof link beside each leadership claim, especially team delivery, teaching scale, and shipped systems. | Next |
-| `/resume` | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Current résumé content was updated; visual PDF comparison remains part of release review. |
+| `/resume` | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Implemented: the print sheet now uses the source's letter size, navy hierarchy, inline role headings, and first-page role grouping. The rendered export matches the two-page structure, and a browser check guards the print styles. |
 | `/projects` | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Next |
 | `/bread` | Add one end-to-end example that shows a visitor how the layers work together in a real request, alongside the layer diagram. | Next |
 | `/batch` | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Next |
@@ -110,9 +110,14 @@ individual checks before the audit can be called complete.
 | `/notes/whitepaper-one-vocabulary` | Keep the working-draft status visible and offer the short GRAIN explanation before the research-length paper. | Next |
 | `/notes/why-i-teach` | Connect the teaching motivation to the course platform and badge criteria so readers can verify what changed in practice. | Next |
 | `/calendar` | Keep the year strip and feed as complementary ways through the history; review the event and note empty states against the live data on both phone and desktop. | Next |
+| `/calendar/{event}` (six event pages) | Keep the event pages connected to the feed, and make the next link point to a related talk, course, or note where one exists. | Next |
 | `/tour` and tour routes | Review the entry tour as the visitor's guided route through the portfolio; label the remaining tours as implementation reviews so they do not read like public showcases. | Next |
 | `/404` | Keep the recovery links, and check that each suggested destination still exists and matches its description. | Next |
 | `/docs`, `/reference`, and `/catalog` | Preserve these as working references, and provide a direct route back to the project story for visitors who land in documentation first. The catalog's mobile overflow, escaping specimen, and unnamed console control are fixed. | Catalog fix verified; remaining entry paths need review. |
+| `/batch/docs/*`, `/grain/docs/*`, `/mill/docs/*`, `/crumb/docs/*`, `/proof/docs/*`, and `/pantry/docs/*` | Review each documentation set's landing path, project context, and links back to its owning introduction. These routes share documentation templates, but their instructions need their own content check. | Next |
+| `/standards` and its 20 standard pages | Keep standards discoverable as evidence of engineering practice, and give each page clear ownership, current status, and a route back to the portfolio. | Next |
+| `/plans/plan/*` (29 plan pages) | Separate public evidence of shipped work from internal or stale backlog detail; link the completed portfolio plan to its finished pages and evidence. | Next |
+| `/decks/*` (four PDF attachments) | Verify each PDF opens, has useful document metadata, and has a matching description on the event or talk page that links to it. | Next |
 | `/kickstart` | Clarify what the coding agent will create and what the visitor must have ready before they hand it a project link. | Next |
 | `/mail` and contact paths | Make the real contact route and any local-only demo state clear before asking visitors to enter a message. | Next |
 
