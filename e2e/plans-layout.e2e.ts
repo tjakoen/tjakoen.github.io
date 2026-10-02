@@ -1,6 +1,22 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("the plans board keeps every status reachable", () => {
+  test("PROOF connects a markdown plan to its board projection and names the refresh limit", async ({ page }) => {
+    await page.goto("/proof");
+    await expect(page.getByRole("link", { name: "plans/site-builder.md" })).toHaveAttribute(
+      "href",
+      "https://github.com/tjakoen/tjakoen.github.io/blob/main/plans/site-builder.md",
+    );
+    await expect(page.getByRole("link", { name: "View the same plan on the board" })).toHaveAttribute(
+      "href",
+      "/plans/plan/site-builder",
+    );
+    await expect(page.locator(".lede").nth(1)).toContainText("manual refresh");
+
+    await page.goto("/plans/plan/site-builder");
+    await expect(page.locator(".proof-facts")).toContainText("done");
+  });
+
   test("a narrow desktop can scroll the final status fully into view", async ({ page }) => {
     await page.setViewportSize({ width: 1050, height: 850 });
     await page.goto("/plans");

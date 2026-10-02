@@ -74,6 +74,10 @@ The MILL introduction now links directly to a rendered note as well as its docum
 can inspect the content engine's output from the project page without first navigating the repository
 or reading the implementation guide. The landing-page browser check covers that evidence link.
 
+The PROOF introduction now pairs the source markdown for a completed site-builder plan with the
+board's rendered plan detail. Its existing manual-refresh limitation remains visible, and a browser
+check follows the source-to-board links and verifies the completed status.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need
@@ -89,7 +93,7 @@ individual checks before the audit can be called complete.
 | `/batch` | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Implemented: the page reports the dated portfolio-wide `/batch` measurement (267,606 bytes of JavaScript, 795,638 total bytes, 38 requests), links to the complete 145-route report, and gives the rerun command. The copy distinguishes shared-shell JavaScript from a BATCH-only benchmark. |
 | `/grain` | Keep the shared-control and visible-provenance demonstration prominent, then give the visitor a single guided action to try it. | Implemented: the first hero action now jumps directly to the two-operator demo; a browser check confirms the destination and working AI action. |
 | `/mill` | Tie the content-engine explanation to one note or documentation page rendered by the live site. | Implemented: the project links include a direct rendered-note example, covered by the landing-page browser check. |
-| `/proof` and `/plans` | Explain the relationship between markdown plans and the board with one current, completed portfolio example; keep the manual-refresh limitation explicit until live updates ship. | Next |
+| `/proof` and `/plans` | Explain the relationship between markdown plans and the board with one current, completed portfolio example; keep the manual-refresh limitation explicit until live updates ship. | Implemented: the PROOF page links the completed site-builder markdown to its board detail, states the manual-refresh limit, and has a browser check for both links and the rendered status. |
 | `/crumb` | Lead with the live portfolio tour so visitors can experience the layer before reading its file format. | Next |
 | `/pantry` | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Next |
 | `/greenroom` | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Next |
