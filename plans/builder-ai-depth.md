@@ -68,18 +68,18 @@ operation, not evidence that natural-language editing is ready.
 
 I reran the five scenarios on 2026-10-02. The explicit-ID removal and the copy-edit refusal passed.
 The model removed the first card instead of the second, removed the intro instead of widening the
-callout, and declined to move the callout after returning the shortened action name `move`. The
+callout, and declined to move the callout after returning the shortened action name move. The
 report is a snapshot from this model and prompt, not a general success rate. On a machine with
 WebGPU and the cached model, the run can be repeated with
-`PORT=3132 bun tools/desk-audit.ts builder-current-2026-10-02 --only=builder-drop,builder-bare-id,builder-span,builder-move,builder-no-verb`.
+PORT=3132 bun tools/desk-audit.ts builder-current-2026-10-02 --only=builder-drop,builder-bare-id,builder-span,builder-move,builder-no-verb.
 A prompt candidate that spelled out the action-to-request mapping also scored 2/5 in a separate run,
 with a different set of misses. I reverted it because the measured result did not improve.
 
 Two more checks narrowed the failure. Setting the edit temperature to zero kept the score at 2/5:
 the exact-ID removal and the copy-edit refusal still passed, while the natural-language drop, width,
 and move cases remained wrong. I added exact-ID width and move scenarios to the live audit. Both
-failed: the model chose `block.move` for each request, and the move request returned the shortened
-action `move`. A temporary 1.5B trial was inconclusive: the first request timed out and the next
+failed: the model chose block.move for each request, and the move request returned the shortened
+action move. A temporary 1.5B trial was inconclusive: the first request timed out and the next
 returned invalid JSON before the audit browser closed. It did not establish a usable improvement, so
 the shipped 0.5B profile remains in place.
 
@@ -87,7 +87,7 @@ The live audit now approves a proposal through the same button as the visitor, t
 canvas after dispatch. On the seven edit and refusal cases, the 2026-10-02 run scored 1/7. The only
 pass was the copy-edit refusal. The model dropped b2 for a request to drop the second card, timed out
 on the exact-ID b4 request, and chose removal for both width requests. Its two move answers used the
-unregistered action name `move`. The review step prevents these suggestions from mutating the page
+unregistered action name move. The review step prevents these suggestions from mutating the page
 until someone approves them, but it does not turn them into successful AI edits.
 
 The edit path is now review-first. A validated proposal names the block and operation, and the
@@ -101,7 +101,7 @@ it does not make the model's choices reliable.
 
 The portfolio-side boundary is also clear. GRAIN registers block removal, span, and move operations.
 Its field operation fills registered form controls; it does not write text into page-content blocks.
-The builder's templates expose text as escaped `data-field` values, but writing those values from
+The builder's templates expose text as escaped data-field values, but writing those values from
 the builder would bypass GRAIN's one-door contract. A later GRAIN design review must define an
 addressed, bounded text operation before the builder can revise existing copy. This plan does not
 change GRAIN or write around that boundary.
@@ -118,19 +118,19 @@ registered operation for that change.
 I corrected the live Builder audit fixture on 2026-10-03 after finding that its callout-width case
 started with the callout already full width. The callout now starts at half width, so both model
 profiles have a real span change to perform. On the corrected seven-case audit, the current 0.5B
-profile scored 2/7. It removed the explicitly named `b4` and correctly refused a request to change
+profile scored 2/7. It removed the explicitly named b4 and correctly refused a request to change
 copy; it could not remove the second card, chose removal for both width requests, and returned the
-unsupported shortened action `move` for both move requests. One first-use case also timed out at the
+unsupported shortened action move for both move requests. One first-use case also timed out at the
 builder's 45-second completion limit before the model produced an answer. The captured result is in
-`.cache/desk-audit/report-builder-qwen-0.5b-fixed-2026-10-03.json`.
+.cache/desk-audit/report-builder-qwen-0.5b-fixed-2026-10-03.json.
 
 I then exported the 1.5B profile and ran the same audit against that frozen static site in WebGPU
-Chromium. It scored 6/7: both width changes, both move requests, the explicit `b4` removal, and the
-copy-edit refusal passed. It still removed `b2`, the first card, when asked to drop the second card.
+Chromium. It scored 6/7: both width changes, both move requests, the explicit b4 removal, and the
+copy-edit refusal passed. It still removed b2, the first card, when asked to drop the second card.
 The first request on the cold profile did not run; after the model loaded, a separate repeat of that
-same request again removed `b2`. Warm responses in this run took 13 to 23 seconds. The static-site
-result is in `.cache/desk-audit/report-builder-qwen-1.5b-static-2026-10-03.json`; the repeated target
-case is in `.cache/desk-audit/report-builder-qwen-1.5b-drop-repeat-2026-10-03.json`. WebLLM lists
+same request again removed b2. Warm responses in this run took 13 to 23 seconds. The static-site
+result is in .cache/desk-audit/report-builder-qwen-1.5b-static-2026-10-03.json; the repeated target
+case is in .cache/desk-audit/report-builder-qwen-1.5b-drop-repeat-2026-10-03.json. WebLLM lists
 about 1.63 GB of required GPU memory for this model, compared with about 0.94 GB for the current
 0.5B model ([WebLLM model configuration](https://github.com/mlc-ai/web-llm/blob/main/src/config.ts)).
 The model's exact first-visit download size has not yet been measured. This is a promising editing
@@ -139,13 +139,13 @@ experience needs review before selecting a model for visitors.
 
 On October 3, 2026, I added a real-model composition scenario that grades the visible blocks and
 checks whether the draft retains the visitor's supplied names and facts. The current 0.5B model
-returned JSON with component names as top-level keys instead of the required `blocks` list. It also
+returned JSON with component names as top-level keys instead of the required blocks list. It also
 added unsupported details, including a claim about fresh bread and omitted the supplied location.
 The code rejected that shape and kept its example copy. A temporary 1.5B profile timed out at the
 Builder's 45-second completion limit before returning a draft. The live writing scenario therefore
 scored 0/1 for both profiles. The report files are
-`.cache/desk-audit/report-builder-draft-0.5b-2026-10-03.json` and
-`.cache/desk-audit/report-builder-draft-1.5b-2026-10-03.json`. These results mean that bounded copy
+.cache/desk-audit/report-builder-draft-0.5b-2026-10-03.json and
+.cache/desk-audit/report-builder-draft-1.5b-2026-10-03.json. These results mean that bounded copy
 is a tested application path, not a useful writing capability of either tested local profile.
 
 ## What to take from Puck AI
