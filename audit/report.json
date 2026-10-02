@@ -1,6 +1,6 @@
 {
   "note": "baseline of the current build; re-run with `bun run audit`",
-  "generatedAgainst": "http://localhost:3320",
+  "generatedAgainst": "http://localhost:3324",
   "pages": [
     {
       "path": "/",
@@ -8,18 +8,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 80,
-        "loadMs": 81,
-        "wireBytes": 917295,
+        "domContentLoadedMs": 145,
+        "loadMs": 148,
+        "wireBytes": 926036,
         "jsBytes": 267606,
-        "cssBytes": 581633,
+        "cssBytes": 589416,
         "requests": 38
       },
       "dom": {
         "title": "Welcome · TJ's Desk",
         "titleLen": 19,
         "metaDescription": "Tjakoen Stolk is a software engineering leader, product builder, and educator who builds production systems and tools for teaching software engineering.",
-        "canonical": "http://localhost:3320/",
+        "canonical": "http://localhost:3324/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -56,19 +56,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 848564,
+        "ttfbMs": 13,
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "wireBytes": 859935,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "About · TJ's Desk",
         "titleLen": 17,
-        "metaDescription": "About Tjakoen Stolk: dev manager, tech lead, and part-time software engineering teacher who builds his own no-build stack. I direct, Claude types.",
-        "canonical": "http://localhost:3320/about/",
+        "metaDescription": "About Tjakoen Stolk, Senior Technical Team Lead at Career Team and part-time computer science instructor at Holy Angel University. Filipino-Dutch engineering leader, educator, and creator of the BREAD stack.",
+        "canonical": "http://localhost:3324/about/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -92,7 +92,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 92,
+        "ariaAttrs": 94,
         "selectorCounts": {
           "Surfaces": 37,
           "Kinds": 0,
@@ -106,18 +106,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 3,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 782585,
+        "domContentLoadedMs": 31,
+        "loadMs": 32,
+        "wireBytes": 791261,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Badges · School of Computing course credentials",
         "titleLen": 47,
         "metaDescription": "Course badges issued by Tjakoen Stolk at the School of Computing, Holy Angel University. Each badge page explains the skills it certifies and how to verify it.",
-        "canonical": "http://localhost:3320/badges/",
+        "canonical": "http://localhost:3324/badges/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -154,19 +154,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 785278,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 39,
+        "loadMs": 39,
+        "wireBytes": 794278,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Flutter App Development · 6ADET section 2125",
         "titleLen": 44,
         "metaDescription": "Flutter App Development",
-        "canonical": "http://localhost:3320/badges/adet-2125-midterm/",
+        "canonical": "http://localhost:3324/badges/adet-2125-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -192,7 +192,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 80,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -203,19 +203,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 785324,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 36,
+        "loadMs": 37,
+        "wireBytes": 794324,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Dart and Flutter Foundations · 6ADET section 2125",
         "titleLen": 49,
         "metaDescription": "Dart and Flutter Foundations",
-        "canonical": "http://localhost:3320/badges/adet-2125-prelim/",
+        "canonical": "http://localhost:3324/badges/adet-2125-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -241,7 +241,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 82,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -252,19 +252,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 36,
-        "loadMs": 36,
-        "wireBytes": 785278,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 794278,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Flutter App Development · 6ADET section 2134",
         "titleLen": 44,
         "metaDescription": "Flutter App Development",
-        "canonical": "http://localhost:3320/badges/adet-2134-midterm/",
+        "canonical": "http://localhost:3324/badges/adet-2134-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -290,7 +290,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 84,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -302,18 +302,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 8,
-        "domContentLoadedMs": 44,
+        "domContentLoadedMs": 43,
         "loadMs": 44,
-        "wireBytes": 785324,
+        "wireBytes": 794324,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Dart and Flutter Foundations · 6ADET section 2134",
         "titleLen": 49,
         "metaDescription": "Dart and Flutter Foundations",
-        "canonical": "http://localhost:3320/badges/adet-2134-prelim/",
+        "canonical": "http://localhost:3324/badges/adet-2134-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -339,7 +339,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 86,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -350,19 +350,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 785346,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 794346,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Backend Development with Cloud · 6APSI section 2203",
         "titleLen": 51,
         "metaDescription": "Backend Development with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2203-midterm/",
+        "canonical": "http://localhost:3324/badges/apsi-2203-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -388,7 +388,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 88,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -399,19 +399,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 34,
-        "loadMs": 35,
-        "wireBytes": 785268,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 794268,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Frontend Design with Cloud · 6APSI section 2203",
         "titleLen": 47,
         "metaDescription": "Frontend Design with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2203-prelim/",
+        "canonical": "http://localhost:3324/badges/apsi-2203-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -437,7 +437,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 90,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -448,19 +448,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 785346,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 794346,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Backend Development with Cloud · 6APSI section 2209",
         "titleLen": 51,
         "metaDescription": "Backend Development with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2209-midterm/",
+        "canonical": "http://localhost:3324/badges/apsi-2209-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -486,7 +486,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 92,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -497,19 +497,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 785268,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 794268,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Frontend Design with Cloud · 6APSI section 2209",
         "titleLen": 47,
         "metaDescription": "Frontend Design with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2209-prelim/",
+        "canonical": "http://localhost:3324/badges/apsi-2209-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -535,7 +535,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 94,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -546,19 +546,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 785346,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 42,
+        "loadMs": 43,
+        "wireBytes": 794346,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Backend Development with Cloud · 6APSI section 2215",
         "titleLen": 51,
         "metaDescription": "Backend Development with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2215-midterm/",
+        "canonical": "http://localhost:3324/badges/apsi-2215-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -584,7 +584,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 96,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -596,18 +596,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 13,
-        "domContentLoadedMs": 47,
-        "loadMs": 48,
-        "wireBytes": 785268,
+        "domContentLoadedMs": 48,
+        "loadMs": 49,
+        "wireBytes": 794268,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Frontend Design with Cloud · 6APSI section 2215",
         "titleLen": 47,
         "metaDescription": "Frontend Design with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2215-prelim/",
+        "canonical": "http://localhost:3324/badges/apsi-2215-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -633,7 +633,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 98,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -644,19 +644,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 785346,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 794346,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Backend Development with Cloud · 6APSI section 2240",
         "titleLen": 51,
         "metaDescription": "Backend Development with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2240-midterm/",
+        "canonical": "http://localhost:3324/badges/apsi-2240-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -682,7 +682,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 100,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -693,19 +693,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 45,
-        "loadMs": 46,
-        "wireBytes": 785268,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 40,
+        "loadMs": 41,
+        "wireBytes": 794268,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Frontend Design with Cloud · 6APSI section 2240",
         "titleLen": 47,
         "metaDescription": "Frontend Design with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2240-prelim/",
+        "canonical": "http://localhost:3324/badges/apsi-2240-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -731,7 +731,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 102,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -742,19 +742,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 785146,
+        "ttfbMs": 11,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 794146,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Interactive Web Pages · 6INTROWEB section 2106",
         "titleLen": 46,
         "metaDescription": "Interactive Web Pages",
-        "canonical": "http://localhost:3320/badges/introweb-2106-midterm/",
+        "canonical": "http://localhost:3324/badges/introweb-2106-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -780,7 +780,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 104,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -792,18 +792,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 8,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 785076,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 794076,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Web Foundations · 6INTROWEB section 2106",
         "titleLen": 40,
         "metaDescription": "Web Foundations",
-        "canonical": "http://localhost:3320/badges/introweb-2106-prelim/",
+        "canonical": "http://localhost:3324/badges/introweb-2106-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -829,7 +829,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 106,
         "selectorCounts": {
-          "Surfaces": 34,
+          "Surfaces": 36,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -840,19 +840,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 34,
-        "loadMs": 35,
-        "wireBytes": 786113,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 795638,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "BATCH · a no-build hypermedia substrate",
         "titleLen": 39,
         "metaDescription": "BATCH: server-rendered hypermedia on Bun with no build step and near-zero client JavaScript. The substrate GRAIN and the product stand on.",
-        "canonical": "http://localhost:3320/batch/",
+        "canonical": "http://localhost:3324/batch/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -870,13 +870,13 @@
         "hasMain": true,
         "hasArticle": false,
         "hasNav": true,
-        "hasTime": false,
+        "hasTime": true,
         "jsonLd": [
           "(no @type)"
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 111,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -889,19 +889,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 779567,
+        "ttfbMs": 25,
+        "domContentLoadedMs": 54,
+        "loadMs": 54,
+        "wireBytes": 788243,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "BATCH docs",
         "titleLen": 10,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/batch/docs/",
+        "canonical": "http://localhost:3324/batch/docs/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -939,18 +939,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 36,
-        "loadMs": 36,
-        "wireBytes": 781782,
+        "domContentLoadedMs": 39,
+        "loadMs": 39,
+        "wireBytes": 790458,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How to: add a route",
         "titleLen": 19,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/batch/docs/add-a-route/",
+        "canonical": "http://localhost:3324/batch/docs/add-a-route/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -987,19 +987,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 17,
-        "domContentLoadedMs": 82,
-        "loadMs": 82,
-        "wireBytes": 959954,
+        "ttfbMs": 16,
+        "domContentLoadedMs": 83,
+        "loadMs": 83,
+        "wireBytes": 968630,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "BATCH — Reference Architecture (Single Source of Truth)",
         "titleLen": 55,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/batch/docs/architecture/",
+        "canonical": "http://localhost:3324/batch/docs/architecture/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1038,17 +1038,17 @@
         "status": 200,
         "ttfbMs": 5,
         "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 783310,
+        "loadMs": 47,
+        "wireBytes": 791986,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How to: consume BATCH / GRAIN as a dependency",
         "titleLen": 45,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/batch/docs/consume-as-git-deps/",
+        "canonical": "http://localhost:3324/batch/docs/consume-as-git-deps/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1085,19 +1085,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 12,
-        "domContentLoadedMs": 54,
-        "loadMs": 55,
-        "wireBytes": 815100,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "wireBytes": 823776,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "CONVENTIONS",
         "titleLen": 11,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/batch/docs/conventions/",
+        "canonical": "http://localhost:3324/batch/docs/conventions/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1134,19 +1134,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 781888,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 790564,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Getting started with BATCH",
         "titleLen": 26,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/batch/docs/getting-started/",
+        "canonical": "http://localhost:3324/batch/docs/getting-started/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1183,19 +1183,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 782370,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 39,
+        "loadMs": 39,
+        "wireBytes": 791046,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How to: static export + deploy",
         "titleLen": 30,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/batch/docs/static-export-and-deploy/",
+        "canonical": "http://localhost:3324/batch/docs/static-export-and-deploy/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1232,19 +1232,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 788955,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 798835,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "The BREAD Stack · four layers plus PANTRY",
         "titleLen": 41,
         "metaDescription": "BREAD: a no-build, server-rendered hypermedia stack. Four layers plus PANTRY, the app that composes them into one server. This whole site runs on it.",
-        "canonical": "http://localhost:3320/bread/",
+        "canonical": "http://localhost:3324/bread/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1268,7 +1268,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 120,
+        "ariaAttrs": 121,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -1281,19 +1281,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 13,
-        "domContentLoadedMs": 53,
-        "loadMs": 56,
-        "wireBytes": 7396518,
+        "ttfbMs": 14,
+        "domContentLoadedMs": 69,
+        "loadMs": 70,
+        "wireBytes": 7405169,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 60
       },
       "dom": {
         "title": "Calendar · TJ's Desk",
         "titleLen": 20,
         "metaDescription": "The desk's calendar: a Month and a Feed view over the same real things, note publish dates and posts about what shipped. Part of the desktop metaphor, not a live scheduling tool.",
-        "canonical": "http://localhost:3320/calendar/",
+        "canonical": "http://localhost:3324/calendar/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1330,19 +1330,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 1246976,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 1255652,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 44
       },
       "dom": {
         "title": "The slots were gone before I said anything",
         "titleLen": 42,
         "metaDescription": "Sleek & Swift, a hands-on Tailwind and shadcn/ui workshop run by Code Geeks, the student organization for the computing programs at Holy Angel University. Two hours in a full lab on a Wednesday afternoon, registration closed a day early. Written up a year to the day afterwards, which is late enough that I say so in the post rather than pretending otherwise.",
-        "canonical": "http://localhost:3320/calendar/codegeeks-hau-sleek-and-swift/",
+        "canonical": "http://localhost:3324/calendar/codegeeks-hau-sleek-and-swift/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1379,19 +1379,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 43,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 42,
         "loadMs": 43,
-        "wireBytes": 915866,
+        "wireBytes": 924542,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 43
       },
       "dom": {
         "title": "I handed out the criteria, then had to score them",
         "titleLen": 49,
         "metaDescription": "Beyond Limits: The AI Hack, the GDG on Campus hackathon at Holy Angel University, ran alongside the first Regional AI Conference. I opened it with the ideation workshop, which is an hour of telling ten teams what makes an idea worth building. Two days later I was sitting behind a nameplate with a scoring sheet, marking the same teams against roughly the same list. The team that won broke my advice on purpose.",
-        "canonical": "http://localhost:3320/calendar/gdg-hau-ai-hack/",
+        "canonical": "http://localhost:3324/calendar/gdg-hau-ai-hack/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1429,18 +1429,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 788649,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 797325,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 42
       },
       "dom": {
         "title": "Don't vibe anything you can't code yourself",
         "titleLen": 43,
         "metaDescription": "Infosession: Navigating Tech, the general assembly of Google Developers Group on Campus - Holy Angel University, about 60 students on a Saturday-night call. Louella Salenga took the ethics of AI in learning and teaching, Marc Samuel Pabilona took security in the age of AI, and I got the one that sounds like a compliment until you look at it: vibe coding, and where it stops working.",
-        "canonical": "http://localhost:3320/calendar/gdgoc-hau-general-assembly/",
+        "canonical": "http://localhost:3324/calendar/gdgoc-hau-general-assembly/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1478,18 +1478,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 4,
-        "domContentLoadedMs": 36,
-        "loadMs": 36,
-        "wireBytes": 788913,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 797589,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 42
       },
       "dom": {
         "title": "Talking AI to a room of artists",
         "titleLen": 31,
         "metaDescription": "Re: AI-lity Check, a seminar on originality and integrity amidst AI-driven media, run by MAFIA, the Multimedia Aficionados, the student org for the Entertainment and Multimedia Computing program. I got half an hour to talk about AI to a room of artists, which is a bit like turning up to explain the weather to people already standing in the rain. The best part came later, in the Q and A.",
-        "canonical": "http://localhost:3320/calendar/mafia-hau-reality-check/",
+        "canonical": "http://localhost:3324/calendar/mafia-hau-reality-check/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1526,19 +1526,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 1887610,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 1896286,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 44
       },
       "dom": {
         "title": "A booth in the morning, a stage after lunch",
         "titleLen": 43,
         "metaDescription": "EXPE21ENCE, the Practicum Fair, Job Fair and Company Talks run by YSES at UP Los Baños in their twenty-first year. Career Team took a booth and a stage slot on the same day: 130 sign-ups on the sheet, then a talk called From Code to Career. A recruiting day, and I will not dress that up.",
-        "canonical": "http://localhost:3320/calendar/yses-uplb-fair-and-talk/",
+        "canonical": "http://localhost:3324/calendar/yses-uplb-fair-and-talk/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1576,18 +1576,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 1237259,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 1245935,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 44
       },
       "dom": {
         "title": "The prize we gave out was not for the best demo",
         "titleLen": 47,
         "metaDescription": "EXPE21ENCE: The Hackfest, run by YSES at UP Los Baños. Career Team came in as a premier sponsor, so I gave a talk and then sat as a judge for our own special prize. We handed the Accelerating the Human Condition Award to two teams, and neither of them won it for the code.",
-        "canonical": "http://localhost:3320/calendar/yses-uplb-hackfest/",
+        "canonical": "http://localhost:3324/calendar/yses-uplb-hackfest/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1624,31 +1624,32 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 37,
-        "loadMs": 87,
-        "wireBytes": 1193065,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 95,
+        "loadMs": 115,
+        "wireBytes": 1204025,
         "jsBytes": 30244,
-        "cssBytes": 433572,
+        "cssBytes": 441355,
         "requests": 22
       },
       "dom": {
         "title": "Component Catalog",
         "titleLen": 17,
-        "metaDescription": null,
-        "canonical": "http://localhost:3320/catalog/",
+        "metaDescription": "Browse GRAIN components, their documented controls, live examples, and the actions available to people and AI.",
+        "canonical": "http://localhost:3324/catalog/",
         "htmlLang": "en",
         "og": [
           "og:type",
           "og:site_name",
           "og:title",
+          "og:description",
           "og:url",
           "og:image",
           "og:image:width",
           "og:image:height",
           "og:image:alt"
         ],
-        "twitter": 3,
+        "twitter": 4,
         "h1Count": 8,
         "hasMain": true,
         "hasArticle": true,
@@ -1659,9 +1660,9 @@
         ],
         "renderBlockingCss": 4,
         "renderBlockingJs": 1,
-        "ariaAttrs": 312,
+        "ariaAttrs": 316,
         "selectorCounts": {
-          "Surfaces": 131,
+          "Surfaces": 132,
           "Kinds": 4,
           "Accepts": 2
         }
@@ -1672,19 +1673,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 40,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 39,
         "loadMs": 40,
-        "wireBytes": 786372,
+        "wireBytes": 794980,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "CRUMB · a guided tour over the live app",
         "titleLen": 39,
         "metaDescription": "CRUMB: the guided-tour, demo-mode, and AI-review layer. Tours are markdown files that highlight real, live surfaces one at a time, using GRAIN's own lamp. Live: this site's own Tour runs on this exact package.",
-        "canonical": "http://localhost:3320/crumb/",
+        "canonical": "http://localhost:3324/crumb/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1721,19 +1722,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 37,
-        "loadMs": 37,
-        "wireBytes": 778746,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 787422,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "CRUMB docs",
         "titleLen": 10,
         "metaDescription": "CRUMB's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/crumb/docs/",
+        "canonical": "http://localhost:3324/crumb/docs/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1770,19 +1771,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 789156,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 797832,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Getting started with CRUMB",
         "titleLen": 26,
         "metaDescription": "CRUMB's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/crumb/docs/getting-started/",
+        "canonical": "http://localhost:3324/crumb/docs/getting-started/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1820,18 +1821,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 799834,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 808510,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Writing a CRUMB tour",
         "titleLen": 20,
         "metaDescription": "CRUMB's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/crumb/docs/write-a-tour/",
+        "canonical": "http://localhost:3324/crumb/docs/write-a-tour/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1868,19 +1869,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 778965,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 787641,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Engineering Ai For Social Impact · the deck",
         "titleLen": 43,
         "metaDescription": "Engineering Ai For Social Impact, the deck, readable here on the site.",
-        "canonical": "http://localhost:3320/decks/engineering-ai-for-social-impact/",
+        "canonical": "http://localhost:3324/decks/engineering-ai-for-social-impact/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1917,19 +1918,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 778744,
+        "ttfbMs": 9,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 787420,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "From Code To Career · the deck",
         "titleLen": 30,
         "metaDescription": "From Code To Career, the deck, readable here on the site.",
-        "canonical": "http://localhost:3320/decks/from-code-to-career/",
+        "canonical": "http://localhost:3324/decks/from-code-to-career/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -1968,17 +1969,17 @@
         "status": 200,
         "ttfbMs": 5,
         "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 778961,
+        "loadMs": 43,
+        "wireBytes": 787637,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Beyond Limits: the ideation workshop · the deck",
         "titleLen": 47,
         "metaDescription": "Beyond Limits: the ideation workshop, the deck, readable here on the site.",
-        "canonical": "http://localhost:3320/decks/gdg-hau-ai-hack-ideation/",
+        "canonical": "http://localhost:3324/decks/gdg-hau-ai-hack-ideation/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2016,18 +2017,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 43,
-        "loadMs": 44,
-        "wireBytes": 778746,
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 787422,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Re: AI-lity Check · the deck",
         "titleLen": 28,
         "metaDescription": "Re: AI-lity Check, the deck, readable here on the site.",
-        "canonical": "http://localhost:3320/decks/reality-check-ai-ethics/",
+        "canonical": "http://localhost:3324/decks/reality-check-ai-ethics/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2064,19 +2065,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 10,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 792111,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 44,
+        "loadMs": 45,
+        "wireBytes": 800719,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Developer docs · BREAD",
         "titleLen": 22,
         "metaDescription": "Learn to build with BREAD: getting started with BATCH and GRAIN, a hands-on tutorial building an operable surface, how-to guides for common tasks, the component catalog, and the AI vocabulary contract.",
-        "canonical": "http://localhost:3320/docs/",
+        "canonical": "http://localhost:3324/docs/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2116,16 +2117,16 @@
         "ttfbMs": 6,
         "domContentLoadedMs": 45,
         "loadMs": 45,
-        "wireBytes": 803717,
+        "wireBytes": 812676,
         "jsBytes": 272014,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 40
       },
       "dom": {
         "title": "GRAIN · an AI-interaction design system",
         "titleLen": 39,
         "metaDescription": "One interface a person and an AI operate through the same controls. GRAIN's own site, built with GRAIN.",
-        "canonical": "http://localhost:3320/grain/",
+        "canonical": "http://localhost:3324/grain/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2162,19 +2163,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 50,
-        "loadMs": 66,
-        "wireBytes": 868166,
-        "jsBytes": 324000,
-        "cssBytes": 455129,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 54,
+        "loadMs": 58,
+        "wireBytes": 878572,
+        "jsBytes": 325814,
+        "cssBytes": 462912,
         "requests": 48
       },
       "dom": {
         "title": "Builder · TJ's Desk",
         "titleLen": 19,
         "metaDescription": "Describe a page in plain English. A closed, code-owned set of GRAIN blocks decides what actually renders: the model never picks a component, a layout, or a name.",
-        "canonical": "http://localhost:3320/grain/builder/",
+        "canonical": "http://localhost:3324/grain/builder/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2212,18 +2213,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 41,
-        "loadMs": 118,
-        "wireBytes": 1531367,
+        "domContentLoadedMs": 43,
+        "loadMs": 122,
+        "wireBytes": 1543209,
         "jsBytes": 292050,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 44
       },
       "dom": {
         "title": "Preview · the builder",
         "titleLen": 21,
         "metaDescription": "A page composed on /grain/builder, on its own, with nothing of the workbench around it. Toggle between the rendered page and the markup behind it.",
-        "canonical": "http://localhost:3320/grain/builder/preview/",
+        "canonical": "http://localhost:3324/grain/builder/preview/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2260,19 +2261,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 780160,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 788836,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "GRAIN docs",
         "titleLen": 10,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/",
+        "canonical": "http://localhost:3324/grain/docs/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2309,19 +2310,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 43,
-        "wireBytes": 782745,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 40,
+        "loadMs": 41,
+        "wireBytes": 791421,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How to: add a component",
         "titleLen": 23,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/add-a-component/",
+        "canonical": "http://localhost:3324/grain/docs/add-a-component/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2361,16 +2362,16 @@
         "ttfbMs": 5,
         "domContentLoadedMs": 43,
         "loadMs": 44,
-        "wireBytes": 782064,
+        "wireBytes": 790740,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How to: add a RenderOp kind",
         "titleLen": 27,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/add-a-render-op-kind/",
+        "canonical": "http://localhost:3324/grain/docs/add-a-render-op-kind/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2408,18 +2409,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 9,
-        "domContentLoadedMs": 57,
-        "loadMs": 57,
-        "wireBytes": 856972,
+        "domContentLoadedMs": 59,
+        "loadMs": 59,
+        "wireBytes": 865648,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "AI ↔ UI Interface — the GRAIN action vocabulary contract",
         "titleLen": 56,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/ai-interface/",
+        "canonical": "http://localhost:3324/grain/docs/ai-interface/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2457,18 +2458,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 53,
-        "loadMs": 53,
-        "wireBytes": 806581,
+        "domContentLoadedMs": 54,
+        "loadMs": 54,
+        "wireBytes": 815257,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "🍞 Sourdough — GRAIN's default theme",
         "titleLen": 36,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/design-system/",
+        "canonical": "http://localhost:3324/grain/docs/design-system/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2508,16 +2509,16 @@
         "ttfbMs": 5,
         "domContentLoadedMs": 44,
         "loadMs": 44,
-        "wireBytes": 783289,
+        "wireBytes": 791965,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Getting started with GRAIN",
         "titleLen": 26,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/getting-started/",
+        "canonical": "http://localhost:3324/grain/docs/getting-started/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2554,19 +2555,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 49,
-        "loadMs": 49,
-        "wireBytes": 805739,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "wireBytes": 814415,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "GRAIN — an interface an AI can operate",
         "titleLen": 38,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/grain/",
+        "canonical": "http://localhost:3324/grain/docs/grain/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2603,19 +2604,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 782151,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 47,
+        "loadMs": 48,
+        "wireBytes": 790827,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How to: make a surface operable",
         "titleLen": 31,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/make-a-surface-operable/",
+        "canonical": "http://localhost:3324/grain/docs/make-a-surface-operable/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2653,18 +2654,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 42,
+        "domContentLoadedMs": 43,
         "loadMs": 43,
-        "wireBytes": 781644,
+        "wireBytes": 790320,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How to: re-skin via tokens",
         "titleLen": 26,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/re-skin-via-tokens/",
+        "canonical": "http://localhost:3324/grain/docs/re-skin-via-tokens/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2701,19 +2702,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 52,
-        "loadMs": 52,
-        "wireBytes": 797655,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 55,
+        "loadMs": 56,
+        "wireBytes": 806331,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Tutorial: build your first operable surface",
         "titleLen": 43,
         "metaDescription": "The GRAIN design system's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/grain/docs/tutorial/",
+        "canonical": "http://localhost:3324/grain/docs/tutorial/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2750,19 +2751,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 50,
-        "loadMs": 50,
-        "wireBytes": 1628360,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 1636964,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 42
       },
       "dom": {
         "title": "Greenroom · TJ's Desk",
         "titleLen": 21,
         "metaDescription": "Greenroom: run automated browser checks against a live web app and read the results, with no coding required. Runs on your own machine or as one shared instance a team signs into. Built on the BREAD stack.",
-        "canonical": "http://localhost:3320/greenroom/",
+        "canonical": "http://localhost:3324/greenroom/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2799,19 +2800,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 840808,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 849469,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Mail · TJ's Desk",
         "titleLen": 16,
         "metaDescription": "The mail panel on TJ's Desk: folders and a letters page dressed as an inbox, all written ahead of time, plus the one real control. Compose builds a message and hands it to your own mail app, addressed to me. A real way to reach me on a static site.",
-        "canonical": "http://localhost:3320/mail/",
+        "canonical": "http://localhost:3324/mail/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2848,19 +2849,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 785636,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 42,
+        "loadMs": 43,
+        "wireBytes": 794244,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "MILL · Markdown in, living layouts",
         "titleLen": 34,
         "metaDescription": "MILL: a reusable Markdown-to-pages CMS. Feed it markdown + images, it renders GRAIN pages. A layer above BATCH and GRAIN; framework-agnostic core. The core is live: it renders this site's notes and docs.",
-        "canonical": "http://localhost:3320/mill/",
+        "canonical": "http://localhost:3324/mill/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2897,19 +2898,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 778898,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 787574,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "MILL docs",
         "titleLen": 9,
         "metaDescription": "MILL's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/mill/docs/",
+        "canonical": "http://localhost:3324/mill/docs/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2946,19 +2947,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 785362,
+        "ttfbMs": 3,
+        "domContentLoadedMs": 35,
+        "loadMs": 36,
+        "wireBytes": 794038,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How to: add a collection",
         "titleLen": 24,
         "metaDescription": "MILL's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/mill/docs/add-a-collection/",
+        "canonical": "http://localhost:3324/mill/docs/add-a-collection/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -2995,19 +2996,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 807017,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 815693,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "MILL: architecture",
         "titleLen": 18,
         "metaDescription": "MILL's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/mill/docs/architecture/",
+        "canonical": "http://localhost:3324/mill/docs/architecture/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3044,19 +3045,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 783338,
+        "ttfbMs": 3,
+        "domContentLoadedMs": 37,
+        "loadMs": 37,
+        "wireBytes": 792014,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Getting started with MILL",
         "titleLen": 25,
         "metaDescription": "MILL's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/mill/docs/getting-started/",
+        "canonical": "http://localhost:3324/mill/docs/getting-started/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3093,19 +3094,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 969094,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 977698,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 39
       },
       "dom": {
         "title": "Native GitHub Classroom · TJ's Desk",
         "titleLen": 35,
         "metaDescription": "A GitHub-native course platform: the repo is the LMS, a push is a submission, grading is a GitHub Action. One engine across every course, and the machine never writes to a student's own work. No course internals or student data here.",
-        "canonical": "http://localhost:3320/native-github-classroom/",
+        "canonical": "http://localhost:3324/native-github-classroom/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3143,18 +3144,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 784929,
+        "domContentLoadedMs": 37,
+        "loadMs": 37,
+        "wireBytes": 793533,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Native GitHub Classroom · Docs",
         "titleLen": 30,
         "metaDescription": "How Native GitHub Classroom is put together: the four repos, the access model, scoped tokens, repo names as data, and the safe-by-default writes. No course internals or student data.",
-        "canonical": "http://localhost:3320/native-github-classroom/docs/",
+        "canonical": "http://localhost:3324/native-github-classroom/docs/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3191,19 +3192,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 807297,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 815963,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Notes",
         "titleLen": 5,
         "metaDescription": "Long-form notes — how this stack got built, how I teach, and what broke along the way.",
-        "canonical": "http://localhost:3320/notes/",
+        "canonical": "http://localhost:3324/notes/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3240,19 +3241,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 10,
-        "domContentLoadedMs": 62,
-        "loadMs": 62,
-        "wireBytes": 848934,
+        "ttfbMs": 13,
+        "domContentLoadedMs": 67,
+        "loadMs": 67,
+        "wireBytes": 857610,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Everybody Wants the Agent. Somebody Has to Build the Floor.",
         "titleLen": 59,
         "metaDescription": "Most organizations have bought AI subscriptions and are hoping the automation arrives on its own. This is the roadmap that actually gets there, and the implementation behind each stage. Instrument and make one repository legible now. Extract skills from the people who do the work and let developers run them by hand. Score what happens. Then fire the same skills from triggers, then chain them into loops that run unattended. One artifact travels the whole way, so there is never a second system and never a migration project. Includes what to build now, what six months looks like, where a year lands, and the six ways these systems fail without telling you.",
-        "canonical": "http://localhost:3320/notes/build-the-floor/",
+        "canonical": "http://localhost:3324/notes/build-the-floor/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3289,19 +3290,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 52,
-        "loadMs": 53,
-        "wireBytes": 811032,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 819708,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "This Site Feels Like an App. It's a Stack of Full Page Loads.",
         "titleLen": 61,
         "metaDescription": "A technical tour of how tjakoen.github.io is built, and why it is a different way of doing things: the single-page feel is a cross-document View Transition, not an SPA; there is no build step, because a Bun server composes the HTML and the static site is a frozen crawl of it; there is no client framework, only a handful of small scripts leaning on native browser elements; writes go through one path that also runs with no server; and the whole thing is three layers stacked one direction. The AI side of the story lives in its own whitepaper.",
-        "canonical": "http://localhost:3320/notes/feels-like-an-app/",
+        "canonical": "http://localhost:3324/notes/feels-like-an-app/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3338,19 +3339,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 49,
-        "loadMs": 49,
-        "wireBytes": 794026,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 802702,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How I Turned a GitHub Org Into My Whole Classroom",
         "titleLen": 49,
         "metaDescription": "The maker's story of a GitHub-native course platform: GitHub is the LMS, a repo is the coursework, a push is a submission, and grading is an Action. How the \"repo is the platform\" reframe fell out of having no budget, the one-engine-many-courses design, and the unglamorous bugs that turned out to be the real work: access control, scoped tokens, and treating repo names as data.",
-        "canonical": "http://localhost:3320/notes/how-i-turned-github-into-a-classroom/",
+        "canonical": "http://localhost:3324/notes/how-i-turned-github-into-a-classroom/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3387,19 +3388,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 49,
-        "loadMs": 49,
-        "wireBytes": 802135,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 42,
+        "loadMs": 43,
+        "wireBytes": 810811,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "I Was Shipping Faster Than I Could Understand It",
         "titleLen": 48,
         "metaDescription": "How I got back on top of AI-assisted work across a dozen repos: one shared workflow instead of a dozen improvised ones. Plan state moved out of chat and into markdown files the AI already edits, with a board that renders them and writes nothing back. A work-triggered heartbeat (a doctor at every session start, CI on every push) that makes skipped chores visible. An accountability contract (a run ledger, declared rails, and verification by a second pass) that keeps an unattended run honest, and a documentation discipline borrowed from aerospace manuals and from Addy Osmani's writing on loop engineering. One person applying the shape the field agrees on, honest that it isn't proof it scales to a team.",
-        "canonical": "http://localhost:3320/notes/one-loop-every-repo/",
+        "canonical": "http://localhost:3324/notes/one-loop-every-repo/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3437,18 +3438,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 50,
-        "loadMs": 50,
-        "wireBytes": 807158,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 815834,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "I Built a Whole Stack Because No To-Do App Would Have Me",
         "titleLen": 56,
         "metaDescription": "How trying to organize my own life turned into a no-build stack, a design system, a content engine, and an AI that manages me.",
-        "canonical": "http://localhost:3320/notes/origin-story/",
+        "canonical": "http://localhost:3324/notes/origin-story/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3485,19 +3486,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 57,
-        "loadMs": 57,
-        "wireBytes": 841944,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 58,
+        "loadMs": 58,
+        "wireBytes": 850570,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Ten Times Zero Is Still Zero",
         "titleLen": 28,
-        "metaDescription": "How I actually work with AI, and why it holds up. AI is a multiplier, not an addend; it multiplies what you already are, and ten times zero is still zero, so I made sure I wasn't zero first. Then the receipt, pulled from this portfolio's own git history: nearly as much writing as code, produced fast, with an AI co-authoring every commit. Professional vibe coding is the human writing the rails and the AI writing much of the code inside them. Includes the playbook, the context and loop engineering underneath it, what to check before anything counts as done, and where to start if you are early.",
-        "canonical": "http://localhost:3320/notes/ten-times-zero/",
+        "metaDescription": "How I actually work with AI, and why it holds up. AI is a multiplier, not an addend; it multiplies what you already are, and ten times zero is still zero, so I made sure I wasn't zero first. Then the receipt, pulled from this portfolio's own git history: a snapshot on 2026-08-22 counted 503 commits, each co-authored with an AI. Professional vibe coding is the human writing the rails and the AI writing much of the code inside them. Includes the playbook, the context and loop engineering underneath it, what to check before anything counts as done, and where to start if you are early.",
+        "canonical": "http://localhost:3324/notes/ten-times-zero/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3534,19 +3535,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 52,
-        "loadMs": 52,
-        "wireBytes": 817762,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 53,
+        "loadMs": 53,
+        "wireBytes": 826438,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "The Browser Grew Up While I Was Busy With Frameworks",
         "titleLen": 52,
         "metaDescription": "I spent years inside frameworks because the native web platform couldn't do the job. It can now. Here is the specific, mildly technical account of the browser features (View Transitions, the dialog element, details, has, color-mix) that let me build a whole stack with no framework and no build step, what that actually buys you, and the honest limits. Including the benchmark I kept promising and finally ran: the same small blog built four ways, where Next ships about 118 kilobytes of JavaScript for one filter and my stack ships about two, plus Declarative Partial Updates, the new browser primitive that hands the last piece of glue back to the browser.",
-        "canonical": "http://localhost:3320/notes/the-browser-grew-up/",
+        "canonical": "http://localhost:3324/notes/the-browser-grew-up/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3583,19 +3584,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 796604,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 805280,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "The Check Ran Once in 165 Sessions, and I Got the Reason Wrong",
         "titleLen": 62,
         "metaDescription": "I built a check that fires when I sit down to work, rolled it across a dozen repositories, and wrote a note about it. Three weeks later my session store said it had run exactly once outside the repo where it was built. The obvious reading was a discipline problem, and I argued myself into it for most of a day before running the check by hand from the wrong folder and watching it fail to find its own program. It had never been able to start, in any repo but the one it was written beside. What the numbers measured was real. The reason I hung on them was invented, and it held up for three weeks because it was plausible and nobody ran the command that would have killed it.",
-        "canonical": "http://localhost:3320/notes/the-check-that-never-ran/",
+        "canonical": "http://localhost:3324/notes/the-check-that-never-ran/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3632,19 +3633,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 49,
-        "loadMs": 49,
-        "wireBytes": 922908,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 53,
+        "loadMs": 53,
+        "wireBytes": 931584,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 40
       },
       "dom": {
         "title": "The Console I Built to Stop Drowning",
         "titleLen": 36,
         "metaDescription": "The story of the Course Console, and how it grew out of a scaling problem. Going from four classes to seven made attendance alone unmanageable, so I built a data-free QR scanner: signed codes a student cannot forge, scanned on my phone, verified by a workflow. That scanner taught me a shape, a page that holds no data, reads my repos live, and writes back only through one reviewed door. The same shape then swallowed grading review: AI-proposed grades render in grain type until I approve or edit them, at which point they go clean, and nothing reaches a student until I turn my decisions into a prompt I have read. One console, two tabs, one rule: the machine drafts, I sign.",
-        "canonical": "http://localhost:3320/notes/the-console-i-built-to-stop-drowning/",
+        "canonical": "http://localhost:3324/notes/the-console-i-built-to-stop-drowning/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3682,18 +3683,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 792352,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 801028,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Watch Its Hands",
         "titleLen": 15,
         "metaDescription": "Most AI works offstage. You ask, it disappears, it comes back with a result and a summary of itself. I built the opposite: the AI operates the same controls I do, enters through the same single door, and leaves its handwriting on everything it touched. Here is the plain-language version of the argument, and the part I have not proven yet.",
-        "canonical": "http://localhost:3320/notes/watch-its-hands/",
+        "canonical": "http://localhost:3324/notes/watch-its-hands/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3730,19 +3731,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
+        "ttfbMs": 8,
         "domContentLoadedMs": 58,
         "loadMs": 58,
-        "wireBytes": 843346,
+        "wireBytes": 852022,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "One Vocabulary, Two Operators",
         "titleLen": 29,
         "metaDescription": "A research-style positioning of GRAIN, an AI-interaction design system: a UI where a human click and an AI decision resolve to the same closed, semantic action-vocabulary through one write door, with the AI's presence disclosed as an in-surface provenance signal. The contribution is an alternative *modality* for AI, a design-system claim, independent of what is built with it or where it runs.",
-        "canonical": "http://localhost:3320/notes/whitepaper-one-vocabulary/",
+        "canonical": "http://localhost:3324/notes/whitepaper-one-vocabulary/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3780,18 +3781,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 48,
+        "domContentLoadedMs": 49,
         "loadMs": 49,
-        "wireBytes": 793822,
+        "wireBytes": 802498,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "I Nearly Quit Teaching. So I Automated the Part That Was Killing Me.",
         "titleLen": 68,
         "metaDescription": "Why I teach when the math says I shouldn't, how I run a classroom (treat adults like adults, lean into self-study, skip the fluff, go straight at the hard parts), and how, after a semester that nearly made me quit, I automated grading and coursework onto a GitHub-native platform so the mechanical grind stopped stealing the time I actually wanted to spend on students.",
-        "canonical": "http://localhost:3320/notes/why-i-teach/",
+        "canonical": "http://localhost:3324/notes/why-i-teach/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3829,18 +3830,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 786617,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 795225,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "PANTRY · one server for the whole stack",
         "titleLen": 39,
         "metaDescription": "PANTRY: the BREAD stack's installable dev-docs and AI cockpit app. AI-legible, not AI-powered: it runs no model. Live: the plan board as home, AI-retrieval (/llms.txt, /knowledge.json), a whole-codebase mindmap at /map, ⌘K search, plus the framework docs, reference, catalog, and standards.",
-        "canonical": "http://localhost:3320/pantry/",
+        "canonical": "http://localhost:3324/pantry/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3877,19 +3878,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 778771,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 787447,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "PANTRY docs",
         "titleLen": 11,
         "metaDescription": "PANTRY's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/pantry/docs/",
+        "canonical": "http://localhost:3324/pantry/docs/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3927,18 +3928,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 788784,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 797460,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Getting started with PANTRY",
         "titleLen": 27,
         "metaDescription": "PANTRY's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/pantry/docs/getting-started/",
+        "canonical": "http://localhost:3324/pantry/docs/getting-started/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -3975,19 +3976,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 791718,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 800394,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "What PANTRY composes",
         "titleLen": 20,
         "metaDescription": "PANTRY's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/pantry/docs/what-it-composes/",
+        "canonical": "http://localhost:3324/pantry/docs/what-it-composes/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4024,19 +4025,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 418,
-        "domContentLoadedMs": 453,
-        "loadMs": 453,
-        "wireBytes": 809226,
+        "ttfbMs": 535,
+        "domContentLoadedMs": 571,
+        "loadMs": 572,
+        "wireBytes": 818584,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Plans",
         "titleLen": 5,
         "metaDescription": "The public work board for this site and its software stack, generated from the underlying plan files.",
-        "canonical": "http://localhost:3320/plans/",
+        "canonical": "http://localhost:3324/plans/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4069,23 +4070,23 @@
       }
     },
     {
-      "path": "/plans/plan/000-welcome/",
+      "path": "/plans/plan/agent-autonomy-tiers/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 419,
-        "domContentLoadedMs": 448,
-        "loadMs": 448,
-        "wireBytes": 785581,
+        "ttfbMs": 497,
+        "domContentLoadedMs": 532,
+        "loadMs": 532,
+        "wireBytes": 802103,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
-        "title": "Welcome to your plan board · Plans",
-        "titleLen": 34,
-        "metaDescription": "This is a PROOF plan: a markdown file with a small frontmatter block (id, status, track, depends, touches, owner) followed by prose and a checklist. Files are the source of…",
-        "canonical": "http://localhost:3320/plans/plan/000-welcome/",
+        "title": "Autonomy earned by evidence, not granted by the model · Plans",
+        "titleLen": 61,
+        "metaDescription": "Osmani's agent-autonomy post and its figure, handed over 2026-08-09. The claim: autonomy is a property of the task, the evidence and the harness, not of the model, and not a…",
+        "canonical": "http://localhost:3324/plans/plan/agent-autonomy-tiers/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4118,23 +4119,23 @@
       }
     },
     {
-      "path": "/plans/plan/agent-autonomy-tiers/",
+      "path": "/plans/plan/ai-agency-navigation/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 423,
-        "domContentLoadedMs": 453,
-        "loadMs": 453,
-        "wireBytes": 793217,
+        "ttfbMs": 490,
+        "domContentLoadedMs": 524,
+        "loadMs": 524,
+        "wireBytes": 808934,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
-        "title": "Autonomy earned by evidence, not granted by the model · Plans",
-        "titleLen": 61,
-        "metaDescription": "Osmani's agent-autonomy post and its figure, handed over 2026-08-09. The claim: autonomy is a property of the task, the evidence and the harness, not of the model, and not a…",
-        "canonical": "http://localhost:3320/plans/plan/agent-autonomy-tiers/",
+        "title": "AI agency — navigate and operate the portfolio like a human · Plans",
+        "titleLen": 67,
+        "metaDescription": "This is an audit + implementation plan. The audit is grounded in the code as it stands today so the build starts from what's real, not a guess.",
+        "canonical": "http://localhost:3324/plans/plan/ai-agency-navigation/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4167,23 +4168,23 @@
       }
     },
     {
-      "path": "/plans/plan/ai-agency-navigation/",
+      "path": "/plans/plan/ai-workflow-loop/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 422,
-        "domContentLoadedMs": 457,
-        "loadMs": 457,
-        "wireBytes": 800077,
+        "ttfbMs": 496,
+        "domContentLoadedMs": 531,
+        "loadMs": 531,
+        "wireBytes": 816024,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
-        "title": "AI agency — navigate and operate the portfolio like a human · Plans",
-        "titleLen": 67,
-        "metaDescription": "This is an audit + implementation plan. The audit is grounded in the code as it stands today so the build starts from what's real, not a guess.",
-        "canonical": "http://localhost:3320/plans/plan/ai-agency-navigation/",
+        "title": "The loop — one standard AI workflow across every repo · Plans",
+        "titleLen": 61,
+        "metaDescription": "Research base (cite in LOOP.md, same precedent move as the STE cite in VOICE): Loop Engineering (Osmani — the five primitives: automations, worktrees, skills, connectors,…",
+        "canonical": "http://localhost:3324/plans/plan/ai-workflow-loop/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4216,23 +4217,23 @@
       }
     },
     {
-      "path": "/plans/plan/ai-workflow-loop/",
+      "path": "/plans/plan/builder-ai-depth/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 420,
-        "domContentLoadedMs": 453,
-        "loadMs": 453,
-        "wireBytes": 807168,
+        "ttfbMs": 488,
+        "domContentLoadedMs": 520,
+        "loadMs": 520,
+        "wireBytes": 801148,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
-        "title": "The loop — one standard AI workflow across every repo · Plans",
-        "titleLen": 61,
-        "metaDescription": "Research base (cite in LOOP.md, same precedent move as the STE cite in VOICE): Loop Engineering (Osmani — the five primitives: automations, worktrees, skills, connectors,…",
-        "canonical": "http://localhost:3320/plans/plan/ai-workflow-loop/",
+        "title": "Make the builder's AI earn its place · Plans",
+        "titleLen": 44,
+        "metaDescription": "The page builder already composes a one-page GRAIN layout from a closed set, works on the static site, lets a person rearrange and resize blocks, and exports JSON, HTML, or tag…",
+        "canonical": "http://localhost:3324/plans/plan/builder-ai-depth/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4269,19 +4270,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 422,
-        "domContentLoadedMs": 456,
-        "loadMs": 456,
-        "wireBytes": 816087,
+        "ttfbMs": 497,
+        "domContentLoadedMs": 532,
+        "loadMs": 533,
+        "wireBytes": 824949,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The builder stops looking like a page about a builder · Plans",
         "titleLen": 61,
         "metaDescription": "P2 and P3 shipped a working page builder on 2026-08-14 and the owner's first reaction was that it does not feel like one: \"we have our dev style console portfolio and it…",
-        "canonical": "http://localhost:3320/plans/plan/builder-design/",
+        "canonical": "http://localhost:3324/plans/plan/builder-design/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4318,19 +4319,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 414,
-        "domContentLoadedMs": 447,
-        "loadMs": 447,
-        "wireBytes": 795194,
+        "ttfbMs": 503,
+        "domContentLoadedMs": 537,
+        "loadMs": 537,
+        "wireBytes": 804219,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The builder becomes a sandbox, not a form page · Plans",
         "titleLen": 54,
         "metaDescription": "The owner answered the builder tour's wording question on 2026-08-13 by redirecting it, and the answer is worth quoting rather than paraphrasing: the builder page should be…",
-        "canonical": "http://localhost:3320/plans/plan/builder-sandbox/",
+        "canonical": "http://localhost:3324/plans/plan/builder-sandbox/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4367,19 +4368,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 416,
-        "domContentLoadedMs": 449,
-        "loadMs": 449,
-        "wireBytes": 791796,
+        "ttfbMs": 492,
+        "domContentLoadedMs": 525,
+        "loadMs": 526,
+        "wireBytes": 800653,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The map nobody opens, and the question that would fix it · Plans",
         "titleLen": 64,
         "metaDescription": "PANTRY has drawn the codebase since piece 10. /map renders graphify's knowledge graph, /map.json is its twin, the layout is deterministic and the central nodes are surfaced by…",
-        "canonical": "http://localhost:3320/plans/plan/codebase-map-seeded/",
+        "canonical": "http://localhost:3324/plans/plan/codebase-map-seeded/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4416,19 +4417,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 425,
-        "domContentLoadedMs": 455,
-        "loadMs": 455,
-        "wireBytes": 793056,
+        "ttfbMs": 494,
+        "domContentLoadedMs": 525,
+        "loadMs": 525,
+        "wireBytes": 795767,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
-        "title": "Plan: course credentials and badges · Plans",
-        "titleLen": 43,
-        "metaDescription": "A self-hosted badging system on this portfolio, replacing something like Credly. Two badges per course section (prelim and midterm), earned from the activities students…",
-        "canonical": "http://localhost:3320/plans/plan/course-badges/",
+        "title": "Course credentials and badges · Plans",
+        "titleLen": 37,
+        "metaDescription": "The portfolio already hosts legacy certificates. Their original participation rule did not demonstrate achievement of the designated badging activities, so the existing batch…",
+        "canonical": "http://localhost:3324/plans/plan/course-badges/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4465,19 +4466,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 415,
-        "domContentLoadedMs": 446,
-        "loadMs": 446,
-        "wireBytes": 793070,
+        "ttfbMs": 492,
+        "domContentLoadedMs": 523,
+        "loadMs": 523,
+        "wireBytes": 801890,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "CRUMB prefilled demos: preset steps, prefilled data, and a tour that writes the next prompt · Plans",
         "titleLen": 99,
         "metaDescription": "The feasibility audit is the substance and lives at docs/CRUMB-PREFILL-FEASIBILITY-2026-08-09.md . This plan is the build order, and it does not restate the audit.",
-        "canonical": "http://localhost:3320/plans/plan/crumb-prefilled-demo/",
+        "canonical": "http://localhost:3324/plans/plan/crumb-prefilled-demo/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4514,19 +4515,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 419,
-        "domContentLoadedMs": 452,
-        "loadMs": 453,
-        "wireBytes": 802899,
+        "ttfbMs": 491,
+        "domContentLoadedMs": 525,
+        "loadMs": 525,
+        "wireBytes": 811756,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The review loop — CRUMB dev tours as the check-changes surface · Plans",
         "titleLen": 70,
         "metaDescription": "The check-changes moment today is a diff pasted into chat. The reviewer reads code to find out what a person would have seen. CRUMB already has the shape that fixes this and it…",
-        "canonical": "http://localhost:3320/plans/plan/crumb-review-loop/",
+        "canonical": "http://localhost:3324/plans/plan/crumb-review-loop/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4563,19 +4564,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 421,
-        "domContentLoadedMs": 451,
-        "loadMs": 451,
-        "wireBytes": 785781,
+        "ttfbMs": 493,
+        "domContentLoadedMs": 525,
+        "loadMs": 525,
+        "wireBytes": 794638,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Author the content backlog · Plans",
         "titleLen": 34,
         "metaDescription": "The canonical list of content pieces to write lives in CONTENT-BACKLOG.md (captured, not written). This plan tracks that the writing work is open; the backlog file stays the…",
-        "canonical": "http://localhost:3320/plans/plan/d2-content-backlog/",
+        "canonical": "http://localhost:3324/plans/plan/d2-content-backlog/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4612,19 +4613,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 421,
-        "domContentLoadedMs": 450,
-        "loadMs": 450,
-        "wireBytes": 787306,
+        "ttfbMs": 494,
+        "domContentLoadedMs": 526,
+        "loadMs": 526,
+        "wireBytes": 796163,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Archive the vestigial tjakoen/standards repo · Plans",
         "titleLen": 52,
         "metaDescription": "Split out from d5-standards-home so that done-plan didn't carry a permanently-open box. That parent is now archived under plans/done/ , which the board does not index, so the…",
-        "canonical": "http://localhost:3320/plans/plan/d6-archive-standards-repo/",
+        "canonical": "http://localhost:3324/plans/plan/d6-archive-standards-repo/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4661,19 +4662,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 417,
-        "domContentLoadedMs": 448,
-        "loadMs": 448,
-        "wireBytes": 791103,
+        "ttfbMs": 499,
+        "domContentLoadedMs": 532,
+        "loadMs": 532,
+        "wireBytes": 799777,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "A form comes from data, and a description builds one · Plans",
         "titleLen": 60,
         "metaDescription": "The consolidated entry for work that ran across four sessions on 2026-08-12 and 2026-08-13. Each session left its own evidence; this is the one place that says what the whole…",
-        "canonical": "http://localhost:3320/plans/plan/form-from-data-demo/",
+        "canonical": "http://localhost:3324/plans/plan/form-from-data-demo/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4710,19 +4711,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 415,
-        "domContentLoadedMs": 445,
-        "loadMs": 445,
-        "wireBytes": 789696,
+        "ttfbMs": 489,
+        "domContentLoadedMs": 520,
+        "loadMs": 520,
+        "wireBytes": 798553,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Publish grain 0.1.18 and bump the pin · Plans",
         "titleLen": 45,
         "metaDescription": "Two e2e failures on this repo were one bug, and the fix was already written and committed in grain ( ffabd85 ): the presentation deck's catalog example carries data-present ,…",
-        "canonical": "http://localhost:3320/plans/plan/grain-0-1-18-bump/",
+        "canonical": "http://localhost:3324/plans/plan/grain-0-1-18-bump/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4759,19 +4760,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 419,
-        "domContentLoadedMs": 451,
-        "loadMs": 451,
-        "wireBytes": 797368,
+        "ttfbMs": 492,
+        "domContentLoadedMs": 524,
+        "loadMs": 524,
+        "wireBytes": 806228,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The design system's own status colour, and the hue it does not have · Plans",
         "titleLen": 75,
         "metaDescription": "Opened 2026-08-11, from the 2026-08-09 audit's one deliberately untouched finding: grain's CSS token debt, called the worst code in the estate and left alone because it is…",
-        "canonical": "http://localhost:3320/plans/plan/grain-token-debt/",
+        "canonical": "http://localhost:3324/plans/plan/grain-token-debt/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4808,19 +4809,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 425,
-        "domContentLoadedMs": 458,
-        "loadMs": 458,
-        "wireBytes": 796812,
+        "ttfbMs": 490,
+        "domContentLoadedMs": 525,
+        "loadMs": 525,
+        "wireBytes": 805668,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The four gaps between what the loop says and what the loop runs · Plans",
         "titleLen": 71,
         "metaDescription": "It is a tier list of Claude Code features by a solo developer on the entry plan. Its top tier is verification, meaning tests written before the implementation plus a…",
-        "canonical": "http://localhost:3320/plans/plan/loop-practice-gaps/",
+        "canonical": "http://localhost:3324/plans/plan/loop-practice-gaps/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4857,19 +4858,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 422,
-        "domContentLoadedMs": 452,
-        "loadMs": 452,
-        "wireBytes": 791699,
+        "ttfbMs": 501,
+        "domContentLoadedMs": 534,
+        "loadMs": 534,
+        "wireBytes": 800531,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Say what the loop actually does, once it actually does it · Plans",
         "titleLen": 65,
         "metaDescription": "Queued 2026-08-09, deliberately not started. Educating is one of the goals of this whole estate, and the loop being built across the three plans above is the most teachable…",
-        "canonical": "http://localhost:3320/plans/plan/loop-story-and-talk/",
+        "canonical": "http://localhost:3324/plans/plan/loop-story-and-talk/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4906,19 +4907,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 424,
-        "domContentLoadedMs": 454,
-        "loadMs": 454,
-        "wireBytes": 790237,
+        "ttfbMs": 490,
+        "domContentLoadedMs": 525,
+        "loadMs": 525,
+        "wireBytes": 799094,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "A tutorial someone can follow to build this loop on a small project · Plans",
         "titleLen": 75,
         "metaDescription": "Queued 2026-08-14 at the owner's ask, deliberately not started. The sibling plan loop-story-and-talk turns the loop into a story: what it is, why it exists, what it cost. This…",
-        "canonical": "http://localhost:3320/plans/plan/loop-tutorial/",
+        "canonical": "http://localhost:3324/plans/plan/loop-tutorial/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -4955,19 +4956,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 414,
-        "domContentLoadedMs": 445,
-        "loadMs": 445,
-        "wireBytes": 793318,
+        "ttfbMs": 489,
+        "domContentLoadedMs": 520,
+        "loadMs": 520,
+        "wireBytes": 802175,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Every multi-line bullet on the published site is broken · Plans",
         "titleLen": 63,
         "metaDescription": "Found 2026-08-10 while checking that a new figure rendered. It was not the figure. A list item whose text wraps to a second line renders as a truncated item followed by an…",
-        "canonical": "http://localhost:3320/plans/plan/mill-list-continuation/",
+        "canonical": "http://localhost:3324/plans/plan/mill-list-continuation/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5004,19 +5005,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 418,
-        "domContentLoadedMs": 450,
-        "loadMs": 450,
-        "wireBytes": 792147,
+        "ttfbMs": 490,
+        "domContentLoadedMs": 523,
+        "loadMs": 523,
+        "wireBytes": 801073,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Note: the loop nobody ran · Plans",
         "titleLen": 33,
         "metaDescription": "A note for content/notes/ , briefed and queued rather than started. The owner approved it on 2026-08-19 alongside three other pieces; the harness caps a session at four…",
-        "canonical": "http://localhost:3320/plans/plan/note-the-loop-nobody-ran/",
+        "canonical": "http://localhost:3324/plans/plan/note-the-loop-nobody-ran/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5053,19 +5054,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 419,
-        "domContentLoadedMs": 451,
-        "loadMs": 451,
-        "wireBytes": 802940,
+        "ttfbMs": 489,
+        "domContentLoadedMs": 522,
+        "loadMs": 522,
+        "wireBytes": 811802,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The control center: one place that knows where the project is · Plans",
         "titleLen": 69,
         "metaDescription": "The problem is not that any single session is opaque. It is that there are six of them, plus their subagents, spread over three repos, and no surface anywhere answers the…",
-        "canonical": "http://localhost:3320/plans/plan/pantry-control-center/",
+        "canonical": "http://localhost:3324/plans/plan/pantry-control-center/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5102,19 +5103,68 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 415,
-        "domContentLoadedMs": 451,
-        "loadMs": 451,
-        "wireBytes": 829202,
+        "ttfbMs": 494,
+        "domContentLoadedMs": 534,
+        "loadMs": 534,
+        "wireBytes": 838064,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "PANTRY hosts the review, CRUMB makes it addressable · Plans",
         "titleLen": 59,
         "metaDescription": "Decided 2026-08-10, in conversation, after the owner rejected the version of this I proposed first. Mine had PANTRY rendering a review about a change. Theirs has PANTRY hosting…",
-        "canonical": "http://localhost:3320/plans/plan/pantry-review-layer/",
+        "canonical": "http://localhost:3324/plans/plan/pantry-review-layer/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": true,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 6,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 108,
+        "selectorCounts": {
+          "Surfaces": 30,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/plans/plan/portfolio-finish-line/",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 492,
+        "domContentLoadedMs": 528,
+        "loadMs": 528,
+        "wireBytes": 814050,
+        "jsBytes": 267606,
+        "cssBytes": 468826,
+        "requests": 39
+      },
+      "dom": {
+        "title": "Bring the portfolio to a clear, reviewable finish · Plans",
+        "titleLen": 57,
+        "metaDescription": "This portfolio should make it easy to understand who I am, what I build, and why the work is worth trusting. It should introduce the BREAD stack through real products, show…",
+        "canonical": "http://localhost:3324/plans/plan/portfolio-finish-line/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5151,19 +5201,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 425,
-        "domContentLoadedMs": 456,
-        "loadMs": 456,
-        "wireBytes": 789100,
+        "ttfbMs": 485,
+        "domContentLoadedMs": 517,
+        "loadMs": 518,
+        "wireBytes": 797957,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Reading list — a library on the desk · Plans",
         "titleLen": 44,
         "metaDescription": "A new app on the desk: a personal reading list that reads like a library . Each book is a cover on a shelf; a small pin/badge in the corner of the cover says whether it has…",
-        "canonical": "http://localhost:3320/plans/plan/reading-list/",
+        "canonical": "http://localhost:3324/plans/plan/reading-list/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5200,19 +5250,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 417,
-        "domContentLoadedMs": 448,
-        "loadMs": 449,
-        "wireBytes": 798416,
+        "ttfbMs": 493,
+        "domContentLoadedMs": 526,
+        "loadMs": 526,
+        "wireBytes": 807273,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Repo structure reorg — tame the root · Plans",
         "titleLen": 44,
         "metaDescription": "standards/ and components/ + pages/ are the two expensive moves; both are gated behind their own phases and can be skipped without blocking the cheap wins.",
-        "canonical": "http://localhost:3320/plans/plan/repo-structure-reorg/",
+        "canonical": "http://localhost:3324/plans/plan/repo-structure-reorg/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5249,19 +5299,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 414,
-        "domContentLoadedMs": 448,
-        "loadMs": 448,
-        "wireBytes": 791741,
+        "ttfbMs": 486,
+        "domContentLoadedMs": 519,
+        "loadMs": 519,
+        "wireBytes": 800614,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The run ledger, read at two altitudes · Plans",
         "titleLen": 45,
         "metaDescription": "/runs and /runs/<id> shipped 2026-08-09 (pantry 6f6cced ). Both work and both are a first cut. Two asks from the owner the same day, and they are the two altitudes the surface…",
-        "canonical": "http://localhost:3320/plans/plan/runs-surface-polish/",
+        "canonical": "http://localhost:3324/plans/plan/runs-surface-polish/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5298,19 +5348,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 428,
-        "domContentLoadedMs": 462,
-        "loadMs": 462,
-        "wireBytes": 809416,
+        "ttfbMs": 497,
+        "domContentLoadedMs": 530,
+        "loadMs": 531,
+        "wireBytes": 818056,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "The builder becomes a page builder, not a form builder · Plans",
         "titleLen": 62,
         "metaDescription": "A proof of concept: GRAIN composed by an AI. That is the claim being tested, and it is the reason the scope is ONE page. It is not a website builder, it is not a CMS, and…",
-        "canonical": "http://localhost:3320/plans/plan/site-builder/",
+        "canonical": "http://localhost:3324/plans/plan/site-builder/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5347,19 +5397,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 420,
-        "domContentLoadedMs": 460,
-        "loadMs": 460,
-        "wireBytes": 852670,
+        "ttfbMs": 501,
+        "domContentLoadedMs": 541,
+        "loadMs": 542,
+        "wireBytes": 861527,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Skills runtime + loop feedback — make the standards fire, make adherence visible · Plans",
         "titleLen": 88,
         "metaDescription": "Source. addyosmani/agent-skills — the executable form of Loop Engineering , which LOOP.md §5 already cites for the five primitives. 24 skills, 4 personas, 7 reference…",
-        "canonical": "http://localhost:3320/plans/plan/skills-runtime/",
+        "canonical": "http://localhost:3324/plans/plan/skills-runtime/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5396,19 +5446,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 416,
-        "domContentLoadedMs": 449,
-        "loadMs": 449,
-        "wireBytes": 804994,
+        "ttfbMs": 500,
+        "domContentLoadedMs": 538,
+        "loadMs": 538,
+        "wireBytes": 813851,
         "jsBytes": 267606,
-        "cssBytes": 460862,
+        "cssBytes": 468826,
         "requests": 39
       },
       "dom": {
         "title": "Storyboard — \"Watch me work\" (demo.run showcase) · Plans",
         "titleLen": 56,
         "metaDescription": "Status: DONE — shipped agentic in 9a1bc4e . The canned version was rejected as dishonest (it ran a hardcoded animation before the model even loaded; the AI did nothing). Owner…",
-        "canonical": "http://localhost:3320/plans/plan/watch-me-work/",
+        "canonical": "http://localhost:3324/plans/plan/watch-me-work/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5445,19 +5495,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 787102,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 796550,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 40
       },
       "dom": {
         "title": "Projects · TJ's Desk",
         "titleLen": 20,
         "metaDescription": "Selected software projects: developer tools, a production web platform, and technology for teaching software engineering.",
-        "canonical": "http://localhost:3320/projects/",
+        "canonical": "http://localhost:3324/projects/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5481,7 +5531,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 129,
+        "ariaAttrs": 131,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5497,16 +5547,16 @@
         "ttfbMs": 6,
         "domContentLoadedMs": 41,
         "loadMs": 41,
-        "wireBytes": 786387,
+        "wireBytes": 794995,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "PROOF · files are the source, the board is a projection",
         "titleLen": 55,
         "metaDescription": "PROOF: the BREAD stack's AI plan board. Plans are markdown files, the board renders what they already say. Live: the core parser, the board, and the check/init tooling. The package also ships a live SSE board, not yet mounted on this site.",
-        "canonical": "http://localhost:3320/proof/",
+        "canonical": "http://localhost:3324/proof/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5543,19 +5593,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 778741,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 40,
+        "loadMs": 41,
+        "wireBytes": 787417,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "PROOF docs",
         "titleLen": 10,
         "metaDescription": "PROOF's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/proof/docs/",
+        "canonical": "http://localhost:3324/proof/docs/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5592,19 +5642,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 783746,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 792422,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Getting started with PROOF",
         "titleLen": 26,
         "metaDescription": "PROOF's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/proof/docs/getting-started/",
+        "canonical": "http://localhost:3324/proof/docs/getting-started/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5641,19 +5691,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 786183,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 794859,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "How PROOF works",
         "titleLen": 15,
         "metaDescription": "PROOF's own docs, canonically homed here (option b) and rendered through MILL.",
-        "canonical": "http://localhost:3320/proof/docs/how-it-works/",
+        "canonical": "http://localhost:3324/proof/docs/how-it-works/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5690,19 +5740,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 50,
-        "loadMs": 50,
-        "wireBytes": 793484,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 53,
+        "loadMs": 54,
+        "wireBytes": 802160,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Reference · Developer docs",
         "titleLen": 26,
         "metaDescription": "Generated reference: the AI vocabulary (actions, surface kinds, render ops), the one door's endpoints, and GRAIN's token slots — read from the real source, never hand-copied.",
-        "canonical": "http://localhost:3320/reference/",
+        "canonical": "http://localhost:3324/reference/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5739,19 +5789,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 14,
-        "domContentLoadedMs": 53,
-        "loadMs": 54,
-        "wireBytes": 823473,
+        "ttfbMs": 12,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 834659,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
-        "title": "Résumé · TJ's Desk",
-        "titleLen": 18,
+        "title": "Tjakoen Stolk | Résumé · TJ's Desk",
+        "titleLen": 34,
         "metaDescription": "Tjakoen Stolk's résumé: software engineering lead and part-time software engineering teacher who builds his own no-build AI-first stack. The full working record, print-friendly. I direct, Claude types.",
-        "canonical": "http://localhost:3320/resume/",
+        "canonical": "http://localhost:3324/resume/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5775,7 +5825,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 140,
+        "ariaAttrs": 142,
         "selectorCounts": {
           "Surfaces": 31,
           "Kinds": 0,
@@ -5788,19 +5838,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 23,
-        "domContentLoadedMs": 56,
-        "loadMs": 56,
-        "wireBytes": 786557,
+        "ttfbMs": 21,
+        "domContentLoadedMs": 59,
+        "loadMs": 59,
+        "wireBytes": 795233,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Standards",
         "titleLen": 9,
         "metaDescription": "The cross-repo standards — how I build with an AI, how anything under my byline reads, and how a repo is set up. Canonically homed here and rendered through MILL.",
-        "canonical": "http://localhost:3320/standards/",
+        "canonical": "http://localhost:3324/standards/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5837,19 +5887,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 36,
-        "loadMs": 36,
-        "wireBytes": 795750,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 804426,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "AI-DEVELOPMENT.md — how I build full stack with AI",
         "titleLen": 50,
         "metaDescription": "A portable playbook for building with an AI partner - the standards, the pitfalls, and how problems become solutions.",
-        "canonical": "http://localhost:3320/standards/ai-development/",
+        "canonical": "http://localhost:3324/standards/ai-development/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5887,18 +5937,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 801260,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 809936,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "AI-REPO-STANDARD.md — structure a repo so AI sessions compound",
         "titleLen": 62,
         "metaDescription": "The repo-side companion to AI-DEVELOPMENT - the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned.",
-        "canonical": "http://localhost:3320/standards/ai-repo-standard/",
+        "canonical": "http://localhost:3324/standards/ai-repo-standard/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5935,19 +5985,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 796087,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 804763,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "AUDIT-STANDARD.md — how a repo gets audited",
         "titleLen": 43,
         "metaDescription": "The whole-repo audit - the nine dimensions it looks at, the severity words, the subagent fan-out that runs it, and the report it owes.",
-        "canonical": "http://localhost:3320/standards/audit-standard/",
+        "canonical": "http://localhost:3324/standards/audit-standard/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -5985,18 +6035,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 784499,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 793175,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "CLAUDE.md — standards",
         "titleLen": 21,
         "metaDescription": "Operating rules for editing standards/ itself - keep each fact in exactly one home, and keep it accurate.",
-        "canonical": "http://localhost:3320/standards/claude/",
+        "canonical": "http://localhost:3324/standards/claude/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6033,19 +6083,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 41,
-        "loadMs": 42,
-        "wireBytes": 785598,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 794274,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "CLAUDE.starter.md — the new-repo starter template",
         "titleLen": 49,
         "metaDescription": "The template every new repo copies to wire itself into these standards from day one - reference them, don't fork them.",
-        "canonical": "http://localhost:3320/standards/claude.starter/",
+        "canonical": "http://localhost:3324/standards/claude.starter/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6082,19 +6132,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 10,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 793920,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 802596,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "CONFORMANCE — the prompt that checks a repo is wired, not just willing",
         "titleLen": 70,
         "metaDescription": "A paste-in prompt that runs in any existing repo and reports whether the standards are wired, the links resolve, the audit runbook is real, and the loop is automated rather than remembered.",
-        "canonical": "http://localhost:3320/standards/conformance/",
+        "canonical": "http://localhost:3324/standards/conformance/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6131,19 +6181,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 790550,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 42,
+        "loadMs": 43,
+        "wireBytes": 799226,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "DECISIONS — how a run reaches the human, and how the answer comes back",
         "titleLen": 70,
         "metaDescription": "The four ways a run asks for something it cannot decide alone, what picks between them, what a decision request has to contain, and the one channel an answer returns on so a session that did not ask can still act on it.",
-        "canonical": "http://localhost:3320/standards/decisions/",
+        "canonical": "http://localhost:3324/standards/decisions/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6183,16 +6233,16 @@
         "ttfbMs": 7,
         "domContentLoadedMs": 46,
         "loadMs": 46,
-        "wireBytes": 800850,
+        "wireBytes": 809526,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "FIGURES.md — figures & visualizations",
         "titleLen": 37,
         "metaDescription": "The standard for every diagram and chart - HTML when a figure has state, two tokenized inline-SVG scaffolds when it does not, one palette each, and a generated diagram carries the same accessible name a hand-drawn one does.",
-        "canonical": "http://localhost:3320/standards/figures/",
+        "canonical": "http://localhost:3324/standards/figures/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6229,19 +6279,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 791187,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 799863,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "GRAPH.md — navigate the code by graph, not by fan-out",
         "titleLen": 53,
         "metaDescription": "The retrieval standard - ask the code graph a scoped question before you fan out grep, reads, and subagents. A small structured answer instead of a pile of files, and a free hook that keeps the graph honest.",
-        "canonical": "http://localhost:3320/standards/graph/",
+        "canonical": "http://localhost:3324/standards/graph/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6278,19 +6328,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 806781,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 815457,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "HOOKS.md — the gates that fire before you do",
         "titleLen": 44,
         "metaDescription": "The three machine-level hooks that enforce parts of the loop on every session in every repo - what each one fires on, what it does, what it deliberately cannot do, and how to turn it off.",
-        "canonical": "http://localhost:3320/standards/hooks/",
+        "canonical": "http://localhost:3324/standards/hooks/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6328,18 +6378,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 795105,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 803781,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "INTAKE — turning a pasted blob into a scoped brief",
         "titleLen": 50,
         "metaDescription": "The four questions a pasted document has to answer before a session starts spending, why the answers are confirmed by a person rather than inferred from the blob, where the brief lands, and the test for when no brief is needed at all.",
-        "canonical": "http://localhost:3320/standards/intake/",
+        "canonical": "http://localhost:3324/standards/intake/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6377,18 +6427,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 787930,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 796606,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "KICKSTART — the new-project prompt for the BREAD stack",
         "titleLen": 54,
         "metaDescription": "Paste one prompt into your AI and it interviews you, learns the stack, reads the public repos, and proposes which BREAD layers your project needs and how to wire them.",
-        "canonical": "http://localhost:3320/standards/kickstart/",
+        "canonical": "http://localhost:3324/standards/kickstart/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6425,19 +6475,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 832803,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 841479,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "LOOP.md — one AI workflow across every repo",
         "titleLen": 43,
         "metaDescription": "The system around the sessions - how every repo is worked the same way, the heartbeat that makes skipped chores visible, and the contract that keeps an unattended run honest.",
-        "canonical": "http://localhost:3320/standards/loop/",
+        "canonical": "http://localhost:3324/standards/loop/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6474,19 +6524,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 51,
-        "loadMs": 51,
-        "wireBytes": 796813,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 805489,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "NOTE-STANDARD.md — the note / blog-post standard",
         "titleLen": 48,
         "metaDescription": "How a note is put together - frontmatter, structure, the sign-off footer, plus a reusable drafting prompt.",
-        "canonical": "http://localhost:3320/standards/note-standard/",
+        "canonical": "http://localhost:3324/standards/note-standard/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6523,19 +6573,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 40,
-        "loadMs": 41,
-        "wireBytes": 791272,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 799948,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "standards/ — how I build, write, and work with AI",
         "titleLen": 49,
         "metaDescription": "The index - one line per standard, so a reader loads one file, not six.",
-        "canonical": "http://localhost:3320/standards/readme/",
+        "canonical": "http://localhost:3324/standards/readme/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6572,19 +6622,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 786787,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 795463,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "README-STANDARD.md — the README standard",
         "titleLen": 40,
         "metaDescription": "How a README presents itself across every repo - the title emoji, the badge row, and the footer, plus a reusable prompt.",
-        "canonical": "http://localhost:3320/standards/readme-standard/",
+        "canonical": "http://localhost:3324/standards/readme-standard/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6622,18 +6672,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 811946,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 820622,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "SESSION-LOOP.md — the working loop, memory, and handoff",
         "titleLen": 55,
         "metaDescription": "How a session with an AI runs start to finish - the loop it repeats, what it writes down, and how it hands off.",
-        "canonical": "http://localhost:3320/standards/session-loop/",
+        "canonical": "http://localhost:3324/standards/session-loop/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6670,19 +6720,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 790381,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 799057,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "TOUR-STANDARD.md — the review-tour standard",
         "titleLen": 43,
         "metaDescription": "How a CRUMB dev tour is built - picking surfaces, writing a verify line someone can run, stamping the status, and handing it over.",
-        "canonical": "http://localhost:3320/standards/tour-standard/",
+        "canonical": "http://localhost:3324/standards/tour-standard/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6719,19 +6769,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 791285,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 799961,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "TREE.md — keep the root an index, not a junk drawer",
         "titleLen": 51,
         "metaDescription": "The layout standard - the repo root is the first screen an agent or a newcomer reads, so only load-bearing files earn a place there and everything else folds one level down into a named home. A lean root is cheaper to orient in and harder to get lost in.",
-        "canonical": "http://localhost:3320/standards/tree/",
+        "canonical": "http://localhost:3324/standards/tree/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6768,19 +6818,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 53,
-        "loadMs": 53,
-        "wireBytes": 835622,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 48,
+        "loadMs": 49,
+        "wireBytes": 844298,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "VOICE.md — voice & tone",
         "titleLen": 23,
         "metaDescription": "The standard for anything published in Tjakoen's name - cadence, the machine-tells to avoid, the honesty clause, and what a reader meets first.",
-        "canonical": "http://localhost:3320/standards/voice/",
+        "canonical": "http://localhost:3324/standards/voice/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6818,18 +6868,18 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 782222,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 790898,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Talks · TJ's Desk",
         "titleLen": 17,
         "metaDescription": "Talks I have given, and the decks that go with them. Each one is a live page on this stack rather than a slide export, so the figures still work.",
-        "canonical": "http://localhost:3320/talks/",
+        "canonical": "http://localhost:3324/talks/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6866,19 +6916,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 63,
-        "loadMs": 63,
-        "wireBytes": 794895,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 66,
+        "loadMs": 66,
+        "wireBytes": 803404,
         "jsBytes": 287757,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 41
       },
       "dom": {
         "title": "Everybody Wants the Agent · the talk",
         "titleLen": 36,
         "metaDescription": "The talk behind the post: how an organization goes from developers with AI subscriptions to real automation. Five stages, skills before automation, and the coder built last.",
-        "canonical": "http://localhost:3320/talks/build-the-floor/",
+        "canonical": "http://localhost:3324/talks/build-the-floor/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6918,16 +6968,16 @@
         "ttfbMs": 4,
         "domContentLoadedMs": 35,
         "loadMs": 35,
-        "wireBytes": 799175,
+        "wireBytes": 817016,
         "jsBytes": 283991,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 40
       },
       "dom": {
         "title": "Every Time It Was Wrong · the talk",
         "titleLen": 34,
         "metaDescription": "Introducing the PR reviewer to the team: what it does on your pull requests, why it says so little, what happens when you reply to it, and how we know whether it is any good.",
-        "canonical": "http://localhost:3320/talks/every-time-it-was-wrong/",
+        "canonical": "http://localhost:3324/talks/every-time-it-was-wrong/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -6951,7 +7001,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 54,
+        "ariaAttrs": 58,
         "selectorCounts": {
           "Surfaces": 0,
           "Kinds": 0,
@@ -6964,19 +7014,19 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 68,
-        "loadMs": 71,
-        "wireBytes": 844332,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 72,
+        "loadMs": 72,
+        "wireBytes": 852841,
         "jsBytes": 305479,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 41
       },
       "dom": {
         "title": "Ten Times Zero Is Still Zero · the talk",
         "titleLen": 39,
         "metaDescription": "The talk behind the post: AI multiplies what you already are, so become worth multiplying first. Thirty-four slides for students, with the receipts and the playbook, live and interactive.",
-        "canonical": "http://localhost:3320/talks/ten-times-zero/",
+        "canonical": "http://localhost:3324/talks/ten-times-zero/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -7015,17 +7065,17 @@
         "status": 200,
         "ttfbMs": 4,
         "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 781615,
+        "loadMs": 33,
+        "wireBytes": 790485,
         "jsBytes": 267606,
-        "cssBytes": 455129,
+        "cssBytes": 462912,
         "requests": 38
       },
       "dom": {
         "title": "Teaching · Tjakoen Stolk, School of Computing, Holy Angel University",
         "titleLen": 68,
         "metaDescription": "Tjakoen Stolk teaches at the School of Computing, Holy Angel University in Angeles City. This page is the issuing authority behind the course badges: the courses, how grading works, and what each badge attests.",
-        "canonical": "http://localhost:3320/teaching/",
+        "canonical": "http://localhost:3324/teaching/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -7051,7 +7101,7 @@
         "renderBlockingJs": 2,
         "ariaAttrs": 151,
         "selectorCounts": {
-          "Surfaces": 30,
+          "Surfaces": 31,
           "Kinds": 0,
           "Accepts": 0
         }

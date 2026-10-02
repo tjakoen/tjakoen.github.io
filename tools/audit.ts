@@ -49,6 +49,7 @@ function narrate(report: AuditReport): string {
     ["Open Graph metadata", finding((d) => d.og.length > 0)],
     ["Structured data", finding((d) => d.jsonLd.length > 0)],
   ] as const;
+  const pagesWithDocumentFindings = new Set(findings.flatMap(([, paths]) => paths));
   const findingLines = findings.map(([label, paths]) =>
     `- **${label}:** ${paths.length ? `${paths.length} page(s): ${paths.map((p) => `\`${p}\``).join(", ")}` : "all pages pass"}`,
   ).join("\n");
@@ -60,7 +61,8 @@ function narrate(report: AuditReport): string {
     `## Coverage\n\n` +
     `- Canonical pages: ${report.pages.length}\n` +
     `- Pages that returned successfully: ${okp.length}\n` +
-    `- Pages that need follow-up: ${report.pages.length - okp.length}\n\n` +
+    `- HTTP failures: ${report.pages.length - okp.length}\n` +
+    `- Pages with one or more document findings: ${pagesWithDocumentFindings.size}\n\n` +
     `## Document checks\n\n${findingLines}\n\n` +
     `## What the numbers mean\n\n` +
     `- **JavaScript shipped: ${kb(jsMin)}–${kb(jsMax)} per page** — the headline, and the "native-first" proof: ${jsVerdict}.\n` +
