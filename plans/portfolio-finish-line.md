@@ -102,7 +102,7 @@ individual checks before the audit can be called complete.
 | `/notes/how-i-turned-github-into-a-classroom` | Link the account to the public classroom project and architecture page as the inspectable version of the story. | Next |
 | `/notes/one-loop-every-repo` | Link the workflow claims to the public plans or documentation that shows how the loop is enforced. | Next |
 | `/notes/origin-story` | Use this as a guided starting point into the stack and project pages, rather than leaving the origin story as a self-contained essay. | Next |
-| `/notes/ten-times-zero` | Reconcile the pinned excerpt's “AI co-authoring every commit” statement with the more carefully scoped AI attribution used elsewhere, or give the claim a clear measurement basis. | Next |
+| `/notes/ten-times-zero` | Bring the snapshot date from the essay's measured 503-commit claim into the pinned excerpt, so a dated historical result does not read as a current guarantee. | Implemented in the pinned excerpt. |
 | `/notes/the-browser-grew-up` | Put the benchmark method and the compared page implementations one click from the result in the summary. | Next |
 | `/notes/the-check-that-never-ran` | Link the diagnosis to the corrected workflow or a public follow-up so the failure story ends with evidence of the fix. | Next |
 | `/notes/the-console-i-built-to-stop-drowning` | Keep the teaching-console story connected to the classroom and teaching pages, while avoiding details that could expose student data. | Next |

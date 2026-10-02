@@ -14,8 +14,8 @@ tags: [ai, vibe-coding, workflow, fundamentals, native-first, batch, grain]
 summary: >
   How I actually work with AI, and why it holds up. AI is a multiplier, not an addend; it
   multiplies what you already are, and ten times zero is still zero, so I made sure I wasn't zero
-  first. Then the receipt, pulled from this portfolio's own git history: nearly as much writing as
-  code, produced fast, with an AI co-authoring every commit. Professional vibe coding is the human
+  first. Then the receipt, pulled from this portfolio's own git history: a snapshot on 2026-08-22
+  counted 503 commits, each co-authored with an AI. Professional vibe coding is the human
   writing the rails and the AI writing much of the code inside them. Includes the playbook, the
   context and loop engineering underneath it, what to check before anything counts as done, and
   where to start if you are early.

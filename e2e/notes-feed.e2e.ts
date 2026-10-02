@@ -12,6 +12,7 @@ test.describe("the /notes feed (JS on)", () => {
 
     const cards = page.locator(".note-card");
     await expect(cards.first()).toBeVisible();
+    await expect(cards.first()).toContainText("snapshot on 2026-08-22");
 
     // the flagship is pinned to the front; the REST stays newest-first (first tail date >= the next)
     const rows = await cards.evaluateAll((els) => els.map((el) => ({ date: el.getAttribute("data-date"), pinned: el.hasAttribute("data-pinned") })));
