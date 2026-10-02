@@ -884,6 +884,6 @@ test.describe("the preview route", () => {
     await page.goto(`/grain/builder/preview?ask=${encodeURIComponent("An intro and a card")}`);
     await expect(page.locator(`${PREVIEW_STAGE} > *`)).toHaveCount(0);
     await expect(page.locator(".preview-empty")).toBeVisible();
-    await expect(page.locator(".preview-empty")).toContainText("frozen file");
+    await expect(page.locator(".preview-note")).toContainText("frozen file");
   });
 });

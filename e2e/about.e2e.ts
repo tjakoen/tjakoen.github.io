@@ -215,9 +215,20 @@ test.describe("the /about profile app (no JS)", () => {
       await expect(page.locator(`.about-tabs [href="${id}"]`)).toBeVisible();
     }
 
-    // the role sections (folded into Profile) are all visible, with their real notes links
+    // the role sections (folded into Profile) are all visible, with direct evidence links
     await expect(page.locator("#profile .role-list").first()).toBeVisible();
-    await expect(page.locator("#profile .role__notes-link a").first()).toHaveAttribute("href", /^\/notes\?tag=/);
+    await expect(page.locator("#role-manager + p + .role-list + .role__proof-link a")).toHaveAttribute(
+      "href",
+      "/talks/ten-times-zero",
+    );
+    await expect(page.locator("#role-tech-lead + p + .role-list + .role__proof-link a")).toHaveAttribute(
+      "href",
+      "/bread",
+    );
+    await expect(page.locator("#role-educator + p + .role-list + .role__proof-link a")).toHaveAttribute(
+      "href",
+      "/native-github-classroom",
+    );
 
     // the real links still resolve without JS
     await expect(page.locator("#resume a[href='/resume']")).toBeVisible();
