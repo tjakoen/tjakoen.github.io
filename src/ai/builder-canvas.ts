@@ -35,7 +35,7 @@ import {
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { isCopyEditRequest, looksLikeAnEdit } from "./block-command.ts";
-import { blockEditManifest, blockMessage, inWords, readModelMove } from "./block-reasoner.ts";
+import { blockEditManifest, blockMessage, inWords, readModelMove, type BlockIntent } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -199,6 +199,28 @@ function applyOp(comp: PageComposition, op: string, id: string): PageComposition
   return comp;
 }
 
+/** The composition the approved GRAIN operation should leave behind. This predicts the result for
+ *  verification only; the live edit still travels through GRAIN's dispatcher. */
+function expectedAfterIntent(comp: PageComposition, command: BlockIntent): PageComposition | null {
+  const id = command.surface.replace(/^block:/, "");
+  if (command.action === "block.remove") return removeBlock(comp, id);
+  if (command.action === "block.span") {
+    return isSpan(command.payload.span) ? setSpan(comp, id, command.payload.span) : null;
+  }
+  const direction = command.payload.direction;
+  if (direction !== "up" && direction !== "down") return null;
+  const index = comp.blocks.findIndex((block) => block.id === id);
+  if (index < 0) return null;
+  return moveBlock(comp, id, direction === "up" ? index - 1 : index + 1);
+}
+
+function intentLabel(command: BlockIntent): string {
+  const id = command.surface.replace(/^block:/, "");
+  if (command.action === "block.remove") return `Drop ${id}`;
+  if (command.action === "block.span") return `Set ${id} to ${String(command.payload.span)} width`;
+  return `Move ${id} ${String(command.payload.direction)}`;
+}
+
 /** Read the composition back off the canvas.
  *
  *  THE REASON THIS EXISTS, and it is the whole of what wiring the AI to a block costs. The AI does
@@ -297,9 +319,9 @@ function boot(): void {
   // 2026-08-19 against the live model: asked for a change no verb can serve, it reached for a verb
   // anyway and removed a block nobody had mentioned, once in four tries. The obvious guard, refusing
   // to resolve a short address for a destructive verb, was written and then measured too, and it
-  // took the one edit the model does land with it, because that edit is a drop written short. So the
-  // answer is not to forbid the wrong drop but to make it cost a keystroke, which is the same
-  // argument that already let a width and a move resolve a short address.
+  // took the one edit the model did land with it, because that edit was a drop written short. The
+  // edit path now asks the visitor to approve the named operation before it reaches GRAIN. Undo
+  // remains useful for an approved choice that still turns out to be wrong, and for rail actions.
   //
   // A STACK OF WHOLE COMPOSITIONS, not a log of inverse ops. A composition is a small immutable
   // value and every mutation here already produces a new one, so keeping the old one is free and
@@ -336,6 +358,14 @@ function boot(): void {
    *  repainted every time an op lands, and the op that lands is the one this line is announcing: a
    *  bound line would blank itself at the exact moment it came true. */
   const saidLine = $('[data-surface="builder-said"]');
+  const proposalPanel = $('[data-surface="builder-edit-proposal"]');
+  const proposalCopy = $('[data-surface="builder-edit-proposal-copy"]');
+  const applyProposal = $<HTMLButtonElement>("[data-proposal-apply]", proposalPanel ?? undefined);
+  const cancelProposal = $<HTMLButtonElement>("[data-proposal-cancel]", proposalPanel ?? undefined);
+  type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition };
+  type Applying = { expected: PageComposition; description: string; timer: ReturnType<typeof setTimeout> };
+  let proposal: Proposal | null = null;
+  let applying: Applying | null = null;
   const say = (text: string, read: "command" | "refusal" | "thinking" | "reply" | "file"): void => {
     if (!saidLine) return;
     saidLine.textContent = text;
@@ -349,6 +379,12 @@ function boot(): void {
     saidLine.setAttribute("hidden", "");
   };
 
+  const clearProposal = (): void => {
+    proposal = null;
+    if (proposalCopy) proposalCopy.textContent = "";
+    if (proposalPanel) proposalPanel.setAttribute("hidden", "");
+  };
+
   /** An edit, from the sentence to the op. The model chooses; nothing it says is trusted.
    *
    *  The order matters and every step of it is somebody else's code. grain harvests the manifest
@@ -360,6 +396,8 @@ function boot(): void {
    *
    *  What is NOT here is a fallback. If the model cannot run, this says so and stops. */
   async function runEdit(ask: string): Promise<void> {
+    clearProposal();
+    const compositionAtAsk = state;
     const desk = deskModel();
     if (!desk) {
       say("The desk cannot run here, so there is nothing to read your sentence. The rail's own controls still work.", "refusal");
@@ -389,6 +427,11 @@ function boot(): void {
       return;
     }
 
+    if (state !== compositionAtAsk) {
+      say("The page changed while the desk was reading it. Nothing was applied; ask again against the current page.", "refusal");
+      return;
+    }
+
     const read = readModelMove(raw, manifest, grainModel);
     if (read.kind === "refusal") {
       console.info("[builder] refused the desk's move:", read.because, raw);
@@ -397,26 +440,77 @@ function boot(): void {
     }
     if (read.kind === "reply") { say(read.said, "reply"); return; }
 
-    // Through the one door, never through applyOp. Calling this module's own op function here would
-    // be quicker and would prove nothing: the point is that a block can be operated by something
-    // that only knows a verb and an address, and the way to show that is to send exactly those two
-    // things out the same wire a rail button uses. The dispatcher answers by mutating the addressed
-    // cell, and the watcher below derives the composition back off the DOM.
-    //
-    // The line says which block BEFORE the op lands, and that is the one guard against the failure
-    // validation cannot see: a move that is legal and wrong. Measured, the live 0.5B has never got
-    // that far. Over thirty-three answers, eighteen before grain's reasoner manifest was narrowed
-    // and fifteen after, zero edits landed, seven named a block at all, and five of those named the
-    // right block AND the right verb and were refused on the address form, since the answer says b2
-    // where the manifest addresses block:b2. That last refusal is gone as of 2026-08-19: the reasoner
-    // resolves a short address up to the long one when the page holds exactly one block at it, so
-    // answers of that shape now reach this line instead of the refusal above, and no live run has
-    // been done since. So this guard covers a failure nothing here has yet produced, and it stays
-    // because the address is the one thing a reader can check before the page moves rather than
-    // after.
-    say(read.command.said, "command");
-    door.submit(read.command.action, read.command.surface, read.command.payload);
+    if (!proposalPanel || !proposalCopy || !applyProposal || !cancelProposal) {
+      say("The desk found an edit, but the review controls are missing. Nothing changed.", "refusal");
+      return;
+    }
+
+    proposal = { command: read.command, raw, model: grainModel, manifestApi: grainManifest, composition: compositionAtAsk };
+    const label = intentLabel(read.command);
+    proposalCopy.textContent = `Proposed edit: ${label}. Check the block ID and change before applying.`;
+    proposalPanel.removeAttribute("hidden");
+    say(`Review this edit: ${label}.`, "thinking");
   }
+
+  cancelProposal?.addEventListener("click", () => {
+    if (!proposal) return;
+    clearProposal();
+    say("Canceled. The page did not change.", "reply");
+  });
+
+  applyProposal?.addEventListener("click", () => {
+    const waiting = proposal;
+    if (!waiting) return;
+    if (state !== waiting.composition) {
+      clearProposal();
+      say("The page changed before you approved that edit. Nothing changed; ask again.", "refusal");
+      return;
+    }
+    const door = grainDoor();
+    if (!door || !door.online()) {
+      clearProposal();
+      say("The door is not up, so the approved edit could not reach GRAIN. Nothing changed.", "refusal");
+      return;
+    }
+    const manifest = waiting.manifestApi.domManifest(document);
+    const checked = readModelMove(waiting.raw, manifest, waiting.model);
+    if (checked.kind !== "command" || checked.command.action !== waiting.command.action ||
+        checked.command.surface !== waiting.command.surface ||
+        JSON.stringify(checked.command.payload) !== JSON.stringify(waiting.command.payload)) {
+      clearProposal();
+      say(checked.kind === "refusal" || checked.kind === "reply"
+        ? checked.said
+        : "The proposal no longer matches the current page. Nothing changed; ask again.", "refusal");
+      return;
+    }
+    const expected = expectedAfterIntent(state, checked.command);
+    if (!expected || sameShape(state, expected)) {
+      clearProposal();
+      say("That edit would leave the page as it is, so nothing changed.", "reply");
+      return;
+    }
+
+    clearProposal();
+    say("Applying the approved edit through GRAIN…", "thinking");
+    const applyingEdit: Applying = {
+      expected,
+      description: intentLabel(checked.command),
+      timer: setTimeout(() => {
+        if (applying !== applyingEdit) return;
+        applying = null;
+        say("GRAIN did not change the canvas. The edit was not applied.", "refusal");
+      }, 1800),
+    };
+    applying = applyingEdit;
+    try {
+      door.submit(checked.command.action, checked.command.surface, checked.command.payload);
+    } catch (error) {
+      clearTimeout(applyingEdit.timer);
+      applying = null;
+      console.error("[builder] approved edit could not reach the door", error);
+      say("The approved edit could not reach GRAIN. The page did not change.", "refusal");
+    }
+  });
 
   // A prompt is ROUTED before it is read, and the router runs on nothing.
   //
@@ -508,6 +602,11 @@ function boot(): void {
     const ask = box?.value.trim() ?? "";
     if (!ask) return;
     e.preventDefault();
+    if (applying) {
+      say("The approved edit is still being applied. Wait for its result before sending another prompt.", "thinking");
+      return;
+    }
+    clearProposal();
 
     if (looksLikeAnEdit(ask, state.blocks.length)) {
       if (isCopyEditRequest(ask)) {
@@ -543,6 +642,20 @@ function boot(): void {
   const watcher = new MutationObserver(() => {
     const next = readComposition(canvas, state);
     if (sameShape(state, next)) return;          // an attribute we do not read changed; nothing to do
+    if (proposal) {
+      clearProposal();
+      say("The page changed while the edit was waiting for approval. Ask again against the current page.", "refusal");
+    }
+    if (applying) {
+      clearTimeout(applying.timer);
+      const applied = sameShape(next, applying.expected);
+      const description = applying.description;
+      applying = null;
+      say(applied
+        ? `Applied: ${description}.`
+        : "The canvas changed, but it does not match the approved edit. Check the page and use Undo if needed.",
+      applied ? "command" : "refusal");
+    }
     // Recorded BEFORE the new shape is adopted, so what goes on the stack is the page as it stood
     // before the desk touched it, with every block's data still on it. This is the branch undo
     // exists for: a press is a thing you meant, and this is a thing a model did.
@@ -580,12 +693,15 @@ function boot(): void {
    *  you compose after undoing, and neither is worth the surface on a page whose point is elsewhere.
    *  Nothing here pretends otherwise: the button disappears when the stack is empty. */
   undoButton?.addEventListener("click", () => {
+    if (applying) return;
     const previous = undoStack.pop();
     showUndo();
     if (!previous) return;
+    const canceledProposal = proposal !== null;
+    clearProposal();
     state = previous;
     repaint(viewOf(state, pageAsk, null));
-    say("Put back.", "command");
+    say(canceledProposal ? "Put back. The pending proposal was canceled." : "Put back.", "command");
   });
   showUndo();
 
@@ -625,6 +741,7 @@ function boot(): void {
     const id = button?.closest("[data-block]")?.getAttribute("data-block");
     const op = button?.getAttribute("data-op");
     if (!op || !id) return;
+    if (applying) return;
     const next = applyOp(state, op, id);
     // A press that changes nothing repaints nothing: pressing the span a block already has, or the
     // up arrow on the first row, is a no-op rather than a flicker. It also records nothing, so undo
@@ -636,9 +753,12 @@ function boot(): void {
     // the code. Harmless while it only cost a repaint; not harmless once a no-op press could put a
     // step on the undo stack that undoes nothing a visitor can see.
     if (sameShape(state, next)) return;
+    const canceledProposal = proposal !== null;
+    clearProposal();
     remember(state);
     state = next;
     repaint(viewOf(state, pageAsk, null));
+    if (canceledProposal) say("The page changed. The pending proposal was canceled.", "reply");
   });
 
   // -------------------------------------------------------------------------------------------
@@ -744,6 +864,11 @@ function boot(): void {
   // narrowing the guard at the top of boot() already did, so `composer` reads as possibly null
   // inside one and the reference below stops type-checking.
   const openFile = async (chosen: File): Promise<void> => {
+    if (applying) {
+      say("The approved edit is still being applied. Wait for its result before opening a file.", "thinking");
+      return;
+    }
+    clearProposal();
     let parsed: unknown;
     try {
       parsed = JSON.parse(await chosen.text());

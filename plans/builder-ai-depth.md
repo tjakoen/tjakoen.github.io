@@ -38,6 +38,8 @@ after it has been composed.
 - Start from an ordinary description and get a composed page from real GRAIN components.
 - Ask for a change to the page already on screen, such as removing a named block, moving it, or
   changing its span.
+- Review the model's proposed block and operation before the page changes; approval sends the
+  validated edit through GRAIN's door.
 - See what the system understood, what it changed, and what it could not do. The account must come
   from the validated operation and the resulting canvas, never from a model's unverified claim.
 - Continue in the workbench, open the preview, and take the page away in a format a developer can
@@ -72,6 +74,30 @@ WebGPU and the cached model, the run can be repeated with
 A prompt candidate that spelled out the action-to-request mapping also scored 2/5 in a separate run,
 with a different set of misses. I reverted it because the measured result did not improve.
 
+Two more checks narrowed the failure. Setting the edit temperature to zero kept the score at 2/5:
+the exact-ID removal and the copy-edit refusal still passed, while the natural-language drop, width,
+and move cases remained wrong. I added exact-ID width and move scenarios to the live audit. Both
+failed: the model chose `block.move` for each request, and the move request returned the shortened
+action `move`. A temporary 1.5B trial was inconclusive: the first request timed out and the next
+returned invalid JSON before the audit browser closed. It did not establish a usable improvement, so
+the shipped 0.5B profile remains in place.
+
+The live audit now approves a proposal through the same button as the visitor, then grades the
+canvas after dispatch. On the seven edit and refusal cases, the 2026-10-02 run scored 1/7. The only
+pass was the copy-edit refusal. The model dropped b2 for a request to drop the second card, timed out
+on the exact-ID b4 request, and chose removal for both width requests. Its two move answers used the
+unregistered action name `move`. The review step prevents these suggestions from mutating the page
+until someone approves them, but it does not turn them into successful AI edits.
+
+The edit path is now review-first. A validated proposal names the block and operation, and the
+canvas stays unchanged until the visitor approves it. Approval checks that the same composition is
+still on screen and revalidates the original model answer against a fresh GRAIN manifest before
+sending it through the door. A canvas change cancels a waiting proposal. After approval, the UI says
+the edit landed only when the observed canvas matches the predicted result; a no-op or a failed
+dispatch is reported without claiming success. The 61-case Builder browser suite covers approval,
+cancellation, stale proposals, and the existing static-host paths. This contains a wrong suggestion;
+it does not make the model's choices reliable.
+
 The portfolio-side boundary is also clear. GRAIN registers block removal, span, and move operations.
 Its field operation fills registered form controls; it does not write text into page-content blocks.
 The builder's templates expose text as escaped `data-field` values, but writing those values from
@@ -98,17 +124,20 @@ browser check verifies that the model was not called for that request.
       the page. The prompt now contains only live block actions and identifies each block's type and
       order, but the current 2/5 result leaves three supported scenarios unreliable. Do not add a
       deterministic fallback that makes the interface claim the AI acted.
-- [ ] Make the narration a projection of validated operations and observed canvas changes. A failed
-      operation must leave the canvas alone and tell the visitor what stopped it.
+- [x] Make the narration a projection of validated operations and observed canvas changes. The page
+      waits for approval, revalidates the choice, and reports an edit as applied only after the
+      observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
+      and applied states.
 - [ ] Give the builder a small set of examples that demonstrates composing and then revising a real
       GRAIN page, including one honest refusal.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
-      builder browser suite passes all 58 scenarios, including the static-host, one-door, and copy-
-      edit refusal paths. The real-model audit remains a separate score because headless CI has no
-      WebGPU.
+      builder browser suite passes all 61 scenarios, including the static-host, one-door, proposal,
+      and copy-edit refusal paths. The real-model audit remains a separate score because headless CI
+      has no WebGPU.
 - [ ] Review the published workbench at desktop and narrow widths, then show the rendered result
-      before calling the plan done.
+      before calling the plan done. The local workbench was reviewed at both widths; its mobile file
+      toolbar now wraps onto a second row instead of clipping. A published review remains open.
 
 ## Done means
 
