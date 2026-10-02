@@ -45,7 +45,10 @@ the design system visible only as one layer inside the BREAD story. The index na
 the featured products, stack, design system, app and teaching platform. The related entries share a
 responsive layout and link directly to their project pages. Browser checks cover their ownership
 copy, links, wide-screen alignment and narrow-screen stacking. This closes those index gaps, while
-the wider audit of each project's outcomes, evidence and next steps remains open.
+the wider audit of each project's outcomes, evidence and next steps remains open. The repeated page
+footer now uses one plain, human-accountable AI statement without the robot emoji or an unsupported
+claim about every commit. Builder exports retain GRAIN's own generated attribution, covered by the
+export checks; the two credits describe different kinds of authorship.
 
 ## Work
 
@@ -59,8 +62,10 @@ the wider audit of each project's outcomes, evidence and next steps remains open
       role, the hard part, the outcome, and where a visitor can inspect the work.
 - [ ] Review the BREAD, BATCH, GRAIN, MILL, PROOF, and Pantry introductions as one explanation of
       the stack. Make their relationships legible without turning each page into a package manual.
-- [ ] Review the repeated page-footer copy and GRAIN attribution as one system. Keep the authorship
-      claim honest and consistent across the portfolio and the pages visitors can export.
+- [x] Review the repeated page-footer copy and GRAIN attribution as one system. Keep the authorship
+      claim honest and consistent across the portfolio and the pages visitors can export. The
+      portfolio footer now uses one tested statement; exported pages retain GRAIN's generated
+      framework attribution and are covered by the builder export checks.
 - [ ] Review Notes, Talks, Teaching, Calendar, and Badges as evidence of engineering, communication,
       teaching, and the path between them. Give each page a clear next link into the relevant proof.
 - [ ] Complete the builder's AI reliability work in [`builder-ai-depth.md`](builder-ai-depth.md),
