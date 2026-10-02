@@ -138,8 +138,25 @@ async function shot(browser: Browser, html: string, w: number, h: number): Promi
   return buf;
 }
 
+// Batch render for tools/issue-badges.ts: jobs arrive as JSON on stdin, PNGs leave as <index>.png in the directory after --render-jobs.
+export interface ImageJob { kind: "cert" | "og"; path: string; md: string; assertion?: string }
+export async function renderJobs(browser: Browser, jobs: ImageJob[]): Promise<Buffer[]> {
+  const out: Buffer[] = [];
+  for (const job of jobs) {
+    const fm = frontmatter(job.md);
+    out.push(job.kind === "og" ? await shot(browser, ogCardHtml(fm), 1200, 630) : bakeHostedBadge(await shot(browser, medallionHtml(fm, 600), 600, 600), job.assertion || ""));
+  }
+  return out;
+}
+const JOBS_FLAG = process.argv.indexOf("--render-jobs");
+if (import.meta.main && JOBS_FLAG >= 0) {
+  const dir = process.argv[JOBS_FLAG + 1]!, jobs = JSON.parse(await Bun.stdin.text()) as ImageJob[];
+  const browser = await chromium.launch();
+  try { (await renderJobs(browser, jobs)).forEach((png, i) => writeFileSync(join(dir, `${i}.png`), png)); } finally { await browser.close(); }
+}
+
 // --- run ---------------------------------------------------------------------
-if (import.meta.main) {
+if (import.meta.main && JOBS_FLAG < 0) {
 mkdirSync(OUT, { recursive: true });
 const files = readdirSync(BADGES).filter((f) => f.endsWith(".md"));
 const classes = files.filter((f) => frontmatter(readFileSync(join(BADGES, f), "utf8")).type === "badge-class");

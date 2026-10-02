@@ -1,9 +1,10 @@
 import { test, expect } from "bun:test";
-import { mkdtempSync, readFileSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync, rmSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { issue, planAwards, existingAwards, manilaDate, type Award } from "./issue-badges.ts";
-const award: Award = { awardKey: "test-private-key", approved: true, badgeId: "backend", course: "apsi", monogram: "6APSI", section: "2240", term: "midterm", title: "Backend Skills", description: "Reviewed backend work.", criteria: "Complete both designated badging activities with a reviewed score of at least 75/100.", recipientKey: "private-recipient", recipientName: "Example Learner", recipientHandle: "example-learner", identityEmail: "learner@example.org", workspaceRepo: "example/workspace", thresholdPercent:75, activities:[{id:"m4a4",title:"Backend project",description:"Build and deploy a tested backend service."},{id:"m5a5",title:"Integration project",description:"Connect the frontend to the backend and document the integration."}], evidence: [{url: "https://github.com/example/project", commit: "a".repeat(40)}] };
+import { issue, planAwards, existingAwards, manilaDate, type Award, type ImageJob } from "./issue-badges.ts";
+const award: Award = { awardKey: "test-private-key", approved: true, badgeId: "backend", course: "apsi", monogram: "6APSI", section: "2240", term: "midterm", title: "Backend Skills", description: "Reviewed backend work.", criteria: "Complete both designated badging activities with a reviewed score of at least 75/100.", recipientKey: "private-recipient", recipientName: "Example Learner", recipientHandle: "example-learner", identityEmail: "learner@example.org", workspaceRepo: "example/workspace", thresholdPercent:75, policyThresholdPercent:75, activities:[{id:"m4a4",title:"Backend project",description:"Build and deploy a tested backend service."},{id:"m5a5",title:"Integration project",description:"Connect the frontend to the backend and document the integration."}], evidence: [{url: "https://github.com/example/project", commit: "a".repeat(40)}] };
 const manifest = (awards = [award]) => ({schemaVersion: 1, awards});
 test("requires explicit approval and verified identity fields", () => {
   for (const change of [{approved:false}, {identityEmail:""}, {recipientName:"202612345"}, {recipientHandle:"invalid handle"}]) expect(() => planAwards(manifest([{...award,...change}]))).toThrow();
@@ -129,7 +130,7 @@ test("private evidence stays in private manifests and cannot enter public badge 
   for(const publicUrl of [privateUrl,'https://github.com/example/workspace','https://canvas.example.org/submission','https://github.com/example/student-apsi-workspace']) expect(()=>planAwards(manifest([{...award,publicEvidence:[{url:publicUrl}]}]))).toThrow('unsafe public');
 });
 test("activity requirements reject private copy and escape rendering markup",async()=>{
-  for(const change of [{thresholdPercent:74},{activities:[]},{activities:[{id:'m4a4',title:'Contact user@example.org',description:'Generic work.'}]},{activities:[{id:'m4a4',title:'Activity',description:'Student 202612345 completed it.'}]}]) expect(()=>planAwards(manifest([{...award,...change}]))).toThrow();
+  for(const change of [{thresholdPercent:74},{thresholdPercent:101,policyThresholdPercent:101},{thresholdPercent:-1,policyThresholdPercent:-1},{policyThresholdPercent:undefined},{activities:[]},{activities:[{id:'m4a4',title:'Contact user@example.org',description:'Generic work.'}]},{activities:[{id:'m4a4',title:'Activity',description:'Student 202612345 completed it.'}]}]) expect(()=>planAwards(manifest([{...award,...change}]))).toThrow();
   const {renderBadgeEntry}=await import('../src/content.ts');
   const a={...award,activities:[{id:'m4a4',title:'<script>alert(1)</script>',description:'<img src=x onerror=alert(1)> "Quoted" work.'}]};
   const result=planAwards(manifest([a])).awards[0]!;
@@ -145,4 +146,153 @@ test("hosted OB2 evidence contains each explicitly public URL and commit once",(
  expect(issued.evidence).toHaveLength(2);expect(issued.evidence![0]).toEqual({id:publicEvidence.url,type:'Evidence',narrative:`Reviewed commit: ${publicEvidence.commit}`});
  expect(issued.evidence![1]).toEqual({id:differentCommit.url,type:'Evidence',narrative:`Reviewed commit: ${differentCommit.commit}`});
  expect(JSON.stringify(issued)).not.toContain('canvas.example.org');expect(JSON.stringify(issued)).not.toContain('HAU-6APSI');
+});
+
+test("the threshold follows the approved policy value rather than a fixed number",()=>{
+  const plan=planAwards(manifest([{...award,thresholdPercent:80,policyThresholdPercent:80}])).awards[0]!;
+  expect(plan.assertion.badge.criteria.narrative).toContain("Award threshold: 80%.");
+  expect(()=>planAwards(manifest([{...award,thresholdPercent:60}]))).toThrow("policy threshold");
+});
+test("a badge is one page: the class slug never carries a version", () => {
+  const plan = planAwards(manifest()).awards[0]!;
+  expect(plan.classSlug).toBe("apsi-2240-backend");
+  expect(plan.assertion.badge.id).toBe("https://tjakoen.github.io/badges/apsi-2240-backend");
+  expect(plan.md).not.toMatch(/-v\d/); expect(JSON.stringify(plan.assertion)).not.toMatch(/-v\d/);
+});
+test("a changed policy cannot rewrite an existing class page; a new badge id is the way forward", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-"));
+  try {
+    issue(manifest(), { dir, emit: true });
+    const before = readFileSync(join(dir, "apsi-2240-backend.md"), "utf8");
+    const changed = { ...award, awardKey: "second", recipientName: "Second Learner", recipientHandle: "second-learner", identityEmail: "second@example.org", thresholdPercent: 80, policyThresholdPercent: 80 };
+    expect(() => issue(manifest([changed]), { dir })).toThrow("class page");
+    expect(() => issue(manifest([changed]), { dir, emit: true, allowExisting: true })).toThrow("make a new badge id");
+    // A recognized-as-current page is never adoptable, even with the flag.
+    expect(() => issue(manifest([changed]), { dir, emit: true, allowExisting: true, adoptLegacyClass: true })).toThrow("class page");
+    expect(readFileSync(join(dir, "apsi-2240-backend.md"), "utf8")).toBe(before);
+    issue(manifest([{ ...changed, badgeId: "backend-two" }]), { dir, emit: true, allowExisting: true });
+    expect(readFileSync(join(dir, "apsi-2240-backend.md"), "utf8")).toBe(before);
+    expect(readFileSync(join(dir, "apsi-2240-backend-two.md"), "utf8")).toContain("thresholdPercent: 80");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// A synthetic legacy tree: a participation class page, and per-student pages with OB3 salt+email hashes, as the older generator wrote them.
+const legacyClass = "apsi-2240-midterm";
+const legacyHash = (email: string, salt = "legacy-salt") => "sha256$" + createHash("sha256").update(salt + email).digest("hex");
+function legacyTree(dir: string, students: { handle: string; email: string; issuedOn?: string }[]) {
+  writeFileSync(join(dir, `${legacyClass}.md`), `---\ntitle: "Old badge"\ntype: badge-class\nbadgeName: "Old badge"\nterm: midterm\nrecipients:\n${students.map(s => `  - "Old Name | ${s.handle} | https://github.com/example/x | | ${legacyClass}--${s.handle}"`).join("\n")}\n---\n\nParticipation.\n`);
+  for (const s of students) {
+    const slug = `${legacyClass}--${s.handle}`;
+    writeFileSync(join(dir, `${slug}.md`), `---\ntitle: "Old: Old Name"\ntype: cert\nbadgeName: "Old badge"\nterm: midterm\nbadgeClass: ${legacyClass}\nshortUrl: /b/${s.handle.slice(0, 8).padEnd(8, "0")}\nrecipientName: "Old Name"\nrecipientHandle: "${s.handle}"\nissuedOn: ${s.issuedOn || "2026-09-16"}\ncertId: "hau-old-${s.handle}"\n---\n\nOld text.\n`);
+    writeFileSync(join(dir, `${slug}.ob.json`), JSON.stringify({ type: ["VerifiableCredential"], credentialSubject: { identifier: [{ type: "IdentityObject", hashed: true, salt: "legacy-salt", identityHash: legacyHash(s.email) }] } }));
+  }
+}
+const legacyAward = { ...award, badgeId: "full-stack", legacyTerm: "midterm", emails: ["learner@example.org", "personal@example.net"] };
+test("a student's existing legacy page is reused: same slug, short link, certificate id and issue date", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-"));
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "personal@example.net", issuedOn: "2026-09-16" }]);
+    const planned = planAwards(manifest([{ ...legacyAward, legacySlug: `${legacyClass}--oldhandle` }]), existingAwards(dir), "2026-10-05").awards[0]!;
+    expect(planned.classSlug).toBe(legacyClass); expect(planned.certSlug).toBe(`${legacyClass}--oldhandle`);
+    expect(planned.issuedOn).toBe("2026-09-16"); expect(planned.assertion.issuedOn).toBe("2026-09-16T00:00:00+08:00");
+    expect(planned.shortId).toBe("oldhandl"); expect(planned.certId).toBe("hau-old-oldhandle"); expect(planned.reused).toBe(true);
+    expect(planned.md).not.toContain("legacy-salt"); expect(JSON.stringify(planned.assertion)).not.toContain("personal@example.net");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+test("a legacy page whose recipient hash does not match the award fails before anything is written", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-"));
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "someone-else@example.net" }]);
+    const before = readFileSync(join(dir, `${legacyClass}--oldhandle.md`), "utf8");
+    expect(() => issue(manifest([{ ...legacyAward, legacySlug: `${legacyClass}--oldhandle` }]), { dir, emit: true, allowExisting: true, adoptLegacyClass: true })).toThrow("recipient does not match");
+    expect(readFileSync(join(dir, `${legacyClass}--oldhandle.md`), "utf8")).toBe(before);
+    expect(readFileSync(join(dir, `${legacyClass}.md`), "utf8")).toContain("recipients:");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+test("legacy slugs must exist, belong to the badge's legacy class, and not be claimed twice", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-"));
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "personal@example.net" }]);
+    const existing = existingAwards(dir);
+    expect(() => planAwards(manifest([{ ...legacyAward, legacySlug: `${legacyClass}--missing` }]), existing)).toThrow("not found");
+    expect(() => planAwards(manifest([{ ...legacyAward, legacySlug: "apsi-2240-prelim--oldhandle" }]), existing)).toThrow("legacy class");
+    expect(() => planAwards(manifest([{ ...legacyAward, legacySlug: `${legacyClass}--oldhandle` }, { ...legacyAward, awardKey: "other", legacySlug: `${legacyClass}--oldhandle` }]), existing)).toThrow("duplicate");
+    expect(() => planAwards(manifest([{ ...award, legacySlug: `${legacyClass}--oldhandle` }]), existing)).toThrow("legacy term");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+test("an earner with no legacy page gets a new page under the legacy class slug", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-"));
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "personal@example.net" }]);
+    const planned = planAwards(manifest([legacyAward]), existingAwards(dir), "2026-10-05").awards[0]!;
+    expect(planned.classSlug).toBe(legacyClass); expect(planned.certSlug).toMatch(/^award-[a-f0-9]{24}$/); expect(planned.issuedOn).toBe("2026-10-05"); expect(planned.reused).toBe(false);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+test("rewriting a legacy class page needs --adopt-legacy-class and a legacy marker", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-")), privateDir = mkdtempSync(join(tmpdir(), "unearned-")), list = join(privateDir, "unearned.json");
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "personal@example.net" }, { handle: "unearned", email: "nobody@example.net" }]);
+    const reuse = manifest([{ ...legacyAward, legacySlug: `${legacyClass}--oldhandle` }]);
+    expect(() => issue(reuse, { dir })).toThrow("--adopt-legacy-class");
+    expect(() => issue(reuse, { dir, emit: true, allowExisting: true })).toThrow("class page");
+    expect(readFileSync(join(dir, `${legacyClass}.md`), "utf8")).toContain("recipients:");
+    const dry = issue(reuse, { dir, adoptLegacyClass: true, unearnedLegacyPath: list });
+    expect(dry.reused).toBe(1); expect(dry.unearnedLegacy).toBe(1); expect(readFileSync(join(dir, `${legacyClass}.md`), "utf8")).toContain("recipients:");
+    issue(reuse, { dir, emit: true, allowExisting: true, adoptLegacyClass: true, unearnedLegacyPath: list });
+    const cls = readFileSync(join(dir, `${legacyClass}.md`), "utf8");
+    expect(cls).toContain("criteriaText:"); expect(cls).not.toContain("recipients:"); expect(cls).toContain("recipientCount: 1");
+    // The reused page now carries the award and the original date; the unearned page is untouched.
+    const reused = existingAwards(dir).find(e => e.slug === `${legacyClass}--oldhandle`)!;
+    expect(reused.fm.awardKey).toBeTruthy(); expect(reused.fm.issuedOn).toBe("2026-09-16"); expect(reused.assertion!.recipient.identity).toMatch(/^sha256\$/);
+    expect(readFileSync(join(dir, `${legacyClass}--unearned.md`), "utf8")).toContain("Old text.");
+    expect(JSON.parse(readFileSync(list, "utf8")).pages).toHaveLength(1);
+    // A second run is idempotent and a current page is never adoptable.
+    issue(reuse, { dir, emit: true, allowExisting: true });
+    expect(readdirSync(dir).filter(f => /-v\d/.test(f))).toEqual([]);
+    expect(() => issue(manifest([{ ...legacyAward, legacySlug: `${legacyClass}--oldhandle`, thresholdPercent: 80, policyThresholdPercent: 80 }]), { dir, adoptLegacyClass: true })).toThrow("class page");
+    expect(() => issue(reuse, { dir, unearnedLegacyPath: join(dir, "inside.json") })).toThrow("outside");
+  } finally { rmSync(dir, { recursive: true, force: true }); rmSync(privateDir, { recursive: true, force: true }); }
+});
+test("a finals badge with no legacy term gets a new class and new pages", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-"));
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "personal@example.net" }]);
+    const finals = { ...award, badgeId: "builds-with-ai", term: "finals" };
+    const planned = planAwards(manifest([finals]), existingAwards(dir)).awards[0]!;
+    expect(planned.classSlug).toBe("apsi-2240-builds-with-ai"); expect(planned.certSlug).toMatch(/^award-/);
+    issue(manifest([finals]), { dir, emit: true, allowExisting: true });
+    expect(readFileSync(join(dir, "apsi-2240-builds-with-ai.md"), "utf8")).toContain("recipientCount: 1");
+    expect(readFileSync(join(dir, `${legacyClass}.md`), "utf8")).toContain("recipients:");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+// A stand-in renderer: a PNG signature followed by the title the job's page carries, so a test can see which title an image was drawn from.
+const fakePng = (job: ImageJob) => Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), Buffer.from(String(job.md.match(/^subtitle: (".*")$/m)?.[1] || "") + "|" + job.kind)]);
+test("a reused legacy page and an adopted class page get their images regenerated in place with the current title", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-")), images = mkdtempSync(join(tmpdir(), "img-"));
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "personal@example.net" }]);
+    const reuse = manifest([{ ...legacyAward, title: "Full Stack Web Development", legacySlug: `${legacyClass}--oldhandle` }]);
+    const seen: ImageJob[][] = [];
+    const dry = issue(reuse, { dir, adoptLegacyClass: true, imageDir: images, renderImages: jobs => { seen.push(jobs); return jobs.map(fakePng); } });
+    expect(dry.images).toBe(2); expect(seen).toHaveLength(0); expect(readdirSync(images)).toEqual([]);
+    const done = issue(reuse, { dir, emit: true, allowExisting: true, adoptLegacyClass: true, imageDir: images, renderImages: jobs => { seen.push(jobs); return jobs.map(fakePng); } });
+    expect(done.images).toBe(2); expect(readdirSync(images).sort()).toEqual([`${legacyClass}--oldhandle.png`, `og-${legacyClass}.png`]);
+    expect(readFileSync(join(images, `${legacyClass}--oldhandle.png`), "latin1")).toContain('"Full Stack Web Development"|cert');
+    expect(readFileSync(join(images, `og-${legacyClass}.png`), "latin1")).toContain('"Full Stack Web Development"|og');
+    expect(seen[0]!.find(j => j.kind === "cert")!.assertion).toContain("HostedBadge");
+    // A new (non-legacy) award regenerates nothing: its image comes from the ordinary image tool run.
+    expect(issue(manifest(), { dir: mkdtempSync(join(tmpdir(), "badge-")), imageDir: images }).images).toBe(0);
+  } finally { rmSync(dir, { recursive: true, force: true }); rmSync(images, { recursive: true, force: true }); }
+});
+test("an image failure writes nothing", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-")), images = mkdtempSync(join(tmpdir(), "img-"));
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "personal@example.net" }]);
+    const snapshot = () => readdirSync(dir).sort().map(f => `${f}:${readFileSync(join(dir, f), "utf8")}`);
+    const before = snapshot();
+    const reuse = manifest([{ ...legacyAward, legacySlug: `${legacyClass}--oldhandle` }]);
+    expect(() => issue(reuse, { dir, emit: true, allowExisting: true, adoptLegacyClass: true, imageDir: images, renderImages: () => { throw new Error("browser died"); } })).toThrow("nothing was written");
+    expect(() => issue(reuse, { dir, emit: true, allowExisting: true, adoptLegacyClass: true, imageDir: images, renderImages: jobs => jobs.map(() => Buffer.from("not a png")) })).toThrow("nothing was written");
+    expect(snapshot()).toEqual(before); expect(readdirSync(images)).toEqual([]);
+  } finally { rmSync(dir, { recursive: true, force: true }); rmSync(images, { recursive: true, force: true }); }
 });

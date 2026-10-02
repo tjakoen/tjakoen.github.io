@@ -1,7 +1,8 @@
 // Issue only instructor-approved awards from a private manifest. Dry runs expose counts only.
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { mkdirSync, readFileSync, existsSync, writeFileSync, readdirSync, realpathSync, chmodSync } from "node:fs";
+import { mkdirSync, readFileSync, existsSync, writeFileSync, readdirSync, realpathSync, chmodSync, renameSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { createHash, randomBytes } from "node:crypto";
 import { YAML } from "bun";
 
@@ -15,6 +16,8 @@ export interface Award {
   recipientKey: string; recipientName: string; recipientHandle: string; identityEmail: string;
   workspaceRepo: string; evidence: BadgeEvidence[]; publicEvidence?: BadgeEvidence[];
   activities: BadgeActivity[]; thresholdPercent: number;
+  // One badge is one page. A badge with a legacy term reuses that term's class page and, per student, the legacy page named by legacySlug (private; read from the roster).
+  policyThresholdPercent?: number; legacyTerm?: string; legacySlug?: string; emails?: string[];
   issuedOn?: string; certSlug?: string; certId?: string; shortId?: string;
 }
 type Existing = { slug: string; fm: Record<string, unknown>; assertion?: Record<string, any> };
@@ -30,6 +33,12 @@ export function existingAwards(dir: string): Existing[] {
   });
 }
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
+// The older generator wrote an OB3 identifier hashed as salt+email; hosted OB2 assertions hash email+salt. Both are accepted.
+function recipientMatches(assertion: Record<string, any> | undefined, email: string): boolean {
+  const v2 = assertion?.recipient, v3 = assertion?.credentialSubject?.identifier?.[0];
+  if (v2?.salt && v2.identity === `sha256$${hash(email + v2.salt)}`) return true;
+  return Boolean(v3?.salt && v3.identityHash === `sha256$${hash(String(v3.salt) + email)}`);
+}
 const scalar = (s: unknown) => JSON.stringify(s);
 function metadata(fields: Record<string, unknown>): string {
   return `---\n${Object.entries(fields).map(([k, v]) => `${k}: ${scalar(v)}`).join("\n")}\n---\n\n`;
@@ -79,7 +88,10 @@ export function planAwards(manifest: unknown, existing: Existing[] = [], today =
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.identityEmail || "")) fail(i, "verified identity email is required");
     if (!/^[a-z\d_.-]+\/[a-z\d_.-]+$/i.test(a.workspaceRepo)) fail(i, "invalid workspace repository");
     if (!Array.isArray(a.evidence) || !a.evidence.length || a.evidence.some(e => !https(e.url) || (e.commit && !/^[a-f\d]{40}$/i.test(e.commit)))) fail(i, "HTTPS evidence and valid commit are required");
-    if (a.thresholdPercent !== 75) fail(i, "approved badge threshold must be 75 percent");
+    if (typeof a.thresholdPercent !== "number" || !Number.isFinite(a.thresholdPercent) || a.thresholdPercent < 0 || a.thresholdPercent > 100) fail(i, "badge threshold must be a number from 0 to 100");
+    if (a.policyThresholdPercent !== a.thresholdPercent) fail(i, "badge threshold must equal the approved badge policy threshold");
+    if (a.legacyTerm !== undefined && (typeof a.legacyTerm !== "string" || !/^[a-z0-9][a-z0-9-]*$/.test(a.legacyTerm))) fail(i, "unsafe legacy term");
+    if (a.legacySlug !== undefined && (!a.legacyTerm || typeof a.legacySlug !== "string" || !/^[a-z\d][a-z\d._-]*$/i.test(a.legacySlug))) fail(i, "legacy page needs a legacy term and a safe slug");
     if (![a.title,a.description,a.criteria].every(publicCopy)) fail(i, "public badge copy contains private or invalid content");
     if (!Array.isArray(a.activities) || !a.activities.length) fail(i, "designated activity descriptions are required");
     const activityIds = new Set<string>();
@@ -90,16 +102,32 @@ export function planAwards(manifest: unknown, existing: Existing[] = [], today =
       if (activity.publicEvidence && (!Array.isArray(activity.publicEvidence) || activity.publicEvidence.some(e => !publicEvidenceAllowed(e,a.workspaceRepo)))) fail(i, "unsafe public activity evidence");
     }
     if (a.publicEvidence && (!Array.isArray(a.publicEvidence) || a.publicEvidence.some(e => !publicEvidenceAllowed(e,a.workspaceRepo)))) fail(i, "unsafe public award evidence");
-    const prior = existing.find(e => e.fm.awardKey === hash(a.awardKey)) || (a.certSlug ? existing.find(e => e.slug === a.certSlug) : undefined);
-    const classSlug = `${a.course}-${a.section}-${a.badgeId}`;
+    // One badge is one page: the class slug is the legacy term's slug when the policy names one, otherwise the badge id.
+    const classSlug = `${a.course}-${a.section}-${a.legacyTerm || a.badgeId}`;
+    let legacy: Existing | undefined;
+    if (a.legacySlug !== undefined) {
+      if (!a.legacySlug.startsWith(`${classSlug}--`)) fail(i, "legacy page does not belong to this badge's legacy class");
+      legacy = existing.find(e => e.slug === a.legacySlug);
+      if (!legacy) fail(i, "legacy badge page not found");
+      if (legacy.fm.badgeClass !== classSlug) fail(i, "legacy page is filed under another badge class");
+    }
+    const prior = existing.find(e => e.fm.awardKey === hash(a.awardKey)) || (a.certSlug ? existing.find(e => e.slug === a.certSlug) : undefined) || legacy;
+    if (legacy && prior !== legacy) fail(i, "legacy page conflicts with the recorded certificate");
+    // A page with no award key is still the original participation page. Its recipient binds by the salted hash of any of the student's addresses, not by the roster name or handle.
+    const adopting = Boolean(prior && !prior.fm.awardKey && legacy);
     if (prior) {
       if (prior.fm.awardKey && prior.fm.awardKey !== hash(a.awardKey)) fail(i, "existing award key conflict");
       if (prior.fm.badgeClass !== classSlug) fail(i, "existing badge class conflict");
-      if (prior.fm.recipientName !== a.recipientName || String(prior.fm.recipientHandle).toLowerCase() !== a.recipientHandle.toLowerCase()) fail(i, "existing recipient conflict");
-      const recipient = prior.assertion?.recipient;
-      const legacyIdentity = prior.assertion?.credentialSubject?.identifier?.[0];
-      if (legacyIdentity && legacyIdentity.identityHash !== `sha256$${hash(String(legacyIdentity.salt || "") + a.identityEmail.toLowerCase().trim())}`) fail(i, "existing legacy identity conflict");
-      if (recipient && recipient.identity !== `sha256$${hash(a.identityEmail.toLowerCase().trim() + recipient.salt)}`) fail(i, "existing identity conflict");
+      if (adopting) {
+        const mailboxes = [a.identityEmail, ...(Array.isArray(a.emails) ? a.emails : [])].filter(x => typeof x === "string").map(x => x.toLowerCase().trim());
+        if (!mailboxes.some(email => recipientMatches(prior.assertion, email))) fail(i, "legacy page recipient does not match the award recipient");
+      } else {
+        if (prior.fm.recipientName !== a.recipientName || String(prior.fm.recipientHandle).toLowerCase() !== a.recipientHandle.toLowerCase()) fail(i, "existing recipient conflict");
+        const recipient = prior.assertion?.recipient;
+        const legacyIdentity = prior.assertion?.credentialSubject?.identifier?.[0];
+        if (legacyIdentity && legacyIdentity.identityHash !== `sha256$${hash(String(legacyIdentity.salt || "") + a.identityEmail.toLowerCase().trim())}`) fail(i, "existing legacy identity conflict");
+        if (recipient && recipient.identity !== `sha256$${hash(a.identityEmail.toLowerCase().trim() + recipient.salt)}`) fail(i, "existing identity conflict");
+      }
       covered.add(prior.slug);
     }
     if (prior && covered.has(prior.slug) && claimed.has(prior.slug)) fail(i, "duplicate existing certificate claim");
@@ -137,7 +165,7 @@ export function planAwards(manifest: unknown, existing: Existing[] = [], today =
       shortUrl: `/b/${shortId}`, recipientName: a.recipientName, recipientHandle: a.recipientHandle,
       issuedOn, certId, criteriaUrl: `/badges/${classSlug}`, social: `I earned ${a.title}. Verify my badge: ${ORIGIN}/b/${shortId}` })
       + `${a.description}\n\nThe instructor approved this award against the [badging activity criteria](/badges/${classSlug}).\n`;
-    return { a, certSlug, certId, issuedOn, shortId, classSlug, assertion, md, common };
+    return { a, certSlug, certId, issuedOn, shortId, classSlug, assertion, md, common, reused: adopting };
   });
   const classes = new Map<string, typeof awards>();
   for (const award of awards) {
@@ -145,7 +173,35 @@ export function planAwards(manifest: unknown, existing: Existing[] = [], today =
     if (group.length && ["title", "description", "criteria", "term", "monogram", "thresholdPercent"].some(k => (group[0]!.a as any)[k] !== (award.a as any)[k]) || group.length && group[0]!.common.activitiesJson !== award.common.activitiesJson) throw new Error("Conflicting badge class metadata");
     group.push(award); classes.set(award.classSlug, group);
   }
-  return { awards, classes, uncovered: existing.filter(e => !covered.has(e.slug)).length };
+  return { awards, classes, covered, uncovered: existing.filter(e => !covered.has(e.slug)).length };
+}
+// The original participation generator wrote class pages with a recipients list and no criteriaText. That pair is the marker of a legacy page that may be adopted once.
+export function isLegacyClassPage(fm: Record<string, unknown>): boolean {
+  return fm.type === "badge-class" && fm.criteriaText === undefined && Array.isArray(fm.recipients);
+}
+// A class page that already exists at this slug is what older assertions point at. Rewriting it with other criteria would change what they claim,
+// so a differing page blocks emission and the instructor creates a new badge id. Only a recognized legacy page may be rewritten, and only with adoptLegacy.
+function assertClassPageMatches(dir: string, slug: string, common: { criteriaText: string; thresholdPercent: number; activitiesJson: string }, adoptLegacy = false): void {
+  const path = join(dir, `${slug}.md`);
+  if (!existsSync(path)) return;
+  const match = readFileSync(path, "utf8").match(/^---\n([\s\S]*?)\n---/);
+  const fm = match ? YAML.parse(match[1]!) as Record<string, unknown> : {};
+  if (fm.criteriaText !== common.criteriaText || fm.thresholdPercent !== common.thresholdPercent || fm.activitiesJson !== common.activitiesJson) {
+    if (adoptLegacy && isLegacyClassPage(fm)) return;
+    throw new Error("Existing badge class page conflict: criteria, threshold or activities differ; make a new badge id" + (isLegacyClassPage(fm) ? ", or pass --adopt-legacy-class to replace the legacy participation criteria once" : ""));
+  }
+}
+// A badge image to regenerate: the cert medallion (baked with its assertion) or the class unfurl card. path is relative to the image directory.
+export interface ImageJob { kind: "cert" | "og"; path: string; md: string; assertion?: string }
+const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+// Production renderer: one headless run of the image tool for the whole batch, so the browser launches once.
+export function renderWithImageTool(jobs: ImageJob[]): Buffer[] {
+  const out = mkdtempSync(join(tmpdir(), "badge-img-"));
+  try {
+    const run = Bun.spawnSync([process.execPath, join(ROOT, "tools", "badge-images.ts"), "--render-jobs", out], { stdin: Buffer.from(JSON.stringify(jobs)), stdout: "ignore", stderr: "ignore" });
+    if (run.exitCode !== 0) throw new Error("Image regeneration failed");
+    return jobs.map((_, i) => readFileSync(join(out, `${i}.png`)));
+  } finally { rmSync(out, { recursive: true, force: true }); }
 }
 type HubClass = { slug: string; title: string; section: string; count: number; legacy: boolean };
 function privateOutput(path: string | undefined, dir: string): void {
@@ -160,14 +216,26 @@ function privateOutput(path: string | undefined, dir: string): void {
 function writePrivate(path: string, value: unknown): void {
   writeFileSync(path, JSON.stringify(value, null, 2) + "\n", {mode:0o600}); chmodSync(path,0o600);
 }
-export function issue(manifest: unknown, options: { dir: string; emit?: boolean; allowExisting?: boolean; hubPath?: string; issuedManifestPath?: string; previewManifestPath?: string }) {
-  privateOutput(options.issuedManifestPath, options.dir); privateOutput(options.previewManifestPath, options.dir);
+export function issue(manifest: unknown, options: { dir: string; emit?: boolean; allowExisting?: boolean; hubPath?: string; issuedManifestPath?: string; previewManifestPath?: string; adoptLegacyClass?: boolean; unearnedLegacyPath?: string; imageDir?: string; renderImages?: (jobs: ImageJob[]) => Buffer[] }) {
+  privateOutput(options.issuedManifestPath, options.dir); privateOutput(options.previewManifestPath, options.dir); privateOutput(options.unearnedLegacyPath, options.dir);
   const existing = existingAwards(options.dir), plan = planAwards(manifest, existing);
+  for (const [slug, group] of plan.classes) assertClassPageMatches(options.dir, slug, group[0]!.common, options.adoptLegacyClass);
+  // Legacy pages in a legacy class with no earned award stay untouched; the instructor decides about them later, from a private list.
+  const legacyClasses = new Set<string>([...plan.classes].filter(([, group]) => group[0]!.a.legacyTerm).map(([slug]) => slug));
+  for (const slug of (manifest as { legacyClasses?: unknown }).legacyClasses as unknown[] || []) if (typeof slug === "string" && /^[a-z0-9][a-z0-9-]*$/.test(slug)) legacyClasses.add(slug);
+  const unearned = existing.filter(e => !e.fm.awardKey && !plan.covered.has(e.slug) && legacyClasses.has(String(e.fm.badgeClass)));
+  if (options.unearnedLegacyPath) writePrivate(options.unearnedLegacyPath, { schemaVersion: 1, generatedAt: new Date().toISOString(), pages: unearned.map(e => ({ slug: e.slug, badgeClass: e.fm.badgeClass, recipientName: e.fm.recipientName, recipientHandle: e.fm.recipientHandle, issuedOn: e.fm.issuedOn })) });
   if (options.emit && plan.uncovered && !options.allowExisting) throw new Error(`Emission held: ${plan.uncovered} existing certificates are not reconciled. --allow-existing preserves legacy awards.`);
   const issuedManifest = { ...(manifest as Record<string, unknown>), schemaVersion: 1, awards: plan.awards.map(award => ({ ...award.a,
     certSlug: award.certSlug, certId: award.certId, shortId: award.shortId,
     issuedOn: award.assertion.issuedOn.slice(0, 10), url: `${ORIGIN}/b/${award.shortId}`, imageUrl: award.assertion.image })) };
-  const result = { approved: plan.awards.length, classes: plan.classes.size, legacy: plan.uncovered };
+  // Reused legacy pages and adopted legacy class pages keep their public image URLs, so their images are re-rendered in place to show the current title.
+  const adoptedClasses = options.adoptLegacyClass ? [...plan.classes.keys()].filter(slug => {
+    const path = join(options.dir, `${slug}.md`), match = existsSync(path) ? readFileSync(path, "utf8").match(/^---\n([\s\S]*?)\n---/) : null;
+    return Boolean(match && isLegacyClassPage(YAML.parse(match[1]!) as Record<string, unknown>));
+  }) : [];
+  const reusedAwards = plan.awards.filter(award => award.reused);
+  const result = { approved: plan.awards.length, classes: plan.classes.size, legacy: plan.uncovered, unearnedLegacy: unearned.length, reused: reusedAwards.length, images: reusedAwards.length + adoptedClasses.length };
   if (!options.emit) {
     if (options.previewManifestPath) writePrivate(options.previewManifestPath, { ...issuedManifest, preview: true });
     return result;
@@ -197,6 +265,18 @@ export function issue(manifest: unknown, options: { dir: string; emit?: boolean;
     classWrites.set(slug, metadata({ ...first.common, title: first.a.title, section:first.a.section,type: "badge-class", recipientCount: count }) + `${first.a.description}\n\n## Award criteria\n\n${first.a.criteria}\n`);
     hub.set(slug,{slug,title:first.a.title,section:first.a.section,count,legacy:false});
   }
+  // Render every image before the first write: a failed render leaves the repository untouched.
+  const jobs: ImageJob[] = [
+    ...reusedAwards.map(award => ({ kind: "cert" as const, path: `${award.certSlug}.png`, md: award.md, assertion: JSON.stringify(award.assertion, null, 2) + "\n" })),
+    ...adoptedClasses.map(slug => ({ kind: "og" as const, path: `og-${slug}.png`, md: classWrites.get(slug)! })),
+  ];
+  let rendered: Buffer[] = [];
+  if (jobs.length && options.renderImages) {
+    try { rendered = options.renderImages(jobs); } catch { throw new Error("Image regeneration failed; nothing was written"); }
+    if (rendered.length !== jobs.length || rendered.some(b => !Buffer.isBuffer(b) || b.length < 8 || !b.subarray(0, 8).equals(PNG_SIGNATURE))) throw new Error("Image regeneration failed; nothing was written");
+  }
+  const imageDir = options.imageDir || join(options.dir, "..", "media", "badges");
+  if (rendered.length) { mkdirSync(imageDir, { recursive: true }); jobs.forEach((job, i) => writeFileSync(join(imageDir, `${job.path}.tmp`), rendered[i]!)); }
   mkdirSync(options.dir, { recursive: true });
   for (const [slug, md] of classWrites) writeFileSync(join(options.dir, `${slug}.md`), md);
   for (const award of plan.awards) {
@@ -205,6 +285,7 @@ export function issue(manifest: unknown, options: { dir: string; emit?: boolean;
     links[award.shortId] = award.certSlug;
   }
   writeFileSync(linksPath, JSON.stringify(links, null, 2) + "\n");
+  for (const job of rendered.length ? jobs : []) renameSync(join(imageDir, `${job.path}.tmp`), join(imageDir, job.path));
   if (options.hubPath) writeFileSync(options.hubPath, hubHtml([...hub.values()], plan.uncovered));
   if (options.issuedManifestPath) writePrivate(options.issuedManifestPath, issuedManifest);
   return result;
@@ -219,11 +300,11 @@ if (import.meta.main) {
     const index = process.argv.indexOf("--manifest"), path = index >= 0 ? process.argv[index + 1] : undefined;
     if (!path || path.startsWith("--")) throw new Error("Supply --manifest /private/approved-awards.json");
     const flagPath = (flag: string) => { const n = process.argv.indexOf(flag); const value = n < 0 ? undefined : process.argv[n+1]; if (n >= 0 && (!value || value.startsWith("--"))) throw new Error(`Supply a private path for ${flag}`); return value; };
-    const result = issue(JSON.parse(readFileSync(path, "utf8")), { dir: join(ROOT, "content", "badges"), emit: process.argv.includes("--emit"), allowExisting: process.argv.includes("--allow-existing"), hubPath: join(ROOT, "view", "pages", "badges", "index.html"), issuedManifestPath:flagPath("--issued-manifest"),previewManifestPath:flagPath("--preview-manifest") });
-    console.log(`issue-badges: ${process.argv.includes("--emit") ? "EMIT" : "DRY-RUN"}; approved=${result.approved}; classes=${result.classes}; unreconciled legacy=${result.legacy}`);
+    const result = issue(JSON.parse(readFileSync(path, "utf8")), { dir: join(ROOT, "content", "badges"), emit: process.argv.includes("--emit"), allowExisting: process.argv.includes("--allow-existing"), hubPath: join(ROOT, "view", "pages", "badges", "index.html"), issuedManifestPath:flagPath("--issued-manifest"),previewManifestPath:flagPath("--preview-manifest"),adoptLegacyClass:process.argv.includes("--adopt-legacy-class"),renderImages:renderWithImageTool,unearnedLegacyPath:flagPath("--unearned-legacy") });
+    console.log(`issue-badges: ${process.argv.includes("--emit") ? "EMIT" : "DRY-RUN"}; approved=${result.approved}; classes=${result.classes}; reused legacy pages=${result.reused}; unreconciled legacy=${result.legacy}; unearned legacy pages=${result.unearnedLegacy}; images ${process.argv.includes("--emit") ? "regenerated" : "to regenerate"}=${result.images}`);
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
-    const safe = /^(Award \d+:|Expected manifest|Supply |Manifest output|Emission held:|Conflicting badge class|Existing alias)/.test(message);
+    const safe = /^(Award \d+:|Expected manifest|Supply |Manifest output|Emission held:|Conflicting badge class|Existing alias|Existing badge class page|Image regeneration failed)/.test(message);
     console.error(safe ? message : "Badge issuance failed while reading, parsing, or writing inputs. No recipient details are logged."); process.exitCode = 1;
   }
 }
