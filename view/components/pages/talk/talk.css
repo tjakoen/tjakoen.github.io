@@ -70,6 +70,7 @@ body[data-deck-only] > .presentation { height: 100dvh; }
 [data-screen="talk"] .end__qr svg { width: 100%; height: 100%; shape-rendering: crispEdges; }
 [data-screen="talk"] .end__url { font-family: var(--font-mono); font-size: calc(var(--u) * 1.9);
   color: var(--color-muted); margin-top: calc(var(--u) * 2); word-break: break-all; }
+[data-screen="talk"] .end__url a { color: inherit; }
 
 
 /* --- 6a · what the first number is made of ---------------------------------

@@ -189,11 +189,12 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     const section = ` data-section="${sectionName}"`;
     // the honest-source toggle: an entry page links straight to its own raw .md (MILL's
     // honest-source route) — "the site is its own source tree" made clickable.
+    const isCalendarEntry = kind === "entry" && collection.prefix === "/calendar";
     const sourceToggle = kind === "entry" && slug
-      ? `<nav class="content-source" aria-label="View">
+      ? `<nav class="content-source" aria-label="${isCalendarEntry ? "Event page navigation" : "View"}">
       <a class="tab" aria-current="page" href="${escapeHtml(`${collection.prefix}/${slug}`)}">Rendered</a>
-      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>
-    </nav>`
+      <a class="tab" href="${escapeHtml(`${collection.prefix}/${slug}.md`)}">Source</a>${isCalendarEntry ? '\n      <a class="tab" href="/calendar">Calendar feed</a>' : ""}
+      </nav>`
       : "";
     // NOTE: the /notes index's "See what's new" AI trigger (data-ai-run demo.run) used to render
     // here, above the body. It now lives INSIDE renderNotesFeedPage's toolbar (grouped with New/Top
@@ -699,7 +700,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       `<button type="button" class="notes-tags__more" data-tags-more aria-expanded="false">+${restTags.length} more</button>`
     : "";
 
-  const cards = entries.map((e) => {
+  const cardRows = entries.map((e) => {
     const slug = escapeHtml(e.slug);
     const date = escapeHtml(e.date);
     const time = e.date ? `<time datetime="${date}">${date}</time>` : "";
@@ -719,7 +720,18 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
             <a class="note-card__sections" href="/notes/${slug}">${e.sections} sections</a></p>
         </div>
       </li>`;
-  }).join("\n");
+  });
+  const paths = `<li class="notes-paths">
+      <nav aria-label="Explore the work behind the notes">
+        <span class="notes-paths__label">Explore the work</span>
+        <a href="/bread">The stack</a>
+        <a href="/teaching">Teaching</a>
+        <a href="/talks">Talks</a>
+      </nav>
+    </li>`;
+  // Keep the flagship note first. The three paths sit after it, where they can lead into the
+  // projects and teaching without pushing the first piece of writing below another toolbar.
+  const cards = [cardRows[0], paths, ...cardRows.slice(1)].filter(Boolean).join("\n");
 
   // The inline island: pure DOM reorder/hide over the cards already in the page (no fetch, no
   // new data route). Guarded so a missing form/list (or no JS at all) leaves the newest-first
@@ -730,8 +742,10 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       var list = document.querySelector(".note-feed");
       if (!form || !list) return;
       var cards = Array.prototype.slice.call(list.querySelectorAll(".note-card"));
+      var paths = list.querySelector(".notes-paths");
       var newest = cards.slice();   // New = the original newest-first DOM order (pinned already first)
       var search = form.querySelector("[data-notes-search]");
+      var tagFilters = form.querySelector("[data-tag-filters]");
       var rest = form.querySelector("[data-tags-rest]");
       var moreBtn = form.querySelector("[data-tags-more]");
       var empty = list.parentNode.querySelector("[data-feed-empty]");
@@ -752,7 +766,12 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
               return Number(b.getAttribute("data-score")) - Number(a.getAttribute("data-score"));
             })
           : newest;
-        floatPinned(ordered).forEach(function (card) { list.appendChild(card); });
+        var arranged = floatPinned(ordered);
+        arranged.forEach(function (card) { list.appendChild(card); });
+        // Sorting moves note cards as a group. Keep the work links after the pinned flagship,
+        // rather than letting them become the first row after a visitor changes the sort.
+        var pinned = arranged.find(function (card) { return card.hasAttribute("data-pinned"); });
+        if (paths && pinned) pinned.after(paths);
       }
 
       // one filter pass over BOTH controls: the checked tag chips (a card must carry one) AND the
@@ -795,6 +814,7 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       function applyQueryTags() {
         var q = new URLSearchParams(location.search).get("tag");
         if (!q) return;
+        if (tagFilters) tagFilters.open = true;
         var requested = q.split(",").map(function (t) { return t.trim(); }).filter(Boolean);
         var unknown = [], hitRest = false;
         requested.forEach(function (t) {
@@ -820,6 +840,9 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
       if (search) search.addEventListener("input", function () { applyFilters(); });
 
       applyQueryTags();
+      // Keep the familiar chip row on desktop. On phones, the disclosure stays closed until a
+      // reader asks for it, so the first essay is not buried under the filter controls.
+      if (tagFilters && window.matchMedia && window.matchMedia("(min-width: 40.001rem)").matches) tagFilters.open = true;
       form.hidden = false;   // reveal the controls only once the island is live
     })();
   </script>`;
@@ -838,7 +861,10 @@ export async function renderNotesFeedPage(inject = "", injectHead = ""): Promise
           ${deskTrigger}
         </div>
       </div>
-      <div class="chips notes-tags" aria-label="Filter by tag">${headChips}${restChips}</div>
+      <details class="notes-tag-filters" data-tag-filters>
+        <summary>Filter by topic</summary>
+        <div class="chips notes-tags" aria-label="Filter by tag">${headChips}${restChips}</div>
+      </details>
     </form>
     <p class="feed-empty" data-feed-empty hidden></p>
     <ul class="note-feed">
@@ -1209,7 +1235,28 @@ function renderIssuer(frontmatter: Record<string, unknown>): string {
 // What the badge attests plus its technologies, inline on the page. Drawn from BADGE_CRITERIA by
 // course and term so every recipient's cert states its own criteria without a click-through. Renders
 // nothing for a course/term the map does not cover.
+function renderBadgeActivities(frontmatter: Record<string, unknown>): string {
+  let activities: unknown;
+  try { activities = JSON.parse(String(frontmatter.activitiesJson || "[]")); } catch { return ""; }
+  if (!Array.isArray(activities) || !activities.length) return "";
+  const rows = activities.flatMap(activity => {
+    if (!activity || typeof activity.id !== "string" || typeof activity.title !== "string" || typeof activity.description !== "string") return [];
+    const links = frontmatter.type === "cert" && Array.isArray(activity.publicEvidence) ? activity.publicEvidence.flatMap((e: {url?:unknown;commit?:unknown}) => {
+      try {
+        const url = new URL(String(e.url)), parts = decodeURIComponent(url.pathname).split("/").filter(Boolean);
+        if (url.protocol !== "https:" || url.hostname !== "github.com" || url.username || url.password || url.search || url.hash || parts.length < 2 || /^hau-/i.test(parts[0]!) || /^student-/i.test(parts[1]!)) return [];
+        return [`<a href="${escapeHtml(url.href)}" target="_blank" rel="noopener noreferrer">View public work${typeof e.commit === "string" && /^[a-f0-9]{40}$/i.test(e.commit) ? ` at ${escapeHtml(e.commit.slice(0,7))}` : ""}</a>`];
+      } catch { return []; }
+    }).join(" · ") : "";
+    return [`<li><strong>${escapeHtml(activity.title)}</strong> <span>(${escapeHtml(activity.id)})</span><p>${escapeHtml(activity.description)}</p>${links ? `<p>${links}</p>` : ""}</li>`];
+  }).join("");
+  const threshold = Number(frontmatter.thresholdPercent);
+  return `<section class="badge-criteria" data-surface="badge:activities"><h3 class="badge-criteria__heading">${frontmatter.type === "cert" ? "Activities completed" : "Activities recognized"}</h3>${threshold === 75 ? `<p class="badge-criteria__lede">Award threshold: 75%, after instructor review.</p>` : ""}<ul class="badge-criteria__list">${rows}</ul></section>`;
+}
+
 function renderBadgeCriteria(frontmatter: Record<string, unknown>): string {
+  if (!frontmatter.awardKey && !frontmatter.criteriaText) return `<section class="badge-criteria" data-surface="badge:criteria"><h3 class="badge-criteria__heading">Historical award</h3><p>This historical award used the earlier participation rule and is awaiting eligibility reconciliation. It does not certify the new activity-based threshold.</p></section>`;
+  if (typeof frontmatter.criteriaText === "string") return `<section class="badge-criteria" data-surface="badge:criteria"><h3 class="badge-criteria__heading">Award criteria</h3><p class="badge-criteria__lede">${escapeHtml(frontmatter.criteriaText)}</p></section>`;
   const c = BADGE_CRITERIA[String(frontmatter.course || "")]?.[String(frontmatter.term || "")];
   if (!c) return "";
   const skills = c.skills.map((s) => `<li>${escapeHtml(s)}</li>`).join("");
@@ -1269,8 +1316,9 @@ const BADGE_STYLE = `<style>
 
 // The /badges entry template: a CERT page (one recipient's verifiable award) or a badge-CLASS page
 // (the roster). Both open with the medallion and the issuer; they diverge below.
-function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): string {
+export function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): string {
   const type = String(frontmatter.type || "");
+  const legacy = !frontmatter.awardKey && !frontmatter.criteriaText;
   const issuerName = String(frontmatter.issuer || "Tjakoen Stolk");
   const year = (String(frontmatter.year || frontmatter.issuedOn || "").slice(0, 4)) || String(new Date().getFullYear());
   const art = renderBadgeArt(frontmatter.course, frontmatter.term, frontmatter.subtitle, year, issuerName);
@@ -1296,7 +1344,7 @@ function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): s
     const shareUrl = frontmatter.shortUrl ? `${SITE.origin}${String(frontmatter.shortUrl)}` : fullUrl;
     const pngHref = `/media/badges/${escapeHtml(slug)}.png`;
     const share = renderShareBlock(frontmatter.social, shareUrl);
-    return `${BADGE_STYLE}<section class="badge-cert">
+    return `${BADGE_STYLE}<section class="badge-cert" data-surface="badge:certificate">
   <header class="badge-cert__head">${certArt}
     <div class="badge-cert__meta">
       <p class="badge-cert__awarded">This certifies that</p>
@@ -1307,16 +1355,18 @@ function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): s
     </div>
   </header>
   <p class="badge-actions">
-    <a class="badge-btn" href="${pngHref}" download>Download badge (PNG)</a>
+    <a class="badge-btn" href="${pngHref}" download>${legacy ? "Download historical badge (PNG)" : "Download badge (PNG)"}</a>
     <button class="badge-btn" type="button" data-copy-url="${escapeHtml(shareUrl)}">Copy share link</button>
+    <a class="badge-btn" href="/badges">All badge criteria</a>
   </p>
   <dl class="badge-verify">
     <dt>Issued</dt><dd>${issuedOn}</dd>
     <dt>Credential id</dt><dd>${certId}</dd>
     <dt>Criteria</dt><dd><a href="${criteria}">Criteria page</a></dd>
-    <dt>Verification</dt><dd><a href="/badges/${escapeHtml(slug)}.json">Open Badges assertion</a></dd>
+    <dt>Verification</dt><dd><a href="/badges/${escapeHtml(slug)}.json">${legacy ? "Legacy award metadata" : "Open Badges assertion"}</a></dd>
   </dl>
   ${renderBadgeCriteria(frontmatter)}
+  ${renderBadgeActivities(frontmatter)}
   ${share}
   ${BADGE_COPY_SCRIPT}
 </section>`;
@@ -1326,8 +1376,8 @@ function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): s
   // attests" — deliberately NOT a roster. Recipient names are PII and live only on each recipient's
   // own direct-link cert page, never aggregated into a listing a crawler could enumerate. The count is
   // the only recipient fact shown here, and it names no one.
-  const count = Array.isArray(frontmatter.recipients) ? frontmatter.recipients.length : 0;
-  return `${BADGE_STYLE}<section class="badge-class">
+  const count = frontmatter.recipientCount !== undefined && Number.isInteger(Number(frontmatter.recipientCount)) ? Number(frontmatter.recipientCount) : Array.isArray(frontmatter.recipients) ? frontmatter.recipients.length : 0;
+  return `${BADGE_STYLE}<section class="badge-class" data-surface="badge:class">
   <header class="badge-class__head">${art}
     <div class="badge-class__meta">
       <h1 class="badge-class__name">${badgeName}</h1>
@@ -1336,6 +1386,9 @@ function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: string): s
       <p class="badge-class__count">Awarded to ${count} recipient${count === 1 ? "" : "s"}.</p>
     </div>
   </header>
+  <p class="badge-actions"><a class="badge-btn" href="/badges">All badge criteria</a></p>
+  ${legacy ? renderBadgeCriteria(frontmatter) : ""}
+  ${legacy ? "" : renderBadgeActivities(frontmatter)}
 </section>`;
 }
 

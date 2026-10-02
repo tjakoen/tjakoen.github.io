@@ -28,6 +28,84 @@ test.describe("the /notes feed (JS on)", () => {
     await expect(page.locator("[data-ai-run]")).toBeVisible();
   });
 
+  test("the flagship note leads into the stack, teaching, and talks", async ({ page }) => {
+    await page.goto("/notes");
+    const cards = page.locator(".note-card");
+    const paths = page.getByRole("navigation", { name: "Explore the work behind the notes" });
+
+    await expect(cards.first()).toHaveAttribute("data-pinned", "");
+    await expect(paths).toBeVisible();
+    await expect(paths.getByRole("link", { name: "The stack" })).toHaveAttribute("href", "/bread");
+    await expect(paths.getByRole("link", { name: "Teaching" })).toHaveAttribute("href", "/teaching");
+    await expect(paths.getByRole("link", { name: "Talks" })).toHaveAttribute("href", "/talks");
+
+    const [flagshipPosition, pathsPosition, nextNotePosition] = await page.evaluate(() => {
+      const list = document.querySelector(".note-feed")!;
+      const flagship = list.querySelector(".note-card--pinned")!;
+      const pathItem = list.querySelector(".notes-paths")!;
+      const nextNote = flagship.nextElementSibling?.nextElementSibling ?? null;
+      return [
+        Array.prototype.indexOf.call(list.children, flagship),
+        Array.prototype.indexOf.call(list.children, pathItem),
+        Array.prototype.indexOf.call(list.children, nextNote),
+      ];
+    });
+    expect(flagshipPosition).toBeLessThan(pathsPosition);
+    expect(pathsPosition).toBeLessThan(nextNotePosition);
+
+    await page.locator('input[name="sort"][value="top"]').check();
+    const [sortedFlagshipPosition, sortedPathsPosition] = await page.evaluate(() => {
+      const list = document.querySelector(".note-feed")!;
+      return [
+        Array.prototype.indexOf.call(list.children, list.querySelector(".note-card--pinned")),
+        Array.prototype.indexOf.call(list.children, list.querySelector(".notes-paths")),
+      ];
+    });
+    expect(sortedFlagshipPosition).toBeLessThan(sortedPathsPosition);
+  });
+
+  test("story notes link directly to the project evidence they describe", async ({ page }) => {
+    const paths = [
+      ["/notes/feels-like-an-app", "/bread"],
+      ["/notes/how-i-turned-github-into-a-classroom", "/native-github-classroom"],
+      ["/notes/origin-story", "/batch"],
+      ["/notes/origin-story", "/grain"],
+      ["/notes/origin-story", "/mill"],
+      ["/notes/one-loop-every-repo", "/proof"],
+      ["/notes/one-loop-every-repo", "/plans"],
+      ["/notes/the-browser-grew-up", "https://tjakoen.github.io/framework-bench/"],
+      ["/notes/the-browser-grew-up", "https://github.com/tjakoen/framework-bench"],
+      ["/notes/the-check-that-never-ran", "https://github.com/tjakoen/pantry/blob/main/cli.ts"],
+      ["/notes/the-console-i-built-to-stop-drowning", "/native-github-classroom"],
+      ["/notes/the-console-i-built-to-stop-drowning", "/teaching"],
+      ["/notes/watch-its-hands", "/grain#surface-demo"],
+      ["/notes/whitepaper-one-vocabulary", "/notes/watch-its-hands"],
+      ["/notes/why-i-teach", "/teaching"],
+      ["/notes/why-i-teach", "/badges"],
+    ] as const;
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    for (const [route, destination] of paths) {
+      await page.goto(route);
+      const link = page.locator(`main a[href="${destination}"]`).first();
+      await expect(link).toBeVisible();
+      const board = page.locator("main .board");
+      expect(await board.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await board.evaluate((el) => el.clientWidth));
+    }
+  });
+
+  test("phone readers can open topic filters without losing the reading path", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/notes");
+    const filters = page.locator("[data-tag-filters]");
+    await expect(filters).toBeVisible();
+    await expect(filters).not.toHaveAttribute("open", "");
+    await expect(filters.locator("summary")).toHaveText("Filter by topic");
+    await filters.locator("summary").click();
+    await expect(filters).toHaveAttribute("open", "");
+    await expect(page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first()).toBeVisible();
+  });
+
   test("the feed controls reveal once the island is live", async ({ page }) => {
     await page.goto("/notes");
     await expect(page.locator("[data-feed-controls]")).toBeVisible();
@@ -52,6 +130,7 @@ test.describe("the /notes feed (JS on)", () => {
 
   test("a tag chip filters the feed to matching cards", async ({ page }) => {
     await page.goto("/notes");
+    await page.locator("[data-tag-filters]").evaluate((el) => { (el as HTMLDetailsElement).open = true; });
 
     const firstTagCheckbox = page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first();
     const tag = await firstTagCheckbox.getAttribute("value");
@@ -98,6 +177,7 @@ test.describe("the /notes feed (JS on)", () => {
 
   test("changing the tag filter mirrors the selection into the URL (shareable ?tag=)", async ({ page }) => {
     await page.goto("/notes");
+    await page.locator("[data-tag-filters]").evaluate((el) => { (el as HTMLDetailsElement).open = true; });
     const box = page.locator('.chips[aria-label="Filter by tag"] input[type="checkbox"]').first();
     const tag = await box.getAttribute("value");
     await box.check();

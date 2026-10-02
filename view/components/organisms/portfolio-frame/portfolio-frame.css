@@ -409,6 +409,17 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
   color: var(--color-muted); letter-spacing: 0.02em; text-transform: none; white-space: normal;
 }
 
+/* ---- MILLED CONTENT: long references stay inside the app pane. MILL emits semantic tables and
+   code blocks; at narrow widths, keep the table and code scrolling local to their own surface. ---- */
+.app-shell__main .board table.table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.app-shell__main .board .code-block { max-width: 100%; }
+.app-shell__main .board .code-inline { overflow-wrap: anywhere; }
+.docs-context-link { margin: var(--space-2) 0 0; font-size: var(--text-sm); }
+
 /* ── the skip link ──────────────────────────────────────────────────────────────
    Hidden by clipping, not by moving it off-screen, and the difference is the whole fix. The first
    attempt parked it at translateY(-120%), which reads fine and tests fine in isolation. But

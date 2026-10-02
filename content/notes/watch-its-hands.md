@@ -48,7 +48,7 @@ both of us from the start, and neither of us got a shortcut.
 
 ## So I built the boring version
 
-The thing I built is a design system called GRAIN. Boring on purpose. There is no clever agent in it.
+The thing I built is a design system called [GRAIN](/grain). Boring on purpose. There is no clever agent in it. The [shared-control demo](/grain#surface-demo) lets you watch the real interface act through that same vocabulary.
 
 Instead of teaching a model to imitate a person, the interface publishes a short, fixed list of
 things that can be done, and a list of places they can be done to. Not CSS selectors, not

@@ -28,6 +28,7 @@
 
         <nav class="project-links" aria-label="Greenroom links">
           <a href="#run-preview">See a run</a>
+          <a href="#sample-run">Inspect a seeded report</a>
           <a href="#try-it">See how to try Greenroom</a>
           <a href="https://github.com/tjakoen/greenroom" target="_blank" rel="noopener noreferrer">Open the source on GitHub</a>
           <a href="/projects">Return to all projects</a>
@@ -36,6 +37,7 @@
           <p class="project-toc__label">On this page</p>
           <div class="project-toc__links">
             <a href="#capabilities">What it does</a>
+            <a href="#sample-run">Sample run</a>
             <a href="#bug-handover">Bug handover</a>
             <a href="#hosted-editor">Browser editor</a>
             <a href="#run-modes">Run modes</a>
@@ -44,6 +46,23 @@
             <a href="#source">Source and docs</a>
           </div>
         </nav>
+
+        <h2 class="section-head" id="sample-run"><span>A smaller seeded run</span></h2>
+        <p class="lede">The screenshot above shows a ten-check matrix. The archived demo report below
+          is a smaller, seeded run: it checks one login against two practice environments, and both
+          pass. Its other two rows are a test written to fail on purpose, once in each environment,
+          so you can see how Greenroom records a failure. This is seeded data, not a result from a
+          live application.</p>
+        <table class="table">
+          <thead><tr><th scope="col">Check</th><th scope="col">Environment</th><th scope="col">Result</th></tr></thead>
+          <tbody>
+            <tr><td>Logs in as a standard user</td><td>demo</td><td>Passed</td></tr>
+            <tr><td>Logs in as a standard user</td><td>demo2</td><td>Passed</td></tr>
+            <tr><td>Fails on purpose to show a red run</td><td>demo</td><td>Intentional failure</td></tr>
+            <tr><td>Fails on purpose to show a red run</td><td>demo2</td><td>Intentional failure</td></tr>
+          </tbody>
+        </table>
+        <p class="lede" data-size="sm"><a href="https://github.com/tjakoen/greenroom/blob/main/demo/runs/2026-07-08T02-00-37-demo%2Bdemo2-failed/index.html" target="_blank" rel="noopener noreferrer">Open the archived seeded report on GitHub</a>.</p>
 
         <h2 class="section-head" id="capabilities"><span>What it does</span></h2>
         <div class="card-grid" style="--card-min: 15rem">

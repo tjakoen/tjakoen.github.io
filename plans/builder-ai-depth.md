@@ -63,6 +63,15 @@ reach the model. The model still removes the first card when asked for the secon
 callout-width and move requests. The 2/5 result is evidence of a safer refusal and one reliable
 operation, not evidence that natural-language editing is ready.
 
+I reran the five scenarios on 2026-10-02. The explicit-ID removal and the copy-edit refusal passed.
+The model removed the first card instead of the second, removed the intro instead of widening the
+callout, and declined to move the callout after returning the shortened action name `move`. The
+report is a snapshot from this model and prompt, not a general success rate. On a machine with
+WebGPU and the cached model, the run can be repeated with
+`PORT=3132 bun tools/desk-audit.ts builder-current-2026-10-02 --only=builder-drop,builder-bare-id,builder-span,builder-move,builder-no-verb`.
+A prompt candidate that spelled out the action-to-request mapping also scored 2/5 in a separate run,
+with a different set of misses. I reverted it because the measured result did not improve.
+
 The portfolio-side boundary is also clear. GRAIN registers block removal, span, and move operations.
 Its field operation fills registered form controls; it does not write text into page-content blocks.
 The builder's templates expose text as escaped `data-field` values, but writing those values from

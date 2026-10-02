@@ -135,7 +135,9 @@ and the whole idea is: GitHub is the LMS. Coursework is a repo. Submitting is a 
 GitHub Action. Feedback is a Markdown file that lands in the student's own repo. The only outside
 system that ever shows up is Canvas, right at the end, to receive the final grades. No hosted app, no
 servers to babysit. I've run it in production across several live courses (front-end JavaScript and
-React, Dart and Flutter, HTML/CSS/JS) covering hundreds of student repositories a term.
+React, Dart and Flutter, HTML/CSS/JS) covering hundreds of student repositories a term. The portfolio's
+[teaching page](/teaching) lists the current courses, and the [badge hub](/badges) shows the criteria
+and verification path.
 
 A few pieces I care about:
 

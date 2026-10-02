@@ -361,6 +361,40 @@ function withPeekRoot(html: string): string {
   return html.replace('<main class="app-shell__main"', '<main data-peek-root class="app-shell__main"');
 }
 
+const DOCS_PROJECTS = {
+  batch: "BATCH",
+  grain: "GRAIN",
+  mill: "MILL",
+  proof: "PROOF",
+  crumb: "CRUMB",
+  pantry: "PANTRY",
+} as const;
+
+function addContextReturn(html: string, pathname: string): string {
+  const addToArticle = (source: string, returnLink: string) =>
+    source.replace(/(<article class="note"[^>]*>[\s\S]*?<h1\b[^>]*>[\s\S]*?<\/h1>)/, `$1${returnLink}`);
+  const match = pathname.match(/^\/(batch|grain|mill|proof|crumb|pantry)\/docs(?:\/|$)/);
+  if (match && !pathname.endsWith(".md")) {
+    const project = match[1] as keyof typeof DOCS_PROJECTS;
+    const returnLink = `<p class="docs-context-link"><a href="/${project}">← ${DOCS_PROJECTS[project]} project overview</a></p>`;
+    return addToArticle(html, returnLink);
+  }
+
+  if (/^\/standards\/[^/]+\/?$/.test(pathname) && !pathname.endsWith(".md")) {
+    const returnLink = '<p class="docs-context-link"><a href="/standards">← All standards</a><span>Maintainer: Tjakoen Stolk. Current working standard.</span></p>';
+    return addToArticle(html, returnLink);
+  }
+
+  return html;
+}
+
+function addPlanPathBreaks(html: string, pathname: string): string {
+  if (!/^\/plans\/plan\/[^/]+\/?$/.test(pathname)) return html;
+  return html.replace(/(<dt>TOUCHES<\/dt><dd>)([\s\S]*?)(<\/dd>)/i, (_match, start, paths, end) =>
+    `${start}${paths.replaceAll("/", "/<wbr>").replaceAll(", ", ",<wbr> ")}${end}`,
+  );
+}
+
 // Finalize every full-document HTML response: (1) enrich the head (seo.ts) with canonical + Open
 // Graph + Twitter + schema.org JSON-LD derived from the page's own title/description + path; (2) mark
 // the content region as a catalog hover-root; (3) fill the status bar's view counts (analytics.ts)
@@ -371,7 +405,8 @@ async function finalizePage(req: Request, res: Response | Promise<Response>): Pr
   const r = await res;
   if (!r.headers.get("content-type")?.includes("text/html")) return r;
   const u = new URL(req.url);
-  let html = enrichHead(await r.text(), u.pathname, u.origin);
+  let html = addContextReturn(enrichHead(await r.text(), u.pathname, u.origin), u.pathname);
+  html = addPlanPathBreaks(html, u.pathname);
   html = withPeekRoot(html);
   html = injectViews(html, u.pathname);
   return new Response(html, { status: r.status, headers: r.headers });
@@ -424,6 +459,9 @@ body[data-screen="plans"] .board { max-width: none; }
    room a mouse-driven overflow assumes. */
 @media (max-width: 640px) {
   .proof-board { grid-auto-flow: row; grid-auto-columns: unset; overflow-x: visible; }
+  .proof-facts__row { display: grid; grid-template-columns: minmax(0, 6rem) minmax(0, 1fr); align-items: start; }
+  .proof-facts dt, .proof-facts dd { min-width: 0; }
+  .proof-facts dd { overflow-wrap: anywhere; }
 }
 `;
 const proofRoutes = createProofRoutes({
@@ -481,7 +519,7 @@ async function fixProofCardLinks(res: Response): Promise<Response> {
   let fixed = html.replaceAll('href="/plan/', `href="${PLANS_PREFIX}/plan/`);
   fixed = fixed.replace(
     /(<p class="proof-lede">\d+ plans?\. )The files are the source of truth; this board is a window\./,
-    "$1This is the public work board for this site and its stack. Status describes work in progress; the plan files are the source of truth.",
+    "$1This board tracks the site's work, including ideas and work in progress. For finished work, start with <a href=\"/projects\">selected projects</a> or read the <a href=\"/plans/plan/portfolio-finish-line\">portfolio plan</a>.",
   );
   if (pageTitle && !/<h1\b/i.test(fixed)) {
     fixed = fixed.replace(/(<a class="proof-back"[^>]*>[\s\S]*?<\/a>)/,
@@ -499,8 +537,8 @@ const deckRoutes = await listPortfolioDeckRoutes();          // /decks/<file>, t
 const planRoutes = await listPlanRoutes();
 // Individual badge CERT pages (/badges/<class>--<handle>) are kept OUT of the sitemap and, since
 // /search.json reads sitemap.routes() too, out of search: a recipient's cert is reachable by its
-// own link (from the badge-class roster or a LinkedIn share), not enumerated as a crawlable list of
-// student names. Badge-CLASS pages (no "--") stay listed. The `--` is the cert-slug marker.
+// own share link, not enumerated as a crawlable list of student names. Badge-CLASS pages (no "--")
+// stay listed. The `--` is the cert-slug marker.
 const isBadgeCertRoute = (p: string) => /^\/badges\/[^/]*--[^/]*$/.test(p);
 const listableContentRoutes = contentRoutes.filter((r) => !isBadgeCertRoute(r));
 const sitemap = createSitemap(config.pagesDir, () => [...listableContentRoutes, ...deckRoutes, ...planRoutes, "/reference", "/catalog"]);   // pages tree + MILL content (minus per-recipient certs) + PROOF's plans + the generated reference
@@ -511,14 +549,31 @@ const catalog = createCatalog(config.componentRoots, () => sitemap.routes(),
 const accepts = createAccepts(config.componentRoots);           // harvest data-kind/data-accepts → AI manifest
 
 const catalogPage = async (req: Request) => {
-  const html = await catalog.html();
+  const html = (await catalog.html()).replace(
+    '<a class="cat-back" href="/">←&nbsp;&nbsp;Back</a>',
+    '<a class="cat-back" href="/grain">←&nbsp;&nbsp;GRAIN design system</a>',
+  ).replace(
+    "<h1>Catalog</h1>",
+    '<h2 class="cat-nav__title">Catalog</h2>',
+  ).replace(
+    '<main class="cat-main">',
+    '<main class="cat-main"><h1 class="cat-page-title">GRAIN component catalog</h1>',
+  ).replace(
+    /<figure class="panel">[\s\S]*?<\/figure>/g,
+    (panel) => panel.replaceAll("<h1", '<div role="presentation"').replaceAll("</h1>", "</div>"),
+  ).replace(
+    "</style>",
+    '.cat-nav__title { font-size: var(--text-lg); margin: 0 0 var(--space-3); }\n.cat-page-title { font-size: var(--text-3xl); margin: 0 0 var(--space-6); }\n</style>',
+  );
   const described = html.replace("</head>",
     '<meta name="description" content="Browse GRAIN components, their documented controls, live examples, and the actions available to people and AI."></head>');
   return finalizePage(req,
     new Response(described, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
 };
 const referencePage = async (req: Request) => {
-  const body = await buildVocabReference(join(config.grainDir, "styles", "variables.css"));
+  const body = (await buildVocabReference(join(config.grainDir, "styles", "variables.css")))
+    .replaceAll("<table>", '<div class="reference-table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table>')
+    .replaceAll("</table>", "</table></div>");
   const page = shellPage({
     title: "Reference · Developer docs",
     description: "Generated reference: the AI vocabulary (actions, surface kinds, render ops), the one door's endpoints, and GRAIN's token slots — read from the real source, never hand-copied.",
@@ -533,6 +588,11 @@ const referencePage = async (req: Request) => {
       <p class="lede">Everything below is read from the real source at request time — the
         <a href="/grain/docs/ai-interface">AI vocabulary</a> contract and GRAIN's token slots.
         Change the source, this page changes with it.</p>
+      <nav class="reference-context" aria-label="Project context">
+        <span>New to the projects?</span>
+        <a href="/bread">Meet the BREAD stack</a>
+        <a href="/grain">Meet GRAIN</a>
+      </nav>
       ${body}
     `,
   });

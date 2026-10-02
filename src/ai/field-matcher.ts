@@ -525,8 +525,9 @@ const MAX_PLACEHOLDER = 80;
  *  default rather than to an empty label. */
 function sanitizeOverride(raw: string | undefined, maxLen: number): string | null {
   if (raw == null) return null;
-  const cleaned = raw
-    .replace(/[\r\n\t\x00-\x1F\x7F]/g, " ")
+  const cleaned = [...raw]
+    .map((character) => character.charCodeAt(0) <= 0x1f || character.charCodeAt(0) === 0x7f ? " " : character)
+    .join("")
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, maxLen)

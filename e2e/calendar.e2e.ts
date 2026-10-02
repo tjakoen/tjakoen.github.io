@@ -53,6 +53,18 @@ test.describe("the /calendar app (JS on)", () => {
     await expect(page.locator('section.feed#feed')).toBeVisible();
   });
 
+  test("on phones, the year range and feed link stay on separate lines", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const head = page.locator('[data-cal-panel="years"] .cal__head');
+    await expect(head).toHaveCSS("flex-direction", "column");
+    const range = head.locator(".cal__month").boundingBox();
+    const feed = head.locator(".cal__to-feed").boundingBox();
+    expect(await range).not.toBeNull();
+    expect(await feed).not.toBeNull();
+    expect((await feed)!.y).toBeGreaterThan((await range)!.y);
+    await expect(head.locator(".cal__to-feed")).toBeVisible();
+  });
+
   test("an events-collection card (hackathon) leads with a real, dimensioned, alt-texted photo", async ({ page }) => {
     const card = page.locator('.feed-card[data-event-kind="hackathon"]').first();
     await expect(card).toBeVisible();
@@ -287,6 +299,28 @@ test.describe("the calendar photo lightbox (no JS)", () => {
 });
 
 test.describe("the /calendar event page (JS on)", () => {
+  test("all event pages have a direct route back to the calendar feed at phone width", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const pages = [
+      ["codegeeks-hau-sleek-and-swift", "/teaching"],
+      ["gdg-hau-ai-hack", "/notes/ten-times-zero"],
+      ["gdgoc-hau-general-assembly", "/talks/ten-times-zero/#1"],
+      ["mafia-hau-reality-check", "/notes/watch-its-hands"],
+      ["yses-uplb-fair-and-talk", "/notes/ten-times-zero"],
+      ["yses-uplb-hackfest", "/notes/ten-times-zero"],
+    ];
+    for (const [slug, nextPath] of pages) {
+      await page.goto(`/calendar/${slug}`);
+      const nav = page.getByRole("navigation", { name: "Event page navigation" });
+      await expect(nav).toBeVisible();
+      await expect(nav.getByRole("link", { name: "Calendar feed" })).toHaveAttribute("href", "/calendar");
+      await expect(nav.getByRole("link", { name: "Source" })).toHaveAttribute("href", `/calendar/${slug}.md`);
+      await expect(page.locator(`main a[href="${nextPath}"]`).first()).toBeVisible();
+      const board = page.locator("main .board");
+      expect(await board.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await board.evaluate((el) => el.clientWidth));
+    }
+  });
+
   test("an event page renders the photo grid on top, then the body", async ({ page }) => {
     await page.goto("/calendar/gdg-hau-ai-hack");
     // the post-template photo grid comes from the entry's frontmatter (shellChrome renderPhotoGrid)

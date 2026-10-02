@@ -58,6 +58,8 @@ computers in it.
 
 ## Written up a year late
 
+I still teach web fundamentals at the School of Computing. The [teaching page](/teaching) has the current course list and how that work is assessed.
+
 I build in vanilla HTML and CSS now, and I argue about it in public. In August 2025 I had none of that
 to defend, which probably made me a better guest.
 

@@ -133,7 +133,7 @@ To have an AI manage me, though, it first needed a surface to manage, something 
 
 ## BATCH: the backend that skips the build
 
-The assistant needed a surface to drive, and my no-framework rule needed a backend that would not fight me about it. So I built **BATCH,** on one stubborn bet: there is no build step, because **the server is the build step.** It composes the final HTML on every request. Edit a file, hit refresh, done: no compiler, no toolchain, no dist folder quietly going stale while I lose twenty minutes wondering why my change did nothing.
+The assistant needed a surface to drive, and my no-framework rule needed a backend that would not fight me about it. So I built [BATCH](/batch) on one stubborn bet: there is no build step, because **the server is the build step.** It composes the final HTML on every request. Edit a file, hit refresh, done: no compiler, no toolchain, no dist folder quietly going stale while I lose twenty minutes wondering why my change did nothing.
 
 I landed on **Bun** for a concrete reason, not the usual hype: it is the one runtime that parses HTML on the server out of the box, so I could keep inventing my own tags and still have a no-build server compose them, without dragging in a whole library to do the one thing I was trying to avoid. It runs TypeScript straight, ships its own database if needed, and otherwise minds its business. Every choice paid down the same debt: fewer moving parts standing between me and a working page.
 
@@ -183,7 +183,7 @@ I landed on **Bun** for a concrete reason, not the usual hype: it is the one run
 
 ## GRAIN: making the machine visible
 
-The next step was enabling the thing I wanna build to be able to look and behave like something. I am a design-systems person to my core. After learning about it, [Brad Frost's atomic design](https://atomicdesign.bradfrost.com/) became more or less my love language when designing frontend. I am DRY (Do not repeat yourself) to a fault, and I would happily build fifty tiny parts before one big one. So as I was building, it grew up into **GRAIN**, a design system built specifically around *AI interaction*, with one non-negotiable rule: What an AI did and what a human did must be clearly visible. The AI never gets to work in the dark.
+The next step was enabling the thing I wanna build to be able to look and behave like something. I am a design-systems person to my core. After learning about it, [Brad Frost's atomic design](https://atomicdesign.bradfrost.com/) became more or less my love language when designing frontend. I am DRY (Do not repeat yourself) to a fault, and I would happily build fifty tiny parts before one big one. So as I was building, it grew up into [GRAIN](/grain), a design system built specifically around *AI interaction*, with one non-negotiable rule: What an AI did and what a human did must be clearly visible. The AI never gets to work in the dark.
 
 Underneath the look is the part that keeps it honest. A human click and an AI decision resolve to the same intent, go through one write door, and come back as operations that redraw the surface. The AI gets no secret key I do not also hold. It plays the same piano I do, in the same room, where I can watch its hands.
 
@@ -231,7 +231,7 @@ Underneath the look is the part that keeps it honest. A human click and an AI de
 
 The last piece was born of pure cheapness. Once this was worth showing people, I wanted it free to host and boring to babysit: a static site on GitHub Pages, which a no-build stack can just export itself into. But static means no database, and I am not about to hand-type my own writing into HTML like it is 2004. I want to write in Markdown, drop in a couple of images, and watch the thing *become* a page.
 
-So I built **MILL:** Markdown In, Living Layouts. Feed it Markdown and it renders real GRAIN pages out of components: frontmatter picks the layout, each block becomes a component, BATCH composes the result. The sneaky payoff is that one pile of writing does three jobs at once: it is the page you read, the knowledge the assistant can lean on, and the docs I publish. Write it once; it turns up everywhere it is needed and nowhere it is not.
+So I built [MILL](/mill): Markdown In, Living Layouts. Feed it Markdown and it renders real GRAIN pages out of components: frontmatter picks the layout, each block becomes a component, BATCH composes the result. The sneaky payoff is that one pile of writing does three jobs at once: it is the page you read, the knowledge the assistant can lean on, and the docs I publish. Write it once; it turns up everywhere it is needed and nowhere it is not.
 
 <svg viewBox="0 0 587 348" width="100%" role="img"
      aria-label="One markdown file with images goes into MILL. Frontmatter picks the layout and each block becomes a component; BATCH composes the page. The same source becomes three surfaces: the page you read, the assistant's knowledge, and the published docs."

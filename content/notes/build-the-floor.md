@@ -129,6 +129,13 @@ built before the skill exists is a bespoke pipeline that encodes nobody's judgem
 the asset. The loop is just the skill with the human taken out of the trigger, once it has earned
 that.
 
+This is an organization-scale roadmap, not a claim that my own work is already at stage four. You
+can inspect the first pieces here: [Kickstart](/kickstart) makes repository setup explicit, and the
+[standards and skills](/standards) make working rules readable. The [Builder's five-case audit](/grain/builder)
+is a small browser demo, not a team-level skill outcome log; its latest run scored two of five. I do
+not have scored team-wide outcomes or unattended engineering loops to show here. Those remain later
+stages of the proposal.
+
 ### What we can do now
 
 Weeks, not months, and none of it needs a procurement conversation.

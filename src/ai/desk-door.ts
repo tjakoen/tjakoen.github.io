@@ -263,7 +263,7 @@ const clickToggleScheme = (): boolean => {
 // (the real control, no private channel), validated live both before and after — same honesty contract
 // as the A4 theme deps just above. `[data-feed-controls]` only exists on /notes, so every read here is
 // naturally empty/false off that page; the reasoner checks pageInfo().route first regardless.
-interface CheckboxEl extends ClickableEl { value: string; checked: boolean; closest(sel: string): { hidden?: boolean } | null }
+interface CheckboxEl extends ClickableEl { value: string; checked: boolean; closest(sel: string): { hidden?: boolean; open?: boolean } | null }
 // The chip boxes are found by ITERATING the checkbox list and comparing `.value` in JS — never by
 // interpolating the tag into an attribute selector. A selector build would need CSS.escape (absent
 // on file:// / old browsers), and its raw-value fallback makes querySelector THROW on any quote in a
@@ -275,6 +275,10 @@ const notesTagChips = (): string[] => notesTagBoxes().map((b) => b.value);
 const clickNotesTag = (tag: string): boolean => {
   const box = notesTagBoxes().find((b) => b.value === tag);
   if (!box) return false;
+  // On phones the tag row is tucked into a native disclosure. Open it before the desk checks a
+  // topic, so the visitor can see the same control the desk is driving.
+  const filters = box.closest("[data-tag-filters]");
+  if (filters && filters.open === false) filters.open = true;
   // the chip may be tucked behind the "+N more" overflow toggle — open it FIRST so the visitor SEES
   // the chip the desk is about to check (the same "drive what's visible" law the A4 clicks follow).
   const rest = box.closest("[data-tags-rest]");
