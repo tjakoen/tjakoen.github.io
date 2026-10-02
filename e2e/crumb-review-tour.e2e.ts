@@ -12,6 +12,15 @@ const NOTE = "/notes/ten-times-zero";
 const FIGURES = ["multiplier", "matrix", "ratio", "sprint", "loop", "trap"];
 
 test.describe("crumb — the review tour over the live figures", () => {
+  test("the CRUMB introduction opens the live portfolio tour", async ({ page }) => {
+    await page.goto("/crumb");
+    await page.getByRole("link", { name: "Take a tour of the live portfolio" }).click();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.locator(".crumb-frame__bar").last()).toBeVisible();
+    await page.getByRole("button", { name: "Start" }).last().click();
+    await expect(page.locator(".crumb-frame__count")).toHaveText("1 / 5");
+  });
+
   test("every live figure is an addressable surface", async ({ page }) => {
     await page.goto(NOTE);
     for (const name of FIGURES) {
