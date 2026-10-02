@@ -162,18 +162,20 @@ test.describe("the /about Profile role sections (Lessons folded in)", () => {
     await page.goto("/about");
   });
 
-  test("Profile holds three role sections with real prose and tagged-notes links", async ({ page }) => {
+  test("Profile holds three role sections with direct evidence for each one", async ({ page }) => {
     for (const id of ["#role-manager", "#role-tech-lead", "#role-educator"]) {
       await expect(page.locator(`#profile ${id}`)).toBeVisible();
     }
     await expect(page.locator("#profile .role-list li").first()).not.toBeEmpty();
     await expect(page.locator("#profile")).not.toContainText("Placeholder");
-    // each role links out to its tagged notes
-    const links = page.locator("#profile .role__notes-link a");
-    expect(await links.count()).toBe(3);
-    for (const href of await links.evaluateAll((els) => els.map((el) => el.getAttribute("href")))) {
-      expect(href).toMatch(/^\/notes\?tag=[a-z-]+$/);
-    }
+    const proofLinks = page.locator("#profile .role__proof-link a");
+    await expect(proofLinks).toHaveCount(3);
+    await expect(proofLinks.nth(0)).toHaveAttribute("href", "/talks/ten-times-zero");
+    await expect(proofLinks.nth(1)).toHaveAttribute("href", "/bread");
+    await expect(proofLinks.nth(2)).toHaveAttribute("href", "/native-github-classroom");
+    await expect(proofLinks.nth(0)).toContainText("direction-and-review loop");
+    await expect(proofLinks.nth(1)).toContainText("architecture");
+    await expect(proofLinks.nth(2)).toContainText("classroom");
   });
 });
 
