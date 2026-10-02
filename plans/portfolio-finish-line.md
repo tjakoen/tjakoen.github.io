@@ -14,6 +14,7 @@ touches:
   - view/pages/talks/
   - view/pages/badges/
   - content/notes/
+  - src/server.ts
   - e2e/
 owner: human
 ---
@@ -48,7 +49,9 @@ copy, links, wide-screen alignment and narrow-screen stacking. This closes those
 the wider audit of each project's outcomes, evidence and next steps remains open. The repeated page
 footer now uses one plain, human-accountable AI statement without the robot emoji or an unsupported
 claim about every commit. Builder exports retain GRAIN's own generated attribution, covered by the
-export checks; the two credits describe different kinds of authorship.
+export checks; the two credits describe different kinds of authorship. The `/plans` board now keeps
+all four status columns readable: narrow desktop users can scroll the final column into view, and
+long path chips wrap so phone layouts do not gain sideways page overflow.
 
 ## Work
 
@@ -70,10 +73,11 @@ export checks; the two credits describe different kinds of authorship.
       teaching, and the path between them. Give each page a clear next link into the relevant proof.
 - [ ] Complete the builder's AI reliability work in [`builder-ai-depth.md`](builder-ai-depth.md),
       then make the builder a convincing demonstration of the same system the portfolio introduces.
+- [x] Keep every `/plans` status column readable at desktop and phone widths. The narrow desktop
+      keeps horizontal scrolling inside the board and brings the blocked column fully into view;
+      phone layouts stack the columns and wrap long path chips. `e2e/plans-layout.e2e.ts` covers both.
 - [ ] Do a final route-by-route browser pass at desktop and narrow widths. Check navigation, page
-      spacing, headings, accessible names, dead ends, and the important interaction paths. The
-      current `/plans` desktop board clips its fourth column at the shell width; include that layout
-      in the pass and make every status column readable.
+      spacing, headings, accessible names, dead ends, and the important interaction paths.
 - [ ] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
       `main`, and verify the deployed pages.
 
