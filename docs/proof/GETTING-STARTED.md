@@ -9,21 +9,15 @@ board is a projection that never writes back. The full design law and the schema
 
 ## Install
 
-PROOF is published on the public npm registry as `@tjakoen/proof`, the same pattern as
-`@tjakoen/grain` and `@tjakoen/mill` (it depends on both):
+PROOF is published on the public npm registry as `@tjakoen/proof`. Install it with Bun:
 
-```json
-{
-  "dependencies": {
-    "@tjakoen/batch": "^0.1.0",
-    "@tjakoen/grain": "^0.1.12",
-    "@tjakoen/mill": "^0.2.0",
-    "@tjakoen/proof": "^0.1.2"
-  }
-}
+```sh
+bun add @tjakoen/proof
 ```
 
-No `.npmrc` and no auth token: the `@tjakoen` scope resolves from npmjs by default.
+With npm, use `npm install @tjakoen/proof`. The package manager installs its published dependencies
+as well. PROOF currently pins BATCH to a public GitHub commit, so installation also needs network
+access to GitHub. No GitHub token or npm registry token is required.
 
 ## Mount it over a plans directory
 
