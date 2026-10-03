@@ -38,6 +38,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("downloads about 350 MB of model files");
     await expect(page.locator(".wb-bar__note")).toContainText("prompt stays on this device");
+    await expect(page.locator(".wb-bar__note")).toContainText("the Builder kept its example copy");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
     await expect(page.locator(`${CELL}[data-span="full"]`).first()).toHaveAttribute("data-block-id", "b1");

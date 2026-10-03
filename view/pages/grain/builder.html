@@ -59,9 +59,10 @@
         </div>
         <p class="wb-bar__note muted">Each prompt adds blocks. The first AI build downloads about
           350 MB of model files, then keeps them cached. Generation runs in this browser, and the
-          prompt stays on this device. Its writing is still experimental,
-          so check the result before export. The desk can also propose moving, resizing or removing a
-          block; review that change before applying it. Existing block copy cannot be revised yet.</p>
+          prompt stays on this device. In an October 3 live draft check, it missed the brief's details,
+          so the Builder kept its example copy. Check the page before export. The desk can also propose
+          moving, resizing or removing a block; review that change before applying it. Existing block
+          copy cannot be revised yet.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -224,10 +225,11 @@
             on your machine, this box says so rather than falling back to something that is not the
             model and calling it one.</p>
           <p>Copy drafting is the unfinished part. In a live WebGPU check on October 3, 2026, the
-            0.5B model returned a different JSON shape and added details the brief did not support, so
-            the Builder kept its example copy. A temporary 1.5B trial timed out before it produced a
-            draft. The bounded copy path is covered with a scripted model, but that is not evidence
-            that the local model can write a useful page.</p>
+            0.5B model returned a different JSON shape, added details the brief did not support, and
+            missed the supplied facts. The Builder kept its example copy, and the scenario scored
+            0/1. A temporary 1.5B trial timed out before it produced a draft. The bounded copy path is
+            covered with a scripted model, but that is not evidence that the local model can write a
+            useful page.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">

@@ -148,6 +148,13 @@ scored 0/1 for both profiles. The report files are
 .cache/desk-audit/report-builder-draft-1.5b-2026-10-03.json. These results mean that bounded copy
 is a tested application path, not a useful writing capability of either tested local profile.
 
+I tried shorter output instructions for the 0.5B draft scenario on October 3. The model kept its
+block names inside the requested array, but returned a copy string instead of registered fields,
+added an unrequested callout, and invented claims about the bakery. The validator kept the existing
+sample copy, so the canvas remained safe, but the scenario still scored 0/1. I reverted the prompt
+change because the live result did not improve. The capture is
+.cache/desk-audit/report-builder-local-only-prompt-2026-10-03.json.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business
@@ -201,8 +208,10 @@ copy edits appear to work.
 ## Work
 
 - [ ] Re-run the live-model scenarios on the current code and record a baseline for composition,
-      block edits, refusals, and unsupported browser hardware. The builder edit baseline and refusal
-      path are recorded above; composition and an unavailable-WebGPU live run remain to be measured.
+      block edits, refusals, and unsupported browser hardware. The composition scenario is now
+      measured at 0/1 on the current 0.5B profile, including a shorter-prompt trial. The builder edit
+      baseline and refusal path are recorded above; an unavailable-WebGPU live run remains to be
+      measured.
 - [x] Trace how generated copy could travel through the existing composition and GRAIN contracts.
       Keep component names, addresses, and allowed fields code-owned. Generated text is bounded to
       registered fields on new blocks; the later GRAIN design-review requirement remains for edits
