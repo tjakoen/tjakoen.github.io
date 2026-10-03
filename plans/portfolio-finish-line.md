@@ -233,7 +233,10 @@ individual checks before the audit can be called complete.
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
 - [ ] Do a final route-by-route browser pass at desktop and narrow widths. Check navigation, page
-      spacing, headings, accessible names, dead ends, and the important interaction paths.
+      spacing, headings, accessible names, dead ends, and the important interaction paths. The latest
+      local route audit covered 145 canonical URLs with no HTTP failures or document findings. It
+      still flags JavaScript payloads from 30 KB to 328 KB as heavy; that needs its own review and
+      does not replace the responsive and interaction pass.
 - [ ] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
       main, and verify the deployed pages.
 
