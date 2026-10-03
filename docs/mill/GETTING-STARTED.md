@@ -10,21 +10,16 @@ fastest path to a rendered page.
 
 ## Install
 
-MILL is published on the public npm registry as `@tjakoen/mill`, alongside `@tjakoen/grain`:
+MILL is published on the public npm registry as `@tjakoen/mill` and depends on GRAIN. Install both
+packages with Bun:
 
-```json
-{
-  "dependencies": {
-    "@tjakoen/batch": "^0.1.0",
-    "@tjakoen/grain": "^0.1.12",
-    "@tjakoen/mill": "^0.2.0"
-  }
-}
+```sh
+bun add @tjakoen/grain @tjakoen/mill
 ```
 
-That is the whole setup: no `.npmrc`, no auth token. (These packages lived on GitHub Packages until
-2026-07-30, whose registry demands a token even for public packages; they are on npmjs now and
-install anonymously.)
+With npm, use `npm install @tjakoen/grain @tjakoen/mill`. They resolve from the public npm registry,
+so a new project needs no `.npmrc` or registry token. Add BATCH separately if your app uses it as
+the server and component composer.
 
 Inside the grain monorepo itself, MILL is a sibling workspace package (`workspace:*`), no install
 step needed there.

@@ -1,25 +1,32 @@
 ---
-title: "How to: static export + deploy"
+title: "How to: export and deploy the portfolio"
 ---
 
-**Status: the export itself is built and works today; a zero-ops GitHub Pages Actions workflow is
-still planned** (see [`README.md`](https://github.com/tjakoen/batch#readme)). This
-guide covers what runs now.
+This guide covers the portfolio app's exporter. BATCH supplies the export mechanism, while the
+portfolio repository boots the app, crawls its routes, and writes the static files. The portfolio's
+[GitHub Pages workflow](https://github.com/tjakoen/tjakoen.github.io/blob/main/.github/workflows/pages.yml)
+runs the export and link verifier, then deploys the result on pushes to `main` and on its daily
+refresh. BATCH itself is a library and does not own a site deployment workflow.
 
 ## Run it
 
+Run these commands from the portfolio repository:
+
 ```sh
-bun run export                                # → dist/, absolute paths (root host / custom domain)
-PUBLIC_BASE_PATH=/repo bun run export         # → dist/ for user.github.io/<repo>/ (subpath host)
-PUBLIC_ORIGIN=https://you.com bun run export  # bake the real origin into sitemap.xml/robots.txt
+bun run export
+bun run verify:export
 ```
 
-Serve the result with any static file server: `bunx serve dist`, or push `dist/` to any static
-host (GitHub Pages, Netlify, S3 — it's plain files, nothing server-specific left in them).
+The export writes to `dist/` with root-absolute paths for a custom domain. For a repository hosted
+at `user.github.io/repo`, set `PUBLIC_BASE_PATH=/repo`. Set `PUBLIC_ORIGIN` to the deployed origin
+so the sitemap, robots file, and language-model index carry public URLs.
+
+Serve the result with any static file server, such as `bunx serve dist`, or deploy `dist/` to a
+static host. The output is plain files and does not need the BATCH server at runtime.
 
 ## What actually gets frozen
 
-The exporter (`tools/export.ts`, on top of the generic `batch/export/export.ts`) **fetches the
+The exporter (`tools/export.ts`, on top of the generic `@tjakoen/batch/export/export.ts`) **fetches the
 running server and freezes its output — it never re-renders** (ARCHITECTURE §18: the export is a
 *projection*, not a second renderer). Concretely, it:
 

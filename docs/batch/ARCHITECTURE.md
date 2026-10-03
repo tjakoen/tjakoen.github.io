@@ -7,39 +7,23 @@ server-rendered hypermedia stack. Reusable design-system component tags use the
 `b-` prefix (`<b-button>`); your app's own components keep semantic names
 (`item-card`, `app-header`).
 
-**Status:** Living document · **Runtime:** Bun 1.3.14. Backend certified 2026-06-26
-(§14.1); the frontend layer — pages, sitemap, the `b-` component
-set, self-closing/prop-text — added and audited 2026-06-27 (§14.4). (The component
-catalog since moved UP to GRAIN — its Human/AI grade toggle is grain's vocabulary — so
-it's no longer BATCH's; see `grain/catalog`.) The **AI
-interaction layer** (server-push over SSE, the one `/intent` door, render ops,
-grade-as-signal) and the **Sourdough** design-system retheme were added and
-audited 2026-06-30 (§17, §14.5), then the repo was **reorganized into a monorepo** the
-same day (§3). The code in `batch/ grain/ project/` is the source of truth.
+**Status:** Living architecture reference. BATCH is published as `@tjakoen/batch` from the
+[standalone BATCH repository](https://github.com/tjakoen/batch). The package is the reusable
+no-build hypermedia substrate; it does not provide the running portfolio server. The current
+portfolio composition root lives in the
+[portfolio repository](https://github.com/tjakoen/tjakoen.github.io) and wires the installed stack
+packages together.
 
-> **The concerns in this repo (monorepo).** `batch/` is the **stack** this document
-> describes (the reusable no-build hypermedia substrate). `grain/` is **GRAIN**, the
-> AI-interaction design system built on BATCH (`docs/GRAIN.md`). `project/` is the
-> product (a personal AI assistant) + its skin; `tjakoen.github.io/server.ts` is the one place
-> those three meet. No Bun workspaces — plain relative imports, one `package.json` +
-> `tsconfig`. Each is headed for its own repo once proven; the boundary is kept clean
-> (`batch/` imports nothing from `grain/`/`project/`, verified). Two further resident
-> concerns build on the stack: **`tjakoen.github.io/`** (a personal site — temporary resident,
-> moving to its own repo) and, planned, **`MILL/`** — a reusable markdown→GRAIN CMS that
-> sits **above `grain`** (depends on `grain` + `batch`, never the reverse; an *extension
-> of neither*). MILL's core is framework-agnostic (a Markdown→components engine driven by a
-> render adapter); its default adapter emits GRAIN + serves on BATCH. The portfolio *uses*
-> MILL to manage its markdown content — its notes/blog **and** the rendered BATCH/GRAIN docs —
-> but is otherwise a custom BATCH + GRAIN app. See `mill/PLAN.md` (canonical) + `tjakoen.github.io/docs/architecture/PLAN.md`
-> (consumer view). Product docs are under `project/docs/`; the doc map is `DOCS.md` at the repo root.
+GRAIN, MILL, PROOF, and CRUMB now live in the separate [GRAIN monorepo](https://github.com/tjakoen/grain).
+GRAIN is the design system built above BATCH. MILL renders Markdown through GRAIN, while PROOF and
+CRUMB add the plan-board and guided-tour layers. Their package and workspace relationships are
+described in [how to install the stack packages](CONSUME-AS-GIT-DEPS.md). The component catalog
+lives with GRAIN because its Human/AI grade toggle belongs to that design system.
 
-Every code block here has been run on Bun 1.3.14. For the final revision the
-entire backend was assembled exactly as specified and **certified**: `tsc`
-typechecks green under `erasableSyntaxOnly` + `verbatimModuleSyntax` (TS 6.0), the
-full test suite passes, and the server serves `/ui` (HTML) and `/api` (JSON)
-correctly. See §14.1 for the audit log.
-
----
+This document keeps the reasoning behind BATCH's architecture and records how the layers developed.
+For current install commands and package-level development checks, start with
+[`GETTING-STARTED.md`](GETTING-STARTED.md) and the BATCH repository's README. Code and tests in the
+standalone repository are the source of truth for the package's current implementation.
 
 ## What BATCH gives you (capabilities)
 

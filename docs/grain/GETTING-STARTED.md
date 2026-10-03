@@ -9,12 +9,15 @@ it. The full reasoning is [`GRAIN.md`](GRAIN.md); the contract is [`AI-INTERFACE
 
 ## Install
 
-Inside this monorepo, GRAIN is a sibling package. Consuming it from another repo (post-split) is a
-Bun git dependency, same as BATCH:
+GRAIN is published on npm as `@tjakoen/grain`. Add it to a Bun app with:
 
-```json
-"@tjakoen/grain": "github:tjakoen/grain#main"
+```sh
+bun add @tjakoen/grain
 ```
+
+With npm, use `npm install @tjakoen/grain`. The package resolves from the public npm registry, so a
+fresh project needs no `.npmrc` or registry token. The GRAIN monorepo uses Bun workspaces for its
+internal packages; a separate app installs the published package.
 
 ## Two layers — start with just the design system
 
@@ -23,8 +26,9 @@ GRAIN is two things, one-directional, so you can adopt only what you need:
 - **The design system** (always usable, no AI required) — the `b-*` atoms, the default theme (`styles/variables.css` → `styles/global.css` → `styles/grain.css`), and grade-as-signal (useful on its own: draft vs. saved, focus/editing, in-transit vs. committed).
 - **The AI-interaction layer** (opt-in) — `ai/*` (the door, the contract, the manifest), the dispatcher island (`scripts/ai-dispatch.js`), and `ai/ai.css` (the "AI is acting" spotlight).
 
-To use just the design system in a plain BATCH app: link the three stylesheets + the `b-*` atoms,
-skip `ai/` entirely. Add the AI layer later — see `README.md` §0/§5 for the exact wiring.
+To use just the design system in a plain BATCH app, link the three stylesheets and the `b-*` atoms,
+then skip `ai/`. Add the AI layer later by following the setup in the
+[GRAIN package README](https://github.com/tjakoen/grain/tree/main/packages/grain#readme).
 
 ## The markup conventions in one table
 

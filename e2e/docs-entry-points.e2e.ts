@@ -35,6 +35,36 @@ test.describe("developer docs entry points", () => {
     }));
     expect(width.scroll).toBeLessThanOrEqual(width.client + 1);
     await expect(page.locator('.docs-list a[href="/pantry/docs/what-it-composes"]')).toBeVisible();
+    await expect(page.locator('.docs-list a[href="/batch/docs/consume-as-git-deps"] + .docs-list__what'))
+      .toContainText("PROOF's pinned GitHub dependency");
+    await expect(page.locator('.docs-list a[href="/batch/docs/static-export-and-deploy"] + .docs-list__what'))
+      .toContainText("portfolio app's running server");
+  });
+
+  test("package setup docs match the published packages and current host boundary", async ({ page }) => {
+    await page.goto("/batch/docs/getting-started");
+    await expect(page.locator(".board")).toContainText("BATCH is a library, not a server of its own");
+    await expect(page.locator(".board")).toContainText("bun add @tjakoen/batch");
+
+    await page.goto("/grain/docs/getting-started");
+    await expect(page.locator(".board")).toContainText("bun add @tjakoen/grain");
+    await expect(page.locator(".board")).toContainText("public npm registry");
+
+    await page.goto("/batch/docs/consume-as-git-deps");
+    await expect(page.locator(".board")).toContainText("pinned public GitHub commit");
+    await expect(page.locator(".board")).toContainText("no GitHub token");
+
+    await page.goto("/batch/docs/conventions");
+    await expect(page.locator(".board")).toContainText("BATCH is a standalone library");
+    await expect(page.locator(".board")).toContainText("The package split is complete");
+  });
+
+  test("the static export guide points to the portfolio deploy workflow", async ({ page }) => {
+    await page.goto("/batch/docs/static-export-and-deploy");
+    await expect(page.locator(".board")).toContainText("BATCH itself is a library");
+    await expect(page.locator(".board")).toContainText("bun run verify:export");
+    await expect(page.locator('.board a[href="https://github.com/tjakoen/tjakoen.github.io/blob/main/.github/workflows/pages.yml"]'))
+      .toBeVisible();
   });
 
   test("the generated reference links back to the project stories and contains wide tables", async ({ page }) => {
@@ -59,6 +89,7 @@ test.describe("developer docs entry points", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     for (const [route, projectPath] of [
       ["/batch/docs/architecture", "/batch"],
+      ["/batch/docs/conventions", "/batch"],
       ["/grain/docs/add-a-component", "/grain"],
     ]) {
       await page.goto(route);

@@ -1,10 +1,10 @@
 name: Deploy to GitHub Pages
 
 # The site is a static PROJECTION of the running server (ARCHITECTURE §18):
-# bun install pulls the layer git-deps (docs ride inside the packages),
+# bun install pulls the published packages from npm (docs ride inside the packages),
 # bun run export crawls the booted app into dist/, bun run verify:export gates the result
 # (every sitemap URL + every internal link must resolve to a real file — Phase 2), and Pages
-# serves dist/. See ../SPLIT-PLAN.md § "The static front door".
+# serves dist/. See docs/batch/STATIC-EXPORT-AND-DEPLOY.md for the portfolio-side guide.
 
 on:
   push:
@@ -33,8 +33,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.14
-      # The @tjakoen/* layers are published on the public npm registry — no registry secret,
-      # no .npmrc. (Until 2026-07-30 they lived in GitHub Packages and this step wrote a token.)
+      # The @tjakoen/* layers are published on the public npm registry, so this needs no registry
+      # secret or .npmrc.
       - run: bun install --frozen-lockfile
       - run: bun run check
       - run: bun test

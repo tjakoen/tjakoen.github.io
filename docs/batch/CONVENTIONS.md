@@ -2,9 +2,9 @@
 title: "CONVENTIONS"
 ---
 
-How we build on this stack. The goal is one consistent, reusable, scalable way to do
-each thing — so new code (and new sessions) extend the grain instead of fighting it.
-When a rule and the surrounding code disagree, the surrounding code wins until this doc
+Conventions for BATCH itself and for apps composed from the published stack packages. BATCH is a
+standalone library. The portfolio repository is the composition root that runs it with GRAIN and
+MILL. When a rule and the surrounding code disagree, the surrounding code wins until this document
 is updated; keep them in sync.
 
 > Companion docs: [`PHILOSOPHY.md`](https://github.com/tjakoen/tjakoen.github.io/blob/main/docs/PHILOSOPHY.md) (the why), [`ARCHITECTURE.md`](ARCHITECTURE.md)
@@ -16,26 +16,32 @@ is updated; keep them in sync.
 
 ## 1. Layers & boundaries
 
-Four concerns, one direction of dependency (each layer builds only on those below):
+The stack is split across package repositories. BATCH provides the substrate. GRAIN owns the design
+system and its interaction contract, without importing BATCH. MILL renders Markdown through GRAIN.
+PROOF and CRUMB add plan-board and guided-tour features. The portfolio app brings these packages
+together at its composition root.
 
-```
-batch/   the no-build hypermedia substrate (render, http, assets, catalog, platform)
-   └─ grain/   the design system + optional AI-interaction layer (default theme lives here)
-        ├─ mill/       the Markdown→GRAIN CMS (a reusable layer above grain; built)
-        └─ tjakoen.github.io/  THE app + composition root — a custom BATCH+GRAIN site that uses
-                               MILL for content; holds domain components, routes, pages, server.ts
-   (project/   the AI-assistant product — PAUSED since 2026-07-05, a docs-only archive)
-```
+| Package or app | Responsibility | Current source |
+|---|---|---|
+| BATCH | Server-rendered composition, HTTP helpers, static export, and audit tools | [BATCH repository](https://github.com/tjakoen/batch) |
+| GRAIN | Design system, themes, components, and the human/AI interaction contract | [GRAIN repository](https://github.com/tjakoen/grain) |
+| MILL | Markdown content routes and rendering | `@tjakoen/mill` in the GRAIN repository |
+| PROOF | Read-only plan board | `@tjakoen/proof` in the GRAIN repository |
+| CRUMB | Guided tours and review walkthroughs | `@tjakoen/crumb` in the GRAIN repository |
+| Portfolio | Application pages, content, and the composition root | [Portfolio repository](https://github.com/tjakoen/tjakoen.github.io) |
 
-**Hard rules (enforced by review; verified in the audit):**
-- `batch/` imports **nothing** from `grain/` (or the app). It's the substrate; it must extract cleanly.
-- `grain/` imports **nothing** from `batch/`. It depends only on the **`OpChannel` port**
-  (`grain/ai/contract.ts`) — never a concrete substrate. It ships its own default theme.
-- `tjakoen.github.io/` wires the graph. Cross-layer dependencies are declared as **constructor/factory
-  params**, and the **only place the layers meet is `tjakoen.github.io/server.ts`** (the composition root).
-- New design-system work goes **in `grain/` by default** (it's reusable). Only obviously
-  app-specific things (a one-off page layout, a domain component like `task-card`) live in the app
-  (`tjakoen.github.io/`). Test: *"would another product on GRAIN want this?"* → yes = grain, no = the app.
+**Hard rules:**
+
+- BATCH imports nothing from GRAIN or a consuming app. It stays usable as a substrate on its own.
+- GRAIN imports nothing from BATCH. It defines the `OpChannel` port and lets the host supply a
+  compatible implementation.
+- A consuming app wires packages at its composition root. The portfolio does this in
+  `src/server.ts`.
+- Reusable design-system work belongs in GRAIN. App-specific pages and domain components belong in
+  the consuming application.
+
+See [the package installation guide](CONSUME-AS-GIT-DEPS.md) for current package relationships,
+including PROOF's pinned public BATCH dependency.
 
 A consuming product **re-skins by overriding token slots** in its own sheet linked after
 GRAIN's three (`variables.css` → `global.css` → `grain.css`) — never by editing components.
@@ -48,9 +54,10 @@ proof). It does **not** mean "zero dependencies." Two things are always fair gam
 violations: **platform builtins** (`fs`, `path`, `node:fs/promises` — provided by Bun; batch reads
 files with them throughout) and **devDependencies** used by tooling that never ships to the client
 (`@playwright/test` drives the e2e tests, `bun run shots`, and `bun run audit` — it measures the
-product from the outside, it isn't part of it). The bar to defend is the `dependencies` block in
-`package.json`: keep third-party *runtime* deps at zero (today only `bun` itself). A dev tool
-importing playwright, or the substrate importing `fs`, is the stack working as intended.
+product from the outside, it isn't part of it). The BATCH package itself keeps third-party runtime
+dependencies out of its `dependencies` block. An app can depend on published stack packages while
+keeping its browser runtime native-first. A dev tool importing Playwright, or the substrate importing
+`fs`, is the stack working as intended.
 
 **Native-first is a *positive* rule, not just an absence of framework JS.** It means: **prefer the
 platform's own primitive over reimplementing it.** A `<dialog>` over a JS modal; `<details>` over a
@@ -90,7 +97,7 @@ worked in [ARCHITECTURE §11.3](ARCHITECTURE.md).
 define it **once** and reference the definition; never re-type the literal. Server/TS code uses a
 `const` or a **const registry** (union + object); a browser module that can't import TS uses a
 **single named-const block** at the top of the file (e.g. the theming attributes/values/control
-names in `grain/scripts/theme.js` — `ATTR`/`SCHEME`/`CTRL`/`KEY`). If you're typing the same string
+names in `packages/grain/scripts/theme.js` — `ATTR`/`SCHEME`/`CTRL`/`KEY`). If you're typing the same string
 twice, that's the smell.
 
 The only literals allowed are the **cross-layer** ones a static file genuinely can't import — HTML
@@ -103,7 +110,7 @@ vocabulary.
 
 ### The action vocabulary
 
-`grain/ai/contract.ts` is the SSOT for everything addressable/operable:
+`packages/grain/ai/contract.ts` is the SSOT for everything addressable/operable:
 
 - **`SurfaceKind`** — the closed set of surface kinds; build addresses with `surface(kind, id?)`,
   never by hand-concatenating strings.
@@ -122,8 +129,8 @@ contract (the dispatcher) — both are validated server-side by the drift guard 
 
 ## 4. Components
 
-Each component is a self-contained directory under `grain/components/<layer>/<name>/` (design
-system) or `tjakoen.github.io/view/components/<layer>/<name>/` (the app's domain components), where
+Each component is a self-contained directory under `packages/grain/components/<layer>/<name>/`
+(design system) or `view/components/<layer>/<name>/` (the app's domain components), where
 layer ∈ atoms / molecules / organisms.
 
 ### New-component checklist
@@ -139,7 +146,8 @@ layer ∈ atoms / molecules / organisms.
 Some components have **no `.html` template** — they're a class + docs (`.css` + `.md`), composed by
 hand rather than data-bound. This is deliberate for **layout shells and patterns** (`app-shell`,
 `side-rail`, `tab-bar`, `chat-log`) and **data-driven atoms rendered as raw markup** (`b-badge`,
-`b-list`). The checklist's `.html` is required only for components `batch/render` expands as a tag.
+`b-list`). The checklist's `.html` is required only for components BATCH's render package expands as
+a tag.
 If a CSS-only component depends on **parent context** to work (e.g. `chat-message` needs a
 `chat-log`'s flex column for its `align-self`), state that requirement in its `.md` — an unstated
 layout dependency is a silent-failure trap.
@@ -159,7 +167,7 @@ layout dependency is a silent-failure trap.
 | `data-commit` | grade = commit state (AI/in-transit) | `pending` |
 | `data-grade` | provenance grade (usually on an ancestor) | `grain`, `smooth`, `accent` |
 
-### Template / binding vocabulary (interpreted by `batch/render`)
+### Template / binding vocabulary (interpreted by BATCH's render package)
 | Form | Means |
 |---|---|
 | `slot-tag prop-as="…"` | polymorphic element (becomes `as`); for atoms that render different tags |
@@ -195,7 +203,7 @@ See [`DESIGN-SYSTEM.md`](../../grain/docs/DESIGN-SYSTEM.md) §3, [`AI-INTERFACE.
 
 - **Token-first. No hardcoded colors, ever** (zero `#hex`/`rgb()` in component CSS — audited).
   Use `var(--token)`. Raw `px` only for true hairlines/offsets (`1px`, `2px` outline).
-- Two layers in `grain/styles/variables.css`: **primitives** (palette, scale, grades) → **semantic
+- Two layers in GRAIN's `packages/grain/styles/variables.css`: **primitives** (palette, scale, grades) → **semantic
   aliases** (`--color-*`, `--type-font`, `--ai-veil`, `--ai-focus-move`). Components read **only
   the semantic aliases**; re-theming repoints them in one place.
 - GRAIN's three page-level sheets are **linked** in order (`variables` → `global` → `grain`);
@@ -209,20 +217,20 @@ See [`DESIGN-SYSTEM.md`](../../grain/docs/DESIGN-SYSTEM.md) §3, [`AI-INTERFACE.
 ## 6. Testing — three tiers, write them as you build
 
 Testing is part of the architecture, not an afterthought. Every feature should land with the
-appropriate tier(s). Run: `bun run test` (unit + integration), `bun run test:e2e` (browser),
-`bun run test:all` (both).
+appropriate tier(s). From the portfolio root, run `bun test` for unit and integration tests,
+`bun run test:e2e` for the browser suite, or `bun run test:all` for both. Package repositories keep
+their own test commands in their README files.
 
 | Tier | Runner | Files | What it covers |
 |---|---|---|---|
 | **Unit** | `bun test` | `*.test.ts` (colocated) | one module in isolation; deps faked. Pure logic, the reasoner, render engine, services, parsing. |
 | **Integration** | `bun test` | `*.integration.test.ts` (colocated) | several **real** modules together over HTTP/SSE, no browser. The door → reasoner → push path, routes, manifest. |
-| **E2E** | `playwright test` | `tjakoen.github.io/e2e/*.e2e.ts` | a real browser against the running app. The **client dispatcher** (click/Enter → `/intent` → SSE → DOM), the spotlight, the `<dialog>` palette, interrupts, auto-scroll, view transitions. |
+| **E2E** | `playwright test` | `e2e/*.e2e.ts` in the portfolio repository | a real browser against the running app. The **client dispatcher** (click/Enter → `/intent` → SSE → DOM), the spotlight, the `<dialog>` palette, interrupts, auto-scroll, view transitions. |
 
-**Tests travel with the code they test** (this is what makes the repo split clean, §10):
-unit tests are colocated in `batch`/`grain`/`project`; the door **integration** test lives in
-`tjakoen.github.io/src/routes/` (it exercises the app's composition); **e2e** lives in `tjakoen.github.io/e2e/` because
-it drives the *product*. `batch`/`grain` carry only their own unit tests; a grain demo harness
-would get its own e2e when grain is extracted.
+**Tests travel with the code they test:** BATCH and the GRAIN-family packages carry tests beside
+their source. The portfolio keeps application unit and integration tests under `src/` and its browser
+suite under `e2e/`. Package tests verify a layer on its own; the portfolio suite verifies that the
+installed packages work together in the running app.
 
 **Conventions**
 - Split by extension so the runners never collide: Bun owns `*.test.ts` (incl.
@@ -243,7 +251,7 @@ would get its own e2e when grain is extracted.
   visibility, text, or count actually changed (e.g. main collapses to ~0 and the console fills the
   space), not that the switch was set. If a mechanism consumes a token/attr, the test must measure the
   motion or layout it produces. See AUDIT check 12 for the matching mechanical guard.
-- **Visual regression baseline** (`tjakoen.github.io/e2e/visual.e2e.ts`): the behavior specs assert what a
+- **Visual regression baseline** (`e2e/visual.e2e.ts` in the portfolio repository): the behavior specs assert what a
   screen *does*; they don't catch a shifted margin, a dropped border, or a broken grid. `toHaveScreenshot`
   pins the pixels of the key **static** screens (welcome, `/grain`, `/batch`, `/catalog`,
   `/about`) so a silent visual regression fails loudly. Baselines are committed
@@ -278,42 +286,31 @@ would get its own e2e when grain is extracted.
 
 ## 9. Quick "add a …" recipes
 
-- **A component:** make the dir + the 3–4 files (§4 checklist) in `grain/` (or `tjakoen.github.io/`
-  if domain-only); use tokens (§5); express AI-mode via the shared idiom; add a `.md` example; if
-  it accepts actions, declare `data-kind`/`data-accepts`. Add a unit/e2e test if it has behavior.
-- **An action/verb:** extend `ActionName` + `ACTIONS` (§3), handle it in the reasoner, reference
-  it via the registry; add a unit test (reasoner) + integration test (door path).
-- **A page:** add `tjakoen.github.io/pages/<name>.html`, link the three GRAIN sheets + `/components.css`,
-  give acting regions a `data-surface`; e2e-test any new interaction.
-- **A theme tweak:** edit `grain/styles/variables.css` token values (or a project override
-  sheet) — never per-component.
+- **A reusable component:** add it to the GRAIN package in the GRAIN repository. An app-specific
+  component belongs in that application's component directory. Use the GRAIN tokens and add tests
+  for behavior the component owns.
+- **An action or verb:** extend GRAIN's contract and reasoner, then cover the interaction in the
+  package tests and the host app's integration path.
+- **A portfolio page:** add it under `view/pages/` in the portfolio repository, link the GRAIN
+  stylesheets and component bundle, give operable regions a `data-surface`, and cover new interactions
+  with a browser test.
+- **A theme change:** edit GRAIN's default theme in the GRAIN repository, or override its tokens in
+  the consuming app when the change is specific to that app.
 
 ---
 
-## 10. On extraction (the future repo split)
+## 10. Package boundaries in current work
 
-The three dirs are headed for **three repos**: `batch` (a published substrate package),
-`grain` (a design-system package on a substrate), `project` (the product, on `grain`). The
-boundaries (§1) are kept clean so the split is a copy, not a rewrite. What goes where:
+The package split is complete. Make changes in the repository that owns the package or application
+being changed, and test that boundary there.
 
-| Repo | Takes | Tests it carries |
+| Repository | Owns | Verification |
 |---|---|---|
-| **batch** | `batch/**` + its `__fixtures__/` | its colocated `*.test.ts` (no app, no e2e) |
-| **grain** | `grain/**` (AI layer, components, default theme, fonts, islands, the catalog) | its colocated `*.test.ts`; **adds its own e2e** against a minimal demo harness |
-| **tjakoen.github.io** (the app) | `tjakoen.github.io/**` incl. `tjakoen.github.io/e2e/` + a copy of `playwright.config.ts` | its `*.test.ts`, the door `*.integration.test.ts`, and the e2e suite |
-| **project** (paused) | `project/**` — docs-only archive (`PROJECT-PLAN.md`, `docs/MVP.md`); no code/tests until the product resumes | — |
+| [BATCH](https://github.com/tjakoen/batch) | The substrate package, including rendering, HTTP helpers, export, audit, and its unit tests | Run `bun test` and `bun run check` in the BATCH checkout. |
+| [GRAIN](https://github.com/tjakoen/grain) | GRAIN, MILL, PROOF, CRUMB, their package tests, and the workspace-only MCP server | Run the workspace checks from that repository. |
+| [Portfolio](https://github.com/tjakoen/tjakoen.github.io) | The composition root, site routes, domain components, content, and browser tests | Run the portfolio typecheck, unit suite, and Playwright suite. |
 
-**Monorepo-level tooling** (`package.json`, `tsconfig.json`, `playwright.config.ts`, `bun.lock`,
-`.gitignore`) is split/copied per repo. What changes on extraction (and **only** this — the
-code doesn't):
-- **`tjakoen.github.io/config.ts` paths** — `./grain/components`, `./grain/styles`, `./grain/fonts` become
-  resolved package paths (or stay relative if vendored). The static/serving wiring follows.
-- **Cross-layer imports** — `../batch/*` and `../grain/*` become package imports
-  (`@org/batch`, `@org/grain`). Nothing else: `batch` imports nothing inward, and `grain`
-  already depends only on the `OpChannel` port + the binding-vocabulary contract.
-- **`playwright.config.ts`** moves into the project repo; its `webServer.command` simplifies to
-  `bun server.ts` (cwd becomes the repo root, so `config.ts`'s relative roots still resolve).
-- **The drift guard + manifest harvest** keep working unchanged.
-
-Keep this true as you build: if a new cross-layer dependency can't be expressed as "project →
-grain → (port) ← batch", it's a smell — add a port, don't reach across.
+The application owns the integration between packages. A shared feature that belongs in a package
+should be implemented and released by that package's maintainers, then consumed by the app through
+its package interface. Avoid restoring the old monorepo layout through copied source folders or
+relative imports across repository boundaries.
