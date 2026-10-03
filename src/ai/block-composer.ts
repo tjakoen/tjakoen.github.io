@@ -22,13 +22,13 @@
 // link with "the desk cannot run here" would be a link that only works on the author's laptop. The
 // page says which one composed it, every time, so the two are never confused for each other.
 
-import { BLOCK_NAMES, isSpan, sanitizeBlockCopy, type Span } from "./block-set.ts";
+import { BLOCK_NAMES, isSpan, MAX_BLOCKS_PER_PROMPT, sanitizeBlockCopy, type Span } from "./block-set.ts";
 
 /** How many blocks one sentence may produce. A repetition loop is the 0.5B's documented failure
  *  shape on this page (an answer of `{"move": {"move": {"move": …` ran to the token cap on
  *  2026-08-22), and a plan is exactly the place that turns into four hundred cards. The cap is not a
  *  judgement about how big a page should be, it is a bound on what a broken answer can cost. */
-export const MAX_PLANNED_BLOCKS = 8;
+export const MAX_PLANNED_BLOCKS = MAX_BLOCKS_PER_PROMPT;
 
 export type PlanRead =
   /** Names, in the model's own order, every one of them in the closed set. `dropped` carries what

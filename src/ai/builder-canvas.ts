@@ -372,6 +372,9 @@ function boot(): void {
     saidLine.setAttribute("data-read", read);
     saidLine.removeAttribute("hidden");
   };
+  if (askInURL) {
+    say("This shared preview uses the code-owned block matcher. Build it asks the on-device model to add blocks when it can run here.", "reply");
+  }
   const clearSaid = (): void => {
     if (!saidLine) return;
     saidLine.textContent = "";

@@ -120,11 +120,21 @@ block. Existing copy cannot be revised because GRAIN does not yet expose a bound
 operation. The Builder names these limits in its visible guidance; the work is a tested assembly
 path, not yet a reliable AI page writer.
 
-The current release checks passed after the Builder changes. The unit suite passed 681 tests. The
-full browser suite passed 392 tests with one skipped calendar lightbox case. The static export
-built 1,174 pages, and its verifier found every sitemap destination and internal link in the export.
-The changes are committed on main, pushed, and present on the live Builder page. The complete
-route-by-route visual review remains open, as does the Builder's live model reliability work.
+The owner confirmed that Builder generation must stay local. The page now says that the browser
+downloads about 350 MB of model files on first AI use, caches them, and keeps prompt generation on
+the device. Shared example links open the predictable code-owned preview until a visitor presses
+Build it. Explicit counts now produce the requested number of blocks, card-specific layout language
+only places the cards side by side, and repeated cards receive distinct fallback copy. Unit and
+browser checks cover the four-block example, the two half-width cards, the distinct copy, and the
+local-generation notice. The narrower preview was also reviewed at 390 pixels with no page overflow.
+
+The current release checks passed after the Builder changes. The unit suite passed 694 tests. The
+full browser suite passed 392 tests with one skipped calendar lightbox case when run serially; a
+four-worker run had one timing-sensitive desk-choice failure that passed both alone and in the
+serial run. The full route audit and static export completed, with 1,174 exported pages and every
+sitemap destination and internal link resolving. The link linter and lint gate passed at the
+existing baseline after two non-mutating sort fixes. The final route-by-route visual review remains
+open, as does the Builder's live model reliability work.
 
 ### Page recommendations in progress
 
