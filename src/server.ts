@@ -193,7 +193,7 @@ async function buildCalendarEvents(): Promise<CalendarEvent[]> {
   });
   // newest-first, same convention as the old hardcoded feed (a stable id breaks date ties).
   return [...noteEvents, ...postEvents, ...eventEvents]
-    .sort((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
+    .toSorted((a, b) => b.date.localeCompare(a.date) || a.id.localeCompare(b.id));
 }
 // /mail (Apps-v2 Pass B): data/mailbox.json is hand-authored dressing too — every "message" is page
 // copy written ahead of time (never a real received mail), read server-side ONLY (no client fetch,

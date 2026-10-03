@@ -24,6 +24,9 @@ export type Span = "full" | "half" | "third";
 export const SPANS: readonly Span[] = ["full", "half", "third"];
 export const isSpan = (s: unknown): s is Span => typeof s === "string" && (SPANS as readonly string[]).includes(s);
 
+/** Maximum number of blocks one prompt can add, whether the plan came from the model or the matcher. */
+export const MAX_BLOCKS_PER_PROMPT = 8;
+
 /** One block on a composed page. `component` is a registered component NAME the renderer expands at
  *  runtime; `data` is what that component's bindings read; `props` are the config attributes a
  *  hand-author would have put on the tag. `id` is stable per block so a later phase can reorder and
@@ -147,6 +150,18 @@ const BLOCK_TABLE: BlockEntry[] = [
   },
 ];
 
+/** Give repeated fallback cards distinct examples so a multi-card preview does not look duplicated.
+ *  Model-written fields still replace these values when the visitor builds through the local model. */
+const REPEATED_CARD_SAMPLES: Record<string, string>[] = [
+  { title: "No build step", body: "Nothing between source and server: no bundler, no transpiler, no watcher." },
+  { title: "A closed set", body: "The model chooses registered blocks; the code owns their fields and rendering." },
+];
+
+function sampleFor(name: string, occurrence: number, fallback: Record<string, unknown>): Record<string, unknown> {
+  if (name !== "card") return { ...fallback };
+  return { ...fallback, ...REPEATED_CARD_SAMPLES[occurrence % REPEATED_CARD_SAMPLES.length] };
+}
+
 // ---------------------------------------------------------------------------------------------
 // The form block: today's field tables, as one entry in the set
 // ---------------------------------------------------------------------------------------------
@@ -233,39 +248,61 @@ export const BLOCK_TEMPLATE_SPECS: Array<{ component: string; keys: string[]; pr
 // matchBlocks
 // ---------------------------------------------------------------------------------------------
 
-/** How a description asks for two things beside each other. Matching a layout phrase sets the span
- *  of everything the same description produced, because a description says how the PAGE should read
- *  rather than how one block should: per-block spans are a direct-edit affordance, not something
- *  free text should be inferring one block at a time. */
+/** How a description asks for blocks beside each other. A phrase attached to cards applies to those
+ *  cards; a general layout phrase applies to every block the same description produced. */
 const SIDE_BY_SIDE = ["side by side", "beside each other", "next to each other", "two column", "in a row", "across"];
 const THREE_UP = ["three column", "three up", "three across", "in three"];
+const CARD_SCOPED_LAYOUT = ["card side by side", "card beside each other", "card next to each other", "card in a row"];
+
+const COUNTS: Record<string, number> = {
+  one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
+};
+
+function countFor(desc: string, tokens: readonly string[]): number {
+  const words = desc.trim().split(" ");
+  for (const token of tokens) {
+    const phrase = padded(token).trim().split(" ");
+    for (let index = 0; index <= words.length - phrase.length; index++) {
+      if (words.slice(index, index + phrase.length).join(" ") !== phrase.join(" ")) continue;
+      const preceding = words[index - 1] ?? "";
+      const parsed = Number(preceding);
+      if (Number.isInteger(parsed) && parsed > 0) return parsed;
+      if (COUNTS[preceding]) return COUNTS[preceding]!;
+    }
+  }
+  return 1;
+}
 
 /** Turn a description into blocks. Declaration order in BLOCK_TABLE is the output order, never the
- *  order words appeared: a page's own block order is a design decision this table owns, the same
- *  rule field-matcher.ts states for fields. A block is emitted at most once however many of its
- *  tokens hit, because dedup falls out of one entry per name rather than a separate pass.
+ *  order words appeared. An explicit count directly before a block name repeats that block, while
+ *  other mentions still produce one. The total is capped to the same per-prompt limit as model plans.
  *  `startIndex` seeds block ids so a later add can continue a composition rather than collide with
- *  it — the ids stay stable and unique across repeated calls. */
+ *  it, and the ids stay stable and unique across repeated calls. */
 export function matchBlocks(description: string, startIndex = 0): Composition {
   const desc = padded(description);
-  const forced: Span | null = anyTokenHits(desc, THREE_UP) ? "third"
+  const scopedToCards = anyTokenHits(desc, CARD_SCOPED_LAYOUT);
+  const cardSpan: Span | null = scopedToCards ? "half" : null;
+  const forced: Span | null = scopedToCards ? null : anyTokenHits(desc, THREE_UP) ? "third"
     : anyTokenHits(desc, SIDE_BY_SIDE) ? "half"
     : null;
 
   const blocks: Block[] = [];
   for (const entry of BLOCK_TABLE) {
     if (!anyTokenHits(desc, entry.tokens)) continue;
-    blocks.push({
-      id: `b${startIndex + blocks.length + 1}`,
-      component: entry.component,
-      span: forced ?? entry.defaultSpan,
-      data: { ...entry.sample },
-      props: { ...entry.props },
-    });
+    const count = Math.min(countFor(desc, entry.tokens), MAX_BLOCKS_PER_PROMPT - blocks.length);
+    for (let repeat = 0; repeat < count; repeat++) {
+      blocks.push({
+        id: `b${startIndex + blocks.length + 1}`,
+        component: entry.component,
+        span: entry.name === "card" ? cardSpan ?? forced ?? entry.defaultSpan : forced ?? entry.defaultSpan,
+        data: sampleFor(entry.name, repeat, entry.sample),
+        props: { ...entry.props },
+      });
+    }
   }
 
   const form = matchFormBlock(description);
-  if (form) {
+  if (form && blocks.length < MAX_BLOCKS_PER_PROMPT) {
     blocks.push({
       id: `b${startIndex + blocks.length + 1}`,
       component: FORM_COMPONENT,
@@ -275,13 +312,7 @@ export function matchBlocks(description: string, startIndex = 0): Composition {
     });
   }
 
-  const refusals: BlockRefusal[] = [];
-  for (const entry of REFUSAL_TABLE) {
-    if (!anyTokenHits(desc, entry.tokens)) continue;
-    refusals.push({ token: entry.token, reason: entry.reason });
-  }
-
-  return { blocks, refusals };
+  return { blocks, refusals: refusalsFor(description) };
 }
 
 /** What a description refuses, whichever path composed it.
@@ -293,8 +324,18 @@ export function matchBlocks(description: string, startIndex = 0): Composition {
  *  here rather than trusting the plan is what keeps that promise on both paths. */
 export function refusalsFor(description: string): BlockRefusal[] {
   const desc = padded(description);
-  return REFUSAL_TABLE.filter((entry) => anyTokenHits(desc, entry.tokens))
+  const refusals = REFUSAL_TABLE.filter((entry) => anyTokenHits(desc, entry.tokens))
     .map((entry) => ({ token: entry.token, reason: entry.reason }));
+  const requested = BLOCK_TABLE.reduce((count, entry) =>
+    count + (anyTokenHits(desc, entry.tokens) ? countFor(desc, entry.tokens) : 0), 0)
+    + (matchFormBlock(description) ? 1 : 0);
+  if (requested > MAX_BLOCKS_PER_PROMPT) {
+    refusals.push({
+      token: `${requested} blocks`,
+      reason: `One prompt can add up to ${MAX_BLOCKS_PER_PROMPT} blocks. The remaining requested blocks were left out.`,
+    });
+  }
+  return refusals;
 }
 
 /** Build a composition from names a model chose, in the order it chose them.
@@ -319,14 +360,17 @@ export function composeFromNames(
   copies: readonly Record<string, string>[] = [],
 ): Composition {
   const desc = padded(description);
-  // The description's own layout word outranks the model's. A phrase like "side by side" is a fact
-  // about the sentence that needs no reading, and the word list has always honoured it; letting a
-  // model's span override it would make the page ignore something the person wrote down plainly.
-  const forced: Span | null = anyTokenHits(desc, THREE_UP) ? "third"
+  const scopedToCards = anyTokenHits(desc, CARD_SCOPED_LAYOUT);
+  const cardSpan: Span | null = scopedToCards ? "half" : null;
+  // The description's own layout word outranks the model's. A phrase attached to cards scopes its
+  // layout to those cards; a general layout phrase applies across the page. Neither form lets a
+  // model's span override something the person wrote down plainly.
+  const forced: Span | null = scopedToCards ? null : anyTokenHits(desc, THREE_UP) ? "third"
     : anyTokenHits(desc, SIDE_BY_SIDE) ? "half"
     : planSpan;
 
   const blocks: Block[] = [];
+  const occurrences = new Map<string, number>();
   for (const [index, name] of names.entries()) {
     if (name === "form") {
       const form = matchFormBlock(description);
@@ -342,11 +386,13 @@ export function composeFromNames(
     }
     const entry = BLOCK_TABLE.find((e) => e.name === name);
     if (!entry) continue;
+    const occurrence = occurrences.get(name) ?? 0;
+    occurrences.set(name, occurrence + 1);
     blocks.push({
       id: `b${startIndex + blocks.length + 1}`,
       component: entry.component,
-      span: forced ?? entry.defaultSpan,
-      data: { ...entry.sample, ...sanitizeBlockCopy(name, copies[index]) },
+      span: name === "card" ? cardSpan ?? forced ?? entry.defaultSpan : forced ?? entry.defaultSpan,
+      data: { ...sampleFor(name, occurrence, entry.sample), ...sanitizeBlockCopy(name, copies[index]) },
       props: { ...entry.props },
     });
   }

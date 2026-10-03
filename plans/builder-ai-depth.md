@@ -182,15 +182,15 @@ initial draft path into a grounded, inspectable workflow:
 
 There is a model-capability decision before this becomes a Puck-like writing tool. The portfolio
 currently wires one local Qwen2.5-0.5B profile through WebLLM. There is no hosted-provider adapter in
-the app. The existing model stays on the visitor's device. The corrected 0.5B and 1.5B edit
+the app. The Builder is local-only by product decision: prompts and page content stay on the visitor's
+device, and this project will not add a hosted model or remote prompt path. The corrected 0.5B and 1.5B edit
 comparison is recorded above; the 1.5B model performs the registered edits more often, but it still
 misses the natural-language second-card target and carries a larger cold-start cost. WebLLM
 documents custom model registration and client-side generation, so the larger local model can run
-without introducing a server. The remaining comparison work is to measure its exact first-visit
+without introducing a server. The remaining local-model comparison work is to measure its exact first-visit
 download size and cold-start behavior on representative desktop and phone hardware, then test a
-grounded initial page draft with visitor-supplied copy. A hosted model remains a separate
-architectural choice because it would add a server or provider, deployment and secret handling, and
-a new data path. Do not treat a larger model as a win based on one good screenshot.
+grounded initial page draft with visitor-supplied copy. Do not treat a larger model as a win based on
+one good screenshot.
 
 Revising text in an already composed page also crosses a GRAIN boundary: the portfolio has no
 registered operation for changing a block's content. The separate GRAIN design review remains

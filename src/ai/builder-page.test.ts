@@ -29,12 +29,14 @@ describe("buildBuilderView: no ask", () => {
 });
 
 describe("buildBuilderView: a page-shaped ask", () => {
-  test("three blocks -> the result state, hasBlocks set, and the composition is the document", () => {
+  test("the requested card count -> the result state and the composition document", () => {
     const ask = "an intro, two cards side by side, and a callout";
     const v = buildBuilderView(ask);
 
     expect(v.builderState).toBe("result");
-    expect(v.blocks.map((b) => b.component)).toEqual(["block-lede", "block-card", "block-callout"]);
+    expect(v.blocks.map((b) => b.component)).toEqual([
+      "block-lede", "block-card", "block-card", "block-callout",
+    ]);
     expect(v.hasBlocks).toBe("hasblocks");
     expect(v.hasForm).toBeNull();
     expect(v.matchedNothing).toBeNull();
@@ -42,12 +44,10 @@ describe("buildBuilderView: a page-shaped ask", () => {
     expect(JSON.parse(v.specJson)).toEqual(toDocument(addFromDescription(emptyComposition(), ask)));
   });
 
-  // Layout is the thing the plan warned a matcher gets wrong, so the one layout phrase this page
-  // supports is asserted rather than trusted: "side by side" reaches every block the description
-  // produced, because a description says how the PAGE reads rather than how one block does.
-  test("a layout phrase sets the span of everything that ask produced", () => {
+  // A layout phrase attached to a block changes that block's span without squeezing the rest of the page.
+  test("a card-specific layout keeps the introduction and callout full width", () => {
     const v = buildBuilderView("an intro, two cards side by side, and a callout");
-    expect(v.blocks.map((b) => b.span)).toEqual(["half", "half", "half"]);
+    expect(v.blocks.map((b) => b.span)).toEqual(["full", "half", "half", "full"]);
   });
 
   test("with no layout phrase each block takes its own default span", () => {

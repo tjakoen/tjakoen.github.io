@@ -57,10 +57,11 @@
             <button class="wb-chip" type="button" data-proposal-cancel>Cancel</button>
           </div>
         </div>
-        <p class="wb-bar__note muted">Each prompt adds blocks. The local model may draft copy into
-          supported fields, but its format and writing quality are still experimental. Check the
-          visible result before export. The desk can also remove, resize or move a block; review that
-          proposal before applying it. Existing block copy cannot be revised yet.</p>
+        <p class="wb-bar__note muted">Each prompt adds blocks. The first AI build downloads about
+          350 MB of model files, then keeps them cached. Generation runs in this browser, and the
+          prompt stays on this device. Its writing is still experimental,
+          so check the result before export. The desk can also propose moving, resizing or removing a
+          block; review that change before applying it. Existing block copy cannot be revised yet.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -206,7 +207,9 @@
           <p>Describe a page and press Build it. A fixed, code-owned set of GRAIN blocks decides what
             renders, and the desk may draft text only into the registered copy fields on those new
             blocks. The live model has not yet produced a reliable draft, so check the visible result
-            before using or exporting the page. Existing block copy cannot be revised yet. The blocks
+            before using or exporting the page. The first AI build downloads about 350 MB of model
+            files, then keeps them cached. The model runs on this device; prompts do not go to a
+            server. Existing block copy cannot be revised yet. The blocks
             are expanded by the same renderer every other page on this
             site goes through. Once
             there are blocks on the canvas, the same box aims at them: say drop the second card, and a
@@ -312,11 +315,13 @@
         </details>
 
         <h2 class="section-head"><span>Examples</span></h2>
-        <p class="muted">These links carry the prompt in the address, so you can share or revisit
-          an example. When the local model is available, the structure and wording can vary; without
-          it, the code-owned examples provide the static fallback.</p>
+        <p class="muted">These links carry the prompt in the address and open a preview composed by
+          the code-owned matcher. Press Build it to ask the on-device model to add blocks when WebGPU
+          is available. The first AI build downloads about 350 MB of model files, then keeps them
+          cached. Your prompt stays on this device, and the model's choices and copy may still need
+          work.</p>
         <div class="docs-list">
-          <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">An intro, two cards side by side, and a callout</a><span class="docs-list__what">three blocks, and the layout word does the placing.</span></div>
+          <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">An intro, two cards side by side, and a callout</a><span class="docs-list__what">four blocks: an intro, two cards, and a callout.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20opening%20paragraph%20and%20a%20stat">An opening paragraph and a stat</a><span class="docs-list__what">the smallest page the set can make.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=A%20contact%20form%20with%20a%20name%2C%20an%20email%2C%20and%20what%20they%20want%20to%20talk%20about">A contact form with a name, an email, and what they want to talk about</a><span class="docs-list__what">a form, as one block.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20intro%2C%20a%20card%2C%20and%20a%20form%20with%20a%20name%2C%20an%20email%20and%20a%20box%20to%20agree%20to%20the%20terms">An intro, a card, and a form with a name, an email and a box to agree to the terms</a><span class="docs-list__what">a page that ends in a form the desk can operate.</span></div>

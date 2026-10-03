@@ -150,6 +150,7 @@ describe("composeFromNames enumerates what the model only named", () => {
     const { blocks } = composeFromNames(["card", "card"], "two cards");
     expect(blocks.map((b) => b.id)).toEqual(["b1", "b2"]);
     expect(blocks.every((b) => b.component === "block-card")).toBe(true);
+    expect(blocks.map((b) => b.data.title)).toEqual(["No build step", "A closed set"]);
   });
 
   test("startIndex continues an existing composition rather than restarting it", () => {

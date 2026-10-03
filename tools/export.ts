@@ -140,7 +140,7 @@ async function pageRoutes(): Promise<string[]> {
   // rather than travelling in with `content`.
   const folded = Object.keys(FOLDED_NOTES);
   const all = new Set([...pages, ...content, ...decks, ...plans, ...folded, ...badgeShortlinkRoutes(), "/catalog", "/reference", "/cv", "/kickstart"]);
-  return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).sort();
+  return [...all].filter((r) => !OPERABLE.has(r) && !REVIEW_ONLY.has(r)).toSorted();
 }
 
 // Asset mounts copied verbatim: everything the config serves statically + the fonts dir.

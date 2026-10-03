@@ -57,9 +57,25 @@ describe("matchBlocks: the closed set decides, never the description", () => {
     expect(c.blocks.map((b) => b.component)).toEqual(["block-lede", "block-card"]);
   });
 
-  test("a block is emitted at most once however many of its tokens hit", () => {
+  test("a block is emitted once when aliases repeat without an explicit quantity", () => {
     const c = matchBlocks("a card, a tile, another card, an info card");
     expect(c.blocks.filter((b) => b.component === "block-card")).toHaveLength(1);
+  });
+
+  test("an explicit quantity repeats the requested block and keeps its ids unique", () => {
+    const c = matchBlocks("an intro, two cards, and a callout");
+    expect(c.blocks.map((b) => b.component)).toEqual([
+      "block-lede", "block-card", "block-card", "block-callout",
+    ]);
+    expect(c.blocks.map((b) => b.id)).toEqual(["b1", "b2", "b3", "b4"]);
+    expect(c.blocks[1]!.data.title).toBe("No build step");
+    expect(c.blocks[2]!.data.title).toBe("A closed set");
+  });
+
+  test("a numeric quantity is capped and the omitted request is named", () => {
+    const c = matchBlocks("12 cards");
+    expect(c.blocks.filter((b) => b.component === "block-card")).toHaveLength(8);
+    expect(c.refusals).toContainEqual(expect.objectContaining({ token: "12 blocks" }));
   });
 
   test("nothing in the set matched: no blocks, and never a guessed default page", () => {
@@ -68,9 +84,9 @@ describe("matchBlocks: the closed set decides, never the description", () => {
 });
 
 describe("matchBlocks: layout is three words and the description cannot invent a fourth", () => {
-  test("side by side sets every block in the same ask to half", () => {
+  test("a card-specific layout keeps the other blocks at their defaults", () => {
     const c = matchBlocks("two cards side by side with an intro");
-    for (const b of c.blocks) expect(b.span).toBe("half");
+    expect(c.blocks.map((b) => b.span)).toEqual(["full", "half", "half"]);
   });
 
   test("three across sets them to third", () => {
