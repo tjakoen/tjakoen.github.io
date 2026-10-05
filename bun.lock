@@ -7,7 +7,7 @@
       "dependencies": {
         "@tjakoen/batch": "^0.2.1",
         "@tjakoen/crumb": "^0.1.10",
-        "@tjakoen/grain": "^0.1.23",
+        "@tjakoen/grain": "^0.1.24",
         "@tjakoen/mill": "^0.4.0",
         "@tjakoen/proof": "^0.1.4",
       },
@@ -77,7 +77,7 @@
 
     "@tjakoen/crumb": ["@tjakoen/crumb@0.1.10", "", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "crumb": "cli.ts" } }, "sha512-Kx/5oOzc2tJL9iwQICvVL4I3i9rHO/qMFMl5zHhJs0i4D2ksylwbGBCLLP26SAnc4H9POoRzFm/8YKRyl2/KSg=="],
 
-    "@tjakoen/grain": ["@tjakoen/grain@0.1.23", "", {}, "sha512-TsRetdKqKnjax4/0nZDQdJnYEuDOpNnQSyjOgKNIN2+DVoTtEqzoYWFEiuU4/WLZjTluKIfu1furcEFKuhOG3g=="],
+    "@tjakoen/grain": ["@tjakoen/grain@0.1.24", "", {}, "sha512-uhhJS/uKT2vrAXfI8UZK5schkwDZu+YFt83kyGxvfxE2NN43LQItu2oc4XoVtGpF2MplIpx/bRcnLd1RVHBElg=="],
 
     "@tjakoen/mill": ["@tjakoen/mill@0.4.0", "", { "dependencies": { "@tjakoen/grain": "^0.1.23" } }, "sha512-D7VCW/uIFC8yobE6uHccTHPiPReKT8p/qtx3q/BEj1iESdK3ffFYzmI1BfstsIwEhJ31Ggzh4H5j4Esrd6/WrQ=="],
 
@@ -299,9 +299,15 @@
 
     "uuid": ["uuid@14.0.2", "", { "bin": { "uuid": "dist-node/bin/uuid" } }, "sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ=="],
 
+    "@tjakoen/crumb/@tjakoen/grain": ["@tjakoen/grain@0.1.23", "", {}, "sha512-TsRetdKqKnjax4/0nZDQdJnYEuDOpNnQSyjOgKNIN2+DVoTtEqzoYWFEiuU4/WLZjTluKIfu1furcEFKuhOG3g=="],
+
     "@tjakoen/crumb/@tjakoen/mill": ["@tjakoen/mill@0.2.2", "", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-cT7Hh3a1owWw9xfCV3W0+Gl0e1+5ir4arZ/iBG+CprebHk16mztbBo9qO/RzkNyyyq9BpeUu5T1uzbLvrWzUXA=="],
 
+    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@0.1.23", "", {}, "sha512-TsRetdKqKnjax4/0nZDQdJnYEuDOpNnQSyjOgKNIN2+DVoTtEqzoYWFEiuU4/WLZjTluKIfu1furcEFKuhOG3g=="],
+
     "@tjakoen/proof/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
+
+    "@tjakoen/proof/@tjakoen/grain": ["@tjakoen/grain@0.1.23", "", {}, "sha512-TsRetdKqKnjax4/0nZDQdJnYEuDOpNnQSyjOgKNIN2+DVoTtEqzoYWFEiuU4/WLZjTluKIfu1furcEFKuhOG3g=="],
 
     "@tjakoen/proof/@tjakoen/mill": ["@tjakoen/mill@0.2.2", "", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-cT7Hh3a1owWw9xfCV3W0+Gl0e1+5ir4arZ/iBG+CprebHk16mztbBo9qO/RzkNyyyq9BpeUu5T1uzbLvrWzUXA=="],
 
