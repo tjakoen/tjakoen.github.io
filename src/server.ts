@@ -381,7 +381,7 @@ function addContextReturn(html: string, pathname: string): string {
   }
 
   if (/^\/standards\/[^/]+\/?$/.test(pathname) && !pathname.endsWith(".md")) {
-    const returnLink = '<p class="docs-context-link"><a href="/standards">← All standards</a><span>Maintainer: Tjakoen Stolk. Current working standard.</span></p>';
+    const returnLink = '<p class="docs-context-link"><a href="/standards">← All standards</a><br><span>Maintainer: Tjakoen Stolk. Current working standard.</span></p>';
     return addToArticle(html, returnLink);
   }
 
@@ -517,6 +517,7 @@ async function fixProofCardLinks(res: Response): Promise<Response> {
   const html = await res.text();
   const pageTitle = html.match(/<title>([\s\S]*?) · Plans<\/title>/)?.[1];
   let fixed = html.replaceAll('href="/plan/', `href="${PLANS_PREFIX}/plan/`);
+  fixed = fixed.replaceAll('href="/plans/plan"', `href="${PLANS_PREFIX}"`);
   fixed = fixed.replace(
     /(<p class="proof-lede">\d+ plans?\. )The files are the source of truth; this board is a window\./,
     "$1This board tracks the site's work, including ideas and work in progress. For finished work, start with <a href=\"/projects\">selected projects</a> or read the <a href=\"/plans/plan/portfolio-finish-line\">portfolio plan</a>.",

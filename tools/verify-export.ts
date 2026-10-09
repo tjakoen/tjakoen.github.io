@@ -30,16 +30,6 @@ import { checkDiagramCache } from "./diagram-cache-gate.ts";
 
 const DIST = Bun.env.EXPORT_DIST ?? "dist";
 
-// Live-only backend endpoints (§18: the operable /intent+SSE door) that legitimately appear as a
-// literal <a href> in the rendered HTML but are NEVER export candidates — there is no page to
-// freeze, only a running server to ask. `/ai/manifest` is linked from /grain's own
-// "manifest" action (a debugging convenience for a human reading the page); batch's own
-// exportSite() already warns about it every run ("expected for operable surfaces excluded per
-// §18") — this is the same exclusion, just promoted from a warning to a documented pass here so a
-// REAL dead link doesn't hide next to an expected one. Keep this list short and named; anything
-// else missing from dist/ is a bug, not an exclusion.
-const OPERABLE_ONLY_REFS = new Set(["/ai/manifest"]);
-
 /** Does a root-absolute ref (already fragment/query-stripped) resolve under dist/? Tries BOTH
  *  shapes a route can take — a literal file (data routes, assets, the honest-source .md twins)
  *  and a "pretty" directory route's index.html — rather than guessing from the ref's spelling
@@ -100,7 +90,6 @@ async function checkDeadLinks(): Promise<string[]> {
     const html = await Bun.file(file).text();
     const page = "/" + relative(DIST, file);
     for (const ref of extractRefs(html)) {
-      if (OPERABLE_ONLY_REFS.has(ref)) continue;
       const r = await resolves(ref);
       if (!r.ok)
         failures.push(`${page}: href/src="${ref}" → dist/${r.triedFile} (or dist/${r.triedDir}) does not exist`);

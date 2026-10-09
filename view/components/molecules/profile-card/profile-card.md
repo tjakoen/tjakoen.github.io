@@ -12,7 +12,7 @@ an actions group. Shared by `/about` and `/resume`. CSS-only (no `.html`) — au
     <p class="profile-card__role">Role line.</p>
     <p class="profile-card__tagline">Tagline.</p>
   </div>
-  <div class="profile-card__actions"><a class="btn" href="…">Action</a></div>
+  <div class="profile-card__actions"><a class="btn" href="/projects">Selected work</a></div>
 </header>
 ```
 

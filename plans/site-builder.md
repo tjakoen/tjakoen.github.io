@@ -65,8 +65,8 @@ the tag source a developer would have written.** Every exported page carries the
 
 **1. Composing GRAIN from data needs no new engine.** `createRenderer` returns
 `render(name, data, props)` and it takes the component name as a **runtime string**
-([`batch/render/render.ts`](../../batch/render/render.ts), re-exported by
-[`src/render.ts`](../src/render.ts)). A composition is therefore a list of
+([batch/render/render.ts](https://github.com/tjakoen/batch/blob/main/render/render.ts), re-exported by
+[src/render.ts](https://github.com/tjakoen/tjakoen.github.io/blob/main/src/render.ts)). A composition is therefore a list of
 `{component, data, props}` rendered by a loop. The closed set stays code-owned exactly as
 `field-matcher.ts`'s tables are, and the model never gets to name a component.
 
@@ -221,7 +221,7 @@ The export drawer says what travels with the file and what still depends on this
 stylesheet.
 
 **What exists.** `madeWith()` in
-[`grain/scripts/made-with.js`](../../grain/packages/grain/scripts/made-with.js) returns
+[grain/scripts/made-with.js](https://github.com/tjakoen/grain/blob/main/packages/grain/scripts/made-with.js) returns
 `made with GRAIN by tjakoen` as markup, with a `made-with` molecule for the styling, and its own doc
 says it is mounted at the bottom of every GRAIN app's shell so provenance reads identically across
 the fleet. Pantry, greenroom, proof and mill import it.
@@ -245,7 +245,7 @@ the fleet. Pantry, greenroom, proof and mill import it.
 
 ## What this supersedes and what it drops
 
-- [`builder-sandbox.md`](builder-sandbox.md) pieces 2 to 5 are replaced by P1 to P5 here. Piece 1,
+- [builder-sandbox.md](/plans/plan/builder-sandbox) pieces 2 to 5 are replaced by P1 to P5 here. Piece 1,
   the composer, shipped on 2026-08-14 and carries over unchanged.
 - **Nothing is deleted.** The form path stays reachable, the field tables become the form block's
   internals, and the tick-box work of 2026-08-14 is what lets a generated form still be AI-operable.
@@ -280,5 +280,5 @@ the fleet. Pantry, greenroom, proof and mill import it.
 The static-host question is settled: the exported builder composes, previews, and exports without an
 application server. The remaining work is whether the browser model can reliably compose and revise
 a page, and how it supplies useful content without inventing details. Those questions now live in
-[builder-ai-depth.md](builder-ai-depth.md), where each claim has to be measured against the canvas
+[builder-ai-depth.md](/plans/plan/builder-ai-depth), where each claim has to be measured against the canvas
 and the live model.

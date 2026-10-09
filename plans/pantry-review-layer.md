@@ -52,7 +52,7 @@ Mine had PANTRY rendering a review *about* a change. Theirs has PANTRY **hosting
 conducting the review on it**, which is a different and more useful thing: it turns PANTRY from a
 reporting surface into the layer the whole loop is driven from.
 
-[DECISIONS](../standards/DECISIONS.md) is the canon this builds toward. It owns which surface a
+[DECISIONS](/standards/decisions) is the canon this builds toward. It owns which surface a
 question belongs on, what a request carries, and the contract the answer comes back on. Nothing in
 this plan changes that contract; this is the mechanism that finally satisfies it.
 

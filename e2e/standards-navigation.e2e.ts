@@ -16,6 +16,11 @@ test("every standard has one heading, fits a phone, and returns to the standards
     await expect(page.locator('.board .docs-context-link a[href="/standards"]')).toBeVisible();
     await expect(page.locator(".board .docs-context-link")).toContainText("Maintainer: Tjakoen Stolk");
     await expect(page.locator(".board .docs-context-link")).toContainText("Current working standard");
+    const context = page.locator(".board .docs-context-link");
+    await expect(context.locator("br")).toHaveCount(1);
+    const linkBottom = await context.locator("a").evaluate((element) => element.getBoundingClientRect().bottom);
+    const maintainerTop = await context.locator("span").evaluate((element) => element.getBoundingClientRect().top);
+    expect(maintainerTop).toBeGreaterThan(linkBottom);
 
     const width = await page.locator(".app-shell__main").evaluate((element) => ({
       client: element.clientWidth,
