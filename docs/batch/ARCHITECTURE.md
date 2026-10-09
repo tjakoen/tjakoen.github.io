@@ -1,5 +1,5 @@
 ---
-title: "BATCH — Reference Architecture (Single Source of Truth)"
+title: "BATCH — Architecture and development history"
 ---
 
 **BATCH** = **B**un · **A**ddressable · **T**ypeScript · **C**SS · **H**tmx — a no-build,
@@ -24,6 +24,10 @@ This document keeps the reasoning behind BATCH's architecture and records how th
 For current install commands and package-level development checks, start with
 [`GETTING-STARTED.md`](GETTING-STARTED.md) and the BATCH repository's README. Code and tests in the
 standalone repository are the source of truth for the package's current implementation.
+
+Some later sections preserve the original portfolio application's folder names, routes, and
+composition-root examples. Those names describe the stack's development history; they are not
+exports or routes owned by the standalone BATCH package today.
 
 ## What BATCH gives you (capabilities)
 
@@ -54,8 +58,10 @@ or drop a capability → update this list (`../../CLAUDE.md` alignment table →
   toggle is grain's grade-as-signal vocabulary. It reads the filesystem directly and imports nothing
   from batch; the composition root passes it the page-nav routes. (§13a is retained for the
   Storybook-style generation technique it still uses; ownership is grain's.)
-- **Sitemap + SEO/AEO from one source** — one page list feeds `/catalog`, `/sitemap.xml`, `/robots.txt`,
-  and an `/llms.txt` AI-facing index (the AEO counterpart to the sitemap; §11.4).
+- **Route-derived sitemap and robots files.** `createSitemap()` derives `/sitemap.xml` and the
+  routes used by `/robots.txt` from page files plus host-supplied extra routes. BATCH's separate
+  `renderLlms()` helper formats an `/llms.txt` index from host-supplied descriptions. The component
+  catalog belongs to GRAIN, where its Human/AI grade toggle is defined.
 - **A framework-generic audit engine** — perf + SEO/AEO baselines via Playwright, vocabulary-agnostic
   so it can bench any app/framework, not just this one (`batch/audit`).
 

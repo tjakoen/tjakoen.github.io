@@ -33,6 +33,7 @@ import { SHOWCASE_KEY, showcaseState, stashShowcaseState, type ShowcaseState } f
 // cross-page task lands on /mail (never a model guess, law #2). Same matcher the reasoner's own
 // on-page branch uses (desk-reasoner.ts), so the two runs can't disagree on what counts as a hit.
 import { matchSender } from "./mail-sender.ts";
+import { completeWithSchema, type JsonSchema } from "./local-schema-completion.ts";
 
 // Pull grain's door + stub by URL (build-time bare imports would be refused by the module server).
 // Top-level await: by the time the dispatcher calls createClientDoor(), these are resolved, so our
@@ -715,8 +716,19 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     // streams or does not depending on the request it is handed, and grain types the two uses
     // separately (StreamingChatEngine carries interruptGenerate; ChatEngine returns a completion).
     // The desk holds the engine as the streaming one because that is what a conversation needs.
-    makeChatModel: (engine, opts) =>
-      grainChat.makeChatModel(engine as unknown as Parameters<typeof grainChat.makeChatModel>[0], opts),
+    makeChatModel: (engine, opts) => {
+      if (!opts?.schema) {
+        return grainChat.makeChatModel(engine as unknown as Parameters<typeof grainChat.makeChatModel>[0], opts);
+      }
+      return {
+        complete: (prompt: string) => completeWithSchema(
+          engine as unknown as Parameters<typeof completeWithSchema>[0],
+          prompt,
+          opts.schema as JsonSchema,
+          opts.temperature,
+        ),
+      };
+    },
     loadKnowledge,
     fallback: grainReasoner.makeStubReasoner(),   // every non-chat verb (demo.run, say.*, item.archive)
     markOffline,
@@ -746,8 +758,8 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // nothing here and says the desk cannot run rather than falling back to something that is not the
   // model. That was the owner's call on 2026-08-14, and a silent fallback is the shape of every
   // silent-success bug this estate has recorded.
-  (globalThis as unknown as { desk?: { complete(prompt: string): Promise<string | null> } }).desk = {
-    complete: (prompt: string) => reasoner.complete(prompt),
+  (globalThis as unknown as { desk?: { complete(prompt: string, schema?: JsonSchema): Promise<string | null> } }).desk = {
+    complete: (prompt: string, schema?: JsonSchema) => reasoner.complete(prompt, schema),
   };
   // If we arrived here from a desk navigation, resume the lamp on this page (cross-page continuity).
   // Read the arrival key BEFORE runArrival consumes it, so page-arrival awareness can skip a page the

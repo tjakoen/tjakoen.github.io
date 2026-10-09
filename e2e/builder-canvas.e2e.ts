@@ -393,7 +393,25 @@ const WEBLLM_STUB = `
 export async function probeDevice() { return { webgpu: true, deviceMemory: 8, cores: 8, maxBufferSize: 4 * 1024 ** 3 }; }
 export function canRunModel() { return true; }
 export async function webgpuAvailable() { return true; }
-export async function loadEngine({ onProgress }) { onProgress?.({ progress: 1, text: "fake engine ready" }); return { fake: true }; }
+function draftAnswer(prompt) {
+  if (/Hearth Bakery page/i.test(prompt)) return JSON.stringify({ blocks: [
+    { name: "lede", copy: { body: "Hearth Bakery bakes sourdough fresh each morning." } },
+    { name: "card", copy: { title: "Coffee", body: "Freshly brewed to go with the bread." } },
+  ] });
+  if (/generated image tag/i.test(prompt)) return JSON.stringify({ blocks: [
+    { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
+  ] });
+  if (/another card/i.test(prompt)) return JSON.stringify({ blocks: [{ name: "card" }] });
+  return JSON.stringify({ blocks: [{ name: "lede" }] });
+}
+export async function loadEngine({ onProgress }) {
+  onProgress?.({ progress: 1, text: "fake engine ready" });
+  return { chat: { completions: { create: async (request) => {
+    const prompt = request.messages.map((message) => message.content).join("\\n");
+    sessionStorage.setItem("__builderSchema", request.response_format.schema);
+    return { choices: [{ message: { content: draftAnswer(prompt) } }] };
+  } } } };
+}
 `;
 
 // makeChatModel is the seam /grain/builder uses (desk-reasoner's `complete`). The scripted answers below
@@ -457,6 +475,11 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(`${CELL} .card__title`)).toHaveText("Coffee");
     await expect(page.locator(`${CELL} .card__body`)).toHaveText("Freshly brewed to go with the bread.");
     await expect(page.locator(SAID)).toContainText("drafted copy from your brief");
+
+    const schema = await page.evaluate(() => JSON.parse(sessionStorage.getItem("__builderSchema") || "null"));
+    expect(schema.properties.blocks.maxItems).toBe(8);
+    expect(schema.properties.blocks.items.properties.name.enum).toContain("card");
+    expect(schema.additionalProperties).toBe(false);
 
     const spec = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
     expect(spec.blocks.map((block: { data: Record<string, string> }) => block.data)).toEqual([
