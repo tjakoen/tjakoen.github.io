@@ -420,6 +420,8 @@ const DECKS_DIR = join(import.meta.dir, "..", "content", "media", "decks");
 /** Deck slug → the page title shown in the tab and the frame's caption. Kept beside the files
  *  rather than parsed out of the PDF: a title is editorial, and pdf metadata is usually wrong. */
 const DECK_TITLES: Record<string, string> = {
+  "engineering-ai-for-social-impact": "Engineering AI for Social Impact",
+  "from-code-to-career": "From Code to Career",
   "gdg-hau-ai-hack-ideation": "Beyond Limits: the ideation workshop",
   "reality-check-ai-ethics": "Re: AI-lity Check",
 };
@@ -427,22 +429,40 @@ const DECK_TITLES: Record<string, string> = {
 const deckTitle = (slug: string): string =>
   DECK_TITLES[slug] ?? slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
-/** Every deck route, so the sitemap and the static export carry the viewer pages too — a page that
- *  only exists on the dev server is a 404 on Pages, which is exactly the bug this shape invites. */
+/** Every deck route and its index, so the sitemap and static export carry the viewer pages too. A
+ *  page that only exists on the dev server is a 404 on Pages, which is exactly the bug this shape invites. */
 export async function listPortfolioDeckRoutes(): Promise<string[]> {
   try {
     const files = await readdir(DECKS_DIR);
-    return files.filter((f) => f.endsWith(".pdf")).map((f) => `/decks/${basename(f, ".pdf")}`);
+    return ["/decks", ...files.filter((f) => f.endsWith(".pdf")).map((f) => `/decks/${basename(f, ".pdf")}`)];
   } catch { return []; }                                   // no decks dir ⇒ no routes, not a crash
 }
 
-/** The viewer route handler, mounted beside the content routes at the composition root. */
+/** The deck index and viewer route handler, mounted beside the content routes at the composition root. */
 export function createPortfolioDeckRoutes(
   compose?: (html: string) => Promise<string>,
   inject = "",
   injectHead = "",
 ): MillRequestHandler {
   return async (pathname: string): Promise<Response | null> => {
+    if (pathname === "/decks") {
+      const files = await readdir(DECKS_DIR).catch(() => []);
+      const items = await Promise.all(files.filter((f) => f.endsWith(".pdf")).map(async (file) => {
+        const slug = basename(file, ".pdf");
+        const href = `/decks/${slug}`;
+        const title = deckTitle(slug);
+        const size = Bun.file(join(DECKS_DIR, file)).size / 1_000_000;
+        return `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a><span>${size.toFixed(1)} MB · PDF</span></li>`;
+      }));
+      const board = `<h1>Talks and decks</h1><p>Presentation decks from selected talks and workshops.</p><ul class="deck-index__list">${items.join("\n")}</ul>`;
+      const html = shellPage({
+        title: "Talks and decks",
+        description: "Presentation decks from selected talks and workshops.",
+        screen: "calendar", section: ` data-section="bread"`, board, inject, injectHead,
+      });
+      const composed = compose ? await compose(html) : html;
+      return new Response(composed, { headers: { "content-type": "text/html; charset=utf-8" } });
+    }
     const match = /^\/decks\/([a-z0-9-]+)$/i.exec(pathname);
     if (!match) return null;
     const slug = match[1]!;
@@ -458,7 +478,7 @@ export function createPortfolioDeckRoutes(
 <figure class="doc-frame">
   <object class="doc-frame__object" data="${escapeHtml(src)}" type="application/pdf"
           aria-label="${escapeHtml(`${title}, rendered in the page`)}">
-    <p class="doc-frame__fallback">This browser will not display the deck inline. Open it directly instead.</p>
+    <p class="doc-frame__fallback">This browser cannot display the deck inline. <a href="${escapeHtml(src)}">Open the PDF directly.</a></p>
   </object>
   <figcaption class="doc-frame__escape">
     <a href="${escapeHtml(src)}">Open the PDF directly</a>

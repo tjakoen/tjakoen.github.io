@@ -171,7 +171,7 @@
 
     <!-- 5 · HOW IT WORKS — one vocabulary → one door → RenderOps over SSE -->
     <section class="site__section" id="how" aria-label="How it works">
-      <h2 class="section-head"><span>How it works</span><a class="action" href="/ai/manifest?screen=grain">manifest</a></h2>
+      <h2 class="section-head"><span>How it works</span><a class="action" href="/grain/docs/ai-interface">AI interface</a></h2>
       <p class="site__why">The whole system is one closed vocabulary of verbs and surfaces
         (<span class="name">contract.ts</span>). A human click and an AI decision are the same
         <b>Intent</b>; both flow through <b>one door</b> and return as <b>RenderOp</b>s pushed over SSE.
@@ -191,7 +191,7 @@
 
       <ul class="list how__points">
         <li class="list__item"><b>One vocabulary.</b> Verbs and surfaces live in a single registry, referenced, never re-typed as strings.</li>
-        <li class="list__item"><b>A manifest the AI reads.</b> Each screen publishes a drift-proof, machine-readable map of what's operable at <a href="/ai/manifest">/ai/manifest</a>, harvested from the components, so the AI is <em>shown</em> the page, not told about it.</li>
+        <li class="list__item"><b>A manifest the AI reads.</b> Each screen has a drift-proof, machine-readable map of what's operable, harvested from the components, so the AI is <em>shown</em> the page, not told about it. <a href="/grain/docs/ai-interface">Read how the interface works.</a></li>
         <li class="list__item"><b>Self-documenting.</b> Every component auto-appears in a live <a href="/catalog">component catalog</a>: the design system browses itself.</li>
         <li class="list__item"><b>Auditable by design.</b> Every interaction, human or AI, is one source-tagged Intent through one server-side door, so a full human + AI interaction log is a server-side drop-in.</li>
         <li class="list__item"><b>Two door transports, one contract.</b> On the live server the door is <span class="name">POST /intent</span>; on a static host this page opts into the <b>client-side door</b>: the same vocabulary and the same ops, run in your browser with no backend. The client door is deliberately fenced: everything it loads is <b>client-safe by contract</b>, static-style modules only, no secrets or tokens, nothing that needs a server. Anything that does need one (real data, a real model) stays behind the server door and is simply absent here.</li>
@@ -234,7 +234,7 @@
       <div class="site__foot-links">
         <a href="/bread">The BREAD stack</a>
         <a href="/catalog">Component catalog</a>
-        <a href="/ai/manifest">AI manifest</a>
+        <a href="/grain/docs/ai-interface">AI interface</a>
         <a href="https://github.com/tjakoen/grain" target="_blank" rel="noopener noreferrer">grain on GitHub</a>
       </div>
       <p>Built on <b class="name">BATCH</b>: no build step. <em>This site is itself built with GRAIN</em>, on the

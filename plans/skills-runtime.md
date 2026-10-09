@@ -23,7 +23,7 @@ owner: ai
 
 **Source.** [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — the executable
 form of [Loop Engineering](https://addyosmani.com/blog/loop-engineering/), which
-[`LOOP.md`](../standards/LOOP.md) §5 already cites for the five primitives. 24 skills, 4 personas,
+[LOOP.md](/standards/loop) §5 already cites for the five primitives. 24 skills, 4 personas,
 7 reference checklists, a `plugin.json`, install via `npx skills add` or the plugin marketplace.
 
 **The gap it exposes.** Swept all nine BREAD repos plus `~/.claude` on 2026-08-05: **no `skills/`
@@ -95,7 +95,7 @@ with a badly shaped description never triggers and is pure context bloat. Cheape
       the first line"), literal trigger tokens, and an anti-rationalization clause; ours are written as
       conditions. `doubt-driven-development` never met a risky-enough decision, so it is untested rather
       than disproven.
-- [x] Recorded in [`plans/decisions/2026-08-05-skills-self-trigger.md`](decisions/2026-08-05-skills-self-trigger.md),
+- [x] Recorded in [plans/decisions/2026-08-05-skills-self-trigger.md](https://github.com/tjakoen/tjakoen.github.io/blob/main/plans/decisions/2026-08-05-skills-self-trigger.md),
       with the census table and the register comparison.
 
 **Exit: met, and it did not shrink S1 — it specced it.** Because the mechanism is confirmed, the

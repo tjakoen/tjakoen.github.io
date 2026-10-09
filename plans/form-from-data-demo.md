@@ -76,7 +76,7 @@ text field would, and anything that is not one of its option values empties it w
   resolves it. The earlier local-symlink limitation no longer applies to this work.
 - **The remaining control gaps and tick-box verb are closed.** GRAIN's check.set operation lets the
   AI tick a generated checkbox. The builder's component composition and export shipped under
-  [`site-builder.md`](site-builder.md).
+  [site-builder.md](/plans/plan/site-builder).
 - **The live-model audit remains useful follow-up evidence.** The form-build-det scenario has no
   recorded GPU pass. The builder reliability plan includes a fresh baseline across composition and
   editing, so it can be run as part of that measured pass.

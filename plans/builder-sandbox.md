@@ -21,7 +21,7 @@ owner: ai
 
 # The builder becomes a sandbox, not a form page
 
-> **Pieces 2 to 5 are superseded by [`site-builder.md`](site-builder.md), 2026-08-14.** The owner's
+> **Pieces 2 to 5 are superseded by [site-builder.md](/plans/plan/site-builder), 2026-08-14.** The owner's
 > clarification that day separated two things this file had been using one word for: building forms
 > from data, which is done and lives in grain, and the builder on the site, which means prompt to
 > GRAIN and is a page builder. Piece 1, the composer, shipped and carries over. The rest of this file
@@ -54,9 +54,9 @@ points rather than four form descriptions.
 ## The five pieces, smallest first
 
 > **Closed as a superseded plan on 2026-10-02.** The prompt, component vocabulary, preview route,
-> and catalog default moved into [`site-builder.md`](site-builder.md), whose five phases are now
+> and catalog default moved into [site-builder.md](/plans/plan/site-builder), whose five phases are now
 > complete. The selection narration and the measured limits of natural-language editing continue
-> in [`builder-ai-depth.md`](builder-ai-depth.md). This file remains as the history of the first
+> in [builder-ai-depth.md](/plans/plan/builder-ai-depth). This file remains as the history of the first
 > proposal; it is no longer an active work item.
 
 1. **The prompt area becomes a real composer.** A text area rather than a link list, using grain's
@@ -115,7 +115,7 @@ matcher's table.
 
 **The owner answered on 2026-08-13: add the verb. BUILT 2026-08-14** as `check.set`, with its own
 surface kind `check` and its own render op `tick`; the spec and the full account are in grain's
-[`plans/check-set-op.md`](../../grain/packages/grain/plans/check-set-op.md). The hole piece 2 would
+[plans/check-set-op.md](https://github.com/tjakoen/grain/blob/main/packages/grain/plans/check-set-op.md). The hole piece 2 would
 otherwise have opened is closed: the moment the matcher can generate a checkbox, the demo's closing
 move of the AI filling in what it just generated reaches that control like any other. The ordering
 held, and it was the point of the unit: contract, dispatcher, kit and door first, the verb proved

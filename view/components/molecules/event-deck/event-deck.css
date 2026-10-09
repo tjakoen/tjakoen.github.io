@@ -24,3 +24,9 @@
 
 /* the viewer page (/decks/<file>): the document is the page, so the title stays quiet above it */
 .deck-page__title { margin: 0 0 var(--space-4); font-size: var(--text-lg); font-weight: 500; }
+
+.deck-index__list { display: grid; gap: var(--space-3); margin: var(--space-5) 0 0;
+  padding: 0; list-style: none; }
+.deck-index__list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: var(--space-2);
+  padding: var(--space-3) 0; border-top: 1px solid var(--line-soft); }
+.deck-index__list span { color: var(--ink-muted); font: var(--text-xs) var(--font-mono); }

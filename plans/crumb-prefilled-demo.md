@@ -16,7 +16,7 @@ owner: ai
 # CRUMB prefilled demos: preset steps, prefilled data, and a tour that writes the next prompt
 
 The feasibility audit is the substance and lives at
-[`docs/CRUMB-PREFILL-FEASIBILITY-2026-08-09.md`](../docs/CRUMB-PREFILL-FEASIBILITY-2026-08-09.md).
+[docs/CRUMB-PREFILL-FEASIBILITY-2026-08-09.md](https://github.com/tjakoen/tjakoen.github.io/blob/main/docs/CRUMB-PREFILL-FEASIBILITY-2026-08-09.md).
 This plan is the build order, and it does not restate the audit.
 
 **Where the work lands.** Most of it is in `grain/packages/crumb` (the parser grammar, the client, the

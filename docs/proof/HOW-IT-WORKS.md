@@ -58,7 +58,7 @@ the timeline: a plan's history *is* the record of the AI's decisions.
 ## Clicking a card
 
 `/plan/:id` renders that plan's full body through MILL (`renderGrainDocument`, the same engine
-[MILL's docs](mill/docs/GETTING-STARTED.md) describe), with a body-only layout, since the plan
+[MILL's docs](/mill/docs/getting-started) describe), with a body-only layout, since the plan
 already leads with its own `# Title` and PROOF renders the frontmatter facts separately above it.
 The grade guardrail still runs, plan prose is human-authored content, so it stamps clean even though
 an AI likely wrote both the plan and the code it describes.
