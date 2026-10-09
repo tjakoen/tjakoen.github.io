@@ -3,10 +3,11 @@ title: "Getting started with PANTRY"
 ---
 
 PANTRY is an **app**, not a layer: a single server you drop into any project that composes BATCH,
-GRAIN, MILL, and PROOF into one "developer cockpit". Run it in a project and both you and your coding
-AI get that project's own task board, the framework docs, a generated component/vocabulary reference,
-and a machine-readable index of all of it, all addressable in one place. Nothing imports PANTRY; it
-imports everything below it. This page is the fastest path from a bare project to a running cockpit.
+GRAIN, MILL, and PROOF into one "developer cockpit". Run it in a project and you get that project's
+task board, framework docs, generated component and vocabulary references, and machine-readable
+indexes. PANTRY also gathers run reports, artifacts, decisions, and a project timeline into the same
+local cockpit. Nothing imports PANTRY; it imports the layers below it. This page is the fastest path
+from a bare project to a running cockpit.
 The full design lives in [`PLAN.md`](https://github.com/tjakoen/pantry/blob/main/PLAN.md); the
 composition itself (which route comes from which layer) is documented in
 [`WHAT-IT-COMPOSES.md`](WHAT-IT-COMPOSES.md).
@@ -79,7 +80,11 @@ Every field is optional; a project with none of the below still runs with sane d
 | `plansDir` | `"./plans"` | Where PROOF's board reads plan files from. |
 | `docsDirs` | `["./docs"]`, only if it exists | This project's *own* docs folders, mounted read-only, one MILL collection per folder. Pointers to existing folders, never a copy. |
 | `graphDir` | `"./graphify-out"` | Where the mindmap (`/map`) looks for a `merged-graph.json` or `graph.json` written by the external `graphify` tool. See `WHAT-IT-COMPOSES.md`. |
-| `surfaces` | every surface `true` | Turn individual surfaces off: `{ plans, docs, reference, catalog, standards }`. |
+| `surfaces` | Every configurable surface is enabled by default. | Turn off individual surfaces with `plans`, `docs`, `reference`, `catalog`, `standards`, `decisions`, `artifacts`, `timeline`, or `runs`. |
+
+The machine-readable indexes (`/knowledge.json` and `/llms.txt`), the mindmap (`/map` and
+`/map.json`), the About page, and the shared event stream are not individual `surfaces` toggles.
+Some configurable surfaces still disappear when their required source or package is missing.
 
 ## Run it
 
@@ -93,11 +98,14 @@ mounted:
 
 ```
 PANTRY cockpit on http://localhost:4400
-  /          the stack, composed
+  /          this project's cockpit
   /plans     this project's plan board
   /docs      the framework docs + this project's
   /reference the generated AI vocabulary + token slots
   /catalog   the GRAIN component catalog
+  /runs      the run ledger
+  /artifacts the run evidence shelf
+  /timeline  the project history
 ```
 
 A surface whose underlying source is missing (no `plans/`, no docs folder, the portfolio package not

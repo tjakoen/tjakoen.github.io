@@ -4,9 +4,10 @@ test("BATCH presents the portfolio audit with its scope and reproduction path", 
   await page.goto("/batch");
 
   const audit = page.locator(".batch-audit");
-  await expect(audit).toContainText("October 2, 2026");
-  await expect(audit).toContainText("267,606 bytes of JavaScript");
-  await expect(audit).toContainText("795,638 total transferred bytes across 38 requests");
+  await expect(audit).toContainText("October 9, 2026");
+  await expect(audit).toContainText("211,553 bytes of JavaScript");
+  await expect(audit).toContainText("745,209 total transferred bytes across 35 requests");
+  await expect(audit).toContainText("cut 56,053 JavaScript bytes from the earlier run");
   await expect(audit).toContainText("not a benchmark of a minimal BATCH app");
   await expect(audit.locator('a[href="https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/report.md"]'))
     .toBeVisible();

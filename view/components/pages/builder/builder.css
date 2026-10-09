@@ -64,6 +64,7 @@
 [data-screen="builder"] .mk-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0;
   overflow: hidden; background: var(--paper);
   border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
+[data-screen="builder"] .wb__canvas { container: builder-canvas-pane / inline-size; }
 [data-screen="builder"] .mk-pane__head { display: flex; align-items: baseline; justify-content: space-between;
   gap: var(--space-3); padding: var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--line-soft); background: var(--paper-2); }
@@ -71,6 +72,7 @@
   color: var(--ink); }
 [data-screen="builder"] .mk-pane__meta { font-size: var(--text-xs); color: var(--ink-muted);
   font-family: var(--font-mono); }
+[data-screen="builder"] .wb__canvas .mk-pane__head > .mk-pane__meta { white-space: nowrap; }
 [data-screen="builder"] .mk-pane__body { flex: 1 1 auto; min-height: 0; overflow-y: auto;
   padding: var(--space-4); }
 
@@ -99,6 +101,17 @@
    the row is a list you scan; these are four controls in a head and the whole point of the page is
    that you can leave with what you built. */
 [data-screen="builder"] .wb__take .wb-chip { opacity: 1; }
+
+/* The canvas can be narrow on a wide screen when the block rail and desk panel are both open.
+   Wrap its file controls at the pane width, so the count stays on one line and the actions get a
+   clean row of their own instead of clipping against the canvas edge. */
+@container builder-canvas-pane (max-width: 34rem) {
+  [data-screen="builder"] .wb__canvas .mk-pane__head { flex-wrap: wrap; align-items: center; row-gap: var(--space-2); }
+  [data-screen="builder"] .wb__file { flex: 1 1 auto; }
+  [data-screen="builder"] .wb__canvas .mk-pane__head > .mk-pane__meta { margin-left: auto; }
+  [data-screen="builder"] .wb__take { flex: 1 0 100%; justify-content: space-between; flex-wrap: wrap;
+    gap: var(--space-2); margin-left: 0; }
+}
 
 /* --- the canvas: the one grid the whole composition lays out in -------------------------------
    Six columns because it is the smallest count the three layout words divide into cleanly (full 6,

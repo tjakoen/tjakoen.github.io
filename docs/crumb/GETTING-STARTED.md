@@ -4,11 +4,13 @@ title: "Getting started with CRUMB"
 
 CRUMB is the GRAIN stack's guided-tour layer: it turns a folder of markdown files into a walkthrough
 that highlights real, live surfaces in your app, one at a time, using GRAIN's own traveling lamp. A
-tour never edits your app or your data; it only reads and highlights. The same tour doubles as an
-AI-review walkthrough (a "here's what changed, mark it verified" mode) when you flip it to dev mode.
-It is live in production on this site: the "Tour" entry point on the desk runs on this exact package.
-The full design reasoning is in [`PLAN.md`](https://github.com/tjakoen/grain/blob/main/packages/crumb/PLAN.md);
-this page is the fastest path from install to a running tour.
+tour reads and highlights by default. If a step declares `prefill`, CRUMB can stage text in that
+step's registered field through GRAIN's door; it never submits the form or replaces text the visitor
+has started typing. The same tour doubles as an AI-review walkthrough (a "here's what changed, mark it
+verified" mode) when you flip it to dev mode. It is live in production on this site: the "Tour" entry
+point on the desk runs on this exact package. The full design reasoning is in
+[`PLAN.md`](https://github.com/tjakoen/grain/blob/main/packages/crumb/PLAN.md); this page is the
+fastest path from install to a running tour.
 
 ## Install
 
@@ -19,8 +21,9 @@ to configure first, no `.npmrc` and no token:
 bun add @tjakoen/crumb    # or: npm install @tjakoen/crumb
 ```
 
-CRUMB depends on `@tjakoen/grain` and `@tjakoen/mill`; both need to already be installed and wired
-into your app (CRUMB reuses GRAIN's lamp and MILL's frontmatter parser rather than shipping its own).
+The package manager also installs CRUMB's declared GRAIN and MILL dependencies. Your host still
+needs to wire the GRAIN and MILL routes and assets into the app: CRUMB reuses GRAIN's lamp and
+MILL's frontmatter parser rather than shipping its own.
 
 ## Mount it over a tours folder
 

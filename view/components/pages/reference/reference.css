@@ -8,6 +8,17 @@
 
 [data-screen="reference"] .reference-context span { color: var(--color-muted); }
 
+[data-screen="reference"] .reference-scroll-hint { display: none; }
+
+@media (max-width: 42rem) {
+  [data-screen="reference"] .reference-scroll-hint {
+    display: block;
+    margin: calc(-1 * var(--space-4)) 0 var(--space-3);
+    color: var(--color-muted);
+    font-size: var(--text-xs);
+  }
+}
+
 [data-screen="reference"] .reference-table-scroll {
   max-width: 100%;
   margin: var(--space-3) 0 var(--space-6);

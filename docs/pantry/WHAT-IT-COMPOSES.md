@@ -4,8 +4,8 @@ title: "What PANTRY composes"
 
 PANTRY is a composition root, not a framework of its own: every surface it serves is a real layer's
 own code, mounted, not a reimplementation. This page walks through what each of BATCH, GRAIN, MILL,
-and PROOF contributes, then lists every route the composed server answers and what each one actually
-returns. See [`GETTING-STARTED.md`](GETTING-STARTED.md) for installing and running it.
+and PROOF contributes, then lists the human and machine routes the composed server answers. See
+[`GETTING-STARTED.md`](GETTING-STARTED.md) for installing and running it.
 
 ## The four layers, and what each one gives PANTRY
 
@@ -42,6 +42,20 @@ themselves rather than error.
 /about               the "here's the BREAD stack" showcase (moved off the front door on purpose)
 /plans               the host's own PROOF board, read-only, from ./plans/*.md
 /plans/plans.json    the board's machine index
+/plans/plan/:id      one plan body, rendered through MILL
+/decisions           the host's decision inbox (when enabled)
+/decisions/:id       one decision and its evidence (when enabled)
+/decisions.json      the machine twin (when enabled)
+/answers             the decision answer log; a guarded local POST records an answer (when enabled)
+/answers.json        the machine twin (when enabled)
+/runs                the run ledger (when enabled)
+/runs/:id            one run report (when enabled)
+/runs.json           the machine twin (when enabled)
+/artifacts           the run-evidence index (when enabled)
+/artifacts.json      the machine twin (when enabled)
+/artifacts/raw/:path the original artifact bytes (when enabled)
+/timeline            the retrospective project timeline (when enabled)
+/timeline.json       the machine twin (when enabled)
 /standards           the writing / README / voice standards, rendered through MILL
 /docs                an index of every mounted doc collection (bundled + the host's own)
 /docs/batch          BATCH's explanatory docs, resolved from the portfolio package
@@ -58,18 +72,19 @@ themselves rather than error.
 /stream              the SSE channel the live plan board updates ride on
 ```
 
-Every route above except the static asset routes (`/styles/*`, `/components.css`, `/*.css`,
-`/*.js`) is gated by a `surfaces` toggle in `pantry.config.json` (`plans`, `docs`, `reference`,
-`catalog`, `standards`); a surface set to `false`, or whose underlying package can't be resolved,
-disappears from the nav and its route stops answering, rather than 500ing.
+The `surfaces` setting controls the plan board, docs, reference, catalog, standards, decisions,
+artifacts, runs, and timeline groups. A disabled group stops answering; a missing source or package
+can also disable a group. The About page, shared machine-readable indexes, mindmap, stream, and static
+assets do not have individual surface toggles. The answer log has a guarded local POST route; the
+other listed data pages are read-only projections of project files and history.
 
 ### The home page, in detail
 
-Home is deliberately **not** a pitch for the BREAD stack (that's what `/about` is for). It's the
-host project's own front door: a card linking to the plan board, a "Working with AI" section with
-two teasers (AI-retrieval, pointing at `/llms.txt`; the mindmap, pointing at `/map`), and a demoted
-"Reference surfaces" row linking `/docs`, `/reference`, and `/catalog` for whoever wants them without
-putting three framework links ahead of the project's own plans.
+Home is deliberately **not** a pitch for the BREAD stack (that's what `/about` is for). It is the
+host project's front door: the plan board leads when enabled, followed by a "Working with AI" section
+for retrieval and the mindmap. Enabled run, artifact, and timeline surfaces appear as evidence
+links. A demoted "Reference surfaces" row links `/docs`, `/reference`, and `/catalog` without putting
+framework links ahead of the project's own plans.
 
 ### `/about`
 

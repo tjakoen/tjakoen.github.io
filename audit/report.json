@@ -7,13 +7,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 144,
-        "loadMs": 146,
-        "wireBytes": 928755,
-        "jsBytes": 267606,
-        "cssBytes": 592135,
-        "requests": 38
+        "ttfbMs": 10,
+        "domContentLoadedMs": 183,
+        "loadMs": 204,
+        "wireBytes": 875505,
+        "jsBytes": 211553,
+        "cssBytes": 594938,
+        "requests": 35
       },
       "dom": {
         "title": "Welcome · TJ's Desk",
@@ -57,12 +57,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 14,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 862654,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 58,
+        "loadMs": 58,
+        "wireBytes": 809404,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "About · TJ's Desk",
@@ -105,13 +105,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 794124,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 36,
+        "loadMs": 36,
+        "wireBytes": 740874,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Badges · School of Computing course credentials",
@@ -155,12 +155,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 9,
-        "domContentLoadedMs": 42,
-        "loadMs": 43,
-        "wireBytes": 797089,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 744137,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Flutter App Development · 6ADET section 2125",
@@ -203,13 +203,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 797135,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 39,
+        "loadMs": 39,
+        "wireBytes": 744183,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Dart and Flutter Foundations · 6ADET section 2125",
@@ -252,13 +252,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 40,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 41,
         "loadMs": 41,
-        "wireBytes": 797089,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 744137,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Flutter App Development · 6ADET section 2134",
@@ -301,13 +301,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 797135,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 9,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 744183,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Dart and Flutter Foundations · 6ADET section 2134",
@@ -350,13 +350,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 41,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 42,
         "loadMs": 42,
-        "wireBytes": 797157,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 744205,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Backend Development with Cloud · 6APSI section 2203",
@@ -399,13 +399,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 12,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 797079,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 9,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 744127,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Frontend Design with Cloud · 6APSI section 2203",
@@ -449,12 +449,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 8,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 797157,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 744205,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Backend Development with Cloud · 6APSI section 2209",
@@ -497,13 +497,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 797079,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 8,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 744127,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Frontend Design with Cloud · 6APSI section 2209",
@@ -546,13 +546,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 797157,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 744205,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Backend Development with Cloud · 6APSI section 2215",
@@ -595,13 +595,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 797079,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 12,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 744127,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Frontend Design with Cloud · 6APSI section 2215",
@@ -644,13 +644,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 797157,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 8,
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 744205,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Backend Development with Cloud · 6APSI section 2240",
@@ -693,13 +693,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
+        "ttfbMs": 8,
         "domContentLoadedMs": 43,
         "loadMs": 43,
-        "wireBytes": 797079,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 744127,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Frontend Design with Cloud · 6APSI section 2240",
@@ -742,13 +742,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 796957,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 38,
+        "loadMs": 39,
+        "wireBytes": 744005,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Interactive Web Pages · 6INTROWEB section 2106",
@@ -791,13 +791,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 37,
-        "loadMs": 37,
-        "wireBytes": 796887,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 743935,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Web Foundations · 6INTROWEB section 2106",
@@ -841,12 +841,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 798357,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 745209,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "BATCH · a no-build hypermedia substrate",
@@ -889,13 +889,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 791042,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 9,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 737796,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "BATCH docs",
@@ -938,13 +938,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 793259,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 740009,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "How to: add a route",
@@ -987,13 +987,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 16,
-        "domContentLoadedMs": 80,
-        "loadMs": 81,
-        "wireBytes": 971431,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 15,
+        "domContentLoadedMs": 83,
+        "loadMs": 83,
+        "wireBytes": 916207,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "BATCH — Reference Architecture (Single Source of Truth)",
@@ -1036,17 +1036,17 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 794787,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 740220,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
-        "title": "How to: consume BATCH / GRAIN as a dependency",
-        "titleLen": 45,
+        "title": "How to: install the BREAD stack packages",
+        "titleLen": 40,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
         "canonical": "http://localhost:3320/batch/docs/consume-as-git-deps/",
         "htmlLang": "en",
@@ -1085,13 +1085,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
+        "ttfbMs": 8,
         "domContentLoadedMs": 49,
-        "loadMs": 49,
-        "wireBytes": 826577,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "loadMs": 50,
+        "wireBytes": 771074,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "CONVENTIONS",
@@ -1134,13 +1134,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 793365,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 740447,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Getting started with BATCH",
@@ -1183,17 +1183,17 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 793847,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 3,
+        "domContentLoadedMs": 29,
+        "loadMs": 29,
+        "wireBytes": 741100,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
-        "title": "How to: static export + deploy",
-        "titleLen": 30,
+        "title": "How to: export and deploy the portfolio",
+        "titleLen": 39,
         "metaDescription": "The BATCH substrate's own docs, canonically homed here (option b) and rendered through MILL.",
         "canonical": "http://localhost:3320/batch/docs/static-export-and-deploy/",
         "htmlLang": "en",
@@ -1232,13 +1232,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 801554,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 8,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 748304,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "The BREAD Stack · four layers plus PANTRY",
@@ -1281,13 +1281,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 14,
-        "domContentLoadedMs": 64,
-        "loadMs": 65,
-        "wireBytes": 7407888,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 60
+        "ttfbMs": 15,
+        "domContentLoadedMs": 69,
+        "loadMs": 76,
+        "wireBytes": 7354638,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 57
       },
       "dom": {
         "title": "Calendar · TJ's Desk",
@@ -1331,12 +1331,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 1258612,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 44
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 1206115,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 41
       },
       "dom": {
         "title": "The slots were gone before I said anything",
@@ -1366,7 +1366,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 121,
+        "ariaAttrs": 122,
         "selectorCounts": {
           "Surfaces": 33,
           "Kinds": 0,
@@ -1380,12 +1380,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 927519,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 43
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 875022,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 40
       },
       "dom": {
         "title": "I handed out the criteria, then had to score them",
@@ -1415,7 +1415,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 121,
+        "ariaAttrs": 122,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -1429,12 +1429,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 4,
-        "domContentLoadedMs": 39,
-        "loadMs": 40,
-        "wireBytes": 800119,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 42
+        "domContentLoadedMs": 36,
+        "loadMs": 37,
+        "wireBytes": 747622,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 39
       },
       "dom": {
         "title": "Don't vibe anything you can't code yourself",
@@ -1464,7 +1464,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 118,
+        "ariaAttrs": 119,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -1477,13 +1477,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 800566,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 42
+        "ttfbMs": 5,
+        "domContentLoadedMs": 36,
+        "loadMs": 36,
+        "wireBytes": 748069,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 39
       },
       "dom": {
         "title": "Talking AI to a room of artists",
@@ -1513,7 +1513,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 118,
+        "ariaAttrs": 119,
         "selectorCounts": {
           "Surfaces": 33,
           "Kinds": 0,
@@ -1526,13 +1526,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 1899080,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 44
+        "ttfbMs": 11,
+        "domContentLoadedMs": 47,
+        "loadMs": 48,
+        "wireBytes": 1846583,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 41
       },
       "dom": {
         "title": "A booth in the morning, a stage after lunch",
@@ -1562,7 +1562,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 119,
+        "ariaAttrs": 120,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -1575,13 +1575,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 1248729,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 44
+        "ttfbMs": 6,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 1196232,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 41
       },
       "dom": {
         "title": "The prize we gave out was not for the best demo",
@@ -1611,7 +1611,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 119,
+        "ariaAttrs": 120,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -1624,12 +1624,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 15,
-        "domContentLoadedMs": 92,
-        "loadMs": 111,
-        "wireBytes": 1207147,
+        "ttfbMs": 13,
+        "domContentLoadedMs": 39,
+        "loadMs": 101,
+        "wireBytes": 1209950,
         "jsBytes": 30244,
-        "cssBytes": 444074,
+        "cssBytes": 446877,
         "requests": 22
       },
       "dom": {
@@ -1673,13 +1673,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 798061,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 4,
+        "domContentLoadedMs": 32,
+        "loadMs": 32,
+        "wireBytes": 744811,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "CRUMB · a guided tour over the live app",
@@ -1722,13 +1722,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 36,
-        "loadMs": 36,
-        "wireBytes": 790221,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 736971,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "CRUMB docs",
@@ -1772,12 +1772,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 800633,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 747546,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Getting started with CRUMB",
@@ -1821,12 +1821,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 811311,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 758286,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Writing a CRUMB tour",
@@ -1869,13 +1869,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 790360,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 737110,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Engineering Ai For Social Impact · the deck",
@@ -1921,10 +1921,10 @@
         "ttfbMs": 5,
         "domContentLoadedMs": 41,
         "loadMs": 41,
-        "wireBytes": 790139,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 736889,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "From Code To Career · the deck",
@@ -1968,12 +1968,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 790356,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 737106,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Beyond Limits: the ideation workshop · the deck",
@@ -2016,13 +2016,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
+        "ttfbMs": 8,
         "domContentLoadedMs": 41,
         "loadMs": 42,
-        "wireBytes": 790141,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 736891,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Re: AI-lity Check · the deck",
@@ -2065,13 +2065,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
+        "ttfbMs": 6,
         "domContentLoadedMs": 45,
         "loadMs": 45,
-        "wireBytes": 803438,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 750192,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Developer docs · BREAD",
@@ -2114,13 +2114,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 815395,
-        "jsBytes": 272014,
-        "cssBytes": 465631,
-        "requests": 40
+        "ttfbMs": 5,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 762145,
+        "jsBytes": 215961,
+        "cssBytes": 468434,
+        "requests": 37
       },
       "dom": {
         "title": "GRAIN · an AI-interaction design system",
@@ -2164,12 +2164,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 8,
-        "domContentLoadedMs": 50,
-        "loadMs": 50,
-        "wireBytes": 881780,
-        "jsBytes": 325814,
-        "cssBytes": 465631,
-        "requests": 48
+        "domContentLoadedMs": 54,
+        "loadMs": 69,
+        "wireBytes": 840958,
+        "jsBytes": 280223,
+        "cssBytes": 468434,
+        "requests": 45
       },
       "dom": {
         "title": "Builder · TJ's Desk",
@@ -2199,9 +2199,9 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 133,
+        "ariaAttrs": 135,
         "selectorCounts": {
-          "Surfaces": 39,
+          "Surfaces": 41,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -2212,13 +2212,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 41,
-        "loadMs": 135,
-        "wireBytes": 1546331,
-        "jsBytes": 292050,
-        "cssBytes": 465631,
-        "requests": 44
+        "ttfbMs": 7,
+        "domContentLoadedMs": 48,
+        "loadMs": 144,
+        "wireBytes": 1496430,
+        "jsBytes": 239346,
+        "cssBytes": 468434,
+        "requests": 41
       },
       "dom": {
         "title": "Preview · the builder",
@@ -2263,11 +2263,11 @@
         "status": 200,
         "ttfbMs": 7,
         "domContentLoadedMs": 36,
-        "loadMs": 36,
-        "wireBytes": 791635,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "loadMs": 37,
+        "wireBytes": 738385,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "GRAIN docs",
@@ -2311,12 +2311,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 38,
-        "loadMs": 38,
-        "wireBytes": 794222,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 36,
+        "loadMs": 36,
+        "wireBytes": 740972,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "How to: add a component",
@@ -2359,13 +2359,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
+        "ttfbMs": 5,
         "domContentLoadedMs": 43,
         "loadMs": 43,
-        "wireBytes": 793541,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 740291,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "How to: add a RenderOp kind",
@@ -2408,13 +2408,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 60,
-        "loadMs": 60,
-        "wireBytes": 868449,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 11,
+        "domContentLoadedMs": 59,
+        "loadMs": 59,
+        "wireBytes": 815199,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "AI ↔ UI Interface — the GRAIN action vocabulary contract",
@@ -2457,13 +2457,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 55,
-        "loadMs": 55,
-        "wireBytes": 818058,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 54,
+        "loadMs": 54,
+        "wireBytes": 764808,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "🍞 Sourdough — GRAIN's default theme",
@@ -2507,12 +2507,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 794766,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 741863,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Getting started with GRAIN",
@@ -2555,13 +2555,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 52,
-        "loadMs": 52,
-        "wireBytes": 817216,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 763966,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "GRAIN — an interface an AI can operate",
@@ -2604,13 +2604,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 793628,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 740378,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "How to: make a surface operable",
@@ -2653,13 +2653,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 793121,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 739871,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "How to: re-skin via tokens",
@@ -2703,12 +2703,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 52,
-        "loadMs": 52,
-        "wireBytes": 809132,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 54,
+        "loadMs": 55,
+        "wireBytes": 755882,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Tutorial: build your first operable surface",
@@ -2751,13 +2751,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 1641152,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 42
+        "ttfbMs": 5,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 1587902,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 39
       },
       "dom": {
         "title": "Greenroom · TJ's Desk",
@@ -2800,13 +2800,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 10,
-        "domContentLoadedMs": 47,
-        "loadMs": 48,
-        "wireBytes": 852188,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 12,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 798938,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Mail · TJ's Desk",
@@ -2849,13 +2849,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 797034,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 4,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 743784,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "MILL · Markdown in, living layouts",
@@ -2899,12 +2899,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 38,
+        "domContentLoadedMs": 39,
         "loadMs": 39,
-        "wireBytes": 790371,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 737121,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "MILL docs",
@@ -2948,12 +2948,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 796837,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 743587,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "How to: add a collection",
@@ -2996,13 +2996,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 818492,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 13,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 765242,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "MILL: architecture",
@@ -3046,12 +3046,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 44,
-        "loadMs": 45,
-        "wireBytes": 794813,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 741447,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Getting started with MILL",
@@ -3094,13 +3094,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 980551,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 39
+        "ttfbMs": 6,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 927301,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 36
       },
       "dom": {
         "title": "Native GitHub Classroom · TJ's Desk",
@@ -3143,13 +3143,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 796252,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 743002,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Native GitHub Classroom · Docs",
@@ -3192,13 +3192,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 819930,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 766680,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Notes",
@@ -3241,13 +3241,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 61,
-        "loadMs": 61,
-        "wireBytes": 860905,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 12,
+        "domContentLoadedMs": 59,
+        "loadMs": 59,
+        "wireBytes": 847180,
+        "jsBytes": 251078,
+        "cssBytes": 468434,
+        "requests": 36
       },
       "dom": {
         "title": "Everybody Wants the Agent. Somebody Has to Build the Floor.",
@@ -3293,10 +3293,10 @@
         "ttfbMs": 8,
         "domContentLoadedMs": 53,
         "loadMs": 53,
-        "wireBytes": 822572,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 769322,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "This Site Feels Like an App. It's a Stack of Full Page Loads.",
@@ -3339,13 +3339,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 805563,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 10,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 752313,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "How I Turned a GitHub Org Into My Whole Classroom",
@@ -3388,13 +3388,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
+        "ttfbMs": 8,
         "domContentLoadedMs": 48,
         "loadMs": 48,
-        "wireBytes": 813532,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 760282,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "I Was Shipping Faster Than I Could Understand It",
@@ -3437,13 +3437,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 818565,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 765315,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "I Built a Whole Stack Because No To-Do App Would Have Me",
@@ -3486,13 +3486,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 10,
-        "domContentLoadedMs": 61,
-        "loadMs": 61,
-        "wireBytes": 853291,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 9,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 817296,
+        "jsBytes": 228808,
+        "cssBytes": 468434,
+        "requests": 37
       },
       "dom": {
         "title": "Ten Times Zero Is Still Zero",
@@ -3535,13 +3535,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 52,
-        "loadMs": 52,
-        "wireBytes": 829159,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 12,
+        "domContentLoadedMs": 55,
+        "loadMs": 55,
+        "wireBytes": 775909,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "The Browser Grew Up While I Was Busy With Frameworks",
@@ -3584,13 +3584,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 46,
-        "loadMs": 47,
-        "wireBytes": 808139,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 4,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 754889,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "The Check Ran Once in 165 Sessions, and I Got the Reason Wrong",
@@ -3633,13 +3633,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 934539,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 40
+        "ttfbMs": 7,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 881289,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 37
       },
       "dom": {
         "title": "The Console I Built to Stop Drowning",
@@ -3682,13 +3682,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 48,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 47,
         "loadMs": 48,
-        "wireBytes": 803896,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 750646,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Watch Its Hands",
@@ -3732,12 +3732,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 10,
-        "domContentLoadedMs": 59,
-        "loadMs": 59,
-        "wireBytes": 855173,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 57,
+        "loadMs": 57,
+        "wireBytes": 801923,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "One Vocabulary, Two Operators",
@@ -3780,13 +3780,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
+        "ttfbMs": 7,
         "domContentLoadedMs": 49,
         "loadMs": 49,
-        "wireBytes": 805382,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 752132,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "I Nearly Quit Teaching. So I Automated the Part That Was Killing Me.",
@@ -3830,12 +3830,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 798937,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 44,
+        "loadMs": 45,
+        "wireBytes": 745687,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "PANTRY · one server for the whole stack",
@@ -3878,13 +3878,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 38,
-        "loadMs": 39,
-        "wireBytes": 790248,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 736998,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "PANTRY docs",
@@ -3927,13 +3927,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 39,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 40,
         "loadMs": 40,
-        "wireBytes": 800263,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 747892,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Getting started with PANTRY",
@@ -3976,13 +3976,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 803197,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 48,
+        "loadMs": 49,
+        "wireBytes": 750475,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "What PANTRY composes",
@@ -4025,13 +4025,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 528,
-        "domContentLoadedMs": 563,
-        "loadMs": 564,
-        "wireBytes": 821604,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 534,
+        "domContentLoadedMs": 567,
+        "loadMs": 567,
+        "wireBytes": 768355,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Plans",
@@ -4074,13 +4074,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 494,
+        "ttfbMs": 497,
         "domContentLoadedMs": 528,
-        "loadMs": 529,
-        "wireBytes": 805051,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "loadMs": 528,
+        "wireBytes": 751801,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Autonomy earned by evidence, not granted by the model · Plans",
@@ -4123,13 +4123,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 500,
-        "domContentLoadedMs": 532,
-        "loadMs": 533,
-        "wireBytes": 811942,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 493,
+        "domContentLoadedMs": 525,
+        "loadMs": 525,
+        "wireBytes": 758692,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "AI agency — navigate and operate the portfolio like a human · Plans",
@@ -4172,13 +4172,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 496,
-        "domContentLoadedMs": 532,
-        "loadMs": 532,
-        "wireBytes": 819057,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 531,
+        "domContentLoadedMs": 563,
+        "loadMs": 563,
+        "wireBytes": 765807,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The loop — one standard AI workflow across every repo · Plans",
@@ -4221,13 +4221,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 504,
-        "domContentLoadedMs": 537,
-        "loadMs": 537,
-        "wireBytes": 805085,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 494,
+        "domContentLoadedMs": 525,
+        "loadMs": 525,
+        "wireBytes": 763743,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Make the builder's AI earn its place · Plans",
@@ -4270,13 +4270,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 493,
-        "domContentLoadedMs": 528,
-        "loadMs": 528,
-        "wireBytes": 827992,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 518,
+        "domContentLoadedMs": 551,
+        "loadMs": 551,
+        "wireBytes": 774742,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The builder stops looking like a page about a builder · Plans",
@@ -4319,13 +4319,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 490,
-        "domContentLoadedMs": 524,
-        "loadMs": 524,
-        "wireBytes": 807462,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 502,
+        "domContentLoadedMs": 535,
+        "loadMs": 535,
+        "wireBytes": 754212,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The builder becomes a sandbox, not a form page · Plans",
@@ -4368,13 +4368,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 487,
-        "domContentLoadedMs": 519,
+        "ttfbMs": 488,
+        "domContentLoadedMs": 518,
         "loadMs": 519,
-        "wireBytes": 803686,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "wireBytes": 750436,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The map nobody opens, and the question that would fix it · Plans",
@@ -4417,13 +4417,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 525,
-        "domContentLoadedMs": 557,
-        "loadMs": 558,
-        "wireBytes": 798700,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 489,
+        "domContentLoadedMs": 518,
+        "loadMs": 518,
+        "wireBytes": 745450,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Course credentials and badges · Plans",
@@ -4466,13 +4466,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 504,
-        "domContentLoadedMs": 534,
-        "loadMs": 534,
-        "wireBytes": 804893,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 502,
+        "domContentLoadedMs": 532,
+        "loadMs": 532,
+        "wireBytes": 751643,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "CRUMB prefilled demos: preset steps, prefilled data, and a tour that writes the next prompt · Plans",
@@ -4515,13 +4515,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 491,
-        "domContentLoadedMs": 524,
-        "loadMs": 524,
-        "wireBytes": 814829,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 503,
+        "domContentLoadedMs": 534,
+        "loadMs": 535,
+        "wireBytes": 761579,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The review loop — CRUMB dev tours as the check-changes surface · Plans",
@@ -4564,13 +4564,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 489,
-        "domContentLoadedMs": 520,
-        "loadMs": 520,
-        "wireBytes": 797581,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 492,
+        "domContentLoadedMs": 521,
+        "loadMs": 521,
+        "wireBytes": 744331,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Author the content backlog · Plans",
@@ -4613,13 +4613,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 512,
-        "domContentLoadedMs": 543,
-        "loadMs": 543,
-        "wireBytes": 799096,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 489,
+        "domContentLoadedMs": 519,
+        "loadMs": 519,
+        "wireBytes": 745846,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Archive the vestigial tjakoen/standards repo · Plans",
@@ -4662,13 +4662,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 492,
-        "domContentLoadedMs": 524,
-        "loadMs": 524,
-        "wireBytes": 803010,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 533,
+        "domContentLoadedMs": 563,
+        "loadMs": 563,
+        "wireBytes": 749760,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "A form comes from data, and a description builds one · Plans",
@@ -4711,13 +4711,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 550,
-        "domContentLoadedMs": 589,
-        "loadMs": 589,
-        "wireBytes": 801521,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 490,
+        "domContentLoadedMs": 521,
+        "loadMs": 522,
+        "wireBytes": 748271,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Publish grain 0.1.18 and bump the pin · Plans",
@@ -4760,13 +4760,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 549,
-        "domContentLoadedMs": 584,
-        "loadMs": 584,
-        "wireBytes": 809301,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 490,
+        "domContentLoadedMs": 520,
+        "loadMs": 520,
+        "wireBytes": 756051,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The design system's own status colour, and the hue it does not have · Plans",
@@ -4809,13 +4809,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 537,
-        "domContentLoadedMs": 576,
-        "loadMs": 576,
-        "wireBytes": 808726,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 496,
+        "domContentLoadedMs": 526,
+        "loadMs": 526,
+        "wireBytes": 755476,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The four gaps between what the loop says and what the loop runs · Plans",
@@ -4858,13 +4858,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 490,
-        "domContentLoadedMs": 521,
-        "loadMs": 521,
-        "wireBytes": 803509,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 503,
+        "domContentLoadedMs": 533,
+        "loadMs": 533,
+        "wireBytes": 750259,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Say what the loop actually does, once it actually does it · Plans",
@@ -4907,13 +4907,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 489,
+        "ttfbMs": 490,
         "domContentLoadedMs": 520,
-        "loadMs": 521,
-        "wireBytes": 802072,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "loadMs": 520,
+        "wireBytes": 748822,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "A tutorial someone can follow to build this loop on a small project · Plans",
@@ -4956,13 +4956,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 483,
-        "domContentLoadedMs": 516,
-        "loadMs": 516,
-        "wireBytes": 805113,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 499,
+        "domContentLoadedMs": 531,
+        "loadMs": 531,
+        "wireBytes": 751863,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Every multi-line bullet on the published site is broken · Plans",
@@ -5005,13 +5005,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 563,
-        "domContentLoadedMs": 598,
-        "loadMs": 599,
-        "wireBytes": 804006,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 492,
+        "domContentLoadedMs": 523,
+        "loadMs": 523,
+        "wireBytes": 750756,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Note: the loop nobody ran · Plans",
@@ -5054,13 +5054,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 491,
-        "domContentLoadedMs": 525,
-        "loadMs": 525,
-        "wireBytes": 815005,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 490,
+        "domContentLoadedMs": 520,
+        "loadMs": 520,
+        "wireBytes": 761755,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The control center: one place that knows where the project is · Plans",
@@ -5103,13 +5103,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 509,
-        "domContentLoadedMs": 546,
-        "loadMs": 546,
-        "wireBytes": 841537,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 487,
+        "domContentLoadedMs": 520,
+        "loadMs": 520,
+        "wireBytes": 788287,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "PANTRY hosts the review, CRUMB makes it addressable · Plans",
@@ -5152,13 +5152,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 534,
-        "domContentLoadedMs": 575,
-        "loadMs": 575,
-        "wireBytes": 825474,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 491,
+        "domContentLoadedMs": 525,
+        "loadMs": 525,
+        "wireBytes": 778588,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Bring the portfolio to a clear, reviewable finish · Plans",
@@ -5202,12 +5202,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 502,
-        "domContentLoadedMs": 536,
-        "loadMs": 536,
-        "wireBytes": 800935,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "domContentLoadedMs": 532,
+        "loadMs": 532,
+        "wireBytes": 747685,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Reading list — a library on the desk · Plans",
@@ -5250,13 +5250,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 561,
-        "domContentLoadedMs": 599,
-        "loadMs": 600,
-        "wireBytes": 810261,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 493,
+        "domContentLoadedMs": 524,
+        "loadMs": 525,
+        "wireBytes": 757011,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 35
       },
       "dom": {
         "title": "Repo structure reorg — tame the root · Plans",
@@ -5299,13 +5299,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 662,
-        "domContentLoadedMs": 699,
-        "loadMs": 699,
-        "wireBytes": 803587,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 484,
+        "domContentLoadedMs": 514,
+        "loadMs": 514,
+        "wireBytes": 750337,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The run ledger, read at two altitudes · Plans",
@@ -5348,13 +5348,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 758,
-        "domContentLoadedMs": 799,
-        "loadMs": 800,
-        "wireBytes": 821159,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 501,
+        "domContentLoadedMs": 531,
+        "loadMs": 532,
+        "wireBytes": 767909,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "The builder becomes a page builder, not a form builder · Plans",
@@ -5397,13 +5397,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 559,
-        "domContentLoadedMs": 601,
-        "loadMs": 601,
-        "wireBytes": 864490,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 493,
+        "domContentLoadedMs": 532,
+        "loadMs": 532,
+        "wireBytes": 811240,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Skills runtime + loop feedback — make the standards fire, make adherence visible · Plans",
@@ -5446,13 +5446,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 530,
-        "domContentLoadedMs": 569,
-        "loadMs": 569,
-        "wireBytes": 816849,
-        "jsBytes": 267606,
-        "cssBytes": 471759,
-        "requests": 39
+        "ttfbMs": 492,
+        "domContentLoadedMs": 527,
+        "loadMs": 527,
+        "wireBytes": 763599,
+        "jsBytes": 211553,
+        "cssBytes": 474562,
+        "requests": 36
       },
       "dom": {
         "title": "Storyboard — \"Watch me work\" (demo.run showcase) · Plans",
@@ -5495,13 +5495,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 38,
-        "loadMs": 38,
-        "wireBytes": 799269,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 40
+        "ttfbMs": 7,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 746019,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 37
       },
       "dom": {
         "title": "Projects · TJ's Desk",
@@ -5544,13 +5544,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 33,
-        "loadMs": 33,
-        "wireBytes": 798093,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 37,
+        "loadMs": 38,
+        "wireBytes": 744843,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "PROOF · files are the source, the board is a projection",
@@ -5594,12 +5594,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 790216,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 36,
+        "loadMs": 36,
+        "wireBytes": 736966,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "PROOF docs",
@@ -5642,13 +5642,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 795223,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 39,
+        "loadMs": 39,
+        "wireBytes": 741781,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Getting started with PROOF",
@@ -5691,13 +5691,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 797660,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 744410,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "How PROOF works",
@@ -5740,13 +5740,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 805636,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 10,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 752548,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Reference · Developer docs",
@@ -5789,13 +5789,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
+        "ttfbMs": 14,
         "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 837378,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "loadMs": 49,
+        "wireBytes": 784128,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Tjakoen Stolk | Résumé · TJ's Desk",
@@ -5839,12 +5839,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 24,
-        "domContentLoadedMs": 62,
-        "loadMs": 63,
-        "wireBytes": 797952,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 61,
+        "loadMs": 61,
+        "wireBytes": 744702,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Standards",
@@ -5887,13 +5887,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 807287,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 754037,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "AI-DEVELOPMENT.md — how I build full stack with AI",
@@ -5936,13 +5936,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 54,
-        "loadMs": 54,
-        "wireBytes": 812797,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 759547,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "AI-REPO-STANDARD.md — structure a repo so AI sessions compound",
@@ -5986,12 +5986,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 49,
-        "loadMs": 50,
-        "wireBytes": 807624,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 43,
+        "loadMs": 44,
+        "wireBytes": 754374,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "AUDIT-STANDARD.md — how a repo gets audited",
@@ -6035,12 +6035,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 796036,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 36,
+        "loadMs": 37,
+        "wireBytes": 742786,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "CLAUDE.md — standards",
@@ -6083,13 +6083,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 797135,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 743885,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "CLAUDE.starter.md — the new-repo starter template",
@@ -6132,13 +6132,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 805457,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 752207,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "CONFORMANCE — the prompt that checks a repo is wired, not just willing",
@@ -6181,13 +6181,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 802087,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 748837,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "DECISIONS — how a run reaches the human, and how the answer comes back",
@@ -6230,13 +6230,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 812387,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 12,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 759137,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "FIGURES.md — figures & visualizations",
@@ -6282,10 +6282,10 @@
         "ttfbMs": 6,
         "domContentLoadedMs": 41,
         "loadMs": 41,
-        "wireBytes": 802724,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 749474,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "GRAPH.md — navigate the code by graph, not by fan-out",
@@ -6328,13 +6328,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 818318,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 765068,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "HOOKS.md — the gates that fire before you do",
@@ -6377,13 +6377,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 806642,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 753392,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "INTAKE — turning a pasted blob into a scoped brief",
@@ -6426,13 +6426,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 799467,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 746217,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "KICKSTART — the new-project prompt for the BREAD stack",
@@ -6475,13 +6475,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 844340,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 15,
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "wireBytes": 791090,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "LOOP.md — one AI workflow across every repo",
@@ -6524,13 +6524,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 42,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 43,
         "loadMs": 43,
-        "wireBytes": 808350,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "wireBytes": 755100,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "NOTE-STANDARD.md — the note / blog-post standard",
@@ -6573,13 +6573,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 37,
-        "loadMs": 38,
-        "wireBytes": 803011,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 749761,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "standards/ — how I build, write, and work with AI",
@@ -6622,13 +6622,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 798324,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 745074,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "README-STANDARD.md — the README standard",
@@ -6671,13 +6671,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 823483,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 7,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 770233,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "SESSION-LOOP.md — the working loop, memory, and handoff",
@@ -6720,13 +6720,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 801918,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 6,
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 748668,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "TOUR-STANDARD.md — the review-tour standard",
@@ -6770,12 +6770,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 802822,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 749572,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "TREE.md — keep the root an index, not a junk drawer",
@@ -6818,13 +6818,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 52,
-        "loadMs": 53,
-        "wireBytes": 847159,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 8,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 793909,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "VOICE.md — voice & tone",
@@ -6867,13 +6867,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 793698,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 5,
+        "domContentLoadedMs": 37,
+        "loadMs": 37,
+        "wireBytes": 740448,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Talks · TJ's Desk",
@@ -6916,13 +6916,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 69,
-        "loadMs": 69,
-        "wireBytes": 806160,
-        "jsBytes": 287757,
-        "cssBytes": 465631,
-        "requests": 41
+        "ttfbMs": 9,
+        "domContentLoadedMs": 60,
+        "loadMs": 72,
+        "wireBytes": 792435,
+        "jsBytes": 271229,
+        "cssBytes": 468434,
+        "requests": 39
       },
       "dom": {
         "title": "Everybody Wants the Agent · the talk",
@@ -6965,13 +6965,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 38,
-        "loadMs": 38,
-        "wireBytes": 819735,
-        "jsBytes": 283991,
-        "cssBytes": 465631,
-        "requests": 40
+        "ttfbMs": 3,
+        "domContentLoadedMs": 32,
+        "loadMs": 32,
+        "wireBytes": 766485,
+        "jsBytes": 227938,
+        "cssBytes": 468434,
+        "requests": 37
       },
       "dom": {
         "title": "Every Time It Was Wrong · the talk",
@@ -7015,12 +7015,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 79,
-        "loadMs": 79,
-        "wireBytes": 855596,
-        "jsBytes": 305479,
-        "cssBytes": 465631,
-        "requests": 41
+        "domContentLoadedMs": 86,
+        "loadMs": 86,
+        "wireBytes": 805900,
+        "jsBytes": 252980,
+        "cssBytes": 468434,
+        "requests": 39
       },
       "dom": {
         "title": "Ten Times Zero Is Still Zero · the talk",
@@ -7063,13 +7063,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 34,
-        "loadMs": 35,
-        "wireBytes": 794563,
-        "jsBytes": 267606,
-        "cssBytes": 465631,
-        "requests": 38
+        "ttfbMs": 4,
+        "domContentLoadedMs": 29,
+        "loadMs": 30,
+        "wireBytes": 741313,
+        "jsBytes": 211553,
+        "cssBytes": 468434,
+        "requests": 35
       },
       "dom": {
         "title": "Teaching · Tjakoen Stolk, School of Computing, Holy Angel University",

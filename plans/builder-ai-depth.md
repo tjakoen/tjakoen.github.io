@@ -155,6 +155,14 @@ sample copy, so the canvas remained safe, but the scenario still scored 0/1. I r
 change because the live result did not improve. The capture is
 .cache/desk-audit/report-builder-local-only-prompt-2026-10-03.json.
 
+I reran the current prompt against the same live local 0.5B profile on October 3. It again returned
+component names as top-level keys instead of the required `blocks` list, omitted all five supplied
+facts, and added unsupported bakery claims. The validator rejected the response and the page used
+the clearly labeled word-list path, leaving its sample copy in place. The repeat scored 0/1 in 8.6
+seconds; it confirms that the current path is safe and local, but the model still does not produce a
+useful grounded draft. The capture is
+.cache/desk-audit/report-builder-local-check-2026-10-03.json.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business

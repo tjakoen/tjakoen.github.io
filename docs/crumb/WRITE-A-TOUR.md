@@ -131,10 +131,11 @@ the surface you want to prefill lives behind a click today, fix the deep link fi
 worth having on its own: a fragment in an href that only works after a click is a broken link for
 people too.
 
-The honest limit, while it is true: this site pins a published CRUMB that predates the key, and an
-older parser reads the line as ordinary prose rather than as a staged write. The worked example is
-[`content/tours/say-hello.md`](https://github.com/tjakoen/tjakoen.github.io/blob/main/content/tours/say-hello.md),
-and it walks as a plain three-step tour until the pin moves.
+The portfolio pins CRUMB 0.1.10, which includes this parser and client behavior. Its
+[`say-hello` tour](https://github.com/tjakoen/tjakoen.github.io/blob/main/content/tours/say-hello.md)
+uses `prefill` on the mail compose field. The browser walkthrough in
+[`e2e/crumb-prompt-and-prefill.e2e.ts`](https://github.com/tjakoen/tjakoen.github.io/blob/main/e2e/crumb-prompt-and-prefill.e2e.ts)
+covers the staged value, its visible label, and the visitor taking ownership by typing over it.
 
 ## The last card: `## prompt`
 

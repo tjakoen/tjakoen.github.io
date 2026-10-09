@@ -37,6 +37,29 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
     await expect(page.locator("[data-resume-print]")).toBeVisible();
   });
 
+  test("keeps every profile action visible on a phone", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/resume");
+    const actions = page.locator(".profile-card__actions");
+    const actionBounds = await actions.boundingBox();
+    expect(actionBounds).not.toBeNull();
+    const viewportWidth = page.viewportSize()!.width;
+    expect(actionBounds!.x + actionBounds!.width).toBeLessThanOrEqual(viewportWidth);
+
+    const buttons = actions.locator(":scope > *");
+    await expect(buttons).toHaveCount(4);
+    let buttonHeight: number | undefined;
+    for (let index = 0; index < await buttons.count(); index += 1) {
+      const button = buttons.nth(index);
+      await expect(button).toBeVisible();
+      const bounds = await button.boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewportWidth);
+      buttonHeight ??= bounds!.height;
+      expect(bounds!.height).toBe(buttonHeight);
+    }
+  });
+
   test("with JS, each entry collapses to a summary and the toggle expands the detail", async ({ page }) => {
     await page.goto("/resume");
     const first = page.locator(".cv-entry").first();
