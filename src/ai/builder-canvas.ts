@@ -28,7 +28,7 @@ import {
   type PageComposition,
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
-import { completeWithin, composeMessage, readModelPlan } from "./block-composer.ts";
+import { BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan } from "./block-composer.ts";
 import {
   bylineFrom, exportJson, exportPage, exportTags, PREVIEW_HANDOVER_KEY,
   type PreviewHandover,
@@ -96,7 +96,7 @@ const grainDoor = (): GrainDoor | null =>
  *  run rather than reaching for a word list that is not the model. That was the owner's call on
  *  2026-08-14, and the reason is that a silent fallback would let the page claim an AI edit for
  *  something no AI touched. */
-interface DeskModel { complete(prompt: string): Promise<string | null> }
+interface DeskModel { complete(prompt: string, schema?: Record<string, unknown>): Promise<string | null> }
 const deskModel = (): DeskModel | null =>
   (window as unknown as { desk?: DeskModel }).desk ?? null;
 
@@ -573,7 +573,7 @@ function boot(): void {
     }
 
     say("Reading that…", "thinking");
-    const raw = await completeWithin(desk, composeMessage(ask));
+    const raw = await completeWithin(desk, composeMessage(ask), undefined, BUILD_PLAN_SCHEMA);
     if (raw === null) {
       buildByWordList(ask);
       say("Composed from the words in that sentence. The desk did not answer in time, so nothing read it.", "reply");

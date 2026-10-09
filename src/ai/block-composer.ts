@@ -30,6 +30,41 @@ import { BLOCK_NAMES, isSpan, MAX_BLOCKS_PER_PROMPT, sanitizeBlockCopy, type Spa
  *  judgement about how big a page should be, it is a bound on what a broken answer can cost. */
 export const MAX_PLANNED_BLOCKS = MAX_BLOCKS_PER_PROMPT;
 
+/** The local model's output is constrained to the same closed vocabulary that the reader validates.
+ *  The renderer remains code-owned: the schema only narrows the completion shape and copy fields. */
+export const BUILD_PLAN_SCHEMA = {
+  type: "object",
+  properties: {
+    blocks: {
+      type: "array",
+      minItems: 1,
+      maxItems: MAX_PLANNED_BLOCKS,
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string", enum: BLOCK_NAMES },
+          copy: {
+            type: "object",
+            properties: {
+              title: { type: "string", maxLength: 60 },
+              body: { type: "string", maxLength: 360 },
+              value: { type: "string", maxLength: 30 },
+              label: { type: "string", maxLength: 60 },
+              sub: { type: "string", maxLength: 80 },
+            },
+            additionalProperties: false,
+          },
+        },
+        required: ["name"],
+        additionalProperties: false,
+      },
+    },
+    span: { enum: ["full", "half", "third", null] },
+  },
+  required: ["blocks"],
+  additionalProperties: false,
+} as const;
+
 export type PlanRead =
   /** Names, in the model's own order, every one of them in the closed set. `dropped` carries what
    *  was thrown away so the console can say what the model asked for and did not get. */
@@ -180,9 +215,10 @@ export const COMPLETION_TIMEOUT_MS = 45_000;
  *  lying about what it is doing. Cancelling the work properly belongs to whoever owns the engine
  *  seam, which is desk-reasoner.ts, and is a larger change than the hang deserves. */
 export function completeWithin(
-  desk: { complete(prompt: string): Promise<string | null> },
+  desk: { complete(prompt: string, schema?: Record<string, unknown>): Promise<string | null> },
   prompt: string,
   ms: number = COMPLETION_TIMEOUT_MS,
+  schema?: Record<string, unknown>,
 ): Promise<string | null> {
   // A race rather than one promise with a guard flag. Two independent promises make "whichever
   // arrives first" the structure rather than something a settled flag has to enforce, and a reader
@@ -191,7 +227,7 @@ export function completeWithin(
   const timeout = new Promise<null>((resolve) => {
     timer = setTimeout(() => resolve(null), ms);
   });
-  const answer = desk.complete(prompt).catch((err: unknown) => {
+  const answer = desk.complete(prompt, schema).catch((err: unknown) => {
     console.error("[builder] the desk threw", err);
     return null;
   });

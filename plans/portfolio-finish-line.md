@@ -121,12 +121,14 @@ Copy on blocks already in the canvas cannot yet be edited.
 
 The Builder now follows the part of Puck's AI approach that fits this site: a model chooses from
 GRAIN's code-owned blocks and can draft copy only for registered text fields on new blocks. The
-builder bounds and sanitizes that text, then renders it as text rather than markup. A visitor can
-inspect the result in the canvas before export. Model quality remains an open gap: the live writing
-check scored 0/1 for both tested profiles, and the current profile's edits can still target the wrong
-block. Existing copy cannot be revised because GRAIN does not yet expose a bounded text-write
-operation. The Builder names these limits in its visible guidance; the work is a tested assembly
-path, not yet a reliable AI page writer.
+portfolio now sends that local request a JSON schema that bounds the block count, names, span, and
+copy lengths; the existing validator still filters each block's fields before rendering. Model
+quality remains an open gap: the live writing check scored 0/1 for both tested profiles, and the
+current profile's edits can still target the wrong block. The current in-app browser has no WebGPU,
+so the schema change has only been verified through the scripted engine and browser contract, not a
+real local model run. Existing copy cannot be revised because GRAIN does not yet expose a bounded
+text-write operation. The Builder names these limits in its visible guidance; the work is a tested
+assembly path, not yet a reliable AI page writer.
 
 The owner confirmed that Builder generation must stay local. The page now says that the browser
 downloads about 350 MB of model files on first AI use, caches them, and keeps prompt generation on
@@ -136,16 +138,19 @@ only places the cards side by side, and repeated cards receive distinct fallback
 browser checks cover the four-block example, the two half-width cards, the distinct copy, and the
 local-generation notice. The narrower preview was also reviewed at 390 pixels with no page overflow.
 
-The current release checks pass on October 9. The typecheck is clean, the unit suite passes 694
-tests, and the serial browser suite passes 399 tests with one data-dependent calendar lightbox test
-skipped because the fixtures have no single-photo post. The link linter finds no dead relative links
-across 56 rendered files, and the lint gate reports 4,505 flags against a baseline of 4,570. A fresh
-route audit returns all 145 canonical pages with no HTTP or document findings; sitemap, robots, and
-llms endpoints return successfully. The static export verifies all 1,174 pages and 1,132 data
-routes, and every exported internal link and named diagram resolves. The current deployment workflow
-sets the canonical `PUBLIC_ORIGIN` before export. A refreshed 23-screen desktop gallery is
-available for review. The final route-by-route visual review remains open, as does the Builder's
-live model reliability work and the remaining BATCH, GRAIN, MILL, and PROOF documentation review.
+The October 10 release checks pass locally. TypeScript is clean, all 698 unit tests pass, and the
+serial browser suite passes 399 tests with one data-dependent calendar lightbox test skipped because
+the fixtures have no single-photo post. Oxlint exits successfully with existing warnings; the lint
+gate reports 4,504 flags against a baseline of 4,570. The link linter finds no dead relative links
+across 56 rendered files, and every served diagram has a committed SVG. The fresh route audit returns
+all 145 canonical pages without HTTP or document findings, and sitemap, robots, and llms endpoints
+return successfully. The static export verifies all 1,174 pages and 1,132 data routes, and every
+exported internal link resolves. The October 10 BATCH and MILL architecture edits were rendered at
+desktop and 390 pixels; both pages have one page heading and no horizontal overflow. A refreshed
+23-screen desktop gallery is available for review. The final route-by-route visual review remains
+open, as does the Builder's live-model reliability work and the remaining BATCH, GRAIN, MILL, and
+PROOF documentation review. Ordinary pages still send about 207 KB of JavaScript in the local
+measurement, so the shared shell's delivery cost also needs a deliberate review.
 
 ### Page recommendations in progress
 
@@ -224,6 +229,12 @@ individual checks before the audit can be called complete.
       claim honest and consistent across the portfolio and the pages visitors can export. The
       portfolio footer now uses one tested statement; exported pages retain GRAIN's generated
       framework attribution and are covered by the builder export checks.
+- [x] Keep Builder draft generation local while constraining its completion to the code-owned
+      composition shape. The portfolio passes WebLLM a JSON schema for the registered block names,
+      bounded output count, layout span, and allowed copy keys and lengths; the desk bridge carries
+      the schema through to the local engine. Unit and scripted browser checks verify the request
+      shape and live canvas path. Real-model quality remains open because this in-app browser has no
+      WebGPU, and the existing measured model failures still apply.
 - [x] Review Notes, Talks, Teaching, Calendar, and Badges as evidence of engineering, communication,
       teaching, and the path between them. Notes point into projects and teaching, talks link to their
       written methods, Teaching explains its issuing authority and links to the platform, calendar,
@@ -236,15 +247,17 @@ individual checks before the audit can be called complete.
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
 - [ ] Do a final route-by-route browser pass at desktop and narrow widths. Check navigation, page
-      spacing, headings, accessible names, dead ends, and the important interaction paths. The
-      October 9 audit covered all 145 canonical URLs with no HTTP failures or document findings;
-      the complete serial browser suite passed 399 tests with one data-dependent skip. The October 4
-      desktop and phone screenshot set covers all routes, and the October 9 gallery refresh covers
-      the 23 primary screens at desktop width. The changed Builder, BATCH, PANTRY, reference, and
-      résumé screens still need a fresh focused phone review before closing this item. Current
-      delivery ranges from 30 KB to 274 KB of JavaScript; ordinary portfolio pages dropped from
-      267.6 KB to 211.6 KB after live-figure code became route-specific. The shared shell remains
-      heavy and needs review alongside the remaining mobile checks.
+      spacing, headings, accessible names, dead ends, and the important interaction paths. On
+      October 10, the route audit covered all 145 canonical URLs with no HTTP failures or document
+      findings, and the complete serial browser suite passed 399 tests with one data-dependent skip.
+      The October 4 desktop and phone screenshot set covers all routes, and the October 9 gallery
+      refresh covers the 23 primary screens at desktop width. The Builder, BATCH, PANTRY, reference,
+      and résumé screens were refreshed at 390px on October 9; the BATCH and MILL architecture pages
+      were refreshed at 390px on October 10. Each focused phone check found one page heading and no
+      horizontal overflow. The full route-by-route visual review remains open. Current delivery
+      ranges from 30 KB to 275 KB of JavaScript; ordinary portfolio pages send about 207 KB in the
+      local measurement. Review the shared shell's delivery cost alongside the remaining visual
+      checks.
 - [ ] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
       main, and verify the deployed pages.
 

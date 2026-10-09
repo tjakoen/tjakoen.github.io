@@ -30,6 +30,7 @@ import { matchTags, uniqueTags } from "./notes-tags.ts";
 // B3 mail batch archive — matching a visitor's free-text sender phrase against the REAL sender set on
 // /mail (never a model guess, law #2). Pure + framework-free (mail-sender.ts), notes-tags.ts's sibling.
 import { matchSender } from "./mail-sender.ts";
+import type { JsonSchema } from "./local-schema-completion.ts";
 // B1 contact prefill — the deterministic draft (the visitor's words + a salutation) and the ONE
 // registered field surface the desk may fill (never a model-picked selector, law #2). Pure
 // (contact-draft.ts), same family as the matchers above.
@@ -148,7 +149,7 @@ export interface DeskReasoner extends Reasoner {
    *  Returns null when the model cannot run at all, which the caller is expected to say out loud
    *  rather than paper over. Silent: no progress bar and no chat bubble, because the caller has its
    *  own surface and this is not a conversation turn. */
-  complete(prompt: string): Promise<string | null>;
+  complete(prompt: string, schema?: JsonSchema): Promise<string | null>;
 }
 
 // Parse the 0.5B's arrival reply: one greeting line, then a `CHIPS: a | b | c` line. Defensive — a
@@ -218,7 +219,7 @@ export interface DeskDeps {
    *  out is stated rather than hidden — `complete` returns null, which its caller reports as the
    *  desk being unable to run. JSON mode lives in here, and on a 0.5B it is most of the difference
    *  between a parseable move and a paragraph about the move. */
-  makeChatModel?: (engine: DeskEngine, opts?: { temperature?: number; jsonMode?: boolean })
+  makeChatModel?: (engine: DeskEngine, opts?: { temperature?: number; jsonMode?: boolean; schema?: JsonSchema })
     => { complete(prompt: string): Promise<string> };
   /** Fetch (and ideally memoize) the build-time corpus. */
   loadKnowledge: () => Promise<Knowledge>;
@@ -1716,7 +1717,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     // no bubble, no progress bar, because this is a move being chosen rather than a turn being
     // taken. Null on every failure path, and the caller says so out loud: a builder that quietly did
     // nothing when the model could not run would be indistinguishable from a broken one.
-    async complete(prompt: string): Promise<string | null> {
+    async complete(prompt: string, schema?: JsonSchema): Promise<string | null> {
       if (!deps.makeChatModel) return null;
       const engine = await ensureEngine(() => {});   // SILENT: the caller owns the surface, not the chat
       if (!engine) return null;
@@ -1724,7 +1725,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // Low temperature and JSON mode: picking a move from a fixed vocabulary wants determinism,
         // and on a 0.5B the format flag is most of the difference between a move and a paragraph
         // about a move. Both are grain's own defaults for this adapter, named here so they are tunable.
-        return await deps.makeChatModel(engine, { temperature: 0.2, jsonMode: true }).complete(prompt);
+        return await deps.makeChatModel(engine, { temperature: 0.2, jsonMode: true, schema }).complete(prompt);
       } catch (err) {
         console.error("[desk] structured completion failed", err);
         return null;

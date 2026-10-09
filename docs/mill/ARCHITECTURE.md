@@ -160,7 +160,9 @@ does, even when an AI drafted the words.
 Per [`mill/PLAN.md`](https://github.com/tjakoen/grain/blob/main/packages/mill/PLAN.md), the
 AI-facing outputs (schema.org JSON-LD, `llms.txt`, `knowledge.json` RAG chunks, and
 `data-surface` addresses stamped on rendered content) are a planned piece ("4b"), not part of
-`serve.ts` itself today. The portfolio currently builds its own `knowledge.json` and JSON-LD
-separately, on top of MILL's collections, rather than MILL emitting them. Mermaid-to-SVG diagram
-conversion is also planned and explicitly deferred; a mermaid code fence renders today as an
-escaped `<pre>` block, plain text, not a diagram.
+`serve.ts` itself today. The portfolio builds its own `knowledge.json` and JSON-LD on top of MILL's
+collections rather than having MILL emit them. Mermaid-to-SVG conversion is implemented behind
+MILL's optional `DiagramRenderer` port. Its default remains a code block; this portfolio supplies a
+renderer backed by a committed diagram cache, so the deployed site does not need to launch a
+browser. See the [MILL package guide](https://github.com/tjakoen/grain/blob/main/packages/mill/README.md)
+for the optional renderer setup.

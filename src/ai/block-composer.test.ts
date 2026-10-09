@@ -7,7 +7,7 @@
 // an invented verb, and the repetition loop that never closes its own object.
 import { test, expect, describe } from "bun:test";
 import {
-  completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
+  BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
 } from "./block-composer.ts";
 import { BLOCK_NAMES, composeFromNames, sanitizeBlockCopy } from "./block-set.ts";
 
@@ -27,6 +27,15 @@ describe("the prompt hands over the closed set", () => {
 
   test("the sentence itself leads, because a small model reads the top of a prompt best", () => {
     expect(composeMessage("  a page about bread  ").startsWith("a page about bread")).toBe(true);
+  });
+
+  test("the structured output schema bounds block names, count, spans, and visible copy fields", () => {
+    const blocks = BUILD_PLAN_SCHEMA.properties.blocks;
+    expect(blocks.maxItems).toBe(MAX_PLANNED_BLOCKS);
+    expect(blocks.items.properties.name.enum).toEqual(BLOCK_NAMES);
+    expect(blocks.items.properties.copy.additionalProperties).toBe(false);
+    expect(BUILD_PLAN_SCHEMA.properties.span.enum).toEqual(["full", "half", "third", null]);
+    expect(BUILD_PLAN_SCHEMA.additionalProperties).toBe(false);
   });
 });
 
@@ -201,6 +210,16 @@ describe("completeWithin bounds one answer", () => {
   test("an answer that arrives is passed straight through", async () => {
     const desk = { complete: async () => '{"blocks": ["card"]}' };
     expect(await completeWithin(desk, "x", 50)).toBe('{"blocks": ["card"]}');
+  });
+
+  test("the Builder passes its schema through the bounded completion", async () => {
+    let received: Record<string, unknown> | undefined;
+    const desk = { complete: async (_prompt: string, schema?: Record<string, unknown>) => {
+      received = schema;
+      return '{"blocks": [{"name": "card"}]}';
+    } };
+    expect(await completeWithin(desk, "two cards", 50, BUILD_PLAN_SCHEMA)).toBe('{"blocks": [{"name": "card"}]}');
+    expect(received).toBe(BUILD_PLAN_SCHEMA);
   });
 
   test("an answer that never arrives resolves null instead of hanging the page", async () => {

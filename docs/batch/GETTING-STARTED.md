@@ -33,7 +33,9 @@ instructions. That app wires BATCH, GRAIN, and MILL together.
 
 - **The composition engine** — server-rendered HTML from `.html` templates and a binding vocabulary (`data-field`, `data-bind-<attr>`, `each`, component tags); see CONVENTIONS §2–4.
 - **A generic SSE push hub** (`@tjakoen/batch/http/stream.ts`) carries the transport for GRAIN's render ops.
-- **Sitemap, robots.txt, and `/llms.txt`** generated from one route source — SEO/AEO for free.
+- **Route-derived sitemap and robots helpers**, plus a separate renderer for host-authored
+  `/llms.txt` entries. The package provides the formats; the composition root supplies its routes
+  and descriptions.
 - **A static-export library** (`@tjakoen/batch/export/*`) that a host app can use to freeze server output without building a second renderer (ARCHITECTURE §18).
 - **A framework-generic performance and SEO/AEO audit library.** The portfolio wraps that library in its own `bun run audit` command.
 
@@ -42,4 +44,4 @@ instructions. That app wires BATCH, GRAIN, and MILL together.
 - Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the substrate's full reasoning (start here if you want to understand *why*, not just *how*).
 - Read [`CONVENTIONS.md`](CONVENTIONS.md) for the component/layering/testing rules before you add code.
 - If you also want the AI-interaction layer (a UI a human *and* an AI can operate through one vocabulary), see [GRAIN's getting-started](/grain/docs/getting-started) — it builds on BATCH but imports nothing from it.
-- Browse every component live at [`/catalog`](/catalog).
+- Browse GRAIN's components in the live [`/catalog`](/catalog).

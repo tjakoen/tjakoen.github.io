@@ -238,7 +238,9 @@ copy edits appear to work.
       GRAIN page, including one honest refusal.
 - [x] Let a page brief draft text into registered fields on newly composed blocks. Unit and browser
       tests cover validation, composition data, visible output, and literal rendering of markup-like
-      input. Measure real-model writing quality before presenting this as reliable copywriting.
+      input. The portfolio now requests schema-constrained JSON for its local build path and tests
+      that contract through the desk bridge; the existing validator still applies. Measure real-model
+      writing quality before presenting this as reliable copywriting.
 - [ ] Finish the model comparison by measuring the larger profile's first-visit download and cold
       start on desktop and phone hardware, then compare a grounded draft from the visitor's brief.
       The corrected edit comparison records 0.5B at 2/7 and 1.5B at 6/7 in WebGPU Chromium on the
@@ -247,9 +249,9 @@ copy edits appear to work.
       language page writing until it passes measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
-      builder browser suite passes all 61 scenarios, including the static-host, one-door, proposal,
-      and copy-edit refusal paths. The real-model audit remains a separate score because headless CI
-      has no WebGPU.
+      builder browser suite passes all 63 scenarios, including schema delivery, static-host,
+      one-door, proposal, and copy-edit refusal paths. The real-model audit remains a separate score
+      because headless CI has no WebGPU.
 - [ ] Review the published workbench at desktop and narrow widths, then show the rendered result
       before calling the plan done. The local workbench was reviewed at both widths; its mobile file
       toolbar now wraps onto a second row instead of clipping. A published review remains open.
