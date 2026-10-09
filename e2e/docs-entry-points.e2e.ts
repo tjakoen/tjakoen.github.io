@@ -73,6 +73,8 @@ test.describe("developer docs entry points", () => {
 
     await expect(page.locator('.reference-context a[href="/bread"]')).toBeVisible();
     await expect(page.locator('.reference-context a[href="/grain"]')).toBeVisible();
+    await expect(page.locator(".reference-scroll-hint")).toBeVisible();
+    await expect(page.locator(".reference-scroll-hint")).toContainText("Swipe to see the remaining columns");
     const main = page.locator(".app-shell__main");
     const width = await main.evaluate((element) => ({
       client: element.clientWidth,

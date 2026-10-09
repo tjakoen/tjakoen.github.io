@@ -593,6 +593,7 @@ const referencePage = async (req: Request) => {
         <a href="/bread">Meet the BREAD stack</a>
         <a href="/grain">Meet GRAIN</a>
       </nav>
+      <p class="reference-scroll-hint">Some tables extend beyond the page width. Swipe to see the remaining columns, or focus a table and use the arrow keys.</p>
       ${body}
     `,
   });
