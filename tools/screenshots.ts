@@ -35,15 +35,19 @@ async function waitForSettledGreeting(page: import("@playwright/test").Page) {
   if (!(await greeting.count())) return;
   // The shell types its first message over a few seconds. Wait for a quiet period so screenshots
   // show the complete onboarding copy instead of an arbitrary mid-word capture.
-  await greeting.evaluate((element) => new Promise<void>((resolve) => {
-    let timer: ReturnType<typeof setTimeout>;
-    const observer = new MutationObserver(() => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { observer.disconnect(); resolve(); }, 400);
-    });
-    observer.observe(element, { childList: true, characterData: true, subtree: true });
-    timer = setTimeout(() => { observer.disconnect(); resolve(); }, 400);
-  }));
+  let text = await greeting.textContent();
+  let lastChange = Date.now();
+  const deadline = lastChange + 5_000;
+  while (Date.now() < deadline) {
+    await page.waitForTimeout(100);
+    const next = await greeting.textContent();
+    if (next !== text) {
+      text = next;
+      lastChange = Date.now();
+    } else if (Date.now() - lastChange >= 400) {
+      return;
+    }
+  }
 }
 
 const SHOTS: Shot[] = [
