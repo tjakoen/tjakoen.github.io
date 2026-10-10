@@ -8,7 +8,7 @@ if/when they can mean something real.
 ```html
 <div class="walks">
   <a class="walk" href="/grain">
-    <span class="walk__head"><b-icon sym="/assets/sprite.svg#spark" size="sm"></b-icon>Watch the AI act
+    <span class="walk__head"><b-icon sym="/assets/sprite.svg#spark" size="sm"></b-icon><span class="walk__title">Watch the AI act</span>
       <span class="walk__badge">live</span></span>
     <p class="walk__body">One vocabulary, two operators — the AI's hand stays visible as grain.</p>
   </a>

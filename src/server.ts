@@ -114,6 +114,11 @@ const CATALOG_ASSETS = `<link rel="stylesheet" href="/styles/cmdk.css"><script s
 </style><script>
 /* The catalog renders the console specimen from GRAIN, whose icon-only expand button needs a name. */
 document.querySelectorAll(".cat .console__grow:not([aria-label])").forEach((button) => button.setAttribute("aria-label", "Expand console"));
+/* Name the GRAIN sidebar specimen's chat field at the portfolio composition boundary. */
+document.querySelectorAll('.cat input[data-surface="chat-input"]').forEach((input) => {
+  if (!input.getAttribute("aria-label")) input.setAttribute("aria-label", "Ask the desk");
+  if (!input.placeholder) input.placeholder = "Ask the desk…";
+});
 </script>`;
 // The full page shell for every rendered page (portfolio + MILL content). HEAD (render-
 // blocking): theme-boot FOUC guard → design-system styles (tokens → base → grade → per-component

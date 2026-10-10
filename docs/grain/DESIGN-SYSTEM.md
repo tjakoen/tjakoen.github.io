@@ -3,11 +3,12 @@ title: "🍞 Sourdough — GRAIN's default theme"
 ---
 
 *Sourdough* is the visual identity GRAIN ships by default; a consuming product re-skins by overriding token
-slots (CONVENTIONS §1), never by editing components. A monochrome, e-ink / Swiss-editorial aesthetic. The whole identity rests on three
-things: a warm paper surface, soft inky black, and Redaction's grainy serif. No
-color, no shadows, no gradients. Restraint is the brand.
+slots (CONVENTIONS §1), never by editing components. It is a monochrome, e-ink / Swiss-editorial aesthetic.
+The default identity rests on three things: a warm paper surface, soft inky black, and Redaction's grainy
+serif. The default has no accent hue or gradients, and keeps shadows scarce. Optional flavors add one
+accent hue; restraint is the brand.
 
-> **Implementation status (2026-06-30): built and live across the app.** What runs
+> **Implementation status (2026-10-10): built and live across the app.** What runs
 > in the monorepo vs. what's still on the page:
 > - ✅ **Tokens** — the monochrome palette is the Layer-1 primitives; the existing
 >   semantic aliases were re-pointed at them, so every component re-themed with no
@@ -55,7 +56,7 @@ Monochrome only. Six values do everything.
   --paper-2:      #E8E6DF; /* subtle hover surface */
   --panel:        #E8E6DF; /* grouped "sheet" — a hair brighter than the page */
   --ink:          #1C1B17; /* primary text, filled dots, rules */
-  --ink-muted:    #6E6C64; /* secondary text, section labels */
+  --ink-muted:    #65635B; /* secondary text, section labels; 4.55:1 on --paper */
   --ink-faint:    #ABA89F; /* fading insights, empty/future dots */
   --hairline:     #1C1B17; /* solid rules (under headlines) */
   --line-soft:    rgba(28,27,23,.14); /* translucent border for quiet grouping */
@@ -118,24 +119,26 @@ grades let the type carry *meaning* (see Grade as signal, below).
 
 - **Weight:** Regular (400) is the house weight, including for headlines — at this grade the
   grain reads finer and more refined than bold. Bold (700) is reserved for rare extra punch.
-- **Grades in play:** `Redaction` (clean) and `Redaction 50` are the working pair. `Redaction 70`
-  is the display accent — never body text. (`Redaction 100` exists in the type family but is not
-  loaded in this bundle.)
+- **Grades in play:** `Redaction` (clean) and `Redaction 50` are the working pair. `Redaction 35`
+  is the finer face for small AI text. `Redaction 70` is the display accent, never body text.
+  (`Redaction 100` exists in the type family but is not loaded in this bundle.)
 - **Body:** clean `Redaction` holds up at reading sizes; `Redaction 50` stays legible for
   short passages but not long body copy.
 
 ```css
 :root {
-  --font-smooth: "Redaction", "Times New Roman", Georgia, serif;     /* clean — human/default */
-  --font-grain:  "Redaction 50", "Times New Roman", Georgia, serif;  /* grain — AI/draft */
-  --font-accent: "Redaction 70", "Times New Roman", Georgia, serif;  /* display accent only */
+  --font-smooth:     "Redaction", "Times New Roman", Georgia, serif;     /* clean — human/default */
+  --font-grain:      "Redaction 50", "Redaction 35", "Times New Roman", Georgia, serif;
+  --font-grain-fine: "Redaction 35", "Times New Roman", Georgia, serif;  /* small AI text */
+  --font-accent:     "Redaction 70", "Times New Roman", Georgia, serif;  /* display accent only */
 }
 ```
 
-**Loading.** Self-host via Fontsource — one package per grade used:
-`npm i @fontsource/redaction @fontsource/redaction-35` (add `-70` for accents), then
-`import "@fontsource/redaction"; import "@fontsource/redaction-35";`. Redaction is free for
-personal use — confirm MCKL's terms before any commercial release.
+**Loading.** GRAIN ships the Redaction font files in its `fonts/` directory, and
+`styles/variables.css` registers the clean, 35, 50, and 70 grades with `@font-face`. Serve those files
+at the `/fonts/` paths used by the stylesheet, then link the GRAIN stylesheets in order. A separate
+Fontsource install is not needed. Redaction is free for personal use; confirm MCKL's terms before any
+commercial release.
 
 **Type scale** (mobile-first, rem @ 16px base):
 
@@ -161,7 +164,10 @@ A working **grade legend**:
 |----------------|---------------------------------|-----------------------------------------|
 | Clean          | Human / committed / present     | What you wrote; saved, settled content  |
 | Redaction 50   | Machine / in-transit / draft    | AI output, streaming text, unsaved edits|
-| 70 / 100       | Heavily ephemeral / decorative  | Rare display accents only               |
+| Redaction 35   | Fine machine / in-transit signal| Small AI text, including chat messages  |
+| Redaction 70   | Display accent                  | Rare display accents only               |
+
+Redaction 100 exists in the type family but is not loaded by GRAIN.
 
 Two patterns this enables:
 
@@ -171,7 +177,7 @@ Two patterns this enables:
   resolve to clean (that would make machine output look human). Only a *human's* optimistic value
   settles to clean once committed. (See `AI-INTERFACE.md` §5 — an earlier "resolve to clean on
   completion" flourish was dropped for exactly this reason.)
-- **Focus / editing.** A field or card sits at `35` at rest and snaps to clean while the
+- **Focus / editing.** A field sits at the grain grade at rest and snaps to clean while the
   person edits it (or the reverse). The smooth state says "this is yours, right now."
 
 **Implementation notes.**
@@ -182,7 +188,8 @@ Two patterns this enables:
 - Trigger on `:focus` / `:focus-within`, or toggle a `.is-ai` / `.is-draft` class in JS.
 
 **Guardrails.**
-- Readability floor: never use grades above `35` for anything the user must actually read.
+- Readability depends on size. Grade 50 carries the visible AI signal in larger or shorter text;
+  small AI text uses grade 35 so its strokes do not collapse. Keep long-form reading copy clean.
 - Don't let grain be the *only* provenance cue where trust matters — pair it with a label
   or icon; texture reinforces, it isn't a sole source of truth.
 - Offer a way to dampen or disable the effect, and honor it.
@@ -212,7 +219,7 @@ inherited custom property; state lives on ancestors, and CSS inheritance distrib
 Atomic mapping: the **atom** reads `--type-font` (knows nothing about grades). A **molecule**
 (message bubble, input field) sets the grade via a class or `data-grade`. An **organism**
 (chat thread) just composes them. Add `class="is-ai"` to a bubble and its whole subtree
-flips to 35 — no per-component wiring.
+flips to the grain grade. The chat-message component selects the finer face at small sizes.
 
 **Typing / streaming.** A blinking caret is pure CSS; a single-line `steps()` typewriter is
 pure CSS but needs a monospace font and no wrapping. For real (multi-line, proportional, or
@@ -227,15 +234,17 @@ clean on completion via a two-layer opacity cross-fade.
 ```css
 :root {
   /* 4px base scale */
-  --s1: 0.25rem;  --s2: 0.5rem;  --s3: 0.75rem;
-  --s4: 1rem;     --s6: 1.5rem;  --s8: 2rem;
-  --s12: 3rem;    --s16: 4rem;
+  --space-1: 0.25rem;  --space-2: 0.5rem;  --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.25rem; --space-6: 1.5rem;
+  --space-8: 2rem;
 
-  --radius: 4px;          /* buttons — crisp, almost square */
+  --radius-sm: 4px;       /* controls — crisp, almost square */
+  --radius-md: 4px;
+  --radius-pill: 2px;     /* badges stay near-rectangular */
   --rule: 1.5px solid var(--hairline);   /* under-headline rule */
   --border: 1px solid var(--hairline);   /* buttons, dotted dividers */
-
-  --page-pad: var(--s6);  /* consistent left/right page margin */
+  --content-max: 768px;
+  --page-pad: clamp(1.25rem, 5vw, 2.5rem); /* consistent left/right page margin */
 }
 ```
 

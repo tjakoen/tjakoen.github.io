@@ -165,7 +165,7 @@ test.describe("/grain — the GRAIN showcase", () => {
     );
   });
 
-  test("the full-page catalog fits a phone and labels its live console control", async ({ page }) => {
+  test("the full-page catalog fits a phone and labels its live controls", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/catalog");
     await expect(page.locator(".cat-navtoggle")).toBeVisible();
@@ -179,6 +179,9 @@ test.describe("/grain — the GRAIN showcase", () => {
     const consoleControls = page.locator(".cat .console__grow");
     await expect(consoleControls).toHaveCount(2);
     expect(await consoleControls.evaluateAll((buttons) => buttons.every((button) => button.getAttribute("aria-label") === "Expand console"))).toBe(true);
+    const specimenChat = page.locator('.cat input[data-surface="chat-input"]');
+    await expect(specimenChat).toHaveCount(2);
+    expect(await specimenChat.evaluateAll((inputs) => inputs.every((input) => input.getAttribute("aria-label") === "Ask the desk" && input.getAttribute("placeholder") === "Ask the desk…"))).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });
 });
