@@ -13,6 +13,18 @@ test.describe("flagship featured", () => {
     await expect(first).toHaveAttribute("data-featured", "");
   });
 
+  test("the featured title keeps its words together beside its badge at desktop width", async ({ page }) => {
+    await page.setViewportSize({ width: 1200, height: 850 });
+    await page.goto("/");
+    const title = page.locator(".walks .walk[data-featured] .walk__title");
+    const lineCount = await title.evaluate((element) => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      return range.getClientRects().length;
+    });
+    expect(lineCount).toBe(1);
+  });
+
   test("/notes feed: the flagship is pinned first in New AND Top (score can't bury it)", async ({ page }) => {
     await page.goto("/notes");
     const firstNew = page.locator(".note-feed .note-card").first();

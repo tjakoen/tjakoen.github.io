@@ -5,7 +5,8 @@ title: "AI ↔ UI Interface — the GRAIN action vocabulary contract"
 > This is the detailed contract for **GRAIN**, the AI-interaction layer (overview:
 > [GRAIN.md](./GRAIN.md)). GRAIN is built on BATCH and now lives in its own repo.
 
-**Status:** Design + reference scaffold (running in the monorepo).
+**Status:** The action contract and dispatcher are implemented in the GRAIN package. Sections marked as
+planned or deferred describe work that has not shipped.
 **Depends on:** MVP.md §"One interface, one path" and §"The Interaction Flow", and
 PROJECT-PLAN.md §9 (control plane / single-writer), both in a private repo and so unlinked here;
 [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) §3 (grade as signal).
@@ -82,7 +83,7 @@ A small vocabulary that grows reluctantly (PROJECT-PLAN principle 8). Each verb
 declares the surface **kinds** it applies to, a typed **payload**, and a routing
 **depth** (light = optimistic; heavy = decide-then-animate — MVP §"Gate triages").
 
-**Current scaffold — built and running in `grain/ai/contract.ts`:**
+**Registered action vocabulary — implemented in `packages/grain/ai/contract.ts`:**
 
 | Verb | Payload | Accepts | Depth |
 |------|---------|---------|-------|
@@ -97,6 +98,9 @@ declares the surface **kinds** it applies to, a typed **payload**, and a routing
 | `navigate` | `{ href }` | `screen` | light (same-origin, root-relative only) |
 | `field.set` | `{ value }` | `field` | light (prefill a registered form field — the human reviews and sends; the AI never submits: no submit verb exists) |
 | `check.set` | `{ checked }` | `check` | light (tick or clear a registered tick box: a set, never a toggle, so a replay is harmless) |
+| `block.remove` | `{}` | `block` | light (remove a block from a composed page) |
+| `block.span` | `{ span }` | `block` | light (`full`, `half`, or `third`) |
+| `block.move` | `{ direction }` | `block` | light (`up` or `down`, clamped at the ends) |
 
 **Full product vocabulary — designed, not yet registered in `contract.ts`:**
 
@@ -113,13 +117,13 @@ These verbs are designed but not yet wired. When a verb lands, it moves to the b
 The built table **is** the live contract. It is defined once in TypeScript and everything else
 — validation, the manifest, the UI affordances — derives from it.
 
-> **Single source of truth: [`grain/ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/packages/grain/ai/contract.ts).**
+> **Single source of truth: [`packages/grain/ai/contract.ts`](https://github.com/tjakoen/grain/blob/main/packages/grain/ai/contract.ts).**
 > The closed sets are **union types + a `const` registry**, not a TS `enum` (`enum`
 > is banned by `erasableSyntaxOnly`) — that union *is* the erasable enum:
 > - `ActionName` — the verbs · `ACTIONS` — the registry (depth, accepted kinds, a one-line
 >   `description`, and a `payload` schema — the calling contract a reasoner reads to invoke a verb, §4).
 > - `SurfaceKind` — the closed set of surface kinds a verb can accept (`item`,
->   `reflection`, `say-stream`, `screen`, `chat-log`, `notepad`, `field`, `check`). A kind is a
+>   `reflection`, `say-stream`, `screen`, `chat-log`, `notepad`, `field`, `check`, `block`). A kind is a
 >   promise about which verbs work on it, which is why a text field and a tick box are two kinds and
 >   not one: see the `check.set` note under the render ops below. Push-only display surfaces the
 >   AI only *writes* to (e.g. `console`, `timeline`, `notepad-body`) are intentionally **not** kinds — see the note in `contract.ts`.
@@ -175,7 +179,7 @@ The interaction layer never returns "data for the client to render." It returns
 server-rendered hypermedia), so the client stays dumb and can't drift from the truth.
 
 ```ts
-type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log" | "navigate" | "choices" | "fill" | "tick";
+type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log" | "navigate" | "choices" | "fill" | "tick" | "span" | "move";
 interface RenderOp {
   target: Surface;                // a semantic address from §1a
   op: RenderOpKind;
@@ -189,6 +193,8 @@ interface RenderOp {
   prompt?: string;                // choices: the question shown above the buttons (optional)
   choices?: { label: string; value?: string }[];   // choices: the options the human picks from
   checked?: boolean;              // tick: the state to assign to a registered tick box
+  span?: "full" | "half" | "third"; // span: the width assigned to one block
+  direction?: "up" | "down";      // move: one place, clamped at the ends
   provenance: "user" | "ai" | "system";
   commit: "pending" | "committed";   // grade = commit state — see §5
 }
@@ -228,6 +234,11 @@ interface RenderOp {
 > `log` appends one provenance-tagged entry to the interaction **timeline** (§5g) — the
 > unified human-and-AI history. The client caps the DOM and pins to newest; the entry's
 > colour/grade comes from `provenance`.
+
+> `span` and `move` are the effects of `block.span` and `block.move` on the Builder's ordered
+> composition. They update one addressed block without sending rendered HTML from the model. The
+> `remove` effect handles `block.remove`; it keeps the existing element-removal vocabulary rather
+> than adding a duplicate operation kind.
 
 > A surface is **overwritten** by streaming `back` ops (delete a char) then `text` ops
 > (type the new) — the AI visibly backspacing and retyping. The hero desk (on `/`) uses this

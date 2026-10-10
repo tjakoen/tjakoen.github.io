@@ -3,7 +3,8 @@ title: "How to: add a RenderOp kind"
 ---
 
 Adding a new *kind* of effect (today's set: `replace` / `append` / `remove` / `flash` / `type` /
-`spotlight`) touches two files that must agree on the shape, plus the docs and a test.
+`spotlight` / `log` / `navigate` / `choices` / `fill` / `tick` / `span` / `move`) touches the
+contract and dispatcher, plus the docs and a test.
 
 ## 1. Add the kind to the contract
 
