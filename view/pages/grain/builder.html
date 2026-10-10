@@ -58,10 +58,10 @@
           </div>
         </div>
         <p class="wb-bar__note muted">AI runs in this browser, and prompts stay on this device. First use
-          downloads about 350 MB and caches the model. An October 3 draft missed the brief, so the
-          sample copy stayed. The desk can propose block moves, size changes or removals, but cannot
-          revise existing copy yet. Review every proposal before applying it, then check the page
-          before export.</p>
+          downloads about 350 MB and caches the model. The October 10 live check scored 2/8; the
+          draft missed the brief and some edit targets. The desk can propose block moves, size
+          changes or removals, but cannot revise existing copy yet. Review every proposal before
+          applying it, then check the page before export.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -204,89 +204,30 @@
              the same case is the note this page links from, which is where an argument belongs. -->
         <details class="wb-drawer" data-surface="builder-help">
           <summary>What it builds, what it edits, and where it stops</summary>
-          <p>Describe a page and press Build it. A fixed, code-owned set of GRAIN blocks decides what
-            renders, and the desk may draft text only into the registered copy fields on those new
-            blocks. The live model has not yet produced a reliable draft, so check the visible result
-            before using or exporting the page. The first AI build downloads about 350 MB of model
-            files, then keeps them cached. The model runs on this device; prompts do not go to a
-            server. Existing block copy cannot be revised yet. The blocks
-            are expanded by the same renderer every other page on this
-            site goes through. Once
-            there are blocks on the canvas, the same box aims at them: say drop the second card, and a
-            half-billion-parameter model running in this browser reads what is on the page and answers
-            with one verb pointed at one id the rail is printing. Whether it answers well is a
-            separate question, it has been measured, and this drawer says so below.</p>
-          <p>The model chooses and code holds the fence. It is shown the blocks that exist and the
-            verbs each one takes, and everything it answers is checked against that same list before
-            anything moves: a verb that is not in the vocabulary, a block that is not here, a width
-            outside the three. What no check can catch is a choice that is legal and wrong, so the
-            page names the block it is about to touch before it touches it. If the model cannot run
-            on your machine, this box says so rather than falling back to something that is not the
-            model and calling it one.</p>
-          <p>Copy drafting is the unfinished part. In a live WebGPU check on October 3, 2026, the
-            0.5B model returned a different JSON shape, added details the brief did not support, and
-            missed the supplied facts. The Builder kept its example copy, and the scenario scored
-            0/1. A temporary 1.5B trial timed out before it produced a draft. The bounded copy path is
-            covered with a scripted model, but that is not evidence that the local model can write a
-            useful page.</p>
+          <p>Describe a page and press Build it. The code-owned matcher gives the examples a stable
+            preview; Build it asks the local model to add blocks and draft text into registered fields.
+            The model has not earned your trust with copy yet. Check the canvas before you use or export
+            anything. Its first run downloads about 350 MB, then caches the files on this device. Your
+            prompt stays here.</p>
+          <p>The live check on October 10, 2026, scored 2/8 across eight draft, edit, and refusal cases.
+            The model removed b4 when asked by that exact id, and refused to rewrite copy on an existing
+            block. It timed out on a request to remove the second card, removed the intro instead of
+            widening the callout, and returned an unsupported action for the move requests. Its draft
+            missed every supplied fact, so the sample copy stayed in place. This is one run of one small
+            local model, not a general success rate.</p>
+          <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
+            the canvas again before it reports a change. That review catches stale proposals, but it
+            cannot tell whether a legal choice is the block you meant. The block rail is the dependable
+            way to resize, move, or remove something. The model may add new blocks; it cannot revise
+            copy already on the canvas because GRAIN has no registered operation for that.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
-            <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">adds blocks. Code picks the components, never the model, and this is the only way to add one.</span></div>
-            <div class="docs-list__item"><span class="docs-list__name">Drop the second card</span><span class="docs-list__what">removes one block, by kind, by position, or by its id.</span></div>
-            <div class="docs-list__item"><span class="docs-list__name">Make the callout half</span><span class="docs-list__what">sets a width. Full, half and third, and there is no fourth word.</span></div>
-            <div class="docs-list__item"><span class="docs-list__name">Move the form up</span><span class="docs-list__what">shifts one block one place, clamped at the ends rather than wrapped.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">the matcher makes a preview; Build it asks the model to add registered blocks and copy.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Drop b4</span><span class="docs-list__what">the one edit that landed in the October 10 run; review the named block before applying.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Resize, move, or remove</span><span class="docs-list__what">the rail controls apply these changes directly to the block you choose.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Rewrite existing copy</span><span class="docs-list__what">not supported; GRAIN does not expose a registered text-edit operation.</span></div>
           </div>
-          <p>Those four lines are the whole vocabulary, and only the first one has ever been shown to
-            work end to end. The editing half was measured on 2026-08-15 rather than assumed, over
-            thirty-three answers from the real model, and not one of them landed a correct edit. The
-            first eighteen never aimed at a block at all. Then the list the model reads was narrowed
-            to only the things a verb can touch, and seven of the next fifteen named a block, five of
-            those named the right block and the right verb, and every one of the five was refused for
-            writing b2 where the page addresses that block as block:b2. Those numbers are a dated
-            measurement of that build rather than a standing fact about small models.</p>
-          <p>That last refusal is gone as of 2026-08-19. The fence now reads a short address up to the
-            long one when exactly one block on the page answers to it, and still refuses an ambiguous
-            or an absent one. Then it was run, the same day, against the same five scenarios that had
-            scored zero before it, and here is the number it earned. <strong>Drop b4 now lands, twice
-            in three tries.</strong> That is the first correct edit this model has ever completed on
-            this page, and it is the scenario that asks only for the vocabulary. The four that also
-            ask it to work out which block you meant, the second card, the callout, move one up, still
-            never landed once.</p>
-          <p>The same run turned up something the deduction would never have found. Asked for a change
-            no verb can make, the model reached for a verb anyway and removed an unrelated block, once
-            in four tries. Under the strict fence that answer was refused for its address and nothing
-            moved. Loosening the fence is what let it through. Both numbers are one afternoon against
-            a model that answers differently every time, not a rate.</p>
-          <p>The obvious guard was to stop resolving a short address for a verb that removes something.
-            That was built, and then measured, and it took the one edit that works with it, because
-            the edit that works is a drop written short. So the answer here is Undo instead. A wrong
-            drop is one press to put back, with the block's own content intact, and the same button
-            covers a width or a move. That is the trade this page is willing to make: an edit that
-            lands, next to a mistake that costs a keystroke rather than the page.</p>
-          <p>This drawer used to promise that the honest demo is the one where you watch it pick the
-            wrong block. Under the strict fence it never got that far, and a promise you cannot keep
-            is worse than a limit you state. Under the loose one it got there once, in the worst way,
-            by dropping a block nobody asked about. So the older claim, that every wrong answer was
-            caught and the canvas came back byte-identical every single time, was true of that build
-            and is not true of this one. What still holds is the shape of the guarantee: a refusal
-            names itself in the visitor's own words, and every wrong answer that IS refused changes
-            nothing. A builder that quietly edits the wrong block is worse than one that admits it did
-            not understand, because the first kind of mistake is the kind you find later.</p>
-          <p>On 2026-10-02, I reran the same five scenarios against this build. Two passed: removing
-            b4 by its printed id, and refusing a copy edit without touching the canvas. The model
-            removed the first card instead of the second, removed the intro instead of widening the
-            callout, and declined to move the callout after returning the shortened action name
-            "move". This is one dated run on one small model, not a general success rate.</p>
-          <p>So describing a page is the part that works, and it works on a machine that cannot run a
-            model at all. Editing one is the model's job, and it can now do the easiest version of it
-            and none of the rest. Both halves are on this page on purpose, and the line under the
-            prompt box is where you watch the second one land or fail in front of you.</p>
-          <p>The model can now suggest wording for the registered text fields on newly composed
-            blocks. That copy is included in the composition and should be checked before export.
-            This browser test does not show that the local model writes useful or accurate copy. A
-            wording pass for blocks already on the canvas remains an open seam because GRAIN does
-            not yet expose a content-edit operation.</p>
           <p>The Can't build list holds two different answers. A shell, a side rail or a top bar is
             the frame a page sits in rather than content it can hold, so it is refused on principle.
             Everything else is a gap with a date on it: the component exists, it is documented, and

@@ -212,34 +212,18 @@ is styled in the **grain serif** (not a monospace terminal) — the AI's narrati
 developer-console aesthetic. `grain/scripts/shell.js` manages the rail collapse/drawer and the
 chat⇄console swap; it knows nothing about the AI door.
 
-## Repo layout (monorepo, separated now)
+## Package boundaries
 
-The concerns are already separate top-level directories — no Bun workspaces,
-plain relative imports, one `package.json` + `tsconfig` at the root. They're polished
-in place and will each become **their own repo** (GRAIN a package on BATCH) once proven;
-the boundary is kept clean so that split is a copy, not a rewrite.
+BATCH, GRAIN, MILL, PROOF, and CRUMB now live in separate repositories. GRAIN is the
+design-system package and is published from the GRAIN monorepo alongside MILL, PROOF,
+and CRUMB. BATCH is its substrate; the portfolio is a separate application that consumes
+the packages. The package boundaries are established, so new work belongs in the owning
+repository rather than in a copied source tree here.
 
-```
-batch/     substrate — render, http (incl. stream.ts SSE), assets, platform.
-           Imports nothing upward. Ships its own render-test fixtures.
-grain/     the design system — ai/ (contract, interaction-layer, reasoner boundary,
-           manifest, accepts), components/atoms/b-*, scripts/ (ai-dispatch, cmdk),
-           styles/ (variables = tokens, global = base/skin, grain = grade mechanism),
-           fonts/ (the Redaction grades). Ships its DEFAULT THEME — GRAIN looks like
-           GRAIN on its own. A consumer overrides token slots to re-skin.
-mill/      the Markdown→GRAIN CMS — a reusable layer above grain+batch (batch → grain → mill).
-tjakoen.github.io/  THE app + composition root — domain components (task/mail/…), routes,
-           pages, vendor, server.ts (the one place the layers meet). Uses MILL for content,
-           GRAIN's look; would add an override sheet only to diverge.
-project/   the AI-assistant product — PAUSED (2026-07-05), a docs-only archive.
-```
+BATCH's `render`, `catalog`, and `style-bundle` interfaces, along with GRAIN's `accepts`
+interface, support multiple component roots. That lets an application compose package
+components with its own domain components without moving either source tree.
 
-A key consequence the split forced (and a real reusability test): BATCH's
-`render`/`catalog`/`style-bundle` and GRAIN's `accepts` accept **multiple component
-roots**, so components compose across `grain/components` + `tjakoen.github.io/components`.
-
-The detailed contract is **[AI-INTERFACE.md](./AI-INTERFACE.md)**; the visual identity
-and grade mechanics are **[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)**; the hands-on usage
-reference (substrate contract, binding vocabulary, token slots, wiring) lives in the
-package itself, **[`grain/README.md`](https://github.com/tjakoen/grain/blob/main/README.md)**. When extracting:
-BATCH → its own repo; GRAIN → a repo on a substrate (BATCH the reference); product → on GRAIN.
+The detailed contract is in **[AI-INTERFACE.md](./AI-INTERFACE.md)**; the visual identity
+and grade mechanics are in **[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)**. The package README
+contains the current installation and usage reference: **[GRAIN on GitHub](https://github.com/tjakoen/grain/blob/main/README.md)**.
