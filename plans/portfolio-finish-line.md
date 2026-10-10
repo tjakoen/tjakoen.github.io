@@ -139,18 +139,26 @@ browser checks cover the four-block example, the two half-width cards, the disti
 local-generation notice. The narrower preview was also reviewed at 390 pixels with no page overflow.
 
 The October 10 release checks pass locally. TypeScript is clean, all 698 unit tests pass, and the
-serial browser suite passes 399 tests with one data-dependent calendar lightbox test skipped because
-the fixtures have no single-photo post. Oxlint exits successfully with existing warnings; the lint
+serial browser suite previously passed 399 tests with one data-dependent calendar lightbox test
+skipped because the fixtures have no single-photo post. The expanded October 10 run now covers 405
+browser cases: 403 passed, the same data-dependent case was skipped, and the one failure was a stale
+Builder assertion for the October 2 help copy. That assertion now checks the October 10 evidence and
+passes in a focused rerun. Oxlint exits successfully with existing warnings; the lint
 gate reports 4,504 flags against a baseline of 4,570. The link linter finds no dead relative links
 across 56 rendered files, and every served diagram has a committed SVG. The fresh route audit returns
-all 145 canonical pages without HTTP or document findings, and sitemap, robots, and llms endpoints
+all 146 canonical pages without HTTP or document findings, and sitemap, robots, and llms endpoints
 return successfully. The static export verifies all 1,174 pages and 1,132 data routes, and every
 exported internal link resolves. The October 10 BATCH and MILL architecture edits were rendered at
 desktop and 390 pixels; both pages have one page heading and no horizontal overflow. A refreshed
-23-screen desktop gallery is available for review. The final route-by-route visual review remains
-open, as does the Builder's live-model reliability work and the remaining BATCH, GRAIN, MILL, and
-PROOF documentation review. Ordinary pages still send about 207 KB of JavaScript in the local
-measurement, so the shared shell's delivery cost also needs a deliberate review.
+23-screen desktop gallery is available for review. The screenshot helper now isolates browser storage
+for each capture and waits for the welcome greeting to finish. The GRAIN guide's package-boundary
+section now reflects the separate BATCH repository and the GRAIN monorepo that publishes GRAIN,
+MILL, PROOF, and CRUMB; package-doc navigation and phone checks pass. The Builder help now reports the
+October 10 local-model result of 2/8, with the full measurement recorded in builder-ai-depth.md.
+The final route-by-route visual review remains open, as does the Builder's live-model reliability
+work and the remaining BATCH, GRAIN, MILL, and PROOF documentation review. Ordinary pages still send
+about 207 KB of JavaScript in the local measurement, so the shared shell's delivery cost also needs
+a deliberate review.
 
 ### Page recommendations in progress
 

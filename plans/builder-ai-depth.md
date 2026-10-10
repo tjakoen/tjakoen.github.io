@@ -163,6 +163,15 @@ seconds; it confirms that the current path is safe and local, but the model stil
 useful grounded draft. The capture is
 .cache/desk-audit/report-builder-local-check-2026-10-03.json.
 
+On October 10, I expanded the local-model check to eight draft, edit, and refusal cases on a machine
+with WebGPU. The current 0.5B model scored 2/8. It removed `b4` when given that exact ID and refused
+to rewrite copy on an existing block. It timed out when asked to remove the second card, removed the
+intro instead of widening the callout, and returned unsupported actions for both move requests. Its
+draft missed every supplied fact and left the sample copy in place. The captured report is
+`.cache/desk-audit/report-builder-local-audit-2026-10-10.json`. The expanded run confirms that the
+current model is not a dependable page writer or natural-language editor. The local-only decision
+still stands; this evidence does not select a replacement model or establish cold-start performance.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business

@@ -28,8 +28,23 @@ type Shot = {
 
 const goto = (path: string) => async (page: import("@playwright/test").Page) => {
   await page.goto(`${BASE}${path}`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(250);
 };
+
+async function waitForSettledGreeting(page: import("@playwright/test").Page) {
+  const greeting = page.locator('.assistant__log .chat-message__body').first();
+  if (!(await greeting.count())) return;
+  // The shell types its first message over a few seconds. Wait for a quiet period so screenshots
+  // show the complete onboarding copy instead of an arbitrary mid-word capture.
+  await greeting.evaluate((element) => new Promise<void>((resolve) => {
+    let timer: ReturnType<typeof setTimeout>;
+    const observer = new MutationObserver(() => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { observer.disconnect(); resolve(); }, 400);
+    });
+    observer.observe(element, { childList: true, characterData: true, subtree: true });
+    timer = setTimeout(() => { observer.disconnect(); resolve(); }, 400);
+  }));
+}
 
 const SHOTS: Shot[] = [
   { name: "welcome", desc: "/ — THE EDITOR's Welcome page (the whole site as one editor window)", fullPage: true, prepare: goto("/") },
@@ -135,15 +150,23 @@ try {
   await waitForServer(BASE);
   await mkdir(OUT, { recursive: true });
   const browser = await chromium.launch();
-  // motion ON so live simulations (e.g. /grain's grade-as-signal) render as users see them —
-  // headless chromium otherwise defaults to prefers-reduced-motion: reduce and freezes them.
-  const page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 2, reducedMotion: "no-preference" });
-
   const cards: string[] = [];
   for (const shot of SHOTS) {
     process.stdout.write(`[shots] ${shot.name} … `);
+    // Give every route a fresh storage context. Reusing one page lets the tab strip's persisted
+    // localStorage accumulate every previous route, so later screenshots no longer show a
+    // visitor's first view of the page.
+    const context = await browser.newContext({
+      viewport: VIEWPORT,
+      deviceScaleFactor: 2,
+      // Motion ON so live simulations (e.g. /grain's grade-as-signal) render as users see them;
+      // headless Chromium otherwise defaults to reduced motion and freezes them.
+      reducedMotion: "no-preference",
+    });
+    const page = await context.newPage();
     try {
       await shot.prepare(page);
+      await waitForSettledGreeting(page);
       const buf = await page.screenshot({ fullPage: shot.fullPage ?? false, type: "jpeg", quality: 72 });
       await writeFile(`${OUT}/${shot.name}.jpg`, buf);
       const b64 = Buffer.from(buf).toString("base64");
@@ -158,6 +181,8 @@ try {
       console.log("ok");
     } catch (e) {
       console.log(`FAILED (${(e as Error).message})`);
+    } finally {
+      await context.close();
     }
   }
   await browser.close();

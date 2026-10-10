@@ -6,8 +6,8 @@ test("the Builder help shows the latest measured edit limits", async ({ page }) 
   const help = page.locator('details[data-surface="builder-help"]');
   await help.locator("summary").click();
 
-  await expect(help).toContainText("On 2026-10-02, I reran the same five scenarios against this build.");
-  await expect(help).toContainText("Two passed");
-  await expect(help).toContainText("removed the first card instead of the second");
-  await expect(help).toContainText("declined to move the callout");
+  await expect(help).toContainText("October 10, 2026, scored 2/8 across eight draft, edit, and refusal cases.");
+  await expect(help).toContainText("removed b4 when asked by that exact id");
+  await expect(help).toContainText("removed the intro instead of widening the callout");
+  await expect(help).toContainText("Its draft missed every supplied fact");
 });
