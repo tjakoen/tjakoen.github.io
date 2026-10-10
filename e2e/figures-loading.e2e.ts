@@ -18,13 +18,13 @@ test.describe("live figures load only on pages that use them", () => {
 
   test("a note loads the figure families its live figures use", async ({ page }) => {
     const loaded = await loadFigureAssets(page, "/notes/ten-times-zero");
-    expect([...loaded]).toContain("/site/figure-multiplier.js");
-    expect([...loaded]).toContain("/site/figure-widgets.js");
+    await expect.poll(() => [...loaded]).toContain("/site/figure-multiplier.js");
+    await expect.poll(() => [...loaded]).toContain("/site/figure-widgets.js");
     expect([...loaded]).not.toContain("/site/figure-floor.js");
   });
 
   test("a talk deck loads its live floor figures", async ({ page }) => {
     const loaded = await loadFigureAssets(page, "/talks/build-the-floor");
-    expect([...loaded]).toEqual(["/site/figure-floor.js"]);
+    await expect.poll(() => [...loaded]).toEqual(["/site/figure-floor.js"]);
   });
 });

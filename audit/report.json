@@ -7,13 +7,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 93,
-        "loadMs": 99,
-        "wireBytes": 875505,
-        "jsBytes": 211553,
-        "cssBytes": 594938,
-        "requests": 35
+        "ttfbMs": 15,
+        "domContentLoadedMs": 217,
+        "loadMs": 217,
+        "wireBytes": 858084,
+        "jsBytes": 199053,
+        "cssBytes": 590140,
+        "requests": 32
       },
       "dom": {
         "title": "Welcome · TJ's Desk",
@@ -43,7 +43,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 79,
+        "ariaAttrs": 69,
         "selectorCounts": {
           "Surfaces": 33,
           "Kinds": 0,
@@ -56,13 +56,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 13,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 809404,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 17,
+        "domContentLoadedMs": 73,
+        "loadMs": 74,
+        "wireBytes": 791983,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "About · TJ's Desk",
@@ -92,7 +92,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 94,
+        "ariaAttrs": 84,
         "selectorCounts": {
           "Surfaces": 37,
           "Kinds": 0,
@@ -105,13 +105,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 27,
-        "loadMs": 27,
-        "wireBytes": 740874,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 723453,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Badges · School of Computing course credentials",
@@ -141,7 +141,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 75,
+        "ariaAttrs": 65,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -154,19 +154,264 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 29,
-        "loadMs": 29,
-        "wireBytes": 744137,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 726716,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Flutter App Development · 6ADET section 2125",
         "titleLen": 44,
         "metaDescription": "Flutter App Development",
         "canonical": "http://localhost:3320/badges/adet-2125-midterm/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": true,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 5,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 70,
+        "selectorCounts": {
+          "Surfaces": 36,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/badges/adet-2125-prelim/",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 726762,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
+      },
+      "dom": {
+        "title": "Dart and Flutter Foundations · 6ADET section 2125",
+        "titleLen": 49,
+        "metaDescription": "Dart and Flutter Foundations",
+        "canonical": "http://localhost:3320/badges/adet-2125-prelim/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": true,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 5,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 72,
+        "selectorCounts": {
+          "Surfaces": 36,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/badges/adet-2134-midterm/",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "wireBytes": 726716,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
+      },
+      "dom": {
+        "title": "Flutter App Development · 6ADET section 2134",
+        "titleLen": 44,
+        "metaDescription": "Flutter App Development",
+        "canonical": "http://localhost:3320/badges/adet-2134-midterm/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": true,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 5,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 74,
+        "selectorCounts": {
+          "Surfaces": 36,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/badges/adet-2134-prelim/",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 726762,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
+      },
+      "dom": {
+        "title": "Dart and Flutter Foundations · 6ADET section 2134",
+        "titleLen": 49,
+        "metaDescription": "Dart and Flutter Foundations",
+        "canonical": "http://localhost:3320/badges/adet-2134-prelim/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": true,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 5,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 76,
+        "selectorCounts": {
+          "Surfaces": 36,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/badges/apsi-2203-midterm/",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 726784,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
+      },
+      "dom": {
+        "title": "Backend Development with Cloud · 6APSI section 2203",
+        "titleLen": 51,
+        "metaDescription": "Backend Development with Cloud",
+        "canonical": "http://localhost:3320/badges/apsi-2203-midterm/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": true,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 5,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 78,
+        "selectorCounts": {
+          "Surfaces": 36,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/badges/apsi-2203-prelim/",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 726706,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
+      },
+      "dom": {
+        "title": "Frontend Design with Cloud · 6APSI section 2203",
+        "titleLen": 47,
+        "metaDescription": "Frontend Design with Cloud",
+        "canonical": "http://localhost:3320/badges/apsi-2203-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -199,23 +444,23 @@
       }
     },
     {
-      "path": "/badges/adet-2125-prelim/",
+      "path": "/badges/apsi-2209-midterm/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 744183,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 726784,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Dart and Flutter Foundations · 6ADET section 2125",
-        "titleLen": 49,
-        "metaDescription": "Dart and Flutter Foundations",
-        "canonical": "http://localhost:3320/badges/adet-2125-prelim/",
+        "title": "Backend Development with Cloud · 6APSI section 2209",
+        "titleLen": 51,
+        "metaDescription": "Backend Development with Cloud",
+        "canonical": "http://localhost:3320/badges/apsi-2209-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -248,23 +493,23 @@
       }
     },
     {
-      "path": "/badges/adet-2134-midterm/",
+      "path": "/badges/apsi-2209-prelim/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 744137,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 726706,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Flutter App Development · 6ADET section 2134",
-        "titleLen": 44,
-        "metaDescription": "Flutter App Development",
-        "canonical": "http://localhost:3320/badges/adet-2134-midterm/",
+        "title": "Frontend Design with Cloud · 6APSI section 2209",
+        "titleLen": 47,
+        "metaDescription": "Frontend Design with Cloud",
+        "canonical": "http://localhost:3320/badges/apsi-2209-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -297,23 +542,23 @@
       }
     },
     {
-      "path": "/badges/adet-2134-prelim/",
+      "path": "/badges/apsi-2215-midterm/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 31,
-        "loadMs": 31,
-        "wireBytes": 744183,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 53,
+        "loadMs": 53,
+        "wireBytes": 726784,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Dart and Flutter Foundations · 6ADET section 2134",
-        "titleLen": 49,
-        "metaDescription": "Dart and Flutter Foundations",
-        "canonical": "http://localhost:3320/badges/adet-2134-prelim/",
+        "title": "Backend Development with Cloud · 6APSI section 2215",
+        "titleLen": 51,
+        "metaDescription": "Backend Development with Cloud",
+        "canonical": "http://localhost:3320/badges/apsi-2215-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -346,23 +591,23 @@
       }
     },
     {
-      "path": "/badges/apsi-2203-midterm/",
+      "path": "/badges/apsi-2215-prelim/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 744205,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 726706,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Backend Development with Cloud · 6APSI section 2203",
-        "titleLen": 51,
-        "metaDescription": "Backend Development with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2203-midterm/",
+        "title": "Frontend Design with Cloud · 6APSI section 2215",
+        "titleLen": 47,
+        "metaDescription": "Frontend Design with Cloud",
+        "canonical": "http://localhost:3320/badges/apsi-2215-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -395,23 +640,23 @@
       }
     },
     {
-      "path": "/badges/apsi-2203-prelim/",
+      "path": "/badges/apsi-2240-midterm/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 744127,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 726784,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Frontend Design with Cloud · 6APSI section 2203",
-        "titleLen": 47,
-        "metaDescription": "Frontend Design with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2203-prelim/",
+        "title": "Backend Development with Cloud · 6APSI section 2240",
+        "titleLen": 51,
+        "metaDescription": "Backend Development with Cloud",
+        "canonical": "http://localhost:3320/badges/apsi-2240-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -444,23 +689,23 @@
       }
     },
     {
-      "path": "/badges/apsi-2209-midterm/",
+      "path": "/badges/apsi-2240-prelim/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 744205,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 50,
+        "loadMs": 51,
+        "wireBytes": 726706,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Backend Development with Cloud · 6APSI section 2209",
-        "titleLen": 51,
-        "metaDescription": "Backend Development with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2209-midterm/",
+        "title": "Frontend Design with Cloud · 6APSI section 2240",
+        "titleLen": 47,
+        "metaDescription": "Frontend Design with Cloud",
+        "canonical": "http://localhost:3320/badges/apsi-2240-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -493,23 +738,23 @@
       }
     },
     {
-      "path": "/badges/apsi-2209-prelim/",
+      "path": "/badges/introweb-2106-midterm/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 744127,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 50,
+        "loadMs": 51,
+        "wireBytes": 726584,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Frontend Design with Cloud · 6APSI section 2209",
-        "titleLen": 47,
-        "metaDescription": "Frontend Design with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2209-prelim/",
+        "title": "Interactive Web Pages · 6INTROWEB section 2106",
+        "titleLen": 46,
+        "metaDescription": "Interactive Web Pages",
+        "canonical": "http://localhost:3320/badges/introweb-2106-midterm/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -542,23 +787,23 @@
       }
     },
     {
-      "path": "/badges/apsi-2215-midterm/",
+      "path": "/badges/introweb-2106-prelim/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 744205,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 56,
+        "loadMs": 56,
+        "wireBytes": 726514,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Backend Development with Cloud · 6APSI section 2215",
-        "titleLen": 51,
-        "metaDescription": "Backend Development with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2215-midterm/",
+        "title": "Web Foundations · 6INTROWEB section 2106",
+        "titleLen": 40,
+        "metaDescription": "Web Foundations",
+        "canonical": "http://localhost:3320/badges/introweb-2106-prelim/",
         "htmlLang": "en",
         "og": [
           "og:type",
@@ -591,262 +836,17 @@
       }
     },
     {
-      "path": "/badges/apsi-2215-prelim/",
-      "ok": true,
-      "perf": {
-        "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 31,
-        "loadMs": 31,
-        "wireBytes": 744127,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
-      },
-      "dom": {
-        "title": "Frontend Design with Cloud · 6APSI section 2215",
-        "titleLen": 47,
-        "metaDescription": "Frontend Design with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2215-prelim/",
-        "htmlLang": "en",
-        "og": [
-          "og:type",
-          "og:site_name",
-          "og:title",
-          "og:description",
-          "og:url",
-          "og:image",
-          "og:image:width",
-          "og:image:height",
-          "og:image:alt"
-        ],
-        "twitter": 4,
-        "h1Count": 1,
-        "hasMain": true,
-        "hasArticle": true,
-        "hasNav": true,
-        "hasTime": false,
-        "jsonLd": [
-          "(no @type)"
-        ],
-        "renderBlockingCss": 5,
-        "renderBlockingJs": 2,
-        "ariaAttrs": 98,
-        "selectorCounts": {
-          "Surfaces": 36,
-          "Kinds": 0,
-          "Accepts": 0
-        }
-      }
-    },
-    {
-      "path": "/badges/apsi-2240-midterm/",
-      "ok": true,
-      "perf": {
-        "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 744205,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
-      },
-      "dom": {
-        "title": "Backend Development with Cloud · 6APSI section 2240",
-        "titleLen": 51,
-        "metaDescription": "Backend Development with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2240-midterm/",
-        "htmlLang": "en",
-        "og": [
-          "og:type",
-          "og:site_name",
-          "og:title",
-          "og:description",
-          "og:url",
-          "og:image",
-          "og:image:width",
-          "og:image:height",
-          "og:image:alt"
-        ],
-        "twitter": 4,
-        "h1Count": 1,
-        "hasMain": true,
-        "hasArticle": true,
-        "hasNav": true,
-        "hasTime": false,
-        "jsonLd": [
-          "(no @type)"
-        ],
-        "renderBlockingCss": 5,
-        "renderBlockingJs": 2,
-        "ariaAttrs": 100,
-        "selectorCounts": {
-          "Surfaces": 36,
-          "Kinds": 0,
-          "Accepts": 0
-        }
-      }
-    },
-    {
-      "path": "/badges/apsi-2240-prelim/",
-      "ok": true,
-      "perf": {
-        "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 31,
-        "loadMs": 31,
-        "wireBytes": 744127,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
-      },
-      "dom": {
-        "title": "Frontend Design with Cloud · 6APSI section 2240",
-        "titleLen": 47,
-        "metaDescription": "Frontend Design with Cloud",
-        "canonical": "http://localhost:3320/badges/apsi-2240-prelim/",
-        "htmlLang": "en",
-        "og": [
-          "og:type",
-          "og:site_name",
-          "og:title",
-          "og:description",
-          "og:url",
-          "og:image",
-          "og:image:width",
-          "og:image:height",
-          "og:image:alt"
-        ],
-        "twitter": 4,
-        "h1Count": 1,
-        "hasMain": true,
-        "hasArticle": true,
-        "hasNav": true,
-        "hasTime": false,
-        "jsonLd": [
-          "(no @type)"
-        ],
-        "renderBlockingCss": 5,
-        "renderBlockingJs": 2,
-        "ariaAttrs": 102,
-        "selectorCounts": {
-          "Surfaces": 36,
-          "Kinds": 0,
-          "Accepts": 0
-        }
-      }
-    },
-    {
-      "path": "/badges/introweb-2106-midterm/",
-      "ok": true,
-      "perf": {
-        "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 744005,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
-      },
-      "dom": {
-        "title": "Interactive Web Pages · 6INTROWEB section 2106",
-        "titleLen": 46,
-        "metaDescription": "Interactive Web Pages",
-        "canonical": "http://localhost:3320/badges/introweb-2106-midterm/",
-        "htmlLang": "en",
-        "og": [
-          "og:type",
-          "og:site_name",
-          "og:title",
-          "og:description",
-          "og:url",
-          "og:image",
-          "og:image:width",
-          "og:image:height",
-          "og:image:alt"
-        ],
-        "twitter": 4,
-        "h1Count": 1,
-        "hasMain": true,
-        "hasArticle": true,
-        "hasNav": true,
-        "hasTime": false,
-        "jsonLd": [
-          "(no @type)"
-        ],
-        "renderBlockingCss": 5,
-        "renderBlockingJs": 2,
-        "ariaAttrs": 104,
-        "selectorCounts": {
-          "Surfaces": 36,
-          "Kinds": 0,
-          "Accepts": 0
-        }
-      }
-    },
-    {
-      "path": "/badges/introweb-2106-prelim/",
-      "ok": true,
-      "perf": {
-        "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 36,
-        "loadMs": 36,
-        "wireBytes": 743935,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
-      },
-      "dom": {
-        "title": "Web Foundations · 6INTROWEB section 2106",
-        "titleLen": 40,
-        "metaDescription": "Web Foundations",
-        "canonical": "http://localhost:3320/badges/introweb-2106-prelim/",
-        "htmlLang": "en",
-        "og": [
-          "og:type",
-          "og:site_name",
-          "og:title",
-          "og:description",
-          "og:url",
-          "og:image",
-          "og:image:width",
-          "og:image:height",
-          "og:image:alt"
-        ],
-        "twitter": 4,
-        "h1Count": 1,
-        "hasMain": true,
-        "hasArticle": true,
-        "hasNav": true,
-        "hasTime": false,
-        "jsonLd": [
-          "(no @type)"
-        ],
-        "renderBlockingCss": 5,
-        "renderBlockingJs": 2,
-        "ariaAttrs": 106,
-        "selectorCounts": {
-          "Surfaces": 36,
-          "Kinds": 0,
-          "Accepts": 0
-        }
-      }
-    },
-    {
       "path": "/batch/",
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 745209,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 67,
+        "loadMs": 67,
+        "wireBytes": 727788,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "BATCH · a no-build hypermedia substrate",
@@ -876,7 +876,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 112,
+        "ariaAttrs": 102,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -889,13 +889,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 737785,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 9,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 720364,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "BATCH docs",
@@ -925,7 +925,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 111,
+        "ariaAttrs": 101,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -938,13 +938,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 28,
-        "loadMs": 29,
-        "wireBytes": 740009,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 58,
+        "loadMs": 59,
+        "wireBytes": 722588,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How to: add a route",
@@ -974,7 +974,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 33,
           "Kinds": 0,
@@ -987,13 +987,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 67,
-        "loadMs": 67,
-        "wireBytes": 916597,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 19,
+        "domContentLoadedMs": 110,
+        "loadMs": 110,
+        "wireBytes": 899176,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "BATCH — Architecture and development history",
@@ -1023,7 +1023,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 89,
           "Kinds": 0,
@@ -1036,13 +1036,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 38,
-        "loadMs": 38,
-        "wireBytes": 740220,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 4,
+        "domContentLoadedMs": 50,
+        "loadMs": 51,
+        "wireBytes": 722799,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How to: install the BREAD stack packages",
@@ -1072,7 +1072,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 118,
+        "ariaAttrs": 108,
         "selectorCounts": {
           "Surfaces": 33,
           "Kinds": 0,
@@ -1085,13 +1085,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 36,
-        "loadMs": 37,
-        "wireBytes": 771074,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 56,
+        "loadMs": 56,
+        "wireBytes": 753653,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "CONVENTIONS",
@@ -1121,7 +1121,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 116,
+        "ariaAttrs": 106,
         "selectorCounts": {
           "Surfaces": 47,
           "Kinds": 0,
@@ -1134,13 +1134,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 33,
-        "loadMs": 33,
-        "wireBytes": 740562,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 4,
+        "domContentLoadedMs": 45,
+        "loadMs": 46,
+        "wireBytes": 723141,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Getting started with BATCH",
@@ -1170,7 +1170,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 33,
           "Kinds": 0,
@@ -1183,13 +1183,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 741100,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 55,
+        "domContentLoadedMs": 136,
+        "loadMs": 136,
+        "wireBytes": 723679,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How to: export and deploy the portfolio",
@@ -1219,7 +1219,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 34,
           "Kinds": 0,
@@ -1232,13 +1232,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 33,
-        "loadMs": 33,
-        "wireBytes": 748304,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 14,
+        "domContentLoadedMs": 71,
+        "loadMs": 72,
+        "wireBytes": 730883,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "The BREAD Stack · four layers plus PANTRY",
@@ -1268,7 +1268,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 121,
+        "ariaAttrs": 111,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -1281,12 +1281,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 55,
-        "loadMs": 55,
-        "wireBytes": 7354638,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
+        "ttfbMs": 15,
+        "domContentLoadedMs": 112,
+        "loadMs": 153,
+        "wireBytes": 7354001,
+        "jsBytes": 206420,
+        "cssBytes": 468841,
         "requests": 57
       },
       "dom": {
@@ -1315,7 +1315,7 @@
         "jsonLd": [
           "(no @type)"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 176,
         "selectorCounts": {
@@ -1330,12 +1330,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 1206115,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 55,
+        "loadMs": 56,
+        "wireBytes": 1205478,
+        "jsBytes": 206420,
+        "cssBytes": 468841,
         "requests": 41
       },
       "dom": {
@@ -1364,7 +1364,7 @@
         "jsonLd": [
           "(no @type)"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 122,
         "selectorCounts": {
@@ -1379,12 +1379,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 37,
-        "loadMs": 37,
-        "wireBytes": 875022,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 51,
+        "loadMs": 52,
+        "wireBytes": 874385,
+        "jsBytes": 206420,
+        "cssBytes": 468841,
         "requests": 40
       },
       "dom": {
@@ -1413,7 +1413,7 @@
         "jsonLd": [
           "(no @type)"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 122,
         "selectorCounts": {
@@ -1428,12 +1428,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 747622,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
+        "ttfbMs": 26,
+        "domContentLoadedMs": 70,
+        "loadMs": 71,
+        "wireBytes": 746985,
+        "jsBytes": 206420,
+        "cssBytes": 468841,
         "requests": 39
       },
       "dom": {
@@ -1462,7 +1462,7 @@
         "jsonLd": [
           "(no @type)"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 119,
         "selectorCounts": {
@@ -1477,12 +1477,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 748069,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 47,
+        "loadMs": 48,
+        "wireBytes": 747432,
+        "jsBytes": 206420,
+        "cssBytes": 468841,
         "requests": 39
       },
       "dom": {
@@ -1511,7 +1511,7 @@
         "jsonLd": [
           "(no @type)"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 119,
         "selectorCounts": {
@@ -1526,12 +1526,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 36,
-        "loadMs": 37,
-        "wireBytes": 1846583,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
+        "ttfbMs": 44,
+        "domContentLoadedMs": 235,
+        "loadMs": 307,
+        "wireBytes": 1845946,
+        "jsBytes": 206420,
+        "cssBytes": 468841,
         "requests": 41
       },
       "dom": {
@@ -1560,7 +1560,7 @@
         "jsonLd": [
           "(no @type)"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 120,
         "selectorCounts": {
@@ -1575,12 +1575,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 1196232,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
+        "ttfbMs": 9,
+        "domContentLoadedMs": 80,
+        "loadMs": 82,
+        "wireBytes": 1195595,
+        "jsBytes": 206420,
+        "cssBytes": 468841,
         "requests": 41
       },
       "dom": {
@@ -1609,7 +1609,7 @@
         "jsonLd": [
           "(no @type)"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 120,
         "selectorCounts": {
@@ -1624,12 +1624,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 10,
-        "domContentLoadedMs": 88,
-        "loadMs": 92,
-        "wireBytes": 1209950,
+        "ttfbMs": 263,
+        "domContentLoadedMs": 585,
+        "loadMs": 611,
+        "wireBytes": 1210436,
         "jsBytes": 30244,
-        "cssBytes": 446877,
+        "cssBytes": 447284,
         "requests": 22
       },
       "dom": {
@@ -1674,12 +1674,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 744811,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "domContentLoadedMs": 50,
+        "loadMs": 51,
+        "wireBytes": 727390,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "CRUMB · a guided tour over the live app",
@@ -1709,7 +1709,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 123,
+        "ariaAttrs": 113,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -1722,13 +1722,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 28,
-        "loadMs": 28,
-        "wireBytes": 736971,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 76,
+        "loadMs": 76,
+        "wireBytes": 719550,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "CRUMB docs",
@@ -1758,7 +1758,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 121,
+        "ariaAttrs": 111,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -1771,13 +1771,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 747546,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 57,
+        "loadMs": 57,
+        "wireBytes": 730125,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Getting started with CRUMB",
@@ -1807,7 +1807,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 38,
           "Kinds": 0,
@@ -1820,13 +1820,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 758286,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 54,
+        "loadMs": 54,
+        "wireBytes": 740865,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Writing a CRUMB tour",
@@ -1856,9 +1856,58 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 39,
+          "Kinds": 0,
+          "Accepts": 0
+        }
+      }
+    },
+    {
+      "path": "/decks/",
+      "ok": true,
+      "perf": {
+        "status": 200,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 719215,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
+      },
+      "dom": {
+        "title": "Talks and decks",
+        "titleLen": 15,
+        "metaDescription": "Presentation decks from selected talks and workshops.",
+        "canonical": "http://localhost:3320/decks/",
+        "htmlLang": "en",
+        "og": [
+          "og:type",
+          "og:site_name",
+          "og:title",
+          "og:description",
+          "og:url",
+          "og:image",
+          "og:image:width",
+          "og:image:height",
+          "og:image:alt"
+        ],
+        "twitter": 4,
+        "h1Count": 1,
+        "hasMain": true,
+        "hasArticle": false,
+        "hasNav": true,
+        "hasTime": false,
+        "jsonLd": [
+          "(no @type)"
+        ],
+        "renderBlockingCss": 5,
+        "renderBlockingJs": 2,
+        "ariaAttrs": 110,
+        "selectorCounts": {
+          "Surfaces": 30,
           "Kinds": 0,
           "Accepts": 0
         }
@@ -1869,18 +1918,18 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 10,
-        "domContentLoadedMs": 69,
-        "loadMs": 70,
-        "wireBytes": 737110,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 3,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 719748,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "Engineering Ai For Social Impact · the deck",
+        "title": "Engineering AI for Social Impact · the deck",
         "titleLen": 43,
-        "metaDescription": "Engineering Ai For Social Impact, the deck, readable here on the site.",
+        "metaDescription": "Engineering AI for Social Impact, the deck, readable here on the site.",
         "canonical": "http://localhost:3320/decks/engineering-ai-for-social-impact/",
         "htmlLang": "en",
         "og": [
@@ -1905,7 +1954,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 121,
+        "ariaAttrs": 109,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -1918,18 +1967,18 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 29,
-        "loadMs": 29,
-        "wireBytes": 736889,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 53,
+        "loadMs": 53,
+        "wireBytes": 719514,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
-        "title": "From Code To Career · the deck",
+        "title": "From Code to Career · the deck",
         "titleLen": 30,
-        "metaDescription": "From Code To Career, the deck, readable here on the site.",
+        "metaDescription": "From Code to Career, the deck, readable here on the site.",
         "canonical": "http://localhost:3320/decks/from-code-to-career/",
         "htmlLang": "en",
         "og": [
@@ -1954,7 +2003,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 119,
+        "ariaAttrs": 107,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -1967,13 +2016,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 737106,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 49,
+        "loadMs": 50,
+        "wireBytes": 719736,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Beyond Limits: the ideation workshop · the deck",
@@ -2003,7 +2052,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 117,
+        "ariaAttrs": 107,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -2016,13 +2065,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 29,
-        "loadMs": 30,
-        "wireBytes": 736891,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 4,
+        "domContentLoadedMs": 49,
+        "loadMs": 50,
+        "wireBytes": 719520,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Re: AI-lity Check · the deck",
@@ -2052,7 +2101,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 117,
+        "ariaAttrs": 107,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -2065,13 +2114,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 34,
-        "loadMs": 35,
-        "wireBytes": 750192,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 62,
+        "loadMs": 63,
+        "wireBytes": 732771,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Developer docs · BREAD",
@@ -2101,7 +2150,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -2114,13 +2163,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 762145,
-        "jsBytes": 215961,
-        "cssBytes": 468434,
-        "requests": 37
+        "ttfbMs": 6,
+        "domContentLoadedMs": 75,
+        "loadMs": 76,
+        "wireBytes": 744760,
+        "jsBytes": 203461,
+        "cssBytes": 463636,
+        "requests": 34
       },
       "dom": {
         "title": "GRAIN · an AI-interaction design system",
@@ -2150,7 +2199,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 140,
+        "ariaAttrs": 130,
         "selectorCounts": {
           "Surfaces": 38,
           "Kinds": 0,
@@ -2163,13 +2212,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 46,
-        "wireBytes": 841918,
-        "jsBytes": 281183,
-        "cssBytes": 468434,
-        "requests": 45
+        "ttfbMs": 15,
+        "domContentLoadedMs": 91,
+        "loadMs": 112,
+        "wireBytes": 818992,
+        "jsBytes": 268683,
+        "cssBytes": 463636,
+        "requests": 42
       },
       "dom": {
         "title": "Builder · TJ's Desk",
@@ -2199,7 +2248,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 135,
+        "ariaAttrs": 125,
         "selectorCounts": {
           "Surfaces": 41,
           "Kinds": 0,
@@ -2212,13 +2261,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 31,
-        "loadMs": 131,
-        "wireBytes": 1496430,
-        "jsBytes": 239346,
-        "cssBytes": 468434,
-        "requests": 41
+        "ttfbMs": 7,
+        "domContentLoadedMs": 72,
+        "loadMs": 515,
+        "wireBytes": 1479088,
+        "jsBytes": 226846,
+        "cssBytes": 463636,
+        "requests": 38
       },
       "dom": {
         "title": "Preview · the builder",
@@ -2248,7 +2297,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 126,
+        "ariaAttrs": 116,
         "selectorCounts": {
           "Surfaces": 32,
           "Kinds": 0,
@@ -2261,13 +2310,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 738385,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 26,
+        "domContentLoadedMs": 126,
+        "loadMs": 127,
+        "wireBytes": 720964,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "GRAIN docs",
@@ -2297,7 +2346,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 125,
+        "ariaAttrs": 113,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -2310,13 +2359,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 740972,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 18,
+        "domContentLoadedMs": 91,
+        "loadMs": 91,
+        "wireBytes": 723551,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How to: add a component",
@@ -2346,7 +2395,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 124,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 34,
           "Kinds": 0,
@@ -2359,13 +2408,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 740291,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 88,
+        "loadMs": 88,
+        "wireBytes": 722870,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How to: add a RenderOp kind",
@@ -2395,7 +2444,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -2408,13 +2457,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 815199,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 12,
+        "domContentLoadedMs": 89,
+        "loadMs": 89,
+        "wireBytes": 797778,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "AI ↔ UI Interface — the GRAIN action vocabulary contract",
@@ -2444,7 +2493,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 54,
           "Kinds": 0,
@@ -2457,13 +2506,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 764808,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 11,
+        "domContentLoadedMs": 100,
+        "loadMs": 100,
+        "wireBytes": 747387,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "🍞 Sourdough — GRAIN's default theme",
@@ -2493,7 +2542,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 50,
           "Kinds": 0,
@@ -2506,13 +2555,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 741863,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 53,
+        "loadMs": 53,
+        "wireBytes": 724442,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Getting started with GRAIN",
@@ -2542,7 +2591,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 34,
           "Kinds": 0,
@@ -2555,13 +2604,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 763966,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 64,
+        "loadMs": 65,
+        "wireBytes": 745187,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "GRAIN — an interface an AI can operate",
@@ -2591,7 +2640,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 36,
           "Kinds": 0,
@@ -2604,13 +2653,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 33,
-        "loadMs": 33,
-        "wireBytes": 740378,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 59,
+        "loadMs": 60,
+        "wireBytes": 722957,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How to: make a surface operable",
@@ -2640,7 +2689,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 112,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -2653,13 +2702,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 739871,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 9,
+        "domContentLoadedMs": 68,
+        "loadMs": 69,
+        "wireBytes": 722450,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How to: re-skin via tokens",
@@ -2689,7 +2738,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 122,
+        "ariaAttrs": 110,
         "selectorCounts": {
           "Surfaces": 34,
           "Kinds": 0,
@@ -2702,13 +2751,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 37,
-        "loadMs": 37,
-        "wireBytes": 755882,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 70,
+        "loadMs": 70,
+        "wireBytes": 738461,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Tutorial: build your first operable surface",
@@ -2738,7 +2787,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 120,
+        "ariaAttrs": 108,
         "selectorCounts": {
           "Surfaces": 38,
           "Kinds": 0,
@@ -2751,13 +2800,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 37,
-        "loadMs": 37,
-        "wireBytes": 1587902,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 39
+        "ttfbMs": 9,
+        "domContentLoadedMs": 322,
+        "loadMs": 323,
+        "wireBytes": 1570481,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 36
       },
       "dom": {
         "title": "Greenroom · TJ's Desk",
@@ -2787,7 +2836,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 121,
+        "ariaAttrs": 111,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -2800,13 +2849,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 798938,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 13,
+        "domContentLoadedMs": 65,
+        "loadMs": 65,
+        "wireBytes": 781517,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Mail · TJ's Desk",
@@ -2836,7 +2885,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 138,
+        "ariaAttrs": 128,
         "selectorCounts": {
           "Surfaces": 41,
           "Kinds": 10,
@@ -2849,13 +2898,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 743784,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 53,
+        "loadMs": 53,
+        "wireBytes": 726363,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "MILL · Markdown in, living layouts",
@@ -2885,7 +2934,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 127,
+        "ariaAttrs": 117,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -2898,13 +2947,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 31,
-        "loadMs": 32,
-        "wireBytes": 737121,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 719700,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "MILL docs",
@@ -2934,7 +2983,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 125,
+        "ariaAttrs": 115,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -2947,13 +2996,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 28,
-        "loadMs": 28,
-        "wireBytes": 743587,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 57,
+        "loadMs": 58,
+        "wireBytes": 726166,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How to: add a collection",
@@ -2983,7 +3032,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 126,
+        "ariaAttrs": 116,
         "selectorCounts": {
           "Surfaces": 36,
           "Kinds": 0,
@@ -2996,13 +3045,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 37,
-        "loadMs": 38,
-        "wireBytes": 765483,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 12,
+        "domContentLoadedMs": 114,
+        "loadMs": 115,
+        "wireBytes": 748062,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "MILL: architecture",
@@ -3032,7 +3081,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 128,
+        "ariaAttrs": 118,
         "selectorCounts": {
           "Surfaces": 41,
           "Kinds": 0,
@@ -3045,13 +3094,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 33,
-        "loadMs": 33,
-        "wireBytes": 741447,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 64,
+        "loadMs": 65,
+        "wireBytes": 724026,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Getting started with MILL",
@@ -3081,7 +3130,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 126,
+        "ariaAttrs": 116,
         "selectorCounts": {
           "Surfaces": 34,
           "Kinds": 0,
@@ -3094,12 +3143,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 35,
-        "loadMs": 36,
-        "wireBytes": 927301,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 56,
+        "loadMs": 60,
+        "wireBytes": 926664,
+        "jsBytes": 206420,
+        "cssBytes": 468841,
         "requests": 36
       },
       "dom": {
@@ -3128,7 +3177,7 @@
         "jsonLd": [
           "(no @type)"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 129,
         "selectorCounts": {
@@ -3143,13 +3192,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 31,
-        "loadMs": 31,
-        "wireBytes": 743002,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 55,
+        "loadMs": 55,
+        "wireBytes": 725581,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Native GitHub Classroom · Docs",
@@ -3179,7 +3228,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 125,
+        "ariaAttrs": 115,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -3192,13 +3241,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 33,
-        "loadMs": 33,
-        "wireBytes": 766680,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 134,
+        "domContentLoadedMs": 315,
+        "loadMs": 316,
+        "wireBytes": 749259,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Notes",
@@ -3228,7 +3277,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 143,
+        "ariaAttrs": 133,
         "selectorCounts": {
           "Surfaces": 42,
           "Kinds": 0,
@@ -3241,13 +3290,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 847180,
-        "jsBytes": 251078,
-        "cssBytes": 468434,
-        "requests": 36
+        "ttfbMs": 14,
+        "domContentLoadedMs": 99,
+        "loadMs": 99,
+        "wireBytes": 835969,
+        "jsBytes": 244788,
+        "cssBytes": 463636,
+        "requests": 35
       },
       "dom": {
         "title": "Everybody Wants the Agent. Somebody Has to Build the Floor.",
@@ -3277,7 +3326,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 170,
+        "ariaAttrs": 160,
         "selectorCounts": {
           "Surfaces": 68,
           "Kinds": 24,
@@ -3290,13 +3339,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 769322,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 63,
+        "loadMs": 63,
+        "wireBytes": 754839,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "This Site Feels Like an App. It's a Stack of Full Page Loads.",
@@ -3326,7 +3375,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 135,
+        "ariaAttrs": 125,
         "selectorCounts": {
           "Surfaces": 36,
           "Kinds": 0,
@@ -3339,13 +3388,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 38,
-        "loadMs": 39,
-        "wireBytes": 752313,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 56,
+        "loadMs": 56,
+        "wireBytes": 737830,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "How I Turned a GitHub Org Into My Whole Classroom",
@@ -3375,7 +3424,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 129,
+        "ariaAttrs": 119,
         "selectorCounts": {
           "Surfaces": 36,
           "Kinds": 0,
@@ -3388,13 +3437,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 36,
-        "loadMs": 37,
-        "wireBytes": 760282,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 58,
+        "loadMs": 58,
+        "wireBytes": 745799,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "I Was Shipping Faster Than I Could Understand It",
@@ -3424,7 +3473,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 131,
+        "ariaAttrs": 121,
         "selectorCounts": {
           "Surfaces": 38,
           "Kinds": 0,
@@ -3437,13 +3486,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 38,
-        "loadMs": 38,
-        "wireBytes": 765315,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 29,
+        "domContentLoadedMs": 115,
+        "loadMs": 116,
+        "wireBytes": 750832,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "I Built a Whole Stack Because No To-Do App Would Have Me",
@@ -3473,7 +3522,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 137,
+        "ariaAttrs": 127,
         "selectorCounts": {
           "Surfaces": 39,
           "Kinds": 0,
@@ -3486,13 +3535,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 817296,
-        "jsBytes": 228808,
-        "cssBytes": 468434,
-        "requests": 37
+        "ttfbMs": 8,
+        "domContentLoadedMs": 71,
+        "loadMs": 71,
+        "wireBytes": 806085,
+        "jsBytes": 222518,
+        "cssBytes": 463636,
+        "requests": 36
       },
       "dom": {
         "title": "Ten Times Zero Is Still Zero",
@@ -3522,7 +3571,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 140,
+        "ariaAttrs": 130,
         "selectorCounts": {
           "Surfaces": 53,
           "Kinds": 0,
@@ -3535,13 +3584,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 775909,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 60,
+        "loadMs": 60,
+        "wireBytes": 761426,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "The Browser Grew Up While I Was Busy With Frameworks",
@@ -3571,7 +3620,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 137,
+        "ariaAttrs": 127,
         "selectorCounts": {
           "Surfaces": 38,
           "Kinds": 0,
@@ -3584,13 +3633,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 754889,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 740406,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "The Check Ran Once in 165 Sessions, and I Got the Reason Wrong",
@@ -3620,7 +3669,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 129,
+        "ariaAttrs": 119,
         "selectorCounts": {
           "Surfaces": 36,
           "Kinds": 0,
@@ -3633,13 +3682,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 38,
-        "loadMs": 38,
-        "wireBytes": 881289,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 37
+        "ttfbMs": 7,
+        "domContentLoadedMs": 52,
+        "loadMs": 54,
+        "wireBytes": 883590,
+        "jsBytes": 209358,
+        "cssBytes": 468841,
+        "requests": 38
       },
       "dom": {
         "title": "The Console I Built to Stop Drowning",
@@ -3667,7 +3716,7 @@
         "jsonLd": [
           "BlogPosting"
         ],
-        "renderBlockingCss": 5,
+        "renderBlockingCss": 6,
         "renderBlockingJs": 2,
         "ariaAttrs": 131,
         "selectorCounts": {
@@ -3682,13 +3731,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 36,
-        "loadMs": 37,
-        "wireBytes": 750646,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 736163,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "Watch Its Hands",
@@ -3718,7 +3767,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 129,
+        "ariaAttrs": 119,
         "selectorCounts": {
           "Surfaces": 37,
           "Kinds": 0,
@@ -3731,13 +3780,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 801923,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 63,
+        "loadMs": 64,
+        "wireBytes": 787440,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "One Vocabulary, Two Operators",
@@ -3767,7 +3816,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 133,
+        "ariaAttrs": 123,
         "selectorCounts": {
           "Surfaces": 47,
           "Kinds": 0,
@@ -3780,13 +3829,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 37,
-        "loadMs": 38,
-        "wireBytes": 752132,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 737649,
+        "jsBytes": 201991,
+        "cssBytes": 463636,
+        "requests": 33
       },
       "dom": {
         "title": "I Nearly Quit Teaching. So I Automated the Part That Was Killing Me.",
@@ -3816,7 +3865,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 127,
+        "ariaAttrs": 117,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -3830,12 +3879,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 37,
-        "loadMs": 38,
-        "wireBytes": 745687,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 728266,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "PANTRY · one server for the whole stack",
@@ -3865,7 +3914,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 126,
+        "ariaAttrs": 116,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -3878,13 +3927,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 30,
-        "loadMs": 30,
-        "wireBytes": 736998,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 719577,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "PANTRY docs",
@@ -3914,7 +3963,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 121,
+        "ariaAttrs": 111,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -3927,13 +3976,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 32,
-        "loadMs": 32,
-        "wireBytes": 747892,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 43,
+        "loadMs": 44,
+        "wireBytes": 730471,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Getting started with PANTRY",
@@ -3963,7 +4012,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 120,
+        "ariaAttrs": 110,
         "selectorCounts": {
           "Surfaces": 37,
           "Kinds": 0,
@@ -3976,13 +4025,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 35,
-        "loadMs": 36,
-        "wireBytes": 750475,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 51,
+        "loadMs": 52,
+        "wireBytes": 733054,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "What PANTRY composes",
@@ -4012,7 +4061,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 120,
+        "ariaAttrs": 110,
         "selectorCounts": {
           "Surfaces": 39,
           "Kinds": 0,
@@ -4025,13 +4074,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 577,
-        "domContentLoadedMs": 613,
-        "loadMs": 614,
-        "wireBytes": 768356,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 836,
+        "domContentLoadedMs": 885,
+        "loadMs": 885,
+        "wireBytes": 750935,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Plans",
@@ -4061,7 +4110,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 121,
+        "ariaAttrs": 111,
         "selectorCounts": {
           "Surfaces": 31,
           "Kinds": 0,
@@ -4074,13 +4123,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 587,
-        "domContentLoadedMs": 621,
-        "loadMs": 622,
-        "wireBytes": 751801,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 765,
+        "domContentLoadedMs": 818,
+        "loadMs": 818,
+        "wireBytes": 734380,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Autonomy earned by evidence, not granted by the model · Plans",
@@ -4110,7 +4159,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 120,
+        "ariaAttrs": 110,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4123,13 +4172,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 539,
-        "domContentLoadedMs": 572,
-        "loadMs": 572,
-        "wireBytes": 758692,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 825,
+        "domContentLoadedMs": 870,
+        "loadMs": 870,
+        "wireBytes": 741271,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "AI agency — navigate and operate the portfolio like a human · Plans",
@@ -4159,7 +4208,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 118,
+        "ariaAttrs": 108,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4172,13 +4221,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 538,
-        "domContentLoadedMs": 571,
-        "loadMs": 571,
-        "wireBytes": 765807,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 779,
+        "domContentLoadedMs": 825,
+        "loadMs": 825,
+        "wireBytes": 748386,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The loop — one standard AI workflow across every repo · Plans",
@@ -4208,7 +4257,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 116,
+        "ariaAttrs": 106,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4221,13 +4270,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 503,
-        "domContentLoadedMs": 535,
-        "loadMs": 535,
-        "wireBytes": 763919,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 862,
+        "domContentLoadedMs": 910,
+        "loadMs": 910,
+        "wireBytes": 747358,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Make the builder's AI earn its place · Plans",
@@ -4257,7 +4306,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4270,13 +4319,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 511,
-        "domContentLoadedMs": 544,
-        "loadMs": 545,
-        "wireBytes": 774742,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 866,
+        "domContentLoadedMs": 915,
+        "loadMs": 915,
+        "wireBytes": 757321,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The builder stops looking like a page about a builder · Plans",
@@ -4306,7 +4355,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4319,13 +4368,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 549,
-        "domContentLoadedMs": 581,
-        "loadMs": 581,
-        "wireBytes": 754212,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 853,
+        "domContentLoadedMs": 900,
+        "loadMs": 900,
+        "wireBytes": 736717,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The builder becomes a sandbox, not a form page · Plans",
@@ -4355,7 +4404,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4368,13 +4417,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 521,
-        "domContentLoadedMs": 551,
-        "loadMs": 552,
-        "wireBytes": 750436,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 844,
+        "domContentLoadedMs": 890,
+        "loadMs": 890,
+        "wireBytes": 733015,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The map nobody opens, and the question that would fix it · Plans",
@@ -4404,7 +4453,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4417,13 +4466,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 521,
-        "domContentLoadedMs": 551,
-        "loadMs": 552,
-        "wireBytes": 745450,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 984,
+        "domContentLoadedMs": 1074,
+        "loadMs": 1075,
+        "wireBytes": 728081,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Course credentials and badges · Plans",
@@ -4453,7 +4502,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4466,13 +4515,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 514,
-        "domContentLoadedMs": 543,
-        "loadMs": 543,
-        "wireBytes": 751643,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 767,
+        "domContentLoadedMs": 807,
+        "loadMs": 808,
+        "wireBytes": 734241,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "CRUMB prefilled demos: preset steps, prefilled data, and a tour that writes the next prompt · Plans",
@@ -4502,7 +4551,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4515,13 +4564,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 502,
-        "domContentLoadedMs": 533,
-        "loadMs": 533,
-        "wireBytes": 761579,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 852,
+        "domContentLoadedMs": 898,
+        "loadMs": 898,
+        "wireBytes": 744158,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The review loop — CRUMB dev tours as the check-changes surface · Plans",
@@ -4551,7 +4600,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4564,13 +4613,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 495,
-        "domContentLoadedMs": 524,
-        "loadMs": 524,
-        "wireBytes": 744331,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 765,
+        "domContentLoadedMs": 809,
+        "loadMs": 809,
+        "wireBytes": 726962,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Author the content backlog · Plans",
@@ -4600,7 +4649,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4613,13 +4662,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 557,
-        "domContentLoadedMs": 587,
-        "loadMs": 587,
-        "wireBytes": 745846,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 760,
+        "domContentLoadedMs": 800,
+        "loadMs": 800,
+        "wireBytes": 728425,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Archive the vestigial tjakoen/standards repo · Plans",
@@ -4649,7 +4698,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4662,13 +4711,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 547,
-        "domContentLoadedMs": 577,
-        "loadMs": 577,
-        "wireBytes": 749760,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 982,
+        "domContentLoadedMs": 1025,
+        "loadMs": 1025,
+        "wireBytes": 732315,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "A form comes from data, and a description builds one · Plans",
@@ -4698,7 +4747,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4711,13 +4760,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 506,
-        "domContentLoadedMs": 539,
-        "loadMs": 539,
-        "wireBytes": 748271,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 767,
+        "domContentLoadedMs": 806,
+        "loadMs": 806,
+        "wireBytes": 730850,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Publish grain 0.1.18 and bump the pin · Plans",
@@ -4747,7 +4796,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4760,13 +4809,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 497,
-        "domContentLoadedMs": 526,
-        "loadMs": 526,
-        "wireBytes": 756051,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 745,
+        "domContentLoadedMs": 788,
+        "loadMs": 788,
+        "wireBytes": 738630,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The design system's own status colour, and the hue it does not have · Plans",
@@ -4796,7 +4845,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4809,13 +4858,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 497,
-        "domContentLoadedMs": 528,
-        "loadMs": 528,
-        "wireBytes": 755476,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 725,
+        "domContentLoadedMs": 768,
+        "loadMs": 768,
+        "wireBytes": 738055,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The four gaps between what the loop says and what the loop runs · Plans",
@@ -4845,7 +4894,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 114,
+        "ariaAttrs": 104,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4858,13 +4907,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 494,
-        "domContentLoadedMs": 524,
-        "loadMs": 525,
-        "wireBytes": 750259,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 756,
+        "domContentLoadedMs": 793,
+        "loadMs": 793,
+        "wireBytes": 732838,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Say what the loop actually does, once it actually does it · Plans",
@@ -4894,7 +4943,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 112,
+        "ariaAttrs": 102,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4907,13 +4956,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 498,
-        "domContentLoadedMs": 528,
-        "loadMs": 529,
-        "wireBytes": 748822,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 754,
+        "domContentLoadedMs": 795,
+        "loadMs": 795,
+        "wireBytes": 731401,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "A tutorial someone can follow to build this loop on a small project · Plans",
@@ -4943,7 +4992,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 110,
+        "ariaAttrs": 100,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -4956,13 +5005,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 502,
-        "domContentLoadedMs": 532,
-        "loadMs": 532,
-        "wireBytes": 751863,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 748,
+        "domContentLoadedMs": 794,
+        "loadMs": 794,
+        "wireBytes": 734442,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Every multi-line bullet on the published site is broken · Plans",
@@ -4992,7 +5041,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 110,
+        "ariaAttrs": 100,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5005,13 +5054,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 514,
-        "domContentLoadedMs": 548,
-        "loadMs": 548,
-        "wireBytes": 750756,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 754,
+        "domContentLoadedMs": 803,
+        "loadMs": 803,
+        "wireBytes": 733335,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Note: the loop nobody ran · Plans",
@@ -5041,7 +5090,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 110,
+        "ariaAttrs": 100,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5054,13 +5103,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 497,
-        "domContentLoadedMs": 528,
-        "loadMs": 528,
-        "wireBytes": 761755,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 744,
+        "domContentLoadedMs": 789,
+        "loadMs": 789,
+        "wireBytes": 744334,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The control center: one place that knows where the project is · Plans",
@@ -5090,7 +5139,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5103,13 +5152,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 505,
-        "domContentLoadedMs": 539,
-        "loadMs": 540,
-        "wireBytes": 788287,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 752,
+        "domContentLoadedMs": 802,
+        "loadMs": 802,
+        "wireBytes": 770861,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "PANTRY hosts the review, CRUMB makes it addressable · Plans",
@@ -5139,7 +5188,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5152,13 +5201,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 495,
-        "domContentLoadedMs": 526,
-        "loadMs": 527,
-        "wireBytes": 780467,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 746,
+        "domContentLoadedMs": 793,
+        "loadMs": 793,
+        "wireBytes": 764375,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Bring the portfolio to a clear, reviewable finish · Plans",
@@ -5188,7 +5237,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5201,13 +5250,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 491,
-        "domContentLoadedMs": 521,
-        "loadMs": 521,
-        "wireBytes": 747685,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 739,
+        "domContentLoadedMs": 781,
+        "loadMs": 781,
+        "wireBytes": 730264,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Reading list — a library on the desk · Plans",
@@ -5237,7 +5286,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5250,13 +5299,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 543,
-        "domContentLoadedMs": 577,
-        "loadMs": 577,
-        "wireBytes": 757011,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 731,
+        "domContentLoadedMs": 776,
+        "loadMs": 776,
+        "wireBytes": 739590,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Repo structure reorg — tame the root · Plans",
@@ -5286,7 +5335,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5299,13 +5348,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 487,
-        "domContentLoadedMs": 519,
-        "loadMs": 519,
-        "wireBytes": 750337,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 743,
+        "domContentLoadedMs": 787,
+        "loadMs": 787,
+        "wireBytes": 732916,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The run ledger, read at two altitudes · Plans",
@@ -5335,7 +5384,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5348,13 +5397,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 497,
-        "domContentLoadedMs": 529,
-        "loadMs": 529,
-        "wireBytes": 767909,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 803,
+        "domContentLoadedMs": 849,
+        "loadMs": 849,
+        "wireBytes": 750488,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "The builder becomes a page builder, not a form builder · Plans",
@@ -5384,7 +5433,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5397,13 +5446,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 545,
-        "domContentLoadedMs": 582,
-        "loadMs": 583,
-        "wireBytes": 811240,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 765,
+        "domContentLoadedMs": 818,
+        "loadMs": 819,
+        "wireBytes": 793809,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Skills runtime + loop feedback — make the standards fire, make adherence visible · Plans",
@@ -5433,7 +5482,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5446,13 +5495,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 505,
-        "domContentLoadedMs": 541,
-        "loadMs": 541,
-        "wireBytes": 763599,
-        "jsBytes": 211553,
-        "cssBytes": 474562,
-        "requests": 36
+        "ttfbMs": 734,
+        "domContentLoadedMs": 783,
+        "loadMs": 783,
+        "wireBytes": 746178,
+        "jsBytes": 199053,
+        "cssBytes": 469764,
+        "requests": 33
       },
       "dom": {
         "title": "Storyboard — \"Watch me work\" (demo.run showcase) · Plans",
@@ -5482,7 +5531,7 @@
         ],
         "renderBlockingCss": 6,
         "renderBlockingJs": 2,
-        "ariaAttrs": 108,
+        "ariaAttrs": 98,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5496,12 +5545,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 746019,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 37
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "wireBytes": 728598,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 34
       },
       "dom": {
         "title": "Projects · TJ's Desk",
@@ -5531,7 +5580,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 131,
+        "ariaAttrs": 121,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5544,13 +5593,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 744843,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 43,
+        "wireBytes": 727422,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 31
       },
       "dom": {
         "title": "PROOF · files are the source, the board is a projection",
@@ -5580,7 +5629,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 119,
+        "ariaAttrs": 109,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5593,13 +5642,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 736966,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 33,
+        "domContentLoadedMs": 74,
+        "loadMs": 74,
+        "wireBytes": 719545,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "PROOF docs",
@@ -5629,7 +5678,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 117,
+        "ariaAttrs": 107,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5642,13 +5691,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 38,
-        "loadMs": 39,
-        "wireBytes": 741781,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 724360,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Getting started with PROOF",
@@ -5678,7 +5727,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 118,
+        "ariaAttrs": 108,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -5691,13 +5740,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 35,
-        "loadMs": 35,
-        "wireBytes": 744410,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 46,
+        "loadMs": 47,
+        "wireBytes": 726987,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "How PROOF works",
@@ -5727,7 +5776,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 118,
+        "ariaAttrs": 108,
         "selectorCounts": {
           "Surfaces": 39,
           "Kinds": 0,
@@ -5741,12 +5790,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 8,
-        "domContentLoadedMs": 49,
-        "loadMs": 49,
-        "wireBytes": 752548,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "domContentLoadedMs": 55,
+        "loadMs": 55,
+        "wireBytes": 735127,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Reference · Developer docs",
@@ -5776,7 +5825,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 130,
+        "ariaAttrs": 120,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5789,13 +5838,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 14,
+        "ttfbMs": 12,
         "domContentLoadedMs": 52,
         "loadMs": 53,
-        "wireBytes": 784128,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "wireBytes": 766707,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Tjakoen Stolk | Résumé · TJ's Desk",
@@ -5825,7 +5874,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 142,
+        "ariaAttrs": 132,
         "selectorCounts": {
           "Surfaces": 31,
           "Kinds": 0,
@@ -5838,13 +5887,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 17,
-        "domContentLoadedMs": 50,
-        "loadMs": 50,
-        "wireBytes": 744702,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 22,
+        "domContentLoadedMs": 65,
+        "loadMs": 65,
+        "wireBytes": 727281,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Standards",
@@ -5874,7 +5923,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 123,
+        "ariaAttrs": 113,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -5888,12 +5937,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 41,
-        "loadMs": 41,
-        "wireBytes": 754037,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 736620,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "AI-DEVELOPMENT.md — how I build full stack with AI",
@@ -5923,7 +5972,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 127,
+        "ariaAttrs": 117,
         "selectorCounts": {
           "Surfaces": 39,
           "Kinds": 0,
@@ -5937,12 +5986,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 41,
-        "loadMs": 42,
-        "wireBytes": 759547,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "domContentLoadedMs": 50,
+        "loadMs": 51,
+        "wireBytes": 742130,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "AI-REPO-STANDARD.md — structure a repo so AI sessions compound",
@@ -5972,7 +6021,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 129,
+        "ariaAttrs": 119,
         "selectorCounts": {
           "Surfaces": 43,
           "Kinds": 0,
@@ -5985,13 +6034,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 10,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 754374,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 736957,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "AUDIT-STANDARD.md — how a repo gets audited",
@@ -6021,7 +6070,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 131,
+        "ariaAttrs": 121,
         "selectorCounts": {
           "Surfaces": 41,
           "Kinds": 0,
@@ -6034,13 +6083,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 742786,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 725369,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "CLAUDE.md — standards",
@@ -6070,7 +6119,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 133,
+        "ariaAttrs": 123,
         "selectorCounts": {
           "Surfaces": 35,
           "Kinds": 0,
@@ -6083,13 +6132,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 34,
-        "loadMs": 34,
-        "wireBytes": 743885,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 726468,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "CLAUDE.starter.md — the new-repo starter template",
@@ -6119,7 +6168,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 135,
+        "ariaAttrs": 125,
         "selectorCounts": {
           "Surfaces": 36,
           "Kinds": 0,
@@ -6132,13 +6181,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 752207,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 734790,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "CONFORMANCE — the prompt that checks a repo is wired, not just willing",
@@ -6168,7 +6217,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 137,
+        "ariaAttrs": 127,
         "selectorCounts": {
           "Surfaces": 36,
           "Kinds": 0,
@@ -6181,13 +6230,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 12,
+        "ttfbMs": 6,
         "domContentLoadedMs": 44,
         "loadMs": 44,
-        "wireBytes": 748837,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "wireBytes": 731420,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "DECISIONS — how a run reaches the human, and how the answer comes back",
@@ -6217,7 +6266,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 139,
+        "ariaAttrs": 129,
         "selectorCounts": {
           "Surfaces": 37,
           "Kinds": 0,
@@ -6230,13 +6279,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 759137,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 741720,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "FIGURES.md — figures & visualizations",
@@ -6266,7 +6315,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 141,
+        "ariaAttrs": 131,
         "selectorCounts": {
           "Surfaces": 40,
           "Kinds": 0,
@@ -6280,12 +6329,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 39,
-        "loadMs": 39,
-        "wireBytes": 749474,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 732057,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "GRAPH.md — navigate the code by graph, not by fan-out",
@@ -6315,7 +6364,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 143,
+        "ariaAttrs": 133,
         "selectorCounts": {
           "Surfaces": 38,
           "Kinds": 0,
@@ -6329,12 +6378,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 40,
-        "loadMs": 41,
-        "wireBytes": 765068,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "domContentLoadedMs": 46,
+        "loadMs": 47,
+        "wireBytes": 747651,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "HOOKS.md — the gates that fire before you do",
@@ -6364,7 +6413,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 145,
+        "ariaAttrs": 135,
         "selectorCounts": {
           "Surfaces": 39,
           "Kinds": 0,
@@ -6377,13 +6426,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 753392,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 735975,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "INTAKE — turning a pasted blob into a scoped brief",
@@ -6413,7 +6462,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 147,
+        "ariaAttrs": 137,
         "selectorCounts": {
           "Surfaces": 40,
           "Kinds": 0,
@@ -6427,12 +6476,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 37,
-        "loadMs": 37,
-        "wireBytes": 746217,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 728800,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "KICKSTART — the new-project prompt for the BREAD stack",
@@ -6462,7 +6511,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 149,
+        "ariaAttrs": 139,
         "selectorCounts": {
           "Surfaces": 32,
           "Kinds": 0,
@@ -6475,13 +6524,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 791090,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 58,
+        "loadMs": 58,
+        "wireBytes": 773673,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "LOOP.md — one AI workflow across every repo",
@@ -6511,7 +6560,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 153,
+        "ariaAttrs": 143,
         "selectorCounts": {
           "Surfaces": 43,
           "Kinds": 0,
@@ -6524,13 +6573,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 755100,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 737683,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "NOTE-STANDARD.md — the note / blog-post standard",
@@ -6560,7 +6609,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 149,
+        "ariaAttrs": 139,
         "selectorCounts": {
           "Surfaces": 39,
           "Kinds": 0,
@@ -6573,13 +6622,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 749761,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 732344,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "standards/ — how I build, write, and work with AI",
@@ -6609,7 +6658,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 149,
+        "ariaAttrs": 139,
         "selectorCounts": {
           "Surfaces": 33,
           "Kinds": 0,
@@ -6622,13 +6671,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 745074,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 727657,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "README-STANDARD.md — the README standard",
@@ -6658,7 +6707,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 149,
+        "ariaAttrs": 139,
         "selectorCounts": {
           "Surfaces": 34,
           "Kinds": 0,
@@ -6671,13 +6720,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 41,
-        "loadMs": 42,
-        "wireBytes": 770233,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 7,
+        "domContentLoadedMs": 56,
+        "loadMs": 56,
+        "wireBytes": 752816,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "SESSION-LOOP.md — the working loop, memory, and handoff",
@@ -6707,7 +6756,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 151,
+        "ariaAttrs": 141,
         "selectorCounts": {
           "Surfaces": 37,
           "Kinds": 0,
@@ -6720,13 +6769,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 38,
-        "loadMs": 39,
-        "wireBytes": 748668,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 731251,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "TOUR-STANDARD.md — the review-tour standard",
@@ -6756,7 +6805,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 153,
+        "ariaAttrs": 143,
         "selectorCounts": {
           "Surfaces": 37,
           "Kinds": 0,
@@ -6769,13 +6818,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 39,
-        "loadMs": 40,
-        "wireBytes": 749572,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 5,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 732155,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "TREE.md — keep the root an index, not a junk drawer",
@@ -6805,7 +6854,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 153,
+        "ariaAttrs": 143,
         "selectorCounts": {
           "Surfaces": 37,
           "Kinds": 0,
@@ -6818,13 +6867,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 41,
-        "loadMs": 42,
-        "wireBytes": 793909,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 8,
+        "domContentLoadedMs": 57,
+        "loadMs": 57,
+        "wireBytes": 776492,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "VOICE.md — voice & tone",
@@ -6854,7 +6903,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 153,
+        "ariaAttrs": 143,
         "selectorCounts": {
           "Surfaces": 53,
           "Kinds": 0,
@@ -6867,13 +6916,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 37,
-        "loadMs": 37,
-        "wireBytes": 740448,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 4,
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 723027,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Talks · TJ's Desk",
@@ -6903,7 +6952,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 151,
+        "ariaAttrs": 141,
         "selectorCounts": {
           "Surfaces": 30,
           "Kinds": 0,
@@ -6917,12 +6966,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 60,
-        "loadMs": 63,
-        "wireBytes": 792435,
-        "jsBytes": 271229,
-        "cssBytes": 468434,
-        "requests": 39
+        "domContentLoadedMs": 88,
+        "loadMs": 88,
+        "wireBytes": 778253,
+        "jsBytes": 262001,
+        "cssBytes": 463636,
+        "requests": 37
       },
       "dom": {
         "title": "Everybody Wants the Agent · the talk",
@@ -6952,7 +7001,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 57,
+        "ariaAttrs": 47,
         "selectorCounts": {
           "Surfaces": 9,
           "Kinds": 24,
@@ -6965,13 +7014,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 37,
-        "loadMs": 37,
-        "wireBytes": 766485,
-        "jsBytes": 227938,
-        "cssBytes": 468434,
-        "requests": 37
+        "ttfbMs": 5,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 749031,
+        "jsBytes": 215438,
+        "cssBytes": 463636,
+        "requests": 34
       },
       "dom": {
         "title": "Every Time It Was Wrong · the talk",
@@ -7001,7 +7050,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 58,
+        "ariaAttrs": 48,
         "selectorCounts": {
           "Surfaces": 0,
           "Kinds": 0,
@@ -7015,12 +7064,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 73,
-        "loadMs": 73,
-        "wireBytes": 805900,
-        "jsBytes": 252980,
-        "cssBytes": 468434,
-        "requests": 39
+        "domContentLoadedMs": 119,
+        "loadMs": 119,
+        "wireBytes": 788446,
+        "jsBytes": 240480,
+        "cssBytes": 463636,
+        "requests": 36
       },
       "dom": {
         "title": "Ten Times Zero Is Still Zero · the talk",
@@ -7050,7 +7099,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 53,
+        "ariaAttrs": 43,
         "selectorCounts": {
           "Surfaces": 0,
           "Kinds": 0,
@@ -7063,13 +7112,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 31,
-        "loadMs": 31,
-        "wireBytes": 741313,
-        "jsBytes": 211553,
-        "cssBytes": 468434,
-        "requests": 35
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 46,
+        "wireBytes": 723892,
+        "jsBytes": 199053,
+        "cssBytes": 463636,
+        "requests": 32
       },
       "dom": {
         "title": "Teaching · Tjakoen Stolk, School of Computing, Holy Angel University",
@@ -7099,7 +7148,7 @@
         ],
         "renderBlockingCss": 5,
         "renderBlockingJs": 2,
-        "ariaAttrs": 152,
+        "ariaAttrs": 142,
         "selectorCounts": {
           "Surfaces": 31,
           "Kinds": 0,

@@ -138,27 +138,30 @@ only places the cards side by side, and repeated cards receive distinct fallback
 browser checks cover the four-block example, the two half-width cards, the distinct copy, and the
 local-generation notice. The narrower preview was also reviewed at 390 pixels with no page overflow.
 
-The October 10 release checks pass locally. TypeScript is clean, all 698 unit tests pass, and the
-serial browser suite previously passed 399 tests with one data-dependent calendar lightbox test
-skipped because the fixtures have no single-photo post. The expanded October 10 run now covers 405
-browser cases: 403 passed, the same data-dependent case was skipped, and the one failure was a stale
-Builder assertion for the October 2 help copy. That assertion now checks the October 10 evidence and
-passes in a focused rerun. Oxlint exits successfully with existing warnings; the lint
-gate reports 4,504 flags against a baseline of 4,570. The link linter finds no dead relative links
-across 56 rendered files, and every served diagram has a committed SVG. The fresh route audit returns
-all 146 canonical pages without HTTP or document findings, and sitemap, robots, and llms endpoints
-return successfully. The static export verifies all 1,174 pages and 1,132 data routes, and every
-exported internal link resolves. The October 10 BATCH and MILL architecture edits were rendered at
-desktop and 390 pixels; both pages have one page heading and no horizontal overflow. A refreshed
-23-screen desktop gallery is available for review. The screenshot helper now isolates browser storage
-for each capture and waits for the welcome greeting to finish. The GRAIN guide's package-boundary
-section now reflects the separate BATCH repository and the GRAIN monorepo that publishes GRAIN,
-MILL, PROOF, and CRUMB; package-doc navigation and phone checks pass. The Builder help now reports the
-October 10 local-model result of 2/8, with the full measurement recorded in builder-ai-depth.md.
-The final route-by-route visual review remains open, as does the Builder's live-model reliability
-work and the remaining BATCH, GRAIN, MILL, and PROOF documentation review. Ordinary pages still send
-about 207 KB of JavaScript in the local measurement, so the shared shell's delivery cost also needs
-a deliberate review.
+The October 10 release checks are in progress. TypeScript is clean, all 698 unit tests pass, and the
+type check, link linter, static export, and export verification pass. The export contains 1,175 pages
+and 1,132 data routes; each exported internal link resolves. The full browser suite covers 408 cases;
+the serial run passes 407 and skips one calendar case because its fixture has no single-photo event.
+The figure-loader assertions now wait for dynamic imports, so a late request no longer looks like a
+missing feature. A run with four workers produced seven failures under parallel load; the serial run
+is the reliable gate for this suite. The export needs PUBLIC_ORIGIN set to the deployed URL to avoid
+localhost in generated endpoints; the Pages workflow sets it. The lint gate reports 4,500 flags
+against its 4,570 ceiling. The link linter finds no dead relative links across 56 rendered files, and
+every served diagram has a committed SVG. The route audit returns all 146 canonical pages without HTTP or
+document findings. The October 10 BATCH and MILL architecture edits were rendered at desktop and 390
+pixels; both pages have one page heading and no horizontal overflow. A refreshed 23-screen desktop
+gallery is available for review. The screenshot helper isolates browser storage for each capture and
+waits for the welcome greeting to finish. The GRAIN guide's package-boundary section now reflects the
+separate BATCH repository and the GRAIN monorepo that publishes GRAIN, MILL, PROOF, and CRUMB;
+package-doc navigation and phone checks pass. The Builder help reports the October 10 local-model
+result of 2/8, with the full measurement recorded in builder-ai-depth.md.
+The final route-by-route visual review remains open, as do the Builder's live-model reliability work
+and the remaining BATCH, GRAIN, MILL, and PROOF documentation review. Ordinary pages now send about
+194 KB of JavaScript, down from 207 KB, after the October 10 route-specific island pass. The loader
+keeps the image viewer and its stylesheet, interactive figure setup, and reading progress off pages
+that do not use them. The report measures 30–262 KB of JavaScript per route; the calendar, long notes,
+talks, and Builder load their additional features only when needed. The common shell still weighs
+about 194 KB, so its delivery cost remains open for a separate design decision.
 
 ### Page recommendations in progress
 
@@ -259,14 +262,16 @@ individual checks before the audit can be called complete.
       October 10, the route audit covered all 146 canonical URLs in 292 desktop and phone captures.
       All pages returned 200, had one heading, fit their viewport, and produced no page errors. The
       catalog's GRAIN sidebar-panel specimen remains the one accessible-name finding for the later
-      GRAIN work. The complete serial browser suite previously passed 399 tests with one
-      data-dependent skip; the focused checks for the updated routes pass. The October 4 desktop and
+      GRAIN work. The full serial browser suite passes 407 of 408 cases, with one calendar case
+      skipped because the fixture has no single-photo event. The October 4 desktop and
       phone screenshot set covers all routes, and the October 9 gallery refresh covers the 23
       primary screens at desktop width. The Builder, BATCH, PANTRY, reference, and résumé screens
       were refreshed at 390px on October 9; the BATCH and MILL architecture pages were refreshed at
-      390px on October 10. Current delivery ranges from 30 KB to 275 KB of JavaScript; ordinary
-      portfolio pages send about 207 KB in the local measurement. Review the shared shell's delivery
-      cost alongside the remaining visual checks.
+      390px on October 10. The October 10 route audit covers 146 canonical pages with no HTTP or
+      document findings. A fresh performance run after deferring page-specific assets measures
+      30–262 KB of JavaScript; ordinary pages now send 194 KB, down from 207 KB. The full serial
+      browser suite and the refreshed desktop gallery add current evidence, while the
+      route-by-route visual pass and review of the remaining shared-shell payload are still open.
 - [ ] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
       main, and verify the deployed pages.
 
