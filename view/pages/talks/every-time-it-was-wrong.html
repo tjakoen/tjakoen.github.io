@@ -62,8 +62,8 @@
   <!-- 2 ----------------------------------------------------------------- WHAT YOU WILL SEE -->
   <section class="presentation__slide" data-title="What you will see">
     <p class="slide-eyebrow settles">When your PR is sitting waiting for review</p>
-    <svg class="fig" viewBox="0 0 700 214" role="img"
-         aria-label="A pull request with six review comments marked down the side of the diff. Beside it, what the reviewer can do: leave up to six comments on the lines they are about, and hold the merge. And what it cannot do: approve. That stays with a person."
+    <svg class="fig" viewBox="0 0 700 246" role="img"
+         aria-label="A pull request with six review comments marked down the side of the diff. Beside it, what the reviewer can do: leave up to six comments on the lines they are about, and hold the merge. And what it cannot do: approve. That stays with a person. Underneath: two tools run the same reviewer, and the label on the review says which one wrote it."
          style="font-size:12px">
       <rect x="8" y="16" width="404" height="182" rx="5" style="fill:none;stroke:var(--color-line)"/>
       <g style="fill:var(--color-line)">
@@ -87,10 +87,14 @@
       <line x1="460" y1="144" x2="692" y2="144" style="stroke:var(--color-line)"/>
       <text x="460" y="170" style="fill:var(--color-fg);font-size:14px">it cannot approve</text>
       <text x="460" y="190" style="fill:var(--color-muted);font-size:12px">ever. That is still a person.</text>
+      <line x1="8" y1="214" x2="692" y2="214" style="stroke:var(--color-line)"/>
+      <text x="8" y="236" style="fill:var(--color-fg);font-size:13px">Two tools run the same reviewer. The label on the review says which one wrote it.</text>
     </svg>
     <ul class="slide-notes" hidden>
       <li>Land the three facts and stop. No defence yet and no mechanism.</li>
       <li>Answer the obvious question before it is asked: not every PR, and not instantly. A check runs every hour, finds the ones waiting on a review, and queues them. Someone still clicks to start it.</li>
+      <li>The two labels will confuse people if nobody says this out loud. Same rules, same lenses, same log. Only the thing driving it differs, and both are scored together.</li>
+      <li>One thing it asks of you, and it is the only one: a change to an interface has to show that its accessibility behaviour was checked. The bar is low and the reason is in the numbers, which the notes on the measurement slide carry.</li>
       <li>If someone asks why it cannot approve, say "two slides from now" and move on.</li>
     </ul>
   </section>
@@ -99,11 +103,11 @@
   <section class="presentation__slide" data-title="Is it right">
     <p class="slide-eyebrow settles">First, the boring question</p>
     <svg class="fig" viewBox="0 0 700 192" role="img"
-         aria-label="Ninety-eight percent of the comments the reviewer has left were correct, measured across 842 of them graded one at a time against what happened to the code afterwards. Which turned out to be the least interesting thing about it."
+         aria-label="Ninety-nine percent of the comments the reviewer has left were correct, measured across 1,363 of them graded one at a time against what happened to the code afterwards. Which turned out to be the least interesting thing about it."
          style="font-size:12px">
-      <text x="8" y="92" style="fill:var(--color-fg);font-size:76px">98%</text>
+      <text x="8" y="92" style="fill:var(--color-fg);font-size:76px">99%</text>
       <text x="252" y="66" style="fill:var(--color-fg);font-size:18px">of its comments were right.</text>
-      <text x="252" y="96" style="fill:var(--color-muted);font-size:13px">842 of them, graded one at a time against</text>
+      <text x="252" y="96" style="fill:var(--color-muted);font-size:13px">1,363 of them, graded one at a time against</text>
       <text x="252" y="116" style="fill:var(--color-muted);font-size:13px">what actually happened to the code.</text>
       <line x1="8" y1="142" x2="692" y2="142" style="stroke:var(--color-line)"/>
       <text x="8" y="174" style="fill:var(--color-fg);font-size:16px">Which is the least interesting thing about it.</text>
@@ -185,6 +189,7 @@
       <li>Point at the taper, not the boxes. The design is subtractive and that is the whole trick.</li>
       <li>The cap is hard: six comments, three on a small change. Over the cap the weakest one is deleted rather than all of them being shortened.</li>
       <li>The six, only if asked: security, tests, migrations, access, design, frontend.</li>
+      <li>Not every change gets six. A diff with no product code in it, a spec file on its own, now gets one. Running the full set on it cost about 216k tokens to produce two notes that both lost at the gates.</li>
     </ul>
   </section>
 
@@ -395,12 +400,12 @@
   <section class="presentation__slide" data-title="Right and unread">
     <p class="slide-eyebrow settles">Now the part we did not expect</p>
     <svg class="fig" viewBox="0 0 700 212" role="img"
-         aria-label="Two pairs of bars. Comments left on a line of code were right 98 percent of the time and acted on 96 percent of the time. The same findings written into the review summary instead were right 99 percent of the time and acted on only 23 to 43 percent of the time."
+         aria-label="Two pairs of bars. Comments left on a line of code were right 99 percent of the time and acted on 92 percent of the time. The same findings written into the review summary instead were right 99 percent of the time and acted on only 32 to 43 percent of the time."
          style="font-size:13px">
       <text x="8" y="20" style="fill:var(--color-muted)">was it right?</text>
       <text x="8" y="46" style="fill:var(--color-fg)">on a line</text>
-      <rect x="150" y="33" width="398" height="17" style="fill:var(--color-line)"/>
-      <text x="558" y="46" style="fill:var(--color-muted)">98%</text>
+      <rect x="150" y="33" width="402" height="17" style="fill:var(--color-line)"/>
+      <text x="562" y="46" style="fill:var(--color-muted)">99%</text>
       <text x="8" y="74" style="fill:var(--color-fg)">in the summary</text>
       <rect x="150" y="61" width="402" height="17" style="fill:var(--color-line)"/>
       <text x="562" y="74" style="fill:var(--color-muted)">99%</text>
@@ -409,11 +414,11 @@
 
       <text x="8" y="118" style="fill:var(--color-muted)">did anyone do anything about it?</text>
       <text x="8" y="144" style="fill:var(--color-fg)">on a line</text>
-      <rect x="150" y="131" width="390" height="17" style="fill:var(--color-fg)"/>
-      <text x="550" y="144" style="fill:var(--color-fg)">96%</text>
+      <rect x="150" y="131" width="374" height="17" style="fill:var(--color-fg)"/>
+      <text x="534" y="144" style="fill:var(--color-fg)">92%</text>
       <text x="8" y="172" style="fill:var(--color-fg)">in the summary</text>
-      <rect x="150" y="159" width="134" height="17" style="fill:var(--color-fg)"/>
-      <text x="294" y="172" style="fill:var(--color-fg)">23 to 43%</text>
+      <rect x="150" y="159" width="152" height="17" style="fill:var(--color-fg)"/>
+      <text x="312" y="172" style="fill:var(--color-fg)">32 to 43%</text>
 
       <text x="8" y="202" style="fill:var(--color-fg);font-size:14px">Same run, same quality. The only difference is where it was printed.</text>
     </svg>
@@ -421,6 +426,7 @@
       <li>Top half first: both groups were right. This is not an accuracy story, which is why slide three cleared accuracy off the table.</li>
       <li>Most of what it said was landing in the summary, which is the part nobody reads. So the repair was placement, not a stricter reviewer.</li>
       <li>The trap worth naming: we had "was it right" and "did anyone act" as one number, so every time you ignored a correct comment the dashboard told us to make it stricter. It was learning to say less for being read less.</li>
+      <li>This is also where the accessibility ask came from. Those findings scored the worst ignore ratio of any theme, and the lens was not the weak part: it carries twenty-three mined patterns, each with the pull request that taught it. Finding more defects does not move an ignore rate. The author answering does.</li>
     </ul>
   </section>
 
