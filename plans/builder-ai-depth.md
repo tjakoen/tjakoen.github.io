@@ -315,9 +315,10 @@ copy edits appear to work.
       builder browser suite passes all 64 scenarios, including the example flow, schema delivery,
       static-host, one-door, proposal, and copy-edit refusal paths. The real-model audit remains a
       separate score because headless CI has no WebGPU.
-- [ ] Review the published workbench at desktop and narrow widths, then show the rendered result
-      before calling the plan done. The local workbench was reviewed at both widths; its mobile file
-      toolbar now wraps onto a second row instead of clipping. A published review remains open.
+- [x] Review the published workbench at desktop and narrow widths. The workbench renders at 1440px
+      and 390px with one page heading, no horizontal overflow, and no browser page errors. The phone
+      view keeps the example link visible and the toolbar wraps without clipping. The live page shows
+      the current model-size disclosure and measured `move b3 up` example.
 
 ## Done means
 
