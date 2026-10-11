@@ -37,8 +37,6 @@ function narrate(report: AuditReport): string {
   const jsMin = jsVals.length ? Math.min(...jsVals) : 0;
   const jsMax = jsVals.length ? Math.max(...jsVals) : 0;
   const loadMax = okp.length ? Math.max(...okp.map((p) => p.perf!.loadMs)) : 0;
-  const jsVerdict = jsMax <= 50 * 1024 ? "**excellent — native-first** (a typical React/Next page ships several× this)"
-    : jsMax <= 150 * 1024 ? "moderate" : "heavy — investigate";
   const skipped = report.pages.filter((p) => !p.ok).map((p) => `\`${p.path}\` (${p.error})`).join(", ") || "none";
   const finding = (passes: (dom: NonNullable<(typeof report.pages)[number]["dom"]>) => boolean) =>
     report.pages.filter((p) => p.ok && !passes(p.dom!)).map((p) => p.path);
@@ -65,10 +63,10 @@ function narrate(report: AuditReport): string {
     `- Pages with one or more document findings: ${pagesWithDocumentFindings.size}\n\n` +
     `## Document checks\n\n${findingLines}\n\n` +
     `## What the numbers mean\n\n` +
-    `- **JavaScript shipped: ${kb(jsMin)}–${kb(jsMax)} per page** — the headline, and the "native-first" proof: ${jsVerdict}.\n` +
-    `- **Bytes, JS and request counts are network-independent** — the robust, honest numbers to publish.\n` +
+    `- **JavaScript response bytes: ${kb(jsMin)}–${kb(jsMax)} per page** — measured against the local Bun server, which serves these files without compression. Treat them as uncompressed build-size checks, not as the bytes a visitor downloads from GitHub Pages.\n` +
+    `- **Wire bytes and request counts describe this local audit run.** They are useful for finding regressions under the same setup, but they are not network-independent or a substitute for measuring the deployed site.\n` +
     `- **TTFB / Load are LOCAL best-case** (no network hop; max load here ${loadMax}ms) — use them for catching regressions, not as absolute proof. Real-world latency adds to every stack equally.\n` +
-    `- **The persuasive frame is comparative** — the same metrics vs Astro / Next / htmx tell the story (memory \`framework-comparison-methodology\`).\n\n` +
+    `- **Compare delivery only under the same conditions.** Production compression and caching change the bytes visitors receive; do not compare this local report with another framework's compressed production assets.\n\n` +
     `## Pages\n\n` +
     `${renderTables(report, Object.keys(SELECTORS))}\n\n` +
     `## Endpoints\n\n${epLines}\n\n` +
@@ -99,7 +97,7 @@ try {
   if (pages.length === 0) throw new Error("sitemap.xml did not contain any canonical page URLs");
   const report = await audit({ baseURL: BASE, pages, endpoints: ENDPOINTS, selectors: SELECTORS });
 
-  await writeFile(`${OUT}/report.json`, JSON.stringify({ note: "baseline of the current build; re-run with `bun run audit`", ...report }, null, 2));
+  await writeFile(`${OUT}/report.json`, JSON.stringify({ note: "Local Bun audit baseline; JavaScript responses are uncompressed. Re-run with bun run audit.", ...report }, null, 2));
   await writeFile(`${OUT}/report.md`, narrate(report));
 
   console.log(`\n[audit] wrote ${OUT}/report.json + ${OUT}/report.md`);
