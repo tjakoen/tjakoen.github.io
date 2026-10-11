@@ -272,13 +272,14 @@ individual checks before the audit can be called complete.
       performance report measures 30–264 KB of JavaScript per route; ordinary pages send 194 KB,
       down from 207 KB, and page-specific features load only where needed. The remaining shared-shell
       delivery cost is tracked as a separate design decision.
-- [ ] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
-      main, and verify the deployed pages. The current local gates pass: 702 unit tests; 409 of 410
-      serial browser cases, with one calendar fixture skipped; typecheck; 4,501 lint flags under the
-      4,570 baseline; link lint across 56 rendered files; and static export verification for 1,175
-      pages, 1,132 data routes, and 39 frozen modules. The current full-route audit has 146 successful
-      pages and zero document findings. The remaining release steps are to commit on main, push the
-      authorized deployment, and confirm the published Builder page and site version.
+- [x] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
+      main, and verify the deployed pages. The local gates passed: 702 unit tests; 409 of 410 serial
+      browser cases, with one calendar fixture skipped; typecheck; 4,501 lint flags under the 4,570
+      baseline; link lint across 56 rendered files; and static export verification for 1,175 pages,
+      1,132 data routes, and 39 frozen modules. The route audit found 146 successful pages and zero
+      document findings. Commit 3ffb666 is on main. GitHub Pages deployment and CI both passed. The
+      published Builder returns HTTP 200 at 1440px and 390px, with no horizontal overflow, page errors,
+      or heading-count issues; the updated model disclosure and example are live.
 
 ## Done means
 
