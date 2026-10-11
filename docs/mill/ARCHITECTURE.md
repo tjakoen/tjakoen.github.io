@@ -97,11 +97,12 @@ Two implementations ship:
 - **`dirSource(dir)`**: a folder of `.md` files. Slug = filename minus `.md`, lowercased
   (`GRAIN.md` → `grain`); a case-colliding pair is last-one-wins. This is what a consumer's own
   content (notes, docs authored in-repo) uses.
-- **`packageDocsSource(anchor)`**: resolves a docs folder out of an *installed package* via
-  `import.meta.resolve` on an anchor file (e.g. `"@tjakoen/grain/docs/GRAIN.md"`). Bun verifies the
-  anchor exists, so a missing or renamed package fails loudly at wiring time instead of serving an
-  empty page. This exists so layer docs can travel inside the dependency itself rather than being
-  copied or reached via a `../sibling` relative path.
+- **`packageDocsSource(anchor)`**: resolves the folder containing a Markdown file shipped by an
+  *installed package*, using `import.meta.resolve` on an exported anchor (for example,
+  `"@tjakoen/grain/PLAN.md"`). Bun verifies the anchor exists, so a missing or renamed package
+  fails loudly at wiring time instead of serving an empty page. The portfolio's layer guides live
+  in its own `docs/<layer>/` folders and use `dirSource`; the packages do not ship those guides.
+  `packageDocsSource` remains useful for Markdown that a package does publish, such as its plan.
 
 ## Chrome: the page shell is the host's
 
