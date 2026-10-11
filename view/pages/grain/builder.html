@@ -58,10 +58,10 @@
           </div>
         </div>
         <p class="wb-bar__note muted">AI runs in this browser, and prompts stay on this device. First use
-          downloads about 350 MB and caches the model. The October 10 live check scored 2/8; the
-          draft missed the brief and some edit targets. The desk can propose block moves, size
-          changes or removals, but cannot revise existing copy yet. Review every proposal before
-          applying it, then check the page before export.</p>
+          downloads about 350 MB and caches the model. Two October 11 WebGPU checks each scored 2/8.
+          Exact-ID removal passed once and timed out on repeat; relative edits and grounded drafts
+          still fail. Existing copy cannot be revised. Review each proposal, then check the page before
+          export.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -151,7 +151,7 @@
             <div class="wb__try-edits" data-builder-try-edits hidden>
               <p class="wb__try-title">Try the model against this page</p>
               <button class="wb-chip" type="button" data-builder-prompt="drop b4" data-builder-drop-example hidden>Try the measured edit: drop b4</button>
-              <p class="muted" data-builder-drop-note hidden>The exact-ID removal landed in the October 10 live check. This only fills the prompt; Build it sends it, and any proposal still waits for your approval.</p>
+              <p class="muted" data-builder-drop-note hidden>Exact-ID removal passed once in the October 11 live check and timed out on repeat. This only fills the prompt; Build it sends it, and any proposal still waits for your approval.</p>
               <button class="wb-chip" type="button" data-builder-prompt="rewrite the intro paragraph to mention pricing">Try an honest copy-edit refusal</button>
               <p class="muted">Copy edits are not supported yet. The Builder should explain that limit without changing the page.</p>
             </div>
@@ -219,12 +219,13 @@
             The model has not earned your trust with copy yet. Check the canvas before you use or export
             anything. Its first run downloads about 350 MB, then caches the files on this device. Your
             prompt stays here.</p>
-          <p>The live check on October 10, 2026, scored 2/8 across eight draft, edit, and refusal cases.
-            The model removed b4 when asked by that exact id, and refused to rewrite copy on an existing
-            block. It timed out on a request to remove the second card, removed the intro instead of
-            widening the callout, and returned an unsupported action for the move requests. Its draft
-            missed every supplied fact, so the sample copy stayed in place. This is one run of one small
-            local model, not a general success rate.</p>
+          <p>Two WebGPU checks on October 11, 2026, each scored 2/8 across eight draft, edit, and refusal
+            cases. The copy-edit refusal passed in both. Exact-ID removal worked in the first run and
+            timed out on the repeat. Relative targets chose the wrong card. Width requests timed out or
+            triggered a move. The callout request chose the wrong card; an explicit-ID move passed after
+            the parser fix. Both drafts lost the supplied facts; the second produced one generic intro.
+            These are small-sample checks
+            of one local model, not general success rates.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
             the canvas again before it reports a change. That review catches stale proposals, but it
             cannot tell whether a legal choice is the block you meant. The block rail is the dependable
@@ -234,7 +235,7 @@
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
             <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">the matcher makes a preview; Build it asks the model to add registered blocks and copy.</span></div>
-            <div class="docs-list__item"><span class="docs-list__name">Drop b4</span><span class="docs-list__what">the one edit that landed in the October 10 run; review the named block before applying.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Drop b4</span><span class="docs-list__what">an explicit-ID edit passed once and timed out on its repeat; review the named block before applying.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Resize, move, or remove</span><span class="docs-list__what">the rail controls apply these changes directly to the block you choose.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Rewrite existing copy</span><span class="docs-list__what">not supported; GRAIN does not expose a registered text-edit operation.</span></div>
           </div>

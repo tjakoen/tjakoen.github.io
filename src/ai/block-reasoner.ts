@@ -190,6 +190,20 @@ function normalizeTarget(move: ModelMoveLike, manifest: Manifest): ModelMoveLike
   return resolved === null ? move : { ...move, target: resolved };
 }
 
+/** The model sometimes shortens the one registered reorder operation to `move`. Read that alias
+ *  only when this manifest exposes block.move and the answer names a real block with a supported
+ *  direction. The usual manifest validation still checks the normalized command before it reaches
+ *  the proposal or the door. */
+function normalizeBlockMoveVerb(move: ModelMoveLike, manifest: Manifest): ModelMoveLike {
+  if (move.action !== "move" || !manifest.actions?.some((action) => action.name === "block.move")) return move;
+  const target = move.target;
+  const isBlock = typeof target === "string" && manifest.targets.some((candidate) =>
+    candidate.kind === "block" && (candidate.id === target || candidate.id === `block:${target}`),
+  );
+  if (!isBlock || !isDirection(move.payload?.direction)) return move;
+  return { ...move, action: "block.move" };
+}
+
 /** The short ids the rail prints, from the addresses the manifest carries. */
 const blockIdsIn = (manifest: Manifest): string[] =>
   manifest.targets.filter((t) => t.id.startsWith("block:")).map((t) => idOf(t.id));
@@ -286,7 +300,7 @@ export function readModelMove(raw: string, manifest: Manifest, grain: GrainModel
   // A short address is written out here, before grain validates and before any copy is derived, so
   // every reader downstream sees the one move the page will actually make. See resolveBareId for why
   // this is done on the way IN and not by teaching the prompt to print the long form.
-  const asked = normalizeTarget(parsed.move, manifest);
+  const asked = normalizeTarget(normalizeBlockMoveVerb(parsed.move, manifest), manifest);
 
   const checked = grain.validateMove(asked, manifest);
   if (!checked.ok) {

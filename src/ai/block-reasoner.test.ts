@@ -40,6 +40,15 @@ describe("a move the model got right", () => {
     expect(r.command.said).toBe("Moving b3 up.");
   });
 
+  test("the measured `move` shorthand resolves only with a live block and supported direction", () => {
+    const r = read('{"action":"move","target":"b3","payload":{"direction":"up"}}');
+    expect(r).toMatchObject({ kind: "command", command: { action: "block.move", surface: "block:b3", said: "Moving b3 up." } });
+
+    const invalid = read('{"action":"move","target":"b3","payload":{"direction":"top"}}');
+    if (invalid.kind !== "refusal") throw new Error("expected an invalid direction to be refused");
+    expect(invalid.said).not.toMatch(/Moving b3/);
+  });
+
   test("JSON wrapped in the prose a small model adds anyway", () => {
     const r = read('Sure! Here is the move:\n```json\n{"action":"block.remove","target":"block:b1"}\n```');
     expect(r.kind).toBe("command");

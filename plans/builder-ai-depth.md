@@ -180,6 +180,25 @@ browser check confirms the starter link is in view, and the Builder suite covers
 the canvas unchanged. These prompts make the measured path easier to inspect; they do not change the
 2/8 result or promise that the model will land the edit again.
 
+On October 11, I reran the eight live-model scenarios in WebGPU Chromium against the current 0.5B
+profile. It scored 2/8: exact-ID removal and refusal to rewrite existing copy passed. The model
+removed the first card when asked for the second, timed out on both width requests, returned the
+unregistered action `move` for both move requests, and produced a draft that omitted the supplied
+business name, location, and copy. The browser kept the draft inside the registered composition
+shape, but the resulting page used its sample text rather than the visitor's facts. The capture is
+`.cache/desk-audit/report-builder-current-2026-10-11.json`.
+
+I added a narrow portfolio-side normalization for the exact `move` shorthand. It is accepted only
+when the live manifest contains `block.move`, the answer names a real block, and the direction is
+`up` or `down`; GRAIN still validates the resulting command before the proposal or door. The focused
+live recheck accepted the explicit request `move b3 up`. It also confirmed the remaining reference
+failure: `move the callout up` selected b4, the second card, and the approval preview exposed that
+choice before the test applied it. An eight-case run after the fix again scored 2/8. The passing cases shifted: exact-ID removal timed
+out on its repeat, while an explicit-ID move passed; a width request also triggered a move. The score
+hides substantial run-to-run variation. This result is in
+`.cache/desk-audit/report-builder-after-move-alias-2026-10-11.json`. Natural-language target selection,
+width requests, and grounded drafting remain open.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business
@@ -232,11 +251,10 @@ copy edits appear to work.
 
 ## Work
 
-- [ ] Re-run the live-model scenarios on the current code and record a baseline for composition,
-      block edits, refusals, and unsupported browser hardware. The composition scenario is now
-      measured at 0/1 on the current 0.5B profile, including a shorter-prompt trial. The builder edit
-      baseline and refusal path are recorded above; an unavailable-WebGPU live run remains to be
-      measured.
+- [x] Re-run the live-model scenarios on the current code and record a baseline for composition,
+      block edits, and refusals. The October 11 WebGPU run scored 2/8 on the 0.5B profile; the
+      focused move-alias recheck is recorded above. The no-WebGPU behavior remains covered by the
+      scripted browser checks, which keep headless CI separate from live-model scoring.
 - [x] Trace how generated copy could travel through the existing composition and GRAIN contracts.
       Keep component names, addresses, and allowed fields code-owned. Generated text is bounded to
       registered fields on new blocks; the later GRAIN design-review requirement remains for edits
@@ -244,9 +262,11 @@ copy edits appear to work.
 - [x] Trace each edit from the visitor's words through the model answer, validation, GRAIN's door,
       the dispatcher, and the final canvas. The scripted browser path still exercises the full chain.
 - [ ] Improve the model's edit choices using the live manifest and the block IDs already visible on
-      the page. The prompt now contains only live block actions and identifies each block's type and
-      order, but the 2026-10-03 result still leaves five of seven scenarios unreliable. Do not add a
-      deterministic fallback that makes the interface claim the AI acted.
+      the page. The prompt contains only live block actions and identifies each block's type and
+      order. A portfolio-side parser now accepts the measured `move` alias only for a live block and
+      valid direction; the explicit-ID move passed its focused live recheck, but the callout request
+      still selected the wrong card. The 0.5B full run remains 2/8. Do not add a deterministic chooser
+      that makes the interface claim the AI acted.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
