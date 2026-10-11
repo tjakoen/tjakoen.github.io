@@ -138,10 +138,10 @@ only places the cards side by side, and repeated cards receive distinct fallback
 browser checks cover the four-block example, the two half-width cards, the distinct copy, and the
 local-generation notice. The narrower preview was also reviewed at 390 pixels with no page overflow.
 
-The October 11 release checks pass: TypeScript, all 698 unit tests, the type check, link linter, static
-export, and export verification. The export contains 1,175 pages and 1,132 data routes; each exported
-internal link resolves. The full browser suite covers 410 cases; the October 11 serial run passes 409
-and skips one calendar case because its fixture has no single-photo event.
+The latest October 11 CI run on `cf0af7a` passed typecheck, all 705 unit tests, and 410 browser
+cases; it skipped one calendar case because its fixture has no single-photo event. Static export
+and export verification pass. The export contains 1,175 pages and 1,132 data routes, and every
+exported internal link resolves.
 The figure-loader assertions now wait for dynamic imports, so a late request no longer looks like a
 missing feature. A run with four workers produced seven failures under parallel load; the serial run
 is the reliable gate for this suite. The export needs PUBLIC_ORIGIN set to the deployed URL to avoid
