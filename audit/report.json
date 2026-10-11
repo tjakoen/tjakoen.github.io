@@ -7,12 +7,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 15,
-        "domContentLoadedMs": 217,
-        "loadMs": 217,
-        "wireBytes": 858084,
+        "ttfbMs": 11,
+        "domContentLoadedMs": 382,
+        "loadMs": 387,
+        "wireBytes": 859529,
         "jsBytes": 199053,
-        "cssBytes": 590140,
+        "cssBytes": 591082,
         "requests": 32
       },
       "dom": {
@@ -56,12 +56,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 17,
-        "domContentLoadedMs": 73,
-        "loadMs": 74,
-        "wireBytes": 791983,
+        "ttfbMs": 16,
+        "domContentLoadedMs": 63,
+        "loadMs": 63,
+        "wireBytes": 793263,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -105,12 +105,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 723453,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 39,
+        "loadMs": 39,
+        "wireBytes": 724733,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -154,12 +154,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 726716,
+        "ttfbMs": 9,
+        "domContentLoadedMs": 43,
+        "loadMs": 44,
+        "wireBytes": 727996,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -203,12 +203,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 50,
-        "loadMs": 50,
-        "wireBytes": 726762,
+        "ttfbMs": 9,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 728042,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -252,12 +252,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 52,
-        "loadMs": 52,
-        "wireBytes": 726716,
+        "ttfbMs": 14,
+        "domContentLoadedMs": 48,
+        "loadMs": 49,
+        "wireBytes": 727996,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -301,12 +301,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 726762,
+        "ttfbMs": 16,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 728042,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -350,12 +350,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 726784,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 728064,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -400,11 +400,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 8,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 726706,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 727986,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -448,12 +448,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 726784,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 728064,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -497,12 +497,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 726706,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 727986,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -546,12 +546,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 53,
-        "loadMs": 53,
-        "wireBytes": 726784,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 728064,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -595,12 +595,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 726706,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 727986,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -644,12 +644,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 50,
-        "loadMs": 50,
-        "wireBytes": 726784,
+        "ttfbMs": 9,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 728064,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -694,11 +694,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 50,
-        "loadMs": 51,
-        "wireBytes": 726706,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 727986,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -743,11 +743,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 8,
-        "domContentLoadedMs": 50,
-        "loadMs": 51,
-        "wireBytes": 726584,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 727864,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -792,11 +792,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 56,
-        "loadMs": 56,
-        "wireBytes": 726514,
+        "domContentLoadedMs": 42,
+        "loadMs": 43,
+        "wireBytes": 727794,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -840,12 +840,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 67,
-        "loadMs": 67,
-        "wireBytes": 727788,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 729068,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -889,12 +889,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 51,
-        "loadMs": 51,
-        "wireBytes": 720364,
+        "ttfbMs": 11,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 721644,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -938,12 +938,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 58,
-        "loadMs": 59,
-        "wireBytes": 722588,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 46,
+        "wireBytes": 723868,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -987,12 +987,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 19,
-        "domContentLoadedMs": 110,
-        "loadMs": 110,
-        "wireBytes": 899176,
+        "ttfbMs": 16,
+        "domContentLoadedMs": 97,
+        "loadMs": 97,
+        "wireBytes": 900456,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1036,12 +1036,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
+        "ttfbMs": 5,
         "domContentLoadedMs": 50,
-        "loadMs": 51,
-        "wireBytes": 722799,
+        "loadMs": 50,
+        "wireBytes": 724079,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1085,12 +1085,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 56,
-        "loadMs": 56,
-        "wireBytes": 753653,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "wireBytes": 754933,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1134,12 +1134,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 45,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 46,
         "loadMs": 46,
-        "wireBytes": 723141,
+        "wireBytes": 724421,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1183,12 +1183,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 55,
-        "domContentLoadedMs": 136,
-        "loadMs": 136,
-        "wireBytes": 723679,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 39,
+        "loadMs": 40,
+        "wireBytes": 724959,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1232,12 +1232,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 14,
-        "domContentLoadedMs": 71,
-        "loadMs": 72,
-        "wireBytes": 730883,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 732163,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1281,12 +1281,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 15,
-        "domContentLoadedMs": 112,
-        "loadMs": 153,
-        "wireBytes": 7354001,
+        "ttfbMs": 16,
+        "domContentLoadedMs": 75,
+        "loadMs": 89,
+        "wireBytes": 7355281,
         "jsBytes": 206420,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 57
       },
       "dom": {
@@ -1330,12 +1330,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 55,
-        "loadMs": 56,
-        "wireBytes": 1205478,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 51,
+        "loadMs": 52,
+        "wireBytes": 1206758,
         "jsBytes": 206420,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 41
       },
       "dom": {
@@ -1380,11 +1380,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 51,
-        "loadMs": 52,
-        "wireBytes": 874385,
+        "domContentLoadedMs": 44,
+        "loadMs": 45,
+        "wireBytes": 875665,
         "jsBytes": 206420,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 40
       },
       "dom": {
@@ -1428,12 +1428,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 26,
-        "domContentLoadedMs": 70,
-        "loadMs": 71,
-        "wireBytes": 746985,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 44,
+        "loadMs": 45,
+        "wireBytes": 748265,
         "jsBytes": 206420,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 39
       },
       "dom": {
@@ -1477,12 +1477,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
-        "domContentLoadedMs": 47,
-        "loadMs": 48,
-        "wireBytes": 747432,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 44,
+        "loadMs": 45,
+        "wireBytes": 748712,
         "jsBytes": 206420,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 39
       },
       "dom": {
@@ -1526,12 +1526,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 44,
-        "domContentLoadedMs": 235,
-        "loadMs": 307,
-        "wireBytes": 1845946,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 53,
+        "loadMs": 54,
+        "wireBytes": 1847226,
         "jsBytes": 206420,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 41
       },
       "dom": {
@@ -1575,12 +1575,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 80,
-        "loadMs": 82,
-        "wireBytes": 1195595,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 51,
+        "loadMs": 52,
+        "wireBytes": 1196875,
         "jsBytes": 206420,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 41
       },
       "dom": {
@@ -1624,12 +1624,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 263,
-        "domContentLoadedMs": 585,
-        "loadMs": 611,
-        "wireBytes": 1210436,
+        "ttfbMs": 15,
+        "domContentLoadedMs": 160,
+        "loadMs": 165,
+        "wireBytes": 1211892,
         "jsBytes": 30244,
-        "cssBytes": 447284,
+        "cssBytes": 448226,
         "requests": 22
       },
       "dom": {
@@ -1660,7 +1660,7 @@
         ],
         "renderBlockingCss": 4,
         "renderBlockingJs": 1,
-        "ariaAttrs": 323,
+        "ariaAttrs": 325,
         "selectorCounts": {
           "Surfaces": 132,
           "Kinds": 4,
@@ -1673,12 +1673,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 50,
-        "loadMs": 51,
-        "wireBytes": 727390,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 728670,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1722,12 +1722,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 76,
-        "loadMs": 76,
-        "wireBytes": 719550,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 38,
+        "loadMs": 38,
+        "wireBytes": 720830,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1772,11 +1772,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 57,
-        "loadMs": 57,
-        "wireBytes": 730125,
+        "domContentLoadedMs": 48,
+        "loadMs": 49,
+        "wireBytes": 731405,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1820,12 +1820,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 54,
-        "loadMs": 54,
-        "wireBytes": 740865,
+        "ttfbMs": 11,
+        "domContentLoadedMs": 59,
+        "loadMs": 59,
+        "wireBytes": 742145,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1869,12 +1869,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 51,
-        "loadMs": 51,
-        "wireBytes": 719215,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 49,
+        "loadMs": 50,
+        "wireBytes": 720495,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1918,12 +1918,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 3,
-        "domContentLoadedMs": 47,
-        "loadMs": 47,
-        "wireBytes": 719748,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 721028,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -1968,11 +1968,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 53,
-        "loadMs": 53,
-        "wireBytes": 719514,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 720794,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2017,11 +2017,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 49,
-        "loadMs": 50,
-        "wireBytes": 719736,
+        "domContentLoadedMs": 44,
+        "loadMs": 45,
+        "wireBytes": 721016,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2066,11 +2066,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 4,
-        "domContentLoadedMs": 49,
-        "loadMs": 50,
-        "wireBytes": 719520,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 720800,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2114,12 +2114,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 62,
-        "loadMs": 63,
-        "wireBytes": 732771,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 734051,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2163,12 +2163,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 75,
-        "loadMs": 76,
-        "wireBytes": 744760,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 68,
+        "loadMs": 68,
+        "wireBytes": 746040,
         "jsBytes": 203461,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 34
       },
       "dom": {
@@ -2212,12 +2212,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 15,
-        "domContentLoadedMs": 91,
-        "loadMs": 112,
-        "wireBytes": 818992,
-        "jsBytes": 268683,
-        "cssBytes": 463636,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 59,
+        "loadMs": 64,
+        "wireBytes": 823174,
+        "jsBytes": 270210,
+        "cssBytes": 464578,
         "requests": 42
       },
       "dom": {
@@ -2261,12 +2261,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 72,
-        "loadMs": 515,
-        "wireBytes": 1479088,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 44,
+        "loadMs": 180,
+        "wireBytes": 1480882,
         "jsBytes": 226846,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 38
       },
       "dom": {
@@ -2310,12 +2310,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 26,
-        "domContentLoadedMs": 126,
-        "loadMs": 127,
-        "wireBytes": 720964,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 722244,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2359,12 +2359,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 18,
-        "domContentLoadedMs": 91,
-        "loadMs": 91,
-        "wireBytes": 723551,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 43,
+        "loadMs": 43,
+        "wireBytes": 724831,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2408,12 +2408,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 88,
-        "loadMs": 88,
-        "wireBytes": 722870,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 60,
+        "loadMs": 60,
+        "wireBytes": 724425,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2457,12 +2457,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 12,
-        "domContentLoadedMs": 89,
-        "loadMs": 89,
-        "wireBytes": 797778,
+        "ttfbMs": 11,
+        "domContentLoadedMs": 77,
+        "loadMs": 78,
+        "wireBytes": 800780,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2506,12 +2506,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 11,
-        "domContentLoadedMs": 100,
-        "loadMs": 100,
-        "wireBytes": 747387,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 67,
+        "loadMs": 67,
+        "wireBytes": 749486,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2556,11 +2556,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 53,
-        "loadMs": 53,
-        "wireBytes": 724442,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 725722,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2605,11 +2605,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 64,
-        "loadMs": 65,
-        "wireBytes": 745187,
+        "domContentLoadedMs": 55,
+        "loadMs": 55,
+        "wireBytes": 746467,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2654,11 +2654,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 59,
-        "loadMs": 60,
-        "wireBytes": 722957,
+        "domContentLoadedMs": 47,
+        "loadMs": 48,
+        "wireBytes": 724237,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2702,12 +2702,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 68,
-        "loadMs": 69,
-        "wireBytes": 722450,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 723730,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2751,12 +2751,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 70,
-        "loadMs": 70,
-        "wireBytes": 738461,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 57,
+        "loadMs": 57,
+        "wireBytes": 739741,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2800,12 +2800,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 9,
-        "domContentLoadedMs": 322,
-        "loadMs": 323,
-        "wireBytes": 1570481,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 53,
+        "loadMs": 53,
+        "wireBytes": 1571761,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 36
       },
       "dom": {
@@ -2849,12 +2849,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 13,
-        "domContentLoadedMs": 65,
-        "loadMs": 65,
-        "wireBytes": 781517,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 782797,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2899,11 +2899,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 53,
-        "loadMs": 53,
-        "wireBytes": 726363,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 727643,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2947,12 +2947,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
+        "ttfbMs": 7,
         "domContentLoadedMs": 45,
         "loadMs": 45,
-        "wireBytes": 719700,
+        "wireBytes": 720980,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -2996,12 +2996,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 57,
-        "loadMs": 58,
-        "wireBytes": 726166,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 40,
+        "loadMs": 40,
+        "wireBytes": 727446,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -3045,12 +3045,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 12,
-        "domContentLoadedMs": 114,
-        "loadMs": 115,
-        "wireBytes": 748062,
+        "ttfbMs": 9,
+        "domContentLoadedMs": 53,
+        "loadMs": 54,
+        "wireBytes": 749342,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -3094,12 +3094,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 64,
-        "loadMs": 65,
-        "wireBytes": 724026,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 725306,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -3144,11 +3144,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 56,
-        "loadMs": 60,
-        "wireBytes": 926664,
+        "domContentLoadedMs": 48,
+        "loadMs": 49,
+        "wireBytes": 927944,
         "jsBytes": 206420,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 36
       },
       "dom": {
@@ -3192,12 +3192,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 55,
-        "loadMs": 55,
-        "wireBytes": 725581,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 38,
+        "loadMs": 39,
+        "wireBytes": 726861,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -3241,12 +3241,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 134,
-        "domContentLoadedMs": 315,
-        "loadMs": 316,
-        "wireBytes": 749259,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 750539,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -3290,12 +3290,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 14,
-        "domContentLoadedMs": 99,
-        "loadMs": 99,
-        "wireBytes": 835969,
+        "ttfbMs": 11,
+        "domContentLoadedMs": 64,
+        "loadMs": 64,
+        "wireBytes": 837249,
         "jsBytes": 244788,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 35
       },
       "dom": {
@@ -3340,11 +3340,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 63,
-        "loadMs": 63,
-        "wireBytes": 754839,
+        "domContentLoadedMs": 56,
+        "loadMs": 56,
+        "wireBytes": 756119,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3388,12 +3388,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 56,
-        "loadMs": 56,
-        "wireBytes": 737830,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 58,
+        "loadMs": 59,
+        "wireBytes": 739110,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3438,11 +3438,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 58,
-        "loadMs": 58,
-        "wireBytes": 745799,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 747079,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3486,12 +3486,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 29,
-        "domContentLoadedMs": 115,
-        "loadMs": 116,
-        "wireBytes": 750832,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 54,
+        "loadMs": 54,
+        "wireBytes": 752112,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3535,12 +3535,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 71,
-        "loadMs": 71,
-        "wireBytes": 806085,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 63,
+        "loadMs": 64,
+        "wireBytes": 807365,
         "jsBytes": 222518,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 36
       },
       "dom": {
@@ -3584,12 +3584,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
+        "ttfbMs": 8,
         "domContentLoadedMs": 60,
         "loadMs": 60,
-        "wireBytes": 761426,
+        "wireBytes": 762706,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3633,12 +3633,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 49,
-        "loadMs": 49,
-        "wireBytes": 740406,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 54,
+        "loadMs": 55,
+        "wireBytes": 741686,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3683,11 +3683,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 52,
-        "loadMs": 54,
-        "wireBytes": 883590,
+        "domContentLoadedMs": 51,
+        "loadMs": 52,
+        "wireBytes": 884870,
         "jsBytes": 209358,
-        "cssBytes": 468841,
+        "cssBytes": 469783,
         "requests": 38
       },
       "dom": {
@@ -3731,12 +3731,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 49,
-        "loadMs": 49,
-        "wireBytes": 736163,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 54,
+        "loadMs": 54,
+        "wireBytes": 737443,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3780,12 +3780,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 63,
-        "loadMs": 64,
-        "wireBytes": 787440,
+        "ttfbMs": 11,
+        "domContentLoadedMs": 67,
+        "loadMs": 67,
+        "wireBytes": 788720,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3829,12 +3829,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
+        "ttfbMs": 6,
         "domContentLoadedMs": 51,
-        "loadMs": 51,
-        "wireBytes": 737649,
+        "loadMs": 52,
+        "wireBytes": 738929,
         "jsBytes": 201991,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 33
       },
       "dom": {
@@ -3878,12 +3878,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 728266,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 50,
+        "loadMs": 50,
+        "wireBytes": 729546,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -3927,12 +3927,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 40,
-        "loadMs": 40,
-        "wireBytes": 719577,
+        "ttfbMs": 10,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 720857,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -3976,12 +3976,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 43,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 44,
         "loadMs": 44,
-        "wireBytes": 730471,
+        "wireBytes": 731751,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -4025,12 +4025,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 51,
-        "loadMs": 52,
-        "wireBytes": 733054,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 49,
+        "loadMs": 49,
+        "wireBytes": 734334,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -4074,12 +4074,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 836,
-        "domContentLoadedMs": 885,
-        "loadMs": 885,
-        "wireBytes": 750935,
+        "ttfbMs": 829,
+        "domContentLoadedMs": 881,
+        "loadMs": 881,
+        "wireBytes": 752215,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4123,12 +4123,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 765,
-        "domContentLoadedMs": 818,
-        "loadMs": 818,
-        "wireBytes": 734380,
+        "ttfbMs": 787,
+        "domContentLoadedMs": 831,
+        "loadMs": 831,
+        "wireBytes": 735660,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4172,12 +4172,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 825,
-        "domContentLoadedMs": 870,
-        "loadMs": 870,
-        "wireBytes": 741271,
+        "ttfbMs": 780,
+        "domContentLoadedMs": 825,
+        "loadMs": 825,
+        "wireBytes": 742551,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4221,12 +4221,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 779,
-        "domContentLoadedMs": 825,
-        "loadMs": 825,
-        "wireBytes": 748386,
+        "ttfbMs": 743,
+        "domContentLoadedMs": 787,
+        "loadMs": 787,
+        "wireBytes": 749666,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4270,12 +4270,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 862,
-        "domContentLoadedMs": 910,
-        "loadMs": 910,
-        "wireBytes": 747358,
+        "ttfbMs": 762,
+        "domContentLoadedMs": 806,
+        "loadMs": 806,
+        "wireBytes": 753367,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4319,12 +4319,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 866,
-        "domContentLoadedMs": 915,
-        "loadMs": 915,
-        "wireBytes": 757321,
+        "ttfbMs": 740,
+        "domContentLoadedMs": 787,
+        "loadMs": 788,
+        "wireBytes": 758601,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4368,12 +4368,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 853,
-        "domContentLoadedMs": 900,
-        "loadMs": 900,
-        "wireBytes": 736717,
+        "ttfbMs": 790,
+        "domContentLoadedMs": 834,
+        "loadMs": 834,
+        "wireBytes": 737997,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4417,12 +4417,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 844,
-        "domContentLoadedMs": 890,
-        "loadMs": 890,
-        "wireBytes": 733015,
+        "ttfbMs": 753,
+        "domContentLoadedMs": 801,
+        "loadMs": 802,
+        "wireBytes": 734295,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4466,12 +4466,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 984,
-        "domContentLoadedMs": 1074,
-        "loadMs": 1075,
-        "wireBytes": 728081,
+        "ttfbMs": 833,
+        "domContentLoadedMs": 876,
+        "loadMs": 877,
+        "wireBytes": 729361,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4515,12 +4515,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 767,
-        "domContentLoadedMs": 807,
-        "loadMs": 808,
-        "wireBytes": 734241,
+        "ttfbMs": 936,
+        "domContentLoadedMs": 991,
+        "loadMs": 992,
+        "wireBytes": 735521,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4564,12 +4564,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 852,
-        "domContentLoadedMs": 898,
-        "loadMs": 898,
-        "wireBytes": 744158,
+        "ttfbMs": 1575,
+        "domContentLoadedMs": 1640,
+        "loadMs": 1641,
+        "wireBytes": 745438,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4613,12 +4613,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 765,
-        "domContentLoadedMs": 809,
-        "loadMs": 809,
-        "wireBytes": 726962,
+        "ttfbMs": 1431,
+        "domContentLoadedMs": 1489,
+        "loadMs": 1489,
+        "wireBytes": 728242,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4662,12 +4662,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 760,
-        "domContentLoadedMs": 800,
-        "loadMs": 800,
-        "wireBytes": 728425,
+        "ttfbMs": 1012,
+        "domContentLoadedMs": 1065,
+        "loadMs": 1065,
+        "wireBytes": 729705,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4711,12 +4711,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 982,
-        "domContentLoadedMs": 1025,
-        "loadMs": 1025,
-        "wireBytes": 732315,
+        "ttfbMs": 1077,
+        "domContentLoadedMs": 1156,
+        "loadMs": 1157,
+        "wireBytes": 733595,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4760,12 +4760,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 767,
-        "domContentLoadedMs": 806,
-        "loadMs": 806,
-        "wireBytes": 730850,
+        "ttfbMs": 869,
+        "domContentLoadedMs": 911,
+        "loadMs": 911,
+        "wireBytes": 732130,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4809,12 +4809,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 745,
-        "domContentLoadedMs": 788,
-        "loadMs": 788,
-        "wireBytes": 738630,
+        "ttfbMs": 754,
+        "domContentLoadedMs": 801,
+        "loadMs": 801,
+        "wireBytes": 739910,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4858,12 +4858,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 725,
-        "domContentLoadedMs": 768,
-        "loadMs": 768,
-        "wireBytes": 738055,
+        "ttfbMs": 758,
+        "domContentLoadedMs": 807,
+        "loadMs": 808,
+        "wireBytes": 739335,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4907,12 +4907,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 756,
-        "domContentLoadedMs": 793,
-        "loadMs": 793,
-        "wireBytes": 732838,
+        "ttfbMs": 747,
+        "domContentLoadedMs": 785,
+        "loadMs": 786,
+        "wireBytes": 734118,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -4956,12 +4956,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 754,
-        "domContentLoadedMs": 795,
-        "loadMs": 795,
-        "wireBytes": 731401,
+        "ttfbMs": 783,
+        "domContentLoadedMs": 824,
+        "loadMs": 825,
+        "wireBytes": 732681,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5005,12 +5005,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 748,
-        "domContentLoadedMs": 794,
-        "loadMs": 794,
-        "wireBytes": 734442,
+        "ttfbMs": 786,
+        "domContentLoadedMs": 827,
+        "loadMs": 827,
+        "wireBytes": 735722,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5054,12 +5054,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 754,
-        "domContentLoadedMs": 803,
-        "loadMs": 803,
-        "wireBytes": 733335,
+        "ttfbMs": 749,
+        "domContentLoadedMs": 790,
+        "loadMs": 790,
+        "wireBytes": 734615,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5103,12 +5103,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 744,
-        "domContentLoadedMs": 789,
-        "loadMs": 789,
-        "wireBytes": 744334,
+        "ttfbMs": 754,
+        "domContentLoadedMs": 798,
+        "loadMs": 798,
+        "wireBytes": 745614,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5152,12 +5152,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 752,
-        "domContentLoadedMs": 802,
-        "loadMs": 802,
-        "wireBytes": 770861,
+        "ttfbMs": 739,
+        "domContentLoadedMs": 787,
+        "loadMs": 788,
+        "wireBytes": 772141,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5201,12 +5201,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 746,
-        "domContentLoadedMs": 793,
-        "loadMs": 793,
-        "wireBytes": 764375,
+        "ttfbMs": 817,
+        "domContentLoadedMs": 866,
+        "loadMs": 866,
+        "wireBytes": 767227,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5250,12 +5250,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 739,
-        "domContentLoadedMs": 781,
-        "loadMs": 781,
-        "wireBytes": 730264,
+        "ttfbMs": 806,
+        "domContentLoadedMs": 851,
+        "loadMs": 851,
+        "wireBytes": 731544,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5299,12 +5299,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 731,
-        "domContentLoadedMs": 776,
-        "loadMs": 776,
-        "wireBytes": 739590,
+        "ttfbMs": 747,
+        "domContentLoadedMs": 792,
+        "loadMs": 792,
+        "wireBytes": 740870,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5348,12 +5348,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 743,
-        "domContentLoadedMs": 787,
-        "loadMs": 787,
-        "wireBytes": 732916,
+        "ttfbMs": 747,
+        "domContentLoadedMs": 790,
+        "loadMs": 790,
+        "wireBytes": 734196,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5397,12 +5397,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 803,
-        "domContentLoadedMs": 849,
-        "loadMs": 849,
-        "wireBytes": 750488,
+        "ttfbMs": 748,
+        "domContentLoadedMs": 792,
+        "loadMs": 792,
+        "wireBytes": 751768,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5446,12 +5446,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 765,
+        "ttfbMs": 766,
         "domContentLoadedMs": 818,
-        "loadMs": 819,
-        "wireBytes": 793809,
+        "loadMs": 818,
+        "wireBytes": 795089,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5495,12 +5495,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 734,
-        "domContentLoadedMs": 783,
-        "loadMs": 783,
-        "wireBytes": 746178,
+        "ttfbMs": 802,
+        "domContentLoadedMs": 853,
+        "loadMs": 854,
+        "wireBytes": 747458,
         "jsBytes": 199053,
-        "cssBytes": 469764,
+        "cssBytes": 470706,
         "requests": 33
       },
       "dom": {
@@ -5544,12 +5544,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 52,
-        "loadMs": 52,
-        "wireBytes": 728598,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 729878,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 34
       },
       "dom": {
@@ -5593,13 +5593,13 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 42,
-        "loadMs": 43,
-        "wireBytes": 727422,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 41,
+        "loadMs": 42,
+        "wireBytes": 728702,
         "jsBytes": 199053,
-        "cssBytes": 463636,
-        "requests": 31
+        "cssBytes": 464578,
+        "requests": 32
       },
       "dom": {
         "title": "PROOF · files are the source, the board is a projection",
@@ -5642,12 +5642,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 33,
-        "domContentLoadedMs": 74,
-        "loadMs": 74,
-        "wireBytes": 719545,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 41,
+        "loadMs": 42,
+        "wireBytes": 720825,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -5694,9 +5694,9 @@
         "ttfbMs": 6,
         "domContentLoadedMs": 42,
         "loadMs": 42,
-        "wireBytes": 724360,
+        "wireBytes": 725640,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -5740,12 +5740,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 46,
-        "loadMs": 47,
-        "wireBytes": 726987,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 49,
+        "loadMs": 50,
+        "wireBytes": 728267,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -5789,12 +5789,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
-        "domContentLoadedMs": 55,
-        "loadMs": 55,
-        "wireBytes": 735127,
+        "ttfbMs": 9,
+        "domContentLoadedMs": 57,
+        "loadMs": 57,
+        "wireBytes": 736407,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -5838,12 +5838,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 12,
-        "domContentLoadedMs": 52,
-        "loadMs": 53,
-        "wireBytes": 766707,
+        "ttfbMs": 14,
+        "domContentLoadedMs": 54,
+        "loadMs": 54,
+        "wireBytes": 767987,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -5887,12 +5887,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 22,
-        "domContentLoadedMs": 65,
-        "loadMs": 65,
-        "wireBytes": 727281,
+        "ttfbMs": 25,
+        "domContentLoadedMs": 67,
+        "loadMs": 67,
+        "wireBytes": 728561,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -5937,11 +5937,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 736620,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 737900,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -5986,11 +5986,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 50,
-        "loadMs": 51,
-        "wireBytes": 742130,
+        "domContentLoadedMs": 54,
+        "loadMs": 55,
+        "wireBytes": 743410,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6037,9 +6037,9 @@
         "ttfbMs": 6,
         "domContentLoadedMs": 45,
         "loadMs": 45,
-        "wireBytes": 736957,
+        "wireBytes": 738237,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6083,12 +6083,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 42,
-        "loadMs": 42,
-        "wireBytes": 725369,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 67,
+        "loadMs": 67,
+        "wireBytes": 726649,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6132,12 +6132,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 726468,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 52,
+        "loadMs": 52,
+        "wireBytes": 727748,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6181,12 +6181,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 8,
+        "ttfbMs": 6,
         "domContentLoadedMs": 47,
         "loadMs": 47,
-        "wireBytes": 734790,
+        "wireBytes": 736070,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6230,12 +6230,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
+        "ttfbMs": 5,
         "domContentLoadedMs": 44,
         "loadMs": 44,
-        "wireBytes": 731420,
+        "wireBytes": 732700,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6279,12 +6279,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 741720,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 743000,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6329,11 +6329,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 48,
-        "loadMs": 48,
-        "wireBytes": 732057,
+        "domContentLoadedMs": 43,
+        "loadMs": 44,
+        "wireBytes": 733337,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6378,12 +6378,12 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 46,
-        "loadMs": 47,
-        "wireBytes": 747651,
+        "domContentLoadedMs": 51,
+        "loadMs": 51,
+        "wireBytes": 748931,
         "jsBytes": 199053,
-        "cssBytes": 463636,
-        "requests": 32
+        "cssBytes": 464578,
+        "requests": 31
       },
       "dom": {
         "title": "HOOKS.md — the gates that fire before you do",
@@ -6426,12 +6426,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 51,
-        "loadMs": 51,
-        "wireBytes": 735975,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 737255,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6476,11 +6476,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 5,
-        "domContentLoadedMs": 43,
-        "loadMs": 43,
-        "wireBytes": 728800,
+        "domContentLoadedMs": 42,
+        "loadMs": 42,
+        "wireBytes": 730080,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6525,11 +6525,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 8,
-        "domContentLoadedMs": 58,
-        "loadMs": 58,
-        "wireBytes": 773673,
+        "domContentLoadedMs": 55,
+        "loadMs": 55,
+        "wireBytes": 774953,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6574,11 +6574,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 6,
-        "domContentLoadedMs": 46,
-        "loadMs": 46,
-        "wireBytes": 737683,
+        "domContentLoadedMs": 47,
+        "loadMs": 47,
+        "wireBytes": 738963,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6622,12 +6622,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 45,
-        "loadMs": 45,
-        "wireBytes": 732344,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "wireBytes": 733624,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6671,12 +6671,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 727657,
+        "ttfbMs": 5,
+        "domContentLoadedMs": 48,
+        "loadMs": 48,
+        "wireBytes": 728937,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6720,12 +6720,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 7,
-        "domContentLoadedMs": 56,
-        "loadMs": 56,
-        "wireBytes": 752816,
+        "ttfbMs": 8,
+        "domContentLoadedMs": 51,
+        "loadMs": 52,
+        "wireBytes": 754096,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6769,12 +6769,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 44,
-        "loadMs": 44,
-        "wireBytes": 731251,
+        "ttfbMs": 7,
+        "domContentLoadedMs": 45,
+        "loadMs": 45,
+        "wireBytes": 732531,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6818,12 +6818,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 50,
-        "loadMs": 50,
-        "wireBytes": 732155,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 55,
+        "loadMs": 55,
+        "wireBytes": 733435,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6870,9 +6870,9 @@
         "ttfbMs": 8,
         "domContentLoadedMs": 57,
         "loadMs": 57,
-        "wireBytes": 776492,
+        "wireBytes": 777772,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6916,12 +6916,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 4,
+        "ttfbMs": 5,
         "domContentLoadedMs": 41,
         "loadMs": 41,
-        "wireBytes": 723027,
+        "wireBytes": 724307,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {
@@ -6965,12 +6965,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 88,
-        "loadMs": 88,
-        "wireBytes": 778253,
+        "ttfbMs": 6,
+        "domContentLoadedMs": 89,
+        "loadMs": 89,
+        "wireBytes": 779533,
         "jsBytes": 262001,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 37
       },
       "dom": {
@@ -7014,12 +7014,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 5,
-        "domContentLoadedMs": 51,
-        "loadMs": 51,
-        "wireBytes": 749031,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 46,
+        "loadMs": 46,
+        "wireBytes": 750311,
         "jsBytes": 215438,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 34
       },
       "dom": {
@@ -7064,11 +7064,11 @@
       "perf": {
         "status": 200,
         "ttfbMs": 7,
-        "domContentLoadedMs": 119,
-        "loadMs": 119,
-        "wireBytes": 788446,
+        "domContentLoadedMs": 107,
+        "loadMs": 107,
+        "wireBytes": 789726,
         "jsBytes": 240480,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 36
       },
       "dom": {
@@ -7112,12 +7112,12 @@
       "ok": true,
       "perf": {
         "status": 200,
-        "ttfbMs": 6,
-        "domContentLoadedMs": 45,
-        "loadMs": 46,
-        "wireBytes": 723892,
+        "ttfbMs": 4,
+        "domContentLoadedMs": 41,
+        "loadMs": 41,
+        "wireBytes": 725172,
         "jsBytes": 199053,
-        "cssBytes": 463636,
+        "cssBytes": 464578,
         "requests": 32
       },
       "dom": {

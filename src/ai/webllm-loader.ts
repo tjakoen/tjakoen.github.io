@@ -2,18 +2,16 @@
 //
 // The engine machinery (the WebGPU probe, the CDN loader, the streaming engine + progress types) lives
 // UP in grain (`@tjakoen/grain/ai/webllm.ts` + `model-chat.ts`) — grain owns the reusable transport, the
-// app owns only WHICH model runs AND how it's tuned. This file is that choice: a single PROFILE — the
-// weak Qwen2.5-0.5B that runs anywhere grain's WebGPU gate clears. desk-door injects it into the desk,
-// which reads EVERY size-dependent knob (context window, prompt budget, generation caps, repetition
-// penalties, the load-bar copy) from it. The demo is locked to this one model — the stronger 1.5B tier
-// was removed 2026-07 (no visible gain on the portfolio's short, grounded Q&A for a ~1.1GB download).
+// app owns which model runs and how it is tuned. This file holds both local profiles and selects the
+// 1.5B only for the Builder on devices that pass a conservative capability check. The shared desk and
+// other devices keep the 0.5B. The reasoner reads every size-dependent knob from the selected profile.
 //
 // CLIENT-SAFE (§19.2): the grain imports below are TYPE-ONLY (erased at build), so this module compiles
 // to plain data — no bare npm import reaches the browser. The real WebLLM `import(url)` lives in grain's
 // webllm.ts (the one CDN touchpoint), not here.
 
 import type { StreamingChatEngine } from "@tjakoen/grain/ai/model-chat.ts";
-import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
+import type { DeviceCapability, EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 
 /** A model choice plus ALL the tuning that depends on its size. The desk reads generation knobs, the
  *  prompt budget, and the load-bar copy from the profile it's handed — so swapping the profile is the
@@ -42,13 +40,11 @@ export interface ModelProfile {
   presencePenalty: number;
 }
 
-/** The one model the desk runs: Qwen2.5-0.5B (4-bit), on any device that clears grain's WebGPU gate.
- *  Its knobs are the values the desk was tuned to over 2026-07 — heavy penalties, a tight window, short
- *  caps — because a 0.5B spins into repetition without them. Do NOT loosen these; they're its guardrails. */
+/** The smaller profile for the shared desk and devices that do not pass the Builder's larger-model gate. */
 export const WEAK_PROFILE: ModelProfile = {
   id: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
   label: "Qwen2.5-0.5B",
-  downloadNote: "About 350MB the first time, then cached.",
+  downloadNote: "About 350 MB the first time, then cached.",
   contextWindow: 2048,
   promptTokenBudget: 1400,
   maxTokens: 220,
@@ -63,6 +59,45 @@ export const WEAK_PROFILE: ModelProfile = {
   frequencyPenalty: 0.6,
   presencePenalty: 0.4,
 };
+
+/** The Builder's larger local profile. It costs more to download, so only the Builder route selects it
+ *  and only when the browser reports conservative memory or GPU signals. */
+export const STRONG_PROFILE: ModelProfile = {
+  id: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  label: "Qwen2.5-1.5B",
+  downloadNote: "About 1.1 GB the first time, then cached.",
+  contextWindow: 4096,
+  promptTokenBudget: 3000,
+  maxTokens: 320,
+  summarizeMaxTokens: 220,
+  arriveMaxTokens: 180,
+  temperature: 0.6,
+  topP: 0.9,
+  frequencyPenalty: 0.3,
+  presencePenalty: 0.2,
+};
+
+const STRONG_MEMORY_GB = 8;
+const STRONG_GPU_BYTES = 3 * 1024 ** 3;
+const CAPABLE_CORES = 8;
+const MIN_GPU_BYTES = 512 * 1024 ** 2;
+
+/** Require a clear capability signal before the Builder can load the 1.5B profile. The browser's
+ *  report is only a conservative proxy; the live model still has to load successfully on first use. */
+export function canRunStrong(cap: DeviceCapability): boolean {
+  if (!cap.webgpu) return false;
+  const mem = cap.deviceMemory ?? 0;
+  const gpu = cap.maxBufferSize ?? 0;
+  const cores = cap.cores ?? 0;
+  return mem >= STRONG_MEMORY_GB || gpu >= STRONG_GPU_BYTES || (cores >= CAPABLE_CORES && gpu >= MIN_GPU_BYTES);
+}
+
+/** Keep the shared site desk on its smaller profile. The Builder gets the larger profile only on a
+ *  device that passes the conservative memory/GPU gate. Paths can arrive with or without a slash. */
+export function profileForPage(pathname: string | undefined, cap: DeviceCapability): ModelProfile {
+  if (pathname?.replace(/\/+$/, "") === "/grain/builder" && canRunStrong(cap)) return STRONG_PROFILE;
+  return WEAK_PROFILE;
+}
 
 // The desk's engine handle IS grain's streaming chat engine — kept under the desk's own name so the
 // reasoner reads in the desk's vocabulary. Re-exported (as a type) for desk-reasoner + its tests.

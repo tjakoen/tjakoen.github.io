@@ -144,7 +144,7 @@ export interface DeskReasoner extends Reasoner {
    *  /grain/builder is the first user: the model reads the live manifest and answers with one JSON move,
    *  which grain then parses and validates before anything touches the page. It is here rather than
    *  in the builder's own island for one reason that matters on a laptop — the desk owns the engine,
-   *  and a second island calling loadEngine would put a second 0.5B on the GPU.
+   *  and a second island calling loadEngine would put another model on the GPU.
    *
    *  Returns null when the model cannot run at all, which the caller is expected to say out loud
    *  rather than paper over. Silent: no progress bar and no chat bubble, because the caller has its
@@ -202,7 +202,7 @@ export const NAV_GLIDE_MS = 550;
 export interface DeskDeps {
   /** The model profile (webllm-loader.ts) — the model id's tuning: generation caps, penalties, the
    *  prompt budget, and the load-bar copy. desk-door injects it, so every size-dependent knob below
-   *  flows from ONE choice (the weak 0.5B — the only model the demo runs). */
+   *  flows from the profile selected for this page and device. */
   profile: ModelProfile;
   /** WebGPU (+ memory) available? */
   probe: () => Promise<boolean>;
@@ -504,7 +504,7 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
 
   // Load the engine once (probe-gated). Returns null on unavailable/failed and flips the desk
   // offline. Memoized so only the first chat.send pays the download; later sends reuse the engine.
-  // A failed load just degrades to offline (the try/catch below) — there's one model, nothing lighter.
+  // A failed load just degrades to offline (the try/catch below); this page does not retry another profile.
   async function ensureEngine(onProgress: (p: EngineProgress) => void): Promise<DeskEngine | null> {
     if (degraded) return null;
     if (!enginePromise) {
