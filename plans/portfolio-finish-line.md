@@ -156,15 +156,22 @@ separate BATCH repository and the GRAIN monorepo that publishes GRAIN, MILL, PRO
 package-doc navigation and phone checks pass. The Builder help now reports both October 11 local-model
 profiles and their measured limits, with the full comparison recorded in builder-ai-depth.md. The
 visual route review covers the 146-route desktop and phone captures and the refreshed 23-screen
-gallery. The remaining work is Builder reliability, the BATCH, GRAIN, MILL, and PROOF documentation
-review, and the shared-shell delivery decision. The catalog's GRAIN sidebar
+gallery. The remaining work is Builder reliability and the BATCH, GRAIN, MILL, and PROOF documentation
+review. A production transfer check closed the shared-shell delivery decision: fresh Chromium contexts
+on October 11 received 136,617 JavaScript bytes on / and /notes (123,417 encoded response bytes),
+and 159,108 bytes on /grain/builder (143,208 encoded response bytes), before any model download.
+GitHub Pages serves the scripts with gzip. Keep the shared shell: its site-wide desk, navigation,
+catalog, and interaction controls are available on every page, while page-specific modules remain
+deferred. The previous local audit values were uncompressed response sizes, so its report now labels
+them as local build-size checks rather than visitor transfer estimates. The catalog's GRAIN sidebar
 specimen chat fields now receive an accessible name and placeholder at the portfolio composition
-boundary, with a browser check covering both rendered fields. Ordinary pages now send about
-194 KB of JavaScript, down from 207 KB, after the October 10 route-specific island pass. The loader
-keeps the image viewer and its stylesheet, interactive figure setup, and reading progress off pages
-that do not use them. The current report measures 30–264 KB of JavaScript per route; the calendar, long notes,
-talks, and Builder load their additional features only when needed. The common shell still weighs
-about 194 KB, so its delivery cost remains open for a separate design decision.
+boundary, with a browser check covering both rendered fields. The October 10 route-specific island
+pass deferred the image viewer and stylesheet, interactive figure setup, and reading progress on
+pages that do not use them. The local report measures 30–264 KB of uncompressed JavaScript responses
+per route; the calendar, long notes, talks, and Builder load their additional features only where
+needed. Production browser captures show the ordinary page's compressed transfer and the Builder's
+additional route modules; the shell decision is closed unless field measurements show a meaningful
+user-facing cost.
 
 ### Page recommendations in progress
 
@@ -269,9 +276,11 @@ individual checks before the audit can be called complete.
       navigation. The full serial browser suite passed 409 cases, with one calendar case skipped
       because the fixture has no single-photo event. The current route audit reports zero HTTP or
       document findings, and link lint found no dead relative links in 56 rendered files. The
-      performance report measures 30–264 KB of JavaScript per route; ordinary pages send 194 KB,
-      down from 207 KB, and page-specific features load only where needed. The remaining shared-shell
-      delivery cost is tracked as a separate design decision.
+      local performance report measures 30–264 KB of uncompressed JavaScript responses per route;
+      ordinary pages measured 136,617 JavaScript bytes transferred from production, and the Builder
+      measured 159,108 bytes before model download. The shared shell stays available across routes;
+      page-specific features load only where needed. The local report labels its bytes as build-size
+      checks and does not present them as production transfer sizes.
 - [x] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
       main, and verify the deployed pages. The local gates passed: 702 unit tests; 409 of 410 serial
       browser cases, with one calendar fixture skipped; typecheck; 4,501 lint flags under the 4,570
