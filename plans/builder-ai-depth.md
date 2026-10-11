@@ -172,6 +172,14 @@ draft missed every supplied fact and left the sample copy in place. The captured
 current model is not a dependable page writer or natural-language editor. The local-only decision
 still stands; this evidence does not select a replacement model or establish cold-start performance.
 
+On October 11, the empty workbench gained a first-screen link to the four-block code-composed example.
+Once that page is open, the rail offers one prompt for the exact-ID removal that landed in the
+October 10 live check and one prompt for an honest refusal to edit existing copy. Both buttons only
+fill the composer; the visitor still sends the prompt and approves any proposed change. A phone-width
+browser check confirms the starter link is in view, and the Builder suite covers the refusal leaving
+the canvas unchanged. These prompts make the measured path easier to inspect; they do not change the
+2/8 result or promise that the model will land the edit again.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business
@@ -243,8 +251,11 @@ copy edits appear to work.
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
       and applied states.
-- [ ] Give the builder a small set of examples that demonstrates composing and then revising a real
-      GRAIN page, including one honest refusal.
+- [x] Give the builder a small set of examples that demonstrates composing and then revising a real
+      GRAIN page, including one honest refusal. The first-screen link opens a four-block page; the
+      rail then offers prompts for the measured `drop b4` edit and a copy-edit refusal. The buttons
+      prefill only, and the 64-case Builder browser suite verifies the flow and unchanged canvas on
+      refusal.
 - [x] Let a page brief draft text into registered fields on newly composed blocks. Unit and browser
       tests cover validation, composition data, visible output, and literal rendering of markup-like
       input. The portfolio now requests schema-constrained JSON for its local build path and tests
@@ -258,9 +269,9 @@ copy edits appear to work.
       language page writing until it passes measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
-      builder browser suite passes all 63 scenarios, including schema delivery, static-host,
-      one-door, proposal, and copy-edit refusal paths. The real-model audit remains a separate score
-      because headless CI has no WebGPU.
+      builder browser suite passes all 64 scenarios, including the example flow, schema delivery,
+      static-host, one-door, proposal, and copy-edit refusal paths. The real-model audit remains a
+      separate score because headless CI has no WebGPU.
 - [ ] Review the published workbench at desktop and narrow widths, then show the rendered result
       before calling the plan done. The local workbench was reviewed at both widths; its mobile file
       toolbar now wraps onto a second row instead of clipping. A published review remains open.

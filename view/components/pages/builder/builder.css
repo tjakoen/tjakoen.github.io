@@ -137,6 +137,7 @@
 [data-screen="builder"] [data-builder-state="result"] .builder-empty { display: none; }
 [data-screen="builder"] .builder-none { display: none; }
 [data-screen="builder"] .builder-none[data-matched-nothing] { display: block; }
+[data-screen="builder"] .builder-empty__example { margin: var(--space-3) 0 0; }
 
 /* --- the rail: the blocks, as things you can operate -----------------------------------------
    This is what makes the page a builder rather than a page that renders a result. It lives in the
@@ -145,7 +146,16 @@
 [data-screen="builder"] .wb__rows { flex: 0 1 auto; min-height: 0; overflow-y: auto; }
 [data-screen="builder"] .wb__rail-empty { margin: 0; padding: var(--space-4);
   font-size: var(--text-sm); color: var(--ink-muted); }
+[data-screen="builder"] .wb__rail-empty p { margin: 0; }
 [data-screen="builder"] [data-builder-state="result"] .wb__rail-empty { display: none; }
+[data-screen="builder"] .wb__try-edits { border-top: 1px solid var(--line-soft); padding: var(--space-3); }
+[data-screen="builder"] .wb__try-edits[hidden] { display: none; }
+[data-screen="builder"] .wb__try-edits p { margin: 0 0 var(--space-2); font-size: var(--text-xs); }
+[data-screen="builder"] .wb__try-title { color: var(--ink); font-weight: var(--font-weight-semibold); }
+[data-screen="builder"] .wb__try-edits .wb-chip { opacity: 1; }
+[data-screen="builder"] .wb__try-edits .wb-chip[hidden],
+[data-screen="builder"] .wb__try-edits p[hidden] { display: none; }
+[data-screen="builder"] .wb__try-edits .muted { color: var(--ink-muted); }
 
 /* One row, and it is deliberately QUIET at rest. Every control stays present, clickable, tabbable
    and testable: what changes is weight, not function. Hiding a remove button until hover would read
@@ -206,6 +216,7 @@
 [data-screen="builder"] .wb[data-rail-collapsed="true"] { grid-template-columns: minmax(0, 1fr) auto; }
 [data-screen="builder"] .wb[data-rail-collapsed="true"] .wb__rows,
 [data-screen="builder"] .wb[data-rail-collapsed="true"] .wb__rail-empty,
+[data-screen="builder"] .wb[data-rail-collapsed="true"] .wb__try-edits,
 [data-screen="builder"] .wb[data-rail-collapsed="true"] .wb__refusals { display: none; }
 /* Only as tall as its own head. Without align-self the pane keeps the grid row's full height and
    collapses into a tall empty box, which reads as something broken rather than something put away. */
