@@ -131,6 +131,19 @@ function build(library: Element, name: string, data: unknown): Element | null {
   return node;
 }
 
+/** Keep the example prompts in step with the live composition. The measured b4 prompt only makes
+ *  sense while that address exists, and an empty page should explain how to reach the example first. */
+function syncTryEdits(board: Element, blocks: readonly Block[]): void {
+  const examples = $("[data-builder-try-edits]", board);
+  const dropExample = $("[data-builder-drop-example]", board);
+  const dropNote = $("[data-builder-drop-note]", board);
+  const hasBlocks = blocks.length > 0;
+  const hasB4 = blocks.some((block) => block.id === "b4");
+  if (examples) examples.toggleAttribute("hidden", !hasBlocks);
+  if (dropExample) dropExample.toggleAttribute("hidden", !hasB4);
+  if (dropNote) dropNote.toggleAttribute("hidden", !hasB4);
+}
+
 /** One block in its grid cell. The cell is three attributes rather than a cloned template because
  *  it holds no content of its own, and both writers get its class and attribute names from the same
  *  constants (canvas-dom.ts) so the server's cell and this one cannot drift apart. */
@@ -166,6 +179,7 @@ function paint(board: Element, canvas: Element, rail: Element, library: Element,
  *  changed it, and rebuilding would throw away the AI ink it put on the cell it touched. */
 function repaintChrome(board: Element, rail: Element, library: Element, view: BuilderView): void {
   rail.replaceChildren(...view.rows.map((r) => build(library, "block-row", r)).filter((n): n is Element => n !== null));
+  syncTryEdits(board, view.blocks);
   // The Can't build list, rebuilt from the library the same way the rail's rows are. It was
   // server-only until 2026-08-19, which meant a prompt typed into the page raised the Can't build
   // head over an empty list: the page that argues hardest about saying out loud what it will not
@@ -311,6 +325,9 @@ function boot(): void {
    *  repaint that read the box would relabel the page with "drop the second card" and then hand
    *  that sentence to a matcher looking for components in it. */
   let pageAsk = askInURL;
+  // A live server may have rendered the page before this module runs. Bring the example controls
+  // into the same state as a browser-composed page without rebuilding its already-correct canvas.
+  syncTryEdits(board, state.blocks);
 
   // -------------------------------------------------------------------------------------------
   // Undo
@@ -766,6 +783,18 @@ function boot(): void {
     state = next;
     repaint(viewOf(state, pageAsk, null));
     if (canceledProposal) say("The page changed. The pending proposal was canceled.", "reply");
+  });
+
+  // Example prompts live beside the rail rows but do not submit themselves. A visitor can inspect
+  // the exact text, then choose Build it to send it through the same local model and review path.
+  rail.parentElement?.addEventListener("click", (e) => {
+    const button = (e.target as Element | null)?.closest<HTMLButtonElement>("[data-builder-prompt]");
+    const prompt = button?.getAttribute("data-builder-prompt");
+    const box = $<HTMLTextAreaElement>("textarea", composer);
+    if (prompt === null || prompt === undefined || !box) return;
+    box.value = prompt;
+    box.dispatchEvent(new Event("input", { bubbles: true }));
+    box.focus();
   });
 
   // -------------------------------------------------------------------------------------------

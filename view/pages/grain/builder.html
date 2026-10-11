@@ -109,10 +109,11 @@
             </div>
             <div class="mk-pane__body wb__stage">
               <div class="builder-empty">
-                <p>Nothing on the page yet. Describe one above, pick an example below, or ask the
-                  desk to build one for you.</p>
+                <p>Nothing on the page yet. Describe one above, or open a code-composed example and
+                  use it to try the live edit path.</p>
                 <p class="muted">It knows five blocks: an intro paragraph, a card, a callout, a stat
                   tile and a form. Say "side by side" and it puts two of them in a row.</p>
+                <p class="builder-empty__example"><a href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">Open the four-block example</a></p>
               </div>
               <p class="builder-none" data-bind-data-matched-nothing="matchedNothing">Nothing in the
                 closed set matched that. Try asking for an intro, a card, a callout, a stat or a
@@ -144,7 +145,16 @@
             <div class="wb__rows" id="wb-rows" data-surface="builder-rail">
               <block-row each="rows"></block-row>
             </div>
-            <p class="wb__rail-empty">No blocks yet.</p>
+            <div class="wb__rail-empty">
+              <p>No blocks yet. Open the four-block example from the canvas to try the measured edit path.</p>
+            </div>
+            <div class="wb__try-edits" data-builder-try-edits hidden>
+              <p class="wb__try-title">Try the model against this page</p>
+              <button class="wb-chip" type="button" data-builder-prompt="drop b4" data-builder-drop-example hidden>Try the measured edit: drop b4</button>
+              <p class="muted" data-builder-drop-note hidden>The exact-ID removal landed in the October 10 live check. This only fills the prompt; Build it sends it, and any proposal still waits for your approval.</p>
+              <button class="wb-chip" type="button" data-builder-prompt="rewrite the intro paragraph to mention pricing">Try an honest copy-edit refusal</button>
+              <p class="muted">Copy edits are not supported yet. The Builder should explain that limit without changing the page.</p>
+            </div>
 
             <div class="wb__refusals" data-bind-data-has-unsupported="hasUnsupported">
               <div class="mk-pane__head">

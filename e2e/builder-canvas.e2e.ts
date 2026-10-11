@@ -33,6 +33,31 @@ async function pretendStaticHost(page: Page): Promise<void> {
 }
 
 test.describe("the canvas: a composition, server-rendered", () => {
+  test("the first-screen example leads to measured edit and honest refusal prompts", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/grain/builder");
+    const example = page.locator(".builder-empty__example a");
+    await expect(example).toHaveText("Open the four-block example");
+    await expect(example).toHaveAttribute("href", ask("An intro, two cards side by side, and a callout"));
+    await expect(example).toBeInViewport();
+    await page.locator(".builder-empty__example a").click();
+    await expect(page.locator(CELL)).toHaveCount(4);
+
+    const examples = page.locator("[data-builder-try-edits]");
+    await expect(examples).toBeVisible();
+    const drop = page.locator("[data-builder-drop-example]");
+    await expect(drop).toBeVisible();
+    await drop.click();
+    await expect(page.locator(COMPOSER)).toHaveValue("drop b4");
+    await expect(page.locator(CELL)).toHaveCount(4);
+
+    await page.getByRole("button", { name: "Try an honest copy-edit refusal" }).click();
+    await expect(page.locator(COMPOSER)).toHaveValue("rewrite the intro paragraph to mention pricing");
+    await page.locator(SUBMIT).click();
+    await expect(page.locator('[data-surface="builder-said"]')).toContainText("cannot revise block copy yet");
+    await expect(page.locator(CELL)).toHaveCount(4);
+  });
+
   test("a page-shaped ask repeats an explicitly counted block", async ({ page }) => {
     await page.goto(ask("An intro, two cards side by side, and a callout"));
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
