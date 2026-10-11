@@ -17,7 +17,7 @@ import type { RenderOp } from "@tjakoen/grain/ai/contract.ts";
 import type { InteractionLayer } from "@tjakoen/grain/ai/interaction-layer.ts";
 import type { Manifest } from "@tjakoen/grain/ai/manifest.ts";
 import type { DomDoc } from "@tjakoen/grain/ai/manifest-dom.ts";
-import { WEAK_PROFILE, type ModelProfile } from "./webllm-loader.ts";
+import { profileForPage, type ModelProfile } from "./webllm-loader.ts";
 import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS, CONTACT_FILL_BEAT_MS, FORM_FILL_BEAT_MS, type DeskNote } from "./desk-reasoner.ts";
 // B1 contact prefill — the ONE registered compose-body surface (contact-draft.ts names it in code;
 // targeting is never a model pick). The message itself arrives ALREADY drafted in the stash.
@@ -78,8 +78,8 @@ function markOffline(): void {
 }
 
 // ONE device probe at module load, used only for the up-front WebGPU/memory gate below (grain owns the
-// probe). The model choice is no longer device-derived: the demo runs a single model (the weak 0.5B),
-// so there's nothing to tier — the probe just decides whether ANY model can load here.
+// probe). The shared desk uses 0.5B; the Builder can choose 1.5B from conservative capability signals.
+// The same probe still decides whether any model can load here.
 const deviceCap = await grainWebllm.probeDevice();
 // The up-front gate deliberately does NOT trust probeDevice()'s adapter result (`deviceCap.webgpu`).
 // On a COLD Safari load the GPU process isn't warm the instant this module evaluates, so
@@ -93,15 +93,14 @@ const gpuApiPresent = typeof (globalThis as unknown as
   { navigator?: { gpu?: { requestAdapter?: unknown } } }).navigator?.gpu?.requestAdapter === "function";
 const tooLittleMemory = typeof deviceCap.deviceMemory === "number" && deviceCap.deviceMemory < 4;
 const canRun = gpuApiPresent && !tooLittleMemory;
-// The one model the desk runs. The 1.5B tier, the device-tiering, and the `?tier=` dev knob were all
-// removed 2026-07 — the demo is a single weak 0.5B, so there's nothing to pick and nothing to fall
-// back to (a failed load just degrades to offline, in ensureEngine).
-const profile = WEAK_PROFILE;
+// The shared desk stays on 0.5B. The Builder selects 1.5B only on devices that pass the memory/GPU
+// gate in webllm-loader.ts; all model data and prompts still stay in the browser.
+const profile = profileForPage(loc()?.pathname, deviceCap);
 const probe = (): Promise<boolean> => Promise.resolve(canRun);
 
 // Load a GIVEN profile's model through grain's transport: grain owns the CDN import + warm-up, the desk
 // supplies WHICH model (profile.id) + its context window and forwards download progress to the load bar.
-// Takes the profile so the reasoner can retry with the fallback profile after a failed load.
+// Takes the selected profile so the reasoner uses its window, generation knobs, and load-bar note.
 const loadEngine = (p: ModelProfile, onProgress: (progress: EngineProgress) => void) =>
   grainWebllm.loadEngine({ modelId: p.id, onProgress, contextWindow: p.contextWindow });
 
@@ -707,7 +706,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   };
 
   const reasoner = makeDeskReasoner({
-    profile,                                      // the one model + its tuning (weak 0.5B)
+    profile,                                      // the page-selected local model and its tuning
     probe,
     loadEngine,
     streamChat: grainChat.streamChat,             // grain's streaming transport (yields token deltas; break interrupts)
@@ -752,7 +751,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // /grain/builder is the only user: it hands over a prompt built from grain's live manifest and gets one
   // JSON move back, which grain then validates before anything reaches the page. Published the same
   // way deskReset is, and for the same reason — an island cannot import this module, and the
-  // alternative is a second 0.5B on the GPU for the sake of one call.
+  // alternative is a second model on the GPU for the sake of one call.
   //
   // Its ABSENCE is meaningful and must stay so: on a page with no desk door stamped, /grain/builder finds
   // nothing here and says the desk cannot run rather than falling back to something that is not the
@@ -786,7 +785,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
   // is never forced to load the model just by navigating (this is an MPA: the engine reloads per page).
   const warm = (() => { try { return ss()?.getItem("desk-warm") === "1"; } catch { return false; } })();
   if (warm && !droveHere && !showcaseRunning) void reasoner.arrive(applyOp);
-  // No model picker: the demo runs a single 0.5B (see the model choice up top), so the desk just loads
-  // it on the first message — nothing to choose, no download size to weigh.
+  // There is no visitor model picker. The selected local profile loads on first use and stays warm
+  // for this page; its download size is disclosed in the Builder guidance and the load bar.
   return grainDoor.createClientDoor(applyOp, { reasoner });
 }

@@ -57,11 +57,10 @@
             <button class="wb-chip" type="button" data-proposal-cancel>Cancel</button>
           </div>
         </div>
-        <p class="wb-bar__note muted">AI runs in this browser, and prompts stay on this device. First use
-          downloads about 350 MB and caches the model. Two October 11 WebGPU checks each scored 2/8.
-          Exact-ID removal passed once and timed out on repeat; relative edits and grounded drafts
-          still fail. Existing copy cannot be revised. Review each proposal, then check the page before
-          export.</p>
+        <p class="wb-bar__note muted">AI runs in this browser, and prompts stay on this device. On capable
+          devices, first use downloads about 1.1 GB; other devices use about 350 MB. The larger model
+          scored 6/8 in one live check; the smaller scored 2/8 in each of two checks. Review each
+          proposal, then check the page before export.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -150,8 +149,8 @@
             </div>
             <div class="wb__try-edits" data-builder-try-edits hidden>
               <p class="wb__try-title">Try the model against this page</p>
-              <button class="wb-chip" type="button" data-builder-prompt="drop b4" data-builder-drop-example hidden>Try the measured edit: drop b4</button>
-              <p class="muted" data-builder-drop-note hidden>Exact-ID removal passed once in the October 11 live check and timed out on repeat. This only fills the prompt; Build it sends it, and any proposal still waits for your approval.</p>
+              <button class="wb-chip" type="button" data-builder-prompt="move b3 up" data-builder-move-example hidden>Try the measured edit: move b3 up</button>
+              <p class="muted" data-builder-move-note hidden>An explicit-ID move passed in both profile checks. This only fills the prompt; Build it sends it, and any proposal still waits for your approval.</p>
               <button class="wb-chip" type="button" data-builder-prompt="rewrite the intro paragraph to mention pricing">Try an honest copy-edit refusal</button>
               <p class="muted">Copy edits are not supported yet. The Builder should explain that limit without changing the page.</p>
             </div>
@@ -217,15 +216,16 @@
           <p>Describe a page and press Build it. The code-owned matcher gives the examples a stable
             preview; Build it asks the local model to add blocks and draft text into registered fields.
             The model has not earned your trust with copy yet. Check the canvas before you use or export
-            anything. Its first run downloads about 350 MB, then caches the files on this device. Your
-            prompt stays here.</p>
-          <p>Two WebGPU checks on October 11, 2026, each scored 2/8 across eight draft, edit, and refusal
-            cases. The copy-edit refusal passed in both. Exact-ID removal worked in the first run and
-            timed out on the repeat. Relative targets chose the wrong card. Width requests timed out or
-            triggered a move. The callout request chose the wrong card; an explicit-ID move passed after
-            the parser fix. Both drafts lost the supplied facts; the second produced one generic intro.
-            These are small-sample checks
-            of one local model, not general success rates.</p>
+            anything. On capable devices its first run downloads about 1.1 GB; other devices use the
+            350 MB model. Both cache files on this device, and your prompt stays here.</p>
+          <p>Two WebGPU checks on October 11, 2026, each scored 2/8 with the 0.5B model. A separate
+            1.5B check scored 6/8. It passed both width and move requests and the copy-edit refusal,
+            but removed the wrong card in both removal scenarios. Its draft kept the supplied facts but
+            added unsupported flourishes. The smaller model varied between runs: removal timed out on
+            repeat, relative targets chose the wrong card, and width requests timed out or triggered a
+            move. These small samples are not general success rates. The 1.5B first scenario took 40.5
+            seconds from a fresh browser cache, including model loading and generation; the browser
+            profile occupied 1.6 GB on disk after the run.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
             the canvas again before it reports a change. That review catches stale proposals, but it
             cannot tell whether a legal choice is the block you meant. The block rail is the dependable
@@ -235,7 +235,7 @@
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
             <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">the matcher makes a preview; Build it asks the model to add registered blocks and copy.</span></div>
-            <div class="docs-list__item"><span class="docs-list__name">Drop b4</span><span class="docs-list__what">an explicit-ID edit passed once and timed out on its repeat; review the named block before applying.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Move b3 up</span><span class="docs-list__what">an explicit-ID move passed in both profile checks; relative targets can still choose the wrong block.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Resize, move, or remove</span><span class="docs-list__what">the rail controls apply these changes directly to the block you choose.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Rewrite existing copy</span><span class="docs-list__what">not supported; GRAIN does not expose a registered text-edit operation.</span></div>
           </div>
@@ -270,8 +270,9 @@
         <h2 class="section-head"><span>Examples</span></h2>
         <p class="muted">These links carry the prompt in the address and open a preview composed by
           the code-owned matcher. Press Build it to ask the on-device model to add blocks when WebGPU
-          is available. The first AI build downloads about 350 MB of model files, then keeps them
-          cached. Your prompt stays on this device, and the model's choices and copy may still need
+          is available. Capable devices download about 1.1 GB of model files for the Builder; other
+          devices use about 350 MB. Files stay cached on this device. Your prompt stays here, and the
+          model's choices and copy may still need
           work.</p>
         <div class="docs-list">
           <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">An intro, two cards side by side, and a callout</a><span class="docs-list__what">four blocks: an intro, two cards, and a callout.</span></div>

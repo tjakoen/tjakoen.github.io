@@ -131,17 +131,17 @@ function build(library: Element, name: string, data: unknown): Element | null {
   return node;
 }
 
-/** Keep the example prompts in step with the live composition. The measured b4 prompt only makes
+/** Keep the example prompts in step with the live composition. The measured b3 prompt only makes
  *  sense while that address exists, and an empty page should explain how to reach the example first. */
 function syncTryEdits(board: Element, blocks: readonly Block[]): void {
   const examples = $("[data-builder-try-edits]", board);
-  const dropExample = $("[data-builder-drop-example]", board);
-  const dropNote = $("[data-builder-drop-note]", board);
+  const moveExample = $("[data-builder-move-example]", board);
+  const moveNote = $("[data-builder-move-note]", board);
   const hasBlocks = blocks.length > 0;
-  const hasB4 = blocks.some((block) => block.id === "b4");
+  const hasB3 = blocks.some((block) => block.id === "b3");
   if (examples) examples.toggleAttribute("hidden", !hasBlocks);
-  if (dropExample) dropExample.toggleAttribute("hidden", !hasB4);
-  if (dropNote) dropNote.toggleAttribute("hidden", !hasB4);
+  if (moveExample) moveExample.toggleAttribute("hidden", !hasB3);
+  if (moveNote) moveNote.toggleAttribute("hidden", !hasB3);
 }
 
 /** One block in its grid cell. The cell is three attributes rather than a cloned template because

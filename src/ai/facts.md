@@ -31,11 +31,11 @@ The site is built on the stack it is showing you. BATCH serves it, GRAIN dresses
 
 It is a static site on GitHub Pages. A build step freezes the live server's output into plain files, so what you get is fast and durable, with no backend to go down.
 
-The assistant is the newest part. Instead of calling a server, the desk loads a small language model straight into your browser and runs it on your own device, grounded on the site's own content. It needs a browser with WebGPU. If your browser cannot run it, the desk goes offline and the rest of the site carries on as normal.
+The assistant is the newest part. Instead of calling a server, the desk loads a small language model straight into your browser and runs it on your own device, grounded on the site's own content. It needs a browser with WebGPU. If your browser cannot run it, the desk goes offline and the rest of the site carries on as normal. The Builder uses the same local path, with a larger model on devices that pass its capability check.
 
 ## How does the desk work under the hood?
 
-The desk is a small language model, Qwen 0.5B, downloaded once and run entirely in your browser on your own device through WebGPU. Nothing you type leaves your machine: there is no server behind it. Before it answers, it searches this site's own notes, docs, and this page of facts, and grounds its reply on what it finds. It can also drive the site itself through GRAIN, the AI-interaction layer: navigating, summarizing, and operating the same surfaces you can.
+The shared desk uses Qwen 0.5B, downloaded once and run entirely in your browser on your own device through WebGPU. The Builder can use Qwen 1.5B on devices that pass its conservative capability check; other devices keep the 0.5B model. Nothing you type leaves your machine: there is no server behind either path. Before it answers, the desk searches this site's own notes, docs, and this page of facts, and grounds its reply on what it finds. It can also drive the site itself through GRAIN, the AI-interaction layer: navigating, summarizing, and operating the same surfaces you can.
 
 ## What can the desk do?
 

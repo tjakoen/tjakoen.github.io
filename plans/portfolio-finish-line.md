@@ -110,14 +110,14 @@ masked; recipient records stay out of the audit notes. The same silent no-clipbo
 event share blocks. They now try the same copy-command fallback and tell the reader to select the
 visible post text if copying still fails; the event-page browser check covers both paths.
 
-The corrected live Builder edit audit scored 2/7 with the current 0.5B model and 6/7 with a tested
-1.5B profile on the static export. The larger model handled both width changes and both move
-requests, but continued to remove the first card instead of the second and took 13 to 23 seconds per
-warm request. Its first request did not run until the model had loaded. The comparison is recorded
-in builder-ai-depth.md. The Builder now passes generated copy for new blocks through registered
-fields, but the live writing check scored 0/1 for both the 0.5B and temporary 1.5B profiles. The
-current model used the wrong JSON shape and added unsupported details; the larger profile timed out.
-Copy on blocks already in the canvas cannot yet be edited.
+The October 11 Builder audit scored 2/8 in each of two live 0.5B runs and 6/8 in one 1.5B run. The
+larger model handled both width changes, both explicit-ID moves, and refusal to rewrite existing
+copy, but failed both removal scenarios and added unsupported flourishes to its draft. Its first
+scenario took 40.5 seconds from a fresh cache, including model loading and generation; a browser
+profile occupied 1.6 GB after the run, which is not an exact download measurement. The Builder now
+selects 1.5B only on capable devices; the shared desk remains on 0.5B. The comparison and remaining
+phone/network measurements are recorded in builder-ai-depth.md. Copy on blocks already in the canvas
+cannot yet be edited.
 
 The Builder now follows the part of Puck's AI approach that fits this site: a model chooses from
 GRAIN's code-owned blocks and can draft copy only for registered text fields on new blocks. The
@@ -130,9 +130,9 @@ real local model run. Existing copy cannot be revised because GRAIN does not yet
 text-write operation. The Builder names these limits in its visible guidance; the work is a tested
 assembly path, not yet a reliable AI page writer.
 
-The owner confirmed that Builder generation must stay local. The page now says that the browser
-downloads about 350 MB of model files on first AI use, caches them, and keeps prompt generation on
-the device. Shared example links open the predictable code-owned preview until a visitor presses
+The owner confirmed that Builder generation must stay local. The page now says capable devices
+download about 1.1 GB of model files for the Builder, while other devices use about 350 MB; files
+are cached and prompt generation stays on the device. Shared example links open the predictable code-owned preview until a visitor presses
 Build it. Explicit counts now produce the requested number of blocks, card-specific layout language
 only places the cards side by side, and repeated cards receive distinct fallback copy. Unit and
 browser checks cover the four-block example, the two half-width cards, the distinct copy, and the
@@ -153,15 +153,16 @@ pixels; both pages have one page heading and no horizontal overflow. A refreshed
 gallery is available for review. The screenshot helper isolates browser storage for each capture and
 waits for the welcome greeting to finish. The GRAIN guide's package-boundary section now reflects the
 separate BATCH repository and the GRAIN monorepo that publishes GRAIN, MILL, PROOF, and CRUMB;
-package-doc navigation and phone checks pass. The Builder help reports the October 10 local-model
-result of 2/8, with the full measurement recorded in builder-ai-depth.md.
-The final route-by-route visual review remains open, as do the Builder's live-model reliability work
-and the remaining BATCH, GRAIN, MILL, and PROOF documentation review. The catalog's GRAIN sidebar
+package-doc navigation and phone checks pass. The Builder help now reports both October 11 local-model
+profiles and their measured limits, with the full comparison recorded in builder-ai-depth.md. The
+visual route review covers the 146-route desktop and phone captures and the refreshed 23-screen
+gallery. The remaining work is Builder reliability, the BATCH, GRAIN, MILL, and PROOF documentation
+review, and the shared-shell delivery decision. The catalog's GRAIN sidebar
 specimen chat fields now receive an accessible name and placeholder at the portfolio composition
 boundary, with a browser check covering both rendered fields. Ordinary pages now send about
 194 KB of JavaScript, down from 207 KB, after the October 10 route-specific island pass. The loader
 keeps the image viewer and its stylesheet, interactive figure setup, and reading progress off pages
-that do not use them. The report measures 30–262 KB of JavaScript per route; the calendar, long notes,
+that do not use them. The current report measures 30–264 KB of JavaScript per route; the calendar, long notes,
 talks, and Builder load their additional features only when needed. The common shell still weighs
 about 194 KB, so its delivery cost remains open for a separate design decision.
 
@@ -185,7 +186,7 @@ individual checks before the audit can be called complete.
 | /pantry | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Implemented: the page shows the documented install, scaffold, validation, and serve commands, then explains that the board reads the host project's plans in place. The PANTRY guides now include the current decisions, run, artifact, and timeline surfaces, identify which routes are not covered by surface toggles, and state the local answer-write path. |
 | /greenroom | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Implemented: the page summarizes and links to Greenroom's archived seeded report, distinguishing its four practice-environment results from the separate ten-check screenshot and calling out the intentional failures. The phone layout and route links are covered by e2e/projects-layout.e2e.ts. |
 | /native-github-classroom and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Implemented: the first links now move from the architecture diagram to the working demo, safety docs, and public source. The copy keeps course internals and student records private; browser checks cover the phone navigation and confirm the docs route resolves. |
-| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in builder-ai-depth.md. The workbench shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. New blocks can receive bounded generated copy through registered fields, covered by unit and browser tests; the live writing check scored 0/1 for both tested profiles. The current model returned the wrong JSON shape and unsupported details; the larger profile timed out. A refreshed desktop and phone review fixed the canvas header wrapping its block count and clipping the file actions when the desk panel is open. The local-generation and model-limit note was shortened, giving the canvas more room in the phone's first screen while keeping the download size, on-device processing, and current limits visible. A first-screen example now opens a four-block preview, followed by prefilled prompts for the measured exact-ID removal and an honest copy-edit refusal; the visitor still chooses when to send each prompt. The 64-case Builder suite covers this flow and the refusal state. The October 11 live 0.5B run scored 2/8: exact-ID removal and copy-edit refusal passed, while the second-card target was wrong, both width requests timed out, both move requests used the unsupported `move` alias, and the draft missed the supplied facts. A portfolio-side normalization now accepts that alias only for a live block and valid direction. The post-fix eight-case run again scored 2/8, but the passing cases shifted: exact-ID removal timed out on its repeat, the explicit `move b3 up` request passed, and one width request triggered a move. The natural-language callout request still targeted the second card. The larger 1.5B comparison previously scored 6/7 and still selected the wrong card for “the second card”; its first-use cost remains unmeasured. Existing block copy cannot yet be edited. |
+| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in builder-ai-depth.md. The workbench shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. New blocks can receive bounded generated copy through registered fields, covered by unit and browser tests; live writing still needs review. A refreshed desktop and phone review fixed the canvas header wrapping its block count and clipping the file actions when the desk panel is open. Builder selects the 1.5B local model only on capable devices; the shared desk remains on 0.5B. On October 11, the 0.5B scored 2/8 in each of two checks and the 1.5B scored 6/8 in one check. The larger profile passed width, explicit-ID move, and refusal cases but failed both removals; its draft retained supplied facts while adding unsupported flourishes. First scenario took 40.5 seconds from a fresh cache, including load and generation; exact network bytes and phone hardware remain unmeasured. The first-screen example offers a prefilled `move b3 up` prompt and an honest copy-edit refusal; the visitor still chooses when to send each prompt. The 64-case Builder suite covers this flow and the refusal state. Existing block copy cannot yet be edited. |
 | /grain/builder/preview | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Implemented: the empty state now opens the workbench with a representative page composed; the static-host limitation remains explicit. |
 | /teaching | Add an anonymized sample activity or rubric so the course and assessment claims have inspectable teaching evidence. | Implemented: an explicitly illustrative responsive-web assessment slice maps observable repository evidence to the published badge criteria without exposing student work or private assignments. |
 | /badges and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | The hub explains the activity threshold and historical reconciliation accurately, and groups class links under each course. Class pages link back to all badge criteria. The shared certificate template has been reviewed at phone width: share-link copying reports success, falls back when clipboard access is unavailable, and exposes a manual link if copying still fails. Browser checks confirm recipient certificates stay out of the sitemap and class pages do not enumerate recipients. |
@@ -259,24 +260,25 @@ individual checks before the audit can be called complete.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
-- [ ] Do a final route-by-route browser pass at desktop and narrow widths. Check navigation, page
-      spacing, headings, accessible names, dead ends, and the important interaction paths. On
-      October 10, the route audit covered all 146 canonical URLs in 292 desktop and phone captures.
-      All pages returned 200, had one heading, fit their viewport, and produced no page errors. The
-      catalog's two GRAIN sidebar-panel chat specimens now receive accessible names and placeholders
-      at the portfolio boundary; a focused phone browser check covers both. The full serial browser
-      suite passes 409 of 410 cases, with one calendar case
-      skipped because the fixture has no single-photo event. The October 4 desktop and
-      phone screenshot set covers all routes, and the October 9 gallery refresh covers the 23
-      primary screens at desktop width. The Builder, BATCH, PANTRY, reference, and résumé screens
-      were refreshed at 390px on October 9; the BATCH and MILL architecture pages were refreshed at
-      390px on October 10. The October 10 route audit covers 146 canonical pages with no HTTP or
-      document findings. A fresh performance run after deferring page-specific assets measures
-      30–262 KB of JavaScript; ordinary pages now send 194 KB, down from 207 KB. The full serial
-      browser suite and the refreshed desktop gallery add current evidence, while the
-      route-by-route visual pass and review of the remaining shared-shell payload are still open.
+- [x] Do a final route-by-route browser pass at desktop and narrow widths. Check navigation, page
+      spacing, headings, accessible names, dead ends, and the important interaction paths. The
+      October 10 route capture covers all 146 canonical URLs at desktop and phone widths; all pages
+      returned 200, fit their viewport, had one page heading, and produced no page errors. I reviewed
+      the route captures and refreshed the 23-screen desktop gallery on October 11. The focused
+      phone checks cover the Builder, project stories, documentation, résumé, plans, catalog, and
+      navigation. The full serial browser suite passed 409 cases, with one calendar case skipped
+      because the fixture has no single-photo event. The current route audit reports zero HTTP or
+      document findings, and link lint found no dead relative links in 56 rendered files. The
+      performance report measures 30–264 KB of JavaScript per route; ordinary pages send 194 KB,
+      down from 207 KB, and page-specific features load only where needed. The remaining shared-shell
+      delivery cost is tracked as a separate design decision.
 - [ ] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
-      main, and verify the deployed pages.
+      main, and verify the deployed pages. The current local gates pass: 702 unit tests; 409 of 410
+      serial browser cases, with one calendar fixture skipped; typecheck; 4,501 lint flags under the
+      4,570 baseline; link lint across 56 rendered files; and static export verification for 1,175
+      pages, 1,132 data routes, and 39 frozen modules. The current full-route audit has 146 successful
+      pages and zero document findings. The remaining release steps are to commit on main, push the
+      authorized deployment, and confirm the published Builder page and site version.
 
 ## Done means
 

@@ -1,17 +1,36 @@
-// portfolio/ai/webllm-loader.test.ts — UNIT: the single model profile. The demo runs one model (the
-// weak 0.5B); the device-tiering + pickProfile were removed 2026-07, so all that's left to pin is that
-// WEAK_PROFILE carries a coherent set of knobs (the budget fits inside the window, penalties are set).
+// portfolio/ai/webllm-loader.test.ts — UNIT: the two local model profiles and the conservative Builder gate.
 import { test, expect } from "bun:test";
-import { WEAK_PROFILE } from "./webllm-loader.ts";
+import { canRunStrong, profileForPage, STRONG_PROFILE, WEAK_PROFILE } from "./webllm-loader.ts";
 
-test("WEAK_PROFILE is the 0.5B and carries a coherent window/budget pairing", () => {
+test("the 0.5B profile carries a coherent window, budget, and generation pairing", () => {
   expect(WEAK_PROFILE.id).toContain("0.5B");
-  // the prompt budget must fit inside the context window (with room reserved for generation)
   expect(WEAK_PROFILE.promptTokenBudget).toBeLessThan(WEAK_PROFILE.contextWindow);
-  // a 0.5B needs heavy repetition penalties to not loop — they're its guardrails, so keep them present
   expect(WEAK_PROFILE.frequencyPenalty).toBeGreaterThan(0);
   expect(WEAK_PROFILE.presencePenalty).toBeGreaterThan(0);
-  // generation caps are ordered: a chat reply gets the most room, the arrival greeting the least
   expect(WEAK_PROFILE.maxTokens).toBeGreaterThanOrEqual(WEAK_PROFILE.summarizeMaxTokens);
   expect(WEAK_PROFILE.summarizeMaxTokens).toBeGreaterThanOrEqual(WEAK_PROFILE.arriveMaxTokens);
+});
+
+test("the 1.5B profile has the larger context and prompt budget its page needs", () => {
+  expect(STRONG_PROFILE.id).toContain("1.5B");
+  expect(STRONG_PROFILE.contextWindow).toBeGreaterThan(WEAK_PROFILE.contextWindow);
+  expect(STRONG_PROFILE.promptTokenBudget).toBeGreaterThan(WEAK_PROFILE.promptTokenBudget);
+  expect(STRONG_PROFILE.downloadNote).toContain("1.1 GB");
+});
+
+test("the larger profile requires a conservative memory or GPU signal", () => {
+  expect(canRunStrong({ webgpu: true, deviceMemory: 8 })).toBe(true);
+  expect(canRunStrong({ webgpu: true, maxBufferSize: 3 * 1024 ** 3 })).toBe(true);
+  expect(canRunStrong({ webgpu: true, cores: 8, maxBufferSize: 512 * 1024 ** 2 })).toBe(true);
+  expect(canRunStrong({ webgpu: true, deviceMemory: 4, cores: 6, maxBufferSize: 1024 ** 3 })).toBe(false);
+  expect(canRunStrong({ webgpu: true, cores: 8, maxBufferSize: 256 * 1024 ** 2 })).toBe(false);
+  expect(canRunStrong({ webgpu: false })).toBe(false);
+});
+
+test("only the Builder gets the larger profile, and weaker devices keep the smaller one", () => {
+  expect(profileForPage("/grain/builder", { webgpu: true, deviceMemory: 8 })).toBe(STRONG_PROFILE);
+  expect(profileForPage("/grain/builder/", { webgpu: true, cores: 8, maxBufferSize: 1024 ** 3 })).toBe(STRONG_PROFILE);
+  expect(profileForPage("/grain/builder", { webgpu: true, deviceMemory: 4 })).toBe(WEAK_PROFILE);
+  expect(profileForPage("/grain", { webgpu: true, deviceMemory: 16 })).toBe(WEAK_PROFILE);
+  expect(profileForPage(undefined, { webgpu: true, deviceMemory: 16 })).toBe(WEAK_PROFILE);
 });

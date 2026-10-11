@@ -199,6 +199,28 @@ hides substantial run-to-run variation. This result is in
 `.cache/desk-audit/report-builder-after-move-alias-2026-10-11.json`. Natural-language target selection,
 width requests, and grounded drafting remain open.
 
+## Builder-only larger profile, October 11
+
+I restored the tested Qwen2.5-1.5B profile for the Builder route only. The shared desk and devices that
+do not pass the conservative memory/GPU capability check continue to use Qwen2.5-0.5B. Browser
+capability signals are proxies, not a guarantee that the GPU can load the model; a failed load still
+leaves the Builder offline on that page.
+
+In a separate WebGPU Chromium run using the 1.5B profile, six of eight scenarios passed. Both width
+requests, both explicit-ID move requests, the copy-edit refusal, and the fact-retention check passed.
+Both card-removal requests failed: the relative request removed the first card, and the exact-ID
+request returned an invalid action. The draft retained supplied facts but added unsupported
+flourishes. The first scenario took 40.5 seconds from a fresh browser cache, including model loading
+and generation. The browser profile occupied 1.6 GB on disk after the run; that includes browser
+overhead and is not a measurement of network bytes. The estimated model download is about 1.1 GB.
+This was one desktop run, not a success-rate estimate, and no phone hardware has been measured.
+
+The Builder now selects 1.5B only on its route when browser-reported memory or GPU capability passes
+the conservative gate. The shared desk remains on 0.5B. Both models run in the browser through WebGPU;
+prompts and generated page content do not go to a hosted model. The public example now offers the
+explicit-ID move prompt, which passed in both profile checks. The larger model still misses deletion,
+and generated copy still needs human review.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business
@@ -231,17 +253,16 @@ initial draft path into a grounded, inspectable workflow:
 4. Measure composition and revision against named scenarios. The current small model has not earned
    a claim of dependable natural-language editing; keep its quality result visible beside the demo.
 
-There is a model-capability decision before this becomes a Puck-like writing tool. The portfolio
-currently wires one local Qwen2.5-0.5B profile through WebLLM. There is no hosted-provider adapter in
+There is a model-capability decision before this becomes a Puck-like writing tool. The shared desk
+uses a local Qwen2.5-0.5B profile through WebLLM; the Builder can select a local 1.5B profile on
+capable devices. There is no hosted-provider adapter in
 the app. The Builder is local-only by product decision: prompts and page content stay on the visitor's
 device, and this project will not add a hosted model or remote prompt path. The corrected 0.5B and 1.5B edit
-comparison is recorded above; the 1.5B model performs the registered edits more often, but it still
-misses the natural-language second-card target and carries a larger cold-start cost. WebLLM
-documents custom model registration and client-side generation, so the larger local model can run
-without introducing a server. The remaining local-model comparison work is to measure its exact first-visit
-download size and cold-start behavior on representative desktop and phone hardware, then test a
-grounded initial page draft with visitor-supplied copy. Do not treat a larger model as a win based on
-one good screenshot.
+comparison is recorded above; the 1.5B model performed better in one eight-case run, but failed both
+removal cases and added unsupported details to its draft. WebLLM documents custom model registration
+and client-side generation, so the larger local model runs without introducing a server. Exact
+network bytes and behavior on representative phone hardware remain unmeasured. Do not treat one run
+as evidence that the larger model is dependable.
 
 Revising text in an already composed page also crosses a GRAIN boundary: the portfolio has no
 registered operation for changing a block's content. The separate GRAIN design review remains
@@ -265,7 +286,8 @@ copy edits appear to work.
       the page. The prompt contains only live block actions and identifies each block's type and
       order. A portfolio-side parser now accepts the measured `move` alias only for a live block and
       valid direction; the explicit-ID move passed its focused live recheck, but the callout request
-      still selected the wrong card. The 0.5B full run remains 2/8. Do not add a deterministic chooser
+      still selected the wrong card. The 0.5B full run remains 2/8; the 1.5B run scored 6/8 while
+      failing both removal cases. Do not add a deterministic chooser
       that makes the interface claim the AI acted.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
@@ -273,7 +295,7 @@ copy edits appear to work.
       and applied states.
 - [x] Give the builder a small set of examples that demonstrates composing and then revising a real
       GRAIN page, including one honest refusal. The first-screen link opens a four-block page; the
-      rail then offers prompts for the measured `drop b4` edit and a copy-edit refusal. The buttons
+      rail then offers a prompt for the measured `move b3 up` edit and a copy-edit refusal. The buttons
       prefill only, and the 64-case Builder browser suite verifies the flow and unchanged canvas on
       refusal.
 - [x] Let a page brief draft text into registered fields on newly composed blocks. Unit and browser
@@ -281,12 +303,13 @@ copy edits appear to work.
       input. The portfolio now requests schema-constrained JSON for its local build path and tests
       that contract through the desk bridge; the existing validator still applies. Measure real-model
       writing quality before presenting this as reliable copywriting.
-- [ ] Finish the model comparison by measuring the larger profile's first-visit download and cold
-      start on desktop and phone hardware, then compare a grounded draft from the visitor's brief.
-      The corrected edit comparison records 0.5B at 2/7 and 1.5B at 6/7 in WebGPU Chromium on the
-      static export; 1.5B still targets the wrong card when asked to remove the second card. Use the
-      remaining results to choose the scope of a Puck-informed draft flow; do not promise natural-
-      language page writing until it passes measured cases.
+- [ ] Finish the model comparison by measuring exact first-visit network bytes and cold start on phone
+      hardware, then improve the grounded draft. The 0.5B scored 2/8 in each of two October 11 runs;
+      the 1.5B scored 6/8 in one separate run, but failed both removal cases and added unsupported
+      flourishes to its draft. Its first scenario took 40.5 seconds from a fresh cache, including model
+      load and generation; the 1.6 GB browser-profile footprint is not a network-size measurement.
+      Keep copy review visible and do not promise reliable natural-language page writing until it
+      passes repeated measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
       builder browser suite passes all 64 scenarios, including the example flow, schema delivery,

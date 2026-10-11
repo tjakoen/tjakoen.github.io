@@ -6,8 +6,9 @@ test("the Builder help shows the latest measured edit limits", async ({ page }) 
   const help = page.locator('details[data-surface="builder-help"]');
   await help.locator("summary").click();
 
-  await expect(help).toContainText("October 10, 2026, scored 2/8 across eight draft, edit, and refusal cases.");
-  await expect(help).toContainText("removed b4 when asked by that exact id");
-  await expect(help).toContainText("removed the intro instead of widening the callout");
-  await expect(help).toContainText("Its draft missed every supplied fact");
+  await expect(help).toContainText("Two WebGPU checks on October 11, 2026, each scored 2/8 with the 0.5B model.");
+  await expect(help).toContainText("A separate 1.5B check scored 6/8.");
+  await expect(help).toContainText("removed the wrong card in both removal scenarios");
+  await expect(help).toContainText("added unsupported flourishes");
+  await expect(help).toContainText("40.5 seconds from a fresh browser cache");
 });

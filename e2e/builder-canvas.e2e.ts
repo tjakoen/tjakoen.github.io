@@ -45,11 +45,11 @@ test.describe("the canvas: a composition, server-rendered", () => {
 
     const examples = page.locator("[data-builder-try-edits]");
     await expect(examples).toBeVisible();
-    const drop = page.locator("[data-builder-drop-example]");
-    await expect(drop).toBeVisible();
-    await expect(page.locator("[data-builder-drop-note]")).toContainText("passed once in the October 11 live check and timed out on repeat");
-    await drop.click();
-    await expect(page.locator(COMPOSER)).toHaveValue("drop b4");
+    const move = page.locator("[data-builder-move-example]");
+    await expect(move).toBeVisible();
+    await expect(page.locator("[data-builder-move-note]")).toContainText("An explicit-ID move passed in both profile checks");
+    await move.click();
+    await expect(page.locator(COMPOSER)).toHaveValue("move b3 up");
     await expect(page.locator(CELL)).toHaveCount(4);
 
     await page.getByRole("button", { name: "Try an honest copy-edit refusal" }).click();
@@ -62,11 +62,12 @@ test.describe("the canvas: a composition, server-rendered", () => {
   test("a page-shaped ask repeats an explicitly counted block", async ({ page }) => {
     await page.goto(ask("An intro, two cards side by side, and a callout"));
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
-    await expect(page.locator(".wb-bar__note")).toContainText("downloads about 350 MB and caches the model");
+    await expect(page.locator(".wb-bar__note")).toContainText("first use downloads about 1.1 GB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("Two October 11 WebGPU checks each scored 2/8");
+    await expect(page.locator(".wb-bar__note")).toContainText("the smaller scored 2/8 in each of two checks");
     const help = page.locator('[data-surface="builder-help"]');
-    await expect(help).toContainText("The callout request chose the wrong card; an explicit-ID move passed after the parser fix.");
+    await expect(help).toContainText("A separate 1.5B check scored 6/8");
+    await expect(help).toContainText("removed the wrong card in both removal scenarios");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
     await expect(page.locator(`${CELL}[data-span="full"]`).first()).toHaveAttribute("data-block-id", "b1");
