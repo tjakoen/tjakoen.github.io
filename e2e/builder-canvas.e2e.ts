@@ -47,6 +47,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(examples).toBeVisible();
     const drop = page.locator("[data-builder-drop-example]");
     await expect(drop).toBeVisible();
+    await expect(page.locator("[data-builder-drop-note]")).toContainText("passed once in the October 11 live check and timed out on repeat");
     await drop.click();
     await expect(page.locator(COMPOSER)).toHaveValue("drop b4");
     await expect(page.locator(CELL)).toHaveCount(4);
@@ -63,7 +64,9 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("downloads about 350 MB and caches the model");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("The October 10 live check scored 2/8");
+    await expect(page.locator(".wb-bar__note")).toContainText("Two October 11 WebGPU checks each scored 2/8");
+    const help = page.locator('[data-surface="builder-help"]');
+    await expect(help).toContainText("The callout request chose the wrong card; an explicit-ID move passed after the parser fix.");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
     await expect(page.locator(`${CELL}[data-span="full"]`).first()).toHaveAttribute("data-block-id", "b1");
