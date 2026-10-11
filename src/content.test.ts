@@ -52,7 +52,7 @@ test("note cross-links resolve to /notes/:slug, not .md files", async () => {
   expect(body).not.toContain(`href="why-i-teach.md"`);
 });
 
-test("layer docs render from the installed packages (both collections, with tables)", async () => {
+test("the GRAIN and BATCH guides render through MILL from this repository", async () => {
   for (const [prefix, slug] of [["/grain/docs", "grain"], ["/batch/docs", "architecture"]] as const) {
     const index = await serve(prefix);
     expect(index?.status).toBe(200);

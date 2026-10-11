@@ -53,6 +53,8 @@ test.describe("developer docs entry points", () => {
     await page.goto("/batch/docs/consume-as-git-deps");
     await expect(page.locator(".board")).toContainText("pinned public GitHub commit");
     await expect(page.locator(".board")).toContainText("no GitHub token");
+    await expect(page.locator(".board")).toContainText("portfolio's layer guides live in this repository's");
+    await expect(page.locator(".board")).toContainText("bun add @tjakoen/crumb");
 
     await page.goto("/batch/docs/conventions");
     await expect(page.locator(".board")).toContainText("BATCH is a standalone library");

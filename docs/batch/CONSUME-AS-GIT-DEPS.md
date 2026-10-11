@@ -6,16 +6,20 @@ The BREAD stack's published packages install from the public npm registry. BATCH
 its own repository. GRAIN, MILL, PROOF, and CRUMB are published from the GRAIN monorepo; its
 workspace-only `grain-mcp` package is not published.
 
-Install only the layers your app uses. For the full stack, run this with Bun:
+Install only the layers your app uses. To add the full stack with Bun, run these commands:
 
 ```sh
-bun add @tjakoen/batch @tjakoen/grain @tjakoen/mill @tjakoen/proof @tjakoen/crumb
+bun add @tjakoen/batch @tjakoen/grain
+bun add @tjakoen/mill @tjakoen/proof
+bun add @tjakoen/crumb
 ```
 
-With npm, run:
+With npm, run the equivalent commands:
 
 ```sh
-npm install @tjakoen/batch @tjakoen/grain @tjakoen/mill @tjakoen/proof @tjakoen/crumb
+npm install @tjakoen/batch @tjakoen/grain
+npm install @tjakoen/mill @tjakoen/proof
+npm install @tjakoen/crumb
 ```
 
 The packages resolve from the public npm registry. Installing PROOF also fetches its current BATCH
@@ -30,7 +34,7 @@ action. PROOF's pinned BATCH dependency changes only when a new PROOF release up
 
 ## Why this, specifically
 
-- **Layer docs travel with their package.** MILL resolves package documentation from the installed package, so a consumer can render the published docs without copying them into the app. See [`packages/mill/serve.ts`](https://github.com/tjakoen/grain/blob/main/packages/mill/serve.ts).
+- **MILL can render Markdown from an installed package.** `packageDocsSource` resolves a published Markdown file through the package's exports. The portfolio's layer guides live in this repository's `docs/<layer>/` folders and are served with `dirSource`; they are not part of the published packages. See [`packages/mill/serve.ts`](https://github.com/tjakoen/grain/blob/main/packages/mill/serve.ts).
 - **`bun update`** picks up versions that maintainers have already published. Each package remains responsible for its own release.
 - GRAIN itself only needs three things from a host (an `OpChannel`, a compatible renderer, a filesystem) — see [`grain/README.md`](https://github.com/tjakoen/grain/blob/main/packages/grain/README.md) §1. It names no concrete dependency beyond that.
 
