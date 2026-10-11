@@ -8,7 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import { parseModelMove, validateMove } from "@tjakoen/grain/ai/model.ts";
 import { buildManifest, type Manifest } from "@tjakoen/grain/ai/manifest.ts";
-import { blockEditManifest, blockMessage, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
+import { blockEditManifest, blockMessage, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
 
 const GRAIN: GrainModelPort = { parseModelMove, validateMove } as unknown as GrainModelPort;
 
@@ -72,6 +72,30 @@ describe("the edit prompt projection", () => {
     ]);
     expect(prompt).toContain("b1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card)");
     expect(prompt).toContain("The only action names are block.remove, block.span and block.move");
+  });
+});
+
+describe("explicit target guard", () => {
+  const blocks = [
+    { id: "b1", component: "block-lede" },
+    { id: "b2", component: "block-card" },
+    { id: "b3", component: "block-callout" },
+    { id: "b4", component: "block-card" },
+  ];
+
+  test("it refuses a legal command against the wrong ordinal block", () => {
+    expect(blockTargetMismatch("drop the second card", blocks, "block:b2"))
+      .toBe("The request points to second card (b4), but the model proposed first card (b2). Nothing changed. Try naming b4 directly.");
+  });
+
+  test("it accepts the requested block and a unique named component", () => {
+    expect(blockTargetMismatch("drop the second card", blocks, "block:b4")).toBeNull();
+    expect(blockTargetMismatch("move the callout up", blocks, "block:b3")).toBeNull();
+  });
+
+  test("it leaves ambiguous multi-target language to the model and review step", () => {
+    expect(blockTargetMismatch("move the second card above the callout", blocks, "block:b2")).toBeNull();
+    expect(blockTargetMismatch("move a card up", blocks, "block:b2")).toBeNull();
   });
 });
 

@@ -459,7 +459,10 @@ export function makeChatModel() {
       if (/generated image tag/i.test(prompt)) return JSON.stringify({ blocks: [
         { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
       ] });
-      if (/drop the second card/i.test(prompt)) return '{"action":"block.remove","target":"block:b4"}';
+      if (/drop the second card/i.test(prompt)) {
+        const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
+        return JSON.stringify({ action: "block.remove", target });
+      }
       if (/make the callout full/i.test(prompt)) return 'Sure!\\n{"action":"block.span","target":"block:b3","payload":{"span":"full"}}';
       if (/move the callout up/i.test(prompt)) return '{"action":"block.move","target":"block:b3","payload":{"direction":"up"}}';
       if (/widen/i.test(prompt)) return '{"action":"block.span","target":"block:b2","payload":{"span":"wide"}}';
@@ -544,6 +547,17 @@ test.describe("the model chooses the verb", () => {
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
     // the rail follows, which is the page deriving its state back off the DOM the dispatcher wrote
     await expect(page.locator(RAIL_ROW)).toHaveCount(3);
+  });
+
+  test("a valid proposal that contradicts the named target is refused before review", async ({ page }) => {
+    await twoCardPage(page);
+    await page.evaluate(() => sessionStorage.setItem("__builderWrongTarget", "true"));
+    await waitForDesk(page);
+    await submitPrompt(page, "drop the second card");
+
+    await expect(page.locator(SAID)).toHaveText("The request points to second card (b4), but the model proposed first card (b2). Nothing changed. Try naming b4 directly.");
+    await expect(page.locator(PROPOSAL)).toBeHidden();
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
   });
 
   test("the model is handed the ids that are actually on the page", async ({ page }) => {

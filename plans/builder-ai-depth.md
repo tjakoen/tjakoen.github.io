@@ -221,6 +221,15 @@ prompts and generated page content do not go to a hosted model. The public examp
 explicit-ID move prompt, which passed in both profile checks. The larger model still misses deletion,
 and generated copy still needs human review.
 
+After those runs, the edit boundary gained a narrow target-mismatch guard. When the visitor names one
+block unambiguously by ID, ordinal plus type, or a unique component name, the portfolio compares that
+reference with the model's validated target. A conflict is refused before a proposal appears or an
+intent reaches GRAIN; the page names both blocks and asks the visitor to try again. The guard never
+rewrites the model's choice, and ambiguous references still use the existing review path. Unit and
+browser checks cover the wrong-second-card case, the matching target, a unique callout, and ambiguous
+language. This contains one measured class of wrong edit; it does not establish that either local
+model chooses targets reliably, and it has not been scored in a live WebGPU run.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business
@@ -287,8 +296,8 @@ copy edits appear to work.
       order. A portfolio-side parser now accepts the measured `move` alias only for a live block and
       valid direction; the explicit-ID move passed its focused live recheck, but the callout request
       still selected the wrong card. The 0.5B full run remains 2/8; the 1.5B run scored 6/8 while
-      failing both removal cases. Do not add a deterministic chooser
-      that makes the interface claim the AI acted.
+      failing both removal cases. The target-mismatch guard refuses a clear reference conflict but
+      does not choose a target or improve the model's answer. The chooser still belongs to the AI.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
@@ -296,7 +305,7 @@ copy edits appear to work.
 - [x] Give the builder a small set of examples that demonstrates composing and then revising a real
       GRAIN page, including one honest refusal. The first-screen link opens a four-block page; the
       rail then offers a prompt for the measured `move b3 up` edit and a copy-edit refusal. The buttons
-      prefill only, and the 64-case Builder browser suite verifies the flow and unchanged canvas on
+      prefill only, and the 65-case Builder browser suite verifies the flow and unchanged canvas on
       refusal.
 - [x] Let a page brief draft text into registered fields on newly composed blocks. Unit and browser
       tests cover validation, composition data, visible output, and literal rendering of markup-like
@@ -312,7 +321,7 @@ copy edits appear to work.
       passes repeated measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
-      builder browser suite passes all 64 scenarios, including the example flow, schema delivery,
+      builder browser suite passes all 65 scenarios, including the example flow, schema delivery,
       static-host, one-door, proposal, and copy-edit refusal paths. The real-model audit remains a
       separate score because headless CI has no WebGPU.
 - [x] Review the published workbench at desktop and narrow widths. The workbench renders at 1440px

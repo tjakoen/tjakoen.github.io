@@ -35,7 +35,7 @@ import {
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { isCopyEditRequest, looksLikeAnEdit } from "./block-command.ts";
-import { blockEditManifest, blockMessage, inWords, readModelMove, type BlockIntent } from "./block-reasoner.ts";
+import { blockEditManifest, blockMessage, blockTargetMismatch, inWords, readModelMove, type BlockIntent } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -459,6 +459,12 @@ function boot(): void {
       return;
     }
     if (read.kind === "reply") { say(read.said, "reply"); return; }
+
+    const targetMismatch = blockTargetMismatch(ask, state.blocks, read.command.surface);
+    if (targetMismatch) {
+      say(targetMismatch, "refusal");
+      return;
+    }
 
     if (!proposalPanel || !proposalCopy || !applyProposal || !cancelProposal) {
       say("The desk found an edit, but the review controls are missing. Nothing changed.", "refusal");

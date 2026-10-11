@@ -124,9 +124,32 @@ export function blockMessage(
   message: string,
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
 ): string {
+  const entries = describeBlocks(blocks);
+  const ids = entries.length
+    ? entries.map((entry, index) => typeof blocks[index] === "string" ? entry.id : `${entry.id} (${entry.label})`).join(", ")
+    : "none";
+  return [
+    message.trim(),
+    "",
+    "(You are editing a page that is already built. The blocks from top to bottom are:",
+    `${ids}. The only action names are block.remove, block.span and block.move.`,
+    "Treat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.",
+    "If the requested target is unclear or is not in this list, reply without acting.",
+    "Use the full action name, not a shortened word such as move.",
+    "block.remove drops its target. block.span takes span: full, half or third.",
+    "block.move takes direction: up or down. Each action targets exactly one listed block.",
+    "If the request cannot be done with these actions, reply without acting and use action: null.)",
+  ].join("\n");
+}
+
+interface BlockDescription { id: string; component: string | null; label: string }
+
+const describeBlocks = (
+  blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
+): BlockDescription[] => {
   const counts = new Map<string, number>();
-  const descriptions = blocks.map((block) => {
-    if (typeof block === "string") return block;
+  return blocks.map((block) => {
+    if (typeof block === "string") return { id: block, component: null, label: block };
     const component = block.component.replace(/^block-/, "");
     const ordinal = (counts.get(component) ?? 0) + 1;
     counts.set(component, ordinal);
@@ -138,19 +161,78 @@ export function blockMessage(
       : component === "stat" ? "stat tile"
       : component === "form" ? "form"
       : "block";
-    return `${block.id} (${label})`;
+    return { id: block.id, component, label };
   });
-  const ids = descriptions.length ? descriptions.join(", ") : "none";
-  return [
-    message.trim(),
-    "",
-    "(You are editing a page that is already built. The blocks from top to bottom are:",
-    `${ids}. The only action names are block.remove, block.span and block.move.`,
-    "Use the full action name, not a shortened word such as move.",
-    "block.remove drops its target. block.span takes span: full, half or third.",
-    "block.move takes direction: up or down. Each action targets exactly one listed block.",
-    "If the request cannot be done with these actions, reply without acting and use action: null.)",
-  ].join("\n");
+};
+
+const REFERENCE_GROUPS: Record<string, readonly string[]> = {
+  lede: ["lede", "intro", "introduction", "opening", "paragraph"],
+  card: ["card"],
+  callout: ["callout", "aside"],
+  stat: ["stat", "tile", "statistic", "kpi", "metric", "counter"],
+  form: ["form", "signup"],
+};
+
+const ORDINALS: Record<string, number | "last"> = {
+  first: 1, "1st": 1, second: 2, "2nd": 2, third: 3, "3rd": 3, fourth: 4, "4th": 4,
+  fifth: 5, "5th": 5, sixth: 6, "6th": 6, seventh: 7, "7th": 7, eighth: 8, "8th": 8,
+  last: "last", final: "last",
+};
+
+const hasWord = (text: string, word: string): boolean => text.split(" ").includes(word);
+
+/** Resolve only a clear target reference already present in the visitor's words. This is a guard,
+ *  not a chooser: it never creates or rewrites a command, and ambiguous references are left to the
+ *  model and its approval proposal. */
+function requestedBlock(
+  message: string,
+  blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
+): BlockDescription | null {
+  const entries = describeBlocks(blocks);
+  const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
+  const references: BlockDescription[] = [];
+
+  const ids = [...text.matchAll(/\b(?:block\s*)?(b\d+)\b/g)].map((match) => match[1]);
+  if (ids.length === 1) {
+    const match = entries.find((entry) => entry.id === ids[0]);
+    if (match) references.push(match);
+  } else if (ids.length > 1) {
+    return null;
+  }
+
+  const mentionedGroups = Object.entries(REFERENCE_GROUPS).filter(([, aliases]) =>
+    aliases.some((alias) => hasWord(text, alias)),
+  );
+  if (mentionedGroups.length === 1) {
+    const [group, aliases] = mentionedGroups[0];
+    const candidates = entries.filter((entry) => entry.component === group ||
+      (entry.component === null && aliases.some((alias) => hasWord(entry.label.toLowerCase(), alias))));
+    const ordinalWords = Object.keys(ORDINALS).filter((ordinal) => hasWord(text, ordinal));
+    let match: BlockDescription | undefined;
+    if (ordinalWords.length === 1) {
+      const index = ORDINALS[ordinalWords[0]] === "last" ? candidates.length - 1 : Number(ORDINALS[ordinalWords[0]]) - 1;
+      match = candidates[index];
+    } else if (ordinalWords.length === 0 && candidates.length === 1) {
+      match = candidates[0];
+    }
+    if (match) references.push(match);
+  }
+
+  const unique = [...new Map(references.map((entry) => [entry.id, entry])).values()];
+  return unique.length === 1 ? unique[0] : null;
+}
+
+/** Refuse a legal model command when it contradicts one unambiguous target the visitor named. */
+export function blockTargetMismatch(
+  message: string,
+  blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
+  target: string,
+): string | null {
+  const requested = requestedBlock(message, blocks);
+  if (!requested) return null;
+  const proposed = describeBlocks(blocks).find((entry) => entry.id === idOf(target));
+  if (!proposed || proposed.id === requested.id) return null;
+  return `The request points to ${requested.label} (${requested.id}), but the model proposed ${proposed.label} (${proposed.id}). Nothing changed. Try naming ${requested.id} directly.`;
 }
 
 // ---------------------------------------------------------------------------------------------
