@@ -6,13 +6,13 @@ Two kinds of route exist; pick the one that matches what you're adding.
 
 ## A hand-authored page
 
-Drop a file under `pagesDir` (`config.ts`, default `pages/`) and it's live on the next refresh —
-nothing to register:
+From the repository root, drop a file under `pagesDir` (`config.ts`, default `pages/`) and it's live
+on the next refresh, with nothing to register:
 
 ```sh
-# a new page at /widgets
-mkdir tjakoen.github.io/pages/widgets
-echo '<!DOCTYPE html><html>...</html>' > tjakoen.github.io/pages/widgets/index.html
+# a new page at /widgets, using the default pages/ root
+mkdir -p pages/widgets
+echo '<!DOCTYPE html><html>...</html>' > pages/widgets/index.html
 ```
 
 `makePageServer` ([`http/pages.ts`](https://github.com/tjakoen/batch/blob/main/http/pages.ts)) maps the URL straight onto the file
