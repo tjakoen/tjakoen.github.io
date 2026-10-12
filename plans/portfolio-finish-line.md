@@ -225,6 +225,31 @@ console as push-only. The docs browser test checks the examples and confirms the
 
 ### Page recommendations in progress
 
+The October 12 cold Builder run used a new Chromium profile and received all 30 weight shards without
+cached responses. Chromium reported 875,219,838 encoded transfer bytes for the larger model's weights,
+tokenizer, configuration, index, and WebGPU library, plus 1,661,197 bytes for WebLLM's JavaScript runtime.
+The public download notice now rounds the model assets to 875 MB, replacing the earlier 1.1 GB
+estimate. The draft was visible by the 60.1-second observation and retained the requested facts, but
+added unsupported claims about artisanal bread and a staple product. This closes the desktop download
+measurement, while phone hardware and grounded writing remain open. The capture method and result
+are recorded in audit/builder-cold-2026-10-12.md.
+
+The MILL source review also found inconsistent rendering and dependency descriptions. Its project
+card, setup guide, and architecture guide now distinguish GRAIN's package dependency from BATCH's
+optional host composition. The architecture explains semantic HTML output, includes the implemented
+link-attribute and heading-surface options, and no longer calls addressable headings wholly planned.
+
+The October 12 operable-surface checklist review found an incomplete action definition: its example
+omitted the required description, payload schema, and behavior hints. The example now includes all
+three and explains how the manifest uses them. Its verification checklist also distinguishes the
+server POST/SSE path from the client door used by the default portfolio development command and
+static export, including the limit on server-dependent capabilities.
+
+This pass passed 83 focused browser cases across documentation, Builder, and project presentation,
+four model-profile unit tests, typechecking, and link lint. The lint gate reports 4,477 flags against
+its 4,491 baseline. Desktop and phone screenshots were reviewed for the updated MILL introduction
+and operable-surface guide, alongside the Builder download disclosure.
+
 These recommendations come from the routes reviewed so far. The shared content families still need
 individual checks before the audit can be called complete.
 

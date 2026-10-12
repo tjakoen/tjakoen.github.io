@@ -24,7 +24,7 @@ export const portfolioLlmsDoc: LlmsDoc = {
     { heading: "The stack", links: [
       { title: "BATCH", url: "/batch", note: "the no-build substrate — server-rendered hypermedia, no bundler, no template language. Live." },
       { title: "GRAIN", url: "/grain", note: "the AI-interaction design system + its default theme (Sourdough); grade-as-signal (grain = AI, clean = human). Live." },
-      { title: "MILL", url: "/mill", note: "Markdown → GRAIN-pages CMS — feed it .md + images, it renders GRAIN pages. Live: it renders this site's notes and layer docs." },
+      { title: "MILL", url: "/mill", note: "A Markdown content rendering engine with a GRAIN adapter and an optional host composer. It renders this site's notes and layer docs." },
       { title: "PROOF", url: "/proof", note: "the AI plan board — plans are markdown files, the board is a projection of them. Live: core parser, board, check/init tooling, and the board updates live over SSE." },
       { title: "PANTRY", url: "/pantry", note: "the installable dev-docs and AI cockpit app that composes BATCH, GRAIN, MILL, and PROOF into one server. v2 live: home, the board, framework docs, /reference, /catalog, and /standards, plus an install kit." },
     ]},

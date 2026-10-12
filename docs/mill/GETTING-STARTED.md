@@ -4,8 +4,8 @@ title: "Getting started with MILL"
 
 MILL, **Markdown In, Living Layouts**, is a content rendering engine: feed it a folder of `.md`
 files (frontmatter + prose) and it renders them as GRAIN pages by mapping Markdown nodes to
-components. It sits a layer above the stack (`batch → grain → MILL`), depending on both and
-extending neither. The full mapping model is [`ARCHITECTURE.md`](ARCHITECTURE.md); this page is the
+GRAIN classes. Its published package depends on GRAIN; BATCH is an optional host server and
+component composer. The full mapping model is [`ARCHITECTURE.md`](ARCHITECTURE.md); this page is the
 fastest path to a rendered page.
 
 ## Install

@@ -62,7 +62,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
   test("a page-shaped ask repeats an explicitly counted block", async ({ page }) => {
     await page.goto(ask("An intro, two cards side by side, and a callout"));
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
-    await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 1.1 GB");
+    await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
     await expect(page.locator(".wb-bar__note")).toContainText("scored 5/8 with the larger model and 2/8 twice with the smaller model");
     await expect(page.locator(".wb-bar__note")).toContainText("first request can take close to a minute");
