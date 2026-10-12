@@ -248,6 +248,14 @@ phrases. The new timeout avoids the earlier timeout on this run, but the model's
 quality remain unreliable. These results show that the larger profile's passing cases vary between
 runs. They do not establish dependable natural-language editing or grounded copy.
 
+On October 12, I tested a clearer edit prompt that listed blocks one per line and said to count
+ordinal references within their own block type. Its eight-case run scored 6/8, but the model still
+proposed moving the first card when asked to remove the second card, and its draft omitted Utrecht.
+A warm repeat of those two cases scored 0/2: it again proposed moving the first card, and again
+omitted Utrecht while adding unsupported marketing copy. The score difference from the preceding
+five-of-eight run does not establish a prompt improvement, and the repeated failures show that this
+clarification did not fix either gap. I reverted the prompt experiment.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business
