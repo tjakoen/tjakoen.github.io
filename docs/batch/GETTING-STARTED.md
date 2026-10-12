@@ -33,9 +33,9 @@ instructions. That app wires BATCH, GRAIN, and MILL together.
 
 - **The composition engine** — server-rendered HTML from `.html` templates and a binding vocabulary (`data-field`, `data-bind-<attr>`, `each`, component tags); see CONVENTIONS §2–4.
 - **A generic SSE push hub** (`@tjakoen/batch/http/stream.ts`) carries the transport for GRAIN's render ops.
-- **Route-derived sitemap and robots helpers**, plus a separate renderer for host-authored
-  `/llms.txt` entries. The package provides the formats; the composition root supplies its routes
-  and descriptions.
+- **A route-derived sitemap helper** and the route list a host can use when it writes *robots.txt*,
+  plus a separate renderer for host-authored `/llms.txt` entries. BATCH does not generate
+  *robots.txt*; the composition root supplies the routes and descriptions.
 - **A static-export library** (`@tjakoen/batch/export/*`) that a host app can use to freeze server output without building a second renderer (ARCHITECTURE §18).
 - **A framework-generic performance and SEO/AEO audit library.** The portfolio wraps that library in its own `bun run audit` command.
 

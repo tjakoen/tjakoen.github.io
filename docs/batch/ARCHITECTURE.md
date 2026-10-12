@@ -59,10 +59,11 @@ or drop a capability → update this list (`../../CLAUDE.md` alignment table →
   toggle is grain's grade-as-signal vocabulary. It reads the filesystem directly and imports nothing
   from batch; the composition root passes it the page-nav routes. (§13a is retained for the
   Storybook-style generation technique it still uses; ownership is grain's.)
-- **Route-derived sitemap and robots files.** `createSitemap()` derives `/sitemap.xml` and the
-  routes used by `/robots.txt` from page files plus host-supplied extra routes. BATCH's separate
-  `renderLlms()` helper formats an `/llms.txt` index from host-supplied descriptions. The component
-  catalog belongs to GRAIN, where its Human/AI grade toggle is defined.
+- **Route-derived sitemap.** `createSitemap()` derives `/sitemap.xml` and the route list a host can
+  use when it writes */robots.txt*, from page files plus host-supplied extra routes. BATCH does not
+  generate *robots.txt*. Its separate `renderLlms()` helper formats an `/llms.txt` index from
+  host-supplied descriptions. The component catalog belongs to GRAIN, where its Human/AI grade
+  toggle is defined.
 - **A framework-generic audit engine** — perf + SEO/AEO baselines via Playwright, vocabulary-agnostic
   so it can bench any app/framework, not just this one (`batch/audit`).
 
