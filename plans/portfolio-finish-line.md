@@ -188,6 +188,19 @@ the presentation seam from the data directory, with browser coverage for the dis
 baseline ratchet also recorded 79 fewer flags than its previous high-water mark, without increasing
 any category.
 
+The follow-up BATCH route-guide review checked `makePageServer` and `createSitemap` in the package
+against the portfolio's `pageRoutes()` exporter. The guide had implied every page was exported
+without exceptions. It now names the review-only and operable exclusions, the generated routes that
+need explicit entries, and the separate sitemap/export entries required for routes outside the page
+tree. Its phone-safe docs browser test verifies those boundaries. The remaining BATCH guides and the
+GRAIN, MILL, and PROOF guides still need their full source-by-source review. The same comparison
+found that the BATCH introduction implied the package generated robots.txt; its API exposes the
+route list and sitemap XML, while the host writes robots.txt. The introduction and architecture
+guide now state that boundary, and the browser suite checks the visible setup copy. The export guide
+also understated the route sources and described assets as verbatim despite base-path rewriting;
+it now names the portfolio's content, deck, plan, and generated route sets and explains CSS and
+JavaScript rewriting for subpath deploys. The docs browser suite checks both statements.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need

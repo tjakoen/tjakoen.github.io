@@ -31,9 +31,10 @@ running server and freezes its output — it never re-renders** (ARCHITECTURE §
 *projection*, not a second renderer). Concretely, it:
 
 1. boots `server.ts` on a throwaway port,
-2. crawls every page route (the same sitemap the live server uses) + MILL's content routes
-   (`/notes`, `/grain/docs`, `/batch/docs`) + `/catalog`,
-3. copies every asset mount (`config.ts`'s `assetDirs` + fonts) verbatim,
+2. crawls the live sitemap routes plus the content, deck, plan, and generated routes assembled by
+   `pageRoutes()` in `tools/export.ts`,
+3. copies every asset mount (`config.ts`'s `assetDirs` + fonts); when a base path is set, it rewrites
+   CSS and JavaScript references to work under that path,
 4. rewrites the baked-in origin/base-path if you passed `PUBLIC_ORIGIN` / `PUBLIC_BASE_PATH`.
 
 ## The one boundary: operable pages don't export

@@ -45,6 +45,7 @@ test.describe("developer docs entry points", () => {
     await page.goto("/batch/docs/getting-started");
     await expect(page.locator(".board")).toContainText("BATCH is a library, not a server of its own");
     await expect(page.locator(".board")).toContainText("bun add @tjakoen/batch");
+    await expect(page.locator(".board")).toContainText("BATCH does not generate robots.txt");
 
     await page.goto("/grain/docs/getting-started");
     await expect(page.locator(".board")).toContainText("bun add @tjakoen/grain");
@@ -87,12 +88,22 @@ test.describe("developer docs entry points", () => {
     await page.goto("/batch/docs/static-export-and-deploy");
     await expect(page.locator(".board")).toContainText("BATCH itself is a library");
     await expect(page.locator(".board")).toContainText("bun run verify:export");
+    await expect(page.locator(".board")).toContainText("content, deck, plan, and generated routes");
+    await expect(page.locator(".board")).toContainText("rewrites CSS and JavaScript references");
     await expect(page.locator('.board a[href="https://github.com/tjakoen/tjakoen.github.io/blob/main/.github/workflows/pages.yml"]'))
       .toBeVisible();
     await page.goto("/batch/docs/architecture");
     await expect(page.locator(".board")).toContainText("BATCH exports exportSite() as a library");
     await expect(page.locator(".board")).toContainText("the portfolio's host-owned bun run export");
     await expect(page.locator(".board")).not.toContainText("exposed as bun run export");
+  });
+
+  test("the route guide explains page discovery and exporter exceptions", async ({ page }) => {
+    await page.goto("/batch/docs/add-a-route");
+    await expect(page.locator(".board")).toContainText("ordinary page reaches search and static export");
+    await expect(page.locator(".board")).toContainText("review-only and operable routes");
+    await expect(page.locator(".board")).toContainText("adds generated pages such as /cv explicitly");
+    await expect(page.locator(".board")).not.toContainText("nothing else to wire");
   });
 
   test("the generated reference links back to the project stories and contains wide tables", async ({ page }) => {

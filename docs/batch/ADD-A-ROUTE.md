@@ -16,8 +16,11 @@ echo '<!DOCTYPE html><html>...</html>' > pages/widgets/index.html
 ```
 
 `makePageServer` ([`http/pages.ts`](https://github.com/tjakoen/batch/blob/main/http/pages.ts)) maps the URL straight onto the file
-under `pagesDir`; the sitemap and the static-export allowlist both derive from the same pages tree,
-so a new page reaches SEO and the export automatically — nothing else to wire.
+under `pagesDir`. The sitemap and the portfolio exporter both enumerate that tree, so an ordinary
+page reaches search and static export without a second route entry. The portfolio also excludes
+review-only and operable routes, and adds generated pages such as /cv explicitly. A route outside
+the pages tree needs its own sitemap and export entry if it should be discoverable and included in
+the static site.
 
 ## A generated / API route
 
