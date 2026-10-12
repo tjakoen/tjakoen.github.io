@@ -218,6 +218,11 @@ The GRAIN tutorial's copied contract excerpt had fallen behind the package regis
 matches the current closed unions, and the docs browser suite checks those entries against the
 rendered guide.
 
+The GRAIN action guide still opened with `task:42` and `task-list`, even though `task` is not a
+registered surface kind. Its examples now use addresses present in the portfolio, and label the
+console as push-only. The docs browser test checks the examples and confirms their code block fits at
+390 pixels.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need

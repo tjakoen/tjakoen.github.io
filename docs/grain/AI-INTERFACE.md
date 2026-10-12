@@ -63,19 +63,21 @@ direction. The *why* behind the modality lives in [`PHILOSOPHY.md`](https://gith
 ### 1a. Surfaces — the element map (addresses, not selectors)
 
 Every mutable region of every screen has a **stable semantic address**, never a CSS
-selector. The address is `kind:id` for instances and a bare slug for singletons:
+selector. The address is `kind:id` for instances and a bare slug for singletons. The
+running Builder and shared shell use addresses such as these:
 
 ```
-task:42            an individual task        (kind = task)
-task-list          the list region          (singleton region)
-overcommit-banner  an AI-owned banner        (push-only; user can't act on it)
-chat-log           the conversation region
+block:b2           kind = block
+field:builder-ask  kind = field
+chat-log           kind = chat-log
+notepad            kind = notepad
+console            push-only output
 ```
 
-The address is what render ops target and what the manifest enumerates. Because it's
-semantic, the markup underneath can change freely — the address is the contract, the
-DOM is an implementation detail. In the DOM this is a `data-surface="task:42"`
-attribute; nothing addresses elements by tag or class.
+The address is what render ops target and what the manifest enumerates. Because it is
+semantic, the markup underneath can change freely. The address is the contract; the
+DOM is an implementation detail. In the DOM, the address is carried by a
+`data-surface` attribute. Nothing addresses elements by tag or class.
 
 ### 1b. Actions — the verbs (closed, typed, depth-tagged)
 

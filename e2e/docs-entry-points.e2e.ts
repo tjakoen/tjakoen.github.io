@@ -41,6 +41,18 @@ test.describe("developer docs entry points", () => {
       .toContainText("portfolio app's running server");
   });
 
+  test("the GRAIN action guide demonstrates registered surface addresses", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/grain/docs/ai-interface");
+    const addresses = page.locator(".board pre").first();
+    await expect(addresses).toContainText("block:b2");
+    await expect(addresses).toContainText("field:builder-ask");
+    await expect(addresses).toContainText("chat-log");
+    await expect(addresses).toContainText("push-only");
+    const width = await addresses.evaluate((element) => ({ client: element.clientWidth, scroll: element.scrollWidth }));
+    expect(width.scroll).toBeLessThanOrEqual(width.client + 1);
+  });
+
   test("package setup docs match the published packages and current host boundary", async ({ page }) => {
     await page.goto("/batch/docs/getting-started");
     await expect(page.locator(".board")).toContainText("BATCH is a library, not a server of its own");
