@@ -66,8 +66,8 @@ bun run dev
   writes.
 - `proof check [dir]` lints a plans folder (schema validity, dangling `depends`, a `done` plan with
   unticked tasks, a stale `doing`) and exits nonzero, so it's CI-able.
-- `proof init [dir]` scaffolds `plans/` plus a contract section for the host's own `CLAUDE.md`,
-  non-invasively, it never edits a host's existing files.
+- `proof init [dir]` scaffolds `plans/` with a starter plan, schema README, and hook scripts. It
+  prints the manual `CLAUDE.md` wiring step, but never edits a host's existing files.
 - See it live at the portfolio's own [`/plans`](https://tjakoen.github.io/plans), this repo mounts
   PROOF over its own `plans/` folder, `PLANS_DIR`/`PLANS_PREFIX` in `src/plans.ts`.
 - The canonical plan (design, seams, what's built vs. deferred) is
