@@ -8,7 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import { parseModelMove, validateMove } from "@tjakoen/grain/ai/model.ts";
 import { buildManifest, type Manifest } from "@tjakoen/grain/ai/manifest.ts";
-import { blockEditManifest, blockMessage, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockMessage, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
 
 const GRAIN: GrainModelPort = { parseModelMove, validateMove } as unknown as GrainModelPort;
 
@@ -72,6 +72,18 @@ describe("the edit prompt projection", () => {
     ]);
     expect(prompt).toContain("b1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card)");
     expect(prompt).toContain("The only action names are block.remove, block.span and block.move");
+  });
+
+  test("constrains completion to the live block IDs and supported payload values", () => {
+    const schema = blockEditSchema(blockEditManifest(MANIFEST)) as {
+      properties: { action: { enum: unknown[] }; target: { enum: unknown[] }; payload: { properties: Record<string, { enum: unknown[] }> } };
+    };
+    expect(schema.properties.action.enum).toEqual([...BLOCK_VERBS, null]);
+    expect(schema.properties.target.enum).toEqual([
+      "block:b1", "b1", "block:b2", "b2", "block:b3", "b3", "block:b4", "b4", null,
+    ]);
+    expect(schema.properties.payload.properties.span.enum).toEqual(["full", "half", "third"]);
+    expect(schema.properties.payload.properties.direction.enum).toEqual(["up", "down"]);
   });
 });
 

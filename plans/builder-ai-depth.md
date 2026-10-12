@@ -271,6 +271,16 @@ guards contain bad suggestions, but it does not establish dependable deletion or
 The capture is `.cache/desk-audit/report-builder-local-2026-10-13.json` and is local audit output,
 not a committed portfolio asset.
 
+A later audit found the live-model harness still graded a page draft from the canvas before it passed
+through the new review panel. The harness now records proposed text and block count first, then
+accepts the proposal through the same control a visitor uses. A warm WebGPU check of the relative
+deletion, explicit-ID deletion, and grounded-draft cases scored 0/3 before structured edit output was
+added: relative deletion selected b2 instead of b4, the explicit-ID result was invalid, and the
+draft omitted Utrecht. The Builder now supplies a schema derived from the live manifest to constrain
+edit actions, target IDs, and payload vocabulary before GRAIN validates the answer. Its next focused
+check scored 1/3: `drop b4` landed, relative deletion still proposed b2, and the draft still omitted
+Utrecht while adding unsupported wording. This single check does not establish a repeatable gain.
+
 The October 13 Builder update adds a review-first path for model-composed pages. Proposed blocks and
 their text appear in the workbench before they enter the composition. Visitors can edit proposed
 text fields in that panel; acceptance runs those values through the existing block-copy sanitizer
@@ -346,16 +356,14 @@ copy edits appear to work.
       the dispatcher, and the final canvas. The scripted browser path still exercises the full chain.
 - [ ] Improve the model's edit choices using the live manifest and the block IDs already visible on
       the page. The prompt contains only live block actions and identifies each block's type and
-      order. A portfolio-side parser now accepts the measured `move` alias only for a live block and
-      valid direction; the explicit-ID move passed its focused live recheck, but the callout request
-      still selected the wrong card. The 0.5B full run remains 2/8; the 1.5B run scored 6/8 while
-      failing both removal cases. The target-mismatch guard refuses a clear reference conflict but
-      does not choose a target or improve the model's answer. It now also refuses a clearly named
-      target that is absent from the current composition. Unit tests and a focused browser case cover
-      that refusal; all 66 Builder browser cases now pass. October 12 runs scored 6/8 and 5/8 with
-      different passing cases. The first request took 50 seconds under the 60-second limit, then the
-      guard refused the model's first-card answer to a second-card request. The chooser still belongs
-      to the AI.
+      order. A portfolio-side parser accepts the measured `move` alias only for a live block and
+      valid direction, and the target-mismatch guard refuses a clear reference conflict or a named
+      target that is absent from the current composition. The local completion now also receives a
+      schema derived from live block IDs, edit verbs, and payload values; it improved the explicit-ID
+      deletion in one warm check, but the relative deletion still chose the first card instead of the
+      second. The 0.5B full run scored 2/8; the 1.5B runs varied, and both profiles have shown failed
+      removals. The chooser still belongs to the AI, and repeat measurements have not established
+      reliable block selection.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
@@ -385,7 +393,11 @@ copy edits appear to work.
       12 edit reached the 45-second completion limit, so the portfolio now allows 60 seconds; the
       fresh-server run avoided that timeout but took 50 seconds and refused the wrong target. The
       October 13 1.5B run passed width and move edits but failed both deletion cases and again
-      omitted Utrecht while adding unsupported draft claims. The October 11 first scenario took
+      omitted Utrecht while adding unsupported draft claims. A later warm WebGPU check scored 1/3
+      after adding schema-constrained edit output: explicit `drop b4` passed, relative deletion still
+      targeted b2, and the draft still omitted Utrecht. Its corrected audit harness scores proposed
+      copy before acceptance. This isolated result does not establish a quality improvement. The
+      October 11 first scenario took
       40.5 seconds from a fresh browser cache, including model load and generation; the 1.6 GB
       browser-profile footprint is not a network-size measurement. Exact first-visit network bytes
       are now recorded in the October 12 cold-download measurement below. Phone hardware remains

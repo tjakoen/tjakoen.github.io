@@ -35,7 +35,7 @@ import {
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { isCopyEditRequest, looksLikeAnEdit } from "./block-command.ts";
-import { blockEditManifest, blockMessage, blockTargetMismatch, inWords, readModelMove, type BlockIntent } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockMessage, blockTargetMismatch, inWords, readModelMove, type BlockIntent } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -517,7 +517,7 @@ function boot(): void {
 
     // Bounded, because this is the exact line the page used to hang on. See completeWithin for the
     // measured failure: a repetition loop that never closes its own JSON object and never returns.
-    const raw = await completeWithin(desk, prompt);
+    const raw = await completeWithin(desk, prompt, undefined, blockEditSchema(blockEditManifest(manifest)));
     if (raw === null) {
       say("The desk could not run the model here, so it did not guess. The rail's own controls still work.", "refusal");
       return;
