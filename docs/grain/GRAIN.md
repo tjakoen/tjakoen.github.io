@@ -33,9 +33,10 @@ a capability, update this list (CLAUDE.md alignment table → `AUDIT.md` check 1
 **Hero — the reasons GRAIN exists:**
 
 - **One vocabulary, two operators.** Every surface is addressable and operable by *both* a human and
-  an AI through one closed set of verbs, entering **one server-side door** (`POST /intent`) and
-  returning as `RenderOp`s. A human click and an AI decision become the *same* `Intent` — there is no
-  privileged AI→DOM back channel. (The pieces table below; `AI-INTERFACE.md`.)
+  an AI through one closed set of verbs. On a server-backed page, both operators send the same
+  `Intent` through `POST /intent` and receive `RenderOp`s. An opted-in static page uses the browser's
+  client door with that same contract. There is no privileged AI→DOM back channel. (The pieces table
+  below; `AI-INTERFACE.md`.)
 - **Grade-as-signal — the AI's presence is visible.** Provenance is *typography*: grain texture = AI /
   in-transit, clean = human / committed. The honesty of the signal **is** the design system.
   (`DESIGN-SYSTEM.md` §3.)
@@ -105,10 +106,10 @@ a capability, update this list (CLAUDE.md alignment table → `AUDIT.md` check 1
   the theme; it's the visual twin of a terminal `context` command. Its on/off state **persists
   across navigation** (`grain.xray.on`), so a shared `?xray` link stays on as you move through the
   site.
-- **Auditable by design.** Every interaction — human or AI — is one `source`-tagged `Intent` through
-  one server-side door, so a complete human+AI **interaction log** is a server-side drop-in. GRAIN
-  provides the chokepoint + provenance; **the consuming app owns the log sink** (see PROJECT-PLAN
-  §10). Not built inside GRAIN by design — it's an affordance, not a feature GRAIN ships.
+- **Auditable by design.** On a server-backed page, each human or AI action is a `source`-tagged
+  `Intent` through `POST /intent`. GRAIN provides the action boundary and provenance; **the consuming
+  app owns the log sink** (see `AI-INTERFACE.md` §5g). The client door preserves the same action
+  contract on static pages, but it cannot provide a server-side interaction log by itself.
 - **The design system works with no AI.** The `b-*` atoms + the grade mechanism are usable in any
   BATCH app with the `ai/` layer dropped entirely (grade also encodes draft/saved, focus/editing).
 - **Re-skin by token override.** Change the whole look by overriding token slots (README §4), never
@@ -124,9 +125,11 @@ a capability, update this list (CLAUDE.md alignment table → `AUDIT.md` check 1
   leans on **`:has()`**, **`:focus-within`**, **`color-mix()`**, **`@starting-style`**, `text-wrap:
   balance/pretty`, and CSS `scroll-behavior` — all native. **The standing rule:** when a UI need has
   a platform primitive (**Popover API**, **anchor positioning**, **container queries**,
-  scroll-driven animations), reach for it before writing JS. This is what makes "near-zero framework
-  JS" (`bun run audit`) *real* rather than aspirational — the only client JS that remains is the
-  load-bearing `/intent` dispatcher, not UI chrome. (ARCHITECTURE §11.3 + §0; CONVENTIONS §1.)
+  scroll-driven animations), reach for them before writing JavaScript. This is what keeps framework
+  JavaScript near zero (`bun run audit`). GRAIN still ships small vanilla-JavaScript islands for
+  behavior that needs code, including the dispatcher, theme controls, tabs, terminal, command
+  palette, demos, handoff, and X-ray. These are feature modules, not a client-framework runtime.
+  (ARCHITECTURE §11.3 + §0; CONVENTIONS §1.)
 
 ## Substrate contract — what GRAIN needs to run
 
@@ -160,8 +163,8 @@ B.6e; the header mechanism lives in the substrate, the manifest policy here.
 |---|---|---|
 | **Surfaces** | every mutable region has a stable semantic address (`data-surface`) | markup + `grain/ai/contract.ts` |
 | **Action vocabulary** | one closed set of verbs (the SSOT: `ActionName`/`SurfaceKind` + `ACTIONS`) | `grain/ai/contract.ts` |
-| **The one door** | human click *and* AI decision become the same `Intent` → `POST /intent` → single writer | `grain/ai/interaction-layer.ts` |
-| **Render ops** | the writer's only output: `replace/append/remove/flash/type/spotlight`, addressed to surfaces, pushed over SSE | `grain/ai/contract.ts`, `batch/http/stream.ts` |
+| **The one door** | human click *and* AI decision use the same action contract; the host routes server-backed actions through `POST /intent`, while opted-in static pages use the client door | `grain/ai/interaction-layer.ts`, `grain/ai/client-door.ts` |
+| **Render ops** | the writer's output, addressed to surfaces and carried by the host's `OpChannel`: `replace`, `append`, `remove`, `flash`, `type`, `spotlight`, `log`, `navigate`, `choices`, `fill`, `tick`, `span`, and `move` | `grain/ai/contract.ts`, `batch/http/stream.ts` |
 | **Manifest** | the AI's instruction manual per screen — harvested from components, can't drift | `grain/ai/manifest.ts`, `grain/ai/accepts.ts` |
 | **Grade-as-signal** | grain = AI / in-transit, clean = human / committed — one inherited switch | `DESIGN-SYSTEM.md` §3, `AI-INTERFACE.md` §5 |
 | **The "AI acts" protocol** | spotlight the surface, it enters AI-mode by kind (button → working, input → composed clean, text → grain), act, hand back — mediated, never force-killed | `AI-INTERFACE.md` §5c |
