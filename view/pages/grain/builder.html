@@ -57,10 +57,10 @@
             <button class="wb-chip" type="button" data-proposal-cancel>Cancel</button>
           </div>
         </div>
-        <p class="wb-bar__note muted">AI runs in this browser, and prompts stay on this device. On capable
-          devices, first use downloads about 1.1 GB; other devices use about 350 MB. The larger model
-          scored 6/8 in one live check; the smaller scored 2/8 in each of two checks. Review each
-          proposal, then check the page before export.</p>
+        <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
+          First use downloads about 1.1 GB on capable devices or 350 MB on others. The latest checks
+          scored 5/8 with the larger model and 2/8 twice with the smaller model. A first request can
+          take close to a minute. Review generated copy before export.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -218,14 +218,15 @@
             The model has not earned your trust with copy yet. Check the canvas before you use or export
             anything. On capable devices its first run downloads about 1.1 GB; other devices use the
             350 MB model. Both cache files on this device, and your prompt stays here.</p>
-          <p>Two WebGPU checks on October 11, 2026, each scored 2/8 with the 0.5B model. A separate
-            1.5B check scored 6/8. It passed both width and move requests and the copy-edit refusal,
-            but removed the wrong card in both removal scenarios. Its draft kept the supplied facts but
-            added unsupported flourishes. The smaller model varied between runs: removal timed out on
-            repeat, relative targets chose the wrong card, and width requests timed out or triggered a
-            move. These small samples are not general success rates. The 1.5B first scenario took 40.5
-            seconds from a fresh browser cache, including model loading and generation; the browser
-            profile occupied 1.6 GB on disk after the run.</p>
+          <p>Two WebGPU checks on October 11, 2026, each scored 2/8 with the 0.5B model. The 1.5B model
+            scored 6/8 on October 11 and in one October 12 run. After its timeout increased to 60
+            seconds, another October 12 run scored 5/8. Width and move requests passed, but both
+            deletion cases failed; the copy-edit refusal passed. The first request took 50 seconds.
+            The model chose the first card instead of the second, and the guard refused it. The draft
+            omitted Utrecht and added unrequested marketing phrases. A warm repeat in the earlier run
+            included Utrecht but still added unsupported phrases. These small samples are not success
+            rates. One October 11 scenario took 40.5 seconds from a fresh browser cache, including
+            model loading and generation. The browser profile occupied 1.6 GB on disk after that run.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
             the canvas again before it reports a change. That review catches stale proposals, but it
             cannot tell whether a legal choice is the block you meant. The block rail is the dependable

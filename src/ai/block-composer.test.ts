@@ -8,6 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import {
   BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
+  COMPLETION_TIMEOUT_MS,
 } from "./block-composer.ts";
 import { BLOCK_NAMES, composeFromNames, sanitizeBlockCopy } from "./block-set.ts";
 
@@ -207,6 +208,10 @@ describe("composeFromNames enumerates what the model only named", () => {
 });
 
 describe("completeWithin bounds one answer", () => {
+  test("uses a 60-second completion limit for the local model", () => {
+    expect(COMPLETION_TIMEOUT_MS).toBe(60_000);
+  });
+
   test("an answer that arrives is passed straight through", async () => {
     const desk = { complete: async () => '{"blocks": ["card"]}' };
     expect(await completeWithin(desk, "x", 50)).toBe('{"blocks": ["card"]}');

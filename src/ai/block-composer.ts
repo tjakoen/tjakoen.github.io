@@ -200,7 +200,7 @@ export function readModelPlan(raw: string, names: readonly string[] = BLOCK_NAME
  *  Generous rather than tight, because a cold engine on a modest GPU genuinely takes tens of seconds
  *  for a first answer and a bound that cut those off would be a bug wearing a fix's clothes. What it
  *  exists to stop is the unbounded case. */
-export const COMPLETION_TIMEOUT_MS = 45_000;
+export const COMPLETION_TIMEOUT_MS = 60_000;
 
 /** A completion, or null if it did not arrive in time.
  *
