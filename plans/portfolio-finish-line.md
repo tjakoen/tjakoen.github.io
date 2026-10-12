@@ -199,7 +199,9 @@ route list and sitemap XML, while the host writes robots.txt. The introduction a
 guide now state that boundary, and the browser suite checks the visible setup copy. The export guide
 also understated the route sources and described assets as verbatim despite base-path rewriting;
 it now names the portfolio's content, deck, plan, and generated route sets and explains CSS and
-JavaScript rewriting for subpath deploys. The docs browser suite checks both statements.
+JavaScript rewriting for subpath deploys. The older architecture summary now also distinguishes
+rewritten CSS and JavaScript from byte-for-byte binary copies. The docs browser suite checks these
+statements.
 
 ### Page recommendations in progress
 

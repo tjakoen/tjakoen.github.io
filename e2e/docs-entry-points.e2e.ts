@@ -95,6 +95,7 @@ test.describe("developer docs entry points", () => {
     await page.goto("/batch/docs/architecture");
     await expect(page.locator(".board")).toContainText("BATCH exports exportSite() as a library");
     await expect(page.locator(".board")).toContainText("the portfolio's host-owned bun run export");
+    await expect(page.locator(".board")).toContainText("binary assets are copied byte-for-byte");
     await expect(page.locator(".board")).not.toContainText("exposed as bun run export");
   });
 

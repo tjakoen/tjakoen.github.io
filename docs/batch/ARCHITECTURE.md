@@ -2214,8 +2214,9 @@ path/rewrite logic (the only branching) lives in `batch/export/rewrite.ts` with 
 What Tier 1 does:
 
 - **Pages** → `dist/<route>/index.html` (pretty dirs); **generated data routes** (`/components.css`,
-  `/search.json`, `/sitemap.xml`, `/robots.txt`) → written at their literal path; **assets** copied
-  verbatim (binaries byte-for-byte; `*.test.*` skipped).
+  `/search.json`, `/sitemap.xml`, `/robots.txt`) → written at their literal path; CSS and JavaScript
+  assets have root-relative references rewritten for `PUBLIC_BASE_PATH`, while binary assets are
+  copied byte-for-byte. `*.test.*` files are skipped.
 - **The absolute-path/subpath problem** is solved by rewriting every root-absolute ref
   (`href`/`src`/`action`, CSS `url()`, JS `import`/`fetch` specifiers, JSON `"url"` fields) to a
   caller-supplied **`PUBLIC_BASE_PATH`** — the "rewrite absolute→relative" option above (kept
