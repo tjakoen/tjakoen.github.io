@@ -112,6 +112,11 @@ the Talks introduction described every deck as an interactive web page, despite 
 and the Standards index repeated the AI-REPO-STANDARD filename and summary in one awkwardly wrapped
 title. The Talks copy now distinguishes interactive web decks from the event PDF, and the standard
 has a shorter display title with its purpose in the summary. Focused browser checks cover both.
+The gallery now contains 35 captures: the original project and interaction views, six newly included
+desktop routes (Projects, Résumé, Teaching, Badges, Plans, and Version One), and first-screen phone
+captures for those six routes. Phone review confirms the content and primary controls remain legible.
+The PDF viewer's fallback is expected in headless Chromium; its direct link now has a browser check
+for a successful `application/pdf` response with a valid PDF signature.
 
 The cross-page read of BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, and PANTRY confirms they now tell one
 consistent story: the BREAD page explains the dependency direction and the portfolio request path;
@@ -174,7 +179,8 @@ linter finds no dead relative links across 56 rendered files, and
 every served diagram has a committed SVG. The October 13 route audit returns all 148 canonical pages
 without HTTP or document findings. The October 10 BATCH and MILL architecture edits were rendered at desktop and 390
 pixels; both pages have one page heading and no horizontal overflow. A refreshed 23-screen desktop
-gallery is available for review. The screenshot helper isolates browser storage for each capture and
+gallery was available for review on October 11; it has since grown to 35 desktop and phone captures.
+The screenshot helper isolates browser storage for each capture and
 waits for the welcome greeting to finish. The GRAIN guide's package-boundary section now reflects the
 separate BATCH repository and the GRAIN monorepo that publishes GRAIN, MILL, PROOF, and CRUMB;
 package-doc navigation and phone checks pass. The Builder help now reports both October 11 local-model
@@ -365,8 +371,9 @@ individual checks before the audit can be called complete.
       navigation, page spacing, headings, accessible names, dead ends, and important interaction
       paths. The October 10 route capture covered 146 canonical URLs at desktop and phone widths; all pages
       returned 200, fit their viewport, had one page heading, and produced no page errors. I reviewed
-      the route captures and refreshed the 23-screen desktop gallery on October 11. The focused
-      phone checks cover the Builder, project stories, documentation, résumé, plans, catalog, and
+      the route captures and refreshed the 23-screen desktop gallery on October 11. The gallery now
+      has 35 captures, with phone first-screen views for six key routes. The focused phone checks
+      cover the Builder, project stories, documentation, résumé, plans, catalog, and
       navigation. The new workshop event and deck viewer also pass desktop and phone checks. The
       October 13 sitemap audit covers 148 current routes with no HTTP or document findings; the new
       routes have focused desktop and phone checks. The full

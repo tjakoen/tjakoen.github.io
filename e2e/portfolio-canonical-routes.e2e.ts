@@ -26,6 +26,10 @@ test.describe("sitemap canonical routes", () => {
     const fallbackLink = page.locator(".doc-frame__fallback a");
     await expect(fallbackLink).toHaveAttribute("href", "/media/decks/reality-check-ai-ethics.pdf");
     await expect(fallbackLink).toBeVisible();
+    const pdf = await page.request.get("/media/decks/reality-check-ai-ethics.pdf");
+    expect(pdf.status()).toBe(200);
+    expect(pdf.headers()["content-type"]).toContain("application/pdf");
+    expect((await pdf.body()).subarray(0, 5).toString()).toBe("%PDF-");
   });
 
   test("the deck breadcrumb opens a useful index of every presentation", async ({ page }) => {
