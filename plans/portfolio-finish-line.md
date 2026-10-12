@@ -373,6 +373,9 @@ individual checks before the audit can be called complete.
       privacy, and responsive routes have focused browser coverage.
 - [ ] Complete the builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
       then make the builder a convincing demonstration of the same system the portfolio introduces.
+      The October 13 local 1.5B run scored 5/8: width and move edits and the copy-edit refusal passed,
+      while both deletion cases failed and the draft omitted a supplied location and added unsupported
+      claims. Guarded failures left the canvas unchanged. See the Builder plan for the scenario detail.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.

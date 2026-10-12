@@ -260,6 +260,17 @@ omitted Utrecht while adding unsupported marketing copy. The score difference fr
 five-of-eight run does not establish a prompt improvement, and the repeated failures show that this
 clarification did not fix either gap. I reverted the prompt experiment.
 
+On October 13, I ran the same eight scenarios on the current machine with the local 1.5B Builder
+profile and cached WebGPU model. It scored 5/8. Both span changes and both move requests passed, as
+did the refusal to edit existing copy. The relative deletion request proposed removing the first
+card instead of the second, so the target guard left the canvas unchanged; the explicit `drop b4`
+request returned an invalid action and also left the canvas unchanged. The draft omitted Utrecht
+and added unsupported claims about fresh bread. The first deletion took 55 seconds, while the
+remaining edit responses arrived in 3–11 seconds. This run confirms that the review and target
+guards contain bad suggestions, but it does not establish dependable deletion or grounded writing.
+The capture is `.cache/desk-audit/report-builder-local-2026-10-13.json` and is local audit output,
+not a committed portfolio asset.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business
@@ -356,8 +367,9 @@ copy edits appear to work.
       the city. A stricter prompt was tested and reverted after it also missed the city. One October
       12 edit reached the 45-second completion limit, so the portfolio now allows 60 seconds; the
       fresh-server run avoided that timeout but took 50 seconds and refused the wrong target. The
-      October 11 first scenario took 40.5 seconds from a fresh browser cache, including model load and
-      generation; the 1.6 GB
+      October 13 1.5B run passed width and move edits but failed both deletion cases and again
+      omitted Utrecht while adding unsupported draft claims. The October 11 first scenario took
+      40.5 seconds from a fresh browser cache, including model load and generation; the 1.6 GB
       browser-profile footprint is not a network-size measurement. Exact first-visit network bytes
       are now recorded in the October 12 cold-download measurement below. Phone hardware remains
       unmeasured. Keep copy review visible and do not promise reliable
