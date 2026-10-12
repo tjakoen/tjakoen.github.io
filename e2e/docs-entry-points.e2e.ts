@@ -55,6 +55,10 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("These are feature modules, not a client-framework runtime.");
     await expect(page.locator(".board")).toContainText("spotlight, log, navigate, choices, fill, tick, span, and move");
 
+    await page.goto("/grain/docs/getting-started");
+    await expect(page.locator(".board")).toContainText("through the configured server or client door");
+    await expect(page.locator(".board")).not.toContainText("clicking it becomes POST /intent");
+
     await page.goto("/mill/docs/getting-started");
     await expect(page.locator(".board")).toContainText("is a content rendering engine");
     await expect(page.locator(".board")).not.toContainText("CMS");
@@ -68,6 +72,11 @@ test.describe("developer docs entry points", () => {
     await page.goto("/batch/docs/conventions");
     await expect(page.locator(".board")).toContainText("BATCH is a standalone library");
     await expect(page.locator(".board")).toContainText("The package split is complete");
+
+    await page.goto("/batch/docs/add-a-route");
+    await expect(page.locator(".board")).toContainText("From the repository root");
+    await expect(page.locator(".board")).toContainText("mkdir -p pages/widgets");
+    await expect(page.locator(".board")).not.toContainText("tjakoen.github.io/pages/widgets");
   });
 
   test("the static export guide points to the portfolio deploy workflow", async ({ page }) => {

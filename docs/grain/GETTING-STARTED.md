@@ -35,7 +35,7 @@ then skip `ai/`. Add the AI layer later by following the setup in the
 | Attribute | On | Means |
 |---|---|---|
 | `data-surface="kind:id"` | any region | its address — what render ops target |
-| `data-action="verb"` | a control | clicking it becomes `POST /intent` with that verb |
+| `data-action="verb"` | a control | a click sends that verb as an Intent through the configured server or client door |
 | `data-kind` + `data-accepts="v1 v2"` | a component root | harvested into the AI manifest |
 | `data-grade="grain\|smooth\|accent"` | any ancestor | provenance: grain = AI, smooth = human |
 
