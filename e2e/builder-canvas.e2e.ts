@@ -62,12 +62,15 @@ test.describe("the canvas: a composition, server-rendered", () => {
   test("a page-shaped ask repeats an explicitly counted block", async ({ page }) => {
     await page.goto(ask("An intro, two cards side by side, and a callout"));
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
-    await expect(page.locator(".wb-bar__note")).toContainText("first use downloads about 1.1 GB");
+    await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 1.1 GB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("the smaller scored 2/8 in each of two checks");
+    await expect(page.locator(".wb-bar__note")).toContainText("scored 5/8 with the larger model and 2/8 twice with the smaller model");
+    await expect(page.locator(".wb-bar__note")).toContainText("first request can take close to a minute");
     const help = page.locator('[data-surface="builder-help"]');
-    await expect(help).toContainText("A separate 1.5B check scored 6/8");
-    await expect(help).toContainText("removed the wrong card in both removal scenarios");
+    await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
+    await expect(help).toContainText("The first request took 50 seconds");
+    await expect(help).toContainText("both deletion cases failed");
+    await expect(help).toContainText("The draft omitted Utrecht");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
     await expect(page.locator(`${CELL}[data-span="full"]`).first()).toHaveAttribute("data-block-id", "b1");

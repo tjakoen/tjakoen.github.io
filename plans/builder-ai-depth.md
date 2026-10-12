@@ -228,7 +228,25 @@ intent reaches GRAIN; the page names both blocks and asks the visitor to try aga
 rewrites the model's choice, and ambiguous references still use the existing review path. Unit and
 browser checks cover the wrong-second-card case, the matching target, a unique callout, and ambiguous
 language. This contains one measured class of wrong edit; it does not establish that either local
-model chooses targets reliably, and it has not been scored in a live WebGPU run.
+model chooses targets reliably. The October 12 live WebGPU run confirms the guard refused a wrong
+first-card target without changing the canvas.
+
+On October 12, an eight-case run of the 1.5B profile scored 6/8. Width changes, both move
+requests, explicit-ID removal, and the copy-edit refusal passed. The relative request to remove the
+second card reached the 45-second completion limit, and the draft omitted Utrecht. A two-case warm
+repeat still sent the relative deletion at the first card, so the target guard refused it without
+changing the canvas. Its draft retained Utrecht but added unrequested marketing phrases. A stricter
+extractive-copy prompt did not fix those issues and was reverted. The first full run took 48.2 seconds
+to report the timed-out edit; the completion limit is now 60 seconds to cover the observed duration.
+The single-case repeat against the previously running server returned an invalid span operation for
+the deletion request. The page refused it without changing the canvas. The fresh-server eight-case
+rerun with the 60-second limit scored 5/8. The model took 50 seconds on the first request, then chose
+b2 instead of the second card b4; the target guard refused it. The explicit-ID removal returned
+`action: null`. Width, move,
+and copy-edit refusal cases passed, while the draft omitted Utrecht and added unrequested marketing
+phrases. The new timeout avoids the earlier timeout on this run, but the model's deletion and writing
+quality remain unreliable. These results show that the larger profile's passing cases vary between
+runs. They do not establish dependable natural-language editing or grounded copy.
 
 ## What to take from Puck AI
 
@@ -297,7 +315,10 @@ copy edits appear to work.
       valid direction; the explicit-ID move passed its focused live recheck, but the callout request
       still selected the wrong card. The 0.5B full run remains 2/8; the 1.5B run scored 6/8 while
       failing both removal cases. The target-mismatch guard refuses a clear reference conflict but
-      does not choose a target or improve the model's answer. The chooser still belongs to the AI.
+      does not choose a target or improve the model's answer. October 12 runs scored 6/8 and 5/8 with
+      different passing cases. The first request took 50 seconds under the 60-second limit, then the
+      guard refused the model's first-card answer to a second-card request. The chooser still belongs
+      to the AI.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
@@ -315,10 +336,16 @@ copy edits appear to work.
 - [ ] Finish the model comparison by measuring exact first-visit network bytes and cold start on phone
       hardware, then improve the grounded draft. The 0.5B scored 2/8 in each of two October 11 runs;
       the 1.5B scored 6/8 in one separate run, but failed both removal cases and added unsupported
-      flourishes to its draft. Its first scenario took 40.5 seconds from a fresh cache, including model
-      load and generation; the 1.6 GB browser-profile footprint is not a network-size measurement.
-      Keep copy review visible and do not promise reliable natural-language page writing until it
-      passes repeated measured cases.
+      flourishes to its draft. It scored 6/8 and 5/8 in two October 12 runs, with different passing
+      cases. A warm draft repeated the supplied city but added unsupported phrases; another omitted
+      the city. A stricter prompt was tested and reverted after it also missed the city. One October
+      12 edit reached the 45-second completion limit, so the portfolio now allows 60 seconds; the
+      fresh-server run avoided that timeout but took 50 seconds and refused the wrong target. The
+      October 11 first scenario took 40.5 seconds from a fresh browser cache, including model load and
+      generation; the 1.6 GB
+      browser-profile footprint is not a network-size measurement. Exact first-visit network bytes
+      and phone hardware remain unmeasured. Keep copy review visible and do not promise reliable
+      natural-language page writing until it passes repeated measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
       builder browser suite passes all 65 scenarios, including the example flow, schema delivery,
