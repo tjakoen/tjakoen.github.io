@@ -271,6 +271,15 @@ guards contain bad suggestions, but it does not establish dependable deletion or
 The capture is `.cache/desk-audit/report-builder-local-2026-10-13.json` and is local audit output,
 not a committed portfolio asset.
 
+The October 13 Builder update adds a review-first path for model-composed pages. Proposed blocks and
+their text appear in the workbench before they enter the composition. Visitors can edit proposed
+text fields in that panel; acceptance runs those values through the existing block-copy sanitizer
+before appending the draft through the composition functions. Discarding it preserves the current
+blocks and URL. Generated markup remains text in the review panel. The 67-case Builder browser suite
+covers review, text edits, acceptance, discard, escaped text, offline builds, and the existing edit
+path. This makes model output inspectable and correctable before it changes the page; it does not
+improve the measured 5/8 result or automatically catch claims the model invented.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business
@@ -298,8 +307,10 @@ initial draft path into a grounded, inspectable workflow:
    canvas.
 3. Keep the generated structure and copy visible in the live preview and JSON composition, identify
    that wording as a draft, and make checking or replacing it straightforward before export. The
-   current path applies a draft directly; a review/accept step is a possible next interaction to
-   evaluate, rather than a capability the current Builder already has.
+   Builder now holds model output in a review panel, shows the proposed block names and text, and
+   leaves the current canvas unchanged until the visitor accepts it. Discarding the proposal leaves
+   both the composition and share address unchanged. This gives the visitor a review point, but it
+   cannot detect unsupported claims by itself.
 4. Measure composition and revision against named scenarios. The current small model has not earned
    a claim of dependable natural-language editing; keep its quality result visible beside the demo.
 
@@ -352,13 +363,19 @@ copy edits appear to work.
 - [x] Give the builder a small set of examples that demonstrates composing and then revising a real
       GRAIN page, including one honest refusal. The first-screen link opens a four-block page; the
       rail then offers a prompt for the measured `move b3 up` edit and a copy-edit refusal. The buttons
-      prefill only, and the 65-case Builder browser suite verifies the flow and unchanged canvas on
+      prefill only, and the 67-case Builder browser suite verifies the flow and unchanged canvas on
       refusal.
 - [x] Let a page brief draft text into registered fields on newly composed blocks. Unit and browser
       tests cover validation, composition data, visible output, and literal rendering of markup-like
       input. The portfolio now requests schema-constrained JSON for its local build path and tests
       that contract through the desk bridge; the existing validator still applies. Measure real-model
       writing quality before presenting this as reliable copywriting.
+- [x] Hold a model-composed page in a review panel until the visitor accepts it. The panel lists the
+      proposed blocks and editable text fields, and its accept and discard controls keep the canvas
+      and composition unchanged until approval. Accepting sanitizes the edited values and appends
+      through the existing composition functions; discarding leaves the page and share URL untouched.
+      The 67-case Builder suite covers this flow, including markup-like copy rendered as text. A
+      human still has to check accuracy because the local model can omit facts and invent claims.
 - [ ] Finish the model comparison by measuring cold start on phone
       hardware, then improve the grounded draft. The 0.5B scored 2/8 in each of two October 11 runs;
       the 1.5B scored 6/8 in one separate run, but failed both removal cases and added unsupported
@@ -376,7 +393,7 @@ copy edits appear to work.
       natural-language page writing until it passes repeated measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
-      builder browser suite passes all 65 scenarios, including the example flow, schema delivery,
+      builder browser suite passes all 67 scenarios, including the example flow, schema delivery,
       static-host, one-door, proposal, and copy-edit refusal paths. The real-model audit remains a
       separate score because headless CI has no WebGPU.
 - [x] Review the published workbench at desktop and narrow widths. The workbench renders at 1440px

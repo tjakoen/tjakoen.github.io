@@ -57,6 +57,29 @@
 [data-screen="builder"] .wb-bar__proposal[hidden] { display: none; }
 [data-screen="builder"] .wb-bar__proposal p { margin: 0; font-size: var(--text-sm); color: var(--ink); }
 [data-screen="builder"] .wb-bar__proposal-actions { display: flex; align-items: center; gap: var(--space-2); flex: 0 0 auto; }
+[data-screen="builder"] .wb-bar__draft { margin: 0 0 var(--space-3); padding: var(--space-4);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--paper-2); }
+[data-screen="builder"] .wb-bar__draft[hidden] { display: none; }
+[data-screen="builder"] .wb-bar__draft-head { display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--space-4); }
+[data-screen="builder"] .wb-bar__draft-head h2 { margin: 0 0 var(--space-1); font-size: var(--text-md); }
+[data-screen="builder"] .wb-bar__draft-head p { margin: 0; font-size: var(--text-sm); }
+[data-screen="builder"] .wb-bar__draft-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-2); margin: var(--space-3) 0 0; padding: 0; list-style: none; }
+[data-screen="builder"] .wb-bar__draft-block { min-width: 0; padding: var(--space-3);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-sm); background: var(--paper); }
+[data-screen="builder"] .wb-bar__draft-block h3 { margin: 0 0 var(--space-2); font: 600 var(--text-sm)/1.4 var(--font-mono); }
+[data-screen="builder"] .wb-bar__draft-block p { margin: 0; font-size: var(--text-sm); overflow-wrap: anywhere; }
+[data-screen="builder"] .wb-bar__draft-block p + p { margin-top: var(--space-2); }
+[data-screen="builder"] .wb-bar__draft-block .muted { font-size: var(--text-xs); }
+[data-screen="builder"] .wb-bar__draft-field { display: block; margin: 0; }
+[data-screen="builder"] .wb-bar__draft-field + .wb-bar__draft-field { margin-top: var(--space-2); }
+[data-screen="builder"] .wb-bar__draft-field .field__label { display: block; margin-bottom: var(--space-1);
+  color: var(--ink-muted); font: 500 var(--text-xs)/1.4 var(--font-mono); text-transform: capitalize; }
+[data-screen="builder"] .wb-bar__draft-text { display: block; width: 100%; min-height: 3.2rem; resize: vertical;
+  overflow-wrap: anywhere; }
+[data-screen="builder"] .wb-bar__draft-actions { display: flex; justify-content: flex-end;
+  gap: var(--space-2); margin-top: var(--space-3); }
 
 /* The pane: one treatment, three users (canvas, rail, and the rail's own refusal block). Borrowed
    from mail.css rather than forked from it, down to the --paper-2 head, because two tool screens
@@ -280,6 +303,8 @@
     gap: var(--space-2); margin-left: 0; }
   [data-screen="builder"] .wb-bar__proposal { align-items: stretch; flex-direction: column; }
   [data-screen="builder"] .wb-bar__proposal-actions { justify-content: flex-start; }
+  [data-screen="builder"] .wb-bar__draft-head { flex-direction: column; align-items: stretch; }
+  [data-screen="builder"] .wb-bar__draft-actions { justify-content: flex-start; flex-wrap: wrap; }
   [data-screen="builder"] .wb__rows { max-height: 18rem; }
   [data-screen="builder"] .wb__stage { max-height: none; }
 }

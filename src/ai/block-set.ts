@@ -57,6 +57,12 @@ const BLOCK_COPY_LIMITS: Record<string, Record<string, number>> = {
   stat: { value: 24, label: 60, sub: 120 },
 };
 
+/** The character bound for one field on one block. The Builder uses the same source for its review
+ *  control, so a visitor sees and meets the limit that the sanitizer enforces on acceptance. */
+export function blockCopyLimit(name: string, field: string): number | null {
+  return BLOCK_COPY_LIMITS[name]?.[field] ?? null;
+}
+
 /** Keep generated copy inside the visible text fields the matching component already exposes.
  *  Text is filled through `textContent` in the browser; stripping controls and limiting each field
  *  also prevents a model response from turning one short brief into a very large exported page. */

@@ -375,7 +375,11 @@ individual checks before the audit can be called complete.
       then make the builder a convincing demonstration of the same system the portfolio introduces.
       The October 13 local 1.5B run scored 5/8: width and move edits and the copy-edit refusal passed,
       while both deletion cases failed and the draft omitted a supplied location and added unsupported
-      claims. Guarded failures left the canvas unchanged. See the Builder plan for the scenario detail.
+      claims. Guarded failures left the canvas unchanged. Model-composed pages now pause in a review
+      panel where visitors can inspect or edit text before acceptance; edited values are sanitized
+      before they enter the composition. Human review is still needed to catch unsupported claims.
+      Phone cold-start and repeated grounded-draft reliability remain open. See the Builder plan for
+      the scenario detail.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
@@ -387,15 +391,15 @@ individual checks before the audit can be called complete.
       no new layout issues. The PDF routes show the direct-open fallback in headless Chromium. The
       existing gallery retains its 35 selected captures, including phone first-screen views for six
       key routes. Focused phone checks cover the Builder, project stories, documentation, résumé,
-      plans, catalog, and navigation. The serial browser suite passed all 420 cases, with one calendar
-      case skipped because its fixture has no single-photo event. Link lint found no dead relative
-      links in 56 rendered files. The local performance report measures 30–268 KB of uncompressed
+      plans, catalog, and navigation. The serial full release run passed all 421 browser cases.
+      Link lint found no dead relative links in 56 rendered files. The local performance report
+      measures 30–268 KB of uncompressed
       JavaScript responses per route; production captures measured 136,617 JavaScript bytes on
       ordinary pages and 159,108 bytes on the Builder before model download. The shared shell stays
       available across routes, while page-specific features load only where needed. The local report
       labels its values as build-size checks rather than production transfer sizes.
 - [ ] Commit the finished work on main, deploy it, and verify the published pages. Current local
-      evidence on October 13: `bun run test:all` passes the unit tests and all 420 browser cases;
+      evidence on October 13: `bun run test:all` passes the unit tests and all 421 browser cases;
       `bun run check` and `bun run lint` pass; link lint finds no dead relative links in 56 rendered
       files; the fresh sitemap audit has 148 successful routes and zero document findings; and
       static export verification passes for 1,177 pages, 1,133 data routes, 39 frozen modules, and

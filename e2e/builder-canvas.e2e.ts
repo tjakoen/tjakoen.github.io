@@ -366,6 +366,10 @@ const PROPOSAL = '[data-surface="builder-edit-proposal"]';
 const PROPOSAL_COPY = '[data-surface="builder-edit-proposal-copy"]';
 const APPLY_PROPOSAL = "[data-proposal-apply]";
 const CANCEL_PROPOSAL = "[data-proposal-cancel]";
+const DRAFT_REVIEW = "[data-builder-draft-review]";
+const DRAFT_BLOCKS = "[data-builder-draft-blocks]";
+const ACCEPT_DRAFT = "[data-draft-accept]";
+const DISCARD_DRAFT = "[data-draft-discard]";
 
 const submitPrompt = async (page: Page, prompt: string): Promise<void> => {
   await page.locator(COMPOSER).fill(prompt);
@@ -381,6 +385,7 @@ async function twoCardPage(page: Page): Promise<void> {
   await page.goto(ask("An intro, a card and a callout"));
   await expect(page.locator(CELL)).toHaveCount(3);
   await submitPrompt(page, "another card");
+  if (await page.locator(DRAFT_REVIEW).isVisible()) await page.locator(ACCEPT_DRAFT).click();
   await expect(page.locator(CELL)).toHaveCount(4);
 }
 
@@ -501,16 +506,33 @@ async function scriptedDesk(page: Page): Promise<void> {
 test.describe("the model chooses the verb", () => {
   test.beforeEach(async ({ page }) => { await scriptedDesk(page); });
 
-  test("a page brief drafts copy into the closed block set and keeps it in the composition", async ({ page }) => {
+  test("a page brief shows a reviewable draft and adds it only after approval", async ({ page }) => {
     await page.goto("/grain/builder");
     await waitForDesk(page);
     await submitPrompt(page, "Build a Hearth Bakery page with an intro and a card about coffee.");
 
+    await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
+    await expect(page.locator(CELL)).toHaveCount(0);
+    await expect(page.locator(DRAFT_BLOCKS).getByRole("listitem")).toHaveCount(2);
+    await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
+      .toHaveValue("Hearth Bakery bakes sourdough fresh each morning.");
+    await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
+      .toHaveAttribute("maxlength", "280");
+    await expect(page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="title"]'))
+      .toHaveAttribute("maxlength", "60");
+    await expect(page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="body"]'))
+      .toHaveValue("Freshly brewed to go with the bread.");
+    await expect(page.locator('[data-surface="builder-spec"]')).not.toContainText("Hearth Bakery");
+    await page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
+      .fill("Hearth Bakery is a neighborhood bakery in Utrecht.");
+    await page.locator(ACCEPT_DRAFT).click();
+
     await expect(page.locator(CELL)).toHaveCount(2);
-    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery bakes sourdough fresh each morning.");
+    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery is a neighborhood bakery in Utrecht.");
     await expect(page.locator(`${CELL} .card__title`)).toHaveText("Coffee");
     await expect(page.locator(`${CELL} .card__body`)).toHaveText("Freshly brewed to go with the bread.");
-    await expect(page.locator(SAID)).toContainText("drafted copy from your brief");
+    await expect(page.locator(SAID)).toContainText("Added lede and card after your review");
+    await expect(page.locator(DRAFT_REVIEW)).toBeHidden();
 
     const schema = await page.evaluate(() => JSON.parse(sessionStorage.getItem("__builderSchema") || "null"));
     expect(schema.properties.blocks.maxItems).toBe(8);
@@ -519,7 +541,7 @@ test.describe("the model chooses the verb", () => {
 
     const spec = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
     expect(spec.blocks.map((block: { data: Record<string, string> }) => block.data)).toEqual([
-      { body: "Hearth Bakery bakes sourdough fresh each morning." },
+      { body: "Hearth Bakery is a neighborhood bakery in Utrecht." },
       { title: "Coffee", body: "Freshly brewed to go with the bread." },
     ]);
   });
@@ -529,10 +551,34 @@ test.describe("the model chooses the verb", () => {
     await waitForDesk(page);
     await submitPrompt(page, "Build a page with a lede about a generated image tag.");
 
+    await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
+      .toHaveValue("<img src=x onerror=window.__builderXss=true>");
+    await expect(page.locator(`${DRAFT_REVIEW} img`)).toHaveCount(0);
+    await expect(page.locator(CELL)).toHaveCount(0);
+    await page.locator(ACCEPT_DRAFT).click();
     const lede = page.locator(`${CELL} .lede`);
     await expect(lede).toHaveText("<img src=x onerror=window.__builderXss=true>");
     await expect(page.locator(`${CELL} img`)).toHaveCount(0);
     expect(await page.evaluate(() => (window as unknown as { __builderXss?: boolean }).__builderXss)).toBeUndefined();
+  });
+
+  test("discarding a draft leaves the current canvas and share address unchanged", async ({ page }) => {
+    await page.goto(ask("An intro"));
+    await waitForDesk(page);
+    const urlBefore = page.url();
+    await submitPrompt(page, "Build a Hearth Bakery page with an intro and a card about coffee.");
+    await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
+    await expect(page.locator(CELL)).toHaveCount(1);
+    const specBefore = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
+    expect(specBefore.blocks.map((block: { id: string }) => block.id)).toEqual(["b1"]);
+
+    await page.locator(DISCARD_DRAFT).click();
+    await expect(page.locator(DRAFT_REVIEW)).toBeHidden();
+    await expect(page.locator(CELL)).toHaveCount(1);
+    await expect(page.locator(SAID)).toHaveText("Draft discarded. The page did not change.");
+    expect(page.url()).toBe(urlBefore);
+    const specAfter = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
+    expect(specAfter.blocks.map((block: { id: string }) => block.id)).toEqual(["b1"]);
   });
 
   test("a sentence becomes a real op on a real block, through the one door", async ({ page }) => {
@@ -632,7 +678,7 @@ test.describe("the model chooses the verb", () => {
 
     await page.locator('[data-block="b2"] [data-op="remove"]').click();
     await expect(page.locator(PROPOSAL)).toBeHidden();
-    await expect(page.locator(SAID)).toHaveText("The page changed. The pending proposal was canceled.");
+    await expect(page.locator(SAID)).toHaveText("The page changed. The pending suggestion was canceled.");
     expect(await canvasIds(page)).toEqual(["b1", "b3", "b4"]);
   });
 
