@@ -2,9 +2,9 @@
 title: "MILL: architecture"
 ---
 
-MILL turns a folder of Markdown into rendered GRAIN pages. It does not invent its own renderer, it
-walks a Markdown AST and calls an adapter that emits component tags, then hands the result to the
-host's own composer. Two mappings, one seam, one escape hatch: that's the whole engine.
+MILL turns a folder of Markdown into rendered GRAIN pages. It walks a Markdown AST and calls an
+adapter that emits semantic HTML with GRAIN classes. The host's optional composer expands component
+tags in the page shell and any raw component markup supplied in the Markdown.
 
 ## Where it sits
 
@@ -19,11 +19,10 @@ refuses an unlabelled diagram and degrades it to a code block rather than shippi
 sentence becomes the SVG's accessible name, which is the figure as far as a screen reader is
 concerned, and as far as anything else reading the page as text.
 
-MILL depends on **GRAIN** (components) and **BATCH** (substrate), never the reverse, so it's an
-extension of neither, a new layer over both. The core (`core/`) imports nothing from grain or
-batch at all: the coupling to the default adapter is a name/CSS-class contract (strings), the
-cleanest seam available. MILL **renders live** at request time; a static export just freezes
-whatever the server returned, never a second render pass.
+MILL's published package depends on GRAIN. A host can supply BATCH as its server and component
+composer, as this portfolio does; MILL has no BATCH package dependency. Its core imports neither
+package, and the default adapter uses GRAIN's class vocabulary. MILL renders live at request time;
+a static export freezes the server's returned HTML.
 
 ## The two mappings
 
@@ -55,6 +54,7 @@ export interface RenderAdapter {
   layout: LayoutFn;
   escape?: (text: string) => string;
   resolveLink?: (href: string) => string;
+  linkAttrs?: (href: string) => string;
 }
 ```
 
@@ -75,10 +75,17 @@ export interface GrainAdapterOptions {
   layouts?: Record<string, LayoutFn>;
   defaultLayout?: LayoutFn;
   resolveLink?: (href: string) => string;         // default: note:slug → /notes/slug
+  linkAttrs?: (href: string) => string;
   blockOverrides?: Partial<BlockHandlers>;
   inlineOverrides?: Partial<InlineHandlers>;
+  headingSurfaces?: boolean;
 }
 ```
+
+The host can supply link attributes through *linkAttrs*, including its policy for external links.
+Those attributes are inserted as written, so this hook belongs to trusted application code.
+Setting *headingSurfaces* adds GRAIN addresses to second- and third-level headings that have slug
+IDs, allowing the host's spotlight to target a section. Both options are implemented today.
 
 ## The content-source port
 
@@ -159,10 +166,10 @@ does, even when an AI drafted the words.
 ## What isn't built yet
 
 Per [`mill/PLAN.md`](https://github.com/tjakoen/grain/blob/main/packages/mill/PLAN.md), the
-AI-facing outputs (schema.org JSON-LD, `llms.txt`, `knowledge.json` RAG chunks, and
-`data-surface` addresses stamped on rendered content) are a planned piece ("4b"), not part of
-`serve.ts` itself today. The portfolio builds its own `knowledge.json` and JSON-LD on top of MILL's
-collections rather than having MILL emit them. Mermaid-to-SVG conversion is implemented behind
+AI-facing document outputs (schema.org JSON-LD, *llms.txt*, and *knowledge.json* RAG chunks) remain
+host-owned. The portfolio builds its own knowledge index and JSON-LD from MILL's collections.
+Addressable content is partly implemented: *headingSurfaces* opts headings into GRAIN's spotlight,
+and *itemSurfacePrefix* addresses collection-index entries. Mermaid-to-SVG conversion is implemented behind
 MILL's optional `DiagramRenderer` port. Its default remains a code block; this portfolio supplies a
 renderer backed by a committed diagram cache, so the deployed site does not need to launch a
 browser. See the [MILL package guide](https://github.com/tjakoen/grain/blob/main/packages/mill/README.md)

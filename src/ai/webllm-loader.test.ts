@@ -15,7 +15,7 @@ test("the 1.5B profile has the larger context and prompt budget its page needs",
   expect(STRONG_PROFILE.id).toContain("1.5B");
   expect(STRONG_PROFILE.contextWindow).toBeGreaterThan(WEAK_PROFILE.contextWindow);
   expect(STRONG_PROFILE.promptTokenBudget).toBeGreaterThan(WEAK_PROFILE.promptTokenBudget);
-  expect(STRONG_PROFILE.downloadNote).toContain("1.1 GB");
+  expect(STRONG_PROFILE.downloadNote).toContain("875 MB");
 });
 
 test("the larger profile requires a conservative memory or GPU signal", () => {

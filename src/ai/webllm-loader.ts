@@ -65,7 +65,7 @@ export const WEAK_PROFILE: ModelProfile = {
 export const STRONG_PROFILE: ModelProfile = {
   id: "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
   label: "Qwen2.5-1.5B",
-  downloadNote: "About 1.1 GB the first time, then cached.",
+  downloadNote: "About 875 MB the first time, then cached.",
   contextWindow: 4096,
   promptTokenBudget: 3000,
   maxTokens: 320,

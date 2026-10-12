@@ -1,0 +1,258 @@
+{
+  "date": "2026-10-12T11:37:18.706Z",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "modelCommit": "9bd564b064631febf14deadcac492efb761d60c3",
+  "freshBrowserProfile": true,
+  "expectedShardCount": 30,
+  "expectedShardBodyBytes": 868547584,
+  "modelEncodedBytes": 875219838,
+  "runtimeEncodedBytes": 1661197,
+  "responseObservedByMs": 60046,
+  "pollIntervalMs": 10000,
+  "ask": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.",
+  "said": "The desk read that as lede and card and drafted copy from your brief.",
+  "blocks": [
+    "Hearth Bakery is a neighborhood bakery in Utrecht, known for its fresh, artisanal bread.",
+    "\n  Sourdough\n  Baked fresh each morning, our sourdough is a staple of our bakery.\n"
+  ],
+  "transfers": [
+    {
+      "file": "mlc-chat-config.json",
+      "host": "huggingface.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 1681
+    },
+    {
+      "file": "Qwen2-1.5B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+      "host": "raw.githubusercontent.com",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 4101502
+    },
+    {
+      "file": "tokenizer.json",
+      "host": "huggingface.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 2068301
+    },
+    {
+      "file": "ndarray-cache.json",
+      "host": "huggingface.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 3010
+    },
+    {
+      "file": "params_shard_21.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346141
+    },
+    {
+      "file": "params_shard_7.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346121
+    },
+    {
+      "file": "params_shard_14.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346132
+    },
+    {
+      "file": "params_shard_22.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346384
+    },
+    {
+      "file": "params_shard_15.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346348
+    },
+    {
+      "file": "params_shard_8.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346130
+    },
+    {
+      "file": "params_shard_23.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346474
+    },
+    {
+      "file": "params_shard_16.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346375
+    },
+    {
+      "file": "params_shard_0.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 116751677
+    },
+    {
+      "file": "params_shard_9.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346130
+    },
+    {
+      "file": "params_shard_24.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346402
+    },
+    {
+      "file": "params_shard_17.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346258
+    },
+    {
+      "file": "params_shard_1.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 22343202
+    },
+    {
+      "file": "params_shard_10.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346303
+    },
+    {
+      "file": "params_shard_25.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346474
+    },
+    {
+      "file": "params_shard_18.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346159
+    },
+    {
+      "file": "params_shard_2.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346301
+    },
+    {
+      "file": "params_shard_11.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346177
+    },
+    {
+      "file": "params_shard_26.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346375
+    },
+    {
+      "file": "params_shard_19.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346267
+    },
+    {
+      "file": "params_shard_3.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346391
+    },
+    {
+      "file": "params_shard_12.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346150
+    },
+    {
+      "file": "params_shard_27.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346429
+    },
+    {
+      "file": "params_shard_20.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346375
+    },
+    {
+      "file": "params_shard_4.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346247
+    },
+    {
+      "file": "params_shard_13.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346150
+    },
+    {
+      "file": "params_shard_28.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346411
+    },
+    {
+      "file": "params_shard_5.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346148
+    },
+    {
+      "file": "params_shard_29.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 18600651
+    },
+    {
+      "file": "params_shard_6.bin",
+      "host": "us.aws.cdn.hf.co",
+      "status": 200,
+      "cached": false,
+      "encodedBytes": 26346562
+    }
+  ]
+}

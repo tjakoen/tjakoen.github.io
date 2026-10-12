@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MILL · Markdown in, living layouts</title>
-  <meta name="description" content="MILL: a reusable Markdown-to-pages CMS. Feed it markdown + images, it renders GRAIN pages. A layer above BATCH and GRAIN; framework-agnostic core. The core is live: it renders this site's notes and docs.">
+  <meta name="description" content="MILL is a reusable Markdown content engine with a framework-agnostic core. It renders this site's notes and docs as GRAIN pages, with BATCH supplied by the host.">
 </head>
 <body data-screen="mill" class="app-window-backdrop">
   <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
@@ -14,7 +14,7 @@
     <p class="eyebrow">⚙ <span class="name">MILL</span> · Content engine</p>
     <h1 class="masthead">Markdown in, living layouts.</h1>
     <hr class="rule">
-    <p class="lede">MILL is a reusable Markdown-to-pages CMS. Feed it <em>markdown and images</em> and it renders
+    <p class="lede">MILL is a reusable content rendering engine. Feed it <em>Markdown and images</em> and it renders
       <span class="name">GRAIN</span> pages. It's the content pipeline behind this site's docs and blog: write the
       prose, get real pages, no hand-built HTML. It sits <em>above</em> BATCH and GRAIN, an extension of neither.</p>
     <nav class="project-links" aria-label="MILL links">
@@ -28,9 +28,9 @@
 
     <h2 class="section-head"><span>The idea</span></h2>
     <div class="card-grid">
-      <div class="card" data-pad="sm"><h3 class="card__title">A layer above</h3><p class="card__body">It depends on GRAIN for components and BATCH for the substrate, never the reverse. Batch, then grain, then MILL on top.</p></div>
-      <div class="card" data-pad="sm"><h3 class="card__title">Framework-agnostic core</h3><p class="card__body">A Markdown-to-components engine driven by a render-adapter port. The BATCH and GRAIN adapter is the default, not baked in.</p></div>
-      <div class="card" data-pad="sm"><h3 class="card__title">Frontmatter picks the layout</h3><p class="card__body">Frontmatter chooses a layout, content blocks map to component tags. MILL emits the tags, BATCH composes them.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">A layer above</h3><p class="card__body">The package depends on GRAIN. This portfolio supplies BATCH as its server and component composer; MILL can run with another host through the same ports.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Framework-agnostic core</h3><p class="card__body">The core walks Markdown through a render-adapter port. The default adapter emits GRAIN classes; a host can supply another adapter.</p></div>
+      <div class="card" data-pad="sm"><h3 class="card__title">Frontmatter picks the layout</h3><p class="card__body">Frontmatter chooses a layout, and the adapter renders content blocks as semantic HTML. BATCH expands component tags in this portfolio's shell and raw component examples.</p></div>
       <div class="card" data-pad="sm"><h3 class="card__title">Live, then frozen</h3><p class="card__body">It renders live on BATCH while you write, and the static export freezes the result. Same content, two modes.</p></div>
     </div>
 

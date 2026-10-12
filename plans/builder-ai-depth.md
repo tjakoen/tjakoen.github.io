@@ -296,7 +296,8 @@ device, and this project will not add a hosted model or remote prompt path. The 
 comparison is recorded above; the 1.5B model performed better in one eight-case run, but failed both
 removal cases and added unsupported details to its draft. WebLLM documents custom model registration
 and client-side generation, so the larger local model runs without introducing a server. Exact
-network bytes and behavior on representative phone hardware remain unmeasured. Do not treat one run
+desktop network bytes are recorded below; behavior on representative phone hardware remains
+unmeasured. Do not treat one run
 as evidence that the larger model is dependable.
 
 Revising text in an already composed page also crosses a GRAIN boundary: the portfolio has no
@@ -341,7 +342,7 @@ copy edits appear to work.
       input. The portfolio now requests schema-constrained JSON for its local build path and tests
       that contract through the desk bridge; the existing validator still applies. Measure real-model
       writing quality before presenting this as reliable copywriting.
-- [ ] Finish the model comparison by measuring exact first-visit network bytes and cold start on phone
+- [ ] Finish the model comparison by measuring cold start on phone
       hardware, then improve the grounded draft. The 0.5B scored 2/8 in each of two October 11 runs;
       the 1.5B scored 6/8 in one separate run, but failed both removal cases and added unsupported
       flourishes to its draft. It scored 6/8 and 5/8 in two October 12 runs, with different passing
@@ -352,7 +353,8 @@ copy edits appear to work.
       October 11 first scenario took 40.5 seconds from a fresh browser cache, including model load and
       generation; the 1.6 GB
       browser-profile footprint is not a network-size measurement. Exact first-visit network bytes
-      and phone hardware remain unmeasured. Keep copy review visible and do not promise reliable
+      are now recorded in the October 12 cold-download measurement below. Phone hardware remains
+      unmeasured. Keep copy review visible and do not promise reliable
       natural-language page writing until it passes repeated measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
@@ -363,6 +365,19 @@ copy edits appear to work.
       and 390px with one page heading, no horizontal overflow, and no browser page errors. The phone
       view keeps the example link visible and the toolbar wraps without clipping. The live page shows
       the current model-size disclosure and measured `move b3 up` example.
+
+## Cold download measurement, October 12
+
+The October 12 cold-download measurement used a new persistent Chromium profile, with network capture
+attached before opening the Builder. All 30 weight shards in the pinned model index were received
+without cached responses. Their declared body sizes total 868,547,584 bytes. Chromium reported
+875,219,838 encoded transfer bytes across weights, tokenizer, configuration, index, and WebGPU library,
+plus 1,661,197 bytes for the WebLLM JavaScript runtime. The public larger-model download notice now
+uses about 875 MB. Exact desktop transfer measurement is complete; actual phone hardware is still
+unmeasured. The model's draft appeared within the 60.1-second observation window and included the
+supplied bakery name, city, and requested product wording, but invented artisanal-bread and staple
+claims. The sampled timing has ten-second resolution and is not an exact generation duration.
+See audit/builder-cold-2026-10-12.md for the capture method and visible output.
 
 ## Done means
 
