@@ -64,16 +64,20 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("A focused local check passed both deletion cases");
-    await expect(page.locator(".wb-bar__note")).toContainText("its draft still omitted Utrecht");
-    await expect(page.locator(".wb-bar__note")).toContainText("first request can take close to a minute");
+    await expect(page.locator(".wb-bar__note")).toContainText("latest full local 1.5B check scored 6/8");
+    await expect(page.locator(".wb-bar__note")).toContainText("corrected and applied the relative second-card deletion after review");
+    await expect(page.locator(".wb-bar__note")).toContainText("explicit-ID deletion still received no model action");
+    await expect(page.locator(".wb-bar__note")).toContainText("draft omitted Utrecht");
+    await expect(page.locator(".wb-bar__note")).toContainText("requests stop after 75 seconds");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
     await expect(help).toContainText("The first request took 50 seconds");
     await expect(help).toContainText("both deletion cases failed");
     await expect(help).toContainText("The draft omitted Utrecht");
     await expect(help).toContainText("This 2/3 result measures the reviewed page workflow");
-    await expect(help).toContainText("shows both IDs and uses the requested block");
+    await expect(help).toContainText("shows both versions and uses your explicit request");
+    await expect(help).toContainText("relative second-card deletion passed after the review proposal corrected both the model's operation and target");
+    await expect(help).toContainText("requests stop after 75 seconds");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
     await expect(page.locator(`${CELL}[data-span="full"]`).first()).toHaveAttribute("data-block-id", "b1");
@@ -436,6 +440,8 @@ export async function webgpuAvailable() { return true; }
 function draftAnswer(prompt) {
   if (/drop the second card/i.test(prompt)) {
     const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
+    if (sessionStorage.getItem("__builderWrongAction") === "true")
+      return JSON.stringify({ action: "block.span", target, payload: { span: "half" } });
     return JSON.stringify({ action: "block.remove", target, payload: {} });
   }
   if (/drop the callout/i.test(prompt)) return JSON.stringify({ action: "block.remove", target: "block:b2", payload: {} });
@@ -484,6 +490,8 @@ export function makeChatModel() {
       ] });
       if (/drop the second card/i.test(prompt)) {
         const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
+        if (sessionStorage.getItem("__builderWrongAction") === "true")
+          return JSON.stringify({ action: "block.span", target, payload: { span: "half" } });
         return JSON.stringify({ action: "block.remove", target });
       }
       if (/drop the callout/i.test(prompt)) return JSON.stringify({ action: "block.remove", target: "block:b2" });
@@ -621,14 +629,35 @@ test.describe("the model chooses the verb", () => {
     await submitPrompt(page, "drop the second card");
 
     await expect(page.locator(PROPOSAL)).toBeVisible();
-    await expect(page.locator(PROPOSAL_COPY)).toContainText("The model chose first card (b2)");
-    await expect(page.locator(PROPOSAL_COPY)).toContainText("your request clearly identifies second card (b4)");
-    await expect(page.locator(PROPOSAL_COPY)).toContainText("The proposal uses b4");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("The model proposed Drop b2 for first card (b2)");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly identifies Drop b4 on second card (b4)");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Review the corrected proposal");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
     await page.setViewportSize({ width: 390, height: 844 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
 
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+  });
+
+  test("a clearly stated edit verb and target correct a wrong operation only after review", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await twoCardPage(page);
+    await page.evaluate(() => {
+      sessionStorage.setItem("__builderWrongTarget", "true");
+      sessionStorage.setItem("__builderWrongAction", "true");
+    });
+    await waitForDesk(page);
+    await submitPrompt(page, "drop the second card");
+
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("The model proposed Set b2 to half width for first card (b2)");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly identifies Drop b4 on second card (b4)");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);

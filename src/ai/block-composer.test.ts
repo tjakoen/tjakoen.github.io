@@ -208,8 +208,8 @@ describe("composeFromNames enumerates what the model only named", () => {
 });
 
 describe("completeWithin bounds one answer", () => {
-  test("uses a 60-second completion limit for the local model", () => {
-    expect(COMPLETION_TIMEOUT_MS).toBe(60_000);
+  test("uses a 75-second completion limit for the local model", () => {
+    expect(COMPLETION_TIMEOUT_MS).toBe(75_000);
   });
 
   test("an answer that arrives is passed straight through", async () => {

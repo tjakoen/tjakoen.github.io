@@ -71,10 +71,11 @@
           </div>
         </section>
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
-          First use downloads about 875 MB on capable devices or 350 MB on others. The latest checks
-          scored 5/8 with the larger model and 2/8 twice with the smaller model. A focused local check
-          passed both deletion cases after the Builder visibly corrected the model's wrong target;
-          its draft still omitted Utrecht. A first request can take close to a minute. Review generated
+          First use downloads about 875 MB on capable devices or 350 MB on others. The latest full
+          local 1.5B check scored 6/8. The Builder corrected and applied the relative second-card
+          deletion after review; an explicit-ID deletion still received no model action, and the
+          draft omitted Utrecht. First answers can take over a minute, and requests stop after 75 seconds.
+          Review generated
           copy and verify its claims before adding a draft or exporting.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
@@ -244,21 +245,25 @@
             model loading and generation. The browser profile occupied 1.6 GB on disk after that run.</p>
           <p>A focused October 13 recheck applied both deletion requests after the Builder showed and
             corrected the model's wrong target for the second card. The draft still omitted Utrecht.
-            This 2/3 result measures the reviewed page workflow, not the model's own accuracy. The model
-            still chose the wrong card, and the draft still needs a human to check its facts.</p>
+            This 2/3 result measures the reviewed page workflow, not the model's own accuracy. In a
+            later eight-case run, the explicit-ID deletion returned no action and the draft omitted
+            Utrecht; the relative second-card deletion passed after the review proposal corrected both
+            the model's operation and target. The run scored 6/8, with width, move, and copy-edit
+            refusal cases also passing. The generated draft included unsupported marketing claims.
+            First answers can take over a minute, and requests stop after 75 seconds.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
-            the canvas again before it reports a change. When the model names a different block from
-            one uniquely identified by your words, the proposal shows both IDs and uses the requested
-            block. Ambiguous references keep the model's proposal for review, and missing targets are
-            refused. This correction makes that edit safer; it does not prove the model resolved the
-            reference correctly. The block rail remains the
+          the canvas again before it reports a change. When one edit verb, value, and live block are
+            clear in your request but the model proposes a different action or target, the proposal
+            shows both versions and uses your explicit request. Ambiguous references keep the model's
+            proposal for review, and missing targets are refused. This correction makes that edit
+            safer; it does not prove the model resolved the reference correctly. The block rail remains the
             dependable way to resize, move, or remove something. The model may add new blocks; it
             cannot revise copy already on the canvas because GRAIN has no registered operation for that.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
             <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">the matcher makes a preview; Build it asks the model to add registered blocks and copy.</span></div>
-            <div class="docs-list__item"><span class="docs-list__name">Move b3 up</span><span class="docs-list__what">an explicit-ID move passed in both profile checks; relative targets can still choose the wrong block.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Move b3 up</span><span class="docs-list__what">an explicit-ID move passed in both profile checks; ambiguous references stay with the model's proposal.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Resize, move, or remove</span><span class="docs-list__what">the rail controls apply these changes directly to the block you choose.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Rewrite existing copy</span><span class="docs-list__what">not supported; GRAIN does not expose a registered text-edit operation.</span></div>
           </div>

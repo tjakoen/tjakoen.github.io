@@ -8,7 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import { parseModelMove, validateMove } from "@tjakoen/grain/ai/model.ts";
 import { buildManifest, type Manifest } from "@tjakoen/grain/ai/manifest.ts";
-import { blockEditManifest, blockEditSchema, blockMessage, blockTargetCorrection, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockMessage, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
 
 const GRAIN: GrainModelPort = { parseModelMove, validateMove } as unknown as GrainModelPort;
 
@@ -101,21 +101,46 @@ describe("explicit target guard", () => {
   });
 
   test("it can transparently correct a wrong model target when the request identifies one block", () => {
-    expect(blockTargetCorrection("drop the second card", blocks, "block:b2")).toEqual({
-      surface: "block:b4",
+    expect(blockIntentCorrection("drop the second card", blocks, {
+      action: "block.span", surface: "block:b2", payload: { span: "half" }, said: "Setting b2 to half width.",
+    })).toEqual({
+      command: { action: "block.remove", surface: "block:b4", payload: {}, said: "" },
+      proposed: { action: "block.span", surface: "block:b2", payload: { span: "half" }, said: "Setting b2 to half width." },
       requestedId: "b4",
       requestedLabel: "second card",
       proposedId: "b2",
       proposedLabel: "first card",
     });
-    expect(blockTargetCorrection("remove b4", blocks, "block:b2")?.surface).toBe("block:b4");
-    expect(blockTargetCorrection("drop the second card", blocks, "block:b4")).toBeNull();
+    expect(blockIntentCorrection("drop the second card", blocks, {
+      action: "block.remove", surface: "block:b2", payload: {}, said: "",
+    })?.command.surface).toBe("block:b4");
+    expect(blockIntentCorrection("drop the second card", blocks, {
+      action: "block.remove", surface: "block:b4", payload: {}, said: "",
+    })).toBeNull();
   });
 
   test("it does not correct an absent, ambiguous, or unspecified target", () => {
-    expect(blockTargetCorrection("drop the third card", blocks, "block:b2")).toBeNull();
-    expect(blockTargetCorrection("move a card up", blocks, "block:b2")).toBeNull();
-    expect(blockTargetCorrection("remove that", blocks, "block:b2")).toBeNull();
+    expect(blockIntentCorrection("drop the third card", blocks, {
+      action: "block.remove", surface: "block:b2", payload: {}, said: "",
+    })).toBeNull();
+    expect(blockIntentCorrection("move a card up", blocks, {
+      action: "block.move", surface: "block:b2", payload: { direction: "up" }, said: "",
+    })).toBeNull();
+    expect(blockIntentCorrection("remove that", blocks, {
+      action: "block.remove", surface: "block:b2", payload: {}, said: "",
+    })).toBeNull();
+    expect(blockIntentCorrection("don't drop the second card", blocks, {
+      action: "block.remove", surface: "block:b2", payload: {}, said: "",
+    })).toBeNull();
+  });
+
+  test("it corrects a uniquely stated span and move as well as the target", () => {
+    expect(blockIntentCorrection("make the second card half width", blocks, {
+      action: "block.span", surface: "block:b2", payload: { span: "full" }, said: "",
+    })?.command).toMatchObject({ action: "block.span", surface: "block:b4", payload: { span: "half" } });
+    expect(blockIntentCorrection("move the callout down", blocks, {
+      action: "block.move", surface: "block:b3", payload: { direction: "up" }, said: "",
+    })?.command).toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "down" } });
   });
 
   test("it accepts the requested block and a unique named component", () => {
