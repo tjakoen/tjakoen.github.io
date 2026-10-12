@@ -7,9 +7,10 @@ task-oriented version.
 
 ## Where it lives
 
-A directory under `grain/components/<layer>/<name>/` (design system) or
-`tjakoen.github.io/view/components/<layer>/<name>/` (app-specific), `layer` ∈ `atoms` / `molecules` /
-`organisms`.
+In the GRAIN monorepo, add a design-system component under
+`packages/grain/components/<layer>/<name>/`. A component owned by the portfolio application lives
+under `view/components/<layer>/<name>/` in the portfolio repository. The `layer` is `atoms`,
+`molecules`, or `organisms`.
 
 ## The checklist
 
@@ -26,10 +27,13 @@ Some components have no `.html` (a class + docs only) — deliberate for layout 
 ## Verify it landed
 
 ```sh
-bun run dev
-# then open /catalog — the new component appears automatically, no registration
-bun run check && bun test
+# from the GRAIN monorepo root
+bun run --filter @tjakoen/grain check
+bun run --filter @tjakoen/grain test
 ```
 
-If the component wires a `data-action`, the boot-time drift guard in `server.ts` will warn on
-startup if that verb isn't in `ai/contract.ts`'s `ACTIONS` registry.
+To inspect the component in the portfolio, run *bun run dev* from the portfolio repository and open
+*/catalog*. That catalog reads the GRAIN package version the portfolio resolves, so a change in the
+GRAIN checkout appears there only after the portfolio uses that package revision. If the component
+wires a `data-action`, the portfolio's boot-time drift guard warns when its verb is absent from the
+GRAIN contract's `ACTIONS` registry.
