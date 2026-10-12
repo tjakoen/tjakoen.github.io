@@ -60,6 +60,12 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("through the configured server or client door");
     await expect(page.locator(".board")).not.toContainText("clicking it becomes POST /intent");
 
+    await page.goto("/grain/docs/add-a-component");
+    await expect(page.locator(".board")).toContainText("packages/grain/components/<layer>/<name>/");
+    await expect(page.locator(".board")).toContainText("bun run --filter @tjakoen/grain check");
+    await expect(page.locator(".board")).toContainText("the GRAIN package version the portfolio resolves");
+    await expect(page.locator(".board")).not.toContainText("the new component appears automatically");
+
     await page.goto("/mill/docs/getting-started");
     await expect(page.locator(".board")).toContainText("is a content rendering engine");
     await expect(page.locator(".board")).not.toContainText("CMS");

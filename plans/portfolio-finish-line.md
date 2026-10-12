@@ -203,6 +203,12 @@ JavaScript rewriting for subpath deploys. The older architecture summary now als
 rewritten CSS and JavaScript from byte-for-byte binary copies. The docs browser suite checks these
 statements.
 
+The GRAIN component guide still named the package's pre-workspace `grain/components` path and mixed
+the GRAIN monorepo's package checks with the portfolio's local preview server. It now names
+`packages/grain/components`, gives the package-scoped check and test commands, and explains that the
+portfolio catalog displays the package version its own config resolves. The documented workspace
+commands passed, and the docs browser test covers the path and preview boundary.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need
