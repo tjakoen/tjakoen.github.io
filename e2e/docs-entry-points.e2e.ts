@@ -144,6 +144,8 @@ test.describe("developer docs entry points", () => {
     await page.goto("/proof/docs/getting-started");
     await expect(page.locator(".board")).toContainText("plansDir, the directory PROOF reads");
     await expect(page.locator(".board")).not.toContainText("the one thing PROOF asks the host for");
+    await expect(page.locator(".board")).toContainText("prints the manual CLAUDE.md wiring step");
+    await expect(page.locator(".board")).not.toContainText("contract section for the host's own CLAUDE.md");
   });
 
   test("the static export guide points to the portfolio deploy workflow", async ({ page }) => {
