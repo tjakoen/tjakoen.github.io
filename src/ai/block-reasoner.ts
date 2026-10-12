@@ -215,6 +215,14 @@ type RequestedBlock =
   | { kind: "missing"; requested: string }
   | { kind: "ambiguous" };
 
+export interface BlockTargetCorrection {
+  surface: string;
+  requestedId: string;
+  requestedLabel: string;
+  proposedId: string;
+  proposedLabel: string;
+}
+
 function requestedBlock(
   message: string,
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
@@ -274,6 +282,28 @@ export function blockTargetMismatch(
   const proposed = describeBlocks(blocks).find((entry) => entry.id === idOf(target));
   if (!proposed || proposed.id === resolvedBlock.id) return null;
   return `The request points to ${resolvedBlock.label} (${resolvedBlock.id}), but the model proposed ${proposed.label} (${proposed.id}). Nothing changed. Try naming ${resolvedBlock.id} directly.`;
+}
+
+/** Return a correction only when the visitor's words identify one existing block unambiguously.
+ *  The model still chooses the operation; this reconciles its proposed address with a target the
+ *  page can prove from an explicit ID, ordinal, or unique component reference. The UI must disclose
+ *  the correction and keep it behind the ordinary approval control. */
+export function blockTargetCorrection(
+  message: string,
+  blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
+  target: string,
+): BlockTargetCorrection | null {
+  const requested = requestedBlock(message, blocks);
+  if (!requested || requested.kind !== "resolved") return null;
+  const proposed = describeBlocks(blocks).find((entry) => entry.id === idOf(target));
+  if (!proposed || proposed.id === requested.block.id) return null;
+  return {
+    surface: `block:${requested.block.id}`,
+    requestedId: requested.block.id,
+    requestedLabel: requested.block.label,
+    proposedId: proposed.id,
+    proposedLabel: proposed.label,
+  };
 }
 
 // ---------------------------------------------------------------------------------------------

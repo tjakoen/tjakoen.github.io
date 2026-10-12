@@ -281,6 +281,16 @@ edit actions, target IDs, and payload vocabulary before GRAIN validates the answ
 check scored 1/3: `drop b4` landed, relative deletion still proposed b2, and the draft still omitted
 Utrecht while adding unsupported wording. This single check does not establish a repeatable gain.
 
+The October 13 follow-up keeps the model's operation choice, but safely reconciles a wrong target when
+the visitor's wording identifies exactly one live block. The proposal names the model's chosen block
+and the requested block, then waits for approval before using the corrected address. References to
+absent blocks are refused; ambiguous references keep the model's proposal for review. The audit
+records the raw answer, the correction shown, and the resulting canvas separately. Its next focused
+check passed both deletion cases: the model named b2
+for the second card, and the proposal transparently corrected it to b4; the explicit `drop b4` request
+also landed. The draft still omitted Utrecht, so the end-to-end check scored 2/3. This demonstrates
+safe target reconciliation, not reliable model reference resolution or grounded copy.
+
 The October 13 Builder update adds a review-first path for model-composed pages. Proposed blocks and
 their text appear in the workbench before they enter the composition. Visitors can edit proposed
 text fields in that panel; acceptance runs those values through the existing block-copy sanitizer
@@ -357,13 +367,15 @@ copy edits appear to work.
 - [ ] Improve the model's edit choices using the live manifest and the block IDs already visible on
       the page. The prompt contains only live block actions and identifies each block's type and
       order. A portfolio-side parser accepts the measured `move` alias only for a live block and
-      valid direction, and the target-mismatch guard refuses a clear reference conflict or a named
-      target that is absent from the current composition. The local completion now also receives a
-      schema derived from live block IDs, edit verbs, and payload values; it improved the explicit-ID
-      deletion in one warm check, but the relative deletion still chose the first card instead of the
-      second. The 0.5B full run scored 2/8; the 1.5B runs varied, and both profiles have shown failed
-      removals. The chooser still belongs to the AI, and repeat measurements have not established
-      reliable block selection.
+      valid direction. The local completion receives a schema derived from live block IDs, edit
+      verbs, and payload values. When a model target conflicts with one block uniquely identified by
+      the request, the review proposal discloses both choices and uses the requested block after
+      approval; missing targets are refused, while ambiguous references stay with the model proposal
+      for human review. The October 13 focused check applied
+      both deletion requests through this path, but the model still chose the first card for a request
+      to remove the second. This is a safe application-level correction, not evidence of reliable
+      model targeting. The 0.5B full run scored 2/8; 1.5B runs have varied, and the next full
+      comparison still needs repeated scenarios.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
@@ -397,7 +409,10 @@ copy edits appear to work.
       after adding schema-constrained edit output: explicit `drop b4` passed, relative deletion still
       targeted b2, and the draft still omitted Utrecht. Its corrected audit harness scores proposed
       copy before acceptance. This isolated result does not establish a quality improvement. The
-      October 11 first scenario took
+      transparent target correction then let both deletion cases apply through review, while the
+      draft still omitted the city. This focused 2/3 result demonstrates target reconciliation, not a
+      model-quality improvement. The audit also records any correction beside the model's raw answer.
+      The October 11 first scenario took
       40.5 seconds from a fresh browser cache, including model load and generation; the 1.6 GB
       browser-profile footprint is not a network-size measurement. Exact first-visit network bytes
       are now recorded in the October 12 cold-download measurement below. Phone hardware remains

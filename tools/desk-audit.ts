@@ -417,6 +417,8 @@ interface Result {
   draftText?: string[];
   /** Number of proposed blocks shown in the review panel before the audit visitor accepts them. */
   draftBlocks?: number;
+  /** The correction text shown when the model proposed a different, unambiguous block. */
+  targetCorrection?: string;
   /** Builder scenarios only: what the model was handed and what it said back, verbatim. The report's
    *  most useful field when a scenario fails — the page's reading of a bad answer looks the same
    *  whatever the bad answer was. */
@@ -593,6 +595,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     let { text, path: endPath } = await settle(page, startPath, timeout, builderPage ? lastSaid : lastReply);
     let draftText: string[] | undefined;
     let draftBlocks: number | undefined;
+    let targetCorrection: string | undefined;
     if (s.builderDraft) {
       const review = page.locator("[data-builder-draft-review]");
       const reviewVisible = await review.isVisible().catch(() => false);
@@ -615,6 +618,8 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     // The real visitor now approves each proposed edit. The audit does the same only after the
     // proposal is visible, then grades the canvas after the ordinary approval path runs.
     if (s.builder && await page.locator("[data-proposal-apply]").isVisible().catch(() => false)) {
+      const proposalText = (await page.locator('[data-surface="builder-edit-proposal-copy"]').textContent().catch(() => ""))?.trim() ?? "";
+      if (proposalText.startsWith("The model chose ")) targetCorrection = proposalText;
       await page.locator("[data-proposal-apply]").click();
       ({ text, path: endPath } = await settle(page, startPath, timeout, lastSaid));
     }
@@ -644,7 +649,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     }, !!s.keepNotepad).catch(() => {});
     const ms = Date.now() - t0;
     const failures = grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks);
-    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftBlocks, model, pass: failures.length === 0, failures };
+    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftBlocks, targetCorrection, model, pass: failures.length === 0, failures };
   } finally {
     await page.close().catch(() => {});
   }
@@ -677,6 +682,7 @@ try {
     if (res.reply) console.log(`  reply: ${res.reply.slice(0, 220).replace(/\s+/g, " ")}${res.reply.length > 220 ? "…" : ""}`);
     if (res.canvas) console.log(`  canvas: ${res.canvas.map((c) => `${c.id}/${c.span}`).join(" ") || "(empty)"}`);
     if (res.draftText) console.log(`  draft: ${res.draftText.join(" | ").replace(/\s+/g, " ").slice(0, 220)}`);
+    if (res.targetCorrection) console.log(`  target correction: ${res.targetCorrection}`);
     if (res.model?.raw) console.log(`  model said: ${res.model.raw.slice(0, 200).replace(/\s+/g, " ")}`);
   }
 } finally {

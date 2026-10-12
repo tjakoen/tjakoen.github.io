@@ -146,8 +146,11 @@ larger model handled both width changes, both explicit-ID moves, and refusal to 
 copy, but failed both removal scenarios and added unsupported flourishes to its draft. Its first
 scenario took 40.5 seconds from a fresh cache, including model loading and generation; a browser
 profile occupied 1.6 GB after the run, which is not an exact download measurement. The Builder now
-selects 1.5B only on capable devices; the shared desk remains on 0.5B. The comparison and remaining
-phone/network measurements are recorded in builder-ai-depth.md. Copy on blocks already in the canvas
+selects 1.5B only on capable devices; the shared desk remains on 0.5B. A focused October 13 check
+applied both deletion requests after the review panel disclosed and corrected the model's wrong
+target for the second card. The same run's draft omitted Utrecht, so the reviewed workflow scored
+2/3. That result measures target reconciliation, not model accuracy or reliable writing. Phone
+hardware and repeated grounded-copy measurements remain open. Copy on blocks already in the canvas
 cannot yet be edited.
 
 The Builder now follows the part of Puck's AI approach that fits this site: a model chooses from
@@ -302,7 +305,7 @@ individual checks before the audit can be called complete.
 | /pantry | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Implemented: the page shows the documented install, scaffold, validation, and serve commands, then explains that the board reads the host project's plans in place. The PANTRY guides now include the current decisions, run, artifact, and timeline surfaces, identify which routes are not covered by surface toggles, and state the local answer-write path. |
 | /greenroom | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Implemented: the page summarizes and links to Greenroom's archived seeded report, distinguishing its four practice-environment results from the separate ten-check screenshot and calling out the intentional failures. The phone layout and route links are covered by e2e/projects-layout.e2e.ts. |
 | /native-github-classroom and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Implemented: the first links now move from the architecture diagram to the working demo, safety docs, and public source. The copy keeps course internals and student records private; browser checks cover the phone navigation and confirm the docs route resolves. |
-| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in builder-ai-depth.md. The workbench shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. New blocks can receive bounded generated copy through registered fields, covered by unit and browser tests; live writing still needs review. A refreshed desktop and phone review fixed the canvas header wrapping its block count and clipping the file actions when the desk panel is open. Builder selects the 1.5B local model only on capable devices; the shared desk remains on 0.5B. On October 11, the 0.5B scored 2/8 in each of two checks and the 1.5B scored 6/8. October 12 runs scored 6/8 and 5/8 with different passing cases. After the timeout increased to 60 seconds, both deletion cases failed and the full draft omitted Utrecht and added unrequested marketing phrases. The first request took 50 seconds; the target guard refused the model's first-card answer to a second-card request. The guard also refuses a clear request for a missing block rather than allowing a different block to be proposed; unit coverage and a focused browser case verify that boundary. A warm draft retained the city but still added unsupported language. The first-screen example offers a prefilled `move b3 up` prompt and an honest copy-edit refusal; the visitor still chooses when to send each prompt. All 66 Builder browser cases now pass. Live-model target and copy reliability remain open. Existing block copy cannot yet be edited. |
+| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in builder-ai-depth.md. The workbench shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. New blocks can receive bounded generated copy through registered fields, covered by unit and browser tests; live writing still needs review. A refreshed desktop and phone review fixed the canvas header wrapping its block count and clipping the file actions when the desk panel is open. Builder selects the 1.5B local model only on capable devices; the shared desk remains on 0.5B. On October 11, the 0.5B scored 2/8 in each of two checks and the 1.5B scored 6/8. October 12 runs scored 6/8 and 5/8 with different passing cases. After the timeout increased to 60 seconds, both deletion cases failed and the full draft omitted Utrecht and added unrequested marketing phrases. A focused October 13 check found that the model chose the first card for a request to remove the second. The review panel named both blocks and used the uniquely identified requested block; both deletion cases then applied, while the generated page still omitted Utrecht. The 2/3 score measures the reviewed workflow, not the model's target selection or copy reliability. A warm draft retained the city but still added unsupported language. The first-screen example offers a prefilled `move b3 up` prompt and an honest copy-edit refusal; the visitor still chooses when to send each prompt. The 67-case Builder suite passes. Phone cold-start and repeated grounded-draft reliability remain open. Existing block copy cannot yet be edited. |
 | /grain/builder/preview | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Implemented: the empty state now opens the workbench with a representative page composed; the static-host limitation remains explicit. |
 | /teaching | Add an anonymized sample activity or rubric so the course and assessment claims have inspectable teaching evidence. | Implemented: an explicitly illustrative responsive-web assessment slice maps observable repository evidence to the published badge criteria without exposing student work or private assignments. |
 | /badges and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | The hub explains the activity threshold and historical reconciliation accurately, and groups class links under each course. Class pages link back to all badge criteria. The shared certificate template has been reviewed at phone width: share-link copying reports success, falls back when clipboard access is unavailable, and exposes a manual link if copying still fails. Browser checks confirm recipient certificates stay out of the sitemap and class pages do not enumerate recipients. |
@@ -375,11 +378,12 @@ individual checks before the audit can be called complete.
       then make the builder a convincing demonstration of the same system the portfolio introduces.
       The October 13 local 1.5B run scored 5/8: width and move edits and the copy-edit refusal passed,
       while both deletion cases failed and the draft omitted a supplied location and added unsupported
-      claims. Guarded failures left the canvas unchanged. Model-composed pages now pause in a review
-      panel where visitors can inspect or edit text before acceptance; edited values are sanitized
-      before they enter the composition. Human review is still needed to catch unsupported claims.
-      Phone cold-start and repeated grounded-draft reliability remain open. See the Builder plan for
-      the scenario detail.
+      claims. A later focused check applied both deletion cases after the review panel transparently
+      corrected one uniquely identified target; the draft still omitted Utrecht, for a 2/3 reviewed
+      workflow result. Model-composed pages pause in a review panel where visitors can inspect or edit
+      text before acceptance; edited values are sanitized before they enter the composition. Human
+      review is still needed to catch unsupported claims. Phone cold-start and repeated grounded-draft
+      reliability remain open. See the Builder plan for the scenario detail.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
@@ -399,9 +403,10 @@ individual checks before the audit can be called complete.
       available across routes, while page-specific features load only where needed. The local report
       labels its values as build-size checks rather than production transfer sizes.
 - [ ] Commit the finished work on main, deploy it, and verify the published pages. Current local
-      evidence on October 13: `bun run test:all` passes the unit tests and all 421 browser cases;
-      `bun run check` and `bun run lint` pass; link lint finds no dead relative links in 56 rendered
-      files; the fresh sitemap audit has 148 successful routes and zero document findings; and
+      evidence on October 13: `bun test` passes 710 unit tests and the serial browser suite passes all
+      421 cases; `bun run check` and `bun run lint` pass; the lint gate stays under its baseline; link
+      lint finds no dead relative links in 56 rendered files; the fresh sitemap audit has 148
+      successful routes and zero document findings; and
       static export verification passes for 1,177 pages, 1,133 data routes, 39 frozen modules, and
       627 assets. These local checks do not prove that the reviewed commit is deployed. Push only
       after the remaining page review is complete, then verify GitHub Pages and CI against that

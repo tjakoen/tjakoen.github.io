@@ -64,13 +64,16 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("scored 5/8 with the larger model and 2/8 twice with the smaller model");
+    await expect(page.locator(".wb-bar__note")).toContainText("A focused local check passed both deletion cases");
+    await expect(page.locator(".wb-bar__note")).toContainText("its draft still omitted Utrecht");
     await expect(page.locator(".wb-bar__note")).toContainText("first request can take close to a minute");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
     await expect(help).toContainText("The first request took 50 seconds");
     await expect(help).toContainText("both deletion cases failed");
     await expect(help).toContainText("The draft omitted Utrecht");
+    await expect(help).toContainText("This 2/3 result measures the reviewed page workflow");
+    await expect(help).toContainText("shows both IDs and uses the requested block");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
     await expect(page.locator(`${CELL}[data-span="full"]`).first()).toHaveAttribute("data-block-id", "b1");
@@ -611,15 +614,24 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(RAIL_ROW)).toHaveCount(3);
   });
 
-  test("a valid proposal that contradicts the named target is refused before review", async ({ page }) => {
+  test("a wrong model target is corrected transparently and still waits for approval", async ({ page }) => {
     await twoCardPage(page);
     await page.evaluate(() => sessionStorage.setItem("__builderWrongTarget", "true"));
     await waitForDesk(page);
     await submitPrompt(page, "drop the second card");
 
-    await expect(page.locator(SAID)).toHaveText("The request points to second card (b4), but the model proposed first card (b2). Nothing changed. Try naming b4 directly.");
-    await expect(page.locator(PROPOSAL)).toBeHidden();
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("The model chose first card (b2)");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("your request clearly identifies second card (b4)");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("The proposal uses b4");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
+
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
   });
 
   test("a model cannot turn a missing named block into a different block removal", async ({ page }) => {

@@ -8,7 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import { parseModelMove, validateMove } from "@tjakoen/grain/ai/model.ts";
 import { buildManifest, type Manifest } from "@tjakoen/grain/ai/manifest.ts";
-import { blockEditManifest, blockEditSchema, blockMessage, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockMessage, blockTargetCorrection, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
 
 const GRAIN: GrainModelPort = { parseModelMove, validateMove } as unknown as GrainModelPort;
 
@@ -98,6 +98,24 @@ describe("explicit target guard", () => {
   test("it refuses a legal command against the wrong ordinal block", () => {
     expect(blockTargetMismatch("drop the second card", blocks, "block:b2"))
       .toBe("The request points to second card (b4), but the model proposed first card (b2). Nothing changed. Try naming b4 directly.");
+  });
+
+  test("it can transparently correct a wrong model target when the request identifies one block", () => {
+    expect(blockTargetCorrection("drop the second card", blocks, "block:b2")).toEqual({
+      surface: "block:b4",
+      requestedId: "b4",
+      requestedLabel: "second card",
+      proposedId: "b2",
+      proposedLabel: "first card",
+    });
+    expect(blockTargetCorrection("remove b4", blocks, "block:b2")?.surface).toBe("block:b4");
+    expect(blockTargetCorrection("drop the second card", blocks, "block:b4")).toBeNull();
+  });
+
+  test("it does not correct an absent, ambiguous, or unspecified target", () => {
+    expect(blockTargetCorrection("drop the third card", blocks, "block:b2")).toBeNull();
+    expect(blockTargetCorrection("move a card up", blocks, "block:b2")).toBeNull();
+    expect(blockTargetCorrection("remove that", blocks, "block:b2")).toBeNull();
   });
 
   test("it accepts the requested block and a unique named component", () => {

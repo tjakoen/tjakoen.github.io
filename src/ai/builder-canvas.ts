@@ -35,7 +35,7 @@ import {
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { isCopyEditRequest, looksLikeAnEdit } from "./block-command.ts";
-import { blockEditManifest, blockEditSchema, blockMessage, blockTargetMismatch, inWords, readModelMove, type BlockIntent } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockMessage, blockTargetCorrection, blockTargetMismatch, inWords, readModelMove, type BlockIntent, type BlockTargetCorrection } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -383,7 +383,7 @@ function boot(): void {
   const draftBlocks = $<HTMLOListElement>("[data-builder-draft-blocks]");
   const acceptDraft = $<HTMLButtonElement>("[data-draft-accept]", draftReview ?? undefined);
   const discardDraft = $<HTMLButtonElement>("[data-draft-discard]", draftReview ?? undefined);
-  type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition };
+  type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition; ask: string; correction: BlockTargetCorrection | null };
   type DraftProposal = { ask: string; composition: PageComposition; before: PageComposition; names: string[] };
   type Applying = { expected: PageComposition; description: string; timer: ReturnType<typeof setTimeout> };
   let proposal: Proposal | null = null;
@@ -536,9 +536,18 @@ function boot(): void {
     }
     if (read.kind === "reply") { say(read.said, "reply"); return; }
 
-    const targetMismatch = blockTargetMismatch(ask, state.blocks, read.command.surface);
+    const correction = blockTargetCorrection(ask, state.blocks, read.command.surface);
+    const targetMismatch = correction ? null : blockTargetMismatch(ask, state.blocks, read.command.surface);
     if (targetMismatch) {
       say(targetMismatch, "refusal");
+      return;
+    }
+
+    const command = correction ? { ...read.command, surface: correction.surface } : read.command;
+    if (correction && !manifest.targets.some((target) =>
+      target.id === correction.surface && target.accepts.includes(command.action),
+    )) {
+      say(`The request identifies ${correction.requestedId}, but that block cannot take this edit. Nothing changed.`, "refusal");
       return;
     }
 
@@ -547,11 +556,15 @@ function boot(): void {
       return;
     }
 
-    proposal = { command: read.command, raw, model: grainModel, manifestApi: grainManifest, composition: compositionAtAsk };
-    const label = intentLabel(read.command);
-    proposalCopy.textContent = `Proposed edit: ${label}. Check the block ID and change before applying.`;
+    proposal = { command, raw, model: grainModel, manifestApi: grainManifest, composition: compositionAtAsk, ask, correction };
+    const label = intentLabel(command);
+    proposalCopy.textContent = correction
+      ? `The model chose ${correction.proposedLabel} (${correction.proposedId}), but your request clearly identifies ${correction.requestedLabel} (${correction.requestedId}). The proposal uses ${correction.requestedId}. Review it before applying.`
+      : `Proposed edit: ${label}. Check the block ID and change before applying.`;
     proposalPanel.removeAttribute("hidden");
-    say(`Review this edit: ${label}.`, "thinking");
+    say(correction
+      ? `The model chose ${correction.proposedId}; your request identifies ${correction.requestedId}. Review the corrected edit: ${label}.`
+      : `Review this edit: ${label}.`, "thinking");
   }
 
   cancelProposal?.addEventListener("click", () => {
@@ -576,16 +589,22 @@ function boot(): void {
     }
     const manifest = waiting.manifestApi.domManifest(document);
     const checked = readModelMove(waiting.raw, manifest, waiting.model);
-    if (checked.kind !== "command" || checked.command.action !== waiting.command.action ||
-        checked.command.surface !== waiting.command.surface ||
-        JSON.stringify(checked.command.payload) !== JSON.stringify(waiting.command.payload)) {
+    const checkedCorrection = checked.kind === "command"
+      ? blockTargetCorrection(waiting.ask, state.blocks, checked.command.surface)
+      : null;
+    const checkedCommand = checked.kind === "command" && checkedCorrection
+      ? { ...checked.command, surface: checkedCorrection.surface }
+      : checked.kind === "command" ? checked.command : null;
+    if (!checkedCommand || checkedCommand.action !== waiting.command.action ||
+        checkedCommand.surface !== waiting.command.surface ||
+        JSON.stringify(checkedCommand.payload) !== JSON.stringify(waiting.command.payload)) {
       clearProposal();
       say(checked.kind === "refusal" || checked.kind === "reply"
         ? checked.said
         : "The proposal no longer matches the current page. Nothing changed; ask again.", "refusal");
       return;
     }
-    const expected = expectedAfterIntent(state, checked.command);
+    const expected = expectedAfterIntent(state, checkedCommand);
     if (!expected || sameShape(state, expected)) {
       clearProposal();
       say("That edit would leave the page as it is, so nothing changed.", "reply");
@@ -596,7 +615,7 @@ function boot(): void {
     say("Applying the approved edit through GRAIN…", "thinking");
     const applyingEdit: Applying = {
       expected,
-      description: intentLabel(checked.command),
+      description: intentLabel(checkedCommand),
       timer: setTimeout(() => {
         if (applying !== applyingEdit) return;
         applying = null;
@@ -605,7 +624,7 @@ function boot(): void {
     };
     applying = applyingEdit;
     try {
-      door.submit(checked.command.action, checked.command.surface, checked.command.payload);
+      door.submit(checkedCommand.action, checkedCommand.surface, checkedCommand.payload);
     } catch (error) {
       clearTimeout(applyingEdit.timer);
       applying = null;
