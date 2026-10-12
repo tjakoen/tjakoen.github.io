@@ -60,6 +60,22 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("through the configured server or client door");
     await expect(page.locator(".board")).not.toContainText("clicking it becomes POST /intent");
 
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/grain/docs/tutorial");
+    await expect(page.locator(".board")).toContainText('  | "field"');
+    await expect(page.locator(".board")).toContainText('  | "check"');
+    await expect(page.locator(".board")).toContainText('  | "block"');
+    await expect(page.locator(".board")).toContainText('"check.set"');
+    await expect(page.locator(".board")).toContainText('  | "block.remove"');
+    await expect(page.locator(".board")).toContainText('  | "block.span"');
+    await expect(page.locator(".board")).toContainText('  | "block.move"');
+    const contractSample = page.locator(".board pre").first();
+    const contractSampleWidth = await contractSample.evaluate((element) => ({
+      client: element.clientWidth,
+      scroll: element.scrollWidth,
+    }));
+    expect(contractSampleWidth.scroll).toBeLessThanOrEqual(contractSampleWidth.client + 1);
+
     await page.goto("/grain/docs/add-a-component");
     await expect(page.locator(".board")).toContainText("packages/grain/components/<layer>/<name>/");
     await expect(page.locator(".board")).toContainText("bun run --filter @tjakoen/grain check");

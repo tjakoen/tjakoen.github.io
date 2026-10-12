@@ -209,6 +209,11 @@ the GRAIN monorepo's package checks with the portfolio's local preview server. I
 portfolio catalog displays the package version its own config resolves. The documented workspace
 commands passed, and the docs browser test covers the path and preview boundary.
 
+The GRAIN tutorial's copied contract excerpt had fallen behind the package registry: it omitted the
+`check` and `block` surface kinds plus the `check.set` and three block-edit verbs. The excerpt now
+matches the current closed unions, and the docs browser suite checks those entries against the
+rendered guide.
+
 ### Page recommendations in progress
 
 These recommendations come from the routes reviewed so far. The shared content families still need
