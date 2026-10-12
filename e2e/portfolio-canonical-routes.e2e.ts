@@ -10,6 +10,7 @@ test.describe("sitemap canonical routes", () => {
     ["/decks/from-code-to-career/", ".deck-page__title"],
     ["/decks/gdg-hau-ai-hack-ideation/", ".deck-page__title"],
     ["/decks/reality-check-ai-ethics/", ".deck-page__title"],
+    ["/decks/version-one/", ".deck-page__title"],
     ["/grain/builder/", ".builder-composer"],
     ["/grain/builder/preview/", ".preview-pane"],
   ]) {
@@ -30,8 +31,27 @@ test.describe("sitemap canonical routes", () => {
   test("the deck breadcrumb opens a useful index of every presentation", async ({ page }) => {
     await page.goto("/decks/");
     await expect(page.getByRole("heading", { name: "Talks and decks" })).toBeVisible();
-    await expect(page.locator(".deck-index__list a")).toHaveCount(4);
+    await expect(page.locator(".deck-index__list a")).toHaveCount(5);
     await expect(page.locator(".deck-index__list a").first()).toHaveAttribute("href", /^\/decks\//);
+    await expect(page.locator('.deck-index__list a[href="/decks/version-one"]')).toHaveText("Version One");
+  });
+
+  test("the Version One deck stays inside the phone viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/decks/version-one/");
+    await expect(page.locator(".deck-page__title")).toHaveText("Version One");
+    const board = page.locator("main .board");
+    expect(await board.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await board.evaluate((el) => el.clientWidth));
+  });
+
+  test("the workshop page links directly to its in-shell presentation", async ({ page }) => {
+    await page.goto("/calendar/loop-hau-version-one");
+    const deck = page.locator('main a.event-deck[href="/decks/version-one"]');
+    await expect(deck).toBeVisible();
+    await expect(deck).toContainText("47 slides");
+    await page.setViewportSize({ width: 390, height: 844 });
+    const board = page.locator("main .board");
+    expect(await board.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await board.evaluate((el) => el.clientWidth));
   });
 
   test("the GRAIN intro links to its static-compatible AI interface guide", async ({ page }) => {

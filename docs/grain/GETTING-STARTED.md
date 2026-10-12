@@ -2,10 +2,11 @@
 title: "Getting started with GRAIN"
 ---
 
-GRAIN is the AI-interaction design system: a UI where every surface is addressable and operable by
-both a human and an AI through one shared vocabulary, with the AI's presence shown as a visible
-signal (*grain = AI*). It runs on a substrate (BATCH is the reference one) but imports nothing from
-it. The full reasoning is [`GRAIN.md`](GRAIN.md); the contract is [`AI-INTERFACE.md`](AI-INTERFACE.md).
+GRAIN is the AI-interaction design system: a UI where registered surfaces can be addressed and
+operated by both a human and an AI through one shared vocabulary, with the AI's presence shown as a
+visible signal (*grain = AI*). It runs on a substrate (BATCH is the reference one) but imports
+nothing from it. The full reasoning is [`GRAIN.md`](GRAIN.md); the contract is
+[`AI-INTERFACE.md`](AI-INTERFACE.md).
 
 ## Install
 

@@ -39,7 +39,7 @@ BATCH and GRAIN, but it does not change their internal implementations. That dee
 work has its own later review. Existing page-level plans remain the source of implementation details;
 this plan owns the final path across them.
 
-## Current progress (2026-10-03)
+## Current progress (2026-10-13)
 
 The first project-index pass now gives GRAIN a direct introduction beside PANTRY instead of leaving
 the design system visible only as one layer inside the BREAD story. The index names TJ's role across
@@ -61,10 +61,10 @@ console-expand control had no accessible name. The portfolio now clamps that gen
 phone viewport, confines each live specimen to its card, and names the control at the host
 integration boundary and supplies the catalog's missing search description, leaving GRAIN and
 BATCH internals untouched. Browser checks cover the phone width, full-page catalog navigation, and
-description. A refreshed headless audit returned all 145 routes successfully, with canonical, Open
+description. A refreshed headless audit then returned all 145 routes successfully, with canonical, Open
 Graph, structured-data, and description metadata present. The first report still counted generated
 catalog specimen titles as page headings. Those titles now keep their visual style without using
-heading elements, and the refreshed report finds exactly one page heading on all 145 routes. The
+heading elements, and that report found exactly one page heading on all 145 routes. The
 page-family review remains open.
 
 The first desktop and phone review of the main visitor journey also found a stale fact in the talks
@@ -93,6 +93,19 @@ starts that tour from the project page and confirms the first guided step appear
 
 The PANTRY introduction now includes the documented install, scaffold, check, and serve commands next
 to its verified-install claim. It also states that the board reads the host project's plans in place.
+
+On October 13, a fresh sitemap audit covered 148 canonical routes: all returned HTTP 200, and every
+route had one page heading, a description, canonical URL, Open Graph metadata, and structured data.
+The new Version One deck route and workshop attachment were checked at desktop and phone widths,
+and the full deck was reviewed for student repositories and records before its route was added to the
+canonical-page checks. The `/batch` introduction now reports that the linked audit covers 148 routes.
+The static export and dead-link verification pass with the workshop deck included.
+
+The October 13 source-by-source documentation review found two capability overstatements:
+the GRAIN quick start said every surface was operable, and the BATCH static-export guide implied the
+client door exposed the same full vocabulary. They now describe registered surfaces and supported
+service-free actions. Browser assertions cover both statements. The other BATCH, GRAIN, MILL, and
+PROOF guides still require their full source comparison.
 
 The cross-page read of BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, and PANTRY confirms they now tell one
 consistent story: the BREAD page explains the dependency direction and the portfolio request path;
@@ -152,8 +165,8 @@ is the reliable gate for this suite. The export needs PUBLIC_ORIGIN set to the d
 localhost in generated endpoints; the Pages workflow sets it. The lint gate now reports 4,491 flags,
 79 below its previous high-water mark; the ratchet baseline has been lowered to that count. The link
 linter finds no dead relative links across 56 rendered files, and
-every served diagram has a committed SVG. The route audit returns all 146 canonical pages without HTTP or
-document findings. The October 10 BATCH and MILL architecture edits were rendered at desktop and 390
+every served diagram has a committed SVG. The October 13 route audit returns all 148 canonical pages
+without HTTP or document findings. The October 10 BATCH and MILL architecture edits were rendered at desktop and 390
 pixels; both pages have one page heading and no horizontal overflow. A refreshed 23-screen desktop
 gallery is available for review. The screenshot helper isolates browser storage for each capture and
 waits for the welcome greeting to finish. The GRAIN guide's package-boundary section now reflects the
@@ -161,8 +174,8 @@ separate BATCH repository and the GRAIN monorepo that publishes GRAIN, MILL, PRO
 package-doc navigation and phone checks pass. The Builder help now reports both October 11 local-model
 profiles and their measured limits, with the full comparison recorded in builder-ai-depth.md. The
 visual route review covers the 146-route desktop and phone captures and the refreshed 23-screen
-gallery. The remaining work is Builder reliability and the BATCH, GRAIN, MILL, and PROOF documentation
-review. A production transfer check closed the shared-shell delivery decision: fresh Chromium contexts
+gallery; the two newer routes also pass focused desktop and phone checks. The remaining work is Builder
+reliability and the BATCH, GRAIN, MILL, and PROOF documentation review. A production transfer check closed the shared-shell delivery decision: fresh Chromium contexts
 on October 11 received 136,617 JavaScript bytes on / and /notes (123,417 encoded response bytes),
 and 159,108 bytes on /grain/builder (143,208 encoded response bytes), before any model download.
 GitHub Pages serves the scripts with gzip. Keep the shared shell: its site-wide desk, navigation,
@@ -172,7 +185,7 @@ them as local build-size checks rather than visitor transfer estimates. The cata
 specimen chat fields now receive an accessible name and placeholder at the portfolio composition
 boundary, with a browser check covering both rendered fields. The October 10 route-specific island
 pass deferred the image viewer and stylesheet, interactive figure setup, and reading progress on
-pages that do not use them. The local report measures 30–264 KB of uncompressed JavaScript responses
+pages that do not use them. The local report measures 30–268 KB of uncompressed JavaScript responses
 per route; the calendar, long notes, talks, and Builder load their additional features only where
 needed. Production browser captures show the ordinary page's compressed transfer and the Builder's
 additional route modules; the shell decision is closed unless field measurements show a meaningful
@@ -260,7 +273,7 @@ individual checks before the audit can be called complete.
 | /resume | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Implemented: the print sheet now uses the source's letter size, navy hierarchy, inline role headings, and first-page role grouping. The rendered export matches the two-page structure, and a browser check guards the print styles. The phone screenshot pass also caught the fourth profile action clipped inside the card despite the page reporting no horizontal overflow; the four actions now form a two-column grid at phone widths, with an e2e check that confirms every action stays inside the viewport. |
 | /projects | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Implemented: the Greenroom, BREAD, GRAIN, PANTRY, and classroom entries pair a specific capability or outcome with a project page or live demo. Responsive group layout and direct links are covered by e2e/projects-layout.e2e.ts. |
 | /bread | Add one end-to-end example that shows a visitor how the layers work together in a real request, alongside the layer diagram. | Implemented: the page follows a public note from its request through MILL and GRAIN composition to the returned HTML, and explains that PROOF and CRUMB serve other paths. |
-| /batch | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Implemented: the page reports the October 9 portfolio-wide /batch measurement (211,553 bytes of JavaScript, 745,209 total bytes, 35 requests), links to the complete 145-route report, and gives the rerun command. Deferring live-figure code from pages that do not use it cut 56,053 JavaScript bytes from the October 2 measurement. The copy distinguishes shared-shell JavaScript from a BATCH-only benchmark. |
+| /batch | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Implemented: the page reports the October 9 portfolio-wide /batch measurement (211,553 bytes of JavaScript, 745,209 total bytes, 35 requests), links to the current 148-route report, and gives the rerun command. Deferring live-figure code from pages that do not use it cut 56,053 JavaScript bytes from the October 2 measurement. The copy distinguishes shared-shell JavaScript from a BATCH-only benchmark. |
 | /grain | Keep the shared-control and visible-provenance demonstration prominent, then give the visitor a single guided action to try it. | Implemented: the first hero action now jumps directly to the two-operator demo; a browser check confirms the destination and working AI action. The static page links its manifest explanation to the published AI interface guide instead of the server-only /ai/manifest endpoint. The RenderOp introduction distinguishes HTML-bearing operations, typed dispatcher operations, and the service-free limits of the static client door. The tutorial distinguishes the client door used by default in development and on the static export from the server door available through *bun run dev:stub*. Source checks corrected the design-system guide's meaningful-text and link-color rules, and the re-skin guide now names the accent slots used by links, focus rings, and primary controls. Browser assertions guard these public contracts. The deeper component implementation remains deferred. |
 | /mill | Tie the content-engine explanation to one note or documentation page rendered by the live site. | Implemented: the project links include a direct rendered-note example, covered by the landing-page browser check. |
 | /proof and /plans | Explain the relationship between markdown plans and the board with one current, completed portfolio example; keep the manual-refresh limitation explicit until live updates ship. | Implemented: the PROOF page links the completed site-builder markdown to its board detail, states the manual-refresh limit, and has a browser check for both links and the rendered status. |
@@ -290,14 +303,14 @@ individual checks before the audit can be called complete.
 | /notes/whitepaper-one-vocabulary | Keep the working-draft status visible and offer the short GRAIN explanation before the research-length paper. | Implemented: the opening labels the working draft and links to the plain-language companion before the paper's abstract. |
 | /notes/why-i-teach | Connect the teaching motivation to the course platform and badge criteria so readers can verify what changed in practice. | Implemented: the note links to the teaching page for the current courses and the badge hub for criteria and verification. |
 | /calendar | Keep the year strip and feed as complementary ways through the history; review the event and note empty states against the live data on both phone and desktop. | Implemented: the year strip, month navigation, feed filters, and no-JavaScript fallback have focused coverage; the phone range heading now stacks cleanly above its feed link. |
-| /calendar/{event} (six event pages) | Keep the event pages connected to the feed, and make the next link point to a related talk, course, or note where one exists. | Implemented: each event page links back to the Calendar feed; all six now lead to related teaching, note, or talk evidence where it exists. The phone-width check covers every route. The social-copy control reports success when copied and tells readers the text remains selectable if clipboard access is unavailable; browser checks cover both states. |
+| /calendar/{event} (seven event pages) | Keep the event pages connected to the feed, and make the next link point to a related talk, course, or note where one exists. | Implemented: each event page links back to the Calendar feed; all seven now lead to related teaching, note, talk, or presentation evidence where it exists. The phone-width check covers every route. The social-copy control reports success when copied and tells readers the text remains selectable if clipboard access is unavailable; browser checks cover both states. The Version One workshop links to its 47-slide presentation and passes a focused desktop and phone layout check. |
 | /tour and tour routes | Review the entry tour as the visitor's guided route through the portfolio; label the remaining tours as implementation reviews so they do not read like public showcases. | Implemented: the desk button starts the portfolio walkthrough; the separate Say Hello demo stages an unsent draft; every other tour is a dev-mode implementation review reached by a direct review link. The CRUMB page explains those paths, and tests guard the tour inventory and visitor launch. |
 | /404 | Keep the recovery links, and check that each suggested destination still exists and matches its description. | Implemented: an unknown route retains status 404, the recovery links all return 200, and the page fits at phone width. |
 | /docs, /reference, and /catalog | Preserve these as working references, and provide a direct route back to the project story for visitors who land in documentation first. The catalog's mobile overflow, escaping specimen, unnamed console control, and missing search description are fixed. | The docs index now stacks its long descriptions at phone widths. The generated reference contains wide tables inside their own scroll regions and links back to BREAD and GRAIN; a phone-only hint explains how to reach columns beyond the viewport. The catalog links to the GRAIN introduction and has one page heading; specimen titles remain visually styled but are no longer heading elements. Long source examples scroll inside their code panels while the page stays within the phone viewport. Browser checks cover the heading structure, phone width, named console control and chat fields, description, and the portfolio audit's one-heading criterion. Both accessible names stay at the portfolio composition boundary; GRAIN's internal specimen source remains deferred with the deeper design-system review. |
 | /batch/docs/*, /grain/docs/*, /mill/docs/*, /crumb/docs/*, /proof/docs/*, and /pantry/docs/* | Review each documentation set's landing path, project context, and links back to its owning introduction. These routes share documentation templates, but their instructions need their own content check. | The route pass confirms the sampled entry pages have one page heading and a return link to their owning introduction. Wide tables, code blocks, and long inline paths now stay inside the phone content pane; focused checks cover BATCH architecture and GRAIN component docs. The BATCH and GRAIN setup pages now use current package boundaries, and the package guide records PROOF's pinned GitHub dependency. The CRUMB setup and tour-writing pages now match the pinned 0.1.10 package: the tour can stage text through a registered field, and does not replace text the visitor has started typing. The running documentation and the serialized say-hello tour were checked. The PANTRY guides now match the publicly pushed surface toggles and routes, with browser checks for the route inventory. This October 10 content pass compared package manifests and current GRAIN sources with the published design-system and action-contract guides, correcting the muted-text token, font-loading instructions, and registered block actions and operation kinds. The October 12 pass checked the BATCH and GRAIN JavaScript and interaction-boundary claims against current package code. It corrected the guides to name GRAIN's browser client door on opted-in static pages, describe its small vanilla-JavaScript feature modules accurately, clarify that `data-action` uses the configured server or client door, and list the complete RenderOp set. It also removed a tutorial reference to a nonexistent TODO. A follow-up check against MILL's canonical plan found that its getting-started page still called MILL a CMS, a label the plan had retired. The page now describes MILL as a content rendering engine, and a browser assertion guards that positioning. The docs browser suite also asserts these GRAIN contract details, and its phone-width checks, all 12 content tests, and link lint pass. This is a focused correction, not the full content review: BATCH, GRAIN, MILL, and PROOF still need their remaining guides checked against current package sources. Earlier this pass corrected a stale package-docs claim: the portfolio serves its layer guides from its own `docs/<layer>/` folders, while `packageDocsSource` reads Markdown that a package actually exports, such as `PLAN.md`. It also broke the full-stack install examples into shorter commands after the rendered page clipped the long package lists. |
 | /standards and its 20 standard pages | Keep standards discoverable as evidence of engineering practice, and give each page clear ownership, current status, and a route back to the portfolio. | The index identifies these as the maintainer's current standards for adopting repositories, and every detail page states its maintainer and current status beside its index link. The 20-route phone-width pass checks the heading, ownership, status, return link, response, and content-pane fit. |
 | /plans/plan/* (29 plan pages) | Separate public evidence of shipped work from internal or stale backlog detail; link the completed portfolio plan to its finished pages and evidence. | All 29 detail pages have a working board return link and one heading. Long paths and dependencies stay inside the phone pane. Plan cross-links now point to rendered plan pages or public GitHub source, and the malformed /plans/plan return target points to /plans. The export verifier and browser checks cover these routes and their local links. The board labels itself as a mix of ideas and active work, and links visitors to selected projects and the portfolio plan. |
-| /decks/* (four PDF attachments) | Verify each PDF opens, has useful document metadata, and has a matching description on the event or talk page that links to it. | All four PDFs open through the in-shell viewer, carry descriptive document titles, and have page counts that match their event-page descriptions. I rendered the first and last slide of each deck to check that the files are complete and visually legible at both ends. The /decks breadcrumb now opens a responsive index of all four files, and browser checks cover the index and each viewer URL. |
+| /decks/* (five PDF attachments) | Verify each PDF opens, has useful document metadata, and has a matching description on the event or talk page that links to it. | All five PDFs open through the in-shell viewer, carry descriptive viewer titles, and have page counts that match their event or talk descriptions. I rendered the first and last slide of the original four decks to check they are complete and legible. The new Version One workshop deck contains 47 slides; I reviewed all slides at thumbnail scale for student repositories and records and found none. The `/decks/version-one` viewer fits the phone viewport, the workshop page links to it, and the responsive index lists all five decks. Browser checks cover the new route, event attachment, index count, and phone layout; static export verification confirms the route and PDF are included. |
 | /kickstart | Clarify what the coding agent will create and what the visitor must have ready before they hand it a project link. | The page already explains the interview, the project details and constraints to bring, the stack research, and the approval gate before writing. It links to the standards index and fits at phone width; e2e/kickstart-page.e2e.ts guards the main promise and layout. |
 | /mail and contact paths | Make the real contact route and any local-only demo state clear before asking visitors to enter a message. | The opening letter says the inbox is written set dressing, and the compose action says it opens the visitor's mail app. Existing tests cover the no-JavaScript mailto route; a phone-width test now checks the explanation, compose path, and fit. The About page links to the same contact route. |
 
@@ -342,28 +355,31 @@ individual checks before the audit can be called complete.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
-- [x] Do a final route-by-route browser pass at desktop and narrow widths. Check navigation, page
-      spacing, headings, accessible names, dead ends, and the important interaction paths. The
-      October 10 route capture covers all 146 canonical URLs at desktop and phone widths; all pages
+- [ ] Finish the route-by-route visual and interaction review at desktop and narrow widths. Check
+      navigation, page spacing, headings, accessible names, dead ends, and important interaction
+      paths. The October 10 route capture covered 146 canonical URLs at desktop and phone widths; all pages
       returned 200, fit their viewport, had one page heading, and produced no page errors. I reviewed
       the route captures and refreshed the 23-screen desktop gallery on October 11. The focused
       phone checks cover the Builder, project stories, documentation, résumé, plans, catalog, and
-      navigation. The full serial browser suite passed 409 cases, with one calendar case skipped
+      navigation. The new workshop event and deck viewer also pass desktop and phone checks. The
+      October 13 sitemap audit covers 148 current routes with no HTTP or document findings; the new
+      routes have focused desktop and phone checks. The full
+      serial browser suite passed 409 cases, with one calendar case skipped
       because the fixture has no single-photo event. The current route audit reports zero HTTP or
       document findings, and link lint found no dead relative links in 56 rendered files. The
-      local performance report measures 30–264 KB of uncompressed JavaScript responses per route;
+      local performance report measures 30–268 KB of uncompressed JavaScript responses per route;
       ordinary pages measured 136,617 JavaScript bytes transferred from production, and the Builder
       measured 159,108 bytes before model download. The shared shell stays available across routes;
       page-specific features load only where needed. The local report labels its bytes as build-size
       checks and does not present them as production transfer sizes.
-- [x] Run the portfolio's release checks, resolve the findings in scope, commit the finished work on
-      main, and verify the deployed pages. The local gates passed: 702 unit tests; 409 of 410 serial
-      browser cases, with one calendar fixture skipped; typecheck; 4,501 lint flags under the 4,570
+- [ ] Run the final release checks, commit the finished work on main, deploy, and verify the
+      published pages. Earlier release evidence is historical: 702 unit tests; 409 of 410 serial
+      browser cases with one calendar fixture skipped; typecheck; 4,501 lint flags under the 4,570
       baseline; link lint across 56 rendered files; and static export verification for 1,175 pages,
-      1,132 data routes, and 39 frozen modules. The route audit found 146 successful pages and zero
-      document findings. Commit 3ffb666 is on main. GitHub Pages deployment and CI both passed. The
-      published Builder returns HTTP 200 at 1440px and 390px, with no horizontal overflow, page errors,
-      or heading-count issues; the updated model disclosure and example are live.
+      1,132 data routes, and 39 frozen modules. Commit 3ffb666 was on main at that release, and GitHub
+      Pages deployment and CI passed. The October 13 route audit is current; the focused checks in
+      this review are recorded above. Re-run all release gates against the final source before
+      closing this item.
 
 ## Done means
 
