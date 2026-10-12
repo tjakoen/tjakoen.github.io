@@ -466,6 +466,7 @@ export function makeChatModel() {
         const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
         return JSON.stringify({ action: "block.remove", target });
       }
+      if (/drop the callout/i.test(prompt)) return JSON.stringify({ action: "block.remove", target: "block:b2" });
       if (/make the callout full/i.test(prompt)) return 'Sure!\\n{"action":"block.span","target":"block:b3","payload":{"span":"full"}}';
       if (/move the callout up/i.test(prompt)) return '{"action":"block.move","target":"block:b3","payload":{"direction":"up"}}';
       if (/widen/i.test(prompt)) return '{"action":"block.span","target":"block:b2","payload":{"span":"wide"}}';
@@ -561,6 +562,17 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(SAID)).toHaveText("The request points to second card (b4), but the model proposed first card (b2). Nothing changed. Try naming b4 directly.");
     await expect(page.locator(PROPOSAL)).toBeHidden();
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+  });
+
+  test("a model cannot turn a missing named block into a different block removal", async ({ page }) => {
+    await page.goto(ask("An intro and two cards"));
+    await expect(page.locator(CELL)).toHaveCount(3);
+    await waitForDesk(page);
+    await submitPrompt(page, "drop the callout");
+
+    await expect(page.locator(SAID)).toHaveText("The request names callout, but no matching block is on the page. Nothing changed.");
+    await expect(page.locator(PROPOSAL)).toBeHidden();
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
   });
 
   test("the model is handed the ids that are actually on the page", async ({ page }) => {
