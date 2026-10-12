@@ -3,9 +3,9 @@ title: "Tutorial: build your first operable surface"
 ---
 
 This walks through **one real verb on one real surface** in the live stack, piece by piece, in the
-order you'd build it: `item.archive` on a mail row. Every file and line quoted below is code the
-running site executes, and the request/response at the end is captured from an integration test that
-POSTs to the real door and reads the ops back off a live SSE connection. The full contract is
+order you'd build it: `item.archive` on a mail row. The contract excerpts follow the running code,
+with omitted registry entries marked. The request/response at the end is captured from an
+integration test that POSTs to the real door and reads the ops back off a live SSE connection. The full contract is
 [`AI-INTERFACE.md`](AI-INTERFACE.md); this page is the fastest way to see it work before reading the
 whole thing.
 
@@ -27,17 +27,56 @@ Everything operable is declared in one closed registry,
 elsewhere:
 
 ```ts
-export type SurfaceKind = "item" | "reflection" | "say-stream" | "screen" | "chat-log" | "notepad" | "field";
-export const surface = (kind: SurfaceKind, id?: string): Surface => (id ? `${kind}:${id}` : kind);
+export type SurfaceKind =
+  | "item"
+  | "reflection"
+  | "say-stream"
+  | "screen"
+  | "chat-log"
+  | "notepad"
+  | "field"
+  | "check"
+  | "block";
+
+export const surface = (
+  kind: SurfaceKind,
+  id?: string,
+): Surface =>
+  id
+    ? `${kind}:${id}`
+    : kind;
 
 export type ActionName =
-  | "item.archive" | "say.set" | "say.stream" | "demo.run" | "desk.stop" | "chat.send"
-  | "note.append" | "note.replace" | "navigate" | "field.set";
+  | "item.archive"
+  | "say.set"
+  | "say.stream"
+  | "demo.run"
+  | "desk.stop"
+  | "chat.send"
+  | "note.append"
+  | "note.replace"
+  | "navigate"
+  | "field.set"
+  | "check.set"
+  | "block.remove"
+  | "block.span"
+  | "block.move";
 
-export const ACTIONS: Record<ActionName, ActionDef> = {
-  "item.archive": { name: "item.archive", depth: "light", accepts: ["item"],
-    description: "Archive an item (stands in for task.complete on the optimistic light path).",
-    payload: {}, hints: { idempotent: true } },   // re-archiving is a harmless no-op
+export const ACTIONS: Record<
+  ActionName,
+  ActionDef
+> = {
+  "item.archive": {
+    name: "item.archive",
+    depth: "light",
+    accepts: ["item"],
+    description:
+      "Archive an item (" +
+      "stands in for task.complete " +
+      "on the optimistic light path).",
+    payload: {},
+    hints: { idempotent: true },
+  }, // A repeated archive is harmless.
   // …
 };
 ```
