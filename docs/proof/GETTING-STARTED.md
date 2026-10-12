@@ -38,9 +38,10 @@ const hit = await proofRoutes(new URL(req.url).pathname);
 if (hit) return hit;
 ```
 
-`chrome` is the one thing PROOF asks the host for: it owns the board's *body*, the host owns the
-`<head>`/asset links, the same "the layer owns the content, the host owns the shell" split MILL
-uses.
+`chrome` is PROOF's presentation seam: it owns the board's *body*, and the host wraps that body with
+the `<head>` and asset links. The caller also supplies `plansDir`, the directory PROOF reads, plus a
+mount prefix or optional live-update settings when needed. This keeps the same "the layer owns the
+content, the host owns the shell" split MILL uses.
 
 ## Zero code: `bunx proof serve`
 

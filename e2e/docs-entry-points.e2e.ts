@@ -77,6 +77,10 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("From the repository root");
     await expect(page.locator(".board")).toContainText("mkdir -p pages/widgets");
     await expect(page.locator(".board")).not.toContainText("tjakoen.github.io/pages/widgets");
+
+    await page.goto("/proof/docs/getting-started");
+    await expect(page.locator(".board")).toContainText("plansDir, the directory PROOF reads");
+    await expect(page.locator(".board")).not.toContainText("the one thing PROOF asks the host for");
   });
 
   test("the static export guide points to the portfolio deploy workflow", async ({ page }) => {
@@ -85,6 +89,10 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("bun run verify:export");
     await expect(page.locator('.board a[href="https://github.com/tjakoen/tjakoen.github.io/blob/main/.github/workflows/pages.yml"]'))
       .toBeVisible();
+    await page.goto("/batch/docs/architecture");
+    await expect(page.locator(".board")).toContainText("BATCH exports exportSite() as a library");
+    await expect(page.locator(".board")).toContainText("the portfolio's host-owned bun run export");
+    await expect(page.locator(".board")).not.toContainText("exposed as bun run export");
   });
 
   test("the generated reference links back to the project stories and contains wide tables", async ({ page }) => {

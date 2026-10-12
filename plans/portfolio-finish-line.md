@@ -145,8 +145,9 @@ exported internal link resolves.
 The figure-loader assertions now wait for dynamic imports, so a late request no longer looks like a
 missing feature. A run with four workers produced seven failures under parallel load; the serial run
 is the reliable gate for this suite. The export needs PUBLIC_ORIGIN set to the deployed URL to avoid
-localhost in generated endpoints; the Pages workflow sets it. The lint gate reports 4,500 flags
-against its 4,570 ceiling. The link linter finds no dead relative links across 56 rendered files, and
+localhost in generated endpoints; the Pages workflow sets it. The lint gate now reports 4,491 flags,
+79 below its previous high-water mark; the ratchet baseline has been lowered to that count. The link
+linter finds no dead relative links across 56 rendered files, and
 every served diagram has a committed SVG. The route audit returns all 146 canonical pages without HTTP or
 document findings. The October 10 BATCH and MILL architecture edits were rendered at desktop and 390
 pixels; both pages have one page heading and no horizontal overflow. A refreshed 23-screen desktop
@@ -179,7 +180,13 @@ as a server POST despite GRAIN's static client door. Both descriptions now match
 contracts, with browser assertions. The BATCH route guide's shell command also pointed at a
 portfolio-named directory instead of the default `pages/` root; its example now works from the
 repository root and is checked in the docs browser suite. The full guide-by-guide review remains
-open.
+open. The next architecture review found that BATCH's `bun run export` wording attributed the
+portfolio-owned command to the package. The guide now distinguishes BATCH's `exportSite()` library
+from the host's command, with a browser assertion for both sides of that boundary. The PROOF setup
+guide also called `chrome` the only host input even though `plansDir` is required; it now separates
+the presentation seam from the data directory, with browser coverage for the distinction. The
+baseline ratchet also recorded 79 fewer flags than its previous high-water mark, without increasing
+any category.
 
 ### Page recommendations in progress
 
