@@ -176,9 +176,13 @@ interface, one path").
 
 ### 2b. RenderOp — what the single writer emits
 
-The interaction layer never returns "data for the client to render." It returns
-**rendered HTML fragments addressed to surfaces** — the server owns rendering (BATCH:
-server-rendered hypermedia), so the client stays dumb and can't drift from the truth.
+The interaction layer returns **RenderOps addressed to semantic surfaces**. Some ops carry
+rendered HTML fragments, which the server-backed path renders through the app; others carry
+typed values or instructions such as `fill`, `tick`, `move`, and `navigate` for the dispatcher
+to apply. On an opted-in static page, the client door uses the same contract and dispatcher, but
+its inert storage and render capabilities limit it to service-free scenarios (§19.3). The
+transport changes where the op is produced; it does not make every server-backed action available
+on a static host.
 
 ```ts
 type RenderOpKind = "replace" | "append" | "remove" | "flash" | "type" | "spotlight" | "log" | "navigate" | "choices" | "fill" | "tick" | "span" | "move";

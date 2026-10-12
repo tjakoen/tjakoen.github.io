@@ -53,6 +53,13 @@ test.describe("developer docs entry points", () => {
     expect(width.scroll).toBeLessThanOrEqual(width.client + 1);
   });
 
+  test("the GRAIN action guide distinguishes server rendering from the static client door", async ({ page }) => {
+    await page.goto("/grain/docs/ai-interface");
+    await expect(page.locator(".board")).toContainText("Some ops carry rendered HTML fragments");
+    await expect(page.locator(".board")).toContainText("the client door uses the same contract and dispatcher");
+    await expect(page.locator(".board")).toContainText("limit it to service-free scenarios");
+  });
+
   test("package setup docs match the published packages and current host boundary", async ({ page }) => {
     await page.goto("/batch/docs/getting-started");
     await expect(page.locator(".board")).toContainText("BATCH is a library, not a server of its own");
