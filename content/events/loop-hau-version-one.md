@@ -10,7 +10,6 @@ summary: >
   faculty advisor. This time I brought something I had to learn on the job: how to save work
   and collaborate without passing files around.
 photos:
-  - "/media/feed/loop-hau-version-one-repository.jpg | 1920x1080 | Me explaining branches at the front of the lab, with a student's GitHub repository open on the monitor in the foreground"
   - "/media/feed/loop-hau-version-one-branches.jpg | 1920x1080 | The lab during the hands-on workshop, students working at their computers while I explain why we need branches"
 gallery:
   - "/media/feed/loop-hau-version-one-group.jpg | 1920x1080 | The workshop participants and me posing together at the front of SJH-706, with the lab computers in the foreground"
