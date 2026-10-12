@@ -180,27 +180,32 @@ it: a plain click, or (once a real model is wired at M★) an in-process decisio
 
 On the **light path**, the grade tells the story (`AI-INTERFACE.md` §5): the moment the control is
 used it goes `data-commit="pending"` and renders grain (in transit), and when the committed
-`replace` lands over SSE the surface settles clean. Grain means AI or in-flight, clean means human
-and committed, expressed with one op.
+`replace` lands the surface settles clean. The server door sends that op over SSE; the client door
+applies it synchronously through its loopback. Grain means AI or in-flight, clean means human and
+committed, expressed with one op.
 
 **See the grade land in a live browser.** On this repo `item.archive`'s host re-render is stubbed
 (the honest note in step 3), so its committed fragment is empty and there is nothing to watch settle
-on `/mail`. The identical grade contract *is* live on the [`/grain`](/grain) showcase, driven by the
-same door: press **Ask/Send** (`chat.send`) and your message settles clean while the AI's reply
-streams into a bubble that stays grain; press **▷ Watch the AI act** (`demo.run`) and the server's
-reasoner pushes a run of `RenderOp`s back over SSE, a task badge flips to `done` and a drafted task
-stays grain. Same `POST /intent` + SSE path, same grade vocabulary as step 4, but with a live host
-effect you can watch in the browser today (pinned by `e2e/grain-page.e2e.ts`).
+on `/mail`. The identical grade contract *is* live on the [`/grain`](/grain) demo. The default
+*bun run dev* command and the deployed static export use the browser client door: **Ask/Send**
+(`chat.send`) applies your message and the streamed AI reply through its local loopback, while
+**▷ Watch the AI act** (`demo.run`) uses the service-free demo reasoner and applies its ops through
+that same loopback. The task badge flips to `done`, and a drafted task stays grain. To inspect the
+server-backed transport in a browser, run *bun run dev:stub*; it sends intents to `POST /intent` and
+receives operations over SSE. Both transports use the same door contract and grade vocabulary, and
+the browser check covers the visible showcase behavior (`e2e/grain-page.e2e.ts`).
 
 ## Run it yourself
 
 ```sh
-bun run dev   # http://localhost:3000
+bun run dev       # http://localhost:3000, using the browser client door
+bun run dev:stub  # http://localhost:3000, using the server door and SSE
 ```
 
-`POST /intent` returns `202` immediately (fire-and-forget: the door acknowledges, the result lands
-over SSE), and the `/stream` connection pushes the confirmed op back. Captured from the integration
-test that spins up the real door and reads the ops off a live SSE connection
+On the server-backed path, `POST /intent` returns `202` immediately (fire-and-forget: the door
+acknowledges, the result lands over SSE), and the `/stream` connection pushes the confirmed op back.
+The transcript below is captured from the integration test that spins up the real door and reads the
+ops off a live SSE connection
 ([`src/routes/ai-routes.integration.test.ts`](https://github.com/tjakoen/tjakoen.github.io/blob/main/src/routes/ai-routes.integration.test.ts)):
 
 ```
@@ -256,7 +261,8 @@ intentionally a no-op on the live site: the domain backing retired with the `/lo
 (2026-07-26), so `archiveItem` / `renderSurface` are stubs and the committed fragment is empty, and
 the `/mail` archive a visitor sees is a client-island DOM move driven by the desk, not a server-door
 re-render. To watch a crossing settle grain then clean over the server SSE channel in a live browser,
-piece 5 points at the [`/grain`](/grain) showcase's `chat.send` / `demo.run` controls, which drive
-the same door with a live host effect. Re-wiring a host-surface backing for `item.archive` against a
-real `/mail`-style board would make *its own* visible end-to-end reproducible too, but is not
-required for the tutorial to be honest.
+run *bun run dev:stub* and use the [`/grain`](/grain) demo's `chat.send` / `demo.run` controls,
+which drive the same server door with a live effect. The default *bun run dev* command and the
+deployed static export use the browser client door instead. Re-wiring a host-surface backing for
+`item.archive` against a real `/mail`-style board would make *its own* visible end-to-end
+reproducible too, but is not required for the tutorial to be honest.

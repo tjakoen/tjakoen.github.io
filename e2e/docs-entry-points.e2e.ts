@@ -60,6 +60,13 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("limit it to service-free scenarios");
   });
 
+  test("the GRAIN tutorial identifies the default client transport and the server SSE option", async ({ page }) => {
+    await page.goto("/grain/docs/tutorial");
+    await expect(page.locator(".board")).toContainText("bun run dev command and the deployed static export use the browser client door");
+    await expect(page.locator(".board")).toContainText("bun run dev:stub");
+    await expect(page.locator(".board")).toContainText("receives operations over SSE");
+  });
+
   test("package setup docs match the published packages and current host boundary", async ({ page }) => {
     await page.goto("/batch/docs/getting-started");
     await expect(page.locator(".board")).toContainText("BATCH is a library, not a server of its own");

@@ -11,9 +11,10 @@
        hover-a-component → reveal-in-pane bridge is its progressive enhancement. ⌘K is global. -->
   <!-- reusable demo-box island (ES module): runs the declarative scripted demos below -->
   <script type="module" src="/scripts/demo-box.js"></script>
-  <!-- THE REAL DISPATCHER — the same client-JS island the hero desk on / uses. The composed surface below
-       is operated through the ONE DOOR: a human's Ask and the AI's "Watch the AI act" both post an
-       Intent to POST /intent and render back over SSE. No showcase-only AI→DOM back channel. -->
+  <!-- THE REAL DISPATCHER — the same client-JS island the hero desk on / uses. A human's Ask and
+       the AI's "Watch the AI act" use GRAIN's configured door. The default dev command and static
+       export use the browser client door; `bun run dev:stub` exercises POST /intent and SSE. Both
+       transports apply the same RenderOp contract. There is no showcase-only AI-to-DOM backchannel. -->
 </head>
 <body data-screen="grain" class="app-window-backdrop">
   <!-- the GRAIN section now lives in the unified BREAD shell (portfolio frame + site-wide
