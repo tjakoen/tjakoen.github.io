@@ -82,6 +82,10 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("These are feature modules, not a client-framework runtime.");
     await expect(page.locator(".board")).toContainText("spotlight, log, navigate, choices, fill, tick, span, and move");
 
+    await page.goto("/grain/docs/design-system");
+    await expect(page.locator(".board")).toContainText("Reserve --ink-faint for decorative marks that do not carry information");
+    await expect(page.locator(".board")).toContainText("Baguette and Brioche use their --color-accent hue");
+
     await page.goto("/grain/docs/getting-started");
     await expect(page.locator(".board")).toContainText("through the configured server or client door");
     await expect(page.locator(".board")).not.toContainText("clicking it becomes POST /intent");

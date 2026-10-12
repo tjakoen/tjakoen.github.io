@@ -57,7 +57,7 @@ Monochrome only. Six values do everything.
   --panel:        #E8E6DF; /* grouped "sheet" — a hair brighter than the page */
   --ink:          #1C1B17; /* primary text, filled dots, rules */
   --ink-muted:    #65635B; /* secondary text, section labels; 4.55:1 on --paper */
-  --ink-faint:    #ABA89F; /* fading insights, empty/future dots */
+  --ink-faint:    #ABA89F; /* decorative marks and empty/future dots, not informative text */
   --hairline:     #1C1B17; /* solid rules (under headlines) */
   --line-soft:    rgba(28,27,23,.14); /* translucent border for quiet grouping */
 }
@@ -289,8 +289,9 @@ A row of tiny faint dots separating list content from the `+ Add New` affordance
 Build: `border-bottom: 1.5px dotted var(--ink-faint)` (cheapest) or a repeated dot row.
 
 ### Insight list
-Primary line in `--ink`, then each subsequent line steps down toward `--ink-faint`
-(a literal fade). Inline actions are underlined links.
+Use `--ink` for the primary line and `--ink-muted` for secondary text. Reserve `--ink-faint` for
+decorative marks that do not carry information, such as empty dots and quiet dividers. Inline
+actions remain underlined links.
 
 ### Buttons
 - **Primary:** full-width, `--border`, `--radius`, uppercase tracked label, transparent fill.
@@ -303,7 +304,9 @@ never a full invert and never a new hue. (The old invert-to-ink hover read as a 
 made ghost buttons — invisible at rest — pop in as a rounded box out of nowhere; retired 2026-07-04.)
 
 ### Links
-Always underlined, inline, same ink color. The underline *is* the affordance — no color change.
+Links stay underlined, so the affordance remains clear in every flavor. Sourdough uses the ink color
+because its accent is hueless; Baguette and Brioche use their *--color-accent* hue, as defined by
+the global link rule and each theme's accent tokens.
 
 ---
 
