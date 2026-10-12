@@ -41,9 +41,10 @@ or drop a capability → update this list (`../../CLAUDE.md` alignment table →
   server-side — no bundler, no transpile step, no client framework, no template dialect between
   source and server. It can even **serve `.ts` to the browser transpiled on request** (§19,
   client-safe modules), so even client code has no build. Near-zero framework JS ships.
-- **Static export = a projection of the running server.** `bun run export` (§18) crawls the live
-  server and freezes it to static files — never a second renderer, so the export can't drift from the
-  app. It also **freezes a client-module graph** (`moduleEntries` — each entry's relative import
+- **Static export = a projection of the running server.** BATCH exports `exportSite()` as a library;
+  the portfolio's host-owned `bun run export` (§18) boots the app, crawls the live server, and freezes
+  its output to static files. It never renders a second time, so the export can't drift from the app.
+  The library can also freeze a client-module graph (`moduleEntries` — each entry's relative import
   graph, transpiled at export). Content pages export; operable `/intent`+SSE surfaces are inert by
   design *unless* a page opts into the client-side door (§19.3), which runs the same vocabulary
   fully in-browser on the static copy.
@@ -2190,15 +2191,13 @@ client-door sets (today they live in `tjakoen.github.io/tools/export.ts`).
 
 ### Placement
 
-A reusable **`batch/export`** capability (not a project-local script), exposed as
-`bun run export`. It boots a composition root, reads `sitemap.routes()` + a caller-supplied
-allowlist, fetches over `localhost`, copies `config.assetDirs` + `config.fontsDir` verbatim,
-and writes `dist/`. It lives in **`batch/`** on purpose: crawl-sitemap→write-files is a pure
-substrate concern, so it must travel with the framework — then *any* BATCH site (the portfolio
-and its `/grain` showcase, and others later) gets Pages hosting from the one tool, per BATCH's
-extraction philosophy. No change to `batch/`/`grain/`/`project` runtime code — the export is an
-outside observer, so it can't regress the live path. (See `tjakoen.github.io/docs/architecture/PLAN.md` piece 1, which drives
-the first real use.)
+The reusable **`batch/export`** capability is the `exportSite(config)` library, not a package
+command. The consumer boots its composition root and passes the running server URL, route allowlist,
+data routes, and asset mounts. In this portfolio, the host-owned `bun run export` command performs
+that wiring and writes `dist/`. The library lives in **`batch/`** on purpose: crawling a sitemap and
+writing files is a substrate concern, so it travels with the framework and any BATCH site can use it.
+The exporter stays an outside observer and never composes pages, so it can't regress the live path.
+(See `tjakoen.github.io/docs/architecture/PLAN.md` piece 1, which drives the first real use.)
 
 ### Status — Tier 1 shipped (2026-07-04)
 
