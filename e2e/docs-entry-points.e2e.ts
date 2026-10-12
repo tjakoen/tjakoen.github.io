@@ -76,6 +76,12 @@ test.describe("developer docs entry points", () => {
     await page.goto("/grain/docs/getting-started");
     await expect(page.locator(".board")).toContainText("bun add @tjakoen/grain");
     await expect(page.locator(".board")).toContainText("public npm registry");
+    await expect(page.locator(".board")).toContainText("registered surfaces can be addressed and");
+    await expect(page.locator(".board")).not.toContainText("every surface is addressable");
+
+    await page.goto("/batch/docs/static-export-and-deploy");
+    await expect(page.locator(".board")).toContainText("supported service-free actions");
+    await expect(page.locator(".board")).toContainText("without an app backend");
 
     await page.goto("/grain/docs/grain");
     await expect(page.locator(".board")).toContainText("An opted-in static page uses the browser's");

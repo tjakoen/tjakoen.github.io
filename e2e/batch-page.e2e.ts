@@ -11,6 +11,7 @@ test("BATCH presents the portfolio audit with its scope and reproduction path", 
   await expect(audit).toContainText("not a benchmark of a minimal BATCH app");
   await expect(audit.locator('a[href="https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/report.md"]'))
     .toBeVisible();
+  await expect(audit).toContainText("covers all 148 routes");
   await expect(audit).toContainText("bun run audit");
   await expect(page.locator(".card__title", { hasText: "Server-first, not no-JS" })).toBeVisible();
 });
