@@ -1,6 +1,6 @@
 ---
-title: AI-REPO-STANDARD.md — structure a repo so AI sessions compound
-summary: The repo-side companion to AI-DEVELOPMENT - the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned.
+title: AI-REPO-STANDARD.md
+summary: Structure a repo so AI sessions compound. The repo-side companion to AI-DEVELOPMENT, with the map, contracts, and guardrails that carry learning between sessions.
 when: >
   Read this BEFORE setting up a repo for AI work, or before changing any of the machinery that
   carries knowledge between sessions: creating or restructuring a CLAUDE.md, adding a sync table,

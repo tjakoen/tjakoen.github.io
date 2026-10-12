@@ -3,6 +3,9 @@ import { test, expect } from "@playwright/test";
 test("every standard has one heading, fits a phone, and returns to the standards index", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/standards");
+  const repoStandard = page.locator('.content-index__item:has(a[href="/standards/ai-repo-standard"])');
+  await expect(repoStandard).toContainText("AI-REPO-STANDARD.md");
+  await expect(repoStandard).toContainText("Structure a repo so AI sessions compound.");
   const routes = await page.locator('.board a[href^="/standards/"]').evaluateAll((links) =>
     [...new Set(links.map((link) => new URL((link as HTMLAnchorElement).href).pathname))]
       .filter((route) => route !== "/standards/"),
