@@ -10,6 +10,10 @@ slots in its own sheet, linked **after** GRAIN's.
 
 - **fonts:** `--type-font` (the grade switch atoms inherit), `--font-grain`, `--font-smooth`, `--font-accent`
 - **ink/paper:** `--ink`, `--paper`, `--color-fg`, `--color-muted`, `--line-soft`
+- **accent:** *--color-accent*, *--color-accent-hover*, *--color-accent-contrast*, and
+  *--color-accent-soft*. These four slots set the flavor's single accent hue; links, focus rings, and
+  primary controls read from them. Sourdough points the accent at ink, while Baguette and Brioche set
+  their own hues.
 - **scale:** `--space-1`…`--space-8`, `--text-sm`, `--border`, `--radius-sm`, `--radius-md`
 - **AI spotlight:** `--ai-veil` (the "AI is acting" backdrop) and `--ai-focus-move` (how slowly the
   spotlight glides between surfaces) — set once in the theme so every page behaves identically.

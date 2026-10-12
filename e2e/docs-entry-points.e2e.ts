@@ -86,6 +86,10 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("Reserve --ink-faint for decorative marks that do not carry information");
     await expect(page.locator(".board")).toContainText("Baguette and Brioche use their --color-accent hue");
 
+    await page.goto("/grain/docs/re-skin-via-tokens");
+    await expect(page.locator(".board")).toContainText("--color-accent-hover");
+    await expect(page.locator(".board")).toContainText("links, focus rings, and primary controls read from them");
+
     await page.goto("/grain/docs/getting-started");
     await expect(page.locator(".board")).toContainText("through the configured server or client door");
     await expect(page.locator(".board")).not.toContainText("clicking it becomes POST /intent");
