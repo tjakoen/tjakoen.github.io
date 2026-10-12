@@ -385,14 +385,14 @@ individual checks before the audit can be called complete.
       measured 159,108 bytes before model download. The shared shell stays available across routes;
       page-specific features load only where needed. The local report labels its bytes as build-size
       checks and does not present them as production transfer sizes.
-- [ ] Run the final release checks, commit the finished work on main, deploy, and verify the
-      published pages. Earlier release evidence is historical: 702 unit tests; 409 of 410 serial
-      browser cases with one calendar fixture skipped; typecheck; 4,501 lint flags under the 4,570
-      baseline; link lint across 56 rendered files; and static export verification for 1,175 pages,
-      1,132 data routes, and 39 frozen modules. Commit 3ffb666 was on main at that release, and GitHub
-      Pages deployment and CI passed. The October 13 route audit is current; the focused checks in
-      this review are recorded above. Re-run all release gates against the final source before
-      closing this item.
+- [ ] Commit the finished work on main, deploy it, and verify the published pages. Current local
+      evidence on October 13: `bun run test:all` passes the unit tests and all 419 browser cases;
+      `bun run check` and `bun run lint` pass; link lint finds no dead relative links in 56 rendered
+      files; the fresh sitemap audit has 148 successful routes and zero document findings; and
+      static export verification passes for 1,177 pages, 1,133 data routes, 39 frozen modules, and
+      627 assets. These local checks do not prove that the reviewed commit is deployed. Push only
+      after the remaining page review is complete, then verify GitHub Pages and CI against that
+      commit.
 
 ## Done means
 
