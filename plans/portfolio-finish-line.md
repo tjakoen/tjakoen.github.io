@@ -107,6 +107,12 @@ client door exposed the same full vocabulary. They now describe registered surfa
 service-free actions. Browser assertions cover both statements. The other BATCH, GRAIN, MILL, and
 PROOF guides still require their full source comparison.
 
+The October 13 refresh of the 23-screen desktop gallery found two additional presentation issues:
+the Talks introduction described every deck as an interactive web page, despite the new event PDF,
+and the Standards index repeated the AI-REPO-STANDARD filename and summary in one awkwardly wrapped
+title. The Talks copy now distinguishes interactive web decks from the event PDF, and the standard
+has a shorter display title with its purpose in the summary. Focused browser checks cover both.
+
 The cross-page read of BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, and PANTRY confirms they now tell one
 consistent story: the BREAD page explains the dependency direction and the portfolio request path;
 BATCH, GRAIN, and MILL each state their own layer and link to adjacent layers; PROOF and CRUMB are

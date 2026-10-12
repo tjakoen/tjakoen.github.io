@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 
 test("the talks index and note metadata match each deck's slide count", async ({ page }) => {
   await page.goto("/talks");
+  await expect(page.locator("main > .board > .lede").first()).toContainText("web decks keep their figures interactive");
+  await expect(page.locator("main > .board > .lede").first()).toContainText("downloadable PDF");
   const talks = page.locator(".content-index__item");
   const count = await talks.count();
 
