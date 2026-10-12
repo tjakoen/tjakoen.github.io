@@ -291,6 +291,13 @@ for the second card, and the proposal transparently corrected it to b4; the expl
 also landed. The draft still omitted Utrecht, so the end-to-end check scored 2/3. This demonstrates
 safe target reconciliation, not reliable model reference resolution or grounded copy.
 
+A full eight-case recheck after that change scored 6/8. The span, move, copy-edit refusal, and draft
+cases passed. Both deletions failed: the relative request reached the 60-second timeout, and the
+explicit-ID request returned `action: null`. The draft included Hearth Bakery, Utrecht, the requested
+bakery wording, and the product title, but it also added unsupported claims about handcrafted bread,
+a staple product, and a daily special. The completion limit is now 75 seconds to give first requests
+more room; this run happened before that adjustment, so the longer limit still needs a live recheck.
+
 The October 13 Builder update adds a review-first path for model-composed pages. Proposed blocks and
 their text appear in the workbench before they enter the composition. Visitors can edit proposed
 text fields in that panel; acceptance runs those values through the existing block-copy sanitizer
@@ -368,14 +375,25 @@ copy edits appear to work.
       the page. The prompt contains only live block actions and identifies each block's type and
       order. A portfolio-side parser accepts the measured `move` alias only for a live block and
       valid direction. The local completion receives a schema derived from live block IDs, edit
-      verbs, and payload values. When a model target conflicts with one block uniquely identified by
-      the request, the review proposal discloses both choices and uses the requested block after
-      approval; missing targets are refused, while ambiguous references stay with the model proposal
-      for human review. The October 13 focused check applied
+      verbs, and payload values. When a model's proposed action, value, or target conflicts with one
+      edit uniquely stated by the request, the review proposal discloses both choices and uses the
+      requested edit only after approval; missing targets are refused, while ambiguous references
+      stay with the model proposal for human review. A fresh eight-case 1.5B run scored 6/8 after
+      this correction: the relative second-card deletion passed after review corrected the model's
+      wrong span operation and first-card target. The explicit-ID deletion returned `action: null`,
+      and the draft again omitted Utrecht while including unsupported marketing claims. Width, move,
+      and copy-edit refusal cases passed. This demonstrates a safer proposal path, not reliable model
+      choices or grounded writing. Repeated runs remain necessary. The October 13 focused check applied
       both deletion requests through this path, but the model still chose the first card for a request
       to remove the second. This is a safe application-level correction, not evidence of reliable
-      model targeting. The 0.5B full run scored 2/8; 1.5B runs have varied, and the next full
-      comparison still needs repeated scenarios.
+      model targeting. The 0.5B full run scored 2/8; 1.5B runs have varied. A full eight-case recheck
+      after the target correction scored 6/8: both deletions failed, the first at the 60-second
+      timeout and the second with `action: null`. The draft included supplied facts but added
+      unsupported claims. The timeout then increased to 75 seconds. In the latest eight-case 1.5B
+      run, the relative second-card deletion passed after the proposal corrected the model's wrong
+      operation and target; the explicit-ID deletion returned `action: null`. The draft again
+      omitted Utrecht and added unsupported claims. The run scored 6/8, so model reliability and
+      grounded writing remain open.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
@@ -402,7 +420,8 @@ copy edits appear to work.
       flourishes to its draft. It scored 6/8 and 5/8 in two October 12 runs, with different passing
       cases. A warm draft repeated the supplied city but added unsupported phrases; another omitted
       the city. A stricter prompt was tested and reverted after it also missed the city. One October
-      12 edit reached the 45-second completion limit, so the portfolio now allows 60 seconds; the
+      12 edit reached the 45-second completion limit, so the portfolio allowed 60 seconds; a later
+      full run still timed out on its first deletion, so the limit now allows 75 seconds; the
       fresh-server run avoided that timeout but took 50 seconds and refused the wrong target. The
       October 13 1.5B run passed width and move edits but failed both deletion cases and again
       omitted Utrecht while adding unsupported draft claims. A later warm WebGPU check scored 1/3
@@ -411,7 +430,12 @@ copy edits appear to work.
       copy before acceptance. This isolated result does not establish a quality improvement. The
       transparent target correction then let both deletion cases apply through review, while the
       draft still omitted the city. This focused 2/3 result demonstrates target reconciliation, not a
-      model-quality improvement. The audit also records any correction beside the model's raw answer.
+      model-quality improvement. A full eight-case run then scored 6/8: both deletions failed, one
+      after 60 seconds and one with `action: null`; the draft included the supplied facts but added
+      unsupported claims. The timeout then increased to 75 seconds. In the latest full run, the
+      relative deletion's wrong verb and target were corrected in the approval proposal and the
+      explicit-ID deletion returned `action: null`. The audit records that correction beside the
+      raw answer. Repeated grounded-draft measurements remain open.
       The October 11 first scenario took
       40.5 seconds from a fresh browser cache, including model load and generation; the 1.6 GB
       browser-profile footprint is not a network-size measurement. Exact first-visit network bytes

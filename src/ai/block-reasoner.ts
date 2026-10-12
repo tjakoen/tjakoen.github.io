@@ -215,8 +215,9 @@ type RequestedBlock =
   | { kind: "missing"; requested: string }
   | { kind: "ambiguous" };
 
-export interface BlockTargetCorrection {
-  surface: string;
+export interface BlockIntentCorrection {
+  command: BlockIntent;
+  proposed: BlockIntent;
   requestedId: string;
   requestedLabel: string;
   proposedId: string;
@@ -284,25 +285,70 @@ export function blockTargetMismatch(
   return `The request points to ${resolvedBlock.label} (${resolvedBlock.id}), but the model proposed ${proposed.label} (${proposed.id}). Nothing changed. Try naming ${resolvedBlock.id} directly.`;
 }
 
-/** Return a correction only when the visitor's words identify one existing block unambiguously.
- *  The model still chooses the operation; this reconciles its proposed address with a target the
- *  page can prove from an explicit ID, ordinal, or unique component reference. The UI must disclose
- *  the correction and keep it behind the ordinary approval control. */
-export function blockTargetCorrection(
+interface RequestedEdit {
+  action: BlockVerb;
+  payload: Record<string, unknown>;
+  block: BlockDescription;
+}
+
+/** Read only plainly stated edit verbs, values, and one unambiguous live target from the request.
+ *  Requests outside this small grammar stay with the model. This result never dispatches directly;
+ *  the review UI must disclose any disagreement and wait for the visitor's approval. */
+function requestedEdit(
   message: string,
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
-  target: string,
-): BlockTargetCorrection | null {
+): RequestedEdit | null {
+  const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
+  if (/\b(?:do not|don t|never|not)\b/.test(text)) return null;
+  const actions: Array<{ action: BlockVerb; payload: Record<string, unknown> }> = [];
+  if (/\b(drop|remove|delete)\b/.test(text)) actions.push({ action: "block.remove", payload: {} });
+
+  const span = text.match(/\b(full|half|third)\s+(?:width|span)\b/);
+  if (span && /\b(make|set|change|resize|widen)\b/.test(text)) {
+    actions.push({ action: "block.span", payload: { span: span[1] } });
+  }
+
+  const direction = text.match(/\b(up|down)\b/);
+  if (direction && /\b(move|shift)\b/.test(text)) {
+    actions.push({ action: "block.move", payload: { direction: direction[1] } });
+  }
+
+  if (actions.length !== 1) return null;
   const requested = requestedBlock(message, blocks);
   if (!requested || requested.kind !== "resolved") return null;
-  const proposed = describeBlocks(blocks).find((entry) => entry.id === idOf(target));
-  if (!proposed || proposed.id === requested.block.id) return null;
-  return {
+  return { ...actions[0], block: requested.block };
+}
+
+/** Correct a model proposal only when the request itself states one supported verb, value, and live
+ *  target unambiguously. The model's answer remains visible in the correction notice; GRAIN's door
+ *  still receives the corrected command only after approval. Vague requests stay with the model. */
+export function blockIntentCorrection(
+  message: string,
+  blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
+  proposed: BlockIntent,
+): BlockIntentCorrection | null {
+  const requested = requestedEdit(message, blocks);
+  if (!requested) return null;
+  const proposedId = idOf(proposed.surface);
+  const proposedBlock = describeBlocks(blocks).find((entry) => entry.id === proposedId);
+  if (!proposedBlock) return null;
+
+  const command: BlockIntent = {
+    action: requested.action,
     surface: `block:${requested.block.id}`,
+    payload: requested.payload,
+    said: "",
+  };
+  if (proposed.action === command.action && proposedId === requested.block.id &&
+      JSON.stringify(proposed.payload) === JSON.stringify(command.payload)) return null;
+
+  return {
+    command,
+    proposed,
     requestedId: requested.block.id,
     requestedLabel: requested.block.label,
-    proposedId: proposed.id,
-    proposedLabel: proposed.label,
+    proposedId,
+    proposedLabel: proposedBlock.label,
   };
 }
 

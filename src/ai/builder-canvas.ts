@@ -35,7 +35,7 @@ import {
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { isCopyEditRequest, looksLikeAnEdit } from "./block-command.ts";
-import { blockEditManifest, blockEditSchema, blockMessage, blockTargetCorrection, blockTargetMismatch, inWords, readModelMove, type BlockIntent, type BlockTargetCorrection } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockMessage, blockTargetMismatch, inWords, readModelMove, type BlockIntent, type BlockIntentCorrection } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -383,7 +383,7 @@ function boot(): void {
   const draftBlocks = $<HTMLOListElement>("[data-builder-draft-blocks]");
   const acceptDraft = $<HTMLButtonElement>("[data-draft-accept]", draftReview ?? undefined);
   const discardDraft = $<HTMLButtonElement>("[data-draft-discard]", draftReview ?? undefined);
-  type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition; ask: string; correction: BlockTargetCorrection | null };
+  type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition; ask: string; correction: BlockIntentCorrection | null };
   type DraftProposal = { ask: string; composition: PageComposition; before: PageComposition; names: string[] };
   type Applying = { expected: PageComposition; description: string; timer: ReturnType<typeof setTimeout> };
   let proposal: Proposal | null = null;
@@ -536,16 +536,16 @@ function boot(): void {
     }
     if (read.kind === "reply") { say(read.said, "reply"); return; }
 
-    const correction = blockTargetCorrection(ask, state.blocks, read.command.surface);
+    const correction = blockIntentCorrection(ask, state.blocks, read.command);
     const targetMismatch = correction ? null : blockTargetMismatch(ask, state.blocks, read.command.surface);
     if (targetMismatch) {
       say(targetMismatch, "refusal");
       return;
     }
 
-    const command = correction ? { ...read.command, surface: correction.surface } : read.command;
+    const command = correction ? correction.command : read.command;
     if (correction && !manifest.targets.some((target) =>
-      target.id === correction.surface && target.accepts.includes(command.action),
+      target.id === command.surface && target.accepts.includes(command.action),
     )) {
       say(`The request identifies ${correction.requestedId}, but that block cannot take this edit. Nothing changed.`, "refusal");
       return;
@@ -559,11 +559,11 @@ function boot(): void {
     proposal = { command, raw, model: grainModel, manifestApi: grainManifest, composition: compositionAtAsk, ask, correction };
     const label = intentLabel(command);
     proposalCopy.textContent = correction
-      ? `The model chose ${correction.proposedLabel} (${correction.proposedId}), but your request clearly identifies ${correction.requestedLabel} (${correction.requestedId}). The proposal uses ${correction.requestedId}. Review it before applying.`
+      ? `The model proposed ${intentLabel(correction.proposed)} for ${correction.proposedLabel} (${correction.proposedId}). Your request clearly identifies ${intentLabel(command)} on ${correction.requestedLabel} (${correction.requestedId}). Review the corrected proposal before applying.`
       : `Proposed edit: ${label}. Check the block ID and change before applying.`;
     proposalPanel.removeAttribute("hidden");
     say(correction
-      ? `The model chose ${correction.proposedId}; your request identifies ${correction.requestedId}. Review the corrected edit: ${label}.`
+      ? `The model proposed ${intentLabel(correction.proposed)}; your request identifies ${correction.requestedLabel} (${correction.requestedId}). Review the corrected edit: ${label}.`
       : `Review this edit: ${label}.`, "thinking");
   }
 
@@ -590,10 +590,10 @@ function boot(): void {
     const manifest = waiting.manifestApi.domManifest(document);
     const checked = readModelMove(waiting.raw, manifest, waiting.model);
     const checkedCorrection = checked.kind === "command"
-      ? blockTargetCorrection(waiting.ask, state.blocks, checked.command.surface)
+      ? blockIntentCorrection(waiting.ask, state.blocks, checked.command)
       : null;
     const checkedCommand = checked.kind === "command" && checkedCorrection
-      ? { ...checked.command, surface: checkedCorrection.surface }
+      ? checkedCorrection.command
       : checked.kind === "command" ? checked.command : null;
     if (!checkedCommand || checkedCommand.action !== waiting.command.action ||
         checkedCommand.surface !== waiting.command.surface ||
