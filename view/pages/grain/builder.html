@@ -57,10 +57,23 @@
             <button class="wb-chip" type="button" data-proposal-cancel>Cancel</button>
           </div>
         </div>
+        <section class="wb-bar__draft" data-builder-draft-review aria-labelledby="builder-draft-title" hidden>
+          <div class="wb-bar__draft-head">
+            <div>
+              <h2 id="builder-draft-title">Review this page draft</h2>
+              <p class="muted">Review or edit each text field. Fields the model left out use sample wording. The page changes only after you add this draft.</p>
+            </div>
+          </div>
+          <ol class="wb-bar__draft-blocks" data-builder-draft-blocks></ol>
+          <div class="wb-bar__draft-actions">
+            <button class="btn" type="button" data-draft-accept>Add draft to page</button>
+            <button class="wb-chip" type="button" data-draft-discard>Discard</button>
+          </div>
+        </section>
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
           First use downloads about 875 MB on capable devices or 350 MB on others. The latest checks
           scored 5/8 with the larger model and 2/8 twice with the smaller model. A first request can
-          take close to a minute. Review generated copy before export.</p>
+          take close to a minute. Review generated copy before adding the draft or exporting.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.

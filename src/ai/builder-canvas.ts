@@ -27,7 +27,7 @@ import {
   addFromDescription, addFromPlan, emptyComposition, fromDocument, moveBlock, removeBlock, setSpan,
   type PageComposition,
 } from "./composition.ts";
-import { BLOCK_COMPONENTS, isSpan, type Block } from "./block-set.ts";
+import { BLOCK_COMPONENTS, blockCopyLimit, isSpan, sanitizeBlockCopy, type Block } from "./block-set.ts";
 import { BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan } from "./block-composer.ts";
 import {
   bylineFrom, exportJson, exportPage, exportTags, PREVIEW_HANDOVER_KEY,
@@ -379,9 +379,15 @@ function boot(): void {
   const proposalCopy = $('[data-surface="builder-edit-proposal-copy"]');
   const applyProposal = $<HTMLButtonElement>("[data-proposal-apply]", proposalPanel ?? undefined);
   const cancelProposal = $<HTMLButtonElement>("[data-proposal-cancel]", proposalPanel ?? undefined);
+  const draftReview = $<HTMLElement>("[data-builder-draft-review]");
+  const draftBlocks = $<HTMLOListElement>("[data-builder-draft-blocks]");
+  const acceptDraft = $<HTMLButtonElement>("[data-draft-accept]", draftReview ?? undefined);
+  const discardDraft = $<HTMLButtonElement>("[data-draft-discard]", draftReview ?? undefined);
   type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition };
+  type DraftProposal = { ask: string; composition: PageComposition; before: PageComposition; names: string[] };
   type Applying = { expected: PageComposition; description: string; timer: ReturnType<typeof setTimeout> };
   let proposal: Proposal | null = null;
+  let draftProposal: DraftProposal | null = null;
   let applying: Applying | null = null;
   const say = (text: string, read: "command" | "refusal" | "thinking" | "reply" | "file"): void => {
     if (!saidLine) return;
@@ -399,10 +405,80 @@ function boot(): void {
     saidLine.setAttribute("hidden", "");
   };
 
+  const clearDraftProposal = (): void => {
+    draftProposal = null;
+    draftBlocks?.replaceChildren();
+    draftReview?.setAttribute("hidden", "");
+  };
+
   const clearProposal = (): void => {
     proposal = null;
     if (proposalCopy) proposalCopy.textContent = "";
     if (proposalPanel) proposalPanel.setAttribute("hidden", "");
+    clearDraftProposal();
+  };
+
+  const describeDraft = (composition: PageComposition, from: number): void => {
+    if (!draftReview || !draftBlocks) return;
+    draftBlocks.replaceChildren();
+    const labels: Record<string, string> = {
+      "block-lede": "Intro",
+      "block-card": "Card",
+      "block-callout": "Callout",
+      "block-stat": "Stat tile",
+      "block-form": "Form",
+    };
+    const copyNames: Record<string, string> = {
+      "block-lede": "lede",
+      "block-card": "card",
+      "block-callout": "callout",
+      "block-stat": "stat",
+    };
+    for (const block of composition.blocks.slice(from)) {
+      const item = document.createElement("li");
+      item.className = "wb-bar__draft-block";
+      const heading = document.createElement("h3");
+      heading.textContent = `${block.id} · ${labels[block.component] ?? "Block"}`;
+      item.append(heading);
+
+      const values = Object.entries(block.data)
+        .filter((entry): entry is [string, string] => typeof entry[1] === "string" && Boolean(entry[1].trim()));
+      for (const [field, value] of values) {
+        const label = document.createElement("label");
+        label.className = "field wb-bar__draft-field";
+        const caption = document.createElement("span");
+        caption.className = "field__label";
+        caption.textContent = field;
+        const editor = document.createElement("textarea");
+        editor.className = "field__textarea wb-bar__draft-text";
+        editor.rows = 2;
+        editor.value = value;
+        const limit = blockCopyLimit(copyNames[block.component] ?? "", field);
+        if (limit !== null) editor.maxLength = limit;
+        editor.setAttribute("data-draft-copy-block", block.id);
+        editor.setAttribute("data-draft-copy-field", field);
+        editor.setAttribute("aria-label", `${labels[block.component] ?? "Block"} ${field}`);
+        label.append(caption, editor);
+        item.append(label);
+      }
+
+      if (block.component === "block-form") {
+        const form = block.data as Record<string, unknown>;
+        for (const key of ["fields", "choices", "messages", "checks"] as const) {
+          const entries = form[key];
+          if (!Array.isArray(entries) || entries.length === 0) continue;
+          const line = document.createElement("p");
+          const names = entries.map((entry) => entry && typeof entry === "object" && "label" in entry
+            ? String(entry.label)
+            : "").filter(Boolean);
+          line.textContent = `${key}: ${names.join(", ") || `${entries.length} configured`}`;
+          item.append(line);
+        }
+      }
+
+      draftBlocks.append(item);
+    }
+    draftReview.removeAttribute("hidden");
   };
 
   /** An edit, from the sentence to the op. The model chooses; nothing it says is trusted.
@@ -588,6 +664,7 @@ function boot(): void {
    *  quietly fell back to the word list while the drawer next to it claims the model chose would be
    *  the exact failure this page was built to argue against. */
   async function runBuild(ask: string): Promise<void> {
+    const beforeComposition = state;
     const desk = deskModel();
     if (!desk) {
       buildByWordList(ask);
@@ -597,6 +674,10 @@ function boot(): void {
 
     say("Reading that…", "thinking");
     const raw = await completeWithin(desk, composeMessage(ask), undefined, BUILD_PLAN_SCHEMA);
+    if (state !== beforeComposition) {
+      say("The page changed while the desk was reading your brief. Nothing was added; review the page and try again.", "refusal");
+      return;
+    }
     if (raw === null) {
       buildByWordList(ask);
       say("Composed from the words in that sentence. The desk did not answer in time, so nothing read it.", "reply");
@@ -612,20 +693,72 @@ function boot(): void {
     }
 
     if (plan.dropped.length) console.info("[builder] dropped names outside the set:", plan.dropped);
-    const before = state.blocks.length;
-    remember(state);
-    landBuild(addFromPlan(state, plan.names, ask, plan.span, plan.copies), ask, before);
-    const added = state.blocks.length - before;
-    const draftedFields = plan.copies.reduce((count, copy) => count + Object.keys(copy).length, 0);
-    // The names are said out loud for the same reason the edit path names a block before touching
-    // it: a plan that is legal and wrong is the one failure no validation can see, and the only
-    // guard against it is a reader who can check what was chosen against what they asked for.
-    say(added === 0
-      ? `The desk read that as ${inWords(plan.names)}, and nothing in it had content to build from.`
-      : draftedFields
-        ? `The desk read that as ${inWords(plan.names)} and drafted copy from your brief.`
-        : `The desk read that as ${inWords(plan.names)}.`, "command");
+    const candidate = addFromPlan(state, plan.names, ask, plan.span, plan.copies);
+    const added = candidate.blocks.length - state.blocks.length;
+    if (added === 0) {
+      say(`The desk read that as ${inWords(plan.names)}, and nothing in it had content to build from.`, "reply");
+      return;
+    }
+    if (!draftReview || !draftBlocks || !acceptDraft || !discardDraft) {
+      say("The desk found a page draft, but its review controls are missing. Nothing was added.", "refusal");
+      return;
+    }
+    draftProposal = { ask, composition: candidate, before: state, names: plan.names };
+    describeDraft(candidate, state.blocks.length);
+    // The model's structure and text are proposed content. The canvas and its composition stay
+    // unchanged until the visitor has read the draft and chooses to add it.
+    say(`The desk proposed ${inWords(plan.names)}. Review the blocks and wording before adding them.`, "thinking");
   }
+
+  acceptDraft?.addEventListener("click", () => {
+    const waiting = draftProposal;
+    if (!waiting) return;
+    if (state !== waiting.before) {
+      clearDraftProposal();
+      say("The page changed before you accepted the draft. Nothing was added; build against the current page.", "refusal");
+      return;
+    }
+    const before = state.blocks.length;
+    const reviewedData = new Map<string, Record<string, string>>();
+    draftBlocks?.querySelectorAll<HTMLTextAreaElement>("[data-draft-copy-block][data-draft-copy-field]")
+      .forEach((editor) => {
+        const id = editor.getAttribute("data-draft-copy-block");
+        const field = editor.getAttribute("data-draft-copy-field");
+        if (!id || !field) return;
+        const values = reviewedData.get(id) ?? {};
+        values[field] = editor.value;
+        reviewedData.set(id, values);
+      });
+    const editableNames: Record<string, string> = {
+      "block-lede": "lede",
+      "block-card": "card",
+      "block-callout": "callout",
+      "block-stat": "stat",
+    };
+    const reviewedComposition: PageComposition = {
+      ...waiting.composition,
+      blocks: waiting.composition.blocks.map((block) => {
+        const edits = reviewedData.get(block.id);
+        const name = editableNames[block.component];
+        if (!edits || !name) return block;
+        const data = { ...block.data };
+        for (const [field, value] of Object.entries(edits)) {
+          data[field] = sanitizeBlockCopy(name, { [field]: value })[field] ?? "";
+        }
+        return { ...block, data };
+      }),
+    };
+    clearDraftProposal();
+    remember(state);
+    landBuild(reviewedComposition, waiting.ask, before);
+    say(`Added ${inWords(waiting.names)} after your review. Check generated claims before export.`, "command");
+  });
+
+  discardDraft?.addEventListener("click", () => {
+    if (!draftProposal) return;
+    clearDraftProposal();
+    say("Draft discarded. The page did not change.", "reply");
+  });
 
   composer.addEventListener("submit", (e) => {
     const box = $<HTMLTextAreaElement>("textarea", composer);
@@ -672,6 +805,10 @@ function boot(): void {
   const watcher = new MutationObserver(() => {
     const next = readComposition(canvas, state);
     if (sameShape(state, next)) return;          // an attribute we do not read changed; nothing to do
+    if (draftProposal) {
+      clearDraftProposal();
+      say("The page changed while the draft was waiting. The draft was discarded; review the current page.", "refusal");
+    }
     if (proposal) {
       clearProposal();
       say("The page changed while the edit was waiting for approval. Ask again against the current page.", "refusal");
@@ -727,11 +864,11 @@ function boot(): void {
     const previous = undoStack.pop();
     showUndo();
     if (!previous) return;
-    const canceledProposal = proposal !== null;
+    const canceledProposal = proposal !== null || draftProposal !== null;
     clearProposal();
     state = previous;
     repaint(viewOf(state, pageAsk, null));
-    say(canceledProposal ? "Put back. The pending proposal was canceled." : "Put back.", "command");
+    say(canceledProposal ? "Put back. The pending suggestion was canceled." : "Put back.", "command");
   });
   showUndo();
 
@@ -783,12 +920,12 @@ function boot(): void {
     // the code. Harmless while it only cost a repaint; not harmless once a no-op press could put a
     // step on the undo stack that undoes nothing a visitor can see.
     if (sameShape(state, next)) return;
-    const canceledProposal = proposal !== null;
+    const canceledProposal = proposal !== null || draftProposal !== null;
     clearProposal();
     remember(state);
     state = next;
     repaint(viewOf(state, pageAsk, null));
-    if (canceledProposal) say("The page changed. The pending proposal was canceled.", "reply");
+    if (canceledProposal) say("The page changed. The pending suggestion was canceled.", "reply");
   });
 
   // Example prompts live beside the rail rows but do not submit themselves. A visitor can inspect
