@@ -72,8 +72,10 @@
         </section>
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
           First use downloads about 875 MB on capable devices or 350 MB on others. The latest checks
-          scored 5/8 with the larger model and 2/8 twice with the smaller model. A first request can
-          take close to a minute. Review generated copy before adding the draft or exporting.</p>
+          scored 5/8 with the larger model and 2/8 twice with the smaller model. A focused local check
+          passed both deletion cases after the Builder visibly corrected the model's wrong target;
+          its draft still omitted Utrecht. A first request can take close to a minute. Review generated
+          copy and verify its claims before adding a draft or exporting.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -240,11 +242,18 @@
             included Utrecht but still added unsupported phrases. These small samples are not success
             rates. One October 11 scenario took 40.5 seconds from a fresh browser cache, including
             model loading and generation. The browser profile occupied 1.6 GB on disk after that run.</p>
+          <p>A focused October 13 recheck applied both deletion requests after the Builder showed and
+            corrected the model's wrong target for the second card. The draft still omitted Utrecht.
+            This 2/3 result measures the reviewed page workflow, not the model's own accuracy. The model
+            still chose the wrong card, and the draft still needs a human to check its facts.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
-            the canvas again before it reports a change. That review catches stale proposals, but it
-            cannot tell whether a legal choice is the block you meant. The block rail is the dependable
-            way to resize, move, or remove something. The model may add new blocks; it cannot revise
-            copy already on the canvas because GRAIN has no registered operation for that.</p>
+            the canvas again before it reports a change. When the model names a different block from
+            one uniquely identified by your words, the proposal shows both IDs and uses the requested
+            block. Ambiguous references keep the model's proposal for review, and missing targets are
+            refused. This correction makes that edit safer; it does not prove the model resolved the
+            reference correctly. The block rail remains the
+            dependable way to resize, move, or remove something. The model may add new blocks; it
+            cannot revise copy already on the canvas because GRAIN has no registered operation for that.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
