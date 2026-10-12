@@ -1,5 +1,27 @@
 import { test, expect } from "@playwright/test";
 
+test("every canonical route fits desktop and phone viewports", async ({ page }) => {
+  test.setTimeout(180_000);
+  const sitemap = await page.request.get("/sitemap.xml");
+  expect(sitemap.status()).toBe(200);
+  const xml = await sitemap.text();
+  const routes = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+    .map(([, loc]) => new URL(loc!).pathname);
+  expect(routes.length).toBe(148);
+
+  for (const route of routes) {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const response = await page.goto(route);
+    expect(response?.status(), `${route} desktop response`).toBe(200);
+    const desktop = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
+    expect(desktop.document, `${route} overflows at desktop: ${JSON.stringify(desktop)}`).toBeLessThanOrEqual(desktop.viewport + 1);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    const phone = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
+    expect(phone.document, `${route} overflows at phone width: ${JSON.stringify(phone)}`).toBeLessThanOrEqual(phone.viewport + 1);
+  }
+});
+
 test.describe("sitemap canonical routes", () => {
   for (const [route, selector] of [
     ["/catalog/", ".cat-main"],

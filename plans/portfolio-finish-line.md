@@ -104,8 +104,10 @@ The static export and dead-link verification pass with the workshop deck include
 The October 13 source-by-source documentation review found two capability overstatements:
 the GRAIN quick start said every surface was operable, and the BATCH static-export guide implied the
 client door exposed the same full vocabulary. They now describe registered surfaces and supported
-service-free actions. Browser assertions cover both statements. The other BATCH, GRAIN, MILL, and
-PROOF guides still require their full source comparison.
+service-free actions. Browser assertions cover both statements. The three MILL guides have now been
+checked against the installed 0.4.0 package source and its current plan: the collection fields,
+route enumeration, renderer port, addressable surfaces, and deferred AI outputs match. The BATCH,
+GRAIN, and PROOF guide sets still require their full source comparison.
 
 The October 13 refresh of the 23-screen desktop gallery found two additional presentation issues:
 the Talks introduction described every deck as an interactive web page, despite the new event PDF,
