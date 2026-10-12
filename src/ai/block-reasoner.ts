@@ -55,6 +55,32 @@ export const BLOCK_VERBS = ["block.remove", "block.span", "block.move"] as const
 export type BlockVerb = (typeof BLOCK_VERBS)[number];
 const isBlockVerb = (a: string): a is BlockVerb => (BLOCK_VERBS as readonly string[]).includes(a);
 
+/** Constrain the local model to the live block addresses and edit vocabulary before grain parses its
+ *  answer. Semantic targeting still belongs to the model and the visitor's proposal review; the
+ *  schema only prevents malformed or out-of-scope answers. */
+export function blockEditSchema(manifest: Manifest): Record<string, unknown> {
+  const targets = manifest.targets
+    .filter((target) => target.kind === "block" && target.accepts.some(isBlockVerb))
+    .flatMap((target) => [target.id, idOf(target.id)]);
+  return {
+    type: "object",
+    properties: {
+      action: { enum: [...BLOCK_VERBS, null] },
+      target: { enum: [...new Set(targets), null] },
+      payload: {
+        type: "object",
+        properties: {
+          span: { enum: ["full", "half", "third"] },
+          direction: { enum: ["up", "down"] },
+        },
+        additionalProperties: false,
+      },
+    },
+    required: ["action", "target", "payload"],
+    additionalProperties: false,
+  };
+}
+
 /** The edit prompt is a view of the live manifest, narrowed to the three operations this composer
  *  supports. The original manifest remains the validator's authority. Hiding unrelated actions and
  *  readable status text keeps the small model focused on the block controls it can actually use. */

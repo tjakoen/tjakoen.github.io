@@ -431,6 +431,17 @@ export async function probeDevice() { return { webgpu: true, deviceMemory: 8, co
 export function canRunModel() { return true; }
 export async function webgpuAvailable() { return true; }
 function draftAnswer(prompt) {
+  if (/drop the second card/i.test(prompt)) {
+    const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
+    return JSON.stringify({ action: "block.remove", target, payload: {} });
+  }
+  if (/drop the callout/i.test(prompt)) return JSON.stringify({ action: "block.remove", target: "block:b2", payload: {} });
+  if (/make the callout full/i.test(prompt)) return JSON.stringify({ action: "block.span", target: "block:b3", payload: { span: "full" } });
+  if (/move the callout up/i.test(prompt)) return JSON.stringify({ action: "block.move", target: "block:b3", payload: { direction: "up" } });
+  if (/widen/i.test(prompt)) return JSON.stringify({ action: "block.span", target: "block:b2", payload: { span: "wide" } });
+  if (/duplicate/i.test(prompt)) return JSON.stringify({ action: "block.duplicate", target: "block:b2" });
+  if (/ninth/i.test(prompt)) return JSON.stringify({ action: "block.remove", target: "block:b9" });
+  if (/the card should mention pricing/i.test(prompt)) return JSON.stringify({ action: null, reply: "There is no verb that rewrites what a block says." });
   if (/Hearth Bakery page/i.test(prompt)) return JSON.stringify({ blocks: [
     { name: "lede", copy: { body: "Hearth Bakery bakes sourdough fresh each morning." } },
     { name: "card", copy: { title: "Coffee", body: "Freshly brewed to go with the bread." } },
@@ -445,6 +456,7 @@ export async function loadEngine({ onProgress }) {
   onProgress?.({ progress: 1, text: "fake engine ready" });
   return { chat: { completions: { create: async (request) => {
     const prompt = request.messages.map((message) => message.content).join("\\n");
+    sessionStorage.setItem("__builderPrompt", prompt);
     sessionStorage.setItem("__builderSchema", request.response_format.schema);
     return { choices: [{ message: { content: draftAnswer(prompt) } }] };
   } } } };

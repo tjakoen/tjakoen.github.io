@@ -415,6 +415,8 @@ interface Result {
   canvas?: Array<{ id: string; span: string }>;
   /** Builder draft scenarios only: visible block text used to grade retained visitor-supplied facts. */
   draftText?: string[];
+  /** Number of proposed blocks shown in the review panel before the audit visitor accepts them. */
+  draftBlocks?: number;
   /** Builder scenarios only: what the model was handed and what it said back, verbatim. The report's
    *  most useful field when a scenario fails — the page's reading of a bad answer looks the same
    *  whatever the bad answer was. */
@@ -429,6 +431,7 @@ function grade(
   s: Scenario, reply: string, endPath: string, realRoutes: Set<string>,
   canvas: Array<{ id: string; span: string }> = [],
   draftText: string[] = [],
+  draftBlocks = 0,
 ): string[] {
   const failures: string[] = [];
   const low = reply.toLowerCase();
@@ -445,8 +448,8 @@ function grade(
     }
   }
   if (s.builderDraft) {
-    if (canvas.length < s.builderDraft.minimumBlocks)
-      failures.push(`draft has ${canvas.length} blocks, wanted at least ${s.builderDraft.minimumBlocks}`);
+    if (draftBlocks < s.builderDraft.minimumBlocks)
+      failures.push(`draft has ${draftBlocks} blocks, wanted at least ${s.builderDraft.minimumBlocks}`);
     const visibleCopy = draftText.join(" ").toLowerCase();
     for (const group of s.builderDraft.mustMention) {
       if (!group.some((value) => visibleCopy.includes(value.toLowerCase())))
@@ -588,6 +591,27 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     const timeout = s.deterministic ? 30_000 : firstModelRun ? 420_000 : 150_000;
     const builderPage = Boolean(s.builder || s.builderDraft);
     let { text, path: endPath } = await settle(page, startPath, timeout, builderPage ? lastSaid : lastReply);
+    let draftText: string[] | undefined;
+    let draftBlocks: number | undefined;
+    if (s.builderDraft) {
+      const review = page.locator("[data-builder-draft-review]");
+      const reviewVisible = await review.isVisible().catch(() => false);
+      draftBlocks = reviewVisible
+        ? await page.locator("[data-builder-draft-blocks] > li").count()
+        : 0;
+      draftText = reviewVisible
+        ? await review.locator("[data-draft-copy-block][data-draft-copy-field]").evaluateAll(
+            (fields) => fields.map((field) => (field as HTMLTextAreaElement).value),
+          )
+        : [];
+      // Grade the proposed wording before acceptance. The real visitor's review step is required
+      // to move it into the composition, so the harness follows that same supported path only after
+      // it has recorded the unedited model proposal for scoring.
+      if (reviewVisible) {
+        await page.locator("[data-draft-accept]").click();
+        ({ text, path: endPath } = await settle(page, startPath, timeout, lastSaid));
+      }
+    }
     // The real visitor now approves each proposed edit. The audit does the same only after the
     // proposal is visible, then grades the canvas after the ordinary approval path runs.
     if (s.builder && await page.locator("[data-proposal-apply]").isVisible().catch(() => false)) {
@@ -596,7 +620,6 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     }
     if (!s.deterministic) firstModelRun = false;
     const canvas = builderPage ? await canvasState(page) : undefined;
-    const draftText = s.builderDraft ? await page.locator(CELL).allTextContents() : undefined;
     const model = builderPage ? await recorded(page) : undefined;
     // Per-scenario sessionStorage cleanup: tour-det (and any future tour ask) leaves a pending
     // "desk-tour" cursor stashed for the NEXT stop the door hasn't navigated to within this scenario's
@@ -620,8 +643,8 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       if (!keepNotepad) localStorage.removeItem("grain.notepad");
     }, !!s.keepNotepad).catch(() => {});
     const ms = Date.now() - t0;
-    const failures = grade(s, text, endPath, realRoutes, canvas, draftText);
-    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, model, pass: failures.length === 0, failures };
+    const failures = grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks);
+    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftBlocks, model, pass: failures.length === 0, failures };
   } finally {
     await page.close().catch(() => {});
   }
