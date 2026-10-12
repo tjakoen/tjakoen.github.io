@@ -50,6 +50,11 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("bun add @tjakoen/grain");
     await expect(page.locator(".board")).toContainText("public npm registry");
 
+    await page.goto("/grain/docs/grain");
+    await expect(page.locator(".board")).toContainText("An opted-in static page uses the browser's");
+    await expect(page.locator(".board")).toContainText("These are feature modules, not a client-framework runtime.");
+    await expect(page.locator(".board")).toContainText("spotlight, log, navigate, choices, fill, tick, span, and move");
+
     await page.goto("/batch/docs/consume-as-git-deps");
     await expect(page.locator(".board")).toContainText("pinned public GitHub commit");
     await expect(page.locator(".board")).toContainText("no GitHub token");

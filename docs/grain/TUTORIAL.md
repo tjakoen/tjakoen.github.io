@@ -104,7 +104,7 @@ else decision = await reasoner.decide(intent, tools);
 > below); only the host-side re-render is a no-op today. Where a visitor actually watches a letter
 > get archived (the `/mail` list), the desk drives the reader's own Archive control through its
 > client door (`src/ai/desk-door.ts`), the same button a human clicks, so the visible move stays
-> honest without a server backing. See the `TODO(owner)` at the end.
+> honest without a server backing. See the explanatory note at the end.
 
 ### 4. Teach the reasoner the verb
 
