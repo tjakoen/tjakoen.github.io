@@ -2,8 +2,8 @@
 title: "Getting started with MILL"
 ---
 
-MILL, **Markdown In, Living Layouts**, is a Markdown → GRAIN-pages CMS: feed it a folder of `.md`
-files (frontmatter + prose) and it renders them as real GRAIN pages by mapping Markdown nodes to
+MILL, **Markdown In, Living Layouts**, is a content rendering engine: feed it a folder of `.md`
+files (frontmatter + prose) and it renders them as GRAIN pages by mapping Markdown nodes to
 components. It sits a layer above the stack (`batch → grain → MILL`), depending on both and
 extending neither. The full mapping model is [`ARCHITECTURE.md`](ARCHITECTURE.md); this page is the
 fastest path to a rendered page.

@@ -55,6 +55,10 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("These are feature modules, not a client-framework runtime.");
     await expect(page.locator(".board")).toContainText("spotlight, log, navigate, choices, fill, tick, span, and move");
 
+    await page.goto("/mill/docs/getting-started");
+    await expect(page.locator(".board")).toContainText("is a content rendering engine");
+    await expect(page.locator(".board")).not.toContainText("CMS");
+
     await page.goto("/batch/docs/consume-as-git-deps");
     await expect(page.locator(".board")).toContainText("pinned public GitHub commit");
     await expect(page.locator(".board")).toContainText("no GitHub token");
