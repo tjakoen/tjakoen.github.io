@@ -23,6 +23,7 @@ type Shot = {
   name: string;
   desc: string;
   fullPage?: boolean;
+  viewport?: { width: number; height: number };
   prepare: (page: import("@playwright/test").Page) => Promise<void>;
 };
 
@@ -52,8 +53,20 @@ async function waitForSettledGreeting(page: import("@playwright/test").Page) {
 
 const SHOTS: Shot[] = [
   { name: "welcome", desc: "/ — THE EDITOR's Welcome page (the whole site as one editor window)", fullPage: true, prepare: goto("/") },
+  { name: "projects", desc: "/projects — selected work, grouped by what it does", fullPage: true, prepare: goto("/projects") },
+  { name: "resume", desc: "/resume — the résumé and downloadable PDF", fullPage: true, prepare: goto("/resume") },
+  { name: "teaching", desc: "/teaching — teaching experience and course evidence", fullPage: true, prepare: goto("/teaching") },
+  { name: "badges", desc: "/badges — issued course badges and criteria", fullPage: true, prepare: goto("/badges") },
+  { name: "plans", desc: "/plans — the public project plan board", fullPage: true, prepare: goto("/plans") },
+  { name: "version-one-deck", desc: "/decks/version-one — the workshop PDF viewer", fullPage: true, prepare: goto("/decks/version-one") },
+  { name: "phone-projects", desc: "/projects — phone-width project index", viewport: { width: 390, height: 844 }, prepare: goto("/projects") },
+  { name: "phone-resume", desc: "/resume — phone-width résumé header", viewport: { width: 390, height: 844 }, prepare: goto("/resume") },
+  { name: "phone-teaching", desc: "/teaching — phone-width teaching page", viewport: { width: 390, height: 844 }, prepare: goto("/teaching") },
+  { name: "phone-badges", desc: "/badges — phone-width credentials index", viewport: { width: 390, height: 844 }, prepare: goto("/badges") },
+  { name: "phone-plans", desc: "/plans — phone-width plan board", viewport: { width: 390, height: 844 }, prepare: goto("/plans") },
+  { name: "phone-version-one-deck", desc: "/decks/version-one — phone-width PDF fallback and link", viewport: { width: 390, height: 844 }, prepare: goto("/decks/version-one") },
   { name: "notes", desc: "/notes — the notes index (MILL), inside the editor window", fullPage: true, prepare: goto("/notes") },
-  { name: "talks", desc: "/talks — the talks index: every deck is a live page on this stack, never a slide export", fullPage: true, prepare: goto("/talks") },
+  { name: "talks", desc: "/talks — interactive web decks, with a PDF from the Version One workshop", fullPage: true, prepare: goto("/talks") },
   { name: "standards", desc: "/standards — the published standards index, rendered by MILL out of this repo's own standards/ folder", fullPage: true, prepare: goto("/standards") },
   { name: "calendar", desc: "/calendar — Month/Week/Agenda over the real note dates + desk-feed posts (Pass 2 — Calendar)", fullPage: true, prepare: goto("/calendar") },
   { name: "mail", desc: "/mail — folders + a message list over a letters page of desk dispatches, Compose is the one live control (Pass 3 — Mail)", fullPage: true, prepare: goto("/mail") },
@@ -161,7 +174,7 @@ try {
     // localStorage accumulate every previous route, so later screenshots no longer show a
     // visitor's first view of the page.
     const context = await browser.newContext({
-      viewport: VIEWPORT,
+      viewport: shot.viewport ?? VIEWPORT,
       deviceScaleFactor: 2,
       // Motion ON so live simulations (e.g. /grain's grade-as-signal) render as users see them;
       // headless Chromium otherwise defaults to reduced motion and freezes them.
