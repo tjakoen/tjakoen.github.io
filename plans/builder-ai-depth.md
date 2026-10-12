@@ -212,7 +212,8 @@ Both card-removal requests failed: the relative request removed the first card, 
 request returned an invalid action. The draft retained supplied facts but added unsupported
 flourishes. The first scenario took 40.5 seconds from a fresh browser cache, including model loading
 and generation. The browser profile occupied 1.6 GB on disk after the run; that includes browser
-overhead and is not a measurement of network bytes. The estimated model download is about 1.1 GB.
+overhead and is not a measurement of network bytes. The later cold-network measurement recorded
+875,219,838 encoded bytes for model assets and 1,661,197 bytes for the WebLLM JavaScript runtime.
 This was one desktop run, not a success-rate estimate, and no phone hardware has been measured.
 
 The Builder now selects 1.5B only on its route when browser-reported memory or GPU capability passes
@@ -225,11 +226,14 @@ After those runs, the edit boundary gained a narrow target-mismatch guard. When 
 block unambiguously by ID, ordinal plus type, or a unique component name, the portfolio compares that
 reference with the model's validated target. A conflict is refused before a proposal appears or an
 intent reaches GRAIN; the page names both blocks and asks the visitor to try again. The guard never
-rewrites the model's choice, and ambiguous references still use the existing review path. Unit and
-browser checks cover the wrong-second-card case, the matching target, a unique callout, and ambiguous
-language. This contains one measured class of wrong edit; it does not establish that either local
-model chooses targets reliably. The October 12 live WebGPU run confirms the guard refused a wrong
-first-card target without changing the canvas.
+rewrites the model's choice, and ambiguous references still use the existing review path. A follow-up
+found that a clear reference to a missing component, such as a callout on a page without one, had
+been treated as ambiguous and could leave a different model-selected block eligible for review. The
+guard now refuses clear absent IDs, component names, and out-of-range ordinals as well. Unit coverage
+and a scripted browser case confirm that a model-proposed removal leaves the canvas unchanged. This
+contains more wrong-target classes; it does not establish that either local model chooses targets
+reliably. The October 12 live WebGPU run confirms the guard refused a wrong first-card target without
+changing the canvas.
 
 On October 12, an eight-case run of the 1.5B profile scored 6/8. Width changes, both move
 requests, explicit-ID removal, and the copy-edit refusal passed. The relative request to remove the
@@ -324,7 +328,9 @@ copy edits appear to work.
       valid direction; the explicit-ID move passed its focused live recheck, but the callout request
       still selected the wrong card. The 0.5B full run remains 2/8; the 1.5B run scored 6/8 while
       failing both removal cases. The target-mismatch guard refuses a clear reference conflict but
-      does not choose a target or improve the model's answer. October 12 runs scored 6/8 and 5/8 with
+      does not choose a target or improve the model's answer. It now also refuses a clearly named
+      target that is absent from the current composition. Unit tests and a focused browser case cover
+      that refusal; all 66 Builder browser cases now pass. October 12 runs scored 6/8 and 5/8 with
       different passing cases. The first request took 50 seconds under the 60-second limit, then the
       guard refused the model's first-card answer to a second-card request. The chooser still belongs
       to the AI.

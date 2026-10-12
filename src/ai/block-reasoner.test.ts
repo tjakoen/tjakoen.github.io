@@ -93,6 +93,15 @@ describe("explicit target guard", () => {
     expect(blockTargetMismatch("move the callout up", blocks, "block:b3")).toBeNull();
   });
 
+  test("it refuses a command when a clear requested target is absent", () => {
+    expect(blockTargetMismatch("drop the callout", [blocks[0], blocks[1]], "block:b2"))
+      .toBe("The request names callout, but no matching block is on the page. Nothing changed.");
+    expect(blockTargetMismatch("remove b9", blocks, "block:b2"))
+      .toBe("The request names b9, but no matching block is on the page. Nothing changed.");
+    expect(blockTargetMismatch("remove the third card", blocks, "block:b2"))
+      .toBe("The request names third card, but no matching block is on the page. Nothing changed.");
+  });
+
   test("it leaves ambiguous multi-target language to the model and review step", () => {
     expect(blockTargetMismatch("move the second card above the callout", blocks, "block:b2")).toBeNull();
     expect(blockTargetMismatch("move a card up", blocks, "block:b2")).toBeNull();

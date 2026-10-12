@@ -184,10 +184,15 @@ const hasWord = (text: string, word: string): boolean => text.split(" ").include
 /** Resolve only a clear target reference already present in the visitor's words. This is a guard,
  *  not a chooser: it never creates or rewrites a command, and ambiguous references are left to the
  *  model and its approval proposal. */
+type RequestedBlock =
+  | { kind: "resolved"; block: BlockDescription }
+  | { kind: "missing"; requested: string }
+  | { kind: "ambiguous" };
+
 function requestedBlock(
   message: string,
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
-): BlockDescription | null {
+): RequestedBlock | null {
   const entries = describeBlocks(blocks);
   const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
   const references: BlockDescription[] = [];
@@ -195,7 +200,8 @@ function requestedBlock(
   const ids = [...text.matchAll(/\b(?:block\s*)?(b\d+)\b/g)].map((match) => match[1]);
   if (ids.length === 1) {
     const match = entries.find((entry) => entry.id === ids[0]);
-    if (match) references.push(match);
+    if (!match) return { kind: "missing", requested: ids[0] };
+    references.push(match);
   } else if (ids.length > 1) {
     return null;
   }
@@ -212,14 +218,20 @@ function requestedBlock(
     if (ordinalWords.length === 1) {
       const index = ORDINALS[ordinalWords[0]] === "last" ? candidates.length - 1 : Number(ORDINALS[ordinalWords[0]]) - 1;
       match = candidates[index];
+      if (!match) return { kind: "missing", requested: `${ordinalWords[0]} ${group}` };
     } else if (ordinalWords.length === 0 && candidates.length === 1) {
       match = candidates[0];
     }
     if (match) references.push(match);
+    else if (ordinalWords.length === 0 && candidates.length === 0)
+      return { kind: "missing", requested: group };
+    else if (ordinalWords.length === 0 && candidates.length > 1)
+      return { kind: "ambiguous" };
   }
 
   const unique = [...new Map(references.map((entry) => [entry.id, entry])).values()];
-  return unique.length === 1 ? unique[0] : null;
+  return unique.length === 1 ? { kind: "resolved", block: unique[0] }
+    : unique.length > 1 ? { kind: "ambiguous" } : null;
 }
 
 /** Refuse a legal model command when it contradicts one unambiguous target the visitor named. */
@@ -229,10 +241,13 @@ export function blockTargetMismatch(
   target: string,
 ): string | null {
   const requested = requestedBlock(message, blocks);
-  if (!requested) return null;
+  if (!requested || requested.kind === "ambiguous") return null;
+  if (requested.kind === "missing")
+    return `The request names ${requested.requested}, but no matching block is on the page. Nothing changed.`;
+  const resolvedBlock = requested.block;
   const proposed = describeBlocks(blocks).find((entry) => entry.id === idOf(target));
-  if (!proposed || proposed.id === requested.id) return null;
-  return `The request points to ${requested.label} (${requested.id}), but the model proposed ${proposed.label} (${proposed.id}). Nothing changed. Try naming ${requested.id} directly.`;
+  if (!proposed || proposed.id === resolvedBlock.id) return null;
+  return `The request points to ${resolvedBlock.label} (${resolvedBlock.id}), but the model proposed ${proposed.label} (${proposed.id}). Nothing changed. Try naming ${resolvedBlock.id} directly.`;
 }
 
 // ---------------------------------------------------------------------------------------------
