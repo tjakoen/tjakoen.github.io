@@ -305,6 +305,7 @@ test.describe("the /calendar event page (JS on)", () => {
       ["codegeeks-hau-sleek-and-swift", "/teaching"],
       ["gdg-hau-ai-hack", "/notes/ten-times-zero"],
       ["gdgoc-hau-general-assembly", "/talks/ten-times-zero/#1"],
+      ["loop-hau-version-one", "/calendar"],
       ["mafia-hau-reality-check", "/notes/watch-its-hands"],
       ["yses-uplb-fair-and-talk", "/notes/ten-times-zero"],
       ["yses-uplb-hackfest", "/notes/ten-times-zero"],
@@ -322,15 +323,21 @@ test.describe("the /calendar event page (JS on)", () => {
   });
 
   test("an event page renders the photo grid on top, then the body", async ({ page }) => {
-    await page.goto("/calendar/gdg-hau-ai-hack");
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/calendar/loop-hau-version-one");
     // the post-template photo grid comes from the entry's frontmatter (shellChrome renderPhotoGrid)
     const photos = page.locator(".feed-photos .feed-photo");
     expect(await photos.count()).toBeGreaterThan(0);
     await expect(photos.first()).toHaveAttribute("href", /\.(jpg|jpeg|png|svg)$/);
+    await expect(page.locator(".feed-photos")).not.toContainText("repository.jpg");
+    await expect(page.locator(".feed-photos img")).toHaveAttribute("alt", /workshop/);
     // and the MILL-rendered body is below it
     await expect(page.locator("h2").first()).toBeVisible();
     // it is a real MILL entry (carries the Rendered/Source toggle)
     await expect(page.locator(".content-source")).toBeVisible();
+    await page.setViewportSize({ width: 390, height: 844 });
+    const board = page.locator("main .board");
+    expect(await board.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await board.evaluate((el) => el.clientWidth));
   });
 
   test("an event share block reports copy success and stays useful without clipboard access", async ({ page }) => {

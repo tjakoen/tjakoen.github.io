@@ -5,8 +5,8 @@ title: "GRAIN — an interface an AI can operate"
 **GRAIN** is a **design system** with an **optional AI-interaction layer** on top. The
 design system — the `b-*` atoms + *grade-as-signal* (grain texture encodes state) — is
 usable on its own in any BATCH app, no AI required (grade also means draft/saved,
-focus/editing). The AI layer adds the part where every surface is **addressable** and
-**operable by both a human and an AI through one shared vocabulary**, with the AI's
+focus/editing). The AI layer adds the part where registered surfaces can be **addressed** and
+**operated by both a human and an AI through one shared vocabulary**, with the AI's
 presence shown as a visible signal: *grain = AI* (the Redaction grain grade), clean =
 human. The dependency is one-directional — the AI layer uses the design system, never
 the reverse (see [`grain/README.md`](https://github.com/tjakoen/grain/blob/main/README.md) §0).
@@ -32,7 +32,7 @@ a capability, update this list (CLAUDE.md alignment table → `AUDIT.md` check 1
 
 **Hero — the reasons GRAIN exists:**
 
-- **One vocabulary, two operators.** Every surface is addressable and operable by *both* a human and
+- **One vocabulary, two operators.** Registered surfaces are addressable and operable by *both* a human and
   an AI through one closed set of verbs. On a server-backed page, both operators send the same
   `Intent` through `POST /intent` and receive `RenderOp`s. An opted-in static page uses the browser's
   client door with that same contract. There is no privileged AI→DOM back channel. (The pieces table
@@ -51,7 +51,7 @@ a capability, update this list (CLAUDE.md alignment table → `AUDIT.md` check 1
 
 - **The client-side door — the same contract with no backend.** The interaction layer can run
   *in the browser* (`ai/client-door.ts`): a loopback `OpChannel` hands `RenderOp`s straight to the
-  dispatcher, so a **static host** runs the full vocabulary — same door, same ops, zero server. The
+  dispatcher, so a **static host** runs the supported service-free actions through the same contract and ops, with no server. The
   page opts in (`<body data-ai-transport="client">`, typically stamped by the static export) and the
   boundary is hard: everything the client door loads is **client-safe by contract** — static-style
   modules only, no secrets/tokens, nothing that needs a server (ARCHITECTURE §19.2–19.3).
