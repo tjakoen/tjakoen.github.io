@@ -403,21 +403,21 @@ individual checks before the audit can be called complete.
       existing gallery retains its 35 selected captures, including phone first-screen views for six
       key routes. Focused phone checks cover the Builder, project stories, documentation, résumé,
       plans, catalog, and navigation. The serial full release run passed all 421 browser cases.
-      Link lint found no dead relative links in 56 rendered files. The local performance report
+      The October 13 hosted CI run on commit 7c3afbe passed all 423 browser cases in 4m24s, alongside
+      typecheck, 712 unit tests, and the lint baseline. Link lint found no dead relative links in 56
+      rendered files. The local performance report
       measures 30–268 KB of uncompressed
       JavaScript responses per route; production captures measured 136,617 JavaScript bytes on
       ordinary pages and 159,108 bytes on the Builder before model download. The shared shell stays
       available across routes, while page-specific features load only where needed. The local report
       labels its values as build-size checks rather than production transfer sizes.
-- [ ] Commit the finished work on main, deploy it, and verify the published pages. Current local
-      evidence on October 13: `bun test` passes 710 unit tests and the serial browser suite passes all
-      421 cases; `bun run check` and `bun run lint` pass; the lint gate stays under its baseline; link
-      lint finds no dead relative links in 56 rendered files; the fresh sitemap audit has 148
-      successful routes and zero document findings; and
-      static export verification passes for 1,177 pages, 1,133 data routes, 39 frozen modules, and
-      627 assets. These local checks do not prove that the reviewed commit is deployed. Push only
-      after the remaining page review is complete, then verify GitHub Pages and CI against that
-      commit.
+- [ ] Commit the finished portfolio on main, deploy it, and verify the published pages after the
+      remaining Builder reliability work is complete. The October 13 increment `7c3afbe` is already
+      on main and deployed: hosted CI passed all 423 browser cases, typecheck, 712 unit tests, and the
+      lint baseline; Pages export verification passed for 1,177 pages, 1,133 data routes, 39 frozen
+      modules, and 627 assets; and the live Builder page serves the disclosed source-brief review.
+      The full finish-line release remains open because repeated grounded-draft reliability and phone
+      cold-start measurements still need evidence.
 
 ## Done means
 
