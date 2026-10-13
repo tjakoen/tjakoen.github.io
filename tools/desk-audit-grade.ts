@@ -13,6 +13,11 @@ export interface BuilderDraftField {
   value: string;
 }
 
+export function builderBlockKeyFromHeading(heading: string): string {
+  const label = heading.split("·").at(-1)?.trim().toLowerCase() ?? "";
+  return label === "intro" || label === "introduction" ? "lede" : label;
+}
+
 export function gradeBuilderDraft(
   requirements: BuilderDraftRequirements,
   draftText: string[],

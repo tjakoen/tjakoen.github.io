@@ -1,5 +1,10 @@
 import { expect, test } from "bun:test";
-import { gradeBuilderDraft } from "./desk-audit-grade.ts";
+import { builderBlockKeyFromHeading, gradeBuilderDraft } from "./desk-audit-grade.ts";
+
+test("the audit maps the visible intro label back to the Builder's lede component", () => {
+  expect(builderBlockKeyFromHeading("b1 · Intro")).toBe("lede");
+  expect(builderBlockKeyFromHeading("b2 · Card")).toBe("card");
+});
 
 test("a requested phrase in the wrong block does not satisfy a field-specific requirement", () => {
   const failures = gradeBuilderDraft({

@@ -64,9 +64,8 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("One cached draft passed after code reconciliation, but varied briefs exposed a phrase-placement miss");
-    await expect(page.locator(".wb-bar__note")).toContainText("two live retries could not download model files");
-    await expect(page.locator(".wb-bar__note")).toContainText("I have not confirmed the fix with a live draft");
+    await expect(page.locator(".wb-bar__note")).toContainText("Two varied WebGPU briefs passed twice after code reconciliation");
+    await expect(page.locator(".wb-bar__note")).toContainText("These were warm desktop runs");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
     await expect(help).toContainText("The first request took 50 seconds");
@@ -568,7 +567,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(CELL)).toHaveCount(0);
     await expect(page.locator(DRAFT_BLOCKS).getByRole("listitem")).toHaveCount(2);
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
-      .toHaveValue("Hearth Bakery · Utrecht · neighborhood bakery");
+      .toHaveValue("Hearth Bakery · Utrecht · a neighborhood bakery");
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
       .locator("xpath=../..")
       .locator('[data-draft-copy-evidence="b1-body"]'))
@@ -585,7 +584,7 @@ test.describe("the model chooses the verb", () => {
       .toContainText("The model's wording was grounded in source phrases or omitted in 2 fields.");
     await expect(page.locator('[data-surface="builder-spec"]')).not.toContainText("Hearth Bakery");
     await page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
-      .fill("Hearth Bakery page about coffee in Utrecht.");
+      .fill("Hearth Bakery page about coffee in Utrecht, a neighborhood bakery.");
     await expect(page.locator("[data-builder-draft-evidence]")).toContainText("Detected names, quoted phrases, and numbers appear in the draft.");
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
       .locator("xpath=../..")
@@ -600,7 +599,7 @@ test.describe("the model chooses the verb", () => {
     await page.locator(ACCEPT_DRAFT).click();
 
     await expect(page.locator(CELL)).toHaveCount(2);
-    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery page about coffee in Utrecht.");
+    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery page about coffee in Utrecht, a neighborhood bakery.");
     await expect(page.locator(`${CELL} .card__title`)).toHaveText("Coffee and bread");
     await expect(page.locator(`${CELL} .card__body`)).toHaveText("baked fresh each morning");
     await expect(page.locator(SAID)).toContainText("Added lede and card after your review");
@@ -613,7 +612,7 @@ test.describe("the model chooses the verb", () => {
 
     const spec = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
     expect(spec.blocks.map((block: { data: Record<string, string> }) => block.data)).toEqual([
-      { body: "Hearth Bakery page about coffee in Utrecht." },
+      { body: "Hearth Bakery page about coffee in Utrecht, a neighborhood bakery." },
       { title: "Coffee and bread", body: "baked fresh each morning" },
     ]);
   });

@@ -575,9 +575,10 @@ claims. The sampled timing has ten-second resolution and is not an exact generat
 See audit/builder-cold-2026-10-12.md for the capture method and visible output.
 
 The October 13 device check ran on the available MacBook Air. Its USB inventory contained no iPhone
-or Android device, and Xcode listed no available simulator. Emulated phone widths remain useful for
-layout checks but cannot measure model compatibility, memory pressure, download, or generation on a
-phone. The current Builder page discloses local inference, first-use model downloads of about 875 MB
+or Android device, and `adb devices -l` listed no Android device. This host does not have the `simctl`
+utility for an iOS simulator. Emulated phone widths remain useful for layout checks but cannot
+measure model compatibility, memory pressure, download, or generation on a phone. The current Builder
+page discloses local inference, first-use model downloads of about 875 MB
 or 350 MB, and the need to review generated copy. Two additional October 13 desktop WebGPU audits
 each passed eight reviewed scenarios with the model cached; both reused the same brief, so they do
 not measure cold start or broad writing reliability. See
@@ -604,9 +605,23 @@ quality check is still incomplete. The source fix is verified in unit and browse
 behavior against the live model is not yet verified. The full test suite passed 722 tests locally
 and the portfolio typecheck passed. A second post-fix retry hit the same CDN failure for both briefs;
 its saved report records zero model answers and two not-run scenarios. See
-[the retry report](../audit/builder-phrase-placement-notrun-recheck-2026-10-13.json). The Builder's
-first-screen note now gives the single cached pass its proper context and discloses that live
-verification remains incomplete. Physical-phone cold start also remains open.
+[the retry report](../audit/builder-phrase-placement-notrun-recheck-2026-10-13.json).
+
+A later repeat reused the stable `localhost:3131` origin where Chromium had the model cached. Two
+varied briefs, for a bike shop and pottery studio, each passed twice after source reconciliation.
+The saved draft fields show the shop description in `lede.body` and “ready for the next ride” in
+`card.body`; both pottery captures also passed the phrase requirement in its named card. The raw
+model answer still misplaced or shortened some wording, so these passes measure the code-guarded
+reviewable composition, not unassisted model accuracy or polished copy. The two reports are
+[first run](../audit/builder-phrase-scoped-description-live-1-2026-10-13.json) and
+[repeat](../audit/builder-phrase-scoped-description-live-2-2026-10-13.json). The earlier CDN
+failures remain no-run results from new local origins, not failures of the later cached runs. A cold
+start on an actual phone and broader writing reliability remain open.
+
+The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
+lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
+updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-
+width page fit. It does not close the phone cold-start item above.
 
 ## Done means
 
