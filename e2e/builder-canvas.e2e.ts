@@ -33,7 +33,7 @@ async function pretendStaticHost(page: Page): Promise<void> {
 }
 
 test.describe("the canvas: a composition, server-rendered", () => {
-  test("the Build it button stays on one line at a narrow phone width", async ({ page }) => {
+  test("the narrow-phone prompt and workbench fit above the detailed audit disclosure", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 812 });
     await page.goto("/grain/builder");
     const submit = page.locator(SUBMIT);
@@ -44,6 +44,9 @@ test.describe("the canvas: a composition, server-rendered", () => {
       return range.getClientRects().length;
     });
     expect(lines).toBe(1);
+    await expect(page.locator(".wb-bar__evidence")).not.toHaveAttribute("open", "");
+    const workbenchTop = await page.locator(".wb").evaluate((workbench) => workbench.getBoundingClientRect().top);
+    expect(workbenchTop).toBeLessThan(430);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
   });
 
@@ -78,12 +81,13 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("Two varied WebGPU briefs each passed three times after code reconciliation");
-    await expect(page.locator(".wb-bar__note")).toContainText("wording variant passed once after code reconciliation");
-    await expect(page.locator(".wb-bar__note")).toContainText("Six further warm WebGPU checks across bakery, bike-repair, and pottery briefs passed once each");
-    await expect(page.locator(".wb-bar__note")).toContainText("Explicit intro descriptions and welcome requests now become short sentences from the brief");
-    await expect(page.locator(".wb-bar__note")).toContainText("Raw model copy still invents claims");
-    await expect(page.locator(".wb-bar__note")).toContainText("These warm desktop runs do not establish broad reliability");
+    await expect(page.locator(".wb-bar__note")).toContainText("Review every draft.");
+    const reliability = page.locator(".wb-bar__evidence");
+    await expect(reliability.locator("summary")).toHaveText("Model limits and reliability evidence");
+    await expect(reliability).not.toHaveAttribute("open", "");
+    await expect(reliability).toContainText("12 of 12 drafts that passed the checks on the text visitors see");
+    await expect(reliability).toContainText("The raw model still proposed unsupported details and extra blocks");
+    await expect(reliability.locator("a")).toHaveAttribute("href", "/plans/plan/builder-ai-depth/");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
     await expect(help).toContainText("The first request took 50 seconds");
