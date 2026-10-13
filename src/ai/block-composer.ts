@@ -79,6 +79,53 @@ const COPY_GLUE = new Set([
   "those", "to", "was", "we", "were", "which", "who", "with", "you", "your",
 ]);
 
+const DRAFT_VERBS = new Set([
+  "add", "build", "can", "could", "create", "design", "give", "help", "make", "please",
+  "show", "write",
+]);
+const ANCHOR = /[\p{Lu}][\p{L}\p{M}'’.-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’.-]*)*/gu;
+const QUOTED = /[“"]([^”"]+)[”"]/gu;
+const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
+
+/** Detect a small, reviewable set of exact details that a draft should preserve.
+ *
+ * This deliberately catches only capitalized names, quoted phrases, and numeric values. It is a
+ * reminder for human review, not entity recognition or proof that the remaining brief was covered.
+ */
+export function briefAnchors(brief: string): string[] {
+  const found: Array<{ value: string; index: number }> = [];
+  for (const match of brief.matchAll(ANCHOR)) {
+    const value = match[0].trim().replace(/^[’'“"]+|[.,;:!?’'”"]+$/gu, "");
+    const first = value.split(/\s+/)[0]?.toLowerCase();
+    if (DRAFT_VERBS.has(first ?? "") || value.length < 2) continue;
+    found.push({ value, index: match.index ?? 0 });
+  }
+  for (const pattern of [QUOTED, NUMBER]) {
+    for (const match of brief.matchAll(pattern)) {
+      found.push({ value: (match[1] ?? match[0]).trim(), index: match.index ?? 0 });
+    }
+  }
+  found.sort((a, b) => a.index - b.index);
+  const seen = new Set<string>();
+  return found.flatMap(({ value }) => {
+    const key = value.toLocaleLowerCase().replaceAll("’", "'").replace(/\s+/g, " ");
+    if (seen.has(key)) return [];
+    seen.add(key);
+    return [value];
+  });
+}
+
+/** Return detected names, quotes, or numeric values not present verbatim in the reviewed copy. */
+export function briefAnchorsMissingFromDraft(brief: string, copy: string): string[] {
+  const tokens = (value: string): string[] => (value.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu) ?? [])
+    .map((term) => term.toLocaleLowerCase().replaceAll("’", "'"));
+  const copyTokens = tokens(copy);
+  return briefAnchors(brief).filter((anchor) => {
+    const expected = tokens(anchor);
+    return !copyTokens.some((_, index) => expected.every((term, offset) => copyTokens[index + offset] === term));
+  });
+}
+
 /** List meaningful generated words that do not appear in the brief. This is a review aid, not a
  *  grounding test: matching words cannot prove that a sentence uses them truthfully. */
 export function termsOutsideBrief(brief: string, copy: string): string[] {

@@ -8,7 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import {
   BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
-  COMPLETION_TIMEOUT_MS, termsOutsideBrief,
+  COMPLETION_TIMEOUT_MS, briefAnchors, briefAnchorsMissingFromDraft, termsOutsideBrief,
 } from "./block-composer.ts";
 import { BLOCK_NAMES, composeFromNames, sanitizeBlockCopy } from "./block-set.ts";
 
@@ -120,6 +120,15 @@ describe("nothing the model says is trusted", () => {
 });
 
 describe("generated block copy is bounded by each component's visible text contract", () => {
+  test("the review aid finds named details, quoted phrases, and numeric values missing from a draft", () => {
+    const brief = "Build a Hearth Bakery page in Utrecht for the ‘Morning Loaf’, founded in 2019.";
+    expect(briefAnchors(brief)).toEqual(["Hearth Bakery", "Utrecht", "Morning Loaf", "2019"]);
+    expect(briefAnchorsMissingFromDraft(brief, "Hearth Bakery offers the Morning Loaf in Utrecht."))
+      .toEqual(["2019"]);
+    expect(briefAnchorsMissingFromDraft("Build a page for Ann in Utrecht.", "An announcement is posted in Utrecht."))
+      .toEqual(["Ann"]);
+  });
+
   test("the review aid lists meaningful words that are absent from the visitor's brief", () => {
     expect(termsOutsideBrief(
       "Hearth Bakery in Utrecht. Sourdough baked fresh each morning.",

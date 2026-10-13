@@ -333,12 +333,15 @@ The October 13 Builder update adds a review-first path for model-composed pages.
 their text appear in the workbench before they enter the composition. Visitors can edit proposed
 text fields in that panel; acceptance runs those values through the existing block-copy sanitizer
 before appending the draft through the composition functions. Discarding it preserves the current
-blocks and URL. Generated markup remains text in the review panel. The 69-case Builder browser suite
-covers review, text edits, acceptance, discard, escaped text, offline builds, and the existing edit
-path, including the disclosed recovery when a model declines a clear command. This makes model output
+blocks and URL. Generated markup remains text in the review panel. The Builder browser suite covers
+review, text edits, acceptance, discard, escaped text, offline builds, and the existing edit path,
+including the disclosed recovery when a model declines a clear command. This makes model output
 inspectable and correctable before it changes the page. A fresh 1.5B draft-only repeat again omitted
-Utrecht and added unsupported claims. The review panel now places the original brief beside the
-editable draft, but repeated model runs are still needed before generated copy can be called grounded.
+Utrecht and added unsupported claims. The review panel places the original brief beside the editable
+draft, flags detected names, quoted phrases, and numbers that are missing, and requires explicit
+confirmation before acceptance. Edits clear the confirmation, and none of these lexical checks
+proves the draft is true or complete. Repeated model runs are still needed before generated copy can
+be called grounded.
 
 A further fresh WebGPU recheck on October 13 scored 6/8. The two deletion answers were unusable: the
 relative request returned a span action with a null payload, and the explicit-ID request returned a
@@ -470,7 +473,7 @@ difference between the 7/8 reviewed workflow and the one-of-three location-reten
 - [x] Give the builder a small set of examples that demonstrates composing and then revising a real
       GRAIN page, including one honest refusal. The first-screen link opens a four-block page; the
       rail then offers a prompt for the measured `move b3 up` edit and a copy-edit refusal. The buttons
-      prefill only, and the 69-case Builder browser suite verifies the flow and unchanged canvas on
+      prefill only, and the 71-case Builder browser suite verifies the flow and unchanged canvas on
       refusal.
 - [x] Let a page brief draft text into registered fields on newly composed blocks. Unit and browser
       tests cover validation, composition data, visible output, and literal rendering of markup-like
@@ -488,8 +491,11 @@ difference between the 7/8 reviewed workflow and the one-of-three location-reten
       can omit facts and invent claims; this confirmation gate does not make generated copy reliable.
 - [x] Make the draft review show which fields use component sample text and which contain model
       copy. For generated text, list meaningful words absent from the brief and update that list as
-      the visitor edits the field. This is a lexical comparison, not a check that the resulting
-      claims are true. Unit and browser checks cover generated copy, sample copy, and edited copy.
+      the visitor edits the field. The review also surfaces capitalized name phrases, quoted
+      phrases, and numeric values from the brief that are not found verbatim anywhere in the draft;
+      its check updates as the visitor edits. This lexical comparison is a review aid, not a check
+      that the resulting claims are true or that every brief detail has been detected. Unit and
+      browser checks cover extra wording, omitted and restored named details, sample copy, and edits.
 - [ ] Finish the model comparison by measuring cold start on phone
       hardware, then improve the grounded draft. The 0.5B scored 2/8 in each of two October 11 runs;
       the 1.5B scored 6/8 in one separate run, but failed both removal cases and added unsupported
