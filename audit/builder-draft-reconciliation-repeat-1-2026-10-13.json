@@ -1,0 +1,46 @@
+{
+  "label": "portfolio-builder-grounded-repeat-1",
+  "base": "http://localhost:3133",
+  "model": "unspecified",
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "id": "builder-draft",
+      "ask": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 16050,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery · Utrecht · neighborhood bakery",
+        "Sourdough",
+        "baked fresh each morning"
+      ],
+      "draftEvidence": "The model's 1 unrequested block was removed. The model's wording was grounded in source phrases or omitted in 2 fields. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The model's wording was grounded in source phrases from your brief: “Hearth Bakery · Utrecht · neighborhood bakery”.",
+        "No new content words found. Word overlap cannot confirm a claim is true.",
+        "The model's wording was grounded in source phrases from your brief: “baked fresh each morning”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "prompt": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\",\n      \"copy\": {\n        \"body\": \"Hearth Bakery is a neighborhood bakery, a place where you can get fresh, delicious bread every morning.\"\n      }\n    },\n    {\n      \"name\": \"card\",\n      \"copy\": {\n        \"title\": \"Sourdough\",\n        \"body\": \"Our Sourdough is baked fresh each morning, perfect for a warm start to your day.\"\n      }\n    },\n    {\n      \"name\": \"callout\",\n      \"copy\": {\n        \"body\": \"Don't miss out on the best bread. Stop by Hearth Bakery today.\"\n      }\n    }\n  ]\n}"
+      },
+      "pass": true,
+      "failures": []
+    }
+  ]
+}

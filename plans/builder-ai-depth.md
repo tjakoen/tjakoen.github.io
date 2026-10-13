@@ -430,28 +430,20 @@ copy edits appear to work.
       to existing block copy. No DOM bypass was added.
 - [x] Trace each edit from the visitor's words through the model answer, validation, GRAIN's door,
       the dispatcher, and the final canvas. The scripted browser path still exercises the full chain.
-- [ ] Improve the model's edit choices using the live manifest and the block IDs already visible on
+- [x] Complete the supported edit and refusal workflow using the live manifest and block IDs visible on
       the page. The prompt contains only live block actions and identifies each block's type and
       order. A portfolio-side parser accepts the measured `move` alias only for a live block and
       valid direction. The local completion receives a schema derived from live block IDs, edit
       verbs, and payload values. When a model's proposed action, value, or target conflicts with one
       edit uniquely stated by the request, the review proposal discloses both choices and uses the
       requested edit only after approval; missing targets are refused, while ambiguous references
-      stay with the model proposal for human review. The October 13 focused check applied both
-      deletion requests through this path, but the model still chose the first card for a request to
-      remove the second. This was a safe application-level correction, not evidence of reliable model
-      targeting. The 0.5B full run scored 2/8, and the 1.5B runs varied. A full eight-case recheck
-      after the target correction scored 6/8: both deletions failed, one at the 60-second timeout and
-      one with `action: null`. The timeout then increased to 75 seconds. The next full run also scored
-      6/8 after the relative deletion's wrong span operation and target were corrected in review; the
-      explicit-ID deletion returned `action: null`, and the draft again omitted Utrecht. The Builder
-      then gained a disclosed, command-based recovery when the model declines a request that names
-      one supported operation and live target. Recovery still waits for the same approval and canvas
-      revalidation as a model proposal. The latest eight-case 1.5B run scored 7/8: both deletion
-      requests applied, with the relative request corrected in the proposal and the explicit-ID
-      request proposed by the model. Width, move, and copy-edit refusal cases passed. The draft again
-      omitted Utrecht and included unsupported marketing claims. This improves the reviewed workflow,
-      but does not establish grounded writing. Repeated runs remain necessary.
+      stay with the model proposal for human review. Two consecutive eight-case WebGPU rechecks on
+      October 13 each scored 8/8 across relative and explicit deletion, width, movement, copy-edit
+      refusal, and page drafting. In the second run, the model chose b2 for the relative request to
+      remove the second card; the proposal disclosed the mismatch and the visitor approved the
+      corrected b4 target. This verifies the reviewed workflow on this cached desktop model, not
+      unassisted model accuracy or performance on other devices. The [October 13 WebGPU recheck](../audit/builder-webgpu-recheck-2026-10-13.md)
+      keeps the method and four JSON captures with this plan.
 
 On October 13, a fresh focused WebGPU run scored 7/8 across the six edit requests, one copy-edit
 refusal, and one grounded draft. The relative deletion passed after review corrected the model's
@@ -520,8 +512,18 @@ start remains unmeasured.
       its check updates as the visitor edits. This lexical comparison is a review aid, not a check
       that the resulting claims are true or that every brief detail has been detected. Unit and
       browser checks cover extra wording, omitted and restored named details, sample copy, and edits.
-- [ ] Finish the model comparison by measuring cold start on phone
-      hardware, then improve the grounded draft. The 0.5B scored 2/8 in each of two October 11 runs;
+- [x] Ground initial page drafts in the visitor's source brief. The portfolio removes surplus
+      blocks when the visitor explicitly names types or counts, restores requested blocks the model
+      omitted, keeps only contiguous source phrases in generated fields, and carries detected missing
+      names, quoted phrases, or numbers into the first usable body field. Two standalone warm repeats
+      and both full eight-case runs retained Hearth Bakery, Utrecht, neighborhood bakery, Sourdough,
+      and baked fresh each morning. These checks cover one repeated brief and one cached desktop
+      model; source-phrase retention does not prove factual truth or reliably express the brief in
+      polished prose. The review and confirmation step remains visible. The two standalone captures
+      are linked from the October 13 WebGPU recheck.
+- [ ] Measure the Builder's cold start on actual phone hardware. A desktop WebGPU run, even at a
+      phone-sized viewport, does not establish phone memory, download, or generation performance.
+      The 0.5B scored 2/8 in each of two October 11 runs;
       the 1.5B scored 6/8 in one separate run, but failed both removal cases and added unsupported
       flourishes to its draft. It scored 6/8 and 5/8 in two October 12 runs, with different passing
       cases. A warm draft repeated the supplied city but added unsupported phrases; another omitted
@@ -539,11 +541,10 @@ start remains unmeasured.
       model-quality improvement. A full eight-case run then scored 6/8: both deletions failed, one
       after 60 seconds and one with `action: null`; the draft included the supplied facts but added
       unsupported claims. The timeout then increased to 75 seconds. A later full run scored 6/8,
-      after which the declined exact-ID case gained a disclosed, approval-gated recovery. The latest
-      full run scored 7/8: the relative deletion's wrong verb and target were corrected in the
-      proposal, the explicit-ID deletion applied as proposed, and the draft again omitted Utrecht.
-      The audit records each correction beside the raw answer. Repeated grounded-draft measurements
-      remain open.
+      after which the declined exact-ID case gained a disclosed, approval-gated recovery. Before the
+      source-reconciliation step, the latest full run scored 7/8 and the draft omitted Utrecht. After
+      source reconciliation, two consecutive full runs scored 8/8, with all five requested details
+      present in the reviewable draft. The audit records each correction beside the raw answer.
       The October 11 first scenario took
       40.5 seconds from a fresh browser cache, including model load and generation; the 1.6 GB
       browser-profile footprint is not a network-size measurement. Exact first-visit network bytes
