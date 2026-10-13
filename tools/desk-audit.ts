@@ -235,7 +235,7 @@ const SCENARIOS: Scenario[] = [
     ask: "Build a page for Northstar Bike Repair in Malmö. Add an intro for a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
     builderDraft: { minimumBlocks: 2, mustMention: [["Northstar Bike Repair"], ["Malmö"], ["family-run bike repair shop"], ["Tune-up"], ["ready for the next ride"]], mustMentionInField: { "lede.body": [["family-run bike repair shop"]], "card.body": [["ready for the next ride"]] } } },
   { id: "builder-draft-negative-anchors", page: "/grain/builder",
-    ask: "Build a page for Hearth Bakery in Utrecht. Do not call it an award-winning bakery or claim it opened in 2019. Add an intro that welcomes neighbors.",
+    ask: "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.",
     builderDraft: { minimumBlocks: 1, mustMention: [["Hearth Bakery"], ["Utrecht"]], mustNotMention: ["award-winning bakery", "2019"] } },
   { id: "builder-draft-pottery-studio", page: "/grain/builder",
     ask: "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.",

@@ -99,8 +99,8 @@ const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 function followsNegation(brief: string, index: number): boolean {
   const before = brief.slice(0, index);
   const clause = before.split(/[,;.!?]|\b(?:but|however|instead)\b/iu).at(-1) ?? before;
-  const context = clause.replace(/\bnot only\b|\b(?:don't|do not) forget\b/giu, "");
-  return /\b(?:not|never|no|without|cannot|can't|don't|dont|isn't|aren't|wasn't|weren't|doesn't|didn't|won't|wouldn't)\b/iu.test(context);
+  const context = clause.replace(/\bnot only\b|\b(?:don't|do not|never) forget\b/giu, "");
+  return /\b(?:not|never|no|without|cannot|can't|avoid(?:ing)?|omit(?:ting)?|exclude|excluding|leave out|skip|refrain from|don't|dont|isn't|aren't|wasn't|weren't|doesn't|didn't|won't|wouldn't)\b/iu.test(context);
 }
 
 /** Detect a small, reviewable set of exact details that a draft should preserve.
