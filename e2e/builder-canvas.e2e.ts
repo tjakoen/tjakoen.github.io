@@ -64,9 +64,9 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("latest full local 1.5B check scored 6/8");
-    await expect(page.locator(".wb-bar__note")).toContainText("corrected and applied the relative second-card deletion after review");
-    await expect(page.locator(".wb-bar__note")).toContainText("explicit-ID deletion still received no model action");
+    await expect(page.locator(".wb-bar__note")).toContainText("latest full local 1.5B check scored 7/8");
+    await expect(page.locator(".wb-bar__note")).toContainText("Both deletion requests applied");
+    await expect(page.locator(".wb-bar__note")).toContainText("needed a visible correction before approval");
     await expect(page.locator(".wb-bar__note")).toContainText("draft omitted Utrecht");
     await expect(page.locator(".wb-bar__note")).toContainText("requests stop after 75 seconds");
     const help = page.locator('[data-surface="builder-help"]');
@@ -76,7 +76,9 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(help).toContainText("The draft omitted Utrecht");
     await expect(help).toContainText("This 2/3 result measures the reviewed page workflow");
     await expect(help).toContainText("shows both versions and uses your explicit request");
-    await expect(help).toContainText("relative second-card deletion passed after the review proposal corrected both the model's operation and target");
+    await expect(help).toContainText("both deletion requests applied");
+    await expect(help).toContainText("explicit-ID request passed as proposed by the model");
+    await expect(help).toContainText("If the model declines a request whose supported edit and live target are explicit");
     await expect(help).toContainText("requests stop after 75 seconds");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
@@ -438,7 +440,9 @@ export async function probeDevice() { return { webgpu: true, deviceMemory: 8, co
 export function canRunModel() { return true; }
 export async function webgpuAvailable() { return true; }
 function draftAnswer(prompt) {
-  if (/drop the second card/i.test(prompt)) {
+  if (/drop the second card|drop b4/i.test(prompt)) {
+    if (sessionStorage.getItem("__builderNoAction") === "true")
+      return JSON.stringify({ action: null, reply: "I could not identify an action." });
     const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
     if (sessionStorage.getItem("__builderWrongAction") === "true")
       return JSON.stringify({ action: "block.span", target, payload: { span: "half" } });
@@ -488,7 +492,9 @@ export function makeChatModel() {
       if (/generated image tag/i.test(prompt)) return JSON.stringify({ blocks: [
         { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
       ] });
-      if (/drop the second card/i.test(prompt)) {
+      if (/drop the second card|drop b4/i.test(prompt)) {
+        if (sessionStorage.getItem("__builderNoAction") === "true")
+          return JSON.stringify({ action: null, reply: "I could not identify an action." });
         const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
         if (sessionStorage.getItem("__builderWrongAction") === "true")
           return JSON.stringify({ action: "block.span", target, payload: { span: "half" } });
@@ -658,6 +664,25 @@ test.describe("the model chooses the verb", () => {
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+  });
+
+  test("a declined exact-ID request becomes a disclosed recovery proposal on a phone", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await twoCardPage(page);
+    await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
+    await waitForDesk(page);
+    await submitPrompt(page, "drop b4");
+
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("The local model declined: I could not identify an action.");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
+
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);

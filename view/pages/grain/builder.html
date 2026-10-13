@@ -72,9 +72,9 @@
         </section>
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
           First use downloads about 875 MB on capable devices or 350 MB on others. The latest full
-          local 1.5B check scored 6/8. The Builder corrected and applied the relative second-card
-          deletion after review; an explicit-ID deletion still received no model action, and the
-          draft omitted Utrecht. First answers can take over a minute, and requests stop after 75 seconds.
+          local 1.5B check scored 7/8. Both deletion requests applied; the relative second-card edit
+          needed a visible correction before approval. The draft omitted Utrecht. First answers can
+          take over a minute, and requests stop after 75 seconds.
           Review generated
           copy and verify its claims before adding a draft or exporting.</p>
 
@@ -246,17 +246,19 @@
           <p>A focused October 13 recheck applied both deletion requests after the Builder showed and
             corrected the model's wrong target for the second card. The draft still omitted Utrecht.
             This 2/3 result measures the reviewed page workflow, not the model's own accuracy. In a
-            later eight-case run, the explicit-ID deletion returned no action and the draft omitted
-            Utrecht; the relative second-card deletion passed after the review proposal corrected both
-            the model's operation and target. The run scored 6/8, with width, move, and copy-edit
+            later eight-case run, both deletion requests applied and the review proposal corrected the
+            relative second-card request's operation and target. The explicit-ID request passed as
+            proposed by the model. The run scored 7/8, with width, move, and copy-edit
             refusal cases also passing. The generated draft included unsupported marketing claims.
             First answers can take over a minute, and requests stop after 75 seconds.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
           the canvas again before it reports a change. When one edit verb, value, and live block are
             clear in your request but the model proposes a different action or target, the proposal
             shows both versions and uses your explicit request. Ambiguous references keep the model's
-            proposal for review, and missing targets are refused. This correction makes that edit
-            safer; it does not prove the model resolved the reference correctly. The block rail remains the
+            proposal for review, and missing targets are refused. If the model declines a request
+            whose supported edit and live target are explicit, the Builder can offer a disclosed,
+            command-based recovery for approval. These safeguards make the edit path safer; they do
+            not prove the model resolved the request correctly. The block rail remains the
             dependable way to resize, move, or remove something. The model may add new blocks; it
             cannot revise copy already on the canvas because GRAIN has no registered operation for that.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
