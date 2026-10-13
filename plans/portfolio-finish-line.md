@@ -177,8 +177,11 @@ first-use routes. The BREAD card also distinguishes the four packages I built fr
 site uses. Four GRAIN implementation guides were checked against the installed package source for
 component locations, the closed RenderOp set and dispatcher lifecycle, token names, and the manifest
 contract. PANTRY's composition and install guides were checked against its docs and source so the
-optional preview-tour support stays separate from the four-layer core. The focused project and docs
-checks pass at desktop and phone widths; the broader project-outcome audit remains open.
+optional preview-tour support stays separate from the four-layer core. The cross-page read across
+BATCH, GRAIN, MILL, PROOF, CRUMB, PANTRY, Greenroom, and the course platform confirmed that each
+project story leads to source, documentation, a working demo, a measured result, or a rendered
+example. One PANTRY link returned readers to the page top instead of the first-use commands; it now
+lands on that section directly, with the project browser check covering the target.
 
 The badge certificate template pass found that “Copy share link” silently failed when clipboard
 access was missing or denied. It now tries the browser clipboard, then a copy-command fallback, and
@@ -400,7 +403,7 @@ individual checks before the audit can be called complete.
 - [x] Archive the empty welcome-plan template so it no longer reads as unfinished portfolio work.
 - [x] Close the completed builder v1 plan and move its remaining model-quality work into
       [builder-ai-depth.md](/plans/plan/builder-ai-depth).
-- [ ] Audit the entry pages and project stories together. The home page establishes my role and
+- [x] Audit the entry pages and project stories together. The home page establishes my role and
       course-platform scale; Projects names my ownership of the stack and teaching platform, then
       links to the detail pages. BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, PANTRY, Greenroom, and the
       classroom page explain their purpose and design constraints, with a live use, measured result,
@@ -412,9 +415,9 @@ individual checks before the audit can be called complete.
       guard this relationship on both introductions. Projects now links directly to the BREAD note
       request trace, GRAIN's shared-control demo and action contract, and PANTRY's composition guide
       and install story. The BREAD card distinguishes the four packages TJ built from MILL, which the
-      site uses. Desktop and phone browser checks cover these links and card layout. The wider pass
-      tying every project's stated result to inspectable evidence and a clear visitor next step
-      remains open.
+      site uses. Desktop and phone browser checks cover these links and card layout. The cross-page
+      read confirms that every project's stated result leads to inspectable evidence and a clear next
+      step, and the PANTRY install example jumps straight to its first-use commands.
 - [x] Review the BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, and PANTRY introductions as one explanation
       of the stack. Their dependency direction, the request path through the portfolio, PANTRY's
       role as an app, and cross-links to adjacent layers are consistent; existing route and
