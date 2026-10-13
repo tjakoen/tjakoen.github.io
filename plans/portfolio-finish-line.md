@@ -41,12 +41,17 @@ this plan owns the final path across them.
 
 ## Current progress (2026-10-13)
 
-The first project-index pass now gives GRAIN a direct introduction beside PANTRY instead of leaving
+The project index now gives GRAIN a direct introduction beside PANTRY instead of leaving
 the design system visible only as one layer inside the BREAD story. The index names TJ's role across
-the featured products, stack, design system, app and teaching platform. The related entries share a
-responsive layout and link directly to their project pages. Browser checks cover their ownership
-copy, links, wide-screen alignment and narrow-screen stacking. This closes those index gaps, while
-the wider audit of each project's outcomes, evidence and next steps remains open. The repeated page
+the featured products, stack, design system, app and teaching platform. This audit found that its
+feature cards linked to the portfolio stories but hid the public repositories one click deeper.
+Source links now sit beside the story links for Greenroom, BREAD, GRAIN, PANTRY, and the course
+platform; its interactive demo remains a separate action. The classroom card also points to the
+teaching page, where visitors can inspect the courses, assessment approach, and badge criteria.
+Browser checks cover ownership copy, source and demo links, teaching handoff, wide-screen alignment,
+and narrow-screen stacking. The project index now provides both an explanation and a direct way to
+inspect the code, while the wider audit of each project's outcomes, evidence and next steps remains
+open. The repeated page
 footer now uses one plain, human-accountable AI statement without the robot emoji or an unsupported
 claim about every commit. Builder exports retain GRAIN's own generated attribution, covered by the
 export checks; the two credits describe different kinds of authorship. The /plans board now keeps
@@ -302,7 +307,7 @@ individual checks before the audit can be called complete.
 | / | Make selected work the primary next step and keep the résumé, notes, and other destinations as secondary paths. The six equal “Start” links competed for attention. | Implemented: the projects link is now the first-screen button, and the secondary list no longer repeats it. The October 10 settled screenshot caught the flagship walkthrough title collapsing into one word per line beside its badge; title and badge now wrap as separate flex items, and a browser check keeps the title on one line at the desktop screenshot width. |
 | /about | Put one inspectable proof link beside each leadership claim, especially team delivery, teaching scale, and shipped systems. | Implemented: manager, technical lead, and educator sections now link directly to a talk, the BREAD architecture, and the public classroom project. |
 | /resume | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Implemented: the print sheet now uses the source's letter size, navy hierarchy, inline role headings, and first-page role grouping. The rendered export matches the two-page structure, and a browser check guards the print styles. The phone screenshot pass also caught the fourth profile action clipped inside the card despite the page reporting no horizontal overflow; the four actions now form a two-column grid at phone widths, with an e2e check that confirms every action stays inside the viewport. |
-| /projects | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Implemented: the Greenroom, BREAD, GRAIN, PANTRY, and classroom entries pair a specific capability or outcome with a project page or live demo. Responsive group layout and direct links are covered by e2e/projects-layout.e2e.ts. |
+| /projects | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Implemented: the Greenroom, BREAD, GRAIN, PANTRY, and classroom entries pair a specific capability or outcome with a project story and a direct public source link; the classroom card also links its interactive demo and the teaching authority page. Responsive group layout and links are covered by e2e/projects-layout.e2e.ts. |
 | /bread | Add one end-to-end example that shows a visitor how the layers work together in a real request, alongside the layer diagram. | Implemented: the page follows a public note from its request through MILL and GRAIN composition to the returned HTML, and explains that PROOF and CRUMB serve other paths. |
 | /batch | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Implemented: the page reports the October 9 portfolio-wide /batch measurement (211,553 bytes of JavaScript, 745,209 total bytes, 35 requests), links to the current 148-route report, and gives the rerun command. Deferring live-figure code from pages that do not use it cut 56,053 JavaScript bytes from the October 2 measurement. The copy distinguishes shared-shell JavaScript from a BATCH-only benchmark. |
 | /grain | Keep the shared-control and visible-provenance demonstration prominent, then give the visitor a single guided action to try it. | Implemented: the first hero action now jumps directly to the two-operator demo; a browser check confirms the destination and working AI action. The static page links its manifest explanation to the published AI interface guide instead of the server-only /ai/manifest endpoint. The RenderOp introduction distinguishes HTML-bearing operations, typed dispatcher operations, and the service-free limits of the static client door. The tutorial distinguishes the client door used by default in development and on the static export from the server door available through *bun run dev:stub*. Source checks corrected the design-system guide's meaningful-text and link-color rules, and the re-skin guide now names the accent slots used by links, focus rings, and primary controls. Browser assertions guard these public contracts. The deeper component implementation remains deferred. |
@@ -353,13 +358,15 @@ individual checks before the audit can be called complete.
 - [x] Archive the empty welcome-plan template so it no longer reads as unfinished portfolio work.
 - [x] Close the completed builder v1 plan and move its remaining model-quality work into
       [builder-ai-depth.md](/plans/plan/builder-ai-depth).
-- [x] Audit the entry pages and project stories together. The home page establishes my role and
+- [ ] Audit the entry pages and project stories together. The home page establishes my role and
       course-platform scale; Projects names my ownership of the stack and teaching platform, then
       links to the detail pages. BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, PANTRY, Greenroom, and the
       classroom page explain their purpose and design constraints, with a live use, measured result,
       public source, documentation, or interactive demo to inspect. The portfolio and projects
       pages were reviewed at desktop and phone widths; e2e/projects-layout.e2e.ts covers the key
-      evidence links and responsive group layout.
+      evidence links and responsive group layout. This pass closed the missing source paths from the
+      Projects cards. A systematic check that each project's stated result is tied to evidence and
+      that the visitor's next step is clear remains open.
 - [x] Review the BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, and PANTRY introductions as one explanation
       of the stack. Their dependency direction, the request path through the portfolio, PANTRY's
       role as an app, and cross-links to adjacent layers are consistent; existing route and

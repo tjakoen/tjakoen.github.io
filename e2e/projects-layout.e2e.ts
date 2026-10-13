@@ -55,6 +55,15 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(page.locator("#tools .project-proof")).toContainText("I built it");
     await expect(page.locator("#platform .project-feature__copy")).toContainText("I built BATCH");
     await expect(page.locator("#teaching .project-feature__copy")).toContainText("I designed and built");
+    for (const repo of ["greenroom", "bread", "grain", "pantry", "github-native-course-platform"]) {
+      const source = page.locator(`a[href="https://github.com/tjakoen/${repo}"]`);
+      await expect(source).toBeVisible();
+      await expect(source).toHaveText("Browse the source ↗");
+    }
+    const demo = page.locator('.project-feature__actions a[href="https://tjakoen.github.io/github-native-course-platform/?demo=1"]');
+    await expect(demo).toHaveText("Open the demo ↗");
+    await expect(page.locator('#teaching .project-feature__copy a[href="/teaching"]'))
+      .toHaveText("See the courses, assessment approach, and badge criteria");
     const cards = page.locator(".project-related");
     const first = await cards.nth(0).boundingBox();
     const second = await cards.nth(1).boundingBox();
