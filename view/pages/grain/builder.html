@@ -245,12 +245,11 @@
         <details class="wb-drawer" data-surface="builder-help">
           <summary>What it builds, what it edits, and where it stops</summary>
           <p>Describe a page and press Build it. The code-owned matcher gives the examples a stable
-            preview; Build it asks the local model to choose blocks and order. Before review, the
-            Builder keeps wording grounded in your brief, removes unsupported model wording, and
-            joins supplied details for recognized intro requests.
-            Component sample copy remains when no phrase can be grounded, and you can edit every field.
-            This does not prove that a phrase is accurate in context; check the draft before use or
-            export. On capable devices the first run downloads about 875 MB; other devices use the
+            preview; Build it asks the local model to choose blocks and order. The model does not
+            write page copy. Code joins only phrases supplied in your brief, leaves unsupported fields
+            blank, and lets you fill or edit every field in the review panel before approval. This
+            does not prove that a phrase is accurate in context; check the draft before use or export.
+            On capable devices the first run downloads about 875 MB; other devices use the
             350 MB model. Both cache files on this device, and your prompt stays here.</p>
           <p>Two WebGPU checks on October 11, 2026, each scored 2/8 with the 0.5B model. The 1.5B model
             scored 6/8 on October 11 and in one October 12 run. After its timeout increased to 60
@@ -311,7 +310,7 @@
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
-            <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">the matcher makes a preview; Build it asks the model to add registered blocks and copy.</span></div>
+            <div class="docs-list__item"><span class="docs-list__name">Describe a page</span><span class="docs-list__what">the matcher makes a preview; Build it asks the model to choose registered blocks and order.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Move b3 up</span><span class="docs-list__what">an explicit-ID move passed in both profile checks; ambiguous references stay with the model's proposal.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Resize, move, or remove</span><span class="docs-list__what">the rail controls apply these changes directly to the block you choose.</span></div>
             <div class="docs-list__item"><span class="docs-list__name">Rewrite existing copy</span><span class="docs-list__what">not supported; GRAIN does not expose a registered text-edit operation.</span></div>
@@ -346,11 +345,10 @@
 
         <h2 class="section-head"><span>Examples</span></h2>
         <p class="muted">These links carry the prompt in the address and open a preview composed by
-          the code-owned matcher. Press Build it to ask the on-device model to add blocks when WebGPU
-          is available. Capable devices download about 875 MB of model files for the Builder; other
-          devices use about 350 MB. Files stay cached on this device. Your prompt stays here, and the
-          model's choices and copy may still need
-          work.</p>
+          the code-owned matcher. Press Build it to ask the on-device model to choose registered
+          blocks and order when WebGPU is available. Capable devices download about 875 MB of model
+          files for the Builder; other devices use about 350 MB. Files stay cached on this device. Your prompt stays here, and the
+          model's layout choices may need review. Page copy comes from your prompt or your edits.</p>
         <div class="docs-list">
           <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">An intro, two cards side by side, and a callout</a><span class="docs-list__what">four blocks: an intro, two cards, and a callout.</span></div>
           <div class="docs-list__item"><a class="docs-list__name" href="/grain/builder?ask=An%20opening%20paragraph%20and%20a%20stat">An opening paragraph and a stat</a><span class="docs-list__what">the smallest page the set can make.</span></div>

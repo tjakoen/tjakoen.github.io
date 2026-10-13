@@ -48,8 +48,8 @@ export interface Composition {
   refusals: BlockRefusal[];
 }
 
-/** Copy fields the model may draft for a new block. Component identity, layout, props, and every
- *  field not listed here remain owned by the code. */
+/** Copy fields the visitor can review on a new block. Component identity, layout, props, and all
+ *  copy values remain owned by the code; the Builder does not accept model-written prose. */
 const BLOCK_COPY_LIMITS: Record<string, Record<string, number>> = {
   lede: { body: 280 },
   card: { title: 60, body: 280 },
@@ -63,9 +63,9 @@ export function blockCopyLimit(name: string, field: string): number | null {
   return BLOCK_COPY_LIMITS[name]?.[field] ?? null;
 }
 
-/** Keep generated copy inside the visible text fields the matching component already exposes.
- *  Text is filled through `textContent` in the browser; stripping controls and limiting each field
- *  also prevents a model response from turning one short brief into a very large exported page. */
+/** Keep reviewed copy inside the visible text fields the matching component already exposes. Text
+ *  is filled through `textContent` in the browser; stripping controls and limiting each field also
+ *  prevents one short brief from turning into a very large exported page. */
 export function sanitizeBlockCopy(name: string, raw: unknown): Record<string, string> {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
   const limits = BLOCK_COPY_LIMITS[name];
@@ -116,10 +116,9 @@ interface BlockEntry {
   props?: Record<string, string>;
 }
 
-// Sample content is deterministic and remains the fallback when the model does not provide a safe
-// value for one of the text fields registered below. Model copy is accepted only for those fields,
-// after `sanitizeBlockCopy` strips controls and bounds its length. It cannot change a component name,
-// field shape, span, or prop.
+// Sample content is deterministic for the code-owned matcher. The AI build path suppresses these
+// examples so they cannot be mistaken for facts about the visitor's project. Supplied text is still
+// accepted only in registered fields, after `sanitizeBlockCopy` bounds its length and removes controls.
 const BLOCK_TABLE: BlockEntry[] = [
   {
     name: "lede",
@@ -364,6 +363,7 @@ export function composeFromNames(
   startIndex = 0,
   planSpan: Span | null = null,
   copies: readonly Record<string, string>[] = [],
+  suppressSamples = false,
 ): Composition {
   const desc = padded(description);
   const scopedToCards = anyTokenHits(desc, CARD_SCOPED_LAYOUT);
@@ -398,7 +398,12 @@ export function composeFromNames(
       id: `b${startIndex + blocks.length + 1}`,
       component: entry.component,
       span: name === "card" ? cardSpan ?? forced ?? entry.defaultSpan : forced ?? entry.defaultSpan,
-      data: { ...sampleFor(name, occurrence, entry.sample), ...sanitizeBlockCopy(name, copies[index]) },
+      data: {
+        ...(suppressSamples
+          ? Object.fromEntries(Object.keys(entry.sample).map((field) => [field, ""]))
+          : sampleFor(name, occurrence, entry.sample)),
+        ...sanitizeBlockCopy(name, copies[index]),
+      },
       props: { ...entry.props },
     });
   }
