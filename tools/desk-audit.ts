@@ -200,6 +200,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-drop-take-out", page: "/grain/builder", ask: "take out the callout",
     builder: { wantIds: ["b1", "b2", "b4"] },
     mustMention: [["b3"]] },
+  { id: "builder-drop-discard", page: "/grain/builder", ask: "discard the final card",
+    builder: { wantIds: ["b1", "b2", "b3"] },
+    mustMention: [["b4"]] },
   // The control, and it is the one that tells you WHICH thing is broken. "the second card" asks the
   // model to resolve a reference and then use the vocabulary; "drop b4" asks only for the second.
   // A page that fails both is failing at the vocabulary, and no amount of better referring language
@@ -216,6 +219,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-span-fill-row", page: "/grain/builder", ask: "let the callout fill the whole row",
     builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "full" } },
     mustMention: [["b3"]] },
+  { id: "builder-span-stretch-width", page: "/grain/builder", ask: "stretch the callout to full width",
+    builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "full" } },
+    mustMention: [["b3"]] },
   { id: "builder-span-id", page: "/grain/builder", ask: "make b2 full width",
     builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b2: "full" } },
     mustMention: [["b2"]] },
@@ -224,6 +230,9 @@ const SCENARIOS: Scenario[] = [
     mustMention: [["b3"]] },
   { id: "builder-move-shift", page: "/grain/builder", ask: "shift the callout up",
     builder: { wantIds: ["b1", "b3", "b2", "b4"] },
+    mustMention: [["b3"]] },
+  { id: "builder-move-nudge", page: "/grain/builder", ask: "nudge the callout down one step",
+    builder: { wantIds: ["b1", "b2", "b4", "b3"] },
     mustMention: [["b3"]] },
   { id: "builder-move-id", page: "/grain/builder", ask: "move b3 up",
     builder: { wantIds: ["b1", "b3", "b2", "b4"] },

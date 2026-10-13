@@ -862,6 +862,40 @@ test.describe("the model chooses the verb", () => {
     expect(await canvasIds(page)).toEqual(["b1", "b2"]);
   });
 
+  test("discard and nudge paraphrases stay review-gated and reject ambiguous or negative asks", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await twoCardPage(page, true);
+    await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
+    await waitForDesk(page);
+
+    await submitPrompt(page, "nudge one of the cards down one step");
+    await expect(page.locator(SAID)).toContainText("without a change");
+    await expect(page.locator(PROPOSAL)).toBeHidden();
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+
+    await submitPrompt(page, "do not discard the final card");
+    await expect(page.locator(SAID)).toContainText("without a change");
+    await expect(page.locator(PROPOSAL)).toBeHidden();
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+
+    await submitPrompt(page, "nudge the callout down one step");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Move b3 down on callout (b3)");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Move b3 down.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b4", "b3"]);
+
+    await submitPrompt(page, "discard the final card");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b4", "b3"]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+  });
+
   test("a malformed model move becomes a disclosed proposal only for a clear live request", async ({ page }) => {
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderMalformed", "true"));

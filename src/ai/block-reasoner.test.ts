@@ -170,6 +170,13 @@ describe("explicit target guard", () => {
       .toBeNull();
   });
 
+  test("discard is a removal request only when the final card is uniquely identified", () => {
+    expect(blockIntentRecovery("discard the final card", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.remove", surface: "block:b4" });
+    expect(blockIntentRecovery("do not discard the final card", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("discard a card", blocks, "No action.")).toBeNull();
+  });
+
   test("a full-row layout paraphrase recovers only for one live component", () => {
     expect(blockIntentRecovery("let the callout fill the whole row", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
@@ -186,6 +193,13 @@ describe("explicit target guard", () => {
       .toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "up" } });
     expect(blockIntentRecovery("shift a card up", blocks, "No action.")).toBeNull();
     expect(blockIntentRecovery("do not shift the callout up", blocks, "No action.")).toBeNull();
+  });
+
+  test("nudge recovers a one-step move only for a uniquely named live block", () => {
+    expect(blockIntentRecovery("nudge the callout down one step", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "down" } });
+    expect(blockIntentRecovery("do not nudge the callout down", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("nudge one of the cards down one step", blocks, "No action.")).toBeNull();
   });
 
   test("a full-row span paraphrase becomes a review-only full-width proposal", () => {
