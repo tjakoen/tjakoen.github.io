@@ -193,11 +193,12 @@ describe("generated block copy is bounded by each component's visible text contr
   test("explicit wording is restored to the block that the brief names", () => {
     const brief = "Build a Northstar Bike Repair page in Malmö. Add an intro for a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.";
     const reconciled = reconcileBuildPlan(brief, ["lede", "card"], [
-      { body: "Northstar Bike Repair is a family-run bike repair shop in Malmö." },
-      { title: "Tune-up", body: "Get your bike ready for the next adventure." },
+      { body: "Northstar Bike Repair is based in Malmö." },
+      { title: "Tune-up", body: "A family-run bike repair shop can get your bike ready for the next adventure." },
     ]);
 
-    expect(reconciled.copies[0]?.copy.body).not.toContain("ready for the next ride");
+    expect(reconciled.copies[0]?.copy.body).toContain("a family-run bike repair shop");
+    expect(reconciled.copies[1]?.copy.body).not.toContain("family-run bike repair shop");
     expect(reconciled.copies[1]?.copy.body).toBe("ready for the next ride");
   });
 

@@ -69,6 +69,17 @@ performance on another device. See the [first report](builder-phrase-scoped-desc
 [second](builder-phrase-scoped-description-live-2-2026-10-13.json), and
 [third](builder-phrase-scoped-description-live-3-2026-10-13.json).
 
+## Intro wording variant, October 13
+
+The copy-intent parser initially recognized “an intro that says it is” and “an intro describing it
+as,” but not the equally direct “an intro for” form. It now treats “intro for” and “intro about” as
+explicit lede wording. The `intro for` regression test puts that phrase in the card's raw answer and
+checks that reconciliation restores it to the intro. A warm live WebGPU check then passed 1/1 for
+the bike-shop brief, with “a family-run bike repair shop” in `lede.body` and “ready for the next
+ride” in `card.body`. This verifies the guarded field placement for one additional phrasing variant;
+it does not show that the model chose or wrote those phrases correctly on its own. See the [live
+report](builder-intro-for-live-2026-10-13.json).
+
 ## Limits
 
 These were warm desktop WebGPU runs against two briefs. They do not measure a first visit, a cold

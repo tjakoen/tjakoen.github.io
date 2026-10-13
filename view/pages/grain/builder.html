@@ -83,7 +83,8 @@
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
           First use downloads about 875 MB on capable devices or 350 MB on others. Two varied WebGPU
           briefs each passed three times after code reconciliation, with requested wording in their
-          named blocks. These warm desktop runs do not establish broad reliability or phone behavior.
+          named blocks. An “intro for…” wording variant passed once after code reconciliation.
+          These warm desktop runs do not establish broad reliability or phone behavior.
           Review every draft.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
@@ -282,7 +283,9 @@
             explicitly requested wording to the body of the named intro, card, or callout, and the
             live audit checks the phrase in its requested field. Two varied WebGPU briefs then passed
             three times each after code reconciliation. The saved review shows the intro description
-            in the intro and the requested card wording in the card body. Earlier post-fix attempts on
+            in the intro and the requested card wording in the card body. The parser also recognizes
+            “intro for…” as intro wording; one live check restored that phrase to `lede.body` when the
+            model put it in the card. Earlier post-fix attempts on
             fresh local origins could not fetch model weight shards from Hugging Face; reusing the
             warmed desktop origin allowed the later runs to load the cached model. These runs do not
             show cold-start or phone behavior, and phrase matching cannot prove that a claim is true.

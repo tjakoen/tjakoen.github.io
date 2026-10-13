@@ -92,7 +92,7 @@ const DRAFT_VERBS = new Set([
 const ANCHOR = /(?<![\p{L}\p{N}_])[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
 const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^.!?]+?)(?=[.!?]|$)/giu;
-const INTRO_DESCRIPTION = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\b(?:says?\s+it\s+is|describing\s+it\s+as|describes?\s+it\s+as)\s+([^,;.!?]+?)(?=,\s*(?:and\s+)?then\b|[;.!?]|$)/giu;
+const INTRO_DESCRIPTION = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\b(?:says?\s+it\s+is|describing\s+it\s+as|describes?\s+it\s+as|for|about)\s+([^,;.!?]+?)(?=,\s*(?:and\s+)?then\b|[;.!?]|$)/giu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 
 /** Detect a small, reviewable set of exact details that a draft should preserve.
