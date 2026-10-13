@@ -86,6 +86,15 @@ also passed all 425 tests. The parallel local run had four time-sensitive failur
 and the long plan-detail crawl; all passed in serial mode. This increment is released, while the
 project-by-project outcome and evidence audit and Builder reliability work remain open below.
 
+The October 13 role-introduction pass reshapes the About profile around three connected principles:
+as a teacher, treat students as adults and automate mechanical grading to return time to teaching; as
+an engineer, hold the architecture and quality bar while keeping direction legible to the next person;
+as a manager, grow people first and deliver goals through them. Each line links to its detailed role
+section. The homepage now opens with the same three principles, while the résumé summary uses that
+first-person framing and links to the full profile. The themes come from existing About role sections,
+the teaching and origin-story notes; no new biographical claims were added. Focused desktop and phone checks cover
+the three statements, role anchors, and résumé/homepage paths.
+
 The first full route sweep covered 145 public routes at desktop and phone widths (290 checks). It
 found no route-level navigation failures, missing or duplicate page headings, or horizontal page
 overflow outside /catalog. The catalog's mobile grid had been allowed to size itself from wide

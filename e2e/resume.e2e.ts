@@ -37,6 +37,16 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
     await expect(page.locator("[data-resume-print]")).toBeVisible();
   });
 
+  test("introduces the résumé through the same teacher, engineer, and manager philosophy", async ({ page }) => {
+    await page.goto("/resume");
+    const summary = page.locator(".lede").first();
+    await expect(summary).toContainText("I am a teacher, engineer, and manager");
+    await expect(summary).toContainText("I treat students as adults");
+    await expect(summary).toContainText("I hold the architecture and quality bar");
+    await expect(summary).toContainText("I grow people first");
+    await expect(page.locator(".resume-philosophy-link a")).toHaveAttribute("href", "/about#profile");
+  });
+
   test("keeps every profile action visible on a phone", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/resume");

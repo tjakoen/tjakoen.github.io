@@ -12,6 +12,11 @@ test.describe("portfolio umbrella", () => {
     await expect(page.locator(".welcome__title")).toContainText("TJ's Desk");
     await expect(page.locator(".start .start__item").first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Explore selected work" })).toHaveAttribute("href", "/projects");
+    await expect(page.locator(".welcome__sub")).toContainText("As a teacher, I go straight at the hard parts");
+    await expect(page.locator(".welcome__sub")).toContainText("As an engineer, I keep the direction legible");
+    await expect(page.locator(".welcome__sub")).toContainText("As a manager, I grow people first");
+    await expect(page.getByRole("link", { name: "How I work across teaching, engineering, and management" }))
+      .toHaveAttribute("href", "/about#profile");
     await expect(page.locator('[data-surface="welcome-start"] a[href="/projects"]')).toHaveCount(0);
     // Recent is fed LIVE from MILL frontmatter — real note links, not hand-typed rows
     await expect(page.locator('.recent .recent__item[href^="/notes/"]').first()).toBeVisible();

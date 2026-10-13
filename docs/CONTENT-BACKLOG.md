@@ -390,7 +390,10 @@ Where the notes actually stand, so a fresh session can pick up mid-stream:
 ## Information architecture (decisions — memory `portfolio-content-architecture`)
 
 - **Résumé main page**, each **experience clickable → its tagged notes** (`/notes?tag=…`).
-- **Lessons-learned** tabbed by role (dev manager / tech lead / educator).
+- **Role philosophy, delivered on About and résumé:** the About profile leads with three first-person
+  principles (teacher / engineer / manager), each linking to the supporting role section; the résumé
+  summary uses the same through-line and the homepage links directly to it. The older separate
+  Lessons tab was folded into the Profile panel so the principles and evidence stay together.
 - **Goals**, **"get to me"**, **Calendar / the grind**, **biggest-challenge note**,
   **why I love educating**, **knowledge-sharing**.
 
