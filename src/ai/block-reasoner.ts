@@ -313,7 +313,7 @@ function requestedEdit(
   }
 
   const span = text.match(/\b(full|half|third)\s+(?:width|span)\b/);
-  const fullRow = /\bspan\s+(?:the\s+)?(?:full|whole|entire)\s+row\b/.test(text);
+  const fullRow = /\b(?:span|fill|use|take up)\s+(?:the\s+)?(?:full|whole|entire)\s+row\b/.test(text);
   if ((span && /\b(make|set|change|resize|widen)\b/.test(text)) || fullRow) {
     actions.push({ action: "block.span", payload: { span: fullRow ? "full" : span![1] } });
   }

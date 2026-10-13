@@ -1,0 +1,258 @@
+{
+  "label": "builder-edit-extended-paraphrase-repeats-2026-10-14",
+  "date": "2026-10-14",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "method": "Three separate warm WebGPU Chromium runs of three explicit natural-language edit variants. The live audit inspected the approved result on the canvas after the proposal flow.",
+  "passed": 9,
+  "failed": 0,
+  "total": 9,
+  "runs": [
+    {
+      "label": "builder-more-paraphrases-2026-10-14",
+      "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "passed": 3,
+      "failed": 0,
+      "results": [
+        {
+          "id": "builder-drop-take-out",
+          "ask": "take out the callout",
+          "reply": "Applied: Drop b3.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-fill-row",
+          "ask": "let the callout fill the whole row",
+          "reply": "Applied: Set b3 to full width.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move-shift",
+          "ask": "shift the callout up",
+          "reply": "Applied: Move b3 up.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    },
+    {
+      "label": "builder-more-paraphrases-repeat-2-2026-10-14",
+      "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "passed": 3,
+      "failed": 0,
+      "results": [
+        {
+          "id": "builder-drop-take-out",
+          "ask": "take out the callout",
+          "reply": "Applied: Drop b3.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-fill-row",
+          "ask": "let the callout fill the whole row",
+          "reply": "Applied: Set b3 to full width.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move-shift",
+          "ask": "shift the callout up",
+          "reply": "Applied: Move b3 up.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": \"block.move\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    },
+    {
+      "label": "builder-more-paraphrases-repeat-3-2026-10-14",
+      "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "passed": 3,
+      "failed": 0,
+      "results": [
+        {
+          "id": "builder-drop-take-out",
+          "ask": "take out the callout",
+          "reply": "Applied: Drop b3.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-fill-row",
+          "ask": "let the callout fill the whole row",
+          "reply": "Applied: Set b3 to full width.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move-shift",
+          "ask": "shift the callout up",
+          "reply": "Applied: Move b3 up.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": \"block.move\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    }
+  ],
+  "interpretation": "All nine reviewed outcomes passed. The model returned action:null for all three take-out requests and all three fill-row requests. It returned action:null for the first shift request and a valid move for the next two. This supports only these explicit phrases within the tested live page and approval flow, not broad paraphrase reliability or reliable unassisted model understanding."
+}

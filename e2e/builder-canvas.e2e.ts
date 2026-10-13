@@ -471,7 +471,7 @@ export async function probeDevice() { return { webgpu: true, deviceMemory: 8, co
 export function canRunModel() { return true; }
 export async function webgpuAvailable() { return true; }
 function draftAnswer(prompt) {
-  if (/get rid of the final card|let the callout span the whole row|avoid getting rid of the final card/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
+  if (/get rid of the final card|take out the callout|let the callout span the whole row|let the callout fill the whole row|shift the callout up|avoid getting rid of the final card/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
     return JSON.stringify({ action: null, reply: "I could not identify an action." });
   if (/drop the second card|drop b4/i.test(prompt)) {
     if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
@@ -539,7 +539,7 @@ export function makeChatModel() {
       if (/literal text/i.test(prompt)) return JSON.stringify({ blocks: [
         { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
       ] });
-      if (/get rid of the final card|let the callout span the whole row|avoid getting rid of the final card/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
+      if (/get rid of the final card|take out the callout|let the callout span the whole row|let the callout fill the whole row|shift the callout up|avoid getting rid of the final card/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
         return JSON.stringify({ action: null, reply: "I could not identify an action." });
       if (/drop the second card|drop b4/i.test(prompt)) {
         if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
@@ -844,6 +844,22 @@ test.describe("the model chooses the verb", () => {
       { id: "b2", span: "half" },
       { id: "b3", span: "full" },
     ]);
+
+    await submitPrompt(page, "shift the callout up");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Move b3 up on callout (b3)");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Move b3 up.");
+    expect(await canvasIds(page)).toEqual(["b1", "b3", "b2"]);
+
+    await submitPrompt(page, "take out the callout");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b3 on callout (b3)");
+    expect(await canvasIds(page)).toEqual(["b1", "b3", "b2"]);
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b3.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2"]);
   });
 
   test("a malformed model move becomes a disclosed proposal only for a clear live request", async ({ page }) => {
