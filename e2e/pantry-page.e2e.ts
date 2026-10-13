@@ -11,6 +11,8 @@ test.describe("PANTRY installation story", () => {
     await expect(steps).toContainText("bunx proof check");
     await expect(steps).toContainText("bunx pantry serve");
     await expect(steps).toContainText("reads the host project's plans folder");
+    await expect(page.locator("main")).toContainText("BATCH, GRAIN, MILL, and PROOF");
+    await expect(page.locator("main")).toContainText("CRUMB tours from its own folder or read the tours already mounted by a project");
     expect(await page.locator("body").evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(
       await page.locator("body").evaluate((el) => el.clientWidth),
     );

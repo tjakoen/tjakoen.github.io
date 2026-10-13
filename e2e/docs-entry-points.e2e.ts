@@ -96,6 +96,14 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("--color-accent-hover");
     await expect(page.locator(".board")).toContainText("links, focus rings, and primary controls read from them");
 
+    await page.goto("/grain/docs/add-a-render-op-kind");
+    await expect(page.locator(".board")).toContainText("spotlight / log / navigate / choices / fill / tick / span / move");
+    await expect(page.locator(".board")).toContainText("clearTrigger(op.target)");
+
+    await page.goto("/grain/docs/make-a-surface-operable");
+    await expect(page.locator(".board")).toContainText("The description, payload schema, and behavior hints are required fields");
+    await expect(page.locator(".board")).toContainText("Client-door integration");
+
     await page.goto("/grain/docs/getting-started");
     await expect(page.locator(".board")).toContainText("through the configured server or client door");
     await expect(page.locator(".board")).not.toContainText("clicking it becomes POST /intent");
@@ -121,6 +129,15 @@ test.describe("developer docs entry points", () => {
     await expect(page.locator(".board")).toContainText("bun run --filter @tjakoen/grain check");
     await expect(page.locator(".board")).toContainText("the GRAIN package version the portfolio resolves");
     await expect(page.locator(".board")).not.toContainText("the new component appears automatically");
+
+    await page.goto("/pantry/docs/what-it-composes");
+    await expect(page.locator(".board")).toContainText("The four layers, and what each one gives PANTRY");
+    await expect(page.locator(".board")).toContainText("PROOF");
+    await expect(page.locator(".board")).toContainText("Every surface, what it is");
+
+    await page.goto("/pantry/docs/getting-started");
+    await expect(page.locator(".board")).toContainText("the host project's working directory");
+    await expect(page.locator(".board")).toContainText("don't have to import PANTRY");
 
     await page.goto("/mill/docs/getting-started");
     await expect(page.locator(".board")).toContainText("is a content rendering engine");
