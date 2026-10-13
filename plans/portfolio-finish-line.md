@@ -655,6 +655,20 @@ proof remain open below.
       browser regression passed, and the updated screenshot shows the workbench and example above
       the fold with no horizontal overflow. The cold-start evidence still needs an actual phone.
 
+## Builder paraphrase check, October 14
+
+I added guarded recovery for “get rid of the final card” and “let the callout span the whole row.”
+Three independent warm WebGPU runs passed both outcomes in the reviewed flow. In all six cases,
+Qwen2.5-1.5B returned no usable action; the Builder disclosed its request-based proposal and waited
+for approval. The 38 focused reasoner tests, all 740 project unit tests, and all 75 Builder browser
+cases passed, including the approval flow at a 390px viewport. Typecheck, link lint, and the lint
+ratchet passed at the existing baseline. The [combined live capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-paraphrase-repeats-2026-10-14.json)
+records model output beside each resulting canvas. This closes only these two tested phrasings;
+broader paraphrase reliability and the cold start on physical phone hardware remain open. The
+model's generated prose is still not used for visible copy, so these results make no claim that it
+can write reliable page copy. A fresh device check found no attached Android handset, no phone or
+tablet in the USB inventory, and no available `simctl` for an iOS simulator.
+
 ## Done means
 
 The home page gives a clear first read. The project stories and stack pages explain the work in plain

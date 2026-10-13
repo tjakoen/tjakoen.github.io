@@ -409,6 +409,11 @@ const submitPrompt = async (page: Page, prompt: string): Promise<void> => {
 
 const canvasIds = (page: Page) => page.locator(CELL).evaluateAll(
   (cells) => cells.map((c) => (c as HTMLElement).dataset.blockId));
+const canvasState = (page: Page) => page.locator(CELL).evaluateAll(
+  (cells) => cells.map((c) => ({
+    id: (c as HTMLElement).dataset.blockId,
+    span: c.getAttribute("data-span"),
+  })));
 
 /** A page holding two cards and a callout. The first prompt builds the introduction, first card and
  *  callout; the second adds another card after them so the edit checks use stable, familiar ids. */
@@ -466,6 +471,8 @@ export async function probeDevice() { return { webgpu: true, deviceMemory: 8, co
 export function canRunModel() { return true; }
 export async function webgpuAvailable() { return true; }
 function draftAnswer(prompt) {
+  if (/get rid of the final card|let the callout span the whole row|avoid getting rid of the final card/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
+    return JSON.stringify({ action: null, reply: "I could not identify an action." });
   if (/drop the second card|drop b4/i.test(prompt)) {
     if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
     if (sessionStorage.getItem("__builderNoAction") === "true")
@@ -532,6 +539,8 @@ export function makeChatModel() {
       if (/literal text/i.test(prompt)) return JSON.stringify({ blocks: [
         { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
       ] });
+      if (/get rid of the final card|let the callout span the whole row|avoid getting rid of the final card/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
+        return JSON.stringify({ action: null, reply: "I could not identify an action." });
       if (/drop the second card|drop b4/i.test(prompt)) {
         if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
         if (sessionStorage.getItem("__builderNoAction") === "true")
@@ -796,6 +805,45 @@ test.describe("the model chooses the verb", () => {
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+  });
+
+  test("common edit paraphrases become disclosed recovery proposals on a phone", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await twoCardPage(page, true);
+    await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
+    await waitForDesk(page);
+
+    await submitPrompt(page, "avoid getting rid of the final card");
+    await expect(page.locator(SAID)).toContainText("I could not identify an action.");
+    await expect(page.locator(PROPOSAL)).toBeHidden();
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+
+    await submitPrompt(page, "get rid of the final card");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+
+    await page.locator('[data-block="b3"] [data-op="span:half"]').click();
+    await expect(page.locator('[data-block-id="b3"]')).toHaveAttribute("data-span", "half");
+    await submitPrompt(page, "let the callout span the whole row");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Set b3 to full width on callout (b3)");
+    expect(await canvasState(page)).toEqual([
+      { id: "b1", span: "full" },
+      { id: "b2", span: "half" },
+      { id: "b3", span: "half" },
+    ]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Set b3 to full width.");
+    expect(await canvasState(page)).toEqual([
+      { id: "b1", span: "full" },
+      { id: "b2", span: "half" },
+      { id: "b3", span: "full" },
+    ]);
   });
 
   test("a malformed model move becomes a disclosed proposal only for a clear live request", async ({ page }) => {

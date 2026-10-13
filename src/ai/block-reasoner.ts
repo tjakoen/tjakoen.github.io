@@ -306,13 +306,16 @@ function requestedEdit(
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
 ): RequestedEdit | null {
   const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
-  if (/\b(?:do not|don t|never|not)\b/.test(text)) return null;
+  if (/\b(?:do not|don t|never|not|avoid|without)\b/.test(text)) return null;
   const actions: Array<{ action: BlockVerb; payload: Record<string, unknown> }> = [];
-  if (/\b(drop|remove|delete)\b/.test(text)) actions.push({ action: "block.remove", payload: {} });
+  if (/\b(drop|remove|delete)\b|\bget rid of\b|\btake out\b/.test(text)) {
+    actions.push({ action: "block.remove", payload: {} });
+  }
 
   const span = text.match(/\b(full|half|third)\s+(?:width|span)\b/);
-  if (span && /\b(make|set|change|resize|widen)\b/.test(text)) {
-    actions.push({ action: "block.span", payload: { span: span[1] } });
+  const fullRow = /\bspan\s+(?:the\s+)?(?:full|whole|entire)\s+row\b/.test(text);
+  if ((span && /\b(make|set|change|resize|widen)\b/.test(text)) || fullRow) {
+    actions.push({ action: "block.span", payload: { span: fullRow ? "full" : span![1] } });
   }
 
   const direction = text.match(/\b(up|down)\b/);

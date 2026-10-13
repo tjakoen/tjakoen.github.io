@@ -155,6 +155,31 @@ describe("explicit target guard", () => {
     expect(blockIntentRecovery("remove that", blocks, "I could not identify an action.")).toBeNull();
   });
 
+  test("common removal paraphrases recover only with a clear live target", () => {
+    expect(blockIntentRecovery("get rid of the final card", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.remove", surface: "block:b4" });
+    expect(blockIntentRecovery("take out the callout", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.remove", surface: "block:b3" });
+    expect(blockIntentRecovery("get rid of the third card", blocks, "No action."))
+      .toBeNull();
+    expect(blockIntentRecovery("do not get rid of the final card", blocks, "No action."))
+      .toBeNull();
+    expect(blockIntentRecovery("avoid getting rid of the final card", blocks, "No action."))
+      .toBeNull();
+    expect(blockIntentRecovery("without taking out the callout", blocks, "No action."))
+      .toBeNull();
+  });
+
+  test("a full-row span paraphrase becomes a review-only full-width proposal", () => {
+    expect(blockIntentRecovery("let the callout span the whole row", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
+    expect(blockIntentCorrection("let the callout span the whole row", blocks, {
+      action: "block.remove", surface: "block:b3", payload: {}, said: "",
+    })?.command).toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
+    expect(blockIntentRecovery("let a card span the whole row", blocks, "No action."))
+      .toBeNull();
+  });
+
   test("it accepts the requested block and a unique named component", () => {
     expect(blockTargetMismatch("drop the second card", blocks, "block:b4")).toBeNull();
     expect(blockTargetMismatch("move the callout up", blocks, "block:b3")).toBeNull();
