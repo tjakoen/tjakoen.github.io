@@ -185,6 +185,15 @@ test.describe("the /about Profile role sections (Lessons folded in)", () => {
     await expect(proof.getByRole("link", { name: /platform, its architecture, and its privacy-safe demo/i }))
       .toHaveAttribute("href", "/native-github-classroom");
   });
+
+  test("each role accordion links to a related note or work log", async ({ page }) => {
+    const teacher = page.locator("#role-educator");
+    await teacher.locator("summary").click();
+    await expect(teacher.locator('.role__reading a[href="/notes/why-i-teach"]')).toBeVisible();
+    await expect(teacher.locator('.role__reading a[href="/calendar/loop-hau-version-one"]')).toBeVisible();
+    await expect(page.locator('#role-tech-lead .role__reading a[href="/notes/origin-story"]')).toHaveAttribute("href", "/notes/origin-story");
+    await expect(page.locator('#role-manager .role__reading a[href="/notes/ten-times-zero"]')).toHaveAttribute("href", "/notes/ten-times-zero");
+  });
 });
 
 test.describe("the /about profile app — incoming hash", () => {
