@@ -745,6 +745,15 @@ that its checks cannot verify claims. Commit `af142b7` released the code and cap
 commit `f170865` passed 432 browser cases, typecheck, unit tests, and lint; its Pages deployment
 passed. The physical-phone cold start remains open.
 
+## Source-quote prompt check, October 14
+
+A temporary prompt rule asked the local model to quote one exact, contiguous phrase from the brief for
+each copy field. A six-scenario warm run still produced unsupported raw details in the bakery,
+bike-shop, and pottery cases. All six reviewed drafts passed after source reconciliation, which does
+not establish that the prompt improved raw writing. The rule was removed. The comparison and its
+limitations are recorded in the [source-quote prompt check](../audit/builder-source-quote-prompt-2026-10-14.md).
+The raw-writing requirement remains open.
+
 ## Done means
 
 The current browser model can build a useful first draft from a visitor's brief and complete the
