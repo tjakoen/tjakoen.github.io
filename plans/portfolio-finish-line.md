@@ -540,10 +540,14 @@ proof remain open below.
       remaining Builder reliability work is complete. The October 13 project-story increment
       `d2df50a` is on main and deployed: hosted CI passed all 425 browser cases, typecheck, 712 unit
       tests, and the lint baseline; the Pages build and deploy passed; and the live Projects and
-      PANTRY pages include the direct evidence paths. The full finish-line release remains open
+      PANTRY pages include the direct evidence paths. The October 13 Builder and Badges increment
+      `8fcdbc5` is also on main and deployed. Hosted CI passed all 432 browser cases, typecheck, 724
+      unit tests, and the lint baseline. The Pages build and deploy succeeded, and a browser check of
+      the published Builder and Badges pages confirmed the updated review disclosure, subject
+      descriptions, section cards, and phone-width fit. The full finish-line release remains open
       because the Builder still needs broader brief and device reliability evidence and a cold-start
-      measurement on an actual phone, and stronger privacy-safe outcome proof for several project claims is
-      unavailable. The October 13 outcome-and-proof review records which project artifacts are
+      measurement on an actual phone. Stronger privacy-safe outcome proof for several project claims
+      is still unavailable. The October 13 outcome-and-proof review records which project artifacts are
       reproducible and which production/adoption claims remain owner-reported or private.
 
 ## Done means
