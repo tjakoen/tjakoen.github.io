@@ -312,7 +312,7 @@ function requestedEdit(
   const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
   if (/\b(?:do not|don t|never|not|avoid|without)\b/.test(text)) return null;
   const actions: Array<{ action: BlockVerb; payload: Record<string, unknown> }> = [];
-  if (/\b(drop|remove|delete|discard)\b|\bget rid of\b|\btake out\b/.test(text)) {
+  if (/\b(drop|remove|delete|discard|erase)\b|\bget rid of\b|\btake out\b/.test(text)) {
     actions.push({ action: "block.remove", payload: {} });
   }
 
@@ -323,7 +323,7 @@ function requestedEdit(
   }
 
   const direction = text.match(/\b(up|down)\b/);
-  if (direction && /\b(move|shift|nudge)\b/.test(text)) {
+  if (direction && /\b(move|shift|nudge|reposition)\b/.test(text)) {
     actions.push({ action: "block.move", payload: { direction: direction[1] } });
   }
 

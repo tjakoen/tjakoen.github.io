@@ -177,6 +177,13 @@ describe("explicit target guard", () => {
     expect(blockIntentRecovery("discard a card", blocks, "No action.")).toBeNull();
   });
 
+  test("erase recovers deletion only for a clearly named live block", () => {
+    expect(blockIntentRecovery("erase the final card", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.remove", surface: "block:b4" });
+    expect(blockIntentRecovery("do not erase the final card", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("erase a card", blocks, "No action.")).toBeNull();
+  });
+
   test("a full-row layout paraphrase recovers only for one live component", () => {
     expect(blockIntentRecovery("let the callout fill the whole row", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
@@ -200,6 +207,13 @@ describe("explicit target guard", () => {
       .toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "down" } });
     expect(blockIntentRecovery("do not nudge the callout down", blocks, "No action.")).toBeNull();
     expect(blockIntentRecovery("nudge one of the cards down one step", blocks, "No action.")).toBeNull();
+  });
+
+  test("reposition recovers only one-step moves with an explicit target and direction", () => {
+    expect(blockIntentRecovery("reposition the callout down one step", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "down" } });
+    expect(blockIntentRecovery("do not reposition the callout down", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("reposition one of the cards down", blocks, "No action.")).toBeNull();
   });
 
   test("a full-row span paraphrase becomes a review-only full-width proposal", () => {

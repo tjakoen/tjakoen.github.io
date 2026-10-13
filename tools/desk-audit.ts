@@ -206,6 +206,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-drop-delete-intro", page: "/grain/builder", ask: "delete the intro",
     builder: { wantIds: ["b2", "b3", "b4"] },
     mustMention: [["b1"]] },
+  { id: "builder-drop-erase-final", page: "/grain/builder", ask: "erase the final card",
+    builder: { wantIds: ["b1", "b2", "b3"] },
+    mustMention: [["b4"]] },
   // The control, and it is the one that tells you WHICH thing is broken. "the second card" asks the
   // model to resolve a reference and then use the vocabulary; "drop b4" asks only for the second.
   // A page that fails both is failing at the vocabulary, and no amount of better referring language
@@ -238,6 +241,9 @@ const SCENARIOS: Scenario[] = [
     builder: { wantIds: ["b1", "b3", "b2", "b4"] },
     mustMention: [["b3"]] },
   { id: "builder-move-nudge", page: "/grain/builder", ask: "nudge the callout down one step",
+    builder: { wantIds: ["b1", "b2", "b4", "b3"] },
+    mustMention: [["b3"]] },
+  { id: "builder-move-reposition", page: "/grain/builder", ask: "reposition the callout down one step",
     builder: { wantIds: ["b1", "b2", "b4", "b3"] },
     mustMention: [["b3"]] },
   { id: "builder-move-id", page: "/grain/builder", ask: "move b3 up",

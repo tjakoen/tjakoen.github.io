@@ -477,8 +477,8 @@ proof remain open below.
       design keeps the model local and uses it to choose registered blocks and order. Code assembles
       visible copy from the brief, and review catches omissions before the visitor approves the page.
       Six briefs passed two warm 1.5B runs for required phrases, field placement, and prohibited
-      wording. The held-out edit audit now covers ten phrasings across removal, span, and move,
-      with 28 reviewed outcomes across warm WebGPU runs. The 3B comparison did not improve the raw
+      wording. The held-out edit audit now covers twelve phrasings across removal, span, and move,
+      with 34 reviewed outcomes across warm WebGPU runs. The 3B comparison did not improve the raw
       answers, so the Builder ignores model prose instead of displaying it. These results support
       the guarded desktop workflow; they do not prove language coverage outside the tested matrix or
       phone performance. The remaining evidence is wider testing of supported requests and a cold
@@ -488,6 +488,8 @@ proof remain open below.
       [delete, nudge, and width holdouts](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-holdout-recovery-2026-10-14.json),
       [the target-guard baseline](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-baseline-2026-10-14.json),
       [the six-run guard recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-repeats-2026-10-14.json), and
+      [erase and reposition baseline](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-third-holdout-baseline-2026-10-14.json),
+      [erase and reposition recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-fourth-holdout-repeats-2026-10-14.json), and
       [3B comparison](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json).
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;

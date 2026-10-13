@@ -986,6 +986,19 @@ canvas before approval, and the applied deletion and third-width span at 390px. 
 passed 43 tests, the full unit suite passed 745, and all 77 Builder browser cases passed. This extends
 the measured language set; broader coverage and the actual-phone cold start remain open.
 
+## Erase and reposition wording, October 14
+
+The next holdout tested “erase the final card” and “reposition the callout down one step.” The
+1.5B model returned no usable action in all six warm runs. Guarded recovery proposed the intended
+remove or one-step move each time, and the visitor-facing canvas changed only after approval. The
+[baseline capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-third-holdout-baseline-2026-10-14.json)
+preserves the two declines, and the [six-run recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-fourth-holdout-repeats-2026-10-14.json)
+records each recovery and resulting canvas. Unit tests reject negative or ambiguous versions, and a
+390px browser test covers the two edits in review order. The reasoner suite passed 45 tests, the full
+unit suite passed 747, and all 78 Builder browser cases passed. Typecheck, link lint, the lint gate,
+and Oxlint completed successfully. These two phrasings extend the measured set; language coverage
+outside it and an actual-phone cold start remain open.
+
 ## Done means
 
 The current browser model can choose a useful page structure from a visitor's brief and complete the
