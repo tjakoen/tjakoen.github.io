@@ -230,6 +230,15 @@ describe("explicit target guard", () => {
     expect(blockTargetMismatch("move the second card above the callout", blocks, "block:b2")).toBeNull();
     expect(blockTargetMismatch("move a card up", blocks, "block:b2")).toBeNull();
   });
+
+  test("a span value is not mistaken for an ordinal block target", () => {
+    expect(blockTargetMismatch("shrink the callout to a third width", blocks, "block:b3")).toBeNull();
+    expect(blockIntentRecovery("shrink the callout to a third width", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "third" } });
+    expect(blockIntentRecovery("reduce one of the cards to a third width", blocks, "No action.")).toBeNull();
+    expect(blockTargetMismatch("remove the third card", blocks, "block:b2"))
+      .toBe("The request names third card, but no matching block is on the page. Nothing changed.");
+  });
 });
 
 describe("what the model is not allowed to have chosen", () => {

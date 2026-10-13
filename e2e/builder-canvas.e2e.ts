@@ -471,7 +471,7 @@ export async function probeDevice() { return { webgpu: true, deviceMemory: 8, co
 export function canRunModel() { return true; }
 export async function webgpuAvailable() { return true; }
 function draftAnswer(prompt) {
-  if (/get rid of the final card|take out the callout|let the callout span the whole row|let the callout fill the whole row|shift the callout up|avoid getting rid of the final card/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
+  if (/get rid of the final card|take out the callout|let the callout span the whole row|let the callout fill the whole row|shift the callout up|avoid getting rid of the final card|delete the intro|shrink the callout to a third width/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
     return JSON.stringify({ action: null, reply: "I could not identify an action." });
   if (/drop the second card|drop b4/i.test(prompt)) {
     if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
@@ -894,6 +894,30 @@ test.describe("the model chooses the verb", () => {
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+  });
+
+  test("delete and shrink paraphrases preserve targets and spans through review", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await twoCardPage(page, true);
+    await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
+    await waitForDesk(page);
+
+    await submitPrompt(page, "delete the intro");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b1 on intro paragraph (b1)");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b1.");
+    expect(await canvasIds(page)).toEqual(["b2", "b3", "b4"]);
+
+    await submitPrompt(page, "shrink the callout to a third width");
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Set b3 to third width on callout (b3)");
+    await expect(page.locator('[data-block-id="b3"]')).toHaveAttribute("data-span", "full");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Set b3 to third width.");
+    await expect(page.locator('[data-block-id="b3"]')).toHaveAttribute("data-span", "third");
   });
 
   test("a malformed model move becomes a disclosed proposal only for a clear live request", async ({ page }) => {

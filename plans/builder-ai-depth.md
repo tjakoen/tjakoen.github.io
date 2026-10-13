@@ -971,6 +971,20 @@ browser suite passed all 76 cases. Typecheck passed, link lint found no dead rel
 lint ratchet remained at its existing baseline. This adds three measured phrasings; broader
 natural-language coverage and the physical-phone cold start remain open.
 
+## Ordinal and span wording, October 14
+
+Two more held-out requests checked “delete the intro” and “shrink the callout to a third width.”
+The 1.5B model declined deletion in all three warm runs, and the reviewed recovery removed the
+intro each time. It handled the third-width request directly in all three runs. The first attempt
+exposed a guard bug: “third” in the width value was read as a block ordinal, so the valid span
+proposal was rejected. Ordinals now count as targets only when they qualify a block name, and
+“shrink” and “reduce” are recognized when the requested width is explicit. The six-repeat
+[live capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-repeats-2026-10-14.json)
+keeps raw answers beside the resulting canvas. A browser regression verifies the proposal, unchanged
+canvas before approval, and the applied deletion and third-width span at 390px. The reasoner suite
+passed 43 tests, the full unit suite passed 745, and all 77 Builder browser cases passed. This extends
+the measured language set; broader coverage and the actual-phone cold start remain open.
+
 ## Done means
 
 The current browser model can choose a useful page structure from a visitor's brief and complete the

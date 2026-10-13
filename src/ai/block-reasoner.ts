@@ -255,7 +255,11 @@ function requestedBlock(
     const [group, aliases] = mentionedGroups[0];
     const candidates = entries.filter((entry) => entry.component === group ||
       (entry.component === null && aliases.some((alias) => hasWord(entry.label.toLowerCase(), alias))));
-    const ordinalWords = Object.keys(ORDINALS).filter((ordinal) => hasWord(text, ordinal));
+    // Count an ordinal as a block reference only when it qualifies the block noun. Words such as
+    // "third" in "third width" describe a span value, not the third block of that kind.
+    const ordinalWords = Object.keys(ORDINALS).filter((ordinal) => aliases.some((alias) =>
+      new RegExp(`\\b${ordinal}\\b(?:\\s+\\w+){0,2}\\s+\\b${alias}\\b`).test(text),
+    ));
     let match: BlockDescription | undefined;
     if (ordinalWords.length === 1) {
       const index = ORDINALS[ordinalWords[0]] === "last" ? candidates.length - 1 : Number(ORDINALS[ordinalWords[0]]) - 1;
@@ -314,7 +318,7 @@ function requestedEdit(
 
   const span = text.match(/\b(full|half|third)\s+(?:width|span)\b/);
   const fullRow = /\b(?:span|fill|use|take up)\s+(?:the\s+)?(?:full|whole|entire)\s+row\b/.test(text);
-  if ((span && /\b(make|set|change|resize|widen)\b/.test(text)) || fullRow) {
+  if ((span && /\b(make|set|change|resize|widen|shrink|reduce)\b/.test(text)) || fullRow) {
     actions.push({ action: "block.span", payload: { span: fullRow ? "full" : span![1] } });
   }
 
