@@ -23,10 +23,12 @@ owner: human
 ## The gap this closes
 
 The page builder already composes a one-page GRAIN layout from a closed set, works on the static
-site, lets a person rearrange and resize blocks, and exports JSON, HTML, or tag source. The model
-chooses the component names and order and can now draft bounded copy for supported fields on newly
-added blocks. Existing block copy cannot yet be revised. Scripted browser coverage proves that the
-copy moves through the composition and renders as text; live-model quality has not yet been measured.
+site, lets a person rearrange and resize blocks, and exports JSON, HTML, or tag source. The local
+model chooses registered component names and their order. Code builds visible copy from phrases in
+the visitor's brief, and the visitor can edit that copy in the review step. Existing block copy
+cannot yet be revised. The Builder does not use model-written prose because the live trials added
+unsupported claims. The source-built path has repeated live-model evidence, while actual-phone
+performance and broad natural-language coverage remain open.
 
 The recorded live-model audit on 2026-08-14 asked the 0.5B model to edit existing blocks eighteen
 times. None of the answers produced a valid edit. The safety boundary held in every case, so the
@@ -36,7 +38,8 @@ after it has been composed.
 
 ## What the visitor should be able to do
 
-- Start from an ordinary description and get a composed page from real GRAIN components.
+- Start from an ordinary description and get a composed page from real GRAIN components, with
+  visible copy drawn from the brief or supplied by the visitor.
 - Ask for a change to the page already on screen, such as removing a named block, moving it, or
   changing its span.
 - Review the model's proposed block and operation before the page changes; approval sends the
@@ -523,13 +526,14 @@ start remains unmeasured.
       model; source-phrase retention does not prove factual truth or reliably express the brief in
       polished prose. The review and confirmation step remains visible. The two standalone captures
       are linked from the October 13 WebGPU recheck.
-- [ ] Establish dependable raw local writing across varied briefs. The six warm scenarios and the
-      exact-intro recheck passed after reconciliation, but raw answers still invented claims,
-      misplaced requested wording, or added unrequested blocks. Do not use the reviewed-copy score as
-      proof of raw-model quality. Close this only after repeated briefs keep supplied names, places,
-      and phrases in their requested fields without unsupported claims or blocks. The October 14
-      before-and-after captures are in
-      [the grounded-sentence follow-up](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-grounded-sentence-followup-2026-10-14.md).
+- [x] Keep model-written prose out of visible drafts. Repeated 1.5B and 3B trials still produced
+      unsupported claims, misplaced wording, or extra blocks. The Builder now uses the model only
+      for registered structure and order. Code builds visible copy from source phrases in the brief,
+      leaves unsupported fields blank, and lets the visitor edit before approval. The repeated
+      visitor-facing checks passed, while the raw model answers remain in the
+      [grounded-sentence follow-up](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-grounded-sentence-followup-2026-10-14.md)
+      and the [3B comparison](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json).
+      This closes the unsafe raw-copy path, not the model's ability to write polished prose.
 - [ ] Measure the Builder's cold start on actual phone hardware. A desktop WebGPU run, even at a
       phone-sized viewport, does not establish phone memory, download, or generation performance.
       The 0.5B scored 2/8 in each of two October 11 runs;
@@ -963,3 +967,14 @@ without changing the canvas or claiming success. The static export still compose
 without a server. A visitor can inspect the outcome, revise it, and export it without leaving the
 portfolio. The live-model results and their limits are recorded beside the tests, so the page's
 claims stay tied to evidence.
+
+## Current release and phone-width review, October 14
+
+The latest Builder changes are on `main` at `2c73625`. Hosted CI passed its typecheck, unit tests,
+lint baseline, and end-to-end job, and the Pages deployment succeeded. I reran the Builder browser
+suite locally: all 75 cases passed. The visual gallery now includes the Builder at 390 by 844 pixels;
+I refreshed all 36 portfolio captures and inspected the phone-width Builder view. The prompt,
+download disclosure, example, and preview are visible in the capture. The existing 320-pixel browser
+case confirms that the composer and workbench fit without horizontal overflow. These are browser
+viewport checks, not a phone test. The machine has no attached handset and `simctl` is unavailable,
+so the physical-phone cold start remains open.

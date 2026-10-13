@@ -126,6 +126,12 @@ const SHOTS: Shot[] = [
     prepare: goto("/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout"),
   },
   {
+    name: "phone-builder",
+    desc: "/grain/builder — phone-width page-builder workbench with a code-composed example",
+    viewport: { width: 390, height: 844 },
+    prepare: goto("/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout"),
+  },
+  {
     name: "cmdk", desc: "/ — the ⌘K command palette",
     prepare: async (page) => {
       await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
