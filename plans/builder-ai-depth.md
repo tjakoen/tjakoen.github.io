@@ -340,6 +340,29 @@ inspectable and correctable before it changes the page. A fresh 1.5B draft-only 
 Utrecht and added unsupported claims. The review panel now places the original brief beside the
 editable draft, but repeated model runs are still needed before generated copy can be called grounded.
 
+A further fresh WebGPU recheck on October 13 scored 6/8. The two deletion answers were unusable: the
+relative request returned a span action with a null payload, and the explicit-ID request returned a
+null action. Before this change, parser and validator refusals stopped before the existing recovery
+could offer a proposal. Clear requests can now use that same disclosed request-based proposal when
+the model declines or returns an unusable answer. Approval reconstructs the proposal from the human's
+request, checks the current manifest again, and still sends the edit through GRAIN's door. A browser
+test covers the malformed response and approval path; the full 71-case Builder browser suite passed.
+The real-model score remains 6/8 because the audit measures the model's answer and direct application,
+not a visitor's approval of a recovered proposal. The draft again kept Hearth Bakery, Utrecht, the
+requested product and phrase, but added unsupported claims about handcrafted bread, a bakery staple,
+and the local scene. The recovery makes clear deletion requests usable despite malformed answers; it
+does not improve model reliability or grounded writing.
+
+After this recovery shipped locally, the same eight-case WebGPU workflow scored 7/8. Both deletion
+requests reached the intended canvas after the ordinary approval step. For the relative request, the
+model again proposed a span change on b2; the review step showed the correction to drop b4 and applied
+it only after approval. The explicit-ID answer proposed removal of b4 and applied as proposed. Both
+width requests, both move requests, and the copy-edit refusal also passed. The draft was the one
+failing case: it omitted Utrecht and added unsupported claims about daily baking and a warm start to
+the day. The ignored local report is at
+.cache/desk-audit/report-builder-current-recovery-2026-10-13.json. This measures the reviewed
+workflow, not reliable model choices or grounded writing.
+
 ## What to take from Puck AI
 
 Puck's current pattern combines constrained assembly from application-owned components, business

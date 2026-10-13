@@ -573,12 +573,14 @@ function boot(): void {
     const read = readModelMove(raw, manifest, grainModel);
     if (read.kind === "refusal") {
       console.info("[builder] refused the desk's move:", read.because, raw);
-      say(read.said, "refusal");
-      return;
     }
-    const recovery = read.kind === "reply"
+    // A malformed model answer can still be recovered as a review-only proposal when the visitor's
+    // own request names one supported operation and one live target. The model never supplies the
+    // recovered command, and the same manifest check and approval gate still apply below.
+    const recovery = read.kind === "reply" || read.kind === "refusal"
       ? blockIntentRecovery(ask, state.blocks, read.said)
       : null;
+    if (read.kind === "refusal" && !recovery) { say(read.said, "refusal"); return; }
     if (read.kind === "reply" && !recovery) { say(read.said, "reply"); return; }
 
     const correction = read.kind === "command"
@@ -613,13 +615,13 @@ function boot(): void {
     proposal = { command, raw, model: grainModel, manifestApi: grainManifest, composition: compositionAtAsk, ask, correction, recovery };
     const label = intentLabel(command);
     proposalCopy.textContent = recovery
-      ? `The local model declined: ${recovery.modelReply.slice(0, 180)} Your request clearly states ${label} on ${recovery.requestedLabel} (${recovery.requestedId}). This proposal comes from your explicit request. Review it before applying.`
+      ? `The local model did not return a usable edit: ${recovery.modelReply.slice(0, 180)} Your request clearly states ${label} on ${recovery.requestedLabel} (${recovery.requestedId}). This proposal comes from your explicit request. Review it before applying.`
       : correction
       ? `The model proposed ${intentLabel(correction.proposed)} for ${correction.proposedLabel} (${correction.proposedId}). Your request clearly identifies ${intentLabel(command)} on ${correction.requestedLabel} (${correction.requestedId}). Review the corrected proposal before applying.`
       : `Proposed edit: ${label}. Check the block ID and change before applying.`;
     proposalPanel.removeAttribute("hidden");
     say(recovery
-      ? `The local model declined. Review the explicit request-based proposal: ${label}.`
+      ? `The local model did not return a usable edit. Review the explicit request-based proposal: ${label}.`
       : correction
       ? `The model proposed ${intentLabel(correction.proposed)}; your request identifies ${correction.requestedLabel} (${correction.requestedId}). Review the corrected edit: ${label}.`
       : `Review this edit: ${label}.`, "thinking");
@@ -650,7 +652,7 @@ function boot(): void {
     const checkedCorrection = checked.kind === "command"
       ? blockIntentCorrection(waiting.ask, state.blocks, checked.command)
       : null;
-    const checkedRecovery = checked.kind === "reply" && waiting.recovery
+    const checkedRecovery = (checked.kind === "reply" || checked.kind === "refusal") && waiting.recovery
       ? blockIntentRecovery(waiting.ask, state.blocks, checked.said)
       : null;
     const checkedCommand = checkedRecovery?.command ?? checkedCorrection?.command ??

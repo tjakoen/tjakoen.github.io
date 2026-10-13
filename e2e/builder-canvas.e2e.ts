@@ -77,7 +77,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(help).toContainText("shows both versions and uses your explicit request");
     await expect(help).toContainText("both deletion requests applied");
     await expect(help).toContainText("explicit-ID request passed as proposed by the model");
-    await expect(help).toContainText("If the model declines a request whose supported edit and live target are explicit");
+    await expect(help).toContainText("If the model declines or returns an unusable answer for a request whose supported edit and live target are explicit");
     await expect(help).toContainText("Two warm repeats of the same prompt scored 0/1 and 1/1");
     await expect(help).toContainText("only one retained the supplied city");
     await expect(help).toContainText("keeps the original brief beside editable draft text");
@@ -443,6 +443,7 @@ export function canRunModel() { return true; }
 export async function webgpuAvailable() { return true; }
 function draftAnswer(prompt) {
   if (/drop the second card|drop b4/i.test(prompt)) {
+    if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
     if (sessionStorage.getItem("__builderNoAction") === "true")
       return JSON.stringify({ action: null, reply: "I could not identify an action." });
     const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
@@ -497,6 +498,7 @@ export function makeChatModel() {
         { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
       ] });
       if (/drop the second card|drop b4/i.test(prompt)) {
+        if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
         if (sessionStorage.getItem("__builderNoAction") === "true")
           return JSON.stringify({ action: null, reply: "I could not identify an action." });
         const target = sessionStorage.getItem("__builderWrongTarget") === "true" ? "block:b2" : "block:b4";
@@ -709,12 +711,27 @@ test.describe("the model chooses the verb", () => {
     await submitPrompt(page, "drop b4");
 
     await expect(page.locator(PROPOSAL)).toBeVisible();
-    await expect(page.locator(PROPOSAL_COPY)).toContainText("The local model declined: I could not identify an action.");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("The local model did not return a usable edit: I could not identify an action.");
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     await expect(page.locator(APPLY_PROPOSAL)).toBeVisible();
 
+    await page.locator(APPLY_PROPOSAL).click();
+    await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
+  });
+
+  test("a malformed model move becomes a disclosed proposal only for a clear live request", async ({ page }) => {
+    await twoCardPage(page);
+    await page.evaluate(() => sessionStorage.setItem("__builderMalformed", "true"));
+    await waitForDesk(page);
+    await submitPrompt(page, "drop the second card");
+
+    await expect(page.locator(PROPOSAL)).toBeVisible();
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("The local model did not return a usable edit:");
+    await expect(page.locator(PROPOSAL_COPY)).toContainText("Your request clearly states Drop b4 on second card (b4)");
+    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b4.");
     expect(await canvasIds(page)).toEqual(["b1", "b2", "b3"]);
