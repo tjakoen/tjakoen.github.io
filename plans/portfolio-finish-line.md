@@ -520,7 +520,9 @@ proof remain open below.
       regression now restores an “intro for…” description to `lede.body` if the model puts it in a
       card; its warm live check passed 1/1. This verifies guarded placement for that wording form,
       not raw model accuracy. A shorter field-map prompt was tested on four warm briefs and rejected
-      because raw field placement and grounding did not improve; the evidence is in the Builder plan.
+      because raw field placement and grounding did not improve. A later warm run identified the
+      selected Qwen2.5-1.5B profile; its answer still invented claims that source reconciliation removed.
+      Both findings are recorded in the Builder plan.
       The actual-phone cold start and broader writing reliability remain open; see the Builder plan
       for evidence and limits.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
