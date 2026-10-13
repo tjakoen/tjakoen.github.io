@@ -10,40 +10,89 @@
   <div class="app-shell app-window" data-section="bread" data-rail-collapsed="false" data-surface="screen">
     <portfolio-frame />
     <main class="app-shell__main" id="main-content">
-      <div class="board">
-    <p class="eyebrow">🏅 <span class="name">Badges</span> · course credentials</p>
-    <h1 class="masthead">Badges earned in my courses.</h1>
-    <hr class="rule">
-    <p class="lede">These awards are grouped by course, section, and term. Each class page explains the
-      skills and activities it recognizes. New activity-based awards use the published 75% threshold
-      after instructor review; historical participation awards are still being reconciled and do not
-      certify that threshold. I issue the badges through the <a href="/teaching">School of Computing</a>.
-      Individual certificates have their own shareable links and verification details.</p>
-    <span class="flag">Issued by <a href="/teaching">Tjakoen Stolk</a>, School of Computing, Holy Angel University</span>
+      <div class="board badges-board">
+        <p class="eyebrow">🏅 <span class="name">Badges</span> · course credentials</p>
+        <h1 class="masthead">Badges earned in my courses.</h1>
+        <hr class="rule">
+        <p class="lede">I group these awards by subject, then by class section. Open a subject to see what
+          its badges recognize and browse the criteria for each section. New activity-based awards use
+          the published 75% threshold after instructor review; historical participation awards are still
+          being reconciled and do not certify that threshold. I issue the badges through the
+          <a href="/teaching">School of Computing</a>.</p>
+        <span class="flag">Issued by <a href="/teaching">Tjakoen Stolk</a>, School of Computing, Holy Angel University</span>
 
-    <h2 class="section-head"><span>6APSI · Application and System Integration</span></h2>
-    <div class="docs-list">
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/apsi-2203-midterm">Midterm Skills, section 2203</a><span class="docs-list__what">Backend Development with Cloud · 41 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/apsi-2203-prelim">Prelim Skills, section 2203</a><span class="docs-list__what">Frontend Design with Cloud · 38 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/apsi-2209-midterm">Midterm Skills, section 2209</a><span class="docs-list__what">Backend Development with Cloud · 35 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/apsi-2209-prelim">Prelim Skills, section 2209</a><span class="docs-list__what">Frontend Design with Cloud · 37 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/apsi-2215-midterm">Midterm Skills, section 2215</a><span class="docs-list__what">Backend Development with Cloud · 33 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/apsi-2215-prelim">Prelim Skills, section 2215</a><span class="docs-list__what">Frontend Design with Cloud · 33 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/apsi-2240-midterm">Midterm Skills, section 2240</a><span class="docs-list__what">Backend Development with Cloud · 27 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/apsi-2240-prelim">Prelim Skills, section 2240</a><span class="docs-list__what">Frontend Design with Cloud · 24 recipients</span></div>
-    </div>
-    <h2 class="section-head"><span>6ADET · Application Development and Emerging Technologies</span></h2>
-    <div class="docs-list">
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/adet-2125-midterm">Midterm Skills, section 2125</a><span class="docs-list__what">Flutter App Development · 40 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/adet-2125-prelim">Prelim Skills, section 2125</a><span class="docs-list__what">Dart and Flutter Foundations · 41 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/adet-2134-midterm">Midterm Skills, section 2134</a><span class="docs-list__what">Flutter App Development · 39 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/adet-2134-prelim">Prelim Skills, section 2134</a><span class="docs-list__what">Dart and Flutter Foundations · 40 recipients</span></div>
-    </div>
-    <h2 class="section-head"><span>6INTROWEB · Basic Programming in Web Development</span></h2>
-    <div class="docs-list">
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/introweb-2106-midterm">Midterm Skills, section 2106</a><span class="docs-list__what">Interactive Web Pages · 41 recipients</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/badges/introweb-2106-prelim">Prelim Skills, section 2106</a><span class="docs-list__what">Web Foundations · 43 recipients</span></div>
-    </div>
+        <div class="badge-subjects">
+          <details class="badge-subject">
+            <summary class="badge-subject__summary">
+              <span class="badge-subject__name"><span class="badge-subject__code">6APSI</span><span>Application and System Integration</span></span>
+              <span class="badge-subject__count">4 sections · 8 badges</span>
+            </summary>
+            <div class="badge-subject__content">
+              <p class="badge-subject__description">Builds from JavaScript and React front ends to Node, Express, PostgreSQL, and deployed backend services.</p>
+              <div class="badge-section-grid">
+                <article class="badge-section-card">
+                  <h3>Section 2203</h3>
+                  <a href="/badges/apsi-2203-prelim"><span>Prelim</span><span>Frontend Design with Cloud</span><small>38 recipients</small></a>
+                  <a href="/badges/apsi-2203-midterm"><span>Midterm</span><span>Backend Development with Cloud</span><small>41 recipients</small></a>
+                </article>
+                <article class="badge-section-card">
+                  <h3>Section 2209</h3>
+                  <a href="/badges/apsi-2209-prelim"><span>Prelim</span><span>Frontend Design with Cloud</span><small>37 recipients</small></a>
+                  <a href="/badges/apsi-2209-midterm"><span>Midterm</span><span>Backend Development with Cloud</span><small>35 recipients</small></a>
+                </article>
+                <article class="badge-section-card">
+                  <h3>Section 2215</h3>
+                  <a href="/badges/apsi-2215-prelim"><span>Prelim</span><span>Frontend Design with Cloud</span><small>33 recipients</small></a>
+                  <a href="/badges/apsi-2215-midterm"><span>Midterm</span><span>Backend Development with Cloud</span><small>33 recipients</small></a>
+                </article>
+                <article class="badge-section-card">
+                  <h3>Section 2240</h3>
+                  <a href="/badges/apsi-2240-prelim"><span>Prelim</span><span>Frontend Design with Cloud</span><small>24 recipients</small></a>
+                  <a href="/badges/apsi-2240-midterm"><span>Midterm</span><span>Backend Development with Cloud</span><small>27 recipients</small></a>
+                </article>
+              </div>
+            </div>
+          </details>
+
+          <details class="badge-subject">
+            <summary class="badge-subject__summary">
+              <span class="badge-subject__name"><span class="badge-subject__code">6ADET</span><span>Application Development and Emerging Technologies</span></span>
+              <span class="badge-subject__count">2 sections · 4 badges</span>
+            </summary>
+            <div class="badge-subject__content">
+              <p class="badge-subject__description">Starts with Dart and Flutter foundations, then moves into stateful, multi-screen Flutter applications.</p>
+              <div class="badge-section-grid">
+                <article class="badge-section-card">
+                  <h3>Section 2125</h3>
+                  <a href="/badges/adet-2125-prelim"><span>Prelim</span><span>Dart and Flutter Foundations</span><small>41 recipients</small></a>
+                  <a href="/badges/adet-2125-midterm"><span>Midterm</span><span>Flutter App Development</span><small>40 recipients</small></a>
+                </article>
+                <article class="badge-section-card">
+                  <h3>Section 2134</h3>
+                  <a href="/badges/adet-2134-prelim"><span>Prelim</span><span>Dart and Flutter Foundations</span><small>40 recipients</small></a>
+                  <a href="/badges/adet-2134-midterm"><span>Midterm</span><span>Flutter App Development</span><small>39 recipients</small></a>
+                </article>
+              </div>
+            </div>
+          </details>
+
+          <details class="badge-subject">
+            <summary class="badge-subject__summary">
+              <span class="badge-subject__name"><span class="badge-subject__code">6INTROWEB</span><span>Basic Programming in Web Development</span></span>
+              <span class="badge-subject__count">1 section · 2 badges</span>
+            </summary>
+            <div class="badge-subject__content">
+              <p class="badge-subject__description">Covers responsive HTML and CSS foundations, then client-side JavaScript for interactive pages.</p>
+              <div class="badge-section-grid">
+                <article class="badge-section-card">
+                  <h3>Section 2106</h3>
+                  <a href="/badges/introweb-2106-prelim"><span>Prelim</span><span>Web Foundations</span><small>43 recipients</small></a>
+                  <a href="/badges/introweb-2106-midterm"><span>Midterm</span><span>Interactive Web Pages</span><small>41 recipients</small></a>
+                </article>
+              </div>
+            </div>
+          </details>
+        </div>
       </div>
     </main>
   </div>
