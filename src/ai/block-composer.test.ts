@@ -84,6 +84,15 @@ describe("nothing the model says is trusted", () => {
     expect(read.dropped).toEqual(["hero"]);
   });
 
+  test("a block name joined to a span suffix is recovered without granting the appended span", () => {
+    const read = plan('{"blocks": [{"name":"ledespanfull"},{"name":"cardspanhalf"},{"name":"heroespanfull"}]}');
+    expect(read.kind).toBe("plan");
+    if (read.kind !== "plan") return;
+    expect(read.names).toEqual(["lede", "card"]);
+    expect(read.span).toBe(null);
+    expect(read.dropped).toEqual([JSON.stringify({ name: "heroespanfull" })]);
+  });
+
   test("an answer with no legal name left is unusable, not an empty page", () => {
     expect(plan('{"blocks": ["hero", "navbar"]}').kind).toBe("unusable");
   });

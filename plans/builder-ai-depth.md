@@ -809,15 +809,38 @@ team credentials, or product promises, and it sometimes proposed three extra blo
 intro request. The code removed or replaced those suggestions before review. This confirms that the
 visitor-facing guard works across these six briefs; it also confirms that raw writing is still not
 reliable. The [repeat report](../audit/builder-draft-recheck-2026-10-14.json) preserves each raw
-answer beside the reviewed draft. The remaining writing acceptance bar is zero unsupported claims
-or unrequested blocks across the varied briefs, repeated on the local profile; passing the guarded
-grader alone does not meet it. See the [published source capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-recheck-2026-10-14.json).
+answer beside the reviewed draft. The remaining writing acceptance bar is zero unsupported claims or unrequested blocks across the
+same six briefs in two consecutive warm runs, with requested wording in its named fields. The raw
+answers must be reviewed directly; passing the guarded grader alone does not meet this bar. See the [published source capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-recheck-2026-10-14.json).
+
+## Local 3B comparison, October 14
+
+I downloaded the MLC Qwen2.5-3B profile into the local WebLLM browser cache and compared it with the
+same six briefs. The first run passed 4/6 guarded drafts. One cold first request exceeded the
+Builder's 75-second completion limit, and the mixed-prohibition brief returned a malformed block
+name, `ledespanfull`, that the closed-set reader correctly rejected. A warm repeat passed the simple
+bakery draft but failed the same mixed brief again with the same malformed name. The raw answers also
+added unsupported claims and extra blocks. The [first run](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-2026-10-14.json)
+and [warm repeats](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-warm-repeats-2026-10-14.json) preserve those
+results.
+
+The captured corruption has an unambiguous repair: a known component name was concatenated with the
+literal `span` and a valid span value. The reader now strips only that exact suffix, recovers the
+known name, and discards the attached span instead of trusting it. Other unknown names still fail
+closed. The focused unit suite passed all 55 tests. A live mixed-prohibition recheck then passed 1/1,
+and the complete six-brief 3B set passed 6/6 through the same visitor review. The [focused
+recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-recheck-2026-10-14.json) and [full
+run](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json) show the model output beside the
+guarded result. The 3B model still added unsupported copy or malformed block names, and warm
+responses took 17 to 76 seconds in this run. It does not meet the raw-writing bar or justify replacing
+the shipped 1.5B profile. The local 3B comparison also does not substitute for a cold start on a
+physical phone.
 
 Checking the published plan pages also exposed a broken evidence path: relative `../audit/` links
 passed repository link lint, but the static export does not publish the `audit/` directory. The
-Builder plan and portfolio finish-line plan now link their 34 audit records to the public GitHub
-source files. All 33 earlier targets returned HTTP 200; the new repeat report will be checked after
-it is published.
+Builder plan and portfolio finish-line plan now link their audit records to public GitHub source
+files. Earlier targets returned HTTP 200; the four new 3B reports will be checked after this update
+is published.
 
 ## Done means
 

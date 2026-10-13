@@ -1,0 +1,297 @@
+{
+  "label": "builder-draft-qwen25-3b-2026-10-14",
+  "base": "http://localhost:3131",
+  "model": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+  "passed": 4,
+  "failed": 2,
+  "notRun": 0,
+  "total": 6,
+  "results": [
+    {
+      "id": "builder-draft",
+      "ask": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "The desk did not return a draft. I composed the page from the words in your sentence instead.",
+      "endPath": "/grain/builder",
+      "ms": 78148,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [],
+      "draftFields": [],
+      "draftEvidence": "review panel unavailable",
+      "draftFieldEvidence": [],
+      "draftBlocks": 0,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": ""
+      },
+      "browserErrors": [],
+      "status": "failed",
+      "pass": false,
+      "failures": [
+        "draft has 0 blocks, wanted at least 2",
+        "draft copy is missing any of [Hearth Bakery]",
+        "draft copy is missing any of [Utrecht]",
+        "draft copy is missing any of [neighborhood bakery]",
+        "draft copy is missing any of [Sourdough]",
+        "draft copy is missing any of [baked fresh each morning, fresh each morning]"
+      ]
+    },
+    {
+      "id": "builder-draft-bike-shop",
+      "ask": "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 17053,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Northstar Bike Repair is a family-run bike repair shop in Malmö.",
+        "Tune-up",
+        "ready for the next ride"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Northstar Bike Repair is a family-run bike repair shop in Malmö."
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Tune-up"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "ready for the next ride"
+        }
+      ],
+      "draftEvidence": "The Builder adjusted or omitted model wording in 2 fields. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Northstar Bike Repair is a family-run bike repair shop in Malmö.”.",
+        "No new content words found. Word overlap cannot confirm a claim is true.",
+        "This field uses wording from your brief: “ready for the next ride”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\",\n      \"copy\": {\n        \"body\": \"Welcome to Northstar Bike Repair in Malmö, a family-run shop dedicated to helping you get ready for your next ride.\"\n      }\n    },\n    {\n      \"name\": \"card\",\n      \"copy\": {\n        \"title\": \"Tune-up\",\n        \"body\": \"Ready for your next adventure on two wheels?\"\n      }\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-intro-for",
+      "ask": "Build a page for Northstar Bike Repair in Malmö. Add an intro for a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 17608,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Northstar Bike Repair is a family-run bike repair shop in Malmö.",
+        "Tune-up",
+        "ready for the next ride"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Northstar Bike Repair is a family-run bike repair shop in Malmö."
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Tune-up"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "ready for the next ride"
+        }
+      ],
+      "draftEvidence": "The Builder adjusted or omitted model wording in 2 fields. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Northstar Bike Repair is a family-run bike repair shop in Malmö.”.",
+        "No new content words found. Word overlap cannot confirm a claim is true.",
+        "This field uses wording from your brief: “ready for the next ride”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Northstar Bike Repair in Malmö. Add an intro for a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\",\n      \"copy\": {\n        \"body\": \"Welcome to Northstar Bike Repair in Malmö, a family-run shop dedicated to helping you get ready for your next ride.\"\n      }\n    },\n    {\n      \"name\": \"card\",\n      \"copy\": {\n        \"title\": \"Tune-up\",\n        \"body\": \"Ready for your next adventure? Let us help you prepare your bike for the journey ahead.\"\n      }\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-negative-anchors",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 39478,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery in Utrecht welcomes neighbors."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery in Utrecht welcomes neighbors."
+        }
+      ],
+      "draftEvidence": "The model's 4 unrequested blocks were removed. The Builder adjusted or omitted model wording in 1 field. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery in Utrecht welcomes neighbors.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"leden\",\n      \"copy\": {\n        \"body\": \"Welcome to Hearth Bakery in Utrecht, where neighbors come together to enjoy delicious, freshly baked treats.\"\n      }\n    },\n    {\n      \"name\": \"card\",\n      \"copy\": [\n        {\n          \"title\": \"Fresh Baked Goods\",\n          \"body\": \"From morning pastries to afternoon cakes, our bakery offers a variety of treats that are loved by all.\"\n        },\n        {\n          \"title\": \"Community Hub\",\n          \"body\": \"Join us for our daily open hours, where you can meet neighbors, chat, and enjoy our homemade goodies.\"\n        },\n        {\n          \"title\": \"Supporting Local\",\n          \"body\": \"We use locally sourced ingredients to create flavors that are true to Utrecht's culinary tradition.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"callout\",\n      \"copy\": {\n        \"body\": \"Whether you're stopping by for a quick snack or planning a special occasion, Hearth Bakery is your go-to spot in Utrecht.\"\n      }\n    },\n    {\n      \"name\": \"stat\",\n      \"copy\": [\n        {\n          \"value\": \"100%\",\n          \"label\": \"Freshness Guarantee\",\n          \"sub\": \"Every item in our bakery is baked daily to ensure the freshest flavors.\"\n        },\n        {\n          \"value\": \"5\",\n          \"label\": \"Years\",\n          \"sub\": \"We've been serving the community since 2023, bringing joy to our neighbors every day.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"form\",\n      \"copy\": [\n        {\n          \"title\": \"Contact Us\",\n          \"body\": \"For more information or to schedule a visit, please fill out the form below.\"\n        },\n        {\n          \"title\": \"Join Our Mailing List\",\n          \"body\": \"Stay updated with our latest news and special offers by joining our mailing list.\"\n        }\n      ]\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-mixed-prohibitions",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Composed from the words in that sentence. The desk answered with nothing this set can build.",
+      "endPath": "/grain/builder",
+      "ms": 32823,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [],
+      "draftFields": [],
+      "draftEvidence": "review panel unavailable",
+      "draftFieldEvidence": [],
+      "draftBlocks": 0,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"ledespanfull\",\n      \"copy\": {\n        \"body\": \"Welcome to Hearth Bakery in Utrecht, where we offer freshly baked treats in our neighborhood bakery.\"\n      }\n    },\n    {\n      \"name\": \"cardspanfull\",\n      \"copy\": [\n        {\n          \"title\": \"Fresh Baked Goods\",\n          \"body\": \"From morning pastries to afternoon cookies, our bakery is your go-to spot for delicious treats.\"\n        },\n        {\n          \"title\": \"Supporting Local\",\n          \"body\": \"We source our ingredients from local farms and markets to support our community's food producers.\"\n        },\n        {\n          \"title\": \"Family-Owned\",\n          \"body\": \"For over a decade, we've been serving the Utrecht community with love and care.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"callouthalf\",\n      \"copy\": {\n        \"body\": \"Join us for a taste of Utrecht's best baked goods.\"\n      }\n    },\n    {\n      \"name\": \"statspanfull\",\n      \"copy\": [\n        {\n          \"value\": \"100\",\n          \"label\": \"Years\",\n          \"sub\": \"In business since 2012\"\n        }\n      ]\n    },\n    {\n      \"name\": \"formhalf\",\n      \"copy\": [\n        {\n          \"label\": \"Contact Us\",\n          \"body\": \"For more information or to place an order, please fill out the form below.\"\n        }\n      ]\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "failed",
+      "pass": false,
+      "failures": [
+        "draft has 0 blocks, wanted at least 1",
+        "draft copy is missing any of [Hearth Bakery]",
+        "draft copy is missing any of [Utrecht]",
+        "draft copy is missing any of [neighborhood bakery]",
+        "lede.body is missing any of [neighborhood bakery]",
+        "lede.body did not match an expected complete value"
+      ]
+    },
+    {
+      "id": "builder-draft-pottery-studio",
+      "ask": "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added card and lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 29563,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Weekend workshop",
+        "hand-built pieces for everyday use",
+        "Juniper Studio is an independent pottery studio in Toronto."
+      ],
+      "draftFields": [
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Weekend workshop"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "hand-built pieces for everyday use"
+        },
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Juniper Studio is an independent pottery studio in Toronto."
+        }
+      ],
+      "draftEvidence": "The Builder adjusted or omitted model wording in 3 fields. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "This field uses wording from your brief: “Weekend workshop”.",
+        "This field uses wording from your brief: “hand-built pieces for everyday use”.",
+        "The Builder composed this field from details in your brief: “Juniper Studio is an independent pottery studio in Toronto.”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"ledes\",\n      \"copy\": {\n        \"body\": \"Welcome to Juniper Studio in Toronto, an independent pottery studio where creativity meets functionality.\"\n      }\n    },\n    {\n      \"name\": \"card\",\n      \"copy\": {\n        \"title\": \"Weekend Workshop\",\n        \"body\": \"Learn to to hand-build pieces for everyday use and take home your own unique creations.\"\n      }\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    }
+  ]
+}
