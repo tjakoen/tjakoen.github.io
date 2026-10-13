@@ -61,7 +61,7 @@
           <div class="wb-bar__draft-head">
             <div>
               <h2 id="builder-draft-title">Review this page draft</h2>
-              <p class="muted">Review or edit each text field. Sample wording is marked, and words absent from your brief are listed. The page changes only after you add this draft.</p>
+              <p class="muted">Review or edit each text field. Sample wording is marked, and words absent from your brief are listed. Editing after you confirm clears the check; adding the draft requires a fresh confirmation.</p>
             </div>
           </div>
           <div class="wb-bar__draft-brief">
@@ -70,8 +70,12 @@
             <p class="muted">Compare names, locations, and claims with the draft before adding it.</p>
           </div>
           <ol class="wb-bar__draft-blocks" data-builder-draft-blocks></ol>
+          <label class="wb-bar__draft-confirm">
+            <input type="checkbox" data-draft-confirm>
+            <span>I checked the draft against my brief and corrected any unsupported wording.</span>
+          </label>
           <div class="wb-bar__draft-actions">
-            <button class="btn" type="button" data-draft-accept>Add draft to page</button>
+            <button class="btn" type="button" data-draft-accept disabled>Add draft to page</button>
             <button class="wb-chip" type="button" data-draft-discard>Discard</button>
           </div>
         </section>

@@ -85,6 +85,9 @@
 [data-screen="builder"] .wb-bar__draft-text { display: block; width: 100%; min-height: 3.2rem; resize: vertical;
   overflow-wrap: anywhere; }
 [data-screen="builder"] .wb-bar__draft-evidence { margin: var(--space-1) 0 0; font-size: var(--text-xs); overflow-wrap: anywhere; }
+[data-screen="builder"] .wb-bar__draft-confirm { display: flex; align-items: flex-start;
+  gap: var(--space-2); margin-top: var(--space-3); color: var(--ink); font-size: var(--text-sm); }
+[data-screen="builder"] .wb-bar__draft-confirm input { flex: 0 0 auto; margin-top: 0.2em; }
 [data-screen="builder"] .wb-bar__draft-actions { display: flex; justify-content: flex-end;
   gap: var(--space-2); margin-top: var(--space-3); }
 

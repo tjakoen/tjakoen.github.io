@@ -396,7 +396,10 @@ async function twoCardPage(page: Page): Promise<void> {
   await page.goto(ask("An intro, a card and a callout"));
   await expect(page.locator(CELL)).toHaveCount(3);
   await submitPrompt(page, "another card");
-  if (await page.locator(DRAFT_REVIEW).isVisible()) await page.locator(ACCEPT_DRAFT).click();
+  if (await page.locator(DRAFT_REVIEW).isVisible()) {
+    await page.locator("[data-draft-confirm]").check();
+    await page.locator(ACCEPT_DRAFT).click();
+  }
   await expect(page.locator(CELL)).toHaveCount(4);
 }
 
@@ -550,6 +553,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
     await expect(page.locator("[data-builder-draft-brief]")).toHaveText("Build a Hearth Bakery page with an intro and a card about coffee.");
     await expect(page.locator(DRAFT_REVIEW)).toContainText("Compare names, locations, and claims with the draft before adding it.");
+    await expect(page.locator(ACCEPT_DRAFT)).toBeDisabled();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     await expect(page.locator(CELL)).toHaveCount(0);
     await expect(page.locator(DRAFT_BLOCKS).getByRole("listitem")).toHaveCount(2);
@@ -572,11 +576,17 @@ test.describe("the model chooses the verb", () => {
       .locator("xpath=../..")
       .locator('[data-draft-copy-evidence="b1-body"]'))
       .toContainText("No new content words found");
+    await page.locator("[data-draft-confirm]").check();
+    await expect(page.locator(ACCEPT_DRAFT)).toBeEnabled();
+    await page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="title"]').fill("Coffee and bread");
+    await expect(page.locator("[data-draft-confirm]")).not.toBeChecked();
+    await expect(page.locator(ACCEPT_DRAFT)).toBeDisabled();
+    await page.locator("[data-draft-confirm]").check();
     await page.locator(ACCEPT_DRAFT).click();
 
     await expect(page.locator(CELL)).toHaveCount(2);
     await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery page about coffee.");
-    await expect(page.locator(`${CELL} .card__title`)).toHaveText("Coffee");
+    await expect(page.locator(`${CELL} .card__title`)).toHaveText("Coffee and bread");
     await expect(page.locator(`${CELL} .card__body`)).toHaveText("Freshly brewed to go with the bread.");
     await expect(page.locator(SAID)).toContainText("Added lede and card after your review");
     await expect(page.locator(DRAFT_REVIEW)).toBeHidden();
@@ -589,7 +599,7 @@ test.describe("the model chooses the verb", () => {
     const spec = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
     expect(spec.blocks.map((block: { data: Record<string, string> }) => block.data)).toEqual([
       { body: "Hearth Bakery page about coffee." },
-      { title: "Coffee", body: "Freshly brewed to go with the bread." },
+      { title: "Coffee and bread", body: "Freshly brewed to go with the bread." },
     ]);
   });
 
@@ -618,6 +628,7 @@ test.describe("the model chooses the verb", () => {
       .toHaveValue("<img src=x onerror=window.__builderXss=true>");
     await expect(page.locator(`${DRAFT_REVIEW} img`)).toHaveCount(0);
     await expect(page.locator(CELL)).toHaveCount(0);
+    await page.locator("[data-draft-confirm]").check();
     await page.locator(ACCEPT_DRAFT).click();
     const lede = page.locator(`${CELL} .lede`);
     await expect(lede).toHaveText("<img src=x onerror=window.__builderXss=true>");

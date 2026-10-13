@@ -384,6 +384,7 @@ function boot(): void {
   const draftBlocks = $<HTMLOListElement>("[data-builder-draft-blocks]");
   const acceptDraft = $<HTMLButtonElement>("[data-draft-accept]", draftReview ?? undefined);
   const discardDraft = $<HTMLButtonElement>("[data-draft-discard]", draftReview ?? undefined);
+  const confirmDraft = $<HTMLInputElement>("[data-draft-confirm]", draftReview ?? undefined);
   type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition; ask: string; correction: BlockIntentCorrection | null; recovery: BlockIntentRecovery | null };
   type DraftProposal = { ask: string; composition: PageComposition; before: PageComposition; names: string[] };
   type Applying = { expected: PageComposition; description: string; timer: ReturnType<typeof setTimeout> };
@@ -409,6 +410,8 @@ function boot(): void {
   const clearDraftProposal = (): void => {
     draftProposal = null;
     draftBlocks?.replaceChildren();
+    if (confirmDraft) confirmDraft.checked = false;
+    if (acceptDraft) acceptDraft.disabled = true;
     draftReview?.setAttribute("hidden", "");
   };
 
@@ -426,7 +429,9 @@ function boot(): void {
     planNames: readonly string[],
     copies: readonly Record<string, string>[],
   ): void => {
-    if (!draftReview || !draftBlocks) return;
+    if (!draftReview || !draftBlocks || !confirmDraft || !acceptDraft) return;
+    confirmDraft.checked = false;
+    acceptDraft.disabled = true;
     if (draftBrief) draftBrief.textContent = ask;
     draftBlocks.replaceChildren();
     const labels: Record<string, string> = {
@@ -499,7 +504,13 @@ function boot(): void {
             : "No new content words found. Word overlap cannot confirm a claim is true.";
         };
         refreshEvidence();
-        editor.addEventListener("input", refreshEvidence);
+        editor.addEventListener("input", () => {
+          // Editing after the check invalidates it; approval must describe the words that will
+          // actually be added, not the version the visitor saw before editing.
+          if (confirmDraft.checked) confirmDraft.checked = false;
+          acceptDraft.disabled = !confirmDraft.checked;
+          refreshEvidence();
+        });
         label.append(caption, editor);
         item.append(label, evidence);
       }
@@ -522,6 +533,10 @@ function boot(): void {
     }
     draftReview.removeAttribute("hidden");
   };
+
+  confirmDraft?.addEventListener("change", () => {
+    if (acceptDraft) acceptDraft.disabled = !confirmDraft.checked;
+  });
 
   /** An edit, from the sentence to the op. The model chooses; nothing it says is trusted.
    *
@@ -780,7 +795,7 @@ function boot(): void {
       say(`The desk read that as ${inWords(plan.names)}, and nothing in it had content to build from.`, "reply");
       return;
     }
-    if (!draftReview || !draftBlocks || !acceptDraft || !discardDraft) {
+    if (!draftReview || !draftBlocks || !acceptDraft || !discardDraft || !confirmDraft) {
       say("The desk found a page draft, but its review controls are missing. Nothing was added.", "refusal");
       return;
     }
@@ -794,6 +809,10 @@ function boot(): void {
   acceptDraft?.addEventListener("click", () => {
     const waiting = draftProposal;
     if (!waiting) return;
+    if (!confirmDraft?.checked) {
+      say("Check the draft against your brief before adding it to the page.", "refusal");
+      return;
+    }
     if (state !== waiting.before) {
       clearDraftProposal();
       say("The page changed before you accepted the draft. Nothing was added; build against the current page.", "refusal");

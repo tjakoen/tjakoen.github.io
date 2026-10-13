@@ -453,7 +453,10 @@ complete; the remaining portfolio-specific audit work is Builder reliability, tr
       editable before acceptance, and now separates component sample copy from model-written fields.
       It lists meaningful words absent from the brief and updates that list as visitors edit. This
       lexical comparison helps focus review but cannot verify truth; generated copy still needs a
-      human fact check. The workbench shows the measured model limitation before a visitor runs it.
+      human fact check. Visitors must attest that they checked the draft against the brief before
+      adding it. Editing after confirmation clears the check and disables acceptance until the
+      visitor confirms again. The workbench shows the measured model limitation before a visitor
+      runs it.
       A fresh October 13 WebGPU recheck scored 6/8: both delete answers were unusable, one with a
       null payload and one with a null action. The Builder now offers a disclosed request-based
       proposal for a clear live request after either refusal, and rechecks it against the current
