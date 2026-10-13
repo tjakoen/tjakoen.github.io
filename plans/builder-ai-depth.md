@@ -791,14 +791,14 @@ answers still added unsupported claims or extra blocks in five of the six drafts
 those additions before the visitor reviewed the draft. The 13/13 result therefore measures the
 guarded visitor-facing result in one run, not raw model accuracy or a repeatable success rate.
 
-The full-run record is [here](builder-full-webgpu-2026-10-14.json). I strengthened the mixed-
+The full-run record is [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-full-webgpu-2026-10-14.json). I strengthened the mixed-
 prohibition grader to require the complete intro sentence in `lede.body`; a phrase list that merely
 contained the requested words now fails. Its unit test rejects the earlier list-shaped result and
 accepts the sentence. Three warm WebGPU runs each passed 1/1 and produced “Hearth Bakery is a
 neighborhood bakery in Utrecht.” while omitting all four prohibited terms. The raw model still
 suggested unsupported phrases such as “fresh, organic bread” and “with a twist”; the source-backed
 sentence composer replaced those suggestions in the reviewed draft. See the
-[three-run live report](builder-mixed-complete-sentence-repeats-2026-10-14.json). This makes the
+[three-run live report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-mixed-complete-sentence-repeats-2026-10-14.json). This makes the
 specific visitor-facing form repeatable in these checks; broad semantic writing quality remains
 open. A physical-phone cold-start measurement is still required.
 
@@ -808,7 +808,7 @@ model output still failed the writing bar in all six cases: it added claims such
 team credentials, or product promises, and it sometimes proposed three extra blocks for a single-
 intro request. The code removed or replaced those suggestions before review. This confirms that the
 visitor-facing guard works across these six briefs; it also confirms that raw writing is still not
-reliable. The [repeat report](../audit/builder-draft-recheck-2026-10-14.json) preserves each raw
+reliable. The [repeat report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-recheck-2026-10-14.json) preserves each raw
 answer beside the reviewed draft. The remaining writing acceptance bar is zero unsupported claims or unrequested blocks across the
 same six briefs in two consecutive warm runs, with requested wording in its named fields. The raw
 answers must be reviewed directly; passing the guarded grader alone does not meet this bar. See the [published source capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-recheck-2026-10-14.json).
