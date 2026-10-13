@@ -823,6 +823,12 @@ records raw and reviewed copy for both runs. The visitor-facing path is repeatab
 desktop profile; raw-model writing reliability remains unresolved, and this run does not measure a
 physical-phone cold start.
 
+A 320px narrow-screen review also found that the `Build it` button wrapped onto two lines. The
+composer now keeps the label on one line while the textarea gives up the small amount of space
+needed. A focused Playwright regression passed, and a fresh 320px screenshot confirms the page
+still fits without horizontal overflow. This verifies responsive composer behavior, not the
+actual-phone model cold start.
+
 ## Local 3B comparison, October 14
 
 I downloaded the MLC Qwen2.5-3B profile into the local WebLLM browser cache and compared it with the
