@@ -633,6 +633,15 @@ omitted a supplied city, and added unsupported claims. The candidate did not imp
 placement or grounding, so I restored the previous prompt. The [experiment record](../audit/builder-field-map-prompt-experiment-2026-10-14.md)
 contains the raw capture and explains why the candidate was not shipped.
 
+The audit previously wrote “unspecified” as the model for live WebGPU runs. The selected profile is
+now exposed in non-visible page metadata and captured per scenario. A warm run identified
+Qwen2.5-1.5B-Instruct-q4f16_1-MLC and passed one bike-shop workflow after source reconciliation.
+Its raw answer still invented more than twenty years of service, reliable and affordable work, and
+an adventure claim. The guard removed those additions and restored the requested field wording.
+This proves the guarded result on one prompt, not reliable raw writing. Older captures remain
+unassigned and cannot be retroactively attributed to a profile. See the
+[profile check](../audit/builder-live-model-profile-2026-10-14.md).
+
 The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
 lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-

@@ -96,6 +96,10 @@ const canRun = gpuApiPresent && !tooLittleMemory;
 // The shared desk stays on 0.5B. The Builder selects 1.5B only on devices that pass the memory/GPU
 // gate in webllm-loader.ts; all model data and prompts still stay in the browser.
 const profile = profileForPage(loc()?.pathname, deviceCap);
+// Keep the selected local profile inspectable so live audits can state which model answered. This is
+// metadata only; it does not alter loading, prompts, or the visitor-facing page.
+if (typeof document !== "undefined" && document.body)
+  document.body.dataset.aiModelProfile = profile.id;
 const probe = (): Promise<boolean> => Promise.resolve(canRun);
 
 // Load a GIVEN profile's model through grain's transport: grain owns the CDN import + warm-up, the desk

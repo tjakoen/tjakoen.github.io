@@ -1,7 +1,8 @@
 // tools/desk-audit.ts — REAL-MODEL scenario audit for the desk (the retune's measuring stick).
 // Drives the live site in a real Chromium WITH WebGPU (unlike the e2e suite, which is headless and
-// model-offline by design), asks the actual Qwen2.5-0.5B a fixed scenario list, and grades the
-// replies (must-mention keywords, expected navigation, protocol leaks, loops). Run it BEFORE a
+// model-offline by design), asks the local profile selected for each page, and grades replies
+// (must-mention keywords, expected navigation, protocol leaks, loops). Builder reports include the
+// selected model ID so a 1.5B run cannot be mistaken for the desk's 0.5B profile. Run it BEFORE a
 // prompt/retrieval change and AFTER, then diff the two reports.
 //
 //   bun tools/desk-audit.ts baseline          # label the report; writes .cache/desk-audit/report-<label>.json
@@ -176,7 +177,7 @@ const SCENARIOS: Scenario[] = [
   // pass here proves the fact reaches an actual model's answer, not just the assembled prompt string.
   { id: "memory-read", page: "/", ask: "what do you know about me?",
     mustMention: [["grain"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
-  // D5 the builder's edit path — the REAL 0.5B choosing a REAL verb on a REAL block. Everything
+  // D5 the builder's edit path — the selected local model choosing a verb on a live block. Everything
   // around the model is proved by builder-canvas.e2e.ts and none of the model is, because that suite
   // scripts the engine: it answers `block:b4` because the test told it to. These four are the
   // measurement, and a failure here is a RESULT rather than a broken harness — the page is built so
@@ -343,9 +344,10 @@ const recordModel = (page: Page) => page.addInitScript(() => {
 });
 
 const recorded = (page: Page) => page.evaluate(() => ({
+  profile: document.body.dataset.aiModelProfile ?? "",
   prompt: sessionStorage.getItem("__auditPrompt") ?? "",
   raw: sessionStorage.getItem("__auditRaw") ?? "",
-})).catch(() => ({ prompt: "", raw: "" }));
+})).catch(() => ({ profile: "", prompt: "", raw: "" }));
 
 /** Type a prompt into the canvas composer and submit it. The composer's own submit handler is what
  *  routes it, so this is the same way in a visitor has and the only one this scenario shape uses. */
@@ -433,7 +435,7 @@ interface Result {
   /** Builder scenarios only: what the model was handed and what it said back, verbatim. The report's
    *  most useful field when a scenario fails — the page's reading of a bad answer looks the same
    *  whatever the bad answer was. */
-  model?: { prompt: string; raw: string };
+  model?: { profile: string; prompt: string; raw: string };
   /** Browser failures that explain model initialization or page execution failures. */
   browserErrors?: string[];
   /** Distinguishes a bad answer from a scenario where no model answer existed to grade. */
@@ -703,6 +705,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       ? "The model did not run, so this brief has no answer to grade."
       : undefined;
     const failures = notRunReason ? [] : grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks, draftFields);
+    if (builderPage && !model?.profile) failures.push("selected local model profile was not reported");
     const pass = !notRunReason && failures.length === 0;
     return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftFields, draftEvidence, draftFieldEvidence, draftBlocks, targetCorrection, model, browserErrors, status: notRunReason ? "not-run" : pass ? "passed" : "failed", notRunReason, pass, failures };
   } finally {
@@ -753,7 +756,9 @@ try {
 const passed = results.filter((r) => r.pass).length;
 const failed = results.filter((r) => r.status === "failed").length;
 const notRun = results.filter((r) => r.status === "not-run").length;
-const report = { label, base: BASE, model: process.env.AUDIT_MODEL ?? "unspecified", passed, failed, notRun, total: results.length, results };
+const profiles = [...new Set(results.map((result) => result.model?.profile).filter((profile): profile is string => !!profile))];
+const model = profiles.length === 1 ? profiles[0] : profiles.length ? `mixed: ${profiles.join(", ")}` : "unreported";
+const report = { label, base: BASE, model, passed, failed, notRun, total: results.length, results };
 await Bun.write(`${OUT_DIR}/report-${label}.json`, JSON.stringify(report, null, 2));
 console.log(`\n== ${passed}/${results.length} passed, ${failed} failed, ${notRun} not run — ${OUT_DIR}/report-${label}.json ==`);
 for (const r of results) {
