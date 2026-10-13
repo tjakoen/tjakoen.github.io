@@ -659,11 +659,14 @@ After deployment, headless production checks selected the 0.5B profile at 1280px
 viewports showed the current disclosure with no overflow or browser errors. This verifies the
 published selector metadata and responsive page, not model behavior on an actual phone.
 
-The negative-anchor guard was released in commit `1b8b5a1`. Hosted CI passed all 432 browser cases,
-726 unit tests, typecheck, and the lint baseline; the Pages build and deploy passed. The published
-Builder page and its bundled script were checked after deployment. This release verifies the
-targeted negative-phrase and year regression only. The Builder still needs broader raw-writing
-reliability evidence and a cold-start measurement on actual phone hardware.
+Commit `1b8b5a1` released the initial negative-anchor guard. Follow-up commit `76e0c9d` added common
+“avoid,” “exclude,” and “leave out” instructions and a later positive phrase to the regression and
+live audit. Hosted CI passed all 431 browser cases, 727 unit tests, typecheck, and the lint baseline;
+the Pages build and deploy passed. The published Builder route and bundled script were checked after
+deployment. Both live WebGPU negative-instruction checks passed their visible-copy requirements.
+These results verify the targeted phrase-and-year cases, not reliable raw model writing or general
+negation understanding. Broader writing quality and a cold-start measurement on actual phone
+hardware remain open.
 
 The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
 lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
