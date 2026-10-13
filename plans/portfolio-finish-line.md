@@ -511,12 +511,12 @@ proof remain open below.
       copy still needs human fact-checking. A cold start on an actual phone remains open because no
       handset was attached and the iOS simulator tool is unavailable; the Builder plan lists the
       measurements needed to close it. See the
-      [WebGPU recheck](../audit/builder-webgpu-recheck-2026-10-13.md), both
-      [first live run](../audit/builder-phrase-scoped-description-live-1-2026-10-13.json),
-      [second](../audit/builder-phrase-scoped-description-live-2-2026-10-13.json), and
-      [third](../audit/builder-phrase-scoped-description-live-3-2026-10-13.json), the earlier
-      [new-origin retry report](../audit/builder-phrase-placement-notrun-recheck-2026-10-13.json), and
-      [intro-for wording variant report](../audit/builder-intro-for-live-2026-10-13.json). A parser
+      [WebGPU recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-webgpu-recheck-2026-10-13.md), both
+      [first live run](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-1-2026-10-13.json),
+      [second](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-2-2026-10-13.json), and
+      [third](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-3-2026-10-13.json), the earlier
+      [new-origin retry report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-placement-notrun-recheck-2026-10-13.json), and
+      [intro-for wording variant report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-intro-for-live-2026-10-13.json). A parser
       regression now restores an “intro for…” description to `lede.body` if the model puts it in a
       card; its warm live check passed 1/1. This verifies guarded placement for that wording form,
       not raw model accuracy. A shorter field-map prompt was tested on four warm briefs and rejected
@@ -530,7 +530,7 @@ proof remain open below.
       specific forbidden-anchor bug; it does not establish reliable raw writing or general negation
       handling. Both findings are recorded in the
       [Builder plan](builder-ai-depth.md#builder-only-larger-profile-october-11) and
-      [negative-anchor audit](../audit/builder-negative-anchor-guard-2026-10-14.md).
+      [negative-anchor audit](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-negative-anchor-guard-2026-10-14.md).
       The actual-phone cold start and broader writing reliability remain open; see the Builder plan
       for evidence and limits.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
@@ -604,7 +604,7 @@ proof remain open below.
       browser cases, typecheck, link lint, and the lint baseline. The review now distinguishes
       verbatim wording from a sentence composed from details in the brief and retains its warning
       that the checks cannot verify claims. The work is documented in
-      [the Builder sentence audit](../audit/builder-grounded-sentence-followup-2026-10-14.md) and
+      [the Builder sentence audit](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-grounded-sentence-followup-2026-10-14.md) and
       was released in commit `af142b7`. Production serves the new sentence composer and revised review
       disclosure. Pages build and deployment passed; hosted end-to-end passed all 432 browser cases on
       commit `f170865`. Raw model output still invents claims or misplaces wording,
@@ -612,11 +612,11 @@ proof remain open below.
       A six-scenario source-quote prompt trial still produced unsupported raw details; all guarded
       drafts passed after reconciliation. The trial did not establish a raw-writing improvement, so
       the temporary prompt rule was removed. See the
-      [prompt experiment record](../audit/builder-source-quote-prompt-2026-10-14.md).
+      [prompt experiment record](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-source-quote-prompt-2026-10-14.md).
       A separate six-brief zero-temperature run still produced unsupported details and proposed a
       prohibited “organic” claim in the raw answer. Reconciliation removed it from the reviewed
       draft; temperature 0.2 was restored. See the
-      [temperature experiment record](../audit/builder-zero-temperature-experiment-2026-10-14.md).
+      [temperature experiment record](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-zero-temperature-experiment-2026-10-14.md).
       The evidence update is on `main` as `69f5bf3`. Hosted CI passed typecheck, 736 unit tests, the
       lint baseline, and all 432 browser cases. The Pages build and deployment succeeded, and the
       published Builder and plan routes both return HTTP 200. These release checks do not close the
@@ -636,8 +636,8 @@ proof remain open below.
       The raw model still suggested unsupported phrases, which source reconciliation removed. These
       results strengthen evidence for this guarded Builder path without proving broad raw model
       quality. The physical-phone cold-start measurement remains open. See the
-      [full Builder audit](../audit/builder-full-webgpu-2026-10-14.json) and the
-      [three sentence rechecks](../audit/builder-mixed-complete-sentence-repeats-2026-10-14.json).
+      [full Builder audit](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-full-webgpu-2026-10-14.json) and the
+      [three sentence rechecks](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-mixed-complete-sentence-repeats-2026-10-14.json).
 
 ## Done means
 
