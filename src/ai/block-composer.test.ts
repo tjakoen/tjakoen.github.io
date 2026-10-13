@@ -7,7 +7,7 @@
 // an invented verb, and the repetition loop that never closes its own object.
 import { test, expect, describe } from "bun:test";
 import {
-  BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
+  completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
   COMPLETION_TIMEOUT_MS, briefAnchors, briefAnchorsMissingFromDraft, groundBlockCopy,
   reconcileBuildPlan, termsOutsideBrief,
 } from "./block-composer.ts";
@@ -23,22 +23,14 @@ describe("the prompt hands over the closed set", () => {
   test("every buildable name appears in it, so the model is never asked to guess one", () => {
     const message = composeMessage("a page about bread");
     for (const name of BLOCK_NAMES) expect(message).toContain(name);
-    expect(message).toContain("Do not invent claims, testimonials, guarantees or statistics.");
-    expect(message).toContain("card.title and card.body");
+    expect(message).toContain("Do not add copy, facts, claims, testimonials, guarantees or statistics.");
+    expect(message).toContain("Do not write copy or add text fields.");
   });
 
   test("the sentence itself leads, because a small model reads the top of a prompt best", () => {
     expect(composeMessage("  a page about bread  ").startsWith("a page about bread")).toBe(true);
   });
 
-  test("the structured output schema bounds block names, count, spans, and visible copy fields", () => {
-    const blocks = BUILD_PLAN_SCHEMA.properties.blocks;
-    expect(blocks.maxItems).toBe(MAX_PLANNED_BLOCKS);
-    expect(blocks.items.properties.name.enum).toEqual(BLOCK_NAMES);
-    expect(blocks.items.properties.copy.additionalProperties).toBe(false);
-    expect(BUILD_PLAN_SCHEMA.properties.span.enum).toEqual(["full", "half", "third", null]);
-    expect(BUILD_PLAN_SCHEMA.additionalProperties).toBe(false);
-  });
 });
 
 describe("a plan is read out of whatever the model wrapped it in", () => {
@@ -309,6 +301,7 @@ describe("generated block copy is bounded by each component's visible text contr
     expect(reconciled.copies[0]?.copy.body).toContain("a family-run bike repair shop");
     expect(reconciled.copies[1]?.copy.body).not.toContain("family-run bike repair shop");
     expect(reconciled.copies[1]?.copy.body).toBe("ready for the next ride");
+    expect(reconciled.copies[1]?.copy.title).toBe("Tune-up");
   });
 
   test("intro description stays in the intro when the model repeats card copy there", () => {
@@ -321,6 +314,7 @@ describe("generated block copy is bounded by each component's visible text contr
     expect(briefAnchors(brief)).toContain("an independent pottery studio");
     expect(reconciled.copies[0]?.copy.body).toContain("an independent pottery studio");
     expect(reconciled.copies[0]?.copy.body).not.toContain("hand-built pieces for everyday use");
+    expect(reconciled.copies[1]?.copy.title).toBe("Weekend workshop");
     expect(reconciled.copies[1]?.copy.body).toBe("hand-built pieces for everyday use");
   });
 
@@ -416,6 +410,11 @@ describe("composeFromNames enumerates what the model only named", () => {
     ]);
   });
 
+  test("a model-composed skeleton suppresses sample claims when the brief provides no copy", () => {
+    const { blocks } = composeFromNames(["card"], "a card", 0, null, [], true);
+    expect(blocks[0]?.data).toEqual({ title: "", body: "" });
+  });
+
   test("refusals are read off the SENTENCE, so a plan that omits a gallery still declines it", () => {
     const { refusals } = composeFromNames(["card"], "a card and a gallery of screenshots");
     expect(refusals.map((r) => r.token)).toContain("image");
@@ -432,14 +431,15 @@ describe("completeWithin bounds one answer", () => {
     expect(await completeWithin(desk, "x", 50)).toBe('{"blocks": ["card"]}');
   });
 
-  test("the Builder passes its schema through the bounded completion", async () => {
+  test("bounded completion passes an optional schema through to the desk", async () => {
     let received: Record<string, unknown> | undefined;
-    const desk = { complete: async (_prompt: string, schema?: Record<string, unknown>) => {
-      received = schema;
+    const schema = { type: "object", properties: { blocks: { type: "array" } } };
+    const desk = { complete: async (_prompt: string, receivedSchema?: Record<string, unknown>) => {
+      received = receivedSchema;
       return '{"blocks": [{"name": "card"}]}';
     } };
-    expect(await completeWithin(desk, "two cards", 50, BUILD_PLAN_SCHEMA)).toBe('{"blocks": [{"name": "card"}]}');
-    expect(received).toBe(BUILD_PLAN_SCHEMA);
+    expect(await completeWithin(desk, "two cards", 50, schema)).toBe('{"blocks": [{"name": "card"}]}');
+    expect(received).toBe(schema);
   });
 
   test("an answer that never arrives resolves null instead of hanging the page", async () => {

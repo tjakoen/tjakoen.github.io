@@ -10,10 +10,9 @@
 //
 // So the division of labour here is the same one block-reasoner.ts already states for editing, and
 // it is the whole rule: THE MODEL UNDERSTANDS, THE CODE ENUMERATES. The model reads the sentence and
-// answers with an ordered list of names and optional copy for the visible text fields the code
-// allows. Every name is checked against the closed set before anything is built, and anything
-// unrecognised is dropped rather than guessed at. Copy fields are stripped of control characters and
-// bounded before they can replace a block's example text.
+// answers with an ordered list of names only. Every name is checked against the closed set before
+// anything is built, and anything unrecognised is dropped rather than guessed at. Copy is assembled
+// from source phrases by code and shown for review; raw model prose never enters the page.
 //
 // WHY THE WORD LIST IS STILL HERE, which reads like the fallback the edit path explicitly refuses.
 // It is not the same call. On the edit path a fallback would let the page claim an AI edit no AI
@@ -31,41 +30,6 @@ import {
  *  2026-08-22), and a plan is exactly the place that turns into four hundred cards. The cap is not a
  *  judgement about how big a page should be, it is a bound on what a broken answer can cost. */
 export const MAX_PLANNED_BLOCKS = MAX_BLOCKS_PER_PROMPT;
-
-/** The local model's output is constrained to the same closed vocabulary that the reader validates.
- *  The renderer remains code-owned: the schema only narrows the completion shape and copy fields. */
-export const BUILD_PLAN_SCHEMA = {
-  type: "object",
-  properties: {
-    blocks: {
-      type: "array",
-      minItems: 1,
-      maxItems: MAX_PLANNED_BLOCKS,
-      items: {
-        type: "object",
-        properties: {
-          name: { type: "string", enum: BLOCK_NAMES },
-          copy: {
-            type: "object",
-            properties: {
-              title: { type: "string", maxLength: 60 },
-              body: { type: "string", maxLength: 360 },
-              value: { type: "string", maxLength: 30 },
-              label: { type: "string", maxLength: 60 },
-              sub: { type: "string", maxLength: 80 },
-            },
-            additionalProperties: false,
-          },
-        },
-        required: ["name"],
-        additionalProperties: false,
-      },
-    },
-    span: { enum: ["full", "half", "third", null] },
-  },
-  required: ["blocks"],
-  additionalProperties: false,
-} as const;
 
 export type PlanRead =
   /** Names, in the model's own order, every one of them in the closed set. `dropped` carries what
@@ -94,8 +58,8 @@ const DRAFT_VERBS = new Set([
 ]);
 const ANCHOR = /(?<![\p{L}\p{N}_])[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
-const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^.!?]+?)(?=[.!?]|$)/giu;
-const INTRO_DESCRIPTION = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\b(?:says?\s+it\s+is|describing\s+it\s+as|describes?\s+it\s+as|for|about)\s+([^,;.!?]+?)(?=,\s*(?:and\s+)?then\b|[;.!?]|$)/giu;
+const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^,.!?;]+?)(?=,\s*(?:and\s+)?(?:then|add|include|feature)\b|[.!?;]|$)/giu;
+const INTRO_DESCRIPTION = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\b(?:says?\s+it\s+is|describing\s+it\s+as|describes?\s+it\s+as|for|about)\s+([^,;.!?]+?)(?=,\s*(?:and\s+)?then\b|\s+then\s+|[;.!?]|$)/giu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 
 /** A fact inside a nearby negative clause must not be repeated without its negation. */
@@ -324,7 +288,26 @@ export function reconcileBuildPlan(
     }
   }
 
-  const grounded = keptNames.map((name, index) => groundBlockCopy(brief, name, keptCopies[index]));
+  const titleTargets = [...brief.matchAll(/\b(?:card\s+)?(?:titled|with\s+the\s+title|called)\s+[“"]?([^,.!?;”"]+)/giu)]
+    .flatMap((match) => {
+      const phrase = match[1]?.trim();
+      const index = (match.index ?? 0) + match[0].indexOf(phrase ?? "");
+      return phrase && !followsNegation(brief, index)
+        ? [{ phrase: phrase.replace(/\s+with\s+(?:the\s+)?(?:words?|phrase)\b[\s\S]*$/iu, "").trim(), index }]
+        : [];
+    }).filter(({ phrase }) => phrase.length > 0);
+  let cardTitleIndex = 0;
+  const grounded = keptNames.map((name, index) => {
+    const result = groundBlockCopy(brief, name, keptCopies[index]);
+    if (name === "card" && titleTargets[cardTitleIndex]) {
+      const title = titleTargets[cardTitleIndex++]!.phrase;
+      if (title.length <= (blockCopyLimit(name, "title") ?? 0)) {
+        result.copy.title = title;
+        if (!result.changedFields.includes("title")) result.changedFields.push("title");
+      }
+    }
+    return result;
+  });
   for (const { phrase, block } of requestedWordingTargets(brief)) {
     if (!block) continue;
     const target = grounded.findIndex((result, index) => keptNames[index] === block
@@ -412,11 +395,10 @@ export function composeMessage(ask: string, names: readonly string[] = BLOCK_NAM
   return [
     ask.trim(),
     "",
-    "(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)",
+    "Return only the block structure as JSON, like {\"blocks\":[{\"name\":\"lede\"},{\"name\":\"card\"}]}. Do not write copy or add text fields.",
     `The only block names are: ${names.join(", ")}. Use no other name.`,
-    "Repeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.",
-    "Use only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.",
-    "Write brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.",
+    "Repeat an object to ask for more than one block of the same name.",
+    "The code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.",
     "Put blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
   ].join("\n");
 }

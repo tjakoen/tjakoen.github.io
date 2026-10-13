@@ -332,15 +332,16 @@ const canvasState = (page: Page): Promise<Array<{ id: string; span: string }>> =
  *  A property definition rather than a patch after load, because desk-door.ts assigns `window.desk`
  *  once, whenever the engine finishes coming up, and there is no event to wait for. */
 const recordModel = (page: Page) => page.addInitScript(() => {
-  let real: { complete(p: string): Promise<string | null> } | undefined;
+  type CompletionSchema = Record<string, unknown>;
+  let real: { complete(p: string, schema?: CompletionSchema): Promise<string | null> } | undefined;
   Object.defineProperty(window, "desk", {
     configurable: true,
     get: () => real,
-    set: (v: { complete(p: string): Promise<string | null> } | undefined) => {
+    set: (v: { complete(p: string, schema?: CompletionSchema): Promise<string | null> } | undefined) => {
       real = v && typeof v.complete === "function"
-        ? { ...v, complete: async (p: string) => {
+        ? { ...v, complete: async (p: string, schema?: CompletionSchema) => {
             sessionStorage.setItem("__auditPrompt", p);
-            const raw = await v.complete(p);
+            const raw = await v.complete(p, schema);
             sessionStorage.setItem("__auditRaw", raw === null ? "(the model did not run)" : raw);
             return raw;
           } }

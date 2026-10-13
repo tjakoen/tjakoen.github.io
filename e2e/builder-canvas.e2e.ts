@@ -504,7 +504,6 @@ export async function loadEngine({ onProgress }) {
   return { chat: { completions: { create: async (request) => {
     const prompt = request.messages.map((message) => message.content).join("\\n");
     sessionStorage.setItem("__builderPrompt", prompt);
-    sessionStorage.setItem("__builderSchema", request.response_format.schema);
     if (sessionStorage.getItem("__builderNoReply") === "true") throw new Error("no model response");
     const raw = draftAnswer(prompt);
     sessionStorage.setItem("__builderRaw", raw);
@@ -522,6 +521,9 @@ export function makeChatModel() {
   return {
     async complete(prompt) {
       sessionStorage.setItem("__builderPrompt", prompt);
+      if (/Build a Northstar Bike Repair page/i.test(prompt)) return JSON.stringify({ blocks: [
+        { name: "lede" }, { name: "card" },
+      ] });
       if (/Hearth Bakery page/i.test(prompt)) return JSON.stringify({ blocks: [
         { name: "lede", copy: { body: "Hearth Bakery is a neighborhood bakery that welcomes every visitor." } },
         { name: "card", copy: { title: "Coffee", body: "Baked fresh each morning, our coffee is perfect." } },
@@ -605,7 +607,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator("[data-builder-draft-evidence]"))
       .toContainText("The model's 1 unrequested block was removed.");
     await expect(page.locator("[data-builder-draft-evidence]"))
-      .toContainText("The Builder adjusted or omitted model wording in 2 fields.");
+      .toContainText("The Builder composed 3 fields from phrases in your brief.");
     await expect(page.locator('[data-surface="builder-spec"]')).not.toContainText("Hearth Bakery");
     await page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
       .fill("Hearth Bakery page about coffee in Utrecht, a neighborhood bakery.");
@@ -629,10 +631,8 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(SAID)).toContainText("Added lede and card after your review");
     await expect(page.locator(DRAFT_REVIEW)).toBeHidden();
 
-    const schema = await page.evaluate(() => JSON.parse(sessionStorage.getItem("__builderSchema") || "null"));
-    expect(schema.properties.blocks.maxItems).toBe(8);
-    expect(schema.properties.blocks.items.properties.name.enum).toContain("card");
-    expect(schema.additionalProperties).toBe(false);
+    const modelPrompt = await page.evaluate(() => sessionStorage.getItem("__builderPrompt") || "");
+    expect(modelPrompt).toContain("Do not write copy or add text fields.");
 
     const spec = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
     expect(spec.blocks.map((block: { data: Record<string, string> }) => block.data)).toEqual([
@@ -662,33 +662,33 @@ test.describe("the model chooses the verb", () => {
     await submitPrompt(page, "Add a card about coffee.");
 
     await expect(page.locator(SAID))
-      .toHaveText("The desk did not return a draft. I composed the page from the words in your sentence instead.");
+      .toHaveText("Composed from the words in that sentence. The desk answered with nothing this set can build.");
     await expect(page.locator(CELL)).toHaveCount(1);
   });
 
-  test("sample wording is identified until the visitor edits it", async ({ page }) => {
+  test("unsupported sample copy stays blank until the visitor adds wording", async ({ page }) => {
     await page.goto("/grain/builder");
     await page.evaluate(() => sessionStorage.setItem("__builderOmitCardBody", "true"));
     await waitForDesk(page);
     await submitPrompt(page, "Build a Hearth Bakery page with an intro and a card about coffee.");
 
     await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
-    const sampleBody = page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="body"]');
-    const evidence = sampleBody.locator("xpath=../..").locator('[data-draft-copy-evidence="b2-body"]');
-    await expect(sampleBody).toHaveValue("Nothing between source and server: no bundler, no transpiler, no watcher.");
-    await expect(evidence).toHaveText("Sample wording from the component, not written for this brief.");
+    const blankBody = page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="body"]');
+    const evidence = blankBody.locator("xpath=../..").locator('[data-draft-copy-evidence="b2-body"]');
+    await expect(blankBody).toHaveValue("");
+    await expect(evidence).toHaveText("No copy was supplied for this field. Add wording here or leave it blank.");
 
-    await sampleBody.fill("Coffee in Utrecht.");
+    await blankBody.fill("Coffee in Utrecht.");
     await expect(evidence).toContainText("Your edits add words absent from your brief: Utrecht.");
   });
 
-  test("generated markup remains literal text inside the live block", async ({ page }) => {
+  test("model-written markup is omitted and visitor markup remains literal text", async ({ page }) => {
     await page.goto("/grain/builder");
     await waitForDesk(page);
     await submitPrompt(page, "Build a page with this literal text: <img src=x onerror=window.__builderXss=true>");
 
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
-      .toHaveValue("img src=x onerror=window.__builderXss=true");
+      .toHaveValue("");
     await expect(page.locator(`${DRAFT_REVIEW} img`)).toHaveCount(0);
     await expect(page.locator(CELL)).toHaveCount(0);
     await page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')

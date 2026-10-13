@@ -865,11 +865,41 @@ Builder plan and portfolio finish-line plan now link their audit records to publ
 files. Earlier targets returned HTTP 200; the four new 3B reports will be checked after this update
 is published.
 
+## Structure selection with source-built copy, October 14
+
+The 1.5B model kept inventing claims after prompt, temperature, and model-size comparisons. I changed
+the job instead of continuing to ask it for prose it could not keep grounded. The local model now
+chooses registered block names and their order. The application ignores every model copy field and
+builds visible text only from phrases in the visitor's brief. It leaves unsupported fields blank,
+removes sample claims from AI-composed blocks, and lets the visitor fill or edit each field before
+approval. JSON mode remains on, but the Builder does not use schema-guided decoding: the pinned
+WebLLM runtime rejected a sampled token during a constrained-schema trial, and that failure would
+have forced a fallback instead of a reviewed draft.
+
+I corrected the live audit wrapper after finding that it had dropped the optional schema argument,
+which meant earlier constrained-schema measurements did not reach the model. The follow-up
+structure-only run used the real JSON-mode path. All twelve reviewed drafts passed across two warm
+runs of the same six briefs. The review preserved requested names, descriptions, titles, exact
+phrases, and prohibitions. The raw response usually contained only block names; both pottery
+responses still included unsupported text fields with generated claims. The Builder ignored those
+fields, and they did not appear in the review or canvas. This is evidence for the visitor-facing
+source-built path. It does not establish reliable model-written copy, which the Builder no longer
+uses. The [raw and reviewed captures](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-structure-only-2026-10-14.json)
+preserve the distinction.
+
+The review now shows blank text fields when a brief does not supply copy, and visitors can fill them
+before approval. Browser tests cover the structure-only prompt, source-built copy, blank fields,
+visitor edits, and a raw model response containing markup. The model's markup is discarded; visitor-
+entered markup remains literal text. The Builder now has repeatable evidence for the parts it uses:
+block selection and order come from the local model, while visible copy comes from the brief or the
+visitor. A physical-phone cold-start measurement remains open.
+
 ## Done means
 
-The current browser model can build a useful first draft from a visitor's brief and complete the
-agreed edit scenarios against the live page. Every unsupported case refuses without changing the
-canvas or claiming success. The static export still composes and previews without a server. A
-visitor can inspect the outcome, revise it, and export it without leaving the portfolio. The
-live-model results and their limits are recorded beside the tests, so the page's claims stay tied to
-evidence.
+The current browser model can choose a useful page structure from a visitor's brief and complete the
+agreed edit scenarios against the live page. Code builds visible copy only from the visitor's source
+phrases, and the visitor can review or change it before approval. Every unsupported operation refuses
+without changing the canvas or claiming success. The static export still composes and previews
+without a server. A visitor can inspect the outcome, revise it, and export it without leaving the
+portfolio. The live-model results and their limits are recorded beside the tests, so the page's
+claims stay tied to evidence.

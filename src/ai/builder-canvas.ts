@@ -29,7 +29,7 @@ import {
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, FORM_COMPONENT, blockCopyLimit, isSpan, sanitizeBlockCopy, type Block } from "./block-set.ts";
 import {
-  BUILD_PLAN_SCHEMA, briefAnchors, briefAnchorsMissingFromDraft, completeWithin, composeMessage,
+  briefAnchors, briefAnchorsMissingFromDraft, completeWithin, composeMessage,
   readModelPlan, reconcileBuildPlan, termsOutsideBrief,
 } from "./block-composer.ts";
 import {
@@ -402,7 +402,7 @@ function boot(): void {
     saidLine.removeAttribute("hidden");
   };
   if (askInURL) {
-    say("This shared preview uses the code-owned block matcher. Build it asks the on-device model to add blocks when it can run here.", "reply");
+    say("This shared preview uses the code-owned block matcher. Build it asks the on-device model to choose registered blocks and order when it can run here.", "reply");
   }
   const clearSaid = (): void => {
     if (!saidLine) return;
@@ -460,7 +460,7 @@ function boot(): void {
       stat: "block-stat",
       form: FORM_COMPONENT,
     };
-    const modelCopyById = new Map<string, Record<string, string>>();
+    const sourceCopyById = new Map<string, Record<string, string>>();
     const changedCopyById = new Map<string, string[]>();
     const refreshDraftEvidence = (): void => {
       const copy = Array.from(draftBlocks.querySelectorAll<HTMLTextAreaElement>("[data-draft-copy-block]"))
@@ -472,8 +472,8 @@ function boot(): void {
         ? "The model's " + droppedBlocks + " unrequested block" + (droppedBlocks === 1 ? " was" : "s were") + " removed. "
         : "";
       const fieldNotice = changedCount
-        ? "The Builder adjusted or omitted model wording in "
-          + changedCount + " field" + (changedCount === 1 ? "" : "s") + ". "
+        ? "The Builder composed " + changedCount + " field" + (changedCount === 1 ? "" : "s")
+          + " from phrases in your brief. "
         : "";
       draftEvidence.textContent = missing.length
         ? `Brief details not found verbatim in the draft: ${missing.join(", ")}. This check does not verify other facts or claims.`
@@ -486,7 +486,7 @@ function boot(): void {
     for (const [index, name] of planNames.entries()) {
       const block = composition.blocks[blockIndex];
       if (!block || block.component !== components[name]) continue;
-      modelCopyById.set(block.id, copies[index] ?? {});
+      sourceCopyById.set(block.id, copies[index] ?? {});
       changedCopyById.set(block.id, changedCopyFields[index] ?? []);
       blockIndex++;
     }
@@ -498,7 +498,8 @@ function boot(): void {
       item.append(heading);
 
       const values = Object.entries(block.data)
-        .filter((entry): entry is [string, string] => typeof entry[1] === "string" && Boolean(entry[1].trim()));
+        .filter((entry): entry is [string, string] => typeof entry[1] === "string"
+          && blockCopyLimit(copyNames[block.component] ?? "", entry[0]) !== null);
       for (const [field, value] of values) {
         const label = document.createElement("label");
         label.className = "field wb-bar__draft-field";
@@ -509,6 +510,7 @@ function boot(): void {
         editor.className = "field__textarea wb-bar__draft-text";
         editor.rows = 2;
         editor.value = value;
+        editor.placeholder = "Add wording or leave this field blank";
         const originalValue = value;
         const limit = blockCopyLimit(copyNames[block.component] ?? "", field);
         if (limit !== null) editor.maxLength = limit;
@@ -519,24 +521,24 @@ function boot(): void {
         evidence.className = "muted wb-bar__draft-evidence";
         evidence.setAttribute("data-draft-copy-evidence", `${block.id}-${field}`);
         evidence.setAttribute("aria-live", "polite");
-        const generated = modelCopyById.get(block.id)?.[field] === value;
+        const composedFromBrief = sourceCopyById.get(block.id)?.[field] === value;
         const changedByGrounding = changedCopyById.get(block.id)?.includes(field) ?? false;
         const refreshEvidence = (): void => {
           if (changedByGrounding && editor.value === originalValue) {
             const wordingIsVerbatim = ask.toLocaleLowerCase().includes(value.toLocaleLowerCase());
-            evidence.textContent = generated
-              ? wordingIsVerbatim
-                ? "This field uses wording from your brief: “" + value + "”."
-                : "The Builder composed this field from details in your brief: “" + value + "”."
-              : "The model's wording was omitted because it could not be matched to your brief; sample wording is shown.";
+            evidence.textContent = wordingIsVerbatim
+              ? "This field uses wording from your brief: “" + value + "”."
+              : "The Builder composed this field from details in your brief: “" + value + "”.";
             return;
           }
-          if (!generated && editor.value === originalValue) {
-            evidence.textContent = "Sample wording from the component, not written for this brief.";
+          if (!composedFromBrief && editor.value === originalValue) {
+            evidence.textContent = editor.value.trim()
+              ? "Sample wording from the component, not written for this brief."
+              : "No copy was supplied for this field. Add wording here or leave it blank.";
             return;
           }
           const outside = termsOutsideBrief(ask, editor.value);
-          const prefix = generated ? "Words absent from your brief" : "Your edits add words absent from your brief";
+          const prefix = composedFromBrief ? "Words absent from your brief" : "Your edits add words absent from your brief";
           evidence.textContent = outside.length
             ? `${prefix}: ${outside.slice(0, 6).join(", ")}${outside.length > 6 ? `, and ${outside.length - 6} more` : ""}. Word overlap cannot confirm a claim is true.`
             : "No new content words found. Word overlap cannot confirm a claim is true.";
@@ -791,9 +793,9 @@ function boot(): void {
    *  produced exactly one card however many times you asked.
    *
    *  What the model decides is WHICH blocks and in WHAT ORDER, from the closed set of names it is
-   *  handed in the prompt. It may also draft copy for the registered text fields on those blocks.
-   *  Code checks every name, ignores unknown copy fields, strips control characters, and limits each
-   *  accepted value. What the page declines to build still comes from `refusalsFor`, which reads the
+   *  handed in the prompt. Code fills text only from the visitor's supplied phrases, and the visitor
+   *  can review or edit those fields before adding the blocks. Code checks every name, strips control
+   *  characters, and limits each value. What the page declines still comes from `refusalsFor`, which reads the
    *  sentence on both paths.
    *
    *  It says WHICH path composed the page, every time, and that line is not decoration. A page that
@@ -809,7 +811,7 @@ function boot(): void {
     }
 
     say("Reading that…", "thinking");
-    const raw = await completeWithin(desk, composeMessage(ask), undefined, BUILD_PLAN_SCHEMA);
+    const raw = await completeWithin(desk, composeMessage(ask));
     if (state !== beforeComposition) {
       say("The page changed while the desk was reading your brief. Nothing was added; review the page and try again.", "refusal");
       return;
@@ -829,10 +831,12 @@ function boot(): void {
     }
 
     if (plan.dropped.length) console.info("[builder] dropped names outside the set:", plan.dropped);
-    const reconciled = reconcileBuildPlan(ask, plan.names, plan.copies);
+    // The model only chooses registered structure. Copy is composed from positive source phrases
+    // below; raw model prose is deliberately ignored rather than treated as visitor-facing content.
+    const reconciled = reconcileBuildPlan(ask, plan.names, []);
     const copies = reconciled.copies.map((result) => result.copy);
     const changedCopyFields = reconciled.copies.map((result) => result.changedFields);
-    const candidate = addFromPlan(state, reconciled.names, ask, plan.span, copies);
+    const candidate = addFromPlan(state, reconciled.names, ask, plan.span, copies, true);
     const added = candidate.blocks.length - state.blocks.length;
     if (added === 0) {
       say(`The desk read that as ${inWords(plan.names)}, and nothing in it had content to build from.`, "reply");
