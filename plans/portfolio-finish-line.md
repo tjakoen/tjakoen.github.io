@@ -168,6 +168,13 @@ local Playwright Chromium run supplies the live-model evidence. Existing copy ca
 because GRAIN does not yet expose a bounded text-write operation. The Builder names these limits in
 its visible guidance; reliable AI page writing remains unfinished.
 
+On October 13, a fresh local 1.5B draft-only repeat again failed to retain Utrecht and added claims
+that the brief did not support. The draft review now shows the visitor's source brief beside the
+editable generated copy and asks the visitor to compare names, locations, and claims before adding
+it. A phone-width browser check confirms the brief remains readable without page overflow. This
+improves the review evidence but does not make generation grounded; repeated draft quality remains
+open in builder-ai-depth.md.
+
 The owner confirmed that Builder generation must stay local. The page now says capable devices
 download about 875 MB of model files for the Builder, while other devices use about 350 MB; files
 are cached and prompt generation stays on the device. Shared example links open the predictable code-owned preview until a visitor presses

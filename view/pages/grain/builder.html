@@ -64,6 +64,11 @@
               <p class="muted">Review or edit each text field. Fields the model left out use sample wording. The page changes only after you add this draft.</p>
             </div>
           </div>
+          <div class="wb-bar__draft-brief">
+            <h3>Your brief</h3>
+            <p data-builder-draft-brief></p>
+            <p class="muted">Compare names, locations, and claims with the draft before adding it.</p>
+          </div>
           <ol class="wb-bar__draft-blocks" data-builder-draft-blocks></ol>
           <div class="wb-bar__draft-actions">
             <button class="btn" type="button" data-draft-accept>Add draft to page</button>
@@ -73,7 +78,8 @@
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
           First use downloads about 875 MB on capable devices or 350 MB on others. The latest full
           local 1.5B check scored 7/8. Both deletion requests applied; the relative second-card edit
-          needed a visible correction before approval. The draft omitted Utrecht. First answers can
+          needed a visible correction before approval. A draft-only repeat again omitted Utrecht and
+          added unsupported claims. First answers can
           take over a minute, and requests stop after 75 seconds.
           Review generated
           copy and verify its claims before adding a draft or exporting.</p>
@@ -251,6 +257,10 @@
             proposed by the model. The run scored 7/8, with width, move, and copy-edit
             refusal cases also passing. The generated draft included unsupported marketing claims.
             First answers can take over a minute, and requests stop after 75 seconds.</p>
+          <p>A fresh draft-only repeat again omitted Utrecht and added claims the brief did not support.
+            The review panel now keeps your original brief beside the editable draft so you can compare
+            names, locations, and claims before adding it. This makes omissions easier to spot; it does
+            not make the model's writing reliable.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
           the canvas again before it reports a change. When one edit verb, value, and live block are
             clear in your request but the model proposes a different action or target, the proposal

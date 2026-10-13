@@ -380,6 +380,7 @@ function boot(): void {
   const applyProposal = $<HTMLButtonElement>("[data-proposal-apply]", proposalPanel ?? undefined);
   const cancelProposal = $<HTMLButtonElement>("[data-proposal-cancel]", proposalPanel ?? undefined);
   const draftReview = $<HTMLElement>("[data-builder-draft-review]");
+  const draftBrief = $<HTMLElement>("[data-builder-draft-brief]", draftReview ?? undefined);
   const draftBlocks = $<HTMLOListElement>("[data-builder-draft-blocks]");
   const acceptDraft = $<HTMLButtonElement>("[data-draft-accept]", draftReview ?? undefined);
   const discardDraft = $<HTMLButtonElement>("[data-draft-discard]", draftReview ?? undefined);
@@ -418,8 +419,9 @@ function boot(): void {
     clearDraftProposal();
   };
 
-  const describeDraft = (composition: PageComposition, from: number): void => {
+  const describeDraft = (composition: PageComposition, from: number, ask: string): void => {
     if (!draftReview || !draftBlocks) return;
+    if (draftBrief) draftBrief.textContent = ask;
     draftBlocks.replaceChildren();
     const labels: Record<string, string> = {
       "block-lede": "Intro",
@@ -741,7 +743,7 @@ function boot(): void {
       return;
     }
     draftProposal = { ask, composition: candidate, before: state, names: plan.names };
-    describeDraft(candidate, state.blocks.length);
+    describeDraft(candidate, state.blocks.length, ask);
     // The model's structure and text are proposed content. The canvas and its composition stay
     // unchanged until the visitor has read the draft and chooses to add it.
     say(`The desk proposed ${inWords(plan.names)}. Review the blocks and wording before adding them.`, "thinking");

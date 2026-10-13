@@ -67,7 +67,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator(".wb-bar__note")).toContainText("latest full local 1.5B check scored 7/8");
     await expect(page.locator(".wb-bar__note")).toContainText("Both deletion requests applied");
     await expect(page.locator(".wb-bar__note")).toContainText("needed a visible correction before approval");
-    await expect(page.locator(".wb-bar__note")).toContainText("draft omitted Utrecht");
+    await expect(page.locator(".wb-bar__note")).toContainText("draft-only repeat again omitted Utrecht");
     await expect(page.locator(".wb-bar__note")).toContainText("requests stop after 75 seconds");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
@@ -79,6 +79,8 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(help).toContainText("both deletion requests applied");
     await expect(help).toContainText("explicit-ID request passed as proposed by the model");
     await expect(help).toContainText("If the model declines a request whose supported edit and live target are explicit");
+    await expect(help).toContainText("A fresh draft-only repeat again omitted Utrecht and added claims the brief did not support");
+    await expect(help).toContainText("keeps your original brief beside the editable draft");
     await expect(help).toContainText("requests stop after 75 seconds");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
@@ -536,11 +538,15 @@ test.describe("the model chooses the verb", () => {
   test.beforeEach(async ({ page }) => { await scriptedDesk(page); });
 
   test("a page brief shows a reviewable draft and adds it only after approval", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/grain/builder");
     await waitForDesk(page);
     await submitPrompt(page, "Build a Hearth Bakery page with an intro and a card about coffee.");
 
     await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
+    await expect(page.locator("[data-builder-draft-brief]")).toHaveText("Build a Hearth Bakery page with an intro and a card about coffee.");
+    await expect(page.locator(DRAFT_REVIEW)).toContainText("Compare names, locations, and claims with the draft before adding it.");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     await expect(page.locator(CELL)).toHaveCount(0);
     await expect(page.locator(DRAFT_BLOCKS).getByRole("listitem")).toHaveCount(2);
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))

@@ -309,6 +309,14 @@ review panel corrected; the explicit-ID deletion came back from the model and ap
 The draft still omitted Utrecht and included unsupported marketing language. The remaining model
 quality gap is now grounded copy, not whether the reviewer can apply a clear removal request.
 
+A fresh 1.5B draft-only repeat again scored 0/1 on the copy brief. The model retained Hearth Bakery
+and neighborhood bakery, omitted Utrecht, and added a daily-baking statement plus “perfect for a warm
+start” without support from the prompt. The draft review now displays the original brief beside the
+editable generated fields and asks visitors to compare names, locations, and claims before adding the
+draft. This gives visitors the evidence needed to review an omission or unsupported claim; it does not
+improve the model's grounding. A phone-width browser check confirms the source brief stays readable
+without horizontal page overflow.
+
 The October 13 Builder update adds a review-first path for model-composed pages. Proposed blocks and
 their text appear in the workbench before they enter the composition. Visitors can edit proposed
 text fields in that panel; acceptance runs those values through the existing block-copy sanitizer
@@ -316,8 +324,9 @@ before appending the draft through the composition functions. Discarding it pres
 blocks and URL. Generated markup remains text in the review panel. The 69-case Builder browser suite
 covers review, text edits, acceptance, discard, escaped text, offline builds, and the existing edit
 path, including the disclosed recovery when a model declines a clear command. This makes model output
-inspectable and correctable before it changes the page; it does not prevent the model from omitting
-Utrecht or inventing unsupported claims in generated copy.
+inspectable and correctable before it changes the page. A fresh 1.5B draft-only repeat again omitted
+Utrecht and added unsupported claims. The review panel now places the original brief beside the
+editable draft, but repeated model runs are still needed before generated copy can be called grounded.
 
 ## What to take from Puck AI
 
