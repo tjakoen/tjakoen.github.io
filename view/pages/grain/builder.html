@@ -61,7 +61,7 @@
           <div class="wb-bar__draft-head">
             <div>
               <h2 id="builder-draft-title">Review this page draft</h2>
-            <p class="muted">Review or edit each text field. Before review, the Builder keeps only source phrases from your brief, removes unmatched model wording, and retains detected names and numbers. Sample wording is marked. Words absent from your brief are also listed. These checks cannot verify whether claims are true. Editing after you confirm clears the check; adding the draft requires a fresh confirmation.</p>
+            <p class="muted">Review or edit each text field. Before review, the Builder keeps model wording only when it matches details from your brief, removes unmatched wording, and joins supplied details into sentences for recognized intro requests. It retains detected names and numbers. Sample wording is marked, and words absent from your brief are listed. These checks cannot verify whether claims are true. Editing after you confirm clears the check; adding the draft requires a fresh confirmation.</p>
             </div>
           </div>
           <div class="wb-bar__draft-brief">
@@ -83,7 +83,10 @@
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
           First use downloads about 875 MB on capable devices or 350 MB on others. Two varied WebGPU
           briefs each passed three times after code reconciliation, with requested wording in their
-          named blocks. An “intro for…” wording variant passed once after code reconciliation.
+          named blocks. An “intro for…” wording variant passed once after code reconciliation. Six
+          further warm WebGPU checks across bakery, bike-repair, and pottery briefs passed once each.
+          Explicit intro descriptions and welcome requests now become short sentences from the brief,
+          while exact wording stays in its requested block. Raw model copy still invents claims.
           These warm desktop runs do not establish broad reliability or phone behavior.
           Review every draft.</p>
 
@@ -240,7 +243,8 @@
           <summary>What it builds, what it edits, and where it stops</summary>
           <p>Describe a page and press Build it. The code-owned matcher gives the examples a stable
             preview; Build it asks the local model to choose blocks and order. Before review, the
-            Builder keeps only source phrases from your brief and removes unmatched model wording.
+            Builder keeps wording grounded in your brief, removes unsupported model wording, and
+            joins supplied details for recognized intro requests.
             Component sample copy remains when no phrase can be grounded, and you can edit every field.
             This does not prove that a phrase is accurate in context; check the draft before use or
             export. On capable devices the first run downloads about 875 MB; other devices use the

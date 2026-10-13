@@ -169,6 +169,36 @@ function requestedWordingTargets(brief: string): Array<{ phrase: string; block: 
   return [...namedPhraseTargets, ...introTargets];
 }
 
+function groundedIntroSentence(brief: string): string | null {
+  const subject = /\b(?:page\s+(?:for|about)\s+(.+?)\s+in|(?:build|create)\s+(?:a|an)\s+(.+?)\s+page\s+in)\s+([^.!?;]+)/iu.exec(brief);
+  if (!subject) return null;
+  const name = (subject[1] ?? subject[2])?.trim();
+  const location = subject[3]?.replace(
+    /\s+(?:with\s+(?:an?\s+)?(?:intro(?:duction)?|lede|card|callout)\b|(?:and\s+)?(?:then|add|include|feature)\b)[\s\S]*$/iu,
+    "",
+  ).trim();
+  const description = [...brief.matchAll(INTRO_DESCRIPTION)]
+    .map((match) => ({ phrase: (match[1] ?? "").trim(), index: (match.index ?? 0) + match[0].indexOf(match[1] ?? "") }))
+    .find(({ phrase, index }) => /^(?:a|an|the)\s+/iu.test(phrase) && !followsNegation(brief, index))?.phrase;
+  if (!name || !location) return null;
+  if (description) return `${name} is ${description} in ${location}.`;
+  const requestedIntro = requestedWordingTargets(brief).find(({ phrase, block }) => block === "lede"
+    && briefAnchors(brief).some((anchor) => anchor.toLocaleLowerCase() === phrase.toLocaleLowerCase()));
+  if (requestedIntro) {
+    const phrase = requestedIntro.phrase;
+    const descriptor = /^(?:a|an|the)\s+/iu.test(phrase)
+      ? phrase
+      : `${/^[aeiou]/iu.test(phrase) ? "an" : "a"} ${phrase}`;
+    return `${name} is ${descriptor} in ${location}.`;
+  }
+  const welcome = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\bwelcomes?\s+([^,.!?;]+)/iu.exec(brief);
+  const audience = welcome?.[1]?.trim();
+  const audienceIndex = (welcome?.index ?? 0) + (welcome?.[0].indexOf(audience ?? "") ?? -1);
+  if (audience && audienceIndex >= 0 && !followsNegation(brief, audienceIndex))
+    return `${name} in ${location} welcomes ${audience}.`;
+  return null;
+}
+
 /** List meaningful generated words that do not appear in the brief. This is a review aid, not a
  *  grounding test: matching words cannot prove that a sentence uses them truthfully. */
 export function termsOutsideBrief(brief: string, copy: string): string[] {
@@ -307,7 +337,16 @@ export function reconcileBuildPlan(
     copy.body = phrase;
     if (!grounded[target]!.changedFields.includes("body")) grounded[target]!.changedFields.push("body");
   }
-  const missing = briefAnchorsMissingFromDraft(
+  const introSentence = groundedIntroSentence(brief);
+  const intro = grounded.findIndex((result, index) => keptNames[index] === "lede");
+  if (introSentence && intro >= 0 && introSentence.length <= (blockCopyLimit("lede", "body") ?? 0)) {
+    const copy = grounded[intro]!.copy;
+    if (copy.body !== introSentence) {
+      copy.body = introSentence;
+      if (!grounded[intro]!.changedFields.includes("body")) grounded[intro]!.changedFields.push("body");
+    }
+  }
+  let missing = briefAnchorsMissingFromDraft(
     brief,
     grounded.flatMap((result) => Object.values(result.copy)).join(" "),
   );
@@ -319,7 +358,22 @@ export function reconcileBuildPlan(
       const name = keptNames[target] ?? "";
       const limit = blockCopyLimit(name, "body") ?? 0;
       const copy = grounded[target]!.copy;
-      const prior = copy.body ?? "";
+      let prior = copy.body ?? "";
+      const priorTokens = new Set(prior.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu)
+        ?.map((token) => token.toLocaleLowerCase().replaceAll("’", "'")) ?? []);
+      const overlapsMissingAnchor = missing.some((anchor) =>
+        (anchor.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu) ?? [])
+          .some((token) => priorTokens.has(token.toLocaleLowerCase().replaceAll("’", "'"))));
+      const preservesRequestedWording = requestedWordingTargets(brief).some(({ phrase }) =>
+        prior.toLocaleLowerCase().includes(phrase.toLocaleLowerCase()));
+      if (overlapsMissingAnchor && !preservesRequestedWording) {
+        prior = "";
+        copy.body = "";
+        missing = briefAnchorsMissingFromDraft(
+          brief,
+          grounded.flatMap((result) => Object.values(result.copy)).join(" "),
+        );
+      }
       let anchors = "";
       for (const anchor of missing) {
         const next = anchors ? anchors + " · " + anchor : anchor;

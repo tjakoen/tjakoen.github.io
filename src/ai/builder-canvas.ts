@@ -472,7 +472,7 @@ function boot(): void {
         ? "The model's " + droppedBlocks + " unrequested block" + (droppedBlocks === 1 ? " was" : "s were") + " removed. "
         : "";
       const fieldNotice = changedCount
-        ? "The model's wording was grounded in source phrases or omitted in "
+        ? "The Builder adjusted or omitted model wording in "
           + changedCount + " field" + (changedCount === 1 ? "" : "s") + ". "
         : "";
       draftEvidence.textContent = missing.length
@@ -523,8 +523,11 @@ function boot(): void {
         const changedByGrounding = changedCopyById.get(block.id)?.includes(field) ?? false;
         const refreshEvidence = (): void => {
           if (changedByGrounding && editor.value === originalValue) {
+            const wordingIsVerbatim = ask.toLocaleLowerCase().includes(value.toLocaleLowerCase());
             evidence.textContent = generated
-              ? "The model's wording was grounded in source phrases from your brief: “" + value + "”."
+              ? wordingIsVerbatim
+                ? "This field uses wording from your brief: “" + value + "”."
+                : "The Builder composed this field from details in your brief: “" + value + "”."
               : "The model's wording was omitted because it could not be matched to your brief; sample wording is shown.";
             return;
           }
