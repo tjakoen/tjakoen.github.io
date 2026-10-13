@@ -1,5 +1,5 @@
 {
-  "summary": "I am a teacher, engineer, and manager. I treat students as adults, go straight at the hard parts, and automate mechanical grading so I can spend more time teaching. I hold the architecture and quality bar, and keep direction legible to whoever opens the file next. I grow people first and deliver goals through them. I lead 15 to 25 engineers and product specialists at Career Team, teach 150 to 300 students each term, and build the BREAD stack.",
+  "summary": "I am a teacher, engineer, and manager. I treat students as adults, go straight at the hard parts, and automate mechanical grading so I can spend more time teaching. I hold the architecture and quality bar, and keep direction legible to whoever opens the file next. I grow people first and deliver goals through them. I lead 15 to 25 engineers and product specialists at Career Team, teach college-level software engineering to 150 to 300 students each term, and have completed one year in the classroom. I also build the BREAD stack.",
   "roles": [
     {
       "title": "Senior Technical Team Lead",
@@ -27,7 +27,7 @@
       "end": "Present",
       "current": true,
       "roleTag": "teaching",
-      "summary": "Teach software engineering to 150 to 300 students a term across up to seven classes.",
+      "summary": "Teach college-level software engineering to 150 to 300 students a term across up to seven classes. One year in the classroom completed.",
       "bullets": [
         "Lecture and mentor 150 to 300 students each term across up to seven classes on software engineering, modern frameworks, and architecture.",
         "Designed full-stack web and mobile curricula with React, Vue, Node.js, Express, PHP, MySQL, and PostgreSQL.",
