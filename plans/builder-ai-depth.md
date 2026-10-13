@@ -658,6 +658,12 @@ After deployment, headless production checks selected the 0.5B profile at 1280px
 viewports showed the current disclosure with no overflow or browser errors. This verifies the
 published selector metadata and responsive page, not model behavior on an actual phone.
 
+The negative-anchor guard was released in commit `1b8b5a1`. Hosted CI passed all 432 browser cases,
+726 unit tests, typecheck, and the lint baseline; the Pages build and deploy passed. The published
+Builder page and its bundled script were checked after deployment. This release verifies the
+targeted negative-phrase and year regression only. The Builder still needs broader raw-writing
+reliability evidence and a cold-start measurement on actual phone hardware.
+
 The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
 lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-
