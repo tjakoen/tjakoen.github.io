@@ -608,13 +608,14 @@ its saved report records zero model answers and two not-run scenarios. See
 [the retry report](../audit/builder-phrase-placement-notrun-recheck-2026-10-13.json).
 
 A later repeat reused the stable `localhost:3131` origin where Chromium had the model cached. Two
-varied briefs, for a bike shop and pottery studio, each passed twice after source reconciliation.
+varied briefs, for a bike shop and pottery studio, each passed three times after source reconciliation.
 The saved draft fields show the shop description in `lede.body` and “ready for the next ride” in
 `card.body`; both pottery captures also passed the phrase requirement in its named card. The raw
 model answer still misplaced or shortened some wording, so these passes measure the code-guarded
-reviewable composition, not unassisted model accuracy or polished copy. The two reports are
-[first run](../audit/builder-phrase-scoped-description-live-1-2026-10-13.json) and
-[repeat](../audit/builder-phrase-scoped-description-live-2-2026-10-13.json). The earlier CDN
+reviewable composition, not unassisted model accuracy or polished copy. The three reports are
+[first run](../audit/builder-phrase-scoped-description-live-1-2026-10-13.json),
+[second](../audit/builder-phrase-scoped-description-live-2-2026-10-13.json), and
+[third](../audit/builder-phrase-scoped-description-live-3-2026-10-13.json). The earlier CDN
 failures remain no-run results from new local origins, not failures of the later cached runs. A cold
 start on an actual phone and broader writing reliability remain open.
 

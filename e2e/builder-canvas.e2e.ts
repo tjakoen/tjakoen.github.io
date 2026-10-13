@@ -64,8 +64,8 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("Two varied WebGPU briefs passed twice after code reconciliation");
-    await expect(page.locator(".wb-bar__note")).toContainText("These were warm desktop runs");
+    await expect(page.locator(".wb-bar__note")).toContainText("Two varied WebGPU briefs each passed three times after code reconciliation");
+    await expect(page.locator(".wb-bar__note")).toContainText("These warm desktop runs do not establish broad reliability");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
     await expect(help).toContainText("The first request took 50 seconds");
