@@ -167,6 +167,15 @@ describe("generated block copy is bounded by each component's visible text contr
     expect(briefAnchors(brief)).toEqual(["Hearth Bakery", "neighborhood bakery"]);
   });
 
+  test("sentence-initial prohibition words are instructions rather than capitalized names", () => {
+    expect(briefAnchors("Exclude the phrase \"award-winning\". Build a page for Hearth Bakery."))
+      .toEqual(["Hearth Bakery"]);
+    expect(briefAnchors("Leave out the claim that it opened in 2019. Build a page for Hearth Bakery."))
+      .toEqual(["Hearth Bakery"]);
+    expect(briefAnchors("Without using \"award-winning\", introduce Hearth Bakery."))
+      .toEqual(["Hearth Bakery"]);
+  });
+
   test("explicit block requests bound the model plan and keep missing anchors visible", () => {
     const brief = "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.";
     const reconciled = reconcileBuildPlan(brief, ["lede", "card", "callout"], [

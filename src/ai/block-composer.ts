@@ -86,8 +86,9 @@ const NEGATION = new Set([
 ]);
 
 const DRAFT_VERBS = new Set([
-  "add", "avoid", "build", "can", "could", "create", "design", "do", "give", "help", "make",
-  "never", "please", "show", "use", "write",
+  "add", "avoid", "build", "can", "can't", "cannot", "could", "create", "design", "do",
+  "dont", "don't", "exclude", "give", "help", "leave", "make", "never", "no", "not", "omit",
+  "please", "refrain", "show", "skip", "use", "without", "write",
 ]);
 const ANCHOR = /(?<![\p{L}\p{N}_])[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
@@ -113,7 +114,7 @@ export function briefAnchors(brief: string): string[] {
   const found: Array<{ value: string; index: number }> = [];
   for (const match of brief.matchAll(ANCHOR)) {
     const value = match[0].trim().replace(/^[’'“"]+|[.,;:!?’'”"]+$/gu, "");
-    const first = value.split(/\s+/)[0]?.toLowerCase();
+    const first = value.split(/\s+/)[0]?.toLocaleLowerCase().replaceAll("’", "'");
     if (DRAFT_VERBS.has(first ?? "") || value.length < 2) continue;
     found.push({ value, index: match.index ?? 0 });
   }

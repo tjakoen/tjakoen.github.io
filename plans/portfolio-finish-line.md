@@ -578,7 +578,11 @@ proof remain open below.
       typecheck, and the lint baseline. The Pages build and deployment passed, and the published
       Builder module contains the new instruction forms. Both live negative-instruction checks
       passed. These targeted checks do not establish broad writing reliability or general negation
-      understanding; the actual-phone cold start remains open.
+      understanding; the actual-phone cold start remains open. Documentation commit `e780d66` records
+      this release; its CI and Pages deployment passed, including 432 browser cases and 727 unit
+      tests. A third live WebGPU brief combines three prohibited details with a required positive
+      intro phrase; the guarded result passed. The actual-phone and broader raw-writing gaps remain
+      open.
 
 ## Done means
 
