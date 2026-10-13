@@ -613,6 +613,10 @@ proof remain open below.
       drafts passed after reconciliation. The trial did not establish a raw-writing improvement, so
       the temporary prompt rule was removed. See the
       [prompt experiment record](../audit/builder-source-quote-prompt-2026-10-14.md).
+      A separate six-brief zero-temperature run still produced unsupported details and proposed a
+      prohibited “organic” claim in the raw answer. Reconciliation removed it from the reviewed
+      draft; temperature 0.2 was restored. See the
+      [temperature experiment record](../audit/builder-zero-temperature-experiment-2026-10-14.md).
 
 ## Done means
 
