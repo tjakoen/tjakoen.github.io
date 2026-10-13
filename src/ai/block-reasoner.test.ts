@@ -170,6 +170,24 @@ describe("explicit target guard", () => {
       .toBeNull();
   });
 
+  test("a full-row layout paraphrase recovers only for one live component", () => {
+    expect(blockIntentRecovery("let the callout fill the whole row", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
+    expect(blockIntentRecovery("let the callout use the entire row", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
+    expect(blockIntentRecovery("avoid letting the callout fill the whole row", blocks, "No action."))
+      .toBeNull();
+    expect(blockIntentRecovery("let a block use the whole row", blocks, "No action."))
+      .toBeNull();
+  });
+
+  test("a shift paraphrase recovers a one-step move when its target is explicit", () => {
+    expect(blockIntentRecovery("shift the callout up", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "up" } });
+    expect(blockIntentRecovery("shift a card up", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("do not shift the callout up", blocks, "No action.")).toBeNull();
+  });
+
   test("a full-row span paraphrase becomes a review-only full-width proposal", () => {
     expect(blockIntentRecovery("let the callout span the whole row", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });

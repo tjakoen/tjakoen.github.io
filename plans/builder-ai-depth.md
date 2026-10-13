@@ -938,6 +938,22 @@ baseline. The broader paraphrase question and cold start on an actual phone rema
 check found no attached Android handset, no phone or tablet in the USB inventory, and no available
 `simctl` for an iOS simulator.
 
+## Three additional edit phrasings, October 14
+
+I added guarded recovery for “take out the callout,” “let the callout fill the whole row,” and “shift
+the callout up.” Each request still needs one supported action and one unambiguous live target, and
+the proposal remains subject to approval. Ambiguous blocks and negative requests do not recover to
+an edit.
+
+Three separate warm WebGPU runs passed all nine reviewed outcomes. The model returned no usable
+action for each removal and width request. For “shift the callout up,” it returned no usable action
+in the first run and the correct move in the next two. This records the application’s guarded
+visitor flow, not a claim of reliable model interpretation. The [combined capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-extended-paraphrase-repeats-2026-10-14.json)
+keeps each raw answer beside the canvas. The reasoner suite passed 40 tests, all 742 project unit
+tests passed, all 75 Builder browser scenarios passed, typecheck passed, link lint found no dead
+relative links, and the lint ratchet stayed at its existing baseline. These examples broaden the
+measured set; natural-language coverage and the actual-phone cold start remain open.
+
 ## Done means
 
 The current browser model can choose a useful page structure from a visitor's brief and complete the

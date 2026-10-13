@@ -669,6 +669,14 @@ model's generated prose is still not used for visible copy, so these results mak
 can write reliable page copy. A fresh device check found no attached Android handset, no phone or
 tablet in the USB inventory, and no available `simctl` for an iOS simulator.
 
+I extended the recovery check with three more phrasings: “take out the callout,” “let the callout fill
+the whole row,” and “shift the callout up.” Three separate warm WebGPU runs passed all nine reviewed
+outcomes. The model supplied no usable action for all six removal and width requests; it handled the
+move itself in two of three runs. The [new capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-extended-paraphrase-repeats-2026-10-14.json)
+records the raw answers. The 40 reasoner tests, 742 project unit tests, and 75 Builder browser cases
+passed, as did typecheck, link lint, and the lint ratchet. Broader natural-language reliability and
+the physical-phone cold start remain open.
+
 ## Done means
 
 The home page gives a clear first read. The project stories and stack pages explain the work in plain
