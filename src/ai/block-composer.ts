@@ -72,6 +72,27 @@ export type PlanRead =
   /** Nothing usable came back. The caller composes by word list and says so. */
   | { kind: "unusable"; because: string };
 
+const COPY_GLUE = new Set([
+  "a", "an", "and", "are", "as", "at", "be", "been", "but", "by", "for", "from", "has",
+  "have", "he", "her", "his", "i", "if", "in", "into", "is", "it", "its", "of", "on", "or",
+  "our", "she", "that", "the", "their", "them", "then", "there", "these", "they", "this",
+  "those", "to", "was", "we", "were", "which", "who", "with", "you", "your",
+]);
+
+/** List meaningful generated words that do not appear in the brief. This is a review aid, not a
+ *  grounding test: matching words cannot prove that a sentence uses them truthfully. */
+export function termsOutsideBrief(brief: string, copy: string): string[] {
+  const terms = (text: string): string[] => text.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu) ?? [];
+  const supplied = new Set(terms(brief).map((term) => term.toLowerCase().replaceAll("’", "'")));
+  const seen = new Set<string>();
+  return terms(copy).filter((term) => {
+    const folded = term.toLowerCase().replaceAll("’", "'");
+    if (COPY_GLUE.has(folded) || supplied.has(folded) || seen.has(folded)) return false;
+    seen.add(folded);
+    return true;
+  });
+}
+
 // ---------------------------------------------------------------------------------------------
 // The prompt
 // ---------------------------------------------------------------------------------------------

@@ -27,8 +27,8 @@ import {
   addFromDescription, addFromPlan, emptyComposition, fromDocument, moveBlock, removeBlock, setSpan,
   type PageComposition,
 } from "./composition.ts";
-import { BLOCK_COMPONENTS, blockCopyLimit, isSpan, sanitizeBlockCopy, type Block } from "./block-set.ts";
-import { BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan } from "./block-composer.ts";
+import { BLOCK_COMPONENTS, FORM_COMPONENT, blockCopyLimit, isSpan, sanitizeBlockCopy, type Block } from "./block-set.ts";
+import { BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan, termsOutsideBrief } from "./block-composer.ts";
 import {
   bylineFrom, exportJson, exportPage, exportTags, PREVIEW_HANDOVER_KEY,
   type PreviewHandover,
@@ -419,7 +419,13 @@ function boot(): void {
     clearDraftProposal();
   };
 
-  const describeDraft = (composition: PageComposition, from: number, ask: string): void => {
+  const describeDraft = (
+    composition: PageComposition,
+    from: number,
+    ask: string,
+    planNames: readonly string[],
+    copies: readonly Record<string, string>[],
+  ): void => {
     if (!draftReview || !draftBlocks) return;
     if (draftBrief) draftBrief.textContent = ask;
     draftBlocks.replaceChildren();
@@ -436,6 +442,21 @@ function boot(): void {
       "block-callout": "callout",
       "block-stat": "stat",
     };
+    const components: Record<string, string> = {
+      lede: "block-lede",
+      card: "block-card",
+      callout: "block-callout",
+      stat: "block-stat",
+      form: FORM_COMPONENT,
+    };
+    const modelCopyById = new Map<string, Record<string, string>>();
+    let blockIndex = from;
+    for (const [index, name] of planNames.entries()) {
+      const block = composition.blocks[blockIndex];
+      if (!block || block.component !== components[name]) continue;
+      modelCopyById.set(block.id, copies[index] ?? {});
+      blockIndex++;
+    }
     for (const block of composition.blocks.slice(from)) {
       const item = document.createElement("li");
       item.className = "wb-bar__draft-block";
@@ -455,13 +476,32 @@ function boot(): void {
         editor.className = "field__textarea wb-bar__draft-text";
         editor.rows = 2;
         editor.value = value;
+        const originalValue = value;
         const limit = blockCopyLimit(copyNames[block.component] ?? "", field);
         if (limit !== null) editor.maxLength = limit;
         editor.setAttribute("data-draft-copy-block", block.id);
         editor.setAttribute("data-draft-copy-field", field);
         editor.setAttribute("aria-label", `${labels[block.component] ?? "Block"} ${field}`);
+        const evidence = document.createElement("p");
+        evidence.className = "muted wb-bar__draft-evidence";
+        evidence.setAttribute("data-draft-copy-evidence", `${block.id}-${field}`);
+        evidence.setAttribute("aria-live", "polite");
+        const generated = modelCopyById.get(block.id)?.[field] === value;
+        const refreshEvidence = (): void => {
+          if (!generated && editor.value === originalValue) {
+            evidence.textContent = "Sample wording from the component, not written for this brief.";
+            return;
+          }
+          const outside = termsOutsideBrief(ask, editor.value);
+          const prefix = generated ? "Words absent from your brief" : "Your edits add words absent from your brief";
+          evidence.textContent = outside.length
+            ? `${prefix}: ${outside.slice(0, 6).join(", ")}${outside.length > 6 ? `, and ${outside.length - 6} more` : ""}. Word overlap cannot confirm a claim is true.`
+            : "No new content words found. Word overlap cannot confirm a claim is true.";
+        };
+        refreshEvidence();
+        editor.addEventListener("input", refreshEvidence);
         label.append(caption, editor);
-        item.append(label);
+        item.append(label, evidence);
       }
 
       if (block.component === "block-form") {
@@ -743,7 +783,7 @@ function boot(): void {
       return;
     }
     draftProposal = { ask, composition: candidate, before: state, names: plan.names };
-    describeDraft(candidate, state.blocks.length, ask);
+    describeDraft(candidate, state.blocks.length, ask, plan.names, plan.copies);
     // The model's structure and text are proposed content. The canvas and its composition stay
     // unchanged until the visitor has read the draft and chooses to add it.
     say(`The desk proposed ${inWords(plan.names)}. Review the blocks and wording before adding them.`, "thinking");

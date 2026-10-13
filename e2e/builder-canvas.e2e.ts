@@ -459,7 +459,9 @@ function draftAnswer(prompt) {
   if (/the card should mention pricing/i.test(prompt)) return JSON.stringify({ action: null, reply: "There is no verb that rewrites what a block says." });
   if (/Hearth Bakery page/i.test(prompt)) return JSON.stringify({ blocks: [
     { name: "lede", copy: { body: "Hearth Bakery bakes sourdough fresh each morning." } },
-    { name: "card", copy: { title: "Coffee", body: "Freshly brewed to go with the bread." } },
+    { name: "card", copy: sessionStorage.getItem("__builderOmitCardBody") === "true"
+      ? { title: "Coffee" }
+      : { title: "Coffee", body: "Freshly brewed to go with the bread." } },
   ] });
   if (/generated image tag/i.test(prompt)) return JSON.stringify({ blocks: [
     { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
@@ -551,6 +553,10 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(DRAFT_BLOCKS).getByRole("listitem")).toHaveCount(2);
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
       .toHaveValue("Hearth Bakery bakes sourdough fresh each morning.");
+    await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
+      .locator("xpath=../..")
+      .locator('[data-draft-copy-evidence="b1-body"]'))
+      .toContainText("Words absent from your brief: bakes, sourdough, fresh, each, morning");
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
       .toHaveAttribute("maxlength", "280");
     await expect(page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="title"]'))
@@ -559,11 +565,15 @@ test.describe("the model chooses the verb", () => {
       .toHaveValue("Freshly brewed to go with the bread.");
     await expect(page.locator('[data-surface="builder-spec"]')).not.toContainText("Hearth Bakery");
     await page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
-      .fill("Hearth Bakery is a neighborhood bakery in Utrecht.");
+      .fill("Hearth Bakery page about coffee.");
+    await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
+      .locator("xpath=../..")
+      .locator('[data-draft-copy-evidence="b1-body"]'))
+      .toContainText("No new content words found");
     await page.locator(ACCEPT_DRAFT).click();
 
     await expect(page.locator(CELL)).toHaveCount(2);
-    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery is a neighborhood bakery in Utrecht.");
+    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery page about coffee.");
     await expect(page.locator(`${CELL} .card__title`)).toHaveText("Coffee");
     await expect(page.locator(`${CELL} .card__body`)).toHaveText("Freshly brewed to go with the bread.");
     await expect(page.locator(SAID)).toContainText("Added lede and card after your review");
@@ -576,9 +586,25 @@ test.describe("the model chooses the verb", () => {
 
     const spec = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
     expect(spec.blocks.map((block: { data: Record<string, string> }) => block.data)).toEqual([
-      { body: "Hearth Bakery is a neighborhood bakery in Utrecht." },
+      { body: "Hearth Bakery page about coffee." },
       { title: "Coffee", body: "Freshly brewed to go with the bread." },
     ]);
+  });
+
+  test("sample wording is identified until the visitor edits it", async ({ page }) => {
+    await page.goto("/grain/builder");
+    await page.evaluate(() => sessionStorage.setItem("__builderOmitCardBody", "true"));
+    await waitForDesk(page);
+    await submitPrompt(page, "Build a Hearth Bakery page with an intro and a card about coffee.");
+
+    await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
+    const sampleBody = page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="body"]');
+    const evidence = sampleBody.locator("xpath=../..").locator('[data-draft-copy-evidence="b2-body"]');
+    await expect(sampleBody).toHaveValue("Nothing between source and server: no bundler, no transpiler, no watcher.");
+    await expect(evidence).toHaveText("Sample wording from the component, not written for this brief.");
+
+    await sampleBody.fill("Coffee in Utrecht.");
+    await expect(evidence).toContainText("Your edits add words absent from your brief: Utrecht.");
   });
 
   test("generated markup remains literal text inside the live block", async ({ page }) => {
