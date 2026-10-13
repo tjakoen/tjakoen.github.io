@@ -977,10 +977,11 @@ Two more held-out requests checked “delete the intro” and “shrink the call
 The 1.5B model declined deletion in all three warm runs, and the reviewed recovery removed the
 intro each time. It handled the third-width request directly in all three runs. The first attempt
 exposed a guard bug: “third” in the width value was read as a block ordinal, so the valid span
-proposal was rejected. Ordinals now count as targets only when they qualify a block name, and
-“shrink” and “reduce” are recognized when the requested width is explicit. The six-repeat
-[live capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-repeats-2026-10-14.json)
-keeps raw answers beside the resulting canvas. A browser regression verifies the proposal, unchanged
+proposal was rejected. The [baseline capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-baseline-2026-10-14.json)
+preserves the failure; the [six-run recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-repeats-2026-10-14.json)
+keeps each raw answer beside the resulting canvas. Ordinals now count as targets only when they
+qualify a block name, and “shrink” and “reduce” are recognized when the requested width is explicit.
+A browser regression verifies the proposal, unchanged
 canvas before approval, and the applied deletion and third-width span at 390px. The reasoner suite
 passed 43 tests, the full unit suite passed 745, and all 77 Builder browser cases passed. This extends
 the measured language set; broader coverage and the actual-phone cold start remain open.
@@ -1004,5 +1005,7 @@ browser cases passed, including the ordinal/span regression at a 390px viewport.
 has a 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width
 view was inspected. The prompt, download disclosure, example, and preview are visible in that
 capture. The existing 320-pixel browser case checks for horizontal overflow. These are browser
-viewport checks, not a physical phone test. This Mac has no attached handset and `simctl` is
-unavailable, so the physical-phone cold start remains open.
+viewport checks, not a physical phone test. A production browser smoke at 390 by 844 also loaded the
+Builder with HTTP 200, showed the page heading, composer, and canvas, measured a 390-pixel document
+width, and logged no page errors. This Mac has no attached handset and `simctl` is unavailable, so
+the physical-phone cold start remains open.

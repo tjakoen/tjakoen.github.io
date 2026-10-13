@@ -651,17 +651,21 @@ for approval and then reach the intended block at a 390px viewport. Local verifi
 reasoner tests, 745 unit tests, and all 77 Builder browser cases; typecheck, link lint, and the lint
 gate also passed. Commit `30656f1` then passed hosted typecheck, unit tests, lint checks, and all 435
 browser cases. Its Pages deployment succeeded, and the published finish-line plan and Builder routes
-return HTTP 200.
+return HTTP 200. A production browser smoke at 390 by 844 showed the Builder heading, composer, and
+canvas, with a 390-pixel document width and no page errors. The [baseline failure](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-baseline-2026-10-14.json)
+and [six-run recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-repeats-2026-10-14.json)
+preserve the failed target check and the corrected model outcomes.
 
 ## Current release and visual review, October 14
 
-Commit `2c73625` is on `main`. Hosted CI passed, including typecheck, unit tests, the lint baseline,
-and end-to-end checks, and the Pages deployment succeeded. I reran all 75 Builder browser cases
-locally. The screenshot gallery now includes a 390 by 844 pixel Builder capture; all 36 portfolio
-captures refreshed, and the phone-width view was inspected. A separate 320-pixel browser case checks
-that the composer and workbench do not overflow horizontally. These checks cover browser layouts,
-not a physical phone or its model cold start. This Mac has no attached handset, and `simctl` is
-unavailable.
+Commit `30656f1` is on `main`. Hosted CI passed typecheck, unit tests, lint checks, and all 435 browser
+cases, and the Pages deployment succeeded. The local Builder suite passed all 77 cases. The screenshot
+gallery includes a 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the
+phone-width view was inspected. A 320-pixel browser case checks that the composer and workbench do not
+overflow horizontally. The production route was also inspected at 390 by 844; the heading, composer,
+and canvas were visible, the document fit the viewport, and the browser logged no page errors. These
+are browser checks, not a physical phone or its model cold start. This Mac has no attached handset,
+and `simctl` is unavailable.
 
 ## Done means
 
