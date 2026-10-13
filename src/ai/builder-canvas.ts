@@ -30,7 +30,7 @@ import {
 import { BLOCK_COMPONENTS, FORM_COMPONENT, blockCopyLimit, isSpan, sanitizeBlockCopy, type Block } from "./block-set.ts";
 import {
   BUILD_PLAN_SCHEMA, briefAnchors, briefAnchorsMissingFromDraft, completeWithin, composeMessage,
-  readModelPlan, termsOutsideBrief,
+  readModelPlan, reconcileBuildPlan, termsOutsideBrief,
 } from "./block-composer.ts";
 import {
   bylineFrom, exportJson, exportPage, exportTags, PREVIEW_HANDOVER_KEY,
@@ -432,6 +432,8 @@ function boot(): void {
     ask: string,
     planNames: readonly string[],
     copies: readonly Record<string, string>[],
+    changedCopyFields: readonly string[][],
+    droppedBlocks: number,
   ): void => {
     if (!draftReview || !draftBlocks || !confirmDraft || !acceptDraft || !draftEvidence) return;
     confirmDraft.checked = false;
@@ -459,22 +461,33 @@ function boot(): void {
       form: FORM_COMPONENT,
     };
     const modelCopyById = new Map<string, Record<string, string>>();
+    const changedCopyById = new Map<string, string[]>();
     const refreshDraftEvidence = (): void => {
       const copy = Array.from(draftBlocks.querySelectorAll<HTMLTextAreaElement>("[data-draft-copy-block]"))
         .map((field) => field.value)
         .join(" ");
       const missing = briefAnchorsMissingFromDraft(ask, copy);
+      const changedCount = changedCopyFields.reduce((count, fields) => count + fields.length, 0);
+      const copyNotice = droppedBlocks
+        ? "The model's " + droppedBlocks + " unrequested block" + (droppedBlocks === 1 ? " was" : "s were") + " removed. "
+        : "";
+      const fieldNotice = changedCount
+        ? "The model's wording was grounded in source phrases or omitted in "
+          + changedCount + " field" + (changedCount === 1 ? "" : "s") + ". "
+        : "";
       draftEvidence.textContent = missing.length
         ? `Brief details not found verbatim in the draft: ${missing.join(", ")}. This check does not verify other facts or claims.`
         : briefAnchors(ask).length
           ? "Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims."
           : "No names, quoted phrases, or numbers were detected. Compare the draft with your brief; this check does not verify facts or claims.";
+      draftEvidence.textContent = copyNotice + fieldNotice + draftEvidence.textContent;
     };
     let blockIndex = from;
     for (const [index, name] of planNames.entries()) {
       const block = composition.blocks[blockIndex];
       if (!block || block.component !== components[name]) continue;
       modelCopyById.set(block.id, copies[index] ?? {});
+      changedCopyById.set(block.id, changedCopyFields[index] ?? []);
       blockIndex++;
     }
     for (const block of composition.blocks.slice(from)) {
@@ -507,7 +520,14 @@ function boot(): void {
         evidence.setAttribute("data-draft-copy-evidence", `${block.id}-${field}`);
         evidence.setAttribute("aria-live", "polite");
         const generated = modelCopyById.get(block.id)?.[field] === value;
+        const changedByGrounding = changedCopyById.get(block.id)?.includes(field) ?? false;
         const refreshEvidence = (): void => {
+          if (changedByGrounding && editor.value === originalValue) {
+            evidence.textContent = generated
+              ? "The model's wording was grounded in source phrases from your brief: “" + value + "”."
+              : "The model's wording was omitted because it could not be matched to your brief; sample wording is shown.";
+            return;
+          }
           if (!generated && editor.value === originalValue) {
             evidence.textContent = "Sample wording from the component, not written for this brief.";
             return;
@@ -806,7 +826,10 @@ function boot(): void {
     }
 
     if (plan.dropped.length) console.info("[builder] dropped names outside the set:", plan.dropped);
-    const candidate = addFromPlan(state, plan.names, ask, plan.span, plan.copies);
+    const reconciled = reconcileBuildPlan(ask, plan.names, plan.copies);
+    const copies = reconciled.copies.map((result) => result.copy);
+    const changedCopyFields = reconciled.copies.map((result) => result.changedFields);
+    const candidate = addFromPlan(state, reconciled.names, ask, plan.span, copies);
     const added = candidate.blocks.length - state.blocks.length;
     if (added === 0) {
       say(`The desk read that as ${inWords(plan.names)}, and nothing in it had content to build from.`, "reply");
@@ -816,11 +839,13 @@ function boot(): void {
       say("The desk found a page draft, but its review controls are missing. Nothing was added.", "refusal");
       return;
     }
-    draftProposal = { ask, composition: candidate, before: state, names: plan.names };
-    describeDraft(candidate, state.blocks.length, ask, plan.names, plan.copies);
+    draftProposal = { ask, composition: candidate, before: state, names: reconciled.names };
+    describeDraft(
+      candidate, state.blocks.length, ask, reconciled.names, copies, changedCopyFields, reconciled.droppedBlocks,
+    );
     // The model's structure and text are proposed content. The canvas and its composition stay
     // unchanged until the visitor has read the draft and chooses to add it.
-    say(`The desk proposed ${inWords(plan.names)}. Review the blocks and wording before adding them.`, "thinking");
+    say(`The Builder prepared ${inWords(reconciled.names)} from the desk's plan. Review the blocks and wording before adding them.`, "thinking");
   }
 
   acceptDraft?.addEventListener("click", () => {

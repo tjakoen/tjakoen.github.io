@@ -462,10 +462,17 @@ complete; the remaining portfolio-specific audit work is Builder reliability, tr
       null payload and one with a null action. The Builder now offers a disclosed request-based
       proposal for a clear live request after either refusal, and rechecks it against the current
       manifest at approval. Its 71 browser cases pass. This closes the usability gap for those
-      explicit requests, but the audit still records the model's raw failures and the draft still
-      adds unsupported claims. The full reviewed-workflow recheck scored 7/8: the six edit cases and
-      the copy-edit refusal passed, while the generated draft omitted Utrecht and added unsupported
-      claims. Phone cold-start remains unmeasured. See the Builder plan for the scenario detail.
+      explicit requests, but the audit still records the model's raw failures and raw drafts still
+      added unsupported claims. The full reviewed-workflow recheck scored 7/8: the six edit cases and
+      the copy-edit refusal passed, while the raw generated draft omitted Utrecht and added
+      unsupported claims. A later source-reconciliation step now removes blocks outside explicitly
+      recognized requests, reduces generated fields to source phrases, retains detected names and
+      numbers, and discloses each adjustment before approval. One cached-WebGPU post-guard draft
+      scenario passed in 24 seconds: the proposed extra callout and unsupported copy were removed,
+      and the requested intro, card, business name, city, and source phrases remained. This verifies
+      one guarded scenario, not repeated model reliability or the truth of claims in context. Run
+      repeated draft scenarios before calling the Builder a dependable page writer. Phone
+      cold-start remains unmeasured. See the Builder plan for the scenario detail.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.

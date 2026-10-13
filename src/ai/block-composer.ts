@@ -22,7 +22,9 @@
 // link with "the desk cannot run here" would be a link that only works on the author's laptop. The
 // page says which one composed it, every time, so the two are never confused for each other.
 
-import { BLOCK_NAMES, isSpan, MAX_BLOCKS_PER_PROMPT, sanitizeBlockCopy, type Span } from "./block-set.ts";
+import {
+  BLOCK_NAMES, blockCopyLimit, isSpan, matchBlocks, MAX_BLOCKS_PER_PROMPT, sanitizeBlockCopy, type Span,
+} from "./block-set.ts";
 
 /** How many blocks one sentence may produce. A repetition loop is the 0.5B's documented failure
  *  shape on this page (an answer of `{"move": {"move": {"move": …` ran to the token cap on
@@ -76,14 +78,18 @@ const COPY_GLUE = new Set([
   "a", "an", "and", "are", "as", "at", "be", "been", "but", "by", "for", "from", "has",
   "have", "he", "her", "his", "i", "if", "in", "into", "is", "it", "its", "of", "on", "or",
   "our", "she", "that", "the", "their", "them", "then", "there", "these", "they", "this",
-  "those", "to", "was", "we", "were", "which", "who", "with", "you", "your",
+  "those", "to", "was", "we", "were", "which", "who", "with", "you", "your", "about",
+]);
+const NEGATION = new Set([
+  "not", "never", "no", "without", "cannot", "can't", "dont", "don't", "isn't", "aren't",
+  "wasn't", "weren't", "doesn't", "didn't", "won't", "wouldn't", "shouldn't",
 ]);
 
 const DRAFT_VERBS = new Set([
   "add", "build", "can", "could", "create", "design", "give", "help", "make", "please",
   "show", "write",
 ]);
-const ANCHOR = /[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
+const ANCHOR = /(?<![\p{L}\p{N}_])[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 
@@ -138,6 +144,145 @@ export function termsOutsideBrief(brief: string, copy: string): string[] {
     seen.add(folded);
     return true;
   });
+}
+
+export interface GroundedBlockCopy {
+  copy: Record<string, string>;
+  /** Fields whose model wording was shortened or removed because no brief phrase supported it. */
+  changedFields: string[];
+}
+
+/** Keep only a verbatim phrase the visitor supplied. The model can still choose blocks and order,
+ *  but generated prose is not treated as evidence merely because some of its words overlap the
+ *  brief. Longer text fields need two meaningful source words; short labels may use one exact
+ *  source word. The returned phrase is sliced from the brief itself, preserving its wording. */
+export function groundBlockCopy(
+  brief: string,
+  name: string,
+  raw: unknown,
+): GroundedBlockCopy {
+  const proposed = sanitizeBlockCopy(name, raw);
+  const contentWords = (value: string): number =>
+    (value.match(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu) ?? [])
+      .filter((word) => !COPY_GLUE.has(word.toLocaleLowerCase().replaceAll("’", "'"))).length;
+  const tokens = (value: string): Array<{ value: string; start: number; end: number }> =>
+    [...value.matchAll(/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu)].map((match) => ({
+      value: match[0].toLocaleLowerCase().replaceAll("’", "'"),
+      start: match.index ?? 0,
+      end: (match.index ?? 0) + match[0].length,
+    }));
+  const source = tokens(brief);
+  const copy: Record<string, string> = {};
+  const changedFields: string[] = [];
+  for (const [field, value] of Object.entries(proposed)) {
+    const candidate = tokens(value);
+    const minimum = field === "body" || field === "sub" ? 2 : 1;
+    let best: { start: number; end: number; words: number } | undefined;
+    for (let left = 0; left < source.length; left++) {
+      for (let right = 0; right < candidate.length; right++) {
+        let length = 0;
+        while (
+          left + length < source.length && right + length < candidate.length
+          && source[left + length]!.value === candidate[right + length]!.value
+        ) length++;
+        if (!length) continue;
+        let first = left;
+        let last = left + length - 1;
+        while (first < last && COPY_GLUE.has(source[first]!.value)) first++;
+        while (last > first && COPY_GLUE.has(source[last]!.value)) last--;
+        if (source.slice(Math.max(0, first - 2), first).some((token) => NEGATION.has(token.value))) continue;
+        const text = brief.slice(source[first]!.start, source[last]!.end);
+        if (contentWords(text) < minimum) continue;
+        if (!best || length > best.words) {
+          best = { start: source[first]!.start, end: source[last]!.end, words: length };
+        }
+      }
+    }
+    const grounded = best ? brief.slice(best.start, best.end).slice(0, blockCopyLimit(name, field) ?? 0).trim() : "";
+    if (grounded) copy[field] = grounded;
+    if (grounded !== value) changedFields.push(field);
+  }
+  return { copy, changedFields };
+}
+
+export interface ReconciledBuildPlan {
+  names: string[];
+  copies: GroundedBlockCopy[];
+  droppedBlocks: number;
+}
+
+/** Keep the model's order where it agrees with explicitly requested block types and counts. Remove
+ *  surplus block requests, restore explicitly requested blocks the model omitted, and ground every
+ *  text field in source wording. When detected names or numbers are missing, keep them as source
+ *  phrases in the first usable text field so a layout omission cannot silently lose them. */
+export function reconcileBuildPlan(
+  brief: string,
+  names: readonly string[],
+  copies: readonly Record<string, string>[],
+): ReconciledBuildPlan {
+  const componentNames: Record<string, string> = {
+    "block-lede": "lede",
+    "block-card": "card",
+    "block-callout": "callout",
+    "block-stat": "stat",
+    "block-form": "form",
+  };
+  const explicit = matchBlocks(brief).blocks.map((block) => componentNames[block.component]).filter(Boolean);
+  const remaining = new Map<string, number>();
+  for (const name of explicit) remaining.set(name, (remaining.get(name) ?? 0) + 1);
+  const keptNames: string[] = [];
+  const keptCopies: Record<string, string>[] = [];
+  let droppedBlocks = 0;
+  for (const [index, name] of names.entries()) {
+    if (explicit.length > 0) {
+      const count = remaining.get(name) ?? 0;
+      if (!count) {
+        droppedBlocks++;
+        continue;
+      }
+      remaining.set(name, count - 1);
+    }
+    keptNames.push(name);
+    keptCopies.push(copies[index] ?? {});
+  }
+  if (explicit.length > 0) {
+    for (const name of explicit) {
+      const count = remaining.get(name) ?? 0;
+      if (!count) continue;
+      keptNames.push(name);
+      keptCopies.push({});
+      remaining.set(name, count - 1);
+    }
+  }
+
+  const grounded = keptNames.map((name, index) => groundBlockCopy(brief, name, keptCopies[index]));
+  const missing = briefAnchorsMissingFromDraft(
+    brief,
+    grounded.flatMap((result) => Object.values(result.copy)).join(" "),
+  );
+  if (missing.length) {
+    const target = grounded.findIndex((result, index) =>
+      ["lede", "card", "callout"].includes(keptNames[index] ?? "")
+      && blockCopyLimit(keptNames[index] ?? "", "body") !== null);
+    if (target >= 0) {
+      const name = keptNames[target] ?? "";
+      const limit = blockCopyLimit(name, "body") ?? 0;
+      const copy = grounded[target]!.copy;
+      const prior = copy.body ?? "";
+      let anchors = "";
+      for (const anchor of missing) {
+        const next = anchors ? anchors + " · " + anchor : anchor;
+        const joined = prior ? next + " · " + prior : next;
+        if (joined.length > limit) continue;
+        anchors = next;
+      }
+      if (anchors) {
+        copy.body = prior ? anchors + " · " + prior : anchors;
+        if (!grounded[target]!.changedFields.includes("body")) grounded[target]!.changedFields.push("body");
+      }
+    }
+  }
+  return { names: keptNames, copies: grounded, droppedBlocks };
 }
 
 // ---------------------------------------------------------------------------------------------

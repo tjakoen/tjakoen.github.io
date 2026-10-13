@@ -61,7 +61,7 @@
           <div class="wb-bar__draft-head">
             <div>
               <h2 id="builder-draft-title">Review this page draft</h2>
-              <p class="muted">Review or edit each text field. Sample wording is marked, along with names, quoted phrases, and numbers from your brief that the draft may have missed. Words absent from your brief are also listed. These checks cannot verify whether claims are true. Editing after you confirm clears the check; adding the draft requires a fresh confirmation.</p>
+            <p class="muted">Review or edit each text field. Before review, the Builder keeps only source phrases from your brief, removes unmatched model wording, and retains detected names and numbers. Sample wording is marked. Words absent from your brief are also listed. These checks cannot verify whether claims are true. Editing after you confirm clears the check; adding the draft requires a fresh confirmation.</p>
             </div>
           </div>
           <div class="wb-bar__draft-brief">
@@ -81,10 +81,11 @@
           </div>
         </section>
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
-          First use downloads about 875 MB on capable devices or 350 MB on others. Live check: 7/8
-          cases passed (six edits and the copy-edit refusal). The relative deletion needed review
-          correction. Only one of three warm drafts kept Utrecht; all three added unsupported details.
-          Check drafts before use or export.</p>
+          First use downloads about 875 MB on capable devices or 350 MB on others. Before source
+          reconciliation, only one of three warm drafts kept Utrecht and all three added unsupported
+          details. A post-guard WebGPU draft check passed 1/1 in 24 seconds: the code removed an extra
+          callout, kept the requested blocks, and retained source wording, Hearth Bakery, and Utrecht.
+          One case does not establish repeatability or truth. Review and edit every draft.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -238,9 +239,11 @@
         <details class="wb-drawer" data-surface="builder-help">
           <summary>What it builds, what it edits, and where it stops</summary>
           <p>Describe a page and press Build it. The code-owned matcher gives the examples a stable
-            preview; Build it asks the local model to add blocks and draft text into registered fields.
-            The model has not earned your trust with copy yet. Check the canvas before you use or export
-            anything. On capable devices its first run downloads about 875 MB; other devices use the
+            preview; Build it asks the local model to choose blocks and order. Before review, the
+            Builder keeps only source phrases from your brief and removes unmatched model wording.
+            Component sample copy remains when no phrase can be grounded, and you can edit every field.
+            This does not prove that a phrase is accurate in context; check the draft before use or
+            export. On capable devices the first run downloads about 875 MB; other devices use the
             350 MB model. Both cache files on this device, and your prompt stays here.</p>
           <p>Two WebGPU checks on October 11, 2026, each scored 2/8 with the 0.5B model. The 1.5B model
             scored 6/8 on October 11 and in one October 12 run. After its timeout increased to 60
@@ -269,6 +272,14 @@
             one retained the supplied city. The score checks fact retention, not whether generated
             claims are true. The review panel keeps the original brief beside editable draft text, but
             the model has not shown reliable writing.</p>
+          <p>A later code-owned reconciliation step removes model blocks outside the explicitly
+            requested types and counts, reduces proposed copy to source phrases, and carries detected
+            names, quoted phrases, and numbers into the draft when they are missing. The review
+            summary identifies removed blocks and adjusted wording. The post-guard WebGPU check took
+            24 seconds and passed its one draft case: it kept the requested intro and card, retained
+            Hearth Bakery and Utrecht, and removed the extra callout and unsupported model wording.
+            This verifies one scenario through the code guard, not repeatable model writing or truth
+            in context. Confirm the details yourself before adding or exporting a page.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
           the canvas again before it reports a change. When one edit verb, value, and live block are
             clear in your request but the model proposes a different action or target, the proposal
