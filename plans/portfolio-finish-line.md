@@ -617,6 +617,10 @@ proof remain open below.
       prohibited “organic” claim in the raw answer. Reconciliation removed it from the reviewed
       draft; temperature 0.2 was restored. See the
       [temperature experiment record](../audit/builder-zero-temperature-experiment-2026-10-14.md).
+      The evidence update is on `main` as `69f5bf3`. Hosted CI passed typecheck, 736 unit tests, the
+      lint baseline, and all 432 browser cases. The Pages build and deployment succeeded, and the
+      published Builder and plan routes both return HTTP 200. These release checks do not close the
+      raw-writing or physical-phone gaps.
 
 ## Done means
 

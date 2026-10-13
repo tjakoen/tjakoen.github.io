@@ -763,6 +763,12 @@ setting was restored. The [zero-temperature audit](../audit/builder-zero-tempera
 records the raw outputs and the limits of this single-run comparison. Raw-writing reliability remains
 open.
 
+The evidence update is published in commit `69f5bf3`. Hosted CI passed typecheck, 736 unit tests, the
+lint baseline, and 432 browser cases. The Pages build and deployment succeeded. The public Builder
+and finish-line plan routes both return HTTP 200. These release checks confirm the recorded
+experiments are published; they do not establish reliable raw writing or a cold start on phone
+hardware.
+
 ## Done means
 
 The current browser model can build a useful first draft from a visitor's brief and complete the
