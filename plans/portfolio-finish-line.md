@@ -344,8 +344,11 @@ four model-profile unit tests, typechecking, and link lint. The lint gate report
 its 4,491 baseline. Desktop and phone screenshots were reviewed for the updated MILL introduction
 and operable-surface guide, alongside the Builder download disclosure.
 
-These recommendations come from the routes reviewed so far. The shared content families still need
-individual checks before the audit can be called complete.
+The audit covers all 148 public routes and their shared page families at desktop and phone widths.
+The table records each page's recommendation and its current state. The project evidence pass is
+complete; the remaining portfolio-specific audit work is Builder reliability, tracked below.
+
+### Page recommendations and current state
 
 | Page or family | Recommendation | State |
 | --- | --- | --- |
@@ -441,14 +444,14 @@ individual checks before the audit can be called complete.
       privacy, and responsive routes have focused browser coverage.
 - [ ] Complete the builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
       then make the builder a convincing demonstration of the same system the portfolio introduces.
-      The October 13 local 1.5B run scored 5/8: width and move edits and the copy-edit refusal passed,
-      while both deletion cases failed and the draft omitted a supplied location and added unsupported
-      claims. A later focused check applied both deletion cases after the review panel transparently
-      corrected one uniquely identified target; the draft still omitted Utrecht, for a 2/3 reviewed
-      workflow result. Model-composed pages pause in a review panel where visitors can inspect or edit
-      text before acceptance; edited values are sanitized before they enter the composition. Human
-      review is still needed to catch unsupported claims. Phone cold-start and repeated grounded-draft
-      reliability remain open. See the Builder plan for the scenario detail.
+      The October 13 focused WebGPU run scored 7/8: all six edit scenarios and the copy-edit refusal
+      passed. The relative deletion landed only after the review step corrected the model's proposed
+      span change; the model proposed the exact-ID deletion correctly. The draft retained the business
+      name and product but omitted Utrecht and added unsupported bakery claims. Two warm repeats of
+      the same brief scored 0/1 and 1/1. One again omitted Utrecht; the other included it but added
+      unsupported claims and an unrequested callout. The review panel keeps drafts inspectable and
+      editable before acceptance, but generated copy still needs a human fact check. Phone cold-start
+      remains unmeasured. See the Builder plan for the scenario detail.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
@@ -461,8 +464,8 @@ individual checks before the audit can be called complete.
       existing gallery retains its 35 selected captures, including phone first-screen views for six
       key routes. Focused phone checks cover the Builder, project stories, documentation, résumé,
       plans, catalog, and navigation. The serial full release run passed all 421 browser cases.
-      The October 13 hosted CI run on commit 7c3afbe passed all 423 browser cases in 4m24s, alongside
-      typecheck, 712 unit tests, and the lint baseline. Link lint found no dead relative links in 56
+      The October 13 hosted CI run on commit d2df50a passed all 425 browser cases in 4.0 minutes,
+      alongside typecheck, 712 unit tests, and the lint baseline. Link lint found no dead relative links in 56
       rendered files. The local performance report
       measures 30–268 KB of uncompressed
       JavaScript responses per route; production captures measured 136,617 JavaScript bytes on
@@ -470,12 +473,12 @@ individual checks before the audit can be called complete.
       available across routes, while page-specific features load only where needed. The local report
       labels its values as build-size checks rather than production transfer sizes.
 - [ ] Commit the finished portfolio on main, deploy it, and verify the published pages after the
-      remaining Builder reliability work is complete. The October 13 increment `7c3afbe` is already
-      on main and deployed: hosted CI passed all 423 browser cases, typecheck, 712 unit tests, and the
-      lint baseline; Pages export verification passed for 1,177 pages, 1,133 data routes, 39 frozen
-      modules, and 627 assets; and the live Builder page serves the disclosed source-brief review.
-      The full finish-line release remains open because repeated grounded-draft reliability and phone
-      cold-start measurements still need evidence.
+      remaining Builder reliability work is complete. The October 13 project-story increment
+      `d2df50a` is on main and deployed: hosted CI passed all 425 browser cases, typecheck, 712 unit
+      tests, and the lint baseline; the Pages build and deploy passed; and the live Projects and
+      PANTRY pages include the direct evidence paths. The full finish-line release remains open
+      because repeated grounded-draft reliability and phone cold-start measurements still need
+      evidence.
 
 ## Done means
 

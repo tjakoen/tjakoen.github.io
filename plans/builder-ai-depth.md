@@ -426,6 +426,18 @@ copy edits appear to work.
       request proposed by the model. Width, move, and copy-edit refusal cases passed. The draft again
       omitted Utrecht and included unsupported marketing claims. This improves the reviewed workflow,
       but does not establish grounded writing. Repeated runs remain necessary.
+
+On October 13, a fresh focused WebGPU run scored 7/8 across the six edit requests, one copy-edit
+refusal, and one grounded draft. The relative deletion passed after review corrected the model's
+proposed span change on the wrong block; the model proposed the exact-ID deletion correctly. The draft
+kept the bakery name and product but omitted Utrecht and added unsupported bread claims. Two warm
+repeats of the same prompt scored 0/1 and 1/1. One omitted Utrecht again. The other included Utrecht
+but added an unsupported claim and an unrequested callout. All three drafts contained unsupported
+embellishment, and only one preserved the supplied city. The scenario score checks fact retention,
+not whether generated claims are true, so these runs do not establish reliable writing. The captures
+are `.cache/desk-audit/report-portfolio-builder-focused-2026-10-13.json`,
+`.cache/desk-audit/report-portfolio-builder-draft-repeat-1-2026-10-13.json`, and
+`.cache/desk-audit/report-portfolio-builder-draft-repeat-2-2026-10-13.json`.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
