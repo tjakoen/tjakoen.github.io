@@ -44,6 +44,11 @@ test.describe("/grain — the GRAIN showcase", () => {
     await expect(page.locator(".rail-head")).toContainText("TJ's Desk");   // the unified shell, not its own bar
     await expect(page.locator('[data-open-tabs] .tab[data-pinned]')).toContainText("Welcome");  // the open-pages strip
     await expect(page.locator(".hero__head")).toContainText("same controls");
+    const demoTransport = page.locator("#surface-demo > .site__why").first();
+    await expect(demoTransport).toContainText("browser client door keeps each action in your tab");
+    await expect(demoTransport).toContainText("bun run dev:stub");
+    await expect(demoTransport).toContainText("streams operations over SSE");
+    await expect(demoTransport).not.toContainText("both post the same Intent");
     await expect(page.locator(".hero__cta a").first()).toHaveAttribute("href", "#surface-demo");
     await expect(page.locator(".hero__cta a").first()).toContainText("Try the shared-control demo");
     await expect(page.locator("#how .flow__node--door")).toContainText("/intent");
