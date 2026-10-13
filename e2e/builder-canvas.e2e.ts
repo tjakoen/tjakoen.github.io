@@ -66,7 +66,7 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
     await expect(page.locator(".wb-bar__note")).toContainText("One cached draft passed after code reconciliation, but varied briefs exposed a phrase-placement miss");
     await expect(page.locator(".wb-bar__note")).toContainText("two live retries could not download model files");
-    await expect(page.locator(".wb-bar__note")).toContainText("live verification remains open");
+    await expect(page.locator(".wb-bar__note")).toContainText("I have not confirmed the fix with a live draft");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
     await expect(help).toContainText("The first request took 50 seconds");
