@@ -460,79 +460,30 @@ proof remain open below.
       claim honest and consistent across the portfolio and the pages visitors can export. The
       portfolio footer now uses one tested statement; exported pages retain GRAIN's generated
       framework attribution and are covered by the builder export checks.
-- [x] Keep Builder draft generation local while constraining its completion to the code-owned
-      composition shape. The portfolio passes WebLLM a JSON schema for the registered block names,
-      bounded output count, layout span, and allowed copy keys and lengths; the desk bridge carries
-      the schema through to the local engine. Unit and scripted browser checks verify the request
-      shape and live canvas path. Real-model quality remains open because this in-app browser has no
-      WebGPU, and the existing measured model failures still apply.
+- [x] Keep Builder generation local and the composition shape code-owned. The local model chooses
+      registered block names and their order through JSON mode. Code ignores model-written copy,
+      builds visible text from phrases in the visitor's brief, and leaves unsupported fields blank.
+      The visitor can edit and review that copy before adding it. Repeated warm WebGPU audits cover
+      six briefs, field placement, required phrases, and prohibited wording. The 1.5B and 3B trials
+      still produced unsupported raw prose, so the Builder does not use it.
 - [x] Review Notes, Talks, Teaching, Calendar, and Badges as evidence of engineering, communication,
       teaching, and the path between them. Notes point into projects and teaching, talks link to their
       written methods, Teaching explains its issuing authority and links to the platform, calendar,
       and criteria, Calendar entries point to related proof where available, and badge pages link
       back to their issuer and criteria. The talk counts, teaching evidence, calendar links, badge
       privacy, and responsive routes have focused browser coverage.
-- [ ] Complete the builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
-      then make the builder a convincing demonstration of the same system the portfolio introduces.
-      The October 13 focused WebGPU run scored 7/8: all six edit scenarios and the copy-edit refusal
-      passed. The relative deletion landed only after the review step corrected the model's proposed
-      span change; the model proposed the exact-ID deletion correctly. The draft retained the business
-      name and product but omitted Utrecht and added unsupported bakery claims. Two warm repeats of
-      the same brief scored 0/1 and 1/1. One again omitted Utrecht; the other included it but added
-      unsupported claims and an unrequested callout. The review panel keeps drafts inspectable and
-      editable before acceptance, and now separates component sample copy from model-written fields.
-      It lists meaningful words absent from the brief and updates that list as visitors edit. This
-      lexical comparison helps focus review but cannot verify truth; generated copy still needs a
-      human fact check. Visitors must attest that they checked the draft against the brief before
-      adding it. Editing after confirmation clears the check and disables acceptance until the
-      visitor confirms again. The review also flags detected names, quoted phrases, and numbers
-      missing verbatim from the draft, while stating that lexical checks cannot validate truth or
-      completeness. The workbench shows the measured model limitation before a visitor runs it.
-      A fresh October 13 WebGPU recheck scored 6/8: both delete answers were unusable, one with a
-      null payload and one with a null action. The Builder now offers a disclosed request-based
-      proposal for a clear live request after either refusal, and rechecks it against the current
-      manifest at approval. Its 73 browser cases pass. This closes the usability gap for those
-      explicit requests, but the audit still records the model's raw failures and raw drafts still
-      added unsupported claims. The source-reconciliation step removes blocks outside explicitly
-      recognized requests, reduces generated fields to source phrases, retains detected names and
-      numbers, and discloses each adjustment before approval. Two consecutive full eight-case
-      WebGPU runs passed the reviewed workflow, and two standalone draft repeats plus both full-run
-      drafts retained five supplied details. The relative deletion still required a disclosed,
-      approval-gated target correction in one run. Two varied briefs then exposed a field-placement
-      gap: an exact phrase in the intro did not mean the requested card contained it. The Builder now
-      restores missing explicit wording to the named block body, and the audit requires that phrase
-      in `card.body`. Two varied briefs then passed three times each on the warmed desktop WebGPU profile
-      after source reconciliation; their saved draft fields place the requested descriptions and
-      phrases in their named blocks. The raw model answers still misplaced or shortened wording, so
-      these passes demonstrate the guarded review composition rather than unassisted accuracy or
-      polished copy. The earlier CDN failures from new local origins remain recorded as no-run results and
-      provide no evidence about model answers. The Builder's fallback explains when the desk returns
-      no draft, and its first-screen note reports the varied warm runs with their limits. Reviewable
-      copy still needs human fact-checking. A cold start on an actual phone remains open because no
-      handset was attached and the iOS simulator tool is unavailable; the Builder plan lists the
-      measurements needed to close it. See the
-      [WebGPU recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-webgpu-recheck-2026-10-13.md), both
-      [first live run](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-1-2026-10-13.json),
-      [second](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-2-2026-10-13.json), and
-      [third](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-3-2026-10-13.json), the earlier
-      [new-origin retry report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-placement-notrun-recheck-2026-10-13.json), and
-      [intro-for wording variant report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-intro-for-live-2026-10-13.json). A parser
-      regression now restores an “intro for…” description to `lede.body` if the model puts it in a
-      card; its warm live check passed 1/1. This verifies guarded placement for that wording form,
-      not raw model accuracy. A shorter field-map prompt was tested on four warm briefs and rejected
-      because raw field placement and grounding did not improve. A later warm run identified the
-      selected Qwen2.5-1.5B profile; its answer still invented claims that source reconciliation removed.
-      On October 14, a negative-instruction regression exposed that forbidden quoted phrases and
-      dates could be treated as required draft anchors. The parser now skips anchors in nearby
-      negative clauses, and the regression and live audit confirm that “award-winning bakery” and
-      “2019” do not appear in the reviewed result. The raw answer still proposed unsupported opening
-      hours, online ordering, pastries, and ambiance, which the review path removed. This closes the
-      specific forbidden-anchor bug; it does not establish reliable raw writing or general negation
-      handling. Both findings are recorded in the
-      [Builder plan](builder-ai-depth.md#builder-only-larger-profile-october-11) and
-      [negative-anchor audit](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-negative-anchor-guard-2026-10-14.md).
-      The actual-phone cold start and broader writing reliability remain open; see the Builder plan
-      for evidence and limits.
+- [ ] Complete the Builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
+      then make it a convincing demonstration of the system the portfolio introduces. The current
+      design keeps the model local and uses it to choose registered blocks and order. Code assembles
+      visible copy from the brief, and review catches omissions before the visitor approves the page.
+      Six briefs passed two warm 1.5B runs for required phrases, field placement, and prohibited
+      wording. Three additional edit phrasings passed nine review-gated outcomes across three warm
+      runs. The 3B comparison did not improve the raw answers, so the Builder ignores model prose
+      instead of displaying it. These results support the guarded desktop workflow; they do not prove
+      broad language coverage or phone performance. The remaining evidence is broader testing of
+      supported requests and a cold start on actual phone hardware. See the [two-run draft report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json),
+      [edit paraphrase report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-extended-paraphrase-repeats-2026-10-14.json),
+      and [3B comparison](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json).
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
@@ -542,7 +493,7 @@ proof remain open below.
       fresh browser contexts. The desktop pass also captured full-page views. Every route returned
       200, had a title and one page heading, and fit within the viewport; the screenshot review found
       no new layout issues. The PDF routes show the direct-open fallback in headless Chromium. The
-      existing gallery retains its 35 selected captures, including phone first-screen views for six
+      existing gallery retains its 36 selected captures, including phone first-screen views for seven
       key routes. Focused phone checks cover the Builder, project stories, documentation, résumé,
       plans, catalog, and navigation. The serial full release run passed all 421 browser cases.
       The October 13 hosted CI run on commit d2df50a passed all 425 browser cases in 4.0 minutes,
@@ -642,7 +593,7 @@ proof remain open below.
       answers still included unsupported copy or malformed block names and warm responses took 17 to
       76 seconds. The 1.5B profile remains shipped; this model-size comparison is closed without a
       promotion. Its reports are [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json)
-      and [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-2026-10-14.json). The raw-writing acceptance bar and a physical-phone cold-start check remain open.
+      and [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-2026-10-14.json). Raw model writing remains unreliable, but the Builder discards that prose and builds visible copy from the visitor's brief. The open Builder checks are broader natural-language coverage and a physical-phone cold start.
       A fresh two-run audit of the six 1.5B Builder briefs passed all 12 visitor-facing drafts,
       including field placement, required phrases, and prohibited wording. Raw answers continued to
       invent service history, staff experience, sourcing, opening claims, and unrequested blocks;
@@ -676,6 +627,16 @@ move itself in two of three runs. The [new capture](https://github.com/tjakoen/t
 records the raw answers. The 40 reasoner tests, 742 project unit tests, and 75 Builder browser cases
 passed, as did typecheck, link lint, and the lint ratchet. Broader natural-language reliability and
 the physical-phone cold start remain open.
+
+## Current release and visual review, October 14
+
+Commit `2c73625` is on `main`. Hosted CI passed, including typecheck, unit tests, the lint baseline,
+and end-to-end checks, and the Pages deployment succeeded. I reran all 75 Builder browser cases
+locally. The screenshot gallery now includes a 390 by 844 pixel Builder capture; all 36 portfolio
+captures refreshed, and the phone-width view was inspected. A separate 320-pixel browser case checks
+that the composer and workbench do not overflow horizontally. These checks cover browser layouts,
+not a physical phone or its model cold start. This Mac has no attached handset, and `simctl` is
+unavailable.
 
 ## Done means
 
