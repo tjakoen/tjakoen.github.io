@@ -79,7 +79,12 @@ so the 150–300 students-per-term claim leads directly to the platform story, a
 privacy-safe demo. The change passed the focused browser check and all 21 About browser cases. Its
 first full hosted CI run caught an older assertion that counted exactly three links across all role
 proof blocks; that selector had become too broad when a fourth, page-level evidence link was added.
-The selector now names the three role-specific links. The next full CI run will verify that correction.
+The selector now names the three role-specific links. Commit `83ae03e` passed typecheck, unit tests,
+lint baseline, and the complete hosted E2E suite (425 tests); the Pages build and deployment passed,
+and the live `/about` route contains the new course-scale evidence. Its serial local full-suite run
+also passed all 425 tests. The parallel local run had four time-sensitive failures in desk animations
+and the long plan-detail crawl; all passed in serial mode. This increment is released, while the
+project-by-project outcome and evidence audit and Builder reliability work remain open below.
 
 The first full route sweep covered 145 public routes at desktop and phone widths (290 checks). It
 found no route-level navigation failures, missing or duplicate page headings, or horizontal page
