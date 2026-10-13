@@ -1,0 +1,26 @@
+[data-screen="pantry"] .pantry-first-run .docs-list__item {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: var(--space-2) var(--space-3);
+}
+
+[data-screen="pantry"] .pantry-first-run .docs-list__name,
+[data-screen="pantry"] .pantry-first-run__commands { min-width: 0; }
+
+[data-screen="pantry"] .pantry-first-run__commands {
+  display: grid;
+  gap: var(--space-2);
+}
+
+[data-screen="pantry"] .pantry-first-run__commands code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 38rem) {
+  [data-screen="pantry"] .pantry-first-run .docs-list__item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+}
