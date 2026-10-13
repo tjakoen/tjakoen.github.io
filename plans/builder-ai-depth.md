@@ -958,6 +958,19 @@ tests passed, all 75 Builder browser scenarios passed, typecheck passed, link li
 relative links, and the lint ratchet stayed at its existing baseline. These examples broaden the
 measured set; natural-language coverage and the actual-phone cold start remain open.
 
+## Two more edit phrasings, October 14
+
+I added “discard the final card” and “nudge the callout down one step” as held-out requests. The
+1.5B model returned no usable action on all six repeated runs for these two requests; guarded
+recovery proposed the correct target and operation each time, and all six edits passed after explicit
+approval. The same run showed that the model handled “stretch the callout to full width” directly.
+Negative and ambiguous variants stayed refused, and the canvas did not change before approval. The
+[live capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-holdout-recovery-2026-10-14.json)
+records each raw answer and reviewed result. The reasoner suite passed 42 tests and the Builder
+browser suite passed all 76 cases. Typecheck passed, link lint found no dead relative links, and the
+lint ratchet remained at its existing baseline. This adds three measured phrasings; broader
+natural-language coverage and the physical-phone cold start remain open.
+
 ## Done means
 
 The current browser model can choose a useful page structure from a visitor's brief and complete the
