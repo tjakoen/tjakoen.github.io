@@ -176,6 +176,31 @@ describe("generated block copy is bounded by each component's visible text contr
       .toEqual(["Hearth Bakery"]);
   });
 
+  test("a positive instruction joined with and remains an anchor after a prohibition", () => {
+    const brief = "Build a page for Hearth Bakery. Do not use the phrase \"award-winning bakery\" and include the exact phrase \"neighborhood bakery\".";
+    expect(briefAnchors(brief)).toEqual(["Hearth Bakery", "neighborhood bakery"]);
+  });
+
+  test("grounding cannot reuse prohibited source phrases but keeps a later positive phrase", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and include the exact phrase \"neighborhood bakery\". Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.";
+    expect(groundBlockCopy(brief, "lede", {
+      body: "An award-winning bakery with certified organic flour; neighborhood bakery.",
+    })).toEqual({
+      copy: { body: "neighborhood bakery" },
+      changedFields: ["body"],
+    });
+  });
+
+  test("a grounded phrase cannot start positive and cross into a prohibited sentence", () => {
+    const brief = "Hearth Bakery. Do not use the phrase \"award-winning bakery\".";
+    expect(groundBlockCopy(brief, "lede", {
+      body: "Hearth Bakery do not use the phrase award-winning bakery.",
+    })).toEqual({
+      copy: { body: "Hearth Bakery" },
+      changedFields: ["body"],
+    });
+  });
+
   test("explicit block requests bound the model plan and keep missing anchors visible", () => {
     const brief = "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.";
     const reconciled = reconcileBuildPlan(brief, ["lede", "card", "callout"], [
