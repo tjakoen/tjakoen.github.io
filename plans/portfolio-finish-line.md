@@ -74,6 +74,13 @@ makes possible. Greenroom now links directly to its public engineering case stud
 demo and source. Desktop and 390px checks cover those evidence paths; the full case-story audit still
 needs each product's stated result, proof, and next step reviewed together.
 
+The About profile now places the course platform's production scale beside its own supporting link,
+so the 150–300 students-per-term claim leads directly to the platform story, architecture, and
+privacy-safe demo. The change passed the focused browser check and all 21 About browser cases. Its
+first full hosted CI run caught an older assertion that counted exactly three links across all role
+proof blocks; that selector had become too broad when a fourth, page-level evidence link was added.
+The selector now names the three role-specific links. The next full CI run will verify that correction.
+
 The first full route sweep covered 145 public routes at desktop and phone widths (290 checks). It
 found no route-level navigation failures, missing or duplicate page headings, or horizontal page
 overflow outside /catalog. The catalog's mobile grid had been allowed to size itself from wide

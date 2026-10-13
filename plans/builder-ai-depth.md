@@ -317,6 +317,18 @@ draft. This gives visitors the evidence needed to review an omission or unsuppor
 improve the model's grounding. A phone-width browser check confirms the source brief stays readable
 without horizontal page overflow.
 
+After the October 13 Builder commit, I reran all eight live 1.5B scenarios against the current local
+source using the cached WebGPU model. The run scored 7/8. Both deletion requests, both width changes,
+both moves, and the copy-edit refusal passed. For “drop the second card,” the model proposed a span
+change to b2; the review path reconciled the explicit request to drop b4 and applied it after
+approval. The exact-ID removal was proposed and applied directly. The draft retained Hearth Bakery,
+the requested category, the Sourdough title, and the baking phrase, but again omitted Utrecht and
+added “hand-crafted” and “every morning.” Its raw answer and result are in the ignored local report
+`.cache/desk-audit/report-builder-continue.json`. This confirms the reviewed edit path can complete
+these requests; repeated grounded writing remains unproven. The review panel still makes the source
+brief available beside the generated copy, and the one-door contract still prevents edits to existing
+block text until GRAIN defines that operation.
+
 The October 13 Builder update adds a review-first path for model-composed pages. Proposed blocks and
 their text appear in the workbench before they enter the composition. Visitors can edit proposed
 text fields in that panel; acceptance runs those values through the existing block-copy sanitizer

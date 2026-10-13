@@ -168,7 +168,9 @@ test.describe("the /about Profile role sections (Lessons folded in)", () => {
     }
     await expect(page.locator("#profile .role-list li").first()).not.toBeEmpty();
     await expect(page.locator("#profile")).not.toContainText("Placeholder");
-    const proofLinks = page.locator("#profile .role__proof-link a");
+    const proofLinks = page.locator("#profile .role__proof-link").filter({ hasText: "See the direction-and-review loop" }).locator("a")
+      .or(page.locator("#profile .role__proof-link").filter({ hasText: "See the architecture" }).locator("a"))
+      .or(page.locator("#profile .role__proof-link").filter({ hasText: "Inspect the GitHub-native classroom" }).locator("a"));
     await expect(proofLinks).toHaveCount(3);
     await expect(proofLinks.nth(0)).toHaveAttribute("href", "/talks/ten-times-zero");
     await expect(proofLinks.nth(1)).toHaveAttribute("href", "/bread");
