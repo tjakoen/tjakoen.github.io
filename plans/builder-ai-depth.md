@@ -623,6 +623,13 @@ lint, and 80 focused browser cases across the Builder and project layouts. The b
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-
 width page fit. It does not close the phone cold-start item above.
 
+Commit `8fcdbc5` is deployed. Hosted CI passed all 432 browser cases, typecheck, 724 unit tests, and
+the lint baseline. The Pages build and deployment both succeeded. A browser check against the
+published Builder and Badges pages confirmed the disclosure text, visible subject descriptions,
+four section cards under the expanded first subject, and no horizontal overflow at 390px. This checks
+the published visitor path at desktop and emulated phone width; it does not measure a physical
+phone's model download, memory use, or generation time.
+
 ## Done means
 
 The current browser model can build a useful first draft from a visitor's brief and complete the
