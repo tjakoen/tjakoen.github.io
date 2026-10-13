@@ -619,6 +619,14 @@ reviewable composition, not unassisted model accuracy or polished copy. The thre
 failures remain no-run results from new local origins, not failures of the later cached runs. A cold
 start on an actual phone and broader writing reliability remain open.
 
+The wording parser previously missed the direct instruction “an intro for a family-run bike repair
+shop.” It now recognizes “intro for” and “intro about” as explicit lede targets. A regression test
+puts the description in the model's card answer and verifies that reconciliation moves it to the
+intro. A warm live run passed 1/1 for the “intro for” variant, with the description in `lede.body` and
+the separate requested phrase in `card.body`; this demonstrates guarded placement, not an accurate
+or polished raw model answer. See the
+[live report](../audit/builder-intro-for-live-2026-10-13.json).
+
 The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
 lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-
