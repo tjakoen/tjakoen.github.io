@@ -415,6 +415,10 @@ interface Result {
   canvas?: Array<{ id: string; span: string }>;
   /** Builder draft scenarios only: visible block text used to grade retained visitor-supplied facts. */
   draftText?: string[];
+  /** The panel's name, quote, and number check, captured before the audit approves the draft. */
+  draftEvidence?: string;
+  /** Per-field copy warnings shown beside the unedited model output. */
+  draftFieldEvidence?: string[];
   /** Number of proposed blocks shown in the review panel before the audit visitor accepts them. */
   draftBlocks?: number;
   /** The correction text shown when the model proposed a different, unambiguous block. */
@@ -594,6 +598,8 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     const builderPage = Boolean(s.builder || s.builderDraft);
     let { text, path: endPath } = await settle(page, startPath, timeout, builderPage ? lastSaid : lastReply);
     let draftText: string[] | undefined;
+    let draftEvidence: string | undefined;
+    let draftFieldEvidence: string[] | undefined;
     let draftBlocks: number | undefined;
     let targetCorrection: string | undefined;
     if (s.builderDraft) {
@@ -607,10 +613,19 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
             (fields) => fields.map((field) => (field as HTMLTextAreaElement).value),
           )
         : [];
+      draftEvidence = reviewVisible
+        ? (await review.locator("[data-builder-draft-evidence]").textContent())?.trim() ?? ""
+        : "review panel unavailable";
+      draftFieldEvidence = reviewVisible
+        ? await review.locator("[data-draft-copy-evidence]").evaluateAll(
+            (items) => items.map((item) => item.textContent?.trim() ?? ""),
+          )
+        : [];
       // Grade the proposed wording before acceptance. The real visitor's review step is required
       // to move it into the composition, so the harness follows that same supported path only after
       // it has recorded the unedited model proposal for scoring.
       if (reviewVisible) {
+        await review.locator("[data-draft-confirm]").check();
         await page.locator("[data-draft-accept]").click();
         ({ text, path: endPath } = await settle(page, startPath, timeout, lastSaid));
       }
@@ -649,7 +664,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     }, !!s.keepNotepad).catch(() => {});
     const ms = Date.now() - t0;
     const failures = grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks);
-    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftBlocks, targetCorrection, model, pass: failures.length === 0, failures };
+    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftEvidence, draftFieldEvidence, draftBlocks, targetCorrection, model, pass: failures.length === 0, failures };
   } finally {
     await page.close().catch(() => {});
   }
@@ -682,6 +697,8 @@ try {
     if (res.reply) console.log(`  reply: ${res.reply.slice(0, 220).replace(/\s+/g, " ")}${res.reply.length > 220 ? "…" : ""}`);
     if (res.canvas) console.log(`  canvas: ${res.canvas.map((c) => `${c.id}/${c.span}`).join(" ") || "(empty)"}`);
     if (res.draftText) console.log(`  draft: ${res.draftText.join(" | ").replace(/\s+/g, " ").slice(0, 220)}`);
+    if (res.draftEvidence) console.log(`  draft review: ${res.draftEvidence}`);
+    if (res.draftFieldEvidence) console.log(`  draft field review: ${res.draftFieldEvidence.join(" | ")}`);
     if (res.targetCorrection) console.log(`  target correction: ${res.targetCorrection}`);
     if (res.model?.raw) console.log(`  model said: ${res.model.raw.slice(0, 200).replace(/\s+/g, " ")}`);
   }

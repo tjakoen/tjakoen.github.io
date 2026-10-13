@@ -83,7 +83,7 @@ const DRAFT_VERBS = new Set([
   "add", "build", "can", "could", "create", "design", "give", "help", "make", "please",
   "show", "write",
 ]);
-const ANCHOR = /[\p{Lu}][\p{L}\p{M}'’.-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’.-]*)*/gu;
+const ANCHOR = /[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 

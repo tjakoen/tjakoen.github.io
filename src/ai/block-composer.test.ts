@@ -127,6 +127,8 @@ describe("generated block copy is bounded by each component's visible text contr
       .toEqual(["2019"]);
     expect(briefAnchorsMissingFromDraft("Build a page for Ann in Utrecht.", "An announcement is posted in Utrecht."))
       .toEqual(["Ann"]);
+    expect(briefAnchors("Build a page for Hearth Bakery in Utrecht. Add an intro and a card."))
+      .toEqual(["Hearth Bakery", "Utrecht"]);
   });
 
   test("the review aid lists meaningful words that are absent from the visitor's brief", () => {
