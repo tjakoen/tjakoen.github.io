@@ -813,7 +813,7 @@ function boot(): void {
     }
     if (raw === null) {
       buildByWordList(ask);
-      say("Composed from the words in that sentence. The desk did not answer in time, so nothing read it.", "reply");
+      say("The desk did not return a draft. I composed the page from the words in your sentence instead.", "reply");
       return;
     }
 

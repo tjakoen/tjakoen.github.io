@@ -13,6 +13,7 @@
 // browser profile (.cache/desk-audit/profile) keeps them cached across runs.
 import { chromium, type BrowserContext, type Page } from "@playwright/test";
 import { parsePort } from "./_server.ts";
+import { gradeBuilderDraft, type BuilderDraftField, type BuilderDraftRequirements } from "./desk-audit-grade.ts";
 
 const PORT = parsePort(process.env.PORT, 3131, "PORT");
 const BASE = `http://localhost:${PORT}`;
@@ -44,13 +45,6 @@ interface BuilderEdit {
   wantSpans?: Record<string, string>;
 }
 
-interface BuilderDraft {
-  /** Copy must retain these supplied facts in the visible new blocks. */
-  mustMention: string[][];
-  /** The prompt should produce this many content blocks. */
-  minimumBlocks: number;
-}
-
 interface Scenario {
   id: string;
   page: string;                    // where the question is asked from
@@ -59,7 +53,7 @@ interface Scenario {
    *  into the canvas composer and the canvas is what gets graded. */
   builder?: BuilderEdit;
   /** Present on a /grain/builder initial composition; grades both structure and visitor-supplied facts. */
-  builderDraft?: BuilderDraft;
+  builderDraft?: BuilderDraftRequirements;
   /** every group must have ≥1 case-insensitive hit in the reply (AND of ORs) */
   mustMention?: string[][];
   /** the browser must END on this pathname (a navigation scenario) */
@@ -231,6 +225,12 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-draft", page: "/grain/builder",
     ask: "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.",
     builderDraft: { minimumBlocks: 2, mustMention: [["Hearth Bakery"], ["Utrecht"], ["neighborhood bakery"], ["Sourdough"], ["baked fresh each morning", "fresh each morning"]] } },
+  { id: "builder-draft-bike-shop", page: "/grain/builder",
+    ask: "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
+    builderDraft: { minimumBlocks: 2, mustMention: [["Northstar Bike Repair"], ["Malmö"], ["family-run bike repair shop"], ["Tune-up"], ["ready for the next ride"]], mustMentionInField: { "card.body": [["ready for the next ride"]] } } },
+  { id: "builder-draft-pottery-studio", page: "/grain/builder",
+    ask: "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.",
+    builderDraft: { minimumBlocks: 2, mustMention: [["Juniper Studio"], ["Toronto"], ["independent pottery studio"], ["Weekend workshop"], ["hand-built pieces for everyday use"]], mustMentionInField: { "card.body": [["hand-built pieces for everyday use"]] } } },
   // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
   // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
   // the destination. LAST in the list on purpose — see the per-scenario cleanup below.
@@ -415,6 +415,8 @@ interface Result {
   canvas?: Array<{ id: string; span: string }>;
   /** Builder draft scenarios only: visible block text used to grade retained visitor-supplied facts. */
   draftText?: string[];
+  /** New draft values keyed by their visible block label and field, for placement-aware scoring. */
+  draftFields?: BuilderDraftField[];
   /** The panel's name, quote, and number check, captured before the audit approves the draft. */
   draftEvidence?: string;
   /** Per-field copy warnings shown beside the unedited model output. */
@@ -427,6 +429,11 @@ interface Result {
    *  most useful field when a scenario fails — the page's reading of a bad answer looks the same
    *  whatever the bad answer was. */
   model?: { prompt: string; raw: string };
+  /** Browser failures that explain model initialization or page execution failures. */
+  browserErrors?: string[];
+  /** Distinguishes a bad answer from a scenario where no model answer existed to grade. */
+  status: "passed" | "failed" | "not-run";
+  notRunReason?: string;
   pass: boolean; failures: string[];
 }
 
@@ -438,6 +445,7 @@ function grade(
   canvas: Array<{ id: string; span: string }> = [],
   draftText: string[] = [],
   draftBlocks = 0,
+  draftFields: BuilderDraftField[] = [],
 ): string[] {
   const failures: string[] = [];
   const low = reply.toLowerCase();
@@ -454,13 +462,7 @@ function grade(
     }
   }
   if (s.builderDraft) {
-    if (draftBlocks < s.builderDraft.minimumBlocks)
-      failures.push(`draft has ${draftBlocks} blocks, wanted at least ${s.builderDraft.minimumBlocks}`);
-    const visibleCopy = draftText.join(" ").toLowerCase();
-    for (const group of s.builderDraft.mustMention) {
-      if (!group.some((value) => visibleCopy.includes(value.toLowerCase())))
-        failures.push(`draft copy is missing any of [${group.join(", ")}]`);
-    }
+    failures.push(...gradeBuilderDraft(s.builderDraft, draftText, draftBlocks, draftFields));
   }
   if (s.mustNavigate) {
     if (endPath.replace(/\/+$/, "") !== s.mustNavigate) failures.push(`ended on ${endPath}, wanted ${s.mustNavigate}`);
@@ -578,6 +580,18 @@ let firstModelRun = true;
 // One scenario, on a given browser context. Throws on a harness/browser failure.
 async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
   const page = await c.newPage();
+  const browserErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") browserErrors.push(message.text());
+  });
+  page.on("pageerror", (error) => browserErrors.push(error.message));
+  page.on("requestfailed", (request) => {
+    const url = new URL(request.url());
+    browserErrors.push(`${request.failure()?.errorText ?? "request failed"} ${url.origin}${url.pathname}`);
+  });
+  page.on("response", (response) => {
+    if (response.status() >= 400) browserErrors.push(`HTTP ${response.status()} ${response.url()}`);
+  });
   try {
     await clientDeskEverywhere(page);
     if (s.builder || s.builderDraft) await recordModel(page);
@@ -640,6 +654,17 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     }
     if (!s.deterministic) firstModelRun = false;
     const canvas = builderPage ? await canvasState(page) : undefined;
+    const draftFields = builderPage && s.builderDraft
+      ? await page.locator("[data-builder-draft-blocks] [data-draft-copy-block]").evaluateAll((fields) => fields.map((field) => {
+          const item = field.closest("li");
+          const heading = item?.querySelector("h3")?.textContent ?? "";
+          return {
+            block: heading.split("·").at(-1)?.trim() ?? "",
+            field: (field as HTMLElement).dataset.draftCopyField ?? "",
+            value: (field as HTMLTextAreaElement).value,
+          };
+        }))
+      : undefined;
     const model = builderPage ? await recorded(page) : undefined;
     // Per-scenario sessionStorage cleanup: tour-det (and any future tour ask) leaves a pending
     // "desk-tour" cursor stashed for the NEXT stop the door hasn't navigated to within this scenario's
@@ -663,8 +688,12 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       if (!keepNotepad) localStorage.removeItem("grain.notepad");
     }, !!s.keepNotepad).catch(() => {});
     const ms = Date.now() - t0;
-    const failures = grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks);
-    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftEvidence, draftFieldEvidence, draftBlocks, targetCorrection, model, pass: failures.length === 0, failures };
+    const notRunReason = s.builderDraft && model?.raw === "(the model did not run)"
+      ? "The model did not run, so this brief has no answer to grade."
+      : undefined;
+    const failures = notRunReason ? [] : grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks, draftFields);
+    const pass = !notRunReason && failures.length === 0;
+    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftFields, draftEvidence, draftFieldEvidence, draftBlocks, targetCorrection, model, browserErrors, status: notRunReason ? "not-run" : pass ? "passed" : "failed", notRunReason, pass, failures };
   } finally {
     await page.close().catch(() => {});
   }
@@ -686,14 +715,16 @@ try {
         try {
           res = await runScenario(ctx, s);
         } catch (err2) {
-          res = { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: "", endPath: "", ms: 0, pass: false, failures: [`harness error after relaunch: ${String(err2)}`] };
+          res = { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: "", endPath: "", ms: 0, status: "failed", pass: false, failures: [`harness error after relaunch: ${String(err2)}`] };
         }
       } else {
-        res = { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: "", endPath: "", ms: 0, pass: false, failures: [`harness error: ${String(err)}`] };
+        res = { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: "", endPath: "", ms: 0, status: "failed", pass: false, failures: [`harness error: ${String(err)}`] };
       }
     }
     results.push(res);
-    console.log(`  ${res.pass ? "PASS" : "FAIL"} (${Math.round(res.ms / 1000)}s)${res.failures.length ? " — " + res.failures.join("; ") : ""}`);
+    const verdict = res.status === "not-run" ? "NOT RUN" : res.pass ? "PASS" : "FAIL";
+    const reason = res.status === "not-run" ? res.notRunReason : res.failures.join("; ");
+    console.log(`  ${verdict} (${Math.round(res.ms / 1000)}s)${reason ? " — " + reason : ""}`);
     if (res.reply) console.log(`  reply: ${res.reply.slice(0, 220).replace(/\s+/g, " ")}${res.reply.length > 220 ? "…" : ""}`);
     if (res.canvas) console.log(`  canvas: ${res.canvas.map((c) => `${c.id}/${c.span}`).join(" ") || "(empty)"}`);
     if (res.draftText) console.log(`  draft: ${res.draftText.join(" | ").replace(/\s+/g, " ").slice(0, 220)}`);
@@ -701,6 +732,7 @@ try {
     if (res.draftFieldEvidence) console.log(`  draft field review: ${res.draftFieldEvidence.join(" | ")}`);
     if (res.targetCorrection) console.log(`  target correction: ${res.targetCorrection}`);
     if (res.model?.raw) console.log(`  model said: ${res.model.raw.slice(0, 200).replace(/\s+/g, " ")}`);
+    if (res.browserErrors?.length) console.log(`  browser errors: ${res.browserErrors.slice(0, 3).join(" | ").slice(0, 500)}`);
   }
 } finally {
   await ctx.close();
@@ -708,8 +740,14 @@ try {
 }
 
 const passed = results.filter((r) => r.pass).length;
-const report = { label, base: BASE, model: process.env.AUDIT_MODEL ?? "unspecified", passed, total: results.length, results };
+const failed = results.filter((r) => r.status === "failed").length;
+const notRun = results.filter((r) => r.status === "not-run").length;
+const report = { label, base: BASE, model: process.env.AUDIT_MODEL ?? "unspecified", passed, failed, notRun, total: results.length, results };
 await Bun.write(`${OUT_DIR}/report-${label}.json`, JSON.stringify(report, null, 2));
-console.log(`\n== ${passed}/${results.length} passed — ${OUT_DIR}/report-${label}.json ==`);
-for (const r of results) console.log(`  ${r.pass ? "✓" : "✗"} ${r.id}${r.failures.length ? " — " + r.failures.join("; ") : ""}`);
+console.log(`\n== ${passed}/${results.length} passed, ${failed} failed, ${notRun} not run — ${OUT_DIR}/report-${label}.json ==`);
+for (const r of results) {
+  const marker = r.status === "not-run" ? "○" : r.pass ? "✓" : "✗";
+  const detail = r.status === "not-run" ? "model did not run" : r.failures.join("; ");
+  console.log(`  ${marker} ${r.id}${detail ? " — " + detail : ""}`);
+}
 if (passed < results.length) process.exit(1);

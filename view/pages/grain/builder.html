@@ -81,11 +81,10 @@
           </div>
         </section>
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
-          First use downloads about 875 MB on capable devices or 350 MB on others. Before source
-          reconciliation, only one of three warm drafts kept Utrecht and all three added unsupported
-          details. A post-guard WebGPU draft check passed 1/1 in 24 seconds: the code removed an extra
-          callout, kept the requested blocks, and retained source wording, Hearth Bakery, and Utrecht.
-          One case does not establish repeatability or truth. Review and edit every draft.</p>
+          First use downloads about 875 MB on capable devices or 350 MB on others. One cached draft
+          passed after code reconciliation, but varied briefs exposed a phrase-placement miss. The
+          Builder now restores requested wording to the named block; two live retries could not
+          download model files, so live verification remains open. Review every draft.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -278,8 +277,13 @@
             summary identifies removed blocks and adjusted wording. The post-guard WebGPU check took
             24 seconds and passed its one draft case: it kept the requested intro and card, retained
             Hearth Bakery and Utrecht, and removed the extra callout and unsupported model wording.
-            This verifies one scenario through the code guard, not repeatable model writing or truth
-            in context. Confirm the details yourself before adding or exporting a page.</p>
+              Later, varied bike-shop and pottery briefs showed that a requested card phrase could
+              appear in the intro while the card kept GRAIN's sample copy. The Builder now restores
+              explicitly requested wording to the body of the named intro, card, or callout, and the
+              live audit checks the phrase in its requested field. The first post-fix live attempt and
+              a retry could not fetch model weight shards from Hugging Face, so neither produced a
+              draft. The fix passes local unit and browser checks, but its live-model behavior remains
+              unverified. Confirm the details yourself before adding or exporting a page.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
           the canvas again before it reports a change. When one edit verb, value, and live block are
             clear in your request but the model proposes a different action or target, the proposal

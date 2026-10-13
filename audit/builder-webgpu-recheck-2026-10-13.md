@@ -24,6 +24,38 @@ and the comparison cannot establish that a claim is true.
 The copy-edit request was refused without changing the existing page. Editing existing block copy
 remains unavailable until GRAIN defines a bounded text-write operation.
 
+## Different briefs and phrase placement, October 13
+
+I added two different page briefs to the live audit: a bike repair shop in Malmö and a pottery studio
+in Toronto. In the first run, the pottery draft kept its requested phrase in the card. The bike shop
+draft shortened “ready for the next ride” to “ready for the next” in the card, so that run scored
+1/2. A later run scored 2/2 because the same phrase appeared in the intro while the card still had
+GRAIN's sample text. That result exposed a flaw in the audit: it checked whether the words appeared
+anywhere, even when the brief assigned them to a specific card.
+
+The Builder now restores an explicitly requested phrase to the block body named in the brief. If the
+model writes different copy, the review shows the requested phrase in that field rather than joining
+it to unsupported model wording. The live audit grades those requirements against `card.body`, and
+unit tests cover both the false-positive layout and the correctly placed phrase. All 73 Builder
+browser cases pass, including the reviewable-draft path and the missing-response fallback. The
+portfolio typecheck and 722 unit tests also pass locally.
+The Builder page now labels the cached result as one case and surfaces the newer unresolved phrase
+placement check in its first-screen disclosure; the expanded audit detail records the repeat no-run.
+
+The post-fix WebGPU recheck could not measure either draft. Both scenarios stopped during model
+initialization when Chromium's Cache API failed to fetch model weight shards from the Hugging Face
+CDN. The audit now records these as “not run,” separate from model answers that ran and failed the
+grader, and still exits unsuccessfully because the required evidence is missing. The Builder tells
+the visitor that it did not return a draft and that the displayed page came from the words in the
+request. This network failure is not evidence about the fixed model output. The post-fix live phrase
+placement therefore remains unverified.
+
+A second post-fix retry on October 13 hit the same CDN failure for both briefs. It again recorded zero
+model answers, zero grader failures, and two not-run scenarios. The [saved report](builder-phrase-placement-notrun-recheck-2026-10-13.json)
+includes each prompt, the honest fallback, the observed canvas, and failed shard paths. It confirms
+that the retry reached the model-loading step, but it still provides no evidence about live draft
+quality or the phrase-placement fix.
+
 ## Limits
 
 These were warm desktop WebGPU runs against one brief. They do not measure a first visit, a cold

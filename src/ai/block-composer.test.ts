@@ -181,6 +181,26 @@ describe("generated block copy is bounded by each component's visible text contr
       .not.toContain("Xss");
   });
 
+  test("the review aid flags explicitly requested wording when the draft keeps only a fragment", () => {
+    const brief = "Build a page for Northstar Bike Repair in Malmö with the words ready for the next ride.";
+    expect(briefAnchors(brief)).toContain("ready for the next ride");
+    expect(briefAnchorsMissingFromDraft(brief, "Northstar Bike Repair · Malmö · ready for the next"))
+      .toContain("ready for the next ride");
+    expect(briefAnchorsMissingFromDraft(brief, "Northstar Bike Repair · Malmö · ready for the next ride"))
+      .not.toContain("ready for the next ride");
+  });
+
+  test("explicit wording is restored to the block that the brief names", () => {
+    const brief = "Build a Northstar Bike Repair page in Malmö. Add an intro for a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card"], [
+      { body: "Northstar Bike Repair is a family-run bike repair shop in Malmö." },
+      { title: "Tune-up", body: "Get your bike ready for the next adventure." },
+    ]);
+
+    expect(reconciled.copies[0]?.copy.body).not.toContain("ready for the next ride");
+    expect(reconciled.copies[1]?.copy.body).toBe("ready for the next ride");
+  });
+
   test("the review aid lists meaningful words that are absent from the visitor's brief", () => {
     expect(termsOutsideBrief(
       "Hearth Bakery in Utrecht. Sourdough baked fresh each morning.",

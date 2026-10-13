@@ -74,6 +74,25 @@ makes possible. Greenroom now links directly to its public engineering case stud
 demo and source. Desktop and 390px checks cover those evidence paths; the full case-story audit still
 needs each product's stated result, proof, and next step reviewed together.
 
+The October 13 outcome-and-proof review checked the five Projects entries against their public
+stories and the available local repositories. Greenroom's case study and source explain the local
+app and deployable team edition; its visitor-facing run is explicitly seeded practice data, not a
+customer result. The BREAD request trace demonstrates the stack serving a real portfolio note, and
+the source plus layer pages explain the reusable architecture; that is a concrete integration proof,
+not an adoption or performance outcome. GRAIN's shared-control demo and action contract demonstrate
+the interaction model, while PANTRY's public quickstart and install-to-first-use path describe an
+installation tested in a separate project. The classroom story and public architecture document a
+production workflow across several courses and hundreds of repositories per term, but its public
+interactive demo is synthetic and cannot independently verify those operational counts. The four
+local repositories checked for this pass were clean on `main` and tracking `origin/main`; the
+course-platform repository is not present in the local repo collection. The current pages generally
+pair a clear problem or design choice with an inspectable artifact and a next link. The remaining
+proof gap is therefore narrower than missing project presentation: visitors cannot independently
+inspect customer usage for Greenroom, adoption of BREAD/GRAIN/PANTRY, or private classroom operation.
+Keep the existing privacy boundary. If stronger outcome proof becomes available, prefer a
+privacy-safe aggregate, a reproducible install/run transcript, or a clearly attributed customer or
+teaching case study; do not imply the seeded and synthetic demos prove production outcomes.
+
 The About profile now places the course platform's production scale beside its own supporting link,
 so the 150–300 students-per-term claim leads directly to the platform story, architecture, and
 privacy-safe demo. The change passed the focused browser check and all 21 About browser cases. Its
@@ -354,8 +373,10 @@ its 4,491 baseline. Desktop and phone screenshots were reviewed for the updated 
 and operable-surface guide, alongside the Builder download disclosure.
 
 The audit covers all 148 public routes and their shared page families at desktop and phone widths.
-The table records each page's recommendation and its current state. The project evidence pass is
-complete; the remaining portfolio-specific audit work is Builder reliability, tracked below.
+The table records each page's recommendation and its current state. Page presentation and evidence
+paths have been reviewed, but some production and adoption claims remain owner-reported because the
+underlying records are private or unavailable. Builder reliability and stronger privacy-safe outcome
+proof remain open below.
 
 ### Page recommendations and current state
 
@@ -364,7 +385,7 @@ complete; the remaining portfolio-specific audit work is Builder reliability, tr
 | / | Make selected work the primary next step and keep the résumé, notes, and other destinations as secondary paths. The six equal “Start” links competed for attention. | Implemented: the projects link is now the first-screen button, and the secondary list no longer repeats it. The October 10 settled screenshot caught the flagship walkthrough title collapsing into one word per line beside its badge; title and badge now wrap as separate flex items, and a browser check keeps the title on one line at the desktop screenshot width. |
 | /about | Put one inspectable proof link beside each leadership claim, especially team delivery, teaching scale, and shipped systems. | Implemented: manager, technical lead, and educator sections now link directly to a talk, the BREAD architecture, and the public classroom project. |
 | /resume | Keep the page aligned with the supplied résumé PDF and recheck the generated PDF at print size after any content change. | Implemented: the print sheet now uses the source's letter size, navy hierarchy, inline role headings, and first-page role grouping. The rendered export matches the two-page structure, and a browser check guards the print styles. The phone screenshot pass also caught the fourth profile action clipped inside the card despite the page reporting no horizontal overflow; the four actions now form a two-column grid at phone widths, with an e2e check that confirms every action stays inside the viewport. |
-| /projects | Keep the current product, platform, and teaching groups. Add one concrete outcome and one evidence link to each project card. | Implemented: the Greenroom, BREAD, GRAIN, PANTRY, and classroom entries pair a specific capability or outcome with a project story and a direct public source link; the classroom card also links its interactive demo and the teaching authority page. Responsive group layout and links are covered by e2e/projects-layout.e2e.ts. |
+| /projects | Keep the current product, platform, and teaching groups. Pair each project with a clear result and evidence whose limits are labeled. | Presentation implemented and source paths checked. Greenroom's run report is seeded, the classroom demo is synthetic, the BREAD proof is a real portfolio request trace, GRAIN has a live shared-control demo/action contract, and PANTRY links its install path and composition guide. The stronger production/adoption outcomes for Greenroom, the stack, and the private classroom operation remain owner-reported or private; see the October 13 outcome-and-proof review above. Responsive group layout and links are covered by e2e/projects-layout.e2e.ts. |
 | /bread | Add one end-to-end example that shows a visitor how the layers work together in a real request, alongside the layer diagram. | Implemented: the page follows a public note from its request through MILL and GRAIN composition to the returned HTML, and explains that PROOF and CRUMB serve other paths. |
 | /batch | Put the measured performance and audit result, plus how to reproduce it, near the no-build claim. | Implemented: the page reports the October 9 portfolio-wide /batch measurement (211,553 bytes of JavaScript, 745,209 total bytes, 35 requests), links to the current 148-route report, and gives the rerun command. Deferring live-figure code from pages that do not use it cut 56,053 JavaScript bytes from the October 2 measurement. The copy distinguishes shared-shell JavaScript from a BATCH-only benchmark. |
 | /grain | Keep the shared-control and visible-provenance demonstration prominent, then give the visitor a single guided action to try it. | Implemented: the first hero action now jumps directly to the two-operator demo; a browser check confirms the destination and working AI action. The static page links its manifest explanation to the published AI interface guide instead of the server-only /ai/manifest endpoint. The RenderOp introduction distinguishes HTML-bearing operations, typed dispatcher operations, and the service-free limits of the static client door. The tutorial and showcase now distinguish the client door used on the deployed static export from the server door available through *bun run dev:stub*. Source checks corrected the design-system guide's meaningful-text and link-color rules, and the re-skin guide now names the accent slots used by links, focus rings, and primary controls. Browser assertions guard these public contracts. The deeper component implementation remains deferred. |
@@ -374,7 +395,7 @@ complete; the remaining portfolio-specific audit work is Builder reliability, tr
 | /pantry | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Implemented: the page shows the documented install, kit scaffold, validation, and serve commands, then explains that the board reads the host project's plans in place. The content review caught that the page described the agent-instructions kit but showed plain `pantry init`, which does not install that kit; it now shows `pantry init --kit`, matching the public quickstart. The long install command now wraps inside a responsive two-column desktop layout that stacks on phones. Browser checks guard the kit flag and ensure the first-run steps fit both widths. The PANTRY guides also include the current decisions, run, artifact, and timeline surfaces, identify which routes are not covered by surface toggles, and state the local answer-write path. |
 | /greenroom | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Implemented: the page summarizes and links to Greenroom's archived seeded report, distinguishing its four practice-environment results from the separate ten-check screenshot and calling out the intentional failures. The phone layout and route links are covered by e2e/projects-layout.e2e.ts. |
 | /native-github-classroom and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Implemented: the first links now move from the architecture diagram to the working demo, safety docs, and public source. The copy keeps course internals and student records private; browser checks cover the phone navigation and confirm the docs route resolves. |
-| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in builder-ai-depth.md. The workbench shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. New blocks can receive bounded generated copy through registered fields, covered by unit and browser tests; live writing still needs review. A refreshed desktop and phone review fixed the canvas header wrapping its block count and clipping the file actions when the desk panel is open. Builder selects the 1.5B local model only on capable devices; the shared desk remains on 0.5B. Earlier 0.5B and 1.5B audits showed inconsistent editing and drafts that omitted facts or added unsupported claims. After code-owned source reconciliation was added, two consecutive full 1.5B WebGPU runs scored 8/8 across six edits, a copy-edit refusal, and one draft. The relative deletion still needed disclosed, approval-gated target correction in one run; this verifies the reviewed workflow, not unassisted model accuracy. Both runs retained the five requested draft details in the reviewable composition. Human fact-checking remains necessary, and existing block copy cannot be edited until GRAIN defines a bounded text-write operation. The first-screen example offers a prefilled `move b3 up` prompt and an honest copy-edit refusal; the visitor still chooses when to send each prompt. The review panel flags detected names, quoted phrases, and numbers missing verbatim, requires a fresh confirmation after every edit, and warns that these checks cannot prove claims true. The 71-case Builder suite passes. Cold-start performance on physical phone hardware remains unmeasured. |
+| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in builder-ai-depth.md. The workbench shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. New blocks can receive bounded generated copy through registered fields, covered by unit and browser tests; live writing still needs review. A refreshed desktop and phone review fixed the canvas header wrapping its block count and clipping the file actions when the desk panel is open. Builder selects the 1.5B local model only on capable devices; the shared desk remains on 0.5B. Earlier 0.5B and 1.5B audits showed inconsistent editing and drafts that omitted facts or added unsupported claims. After code-owned source reconciliation was added, two consecutive full 1.5B WebGPU runs scored 8/8 across six edits, a copy-edit refusal, and one draft. The relative deletion still needed disclosed, approval-gated target correction in one run; this verifies the reviewed workflow, not unassisted model accuracy. Both runs retained the five requested draft details in the reviewable composition. Human fact-checking remains necessary, and existing block copy cannot be edited until GRAIN defines a bounded text-write operation. The first-screen example offers a prefilled `move b3 up` prompt and an honest copy-edit refusal; the visitor still chooses when to send each prompt. The review panel flags detected names, quoted phrases, and numbers missing verbatim, requires a fresh confirmation after every edit, and warns that these checks cannot prove claims true. The 73-case Builder suite passes. Cold-start performance on physical phone hardware remains unmeasured. |
 | /grain/builder/preview | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Implemented: the empty state now opens the workbench with a representative page composed; the static-host limitation remains explicit. |
 | /teaching | Add an anonymized sample activity or rubric so the course and assessment claims have inspectable teaching evidence. | Implemented: an explicitly illustrative responsive-web assessment slice maps observable repository evidence to the published badge criteria without exposing student work or private assignments. |
 | /badges and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | The hub explains the activity threshold and historical reconciliation accurately. Subjects now open as native accordions with a short course description, then show one card per class section with direct prelim and midterm criteria links and recipient counts. Class pages link back to all badge criteria. The shared certificate template has been reviewed at phone width: share-link copying reports success, falls back when clipboard access is unavailable, and exposes a manual link if copying still fails. Browser checks confirm the subject accordions, all 14 class links, phone-width fit, recipient certificates staying out of the sitemap, and class pages not enumerating recipients. |
@@ -470,18 +491,31 @@ complete; the remaining portfolio-specific audit work is Builder reliability, tr
       A fresh October 13 WebGPU recheck scored 6/8: both delete answers were unusable, one with a
       null payload and one with a null action. The Builder now offers a disclosed request-based
       proposal for a clear live request after either refusal, and rechecks it against the current
-      manifest at approval. Its 71 browser cases pass. This closes the usability gap for those
+      manifest at approval. Its 73 browser cases pass. This closes the usability gap for those
       explicit requests, but the audit still records the model's raw failures and raw drafts still
-      added unsupported claims. The full reviewed-workflow recheck scored 7/8: the six edit cases and
-      the copy-edit refusal passed, while the raw generated draft omitted Utrecht and added
-      unsupported claims. A later source-reconciliation step now removes blocks outside explicitly
+      added unsupported claims. The source-reconciliation step removes blocks outside explicitly
       recognized requests, reduces generated fields to source phrases, retains detected names and
-      numbers, and discloses each adjustment before approval. One cached-WebGPU post-guard draft
-      scenario passed in 24 seconds: the proposed extra callout and unsupported copy were removed,
-      and the requested intro, card, business name, city, and source phrases remained. This verifies
-      one guarded scenario, not repeated model reliability or the truth of claims in context. Run
-      repeated draft scenarios before calling the Builder a dependable page writer. Phone
-      cold-start remains unmeasured. See the Builder plan for the scenario detail.
+      numbers, and discloses each adjustment before approval. Two consecutive full eight-case
+      WebGPU runs passed the reviewed workflow, and two standalone draft repeats plus both full-run
+      drafts retained five supplied details. The relative deletion still required a disclosed,
+      approval-gated target correction in one run. Two varied briefs then exposed a field-placement
+      gap: an exact phrase in the intro did not mean the requested card contained it. The Builder now
+      restores missing explicit wording to the named block body, and the audit requires that phrase
+      in `card.body`. The 73-case browser suite and 722 unit tests pass locally; the portfolio
+      typecheck passes. The latest varied WebGPU attempt did not load the model because Chromium's
+      Cache API could not fetch weight shards from the Hugging Face CDN. Both scenarios are recorded
+      as not run, not as model answers that failed the grader. A second retry hit the same model-load
+      failure; its durable report records both prompts and the CDN errors. The Builder's fallback now
+      says that the desk did not return a draft and that the page was composed from the visitor's
+      words. The Builder's first-screen note now gives the earlier single cached pass its proper
+      context and says the live fix is unverified. These CDN failures provide no evidence about the
+      fixed live output. The earlier cached
+      desktop runs reused one brief, so they do not establish unassisted accuracy, polished writing,
+      or broad reliability. Reviewable copy still needs human fact-checking. Physical-phone cold start
+      remains open because no handset or simulator was available on October 13; the Builder plan lists
+      the measurements needed to close it. See the [WebGPU recheck](../audit/builder-webgpu-recheck-2026-10-13.md),
+      [retry report](../audit/builder-phrase-placement-notrun-recheck-2026-10-13.json), and Builder plan
+      for evidence and limits.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
@@ -507,8 +541,10 @@ complete; the remaining portfolio-specific audit work is Builder reliability, tr
       `d2df50a` is on main and deployed: hosted CI passed all 425 browser cases, typecheck, 712 unit
       tests, and the lint baseline; the Pages build and deploy passed; and the live Projects and
       PANTRY pages include the direct evidence paths. The full finish-line release remains open
-      because repeated grounded-draft reliability and phone cold-start measurements still need
-      evidence.
+      because the Builder still needs broader brief/device reliability evidence and a physical-phone
+      cold-start measurement, and stronger privacy-safe outcome proof for several project claims is
+      unavailable. The October 13 outcome-and-proof review records which project artifacts are
+      reproducible and which production/adoption claims remain owner-reported or private.
 
 ## Done means
 
