@@ -460,6 +460,10 @@ difference between the 7/8 reviewed workflow and the one-of-three location-reten
       through the existing composition functions; discarding leaves the page and share URL untouched.
       The 69-case Builder suite covers this flow, including markup-like copy rendered as text. A
       human still has to check accuracy because the local model can omit facts and invent claims.
+- [x] Make the draft review show which fields use component sample text and which contain model
+      copy. For generated text, list meaningful words absent from the brief and update that list as
+      the visitor edits the field. This is a lexical comparison, not a check that the resulting
+      claims are true. Unit and browser checks cover generated copy, sample copy, and edited copy.
 - [ ] Finish the model comparison by measuring cold start on phone
       hardware, then improve the grounded draft. The 0.5B scored 2/8 in each of two October 11 runs;
       the 1.5B scored 6/8 in one separate run, but failed both removal cases and added unsupported
@@ -492,9 +496,9 @@ difference between the 7/8 reviewed workflow and the one-of-three location-reten
       natural-language page writing until it passes repeated measured cases.
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
-      builder browser suite passes all 67 scenarios, including the example flow, schema delivery,
-      static-host, one-door, proposal, and copy-edit refusal paths. The real-model audit remains a
-      separate score because headless CI has no WebGPU.
+      builder browser suite passes all 71 scenarios, including the example flow, schema delivery,
+      static-host, one-door, proposal, copy review, and copy-edit refusal paths. The real-model
+      audit remains separate because headless CI has no WebGPU.
 - [x] Review the published workbench at desktop and narrow widths. The workbench renders at 1440px
       and 390px with one page heading, no horizontal overflow, and no browser page errors. The phone
       view keeps the example link visible and the toolbar wraps without clipping. The live page shows

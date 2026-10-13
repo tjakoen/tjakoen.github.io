@@ -8,7 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import {
   BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
-  COMPLETION_TIMEOUT_MS,
+  COMPLETION_TIMEOUT_MS, termsOutsideBrief,
 } from "./block-composer.ts";
 import { BLOCK_NAMES, composeFromNames, sanitizeBlockCopy } from "./block-set.ts";
 
@@ -120,6 +120,17 @@ describe("nothing the model says is trusted", () => {
 });
 
 describe("generated block copy is bounded by each component's visible text contract", () => {
+  test("the review aid lists meaningful words that are absent from the visitor's brief", () => {
+    expect(termsOutsideBrief(
+      "Hearth Bakery in Utrecht. Sourdough baked fresh each morning.",
+      "Hearth Bakery makes hand-crafted sourdough every morning.",
+    )).toEqual(["makes", "hand-crafted", "every"]);
+  });
+
+  test("the review aid ignores case, repeated words, and common sentence glue", () => {
+    expect(termsOutsideBrief("A page for a bakery in Utrecht", "A BAKERY page in Utrecht.")).toEqual([]);
+  });
+
   test("unknown fields and components are ignored, and controls are stripped", () => {
     expect(sanitizeBlockCopy("card", {
       title: "Fresh\n bread\t today",
