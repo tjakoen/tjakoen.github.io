@@ -1,6 +1,8 @@
 export interface BuilderDraftRequirements {
   /** Copy must retain these supplied facts in the visible new blocks. */
   mustMention: string[][];
+  /** Copy must not contain wording the brief explicitly forbids. */
+  mustNotMention?: string[];
   /** Some requirements belong in a specific block field, not merely somewhere on the page. */
   mustMentionInField?: Record<string, string[][]>;
   /** The prompt should produce this many content blocks. */
@@ -32,6 +34,11 @@ export function gradeBuilderDraft(
   for (const group of requirements.mustMention) {
     if (!group.some((value) => visibleCopy.includes(value.toLowerCase())))
       failures.push(`draft copy is missing any of [${group.join(", ")}]`);
+  }
+
+  for (const value of requirements.mustNotMention ?? []) {
+    if (visibleCopy.includes(value.toLowerCase()))
+      failures.push(`draft copy includes forbidden wording [${value}]`);
   }
 
   for (const [target, groups] of Object.entries(requirements.mustMentionInField ?? {})) {

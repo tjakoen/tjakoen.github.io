@@ -86,14 +86,22 @@ const NEGATION = new Set([
 ]);
 
 const DRAFT_VERBS = new Set([
-  "add", "build", "can", "could", "create", "design", "give", "help", "make", "please",
-  "show", "write",
+  "add", "avoid", "build", "can", "could", "create", "design", "do", "give", "help", "make",
+  "never", "please", "show", "use", "write",
 ]);
 const ANCHOR = /(?<![\p{L}\p{N}_])[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
 const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^.!?]+?)(?=[.!?]|$)/giu;
 const INTRO_DESCRIPTION = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\b(?:says?\s+it\s+is|describing\s+it\s+as|describes?\s+it\s+as|for|about)\s+([^,;.!?]+?)(?=,\s*(?:and\s+)?then\b|[;.!?]|$)/giu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
+
+/** A fact inside a nearby negative clause must not be repeated without its negation. */
+function followsNegation(brief: string, index: number): boolean {
+  const before = brief.slice(0, index);
+  const clause = before.split(/[,;.!?]|\b(?:but|however|instead)\b/iu).at(-1) ?? before;
+  const context = clause.replace(/\bnot only\b|\b(?:don't|do not) forget\b/giu, "");
+  return /\b(?:not|never|no|without|cannot|can't|don't|dont|isn't|aren't|wasn't|weren't|doesn't|didn't|won't|wouldn't)\b/iu.test(context);
+}
 
 /** Detect a small, reviewable set of exact details that a draft should preserve.
  *
@@ -111,12 +119,15 @@ export function briefAnchors(brief: string): string[] {
   }
   for (const pattern of [QUOTED, REQUESTED_WORDING, INTRO_DESCRIPTION, NUMBER]) {
     for (const match of brief.matchAll(pattern)) {
-      found.push({ value: (match[1] ?? match[0]).trim(), index: match.index ?? 0 });
+      const value = (match[1] ?? match[0]).trim();
+      const start = match.index ?? 0;
+      found.push({ value, index: start + (match[1] ? match[0].indexOf(match[1]) : 0) });
     }
   }
   found.sort((a, b) => a.index - b.index);
   const seen = new Set<string>();
-  return found.flatMap(({ value }) => {
+  return found.flatMap(({ value, index }) => {
+    if (followsNegation(brief, index)) return [];
     const key = value.toLocaleLowerCase().replaceAll("’", "'").replace(/\s+/g, " ");
     if (seen.has(key)) return [];
     seen.add(key);
