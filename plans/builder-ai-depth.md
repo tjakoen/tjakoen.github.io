@@ -514,13 +514,22 @@ start remains unmeasured.
       browser checks cover extra wording, omitted and restored named details, sample copy, and edits.
 - [x] Ground initial page drafts in the visitor's source brief. The portfolio removes surplus
       blocks when the visitor explicitly names types or counts, restores requested blocks the model
-      omitted, keeps only contiguous source phrases in generated fields, and carries detected missing
-      names, quoted phrases, or numbers into the first usable body field. Two standalone warm repeats
+      omitted, keeps generated fields within supported source phrases, and carries detected missing
+      names, quoted phrases, or numbers into the first usable body field. For explicit intro
+      descriptions and welcome requests, it joins supplied details into a short sentence rather than
+      leaving a phrase list. Two standalone warm repeats
       and both full eight-case runs retained Hearth Bakery, Utrecht, neighborhood bakery, Sourdough,
       and baked fresh each morning. These checks cover one repeated brief and one cached desktop
       model; source-phrase retention does not prove factual truth or reliably express the brief in
       polished prose. The review and confirmation step remains visible. The two standalone captures
       are linked from the October 13 WebGPU recheck.
+- [ ] Establish dependable raw local writing across varied briefs. The six warm scenarios and the
+      exact-intro recheck passed after reconciliation, but raw answers still invented claims,
+      misplaced requested wording, or added unrequested blocks. Do not use the reviewed-copy score as
+      proof of raw-model quality. Close this only after repeated briefs keep supplied names, places,
+      and phrases in their requested fields without unsupported claims or blocks. The October 14
+      before-and-after captures are in
+      [the grounded-sentence follow-up](../audit/builder-grounded-sentence-followup-2026-10-14.md).
 - [ ] Measure the Builder's cold start on actual phone hardware. A desktop WebGPU run, even at a
       phone-sized viewport, does not establish phone memory, download, or generation performance.
       The 0.5B scored 2/8 in each of two October 11 runs;
@@ -711,6 +720,29 @@ published Builder and Badges pages confirmed the disclosure text, visible subjec
 four section cards under the expanded first subject, and no horizontal overflow at 390px. This checks
 the published visitor path at desktop and emulated phone width; it does not measure a physical
 phone's model download, memory use, or generation time.
+
+## Source-backed intro sentences, October 14
+
+The six-case WebGPU follow-up passed its visible-copy requirements after reconciliation, but one
+reviewed intro still read as a phrase list. I added a narrow sentence builder for an explicitly
+described intro, an exact phrase assigned to the intro, and a welcome request. It combines only the
+brief's supplied subject, location, description, and audience. The anchor fallback also removes an
+overlapping partial phrase before restoring a missing full name or location. Unit regressions cover
+the sentence forms, the prohibited-phrase case, and the name overlap.
+
+The six warm checks covered bakery, bike-repair, negative-instruction, and pottery briefs. The
+reviewed output passed each scenario, including the complete welcome sentence. A separate live check
+of the exact phrase after the sentence-builder change passed 1/1 and excluded all tested prohibited
+terms. The raw model answers still invented locations, an owner, opening hours, and other unsupported
+claims, or put requested words in the wrong field. These results improve the visible guarded draft;
+they do not close the raw-writing item above. See the
+[five-case baseline](../audit/builder-reliability-varied-2026-10-14.json),
+[six-case follow-up](../audit/builder-reliability-postfix-2026-10-14.json), and
+[exact-phrase recheck](../audit/builder-exact-intro-phrase-2026-10-14.json). Local verification
+passed 736 unit tests, 74 Builder browser cases, typecheck, link lint, and the lint baseline. The
+review now distinguishes verbatim wording from sentences composed from brief details and still says
+that its checks cannot verify claims. The code and these captures await release. The physical-phone
+cold start remains open.
 
 ## Done means
 

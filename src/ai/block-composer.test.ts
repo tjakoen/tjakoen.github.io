@@ -211,11 +211,61 @@ describe("generated block copy is bounded by each component's visible text contr
 
     expect(reconciled.names).toEqual(["lede", "card"]);
     expect(reconciled.droppedBlocks).toBe(1);
-    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery · Utrecht · a neighborhood bakery");
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery is a neighborhood bakery in Utrecht.");
     expect(reconciled.copies[1]?.copy).toEqual({
       title: "Sourdough",
       body: "baked fresh each morning",
     });
+  });
+
+  test("an explicit intro description becomes a complete sentence from supplied facts", () => {
+    const brief = "Build a page for Northstar Bike Repair in Malmö. Add an intro describing it as a family-run bike repair shop, then a card titled Tune-up.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card"], [
+      { body: "Northstar Bike Repair is a family-run bike repair shop in Malmö, Sweden. We're ready for your next ride." },
+      { title: "Tune-up" },
+    ]);
+
+    expect(reconciled.copies[0]?.copy.body).toBe("Northstar Bike Repair is a family-run bike repair shop in Malmö.");
+  });
+
+  test("a page name before the word page still joins a description and city", () => {
+    const brief = "Build a Hearth Bakery page in Utrecht with an intro that says it is a neighborhood bakery.";
+    const reconciled = reconcileBuildPlan(brief, ["lede"], [
+      { body: "Hearth Bakery is a neighborhood bakery known for its fresh bread." },
+    ]);
+
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery is a neighborhood bakery in Utrecht.");
+  });
+
+  test("an explicitly prohibited intro description is never synthesized", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\".";
+    const reconciled = reconcileBuildPlan(brief, ["lede"], [
+      { body: "Hearth Bakery is an award-winning bakery in Utrecht." },
+    ]);
+
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery · Utrecht");
+    expect(reconciled.copies[0]?.copy.body).not.toContain("award-winning");
+  });
+
+  test("a requested welcome intro becomes a complete sentence without adding claims", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht. Add an intro that welcomes neighbors.";
+    const reconciled = reconcileBuildPlan(brief, ["lede"], [
+      { body: "A concise introduction." },
+    ]);
+
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery in Utrecht welcomes neighbors.");
+    expect(termsOutsideBrief(brief, reconciled.copies[0]?.copy.body ?? "")).toEqual([]);
+  });
+
+  test("an exact intro phrase joins supplied name and location as a sentence", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery.";
+    const reconciled = reconcileBuildPlan(brief, ["lede"], [
+      { body: "A neighborhood bakery with a twist." },
+    ]);
+
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery is a neighborhood bakery in Utrecht.");
+    expect(reconciled.copies[0]?.copy.body).toContain("neighborhood bakery");
+    expect(reconciled.copies[0]?.copy.body).not.toContain("award-winning");
   });
 
   test("the review aid finds named details, quoted phrases, and numeric values missing from a draft", () => {

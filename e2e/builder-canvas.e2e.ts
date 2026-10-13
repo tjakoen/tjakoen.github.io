@@ -66,6 +66,9 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
     await expect(page.locator(".wb-bar__note")).toContainText("Two varied WebGPU briefs each passed three times after code reconciliation");
     await expect(page.locator(".wb-bar__note")).toContainText("wording variant passed once after code reconciliation");
+    await expect(page.locator(".wb-bar__note")).toContainText("Six further warm WebGPU checks across bakery, bike-repair, and pottery briefs passed once each");
+    await expect(page.locator(".wb-bar__note")).toContainText("Explicit intro descriptions and welcome requests now become short sentences from the brief");
+    await expect(page.locator(".wb-bar__note")).toContainText("Raw model copy still invents claims");
     await expect(page.locator(".wb-bar__note")).toContainText("These warm desktop runs do not establish broad reliability");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
@@ -561,6 +564,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
     await expect(page.locator("[data-builder-draft-brief]")).toHaveText("Build a Hearth Bakery page in Utrecht with an intro that says it is a neighborhood bakery, then a card titled Coffee with the words baked fresh each morning.");
     await expect(page.locator(DRAFT_REVIEW)).toContainText("Compare names, locations, and claims with the draft before adding it.");
+    await expect(page.locator(DRAFT_REVIEW)).toContainText("joins supplied details into sentences for recognized intro requests");
     await expect(page.locator("[data-builder-draft-evidence]"))
       .toContainText("Detected names, quoted phrases, and numbers appear in the draft.");
     await expect(page.locator(ACCEPT_DRAFT)).toBeDisabled();
@@ -568,11 +572,11 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(CELL)).toHaveCount(0);
     await expect(page.locator(DRAFT_BLOCKS).getByRole("listitem")).toHaveCount(2);
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
-      .toHaveValue("Hearth Bakery · Utrecht · a neighborhood bakery");
+      .toHaveValue("Hearth Bakery is a neighborhood bakery in Utrecht.");
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
       .locator("xpath=../..")
       .locator('[data-draft-copy-evidence="b1-body"]'))
-      .toContainText("The model's wording was grounded in source phrases from your brief");
+      .toContainText("The Builder composed this field from details in your brief");
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]'))
       .toHaveAttribute("maxlength", "280");
     await expect(page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="title"]'))
@@ -582,7 +586,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator("[data-builder-draft-evidence]"))
       .toContainText("The model's 1 unrequested block was removed.");
     await expect(page.locator("[data-builder-draft-evidence]"))
-      .toContainText("The model's wording was grounded in source phrases or omitted in 2 fields.");
+      .toContainText("The Builder adjusted or omitted model wording in 2 fields.");
     await expect(page.locator('[data-surface="builder-spec"]')).not.toContainText("Hearth Bakery");
     await page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
       .fill("Hearth Bakery page about coffee in Utrecht, a neighborhood bakery.");
