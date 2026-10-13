@@ -177,6 +177,13 @@ test.describe("the /about Profile role sections (Lessons folded in)", () => {
     await expect(proofLinks.nth(1)).toContainText("architecture");
     await expect(proofLinks.nth(2)).toContainText("classroom");
   });
+
+  test("the teaching-scale claim links directly to platform evidence", async ({ page }) => {
+    const proof = page.locator("#profile .role__proof-link").filter({ hasText: "hundreds of student repositories each term" });
+    await expect(proof).toContainText("several live university courses");
+    await expect(proof.getByRole("link", { name: /platform, its architecture, and its privacy-safe demo/i }))
+      .toHaveAttribute("href", "/native-github-classroom");
+  });
 });
 
 test.describe("the /about profile app — incoming hash", () => {
