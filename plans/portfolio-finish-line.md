@@ -628,6 +628,18 @@ records the raw answers. The 40 reasoner tests, 742 project unit tests, and 75 B
 passed, as did typecheck, link lint, and the lint ratchet. Broader natural-language reliability and
 the physical-phone cold start remain open.
 
+The next held-out requests were “discard the final card,” “nudge the callout down one step,” and
+“stretch the callout to full width.” Across three warm WebGPU repeats, Qwen2.5-1.5B declined the
+first two each time; the guarded recovery proposed the explicit edit and waited for approval. The
+model handled the width request directly. Negative and ambiguous requests stayed refused, and the
+canvas remained unchanged before approval. The [raw answers and resulting canvases](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-holdout-recovery-2026-10-14.json)
+record the distinction between model output and the reviewed visitor flow. The reasoner tests passed
+42 cases, the full unit suite passed 744, and all 76 Builder browser cases passed. Typecheck, link
+lint, and the lint gate passed. The change is on `main` as `c69fc17`, and Pages deployed it; hosted
+typecheck, unit tests, and lint checks passed. Hosted end-to-end passed all 435 browser cases.
+Natural-language coverage beyond these measured phrasings and an actual-phone cold-start check
+remain open.
+
 ## Current release and visual review, October 14
 
 Commit `2c73625` is on `main`. Hosted CI passed, including typecheck, unit tests, the lint baseline,
