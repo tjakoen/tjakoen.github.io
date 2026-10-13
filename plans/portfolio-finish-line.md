@@ -166,6 +166,20 @@ stack rather than another layer. Each introduction links back to BREAD, document
 a live demonstration where applicable. Existing route and phone-layout checks cover the responsive
 presentation; deeper GRAIN and BATCH implementation work remains deferred.
 
+The October 13 source check found one precision gap in that story: PANTRY's core docs app composes
+BATCH, GRAIN, MILL, and PROOF, while its optional `toursDir` mounts CRUMB's review-tour routes and
+client for projects being reviewed. The BREAD and PANTRY introductions now say so explicitly. Focused
+browser checks cover both explanations alongside their existing phone and install paths.
+
+The project-story pass brought inspectable evidence onto the Projects cards: a real note request for
+BREAD, the working shared-control demo and action contract for GRAIN, and PANTRY's composition and
+first-use routes. The BREAD card also distinguishes the four packages I built from MILL, which the
+site uses. Four GRAIN implementation guides were checked against the installed package source for
+component locations, the closed RenderOp set and dispatcher lifecycle, token names, and the manifest
+contract. PANTRY's composition and install guides were checked against its docs and source so the
+optional preview-tour support stays separate from the four-layer core. The focused project and docs
+checks pass at desktop and phone widths; the broader project-outcome audit remains open.
+
 The badge certificate template pass found that “Copy share link” silently failed when clipboard
 access was missing or denied. It now tries the browser clipboard, then a copy-command fallback, and
 shows a selectable manual link if neither works. The phone-width browser check covers the normal
@@ -393,8 +407,14 @@ individual checks before the audit can be called complete.
       public source, documentation, or interactive demo to inspect. The portfolio and projects
       pages were reviewed at desktop and phone widths; e2e/projects-layout.e2e.ts covers the key
       evidence links and responsive group layout. This pass closed the missing source paths from the
-      Projects cards. A systematic check that each project's stated result is tied to evidence and
-      that the visitor's next step is clear remains open.
+      Projects cards. The source audit also confirmed and corrected the BREAD/PANTRY distinction
+      between PANTRY's four core layers and its optional CRUMB review-tour mount. Focused checks now
+      guard this relationship on both introductions. Projects now links directly to the BREAD note
+      request trace, GRAIN's shared-control demo and action contract, and PANTRY's composition guide
+      and install story. The BREAD card distinguishes the four packages TJ built from MILL, which the
+      site uses. Desktop and phone browser checks cover these links and card layout. The wider pass
+      tying every project's stated result to inspectable evidence and a clear visitor next step
+      remains open.
 - [x] Review the BREAD, BATCH, GRAIN, MILL, PROOF, CRUMB, and PANTRY introductions as one explanation
       of the stack. Their dependency direction, the request path through the portfolio, PANTRY's
       role as an app, and cross-links to adjacent layers are consistent; existing route and

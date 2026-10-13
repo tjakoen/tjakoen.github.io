@@ -12,7 +12,11 @@ test("BREAD follows a real note request through the layers that serve it", async
   await expect(page.locator('#request a[href="/grain"]')).toBeVisible();
   await expect(page.locator('#request a[href="/batch"]')).toHaveCount(1);
   await expect(page.locator("#request")).toContainText("PROOF serves the plans board");
-  await expect(page.locator("#request")).toContainText("CRUMB serves the tour data");
+  await expect(page.locator("#request")).toContainText("CRUMB serves the portfolio tour");
+  await expect(page.locator('#pantry-app + div')).toContainText("BATCH, GRAIN, MILL, and PROOF");
+  await expect(page.locator('#pantry-app + div')).toContainText("CRUMB tours from its own folder or the project it is reviewing");
+  await expect(page.locator("#architecture").locator("xpath=following-sibling::p[2]")).toContainText("same four core layers");
+  await expect(page.locator("#architecture").locator("xpath=following-sibling::p[2]")).toContainText("PANTRY can additionally serve CRUMB tours when configured");
 
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await flow.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(

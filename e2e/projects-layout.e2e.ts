@@ -52,6 +52,11 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(page.locator(".project-related-grid")).toContainText("Every action passes through one door");
     await expect(page.locator(".project-related-grid")).toContainText("I designed GRAIN");
     await expect(page.locator(".project-related-grid")).toContainText("I built PANTRY");
+    await expect(page.locator('#platform .project-feature__copy a[href="/notes/ten-times-zero"]')).toHaveText("a real note request");
+    await expect(page.locator('.project-related a[href="/grain#surface-demo"]')).toBeVisible();
+    await expect(page.locator('.project-related a[href="/grain/docs/ai-interface"]')).toBeVisible();
+    await expect(page.locator('.project-related a[href="/pantry/docs/what-it-composes"]')).toBeVisible();
+    await expect(page.locator('.project-related a[href="/pantry"]', { hasText: "install example" })).toBeVisible();
     await expect(page.locator("#tools .project-proof")).toContainText("I built it");
     await expect(page.locator("#platform .project-feature__copy")).toContainText("I built BATCH");
     await expect(page.locator("#teaching .project-feature__copy")).toContainText("I designed and built");

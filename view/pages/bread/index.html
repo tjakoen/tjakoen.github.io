@@ -17,7 +17,8 @@
     <p class="lede">Every page here runs on BREAD. <span class="name">BATCH</span> serves the pages;
       <span class="name">GRAIN</span> supplies the design system; <span class="name">MILL</span> renders the content;
       <span class="name">PROOF</span> holds the plans; <span class="name">CRUMB</span> runs the guided tour.
-      <span class="name">PANTRY</span> composes those layers into an installable docs app.</p>
+      <span class="name">PANTRY</span> is the installable app that composes the four core layers. Its
+      review cockpit can also use <span class="name">CRUMB</span> tours.</p>
     <nav class="project-links" aria-label="BREAD stack links">
       <a href="https://github.com/tjakoen/bread" target="_blank" rel="noopener noreferrer">Browse the stack source on GitHub</a>
       <a href="/projects">Return to all projects</a>
@@ -91,7 +92,8 @@
         <div class="work-card__head"><span class="work-card__name name">🥫 PANTRY</span><span class="work-card__kind">Dev-docs cockpit</span></div>
         <span class="flag">Live · installable app</span>
         <p class="card__body">PANTRY is an installable server, AI-legible not AI-powered (it runs no model), that composes
-          BATCH, GRAIN, MILL, and PROOF into one project's docs and plan board. Drop it into any repo; it's the
+          BATCH, GRAIN, MILL, and PROOF into one project's docs and plan board. Its review cockpit can use
+          CRUMB tours from its own folder or the project it is reviewing. Drop it into any repo; it's the
           neutral, project-agnostic sibling of this site.</p>
         <span class="work-card__go">See the cockpit →</span>
       </a>
@@ -110,7 +112,7 @@
       <li><strong><a href="/grain">GRAIN</a></strong><span>BATCH's renderer expands the shared interface components used by the note and shell.</span></li>
       <li><strong>BATCH</strong><span>The server returns a complete HTML document. The browser follows an ordinary page link; no client-side router takes over.</span></li>
     </ol>
-    <p class="muted">The stack is composed where a request needs it. PROOF serves the plans board, while CRUMB serves the tour data used by the guided walkthrough.</p>
+    <p class="muted">Each app mounts what its routes need. PROOF serves the plans board; CRUMB serves the portfolio tour. PANTRY can host its own review tours or read tours from a project it proxies.</p>
     </section>
 
     <h2 class="section-head" id="architecture"><span>One direction of dependency</span></h2>
@@ -119,8 +121,10 @@
       sits above both, and <span class="name">PROOF</span> sits above MILL. <span class="name">CRUMB</span> sits
       at that same altitude, also above GRAIN and MILL, reusing GRAIN's lamp and MILL's parser rather than
       shipping either again. That purity is what lets each become its own repo once proven.</p>
-    <p class="lede">PANTRY (and this portfolio) mount all four into one running server: two composition roots,
-      one stack, honest about which parts are live and which are still building.</p>
+    <p class="lede">PANTRY (and this portfolio) mount the same four core layers into one running server: two
+      composition roots, one stack. PANTRY can additionally serve CRUMB tours when configured; this
+      portfolio mounts CRUMB for its own walkthrough. Both stay honest about which parts are live and
+      which are still building.</p>
 
     <div class="page-foot">
       Part of <a href="/">tjakoen.github.io</a>, built with itself, on the very stack it describes.
