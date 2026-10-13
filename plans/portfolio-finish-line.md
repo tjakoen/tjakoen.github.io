@@ -638,6 +638,11 @@ proof remain open below.
       quality. The physical-phone cold-start measurement remains open. See the
       [full Builder audit](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-full-webgpu-2026-10-14.json) and the
       [three sentence rechecks](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-mixed-complete-sentence-repeats-2026-10-14.json).
+      The authorized local Qwen2.5-3B comparison also passed the six guarded drafts, but its raw
+      answers still included unsupported copy or malformed block names and warm responses took 17 to
+      76 seconds. The 1.5B profile remains shipped; this model-size comparison is closed without a
+      promotion. Its reports are [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json)
+      and [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-2026-10-14.json). The raw-writing acceptance bar and a physical-phone cold-start check remain open.
 
 ## Done means
 
