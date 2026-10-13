@@ -442,7 +442,7 @@ copy edits appear to work.
       refusal, and page drafting. In the second run, the model chose b2 for the relative request to
       remove the second card; the proposal disclosed the mismatch and the visitor approved the
       corrected b4 target. This verifies the reviewed workflow on this cached desktop model, not
-      unassisted model accuracy or performance on other devices. The [October 13 WebGPU recheck](../audit/builder-webgpu-recheck-2026-10-13.md)
+      unassisted model accuracy or performance on other devices. The [October 13 WebGPU recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-webgpu-recheck-2026-10-13.md)
       keeps the method and four JSON captures with this plan.
 
 On October 13, a fresh focused WebGPU run scored 7/8 across the six edit requests, one copy-edit
@@ -529,7 +529,7 @@ start remains unmeasured.
       proof of raw-model quality. Close this only after repeated briefs keep supplied names, places,
       and phrases in their requested fields without unsupported claims or blocks. The October 14
       before-and-after captures are in
-      [the grounded-sentence follow-up](../audit/builder-grounded-sentence-followup-2026-10-14.md).
+      [the grounded-sentence follow-up](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-grounded-sentence-followup-2026-10-14.md).
 - [ ] Measure the Builder's cold start on actual phone hardware. A desktop WebGPU run, even at a
       phone-sized viewport, does not establish phone memory, download, or generation performance.
       The 0.5B scored 2/8 in each of two October 11 runs;
@@ -591,7 +591,7 @@ page discloses local inference, first-use model downloads of about 875 MB
 or 350 MB, and the need to review generated copy. Two additional October 13 desktop WebGPU audits
 each passed eight reviewed scenarios with the model cached; both reused the same brief, so they do
 not measure cold start or broad writing reliability. See
-[the WebGPU recheck](../audit/builder-webgpu-recheck-2026-10-13.md). Resume the phone test when a
+[the WebGPU recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-webgpu-recheck-2026-10-13.md). Resume the phone test when a
 physical handset is available and record model selection, uncached transfer, load duration,
 generation duration, memory pressure, and whether the page remains usable.
 
@@ -614,7 +614,7 @@ quality check is still incomplete. The source fix is verified in unit and browse
 behavior against the live model is not yet verified. The full test suite passed 722 tests locally
 and the portfolio typecheck passed. A second post-fix retry hit the same CDN failure for both briefs;
 its saved report records zero model answers and two not-run scenarios. See
-[the retry report](../audit/builder-phrase-placement-notrun-recheck-2026-10-13.json).
+[the retry report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-placement-notrun-recheck-2026-10-13.json).
 
 A later repeat reused the stable `localhost:3131` origin where Chromium had the model cached. Two
 varied briefs, for a bike shop and pottery studio, each passed three times after source reconciliation.
@@ -622,9 +622,9 @@ The saved draft fields show the shop description in `lede.body` and “ready for
 `card.body`; both pottery captures also passed the phrase requirement in its named card. The raw
 model answer still misplaced or shortened some wording, so these passes measure the code-guarded
 reviewable composition, not unassisted model accuracy or polished copy. The three reports are
-[first run](../audit/builder-phrase-scoped-description-live-1-2026-10-13.json),
-[second](../audit/builder-phrase-scoped-description-live-2-2026-10-13.json), and
-[third](../audit/builder-phrase-scoped-description-live-3-2026-10-13.json). The earlier CDN
+[first run](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-1-2026-10-13.json),
+[second](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-2-2026-10-13.json), and
+[third](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-phrase-scoped-description-live-3-2026-10-13.json). The earlier CDN
 failures remain no-run results from new local origins, not failures of the later cached runs. A cold
 start on an actual phone and broader writing reliability remain open.
 
@@ -634,12 +634,12 @@ puts the description in the model's card answer and verifies that reconciliation
 intro. A warm live run passed 1/1 for the “intro for” variant, with the description in `lede.body` and
 the separate requested phrase in `card.body`; this demonstrates guarded placement, not an accurate
 or polished raw model answer. See the
-[live report](../audit/builder-intro-for-live-2026-10-13.json).
+[live report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-intro-for-live-2026-10-13.json).
 
 On October 14, I tested a shorter prompt with explicit field destinations against four warm WebGPU
 briefs. The guarded result passed all four, but the raw answers still misplaced bike-shop wording,
 omitted a supplied city, and added unsupported claims. The candidate did not improve raw field
-placement or grounding, so I restored the previous prompt. The [experiment record](../audit/builder-field-map-prompt-experiment-2026-10-14.md)
+placement or grounding, so I restored the previous prompt. The [experiment record](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-field-map-prompt-experiment-2026-10-14.md)
 contains the raw capture and explains why the candidate was not shipped.
 
 The audit previously wrote “unspecified” as the model for live WebGPU runs. The selected profile is
@@ -649,7 +649,7 @@ Its raw answer still invented more than twenty years of service, reliable and af
 an adventure claim. The guard removed those additions and restored the requested field wording.
 This proves the guarded result on one prompt, not reliable raw writing. Older captures remain
 unassigned and cannot be retroactively attributed to a profile. See the
-[profile check](../audit/builder-live-model-profile-2026-10-14.md).
+[profile check](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-live-model-profile-2026-10-14.md).
 
 On October 14, a negative-instruction regression showed that the source-anchor guard could promote
 forbidden quoted text and dates into required draft content. The guard now skips anchors in nearby
@@ -659,9 +659,9 @@ on the Builder's 1.5B profile passed their visible-copy requirements: each kept 
 and location, omitted the forbidden bakery claim and opening year, and reduced the intro to
 source-supported words. Raw responses still proposed unsupported details and blocks; the audit
 checks the guarded result, not reliable raw model writing. See the
-[negative-anchor audit](../audit/builder-negative-anchor-guard-2026-10-14.md), the
-[“do not” live report](../audit/builder-negative-anchor-live-2026-10-14.json), and the
-[“avoid / leave out” live report](../audit/builder-negative-anchor-check-2026-10-14.json). Broader
+[negative-anchor audit](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-negative-anchor-guard-2026-10-14.md), the
+[“do not” live report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-negative-anchor-live-2026-10-14.json), and the
+[“avoid / leave out” live report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-negative-anchor-check-2026-10-14.json). Broader
 raw-writing quality, natural-language editing, and a real phone cold-start remain open.
 
 After deployment, headless production checks selected the 0.5B profile at 1280px and 390px. Both
@@ -684,7 +684,7 @@ those capitalized instructions cannot become positive anchors. Hosted CI passed 
 cases, 728 unit tests, typecheck, and the lint baseline. The Pages build and deployment passed, and
 the published `block-composer.js` contains the expanded filter. A third live WebGPU case passed with
 three forbidden details and a required positive phrase retained in `lede.body`. Its report is
-[here](../audit/builder-mixed-prohibitions-live-2026-10-14.json). This remains a targeted guard check,
+[here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-mixed-prohibitions-live-2026-10-14.json). This remains a targeted guard check,
 not evidence of reliable raw writing. The broader writing and physical-phone cold-start items remain
 open.
 
@@ -699,8 +699,8 @@ Two warm live rechecks passed with the model's raw answers proposing “organic 
 ingredients”; neither suggestion appeared in the reviewed result. The live grader now checks those
 prohibited terms separately. After the span-boundary fix, a third live recheck passed and retained
 the required intro phrase. See the
-[cross-sentence unit regression and audit record](../audit/builder-negative-anchor-guard-2026-10-14.md)
-and [latest live report](../audit/builder-negative-span-recheck-2026-10-14.json). This protects the
+[cross-sentence unit regression and audit record](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-negative-anchor-guard-2026-10-14.md)
+and [latest live report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-negative-span-recheck-2026-10-14.json). This protects the
 visible composition for these tested forms; broad semantic claim detection and raw-writing quality
 remain open. The code and captures are being prepared for release in the next increment.
 
@@ -736,9 +736,9 @@ of the exact phrase after the sentence-builder change passed 1/1 and excluded al
 terms. The raw model answers still invented locations, an owner, opening hours, and other unsupported
 claims, or put requested words in the wrong field. These results improve the visible guarded draft;
 they do not close the raw-writing item above. See the
-[five-case baseline](../audit/builder-reliability-varied-2026-10-14.json),
-[six-case follow-up](../audit/builder-reliability-postfix-2026-10-14.json), and
-[exact-phrase recheck](../audit/builder-exact-intro-phrase-2026-10-14.json). Local verification
+[five-case baseline](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-reliability-varied-2026-10-14.json),
+[six-case follow-up](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-reliability-postfix-2026-10-14.json), and
+[exact-phrase recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-exact-intro-phrase-2026-10-14.json). Local verification
 passed 736 unit tests, 74 Builder browser cases, typecheck, link lint, and the lint baseline. The
 review now distinguishes verbatim wording from sentences composed from brief details and still says
 that its checks cannot verify claims. Commit `af142b7` released the code and captures. Hosted CI on
@@ -751,7 +751,7 @@ A temporary prompt rule asked the local model to quote one exact, contiguous phr
 each copy field. A six-scenario warm run still produced unsupported raw details in the bakery,
 bike-shop, and pottery cases. All six reviewed drafts passed after source reconciliation, which does
 not establish that the prompt improved raw writing. The rule was removed. The comparison and its
-limitations are recorded in the [source-quote prompt check](../audit/builder-source-quote-prompt-2026-10-14.md).
+limitations are recorded in the [source-quote prompt check](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-source-quote-prompt-2026-10-14.md).
 The raw-writing requirement remains open.
 
 ## Zero-temperature check, October 14
@@ -759,7 +759,7 @@ The raw-writing requirement remains open.
 I also compared one six-brief run at structured-completion temperature 0.0 with the previous 0.2
 setting. Both runs passed after source reconciliation, but the zero-temperature raw answers still
 invented details, proposed surplus blocks, and repeated a prohibited “organic” claim. The original
-setting was restored. The [zero-temperature audit](../audit/builder-zero-temperature-experiment-2026-10-14.md)
+setting was restored. The [zero-temperature audit](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-zero-temperature-experiment-2026-10-14.md)
 records the raw outputs and the limits of this single-run comparison. Raw-writing reliability remains
 open.
 
@@ -801,6 +801,11 @@ sentence composer replaced those suggestions in the reviewed draft. See the
 [three-run live report](builder-mixed-complete-sentence-repeats-2026-10-14.json). This makes the
 specific visitor-facing form repeatable in these checks; broad semantic writing quality remains
 open. A physical-phone cold-start measurement is still required.
+
+Checking the published plan pages also exposed a broken evidence path: relative `../audit/` links
+passed repository link lint, but the static export does not publish the `audit/` directory. The
+Builder plan and portfolio finish-line plan now link their 33 audit records to the public GitHub
+source files. All 33 targets returned HTTP 200.
 
 ## Done means
 
