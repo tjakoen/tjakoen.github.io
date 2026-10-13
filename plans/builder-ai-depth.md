@@ -474,6 +474,22 @@ correctly kept the location warning when the draft omitted it, but the compariso
 it cannot detect every unsupported claim or determine whether a sentence is true. The audit harness
 now saves both review cues with the unedited output before approval. Repeated grounded-draft quality
 remains open.
+
+Later on October 13, the model boundary gained a source reconciliation step. When the visitor names
+block types or counts that the code matcher recognizes, surplus model blocks are removed and omitted
+requested blocks are restored. Each proposed text field is reduced to its longest supported source
+phrase or left at component sample copy; detected names, quoted phrases, and numbers missing from
+the result are carried into the first available body field. Nearby negation prevents a phrase from
+being extracted as a positive claim from negative source text. The review summary reports removed
+blocks and changed wording, and the success message names the reconciled composition rather than the
+raw model answer. The cached-WebGPU run
+.cache/desk-audit/report-builder-reconciled-grounded.json passed its single draft scenario in
+24 seconds: the model proposed an extra callout and embellished both requested blocks, while the
+reviewable composition contained only the requested intro and card, retained Hearth Bakery and
+Utrecht, and kept “neighborhood bakery” and “baked fresh each morning” from the brief. This measures
+one code-guarded scenario, not model-authored copy quality, repeated reliability, or claim truth.
+Run repeated briefs before describing the Builder as a dependable page writer. Physical-phone cold
+start remains unmeasured.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,

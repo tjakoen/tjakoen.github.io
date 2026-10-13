@@ -8,7 +8,8 @@
 import { test, expect, describe } from "bun:test";
 import {
   BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
-  COMPLETION_TIMEOUT_MS, briefAnchors, briefAnchorsMissingFromDraft, termsOutsideBrief,
+  COMPLETION_TIMEOUT_MS, briefAnchors, briefAnchorsMissingFromDraft, groundBlockCopy,
+  reconcileBuildPlan, termsOutsideBrief,
 } from "./block-composer.ts";
 import { BLOCK_NAMES, composeFromNames, sanitizeBlockCopy } from "./block-set.ts";
 
@@ -120,6 +121,53 @@ describe("nothing the model says is trusted", () => {
 });
 
 describe("generated block copy is bounded by each component's visible text contract", () => {
+  test("model copy is reduced to the longest exact phrase supplied in the brief", () => {
+    const brief = "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.";
+    const lede = groundBlockCopy(brief, "lede", {
+      body: "Hearth Bakery is a neighborhood bakery, where fresh bread is baked every morning.",
+    });
+    const card = groundBlockCopy(brief, "card", {
+      title: "Sourdough",
+      body: "Our Sourdough is a staple in the Utrecht neighborhood, baked fresh each morning.",
+    });
+    const callout = groundBlockCopy(brief, "callout", { body: "Learn more about our daily bread." });
+
+    expect(lede.copy).toEqual({ body: "neighborhood bakery" });
+    expect(card.copy).toEqual({ title: "Sourdough", body: "baked fresh each morning" });
+    expect(callout.copy).toEqual({});
+    expect(lede.changedFields).toEqual(["body"]);
+    expect(card.changedFields).toEqual(["body"]);
+    expect(callout.changedFields).toEqual(["body"]);
+    expect(card.copy.body).not.toContain("staple");
+    for (const phrase of [...Object.values(lede.copy), ...Object.values(card.copy)]) {
+      expect(brief.toLocaleLowerCase()).toContain(phrase.toLocaleLowerCase());
+    }
+  });
+
+  test("a source phrase inside a negated claim cannot be extracted as a positive claim", () => {
+    expect(groundBlockCopy("This is not a bakery.", "lede", { body: "A bakery welcomes every visitor." }).copy)
+      .toEqual({});
+    expect(groundBlockCopy("The loaf is not fresh bread.", "card", { body: "Fresh bread today." }).copy)
+      .toEqual({});
+  });
+
+  test("explicit block requests bound the model plan and keep missing anchors visible", () => {
+    const brief = "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card", "callout"], [
+      { body: "Hearth Bakery is a neighborhood bakery, a place where you can enjoy fresh, hand-crafted bread every morning." },
+      { title: "Sourdough", body: "Baked fresh each morning, our Sourdough is a staple in the Utrecht neighborhood." },
+      { body: "Learn more about our daily bread." },
+    ]);
+
+    expect(reconciled.names).toEqual(["lede", "card"]);
+    expect(reconciled.droppedBlocks).toBe(1);
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery · Utrecht · neighborhood bakery");
+    expect(reconciled.copies[1]?.copy).toEqual({
+      title: "Sourdough",
+      body: "baked fresh each morning",
+    });
+  });
+
   test("the review aid finds named details, quoted phrases, and numeric values missing from a draft", () => {
     const brief = "Build a Hearth Bakery page in Utrecht for the ‘Morning Loaf’, founded in 2019.";
     expect(briefAnchors(brief)).toEqual(["Hearth Bakery", "Utrecht", "Morning Loaf", "2019"]);
@@ -129,6 +177,8 @@ describe("generated block copy is bounded by each component's visible text contr
       .toEqual(["Ann"]);
     expect(briefAnchors("Build a page for Hearth Bakery in Utrecht. Add an intro and a card."))
       .toEqual(["Hearth Bakery", "Utrecht"]);
+    expect(briefAnchors("Keep __builderXss=true as literal text."))
+      .not.toContain("Xss");
   });
 
   test("the review aid lists meaningful words that are absent from the visitor's brief", () => {
