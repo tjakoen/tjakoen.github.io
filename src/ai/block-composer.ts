@@ -449,11 +449,17 @@ function firstObject(raw: string): string | null {
   return null;
 }
 
-/** The set membership test, folded so casing and stray spacing never decide a block's fate. */
+/** The set membership test, folded so casing and stray spacing never decide a block's fate. One
+ *  observed local model also joined a block name and the word `span` into one value such as
+ *  `ledespanfull`, despite being given separate schema fields. Strip that exact, unambiguous suffix;
+ *  never choose a nearest name or keep the appended layout instruction. */
 const canonical = (value: unknown, names: readonly string[]): string | null => {
   if (typeof value !== "string") return null;
   const folded = value.trim().toLowerCase();
-  return names.find((n) => n === folded) ?? null;
+  const exact = names.find((name) => name === folded);
+  if (exact) return exact;
+  return names.find((name) => folded.startsWith(name)
+    && /^span(?:full|half|third)$/u.test(folded.slice(name.length))) ?? null;
 };
 
 /** Turn a raw completion into a plan, or say why it is not one.

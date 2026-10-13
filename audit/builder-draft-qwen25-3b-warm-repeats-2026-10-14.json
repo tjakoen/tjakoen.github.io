@@ -1,0 +1,104 @@
+{
+  "label": "builder-draft-qwen25-3b-warm-repeats-2026-10-14",
+  "base": "http://localhost:3131",
+  "model": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+  "passed": 1,
+  "failed": 1,
+  "notRun": 0,
+  "total": 2,
+  "results": [
+    {
+      "id": "builder-draft",
+      "ask": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added card and lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 27040,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Sourdough",
+        "baked fresh each morning",
+        "Hearth Bakery is a neighborhood bakery in Utrecht."
+      ],
+      "draftFields": [
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Sourdough"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "baked fresh each morning"
+        },
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery is a neighborhood bakery in Utrecht."
+        }
+      ],
+      "draftEvidence": "The Builder adjusted or omitted model wording in 2 fields. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "No new content words found. Word overlap cannot confirm a claim is true.",
+        "This field uses wording from your brief: “baked fresh each morning”.",
+        "The Builder composed this field from details in your brief: “Hearth Bakery is a neighborhood bakery in Utrecht.”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"leden\",\n      \"copy\": {\n        \"body\": \"Welcome to Hearth Bakery in Utrecht, your neighborhood bakery where every loaf is baked fresh each morning.\"\n      }\n    },\n    {\n      \"name\": \"card\",\n      \"copy\": {\n        \"title\": \"Sourdough\",\n        \"body\": \"Our signature sourdough is a testament to our commitment to traditional baking methods, each loaf a testament to the art of craftsmanship.\"\n      }\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-mixed-prohibitions",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Composed from the words in that sentence. The desk answered with nothing this set can build.",
+      "endPath": "/grain/builder",
+      "ms": 49887,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [],
+      "draftFields": [],
+      "draftEvidence": "review panel unavailable",
+      "draftFieldEvidence": [],
+      "draftBlocks": 0,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"ledespanfull\",\n      \"copy\": {\n        \"body\": \"Welcome to Hearth Bakery in Utrecht, where we offer freshly baked treats in our neighborhood bakery.\"\n      }\n    },\n    {\n      \"name\": \"cardspanfull\",\n      \"copy\": [\n        {\n          \"title\": \"Fresh Baked Goods\",\n          \"body\": \"From morning pastries to afternoon snacks, our bakery is your go-to spot for delicious treats.\"\n        },\n        {\n          \"title\": \"Supporting Local\",\n          \"body\": \"We source our ingredients from local farms and markets to support our community.\"\n        },\n        {\n          \"title\": \"Family-Owned\",\n          \"body\": \"For over a decade, we've been crafting our own unique flavors with love and care.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"callouthalf\",\n      \"copy\": {\n        \"body\": \"Join us for a taste of Utrecht's best neighborhood bakery experience.\"\n      }\n    },\n    {\n      \"name\": \"statspanfull\",\n      \"copy\": [\n        {\n          \"value\": \"100\",\n          \"label\": \"Years\",\n          \"sub\": \"In business since 2012\"\n        }\n      ]\n    },\n    {\n      \"name\": \"formhalf\",\n      \"copy\": [\n        {\n          \"label\": \"Contact Us\",\n          \"body\": \"For more information or to schedule a visit, please fill out the form below.\"\n        }\n      ]\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "failed",
+      "pass": false,
+      "failures": [
+        "draft has 0 blocks, wanted at least 1",
+        "draft copy is missing any of [Hearth Bakery]",
+        "draft copy is missing any of [Utrecht]",
+        "draft copy is missing any of [neighborhood bakery]",
+        "lede.body is missing any of [neighborhood bakery]",
+        "lede.body did not match an expected complete value"
+      ]
+    }
+  ]
+}

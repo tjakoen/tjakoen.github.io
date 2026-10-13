@@ -1,0 +1,50 @@
+{
+  "label": "builder-draft-qwen25-3b-parser-recheck-2026-10-14",
+  "base": "http://localhost:3131",
+  "model": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+  "passed": 1,
+  "failed": 0,
+  "notRun": 0,
+  "total": 1,
+  "results": [
+    {
+      "id": "builder-draft-mixed-prohibitions",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 30424,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery is a neighborhood bakery in Utrecht."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery is a neighborhood bakery in Utrecht."
+        }
+      ],
+      "draftEvidence": "The model's 2 unrequested blocks were removed. The Builder adjusted or omitted model wording in 1 field. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery is a neighborhood bakery in Utrecht.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-3B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"ledespanfull\",\n      \"copy\": {\n        \"body\": \"Welcome to Hearth Bakery in Utrecht, a neighborhood bakery where you can find freshly baked goods and delicious treats made with love.\"\n      }\n    },\n    {\n      \"name\": \"cardspanfull\",\n      \"copy\": [\n        {\n          \"title\": \"Fresh Baked Goods\",\n          \"body\": \"From morning pastries to afternoon cakes, our bakery offers a variety of delicious treats that are made daily in-house.\"\n        },\n        {\n          \"title\": \"Supporting Local Farmers\",\n          \"body\": \"We partner with local farmers to source the freshest ingredients, ensuring our baked baked goods are both tasty and sustainable.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"callouthalf\",\n      \"copy\": {\n        \"body\": \"Join us for a taste of Utrecht's best baked treats!\"\n      }\n    },\n    {\n      \"name\": \"statspanfull\",\n      \"copy\": [\n        {\n          \"value\": \"100\",\n          \"label\": \"Years\",\n          \"sub\": \"In business since 2010\"\n        }\n      ]\n    },\n    {\n      \"name\": \"formhalf\",\n      \"copy\": {\n        \"title\": \"Contact Us\",\n        \"body\": \"For more information or to place an order, please fill out the form below.\"\n      }\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    }
+  ]
+}
