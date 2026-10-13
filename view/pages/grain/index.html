@@ -114,8 +114,10 @@
         <span class="offline-hint">desk offline: live demo unavailable</span>
       </h2>
       <p class="site__why">A real GRAIN composition, operated through the <b>one door</b>. <b>Ask it something</b>
-        yourself, or <b>watch the AI act</b>: both post the same Intent to <span class="name">/intent</span> and
-        render back over SSE. There is no privileged AI&nbsp;→&nbsp;DOM path; the same page powers this demo.</p>
+        yourself, or <b>watch the AI act</b>: both use the same GRAIN door and dispatcher. On this static
+        site, the browser client door keeps each action in your tab; <em>bun run dev:stub</em> shows the
+        server door, which posts to <span class="name">/intent</span> and streams operations over SSE.
+        There is no privileged AI&nbsp;→&nbsp;DOM path; the same page powers this demo.</p>
 
       <div class="surface" data-surface="screen" data-surface-demo>
         <nav class="surface__rail" data-surface="grain-rail" aria-label="Views">
