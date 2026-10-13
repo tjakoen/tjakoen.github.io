@@ -643,6 +643,12 @@ proof remain open below.
       76 seconds. The 1.5B profile remains shipped; this model-size comparison is closed without a
       promotion. Its reports are [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json)
       and [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-2026-10-14.json). The raw-writing acceptance bar and a physical-phone cold-start check remain open.
+      A fresh two-run audit of the six 1.5B Builder briefs passed all 12 visitor-facing drafts,
+      including field placement, required phrases, and prohibited wording. Raw answers continued to
+      invent service history, staff experience, sourcing, opening claims, and unrequested blocks;
+      source reconciliation removed or corrected them before review. This confirms repeatability
+      of the guarded desktop experience, not reliability of the model's raw writing. See the
+      [two-run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json).
 
 ## Done means
 

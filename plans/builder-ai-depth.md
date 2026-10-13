@@ -813,6 +813,16 @@ answer beside the reviewed draft. The remaining writing acceptance bar is zero u
 same six briefs in two consecutive warm runs, with requested wording in its named fields. The raw
 answers must be reviewed directly; passing the guarded grader alone does not meet this bar. See the [published source capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-recheck-2026-10-14.json).
 
+I reran those six briefs twice on the same cached 1.5B profile. All 12 reviewed drafts passed the
+existing field-aware visitor grader, and every output retained its required names and phrases in
+the requested fields. The raw responses still failed the stricter writing bar: they invented
+details such as a Malmö service history, experienced technicians, locally sourced ingredients,
+opening claims, and extra blocks. One bike-shop card also moved requested wording into its title;
+the reviewed draft restored it to the requested body field. The [12-case report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json)
+records raw and reviewed copy for both runs. The visitor-facing path is repeatable on this warm
+desktop profile; raw-model writing reliability remains unresolved, and this run does not measure a
+physical-phone cold start.
+
 ## Local 3B comparison, October 14
 
 I downloaded the MLC Qwen2.5-3B profile into the local WebLLM browser cache and compared it with the
