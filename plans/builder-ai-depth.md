@@ -574,6 +574,40 @@ supplied bakery name, city, and requested product wording, but invented artisana
 claims. The sampled timing has ten-second resolution and is not an exact generation duration.
 See audit/builder-cold-2026-10-12.md for the capture method and visible output.
 
+The October 13 device check ran on the available MacBook Air. Its USB inventory contained no iPhone
+or Android device, and Xcode listed no available simulator. Emulated phone widths remain useful for
+layout checks but cannot measure model compatibility, memory pressure, download, or generation on a
+phone. The current Builder page discloses local inference, first-use model downloads of about 875 MB
+or 350 MB, and the need to review generated copy. Two additional October 13 desktop WebGPU audits
+each passed eight reviewed scenarios with the model cached; both reused the same brief, so they do
+not measure cold start or broad writing reliability. See
+[the WebGPU recheck](../audit/builder-webgpu-recheck-2026-10-13.md). Resume the phone test when a
+physical handset is available and record model selection, uncached transfer, load duration,
+generation duration, memory pressure, and whether the page remains usable.
+
+## Phrase placement and model availability, October 13
+
+Two additional live briefs exposed a gap the repeated bakery prompt had not: a bike-shop draft
+shortened “ready for the next ride” in the requested card, while a pottery draft retained its phrase.
+An earlier page-wide audit later reported 2/2 even though the bike phrase appeared only in the intro
+and the card still showed GRAIN's sample copy. The scorer now requires the phrase in `card.body`.
+When the model misses wording explicitly assigned to an intro, card, or callout, reconciliation puts
+the source phrase in that block's body and replaces nonmatching generated text in that field.
+
+The unit suite covers both phrase placement and the audit's former false positive. The Builder's 73
+browser cases cover the reviewed card draft and a missing model response. The latter now says that the
+desk did not return a draft and that the visible page was composed from the visitor's words. The
+latest varied WebGPU attempt could not load model weights: Chromium's Cache API reported a network
+failure fetching shards from the Hugging Face CDN, so neither brief produced a model answer. The
+audit records these as “not run,” not as failed model answers, and exits nonzero because the live
+quality check is still incomplete. The source fix is verified in unit and browser tests, but its
+behavior against the live model is not yet verified. The full test suite passed 722 tests locally
+and the portfolio typecheck passed. A second post-fix retry hit the same CDN failure for both briefs;
+its saved report records zero model answers and two not-run scenarios. See
+[the retry report](../audit/builder-phrase-placement-notrun-recheck-2026-10-13.json). The Builder's
+first-screen note now gives the single cached pass its proper context and discloses that live
+verification remains incomplete. Physical-phone cold start also remains open.
+
 ## Done means
 
 The current browser model can build a useful first draft from a visitor's brief and complete the

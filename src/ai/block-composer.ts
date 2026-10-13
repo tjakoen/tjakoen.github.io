@@ -91,12 +91,14 @@ const DRAFT_VERBS = new Set([
 ]);
 const ANCHOR = /(?<![\p{L}\p{N}_])[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
+const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^.!?]+?)(?=[.!?]|$)/giu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 
 /** Detect a small, reviewable set of exact details that a draft should preserve.
  *
- * This deliberately catches only capitalized names, quoted phrases, and numeric values. It is a
- * reminder for human review, not entity recognition or proof that the remaining brief was covered.
+ * This catches capitalized names, quoted phrases, wording introduced with "with the words/phrase",
+ * and numeric values. It is a reminder for human review, not entity recognition or proof that the
+ * remaining brief was covered.
  */
 export function briefAnchors(brief: string): string[] {
   const found: Array<{ value: string; index: number }> = [];
@@ -106,7 +108,7 @@ export function briefAnchors(brief: string): string[] {
     if (DRAFT_VERBS.has(first ?? "") || value.length < 2) continue;
     found.push({ value, index: match.index ?? 0 });
   }
-  for (const pattern of [QUOTED, NUMBER]) {
+  for (const pattern of [QUOTED, REQUESTED_WORDING, NUMBER]) {
     for (const match of brief.matchAll(pattern)) {
       found.push({ value: (match[1] ?? match[0]).trim(), index: match.index ?? 0 });
     }
@@ -130,6 +132,21 @@ export function briefAnchorsMissingFromDraft(brief: string, copy: string): strin
     const expected = tokens(anchor);
     return !copyTokens.some((_, index) => expected.every((term, offset) => copyTokens[index + offset] === term));
   });
+}
+
+function requestedWordingTargets(brief: string): Array<{ phrase: string; block: string | null }> {
+  const aliases: Record<string, string> = {
+    intro: "lede", introduction: "lede", lede: "lede", card: "card", callout: "callout",
+  };
+  return [...brief.matchAll(REQUESTED_WORDING)].map((match) => {
+    const phrase = (match[1] ?? "").trim();
+    const before = brief.slice(0, match.index ?? 0);
+    const boundary = Math.max(before.lastIndexOf("."), before.lastIndexOf("!"), before.lastIndexOf("?"), before.lastIndexOf(";"));
+    const context = before.slice(boundary + 1);
+    const mentions = [...context.matchAll(/\b(intro(?:duction)?|lede|card|callout)\b/giu)];
+    const marker = mentions.at(-1)?.[1]?.toLocaleLowerCase();
+    return { phrase, block: marker ? aliases[marker] ?? null : null };
+  }).filter((entry) => entry.phrase.length > 0);
 }
 
 /** List meaningful generated words that do not appear in the brief. This is a review aid, not a
@@ -256,6 +273,18 @@ export function reconcileBuildPlan(
   }
 
   const grounded = keptNames.map((name, index) => groundBlockCopy(brief, name, keptCopies[index]));
+  for (const { phrase, block } of requestedWordingTargets(brief)) {
+    if (!block) continue;
+    const target = grounded.findIndex((result, index) => keptNames[index] === block
+      && blockCopyLimit(block, "body") !== null);
+    if (target < 0) continue;
+    const copy = grounded[target]!.copy;
+    const prior = copy.body ?? "";
+    const foldedPhrase = phrase.toLocaleLowerCase();
+    if (prior.toLocaleLowerCase().includes(foldedPhrase)) continue;
+    copy.body = phrase;
+    if (!grounded[target]!.changedFields.includes("body")) grounded[target]!.changedFields.push("body");
+  }
   const missing = briefAnchorsMissingFromDraft(
     brief,
     grounded.flatMap((result) => Object.values(result.copy)).join(" "),

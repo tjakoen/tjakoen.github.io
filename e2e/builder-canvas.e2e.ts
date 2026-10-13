@@ -64,9 +64,9 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("Before source reconciliation, only one of three warm drafts kept Utrecht");
-    await expect(page.locator(".wb-bar__note")).toContainText("A post-guard WebGPU draft check passed 1/1 in 24 seconds");
-    await expect(page.locator(".wb-bar__note")).toContainText("One case does not establish repeatability or truth");
+    await expect(page.locator(".wb-bar__note")).toContainText("One cached draft passed after code reconciliation, but varied briefs exposed a phrase-placement miss");
+    await expect(page.locator(".wb-bar__note")).toContainText("two live retries could not download model files");
+    await expect(page.locator(".wb-bar__note")).toContainText("live verification remains open");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
     await expect(help).toContainText("The first request took 50 seconds");
@@ -467,6 +467,10 @@ function draftAnswer(prompt) {
       : { title: "Coffee", body: "Baked fresh each morning, our coffee is perfect." } },
     { name: "callout", copy: { body: "Learn more about our daily bread." } },
   ] });
+  if (/Northstar Bike Repair page/i.test(prompt)) return JSON.stringify({ blocks: [
+    { name: "lede", copy: { body: "Northstar Bike Repair is a family-run bike repair shop in Malmö." } },
+    { name: "card", copy: { title: "Tune-up", body: "Get your bike ready for the next adventure." } },
+  ] });
   if (/literal text/i.test(prompt)) return JSON.stringify({ blocks: [
     { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
   ] });
@@ -479,7 +483,10 @@ export async function loadEngine({ onProgress }) {
     const prompt = request.messages.map((message) => message.content).join("\\n");
     sessionStorage.setItem("__builderPrompt", prompt);
     sessionStorage.setItem("__builderSchema", request.response_format.schema);
-    return { choices: [{ message: { content: draftAnswer(prompt) } }] };
+    if (sessionStorage.getItem("__builderNoReply") === "true") throw new Error("no model response");
+    const raw = draftAnswer(prompt);
+    sessionStorage.setItem("__builderRaw", raw);
+    return { choices: [{ message: { content: raw } }] };
   } } } };
 }
 `;
@@ -609,6 +616,31 @@ test.describe("the model chooses the verb", () => {
       { body: "Hearth Bakery page about coffee in Utrecht." },
       { title: "Coffee and bread", body: "baked fresh each morning" },
     ]);
+  });
+
+  test("a shortened requested phrase is restored in the reviewable draft", async ({ page }) => {
+    await page.goto("/grain/builder");
+    await waitForDesk(page);
+    const brief = "Build a Northstar Bike Repair page in Malmö. Add an intro for a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.";
+    await submitPrompt(page, brief);
+
+    await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
+    await expect(page.locator('[data-draft-copy-block="b2"][data-draft-copy-field="body"]'))
+      .toHaveValue("ready for the next ride");
+    await expect(page.locator("[data-builder-draft-evidence]"))
+      .toContainText("Detected names, quoted phrases, and numbers appear in the draft.");
+    await expect(page.locator(ACCEPT_DRAFT)).toBeDisabled();
+  });
+
+  test("a missing draft names the word-list result without claiming the model read it", async ({ page }) => {
+    await page.goto("/grain/builder");
+    await waitForDesk(page);
+    await page.evaluate(() => sessionStorage.setItem("__builderNoReply", "true"));
+    await submitPrompt(page, "Add a card about coffee.");
+
+    await expect(page.locator(SAID))
+      .toHaveText("The desk did not return a draft. I composed the page from the words in your sentence instead.");
+    await expect(page.locator(CELL)).toHaveCount(1);
   });
 
   test("sample wording is identified until the visitor edits it", async ({ page }) => {

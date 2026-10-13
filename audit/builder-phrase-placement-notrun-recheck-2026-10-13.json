@@ -1,0 +1,97 @@
+{
+  "label": "builder-phrase-target-notrun-recheck-2026-10-13",
+  "base": "http://localhost:3144",
+  "model": "unspecified",
+  "passed": 0,
+  "failed": 0,
+  "notRun": 2,
+  "total": 2,
+  "results": [
+    {
+      "id": "builder-draft-bike-shop",
+      "ask": "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "The desk did not return a draft. I composed the page from the words in your sentence instead.",
+      "endPath": "/grain/builder",
+      "ms": 6351,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [],
+      "draftFields": [],
+      "draftEvidence": "review panel unavailable",
+      "draftFieldEvidence": [],
+      "draftBlocks": 0,
+      "model": {
+        "prompt": "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "(the model did not run)"
+      },
+      "browserErrors": [
+        "[desk] model load failed NetworkError: Failed to execute 'add' on 'Cache': Cache.add() encountered a network error",
+        "net::ERR_FAILED https://us.aws.cdn.hf.co/xet-bridge-us/66eb2849a25bcfe3269701d6/1e50ba9d51e8216a826ba67178116f31fa199f44115853d8285f93ce35c500f6",
+        "Failed to load resource: net::ERR_FAILED",
+        "net::ERR_FAILED https://us.aws.cdn.hf.co/xet-bridge-us/66eb2849a25bcfe3269701d6/6d1f0d55624f8e11dd128683eb717a4f28b2031f60107f3d8bece9e7d7198c83",
+        "Failed to load resource: net::ERR_FAILED",
+        "net::ERR_FAILED https://us.aws.cdn.hf.co/xet-bridge-us/66eb2849a25bcfe3269701d6/f3a5185b0834a31637914f563994593040642de867f27cf6142db19926d3fce3",
+        "Failed to load resource: net::ERR_FAILED",
+        "net::ERR_FAILED https://us.aws.cdn.hf.co/xet-bridge-us/66eb2849a25bcfe3269701d6/564ea9e90df1222ed40f20ee820578590bbda68357359c9e55bd03064553bae3",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "status": "not-run",
+      "notRunReason": "The model did not run, so this brief has no answer to grade.",
+      "pass": false,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-pottery-studio",
+      "ask": "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "The desk did not return a draft. I composed the page from the words in your sentence instead.",
+      "endPath": "/grain/builder",
+      "ms": 5405,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [],
+      "draftFields": [],
+      "draftEvidence": "review panel unavailable",
+      "draftFieldEvidence": [],
+      "draftBlocks": 0,
+      "model": {
+        "prompt": "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "(the model did not run)"
+      },
+      "browserErrors": [
+        "[desk] model load failed NetworkError: Failed to execute 'add' on 'Cache': Cache.add() encountered a network error",
+        "net::ERR_FAILED https://us.aws.cdn.hf.co/xet-bridge-us/66eb2849a25bcfe3269701d6/1e50ba9d51e8216a826ba67178116f31fa199f44115853d8285f93ce35c500f6",
+        "Failed to load resource: net::ERR_FAILED",
+        "net::ERR_FAILED https://us.aws.cdn.hf.co/xet-bridge-us/66eb2849a25bcfe3269701d6/f3a5185b0834a31637914f563994593040642de867f27cf6142db19926d3fce3",
+        "Failed to load resource: net::ERR_FAILED",
+        "net::ERR_FAILED https://us.aws.cdn.hf.co/xet-bridge-us/66eb2849a25bcfe3269701d6/564ea9e90df1222ed40f20ee820578590bbda68357359c9e55bd03064553bae3",
+        "Failed to load resource: net::ERR_FAILED",
+        "net::ERR_FAILED https://us.aws.cdn.hf.co/xet-bridge-us/66eb2849a25bcfe3269701d6/6d1f0d55624f8e11dd128683eb717a4f28b2031f60107f3d8bece9e7d7198c83",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "status": "not-run",
+      "notRunReason": "The model did not run, so this brief has no answer to grade.",
+      "pass": false,
+      "failures": []
+    }
+  ]
+}
