@@ -165,8 +165,10 @@ test.describe("the /about Profile role sections (Lessons folded in)", () => {
   test("Profile holds three role sections with direct evidence for each one", async ({ page }) => {
     for (const id of ["#role-manager", "#role-tech-lead", "#role-educator"]) {
       await expect(page.locator(`#profile ${id}`)).toBeVisible();
+      await expect(page.locator(`#profile ${id} > summary`)).toBeVisible();
+      await expect(page.locator(`#profile ${id}`)).not.toHaveAttribute("open", "");
     }
-    await expect(page.locator("#profile .role-list li").first()).not.toBeEmpty();
+    await expect(page.locator("#profile .role-accordion")).toHaveCount(3);
     await expect(page.locator("#profile")).not.toContainText("Placeholder");
     const managerProof = page.locator('#profile .role__proof-link a[href="/talks/ten-times-zero"]');
     const engineerProof = page.locator('#profile .role__proof-link a[href="/bread"]');
@@ -196,11 +198,12 @@ test.describe("the /about profile app — incoming hash", () => {
     await expect(page.locator('.about-tabs [href="#resume"]')).toHaveAttribute("aria-current", "page");
   });
 
-  test("a #role-* quote deep link resolves to Profile with that role section visible", async ({ page }) => {
+  test("a #role-* quote deep link resolves to Profile and opens that role accordion", async ({ page }) => {
     await page.goto("/about#role-educator");
     await expect(page.locator(".about-panel:not([hidden])")).toHaveCount(1);
     await expect(page.locator("#profile")).toBeVisible();
     await expect(page.locator("#role-educator")).toBeVisible();
+    await expect(page.locator("#role-educator")).toHaveAttribute("open", "");
   });
 });
 
@@ -221,17 +224,30 @@ test.describe("the /about profile app (no JS)", () => {
       await expect(page.locator(`.about-tabs [href="${id}"]`)).toBeVisible();
     }
 
-    // the role sections (folded into Profile) are all visible, with direct evidence links
-    await expect(page.locator("#profile .role-list").first()).toBeVisible();
-    await expect(page.locator("#role-manager + p + .role-list + .role__proof-link a")).toHaveAttribute(
+    // Native role disclosures work without the page's tab island.
+    const roleAccordions = page.locator("#profile .role-accordion");
+    await expect(roleAccordions).toHaveCount(3);
+    for (const disclosure of await roleAccordions.all()) {
+      await expect(disclosure).toBeVisible();
+      await expect(disclosure.locator("summary")).toBeVisible();
+      await expect(disclosure).not.toHaveAttribute("open", "");
+    }
+    const teacher = page.locator("#role-educator");
+    await expect(teacher.locator("summary")).toHaveText("As a teacher");
+    await expect(teacher).not.toHaveAttribute("open", "");
+    await teacher.locator("summary").click();
+    await expect(teacher).toHaveAttribute("open", "");
+    await expect(teacher.locator(".role-list")).toBeVisible();
+
+    await expect(page.locator("#role-manager .role__proof-link a")).toHaveAttribute(
       "href",
       "/talks/ten-times-zero",
     );
-    await expect(page.locator("#role-tech-lead + p + .role-list + .role__proof-link a")).toHaveAttribute(
+    await expect(page.locator("#role-tech-lead .role__proof-link a")).toHaveAttribute(
       "href",
       "/bread",
     );
-    await expect(page.locator("#role-educator + p + .role-list + .role__proof-link a")).toHaveAttribute(
+    await expect(page.locator("#role-educator .role__proof-link a")).toHaveAttribute(
       "href",
       "/native-github-classroom",
     );
@@ -252,17 +268,18 @@ test.describe("the /about Profile philosophy", () => {
     await expect(philosophy).toContainText("As a teacher");
     await expect(philosophy).toContainText("As an engineer");
     await expect(philosophy).toContainText("As a manager");
-    await expect(page.locator("#profile .section-head[id^='role-']")).toHaveText([
+    await expect(page.locator("#profile .role-accordion > summary h3")).toHaveText([
       "As a teacher", "As an engineer", "As a manager",
     ]);
   });
 
-  test("a role quote deep-links to its Profile role section (Profile stays the shown panel)", async ({ page }) => {
+  test("a role quote opens its Profile accordion (Profile stays the shown panel)", async ({ page }) => {
     await page.goto("/about");
     await page.locator('.quote a[href="#role-educator"]').click();
     await expect(page.locator(".about-panel:not([hidden])")).toHaveCount(1);
     await expect(page.locator("#profile")).toBeVisible();
     await expect(page.locator("#role-educator")).toBeVisible();
+    await expect(page.locator("#role-educator")).toHaveAttribute("open", "");
   });
 
   test("the Profile highlights strip renders one stat tile per cv.json stat", async ({ page }) => {

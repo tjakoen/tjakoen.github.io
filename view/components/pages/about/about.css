@@ -10,10 +10,19 @@
 [data-screen="about"] .about-panel[hidden] { display: none; }
 [data-screen="about"] .about-panel + .about-panel { margin-top: var(--space-6); }
 
-/* Profile role sections (Teacher / Engineer / Manager): what each role taught me, stacked inside
-   the Profile panel (no nested tabs — the page already has its main tabs). Each is a section-head
-   anchor (#role-<role>, the quotes-hero deep-link target), a short intro paragraph, a bullet list,
-   and a link to that work's tagged notes. */
+/* Role details stay folded below the three-line philosophy. Native details keeps them available
+   without JavaScript; the page's small tab island opens one when a role link is followed. */
+[data-screen="about"] .role-accordion { border-top: 1px solid var(--line-soft); padding: var(--space-2) 0; }
+[data-screen="about"] .role-accordion__summary { display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-3); cursor: pointer; list-style: none; padding: var(--space-2) 0; }
+[data-screen="about"] .role-accordion__summary::-webkit-details-marker { display: none; }
+[data-screen="about"] .role-accordion__summary::after { content: "+"; flex: 0 0 auto; color: var(--color-accent);
+  font: var(--text-md) var(--font-mono); }
+[data-screen="about"] .role-accordion[open] > .role-accordion__summary::after { content: "−"; }
+[data-screen="about"] .role-accordion__summary:focus-visible { outline: 2px solid var(--color-accent);
+  outline-offset: 3px; }
+[data-screen="about"] .role-accordion__summary h3 { margin: 0; font-size: var(--text-lg); font-weight: var(--font-weight-semibold); }
+[data-screen="about"] .role-accordion > p { margin: var(--space-2) 0; }
 [data-screen="about"] .role-list { margin: 0 0 var(--space-2); padding-left: var(--space-5);
   display: flex; flex-direction: column; gap: var(--space-2); }
 [data-screen="about"] .role-list li { font-size: var(--text-sm); color: var(--ink-muted); line-height: var(--leading-relaxed); }
@@ -30,7 +39,7 @@
   margin-right: var(--space-2); }
 
 /* Profile quotes-hero: a first-person manifesto that leads the Profile panel. Each line deep-links
-   to its role section (the island's hashchange routing opens it). All three render stacked and visible
+   to its role accordion (the island's hashchange routing opens it). All three render stacked and visible
    with no JS; with motion allowed they fade in with a small stagger, settling to the same visible state
    (so the visual baseline is deterministic). Reduced motion + Playwright's disabled-animations both land
    on all-visible. */
