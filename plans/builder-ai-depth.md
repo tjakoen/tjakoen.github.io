@@ -836,6 +836,11 @@ responses took 17 to 76 seconds in this run. It does not meet the raw-writing ba
 the shipped 1.5B profile. The local 3B comparison also does not substitute for a cold start on a
 physical phone.
 
+This closes the 3B model comparison for the current portfolio pass. The shipped 1.5B model remains
+in place. Further prompt or model-size trials should wait for a different evidence-backed approach;
+the remaining acceptance work is to meet the repeated raw-writing bar and measure a cold start on a
+physical phone.
+
 Checking the published plan pages also exposed a broken evidence path: relative `../audit/` links
 passed repository link lint, but the static export does not publish the `audit/` directory. The
 Builder plan and portfolio finish-line plan now link their audit records to public GitHub source
