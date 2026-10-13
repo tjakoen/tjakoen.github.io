@@ -28,7 +28,10 @@ import {
   type PageComposition,
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, FORM_COMPONENT, blockCopyLimit, isSpan, sanitizeBlockCopy, type Block } from "./block-set.ts";
-import { BUILD_PLAN_SCHEMA, completeWithin, composeMessage, readModelPlan, termsOutsideBrief } from "./block-composer.ts";
+import {
+  BUILD_PLAN_SCHEMA, briefAnchors, briefAnchorsMissingFromDraft, completeWithin, composeMessage,
+  readModelPlan, termsOutsideBrief,
+} from "./block-composer.ts";
 import {
   bylineFrom, exportJson, exportPage, exportTags, PREVIEW_HANDOVER_KEY,
   type PreviewHandover,
@@ -381,6 +384,7 @@ function boot(): void {
   const cancelProposal = $<HTMLButtonElement>("[data-proposal-cancel]", proposalPanel ?? undefined);
   const draftReview = $<HTMLElement>("[data-builder-draft-review]");
   const draftBrief = $<HTMLElement>("[data-builder-draft-brief]", draftReview ?? undefined);
+  const draftEvidence = $<HTMLElement>("[data-builder-draft-evidence]", draftReview ?? undefined);
   const draftBlocks = $<HTMLOListElement>("[data-builder-draft-blocks]");
   const acceptDraft = $<HTMLButtonElement>("[data-draft-accept]", draftReview ?? undefined);
   const discardDraft = $<HTMLButtonElement>("[data-draft-discard]", draftReview ?? undefined);
@@ -429,7 +433,7 @@ function boot(): void {
     planNames: readonly string[],
     copies: readonly Record<string, string>[],
   ): void => {
-    if (!draftReview || !draftBlocks || !confirmDraft || !acceptDraft) return;
+    if (!draftReview || !draftBlocks || !confirmDraft || !acceptDraft || !draftEvidence) return;
     confirmDraft.checked = false;
     acceptDraft.disabled = true;
     if (draftBrief) draftBrief.textContent = ask;
@@ -455,6 +459,17 @@ function boot(): void {
       form: FORM_COMPONENT,
     };
     const modelCopyById = new Map<string, Record<string, string>>();
+    const refreshDraftEvidence = (): void => {
+      const copy = Array.from(draftBlocks.querySelectorAll<HTMLTextAreaElement>("[data-draft-copy-block]"))
+        .map((field) => field.value)
+        .join(" ");
+      const missing = briefAnchorsMissingFromDraft(ask, copy);
+      draftEvidence.textContent = missing.length
+        ? `Brief details not found verbatim in the draft: ${missing.join(", ")}. This check does not verify other facts or claims.`
+        : briefAnchors(ask).length
+          ? "Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims."
+          : "No names, quoted phrases, or numbers were detected. Compare the draft with your brief; this check does not verify facts or claims.";
+    };
     let blockIndex = from;
     for (const [index, name] of planNames.entries()) {
       const block = composition.blocks[blockIndex];
@@ -510,6 +525,7 @@ function boot(): void {
           if (confirmDraft.checked) confirmDraft.checked = false;
           acceptDraft.disabled = !confirmDraft.checked;
           refreshEvidence();
+          refreshDraftEvidence();
         });
         label.append(caption, editor);
         item.append(label, evidence);
@@ -531,6 +547,7 @@ function boot(): void {
 
       draftBlocks.append(item);
     }
+    refreshDraftEvidence();
     draftReview.removeAttribute("hidden");
   };
 
@@ -795,7 +812,7 @@ function boot(): void {
       say(`The desk read that as ${inWords(plan.names)}, and nothing in it had content to build from.`, "reply");
       return;
     }
-    if (!draftReview || !draftBlocks || !acceptDraft || !discardDraft || !confirmDraft) {
+    if (!draftReview || !draftBlocks || !acceptDraft || !discardDraft || !confirmDraft || !draftEvidence) {
       say("The desk found a page draft, but its review controls are missing. Nothing was added.", "refusal");
       return;
     }

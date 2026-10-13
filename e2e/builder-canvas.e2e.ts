@@ -548,11 +548,12 @@ test.describe("the model chooses the verb", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/grain/builder");
     await waitForDesk(page);
-    await submitPrompt(page, "Build a Hearth Bakery page with an intro and a card about coffee.");
+    await submitPrompt(page, "Build a Hearth Bakery page in Utrecht with an intro and a card about coffee.");
 
     await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
-    await expect(page.locator("[data-builder-draft-brief]")).toHaveText("Build a Hearth Bakery page with an intro and a card about coffee.");
+    await expect(page.locator("[data-builder-draft-brief]")).toHaveText("Build a Hearth Bakery page in Utrecht with an intro and a card about coffee.");
     await expect(page.locator(DRAFT_REVIEW)).toContainText("Compare names, locations, and claims with the draft before adding it.");
+    await expect(page.locator("[data-builder-draft-evidence]")).toContainText("Utrecht");
     await expect(page.locator(ACCEPT_DRAFT)).toBeDisabled();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     await expect(page.locator(CELL)).toHaveCount(0);
@@ -571,7 +572,8 @@ test.describe("the model chooses the verb", () => {
       .toHaveValue("Freshly brewed to go with the bread.");
     await expect(page.locator('[data-surface="builder-spec"]')).not.toContainText("Hearth Bakery");
     await page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
-      .fill("Hearth Bakery page about coffee.");
+      .fill("Hearth Bakery page about coffee in Utrecht.");
+    await expect(page.locator("[data-builder-draft-evidence]")).toContainText("Detected names, quoted phrases, and numbers appear in the draft.");
     await expect(page.locator('[data-draft-copy-block="b1"][data-draft-copy-field="body"]')
       .locator("xpath=../..")
       .locator('[data-draft-copy-evidence="b1-body"]'))
@@ -585,7 +587,7 @@ test.describe("the model chooses the verb", () => {
     await page.locator(ACCEPT_DRAFT).click();
 
     await expect(page.locator(CELL)).toHaveCount(2);
-    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery page about coffee.");
+    await expect(page.locator(`${CELL} .lede`)).toHaveText("Hearth Bakery page about coffee in Utrecht.");
     await expect(page.locator(`${CELL} .card__title`)).toHaveText("Coffee and bread");
     await expect(page.locator(`${CELL} .card__body`)).toHaveText("Freshly brewed to go with the bread.");
     await expect(page.locator(SAID)).toContainText("Added lede and card after your review");
@@ -598,7 +600,7 @@ test.describe("the model chooses the verb", () => {
 
     const spec = JSON.parse((await page.locator('[data-surface="builder-spec"]').textContent())!);
     expect(spec.blocks.map((block: { data: Record<string, string> }) => block.data)).toEqual([
-      { body: "Hearth Bakery page about coffee." },
+      { body: "Hearth Bakery page about coffee in Utrecht." },
       { title: "Coffee and bread", body: "Freshly brewed to go with the bread." },
     ]);
   });

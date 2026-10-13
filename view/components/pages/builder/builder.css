@@ -70,6 +70,7 @@
 [data-screen="builder"] .wb-bar__draft-brief p { margin: 0; font-size: var(--text-sm); overflow-wrap: anywhere; }
 [data-screen="builder"] .wb-bar__draft-brief p + p { margin-top: var(--space-2); }
 [data-screen="builder"] .wb-bar__draft-brief .muted { font-size: var(--text-xs); }
+[data-screen="builder"] .wb-bar__draft-brief .wb-bar__draft-summary { margin-top: var(--space-2); }
 [data-screen="builder"] .wb-bar__draft-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: var(--space-2); margin: var(--space-3) 0 0; padding: 0; list-style: none; }
 [data-screen="builder"] .wb-bar__draft-block { min-width: 0; padding: var(--space-3);
