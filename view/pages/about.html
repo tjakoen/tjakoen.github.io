@@ -45,38 +45,44 @@
           <p class="lede">Filipino–Dutch software engineering leader. I manage 15 to 25 engineers and product specialists at Career Team, then teach 150 to 300 students a term at Holy Angel University. Most of my nine years have gone into growing engineers, shipping cloud-native products from zero, and finding ways to make both jobs fit in one week.</p>
           <p class="role__proof-link">The teaching platform supports several live university courses and hundreds of student repositories each term. <a href="/native-github-classroom">See the platform, its architecture, and its privacy-safe demo →</a></p>
 
-          <h2 class="section-head" id="role-educator"><span>As a teacher</span></h2>
-          <p>I teach the way I wish I had been taught: straight at the hard parts, adults treated as
-            adults, the mechanical work automated so the time goes back to the students.</p>
-          <ul class="role-list">
-            <li>Treat adults like adults and most of the fluff falls away. My students get the real thing, limits included.</li>
-            <li>Automate the mechanical grading so the time goes back to students. I built a GitHub-native platform to buy back the hours I was drowning in.</li>
-            <li>Go straight at the hard parts. Nobody signs up for a semester to be kept away from the difficult idea.</li>
-            <li>You end up teaching the way you wish you had been taught. I nearly quit before I found a way to make it sustainable.</li>
-          </ul>
-          <p class="role__proof-link"><a href="/native-github-classroom">Inspect the GitHub-native classroom I built →</a></p>
+          <details class="role-accordion" id="role-educator">
+            <summary class="role-accordion__summary"><h3>As a teacher</h3></summary>
+            <p>I teach the way I wish I had been taught: straight at the hard parts, adults treated as
+              adults, the mechanical work automated so the time goes back to the students.</p>
+            <ul class="role-list">
+              <li>Treat adults like adults and most of the fluff falls away. My students get the real thing, limits included.</li>
+              <li>Automate the mechanical grading so the time goes back to students. I built a GitHub-native platform to buy back the hours I was drowning in.</li>
+              <li>Go straight at the hard parts. Nobody signs up for a semester to be kept away from the difficult idea.</li>
+              <li>You end up teaching the way you wish you had been taught. I nearly quit before I found a way to make it sustainable.</li>
+            </ul>
+            <p class="role__proof-link"><a href="/native-github-classroom">Inspect the GitHub-native classroom I built →</a></p>
+          </details>
 
-          <h2 class="section-head" id="role-tech-lead"><span>As an engineer</span></h2>
-          <p>I own the architecture, hold the quality bar, and keep the direction legible to whoever
-            opens the file next. Fewer decisions, made in the open, held in review.</p>
-          <ul class="role-list">
-            <li>Fewer moving parts beats a clever abstraction almost every time. I have deleted more code than I was ever proud of writing.</li>
-            <li>The design that survives is the one the next person can read. I write for the stranger who opens the file at two in the morning.</li>
-            <li>Standards live in review, not in a document nobody reopens. I would rather hold the bar in a pull request than in a wiki.</li>
-            <li>A build step you can delete is a decision you get to keep making. This whole site runs with no build, on purpose.</li>
-          </ul>
-          <p class="role__proof-link"><a href="/bread">See the architecture I built and how its layers fit →</a></p>
+          <details class="role-accordion" id="role-tech-lead">
+            <summary class="role-accordion__summary"><h3>As an engineer</h3></summary>
+            <p>I own the architecture, hold the quality bar, and keep the direction legible to whoever
+              opens the file next. Fewer decisions, made in the open, held in review.</p>
+            <ul class="role-list">
+              <li>Fewer moving parts beats a clever abstraction almost every time. I have deleted more code than I was ever proud of writing.</li>
+              <li>The design that survives is the one the next person can read. I write for the stranger who opens the file at two in the morning.</li>
+              <li>Standards live in review, not in a document nobody reopens. I would rather hold the bar in a pull request than in a wiki.</li>
+              <li>A build step you can delete is a decision you get to keep making. This whole site runs with no build, on purpose.</li>
+            </ul>
+            <p class="role__proof-link"><a href="/bread">See the architecture I built and how its layers fit →</a></p>
+          </details>
 
-          <h2 class="section-head" id="role-manager"><span>As a manager</span></h2>
-          <p>I mentor and support the people first, then deliver the goals through them. The team is
-            the thing I am really building; the features are what falls out of it.</p>
-          <ul class="role-list">
-            <li>Mentoring is the job, not the overhead. A junior I actually grow is worth more than any single feature I could have written myself.</li>
-            <li>Direction is something you repeat, not something you announce once. I say the same why in standup, in review, and in the doc, until it is boring.</li>
-            <li>I ship the small internal tool that unblocks five people before the feature that demos well.</li>
-            <li>The honest version of a status is the one that ages well. I would rather write down what is blocked and why than hand up a green square that turns red next week.</li>
-          </ul>
-          <p class="role__proof-link"><a href="/talks/ten-times-zero">See the direction-and-review loop I use across roles →</a></p>
+          <details class="role-accordion" id="role-manager">
+            <summary class="role-accordion__summary"><h3>As a manager</h3></summary>
+            <p>I mentor and support the people first, then deliver the goals through them. The team is
+              the thing I am really building; the features are what falls out of it.</p>
+            <ul class="role-list">
+              <li>Mentoring is the job, not the overhead. A junior I actually grow is worth more than any single feature I could have written myself.</li>
+              <li>Direction is something you repeat, not something you announce once. I say the same why in standup, in review, and in the doc, until it is boring.</li>
+              <li>I ship the small internal tool that unblocks five people before the feature that demos well.</li>
+              <li>The honest version of a status is the one that ages well. I would rather write down what is blocked and why than hand up a green square that turns red next week.</li>
+            </ul>
+            <p class="role__proof-link"><a href="/talks/ten-times-zero">See the direction-and-review loop I use across roles →</a></p>
+          </details>
 
           <div class="cv-stats"><cv-stat each="cvStats"></cv-stat></div>
         </section>
@@ -207,11 +213,14 @@
         setPanel(link.getAttribute('href').slice(1));
       });
 
-      // Route a hash to the right panel. A #role-<role> quote deep link isn't a panel — it's a section
-      // inside Profile — so it resolves to Profile, then the browser's own anchor jump scrolls to it.
+      // Route a hash to the right panel. A #role-<role> quote deep link isn't a panel — it's a native
+      // details accordion inside Profile — so show Profile, open the matching role, and let the browser
+      // scroll to its summary.
       function applyHash(hash) {
         var id = (hash || '').slice(1);
         setPanel(ids.indexOf(id) !== -1 ? id : 'profile');
+        var role = document.getElementById(id);
+        if (role && role.matches('.role-accordion')) role.open = true;
       }
       applyHash(location.hash);
       window.addEventListener('hashchange', function () { applyHash(location.hash); });
