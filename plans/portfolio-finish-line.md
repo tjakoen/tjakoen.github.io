@@ -519,8 +519,10 @@ proof remain open below.
       [intro-for wording variant report](../audit/builder-intro-for-live-2026-10-13.json). A parser
       regression now restores an “intro for…” description to `lede.body` if the model puts it in a
       card; its warm live check passed 1/1. This verifies guarded placement for that wording form,
-      not raw model accuracy. The actual-phone cold start and broader writing reliability remain open;
-      see the Builder plan for evidence and limits.
+      not raw model accuracy. A shorter field-map prompt was tested on four warm briefs and rejected
+      because raw field placement and grounding did not improve; the evidence is in the Builder plan.
+      The actual-phone cold start and broader writing reliability remain open; see the Builder plan
+      for evidence and limits.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.

@@ -627,6 +627,12 @@ the separate requested phrase in `card.body`; this demonstrates guarded placemen
 or polished raw model answer. See the
 [live report](../audit/builder-intro-for-live-2026-10-13.json).
 
+On October 14, I tested a shorter prompt with explicit field destinations against four warm WebGPU
+briefs. The guarded result passed all four, but the raw answers still misplaced bike-shop wording,
+omitted a supplied city, and added unsupported claims. The candidate did not improve raw field
+placement or grounding, so I restored the previous prompt. The [experiment record](../audit/builder-field-map-prompt-experiment-2026-10-14.md)
+contains the raw capture and explains why the candidate was not shipped.
+
 The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
 lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-
