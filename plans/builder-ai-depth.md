@@ -997,11 +997,12 @@ claims stay tied to evidence.
 
 ## Current release and phone-width review, October 14
 
-The latest Builder changes are on `main` at `2c73625`. Hosted CI passed its typecheck, unit tests,
-lint baseline, and end-to-end job, and the Pages deployment succeeded. I reran the Builder browser
-suite locally: all 75 cases passed. The visual gallery now includes the Builder at 390 by 844 pixels;
-I refreshed all 36 portfolio captures and inspected the phone-width Builder view. The prompt,
-download disclosure, example, and preview are visible in the capture. The existing 320-pixel browser
-case confirms that the composer and workbench fit without horizontal overflow. These are browser
-viewport checks, not a phone test. The machine has no attached handset and `simctl` is unavailable,
-so the physical-phone cold start remains open.
+The latest Builder changes are on `main` at `30656f1`. Hosted typecheck, unit tests, and lint checks
+passed, as did all 435 end-to-end browser cases. Pages deployment succeeded, and the live Builder
+and finish-line plan routes return HTTP 200. Locally, all 745 unit tests and 77 Builder
+browser cases passed, including the ordinal/span regression at a 390px viewport. The visual gallery
+has a 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width
+view was inspected. The prompt, download disclosure, example, and preview are visible in that
+capture. The existing 320-pixel browser case checks for horizontal overflow. These are browser
+viewport checks, not a physical phone test. This Mac has no attached handset and `simctl` is
+unavailable, so the physical-phone cold start remains open.

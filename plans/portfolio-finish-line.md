@@ -649,7 +649,9 @@ width values. The [six-run capture](https://github.com/tjakoen/tjakoen.github.io
 records raw answers and resulting canvases. The regression test checks that both proposed edits wait
 for approval and then reach the intended block at a 390px viewport. Local verification passed 43
 reasoner tests, 745 unit tests, and all 77 Builder browser cases; typecheck, link lint, and the lint
-gate also passed. Hosted verification and deployment for this follow-on change are pending.
+gate also passed. Commit `30656f1` then passed hosted typecheck, unit tests, lint checks, and all 435
+browser cases. Its Pages deployment succeeded, and the published finish-line plan and Builder routes
+return HTTP 200.
 
 ## Current release and visual review, October 14
 
