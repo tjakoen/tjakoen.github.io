@@ -61,6 +61,27 @@ test.describe("flagship featured", () => {
 });
 
 test.describe("welcome mobile layout", () => {
+  test("the leadership and course-scale claims lead to inspectable evidence on desktop and phone", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    await expect(page.locator(".welcome__proof")).toContainText("in production across several university courses");
+    await expect(page.locator(".welcome__proof")).toContainText("hundreds of student repositories each term");
+    await expect(page.locator(".welcome__proof")).toContainText("lead 16 engineers and product specialists");
+
+    const proofLinks = page.locator(".welcome__proof-links");
+    await expect(proofLinks.getByRole("link", { name: "Course platform story" })).toHaveAttribute("href", "/native-github-classroom");
+    await expect(proofLinks.getByRole("link", { name: "Open the privacy-safe demo" }))
+      .toHaveAttribute("href", "https://tjakoen.github.io/github-native-course-platform/?demo=1");
+    await expect(proofLinks.getByRole("link", { name: "Leadership experience" })).toHaveAttribute("href", "/about#role-manager");
+    await expect(proofLinks.getByRole("link", { name: "Courses and assessment" })).toHaveAttribute("href", "/teaching");
+    expect(await proofLinks.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await proofLinks.evaluate((el) => el.clientWidth));
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(proofLinks).toBeVisible();
+    expect(await proofLinks.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await proofLinks.evaluate((el) => el.clientWidth));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  });
+
   test("two columns collapse to one in the mobile viewport PREVIEW (no overflow)", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
