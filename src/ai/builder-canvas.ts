@@ -35,7 +35,7 @@ import {
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { isCopyEditRequest, looksLikeAnEdit } from "./block-command.ts";
-import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockMessage, blockTargetMismatch, inWords, readModelMove, type BlockIntent, type BlockIntentCorrection } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockIntentRecovery, blockMessage, blockTargetMismatch, inWords, readModelMove, type BlockIntent, type BlockIntentCorrection, type BlockIntentRecovery } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -383,7 +383,7 @@ function boot(): void {
   const draftBlocks = $<HTMLOListElement>("[data-builder-draft-blocks]");
   const acceptDraft = $<HTMLButtonElement>("[data-draft-accept]", draftReview ?? undefined);
   const discardDraft = $<HTMLButtonElement>("[data-draft-discard]", draftReview ?? undefined);
-  type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition; ask: string; correction: BlockIntentCorrection | null };
+  type Proposal = { command: BlockIntent; raw: string; model: GrainModel; manifestApi: GrainManifest; composition: PageComposition; ask: string; correction: BlockIntentCorrection | null; recovery: BlockIntentRecovery | null };
   type DraftProposal = { ask: string; composition: PageComposition; before: PageComposition; names: string[] };
   type Applying = { expected: PageComposition; description: string; timer: ReturnType<typeof setTimeout> };
   let proposal: Proposal | null = null;
@@ -534,20 +534,32 @@ function boot(): void {
       say(read.said, "refusal");
       return;
     }
-    if (read.kind === "reply") { say(read.said, "reply"); return; }
+    const recovery = read.kind === "reply"
+      ? blockIntentRecovery(ask, state.blocks, read.said)
+      : null;
+    if (read.kind === "reply" && !recovery) { say(read.said, "reply"); return; }
 
-    const correction = blockIntentCorrection(ask, state.blocks, read.command);
-    const targetMismatch = correction ? null : blockTargetMismatch(ask, state.blocks, read.command.surface);
+    const correction = read.kind === "command"
+      ? blockIntentCorrection(ask, state.blocks, read.command)
+      : null;
+    const targetMismatch = read.kind === "command" && !correction
+      ? blockTargetMismatch(ask, state.blocks, read.command.surface)
+      : null;
     if (targetMismatch) {
       say(targetMismatch, "refusal");
       return;
     }
 
-    const command = correction ? correction.command : read.command;
-    if (correction && !manifest.targets.some((target) =>
+    const command = recovery?.command ?? correction?.command ?? (read.kind === "command" ? read.command : null);
+    if (!command) {
+      say(read.kind === "reply" ? read.said : "The model did not propose an edit. Nothing changed.", "refusal");
+      return;
+    }
+    if ((correction || recovery) && !manifest.targets.some((target) =>
       target.id === command.surface && target.accepts.includes(command.action),
     )) {
-      say(`The request identifies ${correction.requestedId}, but that block cannot take this edit. Nothing changed.`, "refusal");
+      const requestedId = correction?.requestedId ?? recovery?.requestedId;
+      say(`The request identifies ${requestedId}, but that block cannot take this edit. Nothing changed.`, "refusal");
       return;
     }
 
@@ -556,13 +568,17 @@ function boot(): void {
       return;
     }
 
-    proposal = { command, raw, model: grainModel, manifestApi: grainManifest, composition: compositionAtAsk, ask, correction };
+    proposal = { command, raw, model: grainModel, manifestApi: grainManifest, composition: compositionAtAsk, ask, correction, recovery };
     const label = intentLabel(command);
-    proposalCopy.textContent = correction
+    proposalCopy.textContent = recovery
+      ? `The local model declined: ${recovery.modelReply.slice(0, 180)} Your request clearly states ${label} on ${recovery.requestedLabel} (${recovery.requestedId}). This proposal comes from your explicit request. Review it before applying.`
+      : correction
       ? `The model proposed ${intentLabel(correction.proposed)} for ${correction.proposedLabel} (${correction.proposedId}). Your request clearly identifies ${intentLabel(command)} on ${correction.requestedLabel} (${correction.requestedId}). Review the corrected proposal before applying.`
       : `Proposed edit: ${label}. Check the block ID and change before applying.`;
     proposalPanel.removeAttribute("hidden");
-    say(correction
+    say(recovery
+      ? `The local model declined. Review the explicit request-based proposal: ${label}.`
+      : correction
       ? `The model proposed ${intentLabel(correction.proposed)}; your request identifies ${correction.requestedLabel} (${correction.requestedId}). Review the corrected edit: ${label}.`
       : `Review this edit: ${label}.`, "thinking");
   }
@@ -592,10 +608,12 @@ function boot(): void {
     const checkedCorrection = checked.kind === "command"
       ? blockIntentCorrection(waiting.ask, state.blocks, checked.command)
       : null;
-    const checkedCommand = checked.kind === "command" && checkedCorrection
-      ? checkedCorrection.command
-      : checked.kind === "command" ? checked.command : null;
-    if (!checkedCommand || checkedCommand.action !== waiting.command.action ||
+    const checkedRecovery = checked.kind === "reply" && waiting.recovery
+      ? blockIntentRecovery(waiting.ask, state.blocks, checked.said)
+      : null;
+    const checkedCommand = checkedRecovery?.command ?? checkedCorrection?.command ??
+      (checked.kind === "command" ? checked.command : null);
+    if (!checkedCommand || Boolean(checkedRecovery) !== Boolean(waiting.recovery) || checkedCommand.action !== waiting.command.action ||
         checkedCommand.surface !== waiting.command.surface ||
         JSON.stringify(checkedCommand.payload) !== JSON.stringify(waiting.command.payload)) {
       clearProposal();

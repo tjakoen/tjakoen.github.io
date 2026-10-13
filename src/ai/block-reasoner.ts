@@ -224,6 +224,13 @@ export interface BlockIntentCorrection {
   proposedLabel: string;
 }
 
+export interface BlockIntentRecovery {
+  command: BlockIntent;
+  requestedId: string;
+  requestedLabel: string;
+  modelReply: string;
+}
+
 function requestedBlock(
   message: string,
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
@@ -317,6 +324,28 @@ function requestedEdit(
   const requested = requestedBlock(message, blocks);
   if (!requested || requested.kind !== "resolved") return null;
   return { ...actions[0], block: requested.block };
+}
+
+/** Build a review-only fallback when the model declines a request whose supported operation,
+ *  value, and live target are all explicit. The caller must show the refusal and wait for approval. */
+export function blockIntentRecovery(
+  message: string,
+  blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
+  modelReply: string,
+): BlockIntentRecovery | null {
+  const requested = requestedEdit(message, blocks);
+  if (!requested) return null;
+  return {
+    command: {
+      action: requested.action,
+      surface: `block:${requested.block.id}`,
+      payload: requested.payload,
+      said: "",
+    },
+    requestedId: requested.block.id,
+    requestedLabel: requested.block.label,
+    modelReply,
+  };
 }
 
 /** Correct a model proposal only when the request itself states one supported verb, value, and live

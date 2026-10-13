@@ -296,16 +296,28 @@ cases passed. Both deletions failed: the relative request reached the 60-second 
 explicit-ID request returned `action: null`. The draft included Hearth Bakery, Utrecht, the requested
 bakery wording, and the product title, but it also added unsupported claims about handcrafted bread,
 a staple product, and a daily special. The completion limit is now 75 seconds to give first requests
-more room; this run happened before that adjustment, so the longer limit still needs a live recheck.
+more room; this run happened before that adjustment.
+
+The next eight-case 1.5B run scored 6/8. The relative second-card deletion passed after the proposal
+corrected the model's wrong span operation and first-card target; the explicit-ID request returned
+`action: null`, and the draft again omitted Utrecht. The edit path now offers a second, disclosed
+recovery when the model declines a request with one explicit supported operation and live target.
+The recovery remains a proposal and uses the same approval and canvas revalidation as model proposals.
+A later eight-case run scored 7/8: both deletion cases, both width cases, both move cases, and the
+copy-edit refusal passed. The model proposed the relative deletion for the wrong target, which the
+review panel corrected; the explicit-ID deletion came back from the model and applied as proposed.
+The draft still omitted Utrecht and included unsupported marketing language. The remaining model
+quality gap is now grounded copy, not whether the reviewer can apply a clear removal request.
 
 The October 13 Builder update adds a review-first path for model-composed pages. Proposed blocks and
 their text appear in the workbench before they enter the composition. Visitors can edit proposed
 text fields in that panel; acceptance runs those values through the existing block-copy sanitizer
 before appending the draft through the composition functions. Discarding it preserves the current
-blocks and URL. Generated markup remains text in the review panel. The 67-case Builder browser suite
+blocks and URL. Generated markup remains text in the review panel. The 69-case Builder browser suite
 covers review, text edits, acceptance, discard, escaped text, offline builds, and the existing edit
-path. This makes model output inspectable and correctable before it changes the page; it does not
-improve the measured 5/8 result or automatically catch claims the model invented.
+path, including the disclosed recovery when a model declines a clear command. This makes model output
+inspectable and correctable before it changes the page; it does not prevent the model from omitting
+Utrecht or inventing unsupported claims in generated copy.
 
 ## What to take from Puck AI
 
@@ -378,22 +390,21 @@ copy edits appear to work.
       verbs, and payload values. When a model's proposed action, value, or target conflicts with one
       edit uniquely stated by the request, the review proposal discloses both choices and uses the
       requested edit only after approval; missing targets are refused, while ambiguous references
-      stay with the model proposal for human review. A fresh eight-case 1.5B run scored 6/8 after
-      this correction: the relative second-card deletion passed after review corrected the model's
-      wrong span operation and first-card target. The explicit-ID deletion returned `action: null`,
-      and the draft again omitted Utrecht while including unsupported marketing claims. Width, move,
-      and copy-edit refusal cases passed. This demonstrates a safer proposal path, not reliable model
-      choices or grounded writing. Repeated runs remain necessary. The October 13 focused check applied
-      both deletion requests through this path, but the model still chose the first card for a request
-      to remove the second. This is a safe application-level correction, not evidence of reliable
-      model targeting. The 0.5B full run scored 2/8; 1.5B runs have varied. A full eight-case recheck
-      after the target correction scored 6/8: both deletions failed, the first at the 60-second
-      timeout and the second with `action: null`. The draft included supplied facts but added
-      unsupported claims. The timeout then increased to 75 seconds. In the latest eight-case 1.5B
-      run, the relative second-card deletion passed after the proposal corrected the model's wrong
-      operation and target; the explicit-ID deletion returned `action: null`. The draft again
-      omitted Utrecht and added unsupported claims. The run scored 6/8, so model reliability and
-      grounded writing remain open.
+      stay with the model proposal for human review. The October 13 focused check applied both
+      deletion requests through this path, but the model still chose the first card for a request to
+      remove the second. This was a safe application-level correction, not evidence of reliable model
+      targeting. The 0.5B full run scored 2/8, and the 1.5B runs varied. A full eight-case recheck
+      after the target correction scored 6/8: both deletions failed, one at the 60-second timeout and
+      one with `action: null`. The timeout then increased to 75 seconds. The next full run also scored
+      6/8 after the relative deletion's wrong span operation and target were corrected in review; the
+      explicit-ID deletion returned `action: null`, and the draft again omitted Utrecht. The Builder
+      then gained a disclosed, command-based recovery when the model declines a request that names
+      one supported operation and live target. Recovery still waits for the same approval and canvas
+      revalidation as a model proposal. The latest eight-case 1.5B run scored 7/8: both deletion
+      requests applied, with the relative request corrected in the proposal and the explicit-ID
+      request proposed by the model. Width, move, and copy-edit refusal cases passed. The draft again
+      omitted Utrecht and included unsupported marketing claims. This improves the reviewed workflow,
+      but does not establish grounded writing. Repeated runs remain necessary.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
@@ -401,7 +412,7 @@ copy edits appear to work.
 - [x] Give the builder a small set of examples that demonstrates composing and then revising a real
       GRAIN page, including one honest refusal. The first-screen link opens a four-block page; the
       rail then offers a prompt for the measured `move b3 up` edit and a copy-edit refusal. The buttons
-      prefill only, and the 67-case Builder browser suite verifies the flow and unchanged canvas on
+      prefill only, and the 69-case Builder browser suite verifies the flow and unchanged canvas on
       refusal.
 - [x] Let a page brief draft text into registered fields on newly composed blocks. Unit and browser
       tests cover validation, composition data, visible output, and literal rendering of markup-like
@@ -412,7 +423,7 @@ copy edits appear to work.
       proposed blocks and editable text fields, and its accept and discard controls keep the canvas
       and composition unchanged until approval. Accepting sanitizes the edited values and appends
       through the existing composition functions; discarding leaves the page and share URL untouched.
-      The 67-case Builder suite covers this flow, including markup-like copy rendered as text. A
+      The 69-case Builder suite covers this flow, including markup-like copy rendered as text. A
       human still has to check accuracy because the local model can omit facts and invent claims.
 - [ ] Finish the model comparison by measuring cold start on phone
       hardware, then improve the grounded draft. The 0.5B scored 2/8 in each of two October 11 runs;
@@ -432,10 +443,12 @@ copy edits appear to work.
       draft still omitted the city. This focused 2/3 result demonstrates target reconciliation, not a
       model-quality improvement. A full eight-case run then scored 6/8: both deletions failed, one
       after 60 seconds and one with `action: null`; the draft included the supplied facts but added
-      unsupported claims. The timeout then increased to 75 seconds. In the latest full run, the
-      relative deletion's wrong verb and target were corrected in the approval proposal and the
-      explicit-ID deletion returned `action: null`. The audit records that correction beside the
-      raw answer. Repeated grounded-draft measurements remain open.
+      unsupported claims. The timeout then increased to 75 seconds. A later full run scored 6/8,
+      after which the declined exact-ID case gained a disclosed, approval-gated recovery. The latest
+      full run scored 7/8: the relative deletion's wrong verb and target were corrected in the
+      proposal, the explicit-ID deletion applied as proposed, and the draft again omitted Utrecht.
+      The audit records each correction beside the raw answer. Repeated grounded-draft measurements
+      remain open.
       The October 11 first scenario took
       40.5 seconds from a fresh browser cache, including model load and generation; the 1.6 GB
       browser-profile footprint is not a network-size measurement. Exact first-visit network bytes

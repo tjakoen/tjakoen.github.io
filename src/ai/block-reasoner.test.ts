@@ -8,7 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import { parseModelMove, validateMove } from "@tjakoen/grain/ai/model.ts";
 import { buildManifest, type Manifest } from "@tjakoen/grain/ai/manifest.ts";
-import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockMessage, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockIntentRecovery, blockMessage, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
 
 const GRAIN: GrainModelPort = { parseModelMove, validateMove } as unknown as GrainModelPort;
 
@@ -141,6 +141,18 @@ describe("explicit target guard", () => {
     expect(blockIntentCorrection("move the callout down", blocks, {
       action: "block.move", surface: "block:b3", payload: { direction: "up" }, said: "",
     })?.command).toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "down" } });
+  });
+
+  test("it can recover a declined but explicit request as a review-only command", () => {
+    expect(blockIntentRecovery("drop b4", blocks, "I could not identify an action."))
+      .toMatchObject({
+        command: { action: "block.remove", surface: "block:b4", payload: {} },
+        requestedId: "b4",
+        requestedLabel: "second card",
+        modelReply: "I could not identify an action.",
+      });
+    expect(blockIntentRecovery("don't drop b4", blocks, "I could not identify an action.")).toBeNull();
+    expect(blockIntentRecovery("remove that", blocks, "I could not identify an action.")).toBeNull();
   });
 
   test("it accepts the requested block and a unique named component", () => {
