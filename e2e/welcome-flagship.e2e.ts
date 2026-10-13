@@ -66,7 +66,7 @@ test.describe("welcome mobile layout", () => {
     await page.goto("/");
     await expect(page.locator(".welcome__proof")).toContainText("in production across several university courses");
     await expect(page.locator(".welcome__proof")).toContainText("hundreds of student repositories each term");
-    await expect(page.locator(".welcome__proof")).toContainText("lead 16 engineers and product specialists");
+    await expect(page.locator(".welcome__proof")).toContainText("lead 15 to 25 engineers and product specialists");
 
     const proofLinks = page.locator(".welcome__proof-links");
     await expect(proofLinks.getByRole("link", { name: "Course platform story" })).toHaveAttribute("href", "/native-github-classroom");

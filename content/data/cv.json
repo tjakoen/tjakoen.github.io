@@ -1,5 +1,5 @@
 {
-  "summary": "I am a teacher, engineer, and manager. I treat students as adults, go straight at the hard parts, and automate mechanical grading so I can spend more time teaching. I hold the architecture and quality bar, and keep direction legible to whoever opens the file next. I grow people first and deliver goals through them. I lead 16 engineers and product specialists at Career Team, teach 150 to 300 students each term, and build the BREAD stack.",
+  "summary": "I am a teacher, engineer, and manager. I treat students as adults, go straight at the hard parts, and automate mechanical grading so I can spend more time teaching. I hold the architecture and quality bar, and keep direction legible to whoever opens the file next. I grow people first and deliver goals through them. I lead 15 to 25 engineers and product specialists at Career Team, teach 150 to 300 students each term, and build the BREAD stack.",
   "roles": [
     {
       "title": "Senior Technical Team Lead",
@@ -9,7 +9,7 @@
       "end": "Present",
       "current": true,
       "roleTag": "ai",
-      "summary": "Manage and mentor 16 Software Engineers and Product Specialists, and lead the team's AI-first development culture.",
+      "summary": "Manage and mentor 15 to 25 Software Engineers and Product Specialists, and lead the team's AI-first development culture.",
       "bullets": [
         "Spearheaded scalable full-stack solutions with Next.js, NestJS, and MongoDB on AWS microservices for U.S. government and education clients.",
         "Rolled out AI coding assistants, set review standards for AI-generated code, and integrated AI-assisted workflows into delivery.",
@@ -164,7 +164,7 @@
   "stats": [
     { "value": "150-300", "label": "students a term", "sub": "software engineering" },
     { "value": "9 yrs", "label": "building software", "sub": "since 2017" },
-    { "value": "16", "label": "engineers and product specialists", "sub": "led at Career Team" },
+    { "value": "15 to 25", "label": "engineers and product specialists", "sub": "led at Career Team" },
     { "value": "no build", "label": "my own stack", "sub": "this site runs on it" }
   ],
   "primarySkills": [
