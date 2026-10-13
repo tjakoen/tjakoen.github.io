@@ -609,6 +609,10 @@ proof remain open below.
       disclosure. Pages build and deployment passed; hosted end-to-end passed all 432 browser cases on
       commit `f170865`. Raw model output still invents claims or misplaces wording,
       and the cold start on an actual phone remains unmeasured.
+      A six-scenario source-quote prompt trial still produced unsupported raw details; all guarded
+      drafts passed after reconciliation. The trial did not establish a raw-writing improvement, so
+      the temporary prompt rule was removed. See the
+      [prompt experiment record](../audit/builder-source-quote-prompt-2026-10-14.md).
 
 ## Done means
 
