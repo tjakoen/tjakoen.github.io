@@ -567,8 +567,11 @@ proof remain open below.
       is still unavailable. The October 13 outcome-and-proof review records which project artifacts are
       reproducible and which production/adoption claims remain owner-reported or private. The
       October 14 negative-anchor fix passes 726 unit tests, all 73 Builder browser cases, link lint,
-      and the lint baseline. Its code and audit record still need to be committed and deployed before
-      the published site is checked against this change.
+      and the lint baseline. Commit `1b8b5a1` is on main and deployed. Hosted CI passed all 432 browser
+      cases, 726 unit tests, typecheck, and the lint baseline. The Pages build and deploy passed, and
+      the published Builder route and its bundled code were checked after deployment. The guard's
+      targeted phrase-and-year case passed one live WebGPU run. This closes that specific regression;
+      broader writing reliability and a cold-start measurement on actual phone hardware remain open.
 
 ## Done means
 
