@@ -572,7 +572,9 @@ const argv = process.argv.slice(2);
 const label = argv.find((a) => !a.startsWith("--")) ?? "run";
 const forceHeaded = argv.includes("--headed");
 const only = argv.find((a) => a.startsWith("--only="))?.slice(7).split(",");
-const scenarios = only ? SCENARIOS.filter((s) => only.includes(s.id)) : SCENARIOS;
+// Preserve the requested order and duplicates so a focused live-model reliability run can repeat
+// the same scenario set without adding a second ad hoc runner.
+const scenarios = only ? only.flatMap((id) => SCENARIOS.filter((scenario) => scenario.id === id)) : SCENARIOS;
 
 const stopServer = await ensureServer();
 // The site's real routes (for the invented-path grader) — same source the catalog uses.
