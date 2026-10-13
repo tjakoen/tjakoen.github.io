@@ -894,6 +894,16 @@ entered markup remains literal text. The Builder now has repeatable evidence for
 block selection and order come from the local model, while visible copy comes from the brief or the
 visitor. A physical-phone cold-start measurement remains open.
 
+The structure-only change shipped to `main` as `875d80e`. The full serial browser suite passed all
+433 cases, including the 148-route desktop and phone viewport crawl; all 738 unit tests, typecheck,
+link lint, lint baseline, and the hosted CI jobs passed. The Pages deployment completed, and the live
+Builder route returned HTTP 200 with the updated structure-only explanation. The 35-screen visual
+gallery was refreshed, and the Builder desktop capture was inspected. This release does not close
+the handset check: the available browser surfaces are desktop, and this machine has no connected
+phone or iOS simulator. When a handset is available, start with an uncached browser profile and
+record the selected model, transferred bytes, model-load time, first generation time, memory
+pressure, and whether the page remains usable during loading.
+
 ## Done means
 
 The current browser model can choose a useful page structure from a visitor's brief and complete the
