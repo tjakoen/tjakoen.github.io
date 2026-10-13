@@ -574,7 +574,11 @@ proof remain open below.
       broader writing reliability and a cold-start measurement on actual phone hardware remain open.
       A follow-up audit added the common instructions “avoid,” “exclude,” and “leave out,” plus a
       positive phrase after the prohibited wording. The unit and live WebGPU checks pass; this follow-
-      up still needs its own main deployment and verification.
+      up was released in commit `76e0c9d`. Hosted CI passed all 431 browser cases, 727 unit tests,
+      typecheck, and the lint baseline. The Pages build and deployment passed, and the published
+      Builder module contains the new instruction forms. Both live negative-instruction checks
+      passed. These targeted checks do not establish broad writing reliability or general negation
+      understanding; the actual-phone cold start remains open.
 
 ## Done means
 
