@@ -522,7 +522,15 @@ proof remain open below.
       not raw model accuracy. A shorter field-map prompt was tested on four warm briefs and rejected
       because raw field placement and grounding did not improve. A later warm run identified the
       selected Qwen2.5-1.5B profile; its answer still invented claims that source reconciliation removed.
-      Both findings are recorded in the Builder plan.
+      On October 14, a negative-instruction regression exposed that forbidden quoted phrases and
+      dates could be treated as required draft anchors. The parser now skips anchors in nearby
+      negative clauses, and the regression and live audit confirm that “award-winning bakery” and
+      “2019” do not appear in the reviewed result. The raw answer still proposed unsupported opening
+      hours, online ordering, pastries, and ambiance, which the review path removed. This closes the
+      specific forbidden-anchor bug; it does not establish reliable raw writing or general negation
+      handling. Both findings are recorded in the
+      [Builder plan](builder-ai-depth.md#builder-only-larger-profile-october-11) and
+      [negative-anchor audit](../audit/builder-negative-anchor-guard-2026-10-14.md).
       The actual-phone cold start and broader writing reliability remain open; see the Builder plan
       for evidence and limits.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
@@ -557,7 +565,10 @@ proof remain open below.
       because the Builder still needs broader brief and device reliability evidence and a cold-start
       measurement on an actual phone. Stronger privacy-safe outcome proof for several project claims
       is still unavailable. The October 13 outcome-and-proof review records which project artifacts are
-      reproducible and which production/adoption claims remain owner-reported or private.
+      reproducible and which production/adoption claims remain owner-reported or private. The
+      October 14 negative-anchor fix passes 726 unit tests, all 73 Builder browser cases, link lint,
+      and the lint baseline. Its code and audit record still need to be committed and deployed before
+      the published site is checked against this change.
 
 ## Done means
 

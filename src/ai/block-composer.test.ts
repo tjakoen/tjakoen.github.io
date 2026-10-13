@@ -151,6 +151,17 @@ describe("generated block copy is bounded by each component's visible text contr
       .toEqual({});
   });
 
+  test("negative instructions do not force forbidden wording or a bare negated number into the draft", () => {
+    const brief = "Build a page for Hearth Bakery. Do not use the phrase \"award-winning bakery\" or claim it opened in 2019.";
+    expect(briefAnchors(brief)).toEqual(["Hearth Bakery"]);
+    const reconciled = reconcileBuildPlan(brief, ["lede"], [
+      { body: "Hearth Bakery welcomes visitors." },
+    ]);
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery");
+    expect(reconciled.copies[0]?.copy.body).not.toContain("award-winning");
+    expect(reconciled.copies[0]?.copy.body).not.toContain("2019");
+  });
+
   test("explicit block requests bound the model plan and keep missing anchors visible", () => {
     const brief = "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.";
     const reconciled = reconcileBuildPlan(brief, ["lede", "card", "callout"], [

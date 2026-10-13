@@ -36,3 +36,16 @@ test("the exact phrase in the requested field satisfies the draft requirements",
 
   expect(failures).toEqual([]);
 });
+
+test("the audit fails if the reviewed draft includes a phrase the brief forbids", () => {
+  const failures = gradeBuilderDraft({
+    minimumBlocks: 1,
+    mustMention: [["Hearth Bakery"]],
+    mustNotMention: ["award-winning bakery", "2019"],
+  }, ["Hearth Bakery · award-winning bakery · 2019"], 1);
+
+  expect(failures).toEqual([
+    "draft copy includes forbidden wording [award-winning bakery]",
+    "draft copy includes forbidden wording [2019]",
+  ]);
+});
