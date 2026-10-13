@@ -918,6 +918,26 @@ reliably interprets those instructions by itself or that it handles broader para
 keeps each raw answer beside its reviewed outcome. The 1.5B profile was already cached, so these runs
 do not measure a cold start or phone performance.
 
+## Two edit paraphrases, October 14
+
+I expanded the request-based recovery grammar for two explicit alternatives: “get rid of the final
+card” and “let the callout span the whole row.” Recovery still requires exactly one supported
+operation and one unambiguous live target, rejects missing or ambiguous targets, and refuses negative
+phrasing such as “avoid getting rid of the final card.” A recovery is only a proposal; it does not
+change the page until the visitor approves it.
+
+Three separate warm WebGPU runs on Qwen2.5-1.5B passed both scenarios, for 6/6 reviewed outcomes.
+The model returned `action: null` in every case. The Builder recovered the requested operation from
+the visitor's sentence, disclosed that the model had not supplied a usable edit, and waited for
+approval. This is evidence for these two guarded phrasings, not for model understanding or broad
+paraphrase reliability. The [combined capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-paraphrase-repeats-2026-10-14.json)
+preserves the raw answers and resulting canvases. The focused reasoner suite passed 38 tests, the
+390px mobile end-to-end check passed, and all 75 Builder browser scenarios passed. The full project
+suite passed 740 unit tests; typecheck, link lint, and the lint ratchet passed at the existing
+baseline. The broader paraphrase question and cold start on an actual phone remain open. A fresh
+check found no attached Android handset, no phone or tablet in the USB inventory, and no available
+`simctl` for an iOS simulator.
+
 ## Done means
 
 The current browser model can choose a useful page structure from a visitor's brief and complete the

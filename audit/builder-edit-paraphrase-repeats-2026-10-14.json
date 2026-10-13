@@ -1,0 +1,180 @@
+{
+  "label": "builder-edit-paraphrase-repeats-2026-10-14",
+  "date": "2026-10-14",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "method": "Three independent warm WebGPU Chromium runs against the local Builder. Each run exercised two explicit paraphrases. The audit followed the visible proposal and approval flow and graded the resulting canvas.",
+  "passed": 6,
+  "failed": 0,
+  "total": 6,
+  "runs": [
+    {
+      "label": "builder-paraphrase-recovery-2026-10-14",
+      "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "passed": 2,
+      "failed": 0,
+      "results": [
+        {
+          "id": "builder-drop-paraphrase",
+          "ask": "get rid of the final card",
+          "reply": "Applied: Drop b4.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-paraphrase",
+          "ask": "let the callout span the whole row",
+          "reply": "Applied: Set b3 to full width.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    },
+    {
+      "label": "builder-paraphrase-recovery-repeat-2-2026-10-14",
+      "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "passed": 2,
+      "failed": 0,
+      "results": [
+        {
+          "id": "builder-drop-paraphrase",
+          "ask": "get rid of the final card",
+          "reply": "Applied: Drop b4.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-paraphrase",
+          "ask": "let the callout span the whole row",
+          "reply": "Applied: Set b3 to full width.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    },
+    {
+      "label": "builder-paraphrase-recovery-repeat-3-2026-10-14",
+      "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "passed": 2,
+      "failed": 0,
+      "results": [
+        {
+          "id": "builder-drop-paraphrase",
+          "ask": "get rid of the final card",
+          "reply": "Applied: Drop b4.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-paraphrase",
+          "ask": "let the callout span the whole row",
+          "reply": "Applied: Set b3 to full width.",
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    }
+  ],
+  "interpretation": "The model returned action:null for all six requests. The Builder recovered the uniquely stated operation and target from the visitor request, disclosed that source in the proposal, and waited for approval. This demonstrates repeatable guarded behavior for these two phrasings, not model understanding or broad paraphrase reliability."
+}
