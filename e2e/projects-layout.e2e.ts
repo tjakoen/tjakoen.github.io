@@ -55,6 +55,8 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(page.locator("#tools .project-proof")).toContainText("I built it");
     await expect(page.locator("#platform .project-feature__copy")).toContainText("I built BATCH");
     await expect(page.locator("#teaching .project-feature__copy")).toContainText("I designed and built");
+    await expect(page.locator("#teaching .project-proof").first()).toContainText("in production across several live university courses");
+    await expect(page.locator("#teaching .project-proof").first()).toContainText("hundreds of student repositories each term");
     for (const repo of ["greenroom", "bread", "grain", "pantry", "github-native-course-platform"]) {
       const source = page.locator(`a[href="https://github.com/tjakoen/${repo}"]`);
       await expect(source).toBeVisible();
@@ -177,6 +179,7 @@ test.describe("Projects presentation in the editor shell", () => {
     const pages = [
       ["/greenroom", "#try-it"],
       ["/greenroom", "#sample-run"],
+      ["/greenroom", "https://github.com/tjakoen/greenroom/blob/main/docs/case-study.md"],
       ["/pantry", "https://github.com/tjakoen/pantry"],
       ["/bread", "https://github.com/tjakoen/bread"],
       ["/batch", "/batch/docs/architecture"],
@@ -186,6 +189,7 @@ test.describe("Projects presentation in the editor shell", () => {
       ["/native-github-classroom", "https://tjakoen.github.io/github-native-course-platform/?demo=1"],
       ["/native-github-classroom", "#architecture"],
       ["/native-github-classroom", "/native-github-classroom/docs"],
+      ["/native-github-classroom", "/notes/why-i-teach"],
     ] as const;
 
     await page.setViewportSize({ width: 390, height: 844 });
@@ -232,13 +236,18 @@ test.describe("Projects presentation in the editor shell", () => {
     }
 
     await page.goto("/native-github-classroom");
+    await expect(page.locator("main")).toContainText("production across several live university courses");
+    await expect(page.locator(".docs-list a[href=\"/notes/why-i-teach\"]")).toContainText("Why I teach");
     const classroomActions = page.locator('nav.project-links[aria-label="Course platform links"]');
     await expect(classroomActions.locator("a").nth(0)).toHaveAttribute("href", "#architecture");
     await expect(classroomActions.locator("a").nth(1)).toHaveAttribute("href", "https://tjakoen.github.io/github-native-course-platform/?demo=1");
-    await expect(classroomActions.locator("a").nth(2)).toHaveAttribute("href", "/native-github-classroom/docs");
+    await expect(classroomActions.locator("a").nth(2)).toHaveAttribute("href", "/notes/why-i-teach");
+    await expect(classroomActions.locator("a").nth(3)).toHaveAttribute("href", "/native-github-classroom/docs");
     await expect(page.getByRole("img", { name: /A teacher control repo/ })).toBeVisible();
 
     await page.goto("/greenroom");
+    await expect(page.locator('nav.project-links a[href="https://github.com/tjakoen/greenroom/blob/main/docs/case-study.md"]'))
+      .toContainText("engineering case study");
     const sampleHeading = page.locator("#sample-run");
     const sampleCopy = page.locator("#sample-run + p");
     const sampleTable = page.locator("#sample-run + p + table");

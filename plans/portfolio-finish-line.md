@@ -65,6 +65,15 @@ export checks; the two credits describe different kinds of authorship. The /plan
 all four status columns readable: narrow desktop users can scroll the final column into view, and
 long path chips wrap so phone layouts do not gain sideways page overflow.
 
+The October 13 follow-up connected the homepage's leadership and course-scale claims directly to the
+course platform story, its synthetic-data demo, teaching page, and leadership profile. The scale
+wording was checked against the public course-platform README, which says the platform runs in
+production across several live university courses and covers hundreds of student repositories per
+term. The course story now repeats that scope and links to the note explaining what the platform
+makes possible. Greenroom now links directly to its public engineering case study, beside the run
+demo and source. Desktop and 390px checks cover those evidence paths; the full case-story audit still
+needs each product's stated result, proof, and next step reviewed together.
+
 The first full route sweep covered 145 public routes at desktop and phone widths (290 checks). It
 found no route-level navigation failures, missing or duplicate page headings, or horizontal page
 overflow outside /catalog. The catalog's mobile grid had been allowed to size itself from wide
