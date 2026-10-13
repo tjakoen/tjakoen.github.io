@@ -481,8 +481,11 @@ difference between the 7/8 reviewed workflow and the one-of-three location-reten
       proposed blocks and editable text fields, and its accept and discard controls keep the canvas
       and composition unchanged until approval. Accepting sanitizes the edited values and appends
       through the existing composition functions; discarding leaves the page and share URL untouched.
-      The 69-case Builder suite covers this flow, including markup-like copy rendered as text. A
-      human still has to check accuracy because the local model can omit facts and invent claims.
+      The visitor must attest that they checked the draft against the brief before adding it. Any
+      edit after confirmation clears the check and disables acceptance until the visitor confirms
+      again. The 71-case Builder suite covers this flow, including markup-like copy rendered as text
+      and reconfirmation after edits. A human still has to check accuracy because the local model
+      can omit facts and invent claims; this confirmation gate does not make generated copy reliable.
 - [x] Make the draft review show which fields use component sample text and which contain model
       copy. For generated text, list meaningful words absent from the brief and update that list as
       the visitor edits the field. This is a lexical comparison, not a check that the resulting
