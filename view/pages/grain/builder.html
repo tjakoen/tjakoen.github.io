@@ -268,12 +268,13 @@
           the canvas again before it reports a change. When one edit verb, value, and live block are
             clear in your request but the model proposes a different action or target, the proposal
             shows both versions and uses your explicit request. Ambiguous references keep the model's
-            proposal for review, and missing targets are refused. If the model declines a request
-            whose supported edit and live target are explicit, the Builder can offer a disclosed,
-            command-based recovery for approval. These safeguards make the edit path safer; they do
-            not prove the model resolved the request correctly. The block rail remains the
-            dependable way to resize, move, or remove something. The model may add new blocks; it
-            cannot revise copy already on the canvas because GRAIN has no registered operation for that.</p>
+            proposal for review, and missing targets are refused. If the model declines or returns
+            an unusable answer for a request whose supported edit and live target are explicit, the
+            Builder can offer a disclosed, request-based recovery for approval. These safeguards
+            make the edit path safer; they do not prove the model resolved the request correctly.
+            The block rail remains the dependable way to resize, move, or remove something. The model
+            may add new blocks; it cannot revise copy already on the canvas because GRAIN has no
+            registered operation for that.</p>
           <pre class="builder-tag">for (const block of composition.blocks)
   render(block.component, block.data, block.props)</pre>
           <div class="docs-list">
