@@ -208,6 +208,15 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(page.locator('.hero__cta a[href="https://github.com/tjakoen/grain"]')).toBeVisible();
     await expect(page.locator('.hero__cta a[href="/projects"]')).toBeVisible();
 
+    await page.goto("/pantry");
+    const firstRun = page.locator('[aria-label="PANTRY first-run steps"]');
+    await expect(firstRun).toContainText("bunx pantry init --kit");
+    await expect(firstRun).toContainText("bunx proof check");
+    expect(await firstRun.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await firstRun.evaluate((el) => el.clientWidth));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    await page.setViewportSize({ width: 1200, height: 850 });
+    expect(await firstRun.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await firstRun.evaluate((el) => el.clientWidth));
+
     for (const [path, ids] of [
       ["/greenroom", ["capabilities", "sample-run", "bug-handover", "hosted-editor", "run-modes", "try-it", "limits", "source"]],
       ["/native-github-classroom", ["architecture", "design", "safety", "demo", "read-more"]],
