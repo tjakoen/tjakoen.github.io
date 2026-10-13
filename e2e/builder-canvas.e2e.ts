@@ -394,8 +394,9 @@ const canvasIds = (page: Page) => page.locator(CELL).evaluateAll(
 
 /** A page holding two cards and a callout. The first prompt builds the introduction, first card and
  *  callout; the second adds another card after them so the edit checks use stable, familiar ids. */
-async function twoCardPage(page: Page): Promise<void> {
+async function twoCardPage(page: Page, withModel = false): Promise<void> {
   await page.goto(ask("An intro, a card and a callout"));
+  if (withModel) await waitForDesk(page);
   await expect(page.locator(CELL)).toHaveCount(3);
   await submitPrompt(page, "another card");
   if (await page.locator(DRAFT_REVIEW).isVisible()) {
@@ -702,7 +703,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("a sentence becomes a real op on a real block, through the one door", async ({ page }) => {
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await waitForDesk(page);
     await submitPrompt(page, "drop the second card");
 
@@ -720,7 +721,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("a wrong model target is corrected transparently and still waits for approval", async ({ page }) => {
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderWrongTarget", "true"));
     await waitForDesk(page);
     await submitPrompt(page, "drop the second card");
@@ -741,7 +742,7 @@ test.describe("the model chooses the verb", () => {
 
   test("a clearly stated edit verb and target correct a wrong operation only after review", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await page.evaluate(() => {
       sessionStorage.setItem("__builderWrongTarget", "true");
       sessionStorage.setItem("__builderWrongAction", "true");
@@ -762,7 +763,7 @@ test.describe("the model chooses the verb", () => {
 
   test("a declined exact-ID request becomes a disclosed recovery proposal on a phone", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderNoAction", "true"));
     await waitForDesk(page);
     await submitPrompt(page, "drop b4");
@@ -780,7 +781,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("a malformed model move becomes a disclosed proposal only for a clear live request", async ({ page }) => {
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.setItem("__builderMalformed", "true"));
     await waitForDesk(page);
     await submitPrompt(page, "drop the second card");
@@ -806,7 +807,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("the model is handed the ids that are actually on the page", async ({ page }) => {
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await page.locator('[data-block="b3"] [data-op="span:half"]').click();
     await waitForDesk(page);
     // Seeding the page now uses the same local model seam as build prompts, so clear its captured
@@ -831,7 +832,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("canceling a proposal leaves the canvas unchanged", async ({ page }) => {
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await waitForDesk(page);
     await submitPrompt(page, "drop the second card");
     await expect(page.locator(PROPOSAL)).toBeVisible();
@@ -843,7 +844,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("an approved move is reported after the observed order changes", async ({ page }) => {
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await waitForDesk(page);
     await submitPrompt(page, "move the callout up");
     await expect(page.locator(PROPOSAL_COPY)).toContainText("Move b3 up.");
@@ -855,7 +856,7 @@ test.describe("the model chooses the verb", () => {
   });
 
   test("a proposal is canceled when the canvas changes before approval", async ({ page }) => {
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await waitForDesk(page);
     await submitPrompt(page, "drop the second card");
     await expect(page.locator(PROPOSAL)).toBeVisible();
@@ -881,7 +882,7 @@ test.describe("the model chooses the verb", () => {
     ["a width outside the three", "widen the card", "full, half or third"],
   ] as const) {
     test(`${what} is refused and nothing moves`, async ({ page }) => {
-      await twoCardPage(page);
+      await twoCardPage(page, true);
       await submitPrompt(page, prompt);
       await expect(page.locator(SAID)).toContainText(expected);
       expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
@@ -889,7 +890,7 @@ test.describe("the model chooses the verb", () => {
   }
 
   test("a request to change block copy cannot reach a destructive model choice", async ({ page }) => {
-    await twoCardPage(page);
+    await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.removeItem("__builderPrompt"));
     await submitPrompt(page, "the card should mention pricing");
     await expect(page.locator(SAID)).toContainText("cannot revise block copy yet");
