@@ -769,6 +769,17 @@ and finish-line plan routes both return HTTP 200. These release checks confirm t
 experiments are published; they do not establish reliable raw writing or a cold start on phone
 hardware.
 
+## Scripted model test readiness, October 14
+
+The hosted run on `0f5b7e4` recorded one flaky first attempt in the Builder's refusal cases. The test
+submitted a model-backed edit before its scripted desk finished initializing, so the page correctly
+reported that the desk was unavailable. The shared test helper now waits for the scripted model
+before sending those prompts; the offline-path tests still run without that wait. The specific
+refusal passed three consecutive local repetitions, and all 73 Builder-canvas cases passed locally.
+Hosted CI on `8d39c1a` passed all 432 browser cases with no retry, 736 unit tests, typecheck, and the
+lint baseline. The Pages deployment succeeded. This fixes the test race, not a model-quality defect:
+raw-writing reliability and a physical-phone cold start remain open.
+
 ## Done means
 
 The current browser model can build a useful first draft from a visitor's brief and complete the

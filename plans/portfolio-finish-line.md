@@ -621,6 +621,13 @@ proof remain open below.
       lint baseline, and all 432 browser cases. The Pages build and deployment succeeded, and the
       published Builder and plan routes both return HTTP 200. These release checks do not close the
       raw-writing or physical-phone gaps.
+      The next hosted run on `0f5b7e4` reported one flaky first attempt: the scripted Builder test
+      submitted an edit before its fake model had initialized and received the page's honest
+      offline response. The test helper now waits for that model before sending model-backed edits.
+      The refusal case passed three local repetitions, and all 73 Builder-canvas cases passed
+      locally. Hosted CI on `8d39c1a` passed all 432 browser cases with no retry, 736 unit tests,
+      typecheck, and the lint baseline. The Pages deployment succeeded. This stabilizes the test
+      evidence; raw-writing reliability and the physical-phone cold start remain open.
 
 ## Done means
 
