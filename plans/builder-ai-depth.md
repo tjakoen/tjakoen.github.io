@@ -643,16 +643,17 @@ unassigned and cannot be retroactively attributed to a profile. See the
 [profile check](../audit/builder-live-model-profile-2026-10-14.md).
 
 On October 14, a negative-instruction regression showed that the source-anchor guard could promote
-forbidden quoted text and dates into required draft content. A request not to use “award-winning
-bakery” or claim a 2019 opening had produced those values as positive anchors. The guard now skips
-anchors inside nearby negative clauses, and a regression test covers the phrase and date case. The
-live WebGPU check on the Builder's 1.5B profile passed its visible-copy requirements: it kept the
-provided bakery and location, while the safety pass removed two unrequested blocks and reduced the
-remaining intro to source-supported words. The raw model still proposed unsupported opening hours,
-online ordering, pastries, and ambiance; this confirms the code guard's behavior, not reliable raw
-model writing. See the [negative-anchor audit](../audit/builder-negative-anchor-guard-2026-10-14.md)
-and [live report](../audit/builder-negative-anchor-live-2026-10-14.json). Broader raw-writing quality,
-natural-language editing, and a real phone cold-start remain open.
+forbidden quoted text and dates into required draft content. The guard now skips anchors in nearby
+negative clauses, including “do not,” “avoid,” “exclude,” and “leave out,” while retaining a positive
+phrase requested later in the same brief. Unit regressions cover those forms. Two live WebGPU checks
+on the Builder's 1.5B profile passed their visible-copy requirements: each kept the provided bakery
+and location, omitted the forbidden bakery claim and opening year, and reduced the intro to
+source-supported words. Raw responses still proposed unsupported details and blocks; the audit
+checks the guarded result, not reliable raw model writing. See the
+[negative-anchor audit](../audit/builder-negative-anchor-guard-2026-10-14.md), the
+[“do not” live report](../audit/builder-negative-anchor-live-2026-10-14.json), and the
+[“avoid / leave out” live report](../audit/builder-negative-anchor-check-2026-10-14.json). Broader
+raw-writing quality, natural-language editing, and a real phone cold-start remain open.
 
 After deployment, headless production checks selected the 0.5B profile at 1280px and 390px. Both
 viewports showed the current disclosure with no overflow or browser errors. This verifies the

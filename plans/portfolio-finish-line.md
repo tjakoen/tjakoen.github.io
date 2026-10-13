@@ -572,6 +572,9 @@ proof remain open below.
       the published Builder route and its bundled code were checked after deployment. The guard's
       targeted phrase-and-year case passed one live WebGPU run. This closes that specific regression;
       broader writing reliability and a cold-start measurement on actual phone hardware remain open.
+      A follow-up audit added the common instructions “avoid,” “exclude,” and “leave out,” plus a
+      positive phrase after the prohibited wording. The unit and live WebGPU checks pass; this follow-
+      up still needs its own main deployment and verification.
 
 ## Done means
 
