@@ -239,7 +239,7 @@ const SCENARIOS: Scenario[] = [
     builderDraft: { minimumBlocks: 1, mustMention: [["Hearth Bakery"], ["Utrecht"]], mustNotMention: ["award-winning bakery", "2019"] } },
   { id: "builder-draft-mixed-prohibitions", page: "/grain/builder",
     ask: "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
-    builderDraft: { minimumBlocks: 1, mustMention: [["Hearth Bakery"], ["Utrecht"], ["neighborhood bakery"]], mustNotMention: ["award-winning", "certified", "organic", "2019"], mustMentionInField: { "lede.body": [["neighborhood bakery"]] } } },
+    builderDraft: { minimumBlocks: 1, mustMention: [["Hearth Bakery"], ["Utrecht"], ["neighborhood bakery"]], mustNotMention: ["award-winning", "certified", "organic", "2019"], mustMentionInField: { "lede.body": [["neighborhood bakery"]] }, mustEqualInField: { "lede.body": ["Hearth Bakery is a neighborhood bakery in Utrecht."] } } },
   { id: "builder-draft-pottery-studio", page: "/grain/builder",
     ask: "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.",
     builderDraft: { minimumBlocks: 2, mustMention: [["Juniper Studio"], ["Toronto"], ["independent pottery studio"], ["Weekend workshop"], ["hand-built pieces for everyday use"]], mustMentionInField: { "lede.body": [["independent pottery studio"]], "card.body": [["hand-built pieces for everyday use"]] } } },
