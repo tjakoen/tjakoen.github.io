@@ -1,0 +1,123 @@
+{
+  "label": "builder-phrase-target-live-third-pass-2026-10-13",
+  "base": "http://localhost:3131",
+  "model": "unspecified",
+  "passed": 2,
+  "failed": 0,
+  "notRun": 0,
+  "total": 2,
+  "results": [
+    {
+      "id": "builder-draft-bike-shop",
+      "ask": "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 15419,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Northstar Bike Repair · Malmö · a family-run bike repair shop",
+        "Tune-up",
+        "ready for the next ride"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Northstar Bike Repair · Malmö · a family-run bike repair shop"
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Tune-up"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "ready for the next ride"
+        }
+      ],
+      "draftEvidence": "The model's wording was grounded in source phrases or omitted in 3 fields. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The model's wording was grounded in source phrases from your brief: “Northstar Bike Repair · Malmö · a family-run bike repair shop”.",
+        "The model's wording was grounded in source phrases from your brief: “Tune-up”.",
+        "The model's wording was grounded in source phrases from your brief: “ready for the next ride”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "prompt": "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\",\n      \"copy\": {\n        \"body\": \"Northstar Bike Repair is a family-run bike repair shop in Malmö, Sweden. We're here to help you get back on the road with a new, shiny bike.\"\n      }\n    },\n    {\n      \"name\": \"card\",\n      \"copy\": {\n        \"title\": \"Tune-up with the next ride\",\n        \"body\": \"Our experienced technicians are ready to take your bike for a spin and get it back on the road. Whether it's a regular maintenance check or a more complex repair, we've got you covered.\"\n      }\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-pottery-studio",
+      "ask": "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 12628,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Juniper Studio · Toronto · an independent pottery studio",
+        "Weekend workshop",
+        "hand-built pieces for everyday use"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Juniper Studio · Toronto · an independent pottery studio"
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Weekend workshop"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "hand-built pieces for everyday use"
+        }
+      ],
+      "draftEvidence": "The model's wording was grounded in source phrases or omitted in 3 fields. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The model's wording was grounded in source phrases from your brief: “Juniper Studio · Toronto · an independent pottery studio”.",
+        "The model's wording was grounded in source phrases from your brief: “Weekend workshop”.",
+        "The model's wording was grounded in source phrases from your brief: “hand-built pieces for everyday use”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "prompt": "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.\n\n(Answer as JSON with a blocks array. Each entry is an object with a name and optional copy, like {\"blocks\":[{\"name\":\"lede\",\"copy\":{\"body\":\"A concise introduction.\"}},{\"name\":\"card\",\"copy\":{\"title\":\"A title\",\"body\":\"A concise description.\"}}]}.)\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name, and write different copy for each one when the brief gives you enough detail.\nUse only copy fields that belong to that block: lede.body; card.title and card.body; callout.body; stat.value, stat.label and stat.sub. Forms are composed by the code and do not take copy here.\nWrite brief, plain text without HTML. Use only facts, names, dates and numbers stated in the visitor's sentence. Do not invent claims, testimonials, guarantees or statistics. Omit a copy field when the sentence does not support it; the code will keep its example text.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\",\n      \"copy\": {\n        \"body\": \"Juniper Studio is an independent pottery studio dedicated to crafting unique, handcrafted pieces.\"\n      }\n    },\n    {\n      \"name\": \"card\",\n      \"copy\": {\n        \"title\": \"Weekend Workshop\",\n        \"body\": \"Join us for a hands-on weekend workshop, where you'll create beautiful, hand-built pieces for everyday use.\"\n      }\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    }
+  ]
+}
