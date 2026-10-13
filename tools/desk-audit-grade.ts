@@ -5,6 +5,8 @@ export interface BuilderDraftRequirements {
   mustNotMention?: string[];
   /** Some requirements belong in a specific block field, not merely somewhere on the page. */
   mustMentionInField?: Record<string, string[][]>;
+  /** Some visitor-facing forms need a complete, readable result, not just a keyword match. */
+  mustEqualInField?: Record<string, string[]>;
   /** The prompt should produce this many content blocks. */
   minimumBlocks: number;
 }
@@ -49,6 +51,14 @@ export function gradeBuilderDraft(
       if (!group.some((term) => value.includes(term.toLowerCase())))
         failures.push(`${target} is missing any of [${group.join(", ")}]`);
     }
+  }
+
+  for (const [target, alternatives] of Object.entries(requirements.mustEqualInField ?? {})) {
+    const [block, field] = target.split(".");
+    const value = draftFields.find((entry) => entry.block.toLowerCase() === block
+      && entry.field.toLowerCase() === field)?.value.trim().toLocaleLowerCase();
+    if (!value || !alternatives.some((expected) => value === expected.trim().toLocaleLowerCase()))
+      failures.push(`${target} did not match an expected complete value`);
   }
 
   return failures;

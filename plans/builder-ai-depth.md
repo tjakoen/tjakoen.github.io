@@ -780,6 +780,28 @@ Hosted CI on `8d39c1a` passed all 432 browser cases with no retry, 736 unit test
 lint baseline. The Pages deployment succeeded. This fixes the test race, not a model-quality defect:
 raw-writing reliability and a physical-phone cold start remain open.
 
+## Full Builder WebGPU recheck, October 14
+
+A fresh run of the complete 36-scenario desk audit on the cached local Qwen2.5-1.5B profile passed
+32 scenarios. All 13 Builder cases passed: seven edit or refusal cases and six page drafts. The
+four failures belonged to other desk behaviors (`who-is-tj`, `cap-freeform`, `cap-det`, and
+`memory-read`), so this result does not count as a full portfolio pass. The Builder drafts retained
+the requested names, locations, descriptions, and phrases after source reconciliation. The raw
+answers still added unsupported claims or extra blocks in five of the six drafts; the code removed
+those additions before the visitor reviewed the draft. The 13/13 result therefore measures the
+guarded visitor-facing result in one run, not raw model accuracy or a repeatable success rate.
+
+The full-run record is [here](builder-full-webgpu-2026-10-14.json). I strengthened the mixed-
+prohibition grader to require the complete intro sentence in `lede.body`; a phrase list that merely
+contained the requested words now fails. Its unit test rejects the earlier list-shaped result and
+accepts the sentence. Three warm WebGPU runs each passed 1/1 and produced “Hearth Bakery is a
+neighborhood bakery in Utrecht.” while omitting all four prohibited terms. The raw model still
+suggested unsupported phrases such as “fresh, organic bread” and “with a twist”; the source-backed
+sentence composer replaced those suggestions in the reviewed draft. See the
+[three-run live report](builder-mixed-complete-sentence-repeats-2026-10-14.json). This makes the
+specific visitor-facing form repeatable in these checks; broad semantic writing quality remains
+open. A physical-phone cold-start measurement is still required.
+
 ## Done means
 
 The current browser model can build a useful first draft from a visitor's brief and complete the

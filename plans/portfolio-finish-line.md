@@ -627,7 +627,17 @@ proof remain open below.
       The refusal case passed three local repetitions, and all 73 Builder-canvas cases passed
       locally. Hosted CI on `8d39c1a` passed all 432 browser cases with no retry, 736 unit tests,
       typecheck, and the lint baseline. The Pages deployment succeeded. This stabilizes the test
-      evidence; raw-writing reliability and the physical-phone cold start remain open.
+      evidence; raw-writing reliability and the physical-phone cold start remain open. A fresh full
+      36-scenario local WebGPU run then passed 32/36 overall, with all 13 Builder edits, refusals,
+      and drafts passing. Four failures belonged to other desk scenarios. The raw Builder answers
+      still added unsupported claims or blocks in five of six drafts; source reconciliation removed
+      them before review. A stricter live grader now requires the complete mixed-prohibition intro
+      sentence in its named field; three warm repeats passed 3/3 with the same visitor-facing result.
+      The raw model still suggested unsupported phrases, which source reconciliation removed. These
+      results strengthen evidence for this guarded Builder path without proving broad raw model
+      quality. The physical-phone cold-start measurement remains open. See the
+      [full Builder audit](../audit/builder-full-webgpu-2026-10-14.json) and the
+      [three sentence rechecks](../audit/builder-mixed-complete-sentence-repeats-2026-10-14.json).
 
 ## Done means
 

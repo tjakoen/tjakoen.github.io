@@ -49,3 +49,20 @@ test("the audit fails if the reviewed draft includes a phrase the brief forbids"
     "draft copy includes forbidden wording [2019]",
   ]);
 });
+
+test("the live draft audit requires complete intro wording when the scenario depends on it", () => {
+  const requirements = {
+    minimumBlocks: 1,
+    mustMention: [["Hearth Bakery"], ["Utrecht"], ["neighborhood bakery"]],
+    mustEqualInField: { "lede.body": ["Hearth Bakery is a neighborhood bakery in Utrecht."] },
+  };
+  const listLike = gradeBuilderDraft(requirements,
+    ["Hearth Bakery · Utrecht · neighborhood bakery"], 1,
+    [{ block: "lede", field: "body", value: "Hearth Bakery · Utrecht · neighborhood bakery" }]);
+  expect(listLike).toEqual(["lede.body did not match an expected complete value"]);
+
+  const sentence = gradeBuilderDraft(requirements,
+    ["Hearth Bakery is a neighborhood bakery in Utrecht."], 1,
+    [{ block: "lede", field: "body", value: "Hearth Bakery is a neighborhood bakery in Utrecht." }]);
+  expect(sentence).toEqual([]);
+});
