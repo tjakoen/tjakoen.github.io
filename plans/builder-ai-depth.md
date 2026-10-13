@@ -466,6 +466,14 @@ are `.cache/desk-audit/report-portfolio-builder-focused-2026-10-13.json`,
 `.cache/desk-audit/report-portfolio-builder-draft-repeat-2-2026-10-13.json`. The Builder's first-screen
 note and detail drawer now show these measured results before visitors try the model, including the
 difference between the 7/8 reviewed workflow and the one-of-three location-retention result.
+On October 13, a follow-up live check confirmed the review cues against two cached WebGPU drafts.
+One draft retained Hearth Bakery and Utrecht, but added unsupported claims about artisanal bread
+and a bakery staple. The other omitted Utrecht; the review called out the missing location and
+separately listed phrases such as “perfect” and “warm start” that were not in the brief. The check
+correctly kept the location warning when the draft omitted it, but the comparison remains lexical:
+it cannot detect every unsupported claim or determine whether a sentence is true. The audit harness
+now saves both review cues with the unedited output before approval. Repeated grounded-draft quality
+remains open.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,
