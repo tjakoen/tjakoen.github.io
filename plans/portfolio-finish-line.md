@@ -586,7 +586,15 @@ proof remain open below.
       out of the positive-anchor set. Its hosted CI passed all 432 browser cases, 728 unit tests,
       typecheck, and the lint baseline; Pages deployment passed. The live Builder module was checked
       after deployment, and its third negative-instruction brief passed. The wider Builder reliability
-      and actual-phone gaps remain open.
+      and actual-phone gaps remain open. A further audit found that copy grounding could reuse a
+      forbidden source phrase even after anchor filtering. The grounding step now applies the same
+      negative-clause filter and stops a candidate span before a later prohibition. A regression
+      confirms that “Hearth Bakery” survives when a raw copy span continues across the sentence
+      boundary into “Do not use the phrase ‘award-winning bakery.’” A separate check preserves a
+      positive phrase after “and include.” Two live WebGPU rechecks rejected raw “organic” suggestions
+      and retained the requested intro; a third recheck after the span fix also passed. Local
+      verification is complete; this follow-up awaits its main release. Broad raw-writing reliability
+      and the physical-phone cold start remain open.
 
 ## Done means
 

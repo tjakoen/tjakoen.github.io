@@ -679,6 +679,22 @@ three forbidden details and a required positive phrase retained in `lede.body`. 
 not evidence of reliable raw writing. The broader writing and physical-phone cold-start items remain
 open.
 
+A further regression showed that anchor filtering alone did not stop the copy-grounding step from
+reusing a prohibited source word. The same clause check now runs as each candidate span is built and
+stops a phrase from crossing into a later prohibited instruction. A direct regression retains the
+positive “Hearth Bakery” phrase but rejects a source span that continues across a sentence boundary
+into “Do not use the phrase ‘award-winning bakery.’” Unit coverage also verifies that a forbidden
+“certified organic” phrase cannot be grounded, while a later requested “neighborhood bakery” phrase
+still can.
+Two warm live rechecks passed with the model's raw answers proposing “organic bread” and “organic
+ingredients”; neither suggestion appeared in the reviewed result. The live grader now checks those
+prohibited terms separately. After the span-boundary fix, a third live recheck passed and retained
+the required intro phrase. See the
+[cross-sentence unit regression and audit record](../audit/builder-negative-anchor-guard-2026-10-14.md)
+and [latest live report](../audit/builder-negative-span-recheck-2026-10-14.json). This protects the
+visible composition for these tested forms; broad semantic claim detection and raw-writing quality
+remain open. The code and captures are being prepared for release in the next increment.
+
 The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
 lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-

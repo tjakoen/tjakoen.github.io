@@ -86,9 +86,11 @@ const NEGATION = new Set([
 ]);
 
 const DRAFT_VERBS = new Set([
-  "add", "avoid", "build", "can", "can't", "cannot", "could", "create", "design", "do",
-  "dont", "don't", "exclude", "give", "help", "leave", "make", "never", "no", "not", "omit",
-  "please", "refrain", "show", "skip", "use", "without", "write",
+  "add", "avoid", "build", "call", "can", "can't", "cannot", "could", "create", "describe",
+  "design", "do", "dont", "don't", "exclude", "feature", "focus", "give", "highlight", "help",
+  "include", "introduce", "keep", "leave", "make", "mention", "never", "no", "not", "offer",
+  "omit", "please", "present", "provide", "refrain", "say", "show", "skip", "use", "without",
+  "write",
 ]);
 const ANCHOR = /(?<![\p{L}\p{N}_])[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
@@ -99,7 +101,7 @@ const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 /** A fact inside a nearby negative clause must not be repeated without its negation. */
 function followsNegation(brief: string, index: number): boolean {
   const before = brief.slice(0, index);
-  const clause = before.split(/[,;.!?]|\b(?:but|however|instead)\b/iu).at(-1) ?? before;
+  const clause = before.split(/[,;.!?]|\b(?:but|however|instead)\b|\band\s+(?=(?:add|include|mention|describe|show|write|say|call|feature|introduce|offer|present|create|build|make|provide|highlight|focus|ensure|keep)\b)/iu).at(-1) ?? before;
   const context = clause.replace(/\bnot only\b|\b(?:don't|do not|never) forget\b/giu, "");
   return /\b(?:not|never|no|without|cannot|can't|avoid(?:ing)?|omit(?:ting)?|exclude|excluding|leave out|skip|refrain from|don't|dont|isn't|aren't|wasn't|weren't|doesn't|didn't|won't|wouldn't)\b/iu.test(context);
 }
@@ -219,6 +221,8 @@ export function groundBlockCopy(
         while (
           left + length < source.length && right + length < candidate.length
           && source[left + length]!.value === candidate[right + length]!.value
+          && !DRAFT_VERBS.has(source[left + length]!.value)
+          && !followsNegation(brief, source[left + length]!.start)
         ) length++;
         if (!length) continue;
         let first = left;
