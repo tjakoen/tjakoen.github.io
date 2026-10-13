@@ -802,10 +802,22 @@ sentence composer replaced those suggestions in the reviewed draft. See the
 specific visitor-facing form repeatable in these checks; broad semantic writing quality remains
 open. A physical-phone cold-start measurement is still required.
 
+I repeated all six draft scenarios on the cached Qwen2.5-1.5B WebGPU profile. The guarded drafts
+passed 6/6 and preserved the requested names, locations, descriptions, and exact phrases. The raw
+model output still failed the writing bar in all six cases: it added claims such as a service history,
+team credentials, or product promises, and it sometimes proposed three extra blocks for a single-
+intro request. The code removed or replaced those suggestions before review. This confirms that the
+visitor-facing guard works across these six briefs; it also confirms that raw writing is still not
+reliable. The [repeat report](../audit/builder-draft-recheck-2026-10-14.json) preserves each raw
+answer beside the reviewed draft. The remaining writing acceptance bar is zero unsupported claims
+or unrequested blocks across the varied briefs, repeated on the local profile; passing the guarded
+grader alone does not meet it. See the [published source capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-recheck-2026-10-14.json).
+
 Checking the published plan pages also exposed a broken evidence path: relative `../audit/` links
 passed repository link lint, but the static export does not publish the `audit/` directory. The
-Builder plan and portfolio finish-line plan now link their 33 audit records to the public GitHub
-source files. All 33 targets returned HTTP 200.
+Builder plan and portfolio finish-line plan now link their 34 audit records to the public GitHub
+source files. All 33 earlier targets returned HTTP 200; the new repeat report will be checked after
+it is published.
 
 ## Done means
 
