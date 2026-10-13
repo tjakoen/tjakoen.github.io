@@ -161,7 +161,7 @@ describe("generated block copy is bounded by each component's visible text contr
 
     expect(reconciled.names).toEqual(["lede", "card"]);
     expect(reconciled.droppedBlocks).toBe(1);
-    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery · Utrecht · neighborhood bakery");
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery · Utrecht · a neighborhood bakery");
     expect(reconciled.copies[1]?.copy).toEqual({
       title: "Sourdough",
       body: "baked fresh each morning",
@@ -199,6 +199,19 @@ describe("generated block copy is bounded by each component's visible text contr
 
     expect(reconciled.copies[0]?.copy.body).not.toContain("ready for the next ride");
     expect(reconciled.copies[1]?.copy.body).toBe("ready for the next ride");
+  });
+
+  test("intro description stays in the intro when the model repeats card copy there", () => {
+    const brief = "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card"], [
+      { body: "Juniper Studio is an independent pottery studio in Toronto and makes hand-built pieces for everyday use." },
+      { title: "Weekend Workshop", body: "Join us to make hand-built pieces for everyday use." },
+    ]);
+
+    expect(briefAnchors(brief)).toContain("an independent pottery studio");
+    expect(reconciled.copies[0]?.copy.body).toContain("an independent pottery studio");
+    expect(reconciled.copies[0]?.copy.body).not.toContain("hand-built pieces for everyday use");
+    expect(reconciled.copies[1]?.copy.body).toBe("hand-built pieces for everyday use");
   });
 
   test("the review aid lists meaningful words that are absent from the visitor's brief", () => {

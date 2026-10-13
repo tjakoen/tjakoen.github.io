@@ -11,9 +11,11 @@
 // Local-only, never CI: needs WebGPU (headless works on a Mac via the full-Chromium channel; if no
 // adapter shows up we relaunch headed) and the first run downloads ~350MB of weights — a PERSISTENT
 // browser profile (.cache/desk-audit/profile) keeps them cached across runs.
+// Keep PORT stable across live runs: WebLLM caches weights by browser origin, so a new port creates
+// a cold origin and can trigger a full model download even when this profile has a warm cache.
 import { chromium, type BrowserContext, type Page } from "@playwright/test";
 import { parsePort } from "./_server.ts";
-import { gradeBuilderDraft, type BuilderDraftField, type BuilderDraftRequirements } from "./desk-audit-grade.ts";
+import { builderBlockKeyFromHeading, gradeBuilderDraft, type BuilderDraftField, type BuilderDraftRequirements } from "./desk-audit-grade.ts";
 
 const PORT = parsePort(process.env.PORT, 3131, "PORT");
 const BASE = `http://localhost:${PORT}`;
@@ -227,10 +229,10 @@ const SCENARIOS: Scenario[] = [
     builderDraft: { minimumBlocks: 2, mustMention: [["Hearth Bakery"], ["Utrecht"], ["neighborhood bakery"], ["Sourdough"], ["baked fresh each morning", "fresh each morning"]] } },
   { id: "builder-draft-bike-shop", page: "/grain/builder",
     ask: "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
-    builderDraft: { minimumBlocks: 2, mustMention: [["Northstar Bike Repair"], ["Malmö"], ["family-run bike repair shop"], ["Tune-up"], ["ready for the next ride"]], mustMentionInField: { "card.body": [["ready for the next ride"]] } } },
+    builderDraft: { minimumBlocks: 2, mustMention: [["Northstar Bike Repair"], ["Malmö"], ["family-run bike repair shop"], ["Tune-up"], ["ready for the next ride"]], mustMentionInField: { "lede.body": [["family-run bike repair shop"]], "card.body": [["ready for the next ride"]] } } },
   { id: "builder-draft-pottery-studio", page: "/grain/builder",
     ask: "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.",
-    builderDraft: { minimumBlocks: 2, mustMention: [["Juniper Studio"], ["Toronto"], ["independent pottery studio"], ["Weekend workshop"], ["hand-built pieces for everyday use"]], mustMentionInField: { "card.body": [["hand-built pieces for everyday use"]] } } },
+    builderDraft: { minimumBlocks: 2, mustMention: [["Juniper Studio"], ["Toronto"], ["independent pottery studio"], ["Weekend workshop"], ["hand-built pieces for everyday use"]], mustMentionInField: { "lede.body": [["independent pottery studio"]], "card.body": [["hand-built pieces for everyday use"]] } } },
   // A2 guided tour — "take the tour" from home drives the FIRST leg deterministically (tour.ts,
   // desk-reasoner.ts): no model, straight to /grain, with an announce that names both the stop and
   // the destination. LAST in the list on purpose — see the per-scenario cleanup below.
@@ -615,6 +617,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     let draftEvidence: string | undefined;
     let draftFieldEvidence: string[] | undefined;
     let draftBlocks: number | undefined;
+    let draftFields: BuilderDraftField[] | undefined;
     let targetCorrection: string | undefined;
     if (s.builderDraft) {
       const review = page.locator("[data-builder-draft-review]");
@@ -627,6 +630,22 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
             (fields) => fields.map((field) => (field as HTMLTextAreaElement).value),
           )
         : [];
+      const reviewedFields = reviewVisible
+        ? await review.locator("[data-draft-copy-block][data-draft-copy-field]").evaluateAll((fields) => fields.map((field) => {
+            const item = field.closest("li");
+            const heading = item?.querySelector("h3")?.textContent ?? "";
+            return {
+              heading,
+              field: (field as HTMLElement).dataset.draftCopyField ?? "",
+              value: (field as HTMLTextAreaElement).value,
+            };
+          }))
+        : [];
+      draftFields = reviewedFields.map(({ heading, field, value }) => ({
+        block: builderBlockKeyFromHeading(heading),
+        field,
+        value,
+      }));
       draftEvidence = reviewVisible
         ? (await review.locator("[data-builder-draft-evidence]").textContent())?.trim() ?? ""
         : "review panel unavailable";
@@ -654,17 +673,6 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     }
     if (!s.deterministic) firstModelRun = false;
     const canvas = builderPage ? await canvasState(page) : undefined;
-    const draftFields = builderPage && s.builderDraft
-      ? await page.locator("[data-builder-draft-blocks] [data-draft-copy-block]").evaluateAll((fields) => fields.map((field) => {
-          const item = field.closest("li");
-          const heading = item?.querySelector("h3")?.textContent ?? "";
-          return {
-            block: heading.split("·").at(-1)?.trim() ?? "",
-            field: (field as HTMLElement).dataset.draftCopyField ?? "",
-            value: (field as HTMLTextAreaElement).value,
-          };
-        }))
-      : undefined;
     const model = builderPage ? await recorded(page) : undefined;
     // Per-scenario sessionStorage cleanup: tour-det (and any future tour ask) leaves a pending
     // "desk-tour" cursor stashed for the NEXT stop the door hasn't navigated to within this scenario's

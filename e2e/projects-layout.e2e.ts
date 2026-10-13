@@ -131,9 +131,9 @@ test.describe("Projects presentation in the editor shell", () => {
     const apsi = subjects.filter({ hasText: "6APSI" });
     await expect(apsi.locator("summary")).toContainText("4 sections · 8 badges");
     await expect(apsi.locator("summary")).toBeVisible();
+    await expect(apsi.locator("summary .badge-subject__description")).toContainText("JavaScript and React");
     await expect(apsi.locator(".badge-subject__content")).toBeHidden();
     await apsi.locator("summary").click();
-    await expect(apsi.locator(".badge-subject__description")).toContainText("JavaScript and React");
     await expect(apsi.locator(".badge-section-card")).toHaveCount(4);
     await expect(apsi.locator(".badge-section-card").first()).toContainText("Section 2203");
     await expect(apsi.locator(".badge-section-card").first()).toContainText("Frontend Design with Cloud");

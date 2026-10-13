@@ -56,6 +56,18 @@ includes each prompt, the honest fallback, the observed canvas, and failed shard
 that the retry reached the model-loading step, but it still provides no evidence about live draft
 quality or the phrase-placement fix.
 
+## Warm-origin phrase-placement repeats, October 13
+
+I reran both briefs on the stable `localhost:3131` origin, where the persistent Chromium profile had
+the model cached. Each run passed 2/2 after source reconciliation. The captured bike-shop fields put
+“a family-run bike repair shop” in `lede.body` and “ready for the next ride” in `card.body`; the
+pottery fields also passed the requested phrase check in the named card. The raw model answers still
+shortened or misplaced some wording, and the source reconciliation produced the guarded fields that
+were reviewed. This verifies the code-guarded composition for these two warm desktop briefs. It does
+not measure a cold load, prove factual truth, establish polished model-authored copy, or predict
+performance on another device. See the [first report](builder-phrase-scoped-description-live-1-2026-10-13.json)
+and [repeat](builder-phrase-scoped-description-live-2-2026-10-13.json).
+
 ## Limits
 
 These were warm desktop WebGPU runs against one brief. They do not measure a first visit, a cold
