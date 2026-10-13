@@ -642,6 +642,10 @@ This proves the guarded result on one prompt, not reliable raw writing. Older ca
 unassigned and cannot be retroactively attributed to a profile. See the
 [profile check](../audit/builder-live-model-profile-2026-10-14.md).
 
+After deployment, headless production checks selected the 0.5B profile at 1280px and 390px. Both
+viewports showed the current disclosure with no overflow or browser errors. This verifies the
+published selector metadata and responsive page, not model behavior on an actual phone.
+
 The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
 lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-
