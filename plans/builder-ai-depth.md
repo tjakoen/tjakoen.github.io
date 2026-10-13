@@ -632,6 +632,11 @@ lint, and 80 focused browser cases across the Builder and project layouts. The b
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-
 width page fit. It does not close the phone cold-start item above.
 
+Commit `dbf161d` is deployed. Hosted CI passed typecheck, all 724 unit tests, the lint baseline, and
+the full end-to-end job. A production browser check confirmed the new “intro for…” evidence at
+desktop and 390px, with no horizontal overflow or page errors. This verifies the published layout,
+not real-phone model performance.
+
 Commit `8fcdbc5` is deployed. Hosted CI passed all 432 browser cases, typecheck, 724 unit tests, and
 the lint baseline. The Pages build and deployment both succeeded. A browser check against the
 published Builder and Badges pages confirmed the disclosure text, visible subject descriptions,
