@@ -640,6 +640,17 @@ typecheck, unit tests, and lint checks passed. Hosted end-to-end passed all 435 
 Natural-language coverage beyond these measured phrasings and an actual-phone cold-start check
 remain open.
 
+The next holdout checked “delete the intro” and “shrink the callout to a third width.” Across three
+warm WebGPU runs, the model declined deletion each time and handled the third-width request directly
+each time. The first width trial uncovered a target-guard bug: “third” was treated as the ordinal of
+the callout, so a valid model proposal was rejected. The resolver now treats ordinals as block
+references only when they qualify a block name, and recognizes “shrink” and “reduce” for explicit
+width values. The [six-run capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-repeats-2026-10-14.json)
+records raw answers and resulting canvases. The regression test checks that both proposed edits wait
+for approval and then reach the intended block at a 390px viewport. Local verification passed 43
+reasoner tests, 745 unit tests, and all 77 Builder browser cases; typecheck, link lint, and the lint
+gate also passed. Hosted verification and deployment for this follow-on change are pending.
+
 ## Current release and visual review, October 14
 
 Commit `2c73625` is on `main`. Hosted CI passed, including typecheck, unit tests, the lint baseline,

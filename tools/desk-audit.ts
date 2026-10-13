@@ -203,6 +203,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-drop-discard", page: "/grain/builder", ask: "discard the final card",
     builder: { wantIds: ["b1", "b2", "b3"] },
     mustMention: [["b4"]] },
+  { id: "builder-drop-delete-intro", page: "/grain/builder", ask: "delete the intro",
+    builder: { wantIds: ["b2", "b3", "b4"] },
+    mustMention: [["b1"]] },
   // The control, and it is the one that tells you WHICH thing is broken. "the second card" asks the
   // model to resolve a reference and then use the vocabulary; "drop b4" asks only for the second.
   // A page that fails both is failing at the vocabulary, and no amount of better referring language
@@ -221,6 +224,9 @@ const SCENARIOS: Scenario[] = [
     mustMention: [["b3"]] },
   { id: "builder-span-stretch-width", page: "/grain/builder", ask: "stretch the callout to full width",
     builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "full" } },
+    mustMention: [["b3"]] },
+  { id: "builder-span-shrink-third", page: "/grain/builder", ask: "shrink the callout to a third width",
+    builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b3: "third" } },
     mustMention: [["b3"]] },
   { id: "builder-span-id", page: "/grain/builder", ask: "make b2 full width",
     builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b2: "full" } },
