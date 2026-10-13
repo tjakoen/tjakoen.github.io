@@ -904,6 +904,20 @@ phone or iOS simulator. When a handset is available, start with an uncached brow
 record the selected model, transferred bytes, model-load time, first generation time, memory
 pressure, and whether the page remains usable during loading.
 
+## Repeated live edit check, October 14
+
+I repeated the seven edit and refusal scenarios three times against the live Qwen2.5-1.5B WebGPU
+profile. All 21 reviewed outcomes passed: relative and explicit-ID deletion, a named-block width
+change, an ID-based width change, a named-block move, an ID-based move, and refusal of a copy edit.
+The raw model returned an unusable null action for several explicit requests, including both
+deletions in all three runs. In those cases the Builder derived a request-based proposal from the
+visitor's unambiguous words, identified its source in the review panel, and applied it only after
+approval. The result supports this bounded, review-first edit set. It does not show that the model
+reliably interprets those instructions by itself or that it handles broader paraphrases. The
+[three-run capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-repeats-2026-10-14.json)
+keeps each raw answer beside its reviewed outcome. The 1.5B profile was already cached, so these runs
+do not measure a cold start or phone performance.
+
 ## Done means
 
 The current browser model can choose a useful page structure from a visitor's brief and complete the

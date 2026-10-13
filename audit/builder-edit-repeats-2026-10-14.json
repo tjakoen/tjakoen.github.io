@@ -1,0 +1,594 @@
+{
+  "label": "builder-edit-repeats-2026-10-14",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "runs": [
+    {
+      "label": "builder-current",
+      "passed": 7,
+      "failed": 0,
+      "total": 7,
+      "results": [
+        {
+          "id": "builder-drop",
+          "ask": "drop the second card",
+          "pass": true,
+          "reply": "Applied: Drop b4.",
+          "ms": 11791,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-bare-id",
+          "ask": "drop b4",
+          "pass": true,
+          "reply": "Applied: Drop b4.",
+          "ms": 10741,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span",
+          "ask": "make the callout full width",
+          "pass": true,
+          "reply": "Applied: Set b3 to full width.",
+          "ms": 10840,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": \"block.span\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-id",
+          "ask": "make b2 full width",
+          "pass": true,
+          "reply": "Applied: Set b2 to full width.",
+          "ms": 10387,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move",
+          "ask": "move the callout up",
+          "pass": true,
+          "reply": "Applied: Move b3 up.",
+          "ms": 10596,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move-id",
+          "ask": "move b3 up",
+          "pass": true,
+          "reply": "Applied: Move b3 up.",
+          "ms": 10737,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": \"block.move\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-no-verb",
+          "ask": "the card should mention pricing",
+          "pass": true,
+          "reply": "This builder cannot revise block copy yet, so nothing changed. Use the block controls to move, resize, or remove a block.",
+          "ms": 2863,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    },
+    {
+      "label": "builder-current-repeat2",
+      "passed": 7,
+      "failed": 0,
+      "total": 7,
+      "results": [
+        {
+          "id": "builder-drop",
+          "ask": "drop the second card",
+          "pass": true,
+          "reply": "Applied: Drop b4.",
+          "ms": 11038,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-bare-id",
+          "ask": "drop b4",
+          "pass": true,
+          "reply": "Applied: Drop b4.",
+          "ms": 10755,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span",
+          "ask": "make the callout full width",
+          "pass": true,
+          "reply": "Applied: Set b3 to full width.",
+          "ms": 10730,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": \"block.span\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-id",
+          "ask": "make b2 full width",
+          "pass": true,
+          "reply": "Applied: Set b2 to full width.",
+          "ms": 11006,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move",
+          "ask": "move the callout up",
+          "pass": true,
+          "reply": "Applied: Move b3 up.",
+          "ms": 10400,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move-id",
+          "ask": "move b3 up",
+          "pass": true,
+          "reply": "Applied: Move b3 up.",
+          "ms": 10750,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": \"block.move\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-no-verb",
+          "ask": "the card should mention pricing",
+          "pass": true,
+          "reply": "This builder cannot revise block copy yet, so nothing changed. Use the block controls to move, resize, or remove a block.",
+          "ms": 2872,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    },
+    {
+      "label": "builder-current-repeat3",
+      "passed": 7,
+      "failed": 0,
+      "total": 7,
+      "results": [
+        {
+          "id": "builder-drop",
+          "ask": "drop the second card",
+          "pass": true,
+          "reply": "Applied: Drop b4.",
+          "ms": 10904,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-bare-id",
+          "ask": "drop b4",
+          "pass": true,
+          "reply": "Applied: Drop b4.",
+          "ms": 10597,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span",
+          "ask": "make the callout full width",
+          "pass": true,
+          "reply": "Applied: Set b3 to full width.",
+          "ms": 10733,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "full"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": \"block.span\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-span-id",
+          "ask": "make b2 full width",
+          "pass": true,
+          "reply": "Applied: Set b2 to full width.",
+          "ms": 10874,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move",
+          "ask": "move the callout up",
+          "pass": true,
+          "reply": "Applied: Move b3 up.",
+          "ms": 10486,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-move-id",
+          "ask": "move b3 up",
+          "pass": true,
+          "reply": "Applied: Move b3 up.",
+          "ms": 11169,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}",
+          "status": "passed",
+          "failures": []
+        },
+        {
+          "id": "builder-no-verb",
+          "ask": "the card should mention pricing",
+          "pass": true,
+          "reply": "This builder cannot revise block copy yet, so nothing changed. Use the block controls to move, resize, or remove a block.",
+          "ms": 2886,
+          "canvas": [
+            {
+              "id": "b1",
+              "span": "full"
+            },
+            {
+              "id": "b2",
+              "span": "half"
+            },
+            {
+              "id": "b3",
+              "span": "half"
+            },
+            {
+              "id": "b4",
+              "span": "half"
+            }
+          ],
+          "modelRaw": "",
+          "status": "passed",
+          "failures": []
+        }
+      ]
+    }
+  ]
+}
