@@ -12,4 +12,8 @@ test("the Builder help shows the latest measured edit limits", async ({ page }) 
   await expect(help).toContainText("The model chose the first card instead of the second");
   await expect(help).toContainText("omitted Utrecht and added unrequested marketing phrases");
   await expect(help).toContainText("40.5 seconds from a fresh browser cache");
+  await expect(help).toContainText("fresh eight-case WebGPU run scored 7/8");
+  await expect(help).toContainText("Two warm repeats of the same prompt scored 0/1 and 1/1");
+  await expect(help).toContainText("All three drafts added details the brief did not support");
+  await expect(help).toContainText("The score checks fact retention, not whether generated claims are true");
 });

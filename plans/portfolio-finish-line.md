@@ -450,8 +450,9 @@ complete; the remaining portfolio-specific audit work is Builder reliability, tr
       name and product but omitted Utrecht and added unsupported bakery claims. Two warm repeats of
       the same brief scored 0/1 and 1/1. One again omitted Utrecht; the other included it but added
       unsupported claims and an unrequested callout. The review panel keeps drafts inspectable and
-      editable before acceptance, but generated copy still needs a human fact check. Phone cold-start
-      remains unmeasured. See the Builder plan for the scenario detail.
+      editable before acceptance, but generated copy still needs a human fact check. The workbench
+      now shows this measured limitation before a visitor runs the model. Phone cold-start remains
+      unmeasured. See the Builder plan for the scenario detail.
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
