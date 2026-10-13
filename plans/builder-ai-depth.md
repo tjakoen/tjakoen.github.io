@@ -754,6 +754,15 @@ not establish that the prompt improved raw writing. The rule was removed. The co
 limitations are recorded in the [source-quote prompt check](../audit/builder-source-quote-prompt-2026-10-14.md).
 The raw-writing requirement remains open.
 
+## Zero-temperature check, October 14
+
+I also compared one six-brief run at structured-completion temperature 0.0 with the previous 0.2
+setting. Both runs passed after source reconciliation, but the zero-temperature raw answers still
+invented details, proposed surplus blocks, and repeated a prohibited “organic” claim. The original
+setting was restored. The [zero-temperature audit](../audit/builder-zero-temperature-experiment-2026-10-14.md)
+records the raw outputs and the limits of this single-run comparison. Raw-writing reliability remains
+open.
+
 ## Done means
 
 The current browser model can build a useful first draft from a visitor's brief and complete the
