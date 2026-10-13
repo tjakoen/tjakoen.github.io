@@ -33,6 +33,20 @@ async function pretendStaticHost(page: Page): Promise<void> {
 }
 
 test.describe("the canvas: a composition, server-rendered", () => {
+  test("the Build it button stays on one line at a narrow phone width", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 812 });
+    await page.goto("/grain/builder");
+    const submit = page.locator(SUBMIT);
+    await expect(submit).toBeVisible();
+    const lines = await submit.evaluate((button) => {
+      const range = document.createRange();
+      range.selectNodeContents(button);
+      return range.getClientRects().length;
+    });
+    expect(lines).toBe(1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+  });
+
   test("the first-screen example leads to measured edit and honest refusal prompts", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/grain/builder");

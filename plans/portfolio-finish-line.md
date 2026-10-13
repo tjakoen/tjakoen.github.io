@@ -649,6 +649,9 @@ proof remain open below.
       source reconciliation removed or corrected them before review. This confirms repeatability
       of the guarded desktop experience, not reliability of the model's raw writing. See the
       [two-run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json).
+      A 320px browser recheck then found and fixed a wrapped `Build it` label; the focused browser
+      regression passed, and the corrected screenshot has no horizontal overflow. The cold-start
+      evidence still needs an actual phone.
 
 ## Done means
 
