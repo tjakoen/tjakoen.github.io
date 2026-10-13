@@ -81,14 +81,17 @@
           </div>
         </section>
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
-          First use downloads about 875 MB on capable devices or 350 MB on others. Two varied WebGPU
-          briefs each passed three times after code reconciliation, with requested wording in their
-          named blocks. An “intro for…” wording variant passed once after code reconciliation. Six
-          further warm WebGPU checks across bakery, bike-repair, and pottery briefs passed once each.
-          Explicit intro descriptions and welcome requests now become short sentences from the brief,
-          while exact wording stays in its requested block. Raw model copy still invents claims.
-          These warm desktop runs do not establish broad reliability or phone behavior.
-          Review every draft.</p>
+          First use downloads about 875 MB on capable devices or 350 MB on others. Review every draft.</p>
+        <details class="wb-bar__evidence muted">
+          <summary>Model limits and reliability evidence</summary>
+          <p>Two warm runs of six Builder briefs produced 12 of 12 drafts that passed the checks on
+            the text visitors see after source reconciliation. The raw model still proposed
+            unsupported details and extra blocks. A larger 3B profile did not improve raw copy, and
+            its warm answers took 17 to 76 seconds. The 1.5B profile remains in use on capable
+            devices. These checks used a cached desktop
+            browser and do not measure a first download or phone behavior. <a
+            href="/plans/plan/builder-ai-depth/">Read the Builder audit.</a></p>
+        </details>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.

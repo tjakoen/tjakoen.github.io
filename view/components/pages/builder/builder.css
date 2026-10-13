@@ -31,6 +31,9 @@
    toolbar's height back and keeps the drag handle for anyone typing a long description. */
 [data-screen="builder"] .wb-bar .field__textarea { min-height: 0; height: 3.4rem; resize: vertical; }
 [data-screen="builder"] .wb-bar__note { font-size: var(--text-xs); margin: 0 0 var(--space-4); }
+[data-screen="builder"] .wb-bar__evidence { font-size: var(--text-xs); margin: 0 0 var(--space-4); }
+[data-screen="builder"] .wb-bar__evidence summary { cursor: pointer; }
+[data-screen="builder"] .wb-bar__evidence > p { margin: var(--space-2) 0 0; }
 /* Undo sits in the composer bar rather than the rail, because it puts back the last change whatever
    made it, and the desk's changes arrive through this box. Full strength rather than the chip's
    resting 0.55: the other chips live inside a row that lifts on hover, and this one has no row to

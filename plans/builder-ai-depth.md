@@ -825,9 +825,11 @@ physical-phone cold start.
 
 A 320px narrow-screen review also found that the `Build it` button wrapped onto two lines. The
 composer now keeps the label on one line while the textarea gives up the small amount of space
-needed. A focused Playwright regression passed, and a fresh 320px screenshot confirms the page
-still fits without horizontal overflow. This verifies responsive composer behavior, not the
-actual-phone model cold start.
+needed. The same review found the run history pushed the workbench below most of the first screen.
+The concise local-model and download note stays visible, while the reliability details now sit in a
+collapsed disclosure with a link to this audit. A focused Playwright regression passed, and a fresh
+320px screenshot confirms the workbench and its example appear sooner with no horizontal overflow.
+This verifies responsive composer behavior, not the actual-phone model cold start.
 
 ## Local 3B comparison, October 14
 
