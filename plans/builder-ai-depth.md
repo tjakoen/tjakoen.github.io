@@ -741,8 +741,9 @@ they do not close the raw-writing item above. See the
 [exact-phrase recheck](../audit/builder-exact-intro-phrase-2026-10-14.json). Local verification
 passed 736 unit tests, 74 Builder browser cases, typecheck, link lint, and the lint baseline. The
 review now distinguishes verbatim wording from sentences composed from brief details and still says
-that its checks cannot verify claims. The code and these captures await release. The physical-phone
-cold start remains open.
+that its checks cannot verify claims. Commit `af142b7` released the code and captures. Hosted CI on
+commit `f170865` passed 432 browser cases, typecheck, unit tests, and lint; its Pages deployment
+passed. The physical-phone cold start remains open.
 
 ## Done means
 

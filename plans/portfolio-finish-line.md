@@ -594,8 +594,8 @@ proof remain open below.
       positive phrase after “and include.” Two live WebGPU rechecks rejected raw “organic” suggestions
       and retained the requested intro; a third recheck after the span fix also passed. Commit `af142b7` is published on `main`; production serves the sentence composer and revised
       review disclosure. Local verification passed, as did hosted typecheck, unit tests, lint count,
-      and the Pages build and deployment. Hosted end-to-end remains in progress. Broad raw-writing
-      reliability and the physical-phone cold start remain open.
+      and the Pages build and deployment. Hosted end-to-end passed all 432 browser cases on commit
+      `f170865`. Broad raw-writing reliability and the physical-phone cold start remain open.
       A follow-up then addressed a visible copy-quality defect: some safe drafts were rendered as
       phrase lists. In six warm WebGPU scenarios, source reconciliation retained the requested facts;
       a separate exact-phrase check confirmed a complete intro sentence and excluded the forbidden
@@ -606,8 +606,8 @@ proof remain open below.
       that the checks cannot verify claims. The work is documented in
       [the Builder sentence audit](../audit/builder-grounded-sentence-followup-2026-10-14.md) and
       was released in commit `af142b7`. Production serves the new sentence composer and revised review
-      disclosure. Pages build and deployment passed; hosted end-to-end remains in progress. Raw model
-      output still invents claims or misplaces wording,
+      disclosure. Pages build and deployment passed; hosted end-to-end passed all 432 browser cases on
+      commit `f170865`. Raw model output still invents claims or misplaces wording,
       and the cold start on an actual phone remains unmeasured.
 
 ## Done means
