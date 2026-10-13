@@ -15,3 +15,8 @@ confirms that this profile still invents details and misses exact wording.
 The [JSON capture](builder-model-profile-check-2026-10-14.json) records the selected model, prompt,
 raw output, reviewed fields, and result. New live runs now carry the selected profile; earlier
 reports remain unassigned and should not be attributed to a specific model after the fact.
+
+After deployment, headless production checks selected the 0.5B profile at both 1280px and 390px.
+The Builder disclosure appeared at both sizes, with no horizontal overflow or page errors. These
+checks verify the deployed selector metadata and layout in Chromium; the emulated phone viewport does
+not measure a handset's model capability, memory, download, or generation time.
