@@ -661,9 +661,11 @@ published selector metadata and responsive page, not model behavior on an actual
 
 Commit `1b8b5a1` released the initial negative-anchor guard. Follow-up commit `76e0c9d` added common
 “avoid,” “exclude,” and “leave out” instructions and a later positive phrase to the regression and
-live audit. Hosted CI passed all 431 browser cases, 727 unit tests, typecheck, and the lint baseline;
-the Pages build and deploy passed. The published Builder route and bundled script were checked after
-deployment. Both live WebGPU negative-instruction checks passed their visible-copy requirements.
+live audit. Documentation commit `e780d66` records that release; its hosted CI passed all 432 browser
+cases and 727 unit tests, typecheck, and the lint baseline, and its Pages build and deploy passed.
+The published Builder route and bundled script were checked after deployment. Three live WebGPU
+negative-instruction checks passed their visible-copy requirements. The third also confirmed that a
+requested positive phrase remained in `lede.body` beside three prohibited details that were omitted.
 These results verify the targeted phrase-and-year cases, not reliable raw model writing or general
 negation understanding. Broader writing quality and a cold-start measurement on actual phone
 hardware remain open.
