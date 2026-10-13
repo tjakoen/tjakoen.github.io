@@ -10,7 +10,7 @@
 [data-screen="about"] .about-panel[hidden] { display: none; }
 [data-screen="about"] .about-panel + .about-panel { margin-top: var(--space-6); }
 
-/* Profile role sections (Manager / Tech lead / Educator): what each role taught me, stacked inside
+/* Profile role sections (Teacher / Engineer / Manager): what each role taught me, stacked inside
    the Profile panel (no nested tabs — the page already has its main tabs). Each is a section-head
    anchor (#role-<role>, the quotes-hero deep-link target), a short intro paragraph, a bullet list,
    and a link to that work's tagged notes. */
@@ -29,12 +29,14 @@
 [data-screen="about"] .now-list time { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-muted);
   margin-right: var(--space-2); }
 
-/* Profile quotes-hero: a first-person manifesto that leads the Profile panel. First three lines deep-link
-   to their Lessons role (the island's hashchange routing opens it). All five render stacked and visible
+/* Profile quotes-hero: a first-person manifesto that leads the Profile panel. Each line deep-links
+   to its role section (the island's hashchange routing opens it). All three render stacked and visible
    with no JS; with motion allowed they fade in with a small stagger, settling to the same visible state
    (so the visual baseline is deterministic). Reduced motion + Playwright's disabled-animations both land
    on all-visible. */
 [data-screen="about"] .quotes-hero { margin: 0 0 var(--space-5); }
+[data-screen="about"] .quotes-hero__title { margin: 0 0 var(--space-3); font-size: var(--text-base);
+  font-weight: var(--font-weight-regular); color: var(--ink-muted); }
 [data-screen="about"] .quotes-hero__list { list-style: none; margin: 0; padding: 0;
   display: flex; flex-direction: column; gap: var(--space-3); }
 [data-screen="about"] .quote { font-size: var(--text-lg); line-height: var(--leading-snug); color: var(--ink);
@@ -47,8 +49,6 @@
   [data-screen="about"] .quote:nth-child(1) { animation-delay: 0s; }
   [data-screen="about"] .quote:nth-child(2) { animation-delay: 0.08s; }
   [data-screen="about"] .quote:nth-child(3) { animation-delay: 0.16s; }
-  [data-screen="about"] .quote:nth-child(4) { animation-delay: 0.24s; }
-  [data-screen="about"] .quote:nth-child(5) { animation-delay: 0.32s; }
 }
 @keyframes quote-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 

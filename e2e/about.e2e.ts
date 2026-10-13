@@ -168,16 +168,13 @@ test.describe("the /about Profile role sections (Lessons folded in)", () => {
     }
     await expect(page.locator("#profile .role-list li").first()).not.toBeEmpty();
     await expect(page.locator("#profile")).not.toContainText("Placeholder");
-    const proofLinks = page.locator("#profile .role__proof-link").filter({ hasText: "See the direction-and-review loop" }).locator("a")
-      .or(page.locator("#profile .role__proof-link").filter({ hasText: "See the architecture" }).locator("a"))
-      .or(page.locator("#profile .role__proof-link").filter({ hasText: "Inspect the GitHub-native classroom" }).locator("a"));
-    await expect(proofLinks).toHaveCount(3);
-    await expect(proofLinks.nth(0)).toHaveAttribute("href", "/talks/ten-times-zero");
-    await expect(proofLinks.nth(1)).toHaveAttribute("href", "/bread");
-    await expect(proofLinks.nth(2)).toHaveAttribute("href", "/native-github-classroom");
-    await expect(proofLinks.nth(0)).toContainText("direction-and-review loop");
-    await expect(proofLinks.nth(1)).toContainText("architecture");
-    await expect(proofLinks.nth(2)).toContainText("classroom");
+    const managerProof = page.locator('#profile .role__proof-link a[href="/talks/ten-times-zero"]');
+    const engineerProof = page.locator('#profile .role__proof-link a[href="/bread"]');
+    const teacherProof = page.locator('#profile .role__proof-link a[href="/native-github-classroom"]')
+      .filter({ hasText: "Inspect the GitHub-native classroom" });
+    await expect(managerProof).toContainText("direction-and-review loop");
+    await expect(engineerProof).toContainText("architecture");
+    await expect(teacherProof).toContainText("classroom");
   });
 
   test("the teaching-scale claim links directly to platform evidence", async ({ page }) => {
@@ -246,11 +243,18 @@ test.describe("the /about profile app (no JS)", () => {
   });
 });
 
-test.describe("the /about Profile quotes-hero", () => {
-  test("leads the Profile panel with five first-person quotes", async ({ page }) => {
+test.describe("the /about Profile philosophy", () => {
+  test("introduces the three roles in one first-person philosophy", async ({ page }) => {
     await page.goto("/about");
-    await expect(page.locator("#profile .quotes-hero .quote")).toHaveCount(5);
-    await expect(page.locator("#profile .quotes-hero")).toContainText("As a");
+    const philosophy = page.locator("#profile .quotes-hero");
+    await expect(philosophy.locator(".quote")).toHaveCount(3);
+    await expect(philosophy).toContainText("How I try to do the work");
+    await expect(philosophy).toContainText("As a teacher");
+    await expect(philosophy).toContainText("As an engineer");
+    await expect(philosophy).toContainText("As a manager");
+    await expect(page.locator("#profile .section-head[id^='role-']")).toHaveText([
+      "As a teacher", "As an engineer", "As a manager",
+    ]);
   });
 
   test("a role quote deep-links to its Profile role section (Profile stays the shown panel)", async ({ page }) => {
