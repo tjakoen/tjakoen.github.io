@@ -76,13 +76,10 @@
           </div>
         </section>
         <p class="wb-bar__note muted">AI runs locally in this browser, and prompts stay on this device.
-          First use downloads about 875 MB on capable devices or 350 MB on others. The latest full
-          local 1.5B check scored 7/8. Both deletion requests applied; the relative second-card edit
-          needed a visible correction before approval. A draft-only repeat again omitted Utrecht and
-          added unsupported claims. First answers can
-          take over a minute, and requests stop after 75 seconds.
-          Review generated
-          copy and verify its claims before adding a draft or exporting.</p>
+          First use downloads about 875 MB on capable devices or 350 MB on others. Live check: 7/8
+          cases passed (six edits and the copy-edit refusal). The relative deletion needed review
+          correction. Only one of three warm drafts kept Utrecht; all three added unsupported details.
+          Check drafts before use or export.</p>
 
         <!-- data-rail-collapsed lives on the workbench rather than on the rail, because collapsing
              is a LAYOUT change (the canvas takes the width back) and the grid is what owns layout.
@@ -257,10 +254,16 @@
             proposed by the model. The run scored 7/8, with width, move, and copy-edit
             refusal cases also passing. The generated draft included unsupported marketing claims.
             First answers can take over a minute, and requests stop after 75 seconds.</p>
-          <p>A fresh draft-only repeat again omitted Utrecht and added claims the brief did not support.
-            The review panel now keeps your original brief beside the editable draft so you can compare
-            names, locations, and claims before adding it. This makes omissions easier to spot; it does
-            not make the model's writing reliable.</p>
+          <p>On October 13, a fresh eight-case WebGPU run scored 7/8: the six edit requests and the
+            copy-edit refusal passed. The relative deletion passed after review corrected the model's
+            proposed span change on the wrong block; the model proposed the exact-ID deletion
+            correctly. The draft kept the business name and product but omitted Utrecht and added
+            unsupported bread claims. Two warm repeats of the same prompt scored 0/1 and 1/1. The
+            first omitted Utrecht again. The second included it, but added unsupported claims and an
+            unrequested callout. All three drafts added details the brief did not support, and only
+            one retained the supplied city. The score checks fact retention, not whether generated
+            claims are true. The review panel keeps the original brief beside editable draft text, but
+            the model has not shown reliable writing.</p>
           <p>Each edit appears as a proposal first. You can approve or cancel it, and the Builder checks
           the canvas again before it reports a change. When one edit verb, value, and live block are
             clear in your request but the model proposes a different action or target, the proposal

@@ -437,7 +437,9 @@ embellishment, and only one preserved the supplied city. The scenario score chec
 not whether generated claims are true, so these runs do not establish reliable writing. The captures
 are `.cache/desk-audit/report-portfolio-builder-focused-2026-10-13.json`,
 `.cache/desk-audit/report-portfolio-builder-draft-repeat-1-2026-10-13.json`, and
-`.cache/desk-audit/report-portfolio-builder-draft-repeat-2-2026-10-13.json`.
+`.cache/desk-audit/report-portfolio-builder-draft-repeat-2-2026-10-13.json`. The Builder's first-screen
+note and detail drawer now show these measured results before visitors try the model, including the
+difference between the 7/8 reviewed workflow and the one-of-three location-retention result.
 - [x] Make the narration a projection of validated operations and observed canvas changes. The page
       waits for approval, revalidates the choice, and reports an edit as applied only after the
       observed canvas matches it. The focused browser suite covers the unchanged, canceled, stale,

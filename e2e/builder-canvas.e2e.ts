@@ -64,11 +64,10 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(page.locator('[data-surface="builder-said"]')).toContainText("shared preview uses the code-owned block matcher");
     await expect(page.locator(".wb-bar__note")).toContainText("First use downloads about 875 MB");
     await expect(page.locator(".wb-bar__note")).toContainText("prompts stay on this device");
-    await expect(page.locator(".wb-bar__note")).toContainText("latest full local 1.5B check scored 7/8");
-    await expect(page.locator(".wb-bar__note")).toContainText("Both deletion requests applied");
-    await expect(page.locator(".wb-bar__note")).toContainText("needed a visible correction before approval");
-    await expect(page.locator(".wb-bar__note")).toContainText("draft-only repeat again omitted Utrecht");
-    await expect(page.locator(".wb-bar__note")).toContainText("requests stop after 75 seconds");
+    await expect(page.locator(".wb-bar__note")).toContainText("Live check: 7/8 cases passed");
+    await expect(page.locator(".wb-bar__note")).toContainText("The relative deletion needed review correction");
+    await expect(page.locator(".wb-bar__note")).toContainText("Only one of three warm drafts kept Utrecht");
+    await expect(page.locator(".wb-bar__note")).toContainText("all three added unsupported details");
     const help = page.locator('[data-surface="builder-help"]');
     await expect(help).toContainText("After its timeout increased to 60 seconds, another October 12 run scored 5/8");
     await expect(help).toContainText("The first request took 50 seconds");
@@ -79,8 +78,9 @@ test.describe("the canvas: a composition, server-rendered", () => {
     await expect(help).toContainText("both deletion requests applied");
     await expect(help).toContainText("explicit-ID request passed as proposed by the model");
     await expect(help).toContainText("If the model declines a request whose supported edit and live target are explicit");
-    await expect(help).toContainText("A fresh draft-only repeat again omitted Utrecht and added claims the brief did not support");
-    await expect(help).toContainText("keeps your original brief beside the editable draft");
+    await expect(help).toContainText("Two warm repeats of the same prompt scored 0/1 and 1/1");
+    await expect(help).toContainText("only one retained the supplied city");
+    await expect(help).toContainText("keeps the original brief beside editable draft text");
     await expect(help).toContainText("requests stop after 75 seconds");
     await expect(page.locator(CELL)).toHaveCount(4);
     await expect(page.locator(`${CELL}[data-span="half"]`)).toHaveCount(2);
