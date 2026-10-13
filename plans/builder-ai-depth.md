@@ -670,6 +670,15 @@ These results verify the targeted phrase-and-year cases, not reliable raw model 
 negation understanding. Broader writing quality and a cold-start measurement on actual phone
 hardware remain open.
 
+Commit `ee8c36d` extends the sentence-initial filter to “exclude,” “leave out,” and “without,” so
+those capitalized instructions cannot become positive anchors. Hosted CI passed all 432 browser
+cases, 728 unit tests, typecheck, and the lint baseline. The Pages build and deployment passed, and
+the published `block-composer.js` contains the expanded filter. A third live WebGPU case passed with
+three forbidden details and a required positive phrase retained in `lede.body`. Its report is
+[here](../audit/builder-mixed-prohibitions-live-2026-10-14.json). This remains a targeted guard check,
+not evidence of reliable raw writing. The broader writing and physical-phone cold-start items remain
+open.
+
 The current local verification passed 724 unit tests, the typecheck, the lint-baseline gate, link
 lint, and 80 focused browser cases across the Builder and project layouts. The browser run covers the
 updated first-screen disclosure, draft confirmation and phrase review, badge accordions, and phone-

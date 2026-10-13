@@ -582,7 +582,11 @@ proof remain open below.
       this release; its CI and Pages deployment passed, including 432 browser cases and 727 unit
       tests. A third live WebGPU brief combines three prohibited details with a required positive
       intro phrase; the guarded result passed. The actual-phone and broader raw-writing gaps remain
-      open.
+      open. Follow-up commit `ee8c36d` keeps sentence-initial “exclude,” “leave out,” and “without”
+      out of the positive-anchor set. Its hosted CI passed all 432 browser cases, 728 unit tests,
+      typecheck, and the lint baseline; Pages deployment passed. The live Builder module was checked
+      after deployment, and its third negative-instruction brief passed. The wider Builder reliability
+      and actual-phone gaps remain open.
 
 ## Done means
 
