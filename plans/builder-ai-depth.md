@@ -1011,14 +1011,14 @@ claims stay tied to evidence.
 
 ## Current release and phone-width review, October 14
 
-The latest Builder changes are on `main` at `30656f1`. Hosted typecheck, unit tests, and lint checks
-passed, as did all 435 end-to-end browser cases. Pages deployment succeeded, and the live Builder
-and finish-line plan routes return HTTP 200. Locally, all 745 unit tests and 77 Builder
-browser cases passed, including the ordinal/span regression at a 390px viewport. The visual gallery
+The latest Builder changes are on `main` at `632f96e`. Hosted typecheck, all 747 unit tests, lint
+checks, and all 437 end-to-end browser cases passed. Pages deployment succeeded, and the live Builder
+and finish-line plan routes return HTTP 200. Locally, all 747 unit tests and 78 Builder
+browser cases passed, including the ordinal/span and erase/reposition regressions at a 390px viewport. The visual gallery
 has a 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width
 view was inspected. The prompt, download disclosure, example, and preview are visible in that
 capture. The existing 320-pixel browser case checks for horizontal overflow. These are browser
 viewport checks, not a physical phone test. A production browser smoke at 390 by 844 also loaded the
-Builder with HTTP 200, showed the page heading, composer, and canvas, measured a 390-pixel document
-width, and logged no page errors. This Mac has no attached handset and `simctl` is unavailable, so
+Builder on this release with HTTP 200, showed the page heading, composer, and canvas, measured a
+390-pixel document width, and logged no page errors. This Mac has no attached handset and `simctl` is unavailable, so
 the physical-phone cold start remains open.
