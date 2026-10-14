@@ -1020,13 +1020,24 @@ without a server. A visitor can inspect the outcome, revise it, and export it wi
 portfolio. The live-model results and their limits are recorded beside the tests, so the page's
 claims stay tied to evidence.
 
+## Qwen3 local comparison, October 14
+
+The locally run Qwen3-1.7B profile completed five guarded Builder scenarios. The final visitor-facing
+outcome passed each case, but “drop the second card” first produced the wrong raw target, `b2`; the
+Builder's correction and review path changed the proposed removal to `b4`. The other removal,
+whole-row span, repositioning, and unsupported-copy refusal cases passed. Action responses took
+about 19 to 54 seconds. This small comparison does not establish a speed or quality improvement over
+the shipped Qwen2.5-1.5B profile, so the profile remains unchanged. The local capture lives in the
+ignored `.cache/desk-audit/report-builder-qwen3-1.7b-local.json` file and is not a published audit
+artifact.
+
 ## Current release and phone-width review, October 14
 
-The latest deployed Builder changes are on `main` at `f9eab6d`. Hosted typecheck, all 756 unit tests,
+The latest deployed Builder changes are on `main` at `a334407`. Hosted typecheck, all 763 unit tests,
 and the lint count passed. The Pages deployment succeeded; hosted end-to-end is still running. The
-Builder route returns HTTP 200; `/plans` redirects to its canonical route. A further local follow-up
-extends the content-edit guard to copy-length and tone phrasing; it passes 763 unit tests and all 78
-Builder browser cases. That follow-up is not part of `f9eab6d` yet. The visual gallery has a
+Builder and plan routes resolve successfully, with `/plans` redirecting to its canonical route. The
+copy-edit guard covers content fields, length, and tone phrasing; the local suite passes 763 unit
+tests and all 78 Builder browser cases. The visual gallery has a
 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width view
 was inspected. The prompt, download disclosure, example, and preview are visible in that capture.
 The existing 320-pixel browser case checks for horizontal overflow. These are browser viewport

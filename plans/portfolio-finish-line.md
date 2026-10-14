@@ -665,12 +665,15 @@ preserve the failed target check and the corrected model outcomes.
 
 ## Current release and visual review, October 14
 
-Commit `f9eab6d` is on `main` and deployed. Hosted typecheck, all 756 unit tests, and the lint count
+Commit `a334407` is on `main` and deployed. Hosted typecheck, all 763 unit tests, and the lint count
 passed; hosted end-to-end is still running. A further copy-field audit found that requests about a
 subtitle, CTA, image, pricing line, copy length, or tone could still reach the model as whole-block
 edits. The router now refuses those requests before a model call; paired tests preserve layout
 requests such as moving a card within the price section. The updated local suite passed all 763 unit
-tests and all 78 Builder browser cases. The screenshot gallery includes a 390 by 844 pixel Builder
+tests and all 78 Builder browser cases. A local Qwen3-1.7B comparison passed five guarded Builder
+scenarios, but one relative deletion had the wrong raw target and succeeded only after the Builder's
+correction path; action responses took about 19 to 54 seconds. This does not justify replacing the
+shipped 1.5B profile. The screenshot gallery includes a 390 by 844 pixel Builder
 capture; all 36 portfolio captures were refreshed and the phone-width view was inspected. A
 320-pixel browser case checks that the composer and workbench do not overflow horizontally. The
 production route was inspected at 390 by 844; the heading, composer, and canvas were visible, the
