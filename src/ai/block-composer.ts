@@ -395,7 +395,7 @@ export function composeMessage(ask: string, names: readonly string[] = BLOCK_NAM
   return [
     ask.trim(),
     "",
-    "Return only the block structure as JSON, like {\"blocks\":[{\"name\":\"lede\"},{\"name\":\"card\"}]}. Do not write copy or add text fields.",
+    "Return only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.",
     `The only block names are: ${names.join(", ")}. Use no other name.`,
     "Repeat an object to ask for more than one block of the same name.",
     "Include a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.",

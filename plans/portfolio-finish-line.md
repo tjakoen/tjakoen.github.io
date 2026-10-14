@@ -741,8 +741,11 @@ The build path now sends a closed JSON schema to the local model. It allows only
 block names and supported spans, and rejects generated copy fields. The repeated six-scenario
 WebGPU matrix produced schema-conforming raw responses in all 12 runs, and all 12 visitor-facing
 drafts passed review. In the two intro-only exclusion cases, the raw model still selected an extra
-card; the reconciler removed it before review. Clarifying the prompt and repeating those cases
-twice did not change that behavior. The raw structural-reliability gate therefore remains open.
+card; the reconciler removed it before review. Inspection found that the prompt example itself
+included a lede and card, contradicting the intro-only briefs. Removing that example led to four
+live repeats returning only a lede, with no block removed by reconciliation. The [recheck](../audit/builder-composition-example-recheck-2026-10-14.json)
+records the raw outputs. This closes the observed extra-card failure for these prompts; broader
+language coverage remains open.
 The [tracked matrix](../audit/builder-structured-composition-schema-live-2026-10-14.json),
 [exclusion recheck](../audit/builder-structured-composition-exclusion-recheck-2026-10-14.json),
 and [run report](../artifacts/runs/2026-10-14-builder-structured-composition-schema.md) preserve
