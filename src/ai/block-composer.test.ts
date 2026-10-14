@@ -387,6 +387,23 @@ describe("generated block copy is bounded by each component's visible text contr
     expect(reconciled.copies[0]?.copy.body).toContain("Open studio this Saturday");
   });
 
+  test("an announcement maps to a callout and retains its requested wording", () => {
+    const brief = "Build a page for Common Ground in Bristol. Add an introduction that welcomes neighbors, then include an announcement that says Open studio this Saturday.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "callout", "card"], [{}, {}, {}]);
+
+    expect(reconciled.names).toEqual(["lede", "callout"]);
+    expect(reconciled.copies[0]?.copy.body).toBe("Common Ground in Bristol welcomes neighbors.");
+    expect(reconciled.copies[1]?.copy.body).toBe("Open studio this Saturday");
+  });
+
+  test("form aliases remain explicit when the same brief names another block", () => {
+    const brief = "Build a page for Common Ground in Bristol. Add an intro that welcomes neighbors, then let visitors get in touch with their name and email.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "form", "card"], [{}, {}, {}]);
+
+    expect(reconciled.names).toEqual(["lede", "form"]);
+    expect(reconciled.copies[0]?.copy.body).toBe("Common Ground in Bristol welcomes neighbors.");
+  });
+
   test("a welcome intro stops before the next block and its requested wording stays there", () => {
     const brief = "Build a page for Hearth Bakery in Utrecht. Add an intro that welcomes neighbors and a callout that says Open daily, but do not include a card.";
     const reconciled = reconcileBuildPlan(brief, ["lede", "card", "callout"], []);

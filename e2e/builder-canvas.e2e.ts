@@ -462,6 +462,18 @@ test.describe("with no desk, the page says so instead of guessing", () => {
     await expect(page.locator(SAID)).toContainText("desk cannot run here");
   });
 
+  test("the no-model path keeps requested copy and exclusions", async ({ page }) => {
+    await page.goto("/grain/builder");
+    await submitPrompt(page, "Build a page for Common Ground in Bristol. Add an introduction that welcomes neighbors, then include an announcement that says Open studio this Saturday, and let visitors get in touch with their name and email. Do not include a card.");
+
+    await expect(page.locator(CELL)).toHaveCount(3);
+    await expect(page.locator(`${CELL} .lede`)).toHaveText("Common Ground in Bristol welcomes neighbors.");
+    await expect(page.locator(`${CANVAS} blockquote.callout`)).toHaveText("Open studio this Saturday");
+    await expect(page.locator(`${CANVAS} [data-surface="builder-form"] input`)).toHaveCount(2);
+    await expect(page.locator(`${CELL} .card`)).toHaveCount(0);
+    await expect(page.locator(SAID)).toContainText("desk cannot run here");
+  });
+
   // The honest-offline rule. The temptation is a word list that answers when the model cannot, and
   // it was deliberately refused: a page claiming an AI edit for something no AI touched is the same
   // silent-success shape every other bug in this estate has had.

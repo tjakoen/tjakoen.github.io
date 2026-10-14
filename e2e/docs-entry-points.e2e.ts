@@ -53,6 +53,14 @@ test.describe("developer docs entry points", () => {
     expect(width.scroll).toBeLessThanOrEqual(width.client + 1);
   });
 
+  test("CRUMB code examples are syntax highlighted in the shared docs renderer", async ({ page }) => {
+    await page.goto("/crumb/docs/getting-started");
+    const example = page.locator('.board pre.code-block[data-lang="ts"]').first();
+    await expect(example.locator(".hljs-keyword").first()).toHaveText("import");
+    await expect(example.locator(".hljs-string").first()).toContainText("@tjakoen/crumb/routes.ts");
+    await expect(example.locator("code")).toContainText("createCrumbRoutes");
+  });
+
   test("the GRAIN action guide distinguishes server rendering from the static client door", async ({ page }) => {
     await page.goto("/grain/docs/ai-interface");
     await expect(page.locator(".board")).toContainText("Some ops carry rendered HTML fragments");

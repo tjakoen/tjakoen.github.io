@@ -418,6 +418,25 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
 }
 .app-shell__main .board .code-block { max-width: 100%; }
 .app-shell__main .board .code-inline { overflow-wrap: anywhere; }
+.board .code-block .hljs-comment,
+.board .code-block .hljs-quote { color: var(--ink-muted); font-style: italic; }
+.board .code-block .hljs-keyword,
+.board .code-block .hljs-selector-tag,
+.board .code-block .hljs-literal,
+.board .code-block .hljs-built_in,
+.board .code-block .hljs-type { color: var(--color-accent); font-weight: 600; }
+.board .code-block .hljs-string,
+.board .code-block .hljs-attr,
+.board .code-block .hljs-attribute,
+.board .code-block .hljs-template-tag { color: var(--ink-muted); }
+.board .code-block .hljs-number,
+.board .code-block .hljs-symbol,
+.board .code-block .hljs-bullet { color: var(--color-accent); font-weight: 600; }
+.board .code-block .hljs-title,
+.board .code-block .hljs-function,
+.board .code-block .hljs-section { color: var(--ink); font-weight: 600; }
+.board .code-block .hljs-meta,
+.board .code-block .hljs-meta .hljs-keyword { color: var(--ink-muted); }
 .docs-context-link { margin: var(--space-2) 0 0; font-size: var(--text-sm); }
 
 /* ── the skip link ──────────────────────────────────────────────────────────────

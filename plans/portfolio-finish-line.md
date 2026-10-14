@@ -914,3 +914,37 @@ language and lead to inspectable evidence. Notes, talks, and teaching work feel 
 portfolio rather than separate shelves. The builder's AI path has measured evidence and honest limits.
 Every public route in scope has been reviewed at desktop and narrow widths, the navigation has no
 dead ends, and the final deployment matches the reviewed result.
+
+## Builder alias and docs presentation follow-up, October 14
+
+The no-model Builder path previously used a separate word matcher and could lose explicit requests
+or prohibitions when another block type was named. The bounded block vocabulary now supplies the
+aliases used for matching, reconciliation, and copy placement. Announcement maps to a callout, and
+contact-form aliases remain explicit alongside other requested blocks. The no-model path and the
+model-error fallback now pass their word-matched plan through the same reconciliation and
+source-copy checks as model plans. A live Qwen2.5-1.5B run passed both announcement and contact-form
+scenarios. In the announcement case, code removed three unrequested raw model blocks; in the
+contact-form case, the requested name and email controls remained. A three-requirement no-model
+browser case also verifies intro copy, the exact announcement phrase, two contact inputs, no card,
+and honest offline status. The initial announcement attempt hit a WebLLM constrained-decoder error
+before returning a response; the fallback path handled the unavailable answer, and two warm repeats
+plus the combined two-case run passed. The raw reports are tracked in
+[`audit/`](../audit/builder-block-alias-live-2026-10-14.json), including the initial runtime error.
+The full Builder browser suite and broader held-out language coverage still determine whether the
+reliability item can close.
+
+A presentation issue reported on the CRUMB docs exposed a shared MILL-rendering gap: fenced source
+blocks had language labels but no syntax tokenization. The portfolio's shared Markdown adapter now
+renders common TypeScript, JavaScript, JSON, shell, YAML, Markdown, HTML, CSS, Python, SQL, and diff
+fences with server-side token spans. Unknown languages and Mermaid source remain escaped text. The
+syntax colors use the site's theme tokens, with weight and muted tones preserving distinctions in
+the monochrome theme. A browser assertion checks the actual CRUMB TypeScript example; unit coverage
+checks escaping and unsupported-language fallback. The rendered CRUMB code example was reviewed in
+the browser at desktop width.
+
+The combined Builder and documentation browser run passed 94 of 94 cases. The full portfolio run
+passed 439 of 442 cases with four workers. Three timing-sensitive checks failed under that load: a
+DESK capability answer had not finished streaming, a same-page spotlight had not finished scrolling,
+and the plan-detail route hit the server's ten-second request timeout. All three passed when rerun
+serially on a fresh test server. The Builder and CRUMB cases passed in both runs. This local result
+records the parallel-load limit; hosted CI remains the full-suite release gate.

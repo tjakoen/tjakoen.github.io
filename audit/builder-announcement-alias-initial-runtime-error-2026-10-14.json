@@ -1,0 +1,49 @@
+{
+  "label": "builder-announcement-alias-recheck",
+  "base": "http://localhost:3131",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "passed": 0,
+  "failed": 0,
+  "notRun": 1,
+  "total": 1,
+  "results": [
+    {
+      "id": "builder-draft-announcement-alias",
+      "ask": "Build a page for Common Ground in Bristol. Add an introduction that welcomes neighbors, then include an announcement that says Open studio this Saturday.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "The desk did not return a draft. I composed the page from the words in your sentence instead.",
+      "endPath": "/grain/builder",
+      "ms": 13845,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "full"
+        }
+      ],
+      "draftText": [],
+      "draftFields": [],
+      "draftBlockNames": [],
+      "draftEvidence": "review panel unavailable",
+      "draftFieldEvidence": [],
+      "draftBlocks": 0,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Common Ground in Bristol. Add an introduction that welcomes neighbors, then include an announcement that says Open studio this Saturday.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "(the model did not run)"
+      },
+      "browserErrors": [
+        "[desk] structured completion failed Error: Grammar matcher rejected the newly sampled token.\n    at pE.<anonymous> (https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.79/+esm:83:8418)\n    at Generator.next (<anonymous>)\n    at e (https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.79/+esm:16:42012)"
+      ],
+      "status": "not-run",
+      "notRunReason": "The model did not run, so this brief has no answer to grade.",
+      "pass": false,
+      "failures": []
+    }
+  ]
+}

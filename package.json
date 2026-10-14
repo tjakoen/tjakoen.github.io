@@ -12,7 +12,8 @@
     "@tjakoen/crumb": "^0.1.10",
     "@tjakoen/grain": "^0.1.23",
     "@tjakoen/mill": "^0.4.0",
-    "@tjakoen/proof": "^0.1.4"
+    "@tjakoen/proof": "^0.1.4",
+    "highlight.js": "^11.12.0"
   },
   "scripts": {
     "deps:refresh": "bun update @tjakoen/batch @tjakoen/crumb @tjakoen/grain @tjakoen/mill @tjakoen/proof",

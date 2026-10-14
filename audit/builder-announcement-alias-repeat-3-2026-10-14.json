@@ -1,0 +1,66 @@
+{
+  "label": "builder-announcement-alias-repeat3",
+  "base": "http://localhost:3131",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "passed": 1,
+  "failed": 0,
+  "notRun": 0,
+  "total": 1,
+  "results": [
+    {
+      "id": "builder-draft-announcement-alias",
+      "ask": "Build a page for Common Ground in Bristol. Add an introduction that welcomes neighbors, then include an announcement that says Open studio this Saturday.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede and callout after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 18111,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Common Ground in Bristol welcomes neighbors.",
+        "Open studio this Saturday"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Common Ground in Bristol welcomes neighbors."
+        },
+        {
+          "block": "callout",
+          "field": "body",
+          "value": "Open studio this Saturday"
+        }
+      ],
+      "draftBlockNames": [
+        "lede",
+        "callout"
+      ],
+      "draftEvidence": "The model's 3 unrequested blocks were removed. The Builder composed 2 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Common Ground in Bristol welcomes neighbors.”.",
+        "This field uses wording from your brief: “Open studio this Saturday”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Common Ground in Bristol. Add an introduction that welcomes neighbors, then include an announcement that says Open studio this Saturday.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"stat\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    }
+  ]
+}

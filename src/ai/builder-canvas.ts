@@ -24,10 +24,10 @@
 // plain GET form and the server renders the same canvas. On a static host with JavaScript off the
 // page stays empty and honest, which is what it always was.
 import {
-  addFromDescription, addFromPlan, emptyComposition, fromDocument, moveBlock, removeBlock, setSpan,
+  addFromPlan, emptyComposition, fromDocument, moveBlock, removeBlock, setSpan,
   type PageComposition,
 } from "./composition.ts";
-import { BLOCK_COMPONENTS, FORM_COMPONENT, blockCopyLimit, isSpan, sanitizeBlockCopy, type Block } from "./block-set.ts";
+import { BLOCK_COMPONENTS, FORM_COMPONENT, blockCopyLimit, isSpan, matchBlocks, sanitizeBlockCopy, type Block } from "./block-set.ts";
 import {
   briefAnchors, briefAnchorsMissingFromDraft, blockPlanSchema, completeWithin, composeMessage,
   readModelPlan, reconcileBuildPlan, termsOutsideBrief,
@@ -70,6 +70,22 @@ import {
   BLOCK_ID_ATTR, CANVAS_SURFACE, CELL_CLASS, LIBRARY_CLASS, REPEATS, SPAN_ATTR, SURFACE_ATTR,
   TEMPLATE_ATTR, blockSurface, fillTree, restoreSurfaces,
 } from "./canvas-dom.ts";
+
+const nameByComponent: Record<string, string> = {
+  "block-lede": "lede", "block-card": "card", "block-callout": "callout",
+  "block-stat": "stat", "block-form": "form",
+};
+
+/** Use the bounded word matcher when inference is unavailable, then apply the same exclusion and
+ *  source-copy rules as the model path. A fallback must keep the requested content and constraints,
+ *  even though it cannot infer the visitor's intended order. */
+function addFromWords(comp: PageComposition, ask: string): PageComposition {
+  const matchedNames = matchBlocks(ask).blocks
+    .map((block) => nameByComponent[block.component])
+    .filter((name): name is string => Boolean(name));
+  const plan = reconcileBuildPlan(ask, matchedNames, []);
+  return addFromPlan(comp, plan.names, ask, null, plan.copies.map(({ copy }) => copy), true);
+}
 
 /** The page's own chrome binds over the VIEW; a block binds over its own DATA; the composer binds
  *  over its one-item spec. Filling the board must therefore stop at all three, or the view's data
@@ -309,7 +325,7 @@ function boot(): void {
   // the page came back with nothing on it, because the host froze one file and serves it whatever
   // the query string says. Compose it here.
   if (askInURL && state.blocks.length === 0) {
-    state = addFromDescription(state, askInURL);
+    state = addFromWords(state, askInURL);
     paint(board, canvas, rail, library, viewOf(state, askInURL));
     // The composer holds the prompt that produced the page, so a visitor edits rather than retypes.
     // It is set here rather than through the fill, because the composer binds over its own one-item
@@ -453,6 +469,7 @@ function boot(): void {
       "block-callout": "callout",
       "block-stat": "stat",
     };
+
     const components: Record<string, string> = {
       lede: "block-lede",
       card: "block-card",
@@ -786,7 +803,7 @@ function boot(): void {
   const buildByWordList = (ask: string): void => {
     const before = state.blocks.length;
     remember(state);
-    landBuild(addFromDescription(state, ask), ask, before);
+    landBuild(addFromWords(state, ask), ask, before);
   };
 
   /** A build, read by the model.
