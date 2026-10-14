@@ -50,6 +50,23 @@ test("the audit fails if the reviewed draft includes a phrase the brief forbids"
   ]);
 });
 
+test("the live draft audit fails if an explicitly prohibited block reaches review", () => {
+  const requirements = {
+    minimumBlocks: 1,
+    mustMention: [["Hearth Bakery"]],
+    mustNotHaveBlocks: ["card"],
+  };
+  expect(gradeBuilderDraft(requirements, ["Hearth Bakery"], 2, [
+    { block: "lede", field: "body", value: "Hearth Bakery" },
+    { block: "card", field: "title", value: "" },
+  ], ["lede", "card"])).toEqual(["draft includes prohibited card block"]);
+  expect(gradeBuilderDraft(requirements, ["Hearth Bakery"], 2, [], ["lede", "card"]))
+    .toEqual(["draft includes prohibited card block"]);
+  expect(gradeBuilderDraft(requirements, ["Hearth Bakery"], 1, [
+    { block: "lede", field: "body", value: "Hearth Bakery" },
+  ])).toEqual([]);
+});
+
 test("the live draft audit requires complete intro wording when the scenario depends on it", () => {
   const requirements = {
     minimumBlocks: 1,

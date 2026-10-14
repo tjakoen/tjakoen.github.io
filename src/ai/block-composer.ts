@@ -62,6 +62,14 @@ const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^,.!?;]+?
 const INTRO_DESCRIPTION = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\b(?:says?\s+it\s+is|describing\s+it\s+as|describes?\s+it\s+as|for|about)\s+([^,;.!?]+?)(?=,\s*(?:and\s+)?then\b|\s+then\s+|[;.!?]|$)/giu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 
+const BLOCK_MENTIONS: Record<string, string[]> = {
+  lede: ["lede", "intro", "introduction", "opening paragraph", "opening line", "standfirst", "summary paragraph"],
+  card: ["card", "cards", "tile", "tiles", "feature", "features", "feature box", "content card", "info card"],
+  callout: ["callout", "aside", "note box", "quote", "blockquote", "pull quote", "warning", "highlight"],
+  stat: ["stat", "stats", "statistic", "statistics", "kpi", "metric", "number", "figure", "counter", "stat tile"],
+  form: ["form", "forms", "contact form", "signup", "sign up", "enquiry", "inquiry", "registration", "survey", "questionnaire", "feedback form", "application form"],
+};
+
 /** A fact inside a nearby negative clause must not be repeated without its negation. */
 function followsNegation(brief: string, index: number): boolean {
   const before = brief.slice(0, index);
@@ -130,7 +138,7 @@ function requestedWordingTargets(brief: string): Array<{ phrase: string; block: 
     phrase: (match[1] ?? "").trim(),
     block: "lede",
   })).filter((entry) => entry.phrase.length > 0);
-  const saidPhraseTargets = [...brief.matchAll(/\b(intro(?:duction)?|lede|card|callout)\b[^.!?]*?\b(?:that\s+)?says?\s+[“"]?([^,.!?;”"]+)/giu)]
+  const saidPhraseTargets = [...brief.matchAll(/\b(intro(?:duction)?|lede|card|callout)\b(?:(?!\b(?:intro(?:duction)?|lede|cards?|callout)\b)[^.!?])*?\b(?:that\s+)?says?\s+[“"]?([^,.!?;”"]+)/giu)]
     .map((match) => ({
       phrase: (match[2] ?? "").trim(),
       block: aliases[(match[1] ?? "").toLocaleLowerCase()] ?? null,
@@ -161,7 +169,7 @@ function groundedIntroSentence(brief: string): string | null {
       : `${/^[aeiou]/iu.test(phrase) ? "an" : "a"} ${phrase}`;
     return `${name} is ${descriptor} in ${location}.`;
   }
-  const welcome = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\bwelcomes?\s+([^,.!?;]+)/iu.exec(brief);
+  const welcome = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\bwelcomes?\s+([^,.!?;]+?)(?=\s+\band\s+(?:(?:a|an|another|the)\s+)?(?:intro(?:duction)?|lede|cards?|callout|stats?|forms?)\b|[,;.!?]|$)/iu.exec(brief);
   const audience = welcome?.[1]?.trim();
   const audienceIndex = (welcome?.index ?? 0) + (welcome?.[0].indexOf(audience ?? "") ?? -1);
   if (audience && audienceIndex >= 0 && !followsNegation(brief, audienceIndex))
@@ -181,6 +189,44 @@ export function termsOutsideBrief(brief: string, copy: string): string[] {
     seen.add(folded);
     return true;
   });
+}
+
+/** Treat an explicitly prohibited block as a constraint, not as a positive block request. Keep
+ *  positive mentions in the brief so a later "but add a card" still wins, and derive requested
+ *  counts from that cleaned brief. This closes the gap between the composition prompt's promise and
+ *  reconciliation's behavior without asking the small model to interpret exclusions correctly. */
+function requestedBlockConstraints(brief: string): { explicit: string[]; excluded: Set<string> } {
+  // Quoted wording is copy or an example, not a block request. Blank it without shifting offsets so
+  // negative phrases such as “No cards available” cannot be mistaken for a structural exclusion.
+  const constraintText = brief.replace(QUOTED, (phrase) => phrase.replace(/[^\r\n]/gu, " "));
+  const positive = new Set<string>();
+  const negative = new Set<string>();
+  const removed: Array<{ start: number; end: number }> = [];
+  for (const [name, aliases] of Object.entries(BLOCK_MENTIONS)) {
+    for (const alias of aliases) {
+      const pattern = new RegExp(`\\b${alias}\\b`, "giu");
+      for (const match of constraintText.matchAll(pattern)) {
+        const start = match.index ?? 0;
+        if (followsNegation(constraintText, start)) {
+          negative.add(name);
+          removed.push({ start, end: start + match[0].length });
+        } else {
+          positive.add(name);
+        }
+      }
+    }
+  }
+
+  // Regex indices use UTF-16 offsets, so split into code units rather than code points here.
+  const cleaned = constraintText.split("");
+  for (const { start, end } of removed) for (let index = start; index < end; index++) cleaned[index] = " ";
+  const explicit = matchBlocks(cleaned.join("")).blocks
+    .map((block) => ({
+      "block-lede": "lede", "block-card": "card", "block-callout": "callout",
+      "block-stat": "stat", "block-form": "form",
+    }[block.component]))
+    .filter((name): name is string => typeof name === "string" && positive.has(name));
+  return { explicit, excluded: new Set([...negative].filter((name) => !positive.has(name))) };
 }
 
 export interface GroundedBlockCopy {
@@ -259,20 +305,17 @@ export function reconcileBuildPlan(
   names: readonly string[],
   copies: readonly Record<string, string>[],
 ): ReconciledBuildPlan {
-  const componentNames: Record<string, string> = {
-    "block-lede": "lede",
-    "block-card": "card",
-    "block-callout": "callout",
-    "block-stat": "stat",
-    "block-form": "form",
-  };
-  const explicit = matchBlocks(brief).blocks.map((block) => componentNames[block.component]).filter(Boolean);
+  const { explicit, excluded } = requestedBlockConstraints(brief);
   const remaining = new Map<string, number>();
   for (const name of explicit) remaining.set(name, (remaining.get(name) ?? 0) + 1);
   const keptNames: string[] = [];
   const keptCopies: Record<string, string>[] = [];
   let droppedBlocks = 0;
   for (const [index, name] of names.entries()) {
+    if (excluded.has(name)) {
+      droppedBlocks++;
+      continue;
+    }
     if (explicit.length > 0) {
       const count = remaining.get(name) ?? 0;
       if (!count) {

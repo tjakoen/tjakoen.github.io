@@ -276,6 +276,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-draft-single-card", page: "/grain/builder",
     ask: "Build a page for Alder Books in Ghent. Add one card titled Used books with the phrase good stories find new readers.",
     builderDraft: { minimumBlocks: 1, mustMention: [["Alder Books"], ["Ghent"], ["Used books"], ["good stories find new readers"]], mustMentionInField: { "card.title": [["Used books"]], "card.body": [["good stories find new readers"]] } } },
+  { id: "builder-draft-prohibited-card", page: "/grain/builder",
+    ask: "Build a page for Hearth Bakery in Utrecht. Add an intro that welcomes neighbors and a callout that says Open daily, but do not include a card.",
+    builderDraft: { minimumBlocks: 2, mustMention: [["Hearth Bakery"], ["Utrecht"], ["welcomes neighbors"], ["Open daily"]], mustMentionInField: { "lede.body": [["welcomes neighbors"]], "callout.body": [["Open daily"]] }, mustNotHaveBlocks: ["card"] } },
   { id: "builder-draft-callout-only", page: "/grain/builder",
     ask: "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.",
     builderDraft: { minimumBlocks: 1, mustMention: [["Common Ground"], ["Bristol"], ["Open studio this Saturday"]], mustMentionInField: { "callout.body": [["Open studio this Saturday"]] } } },
@@ -495,6 +498,8 @@ interface Result {
   draftText?: string[];
   /** New draft values keyed by their visible block label and field, for placement-aware scoring. */
   draftFields?: BuilderDraftField[];
+  /** Actual types in the review panel, including blocks whose editable fields are empty. */
+  draftBlockNames?: string[];
   /** The panel's name, quote, and number check, captured before the audit approves the draft. */
   draftEvidence?: string;
   /** Per-field copy warnings shown beside the unedited model output. */
@@ -524,6 +529,7 @@ function grade(
   draftText: string[] = [],
   draftBlocks = 0,
   draftFields: BuilderDraftField[] = [],
+  draftBlockNames: string[] = [],
 ): string[] {
   const failures: string[] = [];
   const low = reply.toLowerCase();
@@ -540,7 +546,7 @@ function grade(
     }
   }
   if (s.builderDraft) {
-    failures.push(...gradeBuilderDraft(s.builderDraft, draftText, draftBlocks, draftFields));
+    failures.push(...gradeBuilderDraft(s.builderDraft, draftText, draftBlocks, draftFields, draftBlockNames));
   }
   if (s.mustNavigate) {
     if (endPath.replace(/\/+$/, "") !== s.mustNavigate) failures.push(`ended on ${endPath}, wanted ${s.mustNavigate}`);
@@ -698,6 +704,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     let draftFieldEvidence: string[] | undefined;
     let draftBlocks: number | undefined;
     let draftFields: BuilderDraftField[] | undefined;
+    let draftBlockNames: string[] | undefined;
     let targetCorrection: string | undefined;
     if (s.builderDraft) {
       const review = page.locator("[data-builder-draft-review]");
@@ -705,6 +712,10 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
       draftBlocks = reviewVisible
         ? await page.locator("[data-builder-draft-blocks] > li").count()
         : 0;
+      draftBlockNames = reviewVisible
+        ? (await page.locator("[data-builder-draft-blocks] > li h3").allTextContents())
+          .map(builderBlockKeyFromHeading)
+        : [];
       draftText = reviewVisible
         ? await review.locator("[data-draft-copy-block][data-draft-copy-field]").evaluateAll(
             (fields) => fields.map((field) => (field as HTMLTextAreaElement).value),
@@ -781,10 +792,10 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     const notRunReason = s.builderDraft && model?.raw === "(the model did not run)"
       ? "The model did not run, so this brief has no answer to grade."
       : undefined;
-    const failures = notRunReason ? [] : grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks, draftFields);
+    const failures = notRunReason ? [] : grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks, draftFields, draftBlockNames);
     if (builderPage && !model?.profile) failures.push("selected local model profile was not reported");
     const pass = !notRunReason && failures.length === 0;
-    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, modelProfile, reply: text, endPath, ms, canvas, draftText, draftFields, draftEvidence, draftFieldEvidence, draftBlocks, targetCorrection, model, browserErrors, status: notRunReason ? "not-run" : pass ? "passed" : "failed", notRunReason, pass, failures };
+    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, modelProfile, reply: text, endPath, ms, canvas, draftText, draftFields, draftBlockNames, draftEvidence, draftFieldEvidence, draftBlocks, targetCorrection, model, browserErrors, status: notRunReason ? "not-run" : pass ? "passed" : "failed", notRunReason, pass, failures };
   } finally {
     await page.close().catch(() => {});
   }

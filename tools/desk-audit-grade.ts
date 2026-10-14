@@ -11,6 +11,8 @@ export interface BuilderDraftRequirements {
   mustContainInFieldOccurrences?: Record<string, string[][][]>;
   /** The prompt should produce this many content blocks. */
   minimumBlocks: number;
+  /** The visitor explicitly prohibited these block types, so none may reach the review panel. */
+  mustNotHaveBlocks?: string[];
 }
 
 export interface BuilderDraftField {
@@ -29,10 +31,16 @@ export function gradeBuilderDraft(
   draftText: string[],
   draftBlocks: number,
   draftFields: BuilderDraftField[] = [],
+  draftBlockNames: string[] = draftFields.map((field) => field.block),
 ): string[] {
   const failures: string[] = [];
   if (draftBlocks < requirements.minimumBlocks)
     failures.push(`draft has ${draftBlocks} blocks, wanted at least ${requirements.minimumBlocks}`);
+
+  const presentBlocks = new Set(draftBlockNames.map((block) => block.toLowerCase()));
+  for (const block of requirements.mustNotHaveBlocks ?? []) {
+    if (presentBlocks.has(block.toLowerCase())) failures.push(`draft includes prohibited ${block} block`);
+  }
 
   const visibleCopy = draftText.join(" ").toLowerCase();
   for (const group of requirements.mustMention) {

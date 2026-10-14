@@ -78,6 +78,9 @@ Use the evidence to choose the smallest responsible change:
   better.
 - Wrong target or unsupported effect: move authority into deterministic code, closed sets, guards,
   and review steps. Do not try to prompt a small model into becoming a permission system.
+- Explicit exclusions: enforce prohibited outputs in code as well as in the prompt. Test a negative
+  request by itself, the same term inside quoted copy, and a later positive correction. A prompt that
+  says “do not include this” does not prove that the result left it out.
 - Valid structure, poor content: improve field-level grounding and review, or stop asking the model
   to write that content. A bounded output schema controls shape, not truth.
 - Poor first-use experience: measure download time and size, show progress, cache safely, explain the
