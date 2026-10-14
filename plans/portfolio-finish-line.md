@@ -735,6 +735,26 @@ and visitor-flow acceptance. A physical-phone cold-start measurement is separate
 evidence and can be added if that becomes a product requirement. The [run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-negated-modal-recovery.md)
 records the exact scope and evidence.
 
+## Builder live composition follow-up, October 14
+
+Five fresh runs on the deployed Qwen2.5-1.5B-Instruct-q4f16_1-MLC profile covered a pottery studio,
+a mixed-prohibition bakery brief, two bike-shop phrasings, and a repeat bakery brief. All five
+reviewed drafts passed: requested names and phrases appeared in the intended fields, explicit
+prohibitions were absent, and no unrequested block remained. In the pottery case, the raw answer
+added unsupported promotional language; the Builder's source-phrase review removed it before the
+visitor could approve the draft. That distinction remains central: this run supports the reviewed
+visitor flow for these scenarios, not reliable raw model writing or broad semantic understanding.
+The [five-case live report](https://github.com/tjakoen/tjakoen.github.io/blob/main/.cache/desk-audit/report-live-followup.json)
+records the profile, raw outputs, visible drafts, and grading evidence.
+
+The production Builder was also reviewed at 390 by 844 in a real browser. The page fit the viewport
+at 390 CSS pixels, showed its heading, composer, empty canvas, and block rail, and logged no browser
+errors. This satisfies responsive layout and visitor-flow review; physical-device model cold-start
+performance remains unmeasured and is outside the current acceptance target. The [review tour](https://tjakoen.github.io/grain/builder?crumb=review-builder-live-evidence&crumb-mode=dev&crumb-frame)
+points to the live-evidence review and the phone-width canvas. Broad raw-writing reliability and
+customer outcome proof remain open, so the portfolio finish-line goal remains in progress.
+
+
 ## Done means
 
 The home page gives a clear first read. The project stories and stack pages explain the work in plain
