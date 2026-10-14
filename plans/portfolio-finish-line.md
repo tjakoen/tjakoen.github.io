@@ -947,4 +947,6 @@ passed 439 of 442 cases with four workers. Three timing-sensitive checks failed 
 DESK capability answer had not finished streaming, a same-page spotlight had not finished scrolling,
 and the plan-detail route hit the server's ten-second request timeout. All three passed when rerun
 serially on a fresh test server. The Builder and CRUMB cases passed in both runs. This local result
-records the parallel-load limit; hosted CI remains the full-suite release gate.
+records the parallel-load limit. Hosted CI passed all 442 browser cases in 5.6 minutes, along with
+type checking, unit tests, and the lint-baseline check. The Pages build, export verification, and
+deployment also passed for commit `cbfba34`.
