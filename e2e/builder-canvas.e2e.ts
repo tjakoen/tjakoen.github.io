@@ -527,6 +527,7 @@ export async function loadEngine({ onProgress }) {
   return { chat: { completions: { create: async (request) => {
     const prompt = request.messages.map((message) => message.content).join("\\n");
     sessionStorage.setItem("__builderPrompt", prompt);
+    if (request.response_format?.schema) sessionStorage.setItem("__builderSchema", request.response_format.schema);
     if (sessionStorage.getItem("__builderNoReply") === "true") throw new Error("no model response");
     const raw = draftAnswer(prompt);
     sessionStorage.setItem("__builderRaw", raw);
@@ -612,6 +613,12 @@ test.describe("the model chooses the verb", () => {
     await waitForDesk(page);
     await submitPrompt(page, "Build a Hearth Bakery page in Utrecht with an intro that says it is a neighborhood bakery, then a card titled Coffee with the words baked fresh each morning.");
 
+    const schema = await page.evaluate(() => JSON.parse(sessionStorage.getItem("__builderSchema") ?? "null"));
+    expect(schema.required).toEqual(["blocks"]);
+    expect(schema.additionalProperties).toBe(false);
+    expect(schema.properties.blocks.items.properties.name.enum).toEqual(["lede", "card", "callout", "stat", "form"]);
+    expect(schema.properties.blocks.items.additionalProperties).toBe(false);
+
     await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
     await expect(page.locator("[data-builder-draft-brief]")).toHaveText("Build a Hearth Bakery page in Utrecht with an intro that says it is a neighborhood bakery, then a card titled Coffee with the words baked fresh each morning.");
     await expect(page.locator(DRAFT_REVIEW)).toContainText("Compare names, locations, and claims with the draft before adding it.");
@@ -692,7 +699,7 @@ test.describe("the model chooses the verb", () => {
     await submitPrompt(page, "Add a card about coffee.");
 
     await expect(page.locator(SAID))
-      .toHaveText("Composed from the words in that sentence. The desk answered with nothing this set can build.");
+      .toHaveText("The desk did not return a draft. I composed the page from the words in your sentence instead.");
     await expect(page.locator(CELL)).toHaveCount(1);
   });
 

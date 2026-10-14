@@ -29,7 +29,7 @@ import {
 } from "./composition.ts";
 import { BLOCK_COMPONENTS, FORM_COMPONENT, blockCopyLimit, isSpan, sanitizeBlockCopy, type Block } from "./block-set.ts";
 import {
-  briefAnchors, briefAnchorsMissingFromDraft, completeWithin, composeMessage,
+  briefAnchors, briefAnchorsMissingFromDraft, blockPlanSchema, completeWithin, composeMessage,
   readModelPlan, reconcileBuildPlan, termsOutsideBrief,
 } from "./block-composer.ts";
 import {
@@ -815,7 +815,7 @@ function boot(): void {
     }
 
     say("Reading that…", "thinking");
-    const raw = await completeWithin(desk, composeMessage(ask));
+    const raw = await completeWithin(desk, composeMessage(ask), undefined, blockPlanSchema());
     if (state !== beforeComposition) {
       say("The page changed while the desk was reading your brief. Nothing was added; review the page and try again.", "refusal");
       return;

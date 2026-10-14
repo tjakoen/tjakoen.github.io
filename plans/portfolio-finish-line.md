@@ -735,6 +735,20 @@ and visitor-flow acceptance. A physical-phone cold-start measurement is separate
 evidence and can be added if that becomes a product requirement. The [run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-negated-modal-recovery.md)
 records the exact scope and evidence.
 
+## Builder composition schema follow-up, October 14
+
+The build path now sends a closed JSON schema to the local model. It allows only registered
+block names and supported spans, and rejects generated copy fields. The repeated six-scenario
+WebGPU matrix produced schema-conforming raw responses in all 12 runs, and all 12 visitor-facing
+drafts passed review. In the two intro-only exclusion cases, the raw model still selected an extra
+card; the reconciler removed it before review. Clarifying the prompt and repeating those cases
+twice did not change that behavior. The raw structural-reliability gate therefore remains open.
+The [tracked matrix](../audit/builder-structured-composition-schema-live-2026-10-14.json),
+[exclusion recheck](../audit/builder-structured-composition-exclusion-recheck-2026-10-14.json),
+and [run report](../artifacts/runs/2026-10-14-builder-structured-composition-schema.md) preserve
+the prompts, outputs, and gate limits. Responsive browser review remains the device criterion;
+physical-phone cold-start performance is separate and is not required for this goal.
+
 ## Builder live composition follow-up, October 14
 
 Five fresh runs on the deployed Qwen2.5-1.5B-Instruct-q4f16_1-MLC profile covered a pottery studio,
@@ -744,8 +758,9 @@ prohibitions were absent, and no unrequested block remained. In the pottery case
 added unsupported promotional language; the Builder's source-phrase review removed it before the
 visitor could approve the draft. That distinction remains central: this run supports the reviewed
 visitor flow for these scenarios, not reliable raw model writing or broad semantic understanding.
-The [five-case live report](https://github.com/tjakoen/tjakoen.github.io/blob/main/.cache/desk-audit/report-live-followup.json)
-records the profile, raw outputs, visible drafts, and grading evidence.
+The five-case live report from this earlier pass is retained locally in `.cache/desk-audit` and is
+not a published audit artifact. The newer tracked matrix and follow-up above preserve the current
+schema-constrained evidence.
 
 The production Builder was also reviewed at 390 by 844 in a real browser. The page fit the viewport
 at 390 CSS pixels, showed its heading, composer, empty canvas, and block rail, and logged no browser
