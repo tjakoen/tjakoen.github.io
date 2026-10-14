@@ -482,7 +482,12 @@ export async function probeDevice() { return { webgpu: true, deviceMemory: 8, co
 export function canRunModel() { return true; }
 export async function webgpuAvailable() { return true; }
 function draftAnswer(prompt) {
-  if (/get rid of the final card|take out the callout|let the callout span the whole row|let the callout fill the whole row|shift the callout up|avoid getting rid of the final card|can't remove the callout|shouldn't remove the callout|won't remove the callout|should i remove the callout|do you think i should move the callout down|would it be better to remove the callout|is it better to move the callout up|delete the intro|shrink the callout to a third width|erase the final card|reposition the callout down one step|eliminate the final card|expand the callout to full width|push the callout down one step/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
+  if (sessionStorage.getItem("__builderQuestionCommand") === "true" && /what happens if i remove the callout|how would it look if i make the callout full width|how can i move the callout up|would it help to move the callout up|could we move the callout up|can i remove the callout|is there a reason to remove the callout|would moving the callout up be better|is removing the callout a good idea/i.test(prompt)) {
+    if (/make the callout full width/i.test(prompt)) return JSON.stringify({ action: "block.span", target: "block:b3", payload: { span: "full" } });
+    if (/move the callout up|moving the callout up/i.test(prompt)) return JSON.stringify({ action: "block.move", target: "block:b3", payload: { direction: "up" } });
+    return JSON.stringify({ action: "block.remove", target: "block:b3" });
+  }
+  if (/get rid of the final card|take out the callout|let the callout span the whole row|let the callout fill the whole row|shift the callout up|avoid getting rid of the final card|can't remove the callout|shouldn't remove the callout|won't remove the callout|should i remove the callout|do you think i should move the callout down|would it be better to remove the callout|is it better to move the callout up|what happens if i remove the callout|how would it look if i make the callout full width|can you tell me whether i should remove the callout|i wonder if i should move the callout up|could you tell me how to remove the callout|how can i remove the callout|can i remove the callout|could we move the callout up|would it help to move the callout up|is there a reason to remove the callout|would moving the callout up be better|is removing the callout a good idea|delete the intro|shrink the callout to a third width|erase the final card|reposition the callout down one step|eliminate the final card|expand the callout to full width|push the callout down one step/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
     return JSON.stringify({ action: null, reply: "I could not identify an action." });
   if (/drop the second card|drop b4/i.test(prompt)) {
     if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
@@ -495,7 +500,7 @@ function draftAnswer(prompt) {
   }
   if (/drop the callout/i.test(prompt)) return JSON.stringify({ action: "block.remove", target: "block:b2", payload: {} });
   if (/make the callout full/i.test(prompt)) return JSON.stringify({ action: "block.span", target: "block:b3", payload: { span: "full" } });
-  if (/move the callout up/i.test(prompt)) return JSON.stringify({ action: "block.move", target: "block:b3", payload: { direction: "up" } });
+  if (/move the callout up|moving the callout up/i.test(prompt)) return JSON.stringify({ action: "block.move", target: "block:b3", payload: { direction: "up" } });
   if (/widen/i.test(prompt)) return JSON.stringify({ action: "block.span", target: "block:b2", payload: { span: "wide" } });
   if (/duplicate/i.test(prompt)) return JSON.stringify({ action: "block.duplicate", target: "block:b2" });
   if (/ninth/i.test(prompt)) return JSON.stringify({ action: "block.remove", target: "block:b9" });
@@ -539,6 +544,11 @@ export function makeChatModel() {
   return {
     async complete(prompt) {
       sessionStorage.setItem("__builderPrompt", prompt);
+      if (sessionStorage.getItem("__builderQuestionCommand") === "true" && /what happens if i remove the callout|how would it look if i make the callout full width|how can i move the callout up|would it help to move the callout up|could we move the callout up|can i remove the callout|is there a reason to remove the callout|would moving the callout up be better|is removing the callout a good idea/i.test(prompt)) {
+        if (/make the callout full width/i.test(prompt)) return JSON.stringify({ action: "block.span", target: "block:b3", payload: { span: "full" } });
+        if (/move the callout up|moving the callout up/i.test(prompt)) return JSON.stringify({ action: "block.move", target: "block:b3", payload: { direction: "up" } });
+        return JSON.stringify({ action: "block.remove", target: "block:b3" });
+      }
       if (/Build a Northstar Bike Repair page/i.test(prompt)) return JSON.stringify({ blocks: [
         { name: "lede" }, { name: "card" },
       ] });
@@ -550,7 +560,7 @@ export function makeChatModel() {
       if (/literal text/i.test(prompt)) return JSON.stringify({ blocks: [
         { name: "lede", copy: { body: "<img src=x onerror=window.__builderXss=true>" } },
       ] });
-      if (/get rid of the final card|take out the callout|let the callout span the whole row|let the callout fill the whole row|shift the callout up|avoid getting rid of the final card|can't remove the callout|shouldn't remove the callout|won't remove the callout|should i remove the callout|do you think i should move the callout down|would it be better to remove the callout|is it better to move the callout up|erase the final card|reposition the callout down one step|eliminate the final card|expand the callout to full width|push the callout down one step/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
+      if (/get rid of the final card|take out the callout|let the callout span the whole row|let the callout fill the whole row|shift the callout up|avoid getting rid of the final card|can't remove the callout|shouldn't remove the callout|won't remove the callout|should i remove the callout|do you think i should move the callout down|would it be better to remove the callout|is it better to move the callout up|what happens if i remove the callout|how would it look if i make the callout full width|can you tell me whether i should remove the callout|i wonder if i should move the callout up|could you tell me how to remove the callout|how can i remove the callout|can i remove the callout|could we move the callout up|would it help to move the callout up|is there a reason to remove the callout|would moving the callout up be better|is removing the callout a good idea|erase the final card|reposition the callout down one step|eliminate the final card|expand the callout to full width|push the callout down one step/i.test(prompt) && sessionStorage.getItem("__builderNoAction") === "true")
         return JSON.stringify({ action: null, reply: "I could not identify an action." });
       if (/drop the second card|drop b4/i.test(prompt)) {
         if (sessionStorage.getItem("__builderMalformed") === "true") return '{"action":"block.span","target":"b4","payload":null}';
@@ -841,6 +851,18 @@ test.describe("the model chooses the verb", () => {
       "Do you think I should move the callout down?",
       "Would it be better to remove the callout?",
       "Is it better to move the callout up?",
+      "What happens if I remove the callout?",
+      "How would it look if I make the callout full width?",
+      "Can you tell me whether I should remove the callout?",
+      "I wonder if I should move the callout up.",
+      "Could you tell me how to remove the callout?",
+      "How can I remove the callout?",
+      "Can I remove the callout?",
+      "Could we move the callout up?",
+      "Would it help to move the callout up?",
+      "Is there a reason to remove the callout?",
+      "Would moving the callout up be better?",
+      "Is removing the callout a good idea?",
     ]) {
       await submitPrompt(page, phrase);
       await expect(page.locator(SAID)).toContainText("I could not identify an action.");
@@ -890,6 +912,28 @@ test.describe("the model chooses the verb", () => {
     await page.locator(APPLY_PROPOSAL).click();
     await expect(page.locator(SAID)).toContainText("Applied: Drop b3.");
     expect(await canvasIds(page)).toEqual(["b1", "b2"]);
+  });
+
+  test("question-shaped edits are refused even when the model proposes a command", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await twoCardPage(page, true);
+    await page.evaluate(() => sessionStorage.setItem("__builderQuestionCommand", "true"));
+    await waitForDesk(page);
+    const before = await canvasState(page);
+
+    for (const phrase of [
+      "What happens if I remove the callout?",
+      "How would it look if I make the callout full width?",
+      "How can I move the callout up?",
+      "Can I remove the callout?",
+      "Would it help to move the callout up?",
+      "Is there a reason to remove the callout?",
+    ]) {
+      await submitPrompt(page, phrase);
+      await expect(page.locator(SAID)).toContainText("That is a question about an edit, so I left the page unchanged.");
+      await expect(page.locator(PROPOSAL)).toBeHidden();
+      expect(await canvasState(page)).toEqual(before);
+    }
   });
 
   test("discard and nudge paraphrases stay review-gated and reject ambiguous or negative asks", async ({ page }) => {

@@ -302,6 +302,14 @@ interface RequestedEdit {
   block: BlockDescription;
 }
 
+const BLOCK_EDIT_QUESTION = /\b(?:should (?:i|we)\b|(?:can|could|may|would) (?:i|we)\b|do you think\b|would it be better\b|would it (?:help|make sense)\b|is it better\b|is there (?:a|any) reason\b|(?:is|are|was|were|would|could|should) (?:removing|deleting|moving|shifting|resizing|expanding|shrinking)\b|what if\b|what happens if\b|what would happen if\b|how\b.*\bif\b|(?:can|could) you (?:tell|explain|show)\b|do you know\b|i wonder if\b|whether (?:i|we) (?:should|could|can|would)\b|how (?:can|could|do|would|should) (?:i|we)\b)/;
+
+/** Question-shaped requests need an answer, not an edit proposal. */
+export function isBlockEditQuestion(message: string): boolean {
+  const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
+  return BLOCK_EDIT_QUESTION.test(text);
+}
+
 /** Read only plainly stated edit verbs, values, and one unambiguous live target from the request.
  *  Requests outside this small grammar stay with the model. This result never dispatches directly;
  *  the review UI must disclose any disagreement and wait for the visitor's approval. */
@@ -310,10 +318,10 @@ function requestedEdit(
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
 ): RequestedEdit | null {
   const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
-  // A request for advice is not permission to perform the action being discussed. Keep these
-  // question forms with the model's reply path, while still accepting polite commands such as
-  // "Could you remove the callout?".
-  if (/\b(?:should (?:i|we)\b|do you think\b|would it be better\b|is it better\b)/.test(text)) return null;
+  // Advice, information, and hypothetical questions are not permission to perform the action being
+  // discussed. Keep these forms with the model's reply path, while still accepting polite commands
+  // such as "Could you remove the callout?".
+  if (isBlockEditQuestion(text)) return null;
   // Punctuation is stripped above, so English contractions arrive as two tokens ("can't" ->
   // "can t", "shouldn't" -> "shouldn t"). Treat those as non-requests too: recovery must not
   // turn an explicit inability, prohibition, or avoided action into a proposal to perform it.

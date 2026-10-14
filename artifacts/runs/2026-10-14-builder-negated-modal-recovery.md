@@ -9,12 +9,14 @@ skills:
   - sites
 scope:
   - src/ai/block-reasoner.ts
+  - src/ai/builder-canvas.ts
   - src/ai/block-reasoner.test.ts
   - e2e/builder-canvas.e2e.ts
   - plans/builder-ai-depth.md
   - plans/portfolio-finish-line.md
 touched:
   - src/ai/block-reasoner.ts
+  - src/ai/builder-canvas.ts
   - src/ai/block-reasoner.test.ts
   - e2e/builder-canvas.e2e.ts
   - plans/builder-ai-depth.md
@@ -46,3 +48,20 @@ source lint completed successfully. The browser suite includes the phone-width r
 844. These scripted checks cover the named contractions and existing guarded flow; they do not
 establish how a live model interprets them, broad natural-language reliability, or cold-start behavior
 on physical phone hardware.
+
+## Informational and hypothetical question follow-up
+
+Additional probes found that “What happens if I remove the callout?” and “How would it look if I make
+the callout full width?” could also become edit proposals. Requests for instructions, such as “How can
+I remove the callout?”, and requests for an explanation, such as “Can you tell me whether I should
+remove the callout?”, could enter the same recovery path. Permission and advice forms such as “Can I
+remove the callout?” and “Would it help to move the callout up?” also needed a guard. The guard now leaves advice, informational, permission,
+and hypothetical questions with the model's reply path while retaining direct polite commands.
+
+Unit coverage checks the question examples against both recovery and model-proposal correction. The
+390 by 844 browser regression submits sixteen questions after a scripted model refusal and confirms that
+no proposal appears and the four-block canvas stays unchanged. A second browser case returns valid
+remove, width, and move commands for six question-shaped prompts; the Builder refuses every command
+and keeps the canvas unchanged. The focused reasoner suite passed 51 tests, all 830 unit tests passed across 45
+files, all 81 Builder browser cases passed, and TypeScript checking passed. This verifies the guarded visitor flow. It does not establish how the live model interprets the
+questions or close the broader natural-language reliability gap.
