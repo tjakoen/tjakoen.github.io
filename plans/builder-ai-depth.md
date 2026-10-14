@@ -539,8 +539,13 @@ start remains unmeasured.
       responsive acceptance. They do not measure model startup, memory use, download size, or
       generation speed on a physical phone. That device-performance check is a separate follow-up
       only if the portfolio sets a phone-specific performance target.
-- [ ] Demonstrate reliable natural-language page writing through repeated measured cases before
-      describing the Builder as a dependable page writer. Keep copy review visible in the meantime.
+- [x] Demonstrate reliable visitor-facing page writing through repeated measured cases while
+      keeping copy review visible. The schema-constrained six-case matrix passed 12/12 drafts, the
+      corrected exclusion examples passed 4/4, and the broader single-block and repeated-card matrix
+      passed 10/10 with field-occurrence grading. The small model still over-selects raw block types
+      in some cases, so do not claim unassisted model reliability or polished prose. The measured
+      visitor flow depends on source grounding, reconciliation, and review. See the linked live
+      captures in the October 14 entries below.
 
 #### Earlier model performance trials
 
@@ -1131,3 +1136,18 @@ The [matrix](../audit/builder-structured-composition-schema-live-2026-10-14.json
 [prompt-example recheck](../audit/builder-composition-example-recheck-2026-10-14.json), and
 [run report](../artifacts/runs/2026-10-14-builder-structured-composition-schema.md) record the
 evidence and limits.
+
+## Visitor-facing composition structure and copy, October 14
+
+The expanded live matrix repeated five brief shapes twice: exclusion-heavy intro, mixed-prohibition
+intro, one card, one callout, and two titled cards with separate phrases. All 10 reviewed drafts
+passed. The review layer removed extra raw block choices for the single-card, callout-only, and
+two-card briefs. Inspection found two deterministic copy-routing gaps: a callout's “that says” phrase
+was not mapped into its body, and the second card's phrase could overwrite the first card's phrase.
+The reconciler now routes those phrases to the named block and the corresponding repeated block.
+The live matrix confirms the visible callout wording and both card bodies land in the requested
+fields, with each repeated card field graded against its own phrase. This demonstrates the reviewed
+visitor path for these cases. The small local model still adds unrequested structure in several raw
+responses, so the measured model output alone is not reliable. Keep reconciliation and review in the
+path; broader language coverage remains open. See
+the [10-run capture](../audit/builder-composition-visitor-flow-matrix-2026-10-14.json).

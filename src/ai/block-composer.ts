@@ -58,7 +58,7 @@ const DRAFT_VERBS = new Set([
 ]);
 const ANCHOR = /(?<![\p{L}\p{N}_])[\p{Lu}][\p{L}\p{M}'’-]*(?:\s+[\p{Lu}][\p{L}\p{M}'’-]*)*/gu;
 const QUOTED = /[“"]([^”"]+)[”"]/gu;
-const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^,.!?;]+?)(?=,\s*(?:and\s+)?(?:then|add|include|feature)\b|[.!?;]|$)/giu;
+const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^,.!?;]+?)(?=,\s*(?:and\s+)?(?:then|add|include|feature|one|another)\b|[.!?;]|$)/giu;
 const INTRO_DESCRIPTION = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\b(?:says?\s+it\s+is|describing\s+it\s+as|describes?\s+it\s+as|for|about)\s+([^,;.!?]+?)(?=,\s*(?:and\s+)?then\b|\s+then\s+|[;.!?]|$)/giu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 
@@ -115,14 +115,14 @@ export function briefAnchorsMissingFromDraft(brief: string, copy: string): strin
 
 function requestedWordingTargets(brief: string): Array<{ phrase: string; block: string | null }> {
   const aliases: Record<string, string> = {
-    intro: "lede", introduction: "lede", lede: "lede", card: "card", callout: "callout",
+    intro: "lede", introduction: "lede", lede: "lede", card: "card", cards: "card", callout: "callout",
   };
   const namedPhraseTargets = [...brief.matchAll(REQUESTED_WORDING)].map((match) => {
     const phrase = (match[1] ?? "").trim();
     const before = brief.slice(0, match.index ?? 0);
     const boundary = Math.max(before.lastIndexOf("."), before.lastIndexOf("!"), before.lastIndexOf("?"), before.lastIndexOf(";"));
     const context = before.slice(boundary + 1);
-    const mentions = [...context.matchAll(/\b(intro(?:duction)?|lede|card|callout)\b/giu)];
+    const mentions = [...context.matchAll(/\b(intro(?:duction)?|lede|cards?|callout)\b/giu)];
     const marker = mentions.at(-1)?.[1]?.toLocaleLowerCase();
     return { phrase, block: marker ? aliases[marker] ?? null : null };
   }).filter((entry) => entry.phrase.length > 0);
@@ -130,7 +130,13 @@ function requestedWordingTargets(brief: string): Array<{ phrase: string; block: 
     phrase: (match[1] ?? "").trim(),
     block: "lede",
   })).filter((entry) => entry.phrase.length > 0);
-  return [...namedPhraseTargets, ...introTargets];
+  const saidPhraseTargets = [...brief.matchAll(/\b(intro(?:duction)?|lede|card|callout)\b[^.!?]*?\b(?:that\s+)?says?\s+[“"]?([^,.!?;”"]+)/giu)]
+    .map((match) => ({
+      phrase: (match[2] ?? "").trim(),
+      block: aliases[(match[1] ?? "").toLocaleLowerCase()] ?? null,
+    }))
+    .filter(({ phrase }) => phrase.length > 0 && !/^it\s+is\b/iu.test(phrase));
+  return [...namedPhraseTargets, ...introTargets, ...saidPhraseTargets];
 }
 
 function groundedIntroSentence(brief: string): string | null {
@@ -308,10 +314,14 @@ export function reconcileBuildPlan(
     }
     return result;
   });
+  const wordingTargetCounts = new Map<string, number>();
   for (const { phrase, block } of requestedWordingTargets(brief)) {
     if (!block) continue;
-    const target = grounded.findIndex((result, index) => keptNames[index] === block
-      && blockCopyLimit(block, "body") !== null);
+    const targetOffset = wordingTargetCounts.get(block) ?? 0;
+    const targets = grounded.flatMap((result, index) => keptNames[index] === block
+      && blockCopyLimit(block, "body") !== null ? [index] : []);
+    const target = targets[targetOffset] ?? -1;
+    if (target >= 0) wordingTargetCounts.set(block, targetOffset + 1);
     if (target < 0) continue;
     const copy = grounded[target]!.copy;
     const prior = copy.body ?? "";
