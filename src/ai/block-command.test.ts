@@ -33,6 +33,13 @@ describe("an edit points at something already here", () => {
     "remove card",
     "move callout up",
     "drop the ninth card",
+    "add a price to the card",
+    "put a caption on the card",
+    "set card title to Cafe",
+    "give the card a clearer headline",
+    "add text to card",
+    "move the image to the top card",
+    "turn the card title into a button",
   ])("%s", (prompt) => {
     expect(onAPage(prompt)).toBe(true);
   });
@@ -47,6 +54,7 @@ describe("a description asks for something that is not here yet", () => {
     "make a page with the title and callout",
     "write a title and a paragraph",
     "build a card with a caption",
+    "add two cards with a price and a callout",
     "another card",
     "a stat",
     "a form to sign up",                    // " up " is a direction word
@@ -122,6 +130,13 @@ describe("copy edits wait for a real content operation", () => {
     "change the first card background color",
     "remove the logo from the second card",
     "delete the icon next to the title in the first card",
+    "add a price to the card",
+    "put a caption on the card",
+    "set card title to Cafe",
+    "give the card a clearer headline",
+    "add text to card",
+    "move the image to the top card",
+    "turn the card title into a button",
     "remove card caption",
     "shorten second card description",
     "edit caption",

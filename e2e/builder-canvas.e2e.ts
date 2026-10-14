@@ -1089,6 +1089,13 @@ test.describe("the model chooses the verb", () => {
       "shorten the title",
       "change the page headline",
       "make title more concise",
+      "add a price to the card",
+      "put a caption on the card",
+      "set card title to Cafe",
+      "give the card a clearer headline",
+      "add text to card",
+      "move the image to the top card",
+      "turn the card title into a button",
     ]) {
       await submitPrompt(page, prompt);
       await expect(page.locator(SAID)).toContainText("cannot revise block copy yet");
