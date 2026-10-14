@@ -104,6 +104,16 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
 export function isCopyEditRequest(prompt: string): boolean {
   const text = ` ${normalize(prompt)} `;
   if (/\b(?:mention|say|write|rewrite|rephrase|word)\b/.test(text)) return true;
-  return /\b(?:change|edit|revise|replace|update|improve|make)\b/.test(text)
-    && /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content)\b/.test(text);
+  const copyField = /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption)\b/;
+  if (/\b(?:change|edit|revise|replace|update|improve|make)\b/.test(text) && copyField.test(text)) return true;
+
+  // Content can also be the object of an otherwise structural verb: “remove the price from the
+  // card” means revise the card's copy, not remove the card. Without this boundary the edit router
+  // can send that sentence to a model which only knows how to remove, resize or move whole blocks.
+  // Require a copy-bearing noun before a preposition that introduces a block reference, so ordinary
+  // requests such as “remove the card from the page” remain structural edits.
+  const blockReference = /\b(?:block|card|callout|aside|lede|intro(?:duction)?|paragraph|tile|stat|form|b\d+)\b/;
+  const operation = /\b(?:remove|delete|discard|erase|drop|take out|get rid of|move|shift|nudge|reposition)\b/;
+  return operation.test(text)
+    && new RegExp(`${copyField.source}\\b(?:\\s+\\w+){0,4}\\s+(?:from|in|inside|within|of|on)\\s+(?:the\\s+)?${blockReference.source}`).test(text);
 }
