@@ -114,9 +114,14 @@ test.describe("the canvas: a composition, server-rendered", () => {
   });
 
   test("definite copy-field nouns inside a page brief do not route page creation to editing", async ({ page }) => {
-    await page.goto(ask("Build a product page with the title, a short description, and two cards."));
-    await expect(page.locator(SAID)).not.toContainText("cannot revise block copy yet");
-    await expect(page.locator(CELL).first()).toBeVisible();
+    for (const prompt of [
+      "Build a product page with the title, a short description, and two cards.",
+      "Create a landing page for this bakery with a menu and a callout.",
+    ]) {
+      await page.goto(ask(prompt));
+      await expect(page.locator(SAID)).not.toContainText("cannot revise block copy yet");
+      await expect(page.locator(CELL).first()).toBeVisible();
+    }
   });
 
   test("a form-shaped ask still produces a form, at the same address, with the same surfaces", async ({ page }) => {
@@ -1096,6 +1101,11 @@ test.describe("the model chooses the verb", () => {
       "add text to card",
       "move the image to the top card",
       "turn the card title into a button",
+      "delete the title",
+      "remove the CTA",
+      "move the image to the top",
+      "make the title bigger",
+      "write the title",
     ]) {
       await submitPrompt(page, prompt);
       await expect(page.locator(SAID)).toContainText("cannot revise block copy yet");

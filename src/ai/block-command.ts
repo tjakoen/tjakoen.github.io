@@ -38,7 +38,7 @@ const PRONOUNS = [" it ", " that ", " this ", " them ", " those "];
 const POSSESSIVE_COPY_REFERENCES = /\b(?:its|their|his|her)\s+(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption|subtitle|subheading|kicker|eyebrow|cta|image|photo|picture|icon|button|link|url|description|tagline|bullet|quote|author|logo|video|media|line|details)\b/;
 const COPY_FIELD = /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption|subtitle|subheading|kicker|eyebrow|cta|image|photo|picture|icon|button|link|url|description|tagline|bullet|quote|author|logo|video|media|line|details|hours|address|location|phone|email|background|color)\b/;
 const EXPLICIT_COPY_EDIT = /\b(?:rewrite|rephrase|shorten|lengthen|trim|tighten|polish|proofread|edit|revise|replace|update|change|improve)\b/;
-const COPY_QUALITY = /\b(?:shorter|longer|more concise|less wordy|clearer|more direct|friendlier|warmer|punchier|simpler|one line|two lines|single sentence)\b/;
+const COPY_QUALITY = /\b(?:shorter|longer|bigger|smaller|larger|more concise|less wordy|clearer|more direct|friendlier|warmer|punchier|simpler|one line|two lines|single sentence)\b/;
 const COPY_FIELD_OPERATION = /\b(?:add|insert|put|set|fill|clear|remove|delete|discard|erase|drop|get rid of|move|shift|nudge|reposition|resize|stretch|shrink|reduce|change|edit|revise|replace|update|improve|turn|give|include)\b|\btake(?:\s+\w+){1,4}\s+(?:out|off)\b/;
 const BLOCK_REFERENCE = /(?:block|blocks|one|ones|lede|intro(?:duction)?|opening|standfirst|card|cards|tile|tiles|callout|callouts|aside|note|quote|stat|stats|statistic|kpi|metric|counter|form|forms|signup|b\d+)/;
 const COPY_BLOCK_QUALIFIER = "(?:(?:(?:the|that|this)\\s+)?(?:(?:first|second|third|fourth|fifth|sixth|last|final|b\\d+)\\s+)?)";
@@ -68,6 +68,8 @@ const BLOCK_NOUNS = [
 ];
 const BLOCK_NOUN_PATTERN = `(?:${BLOCK_NOUNS.join("|")})`;
 const ORDINAL_PATTERN = "(?:first|1st|second|2nd|third|3rd|fourth|4th|fifth|5th|sixth|6th|seventh|7th|eighth|8th|ninth|9th|tenth|10th|eleventh|11th|twelfth|12th|\\d+(?:st|nd|rd|th)|last|final)";
+const DIRECT_COPY_FIELD_EDIT = new RegExp(`\\b(?:write|mention|say|rewrite|rephrase|shorten|lengthen|trim|tighten|polish|proofread|edit|revise|replace|update|change|improve|add|insert|put|set|fill|clear|remove|delete|discard|erase|drop|get rid of|move|shift|nudge|reposition|resize|stretch|shrink|reduce|turn|give|include)\\s+(?:(?:the|that|this|its|${ORDINAL_PATTERN})\\s+)?${COPY_FIELD.source}`);
+const NEW_PAGE_REQUEST = /^\s*(?:build|create|design|draft|compose|generate|make)\s+(?:me\s+)?(?:a|an|another|new)\s+(?:[a-z0-9]+\s+){0,3}(?:page|website|site|homepage)\b/;
 
 /** Does this prompt point at something already on the page?
  *
@@ -87,10 +89,12 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
   if (blockCount === 0) return false;
   const text = ` ${normalize(prompt)} `;
   if (!text.trim()) return false;
+  if (NEW_PAGE_REQUEST.test(text)) return false;
   if (/ b\d+ /.test(text)) return true;
   if (PRONOUNS.some((p) => text.includes(p))) return true;
   if (EXPLICIT_COPY_EDIT.test(text) && COPY_FIELD.test(text)) return true;
   if (COPY_QUALITY.test(text) && COPY_FIELD.test(text)) return true;
+  if (DIRECT_COPY_FIELD_EDIT.test(text)) return true;
   if (isCopyEditRequest(prompt) && hasCopyBlockReference(text)) return true;
   const definiteBlock = new RegExp(`\\b(?:(?:the|that|this|its)\\s+(?:${ORDINAL_PATTERN}\\s+)?|${ORDINAL_PATTERN}\\s+)${BLOCK_NOUN_PATTERN}\\b`);
   if (definiteBlock.test(text)) return true;
@@ -107,6 +111,7 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
 export function isCopyEditRequest(prompt: string): boolean {
   const text = ` ${normalize(prompt)} `;
   if (/\b(?:mention|say|write|rewrite|rephrase|word|shorten|lengthen|trim|tighten|polish|proofread)\b/.test(text)) return true;
+  if (DIRECT_COPY_FIELD_EDIT.test(text)) return true;
   if (/\b(?:change|edit|revise|replace|update|improve|make)\b/.test(text) && COPY_FIELD.test(text)) return true;
 
   // A length or tone request may name the block but never name a text field: “make the card
