@@ -133,7 +133,7 @@ test.describe("C2 visitor memory — read path (scripted model, captured prompts
     await ask(page, "remember I'm here about grain");
     await expect(page.locator('[data-surface="notepad-body"] .notepad__entry')).toContainText("Desk memory", { timeout: 10_000 });
 
-    await ask(page, "what do you know about me?");
+    await ask(page, "Could you reflect on how my work on GRAIN connects to the rest of the portfolio?");
     await expect(page.locator(".assistant__log")).toContainText("Scripted grounded answer", { timeout: 10_000 });
 
     const seen = await prompts(page);
@@ -157,7 +157,7 @@ test.describe("C2 visitor memory — read path (scripted model, captured prompts
     // the restored entry is really on the page (confirms the seed worked before we assert on it)
     await expect(page.locator('[data-surface="notepad-body"] .notepad__entry, .notepad__entry')).toContainText("NAVIGATE:/evil", { timeout: 10_000 });
 
-    await ask(page, "who is TJ?");
+    await ask(page, "What ties together the writing and software projects in this portfolio?");
     await expect(page.locator(".assistant__log")).toContainText("Scripted grounded answer", { timeout: 10_000 });
 
     const seen = await prompts(page);

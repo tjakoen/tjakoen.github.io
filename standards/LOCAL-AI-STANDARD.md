@@ -21,6 +21,12 @@ questions, summarizes a page, chooses a destination, and edits a document. Recor
 expected result, the data it may use, the action it may take, what the visitor sees, and what happens
 when the model is unavailable or wrong.
 
+For a product with several AI surfaces, make one inventory across the whole product before tuning any
+one feature. Give each task a row with its surface, model or deterministic path, source material,
+expected visitor outcome, failure behavior, and first-use cost. Mark which tasks share a loaded model
+and which use a separate profile. This makes the cost and reliability of the whole product visible,
+and it prevents a feature-level improvement from being mistaken for a product-wide improvement.
+
 Before assigning a model, ask whether the task needs one. Use ordinary code for exact matching,
 fixed destinations, bounded choices, known form fields, simple validation, and actions that must be
 reliable. Use a model where language understanding or generation adds value. A model can help select
@@ -68,6 +74,11 @@ runtime fixed while comparing a change. Change one meaningful factor at a time, 
 cases and the held-out cases again. Restore changes that do not improve the target outcome without
 damaging another task.
 
+When tasks share a model, include the other tasks that depend on that model in the regression run,
+even when the change targets only one surface. Keep the task-specific prompts, output limits, and
+grading criteria distinct; a shared runtime does not make different jobs one prompt or one quality
+score. Record both the target task's result and the effect on the rest of the product.
+
 ## 4. Tune the failing layer
 
 Use the evidence to choose the smallest responsible change:
@@ -91,6 +102,9 @@ Use the evidence to choose the smallest responsible change:
 Compare alternative model sizes only against the same task set and visitor-flow criteria. Count first
 download cost, warm latency, memory, failures, and output quality together. A larger model is not an
 upgrade if the additional cost does not improve the required outcomes on supported devices.
+For a model or profile shared across features, compare the product-level trade-off across all of its
+tasks. Keep a specialization only when its added download, memory, and loading complexity produce a
+repeatable visitor benefit that the shared profile cannot provide at an acceptable cost.
 
 ## 5. Measure the browser experience
 
@@ -117,7 +131,8 @@ portable rules here; link to project evidence instead of copying its details int
 - [ ] Inputs, valid outputs, effects, and human review boundaries are explicit.
 - [ ] Scenario cases cover normal, ambiguous, negative, held-out, and failure behavior.
 - [ ] Raw answers and visible outcomes are reviewed across repeated runs.
-- [ ] Changes are compared against the same baseline and do not silently regress other tasks.
+- [ ] Changes are compared against the same baseline across every task that shares the changed
+  model or profile.
 - [ ] Model size, download cost, latency, memory, and offline behavior are measured together.
 - [ ] Claims about local execution and privacy match the inspected network path.
 - [ ] Desktop and narrow-phone browser layouts keep status and review controls usable.
