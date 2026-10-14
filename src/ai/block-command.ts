@@ -48,14 +48,6 @@ function hasCopyBlockReference(text: string): boolean {
   return fieldFromBlock.test(text) || fieldInsideBlock.test(text) || POSSESSIVE_COPY_REFERENCES.test(text);
 }
 
-/** A definite article, a demonstrative, an ordinal, or a name for the end of a list. On its own each
- *  one means nothing: "the fold" is not a block. It has to be pointing AT something. */
-const DEFINITE = [
-  " the ", " that ", " this ", " its ",
-  " first ", " 1st ", " second ", " 2nd ", " third ", " 3rd ", " fourth ", " 4th ",
-  " fifth ", " 5th ", " sixth ", " 6th ", " last ", " final ",
-];
-
 /** What a person calls a block that is already on the page. The five kinds by the names the rail
  *  prints, plus the two generic ones, because "the second one" and "the last block" are how people
  *  talk about a list they are looking at.
@@ -73,12 +65,8 @@ const BLOCK_NOUNS = [
   "stat", "stats", "statistic", "kpi", "metric", "counter",
   "form", "forms", "signup",
 ];
-
-const firstIndexOf = (text: string, needles: readonly string[]): number =>
-  needles.reduce((best, n) => {
-    const at = text.indexOf(n);
-    return at !== -1 && (best === -1 || at < best) ? at : best;
-  }, -1);
+const BLOCK_NOUN_PATTERN = `(?:${BLOCK_NOUNS.join("|")})`;
+const ORDINAL_PATTERN = "(?:first|1st|second|2nd|third|3rd|fourth|4th|fifth|5th|sixth|6th|seventh|7th|eighth|8th|ninth|9th|tenth|10th|eleventh|11th|twelfth|12th|\\d+(?:st|nd|rd|th)|last|final)";
 
 /** Does this prompt point at something already on the page?
  *
@@ -86,15 +74,14 @@ const firstIndexOf = (text: string, needles: readonly string[]): number =>
  *  looks like: "drop in a card" is an ordinary way to ask for a card, and where there is nothing to
  *  drop it can only mean the add it sounds like.
  *
- *  Three ways to be pointing. A bare id, because the rail prints them and nothing else looks like
- *  one. A pronoun, because a page that does not exist has no "it". Or a definite marker with a block
- *  noun AFTER it, and the order is the whole rule: "the second card" points at a card, while "a card
- *  above the fold" carries both words and points at nothing, because the card comes first and what
- *  follows "the" is a fold.
+ *  Existing targets can be named by id, pronoun, a definite article or ordinal attached to a block
+ *  noun, or a terse edit verb followed by a bare block noun. Content-edit requests also count when
+ *  they identify a field on a block. The words have to stay together: "the second card" points at a
+ *  card, while "the title and two cards" is a new description and the later cards do not become the
+ *  target of "the title".
  *
- *  Both mistakes cost something real, which is why this is stricter than it first was. A false NO
- *  sends an edit to the matcher, which adds rather than edits. A false YES sends a description to
- *  the model, which answers that no verb applies, and the description is never built at all. */
+ *  Both mistakes cost something real. A false NO sends an edit to page creation, which appends rather
+ *  than edits. A false YES sends a description to the block model, which cannot build it. */
 export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
   if (blockCount === 0) return false;
   const text = ` ${normalize(prompt)} `;
@@ -104,10 +91,10 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
   if (EXPLICIT_COPY_EDIT.test(text) && COPY_FIELD.test(text)) return true;
   if (COPY_QUALITY.test(text) && COPY_FIELD.test(text)) return true;
   if (isCopyEditRequest(prompt) && hasCopyBlockReference(text)) return true;
-  const pointer = firstIndexOf(text, DEFINITE);
-  if (pointer === -1) return false;
-  const noun = firstIndexOf(text.slice(pointer), BLOCK_NOUNS.map((n) => ` ${n} `));
-  return noun !== -1;
+  const definiteBlock = new RegExp(`\\b(?:(?:the|that|this|its)\\s+(?:${ORDINAL_PATTERN}\\s+)?|${ORDINAL_PATTERN}\\s+)${BLOCK_NOUN_PATTERN}\\b`);
+  if (definiteBlock.test(text)) return true;
+  const directBlockCommand = new RegExp(`\\b(?:remove|delete|discard|erase|drop|get rid of|move|shift|nudge|reposition|resize|stretch|shrink|reduce|change)\\s+(?!(?:a|an|another|new)\\b)(?:(?:the|that|this|${ORDINAL_PATTERN})\\s+)?${BLOCK_NOUN_PATTERN}\\b`);
+  return directBlockCommand.test(text);
 }
 
 /** Does an edit ask to change prose, for which the builder has no GRAIN operation yet?
