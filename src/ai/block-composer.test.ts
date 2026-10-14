@@ -26,6 +26,7 @@ describe("the prompt hands over the closed set", () => {
     expect(message).toContain("Do not add copy, facts, claims, testimonials, guarantees or statistics.");
     expect(message).toContain("Do not write copy or add text fields.");
     expect(message).toContain("A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.");
+    expect(message).not.toContain('{"blocks":[{"name":"lede"},{"name":"card"}]}');
   });
 
   test("the sentence itself leads, because a small model reads the top of a prompt best", () => {

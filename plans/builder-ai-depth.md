@@ -1120,12 +1120,14 @@ wordings.
 
 The build path now submits a closed response schema that permits only registered block names and
 supported span values, with no generated copy fields. The six-scenario live matrix completed twice:
-all 12 raw responses matched the schema, and all 12 reviewed drafts passed. The model still chose an
-extra card for the intro-only negative-anchor and mixed-prohibition briefs. The Builder removed that
-block before review, including in a four-run follow-up after clarifying the prompt. This closes the
-raw-copy-field failure seen in the earlier run, but it does not close the raw structural-reliability
-acceptance criterion. Keep draft review visible while broader composition reliability remains open.
+all 12 raw responses matched the schema, and all 12 reviewed drafts passed. The first four
+exclusion-heavy responses chose an extra card, which the Builder removed before review. Inspection
+found that the instruction example itself included a lede and card, contradicting an intro-only
+request. After removing that example, four live repeats of the two failing briefs returned only a
+lede, and the reconciler removed nothing. This resolves the measured failure. Broader language
+coverage remains open, so keep draft review visible.
 The [matrix](../audit/builder-structured-composition-schema-live-2026-10-14.json),
-[exclusion recheck](../audit/builder-structured-composition-exclusion-recheck-2026-10-14.json), and
+[initial exclusion recheck](../audit/builder-structured-composition-exclusion-recheck-2026-10-14.json),
+[prompt-example recheck](../audit/builder-composition-example-recheck-2026-10-14.json), and
 [run report](../artifacts/runs/2026-10-14-builder-structured-composition-schema.md) record the
 evidence and limits.

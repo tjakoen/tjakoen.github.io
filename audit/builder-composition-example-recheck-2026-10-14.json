@@ -1,0 +1,167 @@
+{
+  "label": "composition-example-recheck",
+  "base": "http://localhost:3131",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "passed": 4,
+  "failed": 0,
+  "notRun": 0,
+  "total": 4,
+  "results": [
+    {
+      "id": "builder-draft-negative-anchors",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 10550,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery in Utrecht welcomes neighbors."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery in Utrecht welcomes neighbors."
+        }
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery in Utrecht welcomes neighbors.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-negative-anchors",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 10288,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery in Utrecht welcomes neighbors."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery in Utrecht welcomes neighbors."
+        }
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery in Utrecht welcomes neighbors.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-mixed-prohibitions",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 10107,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery is a neighborhood bakery in Utrecht."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery is a neighborhood bakery in Utrecht."
+        }
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery is a neighborhood bakery in Utrecht.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-mixed-prohibitions",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 9945,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery is a neighborhood bakery in Utrecht."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery is a neighborhood bakery in Utrecht."
+        }
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery is a neighborhood bakery in Utrecht.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    }
+  ]
+}
