@@ -184,6 +184,15 @@ describe("explicit target guard", () => {
     expect(blockIntentRecovery("erase a card", blocks, "No action.")).toBeNull();
   });
 
+  test("additional removal phrasings recover only for a unique live target", () => {
+    for (const phrase of ["eliminate the final card", "clear out the final card", "take away the final card"]) {
+      expect(blockIntentRecovery(phrase, blocks, "No action.")?.command)
+        .toMatchObject({ action: "block.remove", surface: "block:b4" });
+    }
+    expect(blockIntentRecovery("clear out a card", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("do not eliminate the final card", blocks, "No action.")).toBeNull();
+  });
+
   test("a full-row layout paraphrase recovers only for one live component", () => {
     expect(blockIntentRecovery("let the callout fill the whole row", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
@@ -216,6 +225,15 @@ describe("explicit target guard", () => {
     expect(blockIntentRecovery("reposition one of the cards down", blocks, "No action.")).toBeNull();
   });
 
+  test("push and slide recover one-step moves only for a unique live target", () => {
+    expect(blockIntentRecovery("push the callout down one step", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "down" } });
+    expect(blockIntentRecovery("slide the intro up one place", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.move", surface: "block:b1", payload: { direction: "up" } });
+    expect(blockIntentRecovery("push a card down one step", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("do not slide the intro up", blocks, "No action.")).toBeNull();
+  });
+
   test("a full-row span paraphrase becomes a review-only full-width proposal", () => {
     expect(blockIntentRecovery("let the callout span the whole row", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
@@ -224,6 +242,17 @@ describe("explicit target guard", () => {
     })?.command).toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
     expect(blockIntentRecovery("let a card span the whole row", blocks, "No action."))
       .toBeNull();
+  });
+
+  test("additional width phrasings recover only an explicit supported span", () => {
+    expect(blockIntentRecovery("expand the callout to full width", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
+    expect(blockIntentRecovery("stretch the callout to full width", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });
+    expect(blockIntentRecovery("narrow the final card to half width", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.span", surface: "block:b4", payload: { span: "half" } });
+    expect(blockIntentRecovery("make the callout wider", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("do not expand the callout to full width", blocks, "No action.")).toBeNull();
   });
 
   test("it accepts the requested block and a unique named component", () => {
