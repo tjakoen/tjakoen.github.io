@@ -180,6 +180,8 @@ describe("explicit target guard", () => {
       "Should we move the callout down?",
       "Do you think I should remove the callout?",
       "Do you think I should move the callout down?",
+      "Would it be better to remove the callout?",
+      "Is it better to move the callout up?",
     ]) {
       expect(blockIntentRecovery(phrase, blocks, "No action.")).toBeNull();
       expect(blockIntentCorrection(phrase, blocks, {
