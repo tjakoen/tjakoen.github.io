@@ -310,7 +310,10 @@ function requestedEdit(
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
 ): RequestedEdit | null {
   const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
-  if (/\b(?:do not|don t|never|not|avoid|without)\b/.test(text)) return null;
+  // Punctuation is stripped above, so English contractions arrive as two tokens ("can't" ->
+  // "can t", "shouldn't" -> "shouldn t"). Treat those as non-requests too: recovery must not
+  // turn an explicit inability, prohibition, or avoided action into a proposal to perform it.
+  if (/\b(?:do not|don t|can t|cannot|couldn t|shouldn t|wouldn t|won t|mustn t|mightn t|needn t|may not|might not|never|not|avoid|without)\b/.test(text)) return null;
   const actions: Array<{ action: BlockVerb; payload: Record<string, unknown> }> = [];
   if (/\b(drop|remove|delete|discard|erase|eliminate)\b|\bclear out\b|\bget rid of\b|\btake out\b|\btake away\b/.test(text)) {
     actions.push({ action: "block.remove", payload: {} });

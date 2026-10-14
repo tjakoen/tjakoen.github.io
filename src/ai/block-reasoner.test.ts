@@ -155,6 +155,25 @@ describe("explicit target guard", () => {
     expect(blockIntentRecovery("remove that", blocks, "I could not identify an action.")).toBeNull();
   });
 
+  test("it never recovers a negated or prohibited edit from modal contractions", () => {
+    for (const phrase of [
+      "I can't remove the callout",
+      "I cannot remove the callout",
+      "I couldn't remove the callout",
+      "I shouldn't remove the callout",
+      "I wouldn't remove the callout",
+      "I won't remove the callout",
+      "I mustn't remove the callout",
+      "I mightn't remove the callout",
+      "I needn't remove the callout",
+    ]) {
+      expect(blockIntentRecovery(phrase, blocks, "No action.")).toBeNull();
+      expect(blockIntentCorrection(phrase, blocks, {
+        action: "block.remove", surface: "block:b3", payload: {}, said: "",
+      })).toBeNull();
+    }
+  });
+
   test("common removal paraphrases recover only with a clear live target", () => {
     expect(blockIntentRecovery("get rid of the final card", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.remove", surface: "block:b4" });

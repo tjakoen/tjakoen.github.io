@@ -1074,3 +1074,18 @@ typecheck and lint passed, and link lint found no dead relative links across 56 
 Hosted CI passed all 438 browser cases, the unit suite, typecheck, and the lint baseline; the Pages
 build and deploy succeeded. The Builder and Plans routes both returned HTTP 200 after deployment.
 The locally run Qwen3-1.7B profile remains a comparison only; the shipped profile is unchanged.
+
+## Negated edit contractions, October 14
+
+A targeted safety probe found that “I can't remove the callout” and “I shouldn't remove the callout”
+could be recovered as deletion requests, even though the guard already refused “don't remove the
+callout.” Punctuation normalization split modal contractions into tokens the negation check did not
+cover. The recovery guard now refuses common negative modal contractions before it interprets an
+operation. A unit test checks that both recovery and correction refuse nine contraction forms. A
+390 by 844 browser test submits three of them after a scripted model refusal and confirms that no
+proposal appears and the canvas remains unchanged. The focused reasoner suite passed 49 tests, the
+full unit suite passed 828 tests across 45 files, and all 80 Builder browser cases passed. TypeScript
+checking and link lint passed. These scripted checks do not establish how the live model interprets
+the phrases. This closes the tested negation gap only; broad natural-language reliability and
+cold-start behavior on physical phone hardware remain open. See the
+[run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-negated-modal-recovery.md).

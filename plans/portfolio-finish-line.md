@@ -707,6 +707,18 @@ remains open. The [run report](https://github.com/tjakoen/tjakoen.github.io/blob
 records the test results and their limits. The cold-start measurement still requires a physical
 phone.
 
+## Negated Builder edit safety, October 14
+
+A safety probe found that “I can't remove the callout” and “I shouldn't remove the callout” could
+become deletion proposals after punctuation normalization split their contractions. Recovery now
+refuses those and other common negative modal forms. The focused reasoner suite passed 49 tests, the
+full unit suite passed 828 tests, and all 80 Builder browser cases passed. A 390 by 844 browser check
+confirmed that three contractions create no proposal and leave all four blocks unchanged. These
+scripted checks do not establish how the live model interprets these phrases. This closes the tested
+negation gap, not broad natural-language reliability. The
+physical-phone cold start and broader language coverage remain open. The [run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-negated-modal-recovery.md)
+records the exact scope and evidence.
+
 ## Done means
 
 The home page gives a clear first read. The project stories and stack pages explain the work in plain
