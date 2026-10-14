@@ -22,7 +22,7 @@
 // page says which one composed it, every time, so the two are never confused for each other.
 
 import {
-  BLOCK_NAMES, blockCopyLimit, isSpan, matchBlocks, MAX_BLOCKS_PER_PROMPT, sanitizeBlockCopy, type Span,
+  BLOCK_ALIASES, BLOCK_NAMES, blockCopyLimit, isSpan, matchBlocks, MAX_BLOCKS_PER_PROMPT, sanitizeBlockCopy, type Span,
 } from "./block-set.ts";
 
 /** How many blocks one sentence may produce. A repetition loop is the 0.5B's documented failure
@@ -62,13 +62,19 @@ const REQUESTED_WORDING = /\bwith the (?:exact )?(?:words?|phrase)\s+([^,.!?;]+?
 const INTRO_DESCRIPTION = /\b(?:intro(?:duction)?|lede)\b[^.!?]*?\b(?:says?\s+it\s+is|describing\s+it\s+as|describes?\s+it\s+as|for|about)\s+([^,;.!?]+?)(?=,\s*(?:and\s+)?then\b|\s+then\s+|[;.!?]|$)/giu;
 const NUMBER = /\b\d[\d,.]*(?:%|\b)/gu;
 
-const BLOCK_MENTIONS: Record<string, string[]> = {
-  lede: ["lede", "intro", "introduction", "opening paragraph", "opening line", "standfirst", "summary paragraph"],
-  card: ["card", "cards", "tile", "tiles", "feature", "features", "feature box", "content card", "info card"],
-  callout: ["callout", "aside", "note box", "quote", "blockquote", "pull quote", "warning", "highlight"],
-  stat: ["stat", "stats", "statistic", "statistics", "kpi", "metric", "number", "figure", "counter", "stat tile"],
-  form: ["form", "forms", "contact form", "signup", "sign up", "enquiry", "inquiry", "registration", "survey", "questionnaire", "feedback form", "application form"],
-};
+const aliasPattern = (alias: string): string => alias.split(/\s+/u).map((word, index, all) => {
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+  return index === all.length - 1 && word.length > 3 ? `${escaped}s?` : escaped;
+}).join("\\s+");
+const copyTargetByAlias = new Map<string, string>(
+  Object.entries(BLOCK_ALIASES)
+    .filter(([name]) => ["lede", "card", "callout"].includes(name))
+    .flatMap(([name, aliases]) => aliases.map((alias) => [alias, name] as [string, string])),
+);
+const copyTargetPattern = [...copyTargetByAlias.keys()]
+  .toSorted((a, b) => b.length - a.length)
+  .map(aliasPattern)
+  .join("|");
 
 /** A fact inside a nearby negative clause must not be repeated without its negation. */
 function followsNegation(brief: string, index: number): boolean {
@@ -122,26 +128,24 @@ export function briefAnchorsMissingFromDraft(brief: string, copy: string): strin
 }
 
 function requestedWordingTargets(brief: string): Array<{ phrase: string; block: string | null }> {
-  const aliases: Record<string, string> = {
-    intro: "lede", introduction: "lede", lede: "lede", card: "card", cards: "card", callout: "callout",
-  };
   const namedPhraseTargets = [...brief.matchAll(REQUESTED_WORDING)].map((match) => {
     const phrase = (match[1] ?? "").trim();
     const before = brief.slice(0, match.index ?? 0);
     const boundary = Math.max(before.lastIndexOf("."), before.lastIndexOf("!"), before.lastIndexOf("?"), before.lastIndexOf(";"));
     const context = before.slice(boundary + 1);
-    const mentions = [...context.matchAll(/\b(intro(?:duction)?|lede|cards?|callout)\b/giu)];
+    const mentions = [...context.matchAll(new RegExp(`\\b(${copyTargetPattern})\\b`, "giu"))];
     const marker = mentions.at(-1)?.[1]?.toLocaleLowerCase();
-    return { phrase, block: marker ? aliases[marker] ?? null : null };
+    return { phrase, block: marker ? copyTargetByAlias.get(marker.replace(/s$/u, "")) ?? copyTargetByAlias.get(marker) ?? null : null };
   }).filter((entry) => entry.phrase.length > 0);
   const introTargets = [...brief.matchAll(INTRO_DESCRIPTION)].map((match) => ({
     phrase: (match[1] ?? "").trim(),
     block: "lede",
   })).filter((entry) => entry.phrase.length > 0);
-  const saidPhraseTargets = [...brief.matchAll(/\b(intro(?:duction)?|lede|card|callout)\b(?:(?!\b(?:intro(?:duction)?|lede|cards?|callout)\b)[^.!?])*?\b(?:that\s+)?says?\s+[“"]?([^,.!?;”"]+)/giu)]
+  const saidPhraseTargets = [...brief.matchAll(new RegExp(`\\b(${copyTargetPattern})\\b(?:(?!\\b(?:${copyTargetPattern})\\b)[^.!?])*?\\b(?:that\\s+)?says?\\s+[“"]?([^,.!?;”"]+)`, "giu"))]
     .map((match) => ({
       phrase: (match[2] ?? "").trim(),
-      block: aliases[(match[1] ?? "").toLocaleLowerCase()] ?? null,
+      block: copyTargetByAlias.get((match[1] ?? "").toLocaleLowerCase().replace(/s$/u, ""))
+        ?? copyTargetByAlias.get((match[1] ?? "").toLocaleLowerCase()) ?? null,
     }))
     .filter(({ phrase }) => phrase.length > 0 && !/^it\s+is\b/iu.test(phrase));
   return [...namedPhraseTargets, ...introTargets, ...saidPhraseTargets];
@@ -199,19 +203,16 @@ function requestedBlockConstraints(brief: string): { explicit: string[]; exclude
   // Quoted wording is copy or an example, not a block request. Blank it without shifting offsets so
   // negative phrases such as “No cards available” cannot be mistaken for a structural exclusion.
   const constraintText = brief.replace(QUOTED, (phrase) => phrase.replace(/[^\r\n]/gu, " "));
-  const positive = new Set<string>();
   const negative = new Set<string>();
   const removed: Array<{ start: number; end: number }> = [];
-  for (const [name, aliases] of Object.entries(BLOCK_MENTIONS)) {
+  for (const [name, aliases] of Object.entries(BLOCK_ALIASES)) {
     for (const alias of aliases) {
-      const pattern = new RegExp(`\\b${alias}\\b`, "giu");
+      const pattern = new RegExp(`\\b${aliasPattern(alias)}\\b`, "giu");
       for (const match of constraintText.matchAll(pattern)) {
         const start = match.index ?? 0;
         if (followsNegation(constraintText, start)) {
           negative.add(name);
           removed.push({ start, end: start + match[0].length });
-        } else {
-          positive.add(name);
         }
       }
     }
@@ -225,8 +226,8 @@ function requestedBlockConstraints(brief: string): { explicit: string[]; exclude
       "block-lede": "lede", "block-card": "card", "block-callout": "callout",
       "block-stat": "stat", "block-form": "form",
     }[block.component]))
-    .filter((name): name is string => typeof name === "string" && positive.has(name));
-  return { explicit, excluded: new Set([...negative].filter((name) => !positive.has(name))) };
+    .filter((name): name is string => typeof name === "string");
+  return { explicit, excluded: new Set([...negative].filter((name) => !explicit.includes(name))) };
 }
 
 export interface GroundedBlockCopy {

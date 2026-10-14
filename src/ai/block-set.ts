@@ -142,7 +142,7 @@ const BLOCK_TABLE: BlockEntry[] = [
     component: "block-callout",
     label: "Callout",
     defaultSpan: "full",
-    tokens: ["callout", "aside", "note box", "quote", "blockquote", "pull quote", "warning", "highlight"],
+    tokens: ["callout", "aside", "note box", "quote", "blockquote", "pull quote", "warning", "highlight", "announcement", "announcements"],
     sample: { body: "Nothing here submits anywhere. This is a static site, and the builder composes a page rather than serving one.", status: null },
   },
   {
@@ -183,6 +183,12 @@ const FORM_TOKENS = [
   "form", "contact form", "signup", "sign up", "signup form", "get in touch", "enquiry", "inquiry",
   "registration", "register", "survey", "questionnaire", "feedback form", "application form",
 ];
+
+/** One vocabulary for matching, explicit constraints, and phrase placement in a composition brief. */
+export const BLOCK_ALIASES: Readonly<Record<string, readonly string[]>> = {
+  ...Object.fromEntries(BLOCK_TABLE.map(({ name, tokens }) => [name, tokens])),
+  form: FORM_TOKENS,
+};
 
 /** Did the description ask for a form, and what did the field matcher make of it? Returns null when
  *  no form was asked for, so a caller can tell "no form" from "a form with nothing in it". */

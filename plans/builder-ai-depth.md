@@ -1154,3 +1154,18 @@ visitor path for these cases. The small local model still adds unrequested struc
 responses, so the measured model output alone is not reliable. Keep reconciliation and review in the
 path; broader language coverage remains open. See
 the [10-run capture](../audit/builder-composition-visitor-flow-matrix-2026-10-14.json).
+
+## Alias and unavailable-model follow-up, October 14
+
+The no-model Builder path and the model-error fallback now use the same plan reconciliation and
+source-copy checks as a model response. Block aliases have one source for matching, exclusions, and
+copy placement, so the word “announcement” produces a callout and a contact form remains explicit
+when the brief also names another block. The live two-scenario Qwen recheck passed both reviewed
+drafts; one case preserved the requested announcement phrase, and the other kept the name and email
+fields. The offline browser case requested an introduction, an exact announcement, and a contact
+form while prohibiting cards. It retained those requested blocks and copy and showed the offline
+notice. The full Builder browser cases passed as part of the combined 94-case Builder and docs run.
+The tracked reports, including an initial constrained-decoder error that the fallback handled, are
+linked from the [portfolio finish-line evidence](portfolio-finish-line.md#builder-alias-and-docs-presentation-follow-up-october-14).
+This closes the identified alias and fallback gaps, while broader natural-language coverage remains
+open.

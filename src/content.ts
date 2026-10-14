@@ -23,6 +23,7 @@ import {
   externalLinkAttrs, type GrainAdapterOptions,
 } from "@tjakoen/mill/adapters/grain/grain-adapter.ts";
 import { servedDiagramRenderer } from "./diagrams.ts";
+import { highlightedCodeBlock } from "./content-code.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
@@ -142,7 +143,12 @@ function notesLink(href: string): string {
 // external (absolute http(s), different host) so the answer is the layer's and not ten copies of a
 // regex here; mailto: and in-page anchors are deliberately untouched.
 function withHeadingAnchors(adapter: GrainAdapterOptions): GrainAdapterOptions {
-  return { ...adapter, headingSurfaces: true, linkAttrs: externalLinkAttrs(SITE.origin) };
+  return {
+    ...adapter,
+    blockOverrides: { ...adapter.blockOverrides, code: highlightedCodeBlock },
+    headingSurfaces: true,
+    linkAttrs: externalLinkAttrs(SITE.origin),
+  };
 }
 
 // ---- the BREAD-shell chrome ---------------------------------------------------

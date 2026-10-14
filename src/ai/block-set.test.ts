@@ -72,6 +72,10 @@ describe("matchBlocks: the closed set decides, never the description", () => {
     expect(c.blocks[2]!.data.title).toBe("A closed set");
   });
 
+  test("an announcement is a callout alias", () => {
+    expect(matchBlocks("an announcement").blocks.map((block) => block.component)).toEqual(["block-callout"]);
+  });
+
   test("a numeric quantity is capped and the omitted request is named", () => {
     const c = matchBlocks("12 cards");
     expect(c.blocks.filter((b) => b.component === "block-card")).toHaveLength(8);
