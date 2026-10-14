@@ -28,6 +28,17 @@ describe("routeAction", () => {
       expect(routeAction(s)?.kind).toBe("capabilities");
   });
 
+  test("natural capability questions do not fall through to small-model prose", () => {
+    for (const s of ["What can you do for me?", "What are you able to do for me on this site?"])
+      expect(routeAction(s)?.kind).toBe("capabilities");
+  });
+
+  test("stable portfolio FAQs route to authored answers", () => {
+    expect(routeAction("Who is TJ?")).toEqual({ kind: "portfolio-faq", topic: "bio" });
+    expect(routeAction("How do you work under the hood?")).toEqual({ kind: "portfolio-faq", topic: "runtime" });
+    expect(routeAction("Tell me about the BREAD stack")).toBeNull();
+  });
+
   test("page-inventory asks are capabilities too (the 0.5B mangles route lists — audit finding)", () => {
     for (const s of ["Which pages can you take me to?", "what pages are there", "where can you take me"])
       expect(routeAction(s)?.kind).toBe("capabilities");
@@ -107,7 +118,7 @@ describe("routeAction", () => {
   });
 
   test("'Watch me work' phrasings route to the showcase", () => {
-    for (const s of ["watch me work", "watch the AI act", "watch the desk work", "run the demo", "play the showcase", "show me the demo"])
+    for (const s of ["watch me work", "watch the AI act", "watch the desk work", "run the demo", "play the showcase", "show me the demo", "show me something interactive here"])
       expect(routeAction(s)?.kind).toBe("showcase-start");
   });
 
@@ -132,7 +143,7 @@ describe("routeAction", () => {
   });
 
   test("plain questions fall through to chat (null)", () => {
-    for (const s of ["What is BREAD?", "Who is TJ?", "how is this site built", ""])
+    for (const s of ["What is BREAD?", "how is this site built", ""])
       expect(routeAction(s)).toBeNull();
   });
 
@@ -379,6 +390,10 @@ describe("routeAction", () => {
   });
 
   describe("C2 visitor memory", () => {
+    test("memory questions read the marked notepad facts without loading the model", () => {
+      for (const s of ["what do you know about me?", "what do you remember about me", "show me what you remember about me"])
+        expect(routeAction(s)).toEqual({ kind: "memory-read" });
+    });
     test("a substantive 'remember X' captures the fact VERBATIM (casing + punctuation survive)", () => {
       const cases: [string, string][] = [
         ["remember I'm here about grain", "I'm here about grain"],
@@ -441,6 +456,7 @@ describe("routeAction", () => {
 describe("ACTION_CAPABILITIES — every listed kind is a REAL, reachable routeAction outcome", () => {
   const EXAMPLE: Partial<Record<string, string>> = {
     summarize: "summarize this page",
+    "memory-read": "what do you know about me?",
     "deep-link": "show me the part about grain",
     "open-latest-note": "show me the latest note",
     "tour-start": "take the tour",

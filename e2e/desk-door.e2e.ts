@@ -77,7 +77,7 @@ test.describe("THE DESK — client transport, no WebGPU → Desk Offline (chat h
 
     await page.evaluate(() =>
       (window as unknown as { grain: { door: { submit(a: string, s: string, p: unknown): void } } })
-        .grain.door.submit("chat.send", "chat-log", { text: "who is TJ?" }));
+        .grain.door.submit("chat.send", "chat-log", { text: "What should I build next?" }));
 
     const reply = page.locator('[data-surface="chat-log"] .chat-message[data-role="ai"]').last();
     await expect(reply).toContainText("offline");

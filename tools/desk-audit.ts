@@ -22,7 +22,8 @@ const PORT = parsePort(process.env.PORT, 3131, "PORT");
 const BASE = `http://localhost:${PORT}`;
 const DESK_DOOR = "/modules/portfolio/ai/desk-door.js";
 const OUT_DIR = ".cache/desk-audit";
-const PROFILE_DIR = `${OUT_DIR}/profile`;
+// Override this for a cold-profile first-download measurement without erasing the warm cache.
+const PROFILE_DIR = process.env.DESK_AUDIT_PROFILE_DIR || `${OUT_DIR}/profile`;
 
 // ---- the scenario list. Each is a REAL visitor question, phrased to reach the layer under test:
 // the model tail (grounded chat / fuzzy nav / capability awareness) unless marked deterministic —
@@ -66,6 +67,7 @@ interface Scenario {
   /** cap on reply length — a 0.5B past this is usually rambling (ignored for nav scenarios) */
   maxChars?: number;
   deterministic?: boolean;         // control: answered without the model
+  showcase?: boolean;              // the model-driven "Watch me work" agent must reach its finish state
   /** C2 visitor memory — skip the per-scenario "grain.notepad" localStorage clear (below) after THIS
    *  scenario, so the very next scenario in the list inherits whatever the desk just wrote to the
    *  pad. Used by exactly one pair (memory-det → memory-read, see their own comments) — every other
@@ -88,22 +90,22 @@ const SCENARIOS: Scenario[] = [
   // -- capability awareness (the grain-awareness gap: freeform phrasings that MISS the deterministic
   //    capabilities route and land on the model, which today knows nothing about what the desk can do) --
   { id: "cap-freeform", page: "/grain", ask: "What are you able to do for me on this site?",
-    mustMention: [["navigate", "take you", "jump", "open"], ["summar"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
+    mustMention: [["navigate", "take you", "jump", "open"], ["summar"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700,
+    deterministic: true },
   { id: "cap-interactive", page: "/grain", ask: "Show me something interactive here",
-    mustMention: [["demo", "desk", "chip", "ask"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
+    mustMention: [["one AI driving", "that's the demo"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 400,
+    showcase: true },
   { id: "cap-pages", page: "/", ask: "Which pages can you take me to?",
     mustMention: [["grain", "notes", "batch", "resume"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700,
     deterministic: true },   // routed to the capabilities action since 2026-07-24 (the 0.5B mangled route lists)
   // -- the desk ACTS: model-composed writes + summaries (the action paths through the real model) --
   { id: "note-write", page: "/grain", ask: "Jot down that the grain demo looks really promising",
     mustMention: [["notepad"]], mustNotMention: ["NAVIGATE:", "CHOICES:"] },
-  // The accepted-words group includes the feed's REAL topic tokens, not just "note(s)": the visible
-  // /notes main pane (the summarize input) is a tag cloud + excerpts and barely contains the word
-  // "note" at all, so the 0.5B fairly summarizes TOPICS ("native-first", "course platform") — runs
-  // that only said those used to fail on grader phrasing, not summary quality (2026-07-24 fix).
+  // The Notes feed has an authored title and summary on each card. Its featured-card summary is a
+  // deterministic read-back because the small model hallucinated unrelated industries on this task.
   { id: "summarize", page: "/notes", ask: "Summarize this page",
-    mustMention: [["note", "notes", "writing", "post", "native-first", "course platform", "teaching", "vibe coding", "web platform"]],
-    mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 900 },
+    mustMention: [["ten times zero"], ["multiplier", "503 commits"]],
+    mustNotMention: ["NAVIGATE:", "CHOICES:", "finance", "healthcare", "retail"], maxChars: 1400, deterministic: true },
   // -- fuzzy navigation (the model's NAVIGATE tail — no deterministic full-cover match) --
   { id: "nav-fuzzy-mill", page: "/", ask: "I want to read the mill documentation",
     mustNavigate: "/mill/docs" },
@@ -115,7 +117,7 @@ const SCENARIOS: Scenario[] = [
   { id: "flagship-det", page: "/", ask: "take me to the flagship note",
     mustNavigate: "/notes/ten-times-zero", mustMention: [["flagship"]], deterministic: true },
   { id: "cap-det", page: "/", ask: "What can I do here?",
-    mustMention: [["latest note"], ["summarize"], ["GRAIN"]], deterministic: true },
+    mustMention: [["latest note"], ["summarize"], ["navigate", "take you", "drive the site"]], deterministic: true },
   // A1 deep-link answers — "where does TJ talk about X" retrieves deterministically (actions.ts
   // DEEP_LINK_PATTERNS) and jumps straight to the anchored section, never the model. Verified against
   // the real corpus (bun -e, buildPortfolioKnowledge + retrieve): this phrasing's top-scoring anchored
@@ -168,15 +170,13 @@ const SCENARIOS: Scenario[] = [
   // to the pad deterministically (actions.ts + desk-reasoner.ts + memory.ts): no model. Placed
   // immediately before memory-read ON PURPOSE (keepNotepad: true skips this scenario's own pad
   // clear, below) — the fact this write leaves on the pad is exactly what the next scenario reads
-  // back through a REAL model answer, not a fake pad like the unit/e2e suites use.
+  // back through the real notepad read path, not a fake pad like unit tests use.
   { id: "memory-det", page: "/", ask: "remember I'm here about grain",
     mustMention: [["noted"], ["pad"]], deterministic: true, keepNotepad: true },
-  // C2 visitor memory (read) — the real Qwen2.5-0.5B answering "what do you know about me?" with
-  // memory-det's write still on the pad (see keepNotepad above): the VISITOR NOTES block feeds the
-  // sanitized fact into the SAME grounded-chat model tail every other Q&A scenario exercises, so a
-  // pass here proves the fact reaches an actual model's answer, not just the assembled prompt string.
+  // C2 visitor memory (read) — the marked visitor-owned line is returned directly from the notepad.
+  // It is a deterministic lookup, so loading a model to paraphrase it would add failure without value.
   { id: "memory-read", page: "/", ask: "what do you know about me?",
-    mustMention: [["grain"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
+    mustMention: [["grain"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700, deterministic: true },
   // D5 the builder's edit path — the selected local model choosing a verb on a live block. Everything
   // around the model is proved by builder-canvas.e2e.ts and none of the model is, because that suite
   // scripts the engine: it answers `block:b4` because the test told it to. These four are the
@@ -462,11 +462,30 @@ async function settle(
   }
 }
 
+/** Follow the multi-page showcase until its saved agent state clears and the closing line appears.
+ * A normal navigation wait would stop at the first page change, halfway through the demonstration. */
+async function settleShowcase(page: Page, timeoutMs: number): Promise<{ text: string; path: string }> {
+  const started = Date.now();
+  let lastLog = 0;
+  const finished = /That's me|That's the demo|wrap the demo up there|interrupted the demo/i;
+  for (;;) {
+    const text = await lastReply(page);
+    if (finished.test(text)) return { text, path: await path(page) };
+    if (Date.now() - started > timeoutMs) return { text, path: await path(page) };
+    if (Date.now() - lastLog > 10_000) {
+      lastLog = Date.now();
+      console.log(`    … ${Math.round((Date.now() - started) / 1000)}s: ${text.slice(0, 80).replace(/\s+/g, " ")}`);
+    }
+    await page.waitForTimeout(400);
+  }
+}
+
 const path = (page: Page): Promise<string> =>
   page.evaluate(() => location.pathname).catch(() => page.url().replace(BASE, "") || "/");
 
 interface Result {
   id: string; ask: string; page: string; deterministic: boolean;
+  modelProfile?: string;
   reply: string; endPath: string; ms: number;
   /** Builder scenarios only: the canvas the edit actually left behind. Recorded even on a pass,
    *  because the point of the report is a diff between two runs and "which block did it pick" is
@@ -671,7 +690,9 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     // first model scenario may include the one-time ~350MB download; be patient once
     const timeout = s.deterministic ? 30_000 : firstModelRun ? 420_000 : 150_000;
     const builderPage = Boolean(s.builder || s.builderDraft);
-    let { text, path: endPath } = await settle(page, startPath, timeout, builderPage ? lastSaid : lastReply);
+    let { text, path: endPath } = s.showcase
+      ? await settleShowcase(page, timeout)
+      : await settle(page, startPath, timeout, builderPage ? lastSaid : lastReply);
     let draftText: string[] | undefined;
     let draftEvidence: string | undefined;
     let draftFieldEvidence: string[] | undefined;
@@ -732,6 +753,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     }
     if (!s.deterministic) firstModelRun = false;
     const canvas = builderPage ? await canvasState(page) : undefined;
+    const modelProfile = await page.evaluate(() => document.body.dataset.aiModelProfile ?? "").catch(() => "");
     const model = builderPage ? await recorded(page) : undefined;
     // Per-scenario sessionStorage cleanup: tour-det (and any future tour ask) leaves a pending
     // "desk-tour" cursor stashed for the NEXT stop the door hasn't navigated to within this scenario's
@@ -741,6 +763,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     // gets a clean slate.
     await page.evaluate((keepNotepad: boolean) => {
       sessionStorage.removeItem("desk-tour");
+      sessionStorage.removeItem("desk-showcase");
       sessionStorage.removeItem("visitor-intent");
       sessionStorage.removeItem("desk-intent-asked");
       // B3 mail archive: archived letters (and any pending cross-page batch) would make a re-run of
@@ -761,7 +784,7 @@ async function runScenario(c: BrowserContext, s: Scenario): Promise<Result> {
     const failures = notRunReason ? [] : grade(s, text, endPath, realRoutes, canvas, draftText, draftBlocks, draftFields);
     if (builderPage && !model?.profile) failures.push("selected local model profile was not reported");
     const pass = !notRunReason && failures.length === 0;
-    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, reply: text, endPath, ms, canvas, draftText, draftFields, draftEvidence, draftFieldEvidence, draftBlocks, targetCorrection, model, browserErrors, status: notRunReason ? "not-run" : pass ? "passed" : "failed", notRunReason, pass, failures };
+    return { id: s.id, ask: s.ask, page: s.page, deterministic: !!s.deterministic, modelProfile, reply: text, endPath, ms, canvas, draftText, draftFields, draftEvidence, draftFieldEvidence, draftBlocks, targetCorrection, model, browserErrors, status: notRunReason ? "not-run" : pass ? "passed" : "failed", notRunReason, pass, failures };
   } finally {
     await page.close().catch(() => {});
   }
@@ -810,7 +833,7 @@ try {
 const passed = results.filter((r) => r.pass).length;
 const failed = results.filter((r) => r.status === "failed").length;
 const notRun = results.filter((r) => r.status === "not-run").length;
-const profiles = [...new Set(results.map((result) => result.model?.profile).filter((profile): profile is string => !!profile))];
+const profiles = [...new Set(results.map((result) => result.modelProfile || result.model?.profile).filter((profile): profile is string => !!profile))];
 const model = profiles.length === 1 ? profiles[0] : profiles.length ? `mixed: ${profiles.join(", ")}` : "unreported";
 const report = { label, base: BASE, model, passed, failed, notRun, total: results.length, results };
 await Bun.write(`${OUT_DIR}/report-${label}.json`, JSON.stringify(report, null, 2));

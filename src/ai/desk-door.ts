@@ -58,10 +58,14 @@ const grainChat = await import(new URL("../../grain/ai/model-chat.js", import.me
 // A1 deep-link answers add one more shape here: an element that can scrollIntoView (getElementById
 // only needs to find + scroll it — no other DOM surface is touched).
 interface ScrollableEl { scrollIntoView(opts?: { behavior?: string; block?: string }): void }
+interface MinimalEl {
+  textContent?: string | null;
+  querySelector?(sel: string): MinimalEl | null;
+}
 interface MinimalDoc {
   body?: { dataset: Record<string, string> };
   title?: string;
-  querySelector?(sel: string): { textContent?: string | null } | null;
+  querySelector?(sel: string): MinimalEl | null;
   getElementById?(id: string): ScrollableEl | null;
 }
 const doc = (): MinimalDoc | undefined => (globalThis as unknown as { document?: MinimalDoc }).document;
@@ -159,6 +163,13 @@ const loadCatalog = (): Promise<NavDest[]> =>
 
 // ---- the desk's UI-driving capabilities (the DOM/nav contact point) ----
 const pageText = (): string => doc()?.querySelector?.(".app-shell__main")?.textContent?.trim() ?? "";
+const pageSummary = (): { title: string; summary: string } | null => {
+  const d = doc();
+  const card = d?.querySelector?.(".note-card:not([hidden])");
+  const title = card?.querySelector?.(".note-card__title a")?.textContent?.trim() ?? "";
+  const summary = card?.querySelector?.(".note-card__summary")?.textContent?.trim() ?? "";
+  return title && summary ? { title, summary } : null;
+};
 const pageInfo = (): { route: string; title: string } => ({ route: loc()?.pathname ?? "/", title: doc()?.title ?? "" });
 // GRAIN's own live-DOM manifest of what's operable on this page (for "what can I do here?"). The
 // real `document` satisfies grain's structural DomDoc (body + querySelectorAll).
@@ -736,7 +747,7 @@ export function createClientDoor(applyOp: (op: RenderOp) => void): InteractionLa
     fallback: grainReasoner.makeStubReasoner(),   // every non-chat verb (demo.run, say.*, item.archive)
     markOffline,
     kit: grainKit,                                // grain's chat markup builders (no fork)
-    navigate, pageText, pageInfo, pageManifest, listNotes, loadCatalog, arrive, revealNav, revealNotepad,   // the desk drives the UI through these
+    navigate, pageText, pageSummary, pageInfo, pageManifest, listNotes, loadCatalog, arrive, revealNav, revealNotepad,   // the desk drives the UI through these
     padMarkdown,   // C2 visitor memory: read "Desk memory" lines back off the visitor's own notepad
     scrollToAnchor,   // A1 deep-link answers: scroll THIS page to a rendered heading id (see desk-reasoner.ts)
     tourSet, tourClear, tourActive,   // A2 guided tour: the reasoner's first leg + the "type anything to stop" cancel

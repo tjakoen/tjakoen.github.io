@@ -25,6 +25,7 @@ six.
 | Read this when you're… | Standard | In one line |
 |---|---|---|
 | **Building anything with an AI** | [AI-DEVELOPMENT.md](AI-DEVELOPMENT.md) | The working relationship, the definition of done, the conventions and pitfalls every change is held to. The rulebook. |
+| **Adding or tuning browser-local AI** | [LOCAL-AI-STANDARD.md](LOCAL-AI-STANDARD.md) | Decide which tasks need a model, measure real outcomes, tune the failing layer, and account for browser costs and limits. |
 | **Structuring a repo so AI sessions compound** | [AI-REPO-STANDARD.md](AI-REPO-STANDARD.md) | The repo-side companion to AI-DEVELOPMENT: the kit you commit (the map, the contracts, the guardrails) so every AI session inherits what the last one learned. AI-DEVELOPMENT owns the working relationship; this owns the repo. |
 | **Auditing a repo (or writing its AUDIT.md)** | [AUDIT-STANDARD.md](AUDIT-STANDARD.md) | The whole-repo pass: the nine quality dimensions, the severity words, the parallel subagent fan-out that runs it, and the report it owes. AI-REPO-STANDARD owns the per-repo runbook file; this owns what an audit actually looks at. |
 | **Deciding where a file lives / unbloating a root** | [TREE.md](TREE.md) | The layout standard: keep the root a readable index, only load-bearing files earn a place there, everything else folds one level down into a named home. AI-REPO-STANDARD owns *which* files exist; this owns *where* they sit. |
