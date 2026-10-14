@@ -74,6 +74,11 @@ runtime fixed while comparing a change. Change one meaningful factor at a time, 
 cases and the held-out cases again. Restore changes that do not improve the target outcome without
 damaging another task.
 
+Define the completion claim against a finite visitor workflow and its tested boundary. A passing
+matrix supports the included tasks and conditions; it does not establish general language
+understanding. If raw generation remains unreliable, exclude it from the visitor-facing result and
+grade the guarded experience the person actually receives. Keep the known limit next to the evidence.
+
 When tasks share a model, include the other tasks that depend on that model in the regression run,
 even when the change targets only one surface. Keep the task-specific prompts, output limits, and
 grading criteria distinct; a shared runtime does not make different jobs one prompt or one quality

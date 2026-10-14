@@ -1169,3 +1169,20 @@ The tracked reports, including an initial constrained-decoder error that the fal
 linked from the [portfolio finish-line evidence](portfolio-finish-line.md#builder-alias-and-docs-presentation-follow-up-october-14).
 This closes the identified alias and fallback gaps, while broader natural-language coverage remains
 open.
+
+## Measured reliability closeout, October 14
+
+The portfolio's full live WebGPU audit passed all 58 scenarios, including 35 Builder edit, refusal,
+and composition outcomes. Its held-out relative placement case exposed that a request such as “Put the
+callout after the second card” was outside the recovery grammar. The request guard now recovers the
+move only when the source and destination are unambiguous and the change is one position; it leaves
+longer and ambiguous moves to the model. The model's no-op answer for that request became a disclosed
+review-only proposal. A separate live case corrected the model's wrong target for an explicitly named
+intro, and a negative deletion request left the canvas unchanged. The full report and exact Builder
+scenarios are in the [portfolio AI audit](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/portfolio-ai-live-recheck-2026-10-14.json).
+
+This closes the Builder's measured visitor workflow, not open-ended language understanding or raw
+model-written prose. The portfolio intentionally excludes unsupported model copy from the page and
+keeps review before mutation. The audit does not claim that the review gate proves a statement true.
+The portfolio finish-line plan records the profile comparison, product-wide evidence, and remaining
+limits.
