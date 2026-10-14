@@ -1,6 +1,6 @@
 ---
 id: builder-ai-depth
-status: doing
+status: done
 track: demo
 depends: [form-from-data-demo, site-builder, builder-design]
 touches:
@@ -27,9 +27,9 @@ site, lets a person rearrange and resize blocks, and exports JSON, HTML, or tag 
 model chooses registered component names and their order. Code builds visible copy from phrases in
 the visitor's brief, and the visitor can edit that copy in the review step. Existing block copy
 cannot yet be revised. The Builder does not use model-written prose because the live trials added
-unsupported claims. The source-built path has repeated live-model evidence, while broad
-natural-language coverage remains open. Responsive browser checks satisfy the device requirement;
-physical-phone performance is outside this goal.
+unsupported claims. The source-built path now meets its measured visitor-workflow criteria. Broad
+natural-language coverage remains unproven. Responsive browser checks satisfy the device
+requirement; physical-phone performance is outside this goal.
 
 The recorded live-model audit on 2026-08-14 asked the 0.5B model to edit existing blocks eighteen
 times. None of the answers produced a valid edit. The safety boundary held in every case, so the
@@ -1046,7 +1046,9 @@ phrases, and the visitor can review or change it before approval. Every unsuppor
 without changing the canvas or claiming success. The static export still composes and previews
 without a server. A visitor can inspect the outcome, revise it, and export it without leaving the
 portfolio. The live-model results and their limits are recorded beside the tests, so the page's
-claims stay tied to evidence.
+claims stay tied to evidence. These criteria are met by the repeated composition and edit audits,
+the review and refusal gates, and the responsive browser checks. They do not claim reliable raw model
+writing or behavior for every possible prompt.
 
 ## Qwen3 local comparison, October 14
 

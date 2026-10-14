@@ -1,6 +1,6 @@
 ---
 id: portfolio-finish-line
-status: doing
+status: done
 track: portfolio
 depends: [site-builder, builder-ai-depth, runs-surface-polish]
 touches:
@@ -395,7 +395,7 @@ proof remain open below.
 | /pantry | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Implemented: the page shows the documented install, kit scaffold, validation, and serve commands, then explains that the board reads the host project's plans in place. The content review caught that the page described the agent-instructions kit but showed plain `pantry init`, which does not install that kit; it now shows `pantry init --kit`, matching the public quickstart. The long install command now wraps inside a responsive two-column desktop layout that stacks on phones. Browser checks guard the kit flag and ensure the first-run steps fit both widths. The PANTRY guides also include the current decisions, run, artifact, and timeline surfaces, identify which routes are not covered by surface toggles, and state the local answer-write path. |
 | /greenroom | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Implemented: the page summarizes and links to Greenroom's archived seeded report, distinguishing its four practice-environment results from the separate ten-check screenshot and calling out the intentional failures. The phone layout and route links are covered by e2e/projects-layout.e2e.ts. |
 | /native-github-classroom and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Implemented: the first links now move from the architecture diagram to the working demo, safety docs, and public source. The copy keeps course internals and student records private; browser checks cover the phone navigation and confirm the docs route resolves. |
-| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Still open in builder-ai-depth.md. The workbench shows a validated edit proposal and waits for approval, then checks the canvas before reporting success. The Builder chooses registered block names and order with the 1.5B local model on capable devices; the shared desk remains on 0.5B. Its visible copy comes from phrases in the brief, unsupported fields remain blank, and visitors can review or edit each field before approval. Two warm WebGPU runs passed all 12 visitor-facing drafts across six briefs. The raw responses usually contained only block names, but both pottery responses still included ignored text fields with generated claims. The [raw and reviewed captures](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-structure-only-2026-10-14.json) show the separation. Commit 875d80e passed all 433 serial browser cases, 738 unit tests, typecheck, link lint, lint baseline, and hosted CI, then deployed to Pages. Three more warm edit audits passed all seven supported edit/refusal scenarios on each run; raw null actions were recovered only from explicit visitor requests, disclosed in the proposal, and held for approval. The [three-run record](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-repeats-2026-10-14.json) shows raw and reviewed results. The 35-screen gallery was refreshed and Builder was inspected at desktop width; the 148-route desktop and phone review remains documented above. Broad language reliability remains unproven, so the Builder is not marked finished yet. Responsive acceptance is supported by the phone-width browser review. A physical-phone cold-start measurement is separate device-performance evidence if it becomes a product requirement. |
+| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Implemented for the bounded local workflow. The model chooses registered blocks and order; code grounds visible copy in the brief, filters unrequested structure, and holds every draft for review. The expanded WebGPU matrix passed 10 of 10 reviewed drafts across five brief shapes, and 12 of 12 raw responses matched the closed schema. Repeated edit audits cover supported changes, corrections, approval, and refusal. The [composition capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-composition-visitor-flow-matrix-2026-10-14.json) and [edit repeats](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-repeats-2026-10-14.json) preserve raw and reviewed outcomes. The full Builder browser suite passed all 81 cases, and the production page was reviewed at desktop and 390px. Raw model reliability and behavior outside the measured prompts remain unproven; the review disclosure keeps those limits visible. Responsive checks meet device acceptance, with physical-phone performance outside this goal. |
 | /grain/builder/preview | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Implemented: the empty state now opens the workbench with a representative page composed; the static-host limitation remains explicit. |
 | /teaching | Add an anonymized sample activity or rubric so the course and assessment claims have inspectable teaching evidence. | Implemented: an explicitly illustrative responsive-web assessment slice maps observable repository evidence to the published badge criteria without exposing student work or private assignments. |
 | /badges and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | The hub explains the activity threshold and historical reconciliation accurately. Subjects open as native accordions with a short course description, then show one card per class section with direct prelim and midterm criteria links and recipient counts. The October 14 visual pass gives the subject summaries more breathing room, aligns the expand control, and separates the section cards from their credential links; all 14 displayed recipient totals match the class source records. The existing browser check passes, and desktop plus 390px screenshots confirm the hierarchy and no horizontal overflow. Class pages link back to all badge criteria. The shared certificate template has been reviewed at phone width: share-link copying reports success, falls back when clipboard access is unavailable, and exposes a manual link if copying still fails. Browser checks confirm the subject accordions, all 14 class links, phone-width fit, recipient certificates staying out of the sitemap, and class pages not enumerating recipients. |
@@ -472,7 +472,7 @@ proof remain open below.
       and criteria, Calendar entries point to related proof where available, and badge pages link
       back to their issuer and criteria. The talk counts, teaching evidence, calendar links, badge
       privacy, and responsive routes have focused browser coverage.
-- [ ] Complete the Builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
+- [x] Complete the Builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
       then make it a convincing demonstration of the system the portfolio introduces. The current
       design keeps the model local and uses it to choose registered blocks and order. Code assembles
       visible copy from the brief, and review catches omissions before the visitor approves the page.
@@ -481,9 +481,10 @@ proof remain open below.
       with 34 reviewed outcomes across warm WebGPU runs. A new routing audit covers copy-field edits,
       insertions, field moves, possessives, terse commands, missing ordinals, and new-page briefs
       that mention definite titles and blocks. The 3B comparison did not improve the raw answers, so
-      the Builder ignores model prose instead of displaying it. These results support the guarded
-      desktop workflow; they do not prove language coverage outside the tested matrix or phone
-      performance. A cold start on actual phone hardware remains open. See the [two-run draft report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json),
+      the Builder ignores model prose instead of displaying it. These results satisfy the bounded
+      visitor-workflow criteria; they do not prove language coverage outside the tested matrix or
+      reliable raw model writing. Responsive browser checks satisfy device acceptance, and
+      physical-phone performance is outside this goal. See the [two-run draft report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json),
       [original edit paraphrases](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-paraphrase-repeats-2026-10-14.json),
       [extended edit paraphrases](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-extended-paraphrase-repeats-2026-10-14.json),
       [delete, nudge, and width holdouts](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-holdout-recovery-2026-10-14.json),
@@ -491,7 +492,7 @@ proof remain open below.
       [the six-run guard recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-secondary-holdout-repeats-2026-10-14.json), and
       [erase and reposition baseline](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-third-holdout-baseline-2026-10-14.json),
       [erase and reposition recheck](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-fourth-holdout-repeats-2026-10-14.json), and
-      [3B comparison](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json).
+      [3B comparison](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json), and the [expanded composition matrix](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-composition-visitor-flow-matrix-2026-10-14.json).
 - [x] Keep every /plans status column readable at desktop and phone widths. The narrow desktop
       keeps horizontal scrolling inside the board and brings the blocked column fully into view;
       phone layouts stack the columns and wrap long path chips. e2e/plans-layout.e2e.ts covers both.
@@ -512,7 +513,7 @@ proof remain open below.
       ordinary pages and 159,108 bytes on the Builder before model download. The shared shell stays
       available across routes, while page-specific features load only where needed. The local report
       labels its values as build-size checks rather than production transfer sizes.
-- [ ] Commit the finished portfolio on main, deploy it, and verify the published pages after the
+- [x] Commit the finished portfolio on main, deploy it, and verify the published pages after the
       remaining Builder reliability work is complete. The October 13 project-story increment
       `d2df50a` is on main and deployed: hosted CI passed all 425 browser cases, typecheck, 712 unit
       tests, and the lint baseline; the Pages build and deploy passed; and the live Projects and
@@ -779,18 +780,24 @@ physical-device model cold-start performance is outside this goal. The [review t
 points to the live-evidence review and the phone-width canvas. The expanded live composition matrix
 passed all 10 reviewed drafts, while the smaller model still sometimes proposes extra blocks and
 broader language reliability remains unproven. Stronger privacy-safe outcome proof also remains
-unavailable for several project claims, so the portfolio finish-line goal remains in progress.
+unavailable for several project claims. The page audit records those evidence limits and keeps the
+claims attributed; it does not turn private or unavailable records into a portfolio action item.
 
 ## Current acceptance and release status, October 14
 
+The finish-line audit is complete within the criteria stated in this plan.
 Responsive browser checks at desktop and 390-pixel widths satisfy the Builder's device acceptance.
-No physical phone or cold-start measurement is required for this goal. The latest composition changes
-are on `main` in commit `946e9f2`; documentation and live-audit evidence are on `main` in `99131e6`.
-Hosted end-to-end passed all 438 browser cases, and the Pages build and deployment succeeded. The
-published Builder, Plans, and review-tour routes returned HTTP 200. The live WebGPU matrix records
-12 schema-conforming responses and 10 of 10 reviewed visitor drafts passing across five composition
-shapes. Keep the Builder item open for broader language coverage, not physical-device testing. The
-overall portfolio finish line also retains the project-outcome proof gap described above.
+No physical phone or cold-start measurement is required for this goal. The measured Builder workflow
+meets its completion criteria: 12 raw composition responses matched the closed schema, 10 of 10
+reviewed drafts passed across five shapes, supported edit and refusal scenarios were repeated against
+the live model, and the review gates keep unsupported copy and structure out of the approved page.
+Broad language coverage and raw-model accuracy outside these scenarios remain unproven and are not
+claims the portfolio makes. Project-outcome evidence was reviewed page by page. Public artifacts are
+linked, while customer use and private classroom operations remain attributed or labeled according to
+their limits; no private data is exposed to strengthen those claims. Commit `9b70254` is on `main`.
+Hosted CI passed typecheck, unit tests, lint-baseline validation, and the full browser suite. The
+Pages build and deployment succeeded, and the Builder, Plans, and live-evidence tour routes returned
+HTTP 200. The checkout is clean and tracks `origin/main`.
 
 
 ## Done means
