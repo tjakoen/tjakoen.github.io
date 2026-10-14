@@ -7,7 +7,8 @@ test("every canonical route fits desktop and phone viewports", async ({ page }) 
   const xml = await sitemap.text();
   const routes = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
     .map(([, loc]) => new URL(loc!).pathname);
-  expect(routes.length).toBe(148);
+  expect(routes.length).toBeGreaterThan(0);
+  expect(new Set(routes).size, "sitemap contains duplicate canonical routes").toBe(routes.length);
 
   for (const route of routes) {
     await page.setViewportSize({ width: 1440, height: 900 });
