@@ -209,6 +209,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-drop-erase-final", page: "/grain/builder", ask: "erase the final card",
     builder: { wantIds: ["b1", "b2", "b3"] },
     mustMention: [["b4"]] },
+  { id: "builder-drop-could-you", page: "/grain/builder", ask: "Could you remove the second card, please?",
+    builder: { wantIds: ["b1", "b2", "b3"] },
+    mustMention: [["b4"]] },
   // The control, and it is the one that tells you WHICH thing is broken. "the second card" asks the
   // model to resolve a reference and then use the vocabulary; "drop b4" asks only for the second.
   // A page that fails both is failing at the vocabulary, and no amount of better referring language
@@ -234,6 +237,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-span-id", page: "/grain/builder", ask: "make b2 full width",
     builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b2: "full" } },
     mustMention: [["b2"]] },
+  { id: "builder-span-intro-half", page: "/grain/builder", ask: "Set the intro to half width.",
+    builder: { wantIds: ["b1", "b2", "b3", "b4"], wantSpans: { b1: "half" } },
+    mustMention: [["b1"]] },
   { id: "builder-move", page: "/grain/builder", ask: "move the callout up",
     builder: { wantIds: ["b1", "b3", "b2", "b4"] },
     mustMention: [["b3"]] },
@@ -249,6 +255,9 @@ const SCENARIOS: Scenario[] = [
   { id: "builder-move-id", page: "/grain/builder", ask: "move b3 up",
     builder: { wantIds: ["b1", "b3", "b2", "b4"] },
     mustMention: [["b3"]] },
+  { id: "builder-move-after-second-card", page: "/grain/builder", ask: "Put the callout after the second card.",
+    builder: { wantIds: ["b1", "b2", "b4", "b3"] },
+    mustMention: [["b3"]] },
   // The reply-without-acting case, which is a first-class answer rather than a failure: there is no
   // verb that rewrites what a block says. Graded on the canvas NOT moving, because the way a small
   // model gets this wrong is to reach for a verb anyway and remove the thing it was asked about.
@@ -259,6 +268,9 @@ const SCENARIOS: Scenario[] = [
   // leaves the canvas exactly as still as the right answer does. "The desk had nothing to change" and
   // "the desk tried something illegal" are opposite outcomes that look identical to a canvas grader.
   { id: "builder-no-verb", page: "/grain/builder", ask: "the card should mention pricing",
+    builder: { wantIds: ["b1", "b2", "b3", "b4"] },
+    mustNotMention: ["will not work here", "does not edit a block"] },
+  { id: "builder-negative-delete", page: "/grain/builder", ask: "Do not remove the callout.",
     builder: { wantIds: ["b1", "b2", "b3", "b4"] },
     mustNotMention: ["will not work here", "does not edit a block"] },
   { id: "builder-draft", page: "/grain/builder",

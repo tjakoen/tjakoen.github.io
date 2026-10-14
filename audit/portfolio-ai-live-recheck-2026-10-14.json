@@ -1,0 +1,1806 @@
+{
+  "label": "portfolio-ai-recheck-2026-10-14",
+  "base": "http://localhost:3131",
+  "model": "mixed: Qwen2.5-0.5B-Instruct-q4f16_1-MLC, Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "passed": 58,
+  "failed": 0,
+  "notRun": 0,
+  "total": 58,
+  "results": [
+    {
+      "id": "bread-stack",
+      "ask": "What is the BREAD stack?",
+      "page": "/",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskThe BREAD stack is TJ's personal software stack, consisting of four layers: BATCH, GRAIN, MILL, and PROOF.Read more: How to: install the BREAD stack packages",
+      "endPath": "/",
+      "ms": 10108,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "who-is-tj",
+      "ask": "Who is TJ?",
+      "page": "/",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskTJ is a Filipino-Dutch software engineering leader, teacher, and manager. He leads 15 to 25 engineers and product specialists at Career Team, teaches college-level software engineering to 150 to 300 students a term at Holy Angel University, and has completed one year in the classroom.",
+      "endPath": "/",
+      "ms": 5251,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "grain-built",
+      "ask": "What did TJ build with grain?",
+      "page": "/grain",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskTJ built the AI interface with grain, which is the GRAIN action vocabulary contract.Read more: AI ↔ UI Interface — the GRAIN action vocabulary contract",
+      "endPath": "/grain",
+      "ms": 7980,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "how-desk-works",
+      "ask": "How do you work under the hood?",
+      "page": "/",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskThe shared desk uses Qwen 0.5B, downloaded once and run entirely in your browser on your own device through WebGPU. The Builder can use Qwen 1.5B on devices that pass its conservative capability check; other devices keep the 0.5B model. Nothing you type leaves your machine: there is no server behind either path.",
+      "endPath": "/",
+      "ms": 5682,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "cap-freeform",
+      "ask": "What are you able to do for me on this site?",
+      "page": "/grain",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere's what I can do from GRAIN · an AI-interaction design system: summarize this page, point you to the part of the site that covers something specific, read back the memories you saved on your notepad, remember something you tell me, on your notepad, filter the notes by topic, switch the site's theme, drive the site itself, step by step, so you can watch, build a form live from a plain description, open the latest note, walk you through the site on a guided tour or take you to any page on this site — just ask. Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.",
+      "endPath": "/grain",
+      "ms": 6513,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "cap-interactive",
+      "ask": "Show me something interactive here",
+      "page": "/grain",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskThat's me — one AI driving the whole site through the same door you use. Ask me anything.",
+      "endPath": "/mail",
+      "ms": 19401,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "cap-pages",
+      "ask": "Which pages can you take me to?",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere's what I can do from Welcome · TJ's Desk: summarize this page, point you to the part of the site that covers something specific, read back the memories you saved on your notepad, remember something you tell me, on your notepad, filter the notes by topic, switch the site's theme, drive the site itself, step by step, so you can watch, build a form live from a plain description, open the latest note, walk you through the site on a guided tour or take you to any page on this site — just ask. Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.",
+      "endPath": "/",
+      "ms": 6465,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "note-write",
+      "ask": "Jot down that the grain demo looks really promising",
+      "page": "/grain",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskAdded that to your notepad.",
+      "endPath": "/grain",
+      "ms": 12781,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "summarize",
+      "ask": "Summarize this page",
+      "page": "/notes",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskThe featured note is “Ten Times Zero Is Still Zero.” Its summary says: How I actually work with AI, and why it holds up. AI is a multiplier, not an addend; it multiplies what you already are, and ten times zero is still zero, so I made sure I wasn't zero first. Then the receipt, pulled from this portfolio's own git history: a snapshot on 2026-08-22 counted 503 commits, each co-authored with an AI. Professional vibe coding is the human writing the rails and the AI writing much of the code inside them. Includes the playbook, the context and loop engineering underneath it, what to check before anything counts as done, and where to start if you are early.",
+      "endPath": "/notes",
+      "ms": 5663,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "nav-fuzzy-mill",
+      "ask": "I want to read the mill documentation",
+      "page": "/",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere's Docs.",
+      "endPath": "/mill/docs",
+      "ms": 4438,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "nav-det",
+      "ask": "take me to the notes",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere's Notes.",
+      "endPath": "/notes",
+      "ms": 4093,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "flagship-det",
+      "ask": "take me to the flagship note",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere's the flagship note, “Ten Times Zero Is Still Zero”.",
+      "endPath": "/notes/ten-times-zero",
+      "ms": 4147,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "cap-det",
+      "ask": "What can I do here?",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere's what I can do from Welcome · TJ's Desk: summarize this page, point you to the part of the site that covers something specific, read back the memories you saved on your notepad, remember something you tell me, on your notepad, filter the notes by topic, switch the site's theme, drive the site itself, step by step, so you can watch, build a form live from a plain description, open the latest note, walk you through the site on a guided tour or take you to any page on this site — just ask. Ask me, or tap a chip below. I answer here and narrate my steps in the terminal.",
+      "endPath": "/",
+      "ms": 6459,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "deep-link-det",
+      "ask": "show me the part about the QR scanner",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere's the part about “So I built a scanner”, from “The Console I Built to Stop Drowning”.",
+      "endPath": "/notes/the-console-i-built-to-stop-drowning",
+      "ms": 4486,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "theme-det",
+      "ask": "switch to brioche",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskYou're already on brioche.",
+      "endPath": "/",
+      "ms": 3637,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "notes-filter-det",
+      "ask": "show me notes about teaching",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere are the notes tagged teaching.",
+      "endPath": "/notes",
+      "ms": 4095,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "mail-archive-det",
+      "ask": "archive everything from BREAD CI",
+      "page": "/mail",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskArchived 3 letters from BREAD CI. They're in the Archive folder now.",
+      "endPath": "/mail",
+      "ms": 5658,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "contact-det",
+      "ask": "tell TJ I want to talk about grain",
+      "page": "/mail",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskDrafted your message in the compose panel — read it over, edit anything, and hit Send. Sending stays yours.",
+      "endPath": "/mail",
+      "ms": 5249,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "form-build-det",
+      "ask": "build me a form that asks for a name, an email and what they want to talk about",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHere's the form.",
+      "endPath": "/grain/builder",
+      "ms": 4025,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "intent-det",
+      "ask": "hi",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskHey! Who's visiting today? Pick one and I'll tailor the tour — or just keep chatting.Recruiter or hiringDeveloper curious about the stackStudent of TJ's",
+      "endPath": "/",
+      "ms": 3643,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "memory-det",
+      "ask": "remember I'm here about grain",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskNoted on your pad — it's yours to edit or remove.",
+      "endPath": "/",
+      "ms": 3638,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "memory-read",
+      "ask": "what do you know about me?",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskI have this saved from what you told me: “I'm here about grain”. It's on your notepad, where you can edit or remove it.",
+      "endPath": "/",
+      "ms": 4056,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-drop",
+      "ask": "drop the second card",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Drop b4.",
+      "endPath": "/grain/builder",
+      "ms": 15134,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\ndrop the second card\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-drop-paraphrase",
+      "ask": "get rid of the final card",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Drop b4.",
+      "endPath": "/grain/builder",
+      "ms": 12572,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nget rid of the final card\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-drop-take-out",
+      "ask": "take out the callout",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Drop b3.",
+      "endPath": "/grain/builder",
+      "ms": 12567,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\ntake out the callout\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-drop-discard",
+      "ask": "discard the final card",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Drop b4.",
+      "endPath": "/grain/builder",
+      "ms": 12296,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\ndiscard the final card\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-drop-delete-intro",
+      "ask": "delete the intro",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Drop b1.",
+      "endPath": "/grain/builder",
+      "ms": 12436,
+      "canvas": [
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\ndelete the intro\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-drop-erase-final",
+      "ask": "erase the final card",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Drop b4.",
+      "endPath": "/grain/builder",
+      "ms": 12330,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nerase the final card\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-drop-could-you",
+      "ask": "Could you remove the second card, please?",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Drop b4.",
+      "endPath": "/grain/builder",
+      "ms": 12369,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nCould you remove the second card, please?\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-bare-id",
+      "ask": "drop b4",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Drop b4.",
+      "endPath": "/grain/builder",
+      "ms": 12383,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\ndrop b4\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-span",
+      "ask": "make the callout full width",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Set b3 to full width.",
+      "endPath": "/grain/builder",
+      "ms": 13772,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "full"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nmake the callout full width\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": \"block.span\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-span-paraphrase",
+      "ask": "let the callout span the whole row",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Set b3 to full width.",
+      "endPath": "/grain/builder",
+      "ms": 14164,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "full"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nlet the callout span the whole row\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-span-fill-row",
+      "ask": "let the callout fill the whole row",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Set b3 to full width.",
+      "endPath": "/grain/builder",
+      "ms": 12716,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "full"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nlet the callout fill the whole row\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-span-stretch-width",
+      "ask": "stretch the callout to full width",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Set b3 to full width.",
+      "endPath": "/grain/builder",
+      "ms": 12966,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "full"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nstretch the callout to full width\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": \"block.span\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-span-shrink-third",
+      "ask": "shrink the callout to a third width",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Set b3 to third width.",
+      "endPath": "/grain/builder",
+      "ms": 12983,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "third"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nshrink the callout to a third width\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-span-id",
+      "ask": "make b2 full width",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Set b2 to full width.",
+      "endPath": "/grain/builder",
+      "ms": 12417,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "full"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nmake b2 full width\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"span\": \"full\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-span-intro-half",
+      "ask": "Set the intro to half width.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Set b1 to half width.",
+      "endPath": "/grain/builder",
+      "ms": 12960,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nSet the intro to half width.\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": \"block.span\",\n  \"target\": \"b2\",\n  \"payload\": {\n    \"span\": \"half\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-move",
+      "ask": "move the callout up",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Move b3 up.",
+      "endPath": "/grain/builder",
+      "ms": 12433,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nmove the callout up\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-move-shift",
+      "ask": "shift the callout up",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Move b3 up.",
+      "endPath": "/grain/builder",
+      "ms": 12781,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nshift the callout up\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": \"block.move\",\n  \"target\": \"b3\",\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-move-nudge",
+      "ask": "nudge the callout down one step",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Move b3 down.",
+      "endPath": "/grain/builder",
+      "ms": 12324,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nnudge the callout down one step\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-move-reposition",
+      "ask": "reposition the callout down one step",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Move b3 down.",
+      "endPath": "/grain/builder",
+      "ms": 13977,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nreposition the callout down one step\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-move-id",
+      "ask": "move b3 up",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Move b3 up.",
+      "endPath": "/grain/builder",
+      "ms": 15937,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nmove b3 up\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"up\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-move-after-second-card",
+      "ask": "Put the callout after the second card.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Applied: Move b3 down.",
+      "endPath": "/grain/builder",
+      "ms": 14910,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nPut the callout after the second card.\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-no-verb",
+      "ask": "the card should mention pricing",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "This builder cannot revise block copy yet, so nothing changed. Use the block controls to move, resize, or remove a block.",
+      "endPath": "/grain/builder",
+      "ms": 2885,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "",
+        "raw": ""
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-negative-delete",
+      "ask": "Do not remove the callout.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "The desk answered without a change and without anything to say, so nothing moved.",
+      "endPath": "/grain/builder",
+      "ms": 10052,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        },
+        {
+          "id": "b3",
+          "span": "half"
+        },
+        {
+          "id": "b4",
+          "span": "half"
+        }
+      ],
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "You operate a UI through ONE door: you may only choose from the vocabulary below. Every surface is addressed by a stable id; every verb lists the payload it needs and behaviour hints (read-only / destructive / idempotent). Read `in view` for the current state before deciding. Choose EXACTLY ONE move: either act (pick an action + a target that accepts it + its payload), or reply without acting (action: null). Never invent a verb, a target, or a field that isn't listed.\n\n# What's operable right now\nscreen: builder\nactions: (3)\n- block.remove [light] (no args) — Drop one block from the composed page. The page keeps every other block's id, so a later verb still names what it means. {destructive, idempotent}\n- block.span [light] (span*:string (one of: full, half, third)) — Set how wide one block sits: full, half or third. The whole layout vocabulary, and there is no fourth word. {idempotent}\n- block.move [light] (direction*:string (one of: up, down)) — Move one block one place earlier or later in the page. Clamped at the ends rather than wrapped.\ntargets: (4)\n- block:b1 [block] -> block.remove, block.span, block.move\n- block:b2 [block] -> block.remove, block.span, block.move\n- block:b3 [block] -> block.remove, block.span, block.move\n- block:b4 [block] -> block.remove, block.span, block.move\n\n# The human's message\nDo not remove the callout.\n\n(You are editing a page that is already built. The blocks from top to bottom are:\nb1 (intro paragraph), b2 (first card), b3 (callout), b4 (second card). The only action names are block.remove, block.span and block.move.\nTreat an explicit block ID, ordinal or component name in the request as the target. Never substitute another block.\nIf the requested target is unclear or is not in this list, reply without acting.\nUse the full action name, not a shortened word such as move.\nblock.remove drops its target. block.span takes span: full, half or third.\nblock.move takes direction: up or down. Each action targets exactly one listed block.\nIf the request cannot be done with these actions, reply without acting and use action: null.)\n\n# Your response\nRespond with ONLY a JSON object, no prose, no code fence:\n{\"action\": \"<verb or null>\", \"target\": \"<surface id or omit>\", \"payload\": { /* the verb's fields, or omit */ }, \"reply\": \"<optional message to the human>\"}",
+        "raw": "{\n  \"action\": null,\n  \"target\": null,\n  \"payload\": {\n    \"direction\": \"down\"\n  }\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft",
+      "ask": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 13105,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery is a neighborhood bakery in Utrecht.",
+        "Sourdough",
+        "baked fresh each morning"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery is a neighborhood bakery in Utrecht."
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Sourdough"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "baked fresh each morning"
+        }
+      ],
+      "draftBlockNames": [
+        "lede",
+        "card"
+      ],
+      "draftEvidence": "The model's 3 unrequested blocks were removed. The Builder composed 3 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery is a neighborhood bakery in Utrecht.”.",
+        "This field uses wording from your brief: “Sourdough”.",
+        "This field uses wording from your brief: “baked fresh each morning”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a landing page for Hearth Bakery in Utrecht. Add an intro that says it is a neighborhood bakery, then a card titled Sourdough with the words baked fresh each morning.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"stat\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-bike-shop",
+      "ask": "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 11909,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Northstar Bike Repair is a family-run bike repair shop in Malmö.",
+        "Tune-up",
+        "ready for the next ride"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Northstar Bike Repair is a family-run bike repair shop in Malmö."
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Tune-up"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "ready for the next ride"
+        }
+      ],
+      "draftBlockNames": [
+        "lede",
+        "card"
+      ],
+      "draftEvidence": "The model's 2 unrequested blocks were removed. The Builder composed 3 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Northstar Bike Repair is a family-run bike repair shop in Malmö.”.",
+        "This field uses wording from your brief: “Tune-up”.",
+        "This field uses wording from your brief: “ready for the next ride”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Northstar Bike Repair in Malmö. Add an intro that says it is a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-intro-for",
+      "ask": "Build a page for Northstar Bike Repair in Malmö. Add an intro for a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 11848,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Northstar Bike Repair is a family-run bike repair shop in Malmö.",
+        "Tune-up",
+        "ready for the next ride"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Northstar Bike Repair is a family-run bike repair shop in Malmö."
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Tune-up"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "ready for the next ride"
+        }
+      ],
+      "draftBlockNames": [
+        "lede",
+        "card"
+      ],
+      "draftEvidence": "The model's 2 unrequested blocks were removed. The Builder composed 3 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Northstar Bike Repair is a family-run bike repair shop in Malmö.”.",
+        "This field uses wording from your brief: “Tune-up”.",
+        "This field uses wording from your brief: “ready for the next ride”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Northstar Bike Repair in Malmö. Add an intro for a family-run bike repair shop, then a card titled Tune-up with the words ready for the next ride.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-negative-anchors",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 10746,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery in Utrecht welcomes neighbors."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery in Utrecht welcomes neighbors."
+        }
+      ],
+      "draftBlockNames": [
+        "lede"
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery in Utrecht welcomes neighbors.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-single-card",
+      "ask": "Build a page for Alder Books in Ghent. Add one card titled Used books with the phrase good stories find new readers.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 11586,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Used books",
+        "Alder Books · Ghent · good stories find new readers"
+      ],
+      "draftFields": [
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Used books"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "Alder Books · Ghent · good stories find new readers"
+        }
+      ],
+      "draftBlockNames": [
+        "card"
+      ],
+      "draftEvidence": "The model's 2 unrequested blocks were removed. The Builder composed 2 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "This field uses wording from your brief: “Used books”.",
+        "The Builder composed this field from details in your brief: “Alder Books · Ghent · good stories find new readers”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Alder Books in Ghent. Add one card titled Used books with the phrase good stories find new readers.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-prohibited-card",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Add an intro that welcomes neighbors and a callout that says Open daily, but do not include a card.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede and callout after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 11123,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery in Utrecht welcomes neighbors.",
+        "Open daily"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery in Utrecht welcomes neighbors."
+        },
+        {
+          "block": "callout",
+          "field": "body",
+          "value": "Open daily"
+        }
+      ],
+      "draftBlockNames": [
+        "lede",
+        "callout"
+      ],
+      "draftEvidence": "The Builder composed 2 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery in Utrecht welcomes neighbors.”.",
+        "This field uses wording from your brief: “Open daily”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Add an intro that welcomes neighbors and a callout that says Open daily, but do not include a card.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"callout\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-callout-only",
+      "ask": "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added callout after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 10812,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Common Ground · Bristol · Open studio this Saturday"
+      ],
+      "draftFields": [
+        {
+          "block": "callout",
+          "field": "body",
+          "value": "Common Ground · Bristol · Open studio this Saturday"
+        }
+      ],
+      "draftBlockNames": [
+        "callout"
+      ],
+      "draftEvidence": "The model's 1 unrequested block was removed. The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Common Ground · Bristol · Open studio this Saturday”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"callout\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-announcement-alias",
+      "ask": "Build a page for Common Ground in Bristol. Add an introduction that welcomes neighbors, then include an announcement that says Open studio this Saturday.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede and callout after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 13715,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Common Ground in Bristol welcomes neighbors.",
+        "Open studio this Saturday"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Common Ground in Bristol welcomes neighbors."
+        },
+        {
+          "block": "callout",
+          "field": "body",
+          "value": "Open studio this Saturday"
+        }
+      ],
+      "draftBlockNames": [
+        "lede",
+        "callout"
+      ],
+      "draftEvidence": "The model's 3 unrequested blocks were removed. The Builder composed 2 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Common Ground in Bristol welcomes neighbors.”.",
+        "This field uses wording from your brief: “Open studio this Saturday”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Common Ground in Bristol. Add an introduction that welcomes neighbors, then include an announcement that says Open studio this Saturday.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"stat\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-get-in-touch-alias",
+      "ask": "Build a page for Common Ground in Bristol. Add an intro that welcomes neighbors, then let visitors get in touch with their name and email.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede and form after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 12206,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Common Ground in Bristol welcomes neighbors."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Common Ground in Bristol welcomes neighbors."
+        }
+      ],
+      "draftBlockNames": [
+        "lede",
+        "form"
+      ],
+      "draftEvidence": "The model's 2 unrequested blocks were removed. The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Common Ground in Bristol welcomes neighbors.”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Common Ground in Bristol. Add an intro that welcomes neighbors, then let visitors get in touch with their name and email.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-two-cards",
+      "ask": "Make a page for Tide Coffee in Cebu with two cards: one titled Espresso with the words chocolate and orange, and one titled Filter with the words floral and bright.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added card and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 13714,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Espresso",
+        "Tide Coffee · Cebu · chocolate and orange",
+        "Filter",
+        "floral and bright"
+      ],
+      "draftFields": [
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Espresso"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "Tide Coffee · Cebu · chocolate and orange"
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Filter"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "floral and bright"
+        }
+      ],
+      "draftBlockNames": [
+        "card",
+        "card"
+      ],
+      "draftEvidence": "The model's 3 unrequested blocks were removed. The Builder composed 4 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "This field uses wording from your brief: “Espresso”.",
+        "The Builder composed this field from details in your brief: “Tide Coffee · Cebu · chocolate and orange”.",
+        "This field uses wording from your brief: “Filter”.",
+        "This field uses wording from your brief: “floral and bright”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Make a page for Tide Coffee in Cebu with two cards: one titled Espresso with the words chocolate and orange, and one titled Filter with the words floral and bright.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-mixed-prohibitions",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 11364,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery is a neighborhood bakery in Utrecht."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery is a neighborhood bakery in Utrecht."
+        }
+      ],
+      "draftBlockNames": [
+        "lede"
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery is a neighborhood bakery in Utrecht.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-pottery-studio",
+      "ask": "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "modelProfile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+      "reply": "Added lede and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 12972,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Juniper Studio is an independent pottery studio in Toronto.",
+        "Weekend workshop",
+        "hand-built pieces for everyday use"
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Juniper Studio is an independent pottery studio in Toronto."
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Weekend workshop"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "hand-built pieces for everyday use"
+        }
+      ],
+      "draftBlockNames": [
+        "lede",
+        "card"
+      ],
+      "draftEvidence": "The model's 3 unrequested blocks were removed. The Builder composed 3 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Juniper Studio is an independent pottery studio in Toronto.”.",
+        "This field uses wording from your brief: “Weekend workshop”.",
+        "This field uses wording from your brief: “hand-built pieces for everyday use”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"stat\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "tour-det",
+      "ask": "take the tour",
+      "page": "/",
+      "deterministic": true,
+      "modelProfile": "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+      "reply": "DeskSecond stop: GRAIN, the AI-interaction design system this desk itself runs on. Every surface here can be run by a person or by an AI through the same door.",
+      "endPath": "/grain",
+      "ms": 4437,
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    }
+  ]
+}

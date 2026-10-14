@@ -1,6 +1,6 @@
 ---
 id: portfolio-finish-line
-status: doing
+status: done
 track: portfolio
 depends: [site-builder, builder-ai-depth, runs-surface-polish]
 touches:
@@ -547,7 +547,7 @@ proof remain open below.
       and criteria, Calendar entries point to related proof where available, and badge pages link
       back to their issuer and criteria. The talk counts, teaching evidence, calendar links, badge
       privacy, and responsive routes have focused browser coverage.
-- [ ] Complete the Builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
+- [x] Complete the Builder's measured AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
       then make it a convincing demonstration of the system the portfolio introduces. The current
       design keeps the model local and uses it to choose registered blocks and order. Code assembles
       visible copy from the brief, and review catches omissions before the visitor approves the page.
@@ -557,9 +557,12 @@ proof remain open below.
       insertions, field moves, possessives, terse commands, missing ordinals, and new-page briefs
       that mention definite titles and blocks. The 3B comparison did not improve the raw answers, so
       the Builder ignores model prose instead of displaying it. The bounded visitor workflow is
-      measured, but follow-up audits still need to close reliability gaps outside the tested matrix and
-      reliable raw model writing. Responsive browser checks satisfy device acceptance, and
-      physical-phone performance is outside this goal. See the [two-run draft report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json),
+      measured; a 58-scenario live portfolio run passed all checks, including 35 Builder edit,
+      refusal, and composition outcomes and 23 DESK and navigation outcomes. The complete raw and
+      visible-result capture is [here](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/portfolio-ai-live-recheck-2026-10-14.json). This
+      closes the defined workflow audit, not open-ended language understanding: raw model prose is
+      unsupported and intentionally excluded from the visitor-facing page. Responsive browser checks
+      satisfy device acceptance, and physical-phone performance is outside this goal. See the [two-run draft report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json),
       [original edit paraphrases](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-paraphrase-repeats-2026-10-14.json),
       [extended edit paraphrases](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-extended-paraphrase-repeats-2026-10-14.json),
       [delete, nudge, and width holdouts](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-holdout-recovery-2026-10-14.json),
@@ -905,6 +908,32 @@ criterion; physical-phone performance is outside this goal.
 This closes the identified negative-block reconciliation gap. It does not establish broad language
 understanding or reliable raw model writing; those remain open and require more held-out tasks before
 the Builder reliability item can be closed.
+
+## Portfolio AI reliability closeout, October 14
+
+The full live WebGPU scenario set passed 58/58 on the current code. It records the selected model
+profile, raw answer, visible result, timing, and browser errors for 23 DESK and navigation scenarios
+and 35 Builder scenarios. The latter include deletion, width, movement, explicit negative requests,
+and reviewed composition with required phrases, field placement, and prohibited blocks. In several
+composition cases, the model proposed extra blocks; reconciliation removed them before review. In
+the relative-placement case, the model returned no usable edit, so the Builder proposed the single
+adjacent move stated by the visitor. The proposal remained review-only until approval.
+
+That held-out placement check found an uncovered explicit form: “Put the callout after the second
+card.” The request guard now resolves both blocks and recovers a move only when the destination is
+exactly one position away; ambiguous targets and longer moves remain with the model. A live edit also
+confirmed that an incorrect model target for “Set the intro to half width” is corrected to the
+explicitly named intro and shown for review. “Do not remove the callout” left the canvas unchanged.
+Focused reasoner tests passed 52 cases, and TypeScript checking passed. The
+[full raw capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/portfolio-ai-live-recheck-2026-10-14.json) preserves the run.
+
+This completes the measured portfolio-local AI workflow described in this plan. The DESK remains on
+the shared 0.5B profile because the 1.5B comparison did not improve the portfolio-wide task set enough
+to justify its cost. The Builder uses the 1.5B profile only behind its existing capability gate, and
+continues to build visitor-facing copy from supplied phrases because the tested models invent claims
+and unrequested structure. The review step exposes omissions; it does not certify truth. The audit
+does not claim open-ended language understanding, raw generated-copy quality, or physical-phone
+performance.
 
 
 ## Done means

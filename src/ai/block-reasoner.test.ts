@@ -303,6 +303,13 @@ describe("explicit target guard", () => {
     expect(blockIntentRecovery("do not slide the intro up", blocks, "No action.")).toBeNull();
   });
 
+  test("relative placement recovers a single adjacent move but refuses longer moves", () => {
+    expect(blockIntentRecovery("put the callout after the second card", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.move", surface: "block:b3", payload: { direction: "down" } });
+    expect(blockIntentRecovery("move the second card before the intro", blocks, "No action.")).toBeNull();
+    expect(blockIntentRecovery("do not put the callout after the second card", blocks, "No action.")).toBeNull();
+  });
+
   test("a full-row span paraphrase becomes a review-only full-width proposal", () => {
     expect(blockIntentRecovery("let the callout span the whole row", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.span", surface: "block:b3", payload: { span: "full" } });

@@ -326,6 +326,25 @@ function requestedEdit(
   // "can t", "shouldn't" -> "shouldn t"). Treat those as non-requests too: recovery must not
   // turn an explicit inability, prohibition, or avoided action into a proposal to perform it.
   if (/\b(?:do not|don t|can t|cannot|couldn t|shouldn t|wouldn t|won t|mustn t|mightn t|needn t|may not|might not|never|not|avoid|without)\b/.test(text)) return null;
+  const relativeMove = text.match(/\b(?:move|put|place|position)\s+(.+?)\s+(before|after)\s+(.+)/);
+  if (relativeMove) {
+    const source = requestedBlock(relativeMove[1]!, blocks);
+    const anchor = requestedBlock(relativeMove[3]!, blocks);
+    if (source?.kind !== "resolved" || anchor?.kind !== "resolved" || source.block.id === anchor.block.id)
+      return null;
+    const sourceIndex = blocks.findIndex((block) => (typeof block === "string" ? block : block.id) === source.block.id);
+    const anchorIndex = blocks.findIndex((block) => (typeof block === "string" ? block : block.id) === anchor.block.id);
+    const insertionIndex = anchorIndex + (relativeMove[2] === "after" ? 1 : 0);
+    const destinationIndex = sourceIndex < insertionIndex ? insertionIndex - 1 : insertionIndex;
+    // GRAIN exposes a one-step move. Do not translate a longer relocation into a misleading single
+    // step; leave it to the model's proposal when the requested destination is farther away.
+    if (sourceIndex < 0 || anchorIndex < 0 || Math.abs(destinationIndex - sourceIndex) !== 1) return null;
+    return {
+      action: "block.move",
+      payload: { direction: destinationIndex < sourceIndex ? "up" : "down" },
+      block: source.block,
+    };
+  }
   const actions: Array<{ action: BlockVerb; payload: Record<string, unknown> }> = [];
   if (/\b(drop|remove|delete|discard|erase|eliminate)\b|\bclear out\b|\bget rid of\b|\btake out\b|\btake away\b/.test(text)) {
     actions.push({ action: "block.remove", payload: {} });
