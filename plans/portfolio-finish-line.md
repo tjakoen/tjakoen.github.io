@@ -692,6 +692,21 @@ successfully, and the Builder and Plans routes returned HTTP 200. Qwen3 remains 
 the shipped model profile is unchanged. Physical-phone cold-start testing and broad language coverage
 remain open, so the finish-line goal stays in progress.
 
+## More bounded edit phrasings, October 14
+
+The recovery grammar missed “eliminate,” “clear out,” and “take away” for removal, “expand” and
+“narrow” for explicit widths, and “push” and “slide” for one-step moves. It now recognizes those
+words only when the request names one live block and one supported operation. Negative requests,
+ambiguous targets, and widths without an explicit supported value still do not recover into an edit.
+The full unit suite passed 827 tests across 45 files, including the 48 reasoner tests. All 80 Builder
+browser cases passed, and TypeScript checking passed. The browser cases verified that each recovered
+edit stays unchanged until the visitor approves it. This measures guarded request recovery, not the
+model's ability to understand those phrasings. A live preview attempt stayed at “Reading the
+page…” and returned no model result, so it did not add live evidence. Broader language coverage
+remains open. The [run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-edit-phrasing.md)
+records the test results and their limits. The cold-start measurement still requires a physical
+phone.
+
 ## Done means
 
 The home page gives a clear first read. The project stories and stack pages explain the work in plain

@@ -312,18 +312,18 @@ function requestedEdit(
   const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
   if (/\b(?:do not|don t|never|not|avoid|without)\b/.test(text)) return null;
   const actions: Array<{ action: BlockVerb; payload: Record<string, unknown> }> = [];
-  if (/\b(drop|remove|delete|discard|erase)\b|\bget rid of\b|\btake out\b/.test(text)) {
+  if (/\b(drop|remove|delete|discard|erase|eliminate)\b|\bclear out\b|\bget rid of\b|\btake out\b|\btake away\b/.test(text)) {
     actions.push({ action: "block.remove", payload: {} });
   }
 
   const span = text.match(/\b(full|half|third)\s+(?:width|span)\b/);
-  const fullRow = /\b(?:span|fill|use|take up)\s+(?:the\s+)?(?:full|whole|entire)\s+row\b/.test(text);
-  if ((span && /\b(make|set|change|resize|widen|shrink|reduce)\b/.test(text)) || fullRow) {
+  const fullRow = /\b(?:span|fill|use|take up|stretch)\s+(?:the\s+)?(?:full|whole|entire)\s+row\b/.test(text);
+  if ((span && /\b(make|set|change|resize|widen|shrink|reduce|expand|stretch|narrow)\b/.test(text)) || fullRow) {
     actions.push({ action: "block.span", payload: { span: fullRow ? "full" : span![1] } });
   }
 
   const direction = text.match(/\b(up|down)\b/);
-  if (direction && /\b(move|shift|nudge|reposition)\b/.test(text)) {
+  if (direction && /\b(move|shift|nudge|reposition|push|slide)\b/.test(text)) {
     actions.push({ action: "block.move", payload: { direction: direction[1] } });
   }
 
