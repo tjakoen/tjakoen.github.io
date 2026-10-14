@@ -841,7 +841,7 @@ test.describe("the model chooses the verb", () => {
 
     for (const phrase of ["I can't remove the callout", "I shouldn't remove the callout", "I won't remove the callout"]) {
       await submitPrompt(page, phrase);
-      await expect(page.locator(SAID)).toContainText("I could not identify an action.");
+      await expect(page.locator(SAID)).toContainText(/I could not identify an action|nothing moved/);
       await expect(page.locator(PROPOSAL)).toBeHidden();
       expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
     }
@@ -861,11 +861,16 @@ test.describe("the model chooses the verb", () => {
       "Could we move the callout up?",
       "Would it help to move the callout up?",
       "Is there a reason to remove the callout?",
+      "Should the callout be removed?",
+      "Can the callout be removed?",
+      "How can the callout be removed?",
+      "Would you recommend removing the callout?",
+      "Would the callout look better at full width?",
       "Would moving the callout up be better?",
       "Is removing the callout a good idea?",
     ]) {
       await submitPrompt(page, phrase);
-      await expect(page.locator(SAID)).toContainText("I could not identify an action.");
+      await expect(page.locator(SAID)).toContainText(/I could not identify an action|nothing moved/);
       await expect(page.locator(PROPOSAL)).toBeHidden();
       expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
     }

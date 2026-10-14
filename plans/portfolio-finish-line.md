@@ -722,7 +722,13 @@ preserving polite commands. The focused reasoner suite passed 51 tests, the full
 830 tests, and all 81 Builder browser cases passed. At 390 by 844, one browser check confirmed that
 three negated requests and sixteen questions create no proposal. Another returned valid remove, width,
 and move commands for six question-shaped prompts; the Builder refused every command and kept the
-canvas unchanged.
+canvas unchanged. A follow-up probe found five uncovered forms: passive permission questions such as
+“Can the callout be removed?” and recommendation questions such as “Would you recommend removing the
+callout?” The proposal-boundary guard now rejects these alongside “Should the callout be removed?”
+and “Would the callout look better at full width?” The reasoner suite passes all 51 cases, and the
+390 by 844 browser test confirms these additional questions create no proposal even when the model
+returns a valid command. This closes the identified question-form gaps, while broad natural-language
+reliability remains open.
 These scripted checks do not establish how the live model interprets these phrases, so broad
 natural-language reliability remains open. The 390px browser review satisfies responsive layout
 and visitor-flow acceptance. A physical-phone cold-start measurement is separate device-performance

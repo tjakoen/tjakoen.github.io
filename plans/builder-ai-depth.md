@@ -1104,3 +1104,14 @@ responsive layout and visitor-flow acceptance. Phone-specific model startup and 
 performance remain unmeasured and are separate evidence only if the portfolio sets a device-specific
 performance target. See the
 [run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-negated-modal-recovery.md).
+
+## Passive and recommendation question forms, October 14
+
+A follow-up probe found five gaps in the question guard: “Should the callout be removed?”, “Can the
+callout be removed?”, “How can the callout be removed?”, “Would you recommend removing the callout?”,
+and “Would the callout look better at full width?” The guard now catches these passive and
+recommendation forms at the proposal boundary. The reasoner suite passed all 51 cases, and the
+390 by 844 browser regression confirmed these questions produce no proposal even when the scripted
+model returns valid commands. This closes the identified question-form gaps. Broad natural-language
+reliability remains open because a scripted model cannot establish how the live model handles other
+wordings.
