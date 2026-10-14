@@ -39,12 +39,13 @@ const POSSESSIVE_COPY_REFERENCES = /\b(?:its|their|his|her)\s+(?:copy|text|wordi
 const COPY_FIELD = /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption|subtitle|subheading|kicker|eyebrow|cta|image|photo|picture|icon|button|link|url|description|tagline|bullet|quote|author|logo|video|media|line|details|hours|address|location|phone|email|background|color)\b/;
 const EXPLICIT_COPY_EDIT = /\b(?:rewrite|rephrase|shorten|lengthen|trim|tighten|polish|proofread|edit|revise|replace|update|change|improve)\b/;
 const COPY_QUALITY = /\b(?:shorter|longer|more concise|less wordy|clearer|more direct|friendlier|warmer|punchier|simpler|one line|two lines|single sentence)\b/;
+const COPY_FIELD_OPERATION = /\b(?:add|insert|put|set|fill|clear|remove|delete|discard|erase|drop|get rid of|move|shift|nudge|reposition|resize|stretch|shrink|reduce|change|edit|revise|replace|update|improve|turn|give|include)\b|\btake(?:\s+\w+){1,4}\s+(?:out|off)\b/;
 const BLOCK_REFERENCE = /(?:block|blocks|one|ones|lede|intro(?:duction)?|opening|standfirst|card|cards|tile|tiles|callout|callouts|aside|note|quote|stat|stats|statistic|kpi|metric|counter|form|forms|signup|b\d+)/;
 const COPY_BLOCK_QUALIFIER = "(?:(?:(?:the|that|this)\\s+)?(?:(?:first|second|third|fourth|fifth|sixth|last|final|b\\d+)\\s+)?)";
 
 function hasCopyBlockReference(text: string): boolean {
-  const fieldFromBlock = new RegExp(`${COPY_FIELD.source}(?:\\s+\\w+){0,4}\\s+(?:from|in|inside|within|of|on|off|out\\s+of|next\\s+to|around|for)\\s+(?:(?:the|that|this|first|second|third|fourth|fifth|sixth|last|final|[a-z0-9]+)\\s+){0,2}${BLOCK_REFERENCE.source}\\b`);
-  const fieldInsideBlock = new RegExp(`${COPY_BLOCK_QUALIFIER}${BLOCK_REFERENCE.source}(?:\\s+s)?\\s+(?:(?:background|text|image)\\s+)?${COPY_FIELD.source}`);
+  const fieldFromBlock = new RegExp(`${COPY_FIELD.source}(?:\\s+\\w+){0,4}\\s+(?:from|in|inside|within|of|on|off|out\\s+of|next\\s+to|around|for|to|into|onto)\\s+(?:(?:the|that|this|first|second|third|fourth|fifth|sixth|last|final|top|bottom|upper|lower|[a-z0-9]+)\\s+){0,2}${BLOCK_REFERENCE.source}\\b`);
+  const fieldInsideBlock = new RegExp(`${COPY_BLOCK_QUALIFIER}${BLOCK_REFERENCE.source}(?:\\s+s)?(?:\\s+(?:a|an|the|new|clearer|shorter|longer|more|less|concise|direct|friendly|warmer|punchier|simpler|background|text|image)){0,3}\\s+${COPY_FIELD.source}`);
   return fieldFromBlock.test(text) || fieldInsideBlock.test(text) || POSSESSIVE_COPY_REFERENCES.test(text);
 }
 
@@ -118,7 +119,6 @@ export function isCopyEditRequest(prompt: string): boolean {
   // can send that sentence to a model which only knows how to remove, resize or move whole blocks.
   // Require a copy-bearing noun before a preposition that introduces a block reference, so ordinary
   // requests such as “remove the card from the page” remain structural edits.
-  const operation = /\b(?:remove|delete|discard|erase|drop|get rid of|move|shift|nudge|reposition)\b|\btake(?:\s+\w+){1,4}\s+(?:out|off)\b/;
-  if (!operation.test(text)) return false;
+  if (!COPY_FIELD_OPERATION.test(text)) return false;
   return hasCopyBlockReference(text);
 }
