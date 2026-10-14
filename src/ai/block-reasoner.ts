@@ -302,7 +302,7 @@ interface RequestedEdit {
   block: BlockDescription;
 }
 
-const BLOCK_EDIT_QUESTION = /\b(?:should (?:i|we)\b|(?:can|could|may|would) (?:i|we)\b|do you think\b|would it be better\b|would it (?:help|make sense)\b|is it better\b|is there (?:a|any) reason\b|(?:is|are|was|were|would|could|should) (?:removing|deleting|moving|shifting|resizing|expanding|shrinking)\b|what if\b|what happens if\b|what would happen if\b|how\b.*\bif\b|(?:can|could) you (?:tell|explain|show)\b|do you know\b|i wonder if\b|whether (?:i|we) (?:should|could|can|would)\b|how (?:can|could|do|would|should) (?:i|we)\b)/;
+const BLOCK_EDIT_QUESTION = /\b(?:should (?:i|we)\b|(?:can|could|may|would) (?:i|we)\b|do you think\b|would it be better\b|would it (?:help|make sense)\b|would you (?:recommend|suggest)\b|would (?:the|this|that|it)\b.{0,60}\b(?:better|help|make sense)\b|is it better\b|is there (?:a|any) reason\b|(?:is|are|was|were|would|could|should) (?:removing|deleting|moving|shifting|resizing|expanding|shrinking)\b|(?:should|can|could|would|may)\b.{0,60}\b(?:be removed|be deleted|be moved|be shifted|be resized|be expanded|be shrunk|be widened|be narrowed)\b|what if\b|what happens if\b|what would happen if\b|how\b.*\bif\b|(?:can|could) you (?:tell|explain|show)\b|do you know\b|i wonder if\b|whether (?:i|we) (?:should|could|can|would)\b|how (?:can|could|do|would|should) (?:i|we)\b|how (?:can|could|would|should) (?:the|this|that|it)\b.{0,60}\b(?:be removed|be deleted|be moved|be shifted|be resized|be expanded|be shrunk|be widened|be narrowed)\b)/;
 
 /** Question-shaped requests need an answer, not an edit proposal. */
 export function isBlockEditQuestion(message: string): boolean {

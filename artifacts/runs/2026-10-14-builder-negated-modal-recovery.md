@@ -65,3 +65,12 @@ remove, width, and move commands for six question-shaped prompts; the Builder re
 and keeps the canvas unchanged. The focused reasoner suite passed 51 tests, all 830 unit tests passed across 45
 files, all 81 Builder browser cases passed, and TypeScript checking passed. This verifies the guarded visitor flow. It does not establish how the live model interprets the
 questions or close the broader natural-language reliability gap.
+
+## Passive and recommendation question regression
+
+A follow-up probe found passive and recommendation questions that were not covered by the previous
+guard. The guard now refuses “Should the callout be removed?”, “Can the callout be removed?”, “How
+can the callout be removed?”, “Would you recommend removing the callout?”, and “Would the callout
+look better at full width?” The focused reasoner suite passed 51 tests. The 390 by 844 Builder browser
+case passed with all five prompts, a scripted model returning valid commands, no proposal shown, and
+the canvas unchanged. The repo-wide tests and hosted deployment are not yet rerun for this follow-up.
