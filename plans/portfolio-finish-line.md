@@ -744,8 +744,15 @@ drafts passed review. In the two intro-only exclusion cases, the raw model still
 card; the reconciler removed it before review. Inspection found that the prompt example itself
 included a lede and card, contradicting the intro-only briefs. Removing that example led to four
 live repeats returning only a lede, with no block removed by reconciliation. The [recheck](../audit/builder-composition-example-recheck-2026-10-14.json)
-records the raw outputs. This closes the observed extra-card failure for these prompts; broader
-language coverage remains open.
+records the raw outputs. The expanded visitor-flow matrix then repeated five brief shapes twice:
+negative-only and mixed-prohibition intros, one card, one callout, and two titled cards with separate
+phrases. All 10 reviewed drafts passed. The reconciler removed unrequested raw structures in the
+single-card, callout-only, and two-card cases. A copy-targeting fix now keeps the callout phrase in
+its body and routes each repeated card phrase to its own card; the captured drafts show both card
+bodies correctly. The small model still adds default blocks to some raw plans, so this evidence
+supports the guarded, reviewable visitor experience for these prompts, not independent model
+reliability. The [expanded capture](../audit/builder-composition-visitor-flow-matrix-2026-10-14.json)
+records the raw outputs and reviewed drafts. Broader language coverage remains open.
 The [tracked matrix](../audit/builder-structured-composition-schema-live-2026-10-14.json),
 [exclusion recheck](../audit/builder-structured-composition-exclusion-recheck-2026-10-14.json),
 and [run report](../artifacts/runs/2026-10-14-builder-structured-composition-schema.md) preserve

@@ -7,6 +7,8 @@ export interface BuilderDraftRequirements {
   mustMentionInField?: Record<string, string[][]>;
   /** Some visitor-facing forms need a complete, readable result, not just a keyword match. */
   mustEqualInField?: Record<string, string[]>;
+  /** Repeated fields, in block order, must each retain wording from their own source phrase. */
+  mustContainInFieldOccurrences?: Record<string, string[][][]>;
   /** The prompt should produce this many content blocks. */
   minimumBlocks: number;
 }
@@ -59,6 +61,21 @@ export function gradeBuilderDraft(
       && entry.field.toLowerCase() === field)?.value.trim().toLocaleLowerCase();
     if (!value || !alternatives.some((expected) => value === expected.trim().toLocaleLowerCase()))
       failures.push(`${target} did not match an expected complete value`);
+  }
+
+  for (const [target, occurrences] of Object.entries(requirements.mustContainInFieldOccurrences ?? {})) {
+    const [block, field] = target.split(".");
+    const values = draftFields.filter((entry) => entry.block.toLowerCase() === block
+      && entry.field.toLowerCase() === field).map((entry) => entry.value.toLowerCase());
+    if (values.length !== occurrences.length)
+      failures.push(`${target} appeared ${values.length} times, wanted ${occurrences.length}`);
+    for (const [index, groups] of occurrences.entries()) {
+      const value = values[index] ?? "";
+      for (const group of groups) {
+        if (!group.some((term) => value.includes(term.toLowerCase())))
+          failures.push(`${target}[${index}] is missing any of [${group.join(", ")}]`);
+      }
+    }
   }
 
   return failures;

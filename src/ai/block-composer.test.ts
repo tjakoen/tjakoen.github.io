@@ -334,6 +334,21 @@ describe("generated block copy is bounded by each component's visible text contr
     expect(reconciled.copies[1]?.copy.title).toBe("Tune-up");
   });
 
+  test("each repeated card receives its own requested phrase", () => {
+    const brief = "Make a page for Tide Coffee in Cebu with two cards: one titled Espresso with the words chocolate and orange, and one titled Filter with the words floral and bright.";
+    const reconciled = reconcileBuildPlan(brief, ["card", "card"], [{}, {}]);
+    expect(reconciled.names).toEqual(["card", "card"]);
+    expect(reconciled.copies[0]?.copy.body).toContain("chocolate and orange");
+    expect(reconciled.copies[1]?.copy.body).toContain("floral and bright");
+  });
+
+  test("a phrase after a callout says command is restored to that callout", () => {
+    const brief = "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.";
+    const reconciled = reconcileBuildPlan(brief, ["callout"], [{}]);
+    expect(reconciled.names).toEqual(["callout"]);
+    expect(reconciled.copies[0]?.copy.body).toContain("Open studio this Saturday");
+  });
+
   test("intro description stays in the intro when the model repeats card copy there", () => {
     const brief = "Create a page for Juniper Studio in Toronto. Add an intro describing it as an independent pottery studio, then a card titled Weekend workshop with the phrase hand-built pieces for everyday use.";
     const reconciled = reconcileBuildPlan(brief, ["lede", "card"], [

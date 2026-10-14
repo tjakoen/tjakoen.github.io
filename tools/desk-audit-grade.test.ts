@@ -66,3 +66,29 @@ test("the live draft audit requires complete intro wording when the scenario dep
     [{ block: "lede", field: "body", value: "Hearth Bakery is a neighborhood bakery in Utrecht." }]);
   expect(sentence).toEqual([]);
 });
+
+test("repeated block fields are graded against their own requested phrases", () => {
+  const requirements = {
+    minimumBlocks: 2,
+    mustMention: [["Espresso"], ["Filter"]],
+    mustContainInFieldOccurrences: {
+      "card.body": [[["chocolate and orange"]], [["floral and bright"]]],
+    },
+  };
+  const correct = gradeBuilderDraft(requirements,
+    ["Espresso · chocolate and orange", "Filter · floral and bright"], 2, [
+      { block: "card", field: "body", value: "chocolate and orange" },
+      { block: "card", field: "body", value: "floral and bright" },
+    ]);
+  expect(correct).toEqual([]);
+
+  const swapped = gradeBuilderDraft(requirements,
+    ["Espresso · floral and bright", "Filter · chocolate and orange"], 2, [
+      { block: "card", field: "body", value: "floral and bright" },
+      { block: "card", field: "body", value: "chocolate and orange" },
+    ]);
+  expect(swapped).toEqual([
+    "card.body[0] is missing any of [chocolate and orange]",
+    "card.body[1] is missing any of [floral and bright]",
+  ]);
+});

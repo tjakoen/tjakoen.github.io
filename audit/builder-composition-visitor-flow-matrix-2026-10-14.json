@@ -1,0 +1,465 @@
+{
+  "label": "composition-visitor-flow-matrix-graded",
+  "base": "http://localhost:3131",
+  "model": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+  "passed": 10,
+  "failed": 0,
+  "notRun": 0,
+  "total": 10,
+  "results": [
+    {
+      "id": "builder-draft-negative-anchors",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 11305,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery in Utrecht welcomes neighbors."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery in Utrecht welcomes neighbors."
+        }
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery in Utrecht welcomes neighbors.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-negative-anchors",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 10670,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery in Utrecht welcomes neighbors."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery in Utrecht welcomes neighbors."
+        }
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery in Utrecht welcomes neighbors.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Avoid calling it an award-winning bakery, and leave out any claim that it opened in 2019. Add an intro that welcomes neighbors.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-mixed-prohibitions",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 10721,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery is a neighborhood bakery in Utrecht."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery is a neighborhood bakery in Utrecht."
+        }
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery is a neighborhood bakery in Utrecht.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-mixed-prohibitions",
+      "ask": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added lede after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 10156,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Hearth Bakery is a neighborhood bakery in Utrecht."
+      ],
+      "draftFields": [
+        {
+          "block": "lede",
+          "field": "body",
+          "value": "Hearth Bakery is a neighborhood bakery in Utrecht."
+        }
+      ],
+      "draftEvidence": "The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Hearth Bakery is a neighborhood bakery in Utrecht.”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Hearth Bakery in Utrecht. Do not use the phrase \"award-winning bakery\" and add an intro with the exact phrase neighborhood bakery. Exclude the \"certified organic\" claim and leave out any claim that it opened in 2019.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-single-card",
+      "ask": "Build a page for Alder Books in Ghent. Add one card titled Used books with the phrase good stories find new readers.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 11350,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Used books",
+        "Alder Books · Ghent · good stories find new readers"
+      ],
+      "draftFields": [
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Used books"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "Alder Books · Ghent · good stories find new readers"
+        }
+      ],
+      "draftEvidence": "The model's 2 unrequested blocks were removed. The Builder composed 2 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "This field uses wording from your brief: “Used books”.",
+        "The Builder composed this field from details in your brief: “Alder Books · Ghent · good stories find new readers”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Alder Books in Ghent. Add one card titled Used books with the phrase good stories find new readers.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-single-card",
+      "ask": "Build a page for Alder Books in Ghent. Add one card titled Used books with the phrase good stories find new readers.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 11200,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Used books",
+        "Alder Books · Ghent · good stories find new readers"
+      ],
+      "draftFields": [
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Used books"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "Alder Books · Ghent · good stories find new readers"
+        }
+      ],
+      "draftEvidence": "The model's 2 unrequested blocks were removed. The Builder composed 2 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "This field uses wording from your brief: “Used books”.",
+        "The Builder composed this field from details in your brief: “Alder Books · Ghent · good stories find new readers”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Build a page for Alder Books in Ghent. Add one card titled Used books with the phrase good stories find new readers.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-callout-only",
+      "ask": "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added callout after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 12319,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Common Ground · Bristol · Open studio this Saturday"
+      ],
+      "draftFields": [
+        {
+          "block": "callout",
+          "field": "body",
+          "value": "Common Ground · Bristol · Open studio this Saturday"
+        }
+      ],
+      "draftEvidence": "The model's 1 unrequested block was removed. The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Common Ground · Bristol · Open studio this Saturday”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"callout\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-callout-only",
+      "ask": "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added callout after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 12767,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "full"
+        }
+      ],
+      "draftText": [
+        "Common Ground · Bristol · Open studio this Saturday"
+      ],
+      "draftFields": [
+        {
+          "block": "callout",
+          "field": "body",
+          "value": "Common Ground · Bristol · Open studio this Saturday"
+        }
+      ],
+      "draftEvidence": "The model's 1 unrequested block was removed. The Builder composed 1 field from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "The Builder composed this field from details in your brief: “Common Ground · Bristol · Open studio this Saturday”."
+      ],
+      "draftBlocks": 1,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"callout\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-two-cards",
+      "ask": "Make a page for Tide Coffee in Cebu with two cards: one titled Espresso with the words chocolate and orange, and one titled Filter with the words floral and bright.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added card and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 13967,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Espresso",
+        "Tide Coffee · Cebu · chocolate and orange",
+        "Filter",
+        "floral and bright"
+      ],
+      "draftFields": [
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Espresso"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "Tide Coffee · Cebu · chocolate and orange"
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Filter"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "floral and bright"
+        }
+      ],
+      "draftEvidence": "The model's 4 unrequested blocks were removed. The Builder composed 4 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "This field uses wording from your brief: “Espresso”.",
+        "The Builder composed this field from details in your brief: “Tide Coffee · Cebu · chocolate and orange”.",
+        "This field uses wording from your brief: “Filter”.",
+        "This field uses wording from your brief: “floral and bright”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Make a page for Tide Coffee in Cebu with two cards: one titled Espresso with the words chocolate and orange, and one titled Filter with the words floral and bright.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"stat\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "builder-draft-two-cards",
+      "ask": "Make a page for Tide Coffee in Cebu with two cards: one titled Espresso with the words chocolate and orange, and one titled Filter with the words floral and bright.",
+      "page": "/grain/builder",
+      "deterministic": false,
+      "reply": "Added card and card after your review. Check generated claims before export.",
+      "endPath": "/grain/builder",
+      "ms": 15596,
+      "canvas": [
+        {
+          "id": "b1",
+          "span": "half"
+        },
+        {
+          "id": "b2",
+          "span": "half"
+        }
+      ],
+      "draftText": [
+        "Espresso",
+        "Tide Coffee · Cebu · chocolate and orange",
+        "Filter",
+        "floral and bright"
+      ],
+      "draftFields": [
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Espresso"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "Tide Coffee · Cebu · chocolate and orange"
+        },
+        {
+          "block": "card",
+          "field": "title",
+          "value": "Filter"
+        },
+        {
+          "block": "card",
+          "field": "body",
+          "value": "floral and bright"
+        }
+      ],
+      "draftEvidence": "The model's 3 unrequested blocks were removed. The Builder composed 4 fields from phrases in your brief. Detected names, quoted phrases, and numbers appear in the draft. This check does not verify facts or claims.",
+      "draftFieldEvidence": [
+        "This field uses wording from your brief: “Espresso”.",
+        "The Builder composed this field from details in your brief: “Tide Coffee · Cebu · chocolate and orange”.",
+        "This field uses wording from your brief: “Filter”.",
+        "This field uses wording from your brief: “floral and bright”."
+      ],
+      "draftBlocks": 2,
+      "model": {
+        "profile": "Qwen2.5-1.5B-Instruct-q4f16_1-MLC",
+        "prompt": "Make a page for Tide Coffee in Cebu with two cards: one titled Espresso with the words chocolate and orange, and one titled Filter with the words floral and bright.\n\nReturn only JSON that follows the response schema. The blocks array may be empty when the brief requests no supported blocks. Do not write copy or add text fields.\nThe only block names are: lede, card, callout, stat, form. Use no other name.\nRepeat an object to ask for more than one block of the same name.\nInclude a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.\nThe code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.\nPut blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+        "raw": "{\n  \"blocks\": [\n    {\n      \"name\": \"lede\"\n    },\n    {\n      \"name\": \"card\"\n    },\n    {\n      \"name\": \"callout\"\n    },\n    {\n      \"name\": \"form\"\n    }\n  ]\n}"
+      },
+      "browserErrors": [],
+      "status": "passed",
+      "pass": true,
+      "failures": []
+    }
+  ]
+}
