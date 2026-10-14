@@ -999,6 +999,16 @@ unit suite passed 747, and all 78 Builder browser cases passed. Typecheck, link 
 and Oxlint completed successfully. These two phrasings extend the measured set; language coverage
 outside it and an actual-phone cold start remain open.
 
+## Content-field requests stay out of block edits, October 14
+
+Negative-case review found that “remove the price from the card” and “move the price down in the
+card” could be routed as structural block edits. The copy-edit guard now recognizes content fields
+used as the object of a block operation, while leaving layout requests such as “move the card down
+in the price section” available. The browser test confirms these copy requests are refused before a
+model call and leave the canvas unchanged. The full unit suite passed 751 tests, the Builder browser
+suite passed all 78 cases, and typecheck passed. The content-edit boundary is covered for these
+phrases; this does not add an operation for editing existing block copy.
+
 ## Done means
 
 The current browser model can choose a useful page structure from a visitor's brief and complete the

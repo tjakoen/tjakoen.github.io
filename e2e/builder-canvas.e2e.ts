@@ -1053,12 +1053,19 @@ test.describe("the model chooses the verb", () => {
     });
   }
 
-  test("a request to change block copy cannot reach a destructive model choice", async ({ page }) => {
+  test("copy-field edits cannot reach a destructive model choice", async ({ page }) => {
     await twoCardPage(page, true);
     await page.evaluate(() => sessionStorage.removeItem("__builderPrompt"));
-    await submitPrompt(page, "the card should mention pricing");
-    await expect(page.locator(SAID)).toContainText("cannot revise block copy yet");
-    expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    for (const prompt of [
+      "the card should mention pricing",
+      "remove the price from the card",
+      "move the price down in the card",
+      "remove the title from b3",
+    ]) {
+      await submitPrompt(page, prompt);
+      await expect(page.locator(SAID)).toContainText("cannot revise block copy yet");
+      expect(await canvasIds(page)).toEqual(["b1", "b2", "b3", "b4"]);
+    }
     expect(await page.evaluate(() => sessionStorage.getItem("__builderPrompt"))).toBeNull();
   });
 });
