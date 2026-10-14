@@ -40,6 +40,11 @@ describe("an edit points at something already here", () => {
     "add text to card",
     "move the image to the top card",
     "turn the card title into a button",
+    "delete the title",
+    "remove the CTA",
+    "move the image to the top",
+    "make the title bigger",
+    "write the title",
   ])("%s", (prompt) => {
     expect(onAPage(prompt)).toBe(true);
   });
@@ -55,6 +60,7 @@ describe("a description asks for something that is not here yet", () => {
     "write a title and a paragraph",
     "build a card with a caption",
     "add two cards with a price and a callout",
+    "Create a landing page for this bakery with a menu and a callout.",
     "another card",
     "a stat",
     "a form to sign up",                    // " up " is a direction word
