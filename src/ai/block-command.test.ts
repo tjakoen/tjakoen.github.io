@@ -30,6 +30,9 @@ describe("an edit points at something already here", () => {
     "shorten the title",
     "change the page headline",
     "make title more concise",
+    "remove card",
+    "move callout up",
+    "drop the ninth card",
   ])("%s", (prompt) => {
     expect(onAPage(prompt)).toBe(true);
   });
@@ -38,6 +41,12 @@ describe("an edit points at something already here", () => {
 describe("a description asks for something that is not here yet", () => {
   test.each([
     "an intro, two cards side by side and a contact form",
+    "Build a product page with the title, a short description, and two cards.",
+    "Create a home page with the heading, one intro, and three cards.",
+    "A bakery page with the menu and a callout.",
+    "make a page with the title and callout",
+    "write a title and a paragraph",
+    "build a card with a caption",
     "another card",
     "a stat",
     "a form to sign up",                    // " up " is a direction word
@@ -129,6 +138,7 @@ describe("copy edits wait for a real content operation", () => {
     "change the card to half width",
     "move the card down in the price section",
     "remove the first card from the page",
+    "remove a card",
     "make the card wider",
     "move the callout after the card",
     "move the card to the other column",
