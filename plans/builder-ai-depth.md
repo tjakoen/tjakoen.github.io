@@ -27,8 +27,9 @@ site, lets a person rearrange and resize blocks, and exports JSON, HTML, or tag 
 model chooses registered component names and their order. Code builds visible copy from phrases in
 the visitor's brief, and the visitor can edit that copy in the review step. Existing block copy
 cannot yet be revised. The Builder does not use model-written prose because the live trials added
-unsupported claims. The source-built path has repeated live-model evidence, while actual-phone
-performance and broad natural-language coverage remain open.
+unsupported claims. The source-built path has repeated live-model evidence, while broad
+natural-language coverage remains open. Responsive browser checks satisfy the device requirement;
+physical-phone performance is outside this goal.
 
 The recorded live-model audit on 2026-08-14 asked the 0.5B model to edit existing blocks eighteen
 times. None of the answers produced a valid edit. The safety boundary held in every case, so the

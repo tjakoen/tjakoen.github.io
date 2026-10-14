@@ -772,12 +772,25 @@ The five-case live report from this earlier pass is retained locally in `.cache/
 not a published audit artifact. The newer tracked matrix and follow-up above preserve the current
 schema-constrained evidence.
 
-The production Builder was also reviewed at 390 by 844 in a real browser. The page fit the viewport
-at 390 CSS pixels, showed its heading, composer, empty canvas, and block rail, and logged no browser
-errors. This satisfies responsive layout and visitor-flow review; physical-device model cold-start
-performance remains unmeasured and is outside the current acceptance target. The [review tour](https://tjakoen.github.io/grain/builder?crumb=review-builder-live-evidence&crumb-mode=dev&crumb-frame)
-points to the live-evidence review and the phone-width canvas. Broad raw-writing reliability and
-customer outcome proof remain open, so the portfolio finish-line goal remains in progress.
+The production Builder was reviewed at 390 by 844 in a real browser. The page fit the viewport at
+390 CSS pixels, showed its heading, composer, empty canvas, and block rail, and logged no browser
+errors. The owner confirmed that responsive browser behavior is sufficient for device acceptance;
+physical-device model cold-start performance is outside this goal. The [review tour](https://tjakoen.github.io/grain/builder?crumb=review-builder-live-evidence&crumb-mode=dev&crumb-frame)
+points to the live-evidence review and the phone-width canvas. The expanded live composition matrix
+passed all 10 reviewed drafts, while the smaller model still sometimes proposes extra blocks and
+broader language reliability remains unproven. Stronger privacy-safe outcome proof also remains
+unavailable for several project claims, so the portfolio finish-line goal remains in progress.
+
+## Current acceptance and release status, October 14
+
+Responsive browser checks at desktop and 390-pixel widths satisfy the Builder's device acceptance.
+No physical phone or cold-start measurement is required for this goal. The latest composition changes
+are on `main` in commit `946e9f2`; documentation and live-audit evidence are on `main` in `99131e6`.
+Hosted end-to-end passed all 438 browser cases, and the Pages build and deployment succeeded. The
+published Builder, Plans, and review-tour routes returned HTTP 200. The live WebGPU matrix records
+12 schema-conforming responses and 10 of 10 reviewed visitor drafts passing across five composition
+shapes. Keep the Builder item open for broader language coverage, not physical-device testing. The
+overall portfolio finish line also retains the project-outcome proof gap described above.
 
 
 ## Done means
