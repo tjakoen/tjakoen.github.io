@@ -21,17 +21,6 @@ owner: human
 
 # Bring the portfolio to a clear, reviewable finish
 
-## Builder routing evidence, October 14
-
-Commit 86bc4d9 closes the remaining direct copy-field routing cases found during the local model
-comparison. Field requests to remove or write titles, move images, and resize text now route to the
-current page's edit guard. New-page briefs that mention fields such as a title, menu, or callout
-remain compositions. The full unit suite passed 824 tests; all 79 Builder browser cases and all 438
-hosted browser cases passed. Hosted typecheck, unit tests, and the lint baseline passed, and the Pages
-build and deployment succeeded. The Builder and Plans routes returned HTTP 200. Qwen3 remains a
-local comparison, with the shipped model profile unchanged. Physical-phone cold-start testing and
-broad language coverage remain open, so the portfolio finish-line goal stays in progress.
-
 ## The job the site has to do
 
 This portfolio should make it easy to understand who I am, what I build, and why the work is worth
@@ -693,6 +682,15 @@ capture; all 36 portfolio captures were refreshed and the phone-width view was i
 production route was inspected at 390 by 844; the heading, composer, and canvas were visible, the
 document fit the viewport, and the browser logged no page errors. These are browser checks, not a
 physical phone or its model cold start. This Mac has no attached handset, and its iOS simulator is unavailable.
+
+The October 14 routing follow-up in 86bc4d9 closes direct copy-field gaps found during the local
+model comparison. Requests to remove or write titles, move images, or resize text route to the
+current page's edit guard. New-page briefs that mention a title, menu, or callout remain compositions.
+The full unit suite passed 824 tests, all 79 Builder browser cases passed, and hosted CI passed all
+438 browser cases, typecheck, unit tests, and the lint baseline. Pages built and deployed
+successfully, and the Builder and Plans routes returned HTTP 200. Qwen3 remains a local comparison;
+the shipped model profile is unchanged. Physical-phone cold-start testing and broad language coverage
+remain open, so the finish-line goal stays in progress.
 
 ## Done means
 
