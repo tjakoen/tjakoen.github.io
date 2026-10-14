@@ -478,11 +478,12 @@ proof remain open below.
       visible copy from the brief, and review catches omissions before the visitor approves the page.
       Six briefs passed two warm 1.5B runs for required phrases, field placement, and prohibited
       wording. The held-out edit audit now covers twelve phrasings across removal, span, and move,
-      with 34 reviewed outcomes across warm WebGPU runs. The 3B comparison did not improve the raw
-      answers, so the Builder ignores model prose instead of displaying it. These results support
-      the guarded desktop workflow; they do not prove language coverage outside the tested matrix or
-      phone performance. The remaining evidence is wider testing of supported requests and a cold
-      start on actual phone hardware. See the [two-run draft report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json),
+      with 34 reviewed outcomes across warm WebGPU runs. A new routing audit covers copy-field edits,
+      insertions, field moves, possessives, terse commands, missing ordinals, and new-page briefs
+      that mention definite titles and blocks. The 3B comparison did not improve the raw answers, so
+      the Builder ignores model prose instead of displaying it. These results support the guarded
+      desktop workflow; they do not prove language coverage outside the tested matrix or phone
+      performance. A cold start on actual phone hardware remains open. See the [two-run draft report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json),
       [original edit paraphrases](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-paraphrase-repeats-2026-10-14.json),
       [extended edit paraphrases](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-extended-paraphrase-repeats-2026-10-14.json),
       [delete, nudge, and width holdouts](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-holdout-recovery-2026-10-14.json),
@@ -665,20 +666,22 @@ preserve the failed target check and the corrected model outcomes.
 
 ## Current release and visual review, October 14
 
-Commit `a334407` is on `main` and deployed. Hosted typecheck, all 763 unit tests, and the lint count
-passed; hosted end-to-end is still running. A further copy-field audit found that requests about a
-subtitle, CTA, image, pricing line, copy length, or tone could still reach the model as whole-block
-edits. The router now refuses those requests before a model call; paired tests preserve layout
-requests such as moving a card within the price section. The updated local suite passed all 763 unit
-tests and all 78 Builder browser cases. A local Qwen3-1.7B comparison passed five guarded Builder
-scenarios, but one relative deletion had the wrong raw target and succeeded only after the Builder's
-correction path; action responses took about 19 to 54 seconds. This does not justify replacing the
-shipped 1.5B profile. The screenshot gallery includes a 390 by 844 pixel Builder
+The latest functional Builder changes are on main at [47d1f55](https://github.com/tjakoen/tjakoen.github.io/commit/47d1f55).
+Hosted CI passed typecheck, all 818 unit tests, the lint count, and all 438 browser cases. The [Pages
+build and deployment](https://github.com/tjakoen/tjakoen.github.io/actions/runs/38512992168) succeeded.
+The published Builder and Plans routes return HTTP 200. Locally, all 79 Builder browser cases passed,
+and link lint found no dead relative links in 56 rendered files. A prompt audit closed copy-field
+routing holes across possessive, block-first, insertion, movement, and terse phrasing, while
+preserving new-page briefs that mention a title before their blocks. The paired browser test confirms
+that copy edits do not call the model or change the canvas. A local Qwen3-1.7B comparison passed five
+guarded Builder scenarios, but one relative deletion had the wrong raw target and succeeded only
+after the Builder's correction path; action responses took about 19 to 54 seconds. This does not
+justify replacing the shipped 1.5B profile. The screenshot gallery includes a 390 by 844 pixel Builder
 capture; all 36 portfolio captures were refreshed and the phone-width view was inspected. A
 320-pixel browser case checks that the composer and workbench do not overflow horizontally. The
 production route was inspected at 390 by 844; the heading, composer, and canvas were visible, the
 document fit the viewport, and the browser logged no page errors. These are browser checks, not a
-physical phone or its model cold start. This Mac has no attached handset, and `simctl` is unavailable.
+physical phone or its model cold start. This Mac has no attached handset, and its iOS simulator is unavailable.
 
 ## Done means
 

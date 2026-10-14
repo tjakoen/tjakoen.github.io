@@ -1003,12 +1003,28 @@ outside it and an actual-phone cold start remain open.
 
 Negative-case review found that “remove the price from the card” and “move the price down in the
 card” could be routed as structural block edits. Follow-up probes found the same issue with a
-subtitle, CTA, image, pricing line, copy length, and tone. The copy-edit guard now recognizes content
-fields used as the object of a block operation and common length or tone requests, while leaving
+subtitle, CTA, image, pricing line, copy length, and tone. The copy-edit guard recognizes those
+fields across possessives, block-first phrases, terse commands, insertions, and moves. It leaves
 layout requests such as “move the card down in the price section” available. Unit tests cover these
-distinctions, and the browser test confirms the content requests are refused before a model call and
-leave the canvas unchanged. The full unit suite passed 763 tests, the Builder browser suite passed
-all 78 cases, and typecheck passed. This does not add an operation for editing existing block copy.
+distinctions, and the browser test confirms that content requests stop before a model call and leave
+the canvas unchanged. The full unit suite passed 763 tests, the Builder browser suite passed all 78
+cases, and typecheck passed. This does not add an operation for editing existing block copy.
+
+## Copy and target routing recheck, October 14
+
+A broader prompt matrix found two more routing defects. Possessive or block-first requests such as
+“remove the card's price,” “set card title to Cafe,” and “move the image to the top card” could reach
+the block model or fall through to page creation. Page briefs such as “Build a product page with the
+title, a short description, and two cards” could be mistaken for edits because the router found a
+later block noun after “the title.” The router now checks for a copy field tied to a block, handles
+explicit copy-edit commands with or without a block noun, and requires the definite article or
+ordinal to qualify the block itself. It also recognizes terse block commands and ordinal references
+such as “the ninth card,” so an absent target is refused instead of treated as a new page. Paired
+tests keep “remove a card,” actual layout requests, and new-page briefs on their intended paths.
+The full unit suite passed 818 tests, all 79 Builder browser cases passed, typecheck and lint passed,
+and link lint found no dead relative links in 56 rendered files. The hosted release checks are
+recorded below. These examples do not establish broad language coverage or a cold start on physical
+phone hardware.
 
 ## Done means
 
@@ -1023,21 +1039,22 @@ claims stay tied to evidence.
 ## Qwen3 local comparison, October 14
 
 The locally run Qwen3-1.7B profile completed five guarded Builder scenarios. The final visitor-facing
-outcome passed each case, but “drop the second card” first produced the wrong raw target, `b2`; the
-Builder's correction and review path changed the proposed removal to `b4`. The other removal,
+outcome passed each case, but “drop the second card” first produced the wrong raw target, b2; the
+Builder's correction and review path changed the proposed removal to b4. The other removal,
 whole-row span, repositioning, and unsupported-copy refusal cases passed. Action responses took
 about 19 to 54 seconds. This small comparison does not establish a speed or quality improvement over
 the shipped Qwen2.5-1.5B profile, so the profile remains unchanged. The local capture lives in the
-ignored `.cache/desk-audit/report-builder-qwen3-1.7b-local.json` file and is not a published audit
+ignored .cache/desk-audit/report-builder-qwen3-1.7b-local.json file and is not a published audit
 artifact.
 
 ## Current release and phone-width review, October 14
 
-The latest deployed Builder changes are on `main` at `a334407`. Hosted typecheck, all 763 unit tests,
-and the lint count passed. The Pages deployment succeeded; hosted end-to-end is still running. The
-Builder and plan routes resolve successfully, with `/plans` redirecting to its canonical route. The
-copy-edit guard covers content fields, length, and tone phrasing; the local suite passes 763 unit
-tests and all 78 Builder browser cases. The visual gallery has a
+The latest functional Builder changes are on main at 47d1f55. Hosted CI passed typecheck, all
+818 unit tests, the lint count, and all 438 browser cases. The Pages build and deployment succeeded.
+The Builder and Plans routes return HTTP 200 after redirects. Locally, all 79 Builder browser cases
+passed, and link lint found no dead relative links in 56 rendered files. The content-edit guard now
+covers field edits, insertions, moves, possessives, terse commands, and copy-only targets while paired
+tests confirm that new-page briefs still compose. The visual gallery has a
 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width view
 was inspected. The prompt, download disclosure, example, and preview are visible in that capture.
 The existing 320-pixel browser case checks for horizontal overflow. These are browser viewport
