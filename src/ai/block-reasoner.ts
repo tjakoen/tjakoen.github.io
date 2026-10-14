@@ -310,6 +310,10 @@ function requestedEdit(
   blocks: readonly (string | Pick<import("./block-set.ts").Block, "id" | "component">)[],
 ): RequestedEdit | null {
   const text = message.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
+  // A request for advice is not permission to perform the action being discussed. Keep these
+  // question forms with the model's reply path, while still accepting polite commands such as
+  // "Could you remove the callout?".
+  if (/\b(?:should (?:i|we)\b|do you think\b)/.test(text)) return null;
   // Punctuation is stripped above, so English contractions arrive as two tokens ("can't" ->
   // "can t", "shouldn't" -> "shouldn t"). Treat those as non-requests too: recovery must not
   // turn an explicit inability, prohibition, or avoided action into a proposal to perform it.

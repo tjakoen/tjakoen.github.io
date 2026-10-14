@@ -174,6 +174,23 @@ describe("explicit target guard", () => {
     }
   });
 
+  test("it does not turn an advice question into an edit proposal", () => {
+    for (const phrase of [
+      "Should I remove the callout?",
+      "Should we move the callout down?",
+      "Do you think I should remove the callout?",
+      "Do you think I should move the callout down?",
+    ]) {
+      expect(blockIntentRecovery(phrase, blocks, "No action.")).toBeNull();
+      expect(blockIntentCorrection(phrase, blocks, {
+        action: "block.remove", surface: "block:b3", payload: {}, said: "",
+      })).toBeNull();
+    }
+
+    expect(blockIntentRecovery("Could you remove the callout?", blocks, "No action.")?.command)
+      .toMatchObject({ action: "block.remove", surface: "block:b3" });
+  });
+
   test("common removal paraphrases recover only with a clear live target", () => {
     expect(blockIntentRecovery("get rid of the final card", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.remove", surface: "block:b4" });
