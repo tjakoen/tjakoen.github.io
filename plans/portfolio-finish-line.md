@@ -710,12 +710,14 @@ phone.
 ## Negated Builder edit safety, October 14
 
 A safety probe found that “I can't remove the callout” and “I shouldn't remove the callout” could
-become deletion proposals after punctuation normalization split their contractions. Recovery now
-refuses those and other common negative modal forms. The focused reasoner suite passed 49 tests, the
-full unit suite passed 828 tests, and all 80 Builder browser cases passed. A 390 by 844 browser check
-confirmed that three contractions create no proposal and leave all four blocks unchanged. These
-scripted checks do not establish how the live model interprets these phrases. This closes the tested
-negation gap, not broad natural-language reliability. The
+become deletion proposals after punctuation normalization split their contractions. A second probe
+found that “Should I remove the callout?” also became a deletion proposal. Recovery now refuses
+common negative modal forms and keeps advice questions out of the edit proposal path while preserving
+polite commands. The focused reasoner suite passed 50 tests, the full unit suite passed 829 tests,
+and all 80 Builder browser cases passed. At 390 by 844, the browser check confirmed that three
+negated requests and two advice questions create no proposal and leave all four blocks unchanged.
+These scripted checks do not establish how the live model interprets these phrases. Broad
+natural-language reliability remains open. The
 physical-phone cold start and broader language coverage remain open. The [run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-negated-modal-recovery.md)
 records the exact scope and evidence.
 

@@ -1079,13 +1079,15 @@ The locally run Qwen3-1.7B profile remains a comparison only; the shipped profil
 
 A targeted safety probe found that “I can't remove the callout” and “I shouldn't remove the callout”
 could be recovered as deletion requests, even though the guard already refused “don't remove the
-callout.” Punctuation normalization split modal contractions into tokens the negation check did not
-cover. The recovery guard now refuses common negative modal contractions before it interprets an
-operation. A unit test checks that both recovery and correction refuse nine contraction forms. A
-390 by 844 browser test submits three of them after a scripted model refusal and confirms that no
-proposal appears and the canvas remains unchanged. The focused reasoner suite passed 49 tests, the
-full unit suite passed 828 tests across 45 files, and all 80 Builder browser cases passed. TypeScript
+callout.” A second probe found that “Should I remove the callout?” also became a deletion proposal.
+Punctuation normalization split modal contractions, and the advice question looked like a command.
+The recovery guard now refuses common negative modal contractions and keeps advice questions out of
+the edit proposal path while still accepting polite commands. Unit tests check nine contraction forms
+and advice questions across both recovery and correction. A 390 by 844 browser test submits three
+negated requests and two advice questions after a scripted model refusal, then confirms that no
+proposal appears and the canvas remains unchanged. The focused reasoner suite passed 50 tests, the
+full unit suite passed 829 tests across 45 files, and all 80 Builder browser cases passed. TypeScript
 checking and link lint passed. These scripted checks do not establish how the live model interprets
-the phrases. This closes the tested negation gap only; broad natural-language reliability and
-cold-start behavior on physical phone hardware remain open. See the
+the phrases. Broad natural-language reliability and cold-start behavior on physical phone hardware
+remain open. See the
 [run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-negated-modal-recovery.md).
