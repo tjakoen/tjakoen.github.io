@@ -21,6 +21,17 @@ owner: human
 
 # Bring the portfolio to a clear, reviewable finish
 
+## Builder routing evidence, October 14
+
+Commit 86bc4d9 closes the remaining direct copy-field routing cases found during the local model
+comparison. Field requests to remove or write titles, move images, and resize text now route to the
+current page's edit guard. New-page briefs that mention fields such as a title, menu, or callout
+remain compositions. The full unit suite passed 824 tests; all 79 Builder browser cases and all 438
+hosted browser cases passed. Hosted typecheck, unit tests, and the lint baseline passed, and the Pages
+build and deployment succeeded. The Builder and Plans routes returned HTTP 200. Qwen3 remains a
+local comparison, with the shipped model profile unchanged. Physical-phone cold-start testing and
+broad language coverage remain open, so the portfolio finish-line goal stays in progress.
+
 ## The job the site has to do
 
 This portfolio should make it easy to understand who I am, what I build, and why the work is worth

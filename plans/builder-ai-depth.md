@@ -1062,3 +1062,15 @@ checks, not a physical phone test. A production browser smoke at 390 by 844 load
 HTTP 200, showed the page heading, composer, and canvas, measured a 390-pixel document width, and
 logged no page errors. This Mac has no attached handset and `simctl` is unavailable, so the
 physical-phone cold start remains open.
+
+## Copy-field routing follow-up, October 14
+
+Commit 86bc4d9 closes another set of prompt-routing gaps found during the Qwen comparison review.
+The Builder now recognizes direct copy-field requests such as removing a title, moving an image to
+the top, resizing a title, or writing a title as edits against the current page, so unsupported
+copy edits are refused before a model call. New-page briefs that mention a title, menu, or callout
+remain page compositions. The full suite passed 824 unit tests, all 79 Builder browser cases passed,
+typecheck and lint passed, and link lint found no dead relative links across 56 rendered files.
+Hosted CI passed all 438 browser cases, the unit suite, typecheck, and the lint baseline; the Pages
+build and deploy succeeded. The Builder and Plans routes both returned HTTP 200 after deployment.
+The locally run Qwen3-1.7B profile remains a comparison only; the shipped profile is unchanged.
