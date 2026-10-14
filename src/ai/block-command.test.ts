@@ -89,6 +89,10 @@ describe("copy edits wait for a real content operation", () => {
     "delete the CTA from the callout",
     "take the pricing line out of the card",
     "remove the image from the card",
+    "shorten the body on the card",
+    "make the card shorter",
+    "make the intro friendlier",
+    "trim the callout down to one line",
   ])("%s", (prompt) => {
     expect(isCopyEditRequest(prompt)).toBe(true);
   });
@@ -99,6 +103,9 @@ describe("copy edits wait for a real content operation", () => {
     "change the card to half width",
     "move the card down in the price section",
     "remove the first card from the page",
+    "make the card wider",
+    "move the callout after the card",
+    "move the card to the other column",
   ])("%s remains an available block operation", (prompt) => {
     expect(isCopyEditRequest(prompt)).toBe(false);
   });

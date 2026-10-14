@@ -103,9 +103,15 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
  *  noun so a width or order request still reaches the model. */
 export function isCopyEditRequest(prompt: string): boolean {
   const text = ` ${normalize(prompt)} `;
-  if (/\b(?:mention|say|write|rewrite|rephrase|word)\b/.test(text)) return true;
+  if (/\b(?:mention|say|write|rewrite|rephrase|word|shorten|lengthen|trim|tighten|polish|proofread)\b/.test(text)) return true;
   const copyField = /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption|subtitle|subheading|kicker|eyebrow|cta|image|photo|picture|icon|button|link|url|description|tagline|bullet|quote|author|logo|video|media|line|details)\b/;
   if (/\b(?:change|edit|revise|replace|update|improve|make)\b/.test(text) && copyField.test(text)) return true;
+
+  // A length or tone request may name the block but never name a text field: “make the card
+  // shorter” and “trim the callout down to one line” are still copy requests. These qualities are
+  // intentionally separate from layout words such as wider or full width.
+  const copyQuality = /\b(?:shorter|longer|more concise|less wordy|clearer|more direct|friendlier|warmer|punchier|simpler|one line|two lines|single sentence)\b/;
+  if (copyQuality.test(text) && /\b(?:make|keep|trim|shorten|lengthen|tighten|reduce|cut|expand|improve)\b/.test(text)) return true;
 
   // Content can also be the object of an otherwise structural verb: “remove the price from the
   // card” means revise the card's copy, not remove the card. Without this boundary the edit router

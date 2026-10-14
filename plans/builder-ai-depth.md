@@ -1003,12 +1003,12 @@ outside it and an actual-phone cold start remain open.
 
 Negative-case review found that “remove the price from the card” and “move the price down in the
 card” could be routed as structural block edits. Follow-up probes found the same issue with a
-subtitle, CTA, image, and pricing line. The copy-edit guard now recognizes content fields used as the
-object of a block operation, while leaving layout requests such as “move the card down in the price
-section” available. Unit tests cover these distinctions, and the browser test confirms the content
-requests are refused before a model call and leave the canvas unchanged. The full unit suite passed
-756 tests, the Builder browser suite passed all 78 cases, and typecheck passed. This does not add an
-operation for editing existing block copy.
+subtitle, CTA, image, pricing line, copy length, and tone. The copy-edit guard now recognizes content
+fields used as the object of a block operation and common length or tone requests, while leaving
+layout requests such as “move the card down in the price section” available. Unit tests cover these
+distinctions, and the browser test confirms the content requests are refused before a model call and
+leave the canvas unchanged. The full unit suite passed 763 tests, the Builder browser suite passed
+all 78 cases, and typecheck passed. This does not add an operation for editing existing block copy.
 
 ## Done means
 
@@ -1022,11 +1022,11 @@ claims stay tied to evidence.
 
 ## Current release and phone-width review, October 14
 
-The latest deployed Builder changes are on `main` at `44d0238`. Hosted typecheck, all 751 unit tests,
-lint checks, and all 437 end-to-end browser cases passed. Pages deployment succeeded. The Builder
-route returns HTTP 200; `/plans` redirects to its canonical route. The follow-up content-field guard
-passes locally with 756 unit tests and 78 Builder browser cases; that follow-up is not part of
-`44d0238` yet. The visual gallery has a
+The latest deployed Builder changes are on `main` at `f9eab6d`. Hosted typecheck, all 756 unit tests,
+and the lint count passed. The Pages deployment succeeded; hosted end-to-end is still running. The
+Builder route returns HTTP 200; `/plans` redirects to its canonical route. A further local follow-up
+extends the content-edit guard to copy-length and tone phrasing; it passes 763 unit tests and all 78
+Builder browser cases. That follow-up is not part of `f9eab6d` yet. The visual gallery has a
 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width view
 was inspected. The prompt, download disclosure, example, and preview are visible in that capture.
 The existing 320-pixel browser case checks for horizontal overflow. These are browser viewport
