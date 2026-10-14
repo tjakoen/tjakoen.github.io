@@ -665,14 +665,18 @@ preserve the failed target check and the corrected model outcomes.
 
 ## Current release and visual review, October 14
 
-Commit `632f96e` is on `main`. Hosted CI passed typecheck, all 747 unit tests, lint checks, and all 437
-browser cases, and the Pages deployment succeeded. The local Builder suite passed all 78 cases. The
-screenshot gallery includes a 390 by 844 pixel Builder capture; all 36 portfolio captures were
-refreshed and the phone-width view was inspected. A 320-pixel browser case checks that the composer
-and workbench do not overflow horizontally. The production route was inspected at 390 by 844; the
-heading, composer, and canvas were visible, the document fit the viewport, and the browser logged no
-page errors. These are browser checks, not a physical phone or its model cold start. This Mac has no
-attached handset, and `simctl` is unavailable.
+Commit `44d0238` is on `main`. Hosted CI passed typecheck, all 751 unit tests, lint checks, and all 437
+browser cases, and the Pages deployment succeeded. A follow-up copy-field audit found that requests
+such as “remove the subtitle from the card,” “delete the CTA from the callout,” and “take the pricing
+line out of the card” could still reach the model as whole-block edits. The router now refuses those
+embedded-content requests before a model call; paired tests preserve layout requests such as moving
+a card within the price section. The updated local suite passed all 756 unit tests and all 78 Builder
+browser cases. The screenshot gallery includes a 390 by 844 pixel Builder capture; all 36 portfolio
+captures were refreshed and the phone-width view was inspected. A 320-pixel browser case checks that
+the composer and workbench do not overflow horizontally. The production route was inspected at 390
+by 844; the heading, composer, and canvas were visible, the document fit the viewport, and the browser
+logged no page errors. These are browser checks, not a physical phone or its model cold start. This
+Mac has no attached handset, and `simctl` is unavailable.
 
 ## Done means
 

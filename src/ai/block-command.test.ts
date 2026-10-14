@@ -85,6 +85,10 @@ describe("copy edits wait for a real content operation", () => {
     "remove the price from the card",
     "move the price down in the card",
     "remove the title from b3",
+    "remove the subtitle from the card",
+    "delete the CTA from the callout",
+    "take the pricing line out of the card",
+    "remove the image from the card",
   ])("%s", (prompt) => {
     expect(isCopyEditRequest(prompt)).toBe(true);
   });
@@ -94,6 +98,7 @@ describe("copy edits wait for a real content operation", () => {
     "move the second card up",
     "change the card to half width",
     "move the card down in the price section",
+    "remove the first card from the page",
   ])("%s remains an available block operation", (prompt) => {
     expect(isCopyEditRequest(prompt)).toBe(false);
   });
