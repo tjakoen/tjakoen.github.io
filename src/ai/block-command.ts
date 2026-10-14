@@ -104,7 +104,7 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
 export function isCopyEditRequest(prompt: string): boolean {
   const text = ` ${normalize(prompt)} `;
   if (/\b(?:mention|say|write|rewrite|rephrase|word)\b/.test(text)) return true;
-  const copyField = /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption)\b/;
+  const copyField = /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption|subtitle|subheading|kicker|eyebrow|cta|image|photo|picture|icon|button|link|url|description|tagline|bullet|quote|author|logo|video|media|line|details)\b/;
   if (/\b(?:change|edit|revise|replace|update|improve|make)\b/.test(text) && copyField.test(text)) return true;
 
   // Content can also be the object of an otherwise structural verb: “remove the price from the
@@ -113,7 +113,7 @@ export function isCopyEditRequest(prompt: string): boolean {
   // Require a copy-bearing noun before a preposition that introduces a block reference, so ordinary
   // requests such as “remove the card from the page” remain structural edits.
   const blockReference = /\b(?:block|card|callout|aside|lede|intro(?:duction)?|paragraph|tile|stat|form|b\d+)\b/;
-  const operation = /\b(?:remove|delete|discard|erase|drop|take out|get rid of|move|shift|nudge|reposition)\b/;
+  const operation = /\b(?:remove|delete|discard|erase|drop|get rid of|move|shift|nudge|reposition)\b|\btake(?:\s+\w+){1,4}\s+out\b/;
   return operation.test(text)
-    && new RegExp(`${copyField.source}\\b(?:\\s+\\w+){0,4}\\s+(?:from|in|inside|within|of|on)\\s+(?:the\\s+)?${blockReference.source}`).test(text);
+    && new RegExp(`${copyField.source}\\b(?:\\s+\\w+){0,4}\\s+(?:from|in|inside|within|of|on|out\\s+of)\\s+(?:the\\s+)?${blockReference.source}`).test(text);
 }

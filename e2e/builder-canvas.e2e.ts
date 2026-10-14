@@ -1061,6 +1061,10 @@ test.describe("the model chooses the verb", () => {
       "remove the price from the card",
       "move the price down in the card",
       "remove the title from b3",
+      "remove the subtitle from the card",
+      "delete the CTA from the callout",
+      "take the pricing line out of the card",
+      "remove the image from the card",
     ]) {
       await submitPrompt(page, prompt);
       await expect(page.locator(SAID)).toContainText("cannot revise block copy yet");

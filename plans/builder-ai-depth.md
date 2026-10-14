@@ -1002,12 +1002,13 @@ outside it and an actual-phone cold start remain open.
 ## Content-field requests stay out of block edits, October 14
 
 Negative-case review found that “remove the price from the card” and “move the price down in the
-card” could be routed as structural block edits. The copy-edit guard now recognizes content fields
-used as the object of a block operation, while leaving layout requests such as “move the card down
-in the price section” available. The browser test confirms these copy requests are refused before a
-model call and leave the canvas unchanged. The full unit suite passed 751 tests, the Builder browser
-suite passed all 78 cases, and typecheck passed. The content-edit boundary is covered for these
-phrases; this does not add an operation for editing existing block copy.
+card” could be routed as structural block edits. Follow-up probes found the same issue with a
+subtitle, CTA, image, and pricing line. The copy-edit guard now recognizes content fields used as the
+object of a block operation, while leaving layout requests such as “move the card down in the price
+section” available. Unit tests cover these distinctions, and the browser test confirms the content
+requests are refused before a model call and leave the canvas unchanged. The full unit suite passed
+756 tests, the Builder browser suite passed all 78 cases, and typecheck passed. This does not add an
+operation for editing existing block copy.
 
 ## Done means
 
@@ -1021,14 +1022,15 @@ claims stay tied to evidence.
 
 ## Current release and phone-width review, October 14
 
-The latest Builder changes are on `main` at `632f96e`. Hosted typecheck, all 747 unit tests, lint
-checks, and all 437 end-to-end browser cases passed. Pages deployment succeeded, and the live Builder
-and finish-line plan routes return HTTP 200. Locally, all 747 unit tests and 78 Builder
-browser cases passed, including the ordinal/span and erase/reposition regressions at a 390px viewport. The visual gallery
-has a 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width
-view was inspected. The prompt, download disclosure, example, and preview are visible in that
-capture. The existing 320-pixel browser case checks for horizontal overflow. These are browser
-viewport checks, not a physical phone test. A production browser smoke at 390 by 844 also loaded the
-Builder on this release with HTTP 200, showed the page heading, composer, and canvas, measured a
-390-pixel document width, and logged no page errors. This Mac has no attached handset and `simctl` is unavailable, so
-the physical-phone cold start remains open.
+The latest deployed Builder changes are on `main` at `44d0238`. Hosted typecheck, all 751 unit tests,
+lint checks, and all 437 end-to-end browser cases passed. Pages deployment succeeded. The Builder
+route returns HTTP 200; `/plans` redirects to its canonical route. The follow-up content-field guard
+passes locally with 756 unit tests and 78 Builder browser cases; that follow-up is not part of
+`44d0238` yet. The visual gallery has a
+390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width view
+was inspected. The prompt, download disclosure, example, and preview are visible in that capture.
+The existing 320-pixel browser case checks for horizontal overflow. These are browser viewport
+checks, not a physical phone test. A production browser smoke at 390 by 844 loaded the Builder with
+HTTP 200, showed the page heading, composer, and canvas, measured a 390-pixel document width, and
+logged no page errors. This Mac has no attached handset and `simctl` is unavailable, so the
+physical-phone cold start remains open.
