@@ -23,6 +23,13 @@ describe("an edit points at something already here", () => {
     "move the form up",
     "delete it",
     "make that one full width",
+    "remove card caption",
+    "shorten second card description",
+    "remove its headline",
+    "edit caption",
+    "shorten the title",
+    "change the page headline",
+    "make title more concise",
   ])("%s", (prompt) => {
     expect(onAPage(prompt)).toBe(true);
   });
@@ -93,6 +100,25 @@ describe("copy edits wait for a real content operation", () => {
     "make the card shorter",
     "make the intro friendlier",
     "trim the callout down to one line",
+    "remove the card's price",
+    "delete the card title",
+    "take the subtitle off the callout",
+    "get rid of the card logo",
+    "delete the title on the second card",
+    "remove the opening hours from the bakery card",
+    "remove the card image",
+    "take the callout text out",
+    "remove its headline",
+    "make its title shorter",
+    "change the first card background color",
+    "remove the logo from the second card",
+    "delete the icon next to the title in the first card",
+    "remove card caption",
+    "shorten second card description",
+    "edit caption",
+    "shorten the title",
+    "change the page headline",
+    "make title more concise",
   ])("%s", (prompt) => {
     expect(isCopyEditRequest(prompt)).toBe(true);
   });
@@ -106,6 +132,10 @@ describe("copy edits wait for a real content operation", () => {
     "make the card wider",
     "move the callout after the card",
     "move the card to the other column",
+    "remove the card's section from the page",
+    "change the card to half width",
+    "move the card down in the price section",
+    "add another card and remove the first one",
   ])("%s remains an available block operation", (prompt) => {
     expect(isCopyEditRequest(prompt)).toBe(false);
   });

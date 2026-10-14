@@ -35,6 +35,18 @@ const normalize = (s: string): string => s.toLowerCase().replace(/[^a-z0-9\s]/g,
 /** Standing on its own, each of these can only mean something already here. A page you are asking
  *  for has no "it" yet. */
 const PRONOUNS = [" it ", " that ", " this ", " them ", " those "];
+const POSSESSIVE_COPY_REFERENCES = /\b(?:its|their|his|her)\s+(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption|subtitle|subheading|kicker|eyebrow|cta|image|photo|picture|icon|button|link|url|description|tagline|bullet|quote|author|logo|video|media|line|details)\b/;
+const COPY_FIELD = /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption|subtitle|subheading|kicker|eyebrow|cta|image|photo|picture|icon|button|link|url|description|tagline|bullet|quote|author|logo|video|media|line|details|hours|address|location|phone|email|background|color)\b/;
+const EXPLICIT_COPY_EDIT = /\b(?:rewrite|rephrase|shorten|lengthen|trim|tighten|polish|proofread|edit|revise|replace|update|change|improve)\b/;
+const COPY_QUALITY = /\b(?:shorter|longer|more concise|less wordy|clearer|more direct|friendlier|warmer|punchier|simpler|one line|two lines|single sentence)\b/;
+const BLOCK_REFERENCE = /(?:block|blocks|one|ones|lede|intro(?:duction)?|opening|standfirst|card|cards|tile|tiles|callout|callouts|aside|note|quote|stat|stats|statistic|kpi|metric|counter|form|forms|signup|b\d+)/;
+const COPY_BLOCK_QUALIFIER = "(?:(?:(?:the|that|this)\\s+)?(?:(?:first|second|third|fourth|fifth|sixth|last|final|b\\d+)\\s+)?)";
+
+function hasCopyBlockReference(text: string): boolean {
+  const fieldFromBlock = new RegExp(`${COPY_FIELD.source}(?:\\s+\\w+){0,4}\\s+(?:from|in|inside|within|of|on|off|out\\s+of|next\\s+to|around|for)\\s+(?:(?:the|that|this|first|second|third|fourth|fifth|sixth|last|final|[a-z0-9]+)\\s+){0,2}${BLOCK_REFERENCE.source}\\b`);
+  const fieldInsideBlock = new RegExp(`${COPY_BLOCK_QUALIFIER}${BLOCK_REFERENCE.source}(?:\\s+s)?\\s+(?:(?:background|text|image)\\s+)?${COPY_FIELD.source}`);
+  return fieldFromBlock.test(text) || fieldInsideBlock.test(text) || POSSESSIVE_COPY_REFERENCES.test(text);
+}
 
 /** A definite article, a demonstrative, an ordinal, or a name for the end of a list. On its own each
  *  one means nothing: "the fold" is not a block. It has to be pointing AT something. */
@@ -89,6 +101,9 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
   if (!text.trim()) return false;
   if (/ b\d+ /.test(text)) return true;
   if (PRONOUNS.some((p) => text.includes(p))) return true;
+  if (EXPLICIT_COPY_EDIT.test(text) && COPY_FIELD.test(text)) return true;
+  if (COPY_QUALITY.test(text) && COPY_FIELD.test(text)) return true;
+  if (isCopyEditRequest(prompt) && hasCopyBlockReference(text)) return true;
   const pointer = firstIndexOf(text, DEFINITE);
   if (pointer === -1) return false;
   const noun = firstIndexOf(text.slice(pointer), BLOCK_NOUNS.map((n) => ` ${n} `));
@@ -104,22 +119,19 @@ export function looksLikeAnEdit(prompt: string, blockCount: number): boolean {
 export function isCopyEditRequest(prompt: string): boolean {
   const text = ` ${normalize(prompt)} `;
   if (/\b(?:mention|say|write|rewrite|rephrase|word|shorten|lengthen|trim|tighten|polish|proofread)\b/.test(text)) return true;
-  const copyField = /\b(?:copy|text|wording|words|title|headline|heading|paragraph|body|sentence|content|price|pricing|label|caption|subtitle|subheading|kicker|eyebrow|cta|image|photo|picture|icon|button|link|url|description|tagline|bullet|quote|author|logo|video|media|line|details)\b/;
-  if (/\b(?:change|edit|revise|replace|update|improve|make)\b/.test(text) && copyField.test(text)) return true;
+  if (/\b(?:change|edit|revise|replace|update|improve|make)\b/.test(text) && COPY_FIELD.test(text)) return true;
 
   // A length or tone request may name the block but never name a text field: “make the card
   // shorter” and “trim the callout down to one line” are still copy requests. These qualities are
   // intentionally separate from layout words such as wider or full width.
-  const copyQuality = /\b(?:shorter|longer|more concise|less wordy|clearer|more direct|friendlier|warmer|punchier|simpler|one line|two lines|single sentence)\b/;
-  if (copyQuality.test(text) && /\b(?:make|keep|trim|shorten|lengthen|tighten|reduce|cut|expand|improve)\b/.test(text)) return true;
+  if (COPY_QUALITY.test(text) && /\b(?:make|keep|trim|shorten|lengthen|tighten|reduce|cut|expand|improve)\b/.test(text)) return true;
 
   // Content can also be the object of an otherwise structural verb: “remove the price from the
   // card” means revise the card's copy, not remove the card. Without this boundary the edit router
   // can send that sentence to a model which only knows how to remove, resize or move whole blocks.
   // Require a copy-bearing noun before a preposition that introduces a block reference, so ordinary
   // requests such as “remove the card from the page” remain structural edits.
-  const blockReference = /\b(?:block|card|callout|aside|lede|intro(?:duction)?|paragraph|tile|stat|form|b\d+)\b/;
-  const operation = /\b(?:remove|delete|discard|erase|drop|get rid of|move|shift|nudge|reposition)\b|\btake(?:\s+\w+){1,4}\s+out\b/;
-  return operation.test(text)
-    && new RegExp(`${copyField.source}\\b(?:\\s+\\w+){0,4}\\s+(?:from|in|inside|within|of|on|out\\s+of)\\s+(?:the\\s+)?${blockReference.source}`).test(text);
+  const operation = /\b(?:remove|delete|discard|erase|drop|get rid of|move|shift|nudge|reposition)\b|\btake(?:\s+\w+){1,4}\s+(?:out|off)\b/;
+  if (!operation.test(text)) return false;
+  return hasCopyBlockReference(text);
 }
