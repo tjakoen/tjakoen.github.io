@@ -8,7 +8,7 @@
 import { test, expect, describe } from "bun:test";
 import { parseModelMove, validateMove } from "@tjakoen/grain/ai/model.ts";
 import { buildManifest, type Manifest } from "@tjakoen/grain/ai/manifest.ts";
-import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockIntentRecovery, blockMessage, blockTargetMismatch, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockIntentRecovery, blockMessage, blockTargetMismatch, isBlockEditQuestion, readModelMove, BLOCK_VERBS, type GrainModelPort } from "./block-reasoner.ts";
 
 const GRAIN: GrainModelPort = { parseModelMove, validateMove } as unknown as GrainModelPort;
 
@@ -174,7 +174,7 @@ describe("explicit target guard", () => {
     }
   });
 
-  test("it does not turn an advice question into an edit proposal", () => {
+  test("it does not turn advice or information questions into edit proposals", () => {
     for (const phrase of [
       "Should I remove the callout?",
       "Should we move the callout down?",
@@ -182,6 +182,18 @@ describe("explicit target guard", () => {
       "Do you think I should move the callout down?",
       "Would it be better to remove the callout?",
       "Is it better to move the callout up?",
+      "What happens if I remove the callout?",
+      "How would it look if I make the callout full width?",
+      "Can you tell me whether I should remove the callout?",
+      "I wonder if I should move the callout up.",
+      "Could you tell me how to remove the callout?",
+      "How can I remove the callout?",
+      "Can I remove the callout?",
+      "Could we move the callout up?",
+      "Would it help to move the callout up?",
+      "Is there a reason to remove the callout?",
+      "Would moving the callout up be better?",
+      "Is removing the callout a good idea?",
     ]) {
       expect(blockIntentRecovery(phrase, blocks, "No action.")).toBeNull();
       expect(blockIntentCorrection(phrase, blocks, {
@@ -191,6 +203,20 @@ describe("explicit target guard", () => {
 
     expect(blockIntentRecovery("Could you remove the callout?", blocks, "No action.")?.command)
       .toMatchObject({ action: "block.remove", surface: "block:b3" });
+  });
+
+  test("question-shaped edit requests are recognized at the proposal boundary", () => {
+    for (const phrase of [
+      "What happens if I remove the callout?",
+      "How would it look if I make the callout full width?",
+      "Can you tell me whether I should remove the callout?",
+      "I wonder if I should move the callout up.",
+      "Could you tell me how to remove the callout?",
+      "How can I remove the callout?",
+    ]) {
+      expect(isBlockEditQuestion(phrase)).toBe(true);
+    }
+    expect(isBlockEditQuestion("Could you remove the callout?")).toBe(false);
   });
 
   test("common removal paraphrases recover only with a clear live target", () => {

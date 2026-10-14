@@ -534,36 +534,42 @@ start remains unmeasured.
       [grounded-sentence follow-up](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-grounded-sentence-followup-2026-10-14.md)
       and the [3B comparison](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-qwen25-3b-parser-full-2026-10-14.json).
       This closes the unsafe raw-copy path, not the model's ability to write polished prose.
-- [ ] Measure the Builder's cold start on actual phone hardware. A desktop WebGPU run, even at a
-      phone-sized viewport, does not establish phone memory, download, or generation performance.
-      The 0.5B scored 2/8 in each of two October 11 runs;
-      the 1.5B scored 6/8 in one separate run, but failed both removal cases and added unsupported
-      flourishes to its draft. It scored 6/8 and 5/8 in two October 12 runs, with different passing
-      cases. A warm draft repeated the supplied city but added unsupported phrases; another omitted
-      the city. A stricter prompt was tested and reverted after it also missed the city. One October
-      12 edit reached the 45-second completion limit, so the portfolio allowed 60 seconds; a later
-      full run still timed out on its first deletion, so the limit now allows 75 seconds; the
-      fresh-server run avoided that timeout but took 50 seconds and refused the wrong target. The
-      October 13 1.5B run passed width and move edits but failed both deletion cases and again
-      omitted Utrecht while adding unsupported draft claims. A later warm WebGPU check scored 1/3
-      after adding schema-constrained edit output: explicit `drop b4` passed, relative deletion still
-      targeted b2, and the draft still omitted Utrecht. Its corrected audit harness scores proposed
-      copy before acceptance. This isolated result does not establish a quality improvement. The
-      transparent target correction then let both deletion cases apply through review, while the
-      draft still omitted the city. This focused 2/3 result demonstrates target reconciliation, not a
-      model-quality improvement. A full eight-case run then scored 6/8: both deletions failed, one
-      after 60 seconds and one with `action: null`; the draft included the supplied facts but added
-      unsupported claims. The timeout then increased to 75 seconds. A later full run scored 6/8,
-      after which the declined exact-ID case gained a disclosed, approval-gated recovery. Before the
-      source-reconciliation step, the latest full run scored 7/8 and the draft omitted Utrecht. After
-      source reconciliation, two consecutive full runs scored 8/8, with all five requested details
-      present in the reviewable draft. The audit records each correction beside the raw answer.
-      The October 11 first scenario took
-      40.5 seconds from a fresh browser cache, including model load and generation; the 1.6 GB
-      browser-profile footprint is not a network-size measurement. Exact first-visit network bytes
-      are now recorded in the October 12 cold-download measurement below. Phone hardware remains
-      unmeasured. Keep copy review visible and do not promise reliable
-      natural-language page writing until it passes repeated measured cases.
+- [x] Verify responsive layout and visitor flow at a 390px browser viewport. The reviewed 390px
+      capture, 320px overflow check, and phone-width end-to-end cases cover the portfolio's
+      responsive acceptance. They do not measure model startup, memory use, download size, or
+      generation speed on a physical phone. That device-performance check is a separate follow-up
+      only if the portfolio sets a phone-specific performance target.
+- [ ] Demonstrate reliable natural-language page writing through repeated measured cases before
+      describing the Builder as a dependable page writer. Keep copy review visible in the meantime.
+
+#### Earlier model performance trials
+
+The 0.5B scored 2/8 in each of two October 11 runs. The 1.5B scored 6/8 in one separate run, but
+failed both removal cases and added unsupported flourishes to its draft. It scored 6/8 and 5/8 in
+two October 12 runs, with different passing cases. A warm draft repeated the supplied city but added
+unsupported phrases; another omitted the city. A stricter prompt was tested and reverted after it
+also missed the city. One October 12 edit reached the 45-second completion limit, so the portfolio
+allowed 60 seconds; a later full run still timed out on its first deletion, so the limit now allows
+75 seconds. The fresh-server run avoided that timeout but took 50 seconds and refused the wrong
+target. The October 13 1.5B run passed width and move edits but failed both deletion cases and again
+omitted Utrecht while adding unsupported draft claims. A later warm WebGPU check scored 1/3 after
+adding schema-constrained edit output: explicit “drop b4” passed, relative deletion still targeted
+b2, and the draft still omitted Utrecht. Its corrected audit harness scores proposed copy before
+acceptance. This isolated result does not establish a quality improvement. The transparent target
+correction then let both deletion cases apply through review, while the draft still omitted the city.
+This focused 2/3 result demonstrates target reconciliation, not a model-quality improvement. A full
+eight-case run then scored 6/8: both deletions failed, one after 60 seconds and one with a null action;
+the draft included the supplied facts but added unsupported claims. The timeout then increased to 75
+seconds. A later full run scored 6/8, after which the declined exact-ID case gained a disclosed,
+approval-gated recovery. Before the source-reconciliation step, the latest full run scored 7/8 and
+the draft omitted Utrecht. After source reconciliation, two consecutive full runs scored 8/8, with
+all five requested details present in the reviewable draft. The audit records each correction beside
+the raw answer. The October 11 first scenario took 40.5 seconds from a fresh browser cache, including
+model load and generation; the 1.6 GB browser-profile footprint is not a network-size measurement.
+Exact first-visit network bytes are recorded in the October 12 cold-download measurement below.
+These runs do not measure physical-phone startup or generation performance, and they do not establish
+reliable natural-language writing. Keep copy review visible.
+
 - [x] Cover the supported path with browser tests on the exported static site, and keep the real
       model audit as a separate measured check because headless CI does not provide WebGPU. The
       builder browser suite passes all 71 scenarios, including the example flow, schema delivery,
@@ -1057,11 +1063,11 @@ covers field edits, insertions, moves, possessives, terse commands, and copy-onl
 tests confirm that new-page briefs still compose. The visual gallery has a
 390 by 844 pixel Builder capture; all 36 portfolio captures were refreshed and the phone-width view
 was inspected. The prompt, download disclosure, example, and preview are visible in that capture.
-The existing 320-pixel browser case checks for horizontal overflow. These are browser viewport
-checks, not a physical phone test. A production browser smoke at 390 by 844 loaded the Builder with
-HTTP 200, showed the page heading, composer, and canvas, measured a 390-pixel document width, and
-logged no page errors. This Mac has no attached handset and `simctl` is unavailable, so the
-physical-phone cold start remains open.
+The existing 320-pixel browser case checks for horizontal overflow. A production browser smoke at
+390 by 844 loaded the Builder with HTTP 200, showed the page heading, composer, and canvas, measured
+a 390-pixel document width, and logged no page errors. This browser review satisfies responsive
+layout acceptance. Phone-specific model startup and generation performance remain unmeasured and
+are a separate follow-up only if the portfolio sets a device-specific performance target.
 
 ## Copy-field routing follow-up, October 14
 
@@ -1082,14 +1088,19 @@ could be recovered as deletion requests, even though the guard already refused �
 callout.” A second probe found that “Should I remove the callout?” also became a deletion proposal.
 Follow-up probes found the same issue in “Would it be better to remove the callout?” and “Is it
 better to move the callout up?” Punctuation normalization split modal contractions, and the advice
-questions looked like commands.
-The recovery guard now refuses common negative modal contractions and keeps advice questions out of
-the edit proposal path while still accepting polite commands. Unit tests check nine contraction forms
-and advice questions across both recovery and correction. A 390 by 844 browser test submits three
-negated requests and four advice questions after a scripted model refusal, then confirms that no
-proposal appears and the canvas remains unchanged. The focused reasoner suite passed 50 tests, the
-full unit suite passed 829 tests across 45 files, and all 80 Builder browser cases passed. TypeScript
-checking and link lint passed. These scripted checks do not establish how the live model interprets
-the phrases. Broad natural-language reliability and cold-start behavior on physical phone hardware
-remain open. See the
+questions looked like commands. Later probes found that “What happens if I remove the callout?” and
+“How would it look if I make the callout full width?” also became edit proposals, along with
+questions asking for instructions, permission, or advice, such as “Can I remove the callout?” and
+“Would it help to move the callout up?”
+The recovery guard now refuses common negative modal contractions and advice, information, permission,
+and hypothetical questions while still accepting direct polite commands. Unit tests check nine contraction
+forms and the question examples across both recovery and correction. The 390 by 844 browser test
+submits three negated requests and sixteen questions after a scripted model refusal, then confirms that
+no proposal appears and the canvas remains unchanged. A second browser case returns valid remove,
+width, and move commands for six question-shaped prompts; the Builder refuses every command and
+preserves the canvas. The focused reasoner suite passed 51 tests, the full unit suite passed 830 tests across
+45 files, and all 81 Builder browser cases passed. TypeScript checking passed. These scripted checks do not establish how the live model interprets the phrases. Broad natural-language reliability remains open. The 390px browser review satisfies
+responsive layout and visitor-flow acceptance. Phone-specific model startup and generation
+performance remain unmeasured and are separate evidence only if the portfolio sets a device-specific
+performance target. See the
 [run report](https://github.com/tjakoen/tjakoen.github.io/blob/main/artifacts/runs/2026-10-14-builder-negated-modal-recovery.md).

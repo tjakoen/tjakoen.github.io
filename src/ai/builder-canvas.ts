@@ -38,7 +38,7 @@ import {
   type Byline, type ExportBlock, type ExportFile,
 } from "./builder-export.ts";
 import { isCopyEditRequest, looksLikeAnEdit } from "./block-command.ts";
-import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockIntentRecovery, blockMessage, blockTargetMismatch, inWords, readModelMove, type BlockIntent, type BlockIntentCorrection, type BlockIntentRecovery } from "./block-reasoner.ts";
+import { blockEditManifest, blockEditSchema, blockIntentCorrection, blockIntentRecovery, blockMessage, blockTargetMismatch, inWords, isBlockEditQuestion, readModelMove, type BlockIntent, type BlockIntentCorrection, type BlockIntentRecovery } from "./block-reasoner.ts";
 
 // grain's model boundary and its live-DOM manifest, pulled by URL because the module server refuses
 // a bare import in the browser — the same shape desk-door.ts uses for the door, the kit and the chat
@@ -630,6 +630,10 @@ function boot(): void {
     const read = readModelMove(raw, manifest, grainModel);
     if (read.kind === "refusal") {
       console.info("[builder] refused the desk's move:", read.because, raw);
+    }
+    if (read.kind === "command" && isBlockEditQuestion(ask)) {
+      say("That is a question about an edit, so I left the page unchanged.", "reply");
+      return;
     }
     // A malformed model answer can still be recovered as a review-only proposal when the visitor's
     // own request names one supported operation and one live target. The model never supplies the
