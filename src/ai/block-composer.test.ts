@@ -342,11 +342,58 @@ describe("generated block copy is bounded by each component's visible text contr
     expect(reconciled.copies[1]?.copy.body).toContain("floral and bright");
   });
 
+  test("a prohibited block is removed even when the model returns it", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht. Add an intro that welcomes neighbors, but do not include a card.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card"], [{}, { title: "Sourdough" }]);
+
+    expect(reconciled.names).toEqual(["lede"]);
+    expect(reconciled.droppedBlocks).toBe(1);
+  });
+
+  test("a prohibited block does not count as a requested block", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht without a card.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card"], [{}, { title: "Sourdough" }]);
+
+    expect(reconciled.names).toEqual(["lede"]);
+    expect(reconciled.droppedBlocks).toBe(1);
+  });
+
+  test("a non-BMP character before a prohibition does not shift the excluded block span", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht 🥐. Do not include a card.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card"], [{}, { title: "Sourdough" }]);
+
+    expect(reconciled.names).toEqual(["lede"]);
+  });
+
+  test("a later explicit request overrides an earlier prohibition for the same block", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht without a card, but add one card titled Sourdough.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card", "card"], [{}, { title: "Sourdough" }, {}]);
+
+    expect(reconciled.names).toEqual(["card"]);
+    expect(reconciled.droppedBlocks).toBe(2);
+    expect(reconciled.copies[0]?.copy.title).toBe("Sourdough");
+  });
+
+  test("quoted copy mentioning a block is not a structural exclusion", () => {
+    const brief = "Build a page titled \"No cards available\".";
+    expect(reconcileBuildPlan(brief, ["card"], [{ title: "No cards available" }]).names)
+      .toEqual(["card"]);
+  });
+
   test("a phrase after a callout says command is restored to that callout", () => {
     const brief = "Create a page for Common Ground in Bristol with a callout that says Open studio this Saturday.";
     const reconciled = reconcileBuildPlan(brief, ["callout"], [{}]);
     expect(reconciled.names).toEqual(["callout"]);
     expect(reconciled.copies[0]?.copy.body).toContain("Open studio this Saturday");
+  });
+
+  test("a welcome intro stops before the next block and its requested wording stays there", () => {
+    const brief = "Build a page for Hearth Bakery in Utrecht. Add an intro that welcomes neighbors and a callout that says Open daily, but do not include a card.";
+    const reconciled = reconcileBuildPlan(brief, ["lede", "card", "callout"], []);
+
+    expect(reconciled.names).toEqual(["lede", "callout"]);
+    expect(reconciled.copies[0]?.copy.body).toBe("Hearth Bakery in Utrecht welcomes neighbors.");
+    expect(reconciled.copies[1]?.copy.body).toBe("Open daily");
   });
 
   test("intro description stays in the intro when the model repeats card copy there", () => {

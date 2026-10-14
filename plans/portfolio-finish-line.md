@@ -470,7 +470,7 @@ proof remain open below.
 | /pantry | Show a short install-to-first-use example beside the “installation verified” claim; the current explanation is accurate but text-heavy. | Implemented: the page shows the documented install, kit scaffold, validation, and serve commands, then explains that the board reads the host project's plans in place. The content review caught that the page described the agent-instructions kit but showed plain `pantry init`, which does not install that kit; it now shows `pantry init --kit`, matching the public quickstart. The long install command now wraps inside a responsive two-column desktop layout that stacks on phones. Browser checks guard the kit flag and ensure the first-run steps fit both widths. The PANTRY guides also include the current decisions, run, artifact, and timeline surfaces, identify which routes are not covered by surface toggles, and state the local answer-write path. |
 | /greenroom | Offer a playable sample run or report beside the screenshot so a visitor can inspect the handover, not only read about it. | Implemented: the page summarizes and links to Greenroom's archived seeded report, distinguishing its four practice-environment results from the separate ten-check screenshot and calling out the intentional failures. The phone layout and route links are covered by e2e/projects-layout.e2e.ts. |
 | /native-github-classroom and its docs | Link the project story, architecture, and public demo as one path, while continuing to protect private student and grading data. | Implemented: the first links now move from the architecture diagram to the working demo, safety docs, and public source. The copy keeps course internals and student records private; browser checks cover the phone navigation and confirm the docs route resolves. |
-| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | Implemented for the bounded local workflow. The model chooses registered blocks and order; code grounds visible copy in the brief, filters unrequested structure, and holds every draft for review. The expanded WebGPU matrix passed 10 of 10 reviewed drafts across five brief shapes, and 12 of 12 raw responses matched the closed schema. Repeated edit audits cover supported changes, corrections, approval, and refusal. The [composition capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-composition-visitor-flow-matrix-2026-10-14.json) and [edit repeats](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-repeats-2026-10-14.json) preserve raw and reviewed outcomes. The full Builder browser suite passed all 81 cases, and the production page was reviewed at desktop and 390px. Raw model reliability and behavior outside the measured prompts remain unproven; the review disclosure keeps those limits visible. Responsive checks meet device acceptance, with physical-phone performance outside this goal. |
+| /grain/builder | Keep the limits explicit and improve the live model's ability to build and revise a page before calling the builder a finished AI demonstration. | The bounded visitor flow is guarded: the model chooses registered blocks and order; code grounds visible copy in the brief, filters unrequested structure, and holds every draft for review. The expanded WebGPU matrix passed 10 of 10 reviewed drafts across five brief shapes, and 12 of 12 raw responses matched the closed schema. Repeated edit audits cover supported changes, corrections, approval, and refusal. Follow-up tests found that a prohibited block mention could count as a positive request during reconciliation, and that a welcome sentence could absorb copy meant for a later callout. Code now filters prohibited block types, distinguishes quoted copy, preserves a later positive request, and bounds copy extraction at the next named block. A seven-case live regression matrix passed, including a prohibited-card brief with separate intro and callout requirements. The [composition capture](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-composition-visitor-flow-matrix-2026-10-14.json), [edit repeats](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-repeats-2026-10-14.json), and [composition regression](../audit/builder-composition-regression-2026-10-14.json) preserve raw and reviewed outcomes. Raw model reliability and behavior outside measured prompts remain unproven; the review disclosure keeps those limits visible. Responsive checks meet device acceptance, with physical-phone performance outside this goal. |
 | /grain/builder/preview | Give an empty direct visit a one-click route into the workbench and an example composition; keep the static-host limitations clear. | Implemented: the empty state now opens the workbench with a representative page composed; the static-host limitation remains explicit. |
 | /teaching | Add an anonymized sample activity or rubric so the course and assessment claims have inspectable teaching evidence. | Implemented: an explicitly illustrative responsive-web assessment slice maps observable repository evidence to the published badge criteria without exposing student work or private assignments. |
 | /badges and badge routes | Keep the issuer and criteria prominent, and group the long list by course, term, and award type so a visitor can find one credential quickly. Individual certificates share one route template and need template-level review. | The hub explains the activity threshold and historical reconciliation accurately. Subjects open as native accordions with a short course description, then show one card per class section with direct prelim and midterm criteria links and recipient counts. The October 14 visual pass gives the subject summaries more breathing room, aligns the expand control, and separates the section cards from their credential links; all 14 displayed recipient totals match the class source records. The existing browser check passes, and desktop plus 390px screenshots confirm the hierarchy and no horizontal overflow. Class pages link back to all badge criteria. The shared certificate template has been reviewed at phone width: share-link copying reports success, falls back when clipboard access is unavailable, and exposes a manual link if copying still fails. Browser checks confirm the subject accordions, all 14 class links, phone-width fit, recipient certificates staying out of the sitemap, and class pages not enumerating recipients. |
@@ -547,7 +547,7 @@ proof remain open below.
       and criteria, Calendar entries point to related proof where available, and badge pages link
       back to their issuer and criteria. The talk counts, teaching evidence, calendar links, badge
       privacy, and responsive routes have focused browser coverage.
-- [x] Complete the Builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
+- [ ] Complete the Builder's AI reliability work in [builder-ai-depth.md](/plans/plan/builder-ai-depth),
       then make it a convincing demonstration of the system the portfolio introduces. The current
       design keeps the model local and uses it to choose registered blocks and order. Code assembles
       visible copy from the brief, and review catches omissions before the visitor approves the page.
@@ -556,8 +556,8 @@ proof remain open below.
       with 34 reviewed outcomes across warm WebGPU runs. A new routing audit covers copy-field edits,
       insertions, field moves, possessives, terse commands, missing ordinals, and new-page briefs
       that mention definite titles and blocks. The 3B comparison did not improve the raw answers, so
-      the Builder ignores model prose instead of displaying it. These results satisfy the bounded
-      visitor-workflow criteria; they do not prove language coverage outside the tested matrix or
+      the Builder ignores model prose instead of displaying it. The bounded visitor workflow is
+      measured, but follow-up audits still need to close reliability gaps outside the tested matrix and
       reliable raw model writing. Responsive browser checks satisfy device acceptance, and
       physical-phone performance is outside this goal. See the [two-run draft report](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-draft-six-repeat-validation-2026-10-14.json),
       [original edit paraphrases](https://github.com/tjakoen/tjakoen.github.io/blob/main/audit/builder-edit-paraphrase-repeats-2026-10-14.json),
@@ -858,9 +858,9 @@ broader language reliability remains unproven. Stronger privacy-safe outcome pro
 unavailable for several project claims. The page audit records those evidence limits and keeps the
 claims attributed; it does not turn private or unavailable records into a portfolio action item.
 
-## Current acceptance and release status, October 14
+## Previous release acceptance, October 14
 
-The finish-line audit is complete within the criteria stated in this plan.
+The previous release passed the criteria recorded at that point in this plan.
 Responsive browser checks at desktop and 390-pixel widths satisfy the Builder's device acceptance.
 No physical phone or cold-start measurement is required for this goal. The measured Builder workflow
 meets its completion criteria: 12 raw composition responses matched the closed schema, 10 of 10
@@ -872,7 +872,39 @@ linked, while customer use and private classroom operations remain attributed or
 their limits; no private data is exposed to strengthen those claims. Commit `9b70254` is on `main`.
 Hosted CI passed typecheck, unit tests, lint-baseline validation, and the full browser suite. The
 Pages build and deployment succeeded, and the Builder, Plans, and live-evidence tour routes returned
-HTTP 200. The checkout is clean and tracks `origin/main`.
+HTTP 200. The checkout was clean and tracked `origin/main` at the time of that release.
+
+## Builder negative-block reconciliation follow-up, October 14
+
+A code review found a gap between the composition prompt and reconciliation: the prompt told the
+model that a block named in a prohibition was not a request, but reconciliation treated that same
+mention as a positive block count. A model could therefore return a prohibited block and have it
+survive the review draft. Reconciliation now removes prohibited block mentions from the positive
+count, filters a type that remains prohibited from the model's plan, and ignores quoted copy while
+classifying structural requests. If the brief later explicitly requests that same type, the positive
+request takes effect. The first adversarial live brief also found that the welcome-intro parser could
+absorb the next callout's requested wording and leave its body empty. Copy extraction now stops at a
+new block mention, while the explicit welcome sentence and callout phrase are restored to their own
+fields. The live grader now reads the actual review-panel headings, including blocks with no text
+fields. Unit coverage checks direct prohibitions, a prohibition without other blocks, a later
+positive override, quoted wording, Unicode before exclusions, and adjacent block copy.
+
+The live seven-case WebGPU Builder matrix passed all seven reviewed outcomes. It covered the prior
+intro, single-card, callout, two-card, mixed-prohibition, and pottery briefs plus a new brief asking
+for an intro and callout while prohibiting a card. In five of the six existing briefs, the model
+proposed one to three unrequested blocks; reconciliation removed them before review. The sixth model
+answer matched the requested intro. On the new brief, the model returned only the intro; code restored
+the requested callout with “Open daily” in its body and left the prohibited card out. The direct unit
+case supplies the adversarial model answer containing a prohibited card and confirms that
+reconciliation removes it. The
+[tracked live capture](../audit/builder-composition-regression-2026-10-14.json) records the raw plans
+and visitor-facing drafts. The full Builder browser suite passed 81 cases, the full unit suite passed,
+and type checking, link lint, and diff checks passed. Responsive browser coverage remains the device
+criterion; physical-phone performance is outside this goal.
+
+This closes the identified negative-block reconciliation gap. It does not establish broad language
+understanding or reliable raw model writing; those remain open and require more held-out tasks before
+the Builder reliability item can be closed.
 
 
 ## Done means
