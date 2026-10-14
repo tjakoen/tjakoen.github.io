@@ -398,9 +398,33 @@ export function composeMessage(ask: string, names: readonly string[] = BLOCK_NAM
     "Return only the block structure as JSON, like {\"blocks\":[{\"name\":\"lede\"},{\"name\":\"card\"}]}. Do not write copy or add text fields.",
     `The only block names are: ${names.join(", ")}. Use no other name.`,
     "Repeat an object to ask for more than one block of the same name.",
+    "Include a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.",
     "The code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.",
     "Put blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
   ].join("\n");
+}
+
+/** Constrain composition to its actual model contract: an ordered list of registered block names,
+ *  with an optional supported span. Copy is generated from the brief by code after this response.
+ *  This keeps malformed `text` or arbitrary copy properties out of the model's allowed output. */
+export function blockPlanSchema(names: readonly string[] = BLOCK_NAMES): Record<string, unknown> {
+  return {
+    type: "object",
+    properties: {
+      blocks: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: { name: { enum: [...names] } },
+          required: ["name"],
+          additionalProperties: false,
+        },
+      },
+      span: { enum: ["full", "half", "third"] },
+    },
+    required: ["blocks"],
+    additionalProperties: false,
+  };
 }
 
 // ---------------------------------------------------------------------------------------------

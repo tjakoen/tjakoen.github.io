@@ -7,7 +7,7 @@
 // an invented verb, and the repetition loop that never closes its own object.
 import { test, expect, describe } from "bun:test";
 import {
-  completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
+  blockPlanSchema, completeWithin, composeMessage, readModelPlan, MAX_PLANNED_BLOCKS,
   COMPLETION_TIMEOUT_MS, briefAnchors, briefAnchorsMissingFromDraft, groundBlockCopy,
   reconcileBuildPlan, termsOutsideBrief,
 } from "./block-composer.ts";
@@ -25,12 +25,41 @@ describe("the prompt hands over the closed set", () => {
     for (const name of BLOCK_NAMES) expect(message).toContain(name);
     expect(message).toContain("Do not add copy, facts, claims, testimonials, guarantees or statistics.");
     expect(message).toContain("Do not write copy or add text fields.");
+    expect(message).toContain("A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.");
   });
 
   test("the sentence itself leads, because a small model reads the top of a prompt best", () => {
     expect(composeMessage("  a page about bread  ").startsWith("a page about bread")).toBe(true);
   });
 
+});
+
+describe("the composition response has a closed schema", () => {
+  test("allows only registered block names and the optional supported span", () => {
+    expect(blockPlanSchema()).toEqual({
+      type: "object",
+      properties: {
+        blocks: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: { name: { enum: [...BLOCK_NAMES] } },
+            required: ["name"],
+            additionalProperties: false,
+          },
+        },
+        span: { enum: ["full", "half", "third"] },
+      },
+      required: ["blocks"],
+      additionalProperties: false,
+    });
+  });
+
+  test("a caller-supplied name list stays the schema's closed vocabulary", () => {
+    const schema = blockPlanSchema(["card"]);
+    expect((schema.properties as Record<string, { items: { properties: { name: { enum: string[] } } } }>)
+      .blocks?.items.properties.name.enum).toEqual(["card"]);
+  });
 });
 
 describe("a plan is read out of whatever the model wrapped it in", () => {

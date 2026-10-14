@@ -1115,3 +1115,17 @@ recommendation forms at the proposal boundary. The reasoner suite passed all 51 
 model returns valid commands. This closes the identified question-form gaps. Broad natural-language
 reliability remains open because a scripted model cannot establish how the live model handles other
 wordings.
+
+## Structured build responses, October 14
+
+The build path now submits a closed response schema that permits only registered block names and
+supported span values, with no generated copy fields. The six-scenario live matrix completed twice:
+all 12 raw responses matched the schema, and all 12 reviewed drafts passed. The model still chose an
+extra card for the intro-only negative-anchor and mixed-prohibition briefs. The Builder removed that
+block before review, including in a four-run follow-up after clarifying the prompt. This closes the
+raw-copy-field failure seen in the earlier run, but it does not close the raw structural-reliability
+acceptance criterion. Keep draft review visible while broader composition reliability remains open.
+The [matrix](../audit/builder-structured-composition-schema-live-2026-10-14.json),
+[exclusion recheck](../audit/builder-structured-composition-exclusion-recheck-2026-10-14.json), and
+[run report](../artifacts/runs/2026-10-14-builder-structured-composition-schema.md) record the
+evidence and limits.
