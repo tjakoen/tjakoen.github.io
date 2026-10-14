@@ -62,6 +62,8 @@ export type Action =
   // only cleanup it gets); the reasoner (never this router) writes it to the notepad as a marked
   // line and never composes or edits the wording itself (law #2).
   | { kind: "memory-set"; fact: string }
+  | { kind: "memory-read" }
+  | { kind: "portfolio-faq"; topic: "bio" | "runtime" }
   // C2 visitor memory — "forget what you know about me". No payload: the desk never deletes pad
   // content (that would be the one irreversible AI action this whole feature is built to avoid), so
   // the reasoner's handler is a fixed, code-authored explanation, never a model-composed reply.
@@ -226,6 +228,17 @@ export function routeAction(text: string): Action | null {
     // empty or deictic-only remainder — fall through (no return): a bare "remember"/"remember this"
     // isn't a memory ask, and the deictic case is caught by the note-write trigger just below instead.
   }
+  // C2 visitor memory — reading the visitor's saved facts needs no language model. The notepad is
+  // already the source of truth, so read its marked lines directly instead of asking a small model
+  // to paraphrase or overlook them.
+  if (/^(?:what do you know about me|what do you remember about me|what have you saved about me|show me what you remember about me)$/.test(t))
+    return { kind: "memory-read" };
+  // Stable portfolio facts should be read from the authored grounding, not reconstructed by a small
+  // model. Keep these narrow so unrelated questions still use retrieval and open conversation.
+  if (/^(?:who is tj|who s tj|tell me about tj|introduce tj)$/.test(t))
+    return { kind: "portfolio-faq", topic: "bio" };
+  if (/^(?:how do you work under the hood|how does the desk work under the hood|how does this desk work)$/.test(t))
+    return { kind: "portfolio-faq", topic: "runtime" };
   const forgetMatch = FORGET_RE.exec(text.trim());
   if (forgetMatch) {
     const remainder = norm(forgetMatch[1] ?? "");
@@ -253,6 +266,7 @@ export function routeAction(text: string): Action | null {
   // showed the 0.5B mangling a route list into invented slugs, and the capabilities reply already
   // names every section — so the model never gets this one.
   if (/\bwhat can i do\b/.test(t) || /\bwhat (should|can) i (do|try)\b/.test(t) ||
+      /\bwhat can you do\b/.test(t) || /\bwhat are you able to do\b/.test(t) ||
       /\bwhat to do\b/.test(t) || /\b(suggest|recommend)\b.*\b(do|next|try)\b/.test(t) ||
       /\bwhat.?s (here|next)\b/.test(t) ||
       /\b(which|what) pages?\b/.test(t) || /\bwhere can you take (me|us)\b/.test(t))
@@ -271,6 +285,7 @@ export function routeAction(text: string): Action | null {
   // "demo"/"showcase". Checked alongside the tour so it never falls into the vaguer clarify bucket.
   if (/\bwatch\b.*\b(work|act)\b/.test(t) || /\b(?:run|play|start|show me|see)\b.*\b(?:demo|showcase)\b/.test(t))
     return { kind: "showcase-start" };
+  if (/\bshow me (?:something )?interactive\b/.test(t)) return { kind: "showcase-start" };
 
   // A4 theme switching — zero model, both axes GRAIN's theme.js already exposes. Checked here (after
   // the specific intents above, before the vaguer clarify bucket below) so a theme ask never gets
@@ -405,6 +420,7 @@ export const ACTION_CAPABILITIES: ActionCapability[] = [
   { kind: "open-latest-note", group: "navigate", phrase: "open the latest note" },
   { kind: "tour-start", group: "navigate", phrase: "walk you through the site on a guided tour" },
   { kind: "notes-filter", group: "operate", phrase: "filter the notes by topic" },
+  { kind: "memory-read", group: "see", phrase: "read back the memories you saved on your notepad" },
   { kind: "theme", group: "operate", phrase: "switch the site's theme" },
   { kind: "showcase-start", group: "operate", phrase: "drive the site itself, step by step, so you can watch" },
   { kind: "form-build", group: "operate", phrase: "build a form live from a plain description" },

@@ -236,6 +236,8 @@ export interface DeskDeps {
   navigate?: (url: string) => void;
   /** The current page's readable content, for "summarize this page". */
   pageText?: () => string;
+  /** Authored summary for a focused content item, when the page already provides one. */
+  pageSummary?: () => { title: string; summary: string } | null;
   /** The current page's route + title, for capabilities phrasing. */
   pageInfo?: () => { route: string; title: string };
   /** GRAIN's live-DOM manifest (domManifest) — what's operable on THIS page, honestly derived from
@@ -1139,6 +1141,40 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           return { ok: true, ops: [], reply: line };
         }
 
+        // C2 visitor memory — read the marked facts straight from the visitor's notepad. This is a
+        // structured lookup, not a language task: do not load the model to paraphrase personal notes.
+        if (action?.kind === "memory-read") {
+          const memories = parseMemories(deps.padMarkdown?.() ?? "");
+          await minThink();
+          const line = memories.length
+            ? `I have this saved from what you told me: ${memories.map((fact) => `“${fact}”`).join("; ")}. It's on your notepad, where you can edit or remove it.`
+            : "I don't have any Desk memories saved yet. Tell me “remember …” and I'll add it to your notepad.";
+          deps.revealNotepad?.();
+          tools.emit(deps.kit.spotlightOp("notepad", { active: true }));
+          await typeOut(line);
+          await tools.delay(1400);
+          tools.emit(deps.kit.spotlightOp("screen", { active: false }));
+          return { ok: true, ops: [], reply: line };
+        }
+
+        // Stable questions about the portfolio's author and the desk runtime have exact, authored
+        // answers in facts.md. Reading the named section avoids asking a small model to reconstruct
+        // public profile details or invent implementation claims from a partial retrieval result.
+        if (action?.kind === "portfolio-faq") {
+          const knowledge = await deps.loadKnowledge();
+          const heading = action.topic === "bio" ? "Who is TJ?" : "How does the desk work under the hood?";
+          const chunk = knowledge.chunks.find((item) => item.route === FACTS_ROUTE && item.heading === heading);
+          await minThink();
+          if (!chunk) {
+            const line = "I don't have that information on hand. The About page has the current details.";
+            await typeOut(line);
+            return { ok: false, ops: [], reply: line, reason: "authored FAQ section missing" };
+          }
+          const line = chunk.text.split(/(?<=[.!?])\s+/).slice(0, action.topic === "bio" ? 2 : 3).join(" ");
+          await typeOut(line);
+          return { ok: true, ops: [], reply: line };
+        }
+
         // C2 visitor memory — "forget what you know about me". Deterministic + offline: the desk
         // NEVER deletes or edits pad content — that's the one irreversible AI action this whole
         // feature is built to avoid (noteReplaceOp could nuke the visitor's OWN notes right alongside
@@ -1373,7 +1409,21 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
     // model marks the desk offline.
     const modelTurn = async (turn: Turn): Promise<Decision> => {
       const { tools, log, text, action, getCatalog,
-        setBody, setBodyRaw, setChips, offline, narrate, streamInto, travelAndNavigate } = turn;
+        setBody, setBodyRaw, setChips, offline, narrate, streamInto, typeOut, travelAndNavigate } = turn;
+        // A feed's featured card already has an authored title and summary. Return that verified
+        // content directly instead of asking a 0.5B model to paraphrase and invent unsupported claims.
+        if (action?.kind === "summarize" && stripSlash(deps.pageInfo?.().route ?? "") === "/notes") {
+          const featured = deps.pageSummary?.();
+          if (!featured) {
+            setBody(esc("There's nothing on this page for me to summarize."), "committed");
+            return { ok: false, ops: [], reply: "empty page", reason: "no visible note summary" };
+          }
+          narrate("reads", "the featured note");
+          const line = `The featured note is “${featured.title}.” Its summary says: ${featured.summary}`;
+          await typeOut(line);
+          return { ok: true, ops: [], reply: line };
+        }
+
         // 4) needs the model. Load it (implicit opt-in on first send): a real progress bar, honest
         //    about the one-time cost. No stub fallback — unavailable/failed ⇒ Desk Offline.
         if (degraded) return offline();
@@ -1395,10 +1445,10 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           if (!page) { setBody(esc("There's nothing on this page for me to summarize."), "committed"); return { ok: false, ops: [], reply: "empty page", reason: "no page text" }; }
           narrate("reads", "this page");
           const acc = await streamInto(engine, [
-            // The forced "This page" opening is what actually suppresses the 0.5B's markdown-summary
-            // reflex (### headings + keyword bullets) — "no markdown" alone didn't (audit finding).
-            { role: "system", content: "You summarize a web page for a visitor in 2 to 3 plain sentences, from the CONTENT only. Start your reply with exactly \"This page\". Sentences only — no headings, no markdown, no lists, no hype, no repetition." },
-            { role: "user", content: `Page: ${deps.pageInfo?.().title ?? ""}\n\nSummarize this page:\n\n${page.slice(0, 4000)}` },
+            // The prompt asks for subjects and claims from the page rather than a description of the
+            // page. A summary that only says it summarizes topics is not useful to the visitor.
+            { role: "system", content: "In 1 or 2 plain sentences, summarize only claims stated in the CONTENT. For a list of articles, name two listed titles or their stated subjects. Do not infer a shared purpose, schedule, outcome, or claim. Do not describe the page or say that you are summarizing it. No headings, markdown, lists, hype, or repetition." },
+            { role: "user", content: `Page: ${deps.pageInfo?.().title ?? ""}\n\nCONTENT:\n${page.slice(0, 4000)}` },
           ], profile.summarizeMaxTokens);
           return { ok: true, ops: [], reply: acc };
         }

@@ -1,6 +1,6 @@
 ---
 id: portfolio-finish-line
-status: done
+status: doing
 track: portfolio
 depends: [site-builder, builder-ai-depth, runs-surface-polish]
 touches:
@@ -38,6 +38,81 @@ This plan closes the portfolio experience and its presentation. It includes the 
 BATCH and GRAIN, but it does not change their internal implementations. That deeper design-system
 work has its own later review. Existing page-level plans remain the source of implementation details;
 this plan owns the final path across them.
+
+The finish line now also includes a portfolio-wide audit of browser-local AI. Builder generation is
+one workload, while DESK handles grounded questions, summaries, fuzzy navigation, and selected
+site actions. The audit will distinguish tasks that should stay deterministic from those that need
+the model, measure each model-backed task against visitor outcomes, and tune only where repeatable
+evidence supports a change. It will also produce a reusable standard in `standards/LOCAL-AI-STANDARD.md`
+so the same method can be applied to the owner's other projects. Browser responsiveness at desktop
+and narrow phone widths is the device criterion; physical handset testing is not required.
+
+## Open work: portfolio-wide local AI
+
+- [x] Inventory every visitor-facing browser-local model path, its profile, prompt/context inputs,
+  deterministic guards, model output, review step, offline behavior, and first-use download cost.
+- [x] Build a task-specific evaluation matrix for DESK grounded answers, summaries, fuzzy navigation,
+  any model-composed action, and Builder composition and editing. Keep deterministic controls in the
+  matrix so the whole visitor flow is checked, not just raw model text.
+- [x] Run repeatable live WebGPU baselines and inspect the captured raw answers and visible outcomes.
+  Record model ID, runtime/profile, prompt or decoding changes, warm/cold state, latency, and failures.
+- [x] Tune only the failing layer: retrieval and bounded context for grounding, task-specific prompts
+  and decoding for model work, or deterministic code and review gates where generation is the wrong
+  tool. Re-run the same cases and holdouts before keeping a change.
+- [x] Verify first-use and warm-use behavior, WebGPU-unavailable handling, and desktop/390px browser
+  presentation for the DESK and Builder surfaces. A fresh 0.5B profile displayed 66% download
+  progress at 20 seconds and completed the first grounded answer in 29 seconds. The warm matrix then
+  passed 51/51. The existing no-WebGPU E2E suite and 390px Builder/GRAIN browser checks passed. Do not
+  require physical-phone testing.
+- [x] Write the reusable method and evidence-backed lessons in `standards/LOCAL-AI-STANDARD.md`, then
+  link it from the standards index and developer docs. Keep implementation-specific facts in this
+  plan or the owning feature plan.
+
+### Initial local-AI evidence, October 14
+
+The live WebGPU baseline exercised eleven DESK tasks on Qwen2.5-0.5B. Seven passed the current
+checks and four failed: “Who is TJ?” omitted teaching; a natural capability question missed the
+capabilities response and did not mention page summarization; “Show me something interactive here”
+fell into a long, irrelevant answer; and “what do you know about me?” failed to repeat the saved
+visitor fact. The “summarize this page” check passed but accepted generic text that named no subject,
+so the audit's own grader was too weak to count that result as useful. These are visible in the local
+baseline report at `.cache/desk-audit/report-portfolio-local-ai-baseline-2026-10-14.json`; the report
+is local because it includes visitor-visible content and is not part of the published evidence set.
+
+The first code review found a source-of-truth mismatch: `src/ai/facts.md` did not carry the current
+About profile's one year of college teaching or the 15-to-25 person leadership range. The shared desk
+also had no deterministic path for reading back its own marked memory lines. Those are being fixed at
+the data and routing boundaries. The natural capability wording now uses the existing live capability
+catalog, and the interactive request maps to the existing model-driven showcase instead of asking the
+small chat model to invent a description. Summary grading now requires an actual subject from the feed.
+The first strict recheck exposed two further failures. The shared 0.5B answered a capability question
+with a page-specific capability list, which is appropriate, but its old grader demanded the literal
+word GRAIN. The model also invented industries in its Notes summary. The capability check now grades
+the actual actions the page offers. The Notes feed summary now reads the featured card's authored
+title and summary directly, a deterministic operation that avoids paraphrase drift. The exact "Who is
+TJ?" and "How do you work under the hood?" questions now read the matching section of the facts file, so
+the portfolio's current leadership and teaching facts and the live model/runtime description do not
+depend on small-model recall. These actions still use the model for open-ended questions, synthesis
+that needs it, and the Builder's generation/editing paths.
+
+The complete live WebGPU matrix then passed 51/51 scenarios on October 14. It includes grounded DESK
+questions, the live capability catalog, the cross-page demonstration, summaries, deterministic routing and
+page actions, visitor memory, 30 Builder edit/composition cases, negative content constraints, and a
+guided tour. The report records model profile, raw model output, timings, page outcome, and grading:
+.cache/desk-audit/report-portfolio-local-ai-final2-2026-10-14.json. It is local-only because it
+contains visitor-visible text. A prior seven-task A/B using Qwen2.5-1.5B passed five tasks, with
+generation times from 14 to 27 seconds (18 seconds median); it still missed runtime and summary
+quality. The 0.5B shared-profile baseline took 5 to 18 seconds across comparable tasks. The larger
+model improved the bio but did not earn its additional download and latency for the whole DESK, so
+the shared DESK remains on 0.5B. The Builder retains its existing conservative 1.5B device gate.
+
+The standard index and developer docs now link to LOCAL-AI-STANDARD.md. Its rendered page was
+inspected at desktop and 390px on October 14 with no horizontal overflow. The 390px GRAIN and Builder
+screens also have no horizontal overflow, and the Builder's live edit and generation model results
+were inspected at desktop. The affected browser suite passed 87/87, including the offline desk and
+narrow-phone Builder workbench. The Builder's real-model matrix is desktop Chromium on this Mac, so
+its phone behavior remains a responsive-browser check rather than a claim about mobile GPU
+performance. Cold-start evidence is local at .cache/desk-audit/report-portfolio-local-ai-cold-start-2026-10-14.json.
 
 ## Current progress (2026-10-13)
 

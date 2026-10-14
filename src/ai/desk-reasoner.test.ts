@@ -66,13 +66,37 @@ const chat = (text = "who is TJ?"): Intent =>
   ({ source: "user", session: "s", screen: "notes", surface: "chat-log", action: "chat.send", payload: { text } });
 
 describe("makeDeskReasoner — healthy path", () => {
+  test("portfolio FAQ returns the authored facts without loading the model", async () => {
+    let loads = 0;
+    const bioKnowledge: Knowledge = {
+      ...knowledge,
+      chunks: [{ id: "facts#bio", route: "facts", title: "About", heading: "Who is TJ?", text: "TJ leads the team. He teaches college software engineering. This is another sentence." }],
+    };
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; }, loadKnowledge: async () => bioKnowledge });
+    const d = await makeDeskReasoner(deps).decide(chat("Who is TJ?"), makeTools().tools);
+    expect(loads).toBe(0);
+    expect(d.reply).toBe("TJ leads the team. He teaches college software engineering.");
+  });
+
+  test("Notes summary reads the featured card's authored summary without loading the model", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({
+      loadEngine: async () => { loads++; return fakeEngine([]).engine; },
+      pageInfo: () => ({ route: "/notes", title: "Notes" }),
+      pageSummary: () => ({ title: "Ten Times Zero Is Still Zero", summary: "AI multiplies what you already are." }),
+    });
+    const d = await makeDeskReasoner(deps).decide(chat("Summarize this page"), makeTools().tools);
+    expect(loads).toBe(0);
+    expect(d.reply).toBe("The featured note is “Ten Times Zero Is Still Zero.” Its summary says: AI multiplies what you already are.");
+  });
+
   test("emits the committed user bubble FIRST (releases the composer), then streams + settles", async () => {
     const { engine } = fakeEngine(["Hel", "lo ", "there"]);
     const { deps } = makeDeps({ loadEngine: async () => engine });
     const r = makeDeskReasoner(deps);
     const { tools, ops } = makeTools();
 
-    const decision = await r.decide(chat(), tools);
+    const decision = await r.decide(chat("Can you help me understand this site?"), tools);
 
     // 1) first op = your message, committed, on the chat-log (this is what releases the trigger)
     expect(ops[0]!.op).toBe("append");
@@ -118,7 +142,7 @@ describe("makeDeskReasoner — offline (NO stub fallback for chat)", () => {
     const r = makeDeskReasoner(deps);
     const { tools, ops } = makeTools();
 
-    const decision = await r.decide(chat(), tools);
+    const decision = await r.decide(chat("Can you help me understand this site?"), tools);
 
     expect(offline).toBeGreaterThan(0);
     expect(fallbackCalls).toEqual([]);                       // chat never went to the stub
@@ -156,7 +180,7 @@ describe("makeDeskReasoner — load failure (single model, no fallback)", () => 
     let offline = 0; deps.markOffline = () => { offline++; };
     const r = makeDeskReasoner(deps);
     const err = console.error; console.error = () => {};
-    try { await r.decide(chat(), makeTools().tools); } finally { console.error = err; }
+    try { await r.decide(chat("Can you help me understand this site?"), makeTools().tools); } finally { console.error = err; }
 
     expect(loads).toBe(1);                                        // one attempt only — nothing lighter to retry
     expect(offline).toBeGreaterThan(0);
@@ -170,7 +194,7 @@ describe("makeDeskReasoner — control", () => {
     const { deps } = makeDeps({ loadEngine: async () => fe.engine });
     const r = makeDeskReasoner(deps);
 
-    await r.decide(chat(), tools);
+    await r.decide(chat("Can you help me understand this site?"), tools);
 
     expect(fe.interrupted()).toBeGreaterThan(0);
     // it still settled (done + committed) so the bubble never hangs pending
@@ -1471,7 +1495,7 @@ describe("makeDeskReasoner — A3 citation (a deterministic 'Read more' under a 
     const r = makeDeskReasoner(deps);
     const { tools, ops } = makeTools();
 
-    await r.decide(chat("who is TJ?"), tools);
+    await r.decide(chat("What is BREAD?"), tools);
 
     expect(ops.some((o) => typeof o.html === "string" && o.html.includes("desk-cite"))).toBe(false);
   });
@@ -1668,7 +1692,7 @@ describe("makeDeskReasoner — C1 visitor-intent onboarding", () => {
     const r = makeDeskReasoner(deps);
     const { tools, ops } = makeTools();
 
-    await r.decide(chat("who is TJ?"), tools);
+    await r.decide(chat("Can you help me understand this site?"), tools);
 
     const chips = chipsOf(ops)!.html;
     expect(chips).toContain("Summarize TJ's experience");
@@ -1710,6 +1734,34 @@ describe("makeDeskReasoner — C1 visitor-intent onboarding", () => {
 describe("makeDeskReasoner — C2 visitor memory (memory-set / memory-forget)", () => {
   const notepadManifest = () => ({ note: "", targets: [{ id: "notepad", kind: "notepad", accepts: ["note.append", "note.replace"] }] }) as any;
   const noNotepadManifest = () => ({ note: "", targets: [{ id: "screen", kind: "screen", accepts: [] }] }) as any;
+
+  test("memory-read returns the visitor's saved fact directly without loading the model", async () => {
+    let loads = 0;
+    let revealed = 0;
+    const { deps } = makeDeps({
+      loadEngine: async () => { loads++; return fakeEngine([]).engine; },
+      padMarkdown: () => "- Desk memory: I'm here about grain",
+      revealNotepad: () => { revealed++; },
+    });
+    const r = makeDeskReasoner(deps);
+    const { tools, ops } = makeTools();
+
+    const d = await r.decide(chat("what do you know about me?"), tools);
+
+    expect(loads).toBe(0);
+    expect(d.ok).toBe(true);
+    expect(d.reply).toContain("I'm here about grain");
+    expect(revealed).toBe(1);
+    expect(ops.some((o) => o.op === "spotlight" && o.target === "notepad" && o.active)).toBe(true);
+  });
+
+  test("memory-read with no saved facts says so without loading the model", async () => {
+    let loads = 0;
+    const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; }, padMarkdown: () => "" });
+    const d = await makeDeskReasoner(deps).decide(chat("what do you know about me?"), makeTools().tools);
+    expect(loads).toBe(0);
+    expect(d.reply).toContain("don't have any Desk memories");
+  });
 
   test("happy path: appends the exact marked line, reveals the pad, confirms — no model load at all", async () => {
     let loads = 0;
@@ -1798,7 +1850,7 @@ describe("makeDeskReasoner — C2 visitor memory (memory-set / memory-forget)", 
     expect(d.reply).not.toContain("Desk memory");
   });
 
-  test("call site: the visitor's own pad memories reach the VISITOR NOTES block in the built prompt", async () => {
+  test("ordinary grounded chat still receives the visitor's own memories as VISITOR NOTES", async () => {
     let captured: { role: string; content: string }[] | null = null;
     const engine: DeskEngine = {
       chat: { completions: { create: async (req: unknown) => {
@@ -1814,7 +1866,7 @@ describe("makeDeskReasoner — C2 visitor memory (memory-set / memory-forget)", 
     const r = makeDeskReasoner(deps);
     const { tools } = makeTools();
 
-    await r.decide(chat("what do you know about me?"), tools);
+    await r.decide(chat("Can you help me understand this site?"), tools);
 
     const sys = captured!.find((m) => m.role === "system")!;
     expect(sys.content).toContain("VISITOR NOTES");
@@ -1834,7 +1886,7 @@ describe("makeDeskReasoner — C2 visitor memory (memory-set / memory-forget)", 
     const r = makeDeskReasoner(deps);
     const { tools } = makeTools();
 
-    await r.decide(chat("who is TJ?"), tools);
+    await r.decide(chat("Can you help me understand this site?"), tools);
 
     const sys = captured!.find((m) => m.role === "system")!;
     expect(sys.content).not.toContain("VISITOR NOTES");
