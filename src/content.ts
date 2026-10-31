@@ -27,8 +27,11 @@ import { highlightedCodeBlock } from "./content-code.ts";
 import { join, basename } from "node:path";
 import { readdir, lstat } from "node:fs/promises";
 import { buildKnowledge, type KnowledgeSource } from "./ai/knowledge.ts";
+import { createKnowledgeCache } from "./ai/knowledge-cache.ts";
 import { SITE } from "./seo.ts";
 import { FACTS_ROUTE, type Knowledge } from "./ai/retrieval.ts";
+
+const CONTENT_READ_BATCH = 8;
 
 // A dirSource that ignores symlinked .md files. `standards/AGENTS.md` is a symlink to CLAUDE.md
 // (the AGENTS.md tooling convention — an agent that opens the folder finds it), but dirSource
@@ -88,10 +91,16 @@ function publishedSource(base: ContentSource): ContentSource {
   return {
     list: async () => {
       const slugs = await base.list();
-      const keep = await Promise.all(slugs.map(publishable));
+      const keep: boolean[] = [];
+      for (let offset = 0; offset < slugs.length; offset += CONTENT_READ_BATCH) {
+        keep.push(...await Promise.all(slugs.slice(offset, offset + CONTENT_READ_BATCH).map(publishable)));
+      }
       return slugs.filter((_, i) => keep[i]!);
     },
-    read: async (slug) => ((await publishable(slug)) ? base.read(slug) : null),
+    read: async (slug) => {
+      const raw = await base.read(slug);
+      return raw !== null && isPublishedStatus(parseFrontmatter(raw).data.status) ? raw : null;
+    },
   };
 }
 
@@ -585,26 +594,23 @@ ${inject}</body>
 // (§18 data route) so the export freezes it and the model fetches it, never the repo.
 export async function listKnowledgeSources(): Promise<KnowledgeSource[]> {
   const out: KnowledgeSource[] = [];
-  for (const col of collections) {
-    if (col.prefix === "/standards") continue;           // internal standards — not desk grounding
-    // Events stay out of the corpus, but the REASON changed when the placeholders were deleted: they
-    // are real writeups now, not set dressing. They are excluded because they are episodic (one day,
-    // one room) where the corpus answers "what does he think about X", and a note already carries the
-    // argument an event only gestures at. Worth revisiting deliberately, not by default.
-    if (col.prefix === "/calendar") continue;
-    for (const slug of await col.source.list()) {
-      const raw = await col.source.read(slug);
-      if (raw === null) continue;
-      const { data, body } = parseFrontmatter(raw);
-      out.push({
-        route: `${col.prefix}/${slug}`,
-        title: typeof data.title === "string" ? data.title : slug,
-        markdown: body,
-        // this source has a REAL rendered page (col.source went through the MILL heading
-        // override above), so its ## / ### headings carry real DOM ids — let buildKnowledge
-        // stamp each chunk with the matching anchor (A1: deep-link answers).
-        anchored: true,
-      });
+  // Grounding is an explicit allowlist. Adding another public collection must not silently
+  // place its records in chat context; badges, events and internal standards are not sources.
+  for (const col of collections.filter((c) => c.prefix === "/notes" || c.prefix.endsWith("/docs"))) {
+    const slugs = await col.source.list();
+    for (let offset = 0; offset < slugs.length; offset += CONTENT_READ_BATCH) {
+      const batch = await Promise.all(slugs.slice(offset, offset + CONTENT_READ_BATCH).map(async (slug) => {
+        const raw = await col.source.read(slug);
+        if (raw === null) return null;
+        const { data, body } = parseFrontmatter(raw);
+        return {
+          route: `${col.prefix}/${slug}`,
+          title: typeof data.title === "string" ? data.title : slug,
+          markdown: body,
+          anchored: true,
+        } satisfies KnowledgeSource;
+      }));
+      for (const source of batch) if (source) out.push(source);
     }
   }
   // the hand-authored grounding (bio, "What is BREAD?", how the site is built) — covers the chips.
@@ -619,11 +625,13 @@ export async function listKnowledgeSources(): Promise<KnowledgeSource[]> {
   return out;
 }
 
-/** The compiled corpus the desk retrieves against — served at /knowledge.json (and frozen by the
- *  export). Built from the live content each call; the corpus is small, so no cache is needed. */
-export async function buildPortfolioKnowledge(): Promise<Knowledge> {
-  return buildKnowledge(await listKnowledgeSources());
-}
+const portfolioKnowledge = createKnowledgeCache(async () => buildKnowledge(await listKnowledgeSources()));
+
+/** Share corpus construction across cold requests and reuse it until authored content changes. */
+export const buildPortfolioKnowledge = (): Promise<Knowledge> => portfolioKnowledge.load();
+
+/** Development watchers call this after note, layer-doc or facts edits; exports build once. */
+export const invalidatePortfolioKnowledge = (): void => portfolioKnowledge.invalidate();
 
 // Every note's frontmatter, newest-first (undated last, then by slug) — the SAME order MILL's
 // own /notes index uses (mill/serve.ts's byDateDesc). Shared so every OTHER consumer that lists

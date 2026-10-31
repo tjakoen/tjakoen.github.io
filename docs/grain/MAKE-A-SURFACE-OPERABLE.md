@@ -90,3 +90,35 @@ e.g. a client-side visual effect.)
 Add the verb to [`AI-INTERFACE.md`](AI-INTERFACE.md)'s vocabulary section. The contract remains the
 registry's source of truth; the guide explains the operation and its transport limits to the next
 person who needs to use it.
+
+## Walk the existing contact field before adding another verb
+
+The portfolio is a runnable consumer example. From its repository root, install the frozen lockfile
+and the matching browser runtime, then exercise both transports:
+
+```sh
+bun install --frozen-lockfile
+bunx playwright install chromium
+bun run check
+bun test src/ai/desk-reasoner.test.ts
+bunx playwright test desk-contact-prefill desk-grounding-recovery --workers=1
+```
+
+The browser cases use the real registered contact field and client door with model availability
+disabled. They verify on-page filling, cross-page drafting, missing-message refusal and denied
+storage. The field changes through field.set and exposes AI provenance until the visitor edits it.
+The denied-storage cases must retain a copyable draft without navigation. None sends a message.
+
+For the server transport, run the integration case that submits an intent and reads its SSE result:
+
+```sh
+bun test src/routes/ai-routes.integration.test.ts
+bun run dev:stub
+```
+
+The stub is intentional choreography for the server example. The normal development command and
+static export use the browser client door; a successful server handler does not prove that a static
+page can execute that verb. Natural-language generation needs a separate WebGPU run. The generic
+model reasoner rejects registered verbs it does not implement, so adding a contract entry alone is
+not enough. Follow the file and component steps above, then add the corresponding behavior and
+refusal assertions for the new surface.

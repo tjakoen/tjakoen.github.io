@@ -13,7 +13,7 @@
 
 import type { Reasoner, ReasonTools } from "@tjakoen/grain/ai/reasoner.ts";
 import type { Intent, Decision, RenderOp } from "@tjakoen/grain/ai/contract.ts";
-import { buildPrompt, type ChatMessage } from "./prompt.ts";
+import { buildPrompt, PromptBudgetError, type ChatMessage } from "./prompt.ts";
 import { retrieve, FACTS_ROUTE, type Knowledge } from "./retrieval.ts";
 import type { DeskEngine, EngineProgress, ModelProfile } from "./webllm-loader.ts";
 import type { ChatStreamOptions } from "@tjakoen/grain/ai/model-chat.ts";
@@ -364,8 +364,8 @@ export interface DeskDeps {
    *  on this page. Read AFTER the fill, to confirm the draft actually landed (validate twice). */
   contactFieldValue?: () => string | null;
   /** Stash the already-drafted message for the door to fill on arrival after navigating to /mail —
-   *  same "stash BEFORE navigate" discipline mailTaskSet follows (the navigate tears this down). */
-  contactTaskSet?: (message: string) => void;
+   *  Returns false when persistence failed; navigation must leave the recoverable draft here. */
+  contactTaskSet?: (message: string) => boolean;
   // ---- D1 form builder demo ("build me a form that asks for a name and an email") — the desk
   // navigates to /grain/builder?ask=<the description>, a plain GET the server answers with matchSpec's own
   // rendered form (this reasoner never renders anything itself). It then prefills the TEXT fields
@@ -1058,9 +1058,13 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           // same field once /mail settles, at the same CONTACT_FILL_BEAT_MS pace.
           if (deps.contactTaskSet && deps.navigate) {
             await minThink();
+            if (!deps.contactTaskSet(draft)) {
+              const line = `I couldn't save this draft for the next page, so I stayed here. Copy this message into Mail:\n\n${draft}`;
+              await typeOut(line);
+              return { ok: false, ops: [], reply: line, reason: "contact draft persistence failed" };
+            }
             const line = "Heading to the mail panel to draft that for you — you'll review and send it.";
             await typeOut(line);
-            deps.contactTaskSet(draft);   // stash BEFORE navigating — the navigate tears this down
             await travelAndNavigate("/mail", "/mail", "Mail", "Here's the compose panel.", "the navigation");
             return { ok: true, ops: [], reply: line };
           }
@@ -1514,10 +1518,18 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
         // entirely when empty, the same "absent/empty leaves the prompt unchanged" contract canDo/nav
         // already follow — never an empty VISITOR NOTES block for the model to puzzle over.
         const visitorNotes = parseMemories(deps.padMarkdown?.() ?? "");
-        const acc = await streamInto(engine, buildPrompt({
-          query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, canDo,
-          visitorNotes: visitorNotes.length ? visitorNotes : undefined, tokenBudget: profile.promptTokenBudget,
-        }));
+        let messages: ChatMessage[];
+        try {
+          messages = buildPrompt({
+            query: text || "Hello", chunks: grounding, history, navShortlist: shortlist, canDo,
+            visitorNotes: visitorNotes.length ? visitorNotes : undefined, tokenBudget: profile.promptTokenBudget,
+          });
+        } catch (error) {
+          if (!(error instanceof PromptBudgetError)) throw error;
+          setBody(esc(error.message), "committed");
+          return { ok: false, ops: [], reply: error.message, reason: "prompt budget exceeded" };
+        }
+        const acc = await streamInto(engine, messages);
 
         // The model chose to navigate. Validate TWICE before acting on generated text: the route must be
         // REAL (present in the sitemap catalog — never trust the model to have stayed in scope), AND

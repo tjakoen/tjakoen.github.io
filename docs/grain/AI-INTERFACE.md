@@ -440,6 +440,14 @@ the model and executes directly. The `manifest` provider is injected by the root
 with a fake model — no browser, no network. Swapping the stub for a real model is wiring a `Model`, not
 a rewrite: the seam was the plan all along.
 
+The generic reasoner implements note.append, note.replace, item.archive and navigate. Reply-shaped
+demo.run, say.set and say.stream need a reply destination and text. It projects only supported
+actions into the model's manifest and rejects other registered actions explicitly; an application
+may supply its own reasoner for fields, checks or blocks. Registration alone does not implement an
+action. JSON action, target, reply and payload types are checked before execution. Cancellation is
+checked after model completion and before effects or navigation; it cannot roll back a write already
+started by an application tool.
+
 **Streaming, for a conversational surface.** The `Model` port is whole-completion for a reason: the
 strict validated-move core parses one JSON object, so streaming buys it nothing. A *chat* surface is the
 opposite — it types the reply token by token and must **stop mid-generation** (a stop button; a weak

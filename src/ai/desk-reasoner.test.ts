@@ -66,6 +66,18 @@ const chat = (text = "who is TJ?"): Intent =>
   ({ source: "user", session: "s", screen: "notes", surface: "chat-log", action: "chat.send", payload: { text } });
 
 describe("makeDeskReasoner — healthy path", () => {
+  test("an oversized grounded question declines explicitly without invoking generation", async () => {
+    let generations = 0;
+    const { deps } = makeDeps({ streamChat: async function* () { generations++; yield "unexpected"; } });
+    const { tools, ops } = makeTools();
+    const d = await makeDeskReasoner(deps).decide(chat("Explain the architecture. ".repeat(1000)), tools);
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("prompt budget exceeded");
+    expect(d.reply).toContain("shorter or more specific");
+    expect(generations).toBe(0);
+    expect(ops.some((op) => op.op === "replace" && op.html?.includes("shorter or more specific"))).toBe(true);
+  });
+
   test("portfolio FAQ returns the authored facts without loading the model", async () => {
     let loads = 0;
     const bioKnowledge: Knowledge = {
@@ -1316,7 +1328,7 @@ describe("makeDeskReasoner — B1 contact prefill (\"tell TJ I want to talk abou
     const { deps } = makeDeps();
     deps.pageInfo = () => ({ route: "/", title: "Welcome" });
     deps.navigate = (u) => { calls.push(`navigate:${u}`); };
-    deps.contactTaskSet = (message) => { calls.push(`contactTaskSet:${message}`); };
+    deps.contactTaskSet = (message) => { calls.push(`contactTaskSet:${message}`); return true; };
     const r = makeDeskReasoner(deps);
 
     const d = await r.decide(chat("tell TJ I want to talk about grain"), makeTools().tools);
@@ -1324,6 +1336,19 @@ describe("makeDeskReasoner — B1 contact prefill (\"tell TJ I want to talk abou
     expect(calls).toEqual([`contactTaskSet:${DRAFT}`, "navigate:/mail"]);   // drafted + stashed BEFORE the tear-down
     expect(d.ok).toBe(true);
     expect((d.reply ?? "")).toContain("review and send");
+  });
+
+  test("failed contact persistence keeps the draft recoverable and never navigates", async () => {
+    const { deps } = makeDeps();
+    const navigated: string[] = [];
+    deps.pageInfo = () => ({ route: "/", title: "Welcome" });
+    deps.navigate = (url) => { navigated.push(url); };
+    deps.contactTaskSet = () => false;
+    const d = await makeDeskReasoner(deps).decide(chat("tell TJ I want to talk about grain"), makeTools().tools);
+    expect(d.ok).toBe(false);
+    expect(d.reason).toBe("contact draft persistence failed");
+    expect(d.reply).toContain(DRAFT);
+    expect(navigated).toEqual([]);
   });
 
   test("elsewhere on the site, no contact-task deps: an honest decline, no crash", async () => {

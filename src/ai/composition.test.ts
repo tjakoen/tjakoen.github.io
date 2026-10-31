@@ -4,7 +4,7 @@
 // was already there.
 import { test, expect, describe } from "bun:test";
 import {
-  emptyComposition, addFromDescription, removeBlock, moveBlock, setSpan, nextIndex,
+  emptyComposition, addFromDescription, addFromPlan, removeBlock, moveBlock, setSpan, nextIndex,
   toDocument, fromDocument, COMPOSITION_VERSION,
 } from "./composition.ts";
 import { BLOCK_COMPONENTS } from "./block-set.ts";
@@ -136,6 +136,29 @@ describe("the document: what export writes and import reads", () => {
   test("an unrecognized span falls back to full rather than losing the block", () => {
     const doc = { version: 1, blocks: [{ id: "b1", component: "block-card", span: "quarter", data: {}, props: {} }] };
     expect(fromDocument(doc, BLOCK_COMPONENTS).blocks[0]!.span).toBe("full");
+  });
+
+  test("duplicate and invalid imported addresses are refused before operations can affect another block", () => {
+    const c = fromDocument({ blocks: ["b1", "b1", "unsafe address", "b2"].map((id) => ({ id, component: "block-card" })) }, BLOCK_COMPONENTS);
+    expect(ids(c)).toEqual(["b1", "b2"]);
+    expect(c.refusals).toHaveLength(2);
+    expect(ids(removeBlock(c, "b1"))).toEqual(["b2"]);
+    expect(setSpan(c, "b1", "half").blocks.map((b) => b.span)).toEqual(["half", "full"]);
+  });
+
+  test("generated missing addresses reserve later imported IDs and remain unique after another add", () => {
+    const c = fromDocument({ blocks: [{ component: "block-card" }, { id: "b1", component: "block-card" }, { component: "block-card" }] }, BLOCK_COMPONENTS);
+    expect(ids(c)).toEqual(["b2", "b1", "b3"]);
+    expect(ids(addFromDescription(c, "a callout"))).toEqual(["b2", "b1", "b3", "b4"]);
+  });
+
+  test("an imported maximum safe address cannot make subsequent additions collide", () => {
+    let c = fromDocument({ blocks: [{ id: `b${Number.MAX_SAFE_INTEGER}`, component: "block-card" }] }, BLOCK_COMPONENTS);
+    c = addFromDescription(c, "a card and a callout");
+    c = addFromPlan(c, ["card"], "a card");
+    expect(new Set(ids(c)).size).toBe(4);
+    expect(c.blocks.every((b) => Number.isSafeInteger(Number(b.id.slice(1))))).toBe(true);
+    expect(fromDocument(toDocument(c), BLOCK_COMPONENTS).blocks).toEqual(c.blocks);
   });
 
   test("something that is not a composition at all is refused as a whole, by name", () => {

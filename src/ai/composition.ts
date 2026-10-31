@@ -33,12 +33,28 @@ export function nextIndex(comp: PageComposition): number {
   return max;
 }
 
+/** Preserve normal increasing addresses, falling back to free low addresses if an imported
+ *  ceiling exhausts JavaScript's safe integers. Every appended block stays independently operable. */
+function addressAdded(comp: PageComposition, blocks: Block[]): Block[] {
+  const used = new Set(comp.blocks.map((b) => b.id));
+  let fallback = 1;
+  return blocks.map((block) => {
+    let id = block.id;
+    if (!Number.isSafeInteger(Number(id.slice(1))) || used.has(id)) {
+      while (used.has(`b${fallback}`)) fallback++;
+      id = `b${fallback++}`;
+    }
+    used.add(id);
+    return { ...block, id };
+  });
+}
+
 /** Add whatever a description asks for to the END of the composition. The refusals REPLACE rather
  *  than accumulate: they describe the last thing asked for, and a list that grew forever would still
  *  be showing a visitor what they were refused three prompts ago as though it just happened. */
 export function addFromDescription(comp: PageComposition, description: string): PageComposition {
   const { blocks, refusals } = matchBlocks(description, nextIndex(comp));
-  return { blocks: [...comp.blocks, ...blocks], refusals };
+  return { blocks: [...comp.blocks, ...addressAdded(comp, blocks)], refusals };
 }
 
 /** Add the blocks a MODEL planned, holding to every rule `addFromDescription` holds to.
@@ -57,7 +73,7 @@ export function addFromPlan(
   suppressSampleCopy = false,
 ): PageComposition {
   const { blocks, refusals } = composeFromNames(names, description, nextIndex(comp), span, copies, suppressSampleCopy);
-  return { blocks: [...comp.blocks, ...blocks], refusals };
+  return { blocks: [...comp.blocks, ...addressAdded(comp, blocks)], refusals };
 }
 
 /** Drop one block by id. An id that is not there returns the composition unchanged rather than
@@ -130,6 +146,12 @@ export function fromDocument(raw: unknown, known: readonly string[]): PageCompos
   }
   const blocks: Block[] = [];
   const refusals: BlockRefusal[] = [];
+  const reservedIds = new Set(doc.blocks.flatMap((block: unknown) => {
+    if (!block || typeof block !== "object" || !("id" in block)) return [];
+    return typeof block.id === "string" ? [block.id] : [];
+  }));
+  const usedIds = new Set<string>();
+  let generatedIndex = 0;
   for (const b of doc.blocks) {
     if (!b || typeof b !== "object") continue;
     const { id, component, span, data, props } = b as Partial<Block>;
@@ -140,8 +162,18 @@ export function fromDocument(raw: unknown, known: readonly string[]): PageCompos
       });
       continue;
     }
+    let blockId: string;
+    if (id === undefined || id === null || id === "") {
+      do { blockId = `b${++generatedIndex}`; } while (reservedIds.has(blockId) || usedIds.has(blockId));
+    } else if (typeof id !== "string" || !/^b[1-9]\d*$/.test(id) || !Number.isSafeInteger(Number(id.slice(1))) || usedIds.has(id)) {
+      refusals.push({ token: String(id), reason: "that block has an invalid or duplicate address, so it cannot be operated independently." });
+      continue;
+    } else {
+      blockId = id;
+    }
+    usedIds.add(blockId);
     blocks.push({
-      id: typeof id === "string" && id ? id : `b${blocks.length + 1}`,
+      id: blockId,
       component,
       // An unrecognized span falls back rather than refusing the whole block: the content is the
       // part worth keeping, and full is the layout that is never wrong, only sometimes wide.

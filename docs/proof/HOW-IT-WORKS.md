@@ -72,6 +72,12 @@ read-only in both directions: the watcher only ever pushes a rebuilt view, it ne
 message back. Omit `liveScriptSrc` and the board still works, it's just a normal server-rendered
 page that needs a reload to see a change.
 
+Refreshes are serialized. Watch startup errors, asynchronous watch errors and rebuild failures are
+reported through the optional onError callback, or the server error log by default. Shutdown is
+asynchronous: await watcher.stop(), or the standalone server handle's stop(), before deleting files
+or releasing resources it may still be reading. Stop closes the watch immediately, suppresses late
+broadcasts and drains any active rebuild.
+
 ## The CLI
 
 - **`proof check [dir]`**: a deterministic lint. Schema validity, duplicate plan ids, dangling
@@ -84,6 +90,12 @@ page that needs a reload to see a change.
   step rather than editing a host's existing `settings.json` or `CLAUDE.md` itself.
 - **`proof serve [dir] [--port N]`**: the standalone board, for a project with no host app to mount
   `createProofRoutes` into.
+
+## Verification evidence
+
+The verification command compares plans with Git evidence. An unavailable Git command or invalid
+comparison ref is a failed verification, not an empty successful diff. A valid comparison with no
+changes remains a valid empty diff.
 
 ## What's not built yet
 

@@ -156,7 +156,7 @@ const BLOCK_TABLE: BlockEntry[] = [
 ];
 
 /** Give repeated fallback cards distinct examples so a multi-card preview does not look duplicated.
- *  Model-written fields still replace these values when the visitor builds through the local model. */
+ *  Source-grounded fields replace these examples when the visitor reviews a local-model build. */
 const REPEATED_CARD_SAMPLES: Record<string, string>[] = [
   { title: "No build step", body: "Nothing between source and server: no bundler, no transpiler, no watcher." },
   { title: "A closed set", body: "The model chooses registered blocks; the code owns their fields and rendering." },

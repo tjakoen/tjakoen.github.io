@@ -98,18 +98,22 @@ Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
 
 ## Running the gates
 
-The gates run in a container rather than against whatever is installed on the host, driven from
-the bread repo checked out beside this one, which holds the compose file:
+Run the same Bun checks as this repository's CI from the repository root:
 
 ```sh
-MSYS_NO_PATHCONV=1 docker compose --profile gates run --rm gates-portfolio
+bun install --frozen-lockfile
+bun run check
+bun test
+bun tools/lint-gate.ts
+bunx playwright install chromium
+bunx playwright test --ignore-snapshots
 ```
 
-It installs from the frozen lockfile, then runs the typecheck, the tests and the linter. The
-baseline is 618 pass, 0 fail; anything less is a real regression rather than a local
-quirk.
-The reason it is not a host run belongs to bread's docs/OPERATING-NOTES.md rather than here, so
-it has one home: a Windows host without Developer Mode cannot create the symlink these fixtures
-build, and a host run therefore reports failures that do not exist. The `MSYS_NO_PATHCONV=1`
-prefix is not optional from Git Bash, which otherwise rewrites a container path into a
-Windows one and kills the run before it starts.
+Record the actual test totals and failures. Historical fixed counts are not an acceptance bar for
+a growing suite. The lint gate compares against its committed baseline and is advisory. CI skips
+image comparisons because the committed visual baselines are macOS-specific; use the unmodified
+visual suite on macOS when changing presentation. See .github/workflows/ci.yml for runner details.
+
+The earlier container command depended on a sibling compose file absent from this checkout.
+Do not prescribe it unless that setup is restored and verified. Windows runs that exercise symlinks
+need Developer Mode or a verified environment that supports them; report that prerequisite explicitly.

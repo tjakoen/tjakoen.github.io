@@ -634,7 +634,7 @@ test.describe("the model chooses the verb", () => {
     await expect(page.locator(DRAFT_REVIEW)).toBeVisible();
     await expect(page.locator("[data-builder-draft-brief]")).toHaveText("Build a Hearth Bakery page in Utrecht with an intro that says it is a neighborhood bakery, then a card titled Coffee with the words baked fresh each morning.");
     await expect(page.locator(DRAFT_REVIEW)).toContainText("Compare names, locations, and claims with the draft before adding it.");
-    await expect(page.locator(DRAFT_REVIEW)).toContainText("joins supplied details into sentences for recognized intro requests");
+    await expect(page.locator(DRAFT_REVIEW)).toContainText("Code builds the text from details in your brief rather than using raw model prose");
     await expect(page.locator("[data-builder-draft-evidence]"))
       .toContainText("Detected names, quoted phrases, and numbers appear in the draft.");
     await expect(page.locator(ACCEPT_DRAFT)).toBeDisabled();
@@ -1396,6 +1396,18 @@ test.describe("taking the page away", () => {
 });
 
 test.describe("opening one back in, honestly", () => {
+  test("Undo after Open restores the page that was replaced", async ({ page }) => {
+    await build(page, "an intro, a card, a callout and a stat");
+    const file = await exportFile(page, "json");
+    await build(page, "a stat");
+    const before = await page.locator(CELL).allTextContents();
+    await page.locator(PICKER).setInputFiles({ name: file.name, mimeType: "application/json", buffer: Buffer.from(file.body) });
+    await expect(page.locator(CELL)).toHaveCount(4);
+    await page.locator("[data-undo]").click();
+    await expect(page.locator(CELL)).toHaveCount(1);
+    expect(await page.locator(CELL).allTextContents()).toEqual(before);
+  });
+
   test("opening replaces the canvas rather than adding to it, and drops the prompt from the address", async ({ page }) => {
     await build(page, "an intro, a card, a callout and a stat");
     const file = await exportFile(page, "json");

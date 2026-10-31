@@ -100,7 +100,9 @@ you know where to edit.
 | **Change the global page shell** (head, scripts) | the `PAGE_HEAD` / `PAGE_ASSETS` constants in [`src/server.ts`](../src/server.ts) | one place, injected into every page — don't hand-list assets in a page's `<head>` |
 | **Change / turn off visitor analytics** | `CF_BEACON_TOKEN` + `analyticsBeacon` in [`src/seo.ts`](../src/seo.ts) | Cloudflare Web Analytics, cookieless, injected into every page's head with the rest of the machine-readable head. Production only (`NODE_ENV`), so the deployed pages count and a local run never does. The token is public by design and lives in the source; clear the constant to turn it off, or set `CF_BEACON_TOKEN` in the env to override it for a rotation or a local trial |
 | **Change the view counts in the status bar** | [`src/analytics.ts`](../src/analytics.ts) (how they render) + [`tools/analytics-pull.ts`](../tools/analytics-pull.ts) (where they come from) | baked in at export time from `.cache/analytics.json`, not live — the static site has no backend to ask. No data = an empty span that collapses, which is the normal local state. `bun run analytics:pull --probe` prints the live GraphQL schema |
-| **Change what the AI does in a demo** | `grain/packages/grain/ai/reasoner.ts` (the scripted stub) | it's choreography today; the live model lands at M★ (see [ROADMAP.md](https://github.com/tjakoen/bread/blob/main/ROADMAP.md)) |
+| **Change the visitor's DESK behavior** | src/ai/desk-reasoner.ts and src/ai/desk-door.ts | deterministic actions and browser-local grounded answers share the client door; dev:stub deliberately uses scripted responses |
+| **Change Builder generation or editing** | src/ai/builder-canvas.ts, src/ai/block-composer.ts | the model proposes registered structure; code reconciles the request and derives copy from supplied phrases before visitor review |
+| **Change a scripted framework demo** | grain/packages/grain/ai/reasoner.ts | choreography remains useful for demos and deterministic tests; it is distinct from the live DESK and Builder models |
 | **Add / change an AI verb or surface** | `grain/packages/grain/ai/contract.ts` first, then walk the alignment row in [`../CLAUDE.md`](../../bread/CLAUDE.md) | this is *not* a minor edit — it ripples into tests + docs |
 
 ## The dev loop
@@ -116,6 +118,11 @@ bun run shots      # capture screenshots + a gallery (to *see* a change headless
 Edit a page, a component's CSS, or a note → **just refresh**. The server recomposes on the request;
 component/style changes hot-reload. Only a change to `src/server.ts` or other server code needs a restart
 (the `bun run dev` watcher handles most of it).
+
+The assistant's compiled grounding corpus contains published notes, framework docs and authored
+facts. It excludes badge records, events and internal standards. Cold requests share one build;
+development watchers invalidate it after note, docs or facts edits. A failed browser fetch can be
+retried on the same page rather than remaining cached as a failure.
 
 Changed how a page *looks* on purpose? The visual-regression suite (`e2e/visual.e2e.ts`) will fail
 because the pixels moved — that's it working. Re-bless the baseline once you're happy:
