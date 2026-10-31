@@ -1,9 +1,9 @@
 ---
 id: ai-agency-navigation
-status: todo
+status: doing
 track: ai
 depends: []
-touches: [ai/, routes/ai-routes.ts, ../grain/packages/grain/ai/, scripts/xray.js, pages/mail.html, tours/]
+touches: [src/ai/, src/routes/ai-routes.ts, view/pages/mail.html, content/tours/, e2e/]
 owner: ai
 ---
 
@@ -16,8 +16,25 @@ owner: ai
 > **intuitively, from its exposure to what it can see and what it can do** — not from a hardcoded
 > script. And the toggle that shows "what can the AI see" needs to be much better.
 
-This is an **audit + implementation** plan. The audit is grounded in the code as it stands today so
-the build starts from what's real, not a guess.
+This is an **audit + implementation** plan. The original audit and proposed phases below are
+historical. The November 1 reconciliation and current tasks state what remains; the old Send
+proposal is not the current behavior or permission to add a submission verb.
+
+## Reconciled state, November 1, 2026
+
+The page-derived capability catalog, field.set, visible field filling, cross-page contact drafts,
+and behavior tests are implemented. Contact drafting opens Mail and fills the message, while the
+visitor reviews, edits and sends with the existing compose controls. Sending remains human-only;
+there is no form.submit action in the current vocabulary.
+
+Navigation handover is implemented through task-specific persisted state for contact, tours and
+other actions. It is not the generic planner originally proposed in P3. When contact persistence
+fails, the assistant now stays on the source page and returns the draft for copying. Browser
+regressions cover denied writes and denied access to session storage.
+
+The remaining product questions are collecting missing information, subject drafting, a chat review
+card, a richer x-ray surface and genuinely model-selected task initiation. A generic planner and
+AI submission are possible new scope, not missing prerequisites for the existing useful flow.
 
 ---
 
@@ -141,13 +158,15 @@ A published note on "an AI that uses the site like you do" once it ships.
 
 - [x] P1: extend the manifest into one page-derived capability catalog (see / navigate / operate)
 - [x] P1: fold `actions.ts` aliases + the capabilities sentence into that one catalog
-- [ ] P2: add `data-surface` to the mail compose fields + form
-- [ ] P2: add `field` / `form` kinds + `field.set` / `form.submit` verbs to `grain/ai/contract.ts` (+ conformance)
-- [ ] P2: dispatcher applies `field.set` / `form.submit` with the pending → committed lifecycle
-- [ ] P3: a task-runner that persists a multi-step plan across MPA navigation (reuse CRUMB's resume pattern)
-- [ ] P4: wire the contact flow end to end (ask → navigate → fill → confirm card → send)
+- [x] P2: make the contact-message field addressable and fill it through field.set.
+- [x] P2: display AI provenance until the visitor edits the field.
+- [x] P3: persist contact drafting across navigation with a checked failure path.
+- [x] P4: recognize a message-bearing request, navigate, open Compose, and fill the body; the visitor sends.
+- [x] P6: exercise on-page drafting, cross-page drafting, missing-message refusal and denied storage in browser tests.
+- [ ] Decide whether missing-detail collection, subject drafting or a chat review card earns the next bounded slice.
+- [ ] Decide whether a generic planner is needed beyond the existing task-specific handovers.
 - [ ] P5: x-ray v2 — panel/legend + See/Navigate/Operate grouping + status-bar affordance
-- [ ] P6: conformance e2e for the verbs + the contact task; CRUMB tour stop; a note
+- [ ] P6: add a dedicated contact-flow tour and consider a note after the remaining experience is reviewed.
 - [ ] Prove the model can *choose* this flow from the catalog (not just a hardcoded "contact" alias)
 
 ## Open questions / decisions

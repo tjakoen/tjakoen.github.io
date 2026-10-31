@@ -2213,6 +2213,11 @@ path/rewrite logic (the only branching) lives in `batch/export/rewrite.ts` with 
 
 What Tier 1 does:
 
+Configured asset directories that cannot be read produce entries in ExportReport.warnings, including
+the source path and filesystem error, even when no logger is supplied. Other readable mounts still
+copy. Omitting the optional assets setting is valid; an explicitly configured unreadable directory
+is an incomplete export. The caller decides whether warnings should block publication.
+
 - **Pages** → `dist/<route>/index.html` (pretty dirs); **generated data routes** (`/components.css`,
   `/search.json`, `/sitemap.xml`, `/robots.txt`) → written at their literal path; CSS and JavaScript
   assets have root-relative references rewritten for `PUBLIC_BASE_PATH`, while binary assets are

@@ -1231,6 +1231,7 @@ function boot(): void {
       say(`Nothing in ${chosen.name} this build can render: ${named}. The page is as you left it.`, "refusal");
       return;
     }
+    remember(state);
     state = opened;
     // The prompt that produced the page did not produce THIS page, so it stops being echoed and
     // stops riding in the address. A shared link that claimed to rebuild an imported file would

@@ -1,13 +1,23 @@
 // portfolio/ai/prompt.test.ts — message assembly: persona first, CONTEXT tagged, history window,
 // and budget clipping so a big corpus/history never blows the small window.
 import { test, expect, describe } from "bun:test";
-import { buildPrompt, __test, type ChatMessage } from "./prompt.ts";
+import { buildPrompt, PromptBudgetError, __test, type ChatMessage } from "./prompt.ts";
 import type { Chunk } from "./retrieval.ts";
 
 const chunk = (id: string, route: string, text: string, heading = "", title = "T"): Chunk =>
   ({ id, route, title, heading, text });
 
 describe("buildPrompt", () => {
+  test("oversized queries and first grounding chunks are explicitly refused without truncating their meaning", () => {
+    expect(() => buildPrompt({ query: "What is BREAD? ".repeat(1000), chunks: [], history: [] })).toThrow(PromptBudgetError);
+    expect(() => buildPrompt({ query: "q", chunks: [chunk("a", "/x", "large ".repeat(2000))], history: [] })).toThrow(PromptBudgetError);
+    expect(() => buildPrompt({ query: "q", chunks: [], history: [], canDo: ["capability ".repeat(1000)] })).toThrow(PromptBudgetError);
+  });
+
+  test("accepted prompts include every wrapper within the declared ceiling", () => {
+    const messages = buildPrompt({ query: "Who is TJ?", chunks: [chunk("a", "/x", "Grounded biography.")], history: [], visitorNotes: ["I am visiting"], canDo: ["navigate"], navShortlist: [{ route: "/about", label: "About" }] });
+    expect(messages.reduce((n, m) => n + __test.approxTokens(m.content), 0)).toBeLessThanOrEqual(__test.PROMPT_TOKEN_BUDGET);
+  });
   test("there is exactly ONE system message, first, opening with the persona; the query is last (user)", () => {
     const msgs = buildPrompt({ query: "who is TJ?", chunks: [chunk("a", "/x", "TJ teaches")], history: [] });
     expect(msgs.filter((m) => m.role === "system").length).toBe(1);   // MLC: system prompt must be the only, first message

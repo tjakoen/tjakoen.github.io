@@ -38,7 +38,7 @@ import { renderCanvas, renderLibrary } from "./ai/canvas.ts";
 // comes from grain and the page parks the markup for the browser to read back.
 import { madeWith } from "@tjakoen/grain/scripts/made-with.js";
 // --- MILL mount (portfolio content: /notes + layer docs) — see mill/serve.ts "HOW TO MOUNT" ---
-import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, shellPage, COLLECTION_DIRS, type CalendarEvent } from "./content.ts";
+import { createPortfolioContentRoutes, createPortfolioDeckRoutes, listPortfolioDeckRoutes, listPortfolioContentRoutes, listRecentNotes, listLatestEvents, listNoteRoutesByDate, renderNotesFeedPage, buildPortfolioKnowledge, invalidatePortfolioKnowledge, listPortfolioNotes, listNoteCalendarEvents, listEventCalendarEvents, kindLabel, parsePhotos, FOLDED_NOTES, renderFoldedNotePage, shellPage, COLLECTION_DIRS, type CalendarEvent } from "./content.ts";
 const BADGES_DIR = COLLECTION_DIRS["/badges"];
 // Short share aliases: /b/<id> → the full cert. The generator writes this map on --emit. Loaded once
 // at boot (authoring a badge = a redeploy anyway). A miss is a 404, not a crash.
@@ -716,6 +716,16 @@ if (config.hotReload) {
   watchComponents(join(config.grainDir, "ai"), () => { styles.refresh(); modules.refresh(); });   // ai.css (bundled) + client modules
 
   watchComponents(config.pagesDir, () => { sitemap.refresh(); catalog.refresh(); });
+
+  // The compiled grounding corpus shares cold requests. Markdown edits invalidate it, including
+  // publish-status changes, so a warm local server never answers from a note just made a draft.
+  for (const [prefix, dir] of Object.entries(COLLECTION_DIRS)) {
+    if (prefix !== "/notes" && !prefix.endsWith("/docs")) continue;
+    watch(dir, (_event, file) => {
+      if (!file || String(file).endsWith(".md")) invalidatePortfolioKnowledge();
+    });
+  }
+  watch(join(import.meta.dir, "ai", "facts.md"), invalidatePortfolioKnowledge);
 
   // The portfolio's OWN client modules (src/ai/*.ts served through /modules). watchComponents above
   // deliberately ignores anything that is not .html/.css/.md, so it cannot cover these, and the

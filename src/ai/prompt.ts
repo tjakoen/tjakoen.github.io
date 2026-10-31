@@ -46,6 +46,11 @@ const PROMPT_TOKEN_BUDGET = 1400;
 const HISTORY_TURNS = 6;        // last 3 exchanges (user+assistant)
 const approxTokens = (s: string): number => Math.ceil(s.length / 4);
 
+/** A request that cannot retain its instructions and grounding within the selected model budget. */
+export class PromptBudgetError extends Error {
+  constructor() { super("That request and its context exceed this model's prompt budget. Ask a shorter or more specific question."); }
+}
+
 // The persona: grounded-only, short, honest about the edges. It must never invent facts about TJ —
 // when the context doesn't cover the question, it says so and points at a page path. Kept terse so
 // a 0.5B follows it. The "concrete facts" + "complete sentences" lines are baseline-audit findings
@@ -120,7 +125,10 @@ function contextBlock(chunks: Chunk[], budget: number): string {
     const head = c.heading ? `${c.title} — ${c.heading}` : c.title;
     const block = `[${c.route}] ${head}\n${c.text}`;
     const cost = approxTokens(block);
-    if (spent + cost > budget && parts.length > 0) break;   // always include at least one chunk
+    if (spent + cost > budget) {
+      if (parts.length === 0) throw new PromptBudgetError();
+      break;
+    }
     parts.push(block);
     spent += cost;
   }
@@ -159,7 +167,11 @@ export function buildPrompt(input: PromptInput): ChatMessage[] {
   // per-turn variable the history/context ratio should have to absorb.
   const notesCost = notes ? approxTokens(notes) : 0;
   const queryCost = approxTokens(query);
-  let remaining = budget - personaCost - choicesCost - navCost - canDoCost - notesCost - queryCost;
+  // Include section separators and the context label, rather than spending the entire ceiling on
+  // content and only adding its wrappers afterward. Oversized required input is refused intact.
+  const wrapperCost = approxTokens("\n\nCONTEXT (site content the visitor can open):\n\n") + 12;
+  let remaining = budget - personaCost - choicesCost - navCost - canDoCost - notesCost - queryCost - wrapperCost;
+  if (remaining < 0) throw new PromptBudgetError();
 
   const historyBudget = Math.floor(remaining * 0.35);
   const clippedHistory = clipHistory(history, Math.max(0, historyBudget));
@@ -183,6 +195,8 @@ export function buildPrompt(input: PromptInput): ChatMessage[] {
   const messages: ChatMessage[] = [{ role: "system", content: systemContent }];
   messages.push(...clippedHistory);
   messages.push({ role: "user", content: query });
+  if (messages.reduce((total, message) => total + approxTokens(message.content), 0) > budget)
+    throw new PromptBudgetError();
   return messages;
 }
 

@@ -24,6 +24,7 @@ import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS,
 import { CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
 import { buildCatalog, stripSlash, joinPhrases, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
+import { createKnowledgeCache } from "./knowledge-cache.ts";
 import type { EngineProgress } from "@tjakoen/grain/ai/webllm.ts";
 // A2 guided tour — the fixed stop list + the cursor codec (tour.ts). The door owns every leg of the
 // tour AFTER the first (no chat.send happens between stops, so the reasoner isn't in the loop then).
@@ -124,9 +125,11 @@ const fetchArtifact = async (url: string): Promise<Response> => {
 
 // The grounding corpus, fetched once from the frozen /knowledge.json (base-path aware: resolved
 // against this module's URL, which sits under <base>/modules/portfolio/ai/).
-let knowledgeP: Promise<Knowledge> | null = null;
-const loadKnowledge = (): Promise<Knowledge> =>
-  (knowledgeP ??= fetchArtifact(new URL("../../../knowledge.json", import.meta.url).href).then((r) => r.json() as Promise<Knowledge>));
+const knowledgeCache = createKnowledgeCache(async () => {
+  const response = await fetchArtifact(new URL("../../../knowledge.json", import.meta.url).href);
+  return response.json() as Promise<Knowledge>;
+});
+const loadKnowledge = knowledgeCache.load;
 
 // Newest-first notes for "open the latest note" — the frozen /notes.json (base-path aware). Memoized.
 let notesP: Promise<DeskNote[]> | null = null;
@@ -471,7 +474,15 @@ const mailTaskSet = (sender: string): void => { try { ss()?.setItem(MAIL_TASK_KE
 // field once /mail settles. Drafted BEFORE the stash (contact-draft.ts, in the reasoner) so this side
 // only ever carries finished text — no composing on arrival. ----
 const CONTACT_TASK_KEY = "desk-contact-task";
-const contactTaskSet = (message: string): void => { try { ss()?.setItem(CONTACT_TASK_KEY, JSON.stringify({ message })); } catch { /* no session storage */ } };
+const contactTaskSet = (message: string): boolean => {
+  try {
+    const storage = ss();
+    if (!storage) return false;
+    const value = JSON.stringify({ message });
+    storage.setItem(CONTACT_TASK_KEY, value);
+    return storage.getItem(CONTACT_TASK_KEY) === value;
+  } catch { return false; }
+};
 
 // ---- D1 form builder demo: a cross-page fill, same MAIL_TASK_KEY/CONTACT_TASK_KEY shape — the
 // ALREADY-DRAFTED demo values (surface → text, form-draft.ts, computed in the reasoner before the

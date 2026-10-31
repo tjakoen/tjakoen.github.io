@@ -77,6 +77,15 @@ test("content pages wear the BREAD shell chrome", async () => {
   expect(body).toContain(`data-screen="notes"`);
 });
 
+test("desk grounding is limited to notes, framework docs and authored facts", async () => {
+  const knowledge = await buildPortfolioKnowledge();
+  expect(knowledge.chunks.some((chunk) => chunk.route.startsWith("/notes/"))).toBe(true);
+  expect(knowledge.chunks.some((chunk) => chunk.route.startsWith("/grain/docs/"))).toBe(true);
+  for (const chunk of knowledge.chunks) {
+    expect(chunk.route === "facts" || chunk.route.startsWith("/notes/") || /^\/(grain|batch|mill|proof|crumb|pantry)\/docs\//.test(chunk.route)).toBe(true);
+  }
+});
+
 test("the /notes feed = the flagship pinned to the front of the date order — the tail stays newest-first (not alphabetical), and the explorer tree (listNoteRoutesByDate → /search.json) stays PURE date order", async () => {
   const body = await renderNotesFeedPage();
   const inPageOrder = [...body.matchAll(/note-card__title"><a href="(\/notes\/[a-z0-9._-]+)"/g)].map((m) => m[1]);

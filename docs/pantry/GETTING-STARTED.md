@@ -114,6 +114,36 @@ just don't appear. `pantry check` is a separate, narrower thing from `proof chec
 *prose* for links that point at a route or `.md` twin the cockpit doesn't actually serve, so a
 renamed doc collection or a deleted page shows up as a build failure instead of a silent 404.
 
+## Read context and answers honestly
+
+Doctor's context-size measurement reads Claude Code instruction and memory files. It honors
+CLAUDE_CONFIG_DIR when selecting the account and names that directory in the result. It does not
+measure Codex's context. Session-event discovery also depends on the configured event log; an absent
+emitter is an observation gap, not evidence that no development took place.
+
+The answer channel distinguishes a missing log from an unreadable one. Malformed records are
+counted and valid records remain inspectable, while the CLI, JSON endpoint and doctor disclose
+that unread answers are unknown. Repair the log before waiting for or acknowledging answers;
+a corrupt inbox must not look like completed work.
+
+## Try it against one development task
+
+Run the cockpit from the host repository's working directory, then use it to find the current plan,
+read the latest run's evidence, and identify any unanswered decision. Compare those steps with reading
+the same files in the coding agent. The board and rendered reports can help a reviewer inspect work;
+they do not replace the files or make a second task system necessary.
+
+Keep doctor and plan checks available without running the dashboard. A live-session view requires
+an enabled control surface and a configured event feed. It does not discover native Codex chats
+automatically. If that feed is absent, zero observed sessions means no observations, not no activity.
+Similarly, an old report missing the expected schema is evidence about that report's format, not
+proof that the underlying code was never tested. Inspect the missing fields before turning such
+counts into a queue of work.
+
+Adoption should earn its setup cost on this task. If the dashboard adds duplicate navigation while
+the CLI checks catch real failures, keep the checks and leave the dashboard optional. Choose an
+integration only after identifying an action the current workflow cannot already perform as well.
+
 ## Compose it yourself instead
 
 If you're building your own server rather than running PANTRY as-is, you don't have to import PANTRY

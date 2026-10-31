@@ -34,6 +34,29 @@ async function deskReady(page: Page) {
 }
 
 test.describe("B1 contact prefill (deterministic, no model needed)", () => {
+  for (const denial of ["write", "access"] as const) {
+    test(`from '/': storage ${denial} denial preserves the draft without navigating`, async ({ page }) => {
+      await clientDeskEverywhere(page);
+      await page.addInitScript((mode) => {
+        if (mode === "access") {
+          Object.defineProperty(window, "sessionStorage", { configurable: true, get() { throw new DOMException("Storage denied", "SecurityError"); } });
+        } else {
+          const original = Storage.prototype.setItem;
+          Storage.prototype.setItem = function (key, value) {
+            if (key === "desk-contact-task") throw new DOMException("Storage full", "QuotaExceededError");
+            original.call(this, key, value);
+          };
+        }
+      }, denial);
+      await page.goto("/");
+      await deskReady(page);
+      await ask(page, "go to contact and tell TJ I want to talk about grain");
+      await expect(page.locator(".assistant__log")).toContainText("I couldn't save this draft", { timeout: 15_000 });
+      await expect(page.locator(".assistant__log")).toContainText(DRAFT);
+      expect(new URL(page.url()).pathname).toBe("/");
+    });
+  }
+
   test("on /mail: opens compose and prefills the registered field — grain ink, the human's edit settles it", async ({ page }) => {
     await clientDeskEverywhere(page);
     await page.goto("/mail");

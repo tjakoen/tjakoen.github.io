@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Builder · TJ's Desk</title>
-  <meta name="description" content="Describe a page in plain English. A closed, code-owned set of GRAIN blocks decides what actually renders: the model never picks a component, a layout, or a name.">
+  <meta name="description" content="Start with an editable example or describe a page. The on-device model proposes registered GRAIN blocks; you review the draft and control the result.">
 </head>
 <!-- data-aside-hidden: this screen gives up the assistant column by default, the same call /plans
      makes for the same reason. The prompt lives in the workbench now, so the chat is not the way in;
@@ -61,7 +61,7 @@
           <div class="wb-bar__draft-head">
             <div>
               <h2 id="builder-draft-title">Review this page draft</h2>
-            <p class="muted">Review or edit each text field. Before review, the Builder keeps model wording only when it matches details from your brief, removes unmatched wording, and joins supplied details into sentences for recognized intro requests. It retains detected names and numbers. Sample wording is marked, and words absent from your brief are listed. These checks cannot verify whether claims are true. Editing after you confirm clears the check; adding the draft requires a fresh confirmation.</p>
+            <p class="muted">The model proposes blocks and order. Code builds the text from details in your brief rather than using raw model prose. Review or edit each field, including names, numbers, and any marked sample wording. These checks cannot verify whether claims are true. Editing after confirmation clears the check; adding the draft requires a fresh confirmation.</p>
             </div>
           </div>
           <div class="wb-bar__draft-brief">
@@ -143,7 +143,8 @@
                   use it to try the live edit path.</p>
                 <p class="muted">It knows five blocks: an intro paragraph, a card, a callout, a stat
                   tile and a form. Say "side by side" and it puts two of them in a row.</p>
-                <p class="builder-empty__example"><a href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">Open the four-block example</a></p>
+                <p class="builder-empty__example"><a class="btn" href="/grain/builder?ask=An%20intro%2C%20two%20cards%20side%20by%20side%2C%20and%20a%20callout">Open the four-block example</a></p>
+                <p class="muted">Start here without a model download. Use the block controls to move, resize, or remove something, then try a reviewed AI layout edit. Undo also restores a page replaced through Open.</p>
               </div>
               <p class="builder-none" data-bind-data-matched-nothing="matchedNothing">Nothing in the
                 closed set matched that. Try asking for an intro, a card, a callout, a stat or a
