@@ -11,7 +11,7 @@ activitiesJson: "[{\"id\":\"m8a9\",\"title\":\"Builds with Flutter and AI\",\"de
 title: "Builds with Flutter and AI"
 section: "2134"
 type: "badge-class"
-recipientCount: 34
+recipientCount: 35
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.
