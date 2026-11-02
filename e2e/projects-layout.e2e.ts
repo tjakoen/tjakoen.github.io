@@ -129,7 +129,7 @@ test.describe("Projects presentation in the editor shell", () => {
     const subjects = page.locator(".badge-subject");
     await expect(subjects).toHaveCount(3);
     const apsi = subjects.filter({ hasText: "6APSI" });
-    await expect(apsi.locator("summary")).toContainText("4 sections · 8 badges");
+    await expect(apsi.locator("summary")).toContainText("4 sections · 12 badges");
     await expect(apsi.locator("summary")).toBeVisible();
     await expect(apsi.locator("summary .badge-subject__description")).toContainText("JavaScript and React");
     await expect(apsi.locator(".badge-subject__content")).toBeHidden();
@@ -137,13 +137,13 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(apsi.locator(".badge-section-card")).toHaveCount(4);
     await expect(apsi.locator(".badge-section-card").first()).toContainText("Section 2203");
     await expect(apsi.locator(".badge-section-card").first()).toContainText("Frontend Design with Cloud");
-    await expect(apsi.locator(".badge-section-card").first()).toContainText("Backend Development with Cloud");
+    await expect(apsi.locator(".badge-section-card").first()).toContainText("Full Stack Web Development");
     expect(await apsi.locator(".badge-section-grid").first().evaluate((el) =>
       getComputedStyle(el).gridTemplateColumns.split(/\s+/).length,
     )).toBe(2);
     await expect(subjects.filter({ hasText: "6ADET" }).locator("summary")).toBeVisible();
     await expect(subjects.filter({ hasText: "6INTROWEB" }).locator("summary")).toBeVisible();
-    await expect(page.locator('a[href^="/badges/"]')).toHaveCount(14);
+    await expect(page.locator('a[href^="/badges/"]')).toHaveCount(21);
 
     await page.setViewportSize({ width: 390, height: 844 });
     const board = page.locator(".badges-board");
