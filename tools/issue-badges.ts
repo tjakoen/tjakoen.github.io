@@ -17,7 +17,7 @@ export interface Award {
   workspaceRepo: string; evidence: BadgeEvidence[]; publicEvidence?: BadgeEvidence[];
   activities: BadgeActivity[]; thresholdPercent: number;
   // One badge is one page. A badge with a legacy term reuses that term's class page and, per student, the legacy page named by legacySlug (private; read from the roster).
-  policyThresholdPercent?: number; legacyTerm?: string; legacySlug?: string; emails?: string[];
+  policyThresholdPercent?: number; legacyTerm?: string; legacySlug?: string; emails?: string[]; legacyIdentityEmails?: string[];
   issuedOn?: string; certSlug?: string; certId?: string; shortId?: string;
 }
 type Existing = { slug: string; fm: Record<string, unknown>; assertion?: Record<string, any> };
@@ -96,7 +96,7 @@ export function planAwards(manifest: unknown, existing: Existing[] = [], today =
     if (!Array.isArray(a.activities) || !a.activities.length) fail(i, "designated activity descriptions are required");
     const activityIds = new Set<string>();
     for (const activity of a.activities) {
-      if (!activity || !/^m\d{1,2}a\d{1,2}$/.test(activity.id) || activityIds.has(activity.id) || !publicCopy(activity.title) || !publicCopy(activity.description)) fail(i, "invalid or duplicate activity description");
+      if (!activity || !/^(?:m\d{1,2}a\d{1,2}|lab\d{1,2})$/.test(activity.id) || activityIds.has(activity.id) || !publicCopy(activity.title) || !publicCopy(activity.description)) fail(i, "invalid or duplicate activity description");
       activityIds.add(activity.id);
       if (activity.evidence && (!Array.isArray(activity.evidence) || activity.evidence.some(e => !https(e.url)))) fail(i, "invalid private activity evidence");
       if (activity.publicEvidence && (!Array.isArray(activity.publicEvidence) || activity.publicEvidence.some(e => !publicEvidenceAllowed(e,a.workspaceRepo)))) fail(i, "unsafe public activity evidence");
@@ -119,7 +119,7 @@ export function planAwards(manifest: unknown, existing: Existing[] = [], today =
       if (prior.fm.awardKey && prior.fm.awardKey !== hash(a.awardKey)) fail(i, "existing award key conflict");
       if (prior.fm.badgeClass !== classSlug) fail(i, "existing badge class conflict");
       if (adopting) {
-        const mailboxes = [a.identityEmail, ...(Array.isArray(a.emails) ? a.emails : [])].filter(x => typeof x === "string").map(x => x.toLowerCase().trim());
+        const mailboxes = [a.identityEmail, ...(Array.isArray(a.emails) ? a.emails : []), ...(Array.isArray(a.legacyIdentityEmails) ? a.legacyIdentityEmails : [])].filter(x => typeof x === "string").map(x => x.toLowerCase().trim());
         if (!mailboxes.some(email => recipientMatches(prior.assertion, email))) fail(i, "legacy page recipient does not match the award recipient");
       } else {
         if (prior.fm.recipientName !== a.recipientName || String(prior.fm.recipientHandle).toLowerCase() !== a.recipientHandle.toLowerCase()) fail(i, "existing recipient conflict");
