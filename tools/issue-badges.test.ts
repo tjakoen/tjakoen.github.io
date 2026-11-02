@@ -51,6 +51,11 @@ test("legacy certificates hold emission and remain unchanged with explicit prese
   } finally {rmSync(dir,{recursive:true,force:true});}
 });
 
+test("activity ids accept module activities and a previous instructor's lab, nothing else", () => {
+  const ids = (id: string) => ({activities:[{id,title:"Laboratory activity",description:"Build a React company profile dashboard."}]});
+  expect(() => planAwards(manifest([{...award,...ids("lab2")}]))).not.toThrow();
+  for (const id of ["lab","lab123","Lab2","quiz1"]) expect(() => planAwards(manifest([{...award,...ids(id)}]))).toThrow("invalid or duplicate activity description");
+});
 test("rejects malformed calendar dates and certificate ID collisions", () => {
   expect(() => planAwards(manifest([{...award,issuedOn:"2026-02-30"}]))).toThrow("date");
   expect(() => planAwards(manifest([{...award,certId:"same"},{...award,awardKey:"second",certId:"same"}]))).toThrow("ID collision");
@@ -199,6 +204,17 @@ test("a student's existing legacy page is reused: same slug, short link, certifi
     expect(planned.md).not.toContain("legacy-salt"); expect(JSON.stringify(planned.assertion)).not.toContain("personal@example.net");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+test("a recorded older address proves a legacy page without becoming a recipient", () => {
+  const dir = mkdtempSync(join(tmpdir(), "badge-"));
+  try {
+    legacyTree(dir, [{ handle: "oldhandle", email: "older@example.net" }]);
+    const award = { ...legacyAward, legacySlug: `${legacyClass}--oldhandle`, legacyIdentityEmails: ["older@example.net"] };
+    expect(issue(manifest([award]), { dir, allowExisting: true, adoptLegacyClass: true }).approved).toBe(1);
+    const page = readFileSync(join(dir, `${legacyClass}--oldhandle.md`), "utf8");
+    expect(page).not.toContain("older@example.net");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test("a legacy page whose recipient hash does not match the award fails before anything is written", () => {
   const dir = mkdtempSync(join(tmpdir(), "badge-"));
   try {
