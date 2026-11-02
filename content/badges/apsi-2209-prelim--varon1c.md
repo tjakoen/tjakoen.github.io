@@ -1,30 +1,26 @@
 ---
-title: "Frontend Design with Cloud · Manusig, CHarles Jansen V. (6APSI 2209)"
-type: cert
 badgeName: "Frontend Design with Cloud"
 subtitle: "Frontend Design with Cloud"
-course: apsi
-monogram: 6APSI
-term: prelim
-badgeClass: apsi-2209-prelim
-shortUrl: /b/acb50842
+course: "apsi"
+monogram: "6APSI"
+term: "prelim"
 issuer: "Tjakoen Stolk"
-issuerRole: "Instructor, Application and System Integration · School of Computing, Holy Angel University, Angeles City"
-recipientName: "Manusig, CHarles Jansen V."
+criteriaText: "Awarded after instructor review confirmed at least 75% on each required activity: M3A3 (In-lab React practical)."
+thresholdPercent: 75
+activitiesJson: "[{\"id\":\"m3a3\",\"title\":\"In-lab React practical\",\"description\":\"Built a small React application under proctored, closed-book lab conditions. The assessment covered JavaScript fundamentals, components and props, a controlled form, page composition, context and a custom hook, a real styling approach, theming, responsive layout, accessibility and code organization.\"}]"
+title: "Frontend Design with Cloud: Charles Jansen Manusig"
+type: "cert"
+awardKey: "b84f6961aa2a3524fbca7e01e1d98bbfcd41f9d936da8e0df183b19235b82098"
+badgeClass: "apsi-2209-prelim"
+shortUrl: "/b/acb50842"
+recipientName: "Charles Jansen Manusig"
 recipientHandle: "varon1c"
-recipientRepo: "https://github.com/HAU-6APSI/m1a1-2209-varon1c"
-recipientPortfolio: ""
-issuedOn: 2026-09-16
+issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-prelim-acb50842"
-criteriaUrl: /badges/apsi-2209-prelim
-social: |
-  I earned the Frontend Design with Cloud badge for Application and System Integration (6APSI, section 2209) at Holy Angel
-  University, issued by my instructor Tjakoen Stolk.
-
-  It attests that I completed the prelim coursework of Application and System Integration, awarded on the work I
-  actually submitted rather than a grade cutoff.
-
-  Verify it here: https://tjakoen.github.io/b/acb50842
+criteriaUrl: "/badges/apsi-2209-prelim"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/acb50842"
 ---
 
-This credential attests completion of the prelim block of Application and System Integration. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/apsi-2209-prelim).
+Recognizes the proctored in-lab React practical at the instructor-reviewed threshold.
+
+The instructor approved this award against the [badging activity criteria](/badges/apsi-2209-prelim).

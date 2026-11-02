@@ -1,43 +1,34 @@
 {
-  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "@context": "https://w3id.org/openbadges/v2",
   "id": "https://tjakoen.github.io/badges/apsi-2209-prelim--ejhaygit.json",
-  "type": [
-    "VerifiableCredential",
-    "OpenBadgeCredential"
-  ],
-  "issuer": {
-    "id": "https://tjakoen.github.io/teaching",
-    "type": [
-      "Profile"
-    ],
-    "name": "Tjakoen Stolk",
-    "url": "https://tjakoen.github.io/teaching",
-    "description": "Instructor, Application and System Integration, School of Computing, Holy Angel University, Angeles City"
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "9b91922957437e1e56671a8c16bc5bf547c21bf251979f12837fc927fda11a19",
+    "identity": "sha256$200b1a3aa7bb792f972edc6d0084bbb55cd4a1d42c633992a4c850d1da4aaa38"
   },
-  "validFrom": "2026-09-16T00:00:00+08:00",
-  "credentialSubject": {
-    "type": [
-      "AchievementSubject"
-    ],
-    "identifier": [
-      {
-        "type": "IdentityObject",
-        "identityHash": "sha256$73c56481425530f42294bede0b388b36e128b092afb412dba4be38d2ca159d87",
-        "identityType": "emailAddress",
-        "hashed": true,
-        "salt": "hau-badges-v1"
-      }
-    ],
-    "achievement": {
+  "issuedOn": "2026-09-16T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/apsi-2209-prelim--ejhaygit.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/apsi-2209-prelim",
+    "type": "BadgeClass",
+    "name": "Frontend Design with Cloud",
+    "description": "Recognizes the proctored in-lab React practical at the instructor-reviewed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-apsi-2209-prelim.png",
+    "criteria": {
       "id": "https://tjakoen.github.io/badges/apsi-2209-prelim",
-      "type": [
-        "Achievement"
-      ],
-      "name": "Frontend Design with Cloud",
-      "description": "Completion of the prelim block (m1 to m2 to m3) of Application and System Integration (6APSI).",
-      "criteria": {
-        "id": "https://tjakoen.github.io/badges/apsi-2209-prelim"
-      }
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M3A3 (In-lab React practical).\n\nAward threshold: 75%.\n\nm3a3: In-lab React practical. Built a small React application under proctored, closed-book lab conditions. The assessment covered JavaScript fundamentals, components and props, a controlled form, page composition, context and a custom hook, a real styling approach, theming, responsive layout, accessibility and code organization."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
     }
   }
 }

@@ -1,30 +1,26 @@
 ---
-title: "Web Foundations · Joshua S. Maniego (6INTROWEB 2106)"
-type: cert
 badgeName: "Web Foundations"
 subtitle: "Web Foundations"
-course: introweb
-monogram: 6INTROWEB
-term: prelim
-badgeClass: introweb-2106-prelim
-shortUrl: /b/590a68bd
+course: "introweb"
+monogram: "6INTROWEB"
+term: "prelim"
 issuer: "Tjakoen Stolk"
-issuerRole: "Instructor, Basic Programming in Web Development · School of Computing, Holy Angel University, Angeles City"
-recipientName: "Joshua S. Maniego"
-recipientHandle: "JoshuaManiego"
-recipientRepo: "https://github.com/HAU-6INTROWEB/m1a1-2106-JoshuaManiego"
-recipientPortfolio: ""
-issuedOn: 2026-09-16
+criteriaText: "Awarded after instructor review confirmed at least 75% on each required activity: M6A3 (Publish Your Portfolio)."
+thresholdPercent: 75
+activitiesJson: "[{\"id\":\"m6a3\",\"title\":\"Publish Your Portfolio\",\"description\":\"Published a personal HTML and CSS portfolio on GitHub Pages. The assessment covered a working public URL, a home page and loading assets, meaningful content, intentional styling and a site finished enough to share.\"}]"
+title: "Web Foundations: Joshua Maniego"
+type: "cert"
+awardKey: "593ef95ee58fbcf614ab845b2cb35eac61e04dbaf9abbe72d9b42ec97eae3fcb"
+badgeClass: "introweb-2106-prelim"
+shortUrl: "/b/590a68bd"
+recipientName: "Joshua Maniego"
+recipientHandle: "joshuamaniego"
+issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-prelim-590a68bd"
-criteriaUrl: /badges/introweb-2106-prelim
-social: |
-  I earned the Web Foundations badge for Basic Programming in Web Development (6INTROWEB, section 2106) at Holy Angel
-  University, issued by my instructor Tjakoen Stolk.
-
-  It attests that I completed the prelim coursework of Basic Programming in Web Development, awarded on the work I
-  actually submitted rather than a grade cutoff.
-
-  Verify it here: https://tjakoen.github.io/b/590a68bd
+criteriaUrl: "/badges/introweb-2106-prelim"
+social: "I earned Web Foundations. Verify my badge: https://tjakoen.github.io/b/590a68bd"
 ---
 
-This credential attests completion of the prelim block of Basic Programming in Web Development. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/introweb-2106-prelim).
+Recognizes the named activity after instructor review at the confirmed threshold.
+
+The instructor approved this award against the [badging activity criteria](/badges/introweb-2106-prelim).

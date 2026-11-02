@@ -1,30 +1,26 @@
 ---
-title: "Dart and Flutter Foundations · Green, Matthew Simon R. (6ADET 2125)"
-type: cert
 badgeName: "Dart and Flutter Foundations"
 subtitle: "Dart and Flutter Foundations"
-course: adet
-monogram: 6ADET
-term: prelim
-badgeClass: adet-2125-prelim
-shortUrl: /b/6b94479c
+course: "adet"
+monogram: "6ADET"
+term: "prelim"
 issuer: "Tjakoen Stolk"
-issuerRole: "Instructor, Application Development and Emerging Technologies · School of Computing, Holy Angel University, Angeles City"
-recipientName: "Green, Matthew Simon R."
-recipientHandle: "matthewsimongreen"
-recipientRepo: "https://github.com/HAU-6ADET/m1a1-2125-matthewsimongreen"
-recipientPortfolio: ""
-issuedOn: 2026-09-16
+criteriaText: "Awarded after instructor review confirmed at least 75% on each required activity: M4A4 (Monster Detail screen)."
+thresholdPercent: 75
+activitiesJson: "[{\"id\":\"m4a4\",\"title\":\"Monster Detail screen\",\"description\":\"Built a Flutter detail screen driven by a monster model. The assessment covered the name and type, current and maximum HP, a proportional health bar, phone layout, visual hierarchy and reusable widgets.\"}]"
+title: "Dart and Flutter Foundations: Matthew Simon Green"
+type: "cert"
+awardKey: "c9ac0f1a44ceca033dba21bdfc7ed93dfaf82dee1a1ed04ee9c97598009ef59e"
+badgeClass: "adet-2125-prelim"
+shortUrl: "/b/6b94479c"
+recipientName: "Matthew Simon Green"
+recipientHandle: "glorysonggreen"
+issuedOn: "2026-09-16"
 certId: "hau-adet-2125-prelim-6b94479c"
-criteriaUrl: /badges/adet-2125-prelim
-social: |
-  I earned the Dart and Flutter Foundations badge for Application Development and Emerging Technologies (6ADET, section 2125) at Holy Angel
-  University, issued by my instructor Tjakoen Stolk.
-
-  It attests that I completed the prelim coursework of Application Development and Emerging Technologies, awarded on the work I
-  actually submitted rather than a grade cutoff.
-
-  Verify it here: https://tjakoen.github.io/b/6b94479c
+criteriaUrl: "/badges/adet-2125-prelim"
+social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/6b94479c"
 ---
 
-This credential attests completion of the prelim block of Application Development and Emerging Technologies. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/adet-2125-prelim).
+Recognizes the named activity after instructor review at the confirmed threshold.
+
+The instructor approved this award against the [badging activity criteria](/badges/adet-2125-prelim).

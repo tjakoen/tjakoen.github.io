@@ -1,0 +1,34 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "id": "https://tjakoen.github.io/badges/award-94c9fd152cd6c9ce72b0dd1d.json",
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "7199aa3dabb05575b3dfa04c2889a9f8cdd83cde4b75094b6e809745da428946",
+    "identity": "sha256$5b879fd519914a6778e3dd9e97ccc24248e70a9e9a5d3910175fda1080f237d3"
+  },
+  "issuedOn": "2026-11-03T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/award-94c9fd152cd6c9ce72b0dd1d.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/apsi-2203-midterm",
+    "type": "BadgeClass",
+    "name": "Full Stack Web Development",
+    "description": "Recognizes completion of both the relational REST API and React client assessments, each at the instructor-reviewed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-apsi-2203-midterm.png",
+    "criteria": {
+      "id": "https://tjakoen.github.io/badges/apsi-2203-midterm",
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M5A4 (Relational REST API) and M5A5 (HAUnted Sightings React client).\n\nAward threshold: 75%.\n\nm5a4: Relational REST API. Built a Node and Express API backed by a relational database. The assessment covered related tables and joins, REST endpoints, input validation, error handling, parameterized queries and separation of routes from data access.\n\nm5a5: HAUnted Sightings React client. Built a React client for the sightings API. The assessment covered API-driven lists and forms, server-side filtering, loading, error and empty states, responsive design, accessibility and component structure."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
+    }
+  }
+}

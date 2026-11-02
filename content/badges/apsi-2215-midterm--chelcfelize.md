@@ -1,30 +1,26 @@
 ---
-title: "Backend Development with Cloud · Chelsea Felize B. (6APSI 2215)"
-type: cert
-badgeName: "Backend Development with Cloud"
-subtitle: "Backend Development with Cloud"
-course: apsi
-monogram: 6APSI
-term: midterm
-badgeClass: apsi-2215-midterm
-shortUrl: /b/a460e3ff
+badgeName: "Full Stack Web Development"
+subtitle: "Full Stack Web Development"
+course: "apsi"
+monogram: "6APSI"
+term: "midterm"
 issuer: "Tjakoen Stolk"
-issuerRole: "Instructor, Application and System Integration · School of Computing, Holy Angel University, Angeles City"
-recipientName: "Chelsea Felize B."
+criteriaText: "Awarded after instructor review confirmed at least 75% on each required activity: M5A4 (Relational REST API) and M5A5 (HAUnted Sightings React client)."
+thresholdPercent: 75
+activitiesJson: "[{\"id\":\"m5a4\",\"title\":\"Relational REST API\",\"description\":\"Built a Node and Express API backed by a relational database. The assessment covered related tables and joins, REST endpoints, input validation, error handling, parameterized queries and separation of routes from data access.\"},{\"id\":\"m5a5\",\"title\":\"HAUnted Sightings React client\",\"description\":\"Built a React client for the sightings API. The assessment covered API-driven lists and forms, server-side filtering, loading, error and empty states, responsive design, accessibility and component structure.\"}]"
+title: "Full Stack Web Development: Chelsea Felize Egaran"
+type: "cert"
+awardKey: "584973a532d9f18a91f2ee977f6529a7f0cb023f2cb96de40a6948440d125dd8"
+badgeClass: "apsi-2215-midterm"
+shortUrl: "/b/a460e3ff"
+recipientName: "Chelsea Felize Egaran"
 recipientHandle: "chelcfelize"
-recipientRepo: "https://github.com/HAU-6APSI/m4a1-2215-chelcfelize"
-recipientPortfolio: ""
-issuedOn: 2026-09-16
+issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-midterm-a460e3ff"
-criteriaUrl: /badges/apsi-2215-midterm
-social: |
-  I earned the Backend Development with Cloud badge for Application and System Integration (6APSI, section 2215) at Holy Angel
-  University, issued by my instructor Tjakoen Stolk.
-
-  It attests that I completed the midterm coursework of Application and System Integration, awarded on the work I
-  actually submitted rather than a grade cutoff.
-
-  Verify it here: https://tjakoen.github.io/b/a460e3ff
+criteriaUrl: "/badges/apsi-2215-midterm"
+social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/a460e3ff"
 ---
 
-This credential attests completion of the midterm block of Application and System Integration. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/apsi-2215-midterm).
+Recognizes completion of both the relational REST API and React client assessments, each at the instructor-reviewed threshold.
+
+The instructor approved this award against the [badging activity criteria](/badges/apsi-2215-midterm).

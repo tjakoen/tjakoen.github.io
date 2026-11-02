@@ -1,30 +1,26 @@
 ---
-title: "Backend Development with Cloud · Justin Neri A. Pangilinan (6APSI 2203)"
-type: cert
-badgeName: "Backend Development with Cloud"
-subtitle: "Backend Development with Cloud"
-course: apsi
-monogram: 6APSI
-term: midterm
-badgeClass: apsi-2203-midterm
-shortUrl: /b/a5400c31
+badgeName: "Full Stack Web Development"
+subtitle: "Full Stack Web Development"
+course: "apsi"
+monogram: "6APSI"
+term: "midterm"
 issuer: "Tjakoen Stolk"
-issuerRole: "Instructor, Application and System Integration · School of Computing, Holy Angel University, Angeles City"
-recipientName: "Justin Neri A. Pangilinan"
-recipientHandle: "JustinNeri"
-recipientRepo: "https://github.com/HAU-6APSI/m4a1-2203-JustinNeri"
-recipientPortfolio: ""
-issuedOn: 2026-09-16
+criteriaText: "Awarded after instructor review confirmed at least 75% on each required activity: M5A4 (Relational REST API) and M5A5 (HAUnted Sightings React client)."
+thresholdPercent: 75
+activitiesJson: "[{\"id\":\"m5a4\",\"title\":\"Relational REST API\",\"description\":\"Built a Node and Express API backed by a relational database. The assessment covered related tables and joins, REST endpoints, input validation, error handling, parameterized queries and separation of routes from data access.\"},{\"id\":\"m5a5\",\"title\":\"HAUnted Sightings React client\",\"description\":\"Built a React client for the sightings API. The assessment covered API-driven lists and forms, server-side filtering, loading, error and empty states, responsive design, accessibility and component structure.\"}]"
+title: "Full Stack Web Development: Justin Neri Pangilinan"
+type: "cert"
+awardKey: "b789bb3af484083b73cc93892ae771fd3d690cbc6ed45292d588fce23442c721"
+badgeClass: "apsi-2203-midterm"
+shortUrl: "/b/a5400c31"
+recipientName: "Justin Neri Pangilinan"
+recipientHandle: "justinneri"
+issuedOn: "2026-09-16"
 certId: "hau-apsi-2203-midterm-a5400c31"
-criteriaUrl: /badges/apsi-2203-midterm
-social: |
-  I earned the Backend Development with Cloud badge for Application and System Integration (6APSI, section 2203) at Holy Angel
-  University, issued by my instructor Tjakoen Stolk.
-
-  It attests that I completed the midterm coursework of Application and System Integration, awarded on the work I
-  actually submitted rather than a grade cutoff.
-
-  Verify it here: https://tjakoen.github.io/b/a5400c31
+criteriaUrl: "/badges/apsi-2203-midterm"
+social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/a5400c31"
 ---
 
-This credential attests completion of the midterm block of Application and System Integration. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/apsi-2203-midterm).
+Recognizes completion of both the relational REST API and React client assessments, each at the instructor-reviewed threshold.
+
+The instructor approved this award against the [badging activity criteria](/badges/apsi-2203-midterm).

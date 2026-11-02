@@ -1,43 +1,34 @@
 {
-  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "@context": "https://w3id.org/openbadges/v2",
   "id": "https://tjakoen.github.io/badges/introweb-2106-midterm--kleddi.json",
-  "type": [
-    "VerifiableCredential",
-    "OpenBadgeCredential"
-  ],
-  "issuer": {
-    "id": "https://tjakoen.github.io/teaching",
-    "type": [
-      "Profile"
-    ],
-    "name": "Tjakoen Stolk",
-    "url": "https://tjakoen.github.io/teaching",
-    "description": "Instructor, Basic Programming in Web Development, School of Computing, Holy Angel University, Angeles City"
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "3970dfdf7930b5ab38fc93c1f4b9bffb07d393f606bd7aaadd2aa1f34c42f25a",
+    "identity": "sha256$ec552674aeaa4aec230b5c830f8fe26053366ddecdcc88a5b11a3169075d5026"
   },
-  "validFrom": "2026-09-16T00:00:00+08:00",
-  "credentialSubject": {
-    "type": [
-      "AchievementSubject"
-    ],
-    "identifier": [
-      {
-        "type": "IdentityObject",
-        "identityHash": "sha256$e8eda7784ea5b81158bf2af0d13375b609c7194e26d206d120aaf6dd83596846",
-        "identityType": "emailAddress",
-        "hashed": true,
-        "salt": "hau-badges-v1"
-      }
-    ],
-    "achievement": {
+  "issuedOn": "2026-09-16T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/introweb-2106-midterm--kleddi.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/introweb-2106-midterm",
+    "type": "BadgeClass",
+    "name": "Interactive Web Pages",
+    "description": "Recognizes the named activity after instructor review at the confirmed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-introweb-2106-midterm.png",
+    "criteria": {
       "id": "https://tjakoen.github.io/badges/introweb-2106-midterm",
-      "type": [
-        "Achievement"
-      ],
-      "name": "Interactive Web Pages",
-      "description": "Completion of the midterm block (m6 to m7 to m8) of Basic Programming in Web Development (6INTROWEB).",
-      "criteria": {
-        "id": "https://tjakoen.github.io/badges/introweb-2106-midterm"
-      }
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M7A5 (Make Your Portfolio Interactive).\n\nAward threshold: 75%.\n\nm7a5: Make Your Portfolio Interactive. Added JavaScript behavior to a live portfolio. The assessment covered an array of original content, a loop that renders it, a function that returns a result, an event listener that changes the displayed data and sensible handling of empty or unusual input."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
     }
   }
 }
