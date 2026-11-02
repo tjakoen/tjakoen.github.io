@@ -1,0 +1,34 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "id": "https://tjakoen.github.io/badges/award-a669d35b08e7cc3eb40c8000.json",
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "84bd77b15f2ed05711c13f014fcdb14dbb7ba5a2e802def7785f271650eb11f1",
+    "identity": "sha256$cccab3ee6e3ddecaf5305f7af060b93ce412f779f41143d21b25404ef4bac9d1"
+  },
+  "issuedOn": "2026-11-03T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/award-a669d35b08e7cc3eb40c8000.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/apsi-2240-builds-with-ai",
+    "type": "BadgeClass",
+    "name": "Builds Full-Stack JavaScript and AI",
+    "description": "Recognizes the named activity after instructor review at the confirmed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-apsi-2240-builds-with-ai.png",
+    "criteria": {
+      "id": "https://tjakoen.github.io/badges/apsi-2240-builds-with-ai",
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M8A9 (Builds Full-Stack JavaScript and AI).\n\nAward threshold: 75%.\n\nm8a9: Builds Full-Stack JavaScript and AI. Documented how AI was used while building a Node, Express and Postgres project. The assessment reviewed commit-linked usage entries, corrections to AI output, explanations of personal contributions and AI credit in the README."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
+    }
+  }
+}

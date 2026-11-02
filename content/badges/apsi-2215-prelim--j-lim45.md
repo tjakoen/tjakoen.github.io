@@ -1,30 +1,26 @@
 ---
-title: "Frontend Design with Cloud · LIM, Josh Adriane G. (6APSI 2215)"
-type: cert
 badgeName: "Frontend Design with Cloud"
 subtitle: "Frontend Design with Cloud"
-course: apsi
-monogram: 6APSI
-term: prelim
-badgeClass: apsi-2215-prelim
-shortUrl: /b/aaf0fde8
+course: "apsi"
+monogram: "6APSI"
+term: "prelim"
 issuer: "Tjakoen Stolk"
-issuerRole: "Instructor, Application and System Integration · School of Computing, Holy Angel University, Angeles City"
-recipientName: "LIM, Josh Adriane G."
+criteriaText: "Awarded after instructor review confirmed at least 75% on each required activity: LAB2 (React company profile dashboard)."
+thresholdPercent: 75
+activitiesJson: "[{\"id\":\"lab2\",\"title\":\"React company profile dashboard\",\"description\":\"Built a company profile dashboard in React during the prelim laboratory, graded in the course learning system.\"}]"
+title: "Frontend Design with Cloud: Josh Adriane Lim"
+type: "cert"
+awardKey: "60c02fd0823e19267185e6dfe7c4e123ba13ec00973029535d3eb84aaabad18c"
+badgeClass: "apsi-2215-prelim"
+shortUrl: "/b/aaf0fde8"
+recipientName: "Josh Adriane Lim"
 recipientHandle: "j-lim45"
-recipientRepo: "https://github.com/HAU-6APSI/m1a1-2215-j-lim45"
-recipientPortfolio: ""
-issuedOn: 2026-09-16
+issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-prelim-aaf0fde8"
-criteriaUrl: /badges/apsi-2215-prelim
-social: |
-  I earned the Frontend Design with Cloud badge for Application and System Integration (6APSI, section 2215) at Holy Angel
-  University, issued by my instructor Tjakoen Stolk.
-
-  It attests that I completed the prelim coursework of Application and System Integration, awarded on the work I
-  actually submitted rather than a grade cutoff.
-
-  Verify it here: https://tjakoen.github.io/b/aaf0fde8
+criteriaUrl: "/badges/apsi-2215-prelim"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/aaf0fde8"
 ---
 
-This credential attests completion of the prelim block of Application and System Integration. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/apsi-2215-prelim).
+Recognizes the React company profile dashboard laboratory activity at the instructor-reviewed threshold.
+
+The instructor approved this award against the [badging activity criteria](/badges/apsi-2215-prelim).

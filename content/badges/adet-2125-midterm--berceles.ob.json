@@ -1,43 +1,34 @@
 {
-  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "@context": "https://w3id.org/openbadges/v2",
   "id": "https://tjakoen.github.io/badges/adet-2125-midterm--berceles.json",
-  "type": [
-    "VerifiableCredential",
-    "OpenBadgeCredential"
-  ],
-  "issuer": {
-    "id": "https://tjakoen.github.io/teaching",
-    "type": [
-      "Profile"
-    ],
-    "name": "Tjakoen Stolk",
-    "url": "https://tjakoen.github.io/teaching",
-    "description": "Instructor, Application Development and Emerging Technologies, School of Computing, Holy Angel University, Angeles City"
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "2c43a5d5d8662ba6ba11d9fd5ce5cddc0e798b1d56eef3747d87f06231ae89bc",
+    "identity": "sha256$48ad0a3386c67f2ce89d498a782d00ff0d444f3d1c27c241e92afbe54cc71fcf"
   },
-  "validFrom": "2026-09-16T00:00:00+08:00",
-  "credentialSubject": {
-    "type": [
-      "AchievementSubject"
-    ],
-    "identifier": [
-      {
-        "type": "IdentityObject",
-        "identityHash": "sha256$40d319b4e6c17d7f8880e1d9041b49d06854e8dddf0caf92bc418953a92be5b9",
-        "identityType": "emailAddress",
-        "hashed": true,
-        "salt": "hau-badges-v1"
-      }
-    ],
-    "achievement": {
+  "issuedOn": "2026-09-16T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/adet-2125-midterm--berceles.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/adet-2125-midterm",
+    "type": "BadgeClass",
+    "name": "Flutter App Development",
+    "description": "Recognizes the named activity after instructor review at the confirmed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-adet-2125-midterm.png",
+    "criteria": {
       "id": "https://tjakoen.github.io/badges/adet-2125-midterm",
-      "type": [
-        "Achievement"
-      ],
-      "name": "Flutter App Development",
-      "description": "Completion of the midterm block (m4 to m5) of Application Development and Emerging Technologies (6ADET).",
-      "criteria": {
-        "id": "https://tjakoen.github.io/badges/adet-2125-midterm"
-      }
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M5A5 (HAUDEX app).\n\nAward threshold: 75%.\n\nm5a5: HAUDEX app. Built a Flutter app with a monster list, an add form, navigation to a detail screen and an attack action that updates HP. The assessment covered input validation, state, phone layout, consistent design and code organization."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
     }
   }
 }

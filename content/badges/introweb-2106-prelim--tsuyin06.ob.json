@@ -1,43 +1,34 @@
 {
-  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "@context": "https://w3id.org/openbadges/v2",
   "id": "https://tjakoen.github.io/badges/introweb-2106-prelim--tsuyin06.json",
-  "type": [
-    "VerifiableCredential",
-    "OpenBadgeCredential"
-  ],
-  "issuer": {
-    "id": "https://tjakoen.github.io/teaching",
-    "type": [
-      "Profile"
-    ],
-    "name": "Tjakoen Stolk",
-    "url": "https://tjakoen.github.io/teaching",
-    "description": "Instructor, Basic Programming in Web Development, School of Computing, Holy Angel University, Angeles City"
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "68dfb938ad4bd9b7dae3a5c3072ca5c62b8e56da97281cc8b1790a7a13399ecc",
+    "identity": "sha256$29cc39a96df43e4591ee75d669b983d068beabbe3816ca41ba21a259a84f814c"
   },
-  "validFrom": "2026-09-16T00:00:00+08:00",
-  "credentialSubject": {
-    "type": [
-      "AchievementSubject"
-    ],
-    "identifier": [
-      {
-        "type": "IdentityObject",
-        "identityHash": "sha256$7de9b44bfd7bbd6f85c158377d3d30f8d1e429ae3a3c648ae0530838cfb85c4e",
-        "identityType": "emailAddress",
-        "hashed": true,
-        "salt": "hau-badges-v1"
-      }
-    ],
-    "achievement": {
+  "issuedOn": "2026-09-16T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/introweb-2106-prelim--tsuyin06.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/introweb-2106-prelim",
+    "type": "BadgeClass",
+    "name": "Web Foundations",
+    "description": "Recognizes the named activity after instructor review at the confirmed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-introweb-2106-prelim.png",
+    "criteria": {
       "id": "https://tjakoen.github.io/badges/introweb-2106-prelim",
-      "type": [
-        "Achievement"
-      ],
-      "name": "Web Foundations",
-      "description": "Completion of the prelim block (m1 to m2 to m3 to m4 to m5) of Basic Programming in Web Development (6INTROWEB).",
-      "criteria": {
-        "id": "https://tjakoen.github.io/badges/introweb-2106-prelim"
-      }
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M6A3 (Publish Your Portfolio).\n\nAward threshold: 75%.\n\nm6a3: Publish Your Portfolio. Published a personal HTML and CSS portfolio on GitHub Pages. The assessment covered a working public URL, a home page and loading assets, meaningful content, intentional styling and a site finished enough to share."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
     }
   }
 }

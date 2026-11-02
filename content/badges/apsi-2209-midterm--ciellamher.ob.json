@@ -1,43 +1,34 @@
 {
-  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "@context": "https://w3id.org/openbadges/v2",
   "id": "https://tjakoen.github.io/badges/apsi-2209-midterm--ciellamher.json",
-  "type": [
-    "VerifiableCredential",
-    "OpenBadgeCredential"
-  ],
-  "issuer": {
-    "id": "https://tjakoen.github.io/teaching",
-    "type": [
-      "Profile"
-    ],
-    "name": "Tjakoen Stolk",
-    "url": "https://tjakoen.github.io/teaching",
-    "description": "Instructor, Application and System Integration, School of Computing, Holy Angel University, Angeles City"
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "a6028c1c03a9904565e983fa0b46d41ac037d40ba592e7b8da7b7cb8853cf232",
+    "identity": "sha256$98bc124f437fe58a7a50ca67445b35b4f199fed17897c1c37e5ddb0f2f1ccfb9"
   },
-  "validFrom": "2026-09-16T00:00:00+08:00",
-  "credentialSubject": {
-    "type": [
-      "AchievementSubject"
-    ],
-    "identifier": [
-      {
-        "type": "IdentityObject",
-        "identityHash": "sha256$c373d62db0b702a60504782d1c9cae7e6d760a6c6e1c5b530e5b1f260df25c0d",
-        "identityType": "emailAddress",
-        "hashed": true,
-        "salt": "hau-badges-v1"
-      }
-    ],
-    "achievement": {
+  "issuedOn": "2026-09-16T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/apsi-2209-midterm--ciellamher.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/apsi-2209-midterm",
+    "type": "BadgeClass",
+    "name": "Full Stack Web Development",
+    "description": "Recognizes completion of both the relational REST API and React client assessments, each at the instructor-reviewed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-apsi-2209-midterm.png",
+    "criteria": {
       "id": "https://tjakoen.github.io/badges/apsi-2209-midterm",
-      "type": [
-        "Achievement"
-      ],
-      "name": "Backend Development with Cloud",
-      "description": "Completion of the midterm block (m4 to m5) of Application and System Integration (6APSI).",
-      "criteria": {
-        "id": "https://tjakoen.github.io/badges/apsi-2209-midterm"
-      }
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M5A4 (Relational REST API) and M5A5 (HAUnted Sightings React client).\n\nAward threshold: 75%.\n\nm5a4: Relational REST API. Built a Node and Express API backed by a relational database. The assessment covered related tables and joins, REST endpoints, input validation, error handling, parameterized queries and separation of routes from data access.\n\nm5a5: HAUnted Sightings React client. Built a React client for the sightings API. The assessment covered API-driven lists and forms, server-side filtering, loading, error and empty states, responsive design, accessibility and component structure."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
     }
   }
 }

@@ -1,30 +1,26 @@
 ---
-title: "Flutter App Development · Maria Alessandra F. Dagdag (6ADET 2125)"
-type: cert
 badgeName: "Flutter App Development"
 subtitle: "Flutter App Development"
-course: adet
-monogram: 6ADET
-term: midterm
-badgeClass: adet-2125-midterm
-shortUrl: /b/95916eac
+course: "adet"
+monogram: "6ADET"
+term: "midterm"
 issuer: "Tjakoen Stolk"
-issuerRole: "Instructor, Application Development and Emerging Technologies · School of Computing, Holy Angel University, Angeles City"
-recipientName: "Maria Alessandra F. Dagdag"
+criteriaText: "Awarded after instructor review confirmed at least 75% on each required activity: M5A5 (HAUDEX app)."
+thresholdPercent: 75
+activitiesJson: "[{\"id\":\"m5a5\",\"title\":\"HAUDEX app\",\"description\":\"Built a Flutter app with a monster list, an add form, navigation to a detail screen and an attack action that updates HP. The assessment covered input validation, state, phone layout, consistent design and code organization.\"}]"
+title: "Flutter App Development: Maria Alessandra Dagdag"
+type: "cert"
+awardKey: "503dfd4582c8e7eec4e5cc31643b84b61634a90110fd7aa09263e2eadcb8386a"
+badgeClass: "adet-2125-midterm"
+shortUrl: "/b/95916eac"
+recipientName: "Maria Alessandra Dagdag"
 recipientHandle: "aichangtries"
-recipientRepo: "https://github.com/HAU-6ADET/m4a1-2125-aichangtries"
-recipientPortfolio: ""
-issuedOn: 2026-09-16
+issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-95916eac"
-criteriaUrl: /badges/adet-2125-midterm
-social: |
-  I earned the Flutter App Development badge for Application Development and Emerging Technologies (6ADET, section 2125) at Holy Angel
-  University, issued by my instructor Tjakoen Stolk.
-
-  It attests that I completed the midterm coursework of Application Development and Emerging Technologies, awarded on the work I
-  actually submitted rather than a grade cutoff.
-
-  Verify it here: https://tjakoen.github.io/b/95916eac
+criteriaUrl: "/badges/adet-2125-midterm"
+social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/95916eac"
 ---
 
-This credential attests completion of the midterm block of Application Development and Emerging Technologies. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/adet-2125-midterm).
+Recognizes the named activity after instructor review at the confirmed threshold.
+
+The instructor approved this award against the [badging activity criteria](/badges/adet-2125-midterm).

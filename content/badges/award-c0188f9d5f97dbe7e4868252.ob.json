@@ -1,0 +1,34 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "id": "https://tjakoen.github.io/badges/award-c0188f9d5f97dbe7e4868252.json",
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "7f0dfece3c865c2a98aa9e0c809745765fee0ac11f142c05b58a10b8cf1d532b",
+    "identity": "sha256$7889902213174075394ad30e75ce48d59cc8a29021b6d817ebaace087971951b"
+  },
+  "issuedOn": "2026-11-03T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/award-c0188f9d5f97dbe7e4868252.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/introweb-2106-builds-with-ai",
+    "type": "BadgeClass",
+    "name": "Builds for the Web and AI",
+    "description": "Recognizes the named activity after instructor review at the confirmed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-introweb-2106-builds-with-ai.png",
+    "criteria": {
+      "id": "https://tjakoen.github.io/badges/introweb-2106-builds-with-ai",
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M12A13 (Builds for the Web and AI).\n\nAward threshold: 75%.\n\nm12a13: Builds for the Web and AI. Documented how AI was used while building an HTML, CSS and JavaScript website. The assessment reviewed commit-linked usage entries, corrections to AI output, an individual explanation of personal contributions and AI credit in the README."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
+    }
+  }
+}

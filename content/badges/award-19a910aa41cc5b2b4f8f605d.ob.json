@@ -1,0 +1,34 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "id": "https://tjakoen.github.io/badges/award-19a910aa41cc5b2b4f8f605d.json",
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "d2d08e61e36331e71628ceecab7610b78a5599b4cf6ff46f8542a215ea9e1526",
+    "identity": "sha256$eed96b1cea3e6dea02998c6865b28833697cd5159f10b63b45620f7923914f3c"
+  },
+  "issuedOn": "2026-11-03T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/award-19a910aa41cc5b2b4f8f605d.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/adet-2134-builds-with-ai",
+    "type": "BadgeClass",
+    "name": "Builds with Flutter and AI",
+    "description": "Recognizes the named activity after instructor review at the confirmed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-adet-2134-builds-with-ai.png",
+    "criteria": {
+      "id": "https://tjakoen.github.io/badges/adet-2134-builds-with-ai",
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M8A9 (Builds with Flutter and AI).\n\nAward threshold: 75%.\n\nm8a9: Builds with Flutter and AI. Documented how AI was used while building a Flutter and Dart app. The assessment reviewed commit-linked usage entries, corrections to AI output, explanations of personal contributions and AI credit in the README."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
+    }
+  }
+}

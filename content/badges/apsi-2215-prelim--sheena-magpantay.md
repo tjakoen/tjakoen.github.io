@@ -1,30 +1,26 @@
 ---
-title: "Frontend Design with Cloud · Sheena Marie B.Magpantay (6APSI 2215)"
-type: cert
 badgeName: "Frontend Design with Cloud"
 subtitle: "Frontend Design with Cloud"
-course: apsi
-monogram: 6APSI
-term: prelim
-badgeClass: apsi-2215-prelim
-shortUrl: /b/4e1b210f
+course: "apsi"
+monogram: "6APSI"
+term: "prelim"
 issuer: "Tjakoen Stolk"
-issuerRole: "Instructor, Application and System Integration · School of Computing, Holy Angel University, Angeles City"
-recipientName: "Sheena Marie B.Magpantay"
+criteriaText: "Awarded after instructor review confirmed at least 75% on each required activity: LAB2 (React company profile dashboard)."
+thresholdPercent: 75
+activitiesJson: "[{\"id\":\"lab2\",\"title\":\"React company profile dashboard\",\"description\":\"Built a company profile dashboard in React during the prelim laboratory, graded in the course learning system.\"}]"
+title: "Frontend Design with Cloud: Sheena Marie Magpantay"
+type: "cert"
+awardKey: "5ffca7a084bad0b860d15424bd5c8352a062b6ee04f775f20fdf4a716ebd8c3c"
+badgeClass: "apsi-2215-prelim"
+shortUrl: "/b/4e1b210f"
+recipientName: "Sheena Marie Magpantay"
 recipientHandle: "sheena-magpantay"
-recipientRepo: "https://github.com/HAU-6APSI/m1a1-2215-sheena-magpantay"
-recipientPortfolio: ""
-issuedOn: 2026-09-16
+issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-prelim-4e1b210f"
-criteriaUrl: /badges/apsi-2215-prelim
-social: |
-  I earned the Frontend Design with Cloud badge for Application and System Integration (6APSI, section 2215) at Holy Angel
-  University, issued by my instructor Tjakoen Stolk.
-
-  It attests that I completed the prelim coursework of Application and System Integration, awarded on the work I
-  actually submitted rather than a grade cutoff.
-
-  Verify it here: https://tjakoen.github.io/b/4e1b210f
+criteriaUrl: "/badges/apsi-2215-prelim"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/4e1b210f"
 ---
 
-This credential attests completion of the prelim block of Application and System Integration. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/apsi-2215-prelim).
+Recognizes the React company profile dashboard laboratory activity at the instructor-reviewed threshold.
+
+The instructor approved this award against the [badging activity criteria](/badges/apsi-2215-prelim).

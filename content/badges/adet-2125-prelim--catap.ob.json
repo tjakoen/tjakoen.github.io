@@ -1,43 +1,34 @@
 {
-  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "@context": "https://w3id.org/openbadges/v2",
   "id": "https://tjakoen.github.io/badges/adet-2125-prelim--catap.json",
-  "type": [
-    "VerifiableCredential",
-    "OpenBadgeCredential"
-  ],
-  "issuer": {
-    "id": "https://tjakoen.github.io/teaching",
-    "type": [
-      "Profile"
-    ],
-    "name": "Tjakoen Stolk",
-    "url": "https://tjakoen.github.io/teaching",
-    "description": "Instructor, Application Development and Emerging Technologies, School of Computing, Holy Angel University, Angeles City"
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "c4d63543d43407b3605f5c77c650cca442c34406ba78ab05595d9171cac7a612",
+    "identity": "sha256$87cd4e4bc76826c6159bec807dbef372b9b909c4862d0bab4ef12378879db4b4"
   },
-  "validFrom": "2026-09-16T00:00:00+08:00",
-  "credentialSubject": {
-    "type": [
-      "AchievementSubject"
-    ],
-    "identifier": [
-      {
-        "type": "IdentityObject",
-        "identityHash": "sha256$f77d9df1b9ede114adf90cd2d0f15f5beb904e9f752e6166510062e1bc3ecc43",
-        "identityType": "emailAddress",
-        "hashed": true,
-        "salt": "hau-badges-v1"
-      }
-    ],
-    "achievement": {
+  "issuedOn": "2026-09-16T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/adet-2125-prelim--catap.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/adet-2125-prelim",
+    "type": "BadgeClass",
+    "name": "Dart and Flutter Foundations",
+    "description": "Recognizes the named activity after instructor review at the confirmed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-adet-2125-prelim.png",
+    "criteria": {
       "id": "https://tjakoen.github.io/badges/adet-2125-prelim",
-      "type": [
-        "Achievement"
-      ],
-      "name": "Dart and Flutter Foundations",
-      "description": "Completion of the prelim block (m1 to m2 to m3) of Application Development and Emerging Technologies (6ADET).",
-      "criteria": {
-        "id": "https://tjakoen.github.io/badges/adet-2125-prelim"
-      }
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: M4A4 (Monster Detail screen).\n\nAward threshold: 75%.\n\nm4a4: Monster Detail screen. Built a Flutter detail screen driven by a monster model. The assessment covered the name and type, current and maximum HP, a proportional health bar, phone layout, visual hierarchy and reusable widgets."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
     }
   }
 }

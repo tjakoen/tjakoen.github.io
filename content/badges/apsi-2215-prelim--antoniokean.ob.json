@@ -1,43 +1,34 @@
 {
-  "@context": "https://www.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+  "@context": "https://w3id.org/openbadges/v2",
   "id": "https://tjakoen.github.io/badges/apsi-2215-prelim--antoniokean.json",
-  "type": [
-    "VerifiableCredential",
-    "OpenBadgeCredential"
-  ],
-  "issuer": {
-    "id": "https://tjakoen.github.io/teaching",
-    "type": [
-      "Profile"
-    ],
-    "name": "Tjakoen Stolk",
-    "url": "https://tjakoen.github.io/teaching",
-    "description": "Instructor, Application and System Integration, School of Computing, Holy Angel University, Angeles City"
+  "type": "Assertion",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "668a0f3c054e46c877ce7a2f63db0f720c4f979203cb5f627e7b05224890492f",
+    "identity": "sha256$d1644077c40663b5ea8049e5383921251fb5f7a71eaa01b0f6ea33ea20cbc915"
   },
-  "validFrom": "2026-09-16T00:00:00+08:00",
-  "credentialSubject": {
-    "type": [
-      "AchievementSubject"
-    ],
-    "identifier": [
-      {
-        "type": "IdentityObject",
-        "identityHash": "sha256$5590dc510e229aa4711d0a53ee10431c6b40096aeaa55b7fd8843282f89fca22",
-        "identityType": "emailAddress",
-        "hashed": true,
-        "salt": "hau-badges-v1"
-      }
-    ],
-    "achievement": {
+  "issuedOn": "2026-09-16T00:00:00+08:00",
+  "verification": {
+    "type": "HostedBadge"
+  },
+  "image": "https://tjakoen.github.io/media/badges/apsi-2215-prelim--antoniokean.png",
+  "badge": {
+    "id": "https://tjakoen.github.io/badges/apsi-2215-prelim",
+    "type": "BadgeClass",
+    "name": "Frontend Design with Cloud",
+    "description": "Recognizes the React company profile dashboard laboratory activity at the instructor-reviewed threshold.",
+    "image": "https://tjakoen.github.io/media/badges/og-apsi-2215-prelim.png",
+    "criteria": {
       "id": "https://tjakoen.github.io/badges/apsi-2215-prelim",
-      "type": [
-        "Achievement"
-      ],
-      "name": "Frontend Design with Cloud",
-      "description": "Completion of the prelim block (m1 to m2 to m3) of Application and System Integration (6APSI).",
-      "criteria": {
-        "id": "https://tjakoen.github.io/badges/apsi-2215-prelim"
-      }
+      "narrative": "Awarded after instructor review confirmed at least 75% on each required activity: LAB2 (React company profile dashboard).\n\nAward threshold: 75%.\n\nlab2: React company profile dashboard. Built a company profile dashboard in React during the prelim laboratory, graded in the course learning system."
+    },
+    "issuer": {
+      "id": "https://tjakoen.github.io/teaching",
+      "type": "Profile",
+      "name": "Tjakoen Stolk",
+      "url": "https://tjakoen.github.io/teaching",
+      "email": "tjakoen.s@gmail.com"
     }
   }
 }
