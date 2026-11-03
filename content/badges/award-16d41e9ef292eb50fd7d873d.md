@@ -19,7 +19,9 @@ issuedOn: "2026-11-03"
 certId: "hau-16d41e9ef292eb50fd7d873d"
 criteriaUrl: "/badges/introweb-2106-builds-with-ai"
 social: "I earned Builds for the Web and AI. Verify my badge: https://tjakoen.github.io/b/16d41e9ef292eb50"
-showcaseNone: "live site did not render a usable, privacy-safe page on 2026-11-03"
+showcase:
+  - "/media/badges/showcase/1c7716f6f71e7cfa.webp | 1280x800 | The deployed final project, view 1"
+  - "/media/badges/showcase/fbc8245c97115b28.webp | 1280x800 | The deployed final project, view 2"
 showcaseOptOut: false
 ---
 
