@@ -23,7 +23,7 @@ social: |
 
 ## No frameworks, on purpose
 
-This is the class where I take away the toys. Introduction to Web Development runs on plain HTML, CSS and JavaScript, no frameworks, no component libraries, nothing that does the thinking for you. Students grumble about it for about three weeks. Then something clicks, and they stop asking for React.
+This is the class where most students build their first web page. Introduction to Web Development runs on plain HTML, CSS and JavaScript, with no frameworks, no component libraries and nothing that does the thinking for them. Most of them could not tell you what React is, and that is fine: they will meet it later, in a course built for it. Here, every line on the page is one they typed and can explain.
 
 The finals were team projects, and team projects are where good ideas go to get averaged into mush. These four did not. Each one reads like a single clear idea, which means somebody on each team did the hard, invisible work of saying *no, not that feature*.
 
