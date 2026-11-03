@@ -4,15 +4,16 @@ kind: student-project
 location: "Holy Angel University"
 tags: [students, student-work, apsi]
 summary: "Printable Mass missalettes for a campus ministry office, without retyping a word."
-photos:
-  - "/media/projects/2026-1st-sem/liturgygen/shot-1.webp | 1280x800 | LiturgyGen, screenshot 1 of 3"
-  - "/media/projects/2026-1st-sem/liturgygen/shot-2.webp | 1440x950 | LiturgyGen, screenshot 2 of 3"
-  - "/media/projects/2026-1st-sem/liturgygen/shot-3.webp | 1440x950 | LiturgyGen, screenshot 3 of 3"
-gallery:
-  - "/media/projects/2026-1st-sem/liturgygen/square.webp | 1080x1080 | LiturgyGen, the project's square image"
 ---
 
 *A final project from Full-stack JavaScript, 2026 first semester. Part of [Fifteen full-stack apps from a semester I almost did not survive](/calendar/2026-s1-apsi-students).*
+
+<div class="gallery" data-lightbox-group style="--gallery-min: 14rem; align-items: start">
+<figure class="gallery__item" style="grid-column: 1 / -1"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/liturgygen/shot-1.webp"><img src="/media/projects/2026-1st-sem/liturgygen/shot-1.webp" width="1280" height="800" alt="LiturgyGen, screenshot 1 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/liturgygen/shot-2.webp"><img src="/media/projects/2026-1st-sem/liturgygen/shot-2.webp" width="1440" height="950" alt="LiturgyGen, screenshot 2 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/liturgygen/shot-3.webp"><img src="/media/projects/2026-1st-sem/liturgygen/shot-3.webp" width="1440" height="950" alt="LiturgyGen, screenshot 3 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/liturgygen/square.webp"><img src="/media/projects/2026-1st-sem/liturgygen/square.webp" width="1080" height="1080" alt="LiturgyGen, the project's square image" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+</div>
 
 ## What it is
 
