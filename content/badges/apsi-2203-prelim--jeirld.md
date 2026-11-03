@@ -19,7 +19,8 @@ issuedOn: "2026-09-16"
 certId: "hau-apsi-2203-prelim-fe614a2d"
 criteriaUrl: "/badges/apsi-2203-prelim"
 social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/fe614a2d"
-showcaseNone: "practical submitted in Canvas, no capture"
+showcase:
+  - "/media/badges/showcase/b97236214ab17328.webp | 687x922 | Company dashboard"
 showcaseOptOut: false
 ---
 
