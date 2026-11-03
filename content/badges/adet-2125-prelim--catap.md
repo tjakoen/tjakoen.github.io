@@ -19,6 +19,11 @@ issuedOn: "2026-09-16"
 certId: "hau-adet-2125-prelim-9c9f0a16"
 criteriaUrl: "/badges/adet-2125-prelim"
 social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/9c9f0a16"
+showcase:
+  - "/media/badges/showcase/8ed0bbd02ee1bd77.webp | 780x1688 | Detail fire"
+  - "/media/badges/showcase/159a0a13258d46c8.webp | 780x1688 | Detail water low hp"
+  - "/media/badges/showcase/05b16fd002e1a717.webp | 780x1688 | Detail grass long name"
+showcaseOptOut: false
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.

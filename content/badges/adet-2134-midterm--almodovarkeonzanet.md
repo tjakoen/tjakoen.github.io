@@ -19,6 +19,12 @@ issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-2295d248"
 criteriaUrl: "/badges/adet-2134-midterm"
 social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/2295d248"
+showcase:
+  - "/media/badges/showcase/96c74c467ebdcd1f.webp | 780x1688 | Dex list"
+  - "/media/badges/showcase/3b13c9f5b6ba41f5.webp | 780x1688 | Monster detail"
+  - "/media/badges/showcase/ae8dab71d94140a5.webp | 780x1688 | After attack"
+  - "/media/badges/showcase/0defd8ab7eb0cb6e.webp | 780x1688 | Back on list"
+showcaseOptOut: false
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.

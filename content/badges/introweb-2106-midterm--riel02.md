@@ -19,6 +19,9 @@ issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-43d2093f"
 criteriaUrl: "/badges/introweb-2106-midterm"
 social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/43d2093f"
+showcase:
+  - "/media/badges/showcase/19c7acf35c3416db.webp | 1280x800 | The published portfolio site"
+showcaseOptOut: false
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.
