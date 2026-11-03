@@ -18,8 +18,8 @@ test.describe("portfolio umbrella", () => {
     await expect(page.getByRole("link", { name: "How I work across teaching, engineering, and management" }))
       .toHaveAttribute("href", "/about#profile");
     await expect(page.locator('[data-surface="welcome-start"] a[href="/projects"]')).toHaveCount(0);
-    // Recent is fed LIVE from MILL frontmatter — real note links, not hand-typed rows
-    await expect(page.locator('.recent .recent__item[href^="/notes/"]').first()).toBeVisible();
+    // Recent is fed LIVE from MILL frontmatter: real note or calendar links, not hand-typed rows
+    await expect(page.locator('.recent .recent__item[href^="/notes/"], .recent .recent__item[href^="/calendar/"]').first()).toBeVisible();
     await expect(page.locator(".recent .recent__path").first()).toContainText(".md");
     await expect(page.locator(".walks .walk").first()).toBeVisible();
     // the whole site sits in ONE editor window: title bar (nav + ⌘K search) + status bar
