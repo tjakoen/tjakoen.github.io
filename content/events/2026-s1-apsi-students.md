@@ -12,16 +12,16 @@ photos:
   - "/media/projects/2026-1st-sem/liturgygen/square.webp | 1080x1080 | LiturgyGen, the project's square image"
   - "/media/projects/2026-1st-sem/cartcheck/square.webp | 1080x1080 | CartCheck, the project's square image"
 social: |
-  Four sections of full-stack JavaScript this semester, three of them inherited partway through. I nearly drowned in grading. Then the final projects came in.
+  Four sections of full-stack JavaScript this semester at the School of Computing, Holy Angel University. I nearly drowned in grading until the final projects came in.
   
-  A job-hunting clipboard with a better pitch than most startups. A missalette generator built for a real campus ministry office. A rent tracker for small landlords. A seat-reservation system every student org needs.
+  The top projects were: A job-hunting clipboard with a better pitch than most startups. A missalette generator built for a real campus ministry office. A rent tracker for small landlords. A seat-reservation system every student org needs.
+  
+  Tagging the builders I could find on LinkedIn: Ranz Emmanuel Cuarto (LaundryLog), Matt Lara (Roomy), Graciella Jimenez (Revive Pilates Studio), Angelo Tristan Sinohin (SeatSaver). If you built one of the others, send me your profile and I will tag you.
   
   Fifteen of them, with a page each:
   https://tjakoen.github.io/calendar/2026-s1-apsi-students
   
   Repos and live links are on each project's page.
-  
-  Tagging the builders I could find on LinkedIn or who sent me theirs: @Ranz Emmanuel Cuarto (LaundryLog), @Matt Christian Lara (Roomy), @Graciella Mhervie Jimenez (Revive Pilates Studio), @Angelo Tristan Sinohin (SeatSaver). If you built one of the others, send me your profile and I will tag you.
 ---
 
 ## Four sections, three of them inherited, one very tired instructor
