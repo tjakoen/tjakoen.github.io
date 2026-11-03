@@ -20,8 +20,8 @@ certId: "hau-4f147e7c8a152c0dbaa26fac"
 criteriaUrl: "/badges/apsi-2209-builds-with-ai"
 social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/4f147e7c8a152c0d"
 showcase:
-  - "/media/badges/showcase/31916f5b39d12ae5.webp | 1280x800 | The deployed final project, view 1"
-  - "/media/badges/showcase/ddb6045ba9a14123.webp | 390x844 | The deployed final project, view 2"
+  - "/media/badges/showcase/beaada9045818b67.webp | 1280x800 | The student's desktop wireframe of the cart"
+  - "/media/badges/showcase/168851c3bd2a4997.webp | 314x800 | The grocery checklist preview from the landing page"
 showcaseOptOut: false
 ---
 
