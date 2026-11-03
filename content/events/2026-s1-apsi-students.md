@@ -18,6 +18,10 @@ social: |
   
   Fifteen of them, with a page each:
   https://tjakoen.github.io/calendar/2026-s1-apsi-students
+  
+  Repos and live links are on each project's page.
+  
+  Tagging the builders I could find on LinkedIn or who sent me theirs: @Ranz Emmanuel Cuarto (LaundryLog), @Matt Christian Lara (Roomy), @Graciella Mhervie Jimenez (Revive Pilates Studio), @Angelo Tristan Sinohin (SeatSaver). If you built one of the others, send me your profile and I will tag you.
 ---
 
 ## Four sections, three of them inherited, one very tired instructor
