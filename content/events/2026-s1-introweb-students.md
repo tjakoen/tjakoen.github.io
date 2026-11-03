@@ -35,19 +35,19 @@ Each card opens a page with screenshots, what the team says it does, and where t
 <div class="card-grid" style="--card-min: 15rem">
 <a class="media-card" href="/calendar/2026-s1-memora">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/memora/square.webp" width="1080" height="1080" alt="Memora, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Memora</span><span class="media-card__text">Free flashcards for college students: make decks, flip cards, see what is left to review. By @JoshPhilipPuangco.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Memora</span><span class="media-card__text">Free flashcards for college students: make decks, flip cards, see what is left to review. By @JoshPhilipPuangco.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-hau-dorm-finder">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/hau-dorm-finder/square.webp" width="1080" height="1080" alt="HAU Dorm Finder, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">HAU Dorm Finder</span><span class="media-card__text">Compare boarding houses near Holy Angel University by price, distance and amenities. By @yv-or.</span></span>
+  <div class="media-card__body"><span class="media-card__title">HAU Dorm Finder</span><span class="media-card__text">Compare boarding houses near Holy Angel University by price, distance and amenities. By @yv-or.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-hourly">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/hourly/square.webp" width="1080" height="1080" alt="Hour.ly, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Hour.ly</span><span class="media-card__text">Shared calendars for friend groups and classes, called circles. By @Ezekielley.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Hour.ly</span><span class="media-card__text">Shared calendars for friend groups and classes, called circles. By @Ezekielley.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-life-quest">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/life-quest/square.webp" width="1080" height="1080" alt="Life-Quest, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Life-Quest</span><span class="media-card__text">Turns tasks and habits into quests, with XP, streaks and badges. By @aaronsalunga098-ai.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Life-Quest</span><span class="media-card__text">Turns tasks and habits into quests, with XP, streaks and badges. By @aaronsalunga098-ai.</span></div>
 </a>
 </div>
 

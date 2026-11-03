@@ -37,35 +37,35 @@ So this is a thank-you, in public. Each card below opens a page for that project
 <div class="card-grid" style="--card-min: 15rem">
 <a class="media-card" href="/calendar/2026-s1-love-my-closet">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/love-my-closet/square.webp" width="1080" height="1080" alt="Love My Closet, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Love My Closet</span><span class="media-card__text">A digital wardrobe for people who own plenty of clothes and keep wearing the same five. By @sofiademesa.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Love My Closet</span><span class="media-card__text">A digital wardrobe for people who own plenty of clothes and keep wearing the same five. By @sofiademesa.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-vivari">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/vivari/square.webp" width="1080" height="1080" alt="Vivari, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Vivari</span><span class="media-card__text">Aquarium care for people who keep more than one tank. By @vvnrzn.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Vivari</span><span class="media-card__text">Aquarium care for people who keep more than one tank. By @vvnrzn.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-reaction-chain">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/reaction-chain/square.webp" width="1080" height="1080" alt="Reaction Chain, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Reaction Chain</span><span class="media-card__text">The Chain Reaction board game, rebuilt in Flutter for local multiplayer. By @enetwarch.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Reaction Chain</span><span class="media-card__text">The Chain Reaction board game, rebuilt in Flutter for local multiplayer. By @enetwarch.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-shelf">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/shelf/square.webp" width="1080" height="1080" alt="Shelf, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Shelf</span><span class="media-card__text">Inventory for a shared equipment room: what is there, where it lives, and who borrowed it. By @28BEANS.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Shelf</span><span class="media-card__text">Inventory for a shared equipment room: what is there, where it lives, and who borrowed it. By @28BEANS.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-trivet">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/trivet/square.webp" width="1080" height="1080" alt="Trivet, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Trivet</span><span class="media-card__text">A weekly balance tracker for work, health and leisure. By @Keonzane.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Trivet</span><span class="media-card__text">A weekly balance tracker for work, health and leisure. By @Keonzane.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-nook">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/nook/square.webp" width="1080" height="1080" alt="Nook, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Nook</span><span class="media-card__text">Never lose a travel find again: saves from TikTok, Instagram, Facebook and YouTube, turned into an itinerary. By @alyencs.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Nook</span><span class="media-card__text">Never lose a travel find again: saves from TikTok, Instagram, Facebook and YouTube, turned into an itinerary. By @alyencs.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-momentum">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/momentum/square.webp" width="1080" height="1080" alt="Momentum, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Momentum</span><span class="media-card__text">A study planner: tasks, events, focus sessions and calendar imports in one place. By @asm0git.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Momentum</span><span class="media-card__text">A study planner: tasks, events, focus sessions and calendar imports in one place. By @asm0git.</span></div>
 </a>
 <a class="media-card" href="/calendar/2026-s1-bahantabay">
   <span class="media-card__media" style="--media-ratio: 1 / 1"><img class="media-card__image" src="/media/projects/2026-1st-sem/bahantabay/square.webp" width="1080" height="1080" alt="Bahantabay, the project's square image" loading="lazy" decoding="async"></span>
-  <span class="media-card__body"><span class="media-card__title">Bahantabay</span><span class="media-card__text">Community flood reports and route warnings for commuters around Angeles City. By @Allen021006.</span></span>
+  <div class="media-card__body"><span class="media-card__title">Bahantabay</span><span class="media-card__text">Community flood reports and route warnings for commuters around Angeles City. By @Allen021006.</span></div>
 </a>
 </div>
 
