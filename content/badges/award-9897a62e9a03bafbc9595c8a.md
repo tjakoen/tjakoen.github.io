@@ -19,6 +19,9 @@ issuedOn: "2026-11-03"
 certId: "hau-9897a62e9a03bafbc9595c8a"
 criteriaUrl: "/badges/apsi-2240-builds-with-ai"
 social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/9897a62e9a03bafb"
+showcase:
+  - "/media/badges/showcase/157ec2bfaf8918e2.webp | 1280x800 | The deployed final project"
+showcaseOptOut: false
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.

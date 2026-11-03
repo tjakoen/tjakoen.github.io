@@ -19,6 +19,9 @@ issuedOn: "2026-11-03"
 certId: "hau-eb5eeda79b7003450afbceeb"
 criteriaUrl: "/badges/adet-2134-builds-with-ai"
 social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/eb5eeda79b700345"
+showcase:
+  - "/media/badges/showcase/d94cf8c55e9058cc.webp | 1280x800 | The deployed final project"
+showcaseOptOut: false
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.

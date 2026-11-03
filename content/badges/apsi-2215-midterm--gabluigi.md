@@ -19,6 +19,10 @@ issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-midterm-085f8b87"
 criteriaUrl: "/badges/apsi-2215-midterm"
 social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/085f8b87"
+showcase:
+  - "/media/badges/showcase/803480eec16d639f.webp | 1280x1602 | The client at desktop width"
+  - "/media/badges/showcase/ea6e6b9a728ac47f.webp | 375x1618 | The client at phone width"
+showcaseOptOut: false
 ---
 
 Recognizes completion of both the relational REST API and React client assessments, each at the instructor-reviewed threshold.

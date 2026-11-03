@@ -1291,6 +1291,29 @@ function renderIssuer(frontmatter: Record<string, unknown>): string {
 // What the badge attests plus its technologies, inline on the page. Drawn from BADGE_CRITERIA by
 // course and term so every recipient's cert states its own criteria without a click-through. Renders
 // nothing for a course/term the map does not cover.
+// What the recipient built, as GRAIN's gallery molecule wired to the lightbox. Screenshots use the
+// same flat "src | WxH | alt" encoding as event photos. showcaseOptOut: true hides them without
+// deleting the files, so a student's removal request is one frontmatter line.
+function renderBadgeShowcase(frontmatter: Record<string, unknown>): string {
+  if (frontmatter.type !== "cert" || String(frontmatter.showcaseOptOut) === "true") return "";
+  const shots = parsePhotos(frontmatter.showcase);
+  if (!shots.length) return "";
+  const items = shots.map((p) => {
+    const src = escapeHtml(p.src);
+    const dims = p.width && p.height ? ` width="${escapeHtml(p.width)}" height="${escapeHtml(p.height)}"` : "";
+    const alt = escapeHtml(p.alt);
+    return `<figure class="gallery__item">
+      <a class="gallery__link" data-lightbox href="${src}"><img src="${src}"${dims} alt="${alt}" loading="lazy" decoding="async"></a>
+      <figcaption class="gallery__caption">${alt}</figcaption>
+    </figure>`;
+  }).join("");
+  // Phone captures are tall, desktop ones wide: crop the whole grid to the first shot's orientation.
+  const first = shots[0];
+  const tall = Number(first.height) > Number(first.width);
+  const style = tall ? "--gallery-ratio: 9 / 16; --gallery-min: 11rem;" : "--gallery-ratio: 16 / 10;";
+  return `<section class="badge-criteria badge-showcase" data-surface="badge:showcase"><h3 class="badge-criteria__heading">What they built</h3><div class="gallery" data-lightbox-group style="${style}">${items}</div></section>`;
+}
+
 function renderBadgeActivities(frontmatter: Record<string, unknown>): string {
   let activities: unknown;
   try { activities = JSON.parse(String(frontmatter.activitiesJson || "[]")); } catch { return ""; }
@@ -1430,6 +1453,7 @@ export function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: str
   </dl>
   ${renderBadgeCriteria(frontmatter)}
   ${renderBadgeActivities(frontmatter)}
+  ${renderBadgeShowcase(frontmatter)}
   ${share}
   ${BADGE_COPY_SCRIPT}
 </section>`;

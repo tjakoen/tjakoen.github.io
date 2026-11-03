@@ -19,6 +19,9 @@ issuedOn: "2026-11-03"
 certId: "hau-f2b7cf8427e1d404f69c5eda"
 criteriaUrl: "/badges/introweb-2106-builds-with-ai"
 social: "I earned Builds for the Web and AI. Verify my badge: https://tjakoen.github.io/b/f2b7cf8427e1d404"
+showcase:
+  - "/media/badges/showcase/e46db0376d614ca4.webp | 1280x800 | The deployed final project"
+showcaseOptOut: false
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.

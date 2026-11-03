@@ -19,6 +19,8 @@ issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-prelim-c95884d9"
 criteriaUrl: "/badges/introweb-2106-prelim"
 social: "I earned Web Foundations. Verify my badge: https://tjakoen.github.io/b/c95884d9"
+showcaseNone: "live site did not render a usable, privacy-safe page on 2026-11-03"
+showcaseOptOut: false
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.

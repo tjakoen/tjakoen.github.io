@@ -19,6 +19,9 @@ issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-prelim-b3a3f899"
 criteriaUrl: "/badges/apsi-2209-prelim"
 social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/b3a3f899"
+showcase:
+  - "/media/badges/showcase/b9b0a5fee32b246c.webp | 1024x880 | App"
+showcaseOptOut: false
 ---
 
 Recognizes the proctored in-lab React practical at the instructor-reviewed threshold.

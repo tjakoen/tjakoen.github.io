@@ -19,6 +19,8 @@ issuedOn: "2026-09-16"
 certId: "hau-apsi-2203-prelim-a5dd41ea"
 criteriaUrl: "/badges/apsi-2203-prelim"
 social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/a5dd41ea"
+showcaseNone: "practical submitted in Canvas, no capture"
+showcaseOptOut: false
 ---
 
 Recognizes the React company profile dashboard laboratory activity at the instructor-reviewed threshold.
