@@ -12,16 +12,12 @@ photos:
   - "/media/projects/2026-1st-sem/reaction-chain/square.webp | 1080x1080 | Reaction Chain, the project's square image"
   - "/media/projects/2026-1st-sem/shelf/square.webp | 1080x1080 | Shelf, the project's square image"
 social: |
-  Seventy-three Flutter final projects this semester across two sections at Holy Angel University. I graded every one of them, and these are the eight I keep pulling up to show people.
+  Seventy-three Flutter final projects this semester across two sections at the School of Computing, Holy Angel University. I graded every one of them, and these are the eight I keep pulling up to show people.
   
-  A wardrobe app with an actual brand. An aquarium tracker for a hobby I know nothing about. A board game you can play from the link.
+  Tagging the builders I could find on LinkedIn: Sofia Ryza De Mesa (Love My Closet), Alison Sampang (Nook), Vince Evangelista (Shelf). If you built one of the others, send me your profile and I will tag you.
   
-  All eight, with a page each:
+  Repos and live links are on each project's page:
   https://tjakoen.github.io/calendar/2026-s1-appdev-students
-  
-  Repos and live links are on each project's page.
-  
-  Tagging the builders I could find on LinkedIn or who sent me theirs: @Sofia Ryza De Mesa (Love My Closet), @Alison Sampang (Nook), @Vince Jerwyn Evangelista (Shelf). If you built one of the others, send me your profile and I will tag you.
 ---
 
 ## I graded all of them at night, and these kept me awake

@@ -12,16 +12,13 @@ photos:
   - "/media/projects/2026-1st-sem/hourly/square.webp | 1080x1080 | Hour.ly, the project's square image"
   - "/media/projects/2026-1st-sem/life-quest/square.webp | 1080x1080 | Life-Quest, the project's square image"
 social: |
-  No frameworks. That was the rule for my intro web class this semester: plain HTML, CSS and JavaScript, built in teams.
+  No frameworks. That was the rule for my intro web class this semester at the School of Computing, Holy Angel University: plain HTML, CSS and JavaScript, built in teams.
   
-  The final projects included a flashcard site that could pass for a real product, a dorm finder for students near campus, and a shared calendar for your barkada.
+  The top final projects included a flashcard site that could pass for a real product, a dorm finder for students near campus, and a shared calendar for your barkada. I could not find any of these builders on LinkedIn yet. If you built one, send me your profile and I will tag you.
   
   Four of them, with a page each:
   https://tjakoen.github.io/calendar/2026-s1-introweb-students
-  
   Repos and live links are on each project's page.
-  
-  I could not find any of these builders on LinkedIn yet. If you built one, send me your profile and I will tag you.
 ---
 
 ## No frameworks, on purpose
