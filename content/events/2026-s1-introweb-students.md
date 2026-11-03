@@ -18,6 +18,10 @@ social: |
   
   Four of them, with a page each:
   https://tjakoen.github.io/calendar/2026-s1-introweb-students
+  
+  Repos and live links are on each project's page.
+  
+  I could not find any of these builders on LinkedIn yet. If you built one, send me your profile and I will tag you.
 ---
 
 ## No frameworks, on purpose

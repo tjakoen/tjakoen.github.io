@@ -18,6 +18,10 @@ social: |
   
   All eight, with a page each:
   https://tjakoen.github.io/calendar/2026-s1-appdev-students
+  
+  Repos and live links are on each project's page.
+  
+  Tagging the builders I could find on LinkedIn or who sent me theirs: @Sofia Ryza De Mesa (Love My Closet), @Alison Sampang (Nook), @Vince Jerwyn Evangelista (Shelf). If you built one of the others, send me your profile and I will tag you.
 ---
 
 ## I graded all of them at night, and these kept me awake
