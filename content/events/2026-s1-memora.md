@@ -8,12 +8,7 @@ summary: "Free flashcards for college students: make decks, flip cards, see what
 
 *A final project from Introduction to Web Development, 2026 first semester. Part of [Four websites built with nothing but HTML, CSS and JavaScript](/calendar/2026-s1-introweb-students).*
 
-<div class="gallery" data-lightbox-group style="--gallery-min: 14rem; align-items: start">
-<figure class="gallery__item" style="grid-column: 1 / -1"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/memora/shot-1.webp"><img src="/media/projects/2026-1st-sem/memora/shot-1.webp" width="1600" height="900" alt="Memora, screenshot 1 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
-<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/memora/shot-2.webp"><img src="/media/projects/2026-1st-sem/memora/shot-2.webp" width="1600" height="900" alt="Memora, screenshot 2 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
-<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/memora/shot-3.webp"><img src="/media/projects/2026-1st-sem/memora/shot-3.webp" width="1600" height="900" alt="Memora, screenshot 3 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
-<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/memora/square.webp"><img src="/media/projects/2026-1st-sem/memora/square.webp" width="1080" height="1080" alt="Memora, the project's square image" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
-</div>
+<figure data-lightbox-group style="max-width: 22rem; margin: 0 0 var(--space-6, 2rem)"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/memora/square.webp"><img src="/media/projects/2026-1st-sem/memora/square.webp" width="1080" height="1080" alt="Memora, the project's square image" loading="eager" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
 
 ## What it is
 
@@ -30,3 +25,11 @@ The landing page could pass for a real product's, and that is plain HTML, CSS an
 - Project: [github.com/JoshPhilipPuangco/Memora](https://github.com/JoshPhilipPuangco/Memora)
 - Live: [joshphilippuangco.github.io/Memora](https://joshphilippuangco.github.io/Memora/)
 - GitHub: [@JoshPhilipPuangco](https://github.com/JoshPhilipPuangco)
+
+## Screenshots
+
+<div class="gallery" data-lightbox-group style="--gallery-min: 14rem; align-items: start">
+<figure class="gallery__item" style="grid-column: 1 / -1"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/memora/shot-1.webp"><img src="/media/projects/2026-1st-sem/memora/shot-1.webp" width="1600" height="900" alt="Memora, screenshot 1 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/memora/shot-2.webp"><img src="/media/projects/2026-1st-sem/memora/shot-2.webp" width="1600" height="900" alt="Memora, screenshot 2 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/memora/shot-3.webp"><img src="/media/projects/2026-1st-sem/memora/shot-3.webp" width="1600" height="900" alt="Memora, screenshot 3 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+</div>

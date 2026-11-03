@@ -8,12 +8,7 @@ summary: "Compare boarding houses near Holy Angel University by price, distance 
 
 *A final project from Introduction to Web Development, 2026 first semester. Part of [Four websites built with nothing but HTML, CSS and JavaScript](/calendar/2026-s1-introweb-students).*
 
-<div class="gallery" data-lightbox-group style="--gallery-min: 14rem; align-items: start">
-<figure class="gallery__item" style="grid-column: 1 / -1"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/hau-dorm-finder/shot-1.webp"><img src="/media/projects/2026-1st-sem/hau-dorm-finder/shot-1.webp" width="1280" height="800" alt="HAU Dorm Finder, screenshot 1 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
-<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/hau-dorm-finder/shot-2.webp"><img src="/media/projects/2026-1st-sem/hau-dorm-finder/shot-2.webp" width="1280" height="800" alt="HAU Dorm Finder, screenshot 2 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
-<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/hau-dorm-finder/shot-3.webp"><img src="/media/projects/2026-1st-sem/hau-dorm-finder/shot-3.webp" width="390" height="844" alt="HAU Dorm Finder, screenshot 3 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
-<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/hau-dorm-finder/square.webp"><img src="/media/projects/2026-1st-sem/hau-dorm-finder/square.webp" width="1080" height="1080" alt="HAU Dorm Finder, the project's square image" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
-</div>
+<figure data-lightbox-group style="max-width: 22rem; margin: 0 0 var(--space-6, 2rem)"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/hau-dorm-finder/square.webp"><img src="/media/projects/2026-1st-sem/hau-dorm-finder/square.webp" width="1080" height="1080" alt="HAU Dorm Finder, the project's square image" loading="eager" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
 
 ## What it is
 
@@ -30,3 +25,11 @@ It is the clearest local problem in the class, and every incoming student has it
 - Project: [github.com/yv-or/hau-dorm-finder](https://github.com/yv-or/hau-dorm-finder)
 - Live: [yv-or.github.io/hau-dorm-finder](https://yv-or.github.io/hau-dorm-finder)
 - GitHub: [@yv-or](https://github.com/yv-or)
+
+## Screenshots
+
+<div class="gallery" data-lightbox-group style="--gallery-min: 14rem; align-items: start">
+<figure class="gallery__item" style="grid-column: 1 / -1"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/hau-dorm-finder/shot-1.webp"><img src="/media/projects/2026-1st-sem/hau-dorm-finder/shot-1.webp" width="1280" height="800" alt="HAU Dorm Finder, screenshot 1 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/hau-dorm-finder/shot-2.webp"><img src="/media/projects/2026-1st-sem/hau-dorm-finder/shot-2.webp" width="1280" height="800" alt="HAU Dorm Finder, screenshot 2 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+<figure class="gallery__item"><a class="gallery__link" data-lightbox href="/media/projects/2026-1st-sem/hau-dorm-finder/shot-3.webp"><img src="/media/projects/2026-1st-sem/hau-dorm-finder/shot-3.webp" width="390" height="844" alt="HAU Dorm Finder, screenshot 3 of 3" loading="lazy" decoding="async" style="aspect-ratio:auto;height:auto;object-fit:contain"></a></figure>
+</div>
