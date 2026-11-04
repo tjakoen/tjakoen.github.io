@@ -278,7 +278,8 @@
       const el0 = cur();
       if (!el0) return null;
       const saved = get(key);
-      if (saved != null) el0.innerHTML = saved;
+      // the frame restores before first paint (portfolio-frame.html) and marks data-restored
+      if (saved != null && !el0.hasAttribute("data-restored")) el0.innerHTML = saved;
       // the actual write — shared by the debounced saver AND the flush-on-exit below.
       const flush = () => {
         const el = cur();
