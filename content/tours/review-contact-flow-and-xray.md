@@ -20,7 +20,7 @@ Start here and ask the desk to send a message.
 - at: /mail
 - status: needs-verification
 - review: The body is the visitor's own words plus a greeting, filled through field.set, and marked as AI-written until the visitor edits it. Nothing is ever sent for them.
-- verify: After the previous step, Compose should be open with "Hi TJ, I want to talk about grain." in the body, set in the desk's ink. Type one character at the end; the text should switch to ordinary ink, and nothing should send until you press Send.
+- verify: After the previous step, Compose should be open with "About grain" as the subject and "Hi TJ, I want to talk about grain." in the body, both set in the desk's ink. Type one character at the end; the text should switch to ordinary ink, and nothing should send until you press Send.
 The draft lands here. Sending it stays yours.
 
 ## screen
