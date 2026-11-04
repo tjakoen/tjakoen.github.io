@@ -258,6 +258,11 @@
     <svg class="icon" aria-hidden="true" focusable="false"><use href="/assets/sprite.svg#close"></use></svg>
   </button>
 </header>
+<!-- tabs.js runs HERE, synchronously, rather than as a deferred module: a view transition captures
+     the new page's first paint, and the shell chrome snaps to it. Deferred, the strip painted with
+     only its pinned tab and the stored tabs arrived a frame later, which read as a flash on every
+     tab switch. The rail it reads labels from (data-tab-source) is already parsed above. -->
+<script src="/scripts/tabs.js"></script>
 
 <aside class="app-shell__aside">
   <!-- the sidebar-panel with MODES, SITEWIDE: Chat (default) ⇄ Catalog. shell.js flips
