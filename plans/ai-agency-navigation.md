@@ -166,7 +166,7 @@ A published note on "an AI that uses the site like you do" once it ships.
 - [ ] Decide whether missing-detail collection, subject drafting or a chat review card earns the next bounded slice.
 - [ ] Decide whether a generic planner is needed beyond the existing task-specific handovers.
 - [x] P5: x-ray v2 — panel/legend + See/Navigate/Operate grouping + status-bar affordance (src/ai/xray-panel.ts, the status-bar "AI view" button, e2e/xray-panel.e2e.ts; the hover dry-run hint stays optional and unbuilt)
-- [ ] P6: add a dedicated contact-flow tour and consider a note after the remaining experience is reviewed.
+- [x] P6: add a dedicated contact-flow tour (content/tours/review-contact-flow-and-xray.md, which also walks the x-ray panel). A note waits on the owner's review of that walk.
 - [ ] Prove the model can *choose* this flow from the catalog (not just a hardcoded "contact" alias)
 
 ## Open questions / decisions
@@ -178,7 +178,7 @@ A published note on "an AI that uses the site like you do" once it ships.
   primitives (any GRAIN app would want them) vs. portfolio-specific. Likely grain, kept minimal.
 - **Confirm-before-send is non-negotiable** for anything that leaves the site (mailto). Which other
   actions need a confirm gate?
-- **x-ray scope:** dev-island only, or promote a lightweight version as a real visitor "show me what
-  the assistant can do here" affordance?
+- **x-ray scope:** RESOLVED November 4, 2026 by building it: the AI view button sits in the public
+  status bar, so the panel is a visitor affordance, not only a dev island.
 - **Privacy:** the sender's email is entered locally and handed to the visitor's own mail app; keep
   it client-only, never posted to the door.
