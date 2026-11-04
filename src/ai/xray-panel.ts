@@ -50,6 +50,21 @@ function surfaceList(): string {
     .join("")}</ul></details>`;
 }
 
+// The desk's chat sits in the right-hand aside, and a panel pinned to the window's corner covered its
+// input. When the aside is showing, the panel docks to the aside's left edge instead, so the visitor
+// can read what the desk can do and ask it in the same glance. With no aside (phone widths), the
+// stylesheet's corner position stands.
+function placeBesideAside(panel: HTMLElement): void {
+  const aside = document.querySelector<HTMLElement>(".app-shell__aside");
+  const r = aside?.getBoundingClientRect();
+  const showing = !!r && r.width > 0 && getComputedStyle(aside!).display !== "none";
+  panel.style.right = showing ? `${Math.round(window.innerWidth - r!.left + 12)}px` : "";
+}
+addEventListener("resize", () => {
+  const panel = document.getElementById(PANEL_ID);
+  if (panel) placeBesideAside(panel);
+});
+
 async function render(): Promise<void> {
   const pages = await sitemapPages();
   if (!HTML.hasAttribute("data-xray")) return;   // switched off while the sitemap loaded
@@ -63,6 +78,7 @@ async function render(): Promise<void> {
     panel.setAttribute("aria-label", "What the AI can see and do on this page");
     document.body.append(panel);
   }
+  placeBesideAside(panel);
   panel.innerHTML = `<header class="xray-panel__head"><strong>AI view</strong><button type="button" class="xray-panel__close" aria-label="Turn the AI view off">×</button></header>${GROUPS
     .map((g) => `<section class="xray-panel__group" data-group="${g.group}"><h2>${g.title}</h2><p class="xray-panel__lede">${g.lede}${g.group === "navigate" && pages ? ` ${pages} pages in the sitemap.` : ""}</p>${capList(catalog[g.group])}</section>`)
     .join("")}${surfaceList()}<p class="xray-panel__foot">Share this view with <code>?xray</code>, or toggle it with Ctrl+Shift+X.</p>`;
