@@ -196,7 +196,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // unfurls with its badge on LinkedIn rather than the site card. The class slug names the image:
     // a cert points at its badgeClass, a class page at its own slug.
     const ogClass = collection.prefix === "/badges" && frontmatter
-      ? (frontmatter.type === "cert" ? String(frontmatter.badgeClass || "") : frontmatter.type === "badge-class" ? slug : "")
+      ? (frontmatter.type === "cert" ? String(frontmatter.badgeClass || "") : frontmatter.type === "badge-class" ? slug : frontmatter.type === "badge-design" ? String(frontmatter.ogClass || "") : "")
       : "";
     const badgeHead = ogClass ? `<meta name="x-og-image" content="/media/badges/og-${escapeHtml(ogClass)}.png">` : "";
     // THE EDITOR section (rail active + tab group): notes → its own; layer docs live under BREAD.
@@ -1394,6 +1394,10 @@ const BADGE_STYLE = `<style>
 .badge-criteria__list { margin: 0; padding-left: 1.2em; }
 .badge-criteria__list li { margin: 0.3em 0; }
 .badge-criteria__tech { color: var(--ink-muted); margin: 0; }
+.badge-design-sections__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-line); }
+.badge-design-sections__row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25em 1em; padding: 0.6em 0; border-bottom: 1px solid var(--color-line); }
+.badge-design-sections__count { color: var(--color-muted); font-family: var(--font-mono); font-size: var(--text-sm); }
+.badge-design-sections__criteria { flex-basis: 100%; margin: 0; color: var(--color-muted); font-size: var(--text-sm); }
 </style>`;
 
 // The /badges entry template: a CERT page (one recipient's verifiable award) or a badge-CLASS page
@@ -1459,10 +1463,41 @@ export function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: str
 </section>`;
   }
 
+  // badge-design: the badge itself, across every class section that awarded it. One design is shared
+  // by all sections of a course, so this is the page the hub links to; each section row leads on to
+  // that section's criteria page. Like badge-class it shows counts only, never a name.
+  if (type === "badge-design") {
+    let sections: { section: string; slug: string; count: number; criteria: string }[] = [];
+    try { sections = JSON.parse(String(frontmatter.sectionsJson || "[]")); } catch { sections = []; }
+    const total = Number(frontmatter.recipientCount) || sections.reduce((n, s) => n + Number(s.count || 0), 0);
+    const shared = typeof frontmatter.criteriaText === "string";
+    const rows = sections.map((s) => `<li class="badge-design-sections__row"><a href="/badges/${escapeHtml(s.slug)}">Section ${escapeHtml(s.section)}</a><span class="badge-design-sections__count">${Number(s.count)} recipient${Number(s.count) === 1 ? "" : "s"}</span>${shared ? "" : `<p class="badge-design-sections__criteria">${escapeHtml(s.criteria)}</p>`}</li>`).join("");
+    return `${BADGE_STYLE}<section class="badge-class badge-design-page" data-surface="badge:design">
+  <header class="badge-class__head">${art}
+    <div class="badge-class__meta">
+      <h1 class="badge-class__name">${badgeName}</h1>
+      ${subtitle}
+      ${issuer}
+      <p class="badge-class__count">Awarded to ${total} recipient${total === 1 ? "" : "s"} across ${sections.length} class section${sections.length === 1 ? "" : "s"}.</p>
+    </div>
+  </header>
+  <p class="badge-actions"><a class="badge-btn" href="/badges">All badges</a></p>
+  ${shared ? renderBadgeCriteria(frontmatter) : `<section class="badge-criteria" data-surface="badge:criteria"><h3 class="badge-criteria__heading">Award criteria</h3><p class="badge-criteria__lede">Awarded after instructor review at 75% or better on each required activity. The required activity differed between sections, so each section below states its own.</p></section>`}
+  <section class="badge-criteria badge-design-sections" data-surface="badge:sections">
+    <h3 class="badge-criteria__heading">Sections</h3>
+    <ul class="badge-design-sections__list">${rows}</ul>
+  </section>
+  ${shared && frontmatter.activitiesJson ? renderBadgeActivities(frontmatter) : ""}
+</section>`;
+  }
+
   // badge-class: the CRITERIA page. It is the issuer surface a cert links to for "what this badge
   // attests" — deliberately NOT a roster. Recipient names are PII and live only on each recipient's
   // own direct-link cert page, never aggregated into a listing a crawler could enumerate. The count is
   // the only recipient fact shown here, and it names no one.
+  // The design page this section's badge belongs to, when the course and term name one.
+  const designHref = frontmatter.course && ["prelim", "midterm", "finals"].includes(String(frontmatter.term))
+    ? `/badges/${escapeHtml(String(frontmatter.course))}-${escapeHtml(String(frontmatter.term))}` : "";
   const count = frontmatter.recipientCount !== undefined && Number.isInteger(Number(frontmatter.recipientCount)) ? Number(frontmatter.recipientCount) : Array.isArray(frontmatter.recipients) ? frontmatter.recipients.length : 0;
   return `${BADGE_STYLE}<section class="badge-class" data-surface="badge:class">
   <header class="badge-class__head">${art}
@@ -1473,7 +1508,7 @@ export function renderBadgeEntry(frontmatter: Record<string, unknown>, slug: str
       <p class="badge-class__count">Awarded to ${count} recipient${count === 1 ? "" : "s"}.</p>
     </div>
   </header>
-  <p class="badge-actions"><a class="badge-btn" href="/badges">All badge criteria</a></p>
+  <p class="badge-actions">${designHref ? `<a class="badge-btn" href="${designHref}">See this badge across all sections</a>` : ""}<a class="badge-btn" href="/badges">All badge criteria</a></p>
   ${legacy ? renderBadgeCriteria(frontmatter) : ""}
   ${legacy ? "" : renderBadgeActivities(frontmatter)}
 </section>`;
