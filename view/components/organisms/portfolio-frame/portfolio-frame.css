@@ -477,3 +477,27 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
   gap: var(--space-1);
   white-space: nowrap;
 }
+
+/* x-ray v2 (src/ai/xray-panel.ts): the status-bar switch and the legend panel. The button reads like
+   the rest of the bar until it is on, when it takes the accent so the state is visible at a glance. */
+.status-bar__xray { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.status-bar__xray:hover { color: var(--color-fg); }
+.status-bar__xray[aria-pressed="true"] { color: var(--color-accent); }
+.xray-panel {
+  position: fixed; right: var(--space-4); bottom: 2.5rem; z-index: 60;
+  width: min(22rem, calc(100vw - 2 * var(--space-4))); max-height: 70vh; overflow: auto;
+  padding: var(--space-3) var(--space-4); font-family: var(--font-mono); font-size: 0.8125rem;
+  color: var(--color-fg); background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-md);
+}
+.xray-panel__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); }
+.xray-panel__close { font: inherit; font-size: 1rem; line-height: 1; color: var(--color-muted); background: none; border: 0; cursor: pointer; }
+.xray-panel__close:hover { color: var(--color-fg); }
+.xray-panel__group { padding-block: var(--space-2); border-top: 1px solid var(--color-line); }
+.xray-panel__group h2 { margin: 0; font-size: inherit; color: var(--color-accent); }
+.xray-panel__lede, .xray-panel__empty, .xray-panel__foot { margin: var(--space-1) 0; color: var(--color-muted); }
+.xray-panel__list { margin: var(--space-1) 0 0; padding: 0; list-style: none; display: grid; gap: var(--space-1); }
+.xray-panel__list li { display: flex; justify-content: space-between; gap: var(--space-2); }
+.xray-panel__verb { color: var(--color-muted); white-space: nowrap; }
+.xray-panel__surfaces { padding-top: var(--space-2); border-top: 1px solid var(--color-line); }
+.xray-panel__surfaces summary { cursor: pointer; }
+.xray-panel__foot { padding-top: var(--space-2); border-top: 1px solid var(--color-line); }
