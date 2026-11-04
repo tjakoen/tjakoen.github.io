@@ -167,7 +167,14 @@ A published note on "an AI that uses the site like you do" once it ships.
 - [ ] Decide whether a generic planner is needed beyond the existing task-specific handovers.
 - [x] P5: x-ray v2 — panel/legend + See/Navigate/Operate grouping + status-bar affordance (src/ai/xray-panel.ts, the status-bar "AI view" button, e2e/xray-panel.e2e.ts; the hover dry-run hint stays optional and unbuilt)
 - [x] P6: add a dedicated contact-flow tour (content/tours/review-contact-flow-and-xray.md, which also walks the x-ray panel). A note waits on the owner's review of that walk.
-- [ ] Prove the model can *choose* this flow from the catalog (not just a hardcoded "contact" alias)
+- [x] Prove the model can *choose* this flow from the catalog (not just a hardcoded "contact" alias).
+  November 5, 2026: the owner chose to try it. The model now has a CONTACT: token that hands the
+  visitor's words to the same deterministic draft path. Measured on the real 0.5B over two runs with
+  identical results: it starts the flow for 2 of 4 phrasings the fixed pattern misses ("get in touch
+  with TJ about a teaching job", "how do I contact TJ"), misses 2 ("let him know…", "pass a note to
+  TJ…", where it invents a page or steps, as it did before the token existed), and starts it for 0 of
+  2 controls. "Who is TJ?" and "What is the BREAD stack?" still pass. The fixed pattern stays the
+  first route, so nothing it caught before is now left to the model.
 
 ## Open questions / decisions
 
