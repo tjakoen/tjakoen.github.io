@@ -93,6 +93,7 @@ const MODULE_ENTRIES = [
   "/modules/portfolio/ai/desk-door.js",
   "/modules/portfolio/ai/builder-canvas.js",
   "/modules/portfolio/ai/preview-view.js",
+  "/modules/portfolio/ai/xray-panel.js",   // x-ray v2: every page tags it, and it imports capabilities.ts + actions.ts
 ];
 
 // Generated routes that a href/src crawler won't discover: the ⌘K palette's index, the desk's
