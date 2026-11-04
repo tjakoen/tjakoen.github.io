@@ -375,6 +375,22 @@
     <div class="console__feed" data-surface="console"></div>
   </div>
 </section>
+<!-- restore the chat and the terminal feed HERE, before the first paint, for the same reason
+     tabs.js runs after the topbar: a view transition shows the new page's first paint, and the
+     restore in site.js waits for DOMContentLoaded, so the sidebar painted empty and refilled a frame
+     later. site.js sees data-restored and does not restore a second time. Keys match its KEY map. -->
+<script>
+  (function () {
+    try {
+      var pairs = [["chat-log", "tj.chat"], ["console", "tj.terminal"]];
+      for (var i = 0; i < pairs.length; i++) {
+        var el = document.querySelector('[data-surface="' + pairs[i][0] + '"]');
+        var saved = localStorage.getItem(pairs[i][1]);
+        if (el && saved != null) { el.innerHTML = saved; el.setAttribute("data-restored", ""); el.scrollTop = el.scrollHeight; }
+      }
+    } catch (e) { /* private mode: site.js falls back to its own restore */ }
+  })();
+</script>
 
 <!-- ═══ the STATUS BAR: presence + breadcrumb, left; the byline + contact, right ═══ -->
 <footer class="app-shell__status status-bar">
