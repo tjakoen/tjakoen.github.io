@@ -16,3 +16,8 @@ Two different licenses apply in this repository:
 
 If in doubt about whether a file is "code" or "content," treat it as
 content (all rights reserved).
+
+The plan-review practice in standards/AI-DEVELOPMENT.md and the goldfish
+reviewer agent are adapted from the Elephant-Goldfish Model by Google LLC,
+https://github.com/google/elephant-goldfish-model, licensed under the
+Apache License, Version 2.0.

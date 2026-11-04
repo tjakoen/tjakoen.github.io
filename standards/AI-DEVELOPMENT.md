@@ -203,6 +203,41 @@ the AI trips, or a person trips, suspect the docs/design *first*. An operator st
 measures the system's clarity. The bar: this should be easy for a human and *even more*
 legible and operable for an AI. If the AI got it wrong, the contract probably let it.
 
+### Before the build: review the plan with a goldfish
+
+Fixing a bug starts from a reproduction. Building something new starts from a plan, and a plan has
+a failure mode no test catches: it reads clearly to the person who wrote it, because that person
+remembers the conversation that produced it. The reader who will actually build from it does not.
+
+So a plan that earns more than a single pass under LOOP section 4b (a new interface, a migration, a
+grade or data operation, anything that spans repositories) gets a goldfish review before the first
+line of code. A clear, small bug fix does not; the reproduction is its plan.
+
+1. **Write the plan as a file** under `plans/`, with every file it depends on linked from it. The
+   long session that wrote it is the elephant: it holds the context, and its job ends at a plan
+   someone else can read.
+2. **Start three fresh `goldfish` agents,** one per role, each given only the plan file and the
+   files it links. Comprehension explains the plan back and lists every assumption it had to make.
+   Critic finds the edge cases, hidden dependencies and strongest counter-argument. Readiness
+   answers GO or NO-GO: could someone with no access to the author build this? Run comprehension
+   first, and stop if it cannot explain the plan.
+3. **Never fork a goldfish.** A forked subagent inherits the whole conversation, which is exactly
+   the context the review exists to lack. Start it as a new named agent (`goldfish` in Claude Code
+   and in Codex). A review run in the same context, or in a fork, is not this review, whatever it
+   finds.
+4. **Write the findings down** as `artifacts/reviews/<slug>.md`, not under `plans/`, where PROOF would read the review as a plan. The elephant fixes each one in the plan
+   or answers it there, and the owner approves the plan through the surfaces in
+   [`DECISIONS.md`](DECISIONS.md) before the build starts.
+
+The goldfish reviews the plan before the build; the `auditor` reviews the result after it. One
+does not replace the other, and neither replaces tests.
+
+This practice is adapted from Google's Elephant-Goldfish Model
+([google/elephant-goldfish-model](https://github.com/google/elephant-goldfish-model), Apache 2.0),
+which runs five review stages through nine reviewer personas. The three roles here keep its
+fresh-context rule and its comprehension, critique and readiness checks, and drop the style and
+structure reviewers because VOICE and the plan template already cover them.
+
 ---
 
 ## 7. Seeing the work
