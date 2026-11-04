@@ -6,9 +6,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin: var(--space-5) 0 var(--space-7);
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-line);
+  margin: var(--space-5) 0 3rem;
 }
 
 [data-screen="projects"] .projects-index a,
@@ -19,19 +17,30 @@
   text-underline-offset: 0.22em;
 }
 
+[data-screen="projects"] .projects-index a {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  font-size: var(--type--1, 0.875rem);
+  text-decoration: none;
+}
+
+[data-screen="projects"] .projects-index a:hover { border-color: var(--color-fg); }
+
 [data-screen="projects"] .projects-index a:hover,
 [data-screen="projects"] .project-feature__secondary:hover { color: var(--color-fg); }
 
 [data-screen="projects"] .projects-group { margin: 0 0 var(--space-8); scroll-margin-top: var(--space-4); }
 [data-screen="projects"] .projects-group > .eyebrow { margin-bottom: var(--space-1); }
-[data-screen="projects"] .section-head { margin-top: 0; }
+[data-screen="projects"] .section-head { margin: 0 0 var(--space-3); }
 
 [data-screen="projects"] .project-feature {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
-  gap: clamp(var(--space-4), 5vw, var(--space-7));
-  align-items: center;
-  padding: var(--space-4) 0;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  column-gap: 2.5rem;
+  row-gap: var(--space-4);
+  align-items: start;
+  padding: 0 0 var(--space-5);
   border-bottom: 1px solid var(--color-line);
 }
 
@@ -41,7 +50,13 @@
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md, 8px);
   background: var(--color-bg-subtle, var(--color-surface));
+  position: sticky;
+  top: var(--space-4);
+  transition: border-color 160ms ease, transform 160ms ease;
 }
+
+[data-screen="projects"] a.project-feature__visual:hover { border-color: var(--color-fg); transform: translateY(-2px); }
+[data-screen="projects"] .project-feature__copy > :first-child { margin-top: 0; }
 
 [data-screen="projects"] .project-feature__visual img {
   display: block;
@@ -70,7 +85,7 @@
 [data-screen="projects"] .project-feature__kicker { margin: 0 0 var(--space-1); color: var(--color-muted); font-size: var(--type--1, 0.875rem); }
 [data-screen="projects"] .project-proof { padding-left: var(--space-3); border-left: 2px solid var(--color-accent, var(--color-muted)); }
 [data-screen="projects"] .project-feature__link { display: inline-block; margin-top: var(--space-2); font-weight: 600; }
-[data-screen="projects"] .project-feature__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: baseline; }
+[data-screen="projects"] .project-feature__actions { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); align-items: baseline; margin-top: var(--space-3); }
 [data-screen="projects"] .project-feature__actions .project-feature__link { margin-top: var(--space-2); }
 [data-screen="projects"] .project-feature__secondary { font-size: var(--type--1, 0.875rem); }
 
@@ -83,23 +98,24 @@
 
 [data-screen="projects"] .project-related {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-between;
   gap: var(--space-3);
-  align-items: center;
+  border-radius: var(--radius-md, 8px);
   padding: var(--space-4);
   border: 1px solid var(--color-line);
   background: var(--color-bg-subtle, var(--color-surface));
 }
 
 [data-screen="projects"] .project-related p:last-child { margin-bottom: 0; }
+[data-screen="projects"] .project-related .project-feature__actions { margin-top: 0; }
 [data-screen="projects"] .project-related .project-feature__link { margin-top: 0; }
 
 @container projects-main (max-width: 52rem) {
   [data-screen="projects"] .projects-index { gap: var(--space-2) var(--space-3); }
   [data-screen="projects"] .project-feature { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
   [data-screen="projects"] .project-feature__copy { order: 2; }
-  [data-screen="projects"] .project-feature__visual { order: 1; }
+  [data-screen="projects"] .project-feature__visual { order: 1; position: static; }
   [data-screen="projects"] .project-feature__visual--diagram { min-height: 200px; }
   [data-screen="projects"] .project-related-grid { grid-template-columns: minmax(0, 1fr); }
 }
