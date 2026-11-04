@@ -29,4 +29,13 @@ test.describe("x-ray v2 — the AI view panel", () => {
     await expect(page.locator("#xray-panel")).toBeVisible();
     await expect(page.locator('#xray-panel [data-group="navigate"]')).toContainText("navigate");
   });
+
+  test("the panel leaves the desk's chat input uncovered", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/mail?xray");
+    const panel = await page.locator("#xray-panel").boundingBox();
+    const aside = await page.locator(".app-shell__aside").boundingBox();
+    expect(panel && aside).toBeTruthy();
+    expect(panel!.x + panel!.width).toBeLessThanOrEqual(aside!.x);
+  });
 });
