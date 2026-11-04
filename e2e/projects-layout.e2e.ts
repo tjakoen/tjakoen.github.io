@@ -147,7 +147,9 @@ test.describe("Projects presentation in the editor shell", () => {
     expect(await apsi.locator(".badge-designs").evaluate((el) =>
       getComputedStyle(el).gridTemplateColumns.split(/\s+/).length,
     )).toBe(3);
-    await expect(page.locator('a[href^="/badges/"]')).toHaveCount(30);
+    // Nine design pages (each linked from its art and its title) plus the 21 section pages.
+    await expect(page.locator('a[href^="/badges/"]')).toHaveCount(39);
+    await expect(first.locator(".badge-design__art")).toHaveAttribute("href", "/badges/apsi-prelim");
 
     await page.setViewportSize({ width: 390, height: 844 });
     const board = page.locator(".badges-board");
@@ -156,6 +158,13 @@ test.describe("Projects presentation in the editor shell", () => {
       getComputedStyle(el).gridTemplateColumns.split(/\s+/).length,
     )).toBe(1);
     await expect(first).toBeVisible();
+
+    await page.goto("/badges/apsi-finals");
+    await expect(page.locator(".badge-class__count")).toHaveText("Awarded to 119 recipients across 4 class sections.");
+    await expect(page.locator(".badge-design-sections__row")).toHaveCount(4);
+    await page.locator(".badge-design-sections__row a").first().click();
+    await expect(page).toHaveURL(/\/badges\/apsi-2203-builds-with-ai$/);
+    await expect(page.getByRole("link", { name: "See this badge across all sections" })).toHaveAttribute("href", "/badges/apsi-finals");
 
     await page.goto("/badges/apsi-2215-prelim");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
