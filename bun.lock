@@ -7,7 +7,7 @@
       "dependencies": {
         "@tjakoen/batch": "^0.2.1",
         "@tjakoen/crumb": "^0.1.10",
-        "@tjakoen/grain": "0.1.26",
+        "@tjakoen/grain": "0.1.27",
         "@tjakoen/mill": "^0.4.0",
         "@tjakoen/proof": "^0.1.4",
         "highlight.js": "^11.12.0",
@@ -78,7 +78,7 @@
 
     "@tjakoen/crumb": ["@tjakoen/crumb@0.1.10", "", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "crumb": "cli.ts" } }, "sha512-Kx/5oOzc2tJL9iwQICvVL4I3i9rHO/qMFMl5zHhJs0i4D2ksylwbGBCLLP26SAnc4H9POoRzFm/8YKRyl2/KSg=="],
 
-    "@tjakoen/grain": ["@tjakoen/grain@0.1.26", "", {}, "sha512-Mce4BtdajrV65kbsEyw3qZJNKv74hPyxxmZMZD7MfnZNj8AsSy+lZP1gXbeRmTpRvtwR2mzzjHjN4mMRv7T7CQ=="],
+    "@tjakoen/grain": ["@tjakoen/grain@0.1.27", "", {}, "sha512-JLafeBB+kWEbxn+S0c9iG7Mkc414FXGj5pLxxuxhCbdd56CPJ45ZvDhByoeQC3ZcoDsHy970ncb6AxzYUYRvAg=="],
 
     "@tjakoen/mill": ["@tjakoen/mill@0.4.0", "", { "dependencies": { "@tjakoen/grain": "^0.1.23" } }, "sha512-D7VCW/uIFC8yobE6uHccTHPiPReKT8p/qtx3q/BEj1iESdK3ffFYzmI1BfstsIwEhJ31Ggzh4H5j4Esrd6/WrQ=="],
 
