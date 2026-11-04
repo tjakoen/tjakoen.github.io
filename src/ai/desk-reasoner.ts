@@ -100,6 +100,9 @@ interface Turn {
 // trims stray whitespace) since a 0.5B doesn't always hit a format byte-exact; the chosen route is then
 // validated against the real catalog before we act on it.
 const MODEL_NAVIGATE_RE = /^navigate:\s*(\/\S*)\s*$/i;
+// The model's own decision to start the contact flow (CONTACT: protocol, prompt.ts). Loose on case and
+// spacing for the same reason as NAVIGATE; a reply that only mentions "contact" mid-sentence is prose.
+const MODEL_CONTACT_RE = /^contact:\s*["“]?([\s\S]+?)["”]?\s*$/i;
 
 // The flagship note's slug — the ONE hand-pinned note. Source of truth: content.ts FLAGSHIP_NOTE_SLUG
 // (kept in sync by hand; this CLIENT-SAFE reasoner can't import the server content module without
@@ -1563,6 +1566,15 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
           history.push({ role: "user", content: text || "Hello" }, { role: "assistant", content: line });
           setChips([...pickFollowups(text, history, deps.intentGet?.() ?? undefined), "Summarize this page"]);
           return { ok: true, ops: [], reply: line };
+        }
+
+        // The model chose to start the contact flow (CONTACT: protocol, prompt.ts). It only decides;
+        // the message it hands back runs through the SAME deterministic branch the fixed pattern
+        // reaches, so the draft is still contact-draft.ts's and sending stays the visitor's.
+        const contact = MODEL_CONTACT_RE.exec(acc.trim());
+        if (contact) {
+          const decided = await deterministicTurn({ ...turn, action: { kind: "contact-message", message: contact[1]!.trim() } });
+          if (decided) return decided;
         }
 
         // The model chose to ASK instead of answer (CHOICES: protocol, prompt.ts). Turn the raw

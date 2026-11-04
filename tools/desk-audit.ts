@@ -62,6 +62,8 @@ interface Scenario {
   mustMention?: string[][];
   /** the browser must END on this pathname (a navigation scenario) */
   mustNavigate?: string;
+  /** the browser must NOT end on this pathname (a control: the model should not have acted) */
+  mustNotNavigate?: string;
   /** case-insensitive substrings that must NOT appear (protocol leaks, stub phrasing) */
   mustNotMention?: string[];
   /** cap on reply length — a 0.5B past this is usually rambling (ignored for nav scenarios) */
@@ -76,6 +78,17 @@ interface Scenario {
 }
 
 const SCENARIOS: Scenario[] = [
+  // CONTACT protocol (prompt.ts CONTACT_BLOCK): phrasings the fixed pattern in actions.ts does NOT
+  // catch, so the model alone decides whether to start the contact flow. A pass ends on /mail, where
+  // the deterministic branch drafts the visitor's words. The two controls mention TJ or mail without
+  // asking to send anything and must stay put; they catch a model that reaches for CONTACT on every TJ
+  // question, which would be worse than never reaching for it.
+  { id: "contact-model-collab", page: "/", ask: "Can you let him know I'd like to collaborate on a course?", mustNavigate: "/mail" },
+  { id: "contact-model-reach", page: "/", ask: "I'd like to get in touch with TJ about a teaching job", mustNavigate: "/mail" },
+  { id: "contact-model-pass", page: "/notes", ask: "Please pass a note to TJ that I loved the grain talk", mustNavigate: "/mail" },
+  { id: "contact-model-howto", page: "/", ask: "How do I contact TJ? I want to ask about mentoring", mustNavigate: "/mail" },
+  { id: "contact-model-ctl-teach", page: "/", ask: "What does TJ teach?", mustNotNavigate: "/mail" },
+  { id: "contact-model-ctl-mail", page: "/", ask: "How does the mail page on this site work?", mustNotNavigate: "/mail" },
   // -- grounded Q&A (the model tail; retrieval + persona under test) --
   { id: "bread-stack", page: "/", ask: "What is the BREAD stack?",
     mustMention: [["batch"], ["grain"], ["mill"]], mustNotMention: ["NAVIGATE:", "CHOICES:"], maxChars: 700 },
@@ -569,6 +582,7 @@ function grade(
   if (s.mustNavigate) {
     if (endPath.replace(/\/+$/, "") !== s.mustNavigate) failures.push(`ended on ${endPath}, wanted ${s.mustNavigate}`);
   }
+  if (s.mustNotNavigate && endPath.replace(/\/+$/, "") === s.mustNotNavigate) failures.push(`acted: ended on ${endPath}`);
   for (const group of s.mustMention ?? []) {
     if (!group.some((k) => low.includes(k.toLowerCase()))) failures.push(`missing any of [${group.join(", ")}]`);
   }
