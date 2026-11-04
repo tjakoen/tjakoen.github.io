@@ -67,6 +67,9 @@ test.describe("B1 contact prefill (deterministic, no model needed)", () => {
     // the island's real compose panel opened, and the ONE registered field carries the exact draft
     await expect(page.locator("#compose")).toBeVisible({ timeout: 15_000 });
     await expect(page.locator(FIELD)).toHaveValue(DRAFT, { timeout: 15_000 });
+    // the subject is drafted from the same words, into its own registered field, in the same ink
+    await expect(page.locator('[data-surface="field:contact-subject"]')).toHaveValue("About grain");
+    await expect(page.locator('[data-surface="field:contact-subject"]')).toHaveAttribute("data-grade", "grain");
     // AI ink: the fill marked the field grain — provenance visible until the human touches it
     await expect(page.locator(FIELD)).toHaveAttribute("data-grade", "grain");
     await expect(page.locator(".assistant__log")).toContainText("Sending stays yours");

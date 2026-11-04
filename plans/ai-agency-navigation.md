@@ -163,7 +163,11 @@ A published note on "an AI that uses the site like you do" once it ships.
 - [x] P3: persist contact drafting across navigation with a checked failure path.
 - [x] P4: recognize a message-bearing request, navigate, open Compose, and fill the body; the visitor sends.
 - [x] P6: exercise on-page drafting, cross-page drafting, missing-message refusal and denied storage in browser tests.
-- [ ] Decide whether missing-detail collection, subject drafting or a chat review card earns the next bounded slice.
+- [x] Decide whether missing-detail collection, subject drafting or a chat review card earns the next bounded slice.
+  The owner chose subject drafting on November 5, 2026. draftSubject (contact-draft.ts) takes the
+  topic after "about", or the phrase without its filler opener, from the visitor's own words; the
+  compose subject is registered as field:contact-subject and filled before the body, best-effort, on
+  both the same-page and cross-page paths.
 - [ ] Decide whether a generic planner is needed beyond the existing task-specific handovers.
 - [x] P5: x-ray v2 — panel/legend + See/Navigate/Operate grouping + status-bar affordance (src/ai/xray-panel.ts, the status-bar "AI view" button, e2e/xray-panel.e2e.ts; the hover dry-run hint stays optional and unbuilt)
 - [x] P6: add a dedicated contact-flow tour (content/tours/review-contact-flow-and-xray.md, which also walks the x-ray panel). A note waits on the owner's review of that walk.
