@@ -1,7 +1,7 @@
 ---
 id: course-badges
 title: Course credentials and badges
-status: doing
+status: done
 track: credentials
 depends: []
 owner: human
