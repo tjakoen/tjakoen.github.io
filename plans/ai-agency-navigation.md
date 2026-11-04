@@ -165,7 +165,7 @@ A published note on "an AI that uses the site like you do" once it ships.
 - [x] P6: exercise on-page drafting, cross-page drafting, missing-message refusal and denied storage in browser tests.
 - [ ] Decide whether missing-detail collection, subject drafting or a chat review card earns the next bounded slice.
 - [ ] Decide whether a generic planner is needed beyond the existing task-specific handovers.
-- [ ] P5: x-ray v2 — panel/legend + See/Navigate/Operate grouping + status-bar affordance
+- [x] P5: x-ray v2 — panel/legend + See/Navigate/Operate grouping + status-bar affordance (src/ai/xray-panel.ts, the status-bar "AI view" button, e2e/xray-panel.e2e.ts; the hover dry-run hint stays optional and unbuilt)
 - [ ] P6: add a dedicated contact-flow tour and consider a note after the remaining experience is reviewed.
 - [ ] Prove the model can *choose* this flow from the catalog (not just a hardcoded "contact" alias)
 

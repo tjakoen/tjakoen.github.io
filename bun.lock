@@ -5,9 +5,9 @@
     "": {
       "name": "tjakoen.github.io",
       "dependencies": {
-        "@tjakoen/batch": "^0.2.1",
+        "@tjakoen/batch": "^0.3.0",
         "@tjakoen/crumb": "^0.1.10",
-        "@tjakoen/grain": "0.1.27",
+        "@tjakoen/grain": "^0.1.27",
         "@tjakoen/mill": "^0.4.0",
         "@tjakoen/proof": "^0.1.4",
         "highlight.js": "^11.12.0",
@@ -74,7 +74,7 @@
 
     "@playwright/test": ["@playwright/test@1.62.0", "", { "dependencies": { "playwright": "1.62.0" }, "bin": { "playwright": "cli.js" } }, "sha512-9zOJ6ZQRAena31MpOH9VSzIz8Ou3YJ/wtY/eQm5T2uhfhG7/U3COrMS8xOtUrZrp9OgdmzEnIYODye3nY1VqzA=="],
 
-    "@tjakoen/batch": ["@tjakoen/batch@0.2.1", "", {}, "sha512-ZT0cpoGYzZGIoomNfAb8GoO8o/UXp/D9MXrKnoItT4Ew6WlRf1r7CiNl0ty4d8TsH5t0Z4WUSSXKhv+pM2iRvw=="],
+    "@tjakoen/batch": ["@tjakoen/batch@0.3.0", "", {}, "sha512-D2HRWcF0YsiGzLvg02hR5V4VtWMhg5s9xHgAXidU46kVUHAUKwXO3HekbzqaX9jSavY11a6/iI7dVEASURNMYQ=="],
 
     "@tjakoen/crumb": ["@tjakoen/crumb@0.1.10", "", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "crumb": "cli.ts" } }, "sha512-Kx/5oOzc2tJL9iwQICvVL4I3i9rHO/qMFMl5zHhJs0i4D2ksylwbGBCLLP26SAnc4H9POoRzFm/8YKRyl2/KSg=="],
 

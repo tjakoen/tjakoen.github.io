@@ -7,13 +7,13 @@ test.describe("THE EDITOR v3 — island state survives navigation", () => {
   test("x-ray: toggled on, it stays on across a page load", async ({ page }) => {
     await page.goto("/grain");
     await expect(page.locator("html")).not.toHaveAttribute("data-xray", "");
-    await page.locator("[data-xray-toggle]").click();               // turn it on
+    await page.locator(".status-bar__xray").click();               // turn it on
     await expect(page.locator("html")).toHaveAttribute("data-xray", "");
     // reload the page — x-ray restores from storage on boot
     await page.goto("/grain");
     await expect(page.locator("html")).toHaveAttribute("data-xray", "");
     // turn it off; the off-state persists too
-    await page.locator("[data-xray-toggle]").click();
+    await page.locator(".status-bar__xray").click();
     await page.goto("/grain");
     await expect(page.locator("html")).not.toHaveAttribute("data-xray", "");
   });

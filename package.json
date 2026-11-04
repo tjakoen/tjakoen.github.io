@@ -8,7 +8,7 @@
   "author": "Tjakoen Stolk <tjakoen.s@gmail.com> (https://tjakoen.github.io)",
   "homepage": "https://tjakoen.github.io",
   "dependencies": {
-    "@tjakoen/batch": "^0.2.1",
+    "@tjakoen/batch": "^0.3.0",
     "@tjakoen/crumb": "^0.1.10",
     "@tjakoen/grain": "^0.1.27",
     "@tjakoen/mill": "^0.4.0",
