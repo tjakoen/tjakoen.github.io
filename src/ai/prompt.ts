@@ -75,6 +75,15 @@ const CHOICES_BLOCK =
   "\"CHOICES: <your one-line question> | <option 1> | <option 2> | <option 3>\" — 2 to 4 short options " +
   "(each a few words), and nothing else. Otherwise just answer. Don't offer choices for a clear question.";
 
+// The CONTACT protocol — offered ALWAYS, measured before it was trusted (tools/desk-audit.ts, the
+// contact-model-* scenarios). A visitor who wants to message TJ in words the fixed pattern in
+// actions.ts does not catch can still start the contact flow: the model only DECIDES and hands back
+// the visitor's message; the reasoner runs the same deterministic draft-and-fill path, so the model
+// never writes the draft and never sends.
+export const CONTACT_BLOCK =
+  "If the visitor wants to send TJ a message or get in touch with him, reply with EXACTLY " +
+  "\"CONTACT: <what they want to say, in their words>\" and nothing else.";
+
 /** The CAN-DO line: what the desk itself can do for the visitor right now (built-in actions + this
  *  page's grain-manifest operables, composed by the reasoner). Grounds "what can you do?" phrasings
  *  that miss the deterministic capabilities route — the baseline audit's biggest gap. Shaped as a
@@ -159,7 +168,7 @@ export function buildPrompt(input: PromptInput): ChatMessage[] {
   const cando = canDo && canDo.length > 0 ? canDoBlock(canDo) : "";
   const notes = visitorNotes && visitorNotes.length > 0 ? visitorNotesBlock(visitorNotes) : "";
   const personaCost = approxTokens(PERSONA);
-  const choicesCost = approxTokens(CHOICES_BLOCK);   // always in the system prompt
+  const choicesCost = approxTokens(CHOICES_BLOCK) + approxTokens(CONTACT_BLOCK);   // both always in the system prompt
   const navCost = nav ? approxTokens(nav) : 0;
   const canDoCost = cando ? approxTokens(cando) : 0;
   // Spent up front alongside persona/choices/nav/canDo (never carved out of the history/context
@@ -186,7 +195,7 @@ export function buildPrompt(input: PromptInput): ChatMessage[] {
   // showed it latching onto the (later) pages list when asked what it can do.
   let systemContent = PERSONA;
   if (cando) systemContent += `\n\n${cando}`;
-  systemContent += `\n\n${CHOICES_BLOCK}`;
+  systemContent += `\n\n${CHOICES_BLOCK}\n\n${CONTACT_BLOCK}`;
   if (nav) systemContent += `\n\n${nav}`;
   if (context) systemContent += `\n\nCONTEXT (site content the visitor can open):\n\n${context}`;
   // VISITOR NOTES go LAST, after CONTEXT — TJ's own site content leads, the visitor's self-reported

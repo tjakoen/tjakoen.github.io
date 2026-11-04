@@ -29,6 +29,7 @@ export async function* streamChat(engine, messages, opts) {
   let reply = "Scripted grounded answer from the fake model.";
   if (/mill documentation/i.test(user)) reply = "NAVIGATE:/mill/docs";
   else if (/atlantis/i.test(user)) reply = "NAVIGATE:/atlantis";
+  else if (/get in touch about a teaching job/i.test(user)) reply = "CONTACT: I'd like to talk about a teaching job";
   else if (/pick a layer/i.test(user)) reply = "CHOICES: Which layer do you want? | GRAIN | MILL | BATCH";
   else if (/grain is impressive/i.test(user)) reply = "- Grain is impressive";
   for (const part of reply.match(/\\S+\\s*/g) ?? [reply]) yield part;
@@ -103,6 +104,21 @@ test.describe("THE DESK's model tail — scripted engine, real everything else",
     await expect(log).toContainText("I'm not sure where that is on the site");
     await expect(log).not.toContainText("NAVIGATE:");             // the raw protocol token never reaches the visitor
     expect(new URL(page.url()).pathname).toBe("/");               // and we went nowhere
+  });
+
+  test("model CONTACT: the model starts the contact flow and the deterministic draft fills Compose", async ({ page }) => {
+    await fakeModelDesk(page);
+    await page.goto("/");
+    await deskReady(page);
+
+    // Outside actions.ts's fixed pattern ("tell/message/email/write to TJ"), so only the model can start it.
+    await ask(page, "I'd like to get in touch about a teaching job");
+
+    await page.waitForURL("**/mail");
+    await expect(page.locator('[data-surface="field:contact-message"]')).toHaveValue(/teaching job/, { timeout: 15_000 });
+    await expect(page.locator(".assistant__log")).not.toContainText("CONTACT:");   // the protocol token never reaches the visitor
+    const sys = (await prompts(page))[0]!.messages[0]!;
+    expect(sys.content).toContain("CONTACT:");                    // the protocol was offered
   });
 
   test("model CHOICES: question bubble + real choice buttons; a tap re-enters the desk and acts", async ({ page }) => {
