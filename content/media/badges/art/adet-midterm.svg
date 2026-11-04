@@ -1,0 +1,16 @@
+<svg viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Application Development and Emerging Technologies badge: Flutter App Development, issued by Tjakoen Stolk, 2026" width="300" height="340">
+    <rect x="8" y="8" width="284" height="324" rx="26" style="fill:#FFFFFF;stroke:#3fa89e" stroke-width="6"/>
+    <rect x="19" y="19" width="262" height="302" rx="17" fill="none" style="stroke:#3fa89e" stroke-width="1" opacity="0.35"/>
+    <g style="stroke:#3fa89e" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="138" y="30" width="24" height="34" rx="4"/>
+      <line x1="145" y1="36" x2="155" y2="36"/>
+      <path d="M146 50 l9 -5 -9 -5 z" style="fill:#3fa89e;stroke:#3fa89e"/>
+    </g>
+    <text text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10.5" letter-spacing="1.5" style="fill:#6E6C64"><tspan x="150" y="77">Application Development</tspan><tspan x="150" y="91">and Emerging Technologies</tspan></text>
+    <text text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" style="fill:#1C1B17"><tspan x="150" y="151">Flutter App</tspan><tspan x="150" y="179">Development</tspan></text>
+    
+    <line x1="70" y1="248" x2="230" y2="248" style="stroke:#6E6C64" stroke-width="1" opacity="0.3"/>
+    <text x="150" y="273" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="700" style="fill:#3fa89e">Tjakoen Stolk</text>
+    <text x="150" y="291" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="8.5" letter-spacing="1.2" style="fill:#6E6C64">INSTRUCTOR &#183; HOLY ANGEL UNIVERSITY</text>
+    <text x="150" y="306" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="8" letter-spacing="1.2" style="fill:#6E6C64">SCHOOL OF COMPUTING &#183; 2026</text>
+  </svg>

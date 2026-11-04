@@ -1,0 +1,17 @@
+<svg viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Application and System Integration badge: Builds Full-Stack JavaScript and AI, issued by Tjakoen Stolk, 2026" width="300" height="340">
+    <rect x="8" y="8" width="284" height="324" rx="26" style="fill:#FFFFFF;stroke:#d07f4a" stroke-width="6"/>
+    <rect x="19" y="19" width="262" height="302" rx="17" fill="none" style="stroke:#d07f4a" stroke-width="1" opacity="0.35"/>
+    <g style="stroke:#d07f4a" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="131" y="28" width="26" height="20" rx="3"/>
+    <line x1="131" y1="34" x2="157" y2="34"/>
+    <ellipse cx="160" cy="49" rx="9" ry="3.4"/>
+    <path d="M151 49 v9 a9 3.4 0 0 0 18 0 v-9"/>
+  </g>
+    <text text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10.5" letter-spacing="1.5" style="fill:#6E6C64"><tspan x="150" y="77">Application and System</tspan><tspan x="150" y="91">Integration</tspan></text>
+    <text text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" style="fill:#1C1B17"><tspan x="150" y="137">Builds</tspan><tspan x="150" y="165">Full-Stack</tspan><tspan x="150" y="193">JavaScript and</tspan></text>
+    
+    <line x1="70" y1="248" x2="230" y2="248" style="stroke:#6E6C64" stroke-width="1" opacity="0.3"/>
+    <text x="150" y="273" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="700" style="fill:#d07f4a">Tjakoen Stolk</text>
+    <text x="150" y="291" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="8.5" letter-spacing="1.2" style="fill:#6E6C64">INSTRUCTOR &#183; HOLY ANGEL UNIVERSITY</text>
+    <text x="150" y="306" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="8" letter-spacing="1.2" style="fill:#6E6C64">SCHOOL OF COMPUTING &#183; 2026</text>
+  </svg>

@@ -123,35 +123,39 @@ test.describe("Projects presentation in the editor shell", () => {
   test("badge hub groups awards clearly and explains the current threshold", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/badges");
-    await expect(page.locator("main")).toContainText("group these awards by subject, then by class section");
-    await expect(page.locator("main")).toContainText("published 75% threshold after instructor review");
-    await expect(page.locator("main")).toContainText("historical participation awards are still being reconciled");
-    const subjects = page.locator(".badge-subject");
+    await expect(page.locator("main")).toContainText("594 of them, across three subjects and nine designs");
+    await expect(page.locator("main")).toContainText("at 75% or better on the activities it names");
+    await expect(page.locator("main")).toContainText("participation awards is still being reconciled");
+    const subjects = page.locator(".badge-course");
     await expect(subjects).toHaveCount(3);
     const apsi = subjects.filter({ hasText: "6APSI" });
-    await expect(apsi.locator("summary")).toContainText("4 sections · 12 badges");
-    await expect(apsi.locator("summary")).toBeVisible();
-    await expect(apsi.locator("summary .badge-subject__description")).toContainText("JavaScript and React");
-    await expect(apsi.locator(".badge-subject__content")).toBeHidden();
-    await apsi.locator("summary").click();
-    await expect(apsi.locator(".badge-section-card")).toHaveCount(4);
-    await expect(apsi.locator(".badge-section-card").first()).toContainText("Section 2203");
-    await expect(apsi.locator(".badge-section-card").first()).toContainText("Frontend Design with Cloud");
-    await expect(apsi.locator(".badge-section-card").first()).toContainText("Full Stack Web Development");
-    expect(await apsi.locator(".badge-section-grid").first().evaluate((el) =>
+    await expect(apsi.locator(".badge-course__count")).toContainText("4 sections · 326 badges issued");
+    await expect(apsi.locator(".badge-course__desc")).toContainText("JavaScript and React");
+    const designs = page.locator(".badge-design");
+    await expect(designs).toHaveCount(9);
+    const first = apsi.locator(".badge-design").first();
+    await expect(first).toContainText("Frontend Design with Cloud");
+    await expect(first).toContainText("105 recipients");
+    await expect(first).toContainText("Section 2203");
+    // Every card shows the real badge artwork, loaded, not a text stand-in.
+    const art = page.locator(".badge-design__art img");
+    await expect(art).toHaveCount(9);
+    for (const img of await art.all()) {
+      await img.scrollIntoViewIfNeeded();
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
+    }
+    expect(await apsi.locator(".badge-designs").evaluate((el) =>
       getComputedStyle(el).gridTemplateColumns.split(/\s+/).length,
-    )).toBe(2);
-    await expect(subjects.filter({ hasText: "6ADET" }).locator("summary")).toBeVisible();
-    await expect(subjects.filter({ hasText: "6INTROWEB" }).locator("summary")).toBeVisible();
-    await expect(page.locator('a[href^="/badges/"]')).toHaveCount(21);
+    )).toBe(3);
+    await expect(page.locator('a[href^="/badges/"]')).toHaveCount(30);
 
     await page.setViewportSize({ width: 390, height: 844 });
     const board = page.locator(".badges-board");
     expect(await board.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await board.evaluate((el) => el.clientWidth));
-    expect(await apsi.locator(".badge-section-grid").first().evaluate((el) =>
+    expect(await apsi.locator(".badge-designs").evaluate((el) =>
       getComputedStyle(el).gridTemplateColumns.split(/\s+/).length,
     )).toBe(1);
-    await expect(apsi.locator(".badge-section-card").first()).toBeVisible();
+    await expect(first).toBeVisible();
 
     await page.goto("/badges/apsi-2215-prelim");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
