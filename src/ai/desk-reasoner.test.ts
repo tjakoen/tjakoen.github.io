@@ -1260,7 +1260,7 @@ describe("makeDeskReasoner — B3 mail batch archive (\"archive everything from 
 describe("makeDeskReasoner — B1 contact prefill (\"tell TJ I want to talk about grain\")", () => {
   const DRAFT = "Hi TJ, I want to talk about grain.";
 
-  test("on /mail happy path: opens compose, fills the ONE registered field with the drafted words, validates", async () => {
+  test("on /mail happy path: opens compose, fills the registered subject and body with the drafted words, validates", async () => {
     let loads = 0, opened = 0;
     const { deps } = makeDeps({ loadEngine: async () => { loads++; return fakeEngine([]).engine; } });
     deps.pageInfo = () => ({ route: "/mail", title: "Mail" });
@@ -1273,8 +1273,12 @@ describe("makeDeskReasoner — B1 contact prefill (\"tell TJ I want to talk abou
 
     expect(loads).toBe(0);                  // deterministic — the 0.5B never composes or targets
     expect(opened).toBe(1);                 // the same visible ✎ Compose button a human would click
-    const fill = ops.find((o) => o.op === "fill");
+    const fill = ops.find((o) => o.op === "fill" && o.target === "field:contact-message");
     expect(fill).toMatchObject({ target: "field:contact-message", text: DRAFT, provenance: "ai", commit: "committed" });
+    // the subject is the visitor's topic, filled before the body and only into its own registered field
+    const subject = ops.find((o) => o.op === "fill" && o.target === "field:contact-subject");
+    expect(subject).toMatchObject({ text: "About grain", provenance: "ai" });
+    expect(ops.filter((o) => o.op === "fill").length).toBe(2);
     // the lamp lands on the field before the fill, and releases the screen after
     expect(ops.some((o) => o.op === "spotlight" && o.target === "field:contact-message" && o.active)).toBe(true);
     expect(ops.some((o) => o.op === "spotlight" && o.target === "screen" && !o.active)).toBe(true);

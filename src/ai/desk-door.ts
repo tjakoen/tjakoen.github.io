@@ -21,7 +21,7 @@ import { profileForPage, type ModelProfile } from "./webllm-loader.ts";
 import { makeDeskReasoner, suggestChipsHtml, NAV_GLIDE_MS, MAIL_ARCHIVE_BEAT_MS, CONTACT_FILL_BEAT_MS, FORM_FILL_BEAT_MS, type DeskNote } from "./desk-reasoner.ts";
 // B1 contact prefill — the ONE registered compose-body surface (contact-draft.ts names it in code;
 // targeting is never a model pick). The message itself arrives ALREADY drafted in the stash.
-import { CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
+import { CONTACT_FIELD_SURFACE, CONTACT_SUBJECT_SURFACE, draftSubject } from "./contact-draft.ts";
 import { buildCatalog, stripSlash, joinPhrases, type NavDest } from "./catalog.ts";
 import type { Knowledge } from "./retrieval.ts";
 import { createKnowledgeCache } from "./knowledge-cache.ts";
@@ -657,6 +657,9 @@ async function runContactTask(applyOp: (op: RenderOp) => void): Promise<void> {
   applyOp(grainKit.narrateOp("drafts", "a message in the compose panel"));
   applyOp(grainKit.spotlightOp(CONTACT_FIELD_SURFACE, { active: true }));
   await wait(CONTACT_FILL_BEAT_MS);
+  // The subject first, best-effort, drawn from the same stashed draft (draftSubject drops its greeting).
+  const subject = draftSubject(stashed.message);
+  if (subject) { try { applyOp(grainKit.fillOp(CONTACT_SUBJECT_SURFACE, subject)); } catch { /* optional */ } }
   try {
     applyOp(grainKit.fillOp(CONTACT_FIELD_SURFACE, stashed.message));
   } catch {

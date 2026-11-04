@@ -34,7 +34,7 @@ import type { JsonSchema } from "./local-schema-completion.ts";
 // B1 contact prefill — the deterministic draft (the visitor's words + a salutation) and the ONE
 // registered field surface the desk may fill (never a model-picked selector, law #2). Pure
 // (contact-draft.ts), same family as the matchers above.
-import { draftMessage, CONTACT_FIELD_SURFACE } from "./contact-draft.ts";
+import { draftMessage, draftSubject, CONTACT_FIELD_SURFACE, CONTACT_SUBJECT_SURFACE } from "./contact-draft.ts";
 // D1 form builder demo — the closed-set matcher (field-matcher.ts, "Read first" — the ONE thing that
 // decides which fields/choices ever exist) plus the demo values drafted for its TEXT fields only
 // (form-draft.ts — never a `choices` item, see that file's own banner on why). KNOWN_FIELD_LABELS/
@@ -1032,6 +1032,9 @@ export function makeDeskReasoner(deps: DeskDeps): DeskReasoner {
             narrate("drafts", "a message in the compose panel");
             tools.emit(deps.kit.spotlightOp(CONTACT_FIELD_SURFACE, { active: true }));
             await tools.delay(CONTACT_FILL_BEAT_MS);
+            // The subject first, best-effort: a subject that will not fill never blocks the body.
+            const subject = draftSubject(action.message);
+            if (subject) { try { tools.emit(deps.kit.fillOp(CONTACT_SUBJECT_SURFACE, subject)); } catch { /* optional */ } }
             try {
               tools.emit(deps.kit.fillOp(CONTACT_FIELD_SURFACE, draft));
             } catch {
