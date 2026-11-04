@@ -100,6 +100,7 @@ Same voice, different dial settings. Contractions are resolved here: this is the
 | **Social posts** | Contract, hard | Very short | One confession or one sharp claim, one specific, done. The pull-quote *is* the post. No thread throat-clearing, no "a 🧵". Lead with the hook, land in one line. |
 | **Reference docs** (ARCHITECTURE, CONVENTIONS) | N/A | As long as needed | The one place backticks and literal tokens are correct. Precision over personality. |
 | **Code review comment** | Contract | Very short | Ask, don't declare. State the mechanism in plain words, then put the fix as a question the author can say no to. Backticks are correct here, a file and a line have to be exact. The claim and the ask stay visible, the proof folds (see *What a reader meets first*). |
+| **Ticket / PR comment** (Jira, a PR conversation) | Contract | Short, grouped | Built to be scanned. A bold line naming who has to act opens it, then short groups under lead-in lines, each a few bullets, with a blank line between groups. Every ticket key is a link. A comment with one thing to say stays one line. See *What a reader meets first*. |
 | **Chat / casual** | Contract, typo-tolerant | Whatever | Fast, high energy. Keep its directness and honesty; never import chat looseness into published work. |
 
 **Social, specifically**, it's the origin-story open with the essay amputated. Take the single most
@@ -223,6 +224,42 @@ colleague, anything a person meets in a narrow column on a phone:
 And the first line is the only line you are guaranteed. Collapsed views, notification digests and
 link previews all show line one and drop the rest, so line one carries the claim on its own. Never
 open with setup, and never open with a restatement of the thing the reader is already looking at.
+
+### Ticket and pull request comments
+
+A ticket comment gets read in a sidebar, between two other tickets, by someone deciding whether it
+is their turn. A paragraph makes them read all of it to find out. So a comment that carries more
+than one thing is laid out for scanning rather than for reading straight through:
+
+- **The action goes on the first line, in bold, with who owns it.** *Needs a check:* when someone has
+  to verify something, *Needs the reporter:* when only the person who filed it can answer. This is
+  the one place bold is right, because it is a label rather than stress. Nothing else in the comment
+  gets bolded, and the ban on bold scattered through every other phrase stands.
+- **The rest sits in short groups.** Each group opens with a plain lead-in line that says what it is
+  (*What I tried*, *What is still open*), then a few bullets under it. Put a blank line between
+  groups, because a group that touches the next one reads as one long list. A group holds as many
+  bullets as it has facts: two is fine, five is fine, and three every time is the tidy-list tell
+  coming back in through the layout.
+- **Every ticket key is a link.** A bare key makes the reader copy it into a search box, which is
+  work I could have done once for every reader.
+- **A one-line comment stays one line.** *"Fixed in [EDGE-4120](.), back to you."* needs no heading,
+  no group and no bullet. Structure is for comments that have more than one thing to say, never a
+  costume put on a short one.
+
+What that looks like, for a comment on a pre-prod test ticket:
+
+> **Needs the reporter:** which account were you signed in as when the export came back empty?
+>
+> What I checked on pre-prod
+> - The export runs and fills for an admin account.
+> - The same report as a counselor comes back empty, which matches what you saw.
+>
+> What is still open
+> - Whether this is permissions or the date filter. I have not ruled out the filter yet.
+> - It may share a cause with [EDGE-4118](.), which reports an empty roster on the same page.
+
+The caveat sits in the visible bullets, next to the claim it qualifies, for the same reason as the
+hedge rule above.
 
 **What I have not shown.** Whether folding actually raises the odds of feedback being acted on is
 still open on my own numbers: the folded items ran well below the visible ones for adoption before
