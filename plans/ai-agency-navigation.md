@@ -1,6 +1,6 @@
 ---
 id: ai-agency-navigation
-status: doing
+status: done
 track: ai
 depends: []
 touches: [src/ai/, src/routes/ai-routes.ts, view/pages/mail.html, content/tours/, e2e/]
@@ -168,7 +168,10 @@ A published note on "an AI that uses the site like you do" once it ships.
   topic after "about", or the phrase without its filler opener, from the visitor's own words; the
   compose subject is registered as field:contact-subject and filled before the body, best-effort, on
   both the same-page and cross-page paths.
-- [ ] Decide whether a generic planner is needed beyond the existing task-specific handovers.
+- [x] Decide whether a generic planner is needed beyond the existing task-specific handovers.
+  The owner decided on November 5, 2026 to keep the handovers. Contact drafting, mail actions and
+  tours already carry their own state across page loads, and no current flow needs a general
+  planner; it stays possible new scope rather than a missing prerequisite.
 - [x] P5: x-ray v2 — panel/legend + See/Navigate/Operate grouping + status-bar affordance (src/ai/xray-panel.ts, the status-bar "AI view" button, e2e/xray-panel.e2e.ts; the hover dry-run hint stays optional and unbuilt)
 - [x] P6: add a dedicated contact-flow tour (content/tours/review-contact-flow-and-xray.md, which also walks the x-ray panel). A note waits on the owner's review of that walk.
 - [x] Prove the model can *choose* this flow from the catalog (not just a hardcoded "contact" alias).
