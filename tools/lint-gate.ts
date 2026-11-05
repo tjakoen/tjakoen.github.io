@@ -67,13 +67,29 @@ function oxlintCounts(): Counts {
 // scope changes again (it has twice: standards/ in August, then docs/ and src/ page copy).
 function voiceCounts(): Counts {
   const res = spawnSync("bun", ["tools/voice-lint.ts"], { cwd: root, encoding: "utf8" });
+  // voice-lint exits 1 whenever it finds a tell, and so does a crash, so the exit code cannot tell a
+  // finished run from a broken one. Its closing summary line can: every completed run prints it,
+  // with the total it counted. No summary, or a total that disagrees with the lines parsed here,
+  // means the report was not the whole report, and a partial count must never read as level.
+  if (res.error) throw new Error(`lint gate: failed to run voice-lint — ${res.error.message}`);
+  const stdout = res.stdout ?? "";
+  if (stdout.includes("voice-lint: no files to check.")) return {};
+  const summary = stdout.match(/voice-lint: (\d+) flag\(s\) across/);
+  if (!summary) {
+    throw new Error(`lint gate: voice-lint did not finish (exit ${res.status}) — ${(res.stderr ?? "").trim().slice(0, 300)}`);
+  }
   const counts: Counts = {};
-  for (const line of (res.stdout || "").split("\n")) {
+  let parsedTotal = 0;
+  for (const line of stdout.split("\n")) {
     const m = line.match(/:\s(?:TELL|warn)\s\[([a-z-]+)\]/);
     if (m) {
       const key = `voice:${m[1]}`;
       counts[key] = (counts[key] ?? 0) + 1;
+      parsedTotal++;
     }
+  }
+  if (parsedTotal !== Number(summary[1])) {
+    throw new Error(`lint gate: voice-lint reported ${summary[1]} flags but ${parsedTotal} parsed — the line format changed`);
   }
   return counts;
 }
@@ -83,11 +99,13 @@ function currentCounts(): Counts {
 }
 
 function loadBaseline(): { generated: string; counts: Counts } | undefined {
+  // Missing is a real state (the first run writes it). Unreadable is not: treating a corrupt file as
+  // missing would print "no baseline yet", exit clean, and switch the ratchet off without a word.
   if (!existsSync(baselinePath)) return undefined;
   try {
     return JSON.parse(readFileSync(baselinePath, "utf8"));
-  } catch {
-    return undefined;
+  } catch (e) {
+    throw new Error(`lint gate: ${baselinePath} is not valid JSON — ${(e as Error).message}`, { cause: e });
   }
 }
 

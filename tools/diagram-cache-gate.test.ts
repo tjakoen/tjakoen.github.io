@@ -216,4 +216,4 @@ test("a mermaid fence in an unserved file does not fail the gate", async () => {
   expect(servedDirs.some((d) => audit.startsWith(d + "/"))).toBe(false);
 
   expect(await checkDiagramCache()).toEqual([]);              // the real repo, real collections
-});
+}, 20_000); // it reads every served collection, which outlasts bun's 5s default under a full suite
