@@ -4,7 +4,7 @@ date: 2026-11-05
 status: complete
 lane: gated
 branch: claude/agency-close
-scope: [tools/export.ts, e2e, content/tours, src/ai, view/pages/mail.html, plans/ai-agency-navigation.md, artifacts/runs]
+scope: [tools/export.ts, tools/desk-audit.ts, e2e, content/tours, src/ai, view/pages/mail.html, plans/ai-agency-navigation.md, artifacts/runs]
 touched:
   - tools/export.ts
   - e2e/visual.e2e.ts-snapshots/catalog-darwin.png

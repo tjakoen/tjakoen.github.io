@@ -1,6 +1,6 @@
 ---
 title: What should the cold-start context budget be?
-status: decided
+status: resolved
 decided: 2026-08-18
 answer: A, 20,000 characters. The number stands and is now agreed rather than assumed.
 options:
