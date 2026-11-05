@@ -53,5 +53,5 @@ describe("the live preflight", () => {
     // A failure here is almost always the grain bridge: the installed package predates a component
     // a template uses, and nothing else in the suite would say so.
     expect(missing.length === 0 ? "" : missingReport(missing)).toBe("");
-  });
+  }, 20_000); // it walks every page and component template, slower than bun's 5s default under load
 });
