@@ -6,7 +6,7 @@ The byline footer that closes every landing page — a ruled, muted sign-off wit
 ## Page foot
 ```html
 <div class="page-foot">
-  Part of <a href="/">tjakoen.github.io</a>, built with itself.
+  Part of <a href="/">portfolio.tjakoen.com</a>, built with itself.
   <p>AI helps me write and review. I direct the work, test the result, and answer for what ships.
     <a href="/notes/ten-times-zero">How I work with AI →</a></p>
 </div>
