@@ -136,6 +136,21 @@ in the skills lockfile, and they are mounted rather than committed. Worth naming
 they are the one place an outside source runs as code in a session instead of sitting behind an
 argument in a document.
 
+**Richard Edens, [C.R.I.S.S.P.](https://github.com/richardedens/crissp) (Apache-2.0).**
+An agentic SDLC framework for Claude Code that makes the same bet as this estate: AI colleagues
+build, scripts with no model in them decide what is green, and a person decides what ships. Read on
+2026-11-06. Two of its guards were taken whole as ideas: the release gate, which lets a deploy through
+only with a green full run at most seven days old plus a green check on every commit since and has no
+bypass, and the coverage gate, under which coverage may only go up. The tile row on its Tests
+dashboard was taken as the shape for showing that gate.
+
+Landed in PANTRY as the release certificate (certify.ts, with the gate tiles on /control) and in LOOP
+section 4(a), which now names the certificate as the check a run report's claim can be held to. No
+code was copied. One part was changed rather than applied: its gate tracks commit IDs, and here the
+gate matches the code tree, so a squash merge of already certified code keeps the gate open. Its UX
+persona rounds and its before-and-after design approval were read and left for later, because each
+round costs a model run and that needs a budget call first.
+
 ---
 
 ## Where each already appears, for whoever finishes the note
@@ -147,6 +162,7 @@ argument in a document.
 | Agentic Code Quality | LOOP section 5, this file, the 2026-08-13 audit |
 | Graziano | LOOP section 5 |
 | Spec Kit | LOOP section 5 |
+| C.R.I.S.S.P. | LOOP section 4(a), standards NOTICE, and in PANTRY its NOTICE, README, PLAN and the certify and /control source |
 | ASD-STE100 | VOICE, the draft note body, agent memory |
 | ste-lint.py | the header of the voice linter |
 | agent-skills | the skills lockfile |
