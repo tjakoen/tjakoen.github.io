@@ -6,5 +6,7 @@ inside [cv-entry](../cv-entry/cv-entry.md), and reused at page level for the cer
 Styling lives in `cv-entry.css` (`.cv-bullet`).
 
 ```html
-<li class="cv-bullet">Manage and mentor a team of engineers, working AI-first to ship faster.</li>
+<ul class="cv-entry__bullets">
+  <li class="cv-bullet">Manage and mentor a team of engineers, working AI-first to ship faster.</li>
+</ul>
 ```
