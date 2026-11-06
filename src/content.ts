@@ -1247,8 +1247,12 @@ export function badgeMedallionSvg(opts: {
   const courseY = 84 - (courseLines.length - 1) * 7;
   const course = courseLines.map((l, i) =>
     `<tspan x="150" y="${courseY + i * 14}">${l}</tspan>`).join("");
-  // The certified skill as the headline, up to three lines, settled around y165.
-  const titleLines = wrapTitle(opts.subtitle, 16, 3).map(escapeHtml);
+  // The certified skill as the headline, up to three lines, settled around y165. A title that will
+  // not fit three lines of 16 rewraps at 19, because the three-line cap drops the overflow silently:
+  // "Builds Full-Stack JavaScript and AI" lost its last word that way. Titles that already fit keep
+  // their old breaks.
+  const titleLines = (wrapTitle(opts.subtitle, 16, 4).length > 3
+    ? wrapTitle(opts.subtitle, 19, 3) : wrapTitle(opts.subtitle, 16, 3)).map(escapeHtml);
   const titleY = 165 - (titleLines.length - 1) * 14;
   const title = titleLines.map((l, i) =>
     `<tspan x="150" y="${titleY + i * 28}">${l}</tspan>`).join("");
