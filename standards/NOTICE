@@ -2,3 +2,6 @@ BATCH
 Copyright 2026 Tjakoen Stolk
 
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+LOOP section 4(a) adapts the release gate of C.R.I.S.S.P. by Richard Edens,
+https://github.com/richardedens/crissp, licensed under the Apache License, Version 2.0.
