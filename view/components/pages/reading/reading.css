@@ -1,0 +1,62 @@
+/* pages/reading — the furniture for /reading (bundled into /components.css, scoped to the reading
+   screen). Two shapes: a bookshelf for the works, where each spine is a link standing on a board,
+   and a social-style feed for the people, where each post is what I took from one person. Neither
+   would be wanted by a second product, so neither goes up into grain. Spine colours mix the theme's
+   own ink and accent, so the shelf follows sourdough, baguette and brioche without its own palette. */
+
+/* ── The bookshelf ─────────────────────────────────────────────────────────────────────────── */
+[data-screen="reading"] .shelf { margin: var(--space-4) 0 var(--space-6); }
+[data-screen="reading"] .shelf__row { list-style: none; margin: 0; padding: 0 var(--space-4);
+  display: flex; align-items: flex-end; gap: var(--space-1); min-height: 15rem; overflow-x: auto; }
+[data-screen="reading"] .shelf__board { height: 0.75rem; border-radius: 2px;
+  background: color-mix(in srgb, var(--ink) 55%, var(--paper));
+  box-shadow: 0 0.4rem 0.6rem -0.3rem color-mix(in srgb, var(--ink) 40%, transparent); }
+
+[data-screen="reading"] .book { flex: none; }
+[data-screen="reading"] .book__spine { display: flex; flex-direction: column; justify-content: space-between;
+  align-items: center; box-sizing: border-box; width: 3.25rem; height: 13rem; padding: var(--space-2) 0;
+  border-radius: 3px 3px 0 0; text-decoration: none; color: var(--paper);
+  background: color-mix(in srgb, var(--paper) 55%, var(--color-accent));
+  box-shadow: inset 0.25rem 0 0 color-mix(in srgb, var(--paper) 18%, transparent),
+              inset -0.2rem 0 0 color-mix(in srgb, var(--ink) 30%, transparent);
+  transition: transform 160ms ease; }
+[data-screen="reading"] .book:nth-child(3n+2) .book__spine { height: 14.5rem; width: 3rem;
+  background: color-mix(in srgb, var(--color-accent) 85%, var(--paper)); }
+[data-screen="reading"] .book:nth-child(3n) .book__spine {
+  background: color-mix(in srgb, var(--color-accent) 40%, var(--paper)); color: var(--ink); }
+[data-screen="reading"] .book[data-kind="essay"] .book__spine { width: 1.75rem; height: 10rem; }
+[data-screen="reading"] .book__spine:hover,
+[data-screen="reading"] .book__spine:focus-visible { transform: translateY(-0.6rem); }
+@media (prefers-reduced-motion: reduce) { [data-screen="reading"] .book__spine { transition: none; } }
+
+[data-screen="reading"] .book__title,
+[data-screen="reading"] .book__author { writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; }
+[data-screen="reading"] .book__title { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; }
+[data-screen="reading"] .book__author { font-family: var(--font-mono); font-size: 0.7rem; opacity: 0.8; }
+[data-screen="reading"] .book[data-kind="essay"] .book__author { display: none; }
+
+[data-screen="reading"] .shelf__notes { list-style: none; margin: var(--space-4) 0 0; padding: 0;
+  display: grid; gap: var(--space-2); }
+[data-screen="reading"] .shelf__notes li { color: var(--ink-muted); }
+[data-screen="reading"] .shelf__notes strong { color: var(--ink); }
+
+/* ── The people, as a feed ────────────────────────────────────────────────────────────────── */
+[data-screen="reading"] .people { list-style: none; margin: var(--space-4) 0 var(--space-6); padding: 0;
+  display: grid; gap: var(--space-4); max-width: 40rem; }
+[data-screen="reading"] .post { display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-2) var(--space-4);
+  padding: var(--space-4); border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
+[data-screen="reading"] .post__avatar { width: 3rem; height: 3rem; border-radius: 50%; display: grid;
+  place-items: center; font-weight: 700; color: var(--paper);
+  background: color-mix(in srgb, var(--color-accent) 70%, var(--ink)); }
+[data-screen="reading"] .post__main { min-width: 0; }
+[data-screen="reading"] .post__head { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-2); }
+[data-screen="reading"] .post__name { font-weight: 700; color: var(--ink); }
+[data-screen="reading"] .post__handle { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); }
+[data-screen="reading"] .post__body { margin: var(--space-2) 0 var(--space-4); }
+[data-screen="reading"] .post__embed { display: block; padding: var(--space-2) var(--space-4); border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md); text-decoration: none; color: inherit; }
+[data-screen="reading"] .post__embed:hover { border-color: var(--color-accent); }
+[data-screen="reading"] .post__embed-site { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted); }
+[data-screen="reading"] .post__embed-title { font-weight: 600; }
+[data-screen="reading"] .post__foot { margin: var(--space-2) 0 0; font-size: 0.85rem; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }

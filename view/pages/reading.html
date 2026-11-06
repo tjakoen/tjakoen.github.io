@@ -18,37 +18,59 @@
       from them and links to the place in my own writing where it shows up, so you can see the idea
       in use rather than take my word that it mattered. Go read them first. They said it better.</p>
 
-    <h2 class="section-head"><span>Addy Osmani</span></h2>
-    <p class="lede">Addy gave me the words for what I was already fumbling toward with AI: durable work
-      is a loop built from a few reusable parts, not one clever prompt. His seventy percent problem is
-      the honest half of that. The machine gets you most of the way, and the last stretch is where
-      unmanaged work rots. Every gate and handoff in my setup exists because of that last stretch.</p>
-    <div class="docs-list">
-      <div class="docs-list__item"><a class="docs-list__name" href="https://addyosmani.com/blog/loop-engineering/" target="_blank" rel="noopener noreferrer">Loop Engineering</a><span class="docs-list__what">the term and the framing I build around.</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="https://beyond.addy.ie" target="_blank" rel="noopener noreferrer">Beyond Vibe Coding</a><span class="docs-list__what">the book, and the seventy percent problem.</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/notes/one-loop-every-repo">One loop, every repo</a><span class="docs-list__what">where I apply his shape across every project I run.</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/notes/ten-times-zero">Ten times zero</a><span class="docs-list__what">where I credit the framing and argue with my own results.</span></div>
+    <h2 class="section-head"><span>The shelf</span></h2>
+    <div class="shelf" aria-label="Bookshelf of the works I keep going back to">
+      <ol class="shelf__row">
+        <li class="book"><a class="book__spine" href="https://atomicdesign.bradfrost.com/" target="_blank" rel="noopener noreferrer"><span class="book__title">Atomic Design</span><span class="book__author">Frost</span></a></li>
+        <li class="book"><a class="book__spine" href="https://beyond.addy.ie" target="_blank" rel="noopener noreferrer"><span class="book__title">Beyond Vibe Coding</span><span class="book__author">Osmani</span></a></li>
+        <li class="book" data-kind="essay"><a class="book__spine" href="https://addyosmani.com/blog/loop-engineering/" target="_blank" rel="noopener noreferrer" aria-label="Loop Engineering, an essay by Addy Osmani"><span class="book__title">Loop Engineering</span><span class="book__author">Osmani</span></a></li>
+      </ol>
+      <div class="shelf__board" aria-hidden="true"></div>
     </div>
+    <ul class="shelf__notes">
+      <li><strong>Atomic Design</strong>, Brad Frost, 2013. Free to read online, and the shape <a href="/grain">GRAIN</a> is built in.</li>
+      <li><strong>Beyond Vibe Coding</strong>, Addy Osmani. The seventy percent problem, and why the last stretch is where AI work rots.</li>
+      <li><strong>Loop Engineering</strong>, Addy Osmani. An essay, not a book, so it stands thin on the shelf. It is the framing <a href="/notes/one-loop-every-repo">One loop, every repo</a> applies.</li>
+    </ul>
 
-    <h2 class="section-head"><span>Brad Frost</span></h2>
-    <p class="lede">Atomic design is more or less my love language for frontend work. Atoms compose into
-      molecules, molecules into organisms, and nothing gets built big when it can be built from small
-      parts. I would happily make fifty tiny components before one large one, and GRAIN, the design
-      system under this site, is built in exactly that shape.</p>
-    <div class="docs-list">
-      <div class="docs-list__item"><a class="docs-list__name" href="https://atomicdesign.bradfrost.com/" target="_blank" rel="noopener noreferrer">Atomic Design</a><span class="docs-list__what">the 2013 book, free to read online.</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/grain">GRAIN</a><span class="docs-list__what">the design system that uses his taxonomy on purpose.</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/notes/origin-story">Origin story</a><span class="docs-list__what">how his method turned a side project into a design system.</span></div>
-    </div>
-
-    <h2 class="section-head"><span>Coding2GO</span></h2>
-    <p class="lede">Coding2GO reminded me that the web platform grew up while I was not looking. Much of
-      what I used to reach for a framework to do, the browser now does on its own, and that is a large
-      part of why this site runs with no build step at all.</p>
-    <div class="docs-list">
-      <div class="docs-list__item"><a class="docs-list__name" href="https://www.youtube.com/@coding2go" target="_blank" rel="noopener noreferrer">Coding2GO on YouTube</a><span class="docs-list__what">short, practical videos on modern HTML, CSS and JavaScript.</span></div>
-      <div class="docs-list__item"><a class="docs-list__name" href="/notes/origin-story">Origin story</a><span class="docs-list__what">where the thanks is written down.</span></div>
-    </div>
+    <h2 class="section-head"><span>The people</span></h2>
+    <ol class="people" aria-label="The people I learn from, as a feed">
+      <li class="post">
+        <span class="post__avatar" aria-hidden="true">AO</span>
+        <div class="post__main">
+          <p class="post__head"><a class="post__name" href="https://addyosmani.com" target="_blank" rel="noopener noreferrer">Addy Osmani</a><span class="post__handle">addyosmani.com</span></p>
+          <p class="post__body">Addy gave me the words for what I was already fumbling toward with AI: durable work
+            is a loop built from a few reusable parts, not one clever prompt. His seventy percent problem is
+            the honest half of that. The machine gets you most of the way, and the last stretch is where
+            unmanaged work rots. Every gate and handoff in my setup exists because of that last stretch.</p>
+          <a class="post__embed" href="https://addyosmani.com/blog/loop-engineering/" target="_blank" rel="noopener noreferrer"><span class="post__embed-site">addyosmani.com</span><span class="post__embed-title">Loop Engineering</span></a>
+          <p class="post__foot"><span>Shows up in</span><a href="/notes/one-loop-every-repo">One loop, every repo</a><a href="/notes/ten-times-zero">Ten times zero</a></p>
+        </div>
+      </li>
+      <li class="post">
+        <span class="post__avatar" aria-hidden="true">BF</span>
+        <div class="post__main">
+          <p class="post__head"><a class="post__name" href="https://bradfrost.com" target="_blank" rel="noopener noreferrer">Brad Frost</a><span class="post__handle">bradfrost.com</span></p>
+          <p class="post__body">Atomic design is more or less my love language for frontend work. Atoms compose into
+            molecules, molecules into organisms, and nothing gets built big when it can be built from small
+            parts. I would happily make fifty tiny components before one large one, and GRAIN, the design
+            system under this site, is built in exactly that shape.</p>
+          <a class="post__embed" href="https://atomicdesign.bradfrost.com/" target="_blank" rel="noopener noreferrer"><span class="post__embed-site">atomicdesign.bradfrost.com</span><span class="post__embed-title">Atomic Design</span></a>
+          <p class="post__foot"><span>Shows up in</span><a href="/grain">GRAIN</a><a href="/notes/origin-story">Origin story</a></p>
+        </div>
+      </li>
+      <li class="post">
+        <span class="post__avatar" aria-hidden="true">C2</span>
+        <div class="post__main">
+          <p class="post__head"><a class="post__name" href="https://www.youtube.com/@coding2go" target="_blank" rel="noopener noreferrer">Coding2GO</a><span class="post__handle">@coding2go</span></p>
+          <p class="post__body">Coding2GO reminded me that the web platform grew up while I was not looking. Much of
+            what I used to reach for a framework to do, the browser now does on its own, and that is a large
+            part of why this site runs with no build step at all.</p>
+          <a class="post__embed" href="https://www.youtube.com/@coding2go" target="_blank" rel="noopener noreferrer"><span class="post__embed-site">youtube.com</span><span class="post__embed-title">Short, practical videos on modern HTML, CSS and JavaScript</span></a>
+          <p class="post__foot"><span>Shows up in</span><a href="/notes/origin-story">Origin story</a></p>
+        </div>
+      </li>
+    </ol>
 
     <p class="lede">This list grows when someone changes how I work, not when I finish a book. If you
       think somebody belongs here, <a href="/mail">tell me who</a>.</p>
