@@ -11,6 +11,37 @@ summary: >
   A look back at semester one of 2026: seven sections, three subjects, more than 200 public final
   projects and 594 badges. The one rule that shaped them was to build something you actually need,
   publish it in the open, and own every line, including the lines AI wrote.
+social: |
+  Last term, I almost quit teaching.
+
+  I run an engineering team full-time, and the grading on top of that got heavy. So instead of
+  quitting, I built a platform to take the grind off my plate, and kept the part I love.
+
+  That became the one thing I kept telling my students this semester: build for yourself, not a
+  made-up client. If you need it, you'll be its biggest advocate. You'll know why every feature is
+  there.
+
+  They ran with it. A clipboard for job posts you find on your phone. An OJT hours tracker. A dorm
+  finder near campus. Flood warnings for commuters around Angeles City. And the fun ones: a wardrobe
+  app for people who own plenty of clothes and keep wearing the same five, apps for crochet,
+  aquariums and basketball, a fan-made board game.
+
+  Two rules came with it. Every project is public on GitHub, because a project in a private folder
+  helps nobody. And AI is allowed, as long as you credit it, write down what it did, and own every
+  line, including the ones it wrote.
+
+  This semester: 7 sections, 3 subjects, more than 200 final projects, 594 badges. Tests and AI do
+  the first pass on every one. Nothing gets issued until I sign off.
+
+  Some of these are better than apps I've paid for. More than once I opened a student's code and
+  thought, huh, that's a better way to do it.
+
+  You go in to teach, and you walk out learning.
+
+  To my students: thank you. I'm proud of you. Keep building.
+
+  The whole semester, with every project and badge linked:
+  https://tjakoen.github.io/notes/proud-of-my-students-2026-s1
 ---
 
 Seven sections. Three subjects. More than 200 final projects. 73 Flutter apps, around 127
