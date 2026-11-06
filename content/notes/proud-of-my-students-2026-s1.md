@@ -2,7 +2,7 @@
 title: "Two Hundred Final Projects, and the Ones I Didn't See Coming"
 subtitle: "Seven sections, three subjects, more than 200 final projects, all of them public. I told my students to build for themselves instead of a made-up client, and some of what came back is better than apps I've paid for."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-11-06
 readingTime: "~5 min"
@@ -49,8 +49,8 @@ Nobody builds a crochet pattern tracker to hit a rubric.
 
 <figure class="shot">
   <img class="shot__img" src="/media/proud-of-my-students/flutter.jpg" width="1080" height="1080" loading="lazy" data-lightbox
-       alt="73 Flutter apps from two sections of Applications Development: Love My Closet, Bahantabay, Reaction Chain and Nook.">
-  <figcaption class="shot__cap">Applications Development, two sections, 73 Flutter apps. The wardrobe app, the flood warnings and the board game are all in here.</figcaption>
+       alt="73 Flutter apps from two sections of Application Development and Emerging Technologies: Love My Closet, Bahantabay, Reaction Chain and Nook.">
+  <figcaption class="shot__cap">Application Development and Emerging Technologies, two sections, 73 Flutter apps. The wardrobe app, the flood warnings and the board game are all in here.</figcaption>
 </figure>
 
 <figure class="shot">
@@ -61,8 +61,8 @@ Nobody builds a crochet pattern tracker to hit a rubric.
 
 <figure class="shot">
   <img class="shot__img" src="/media/proud-of-my-students/web.jpg" width="1080" height="1080" loading="lazy" data-lightbox
-       alt="Intro to Web team sites built with plain HTML, CSS and JavaScript: Memora, HAU Dorm Finder, Hour.ly and LifeQuest.">
-  <figcaption class="shot__cap">Intro to Web, plain HTML, CSS and JavaScript. No frameworks, which is a rule I don't only hand to students.</figcaption>
+       alt="Basic Programming in Web Development team sites built with plain HTML, CSS and JavaScript: Memora, HAU Dorm Finder, Hour.ly and LifeQuest.">
+  <figcaption class="shot__cap">Basic Programming in Web Development, plain HTML, CSS and JavaScript. No frameworks, which is a rule I don't only hand to students.</figcaption>
 </figure>
 
 ## Public, or it didn't happen
@@ -127,24 +127,23 @@ The dashed line is the one that matters. Anything that fails at any step goes ba
 and the AI never issues anything on its own. It flags; I decide. The machine took the hours, not the
 judgment.
 
+Every badge has a public criteria page, so a recruiter can see exactly what a student had to show
+to earn it. Here are all nine, one row per class. Tap one for its criteria.
+
 <figure class="shot">
-  <img class="shot__img" src="/media/proud-of-my-students/badges.jpg" width="1080" height="1080" loading="lazy" data-lightbox
-       alt="Three issued badges from Application Development and Emerging Technologies: Flutter App Development and two Builds with Flutter and AI.">
-  <figcaption class="shot__cap">Three of the 594, from the Flutter class.</figcaption>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem">
+    <a href="/badges/adet-prelim" style="display:block;text-decoration:none"><img src="/media/badges/art/adet-prelim.svg" width="300" height="340" loading="lazy" alt="Dart and Flutter Foundations badge" style="width:100%;height:auto;display:block"></a>
+    <a href="/badges/adet-midterm" style="display:block;text-decoration:none"><img src="/media/badges/art/adet-midterm.svg" width="300" height="340" loading="lazy" alt="Flutter App Development badge" style="width:100%;height:auto;display:block"></a>
+    <a href="/badges/adet-finals" style="display:block;text-decoration:none"><img src="/media/badges/art/adet-finals.svg" width="300" height="340" loading="lazy" alt="Builds with Flutter and AI badge" style="width:100%;height:auto;display:block"></a>
+    <a href="/badges/apsi-prelim" style="display:block;text-decoration:none"><img src="/media/badges/art/apsi-prelim.svg" width="300" height="340" loading="lazy" alt="Frontend Design with Cloud badge" style="width:100%;height:auto;display:block"></a>
+    <a href="/badges/apsi-midterm" style="display:block;text-decoration:none"><img src="/media/badges/art/apsi-midterm.svg" width="300" height="340" loading="lazy" alt="Full Stack Web Development badge" style="width:100%;height:auto;display:block"></a>
+    <a href="/badges/apsi-finals" style="display:block;text-decoration:none"><img src="/media/badges/art/apsi-finals.svg" width="300" height="340" loading="lazy" alt="Builds Full-Stack JavaScript and AI badge" style="width:100%;height:auto;display:block"></a>
+    <a href="/badges/introweb-prelim" style="display:block;text-decoration:none"><img src="/media/badges/art/introweb-prelim.svg" width="300" height="340" loading="lazy" alt="Web Foundations badge" style="width:100%;height:auto;display:block"></a>
+    <a href="/badges/introweb-midterm" style="display:block;text-decoration:none"><img src="/media/badges/art/introweb-midterm.svg" width="300" height="340" loading="lazy" alt="Interactive Web Pages badge" style="width:100%;height:auto;display:block"></a>
+    <a href="/badges/introweb-finals" style="display:block;text-decoration:none"><img src="/media/badges/art/introweb-finals.svg" width="300" height="340" loading="lazy" alt="Builds for the Web and AI badge" style="width:100%;height:auto;display:block"></a>
+  </div>
+  <figcaption class="shot__cap">Prelim, midterm and finals for Application Development and Emerging Technologies, Application and System Integration, and Basic Programming in Web Development. 594 issued between them. <a href="/badges">All badges in one place</a>.</figcaption>
 </figure>
-
-The criteria are public too, one page per badge, so a recruiter can see exactly what a student had
-to show to earn one:
-
-- **Applications Development:** [Dart and Flutter Foundations](/badges/adet-prelim),
-  [Flutter App Development](/badges/adet-midterm), [Builds with Flutter and AI](/badges/adet-finals)
-- **Full-stack JavaScript:** [Frontend Design with Cloud](/badges/apsi-prelim),
-  [Full Stack Web Development](/badges/apsi-midterm),
-  [Builds Full-Stack JavaScript and AI](/badges/apsi-finals)
-- **Intro to Web:** [Web Foundations](/badges/introweb-prelim),
-  [Interactive Web Pages](/badges/introweb-midterm), [Builds for the Web and AI](/badges/introweb-finals)
-
-Or [all of them in one place](/badges).
 
 ## The curriculum I wasn't asked to teach
 
@@ -166,9 +165,9 @@ To my students: thank you. I'm proud of you. Keep building.
 
 Every project has its own page, by class:
 
-- [Applications Development](/calendar/2026-s1-appdev-students)
-- [Full-stack JavaScript](/calendar/2026-s1-apsi-students)
-- [Intro to Web](/calendar/2026-s1-introweb-students)
+- [Application Development and Emerging Technologies](/calendar/2026-s1-appdev-students)
+- [Application and System Integration](/calendar/2026-s1-apsi-students)
+- [Basic Programming in Web Development](/calendar/2026-s1-introweb-students)
 
 ---
 
