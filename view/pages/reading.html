@@ -21,35 +21,103 @@
     <h2 class="section-head"><span>The shelf</span></h2>
     <div class="shelf" aria-label="Bookshelf of the works I keep going back to">
       <ol class="shelf__row">
-        <li class="book"><a class="book__spine" href="https://atomicdesign.bradfrost.com/" target="_blank" rel="noopener noreferrer"><span class="book__title">Atomic Design</span><span class="book__author">Frost</span><span class="book__cat" title="Design"><span class="visually-hidden">Category: Design</span><span aria-hidden="true">DES</span></span></a></li>
-        <li class="book"><a class="book__spine" href="https://beyond.addy.ie" target="_blank" rel="noopener noreferrer"><span class="book__title">Beyond Vibe Coding</span><span class="book__author">Osmani</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
-        <li class="book" data-kind="essay"><a class="book__spine" href="https://addyosmani.com/blog/loop-engineering/" target="_blank" rel="noopener noreferrer" aria-label="Loop Engineering, an essay by Addy Osmani"><span class="book__title">Loop Engineering</span><span class="book__author">Osmani</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
-        <li class="book"><a class="book__spine" href="https://personalmba.com" target="_blank" rel="noopener noreferrer"><span class="book__title">The Personal MBA</span><span class="book__author">Kaufman</span><span class="book__cat" title="Business"><span class="visually-hidden">Category: Business</span><span aria-hidden="true">BIZ</span></span></a></li>
-        <li class="book" data-long><span class="book__spine"><span class="book__title">Thinking, Fast and Slow</span><span class="book__author">Kahneman</span><span class="book__cat" title="Mind"><span class="visually-hidden">Category: Mind</span><span aria-hidden="true">MIND</span></span></span></li>
-        <li class="book" data-long><span class="book__spine"><span class="book__title">The 48 Laws of Power</span><span class="book__author">Greene</span><span class="book__cat" title="Business"><span class="visually-hidden">Category: Business</span><span aria-hidden="true">BIZ</span></span></span></li>
-        <li class="book"><a class="book__spine" href="https://dailystoic.com" target="_blank" rel="noopener noreferrer"><span class="book__title">The Daily Stoic</span><span class="book__author">Holiday</span><span class="book__cat" title="Philosophy"><span class="visually-hidden">Category: Philosophy</span><span aria-hidden="true">PHIL</span></span></a></li>
-        <li class="book"><span class="book__spine"><span class="book__title">Aristotle's Way</span><span class="book__author">Hall</span><span class="book__cat" title="Philosophy"><span class="visually-hidden">Category: Philosophy</span><span aria-hidden="true">PHIL</span></span></span></li>
-        <li class="book" data-long><span class="book__spine"><span class="book__title">How to Think Like a Roman Emperor</span><span class="book__author">Robertson</span><span class="book__cat" title="Philosophy"><span class="visually-hidden">Category: Philosophy</span><span aria-hidden="true">PHIL</span></span></span></li>
-        <li class="book" data-long><a class="book__spine" href="https://alfonsograziano.it/book" target="_blank" rel="noopener noreferrer"><span class="book__title">Learning AI-Native Software Engineering</span><span class="book__author">Graziano</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
-        <li class="book"><span class="book__spine"><span class="book__title">Clean Code</span><span class="book__author">Martin</span><span class="book__cat" title="Code"><span class="visually-hidden">Category: Code</span><span aria-hidden="true">CODE</span></span></span></li>
-        <li class="book" data-kind="essay"><a class="book__spine" href="https://scrumguides.org" target="_blank" rel="noopener noreferrer" aria-label="The Scrum Guide, by Ken Schwaber and Jeff Sutherland"><span class="book__title">The Scrum Guide</span><span class="book__author">Schwaber</span><span class="book__cat" title="Process"><span class="visually-hidden">Category: Process</span><span aria-hidden="true">PROC</span></span></a></li>
+        <li class="book"><a class="book__spine" href="#book-atomic-design" aria-controls="book-atomic-design"><span class="book__title">Atomic Design</span><span class="book__author">Frost</span><span class="book__cat" title="Design"><span class="visually-hidden">Category: Design</span><span aria-hidden="true">DES</span></span></a></li>
+        <li class="book"><a class="book__spine" href="#book-beyond-vibe-coding" aria-controls="book-beyond-vibe-coding"><span class="book__title">Beyond Vibe Coding</span><span class="book__author">Osmani</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
+        <li class="book" data-kind="essay"><a class="book__spine" href="#book-loop-engineering" aria-controls="book-loop-engineering"><span class="book__title">Loop Engineering</span><span class="book__author">Osmani</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
+        <li class="book"><a class="book__spine" href="#book-personal-mba" aria-controls="book-personal-mba"><span class="book__title">The Personal MBA</span><span class="book__author">Kaufman</span><span class="book__cat" title="Business"><span class="visually-hidden">Category: Business</span><span aria-hidden="true">BIZ</span></span></a></li>
+        <li class="book" data-long><a class="book__spine" href="#book-thinking-fast-and-slow" aria-controls="book-thinking-fast-and-slow"><span class="book__title">Thinking, Fast and Slow</span><span class="book__author">Kahneman</span><span class="book__cat" title="Mind"><span class="visually-hidden">Category: Mind</span><span aria-hidden="true">MIND</span></span></a></li>
+        <li class="book" data-long><a class="book__spine" href="#book-48-laws-of-power" aria-controls="book-48-laws-of-power"><span class="book__title">The 48 Laws of Power</span><span class="book__author">Greene</span><span class="book__cat" title="Business"><span class="visually-hidden">Category: Business</span><span aria-hidden="true">BIZ</span></span></a></li>
+        <li class="book"><a class="book__spine" href="#book-daily-stoic" aria-controls="book-daily-stoic"><span class="book__title">The Daily Stoic</span><span class="book__author">Holiday</span><span class="book__cat" title="Philosophy"><span class="visually-hidden">Category: Philosophy</span><span aria-hidden="true">PHIL</span></span></a></li>
+        <li class="book"><a class="book__spine" href="#book-aristotles-way" aria-controls="book-aristotles-way"><span class="book__title">Aristotle's Way</span><span class="book__author">Hall</span><span class="book__cat" title="Philosophy"><span class="visually-hidden">Category: Philosophy</span><span aria-hidden="true">PHIL</span></span></a></li>
+        <li class="book" data-long><a class="book__spine" href="#book-roman-emperor" aria-controls="book-roman-emperor"><span class="book__title">How to Think Like a Roman Emperor</span><span class="book__author">Robertson</span><span class="book__cat" title="Philosophy"><span class="visually-hidden">Category: Philosophy</span><span aria-hidden="true">PHIL</span></span></a></li>
+        <li class="book" data-long><a class="book__spine" href="#book-ai-native-engineering" aria-controls="book-ai-native-engineering"><span class="book__title">Learning AI-Native Software Engineering</span><span class="book__author">Graziano</span><span class="book__cat" title="AI"><span class="visually-hidden">Category: AI</span><span aria-hidden="true">AI</span></span></a></li>
+        <li class="book"><a class="book__spine" href="#book-clean-code" aria-controls="book-clean-code"><span class="book__title">Clean Code</span><span class="book__author">Martin</span><span class="book__cat" title="Code"><span class="visually-hidden">Category: Code</span><span aria-hidden="true">CODE</span></span></a></li>
+        <li class="book" data-kind="essay"><a class="book__spine" href="#book-scrum-guide" aria-controls="book-scrum-guide"><span class="book__title">The Scrum Guide</span><span class="book__author">Schwaber</span><span class="book__cat" title="Process"><span class="visually-hidden">Category: Process</span><span aria-hidden="true">PROC</span></span></a></li>
       </ol>
       <div class="shelf__board" aria-hidden="true"></div>
     </div>
-    <ul class="shelf__notes">
-      <li><strong>Atomic Design</strong>, Brad Frost, 2013. Free to read online, and the shape <a href="/grain">GRAIN</a> is built in.</li>
-      <li><strong>Beyond Vibe Coding</strong>, Addy Osmani. The seventy percent problem, and why the last stretch is where AI work rots.</li>
-      <li><strong>Loop Engineering</strong>, Addy Osmani. An essay, not a book, so it stands thin on the shelf. It is the framing <a href="/notes/one-loop-every-repo">One loop, every repo</a> applies.</li>
-      <li><strong>The Personal MBA</strong>, Josh Kaufman, 2010. I learned business by starting five of them, and not one worked out the way I planned, which taught me more than success would have. This is the book I wish I had read before the first one.</li>
-      <li><strong>Thinking, Fast and Slow</strong>, Daniel Kahneman, 2011. My first answer is usually the fast one, and the fast one is usually the one I should check.</li>
-      <li><strong>The 48 Laws of Power</strong>, Robert Greene, 1998. I read it to recognise the moves, not to make them. Knowing how office politics work made it easier to stay out of them.</li>
-      <li><strong>The Daily Stoic</strong>, Ryan Holiday and Stephen Hanselman, 2016. One page a morning, and most days it comes back to the same thing: what is mine to control, and what is not.</li>
-      <li><strong>Aristotle's Way</strong>, Edith Hall, 2018. A good life is something you practise, the same way you get good at a craft.</li>
-      <li><strong>How to Think Like a Roman Emperor</strong>, Donald Robertson, 2019. Stoicism used for what it was built for: staying steady while you run something hard.</li>
-      <li><strong>Learning AI-Native Software Engineering</strong>, Alfonso Graziano. Where most of my thinking on handing work to an AI got sharpened.</li>
-      <li><strong>Clean Code</strong>, Robert C. Martin, 2008. Code is read far more often than it is written, so I write it for the next reader, who is usually me.</li>
-      <li><strong>The Scrum Guide</strong>, Ken Schwaber and Jeff Sutherland, 2020 edition. A guide rather than a book, so it stands thin too. The official version is short, and most of what teams call Scrum is not in it.</li>
-    </ul>
+    <div class="shelf__cards" aria-live="polite">
+      <p class="shelf__hint">Pick a book off the shelf to see what it is and why it is here.</p>
+      <article class="book-card" id="book-atomic-design" tabindex="-1">
+        <p class="book-card__meta">Brad Frost, 2013 · Design</p>
+        <h3 class="book-card__title">Atomic Design</h3>
+        <p class="book-card__what">A method for building interfaces as design systems: small atoms combine into molecules, molecules into organisms, and those into templates and pages.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> It is more or less my love language for frontend work, and it is the shape <a href="/grain">GRAIN</a> is built in.</p>
+        <a class="btn" href="https://atomicdesign.bradfrost.com/" target="_blank" rel="noopener noreferrer">Read it free online</a>
+      </article>
+      <article class="book-card" id="book-beyond-vibe-coding" tabindex="-1">
+        <p class="book-card__meta">Addy Osmani · AI</p>
+        <h3 class="book-card__title">Beyond Vibe Coding</h3>
+        <p class="book-card__what">A practical book on building software with AI assistants, past the point where prompting alone carries you.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> The seventy percent problem, and why the last stretch is where AI work rots. Every gate in my setup exists because of that last stretch.</p>
+        <a class="btn" href="https://beyond.addy.ie" target="_blank" rel="noopener noreferrer">Open the book</a>
+      </article>
+      <article class="book-card" id="book-loop-engineering" tabindex="-1">
+        <p class="book-card__meta">Addy Osmani · AI</p>
+        <h3 class="book-card__title">Loop Engineering</h3>
+        <p class="book-card__what">An essay arguing that durable AI work is built from a few reusable parts in a loop, rather than from one clever prompt.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> It is an essay, not a book, so it stands thin on the shelf. It is the framing <a href="/notes/one-loop-every-repo">One loop, every repo</a> applies.</p>
+        <a class="btn" href="https://addyosmani.com/blog/loop-engineering/" target="_blank" rel="noopener noreferrer">Read the essay</a>
+      </article>
+      <article class="book-card" id="book-personal-mba" tabindex="-1">
+        <p class="book-card__meta">Josh Kaufman, 2010 · Business</p>
+        <h3 class="book-card__title">The Personal MBA</h3>
+        <p class="book-card__what">A self-taught business education: the core ideas of value creation, marketing, sales, finance and people, each in a short chapter.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> I learned business by starting five of them, and not one worked out the way I planned, which taught me more than success would have. This is the book I wish I had read before the first one.</p>
+        <a class="btn" href="https://personalmba.com" target="_blank" rel="noopener noreferrer">Visit the book’s site</a>
+      </article>
+      <article class="book-card" id="book-thinking-fast-and-slow" tabindex="-1">
+        <p class="book-card__meta">Daniel Kahneman, 2011 · Mind</p>
+        <h3 class="book-card__title">Thinking, Fast and Slow</h3>
+        <p class="book-card__what">A Nobel-winning psychologist on the two systems of thought: the fast, intuitive one and the slow, deliberate one, and the biases that live between them.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> My first answer is usually the fast one, and the fast one is usually the one I should check.</p>
+      </article>
+      <article class="book-card" id="book-48-laws-of-power" tabindex="-1">
+        <p class="book-card__meta">Robert Greene, 1998 · Business</p>
+        <h3 class="book-card__title">The 48 Laws of Power</h3>
+        <p class="book-card__what">Forty-eight rules of power, each drawn from historical figures who used it well or lost it badly.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> I read it to recognise the moves, not to make them. Knowing how office politics work made it easier to stay out of them.</p>
+      </article>
+      <article class="book-card" id="book-daily-stoic" tabindex="-1">
+        <p class="book-card__meta">Ryan Holiday and Stephen Hanselman, 2016 · Philosophy</p>
+        <h3 class="book-card__title">The Daily Stoic</h3>
+        <p class="book-card__what">A year of short daily readings from the Stoic philosophers, one page and one reflection for each day.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> One page a morning, and most days it comes back to the same thing: what is mine to control, and what is not.</p>
+        <a class="btn" href="https://dailystoic.com" target="_blank" rel="noopener noreferrer">Visit Daily Stoic</a>
+      </article>
+      <article class="book-card" id="book-aristotles-way" tabindex="-1">
+        <p class="book-card__meta">Edith Hall, 2018 · Philosophy</p>
+        <h3 class="book-card__title">Aristotle's Way</h3>
+        <p class="book-card__what">A classicist on how Aristotle's ethics apply to an ordinary modern life: decisions, friendship, work and happiness.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> A good life is something you practise, the same way you get good at a craft.</p>
+      </article>
+      <article class="book-card" id="book-roman-emperor" tabindex="-1">
+        <p class="book-card__meta">Donald Robertson, 2019 · Philosophy</p>
+        <h3 class="book-card__title">How to Think Like a Roman Emperor</h3>
+        <p class="book-card__what">A cognitive psychotherapist on Marcus Aurelius, using his life to teach Stoic techniques for handling stress, anger and fear.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> Stoicism used for what it was built for: staying steady while you run something hard.</p>
+      </article>
+      <article class="book-card" id="book-ai-native-engineering" tabindex="-1">
+        <p class="book-card__meta">Alfonso Graziano · AI</p>
+        <h3 class="book-card__title">Learning AI-Native Software Engineering</h3>
+        <p class="book-card__what">A book on building software with AI as a working part of the process, from specifying the work to reviewing what comes back.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> Where most of my thinking on handing work to an AI got sharpened. It shows up in <a href="/notes/ten-times-zero">Ten times zero</a>.</p>
+        <a class="btn" href="https://alfonsograziano.it/book" target="_blank" rel="noopener noreferrer">Open the book</a>
+      </article>
+      <article class="book-card" id="book-clean-code" tabindex="-1">
+        <p class="book-card__meta">Robert C. Martin, 2008 · Code</p>
+        <h3 class="book-card__title">Clean Code</h3>
+        <p class="book-card__what">A handbook of habits for writing code other people can read and change: naming, small functions, tests and refactoring.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> Code is read far more often than it is written, so I write it for the next reader, who is usually me.</p>
+      </article>
+      <article class="book-card" id="book-scrum-guide" tabindex="-1">
+        <p class="book-card__meta">Ken Schwaber and Jeff Sutherland, 2020 edition · Process</p>
+        <h3 class="book-card__title">The Scrum Guide</h3>
+        <p class="book-card__what">The official definition of Scrum, written by its two creators and kept short on purpose.</p>
+        <p class="book-card__why"><strong>Why it is here.</strong> A guide rather than a book, so it stands thin too. The official version is short, and most of what teams call Scrum is not in it.</p>
+        <a class="btn" href="https://scrumguides.org" target="_blank" rel="noopener noreferrer">Read the guide</a>
+      </article>
+    </div>
 
     <h2 class="section-head"><span>The people</span></h2>
     <ol class="people" aria-label="The people I learn from, as a feed">
@@ -117,5 +185,13 @@
       </div>
     </main>
   </div>
+  <script>
+    // Marks the spine whose card is open, so the shelf shows which book was picked. The cards
+    // themselves open through :target in CSS, so the shelf still works with scripts off.
+    const markSpine = () => document.querySelectorAll(".book__spine").forEach((spine) =>
+      spine.toggleAttribute("aria-current", spine.getAttribute("href") === location.hash));
+    addEventListener("hashchange", markSpine);
+    markSpine();
+  </script>
 </body>
 </html>

@@ -41,10 +41,21 @@
 [data-screen="reading"] .book[data-long] .book__spine { width: 4rem; height: 16.5rem; }
 [data-screen="reading"] .book[data-long] .book__title { white-space: normal; inline-size: 10.5rem; font-size: 0.85rem; }
 
-[data-screen="reading"] .shelf__notes { list-style: none; margin: var(--space-4) 0 0; padding: 0;
-  display: grid; gap: var(--space-2); }
-[data-screen="reading"] .shelf__notes li { color: var(--ink-muted); }
-[data-screen="reading"] .shelf__notes strong { color: var(--ink); }
+/* One card under the shelf at a time. A spine links to its card's id, and :target opens it, so
+   picking a book needs no script; the hint shows until a book is picked. */
+[data-screen="reading"] .shelf__cards { margin: var(--space-4) 0 var(--space-6); max-width: 40rem; }
+[data-screen="reading"] .shelf__hint { margin: 0; color: var(--ink-muted); font-style: italic; }
+[data-screen="reading"] .shelf__cards:has(.book-card:target) .shelf__hint { display: none; }
+[data-screen="reading"] .book-card { display: none; scroll-margin-top: 40vh; padding: var(--space-4);
+  border: 1px solid var(--line-soft); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
+[data-screen="reading"] .book-card:target { display: block; }
+[data-screen="reading"] .book-card__meta { margin: 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); }
+[data-screen="reading"] .book-card__title { margin: var(--space-1) 0 var(--space-2); }
+[data-screen="reading"] .book-card__what { margin: 0 0 var(--space-2); }
+[data-screen="reading"] .book-card__why { margin: 0 0 var(--space-4); color: var(--ink-muted); }
+[data-screen="reading"] .book-card__why strong { color: var(--ink); }
+[data-screen="reading"] .book__spine[aria-current] { transform: translateY(-0.6rem);
+  outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
 /* ── The people, as a feed ────────────────────────────────────────────────────────────────── */
 [data-screen="reading"] .people { list-style: none; margin: var(--space-4) 0 var(--space-6); padding: 0;
