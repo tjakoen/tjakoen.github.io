@@ -24,7 +24,7 @@ test.describe("THE EDITOR — one window around the whole site", () => {
   test("the breadcrumb sits in the status bar; the title-bar search opens the palette", async ({ page }) => {
     await page.goto("/notes");
     await expect(page.locator(".status-bar [data-breadcrumb]")).toContainText("notes");
-    await expect(page.locator(".window-bar__search")).toContainText("tjakoen.github.io");   // static label, no breadcrumb
+    await expect(page.locator(".window-bar__search")).toContainText("portfolio.tjakoen.com");   // static label, no breadcrumb
     await page.locator(".window-bar__search").click();
     await expect(page.locator(".cmdk[open]")).toBeVisible();   // the palette dropped from the search
   });
