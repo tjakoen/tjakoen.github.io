@@ -1,0 +1,92 @@
+/* pages/reading — the furniture for /reading (bundled into /components.css, scoped to the reading
+   screen). Two shapes: a bookshelf for the works, where each spine is a link standing on a board,
+   and a social-style feed for the people, where each post is what I took from one person. Neither
+   would be wanted by a second product, so neither goes up into grain. Spine colours mix the theme's
+   own ink and accent, so the shelf follows sourdough, baguette and brioche without its own palette. */
+
+/* ── The bookshelf ─────────────────────────────────────────────────────────────────────────── */
+[data-screen="reading"] .shelf { margin: var(--space-4) 0 var(--space-6); }
+/* The shelf wraps: every line of books is 15rem tall and stands on its own board, painted by the
+   row's repeating background so a second line gets a second board with no extra markup. */
+[data-screen="reading"] .shelf__row { --shelf-line: 17.5rem; --shelf-board: 0.75rem;
+  list-style: none; margin: 0; padding: 0 var(--space-4);
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--shelf-board) var(--space-1);
+  background: repeating-linear-gradient(to bottom, transparent 0 var(--shelf-line),
+    color-mix(in srgb, var(--ink) 55%, var(--paper)) var(--shelf-line) calc(var(--shelf-line) + var(--shelf-board)));
+  padding-bottom: var(--shelf-board); }
+[data-screen="reading"] .shelf__board { display: none; }
+[data-screen="reading"] .book { flex: none; height: var(--shelf-line); display: flex; align-items: flex-end; }
+
+[data-screen="reading"] .book__spine { display: flex; flex-direction: column; justify-content: space-between;
+  align-items: center; box-sizing: border-box; width: 3.25rem; height: 15rem; padding: var(--space-2) 0;
+  border-radius: 3px 3px 0 0; text-decoration: none; color: var(--paper);
+  background: color-mix(in srgb, var(--paper) 55%, var(--color-accent));
+  box-shadow: inset 0.25rem 0 0 color-mix(in srgb, var(--paper) 18%, transparent),
+              inset -0.2rem 0 0 color-mix(in srgb, var(--ink) 30%, transparent);
+  transition: transform 160ms ease; }
+[data-screen="reading"] .book:nth-child(3n+2) .book__spine { height: 16.5rem; width: 3rem;
+  background: color-mix(in srgb, var(--color-accent) 85%, var(--paper)); }
+[data-screen="reading"] .book:nth-child(3n) .book__spine {
+  background: color-mix(in srgb, var(--color-accent) 40%, var(--paper)); color: var(--ink); }
+[data-screen="reading"] .book[data-kind="essay"] .book__spine { width: 1.75rem; height: 13rem; }
+[data-screen="reading"] .book__spine:hover,
+[data-screen="reading"] .book__spine:focus-visible { transform: translateY(-0.6rem); }
+@media (prefers-reduced-motion: reduce) { [data-screen="reading"] .book__spine { transition: none; } }
+
+[data-screen="reading"] .book__title,
+[data-screen="reading"] .book__author { writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; }
+[data-screen="reading"] .book__title { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; }
+[data-screen="reading"] .book__author { font-family: var(--font-mono); font-size: 0.7rem; opacity: 0.8; }
+[data-screen="reading"] .book[data-kind="essay"] .book__author { display: none; }
+[data-screen="reading"] .book[data-long] .book__spine { width: 4rem; height: 16.5rem; }
+[data-screen="reading"] .book[data-long] .book__title { white-space: normal; inline-size: 10.5rem; font-size: 0.85rem; }
+
+/* One card under the shelf at a time. A spine links to its card's id, and :target opens it, so
+   picking a book needs no script; the hint shows until a book is picked. */
+[data-screen="reading"] .shelf__cards { margin: var(--space-4) 0 var(--space-6); max-width: 40rem; }
+/* With no book picked yet, the first book on the shelf is open, so the card is never empty. */
+[data-screen="reading"] .shelf__cards:not(:has(.book-card:target)) .book-card:first-of-type { display: block; }
+[data-screen="reading"] .book-card { display: none; scroll-margin-top: 40vh; padding: var(--space-4);
+  border: 1px solid var(--line-soft); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
+[data-screen="reading"] .book-card:target { display: block; }
+[data-screen="reading"] .book-card__meta { margin: 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); }
+[data-screen="reading"] .book-card__title { margin: var(--space-1) 0 var(--space-2); }
+[data-screen="reading"] .book-card__what { margin: 0 0 var(--space-2); }
+[data-screen="reading"] .book-card__why { margin: 0 0 var(--space-4); color: var(--ink-muted); }
+[data-screen="reading"] .book-card__why strong { color: var(--ink); }
+/* The picked book is pulled partway off the shelf: it rises, grows toward the reader, and casts a
+   shadow on the books beside it, instead of glowing. */
+[data-screen="reading"] .book__spine[aria-current] { position: relative; z-index: 1;
+  transform: translateY(-1.5rem) scale(1.1);
+  box-shadow: inset 0.25rem 0 0 color-mix(in srgb, var(--paper) 18%, transparent),
+              0.75rem 1.25rem 1.5rem 0 color-mix(in srgb, black 75%, transparent); }
+
+/* ── The people, as a feed ────────────────────────────────────────────────────────────────── */
+[data-screen="reading"] .people { list-style: none; margin: var(--space-4) 0 var(--space-6); padding: 0;
+  display: grid; gap: var(--space-4); max-width: 40rem; }
+[data-screen="reading"] .post { display: grid; grid-template-columns: 3rem 1fr; gap: var(--space-2) var(--space-4);
+  padding: var(--space-4); border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
+[data-screen="reading"] .post__avatar { width: 3rem; height: 3rem; border-radius: 50%; display: grid;
+  place-items: center; font-weight: 700; color: var(--paper);
+  background: color-mix(in srgb, var(--color-accent) 70%, var(--ink)); position: relative; overflow: hidden; }
+[data-screen="reading"] .post__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+[data-screen="reading"] .post__main { min-width: 0; }
+[data-screen="reading"] .post__head { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-2); }
+[data-screen="reading"] .post__name { font-weight: 700; color: var(--ink); }
+[data-screen="reading"] .post__handle { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); }
+[data-screen="reading"] .post__body { margin: var(--space-2) 0 var(--space-4); }
+[data-screen="reading"] .post__embed { display: block; padding: var(--space-2) var(--space-4); border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md); text-decoration: none; color: inherit; }
+[data-screen="reading"] .post__embed:hover { border-color: var(--color-accent); }
+[data-screen="reading"] .post__embed-site { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted); }
+[data-screen="reading"] .post__embed-title { font-weight: 600; }
+[data-screen="reading"] .post__foot { margin: var(--space-2) 0 0; font-size: 0.85rem; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
+
+/* The category sits at the foot of each spine under a rule, the way a library label would. */
+[data-screen="reading"] .book__cat { align-self: stretch; text-align: center; margin-top: var(--space-1);
+  padding-top: var(--space-1); border-top: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  font-family: var(--font-mono); font-size: 0.55rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.85; }
+[data-screen="reading"] .book__cat .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; }
+[data-screen="reading"] .book__title, [data-screen="reading"] .book__author, [data-screen="reading"] .book__cat { flex-shrink: 0; }
