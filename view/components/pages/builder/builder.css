@@ -215,8 +215,14 @@
 [data-screen="builder"] .wb-row__move,
 [data-screen="builder"] .wb-row__x {
   font: inherit; color: var(--ink-muted); background: transparent; border: 0;
-  padding: 0; cursor: pointer; flex: 0 0 auto; opacity: 0.55; transition: opacity 120ms, color 120ms;
+  padding: 0; cursor: pointer; flex: 0 0 auto; transition: opacity 120ms, color 120ms;
 }
+/* No resting opacity: at 0.55 the muted ink fell below 4.5:1 (WCAG 1.4.3). Rest is muted, hover and
+   pressed are full ink, so the lift still reads, through colour and weight rather than fade. */
+[data-screen="builder-preview"] .wb-chip { font: inherit; color: var(--ink-muted); background: transparent;
+  border: 0; padding: 0 var(--space-1); cursor: pointer; }
+[data-screen="builder-preview"] .wb-chip[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
+[data-screen="builder-preview"] .wb-chip:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
 [data-screen="builder"] .wb-row__move,
 [data-screen="builder"] .wb-row__x { padding: 0 var(--space-1); }
 /* The whole row lifts together, so one hover reveals every control on the block you are aiming at
@@ -356,7 +362,6 @@
    follow: aria-pressed is the state, so the attribute a screen reader reads is the attribute the
    stylesheet reads, and there is no class shadowing it that could disagree. */
 [data-screen="builder-preview"] .preview-switch { display: inline-flex; gap: var(--space-3); }
-[data-screen="builder-preview"] .preview-switch .wb-chip { opacity: 0.55; }
 [data-screen="builder-preview"] .preview-switch .wb-chip[aria-pressed="true"] {
   opacity: 1; color: var(--ink); font-weight: var(--weight-medium);
 }

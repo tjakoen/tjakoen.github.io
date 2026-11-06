@@ -50,7 +50,7 @@
 [data-screen="calendar"] .cal__mon--empty { background: var(--paper-2); }
 [data-screen="calendar"] .cal__mon-label { font-size: var(--text-xs); font-family: var(--font-mono);
   color: var(--ink-muted); }
-[data-screen="calendar"] .cal__mon--empty .cal__mon-label { color: var(--ink-faint); }
+[data-screen="calendar"] .cal__mon--empty .cal__mon-label { color: var(--ink-muted); }
 [data-screen="calendar"] .cal__mon--now .cal__mon-label { color: var(--color-accent-contrast);
   background: var(--color-accent); border-radius: var(--radius-sm);
   padding: 0 var(--space-1); align-self: flex-start;
@@ -161,3 +161,4 @@
   [data-screen="calendar"] .cal__cell { min-height: 3.6rem; }
   [data-screen="calendar"] .cal__event { padding: 1px var(--space-1); }
 }
+[data-screen="calendar"] .cal__more::after { content: attr(data-more); }

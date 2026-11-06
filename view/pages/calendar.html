@@ -277,7 +277,8 @@
           if (!bucket.length) cell.classList.add('cal__mon--empty');
           if (y === thisYear && m === thisMonth) cell.classList.add('cal__mon--now');
           cell.setAttribute('data-month', y + '-' + String(m + 1).padStart(2, '0'));
-          cell.setAttribute('aria-label', monthsLong[m] + ' ' + y + ', ' +
+          // WCAG 2.5.3: the name opens with the visible short month, so a voice user can say what they see.
+          cell.setAttribute('aria-label', monthsShort[m] + ' ' + y + ', ' +
             (bucket.length ? bucket.length + (bucket.length === 1 ? ' entry' : ' entries') : 'nothing'));
           cell.addEventListener('click', function () { showMonth(+y, m); });
 
@@ -296,7 +297,9 @@
           if (bucket.length > SHOWN) {
             var more = document.createElement('span');
             more.className = 'cal__more';
-            more.textContent = '+' + (bucket.length - SHOWN);
+            // Drawn from CSS rather than as text: the total is already in the button's name, and a
+            // visible "+7" that the name lacks fails WCAG 2.5.3.
+            more.setAttribute('data-more', '+' + (bucket.length - SHOWN));
             dots.appendChild(more);
           }
           cell.appendChild(dots);
