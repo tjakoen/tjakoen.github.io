@@ -7,9 +7,9 @@
       "dependencies": {
         "@tjakoen/batch": "^0.3.0",
         "@tjakoen/crumb": "^0.1.10",
-        "@tjakoen/grain": "^0.1.27",
-        "@tjakoen/mill": "^0.4.0",
-        "@tjakoen/proof": "^0.1.4",
+        "@tjakoen/grain": "^0.1.28",
+        "@tjakoen/mill": "^0.4.1",
+        "@tjakoen/proof": "^0.1.5",
         "highlight.js": "^11.12.0",
       },
       "devDependencies": {
@@ -81,11 +81,11 @@
 
     "@tjakoen/crumb": ["@tjakoen/crumb@0.1.10", "", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "crumb": "cli.ts" } }, "sha512-Kx/5oOzc2tJL9iwQICvVL4I3i9rHO/qMFMl5zHhJs0i4D2ksylwbGBCLLP26SAnc4H9POoRzFm/8YKRyl2/KSg=="],
 
-    "@tjakoen/grain": ["@tjakoen/grain@0.1.27", "", {}, "sha512-JLafeBB+kWEbxn+S0c9iG7Mkc414FXGj5pLxxuxhCbdd56CPJ45ZvDhByoeQC3ZcoDsHy970ncb6AxzYUYRvAg=="],
+    "@tjakoen/grain": ["@tjakoen/grain@0.1.28", "", {}, "sha512-Gh13FAJ0pf4VEliGhZ6TTNyY3eOEFMmXeEdItWedXYpr7MEC3sSPXkPUEERf7tY9dW97JF2/BHiC4fY40+CEaw=="],
 
-    "@tjakoen/mill": ["@tjakoen/mill@0.4.0", "", { "dependencies": { "@tjakoen/grain": "^0.1.23" } }, "sha512-D7VCW/uIFC8yobE6uHccTHPiPReKT8p/qtx3q/BEj1iESdK3ffFYzmI1BfstsIwEhJ31Ggzh4H5j4Esrd6/WrQ=="],
+    "@tjakoen/mill": ["@tjakoen/mill@0.4.1", "", { "dependencies": { "@tjakoen/grain": "^0.1.23" } }, "sha512-BPXw/9We4nvrC9IgWkWMQ3QFs2JZjs9MPw4fQY3yuXj3R4cHqkwvwW57EsQVeIGljVH9cwIT0axio7LICcOUFw=="],
 
-    "@tjakoen/proof": ["@tjakoen/proof@0.1.4", "", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "proof": "cli.ts" } }, "sha512-TWr3pqngUCzBJH9RuL+P34TjnPBgNYQ2nSo3D8BNm6vKI4aFsRUBDQmFpKRzwECd50+5AlQk+KpiC8tAz8IBKQ=="],
+    "@tjakoen/proof": ["@tjakoen/proof@0.1.5", "", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "proof": "cli.ts" } }, "sha512-He8shMOEbcosOr5O0F/igpfMAvRjTYG3SUA23lwFOsb7eJOf1NfaPrzWjcwcE9vAB+bYf3aKqSO/XklUCwV50w=="],
 
     "@types/d3": ["@types/d3@7.4.3", "", { "dependencies": { "@types/d3-array": "*", "@types/d3-axis": "*", "@types/d3-brush": "*", "@types/d3-chord": "*", "@types/d3-color": "*", "@types/d3-contour": "*", "@types/d3-delaunay": "*", "@types/d3-dispatch": "*", "@types/d3-drag": "*", "@types/d3-dsv": "*", "@types/d3-ease": "*", "@types/d3-fetch": "*", "@types/d3-force": "*", "@types/d3-format": "*", "@types/d3-geo": "*", "@types/d3-hierarchy": "*", "@types/d3-interpolate": "*", "@types/d3-path": "*", "@types/d3-polygon": "*", "@types/d3-quadtree": "*", "@types/d3-random": "*", "@types/d3-scale": "*", "@types/d3-scale-chromatic": "*", "@types/d3-selection": "*", "@types/d3-shape": "*", "@types/d3-time": "*", "@types/d3-time-format": "*", "@types/d3-timer": "*", "@types/d3-transition": "*", "@types/d3-zoom": "*" } }, "sha512-lZXZ9ckh5R8uiFVt8ogUNf+pIrK4EsWrx2Np75WvF/eTpJ0FMHNhjXk8CKEx/+gpHbNQyJWehbFaTvqmHWB3ww=="],
 
@@ -311,11 +311,7 @@
 
     "@tjakoen/crumb/@tjakoen/mill": ["@tjakoen/mill@0.2.2", "", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-cT7Hh3a1owWw9xfCV3W0+Gl0e1+5ir4arZ/iBG+CprebHk16mztbBo9qO/RzkNyyyq9BpeUu5T1uzbLvrWzUXA=="],
 
-    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@0.1.23", "", {}, "sha512-TsRetdKqKnjax4/0nZDQdJnYEuDOpNnQSyjOgKNIN2+DVoTtEqzoYWFEiuU4/WLZjTluKIfu1furcEFKuhOG3g=="],
-
     "@tjakoen/proof/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
-
-    "@tjakoen/proof/@tjakoen/grain": ["@tjakoen/grain@0.1.23", "", {}, "sha512-TsRetdKqKnjax4/0nZDQdJnYEuDOpNnQSyjOgKNIN2+DVoTtEqzoYWFEiuU4/WLZjTluKIfu1furcEFKuhOG3g=="],
 
     "@tjakoen/proof/@tjakoen/mill": ["@tjakoen/mill@0.2.2", "", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-cT7Hh3a1owWw9xfCV3W0+Gl0e1+5ir4arZ/iBG+CprebHk16mztbBo9qO/RzkNyyyq9BpeUu5T1uzbLvrWzUXA=="],
 
