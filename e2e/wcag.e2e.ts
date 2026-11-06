@@ -41,7 +41,8 @@ for (const scheme of ["light", "dark"] as const) for (let chunk = 0; chunk < CHU
         // One retry: a page script that navigates late can abort the next goto mid-flight.
         await page.goto(route, { waitUntil: "load" }).catch(() => page.goto(route, { waitUntil: "load" }));
         const { violations: raw } = await new AxeBuilder({ page }).withTags(TAGS).analyze();
-        const violations = raw.map((v) => v.id !== "target-size" ? v : { ...v, nodes: v.nodes.filter((n) => !scrolledUnder(n)) }).filter((v) => v.nodes.length);
+        for (const v of raw) if (v.id === "target-size") v.nodes = v.nodes.filter((n) => !scrolledUnder(n));
+        const violations = raw.filter((v) => v.nodes.length);
         for (const v of violations) {
           const where = v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ");
           failures.push(`${route} [${v.impact}] ${v.id}: ${v.nodes.length}x ${where}`);

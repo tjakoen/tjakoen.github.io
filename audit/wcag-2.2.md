@@ -7,7 +7,7 @@ GRAIN's `a11y/wcag-2-2` branch. This is a reference doc, so filenames and select
 
 GRAIN can promise what it owns: its tokens, its components' markup and focus behavior, its motion
 and its target sizes. It cannot promise what an app adds on top: alt text, heading order, link
-wording, captions, any colour or component the app brings itself. So the honest claim is
+wording, captions, any color or component the app brings itself. So the honest claim is
 **"GRAIN's components and themes meet WCAG 2.2 AA, and this site, built on them, passes an automated
 WCAG 2.2 AA scan on every canonical route plus a manual pass on the criteria a scanner cannot
 test."** It is not a third-party certification, and no screen-reader user has tested it yet.
@@ -35,7 +35,7 @@ on the catalog, the calendar, the builder and the talk decks.
 |---|---|---|---|
 | 4.1.2 | portfolio frame, GRAIN sidebar-panel doc | The Chat/Catalog/Notepad switch put `aria-selected` on plain buttons, which has no meaning there. | The group is now `role="tablist"` and each button `role="tab"`. GRAIN's `shell.js` already drove `aria-selected`, so no script change. |
 | 2.5.3 | portfolio frame | "New chat" was named "New conversation"; the Terminal toggle's name did not contain "Terminal". A voice user saying what they see would miss both. | The name now starts with the visible words. |
-| 1.4.3 | GRAIN, 24 rules | `--ink-faint` (1.79:1 in light) coloured real text: chat speaker labels, hints, placeholders, badges, the muted stat tile, the notepad and console labels. The token's own comment said decorative only. | Every text or control use moved to `--ink-muted` (4.55:1 at worst, across all four themes and both modes). `--ink-faint` remains only on list bullets, chevrons and the tab icon, and its comment now names the rule. |
+| 1.4.3 | GRAIN, 24 rules | `--ink-faint` (1.79:1 in light) colored real text: chat speaker labels, hints, placeholders, badges, the muted stat tile, the notepad and console labels. The token's own comment said decorative only. | Every text or control use moved to `--ink-muted` (4.55:1 at worst, across all four themes and both modes). `--ink-faint` remains only on list bullets, chevrons and the tab icon, and its comment now names the rule. |
 | 1.4.3, 1.4.11 | GRAIN themes | Brioche's light accent was 2.99:1 on its page, too faint even for a focus ring. Baguette's and the template's blue was 4.49:1 as text. | Brioche `#B77F1E` to `#8A5E12` (4.92:1), its hover darkened to match. Baguette and template `#2F6FE0` to `#2C68D6` (4.95:1). |
 | 2.5.8 | GRAIN tab and file-tree close | The close controls were 18.4px square. | 24px. |
 | 2.4.7 | GRAIN tab and file-tree close | Hidden until hover, so a keyboard user tabbed onto an invisible control. | Shown on `:focus-visible`. |
@@ -65,7 +65,7 @@ fails.
 - 2.4.1: every page has a skip link to `#main-content`.
 - 2.5.7: the one drag interaction (the ratio figure) also works with a single click.
 - 2.3.3 and motion generally: view transitions, smooth scroll and the panel animations stop under
-  `prefers-reduced-motion`. The remaining unguarded transitions are 150ms colour fades and a chevron
+  `prefers-reduced-motion`. The remaining unguarded transitions are 150ms color fades and a chevron
   turn, which WCAG does not ask to remove.
 - 3.3.8: the site has no sign-in, so accessible authentication does not apply.
 - 3.2.6: the contact route and the desk sit in the same place on every page.

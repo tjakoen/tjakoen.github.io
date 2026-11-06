@@ -61,8 +61,8 @@ export function mountRatio(host) {
   setGuess(guess);
   // dragging the bar is the prose equivalent of the room shouting a number
   const fromEvent = (e) => {
-    const bar = host.querySelector('.ratio__bar').getBoundingClientRect();
-    setGuess(Math.round(((e.clientX - bar.left) / bar.width) * 100));
+    const box = bar.getBoundingClientRect();
+    setGuess(Math.round(((e.clientX - box.left) / box.width) * 100));
   };
   host.querySelector('.ratio__bar').addEventListener('pointerdown', (e) => { if (!shown) fromEvent(e); });
   host.querySelector('.ratio__bar').addEventListener('pointermove', (e) => { if (!shown && e.buttons) fromEvent(e); });
