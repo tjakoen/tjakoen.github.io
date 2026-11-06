@@ -364,6 +364,11 @@ const servePage = makePageServer(bunRuntime, config.pagesDir, renderAppPage, PAG
 // the one content wrapper every page (static + MILL + the reference/plans chrome) shares.
 function withPeekRoot(html: string): string {
   if (html.includes("data-peek-root")) return html;
+  // The root is the whole shell, not just <main>: most pages carry few or no catalogued components
+  // in their content, so a <main>-only root left the hover dead everywhere except /grain. The
+  // shell's own chrome (tab bar, file tree, side rail, status bar) is GRAIN and is on every page.
+  const shell = html.replace(/<div class="app-shell(?=[\s"])/, '<div data-peek-root class="app-shell');
+  if (shell !== html) return shell;
   return html.replace('<main class="app-shell__main"', '<main data-peek-root class="app-shell__main"');
 }
 

@@ -27,7 +27,7 @@ test.describe("command surfaces are site-wide (not /grain-only)", () => {
     await page.goto("/about");
     // the page's main content region is a catalog hover-root (server.ts finalizePage), so the
     // usage→specimen bridge attaches here the same as on /grain's own showcase.
-    await expect(page.locator("main.app-shell__main")).toHaveAttribute("data-peek-root", "");
+    await expect(page.locator(".app-shell[data-peek-root]")).toHaveCount(1);
     // open the Catalog pane; it lazy-embeds /catalog in single (reveal-one) mode
     await page.locator('.assistant__modes [data-shell-mode="catalog"]').click();
     const pane = page.locator('.assistant__pane[data-pane="catalog"]');
