@@ -11,7 +11,7 @@
     "The counts below are debt with a direction, not a settled state. Whoever lowers one lowers it",
     "for good: the ratchet will not let it climb back quietly."
   ],
-  "generated": "2026-10-14",
+  "generated": "2026-11-07",
   "counts": {
     "oxlint:eslint(no-unused-vars)": 1,
     "oxlint:eslint(preserve-caught-error)": 1,
@@ -20,11 +20,11 @@
     "oxlint:unicorn(no-array-sort)": 24,
     "oxlint:unicorn(prefer-add-event-listener)": 1,
     "oxlint:unicorn(prefer-array-find)": 2,
-    "voice:backtick": 3111,
+    "voice:backtick": 3116,
     "voice:corporate-verb": 5,
     "voice:eager-signoff": 2,
-    "voice:em-dash": 1171,
-    "voice:emoji": 74,
+    "voice:em-dash": 1168,
+    "voice:emoji": 73,
     "voice:faux-insight": 2,
     "voice:ing-clause": 3,
     "voice:metadiscourse": 2,
@@ -32,6 +32,6 @@
     "voice:not-just-x": 14,
     "voice:puffery": 3,
     "voice:throat-clearing": 3,
-    "voice:word-tell": 54
+    "voice:word-tell": 55
   }
 }
