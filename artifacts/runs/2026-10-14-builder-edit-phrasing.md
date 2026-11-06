@@ -22,6 +22,7 @@ touched:
 diffstat: 5 files changed, 133 insertions, 6 deletions
 unpushed: 0
 verifiedBy: the same session, 2026-10-14
+doctor: not run on 2026-10-14; this line was added on 2026-11-07 when the evidence sections were backfilled
 ---
 
 # The guarded Builder edits accept more ordinary wording
@@ -48,3 +49,22 @@ preview, but it stayed at “Reading the page…” and returned no model result
 live-model run. The browser checks do not show that the local model understands these phrases
 reliably. Broader language coverage and a cold-start measurement on physical phone hardware remain
 open.
+
+## Gate output
+
+NOT A PASTE. The original command output was not kept. These figures are restated on 2026-11-07
+from the report's own text above, written by the session that ran them.
+
+```text
+bun test src/ai/block-reasoner.test.ts   48 pass
+playwright builder-canvas               80 pass
+bun run check (tsc)                      pass
+```
+
+## What was not done
+
+No live-model run counts as evidence: the one attempt stayed at "Reading the page" and returned nothing. Broader phrasing coverage and a cold-start measurement on a physical phone were not done.
+
+## What needs human eyes
+
+Whether the local model itself understands these phrasings. The browser checks use the refusal stub, so only a live run on real hardware can show it.

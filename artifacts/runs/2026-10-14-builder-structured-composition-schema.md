@@ -14,7 +14,24 @@ scope:
   - tools/desk-audit-grade.test.ts
   - plans/builder-ai-depth.md
   - plans/portfolio-finish-line.md
-- content/tours/review-builder-live-evidence.md
+  - content/tours/review-builder-live-evidence.md
+  - artifacts/runs/
+touched:
+  - src/ai/block-composer.ts
+  - src/ai/block-composer.test.ts
+  - src/ai/builder-canvas.ts
+  - e2e/builder-canvas.e2e.ts
+  - tools/desk-audit.ts
+  - tools/desk-audit-grade.ts
+  - tools/desk-audit-grade.test.ts
+  - plans/builder-ai-depth.md
+  - plans/portfolio-finish-line.md
+  - content/tours/review-builder-live-evidence.md
+  - artifacts/runs/2026-10-14-builder-structured-composition-schema.md
+verifiedBy: none, no second pass was recorded; noted on 2026-11-07
+diffstat: 15 files changed, 1673 insertions, 18 deletions (from git on 2026-11-07)
+unpushed: 0
+doctor: not run on 2026-10-14; this line was added on 2026-11-07 when the evidence sections were backfilled
 ---
 
 # A structured response contract for Builder composition
@@ -32,3 +49,22 @@ The build path now submits a JSON schema with the completion request. The schema
 The cached Qwen2.5-1.5B-Instruct-q4f16_1-MLC profile completed the six composition scenarios twice. All 12 reviewed drafts passed the Builder's visitor-facing grader. An independent check parsed every raw response and found no properties outside the schema; no response contained generated prose. The raw model proposed an extra card in both runs of the intro-only negative-anchor and mixed-prohibition cases. The reconciler removed that card before review. Inspection found the prompt's own example included a lede and card, contradicting an intro-only request. After removing that example, a four-run follow-up across both prompts returned only a lede in every raw response; the reconciler removed nothing. This closes the observed extra-card failure for these cases. Broader language coverage and composition reliability across other phrasings remain open. See the [prompt-example recheck](../../audit/builder-composition-example-recheck-2026-10-14.json).
 
 The full unit suite passed 835 tests across 45 files, all 81 Builder browser cases passed, TypeScript checking passed, link lint found no dead relative links in 56 rendered files, Oxlint completed against the existing warning baseline, `git diff --check` passed, and the CRUMB checker accepted all 22 tours. The browser test inspects the captured WebLLM request schema, including the closed block enum and refusal of extra properties. The live captures are [the six-case repeated matrix](../../audit/builder-structured-composition-schema-live-2026-10-14.json), [the initial exclusion follow-up](../../audit/builder-structured-composition-exclusion-recheck-2026-10-14.json), [the prompt-example recheck](../../audit/builder-composition-example-recheck-2026-10-14.json), and [the expanded visitor-flow matrix](../../audit/builder-composition-visitor-flow-matrix-2026-10-14.json). Commit 946e9f2 passed [hosted CI](https://github.com/tjakoen/tjakoen.github.io/actions/runs/38551126892) and [Pages deployment](https://github.com/tjakoen/tjakoen.github.io/actions/runs/38551126807). The published Builder, Plans, and review-tour routes all returned HTTP 200.
+
+## Gate output
+
+NOT A PASTE. The original command output was not kept. These figures are restated on 2026-11-07
+from the report's own text above, written by the session that ran them.
+
+```text
+unit 835 pass in 45 files | playwright builder-canvas 81 pass | tsc pass
+link lint 0 dead links in 56 files | oxlint at baseline | git diff --check pass
+crumb 22 tours accepted | hosted CI and Pages pass on 946e9f2
+```
+
+## What was not done
+
+Composition reliability across phrasings other than the six scenarios was not measured.
+
+## What needs human eyes
+
+A spot check of the live captures linked under Evidence, since the grader that passed all twelve drafts was written by the same session.
