@@ -44,10 +44,8 @@
 /* One card under the shelf at a time. A spine links to its card's id, and :target opens it, so
    picking a book needs no script; the hint shows until a book is picked. */
 [data-screen="reading"] .shelf__cards { margin: var(--space-4) 0 var(--space-6); max-width: 40rem; }
-[data-screen="reading"] .book-card.shelf__hint { display: block; }
-[data-screen="reading"] .book-card__cta { margin: 0; font-weight: 600; color: var(--ink); }
-[data-screen="reading"] .book-card__cta::before { content: "\2191  "; }
-[data-screen="reading"] .shelf__cards:has(.book-card:target) .shelf__hint { display: none; }
+/* With no book picked yet, the first book on the shelf is open, so the card is never empty. */
+[data-screen="reading"] .shelf__cards:not(:has(.book-card:target)) .book-card:first-of-type { display: block; }
 [data-screen="reading"] .book-card { display: none; scroll-margin-top: 40vh; padding: var(--space-4);
   border: 1px solid var(--line-soft); border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); }
 [data-screen="reading"] .book-card:target { display: block; }

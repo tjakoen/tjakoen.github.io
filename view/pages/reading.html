@@ -14,6 +14,9 @@
     <p class="eyebrow">📚 <span class="name">Reading</span> · the people I learn from</p>
     <h1 class="masthead">Most of what I build started as something I read.</h1>
     <hr class="rule">
+    <p class="lede">These are the people whose work I keep going back to. Each entry says what I took
+      from them and links to the place in my own writing where it shows up, so you can see the idea
+      in use rather than take my word that it mattered. Go read them first. They said it better.</p>
 
     <h2 class="section-head"><span>The shelf</span></h2>
     <div class="shelf" aria-label="Bookshelf of the works I keep going back to">
@@ -34,13 +37,6 @@
       <div class="shelf__board" aria-hidden="true"></div>
     </div>
     <div class="shelf__cards" aria-live="polite">
-      <article class="book-card shelf__hint">
-        <p class="book-card__meta">Start here</p>
-        <p class="book-card__what">These are the people whose work I keep going back to. Each entry says what I took
-      from them and links to the place in my own writing where it shows up, so you can see the idea
-      in use rather than take my word that it mattered. Go read them first. They said it better.</p>
-        <p class="book-card__cta">Click or tap a book to pull it off the shelf.</p>
-      </article>
       <article class="book-card" id="book-atomic-design" tabindex="-1">
         <p class="book-card__meta">Brad Frost, 2013 · Design</p>
         <h3 class="book-card__title">Atomic Design</h3>
@@ -191,8 +187,9 @@
   <script>
     // Marks the spine whose card is open, so the shelf shows which book was picked. The cards
     // themselves open through :target in CSS, so the shelf still works with scripts off.
+    const firstBook = document.querySelector(".book__spine")?.getAttribute("href");
     const markSpine = () => document.querySelectorAll(".book__spine").forEach((spine) =>
-      spine.toggleAttribute("aria-current", spine.getAttribute("href") === location.hash));
+      spine.toggleAttribute("aria-current", spine.getAttribute("href") === (location.hash || firstBook)));
     addEventListener("hashchange", markSpine);
     markSpine();
   </script>
