@@ -185,8 +185,9 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // top stays the four that carry the post.
     const gallery = kind === "entry" && collection.prefix === "/calendar" && frontmatter
       ? renderGallery(parsePhotos(frontmatter.gallery)) : "";
-    // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key).
-    const shareBlock = kind === "entry" && collection.prefix === "/calendar" && frontmatter && slug
+    // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key). Notes
+    // carry it too, because a note that started life as a social post keeps that post beside it.
+    const shareBlock = kind === "entry" && (collection.prefix === "/calendar" || collection.prefix === "/notes") && frontmatter && slug
       ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`) : "";
     // /badges entry pages: a badge-CLASS page (roster of recipients) or a per-recipient CERT page.
     // The template (art + issuer + verification + roster/share) sits above the MILL-rendered body.
