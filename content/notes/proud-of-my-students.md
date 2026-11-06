@@ -47,6 +47,24 @@ five, which I took personally. Apps for crochet, for aquariums, for basketball. 
 a board game. Honestly, these were some of my favorites to grade, because you could tell they cared.
 Nobody builds a crochet pattern tracker to hit a rubric.
 
+<figure class="shot">
+  <img class="shot__img" src="/media/proud-of-my-students/flutter.jpg" width="1080" height="1080" loading="lazy" data-lightbox
+       alt="73 Flutter apps from two sections of Applications Development: Love My Closet, Bahantabay, Reaction Chain and Nook.">
+  <figcaption class="shot__cap">Applications Development, two sections, 73 Flutter apps. The wardrobe app, the flood warnings and the board game are all in here.</figcaption>
+</figure>
+
+<figure class="shot">
+  <img class="shot__img" src="/media/proud-of-my-students/fullstack.jpg" width="1080" height="1080" loading="lazy" data-lightbox
+       alt="127 full-stack apps in React, Express and PostgreSQL from four sections: JobStash, LiturgyGen, WorkBud and Rentora.">
+  <figcaption class="shot__cap">Four sections of React, Express and PostgreSQL, 127 full-stack apps. One of them prints Mass missalettes for a real campus office.</figcaption>
+</figure>
+
+<figure class="shot">
+  <img class="shot__img" src="/media/proud-of-my-students/web.jpg" width="1080" height="1080" loading="lazy" data-lightbox
+       alt="Intro to Web team sites built with plain HTML, CSS and JavaScript: Memora, HAU Dorm Finder, Hour.ly and LifeQuest.">
+  <figcaption class="shot__cap">Intro to Web, plain HTML, CSS and JavaScript. No frameworks, which is a rule I don't only hand to students.</figcaption>
+</figure>
+
 ## Public, or it didn't happen
 
 Every project had to be published on GitHub, out in the open.
@@ -109,6 +127,25 @@ The dashed line is the one that matters. Anything that fails at any step goes ba
 and the AI never issues anything on its own. It flags; I decide. The machine took the hours, not the
 judgment.
 
+<figure class="shot">
+  <img class="shot__img" src="/media/proud-of-my-students/badges.jpg" width="1080" height="1080" loading="lazy" data-lightbox
+       alt="Three issued badges from Application Development and Emerging Technologies: Flutter App Development and two Builds with Flutter and AI.">
+  <figcaption class="shot__cap">Three of the 594, from the Flutter class.</figcaption>
+</figure>
+
+The criteria are public too, one page per badge, so a recruiter can see exactly what a student had
+to show to earn one:
+
+- **Applications Development:** [Dart and Flutter Foundations](/badges/adet-prelim),
+  [Flutter App Development](/badges/adet-midterm), [Builds with Flutter and AI](/badges/adet-finals)
+- **Full-stack JavaScript:** [Frontend Design with Cloud](/badges/apsi-prelim),
+  [Full Stack Web Development](/badges/apsi-midterm),
+  [Builds Full-Stack JavaScript and AI](/badges/apsi-finals)
+- **Intro to Web:** [Web Foundations](/badges/introweb-prelim),
+  [Interactive Web Pages](/badges/introweb-midterm), [Builds for the Web and AI](/badges/introweb-finals)
+
+Or [all of them in one place](/badges).
+
 ## The curriculum I wasn't asked to teach
 
 Being part-time and still working in the industry means I get to teach things that aren't on the
@@ -129,8 +166,8 @@ To my students: thank you. I'm proud of you. Keep building.
 
 Every project has its own page, by class:
 
-- [App Development](/calendar/2026-s1-appdev-students)
-- [APSI](/calendar/2026-s1-apsi-students)
+- [Applications Development](/calendar/2026-s1-appdev-students)
+- [Full-stack JavaScript](/calendar/2026-s1-apsi-students)
 - [Intro to Web](/calendar/2026-s1-introweb-students)
 
 ---
