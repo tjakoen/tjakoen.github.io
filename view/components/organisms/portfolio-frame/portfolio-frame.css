@@ -501,3 +501,9 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
 .xray-panel__surfaces { padding-top: var(--space-2); border-top: 1px solid var(--color-line); }
 .xray-panel__surfaces summary { cursor: pointer; }
 .xray-panel__foot { padding-top: var(--space-2); border-top: 1px solid var(--color-line); }
+
+/* WCAG 2.4.11 (focus not obscured): on a phone the assistant sheet peeks over the bottom of the
+   page, so whichever element scrolls the page keeps its focus target clear of that strip. */
+@media (max-width: 768px) {
+  html, .app-shell__main { scroll-padding-bottom: 4.5rem; }
+}

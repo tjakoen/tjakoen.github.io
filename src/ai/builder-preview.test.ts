@@ -10,10 +10,10 @@ import { openCatalogPane, markupPane } from "./builder-preview.ts";
 
 const SHELL = `<aside class="app-shell__aside">
   <div class="assistant" data-mode="chat">
-    <nav class="assistant__modes" aria-label="Panel mode">
-      <button type="button" data-shell-mode="chat" aria-selected="true">Chat</button>
-      <button type="button" data-shell-mode="catalog" aria-selected="false">Catalog</button>
-    </nav>
+    <div class="assistant__modes" role="tablist" aria-label="Panel mode">
+      <button type="button" role="tab" data-shell-mode="chat" aria-selected="true">Chat</button>
+      <button type="button" role="tab" data-shell-mode="catalog" aria-selected="false">Catalog</button>
+    </div>
     <div class="assistant__pane" data-pane="chat">chat</div>
     <div class="assistant__pane catalog-pane" data-pane="catalog" hidden>catalog</div>
   </div>
@@ -28,7 +28,7 @@ test("the panel opens on the catalog, in all three places the state is written",
   expect(out).toContain('<div class="assistant__pane catalog-pane" data-pane="catalog">');
   // aria-selected moves with it, or a screen reader is told chat is the active tab while the
   // catalog is the visible pane.
-  expect(out).toContain('data-shell-mode="chat" aria-selected="false"');
+  expect(out).toContain('role="tab" data-shell-mode="chat" aria-selected="false"');
   expect(out).toContain('data-shell-mode="catalog" aria-selected="true"');
 });
 

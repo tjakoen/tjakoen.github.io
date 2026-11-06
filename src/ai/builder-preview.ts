@@ -26,8 +26,8 @@ export function openCatalogPane(html: string): string {
     .replace('<div class="assistant" data-mode="chat">', '<div class="assistant" data-mode="catalog">')
     .replace('<div class="assistant__pane" data-pane="chat">', '<div class="assistant__pane" data-pane="chat" hidden>')
     .replace('<div class="assistant__pane catalog-pane" data-pane="catalog" hidden>', '<div class="assistant__pane catalog-pane" data-pane="catalog">')
-    .replace('<button type="button" data-shell-mode="chat" aria-selected="true">', '<button type="button" data-shell-mode="chat" aria-selected="false">')
-    .replace('<button type="button" data-shell-mode="catalog" aria-selected="false">', '<button type="button" data-shell-mode="catalog" aria-selected="true">');
+    .replace('<button type="button" role="tab" data-shell-mode="chat" aria-selected="true">', '<button type="button" role="tab" data-shell-mode="chat" aria-selected="false">')
+    .replace('<button type="button" role="tab" data-shell-mode="catalog" aria-selected="false">', '<button type="button" role="tab" data-shell-mode="catalog" aria-selected="true">');
 }
 
 /**

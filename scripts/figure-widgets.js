@@ -41,7 +41,24 @@ export function mountRatio(host) {
     guess = Math.max(0, Math.min(100, n));
     marker.style.left = guess + '%';
     marker.dataset.label = 'your guess: ' + guess + '%';
+    bar.setAttribute('aria-valuenow', String(guess));
+    bar.setAttribute('aria-valuetext', guess + '% writing');
   };
+  // WCAG 2.1.1: the bar is also a slider, so a keyboard can place the guess that a pointer drags.
+  const bar = host.querySelector('.ratio__bar');
+  bar.setAttribute('role', 'slider');
+  bar.setAttribute('tabindex', '0');
+  bar.setAttribute('aria-label', 'Your guess: how much of the repo is writing');
+  bar.setAttribute('aria-valuemin', '0');
+  bar.setAttribute('aria-valuemax', '100');
+  bar.addEventListener('keydown', (e) => {
+    if (shown) return;
+    const step = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1, PageUp: 10, PageDown: -10 }[e.key];
+    if (step !== undefined) { e.preventDefault(); setGuess(guess + step); }
+    else if (e.key === 'Home') { e.preventDefault(); setGuess(0); }
+    else if (e.key === 'End') { e.preventDefault(); setGuess(100); }
+  });
+  setGuess(guess);
   // dragging the bar is the prose equivalent of the room shouting a number
   const fromEvent = (e) => {
     const bar = host.querySelector('.ratio__bar').getBoundingClientRect();

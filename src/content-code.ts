@@ -38,6 +38,6 @@ export const highlightedCodeBlock: BlockHandlers["code"] = (node, context) => {
     ? hljs.highlight(node.value, { language, ignoreIllegals: true }).value
     : escapeHtml(node.value);
   const lang = language ? ` data-lang="${context.escape(language)}"` : "";
-  return `<pre class="code-block"${lang}><code>${highlighted}</code></pre>`;
+  return `<pre class="code-block" tabindex="0"${lang}><code>${highlighted}</code></pre>`;
 };
 

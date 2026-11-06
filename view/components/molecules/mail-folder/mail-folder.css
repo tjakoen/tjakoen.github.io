@@ -8,3 +8,6 @@
 [data-screen="mail"] .mailbox__folder[aria-current="page"] { background: var(--color-accent-soft); color: var(--ink);
   border-color: var(--color-accent); font-weight: var(--font-weight-semibold); }
 [data-screen="mail"] .mailbox__folder-count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--ink-muted); }
+/* WCAG 2.5.8: the chip keeps a 24px target outside the mail screen too (the catalog renders it
+   without data-screen="mail", where the rules above do not reach). */
+.mailbox__folder { display: inline-flex; align-items: center; min-height: 24px; min-width: 24px; }
