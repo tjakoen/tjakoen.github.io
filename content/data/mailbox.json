@@ -27,7 +27,6 @@
       "links": [
         { "href": "/badges", "label": "The course badges" },
         { "href": "/calendar", "label": "The calendar" },
-        { "href": "/builder", "label": "The builder" },
         { "href": "/about", "label": "About" }
       ]
     },
