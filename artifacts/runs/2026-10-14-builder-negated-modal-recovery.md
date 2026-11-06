@@ -14,6 +14,7 @@ scope:
   - e2e/builder-canvas.e2e.ts
   - plans/builder-ai-depth.md
   - plans/portfolio-finish-line.md
+  - artifacts/runs/
 touched:
   - src/ai/block-reasoner.ts
   - src/ai/builder-canvas.ts
@@ -23,6 +24,9 @@ touched:
   - plans/portfolio-finish-line.md
   - artifacts/runs/2026-10-14-builder-negated-modal-recovery.md
 verifiedBy: the same session, 2026-10-14
+diffstat: 7 files changed, 343 insertions, 42 deletions (69be532 to 94cf905, from git on 2026-11-07)
+unpushed: 0
+doctor: not run on 2026-10-14; this line was added on 2026-11-07 when the evidence sections were backfilled
 ---
 
 # Negated and advice-seeking Builder edits remain requests to do nothing
@@ -74,3 +78,22 @@ can the callout be removed?”, “Would you recommend removing the callout?”,
 look better at full width?” The focused reasoner suite passed 51 tests. The 390 by 844 Builder browser
 case passed with all five prompts, a scripted model returning valid commands, no proposal shown, and
 the canvas unchanged. The repo-wide tests and hosted deployment are not yet rerun for this follow-up.
+
+## Gate output
+
+NOT A PASTE. The original command output was not kept. These figures are restated on 2026-11-07
+from the report's own text above, written by the session that ran them.
+
+```text
+first pass:  reasoner 50 pass | unit 829 pass in 45 files | playwright builder-canvas 80 pass | tsc, link lint, source lint pass
+follow-up:   reasoner 51 pass | unit 830 pass in 45 files | playwright builder-canvas 81 pass | tsc pass
+last pass:   reasoner 51 pass | 390 by 844 builder case pass | repo-wide suite not rerun
+```
+
+## What was not done
+
+The repo-wide tests and the hosted deployment were not rerun after the passive and recommendation follow-up. No check shows how the live model reads these questions.
+
+## What needs human eyes
+
+Live-model behaviour on question-shaped and negated requests, and the guard's reach beyond the listed phrasings.
