@@ -1,3 +1,4 @@
+| `/reading` | `view/pages/reading.html` (the people I learn from, each linked to the notes where their idea shows up) |
 # HACKING.md — change something yourself, fast
 
 The map I reach for when I want to make a *small* edit without spinning up an AI: where every URL's
