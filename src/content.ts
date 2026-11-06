@@ -562,7 +562,7 @@ export function renderFoldedNotePage(from: string, inject = "", injectHead = "")
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>This note moved · tjakoen.github.io</title>
+  <title>This note moved · portfolio.tjakoen.com</title>
   <meta name="description" content="This note was folded into a longer one. It now lives at ${dest}.">
   <meta name="robots" content="noindex, follow">
   <link rel="canonical" href="${dest}">
