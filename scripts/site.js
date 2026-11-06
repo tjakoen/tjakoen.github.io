@@ -151,7 +151,7 @@
         crumb.appendChild(a);
       };
       const parts = path === "/" ? ["welcome"] : path.split("/").filter(Boolean);
-      seg("tjakoen.github.io", path === "/" ? null : "/");
+      seg("portfolio.tjakoen.com", path === "/" ? null : "/");
       parts.forEach((p, i) => seg(p, i < parts.length - 1 ? "/" + parts.slice(0, i + 1).join("/") : null));
     }
 

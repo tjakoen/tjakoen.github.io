@@ -19,7 +19,7 @@ import { escapeHtml } from "@tjakoen/mill/core/engine.ts";
 export const SITE = {
   name: "TJ's Desk",
   tagline: "AI-first interfaces on a no-build hypermedia stack.",
-  origin: "https://tjakoen.github.io",
+  origin: "https://portfolio.tjakoen.com",
   author: {
     name: "Tjakoen Stolk",
     jobTitle: "Software engineering manager, tech lead, and part-time software-engineering teacher",
