@@ -208,8 +208,8 @@ test("a recorded older address proves a legacy page without becoming a recipient
   const dir = mkdtempSync(join(tmpdir(), "badge-"));
   try {
     legacyTree(dir, [{ handle: "oldhandle", email: "older@example.net" }]);
-    const award = { ...legacyAward, legacySlug: `${legacyClass}--oldhandle`, legacyIdentityEmails: ["older@example.net"] };
-    expect(issue(manifest([award]), { dir, allowExisting: true, adoptLegacyClass: true }).approved).toBe(1);
+    const oldAward = { ...legacyAward, legacySlug: `${legacyClass}--oldhandle`, legacyIdentityEmails: ["older@example.net"] };
+    expect(issue(manifest([oldAward]), { dir, allowExisting: true, adoptLegacyClass: true }).approved).toBe(1);
     const page = readFileSync(join(dir, `${legacyClass}--oldhandle.md`), "utf8");
     expect(page).not.toContain("older@example.net");
   } finally { rmSync(dir, { recursive: true, force: true }); }
