@@ -111,6 +111,26 @@
     // ---- remember the open page (the "reopen where you left off" cache)
     if (path !== "/") put(KEY.lastPage, path);
 
+    // ---- remember the sidebar panel's mode (Chat / Catalog / Notepad) across pages. shell.js owns
+    // the switch and does not persist it, so every navigation landed back on Chat. Restoring by
+    // clicking the tab reuses that one mechanic, which also lets catalog-peek.js lazy-load its
+    // iframe exactly as a real click would. Deferred scripts have run by DOMContentLoaded.
+    const MODE_KEY = "portfolio:aside-mode";
+    const modeTabs = document.querySelectorAll(".assistant__modes [data-shell-mode]");
+    for (const b of modeTabs) b.addEventListener("click", () => {
+      try { store && store.setItem(MODE_KEY, b.getAttribute("data-shell-mode")); } catch { /* private mode */ }
+    });
+    let savedMode = null;
+    try { savedMode = store && store.getItem(MODE_KEY); } catch { /* private mode */ }
+    if (savedMode && savedMode !== "chat") {
+      const tab = document.querySelector(`.assistant__modes [data-shell-mode="${savedMode}"]`);
+      // a real click also raises the mobile sheet, which a restore must not do
+      const appShell = document.querySelector(".app-shell");
+      const wasOpen = appShell && appShell.hasAttribute("data-aside-open");
+      if (tab) tab.click();
+      if (appShell && !wasOpen) appShell.removeAttribute("data-aside-open");
+    }
+
     // ---- mobile: the open-tabs strip (grain/scripts/tabs.js) scrolls horizontally with no
     // memory of position; with enough open tabs the active one can render off-screen on load,
     // clipped with no visible cue it's just a scroll away. rAF, not immediate: tabs.js's own

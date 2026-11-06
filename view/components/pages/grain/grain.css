@@ -111,3 +111,6 @@
    body[data-ai-online="false"] by outcome). Persona-worded here; the gating mechanism is grain's. */
 [data-screen="grain"] .offline-hint { display: none; color: var(--color-muted); font-size: var(--text-sm); }
 body[data-screen="grain"][data-ai-online="false"] .offline-hint { display: inline; }
+
+/* the chat thread's last bubble sat flush against the caption below it */
+[data-screen="grain"] .chat-log + .site__why { margin-top: var(--space-4); }
