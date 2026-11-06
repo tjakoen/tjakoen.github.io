@@ -12,7 +12,7 @@
       "from": "The Desk",
       "subject": "About this mailbox",
       "snippet": "What's real here, what isn't, and where the one live control is.",
-      "date": "2026-07-14",
+      "date": "2026-11-06",
       "body": "A panel on the desk, dressed as a mailbox: folders, a message list, and the letter itself. Almost none of it is real. Every letter here was written by me ahead of time, and the folder chrome doesn't do anything but sort them.\n\nThe one live control is Compose: write a message there and it opens in your own mail app, already addressed to me. That's the real contact form. Everything else is honest set dressing.\n\nSo read this like a letters page, not a live inbox. The letters are real things I actually did. The inbox around them is the costume.",
       "links": []
     },
@@ -21,14 +21,14 @@
       "folder": "inbox",
       "from": "The Desk",
       "subject": "What shipped recently",
-      "snippet": "A short, honest list of the last few real things, in case you don't want to dig for it.",
-      "date": "2026-07-13",
-      "body": "A short, honest list of the last few things that actually shipped, in case you don't want to dig through the notes for it.\n\nThe notes list turned into a real feed this week, newest first, sortable by reading time instead of upvotes (I don't have real votes, so I didn't fake them). The calendar next to it plots the same real dates, note publish days and the handful of posts about what shipped, nothing invented. This mail panel is the third piece of that same push, a compose window wearing an inbox's clothes.\n\nBefore that: PROOF, the plan board this whole stack runs on, went from a static page to something that streams as the work happens. PANTRY's mindmap shipped the same week, a way for an AI already on your machine to read a codebase without running a model of its own.\n\nIf any of that sounds interesting, the notes feed has the long version.",
+      "snippet": "Badges, final projects, a sharper builder, and a desk that can start your message for you.",
+      "date": "2026-11-06",
+      "body": "The July version of this letter sat at the top of the inbox until November, announcing a notes feed as this week's news. It is in the Archive now, where it should have gone months ago.\n\nHere is what actually shipped since. The first-semester course badges went out, and each credential page now shows what that student built, final project screenshots included where I could recover them. The calendar features those same final projects. The builder learned to run a stronger local model on machines that can carry one, and to show the brief beside whatever copy it drafts, so you can check it against what you asked for. The homepage, the about page and the project pages now link each claim to the evidence behind it.\n\nThe newest piece is the one closest to this panel. Tell the desk you want to get in touch and it starts the contact flow for you, with a subject line drafted from your own words. The small model behind it still misreads the odd phrasing, which is why Compose below stays the plain, reliable way in.",
       "links": [
-        { "href": "/notes", "label": "The notes feed" },
+        { "href": "/badges", "label": "The course badges" },
         { "href": "/calendar", "label": "The calendar" },
-        { "href": "/proof", "label": "PROOF" },
-        { "href": "/pantry", "label": "PANTRY" }
+        { "href": "/builder", "label": "The builder" },
+        { "href": "/about", "label": "About" }
       ]
     },
     {
@@ -47,7 +47,7 @@
       "from": "BREAD CI",
       "subject": "grain build passed",
       "snippet": "A routine build notification, dressed the same as everything else in this mailbox.",
-      "date": "2026-07-12",
+      "date": "2026-11-05",
       "body": "grain's build ran and came back clean: typecheck, lint, and the component tests, all green, in that order.\n\nThis inbox doesn't actually watch a pipeline. I wrote this letter the same way I wrote the rest of them, ahead of time, standing in for the kind of mail a real CI system would send. If you want the actual build logs, they live in grain's own repo, not here.",
       "links": []
     },
@@ -57,7 +57,7 @@
       "from": "BREAD CI",
       "subject": "Pages deploy succeeded",
       "snippet": "The site's latest deploy went out clean. No drama, just a push, a build, and a swap.",
-      "date": "2026-07-11",
+      "date": "2026-11-05",
       "body": "The Pages deploy for this site finished and went live. A push to main, a build, a swap, the same three steps every deploy takes here.\n\nNothing on this page is watching that pipeline in real time. This letter is set dressing, same as the rest of the mailbox, written to fill out what a notifications folder usually looks like.",
       "links": []
     },
@@ -67,7 +67,7 @@
       "from": "BREAD CI",
       "subject": "batch nightly, all green",
       "snippet": "batch's nightly test run finished with nothing to report, which is the goal.",
-      "date": "2026-07-11",
+      "date": "2026-11-04",
       "body": "batch's nightly run finished clean: every binding test and every snapshot passed, nothing flaky to chase down this time.\n\nA quiet night like this one doesn't really deserve a letter, but the folder needed a third message from a sender other than The Desk, so here it is anyway.",
       "links": []
     },
@@ -115,6 +115,21 @@
       "body": "PANTRY's whole-codebase mindmap shipped. It's AI-legible, not AI-powered: it runs no model of its own, it just makes a project easy for an agent already on your machine to read.\n\nThere's more on that over at pantry.",
       "links": [
         { "href": "/pantry", "label": "/pantry" }
+      ]
+    },
+    {
+      "id": "shipped-july",
+      "folder": "archive",
+      "from": "The Desk",
+      "subject": "What shipped in July",
+      "snippet": "A short, honest list of the last few real things, in case you don't want to dig for it.",
+      "date": "2026-07-13",
+      "body": "A short, honest list of the last few things that actually shipped, in case you don't want to dig through the notes for it.\n\nThe notes list turned into a real feed this week, newest first, sortable by reading time instead of upvotes (I don't have real votes, so I didn't fake them). The calendar next to it plots the same real dates, note publish days and the handful of posts about what shipped, nothing invented. This mail panel is the third piece of that same push, a compose window wearing an inbox's clothes.\n\nBefore that: PROOF, the plan board this whole stack runs on, went from a static page to something that streams as the work happens. PANTRY's mindmap shipped the same week, a way for an AI already on your machine to read a codebase without running a model of its own.\n\nIf any of that sounds interesting, the notes feed has the long version.",
+      "links": [
+        { "href": "/notes", "label": "The notes feed" },
+        { "href": "/calendar", "label": "The calendar" },
+        { "href": "/proof", "label": "PROOF" },
+        { "href": "/pantry", "label": "PANTRY" }
       ]
     }
   ]
