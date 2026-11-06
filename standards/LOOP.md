@@ -290,6 +290,13 @@ the work happened on and not from a phone. Where a repo does not run PANTRY, the
 the handover and chat carries the path to it. Neither replaces the report: the surface only renders
 what the run was already honest enough to write down.
 
+A run report says the gates passed; a release certificate lets a script check that claim before
+anything ships. PANTRY keeps one per repo: a green full run at most seven days old, a green quick
+check on every commit since, and coverage that may rise but never fall, with no bypass. The design
+is adapted from the release gate in [C.R.I.S.S.P.](https://github.com/richardedens/crissp) by
+Richard Edens (Apache-2.0), which got there first and says it plainly: guards prove, a person
+decides.
+
 ### (b) The rails — a declared envelope per run
 
 Before an autonomous run starts, it declares its envelope, and the envelope is enforced (mechanically where
