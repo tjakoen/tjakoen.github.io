@@ -9,6 +9,15 @@
 > the repo is **public**. The events-platform exit is told **neutrally, no names, lessons-forward**.
 > Company name is **Career Team**. People name-drops = public professional info + LinkedIn only.
 
+## The semester-one student note (published 2026-11-06)
+
+[proud-of-my-students-2026-s1](../content/notes/proud-of-my-students-2026-s1.md) started as a LinkedIn
+post and grew into a note. It covers the 2026 first semester: seven sections, three subjects, more
+than 200 public final projects and 594 badges, with the class cards, the badge pipeline figure and
+a grid of all nine badge designs linking to their criteria pages. The term sits in the slug because
+the next semester gets its own note. The social post points at the note and uses the cover card and
+the story card from the same set.
+
 ## The AI implementation roadmap note (drafted 2026-08-18)
 
 **Everybody Wants the Agent. Somebody Has to Build the Floor.**

@@ -185,8 +185,9 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // top stays the four that carry the post.
     const gallery = kind === "entry" && collection.prefix === "/calendar" && frontmatter
       ? renderGallery(parsePhotos(frontmatter.gallery)) : "";
-    // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key).
-    const shareBlock = kind === "entry" && collection.prefix === "/calendar" && frontmatter && slug
+    // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key). Notes
+    // carry it too, because a note that started life as a social post keeps that post beside it.
+    const shareBlock = kind === "entry" && (collection.prefix === "/calendar" || collection.prefix === "/notes") && frontmatter && slug
       ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`) : "";
     // /badges entry pages: a badge-CLASS page (roster of recipients) or a per-recipient CERT page.
     // The template (art + issuer + verification + roster/share) sits above the MILL-rendered body.
@@ -1247,8 +1248,12 @@ export function badgeMedallionSvg(opts: {
   const courseY = 84 - (courseLines.length - 1) * 7;
   const course = courseLines.map((l, i) =>
     `<tspan x="150" y="${courseY + i * 14}">${l}</tspan>`).join("");
-  // The certified skill as the headline, up to three lines, settled around y165.
-  const titleLines = wrapTitle(opts.subtitle, 16, 3).map(escapeHtml);
+  // The certified skill as the headline, up to three lines, settled around y165. A title that will
+  // not fit three lines of 16 rewraps at 19, because the three-line cap drops the overflow silently:
+  // "Builds Full-Stack JavaScript and AI" lost its last word that way. Titles that already fit keep
+  // their old breaks.
+  const titleLines = (wrapTitle(opts.subtitle, 16, 4).length > 3
+    ? wrapTitle(opts.subtitle, 19, 3) : wrapTitle(opts.subtitle, 16, 3)).map(escapeHtml);
   const titleY = 165 - (titleLines.length - 1) * 14;
   const title = titleLines.map((l, i) =>
     `<tspan x="150" y="${titleY + i * 28}">${l}</tspan>`).join("");

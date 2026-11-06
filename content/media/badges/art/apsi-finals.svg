@@ -8,7 +8,7 @@
     <path d="M151 49 v9 a9 3.4 0 0 0 18 0 v-9"/>
   </g>
     <text text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10.5" letter-spacing="1.5" style="fill:#6E6C64"><tspan x="150" y="77">Application and System</tspan><tspan x="150" y="91">Integration</tspan></text>
-    <text text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" style="fill:#1C1B17"><tspan x="150" y="137">Builds</tspan><tspan x="150" y="165">Full-Stack</tspan><tspan x="150" y="193">JavaScript and</tspan></text>
+    <text text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" style="fill:#1C1B17"><tspan x="150" y="151">Builds Full-Stack</tspan><tspan x="150" y="179">JavaScript and AI</tspan></text>
     
     <line x1="70" y1="248" x2="230" y2="248" style="stroke:#6E6C64" stroke-width="1" opacity="0.3"/>
     <text x="150" y="273" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="700" style="fill:#d07f4a">Tjakoen Stolk</text>
