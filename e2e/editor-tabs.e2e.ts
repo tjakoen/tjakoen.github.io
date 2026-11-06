@@ -106,7 +106,7 @@ test.describe("THE EDITOR v2 — explorer + open tabs", () => {
   test("the status-bar breadcrumb is linked: segments navigate, the last stays text", async ({ page }) => {
     await page.goto("/grain/docs/grain");
     const crumb = page.locator("[data-breadcrumb]");
-    await expect(crumb.locator('a[href="/"]')).toContainText("tjakoen.github.io");
+    await expect(crumb.locator('a[href="/"]')).toContainText("portfolio.tjakoen.com");
     await expect(crumb.locator('a[href="/grain"]')).toContainText("grain");
     await expect(crumb.locator('a[href="/grain/docs"]')).toContainText("docs");
     await expect(crumb.locator("a")).toHaveCount(3);   // the last segment is plain text
