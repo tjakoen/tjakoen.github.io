@@ -6,13 +6,17 @@
 
 /* ── The bookshelf ─────────────────────────────────────────────────────────────────────────── */
 [data-screen="reading"] .shelf { margin: var(--space-4) 0 var(--space-6); }
-[data-screen="reading"] .shelf__row { list-style: none; margin: 0; padding: 0 var(--space-4);
-  display: flex; align-items: flex-end; gap: var(--space-1); min-height: 15rem; overflow-x: auto; }
-[data-screen="reading"] .shelf__board { height: 0.75rem; border-radius: 2px;
-  background: color-mix(in srgb, var(--ink) 55%, var(--paper));
-  box-shadow: 0 0.4rem 0.6rem -0.3rem color-mix(in srgb, var(--ink) 40%, transparent); }
+/* The shelf wraps: every line of books is 15rem tall and stands on its own board, painted by the
+   row's repeating background so a second line gets a second board with no extra markup. */
+[data-screen="reading"] .shelf__row { --shelf-line: 15rem; --shelf-board: 0.75rem;
+  list-style: none; margin: 0; padding: 0 var(--space-4);
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--shelf-board) var(--space-1);
+  background: repeating-linear-gradient(to bottom, transparent 0 var(--shelf-line),
+    color-mix(in srgb, var(--ink) 55%, var(--paper)) var(--shelf-line) calc(var(--shelf-line) + var(--shelf-board)));
+  padding-bottom: var(--shelf-board); }
+[data-screen="reading"] .shelf__board { display: none; }
+[data-screen="reading"] .book { flex: none; height: var(--shelf-line); display: flex; align-items: flex-end; }
 
-[data-screen="reading"] .book { flex: none; }
 [data-screen="reading"] .book__spine { display: flex; flex-direction: column; justify-content: space-between;
   align-items: center; box-sizing: border-box; width: 3.25rem; height: 13rem; padding: var(--space-2) 0;
   border-radius: 3px 3px 0 0; text-decoration: none; color: var(--paper);
@@ -49,7 +53,8 @@
   padding: var(--space-4); border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
 [data-screen="reading"] .post__avatar { width: 3rem; height: 3rem; border-radius: 50%; display: grid;
   place-items: center; font-weight: 700; color: var(--paper);
-  background: color-mix(in srgb, var(--color-accent) 70%, var(--ink)); }
+  background: color-mix(in srgb, var(--color-accent) 70%, var(--ink)); position: relative; overflow: hidden; }
+[data-screen="reading"] .post__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 [data-screen="reading"] .post__main { min-width: 0; }
 [data-screen="reading"] .post__head { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-2); }
 [data-screen="reading"] .post__name { font-weight: 700; color: var(--ink); }
