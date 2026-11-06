@@ -8,7 +8,7 @@
 [data-screen="reading"] .shelf { margin: var(--space-4) 0 var(--space-6); }
 /* The shelf wraps: every line of books is 15rem tall and stands on its own board, painted by the
    row's repeating background so a second line gets a second board with no extra markup. */
-[data-screen="reading"] .shelf__row { --shelf-line: 15rem; --shelf-board: 0.75rem;
+[data-screen="reading"] .shelf__row { --shelf-line: 17.5rem; --shelf-board: 0.75rem;
   list-style: none; margin: 0; padding: 0 var(--space-4);
   display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--shelf-board) var(--space-1);
   background: repeating-linear-gradient(to bottom, transparent 0 var(--shelf-line),
@@ -18,17 +18,17 @@
 [data-screen="reading"] .book { flex: none; height: var(--shelf-line); display: flex; align-items: flex-end; }
 
 [data-screen="reading"] .book__spine { display: flex; flex-direction: column; justify-content: space-between;
-  align-items: center; box-sizing: border-box; width: 3.25rem; height: 13rem; padding: var(--space-2) 0;
+  align-items: center; box-sizing: border-box; width: 3.25rem; height: 15rem; padding: var(--space-2) 0;
   border-radius: 3px 3px 0 0; text-decoration: none; color: var(--paper);
   background: color-mix(in srgb, var(--paper) 55%, var(--color-accent));
   box-shadow: inset 0.25rem 0 0 color-mix(in srgb, var(--paper) 18%, transparent),
               inset -0.2rem 0 0 color-mix(in srgb, var(--ink) 30%, transparent);
   transition: transform 160ms ease; }
-[data-screen="reading"] .book:nth-child(3n+2) .book__spine { height: 14.5rem; width: 3rem;
+[data-screen="reading"] .book:nth-child(3n+2) .book__spine { height: 16.5rem; width: 3rem;
   background: color-mix(in srgb, var(--color-accent) 85%, var(--paper)); }
 [data-screen="reading"] .book:nth-child(3n) .book__spine {
   background: color-mix(in srgb, var(--color-accent) 40%, var(--paper)); color: var(--ink); }
-[data-screen="reading"] .book[data-kind="essay"] .book__spine { width: 1.75rem; height: 10rem; }
+[data-screen="reading"] .book[data-kind="essay"] .book__spine { width: 1.75rem; height: 13rem; }
 [data-screen="reading"] .book__spine:hover,
 [data-screen="reading"] .book__spine:focus-visible { transform: translateY(-0.6rem); }
 @media (prefers-reduced-motion: reduce) { [data-screen="reading"] .book__spine { transition: none; } }
@@ -38,8 +38,8 @@
 [data-screen="reading"] .book__title { font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; }
 [data-screen="reading"] .book__author { font-family: var(--font-mono); font-size: 0.7rem; opacity: 0.8; }
 [data-screen="reading"] .book[data-kind="essay"] .book__author { display: none; }
-[data-screen="reading"] .book[data-long] .book__spine { width: 4rem; height: 14.5rem; }
-[data-screen="reading"] .book[data-long] .book__title { white-space: normal; max-block-size: 11.5rem; font-size: 0.85rem; }
+[data-screen="reading"] .book[data-long] .book__spine { width: 4rem; height: 16.5rem; }
+[data-screen="reading"] .book[data-long] .book__title { white-space: normal; inline-size: 10.5rem; font-size: 0.85rem; }
 
 [data-screen="reading"] .shelf__notes { list-style: none; margin: var(--space-4) 0 0; padding: 0;
   display: grid; gap: var(--space-2); }
@@ -67,3 +67,11 @@
 [data-screen="reading"] .post__embed-title { font-weight: 600; }
 [data-screen="reading"] .post__foot { margin: var(--space-2) 0 0; font-size: 0.85rem; color: var(--ink-muted);
   display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
+
+/* The category sits at the foot of each spine under a rule, the way a library label would. */
+[data-screen="reading"] .book__cat { align-self: stretch; text-align: center; margin-top: var(--space-1);
+  padding-top: var(--space-1); border-top: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  font-family: var(--font-mono); font-size: 0.55rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.85; }
+[data-screen="reading"] .book__cat .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; }
+[data-screen="reading"] .book__title, [data-screen="reading"] .book__author, [data-screen="reading"] .book__cat { flex-shrink: 0; }
