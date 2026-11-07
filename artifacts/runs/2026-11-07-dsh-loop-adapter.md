@@ -23,9 +23,13 @@ touched:
   - agent-config/shared/tools/dsh/guard.test.ts
   - agent-config/shared/tools/dsh/plugin.test.ts
   - agent-config/machines/tjakoens-macbook-air/dsh/mcp.yml
-diffstat: site one edited file and four new paths; agent-config five edited files and six new files plus one symlink
+  - agent-config/shared/tools/dsh/nudges.mjs
+  - agent-config/shared/tools/dsh/nudges.test.ts
+  - agent-config/shared/tools/dsh/events.mjs
+  - agent-config/shared/tools/dsh/events.test.ts
+diffstat: two commits; the site keeps the CLI, doc and report, and agent-config gained the loop, checklist, MCP, nudges, session events and memory pointer
 unpushed: 0 | the site and agent-config trees are left for review
-verifiedBy: checklist run in DSH mode, guard probe in the running session, 20 agent-config tests, 875 site tests
+verifiedBy: checklist run in DSH mode, guard probe in the running session, 28 agent-config tests, 875 site tests
 doctor: 23 checks, 0 failing, 1 due | the Claude context budget
 ---
 
@@ -46,6 +50,11 @@ over stdio. The pantry server answered and listed every project, and the tools a
 mcp__pantry__*, mcp__tokensave__* and mcp__headroom__*. The installer merges the machine's
 mcp.yml, so the server paths stay in agent-config/machines/<host>/dsh/mcp.yml.
 
+The plugin now also carries the PostToolUse nudges: a bash or tool result over its bound, a
+session that reads and searches without delegating, a search sweep without a graph query, and a
+finish reminder after an edit. It writes the session heartbeat to the project's sessions.jsonl, and
+the checklist names the project memory index for the model to read on demand.
+
 The guard, the spawn envelope and the graph refresh are unchanged. The checklist is the piece that
 was missing, and it now runs automatically.
 
@@ -57,6 +66,7 @@ The checklist ran in the live session's shape and passed every required row:
 Agentic loop check, tjakoen.github.io (PANTRY project, DSH)
  ok   DSH, deepseek-flash
  ok   Instructions: global + repo, 18k chars of the 20k budget
+ ok   Memory: 83 notes, index loads whole
  ok   DSH loop: plugin linked and mounted
  ok   MCP: pantry, tokensave, headroom configured
  ok   No style override
@@ -64,7 +74,7 @@ Agentic loop check, tjakoen.github.io (PANTRY project, DSH)
  ok   PANTRY: serving tjakoen.github.io at http://localhost:4403/__pantry/, 1 ready, 0 claimed
  ok   tokensave: indexed, 0 day(s) old
  ok   graphify: graph 0 day(s) old
- warn Git: codex/nest-terminal-controls, 4 uncommitted
+ ok   Git: codex/nest-terminal-controls, 0 uncommitted
 Agentic Loop Loaded (DSH)
 ```
 
@@ -73,7 +83,7 @@ agent-config tests and the site suite:
 
 ```text
 $ bun test shared/tools/dsh        # from the agent-config checkout
-20 pass
+28 pass
 0 fail
 48 expect() calls
 Ran 20 tests across 2 files.
@@ -95,10 +105,12 @@ $ bun tools/lint-gate.ts
 ## What was not done
 
 The DSH checklist checks the PANTRY hub and the MCP entries, and the pantry, tokensave and headroom
-servers are configured. A server that is down still contributes no tools. The output bounds,
-context trigger and session-event ledger were not ported. The checklist is injected once per root
-session, not on every turn. The machine links and profile patch are machine state; the agent-config
-repo is uncommitted, and it was already dirty with two memory notes this run did not touch.
+servers are configured. A server that is down still contributes no tools. The finish nudge reaches
+the model after an edit, but no Stop hook runs the gate automatically; the end command is still the
+close. Memory is a pointer to the Claude project index, not an automatic DSH load or a second
+store. The context-trigger nudge is not ported. The checklist is injected once per root session,
+not on every turn. The machine links and profile patch are machine state; the agent-config repo is
+committed, and the two memory notes that predate this work are still uncommitted.
 
 ## What needs human eyes
 
