@@ -427,8 +427,10 @@ Two rules keep this from turning into a permissions system that quietly grants i
   change to gated, because "the tests pass" means nothing when the tests do not reach the change.
 
 **A lane the harness enforces beats a lane the run remembers.** Rails that live only in a document
-are followed by whoever read the document, which on a long run is a coin flip. Two harness
-capabilities carry real weight here, and both are worth asking for by name when choosing one:
+are followed by whoever read the document, which on a long run is a coin flip. Which of these a given
+harness can actually enforce, and the case list that proves it, is [HOOKS](HOOKS.md) section 4c.
+Two harness capabilities carry real weight here, and both are worth asking for by name when choosing
+one:
 
 - **Per-action approval decided per action, not per session.** A blanket yes at the start is the
   binary rail this section replaces, one lane wide and always the widest. Better is a harness that
@@ -521,6 +523,19 @@ read as this is written, so this section is a living base, not a finished litera
 revisited after the read. And none of these sources is a study of *this* estate; they are the shape the
 field agrees on, and this file is one person applying it, not proof it scales to a team.
 
+**The critical-thinking half is named, and it is the one this file answers with habits rather than
+gates.** Osmani's [Critical thinking when agents do the work](https://www.linkedin.com/posts/addyosmani_ai-programming-softwareengineering-share_7524690987357470720-cLIK/)
+sorts the postures toward an agent's output into three. Offloading keeps ownership of the result, and is
+the one to aim for. Deferral lets the output become your input, at which point it stops being a
+hypothesis. Surrender lets it quietly become your own. The defence is four questions asked before the
+prompt: what do I expect, am I asking for help thinking or for the thinking itself, what would have to be
+true for this to be wrong, and would I defend it in front of the maintainer. Two of those now sit where a
+session meets them, the prediction in [SESSION-LOOP](SESSION-LOOP.md) §2 and the coverage line in §9. The
+other two stay questions the owner asks himself, because a check cannot tell whether the person signing
+off still understands the change, only that the boxes are ticked. His intent-debt point, that a vague
+prompt lets the agent write the rationale you will later have to defend, is the failure
+[INTAKE](INTAKE.md) was built against.
+
 **The comprehension-debt warning.** Osmani's sharpest point, and the one this whole file is built around:
 a loop that ships code faster than anyone understands it is not a productivity win, it is *debt* — you can
 run a repo you no longer comprehend right up until the day you have to fix it. This is exactly the
@@ -612,6 +627,9 @@ Short, mechanical, evidence-shaped, and meant to be machine-checkable: this list
 run ledger is checked against, not a vibe pass.
 
 - [ ] Gate output pasted verbatim in the run report, not summarized.
+- [ ] What the gate did not cover, named in the same section as its output: what the check proved and
+      what it ignored. A green check proves one property, and the property it skipped is the finding
+      rather than a footnote.
 - [ ] Diffstat in the report.
 - [ ] "What was not done" written, even when the answer is nothing.
 - [ ] "What needs human eyes" written, even when the answer is nothing.
