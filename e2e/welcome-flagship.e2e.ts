@@ -72,7 +72,7 @@ test.describe("welcome mobile layout", () => {
     const proofLinks = page.locator(".welcome__proof-links");
     await expect(proofLinks.getByRole("link", { name: "Course platform story" })).toHaveAttribute("href", "/native-github-classroom");
     await expect(proofLinks.getByRole("link", { name: "Open the privacy-safe demo" }))
-      .toHaveAttribute("href", "https://tjakoen.github.io/github-native-course-platform/?demo=1");
+      .toHaveAttribute("href", "https://portfolio.tjakoen.com/github-native-course-platform/?demo=1");
     await expect(proofLinks.getByRole("link", { name: "Leadership experience" })).toHaveAttribute("href", "/about#role-manager");
     await expect(proofLinks.getByRole("link", { name: "Courses and assessment" })).toHaveAttribute("href", "/teaching");
     expect(await proofLinks.evaluate((el) => el.scrollWidth)).toBeLessThanOrEqual(await proofLinks.evaluate((el) => el.clientWidth));
