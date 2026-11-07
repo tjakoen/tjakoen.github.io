@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 49 | the branch is local for review
+unpushed: 50 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a multi-swat check, a reset-warning check, a reset-scroll check, a reset-ants check, a larder-width check, a meter-hint check, a stores-cap check, a worship-population check, a queen-dance check, a guard-nearest check, a mound-heal check, a note-start check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -52,10 +52,10 @@ which was about 1.9:1 on the paper. The new line is visible without reading as b
 **Soldiers.** Soldiers and guards now use the flyer's quieter colour, with a wider head and two
 mandibles. The permanent link line from a mini hill to a trail is gone, so a soldier leaves no
 scent. Guards walk a parallel lane beside the trail instead of the workers' line, so a busy trail
-stays uncrowded. A guard goes to the nearest trail, even one beyond the old radius, rather than
-circling its mound. After a defence it returns to that trail, not the mound. Their patrol gets a
-six second progress check: a guard that moves less than thirty pixels re-homes instead of standing
-in the dirt.
+stays uncrowded. A guard stays on its trail until that trail disappears, then returns to its mound;
+it does not switch trails. After a defence it goes back to the same trail. Their patrol gets a six
+second progress check: a guard that moves less than thirty pixels re-homes instead of standing in
+the dirt.
 
 **The opening.** Three scouts and three workers start. A block with a trail or a scout is taken,
 so the first three scouts and later ones stay off each other's source. The first three stay in
@@ -168,10 +168,10 @@ $ bun test
  894 pass
  0 fail
  3885 expect() calls
-Ran 896 tests across 49 files. [5.79s]
+Ran 896 tests across 49 files. [5.96s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  28 passed (29.5s)
+  28 passed (26.1s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

@@ -1077,8 +1077,10 @@
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
     if ((ant.job === "defend" || ant.job === "guard") && ant.defendUntil && performance.now() > ant.defendUntil) {
       ant.defendUntil = 0;
-      if (ant.mini && minis.includes(ant.mini)) { assignGuard(ant); }
-      else { ant.job = "guard"; ant.path = []; }
+      if (ant.mini && minis.includes(ant.mini)) {
+        if (ant.patrol && state.trails.includes(ant.patrol)) assignGuard(ant, ant.patrol);
+        else { ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; }
+      } else { ant.job = "guard"; ant.path = []; }
       return;
     }
     if (ant.job === "defend") { // a clicked mound calls its guards home
@@ -1091,9 +1093,9 @@
       return;
     }
     if (ant.job === "patrol") { // soldiers and guards walk their trail out and back, guarding it
-      if (ant.circling && state.trails.some((trail) => trail.ready && trail.state !== "gone")) return assignGuard(ant);
+      if (ant.circling && !ant.retired && state.trails.some((trail) => trail.ready && trail.state !== "gone")) return assignGuard(ant);
       if (!ant.circling && !state.trails.includes(ant.patrol)) {
-        if (ant.mini && minis.includes(ant.mini)) { ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; }
+        if (ant.mini && minis.includes(ant.mini)) { ant.retired = true; ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; }
         else { ant.job = "home"; ant.path = [hillOf(ant).hole.slice()]; ant.k = 0; }
         return;
       }
@@ -1428,7 +1430,7 @@
       ant.mound.textContent = miniArt(0.02);
       positionMini(ant.mound, ant.spot);
       log("a mini hill is going up");
-    } else if (ant.job === "mini-home") { if (ant.mini && minis.includes(ant.mini)) assignGuard(ant); else squashQuiet(ant); }
+    } else if (ant.job === "mini-home") { if (ant.mini && minis.includes(ant.mini)) assignGuard(ant, null, !!ant.retired); else squashQuiet(ant); }
   };
   const exposedArt = (p) => miniArt(p).split("\n").map((row) => {
     const mid = Math.floor(row.length / 2);
@@ -1506,26 +1508,26 @@
   };
   // A guard walks from its mini hill to the nearest point of a trail, then patrols that trail.
   // It leaves no line behind it: a soldier is not a scent.
-  const assignGuard = (g) => {
+  const assignGuard = (g, preferred, stay = false) => {
     if (!g.mini || !minis.includes(g.mini)) { g.job = "home"; g.path = [hillOf(g).hole.slice()]; g.k = 0; return; }
     const ready = state.trails.filter((t) => t.ready && t.state !== "gone");
-    if (!ready.length) {
+    if (!ready.length || stay) {
       const c = [g.mini.spot.x, g.mini.spot.y - 6];
-      g.job = "patrol"; g.patrol = null; g.circling = true;
+      g.job = "patrol"; g.patrol = null; g.circling = true; g.retired = stay;
       g.path = Array.from({ length: 7 }, (_, k) => [c[0] + Math.cos(k * 1.1) * 42, c[1] + 10 + Math.sin(k * 1.1) * 24]);
       g.k = 0; return;
     }
-    // The nearest trail always wins. A guard with a trail to guard does not go back to the
-    // mound, and a trail beyond the old radius is still better than circling the hill forever.
+    // A guard stays on its own trail until that trail is gone; it only takes a new one when it
+    // has just come out of the mound.
     const distanceTo = (trail) => Math.min(...trail.pts.map(([x, y]) => Math.hypot(x - g.x, y - g.y)));
-    const t = ready.reduce((best, trail) => (distanceTo(trail) < distanceTo(best) ? trail : best), ready[0]);
+    const t = preferred && ready.includes(preferred) ? preferred : ready.reduce((best, trail) => (distanceTo(trail) < distanceTo(best) ? trail : best), ready[0]);
     let best = 0, bd = Infinity;
     t.pts.forEach((p, k) => { const d = Math.hypot(p[0] - g.x, p[1] - g.y); if (d < bd) { bd = d; best = k; } });
     const lo = Math.max(1, best - 4), hi = Math.min(t.pts.length, best + 5);
     // Walk beside the trail, never on it: the workers need the line itself and a guard in the
     // same lane is what made a busy trail look crowded.
     const side = g.id % 2 ? 1 : -1, span = 13 + (g.id % 3) * 2;
-    g.job = "patrol"; g.patrol = t; g.circling = false;
+    g.job = "patrol"; g.patrol = t; g.circling = false; g.retired = false;
     g.path = [[g.x, g.y], ...lanePath(t.pts.slice(lo, hi), span * side)]; g.k = 0;
     g.guardLink = null;
   };
