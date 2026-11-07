@@ -206,6 +206,13 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page).toHaveURL(/\/$/);
     await fileLink.click();
     await expect(page).toHaveURL(/\/$/);
+    const toast = page.locator(".nest-lock-toast");
+    await expect(toast).toBeVisible();
+    await expect(toast).toContainText("Links are locked while the colony is playing.");
+    await toast.getByRole("button", { name: "Use Links (3)" }).click();
+    await expect(linkState).toHaveText("links open");
+    await panel.getByRole("button", { name: "Squash", exact: true }).click();
+    await expect(linkState).toHaveText("links locked");
 
     const bait = panel.getByRole("button", { name: "Drop bait" });
     await bait.click();

@@ -62,7 +62,7 @@ unreadable and the colony has won that page.
   accent outline and no new guards spawn. Five clicks break it. Its flyers outlive it.
 - **The player's tools.** Pick a tool: squash holds every page link so a missed ant never
   navigates, wipe is the only tool that breaks scent, and links gives the page back with a leave
-  confirmation. The panel gives
+  confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
   each tool a name, an icon and a key. Squash ants, drag across a scent trail to break it, drop bait
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
   seals have cooldowns. Sound is muted until switched on.
