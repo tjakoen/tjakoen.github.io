@@ -547,7 +547,7 @@
   const findHomeSpot = () => {
     const rects = [];
     for (const n of textNodes(main)) { if (!/\S/.test(n.data)) continue; const r = document.createRange(); r.selectNodeContents(n); for (const c of r.getClientRects()) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } }
-    main.querySelectorAll("img, svg, button, input, textarea, figure, hr").forEach((el) => { if (layer.contains(el)) return; const c = el.getBoundingClientRect(); if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } });
+    main.querySelectorAll("img, svg, pre, button, input, textarea, figure, hr").forEach((el) => { if (layer.contains(el)) return; const c = el.getBoundingClientRect(); if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } });
     const w = hr.width, h = hr.height, pad = 14;
     const collect = (top, bottom) => {
       const spots = [];
@@ -1135,7 +1135,7 @@
       const range = document.createRange(); range.selectNodeContents(n);
       for (const r of range.getClientRects()) { const [x, y] = local(r); rects.push([x, y, x + r.width, y + r.height]); }
     }
-    main.querySelectorAll("img, svg, figure, hr").forEach((el) => {
+    main.querySelectorAll("img, svg, pre, figure, hr").forEach((el) => {
       if (layer.contains(el)) return;
       const c = el.getBoundingClientRect();
       if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); }
@@ -1180,7 +1180,7 @@
       const list = stolen.has(node.parentElement) ? gaps : obstacles;
       for (const rect of range.getClientRects()) addRect(rect, list);
     }
-    for (const el of main.querySelectorAll("img, svg, button, input, select, textarea, figure, hr")) {
+    for (const el of main.querySelectorAll("img, svg, pre, button, input, select, textarea, figure, hr")) {
       if (!layer.contains(el)) addRect(el.getBoundingClientRect(), obstacles, 4);
     }
     for (const mound of includeMinis ? [...hills, ...minis] : hills) {
