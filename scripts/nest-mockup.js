@@ -802,13 +802,16 @@
       }
     }
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
-    const [node, tx, ty] = options[Math.floor(Math.random() * options.length)];
+    const pick = opening
+      ? options.reduce((best, o) => (Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best), options[0])
+      : options[Math.floor(Math.random() * options.length)];
+    const [node, tx, ty] = pick;
     const block = blockOf(node);
     // One gentle bend, then a smoothed route. The old four random jitters made the trail look
     // like it had been drawn while running.
     const dx = tx - hole[0], dy = ty - hole[1], dist = Math.hypot(dx, dy) || 1;
     const nx = -dy / dist, ny = dx / dist;
-    const amp = 18 + Math.random() * 27;
+    const amp = Math.min(44, Math.max(10, dist * 0.22) * (0.8 + Math.random() * 0.4));
     const path = [];
     for (let s = 0; s <= 28; s++) {
       const k = s / 28;
@@ -1153,6 +1156,46 @@
     return out.trimEnd();
   };
   const overlaps = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+
+  // A couple of ground pieces away from the hill, in empty space, so the page itself feels
+  // inhabited rather than only the mound. They are decorations: no clicks, no game state.
+  const scatterDecor = () => {
+    const rects = [];
+    for (const n of textNodes(main)) {
+      if (!/\S/.test(n.data)) continue;
+      const range = document.createRange(); range.selectNodeContents(n);
+      for (const r of range.getClientRects()) { const [x, y] = local(r); rects.push([x, y, x + r.width, y + r.height]); }
+    }
+    main.querySelectorAll("img, svg, figure, hr").forEach((el) => {
+      if (layer.contains(el)) return;
+      const c = el.getBoundingClientRect();
+      if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); }
+    });
+    [...hills, ...minis].forEach((mound) => {
+      const c = mound.el.getBoundingClientRect();
+      if (c.width) { const [x, y] = local(c); rects.push([x - 24, y - 24, x + c.width + 24, y + c.height + 24]); }
+    });
+    const picked = [];
+    for (let tries = 0; tries < 160 && picked.length < 2; tries++) {
+      const x = 28 + Math.random() * (main.clientWidth - 56);
+      const y = main.scrollTop + 60 + Math.random() * (main.clientHeight - 120);
+      const box = [x - 28, y - 26, x + 28, y + 6];
+      if (rects.some((r) => overlaps(box, r))) continue;
+      if (picked.some((p) => Math.hypot(p[0] - x, p[1] - y) < 90)) continue;
+      picked.push([x, y]);
+    }
+    picked.forEach(([x, y], i) => {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "nest-decor"); svg.setAttribute("aria-hidden", "true");
+      svg.setAttribute("width", "56"); svg.setAttribute("height", "30"); svg.setAttribute("viewBox", "0 0 56 30");
+      svg.innerHTML = i % 2
+        ? `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 24 C10 13 26 11 34 19 C26 28 10 30 6 24 Z" fill="currentColor" fill-opacity=".28" stroke-width="1"/><path d="M10 24 C17 20 25 19 30 20" stroke-width=".9"/><ellipse cx="44" cy="24" rx="6" ry="3" fill="currentColor" fill-opacity=".26" stroke-width="1"/></g>`
+        : `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26 Q7 18 4 12 Q9 18 12 26 Z" fill="currentColor" fill-opacity=".26" stroke-width="1"/><path d="M14 26 Q14 16 14 9 Q17 17 20 26 Z" fill="currentColor" fill-opacity=".22" stroke-width="1"/><ellipse cx="34" cy="23" rx="7" ry="3.5" fill="currentColor" fill-opacity=".28" stroke-width="1"/><ellipse cx="45" cy="26" rx="5" ry="2.5" fill="currentColor" fill-opacity=".24" stroke-width=".9"/></g>`;
+      svg.style.left = (x - 28) + "px"; svg.style.top = (y - 24) + "px";
+      layer.append(svg);
+    });
+  };
+  scatterDecor();
   // The compact mound fits on a line of prose. An open-ground site also needs room for its badge.
   const miniBox = ({ x, y, gap }) => [x - 30, y - (gap ? 20 : 34), x + 30, y + 2];
   const miniTerrain = (includeMinis = true) => {

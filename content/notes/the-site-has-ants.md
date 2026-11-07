@@ -102,7 +102,7 @@ That was the point of building it at all. A design system that only renders docu
 
 ## Where the time actually went
 
-Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Later I gave each trail two lanes and smoothed the scout's route, because a trail should look walked, not sampled. Real ants solved that a long time ago. It took me a few evenings.
+Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Later I gave each trail two lanes and smoothed and bowed the scout's route, because a trail should look walked, not sampled. Real ants solved that a long time ago. It took me a few evenings.
 
 Claude did most of the typing, which will surprise nobody who has read [how I work](ten-times-zero.md). The calls were mine: ants that take real letters, gaps that never reflow, no announced ending, and the bit where a professional site hides a game behind a small ant and a word you have to know to type.
 
