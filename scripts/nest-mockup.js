@@ -196,9 +196,9 @@
     #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
     #nest-mock .nest-meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
     #nest-mock .nest-meter .hint { font: 9px/1.2 var(--font-mono); font-style: normal; letter-spacing: 0; opacity: .65; }
-    #nest-mock .nest-meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
-    #nest-mock .nest-meter__bar > span { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 999px; transition: width .35s; }
-    #nest-mock .nest-meter__bar.accent > span { background: var(--color-accent); }
+    #nest-mock .nest-meter__bar { grid-column: 1 / -1; font: 10px/1.2 var(--font-mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
+    #nest-mock .nest-meter__bar .fill { color: var(--color-accent); }
+    #nest-mock .nest-meter__bar .rest { color: var(--ink-faint); opacity: .7; }
     #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px 10px; margin: 0; align-items: baseline; }
     #nest-mock .stat-grid div { display: flex; justify-content: flex-start; gap: 4px; min-width: 0; overflow: hidden; }
     #nest-mock .stat-grid dt { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); white-space: nowrap; }
@@ -433,13 +433,13 @@
     <ul class="log activity" data-k="log" aria-live="polite"></ul>
     <div class="nest-meters">
       <div class="nest-meter"><span class="lbl muted">page left <i class="hint">page still whole</i></span><span class="lbl" data-k="holds-val">100%</span>
-        <div class="nest-meter__bar accent" data-k="holds-bar" role="progressbar" aria-label="Page left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span data-k="holds"></span></div></div>
+        <div class="nest-meter__bar" data-k="holds-bar" role="progressbar" aria-label="Page left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="fill" data-k="holds"></span><span class="rest" data-k="holds-rest"></span></div></div>
       <div class="nest-meter"><span class="lbl muted">stores <i class="hint">builds mound builders</i></span><span class="lbl" data-k="stores-val">0/12</span>
-        <div class="nest-meter__bar accent" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="stores"></span></div></div>
+        <div class="nest-meter__bar" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="stores"></span><span class="rest" data-k="stores-rest"></span></div></div>
       <div class="nest-meter"><span class="lbl muted">next egg <i class="hint">hatches ants</i></span><span class="lbl" data-k="bar-val">0/3</span>
-        <div class="nest-meter__bar accent" data-k="bar-bar" role="progressbar" aria-label="Next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="bar"></span></div></div>
+        <div class="nest-meter__bar" data-k="bar-bar" role="progressbar" aria-label="Next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="bar"></span><span class="rest" data-k="bar-rest"></span></div></div>
       <div class="nest-meter"><span class="lbl muted">next worship <i class="hint">the queen dances</i></span><span class="lbl" data-k="worship-val">0/20</span>
-        <div class="nest-meter__bar accent" data-k="worship-bar" role="progressbar" aria-label="Next worship" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="worship"></span></div></div>
+        <div class="nest-meter__bar" data-k="worship-bar" role="progressbar" aria-label="Next worship" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="worship"></span><span class="rest" data-k="worship-rest"></span></div></div>
     </div>
     <dl class="stat-grid">
       <div title="Scouts find new food"><dt>scouts</dt><dd class="accent" data-k="scouts">0</dd></div>
@@ -925,6 +925,8 @@
     const t = { pts: route.pts, block: route.block, end: route.end, ants: new Set(), line, halo, ready: true, hill: route.hill,
       state: "ready", born, ttl: born + TUNING.trailTtl };
     scent.append(halo, line);
+    line.style.opacity = "0"; halo.style.opacity = "0";
+    requestAnimationFrame(() => { line.style.opacity = ""; halo.style.opacity = ""; });
     addEraser(t);
     state.trails.push(t);
     ant.scoutRoute = null;
@@ -1741,7 +1743,9 @@
   const drawStats = () => {
     const setMeter = (key, ratio, text) => {
       const r = Math.min(1, Math.max(0, ratio));
-      const fill = $(key); if (fill) fill.style.width = `${Math.round(r * 100)}%`;
+      const cells = 10, filled = Math.round(r * cells);
+      const fill = $(key); if (fill) fill.textContent = "▰".repeat(filled);
+      const rest = $(`${key}-rest`); if (rest) rest.textContent = "▱".repeat(cells - filled);
       const meter = $(`${key}-bar`);
       if (meter) {
         meter.setAttribute("aria-valuenow", String(Math.round(r * 100)));
