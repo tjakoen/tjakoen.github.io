@@ -200,6 +200,10 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
       ? (frontmatter.type === "cert" ? String(frontmatter.badgeClass || "") : frontmatter.type === "badge-class" ? slug : frontmatter.type === "badge-design" ? String(frontmatter.ogClass || "") : "")
       : "";
     const badgeHead = ogClass ? `<meta name="x-og-image" content="/media/badges/og-${escapeHtml(ogClass)}.png">` : "";
+    // A note may name its own share card with an image key (a /media path), plus imageAlt for its
+    // description, so a shared post unfurls with its own picture instead of the site card.
+    const noteImg = collection.prefix === "/notes" && frontmatter && typeof frontmatter.image === "string" && frontmatter.image.startsWith("/media/") ? frontmatter.image : "";
+    const noteHead = noteImg ? `<meta name="x-og-image" content="${escapeHtml(noteImg)}">${frontmatter?.imageAlt ? `<meta name="x-og-image-alt" content="${escapeHtml(String(frontmatter.imageAlt))}">` : ""}` : "";
     // THE EDITOR section (rail active + tab group): notes → its own; layer docs live under BREAD.
     const sectionName = collection.prefix === "/notes" ? "notes" : "bread";
     const section = ` data-section="${sectionName}"`;
@@ -231,7 +235,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     if (kind === "entry" && collection.prefix === "/standards")
       readable = readable.replace(/<header[\s\S]*?<\/header>/, "");
     return shellPage({
-      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}`,
+      title, description, screen, section, inject, injectHead: `${injectHead}${badgeHead}${noteHead}`,
       board: `${sourceToggle}${badgeCard}${photoGrid}${deck}${readable}${videoCard}${gallery}${shareBlock}`,
     });
   };
