@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 14 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 15 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a three-wave trail check, an opening-source check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -30,8 +30,8 @@ for the checks.
 ## What changed
 
 **Traffic.** The old wobble was a sideways kick every frame. It is now a small sway folded into a
-smoothed heading, with a turn-rate cap. Scout routes are one guaranteed bow, then Chaikin,
-not four random jumps. Trails are drawn as the same smooth path with a paper-coloured under-stroke
+smoothed heading, with a turn-rate cap. Scout routes are a three-wave wander (a main bow, a
+cross-wave and a small skew), then Chaikin, not four random jumps. Trails are drawn as the same smooth path with a paper-coloured under-stroke
 and a dotted scent line. Ants on a trail get an outbound and a return lane, so they no longer walk
 the same three pixels, and a queued ant slows instead of stopping dead. The line is five ants, not
 six, and the colony caps at twenty.
@@ -50,10 +50,11 @@ mandibles. The permanent link line from a mini hill to a trail is gone, so a sol
 scent. Their patrol gets a six second progress check: a guard that moves less than thirty pixels
 re-homes instead of standing in the dirt.
 
-**The opening.** Three scouts and three workers start. The first scout keeps its first find within
-240 pixels of the hill, the first egg is laid at six seconds, and the first hatch comes at 3.4
-seconds of incubation. The first trail appeared at seven seconds in the measured run and three
-trails were open by nine.
+**The opening.** Three scouts and three workers start. Each opening scout takes a different block,
+so the first three trails point at different paragraphs instead of one source. The first scout keeps
+its first find within 240 pixels of the hill, the first egg is laid at six seconds, and the first
+hatch comes at 3.4 seconds of incubation. The first trail appeared at seven seconds in the measured
+run and three trails were open by nine.
 
 **The page is the environment.** The home hill is still sited in the visible viewport, so nothing
 makes the player scroll to find it, but scouts can work the whole page afterwards. The automatic
@@ -62,10 +63,11 @@ hill still opens in view. The ants may work below the fold while the reader read
 
 **Refresh, navigation and the stray.** A reload or a move to another page closes the panel, clears
 the colony, and leaves the launcher, so the sidebar is back to its default view and the player has
-to click. The colony lives on the page where it was opened. When the game is closed, a single stray
-ant sometimes crosses
-the reading pane on its own, off any trail, with pauses and a small sway. Click it and it runs for
-the status bar launcher and makes it pulse. A click writes `nest-stray-clicked` to sessionStorage,
+to click. The colony lives on the page where it was opened. A page link with Links on asks first
+with a leave confirmation; other redirects get the browser's own beforeunload prompt. When the game
+is closed, a single stray ant sometimes crosses the reading pane on its own, off any trail, with
+pauses and a small sway. It uses the colony's animated ant art, so its legs move. Click it and it
+runs for the status bar launcher and makes it pulse. A click writes `nest-stray-clicked` to sessionStorage,
 so the random ant does not return in that tab, across page loads, until the tab is closed. A `stray`
 terminal command sends one on demand. It is scheduled thirty to ninety seconds after load, then two
 to four minutes after a walk or a click. It only runs where the launcher is visible, so it is a
@@ -78,8 +80,10 @@ scene for longer. The player's win stays quiet, which is the note's own argument
 
 **The controls.** The three tools are named, keyed 1, 2 and 3, and the selected tile presses in.
 The cursor changes natively: crosshair for squash, cell for wipe, the page's own cursor for links,
-and copy for bait. Squash and Wipe turn off text selection on the page so a drag does not select
-copy; Links turns it back on. A squash flattens the ant under a quick ring and a dust mark. A wiped trail
+and copy for bait. The link lock covers the whole page, not just the reading pane, so a sidebar link
+is blocked while Squash or Wipe is on. Links turns the lock off but asks before a page link leaves,
+because leaving ends the colony. Squash and Wipe turn off text selection on the page so a drag does
+not select copy; Links turns it back on. A squash flattens the ant under a quick ring and a dust mark. A wiped trail
 snaps into two pieces, sprays scent dots, and then the ants scatter.
 
 **The sidebar.** The panel is now one instrument: a status line, the Braille nest, a two-line
@@ -130,7 +134,7 @@ $ bun test
 Ran 875 tests across 48 files. [9.74s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  11 passed (8.3s)
+  11 passed (25.2s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
