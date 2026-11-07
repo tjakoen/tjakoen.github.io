@@ -42,6 +42,61 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await input.press("Enter");
     await expect(page).toHaveURL(/\/bread$/);
   });
+
+  test("nest unlocks through the terminal and remembers the launcher", async ({ page }) => {
+    const loaded = new Set<string>();
+    page.on("request", (request) => loaded.add(new URL(request.url()).pathname));
+    await page.goto("/notes/the-site-has-ants");
+    await expect(page.getByText("Open the terminal at the bottom of the page", { exact: false })).toBeVisible();
+    await page.keyboard.type("nest");
+    await page.locator(".console__expand").click();
+    await run(page, "help");
+    await expect(page.locator('[data-surface="console"]')).toContainText("reveal the ant colony");
+    const launcher = page.getByRole("button", { name: "Open the Nest" });
+    await expect(launcher).toHaveCount(0);
+    expect(loaded.has("/site/nest-mockup.js")).toBe(false);
+
+    await run(page, "nest");
+    await expect(launcher).toBeVisible();
+    await expect(page.locator('[data-surface="console"]')).toContainText("Look for the little ant");
+    await page.reload();
+    await expect(launcher).toBeVisible();
+    await launcher.click();
+    await expect(page.locator('[data-surface="nest-controls"]')).toBeVisible();
+  });
+
+  test("Nest tools lock links during play and let players cancel bait", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".console__expand").click();
+    await run(page, "nest");
+    await page.locator(".console__expand").click();
+    await page.getByRole("button", { name: "Open the Nest" }).click();
+    const panel = page.locator('[data-surface="nest-controls"]');
+    const main = page.locator(".app-shell__main");
+    const link = main.getByRole("link", { name: "Explore selected work" });
+    await expect(main).toHaveCSS("cursor", "crosshair");
+    await link.press("Enter");
+    await expect(page).toHaveURL(/\/$/);
+
+    const bait = panel.getByRole("button", { name: "Drop bait" });
+    await bait.click();
+    await expect(main).toHaveCSS("cursor", "copy");
+    await panel.getByRole("button", { name: "Cancel bait" }).click();
+    await expect(main).toHaveCSS("cursor", "crosshair");
+    await expect(main.locator(".nest-bait")).toHaveCount(0);
+
+    await bait.click();
+    await panel.getByRole("button", { name: "Wipe trail" }).click();
+    await expect(main).toHaveCSS("cursor", "cell");
+    await expect(bait).toBeEnabled();
+    await panel.getByRole("button", { name: "Use page links" }).click();
+    await expect(main.locator(".nest-layer")).toHaveAttribute("inert", "");
+    await expect(bait).toBeDisabled();
+    await link.press("Enter");
+    await expect(page).toHaveURL(/\/projects$/);
+    await page.waitForLoadState("load");
+    await expect(panel.getByRole("button", { name: "Use page links" })).toHaveAttribute("aria-pressed", "true");
+  });
 });
 
 // ---- the DESK VERBS (P2b): the terminal restates each command as the SAME natural-language intent

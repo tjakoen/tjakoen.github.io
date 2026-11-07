@@ -30,6 +30,16 @@ inline rather than described; and `.nimbalyst/` plus `nimbalyst-local/` are giti
 working material, never site content. None of this is required by the standards, which state the
 capability and name the tool only as the example. See [`plans/nimbalyst-in-the-loop.md`](plans/nimbalyst-in-the-loop.md).
 
+When the session opens in DeepSeek Harness (DSH), the front door is this same file and the skills
+come from .agents/skills, a symlink to .claude/skills. DSH runs none of the Claude Code hooks.
+The DSH loop plugin carries the human-lane guard, the spawn envelope, the graph refresh and the
+session checklist; the checklist runs on the first step and its block is shown at the top of the
+first reply. The profile also mounts the pantry, tokensave and headroom MCP servers, so the board
+and code-search tools are available. The doctor and turn-end gate are commands here: bun
+tools/dsh-loop/cli.mjs start at the first turn, bun tools/dsh-loop/cli.mjs end before calling work
+done. The machine source is agent-config/shared/tools/dsh. See
+[docs/HARNESS-DSH.md](docs/HARNESS-DSH.md).
+
 ## Start here (reading order)
 
 The standards are installed here as **skills**. Invoke them, do not fetch them: `Skill(voice)`,
@@ -40,7 +50,8 @@ is a wasted round trip. The source of every one lives in this repo's `standards/
 there and then get regenerated into the gitignored, never-committed skills dir by running
 `bun cli.ts skills sync ../tjakoen.github.io` from the pantry repo. That package does name a pantry
 binary, but it is not installed on PATH here, so reach for it through bun rather than assuming the
-short command exists.
+short command exists. DSH reads the same mount through the .agents/skills symlink, so one sync
+serves both harnesses.
 
 1. [`PHILOSOPHY.md`](docs/PHILOSOPHY.md): the *why* beneath the whole stack. Read first.
 2. *Skill(intake)* ([published](https://tjakoen.github.io/standards/intake)): read it BEFORE
@@ -60,9 +71,10 @@ short command exists.
    badges + README presentation, with a reusable prompt to run in any repo.
 7. `Skill(graph)` ([published](https://tjakoen.github.io/standards/graph)): read it before answering
    any "where is X", "what calls Y" or "map this directory" question. This repo carries a live code
-   graph, rebuilt by a PostToolUse hook on every edit, so `graphify query <symbol>` answers those in
-   one call where a grep sweep costs many. Seed the query with a symbol the code actually contains:
-   a partial name returns a bare "No matching nodes found." and reads like a broken tool.
+   graph, rebuilt on every edit by a PostToolUse hook in Claude and by the DSH loop plugin, so
+   `graphify query <symbol>` answers those in one call where a grep sweep costs many. Seed the query
+   with a symbol the code actually contains: a partial name returns a bare "No matching nodes found."
+   and reads like a broken tool.
 8. [`CONTENT-BACKLOG.md`](docs/CONTENT-BACKLOG.md): what is written, what is in-flight, what is left.
 9. [`PLAN.md`](docs/architecture/PLAN.md) + [`FEATURES.md`](docs/architecture/FEATURES.md): the site's *how* and *what*.
 10. [`HACKING.md`](docs/HACKING.md): the route → source map + "which file do I open to change X" — the
@@ -113,6 +125,10 @@ Record the actual test totals and failures. Historical fixed counts are not an a
 a growing suite. The lint gate compares against its committed baseline and is advisory. CI skips
 image comparisons because the committed visual baselines are macOS-specific; use the unmodified
 visual suite on macOS when changing presentation. See .github/workflows/ci.yml for runner details.
+
+On DSH, bun tools/dsh-loop/cli.mjs end runs the typecheck, the lint gate and the graph refresh;
+bun tools/dsh-loop/cli.mjs start runs the doctor and the mount check. See
+[docs/HARNESS-DSH.md](docs/HARNESS-DSH.md).
 
 The earlier container command depended on a sibling compose file absent from this checkout.
 Do not prescribe it unless that setup is restored and verified. Windows runs that exercise symlinks
