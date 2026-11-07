@@ -36,7 +36,11 @@
   const style = document.createElement("style");
   style.textContent = `
     #nest-mock { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--space-2, 8px);
-      padding: var(--space-3, 12px); font: 12px/1.4 var(--font-mono); color: var(--ink); }
+      padding: var(--space-3, 12px); font: 12px/1.4 var(--font-mono); color: var(--ink);
+      min-width: 0; max-width: 100%; overflow-x: hidden; }
+    #nest-mock > * { min-width: 0; max-width: 100%; }
+    #nest-mock .head { min-width: 0; }
+    #nest-mock .head .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .muted { color: var(--ink-muted); }
     #nest-mock .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; gap: 8px; }
     #nest-mock .well { flex: 1 1 0; min-height: 0; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
@@ -154,11 +158,6 @@
     #nest-mock .head .lbl:first-child { flex: 1; }
     #nest-mock .head .x { flex: 0 0 auto; width: 24px; height: 24px; padding: 0; border: 1px solid transparent; font: 16px/1 var(--font-mono); color: var(--ink-muted); }
     #nest-mock .head .x:hover { border-color: var(--color-line); color: var(--ink); }
-    .nest-crest, .nest-hp { position: absolute; display: flex; gap: 3px; translate: -50% 0; pointer-events: none; }
-    .nest-crest { color: var(--ink-muted); }
-    .nest-crest i { width: 3.5px; height: 3.5px; border-radius: 50%; background: var(--color-accent); }
-    .nest-hp i { width: 4px; height: 4px; border-radius: 50%; border: 1px solid var(--ink-faint); }
-    .nest-hp i.on { background: var(--color-accent); border-color: var(--color-accent); }
     .nest-mini.hit { animation: nest-mini-hit .25s ease-out; }
     @keyframes nest-mini-hit { 30% { transform: translateX(2px) scale(.96); } }
     .nest-queen { position: absolute; width: 40px; height: 22px; margin: -11px 0 0 -20px; color: var(--color-accent); pointer-events: none; z-index: 2; transition: opacity .4s; }
@@ -174,14 +173,15 @@
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
     #nest-mock .nest-meter__bar > span { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 999px; transition: width .35s; }
     #nest-mock .nest-meter__bar.accent > span { background: var(--color-accent); }
-    #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, auto); gap: 1px 10px; margin: 0; align-items: baseline; }
-    #nest-mock .stat-grid div { display: flex; justify-content: space-between; gap: 6px; }
-    #nest-mock .stat-grid dt { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); }
-    #nest-mock .stat-grid dd { margin: 0; font-size: 12px; font-variant-numeric: tabular-nums; }
-    #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; }
+    #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, auto)); gap: 1px 10px; margin: 0; align-items: baseline; }
+    #nest-mock .stat-grid div { display: flex; justify-content: space-between; gap: 6px; min-width: 0; overflow: hidden; }
+    #nest-mock .stat-grid dt { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); white-space: nowrap; }
+    #nest-mock .stat-grid dd { margin: 0; font-size: 12px; font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #nest-mock .tools button { min-width: 0; }
+    #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
-    #nest-mock .link-state { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-muted); }
+    #nest-mock .link-state { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-muted); min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     #nest-mock .link-state .dot { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--color-accent); }
     #nest-mock .link-state.open { color: var(--ink); }
     #nest-mock .link-state.open .dot { background: var(--color-accent); }
@@ -1228,7 +1228,8 @@
     spot.gap === gaps.some((rect) => overlaps(box, rect));
   const findMiniSpot = () => {
     const terrain = miniTerrain();
-    const top = main.scrollTop, bottom = top + main.clientHeight;
+    const top = 0, bottom = main.scrollHeight;
+    const viewTop = main.scrollTop, viewBottom = viewTop + main.clientHeight;
     const bases = [...hills, ...minis].map((mound) => mound.base);
     let best = null, bestScore = -Infinity;
     const consider = (x, y, gap) => {
@@ -1236,7 +1237,9 @@
       const box = miniBox(spot);
       if (box[1] < top + 4 || box[3] > bottom - 4 || !miniSiteFits(spot, box, terrain)) return;
       const separation = Math.min(...bases.map(([baseX, baseY]) => Math.hypot((x - baseX) * 1.5, y - baseY)));
-      if (separation > bestScore) { best = spot; bestScore = separation; }
+      // A hill in the current view is preferred, but a lower scroll is a fine place too.
+      const score = separation + (box[1] >= viewTop && box[3] <= viewBottom ? 1000 : 0);
+      if (score > bestScore) { best = spot; bestScore = score; }
     };
     for (const [left, , right, bottomEdge] of terrain.gaps) {
       const center = (left + right) / 2;
@@ -1302,21 +1305,10 @@
     const count = mound.guards.size;
     mound.el.setAttribute("aria-label", count ? `Mini hill, ${count} guards` : `Mini hill, ${mound.hp} hits left`);
     mound.el.classList.toggle("open", !count);
-    if (mound.crest) {
-      mound.crest.replaceChildren(...Array.from({ length: count }, () => document.createElement("i")));
-      mound.crest.hidden = !count;
-    }
-    if (mound.hpRing) mound.hpRing.replaceChildren(...Array.from({ length: MINI_HP }, (_, i) => {
-      const dot = document.createElement("i");
-      if (i < mound.hp) dot.className = "on";
-      return dot;
-    }));
   };
   const squashQuiet = (ant) => { ant.el?.remove(); ant.el = null; state.ants = state.ants.filter((a) => a !== ant); };
   const removeMini = (mound) => {
     mound.el.remove();
-    mound.crest?.remove();
-    mound.hpRing?.remove();
     mound.decor?.remove();
     mound.links.forEach((link) => link.remove());
     minis.splice(minis.indexOf(mound), 1);
@@ -1328,15 +1320,10 @@
     el.setAttribute("role", "button"); el.setAttribute("tabindex", "0");
     positionMini(el, spot);
     const m = { el, spot, base: [spot.x, spot.y], hole: [spot.x, spot.y - 17], hp: MINI_HP, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, links: [] };
-    m.crest = document.createElement("span"); m.crest.className = "nest-crest";
-    m.hpRing = document.createElement("span"); m.hpRing.className = "nest-hp";
-    m.crest.style.left = spot.x + "px"; m.crest.style.top = (spot.y - 26) + "px";
-    m.hpRing.style.left = spot.x + "px"; m.hpRing.style.top = (spot.y + 3) + "px";
     el.addEventListener("click", (e) => {
       e.stopPropagation(); if (state.overrun || state.queenDead) return;
       if (m.guards.size) {
         el.classList.add("denied"); setTimeout(() => el.classList.remove("denied"), 300);
-        if (!m.warned) { m.warned = true; log("its guards are still alive"); }
         blip(180, 0.05, "square"); return;
       }
       m.hp--; el.textContent = miniArt(m.hp / MINI_HP); markGuards(m);
@@ -1352,7 +1339,7 @@
       removeMini(m); log("you broke a mini hill"); blip(90, 0.4, "square"); noiseBurst(0.2, 0.06, 320); checkWipe();
     });
     el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } });
-    layer.append(el); layer.append(m.crest); layer.append(m.hpRing);
+    layer.append(el);
     const tuft = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     tuft.setAttribute("class", "nest-decor"); tuft.setAttribute("aria-hidden", "true");
     tuft.setAttribute("width", "72"); tuft.setAttribute("height", "36"); tuft.setAttribute("viewBox", "0 0 72 36");

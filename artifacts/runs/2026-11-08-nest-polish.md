@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 9 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a trail-bend and text-selection check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 10 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a trail-bend and text-selection check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -57,8 +57,8 @@ trails were open by nine.
 
 **The page is the environment.** The home hill is still sited in the visible viewport, so nothing
 makes the player scroll to find it, but scouts can work the whole page afterwards. The automatic
-scroll is gone. Mini hills still stay in view. This is the owner's call: the ants may work below
-the fold while the reader reads.
+scroll is gone. Mini hills may be built below the fold now, which the owner allowed; the home
+hill still opens in view. The ants may work below the fold while the reader reads.
 
 **Refresh and the stray.** A reload now closes the panel, clears the saved colony, and leaves the
 launcher, so the sidebar is back to its default view and the player has to click. A normal link
@@ -83,7 +83,8 @@ snaps into two pieces, sprays scent dots, and then the ants scatter.
 activity log, three filled meters for page holds, stores and the next egg, a compact stat grid, the
 tool tiles, a persistent links locked or links open chip, the colony controls, and a footer link to
 the note. The meter classes are namespaced to the panel, because GRAIN's global `.meter` atom was
-clipping the labels to eight pixels. The inline "How to play" block is
+clipping the labels to eight pixels. The panel also clips horizontally, so a long larder or status
+cannot create a sideways scroll. The inline "How to play" block is
 gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps running.
 
 **The launcher.** The ant now sits in the status bar on every page. The game loads with the page
@@ -101,9 +102,9 @@ and a leaf or a mushroom depending on the hill. Two more small pieces are scatte
 in the reading pane, so the page feels inhabited beyond the mound. It is theme-token colour,
 never catches a click, and stays still under reduced motion. A mini hill gets a smaller tuft.
 
-**The mini hill language.** No words on the page. The rim carries one dot per guard. The base
-carries five dots, one per hit, and the existing Braille mound shrinks as the dots go out. The
-element is a keyboard button with an aria label for screen readers.
+**The mini hill language.** No words or count dots on the page. The mound thins as it takes hits,
+and the guards are the ants visible on patrol. The element is a keyboard button with an aria label
+for screen readers.
 
 **Sound.** One small synth, no files: a master gain, a compressor, oscillators and a reusable
 noise buffer. Cues cover the wake, a letter lift, a delivery, a trail laid, a trail fade, an egg,
@@ -148,7 +149,7 @@ run does not touch. The game file itself is clean.
 
 The note's two screenshots and its social card were regenerated against the new panel and the new
 trails. The session also showed a light run, a dark run, a forced dance, a close crop of the ground
-decor, a close crop of a mini hill with its guard crest and hit dots, a real trail wipe, and a real
+decor, a close crop of a mini hill, a real trail wipe, and a real
 squash.
 
 ## What was not done
