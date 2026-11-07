@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 16 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a three-wave trail check, an opening-source check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 17 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a trail-shape check, a scout-source check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -30,8 +30,8 @@ for the checks.
 ## What changed
 
 **Traffic.** The old wobble was a sideways kick every frame. It is now a small sway folded into a
-smoothed heading, with a turn-rate cap. Scout routes are a three-wave wander (a main bow, a
-cross-wave and a small skew), then Chaikin, not four random jumps. Trails are drawn as the same smooth path with a paper-coloured under-stroke
+smoothed heading, with a turn-rate cap. Scout routes are one cubic C or S through two random
+control points, with a little walk in the line, then Chaikin, not four random jumps. Trails are drawn as the same smooth path with a paper-coloured under-stroke
 and a dotted scent line. Ants on a trail get an outbound and a return lane, so they no longer walk
 the same three pixels, and a queued ant slows instead of stopping dead. The line is five ants, not
 six, and the colony caps at twenty.
@@ -50,11 +50,11 @@ mandibles. The permanent link line from a mini hill to a trail is gone, so a sol
 scent. Their patrol gets a six second progress check: a guard that moves less than thirty pixels
 re-homes instead of standing in the dirt.
 
-**The opening.** Three scouts and three workers start. Each opening scout takes a different block,
-so the first three trails point at different paragraphs instead of one source. The first scout keeps
-its first find within 240 pixels of the hill, the first egg is laid at six seconds, and the first
-hatch comes at 3.4 seconds of incubation. The first trail appeared at seven seconds in the measured
-run and three trails were open by nine.
+**The opening.** Three scouts and three workers start. A block with a trail or a scout is taken,
+so the first three scouts and later ones stay off each other's source. The first scout keeps its
+first find within 240 pixels of the hill, the first egg is laid at six seconds, and the first hatch
+comes at 3.4 seconds of incubation. The first trail appeared at seven seconds in the measured run
+and three trails were open by nine.
 
 **The page is the environment.** The home hill is still sited in the visible viewport, so nothing
 makes the player scroll to find it, but scouts can work the whole page afterwards. The automatic
@@ -103,13 +103,11 @@ next to `reveal the ant colony`. `?nest-debug` only exposes the local test hooks
 **The note.** The public note now carries the bug joke ("My portfolio has bugs now"), the
 always-visible launcher and the help line, the ninety second trail fade, the soldier and mini hill
 dots, the twenty and fifty letter dances, the refresh reset, the stray ant and its `stray`
-command, and the ground and sound details.
+command, and the sound details.
 
-**The ground.** A few Braille pieces are scattered in the empty margins, grass, stones, a leaf and
-a mushroom, the same alphabet as the hill and the sidebar nest. Nothing sits around the anthill, so
-the mound stays clean. The bread is a PRE, and the first obstacle scan skipped PRE; it is now solid
-for the hill, the scattered pieces and the mini hills. The decor is theme-token colour, never
-catches a click, and stays still under reduced motion.
+**The page.** The scattered ground decor is gone; the hill and the trails sit on the page alone.
+The bread is a PRE, and the first obstacle scan skipped PRE; it is now solid for the hill and the
+mini hills.
 
 **The mini hill language.** No words or count dots on the page. The mound thins as it takes hits,
 and the guards are the ants visible on patrol. The element is a keyboard button with an aria label
@@ -135,7 +133,7 @@ $ bun test
 Ran 875 tests across 48 files. [9.74s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  11 passed (33.8s)
+  12 passed (32.7s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
@@ -157,9 +155,8 @@ run does not touch. The game file itself is clean.
 ## What was shown
 
 The note's two screenshots and its social card were regenerated against the new panel and the new
-trails. The session also showed a light run, a dark run, a forced dance, a close crop of the ground
-decor, a close crop of a mini hill, a real trail wipe, and a real
-squash.
+trails. The session also showed a light run, a dark run, a forced dance, a close crop of a mini hill,
+a real trail wipe, and a real squash.
 
 ## What was not done
 
@@ -174,6 +171,6 @@ alone. The old screenshot inside the first note image is recursive by nature and
 Play the first minute on the home page and on a note, in both colour schemes. Watch whether the
 new trail weight reads as scent rather than as a dotted rule. Wipe a trail and squash a soldier to
 see whether the two animations land at the right speed. Let a mini hill stand and watch a guard
-patrol away from it. Look at the scattered Braille pieces and decide whether their amount and placement are
-right. The dance is the one call that is still a taste question: nine seconds, queen on the
+patrol away from it. Watch the trail shape and decide whether the cubic reads as walked rather than
+plotted. The dance is the one call that is still a taste question: nine seconds, queen on the
 hill, glyphs in orbit.
