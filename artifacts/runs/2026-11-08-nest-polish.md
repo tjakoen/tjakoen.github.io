@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 27 | the branch is local for review
+unpushed: 28 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -84,12 +84,13 @@ synth melody plays, and then the colony goes back to work. The queen is hidden i
 while she is outside. The final overrun uses the same scene for longer. The player's win stays
 quiet, which is the note's own argument.
 
-**The controls.** The three tools are named, keyed 1, 2 and 3, and the selected tile presses in.
-The cursor changes natively: crosshair for squash, cell for wipe, the page's own cursor for links,
-and copy for bait. The link lock covers the whole page, not just the reading pane, so a sidebar link
-is blocked while Squash or Wipe is on. A blocked link is not silent: the cursor is not-allowed and a
-toast says the links are locked and offers Use Links (3), which switches the tool. Links then asks
-before a page link leaves, because leaving ends the colony. Squash and Wipe turn off text selection on the page so a drag does
+**The controls.** Four colony tools are named: Squash, Wipe, Bait and Seal, with Bait and Seal on
+text tiles beside the two page tools. Links, mute, pause and restore are the utility row below;
+Links keeps key 3. The cursor changes natively: crosshair for squash, cell for wipe, the page's own
+cursor for links, and copy for bait. The link lock covers the whole page, not just the reading pane,
+so a sidebar link is blocked while Squash or Wipe is on. A blocked link is not silent: the cursor
+is not-allowed and a toast says the links are locked and offers Use Links (3), which switches the
+tool. Links then asks before a page link leaves, because leaving ends the colony. Squash and Wipe turn off text selection on the page so a drag does
 not select copy; Links turns it back on. A squash flattens the ant under a quick ring and a dust mark. A wiped trail
 snaps into two pieces, sprays scent dots, and then the ants scatter.
 
@@ -140,7 +141,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  15 passed (32.1s)
+  15 passed (28.2s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

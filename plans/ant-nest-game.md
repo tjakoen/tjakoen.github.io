@@ -59,9 +59,10 @@ unreadable and the colony has won that page.
   below the fold. The first two favor a spot near the main hill; later ones spread out. Builders
   favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Its mound thins
   with each hit. Knocking it calls the guards home; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
-- **The player's tools.** Pick a tool: squash holds every page link so a missed ant never
-  navigates, wipe is the only tool that breaks scent, and links gives the page back with a leave
-  confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
+- **The player's tools.** The colony tools are Squash, Wipe, Bait and Seal, with names on the
+  tiles; Links, mute, pause and restore are the utility row below. Squash holds every page link so
+  a missed ant never navigates, wipe is the only tool that breaks scent, and links gives the page
+  back with a leave confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
   each tool a name, an icon and a key. Squash ants, drag across a scent trail to break it, drop bait
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
   seals have cooldowns. Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
