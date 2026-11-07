@@ -174,6 +174,19 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(mound).toHaveClass(/exposed/);
   });
 
+  test("keyboard tool switches do not resize the colony", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    const well = page.locator("#nest-mock .well");
+    const before = await well.boundingBox();
+    await page.keyboard.press("2");
+    await page.waitForTimeout(250);
+    const after = await well.boundingBox();
+    expect(Math.abs((after?.height ?? 0) - (before?.height ?? 0))).toBeLessThan(1);
+    expect(Math.abs((after?.width ?? 0) - (before?.width ?? 0))).toBeLessThan(1);
+  });
+
   test("restore puts the mounds somewhere else", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();

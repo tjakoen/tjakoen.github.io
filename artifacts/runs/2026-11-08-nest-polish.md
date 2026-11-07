@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 30 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 31 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -144,7 +144,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  16 passed (32.5s)
+  17 passed (1.2m)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
