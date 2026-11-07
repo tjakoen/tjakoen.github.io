@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 33 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 34 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -36,9 +36,9 @@ and a dotted scent line. Ants on a trail get an outbound and a return lane, so t
 the same three pixels, and a queued ant slows instead of stopping dead. The line is five ants, not
 six, and the colony caps at twenty.
 
-**Trails.** A trail now has a state. It is faint while the scout is still walking it, it firms up
-when the first letter reaches the hill, and it fades when its patch empties or after ninety
-seconds. Each spent trail sends its own worker out as the next scout; the old one-scout rule
+**Trails.** A scout's walk is a route, not a trail: the scent line is laid only when the first
+letter reaches the hill. A scout killed before that leaves nothing to join, so the old half-open
+trail cannot softlock the colony. A trail fades when its patch empties or after ninety seconds. Each spent trail sends its own worker out as the next scout; the old one-scout rule
 dropped the replacements when two patches emptied together, which is why three trails could fall to
 one. Successors look near the mound first and only widen the search when nothing is close, and the
 trail target grows with the colony up to four, so more ants can hold more lines. That also removes
@@ -57,8 +57,9 @@ re-homes instead of standing in the dirt.
 so the first three scouts and later ones stay off each other's source. The first three stay in
 view: the first takes the closest letter, the second the farthest on the opposite side of the
 mound, and the third the most spread-out remaining spot. The first egg is laid at six seconds, and
-the first hatch comes at 3.4 seconds of incubation. The first trail appeared at seven seconds in
-the measured run and three trails were open by nine.
+the first hatch comes at 3.4 seconds of incubation. The first trail appeared at eight seconds in
+the measured run, with the third scout still walking at twenty-eight, so a line opens only after
+its scout has carried a letter home.
 
 **The page is the environment.** The home hill is sited in a random empty cell of the visible
 viewport, top or bottom, rather than the same roomy top-right gap; the old roomiest-spot rule was
@@ -83,8 +84,8 @@ desktop easter egg.
 thresholds. The queen leaves the sidepanel nest for a stage outside the hill, the workers ring her
 and dance, the sidepanel pulses with a border glow and a sway, the stolen glyphs orbit, a short
 synth melody plays, and then the colony goes back to work. The queen is hidden in the sidepanel
-while she is outside. The final overrun uses the same scene for longer. The player's win stays
-quiet, which is the note's own argument.
+while she is outside. The final overrun uses the same scene for longer. There is no win to stay
+quiet now: the reserve is gone, and an empty colony gets a fresh scout from the queen.
 
 **The controls.** Four colony tools are named: Squash, Wipe, Bait and Seal, with Bait and Seal on
 text tiles beside the two page tools. Links, mute, pause and restore are the utility row below;
@@ -147,7 +148,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  17 passed (1.2m)
+  21 passed (33.9s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
