@@ -27,6 +27,7 @@ import { join, relative } from "node:path";
 import { readdir } from "node:fs/promises";
 import { extractRefs } from "@tjakoen/batch/export/rewrite.ts";
 import { checkDiagramCache } from "./diagram-cache-gate.ts";
+import { SITE } from "../src/seo.ts";
 
 const DIST = Bun.env.EXPORT_DIST ?? "dist";
 
@@ -67,11 +68,15 @@ async function checkSitemap(): Promise<string[]> {
   const xml = await Bun.file(sitemapPath).text();
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!);
   if (locs.length === 0) failures.push(`dist/sitemap.xml has no <loc> entries`);
+  const expectedOrigin = new URL(SITE.origin).origin;
 
   for (const loc of locs) {
     let pathname: string;
-    try { pathname = new URL(loc).pathname; }
+    let origin: string;
+    try { const url = new URL(loc); pathname = url.pathname; origin = url.origin; }
     catch { failures.push(`sitemap: "${loc}" is not a valid URL`); continue; }
+    if (origin !== expectedOrigin)
+      failures.push(`sitemap: "${loc}" prints ${origin}, not the public origin ${expectedOrigin}`);
     // task 3: every non-root sitemap URL is canonical trailing-slash — flag a regression here too.
     if (pathname !== "/" && !pathname.endsWith("/"))
       failures.push(`sitemap: "${pathname}" is not trailing-slash canonical (301s on GitHub Pages)`);
