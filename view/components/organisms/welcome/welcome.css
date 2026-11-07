@@ -17,7 +17,10 @@
 /* the Braille baguette: floats in the hero's top-right corner in the flavor accent, so the intro copy
    wraps around it rather than running under it, and steps aside when the frame is too narrow. */
 .welcome__bread { float: right; margin: 0 0 var(--space-4) var(--space-6);
-  font-family: var(--font-mono); font-size: clamp(0.7rem, 1.2vw, 1.05rem); line-height: 1.05;
+  font-family: var(--font-mono); font-size: clamp(0.6rem, 0.9vw, 0.85rem);
+  /* a Braille cell is two dots wide and four tall, so line-height 1.2 and a slight negative tracking
+     space the dots evenly in both directions; the stroke fattens each dot so the loaf reads solid. */
+  line-height: 1.2; letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor;
   color: var(--color-accent); pointer-events: none; user-select: none; }
 @container shell-frame (max-width: 56rem) { .welcome__bread { display: none; } }
 .welcome h2 { font-size: var(--text-xl); font-weight: var(--font-weight-regular); margin: 0 0 1rem; }
