@@ -2,7 +2,7 @@
 title: "My portfolio has ants now, and they eat the copy"
 subtitle: "A hidden game on a professional site, built with no canvas and no framework, where the enemy steals the very letters you came to read."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-11-07
 readingTime: "~6 min"
