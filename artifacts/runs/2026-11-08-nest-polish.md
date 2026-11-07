@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 26 | the branch is local for review
+unpushed: 27 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -38,8 +38,9 @@ six, and the colony caps at twenty.
 
 **Trails.** A trail now has a state. It is faint while the scout is still walking it, it firms up
 when the first letter reaches the hill, and it fades when its patch empties or after ninety
-seconds. A spent trail sends a worker out as the next scout. That removes the long pause where the
-colony stood in the tunnel waiting for a trail to die.
+seconds. Each spent trail sends its own worker out as the next scout; the old one-scout rule
+dropped the replacements when two patches emptied together, which is why three trails could fall to
+one. That also removes the long pause where the colony stood in the tunnel waiting for a trail to die.
 
 **Light mode.** The scent uses `--ink-muted` at a stronger weight with a paper halo, and a
 `[data-color-scheme="light"]` override. The old stroke was 1.2px of `--ink-faint` at 0.55 opacity,
@@ -139,7 +140,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  15 passed (31.3s)
+  15 passed (32.1s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

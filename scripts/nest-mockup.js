@@ -754,7 +754,6 @@
   };
   const spawnSuccessor = () => {
     if (state.over || state.overrun || state.queenDead) return;
-    if (state.ants.some((a) => a.role === "scout")) return;
     const pick = state.ants.find((a) => a.role === "worker" && a.job !== "carry" && a.job !== "crew" && a.job !== "dance");
     if (pick) {
       const held = pick.letter;
@@ -769,10 +768,8 @@
       log("a trail fades; a worker turns scout");
       return;
     }
-    if (!state.ants.some((a) => a.role === "scout")) {
-      const a = newAnt("scout", "hatch", 0); label(a);
-      log("a trail fades; a scout hatches");
-    }
+    const a = newAnt("scout", "hatch", 0); label(a);
+    log("a trail fades; a scout hatches");
   };
 
   // A worker at the top of the tunnel decides whether to go out: follow a trail with room on it,
