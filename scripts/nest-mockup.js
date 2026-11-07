@@ -193,8 +193,9 @@
     @keyframes nest-party-sway { to { transform: translateY(-1.5px); filter: brightness(1.1); } }
     .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
     @keyframes nest-bob { to { transform: translateY(-3px); } }
-    #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
-    #nest-mock .nest-meter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-content: start; }
+    #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    #nest-mock .nest-meter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-content: start;
+      padding: 4px 6px; border: 1px solid var(--color-line); background: var(--paper-2); }
     #nest-mock .nest-meter > .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .nest-meter .hint { grid-column: 1 / -1; font: 8px/1.15 var(--font-mono); font-style: normal; letter-spacing: .02em; opacity: .55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; font: 10px/1.2 var(--font-mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
@@ -485,7 +486,7 @@
   };
   const pre = panel.querySelector(".nest-pre");
   const well = panel.querySelector(".well");
-  const log = (msg) => { const li = document.createElement("li"); li.textContent = msg; $("log").prepend(li); while ($("log").children.length > 3) $("log").lastChild.remove(); };
+  const log = (msg) => { const li = document.createElement("li"); li.textContent = msg; $("log").prepend(li); while ($("log").children.length > 1) $("log").lastChild.remove(); };
 
   // ================================ the nest ================================
   // Routes in nest units (0..1 across, 0..1 down). Ants and eggs hold a route and a distance along
@@ -1759,8 +1760,8 @@
     const setMeter = (key, ratio, text) => {
       const r = Math.min(1, Math.max(0, ratio));
       const cells = 10, filled = Math.round(r * cells);
-      const fill = $(key); if (fill) fill.textContent = "▰".repeat(filled);
-      const rest = $(`${key}-rest`); if (rest) rest.textContent = "▱".repeat(cells - filled);
+      const fill = $(key); if (fill) fill.textContent = "█".repeat(filled);
+      const rest = $(`${key}-rest`); if (rest) rest.textContent = "░".repeat(cells - filled);
       const meter = $(`${key}-bar`);
       if (meter) {
         meter.setAttribute("aria-valuenow", String(Math.round(r * 100)));

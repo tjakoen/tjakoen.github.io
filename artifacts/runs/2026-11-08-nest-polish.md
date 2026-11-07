@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 45 | the branch is local for review
+unpushed: 46 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a multi-swat check, a reset-warning check, a reset-scroll check, a reset-ants check, a larder-width check, a meter-hint check, a stores-cap check, a worship-population check, a queen-dance check, a guard-nearest check, a mound-heal check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -114,7 +114,7 @@ and the colony and page tool rows sit at the bottom. The status and help sentenc
 The activity log is one line, and the four meters run two by two as clean cards: label and value on
 one line, the full ten-cell bar below, and the hint on its own line, so no label wraps into the
 next card. That gave the nest well another thirty-five pixels. The meter bars are
-character cells, filled with ▰ and empty with ▱, rather than CSS pills. The meter classes are namespaced to the panel, because GRAIN's global `.meter` atom was
+block cells, filled with █ and empty with ░, with each meter in a bordered card and the log on one line. The meter classes are namespaced to the panel, because GRAIN's global `.meter` atom was
 clipping the labels to eight pixels. The panel also clips horizontally, so a long larder or status
 cannot create a sideways scroll. The stat values sit next to their labels; the old space-between
 pushed the next 0 far enough right that it read as the trails value. The larder is a full-width
@@ -166,10 +166,10 @@ $ bun test
  894 pass
  0 fail
  3885 expect() calls
-Ran 896 tests across 49 files. [6.16s]
+Ran 896 tests across 49 files. [5.77s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  27 passed (30.9s)
+  27 passed (30.8s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
