@@ -21,7 +21,9 @@ uses the stack; it does not build it. Pages are trailheads to the canonical docs
 
 ## What this is worked in
 
-The harness is **Nimbalyst**: sessions grouped into workstreams with their subagents, tabs and
+The harness is whichever program runs the session: Claude Code, Codex or DeepSeek Harness. The loop
+is the same in all three; the adapter is what changes. The desk is **Nimbalyst**: sessions grouped
+into workstreams with their subagents, tabs and
 edited files visible together, per-action permission judged rather than blanket-approved, and
 `spawn_session` so a handoff opens the next session instead of being pasted into one. It matters to
 anyone working here for three practical reasons: uncommitted work is attributed **per session**, so a
