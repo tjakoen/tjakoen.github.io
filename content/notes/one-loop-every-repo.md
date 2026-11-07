@@ -18,6 +18,14 @@ summary: >
   honest that it isn't proof it scales to a team.
 ---
 
+> **Update, 2026-11-08.** This is the earlier version of the loop. The principles still hold: one
+> instruction file, one plan, one report, one session check, one human gate. What changed is the
+> harness and the model layer. The loop now runs in Claude Code, Codex and DeepSeek Harness; the
+> model is a routing decision, not an identity. The current version is a pair:
+> [The Loop Outlives the Model](one-loop-three-harnesses.md) is the story, and
+> [Set Up the Loop With One Prompt](loop-setup.md) is the setup. This note is still the long version
+> of the loop's principles; the harness and model layer are the part that moved.
+
 ## The week I couldn't explain my own work
 
 There was a week where I looked at what had shipped across my repositories and could not, off the top

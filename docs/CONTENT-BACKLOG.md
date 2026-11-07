@@ -342,6 +342,15 @@ Two notes added to close gaps between the published set and work that shipped si
       - Figure per FIGURES if one earns its place: the flow scaffold, brief to spawned session to
         workstream, is the shape most likely to.
 
+- [ ] **The loop, split in two (drafted 2026-11-08).** The lead is The Loop Outlives the Model,
+      the story of one public standard and a private config across Claude Code, Codex and DeepSeek.
+      The companion is Set Up the Loop With One Prompt, the prompt-first setup guide with the
+      checklist terminal, the five pieces, the guards and the adapter. Both DRAFT, cross-linked,
+      one argument. This answers the item above: the harness is the program, the loop is the
+      standard. The guide's public/private section carries the audit: the voice rules and the
+      checklist rule are the promotion candidates, and the guard grammar drift is fixed with one
+      test list.
+
 ## Production status (in-flight, 2026-07-03)
 
 Where the notes actually stand, so a fresh session can pick up mid-stream:
