@@ -1,30 +1,61 @@
-// Mockup only: open any page with ?nest in the address to see the Nest idea.
-// Everything is drawn in Braille dots, the same way PR 37 draws the homepage baguette: a mono <pre>,
-// a two-by-four dot cell per character, the flavor accent for what matters and faint ink for soil.
+// Nest mockup: open any page with ?nest in the address. A playable sketch of plans/ant-nest-game.md:
+// ants leave a crack in the page, steal real letters, carry them to the queen, and every three
+// letters she lays another ant. Click an ant to squash it; a carried letter goes back where it was.
+// Every colour is a theme token, so each flavor recolours it: soil in faint and muted ink, the ants
+// in ink, and the queen, the grass and the stolen letters in the flavor accent.
 (() => {
   const modes = document.querySelector(".assistant__modes");
   const aside = document.querySelector(".assistant");
-  if (!modes || !aside || document.getElementById("nest-mock")) return "skip";
+  const main = document.querySelector(".app-shell__main") || document.querySelector("main");
+  if (!modes || !aside || !main || document.getElementById("nest-mock")) return;
 
-  // A dot canvas. set(x, y, tone) marks one dot; render() packs each 2x4 block into one Braille
-  // character and colours it by the strongest tone inside it (0 soil, 1 ink, 2 accent).
+  const style = document.createElement("style");
+  style.textContent = `
+    #nest-mock { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--space-2, 8px);
+      padding: var(--space-3, 12px); font: 12px/1.4 var(--font-mono); color: var(--ink); }
+    #nest-mock .muted { color: var(--ink-muted); }
+    #nest-mock .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; }
+    #nest-mock .well { flex: 1; min-height: 0; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line); }
+    .nest-pre { margin: 0; font-family: var(--font-mono); font-size: 10px; line-height: 1.2; letter-spacing: -0.04em;
+      -webkit-text-stroke: 0.05em currentColor; color: var(--ink-faint); user-select: none; }
+    .nest-pre b { font-weight: inherit; }
+    .nest-pre .t1 { color: var(--ink-muted); } .nest-pre .t2, .nest-pre .t5, .nest-pre .t6 { color: var(--color-accent); }
+    .nest-pre .t3, .nest-pre .t4 { color: var(--ink); }
+    #nest-mock .stats { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 2px 10px; margin: 0; align-items: baseline; }
+    #nest-mock .stats dt, #nest-mock .stats dd { font-size: 12px; line-height: 1.4; }
+    #nest-mock .stats dd { margin: 0; text-align: right; }
+    #nest-mock .accent { color: var(--color-accent); }
+    #nest-mock .row { display: flex; gap: 6px; }
+    #nest-mock button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; cursor: pointer; }
+    .nest-layer { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 50; }
+    .nest-ant { position: absolute; width: 23px; height: 13px; margin: -6px 0 0 -11px; color: var(--ink); cursor: crosshair; }
+    .nest-ant svg { display: block; }
+    .nest-ant i { position: absolute; left: 4px; top: -15px; font: 700 15px var(--font-accent, Georgia), serif; font-style: normal; color: var(--color-accent); }
+    .nest-squash { position: absolute; color: var(--ink-faint); font: 14px var(--font-mono); pointer-events: none; transition: opacity 1.2s; }
+    .nest-crack { position: absolute; font: 16px/1.2 var(--font-mono); letter-spacing: -0.04em; white-space: pre; color: var(--ink-muted);
+      -webkit-text-stroke: 0.05em currentColor; pointer-events: none; transform: translate(-50%, -50%); }`;
+  document.head.append(style);
+
+  // ---- Braille dot canvas: each 2x4 block of dots becomes one character, coloured by its strongest tone.
   const canvas = (w, h) => {
     const dots = new Int8Array(w * h).fill(-1);
     const bit = [[0x01, 0x08], [0x02, 0x10], [0x04, 0x20], [0x40, 0x80]];
+    const ok = (x, y) => x >= 0 && y >= 0 && x < w && y < h;
     return {
-      set: (x, y, t) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < w && y < h) dots[y * w + x] = Math.max(dots[y * w + x], t); },
-      clear: (x, y) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < w && y < h) dots[y * w + x] = -1; },
-      render: () => {
+      dots,
+      set: (x, y, t) => { x |= 0; y |= 0; if (ok(x, y)) dots[y * w + x] = Math.max(dots[y * w + x], t); },
+      clear: (x, y) => { x |= 0; y |= 0; if (ok(x, y)) dots[y * w + x] = -1; },
+      render: (src = dots) => {
         let out = "";
         for (let cy = 0; cy < h; cy += 4) {
           for (let cx = 0; cx < w; cx += 2) {
             let code = 0, tone = -1;
             for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) {
-              const t = dots[(cy + dy) * w + cx + dx];
+              const t = src[(cy + dy) * w + cx + dx];
               if (t >= 0) { code |= bit[dy][dx]; tone = Math.max(tone, t); }
             }
             const ch = String.fromCharCode(0x2800 + code);
-            out += tone >= 0 ? `<b class="t${tone}">${ch}</b>` : ch;
+            out += tone > 0 ? `<b class="t${tone}">${ch}</b>` : ch;
           }
           out += "\n";
         }
@@ -33,104 +64,173 @@
     };
   };
 
-  // The nest: speckled soil, a grass line, tunnels and three chambers carved out of it.
-  const W = 76, H = 112, c = canvas(W, H);
-  let seed = 7; const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
-  for (let y = 10; y < H; y++) for (let x = 0; x < W; x++) if ((x + 2 * y) % 4 === 0 || rnd() < 0.06) c.set(x, y, y < 34 ? 1 : 0);
-  for (let x = 0; x < W; x++) { c.set(x, 8 + Math.round(Math.sin(x / 5)), 2); if (x % 3 === 0) c.set(x, 6 + (x % 2), 2); }
-  const carve = (x, y, rx, ry) => { for (let j = -ry; j <= ry; j++) for (let i = -rx; i <= rx; i++) if ((i * i) / (rx * rx) + (j * j) / (ry * ry) <= 1) c.clear(x + i, y + j); };
-  const tunnel = (pts) => { for (let k = 0; k < pts.length - 1; k++) { const [a, b] = [pts[k], pts[k + 1]]; for (let s = 0; s <= 30; s++) carve(a[0] + (b[0] - a[0]) * s / 30, a[1] + (b[1] - a[1]) * s / 30, 2, 2); } };
-  tunnel([[38, 6], [38, 28], [22, 46], [16, 52]]);
-  tunnel([[38, 28], [56, 44], [60, 62]]);
-  tunnel([[24, 46], [28, 78], [38, 90]]);
-  tunnel([[60, 62], [50, 86], [40, 92]]);
-  carve(16, 54, 11, 6); carve(60, 64, 12, 6); carve(38, 96, 18, 9);
-  // eggs in the nursery, letters in the larder, the queen in the bottom chamber
-  [10, 13, 16, 19, 22].forEach((x) => { c.set(x, 57, 4); c.set(x + 1, 57, 4); });
-  for (let x = 50; x < 70; x += 2) { c.set(x, 68, 5); c.set(x, 69, 5); }
-  for (let j = -3; j <= 3; j++) for (let i = -9; i <= 9; i++) if ((i * i) / 81 + (j * j) / 9 <= 1) c.set(40 + i, 99 + j, 6);
-  for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) c.set(29 + i, 98 + j, 6);
-  for (let k = -1; k <= 1; k++) { c.set(30 + k * 5, 103, 6); c.set(30 + k * 5 + 1, 104, 6); c.set(30 + k * 5, 94, 6); c.set(30 + k * 5 + 1, 93, 6); }
-  // workers in the tunnels: three dots in a row, head to tail
-  [[38, 16], [30, 38], [48, 36], [26, 64], [56, 50], [46, 80]].forEach(([x, y]) => { c.set(x - 1, y, 3); c.set(x, y, 3); c.set(x + 1, y, 3); c.set(x + 2, y, 3); });
-
-  // 1. The fourth tab, after Notepad.
+  // ---- The panel: the tab, then a well the nest fills edge to edge, then the numbers.
   modes.querySelectorAll("[role=tab]").forEach((b) => b.setAttribute("aria-selected", "false"));
   const tab = document.createElement("button");
-  tab.type = "button"; tab.role = "tab"; tab.textContent = "Nest"; tab.setAttribute("aria-selected", "true");
+  tab.type = "button"; tab.setAttribute("role", "tab"); tab.textContent = "Nest"; tab.setAttribute("aria-selected", "true");
   modes.append(tab);
-
-  const style = document.createElement("style");
-  style.textContent = `
-    .nest-pre { font-family: var(--font-mono); line-height: 1.2; letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor;
-      color: var(--nest-soil); margin: 0; user-select: none; }
-    #nest-mock, .nest-layer {
-      --nest-soil: color-mix(in oklab, #8a5a30 88%, var(--color-accent));
-      --nest-topsoil: color-mix(in oklab, #b98450 88%, var(--color-accent));
-      --nest-grass: color-mix(in oklab, #86b24f 88%, var(--color-accent));
-      --nest-ant: color-mix(in oklab, #d9603a 90%, var(--color-accent));
-      --nest-egg: #efe6d0;
-      --nest-gold: color-mix(in oklab, #f0b545 82%, var(--color-accent)); }
-    .nest-pre b { font-weight: inherit; }
-    #nest-mock .nest-pre { padding: 6px 4px; border-radius: 2px;
-      background: linear-gradient(transparent 7%, color-mix(in oklab, #4a2e17 45%, var(--paper)) 7%, color-mix(in oklab, #2e1c0e 55%, var(--paper))); }
-    .nest-pre .t0 { color: var(--nest-soil); } .nest-pre .t1 { color: var(--nest-topsoil); } .nest-pre .t2 { color: var(--nest-grass); }
-    .nest-pre .t3 { color: var(--nest-ant); } .nest-pre .t4 { color: var(--nest-egg); }
-    .nest-pre .t5, .nest-pre .t6 { color: var(--nest-gold); }
-    #nest-mock { padding: var(--space-3, 12px); font: var(--text-sm, 12px)/1.5 var(--font-mono); color: var(--ink); }
-    #nest-mock .muted { color: var(--ink-muted); } #nest-mock .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
-    #nest-mock .bar { font-family: var(--font-mono); color: var(--nest-gold); letter-spacing: -0.04em; }
-    #nest-mock button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; }
-    .nest-ant { position: absolute; white-space: pre; font-family: var(--font-mono); color: var(--nest-ant); -webkit-text-stroke: 0.06em currentColor; letter-spacing: -0.04em; line-height: 1.2; }
-    .nest-ant i { position: absolute; left: 0.2em; top: -0.95em; font: 700 1.15em var(--font-serif, Georgia), serif; color: var(--nest-gold); -webkit-text-stroke: 0; }
-    .nest-gap { display: inline-block; width: 0.5em; border-bottom: 1px dotted var(--nest-gold); }`;
-  document.head.append(style);
-
-  // 2. The panel: the dot nest, then the colony's numbers and the two controls.
   [...aside.children].forEach((el) => { if (!el.classList.contains("assistant__head")) el.style.display = "none"; });
+  aside.style.display = "flex"; aside.style.flexDirection = "column";
   const panel = document.createElement("div");
   panel.id = "nest-mock";
   panel.innerHTML = `
-    <div class="lbl muted" style="display:flex;justify-content:space-between"><span>colony 01</span><span>day 3</span></div>
-    <pre class="nest-pre" aria-label="Side view of the ant nest: a queen, a nursery and a larder of stolen letters" role="img" style="font-size:10px">${c.render()}</pre>
-    <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="lbl muted">next ant</span><span class="bar">⣿⣿⣿⣿⣿⣿⣿⣿⣀⣀⣀⣀⣀</span></div>
-    <div class="muted" style="text-align:right">3 letters to go</div>
-    <pre style="margin:12px 0;font:inherit">workers   <b style="color:var(--nest-ant)">14</b>   larder  <b style="color:var(--nest-gold)">teach</b>
-squashed  <b>23</b>   page    <b>91%</b></pre>
-    <div style="display:flex;gap:6px"><button>pause colony</button><button class="muted">restore page</button></div>
-    <p class="muted" style="margin-top:10px">Off by default. Restore page puts every letter back.</p>`;
+    <div class="lbl muted"><span>colony 01</span><span data-k="status">foraging</span></div>
+    <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
+    <div class="lbl muted"><span>next ant</span><span class="accent" data-k="bar"></span></div>
+    <dl class="stats">
+      <dt class="muted">ants</dt><dd data-k="ants">0</dd><dt class="muted">squashed</dt><dd data-k="squashed">0</dd>
+      <dt class="muted">stolen</dt><dd data-k="stolen">0</dd><dt class="muted">page</dt><dd data-k="page">100%</dd>
+      <dt class="muted">larder</dt><dd class="accent" data-k="larder" style="grid-column: span 3; text-align: left">empty</dd>
+    </dl>
+    <div class="row"><button data-k="pause">pause colony</button><button data-k="restore" class="muted">restore page</button></div>`;
   aside.append(panel);
+  const $ = (k) => panel.querySelector(`[data-k="${k}"]`);
+  const pre = panel.querySelector(".nest-pre");
+  const well = panel.querySelector(".well");
 
-  // 3. The page: a Braille crack in the copy, and ants walking off with letters.
-  const main = document.querySelector("main") || document.body;
-  const layer = document.createElement("div");
-  layer.className = "nest-layer"; layer.style.cssText = "position:fixed;inset:0;pointer-events:none;z-index:50";
-  document.body.append(layer);
-  const r = main.getBoundingClientRect();
-  const cx = r.left + r.width * 0.74, cy = r.top + 372;
-  const put = (x, y, html, cls, size) => { const el = document.createElement("div"); el.className = cls; el.style.cssText += `left:${x}px;top:${y}px;font-size:${size}px`; el.innerHTML = html; layer.append(el); return el; };
-  put(cx - 40, cy - 8, "⢀⣠⡴⠾⠛⠳⣦⣤⡴⠞⠋⠙⠷⣤⣀", "nest-ant nest-pre", 16).style.color = "var(--nest-topsoil)";
-  put(cx - 30, cy + 9, "⠈⠛⠛⠛⠋⠉⠙⠛⠋", "nest-ant nest-pre", 16).style.color = "var(--nest-soil)";
-  // One ant as a grid of round dots, drawn as a tiny SVG the way the toast favicon is: Braille text
-  // turns to a solid block at this size, round dots stay crisp. Head, thorax, abdomen, legs, feelers.
-  const antArt = (() => {
+  // Size the dot grid to the well: measure one Braille cell, then take as many as fit.
+  const probe = document.createElement("span"); probe.textContent = "⣿".repeat(20); pre.append(probe);
+  const cellW = probe.getBoundingClientRect().width / 20, cellH = probe.getBoundingClientRect().height;
+  probe.remove();
+  const cols = Math.floor(well.clientWidth / cellW), rows = Math.floor(well.clientHeight / cellH);
+  const W = cols * 2, H = rows * 4;
+  const nest = canvas(W, H);
+  const X = (u) => u * W, Y = (v) => v * H, R = Math.max(4, W / 7);
+
+  // Soil in two tones, a grass line, tunnels and chambers carved out by proportion.
+  let seed = 7; const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+  const sky = Math.round(Y(0.06));
+  for (let y = sky + 2; y < H; y++) for (let x = 0; x < W; x++) if ((x + 2 * y) % 4 === 0 || rnd() < 0.05) nest.set(x, y, y < Y(0.3) ? 1 : 0);
+  for (let x = 0; x < W; x++) { nest.set(x, sky + Math.round(Math.sin(x / 5)), 2); if (x % 3 === 0) nest.set(x, sky - 2 + (x % 2), 2); }
+  const carve = (cx, cy, rx, ry) => { for (let j = -ry; j <= ry; j++) for (let i = -rx; i <= rx; i++) if ((i * i) / (rx * rx) + (j * j) / (ry * ry) <= 1) nest.clear(cx + i, cy + j); };
+  const tunnels = [
+    [[0.5, 0.04], [0.5, 0.25], [0.3, 0.42], [0.22, 0.47]],
+    [[0.5, 0.25], [0.74, 0.4], [0.78, 0.56]],
+    [[0.32, 0.42], [0.36, 0.7], [0.5, 0.84]],
+    [[0.78, 0.56], [0.66, 0.78], [0.52, 0.85]],
+  ].map((path) => path.map(([u, v]) => [X(u), Y(v)]));
+  tunnels.forEach((path) => { for (let k = 0; k < path.length - 1; k++) { const [a, b] = [path[k], path[k + 1]]; for (let s = 0; s <= 40; s++) carve(a[0] + (b[0] - a[0]) * s / 40, a[1] + (b[1] - a[1]) * s / 40, 2, 2); } });
+  const nursery = [X(0.2), Y(0.49)], larder = [X(0.8), Y(0.58)], queen = [X(0.5), Y(0.88)];
+  carve(nursery[0], nursery[1], R * 0.8, R * 0.45); carve(larder[0], larder[1], R * 0.85, R * 0.45); carve(queen[0], queen[1], R * 1.3, R * 0.65);
+  // the queen: a long gold abdomen, thorax and head, six legs
+  for (let j = -R * 0.25; j <= R * 0.25; j++) for (let i = -R * 0.6; i <= R * 0.6; i++) if ((i * i) / (R * R * 0.36) + (j * j) / (R * R * 0.0625) <= 1) nest.set(queen[0] + R * 0.25 + i, queen[1] + j, 6);
+  for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { nest.set(queen[0] - R * 0.5 + i, queen[1] + j, 6); if (Math.abs(i) + Math.abs(j) < 3) nest.set(queen[0] - R * 0.5 - 5 + i, queen[1] + j, 6); }
+  for (let k = -1; k <= 1; k++) for (let s = 1; s < 4; s++) { nest.set(queen[0] - R * 0.5 + k * 3 + s * k, queen[1] + 2 + s, 6); nest.set(queen[0] - R * 0.5 + k * 3 + s * k, queen[1] - 2 - s, 6); }
+  const base = nest.dots.slice();
+
+  // Tunnel walkers in the panel follow the carved paths so the nest is never still.
+  const flat = tunnels.flatMap((path) => { const pts = []; for (let k = 0; k < path.length - 1; k++) for (let s = 0; s < 20; s++) pts.push([path[k][0] + (path[k + 1][0] - path[k][0]) * s / 20, path[k][1] + (path[k + 1][1] - path[k][1]) * s / 20]); return [pts]; });
+
+  // ---- Game state
+  const state = { ants: [], stolen: [], larder: [], squashed: 0, food: 0, paused: false, letters: 0 };
+  main.style.position = main.style.position || "relative";
+  const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
+  const toLocal = (r) => { const m = main.getBoundingClientRect(); return [r.left - m.left + main.scrollLeft, r.top - m.top + main.scrollTop]; };
+
+  // The crack sits beside the copy, low in the first screen of the page.
+  const mainR = main.getBoundingClientRect();
+  const hole = [main.clientWidth * 0.82, Math.min(main.clientHeight * 0.62, 420) + main.scrollTop];
+  const crack = document.createElement("div"); crack.className = "nest-crack";
+  crack.textContent = "⢀⣠⡴⠾⠛⠳⣦⣤⡴⠞⠋⠙⠷⣤⣀\n⠀⠈⠛⠛⠛⠋⠉⠙⠛⠋";
+  crack.style.left = hole[0] + "px"; crack.style.top = hole[1] + "px"; layer.append(crack);
+
+  // Every letter on screen that an ant could take, as text node + index, counted once for the score.
+  const letters = () => {
+    const out = []; const walk = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => (layer.contains(n) || !n.parentElement.offsetParent || /^(SCRIPT|STYLE|PRE|CODE)$/.test(n.parentElement.tagName)) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    for (let n; (n = walk.nextNode());) for (let i = 0; i < n.data.length; i++) if (/[A-Za-z]/.test(n.data[i])) out.push([n, i]);
+    return out;
+  };
+  state.letters = letters().length;
+  const rectOf = (n, i) => { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 1); return r.getBoundingClientRect(); };
+  const setChar = (n, i, ch) => { n.data = n.data.slice(0, i) + ch + n.data.slice(i + 1); };
+
+  const antSvg = (() => {
     let dots = "";
     ["..x.........x.", "...x.......x..", "..x..x...x.x..", ".xxx.xx.xxxxx.", "xxxx.xxx.xxxxx", ".xxx.xx.xxxxx.", "..x..x...x....", ".x...x....x..."]
       .forEach((row, y) => [...row].forEach((k, x) => { if (k === "x") dots += `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`; }));
     return `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${dots}</svg>`;
   })();
-  const ant = (x, y, letter, flip) => { const el = put(x, y, antArt + (letter ? `<i>${letter}</i>` : ""), "nest-ant", 13); if (flip) el.style.transform = "scaleX(-1)"; return el; };
-  ant(cx - 150, cy - 66, "g"); ant(cx - 78, cy - 34, "r"); ant(cx + 30, cy - 96, null, true); ant(cx - 230, cy - 118, null);
-  const target = ant(cx - 320, cy - 182, null); target.style.outline = "1px dashed var(--nest-gold)"; target.style.outlineOffset = "4px";
 
-  // Mark where letters were taken, so the theft reads on the page itself.
-  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
-  const hits = [];
-  for (let n; (n = walker.nextNode()) && hits.length < 3;) if (n.data.length > 30 && n.data.indexOf("ow") > 0) hits.push(n);
-  hits.forEach((n) => {
-    const at = n.data.indexOf("ow"); const rest = n.splitText(at); rest.data = rest.data.slice(1);
-    const gap = document.createElement("span"); gap.className = "nest-gap"; rest.before(gap);
+  const spawn = () => {
+    const el = document.createElement("button");
+    el.className = "nest-ant"; el.setAttribute("aria-label", "Ant. Press to squash."); el.innerHTML = antSvg;
+    el.style.cssText += "background:none;border:0;padding:0";
+    const ant = { el, x: hole[0], y: hole[1], target: null, carry: null, home: false };
+    el.addEventListener("click", (e) => { e.stopPropagation(); squash(ant); });
+    layer.append(el); state.ants.push(ant); pickTarget(ant);
+  };
+
+  const pickTarget = (ant) => {
+    const pool = letters().filter(([n, i]) => { const r = rectOf(n, i); return r.width > 0 && r.top > mainR.top && r.bottom < mainR.bottom; });
+    if (!pool.length) { ant.home = true; return; }
+    const [n, i] = pool[Math.floor(Math.random() * pool.length)];
+    const r = rectOf(n, i); const [lx, ly] = toLocal(r);
+    ant.target = { n, i, x: lx + r.width / 2, y: ly + r.height / 2 };
+  };
+
+  const squash = (ant) => {
+    if (ant.carry) setChar(ant.carry.n, ant.carry.i, ant.carry.ch), state.stolen = state.stolen.filter((s) => s !== ant.carry);
+    const mark = document.createElement("div"); mark.className = "nest-squash"; mark.textContent = "⠪⠕";
+    mark.style.left = ant.x - 8 + "px"; mark.style.top = ant.y - 9 + "px"; layer.append(mark);
+    requestAnimationFrame(() => (mark.style.opacity = "0")); setTimeout(() => mark.remove(), 1300);
+    ant.el.remove(); state.ants = state.ants.filter((a) => a !== ant); state.squashed++;
+  };
+
+  const step = (ant, dt) => {
+    const goal = ant.home || ant.carry ? { x: hole[0], y: hole[1] } : ant.target;
+    if (!goal) return pickTarget(ant);
+    const dx = goal.x - ant.x, dy = goal.y - ant.y, d = Math.hypot(dx, dy), v = 38 * dt;
+    if (d > v) { ant.x += (dx / d) * v + Math.sin(performance.now() / 120 + ant.x) * 0.3; ant.y += (dy / d) * v; }
+    ant.el.style.left = ant.x + "px"; ant.el.style.top = ant.y + "px";
+    ant.el.style.transform = `rotate(${Math.atan2(dy, dx) + Math.PI}rad)`;
+    const label = ant.el.querySelector("i"); if (label) label.style.transform = `rotate(${-(Math.atan2(dy, dx) + Math.PI)}rad)`;
+    if (d > v) return;
+    if (ant.carry) { // home with a letter: the larder takes it and the queen eats
+      state.larder.push(ant.carry.ch); state.food++; ant.carry = null; ant.el.querySelector("i")?.remove();
+      if (state.food % 3 === 0 && state.ants.length < 14) setTimeout(spawn, 400);
+      pickTarget(ant);
+    } else if (ant.target) { // at the letter: lift it if it is still there
+      const { n, i } = ant.target; const ch = n.data[i];
+      if (/[A-Za-z]/.test(ch || "")) {
+        setChar(n, i, " "); ant.carry = { n, i, ch }; state.stolen.push(ant.carry);
+        const tag = document.createElement("i"); tag.textContent = ch; ant.el.append(tag);
+      }
+      ant.target = null;
+    }
+  };
+
+  // ---- Loop: move ants every frame, redraw the panel a few times a second.
+  let last = performance.now(), tick = 0;
+  const frame = (now) => {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (!state.paused) state.ants.slice().forEach((a) => step(a, dt));
+    if ((tick = (tick + 1) % 8) === 0) draw(now);
+    requestAnimationFrame(frame);
+  };
+  const draw = (now) => {
+    const d = base.slice();
+    const put = (x, y, t) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < W && y < H) d[y * W + x] = t; };
+    const workers = Math.min(state.ants.length + 2, 10);
+    for (let k = 0; k < workers; k++) { const path = flat[k % flat.length]; const p = path[Math.floor((now / 90 + k * 13) % path.length)]; for (let s = -1; s < 3; s++) put(p[0] + s, p[1], 3); }
+    const eggs = state.food % 3; for (let k = 0; k < 2 + eggs * 2; k++) { put(nursery[0] - R * 0.5 + k * 3, nursery[1] + 1, 4); put(nursery[0] - R * 0.5 + k * 3 + 1, nursery[1] + 1, 4); }
+    for (let k = 0; k < Math.min(state.larder.length, Math.floor(R * 0.8)); k++) { put(larder[0] - R * 0.7 + k * 2, larder[1] + 2, 5); put(larder[0] - R * 0.7 + k * 2, larder[1] + 1 - (k % 2), 5); }
+    pre.innerHTML = nest.render(d);
+    const left = 3 - (state.food % 3);
+    $("bar").textContent = "⣿⣿⣿⣿".repeat(3 - left) + "⣀⣀⣀⣀".repeat(left);
+    $("ants").textContent = state.ants.length; $("squashed").textContent = state.squashed;
+    $("stolen").textContent = state.stolen.length;
+    $("page").textContent = Math.round(100 * (1 - state.stolen.length / Math.max(1, state.letters))) + "%";
+    $("larder").textContent = state.larder.slice(-14).join("") || "empty";
+    $("status").textContent = state.paused ? "paused" : state.ants.length ? "foraging" : "beaten";
+  };
+
+  $("pause").addEventListener("click", () => { state.paused = !state.paused; $("pause").textContent = state.paused ? "wake colony" : "pause colony"; });
+  $("restore").addEventListener("click", () => {
+    state.stolen.forEach((s) => setChar(s.n, s.i, s.ch)); state.stolen = [];
+    state.ants.forEach((a) => { a.carry = null; a.el.querySelector("i")?.remove(); a.target = null; });
   });
-  document.body.style.cursor = "crosshair";
-  return "ok";
+
+  for (let k = 0; k < 4; k++) setTimeout(spawn, k * 700);
+  requestAnimationFrame(frame);
 })();
