@@ -17,7 +17,7 @@ touched:
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
 unpushed: 1 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, and the terminal e2e
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a help and query-shortcut check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -83,6 +83,11 @@ activity log, three CSS meters for page holds, stores and the next egg, a compac
 tool tiles, the colony controls, and a footer link to the note. The inline "How to play" block is
 gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps running.
 
+**The door.** The `?nest` query shortcut is gone. The terminal command `nest` is the only way to
+unlock the game, and `help` lists it next to `reveal the ant colony`. A returning player's saved
+unlock still loads the launcher on later pages. `?nest-debug` only exposes the local test hooks and
+does not load the game by itself.
+
 **The ground.** A quiet ground patch sits around each hill: stones, grass, a twig, a dandelion and
 one paperclip further out. It is theme-token colour at 0.55 opacity, never catches a click, and
 stays still under reduced motion. A mini hill gets a smaller tuft.
@@ -111,13 +116,15 @@ $ bun test
 Ran 875 tests across 48 files. [9.74s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  8 passed (21.3s)
+  9 passed (7.7s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
 
 A Chromium check spawned the stray, measured 171 pixels of travel in 2.2 seconds, clicked it and
 saw the launcher pulse, then reloaded and found the panel closed and the launcher still visible.
+A second check opened `/?nest` in a fresh context and confirmed no request for the game file and no
+launcher. A third typed `help` in the terminal and read back `nest` next to `reveal the ant colony`.
 
 $ bun tools/dsh-loop/cli.mjs end
 graphify update: ok

@@ -45,7 +45,8 @@ unreadable and the colony has won that page.
 ## What the mockup now does
 
 - **Hidden by default.** The `nest` terminal command reveals the status bar launcher and remembers
-  the unlock on that browser. A direct preview link can still load the launcher with `?nest`.
+  the unlock on that browser. The terminal command is the only door; there is no query-string
+  shortcut.
 - **The colony.** Three scouts and three workers to start. A scout draws a faint route as it walks,
   the route firms up when the scout carries the first letter home, workers take open trails in turn,
   five to a line, and a trail fades when its patch empties or after ninety seconds. A successor
@@ -85,4 +86,6 @@ unreadable and the colony has won that page.
 ## Mockup
 
 `scripts/nest-mockup.js` fakes the panel and one wave of ants on the live site so the idea can be
-played before the real build. Add `?nest` to any page's address to load it, for example `/?nest`. It is a playable sketch: ants steal real letters, the queen breeds every three, a click squashes, and every colour is a theme token.
+played before the real build. Unlock it with the terminal command `nest`; `?nest-debug` only
+exposes the local test hooks. It is a playable sketch: ants steal real letters, the queen breeds
+every three, a click squashes, and every colour is a theme token.

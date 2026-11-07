@@ -28,6 +28,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     // machine output stays on the feed's default (grain) — no grade override on builtin output
     await expect(feed).toContainText("whoami");                     // desk-commands registered
     await expect(feed).toContainText("navigate to a page");         // the go builtin's help line
+    await expect(feed).toContainText("reveal the ant colony");      // the nest command is listed
     // an unknown command reports honestly instead of failing silent
     await input.fill("frobnicate");
     await input.press("Enter");
@@ -41,6 +42,14 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await input.fill("go bread");
     await input.press("Enter");
     await expect(page).toHaveURL(/\/bread$/);
+  });
+
+  test("the old ?nest link no longer opens the Nest", async ({ page }) => {
+    const loaded = new Set<string>();
+    page.on("request", (request) => loaded.add(new URL(request.url()).pathname));
+    await page.goto("/?nest");
+    await expect(page.getByRole("button", { name: "Open the Nest" })).toHaveCount(0);
+    expect(loaded.has("/site/nest-mockup.js")).toBe(false);
   });
 
   test("nest unlocks through the terminal and remembers the launcher", async ({ page }) => {
