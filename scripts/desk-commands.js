@@ -107,7 +107,7 @@
   t.register({ name: "stray", args: "", help: "send a stray ant across the page", run(ctx) {
     if (document.getElementById("nest-mock")) { ctx.printErr("close the Nest first."); return; }
     if (!window.__nestStray) { ctx.printErr("the colony is not loaded on this page."); return; }
-    window.__nestStray.spawn();
+    window.__nestStray.spawn(true);
     ctx.print("A stray ant is crossing the page. Click it and it will run for the launcher.");
   }});
   t.register({ name: "sudo", args: "", help: "", run(ctx) {

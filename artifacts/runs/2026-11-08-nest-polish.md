@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 10 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a trail-bend and text-selection check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 11 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a session stray check, a trail-bend and text-selection check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -64,9 +64,11 @@ hill still opens in view. The ants may work below the fold while the reader read
 launcher, so the sidebar is back to its default view and the player has to click. A normal link
 navigation still carries the colony. When the game is closed, a single stray ant sometimes crosses
 the reading pane on its own, off any trail, with pauses and a small sway. Click it and it runs for
-the status bar launcher and makes it pulse. A `stray` terminal command sends one on demand. It is
-scheduled thirty to ninety seconds after load, then two to four minutes after a walk or a click.
-It only runs where the launcher is visible, so it is a desktop easter egg.
+the status bar launcher and makes it pulse. A click writes `nest-stray-clicked` to sessionStorage,
+so the random ant does not return in that tab, across page loads, until the tab is closed. A `stray`
+terminal command sends one on demand. It is scheduled thirty to ninety seconds after load, then two
+to four minutes after a walk or a click. It only runs where the launcher is visible, so it is a
+desktop easter egg.
 
 **The dance.** The colony stops at twenty stolen letters, then fifty, then a rising set of
 thresholds. The queen comes out of the hill, the workers circle her, the stolen glyphs orbit, a
