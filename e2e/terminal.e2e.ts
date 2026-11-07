@@ -224,6 +224,20 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
   });
 
+  test("a long larder does not push the stats around", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    const scouts = page.locator("#nest-mock [data-k='scouts']");
+    const before = await scouts.boundingBox();
+    await page.evaluate(() => {
+      const larder = document.querySelector("#nest-mock [data-k='larder']");
+      if (larder) larder.textContent = "lrsovehperdeadlrsovehperdeadlrsovehperdead";
+    });
+    const after = await scouts.boundingBox();
+    expect(Math.abs((after?.x ?? 0) - (before?.x ?? 0))).toBeLessThan(1);
+  });
+
   test("an empty colony gets a scout from the queen", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();

@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 38 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a multi-swat check, a reset-warning check, a reset-scroll check, a reset-ants check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 39 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a multi-swat check, a reset-warning check, a reset-scroll check, a reset-ants check, a larder-width check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -107,7 +107,8 @@ tool tiles, a persistent links locked or links open chip, the colony controls, a
 the note. The meter classes are namespaced to the panel, because GRAIN's global `.meter` atom was
 clipping the labels to eight pixels. The panel also clips horizontally, so a long larder or status
 cannot create a sideways scroll. The stat values sit next to their labels; the old space-between
-pushed the next 0 far enough right that it read as the trails value. The inline "How to play" block is
+pushed the next 0 far enough right that it read as the trails value. The larder is a full-width
+row of its own with an ellipsis, so a long stolen string cannot resize the four stat columns. The inline "How to play" block is
 gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps running.
 
 **The launcher.** The ant now sits in the status bar on every page. The game loads with the page
@@ -153,10 +154,10 @@ $ bun test
  894 pass
  0 fail
  3885 expect() calls
-Ran 895 tests across 49 files. [5.78s]
+Ran 895 tests across 49 files. [7.25s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  22 passed (29.5s)
+  23 passed (32.1s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

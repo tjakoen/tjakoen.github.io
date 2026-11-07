@@ -195,7 +195,7 @@
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
     #nest-mock .nest-meter__bar > span { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 999px; transition: width .35s; }
     #nest-mock .nest-meter__bar.accent > span { background: var(--color-accent); }
-    #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, auto)); gap: 1px 10px; margin: 0; align-items: baseline; }
+    #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px 10px; margin: 0; align-items: baseline; }
     #nest-mock .stat-grid div { display: flex; justify-content: flex-start; gap: 4px; min-width: 0; overflow: hidden; }
     #nest-mock .stat-grid dt { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); white-space: nowrap; }
     #nest-mock .stat-grid dd { margin: 0; font-size: 12px; font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -447,7 +447,7 @@
       <div><dt>flyers</dt><dd data-k="flyers">0</dd></div>
       <div><dt>trails</dt><dd data-k="trails">0</dd></div>
       <div><dt>squashed</dt><dd data-k="squashed">0</dd></div>
-      <div><dt>larder</dt><dd class="accent" data-k="larder" style="grid-column: span 3; text-align: left">empty</dd></div>
+      <div style="grid-column: 1 / -1"><dt>larder</dt><dd class="accent" data-k="larder" style="text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">empty</dd></div>
     </dl>
     <div class="row tools" role="group" aria-label="Colony tools">
       ${tool("squash", "Squash", "1")}${tool("wipe", "Wipe", "2")}${gameAction("bait", "bait", "Bait", "Drop bait", "Place a crumb to lure nearby ants away.")}${gameAction("seal", "seal", "Seal", "Seal hills", "Seal every anthill for a few seconds.")}
