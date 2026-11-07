@@ -42,7 +42,7 @@
     #nest-mock .head .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .muted { color: var(--ink-muted); }
     #nest-mock .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; gap: 8px; }
-    #nest-mock .well { flex: 1 1 0; min-height: 0; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
+    #nest-mock .well { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
       display: flex; align-items: center; justify-content: center; }
     .nest-pre { margin: 0; font-family: var(--font-mono); font-size: 10px; line-height: 1.2; letter-spacing: -0.04em;
       -webkit-text-stroke: 0.05em currentColor; color: var(--ink-faint); user-select: none; }
@@ -54,7 +54,7 @@
     #nest-mock .stats dd { text-align: right; font-variant-numeric: tabular-nums; }
     #nest-mock .accent { color: var(--color-accent); }
     #nest-mock .bar { font-family: var(--font-mono); letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor; }
-    #nest-mock .log { margin: 0; padding: 0; list-style: none; min-height: 4.2em; font-size: 11px; color: var(--ink-muted); }
+    #nest-mock .log { margin: 0; padding: 0; list-style: none; min-height: 1.4em; max-height: 1.4em; overflow: hidden; font-size: 11px; color: var(--ink-muted); }
     #nest-mock .log li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .log li:first-child { color: var(--ink); }
     #nest-mock .log li::before { content: "› "; color: var(--ink-faint); }
@@ -193,7 +193,7 @@
     @keyframes nest-party-sway { to { transform: translateY(-1.5px); filter: brightness(1.1); } }
     .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
     @keyframes nest-bob { to { transform: translateY(-3px); } }
-    #nest-mock .nest-meters { display: grid; gap: 5px; }
+    #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
     #nest-mock .nest-meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
     #nest-mock .nest-meter .hint { font: 9px/1.2 var(--font-mono); font-style: normal; letter-spacing: 0; opacity: .65; }
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
@@ -208,7 +208,7 @@
     #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
-    #nest-mock .note-link { padding-top: 2px; color: var(--ink-muted); font-size: 10px; text-decoration: none; }
+    #nest-mock .note-link { position: absolute; right: 5px; bottom: 3px; padding: 1px 3px; background: var(--paper); color: var(--ink-muted); font-size: 9px; line-height: 1.2; text-decoration: none; }
     #nest-mock .note-link:hover { color: var(--ink); }
     #nest-mock .activity { margin: 0; padding: 0; list-style: none; min-height: 2.6em; font-size: 10px; color: var(--ink-muted); }
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -428,8 +428,8 @@
     <div class="head"><span class="lbl muted"><span>nest · colony 01</span></span><span class="lbl muted"><span data-k="status">waking</span></span>
       <button class="x" data-k="x" type="button" aria-label="Close the Nest" title="Close">×</button></div>
     <p class="muted tool-help" data-k="tool-help" aria-live="polite"></p>
-    <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener">the colony, explained ↗</a>
-    <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
+    <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre>
+      <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener" title="The colony, explained">explained ↗</a></div>
     <ul class="log activity" data-k="log" aria-live="polite"></ul>
     <div class="nest-meters">
       <div class="nest-meter"><span class="lbl muted">page left <i class="hint">page still whole</i></span><span class="lbl" data-k="holds-val">100%</span>
@@ -798,7 +798,7 @@
     const t = openTrail(ant);
     if (t) { join(ant, t); return emerge(ant); }
     if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
-    const wantTrails = Math.min(4, 1 + Math.floor(state.ants.length / 4));
+    const wantTrails = Math.max(2, Math.round(state.ants.length / 2));
     if (state.trails.length < wantTrails && !scoutsOut()) { ant.role = "scout"; log("a worker turned scout"); return emerge(ant); }
     ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); // queue in the tunnel
   };
