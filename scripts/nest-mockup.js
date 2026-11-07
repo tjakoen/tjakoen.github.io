@@ -433,7 +433,6 @@
       <div><dt>scouts</dt><dd class="accent" data-k="scouts">0</dd></div>
       <div><dt>workers</dt><dd data-k="workers">0</dd></div>
       <div><dt>soldiers</dt><dd data-k="soldiers">0</dd></div>
-      <div><dt>reserve</dt><dd class="accent" data-k="reserve">2</dd></div>
       <div><dt>hills</dt><dd class="accent" data-k="minis">0</dd></div>
       <div><dt>flyers</dt><dd data-k="flyers">0</dd></div>
       <div><dt>trails</dt><dd data-k="trails">0</dd></div>
@@ -536,7 +535,7 @@
   };
   addEventListener("beforeunload", onBeforeUnload);
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
-    reserve: 2, over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false,
+    over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
@@ -825,7 +824,7 @@
     // first three scouts off one paragraph, and later scouts off an active source.
     const busyBlocks = new Set([
       ...state.trails.map((t) => t.block),
-      ...state.ants.filter((a) => a.job === "scout" && a.block).map((a) => a.block),
+      ...state.ants.filter((a) => (a.job === "scout" || a.scoutRoute) && a.block).map((a) => a.block),
     ]);
     const options = [];
     for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
@@ -893,24 +892,41 @@
     ant.job = "scout"; ant.block = block; ant.path = chaikin(path, 1); ant.k = 0; ant.walked = [hole.slice()];
   };
 
-  const backPath = (ant) => (ant.trail ? lanePath(ant.trail.pts.toReversed(), -(ant.lane || 0)) : []).concat([hillOf(ant).hole.slice()]);
-  const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.el?.classList.remove("wait"); };
+  const routePts = (ant) => (ant.trail ? ant.trail.pts : ant.scoutRoute ? ant.scoutRoute.pts : null);
+  const backPath = (ant) => (routePts(ant) ? lanePath(routePts(ant).toReversed(), -(ant.lane || 0)) : []).concat([hillOf(ant).hole.slice()]);
+  const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.scoutRoute = null; ant.el?.classList.remove("wait"); };
+
+  // The first trail is laid only when the scout gets its first letter home. A scout killed on the
+  // way leaves no half-open trail and nothing for the workers to join.
+  const layTrail = (ant) => {
+    const route = ant.scoutRoute; if (!route) return null;
+    const points = route.pts.map((p) => p.join(",")).join(" ");
+    const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    halo.setAttribute("points", points); halo.classList.add("halo");
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    line.setAttribute("points", points);
+    const born = performance.now() / 1000;
+    const t = { pts: route.pts, block: route.block, end: route.end, ants: new Set(), line, halo, ready: true, hill: route.hill,
+      state: "ready", born, ttl: born + TUNING.trailTtl };
+    scent.append(halo, line);
+    addEraser(t);
+    state.trails.push(t);
+    ant.scoutRoute = null;
+    log("the scout is home; a trail is laid"); chord([392, 523], 0.18, 0.03);
+    return t;
+  };
 
   const toLetter = (ant, block, light) => {
     if (!block) return goHome(ant);
-    const all = freeIn(block, ant.trail ? ant.trail.end : [ant.x, ant.y]);
+    const all = freeIn(block, ant.trail ? ant.trail.end : ant.scoutRoute ? ant.scoutRoute.end : [ant.x, ant.y]);
     // a scout alone takes a letter it can lift alone, when the patch has one
     const pick = (light && all.find((f) => f.L.state === "free" && needOf(f.L.n) === 1)) || all[0];
     if (!pick) return goHome(ant);
     const L = pick.L;
+    // a scout that finds only heavy letters cannot carry one home alone, so it turns back and
+    // looks elsewhere rather than opening a trail nobody can use.
+    if (light && needOf(L.n) > 1) { log(`a big “${L.ch}” needs ${needOf(L.n)} ants`); return goHome(ant); }
     if (L.state === "free") { L.need = needOf(L.n); L.state = "gather"; L.crew = []; }
-    // a scout that finds only heavy letters cannot carry one home alone, so it opens the trail to call help
-    if (light && L.need > 1 && ant.trail && !ant.trail.ready) {
-      ant.trail.ready = true;
-      ant.trail.line.classList.remove("scouting"); ant.trail.halo.classList.remove("scouting");
-      if (ant.trail.hit && !ant.trail.hit.isConnected) scent.append(ant.trail.hit);
-      log(`a big “${L.ch}”; the scout calls for help`); chord([349, 440], 0.16, 0.025);
-    }
     L.crew.push(ant); ant.letter = L; ant.job = "toLetter";
     const k = L.crew.length - 1, spread = (k - (L.need - 1) / 2) * 12;
     ant.path = [[pick.x + spread, pick.y + 7]]; ant.k = 0;
@@ -1066,12 +1082,7 @@
       if (isSealed(hillOf(ant))) { ant.k = ant.path.length - 1; return; } // waits at the sealed hill, letter held up
       L.glyph.remove(); L.state = "stolen"; state.stolen.add(L); state.stolenTotal++;
       blip(520, 0.05, "sine"); chord([523, 659], 0.16, 0.022);
-      if (ant.trail && !ant.trail.ready) {
-        ant.trail.ready = true;
-        ant.trail.line.classList.remove("scouting"); ant.trail.halo.classList.remove("scouting");
-        if (ant.trail.hit && !ant.trail.hit.isConnected) scent.append(ant.trail.hit);
-        log("the scout is home; a trail is laid"); chord([392, 523], 0.18, 0.03);
-      }
+      if (ant.scoutRoute) layTrail(ant);
       if (ant.role === "scout") { ant.role = "worker"; }
       if (ant.role === "flyer") { state.stores++; ant.letter = null; ant.job = "fly"; ant.path = [randomPoint()]; ant.k = 0; return; } // flyers feed the stores and fly on
       L.crew.forEach((a) => { if (a !== ant && a.el) enterNest(a, null); });
@@ -1084,22 +1095,10 @@
     ant.px = ant.x; ant.py = ant.y;
     if (++ant.k < ant.path.length) return;
     if (ant.job === "scatter") return regroup(ant);
-    if (ant.job === "scout") { // found food: the walk becomes a trail and the scout becomes a worker
+    if (ant.job === "scout") { // found food: keep the walk as a route until a letter is home
       ant.walked.push([ant.x, ant.y]);
-      // the trail exists from here but stays unscented and closed until the scout gets a letter home
       const pts = chaikin(ant.walked, 1);
-      const points = pts.map((p) => p.join(",")).join(" ");
-      const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      halo.setAttribute("points", points); halo.classList.add("halo");
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      line.setAttribute("points", points);
-      const born = performance.now() / 1000;
-      const t = { pts, block: ant.block, end: [ant.x, ant.y], ants: new Set(), line, halo, ready: false, hill: hillOf(ant),
-        state: "scouting", born, ttl: born + TUNING.trailTtl };
-      line.classList.add("scouting"); halo.classList.add("scouting");
-      scent.append(halo, line);
-      addEraser(t);
-      state.trails.push(t); join(ant, t);
+      ant.scoutRoute = { pts, block: ant.block, end: [ant.x, ant.y], hill: hillOf(ant) };
       log(`scout found “${(ant.block.textContent || "").trim().slice(0, 22)}”`);
       toLetter(ant, ant.block, true);
     } else if (ant.job === "follow") { if (ant.trail && state.trails.includes(ant.trail)) toLetter(ant, ant.trail.block); else goHome(ant); }
@@ -1134,29 +1133,29 @@
   };
 
   // ================================ the round ================================
-  // The colony loses when the page cannot hold any more: LOSE letters gone, about one in seven of
-  // the page's characters, never fewer than 25 and never more than 120. You win only when the
-  // colony is wiped out with no eggs left and the queen has spent both reserve scouts, so clearing
-  // the first wave is a start, not a win.
+  // There is no win and no reserve. If the last ant is gone the queen sends one scout back out
+  // and the colony carries on. The only ending left is the page itself running out.
   const LOSE = Math.max(25, Math.min(120, Math.round(pageLetters * 0.15)));
   const checkWipe = () => {
     if (state.over || state.ants.length || state.eggs.length || minis.length || state.builder) return;
-    if (state.overrun) { newAnt("scout", "hatch", 0); return; } // past saving: the colony always comes back
-    if (state.reserve > 0) { state.reserve--; newAnt("scout", "hatch", 0); log(`the colony is gone; the queen spends a reserve scout (${state.reserve} left)`); return; }
-    end(true);
+    newAnt("scout", "hatch", 0);
+    log("the queen sends out a scout"); blip(330, 0.08, "sine");
   };
-  // Neither ending announces itself. Wipe the colony with the reserves spent and the queen dies:
-  // the nest goes still and the page keeps whatever gaps it has. Let LOSE letters go and it is too
-  // late: ants can no longer be squashed, and they eat on until the page is empty.
-  const end = (won) => {
-    if (won) {
-      state.over = true; state.queenDead = true;
-      log("the queen is dead"); blip(110, 0.6, "sine");
-    } else {
-      state.overrun = true; layer.classList.add("overrun");
-      log("too late: the colony has the page"); blip(90, 0.5, "sawtooth");
-      startParty(true);
-    }
+  // A missing scout is a gap, not an ending. The queen sends one whenever nobody is scouting, so
+  // a killed scout cannot leave the colony with no way to find a new trail.
+  const ensureScout = () => {
+    if (state.over || state.overrun || state.queenDead || state.party) return;
+    if (state.ants.some((a) => a.role === "scout" || a.job === "scout")) return;
+    if (state.builder) return;
+    newAnt("scout", "hatch", 0);
+    log("the queen sends out a scout");
+  };
+  // The page running out is the only ending. It announces itself the same way: the colony takes
+  // whatever is left and slower.
+  const end = () => {
+    state.overrun = true; layer.classList.add("overrun");
+    log("too late: the colony has the page"); blip(90, 0.5, "sawtooth");
+    startParty(true);
   };
 
   // ================================ the dance ================================
@@ -1677,7 +1676,6 @@
     $("minis").textContent = minis.length;
     const cap = storeCap();
     setMeter("stores", state.stores / cap, state.builder ? "building" : minis.length >= MAX_MINIS ? "full" : `${state.stores}/${cap}`);
-    $("reserve").textContent = `${state.reserve}/2`;
     const held = Math.max(0, 1 - state.stolen.size / LOSE);
     setMeter("holds", held, `${Math.round(held * 100)}%`);
     const wait = Math.ceil(baitReady - performance.now() / 1000);
@@ -1737,8 +1735,8 @@
         }
       });
       if (!state.over) {
-        state.peak = Math.max(state.peak, state.ants.length); checkWipe();
-        if (!state.overrun && state.stolen.size >= LOSE) end(false);
+        state.peak = Math.max(state.peak, state.ants.length); checkWipe(); ensureScout();
+        if (!state.overrun && state.stolen.size >= LOSE) end();
         if (!state.overrun && !state.party && state.stolenTotal >= state.nextParty) startParty(false);
         tickMinis(now);
       }

@@ -50,9 +50,9 @@ unreadable and the colony has won that page.
 - **The colony.** Three scouts and three workers to start. A block with a trail or a scout is taken,
   so the first three scouts and later ones stay off each other's source. The first three stay in view:
   the first takes the closest, the second the opposite side of the mound, and the third the most
-  spread-out remaining spot. A scout draws a faint route as it walks,
-  the route firms up when the scout carries the first letter home, workers take open trails in turn,
-  five to a line, and a trail fades when its patch empties or after ninety seconds. Each retired
+  spread-out remaining spot. A scout walks a route and lays no trail until it carries the first
+  letter home; a scout killed on the way leaves nothing. Workers take open trails in turn, five to
+  a line, and a trail fades when its patch empties or after ninety seconds. Each retired
   trail sends its own successor scout, so several spent patches do not leave one line. Successors
   look near the mound first; the trail target grows with the colony up to four. Soldiers hatch once the colony passes eight and take two
   hits.
@@ -74,10 +74,10 @@ unreadable and the colony has won that page.
   workers ring her and dance, the sidepanel pulses, the stolen glyphs orbit, and then the colony
   goes back to work. The page is the whole environment, so the ants may work below the fold while
   the player reads.
-- **No announced ending.** Wipe the colony after the queen has spent her two reserve scouts and the
-  queen dies: the nest goes still and the page keeps its gaps. Let one in seven characters go,
-  capped at 120, and it is too late: the ants can no longer be squashed and eat on until the page is
-  empty. Leaving the tab still restores everything.
+- **No announced ending.** There is no win and no reserve. If the last ant is gone the queen sends
+  one scout back out and the colony continues. The only ending left is the page running out: let
+  one in seven characters go, capped at 120, and it is too late: the ants can no longer be squashed
+  and eat on until the page is empty. Leaving the tab still restores everything.
 - **It lives on the page.** A refresh or a move to another page closes the panel and clears the
   colony; a page link asks first. The launcher stays in the status bar. The stray click is
   remembered for the tab.

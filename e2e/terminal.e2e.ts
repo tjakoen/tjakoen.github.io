@@ -10,7 +10,10 @@ declare global {
   interface Window {
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
     __nest?: {
-      state: { ants: Array<{ role: string; block: Element | null; job?: string; x: number; y: number; mini?: { base: [number, number] } }> };
+      state: {
+        ants: Array<{ role: string; block: Element | null; job?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown }>;
+        trails: Array<{ block: Element }>;
+      };
       home: { base: [number, number] };
       startParty: (final?: boolean) => void;
       makeMini: (spot: unknown) => unknown;
@@ -178,6 +181,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.getByRole("button", { name: "Pause" }).click();
     const well = page.locator("#nest-mock .well");
     const before = await well.boundingBox();
     await page.keyboard.press("2");
@@ -185,6 +189,54 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     const after = await well.boundingBox();
     expect(Math.abs((after?.height ?? 0) - (before?.height ?? 0))).toBeLessThan(1);
     expect(Math.abs((after?.width ?? 0) - (before?.width ?? 0))).toBeLessThan(1);
+  });
+
+  test("a killed scout leaves no trail behind", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForFunction(() => (window.__nest?.state.ants.filter((a) => a.scoutRoute).length ?? 0) >= 1);
+    const route = await page.evaluate(() => {
+      const scout = window.__nest!.state.ants.find((a) => a.scoutRoute);
+      return scout ? (scout.block!.textContent || "").trim().slice(0, 40) : null;
+    });
+    expect(route).not.toBeNull();
+    await page.evaluate(() => {
+      const scout = window.__nest!.state.ants.find((a) => a.scoutRoute);
+      if (scout) window.__nest!.squash(scout);
+    });
+    await page.waitForTimeout(350);
+    const trailBlocks = await page.evaluate(() => window.__nest!.state.trails.map((t) => (t.block.textContent || "").trim().slice(0, 40)));
+    expect(trailBlocks).not.toContain(route);
+  });
+
+  test("the queen sends a scout when none is left", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(600);
+    await page.evaluate(() => {
+      window.__nest!.state.ants.filter((a) => a.role === "scout").forEach((a) => window.__nest!.squash(a));
+    });
+    await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
+  });
+
+  test("an empty colony gets a scout from the queen", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(600);
+    await page.evaluate(() => {
+      [...window.__nest!.state.ants].forEach((a) => window.__nest!.squash(a));
+    });
+    await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
+  });
+
+  test("the reserve stat is gone", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await expect(page.locator("#nest-mock [data-k='reserve']")).toHaveCount(0);
   });
 
   test("restore puts the mounds somewhere else", async ({ page }) => {
