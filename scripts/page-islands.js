@@ -14,9 +14,10 @@ if (document.querySelector("[data-lightbox]")) {
 }
 
 if (document.querySelector("[data-live-figure]")) tasks.push(import("/site/figures.js"));
-// Load the Nest for returning players and direct preview links. New players can unlock it in the terminal.
+// The terminal command `nest` is the only door. Once it has been used, this remembers the
+// unlock and loads the launcher on later pages. There is no query-string shortcut.
 const nestUnlocked = () => { try { return localStorage.getItem("nest-unlocked") === "1"; } catch { return false; } };
-if (new URLSearchParams(location.search).has("nest") || nestUnlocked()) tasks.push(import("/site/nest-mockup.js"));
+if (nestUnlocked()) tasks.push(import("/site/nest-mockup.js"));
 if (document.querySelector("[data-note-progress]")) tasks.push(import("/site/note-progress.js"));
 
 await Promise.all(tasks);

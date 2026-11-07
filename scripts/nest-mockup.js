@@ -1,4 +1,5 @@
-// Nest mockup: open any page with ?nest in the address. A playable sketch of plans/ant-nest-game.md.
+// Nest: a playable sketch of plans/ant-nest-game.md. Unlock it with the `nest` terminal command.
+// `?nest-debug` exposes the local test hooks; it does not load the game by itself.
 //
 // One colony, two views. Every ant is either in the nest (Braille dots in the sidebar) or out on
 // the page (a small dot SVG), and it leaves and enters through the anthill drawn in both places.
@@ -299,7 +300,7 @@
   antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelStray(); else scheduleStray(); });
   scheduleStray();
-  if (new URLSearchParams(location.search).get("nest") === "debug") {
+  if (new URLSearchParams(location.search).has("nest-debug")) {
     window.__stray = { spawnStray, cancelStray, scheduleStray, pulseLauncher };
   }
 
@@ -1760,7 +1761,7 @@
     const box = $("confirm"); box.hidden = false; $("leave").focus();
     leaveGo = go;
   };
-  if (new URLSearchParams(location.search).get("nest") === "debug") {
+  if (new URLSearchParams(location.search).has("nest-debug")) {
     window.__nest = { state, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot };
   }
   return { stop, confirmLeave };
