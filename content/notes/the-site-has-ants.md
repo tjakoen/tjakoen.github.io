@@ -8,7 +8,7 @@ date: 2026-11-07
 readingTime: "~6 min"
 tags: [games, interactive, vanilla, grain, claude]
 summary: >
-  Type the word nest on any page of this site and an ant colony moves in. Scouts find letters,
+  Run nest in this site's terminal to find the ant colony. Scouts find letters,
   lay scent trails, and workers carry the real glyphs home to a queen drawn in Braille dots. It is
   a small game built on the same vanilla stack as everything else here, to show that the stack can
   do play as well as documents, and it took more tuning of ant traffic than of anything that looks
@@ -18,7 +18,7 @@ imageAlt: "TJ's Desk home page with an ant colony at work: an anthill drawn in B
 social: |
   My portfolio has ants now.
 
-  Type the word nest on any page of my site and a colony moves in. Scouts find letters, lay scent
+  Run nest in the site's terminal to find the colony. Scouts find letters, lay scent
   trails, and workers carry the real glyphs home to a queen drawn in Braille dots. The gaps they
   leave stay put, so you watch the paragraph you were reading go missing one letter at a time.
 
@@ -30,7 +30,7 @@ social: |
 
 I had no game on my portfolio. For someone who keeps telling students the interesting part of software is the behavior, that was a little embarrassing. So this site now has ants.
 
-They are hidden. Type *nest* anywhere outside a text field (or add ?nest to the address) and a tiny ant appears in the status bar at the bottom. Click it, and an anthill turns up in an empty patch of whatever page you are on, the page scrolls to it, and the colony goes to work on the copy.
+Open the terminal at the bottom of the page, type *nest*, and press Enter. A tiny ant appears in the status bar. Click it, and an anthill turns up in an empty patch of whatever page you are on, the page scrolls to it, and the colony goes to work on the copy.
 
 > The enemy in this game wants the sentence you were halfway through reading.
 
@@ -79,7 +79,7 @@ A scout that makes it home lays a scent trail. Workers follow trails six to a li
 
 ![Two trails of ants carrying letters across the ten-times-zero note toward the anthill, the stores bar in the sidebar reading building as a builder heads out to raise a mini hill.](/media/notes/nest-mini-hill.jpg)
 
-You fight back with three tools from the panel. Squash, which is the default, and which also holds every link on the page so a missed ant does not send you to another page. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe trail, for dragging across the scent so a line of ants loses the plot. And read page, which hands the links back and leaves the ants alone. There is bait, a hill seal on a cooldown, and a mute button, because sound is off until you ask for it.
+You fight back with the icons in the panel. Squash and Wipe Trail lock the links so a missed ant does not send you to another page. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and the ants scatter, then take the nearest trail with room or head back to the hill. Use Page Links hands the links back while the ants keep working. There is bait, a hill seal on a cooldown, and a mute button, because sound is off until you ask for it.
 
 ## No win screen, no game over
 
@@ -87,7 +87,7 @@ The endings were the part I argued with myself about longest. A portfolio is not
 
 ## Built on the same stack as everything else
 
-No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file, loaded only when you type the word.
+No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file, loaded on demand.
 
 That was the point of building it at all. A design system that only renders documents is half a claim. This one also renders a small ecosystem that steals from the documents.
 
@@ -101,7 +101,7 @@ Claude did most of the typing, which will surprise nobody who has read [how I wo
 
 It has been played by me and by a preview browser, and that is the whole test group. Balance is a guess: the costs of mini hills, the one in seven threshold, how fast the queen breeds. I have not watched a guard patrol a trail end to end. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and I have not built that one.
 
-But if you are reading this on the site, the word is *nest*. The copy you just read is the food.
+But if you are reading this on the site, the terminal takes one word. *Nest*. The copy you just read is the food.
 
 ---
 

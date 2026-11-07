@@ -98,6 +98,11 @@
   }});
 
   // ── easter eggs — each one honest about how this thing actually works ───────────────────────────
+  t.register({ name: "nest", args: "", help: "reveal the ant colony", async run(ctx) {
+    await import("/site/nest-mockup.js");
+    try { localStorage.setItem("nest-unlocked", "1"); } catch { /* private mode */ }
+    ctx.print("Look for the little ant in the status bar.");
+  }});
   t.register({ name: "sudo", args: "", help: "", run(ctx) {
     ctx.print("you're already the operator. Equal footing is the whole point here — no elevated mode to grant.");
   }});
