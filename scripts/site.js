@@ -490,5 +490,38 @@
         if (ev.key === "Escape" && shell.hasAttribute("data-aside-open")) closeSheet();
       });
     }
+
+    // ---- the toast favicon follows the theme. A browser renders a favicon in isolation, so it
+    // cannot read the page's custom properties itself. Instead the icon is redrawn from the live
+    // tokens whenever the flavor or the colour scheme changes: the crust takes the accent, the
+    // crumb takes the raised paper, and the prompt takes the ink.
+    const root = document.documentElement;
+    const tok = (name, fallback) => getComputedStyle(root).getPropertyValue(name).trim() || fallback;
+    const paintFavicon = () => {
+      const svg = toastSvg(tok("--color-accent", "#854F0B"), tok("--paper-2", "#FAC775"), tok("--ink", "#633806"));
+      let link = document.querySelector('link[rel="icon"]');
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "icon"; link.type = "image/svg+xml";
+        document.head.appendChild(link);
+      }
+      link.href = "data:image/svg+xml," + encodeURIComponent(svg);
+    };
+    paintFavicon();
+    new MutationObserver(paintFavicon).observe(root, { attributes: true, attributeFilter: ["data-theme", "data-color-scheme"] });
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintFavicon);
   });
+
+  // The A5 toast slice, drawn as a ten-by-ten grid of round dots so it shares the Braille look of the
+  // homepage baguette while staying coarse enough to read at 16 pixels: c is crust, m is crumb, and
+  // i is the ink of the prompt on the crumb.
+  function toastSvg(crust, crumb, ink) {
+    const grid = ["..cccccc..", ".cmmmmmmc.", "cmmmmmmmmc", "cmmmmmmmmc", ".cmimmmmc.", ".cmmimmmc.", ".cmimmmmc.", ".cmmmiiic.", ".cmmmmmmc.", ".cccccccc."];
+    const fill = { c: crust, m: crumb, i: ink };
+    let dots = "";
+    grid.forEach((row, y) => [...row].forEach((k, x) => {
+      if (fill[k]) dots += `<circle cx="${x * 3.2 + 1.6}" cy="${y * 3.2 + 1.6}" r="1.45" fill="${fill[k]}"/>`;
+    }));
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${dots}</svg>`;
+  }
 })();
