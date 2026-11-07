@@ -57,7 +57,7 @@ unreadable and the colony has won that page.
 - **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
   below the fold. The first two favor a spot near the main hill; later ones spread out. Builders
-  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Its mound thins
+  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to patrol a short stretch near it, or circle the mound, and flyers to steal letters. Its mound thins
   with each hit. Knocking it calls the guards home; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
 - **The player's tools.** The colony tools are Squash, Wipe, Bait and Seal, with names on the
   tiles; Links, mute, pause and restore are the utility row below. Squash holds every page link so

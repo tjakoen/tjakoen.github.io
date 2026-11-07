@@ -10,7 +10,7 @@ declare global {
   interface Window {
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
     __nest?: {
-      state: { ants: Array<{ role: string; block: Element | null; job?: string }> };
+      state: { ants: Array<{ role: string; block: Element | null; job?: string; x: number; y: number; mini?: { base: [number, number] } }> };
       home: { base: [number, number] };
       startParty: (final?: boolean) => void;
       makeMini: (spot: unknown) => unknown;
@@ -154,6 +154,12 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator("#nest-mock")).toBeVisible();
     await page.evaluate(() => { const spot = window.__nest!.findMiniSpot(); if (spot) window.__nest!.makeMini(spot); });
     await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").length)).toBeGreaterThan(0);
+    const guardNear = await page.evaluate(() => {
+      const guard = window.__nest!.state.ants.find((a) => a.role === "guard");
+      return guard?.mini ? Math.hypot(guard.x - guard.mini.base[0], guard.y - guard.mini.base[1]) : null;
+    });
+    expect(guardNear).not.toBeNull();
+    expect(guardNear!).toBeLessThan(300);
     const mound = page.locator(".nest-mini").first();
     await mound.click();
     await page.waitForFunction(() => {

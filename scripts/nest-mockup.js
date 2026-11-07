@@ -1229,7 +1229,7 @@
   // a mini hill in open ground; squash the builder and the stores are lost. A mini hill sends out
   // guards, which walk to an existing trail and patrol it, and flyers, which roam and steal any
   // letter. It falls to a few clicks, but only once none of its guards are left.
-  const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6;
+  const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, GUARD_RANGE = 220;
   const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
   const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
     const w = 18, h = 8, cells = new Int8Array(w * h).fill(-1);
@@ -1408,17 +1408,19 @@
   const assignGuard = (g) => {
     if (!g.mini || !minis.includes(g.mini)) { g.job = "home"; g.path = [hillOf(g).hole.slice()]; g.k = 0; return; }
     const ready = state.trails.filter((t) => t.ready && t.state !== "gone");
-    if (!ready.length) {
+    const near = ready.filter((t) => t.pts.some(([x, y]) => Math.hypot(x - g.mini.hole[0], y - g.mini.hole[1]) < GUARD_RANGE));
+    if (!near.length) {
       const c = [g.mini.spot.x, g.mini.spot.y - 6];
       g.job = "patrol"; g.patrol = null; g.circling = true;
       g.path = Array.from({ length: 7 }, (_, k) => [c[0] + Math.cos(k * 1.1) * 42, c[1] + 10 + Math.sin(k * 1.1) * 24]);
       g.k = 0; return;
     }
-    const t = ready[Math.floor(Math.random() * ready.length)];
+    const t = near[Math.floor(Math.random() * near.length)];
     let best = 0, bd = Infinity;
     t.pts.forEach((p, k) => { const d = Math.hypot(p[0] - g.mini.hole[0], p[1] - g.mini.hole[1]); if (d < bd) { bd = d; best = k; } });
+    const lo = Math.max(1, best - 4), hi = Math.min(t.pts.length, best + 5);
     g.job = "patrol"; g.patrol = t; g.circling = false;
-    g.path = [g.mini.hole.slice(), ...t.pts.slice(best)]; g.k = 0;
+    g.path = [g.mini.hole.slice(), ...t.pts.slice(lo, hi)]; g.k = 0;
     g.guardLink = null;
   };
   const stepFlyer = (f, dt) => {
