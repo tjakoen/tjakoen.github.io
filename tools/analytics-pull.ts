@@ -107,18 +107,18 @@ async function probe() {
 // was measured returning 0 rows), and the host is a value this repo already knows for certain —
 // SITE.origin in seo.ts, so there is one source of truth and no second env var to keep in sync.
 const COUNTS = `
-  query Counts($account: String!, $since: Time!, $host: String!) {
+  query Counts($account: String!, $since: Time!, $hosts: [String!]!) {
     viewer {
       accounts(filter: { accountTag: $account }) {
         total: rumPageloadEventsAdaptiveGroups(
-          filter: { datetime_geq: $since, requestHost: $host }
+          filter: { datetime_geq: $since, requestHost_in: $hosts }
           limit: 1
         ) {
           sum { visits }
           count
         }
         pages: rumPageloadEventsAdaptiveGroups(
-          filter: { datetime_geq: $since, requestHost: $host }
+          filter: { datetime_geq: $since, requestHost_in: $hosts }
           limit: 5000
           orderBy: [count_DESC]
         ) {
@@ -129,6 +129,15 @@ const COUNTS = `
     }
   }
 `;
+
+// Every host the site has ever answered at. The site moved from tjakoen.github.io to
+// portfolio.tjakoen.com on 2026-11-07, and Cloudflare records each page load under the host it was
+// served from, so filtering on the current origin alone silently dropped every visit made before the
+// move and the status bar read 0. Older hosts stay in this list for good: their history is real.
+export const PAST_HOSTS = ["tjakoen.github.io"];
+export function siteHosts(): string[] {
+  return [...new Set([new URL(SITE.origin).hostname, ...PAST_HOSTS])];
+}
 
 type CountsResponse = {
   viewer?: {
@@ -154,8 +163,7 @@ export function foldPaths(rows: { count: number; dimensions: { requestPath: stri
 }
 
 async function pull() {
-  const host = new URL(SITE.origin).hostname;
-  const data = await graphql(COUNTS, { account: ACCOUNT, since: SINCE, host }) as CountsResponse;
+  const data = await graphql(COUNTS, { account: ACCOUNT, since: SINCE, hosts: siteHosts() }) as CountsResponse;
   const account = data?.viewer?.accounts?.[0];
   if (!account) throw new Error("no account in the response — check CF_ACCOUNT_ID and the token's scope");
 
