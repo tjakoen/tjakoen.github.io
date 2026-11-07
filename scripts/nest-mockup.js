@@ -173,9 +173,17 @@
     #nest-mock .head .x:hover { border-color: var(--color-line); color: var(--ink); }
     .nest-mini.hit { animation: nest-mini-hit .25s ease-out; }
     @keyframes nest-mini-hit { 30% { transform: translateX(2px) scale(.96); } }
-    .nest-queen { position: absolute; width: 40px; height: 22px; margin: -11px 0 0 -20px; color: var(--color-accent); pointer-events: none; z-index: 2; transition: opacity .4s; }
-    .nest-queen svg { width: 100%; height: 100%; display: block; }
+    .nest-queen { position: absolute; width: 46px; height: 30px; margin: -15px 0 0 -23px; color: var(--color-accent); pointer-events: none; z-index: 2;
+      white-space: pre; text-align: center; font: 10px/0.95 var(--font-mono); letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor;
+      transition: opacity .4s, left 1.1s cubic-bezier(.2,.8,.3,1), top 1.1s cubic-bezier(.2,.8,.3,1); }
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
+    .nest-ant.dancing { pointer-events: none; }
+    .nest-ant.dancing svg { animation: nest-dance .55s ease-in-out infinite alternate; }
+    @keyframes nest-dance { to { transform: translateY(-2px) rotate(6deg); } }
+    #nest-mock.celebrating .well { animation: nest-party-glow 1.4s ease-in-out infinite alternate; }
+    #nest-mock.celebrating .nest-pre { animation: nest-party-sway 1.4s ease-in-out infinite alternate; }
+    @keyframes nest-party-glow { from { border-color: var(--color-line); box-shadow: inset 0 0 0 0 transparent; } to { border-color: var(--color-accent); box-shadow: inset 0 0 22px color-mix(in srgb, var(--color-accent) 15%, transparent); } }
+    @keyframes nest-party-sway { to { transform: translateY(-1.5px); filter: brightness(1.1); } }
     .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
     @keyframes nest-bob { to { transform: translateY(-3px); } }
     #nest-mock .nest-meters { display: grid; gap: 5px; }
@@ -201,7 +209,7 @@
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .activity li:first-child { color: var(--ink); }
     #nest-mock .activity li::before { content: "› "; color: var(--ink-faint); }
-    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-ant.swatted svg, .nest-splat { animation: none; } }`;
+    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
   document.head.append(style);
 
   // ================================ the switch ================================
@@ -667,6 +675,7 @@
     layer.append(el); hills.push(h); return h;
   };
   const seal = (h) => {
+    if (state.party) return;
     const now = performance.now() / 1000;
     if (h.cool > now) { log(`the hill can be sealed again in ${Math.ceil(h.cool - now)}s`); return; }
     h.sealed = now + SEAL; h.cool = now + SEAL_COOL; h.el.classList.add("sealed"); blip(180, 0.18, "square"); noiseBurst(0.15, 0.05, 400);
@@ -942,7 +951,7 @@
   };
 
   const squash = (ant) => {
-    if (state.tool !== "squash" || state.over || state.overrun || ant.dead) return;
+    if (state.tool !== "squash" || state.over || state.overrun || ant.dead || ant.job === "dance") return;
     if ((ant.role === "soldier" || ant.role === "guard") && ant.hp > 1) {
       ant.hp--; ant.el?.classList.add("hit"); setTimeout(() => ant.el?.classList.remove("hit"), 250);
       blip(300, 0.06, "square"); noiseBurst(0.04, 0.03, 2200); return;
@@ -1156,18 +1165,20 @@
   // The colony does not wait for the page to empty. Every few letters it stops, the queen comes
   // out of the hill, and the workers circle her. Then they go back to work. The thresholds rise
   // because a colony that danced every twenty letters forever would be a metronome, not a colony.
-  const QUEEN_SVG = `<svg viewBox="0 0 44 24" fill="currentColor" aria-hidden="true">
-    <circle cx="8" cy="12" r="2.4"/><circle cx="11" cy="12" r="3.1"/><circle cx="15" cy="12" r="3.5"/>
-    <circle cx="20" cy="12" r="4.3"/><circle cx="26" cy="12" r="5.2"/><circle cx="33" cy="12" r="6.1"/>
-    <path d="M8 4 11 7 14 3 17 7 20 3 23 7 26 3 29 7 32 4" fill="none" stroke="currentColor" stroke-width="1.2"/>
-  </svg>`;
+  // The queen is the same dot animal as the sidepanel, not a separate card. She leaves the nest
+  // for a stage outside the hill; the sidepanel queen disappears while she is out.
+  const QUEEN_ART = "⠀⢀⣤⣤⡀⠀\n⢠⣿⣿⣿⣿⡄\n⠈⠛⠛⠛⠛⠁";
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
     const now = performance.now();
     const mound = home;
-    const queen = document.createElement("div"); queen.className = "nest-queen bob"; queen.innerHTML = QUEEN_SVG;
+    const stage = { x: mound.base[0], y: Math.min(main.scrollHeight - 30, mound.base[1] + 46) };
+    const queen = document.createElement("pre"); queen.className = "nest-queen bob"; queen.textContent = QUEEN_ART;
     queen.style.left = mound.hole[0] + "px"; queen.style.top = (mound.hole[1] - 8) + "px";
     layer.append(queen);
+    requestAnimationFrame(() => { queen.style.left = stage.x + "px"; queen.style.top = stage.y + "px"; });
+    panel.classList.add("celebrating");
+    hills.forEach((h) => { h.el.style.pointerEvents = "none"; });
     const dancers = state.ants.filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
     dancers.forEach((a, i) => {
       a.party = { angle: (i / Math.max(1, dancers.length)) * Math.PI * 2, radius: 40 + (i % 3) * 13 };
@@ -1179,7 +1190,7 @@
       g.dataset.radius = String(54 + (i % 2) * 16);
       layer.append(g); glyphs.push(g);
     });
-    state.party = { start: now, until: now + (final ? 16000 : 9000), final, queen, dancers, glyphs };
+    state.party = { start: now, until: now + (final ? 16000 : 9000), final, queen, dancers, glyphs, stage };
     state.queen.lay = 0;
     log(final ? "the colony takes the page" : "the colony dances");
     melody();
@@ -1190,23 +1201,26 @@
     p.dancers.forEach((a) => {
       if (!a.el) return;
       const angle = a.party.angle + t * 0.9;
-      move(a, home.hole[0] + Math.cos(angle) * a.party.radius, home.hole[1] + Math.sin(angle) * a.party.radius * 0.55 + 8, dt, SPEED * 0.9);
+      move(a, p.stage.x + Math.cos(angle) * a.party.radius, p.stage.y + Math.sin(angle) * a.party.radius * 0.55 + 8, dt, SPEED * 0.9);
       a.px = a.x; a.py = a.y;
     });
     p.glyphs.forEach((g, i) => {
       const angle = (i / Math.max(1, p.glyphs.length)) * Math.PI * 2 + t * 0.7;
       const r = Number(g.dataset.radius) || 58;
-      g.style.left = (home.hole[0] + Math.cos(angle) * r) + "px";
-      g.style.top = (home.hole[1] + Math.sin(angle) * r * 0.55 - 4) + "px";
+      g.style.left = (p.stage.x + Math.cos(angle) * r) + "px";
+      g.style.top = (p.stage.y + Math.sin(angle) * r * 0.55 - 4) + "px";
     });
     if (now >= p.until) endParty();
   };
   const endParty = () => {
     const p = state.party; if (!p) return;
     p.queen.remove(); p.glyphs.forEach((g) => g.remove());
+    panel.classList.remove("celebrating");
+    hills.forEach((h) => { h.el.style.pointerEvents = ""; });
     p.dancers.forEach((a) => {
       if (!a.el) return;
       a.el.classList.remove("dancing");
+      label(a);
       a.job = "home"; a.path = [hillOf(a).hole.slice()]; a.k = 0; a.party = null;
     });
     state.party = null;
@@ -1604,15 +1618,17 @@
     const d = base.slice();
     const put = (x, y, t) => { x = Math.round(x); y = Math.round(y); if (x >= 0 && y >= 0 && x < W && y < H) d[y * W + x] = t; };
     const step = Math.floor(now / 180) % 2;
-    const qx = QUEEN[0] * W, qy = QUEEN[1] * H, q = state.queen;
-    const swell = state.queenDead ? 0.9 : 1 + 0.06 * Math.sin(now / 400) + 0.25 * q.lay;
-    const ax = R * 0.6 * swell, ay = R * 0.26 * swell;
-    for (let j = -ay; j <= ay; j++) for (let i = -ax; i <= ax; i++) if ((i * i) / (ax * ax) + (j * j) / (ay * ay) <= 1 && (Math.round(i + j) % 2 === 0 || Math.abs(j) < ay * 0.5)) put(qx + R * 0.15 + i, qy + j, state.queenDead ? 0 : 6);
-    const hx = qx - R * 0.6 - (q.eat > 0 ? step * 2 : 0);
-    for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { put(qx - R * 0.45 + i, qy + j, 6); if (Math.abs(i) + Math.abs(j) < 3) put(hx - 4 + i, qy + j, 6); }
-    for (let k = -1; k <= 1; k++) for (let s = 1; s < 4; s++) { const lx = qx - R * 0.45 + k * 3 + s * k + (step && k === 0 ? 1 : 0); put(lx, qy + 2 + s, 6); put(lx, qy - 2 - s, 6); }
-    if (q.eat > 0) { put(hx - 8 + q.eat * 3, qy, 5); put(hx - 8 + q.eat * 3, qy - 1, 5); }
-    if (q.lay > 0) put(qx + R * 0.15 + ax + 2, qy, 4);
+    if (!state.party) {
+      const qx = QUEEN[0] * W, qy = QUEEN[1] * H, q = state.queen;
+      const swell = state.queenDead ? 0.9 : 1 + 0.06 * Math.sin(now / 400) + 0.25 * q.lay;
+      const ax = R * 0.6 * swell, ay = R * 0.26 * swell;
+      for (let j = -ay; j <= ay; j++) for (let i = -ax; i <= ax; i++) if ((i * i) / (ax * ax) + (j * j) / (ay * ay) <= 1 && (Math.round(i + j) % 2 === 0 || Math.abs(j) < ay * 0.5)) put(qx + R * 0.15 + i, qy + j, state.queenDead ? 0 : 6);
+      const hx = qx - R * 0.6 - (q.eat > 0 ? step * 2 : 0);
+      for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { put(qx - R * 0.45 + i, qy + j, 6); if (Math.abs(i) + Math.abs(j) < 3) put(hx - 4 + i, qy + j, 6); }
+      for (let k = -1; k <= 1; k++) for (let s = 1; s < 4; s++) { const lx = qx - R * 0.45 + k * 3 + s * k + (step && k === 0 ? 1 : 0); put(lx, qy + 2 + s, 6); put(lx, qy - 2 - s, 6); }
+      if (q.eat > 0) { put(hx - 8 + q.eat * 3, qy, 5); put(hx - 8 + q.eat * 3, qy - 1, 5); }
+      if (q.lay > 0) put(qx + R * 0.15 + ax + 2, qy, 4);
+    }
     { const cap = storeCap(), fill = Math.min(1, state.stores / cap), per = Math.round(fill * R * 1.1);
       STORES.forEach(([u, v], c) => { for (let k = 0; k < per; k++) { const col = k % Math.max(2, Math.floor(R * 0.9)), row = Math.floor(k / Math.max(2, Math.floor(R * 0.9))); put(u * W - R * 0.45 + col * 1.0 + (c ? 0 : 0), v * H + 2 - row, 5); } }); }
     state.larder.forEach((_, k) => { if (k < R * 0.8) { put(LARDER[0] * W - R * 0.7 + k * 2, LARDER[1] * H + 2, 5); put(LARDER[0] * W - R * 0.7 + k * 2, LARDER[1] * H + 1 - (k % 2), 5); } });
@@ -1665,7 +1681,7 @@
     setMeter("holds", held, `${Math.round(held * 100)}%`);
     const wait = Math.ceil(baitReady - performance.now() / 1000);
     const sealWait = Math.ceil(Math.max(...hills.map((h) => h.cool)) - performance.now() / 1000);
-    $("seal").disabled = sealWait > 0 || state.queenDead;
+    $("seal").disabled = sealWait > 0 || state.queenDead || !!state.party;
     if (state.over && main.classList.contains("nest-armed")) setBaitArmed(false);
     $("bait").disabled = wait > 0 || state.over || state.tool === "read";
     for (const [key, seconds] of [["seal", sealWait], ["bait", wait]]) {
@@ -1870,6 +1886,8 @@
       state.party.queen.remove();
       state.party.glyphs.forEach((g) => g.remove());
       state.party.dancers.forEach((a) => a.el?.classList.remove("dancing"));
+      panel.classList.remove("celebrating");
+      hills.forEach((h) => { h.el.style.pointerEvents = ""; });
       state.party = null;
     }
     state.ants.forEach((a) => { const L = a.letter; if (L && L.glyph) { L.glyph.remove(); showChar(L); } });

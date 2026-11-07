@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 24 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 25 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -77,9 +77,11 @@ to four minutes after a walk or a click. It only runs where the launcher is visi
 desktop easter egg.
 
 **The dance.** The colony stops at twenty stolen letters, then fifty, then a rising set of
-thresholds. The queen comes out of the hill, the workers circle her, the stolen glyphs orbit, a
-short synth melody plays, and then the colony goes back to work. The final overrun uses the same
-scene for longer. The player's win stays quiet, which is the note's own argument.
+thresholds. The queen leaves the sidepanel nest for a stage outside the hill, the workers ring her
+and dance, the sidepanel pulses with a border glow and a sway, the stolen glyphs orbit, a short
+synth melody plays, and then the colony goes back to work. The queen is hidden in the sidepanel
+while she is outside. The final overrun uses the same scene for longer. The player's win stays
+quiet, which is the note's own argument.
 
 **The controls.** The three tools are named, keyed 1, 2 and 3, and the selected tile presses in.
 The cursor changes natively: crosshair for squash, cell for wipe, the page's own cursor for links,
@@ -138,7 +140,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  14 passed (54.3s)
+  15 passed (22.6s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
@@ -178,5 +180,5 @@ new trail weight reads as scent rather than as a dotted rule. Wipe a trail and s
 see whether the two animations land at the right speed. Let a mini hill stand and watch a guard
 patrol away from it. Click a guarded mound, clear the guards, and decide whether the split art and
 dashed outline read as exposed. Watch the trail shape and decide whether the cubic reads as walked
-rather than plotted. The dance is the one call that is still a taste question: nine seconds, queen on the
-hill, glyphs in orbit.
+rather than plotted. The dance is the one call that is still a taste question: nine seconds, queen on a
+stage outside the hill, dancers in a ring, the sidepanel pulsing.
