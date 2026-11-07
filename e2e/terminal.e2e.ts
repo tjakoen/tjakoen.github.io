@@ -29,6 +29,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(feed).toContainText("whoami");                     // desk-commands registered
     await expect(feed).toContainText("navigate to a page");         // the go builtin's help line
     await expect(feed).toContainText("reveal the ant colony");      // the nest command is listed
+    await expect(feed).toContainText("send a stray ant");           // the stray command is listed
     // an unknown command reports honestly instead of failing silent
     await input.fill("frobnicate");
     await input.press("Enter");
@@ -70,6 +71,17 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
     await launcher.click();
     await expect(page.locator('[data-surface="nest-controls"]')).toBeVisible();
+  });
+
+  test("the stray command sends an ant that runs for the launcher", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".console__expand").click();
+    await run(page, "stray");
+    const stray = page.locator(".nest-stray");
+    await expect(stray).toHaveCount(1);
+    await stray.evaluate((el) => (el as HTMLButtonElement).click());
+    await expect(page.locator(".nest-switch")).toHaveClass(/nest-pulse/);
+    await expect(stray).toHaveCount(0);
   });
 
   test("Nest tools lock links during play and let players cancel bait", async ({ page }) => {
