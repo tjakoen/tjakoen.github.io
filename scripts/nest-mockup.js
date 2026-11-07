@@ -18,7 +18,7 @@
   const LINE = 6;          // ants that share one trail
   const MAX_ANTS = 24;
   const SPEED = 40;        // page pixels per second
-  const GAP = 17;          // spacing between ants walking the same way
+  const GAP = 27;          // spacing between ants walking the same way
   const NEST_SPEED = 0.16; // nest units per second
 
   const style = document.createElement("style");
@@ -395,15 +395,19 @@
 
   // Walk toward a point. Ants keep their distance: one that would close on an ant ahead going the
   // same way stops for the frame, which is what turns a trail into a line.
-  const blocked = (ant) => state.ants.some((o) => o !== ant && o.el && o.job !== "crew" && o.lead !== ant && ant.lead !== o &&
+  // Only ants on the same trail, heading the same way, hold each other up, so two crossing trails
+  // never lock; and an ant kept waiting for more than a second walks on anyway.
+  const outbound = (a) => a.job === "follow" || a.job === "toLetter";
+  const blocked = (ant) => (ant.stuck || 0) < 1 && state.ants.some((o) => o !== ant && o.el && o.job !== "crew" && o.lead !== ant && ant.lead !== o &&
+    ant.trail && o.trail === ant.trail && outbound(o) === outbound(ant) &&
     Math.hypot(o.px - ant.x, o.py - ant.y) < GAP && Math.cos(ant.heading - o.heading) > 0.2 &&
     ((o.px - ant.x) * Math.cos(ant.heading) + (o.py - ant.y) * Math.sin(ant.heading)) > 0);
   const move = (ant, tx, ty, dt, speed) => {
     const dx = tx - ant.x, dy = ty - ant.y, d = Math.hypot(dx, dy), v = speed * dt;
     if (d > 0.5) ant.heading = Math.atan2(dy, dx);
     if (d <= v) { ant.x = tx; ant.y = ty; return true; }
-    if (ant.job !== "carry" && blocked(ant)) { ant.paused = true; return false; }
-    ant.paused = false;
+    if (ant.job !== "carry" && blocked(ant)) { ant.paused = true; ant.stuck = (ant.stuck || 0) + dt; return false; }
+    ant.paused = false; if (ant.stuck) ant.stuck = Math.max(0, ant.stuck - dt * 0.5);
     const wob = Math.sin(performance.now() / 140 + ant.id) * 0.3;
     ant.x += (dx / d) * v - (dy / d) * wob; ant.y += (dy / d) * v + (dx / d) * wob; return false;
   };
