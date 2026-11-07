@@ -46,6 +46,10 @@
     #nest-mock .row { display: flex; gap: 6px; }
     #nest-mock button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; cursor: pointer; }
     #nest-mock button:hover { background: var(--paper-2); }
+    #nest-mock { position: relative; }
+    #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
+      background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+    #nest-mock .confirm p { margin: 0 0 8px; }
     .nest-layer { position: absolute; left: 0; top: 0; width: 100%; z-index: 50; pointer-events: none; overflow: hidden; }
     .nest-scent { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; }
     .nest-scent polyline { fill: none; stroke: var(--ink-faint); stroke-width: 1.2; stroke-dasharray: 1 5; stroke-linecap: round; opacity: .55; transition: opacity 1s; }
@@ -71,12 +75,28 @@
     @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-ant.wait svg { animation: none; } }`;
   document.head.append(style);
 
+  // ================================ the tab ================================
+  // The Nest tab sits beside the others and does nothing until it is clicked. Clicking it starts a
+  // colony; switching to another tab asks first, then clears the colony and restores the page.
+  const tab = document.createElement("button");
+  // data-shell-mode gives it GRAIN's tab styling; the mode handlers bind at page load, so they never see this one
+  tab.type = "button"; tab.setAttribute("role", "tab"); tab.dataset.shellMode = "nest"; tab.textContent = "Nest"; tab.setAttribute("aria-selected", "false");
+  modes.append(tab);
+  let game = null;
+  tab.addEventListener("click", () => { if (!game) game = start(); });
+  modes.addEventListener("click", (e) => {
+    const other = e.target.closest("[role=tab]");
+    if (!game || !other || other === tab || other.dataset.nestPass) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    game.confirmLeave(() => { game.stop(); game = null; other.dataset.nestPass = "1"; other.click(); delete other.dataset.nestPass; });
+  }, true);
+
+  const start = () => {
   // ================================ the panel ================================
   modes.querySelectorAll("[role=tab]").forEach((b) => b.setAttribute("aria-selected", "false"));
-  const tab = document.createElement("button");
-  tab.type = "button"; tab.setAttribute("role", "tab"); tab.textContent = "Nest"; tab.setAttribute("aria-selected", "true");
-  modes.append(tab);
-  [...aside.children].forEach((el) => { if (!el.classList.contains("assistant__head")) el.style.display = "none"; });
+  tab.setAttribute("aria-selected", "true");
+  const hidden = [...aside.children].filter((el) => !el.classList.contains("assistant__head") && el.style.display !== "none");
+  hidden.forEach((el) => { el.dataset.nestDisplay = el.style.display; el.style.display = "none"; });
   const panel = document.createElement("div");
   panel.id = "nest-mock";
   panel.innerHTML = `
@@ -90,7 +110,12 @@
       <dt class="muted">trails</dt><dd data-k="trails">0</dd><dt class="muted">squashed</dt><dd data-k="squashed">0</dd>
       <dt class="muted">larder</dt><dd class="accent" data-k="larder" style="grid-column: span 3; text-align: left">empty</dd>
     </dl>
-    <div class="row"><button data-k="pause">pause colony</button><button data-k="restore" class="muted">restore page</button></div>`;
+    <div class="row"><button data-k="pause">pause colony</button><button data-k="restore" class="muted">restore page</button></div>
+    <div class="confirm" data-k="confirm" role="alertdialog" aria-labelledby="nest-confirm-title" hidden>
+      <p id="nest-confirm-title"><b>Leave the nest?</b></p>
+      <p class="muted">The colony is cleared and every stolen letter goes back where it was.</p>
+      <div class="row"><button data-k="leave">clear and leave</button><button data-k="stay" class="muted">keep playing</button></div>
+    </div>`;
   aside.append(panel);
   const $ = (k) => panel.querySelector(`[data-k="${k}"]`);
   const pre = panel.querySelector(".nest-pre");
@@ -220,7 +245,7 @@
     for (const n of textNodes(main)) { if (!/\S/.test(n.data)) continue; const r = document.createRange(); r.selectNodeContents(n); for (const c of r.getClientRects()) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } }
     main.querySelectorAll("img, svg, button, input, textarea, figure, hr").forEach((el) => { if (layer.contains(el)) return; const c = el.getBoundingClientRect(); if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } });
     const w = hr.width, h = hr.height, pad = 14, spots = [];
-    for (let y = main.scrollTop + h + 30; y < main.scrollTop + main.clientHeight - 20; y += 18) for (let x = w / 2 + 20; x < main.clientWidth - w / 2 - 20; x += 18) {
+    for (let y = h + 30; y < main.scrollHeight - 20; y += 18) for (let x = w / 2 + 20; x < main.clientWidth - w / 2 - 20; x += 18) {
       const box = [x - w / 2 - pad, y - h - pad, x + w / 2 + pad, y + pad];
       let near = Infinity;
       for (const r of rects) {
@@ -230,11 +255,14 @@
       if (near > 0) spots.push([x, y, near]);
     }
     if (!spots.length) return [main.clientWidth * 0.85, main.scrollTop + main.clientHeight * 0.8];
+    // the page is searched top to bottom; any roomy spot anywhere is fair game
     const best = Math.max(...spots.map((p) => Math.min(p[2], 160)));
     const roomy = spots.filter((p) => Math.min(p[2], 160) >= best * 0.8);
     return roomy[Math.floor(Math.random() * roomy.length)];
   })();
   hill.style.left = hillBase[0] - hr.width / 2 + "px"; hill.style.top = hillBase[1] - hr.height + "px";
+  // bring the hill into view, a little above the middle of the pane
+  main.scrollTo({ top: Math.max(0, hillBase[1] - main.clientHeight * 0.55), behavior: "smooth" });
   const hole = [hillBase[0], hillBase[1] - hr.height + 4];
 
   // A trail feeds from a patch, the letters within PATCH pixels of where its scout found food, so
@@ -543,7 +571,9 @@
 
   // ================================ the loop ================================
   let last = performance.now(), tick = 0;
+  let stopped = false;
   const frame = (now) => {
+    if (stopped) return;
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     if (!state.paused) {
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
@@ -576,4 +606,21 @@
   for (let k = 0; k < 4; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
   log("the colony wakes; two scouts head out");
   requestAnimationFrame(frame);
+
+  // Leaving: put every letter back, carried or stolen, and take the colony off the page.
+  const stop = () => {
+    stopped = true;
+    state.ants.forEach((a) => { const L = a.letter; if (L && L.glyph) { L.glyph.remove(); showChar(L); } });
+    state.stolen.forEach(showChar);
+    layer.remove(); panel.remove();
+    hidden.forEach((el) => { el.style.display = el.dataset.nestDisplay; delete el.dataset.nestDisplay; });
+    tab.setAttribute("aria-selected", "false");
+  };
+  const confirmLeave = (go) => {
+    const box = $("confirm"); box.hidden = false; $("leave").focus();
+    $("leave").onclick = () => { box.hidden = true; go(); };
+    $("stay").onclick = () => { box.hidden = true; tab.focus(); };
+  };
+  return { stop, confirmLeave };
+  };
 })();
