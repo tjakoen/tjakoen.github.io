@@ -17,7 +17,7 @@ touched:
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
 unpushed: 1 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a help and query-shortcut check, and the terminal e2e
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -87,6 +87,11 @@ gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps
 unlock the game, and `help` lists it next to `reveal the ant colony`. A returning player's saved
 unlock still loads the launcher on later pages. `?nest-debug` only exposes the local test hooks and
 does not load the game by itself.
+
+**The note.** The public note now carries the bug joke ("My portfolio has bugs now"), the
+terminal-only door and the help line, the ninety second trail fade, the soldier and mini hill dots,
+the twenty and fifty letter dances, the refresh reset, the stray ant, and the ground and sound
+details.
 
 **The ground.** A quiet ground patch sits around each hill: stones, grass, a twig, a dandelion and
 one paperclip further out. It is theme-token colour at 0.55 opacity, never catches a click, and

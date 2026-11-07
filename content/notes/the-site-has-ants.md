@@ -5,18 +5,21 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-07
-readingTime: "~6 min"
+updated: 2026-11-08
+readingTime: "~7 min"
 tags: [games, interactive, vanilla, grain, claude]
 summary: >
-  Run nest in this site's terminal to find the ant colony. Scouts find letters,
-  lay scent trails, and workers carry the real glyphs home to a queen drawn in Braille dots. It is
-  a small game built on the same vanilla stack as everything else here, to show that the stack can
-  do play as well as documents, and it took more tuning of ant traffic than of anything that looks
-  like game design.
+  My portfolio has bugs now. I gave them a home, and the ants eat the copy. Run nest in this site's
+  terminal to find the colony. Scouts find letters, lay scent trails, and workers carry the real
+  glyphs home to a queen drawn in Braille dots. It is a small game built on the same vanilla stack
+  as everything else here, to show that the stack can do play as well as documents, and it took
+  more tuning of ant traffic than of anything that looks like game design.
 image: /media/notes/nest-og.png
 imageAlt: "TJ's Desk home page with an ant colony at work: an anthill drawn in Braille dots, scent trails running down to the page copy with letters missing, and the Nest panel in the sidebar."
 social: |
-  My portfolio has ants now.
+  My portfolio has bugs now.
+
+  Every portfolio has bugs. I gave mine a home, a queen, and a job stealing the copy.
 
   Run nest in the site's terminal to find the colony. Scouts find letters, lay scent
   trails, and workers carry the real glyphs home to a queen drawn in Braille dots. The gaps they
@@ -28,9 +31,11 @@ social: |
   The word is nest. The copy is the food.
 ---
 
-I had no game on my portfolio. For someone who keeps telling students the interesting part of software is the behavior, that was a little embarrassing. So this site now has ants.
+I had no game on my portfolio. For someone who keeps telling students the interesting part of software is the behavior, that was a little embarrassing. So I gave the bugs a home. This site now has ants.
 
-Open the terminal at the bottom of the page, type *nest*, and press Enter. A tiny ant appears in the status bar. Click it, and an anthill turns up in an empty patch of whatever page you are on, and the colony goes to work on the copy.
+Open the terminal at the bottom of the page, type *nest*, and press Enter. There is no button for it and no link that opens it; the word is the only door. If you want to see it listed, type *help* first: *nest* sits next to *reveal the ant colony*.
+
+A tiny ant appears in the status bar. Click it, and an anthill turns up in an empty patch of whatever page you are on, and the colony goes to work on the copy.
 
 > The enemy in this game wants the sentence you were halfway through reading.
 
@@ -40,7 +45,9 @@ Open the terminal at the bottom of the page, type *nest*, and press Enter. A tin
 
 Three scouts leave the hill first. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
 
-A scout that makes it home lays a scent trail. Workers follow trails five to a line, filled in turn so no trail starves, and a heading in a big font needs a crew of two or three to lift. Every other letter feeds the queen in the sidebar, who lays eggs. The rest goes into two storerooms, and when they fill up a builder ant walks out and raises a mini hill somewhere else on the page. Mini hills send out guards, which walk to an existing trail and patrol it, and flyers, which ignore trails entirely and pinch letters from anywhere. A colony that has taken a few letters stops to dance: the queen comes out of the hill, the workers circle her, and then they go back to work. The next dance waits for a larger haul.
+A scout that makes it home lays a scent trail. Workers follow trails five to a line, filled in turn so no trail starves, and a heading in a big font needs a crew of two or three to lift. A trail fades when its patch is empty or after ninety seconds, and a worker turns scout to find the next one. Once the colony passes eight, soldiers hatch: bigger, quieter in color than a worker, and worth two hits.
+
+Every other letter feeds the queen in the sidebar, who lays eggs. The rest goes into two storerooms, and when they fill up a builder ant walks out and raises a mini hill somewhere else on the page. Its rim carries one dot per guard and its base one dot per hit. Mini hills send out guards, which walk to an existing trail and patrol it, and flyers, which ignore trails entirely and pinch letters from anywhere. A colony that has taken twenty letters stops to dance, then fifty, then a rising count: the queen comes out of the hill, the workers circle her, and then they go back to work.
 
 <svg viewBox="0 0 480 236" width="100%" role="img"
      aria-label="The colony loop: scouts find a letter and lay a trail; workers follow the trail and carry letters home; half the letters feed the queen, who lays more ants; the other half fill the stores, and full stores send a builder to raise a mini hill, which sends guards to the trails and flyers to steal letters anywhere."
@@ -77,31 +84,31 @@ A scout that makes it home lays a scent trail. Workers follow trails five to a l
   </g>
 </svg>
 
-![Two trails of ants carrying letters across the ten-times-zero note toward the anthill, the stores bar in the sidebar reading building as a builder heads out to raise a mini hill.](/media/notes/nest-mini-hill.jpg)
+![Trails of ants carrying letters across the ten-times-zero note toward the anthill, the stores bar in the sidebar reading building as a builder heads out to raise a mini hill.](/media/notes/nest-mini-hill.jpg)
 
-You fight back with the three tools in the panel, on the icons or the 1, 2 and 3 keys. Squash and Wipe lock the links so a missed ant does not send you to another page. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and it snaps: the ants scatter, then take the nearest trail with room or head back to the hill. Use Page Links hands the links back while the ants keep working. There is bait, a hill seal on a cooldown, and a mute button, because sound is off until you ask for it.
+You fight back with the three tools in the panel, on the icons or the 1, 2 and 3 keys. Squash and Wipe lock the links so a missed ant does not send you to another page. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and it snaps into two pieces: the ants scatter, then take the nearest trail with room or head back to the hill. A squashed ant flattens under a quick ring. Links hands the page back while the ants keep working. There is bait, a hill seal on a cooldown, and a mute button, because sound is off until you ask for it.
 
 ## No win screen, no game over
 
-The endings were the part I argued with myself about longest. A portfolio is not an arcade, and a big YOU WIN banner on a résumé page felt wrong. So there isn't one. Wipe out the colony after the queen has spent her two reserve scouts and she dies: the nest goes still and the page keeps its gaps, as a record of the fight. Let roughly one in seven characters go and it is simply too late. The ants stop being squashable and eat on, quietly, until the page is empty. Closing the Nest puts every letter back.
+The endings were the part I argued with myself about longest. A portfolio is not an arcade, and a big YOU WIN banner on a résumé page felt wrong. So there isn't one. Wipe out the colony after the queen has spent her two reserve scouts and she dies: the nest goes still and the page keeps its gaps, as a record of the fight. Let roughly one in seven characters go and it is simply too late. The ants stop being squashable and eat on, quietly, until the page is empty. Closing the Nest puts every letter back. A refresh is a reset too: the panel closes, the saved colony clears, and the launcher waits in the status bar. A link navigation carries the colony to the next page.
 
 ## Built on the same stack as everything else
 
-No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file, loaded on demand.
+No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file, loaded on demand. The ground around a hill is a few inline SVG stones, grass, a twig and a paperclip, not an image. The sound is synthesized in the same file: a few oscillators and one noise buffer, no audio files.
 
 That was the point of building it at all. A design system that only renders documents is half a claim. This one also renders a small ecosystem that steals from the documents.
 
 ## Where the time actually went
 
-Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Real ants solved that a long time ago. It took me a few evenings.
+Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Later I gave each trail two lanes and smoothed the scout's route, because a trail should look walked, not sampled. Real ants solved that a long time ago. It took me a few evenings.
 
 Claude did most of the typing, which will surprise nobody who has read [how I work](ten-times-zero.md). The calls were mine: ants that take real letters, gaps that never reflow, no announced ending, and the bit where a professional site hides a game behind a word you have to know to type.
 
 ## What I have not earned yet
 
-It has been played by me and by a preview browser, and that is the whole test group. Balance is a guess: the costs of mini hills, the one in seven threshold, how fast the queen breeds. I have watched a guard patrol a trail end to end since, and the first version could get stuck on its own mound; that is fixed now. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and I have not built that one.
+It has been played by me, a preview browser, and a small browser suite, and that is the whole test group. Balance is a guess: the costs of mini hills, the one in seven threshold, how fast the queen breeds. I have watched a guard patrol a trail end to end since, and the first version could get stuck on its own mound; that is fixed now. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and the stray ant has nowhere to lead because the launcher hides there. I have not built that one.
 
-But if you are reading this on the site, the terminal takes one word. *Nest*. The copy you just read is the food.
+But if you are reading this on the site, the terminal takes one word. *Nest*. The copy you just read is the food. If a single ant crosses the page later, when the Nest is closed, follow it. It knows the way back.
 
 ---
 
