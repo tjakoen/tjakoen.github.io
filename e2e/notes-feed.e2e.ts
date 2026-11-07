@@ -73,7 +73,7 @@ test.describe("the /notes feed (JS on)", () => {
       ["/notes/origin-story", "/mill"],
       ["/notes/one-loop-every-repo", "/proof"],
       ["/notes/one-loop-every-repo", "/plans"],
-      ["/notes/the-browser-grew-up", "https://tjakoen.github.io/framework-bench/"],
+      ["/notes/the-browser-grew-up", "https://portfolio.tjakoen.com/framework-bench/"],
       ["/notes/the-browser-grew-up", "https://github.com/tjakoen/framework-bench"],
       ["/notes/the-check-that-never-ran", "https://github.com/tjakoen/pantry/blob/main/cli.ts"],
       ["/notes/the-console-i-built-to-stop-drowning", "/native-github-classroom"],

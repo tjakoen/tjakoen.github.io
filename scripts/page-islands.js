@@ -14,9 +14,9 @@ if (document.querySelector("[data-lightbox]")) {
 }
 
 if (document.querySelector("[data-live-figure]")) tasks.push(import("/site/figures.js"));
-// Load the Nest for returning players and direct preview links. New players can unlock it in the terminal.
-const nestUnlocked = () => { try { return localStorage.getItem("nest-unlocked") === "1"; } catch { return false; } };
-if (new URLSearchParams(location.search).has("nest") || nestUnlocked()) tasks.push(import("/site/nest-mockup.js"));
+// The ant in the status bar is the door. The game script loads with the page and stays closed
+// until the ant is clicked or `nest` is typed in the terminal. There is no query-string shortcut.
+tasks.push(import("/site/nest-mockup.js"));
 if (document.querySelector("[data-note-progress]")) tasks.push(import("/site/note-progress.js"));
 
 await Promise.all(tasks);
