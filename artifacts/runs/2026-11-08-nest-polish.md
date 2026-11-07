@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 25 | the branch is local for review
+unpushed: 26 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -111,13 +111,12 @@ dots, the twenty and fifty letter dances, the refresh reset, the stray ant and i
 command, and the sound details.
 
 **The page.** The scattered ground decor is gone; the hill and the trails sit on the page alone.
-The bread is a PRE, and the first obstacle scan skipped PRE; it is now solid for the hill and the
-mini hills.
+The first two mini hills are sited near the main hill; later ones spread out. The bread is a PRE,
+and the first obstacle scan skipped PRE; it is now solid for the hill and the mini hills.
 
 **The mini hill language.** No words or count dots on the page. The mound thins as it takes hits,
 and the guards are the ants visible on patrol. Clicking a guarded mound calls its guards home;
-clearing them splits the mound open with a space through the Braille and a dashed accent outline,
-and no new guards spawn. The element is a keyboard button with an aria label for screen readers.
+clearing them splits the mound open with a space through the Braille, and no new guards spawn. The element is a keyboard button with an aria label for screen readers.
 
 **Sound.** One small synth, no files: the unmute button pulses for eight seconds when the colony
 opens, then settles on hover, focus, click or time. A master gain, a compressor, oscillators and a reusable
@@ -140,7 +139,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  15 passed (22.6s)
+  15 passed (31.3s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
@@ -178,7 +177,6 @@ alone. The old screenshot inside the first note image is recursive by nature and
 Play the first minute on the home page and on a note, in both colour schemes. Watch whether the
 new trail weight reads as scent rather than as a dotted rule. Wipe a trail and squash a soldier to
 see whether the two animations land at the right speed. Let a mini hill stand and watch a guard
-patrol away from it. Click a guarded mound, clear the guards, and decide whether the split art and
-dashed outline read as exposed. Watch the trail shape and decide whether the cubic reads as walked
+patrol away from it. Click a guarded mound, clear the guards, and decide whether the split art reads as exposed. Watch the trail shape and decide whether the cubic reads as walked
 rather than plotted. The dance is the one call that is still a taste question: nine seconds, queen on a
 stage outside the hill, dancers in a ring, the sidepanel pulsing.
