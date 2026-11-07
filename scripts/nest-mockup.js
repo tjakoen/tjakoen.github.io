@@ -91,9 +91,9 @@
     .nest-ant:focus-visible { outline: 1px dashed var(--color-accent); outline-offset: 3px; }
     .nest-ant.scout { color: var(--color-accent); }
     .nest-ant svg { display: block; overflow: visible; transition: transform .15s; }
-    .nest-ant .legs-b { opacity: 0; }
-    .nest-ant.walk .legs-a { animation: nest-step .18s steps(1) infinite; }
-    .nest-ant.walk .legs-b { animation: nest-step .18s steps(1) infinite reverse; }
+    .nest-ant .legs-b, .nest-stray .legs-b { opacity: 0; }
+    .nest-ant.walk .legs-a, .nest-stray.walk .legs-a { animation: nest-step .18s steps(1) infinite; }
+    .nest-ant.walk .legs-b, .nest-stray.walk .legs-b { animation: nest-step .18s steps(1) infinite reverse; }
     .nest-ant.lift svg { animation: nest-lift .35s ease-out; }
     .nest-ant.wait svg { animation: nest-wait 1s ease-in-out infinite; }
     @keyframes nest-step { 0% { opacity: 1; } 50% { opacity: 0; } }
@@ -191,7 +191,7 @@
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .activity li:first-child { color: var(--ink); }
     #nest-mock .activity li::before { content: "› "; color: var(--ink-faint); }
-    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-ant.swatted svg, .nest-splat { animation: none; } }`;
+    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-ant.swatted svg, .nest-splat { animation: none; } }`;
   document.head.append(style);
 
   // ================================ the switch ================================
@@ -218,6 +218,15 @@
   const strayConsumed = () => { try { return sessionStorage.getItem(STRAY_KEY) === "1"; } catch { return false; } };
   const consumeStray = () => { try { sessionStorage.setItem(STRAY_KEY, "1"); } catch { /* private mode */ } };
   const strayReduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // The ant art is shared by the colony and the stray easter egg.
+  const LEGS_A = [[5, 2], [4, 1], [9, 2], [10, 1], [7, 6], [8, 7], [2, 6], [1, 7]];
+  const LEGS_B = [[7, 2], [8, 1], [3, 2], [2, 1], [5, 6], [4, 7], [10, 6], [11, 7]];
+  const BODY = ["", "", "", ".xxx.xx.xxxxx.", "xxxx.xxx.xxxxx", ".xxx.xx.xxxxx."].flatMap((row, y) => [...row].map((k, x) => k === "x" ? [x, y] : null).filter(Boolean)).concat([[0, 0], [1, 1], [1, 2]]);
+  const dots = (pts) => pts.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("");
+  const ANT_SVG = `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
+  // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
+  // colour. At a glance it should not read as another worker.
+  const SOLDIER_SVG = `<svg width="23" height="13" viewBox="-2.4 0 24.8 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const cancelStray = () => {
     clearTimeout(strayTimer);
@@ -266,7 +275,7 @@
     const endX = fromLeft ? main.clientWidth + 30 : -30;
     const endY = y + (Math.random() - 0.5) * 140;
     const el = document.createElement("button");
-    el.type = "button"; el.className = "nest-stray"; el.innerHTML = antBtn.innerHTML;
+    el.type = "button"; el.className = "nest-stray walk"; el.innerHTML = ANT_SVG;
     el.setAttribute("aria-label", "A stray ant. Follow it to the Nest.");
     el.style.left = startX + "px"; el.style.top = y + "px";
     el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); runToLauncher(el); });
@@ -381,8 +390,8 @@
     <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener">the colony, explained ↗</a>
 
     <div class="confirm" data-k="confirm" role="alertdialog" aria-labelledby="nest-confirm-title" hidden>
-      <p id="nest-confirm-title"><b>Close the Nest?</b></p>
-      <p class="muted">The colony is cleared and every stolen letter goes back where it was.</p>
+      <p id="nest-confirm-title"><b data-k="confirm-title">Close the Nest?</b></p>
+      <p class="muted" data-k="confirm-body">The colony is cleared and every stolen letter goes back where it was.</p>
       <div class="row"><button data-k="leave">clear and close</button><button data-k="stay" class="muted">keep playing</button></div>
     </div>`;
   aside.append(panel);
@@ -457,7 +466,14 @@
   new ResizeObserver(buildNest).observe(well);
 
   // ================================ the page ================================
-  const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), squashed: 0, meals: 0, paused: false,
+  let allowLeave = false;
+  const onBeforeUnload = (e) => {
+    if (allowLeave || state.over || stopped) return;
+    e.preventDefault(); e.returnValue = "Leaving this page closes the colony.";
+    return e.returnValue;
+  };
+  addEventListener("beforeunload", onBeforeUnload);
+  const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingBlocks: new Set(), squashed: 0, meals: 0, paused: false,
     reserve: 2, over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
@@ -636,15 +652,6 @@
       `text-transform:${cs.textTransform};letter-spacing:${cs.letterSpacing};text-decoration:${deco};text-underline-offset:${off};-webkit-text-stroke:${cs.webkitTextStroke || "0"}`;
   };
 
-  // ---- ants
-  const LEGS_A = [[5, 2], [4, 1], [9, 2], [10, 1], [7, 6], [8, 7], [2, 6], [1, 7]];
-  const LEGS_B = [[7, 2], [8, 1], [3, 2], [2, 1], [5, 6], [4, 7], [10, 6], [11, 7]];
-  const BODY = ["", "", "", ".xxx.xx.xxxxx.", "xxxx.xxx.xxxxx", ".xxx.xx.xxxxx."].flatMap((row, y) => [...row].map((k, x) => k === "x" ? [x, y] : null).filter(Boolean)).concat([[0, 0], [1, 1], [1, 2]]);
-  const dots = (pts) => pts.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("");
-  const ANT_SVG = `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
-  // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
-  // colour. At a glance it should not read as another worker.
-  const SOLDIER_SVG = `<svg width="23" height="13" viewBox="-2.4 0 24.8 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
 
   const newAnt = (role, route, d) => { state.total++; const a = { id: state.total, role, where: "nest", route, d }; state.ants.push(a); return a; };
   const scoutsOut = () => state.ants.some((a) => a.role === "scout");
@@ -771,20 +778,25 @@
       }
     }
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
+    const fresh = opening ? options.filter((o) => !state.openingBlocks.has(blockOf(o[0]))) : [];
+    const pool = fresh.length ? fresh : options;
     const pick = opening
-      ? options.reduce((best, o) => (Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best), options[0])
+      ? pool.reduce((best, o) => (Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best), pool[0])
       : options[Math.floor(Math.random() * options.length)];
     const [node, tx, ty] = pick;
     const block = blockOf(node);
-    // One gentle bend, then a smoothed route. The old four random jitters made the trail look
-    // like it had been drawn while running.
+    if (opening) state.openingBlocks.add(block);
+    // A wandering line, not one bow: a main curve, a cross-wave and a small skew. The first
+    // version read as a straight line with a single sag, so the scent looked drawn, not walked.
     const dx = tx - hole[0], dy = ty - hole[1], dist = Math.hypot(dx, dy) || 1;
     const nx = -dy / dist, ny = dx / dist;
-    const amp = Math.min(44, Math.max(10, dist * 0.22) * (0.8 + Math.random() * 0.4));
+    const amp = Math.min(48, Math.max(14, dist * 0.22) * (0.8 + Math.random() * 0.4));
+    const amp2 = Math.min(16, Math.max(6, dist * 0.06) * (0.55 + Math.random() * 0.8)) * (Math.random() < 0.5 ? -1 : 1);
+    const amp3 = Math.min(6, Math.max(2, dist * 0.025)) * (Math.random() < 0.5 ? -1 : 1);
     const path = [];
     for (let s = 0; s <= 28; s++) {
       const k = s / 28;
-      const bow = Math.sin(Math.PI * k) * amp;
+      const bow = Math.sin(Math.PI * k) * amp + Math.sin(Math.PI * 3 * k) * amp2 + Math.sin(Math.PI * 2 * k) * amp3;
       path.push([hole[0] + dx * k + nx * bow, hole[1] + dy * k + ny * bow]);
     }
     ant.job = "scout"; ant.block = block; ant.path = chaikin(path, 1); ant.k = 0; ant.walked = [hole.slice()];
@@ -1677,16 +1689,33 @@
   };
   document.addEventListener("keydown", onKey);
   panel.querySelectorAll("[data-tool]").forEach((b) => b.addEventListener("click", () => setTool(b.dataset.tool)));
+  const gameChrome = (el) => !!el.closest?.("#nest-mock, [data-surface='console'], .nest-switch");
   const holdLinks = (e) => {
-    if (state.tool === "read") return;
-    if (!state.over && e.type === "click" && e.detail > 0 && main.classList.contains("nest-armed")) {
+    const target = e.target instanceof Element ? e.target : null;
+    if (!target || gameChrome(target)) return;
+    const inMain = main.contains(target);
+    const a = target.closest("a[href]");
+    if (state.tool === "read") {
+      if (!a || e.type !== "click" || state.over || a.target === "_blank" || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const href = a.getAttribute("href");
+      if (!href || href.startsWith("#") || /^(mailto:|tel:|javascript:)/i.test(href)) return;
+      e.preventDefault(); e.stopPropagation();
+      confirmLeave(() => { allowLeave = true; location.assign(a.href); }, {
+        title: "Leave this page?",
+        body: "Leaving this page closes the colony; every stolen letter goes back where it was.",
+        action: "leave and close",
+      });
+      return;
+    }
+    if (!state.over && e.type === "click" && e.detail > 0 && inMain && main.classList.contains("nest-armed")) {
       e.preventDefault(); e.stopPropagation(); placeBait(e); return;
     }
-    if (layer.contains(e.target)) return;
-    if (e.target.closest("a, button, summary, label, input, select, textarea, [role=button]")) { e.preventDefault(); e.stopPropagation(); }
+    if (layer.contains(target)) return;
+    if (a) { e.preventDefault(); e.stopPropagation(); log("the page is locked while the colony works"); return; }
+    if (inMain && target.closest("button, summary, label, input, select, textarea, [role=button]")) { e.preventDefault(); e.stopPropagation(); }
   };
-  main.addEventListener("click", holdLinks, true);
-  main.addEventListener("auxclick", holdLinks, true);
+  document.addEventListener("click", holdLinks, true);
+  document.addEventListener("auxclick", holdLinks, true);
   setTool("squash");
   $("x").addEventListener("click", leave);
   $("seal").addEventListener("click", () => hills.forEach(seal));
@@ -1735,8 +1764,9 @@
   // Leaving: put every letter back, carried or stolen, and take the colony off the page.
   const stop = () => {
     watchTerrain.disconnect();
-    stopped = true; main.removeEventListener("click", holdLinks, true);
-    main.removeEventListener("auxclick", holdLinks, true); document.removeEventListener("keydown", onKey);
+    stopped = true; document.removeEventListener("click", holdLinks, true);
+    document.removeEventListener("auxclick", holdLinks, true); document.removeEventListener("keydown", onKey);
+    removeEventListener("beforeunload", onBeforeUnload);
     main.classList.remove("nest-armed"); delete main.dataset.nestTool;
     if (state.party) {
       state.party.queen.remove();
@@ -1759,7 +1789,10 @@
   let leaveGo = null;
   $("leave").addEventListener("click", () => { $("confirm").hidden = true; leaveGo?.(); });
   $("stay").addEventListener("click", () => { $("confirm").hidden = true; antBtn.focus(); });
-  const confirmLeave = (go) => {
+  const confirmLeave = (go, copy = {}) => {
+    $("confirm-title").textContent = copy.title || "Close the Nest?";
+    $("confirm-body").textContent = copy.body || "The colony is cleared and every stolen letter goes back where it was.";
+    $("leave").textContent = copy.action || "clear and close";
     const box = $("confirm"); box.hidden = false; $("leave").focus();
     leaveGo = go;
   };

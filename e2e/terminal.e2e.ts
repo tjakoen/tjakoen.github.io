@@ -72,6 +72,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator('[data-surface="nest-controls"]')).toBeVisible();
     await expect(page.locator('[data-surface="console"]')).toContainText("colony is open");
 
+    page.once("dialog", (dialog) => dialog.accept());
     await page.reload();
     await expect(launcher).toBeVisible();
     await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
@@ -98,6 +99,10 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await run(page, "stray");
     const stray = page.locator(".nest-stray");
     await expect(stray).toHaveCount(1);
+    expect(await stray.evaluate((el) => {
+      const legs = el.querySelector(".legs-a");
+      return { walk: el.classList.contains("walk"), animation: legs ? getComputedStyle(legs).animationName : null };
+    })).toEqual({ walk: true, animation: "nest-step" });
     await stray.evaluate((el) => (el as HTMLButtonElement).click());
     await expect(page.locator(".nest-switch")).toHaveClass(/nest-pulse/);
     await expect(stray).toHaveCount(0);
@@ -115,10 +120,13 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     const panel = page.locator('[data-surface="nest-controls"]');
     const main = page.locator(".app-shell__main");
     const link = main.getByRole("link", { name: "Explore selected work" });
+    const fileLink = page.locator('.file-tree__file[href="/resume"]');
     const linkState = panel.locator('[data-k="link-text"]');
     await expect(linkState).toHaveText("links locked");
     await expect(main).toHaveCSS("cursor", "crosshair");
     await link.press("Enter");
+    await expect(page).toHaveURL(/\/$/);
+    await fileLink.click();
     await expect(page).toHaveURL(/\/$/);
 
     const bait = panel.getByRole("button", { name: "Drop bait" });
@@ -138,6 +146,9 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(main.locator(".nest-layer")).toHaveAttribute("inert", "");
     await expect(bait).toBeDisabled();
     await link.press("Enter");
+    await expect(page.getByRole("alertdialog")).toBeVisible();
+    await expect(page.getByRole("alertdialog")).toContainText("Leave this page?");
+    await page.getByRole("button", { name: "leave and close" }).click();
     await expect(page).toHaveURL(/\/projects$/);
     await page.waitForLoadState("load");
     await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);

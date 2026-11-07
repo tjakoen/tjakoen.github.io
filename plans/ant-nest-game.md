@@ -46,7 +46,8 @@ unreadable and the colony has won that page.
 
 - **Always on the desk.** The ant sits in the status bar on every page. Click it to open the
   colony; the `nest` terminal command opens it too. There is no query-string shortcut.
-- **The colony.** Three scouts and three workers to start. A scout draws a faint route as it walks,
+- **The colony.** Three scouts and three workers to start. The first three scouts take different
+  blocks, so the opening does not point every trail at one source. A scout draws a faint route as it walks,
   the route firms up when the scout carries the first letter home, workers take open trails in turn,
   five to a line, and a trail fades when its patch empties or after ninety seconds. A successor
   scout goes out as the old trail fades. Soldiers hatch once the colony passes eight and take two
@@ -56,8 +57,9 @@ unreadable and the colony has won that page.
   below the fold. Builders favor gaps left by stolen letters and spread out from existing hills. Squash the builder and the stores
   are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Its mound thins
   with each hit; once the guards are gone, five clicks break it. Its flyers outlive it.
-- **The player's tools.** Pick a tool: squash holds the page's links so a missed ant never
-  navigates, wipe is the only tool that breaks scent, and links gives the page back. The panel gives
+- **The player's tools.** Pick a tool: squash holds every page link so a missed ant never
+  navigates, wipe is the only tool that breaks scent, and links gives the page back with a leave
+  confirmation. The panel gives
   each tool a name, an icon and a key. Squash ants, drag across a scent trail to break it, drop bait
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
   seals have cooldowns. Sound is muted until switched on.
@@ -70,11 +72,12 @@ unreadable and the colony has won that page.
   capped at 120, and it is too late: the ants can no longer be squashed and eat on until the page is
   empty. Leaving the tab still restores everything.
 - **It lives on the page.** A refresh or a move to another page closes the panel and clears the
-  colony; the launcher stays in the status bar. The stray click is remembered for the tab.
+  colony; a page link asks first. The launcher stays in the status bar. The stray click is
+  remembered for the tab.
 - **The stray.** When the game is closed, a single ant sometimes crosses the reading pane, off any
-  trail. Click it and it runs for the status bar launcher and makes it pulse. A click marks the tab,
-  so the random ant does not return until a new tab. Type `stray` in the terminal to send one on
-  demand.
+  trail. It uses the same animated ant art as the colony. Click it and it runs for the status bar
+  launcher and makes it pulse. A click marks the tab, so the random ant does not return until a new
+  tab. Type `stray` in the terminal to send one on demand.
 
 ## Open questions for the owner
 

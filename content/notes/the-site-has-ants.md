@@ -45,7 +45,7 @@ Click the ant, and an anthill turns up in an empty patch of whatever page you ar
 
 ## What the ants actually do
 
-Three scouts leave the hill first. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
+Three scouts leave the hill first, each taking a different paragraph, so the opening does not put every trail on one source. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
 
 A scout that makes it home lays a scent trail. Workers follow trails five to a line, filled in turn so no trail starves, and a heading in a big font needs a crew of two or three to lift. A trail fades when its patch is empty or after ninety seconds, and a worker turns scout to find the next one. Once the colony passes eight, soldiers hatch: bigger, quieter in color than a worker, and worth two hits.
 
@@ -88,7 +88,7 @@ Every other letter feeds the queen in the sidebar, who lays eggs. The rest goes 
 
 ![Trails of ants carrying letters across the ten-times-zero note toward the anthill, the stores bar in the sidebar reading building as a builder heads out to raise a mini hill.](/media/notes/nest-mini-hill.jpg)
 
-You fight back with the three tools in the panel, on the icons or the 1, 2 and 3 keys. Squash and Wipe lock the links so a missed ant does not send you to another page. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and it snaps into two pieces: the ants scatter, then take the nearest trail with room or head back to the hill. A squashed ant flattens under a quick ring. Links hands the page back while the ants keep working. There is bait, a hill seal on a cooldown, and a mute button, because sound is off until you ask for it.
+You fight back with the three tools in the panel, on the icons or the 1, 2 and 3 keys. Squash and Wipe lock every page link, not just the reading pane, so a missed ant does not send you to another page. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and it snaps into two pieces: the ants scatter, then take the nearest trail with room or head back to the hill. A squashed ant flattens under a quick ring. Links hands the page back, but following a page link asks first: leaving ends the colony. There is bait, a hill seal on a cooldown, and a mute button, because sound is off until you ask for it.
 
 ## No win screen, no game over
 
@@ -102,7 +102,7 @@ That was the point of building it at all. A design system that only renders docu
 
 ## Where the time actually went
 
-Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Later I gave each trail two lanes and smoothed and bowed the scout's route, because a trail should look walked, not sampled. Real ants solved that a long time ago. It took me a few evenings.
+Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Later I gave each trail two lanes and gave the scout's route three waves, because a trail should look walked, not sampled. Real ants solved that a long time ago. It took me a few evenings.
 
 Claude did most of the typing, which will surprise nobody who has read [how I work](ten-times-zero.md). The calls were mine: ants that take real letters, gaps that never reflow, no announced ending, and the bit where a professional site hides a game behind a small ant and a word you have to know to type.
 
@@ -110,7 +110,7 @@ Claude did most of the typing, which will surprise nobody who has read [how I wo
 
 It has been played by me, a preview browser, and a small browser suite, and that is the whole test group. Balance is a guess: the costs of mini hills, the one in seven threshold, how fast the queen breeds. I have watched a guard patrol a trail end to end since, and the first version could get stuck on its own mound; that is fixed now. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and the stray ant has nowhere to lead because the launcher hides there. I have not built that one.
 
-But if you are reading this on the site, the ant is in the status bar, and the terminal still takes one word. *Nest*. The copy you just read is the food. If a single ant crosses the page later, when the Nest is closed, follow it. It knows the way back. Click one and it will not cross again in that tab. If you would rather not wait, the terminal takes *stray*.
+But if you are reading this on the site, the ant is in the status bar, and the terminal still takes one word. *Nest*. The copy you just read is the food. If a single ant crosses the page later, when the Nest is closed, follow it. It is the same animated ant as the colony, legs and all, and it knows the way back. Click one and it will not cross again in that tab. If you would rather not wait, the terminal takes *stray*.
 
 ---
 
