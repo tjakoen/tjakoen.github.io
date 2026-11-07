@@ -274,10 +274,18 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator("#nest-mock")).toBeVisible();
     await page.waitForTimeout(700);
     const before = await page.evaluate(() => window.__nest!.home.base.slice());
+    const antsBefore = await page.evaluate(() => window.__nest!.state.ants.length);
     await page.getByRole("button", { name: "Restore page" }).click();
-    await page.waitForTimeout(500);
+    await expect(page.getByRole("alertdialog")).toContainText("main mound");
+    const blocked = await page.evaluate(() => window.__nest!.home.base.slice());
+    expect(blocked).toEqual(before);
+    await page.getByRole("button", { name: "reset the page" }).click();
+    await page.waitForTimeout(700);
     const after = await page.evaluate(() => window.__nest!.home.base.slice());
     expect(after).not.toEqual(before);
+    await expect(page.locator(".nest-hill").first()).toBeInViewport();
+    const antsAfter = await page.evaluate(() => window.__nest!.state.ants.length);
+    expect(antsAfter).toBeGreaterThanOrEqual(antsBefore);
   });
 
   test("the queen leaves the nest for the page dance", async ({ page }) => {
