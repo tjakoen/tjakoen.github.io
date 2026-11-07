@@ -174,6 +174,18 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(mound).toHaveClass(/exposed/);
   });
 
+  test("restore puts the mounds somewhere else", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(700);
+    const before = await page.evaluate(() => window.__nest!.home.base.slice());
+    await page.getByRole("button", { name: "Restore page" }).click();
+    await page.waitForTimeout(500);
+    const after = await page.evaluate(() => window.__nest!.home.base.slice());
+    expect(after).not.toEqual(before);
+  });
+
   test("the queen leaves the nest for the page dance", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();

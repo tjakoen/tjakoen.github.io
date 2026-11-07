@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 29 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 30 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -107,6 +107,9 @@ and stays closed until the ant is clicked or `nest` is typed in the terminal. `?
 page now, not a shortcut into the panel. The terminal command opens the panel, and `help` lists it
 next to `reveal the ant colony`. `?nest-debug` only exposes the local test hooks.
 
+**The reset.** Restore page now also moves the home mound to a new empty spot, removes and re-sites
+the mini mounds, retires the old trails, and sends the page ants home to the new mound.
+
 **The note.** The public note now carries the bug joke ("My portfolio has bugs now"), the
 always-visible launcher and the help line, the ninety second trail fade, the soldier and mini hill
 dots, the twenty and fifty letter dances, the refresh reset, the stray ant and its `stray`
@@ -141,7 +144,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  15 passed (28.9s)
+  16 passed (32.5s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
