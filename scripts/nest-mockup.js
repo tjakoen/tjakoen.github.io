@@ -46,7 +46,7 @@
     #nest-mock .row { display: flex; gap: 6px; }
     #nest-mock button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; cursor: pointer; }
     #nest-mock button:hover { background: var(--paper-2); }
-    .nest-layer { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 50; pointer-events: none; }
+    .nest-layer { position: absolute; left: 0; top: 0; width: 100%; z-index: 50; pointer-events: none; overflow: hidden; }
     .nest-scent { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; }
     .nest-scent polyline { fill: none; stroke: var(--ink-faint); stroke-width: 1.2; stroke-dasharray: 1 5; stroke-linecap: round; opacity: .55; transition: opacity 1s; }
     .nest-ant { position: absolute; width: 23px; height: 13px; margin: -6px 0 0 -11px; padding: 0; border: 0; background: none;
@@ -159,6 +159,9 @@
     queen: { eat: 0, lay: 0 }, total: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
+  // the layer covers the page exactly and clips what crosses its edge, so nothing scrolls sideways
+  const fitLayer = () => { layer.style.height = "0"; layer.style.height = main.scrollHeight + "px"; };
+  fitLayer(); new ResizeObserver(fitLayer).observe(main);
   const scent = document.createElementNS("http://www.w3.org/2000/svg", "svg"); scent.classList.add("nest-scent"); layer.append(scent);
   const local = (r) => { const m = main.getBoundingClientRect(); return [r.left - m.left + main.scrollLeft, r.top - m.top + main.scrollTop]; };
 
@@ -273,17 +276,20 @@
 
   const newAnt = (role, route, d) => { state.total++; const a = { id: state.total, role, where: "nest", route, d }; state.ants.push(a); return a; };
   const scoutsOut = () => state.ants.some((a) => a.role === "scout");
-  const openTrail = (ant) => {
-    if (ant.trail && state.trails.includes(ant.trail) && freeIn(ant.trail.block, ant.trail.end).length) return ant.trail;
-    // the trail with the fewest ants gets the next worker, so lines fill evenly
-    return state.trails.filter((t) => t.ants.size < LINE && freeIn(t.block, t.end).length).sort((a, b) => a.ants.size - b.ants.size)[0];
+  // Workers leaving the nest take the ready trails in turn, skipping any that are full or worked
+  // out, so every trail fills at the same pace and a finished trail's ants move to the others.
+  const openTrail = () => {
+    const ready = state.trails.filter((t) => t.ready && t.ants.size < LINE && remaining(t));
+    if (!ready.length) return null;
+    state.rr = ((state.rr || 0) + 1) % ready.length;
+    return ready[state.rr];
   };
   const join = (ant, t) => { if (ant.trail && ant.trail !== t) ant.trail.ants.delete(ant); ant.trail = t; t.ants.add(ant); };
   const leaveTrail = (ant) => {
     const t = ant.trail; if (!t) return; t.ants.delete(ant); ant.trail = null;
     if (!t.ants.size) { retire(t); log("a trail went cold"); }
   };
-  const retire = (t) => { state.trails = state.trails.filter((x) => x !== t); t.line.style.opacity = "0"; setTimeout(() => t.line.remove(), 1000); t.ants.forEach((a) => (a.trail = null)); };
+  const retire = (t) => { state.trails = state.trails.filter((x) => x !== t); t.line.style.opacity = "0"; setTimeout(() => t.line.remove(), 1000); t.ready = false; t.ants.forEach((a) => (a.trail = null)); };
 
   // A worker at the top of the tunnel decides whether to go out: follow a trail with room on it,
   // scout if nobody is scouting, or wait in the tunnel.
@@ -291,6 +297,7 @@
     if (ant.role === "scout") return emerge(ant);
     const t = openTrail(ant);
     if (t) { join(ant, t); return emerge(ant); }
+    if (ant.trail) ant.trail.ants.delete(ant), (ant.trail = null);
     if (!scoutsOut()) { ant.role = "scout"; log("a worker turned scout"); return emerge(ant); }
     ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); // queue in the tunnel
   };
@@ -340,11 +347,16 @@
   const backPath = (ant) => (ant.trail ? ant.trail.pts.slice().reverse() : []).concat([hole.slice()]);
   const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.el?.classList.remove("wait"); };
 
-  const toLetter = (ant, block) => {
-    const pick = freeIn(block, ant.trail ? ant.trail.end : [ant.x, ant.y])[0];
+  const toLetter = (ant, block, light) => {
+    if (!block) return goHome(ant);
+    const all = freeIn(block, ant.trail ? ant.trail.end : [ant.x, ant.y]);
+    // a scout alone takes a letter it can lift alone, when the patch has one
+    const pick = (light && all.find((f) => f.L.state === "free" && needOf(f.L.n) === 1)) || all[0];
     if (!pick) return goHome(ant);
     const L = pick.L;
     if (L.state === "free") { L.need = needOf(L.n); L.state = "gather"; L.crew = []; }
+    // a scout that finds only heavy letters cannot carry one home alone, so it opens the trail to call help
+    if (light && L.need > 1 && ant.trail && !ant.trail.ready) { ant.trail.ready = true; scent.append(ant.trail.line); log(`a big “${L.ch}”; the scout calls for help`); }
     L.crew.push(ant); ant.letter = L; ant.job = "toLetter";
     const k = L.crew.length - 1, spread = (k - (L.need - 1) / 2) * 12;
     ant.path = [[pick.x + spread, pick.y + 7]]; ant.k = 0;
@@ -429,6 +441,8 @@
       L.glyph.style.transform = `rotate(${Math.sin(t * 0.8) * 3}deg)`;
       if (!arrived || ++ant.k < ant.path.length) return;
       L.glyph.remove(); L.state = "stolen"; state.stolen.add(L);
+      if (ant.trail && !ant.trail.ready) { ant.trail.ready = true; scent.append(ant.trail.line); log("the scout is home; a trail is laid"); }
+      if (ant.role === "scout") { ant.role = "worker"; }
       L.crew.forEach((a) => { if (a !== ant && a.el) enterNest(a, null); });
       return enterNest(ant, L.ch);
     }
@@ -440,13 +454,14 @@
     if (++ant.k < ant.path.length) return;
     if (ant.job === "scout") { // found food: the walk becomes a trail and the scout becomes a worker
       ant.walked.push([ant.x, ant.y]);
+      // the trail exists from here but stays unscented and closed until the scout gets a letter home
       const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      line.setAttribute("points", ant.walked.map((p) => p.join(",")).join(" ")); scent.append(line);
-      const t = { pts: ant.walked, block: ant.block, end: [ant.x, ant.y], ants: new Set(), line };
-      state.trails.push(t); join(ant, t); ant.role = "worker"; label(ant);
+      line.setAttribute("points", ant.walked.map((p) => p.join(",")).join(" "));
+      const t = { pts: ant.walked, block: ant.block, end: [ant.x, ant.y], ants: new Set(), line, ready: false };
+      state.trails.push(t); join(ant, t);
       log(`scout found “${(ant.block.textContent || "").trim().slice(0, 22)}”`);
-      toLetter(ant, ant.block);
-    } else if (ant.job === "follow") toLetter(ant, ant.trail ? ant.trail.block : null);
+      toLetter(ant, ant.block, true);
+    } else if (ant.job === "follow") { if (ant.trail && state.trails.includes(ant.trail)) toLetter(ant, ant.trail.block); else goHome(ant); }
     else if (ant.job === "toLetter") {
       const L2 = ant.letter;
       if (!L2 || L2.state !== "gather") return goHome(ant);
