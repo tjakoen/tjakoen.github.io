@@ -415,6 +415,7 @@
   };
   const tool = (name, label, key) => `<button type="button" data-tool="${name}" aria-label="${label}" title="${toolHelp[name]}" aria-pressed="false">${icon(name)}<span>${label}</span><kbd>${key}</kbd></button>`;
   const action = (key, glyph, label, help) => `<button type="button" data-k="${key}" aria-label="${label}" title="${help}">${icon(glyph)}</button>`;
+  const gameAction = (key, glyph, text, label, help) => `<button type="button" data-k="${key}" aria-label="${label}" title="${help}">${icon(glyph)}<span data-label>${text}</span></button>`;
   panel.innerHTML = `
     <div class="head"><span class="lbl muted"><span>nest · colony 01</span></span><span class="lbl muted"><span data-k="status">waking</span></span>
       <button class="x" data-k="x" type="button" aria-label="Close the Nest" title="Close">×</button></div>
@@ -439,17 +440,13 @@
       <div><dt>squashed</dt><dd data-k="squashed">0</dd></div>
       <div><dt>larder</dt><dd class="accent" data-k="larder" style="grid-column: span 3; text-align: left">empty</dd></div>
     </dl>
-    <div class="row tools" role="group" aria-label="Page tools">
-      ${tool("squash", "Squash", "1")}${tool("wipe", "Wipe", "2")}${tool("read", "Links", "3")}
+    <div class="row tools" role="group" aria-label="Colony tools">
+      ${tool("squash", "Squash", "1")}${tool("wipe", "Wipe", "2")}${gameAction("bait", "bait", "Bait", "Drop bait", "Place a crumb to lure nearby ants away.")}${gameAction("seal", "seal", "Seal", "Seal hills", "Seal every anthill for a few seconds.")}
+    </div>
+    <div class="row tools" role="group" aria-label="Page controls">
+      ${tool("read", "Links", "3")}${action("sound", "muted", "Unmute", "Turn on colony sounds.")}${action("pause", "pause", "Pause", "Pause the colony.")}${action("restore", "restore", "Restore page", "Put stolen letters back while the colony keeps running.")}
     </div>
     <p class="link-state" data-k="link-state" aria-live="polite"><span class="dot"></span><span data-k="link-text">links locked</span></p>
-    <div class="row tools" role="group" aria-label="Colony controls">
-      ${action("bait", "bait", "Drop bait", "Place a crumb to lure nearby ants away.")}
-      ${action("seal", "seal", "Seal hills", "Seal every anthill for a few seconds.")}
-      ${action("sound", "muted", "Unmute", "Turn on colony sounds.")}
-      ${action("pause", "pause", "Pause", "Pause the colony.")}
-      ${action("restore", "restore", "Restore page", "Put stolen letters back while the colony keeps running.")}
-    </div>
     <p class="muted tool-help" data-k="tool-help" aria-live="polite"></p>
     <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener">the colony, explained ↗</a>
 
@@ -462,7 +459,8 @@
   const $ = (k) => panel.querySelector(`[data-k="${k}"]`);
   const setAction = (key, glyph, label, help) => {
     const button = $(key);
-    button.innerHTML = icon(glyph);
+    const text = button.querySelector("[data-label]")?.textContent || "";
+    button.innerHTML = icon(glyph) + (text ? `<span data-label>${text}</span>` : "");
     button.setAttribute("aria-label", label);
     button.title = help;
   };
