@@ -9,7 +9,12 @@ import mailbox from "../content/data/mailbox.json" with { type: "json" };
 declare global {
   interface Window {
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
-    __nest?: { state: { ants: Array<{ role: string; block: Element | null }> } };
+    __nest?: {
+      state: { ants: Array<{ role: string; block: Element | null; job?: string }> };
+      makeMini: (spot: unknown) => unknown;
+      findMiniSpot: () => unknown;
+      squash: (ant: unknown) => void;
+    };
   }
 }
 
@@ -119,6 +124,26 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     });
     expect(spread.count).toBe(3);
     expect(spread.min).toBeGreaterThan(140);
+  });
+
+  test("a guarded mound calls its guards and opens when they are gone", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.evaluate(() => { const spot = window.__nest!.findMiniSpot(); if (spot) window.__nest!.makeMini(spot); });
+    await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").length)).toBeGreaterThan(0);
+    const mound = page.locator(".nest-mini").first();
+    await mound.click();
+    await page.waitForFunction(() => {
+      const guards = window.__nest!.state.ants.filter((a) => a.role === "guard");
+      return guards.length > 0 && guards.every((a) => a.job === "defend" || a.job === "guard");
+    });
+    await page.evaluate(() => {
+      for (const g of window.__nest!.state.ants.filter((a) => a.role === "guard")) {
+        window.__nest!.squash(g); window.__nest!.squash(g);
+      }
+    });
+    await expect(mound).toHaveClass(/exposed/);
   });
 
   test("the stray command sends an ant that runs for the launcher", async ({ page }) => {

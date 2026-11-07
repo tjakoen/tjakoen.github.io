@@ -57,7 +57,8 @@ unreadable and the colony has won that page.
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
   below the fold. Builders favor gaps left by stolen letters and spread out from existing hills. Squash the builder and the stores
   are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Its mound thins
-  with each hit; once the guards are gone, five clicks break it. Its flyers outlive it.
+  with each hit. Knocking it calls the guards home; clearing them splits the mound open inside an
+  accent outline and no new guards spawn. Five clicks break it. Its flyers outlive it.
 - **The player's tools.** Pick a tool: squash holds every page link so a missed ant never
   navigates, wipe is the only tool that breaks scent, and links gives the page back with a leave
   confirmation. The panel gives
