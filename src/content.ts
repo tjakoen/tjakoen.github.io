@@ -188,7 +188,7 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // …and, below the body, the ready-to-post share block (opt-in via the entry's `social:` key). Notes
     // carry it too, because a note that started life as a social post keeps that post beside it.
     const shareBlock = kind === "entry" && (collection.prefix === "/calendar" || collection.prefix === "/notes") && frontmatter && slug
-      ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`) : "";
+      ? renderShareBlock(frontmatter.social, `${SITE.origin}${collection.prefix}/${slug}`, frontmatter.socialImage, frontmatter.socialImageAlt) : "";
     // /badges entry pages: a badge-CLASS page (roster of recipients) or a per-recipient CERT page.
     // The template (art + issuer + verification + roster/share) sits above the MILL-rendered body.
     const badgeCard = kind === "entry" && collection.prefix === "/badges" && frontmatter && slug
@@ -1022,7 +1022,7 @@ export function parsePhotos(raw: unknown): EventPhoto[] {
 // the page and the post it becomes cannot drift. Opt-in per event: no `social:` key, no block. A
 // <details> so it stays folded away from the reader (it is a tool, not part of the post), and so it
 // still works with no JS: open it, the text is selectable and the link is a real anchor.
-function renderShareBlock(social: unknown, url: string): string {
+function renderShareBlock(social: unknown, url: string, image?: unknown, imageAlt?: unknown): string {
   if (typeof social !== "string" || !social.trim()) return "";
   // Unwrap the authoring line breaks: the source file is hard-wrapped at 110 columns like every
   // other file here, but a paste into LinkedIn must break only where a paragraph does. Blank lines
@@ -1032,9 +1032,16 @@ function renderShareBlock(social: unknown, url: string): string {
     .filter(Boolean).join("\n\n");
   const text = escapeHtml(unwrapped);
   const href = escapeHtml(url);
+  const imageHref = typeof image === "string" && image.trim() ? escapeHtml(image.trim()) : "";
+  const alt = typeof imageAlt === "string" && imageAlt.trim() ? escapeHtml(imageAlt.trim()) : "Social card";
+  const imageBlock = imageHref ? `<figure class="share-block__figure">
+    <img class="share-block__image" src="${imageHref}" alt="${alt}" width="1200" height="1200" loading="lazy">
+    <figcaption class="share-block__caption"><a class="share-block__download" href="${imageHref}" download>Download image</a></figcaption>
+  </figure>` : "";
   return `<details class="share-block" data-share>
   <summary class="share-block__head">Social post copy</summary>
   <pre class="share-block__text" data-share-text>${text}</pre>
+  ${imageBlock}
   <p class="share-block__row">
     <button class="share-block__copy" type="button" data-share-copy aria-live="polite">Copy</button>
     <a class="share-block__link" href="${href}">${href}</a>

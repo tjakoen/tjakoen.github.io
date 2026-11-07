@@ -1,6 +1,6 @@
 ---
 id: loop-story-and-talk
-status: todo
+status: doing
 track: content
 depends:
   - agent-autonomy-tiers
@@ -14,6 +14,11 @@ owner: human
 ---
 
 # Say what the loop actually does, once it actually does it
+
+The owner asked for the note directly on 2026-11-08; the story is
+content/notes/one-loop-three-harnesses.md and the setup companion is
+content/notes/loop-setup.md. The pair is a companion draft, not the full teaching pass. The gate
+task still governs the talk and the tutorial.
 
 Queued 2026-08-09, deliberately not started. Educating is one of the goals of this whole estate, and
 the loop being built across the three plans above is the most teachable thing in it. This plan is the
@@ -86,6 +91,7 @@ honest about a half-built step as a note can.
 - [ ] The doc pass, one repo at a time, fixing drift in the same change that finds it.
 - [ ] Capture a real run end to end as the raw material.
 - [ ] The figure set, built once and shared by the note and the talk.
-- [ ] Add the note to `docs/CONTENT-BACKLOG.md` and place it against the existing queue.
-- [ ] Draft the note per NOTE-STANDARD, with the limits section written first.
+- [x] Add the note to `docs/CONTENT-BACKLOG.md` and place it against the existing queue.
+- [x] Draft the note per NOTE-STANDARD, with the limits section written first.
+- [x] Draft the setup companion note, Set Up the Loop With One Prompt.
 - [ ] The talk, after the note, reusing the deck mechanism that already ships.
