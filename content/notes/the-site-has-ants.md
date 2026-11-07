@@ -45,7 +45,7 @@ Click the ant, and an anthill turns up in a random empty patch of whatever page 
 
 ## What the ants actually do
 
-Three scouts leave the hill first. The first takes the nearest letter; the next two take the options farthest from the ones already chosen, so the opening spreads across the page. Later scouts stay off a block that already has a trail or a scout on the way. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
+Three scouts leave the hill first. The first takes the closest letter. The second takes a target on the opposite side of the mound, so a hill on the right sends it left. The third takes the most spread-out remaining spot. All three stay in view. Later scouts stay off a block that already has a trail or a scout on the way. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
 
 A scout that makes it home lays a scent trail. Workers follow trails five to a line, filled in turn so no trail starves, and a heading in a big font needs a crew of two or three to lift. A trail fades when its patch is empty or after ninety seconds, and a worker turns scout to find the next one. Once the colony passes eight, soldiers hatch: bigger, quieter in color than a worker, and worth two hits.
 

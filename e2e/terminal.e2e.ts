@@ -11,6 +11,7 @@ declare global {
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
     __nest?: {
       state: { ants: Array<{ role: string; block: Element | null; job?: string }> };
+      home: { base: [number, number] };
       makeMini: (spot: unknown) => unknown;
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
@@ -127,21 +128,23 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       .map((a) => (a.block!.textContent || "").trim().slice(0, 40)));
     expect(blocks).toHaveLength(3);
     expect(new Set(blocks).size).toBe(3);
-    const spread = await page.evaluate(() => {
+    const shape = await page.evaluate(() => {
       const points = window.__nest!.state.ants
         .filter((a) => a.role === "scout" && a.block)
         .map((a) => {
           const r = a.block!.getBoundingClientRect();
-          return [r.left + r.width / 2, r.top + r.height / 2];
+          return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
         });
-      let min = Infinity;
-      for (let i = 0; i < points.length; i++) for (let j = i + 1; j < points.length; j++) {
-        min = Math.min(min, Math.hypot(points[i][0] - points[j][0], points[i][1] - points[j][1]));
-      }
-      return { count: points.length, min };
+      const main = document.querySelector("main")!.getBoundingClientRect();
+      const home = window.__nest!.home.base;
+      const inView = points.every((p) => p.x > main.left && p.x < main.right && p.y > main.top && p.y < main.bottom);
+      const secondOpposite = (points[1].x - main.left - home[0]) * (home[0] - main.width / 2) < 0;
+      const minThird = Math.min(...points.slice(0, 2).map((p) => Math.hypot(p.x - points[2].x, p.y - points[2].y)));
+      return { inView, secondOpposite, minThird };
     });
-    expect(spread.count).toBe(3);
-    expect(spread.min).toBeGreaterThan(140);
+    expect(shape.inView).toBe(true);
+    expect(shape.secondOpposite).toBe(true);
+    expect(shape.minThird).toBeGreaterThan(80);
   });
 
   test("a guarded mound calls its guards and opens when they are gone", async ({ page }) => {
@@ -181,6 +184,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.evaluate(() => window.__nestStray?.spawn());
     await expect(stray).toHaveCount(0);
     await page.reload();
+    await expect(page.locator(".nest-switch")).toBeVisible();
     await page.evaluate(() => window.__nestStray?.spawn());
     await expect(page.locator(".nest-stray")).toHaveCount(0);
     await page.evaluate(() => window.__nestStray?.spawn(true));
