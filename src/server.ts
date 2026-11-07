@@ -85,7 +85,7 @@ function shortlinkPage(certSlug: string, origin: string): string {
 <body><p>Redirecting to <a href="${dest}">your credential</a>.</p></body></html>`;
 }
 import { portfolioLlmsDoc } from "./llms.ts";   // /llms.txt content (the llmstxt.org AI-facing index)
-import { enrichHead } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
+import { enrichHead, rewriteLegacySiteLinks } from "./seo.ts";          // per-page canonical + Open Graph + Twitter + JSON-LD
 import { injectViews } from "./analytics.ts";   // the status bar's view counts, baked in at build time
 // --- PROOF mount: portfolio serves its OWN plans/ as a rendered board at /plans (proof = a layer) ---
 import { createProofRoutes } from "@tjakoen/proof/routes.ts";
@@ -416,7 +416,8 @@ async function finalizePage(req: Request, res: Response | Promise<Response>): Pr
   const r = await res;
   if (!r.headers.get("content-type")?.includes("text/html")) return r;
   const u = new URL(req.url);
-  let html = addContextReturn(enrichHead(await r.text(), u.pathname, u.origin), u.pathname);
+  let html = rewriteLegacySiteLinks(await r.text());
+  html = addContextReturn(enrichHead(html, u.pathname, u.origin), u.pathname);
   html = addPlanPathBreaks(html, u.pathname);
   html = withPeekRoot(html);
   html = injectViews(html, u.pathname);

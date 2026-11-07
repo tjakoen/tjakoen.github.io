@@ -37,7 +37,7 @@ social: |
   Congratulations to Jansen Cruz, Elicia Klyde Martigne Apostol, Jose Gian Tubera and Paul Andrei
   Calma, and to their faculty adviser.
 
-  Writeup, the deck and the photos: https://tjakoen.github.io/calendar/gdg-hau-ai-hack
+  Writeup, the deck and the photos: https://portfolio.tjakoen.com/calendar/gdg-hau-ai-hack
 ---
 
 ## Wednesday I gave the criteria, Friday I had to use them

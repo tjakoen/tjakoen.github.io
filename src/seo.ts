@@ -34,6 +34,17 @@ export const SITE = {
   ogImageH: 630,
 };
 
+// The site moved from the GitHub Pages host to the custom domain. A source that still prints the old
+// host in an href, src or content attribute is normalized at render, so a stale link in a note or a
+// hand-written page cannot ship the old address. Only attributes are touched: literal text (a terminal
+// transcript, a repo tree) stays as written.
+export function rewriteLegacySiteLinks(html: string): string {
+  return html.replace(
+    /\b(href|src|content)=(["'])https?:\/\/tjakoen\.github\.io/gi,
+    (_match, attr: string, quote: string) => `${attr}=${quote}${SITE.origin}`,
+  );
+}
+
 // Canonical path: root stays "/", every other route gets a single trailing slash — identical to the
 // sitemap (server.ts /sitemap.xml) so there is exactly one canonical URL per page.
 //

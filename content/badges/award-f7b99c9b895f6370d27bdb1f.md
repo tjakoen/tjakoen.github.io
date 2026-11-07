@@ -18,7 +18,7 @@ recipientHandle: "kristoffesantos"
 issuedOn: "2026-11-03"
 certId: "hau-f7b99c9b895f6370d27bdb1f"
 criteriaUrl: "/badges/introweb-2106-builds-with-ai"
-social: "I earned Builds for the Web and AI. Verify my badge: https://tjakoen.github.io/b/f7b99c9b895f6370"
+social: "I earned Builds for the Web and AI. Verify my badge: https://portfolio.tjakoen.com/b/f7b99c9b895f6370"
 showcase:
   - "/media/badges/showcase/c2890f5d12cca98d.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

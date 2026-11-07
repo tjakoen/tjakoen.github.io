@@ -18,7 +18,7 @@ recipientHandle: "charlesm-27"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-97527f53"
 criteriaUrl: "/badges/introweb-2106-midterm"
-social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/97527f53"
+social: "I earned Interactive Web Pages. Verify my badge: https://portfolio.tjakoen.com/b/97527f53"
 showcase:
   - "/media/badges/showcase/2edbb04bb19e1bd6.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

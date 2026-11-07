@@ -18,7 +18,7 @@ recipientHandle: "tobiiyama"
 issuedOn: "2026-11-03"
 certId: "hau-365e7dcede606cf7fb9415dd"
 criteriaUrl: "/badges/adet-2125-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/365e7dcede606cf7"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/365e7dcede606cf7"
 showcaseNone: "project repo private or without a deployed site"
 showcaseOptOut: false
 ---

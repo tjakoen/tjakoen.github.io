@@ -18,7 +18,7 @@ recipientHandle: "yysfall"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2203-midterm-8b2bc1a8"
 criteriaUrl: "/badges/apsi-2203-midterm"
-social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/8b2bc1a8"
+social: "I earned Full Stack Web Development. Verify my badge: https://portfolio.tjakoen.com/b/8b2bc1a8"
 showcase:
   - "/media/badges/showcase/5015df2c2d72e36a.webp | 1280x1823 | The client at desktop width"
   - "/media/badges/showcase/f55c90f95249ff8e.webp | 375x1914 | The client at phone width"

@@ -29,7 +29,7 @@ social: |
 
   Thanks to the LOOP officers for organizing the workshop.
 
-  Writeup: https://tjakoen.github.io/calendar/loop-hau-version-one
+  Writeup: https://portfolio.tjakoen.com/calendar/loop-hau-version-one
 ---
 
 ## The organization I came back to

@@ -18,7 +18,7 @@ recipientHandle: "lintahlo-001"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-midterm-f42b3b0a"
 criteriaUrl: "/badges/apsi-2215-midterm"
-social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/f42b3b0a"
+social: "I earned Full Stack Web Development. Verify my badge: https://portfolio.tjakoen.com/b/f42b3b0a"
 showcase:
   - "/media/badges/showcase/a635d1e06b14181b.webp | 1280x970 | The client at desktop width"
   - "/media/badges/showcase/35996958247dbede.webp | 375x2067 | The client at phone width"

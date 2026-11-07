@@ -18,7 +18,7 @@ recipientHandle: "enzoprog-ctrl"
 issuedOn: "2026-11-03"
 certId: "hau-94c9fd152cd6c9ce72b0dd1d"
 criteriaUrl: "/badges/apsi-2203-midterm"
-social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/94c9fd152cd6c9ce"
+social: "I earned Full Stack Web Development. Verify my badge: https://portfolio.tjakoen.com/b/94c9fd152cd6c9ce"
 showcase:
   - "/media/badges/showcase/1171d4bbad36bd75.webp | 1280x973 | The client at desktop width"
   - "/media/badges/showcase/0ea45d646dce9e6b.webp | 375x2158 | The client at phone width"

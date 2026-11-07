@@ -18,7 +18,7 @@ recipientHandle: "tachibae"
 issuedOn: "2026-11-03"
 certId: "hau-c1a688df1d983b9cd28dc042"
 criteriaUrl: "/badges/adet-2125-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/c1a688df1d983b9c"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/c1a688df1d983b9c"
 showcase:
   - "/media/badges/showcase/c4b48ea14870b373.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

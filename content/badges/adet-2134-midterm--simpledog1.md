@@ -18,7 +18,7 @@ recipientHandle: "simpledog1"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-7d2a59e5"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/7d2a59e5"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/7d2a59e5"
 showcase:
   - "/media/badges/showcase/847e764a3cd079a9.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/9fea49fc08a088e7.webp | 780x1688 | Monster detail"

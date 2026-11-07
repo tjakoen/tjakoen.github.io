@@ -18,7 +18,7 @@ recipientHandle: "lintahlo-001"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-prelim-e6c92daf"
 criteriaUrl: "/badges/apsi-2215-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/e6c92daf"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/e6c92daf"
 showcase:
   - "/media/badges/showcase/7078afd4d4ffe05f.webp | 1124x736 | Company dashboard view 1"
   - "/media/badges/showcase/0f0aa29d4d9176d0.webp | 1129x776 | Company dashboard view 2"

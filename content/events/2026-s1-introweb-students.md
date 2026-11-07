@@ -17,7 +17,7 @@ social: |
   The top final projects included a flashcard site that could pass for a real product, a dorm finder for students near campus, and a shared calendar for your barkada. I could not find any of these builders on LinkedIn yet. If you built one, send me your profile and I will tag you.
   
   Four of them, with a page each:
-  https://tjakoen.github.io/calendar/2026-s1-introweb-students
+  https://portfolio.tjakoen.com/calendar/2026-s1-introweb-students
   Repos and live links are on each project's page.
 ---
 

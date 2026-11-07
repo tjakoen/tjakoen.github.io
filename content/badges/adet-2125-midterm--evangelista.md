@@ -18,7 +18,7 @@ recipientHandle: "28beans"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-5a80c9cb"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/5a80c9cb"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/5a80c9cb"
 showcase:
   - "/media/badges/showcase/85f504c2489e0197.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/ea6cdce5a10445a8.webp | 780x1688 | Monster detail"

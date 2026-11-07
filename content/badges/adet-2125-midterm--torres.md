@@ -18,7 +18,7 @@ recipientHandle: "frenchbrot"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-aca9f6bb"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/aca9f6bb"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/aca9f6bb"
 showcase:
   - "/media/badges/showcase/165574717b1de97f.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/6b868c07cf70256a.webp | 780x1688 | Monster detail"

@@ -26,7 +26,7 @@ social: |
   animation right now. What I told them: quality outlasts quantity, and audiences vote with their
   wallets. A cash grab can print money and still mean nothing to anyone a year later.
 
-  Writeup and the deck: https://tjakoen.github.io/calendar/mafia-hau-reality-check
+  Writeup and the deck: https://portfolio.tjakoen.com/calendar/mafia-hau-reality-check
 ---
 
 ## The question I had no slide for

@@ -18,7 +18,7 @@ recipientHandle: "tykesvirayguevarra-cloud"
 issuedOn: "2026-11-03"
 certId: "hau-d1af43ee9ad507c8383d9ae9"
 criteriaUrl: "/badges/adet-2134-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/d1af43ee9ad507c8"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/d1af43ee9ad507c8"
 ---
 
 Recognizes the named activity after instructor review at the confirmed threshold.

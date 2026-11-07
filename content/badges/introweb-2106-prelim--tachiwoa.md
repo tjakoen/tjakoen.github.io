@@ -24,7 +24,7 @@ social: |
   It attests that I completed the prelim coursework of Basic Programming in Web Development, awarded on the work I
   actually submitted rather than a grade cutoff.
 
-  Verify it here: https://tjakoen.github.io/b/ae9bcd8b
+  Verify it here: https://portfolio.tjakoen.com/b/ae9bcd8b
 ---
 
 This credential attests completion of the prelim block of Basic Programming in Web Development. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/introweb-2106-prelim).
