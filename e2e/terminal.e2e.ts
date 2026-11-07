@@ -192,6 +192,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(500);
     await page.getByRole("button", { name: "Pause" }).click();
     const well = page.locator("#nest-mock .well");
     const before = await well.boundingBox();

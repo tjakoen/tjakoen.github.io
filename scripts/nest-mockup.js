@@ -34,7 +34,7 @@
 
   const style = document.createElement("style");
   style.textContent = `
-    #nest-mock { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: var(--space-2, 8px);
+    #nest-mock { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px;
       padding: var(--space-3, 12px); font: 12px/1.4 var(--font-mono); color: var(--ink);
       min-width: 0; max-width: 100%; overflow-x: hidden; }
     #nest-mock > * { min-width: 0; max-width: 100%; }
@@ -43,8 +43,8 @@
     #nest-mock .muted { color: var(--ink-muted); }
     #nest-mock .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; gap: 8px; }
     #nest-mock .well { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
-      display: flex; align-items: center; justify-content: center; }
-    .nest-pre { margin: 0; font-family: var(--font-mono); font-size: 10px; line-height: 1.2; letter-spacing: -0.04em;
+      display: flex; align-items: stretch; justify-content: center; }
+    .nest-pre { width: 100%; height: 100%; margin: 0; font-family: var(--font-mono); font-size: 10px; line-height: 1.2; letter-spacing: -0.04em;
       -webkit-text-stroke: 0.05em currentColor; color: var(--ink-faint); user-select: none; }
     .nest-pre b { font-weight: inherit; }
     .nest-pre .t1 { color: var(--ink-muted); } .nest-pre .t2, .nest-pre .t5, .nest-pre .t6 { color: var(--color-accent); }
@@ -196,7 +196,7 @@
     @keyframes nest-bob { to { transform: translateY(-3px); } }
     #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     #nest-mock .nest-meter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-content: start;
-      padding: 4px 6px; border: 1px solid var(--color-line); background: var(--paper-2); }
+      padding: 6px 8px; border: 1px solid var(--color-line); background: var(--paper-2); }
     #nest-mock .nest-meter > .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .nest-meter .hint { grid-column: 1 / -1; font: 8px/1.15 var(--font-mono); font-style: normal; letter-spacing: .02em; opacity: .55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; font: 10px/1.2 var(--font-mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
@@ -212,7 +212,7 @@
     #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
-    #nest-mock .note-link { position: absolute; right: 5px; bottom: 3px; padding: 1px 3px; background: var(--paper); color: var(--ink-muted); font-size: 9px; line-height: 1.2; text-decoration: none; }
+    #nest-mock .note-link { align-self: flex-end; margin: -4px 2px 0; color: var(--ink-muted); font-size: 9px; line-height: 1.2; text-decoration: none; }
     #nest-mock .note-link:hover { color: var(--ink); }
     #nest-mock .activity { margin: 0; padding: 0; list-style: none; min-height: 2.6em; font-size: 10px; color: var(--ink-muted); }
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -440,8 +440,8 @@
     <div class="head"><span class="lbl muted"><span>nest · colony 01</span></span><span class="lbl muted"><span data-k="status">waking</span></span>
       <button class="x" data-k="x" type="button" aria-label="Close the Nest" title="Close">×</button></div>
     <p class="muted tool-help" data-k="tool-help" aria-live="polite"></p>
-    <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre>
-      <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener" title="The colony, explained">explained ↗</a></div>
+    <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
+    <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener" title="The colony, explained">explained ↗</a>
     <ul class="log activity" data-k="log" aria-live="polite"></ul>
     <div class="nest-meters">
       <div class="nest-meter"><span class="lbl muted">page left</span><span class="lbl" data-k="holds-val">100%</span>
@@ -1768,10 +1768,11 @@
   const drawStats = () => {
     const setMeter = (key, ratio, text) => {
       const r = Math.min(1, Math.max(0, ratio));
-      const cells = 10, filled = Math.round(r * cells);
+      const meter = $(`${key}-bar`);
+      const cells = Math.max(10, Math.floor((meter?.clientWidth || 160) / 6));
+      const filled = Math.round(r * cells);
       const fill = $(key); if (fill) fill.textContent = "█".repeat(filled);
       const rest = $(`${key}-rest`); if (rest) rest.textContent = "░".repeat(cells - filled);
-      const meter = $(`${key}-bar`);
       if (meter) {
         meter.setAttribute("aria-valuenow", String(Math.round(r * 100)));
         meter.setAttribute("aria-valuetext", text ?? `${Math.round(r * 100)}%`);
