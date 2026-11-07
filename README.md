@@ -5,7 +5,7 @@
 [![Code: Apache 2.0](https://img.shields.io/badge/code-Apache_2.0-blue)](LICENSE)
 [![Content: all rights reserved](https://img.shields.io/badge/content-all_rights_reserved-lightgrey)](NOTICE)
 
-Tjakoen's personal site (`tjakoen.github.io`), a **custom BATCH + GRAIN app** that doubles as the
+Tjakoen's personal site (`portfolio.tjakoen.com`), a **custom BATCH + GRAIN app** that doubles as the
 strongest possible proof the stack works: AI-first design, served as plain static files, with a
 lightweight AI demo that runs entirely in the visitor's browser.
 
