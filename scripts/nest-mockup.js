@@ -12,6 +12,7 @@
 (() => {
   const modes = document.querySelector(".assistant__modes");
   const aside = document.querySelector(".assistant");
+  const shell = aside?.closest(".app-shell");
   const main = document.querySelector(".app-shell__main") || document.querySelector("main");
   if (!modes || !aside || !main || document.getElementById("nest-mock")) return;
 
@@ -46,6 +47,10 @@
     #nest-mock .row { display: flex; gap: 6px; }
     #nest-mock button { flex: 1; padding: 6px; background: none; border: 1px solid currentColor; color: inherit; font: inherit; cursor: pointer; }
     #nest-mock button:hover { background: var(--paper-2); }
+    #nest-mock .tools button { position: relative; display: grid; place-items: center; min-width: 0; min-height: 40px; }
+    #nest-mock .tools button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+    #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: 9px; }
+    #nest-mock .tool-help { min-height: 2.8em; margin: 0; }
     #nest-mock { position: relative; }
     #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
       background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
@@ -55,6 +60,9 @@
     .nest-scent polyline { fill: none; stroke: var(--ink-faint); stroke-width: 1.2; stroke-dasharray: 1 5; stroke-linecap: round; opacity: .55; transition: opacity 1s; }
     .nest-ant { position: absolute; width: 23px; height: 13px; margin: -6px 0 0 -11px; padding: 0; border: 0; background: none;
       color: var(--ink); cursor: crosshair; pointer-events: auto; }
+    @media (pointer: coarse) {
+      .nest-ant { width: 44px; height: 44px; margin: -22px 0 0 -22px; display: grid; place-items: center; }
+    }
     .nest-ant:hover svg, .nest-ant:focus-visible svg { transform: scale(1.35); }
     .nest-ant:focus-visible { outline: 1px dashed var(--color-accent); outline-offset: 3px; }
     .nest-ant.scout { color: var(--color-accent); }
@@ -77,8 +85,8 @@
     .nest-ant.flyer { color: var(--ink-muted); } .nest-ant.flyer .wing { animation: nest-flap .1s steps(1) infinite; }
     .nest-ant.builder { color: var(--color-accent); }
     @keyframes nest-flap { 50% { opacity: .15; } }
-    .nest-mini { font-size: 12px; }
-    .nest-badge { position: absolute; font: 10px/1 var(--font-mono); color: var(--ink-muted); pointer-events: none; white-space: nowrap; }
+    .nest-mini { width: 56px; height: 20px; translate: -50% -100%; text-align: center; font-size: 9px; line-height: 10px; }
+    .nest-badge { position: absolute; translate: -50% 0; font: 10px/1 var(--font-mono); color: var(--ink-muted); pointer-events: none; white-space: nowrap; }
     .nest-badge.open { color: var(--color-accent); }
     .nest-mini.open { cursor: pointer; }
     .nest-mini.denied { color: var(--color-accent); transform: translateX(2px); }
@@ -91,6 +99,8 @@
       transform: translate(-50%, -50%); pointer-events: none; transition: opacity 1s; }
       transition: left 5s ease-in-out, top 5s ease-in-out; }
     @keyframes nest-flap { 50% { opacity: .2; } }
+    [data-nest-tool="squash"], [data-nest-tool="squash"] :is(a, button, summary, label) { cursor: crosshair; }
+    [data-nest-tool="wipe"], [data-nest-tool="wipe"] :is(a, button, summary, label) { cursor: cell; }
     .nest-armed, .nest-armed * { cursor: copy !important; }
     .nest-layer.overrun .nest-ant { cursor: not-allowed; }
     #nest-mock .end { position: absolute; inset: var(--space-3, 12px); display: flex; flex-direction: column; justify-content: center; gap: 10px;
@@ -99,10 +109,9 @@
     #nest-mock .end pre { margin: 0; font: inherit; text-align: left; display: inline-block; }
     #nest-mock details { font-size: 11px; color: var(--ink-muted); } #nest-mock summary { cursor: pointer; }
     #nest-mock details p { margin: 6px 0 0; }
-    #nest-mock .tools button[aria-pressed="true"] { color: var(--color-accent); border-color: var(--color-accent); }
+    #nest-mock .tools button[aria-pressed="true"] { color: var(--color-accent); border: 2px solid currentColor; background: var(--paper-2); }
     .nest-scent .hit { pointer-events: none; }
-    .nest-layer[data-tool="wipe"] .nest-scent .hit { pointer-events: stroke; }
-    .nest-layer[data-tool="read"] .nest-ant { pointer-events: none; }
+    .nest-layer[data-tool="wipe"] .nest-scent .hit { pointer-events: stroke; touch-action: none; }
     #nest-mock .tools button[disabled] { opacity: .45; cursor: default; }
     .nest-switch { background: none; border: 0; padding: 2px 4px; margin: 0 6px; color: var(--ink-faint); cursor: pointer; line-height: 0; }
     .nest-switch:hover, .nest-switch:focus-visible { color: var(--ink); }
@@ -129,24 +138,49 @@
   (bar.querySelector(".status-bar__xray") || null) ? bar.insertBefore(antBtn, bar.querySelector(".status-bar__xray")) : bar.append(antBtn);
   let game = null;
   try { if (localStorage.getItem("portfolio:aside-mode") === "nest") localStorage.removeItem("portfolio:aside-mode"); } catch { /* private mode */ }
-  const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; });
-  antBtn.addEventListener("click", () => { if (!game) game = start(); else leave(); });
+  const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; antBtn.focus(); });
   // a colony left running on the last page picks up here
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem("nest-colony") || "null"); } catch { /* private mode or a bad save */ }
   if (saved) setTimeout(() => {
-    if (game) return;
-    try { game = start(saved); } catch (err) { console.error("nest resume:", err); }
+    if (game || !saved) return;
+    try { openNest(); } catch (err) { console.error("nest resume:", err); }
   }, 300);
+  const openNest = () => { game = start(saved); saved = null; };
+  antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
 
   const SAVE_KEY = "nest-colony";
   const start = (saved) => {
   // ================================ the panel ================================
   antBtn.setAttribute("aria-pressed", "true"); antBtn.setAttribute("aria-label", "Close the Nest");
+  const sidebarWasHidden = shell?.getAttribute("data-aside-hidden") === "true";
+  shell?.removeAttribute("data-aside-hidden");
   const hidden = [...aside.children].filter((el) => el.style.display !== "none");
   hidden.forEach((el) => { el.dataset.nestDisplay = el.style.display; el.style.display = "none"; });
   const panel = document.createElement("div");
   panel.id = "nest-mock";
+  panel.dataset.surface = "nest-controls";
+  const icons = {
+    squash: '<circle cx="12" cy="12" r="7"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/>',
+    wipe: '<path d="m4 13 8-8a2 2 0 0 1 3 0l5 5a2 2 0 0 1 0 3l-7 7H9l-5-5a1.5 1.5 0 0 1 0-2Zm4-4 9 9m-4 2h8"/>',
+    read: '<path d="m10 13 4-4m-5 6-1 1a3 3 0 0 1-4-4l4-4a3 3 0 0 1 4 0m3 1 1-1a3 3 0 0 1 4 4l-4 4a3 3 0 0 1-4 0"/>',
+    bait: '<path d="m4 16 3-7 7-4 5 3 2 8-6 4-7-1zM9 13h.01m6-4h.01m1 6h.01"/>',
+    cancel: '<path d="m6 6 12 12M18 6 6 18"/>',
+    seal: '<path d="M2 19 8 9h8l6 10H2Zm7-10V6h6v3m-4 6h2"/>',
+    muted: '<path d="M3 9h4l5-4v14l-5-4H3zM16 9l5 6m0-6-5 6"/>',
+    sound: '<path d="M3 9h4l5-4v14l-5-4H3zm13 0a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/>',
+    pause: '<path d="M9 5v14m6-14v14"/>',
+    play: '<path d="m8 5 11 7-11 7z"/>',
+    restore: '<path d="M4 10a8 8 0 1 1 1 8m-1-8V4m0 6h6"/>',
+  };
+  const icon = (name) => `<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[name]}</svg>`;
+  const toolHelp = {
+    squash: "Click or tap ants to squash them. Page links are locked.",
+    wipe: "Drag across a dotted trail to scatter its ants. Page links are locked.",
+    read: "Page links work again. The colony keeps running.",
+  };
+  const tool = (name, label) => `<button type="button" data-tool="${name}" aria-label="${label}" title="${toolHelp[name]}" aria-pressed="false">${icon(name)}</button>`;
+  const action = (key, glyph, label, help) => `<button type="button" data-k="${key}" aria-label="${label}" title="${help}">${icon(glyph)}</button>`;
   panel.innerHTML = `
     <div class="head"><span class="lbl muted"><span>nest · colony 01</span></span><span class="lbl muted"><span data-k="status">waking</span></span>
       <button class="x" data-k="x" type="button" aria-label="Close the Nest" title="Close">×</button></div>
@@ -162,13 +196,20 @@
       <dt class="muted">trails</dt><dd data-k="trails">0</dd><dt class="muted">squashed</dt><dd data-k="squashed">0</dd>
       <dt class="muted">larder</dt><dd class="accent" data-k="larder" style="grid-column: span 3; text-align: left">empty</dd>
     </dl>
-    <div class="row tools" role="radiogroup" aria-label="Tool"><button data-tool="squash" aria-pressed="true" title="Click ants to squash them; links on the page are held">squash</button><button data-tool="wipe" aria-pressed="false" title="Drag across a scent trail to wipe it">wipe trail</button><button data-tool="read" aria-pressed="false" title="Leave the ants be and use the page's links">read page</button></div>
-    <div class="row tools"><button data-k="bait" title="Drop a crumb that pulls ants off their trail">drop bait</button><button data-k="seal" title="Seal every anthill for a few seconds">seal hill</button></div>
-    <div class="row"><button data-k="sound" class="muted" aria-pressed="false">unmute</button>
-<button data-k="pause">pause</button><button data-k="restore" class="muted">restore page</button></div>
-    <details><summary>about this</summary>
-      <p>A small game hidden in the site. The nest is Braille text and the ants are inline SVG dots on the live page: no canvas, no library, and every colour is a theme token, so each flavor recolours it.</p>
-      <p>Hold an anthill to seal it. Drag across a scent trail to wipe it. Soldiers take two hits. Letters are hidden in place, never deleted, and closing the Nest puts them all back.</p>
+    <div class="row tools" role="group" aria-label="Page tools">
+      ${tool("squash", "Squash ants")}${tool("wipe", "Wipe trail")}${tool("read", "Use page links")}
+    </div>
+    <div class="row tools" role="group" aria-label="Colony controls">
+      ${action("bait", "bait", "Drop bait", "Place a crumb to lure nearby ants away.")}
+      ${action("seal", "seal", "Seal hills", "Seal every anthill for a few seconds.")}
+      ${action("sound", "muted", "Unmute", "Turn on colony sounds.")}
+      ${action("pause", "pause", "Pause", "Pause the colony.")}
+      ${action("restore", "restore", "Restore page", "Put stolen letters back while the colony keeps running.")}
+    </div>
+    <p class="muted tool-help" data-k="tool-help" aria-live="polite"></p>
+    <details><summary>How to play</summary>
+      <p>Keep the ants from carrying off too much of the page. Click or tap an ant to squash it. Soldiers take two hits.</p>
+      <p>Pick Wipe Trail and drag across the dots, or drop bait to lure nearby ants away. Hold an anthill to seal it, or seal them all from the sidebar. Pick Use Page Links to browse while the ants keep working.</p>
     </details>
 
     <div class="confirm" data-k="confirm" role="alertdialog" aria-labelledby="nest-confirm-title" hidden>
@@ -178,6 +219,12 @@
     </div>`;
   aside.append(panel);
   const $ = (k) => panel.querySelector(`[data-k="${k}"]`);
+  const setAction = (key, glyph, label, help) => {
+    const button = $(key);
+    button.innerHTML = icon(glyph);
+    button.setAttribute("aria-label", label);
+    button.title = help;
+  };
   const pre = panel.querySelector(".nest-pre");
   const well = panel.querySelector(".well");
   const log = (msg) => { const li = document.createElement("li"); li.textContent = msg; $("log").prepend(li); while ($("log").children.length > 3) $("log").lastChild.remove(); };
@@ -305,11 +352,9 @@
   // Where the hill goes: an empty patch of the visible page that the whole mound fits in, as far
   // from any text as the page allows. Among the roomiest spots one is picked at random.
   const minis = [];
-  const findSpot = () => {
+  const findHomeSpot = () => {
     const rects = [];
     for (const n of textNodes(main)) { if (!/\S/.test(n.data)) continue; const r = document.createRange(); r.selectNodeContents(n); for (const c of r.getClientRects()) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } }
-    minis.forEach((h) => rects.push([h.base[0] - 160, h.base[1] - 120, h.base[0] + 160, h.base[1] + 80]));
-    hills.forEach((h) => rects.push([h.base[0] - 260, h.base[1] - 200, h.base[0] + 260, h.base[1] + 120])); // a new hill keeps clear of the others
     main.querySelectorAll("img, svg, button, input, textarea, figure, hr").forEach((el) => { if (layer.contains(el)) return; const c = el.getBoundingClientRect(); if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } });
     const w = hr.width, h = hr.height, pad = 14, spots = [];
     for (let y = h + 30; y < main.scrollHeight - 20; y += 18) for (let x = w / 2 + 20; x < main.clientWidth - w / 2 - 20; x += 18) {
@@ -348,7 +393,7 @@
   };
   const isSealed = (h) => h.sealed > performance.now() / 1000;
   hill.remove();
-  const firstSpot = findSpot();
+  const firstSpot = findHomeSpot();
   const home = makeHill(firstSpot);
   // bring the hill into view, a little above the middle of the pane
   main.scrollTo({ top: Math.max(0, firstSpot[1] - main.clientHeight * 0.55), behavior: "smooth" });
@@ -439,7 +484,7 @@
     else { ant.job = "follow"; ant.path = ant.trail.pts.slice(); ant.k = 0; }
     label(ant);
   };
-  const label = (ant) => { if (!ant.el) return; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier" || ant.role === "guard"); ant.el.classList.toggle("builder", ant.role === "builder"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder" }[ant.role]} ant. Press to squash.`); };
+  const label = (ant) => { if (!ant.el) return; ant.el.inert = state.tool === "wipe"; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier" || ant.role === "guard"); ant.el.classList.toggle("builder", ant.role === "builder"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder" }[ant.role]} ant. Press to squash.`); };
 
   // A scout wanders: loose waypoints toward a block of text no trail reaches yet, its steps recorded.
   const remaining = (t) => {
@@ -503,20 +548,25 @@
   };
 
   // The letter drifts home on a slow, gentle arc, then becomes text again.
+  const returningLetters = new Map();
+  const finishReturn = (letter) => {
+    returningLetters.delete(letter);
+    showChar(letter); letter.glyph.remove(); letter.glyph = null; letter.state = "free"; letter.crew = [];
+  };
   const drop = (L) => {
     if (!L || L.state !== "carried") return;
     L.state = "returning";
     const g = L.glyph, sx = parseFloat(g.style.left), sy = parseFloat(g.style.top), [ex, ey] = L.home;
     const lift = Math.min(60, 20 + Math.hypot(ex - sx, ey - sy) * 0.15);
     const frames = [0, 0.25, 0.5, 0.75, 1].map((t) => ({ left: sx + (ex - sx) * t + "px", top: sy + (ey - sy) * t - Math.sin(t * Math.PI) * lift + "px", transform: `rotate(${(1 - t) * 6 * Math.sin(t * 9)}deg)` }));
-    g.animate(frames, { duration: 3800, easing: "cubic-bezier(.45,.05,.35,1)" }).finished.then(() => {
-      showChar(L); g.remove(); L.glyph = null; L.state = "free"; L.crew = [];
-    });
+    const animation = g.animate(frames, { duration: 3800, easing: "cubic-bezier(.45,.05,.35,1)" });
+    returningLetters.set(L, animation);
+    animation.addEventListener("finish", () => { if (returningLetters.has(L)) finishReturn(L); }, { once: true });
     L.crew.forEach((a) => { if (a.el) goHome(a); });
   };
 
   const squash = (ant) => {
-    if (state.over || state.overrun) return;
+    if (state.tool !== "squash" || state.over || state.overrun) return;
     if ((ant.role === "soldier" || ant.role === "guard") && ant.hp > 1) { ant.hp--; ant.el.classList.add("hit"); setTimeout(() => ant.el?.classList.remove("hit"), 250); blip(300, 0.06, "square"); return; }
     blip(140 + Math.random() * 40, 0.09, "triangle");
     const L = ant.letter;
@@ -562,7 +612,8 @@
     if (ant.job === "fly") return stepFlyer(ant, dt);
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
     if (ant.job === "patrol") { // soldiers and guards walk their trail out and back, guarding it
-      if (!state.trails.includes(ant.patrol)) {
+      if (ant.circling && state.trails.some((trail) => trail.ready)) return assignGuard(ant);
+      if (!ant.circling && !state.trails.includes(ant.patrol)) {
         if (ant.mini) { ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; return; }
         ant.job = "home"; ant.path = [hillOf(ant).hole.slice()]; ant.k = 0; return;
       }
@@ -596,6 +647,7 @@
     }
     ant.px = ant.x; ant.py = ant.y;
     if (++ant.k < ant.path.length) return;
+    if (ant.job === "scatter") return regroup(ant);
     if (ant.job === "scout") { // found food: the walk becomes a trail and the scout becomes a worker
       ant.walked.push([ant.x, ant.y]);
       // the trail exists from here but stays unscented and closed until the scout gets a letter home
@@ -670,11 +722,68 @@
   const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6;
   const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
   const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
-    const w = 26, h = 10, dots = new Int8Array(w * h).fill(-1);
+    const w = 18, h = 8, dots = new Int8Array(w * h).fill(-1);
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const u = (x - w / 2) / (w / 2), top = h * u * u; const hash = ((x * 73 + y * 151) % 97) / 97; if (y >= top && ((x + y) % 2 === 0 || y < top + 1.2) && hash < p) dots[y * w + x] = 0; }
     for (let y = 0; y < 3; y++) for (let x = w / 2 - 2; x < w / 2 + 2; x++) dots[y * w + x] = -1;
     let out = ""; for (let cy = 0; cy < h; cy += 4) { for (let cx = 0; cx < w; cx += 2) { let code = 0; for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) if (dots[(cy + dy) * w + cx + dx] >= 0) code |= bit[dy][dx]; out += String.fromCharCode(0x2800 + code); } out += "\n"; }
     return out.trimEnd();
+  };
+  const overlaps = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+  // The compact mound fits on a line of prose. An open-ground site also needs room for its badge.
+  const miniBox = ({ x, y, gap }) => [x - 30, y - (gap ? 20 : 34), x + 30, y + 2];
+  const miniTerrain = (includeMinis = true) => {
+    const gaps = [], obstacles = [];
+    const stolen = new Set([...state.stolen].map((letter) => letter.span));
+    const addRect = (rect, list, pad = 0) => {
+      if (!rect.width || !rect.height) return;
+      const [x, y] = local(rect);
+      list.push([x - pad, y - pad, x + rect.width + pad, y + rect.height + pad]);
+    };
+    const range = document.createRange();
+    for (const node of textNodes(main)) {
+      if (!/\S/.test(node.data)) continue;
+      range.selectNodeContents(node);
+      const list = stolen.has(node.parentElement) ? gaps : obstacles;
+      for (const rect of range.getClientRects()) addRect(rect, list);
+    }
+    for (const el of main.querySelectorAll("img, svg, button, input, select, textarea, figure, hr")) {
+      if (!layer.contains(el)) addRect(el.getBoundingClientRect(), obstacles, 4);
+    }
+    for (const mound of includeMinis ? [...hills, ...minis] : hills) {
+      addRect(mound.el.getBoundingClientRect(), obstacles, 24);
+      if (mound.badge) addRect(mound.badge.getBoundingClientRect(), obstacles, 8);
+    }
+    return { gaps, obstacles };
+  };
+  const miniFits = (box, obstacles) => box[0] >= 4 && box[2] <= main.clientWidth - 4 &&
+    box[1] >= 0 && box[3] <= main.scrollHeight && !obstacles.some((rect) => overlaps(box, rect));
+  const miniSiteFits = (spot, box, { gaps, obstacles }) => miniFits(box, obstacles) &&
+    spot.gap === gaps.some((rect) => overlaps(box, rect));
+  const findMiniSpot = () => {
+    const terrain = miniTerrain();
+    const top = main.scrollTop, bottom = top + main.clientHeight;
+    const bases = [...hills, ...minis].map((mound) => mound.base);
+    let best = null, bestScore = -Infinity;
+    const consider = (x, y, gap) => {
+      const spot = { x, y, gap };
+      const box = miniBox(spot);
+      if (box[1] < top + 4 || box[3] > bottom - 4 || !miniSiteFits(spot, box, terrain)) return;
+      const separation = Math.min(...bases.map(([baseX, baseY]) => Math.hypot((x - baseX) * 1.5, y - baseY)));
+      if (separation > bestScore) { best = spot; bestScore = separation; }
+    };
+    for (const [left, , right, bottomEdge] of terrain.gaps) {
+      const center = (left + right) / 2;
+      for (const offset of [-18, 0, 18]) consider(center + offset, bottomEdge, true);
+    }
+    if (best) return best;
+    for (let y = top + 40; y < bottom - 4; y += 12) {
+      for (let x = 34; x <= main.clientWidth - 34; x += 12) consider(x, y, false);
+    }
+    return best;
+  };
+  const positionMini = (element, { x, y }) => {
+    element.style.left = `${x}px`;
+    element.style.top = `${y}px`;
   };
   const randomPoint = () => [20 + Math.random() * (main.clientWidth - 40), main.scrollTop + 30 + Math.random() * (main.clientHeight - 60)];
   const spawnPageAnt = (role, at, mini) => {
@@ -685,13 +794,18 @@
     layer.append(a.el); state.ants.push(a); label(a); return a;
   };
   const startBuild = () => {
-    const spot = findSpot(); if (!spot) return;
+    const spot = findMiniSpot(); if (!spot) return;
     const b = spawnPageAnt("builder", home.hole.slice(), null);
-    b.job = "build-walk"; b.path = [[spot[0], spot[1] - 6]]; b.k = 0; b.spot = spot; state.builder = b;
+    b.job = "build-walk"; b.path = [[spot.x, spot.y - 6]]; b.k = 0; b.spot = spot; state.builder = b;
     log("the stores are full; a builder heads out");
   };
   const failBuild = (b) => {
     b.mound?.remove(); state.builder = null; state.stores = 0; log("you stopped the builder; the stores are lost");
+  };
+  const cancelBuild = (ant) => {
+    ant.mound?.remove();
+    state.builder = null;
+    squashQuiet(ant);
   };
   const stepMiniJob = (ant, dt) => {
     if (ant.job === "building") {
@@ -699,6 +813,7 @@
       ant.mound.textContent = miniArt(Math.min(1, ant.build));
       ant.heading += Math.sin(performance.now() / 150) * 0.05;
       if (ant.build < 1) return;
+      if (!miniSiteFits(ant.spot, miniBox(ant.spot), miniTerrain())) return cancelBuild(ant);
       ant.mound.remove(); makeMini(ant.spot); state.stores = Math.max(0, state.stores - storeCap()); state.built++; state.builder = null;
       ant.job = "home"; ant.role = "worker"; ant.path = [home.hole.slice()]; ant.k = 0; label(ant); return;
     }
@@ -706,30 +821,47 @@
     if (!move(ant, g[0], g[1], dt, SPEED)) { ant.px = ant.x; ant.py = ant.y; return; }
     ant.px = ant.x; ant.py = ant.y;
     if (ant.job === "build-walk") {
+      if (!miniSiteFits(ant.spot, miniBox(ant.spot), miniTerrain())) return cancelBuild(ant);
       ant.job = "building"; ant.build = 0; ant.el.classList.add("wait");
       ant.mound = document.createElement("div"); ant.mound.className = "nest-hill nest-mini"; layer.append(ant.mound);
       ant.mound.textContent = miniArt(0.02);
-      const mr = { w: 26 * 0.5 * 7.2, h: 30 };
-      ant.mound.style.left = ant.spot[0] - 47 + "px"; ant.mound.style.top = ant.spot[1] - 30 + "px";
+      positionMini(ant.mound, ant.spot);
       log("a mini hill is going up");
     } else if (ant.job === "mini-home") { if (ant.mini && minis.includes(ant.mini)) assignGuard(ant); else squashQuiet(ant); }
   };
-  // the badge over each mini hill counts its living guards; at zero it can be broken
-  const markGuards = (m) => { if (!m.badge) return; const n = m.guards.size; m.badge.textContent = n ? "guards " + "⣿".repeat(n) : "open ×" + m.hp; m.badge.classList.toggle("open", !n); m.el.classList.toggle("open", !n); };
+  const markGuards = (mound) => {
+    const count = mound.guards.size;
+    mound.el.title = count ? `Guards defending this mini hill: ${count}` : `Clicks to break this mini hill: ${mound.hp}`;
+    mound.el.classList.toggle("open", !count);
+    if (!mound.badge) return;
+    mound.badge.textContent = count ? "guards " + "⣿".repeat(count) : "open ×" + mound.hp;
+    mound.badge.classList.toggle("open", !count);
+  };
   const squashQuiet = (ant) => { ant.el?.remove(); ant.el = null; state.ants = state.ants.filter((a) => a !== ant); };
+  const removeMini = (mound) => {
+    mound.el.remove();
+    mound.badge?.remove();
+    mound.links.forEach((link) => link.remove());
+    minis.splice(minis.indexOf(mound), 1);
+    mound.guards.forEach(squashQuiet);
+    mound.flyers.forEach((flyer) => { flyer.mini = null; flyer.hill = home; });
+  };
   const makeMini = (spot) => {
     const el = document.createElement("div"); el.className = "nest-hill nest-mini"; el.textContent = miniArt(1);
-    el.style.left = spot[0] - 47 + "px"; el.style.top = spot[1] - 30 + "px"; el.title = "Kill its guards, then click to break it";
-    const m = { el, base: spot, hole: [spot[0], spot[1] - 26], hp: MINI_HP, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, links: [] };
+    positionMini(el, spot);
+    const m = { el, spot, base: [spot.x, spot.y], hole: [spot.x, spot.y - 17], hp: MINI_HP, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, links: [] };
     el.addEventListener("click", (e) => {
       e.stopPropagation(); if (state.overrun) return;
       if (m.guards.size) { el.classList.add("denied"); setTimeout(() => el.classList.remove("denied"), 300); if (!m.warned) { m.warned = true; log("its guards are still alive"); } return; }
       m.hp--; el.textContent = miniArt(m.hp / MINI_HP); markGuards(m); blip(160, 0.1, "square");
       if (m.hp > 0) return;
-      el.remove(); m.badge.remove(); m.links.forEach((l) => l.remove()); minis.splice(minis.indexOf(m), 1);
-      m.flyers.forEach((f) => { f.mini = null; f.hill = home; }); log("you broke a mini hill"); blip(90, 0.4, "sawtooth"); checkWipe();
+      removeMini(m); log("you broke a mini hill"); blip(90, 0.4, "square"); checkWipe();
     });
-    m.badge = document.createElement("span"); m.badge.className = "nest-badge"; m.badge.style.left = spot[0] - 8 + "px"; m.badge.style.top = spot[1] - 46 + "px"; layer.append(m.badge);
+    if (!spot.gap) {
+      m.badge = document.createElement("span"); m.badge.className = "nest-badge";
+      positionMini(m.badge, { x: spot.x, y: spot.y - 32 });
+      layer.append(m.badge);
+    }
     layer.append(el); minis.push(m); markGuards(m); log("a mini hill stands"); return m;
   };
   // A guard walks from its mini hill to the nearest point of a trail, then patrols that trail.
@@ -739,7 +871,7 @@
     const t = ready[Math.floor(Math.random() * ready.length)];
     let best = 0, bd = Infinity; t.pts.forEach((p, k) => { const d = Math.hypot(p[0] - g.mini.hole[0], p[1] - g.mini.hole[1]); if (d < bd) { bd = d; best = k; } });
     const link = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    link.setAttribute("points", [g.mini.hole, t.pts[best]].map((p) => p.join(",")).join(" ")); scent.append(link); g.mini.links.push(link);
+    link.setAttribute("points", [g.mini.hole, t.pts[best]].map((p) => p.join(",")).join(" ")); scent.append(link); g.mini.links.push(link); g.guardLink = link;
     g.job = "patrol"; g.patrol = t; g.circling = false; g.path = [g.mini.hole.slice(), ...t.pts.slice(best)]; g.k = 0;
   };
   const stepFlyer = (f, dt) => {
@@ -752,9 +884,13 @@
     }
     f.path = [randomPoint()]; f.k = 0;
   };
+  let nextBuildSearch = 0;
   const tickMinis = (now) => {
     const t = now / 1000;
-    if (!state.builder && !state.queenDead && minis.length < MAX_MINIS && state.stores >= storeCap()) startBuild();
+    if (!state.paused && now >= nextBuildSearch && !state.builder && !state.queenDead && minis.length < MAX_MINIS && state.stores >= storeCap()) {
+      nextBuildSearch = now + 1000;
+      startBuild();
+    }
     minis.forEach((m) => {
       if (t < m.next || state.queenDead) return; m.next = t + SPEED_SPAWN();
       if (m.guards.size < 2) { const g = spawnPageAnt("guard", m.hole.slice(), m); m.guards.add(g); markGuards(m); assignGuard(g); }
@@ -764,41 +900,98 @@
   const SPEED_SPAWN = () => SPAWN_EVERY * (0.8 + Math.random() * 0.4);
 
   // ---- wiping a trail: drag across its scent
+  const regroup = (ant) => {
+    const patrol = ant.role === "soldier" || ant.role === "guard";
+    let nearest = null;
+    for (const trail of state.trails) {
+      if (!trail.ready || (!patrol && (trail.ants.size >= LINE || !remaining(trail)))) continue;
+      for (let i = 1; i < trail.pts.length; i++) {
+        const [x, y] = trail.pts[i - 1];
+        const dx = trail.pts[i][0] - x, dy = trail.pts[i][1] - y;
+        const lengthSq = dx * dx + dy * dy;
+        if (!lengthSq) continue;
+        const fraction = Math.max(0, Math.min(1, ((ant.x - x) * dx + (ant.y - y) * dy) / lengthSq));
+        const point = [x + fraction * dx, y + fraction * dy];
+        const distance = Math.hypot(ant.x - point[0], ant.y - point[1]);
+        if (!nearest || distance < nearest.distance) nearest = { trail, i, point, distance };
+      }
+    }
+    if (!nearest) {
+      if (ant.mini) {
+        ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0;
+        return;
+      }
+      return goHome(ant);
+    }
+    const { trail, i, point } = nearest;
+    ant.path = [point, ...trail.pts.slice(i)]; ant.k = 0;
+    if (patrol) {
+      ant.patrol = trail; ant.job = "patrol";
+    } else {
+      join(ant, trail); ant.job = "follow";
+      if (ant.role === "scout") { ant.role = "worker"; label(ant); }
+    }
+  };
+  const wipeTrail = (trail) => {
+    const displaced = state.ants.filter((ant) => ant.el && (ant.trail === trail || ant.patrol === trail));
+    retire(trail);
+    displaced.forEach((ant, i) => {
+      const letter = ant.letter;
+      if (letter?.state === "carried") drop(letter);
+      else if (letter?.state === "gather") {
+        letter.crew = letter.crew.filter((member) => member !== ant);
+        if (!letter.crew.length) letter.state = "free";
+      }
+      if (ant.guardLink) {
+        ant.guardLink.remove();
+        ant.mini.links = ant.mini.links.filter((link) => link !== ant.guardLink);
+        ant.guardLink = null;
+      }
+      ant.letter = null; ant.patrol = null; ant.circling = false; ant.lead = null;
+      ant.el.classList.remove("wait");
+      const angle = i * 2.4 + ant.heading + Math.PI / 2;
+      const x = Math.max(10, Math.min(main.scrollWidth - 10, ant.x + Math.cos(angle) * 42));
+      const y = Math.max(10, Math.min(main.scrollHeight - 10, ant.y + Math.sin(angle) * 42));
+      ant.job = "scatter"; ant.path = [[x, y]]; ant.k = 0;
+    });
+    blip(240, 0.2, "sawtooth"); log("you wiped a scent trail");
+  };
   const addEraser = (t) => {
     const hit = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     hit.setAttribute("points", t.line.getAttribute("points")); hit.classList.add("hit"); t.hit = hit;
     let from = null;
-    hit.addEventListener("pointerdown", (e) => { e.preventDefault(); from = [e.clientX, e.clientY]; hit.setPointerCapture(e.pointerId); });
-    hit.addEventListener("pointermove", (e) => {
-      if (!from || Math.hypot(e.clientX - from[0], e.clientY - from[1]) < 28) return;
-      from = null; if (!state.trails.includes(t)) return;
-      retire(t); blip(240, 0.2, "sawtooth"); log("you wiped a scent trail");
+    hit.addEventListener("pointerdown", (e) => {
+      if (!e.isPrimary || e.button !== 0) return;
+      e.preventDefault(); from = [e.clientX, e.clientY]; hit.setPointerCapture(e.pointerId);
     });
-    hit.addEventListener("pointerup", () => (from = null));
+    hit.addEventListener("pointermove", (e) => {
+      if (!e.isPrimary || !from || Math.hypot(e.clientX - from[0], e.clientY - from[1]) < 28) return;
+      from = null; if (state.trails.includes(t)) wipeTrail(t);
+    });
+    hit.addEventListener("lostpointercapture", () => (from = null));
   };
 
   // ---- bait: a crumb that pulls nearby ants off course for a few seconds
   const BAIT_COOL = 12, BAIT_TIME = 6;
   let baitReady = 0;
-  const armBait = () => {
-    if (state.over || performance.now() / 1000 < baitReady) return;
-    main.classList.add("nest-armed"); $("bait").textContent = "click the page";
-    const place = (e) => {
-      main.removeEventListener("click", place, true); main.classList.remove("nest-armed");
-      if (e.target.closest(".nest-ant")) return;
-      e.preventDefault(); e.stopPropagation();
-      const m = main.getBoundingClientRect(), x = e.clientX - m.left + main.scrollLeft, y = e.clientY - m.top + main.scrollTop;
-      const crumb = document.createElement("div"); crumb.className = "nest-bait"; crumb.textContent = "⣴⣦"; crumb.style.left = x + "px"; crumb.style.top = y + "px"; layer.append(crumb);
-      baitReady = performance.now() / 1000 + BAIT_COOL; blip(400, 0.08, "sine");
-      const lured = state.ants.filter((a) => a.el && !a.letter && a.job !== "crew" && a.role !== "soldier" && Math.hypot(a.x - x, a.y - y) < 200);
-      lured.forEach((a) => { a.trail?.ants.delete(a); a.trail = null; a.job = "bait"; a.path = [[x + (Math.random() - 0.5) * 30, y + (Math.random() - 0.5) * 20]]; a.k = 0; });
-      log(lured.length ? `${lured.length} ant${lured.length > 1 ? "s" : ""} took the bait` : "nothing near enough to smell it");
-      setTimeout(() => {
-        crumb.style.opacity = "0"; setTimeout(() => crumb.remove(), 1000);
-        lured.forEach((a) => { if (a.el) { a.el.classList.remove("wait"); a.job = "home"; a.path = [hillOf(a).hole.slice()]; a.k = 0; } });
-      }, BAIT_TIME * 1000);
-    };
-    main.addEventListener("click", place, true);
+  const setBaitArmed = (armed) => {
+    main.classList.toggle("nest-armed", armed);
+    if (armed) setAction("bait", "cancel", "Cancel bait", "Cancel bait placement.");
+    else setAction("bait", "bait", "Drop bait", "Place a crumb to lure nearby ants away.");
+    $("tool-help").textContent = armed ? "Click or tap the page to drop bait." : toolHelp[state.tool];
+  };
+  const placeBait = (e) => {
+    setBaitArmed(false);
+    const m = main.getBoundingClientRect(), x = e.clientX - m.left + main.scrollLeft, y = e.clientY - m.top + main.scrollTop;
+    const crumb = document.createElement("div"); crumb.className = "nest-bait"; crumb.textContent = "⣴⣦"; crumb.style.left = x + "px"; crumb.style.top = y + "px"; layer.append(crumb);
+    baitReady = performance.now() / 1000 + BAIT_COOL; blip(400, 0.08, "sine");
+    const lured = state.ants.filter((a) => a.el && a !== state.builder && !a.letter && a.job !== "crew" && a.role !== "soldier" && Math.hypot(a.x - x, a.y - y) < 200);
+    lured.forEach((a) => { a.trail?.ants.delete(a); a.trail = null; a.job = "bait"; a.path = [[x + (Math.random() - 0.5) * 30, y + (Math.random() - 0.5) * 20]]; a.k = 0; });
+    log(lured.length ? `${lured.length} ant${lured.length > 1 ? "s" : ""} took the bait` : "nothing near enough to smell it");
+    setTimeout(() => {
+      crumb.style.opacity = "0"; setTimeout(() => crumb.remove(), 1000);
+      lured.forEach((a) => { if (a.el) { a.el.classList.remove("wait"); a.job = "home"; a.path = [hillOf(a).hole.slice()]; a.k = 0; } });
+    }, BAIT_TIME * 1000);
   };
 
   // ---- sound: off by default, a few short tones from one oscillator
@@ -813,7 +1006,7 @@
 
   // ---- the colony carries over between pages
   function save(data) { try { data ? localStorage.setItem(SAVE_KEY, JSON.stringify(data)) : localStorage.removeItem(SAVE_KEY); } catch { /* private mode */ } }
-  const snapshot = () => ({ roles: state.ants.filter((a) => /^(scout|worker|soldier)$/.test(a.role)).map((a) => a.role), stores: state.stores, built: state.built, eggs: state.eggs.length, meals: state.meals, reserve: state.reserve,
+  const snapshot = () => ({ roles: state.ants.filter((a) => /^(scout|worker|soldier)$/.test(a.role)).map((a) => a.role), tool: state.tool, stores: state.stores, built: state.built, eggs: state.eggs.length, meals: state.meals, reserve: state.reserve,
     squashed: state.squashed, stolenTotal: state.stolenTotal, peak: state.peak, sound: state.sound, elapsed: performance.now() - state.started });
   const onHide = () => { if (!state.over && !stopped) save(snapshot()); };
   addEventListener("pagehide", onHide);
@@ -873,8 +1066,13 @@
     $("holds").textContent = "⣿".repeat(hc) + "⣀".repeat(14 - hc);
     const wait = Math.ceil(baitReady - performance.now() / 1000);
     const sealWait = Math.ceil(Math.max(...hills.map((h) => h.cool)) - performance.now() / 1000);
-    $("seal").disabled = sealWait > 0 || state.queenDead; $("seal").textContent = hills.some(isSealed) ? "sealed" : sealWait > 0 ? `seal in ${sealWait}s` : "seal hill";
-    $("bait").disabled = wait > 0; if (!main.classList.contains("nest-armed")) $("bait").textContent = wait > 0 ? `bait in ${wait}s` : "drop bait";
+    $("seal").disabled = sealWait > 0 || state.queenDead;
+    if (state.over && main.classList.contains("nest-armed")) setBaitArmed(false);
+    $("bait").disabled = wait > 0 || state.over || state.tool === "read";
+    for (const [key, seconds] of [["seal", sealWait], ["bait", wait]]) {
+      if (seconds > 0) $(key).dataset.cooldown = `${seconds}s`;
+      else $(key).removeAttribute("data-cooldown");
+    }
     $("trails").textContent = state.trails.length; $("squashed").textContent = state.squashed;
     $("larder").textContent = [...state.stolen].slice(-14).map((L) => L.ch).join("") || "empty";
     const fed = state.meals % 3; $("bar").textContent = "⣿⣿⣿⣿".repeat(fed) + "⣀⣀⣀⣀".repeat(3 - fed);
@@ -911,27 +1109,49 @@
     }
   };
 
-  $("bait").addEventListener("click", armBait);
-  // Tools: squash holds the page's links so a missed ant never navigates; read hands them back.
-  const setTool = (t) => { state.tool = t; layer.dataset.tool = t; panel.querySelectorAll("[data-tool]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tool === t))); };
+  $("bait").addEventListener("click", () => {
+    if (state.over || state.tool === "read" || performance.now() / 1000 < baitReady) return;
+    setBaitArmed(!main.classList.contains("nest-armed"));
+  });
+  const setTool = (t) => {
+    state.tool = t;
+    layer.dataset.tool = t;
+    layer.inert = t === "read";
+    layer.querySelectorAll(".nest-ant").forEach((button) => { button.inert = t === "wipe"; });
+    main.dataset.nestTool = t;
+    if (main.classList.contains("nest-armed")) setBaitArmed(false);
+    $("tool-help").textContent = toolHelp[t];
+    panel.querySelectorAll("[data-tool]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tool === t)));
+  };
   panel.querySelectorAll("[data-tool]").forEach((b) => b.addEventListener("click", () => setTool(b.dataset.tool)));
   const holdLinks = (e) => {
-    if (state.tool === "read" || layer.contains(e.target)) return;
+    if (state.tool === "read") return;
+    if (!state.over && e.type === "click" && e.detail > 0 && main.classList.contains("nest-armed")) {
+      e.preventDefault(); e.stopPropagation(); placeBait(e); return;
+    }
+    if (layer.contains(e.target)) return;
     if (e.target.closest("a, button, summary, label, input, select, textarea, [role=button]")) { e.preventDefault(); e.stopPropagation(); }
   };
   main.addEventListener("click", holdLinks, true);
-  setTool("squash");
+  main.addEventListener("auxclick", holdLinks, true);
+  setTool(saved?.tool === "read" ? "read" : "squash");
   $("x").addEventListener("click", leave);
   $("seal").addEventListener("click", () => hills.forEach(seal));
   $("sound").addEventListener("click", () => {
-    state.sound = !state.sound; $("sound").textContent = state.sound ? "mute" : "unmute"; $("sound").setAttribute("aria-pressed", state.sound);
+    state.sound = !state.sound;
+    if (state.sound) setAction("sound", "sound", "Mute", "Turn off colony sounds.");
+    else setAction("sound", "muted", "Unmute", "Turn on colony sounds.");
     blip(520, 0.08, "sine");
   });
   $("pause").addEventListener("click", () => {
-    state.paused = !state.paused; $("pause").textContent = state.paused ? "resume" : "pause";
+    state.paused = !state.paused;
+    if (state.paused) setAction("pause", "play", "Resume", "Resume the colony.");
+    else setAction("pause", "pause", "Pause", "Pause the colony.");
     layer.querySelectorAll(".nest-ant").forEach((el) => el.classList.toggle("walk", !state.paused));
   });
   $("restore").addEventListener("click", () => {
+    if (state.builder?.spot.gap) cancelBuild(state.builder);
+    minis.filter((mound) => mound.spot.gap).forEach(removeMini);
     state.ants.forEach((a) => { if (a.letter?.state === "carried") drop(a.letter); });
     state.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
     state.stolen.clear(); state.larder = []; log("every letter is back");
@@ -953,13 +1173,33 @@
   save(null);
   requestAnimationFrame(frame);
 
+  let terrainWidth = main.clientWidth;
+  const watchTerrain = new ResizeObserver(() => {
+    if (main.clientWidth === terrainWidth) return;
+    terrainWidth = main.clientWidth;
+    const builder = state.builder;
+    if (!minis.length && !builder) return;
+    const terrain = miniTerrain(false);
+    const fits = ({ spot }) => miniSiteFits(spot, miniBox(spot), terrain);
+    if (builder && !fits(builder)) cancelBuild(builder);
+    minis.filter((mound) => !fits(mound)).forEach(removeMini);
+  });
+  watchTerrain.observe(main);
+
   // Leaving: put every letter back, carried or stolen, and take the colony off the page.
   const stop = () => {
-    stopped = true; removeEventListener("pagehide", onHide); main.removeEventListener("click", holdLinks, true); main.classList.remove("nest-armed");
+    watchTerrain.disconnect();
+    stopped = true; removeEventListener("pagehide", onHide); main.removeEventListener("click", holdLinks, true);
+    main.removeEventListener("auxclick", holdLinks, true); main.classList.remove("nest-armed"); delete main.dataset.nestTool;
     state.ants.forEach((a) => { const L = a.letter; if (L && L.glyph) { L.glyph.remove(); showChar(L); } });
     state.stolen.forEach(showChar);
+    for (const [letter, animation] of returningLetters) {
+      animation.cancel();
+      finishReturn(letter);
+    }
     layer.remove(); panel.remove();
     hidden.forEach((el) => { el.style.display = el.dataset.nestDisplay; delete el.dataset.nestDisplay; });
+    if (sidebarWasHidden) shell?.setAttribute("data-aside-hidden", "true");
     antBtn.setAttribute("aria-pressed", "false"); antBtn.setAttribute("aria-label", "Open the Nest");
   };
   const confirmLeave = (go) => {
