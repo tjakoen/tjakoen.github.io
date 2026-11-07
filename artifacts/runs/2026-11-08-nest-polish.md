@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 23 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a lock-toast check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 24 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -117,7 +117,8 @@ and the guards are the ants visible on patrol. Clicking a guarded mound calls it
 clearing them splits the mound open with a space through the Braille and a dashed accent outline,
 and no new guards spawn. The element is a keyboard button with an aria label for screen readers.
 
-**Sound.** One small synth, no files: a master gain, a compressor, oscillators and a reusable
+**Sound.** One small synth, no files: the unmute button pulses for eight seconds when the colony
+opens, then settles on hover, focus, click or time. A master gain, a compressor, oscillators and a reusable
 noise buffer. Cues cover the wake, a letter lift, a delivery, a trail laid, a trail fade, an egg,
 a hatch, a soldier, a squash, a soldier hit, a seal, bait, a build tick, a hill break, a guard, a
 flyer, the dance and the overrun. Silence is still the default.
@@ -137,7 +138,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  14 passed (57.6s)
+  14 passed (54.3s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

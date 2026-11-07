@@ -158,6 +158,9 @@
       font: 11px/1.35 var(--font-mono); }
     .nest-lock-toast button { border: 1px solid currentColor; background: none; padding: 4px 8px; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
     .nest-lock-toast button:hover { background: var(--paper-2); }
+    #nest-mock .nest-sound-hint { color: var(--color-accent); border-color: var(--color-accent); animation: nest-sound-pulse 1.2s ease-in-out infinite; }
+    @keyframes nest-sound-pulse { 0%, 100% { box-shadow: 0 0 0 0 transparent; background-color: transparent; } 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 40%, transparent); background-color: color-mix(in srgb, var(--color-accent) 12%, transparent); } }
+    @media (prefers-reduced-motion: reduce) { #nest-mock .nest-sound-hint { animation: none; outline: 1px dashed var(--color-accent); outline-offset: 2px; } }
     .nest-stray { position: absolute; width: 23px; height: 13px; margin: -6px 0 0 -11px; padding: 0; border: 0; background: none;
       color: var(--ink-muted); cursor: pointer; z-index: 40; opacity: .7; pointer-events: auto; transition: opacity .35s, color .35s; }
     .nest-stray:hover, .nest-stray:focus-visible { color: var(--ink); opacity: 1; }
@@ -1814,6 +1817,12 @@
     else setAction("sound", "muted", "Unmute", "Turn on colony sounds.");
     blip(520, 0.08, "sine");
   });
+  const soundBtn = $("sound");
+  let soundHintTimer = 0;
+  const clearSoundHint = () => { soundBtn.classList.remove("nest-sound-hint"); clearTimeout(soundHintTimer); };
+  soundBtn.classList.add("nest-sound-hint");
+  soundHintTimer = setTimeout(clearSoundHint, 8000);
+  ["pointerenter", "focus", "click"].forEach((ev) => soundBtn.addEventListener(ev, clearSoundHint, { once: true }));
   $("pause").addEventListener("click", () => {
     state.paused = !state.paused;
     if (state.paused) setAction("pause", "play", "Resume", "Resume the colony.");
@@ -1870,6 +1879,7 @@
       finishReturn(letter);
     }
     hideLockToast();
+    clearTimeout(soundHintTimer);
     document.body.classList.remove("nest-links-locked");
     delete window.__nest;
     layer.remove(); panel.remove();
