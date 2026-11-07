@@ -94,43 +94,52 @@
     #nest-mock details { font-size: 11px; color: var(--ink-muted); } #nest-mock summary { cursor: pointer; }
     #nest-mock details p { margin: 6px 0 0; }
     #nest-mock .tools button[disabled] { opacity: .45; cursor: default; }
-    .assistant__modes .nest-tab { background: transparent; border: 1px solid transparent; border-radius: var(--radius-sm);
-      padding: 0 var(--space-2); font: inherit; color: var(--color-muted); cursor: pointer; }
-    .assistant__modes .nest-tab[aria-selected="true"] { color: var(--color-fg); border-color: var(--color-line); background: var(--color-surface); }
+    .nest-switch { background: none; border: 0; padding: 2px 4px; margin: 0 6px; color: var(--ink-faint); cursor: pointer; line-height: 0; }
+    .nest-switch:hover, .nest-switch:focus-visible { color: var(--ink); }
+    .nest-switch[aria-pressed="true"] { color: var(--color-accent); }
+    #nest-mock .head { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+    #nest-mock .head .lbl:first-child { flex: 1; }
+    #nest-mock .head .x { flex: 0 0 auto; width: 24px; height: 24px; padding: 0; border: 1px solid transparent; font: 16px/1 var(--font-mono); color: var(--ink-muted); }
+    #nest-mock .head .x:hover { border-color: var(--color-line); color: var(--ink); }
     @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-ant.wait svg { animation: none; } }`;
   document.head.append(style);
 
-  // ================================ the tab ================================
-  // The Nest tab sits beside the others and does nothing until it is clicked. Clicking it starts a
-  // colony; switching to another tab asks first, then clears the colony and restores the page.
-  const tab = document.createElement("button");
-  // Styled to match GRAIN's mode tabs by its own class. It must not carry data-shell-mode: the site
-  // binds and remembers every tab with that attribute, and would reopen the game on the next load.
-  tab.type = "button"; tab.setAttribute("role", "tab"); tab.className = "nest-tab"; tab.textContent = "Nest"; tab.setAttribute("aria-selected", "false");
-  modes.append(tab);
+  // ================================ the switch ================================
+  // A tiny dot ant in the status bar is the only trace of the game. Clicking it starts a colony and
+  // the Nest takes over the whole sidebar; the ant again, or the × in the panel, asks before
+  // clearing the colony and handing the sidebar back.
+  const bar = document.querySelector(".status-bar");
+  const antBtn = document.createElement("button");
+  antBtn.type = "button"; antBtn.className = "nest-switch"; antBtn.title = "Nest"; antBtn.setAttribute("aria-label", "Open the Nest");
+  antBtn.setAttribute("aria-pressed", "false");
+  antBtn.innerHTML = `<svg width="18" height="10" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${[
+    [0, 0], [1, 1], [1, 2], [1, 3], [2, 3], [3, 3], [5, 3], [6, 3], [8, 3], [9, 3], [10, 3], [11, 3], [12, 3], [0, 4], [1, 4], [2, 4], [3, 4], [5, 4], [6, 4], [7, 4],
+    [9, 4], [10, 4], [11, 4], [12, 4], [13, 4], [1, 5], [2, 5], [3, 5], [5, 5], [6, 5], [8, 5], [9, 5], [10, 5], [11, 5], [12, 5], [5, 2], [4, 1], [9, 2], [10, 1],
+    [7, 6], [8, 7], [2, 6], [1, 7]].map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}</svg>`;
+  (bar.querySelector(".status-bar__xray") || null) ? bar.insertBefore(antBtn, bar.querySelector(".status-bar__xray")) : bar.append(antBtn);
   let game = null;
   try { if (localStorage.getItem("portfolio:aside-mode") === "nest") localStorage.removeItem("portfolio:aside-mode"); } catch { /* private mode */ }
-  tab.addEventListener("click", () => { if (!game) game = start(); });
+  const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; });
+  antBtn.addEventListener("click", () => { if (!game) game = start(); else leave(); });
   // a colony left running on the last page picks up here
-  try { const saved = JSON.parse(localStorage.getItem("nest-colony") || "null"); if (saved) requestAnimationFrame(() => { if (!game) game = start(saved); }); } catch { /* private mode */ }
-  modes.addEventListener("click", (e) => {
-    const other = e.target.closest("[role=tab]");
-    if (!game || !other || other === tab || other.dataset.nestPass) return;
-    e.preventDefault(); e.stopImmediatePropagation();
-    game.confirmLeave(() => { game.stop(); game = null; other.dataset.nestPass = "1"; other.click(); delete other.dataset.nestPass; });
-  }, true);
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem("nest-colony") || "null"); } catch { /* private mode or a bad save */ }
+  if (saved) setTimeout(() => {
+    if (game) return;
+    try { game = start(saved); } catch (err) { console.error("nest resume:", err); }
+  }, 300);
 
   const SAVE_KEY = "nest-colony";
   const start = (saved) => {
   // ================================ the panel ================================
-  modes.querySelectorAll("[role=tab]").forEach((b) => b.setAttribute("aria-selected", "false"));
-  tab.setAttribute("aria-selected", "true");
-  const hidden = [...aside.children].filter((el) => !el.classList.contains("assistant__head") && el.style.display !== "none");
+  antBtn.setAttribute("aria-pressed", "true"); antBtn.setAttribute("aria-label", "Close the Nest");
+  const hidden = [...aside.children].filter((el) => el.style.display !== "none");
   hidden.forEach((el) => { el.dataset.nestDisplay = el.style.display; el.style.display = "none"; });
   const panel = document.createElement("div");
   panel.id = "nest-mock";
   panel.innerHTML = `
-    <div class="lbl muted"><span>colony 01</span><span data-k="status">waking</span></div>
+    <div class="head"><span class="lbl muted"><span>nest · colony 01</span></span><span class="lbl muted"><span data-k="status">waking</span></span>
+      <button class="x" data-k="x" type="button" aria-label="Close the Nest" title="Close">×</button></div>
     <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
     <ul class="log" data-k="log" aria-live="polite"></ul>
     <div class="lbl muted"><span>page holds</span><span class="bar" data-k="holds"></span></div>
@@ -146,13 +155,13 @@
 <button data-k="pause">pause</button><button data-k="restore" class="muted">restore page</button></div>
     <details><summary>about this</summary>
       <p>A small game hidden in the site. The nest is Braille text and the ants are inline SVG dots on the live page: no canvas, no library, and every colour is a theme token, so each flavor recolours it.</p>
-      <p>Hold an anthill to seal it. Drag across a scent trail to wipe it. Soldiers take two hits. Letters are hidden in place, never deleted, and leaving the tab puts them all back.</p>
+      <p>Hold an anthill to seal it. Drag across a scent trail to wipe it. Soldiers take two hits. Letters are hidden in place, never deleted, and closing the Nest puts them all back.</p>
     </details>
 
     <div class="confirm" data-k="confirm" role="alertdialog" aria-labelledby="nest-confirm-title" hidden>
-      <p id="nest-confirm-title"><b>Leave the nest?</b></p>
+      <p id="nest-confirm-title"><b>Close the Nest?</b></p>
       <p class="muted">The colony is cleared and every stolen letter goes back where it was.</p>
-      <div class="row"><button data-k="leave">clear and leave</button><button data-k="stay" class="muted">keep playing</button></div>
+      <div class="row"><button data-k="leave">clear and close</button><button data-k="stay" class="muted">keep playing</button></div>
     </div>`;
   aside.append(panel);
   const $ = (k) => panel.querySelector(`[data-k="${k}"]`);
@@ -786,6 +795,7 @@
   };
 
   $("bait").addEventListener("click", armBait);
+  $("x").addEventListener("click", leave);
   $("seal").addEventListener("click", () => hills.forEach(seal));
   $("sound").addEventListener("click", () => {
     state.sound = !state.sound; $("sound").textContent = state.sound ? "mute" : "unmute"; $("sound").setAttribute("aria-pressed", state.sound);
@@ -824,12 +834,12 @@
     state.stolen.forEach(showChar);
     layer.remove(); panel.remove();
     hidden.forEach((el) => { el.style.display = el.dataset.nestDisplay; delete el.dataset.nestDisplay; });
-    tab.setAttribute("aria-selected", "false");
+    antBtn.setAttribute("aria-pressed", "false"); antBtn.setAttribute("aria-label", "Open the Nest");
   };
   const confirmLeave = (go) => {
     const box = $("confirm"); box.hidden = false; $("leave").focus();
     $("leave").onclick = () => { box.hidden = true; go(); };
-    $("stay").onclick = () => { box.hidden = true; tab.focus(); };
+    $("stay").onclick = () => { box.hidden = true; antBtn.focus(); };
   };
   return { stop, confirmLeave };
   };
