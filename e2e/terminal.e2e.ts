@@ -104,6 +104,21 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       .map((a) => (a.block!.textContent || "").trim().slice(0, 40)));
     expect(blocks).toHaveLength(3);
     expect(new Set(blocks).size).toBe(3);
+    const spread = await page.evaluate(() => {
+      const points = window.__nest!.state.ants
+        .filter((a) => a.role === "scout" && a.block)
+        .map((a) => {
+          const r = a.block!.getBoundingClientRect();
+          return [r.left + r.width / 2, r.top + r.height / 2];
+        });
+      let min = Infinity;
+      for (let i = 0; i < points.length; i++) for (let j = i + 1; j < points.length; j++) {
+        min = Math.min(min, Math.hypot(points[i][0] - points[j][0], points[i][1] - points[j][1]));
+      }
+      return { count: points.length, min };
+    });
+    expect(spread.count).toBe(3);
+    expect(spread.min).toBeGreaterThan(140);
   });
 
   test("the stray command sends an ant that runs for the launcher", async ({ page }) => {

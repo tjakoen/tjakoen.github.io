@@ -47,7 +47,8 @@ unreadable and the colony has won that page.
 - **Always on the desk.** The ant sits in the status bar on every page. Click it to open the
   colony; the `nest` terminal command opens it too. There is no query-string shortcut.
 - **The colony.** Three scouts and three workers to start. A block with a trail or a scout is taken,
-  so the first three scouts and later ones stay off each other's source. A scout draws a faint route as it walks,
+  so the first three scouts and later ones stay off each other's source. The first three spread across
+  the page, the first near and the next two farthest from the chosen. A scout draws a faint route as it walks,
   the route firms up when the scout carries the first letter home, workers take open trails in turn,
   five to a line, and a trail fades when its patch empties or after ninety seconds. A successor
   scout goes out as the old trail fades. Soldiers hatch once the colony passes eight and take two

@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 18 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-source check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 19 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-spread check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -31,7 +31,7 @@ for the checks.
 
 **Traffic.** The old wobble was a sideways kick every frame. It is now a small sway folded into a
 smoothed heading, with a turn-rate cap. Scout routes are one cubic C or S through two random
-control points, with a little walk in the line, then Chaikin, not four random jumps. Trails are drawn as the same smooth path with a paper-coloured under-stroke
+control points, with a jagged little walk in the line, then Chaikin, not four random jumps. Trails are drawn as the same smooth path with a paper-coloured under-stroke
 and a dotted scent line. Ants on a trail get an outbound and a return lane, so they no longer walk
 the same three pixels, and a queued ant slows instead of stopping dead. The line is five ants, not
 six, and the colony caps at twenty.
@@ -51,10 +51,11 @@ scent. Their patrol gets a six second progress check: a guard that moves less th
 re-homes instead of standing in the dirt.
 
 **The opening.** Three scouts and three workers start. A block with a trail or a scout is taken,
-so the first three scouts and later ones stay off each other's source. The first scout keeps its
-first find within 240 pixels of the hill, the first egg is laid at six seconds, and the first hatch
-comes at 3.4 seconds of incubation. The first trail appeared at seven seconds in the measured run
-and three trails were open by nine.
+so the first three scouts and later ones stay off each other's source. The first takes the nearest
+letter; the next two take the options farthest from the ones already chosen, so the three sources
+spread across the page. The first scout keeps its first find within 240 pixels of the hill,
+the first egg is laid at six seconds, and the first hatch comes at 3.4 seconds of incubation. The
+first trail appeared at seven seconds in the measured run and three trails were open by nine.
 
 **The page is the environment.** The home hill is still sited in the visible viewport, so nothing
 makes the player scroll to find it, but scouts can work the whole page afterwards. The automatic
@@ -133,7 +134,7 @@ $ bun test
 Ran 875 tests across 48 files. [9.74s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  12 passed (27.0s)
+  12 passed (24.4s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

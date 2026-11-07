@@ -518,7 +518,7 @@
     return e.returnValue;
   };
   addEventListener("beforeunload", onBeforeUnload);
-  const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), squashed: 0, meals: 0, paused: false,
+  const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
     reserve: 2, over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
@@ -805,7 +805,8 @@
       const r = rectOf(n, i); if (!r.width) continue;
       if (busyBlocks.has(blockOf(n))) continue;
       const [x, y] = local(r);
-      if (opening && (!onScreen(r) || Math.hypot(x - hole[0], y - hole[1]) > TUNING.firstScoutRange)) continue;
+      if (opening && state.openingTargets.length === 0 &&
+          (!onScreen(r) || Math.hypot(x - hole[0], y - hole[1]) > TUNING.firstScoutRange)) continue;
       if (state.trails.some((t) => Math.hypot(t.end[0] - x, t.end[1] - y) < PATCH * 2)) continue;
       options.push([n, x + r.width / 2, y + r.height]);
     }
@@ -823,11 +824,16 @@
       options.push(...(open.length ? open : free));
     }
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
+    const spread = (o) => Math.min(...state.openingTargets.map(([px, py]) => Math.hypot(o[1] - px, o[2] - py)));
     const pick = opening
-      ? options.reduce((best, o) => (Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best), options[0])
+      ? options.reduce((best, o) => {
+          if (!state.openingTargets.length) return Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best;
+          return spread(o) > spread(best) ? o : best;
+        }, options[0])
       : options[Math.floor(Math.random() * options.length)];
     const [node, tx, ty] = pick;
     const block = blockOf(node);
+    if (opening) state.openingTargets.push([tx, ty]);
     // One soft C or S through two random control points, with a little walk in the line. The
     // three-wave version read like a graph, and one symmetric bow read like a straight line.
     const dx = tx - hole[0], dy = ty - hole[1], dist = Math.hypot(dx, dy) || 1;
@@ -841,12 +847,14 @@
     const p2 = [hole[0] + dx * 0.7 + nx * c2, hole[1] + dy * 0.7 + ny * c2];
     const p3 = [tx, ty];
     const phase = Math.random() * Math.PI * 2;
+    let jag = 0;
     const path = [];
     for (let s = 0; s <= 28; s++) {
       const k = s / 28, u = 1 - k;
       const bx = u * u * u * p0[0] + 3 * u * u * k * p1[0] + 3 * u * k * k * p2[0] + k * k * k * p3[0];
       const by = u * u * u * p0[1] + 3 * u * u * k * p1[1] + 3 * u * k * k * p2[1] + k * k * k * p3[1];
-      const wobble = (Math.sin(k * 5.2 + phase) * 1.1 + Math.sin(k * 9.7 + phase * 1.7) * 0.5) * Math.sin(Math.PI * k);
+      jag = jag * 0.58 + (Math.random() - 0.5) * 5.2;
+      const wobble = (Math.sin(k * 5.2 + phase) * 0.6 + jag) * Math.sin(Math.PI * k);
       path.push([bx + nx * wobble, by + ny * wobble]);
     }
     ant.job = "scout"; ant.block = block; ant.path = chaikin(path, 1); ant.k = 0; ant.walked = [hole.slice()];

@@ -45,7 +45,7 @@ Click the ant, and an anthill turns up in an empty patch of whatever page you ar
 
 ## What the ants actually do
 
-Three scouts leave the hill first, each taking a different paragraph, and later scouts stay off a block that already has a trail or a scout on the way. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
+Three scouts leave the hill first. The first takes the nearest letter; the next two take the options farthest from the ones already chosen, so the opening spreads across the page. Later scouts stay off a block that already has a trail or a scout on the way. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
 
 A scout that makes it home lays a scent trail. Workers follow trails five to a line, filled in turn so no trail starves, and a heading in a big font needs a crew of two or three to lift. A trail fades when its patch is empty or after ninety seconds, and a worker turns scout to find the next one. Once the colony passes eight, soldiers hatch: bigger, quieter in color than a worker, and worth two hits.
 
@@ -102,7 +102,7 @@ That was the point of building it at all. A design system that only renders docu
 
 ## Where the time actually went
 
-Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Later I gave each trail two lanes and drew the scout's route as one soft cubic with a little walk in it, because a trail should look walked, not sampled. Real ants solved that a long time ago. It took me a few evenings.
+Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Later I gave each trail two lanes and drew the scout's route as one soft cubic with a jagged little walk in it, because a trail should look walked, not sampled. Real ants solved that a long time ago. It took me a few evenings.
 
 Claude did most of the typing, which will surprise nobody who has read [how I work](ten-times-zero.md). The calls were mine: ants that take real letters, gaps that never reflow, no announced ending, and the bit where a professional site hides a game behind a small ant and a word you have to know to type.
 
