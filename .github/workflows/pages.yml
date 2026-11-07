@@ -52,7 +52,7 @@ jobs:
       # switch that makes the beacon ship on the deployed pages but never on a local run.
       - run: bun run export
         env:
-          PUBLIC_ORIGIN: https://tjakoen.github.io
+          PUBLIC_ORIGIN: https://portfolio.tjakoen.com
       - run: bun run verify:export
       - uses: actions/upload-pages-artifact@v5
         with:
