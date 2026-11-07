@@ -123,6 +123,7 @@
     .nest-badge { position: absolute; translate: -50% 0; font: 10px/1 var(--font-mono); color: var(--ink-muted); pointer-events: none; white-space: nowrap; }
     .nest-badge.open { color: var(--color-accent); }
     .nest-mini.open { cursor: pointer; }
+    .nest-mini.exposed { color: var(--color-accent); outline: 1px dashed var(--color-accent); outline-offset: 2px; }
     .nest-mini.denied { color: var(--color-accent); transform: translateX(2px); }
     .nest-hill { pointer-events: auto; cursor: pointer; transition: opacity .3s, filter .3s; }
     .nest-hill.pressing { filter: brightness(1.4); }
@@ -792,7 +793,7 @@
 
   const scout = (ant) => {
     const hole = hillOf(ant).hole;
-    const opening = state.stolenTotal === 0 && state.meals === 0 && state.trails.length === 0;
+    const firstOpening = state.openingTargets.length === 0;
     // A block that already has a trail or a scout walking to it is taken. This is what keeps the
     // first three scouts off one paragraph, and later scouts off an active source.
     const busyBlocks = new Set([
@@ -805,8 +806,7 @@
       const r = rectOf(n, i); if (!r.width) continue;
       if (busyBlocks.has(blockOf(n))) continue;
       const [x, y] = local(r);
-      if (opening && state.openingTargets.length === 0 &&
-          (!onScreen(r) || Math.hypot(x - hole[0], y - hole[1]) > TUNING.firstScoutRange)) continue;
+      if (firstOpening && (!onScreen(r) || Math.hypot(x - hole[0], y - hole[1]) > TUNING.firstScoutRange)) continue;
       if (state.trails.some((t) => Math.hypot(t.end[0] - x, t.end[1] - y) < PATCH * 2)) continue;
       options.push([n, x + r.width / 2, y + r.height]);
     }
@@ -825,15 +825,14 @@
     }
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
     const spread = (o) => Math.min(...state.openingTargets.map(([px, py]) => Math.hypot(o[1] - px, o[2] - py)));
-    const pick = opening
-      ? options.reduce((best, o) => {
-          if (!state.openingTargets.length) return Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best;
-          return spread(o) > spread(best) ? o : best;
-        }, options[0])
-      : options[Math.floor(Math.random() * options.length)];
+    const pick = firstOpening
+      ? options.reduce((best, o) => (Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best), options[0])
+      : state.openingTargets.length < 3
+        ? options.reduce((best, o) => (spread(o) > spread(best) ? o : best), options[0])
+        : options[Math.floor(Math.random() * options.length)];
     const [node, tx, ty] = pick;
     const block = blockOf(node);
-    if (opening) state.openingTargets.push([tx, ty]);
+    if (state.openingTargets.length < 3) state.openingTargets.push([tx, ty]);
     // One soft C or S through two random control points, with a little walk in the line. The
     // three-wave version read like a graph, and one symmetric bow read like a straight line.
     const dx = tx - hole[0], dy = ty - hole[1], dist = Math.hypot(dx, dy) || 1;
@@ -980,6 +979,15 @@
     if (ant.job === "baited") return;
     if (ant.job === "fly") return stepFlyer(ant, dt);
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
+    if (ant.job === "defend") { // a clicked mound calls its guards home
+      const g = ant.path[ant.k];
+      if (!g) { ant.job = "guard"; ant.path = []; return; }
+      if (move(ant, g[0], g[1], dt, SPEED * 0.9)) {
+        ant.px = ant.x; ant.py = ant.y;
+        if (++ant.k >= ant.path.length) { ant.job = "guard"; ant.path = []; }
+      } else { ant.px = ant.x; ant.py = ant.y; }
+      return;
+    }
     if (ant.job === "patrol") { // soldiers and guards walk their trail out and back, guarding it
       if (ant.circling && state.trails.some((trail) => trail.ready && trail.state !== "gone")) return assignGuard(ant);
       if (!ant.circling && !state.trails.includes(ant.patrol)) {
@@ -1301,10 +1309,26 @@
       log("a mini hill is going up");
     } else if (ant.job === "mini-home") { if (ant.mini && minis.includes(ant.mini)) assignGuard(ant); else squashQuiet(ant); }
   };
+  const exposedArt = (p) => miniArt(p).split("\n").map((row) => {
+    const mid = Math.floor(row.length / 2);
+    return row.slice(0, mid) + " " + row.slice(mid + 1);
+  }).join("\n");
   const markGuards = (mound) => {
     const count = mound.guards.size;
-    mound.el.setAttribute("aria-label", count ? `Mini hill, ${count} guards` : `Mini hill, ${mound.hp} hits left`);
+    if (count) mound.hadGuards = true;
+    const exposed = !count && mound.hadGuards;
     mound.el.classList.toggle("open", !count);
+    mound.el.classList.toggle("exposed", exposed);
+    if (exposed) mound.el.textContent = exposedArt(mound.hp / MINI_HP);
+    mound.el.setAttribute("aria-label", exposed
+      ? `Mini hill, exposed, ${mound.hp} hits left`
+      : count ? `Mini hill, ${count} guards` : `Mini hill, ${mound.hp} hits left`);
+  };
+  const callGuards = (mound) => {
+    mound.guards.forEach((g) => {
+      g.job = "defend"; g.patrol = null; g.circling = false;
+      g.path = [mound.hole.slice()]; g.k = 0;
+    });
   };
   const squashQuiet = (ant) => { ant.el?.remove(); ant.el = null; state.ants = state.ants.filter((a) => a !== ant); };
   const removeMini = (mound) => {
@@ -1318,10 +1342,11 @@
     const el = document.createElement("div"); el.className = "nest-hill nest-mini"; el.textContent = miniArt(1);
     el.setAttribute("role", "button"); el.setAttribute("tabindex", "0");
     positionMini(el, spot);
-    const m = { el, spot, base: [spot.x, spot.y], hole: [spot.x, spot.y - 17], hp: MINI_HP, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, links: [] };
+    const m = { el, spot, base: [spot.x, spot.y], hole: [spot.x, spot.y - 17], hp: MINI_HP, hadGuards: false, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, links: [] };
     el.addEventListener("click", (e) => {
       e.stopPropagation(); if (state.overrun || state.queenDead) return;
       if (m.guards.size) {
+        callGuards(m);
         el.classList.add("denied"); setTimeout(() => el.classList.remove("denied"), 300);
         blip(180, 0.05, "square"); return;
       }
@@ -1378,7 +1403,7 @@
     }
     minis.forEach((m) => {
       if (t < m.next || state.queenDead) return; m.next = t + SPEED_SPAWN();
-      if (m.guards.size < 2) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); }
+      if (m.guards.size < 2 && !(m.hadGuards && m.guards.size === 0)) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); }
       else if (m.flyers.size < 2) { const f = spawnPageAnt("flyer", m.hole.slice(), m); m.flyers.add(f); f.job = "fly"; f.path = [randomPoint()]; f.k = 0; blip(720, 0.04, "sine", 0.02); }
     });
   };
