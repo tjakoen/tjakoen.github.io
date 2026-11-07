@@ -233,7 +233,8 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.evaluate(() => {
       window.__nest!.state.built = 2;
       const spot = window.__nest!.findMiniSpot();
-      if (spot) window.__nest!.makeMini(spot);
+      const mound = spot ? (window.__nest!.makeMini(spot) as { next: number } | null) : null;
+      if (mound) mound.next = performance.now() / 1000 + 999;
     });
     await expect(page.locator("#nest-mock [data-k='stores-val']")).toContainText("/24");
     const mound = page.locator(".nest-mini").first();

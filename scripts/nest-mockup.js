@@ -64,7 +64,7 @@
     #nest-mock .tools button { position: relative; display: grid; place-items: center; min-width: 0; min-height: 40px; }
     #nest-mock .tools button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
     #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: 9px; }
-    #nest-mock .tool-help { min-height: 2.8em; height: 2.8em; overflow: hidden; margin: 0; }
+    #nest-mock .tool-help { min-height: 2.6em; height: 2.6em; overflow: hidden; margin: 0; font-size: 10px; line-height: 1.3; }
     #nest-mock { position: relative; }
     #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
       background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
@@ -193,9 +193,10 @@
     @keyframes nest-party-sway { to { transform: translateY(-1.5px); filter: brightness(1.1); } }
     .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
     @keyframes nest-bob { to { transform: translateY(-3px); } }
-    #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
-    #nest-mock .nest-meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
-    #nest-mock .nest-meter .hint { font: 9px/1.2 var(--font-mono); font-style: normal; letter-spacing: 0; opacity: .65; }
+    #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+    #nest-mock .nest-meter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-content: start; }
+    #nest-mock .nest-meter > .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #nest-mock .nest-meter .hint { grid-column: 1 / -1; font: 8px/1.15 var(--font-mono); font-style: normal; letter-spacing: .02em; opacity: .55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; font: 10px/1.2 var(--font-mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
     #nest-mock .nest-meter__bar .fill { color: var(--color-accent); }
     #nest-mock .nest-meter__bar .rest { color: var(--ink-faint); opacity: .7; }
@@ -205,6 +206,7 @@
     #nest-mock .stat-grid dd { margin: 0; font-size: 12px; font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button { min-width: 0; }
     #nest-mock .tools button.wide { flex: 1.8; }
+    #nest-mock .head .lbl { font-size: 9px; }
     #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
@@ -432,14 +434,18 @@
       <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener" title="The colony, explained">explained ↗</a></div>
     <ul class="log activity" data-k="log" aria-live="polite"></ul>
     <div class="nest-meters">
-      <div class="nest-meter"><span class="lbl muted">page left <i class="hint">page still whole</i></span><span class="lbl" data-k="holds-val">100%</span>
-        <div class="nest-meter__bar" data-k="holds-bar" role="progressbar" aria-label="Page left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="fill" data-k="holds"></span><span class="rest" data-k="holds-rest"></span></div></div>
-      <div class="nest-meter"><span class="lbl muted">stores <i class="hint">builds mound builders</i></span><span class="lbl" data-k="stores-val">0/12</span>
-        <div class="nest-meter__bar" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="stores"></span><span class="rest" data-k="stores-rest"></span></div></div>
-      <div class="nest-meter"><span class="lbl muted">next egg <i class="hint">hatches ants</i></span><span class="lbl" data-k="bar-val">0/3</span>
-        <div class="nest-meter__bar" data-k="bar-bar" role="progressbar" aria-label="Next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="bar"></span><span class="rest" data-k="bar-rest"></span></div></div>
-      <div class="nest-meter"><span class="lbl muted">next worship <i class="hint">the queen dances</i></span><span class="lbl" data-k="worship-val">0/20</span>
-        <div class="nest-meter__bar" data-k="worship-bar" role="progressbar" aria-label="Next worship" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="worship"></span><span class="rest" data-k="worship-rest"></span></div></div>
+      <div class="nest-meter"><span class="lbl muted">page left</span><span class="lbl" data-k="holds-val">100%</span>
+        <div class="nest-meter__bar" data-k="holds-bar" role="progressbar" aria-label="Page left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="fill" data-k="holds"></span><span class="rest" data-k="holds-rest"></span></div>
+        <i class="hint">page still whole</i></div>
+      <div class="nest-meter"><span class="lbl muted">stores</span><span class="lbl" data-k="stores-val">0/12</span>
+        <div class="nest-meter__bar" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="stores"></span><span class="rest" data-k="stores-rest"></span></div>
+        <i class="hint">builds mound builders</i></div>
+      <div class="nest-meter"><span class="lbl muted">next egg</span><span class="lbl" data-k="bar-val">0/3</span>
+        <div class="nest-meter__bar" data-k="bar-bar" role="progressbar" aria-label="Next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="bar"></span><span class="rest" data-k="bar-rest"></span></div>
+        <i class="hint">hatches ants</i></div>
+      <div class="nest-meter"><span class="lbl muted">next worship</span><span class="lbl" data-k="worship-val">0/20</span>
+        <div class="nest-meter__bar" data-k="worship-bar" role="progressbar" aria-label="Next worship" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="worship"></span><span class="rest" data-k="worship-rest"></span></div>
+        <i class="hint">the queen dances</i></div>
     </div>
     <dl class="stat-grid">
       <div title="Scouts find new food"><dt>scouts</dt><dd class="accent" data-k="scouts">0</dd></div>
