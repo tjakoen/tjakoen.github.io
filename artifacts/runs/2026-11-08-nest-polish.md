@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 20 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-spread check, a guard-defence check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 21 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-spread check, a guard-defence check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -57,8 +57,9 @@ spread across the page. The first scout keeps its first find within 240 pixels o
 the first egg is laid at six seconds, and the first hatch comes at 3.4 seconds of incubation. The
 first trail appeared at seven seconds in the measured run and three trails were open by nine.
 
-**The page is the environment.** The home hill is still sited in the visible viewport, so nothing
-makes the player scroll to find it, but scouts can work the whole page afterwards. The automatic
+**The page is the environment.** The home hill is sited in a random empty cell of the visible
+viewport, top or bottom, rather than the same roomy top-right gap; the old roomiest-spot rule was
+replaced. Scouts can work the whole page afterwards. The automatic
 scroll is gone. Mini hills may be built below the fold now, which the owner allowed; the home
 hill still opens in view. The ants may work below the fold while the reader reads.
 
@@ -129,13 +130,13 @@ $ bun run check
 $ tsc --noEmit
 
 $ bun test
- 875 pass
+ 894 pass
  0 fail
- 3804 expect() calls
-Ran 875 tests across 48 files. [9.74s]
+ 3885 expect() calls
+Ran 894 tests across 49 files. [10.57s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  13 passed (23.4s)
+  14 passed (40.8s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
