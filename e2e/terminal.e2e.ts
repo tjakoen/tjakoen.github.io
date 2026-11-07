@@ -11,7 +11,7 @@ declare global {
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
     __nest?: {
       state: {
-        ants: Array<{ role: string; block: Element | null; job?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown }>;
+        ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; el?: Element }>;
         trails: Array<{ block: Element }>;
       };
       home: { base: [number, number] };
@@ -233,6 +233,32 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       [...window.__nest!.state.ants].forEach((a) => window.__nest!.squash(a));
     });
     await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
+  });
+
+  test("a pile of ants goes under one click", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForFunction(() => {
+      const ants = window.__nest?.state.ants.filter((a) => a.el && a.where === "page") ?? [];
+      return ants.some((a, i) => ants.some((b, j) => i !== j && Math.hypot(a.x - b.x, a.y - b.y) < 15));
+    });
+    const pair = await page.evaluate(() => {
+      const ants = window.__nest!.state.ants.filter((a) => a.el && a.where === "page");
+      for (let i = 0; i < ants.length; i++) for (let j = i + 1; j < ants.length; j++) {
+        if (Math.hypot(ants[i].x - ants[j].x, ants[i].y - ants[j].y) < 15) return [ants[i].id, ants[j].id];
+      }
+      return null;
+    });
+    expect(pair).not.toBeNull();
+    const before = await page.evaluate(() => window.__nest!.state.ants.length);
+    await page.evaluate(([id]) => {
+      const ant = window.__nest!.state.ants.find((a) => a.id === id);
+      (ant?.el as HTMLElement | undefined)?.click();
+    }, pair!);
+    await page.waitForTimeout(250);
+    const after = await page.evaluate(() => window.__nest!.state.ants.length);
+    expect(after).toBeLessThanOrEqual(before - 2);
   });
 
   test("the reserve stat is gone", async ({ page }) => {

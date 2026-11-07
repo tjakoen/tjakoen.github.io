@@ -65,7 +65,7 @@ unreadable and the colony has won that page.
   tiles; Links, mute, pause and restore are the utility row below. Squash holds every page link so
   a missed ant never navigates, wipe is the only tool that breaks scent, and links gives the page
   back with a leave confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
-  each tool a name, an icon and a key. Squash ants, drag across a scent trail to break it, drop bait
+  each tool a name, an icon and a key. Squash ants (a pile goes together), drag across a scent trail to break it, drop bait
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
   seals have cooldowns. Restore page puts the letters back and re-sites the home and mini mounds.
   Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
