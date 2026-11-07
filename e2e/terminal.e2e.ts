@@ -6,6 +6,12 @@
 import { test, expect, type Page } from "@playwright/test";
 import mailbox from "../content/data/mailbox.json" with { type: "json" };
 
+declare global {
+  interface Window {
+    __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
+  }
+}
+
 test.describe("the interactive terminal (third client of the one door)", () => {
   test("mounts only on the opt-in console, and Ctrl+` opens + focuses it", async ({ page }) => {
     await page.goto("/");
@@ -82,6 +88,12 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await stray.evaluate((el) => (el as HTMLButtonElement).click());
     await expect(page.locator(".nest-switch")).toHaveClass(/nest-pulse/);
     await expect(stray).toHaveCount(0);
+    expect(await page.evaluate(() => sessionStorage.getItem("nest-stray-clicked"))).toBe("1");
+    await page.evaluate(() => window.__nestStray?.spawn());
+    await expect(stray).toHaveCount(0);
+    await page.reload();
+    await page.evaluate(() => window.__nestStray?.spawn());
+    await expect(page.locator(".nest-stray")).toHaveCount(0);
   });
 
   test("Nest tools lock links during play and let players cancel bait", async ({ page }) => {

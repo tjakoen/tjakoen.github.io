@@ -211,9 +211,12 @@
   let game = null;
 
   // A stray ant is the easter egg for a closed Nest. It walks the reading pane on its own, not on
-  // a trail, and if someone clicks it the ant runs for the launcher and makes it pulse. It only
-  // exists when the game has been unlocked, because this whole file is only loaded then.
+  // a trail, and if someone clicks it the ant runs for the launcher and makes it pulse. One click
+  // marks the tab, so the random ant does not come back until a new tab.
   let strayTimer = null, strayEl = null, strayLeaving = false;
+  const STRAY_KEY = "nest-stray-clicked";
+  const strayConsumed = () => { try { return sessionStorage.getItem(STRAY_KEY) === "1"; } catch { return false; } };
+  const consumeStray = () => { try { sessionStorage.setItem(STRAY_KEY, "1"); } catch { /* private mode */ } };
   const strayReduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const cancelStray = () => {
@@ -223,7 +226,7 @@
   };
   const scheduleStray = (delay) => {
     clearTimeout(strayTimer);
-    if (game || document.hidden || !launcherVisible()) return;
+    if (game || document.hidden || !launcherVisible() || strayConsumed()) return;
     strayTimer = setTimeout(spawnStray, delay ?? 30000 + Math.random() * 60000);
   };
   const pulseLauncher = () => {
@@ -232,6 +235,7 @@
   };
   const runToLauncher = (el) => {
     if (!el || strayEl !== el) return;
+    consumeStray();
     strayLeaving = true;
     const from = el.getBoundingClientRect(), to = antBtn.getBoundingClientRect();
     if (!to.width || strayReduced()) {
@@ -252,8 +256,9 @@
     };
     requestAnimationFrame(frame);
   };
-  const spawnStray = () => {
-    if (game || document.hidden || !launcherVisible() || strayEl) return;
+  const spawnStray = (force = false) => {
+    if (!force && (strayConsumed() || game || document.hidden || !launcherVisible() || strayEl)) return;
+    if (force && (game || document.hidden || !launcherVisible() || strayEl)) return;
     if (getComputedStyle(main).position === "static") main.style.position = "relative";
     const fromLeft = Math.random() < 0.5;
     const y = main.scrollTop + Math.max(80, main.clientHeight * (0.25 + Math.random() * 0.45));
@@ -309,7 +314,7 @@
   window.__nestLauncher = { open: () => { if (!game) openNest(); }, close: () => { if (game) leave(); } };
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelStray(); else scheduleStray(); });
   scheduleStray();
-  window.__nestStray = { spawn: () => { cancelStray(); spawnStray(); if (!strayEl) scheduleStray(); }, cancel: cancelStray };
+  window.__nestStray = { spawn: (force = false) => { cancelStray(); spawnStray(force); if (!strayEl) scheduleStray(); }, cancel: cancelStray };
   if (new URLSearchParams(location.search).has("nest-debug")) {
     window.__stray = { spawnStray, cancelStray, scheduleStray, pulseLauncher };
   }

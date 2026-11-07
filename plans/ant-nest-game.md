@@ -73,8 +73,9 @@ unreadable and the colony has won that page.
   page. A refresh is different: it closes the panel, clears the saved colony, and leaves the
   launcher, so the player starts clean when they click.
 - **The stray.** When the game is closed, a single ant sometimes crosses the reading pane, off any
-  trail. Click it and it runs for the status bar launcher and makes it pulse. Type `stray` in the
-  terminal to send one on demand.
+  trail. Click it and it runs for the status bar launcher and makes it pulse. A click marks the tab,
+  so the random ant does not return until a new tab. Type `stray` in the terminal to send one on
+  demand.
 
 ## Open questions for the owner
 
