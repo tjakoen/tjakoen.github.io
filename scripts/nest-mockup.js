@@ -165,9 +165,9 @@
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
     .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
     @keyframes nest-bob { to { transform: translateY(-3px); } }
-    .nest-decor { position: absolute; pointer-events: none; color: var(--ink-muted); opacity: .65; z-index: 0; }
-    .nest-decor svg { display: block; overflow: visible; }
-    .nest-decor.desk { color: var(--ink-faint); opacity: .5; }
+    .nest-decor { position: absolute; pointer-events: none; color: var(--ink-muted); opacity: .9; z-index: 0;
+      margin: 0; font: 13px/0.95 var(--font-mono); letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor;
+      white-space: pre; user-select: none; }
     #nest-mock .nest-meters { display: grid; gap: 5px; }
     #nest-mock .nest-meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
@@ -295,21 +295,12 @@
     walk(0);
   };
 
-  // A refresh is a fresh start: no saved colony, no panel, just the launcher. Link navigation
-  // still carries the colony, because that is the game following the reader.
-  const navType = performance.getEntriesByType("navigation")[0]?.type;
-  if (navType === "reload") { try { localStorage.removeItem("nest-colony"); } catch { /* private mode */ } }
-
+  // The colony lives on the page. A refresh or a move to another page is a fresh start: no panel,
+  // no saved colony, just the launcher. The one thing that survives is the tab's stray flag.
+  try { localStorage.removeItem("nest-colony"); } catch { /* private mode */ }
   try { if (localStorage.getItem("portfolio:aside-mode") === "nest") localStorage.removeItem("portfolio:aside-mode"); } catch { /* private mode */ }
   const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; antBtn.focus(); scheduleStray(); });
-  // a colony left running on the last page picks up here
-  let pending = null;
-  try { pending = JSON.parse(localStorage.getItem("nest-colony") || "null"); } catch { /* private mode or a bad save */ }
-  if (pending) setTimeout(() => {
-    if (game || !pending) return;
-    try { openNest(); } catch (err) { console.error("nest resume:", err); }
-  }, 300);
-  const openNest = () => { game = start(pending); pending = null; };
+  const openNest = () => { game = start(); };
   antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
   window.__nestLauncher = { open: () => { if (!game) openNest(); }, close: () => { if (game) leave(); } };
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelStray(); else scheduleStray(); });
@@ -319,8 +310,7 @@
     window.__stray = { spawnStray, cancelStray, scheduleStray, pulseLauncher };
   }
 
-  const SAVE_KEY = "nest-colony";
-  const start = (saved) => {
+  const start = () => {
   cancelStray();
   // ================================ the panel ================================
   antBtn.setAttribute("aria-pressed", "true"); antBtn.setAttribute("aria-label", "Close the Nest");
@@ -468,7 +458,7 @@
 
   // ================================ the page ================================
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), squashed: 0, meals: 0, paused: false,
-    reserve: 2, over: false, stores: 0, built: 0, feedFlip: false, peak: 0, started: performance.now(), stolenTotal: 0, sound: false,
+    reserve: 2, over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
@@ -606,39 +596,26 @@
   const home = makeHill(firstSpot);
   const hillOf = (ant) => ant.trail?.hill || ant.hill || home;
 
-  // A little ground around the mound: filled stones, broad grass blades, and a leaf or a
-  // mushroom. The old thin scratch lines read as scribbles, so the shapes are solid and larger.
+  // A little ground around the mound: Braille glyphs for grass, stones, a leaf and a mushroom,
+  // the same alphabet as the hill and the sidebar nest. The old SVG strokes read as scribbles.
+  const brailleDecor = (text, left, top) => {
+    const decor = document.createElement("pre");
+    decor.className = "nest-decor"; decor.setAttribute("aria-hidden", "true");
+    decor.textContent = text;
+    decor.style.left = left + "px"; decor.style.top = top + "px";
+    layer.append(decor);
+    return decor;
+  };
   const decorate = (h) => {
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("class", "nest-decor"); svg.setAttribute("aria-hidden", "true");
-    svg.setAttribute("width", "160"); svg.setAttribute("height", "52"); svg.setAttribute("viewBox", "0 0 160 52");
     let seed = Math.max(1, Math.round(h.base[0] * 7 + h.base[1] * 13));
     const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
-    const leaf = rnd() > 0.35, mushroom = rnd() > 0.4;
-    let art = `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">`;
-    art += `<path d="M6 48 Q4 32 0 18 Q8 32 14 48 Z" fill="currentColor" fill-opacity=".3" stroke-width="1"/>`;
-    art += `<path d="M15 48 Q15 30 15 12 Q20 30 24 48 Z" fill="currentColor" fill-opacity=".26" stroke-width="1"/>`;
-    art += `<path d="M25 48 Q27 34 33 22 Q30 38 33 48 Z" fill="currentColor" fill-opacity=".24" stroke-width="1"/>`;
-    art += `<path d="M127 48 Q125 32 121 18 Q129 32 135 48 Z" fill="currentColor" fill-opacity=".3" stroke-width="1"/>`;
-    art += `<path d="M136 48 Q136 30 136 12 Q141 30 145 48 Z" fill="currentColor" fill-opacity=".26" stroke-width="1"/>`;
-    art += `<path d="M146 48 Q148 34 154 22 Q151 38 153 48 Z" fill="currentColor" fill-opacity=".24" stroke-width="1"/>`;
-    art += `<ellipse cx="52" cy="42" rx="10" ry="5" fill="currentColor" fill-opacity=".3" stroke-width="1.2"/>`;
-    art += `<ellipse cx="66" cy="47" rx="7" ry="3.6" fill="currentColor" fill-opacity=".32" stroke-width="1"/>`;
-    art += `<ellipse cx="77" cy="44" rx="5" ry="2.6" fill="currentColor" fill-opacity=".28" stroke-width=".9"/>`;
-    if (leaf) {
-      art += `<path d="M85 46 C91 34 107 32 115 40 C107 50 91 52 85 46 Z" fill="currentColor" fill-opacity=".3" stroke-width="1.2"/>`;
-      art += `<path d="M88 46 C97 42 105 40 111 41" stroke-width="1"/>`;
-    }
-    if (mushroom) {
-      art += `<path d="M124 48 V34" stroke-width="1.6"/>`;
-      art += `<path d="M112 34 Q124 22 136 34 Z" fill="currentColor" fill-opacity=".34" stroke-width="1.2"/>`;
-      art += `<circle cx="119" cy="30" r="1.2" fill="currentColor" stroke="none"/><circle cx="129" cy="29" r="1" fill="currentColor" stroke="none"/>`;
-    }
-    art += `</g>`;
-    svg.innerHTML = art;
-    svg.style.left = (h.base[0] - 80) + "px";
-    svg.style.top = (h.base[1] - 28) + "px";
-    layer.append(svg); h.decor = svg;
+    const leaf = rnd() > 0.35;
+    const lines = [
+      "⠁⠂  " + (leaf ? "⠢⠔" : "⠒⠲"),
+      "⠉⠊  " + (leaf ? "⠪⠕" : "⠶⠦"),
+      "⣀⣀⣀⣀⣀⣀⣀⣀",
+    ];
+    h.decor = brailleDecor(lines.join("\n"), h.base[0] - 42, h.base[1] - 10);
   };
   decorate(home);
 
@@ -1074,7 +1051,7 @@
   // late: ants can no longer be squashed, and they eat on until the page is empty.
   const end = (won) => {
     if (won) {
-      state.over = true; state.queenDead = true; save(null);
+      state.over = true; state.queenDead = true;
       log("the queen is dead"); blip(110, 0.6, "sine");
     } else {
       state.overrun = true; layer.classList.add("overrun");
@@ -1190,14 +1167,7 @@
       picked.push([x, y]);
     }
     picked.forEach(([x, y], i) => {
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.setAttribute("class", "nest-decor"); svg.setAttribute("aria-hidden", "true");
-      svg.setAttribute("width", "56"); svg.setAttribute("height", "30"); svg.setAttribute("viewBox", "0 0 56 30");
-      svg.innerHTML = i % 2
-        ? `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 24 C10 13 26 11 34 19 C26 28 10 30 6 24 Z" fill="currentColor" fill-opacity=".28" stroke-width="1"/><path d="M10 24 C17 20 25 19 30 20" stroke-width=".9"/><ellipse cx="44" cy="24" rx="6" ry="3" fill="currentColor" fill-opacity=".26" stroke-width="1"/></g>`
-        : `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 26 Q7 18 4 12 Q9 18 12 26 Z" fill="currentColor" fill-opacity=".26" stroke-width="1"/><path d="M14 26 Q14 16 14 9 Q17 17 20 26 Z" fill="currentColor" fill-opacity=".22" stroke-width="1"/><ellipse cx="34" cy="23" rx="7" ry="3.5" fill="currentColor" fill-opacity=".28" stroke-width="1"/><ellipse cx="45" cy="26" rx="5" ry="2.5" fill="currentColor" fill-opacity=".24" stroke-width=".9"/></g>`;
-      svg.style.left = (x - 28) + "px"; svg.style.top = (y - 24) + "px";
-      layer.append(svg);
+      brailleDecor(i % 2 ? "⠢⠔\n⣀⣀⣀⣀" : "⠁⠂  ⠶\n⣀⣀⣀⣀", x - 28, y - 22);
     });
   };
   scatterDecor();
@@ -1345,12 +1315,7 @@
     });
     el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } });
     layer.append(el);
-    const tuft = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    tuft.setAttribute("class", "nest-decor"); tuft.setAttribute("aria-hidden", "true");
-    tuft.setAttribute("width", "72"); tuft.setAttribute("height", "36"); tuft.setAttribute("viewBox", "0 0 72 36");
-    tuft.innerHTML = `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 34 Q4 22 0 12 Q7 22 12 34 Z" fill="currentColor" fill-opacity=".28" stroke-width="1"/><path d="M14 34 Q14 20 14 8 Q19 20 23 34 Z" fill="currentColor" fill-opacity=".24" stroke-width="1"/><path d="M24 34 Q26 24 31 16 Q29 26 32 34 Z" fill="currentColor" fill-opacity=".22" stroke-width="1"/><ellipse cx="46" cy="30" rx="7" ry="3.5" fill="currentColor" fill-opacity=".3" stroke-width="1"/><ellipse cx="57" cy="33" rx="5" ry="2.5" fill="currentColor" fill-opacity=".28" stroke-width=".9"/></g>`;
-    tuft.style.left = (spot.x - 36) + "px"; tuft.style.top = (spot.y - 20) + "px";
-    layer.append(tuft); m.decor = tuft;
+    m.decor = brailleDecor("⠁⠂  ⠶\n⣀⣀⣀⣀", spot.x - 48, spot.y - 6);
     minis.push(m); markGuards(m); log("a mini hill stands"); return m;
   };
   // A guard walks from its mini hill to the nearest point of a trail, then patrols that trail.
@@ -1558,13 +1523,6 @@
   const chord = (freqs, dur = 0.2, gain = 0.03) => freqs.forEach((f, i) => setTimeout(() => blip(f, dur, "sine", gain), i * 45));
   const melody = () => [392, 440, 523, 587, 659, 784].forEach((f, i) => setTimeout(() => blip(f, 0.18, "sine", 0.04), i * 90));
 
-  // ---- the colony carries over between pages
-  function save(data) { try { if (data) localStorage.setItem(SAVE_KEY, JSON.stringify(data)); else localStorage.removeItem(SAVE_KEY); } catch { /* private mode */ } }
-  const snapshot = () => ({ roles: state.ants.filter((a) => /^(scout|worker|soldier)$/.test(a.role)).map((a) => a.role), tool: state.tool, stores: state.stores, built: state.built, eggs: state.eggs.length, meals: state.meals, reserve: state.reserve,
-    squashed: state.squashed, stolenTotal: state.stolenTotal, peak: state.peak, sound: state.sound, elapsed: performance.now() - state.started });
-  const onHide = () => { if (!state.over && !stopped) save(snapshot()); };
-  addEventListener("pagehide", onHide);
-
   // ================================ drawing the nest ================================
   const drawNest = (now) => {
     if (!base) return;
@@ -1739,7 +1697,7 @@
   };
   main.addEventListener("click", holdLinks, true);
   main.addEventListener("auxclick", holdLinks, true);
-  setTool(saved?.tool === "read" ? "read" : "squash");
+  setTool("squash");
   $("x").addEventListener("click", leave);
   $("seal").addEventListener("click", () => hills.forEach(seal));
   $("sound").addEventListener("click", () => {
@@ -1764,24 +1722,11 @@
 
   // Six ants to start: three scouts already on their way up and three workers below them. The
   // opening is a beat, not a waiting room: a trail should exist before the player wonders if it works.
-  if (saved && saved.roles?.length) { // the same colony, arriving on a new page
-    saved.roles.forEach((r, k) => newAnt(r, r === "scout" ? "hatch" : "up", r === "scout" ? LEN.hatch * (0.85 - k * 0.05) : LEN.up - 0.06 - k * 0.02));
-    for (let k = 0; k < saved.eggs; k++) state.eggs.push({ d: LEN.lay, age: k });
-    Object.assign(state, { meals: saved.meals, reserve: saved.reserve, squashed: saved.squashed, stolenTotal: saved.stolenTotal, peak: saved.peak, stores: saved.stores || 0, built: saved.built || 0 });
-    const nextIndex = TUNING.party.findIndex((n) => n > (saved.stolenTotal || 0));
-    state.partyIndex = nextIndex < 0 ? TUNING.party.length : nextIndex;
-    state.nextParty = nextIndex < 0 ? (saved.stolenTotal || 0) + 120 : TUNING.party[nextIndex];
-    state.started = performance.now() - (saved.elapsed || 0);
-    if (saved.sound) $("sound").click();
-    log(`the colony followed you here: ${saved.roles.length} ants`);
-  } else {
-    newAnt("scout", "hatch", LEN.hatch * 0.85); newAnt("scout", "hatch", LEN.hatch * 0.55); newAnt("scout", "hatch", LEN.hatch * 0.3);
-    for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
-    log("the colony wakes; three scouts head out");
-    blip(196, 0.3, "sine", 0.04, -40);
-    setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
-  }
-  save(null);
+  newAnt("scout", "hatch", LEN.hatch * 0.85); newAnt("scout", "hatch", LEN.hatch * 0.55); newAnt("scout", "hatch", LEN.hatch * 0.3);
+  for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
+  log("the colony wakes; three scouts head out");
+  blip(196, 0.3, "sine", 0.04, -40);
+  setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
   requestAnimationFrame(frame);
 
   let terrainWidth = main.clientWidth;
@@ -1800,7 +1745,7 @@
   // Leaving: put every letter back, carried or stolen, and take the colony off the page.
   const stop = () => {
     watchTerrain.disconnect();
-    stopped = true; removeEventListener("pagehide", onHide); main.removeEventListener("click", holdLinks, true);
+    stopped = true; main.removeEventListener("click", holdLinks, true);
     main.removeEventListener("auxclick", holdLinks, true); document.removeEventListener("keydown", onKey);
     main.classList.remove("nest-armed"); delete main.dataset.nestTool;
     if (state.party) {

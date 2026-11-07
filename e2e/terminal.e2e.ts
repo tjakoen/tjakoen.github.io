@@ -96,7 +96,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator(".nest-stray")).toHaveCount(0);
   });
 
-  test("Nest tools lock links during play and let players cancel bait", async ({ page }) => {
+  test("Nest tools lock links during play, and a page switch closes the colony", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Open the Nest" }).click();
     const panel = page.locator('[data-surface="nest-controls"]');
@@ -127,7 +127,8 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await link.press("Enter");
     await expect(page).toHaveURL(/\/projects$/);
     await page.waitForLoadState("load");
-    await expect(panel.getByRole("button", { name: "Links", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Open the Nest" })).toBeVisible();
   });
 });
 
