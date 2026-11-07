@@ -18,6 +18,13 @@ summary: >
   like, where a year lands, and the six ways these systems fail without telling you.
 ---
 
+> **A note on the word harness (2026-11-08).** This piece uses harness the way the industry does:
+> the machinery around a model, what it sees, what it may touch, who checks the result. The newer
+> notes use harness for the program that runs the session, Claude Code, Codex or DeepSeek Harness.
+> Same word, different layer. The pair that sorts it out:
+> [The Loop Outlives the Model](one-loop-three-harnesses.md) and
+> [Set Up the Loop With One Prompt](loop-setup.md).
+
 ## The part everybody skips
 
 Everybody wants the agent that opens pull requests while they sleep. I want it too. It is genuinely
