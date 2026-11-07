@@ -18,7 +18,7 @@ recipientHandle: "flwng-code"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-prelim-ccba6abc"
 criteriaUrl: "/badges/adet-2125-prelim"
-social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/ccba6abc"
+social: "I earned Dart and Flutter Foundations. Verify my badge: https://portfolio.tjakoen.com/b/ccba6abc"
 showcase:
   - "/media/badges/showcase/1ac93826e11675cd.webp | 780x1688 | Detail fire"
   - "/media/badges/showcase/da73378b70bd3652.webp | 780x1688 | Detail water low hp"

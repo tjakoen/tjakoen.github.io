@@ -18,7 +18,7 @@ recipientHandle: "kian-james"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-midterm-38fa2dca"
 criteriaUrl: "/badges/apsi-2215-midterm"
-social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/38fa2dca"
+social: "I earned Full Stack Web Development. Verify my badge: https://portfolio.tjakoen.com/b/38fa2dca"
 showcase:
   - "/media/badges/showcase/4d6f4b503129f826.webp | 1280x988 | The client at desktop width"
   - "/media/badges/showcase/4f7db16a92bbf8d5.webp | 375x1811 | The client at phone width"

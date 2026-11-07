@@ -18,7 +18,7 @@ recipientHandle: "erichmusngi10"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-prelim-99bbcc97"
 criteriaUrl: "/badges/introweb-2106-prelim"
-social: "I earned Web Foundations. Verify my badge: https://tjakoen.github.io/b/99bbcc97"
+social: "I earned Web Foundations. Verify my badge: https://portfolio.tjakoen.com/b/99bbcc97"
 showcase:
   - "/media/badges/showcase/aa542bcf13fb832f.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

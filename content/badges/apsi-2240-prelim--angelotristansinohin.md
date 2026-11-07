@@ -18,7 +18,7 @@ recipientHandle: "trstnsnhn"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2240-prelim-7ebe7a15"
 criteriaUrl: "/badges/apsi-2240-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/7ebe7a15"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/7ebe7a15"
 showcaseNone: "no grader capture of the in-lab practical"
 showcaseOptOut: false
 ---

@@ -18,7 +18,7 @@ recipientHandle: "danlenoon"
 issuedOn: "2026-11-03"
 certId: "hau-ecbd966a23beb2736ea3d00b"
 criteriaUrl: "/badges/apsi-2203-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/ecbd966a23beb273"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/ecbd966a23beb273"
 showcaseNone: "live site did not render a usable, privacy-safe page on 2026-11-03"
 showcaseOptOut: false
 ---

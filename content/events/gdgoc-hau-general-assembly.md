@@ -26,7 +26,7 @@ social: |
   asked better questions than I had answers for.
 
   Writeup and links to the presentation can be found here:
-  https://tjakoen.github.io/calendar/gdgoc-hau-general-assembly
+  https://portfolio.tjakoen.com/calendar/gdgoc-hau-general-assembly
 ---
 
 ## Saturday night, and they showed up anyway

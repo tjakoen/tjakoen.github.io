@@ -18,7 +18,7 @@ recipientHandle: "glorysonggreen"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-76cc271c"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/76cc271c"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/76cc271c"
 showcase:
   - "/media/badges/showcase/33ba935d83e99a94.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/861af183576373e8.webp | 780x1688 | Monster detail"

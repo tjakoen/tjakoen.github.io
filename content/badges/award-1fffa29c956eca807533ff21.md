@@ -18,7 +18,7 @@ recipientHandle: "migui-alcantara"
 issuedOn: "2026-11-03"
 certId: "hau-1fffa29c956eca807533ff21"
 criteriaUrl: "/badges/adet-2134-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/1fffa29c956eca80"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/1fffa29c956eca80"
 showcase:
   - "/media/badges/showcase/5dc90b2d58f056f9.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

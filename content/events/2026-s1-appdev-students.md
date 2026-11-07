@@ -17,7 +17,7 @@ social: |
   Tagging the builders I could find on LinkedIn: Sofia Ryza De Mesa (Love My Closet), Alison Sampang (Nook), Vince Evangelista (Shelf). If you built one of the others, send me your profile and I will tag you.
   
   Repos and live links are on each project's page:
-  https://tjakoen.github.io/calendar/2026-s1-appdev-students
+  https://portfolio.tjakoen.com/calendar/2026-s1-appdev-students
 ---
 
 ## I graded all of them at night, and these kept me awake

@@ -18,7 +18,7 @@ recipientHandle: "felicitydelacruz"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-d341182e"
 criteriaUrl: "/badges/introweb-2106-midterm"
-social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/d341182e"
+social: "I earned Interactive Web Pages. Verify my badge: https://portfolio.tjakoen.com/b/d341182e"
 showcase:
   - "/media/badges/showcase/aa542bcf13fb832f.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

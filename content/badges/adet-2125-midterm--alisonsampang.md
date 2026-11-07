@@ -18,7 +18,7 @@ recipientHandle: "alyencs"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-33940eef"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/33940eef"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/33940eef"
 showcase:
   - "/media/badges/showcase/3f3491b749a9e1b2.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/2e1e74e45c2708da.webp | 780x1688 | Monster detail"

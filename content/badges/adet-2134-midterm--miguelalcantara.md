@@ -18,7 +18,7 @@ recipientHandle: "migui-alcantara"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-8890347b"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/8890347b"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/8890347b"
 showcase:
   - "/media/badges/showcase/d8426a5e87d7ca1e.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/bf8939fad9946f07.webp | 780x1688 | Monster detail"

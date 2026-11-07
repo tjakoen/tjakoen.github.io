@@ -18,7 +18,7 @@ recipientHandle: "roki-a"
 issuedOn: "2026-11-03"
 certId: "hau-b58d53b9216ec638fa3aab38"
 criteriaUrl: "/badges/apsi-2209-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/b58d53b9216ec638"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/b58d53b9216ec638"
 showcase:
   - "/media/badges/showcase/5539545f5c0d1f77.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

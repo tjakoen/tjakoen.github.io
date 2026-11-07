@@ -18,7 +18,7 @@ recipientHandle: "flwng-code"
 issuedOn: "2026-11-03"
 certId: "hau-91bcc7ab69b55d124fe361ac"
 criteriaUrl: "/badges/adet-2125-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/91bcc7ab69b55d12"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/91bcc7ab69b55d12"
 showcaseNone: "project repo private or without a deployed site"
 showcaseOptOut: false
 ---

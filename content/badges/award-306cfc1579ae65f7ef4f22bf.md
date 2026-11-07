@@ -18,7 +18,7 @@ recipientHandle: "aistwobig"
 issuedOn: "2026-11-03"
 certId: "hau-306cfc1579ae65f7ef4f22bf"
 criteriaUrl: "/badges/adet-2134-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/306cfc1579ae65f7"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/306cfc1579ae65f7"
 showcase:
   - "/media/badges/showcase/7d05a37e2673b7d6.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

@@ -18,7 +18,7 @@ recipientHandle: "nowenpascual28-bot"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-758719e4"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/758719e4"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/758719e4"
 showcase:
   - "/media/badges/showcase/57eed8c3bffc7b17.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/ad56f8bea84258b8.webp | 780x1688 | Monster detail"

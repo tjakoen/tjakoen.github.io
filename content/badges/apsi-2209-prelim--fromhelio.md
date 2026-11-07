@@ -18,7 +18,7 @@ recipientHandle: "fromhelio"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-prelim-28997477"
 criteriaUrl: "/badges/apsi-2209-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/28997477"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/28997477"
 showcase:
   - "/media/badges/showcase/07a2297ef9fbc1ea.webp | 1024x800 | App"
 showcaseOptOut: false

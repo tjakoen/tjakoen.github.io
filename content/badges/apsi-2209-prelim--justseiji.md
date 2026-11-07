@@ -18,7 +18,7 @@ recipientHandle: "justseiji"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-prelim-1d67f2b3"
 criteriaUrl: "/badges/apsi-2209-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/1d67f2b3"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/1d67f2b3"
 showcase:
   - "/media/badges/showcase/ab168954e2741ad9.webp | 1024x800 | App"
 showcaseOptOut: false

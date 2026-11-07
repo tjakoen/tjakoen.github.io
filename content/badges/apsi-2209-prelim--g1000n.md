@@ -18,7 +18,7 @@ recipientHandle: "g1000n"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-prelim-cbce454b"
 criteriaUrl: "/badges/apsi-2209-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/cbce454b"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/cbce454b"
 showcase:
   - "/media/badges/showcase/6bd04ca55f7af163.webp | 1024x800 | App"
 showcaseOptOut: false

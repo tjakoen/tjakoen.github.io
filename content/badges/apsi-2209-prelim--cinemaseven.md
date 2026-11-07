@@ -18,7 +18,7 @@ recipientHandle: "cinemaseven"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-prelim-d8bb0b87"
 criteriaUrl: "/badges/apsi-2209-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/d8bb0b87"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/d8bb0b87"
 showcase:
   - "/media/badges/showcase/bcaa60fe1c05d714.webp | 1024x800 | App"
 showcaseOptOut: false

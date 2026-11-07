@@ -33,7 +33,7 @@ social: |
   Which is the multiplier argument turning up in a company deck. Ten times zero is still zero,
   whoever is holding the microphone.
 
-  Writeup and the deck: https://tjakoen.github.io/calendar/yses-uplb-fair-and-talk
+  Writeup and the deck: https://portfolio.tjakoen.com/calendar/yses-uplb-fair-and-talk
 ---
 
 ## The day job, for once

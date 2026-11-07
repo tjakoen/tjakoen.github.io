@@ -19,7 +19,7 @@ social: |
   Tagging the builders I could find on LinkedIn: Ranz Emmanuel Cuarto (LaundryLog), Matt Lara (Roomy), Graciella Jimenez (Revive Pilates Studio), Angelo Tristan Sinohin (SeatSaver). If you built one of the others, send me your profile and I will tag you.
   
   Fifteen of them, with a page each:
-  https://tjakoen.github.io/calendar/2026-s1-apsi-students
+  https://portfolio.tjakoen.com/calendar/2026-s1-apsi-students
   
   Repos and live links are on each project's page.
 ---
