@@ -213,7 +213,7 @@
   // A stray ant is the easter egg for a closed Nest. It walks the reading pane on its own, not on
   // a trail, and if someone clicks it the ant runs for the launcher and makes it pulse. One click
   // marks the tab, so the random ant does not come back until a new tab.
-  let strayTimer = null, strayEl = null, strayLeaving = false;
+  let strayTimer = null, strayExitTimer = null, strayEl = null, strayLeaving = false;
   const STRAY_KEY = "nest-stray-clicked";
   const strayConsumed = () => { try { return sessionStorage.getItem(STRAY_KEY) === "1"; } catch { return false; } };
   const consumeStray = () => { try { sessionStorage.setItem(STRAY_KEY, "1"); } catch { /* private mode */ } };
@@ -229,7 +229,7 @@
   const SOLDIER_SVG = `<svg width="23" height="13" viewBox="-2.4 0 24.8 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const cancelStray = () => {
-    clearTimeout(strayTimer);
+    clearTimeout(strayTimer); clearTimeout(strayExitTimer);
     strayLeaving = false;
     if (strayEl) { strayEl.remove(); strayEl = null; }
   };
@@ -245,6 +245,7 @@
   const runToLauncher = (el) => {
     if (!el || strayEl !== el) return;
     consumeStray();
+    clearTimeout(strayExitTimer);
     strayLeaving = true;
     const from = el.getBoundingClientRect(), to = antBtn.getBoundingClientRect();
     if (!to.width || strayReduced()) {
@@ -265,6 +266,23 @@
     };
     requestAnimationFrame(frame);
   };
+  const leaveStray = () => {
+    if (!strayEl || strayLeaving) return;
+    strayLeaving = true;
+    clearTimeout(strayExitTimer);
+    const el = strayEl;
+    const sx = parseFloat(el.style.left) || 0;
+    const tx = sx < main.clientWidth / 2 ? -30 : main.clientWidth + 30;
+    const t0 = performance.now(), dur = 700;
+    const frame = (now) => {
+      const k = Math.min(1, (now - t0) / dur);
+      el.style.left = sx + (tx - sx) * k + "px";
+      el.style.opacity = String(0.7 * (1 - k));
+      if (k < 1) requestAnimationFrame(frame);
+      else { el.remove(); strayEl = null; strayLeaving = false; scheduleStray(120000 + Math.random() * 120000); }
+    };
+    requestAnimationFrame(frame);
+  };
   const spawnStray = (force = false) => {
     if (!force && (strayConsumed() || game || document.hidden || !launcherVisible() || strayEl)) return;
     if (force && (game || document.hidden || !launcherVisible() || strayEl)) return;
@@ -280,6 +298,8 @@
     el.style.left = startX + "px"; el.style.top = y + "px";
     el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); runToLauncher(el); });
     main.append(el); strayEl = el; strayLeaving = false;
+    clearTimeout(strayExitTimer);
+    strayExitTimer = setTimeout(leaveStray, 14000 + Math.random() * 5000);
     const steps = 4 + Math.floor(Math.random() * 3), legs = [];
     for (let i = 1; i <= steps; i++) {
       const t = i / steps;
@@ -287,7 +307,7 @@
     }
     const walk = (i) => {
       if (!strayEl || game || strayLeaving) return;
-      if (i >= legs.length) { el.remove(); strayEl = null; scheduleStray(120000 + Math.random() * 120000); return; }
+      if (i >= legs.length) { clearTimeout(strayExitTimer); el.remove(); strayEl = null; scheduleStray(120000 + Math.random() * 120000); return; }
       const [tx, ty] = legs[i], sx = parseFloat(el.style.left), sy = parseFloat(el.style.top);
       const dur = 1800 + Math.random() * 1800, t0 = performance.now();
       const frame = (now) => {
