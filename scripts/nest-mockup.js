@@ -54,6 +54,9 @@
     #nest-mock .stats dd { text-align: right; font-variant-numeric: tabular-nums; }
     #nest-mock .accent { color: var(--color-accent); }
     #nest-mock .bar { font-family: var(--font-mono); letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor; }
+    #nest-mock .nest-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; margin-bottom: -10px; }
+    #nest-mock .nest-foot .log { flex: 1; min-width: 0; }
+    #nest-mock .nest-foot .note-link { flex: 0 0 auto; margin: 0; }
     #nest-mock .log { margin: 0; padding: 0; list-style: none; min-height: 1.4em; max-height: 1.4em; overflow: hidden; font-size: 11px; color: var(--ink-muted); }
     #nest-mock .log li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .log li:first-child { color: var(--ink); }
@@ -64,7 +67,7 @@
     #nest-mock .tools button { position: relative; display: grid; place-items: center; min-width: 0; min-height: 40px; }
     #nest-mock .tools button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
     #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: 9px; }
-    #nest-mock .tool-help { min-height: 2.6em; height: 2.6em; overflow: hidden; margin: 0; font-size: 10px; line-height: 1.3; }
+    #nest-mock .tool-help { min-height: 1.5em; height: 1.5em; overflow: hidden; margin: 0; font-size: 10px; line-height: 1.3; }
     #nest-mock { position: relative; }
     #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
       background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
@@ -212,7 +215,7 @@
     #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
-    #nest-mock .note-link { align-self: flex-end; margin: -4px 2px 0; color: var(--ink-muted); font-size: 9px; line-height: 1.2; text-decoration: none; }
+    #nest-mock .note-link { color: var(--ink-muted); font-size: 9px; line-height: 1.2; text-decoration: none; }
     #nest-mock .note-link:hover { color: var(--ink); }
     #nest-mock .activity { margin: 0; padding: 0; list-style: none; min-height: 2.6em; font-size: 10px; color: var(--ink-muted); }
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -441,8 +444,10 @@
       <button class="x" data-k="x" type="button" aria-label="Close the Nest" title="Close">×</button></div>
     <p class="muted tool-help" data-k="tool-help" aria-live="polite"></p>
     <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
-    <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener" title="The colony, explained">explained ↗</a>
-    <ul class="log activity" data-k="log" aria-live="polite"></ul>
+    <div class="nest-foot">
+      <ul class="log activity" data-k="log" aria-live="polite"></ul>
+      <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener" title="The colony, explained">explained ↗</a>
+    </div>
     <div class="nest-meters">
       <div class="nest-meter"><span class="lbl muted">page left</span><span class="lbl" data-k="holds-val">100%</span>
         <div class="nest-meter__bar" data-k="holds-bar" role="progressbar" aria-label="Page left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="fill" data-k="holds"></span><span class="rest" data-k="holds-rest"></span></div>
