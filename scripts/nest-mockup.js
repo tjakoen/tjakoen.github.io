@@ -783,7 +783,8 @@
     const t = openTrail(ant);
     if (t) { join(ant, t); return emerge(ant); }
     if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
-    if (!scoutsOut()) { ant.role = "scout"; log("a worker turned scout"); return emerge(ant); }
+    const wantTrails = Math.min(4, 1 + Math.floor(state.ants.length / 4));
+    if (state.trails.length < wantTrails && !scoutsOut()) { ant.role = "scout"; log("a worker turned scout"); return emerge(ant); }
     ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); // queue in the tunnel
   };
   const waitingRank = (ant) => state.ants.filter((a) => a.where === "nest" && a.route === "up" && a.d > LEN.up - 0.3 && a.id < ant.id).length;
@@ -854,13 +855,15 @@
     const spread = (o) => Math.min(...state.openingTargets.map(([px, py]) => Math.hypot(o[1] - px, o[2] - py)));
     const moundSide = hole[0] > main.clientWidth / 2 ? 1 : -1;
     const opposite = options.filter((o) => (o[1] - hole[0]) * moundSide < 0);
+    const near = options.filter((o) => distToHole(o) < 420);
+    const close = near.length ? near : options;
     const pick = firstOpening
       ? options.reduce((best, o) => (distToHole(o) < distToHole(best) ? o : best), options[0])
       : state.openingTargets.length === 1
         ? (opposite.length ? opposite : options).reduce((best, o) => (distToHole(o) > distToHole(best) ? o : best), (opposite.length ? opposite : options)[0])
         : state.openingTargets.length === 2
           ? options.reduce((best, o) => (spread(o) > spread(best) ? o : best), options[0])
-          : options[Math.floor(Math.random() * options.length)];
+          : close.reduce((best, o) => (distToHole(o) < distToHole(best) ? o : best), close[0]);
     const [node, tx, ty] = pick;
     const block = blockOf(node);
     if (state.openingTargets.length < 3) state.openingTargets.push([tx, ty]);

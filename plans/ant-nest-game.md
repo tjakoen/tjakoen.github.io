@@ -53,7 +53,8 @@ unreadable and the colony has won that page.
   spread-out remaining spot. A scout draws a faint route as it walks,
   the route firms up when the scout carries the first letter home, workers take open trails in turn,
   five to a line, and a trail fades when its patch empties or after ninety seconds. Each retired
-  trail sends its own successor scout, so several spent patches do not leave one line. Soldiers hatch once the colony passes eight and take two
+  trail sends its own successor scout, so several spent patches do not leave one line. Successors
+  look near the mound first; the trail target grows with the colony up to four. Soldiers hatch once the colony passes eight and take two
   hits.
 - **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
