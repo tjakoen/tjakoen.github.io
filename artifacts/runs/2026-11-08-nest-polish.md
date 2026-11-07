@@ -1,0 +1,141 @@
+---
+title: The Nest gets calmer traffic, a visible light mode, and a dance between letters
+date: 2026-11-08
+status: complete
+lane: gated
+branch: feat/nest-polish
+scope: [scripts, content/notes/the-site-has-ants.md, content/tours/review-nest-controls.md, content/media/notes, plans/ant-nest-game.md, e2e/terminal.e2e.ts, artifacts/runs]
+touched:
+  - scripts/nest-mockup.js
+  - content/notes/the-site-has-ants.md
+  - content/tours/review-nest-controls.md
+  - content/media/notes/nest-trails.jpg
+  - content/media/notes/nest-mini-hill.jpg
+  - content/media/notes/nest-og.png
+  - plans/ant-nest-game.md
+  - e2e/terminal.e2e.ts
+  - artifacts/runs/2026-11-08-nest-polish.md
+diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
+unpushed: 1 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, and the terminal e2e
+doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
+---
+
+The owner's list was about feel before features: ants that do not fidget, trails that do not
+clump, a light mode where the scent is visible, a colony that starts sooner, a queen who leaves the
+hill, and controls that feel equipped rather than selected. This pass covers those, plus the
+sidebar, the no-text mini hill language, the note that teaches the game, and a hidden debug hook
+for the checks.
+
+## What changed
+
+**Traffic.** The old wobble was a sideways kick every frame. It is now a small sway folded into a
+smoothed heading, with a turn-rate cap. Scout routes are one gentle quadratic bend, then Chaikin,
+not four random jumps. Trails are drawn as the same smooth path with a paper-coloured under-stroke
+and a dotted scent line. Ants on a trail get an outbound and a return lane, so they no longer walk
+the same three pixels, and a queued ant slows instead of stopping dead. The line is five ants, not
+six, and the colony caps at twenty.
+
+**Trails.** A trail now has a state. It is faint while the scout is still walking it, it firms up
+when the first letter reaches the hill, and it fades when its patch empties or after ninety
+seconds. A spent trail sends a worker out as the next scout. That removes the long pause where the
+colony stood in the tunnel waiting for a trail to die.
+
+**Light mode.** The scent uses `--ink-muted` at a stronger weight with a paper halo, and a
+`[data-color-scheme="light"]` override. The old stroke was 1.2px of `--ink-faint` at 0.55 opacity,
+which was about 1.9:1 on the paper. The new line is visible without reading as body text.
+
+**Soldiers.** Soldiers and guards now use the flyer's quieter colour, with a wider head and two
+mandibles. The permanent link line from a mini hill to a trail is gone, so a soldier leaves no
+scent. Their patrol gets a six second progress check: a guard that moves less than thirty pixels
+re-homes instead of standing in the dirt.
+
+**The opening.** Three scouts and three workers start. The first scout keeps its first find within
+240 pixels of the hill, the first egg is laid at six seconds, and the first hatch comes at 3.4
+seconds of incubation. The first trail appeared at seven seconds in the measured run and three
+trails were open by nine.
+
+**The page is the environment.** The home hill is still sited in the visible viewport, so nothing
+makes the player scroll to find it, but scouts can work the whole page afterwards. The automatic
+scroll is gone. Mini hills still stay in view. This is the owner's call: the ants may work below
+the fold while the reader reads.
+
+**The dance.** The colony stops at twenty stolen letters, then fifty, then a rising set of
+thresholds. The queen comes out of the hill, the workers circle her, the stolen glyphs orbit, a
+short synth melody plays, and then the colony goes back to work. The final overrun uses the same
+scene for longer. The player's win stays quiet, which is the note's own argument.
+
+**The controls.** The three tools are named, keyed 1, 2 and 3, and the selected tile presses in.
+The cursor changes natively: crosshair for squash, cell for wipe, the page's own cursor for links,
+and copy for bait. A squash flattens the ant under a quick ring and a dust mark. A wiped trail
+snaps into two pieces, sprays scent dots, and then the ants scatter.
+
+**The sidebar.** The panel is now one instrument: a status line, the Braille nest, a two-line
+activity log, three CSS meters for page holds, stores and the next egg, a compact stat grid, the
+tool tiles, the colony controls, and a footer link to the note. The inline "How to play" block is
+gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps running.
+
+**The ground.** A quiet ground patch sits around each hill: stones, grass, a twig, a dandelion and
+one paperclip further out. It is theme-token colour at 0.55 opacity, never catches a click, and
+stays still under reduced motion. A mini hill gets a smaller tuft.
+
+**The mini hill language.** No words on the page. The rim carries one dot per guard. The base
+carries five dots, one per hit, and the existing Braille mound shrinks as the dots go out. The
+element is a keyboard button with an aria label for screen readers.
+
+**Sound.** One small synth, no files: a master gain, a compressor, oscillators and a reusable
+noise buffer. Cues cover the wake, a letter lift, a delivery, a trail laid, a trail fade, an egg,
+a hatch, a soldier, a squash, a soldier hit, a seal, bait, a build tick, a hill break, a guard, a
+flyer, the dance and the overrun. Silence is still the default.
+
+## Gate output
+
+The focused browser suite passed after the renames and the lint cleanup.
+
+```text
+$ bun run check
+$ tsc --noEmit
+
+$ bun test
+ 875 pass
+ 0 fail
+ 3804 expect() calls
+Ran 875 tests across 48 files. [9.74s]
+
+$ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
+  8 passed (21.3s)
+
+$ bunx oxlint scripts/nest-mockup.js
+Found 0 warnings and 0 errors.
+
+$ bun tools/dsh-loop/cli.mjs end
+graphify update: ok
+bun run check: ok
+bun tools/lint-gate.ts: ok
+```
+
+The lint gate still reports one unrelated `no-unused-expressions` in `scripts/site.js`, which the
+run does not touch. The game file itself is clean.
+
+## What was shown
+
+The note's two screenshots and its social card were regenerated against the new panel and the new
+trails. The session also showed a light run, a dark run, a forced dance, a close crop of the ground
+decor, a close crop of a mini hill with its guard crest and hit dots, a real trail wipe, and a real
+squash.
+
+## What was not done
+
+The full browser suite was not run; the focused terminal spec and the unit suite were. The phone
+layout still needs its own pass, because the launcher sits in the status bar and the test harness
+is desktop. The two untracked loop notes in the tree belong to another session and were left
+alone. The old screenshot inside the first note image is recursive by nature and was accepted.
+
+## What needs human eyes
+
+Play the first minute on the home page and on a note, in both colour schemes. Watch whether the
+new trail weight reads as scent rather than as a dotted rule. Wipe a trail and squash a soldier to
+see whether the two animations land at the right speed. Let a mini hill stand and watch a guard
+patrol away from it. Look at the ground patch and decide whether 0.55 opacity is the right amount
+of quiet. The dance is the one call that is still a taste question: nine seconds, queen on the
+hill, glyphs in orbit.
