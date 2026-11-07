@@ -67,9 +67,10 @@ unreadable and the colony has won that page.
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
   seals have cooldowns. Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
 - **The colony dances.** Every time the colony has taken twenty, then fifty, then a rising number
-  of letters, it stops: the queen comes out of the hill, the workers circle her, the stolen glyphs
-  orbit, and then the colony goes back to work. The page is the whole environment, so the ants may
-  work below the fold while the player reads.
+  of letters, it stops: the queen leaves the sidepanel nest for a stage outside the hill, the
+  workers ring her and dance, the sidepanel pulses, the stolen glyphs orbit, and then the colony
+  goes back to work. The page is the whole environment, so the ants may work below the fold while
+  the player reads.
 - **No announced ending.** Wipe the colony after the queen has spent her two reserve scouts and the
   queen dies: the nest goes still and the page keeps its gaps. Let one in seven characters go,
   capped at 120, and it is too late: the ants can no longer be squashed and eat on until the page is

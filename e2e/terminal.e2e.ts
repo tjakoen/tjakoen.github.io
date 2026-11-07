@@ -12,6 +12,7 @@ declare global {
     __nest?: {
       state: { ants: Array<{ role: string; block: Element | null; job?: string }> };
       home: { base: [number, number] };
+      startParty: (final?: boolean) => void;
       makeMini: (spot: unknown) => unknown;
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
@@ -165,6 +166,21 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       }
     });
     await expect(mound).toHaveClass(/exposed/);
+  });
+
+  test("the queen leaves the nest for the page dance", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(2800);
+    await page.evaluate(() => window.__nest!.startParty());
+    await expect(page.locator("#nest-mock")).toHaveClass(/celebrating/);
+    await expect(page.locator(".nest-queen")).toBeVisible();
+    await expect(page.locator(".nest-ant.dancing").first()).toBeVisible();
+    await page.waitForTimeout(1300);
+    const queen = await page.locator(".nest-queen").boundingBox();
+    const hill = await page.locator(".nest-hill").first().boundingBox();
+    expect(queen && hill && queen.y > hill.y + hill.height).toBe(true);
   });
 
   test("the stray command sends an ant that runs for the launcher", async ({ page }) => {
