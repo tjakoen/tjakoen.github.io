@@ -112,6 +112,9 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.reload();
     await page.evaluate(() => window.__nestStray?.spawn());
     await expect(page.locator(".nest-stray")).toHaveCount(0);
+    await page.evaluate(() => window.__nestStray?.spawn(true));
+    await expect(page.locator(".nest-stray")).toHaveCount(1);
+    await expect(page.locator(".nest-stray")).toHaveCount(0, { timeout: 25000 });
   });
 
   test("Nest tools lock links during play, and a page switch closes the colony", async ({ page }) => {

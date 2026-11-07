@@ -75,9 +75,10 @@ unreadable and the colony has won that page.
   colony; a page link asks first. The launcher stays in the status bar. The stray click is
   remembered for the tab.
 - **The stray.** When the game is closed, a single ant sometimes crosses the reading pane, off any
-  trail. It uses the same animated ant art as the colony. Click it and it runs for the status bar
-  launcher and makes it pulse. A click marks the tab, so the random ant does not return until a new
-  tab. Type `stray` in the terminal to send one on demand.
+  trail. It uses the same animated ant art as the colony. If nobody clicks it, it leaves the screen
+  after fourteen to nineteen seconds. Click it and it runs for the status bar launcher and makes it
+  pulse. A click marks the tab, so the random ant does not return until a new tab. Type `stray` in
+  the terminal to send one on demand.
 
 ## Open questions for the owner
 
