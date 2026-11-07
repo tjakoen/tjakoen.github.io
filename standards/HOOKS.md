@@ -323,18 +323,20 @@ at the first step, a listener after each execution, and session events.
 [The DeepSeek Harness adapter doc](https://github.com/tjakoen/tjakoen.github.io/blob/main/docs/HARNESS-DSH.md)
 owns that in detail; this file owns only the contract it is held to.
 
-**The list is a live defect, not a thought experiment.** Measure the lane list in both guards and
-they do not agree. On 2026-11-08 the shell guard carried seventeen path rules plus the package.json
-special case, and the DSH guard carried twenty. Three differ, and only one of the three is a rule
-about the estate: the DSH guard blocks a payments directory, the shell guard does not. Probed with
-the same payload, a file under payments is blocked by one adapter and allowed by the other, while
-LOOP §4b's printed path list covers both spellings. The other two entries are the guard protecting
-its own source and its own configuration, which is right, and which belongs in the adapter declared
-rather than discovered.
+**The list earned its keep on the first run, and the defect was real.** Measure the lane list in both
+guards and on 2026-11-08 they did not agree. The shell guard carried seventeen path rules plus the
+package.json special case, and the DSH guard carried twenty. Three differed, and only one of the three
+was a rule about the estate: the DSH guard blocked a payments directory, the shell guard did not,
+while LOOP §4b's printed path list covers both spellings. Probed with the same payload, a file under
+payments was blocked by one adapter and allowed by the other. The other two entries protect the DSH
+guard's own source and its own configuration, which is right, and which this section requires an
+adapter to declare rather than leave to be discovered.
 
-That finding is left open here on purpose. The shell guard lives in the private tools repo, outside
-the repo this standard lives in, and the case list below is the thing that caught it, on its first
-run. Fixing one adapter without the list would have left the sentence this section replaces.
+The payments rule went into the shell guard the same day, one line in its list, and the same probe
+now returns a block from both adapters. The count is eighteen against twenty, and the two that remain
+are the declared kind. The fix matters less than the shape of the finding: a second copy of a rule
+was correct in one adapter and wrong in the other, and what caught it was a case run against both
+rather than a reading of either.
 
 **The case list.** Run all ten against each harness when an adapter changes, when a harness updates,
 and once a quarter. File the result as a run report, so the date each case was last proved is a date

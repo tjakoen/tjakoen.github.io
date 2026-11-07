@@ -67,8 +67,9 @@ six.
   is where you find out which of that is real on a given machine. Read it when a session-start report
   or a blocked write surprises you, and before touching anything under the machine's tools directory.
   It is deliberately honest about the holes: the write guard does not see the shell, the envelope
-  check reads presence rather than quality, and the three harness adapters do not yet agree on one
-  path rule, which its section 4c measures rather than assumes.
+  check reads presence rather than quality, and two harness guards disagreed on one path rule until
+  the case list in section 4c caught it, which is the argument for running the list rather than
+  reading it.
 - **VOICE + NOTE-STANDARD + README-STANDARD + FIGURES** are the writing set: VOICE owns the prose,
   the others own specific artifacts and point back at it. Start here for any published words.
 - **TOUR-STANDARD** is the handover half of the engineering pair: LOOP's contract says a change that

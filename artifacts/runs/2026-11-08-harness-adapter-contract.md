@@ -152,3 +152,11 @@ a run report: the date is the evidence, not the list.
 - Whether six signals is the right number, or whether session identity is a harness capability the
   contract cannot ask for everywhere.
 - The two screenshots in [the review folder](/Users/tjakoenstolk/Local/Development/bread-repos/tjakoen.github.io/artifacts/reviews/2026-11-08-review-harness-adapter/01-hooks-adapter-contract.png).
+
+## Correction, dated the same day
+
+The shell guard fix named under *What was not done* was taken the same day, after this branch was
+prepared for main and before it merged. One rule line, a payments directory, in the private tools
+repo, and the same probe now returns a block from both adapters. The standard was amended in the same
+branch rather than after the merge, so the page that reaches main describes the fix and not the hole.
+Nothing else here changed, including the count of cases actually run.
