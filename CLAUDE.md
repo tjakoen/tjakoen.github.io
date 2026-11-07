@@ -1,19 +1,19 @@
 # CLAUDE.md — portfolio
 
-Onboarding + operating rules for anyone (AI or human) working in `tjakoen.github.io/`: the personal site
-(tjakoen.github.io), the home of all published content and the notes, and the canonical home of the
+Onboarding + operating rules for anyone (AI or human) working in this repo: the personal site
+(portfolio.tjakoen.com), the home of all published content and the notes, and the canonical home of the
 personal standards (`/standards`, rendered through MILL from this repo's own `standards/` dir — since
 the 2026-07-09 fold-in, the same option-b move used for the layer docs; PANTRY resolves the same files
 out of this repo's package). Read this first. This is where most content work happens, so before
 writing anything in Tjakoen's name, read the standards below.
 
 > This file follows the `CLAUDE.starter.md` template from the published standards index
-> <https://tjakoen.github.io/standards>. The personal voice/badge standards it points to
+> <https://portfolio.tjakoen.com/standards>. The personal voice/badge standards it points to
 > are the source of truth for how anything published should read and look.
 
 ## What this is
 
-`tjakoen.github.io/` is **the app + composition root** — it wires grain + batch + mill and runs the
+This repo is **the app + composition root** — it wires grain + batch + mill and runs the
 site — plus the content layer: the blog/notes, the résumé and showcase pages (`/`, `/grain`, `/batch`),
 and the standards. It uses MILL to render Markdown content into GRAIN pages — **MILL is built and
 live** (`/notes`, `/grain/docs`, `/batch/docs` render through it); content is authored as `.md`. It
@@ -56,22 +56,22 @@ short command exists. DSH reads the same mount through the .agents/skills symlin
 serves both harnesses.
 
 1. [`PHILOSOPHY.md`](docs/PHILOSOPHY.md): the *why* beneath the whole stack. Read first.
-2. *Skill(intake)* ([published](https://tjakoen.github.io/standards/intake)): read it BEFORE
+2. *Skill(intake)* ([published](https://portfolio.tjakoen.com/standards/intake)): read it BEFORE
    starting work on a pasted document, a forwarded brief or a handoff that runs longer than a
    screen and wants something changed. It turns the blob into the lane, the scope cap, the hard
    stops, the ask-triggers and a finish line by putting four questions to the owner, and it says
    plainly when no brief is needed so it does not fire on a one-line ask.
-3. `Skill(voice)` ([published](https://tjakoen.github.io/standards/voice)): the writing standard
+3. `Skill(voice)` ([published](https://portfolio.tjakoen.com/standards/voice)): the writing standard
    (voice, the machine-tells to avoid). Match it for any prose in his name.
-4. `Skill(figures)` ([published](https://tjakoen.github.io/standards/figures)): the figure standard,
+4. `Skill(figures)` ([published](https://portfolio.tjakoen.com/standards/figures)): the figure standard,
    the two tokenized inline-SVG scaffolds (data-viz + flow) and the no-mermaid-on-the-published-site
    rule. Use it for any diagram or chart.
-5. `Skill(note-standard)` ([published](https://tjakoen.github.io/standards/note-standard)): how a
+5. `Skill(note-standard)` ([published](https://portfolio.tjakoen.com/standards/note-standard)): how a
    note/blog post is built (frontmatter, structure, the sign-off footer) + a reusable prompt to
    draft one. Use it for any `content/notes/*.md`.
-6. `Skill(readme-standard)` ([published](https://tjakoen.github.io/standards/readme-standard)):
+6. `Skill(readme-standard)` ([published](https://portfolio.tjakoen.com/standards/readme-standard)):
    badges + README presentation, with a reusable prompt to run in any repo.
-7. `Skill(graph)` ([published](https://tjakoen.github.io/standards/graph)): read it before answering
+7. `Skill(graph)` ([published](https://portfolio.tjakoen.com/standards/graph)): read it before answering
    any "where is X", "what calls Y" or "map this directory" question. This repo carries a live code
    graph, rebuilt on every edit by a PostToolUse hook in Claude and by the DSH loop plugin, so
    `graphify query <symbol>` answers those in one call where a grep sweep costs many. Seed the query
@@ -86,10 +86,10 @@ Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
 
 ## Non-negotiables
 
-- **Content follows [VOICE](https://tjakoen.github.io/standards/voice)** (how it reads) **and
-  [NOTE-STANDARD](https://tjakoen.github.io/standards/note-standard)** (how a note is built:
+- **Content follows [VOICE](https://portfolio.tjakoen.com/standards/voice)** (how it reads) **and
+  [NOTE-STANDARD](https://portfolio.tjakoen.com/standards/note-standard)** (how a note is built:
   frontmatter, structure, footer). No em-dashes and no backticks in prose, money stays vague
-  (no ratios), visuals per [FIGURES](https://tjakoen.github.io/standards/figures). Honest limits over hype.
+  (no ratios), visuals per [FIGURES](https://portfolio.tjakoen.com/standards/figures). Honest limits over hype.
 - **A terse-output mode never reaches the page.** Any style rule that compresses replies (the caveman
   plugin is the one installed here, and its reminder arrives on every turn, where VOICE has to be
   pulled once) governs chat and nothing else. Files under `content/`, `standards/`, `docs/`, any
@@ -103,10 +103,14 @@ Whole-repo doc map: [`../bread/DOCS.md`](../bread/DOCS.md).
   someone see it, and the turn-end nudge reaches a human reading the transcript rather than the
   session that still could act. The tour-standard skill says which surfaces count and how a step is
   written.
+- **The public address is <https://portfolio.tjakoen.com>.** Use it in published copy, canonical
+  links, social posts, cards and standards links. The old github.io host still redirects, but it is
+  not the address we print. A card takes its host from `SITE.origin` in `src/seo.ts`, never from a
+  string in the template.
 - **Public-repo guardrails.** Company is "Career Team". Neutral, no names, lessons-forward on
   anything sensitive. No student data or private course internals.
 - **AI use flown proudly.** Every repo carries the "made with Claude" badge + footer
-  ([README-STANDARD](https://tjakoen.github.io/standards/readme-standard)); the flagship post is
+  ([README-STANDARD](https://portfolio.tjakoen.com/standards/readme-standard)); the flagship post is
   `content/notes/ten-times-zero.md`.
 - **It consumes the stack, never forks it.** New design work belongs up in grain, not here.
 
