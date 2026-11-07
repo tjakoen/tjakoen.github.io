@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 8 | the branch is local for review
+unpushed: 9 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a trail-bend and text-selection check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -97,8 +97,9 @@ dots, the twenty and fifty letter dances, the refresh reset, the stray ant and i
 command, and the ground and sound details.
 
 **The ground.** A quiet ground patch sits around each hill: filled stones, thicker grass blades,
-and a leaf or a mushroom depending on the hill. It is theme-token colour at 0.55 opacity, never
-catches a click, and stays still under reduced motion. A mini hill gets a smaller tuft.
+and a leaf or a mushroom depending on the hill. Two more small pieces are scattered in empty space
+in the reading pane, so the page feels inhabited beyond the mound. It is theme-token colour,
+never catches a click, and stays still under reduced motion. A mini hill gets a smaller tuft.
 
 **The mini hill language.** No words on the page. The rim carries one dot per guard. The base
 carries five dots, one per hit, and the existing Braille mound shrinks as the dots go out. The
