@@ -76,8 +76,13 @@ The plugin does three jobs inside DSH:
    debounced by two seconds. The Claude PostToolUse hook did this; the plugin replaces it.
 4. **The session checklist.** On the first step of a root session it runs the shared checklist in
    DSH mode and injects the block. The block checks the global instructions, the plugin and its
-   profile entry, the MCP entries, the standards, PANTRY, the graph and git state, and ends with
-   the verdict.
+   profile entry, the MCP entries, the project memory index, the standards, PANTRY, the graph and
+   git state, and ends with the verdict.
+5. **Nudges.** One-time PostToolUse reminders for a bash or tool result over its bound, a session
+   that reads and searches without delegating, a search sweep without a graph query, and a finish
+   nudge after an edit that says to run the end command.
+6. **Session events.** Start, write and stop lines in the project's sessions.jsonl, the same shape
+   the Claude hooks write, so the doctor and PANTRY count a DSH session.
 
 The owner's approval file is the one Claude already uses: ~/.claude/human-lane-approved, one
 extended regular expression per line. A path matching a line is allowed through, so an approval
@@ -90,7 +95,7 @@ fails, never breaks the tool call that triggered it.
 
 - **The full doctor is a command, not a start event.** The checklist runs automatically and covers
   the health rows; the doctor adds the kit and run-ledger checks, so the AGENTS.md line asks for it
-  first.
+  first. The finish nudge asks the model to run the end command, which is still the close.
 - **The turn-end gate is a command, not a stop hook.** The end command is manual. Nothing blocks a
   session from declaring done without it.
 - **Shell writes are outside the guard.** A bash command can write anywhere. Parsing shell to find
@@ -99,11 +104,13 @@ fails, never breaks the tool call that triggered it.
   the same gap.
 - **A workflow script is not envelope-checked.** The agent calls live inside JavaScript the tool
   receives as a script, not as a prompt. A subagent call is checked.
-- **The ~/.claude.json permissions, ~/.claude/MEMORY.md and the artifacts/runs ledger are not read
-  or written automatically.** The MCP servers are configured in the profile patch. DSH has its own
-  session store under ~/.dsh. A run report is still the session's job.
-- **The output bounds and the context-trigger nudge are absent.** DSH has its own truncation and
-  spill behavior, but not the Claude PostToolUse reminders.
+- **The ~/.claude.json permissions and the artifacts/runs ledger are not read or written
+  automatically.** The MCP servers are configured in the profile patch. The project memory index is
+  named by the checklist and read on demand; DSH does not load it automatically or keep a second
+  store. DSH has its own session store under ~/.dsh. A run report is still the session's job.
+- **The context-trigger nudge is absent.** The output bounds, the delegation and discovery
+  reminders, and the finish nudge are in the plugin. The context trigger reads the transcript for
+  the window, which DSH does not expose the same way.
 
 ## Install and remove
 
