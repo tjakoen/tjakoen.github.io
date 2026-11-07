@@ -37,9 +37,11 @@ I had no game on my portfolio. For someone who keeps telling students the intere
 
 The ant is already in the status bar. Click it, or open the terminal at the bottom of the page, type *nest*, and press Enter. The terminal command does the same thing. If you want to see it listed, type *help* first: *nest* sits next to *reveal the ant colony*.
 
-Click the ant, and an anthill turns up in a random empty patch of whatever page you are on, high or low, and the colony goes to work on the copy.
+Click the ant, and an anthill turns up in a random empty patch of whatever page you are on, high or low, and the colony goes to work on the copy. If you are already reading this note, the button below does the same thing without a trip to the status bar.
 
 > The enemy in this game wants the sentence you were halfway through reading.
+
+<p class="nest-start"><button type="button" data-nest-start>Start the colony</button></p>
 
 ![The Nest open on a note: an anthill in an empty patch, a dotted scent trail down to the subtitle, an ant carrying a letter, gaps where letters were taken, and the colony panel in the sidebar.](/media/notes/nest-trails.jpg)
 
@@ -86,9 +88,9 @@ Every other letter feeds the queen in the sidebar, who lays eggs. The rest goes 
   </g>
 </svg>
 
-![Trails of ants carrying letters across the ten-times-zero note toward the anthill, the stores bar in the sidebar reading building as a builder heads out to raise a mini hill.](/media/notes/nest-mini-hill.jpg)
+![A mini hill standing on the note while the colony works, the panel showing one hill and the new meter cards.](/media/notes/nest-mini-hill.jpg)
 
-You fight back with four colony tools in the panel: Squash and Wipe on 1 and 2, and Bait and Seal with their names on the tiles. Links, mute, pause and restore sit in the row below, with Links still on 3. Squash and Wipe lock every page link, not just the reading pane, so a missed ant does not send you to another page. A locked link says so in a small notice and offers the Links tool. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and it snaps into two pieces: the ants scatter, then take the nearest trail with room or head back to the hill. A squashed ant flattens under a quick ring, and a pile of ants goes together under one click. Links hands the page back, but following a page link asks first: leaving ends the colony. There is bait, a hill seal on a cooldown, a restore button that asks first, then puts every letter back, moves the main mound, and keeps the ants, and a mute button, because sound is off until you ask for it; the unmute button pulses when the colony opens, then settles on hover, focus, click or after eight seconds.
+You fight back with four colony tools in the panel: Squash and Wipe on 1 and 2, and Bait and Seal with their names on the tiles. Links, mute, pause and restore sit in the row below, with Links still on 3 and its label reading Links locked or Links unlocked. Squash and Wipe lock every page link, not just the reading pane, so a missed ant does not send you to another page. A locked link says so in a small notice and offers the Links tool. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and it snaps into two pieces: the ants scatter, then take the nearest trail with room or head back to the hill. A squashed ant flattens under a quick ring, and a pile of ants goes together under one click. Links hands the page back, but following a page link asks first: leaving ends the colony. There is bait, a hill seal on a cooldown, a restore button that asks first, then puts every letter back, moves the main mound, keeps the ants, and scrolls to the new hill, and a mute button, because sound is off until you ask for it; the unmute button pulses when the colony opens, then settles on hover, focus, click or after eight seconds.
 
 ## No win screen, no game over
 
@@ -96,7 +98,7 @@ The endings were the part I argued with myself about longest. A portfolio is not
 
 ## Built on the same stack as everything else
 
-No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file. The sound is synthesized in the same file: a few oscillators and one noise buffer, no audio files.
+No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The four meters are character bars, ten cells each, and the activity log is one line. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file. The sound is synthesized in the same file: a few oscillators and one noise buffer, no audio files.
 
 That was the point of building it at all. A design system that only renders documents is half a claim. This one also renders a small ecosystem that steals from the documents.
 
@@ -108,7 +110,7 @@ Claude did most of the typing, which will surprise nobody who has read [how I wo
 
 ## What I have not earned yet
 
-It has been played by me, a preview browser, and a small browser suite, and that is the whole test group. Balance is a guess: the costs of mini hills, the one in seven threshold, how fast the queen breeds. I have watched a guard patrol beside a trail since, and the first version could get stuck on its own mound; that is fixed now. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and the stray ant has nowhere to lead because the launcher hides there. I have not built that one.
+It has been played by me, a preview browser, and a small browser suite, and that is the whole test group. Balance is a guess: the costs of mini hills, the trail target, how fast the queen breeds. I have watched a guard patrol beside a trail since, and the first version could get stuck on its own mound; that is fixed now. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and the stray ant has nowhere to lead because the launcher hides there. I have not built that one.
 
 But if you are reading this on the site, the ant is in the status bar, and the terminal still takes one word. *Nest*. The copy you just read is the food. If a single ant crosses the page later, when the Nest is closed, follow it. It is the same animated ant as the colony, legs and all, and it knows the way back. Click one and it runs down the page, along the status bar and into the launcher, rather than flying there. It will not cross again in that tab. If you leave it alone, it walks off the nearest edge after fourteen to nineteen seconds. If you would rather not wait, the terminal takes *stray*.
 

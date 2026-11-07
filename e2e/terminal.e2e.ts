@@ -64,6 +64,12 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page).toHaveURL(/\/bread$/);
   });
 
+  test("the note starts the colony from its own button", async ({ page }) => {
+    await page.goto("/notes/the-site-has-ants");
+    await page.getByRole("button", { name: "Start the colony" }).click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+  });
+
   test("the old ?nest link is just a page, not a shortcut into the game", async ({ page }) => {
     await page.goto("/?nest");
     await expect(page.getByRole("button", { name: "Open the Nest" })).toBeVisible();
