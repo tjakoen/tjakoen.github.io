@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 17 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a trail-shape check, a scout-source check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 18 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-source check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -68,7 +68,7 @@ with a leave confirmation; other redirects get the browser's own beforeunload pr
 is closed, a single stray ant sometimes crosses the reading pane on its own, off any trail, with
 pauses and a small sway. It uses the colony's animated ant art, so its legs move. If nobody
 clicks it, it slides off the nearest edge after fourteen to nineteen seconds. Click it and it runs
-for the status bar launcher and makes it pulse. A click writes `nest-stray-clicked` to sessionStorage,
+down the reading pane, along the status bar, and up into the launcher; the launcher pulses. A click writes `nest-stray-clicked` to sessionStorage,
 so the random ant does not return in that tab, across page loads, until the tab is closed. A `stray`
 terminal command sends one on demand. It is scheduled thirty to ninety seconds after load, then two
 to four minutes after a walk or a click. It only runs where the launcher is visible, so it is a
@@ -133,7 +133,7 @@ $ bun test
 Ran 875 tests across 48 files. [9.74s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  12 passed (32.7s)
+  12 passed (27.0s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

@@ -94,6 +94,8 @@
     .nest-ant .legs-b, .nest-stray .legs-b { opacity: 0; }
     .nest-ant.walk .legs-a, .nest-stray.walk .legs-a { animation: nest-step .18s steps(1) infinite; }
     .nest-ant.walk .legs-b, .nest-stray.walk .legs-b { animation: nest-step .18s steps(1) infinite reverse; }
+    .nest-stray.running .legs-a { animation-duration: .1s; }
+    .nest-stray.running .legs-b { animation-duration: .1s; }
     .nest-ant.lift svg { animation: nest-lift .35s ease-out; }
     .nest-ant.wait svg { animation: nest-wait 1s ease-in-out infinite; }
     @keyframes nest-step { 0% { opacity: 1; } 50% { opacity: 0; } }
@@ -188,7 +190,7 @@
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .activity li:first-child { color: var(--ink); }
     #nest-mock .activity li::before { content: "› "; color: var(--ink-faint); }
-    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-ant.swatted svg, .nest-splat { animation: none; } }`;
+    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-ant.swatted svg, .nest-splat { animation: none; } }`;
   document.head.append(style);
 
   // ================================ the switch ================================
@@ -248,20 +250,46 @@
     if (!to.width || strayReduced()) {
       el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(180000 + Math.random() * 120000); return;
     }
-    const tx = to.left + to.width / 2 - 11, ty = to.top + to.height / 2 - 6;
-    el.style.position = "fixed"; el.style.margin = "0";
-    el.style.left = from.left + "px"; el.style.top = from.top + "px";
-    const t0 = performance.now(), dur = 900;
-    const frame = (now) => {
-      const k = Math.min(1, (now - t0) / dur), e = k * k;
-      el.style.left = from.left + (tx - from.left) * e + "px";
-      el.style.top = from.top + (ty - from.top) * e - Math.sin(k * Math.PI) * 22 + "px";
-      el.style.transform = `rotate(${Math.atan2(to.top - from.top, to.left - from.left) + Math.PI}rad) scale(${1 - k * 0.45})`;
-      el.style.opacity = String(0.7 * (1 - k * 0.5));
-      if (k < 1) requestAnimationFrame(frame);
-      else { el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(180000 + Math.random() * 120000); }
+    // A run along the page, not a flight: down to the bottom of the reading pane, along the
+    // status bar, then up into the launcher. The ant turns at each corner and keeps its legs.
+    const start = [from.left + from.width / 2, from.top + from.height / 2];
+    const target = [to.left + to.width / 2, to.top + to.height / 2];
+    const bottomY = Math.min(main.getBoundingClientRect().bottom - 6, target[1] - 4);
+    const path = [
+      start,
+      [start[0] + (Math.random() - 0.5) * 30, bottomY],
+      [target[0], bottomY],
+      target,
+    ];
+    el.style.position = "fixed"; el.style.margin = "0"; el.style.zIndex = "100";
+    el.style.left = (start[0] - 11) + "px"; el.style.top = (start[1] - 6) + "px";
+    el.classList.add("running");
+    let seg = 0;
+    const step = () => {
+      if (!strayEl || game) return;
+      const a = path[seg], b = path[seg + 1];
+      const dist = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      const dur = Math.max(140, dist / 0.65), t0 = performance.now();
+      const last = seg === path.length - 2;
+      const frame = (now) => {
+        if (!strayEl || game) return;
+        const k = Math.min(1, (now - t0) / dur);
+        const x = a[0] + (b[0] - a[0]) * k, y = a[1] + (b[1] - a[1]) * k;
+        const bob = Math.sin(k * Math.PI * 6) * 0.8;
+        el.style.left = (x - 11) + "px"; el.style.top = (y - 6 + bob) + "px";
+        const scale = last ? 1 - k * 0.12 : 1;
+        el.style.transform = `rotate(${Math.atan2(b[1] - a[1], b[0] - a[0]) + Math.PI}rad) scale(${scale})`;
+        if (last) el.style.opacity = String(0.7 * (1 - k * 0.75));
+        if (k < 1) requestAnimationFrame(frame);
+        else {
+          seg++;
+          if (seg < path.length - 1) step();
+          else { el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(180000 + Math.random() * 120000); }
+        }
+      };
+      requestAnimationFrame(frame);
     };
-    requestAnimationFrame(frame);
+    step();
   };
   const leaveStray = () => {
     if (!strayEl || strayLeaving) return;
