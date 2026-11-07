@@ -444,7 +444,7 @@
       ${tool("squash", "Squash", "1")}${tool("wipe", "Wipe", "2")}${gameAction("bait", "bait", "Bait", "Drop bait", "Place a crumb to lure nearby ants away.")}${gameAction("seal", "seal", "Seal", "Seal hills", "Seal every anthill for a few seconds.")}
     </div>
     <div class="row tools" role="group" aria-label="Page controls">
-      ${tool("read", "Links", "3")}${action("sound", "muted", "Unmute", "Turn on colony sounds.")}${action("pause", "pause", "Pause", "Pause the colony.")}${action("restore", "restore", "Restore page", "Put stolen letters back while the colony keeps running.")}
+      ${tool("read", "Links", "3")}${action("sound", "muted", "Unmute", "Turn on colony sounds.")}${action("pause", "pause", "Pause", "Pause the colony.")}${action("restore", "restore", "Restore page", "Put stolen letters back and re-site the mounds while the colony keeps running.")}
     </div>
     <p class="link-state" data-k="link-state" aria-live="polite"><span class="dot"></span><span data-k="link-text">links locked</span></p>
     <p class="muted tool-help" data-k="tool-help" aria-live="polite"></p>
@@ -1845,10 +1845,23 @@
   });
   $("restore").addEventListener("click", () => {
     if (state.builder?.spot.gap) cancelBuild(state.builder);
-    minis.filter((mound) => mound.spot.gap).forEach(removeMini);
-    state.ants.forEach((a) => { if (a.letter?.state === "carried") drop(a.letter); });
+    const oldMinis = minis.slice();
+    oldMinis.forEach(removeMini);
+    state.trails.slice().forEach(retire);
+    const spot = findHomeSpot();
+    home.base = spot;
+    home.hole = [spot[0], spot[1] - hr.height + 4];
+    home.el.style.left = spot[0] - hr.width / 2 + "px";
+    home.el.style.top = spot[1] - hr.height + "px";
+    state.ants.forEach((a) => {
+      if (a.where !== "page") return;
+      if (a.letter?.state === "carried") drop(a.letter);
+      a.letter = null; a.trail = null; a.job = "home"; a.path = [home.hole.slice()]; a.k = 0;
+      a.el?.classList.remove("wait");
+    });
+    oldMinis.forEach(() => { const s = findMiniSpot(); if (s) makeMini(s); });
     state.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
-    state.stolen.clear(); state.larder = []; log("every letter is back");
+    state.stolen.clear(); state.larder = []; log("every letter is back; the mounds have moved");
   });
 
   // Six ants to start: three scouts already on their way up and three workers below them. The

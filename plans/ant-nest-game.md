@@ -35,7 +35,8 @@ unreadable and the colony has won that page.
 - Off by default, and nothing runs until the Nest tab is opened. The choice persists the way the
   sidebar mode already persists across pages.
 - Works on any page, because it only reads text nodes inside the main content and never touches
-  the DOM structure. Restore page puts every letter back in one click, and a reload always does.
+  the DOM structure. Restore page puts every letter back in one click and re-sites the mounds; a
+  reload always does.
 - Respects reduced motion: ants step rather than crawl, and the colony pauses when the tab is hidden.
 - Accessible: ants are buttons with a name, so a keyboard player can tab to them and squash them
   with Enter. The page text a screen reader hears is restored before it is read.
@@ -65,7 +66,8 @@ unreadable and the colony has won that page.
   back with a leave confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
   each tool a name, an icon and a key. Squash ants, drag across a scent trail to break it, drop bait
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
-  seals have cooldowns. Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
+  seals have cooldowns. Restore page puts the letters back and re-sites the home and mini mounds.
+  Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
 - **The colony dances.** Every time the colony has taken twenty, then fifty, then a rising number
   of letters, it stops: the queen leaves the sidepanel nest for a stage outside the hill, the
   workers ring her and dance, the sidepanel pulses, the stolen glyphs orbit, and then the colony
