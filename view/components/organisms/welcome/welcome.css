@@ -7,13 +7,19 @@
 .welcome__proof { max-width: 68ch; margin: 0 0 var(--space-4); color: var(--ink-muted); font-size: var(--text-sm); }
 .welcome__proof-links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); max-width: 72ch; margin-top: var(--space-3); }
 .welcome__proof-links a { font-size: var(--text-sm); text-underline-offset: 0.2em; }
-.welcome__cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(var(--space-8), 6vw, 6rem); margin-top: var(--space-8); }
+.welcome__cols { clear: both; display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(var(--space-8), 6vw, 6rem); margin-top: var(--space-8); }
 /* collapse to one column when the SHELL FRAME is narrow — a @container query, not @media, so the
    viewport-toggle's mobile PREVIEW (which clamps the frame, not the real viewport) also collapses
    it. Under plain @media the two columns stayed side by side in the preview and the Walkthroughs
    column overflowed off the frame's right edge. The container is <body> (grain's shell-frame);
    on a real window its width tracks the viewport, so narrow real windows collapse exactly as before. */
 @container shell-frame (max-width: 56rem) { .welcome__cols { grid-template-columns: 1fr; } }
+/* the Braille baguette: floats in the hero's top-right corner in the flavor accent, so the intro copy
+   wraps around it rather than running under it, and steps aside when the frame is too narrow. */
+.welcome__bread { float: right; margin: 0 0 var(--space-4) var(--space-6);
+  font-family: var(--font-mono); font-size: clamp(0.7rem, 1.2vw, 1.05rem); line-height: 1.05;
+  color: var(--color-accent); pointer-events: none; user-select: none; }
+@container shell-frame (max-width: 56rem) { .welcome__bread { display: none; } }
 .welcome h2 { font-size: var(--text-xl); font-weight: var(--font-weight-regular); margin: 0 0 1rem; }
 
 /* bottom: the pill CTA + the (functional) startup checkbox */
