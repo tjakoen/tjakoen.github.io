@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 11 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a session stray check, a trail-bend and text-selection check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 12 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -60,9 +60,10 @@ makes the player scroll to find it, but scouts can work the whole page afterward
 scroll is gone. Mini hills may be built below the fold now, which the owner allowed; the home
 hill still opens in view. The ants may work below the fold while the reader reads.
 
-**Refresh and the stray.** A reload now closes the panel, clears the saved colony, and leaves the
-launcher, so the sidebar is back to its default view and the player has to click. A normal link
-navigation still carries the colony. When the game is closed, a single stray ant sometimes crosses
+**Refresh, navigation and the stray.** A reload or a move to another page closes the panel, clears
+the colony, and leaves the launcher, so the sidebar is back to its default view and the player has
+to click. The colony lives on the page where it was opened. When the game is closed, a single stray
+ant sometimes crosses
 the reading pane on its own, off any trail, with pauses and a small sway. Click it and it runs for
 the status bar launcher and makes it pulse. A click writes `nest-stray-clicked` to sessionStorage,
 so the random ant does not return in that tab, across page loads, until the tab is closed. A `stray`
@@ -99,10 +100,11 @@ always-visible launcher and the help line, the ninety second trail fade, the sol
 dots, the twenty and fifty letter dances, the refresh reset, the stray ant and its `stray`
 command, and the ground and sound details.
 
-**The ground.** A quiet ground patch sits around each hill: filled stones, thicker grass blades,
-and a leaf or a mushroom depending on the hill. Two more small pieces are scattered in empty space
-in the reading pane, so the page feels inhabited beyond the mound. It is theme-token colour,
-never catches a click, and stays still under reduced motion. A mini hill gets a smaller tuft.
+**The ground.** A quiet ground patch sits around each hill: a Braille soil line, grass, stones and a
+leaf, the same alphabet as the hill and the sidebar nest. Two more small pieces
+are scattered in empty space in the reading pane, so the page feels inhabited beyond the mound.
+It is theme-token colour, never catches a click, and stays still under reduced motion. A mini hill
+gets a smaller tuft.
 
 **The mini hill language.** No words or count dots on the page. The mound thins as it takes hits,
 and the guards are the ants visible on patrol. The element is a keyboard button with an aria label

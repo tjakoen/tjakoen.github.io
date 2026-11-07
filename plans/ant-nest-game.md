@@ -69,9 +69,8 @@ unreadable and the colony has won that page.
   queen dies: the nest goes still and the page keeps its gaps. Let one in seven characters go,
   capped at 120, and it is too late: the ants can no longer be squashed and eat on until the page is
   empty. Leaving the tab still restores everything.
-- **It follows you.** A colony left running is saved when the page unloads and resumes on the next
-  page. A refresh is different: it closes the panel, clears the saved colony, and leaves the
-  launcher, so the player starts clean when they click.
+- **It lives on the page.** A refresh or a move to another page closes the panel and clears the
+  colony; the launcher stays in the status bar. The stray click is remembered for the tab.
 - **The stray.** When the game is closed, a single ant sometimes crosses the reading pane, off any
   trail. Click it and it runs for the status bar launcher and makes it pulse. A click marks the tab,
   so the random ant does not return until a new tab. Type `stray` in the terminal to send one on
@@ -79,7 +78,6 @@ unreadable and the colony has won that page.
 
 ## Open questions for the owner
 
-- Should the colony carry across pages, so ants left alive on the home page are waiting on /notes?
 - Does a beaten colony end the game, or does a new queen move in after a while?
 - Is a small leaderboard worth having, or does the larder of stolen words say enough?
 
