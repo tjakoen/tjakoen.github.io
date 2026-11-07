@@ -302,6 +302,7 @@
   window.__nestLauncher = { open: () => { if (!game) openNest(); }, close: () => { if (game) leave(); } };
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelStray(); else scheduleStray(); });
   scheduleStray();
+  window.__nestStray = { spawn: () => { cancelStray(); spawnStray(); if (!strayEl) scheduleStray(); }, cancel: cancelStray };
   if (new URLSearchParams(location.search).has("nest-debug")) {
     window.__stray = { spawnStray, cancelStray, scheduleStray, pulseLauncher };
   }

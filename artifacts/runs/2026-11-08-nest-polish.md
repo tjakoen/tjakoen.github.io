@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 5 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 6 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -62,11 +62,11 @@ the fold while the reader reads.
 
 **Refresh and the stray.** A reload now closes the panel, clears the saved colony, and leaves the
 launcher, so the sidebar is back to its default view and the player has to click. A normal link
-navigation still carries the colony. When the game is unlocked but closed, a single stray ant
-sometimes crosses the reading pane on its own, off any trail, with pauses and a small sway. Click it
-and it runs for the status bar launcher and makes it pulse. It is scheduled thirty to ninety seconds
-after load, then two to four minutes after a walk or a click. It only runs where the launcher is
-visible, so it is a desktop easter egg.
+navigation still carries the colony. When the game is closed, a single stray ant sometimes crosses
+the reading pane on its own, off any trail, with pauses and a small sway. Click it and it runs for
+the status bar launcher and makes it pulse. A `stray` terminal command sends one on demand. It is
+scheduled thirty to ninety seconds after load, then two to four minutes after a walk or a click.
+It only runs where the launcher is visible, so it is a desktop easter egg.
 
 **The dance.** The colony stops at twenty stolen letters, then fifty, then a rising set of
 thresholds. The queen comes out of the hill, the workers circle her, the stolen glyphs orbit, a
@@ -90,8 +90,8 @@ next to `reveal the ant colony`. `?nest-debug` only exposes the local test hooks
 
 **The note.** The public note now carries the bug joke ("My portfolio has bugs now"), the
 always-visible launcher and the help line, the ninety second trail fade, the soldier and mini hill
-dots, the twenty and fifty letter dances, the refresh reset, the stray ant, and the ground and sound
-details.
+dots, the twenty and fifty letter dances, the refresh reset, the stray ant and its `stray`
+command, and the ground and sound details.
 
 **The ground.** A quiet ground patch sits around each hill: stones, grass, a twig, a dandelion and
 one paperclip further out. It is theme-token colour at 0.55 opacity, never catches a click, and
@@ -121,7 +121,7 @@ $ bun test
 Ran 875 tests across 48 files. [9.74s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  9 passed (7.7s)
+  10 passed (7.7s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

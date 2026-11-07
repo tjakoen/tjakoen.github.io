@@ -73,8 +73,9 @@ unreadable and the colony has won that page.
 - **It follows you.** A colony left running is saved when the page unloads and resumes on the next
   page. A refresh is different: it closes the panel, clears the saved colony, and leaves the
   launcher, so the player starts clean when they click.
-- **The stray.** When the game is unlocked but closed, a single ant sometimes crosses the reading
-  pane, off any trail. Click it and it runs for the status bar launcher and makes it pulse.
+- **The stray.** When the game is closed, a single ant sometimes crosses the reading pane, off any
+  trail. Click it and it runs for the status bar launcher and makes it pulse. Type `stray` in the
+  terminal to send one on demand.
 
 ## Open questions for the owner
 
