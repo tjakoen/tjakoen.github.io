@@ -18,7 +18,7 @@ recipientHandle: "shokomori"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-midterm-aacb3b2d"
 criteriaUrl: "/badges/apsi-2209-midterm"
-social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/aacb3b2d"
+social: "I earned Full Stack Web Development. Verify my badge: https://portfolio.tjakoen.com/b/aacb3b2d"
 showcase:
   - "/media/badges/showcase/83da6c7df6ccac80.webp | 1280x1028 | The client at desktop width"
   - "/media/badges/showcase/f2f2e47094194be1.webp | 375x1573 | The client at phone width"

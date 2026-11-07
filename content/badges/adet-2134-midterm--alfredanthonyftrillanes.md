@@ -18,7 +18,7 @@ recipientHandle: "mog4ku-mono"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-546ee6ac"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/546ee6ac"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/546ee6ac"
 showcase:
   - "/media/badges/showcase/60eaea5068c773e9.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/6d63598862ebfe66.webp | 780x1688 | Monster detail"

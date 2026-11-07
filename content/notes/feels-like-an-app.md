@@ -8,7 +8,7 @@ date: 2026-07-05
 readingTime: "~13 min"
 tags: [batch, grain, mill, no-build, view-transitions, architecture]
 summary: >
-  A technical tour of how tjakoen.github.io is built, and why it is a different way of doing things:
+  A technical tour of how portfolio.tjakoen.com is built, and why it is a different way of doing things:
   the single-page feel is a cross-document View Transition, not an SPA; there is no build step,
   because a Bun server composes the HTML and the static site is a frozen crawl of it; there is no
   client framework, only a handful of small scripts leaning on native browser elements; writes go

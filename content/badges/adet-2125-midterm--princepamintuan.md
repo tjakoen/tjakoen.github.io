@@ -18,7 +18,7 @@ recipientHandle: "prinpami"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-2ce4171e"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/2ce4171e"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/2ce4171e"
 showcase:
   - "/media/badges/showcase/d58978da2fe533d3.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/69163f20a5d8cc76.webp | 780x1688 | Monster detail"

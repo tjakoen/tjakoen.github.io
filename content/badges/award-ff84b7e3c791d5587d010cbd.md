@@ -18,7 +18,7 @@ recipientHandle: "gianworks"
 issuedOn: "2026-11-03"
 certId: "hau-ff84b7e3c791d5587d010cbd"
 criteriaUrl: "/badges/apsi-2203-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/ff84b7e3c791d558"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/ff84b7e3c791d558"
 showcaseNone: "project repo private or without a deployed site"
 showcaseOptOut: false
 ---

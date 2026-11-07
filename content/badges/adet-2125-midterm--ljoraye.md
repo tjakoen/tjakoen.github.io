@@ -18,7 +18,7 @@ recipientHandle: "ljoraye"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-645ec05d"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/645ec05d"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/645ec05d"
 showcase:
   - "/media/badges/showcase/8a04dbf2be69cd57.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/86c80cf56f6fe26f.webp | 780x1688 | Monster detail"

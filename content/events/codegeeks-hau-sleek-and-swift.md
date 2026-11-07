@@ -32,7 +32,7 @@ social: |
   Thanks to Code Geeks for the invitation and the packed lab, and to Kyle Payawal for the photos
   and the recap video.
 
-  Writeup and the photos: https://tjakoen.github.io/calendar/codegeeks-hau-sleek-and-swift
+  Writeup and the photos: https://portfolio.tjakoen.com/calendar/codegeeks-hau-sleek-and-swift
 ---
 
 ## Registration closed a day early

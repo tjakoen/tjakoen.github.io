@@ -18,7 +18,7 @@ recipientHandle: "piedot3000"
 issuedOn: "2026-11-03"
 certId: "hau-f76036a2a09860bfdb51fc5d"
 criteriaUrl: "/badges/apsi-2209-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/f76036a2a09860bf"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/f76036a2a09860bf"
 showcase:
   - "/media/badges/showcase/8af50646222badc3.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

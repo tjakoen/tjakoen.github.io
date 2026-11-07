@@ -18,7 +18,7 @@ recipientHandle: "camillavillena-tech"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-642585b7"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/642585b7"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/642585b7"
 showcase:
   - "/media/badges/showcase/73ca02c87e96f552.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/0d41e355d615a3a8.webp | 780x1688 | Monster detail"

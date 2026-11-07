@@ -18,7 +18,7 @@ recipientHandle: "venz-ochoa"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2203-midterm-2d1c2769"
 criteriaUrl: "/badges/apsi-2203-midterm"
-social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/2d1c2769"
+social: "I earned Full Stack Web Development. Verify my badge: https://portfolio.tjakoen.com/b/2d1c2769"
 showcase:
   - "/media/badges/showcase/f1f3dc12360bfca6.webp | 1280x1579 | The client at desktop width"
   - "/media/badges/showcase/b5bb0243f2290753.webp | 375x2209 | The client at phone width"

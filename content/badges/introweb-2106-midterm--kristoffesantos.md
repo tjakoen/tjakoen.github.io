@@ -18,7 +18,7 @@ recipientHandle: "kristoffesantos"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-e68ce21f"
 criteriaUrl: "/badges/introweb-2106-midterm"
-social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/e68ce21f"
+social: "I earned Interactive Web Pages. Verify my badge: https://portfolio.tjakoen.com/b/e68ce21f"
 showcase:
   - "/media/badges/showcase/c2890f5d12cca98d.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

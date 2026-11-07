@@ -1,6 +1,6 @@
 // portfolio/seo.test.ts — the machine-readable head (canonical + Open Graph + Twitter + JSON-LD).
 import { test, expect, describe } from "bun:test";
-import { enrichHead, canonicalPath, analyticsBeacon, CF_BEACON_TOKEN, SITE } from "./seo.ts";
+import { enrichHead, canonicalPath, analyticsBeacon, CF_BEACON_TOKEN, SITE, rewriteLegacySiteLinks } from "./seo.ts";
 
 const ORIGIN = "https://example.test";
 const doc = (head: string, body = "<p>hi</p>") =>
@@ -17,6 +17,13 @@ describe("SITE", () => {
   test("the public origin is the custom domain", () => {
     expect(SITE.origin).toBe("https://portfolio.tjakoen.com");
   });
+});
+
+test("legacy GitHub Pages links are rewritten, literal text is left alone", () => {
+  const html = '<a href="https://tjakoen.github.io/notes/x">x</a><img src="http://tjakoen.github.io/a.png"><pre>tjakoen.github.io</pre>';
+  expect(rewriteLegacySiteLinks(html)).toBe(
+    '<a href="https://portfolio.tjakoen.com/notes/x">x</a><img src="https://portfolio.tjakoen.com/a.png"><pre>tjakoen.github.io</pre>',
+  );
 });
 
 describe("canonicalPath", () => {

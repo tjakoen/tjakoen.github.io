@@ -18,7 +18,7 @@ recipientHandle: "gumawaangel88-art"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-2b7e0fc6"
 criteriaUrl: "/badges/introweb-2106-midterm"
-social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/2b7e0fc6"
+social: "I earned Interactive Web Pages. Verify my badge: https://portfolio.tjakoen.com/b/2b7e0fc6"
 showcaseNone: "live site did not render a usable, privacy-safe page on 2026-11-03"
 showcaseOptOut: false
 ---

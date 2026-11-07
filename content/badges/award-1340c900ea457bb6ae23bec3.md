@@ -18,7 +18,7 @@ recipientHandle: "kleddi"
 issuedOn: "2026-11-03"
 certId: "hau-1340c900ea457bb6ae23bec3"
 criteriaUrl: "/badges/introweb-2106-builds-with-ai"
-social: "I earned Builds for the Web and AI. Verify my badge: https://tjakoen.github.io/b/1340c900ea457bb6"
+social: "I earned Builds for the Web and AI. Verify my badge: https://portfolio.tjakoen.com/b/1340c900ea457bb6"
 showcaseNone: "project repo private or without a deployed site"
 showcaseOptOut: false
 ---

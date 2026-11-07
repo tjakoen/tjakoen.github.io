@@ -18,7 +18,7 @@ recipientHandle: "oldspeed159"
 issuedOn: "2026-11-03"
 certId: "hau-1ecaa660d3e80a3e3411d7c2"
 criteriaUrl: "/badges/introweb-2106-builds-with-ai"
-social: "I earned Builds for the Web and AI. Verify my badge: https://tjakoen.github.io/b/1ecaa660d3e80a3e"
+social: "I earned Builds for the Web and AI. Verify my badge: https://portfolio.tjakoen.com/b/1ecaa660d3e80a3e"
 showcaseNone: "project repo private or without a deployed site"
 showcaseOptOut: false
 ---

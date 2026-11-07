@@ -18,7 +18,7 @@ recipientHandle: "joshphilippuangco"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-3d96bd4f"
 criteriaUrl: "/badges/introweb-2106-midterm"
-social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/3d96bd4f"
+social: "I earned Interactive Web Pages. Verify my badge: https://portfolio.tjakoen.com/b/3d96bd4f"
 showcase:
   - "/media/badges/showcase/2edbb04bb19e1bd6.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

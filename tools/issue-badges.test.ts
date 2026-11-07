@@ -69,7 +69,7 @@ test("writes private issued manifest only during emission and preserves all sour
     const written=JSON.parse(readFileSync(output,"utf8")).awards[0];
     expect(written.emails).toEqual(source.emails); expect(written.scores).toEqual(source.scores); expect(written.recipientKey).toBe(source.recipientKey);
     expect(written.identityEmail).toBe(source.identityEmail); expect(written.evidence).toEqual(source.evidence);
-    expect(written.url).toBe(`https://tjakoen.github.io/b/${written.shortId}`); expect(written.imageUrl).toEndWith(`${written.certSlug}.png`); expect(written.issuedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(written.url).toBe(`https://portfolio.tjakoen.com/b/${written.shortId}`); expect(written.imageUrl).toEndWith(`${written.certSlug}.png`); expect(written.issuedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(() => issue(manifest(),{dir,issuedManifestPath:join(dir,"unsafe.json")})).toThrow("outside");
   } finally {rmSync(dir,{recursive:true,force:true});rmSync(privateDir,{recursive:true,force:true});}
 });
