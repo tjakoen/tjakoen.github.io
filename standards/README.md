@@ -31,7 +31,7 @@ six.
 | **Deciding where a file lives / unbloating a root** | [TREE.md](TREE.md) | The layout standard: keep the root a readable index, only load-bearing files earn a place there, everything else folds one level down into a named home. AI-REPO-STANDARD owns *which* files exist; this owns *where* they sit. |
 | **Running a session / handing off** | [SESSION-LOOP.md](SESSION-LOOP.md) | The session lifecycle: orient, the loop, the recurring chores, memory (so lessons stick), the handoff, and model economy. |
 | **Running one AI workflow across every repo** | [LOOP.md](LOOP.md) | The system *around* the sessions: the work-triggered heartbeat that makes skipped chores visible, the thin-kit shape, the accountability contract that keeps an unattended run honest. One floor above SESSION-LOOP. |
-| **Finding out whether a rule is enforced or only written** | [HOOKS.md](HOOKS.md) | The three machine-level hooks that fire in every session: the doctor at session start, the human-lane deny before a write, the envelope check before a spawn. What each one cannot do, and the off switch for each. LOOP owns the rules; this owns the machinery under three of them. |
+| **Finding out whether a rule is enforced or only written** | [HOOKS.md](HOOKS.md) | The machine-level hooks that fire in every session: the doctor at session start, the human-lane deny before a write, the envelope check before a spawn. What each one cannot do, the off switch for each, and the adapter contract that holds Claude Code, Codex and DeepSeek Harness to the same six signals with a ten-case conformance list. LOOP owns the rules; this owns the machinery under them. |
 | **Answering a code question without burning the window** | [GRAPH.md](GRAPH.md) | Ask the code graph a scoped question before you fan out grep, reads, and subagents. Query by symbol not prose, keep it fresh with a free per-edit hook, never commit the artifact. The retrieval half of the loop. |
 | **Writing prose in my name** | [VOICE.md](VOICE.md) | The writing standard: cadence, the honesty clause, the machine-tells to refuse, and what a reader meets first. Owns *how it reads*, and what they read first. |
 | **Drafting a note / blog post** | [NOTE-STANDARD.md](NOTE-STANDARD.md) | How a note is built (frontmatter, structure, footer), plus a runnable prompt. Owns the *artifact*; VOICE owns the words. |
@@ -66,8 +66,9 @@ six.
   start and turn end, and section 4b says the envelope is enforced where the tooling allows, and HOOKS
   is where you find out which of that is real on a given machine. Read it when a session-start report
   or a blocked write surprises you, and before touching anything under the machine's tools directory.
-  It is deliberately honest about the holes: the write guard does not see the shell, and the envelope
-  check reads presence rather than quality.
+  It is deliberately honest about the holes: the write guard does not see the shell, the envelope
+  check reads presence rather than quality, and the three harness adapters do not yet agree on one
+  path rule, which its section 4c measures rather than assumes.
 - **VOICE + NOTE-STANDARD + README-STANDARD + FIGURES** are the writing set: VOICE owns the prose,
   the others own specific artifacts and point back at it. Start here for any published words.
 - **TOUR-STANDARD** is the handover half of the engineering pair: LOOP's contract says a change that
