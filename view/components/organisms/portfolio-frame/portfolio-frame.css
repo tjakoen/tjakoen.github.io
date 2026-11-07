@@ -507,3 +507,10 @@ body[data-desk="offline"] .presence .presence__star { color: var(--ink-faint); }
 @media (max-width: 768px) {
   html, .app-shell__main { scroll-padding-bottom: 4.5rem; }
 }
+
+/* The sidebar is the same on every page, so it holds still across a page change rather than
+   cross-fading with the content. Its own view-transition group with no animation means only the
+   page content changes, which is the single-page feel the shell is going for. */
+.app-shell__aside { view-transition-name: app-aside; }
+::view-transition-old(app-aside), ::view-transition-new(app-aside) { animation: none; }
+::view-transition-old(app-aside) { display: none; }
