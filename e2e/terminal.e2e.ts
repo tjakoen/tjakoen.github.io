@@ -396,8 +396,8 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(sound).not.toHaveClass(/nest-sound-hint/);
     const link = main.getByRole("link", { name: "Explore selected work" });
     const fileLink = page.locator('.file-tree__file[href="/resume"]');
-    const linkState = panel.locator('[data-k="link-text"]');
-    await expect(linkState).toHaveText("links locked");
+    const links = panel.getByRole("button", { name: /Links/ });
+    await expect(links).toContainText("Links locked");
     await expect(main).toHaveCSS("cursor", "crosshair");
     await link.press("Enter");
     await expect(page).toHaveURL(/\/$/);
@@ -407,9 +407,9 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(toast).toBeVisible();
     await expect(toast).toContainText("Links are locked while the colony is playing.");
     await toast.getByRole("button", { name: "Use Links (3)" }).click();
-    await expect(linkState).toHaveText("links open");
+    await expect(links).toContainText("Links unlocked");
     await panel.getByRole("button", { name: "Squash", exact: true }).click();
-    await expect(linkState).toHaveText("links locked");
+    await expect(links).toContainText("Links locked");
 
     const bait = panel.getByRole("button", { name: "Drop bait" });
     await bait.click();
@@ -421,10 +421,10 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await bait.click();
     await panel.getByRole("button", { name: "Wipe", exact: true }).click();
     await expect(main).toHaveCSS("cursor", "cell");
-    await expect(linkState).toHaveText("links locked");
+    await expect(links).toContainText("Links locked");
     await expect(bait).toBeEnabled();
-    await panel.getByRole("button", { name: "Links", exact: true }).click();
-    await expect(linkState).toHaveText("links open");
+    await links.click();
+    await expect(links).toContainText("Links unlocked");
     await expect(main.locator(".nest-layer")).toHaveAttribute("inert", "");
     await expect(bait).toBeDisabled();
     await link.press("Enter");
