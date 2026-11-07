@@ -1,13 +1,14 @@
 ---
 title: HOOKS.md — the gates that fire before you do
-summary: The three machine-level hooks that enforce parts of the loop on every session in every repo - what each one fires on, what it does, what it deliberately cannot do, and how to turn it off.
+summary: The machine-level hooks that enforce parts of the loop on every session in every repo - what each one fires on, what it deliberately cannot do, how to turn it off, and the adapter contract that holds Claude Code, Codex and DeepSeek Harness to the same six signals with a ten-case conformance list.
 when: >
   Read this BEFORE trusting that a rule in LOOP or SESSION-LOOP is enforced rather than merely
   written, before a session-start report or a blocked write surprises you, and before adding,
-  editing or switching off anything under the machine's tools directory. It owns the machinery:
-  which event each hook fires on, the limits that are deliberate, and the off switch for each one.
-  Don't skip because you have read LOOP - LOOP says what the rules are, and this says which three of
-  them a machine actually stops you over.
+  editing or switching off anything under the machine's tools directory or wiring a new harness
+  into the loop. It owns the machinery: which event each hook fires on, the limits that are
+  deliberate, the off switch for each one, and the adapter contract with the case list that proves
+  an adapter against it. Don't skip because you have read LOOP - LOOP says what the rules are, and
+  this says which of them a machine actually stops you over, and in which harness.
 ---
 
 # The gates that fire before you do
@@ -290,6 +291,88 @@ twelve sessions: zero. Rung two again.
 TOOL_OUTPUT_MAX, the sweep thresholds with CODE_DISCOVERY_SWEEP and DELEGATE_SWEEP, and all four
 honour the exclusion prefix. Unwiring is removing the entry from the machine settings, which is the
 owner's act.
+
+---
+
+## 4c. The adapter contract (one set of rules, three harnesses)
+
+A harness is the program that runs a session, and three of them run here: Claude Code, Codex and
+DeepSeek Harness. The rules above do not change between them. What changes is the adapter: which
+event a harness can fire, and what it hands over when it does. Every section above is written as
+though there were one harness, which until recently there was.
+
+That makes enforcement a per-adapter fact, and the honest reading of a rule is its weakest column.
+So the contract is stated as signals, and each adapter is measured against the same list rather than
+trusted to have copied it.
+
+**The six signals.** A harness that can give all six carries the whole mechanical tier. Each one
+exists because a rule in LOOP or SESSION-LOOP is only teeth if a machine does it.
+
+| Signal | What it carries | The rule behind it |
+|---|---|---|
+| Start of session | runs the checker before the first prompt and puts its verdict in front of the session | LOOP §2, SESSION-LOOP §1 |
+| Before a write | refuses the write, with the reason, and the call does not run | LOOP §4b |
+| Before a spawn | refuses a handoff carrying no lane, cap, stops or ask-triggers, naming the missing one | LOOP §4b, SESSION-LOOP §5 |
+| After a tool call | hands a gate failure to the model's next turn rather than to the transcript | LOOP §2, section 5 below |
+| End of turn | runs the typecheck, the lint count and the graph refresh, and asks for the two report lines | LOOP §9 |
+| Session identity | attributes an uncommitted path to the session that wrote it | LOOP §4b |
+
+Three adapters answer it three ways. Claude Code and Codex are shell hooks in a settings file.
+DeepSeek Harness has no shell event, so the same rules arrive as a plugin: a tool guard, an injection
+at the first step, a listener after each execution, and session events.
+[The DeepSeek Harness adapter doc](https://github.com/tjakoen/tjakoen.github.io/blob/main/docs/HARNESS-DSH.md)
+owns that in detail; this file owns only the contract it is held to.
+
+**The list is a live defect, not a thought experiment.** Measure the lane list in both guards and
+they do not agree. On 2026-11-08 the shell guard carried seventeen path rules plus the package.json
+special case, and the DSH guard carried twenty. Three differ, and only one of the three is a rule
+about the estate: the DSH guard blocks a payments directory, the shell guard does not. Probed with
+the same payload, a file under payments is blocked by one adapter and allowed by the other, while
+LOOP §4b's printed path list covers both spellings. The other two entries are the guard protecting
+its own source and its own configuration, which is right, and which belongs in the adapter declared
+rather than discovered.
+
+That finding is left open here on purpose. The shell guard lives in the private tools repo, outside
+the repo this standard lives in, and the case list below is the thing that caught it, on its first
+run. Fixing one adapter without the list would have left the sentence this section replaces.
+
+**The case list.** Run all ten against each harness when an adapter changes, when a harness updates,
+and once a quarter. File the result as a run report, so the date each case was last proved is a date
+rather than a memory.
+
+1. Cold start in a kit repo: the checklist verdict appears before the first prompt, and names the
+   failing row when one is red.
+2. Cold start in a directory that is not a kit: silence, exit 0, no error. A report that fires
+   everywhere is muted within a week.
+3. A write to a path in the lane list: blocked, with the reason, and the call does not run.
+4. A write outside the list: allowed and silent. A guard that speaks on the ordinary case is a guard
+   someone unwires.
+5. A write to the settings file: blocked by the guard rather than by the harness, so a session cannot
+   unwire the rule it is breaking.
+6. The same blocked write after one matching line in the approval file: allowed, and no other path
+   opens with it.
+7. A spawn carrying the four envelope headings: allowed. The same spawn with one heading removed:
+   blocked, naming which one.
+8. A broken type: the failure reaches the model's next turn, not only the transcript.
+9. The end gate on a clean tree and on a dirty one: typecheck, lint count, graph refresh, and the two
+   report lines.
+10. Two sessions in one tree: the dirty file is attributed to the session that wrote it.
+
+**What an adapter may add, and what it may not.** It may add rules that protect the guard and its own
+composition, because a guard a session can edit is a guard a session can remove. It may not narrow
+the public list in LOOP §4b, and it may not silently drop one of the six signals: any difference is
+declared in the adapter with its reason. A harness that cannot fire a signal does not carry the rule
+behind it, and the honest response is the CONFORMANCE posture, name the row not run rather than claim
+it. The DSH adapter has no Stop channel, which is why its end gate is a command plus a nudge rather
+than a refusal.
+
+**Where the shape comes from.** HKUDS's [AgentPilot](https://github.com/HKUDS/AgentPilot) installs one
+skill across a dozen coding hosts and treats the host as a worker behind an adapter with a declared
+contract: what task input it takes, what execution options it accepts, what result it returns, plus a
+registry of where each host keeps its skills. None of its software runs here, no Python runtime, no
+policy model, no cloud skill store. What is borrowed is the shape, that an adapter is a contract with
+a case list rather than a second copy of the rules. The two rows that disagree above are what a
+second copy does.
 
 ---
 

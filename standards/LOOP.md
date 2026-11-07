@@ -427,8 +427,10 @@ Two rules keep this from turning into a permissions system that quietly grants i
   change to gated, because "the tests pass" means nothing when the tests do not reach the change.
 
 **A lane the harness enforces beats a lane the run remembers.** Rails that live only in a document
-are followed by whoever read the document, which on a long run is a coin flip. Two harness
-capabilities carry real weight here, and both are worth asking for by name when choosing one:
+are followed by whoever read the document, which on a long run is a coin flip. Which of these a given
+harness can actually enforce, and the case list that proves it, is [HOOKS](HOOKS.md) section 4c.
+Two harness capabilities carry real weight here, and both are worth asking for by name when choosing
+one:
 
 - **Per-action approval decided per action, not per session.** A blanket yes at the start is the
   binary rail this section replaces, one lane wide and always the widest. Better is a harness that
