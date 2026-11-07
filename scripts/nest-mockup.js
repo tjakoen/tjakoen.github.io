@@ -138,6 +138,14 @@
     .nest-switch { background: none; border: 0; padding: 2px 4px; margin: 0 6px; color: var(--ink-faint); cursor: pointer; line-height: 0; }
     .nest-switch:hover, .nest-switch:focus-visible { color: var(--ink); }
     .nest-switch[aria-pressed="true"] { color: var(--color-accent); }
+    .nest-switch.nest-pulse svg { animation: nest-pulse 1.1s ease-out 2; }
+    @keyframes nest-pulse { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.45); } }
+    .nest-stray { position: absolute; width: 23px; height: 13px; margin: -6px 0 0 -11px; padding: 0; border: 0; background: none;
+      color: var(--ink-muted); cursor: pointer; z-index: 40; opacity: .7; pointer-events: auto; transition: opacity .35s, color .35s; }
+    .nest-stray:hover, .nest-stray:focus-visible { color: var(--ink); opacity: 1; }
+    .nest-stray:focus-visible { outline: 1px dashed var(--color-accent); outline-offset: 3px; }
+    .nest-stray svg { display: block; width: 23px; height: 13px; overflow: visible; }
+    @media (prefers-reduced-motion: reduce) { .nest-switch.nest-pulse svg { animation: none; } }
     #nest-mock .head { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
     #nest-mock .head .lbl:first-child { flex: 1; }
     #nest-mock .head .x { flex: 0 0 auto; width: 24px; height: 24px; padding: 0; border: 1px solid transparent; font: 16px/1 var(--font-mono); color: var(--ink-muted); }
@@ -192,8 +200,94 @@
     [7, 6], [8, 7], [2, 6], [1, 7]].map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}</svg>`;
   if (bar.querySelector(".status-bar__xray")) bar.insertBefore(antBtn, bar.querySelector(".status-bar__xray")); else bar.append(antBtn);
   let game = null;
+
+  // A stray ant is the easter egg for a closed Nest. It walks the reading pane on its own, not on
+  // a trail, and if someone clicks it the ant runs for the launcher and makes it pulse. It only
+  // exists when the game has been unlocked, because this whole file is only loaded then.
+  let strayTimer = null, strayEl = null, strayLeaving = false;
+  const strayReduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const cancelStray = () => {
+    clearTimeout(strayTimer);
+    strayLeaving = false;
+    if (strayEl) { strayEl.remove(); strayEl = null; }
+  };
+  const scheduleStray = (delay) => {
+    clearTimeout(strayTimer);
+    if (game || document.hidden || !launcherVisible()) return;
+    strayTimer = setTimeout(spawnStray, delay ?? 30000 + Math.random() * 60000);
+  };
+  const pulseLauncher = () => {
+    antBtn.classList.add("nest-pulse");
+    setTimeout(() => antBtn.classList.remove("nest-pulse"), 2400);
+  };
+  const runToLauncher = (el) => {
+    if (!el || strayEl !== el) return;
+    strayLeaving = true;
+    const from = el.getBoundingClientRect(), to = antBtn.getBoundingClientRect();
+    if (!to.width || strayReduced()) {
+      el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(180000 + Math.random() * 120000); return;
+    }
+    const tx = to.left + to.width / 2 - 11, ty = to.top + to.height / 2 - 6;
+    el.style.position = "fixed"; el.style.margin = "0";
+    el.style.left = from.left + "px"; el.style.top = from.top + "px";
+    const t0 = performance.now(), dur = 900;
+    const frame = (now) => {
+      const k = Math.min(1, (now - t0) / dur), e = k * k;
+      el.style.left = from.left + (tx - from.left) * e + "px";
+      el.style.top = from.top + (ty - from.top) * e - Math.sin(k * Math.PI) * 22 + "px";
+      el.style.transform = `rotate(${Math.atan2(to.top - from.top, to.left - from.left) + Math.PI}rad) scale(${1 - k * 0.45})`;
+      el.style.opacity = String(0.7 * (1 - k * 0.5));
+      if (k < 1) requestAnimationFrame(frame);
+      else { el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(180000 + Math.random() * 120000); }
+    };
+    requestAnimationFrame(frame);
+  };
+  const spawnStray = () => {
+    if (game || document.hidden || !launcherVisible() || strayEl) return;
+    if (getComputedStyle(main).position === "static") main.style.position = "relative";
+    const fromLeft = Math.random() < 0.5;
+    const y = main.scrollTop + Math.max(80, main.clientHeight * (0.25 + Math.random() * 0.45));
+    const startX = fromLeft ? -24 : main.clientWidth + 24;
+    const endX = fromLeft ? main.clientWidth + 30 : -30;
+    const endY = y + (Math.random() - 0.5) * 140;
+    const el = document.createElement("button");
+    el.type = "button"; el.className = "nest-stray"; el.innerHTML = antBtn.innerHTML;
+    el.setAttribute("aria-label", "A stray ant. Follow it to the Nest.");
+    el.style.left = startX + "px"; el.style.top = y + "px";
+    el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); runToLauncher(el); });
+    main.append(el); strayEl = el; strayLeaving = false;
+    const steps = 4 + Math.floor(Math.random() * 3), legs = [];
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;
+      legs.push([startX + (endX - startX) * t + (Math.random() - 0.5) * 24, y + (endY - y) * t + (Math.random() - 0.5) * 44]);
+    }
+    const walk = (i) => {
+      if (!strayEl || game || strayLeaving) return;
+      if (i >= legs.length) { el.remove(); strayEl = null; scheduleStray(120000 + Math.random() * 120000); return; }
+      const [tx, ty] = legs[i], sx = parseFloat(el.style.left), sy = parseFloat(el.style.top);
+      const dur = 1800 + Math.random() * 1800, t0 = performance.now();
+      const frame = (now) => {
+        if (!strayEl || game || strayLeaving) return;
+        const k = Math.min(1, (now - t0) / dur), e = k * k * (3 - 2 * k);
+        el.style.left = sx + (tx - sx) * e + Math.sin(k * 9) * 2 + "px";
+        el.style.top = sy + (ty - sy) * e + Math.cos(k * 7) * 1.5 + "px";
+        el.style.transform = `rotate(${Math.atan2(ty - sy, tx - sx) + Math.PI + Math.sin(k * 8) * 0.06}rad)`;
+        if (k < 1) requestAnimationFrame(frame);
+        else setTimeout(() => walk(i + 1), 300 + Math.random() * 900);
+      };
+      requestAnimationFrame(frame);
+    };
+    walk(0);
+  };
+
+  // A refresh is a fresh start: no saved colony, no panel, just the launcher. Link navigation
+  // still carries the colony, because that is the game following the reader.
+  const navType = performance.getEntriesByType("navigation")[0]?.type;
+  if (navType === "reload") { try { localStorage.removeItem("nest-colony"); } catch { /* private mode */ } }
+
   try { if (localStorage.getItem("portfolio:aside-mode") === "nest") localStorage.removeItem("portfolio:aside-mode"); } catch { /* private mode */ }
-  const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; antBtn.focus(); });
+  const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; antBtn.focus(); scheduleStray(); });
   // a colony left running on the last page picks up here
   let pending = null;
   try { pending = JSON.parse(localStorage.getItem("nest-colony") || "null"); } catch { /* private mode or a bad save */ }
@@ -203,9 +297,15 @@
   }, 300);
   const openNest = () => { game = start(pending); pending = null; };
   antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) cancelStray(); else scheduleStray(); });
+  scheduleStray();
+  if (new URLSearchParams(location.search).get("nest") === "debug") {
+    window.__stray = { spawnStray, cancelStray, scheduleStray, pulseLauncher };
+  }
 
   const SAVE_KEY = "nest-colony";
   const start = (saved) => {
+  cancelStray();
   // ================================ the panel ================================
   antBtn.setAttribute("aria-pressed", "true"); antBtn.setAttribute("aria-label", "Close the Nest");
   const sidebarWasHidden = shell?.getAttribute("data-aside-hidden") === "true";
