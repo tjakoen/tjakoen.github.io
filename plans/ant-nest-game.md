@@ -60,7 +60,7 @@ unreadable and the colony has won that page.
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
   below the fold. The first two favor a spot near the main hill; later ones spread out. Builders
   favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to patrol a short stretch beside a nearby trail, or circle the mound, and flyers to steal letters. Its mound thins
-  with each hit. Knocking it calls the guards home and flashes the mound and every guard; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
+  with each hit, and a fallen mound lowers the stores cap. Knocking it calls the guards home and flashes the mound and every guard; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
 - **The player's tools.** The colony tools are Squash, Wipe, Bait and Seal, with names on the
   tiles; Links, mute, pause and restore are the utility row below. Squash holds every page link so
   a missed ant never navigates, wipe is the only tool that breaks scent, and links gives the page
@@ -73,7 +73,7 @@ unreadable and the colony has won that page.
   number of letters, it stops: the queen crawls out of the hill and walks to a clear patch near
   it, every ant on the page moves toward her and the far ones turn back to their trails when it
   ends, the sidepanel pulses, the stolen glyphs orbit, and a next worship bar tracks the next
-  one. The page is the whole environment, so the ants may work below the fold while
+  one. The target rises and falls with the living colony, and the queen dances at the patch. The page is the whole environment, so the ants may work below the fold while
   the player reads.
 - **No announced ending.** There is no win, no reserve and no game over. If the last ant is gone
   the queen sends one scout back out and the colony continues. The page can run out, and the

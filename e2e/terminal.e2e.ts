@@ -13,12 +13,14 @@ declare global {
       state: {
         ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; el?: Element }>;
         trails: Array<{ block: Element }>;
+        built: number;
       };
       home: { base: [number, number] };
       startParty: (final?: boolean) => void;
       makeMini: (spot: unknown) => unknown;
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
+      newAnt: (role: string, route: string, d: number) => unknown;
     };
   }
 }
@@ -224,6 +226,41 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
   });
 
+  test("a broken mound lowers the stores cap", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.evaluate(() => {
+      window.__nest!.state.built = 2;
+      const spot = window.__nest!.findMiniSpot();
+      if (spot) window.__nest!.makeMini(spot);
+    });
+    await expect(page.locator("#nest-mock [data-k='stores-val']")).toContainText("/24");
+    const mound = page.locator(".nest-mini").first();
+    for (let i = 0; i < 5; i++) await mound.click();
+    await expect(page.locator("#nest-mock [data-k='stores-val']")).toContainText("/18");
+  });
+
+  test("the next worship scales with the colony", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    const before = await page.locator("#nest-mock [data-k='worship-val']").textContent();
+    await page.evaluate(() => { for (let i = 0; i < 8; i++) window.__nest!.newAnt("worker", "hatch", 0); });
+    await page.waitForTimeout(250);
+    const after = await page.locator("#nest-mock [data-k='worship-val']").textContent();
+    expect(after).not.toBe(before);
+  });
+
+  test("the meters explain themselves", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await expect(page.locator("#nest-mock .nest-meter .hint")).toHaveCount(4);
+    await expect(page.locator("#nest-mock .nest-meter .hint").nth(1)).toContainText("mound builders");
+    await expect(page.locator("#nest-mock .nest-meter .hint").nth(3)).toContainText("queen dances");
+  });
+
   test("a long larder does not push the stats around", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
@@ -317,6 +354,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     const q1 = await page.locator(".nest-queen").boundingBox();
     expect(q0 && q1 && Math.hypot(q1.x - q0.x, q1.y - q0.y)).toBeGreaterThan(8);
     await page.waitForTimeout(900);
+    await expect(page.locator(".nest-queen")).toHaveClass(/dancing/);
     const queen = await page.locator(".nest-queen").boundingBox();
     const hill = await page.locator(".nest-hill").first().boundingBox();
     expect(queen && hill && queen.y > hill.y + hill.height).toBe(true);
