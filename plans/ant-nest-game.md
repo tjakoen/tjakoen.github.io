@@ -42,6 +42,24 @@ unreadable and the colony has won that page.
 - No canvas. Ants are small inline SVGs on one fixed layer, moved with transforms, so the whole thing
   stays inside GRAIN's tokens and dark theme.
 
+## What the mockup now does
+
+- **Hidden by default.** Nothing loads until the game is unlocked, by typing the word nest anywhere
+  outside a text field or by visiting with `?nest`. The unlock is remembered on that browser.
+- **The colony.** Two scouts and four workers to start. A trail opens when its scout carries the
+  first letter home, workers take open trails in turn, six to a line, and a trail dies with its
+  last ant. Soldiers hatch once the colony passes eight and take two hits. At fourteen ants a
+  winged queen flies off to found a second anthill, unless she is caught on the way.
+- **The player's tools.** Squash ants, drag across a scent trail to wipe it, drop bait to pull
+  nearby ants off course, and seal the anthills from the panel or by holding one. Bait and seals
+  have cooldowns. Sound is muted until switched on.
+- **No announced ending.** Wipe the colony after the queen has spent her two reserve scouts and the
+  queen dies: the nest goes still and the page keeps its gaps. Let one in seven characters go,
+  capped at 120, and it is too late: the ants can no longer be squashed and eat on until the page is
+  empty. Leaving the tab still restores everything.
+- **It follows you.** A colony left running is saved when the page unloads and resumes on the next
+  page.
+
 ## Open questions for the owner
 
 - Should the colony carry across pages, so ants left alive on the home page are waiting on /notes?
