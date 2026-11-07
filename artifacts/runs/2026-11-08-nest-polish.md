@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 31 | the branch is local for review
+unpushed: 32 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -99,7 +99,8 @@ activity log, three filled meters for page holds, stores and the next egg, a com
 tool tiles, a persistent links locked or links open chip, the colony controls, and a footer link to
 the note. The meter classes are namespaced to the panel, because GRAIN's global `.meter` atom was
 clipping the labels to eight pixels. The panel also clips horizontally, so a long larder or status
-cannot create a sideways scroll. The inline "How to play" block is
+cannot create a sideways scroll. The stat values sit next to their labels; the old space-between
+pushed the next 0 far enough right that it read as the trails value. The inline "How to play" block is
 gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps running.
 
 **The launcher.** The ant now sits in the status bar on every page. The game loads with the page
