@@ -18,6 +18,7 @@ import { SITE } from "../src/seo.ts";
 const OUT = join(import.meta.dir, "..", "content", "media");
 const W = SITE.ogImageW;   // 1200
 const H = SITE.ogImageH;   // 630
+const HOST = new URL(SITE.origin).host;
 
 // The card markup. Serif masthead + e-ink paper, matching the site's own look. Inline everything —
 // this renders with setContent (no server, no external asset), so what you see here is the whole card.
@@ -51,7 +52,7 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
     </div>
     <div class="foot">
       <span>${SITE.author.name}</span>
-      <span class="url">tjakoen.github.io</span>
+      <span class="url">${HOST}</span>
     </div>
   </div>
 </body></html>`;

@@ -12,11 +12,13 @@
 import { chromium } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { SITE } from "../src/seo.ts";
 
 const OUT = join(import.meta.dir, "..", "content", "media", "notes");
 const FILE = "one-loop-three-harnesses-social.png";
 const W = 1200;
 const H = 1200;
+const HOST = new URL(SITE.origin).host;
 
 const PAPER = "#E2E0D8";
 const INK = "#1C1B17";
@@ -98,7 +100,7 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
 
     <line x1="96" y1="1122" x2="${W - 96}" y2="1122" style="stroke:${LINE};stroke-width:1"/>
     <text x="96" y="1158" style="fill:${INK};font-size:22px">The Loop Outlives the Model</text>
-    <text x="${W - 96}" y="1158" text-anchor="end" style="fill:${MUTED};font-size:21px">tjakoen.github.io</text>
+    <text x="${W - 96}" y="1158" text-anchor="end" style="fill:${MUTED};font-size:21px">${HOST}</text>
   </svg>
 </body></html>`;
 
