@@ -40,7 +40,9 @@ It runs the machine doctor, prints the warnings and due rows, checks that .agent
 points at the live mount, and reports the graph age. The full doctor is a command because DSH has no
 session-start event. The session checklist is separate and does run automatically: the plugin runs
 it on the first step and injects the block, and the global instruction file says to show that block
-verbatim at the top of the first reply.
+verbatim at the top of the first reply. When the script prints nothing the plugin injects a line
+saying the checklist did not run, rather than staying silent, because a missing block and a passing
+block look identical from inside the session.
 
 Before calling work done:
 
@@ -61,9 +63,53 @@ bun tools/dsh-loop/cli.mjs envelope /tmp/handoff.txt
 The first asks the human-lane rules about a path. The second checks a handoff for the four headings
 LOOP section 4b requires.
 
+When the question is whether a session can be archived:
+
+```sh
+bun tools/dsh-loop/cli.mjs close
+```
+
+It reports the branch and whether it is on the default branch, the pull request state, what is
+pushed, which dirty paths belong to this session, the worktree inventory, the newest run report for
+the branch, and whether the gate ran. Then it gives one of the four verdicts the close skill already
+defines, CLOSE, CLOSE WITH NOTES, HAND OFF or DO NOT CLOSE, with the single next move. It exits 0
+when the session can close and 1 when it cannot, so a script can read it. Pass --gate to run the
+repository's own check script as part of the verdict, and --json for the facts.
+
+Attribution is what makes it usable. A dirty tree is not a verdict in a repository where several
+sessions share a checkout, so the command reads the per-project event log the DSH plugin appends
+to, and counts against this session only the paths its own edits touched. Everything else is a
+note. The log records edits and not files created by a shell command, so a path that arrived that
+way is counted as another session's; pass --mine <paths> to claim it.
+
+It changes nothing. The worktree check runs prune with --dry-run, and the commands that remove a
+worktree or delete a branch are printed for a person to run.
+
+## The stop hook
+
+DSH has no Stop hook of its own, but its agent loop runs a serial agent/turn-stopping event when a
+turn has no steps left, and a listener there can queue a message that opens one more turn. The loop
+plugin listens there. When a turn changed files, it runs the repository's own close command, writes
+the block into the worktree's git dir as dsh-close.md, and queues a message that asks the session to
+reply with that block and start nothing new. The owner gets a status card instead of asking where
+the project stands, and the next session's start prints the same block from the file, so a cold
+session opens oriented.
+
+Three environment values tune it. DSH_STOP_REPORT is always by default, blocked to report only when
+the work is not safely archived, or off. DSH_STOP_REPORT_COOLDOWN_MS sets a floor between reports and
+defaults to zero. The hook stays offline: it runs close with --no-fetch, --no-pr and --no-worktrees,
+so it answers in about a second and never waits on the network.
+
+The report is itself a turn, so the plugin will not fire twice on the same count of edits and will
+not fire while a report is in flight. A repository without tools/dsh-loop/cli.mjs is skipped, and so
+is a child session.
+
+The plugin is loaded when the app starts. A session that is already running keeps the listener it
+was started with, so a restart is what arms this on the machine.
+
 ## What the plugin enforces
 
-The plugin does three jobs inside DSH:
+The plugin does six jobs inside DSH:
 
 1. **The human lane.** A write to a path in LOOP section 4b is denied with a reason, before the tool
    runs. It covers CI and workflows, migrations and SQL, auth and permission paths, secrets,
