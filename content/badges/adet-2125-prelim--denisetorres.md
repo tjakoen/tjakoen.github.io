@@ -18,7 +18,7 @@ recipientHandle: "frenchbrot"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-prelim-a14e5083"
 criteriaUrl: "/badges/adet-2125-prelim"
-social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/a14e5083"
+social: "I earned Dart and Flutter Foundations. Verify my badge: https://portfolio.tjakoen.com/b/a14e5083"
 showcase:
   - "/media/badges/showcase/8ce94b63dda62142.webp | 780x1688 | Detail fire"
   - "/media/badges/showcase/47151b145bc46431.webp | 780x1688 | Detail water low hp"

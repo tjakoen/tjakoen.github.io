@@ -18,7 +18,7 @@ recipientHandle: "piedot3000"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-prelim-b8b0eb76"
 criteriaUrl: "/badges/apsi-2209-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/b8b0eb76"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/b8b0eb76"
 showcase:
   - "/media/badges/showcase/694411a3e27c4295.webp | 1024x800 | App"
 showcaseOptOut: false

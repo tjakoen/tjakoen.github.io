@@ -41,7 +41,7 @@ social: |
   To my students: thank you. I'm proud of you. Keep building.
 
   The whole semester, with every project and badge linked:
-  https://tjakoen.github.io/notes/proud-of-my-students-2026-s1
+  https://portfolio.tjakoen.com/notes/proud-of-my-students-2026-s1
 ---
 
 Seven sections. Three subjects. More than 200 final projects. 73 Flutter apps, around 127

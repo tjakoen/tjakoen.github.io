@@ -18,7 +18,7 @@ recipientHandle: "dodz24"
 issuedOn: "2026-11-03"
 certId: "hau-9f246c7d6c6d3c89cd57dca4"
 criteriaUrl: "/badges/adet-2134-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/9f246c7d6c6d3c89"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/9f246c7d6c6d3c89"
 showcase:
   - "/media/badges/showcase/ea75aca24a1ea505.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

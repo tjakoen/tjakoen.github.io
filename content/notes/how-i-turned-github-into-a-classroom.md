@@ -165,7 +165,7 @@ You can go and look, which I would rather do than ask you to believe me. The
 [code is public](https://github.com/tjakoen/github-native-course-platform): the engine, the workflows,
 and the two repo templates a course gets stamped from. The teacher side of it, the console I run all
 this from, [opens in your own browser in demo
-mode](https://tjakoen.github.io/github-native-course-platform/?demo=1), real code against invented
+mode](https://portfolio.tjakoen.com/github-native-course-platform/?demo=1), real code against invented
 students, no token and no connection. Course internals and student data stay in a private repo, where
 they belong. The portfolio's [classroom project page](/native-github-classroom) connects the public
 demo to the architecture and safety docs. The console got its own story later, in

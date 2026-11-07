@@ -18,7 +18,7 @@ recipientHandle: "grantmihkael"
 issuedOn: "2026-11-03"
 certId: "hau-92af67fdb8b8bb45ab4fa068"
 criteriaUrl: "/badges/apsi-2209-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/92af67fdb8b8bb45"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/92af67fdb8b8bb45"
 showcase:
   - "/media/badges/showcase/8ddfdb97b6f2606c.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

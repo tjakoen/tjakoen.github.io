@@ -18,7 +18,7 @@ recipientHandle: "gian-ibe"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2203-midterm-5b504c56"
 criteriaUrl: "/badges/apsi-2203-midterm"
-social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/5b504c56"
+social: "I earned Full Stack Web Development. Verify my badge: https://portfolio.tjakoen.com/b/5b504c56"
 showcase:
   - "/media/badges/showcase/74d120345b83ca8a.webp | 1280x1312 | The client at desktop width"
   - "/media/badges/showcase/8013cfa4cdf06252.webp | 375x1845 | The client at phone width"

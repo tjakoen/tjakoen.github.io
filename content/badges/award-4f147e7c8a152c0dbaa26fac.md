@@ -18,7 +18,7 @@ recipientHandle: "ejhaygit"
 issuedOn: "2026-11-03"
 certId: "hau-4f147e7c8a152c0dbaa26fac"
 criteriaUrl: "/badges/apsi-2209-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/4f147e7c8a152c0d"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/4f147e7c8a152c0d"
 showcase:
   - "/media/badges/showcase/beaada9045818b67.webp | 1280x800 | The student's desktop wireframe of the cart"
   - "/media/badges/showcase/31916f5b39d12ae5.webp | 1280x800 | The landing page and sign-in"

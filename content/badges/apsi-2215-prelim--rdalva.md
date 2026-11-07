@@ -18,7 +18,7 @@ recipientHandle: "rdalva"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-prelim-a4c1f4ed"
 criteriaUrl: "/badges/apsi-2215-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/a4c1f4ed"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/a4c1f4ed"
 showcase:
   - "/media/badges/showcase/8da3dbdb333b1c08.webp | 1280x689 | Company dashboard view 1"
   - "/media/badges/showcase/3aeaa832b52c4405.webp | 1280x784 | Company dashboard view 2"

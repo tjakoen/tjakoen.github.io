@@ -24,7 +24,7 @@ social: |
   It attests that I completed the prelim coursework of Application and System Integration, awarded on the work I
   actually submitted rather than a grade cutoff.
 
-  Verify it here: https://tjakoen.github.io/b/521f0ec8
+  Verify it here: https://portfolio.tjakoen.com/b/521f0ec8
 ---
 
 This credential attests completion of the prelim block of Application and System Integration. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/apsi-2203-prelim).

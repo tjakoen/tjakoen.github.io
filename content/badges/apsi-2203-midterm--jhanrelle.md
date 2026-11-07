@@ -24,7 +24,7 @@ social: |
   It attests that I completed the midterm coursework of Application and System Integration, awarded on the work I
   actually submitted rather than a grade cutoff.
 
-  Verify it here: https://tjakoen.github.io/b/ec60999e
+  Verify it here: https://portfolio.tjakoen.com/b/ec60999e
 ---
 
 This credential attests completion of the midterm block of Application and System Integration. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/apsi-2203-midterm).

@@ -18,7 +18,7 @@ recipientHandle: "aaronsalunga098-ai"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-df73e8ca"
 criteriaUrl: "/badges/introweb-2106-midterm"
-social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/df73e8ca"
+social: "I earned Interactive Web Pages. Verify my badge: https://portfolio.tjakoen.com/b/df73e8ca"
 showcaseNone: "live site did not render a usable, privacy-safe page on 2026-11-03"
 showcaseOptOut: false
 ---

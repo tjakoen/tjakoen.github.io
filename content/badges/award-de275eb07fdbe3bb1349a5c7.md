@@ -18,7 +18,7 @@ recipientHandle: "kish-mnlo"
 issuedOn: "2026-11-03"
 certId: "hau-de275eb07fdbe3bb1349a5c7"
 criteriaUrl: "/badges/apsi-2215-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/de275eb07fdbe3bb"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/de275eb07fdbe3bb"
 showcaseNone: "project repo private or without a deployed site"
 showcaseOptOut: false
 ---

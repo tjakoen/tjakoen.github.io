@@ -18,7 +18,7 @@ recipientHandle: "kleddi"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-1e5b08f5"
 criteriaUrl: "/badges/introweb-2106-midterm"
-social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/1e5b08f5"
+social: "I earned Interactive Web Pages. Verify my badge: https://portfolio.tjakoen.com/b/1e5b08f5"
 showcase:
   - "/media/badges/showcase/74739c8a5d194e3a.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

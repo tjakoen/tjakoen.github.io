@@ -18,7 +18,7 @@ recipientHandle: "francisalfonso27"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-prelim-1f7cc5cb"
 criteriaUrl: "/badges/introweb-2106-prelim"
-social: "I earned Web Foundations. Verify my badge: https://tjakoen.github.io/b/1f7cc5cb"
+social: "I earned Web Foundations. Verify my badge: https://portfolio.tjakoen.com/b/1f7cc5cb"
 showcaseNone: "live site did not render a usable, privacy-safe page on 2026-11-03"
 showcaseOptOut: false
 ---

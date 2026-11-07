@@ -18,7 +18,7 @@ recipientHandle: "thebeancheese"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-90324a6e"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/90324a6e"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/90324a6e"
 showcase:
   - "/media/badges/showcase/474226a09fea7106.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/5f01676ffa08e3b1.webp | 780x1688 | Monster detail"
