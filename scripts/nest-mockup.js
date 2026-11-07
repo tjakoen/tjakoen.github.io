@@ -162,22 +162,6 @@
   const scent = document.createElementNS("http://www.w3.org/2000/svg", "svg"); scent.classList.add("nest-scent"); layer.append(scent);
   const local = (r) => { const m = main.getBoundingClientRect(); return [r.left - m.left + main.scrollLeft, r.top - m.top + main.scrollTop]; };
 
-  // The anthill on the page: the same dome, drawn in Braille, its entrance at the crown.
-  // a random spot in the visible part of the page, away from the edges
-  const hillBase = [main.clientWidth * (0.15 + Math.random() * 0.7), main.clientHeight * (0.35 + Math.random() * 0.5) + main.scrollTop];
-  const hill = document.createElement("div"); hill.className = "nest-hill"; hill.setAttribute("aria-hidden", "true");
-  {
-    const w = 44, h = 16, dots = new Int8Array(w * h).fill(-1); let seed = 3; const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const u = (x - w / 2) / (w / 2), top = h * (u * u) * 0.95; if (y >= top && ((x + y) % 2 === 0 || y < top + 1.2 || rnd() < 0.2)) dots[y * w + x] = y > h - 3 ? 1 : 0; }
-    for (let y = 0; y < 4; y++) for (let x = w / 2 - 3; x < w / 2 + 3; x++) dots[y * w + x] = -1;
-    let out = "";
-    for (let cy = 0; cy < h; cy += 4) { for (let cx = 0; cx < w; cx += 2) { let code = 0, t = -1; for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) { const v = dots[(cy + dy) * w + cx + dx]; if (v >= 0) { code |= bit[dy][dx]; t = Math.max(t, v); } } const ch = String.fromCharCode(0x2800 + code); out += t === 1 ? `<b>${ch}</b>` : ch; } out += "\n"; }
-    hill.innerHTML = out.trimEnd();
-  }
-  layer.append(hill);
-  const hr = hill.getBoundingClientRect();
-  hill.style.left = hillBase[0] - hr.width / 2 + "px"; hill.style.top = hillBase[1] - hr.height + "px";
-  const hole = [hillBase[0], hillBase[1] - hr.height + 4];
 
   // ---- letters
   const byNode = new WeakMap();
@@ -214,13 +198,53 @@
   const blockOf = (n) => n.parentElement.closest("p, h1, h2, h3, h4, li, dd, blockquote, figcaption, a") || n.parentElement;
   const needOf = (n) => { const fs = parseFloat(getComputedStyle(n.parentElement).fontSize); return fs >= 28 ? 3 : fs >= 20 ? 2 : 1; };
 
-  const freeIn = (block, from) => {
+  // The anthill on the page: the same dome, drawn in Braille, its entrance at the crown.
+  const hill = document.createElement("div"); hill.className = "nest-hill"; hill.setAttribute("aria-hidden", "true");
+  {
+    const w = 44, h = 16, dots = new Int8Array(w * h).fill(-1); let seed = 3; const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const u = (x - w / 2) / (w / 2), top = h * (u * u) * 0.95; if (y >= top && ((x + y) % 2 === 0 || y < top + 1.2 || rnd() < 0.2)) dots[y * w + x] = y > h - 3 ? 1 : 0; }
+    for (let y = 0; y < 4; y++) for (let x = w / 2 - 3; x < w / 2 + 3; x++) dots[y * w + x] = -1;
+    let out = "";
+    for (let cy = 0; cy < h; cy += 4) { for (let cx = 0; cx < w; cx += 2) { let code = 0, t = -1; for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) { const v = dots[(cy + dy) * w + cx + dx]; if (v >= 0) { code |= bit[dy][dx]; t = Math.max(t, v); } } const ch = String.fromCharCode(0x2800 + code); out += t === 1 ? `<b>${ch}</b>` : ch; } out += "\n"; }
+    hill.innerHTML = out.trimEnd();
+  }
+  layer.append(hill);
+  const hr = hill.getBoundingClientRect();
+  // Where the hill goes: an empty patch of the visible page that the whole mound fits in, as far
+  // from any text as the page allows. Among the roomiest spots one is picked at random.
+  const hillBase = (() => {
+    const rects = [];
+    for (const n of textNodes(main)) { if (!/\S/.test(n.data)) continue; const r = document.createRange(); r.selectNodeContents(n); for (const c of r.getClientRects()) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } }
+    main.querySelectorAll("img, svg, button, input, textarea, figure, hr").forEach((el) => { if (layer.contains(el)) return; const c = el.getBoundingClientRect(); if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } });
+    const w = hr.width, h = hr.height, pad = 14, spots = [];
+    for (let y = main.scrollTop + h + 30; y < main.scrollTop + main.clientHeight - 20; y += 18) for (let x = w / 2 + 20; x < main.clientWidth - w / 2 - 20; x += 18) {
+      const box = [x - w / 2 - pad, y - h - pad, x + w / 2 + pad, y + pad];
+      let near = Infinity;
+      for (const r of rects) {
+        const dx = Math.max(r[0] - box[2], box[0] - r[2], 0), dy = Math.max(r[1] - box[3], box[1] - r[3], 0);
+        near = Math.min(near, Math.hypot(dx, dy)); if (!near) break;
+      }
+      if (near > 0) spots.push([x, y, near]);
+    }
+    if (!spots.length) return [main.clientWidth * 0.85, main.scrollTop + main.clientHeight * 0.8];
+    const best = Math.max(...spots.map((p) => Math.min(p[2], 160)));
+    const roomy = spots.filter((p) => Math.min(p[2], 160) >= best * 0.8);
+    return roomy[Math.floor(Math.random() * roomy.length)];
+  })();
+  hill.style.left = hillBase[0] - hr.width / 2 + "px"; hill.style.top = hillBase[1] - hr.height + "px";
+  const hole = [hillBase[0], hillBase[1] - hr.height + 4];
+
+  // A trail feeds from a patch, the letters within PATCH pixels of where its scout found food, so
+  // the ants on it visibly work one small area of the page.
+  const PATCH = 70;
+  const inPatch = (r, c) => Math.hypot(r.left + r.width / 2 - (c[0] - main.scrollLeft + main.getBoundingClientRect().left), r.top + r.height / 2 - (c[1] - main.scrollTop + main.getBoundingClientRect().top)) <= PATCH;
+  const freeIn = (block, center) => {
     const found = [];
     for (const n of textNodes(block)) for (let i = 0; i < n.data.length; i++) {
       if (!/\S/.test(n.data[i])) continue;
       const L = letterOf(n, i); L.ch = n.data[i];
       if (L.state === "free" || (L.state === "gather" && L.crew.length < L.need)) {
-        const r = rectOf(n, i); if (!onScreen(r)) continue;
+        const r = rectOf(n, i); if (!onScreen(r) || (center && !inPatch(r, center))) continue;
         const [x, y] = local(r); found.push({ L, x: x + r.width / 2, y: y + r.height, r });
       }
     }
@@ -251,7 +275,8 @@
   const scoutsOut = () => state.ants.some((a) => a.role === "scout");
   const openTrail = (ant) => {
     if (ant.trail && state.trails.includes(ant.trail) && freeIn(ant.trail.block, ant.trail.end).length) return ant.trail;
-    return state.trails.find((t) => t.ants.size < LINE && freeIn(t.block, t.end).length);
+    // the trail with the fewest ants gets the next worker, so lines fill evenly
+    return state.trails.filter((t) => t.ants.size < LINE && freeIn(t.block, t.end).length).sort((a, b) => a.ants.size - b.ants.size)[0];
   };
   const join = (ant, t) => { if (ant.trail && ant.trail !== t) ant.trail.ants.delete(ant); ant.trail = t; t.ants.add(ant); };
   const leaveTrail = (ant) => {
@@ -284,13 +309,28 @@
   const label = (ant) => { if (!ant.el) return; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.setAttribute("aria-label", `${ant.role === "scout" ? "Scout" : "Worker"} ant. Press to squash.`); };
 
   // A scout wanders: loose waypoints toward a block of text no trail reaches yet, its steps recorded.
+  const remaining = (t) => {
+    for (const n of textNodes(t.block)) for (let i = 0; i < n.data.length; i++) {
+      if (!/\S/.test(n.data[i])) continue;
+      const L = letterOf(n, i); if (L.state === "stolen") continue;
+      if (inPatch(rectOf(n, i), t.end)) return true;
+    }
+    return false;
+  };
+
   const scout = (ant) => {
-    const blocks = [...new Set(textNodes(main).filter((n) => /\S/.test(n.data) && onScreen(n.parentElement.getBoundingClientRect())).map(blockOf))]
-      .filter((b) => !state.trails.some((t) => t.block === b));
-    if (!blocks.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
-    const block = blocks[Math.floor(Math.random() * blocks.length)];
-    const br = block.getBoundingClientRect(); const [bx, by] = local(br);
-    const tx = bx + Math.random() * Math.min(220, br.width), ty = by + br.height / 2;
+    // the scout heads for a random visible character well clear of every patch already worked
+    const options = [];
+    for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
+      if (!/\S/.test(n.data[i]) || letterOf(n, i).state !== "free") continue;
+      const r = rectOf(n, i); if (!onScreen(r)) continue;
+      const [x, y] = local(r);
+      if (state.trails.some((t) => Math.hypot(t.end[0] - x, t.end[1] - y) < PATCH * 2)) continue;
+      options.push([n, x + r.width / 2, y + r.height]);
+    }
+    if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
+    const [node, tx, ty] = options[Math.floor(Math.random() * options.length)];
+    const block = blockOf(node);
     const path = [];
     for (let s = 1; s <= 4; s++) path.push([hole[0] + (tx - hole[0]) * s / 5 + (Math.random() - 0.5) * 100, hole[1] + (ty - hole[1]) * s / 5 + (Math.random() - 0.5) * 60]);
     path.push([tx, ty]);
@@ -301,7 +341,7 @@
   const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.el?.classList.remove("wait"); };
 
   const toLetter = (ant, block) => {
-    const pick = freeIn(block, [ant.x, ant.y])[0];
+    const pick = freeIn(block, ant.trail ? ant.trail.end : [ant.x, ant.y])[0];
     if (!pick) return goHome(ant);
     const L = pick.L;
     if (L.state === "free") { L.need = needOf(L.n); L.state = "gather"; L.crew = []; }
@@ -494,9 +534,11 @@
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
         else if ((e.age += dt) > 4 && state.ants.length < MAX_ANTS) { state.eggs.splice(state.eggs.indexOf(e), 1); newAnt("worker", "hatch", 0); log("an egg hatched"); }
       });
-      state.trails.slice().forEach((t) => { if (!freeIn(t.block, t.end).length) { retire(t); log("a trail ran out of letters"); } });
     }
-    if ((tick = (tick + 1) % 6) === 0) { drawNest(now); drawStats(); }
+    if ((tick = (tick + 1) % 6) === 0) {
+      if (!state.paused) state.trails.slice().forEach((t) => { if (!remaining(t)) { retire(t); log("a trail ran out of letters"); } });
+      drawNest(now); drawStats();
+    }
     requestAnimationFrame(frame);
   };
 
