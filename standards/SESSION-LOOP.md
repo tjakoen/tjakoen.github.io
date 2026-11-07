@@ -68,13 +68,20 @@ The problem→solution loop lives in **AI-DEVELOPMENT §6**; the standing gate i
 session mechanics around them:
 
 1. **Act when the info is there.** Don't re-ask what's answered or re-litigate a settled call.
-2. **Report at load-bearing moments** — a plan before a big move, an honest status after (what
+2. **Write the prediction before you ask.** On any ask that matters, put one line down first saying
+   what you expect the answer to be. A confident, well written response is an anchor, and a written
+   prediction is the only thing it can be compared against afterwards; without one the answer just
+   becomes the conclusion. The habit is Addy Osmani's, from [Critical thinking when agents do the
+   work](https://www.linkedin.com/posts/addyosmani_ai-programming-softwareengineering-share_7524690987357470720-cLIK/):
+   form a hypothesis before asking, and in unfamiliar ground ask for a blind spot pass instead of an
+   opinion. One line is enough, because a prediction nobody can check is a diary entry.
+3. **Report at load-bearing moments** — a plan before a big move, an honest status after (what
    passed, what was skipped, what's still red). No "done!" when it isn't.
-3. **Hit the gate before you call anything done** — typecheck + tests + docs synced + diff read.
+4. **Hit the gate before you call anything done** — typecheck + tests + docs synced + diff read.
    The full checklist is AI-DEVELOPMENT §8; run it, don't paraphrase it.
-4. **The gate is also the commit trigger.** Once it's green, commit (see §3 below). Don't leave
+5. **The gate is also the commit trigger.** Once it's green, commit (see §3 below). Don't leave
    finished, verified work sitting uncommitted.
-5. **A commit is the cheapest place to start over.** When the unit that just landed and the unit
+6. **A commit is the cheapest place to start over.** When the unit that just landed and the unit
    about to start have nothing to do with each other, the second one belongs in a fresh session. Not
    because the thread is long, which is what §5's warn line measures, but because everything the
    first task loaded is now carried into the second and re-read on every turn of it, and none of it
