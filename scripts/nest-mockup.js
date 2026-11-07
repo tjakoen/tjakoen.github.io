@@ -74,16 +74,22 @@
     .nest-hill b { font-weight: inherit; color: var(--ink-faint); }
     .nest-ant.soldier svg { transform: scale(1.4); } .nest-ant.soldier:hover svg { transform: scale(1.7); }
     .nest-ant.hit { color: var(--color-accent); }
+    .nest-ant.flyer { color: var(--ink-muted); } .nest-ant.flyer .wing { animation: nest-flap .1s steps(1) infinite; }
+    .nest-ant.builder { color: var(--color-accent); }
+    @keyframes nest-flap { 50% { opacity: .15; } }
+    .nest-mini { font-size: 12px; }
+    .nest-badge { position: absolute; font: 10px/1 var(--font-mono); color: var(--ink-muted); pointer-events: none; white-space: nowrap; }
+    .nest-badge.open { color: var(--color-accent); }
+    .nest-mini.open { cursor: pointer; }
+    .nest-mini.denied { color: var(--color-accent); transform: translateX(2px); }
     .nest-hill { pointer-events: auto; cursor: pointer; transition: opacity .3s, filter .3s; }
     .nest-hill.pressing { filter: brightness(1.4); }
     .nest-hill.sealed { color: var(--color-accent); }
     .nest-hill.sealed b { color: var(--color-accent); }
-    .nest-scent .hit { stroke: transparent; stroke-width: 16; stroke-dasharray: none; pointer-events: stroke; cursor: grab; opacity: 1; }
+    .nest-scent .hit { stroke: transparent; stroke-width: 16; stroke-dasharray: none; cursor: grab; opacity: 1; }
     .nest-bait { position: absolute; font: 16px var(--font-mono); color: var(--color-accent); -webkit-text-stroke: .05em currentColor;
       transform: translate(-50%, -50%); pointer-events: none; transition: opacity 1s; }
-    .nest-flyer { position: absolute; color: var(--color-accent); pointer-events: auto; cursor: crosshair; margin: -10px 0 0 -14px;
       transition: left 5s ease-in-out, top 5s ease-in-out; }
-    .nest-flyer .wing { animation: nest-flap .12s steps(1) infinite; }
     @keyframes nest-flap { 50% { opacity: .2; } }
     .nest-armed, .nest-armed * { cursor: copy !important; }
     .nest-layer.overrun .nest-ant { cursor: not-allowed; }
@@ -93,6 +99,10 @@
     #nest-mock .end pre { margin: 0; font: inherit; text-align: left; display: inline-block; }
     #nest-mock details { font-size: 11px; color: var(--ink-muted); } #nest-mock summary { cursor: pointer; }
     #nest-mock details p { margin: 6px 0 0; }
+    #nest-mock .tools button[aria-pressed="true"] { color: var(--color-accent); border-color: var(--color-accent); }
+    .nest-scent .hit { pointer-events: none; }
+    .nest-layer[data-tool="wipe"] .nest-scent .hit { pointer-events: stroke; }
+    .nest-layer[data-tool="read"] .nest-ant { pointer-events: none; }
     #nest-mock .tools button[disabled] { opacity: .45; cursor: default; }
     .nest-switch { background: none; border: 0; padding: 2px 4px; margin: 0 6px; color: var(--ink-faint); cursor: pointer; line-height: 0; }
     .nest-switch:hover, .nest-switch:focus-visible { color: var(--ink); }
@@ -143,13 +153,16 @@
     <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
     <ul class="log" data-k="log" aria-live="polite"></ul>
     <div class="lbl muted"><span>page holds</span><span class="bar" data-k="holds"></span></div>
+    <div class="lbl muted"><span>stores</span><span class="bar accent" data-k="stores"></span></div>
     <div class="lbl muted"><span>next egg</span><span class="bar accent" data-k="bar"></span></div>
     <dl class="stats">
       <dt class="muted">scouts</dt><dd class="accent" data-k="scouts">0</dd><dt class="muted">workers</dt><dd data-k="workers">0</dd>
       <dt class="muted">soldiers</dt><dd data-k="soldiers">0</dd><dt class="muted">reserve</dt><dd class="accent" data-k="reserve">⣿⣿</dd>
+      <dt class="muted">mini hills</dt><dd class="accent" data-k="minis">0</dd><dt class="muted">flyers</dt><dd data-k="flyers">0</dd>
       <dt class="muted">trails</dt><dd data-k="trails">0</dd><dt class="muted">squashed</dt><dd data-k="squashed">0</dd>
       <dt class="muted">larder</dt><dd class="accent" data-k="larder" style="grid-column: span 3; text-align: left">empty</dd>
     </dl>
+    <div class="row tools" role="radiogroup" aria-label="Tool"><button data-tool="squash" aria-pressed="true" title="Click ants to squash them; links on the page are held">squash</button><button data-tool="wipe" aria-pressed="false" title="Drag across a scent trail to wipe it">wipe trail</button><button data-tool="read" aria-pressed="false" title="Leave the ants be and use the page's links">read page</button></div>
     <div class="row tools"><button data-k="bait" title="Drop a crumb that pulls ants off their trail">drop bait</button><button data-k="seal" title="Seal every anthill for a few seconds">seal hill</button></div>
     <div class="row"><button data-k="sound" class="muted" aria-pressed="false">unmute</button>
 <button data-k="pause">pause</button><button data-k="restore" class="muted">restore page</button></div>
@@ -191,7 +204,7 @@
     }
     const e = r[r.length - 1]; return [e[0], e[1], -Math.PI / 2];
   };
-  const NURSERY = [0.2, 0.54], LARDER = [0.8, 0.61], QUEEN = [0.5, 0.89];
+  const NURSERY = [0.2, 0.54], LARDER = [0.8, 0.61], QUEEN = [0.5, 0.89], STORES = [[0.13, 0.76], [0.87, 0.8]];
 
   const bit = [[0x01, 0x08], [0x02, 0x10], [0x04, 0x20], [0x40, 0x80]];
   let W = 0, H = 0, R = 0, base = null;
@@ -222,13 +235,15 @@
     carve(mx, sky - mh + 1, 2, 2);
     carve(NURSERY[0] * W, NURSERY[1] * H, R * 0.85, R * 0.45);
     carve(LARDER[0] * W, LARDER[1] * H, R * 0.85, R * 0.45);
+    // the two storerooms, joined to the tunnels by short side passages
+    STORES.forEach(([u, v], k) => { const [tu, tv] = k ? [0.68, 0.77] : [0.36, 0.72]; for (let s2 = 0; s2 <= 30; s2++) carve((u + (tu - u) * s2 / 30) * W, (v + (tv - v) * s2 / 30) * H, 1.5, 1.5); carve(u * W, v * H, R * 0.7, R * 0.42); });
     carve(QUEEN[0] * W, QUEEN[1] * H, R * 1.4, R * 0.7);
   };
   new ResizeObserver(buildNest).observe(well);
 
   // ================================ the page ================================
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), squashed: 0, meals: 0, paused: false,
-    reserve: 2, over: false, winged: false, peak: 0, started: performance.now(), stolenTotal: 0, sound: false,
+    reserve: 2, over: false, stores: 0, built: 0, feedFlip: false, peak: 0, started: performance.now(), stolenTotal: 0, sound: false,
     queen: { eat: 0, lay: 0 }, total: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
@@ -289,9 +304,11 @@
   hill.classList.add("nest-hill-live");
   // Where the hill goes: an empty patch of the visible page that the whole mound fits in, as far
   // from any text as the page allows. Among the roomiest spots one is picked at random.
+  const minis = [];
   const findSpot = () => {
     const rects = [];
     for (const n of textNodes(main)) { if (!/\S/.test(n.data)) continue; const r = document.createRange(); r.selectNodeContents(n); for (const c of r.getClientRects()) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } }
+    minis.forEach((h) => rects.push([h.base[0] - 160, h.base[1] - 120, h.base[0] + 160, h.base[1] + 80]));
     hills.forEach((h) => rects.push([h.base[0] - 260, h.base[1] - 200, h.base[0] + 260, h.base[1] + 120])); // a new hill keeps clear of the others
     main.querySelectorAll("img, svg, button, input, textarea, figure, hr").forEach((el) => { if (layer.contains(el)) return; const c = el.getBoundingClientRect(); if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } });
     const w = hr.width, h = hr.height, pad = 14, spots = [];
@@ -422,7 +439,7 @@
     else { ant.job = "follow"; ant.path = ant.trail.pts.slice(); ant.k = 0; }
     label(ant);
   };
-  const label = (ant) => { if (!ant.el) return; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker" }[ant.role]} ant. Press to squash.`); };
+  const label = (ant) => { if (!ant.el) return; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier" || ant.role === "guard"); ant.el.classList.toggle("builder", ant.role === "builder"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder" }[ant.role]} ant. Press to squash.`); };
 
   // A scout wanders: loose waypoints toward a block of text no trail reaches yet, its steps recorded.
   const remaining = (t) => {
@@ -500,7 +517,7 @@
 
   const squash = (ant) => {
     if (state.over || state.overrun) return;
-    if (ant.role === "soldier" && ant.hp > 1) { ant.hp--; ant.el.classList.add("hit"); setTimeout(() => ant.el?.classList.remove("hit"), 250); blip(300, 0.06, "square"); return; }
+    if ((ant.role === "soldier" || ant.role === "guard") && ant.hp > 1) { ant.hp--; ant.el.classList.add("hit"); setTimeout(() => ant.el?.classList.remove("hit"), 250); blip(300, 0.06, "square"); return; }
     blip(140 + Math.random() * 40, 0.09, "triangle");
     const L = ant.letter;
     if (L && L.state === "carried") drop(L);
@@ -510,7 +527,8 @@
     requestAnimationFrame(() => (mark.style.opacity = "0")); setTimeout(() => mark.remove(), 1500);
     ant.el?.remove(); ant.el = null;
     state.ants = state.ants.filter((a) => a !== ant); state.squashed++;
-    leaveTrail(ant);
+    leaveTrail(ant); if (ant.mini) { ant.mini.guards.delete(ant); ant.mini.flyers.delete(ant); markGuards(ant.mini); }
+    if (ant.role === "builder") failBuild(ant);
     checkWipe();
   };
 
@@ -541,8 +559,13 @@
     ant.px = ant.x; ant.py = ant.y;
     if (ant.job === "wait" || ant.job === "crew") return; // crew members are placed by their leader
     if (ant.job === "baited") return;
-    if (ant.job === "patrol") { // soldiers walk their trail out and back, guarding it
-      if (!state.trails.includes(ant.patrol)) { ant.job = "home"; ant.path = [hillOf(ant).hole.slice()]; ant.k = 0; return; }
+    if (ant.job === "fly") return stepFlyer(ant, dt);
+    if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
+    if (ant.job === "patrol") { // soldiers and guards walk their trail out and back, guarding it
+      if (!state.trails.includes(ant.patrol)) {
+        if (ant.mini) { ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; return; }
+        ant.job = "home"; ant.path = [hillOf(ant).hole.slice()]; ant.k = 0; return;
+      }
       const g = ant.path[ant.k]; if (move(ant, g[0], g[1], dt, SPEED * 0.8)) { if (++ant.k >= ant.path.length) { ant.path.reverse(); ant.k = 0; } }
       ant.px = ant.x; ant.py = ant.y; return;
     }
@@ -550,7 +573,7 @@
     const L = ant.letter;
     if (ant.job === "carry") { // the leader moves the centre of the crew; everyone stands under the letter
       ant.x = ant.cx; ant.y = ant.cy;
-      const arrived = move(ant, goal[0], goal[1], dt, SPEED / (1 + 0.3 * (L.need - 1)));
+      const arrived = move(ant, goal[0], goal[1], dt, ant.role === "flyer" ? SPEED * 1.7 : SPEED / (1 + 0.3 * (L.need - 1)));
       ant.cx = ant.x; ant.cy = ant.y;
       const n = L.crew.length, nx = -Math.sin(ant.heading), ny = Math.cos(ant.heading);
       L.crew.forEach((a, k) => { const off = (k - (n - 1) / 2) * 12; a.x = a.px = ant.cx + nx * off; a.y = a.py = ant.cy + ny * off; a.heading = ant.heading; });
@@ -563,6 +586,7 @@
       L.glyph.remove(); L.state = "stolen"; state.stolen.add(L); state.stolenTotal++; blip(520, 0.05, "sine");
       if (ant.trail && !ant.trail.ready) { ant.trail.ready = true; scent.append(ant.trail.line, ant.trail.hit); log("the scout is home; a trail is laid"); }
       if (ant.role === "scout") { ant.role = "worker"; }
+      if (ant.role === "flyer") { state.stores++; ant.letter = null; ant.job = "fly"; ant.path = [randomPoint()]; ant.k = 0; return; } // flyers feed the stores and fly on
       L.crew.forEach((a) => { if (a !== ant && a.el) enterNest(a, null); });
       return enterNest(ant, L.ch);
     }
@@ -589,7 +613,8 @@
       ant.job = "wait"; ant.el.classList.add("wait");
       if (L2.crew.length >= L2.need && L2.crew.every((a) => a.job === "wait")) lift(L2);
       else if (L2.need > 1 && L2.crew.length === 1) log(`a big “${L2.ch}” needs ${L2.need} ants`);
-    } else if (ant.job === "bait") { ant.job = "baited"; ant.el.classList.add("wait"); }
+    } else if (ant.job === "dive") { if (ant.letter && ant.letter.state === "gather") lift(ant.letter); else { ant.job = "fly"; ant.path = [randomPoint()]; ant.k = 0; } }
+    else if (ant.job === "bait") { ant.job = "baited"; ant.el.classList.add("wait"); }
     else if (isSealed(hillOf(ant))) { ant.k = ant.path.length - 1; ant.el.classList.add("wait"); }
     else { ant.el.classList.remove("wait"); enterNest(ant, null); }
   };
@@ -601,6 +626,8 @@
     if (ant.route === "hatch") { ant.route = "up"; ant.d = LEN.up; return atEntrance(ant); }
     if (ant.route === "down") { if (ant.food) state.larder.push(ant.food); ant.route = "feed"; ant.d = 0; ant.food = ant.food ? "meal" : null; return; }
     if (ant.route === "feed") {
+      // every other letter goes to the stores instead of the queen; a full store builds a mini hill
+      if (ant.food && (state.feedFlip = !state.feedFlip) && !state.queenDead) { state.larder.shift(); state.stores++; ant.food = null; }
       if (ant.food) {
         state.larder.shift(); state.meals++; state.queen.eat = 0.8;
         if (state.meals % 3 === 0 && !state.queenDead) { state.queen.lay = 1; setTimeout(() => { state.eggs.push({ d: 0, age: 0 }); log("the queen laid an egg"); }, 900); }
@@ -617,7 +644,7 @@
   // the first wave is a start, not a win.
   const LOSE = Math.max(25, Math.min(120, Math.round(pageLetters * 0.15)));
   const checkWipe = () => {
-    if (state.over || state.ants.length || state.eggs.length) return;
+    if (state.over || state.ants.length || state.eggs.length || minis.length || state.builder) return;
     if (state.overrun) { newAnt("scout", "hatch", 0); return; } // past saving: the colony always comes back
     if (state.reserve > 0) { state.reserve--; newAnt("scout", "hatch", 0); log(`the colony is gone; the queen spends a reserve scout (${state.reserve} left)`); return; }
     end(true);
@@ -635,20 +662,106 @@
     }
   };
 
-  // ---- the winged queen: once the colony is large she flies off to found a second hill
-  const flyOut = () => {
-    state.winged = true;
-    const spot = findSpot(); if (!spot) return;
-    const f = document.createElement("button"); f.type = "button"; f.className = "nest-flyer"; f.setAttribute("aria-label", "Winged queen. Press to catch her.");
-    f.innerHTML = `<svg width="28" height="20" viewBox="0 0 28 20" fill="currentColor" aria-hidden="true"><g class="wing"><ellipse cx="9" cy="5" rx="7" ry="3" opacity=".5"/><ellipse cx="19" cy="5" rx="7" ry="3" opacity=".5"/></g>${dots(BODY).replace(/cy="([\d.]+)"/g, (m, y) => `cy="${+y + 6}"`)}</svg>`;
-    f.style.cssText += "background:none;border:0;padding:0";
-    f.style.left = home.hole[0] + "px"; f.style.top = home.hole[1] + "px"; layer.append(f);
-    log("a winged queen takes flight");
-    let caught = false;
-    f.addEventListener("click", (e) => { e.stopPropagation(); caught = true; f.remove(); state.squashed++; blip(880, 0.15, "sine"); log("you caught the winged queen"); });
-    requestAnimationFrame(() => { f.style.left = spot[0] + "px"; f.style.top = spot[1] - hr.height + "px"; });
-    setTimeout(() => { if (caught) return; f.remove(); makeHill(spot); log("she founded a second anthill"); }, 5100);
+  // ================================ mini hills ================================
+  // Every other letter fills the stores. A full store sends a builder out of the main hill to raise
+  // a mini hill in open ground; squash the builder and the stores are lost. A mini hill sends out
+  // guards, which walk to an existing trail and patrol it, and flyers, which roam and steal any
+  // letter. It falls to a few clicks, but only once none of its guards are left.
+  const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6;
+  const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
+  const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
+    const w = 26, h = 10, dots = new Int8Array(w * h).fill(-1);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const u = (x - w / 2) / (w / 2), top = h * u * u; const hash = ((x * 73 + y * 151) % 97) / 97; if (y >= top && ((x + y) % 2 === 0 || y < top + 1.2) && hash < p) dots[y * w + x] = 0; }
+    for (let y = 0; y < 3; y++) for (let x = w / 2 - 2; x < w / 2 + 2; x++) dots[y * w + x] = -1;
+    let out = ""; for (let cy = 0; cy < h; cy += 4) { for (let cx = 0; cx < w; cx += 2) { let code = 0; for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) if (dots[(cy + dy) * w + cx + dx] >= 0) code |= bit[dy][dx]; out += String.fromCharCode(0x2800 + code); } out += "\n"; }
+    return out.trimEnd();
   };
+  const randomPoint = () => [20 + Math.random() * (main.clientWidth - 40), main.scrollTop + 30 + Math.random() * (main.clientHeight - 60)];
+  const spawnPageAnt = (role, at, mini) => {
+    state.total++; const a = { id: state.total, role, where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
+    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant walk" + (role === "flyer" ? " flyer" : "");
+    a.el.innerHTML = role === "flyer" ? ANT_SVG.replace("<g class=\"legs-a\">", `<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g><g class="legs-a">`) : ANT_SVG;
+    a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squash(a); });
+    layer.append(a.el); state.ants.push(a); label(a); return a;
+  };
+  const startBuild = () => {
+    const spot = findSpot(); if (!spot) return;
+    const b = spawnPageAnt("builder", home.hole.slice(), null);
+    b.job = "build-walk"; b.path = [[spot[0], spot[1] - 6]]; b.k = 0; b.spot = spot; state.builder = b;
+    log("the stores are full; a builder heads out");
+  };
+  const failBuild = (b) => {
+    b.mound?.remove(); state.builder = null; state.stores = 0; log("you stopped the builder; the stores are lost");
+  };
+  const stepMiniJob = (ant, dt) => {
+    if (ant.job === "building") {
+      ant.build = (ant.build || 0) + dt / BUILD_TIME;
+      ant.mound.textContent = miniArt(Math.min(1, ant.build));
+      ant.heading += Math.sin(performance.now() / 150) * 0.05;
+      if (ant.build < 1) return;
+      ant.mound.remove(); makeMini(ant.spot); state.stores = Math.max(0, state.stores - storeCap()); state.built++; state.builder = null;
+      ant.job = "home"; ant.role = "worker"; ant.path = [home.hole.slice()]; ant.k = 0; label(ant); return;
+    }
+    const g = ant.path[ant.k]; if (!g) return;
+    if (!move(ant, g[0], g[1], dt, SPEED)) { ant.px = ant.x; ant.py = ant.y; return; }
+    ant.px = ant.x; ant.py = ant.y;
+    if (ant.job === "build-walk") {
+      ant.job = "building"; ant.build = 0; ant.el.classList.add("wait");
+      ant.mound = document.createElement("div"); ant.mound.className = "nest-hill nest-mini"; layer.append(ant.mound);
+      ant.mound.textContent = miniArt(0.02);
+      const mr = { w: 26 * 0.5 * 7.2, h: 30 };
+      ant.mound.style.left = ant.spot[0] - 47 + "px"; ant.mound.style.top = ant.spot[1] - 30 + "px";
+      log("a mini hill is going up");
+    } else if (ant.job === "mini-home") { if (ant.mini && minis.includes(ant.mini)) assignGuard(ant); else squashQuiet(ant); }
+  };
+  // the badge over each mini hill counts its living guards; at zero it can be broken
+  const markGuards = (m) => { if (!m.badge) return; const n = m.guards.size; m.badge.textContent = n ? "guards " + "⣿".repeat(n) : "open ×" + m.hp; m.badge.classList.toggle("open", !n); m.el.classList.toggle("open", !n); };
+  const squashQuiet = (ant) => { ant.el?.remove(); ant.el = null; state.ants = state.ants.filter((a) => a !== ant); };
+  const makeMini = (spot) => {
+    const el = document.createElement("div"); el.className = "nest-hill nest-mini"; el.textContent = miniArt(1);
+    el.style.left = spot[0] - 47 + "px"; el.style.top = spot[1] - 30 + "px"; el.title = "Kill its guards, then click to break it";
+    const m = { el, base: spot, hole: [spot[0], spot[1] - 26], hp: MINI_HP, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, links: [] };
+    el.addEventListener("click", (e) => {
+      e.stopPropagation(); if (state.overrun) return;
+      if (m.guards.size) { el.classList.add("denied"); setTimeout(() => el.classList.remove("denied"), 300); if (!m.warned) { m.warned = true; log("its guards are still alive"); } return; }
+      m.hp--; el.textContent = miniArt(m.hp / MINI_HP); markGuards(m); blip(160, 0.1, "square");
+      if (m.hp > 0) return;
+      el.remove(); m.badge.remove(); m.links.forEach((l) => l.remove()); minis.splice(minis.indexOf(m), 1);
+      m.flyers.forEach((f) => { f.mini = null; f.hill = home; }); log("you broke a mini hill"); blip(90, 0.4, "sawtooth"); checkWipe();
+    });
+    m.badge = document.createElement("span"); m.badge.className = "nest-badge"; m.badge.style.left = spot[0] - 8 + "px"; m.badge.style.top = spot[1] - 46 + "px"; layer.append(m.badge);
+    layer.append(el); minis.push(m); markGuards(m); log("a mini hill stands"); return m;
+  };
+  // A guard walks from its mini hill to the nearest point of a trail, then patrols that trail.
+  const assignGuard = (g) => {
+    const ready = state.trails.filter((t) => t.ready);
+    if (!ready.length) { const c = g.mini.hole; g.job = "patrol"; g.patrol = null; g.path = [0, 1, 2, 3, 4, 5].map((k) => [c[0] + Math.cos(k) * 40, c[1] + 18 + Math.sin(k) * 22]); g.k = 0; g.circling = true; return; }
+    const t = ready[Math.floor(Math.random() * ready.length)];
+    let best = 0, bd = Infinity; t.pts.forEach((p, k) => { const d = Math.hypot(p[0] - g.mini.hole[0], p[1] - g.mini.hole[1]); if (d < bd) { bd = d; best = k; } });
+    const link = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    link.setAttribute("points", [g.mini.hole, t.pts[best]].map((p) => p.join(",")).join(" ")); scent.append(link); g.mini.links.push(link);
+    g.job = "patrol"; g.patrol = t; g.circling = false; g.path = [g.mini.hole.slice(), ...t.pts.slice(best)]; g.k = 0;
+  };
+  const stepFlyer = (f, dt) => {
+    const g = f.path[f.k];
+    if (!move(f, g[0], g[1], dt, SPEED * 2.1)) { f.px = f.x; f.py = f.y; return; }
+    f.px = f.x; f.py = f.y;
+    if (Math.random() < 0.35) { // dive for a letter somewhere on screen
+      const pool = []; for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) { if (!/\S/.test(n.data[i])) continue; const L = letterOf(n, i); if (L.state !== "free" || needOf(n) > 1) continue; const r = rectOf(n, i); if (onScreen(r)) pool.push([L, r]); if (pool.length > 400) break; }
+      if (pool.length) { const [L, r] = pool[Math.floor(Math.random() * pool.length)]; const [x, y] = local(r); L.state = "gather"; L.need = 1; L.crew = [f]; f.letter = L; f.job = "dive"; f.path = [[x + r.width / 2, y + r.height]]; f.k = 0; return; }
+    }
+    f.path = [randomPoint()]; f.k = 0;
+  };
+  const tickMinis = (now) => {
+    const t = now / 1000;
+    if (!state.builder && !state.queenDead && minis.length < MAX_MINIS && state.stores >= storeCap()) startBuild();
+    minis.forEach((m) => {
+      if (t < m.next || state.queenDead) return; m.next = t + SPEED_SPAWN();
+      if (m.guards.size < 2) { const g = spawnPageAnt("guard", m.hole.slice(), m); m.guards.add(g); markGuards(m); assignGuard(g); }
+      else if (m.flyers.size < 2) { const f = spawnPageAnt("flyer", m.hole.slice(), m); m.flyers.add(f); f.job = "fly"; f.path = [randomPoint()]; f.k = 0; }
+    });
+  };
+  const SPEED_SPAWN = () => SPAWN_EVERY * (0.8 + Math.random() * 0.4);
 
   // ---- wiping a trail: drag across its scent
   const addEraser = (t) => {
@@ -700,8 +813,8 @@
 
   // ---- the colony carries over between pages
   function save(data) { try { data ? localStorage.setItem(SAVE_KEY, JSON.stringify(data)) : localStorage.removeItem(SAVE_KEY); } catch { /* private mode */ } }
-  const snapshot = () => ({ roles: state.ants.map((a) => a.role), eggs: state.eggs.length, meals: state.meals, reserve: state.reserve,
-    squashed: state.squashed, stolenTotal: state.stolenTotal, peak: state.peak, winged: state.winged, sound: state.sound, elapsed: performance.now() - state.started });
+  const snapshot = () => ({ roles: state.ants.filter((a) => /^(scout|worker|soldier)$/.test(a.role)).map((a) => a.role), stores: state.stores, built: state.built, eggs: state.eggs.length, meals: state.meals, reserve: state.reserve,
+    squashed: state.squashed, stolenTotal: state.stolenTotal, peak: state.peak, sound: state.sound, elapsed: performance.now() - state.started });
   const onHide = () => { if (!state.over && !stopped) save(snapshot()); };
   addEventListener("pagehide", onHide);
 
@@ -720,6 +833,8 @@
     for (let k = -1; k <= 1; k++) for (let s = 1; s < 4; s++) { const lx = qx - R * 0.45 + k * 3 + s * k + (step && k === 0 ? 1 : 0); put(lx, qy + 2 + s, 6); put(lx, qy - 2 - s, 6); }
     if (q.eat > 0) { put(hx - 8 + q.eat * 3, qy, 5); put(hx - 8 + q.eat * 3, qy - 1, 5); }
     if (q.lay > 0) put(qx + R * 0.15 + ax + 2, qy, 4);
+    { const cap = storeCap(), fill = Math.min(1, state.stores / cap), per = Math.round(fill * R * 1.1);
+      STORES.forEach(([u, v], c) => { for (let k = 0; k < per; k++) { const col = k % Math.max(2, Math.floor(R * 0.9)), row = Math.floor(k / Math.max(2, Math.floor(R * 0.9))); put(u * W - R * 0.45 + col * 1.0 + (c ? 0 : 0), v * H + 2 - row, 5); } }); }
     state.larder.forEach((_, k) => { if (k < R * 0.8) { put(LARDER[0] * W - R * 0.7 + k * 2, LARDER[1] * H + 2, 5); put(LARDER[0] * W - R * 0.7 + k * 2, LARDER[1] * H + 1 - (k % 2), 5); } });
     state.eggs.forEach((e, k) => {
       const [u, v] = e.d < LEN.lay ? along("lay", e.d) : [NURSERY[0] - 0.08 + (k % 5) * 0.035, NURSERY[1] + 0.01];
@@ -750,7 +865,9 @@
   const drawStats = () => {
     $("scouts").textContent = state.ants.filter((a) => a.role === "scout").length;
     $("workers").textContent = state.ants.filter((a) => a.role === "worker").length;
-    $("soldiers").textContent = state.ants.filter((a) => a.role === "soldier").length;
+    $("soldiers").textContent = state.ants.filter((a) => a.role === "soldier" || a.role === "guard").length;
+    $("flyers").textContent = state.ants.filter((a) => a.role === "flyer").length; $("minis").textContent = minis.length;
+    { const f = Math.min(1, state.stores / storeCap()), c = Math.round(f * 14); $("stores").textContent = state.builder ? "building…" : minis.length >= MAX_MINIS ? "full" : "⣿".repeat(c) + "⣀".repeat(14 - c); }
     $("reserve").textContent = "⣿".repeat(state.reserve) + "⣀".repeat(2 - state.reserve);
     const held = Math.max(0, 1 - state.stolen.size / LOSE), hc = Math.round(held * 14);
     $("holds").textContent = "⣿".repeat(hc) + "⣀".repeat(14 - hc);
@@ -788,13 +905,22 @@
       if (!state.over) {
         state.peak = Math.max(state.peak, state.ants.length); checkWipe();
         if (!state.overrun && state.stolen.size >= LOSE) end(false);
-        else if (!state.winged && state.ants.length >= 14 && hills.length < 2) flyOut();
+        tickMinis(now);
       }
       drawNest(now); drawStats();
     }
   };
 
   $("bait").addEventListener("click", armBait);
+  // Tools: squash holds the page's links so a missed ant never navigates; read hands them back.
+  const setTool = (t) => { state.tool = t; layer.dataset.tool = t; panel.querySelectorAll("[data-tool]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tool === t))); };
+  panel.querySelectorAll("[data-tool]").forEach((b) => b.addEventListener("click", () => setTool(b.dataset.tool)));
+  const holdLinks = (e) => {
+    if (state.tool === "read" || layer.contains(e.target)) return;
+    if (e.target.closest("a, button, summary, label, input, select, textarea, [role=button]")) { e.preventDefault(); e.stopPropagation(); }
+  };
+  main.addEventListener("click", holdLinks, true);
+  setTool("squash");
   $("x").addEventListener("click", leave);
   $("seal").addEventListener("click", () => hills.forEach(seal));
   $("sound").addEventListener("click", () => {
@@ -815,7 +941,7 @@
   if (saved && saved.roles?.length) { // the same colony, arriving on a new page
     saved.roles.forEach((r, k) => newAnt(r, r === "scout" ? "hatch" : "up", r === "scout" ? LEN.hatch * (0.85 - k * 0.05) : LEN.up - 0.06 - k * 0.02));
     for (let k = 0; k < saved.eggs; k++) state.eggs.push({ d: LEN.lay, age: k });
-    Object.assign(state, { meals: saved.meals, reserve: saved.reserve, squashed: saved.squashed, stolenTotal: saved.stolenTotal, peak: saved.peak, winged: saved.winged });
+    Object.assign(state, { meals: saved.meals, reserve: saved.reserve, squashed: saved.squashed, stolenTotal: saved.stolenTotal, peak: saved.peak, stores: saved.stores || 0, built: saved.built || 0 });
     state.started = performance.now() - (saved.elapsed || 0);
     if (saved.sound) $("sound").click();
     log(`the colony followed you here: ${saved.roles.length} ants`);
@@ -829,7 +955,7 @@
 
   // Leaving: put every letter back, carried or stolen, and take the colony off the page.
   const stop = () => {
-    stopped = true; removeEventListener("pagehide", onHide); main.classList.remove("nest-armed");
+    stopped = true; removeEventListener("pagehide", onHide); main.removeEventListener("click", holdLinks, true); main.classList.remove("nest-armed");
     state.ants.forEach((a) => { const L = a.letter; if (L && L.glyph) { L.glyph.remove(); showChar(L); } });
     state.stolen.forEach(showChar);
     layer.remove(); panel.remove();
