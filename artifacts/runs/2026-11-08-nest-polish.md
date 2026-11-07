@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 12 | the branch is local for review
+unpushed: 13 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -100,11 +100,10 @@ always-visible launcher and the help line, the ninety second trail fade, the sol
 dots, the twenty and fifty letter dances, the refresh reset, the stray ant and its `stray`
 command, and the ground and sound details.
 
-**The ground.** A quiet ground patch sits around each hill: a Braille soil line, grass, stones and a
-leaf, the same alphabet as the hill and the sidebar nest. Two more small pieces
-are scattered in empty space in the reading pane, so the page feels inhabited beyond the mound.
-It is theme-token colour, never catches a click, and stays still under reduced motion. A mini hill
-gets a smaller tuft.
+**The ground.** A few Braille pieces are scattered in the empty margins, grass, stones, a leaf and
+a mushroom, the same alphabet as the hill and the sidebar nest. Nothing sits around the anthill, so
+the mound stays clean. It is theme-token colour, never catches a click, and stays still under
+reduced motion.
 
 **The mini hill language.** No words or count dots on the page. The mound thins as it takes hits,
 and the guards are the ants visible on patrol. The element is a keyboard button with an aria label
@@ -169,6 +168,6 @@ alone. The old screenshot inside the first note image is recursive by nature and
 Play the first minute on the home page and on a note, in both colour schemes. Watch whether the
 new trail weight reads as scent rather than as a dotted rule. Wipe a trail and squash a soldier to
 see whether the two animations land at the right speed. Let a mini hill stand and watch a guard
-patrol away from it. Look at the ground patch and decide whether 0.55 opacity is the right amount
-of quiet. The dance is the one call that is still a taste question: nine seconds, queen on the
+patrol away from it. Look at the scattered Braille pieces and decide whether their amount and placement are
+right. The dance is the one call that is still a taste question: nine seconds, queen on the
 hill, glyphs in orbit.
