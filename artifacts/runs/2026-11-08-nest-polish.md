@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 34 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 35 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -50,8 +50,9 @@ which was about 1.9:1 on the paper. The new line is visible without reading as b
 
 **Soldiers.** Soldiers and guards now use the flyer's quieter colour, with a wider head and two
 mandibles. The permanent link line from a mini hill to a trail is gone, so a soldier leaves no
-scent. Their patrol gets a six second progress check: a guard that moves less than thirty pixels
-re-homes instead of standing in the dirt.
+scent. Guards walk a parallel lane beside the trail instead of the workers' line, so a busy trail
+stays uncrowded. Their patrol gets a six second progress check: a guard that moves less than
+thirty pixels re-homes instead of standing in the dirt.
 
 **The opening.** Three scouts and three workers start. A block with a trail or a scout is taken,
 so the first three scouts and later ones stay off each other's source. The first three stay in
@@ -80,12 +81,13 @@ terminal command sends one on demand. It is scheduled thirty to ninety seconds a
 to four minutes after a walk or a click. It only runs where the launcher is visible, so it is a
 desktop easter egg.
 
-**The dance.** The colony stops at twenty stolen letters, then fifty, then a rising set of
-thresholds. The queen leaves the sidepanel nest for a stage outside the hill, the workers ring her
-and dance, the sidepanel pulses with a border glow and a sway, the stolen glyphs orbit, a short
-synth melody plays, and then the colony goes back to work. The queen is hidden in the sidepanel
-while she is outside. The final overrun uses the same scene for longer. There is no win to stay
-quiet now: the reserve is gone, and an empty colony gets a fresh scout from the queen.
+**The worship.** The colony stops at twenty stolen letters, then fifty, then a rising set of
+thresholds. The queen crawls out of the hill and walks to a clear patch near it, every ant on the
+page moves toward her, the far ones turn back to their trails when it ends, the sidepanel pulses
+with a border glow and a sway, the stolen glyphs orbit, a short synth melody plays, and a next
+worship bar in the panel tracks the next one. The queen is hidden in the sidepanel while she is
+outside. The final overrun uses the same scene for longer. There is no win to stay quiet now: the
+reserve is gone, and an empty colony gets a fresh scout from the queen.
 
 **The controls.** Four colony tools are named: Squash, Wipe, Bait and Seal, with Bait and Seal on
 text tiles beside the two page tools. Links, mute, pause and restore are the utility row below;
@@ -124,8 +126,10 @@ The first two mini hills are sited near the main hill; later ones spread out. Th
 and the first obstacle scan skipped PRE; it is now solid for the hill and the mini hills.
 
 **The mini hill language.** No words or count dots on the page. The mound thins as it takes hits,
-and the guards are the ants visible within a short range of their mound. Clicking a guarded mound calls its guards home;
-clearing them splits the mound open with a space through the Braille, and no new guards spawn. The element is a keyboard button with an aria label for screen readers.
+and the guards are the ants visible within a short range of their mound and beside a nearby trail.
+Clicking a guarded mound calls its guards home and flashes the mound and every guard; clearing them
+splits the mound open with a space through the Braille, and no new guards spawn. The element is a
+keyboard button with an aria label for screen readers.
 
 **Sound.** One small synth, no files: the unmute button pulses for eight seconds when the colony
 opens, then settles on hover, focus, click or time. A master gain, a compressor, oscillators and a reusable
@@ -145,10 +149,10 @@ $ bun test
  894 pass
  0 fail
  3885 expect() calls
-Ran 894 tests across 49 files. [10.52s]
+Ran 894 tests across 49 files. [5.51s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  21 passed (33.9s)
+  21 passed (27.0s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
@@ -186,6 +190,7 @@ alone. The old screenshot inside the first note image is recursive by nature and
 Play the first minute on the home page and on a note, in both colour schemes. Watch whether the
 new trail weight reads as scent rather than as a dotted rule. Wipe a trail and squash a soldier to
 see whether the two animations land at the right speed. Let a mini hill stand and watch a guard
-patrol away from it. Click a guarded mound, clear the guards, and decide whether the split art reads as exposed. Watch the trail shape and decide whether the cubic reads as walked
-rather than plotted. The dance is the one call that is still a taste question: nine seconds, queen on a
-stage outside the hill, dancers in a ring, the sidepanel pulsing.
+patrol beside its trail. Click a guarded mound, watch the guard flash, clear them, and decide
+whether the split art reads as exposed. Watch the trail shape and decide whether the cubic reads as
+walked rather than plotted. The worship is the one call that is still a taste question: nine
+seconds, the queen's crawl, every ant converging, and the next worship bar filling.

@@ -259,8 +259,13 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.evaluate(() => window.__nest!.startParty());
     await expect(page.locator("#nest-mock")).toHaveClass(/celebrating/);
     await expect(page.locator(".nest-queen")).toBeVisible();
+    await expect(page.locator("[data-k='worship-bar']")).toBeVisible();
     await expect(page.locator(".nest-ant.dancing").first()).toBeVisible();
-    await page.waitForTimeout(1300);
+    const q0 = await page.locator(".nest-queen").boundingBox();
+    await page.waitForTimeout(500);
+    const q1 = await page.locator(".nest-queen").boundingBox();
+    expect(q0 && q1 && Math.hypot(q1.x - q0.x, q1.y - q0.y)).toBeGreaterThan(8);
+    await page.waitForTimeout(900);
     const queen = await page.locator(".nest-queen").boundingBox();
     const hill = await page.locator(".nest-hill").first().boundingBox();
     expect(queen && hill && queen.y > hill.y + hill.height).toBe(true);
