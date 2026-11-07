@@ -6,6 +6,25 @@
 import { test, expect, type Page } from "@playwright/test";
 import mailbox from "../content/data/mailbox.json" with { type: "json" };
 
+declare global {
+  interface Window {
+    __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
+    __nest?: {
+      state: {
+        ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; el?: Element }>;
+        trails: Array<{ block: Element }>;
+        built: number;
+      };
+      home: { base: [number, number] };
+      startParty: (final?: boolean) => void;
+      makeMini: (spot: unknown) => unknown;
+      findMiniSpot: () => unknown;
+      squash: (ant: unknown) => void;
+      newAnt: (role: string, route: string, d: number) => unknown;
+    };
+  }
+}
+
 test.describe("the interactive terminal (third client of the one door)", () => {
   test("mounts only on the opt-in console, and Ctrl+` opens + focuses it", async ({ page }) => {
     await page.goto("/");
@@ -28,6 +47,8 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     // machine output stays on the feed's default (grain) — no grade override on builtin output
     await expect(feed).toContainText("whoami");                     // desk-commands registered
     await expect(feed).toContainText("navigate to a page");         // the go builtin's help line
+    await expect(feed).toContainText("reveal the ant colony");      // the nest command is listed
+    await expect(feed).toContainText("send a stray ant");           // the stray command is listed
     // an unknown command reports honestly instead of failing silent
     await input.fill("frobnicate");
     await input.press("Enter");
@@ -43,40 +64,376 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page).toHaveURL(/\/bread$/);
   });
 
-  test("nest unlocks through the terminal and remembers the launcher", async ({ page }) => {
-    const loaded = new Set<string>();
-    page.on("request", (request) => loaded.add(new URL(request.url()).pathname));
+  test("the note starts the colony from its own button", async ({ page }) => {
+    await page.goto("/notes/the-site-has-ants");
+    await page.getByRole("button", { name: "Start the colony" }).click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+  });
+
+  test("the old ?nest link is just a page, not a shortcut into the game", async ({ page }) => {
+    await page.goto("/?nest");
+    await expect(page.getByRole("button", { name: "Open the Nest" })).toBeVisible();
+    await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
+  });
+
+  test("the launcher is always there, and nest opens the colony", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
     await expect(page.getByText("Open the terminal at the bottom of the page", { exact: false })).toBeVisible();
+    const launcher = page.getByRole("button", { name: "Open the Nest" });
+    await expect(launcher).toBeVisible();
+    await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
+
     await page.keyboard.type("nest");
     await page.locator(".console__expand").click();
     await run(page, "help");
     await expect(page.locator('[data-surface="console"]')).toContainText("reveal the ant colony");
-    const launcher = page.getByRole("button", { name: "Open the Nest" });
-    await expect(launcher).toHaveCount(0);
-    expect(loaded.has("/site/nest-mockup.js")).toBe(false);
-
     await run(page, "nest");
-    await expect(launcher).toBeVisible();
-    await expect(page.locator('[data-surface="console"]')).toContainText("Look for the little ant");
+    await expect(page.locator('[data-surface="nest-controls"]')).toBeVisible();
+    await expect(page.locator('[data-surface="console"]')).toContainText("colony is open");
+
+    page.once("dialog", (dialog) => dialog.accept());
     await page.reload();
     await expect(launcher).toBeVisible();
+    await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
     await launcher.click();
     await expect(page.locator('[data-surface="nest-controls"]')).toBeVisible();
   });
 
-  test("Nest tools lock links during play and let players cancel bait", async ({ page }) => {
+  test("the anthill keeps clear of the bread", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(1600);
+    expect(await page.evaluate(() => {
+      const bread = document.querySelector<HTMLElement>(".welcome__bread")?.getBoundingClientRect();
+      const hill = document.querySelector<HTMLElement>(".nest-hill")?.getBoundingClientRect();
+      if (!bread || !hill || !bread.width || !hill.width) return false;
+      return hill.left < bread.right && hill.right > bread.left && hill.top < bread.bottom && hill.bottom > bread.top;
+    })).toBe(false);
+  });
+
+  test("the anthill moves between empty cells", async ({ page }) => {
+    const cells = new Set<string>();
+    page.on("dialog", (dialog) => dialog.accept());
+    for (let i = 0; i < 10; i++) {
+      await page.goto("/?nest-debug");
+      await page.locator(".nest-switch").click();
+      await expect(page.locator(".nest-hill")).toBeVisible();
+      cells.add(await page.evaluate(() => {
+        const h = document.querySelector(".nest-hill")!.getBoundingClientRect();
+        const m = document.querySelector("main")!.getBoundingClientRect();
+        const col = Math.min(2, Math.floor(((h.left + h.width / 2 - m.left) / m.width) * 3));
+        const row = Math.min(2, Math.floor(((h.top + h.height / 2 - m.top) / m.height) * 3));
+        return `${col},${row}`;
+      }));
+    }
+    expect(cells.size).toBeGreaterThan(1);
+  });
+
+  test("the first three scouts take different source blocks", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForFunction(() => (window.__nest?.state.ants.filter((a) => a.role === "scout" && a.block).length ?? 0) >= 3);
+    const blocks = await page.evaluate(() => window.__nest!.state.ants
+      .filter((a) => a.role === "scout" && a.block)
+      .map((a) => (a.block!.textContent || "").trim().slice(0, 40)));
+    expect(blocks).toHaveLength(3);
+    expect(new Set(blocks).size).toBe(3);
+    const shape = await page.evaluate(() => {
+      const points = window.__nest!.state.ants
+        .filter((a) => a.role === "scout" && a.block)
+        .map((a) => {
+          const r = a.block!.getBoundingClientRect();
+          return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+        });
+      const main = document.querySelector("main")!.getBoundingClientRect();
+      const home = window.__nest!.home.base;
+      const inView = points.every((p) => p.x > main.left && p.x < main.right && p.y > main.top && p.y < main.bottom);
+      const secondOpposite = (points[1].x - main.left - home[0]) * (home[0] - main.width / 2) < 0;
+      const minThird = Math.min(...points.slice(0, 2).map((p) => Math.hypot(p.x - points[2].x, p.y - points[2].y)));
+      return { inView, secondOpposite, minThird };
+    });
+    expect(shape.inView).toBe(true);
+    expect(shape.secondOpposite).toBe(true);
+    expect(shape.minThird).toBeGreaterThan(80);
+  });
+
+  test("a guarded mound calls its guards and opens when they are gone", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.evaluate(() => { const spot = window.__nest!.findMiniSpot(); if (spot) window.__nest!.makeMini(spot); });
+    await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").length)).toBeGreaterThan(0);
+    const guardNear = await page.evaluate(() => {
+      const guard = window.__nest!.state.ants.find((a) => a.role === "guard");
+      return guard?.mini ? Math.hypot(guard.x - guard.mini.base[0], guard.y - guard.mini.base[1]) : null;
+    });
+    expect(guardNear).not.toBeNull();
+    expect(guardNear!).toBeLessThan(300);
+    const mound = page.locator(".nest-mini").first();
+    await mound.click();
+    await page.waitForFunction(() => {
+      const guards = window.__nest!.state.ants.filter((a) => a.role === "guard");
+      return guards.length > 0 && guards.every((a) => a.job === "defend" || a.job === "guard");
+    });
+    await page.waitForTimeout(4500);
+    const freed = await page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").map((a) => a.job));
+    expect(freed.every((job) => job !== "defend" && job !== "guard")).toBe(true);
+    await page.evaluate(() => {
+      for (const g of window.__nest!.state.ants.filter((a) => a.role === "guard")) {
+        window.__nest!.squash(g); window.__nest!.squash(g);
+      }
+    });
+    await expect(mound).toHaveClass(/exposed/);
+  });
+
+  test("keyboard tool switches do not resize the colony", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(500);
+    await page.getByRole("button", { name: "Pause" }).click();
+    const well = page.locator("#nest-mock .well");
+    const before = await well.boundingBox();
+    await page.keyboard.press("2");
+    await page.waitForTimeout(250);
+    const after = await well.boundingBox();
+    expect(Math.abs((after?.height ?? 0) - (before?.height ?? 0))).toBeLessThan(1);
+    expect(Math.abs((after?.width ?? 0) - (before?.width ?? 0))).toBeLessThan(1);
+  });
+
+  test("a killed scout leaves no trail behind", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForFunction(() => (window.__nest?.state.ants.filter((a) => a.scoutRoute).length ?? 0) >= 1);
+    const route = await page.evaluate(() => {
+      const scout = window.__nest!.state.ants.find((a) => a.scoutRoute);
+      return scout ? (scout.block!.textContent || "").trim().slice(0, 40) : null;
+    });
+    expect(route).not.toBeNull();
+    await page.evaluate(() => {
+      const scout = window.__nest!.state.ants.find((a) => a.scoutRoute);
+      if (scout) window.__nest!.squash(scout);
+    });
+    await page.waitForTimeout(350);
+    const trailBlocks = await page.evaluate(() => window.__nest!.state.trails.map((t) => (t.block.textContent || "").trim().slice(0, 40)));
+    expect(trailBlocks).not.toContain(route);
+  });
+
+  test("the queen sends a scout when none is left", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(600);
+    await page.evaluate(() => {
+      window.__nest!.state.ants.filter((a) => a.role === "scout").forEach((a) => window.__nest!.squash(a));
+    });
+    await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
+  });
+
+  test("a broken mound lowers the stores cap", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.evaluate(() => {
+      window.__nest!.state.built = 2;
+      const spot = window.__nest!.findMiniSpot();
+      const mound = spot ? (window.__nest!.makeMini(spot) as { next: number } | null) : null;
+      if (mound) mound.next = performance.now() / 1000 + 999;
+    });
+    await expect(page.locator("#nest-mock [data-k='stores-val']")).toContainText("/24");
+    const mound = page.locator(".nest-mini").first();
+    for (let i = 0; i < 5; i++) await mound.click();
+    await expect(page.locator("#nest-mock [data-k='stores-val']")).toContainText("/18");
+  });
+
+  test("a damaged mini hill heals slowly", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.evaluate(() => {
+      const spot = window.__nest!.findMiniSpot();
+      const mound = spot ? (window.__nest!.makeMini(spot) as { next: number } | null) : null;
+      if (mound) mound.next = performance.now() / 1000 + 999;
+    });
+    const mound = page.locator(".nest-mini").first();
+    await mound.click();
+    await expect(mound).toHaveAttribute("aria-label", /4 hits left/);
+    await page.waitForTimeout(12000);
+    await expect(mound).toHaveAttribute("aria-label", /5 hits left/);
+  });
+
+  test("the next worship scales with the colony", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    const before = await page.locator("#nest-mock [data-k='worship-val']").textContent();
+    await page.evaluate(() => { for (let i = 0; i < 8; i++) window.__nest!.newAnt("worker", "hatch", 0); });
+    await page.waitForTimeout(250);
+    const after = await page.locator("#nest-mock [data-k='worship-val']").textContent();
+    expect(after).not.toBe(before);
+  });
+
+  test("the meters explain themselves", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await expect(page.locator("#nest-mock .nest-meter .hint")).toHaveCount(4);
+    await expect(page.locator("#nest-mock .nest-meter .hint").nth(1)).toContainText("mound builders");
+    await expect(page.locator("#nest-mock .nest-meter .hint").nth(3)).toContainText("queen dances");
+  });
+
+  test("a long larder does not push the stats around", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    const scouts = page.locator("#nest-mock [data-k='scouts']");
+    const before = await scouts.boundingBox();
+    await page.evaluate(() => {
+      const larder = document.querySelector("#nest-mock [data-k='larder']");
+      if (larder) larder.textContent = "lrsovehperdeadlrsovehperdeadlrsovehperdead";
+    });
+    const after = await scouts.boundingBox();
+    expect(Math.abs((after?.x ?? 0) - (before?.x ?? 0))).toBeLessThan(1);
+  });
+
+  test("an empty colony gets a scout from the queen", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(600);
+    await page.evaluate(() => {
+      [...window.__nest!.state.ants].forEach((a) => window.__nest!.squash(a));
+    });
+    await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
+  });
+
+  test("a pile of ants goes under one click", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForFunction(() => {
+      const ants = window.__nest?.state.ants.filter((a) => a.el && a.where === "page") ?? [];
+      return ants.some((a, i) => ants.some((b, j) => i !== j && Math.hypot(a.x - b.x, a.y - b.y) < 15));
+    });
+    const pair = await page.evaluate(() => {
+      const ants = window.__nest!.state.ants.filter((a) => a.el && a.where === "page");
+      for (let i = 0; i < ants.length; i++) for (let j = i + 1; j < ants.length; j++) {
+        if (Math.hypot(ants[i].x - ants[j].x, ants[i].y - ants[j].y) < 15) return [ants[i].id, ants[j].id];
+      }
+      return null;
+    });
+    expect(pair).not.toBeNull();
+    const before = await page.evaluate(() => window.__nest!.state.ants.length);
+    await page.evaluate(([id]) => {
+      const ant = window.__nest!.state.ants.find((a) => a.id === id);
+      (ant?.el as HTMLElement | undefined)?.click();
+    }, pair!);
+    await page.waitForTimeout(250);
+    const after = await page.evaluate(() => window.__nest!.state.ants.length);
+    expect(after).toBeLessThanOrEqual(before - 2);
+  });
+
+  test("the reserve stat is gone", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await expect(page.locator("#nest-mock [data-k='reserve']")).toHaveCount(0);
+  });
+
+  test("restore puts the mounds somewhere else", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(700);
+    const before = await page.evaluate(() => window.__nest!.home.base.slice());
+    const antsBefore = await page.evaluate(() => window.__nest!.state.ants.length);
+    await page.getByRole("button", { name: "Restore page" }).click();
+    await expect(page.getByRole("alertdialog")).toContainText("main mound");
+    const blocked = await page.evaluate(() => window.__nest!.home.base.slice());
+    expect(blocked).toEqual(before);
+    await page.getByRole("button", { name: "reset the page" }).click();
+    await page.waitForTimeout(700);
+    const after = await page.evaluate(() => window.__nest!.home.base.slice());
+    expect(after).not.toEqual(before);
+    await expect(page.locator(".nest-hill").first()).toBeInViewport();
+    const antsAfter = await page.evaluate(() => window.__nest!.state.ants.length);
+    expect(antsAfter).toBeGreaterThanOrEqual(antsBefore);
+  });
+
+  test("the queen leaves the nest for the page dance", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(2800);
+    await page.evaluate(() => window.__nest!.startParty());
+    await expect(page.locator("#nest-mock")).toHaveClass(/celebrating/);
+    await expect(page.locator(".nest-queen")).toBeVisible();
+    await expect(page.locator("[data-k='worship-bar']")).toBeVisible();
+    await expect(page.locator(".nest-ant.dancing").first()).toBeVisible();
+    const q0 = await page.locator(".nest-queen").boundingBox();
+    await page.waitForTimeout(500);
+    const q1 = await page.locator(".nest-queen").boundingBox();
+    expect(q0 && q1 && Math.hypot(q1.x - q0.x, q1.y - q0.y)).toBeGreaterThan(8);
+    await page.waitForTimeout(900);
+    await expect(page.locator(".nest-queen")).toHaveClass(/dancing/);
+    const queen = await page.locator(".nest-queen").boundingBox();
+    const hill = await page.locator(".nest-hill").first().boundingBox();
+    expect(queen && hill && queen.y > hill.y + hill.height).toBe(true);
+  });
+
+  test("the stray command sends an ant that runs for the launcher", async ({ page }) => {
     await page.goto("/");
     await page.locator(".console__expand").click();
-    await run(page, "nest");
-    await page.locator(".console__expand").click();
+    await run(page, "stray");
+    const stray = page.locator(".nest-stray");
+    await expect(stray).toHaveCount(1);
+    expect(await stray.evaluate((el) => {
+      const legs = el.querySelector(".legs-a");
+      return { walk: el.classList.contains("walk"), animation: legs ? getComputedStyle(legs).animationName : null };
+    })).toEqual({ walk: true, animation: "nest-step" });
+    await stray.evaluate((el) => (el as HTMLButtonElement).click());
+    await expect(page.locator(".nest-switch")).toHaveClass(/nest-pulse/);
+    await expect(stray).toHaveCount(0);
+    expect(await page.evaluate(() => sessionStorage.getItem("nest-stray-clicked"))).toBe("1");
+    await page.evaluate(() => window.__nestStray?.spawn());
+    await expect(stray).toHaveCount(0);
+    await page.reload();
+    await expect(page.locator(".nest-switch")).toBeVisible();
+    await page.evaluate(() => window.__nestStray?.spawn());
+    await expect(page.locator(".nest-stray")).toHaveCount(0);
+    await page.evaluate(() => window.__nestStray?.spawn(true));
+    await expect(page.locator(".nest-stray")).toHaveCount(1);
+    await expect(page.locator(".nest-stray")).toHaveCount(0, { timeout: 25000 });
+  });
+
+  test("Nest tools lock links during play, and a page switch closes the colony", async ({ page }) => {
+    await page.goto("/");
     await page.getByRole("button", { name: "Open the Nest" }).click();
     const panel = page.locator('[data-surface="nest-controls"]');
     const main = page.locator(".app-shell__main");
+    const sound = panel.getByRole("button", { name: "Unmute" });
+    await expect(sound).toHaveClass(/nest-sound-hint/);
+    await sound.hover();
+    await expect(sound).not.toHaveClass(/nest-sound-hint/);
     const link = main.getByRole("link", { name: "Explore selected work" });
+    const fileLink = page.locator('.file-tree__file[href="/resume"]');
+    const links = panel.getByRole("button", { name: /Links/ });
+    await expect(links).toContainText("Links locked");
     await expect(main).toHaveCSS("cursor", "crosshair");
     await link.press("Enter");
     await expect(page).toHaveURL(/\/$/);
+    await fileLink.click();
+    await expect(page).toHaveURL(/\/$/);
+    const toast = page.locator(".nest-lock-toast");
+    await expect(toast).toBeVisible();
+    await expect(toast).toContainText("Links are locked while the colony is playing.");
+    await toast.getByRole("button", { name: "Use Links (3)" }).click();
+    await expect(links).toContainText("Links unlocked");
+    await panel.getByRole("button", { name: "Squash", exact: true }).click();
+    await expect(links).toContainText("Links locked");
 
     const bait = panel.getByRole("button", { name: "Drop bait" });
     await bait.click();
@@ -86,16 +443,22 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(main.locator(".nest-bait")).toHaveCount(0);
 
     await bait.click();
-    await panel.getByRole("button", { name: "Wipe trail" }).click();
+    await panel.getByRole("button", { name: "Wipe", exact: true }).click();
     await expect(main).toHaveCSS("cursor", "cell");
+    await expect(links).toContainText("Links locked");
     await expect(bait).toBeEnabled();
-    await panel.getByRole("button", { name: "Use page links" }).click();
+    await links.click();
+    await expect(links).toContainText("Links unlocked");
     await expect(main.locator(".nest-layer")).toHaveAttribute("inert", "");
     await expect(bait).toBeDisabled();
     await link.press("Enter");
+    await expect(page.getByRole("alertdialog")).toBeVisible();
+    await expect(page.getByRole("alertdialog")).toContainText("Leave this page?");
+    await page.getByRole("button", { name: "leave and close" }).click();
     await expect(page).toHaveURL(/\/projects$/);
     await page.waitForLoadState("load");
-    await expect(panel.getByRole("button", { name: "Use page links" })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Open the Nest" })).toBeVisible();
   });
 });
 

@@ -35,7 +35,8 @@ unreadable and the colony has won that page.
 - Off by default, and nothing runs until the Nest tab is opened. The choice persists the way the
   sidebar mode already persists across pages.
 - Works on any page, because it only reads text nodes inside the main content and never touches
-  the DOM structure. Restore page puts every letter back in one click, and a reload always does.
+  the DOM structure. Restore page puts every letter back in one click and re-sites the mounds; a
+  reload always does.
 - Respects reduced motion: ants step rather than crawl, and the colony pauses when the tab is hidden.
 - Accessible: ants are buttons with a name, so a keyboard player can tab to them and squash them
   with Enter. The page text a screen reader hears is restored before it is read.
@@ -44,35 +45,58 @@ unreadable and the colony has won that page.
 
 ## What the mockup now does
 
-- **Hidden by default.** The `nest` terminal command reveals the status bar launcher and remembers
-  the unlock on that browser. A direct preview link can still load the launcher with `?nest`.
-- **The colony.** Two scouts and four workers to start. A trail opens when its scout carries the
-  first letter home, workers take open trails in turn, six to a line, and a trail dies with its
-  last ant. Soldiers hatch once the colony passes eight and take two hits.
+- **Always on the desk.** The ant sits in the status bar on every page. Click it to open the
+  colony; the `nest` terminal command opens it too. There is no query-string shortcut.
+- **The colony.** Three scouts and three workers to start. A block with a trail or a scout is taken,
+  so the first three scouts and later ones stay off each other's source. The first three stay in view:
+  the first takes the closest, the second the opposite side of the mound, and the third the most
+  spread-out remaining spot. A scout walks a route and lays no trail until it carries the first
+  letter home; a scout killed on the way leaves nothing. Workers take open trails in turn, five to
+  a line, and a trail fades when its patch empties or after ninety seconds. Each retired
+  trail sends its own successor scout, so several spent patches do not leave one line. Successors
+  look near the mound first; the trail target is one per two ants, so it keeps climbing. Soldiers hatch once the colony passes eight and take two
+  hits.
 - **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
-  shows how full they are. A full store sends a builder to an open spot in view. Builders favor
-  gaps left by stolen letters and spread out from existing hills. Squash the builder and the stores
-  are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Hover a hill to
-  see how many guards defend it. Once none are left, five clicks break it. Its flyers outlive it.
-- **The player's tools.** Pick a tool: squash holds the page's links so a missed ant never
-  navigates, wipe trail is the only tool that erases scent, and read page gives the links back.
-  Squash ants, drag across a scent trail to wipe it, drop bait to pull
-  nearby ants off course, and seal the anthills from the panel or by holding one. Bait and seals
-  have cooldowns. Sound is muted until switched on.
-- **No announced ending.** Wipe the colony after the queen has spent her two reserve scouts and the
-  queen dies: the nest goes still and the page keeps its gaps. Let one in seven characters go,
-  capped at 120, and it is too late: the ants can no longer be squashed and eat on until the page is
-  empty. Leaving the tab still restores everything.
-- **It follows you.** A colony left running is saved when the page unloads and resumes on the next
-  page.
+  shows how full they are. A full store sends a builder to an open spot on the page, sometimes
+  below the fold. The first two favor a spot near the main hill; later ones spread out. Builders
+  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to stay on the nearest trail until it disappears, then return to the mound, and flyers to steal letters. Its mound thins
+  with each hit, and a fallen mound lowers the stores cap. A hurt mound heals one hit at a time. Knocking it calls the guards home and flashes the mound and every guard; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
+- **The player's tools.** The colony tools are Squash, Wipe, Bait and Seal, with names on the
+  tiles; Links, mute, pause and restore are the utility row below. Squash holds every page link so
+  a missed ant never navigates, wipe is the only tool that breaks scent, and links gives the page
+  back with a leave confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
+  each tool a name, an icon and a key. Squash ants (a pile goes together), drag across a scent trail to break it, drop bait
+  to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
+  seals have cooldowns. Restore page asks first: it puts the letters back, re-sites the home and mini mounds, keeps the ants, and scrolls to a new home that lands off screen.
+  Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
+- **The colony worships.** Every time the colony has taken twenty, then fifty, then a rising
+  number of letters, it stops: the queen crawls out of the hill and walks to a clear patch near
+  it, every ant on the page moves toward her and the far ones turn back to their trails when it
+  ends, the sidepanel pulses, the stolen glyphs orbit, and a next worship bar tracks the next
+  one. The target rises and falls with the living colony, and the queen dances at the patch. The page is the whole environment, so the ants may work below the fold while
+  the player reads.
+- **No announced ending.** There is no win, no reserve and no game over. If the last ant is gone
+  the queen sends one scout back out and the colony continues. The page can run out, and the
+  colony still continues: another scout goes out and the ants take what is left. Leaving the tab
+  still restores everything.
+- **It lives on the page.** A refresh or a move to another page closes the panel and clears the
+  colony; a page link asks first. The launcher stays in the status bar. The stray click is
+  remembered for the tab.
+- **The stray.** When the game is closed, a single ant sometimes crosses the reading pane, off any
+  trail. It uses the same animated ant art as the colony. If nobody clicks it, it leaves the screen
+  after fourteen to nineteen seconds. Click it and it runs down the page, along the status bar, and
+  into the launcher; the launcher pulses. A click marks the tab, so the random ant does not return
+  until a new tab. Type `stray` in
+  the terminal to send one on demand.
 
 ## Open questions for the owner
 
-- Should the colony carry across pages, so ants left alive on the home page are waiting on /notes?
 - Does a beaten colony end the game, or does a new queen move in after a while?
 - Is a small leaderboard worth having, or does the larder of stolen words say enough?
 
 ## Mockup
 
 `scripts/nest-mockup.js` fakes the panel and one wave of ants on the live site so the idea can be
-played before the real build. Add `?nest` to any page's address to load it, for example `/?nest`. It is a playable sketch: ants steal real letters, the queen breeds every three, a click squashes, and every colour is a theme token.
+played before the real build. Click the ant in the status bar, or type `nest` in the terminal;
+`?nest-debug` only exposes the local test hooks. It is a playable sketch: ants steal real letters, the queen breeds
+every three, a click squashes, and every colour is a theme token.
