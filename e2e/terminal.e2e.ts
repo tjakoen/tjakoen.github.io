@@ -242,6 +242,22 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator("#nest-mock [data-k='stores-val']")).toContainText("/18");
   });
 
+  test("a damaged mini hill heals slowly", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.evaluate(() => {
+      const spot = window.__nest!.findMiniSpot();
+      const mound = spot ? (window.__nest!.makeMini(spot) as { next: number } | null) : null;
+      if (mound) mound.next = performance.now() / 1000 + 999;
+    });
+    const mound = page.locator(".nest-mini").first();
+    await mound.click();
+    await expect(mound).toHaveAttribute("aria-label", /4 hits left/);
+    await page.waitForTimeout(12000);
+    await expect(mound).toHaveAttribute("aria-label", /5 hits left/);
+  });
+
   test("the next worship scales with the colony", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
