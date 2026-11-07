@@ -66,7 +66,10 @@
     #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
       background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
     #nest-mock .confirm p { margin: 0 0 8px; }
-    .nest-layer { position: absolute; left: 0; top: 0; width: 100%; z-index: 50; pointer-events: none; overflow: hidden; }
+    .nest-layer { position: absolute; left: 0; top: 0; width: 100%; z-index: 50; pointer-events: none; overflow: hidden; user-select: none; -webkit-user-select: none; }
+    [data-nest-tool="squash"], [data-nest-tool="squash"] *,
+    [data-nest-tool="wipe"], [data-nest-tool="wipe"] * { user-select: none; -webkit-user-select: none; }
+    .nest-ant, .nest-hill, .nest-stray { user-select: none; -webkit-user-select: none; }
     .nest-scent { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; }
     .nest-layer { --nest-trail: var(--ink-muted); }
     :root[data-color-scheme="light"] .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); }
@@ -163,13 +166,13 @@
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
     .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
     @keyframes nest-bob { to { transform: translateY(-3px); } }
-    .nest-decor { position: absolute; pointer-events: none; color: var(--ink-muted); opacity: .55; z-index: 0; }
+    .nest-decor { position: absolute; pointer-events: none; color: var(--ink-muted); opacity: .65; z-index: 0; }
     .nest-decor svg { display: block; overflow: visible; }
     .nest-decor.desk { color: var(--ink-faint); opacity: .5; }
     #nest-mock .meters { display: grid; gap: 5px; }
     #nest-mock .meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
-    #nest-mock .meter__bar { grid-column: 1 / -1; height: 4px; background: var(--paper-2); border: 1px solid var(--color-line); overflow: hidden; }
-    #nest-mock .meter__bar > span { display: block; height: 100%; width: 0; background: var(--ink-muted); transition: width .3s; }
+    #nest-mock .meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
+    #nest-mock .meter__bar > span { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 999px; transition: width .35s; }
     #nest-mock .meter__bar.accent > span { background: var(--color-accent); }
     #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, auto); gap: 1px 10px; margin: 0; align-items: baseline; }
     #nest-mock .stat-grid div { display: flex; justify-content: space-between; gap: 6px; }
@@ -178,6 +181,10 @@
     #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; }
     #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
+    #nest-mock .link-state { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-muted); }
+    #nest-mock .link-state .dot { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--color-accent); }
+    #nest-mock .link-state.open { color: var(--ink); }
+    #nest-mock .link-state.open .dot { background: var(--color-accent); }
     #nest-mock .note-link { margin-top: auto; padding-top: 6px; color: var(--ink-muted); font-size: 10px; text-decoration: none; border-top: 1px solid var(--color-line); }
     #nest-mock .note-link:hover { color: var(--ink); }
     #nest-mock .activity { margin: 0; padding: 0; list-style: none; min-height: 2.6em; font-size: 10px; color: var(--ink-muted); }
@@ -347,7 +354,7 @@
     <ul class="log activity" data-k="log" aria-live="polite"></ul>
     <div class="meters">
       <div class="meter"><span class="lbl muted">page holds</span><span class="lbl" data-k="holds-val">100%</span>
-        <div class="meter__bar" data-k="holds-bar" role="progressbar" aria-label="Page holds" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span data-k="holds"></span></div></div>
+        <div class="meter__bar accent" data-k="holds-bar" role="progressbar" aria-label="Page holds" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span data-k="holds"></span></div></div>
       <div class="meter"><span class="lbl muted">stores</span><span class="lbl" data-k="stores-val">0/12</span>
         <div class="meter__bar accent" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="stores"></span></div></div>
       <div class="meter"><span class="lbl muted">next egg</span><span class="lbl" data-k="bar-val">0/3</span>
@@ -367,6 +374,7 @@
     <div class="row tools" role="group" aria-label="Page tools">
       ${tool("squash", "Squash", "1")}${tool("wipe", "Wipe", "2")}${tool("read", "Links", "3")}
     </div>
+    <p class="link-state" data-k="link-state" aria-live="polite"><span class="dot"></span><span data-k="link-text">links locked</span></p>
     <div class="row tools" role="group" aria-label="Colony controls">
       ${action("bait", "bait", "Drop bait", "Place a crumb to lure nearby ants away.")}
       ${action("seal", "seal", "Seal hills", "Seal every anthill for a few seconds.")}
@@ -593,37 +601,39 @@
   const home = makeHill(firstSpot);
   const hillOf = (ant) => ant.trail?.hill || ant.hill || home;
 
-  // A little ground around the mound: stones, grass, a twig and a dandelion, plus one desk find
-  // further out. Decor is deliberately quiet and never catches a click.
+  // A little ground around the mound: filled stones, broad grass blades, and a leaf or a
+  // mushroom. The old thin scratch lines read as scribbles, so the shapes are solid and larger.
   const decorate = (h) => {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("class", "nest-decor"); svg.setAttribute("aria-hidden", "true");
-    svg.setAttribute("width", "100"); svg.setAttribute("height", "40"); svg.setAttribute("viewBox", "0 0 100 40");
+    svg.setAttribute("width", "160"); svg.setAttribute("height", "52"); svg.setAttribute("viewBox", "0 0 160 52");
     let seed = Math.max(1, Math.round(h.base[0] * 7 + h.base[1] * 13));
     const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
-    let art = `<g fill="none" stroke="currentColor" stroke-linecap="round">`;
-    for (let i = 0; i < 4; i++) {
-      const x = (8 + rnd() * 80).toFixed(1), y = (31 + rnd() * 5).toFixed(1), r = (2 + rnd() * 2.2).toFixed(1);
-      art += `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${(r * 0.55).toFixed(1)}" fill="currentColor" fill-opacity=".22" stroke-width=".8"/>`;
+    const leaf = rnd() > 0.35, mushroom = rnd() > 0.4;
+    let art = `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">`;
+    art += `<path d="M6 48 Q4 32 0 18 Q8 32 14 48 Z" fill="currentColor" fill-opacity=".3" stroke-width="1"/>`;
+    art += `<path d="M15 48 Q15 30 15 12 Q20 30 24 48 Z" fill="currentColor" fill-opacity=".26" stroke-width="1"/>`;
+    art += `<path d="M25 48 Q27 34 33 22 Q30 38 33 48 Z" fill="currentColor" fill-opacity=".24" stroke-width="1"/>`;
+    art += `<path d="M127 48 Q125 32 121 18 Q129 32 135 48 Z" fill="currentColor" fill-opacity=".3" stroke-width="1"/>`;
+    art += `<path d="M136 48 Q136 30 136 12 Q141 30 145 48 Z" fill="currentColor" fill-opacity=".26" stroke-width="1"/>`;
+    art += `<path d="M146 48 Q148 34 154 22 Q151 38 153 48 Z" fill="currentColor" fill-opacity=".24" stroke-width="1"/>`;
+    art += `<ellipse cx="52" cy="42" rx="10" ry="5" fill="currentColor" fill-opacity=".3" stroke-width="1.2"/>`;
+    art += `<ellipse cx="66" cy="47" rx="7" ry="3.6" fill="currentColor" fill-opacity=".32" stroke-width="1"/>`;
+    art += `<ellipse cx="77" cy="44" rx="5" ry="2.6" fill="currentColor" fill-opacity=".28" stroke-width=".9"/>`;
+    if (leaf) {
+      art += `<path d="M85 46 C91 34 107 32 115 40 C107 50 91 52 85 46 Z" fill="currentColor" fill-opacity=".3" stroke-width="1.2"/>`;
+      art += `<path d="M88 46 C97 42 105 40 111 41" stroke-width="1"/>`;
     }
-    for (let i = 0; i < 5; i++) {
-      const x = (10 + rnd() * 74).toFixed(1), lean = ((rnd() - 0.5) * 7).toFixed(1);
-      art += `<path d="M${x} 34 q${lean} -9 ${(lean * 1.7).toFixed(1)} -15" stroke-width=".9"/>`;
+    if (mushroom) {
+      art += `<path d="M124 48 V34" stroke-width="1.6"/>`;
+      art += `<path d="M112 34 Q124 22 136 34 Z" fill="currentColor" fill-opacity=".34" stroke-width="1.2"/>`;
+      art += `<circle cx="119" cy="30" r="1.2" fill="currentColor" stroke="none"/><circle cx="129" cy="29" r="1" fill="currentColor" stroke="none"/>`;
     }
-    art += `<path d="M60 35 q11 -7 22 -5M73 31 l3 -4" stroke-width="1.1"/>`;
-    art += `<circle cx="27" cy="21" r="2" fill="currentColor" fill-opacity=".3" stroke="none"/><path d="M27 23 q1 5 0 9" stroke-width=".8"/>`;
     art += `</g>`;
     svg.innerHTML = art;
-    svg.style.left = (h.base[0] - 50) + "px";
-    svg.style.top = (h.base[1] - 34) + "px";
+    svg.style.left = (h.base[0] - 80) + "px";
+    svg.style.top = (h.base[1] - 28) + "px";
     layer.append(svg); h.decor = svg;
-    const desk = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    desk.setAttribute("class", "nest-decor desk"); desk.setAttribute("aria-hidden", "true");
-    desk.setAttribute("width", "28"); desk.setAttribute("height", "22"); desk.setAttribute("viewBox", "0 0 28 22");
-    desk.innerHTML = `<path d="M8 18 C4 14 8 5 14 5 C20 5 23 11 20 15 L15 20 C12 23 8 20 9 16 L12 11" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>`;
-    desk.style.left = (h.base[0] + 42) + "px";
-    desk.style.top = (h.base[1] - 12) + "px";
-    layer.append(desk); h.deskFind = desk;
   };
   decorate(home);
 
@@ -665,7 +675,7 @@
   const ANT_SVG = `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
   // colour. At a glance it should not read as another worker.
-  const SOLDIER_SVG = `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[18, 3], [19, 2], [19, 6], [20, 1], [20, 7]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
+  const SOLDIER_SVG = `<svg width="23" height="13" viewBox="-2.4 0 24.8 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
 
   const newAnt = (role, route, d) => { state.total++; const a = { id: state.total, role, where: "nest", route, d }; state.ants.push(a); return a; };
   const scoutsOut = () => state.ants.some((a) => a.role === "scout");
@@ -781,17 +791,29 @@
       if (state.trails.some((t) => Math.hypot(t.end[0] - x, t.end[1] - y) < PATCH * 2)) continue;
       options.push([n, x + r.width / 2, y + r.height]);
     }
+    if (!options.length) {
+      // The opening hint can miss on a page with a wide empty margin. Fall back to any free
+      // letter on the page before turning the scout around, or the colony can loop forever.
+      for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
+        if (!/\S/.test(n.data[i]) || letterOf(n, i).state !== "free") continue;
+        const r = rectOf(n, i); if (!r.width) continue;
+        const [x, y] = local(r);
+        options.push([n, x + r.width / 2, y + r.height]);
+      }
+    }
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
     const [node, tx, ty] = options[Math.floor(Math.random() * options.length)];
     const block = blockOf(node);
     // One gentle bend, then a smoothed route. The old four random jitters made the trail look
     // like it had been drawn while running.
-    const mx = hole[0] + (tx - hole[0]) * 0.5 + (Math.random() - 0.5) * 26;
-    const my = hole[1] + (ty - hole[1]) * 0.5 + (Math.random() - 0.5) * 20;
+    const dx = tx - hole[0], dy = ty - hole[1], dist = Math.hypot(dx, dy) || 1;
+    const nx = -dy / dist, ny = dx / dist;
+    const amp = 18 + Math.random() * 27;
     const path = [];
-    for (let s = 0; s <= 16; s++) {
-      const k = s / 16, u = 1 - k;
-      path.push([u * u * hole[0] + 2 * u * k * mx + k * k * tx, u * u * hole[1] + 2 * u * k * my + k * k * ty]);
+    for (let s = 0; s <= 28; s++) {
+      const k = s / 28;
+      const bow = Math.sin(Math.PI * k) * amp;
+      path.push([hole[0] + dx * k + nx * bow, hole[1] + dy * k + ny * bow]);
     }
     ant.job = "scout"; ant.block = block; ant.path = chaikin(path, 1); ant.k = 0; ant.walked = [hole.slice()];
   };
@@ -1290,9 +1312,9 @@
     layer.append(el); layer.append(m.crest); layer.append(m.hpRing);
     const tuft = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     tuft.setAttribute("class", "nest-decor"); tuft.setAttribute("aria-hidden", "true");
-    tuft.setAttribute("width", "48"); tuft.setAttribute("height", "24"); tuft.setAttribute("viewBox", "0 0 48 24");
-    tuft.innerHTML = `<path d="M8 22 q-2 -8 -5 -11M12 22 q1 -9 4 -13M16 22 q0 -6 2 -8M34 21 q-1 -5 -3 -7M38 22 q1 -5 3 -7" fill="none" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/><ellipse cx="40" cy="21" rx="2.4" ry="1.2" fill="currentColor" fill-opacity=".16"/>`;
-    tuft.style.left = (spot.x - 24) + "px"; tuft.style.top = (spot.y - 18) + "px";
+    tuft.setAttribute("width", "72"); tuft.setAttribute("height", "36"); tuft.setAttribute("viewBox", "0 0 72 36");
+    tuft.innerHTML = `<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 34 Q4 22 0 12 Q7 22 12 34 Z" fill="currentColor" fill-opacity=".28" stroke-width="1"/><path d="M14 34 Q14 20 14 8 Q19 20 23 34 Z" fill="currentColor" fill-opacity=".24" stroke-width="1"/><path d="M24 34 Q26 24 31 16 Q29 26 32 34 Z" fill="currentColor" fill-opacity=".22" stroke-width="1"/><ellipse cx="46" cy="30" rx="7" ry="3.5" fill="currentColor" fill-opacity=".3" stroke-width="1"/><ellipse cx="57" cy="33" rx="5" ry="2.5" fill="currentColor" fill-opacity=".28" stroke-width=".9"/></g>`;
+    tuft.style.left = (spot.x - 36) + "px"; tuft.style.top = (spot.y - 20) + "px";
     layer.append(tuft); m.decor = tuft;
     minis.push(m); markGuards(m); log("a mini hill stands"); return m;
   };
@@ -1556,7 +1578,11 @@
     const setMeter = (key, ratio, text) => {
       const r = Math.min(1, Math.max(0, ratio));
       const fill = $(key); if (fill) fill.style.width = `${Math.round(r * 100)}%`;
-      const meter = $(`${key}-bar`); if (meter) meter.setAttribute("aria-valuenow", String(Math.round(r * 100)));
+      const meter = $(`${key}-bar`);
+      if (meter) {
+        meter.setAttribute("aria-valuenow", String(Math.round(r * 100)));
+        meter.setAttribute("aria-valuetext", text ?? `${Math.round(r * 100)}%`);
+      }
       const val = $(`${key}-val`); if (val && text != null) val.textContent = text;
     };
     $("scouts").textContent = state.ants.filter((a) => a.role === "scout").length;
@@ -1649,6 +1675,9 @@
     main.dataset.nestTool = t;
     if (main.classList.contains("nest-armed")) setBaitArmed(false);
     $("tool-help").textContent = toolHelp[t];
+    const linksOpen = t === "read";
+    $("link-state").classList.toggle("open", linksOpen);
+    $("link-text").textContent = linksOpen ? "links open" : "links locked";
     panel.querySelectorAll("[data-tool]").forEach((b) => {
       const on = b.dataset.tool === t;
       b.setAttribute("aria-pressed", String(on));
@@ -1765,7 +1794,7 @@
     leaveGo = go;
   };
   if (new URLSearchParams(location.search).has("nest-debug")) {
-    window.__nest = { state, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot };
+    window.__nest = { state, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label };
   }
   return { stop, confirmLeave };
   };
