@@ -79,6 +79,19 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator('[data-surface="nest-controls"]')).toBeVisible();
   });
 
+  test("the anthill keeps clear of the bread", async ({ page }) => {
+    await page.goto("/");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(1600);
+    expect(await page.evaluate(() => {
+      const bread = document.querySelector<HTMLElement>(".welcome__bread")?.getBoundingClientRect();
+      const hill = document.querySelector<HTMLElement>(".nest-hill")?.getBoundingClientRect();
+      if (!bread || !hill || !bread.width || !hill.width) return false;
+      return hill.left < bread.right && hill.right > bread.left && hill.top < bread.bottom && hill.bottom > bread.top;
+    })).toBe(false);
+  });
+
   test("the stray command sends an ant that runs for the launcher", async ({ page }) => {
     await page.goto("/");
     await page.locator(".console__expand").click();

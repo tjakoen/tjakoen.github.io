@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 13 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 14 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -102,8 +102,9 @@ command, and the ground and sound details.
 
 **The ground.** A few Braille pieces are scattered in the empty margins, grass, stones, a leaf and
 a mushroom, the same alphabet as the hill and the sidebar nest. Nothing sits around the anthill, so
-the mound stays clean. It is theme-token colour, never catches a click, and stays still under
-reduced motion.
+the mound stays clean. The bread is a PRE, and the first obstacle scan skipped PRE; it is now solid
+for the hill, the scattered pieces and the mini hills. The decor is theme-token colour, never
+catches a click, and stays still under reduced motion.
 
 **The mini hill language.** No words or count dots on the page. The mound thins as it takes hits,
 and the guards are the ants visible on patrol. The element is a keyboard button with an aria label
@@ -129,7 +130,7 @@ $ bun test
 Ran 875 tests across 48 files. [9.74s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  10 passed (7.7s)
+  11 passed (8.3s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
