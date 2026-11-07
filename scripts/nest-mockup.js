@@ -169,11 +169,11 @@
     .nest-decor { position: absolute; pointer-events: none; color: var(--ink-muted); opacity: .65; z-index: 0; }
     .nest-decor svg { display: block; overflow: visible; }
     .nest-decor.desk { color: var(--ink-faint); opacity: .5; }
-    #nest-mock .meters { display: grid; gap: 5px; }
-    #nest-mock .meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
-    #nest-mock .meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
-    #nest-mock .meter__bar > span { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 999px; transition: width .35s; }
-    #nest-mock .meter__bar.accent > span { background: var(--color-accent); }
+    #nest-mock .nest-meters { display: grid; gap: 5px; }
+    #nest-mock .nest-meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
+    #nest-mock .nest-meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
+    #nest-mock .nest-meter__bar > span { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 999px; transition: width .35s; }
+    #nest-mock .nest-meter__bar.accent > span { background: var(--color-accent); }
     #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, auto); gap: 1px 10px; margin: 0; align-items: baseline; }
     #nest-mock .stat-grid div { display: flex; justify-content: space-between; gap: 6px; }
     #nest-mock .stat-grid dt { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); }
@@ -352,13 +352,13 @@
       <button class="x" data-k="x" type="button" aria-label="Close the Nest" title="Close">×</button></div>
     <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
     <ul class="log activity" data-k="log" aria-live="polite"></ul>
-    <div class="meters">
-      <div class="meter"><span class="lbl muted">page holds</span><span class="lbl" data-k="holds-val">100%</span>
-        <div class="meter__bar accent" data-k="holds-bar" role="progressbar" aria-label="Page holds" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span data-k="holds"></span></div></div>
-      <div class="meter"><span class="lbl muted">stores</span><span class="lbl" data-k="stores-val">0/12</span>
-        <div class="meter__bar accent" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="stores"></span></div></div>
-      <div class="meter"><span class="lbl muted">next egg</span><span class="lbl" data-k="bar-val">0/3</span>
-        <div class="meter__bar accent" data-k="bar-bar" role="progressbar" aria-label="Next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="bar"></span></div></div>
+    <div class="nest-meters">
+      <div class="nest-meter"><span class="lbl muted">page holds</span><span class="lbl" data-k="holds-val">100%</span>
+        <div class="nest-meter__bar accent" data-k="holds-bar" role="progressbar" aria-label="Page holds" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span data-k="holds"></span></div></div>
+      <div class="nest-meter"><span class="lbl muted">stores</span><span class="lbl" data-k="stores-val">0/12</span>
+        <div class="nest-meter__bar accent" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="stores"></span></div></div>
+      <div class="nest-meter"><span class="lbl muted">next egg</span><span class="lbl" data-k="bar-val">0/3</span>
+        <div class="nest-meter__bar accent" data-k="bar-bar" role="progressbar" aria-label="Next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="bar"></span></div></div>
     </div>
     <dl class="stat-grid">
       <div><dt>scouts</dt><dd class="accent" data-k="scouts">0</dd></div>
