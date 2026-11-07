@@ -169,6 +169,9 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       const guards = window.__nest!.state.ants.filter((a) => a.role === "guard");
       return guards.length > 0 && guards.every((a) => a.job === "defend" || a.job === "guard");
     });
+    await page.waitForTimeout(4500);
+    const freed = await page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").map((a) => a.job));
+    expect(freed.every((job) => job !== "defend" && job !== "guard")).toBe(true);
     await page.evaluate(() => {
       for (const g of window.__nest!.state.ants.filter((a) => a.role === "guard")) {
         window.__nest!.squash(g); window.__nest!.squash(g);

@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 35 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 36 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -86,8 +86,8 @@ thresholds. The queen crawls out of the hill and walks to a clear patch near it,
 page moves toward her, the far ones turn back to their trails when it ends, the sidepanel pulses
 with a border glow and a sway, the stolen glyphs orbit, a short synth melody plays, and a next
 worship bar in the panel tracks the next one. The queen is hidden in the sidepanel while she is
-outside. The final overrun uses the same scene for longer. There is no win to stay quiet now: the
-reserve is gone, and an empty colony gets a fresh scout from the queen.
+outside. There is no final overrun now: when the page runs out the queen sends another scout and
+the colony carries on. There is no win, no reserve, and no game over to lock the squash tool.
 
 **The controls.** Four colony tools are named: Squash, Wipe, Bait and Seal, with Bait and Seal on
 text tiles beside the two page tools. Links, mute, pause and restore are the utility row below;
@@ -135,7 +135,7 @@ keyboard button with an aria label for screen readers.
 opens, then settles on hover, focus, click or time. A master gain, a compressor, oscillators and a reusable
 noise buffer. Cues cover the wake, a letter lift, a delivery, a trail laid, a trail fade, an egg,
 a hatch, a soldier, a squash, a soldier hit, a seal, bait, a build tick, a hill break, a guard, a
-flyer, the dance and the overrun. Silence is still the default.
+flyer and the dance. Silence is still the default.
 
 ## Gate output
 
@@ -149,10 +149,10 @@ $ bun test
  894 pass
  0 fail
  3885 expect() calls
-Ran 894 tests across 49 files. [5.51s]
+Ran 894 tests across 49 files. [5.84s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  21 passed (27.0s)
+  21 passed (27.5s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
