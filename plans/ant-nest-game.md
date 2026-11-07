@@ -52,11 +52,10 @@ unreadable and the colony has won that page.
   scout goes out as the old trail fades. Soldiers hatch once the colony passes eight and take two
   hits.
 - **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
-  shows how full they are. A full store sends a builder to an open spot in view. Builders favor
-  gaps left by stolen letters and spread out from existing hills. Squash the builder and the stores
-  are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Its rim carries
-  one dot per guard and its base carries one dot per hit; once the guards are gone, five clicks
-  break it. Its flyers outlive it.
+  shows how full they are. A full store sends a builder to an open spot on the page, sometimes
+  below the fold. Builders favor gaps left by stolen letters and spread out from existing hills. Squash the builder and the stores
+  are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Its mound thins
+  with each hit; once the guards are gone, five clicks break it. Its flyers outlive it.
 - **The player's tools.** Pick a tool: squash holds the page's links so a missed ant never
   navigates, wipe is the only tool that breaks scent, and links gives the page back. The panel gives
   each tool a name, an icon and a key. Squash ants, drag across a scent trail to break it, drop bait
