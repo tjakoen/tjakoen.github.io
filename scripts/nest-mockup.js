@@ -175,9 +175,9 @@
     #nest-mock .head .x:hover { border-color: var(--color-line); color: var(--ink); }
     .nest-mini.hit { animation: nest-mini-hit .25s ease-out; }
     @keyframes nest-mini-hit { 30% { transform: translateX(2px) scale(.96); } }
-    .nest-queen { position: absolute; width: 46px; height: 30px; margin: -15px 0 0 -23px; color: var(--color-accent); pointer-events: none; z-index: 2;
-      white-space: pre; text-align: center; font: 10px/0.95 var(--font-mono); letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor;
+    .nest-queen { position: absolute; width: 40px; height: 24px; margin: -12px 0 0 -20px; color: var(--color-accent); pointer-events: none; z-index: 2;
       transition: opacity .4s; }
+    .nest-queen svg { display: block; width: 40px; height: 24px; overflow: visible; }
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
     .nest-queen.crawling { animation: nest-queen-crawl .18s steps(2) infinite; }
     @keyframes nest-queen-crawl { 50% { transform: translateY(1px) rotate(2deg); } }
@@ -249,6 +249,10 @@
   // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
   // colour. At a glance it should not read as another worker.
   const SOLDIER_SVG = `<svg width="23" height="13" viewBox="-2.4 0 24.8 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
+  // The queen is a bigger soldier with a crown, not a Braille blob. The sidepanel keeps the
+  // Braille queen inside the nest; outside, she should read as the animal leading the colony.
+  const CROWN = [[-0.6, -1.1], [0.2, -1.8], [1, -1.1], [1.8, -1.8], [2.6, -1.1]];
+  const QUEEN_SVG = `<svg width="40" height="24" viewBox="-2.4 -2.6 24.8 15.4" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}${dots(CROWN)}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const cancelStray = () => {
     clearTimeout(strayTimer); clearTimeout(strayExitTimer);
@@ -426,8 +430,8 @@
     <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
     <ul class="log activity" data-k="log" aria-live="polite"></ul>
     <div class="nest-meters">
-      <div class="nest-meter"><span class="lbl muted">page holds</span><span class="lbl" data-k="holds-val">100%</span>
-        <div class="nest-meter__bar accent" data-k="holds-bar" role="progressbar" aria-label="Page holds" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span data-k="holds"></span></div></div>
+      <div class="nest-meter"><span class="lbl muted">page left</span><span class="lbl" data-k="holds-val">100%</span>
+        <div class="nest-meter__bar accent" data-k="holds-bar" role="progressbar" aria-label="Page left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span data-k="holds"></span></div></div>
       <div class="nest-meter"><span class="lbl muted">stores</span><span class="lbl" data-k="stores-val">0/12</span>
         <div class="nest-meter__bar accent" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="stores"></span></div></div>
       <div class="nest-meter"><span class="lbl muted">next egg</span><span class="lbl" data-k="bar-val">0/3</span>
@@ -800,7 +804,7 @@
     ant.where = "page"; ant.x = hole[0]; ant.y = hole[1]; ant.heading = -Math.PI / 2; ant.px = ant.x; ant.py = ant.y;
     ant.el = document.createElement("button"); ant.el.type = "button";
     ant.el.className = "nest-ant walk"; ant.el.innerHTML = ant.role === "soldier" ? SOLDIER_SVG : ANT_SVG;
-    ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squash(ant); });
+    ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
     layer.append(ant.el);
     if (ant.role === "scout") scout(ant);
     else if (ant.role === "soldier") { ant.job = "patrol"; ant.path = lanePath(ant.patrol.pts, ant.lane || 0); ant.k = 0; ant.hp = ant.hp || 2; }
@@ -970,6 +974,13 @@
     L.crew.forEach((a) => { if (a.el) goHome(a); });
   };
 
+  // A click on a pile takes the whole pile. The top ant is not the only one under the finger.
+  const swarm = (ant) => {
+    if (!ant || ant.dead) return;
+    const pile = state.ants.filter((a) => a !== ant && a.el && !a.dead && Math.hypot(a.x - ant.x, a.y - ant.y) < 18);
+    squash(ant);
+    pile.forEach((a) => squash(a));
+  };
   const squash = (ant) => {
     if (state.tool !== "squash" || state.over || state.overrun || ant.dead || ant.job === "dance") return;
     if ((ant.role === "soldier" || ant.role === "guard") && ant.hp > 1) {
@@ -1168,7 +1179,6 @@
   // because a colony that danced every twenty letters forever would be a metronome, not a colony.
   // The queen is the same dot animal as the sidepanel, not a separate card. She leaves the nest
   // for a stage outside the hill; the sidepanel queen disappears while she is out.
-  const QUEEN_ART = "⠀⢀⣤⣤⡀⠀\n⢠⣿⣿⣿⣿⡄\n⠈⠛⠛⠛⠛⠁";
   // A clear patch of page near the home mound: below it first, then to either side. The queen
   // should walk into open ground, not through a line of prose.
   const stageSpot = () => {
@@ -1190,7 +1200,7 @@
     const now = performance.now();
     const mound = home;
     const stage = stageSpot();
-    const queen = document.createElement("pre"); queen.className = "nest-queen bob crawling"; queen.textContent = QUEEN_ART;
+    const queen = document.createElement("div"); queen.className = "nest-queen bob crawling"; queen.innerHTML = QUEEN_SVG;
     queen.style.left = mound.hole[0] + "px"; queen.style.top = (mound.hole[1] - 8) + "px";
     layer.append(queen);
     panel.classList.add("celebrating");
@@ -1342,7 +1352,7 @@
     state.total++; const a = { id: state.total, role, where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant walk" + (role === "flyer" ? " flyer" : "");
     a.el.innerHTML = role === "flyer" ? ANT_SVG.replace("<g class=\"legs-a\">", `<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g><g class="legs-a">`) : role === "guard" ? SOLDIER_SVG : ANT_SVG;
-    a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squash(a); });
+    a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
     layer.append(a.el); state.ants.push(a); label(a); return a;
   };
   const startBuild = () => {
