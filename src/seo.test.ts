@@ -13,6 +13,12 @@ function jsonLd(html: string): any {
   return JSON.parse(m[1].replace(/\\u003c/g, "<"));
 }
 
+describe("SITE", () => {
+  test("the public origin is the custom domain", () => {
+    expect(SITE.origin).toBe("https://portfolio.tjakoen.com");
+  });
+});
+
 describe("canonicalPath", () => {
   test("root stays root; others get one trailing slash (matches the sitemap)", () => {
     expect(canonicalPath("/")).toBe("/");
