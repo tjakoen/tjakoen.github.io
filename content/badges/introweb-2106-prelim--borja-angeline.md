@@ -18,7 +18,7 @@ recipientHandle: "borja-angeline"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-prelim-4c321db7"
 criteriaUrl: "/badges/introweb-2106-prelim"
-social: "I earned Web Foundations. Verify my badge: https://tjakoen.github.io/b/4c321db7"
+social: "I earned Web Foundations. Verify my badge: https://portfolio.tjakoen.com/b/4c321db7"
 showcase:
   - "/media/badges/showcase/bfd2e6e9fc658683.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

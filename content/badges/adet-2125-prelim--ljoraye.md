@@ -18,7 +18,7 @@ recipientHandle: "ljoraye"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-prelim-35b726b1"
 criteriaUrl: "/badges/adet-2125-prelim"
-social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/35b726b1"
+social: "I earned Dart and Flutter Foundations. Verify my badge: https://portfolio.tjakoen.com/b/35b726b1"
 showcase:
   - "/media/badges/showcase/a201f5c05f336f1e.webp | 780x1688 | Detail fire"
   - "/media/badges/showcase/7b626715a5f14556.webp | 780x1688 | Detail water low hp"

@@ -18,7 +18,7 @@ recipientHandle: "potchimavs"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-midterm-d0350254"
 criteriaUrl: "/badges/introweb-2106-midterm"
-social: "I earned Interactive Web Pages. Verify my badge: https://tjakoen.github.io/b/d0350254"
+social: "I earned Interactive Web Pages. Verify my badge: https://portfolio.tjakoen.com/b/d0350254"
 showcase:
   - "/media/badges/showcase/aa542bcf13fb832f.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

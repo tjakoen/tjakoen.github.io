@@ -18,7 +18,7 @@ recipientHandle: "migui-alcantara"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-prelim-cff7c9b2"
 criteriaUrl: "/badges/adet-2134-prelim"
-social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/cff7c9b2"
+social: "I earned Dart and Flutter Foundations. Verify my badge: https://portfolio.tjakoen.com/b/cff7c9b2"
 showcase:
   - "/media/badges/showcase/1115a2a1990467cf.webp | 780x1688 | Detail fire"
   - "/media/badges/showcase/b85338d796759418.webp | 780x1688 | Detail water low hp"

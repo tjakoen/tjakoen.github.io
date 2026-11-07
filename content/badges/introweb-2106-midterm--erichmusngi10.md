@@ -24,7 +24,7 @@ social: |
   It attests that I completed the midterm coursework of Basic Programming in Web Development, awarded on the work I
   actually submitted rather than a grade cutoff.
 
-  Verify it here: https://tjakoen.github.io/b/2ba1b5b4
+  Verify it here: https://portfolio.tjakoen.com/b/2ba1b5b4
 ---
 
 This credential attests completion of the midterm block of Basic Programming in Web Development. The criteria this badge certifies, and how it sits alongside the other badge in the course, are on the [criteria page](/badges/introweb-2106-midterm).

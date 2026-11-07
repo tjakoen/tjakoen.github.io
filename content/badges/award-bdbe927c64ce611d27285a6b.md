@@ -18,7 +18,7 @@ recipientHandle: "28beans"
 issuedOn: "2026-11-03"
 certId: "hau-bdbe927c64ce611d27285a6b"
 criteriaUrl: "/badges/adet-2125-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/bdbe927c64ce611d"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/bdbe927c64ce611d"
 showcase:
   - "/media/badges/showcase/291b4230be7a2bab.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

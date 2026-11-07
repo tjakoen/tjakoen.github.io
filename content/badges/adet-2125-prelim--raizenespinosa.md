@@ -18,7 +18,7 @@ recipientHandle: "blue-cynic"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-prelim-66528b8d"
 criteriaUrl: "/badges/adet-2125-prelim"
-social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/66528b8d"
+social: "I earned Dart and Flutter Foundations. Verify my badge: https://portfolio.tjakoen.com/b/66528b8d"
 showcase:
   - "/media/badges/showcase/f4efa77fe9674fc2.webp | 780x1688 | Detail fire"
   - "/media/badges/showcase/b3dcb9cda729bc3e.webp | 780x1688 | Detail water low hp"

@@ -18,7 +18,7 @@ recipientHandle: "kumaarrkkshitij"
 issuedOn: "2026-11-03"
 certId: "hau-1280aac2f15b1ccc6ed37c46"
 criteriaUrl: "/badges/apsi-2203-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/1280aac2f15b1ccc"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/1280aac2f15b1ccc"
 showcase:
   - "/media/badges/showcase/c032d1c864fb07b8.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

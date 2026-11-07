@@ -18,7 +18,7 @@ recipientHandle: "putoydi"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-8e4230ef"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/8e4230ef"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/8e4230ef"
 showcase:
   - "/media/badges/showcase/4e8a0d6f276b90e5.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/6bb69f0cad0eac24.webp | 780x1688 | Monster detail"

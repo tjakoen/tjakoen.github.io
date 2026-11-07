@@ -18,7 +18,7 @@ recipientHandle: "enetwarch"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-15bad3bc"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/15bad3bc"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/15bad3bc"
 showcase:
   - "/media/badges/showcase/988cb9a8bfd83f43.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/22f478fcaea5db9a.webp | 780x1688 | Monster detail"

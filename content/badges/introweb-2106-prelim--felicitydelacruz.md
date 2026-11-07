@@ -18,7 +18,7 @@ recipientHandle: "felicitydelacruz"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-prelim-6a2da14c"
 criteriaUrl: "/badges/introweb-2106-prelim"
-social: "I earned Web Foundations. Verify my badge: https://tjakoen.github.io/b/6a2da14c"
+social: "I earned Web Foundations. Verify my badge: https://portfolio.tjakoen.com/b/6a2da14c"
 showcase:
   - "/media/badges/showcase/aa542bcf13fb832f.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

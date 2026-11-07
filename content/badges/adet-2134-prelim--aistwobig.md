@@ -18,7 +18,7 @@ recipientHandle: "aistwobig"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-prelim-af27c285"
 criteriaUrl: "/badges/adet-2134-prelim"
-social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/af27c285"
+social: "I earned Dart and Flutter Foundations. Verify my badge: https://portfolio.tjakoen.com/b/af27c285"
 showcase:
   - "/media/badges/showcase/6212e974fd3ca11b.webp | 780x1688 | Detail fire"
   - "/media/badges/showcase/9da4f8e462b6501f.webp | 780x1688 | Detail water low hp"

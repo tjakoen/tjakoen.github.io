@@ -18,7 +18,7 @@ recipientHandle: "kish-mnlo"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-prelim-a1b7f99e"
 criteriaUrl: "/badges/apsi-2215-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/a1b7f99e"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/a1b7f99e"
 showcaseNone: "practical submitted in Canvas, no capture"
 showcaseOptOut: false
 ---

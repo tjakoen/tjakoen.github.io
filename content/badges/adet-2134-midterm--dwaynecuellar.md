@@ -18,7 +18,7 @@ recipientHandle: "drain18"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-0b0c0dc4"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/0b0c0dc4"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/0b0c0dc4"
 showcase:
   - "/media/badges/showcase/d89b817fc5290d51.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/24c937718fd4bd95.webp | 780x1688 | Monster detail"

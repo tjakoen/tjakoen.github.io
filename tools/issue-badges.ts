@@ -7,7 +7,10 @@ import { createHash, randomBytes } from "node:crypto";
 import { YAML } from "bun";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+// Badge assertion and class IDs were minted at the GitHub Pages host and stay there: a credential ID
+// is permanent, and the old host redirects. Public links use the custom domain.
 const ORIGIN = "https://tjakoen.github.io";
+const PUBLIC_ORIGIN = "https://portfolio.tjakoen.com";
 export interface BadgeEvidence { url: string; commit?: string }
 export interface BadgeActivity { id: string; title: string; description: string; evidence?: BadgeEvidence[]; publicEvidence?: BadgeEvidence[] }
 export interface Award {
@@ -163,7 +166,7 @@ export function planAwards(manifest: unknown, existing: Existing[] = [], today =
     const common = { badgeName: a.title, subtitle: a.title, course: a.course, monogram: a.monogram, term: a.term, issuer: "Tjakoen Stolk", criteriaText: a.criteria, thresholdPercent: a.thresholdPercent, activitiesJson: JSON.stringify(a.activities.map(({id,title,description}) => ({id,title,description}))) };
     const md = metadata({ ...common, activitiesJson: JSON.stringify(a.activities.map(({id,title,description,publicEvidence}) => ({id,title,description,publicEvidence:publicEvidence?.length ? publicEvidence : undefined}))), title: `${a.title}: ${a.recipientName}`, type: "cert", awardKey: digest, badgeClass: classSlug,
       shortUrl: `/b/${shortId}`, recipientName: a.recipientName, recipientHandle: a.recipientHandle,
-      issuedOn, certId, criteriaUrl: `/badges/${classSlug}`, social: `I earned ${a.title}. Verify my badge: ${ORIGIN}/b/${shortId}` })
+      issuedOn, certId, criteriaUrl: `/badges/${classSlug}`, social: `I earned ${a.title}. Verify my badge: ${PUBLIC_ORIGIN}/b/${shortId}` })
       + `${a.description}\n\nThe instructor approved this award against the [badging activity criteria](/badges/${classSlug}).\n`;
     return { a, certSlug, certId, issuedOn, shortId, classSlug, assertion, md, common, reused: adopting };
   });
@@ -228,7 +231,7 @@ export function issue(manifest: unknown, options: { dir: string; emit?: boolean;
   if (options.emit && plan.uncovered && !options.allowExisting) throw new Error(`Emission held: ${plan.uncovered} existing certificates are not reconciled. --allow-existing preserves legacy awards.`);
   const issuedManifest = { ...(manifest as Record<string, unknown>), schemaVersion: 1, awards: plan.awards.map(award => ({ ...award.a,
     certSlug: award.certSlug, certId: award.certId, shortId: award.shortId,
-    issuedOn: award.assertion.issuedOn.slice(0, 10), url: `${ORIGIN}/b/${award.shortId}`, imageUrl: award.assertion.image })) };
+    issuedOn: award.assertion.issuedOn.slice(0, 10), url: `${PUBLIC_ORIGIN}/b/${award.shortId}`, imageUrl: award.assertion.image })) };
   // Reused legacy pages and adopted legacy class pages keep their public image URLs, so their images are re-rendered in place to show the current title.
   const adoptedClasses = options.adoptLegacyClass ? [...plan.classes.keys()].filter(slug => {
     const path = join(options.dir, `${slug}.md`), match = existsSync(path) ? readFileSync(path, "utf8").match(/^---\n([\s\S]*?)\n---/) : null;

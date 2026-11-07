@@ -18,7 +18,7 @@ recipientHandle: "wozuwozu"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-ce326f26"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/ce326f26"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/ce326f26"
 showcase:
   - "/media/badges/showcase/7b089ac031542a02.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/f404e449d70584f4.webp | 780x1688 | Monster detail"

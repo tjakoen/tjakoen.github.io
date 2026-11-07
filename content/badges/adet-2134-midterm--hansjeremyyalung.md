@@ -18,7 +18,7 @@ recipientHandle: "yalunghans88-droid"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-midterm-171e8aac"
 criteriaUrl: "/badges/adet-2134-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/171e8aac"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/171e8aac"
 showcase:
   - "/media/badges/showcase/005df822d870c40e.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/1a0ef36c09c8a2f7.webp | 780x1688 | Monster detail"

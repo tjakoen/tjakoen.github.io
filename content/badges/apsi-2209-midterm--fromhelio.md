@@ -18,7 +18,7 @@ recipientHandle: "fromhelio"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2209-midterm-d8ab5986"
 criteriaUrl: "/badges/apsi-2209-midterm"
-social: "I earned Full Stack Web Development. Verify my badge: https://tjakoen.github.io/b/d8ab5986"
+social: "I earned Full Stack Web Development. Verify my badge: https://portfolio.tjakoen.com/b/d8ab5986"
 showcase:
   - "/media/badges/showcase/d071204e88fe9000.webp | 1280x2073 | The client at desktop width"
   - "/media/badges/showcase/ddad27b13f0a6c0e.webp | 375x2378 | The client at phone width"
