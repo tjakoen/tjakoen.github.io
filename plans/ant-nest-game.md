@@ -50,5 +50,5 @@ unreadable and the colony has won that page.
 
 ## Mockup
 
-`plans/ant-nest-mockup.js` fakes the panel and one wave of ants on the live site so the idea can be
-looked at before any of it is built. It has no game logic.
+`scripts/nest-mockup.js` fakes the panel and one wave of ants on the live site so the idea can be
+looked at before any of it is built. Add `?nest` to any page's address to load it, for example `/?nest`. It has no game logic.
