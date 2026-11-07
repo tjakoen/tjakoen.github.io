@@ -197,6 +197,10 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.getByRole("button", { name: "Open the Nest" }).click();
     const panel = page.locator('[data-surface="nest-controls"]');
     const main = page.locator(".app-shell__main");
+    const sound = panel.getByRole("button", { name: "Unmute" });
+    await expect(sound).toHaveClass(/nest-sound-hint/);
+    await sound.hover();
+    await expect(sound).not.toHaveClass(/nest-sound-hint/);
     const link = main.getByRole("link", { name: "Explore selected work" });
     const fileLink = page.locator('.file-tree__file[href="/resume"]');
     const linkState = panel.locator('[data-k="link-text"]');

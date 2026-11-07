@@ -65,7 +65,7 @@ unreadable and the colony has won that page.
   confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
   each tool a name, an icon and a key. Squash ants, drag across a scent trail to break it, drop bait
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
-  seals have cooldowns. Sound is muted until switched on.
+  seals have cooldowns. Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
 - **The colony dances.** Every time the colony has taken twenty, then fifty, then a rising number
   of letters, it stops: the queen comes out of the hill, the workers circle her, the stolen glyphs
   orbit, and then the colony goes back to work. The page is the whole environment, so the ants may
