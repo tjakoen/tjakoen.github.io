@@ -192,7 +192,7 @@
     #nest-mock .nest-meter__bar > span { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 999px; transition: width .35s; }
     #nest-mock .nest-meter__bar.accent > span { background: var(--color-accent); }
     #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, auto)); gap: 1px 10px; margin: 0; align-items: baseline; }
-    #nest-mock .stat-grid div { display: flex; justify-content: space-between; gap: 6px; min-width: 0; overflow: hidden; }
+    #nest-mock .stat-grid div { display: flex; justify-content: flex-start; gap: 4px; min-width: 0; overflow: hidden; }
     #nest-mock .stat-grid dt { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); white-space: nowrap; }
     #nest-mock .stat-grid dd { margin: 0; font-size: 12px; font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button { min-width: 0; }
