@@ -6,6 +6,7 @@
 //
 //   bun tools/dsh-loop/cli.mjs start
 //   bun tools/dsh-loop/cli.mjs end
+//   bun tools/dsh-loop/cli.mjs close
 //   bun tools/dsh-loop/cli.mjs guard .github/workflows/ci.yml
 //   bun tools/dsh-loop/cli.mjs envelope /tmp/handoff.txt
 
@@ -14,6 +15,7 @@ import { existsSync, lstatSync, readFileSync, realpathSync, statSync } from 'nod
 import { join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { pathToFileURL } from 'node:url';
+import { runClose } from './close.ts';
 
 const guardPath = process.env.DSH_GUARD || join(homedir(), '.dsh', 'loop', 'guard.mjs');
 let guardModule;
@@ -116,8 +118,20 @@ function changedFiles() {
     .filter(Boolean);
 }
 
+function checkpoint() {
+  const result = run('git', ['rev-parse', '--git-dir']);
+  if (result.status !== 0) return;
+  const file = resolve(repo, result.stdout.trim(), 'dsh-close.md');
+  if (!existsSync(file)) return;
+  const text = readFileSync(file, 'utf8').trim();
+  if (!text) return;
+  console.log('');
+  console.log(text);
+}
+
 function start() {
   console.log(`DSH loop start: ${repo}`);
+  checkpoint();
   doctor();
   skillsMount();
   graphAge();
@@ -152,6 +166,8 @@ function end() {
   console.log('Report lines to carry into the run report:');
   console.log('  What was not done: <name it, even when the answer is nothing>');
   console.log('  What needs human eyes: <name it, even when the answer is nothing>');
+  console.log('');
+  console.log('Before you archive the session: bun tools/dsh-loop/cli.mjs close');
 }
 
 async function guardCommand(target) {
@@ -203,9 +219,21 @@ function help() {
 
   start               run the session-start doctor, the mount check and the graph age
   end                 refresh the graph, run the typecheck and the lint gate, print the run ledger
+  close               answer whether this session can be archived, from git and the event log
   guard <path>        ask the human-lane rules about a path before a write
   envelope <file>     check a handoff file for lane, scope cap, hard stops and ask-triggers
   help                this message
+
+close options:
+  --session <id>      attribute dirty paths with this session (default DSH_SESSION_ID)
+  --mine <paths>      comma separated paths this session edited, for when no log exists
+  --no-fetch          skip the fetch, and report merge state as of the last one
+  --gate              also run the repository's own gate (check, typecheck or gate script)
+  --no-worktrees      skip the worktree inventory
+  --no-pr             skip the gh lookup, for a hook that must not wait on the network
+  --json              machine-readable facts and verdict
+
+close exits 0 when the verdict is CLOSE or CLOSE WITH NOTES, and 1 otherwise.
 
 The machine plugin at ~/.dsh/loop enforces the human lane, the spawn envelope, graph refresh
 and the session checklist inside DSH. This CLI is the repo part DSH has no event for.`);
@@ -217,6 +245,9 @@ switch (command) {
     break;
   case 'end':
     end();
+    break;
+  case 'close':
+    process.exitCode = runClose(repo, rest);
     break;
   case 'guard':
     await guardCommand(rest[0]);
