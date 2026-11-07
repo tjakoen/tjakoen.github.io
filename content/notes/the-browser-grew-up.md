@@ -308,7 +308,7 @@ There is a fourth bar in that chart I slid past: my stack, with one change. In t
 
 Which is why I checked the browser support myself rather than trusting a changelog, and it is as early as I said: the full feature in Chrome only, behind a flag you turn on by hand, the plain setHTML setter shipping in a normal Firefox release, and not a word from Safari. There is also a trade I am not hiding. The native-swap version asks the server for each fragment, so it spends a round-trip where my plain client-side filter spends none. Fewer bytes, one more request. On that one I took the measurement, not a side.
 
-*(The full numbers live on the [bench results page](https://tjakoen.github.io/framework-bench/), a static page that itself ships no JavaScript at all. The harness and the four builds live in the [framework bench repo](https://github.com/tjakoen/framework-bench), so you can run it yourself and get your own numbers.)*
+*(The full numbers live on the [bench results page](https://portfolio.tjakoen.com/framework-bench/), a static page that itself ships no JavaScript at all. The harness and the four builds live in the [framework bench repo](https://github.com/tjakoen/framework-bench), so you can run it yourself and get your own numbers.)*
 
 > The bet I kept calling well-founded is measured now. It held.
 

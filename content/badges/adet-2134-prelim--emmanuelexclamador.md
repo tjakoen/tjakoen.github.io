@@ -18,7 +18,7 @@ recipientHandle: "emmeor"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2134-prelim-fc4ace18"
 criteriaUrl: "/badges/adet-2134-prelim"
-social: "I earned Dart and Flutter Foundations. Verify my badge: https://tjakoen.github.io/b/fc4ace18"
+social: "I earned Dart and Flutter Foundations. Verify my badge: https://portfolio.tjakoen.com/b/fc4ace18"
 showcase:
   - "/media/badges/showcase/d3f2699a1a93dfc2.webp | 780x1688 | Detail fire"
   - "/media/badges/showcase/ee691a165329bc13.webp | 780x1688 | Detail water low hp"

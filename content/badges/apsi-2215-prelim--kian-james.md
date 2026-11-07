@@ -18,7 +18,7 @@ recipientHandle: "kian-james"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2215-prelim-2f039dd4"
 criteriaUrl: "/badges/apsi-2215-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/2f039dd4"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/2f039dd4"
 showcaseNone: "practical submitted in Canvas, no capture"
 showcaseOptOut: false
 ---

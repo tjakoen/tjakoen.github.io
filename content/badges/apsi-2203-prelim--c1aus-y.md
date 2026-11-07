@@ -18,7 +18,7 @@ recipientHandle: "c1aus-y"
 issuedOn: "2026-09-16"
 certId: "hau-apsi-2203-prelim-b1d4a263"
 criteriaUrl: "/badges/apsi-2203-prelim"
-social: "I earned Frontend Design with Cloud. Verify my badge: https://tjakoen.github.io/b/b1d4a263"
+social: "I earned Frontend Design with Cloud. Verify my badge: https://portfolio.tjakoen.com/b/b1d4a263"
 showcaseNone: "practical submitted in Canvas, no capture"
 showcaseOptOut: false
 ---

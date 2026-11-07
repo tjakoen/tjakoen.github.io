@@ -18,7 +18,7 @@ recipientHandle: "margoxt"
 issuedOn: "2026-11-03"
 certId: "hau-b5c2c0a228eca16af40cc30c"
 criteriaUrl: "/badges/apsi-2215-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/b5c2c0a228eca16a"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/b5c2c0a228eca16a"
 showcaseNone: "project repo private or without a deployed site"
 showcaseOptOut: false
 ---

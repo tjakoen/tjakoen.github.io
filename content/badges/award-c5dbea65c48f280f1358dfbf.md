@@ -18,7 +18,7 @@ recipientHandle: "nathan-is-in-cs"
 issuedOn: "2026-11-03"
 certId: "hau-c5dbea65c48f280f1358dfbf"
 criteriaUrl: "/badges/adet-2125-builds-with-ai"
-social: "I earned Builds with Flutter and AI. Verify my badge: https://tjakoen.github.io/b/c5dbea65c48f280f"
+social: "I earned Builds with Flutter and AI. Verify my badge: https://portfolio.tjakoen.com/b/c5dbea65c48f280f"
 showcaseNone: "live site did not render a usable, privacy-safe page on 2026-11-03"
 showcaseOptOut: false
 ---

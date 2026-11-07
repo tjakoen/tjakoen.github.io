@@ -18,7 +18,7 @@ recipientHandle: "pamintuanaj"
 issuedOn: "2026-11-03"
 certId: "hau-56db0c65f6f23e0fda184ee7"
 criteriaUrl: "/badges/apsi-2240-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/56db0c65f6f23e0f"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/56db0c65f6f23e0f"
 showcase:
   - "/media/badges/showcase/5057913c06edc62b.webp | 1280x800 | The deployed final project"
 showcaseOptOut: false

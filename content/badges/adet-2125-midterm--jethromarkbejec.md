@@ -18,7 +18,7 @@ recipientHandle: "jethromarkbejec"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-aa16cafa"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/aa16cafa"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/aa16cafa"
 showcase:
   - "/media/badges/showcase/f5bfc3ba1945781a.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/67d96de56fd5a93f.webp | 780x1688 | Monster detail"

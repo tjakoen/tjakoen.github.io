@@ -18,7 +18,7 @@ recipientHandle: "allainstephanie26-alt"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-dc95e56e"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/dc95e56e"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/dc95e56e"
 showcase:
   - "/media/badges/showcase/133dc93e43fc1c8e.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/70ac1b8893752e53.webp | 780x1688 | Monster detail"

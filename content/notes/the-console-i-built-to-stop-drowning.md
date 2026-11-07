@@ -230,7 +230,7 @@ purpose, and those limits are the design, not a gap in it.
 ## You can open the thing
 
 The last piece I am proud of is that none of this is a story you have to take on faith. The console
-ships a [demo mode](https://tjakoen.github.io/github-native-course-platform/?demo=1) you can open in
+ships a [demo mode](https://portfolio.tjakoen.com/github-native-course-platform/?demo=1) you can open in
 your own browser, and it is not a mock-up. It runs the real code, with one part swapped: the connection
 to GitHub is replaced with an in-memory stand-in full of synthetic students. Everything else is the
 actual page, the actual grain type, the actual review flow, just with nobody real inside it. Every

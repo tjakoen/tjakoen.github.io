@@ -18,7 +18,7 @@ recipientHandle: "venz-ochoa"
 issuedOn: "2026-11-03"
 certId: "hau-cb297fbf63269c3eb264c9cf"
 criteriaUrl: "/badges/apsi-2203-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/cb297fbf63269c3e"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/cb297fbf63269c3e"
 showcaseNone: "live site did not render a usable, privacy-safe page on 2026-11-03"
 showcaseOptOut: false
 ---

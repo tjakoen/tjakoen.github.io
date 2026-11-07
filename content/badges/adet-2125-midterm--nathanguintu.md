@@ -18,7 +18,7 @@ recipientHandle: "nathan-is-in-cs"
 issuedOn: "2026-09-16"
 certId: "hau-adet-2125-midterm-1b01a92f"
 criteriaUrl: "/badges/adet-2125-midterm"
-social: "I earned Flutter App Development. Verify my badge: https://tjakoen.github.io/b/1b01a92f"
+social: "I earned Flutter App Development. Verify my badge: https://portfolio.tjakoen.com/b/1b01a92f"
 showcase:
   - "/media/badges/showcase/457e5bf924f5639e.webp | 780x1688 | Dex list"
   - "/media/badges/showcase/e26c8f045bdd3400.webp | 780x1688 | Monster detail"

@@ -18,7 +18,7 @@ recipientHandle: "yv-or"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-prelim-c08b02fc"
 criteriaUrl: "/badges/introweb-2106-prelim"
-social: "I earned Web Foundations. Verify my badge: https://tjakoen.github.io/b/c08b02fc"
+social: "I earned Web Foundations. Verify my badge: https://portfolio.tjakoen.com/b/c08b02fc"
 showcase:
   - "/media/badges/showcase/bfd2e6e9fc658683.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

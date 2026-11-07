@@ -18,7 +18,7 @@ recipientHandle: "joshphilippuangco"
 issuedOn: "2026-09-16"
 certId: "hau-introweb-2106-prelim-02dd0a5b"
 criteriaUrl: "/badges/introweb-2106-prelim"
-social: "I earned Web Foundations. Verify my badge: https://tjakoen.github.io/b/02dd0a5b"
+social: "I earned Web Foundations. Verify my badge: https://portfolio.tjakoen.com/b/02dd0a5b"
 showcase:
   - "/media/badges/showcase/2edbb04bb19e1bd6.webp | 1280x800 | The published portfolio site"
 showcaseOptOut: false

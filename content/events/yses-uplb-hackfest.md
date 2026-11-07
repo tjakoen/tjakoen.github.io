@@ -33,7 +33,7 @@ social: |
   Our own users are veterans, people with disabilities, people leaving incarceration, people without
   housing. Both teams built for someone specific. That was the whole criterion.
 
-  Writeup and the deck: https://tjakoen.github.io/calendar/yses-uplb-hackfest
+  Writeup and the deck: https://portfolio.tjakoen.com/calendar/yses-uplb-hackfest
 ---
 
 ## Sponsor, speaker, judge, all in one afternoon

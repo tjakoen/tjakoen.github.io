@@ -18,7 +18,7 @@ recipientHandle: "matt-crl"
 issuedOn: "2026-11-03"
 certId: "hau-7dc106bd5602b06be49ed69b"
 criteriaUrl: "/badges/apsi-2240-builds-with-ai"
-social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://tjakoen.github.io/b/7dc106bd5602b06b"
+social: "I earned Builds Full-Stack JavaScript and AI. Verify my badge: https://portfolio.tjakoen.com/b/7dc106bd5602b06b"
 showcase:
   - "/media/badges/showcase/c6d6e07f8d4ba609.webp | 1600x900 | The deployed final project, view 1"
   - "/media/badges/showcase/991091d7759dde24.webp | 1600x900 | The deployed final project, view 2"
