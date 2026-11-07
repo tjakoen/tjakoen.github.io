@@ -624,14 +624,25 @@
       }
       return spots;
     };
-    // The hill opens where the player already is. Ants may work the whole page afterwards, but
-    // the front door never makes someone scroll to find it.
-    let spots = collect(main.scrollTop, main.scrollTop + main.clientHeight);
-    if (!spots.length) spots = collect(0, main.scrollHeight);
-    if (!spots.length) return [main.clientWidth * 0.85, main.scrollTop + main.clientHeight * 0.8];
-    const best = Math.max(...spots.map((p) => Math.min(p[2], 160)));
-    const roomy = spots.filter((p) => Math.min(p[2], 160) >= best * 0.8);
-    return roomy[Math.floor(Math.random() * roomy.length)];
+    // The hill opens where the player already is, in a random empty cell of the visible page.
+    // The old roomiest-spot rule kept choosing the same big top-right gap.
+    let top = main.scrollTop, bottom = top + main.clientHeight;
+    let spots = collect(top, bottom);
+    if (!spots.length) { top = 0; bottom = main.scrollHeight; spots = collect(top, bottom); }
+    if (!spots.length) return [main.clientWidth * 0.5, main.scrollTop + main.clientHeight * 0.5];
+    const clear = spots.filter((p) => p[2] >= 18);
+    const pool = clear.length ? clear : spots;
+    const cells = new Map();
+    for (const p of pool) {
+      const col = Math.min(2, Math.max(0, Math.floor((p[0] / main.clientWidth) * 3)));
+      const row = Math.min(2, Math.max(0, Math.floor(((p[1] - top) / (bottom - top)) * 3)));
+      const key = `${col},${row}`;
+      if (!cells.has(key)) cells.set(key, []);
+      cells.get(key).push(p);
+    }
+    const keys = [...cells.keys()];
+    const cell = cells.get(keys[Math.floor(Math.random() * keys.length)]);
+    return cell[Math.floor(Math.random() * cell.length)];
   };
   // Each hill is a mound on the page with its own entrance. A long press seals it for a while.
   const SEAL = 8, SEAL_COOL = 20;

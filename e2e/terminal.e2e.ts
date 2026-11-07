@@ -99,6 +99,24 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     })).toBe(false);
   });
 
+  test("the anthill moves between empty cells", async ({ page }) => {
+    const cells = new Set<string>();
+    page.on("dialog", (dialog) => dialog.accept());
+    for (let i = 0; i < 10; i++) {
+      await page.goto("/?nest-debug");
+      await page.locator(".nest-switch").click();
+      await expect(page.locator(".nest-hill")).toBeVisible();
+      cells.add(await page.evaluate(() => {
+        const h = document.querySelector(".nest-hill")!.getBoundingClientRect();
+        const m = document.querySelector("main")!.getBoundingClientRect();
+        const col = Math.min(2, Math.floor(((h.left + h.width / 2 - m.left) / m.width) * 3));
+        const row = Math.min(2, Math.floor(((h.top + h.height / 2 - m.top) / m.height) * 3));
+        return `${col},${row}`;
+      }));
+    }
+    expect(cells.size).toBeGreaterThan(1);
+  });
+
   test("the first three scouts take different source blocks", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();

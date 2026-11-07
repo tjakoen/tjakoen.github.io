@@ -37,11 +37,11 @@ I had no game on my portfolio. For someone who keeps telling students the intere
 
 The ant is already in the status bar. Click it, or open the terminal at the bottom of the page, type *nest*, and press Enter. The terminal command does the same thing. If you want to see it listed, type *help* first: *nest* sits next to *reveal the ant colony*.
 
-Click the ant, and an anthill turns up in an empty patch of whatever page you are on, and the colony goes to work on the copy.
+Click the ant, and an anthill turns up in a random empty patch of whatever page you are on, high or low, and the colony goes to work on the copy.
 
 > The enemy in this game wants the sentence you were halfway through reading.
 
-![The Nest open on a note: an anthill in the top corner, a dotted scent trail down to the subtitle, an ant carrying a letter, gaps where letters were taken, and the colony panel in the sidebar.](/media/notes/nest-trails.jpg)
+![The Nest open on a note: an anthill in an empty patch, a dotted scent trail down to the subtitle, an ant carrying a letter, gaps where letters were taken, and the colony panel in the sidebar.](/media/notes/nest-trails.jpg)
 
 ## What the ants actually do
 
