@@ -102,15 +102,15 @@ test.describe("/grain — the GRAIN showcase", () => {
     await expect(assistant).toHaveAttribute("data-mode", "chat");   // SSR default: Chat
     await expect(pane).toBeHidden();
 
-    // the sidebar-panel's Catalog mode (sitewide) — the aside GRID COLUMN widens, so the
-    // content SHIFTS aside (never an overlay)
+    // the sidebar-panel's Catalog mode (sitewide) keeps the same column width as Chat, so
+    // switching modes never shifts the main content
     const asideWidth = async () => (await page.locator(".app-shell__aside").boundingBox())?.width ?? 0;
     const chatWidth = await asideWidth();
     await page.locator('.assistant__modes [data-shell-mode="catalog"]').click();
     await expect(assistant).toHaveAttribute("data-mode", "catalog");
     await expect(pane).toBeVisible();
     await expect(pane.locator(".catalog-pane__frame")).toHaveAttribute("src", /\/catalog$/);
-    await expect.poll(asideWidth).toBeGreaterThan(chatWidth);
+    await expect.poll(asideWidth).toBe(chatWidth);
 
     // the embedded catalog is in "single" mode: exactly ONE entry shows (reveal-one, no scrolling)
     const cat = page.frameLocator(".catalog-pane__frame");

@@ -359,6 +359,11 @@
     </div>
   </div>
 </aside>
+<!-- Applies the remembered panel mode (Chat / Catalog / Notepad) synchronously, before first paint,
+     for the same reason tabs.js runs inline above: a cross-document view transition captures the new
+     page as it first paints, so a mode restored later (DOMContentLoaded) showed Chat for a frame and
+     then flipped. site.js saves the mode on each tab click; shell.js still owns the switch itself. -->
+<script>(function(){try{var m=localStorage.getItem("portfolio:aside-mode");var a=document.querySelector(".app-shell__aside .assistant");if(!m||m==="chat"||!a||!a.querySelector('.assistant__pane[data-pane="'+m+'"]'))return;a.setAttribute("data-mode",m);a.querySelectorAll(".assistant__pane").forEach(function(p){p.hidden=p.getAttribute("data-pane")!==m});a.querySelectorAll("[data-shell-mode]").forEach(function(b){b.setAttribute("aria-selected",b.getAttribute("data-shell-mode")===m?"true":"false")})}catch(e){}})();</script>
 
 <section class="app-shell__console">
   <!-- data-terminal="interactive": grain/scripts/terminal.js injects a command line here and the
