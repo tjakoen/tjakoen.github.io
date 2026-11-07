@@ -1,5 +1,5 @@
-// Nest: a playable sketch of plans/ant-nest-game.md. Unlock it with the `nest` terminal command.
-// `?nest-debug` exposes the local test hooks; it does not load the game by itself.
+// Nest: a playable sketch of plans/ant-nest-game.md. The ant in the status bar opens it, and so
+// does the `nest` terminal command. `?nest-debug` exposes the local test hooks.
 //
 // One colony, two views. Every ant is either in the nest (Braille dots in the sidebar) or out on
 // the page (a small dot SVG), and it leaves and enters through the anthill drawn in both places.
@@ -192,6 +192,7 @@
   // the Nest takes over the whole sidebar; the ant again, or the × in the panel, asks before
   // clearing the colony and handing the sidebar back.
   const bar = document.querySelector(".status-bar");
+  if (!bar) return; // a page without the desk chrome has nowhere to put the launcher
   const antBtn = document.createElement("button");
   antBtn.type = "button"; antBtn.className = "nest-switch"; antBtn.title = "Nest"; antBtn.setAttribute("aria-label", "Open the Nest");
   antBtn.setAttribute("aria-pressed", "false");
@@ -298,6 +299,7 @@
   }, 300);
   const openNest = () => { game = start(pending); pending = null; };
   antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
+  window.__nestLauncher = { open: () => { if (!game) openNest(); }, close: () => { if (game) leave(); } };
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelStray(); else scheduleStray(); });
   scheduleStray();
   if (new URLSearchParams(location.search).has("nest-debug")) {

@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 1 | the branch is local for review
+unpushed: 5 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -83,14 +83,14 @@ activity log, three CSS meters for page holds, stores and the next egg, a compac
 tool tiles, the colony controls, and a footer link to the note. The inline "How to play" block is
 gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps running.
 
-**The door.** The `?nest` query shortcut is gone. The terminal command `nest` is the only way to
-unlock the game, and `help` lists it next to `reveal the ant colony`. A returning player's saved
-unlock still loads the launcher on later pages. `?nest-debug` only exposes the local test hooks and
-does not load the game by itself.
+**The launcher.** The ant now sits in the status bar on every page. The game loads with the page
+and stays closed until the ant is clicked or `nest` is typed in the terminal. `?nest` is just a
+page now, not a shortcut into the panel. The terminal command opens the panel, and `help` lists it
+next to `reveal the ant colony`. `?nest-debug` only exposes the local test hooks.
 
 **The note.** The public note now carries the bug joke ("My portfolio has bugs now"), the
-terminal-only door and the help line, the ninety second trail fade, the soldier and mini hill dots,
-the twenty and fifty letter dances, the refresh reset, the stray ant, and the ground and sound
+always-visible launcher and the help line, the ninety second trail fade, the soldier and mini hill
+dots, the twenty and fifty letter dances, the refresh reset, the stray ant, and the ground and sound
 details.
 
 **The ground.** A quiet ground patch sits around each hill: stones, grass, a twig, a dandelion and
@@ -128,8 +128,8 @@ Found 0 warnings and 0 errors.
 
 A Chromium check spawned the stray, measured 171 pixels of travel in 2.2 seconds, clicked it and
 saw the launcher pulse, then reloaded and found the panel closed and the launcher still visible.
-A second check opened `/?nest` in a fresh context and confirmed no request for the game file and no
-launcher. A third typed `help` in the terminal and read back `nest` next to `reveal the ant colony`.
+A second check opened `/?nest` and confirmed the launcher was there but the panel stayed closed. A
+third typed `help` in the terminal and read back `nest` next to `reveal the ant colony`.
 
 $ bun tools/dsh-loop/cli.mjs end
 graphify update: ok
@@ -152,7 +152,7 @@ squash.
 The full browser suite was not run; the focused terminal spec and the unit suite were. The phone
 layout still needs its own pass, because the launcher sits in the status bar and the test harness
 is desktop. That also means the stray ant is desktop only for now; a phone needs a different
-destination than the hidden launcher. The two untracked loop notes in the tree belong to another session and were left
+destination than the status bar launcher. The two untracked loop notes in the tree belong to another session and were left
 alone. The old screenshot inside the first note image is recursive by nature and was accepted.
 
 ## What needs human eyes

@@ -1,6 +1,6 @@
 ---
 title: "My portfolio has ants now, and they eat the copy"
-subtitle: "A hidden game on a professional site, built with no canvas and no framework, where the enemy steals the very letters you came to read."
+subtitle: "A small game on a professional site, built with no canvas and no framework, where the enemy steals the very letters you came to read."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
@@ -9,11 +9,12 @@ updated: 2026-11-08
 readingTime: "~7 min"
 tags: [games, interactive, vanilla, grain, claude]
 summary: >
-  My portfolio has bugs now. I gave them a home, and the ants eat the copy. Run nest in this site's
-  terminal to find the colony. Scouts find letters, lay scent trails, and workers carry the real
-  glyphs home to a queen drawn in Braille dots. It is a small game built on the same vanilla stack
-  as everything else here, to show that the stack can do play as well as documents, and it took
-  more tuning of ant traffic than of anything that looks like game design.
+  My portfolio has bugs now. I gave them a home, and the ants eat the copy. The ant in the status
+  bar opens the colony; type nest in the terminal if you prefer the word. Scouts find letters, lay
+  scent trails, and workers carry the real glyphs home to a queen drawn in Braille dots. It is a
+  small game built on the same vanilla stack as everything else here, to show that the stack can do
+  play as well as documents, and it took more tuning of ant traffic than of anything that looks
+  like game design.
 image: /media/notes/nest-og.png
 imageAlt: "TJ's Desk home page with an ant colony at work: an anthill drawn in Braille dots, scent trails running down to the page copy with letters missing, and the Nest panel in the sidebar."
 social: |
@@ -21,21 +22,22 @@ social: |
 
   Every portfolio has bugs. I gave mine a home, a queen, and a job stealing the copy.
 
-  Run nest in the site's terminal to find the colony. Scouts find letters, lay scent
-  trails, and workers carry the real glyphs home to a queen drawn in Braille dots. The gaps they
-  leave stay put, so you watch the paragraph you were reading go missing one letter at a time.
+  Click the ant in the status bar, or type nest in the terminal, to find the colony. Scouts find
+  letters, lay scent trails, and workers carry the real glyphs home to a queen drawn in Braille
+  dots. The gaps they leave stay put, so you watch the paragraph you were reading go missing one
+  letter at a time.
 
   No canvas, no game library, no framework. One plain JavaScript file on the same vanilla stack as
   the rest of the site, colored by the theme's own tokens.
 
-  The word is nest. The copy is the food.
+  The ant is the door. The word is the shortcut. The copy is the food.
 ---
 
 I had no game on my portfolio. For someone who keeps telling students the interesting part of software is the behavior, that was a little embarrassing. So I gave the bugs a home. This site now has ants.
 
-Open the terminal at the bottom of the page, type *nest*, and press Enter. There is no button for it and no link that opens it; the word is the only door. If you want to see it listed, type *help* first: *nest* sits next to *reveal the ant colony*.
+The ant is already in the status bar. Click it, or open the terminal at the bottom of the page, type *nest*, and press Enter. The terminal command does the same thing. If you want to see it listed, type *help* first: *nest* sits next to *reveal the ant colony*.
 
-A tiny ant appears in the status bar. Click it, and an anthill turns up in an empty patch of whatever page you are on, and the colony goes to work on the copy.
+Click the ant, and an anthill turns up in an empty patch of whatever page you are on, and the colony goes to work on the copy.
 
 > The enemy in this game wants the sentence you were halfway through reading.
 
@@ -94,7 +96,7 @@ The endings were the part I argued with myself about longest. A portfolio is not
 
 ## Built on the same stack as everything else
 
-No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file, loaded on demand. The ground around a hill is a few inline SVG stones, grass, a twig and a paperclip, not an image. The sound is synthesized in the same file: a few oscillators and one noise buffer, no audio files.
+No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file. The ground around a hill is a few inline SVG stones, grass, a twig and a paperclip, not an image. The sound is synthesized in the same file: a few oscillators and one noise buffer, no audio files.
 
 That was the point of building it at all. A design system that only renders documents is half a claim. This one also renders a small ecosystem that steals from the documents.
 
@@ -102,13 +104,13 @@ That was the point of building it at all. A design system that only renders docu
 
 Not into the fun parts. Into traffic. The first colony read like a centipede, ants nose to tail. Then every ant piled onto the first trail and ignored the second. Then two trails crossed and the whole colony gridlocked, each ant politely waiting for the one in front of it, forever. The fix there was letting ants only queue behind ants on their own trail heading their own way, plus a timeout for the stubborn ones. Later I gave each trail two lanes and smoothed the scout's route, because a trail should look walked, not sampled. Real ants solved that a long time ago. It took me a few evenings.
 
-Claude did most of the typing, which will surprise nobody who has read [how I work](ten-times-zero.md). The calls were mine: ants that take real letters, gaps that never reflow, no announced ending, and the bit where a professional site hides a game behind a word you have to know to type.
+Claude did most of the typing, which will surprise nobody who has read [how I work](ten-times-zero.md). The calls were mine: ants that take real letters, gaps that never reflow, no announced ending, and the bit where a professional site hides a game behind a small ant and a word you have to know to type.
 
 ## What I have not earned yet
 
 It has been played by me, a preview browser, and a small browser suite, and that is the whole test group. Balance is a guess: the costs of mini hills, the one in seven threshold, how fast the queen breeds. I have watched a guard patrol a trail end to end since, and the first version could get stuck on its own mound; that is fixed now. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and the stray ant has nowhere to lead because the launcher hides there. I have not built that one.
 
-But if you are reading this on the site, the terminal takes one word. *Nest*. The copy you just read is the food. If a single ant crosses the page later, when the Nest is closed, follow it. It knows the way back.
+But if you are reading this on the site, the ant is in the status bar, and the terminal still takes one word. *Nest*. The copy you just read is the food. If a single ant crosses the page later, when the Nest is closed, follow it. It knows the way back.
 
 ---
 

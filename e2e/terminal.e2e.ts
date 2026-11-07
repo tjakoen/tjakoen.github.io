@@ -44,41 +44,36 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page).toHaveURL(/\/bread$/);
   });
 
-  test("the old ?nest link no longer opens the Nest", async ({ page }) => {
-    const loaded = new Set<string>();
-    page.on("request", (request) => loaded.add(new URL(request.url()).pathname));
+  test("the old ?nest link is just a page, not a shortcut into the game", async ({ page }) => {
     await page.goto("/?nest");
-    await expect(page.getByRole("button", { name: "Open the Nest" })).toHaveCount(0);
-    expect(loaded.has("/site/nest-mockup.js")).toBe(false);
+    await expect(page.getByRole("button", { name: "Open the Nest" })).toBeVisible();
+    await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
   });
 
-  test("nest unlocks through the terminal and remembers the launcher", async ({ page }) => {
-    const loaded = new Set<string>();
-    page.on("request", (request) => loaded.add(new URL(request.url()).pathname));
+  test("the launcher is always there, and nest opens the colony", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
     await expect(page.getByText("Open the terminal at the bottom of the page", { exact: false })).toBeVisible();
+    const launcher = page.getByRole("button", { name: "Open the Nest" });
+    await expect(launcher).toBeVisible();
+    await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
+
     await page.keyboard.type("nest");
     await page.locator(".console__expand").click();
     await run(page, "help");
     await expect(page.locator('[data-surface="console"]')).toContainText("reveal the ant colony");
-    const launcher = page.getByRole("button", { name: "Open the Nest" });
-    await expect(launcher).toHaveCount(0);
-    expect(loaded.has("/site/nest-mockup.js")).toBe(false);
-
     await run(page, "nest");
-    await expect(launcher).toBeVisible();
-    await expect(page.locator('[data-surface="console"]')).toContainText("Look for the little ant");
+    await expect(page.locator('[data-surface="nest-controls"]')).toBeVisible();
+    await expect(page.locator('[data-surface="console"]')).toContainText("colony is open");
+
     await page.reload();
     await expect(launcher).toBeVisible();
+    await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
     await launcher.click();
     await expect(page.locator('[data-surface="nest-controls"]')).toBeVisible();
   });
 
   test("Nest tools lock links during play and let players cancel bait", async ({ page }) => {
     await page.goto("/");
-    await page.locator(".console__expand").click();
-    await run(page, "nest");
-    await page.locator(".console__expand").click();
     await page.getByRole("button", { name: "Open the Nest" }).click();
     const panel = page.locator('[data-surface="nest-controls"]');
     const main = page.locator(".app-shell__main");
