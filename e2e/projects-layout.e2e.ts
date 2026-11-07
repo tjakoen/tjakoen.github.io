@@ -67,7 +67,7 @@ test.describe("Projects presentation in the editor shell", () => {
       await expect(source).toBeVisible();
       await expect(source).toHaveText("Browse the source ↗");
     }
-    const demo = page.locator('.project-feature__actions a[href="https://tjakoen.github.io/github-native-course-platform/?demo=1"]');
+    const demo = page.locator('.project-feature__actions a[href="https://portfolio.tjakoen.com/github-native-course-platform/?demo=1"]');
     await expect(demo).toHaveText("Open the demo ↗");
     await expect(page.locator('#teaching .project-feature__copy a[href="/teaching"]'))
       .toHaveText("See the courses, assessment approach, and badge criteria");
@@ -222,7 +222,7 @@ test.describe("Projects presentation in the editor shell", () => {
       ["/mill", "/mill/docs"],
       ["/proof", "/plans"],
       ["/crumb", "/crumb/docs/getting-started"],
-      ["/native-github-classroom", "https://tjakoen.github.io/github-native-course-platform/?demo=1"],
+      ["/native-github-classroom", "https://portfolio.tjakoen.com/github-native-course-platform/?demo=1"],
       ["/native-github-classroom", "#architecture"],
       ["/native-github-classroom", "/native-github-classroom/docs"],
       ["/native-github-classroom", "/notes/why-i-teach"],
@@ -276,7 +276,7 @@ test.describe("Projects presentation in the editor shell", () => {
     await expect(page.locator(".docs-list a[href=\"/notes/why-i-teach\"]")).toContainText("Why I teach");
     const classroomActions = page.locator('nav.project-links[aria-label="Course platform links"]');
     await expect(classroomActions.locator("a").nth(0)).toHaveAttribute("href", "#architecture");
-    await expect(classroomActions.locator("a").nth(1)).toHaveAttribute("href", "https://tjakoen.github.io/github-native-course-platform/?demo=1");
+    await expect(classroomActions.locator("a").nth(1)).toHaveAttribute("href", "https://portfolio.tjakoen.com/github-native-course-platform/?demo=1");
     await expect(classroomActions.locator("a").nth(2)).toHaveAttribute("href", "/notes/why-i-teach");
     await expect(classroomActions.locator("a").nth(3)).toHaveAttribute("href", "/native-github-classroom/docs");
     await expect(page.getByRole("img", { name: /A teacher control repo/ })).toBeVisible();
