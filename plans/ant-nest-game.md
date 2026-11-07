@@ -48,9 +48,15 @@ unreadable and the colony has won that page.
   outside a text field or by visiting with `?nest`. The unlock is remembered on that browser.
 - **The colony.** Two scouts and four workers to start. A trail opens when its scout carries the
   first letter home, workers take open trails in turn, six to a line, and a trail dies with its
-  last ant. Soldiers hatch once the colony passes eight and take two hits. At fourteen ants a
-  winged queen flies off to found a second anthill, unless she is caught on the way.
-- **The player's tools.** Squash ants, drag across a scent trail to wipe it, drop bait to pull
+  last ant. Soldiers hatch once the colony passes eight and take two hits.
+- **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
+  shows how full they are. A full store sends a builder out to raise a mini hill in open ground;
+  squash it and the stores are lost. A mini hill sends guards, which walk to an existing trail and
+  patrol it, and flyers, which roam and steal letters anywhere. A badge counts its living guards,
+  and once none are left five clicks break it. Its flyers outlive it but no more are made.
+- **The player's tools.** Pick a tool: squash holds the page's links so a missed ant never
+  navigates, wipe trail is the only tool that erases scent, and read page gives the links back.
+  Squash ants, drag across a scent trail to wipe it, drop bait to pull
   nearby ants off course, and seal the anthills from the panel or by holding one. Bait and seals
   have cooldowns. Sound is muted until switched on.
 - **No announced ending.** Wipe the colony after the queen has spent her two reserve scouts and the
