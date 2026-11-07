@@ -1,4 +1,4 @@
-// Mockup only: paste into the console on any page of the local site to see the Nest idea.
+// Mockup only: open any page with ?nest in the address to see the Nest idea.
 // Everything is drawn in Braille dots, the same way PR 37 draws the homepage baguette: a mono <pre>,
 // a two-by-four dot cell per character, the flavor accent for what matters and faint ink for soil.
 (() => {
