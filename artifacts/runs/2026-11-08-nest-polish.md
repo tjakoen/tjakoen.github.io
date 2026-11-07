@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 44 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a multi-swat check, a reset-warning check, a reset-scroll check, a reset-ants check, a larder-width check, a meter-hint check, a stores-cap check, a worship-population check, a queen-dance check, a guard-nearest check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 45 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a multi-swat check, a reset-warning check, a reset-scroll check, a reset-ants check, a larder-width check, a meter-hint check, a stores-cap check, a worship-population check, a queen-dance check, a guard-nearest check, a mound-heal check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -142,7 +142,8 @@ and the first obstacle scan skipped PRE; it is now solid for the hill and the mi
 
 **The mini hill language.** No words or count dots on the page. The mound thins as it takes hits,
 and the guards are the ants visible within a short range of their mound and beside a nearby trail.
-A fallen mound lowers the stores cap.
+A fallen mound lowers the stores cap. A mound that is hurt but not broken heals one hit every
+five seconds after six seconds without a hit, up to full; zero still breaks it.
 Clicking a guarded mound calls its guards home and flashes the mound and every guard; clearing them
 splits the mound open with a space through the Braille, and no new guards spawn. The element is a
 keyboard button with an aria label for screen readers.
@@ -165,10 +166,10 @@ $ bun test
  894 pass
  0 fail
  3885 expect() calls
-Ran 895 tests across 49 files. [6.56s]
+Ran 896 tests across 49 files. [6.16s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  26 passed (32.1s)
+  27 passed (30.9s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

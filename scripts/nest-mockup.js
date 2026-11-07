@@ -1298,7 +1298,7 @@
   // a mini hill in open ground; squash the builder and the stores are lost. A mini hill sends out
   // guards, which walk to an existing trail and patrol it, and flyers, which roam and steal any
   // letter. It falls to a few clicks, but only once none of its guards are left.
-  const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6;
+  const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, HEAL_AFTER = 6, HEAL_EVERY = 5;
   const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
   const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
     const w = 18, h = 8, cells = new Int8Array(w * h).fill(-1);
@@ -1459,7 +1459,7 @@
     const el = document.createElement("div"); el.className = "nest-hill nest-mini"; el.textContent = miniArt(1);
     el.setAttribute("role", "button"); el.setAttribute("tabindex", "0");
     positionMini(el, spot);
-    const m = { el, spot, base: [spot.x, spot.y], hole: [spot.x, spot.y - 17], hp: MINI_HP, hadGuards: false, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, links: [] };
+    const m = { el, spot, base: [spot.x, spot.y], hole: [spot.x, spot.y - 17], hp: MINI_HP, hadGuards: false, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, lastHit: 0, nextHeal: 0, links: [] };
     el.addEventListener("click", (e) => {
       e.stopPropagation(); if (state.overrun || state.queenDead) return;
       if (m.guards.size) {
@@ -1472,7 +1472,8 @@
         });
         blip(180, 0.05, "square"); return;
       }
-      m.hp--; el.textContent = miniArt(m.hp / MINI_HP); markGuards(m);
+      m.hp--; m.lastHit = performance.now() / 1000; m.nextHeal = 0;
+      el.textContent = miniArt(m.hp / MINI_HP); markGuards(m);
       el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit");
       blip(160, 0.1, "square"); noiseBurst(0.05, 0.05, 700);
       for (let i = 0; i < 4; i++) {
@@ -1531,6 +1532,14 @@
       startBuild();
     }
     minis.forEach((m) => {
+      // A mound that is hurt but not broken grows one hit back at a time.
+      if (m.hp > 0 && m.hp < MINI_HP && t - (m.lastHit || 0) > HEAL_AFTER) {
+        if (!m.nextHeal) m.nextHeal = t + HEAL_EVERY;
+        else if (t >= m.nextHeal) {
+          m.hp = Math.min(MINI_HP, m.hp + 1); m.nextHeal = t + HEAL_EVERY;
+          m.el.textContent = miniArt(m.hp / MINI_HP); markGuards(m);
+        }
+      } else if (m.hp >= MINI_HP) m.nextHeal = 0;
       if (t < m.next || state.queenDead) return; m.next = t + SPEED_SPAWN();
       if (m.guards.size < 2 && !(m.hadGuards && m.guards.size === 0)) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); }
       else if (m.flyers.size < 2) { const f = spawnPageAnt("flyer", m.hole.slice(), m); m.flyers.add(f); f.job = "fly"; f.path = [randomPoint()]; f.k = 0; blip(720, 0.04, "sine", 0.02); }
