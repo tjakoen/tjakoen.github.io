@@ -204,14 +204,11 @@
     #nest-mock .stat-grid dt { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); white-space: nowrap; }
     #nest-mock .stat-grid dd { margin: 0; font-size: 12px; font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button { min-width: 0; }
+    #nest-mock .tools button.wide { flex: 1.8; }
     #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
-    #nest-mock .link-state { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-muted); min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-    #nest-mock .link-state .dot { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--color-accent); }
-    #nest-mock .link-state.open { color: var(--ink); }
-    #nest-mock .link-state.open .dot { background: var(--color-accent); }
-    #nest-mock .note-link { margin-top: auto; padding-top: 6px; color: var(--ink-muted); font-size: 10px; text-decoration: none; border-top: 1px solid var(--color-line); }
+    #nest-mock .note-link { padding-top: 2px; color: var(--ink-muted); font-size: 10px; text-decoration: none; }
     #nest-mock .note-link:hover { color: var(--ink); }
     #nest-mock .activity { margin: 0; padding: 0; list-style: none; min-height: 2.6em; font-size: 10px; color: var(--ink-muted); }
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -420,16 +417,18 @@
   };
   const icon = (name) => `<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[name]}</svg>`;
   const toolHelp = {
-    squash: "Click or tap ants to squash them. Page links are locked.",
-    wipe: "Drag across a dotted trail to scatter its ants. Page links are locked.",
-    read: "Page links work again. The colony keeps running.",
+    squash: "Click or tap ants to squash them. Stop them from destroying the page!",
+    wipe: "Drag across a dotted trail to scatter its ants. Stop them from destroying the page!",
+    read: "Links unlocked. The colony keeps running.",
   };
-  const tool = (name, label, key) => `<button type="button" data-tool="${name}" aria-label="${label}" title="${toolHelp[name]}" aria-pressed="false">${icon(name)}<span>${label}</span><kbd>${key}</kbd></button>`;
+  const tool = (name, label, key, wide = false) => `<button type="button" class="${wide ? "wide" : ""}" data-tool="${name}" aria-label="${label}" title="${toolHelp[name]}" aria-pressed="false">${icon(name)}<span>${label}</span><kbd>${key}</kbd></button>`;
   const action = (key, glyph, label, help) => `<button type="button" data-k="${key}" aria-label="${label}" title="${help}">${icon(glyph)}</button>`;
   const gameAction = (key, glyph, text, label, help) => `<button type="button" data-k="${key}" aria-label="${label}" title="${help}">${icon(glyph)}<span data-label>${text}</span></button>`;
   panel.innerHTML = `
     <div class="head"><span class="lbl muted"><span>nest · colony 01</span></span><span class="lbl muted"><span data-k="status">waking</span></span>
       <button class="x" data-k="x" type="button" aria-label="Close the Nest" title="Close">×</button></div>
+    <p class="muted tool-help" data-k="tool-help" aria-live="polite"></p>
+    <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener">the colony, explained ↗</a>
     <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
     <ul class="log activity" data-k="log" aria-live="polite"></ul>
     <div class="nest-meters">
@@ -456,11 +455,8 @@
       ${tool("squash", "Squash", "1")}${tool("wipe", "Wipe", "2")}${gameAction("bait", "bait", "Bait", "Drop bait", "Place a crumb to lure nearby ants away.")}${gameAction("seal", "seal", "Seal", "Seal hills", "Seal every anthill for a few seconds.")}
     </div>
     <div class="row tools" role="group" aria-label="Page controls">
-      ${tool("read", "Links", "3")}${action("sound", "muted", "Unmute", "Turn on colony sounds.")}${action("pause", "pause", "Pause", "Pause the colony.")}${action("restore", "restore", "Restore page", "Put stolen letters back and re-site the mounds while the colony keeps running.")}
+      ${tool("read", "Links", "3", true)}${action("sound", "muted", "Unmute", "Turn on colony sounds.")}${action("pause", "pause", "Pause", "Pause the colony.")}${action("restore", "restore", "Restore page", "Put stolen letters back and re-site the mounds while the colony keeps running.")}
     </div>
-    <p class="link-state" data-k="link-state" aria-live="polite"><span class="dot"></span><span data-k="link-text">links locked</span></p>
-    <p class="muted tool-help" data-k="tool-help" aria-live="polite"></p>
-    <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener">the colony, explained ↗</a>
 
     <div class="confirm" data-k="confirm" role="alertdialog" aria-labelledby="nest-confirm-title" hidden>
       <p id="nest-confirm-title"><b data-k="confirm-title">Close the Nest?</b></p>
@@ -1058,7 +1054,7 @@
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
     if ((ant.job === "defend" || ant.job === "guard") && ant.defendUntil && performance.now() > ant.defendUntil) {
       ant.defendUntil = 0;
-      if (ant.mini && minis.includes(ant.mini)) { ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; }
+      if (ant.mini && minis.includes(ant.mini)) { assignGuard(ant); }
       else { ant.job = "guard"; ant.path = []; }
       return;
     }
@@ -1294,7 +1290,7 @@
   // a mini hill in open ground; squash the builder and the stores are lost. A mini hill sends out
   // guards, which walk to an existing trail and patrol it, and flyers, which roam and steal any
   // letter. It falls to a few clicks, but only once none of its guards are left.
-  const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, GUARD_RANGE = 220;
+  const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6;
   const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
   const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
     const w = 18, h = 8, cells = new Int8Array(w * h).fill(-1);
@@ -1428,7 +1424,7 @@
   };
   const callGuards = (mound) => {
     mound.guards.forEach((g) => {
-      g.job = "defend"; g.patrol = null; g.circling = false;
+      g.job = "defend"; g.circling = false;
       g.defendUntil = performance.now() + 4000;
       // Stand beside the mound, not on the hole: a guard parked on the nest blocks the click.
       const side = g.id % 2 ? 1 : -1;
@@ -1489,22 +1485,24 @@
   const assignGuard = (g) => {
     if (!g.mini || !minis.includes(g.mini)) { g.job = "home"; g.path = [hillOf(g).hole.slice()]; g.k = 0; return; }
     const ready = state.trails.filter((t) => t.ready && t.state !== "gone");
-    const near = ready.filter((t) => t.pts.some(([x, y]) => Math.hypot(x - g.mini.hole[0], y - g.mini.hole[1]) < GUARD_RANGE));
-    if (!near.length) {
+    if (!ready.length) {
       const c = [g.mini.spot.x, g.mini.spot.y - 6];
       g.job = "patrol"; g.patrol = null; g.circling = true;
       g.path = Array.from({ length: 7 }, (_, k) => [c[0] + Math.cos(k * 1.1) * 42, c[1] + 10 + Math.sin(k * 1.1) * 24]);
       g.k = 0; return;
     }
-    const t = near[Math.floor(Math.random() * near.length)];
+    // The nearest trail always wins. A guard with a trail to guard does not go back to the
+    // mound, and a trail beyond the old radius is still better than circling the hill forever.
+    const distanceTo = (trail) => Math.min(...trail.pts.map(([x, y]) => Math.hypot(x - g.x, y - g.y)));
+    const t = ready.reduce((best, trail) => (distanceTo(trail) < distanceTo(best) ? trail : best), ready[0]);
     let best = 0, bd = Infinity;
-    t.pts.forEach((p, k) => { const d = Math.hypot(p[0] - g.mini.hole[0], p[1] - g.mini.hole[1]); if (d < bd) { bd = d; best = k; } });
+    t.pts.forEach((p, k) => { const d = Math.hypot(p[0] - g.x, p[1] - g.y); if (d < bd) { bd = d; best = k; } });
     const lo = Math.max(1, best - 4), hi = Math.min(t.pts.length, best + 5);
     // Walk beside the trail, never on it: the workers need the line itself and a guard in the
     // same lane is what made a busy trail look crowded.
     const side = g.id % 2 ? 1 : -1, span = 13 + (g.id % 3) * 2;
     g.job = "patrol"; g.patrol = t; g.circling = false;
-    g.path = [g.mini.hole.slice(), ...lanePath(t.pts.slice(lo, hi), span * side)]; g.k = 0;
+    g.path = [[g.x, g.y], ...lanePath(t.pts.slice(lo, hi), span * side)]; g.k = 0;
     g.guardLink = null;
   };
   const stepFlyer = (f, dt) => {
@@ -1842,8 +1840,13 @@
     $("tool-help").textContent = toolHelp[t];
     const linksOpen = t === "read";
     document.body.classList.toggle("nest-links-locked", !linksOpen);
-    $("link-state").classList.toggle("open", linksOpen);
-    $("link-text").textContent = linksOpen ? "links open" : "links locked";
+    const links = panel.querySelector('[data-tool="read"]');
+    if (links) {
+      const text = linksOpen ? "Links unlocked" : "Links locked";
+      const span = links.querySelector("span"); if (span) span.textContent = text;
+      links.setAttribute("aria-label", text);
+      links.title = linksOpen ? "Page links work again. The colony keeps running." : "Page links are locked. Switch to Links to use them.";
+    }
     panel.querySelectorAll("[data-tool]").forEach((b) => {
       b.setAttribute("aria-pressed", String(b.dataset.tool === t));
     });
