@@ -165,9 +165,6 @@
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
     .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
     @keyframes nest-bob { to { transform: translateY(-3px); } }
-    .nest-decor { position: absolute; pointer-events: none; color: var(--ink-muted); opacity: .9; z-index: 0;
-      margin: 0; font: 13px/0.95 var(--font-mono); letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor;
-      white-space: pre; user-select: none; }
     #nest-mock .nest-meters { display: grid; gap: 5px; }
     #nest-mock .nest-meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: baseline; }
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; height: 10px; background: var(--paper-2); border: 1px solid var(--color-line); border-radius: 999px; overflow: hidden; }
@@ -493,7 +490,7 @@
     return e.returnValue;
   };
   addEventListener("beforeunload", onBeforeUnload);
-  const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingBlocks: new Set(), squashed: 0, meals: 0, paused: false,
+  const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), squashed: 0, meals: 0, paused: false,
     reserve: 2, over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
@@ -632,16 +629,6 @@
   const home = makeHill(firstSpot);
   const hillOf = (ant) => ant.trail?.hill || ant.hill || home;
 
-  // Braille decorations live in the empty margins, not around the mound.
-  const brailleDecor = (text, left, top) => {
-    const decor = document.createElement("pre");
-    decor.className = "nest-decor"; decor.setAttribute("aria-hidden", "true");
-    decor.textContent = text;
-    decor.style.left = left + "px"; decor.style.top = top + "px";
-    layer.append(decor);
-    return decor;
-  };
-
   // A trail feeds from a patch, the letters within PATCH pixels of where its scout found food, so
   // the ants on it visibly work one small area of the page.
   const PATCH = 70;
@@ -778,10 +765,17 @@
   const scout = (ant) => {
     const hole = hillOf(ant).hole;
     const opening = state.stolenTotal === 0 && state.meals === 0 && state.trails.length === 0;
+    // A block that already has a trail or a scout walking to it is taken. This is what keeps the
+    // first three scouts off one paragraph, and later scouts off an active source.
+    const busyBlocks = new Set([
+      ...state.trails.map((t) => t.block),
+      ...state.ants.filter((a) => a.job === "scout" && a.block).map((a) => a.block),
+    ]);
     const options = [];
     for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
       if (!/\S/.test(n.data[i]) || letterOf(n, i).state !== "free") continue;
       const r = rectOf(n, i); if (!r.width) continue;
+      if (busyBlocks.has(blockOf(n))) continue;
       const [x, y] = local(r);
       if (opening && (!onScreen(r) || Math.hypot(x - hole[0], y - hole[1]) > TUNING.firstScoutRange)) continue;
       if (state.trails.some((t) => Math.hypot(t.end[0] - x, t.end[1] - y) < PATCH * 2)) continue;
@@ -789,35 +783,43 @@
     }
     if (!options.length) {
       // The opening hint can miss on a page with a wide empty margin. Fall back to any free
-      // letter on the page before turning the scout around, or the colony can loop forever.
+      // block before turning the scout around, or the colony can loop forever.
+      const free = [];
       for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
         if (!/\S/.test(n.data[i]) || letterOf(n, i).state !== "free") continue;
         const r = rectOf(n, i); if (!r.width) continue;
         const [x, y] = local(r);
-        options.push([n, x + r.width / 2, y + r.height]);
+        free.push([n, x + r.width / 2, y + r.height]);
       }
+      const open = free.filter((o) => !busyBlocks.has(blockOf(o[0])));
+      options.push(...(open.length ? open : free));
     }
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
-    const fresh = opening ? options.filter((o) => !state.openingBlocks.has(blockOf(o[0]))) : [];
-    const pool = fresh.length ? fresh : options;
     const pick = opening
-      ? pool.reduce((best, o) => (Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best), pool[0])
+      ? options.reduce((best, o) => (Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best), options[0])
       : options[Math.floor(Math.random() * options.length)];
     const [node, tx, ty] = pick;
     const block = blockOf(node);
-    if (opening) state.openingBlocks.add(block);
-    // A wandering line, not one bow: a main curve, a cross-wave and a small skew. The first
-    // version read as a straight line with a single sag, so the scent looked drawn, not walked.
+    // One soft C or S through two random control points, with a little walk in the line. The
+    // three-wave version read like a graph, and one symmetric bow read like a straight line.
     const dx = tx - hole[0], dy = ty - hole[1], dist = Math.hypot(dx, dy) || 1;
     const nx = -dy / dist, ny = dx / dist;
-    const amp = Math.min(48, Math.max(14, dist * 0.22) * (0.8 + Math.random() * 0.4));
-    const amp2 = Math.min(16, Math.max(6, dist * 0.06) * (0.55 + Math.random() * 0.8)) * (Math.random() < 0.5 ? -1 : 1);
-    const amp3 = Math.min(6, Math.max(2, dist * 0.025)) * (Math.random() < 0.5 ? -1 : 1);
+    const amp = Math.min(54, Math.max(11, dist * 0.23));
+    const side = Math.random() < 0.5 ? -1 : 1;
+    const c1 = amp * (0.6 + Math.random() * 0.8) * side;
+    const c2 = amp * (0.25 + Math.random() * 0.75) * (Math.random() < 0.28 ? -side : side);
+    const p0 = [hole[0], hole[1]];
+    const p1 = [hole[0] + dx * 0.3 + nx * c1, hole[1] + dy * 0.3 + ny * c1];
+    const p2 = [hole[0] + dx * 0.7 + nx * c2, hole[1] + dy * 0.7 + ny * c2];
+    const p3 = [tx, ty];
+    const phase = Math.random() * Math.PI * 2;
     const path = [];
     for (let s = 0; s <= 28; s++) {
-      const k = s / 28;
-      const bow = Math.sin(Math.PI * k) * amp + Math.sin(Math.PI * 3 * k) * amp2 + Math.sin(Math.PI * 2 * k) * amp3;
-      path.push([hole[0] + dx * k + nx * bow, hole[1] + dy * k + ny * bow]);
+      const k = s / 28, u = 1 - k;
+      const bx = u * u * u * p0[0] + 3 * u * u * k * p1[0] + 3 * u * k * k * p2[0] + k * k * k * p3[0];
+      const by = u * u * u * p0[1] + 3 * u * u * k * p1[1] + 3 * u * k * k * p2[1] + k * k * k * p3[1];
+      const wobble = (Math.sin(k * 5.2 + phase) * 1.1 + Math.sin(k * 9.7 + phase * 1.7) * 0.5) * Math.sin(Math.PI * k);
+      path.push([bx + nx * wobble, by + ny * wobble]);
     }
     ant.job = "scout"; ant.block = block; ant.path = chaikin(path, 1); ant.k = 0; ant.walked = [hole.slice()];
   };
@@ -1158,43 +1160,6 @@
   };
   const overlaps = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
 
-  // A couple of ground pieces away from the hill, in empty space, so the page itself feels
-  // inhabited rather than only the mound. They are decorations: no clicks, no game state.
-  const scatterDecor = () => {
-    const rects = [];
-    for (const n of textNodes(main)) {
-      if (!/\S/.test(n.data)) continue;
-      const range = document.createRange(); range.selectNodeContents(n);
-      for (const r of range.getClientRects()) { const [x, y] = local(r); rects.push([x, y, x + r.width, y + r.height]); }
-    }
-    main.querySelectorAll("img, svg, pre, figure, hr").forEach((el) => {
-      if (layer.contains(el)) return;
-      const c = el.getBoundingClientRect();
-      if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); }
-    });
-    const pieces = [
-      "⠁⠂\n⠉⠊\n⣀⣀",
-      "⠒⠲\n⠶⠦\n⣀⣀",
-      "⠢⠔\n⠪⠕\n⣀⣀",
-      "⠶⠶\n⠂\n⣀⣀",
-    ];
-    const bands = [[0.08, 0.3], [0.3, 0.55], [0.55, 0.78], [0.78, 0.94]];
-    const picked = [];
-    bands.forEach(([from, to], i) => {
-      for (let tries = 0; tries < 80; tries++) {
-        const x = (i % 2 ? main.clientWidth - 54 : 30) + (Math.random() - 0.5) * 26;
-        const y = main.scrollTop + main.clientHeight * (from + Math.random() * (to - from));
-        const box = [x - 24, y - 28, x + 24, y + 6];
-        if (rects.some((r) => overlaps(box, r))) continue;
-        if ([...hills, ...minis].some((mound) => Math.hypot(mound.base[0] - x, mound.base[1] - y) < 150)) continue;
-        if (picked.some((p) => Math.hypot(p[0] - x, p[1] - y) < 110)) continue;
-        picked.push([x, y, i]);
-        break;
-      }
-    });
-    picked.forEach(([x, y, i]) => brailleDecor(pieces[i], x - 12, y - 26));
-  };
-  scatterDecor();
   // The compact mound fits on a line of prose. An open-ground site also needs room for its badge.
   const miniBox = ({ x, y, gap }) => [x - 30, y - (gap ? 20 : 34), x + 30, y + 2];
   const miniTerrain = (includeMinis = true) => {

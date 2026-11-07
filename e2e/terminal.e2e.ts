@@ -9,6 +9,7 @@ import mailbox from "../content/data/mailbox.json" with { type: "json" };
 declare global {
   interface Window {
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
+    __nest?: { state: { ants: Array<{ role: string; block: Element | null }> } };
   }
 }
 
@@ -91,6 +92,18 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       if (!bread || !hill || !bread.width || !hill.width) return false;
       return hill.left < bread.right && hill.right > bread.left && hill.top < bread.bottom && hill.bottom > bread.top;
     })).toBe(false);
+  });
+
+  test("the first three scouts take different source blocks", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForFunction(() => (window.__nest?.state.ants.filter((a) => a.role === "scout" && a.block).length ?? 0) >= 3);
+    const blocks = await page.evaluate(() => window.__nest!.state.ants
+      .filter((a) => a.role === "scout" && a.block)
+      .map((a) => (a.block!.textContent || "").trim().slice(0, 40)));
+    expect(blocks).toHaveLength(3);
+    expect(new Set(blocks).size).toBe(3);
   });
 
   test("the stray command sends an ant that runs for the launcher", async ({ page }) => {
