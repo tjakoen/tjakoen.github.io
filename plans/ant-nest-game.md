@@ -67,7 +67,7 @@ unreadable and the colony has won that page.
   back with a leave confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
   each tool a name, an icon and a key. Squash ants (a pile goes together), drag across a scent trail to break it, drop bait
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
-  seals have cooldowns. Restore page puts the letters back and re-sites the home and mini mounds.
+  seals have cooldowns. Restore page asks first: it puts the letters back, re-sites the home and mini mounds, keeps the ants, and scrolls to a new home that lands off screen.
   Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
 - **The colony worships.** Every time the colony has taken twenty, then fifty, then a rising
   number of letters, it stops: the queen crawls out of the hill and walks to a clear patch near

@@ -463,6 +463,11 @@
       <p id="nest-confirm-title"><b data-k="confirm-title">Close the Nest?</b></p>
       <p class="muted" data-k="confirm-body">The colony is cleared and every stolen letter goes back where it was.</p>
       <div class="row"><button data-k="leave">clear and close</button><button data-k="stay" class="muted">keep playing</button></div>
+    </div>
+    <div class="confirm" data-k="reset-confirm" role="alertdialog" aria-labelledby="nest-reset-title" hidden>
+      <p id="nest-reset-title"><b>Reset the page?</b></p>
+      <p class="muted">The main mound moves to a new spot, every letter goes back, and the colony keeps its ants.</p>
+      <div class="row"><button data-k="reset-go">reset the page</button><button data-k="reset-cancel" class="muted">keep playing</button></div>
     </div>`;
   aside.append(panel);
   const $ = (k) => panel.querySelector(`[data-k="${k}"]`);
@@ -1418,11 +1423,18 @@
     });
   };
   const squashQuiet = (ant) => { ant.el?.remove(); ant.el = null; state.ants = state.ants.filter((a) => a !== ant); };
-  const removeMini = (mound) => {
+  const removeMini = (mound, keepAnts = false) => {
     mound.el.remove();
     mound.links.forEach((link) => link.remove());
     minis.splice(minis.indexOf(mound), 1);
-    mound.guards.forEach(squashQuiet);
+    if (keepAnts) {
+      mound.guards.forEach((g) => {
+        g.mini = null; g.hill = home; g.job = "home"; g.path = [home.hole.slice()]; g.k = 0;
+        g.patrol = null; g.circling = false; g.defendUntil = 0;
+      });
+    } else {
+      mound.guards.forEach(squashQuiet);
+    }
     mound.flyers.forEach((flyer) => { flyer.mini = null; flyer.hill = home; });
   };
   const makeMini = (spot) => {
@@ -1899,10 +1911,10 @@
     else setAction("pause", "pause", "Pause", "Pause the colony.");
     layer.querySelectorAll(".nest-ant").forEach((el) => el.classList.toggle("walk", !state.paused));
   });
-  $("restore").addEventListener("click", () => {
+  const resetPage = () => {
     if (state.builder?.spot.gap) cancelBuild(state.builder);
     const oldMinis = minis.slice();
-    oldMinis.forEach(removeMini);
+    oldMinis.forEach((m) => removeMini(m, true));
     state.trails.slice().forEach(retire);
     const spot = findHomeSpot();
     home.base = spot;
@@ -1918,7 +1930,14 @@
     oldMinis.forEach(() => { const s = findMiniSpot(); if (s) makeMini(s); });
     state.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
     state.stolen.clear(); state.larder = []; log("every letter is back; the mounds have moved");
-  });
+    const r = home.el.getBoundingClientRect(), view = main.getBoundingClientRect();
+    if (r.top < view.top + 24 || r.bottom > view.bottom - 24) {
+      home.el.scrollIntoView({ block: "center", inline: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    }
+  };
+  $("restore").addEventListener("click", () => { $("reset-confirm").hidden = false; $("reset-go").focus(); });
+  $("reset-go").addEventListener("click", () => { $("reset-confirm").hidden = true; resetPage(); });
+  $("reset-cancel").addEventListener("click", () => { $("reset-confirm").hidden = true; antBtn.focus(); });
 
   // Six ants to start: three scouts already on their way up and three workers below them. The
   // opening is a beat, not a waiting room: a trail should exist before the player wonders if it works.
