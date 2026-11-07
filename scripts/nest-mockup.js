@@ -122,7 +122,7 @@
     .nest-badge { position: absolute; translate: -50% 0; font: 10px/1 var(--font-mono); color: var(--ink-muted); pointer-events: none; white-space: nowrap; }
     .nest-badge.open { color: var(--color-accent); }
     .nest-mini.open { cursor: pointer; }
-    .nest-mini.exposed { color: var(--color-accent); outline: 1px dashed var(--color-accent); outline-offset: 2px; }
+    .nest-mini.exposed { color: var(--color-accent); }
     .nest-mini.denied { color: var(--color-accent); transform: translateX(2px); }
     .nest-hill { pointer-events: auto; cursor: pointer; transition: opacity .3s, filter .3s; }
     .nest-hill.pressing { filter: brightness(1.4); }
@@ -1286,8 +1286,9 @@
       const box = miniBox(spot);
       if (box[1] < top + 4 || box[3] > bottom - 4 || !miniSiteFits(spot, box, terrain)) return;
       const separation = Math.min(...bases.map(([baseX, baseY]) => Math.hypot((x - baseX) * 1.5, y - baseY)));
-      // A hill in the current view is preferred, but a lower scroll is a fine place too.
-      const score = separation + (box[1] >= viewTop && box[3] <= viewBottom ? 1000 : 0);
+      const nearHome = Math.hypot((x - home.base[0]) * 1.15, y - home.base[1]);
+      // The first two mini hills grow near the main hill; later ones spread out.
+      const score = (minis.length < 2 ? -nearHome : separation) + (box[1] >= viewTop && box[3] <= viewBottom ? 1000 : 0);
       if (score > bestScore) { best = spot; bestScore = score; }
     };
     for (const [left, , right, bottomEdge] of terrain.gaps) {
