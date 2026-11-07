@@ -75,10 +75,10 @@ unreadable and the colony has won that page.
   ends, the sidepanel pulses, the stolen glyphs orbit, and a next worship bar tracks the next
   one. The page is the whole environment, so the ants may work below the fold while
   the player reads.
-- **No announced ending.** There is no win and no reserve. If the last ant is gone the queen sends
-  one scout back out and the colony continues. The only ending left is the page running out: let
-  one in seven characters go, capped at 120, and it is too late: the ants can no longer be squashed
-  and eat on until the page is empty. Leaving the tab still restores everything.
+- **No announced ending.** There is no win, no reserve and no game over. If the last ant is gone
+  the queen sends one scout back out and the colony continues. The page can run out, and the
+  colony still continues: another scout goes out and the ants take what is left. Leaving the tab
+  still restores everything.
 - **It lives on the page.** A refresh or a move to another page closes the panel and clears the
   colony; a page link asks first. The launcher stays in the status bar. The stray click is
   remembered for the tab.

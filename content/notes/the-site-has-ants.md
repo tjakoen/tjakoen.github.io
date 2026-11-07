@@ -92,7 +92,7 @@ You fight back with four colony tools in the panel: Squash and Wipe on 1 and 2, 
 
 ## No win screen, no game over
 
-The endings were the part I argued with myself about longest. A portfolio is not an arcade, and a big YOU WIN banner on a résumé page felt wrong. So there isn't one, and there is no reserve left to make one out of. If the last ant is gone, the queen sends one scout back out and the colony carries on. The page running out is the only ending: let roughly one in seven characters go and it is simply too late. The ants stop being squashable and eat on, quietly, until the page is empty. Closing the Nest puts every letter back. A refresh or a move to another page is a reset too: the panel closes, the colony clears, and the launcher waits in the status bar. The colony lives on the page where you opened it.
+The endings were the part I argued with myself about longest. A portfolio is not an arcade, and a big YOU WIN banner on a résumé page felt wrong. So there isn't one, and there is no reserve left to make one out of. If the last ant is gone, the queen sends one scout back out and the colony carries on. The page can run out too, and the colony still carries on: the queen sends another scout and the ants take whatever is left. Closing the Nest puts every letter back. A refresh or a move to another page is a reset too: the panel closes, the colony clears, and the launcher waits in the status bar. The colony lives on the page where you opened it.
 
 ## Built on the same stack as everything else
 

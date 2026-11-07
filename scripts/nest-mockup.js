@@ -1035,6 +1035,12 @@
     if (ant.job === "baited") return;
     if (ant.job === "fly") return stepFlyer(ant, dt);
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
+    if ((ant.job === "defend" || ant.job === "guard") && ant.defendUntil && performance.now() > ant.defendUntil) {
+      ant.defendUntil = 0;
+      if (ant.mini && minis.includes(ant.mini)) { ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; }
+      else { ant.job = "guard"; ant.path = []; }
+      return;
+    }
     if (ant.job === "defend") { // a clicked mound calls its guards home
       const g = ant.path[ant.k];
       if (!g) { ant.job = "guard"; ant.path = []; return; }
@@ -1156,14 +1162,6 @@
     newAnt("scout", "hatch", 0);
     log("the queen sends out a scout");
   };
-  // The page running out is the only ending. It announces itself the same way: the colony takes
-  // whatever is left and slower.
-  const end = () => {
-    state.overrun = true; layer.classList.add("overrun");
-    log("too late: the colony has the page"); blip(90, 0.5, "sawtooth");
-    startParty(true);
-  };
-
   // ================================ the dance ================================
   // The colony does not wait for the page to empty. Every few letters it stops, the queen comes
   // out of the hill, and the workers circle her. Then they go back to work. The thresholds rise
@@ -1403,7 +1401,10 @@
   const callGuards = (mound) => {
     mound.guards.forEach((g) => {
       g.job = "defend"; g.patrol = null; g.circling = false;
-      g.path = [mound.hole.slice()]; g.k = 0;
+      g.defendUntil = performance.now() + 4000;
+      // Stand beside the mound, not on the hole: a guard parked on the nest blocks the click.
+      const side = g.id % 2 ? 1 : -1;
+      g.path = [[mound.spot.x + side * 28, mound.spot.y - 2]]; g.k = 0;
     });
   };
   const squashQuiet = (ant) => { ant.el?.remove(); ant.el = null; state.ants = state.ants.filter((a) => a !== ant); };
@@ -1784,7 +1785,6 @@
       });
       if (!state.over) {
         state.peak = Math.max(state.peak, state.ants.length); checkWipe(); ensureScout();
-        if (!state.overrun && state.stolen.size >= LOSE) end();
         if (!state.overrun && !state.party && state.stolenTotal >= state.nextParty) startParty(false);
         tickMinis(now);
       }
