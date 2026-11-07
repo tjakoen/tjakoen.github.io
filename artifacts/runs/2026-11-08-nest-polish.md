@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 46 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a multi-swat check, a reset-warning check, a reset-scroll check, a reset-ants check, a larder-width check, a meter-hint check, a stores-cap check, a worship-population check, a queen-dance check, a guard-nearest check, a mound-heal check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 47 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a party check, a guard-range check, a restore-mounds check, a keyboard-layout check, a dead-scout check, a no-scout queen check, a no-reserve stat check, an empty-colony check, a queen-crawl check, a worship-bar check, a guard-flash check, a guard-return check, a multi-swat check, a reset-warning check, a reset-scroll check, a reset-ants check, a larder-width check, a meter-hint check, a stores-cap check, a worship-population check, a queen-dance check, a guard-nearest check, a mound-heal check, a note-start check, a lock-toast check, a sound-hint check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -131,7 +131,7 @@ the warning. It then moves the home mound to a new empty spot, re-sites the mini
 old trails, and sends the page ants home to the new mound. Guards from a removed mini are re-homed,
 not killed. If the new home lands off screen the page scrolls to it.
 
-**The note.** The public note now carries the bug joke ("My portfolio has bugs now"), the
+**The note.** The note starts the colony from a button near the top, then carries the bug joke ("My portfolio has bugs now"), the
 always-visible launcher and the help line, the ninety second trail fade, the soldier and mini hill
 dots, the twenty and fifty letter dances, the refresh reset, the stray ant and its `stray`
 command, and the sound details.
@@ -166,10 +166,10 @@ $ bun test
  894 pass
  0 fail
  3885 expect() calls
-Ran 896 tests across 49 files. [5.77s]
+Ran 896 tests across 49 files. [6.07s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  27 passed (30.8s)
+  28 passed (29.9s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

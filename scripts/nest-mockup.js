@@ -148,6 +148,8 @@
     .nest-layer[data-tool="wipe"] .nest-scent .hit { pointer-events: stroke; touch-action: none; }
     #nest-mock .tools button[disabled] { opacity: .45; cursor: default; }
     .nest-switch { background: none; border: 0; padding: 2px 4px; margin: 0 6px; color: var(--ink-faint); cursor: pointer; line-height: 0; }
+    [data-nest-start] { font: 11px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border: 1px solid currentColor; background: none; color: inherit; cursor: pointer; }
+    [data-nest-start]:hover, [data-nest-start]:focus-visible { background: var(--paper-2); outline: 1px dashed var(--color-accent); outline-offset: 2px; }
     .nest-switch:hover, .nest-switch:focus-visible { color: var(--ink); }
     .nest-switch[aria-pressed="true"] { color: var(--color-accent); }
     .nest-switch.nest-pulse svg { animation: nest-pulse 1.1s ease-out 2; }
@@ -175,10 +177,9 @@
     #nest-mock .head .x:hover { border-color: var(--color-line); color: var(--ink); }
     .nest-mini.hit { animation: nest-mini-hit .25s ease-out; }
     @keyframes nest-mini-hit { 30% { transform: translateX(2px) scale(.96); } }
-    .nest-queen { position: absolute; width: 56px; height: 34px; margin: -17px 0 0 -28px; color: var(--color-accent); pointer-events: none; z-index: 2;
-      filter: drop-shadow(0 0 5px color-mix(in srgb, var(--color-accent) 50%, transparent)); transition: opacity .4s; }
-    .nest-queen svg { display: block; width: 56px; height: 34px; overflow: visible; }
-    .nest-queen::after { content: ""; position: absolute; inset: -8px; border: 1px dashed currentColor; border-radius: 50%; opacity: .28; }
+    .nest-queen { position: absolute; width: 60px; height: 38px; margin: -19px 0 0 -30px; color: var(--color-accent); pointer-events: none; z-index: 2;
+      filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 35%, transparent)); transition: opacity .4s; }
+    .nest-queen svg { display: block; width: 60px; height: 38px; overflow: visible; }
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
     .nest-queen.crawling { animation: nest-queen-crawl .18s steps(2) infinite; }
     .nest-queen.dancing { animation: nest-queen-dance .5s ease-in-out infinite alternate; }
@@ -255,7 +256,12 @@
   const SOLDIER_SVG = `<svg width="23" height="13" viewBox="-2.4 0 24.8 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   // The queen is a bigger soldier under a real crown, not a Braille blob. The sidepanel keeps the
   // Braille queen inside the nest; outside, she should read as the animal leading the colony.
-  const QUEEN_SVG = `<svg width="56" height="34" viewBox="-3.4 -3.4 28 18" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}${dots([[9, 0.4], [10.4, 0.4], [11.8, 0.4], [13.2, 0.4]])}<path d="M-1.8 -0.9 0 -3.3 1.8 -0.9 3.6 -3.3 5.4 -0.9Z" fill="currentColor" stroke="none"/><g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
+  const QUEEN_ABDOMEN = [[9.2, 0.4], [10.6, 0.4], [12, 0.4], [13.4, 0.4], [9.8, 1.8], [11.2, 1.8], [12.6, 1.8], [14, 1.8], [10.4, 3.2], [11.8, 3.2], [13.2, 3.2]];
+  const QUEEN_SVG = `<svg width="60" height="38" viewBox="-4 -4.5 30 20" fill="currentColor" aria-hidden="true">
+    <g opacity=".16"><ellipse cx="12" cy="2.2" rx="9.6" ry="3.6"/><ellipse cx="12" cy="4.4" rx="7.4" ry="2.8"/></g>
+    ${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}${dots(QUEEN_ABDOMEN)}
+    <path d="M-1.9 -1 0 -3.7 1.9 -1 3.8 -3.7 5.7 -1Z" fill="currentColor" stroke="none"/>
+    <g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const cancelStray = () => {
     clearTimeout(strayTimer); clearTimeout(strayExitTimer);
@@ -386,6 +392,9 @@
   const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; antBtn.focus(); scheduleStray(); });
   const openNest = () => { game = start(); };
   antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
+  document.querySelectorAll("[data-nest-start]").forEach((button) => {
+    button.addEventListener("click", () => { if (!game) openNest(); });
+  });
   window.__nestLauncher = { open: () => { if (!game) openNest(); }, close: () => { if (game) leave(); } };
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelStray(); else scheduleStray(); });
   scheduleStray();
