@@ -59,8 +59,8 @@ unreadable and the colony has won that page.
 - **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
   below the fold. The first two favor a spot near the main hill; later ones spread out. Builders
-  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to patrol a short stretch near it, or circle the mound, and flyers to steal letters. Its mound thins
-  with each hit. Knocking it calls the guards home; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
+  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to patrol a short stretch beside a nearby trail, or circle the mound, and flyers to steal letters. Its mound thins
+  with each hit. Knocking it calls the guards home and flashes the mound and every guard; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
 - **The player's tools.** The colony tools are Squash, Wipe, Bait and Seal, with names on the
   tiles; Links, mute, pause and restore are the utility row below. Squash holds every page link so
   a missed ant never navigates, wipe is the only tool that breaks scent, and links gives the page
@@ -69,10 +69,11 @@ unreadable and the colony has won that page.
   to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
   seals have cooldowns. Restore page puts the letters back and re-sites the home and mini mounds.
   Sound is muted until switched on; the unmute button gets a brief attention pulse that stops on hover, focus, click or after eight seconds.
-- **The colony dances.** Every time the colony has taken twenty, then fifty, then a rising number
-  of letters, it stops: the queen leaves the sidepanel nest for a stage outside the hill, the
-  workers ring her and dance, the sidepanel pulses, the stolen glyphs orbit, and then the colony
-  goes back to work. The page is the whole environment, so the ants may work below the fold while
+- **The colony worships.** Every time the colony has taken twenty, then fifty, then a rising
+  number of letters, it stops: the queen crawls out of the hill and walks to a clear patch near
+  it, every ant on the page moves toward her and the far ones turn back to their trails when it
+  ends, the sidepanel pulses, the stolen glyphs orbit, and a next worship bar tracks the next
+  one. The page is the whole environment, so the ants may work below the fold while
   the player reads.
 - **No announced ending.** There is no win and no reserve. If the last ant is gone the queen sends
   one scout back out and the colony continues. The only ending left is the page running out: let

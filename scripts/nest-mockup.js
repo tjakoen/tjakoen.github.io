@@ -109,6 +109,8 @@
     .nest-ant.soldier svg, .nest-ant.guard svg { transform: scale(1.35); }
     .nest-ant.soldier:hover svg, .nest-ant.guard:hover svg { transform: scale(1.62); }
     .nest-ant.hit { color: var(--color-accent); }
+    .nest-ant.flash { color: var(--color-accent); animation: nest-ant-flash .18s steps(2) 2; }
+    @keyframes nest-ant-flash { 50% { opacity: .25; } }
     .nest-ant.flyer { color: var(--ink-muted); }
     .nest-ant.flyer .wing { animation: nest-flap .1s steps(1) infinite; }
     .nest-ant.builder { color: var(--color-accent); }
@@ -175,8 +177,10 @@
     @keyframes nest-mini-hit { 30% { transform: translateX(2px) scale(.96); } }
     .nest-queen { position: absolute; width: 46px; height: 30px; margin: -15px 0 0 -23px; color: var(--color-accent); pointer-events: none; z-index: 2;
       white-space: pre; text-align: center; font: 10px/0.95 var(--font-mono); letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor;
-      transition: opacity .4s, left 1.1s cubic-bezier(.2,.8,.3,1), top 1.1s cubic-bezier(.2,.8,.3,1); }
+      transition: opacity .4s; }
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
+    .nest-queen.crawling { animation: nest-queen-crawl .18s steps(2) infinite; }
+    @keyframes nest-queen-crawl { 50% { transform: translateY(1px) rotate(2deg); } }
     .nest-ant.dancing { pointer-events: none; }
     .nest-ant.dancing svg { animation: nest-dance .55s ease-in-out infinite alternate; }
     @keyframes nest-dance { to { transform: translateY(-2px) rotate(6deg); } }
@@ -209,7 +213,7 @@
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .activity li:first-child { color: var(--ink); }
     #nest-mock .activity li::before { content: "› "; color: var(--ink-faint); }
-    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
+    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-queen.crawling, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, .nest-ant.flash, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
   document.head.append(style);
 
   // ================================ the switch ================================
@@ -428,6 +432,8 @@
         <div class="nest-meter__bar accent" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="stores"></span></div></div>
       <div class="nest-meter"><span class="lbl muted">next egg</span><span class="lbl" data-k="bar-val">0/3</span>
         <div class="nest-meter__bar accent" data-k="bar-bar" role="progressbar" aria-label="Next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="bar"></span></div></div>
+      <div class="nest-meter"><span class="lbl muted">next worship</span><span class="lbl" data-k="worship-val">0/20</span>
+        <div class="nest-meter__bar accent" data-k="worship-bar" role="progressbar" aria-label="Next worship" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-k="worship"></span></div></div>
     </div>
     <dl class="stat-grid">
       <div><dt>scouts</dt><dd class="accent" data-k="scouts">0</dd></div>
@@ -1165,15 +1171,30 @@
   // The queen is the same dot animal as the sidepanel, not a separate card. She leaves the nest
   // for a stage outside the hill; the sidepanel queen disappears while she is out.
   const QUEEN_ART = "⠀⢀⣤⣤⡀⠀\n⢠⣿⣿⣿⣿⡄\n⠈⠛⠛⠛⠛⠁";
+  // A clear patch of page near the home mound: below it first, then to either side. The queen
+  // should walk into open ground, not through a line of prose.
+  const stageSpot = () => {
+    const terrain = miniTerrain(true);
+    const hb = home.el.getBoundingClientRect(); const [hx, hy] = local(hb);
+    const own = [hx, hy, hx + hb.width, hy + hb.height];
+    const obstacles = terrain.obstacles.filter((r) => !(r[0] < own[2] && r[2] > own[0] && r[1] < own[3] && r[3] > own[1]));
+    const fallback = { x: home.base[0], y: Math.min(main.scrollHeight - 30, home.base[1] + 46) };
+    for (const [dx, dy] of [[0, 46], [0, 74], [64, 28], [-64, 28], [80, 56], [-80, 56], [0, 104]]) {
+      const x = home.base[0] + dx, y = Math.min(main.scrollHeight - 30, home.base[1] + dy);
+      const box = [x - 54, y - 38, x + 54, y + 44];
+      if (box[0] < 4 || box[2] > main.clientWidth - 4 || box[1] < 0 || box[3] > main.scrollHeight) continue;
+      if (!obstacles.some((r) => overlaps(box, r))) return { x, y };
+    }
+    return fallback;
+  };
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
     const now = performance.now();
     const mound = home;
-    const stage = { x: mound.base[0], y: Math.min(main.scrollHeight - 30, mound.base[1] + 46) };
-    const queen = document.createElement("pre"); queen.className = "nest-queen bob"; queen.textContent = QUEEN_ART;
+    const stage = stageSpot();
+    const queen = document.createElement("pre"); queen.className = "nest-queen bob crawling"; queen.textContent = QUEEN_ART;
     queen.style.left = mound.hole[0] + "px"; queen.style.top = (mound.hole[1] - 8) + "px";
     layer.append(queen);
-    requestAnimationFrame(() => { queen.style.left = stage.x + "px"; queen.style.top = stage.y + "px"; });
     panel.classList.add("celebrating");
     hills.forEach((h) => { h.el.style.pointerEvents = "none"; });
     const dancers = state.ants.filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
@@ -1187,7 +1208,8 @@
       g.dataset.radius = String(54 + (i % 2) * 16);
       layer.append(g); glyphs.push(g);
     });
-    state.party = { start: now, until: now + (final ? 16000 : 9000), final, queen, dancers, glyphs, stage };
+    state.party = { start: now, until: now + (final ? 16000 : 9000), final, queen, dancers, glyphs, stage,
+      queenFrom: mound.hole.slice() };
     state.queen.lay = 0;
     log(final ? "the colony takes the page" : "the colony dances");
     melody();
@@ -1195,6 +1217,12 @@
   const stepParty = (now, dt) => {
     const p = state.party; if (!p) return;
     const t = now / 1000;
+    const walk = Math.min(1, (now - p.start) / 1200);
+    const ease = walk * walk * (3 - 2 * walk);
+    const qx = p.queenFrom[0] + (p.stage.x - p.queenFrom[0]) * ease + Math.sin(walk * Math.PI * 7) * 2;
+    const qy = p.queenFrom[1] + (p.stage.y - p.queenFrom[1]) * ease;
+    p.queen.style.left = qx + "px"; p.queen.style.top = qy + "px";
+    p.queen.classList.toggle("crawling", walk < 1);
     p.dancers.forEach((a) => {
       if (!a.el) return;
       const angle = a.party.angle + t * 0.9;
@@ -1218,7 +1246,16 @@
       if (!a.el) return;
       a.el.classList.remove("dancing");
       label(a);
-      a.job = "home"; a.path = [hillOf(a).hole.slice()]; a.k = 0; a.party = null;
+      a.party = null;
+      if (a.role === "guard" && a.mini && minis.includes(a.mini)) {
+        a.job = "mini-home"; a.path = [a.mini.hole.slice()]; a.k = 0;
+      } else if (a.trail && state.trails.includes(a.trail)) {
+        a.job = "follow"; a.path = lanePath(a.trail.pts, a.lane || 0); a.k = 0;
+      } else if (a.patrol && state.trails.includes(a.patrol)) {
+        a.job = "patrol"; a.path = lanePath(a.patrol.pts, a.lane || 0); a.k = 0;
+      } else {
+        a.job = "home"; a.path = [hillOf(a).hole.slice()]; a.k = 0;
+      }
     });
     state.party = null;
     if (p.final) { state.nextParty = Infinity; return; }
@@ -1387,6 +1424,11 @@
       if (m.guards.size) {
         callGuards(m);
         el.classList.add("denied"); setTimeout(() => el.classList.remove("denied"), 300);
+        m.guards.forEach((g) => {
+          if (!g.el) return;
+          g.el.classList.add("flash");
+          setTimeout(() => g.el?.classList.remove("flash"), 380);
+        });
         blip(180, 0.05, "square"); return;
       }
       m.hp--; el.textContent = miniArt(m.hp / MINI_HP); markGuards(m);
@@ -1421,8 +1463,11 @@
     let best = 0, bd = Infinity;
     t.pts.forEach((p, k) => { const d = Math.hypot(p[0] - g.mini.hole[0], p[1] - g.mini.hole[1]); if (d < bd) { bd = d; best = k; } });
     const lo = Math.max(1, best - 4), hi = Math.min(t.pts.length, best + 5);
+    // Walk beside the trail, never on it: the workers need the line itself and a guard in the
+    // same lane is what made a busy trail look crowded.
+    const side = g.id % 2 ? 1 : -1, span = 13 + (g.id % 3) * 2;
     g.job = "patrol"; g.patrol = t; g.circling = false;
-    g.path = [g.mini.hole.slice(), ...t.pts.slice(lo, hi)]; g.k = 0;
+    g.path = [g.mini.hole.slice(), ...lanePath(t.pts.slice(lo, hi), span * side)]; g.k = 0;
     g.guardLink = null;
   };
   const stepFlyer = (f, dt) => {
@@ -1692,6 +1737,9 @@
     $("larder").textContent = [...state.stolen].slice(-18).map((L) => L.ch).join("") || "empty";
     const fed = state.meals % 3;
     setMeter("bar", fed / 3, `${fed}/3`);
+    const worshipAt = state.nextParty;
+    setMeter("worship", Number.isFinite(worshipAt) ? state.stolenTotal / worshipAt : 1,
+      Number.isFinite(worshipAt) ? `${state.stolenTotal}/${worshipAt}` : "the page");
     $("status").textContent = state.party ? "dancing" : state.queenDead ? "the queen is dead" : state.overrun ? "overrun"
       : state.paused ? "paused" : state.queen.lay > 0 ? "laying" : state.queen.eat > 0 ? "feeding"
       : scoutsOut() ? "scouting" : state.trails.length ? "foraging" : "resting";
