@@ -90,6 +90,8 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     const panel = page.locator('[data-surface="nest-controls"]');
     const main = page.locator(".app-shell__main");
     const link = main.getByRole("link", { name: "Explore selected work" });
+    const linkState = panel.locator('[data-k="link-text"]');
+    await expect(linkState).toHaveText("links locked");
     await expect(main).toHaveCSS("cursor", "crosshair");
     await link.press("Enter");
     await expect(page).toHaveURL(/\/$/);
@@ -104,8 +106,10 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await bait.click();
     await panel.getByRole("button", { name: "Wipe", exact: true }).click();
     await expect(main).toHaveCSS("cursor", "cell");
+    await expect(linkState).toHaveText("links locked");
     await expect(bait).toBeEnabled();
     await panel.getByRole("button", { name: "Links", exact: true }).click();
+    await expect(linkState).toHaveText("links open");
     await expect(main.locator(".nest-layer")).toHaveAttribute("inert", "");
     await expect(bait).toBeDisabled();
     await link.press("Enter");

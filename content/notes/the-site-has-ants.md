@@ -96,7 +96,7 @@ The endings were the part I argued with myself about longest. A portfolio is not
 
 ## Built on the same stack as everything else
 
-No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file. The ground around a hill is a few inline SVG stones, grass, a twig and a paperclip, not an image. The sound is synthesized in the same file: a few oscillators and one noise buffer, no audio files.
+No canvas, no game library, no framework. The nest in the sidebar is a grid of Braille characters, each cell eight dots, colored by the theme's own tokens, the same trick as the bread on the home page. The ants are tiny inline SVGs made of round dots, two leg frames swapping. Every color comes from the active flavor of [GRAIN](/grain), so the game is blue on baguette and gold on brioche without me writing a line for either. It is one plain JavaScript file. The ground around a hill is a few inline SVG stones, grass, a leaf and a mushroom, not an image. The sound is synthesized in the same file: a few oscillators and one noise buffer, no audio files.
 
 That was the point of building it at all. A design system that only renders documents is half a claim. This one also renders a small ecosystem that steals from the documents.
 

@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 6 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 7 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a trail-bend and text-selection check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -30,7 +30,7 @@ for the checks.
 ## What changed
 
 **Traffic.** The old wobble was a sideways kick every frame. It is now a small sway folded into a
-smoothed heading, with a turn-rate cap. Scout routes are one gentle quadratic bend, then Chaikin,
+smoothed heading, with a turn-rate cap. Scout routes are one guaranteed bow, then Chaikin,
 not four random jumps. Trails are drawn as the same smooth path with a paper-coloured under-stroke
 and a dotted scent line. Ants on a trail get an outbound and a return lane, so they no longer walk
 the same three pixels, and a queued ant slows instead of stopping dead. The line is five ants, not
@@ -75,12 +75,14 @@ scene for longer. The player's win stays quiet, which is the note's own argument
 
 **The controls.** The three tools are named, keyed 1, 2 and 3, and the selected tile presses in.
 The cursor changes natively: crosshair for squash, cell for wipe, the page's own cursor for links,
-and copy for bait. A squash flattens the ant under a quick ring and a dust mark. A wiped trail
+and copy for bait. Squash and Wipe turn off text selection on the page so a drag does not select
+copy; Links turns it back on. A squash flattens the ant under a quick ring and a dust mark. A wiped trail
 snaps into two pieces, sprays scent dots, and then the ants scatter.
 
 **The sidebar.** The panel is now one instrument: a status line, the Braille nest, a two-line
-activity log, three CSS meters for page holds, stores and the next egg, a compact stat grid, the
-tool tiles, the colony controls, and a footer link to the note. The inline "How to play" block is
+activity log, three filled meters for page holds, stores and the next egg, a compact stat grid, the
+tool tiles, a persistent links locked or links open chip, the colony controls, and a footer link to
+the note. The inline "How to play" block is
 gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps running.
 
 **The launcher.** The ant now sits in the status bar on every page. The game loads with the page
@@ -93,9 +95,9 @@ always-visible launcher and the help line, the ninety second trail fade, the sol
 dots, the twenty and fifty letter dances, the refresh reset, the stray ant and its `stray`
 command, and the ground and sound details.
 
-**The ground.** A quiet ground patch sits around each hill: stones, grass, a twig, a dandelion and
-one paperclip further out. It is theme-token colour at 0.55 opacity, never catches a click, and
-stays still under reduced motion. A mini hill gets a smaller tuft.
+**The ground.** A quiet ground patch sits around each hill: filled stones, thicker grass blades,
+and a leaf or a mushroom depending on the hill. It is theme-token colour at 0.55 opacity, never
+catches a click, and stays still under reduced motion. A mini hill gets a smaller tuft.
 
 **The mini hill language.** No words on the page. The rim carries one dot per guard. The base
 carries five dots, one per hit, and the existing Braille mound shrinks as the dots go out. The
