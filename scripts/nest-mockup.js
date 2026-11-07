@@ -596,8 +596,7 @@
   const home = makeHill(firstSpot);
   const hillOf = (ant) => ant.trail?.hill || ant.hill || home;
 
-  // A little ground around the mound: Braille glyphs for grass, stones, a leaf and a mushroom,
-  // the same alphabet as the hill and the sidebar nest. The old SVG strokes read as scribbles.
+  // Braille decorations live in the empty margins, not around the mound.
   const brailleDecor = (text, left, top) => {
     const decor = document.createElement("pre");
     decor.className = "nest-decor"; decor.setAttribute("aria-hidden", "true");
@@ -606,18 +605,6 @@
     layer.append(decor);
     return decor;
   };
-  const decorate = (h) => {
-    let seed = Math.max(1, Math.round(h.base[0] * 7 + h.base[1] * 13));
-    const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
-    const leaf = rnd() > 0.35;
-    const lines = [
-      "⠁⠂  " + (leaf ? "⠢⠔" : "⠒⠲"),
-      "⠉⠊  " + (leaf ? "⠪⠕" : "⠶⠦"),
-      "⣀⣀⣀⣀⣀⣀⣀⣀",
-    ];
-    h.decor = brailleDecor(lines.join("\n"), h.base[0] - 42, h.base[1] - 10);
-  };
-  decorate(home);
 
   // A trail feeds from a patch, the letters within PATCH pixels of where its scout found food, so
   // the ants on it visibly work one small area of the page.
@@ -1153,22 +1140,27 @@
       const c = el.getBoundingClientRect();
       if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); }
     });
-    [...hills, ...minis].forEach((mound) => {
-      const c = mound.el.getBoundingClientRect();
-      if (c.width) { const [x, y] = local(c); rects.push([x - 24, y - 24, x + c.width + 24, y + c.height + 24]); }
-    });
+    const pieces = [
+      "⠁⠂\n⠉⠊\n⣀⣀",
+      "⠒⠲\n⠶⠦\n⣀⣀",
+      "⠢⠔\n⠪⠕\n⣀⣀",
+      "⠶⠶\n⠂\n⣀⣀",
+    ];
+    const bands = [[0.08, 0.3], [0.3, 0.55], [0.55, 0.78], [0.78, 0.94]];
     const picked = [];
-    for (let tries = 0; tries < 160 && picked.length < 2; tries++) {
-      const x = 28 + Math.random() * (main.clientWidth - 56);
-      const y = main.scrollTop + 60 + Math.random() * (main.clientHeight - 120);
-      const box = [x - 28, y - 26, x + 28, y + 6];
-      if (rects.some((r) => overlaps(box, r))) continue;
-      if (picked.some((p) => Math.hypot(p[0] - x, p[1] - y) < 90)) continue;
-      picked.push([x, y]);
-    }
-    picked.forEach(([x, y], i) => {
-      brailleDecor(i % 2 ? "⠢⠔\n⣀⣀⣀⣀" : "⠁⠂  ⠶\n⣀⣀⣀⣀", x - 28, y - 22);
+    bands.forEach(([from, to], i) => {
+      for (let tries = 0; tries < 80; tries++) {
+        const x = (i % 2 ? main.clientWidth - 54 : 30) + (Math.random() - 0.5) * 26;
+        const y = main.scrollTop + main.clientHeight * (from + Math.random() * (to - from));
+        const box = [x - 24, y - 28, x + 24, y + 6];
+        if (rects.some((r) => overlaps(box, r))) continue;
+        if ([...hills, ...minis].some((mound) => Math.hypot(mound.base[0] - x, mound.base[1] - y) < 150)) continue;
+        if (picked.some((p) => Math.hypot(p[0] - x, p[1] - y) < 110)) continue;
+        picked.push([x, y, i]);
+        break;
+      }
     });
+    picked.forEach(([x, y, i]) => brailleDecor(pieces[i], x - 12, y - 26));
   };
   scatterDecor();
   // The compact mound fits on a line of prose. An open-ground site also needs room for its badge.
@@ -1284,7 +1276,6 @@
   const squashQuiet = (ant) => { ant.el?.remove(); ant.el = null; state.ants = state.ants.filter((a) => a !== ant); };
   const removeMini = (mound) => {
     mound.el.remove();
-    mound.decor?.remove();
     mound.links.forEach((link) => link.remove());
     minis.splice(minis.indexOf(mound), 1);
     mound.guards.forEach(squashQuiet);
@@ -1315,7 +1306,6 @@
     });
     el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } });
     layer.append(el);
-    m.decor = brailleDecor("⠁⠂  ⠶\n⣀⣀⣀⣀", spot.x - 48, spot.y - 6);
     minis.push(m); markGuards(m); log("a mini hill stands"); return m;
   };
   // A guard walks from its mini hill to the nearest point of a trail, then patrols that trail.
