@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 21 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-spread check, a guard-defence check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 22 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -51,11 +51,11 @@ scent. Their patrol gets a six second progress check: a guard that moves less th
 re-homes instead of standing in the dirt.
 
 **The opening.** Three scouts and three workers start. A block with a trail or a scout is taken,
-so the first three scouts and later ones stay off each other's source. The first takes the nearest
-letter; the next two take the options farthest from the ones already chosen, so the three sources
-spread across the page. The first scout keeps its first find within 240 pixels of the hill,
-the first egg is laid at six seconds, and the first hatch comes at 3.4 seconds of incubation. The
-first trail appeared at seven seconds in the measured run and three trails were open by nine.
+so the first three scouts and later ones stay off each other's source. The first three stay in
+view: the first takes the closest letter, the second the farthest on the opposite side of the
+mound, and the third the most spread-out remaining spot. The first egg is laid at six seconds, and
+the first hatch comes at 3.4 seconds of incubation. The first trail appeared at seven seconds in
+the measured run and three trails were open by nine.
 
 **The page is the environment.** The home hill is sited in a random empty cell of the visible
 viewport, top or bottom, rather than the same roomy top-right gap; the old roomiest-spot rule was
@@ -133,10 +133,10 @@ $ bun test
  894 pass
  0 fail
  3885 expect() calls
-Ran 894 tests across 49 files. [10.57s]
+Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  14 passed (40.8s)
+  14 passed (26.8s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.

@@ -27,7 +27,6 @@
     nestSpeed: 0.18,      // nest units per second
     trailTtl: 90,         // seconds before a trail wears out even with letters left
     trailFade: 1600,      // ms a spent trail takes to leave the page
-    firstScoutRange: 240, // the opening scout keeps its first find close to the hill
     party: [20, 50, 90, 140, 200, 280, 380], // letters stolen at each colony dance
   };
   const LINE = TUNING.line, MAX_ANTS = TUNING.maxAnts, SPEED = TUNING.speed;
@@ -804,6 +803,7 @@
 
   const scout = (ant) => {
     const hole = hillOf(ant).hole;
+    const opening = state.openingTargets.length < 3;
     const firstOpening = state.openingTargets.length === 0;
     // A block that already has a trail or a scout walking to it is taken. This is what keeps the
     // first three scouts off one paragraph, and later scouts off an active source.
@@ -817,7 +817,7 @@
       const r = rectOf(n, i); if (!r.width) continue;
       if (busyBlocks.has(blockOf(n))) continue;
       const [x, y] = local(r);
-      if (firstOpening && (!onScreen(r) || Math.hypot(x - hole[0], y - hole[1]) > TUNING.firstScoutRange)) continue;
+      if (opening && !onScreen(r)) continue;
       if (state.trails.some((t) => Math.hypot(t.end[0] - x, t.end[1] - y) < PATCH * 2)) continue;
       options.push([n, x + r.width / 2, y + r.height]);
     }
@@ -835,12 +835,17 @@
       options.push(...(open.length ? open : free));
     }
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
+    const distToHole = (o) => Math.hypot(o[1] - hole[0], o[2] - hole[1]);
     const spread = (o) => Math.min(...state.openingTargets.map(([px, py]) => Math.hypot(o[1] - px, o[2] - py)));
+    const moundSide = hole[0] > main.clientWidth / 2 ? 1 : -1;
+    const opposite = options.filter((o) => (o[1] - hole[0]) * moundSide < 0);
     const pick = firstOpening
-      ? options.reduce((best, o) => (Math.hypot(o[1] - hole[0], o[2] - hole[1]) < Math.hypot(best[1] - hole[0], best[2] - hole[1]) ? o : best), options[0])
-      : state.openingTargets.length < 3
-        ? options.reduce((best, o) => (spread(o) > spread(best) ? o : best), options[0])
-        : options[Math.floor(Math.random() * options.length)];
+      ? options.reduce((best, o) => (distToHole(o) < distToHole(best) ? o : best), options[0])
+      : state.openingTargets.length === 1
+        ? (opposite.length ? opposite : options).reduce((best, o) => (distToHole(o) > distToHole(best) ? o : best), (opposite.length ? opposite : options)[0])
+        : state.openingTargets.length === 2
+          ? options.reduce((best, o) => (spread(o) > spread(best) ? o : best), options[0])
+          : options[Math.floor(Math.random() * options.length)];
     const [node, tx, ty] = pick;
     const block = blockOf(node);
     if (state.openingTargets.length < 3) state.openingTargets.push([tx, ty]);
