@@ -26,6 +26,7 @@
     "test:all": "bun test && playwright test",
     "shots": "bun tools/screenshots.ts",
     "og:card": "bun tools/og-card.ts",
+    "social:card": "bun tools/social-card.ts",
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",

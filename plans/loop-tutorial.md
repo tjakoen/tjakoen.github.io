@@ -14,6 +14,9 @@ owner: human
 
 # A tutorial someone can follow to build this loop on a small project
 
+The setup companion note is content/notes/loop-setup.md; it is the prompt-first setup, not the
+follow-along. The tutorial still waits on the gate below.
+
 Queued 2026-08-14 at the owner's ask, deliberately not started. The sibling plan
 `loop-story-and-talk` turns the loop into a story: what it is, why it exists, what it cost. This one
 turns it into instructions: a reader with an empty directory and a Claude Code install follows along
