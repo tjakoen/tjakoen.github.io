@@ -16,7 +16,7 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 7 | the branch is local for review
+unpushed: 8 | the branch is local for review
 verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, a stray command check, a trail-bend and text-selection check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
@@ -82,7 +82,8 @@ snaps into two pieces, sprays scent dots, and then the ants scatter.
 **The sidebar.** The panel is now one instrument: a status line, the Braille nest, a two-line
 activity log, three filled meters for page holds, stores and the next egg, a compact stat grid, the
 tool tiles, a persistent links locked or links open chip, the colony controls, and a footer link to
-the note. The inline "How to play" block is
+the note. The meter classes are namespaced to the panel, because GRAIN's global `.meter` atom was
+clipping the labels to eight pixels. The inline "How to play" block is
 gone. The link opens `/notes/the-site-has-ants` in a new tab so the colony keeps running.
 
 **The launcher.** The ant now sits in the status bar on every page. The game loads with the page
