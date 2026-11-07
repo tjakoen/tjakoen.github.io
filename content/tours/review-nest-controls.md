@@ -14,8 +14,8 @@ route: /notes/the-site-has-ants
 ## nest-controls
 - at: /notes/the-site-has-ants
 - status: needs-verification
-- review: The sidebar uses icons, with a description for each on hover. Use Page Links lets you browse while the colony keeps running.
-- verify: Hover the tools, then try a link with Squash selected. Wait for a dotted trail, select Wipe Trail, and drag across it. The ants should scatter and find another trail or head home. Select Use Page Links and check that the link works.
+- review: The sidebar gives each tool a name, an icon and a key, and describes it on hover. Links lets you browse while the colony keeps running.
+- verify: Hover the tools, then try a link with Squash selected. Wait for a dotted trail, press 2 for Wipe, and drag across the line. The ants should scatter and find another trail or head home. Press 3 for Links and check that the link works.
 
 ## anchor:what-the-ants-actually-do
 - at: /notes/the-site-has-ants

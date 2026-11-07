@@ -86,16 +86,16 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(main.locator(".nest-bait")).toHaveCount(0);
 
     await bait.click();
-    await panel.getByRole("button", { name: "Wipe trail" }).click();
+    await panel.getByRole("button", { name: "Wipe", exact: true }).click();
     await expect(main).toHaveCSS("cursor", "cell");
     await expect(bait).toBeEnabled();
-    await panel.getByRole("button", { name: "Use page links" }).click();
+    await panel.getByRole("button", { name: "Links", exact: true }).click();
     await expect(main.locator(".nest-layer")).toHaveAttribute("inert", "");
     await expect(bait).toBeDisabled();
     await link.press("Enter");
     await expect(page).toHaveURL(/\/projects$/);
     await page.waitForLoadState("load");
-    await expect(panel.getByRole("button", { name: "Use page links" })).toHaveAttribute("aria-pressed", "true");
+    await expect(panel.getByRole("button", { name: "Links", exact: true })).toHaveAttribute("aria-pressed", "true");
   });
 });
 

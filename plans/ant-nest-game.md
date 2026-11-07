@@ -46,19 +46,26 @@ unreadable and the colony has won that page.
 
 - **Hidden by default.** The `nest` terminal command reveals the status bar launcher and remembers
   the unlock on that browser. A direct preview link can still load the launcher with `?nest`.
-- **The colony.** Two scouts and four workers to start. A trail opens when its scout carries the
-  first letter home, workers take open trails in turn, six to a line, and a trail dies with its
-  last ant. Soldiers hatch once the colony passes eight and take two hits.
+- **The colony.** Three scouts and three workers to start. A scout draws a faint route as it walks,
+  the route firms up when the scout carries the first letter home, workers take open trails in turn,
+  five to a line, and a trail fades when its patch empties or after ninety seconds. A successor
+  scout goes out as the old trail fades. Soldiers hatch once the colony passes eight and take two
+  hits.
 - **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
   shows how full they are. A full store sends a builder to an open spot in view. Builders favor
   gaps left by stolen letters and spread out from existing hills. Squash the builder and the stores
-  are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Hover a hill to
-  see how many guards defend it. Once none are left, five clicks break it. Its flyers outlive it.
+  are lost. A mini hill sends guards to patrol trails and flyers to steal letters. Its rim carries
+  one dot per guard and its base carries one dot per hit; once the guards are gone, five clicks
+  break it. Its flyers outlive it.
 - **The player's tools.** Pick a tool: squash holds the page's links so a missed ant never
-  navigates, wipe trail is the only tool that erases scent, and read page gives the links back.
-  Squash ants, drag across a scent trail to wipe it, drop bait to pull
-  nearby ants off course, and seal the anthills from the panel or by holding one. Bait and seals
-  have cooldowns. Sound is muted until switched on.
+  navigates, wipe is the only tool that breaks scent, and links gives the page back. The panel gives
+  each tool a name, an icon and a key. Squash ants, drag across a scent trail to break it, drop bait
+  to pull nearby ants off course, and seal the anthills from the panel or by holding one. Bait and
+  seals have cooldowns. Sound is muted until switched on.
+- **The colony dances.** Every time the colony has taken twenty, then fifty, then a rising number
+  of letters, it stops: the queen comes out of the hill, the workers circle her, the stolen glyphs
+  orbit, and then the colony goes back to work. The page is the whole environment, so the ants may
+  work below the fold while the player reads.
 - **No announced ending.** Wipe the colony after the queen has spent her two reserve scouts and the
   queen dies: the nest goes still and the page keeps its gaps. Let one in seven characters go,
   capped at 120, and it is too late: the ants can no longer be squashed and eat on until the page is

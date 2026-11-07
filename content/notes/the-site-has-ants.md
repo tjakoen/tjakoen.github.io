@@ -14,7 +14,7 @@ summary: >
   do play as well as documents, and it took more tuning of ant traffic than of anything that looks
   like game design.
 image: /media/notes/nest-og.png
-imageAlt: "TJ's Desk home page with an ant colony at work: an anthill drawn in Braille dots, scent trails running to two feed cards with letters missing, and the Nest panel in the sidebar."
+imageAlt: "TJ's Desk home page with an ant colony at work: an anthill drawn in Braille dots, scent trails running down to the page copy with letters missing, and the Nest panel in the sidebar."
 social: |
   My portfolio has ants now.
 
@@ -30,7 +30,7 @@ social: |
 
 I had no game on my portfolio. For someone who keeps telling students the interesting part of software is the behavior, that was a little embarrassing. So this site now has ants.
 
-Open the terminal at the bottom of the page, type *nest*, and press Enter. A tiny ant appears in the status bar. Click it, and an anthill turns up in an empty patch of whatever page you are on, the page scrolls to it, and the colony goes to work on the copy.
+Open the terminal at the bottom of the page, type *nest*, and press Enter. A tiny ant appears in the status bar. Click it, and an anthill turns up in an empty patch of whatever page you are on, and the colony goes to work on the copy.
 
 > The enemy in this game wants the sentence you were halfway through reading.
 
@@ -38,9 +38,9 @@ Open the terminal at the bottom of the page, type *nest*, and press Enter. A tin
 
 ## What the ants actually do
 
-Two scouts leave the hill first. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
+Three scouts leave the hill first. Each one wanders to a letter, picks it up, and walks it home. The letter it takes is the real glyph, in its real font, color and underline, and the space it leaves stays exactly where it was, so the paragraph never reflows. You just watch it get gappier.
 
-A scout that makes it home lays a scent trail. Workers follow trails six to a line, filled in turn so no trail starves, and a heading in a big font needs a crew of two or three to lift. Every other letter feeds the queen in the sidebar, who lays eggs. The rest goes into two storerooms, and when they fill up a builder ant walks out and raises a mini hill somewhere else on the page. Mini hills send out guards, which walk to an existing trail and patrol it, and flyers, which ignore trails entirely and pinch letters from anywhere.
+A scout that makes it home lays a scent trail. Workers follow trails five to a line, filled in turn so no trail starves, and a heading in a big font needs a crew of two or three to lift. Every other letter feeds the queen in the sidebar, who lays eggs. The rest goes into two storerooms, and when they fill up a builder ant walks out and raises a mini hill somewhere else on the page. Mini hills send out guards, which walk to an existing trail and patrol it, and flyers, which ignore trails entirely and pinch letters from anywhere. A colony that has taken a few letters stops to dance: the queen comes out of the hill, the workers circle her, and then they go back to work. The next dance waits for a larger haul.
 
 <svg viewBox="0 0 480 236" width="100%" role="img"
      aria-label="The colony loop: scouts find a letter and lay a trail; workers follow the trail and carry letters home; half the letters feed the queen, who lays more ants; the other half fill the stores, and full stores send a builder to raise a mini hill, which sends guards to the trails and flyers to steal letters anywhere."
@@ -79,7 +79,7 @@ A scout that makes it home lays a scent trail. Workers follow trails six to a li
 
 ![Two trails of ants carrying letters across the ten-times-zero note toward the anthill, the stores bar in the sidebar reading building as a builder heads out to raise a mini hill.](/media/notes/nest-mini-hill.jpg)
 
-You fight back with the icons in the panel. Squash and Wipe Trail lock the links so a missed ant does not send you to another page. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and the ants scatter, then take the nearest trail with room or head back to the hill. Use Page Links hands the links back while the ants keep working. There is bait, a hill seal on a cooldown, and a mute button, because sound is off until you ask for it.
+You fight back with the three tools in the panel, on the icons or the 1, 2 and 3 keys. Squash and Wipe lock the links so a missed ant does not send you to another page. (I learned that one by clicking an ant, missing, and landing on /projects. Several times.) Wipe across a scent trail and it snaps: the ants scatter, then take the nearest trail with room or head back to the hill. Use Page Links hands the links back while the ants keep working. There is bait, a hill seal on a cooldown, and a mute button, because sound is off until you ask for it.
 
 ## No win screen, no game over
 
@@ -99,7 +99,7 @@ Claude did most of the typing, which will surprise nobody who has read [how I wo
 
 ## What I have not earned yet
 
-It has been played by me and by a preview browser, and that is the whole test group. Balance is a guess: the costs of mini hills, the one in seven threshold, how fast the queen breeds. I have not watched a guard patrol a trail end to end. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and I have not built that one.
+It has been played by me and by a preview browser, and that is the whole test group. Balance is a guess: the costs of mini hills, the one in seven threshold, how fast the queen breeds. I have watched a guard patrol a trail end to end since, and the first version could get stuck on its own mound; that is fixed now. On a phone it needs a rethink, because squashing an ant with a thumb on a narrow column is a different game, and I have not built that one.
 
 But if you are reading this on the site, the terminal takes one word. *Nest*. The copy you just read is the food.
 
