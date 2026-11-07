@@ -64,7 +64,7 @@
     #nest-mock .tools button { position: relative; display: grid; place-items: center; min-width: 0; min-height: 40px; }
     #nest-mock .tools button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
     #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: 9px; }
-    #nest-mock .tool-help { min-height: 2.8em; margin: 0; }
+    #nest-mock .tool-help { min-height: 2.8em; height: 2.8em; overflow: hidden; margin: 0; }
     #nest-mock { position: relative; }
     #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
       background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
@@ -141,7 +141,7 @@
     #nest-mock .end pre { margin: 0; font: inherit; text-align: left; display: inline-block; }
     #nest-mock details { font-size: 11px; color: var(--ink-muted); } #nest-mock summary { cursor: pointer; }
     #nest-mock details p { margin: 6px 0 0; }
-    #nest-mock .tools button[aria-pressed="true"] { color: var(--color-accent); border: 2px solid currentColor; background: var(--paper-2); }
+    #nest-mock .tools button[aria-pressed="true"] { color: var(--color-accent); border-color: currentColor; background: var(--paper-2); box-shadow: inset 0 0 0 1px currentColor; }
     .nest-scent .hit { pointer-events: none; }
     .nest-layer[data-tool="wipe"] .nest-scent .hit { pointer-events: stroke; touch-action: none; }
     #nest-mock .tools button[disabled] { opacity: .45; cursor: default; }
@@ -1747,7 +1747,6 @@
     if (state.over || state.tool === "read" || performance.now() / 1000 < baitReady) return;
     setBaitArmed(!main.classList.contains("nest-armed"));
   });
-  const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   const setTool = (t) => {
     if (!toolHelp[t]) return;
     state.tool = t;
@@ -1762,9 +1761,7 @@
     $("link-state").classList.toggle("open", linksOpen);
     $("link-text").textContent = linksOpen ? "links open" : "links locked";
     panel.querySelectorAll("[data-tool]").forEach((b) => {
-      const on = b.dataset.tool === t;
-      b.setAttribute("aria-pressed", String(on));
-      if (on && !reduceMotion()) b.animate([{ transform: "translateY(1px) scale(.95)" }, { transform: "none" }], { duration: 180, easing: "ease-out" });
+      b.setAttribute("aria-pressed", String(b.dataset.tool === t));
     });
     blip(t === "read" ? 520 : 380, 0.04, "sine", 0.025);
   };
