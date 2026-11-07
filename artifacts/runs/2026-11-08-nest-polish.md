@@ -17,7 +17,7 @@ touched:
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
 unpushed: 1 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, and the terminal e2e
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, a stray ant and refresh check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -59,6 +59,14 @@ trails were open by nine.
 makes the player scroll to find it, but scouts can work the whole page afterwards. The automatic
 scroll is gone. Mini hills still stay in view. This is the owner's call: the ants may work below
 the fold while the reader reads.
+
+**Refresh and the stray.** A reload now closes the panel, clears the saved colony, and leaves the
+launcher, so the sidebar is back to its default view and the player has to click. A normal link
+navigation still carries the colony. When the game is unlocked but closed, a single stray ant
+sometimes crosses the reading pane on its own, off any trail, with pauses and a small sway. Click it
+and it runs for the status bar launcher and makes it pulse. It is scheduled thirty to ninety seconds
+after load, then two to four minutes after a walk or a click. It only runs where the launcher is
+visible, so it is a desktop easter egg.
 
 **The dance.** The colony stops at twenty stolen letters, then fifty, then a rising set of
 thresholds. The queen comes out of the hill, the workers circle her, the stolen glyphs orbit, a
@@ -108,6 +116,9 @@ $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
 
+A Chromium check spawned the stray, measured 171 pixels of travel in 2.2 seconds, clicked it and
+saw the launcher pulse, then reloaded and found the panel closed and the launcher still visible.
+
 $ bun tools/dsh-loop/cli.mjs end
 graphify update: ok
 bun run check: ok
@@ -128,7 +139,8 @@ squash.
 
 The full browser suite was not run; the focused terminal spec and the unit suite were. The phone
 layout still needs its own pass, because the launcher sits in the status bar and the test harness
-is desktop. The two untracked loop notes in the tree belong to another session and were left
+is desktop. That also means the stray ant is desktop only for now; a phone needs a different
+destination than the hidden launcher. The two untracked loop notes in the tree belong to another session and were left
 alone. The old screenshot inside the first note image is recursive by nature and was accepted.
 
 ## What needs human eyes
