@@ -150,6 +150,14 @@
     .nest-switch[aria-pressed="true"] { color: var(--color-accent); }
     .nest-switch.nest-pulse svg { animation: nest-pulse 1.1s ease-out 2; }
     @keyframes nest-pulse { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.45); } }
+    body.nest-links-locked a[href] { cursor: not-allowed; }
+    body.nest-links-locked #nest-mock a[href], body.nest-links-locked .nest-switch, body.nest-links-locked [data-surface="console"] a[href] { cursor: pointer; }
+    .nest-lock-toast { position: fixed; left: 50%; bottom: 48px; transform: translateX(-50%); z-index: 300;
+      display: flex; align-items: center; gap: 10px; max-width: min(92vw, 470px); padding: 10px 12px;
+      background: var(--paper); color: var(--ink); border: 1px solid var(--ink); box-shadow: 4px 4px 0 var(--color-line);
+      font: 11px/1.35 var(--font-mono); }
+    .nest-lock-toast button { border: 1px solid currentColor; background: none; padding: 4px 8px; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
+    .nest-lock-toast button:hover { background: var(--paper-2); }
     .nest-stray { position: absolute; width: 23px; height: 13px; margin: -6px 0 0 -11px; padding: 0; border: 0; background: none;
       color: var(--ink-muted); cursor: pointer; z-index: 40; opacity: .7; pointer-events: auto; transition: opacity .35s, color .35s; }
     .nest-stray:hover, .nest-stray:focus-visible { color: var(--ink); opacity: 1; }
@@ -1733,6 +1741,7 @@
     if (main.classList.contains("nest-armed")) setBaitArmed(false);
     $("tool-help").textContent = toolHelp[t];
     const linksOpen = t === "read";
+    document.body.classList.toggle("nest-links-locked", !linksOpen);
     $("link-state").classList.toggle("open", linksOpen);
     $("link-text").textContent = linksOpen ? "links open" : "links locked";
     panel.querySelectorAll("[data-tool]").forEach((b) => {
@@ -1751,6 +1760,24 @@
   };
   document.addEventListener("keydown", onKey);
   panel.querySelectorAll("[data-tool]").forEach((b) => b.addEventListener("click", () => setTool(b.dataset.tool)));
+  let lockToast = null, lockToastTimer = 0;
+  const hideLockToast = () => { clearTimeout(lockToastTimer); lockToast?.remove(); lockToast = null; };
+  const showLockToast = () => {
+    if (!lockToast) {
+      lockToast = document.createElement("div");
+      lockToast.className = "nest-lock-toast";
+      lockToast.setAttribute("role", "status");
+      const text = document.createElement("span");
+      text.textContent = "Links are locked while the colony is playing.";
+      const use = document.createElement("button");
+      use.type = "button"; use.textContent = "Use Links (3)";
+      use.addEventListener("click", () => { setTool("read"); hideLockToast(); });
+      lockToast.append(text, use);
+      document.body.append(lockToast);
+    }
+    clearTimeout(lockToastTimer);
+    lockToastTimer = setTimeout(hideLockToast, 5000);
+  };
   const gameChrome = (el) => !!el.closest?.("#nest-mock, [data-surface='console'], .nest-switch");
   const holdLinks = (e) => {
     const target = e.target instanceof Element ? e.target : null;
@@ -1773,7 +1800,7 @@
       e.preventDefault(); e.stopPropagation(); placeBait(e); return;
     }
     if (layer.contains(target)) return;
-    if (a) { e.preventDefault(); e.stopPropagation(); log("the page is locked while the colony works"); return; }
+    if (a) { e.preventDefault(); e.stopPropagation(); showLockToast(); return; }
     if (inMain && target.closest("button, summary, label, input, select, textarea, [role=button]")) { e.preventDefault(); e.stopPropagation(); }
   };
   document.addEventListener("click", holdLinks, true);
@@ -1842,6 +1869,8 @@
       animation.cancel();
       finishReturn(letter);
     }
+    hideLockToast();
+    document.body.classList.remove("nest-links-locked");
     delete window.__nest;
     layer.remove(); panel.remove();
     hidden.forEach((el) => { el.style.display = el.dataset.nestDisplay; delete el.dataset.nestDisplay; });

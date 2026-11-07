@@ -16,8 +16,8 @@ touched:
   - e2e/terminal.e2e.ts
   - artifacts/runs/2026-11-08-nest-polish.md
 diffstat: one game file of 760 changed lines, the note copy, its two screenshots and social card, the review tour and the terminal e2e
-unpushed: 22 | the branch is local for review
-verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
+unpushed: 23 | the branch is local for review
+verifiedBy: three light and dark browser runs, a forced party, a forced mini hill, a 12 second guard sample, a real trail wipe, a real squash, an animated stray check, a stray-exit check, a natural stray-run check, a trail-shape check, a scout-direction check, a guard-defence check, a lock-toast check, a home-spot check, a page-leave confirm check, a stray command check, a session stray check, a trail-bend and text-selection check, a page-switch close check, a bread-overlap check, a sidebar overflow check, a help and query-shortcut check, a rendered note check, and the terminal e2e
 doctor: 23 checks, 0 failing, 1 due | the Claude Code context budget remains due
 ---
 
@@ -84,8 +84,9 @@ scene for longer. The player's win stays quiet, which is the note's own argument
 **The controls.** The three tools are named, keyed 1, 2 and 3, and the selected tile presses in.
 The cursor changes natively: crosshair for squash, cell for wipe, the page's own cursor for links,
 and copy for bait. The link lock covers the whole page, not just the reading pane, so a sidebar link
-is blocked while Squash or Wipe is on. Links turns the lock off but asks before a page link leaves,
-because leaving ends the colony. Squash and Wipe turn off text selection on the page so a drag does
+is blocked while Squash or Wipe is on. A blocked link is not silent: the cursor is not-allowed and a
+toast says the links are locked and offers Use Links (3), which switches the tool. Links then asks
+before a page link leaves, because leaving ends the colony. Squash and Wipe turn off text selection on the page so a drag does
 not select copy; Links turns it back on. A squash flattens the ant under a quick ring and a dust mark. A wiped trail
 snaps into two pieces, sprays scent dots, and then the ants scatter.
 
@@ -136,7 +137,7 @@ $ bun test
 Ran 894 tests across 49 files. [10.52s]
 
 $ bunx playwright test e2e/terminal.e2e.ts --ignore-snapshots
-  14 passed (26.8s)
+  14 passed (57.6s)
 
 $ bunx oxlint scripts/nest-mockup.js
 Found 0 warnings and 0 errors.
