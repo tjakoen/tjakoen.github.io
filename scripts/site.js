@@ -522,11 +522,16 @@
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintFavicon);
   });
 
-  // The A5 toast slice: a domed crust, a crumb inset, and a prompt on the crumb.
+  // The A5 toast slice, drawn as a ten-by-ten grid of round dots so it shares the Braille look of the
+  // homepage baguette while staying coarse enough to read at 16 pixels: c is crust, m is crumb, and
+  // i is the ink of the prompt on the crumb.
   function toastSvg(crust, crumb, ink) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">`
-      + `<path d="M16 1C7.5 1 1 4.6 1 10.5c0 2.6 1.4 4.3 3 4.9V29a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V15.4c1.6-.6 3-2.3 3-4.9C31 4.6 24.5 1 16 1z" fill="${crust}"/>`
-      + `<path d="M16 5C10 5 5 7.6 5 11c0 1.8 1.2 2.9 3 3.2V27h16V14.2c1.8-.3 3-1.4 3-3.2C27 7.6 22 5 16 5z" fill="${crumb}"/>`
-      + `<path d="M10 14.5l4.5 4-4.5 4M16.5 23.5h6" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const grid = ["..cccccc..", ".cmmmmmmc.", "cmmmmmmmmc", "cmmmmmmmmc", ".cmimmmmc.", ".cmmimmmc.", ".cmimmmmc.", ".cmmmiiic.", ".cmmmmmmc.", ".cccccccc."];
+    const fill = { c: crust, m: crumb, i: ink };
+    let dots = "";
+    grid.forEach((row, y) => [...row].forEach((k, x) => {
+      if (fill[k]) dots += `<circle cx="${x * 3.2 + 1.6}" cy="${y * 3.2 + 1.6}" r="1.45" fill="${fill[k]}"/>`;
+    }));
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">${dots}</svg>`;
   }
 })();
