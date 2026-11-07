@@ -6,6 +6,7 @@ shared/tools/dsh, linked into ~/.dsh/loop.
 
 - start: the doctor, the skill mount check and the graph age.
 - end: the graph refresh, the typecheck, the lint gate and the run ledger evidence.
+- close: whether this session can be archived, as one of four verdicts with the evidence above it.
 - guard: ask the human-lane rules about a path before a write.
 - envelope: check a handoff file for the four headings.
 
