@@ -500,5 +500,33 @@
         if (ev.key === "Escape" && shell.hasAttribute("data-aside-open")) closeSheet();
       });
     }
+
+    // ---- the toast favicon follows the theme. A browser renders a favicon in isolation, so it
+    // cannot read the page's custom properties itself. Instead the icon is redrawn from the live
+    // tokens whenever the flavor or the colour scheme changes: the crust takes the accent, the
+    // crumb takes the raised paper, and the prompt takes the ink.
+    const root = document.documentElement;
+    const tok = (name, fallback) => getComputedStyle(root).getPropertyValue(name).trim() || fallback;
+    const paintFavicon = () => {
+      const svg = toastSvg(tok("--color-accent", "#854F0B"), tok("--paper-2", "#FAC775"), tok("--ink", "#633806"));
+      let link = document.querySelector('link[rel="icon"]');
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "icon"; link.type = "image/svg+xml";
+        document.head.appendChild(link);
+      }
+      link.href = "data:image/svg+xml," + encodeURIComponent(svg);
+    };
+    paintFavicon();
+    new MutationObserver(paintFavicon).observe(root, { attributes: true, attributeFilter: ["data-theme", "data-color-scheme"] });
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintFavicon);
   });
+
+  // The A5 toast slice: a domed crust, a crumb inset, and a prompt on the crumb.
+  function toastSvg(crust, crumb, ink) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">`
+      + `<path d="M16 3C9 3 3 6 3 11c0 2.2 1.3 3.6 3 4V27a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V15c1.7-.4 3-1.8 3-4 0-5-6-8-13-8z" fill="${crust}"/>`
+      + `<path d="M16 6C10.5 6 6 8.2 6 11.2c0 1.6 1 2.6 2.5 2.9V25.5c0 .6.4 1 1 1h13c.6 0 1-.4 1-1V14.1c1.5-.3 2.5-1.3 2.5-2.9C26 8.2 21.5 6 16 6z" fill="${crumb}"/>`
+      + `<text x="16" y="23" text-anchor="middle" font-size="11" font-family="monospace" font-weight="700" fill="${ink}">&gt;_</text></svg>`;
+  }
 })();
