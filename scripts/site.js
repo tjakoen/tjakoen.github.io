@@ -525,8 +525,8 @@
   // The A5 toast slice: a domed crust, a crumb inset, and a prompt on the crumb.
   function toastSvg(crust, crumb, ink) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">`
-      + `<path d="M16 3C9 3 3 6 3 11c0 2.2 1.3 3.6 3 4V27a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V15c1.7-.4 3-1.8 3-4 0-5-6-8-13-8z" fill="${crust}"/>`
-      + `<path d="M16 6C10.5 6 6 8.2 6 11.2c0 1.6 1 2.6 2.5 2.9V25.5c0 .6.4 1 1 1h13c.6 0 1-.4 1-1V14.1c1.5-.3 2.5-1.3 2.5-2.9C26 8.2 21.5 6 16 6z" fill="${crumb}"/>`
-      + `<text x="16" y="23" text-anchor="middle" font-size="11" font-family="monospace" font-weight="700" fill="${ink}">&gt;_</text></svg>`;
+      + `<path d="M16 1C7.5 1 1 4.6 1 10.5c0 2.6 1.4 4.3 3 4.9V29a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V15.4c1.6-.6 3-2.3 3-4.9C31 4.6 24.5 1 16 1z" fill="${crust}"/>`
+      + `<path d="M16 5C10 5 5 7.6 5 11c0 1.8 1.2 2.9 3 3.2V27h16V14.2c1.8-.3 3-1.4 3-3.2C27 7.6 22 5 16 5z" fill="${crumb}"/>`
+      + `<path d="M10 14.5l4.5 4-4.5 4M16.5 23.5h6" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   }
 })();
