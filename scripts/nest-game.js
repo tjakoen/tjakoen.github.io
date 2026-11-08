@@ -112,6 +112,12 @@
     .nest-suck { position: absolute; z-index: 7; width: 3px; height: 3px; border-radius: 50%; background: var(--color-accent); pointer-events: none; }
     .nest-ant.stuck { color: var(--color-accent); opacity: .8; }
     @keyframes nest-sweet-fade { from { opacity: 1; } to { opacity: .15; } }
+    .nest-event-card { width: 54px !important; height: 54px !important; padding: 7px !important; border: 1px solid var(--color-accent) !important; background: var(--paper) !important; border-radius: 0 !important; }
+    .nest-event-card .wrapper { display: none !important; }
+    .nest-event-card .candy { position: static !important; width: 100% !important; height: 100% !important; background: none !important; box-shadow: none !important; border-radius: 0 !important; }
+    .nest-event-card .candy::after { display: none !important; }
+    .nest-event-card .candy svg { width: 100%; height: 100%; }
+    .nest-event-card:hover, .nest-event-card:focus-visible { background: var(--paper-2) !important; outline: 2px dashed var(--color-accent); outline-offset: 2px; }
     @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
     .nest-scent polyline.rival { stroke: var(--nest-rival); }
     .nest-meter .hint .rival, #nest-mock .stat-grid .rival { color: var(--nest-rival); }
