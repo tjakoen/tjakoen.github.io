@@ -34,6 +34,7 @@
     "answers:check": "bun tools/answers-check.ts",
     "audit:desk": "bun tools/desk-audit.ts",
     "analytics:pull": "bun tools/analytics-pull.ts",
+    "dream": "bun tools/dream.ts",
     "diagrams:warm": "bun tools/diagram-warm.ts",
     "diagrams:check": "bun tools/diagram-cache-gate.ts",
     "export": "bun tools/export.ts",
