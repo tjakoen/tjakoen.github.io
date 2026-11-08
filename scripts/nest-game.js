@@ -84,6 +84,8 @@
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
     .nest-sweet-card { position: absolute; z-index: 5; pointer-events: auto; padding: 8px 10px; border: 1px dashed var(--color-accent); background: var(--paper); color: var(--color-accent); font: 12px/1.2 var(--font-mono); cursor: pointer; animation: nest-sweet-fade 12s linear both; }
+    .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; color: var(--nest-rival); }
+    @keyframes nest-fight { 50% { transform: translateX(2px) rotate(4deg); } }
     .nest-sweet { position: absolute; z-index: 4; color: var(--color-accent); font: 18px/1 var(--font-mono); letter-spacing: 2px; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 40%, transparent); pointer-events: none; }
     main.nest-sweet-planning { cursor: crosshair; }
     .nest-event-card { position: absolute; z-index: 5; pointer-events: auto; padding: 7px 9px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); font: 11px/1.2 var(--font-mono); cursor: pointer; }
@@ -2043,6 +2045,7 @@
 
   // ---- the rival colony: a small, inverse-colour nuisance below the fold -------------------
   const removeRivalAnt = (a) => {
+    if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); showChar(a.letter); a.letter.state = "free"; a.letter = null; }
     a.el?.remove(); a.el = null;
     a.trail?.ants.delete(a);
     rival.ants = rival.ants.filter((x) => x !== a);
@@ -2158,15 +2161,19 @@
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
     layer.append(a.el); placeAnt(a); label(a); rival.ants.push(a); trail.ants.add(a);
   };
-  const stealRival = (trail) => {
-    if (!trail || !state.trails.includes(trail)) return;
+  const stealRival = (trail, ant) => {
+    if (!trail || !state.trails.includes(trail)) return false;
     const options = freeIn(trail.block, trail.end);
-    if (!options.length) { retireRivalTrail(trail); return; }
+    if (!options.length) return false;
     const L = options[0].L;
-    hideChar(L); L.state = "stolen"; L.crew = [];
-    rival.stolen.add(L);
-    log(`the rival takes “${L.ch}”`);
+    const r = rectOf(L.n, L.i); const [x, y] = local(r);
+    hideChar(L); L.state = "rival-carry"; L.crew = [];
+    const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
+    glyph.style.cssText += lookOf(L.n.parentElement); glyph.style.left = x + "px"; glyph.style.top = y + "px";
+    layer.append(glyph); ant.letter = L; ant.glyph = glyph;
+    log(`the rival picks up “${L.ch}”`);
     blip(330, 0.05, "triangle", 0.03);
+    return true;
   };
   const stepRival = (a, dt) => {
     if (!a.el) return;
@@ -2180,12 +2187,18 @@
     const g = a.path[a.k]; if (!g) return;
     if (!move(a, g[0], g[1], dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; return; }
     a.px = a.x; a.py = a.y;
+    if (a.glyph) { a.glyph.style.left = a.x + 2 + "px"; a.glyph.style.top = a.y - 16 + "px"; }
     if (++a.k < a.path.length) return;
     if (a.job === "rival-follow") {
-      stealRival(a.trail);
+      stealRival(a.trail, a);
       a.job = "rival-home"; a.path = lanePath(a.trail.pts.toReversed(), -a.lane); a.k = 0;
     } else if (a.job === "rival-home") {
+      if (a.letter?.state === "rival-carry") {
+        a.letter.glyph?.remove(); a.letter.state = "stolen"; rival.stolen.add(a.letter); a.letter = null; a.glyph = null;
+        log("the rival banks a letter at its mound");
+      }
       a.job = "rival-pause"; a.pauseAt = now + 700;
+      if (a.trail && !remaining(a.trail)) { const old = a.trail; retireRivalTrail(old, false); rivalRetarget(); }
     }
   };
   let lastRivalFight = 0;
@@ -2193,31 +2206,49 @@
     if (now - lastRivalFight < 420) return;
     lastRivalFight = now;
     for (const r of rival.ants.slice()) {
-      if (!r.el) continue;
+      if (!r.el || r.contest) continue;
       const defender = state.ants.find((a) => a.el && (a.role === "soldier" || a.role === "guard") &&
         Math.hypot(a.x - r.x, a.y - r.y) < 18);
       if (!defender) continue;
-      removeRivalAnt(r);
-      state.squashed++;
-      blip(180, 0.06, "square", 0.03);
-      log("a soldier drives a rival ant off the trail");
+      r.contest = now; r.el.classList.add("fighting"); defender.el.classList.add("fighting");
+      blip(220, 0.05, "square", 0.035);
+      setTimeout(() => {
+        defender.el?.classList.remove("fighting");
+        if (!r.el) return;
+        r.el.classList.remove("fighting");
+        removeRivalAnt(r); state.squashed++;
+        log("a soldier drives a rival ant off the trail");
+      }, 520);
       break;
     }
   };
 
-  const retireRivalTrail = (t) => {
+  let rivalRetargetTimer = 0;
+  const rivalRetarget = () => {
+    if (!rival.active || rival.trails.length || rivalRetargetTimer) return;
+    rivalRetargetTimer = setTimeout(() => {
+      rivalRetargetTimer = 0;
+      if (!rival.active || rival.trails.length) return;
+      const pick = rivalTarget();
+      if (!pick) { rivalRetarget(); return; }
+      rival.trails.slice().forEach((old) => retireRivalTrail(old, false));
+      const t = rivalTrail(pick); spawnRival(t); spawnRival(t);
+      log("the rival opens a new trail");
+    }, 1200);
+  };
+  const retireRivalTrail = (t, retreat = true) => {
     if (!t || t.state === "gone") return;
     t.state = "gone"; t.ready = false;
     t.line.remove(); t.halo.remove(); t.hit?.remove();
     state.trails = state.trails.filter((x) => x !== t);
     rival.trails = rival.trails.filter((x) => x !== t);
     [...t.ants].forEach(removeRivalAnt);
-    if (!rival.trails.length) retreatRival();
+    if (retreat && !rival.trails.length) retreatRival();
   };
   const retreatRival = () => {
     if (!rival.active) return;
     rival.active = false;
-    [...rival.trails].forEach(retireRivalTrail);
+    [...rival.trails].forEach((t) => retireRivalTrail(t, false));
     [...rival.ants].forEach(removeRivalAnt);
     rival.mound?.el.remove(); rival.mound = null;
     rival.stolen.forEach((L) => state.stolen.add(L));
@@ -2484,7 +2515,7 @@
     }
     if ((tick = (tick + 1) % 6) === 0) {
       if (!state.paused) state.trails.slice().forEach((t) => {
-        if (t.state === "gone") return;
+        if (t.side === "rival" || t.state === "gone") return;
         if (!remaining(t)) {
           const wore = t.ttl && performance.now() / 1000 > t.ttl;
           retire(t);

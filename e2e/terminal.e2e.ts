@@ -15,6 +15,7 @@ declare global {
         ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; letter?: unknown; el?: Element }>;
         trails: Array<{ block: Element }>;
         built: number;
+        squashed: number;
         sweet?: { pieces: number } | null;
       };
       home: { base: [number, number] };
@@ -414,13 +415,13 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       await page.locator(".nest-switch").click();
       await expect(page.locator("#nest-mock")).toBeVisible();
       await page.waitForFunction(() => window.__nest?.state.ants.some((a) => a.el && a.where === "page"));
-      const before = await page.evaluate(() => window.__nest!.state.ants.filter((a) => a.el && a.where === "page").length);
+      const before = await page.evaluate(() => window.__nest!.state.squashed);
       const pageBefore = await page.locator("[data-k='holds-val']").textContent();
       await page.evaluate((k) => window.__nest!.spawnEnv(k), kind);
       const card = page.locator(".nest-event-card");
       await expect(card).toBeVisible();
       await card.click();
-      await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.el && a.where === "page").length), { timeout: 5_000 }).toBeLessThan(before);
+      await expect.poll(() => page.evaluate(() => window.__nest!.state.squashed), { timeout: 5_000 }).toBeGreaterThan(before);
       expect(await page.locator("[data-k='holds-val']").textContent()).toBe(pageBefore);
     });
   }
