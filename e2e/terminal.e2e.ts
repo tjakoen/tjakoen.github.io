@@ -22,6 +22,8 @@ declare global {
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
       newAnt: (role: string, route: string, d: number) => unknown;
+      wipeTrail: (trail: unknown, at: [number, number]) => void;
+      rival: { active: boolean; ants: Array<unknown>; trails: Array<{ end: [number, number] }>; stolen: Set<unknown>; returnAt: number };
     };
   }
 }
@@ -67,7 +69,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
 
   test("the Nest is lazy: no game request before the launcher is used", async ({ page }) => {
     let gameRequests = 0;
-    page.on("request", (request) => { if (request.url().includes("/site/nest-mockup.js")) gameRequests++; });
+    page.on("request", (request) => { if (request.url().includes("/site/nest-game.js")) gameRequests++; });
     await page.goto("/");
     await expect(page.locator(".nest-switch")).toBeVisible();
     await page.waitForTimeout(500);
@@ -131,9 +133,9 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     for (let i = 0; i < 10; i++) {
       await page.goto("/?nest-debug");
       await page.locator(".nest-switch").click();
-      await expect(page.locator(".nest-hill")).toBeVisible();
+      await expect(page.locator(".nest-hill:not(.rival)")).toBeVisible();
       cells.add(await page.evaluate(() => {
-        const h = document.querySelector(".nest-hill")!.getBoundingClientRect();
+        const h = document.querySelector(".nest-hill:not(.rival)")!.getBoundingClientRect();
         const m = document.querySelector("main")!.getBoundingClientRect();
         const col = Math.min(2, Math.floor(((h.left + h.width / 2 - m.left) / m.width) * 3));
         const row = Math.min(2, Math.floor(((h.top + h.height / 2 - m.top) / m.height) * 3));
@@ -383,6 +385,22 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
   });
 
+  test("the rival colony founds, steals and retreats when its trail is wiped", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.active)).toBe(true);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length)).toBeGreaterThan(0);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size)).toBeGreaterThan(0);
+    await expect(page.locator("[data-k='rival-hint']")).toContainText("rival");
+    await page.evaluate(() => {
+      const trail = window.__nest!.rival.trails[0];
+      window.__nest!.wipeTrail(trail, trail.end);
+    });
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.active)).toBe(false);
+    await expect(page.locator("[data-k='rival-hint']")).toHaveText("");
+  });
+
   test("a pile of ants goes under one click", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
@@ -431,7 +449,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.waitForTimeout(700);
     const after = await page.evaluate(() => window.__nest!.home.base.slice());
     expect(after).not.toEqual(before);
-    await expect(page.locator(".nest-hill").first()).toBeInViewport();
+    await expect(page.locator(".nest-hill:not(.rival)").first()).toBeInViewport();
     const antsAfter = await page.evaluate(() => window.__nest!.state.ants.length);
     expect(antsAfter).toBeGreaterThanOrEqual(antsBefore);
   });
@@ -451,7 +469,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.waitForTimeout(1800);
     await expect(page.locator(".nest-queen:not(.panel-queen)")).toHaveClass(/dancing/);
     const queen = await page.locator(".nest-queen:not(.panel-queen)").boundingBox();
-    const hill = await page.locator(".nest-hill").first().boundingBox();
+    const hill = await page.locator(".nest-hill:not(.rival)").first().boundingBox();
     expect(queen && hill && (queen.y > hill.y + hill.height || queen.x > hill.x + hill.width || queen.x + queen.width < hill.x)).toBe(true);
   });
 

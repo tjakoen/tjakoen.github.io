@@ -50,7 +50,7 @@ if (nestModes && nestAside && nestMain && nestBar) {
 
   let nestGamePromise = null;
   const ensureNestGame = () => {
-    if (!nestGamePromise) nestGamePromise = import("/site/nest-mockup.js").catch((err) => {
+    if (!nestGamePromise) nestGamePromise = import("/site/nest-game.js").catch((err) => {
       nestGamePromise = null;
       throw err;
     });
