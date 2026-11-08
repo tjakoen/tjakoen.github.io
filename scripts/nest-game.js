@@ -82,6 +82,8 @@
     :root[data-color-scheme="light"] .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); }
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
+    .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
+    @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
     .nest-scent polyline.rival { stroke: var(--nest-rival); }
     .nest-meter .hint .rival, #nest-mock .stat-grid .rival { color: var(--nest-rival); }
     .nest-scent polyline { fill: none; stroke: var(--nest-trail); stroke-width: 1.7; stroke-dasharray: 1 4.2; stroke-linecap: round; opacity: .8; transition: opacity 1s; }
@@ -227,7 +229,7 @@
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .activity li:first-child { color: var(--ink); }
     #nest-mock .activity li::before { content: "› "; color: var(--ink-faint); }
-    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-queen.crawling, .nest-queen.dancing, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, .nest-ant.flash, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
+    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-queen.crawling, .nest-queen.dancing, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, .nest-ant.flash, .nest-hill.rising, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
   document.head.append(style);
 
   // ================================ the switch ================================
@@ -757,6 +759,8 @@
   hill.remove();
   const firstSpot = findHomeSpot();
   const home = makeHill(firstSpot);
+  home.el.classList.add("rising");
+  setTimeout(() => home.el?.classList.remove("rising"), 900);
   const hillOf = (ant) => ant.trail?.hill || ant.hill || home;
 
   // A trail feeds from a patch, the letters within PATCH pixels of where its scout found food, so
@@ -1927,10 +1931,21 @@
     setTimeout(() => { if (a.el) removeRivalAnt(a); }, 260);
     log("you squashed a rival ant");
   };
+  const rivalArt = () => {
+    const w = 42, h = 15, cells = new Int8Array(w * h).fill(-1); let seed = 17; const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const u = (x - w / 2) / (w / 2), top = h * (u * u) * 0.9 + Math.sin(x * 0.45) * 0.7;
+      if (y >= top && ((x + y) % 2 === 0 || y < top + 1.2 || rnd() < 0.18)) cells[y * w + x] = y > h - 3 ? 1 : 0;
+    }
+    for (let y = 0; y < 4; y++) for (let x = Math.floor(w * 0.57); x < Math.floor(w * 0.57) + 5; x++) cells[y * w + x] = -1;
+    let out = "";
+    for (let cy = 0; cy < h; cy += 4) { for (let cx = 0; cx < w; cx += 2) { let code = 0, t = -1; for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) { const v = cells[(cy + dy) * w + cx + dx]; if (v >= 0) { code |= bit[dy][dx]; t = Math.max(t, v); } } const ch = String.fromCharCode(0x2800 + code); out += t === 1 ? `<b>${ch}</b>` : ch; } out += "\n"; }
+    return out.trimEnd();
+  };
   const rivalMound = () => {
-    const template = hill.cloneNode(true);
+    const template = document.createElement("div");
     template.className = "nest-hill rival";
-    template.removeAttribute("aria-label");
+    template.innerHTML = rivalArt();
     template.setAttribute("aria-hidden", "true");
     const terrain = miniTerrain();
     const hw = hr.width, hh = hr.height;
@@ -1970,6 +1985,8 @@
     template.style.left = `${x - hw / 2}px`;
     template.style.top = `${y - hh}px`;
     layer.append(template);
+    template.classList.add("rising");
+    setTimeout(() => template.classList.remove("rising"), 900);
     return { el: template, base: [x, y], hole: [x, y - hh + 4] };
   };
   const rivalTarget = () => {
@@ -2088,14 +2105,17 @@
     if (rival.active || state.over || state.party) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-    rival.mound = mound;
-    const pick = rivalTarget();
-    if (!pick) { rival.mound.el.remove(); rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-    const t = rivalTrail(pick);
-    spawnRival(t); spawnRival(t);
-    rival.active = true; rival.returnAt = 0;
-    log("a rival colony founds below the fold");
-    blip(260, 0.1, "sawtooth", 0.025);
+    rival.mound = mound; rival.active = true; rival.returnAt = 0;
+    log("a rival mound is being built on the opposite side");
+    setTimeout(() => {
+      if (!rival.active || rival.mound !== mound) return;
+      const pick = rivalTarget();
+      if (!pick) { mound.el.remove(); rival.active = false; rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
+      const t = rivalTrail(pick);
+      spawnRival(t); spawnRival(t);
+      log("the rival trail opens");
+      blip(260, 0.1, "sawtooth", 0.025);
+    }, 900);
   };
   const placeBait = (e) => {
     setBaitArmed(false);
@@ -2320,7 +2340,7 @@
           el.style.transform = antTransform(a); el._px = a.px; el._py = a.py; el._heading = a.heading;
         }
       }
-      if (!rival.active && !state.party && performance.now() >= rival.returnAt) foundRival();
+      if (!rival.active && !state.party && state.partyIndex >= 1 && performance.now() >= rival.returnAt) foundRival();
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
@@ -2517,7 +2537,6 @@
   // opening is a beat, not a waiting room: a trail should exist before the player wonders if it works.
   newAnt("scout", "hatch", LEN.hatch * 0.85); newAnt("scout", "hatch", LEN.hatch * 0.55); newAnt("scout", "hatch", LEN.hatch * 0.3);
   for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
-  foundRival();
   log("the colony wakes; three scouts head out");
   blip(196, 0.3, "sine", 0.04, -40);
   setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
