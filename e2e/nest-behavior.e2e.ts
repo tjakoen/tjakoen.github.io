@@ -32,3 +32,19 @@ test("one worker cannot remove a rival guard", async ({ page }) => {
   expect(result.guardEl).toBe(true);
   expect(result.remaining).toBe(1);
 });
+
+
+test("staged combat does not throw frame errors", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await page.evaluate(() => {
+    const n = window.__nest as any;
+    n.spawnPageAnt("soldier", [420, 420], null);
+    n.spawnRivalUnit("rival-guard", [420, 420], [[420, 420]]);
+  });
+  await page.waitForTimeout(600);
+  expect(errors).toEqual([]);
+});
