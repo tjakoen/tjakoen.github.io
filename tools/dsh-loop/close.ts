@@ -440,7 +440,7 @@ export function verdictFor(facts: CloseFacts): Verdict {
   if (facts.contentOnMain && facts.aheadOfDefault > 0) {
     notes.push(`${facts.aheadOfDefault} commit(s) are already on ${facts.defaultBranch} by patch, so this was a squash or rebase merge`);
   }
-  if (!onMain && facts.onRemote && !facts.detached) {
+  if (!onMain && facts.onRemote && !facts.detached && facts.branch !== facts.defaultBranch) {
     notes.push(`${facts.branch} is pushed but not on ${facts.defaultBranch}, so archiving it drops work that no one merged`);
   }
 
@@ -481,7 +481,9 @@ export function verdictFor(facts: CloseFacts): Verdict {
   } else if (facts.gate.ran && facts.gate.ok === false) {
     next = `fix what ${facts.gate.script} reports, then run close again`;
   } else if (!onMain) {
-    next = `open or merge the pull request for ${facts.branch}, or hand off with that branch named`;
+    next = facts.branch === facts.defaultBranch
+      ? `push the default branch, then run close again: git push origin ${facts.branch}`
+      : `open or merge the pull request for ${facts.branch}, or hand off with that branch named`;
   } else if (facts.staleWorktrees.length > 0) {
     next = 'safe to archive; run git worktree prune to drop the stale registration(s)';
   } else if (notes.length > 0) {
@@ -499,7 +501,11 @@ function row(label: string, value: string): string {
 
 export function format(facts: CloseFacts, verdict: Verdict): string {
   const lines: string[] = [];
-  const state = verdict.onMain ? `on ${facts.defaultBranch}` : `${facts.aheadOfDefault} ahead of ${facts.defaultBranch}`;
+  const state = verdict.onMain
+    ? `on ${facts.defaultBranch}`
+    : facts.branch === facts.defaultBranch
+      ? `${facts.aheadOfDefault} ahead of origin/${facts.defaultBranch}`
+      : `${facts.aheadOfDefault} ahead of ${facts.defaultBranch}`;
   lines.push(row('branch:', `${facts.branch} at ${facts.head}, ${state}`));
   if (facts.pr) {
     const merged = facts.pr.mergedAt ? `merged ${facts.pr.mergedAt}` : facts.pr.state.toLowerCase();

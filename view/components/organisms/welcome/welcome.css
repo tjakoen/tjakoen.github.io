@@ -6,7 +6,7 @@
 .welcome__sub { color: var(--ink-muted); font-size: var(--text-lg); margin: 0.4rem 0 var(--space-3); }
 .welcome__proof { max-width: 68ch; margin: 0 0 var(--space-4); color: var(--ink-muted); font-size: var(--text-sm); }
 .welcome__proof-links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); max-width: 72ch; margin-top: var(--space-3); }
-.welcome__proof-links a { font-size: var(--text-sm); text-underline-offset: 0.2em; }
+.welcome__proof-links a { display: inline-flex; align-items: center; min-height: 24px; font-size: var(--text-sm); text-underline-offset: 0.2em; }
 .welcome__cols { clear: both; display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(var(--space-8), 6vw, 6rem); margin-top: var(--space-8); }
 /* collapse to one column when the SHELL FRAME is narrow — a @container query, not @media, so the
    viewport-toggle's mobile PREVIEW (which clamps the frame, not the real viewport) also collapses

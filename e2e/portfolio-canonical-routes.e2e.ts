@@ -1,27 +1,34 @@
 import { test, expect } from "@playwright/test";
 
-test("every canonical route fits desktop and phone viewports", async ({ page }) => {
-  test.setTimeout(180_000);
-  const sitemap = await page.request.get("/sitemap.xml");
-  expect(sitemap.status()).toBe(200);
-  const xml = await sitemap.text();
-  const routes = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
-    .map(([, loc]) => new URL(loc!).pathname);
-  expect(routes.length).toBeGreaterThan(0);
-  expect(new Set(routes).size, "sitemap contains duplicate canonical routes").toBe(routes.length);
+// The sitemap holds a few hundred routes and each one gets a desktop and a phone layout pass. One
+// test over the whole list outgrew its 180s budget as the site grew, so the sweep is split into
+// parallel chunks that each fit; every route is still checked at both widths.
+const CHUNKS = 6;
+for (let chunk = 0; chunk < CHUNKS; chunk++) {
+  test(`every canonical route fits desktop and phone viewports (part ${chunk + 1} of ${CHUNKS})`, async ({ page }) => {
+    test.setTimeout(180_000);
+    const sitemap = await page.request.get("/sitemap.xml");
+    expect(sitemap.status()).toBe(200);
+    const xml = await sitemap.text();
+    const all = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+      .map(([, loc]) => new URL(loc!).pathname);
+    expect(all.length).toBeGreaterThan(0);
+    expect(new Set(all).size, "sitemap contains duplicate canonical routes").toBe(all.length);
+    const routes = all.filter((_, i) => i % CHUNKS === chunk);
 
-  for (const route of routes) {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    const response = await page.goto(route);
-    expect(response?.status(), `${route} desktop response`).toBe(200);
-    const desktop = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
-    expect(desktop.document, `${route} overflows at desktop: ${JSON.stringify(desktop)}`).toBeLessThanOrEqual(desktop.viewport + 1);
+    for (const route of routes) {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      const response = await page.goto(route);
+      expect(response?.status(), `${route} desktop response`).toBe(200);
+      const desktop = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
+      expect(desktop.document, `${route} overflows at desktop: ${JSON.stringify(desktop)}`).toBeLessThanOrEqual(desktop.viewport + 1);
 
-    await page.setViewportSize({ width: 390, height: 844 });
-    const phone = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
-    expect(phone.document, `${route} overflows at phone width: ${JSON.stringify(phone)}`).toBeLessThanOrEqual(phone.viewport + 1);
-  }
-});
+      await page.setViewportSize({ width: 390, height: 844 });
+      const phone = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
+      expect(phone.document, `${route} overflows at phone width: ${JSON.stringify(phone)}`).toBeLessThanOrEqual(phone.viewport + 1);
+    }
+  });
+}
 
 test.describe("sitemap canonical routes", () => {
   for (const [route, selector] of [

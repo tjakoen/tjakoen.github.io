@@ -5,8 +5,8 @@
   "type": "module",
   "license": "Apache-2.0",
   "private": true,
-  "author": "Tjakoen Stolk <tjakoen.s@gmail.com> (https://tjakoen.github.io)",
-  "homepage": "https://tjakoen.github.io",
+  "author": "Tjakoen Stolk <tjakoen.s@gmail.com> (https://portfolio.tjakoen.com)",
+  "homepage": "https://portfolio.tjakoen.com",
   "dependencies": {
     "@tjakoen/batch": "^0.3.0",
     "@tjakoen/crumb": "^0.1.10",

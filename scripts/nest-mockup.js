@@ -45,7 +45,7 @@
     #nest-mock .well { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
       display: flex; align-items: stretch; justify-content: center; }
     .nest-pre { width: 100%; height: 100%; margin: 0; font-family: var(--font-mono); font-size: 10px; line-height: 1.2; letter-spacing: -0.04em;
-      -webkit-text-stroke: 0.05em currentColor; color: var(--ink-faint); user-select: none; }
+      -webkit-text-stroke: 0.05em currentColor; color: color-mix(in srgb, var(--ink) 66%, var(--paper-2)); user-select: none; }
     .nest-pre b { font-weight: inherit; }
     .nest-pre .t1 { color: var(--ink-muted); } .nest-pre .t2, .nest-pre .t5, .nest-pre .t6 { color: var(--color-accent); }
     .nest-pre .t3, .nest-pre .t4 { color: var(--ink); }
@@ -84,7 +84,8 @@
     .nest-scent polyline.halo { stroke: var(--paper); stroke-width: 3.6; stroke-dasharray: none; opacity: .55; }
     .nest-scent polyline.breaking { transition: opacity .55s, transform .55s; }
     .nest-scent polyline.scouting { opacity: .3; }
-    .nest-ant { position: absolute; width: 23px; height: 13px; margin: -6px 0 0 -11px; padding: 0; border: 0; background: none;
+    .nest-ant { position: absolute; width: 25px; height: 25px; margin: -12.5px 0 0 -12.5px; padding: 0; border: 0; background: none;
+      display: grid; place-items: center;
       color: var(--ink); cursor: crosshair; pointer-events: auto; }
     @media (pointer: coarse) {
       .nest-ant { width: 44px; height: 44px; margin: -22px 0 0 -22px; display: grid; place-items: center; }
@@ -168,7 +169,8 @@
     #nest-mock .nest-sound-hint { color: var(--color-accent); border-color: var(--color-accent); animation: nest-sound-pulse 1.2s ease-in-out infinite; }
     @keyframes nest-sound-pulse { 0%, 100% { box-shadow: 0 0 0 0 transparent; background-color: transparent; } 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 40%, transparent); background-color: color-mix(in srgb, var(--color-accent) 12%, transparent); } }
     @media (prefers-reduced-motion: reduce) { #nest-mock .nest-sound-hint { animation: none; outline: 1px dashed var(--color-accent); outline-offset: 2px; } }
-    .nest-stray { position: absolute; width: 23px; height: 13px; margin: -6px 0 0 -11px; padding: 0; border: 0; background: none;
+    .nest-stray { position: absolute; width: 25px; height: 25px; margin: -12.5px 0 0 -12.5px; padding: 0; border: 0; background: none;
+      display: grid; place-items: center;
       color: var(--ink-muted); cursor: pointer; z-index: 40; opacity: .7; pointer-events: auto; transition: opacity .35s, color .35s; }
     .nest-stray:hover, .nest-stray:focus-visible { color: var(--ink); opacity: 1; }
     .nest-stray:focus-visible { outline: 1px dashed var(--color-accent); outline-offset: 3px; }
@@ -201,7 +203,7 @@
     #nest-mock .nest-meter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-content: start;
       padding: 6px 8px; border: 1px solid var(--color-line); background: var(--paper-2); }
     #nest-mock .nest-meter > .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #nest-mock .nest-meter .hint { grid-column: 1 / -1; font: 8px/1.15 var(--font-mono); font-style: normal; letter-spacing: .02em; opacity: .55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #nest-mock .nest-meter .hint { grid-column: 1 / -1; font: 8px/1.15 var(--font-mono); font-style: normal; letter-spacing: .02em; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .nest-meter__bar { grid-column: 1 / -1; font: 10px/1.2 var(--font-mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
     #nest-mock .nest-meter__bar .fill { color: var(--color-accent); }
     #nest-mock .nest-meter__bar .rest { color: var(--ink-faint); opacity: .7; }
@@ -213,7 +215,8 @@
     #nest-mock .tools button.wide { flex: 1.8; }
     #nest-mock .head .lbl { font-size: 9px; }
     #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
+    #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: color-mix(in srgb, var(--ink) 66%, var(--paper-2)); }
+    #nest-mock .tools button kbd::after { content: attr(data-key); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
     #nest-mock .note-link { color: var(--ink-muted); font-size: 9px; line-height: 1.2; text-decoration: none; }
     #nest-mock .note-link:hover { color: var(--ink); }
@@ -301,7 +304,7 @@
       target,
     ];
     el.style.position = "fixed"; el.style.margin = "0"; el.style.zIndex = "100";
-    el.style.left = (start[0] - 11) + "px"; el.style.top = (start[1] - 6) + "px";
+    el.style.left = (start[0] - 12.5) + "px"; el.style.top = (start[1] - 12.5) + "px";
     el.classList.add("running");
     let seg = 0;
     const step = () => {
@@ -315,7 +318,7 @@
         const k = Math.min(1, (now - t0) / dur);
         const x = a[0] + (b[0] - a[0]) * k, y = a[1] + (b[1] - a[1]) * k;
         const bob = Math.sin(k * Math.PI * 6) * 0.8;
-        el.style.left = (x - 11) + "px"; el.style.top = (y - 6 + bob) + "px";
+        el.style.left = (x - 12.5) + "px"; el.style.top = (y - 12.5 + bob) + "px";
         const scale = last ? 1 - k * 0.12 : 1;
         el.style.transform = `rotate(${Math.atan2(b[1] - a[1], b[0] - a[0]) + Math.PI}rad) scale(${scale})`;
         if (last) el.style.opacity = String(0.7 * (1 - k * 0.75));
@@ -436,7 +439,7 @@
     wipe: "Drag across a dotted trail to scatter its ants. Stop them from destroying the page!",
     read: "Links unlocked. The colony keeps running.",
   };
-  const tool = (name, label, key, wide = false) => `<button type="button" class="${wide ? "wide" : ""}" data-tool="${name}" aria-label="${label}" title="${toolHelp[name]}" aria-pressed="false">${icon(name)}<span>${label}</span><kbd>${key}</kbd></button>`;
+  const tool = (name, label, key, wide = false) => `<button type="button" class="${wide ? "wide" : ""}" data-tool="${name}" aria-label="${label}" aria-keyshortcuts="${key}" title="${toolHelp[name]}" aria-pressed="false">${icon(name)}<span>${label}</span><kbd aria-hidden="true" data-key="${key}"></kbd></button>`;
   const action = (key, glyph, label, help) => `<button type="button" data-k="${key}" aria-label="${label}" title="${help}">${icon(glyph)}</button>`;
   const gameAction = (key, glyph, text, label, help) => `<button type="button" data-k="${key}" aria-label="${label}" title="${help}">${icon(glyph)}<span data-label>${text}</span></button>`;
   panel.innerHTML = `

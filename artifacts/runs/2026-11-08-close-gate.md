@@ -12,11 +12,11 @@ touched:
   - tools/dsh-loop/README.md
   - docs/HARNESS-DSH.md
   - artifacts/runs/2026-11-08-close-gate.md
-  - agent-config shared/tools/dsh/stop.mjs
-  - agent-config shared/tools/dsh/stop.test.ts
-  - agent-config shared/tools/dsh/plugin.mjs
-  - agent-config shared/tools/dsh/plugin.test.ts
-  - agent-config shared/tools/dsh/README.md
+  - agent-config/shared/tools/dsh/stop.mjs
+  - agent-config/shared/tools/dsh/stop.test.ts
+  - agent-config/shared/tools/dsh/plugin.mjs
+  - agent-config/shared/tools/dsh/plugin.test.ts
+  - agent-config/shared/tools/dsh/README.md
 diffstat: a 561 line close module and a 245 line test in the site repo, 18 lines in its CLI, 24 in the harness doc, and on the agent-config side a 75 line stop module, a 113 line test, 85 lines of plugin wiring and 62 of wiring test
 unpushed: 17 | feat/nest-polish is local and has no upstream
 verifiedBy: 19 tests in the site repo including one against a temporary repository, 49 tests in the agent-config dsh package, a typecheck, a lint pass over the three site files, four hand runs of close including the gate path, and one simulated turn-stopping run that queued exactly one report in 186ms
@@ -60,6 +60,25 @@ already knowing where the work stands.
 **It never changes anything.** Worktree pruning runs with `--dry-run`, and the commands that remove
 a worktree or delete a branch are printed for a person to run. A close gate that deletes on its own
 would cost more than it saves the first time it was wrong.
+
+## Gate output
+
+Re-run at the audit on 2026-11-08, because the original report carried no gate block:
+
+```text
+$ bun test tools/dsh-loop/close.test.ts
+ 19 pass
+ 0 fail
+ 58 expect() calls
+Ran 19 tests across 1 file. [827.00ms]
+
+$ bun run check
+$ tsc --noEmit
+```
+
+The two lint regressions the gate reported then, in `scripts/site.js` and `scripts/tmp-meters.mjs`,
+were fixed at the same audit: the unused expression became an `if`, and the untracked measurement
+script was removed.
 
 ## What was not done
 

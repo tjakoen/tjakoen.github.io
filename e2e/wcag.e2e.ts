@@ -22,6 +22,13 @@ const scrolledUnder = (n: { html: string; any: { data?: unknown }[] }) =>
   /^<(a|span) class="tab(__close)?"/.test(n.html) &&
   n.any.some((c) => (c.data as { messageKey?: string } | undefined)?.messageKey === "partiallyObscured");
 
+// A page ant is a 25x25 button, but the colony walks in crowds: ants overlap each other, and the
+// letter one is carrying sits over its box. axe reads that momentary partial cover as an undersized
+// target. The ants are the game's essential moving targets (a pile still takes one click, and the
+// keyboard reaches them), so only those buttons are excused; the panel around them is not.
+const movingAnt = (n: { html: string }) =>
+  n.html.startsWith("<button") && /class="nest-ant/.test(n.html);
+
 // The sitemap holds a few hundred routes, so each scheme is split into CHUNKS tests that fit the
 // timeout and run in parallel; chunk i takes every CHUNKS-th route starting at i.
 const CHUNKS = 8;
@@ -53,5 +60,25 @@ for (const scheme of ["light", "dark"] as const) for (let chunk = 0; chunk < CHU
     mkdirSync("test-results", { recursive: true });
     writeFileSync(`test-results/wcag-${scheme}-${chunk}.txt`, failures.join("\n") + "\n");
     expect(failures, failures.join("\n")).toEqual([]);
+  });
+}
+
+// The Nest opens on interaction, so the route scan above never sees it. It is a dense surface of
+// small targets, progress bars and fine print, and its launcher sits on every page. Scan the open
+// panel once per scheme, after a couple of seconds so the first scouts are on the page: the ants
+// are targets too.
+for (const scheme of ["light", "dark"] as const) {
+  test(`the open Nest passes axe WCAG 2.2 AA (${scheme})`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
+    await page.goto("/", { waitUntil: "load" });
+    await page.getByRole("button", { name: "Open the Nest" }).click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(2000);
+    const { violations } = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+    for (const v of violations) if (v.id === "target-size") v.nodes = v.nodes.filter((n) => !movingAnt(n));
+    const lines = violations
+      .filter((v) => v.nodes.length)
+      .map((v) => `${v.id}: ${v.nodes.length}x ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" | ")}`);
+    expect(lines, lines.join("\n")).toEqual([]);
   });
 }
