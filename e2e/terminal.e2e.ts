@@ -16,7 +16,6 @@ declare global {
         trails: Array<{ block: Element }>;
         built: number;
         squashed: number;
-        sweet?: { pieces: number } | null;
       };
       home: { base: [number, number] };
       startParty: (final?: boolean) => void;
@@ -24,8 +23,6 @@ declare global {
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
       newAnt: (role: string, route: string, d: number) => unknown;
-      sweetCard: () => void;
-      placeSweet: (x: number, y: number) => unknown;
       spawnEnv: (kind: string) => void;
       env?: unknown;
       spawnPageAnt: (role: string, at: [number, number], mini: unknown) => { el: Element };

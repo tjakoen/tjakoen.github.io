@@ -83,43 +83,26 @@
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
+.nest-event-card { position: absolute; z-index: 5; width: 54px; height: 54px; padding: 7px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); cursor: pointer; pointer-events: auto; }
+    .nest-event-card svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .nest-event-card:hover, .nest-event-card:focus-visible { background: var(--paper-2); outline: 2px dashed var(--color-accent); outline-offset: 2px; }
     .nest-hill.hit { animation: nest-hill-hit .3s steps(2); }
     @keyframes nest-hill-hit { 50% { transform: translateX(3px); filter: brightness(1.5); } }
     .nest-hill.unbuilding { animation: nest-hill-unbuild .55s cubic-bezier(.6,0,.8,.4) both; transform-origin: 50% 100%; }
     @keyframes nest-hill-unbuild { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scaleY(.06); } }
-    .nest-sweet-card, .nest-event-card { position: absolute; z-index: 5; width: 46px; height: 28px; padding: 0; border: 0; background: none; color: var(--color-accent); cursor: pointer; pointer-events: auto; animation: nest-sweet-fade 12s linear both; }
     .nest-event-card { width: 44px; }
-    .nest-sweet-card .wrapper, .nest-event-card .wrapper { position: absolute; top: 4px; width: 15px; height: 20px; background: currentColor; opacity: .78; transition: transform .42s ease, opacity .42s; }
-    .nest-sweet-card .wrapper.left, .nest-event-card .wrapper.left { left: 0; clip-path: polygon(100% 0, 0 50%, 100% 100%); transform-origin: 100% 50%; }
-    .nest-sweet-card .wrapper.right, .nest-event-card .wrapper.right { right: 0; clip-path: polygon(0 0, 100% 50%, 0 100%); transform-origin: 0 50%; }
-    .nest-sweet-card .candy, .nest-event-card .candy { position: absolute; left: 13px; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: currentColor; box-shadow: inset 0 0 0 3px var(--paper), 0 0 8px color-mix(in srgb, currentColor 35%, transparent); transition: transform .42s ease, opacity .42s; }
-    .nest-sweet-card .candy::after { content: ""; position: absolute; left: 6px; top: 3px; width: 8px; height: 14px; border-radius: 50%; background: var(--paper); opacity: .65; }
-    .nest-event-card[data-kind="vacuum"] .candy { border-radius: 4px; }
-    .nest-event-card[data-kind="vacuum"] .candy::after { content: ""; position: absolute; left: 8px; top: 3px; width: 3px; height: 14px; background: var(--paper); }
-    .nest-event-card[data-kind="anteater"] .candy { left: 11px; width: 24px; height: 10px; top: 9px; border-radius: 10px 0 0 10px; }
-    .nest-event-card[data-kind="anteater"] .candy::after { content: ""; position: absolute; right: 1px; top: 3px; width: 7px; height: 4px; border-radius: 50%; background: var(--paper); }
-    .nest-event-card .candy svg { position: absolute; inset: 0; width: 100%; height: 100%; stroke: var(--paper); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .nest-sweet-card.unwrapping .wrapper.left, .nest-event-card.unwrapping .wrapper.left { transform: translateX(-28px) rotate(-35deg); opacity: 0; }
-    .nest-sweet-card.unwrapping .wrapper.right, .nest-event-card.unwrapping .wrapper.right { transform: translateX(28px) rotate(35deg); opacity: 0; }
-    .nest-sweet-card.unwrapping .candy, .nest-event-card.unwrapping .candy { transform: scale(1.35); }
-    .nest-sweet-card:focus-visible, .nest-event-card:focus-visible { outline: 2px dashed var(--color-accent); outline-offset: 3px; }
     .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; color: var(--nest-rival); }
     .nest-ant.fighting::after { content: "✶"; position: absolute; left: 50%; top: -12px; color: var(--color-accent); font-size: 12px; }
     .nest-ant.marching { filter: drop-shadow(0 0 4px var(--color-accent)); }
     @keyframes nest-fight { 50% { transform: translateX(2px) rotate(4deg); } }
-    .nest-sweet { position: absolute; z-index: 4; color: var(--color-accent); font: 18px/1 var(--font-mono); letter-spacing: 2px; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 40%, transparent); pointer-events: none; }
-    main.nest-sweet-planning { cursor: crosshair; }
 
     .nest-vacuum { position: absolute; z-index: 6; width: 100px; height: 100%; pointer-events: none; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent); border-left: 1px solid var(--color-accent); }
     .nest-tongue { position: absolute; z-index: 6; pointer-events: none; overflow: visible; }
     .nest-suck { position: absolute; z-index: 7; width: 3px; height: 3px; border-radius: 50%; background: var(--color-accent); pointer-events: none; }
+    .nest-vacuum-head { position: absolute; z-index: 7; width: 48px; height: 48px; padding: 6px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); pointer-events: none; }
+    .nest-vacuum-head svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; }
     .nest-ant.stuck { color: var(--color-accent); opacity: .8; }
-    @keyframes nest-sweet-fade { from { opacity: 1; } to { opacity: .15; } }
     .nest-event-card { width: 54px !important; height: 54px !important; padding: 7px !important; border: 1px solid var(--color-accent) !important; background: var(--paper) !important; border-radius: 0 !important; }
-    .nest-event-card .wrapper { display: none !important; }
-    .nest-event-card .candy { position: static !important; width: 100% !important; height: 100% !important; background: none !important; box-shadow: none !important; border-radius: 0 !important; }
-    .nest-event-card .candy::after { display: none !important; }
-    .nest-event-card .candy svg { width: 100%; height: 100%; }
     .nest-event-card:hover, .nest-event-card:focus-visible { background: var(--paper-2) !important; outline: 2px dashed var(--color-accent); outline-offset: 2px; }
     @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
     .nest-scent polyline.rival { stroke: var(--nest-rival); }
@@ -1275,7 +1258,6 @@
     if (ant.job === "crew") return; // crew members are placed by their leader
     if (ant.job === "baited") return;
     if (ant.job === "fly") return stepFlyer(ant, dt);
-    if (ant.job === "sweet-walk" || ant.job === "sweet-eat") return stepSweetAnt(ant, dt);
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
     if (ant.job === "rival-siege" || ant.job === "rival-contest") return stepRivalDefense(ant, dt);
     if ((ant.job === "defend" || ant.job === "guard") && ant.defendUntil && performance.now() > ant.defendUntil) {
@@ -1668,96 +1650,9 @@
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
-  // ---- the sweet: a rare lure that buys the page time without feeding the copy -------------
   const eventIcon = (kind) => kind === "vacuum"
-    ? "<svg viewBox='0 0 20 20' aria-hidden='true'><rect x='4' y='4' width='12' height='12' rx='3'/><path d='M8 8h4M10 4V1'/></svg>"
-    : "<svg viewBox='0 0 20 20' aria-hidden='true'><path d='M2 11c4-7 9-7 13 0l3 4H1z'/><circle cx='7' cy='10' r='1'/><path d='M5 15h10'/></svg>";
-  const unwrapCard = (el, done) => {
-    if (el.classList.contains("unwrapping")) return;
-    el.classList.add("unwrapping");
-    setTimeout(done, 430);
-  };
-  const sweetCard = () => {
-    if (state.sweet || state.sweetCard || state.sweetPlanning || state.party) return;
-    const spot = findMiniSpot();
-    if (!spot) { state.sweetNext = performance.now() + 20000; return; }
-    const el = document.createElement("button");
-    el.type = "button"; el.className = "nest-sweet-card";
-    el.setAttribute("aria-label", "A wrapped candy. Click to unwrap and place it.");
-    el.innerHTML = "<span class='wrapper left'></span><span class='candy'></span><span class='wrapper right'></span>";
-    el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 70)}px`;
-    layer.append(el);
-    const card = { el, ttl: 12000 };
-    state.sweetCard = card;
-    const remove = () => {
-      if (state.sweetCard !== card) return;
-      el.remove(); state.sweetCard = null; state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
-    };
-    setTimeout(remove, card.ttl);
-    el.addEventListener("click", (e) => {
-      e.preventDefault(); e.stopPropagation();
-      if (state.sweetCard !== card || card.unwrapping) return;
-      card.unwrapping = true;
-      unwrapCard(el, () => {
-        if (state.sweetCard !== card) return;
-        el.remove(); state.sweetCard = null;
-        state.sweetPlanning = true; main.classList.add("nest-sweet-planning");
-        log("place the unwrapped sweet on a clear patch");
-        setTimeout(() => {
-          if (!state.sweetPlanning) return;
-          state.sweetPlanning = false; main.classList.remove("nest-sweet-planning");
-          state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
-        }, 8000);
-      });
-    });
-  };
-  const removeSweet = (why) => {
-    const sweet = state.sweet; if (!sweet) return;
-    sweet.el.remove(); state.sweet = null;
-    state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
-    state.ants.filter((a) => a.sweetTarget === sweet).forEach((a) => goHome(a));
-    log(why === "eaten" ? "the sweet is gone; the page is still here" : "the sweet fades away");
-  };
-  const placeSweet = (x, y) => {
-    if (!state.sweetPlanning || state.sweet) return null;
-    state.sweetPlanning = false; main.classList.remove("nest-sweet-planning");
-    const el = document.createElement("div");
-    el.className = "nest-sweet"; el.textContent = "⣿⣿⣿⣿⣿⣿";
-    el.style.left = `${x}px`; el.style.top = `${y}px`;
-    layer.append(el);
-    const sweet = { x, y, pieces: 6, el, ttl: 25000 };
-    state.sweet = sweet;
-    state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
-    for (let i = 0; i < 2; i++) {
-      const a = spawnPageAnt("worker", home.hole.slice(), null);
-      a.job = "sweet-walk"; a.sweetTarget = sweet;
-      a.path = [[x + (i ? 18 : -18), y + 10]]; a.k = 0;
-    }
-    if (rival.active && rival.mound) spawnRivalUnit("rival-sweet", rival.mound.hole.slice(), [[x, y]], sweet);
-    log("the sweet is placed; workers are coming");
-    blip(520, 0.08, "sine", 0.03);
-    setTimeout(() => { if (state.sweet === sweet) removeSweet("faded"); }, sweet.ttl);
-    return sweet;
-  };
-  const stepSweetAnt = (ant, dt) => {
-    const sweet = state.sweet;
-    if (!sweet || ant.sweetTarget !== sweet) { goHome(ant); return; }
-    if (ant.job === "sweet-walk") {
-      const g = ant.path[ant.k];
-      if (!g) { ant.job = "sweet-eat"; ant.nextEat = performance.now() + 250; return; }
-      if (move(ant, g[0], g[1], dt, SPEED * 1.45)) { ant.px = ant.x; ant.py = ant.y; if (++ant.k >= ant.path.length) { ant.job = "sweet-eat"; ant.nextEat = performance.now() + 250; } }
-      else { ant.px = ant.x; ant.py = ant.y; }
-      return;
-    }
-    if (performance.now() < (ant.nextEat || 0)) return;
-    ant.nextEat = performance.now() + 500;
-    sweet.pieces--;
-    if ((state.feedFlip = !state.feedFlip)) state.stores++;
-    else { state.meals++; state.queen.eat = 0.8; }
-    sweet.el.textContent = "⣿".repeat(Math.max(0, sweet.pieces));
-    blip(420, 0.04, "sine", 0.02);
-    if (sweet.pieces <= 0) removeSweet("eaten");
-  };
+    ? "<svg viewBox='0 0 48 48' aria-hidden='true'><rect x='9' y='8' width='22' height='25' rx='6'/><circle cx='20' cy='20' r='5'/><path d='M31 31h9v7M9 40h22'/></svg>"
+    : "<svg viewBox='0 0 48 48' aria-hidden='true'><path d='M4 28c7-17 22-20 35-8l6 5-13 7c-8 4-16 0-17-6z'/><circle cx='13' cy='25' r='1'/><path d='M7 36h34'/></svg>";
 
   // ---- environmental pest control: a switch and an anteater, never banked -----------------
   const removeEnvAnt = (a) => {
@@ -1787,6 +1682,9 @@
       const sweep = document.createElement("div"); sweep.className = "nest-vacuum";
       sweep.style.width = "220px"; sweep.style.height = main.scrollHeight + "px"; sweep.style.left = "0"; sweep.style.top = "0"; sweep.style.transformOrigin = "0 0";
       layer.append(sweep);
+      const head = document.createElement("div"); head.className = "nest-vacuum-head"; head.innerHTML = eventIcon("vacuum");
+      head.style.left = from[0] + "px"; head.style.top = from[1] + "px"; layer.append(head);
+      head.animate([{ transform: "translate(0,0)" }, { transform: `translate(${to[0] - from[0]}px, ${to[1] - from[1]}px)` }], { duration: 1600, easing: "ease-in-out" }).onfinish = () => head.remove();
       sweep.animate([{ transform: `translate(${from[0]}px, ${from[1]}px) rotate(${angle}rad)` }, { transform: `translate(${to[0]}px, ${to[1]}px) rotate(${angle}rad)` }], { duration: 1600, easing: "ease-in-out" }).onfinish = () => sweep.remove();
       for (let i = 0; i < 12; i++) {
         const p = document.createElement("span"); p.className = "nest-suck";
@@ -1835,16 +1733,14 @@
     const el = document.createElement("button");
     el.type = "button"; el.className = "nest-event-card"; el.dataset.kind = kind;
     el.setAttribute("aria-label", kind === "vacuum" ? "A wrapped switch. Click to unwrap." : "A wrapped anteater. Click to unwrap.");
-    el.innerHTML = `<span class='wrapper left'></span><span class='candy'>${eventIcon(kind)}</span><span class='wrapper right'></span>`;
+    el.innerHTML = eventIcon(kind);
     el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 64)}px`;
     layer.append(el);
     const card = { el, kind, ttl: 10000 };
     state.env = card;
     el.addEventListener("click", (e) => {
       e.preventDefault(); e.stopPropagation();
-      if (card.unwrapping) return;
-      card.unwrapping = true;
-      unwrapCard(el, () => resolveEnv(kind));
+      resolveEnv(kind);
     });
     setTimeout(() => { if (state.env === card) { el.remove(); state.env = null; state.envNext = performance.now() + 80000; } }, card.ttl);
   };
@@ -2290,9 +2186,9 @@
     blip(330, 0.05, "triangle", 0.03);
     return true;
   };
-  const spawnRivalUnit = (job, at, path, sweet) => {
+  const spawnRivalUnit = (job, at, path) => {
     const a = { id: ++state.total, role: job === "rival-guard" ? "guard" : "rival", side: "rival", where: "page", x: at[0], y: at[1], px: at[0], py: at[1],
-      heading: -Math.PI / 2, job, path, k: 0, sweetTarget: sweet, hp: job === "rival-guard" ? 2 : 1 };
+      heading: -Math.PI / 2, job, path, k: 0, hp: job === "rival-guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival walk";
     a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival ant. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
@@ -2872,12 +2768,6 @@
   document.addEventListener("auxclick", holdLinks, true);
   // Wipe with a drag anywhere on the page, not only if the pointer starts on the thin hit path.
   let wipeFrom = null;
-  main.addEventListener("click", (e) => {
-    if (!state.sweetPlanning) return;
-    e.preventDefault(); e.stopPropagation();
-    const m = main.getBoundingClientRect();
-    placeSweet(e.clientX - m.left + main.scrollLeft, e.clientY - m.top + main.scrollTop);
-  }, true);
   main.addEventListener("pointerdown", (e) => {
     if (state.tool !== "wipe" || !e.isPrimary || e.button !== 0) return;
     if (e.target.closest?.("#nest-mock, .nest-switch, [data-surface='console']")) return;
@@ -2966,7 +2856,6 @@
   // opening is a beat, not a waiting room: a trail should exist before the player wonders if it works.
   newAnt("scout", "hatch", LEN.hatch * 0.85); newAnt("scout", "hatch", LEN.hatch * 0.55); newAnt("scout", "hatch", LEN.hatch * 0.3);
   for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
-  state.sweetNext = performance.now() + 12000;
   state.envNext = performance.now() + 30000;
   log("the colony wakes; three scouts head out");
   blip(196, 0.3, "sine", 0.04, -40);
@@ -3033,7 +2922,7 @@
     leaveGo = go;
   };
   if (new URLSearchParams(location.search).has("nest-debug")) {
-    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, sweetCard, placeSweet, spawnEnv, resolveEnv, spawnPageAnt, spawnRivalUnit, rivalCombat };
+    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, spawnEnv, resolveEnv, spawnPageAnt, spawnRivalUnit, rivalCombat };
   }
   return { stop, confirmLeave };
   };
