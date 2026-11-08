@@ -230,14 +230,18 @@
   // clearing the colony and handing the sidebar back.
   const bar = document.querySelector(".status-bar");
   if (!bar) return; // a page without the desk chrome has nowhere to put the launcher
-  const antBtn = document.createElement("button");
-  antBtn.type = "button"; antBtn.className = "nest-switch"; antBtn.title = "Nest"; antBtn.setAttribute("aria-label", "Open the Nest");
-  antBtn.setAttribute("aria-pressed", "false");
-  antBtn.innerHTML = `<svg width="18" height="10" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${[
-    [0, 0], [1, 1], [1, 2], [1, 3], [2, 3], [3, 3], [5, 3], [6, 3], [8, 3], [9, 3], [10, 3], [11, 3], [12, 3], [0, 4], [1, 4], [2, 4], [3, 4], [5, 4], [6, 4], [7, 4],
-    [9, 4], [10, 4], [11, 4], [12, 4], [13, 4], [1, 5], [2, 5], [3, 5], [5, 5], [6, 5], [8, 5], [9, 5], [10, 5], [11, 5], [12, 5], [5, 2], [4, 1], [9, 2], [10, 1],
-    [7, 6], [8, 7], [2, 6], [1, 7]].map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}</svg>`;
-  if (bar.querySelector(".status-bar__xray")) bar.insertBefore(antBtn, bar.querySelector(".status-bar__xray")); else bar.append(antBtn);
+  let antBtn = bar.querySelector(".nest-switch");
+  if (!antBtn) {
+    antBtn = document.createElement("button");
+    antBtn.type = "button"; antBtn.className = "nest-switch"; antBtn.title = "Nest"; antBtn.setAttribute("aria-label", "Open the Nest");
+    antBtn.setAttribute("aria-pressed", "false");
+    antBtn.innerHTML = `<svg width="18" height="10" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${[
+      [0, 0], [1, 1], [1, 2], [1, 3], [2, 3], [3, 3], [5, 3], [6, 3], [8, 3], [9, 3], [10, 3], [11, 3], [12, 3], [0, 4], [1, 4], [2, 4], [3, 4], [5, 4], [6, 4], [7, 4],
+      [9, 4], [10, 4], [11, 4], [12, 4], [13, 4], [1, 5], [2, 5], [3, 5], [5, 5], [6, 5], [8, 5], [9, 5], [10, 5], [11, 5], [12, 5], [5, 2], [4, 1], [9, 2], [10, 1],
+      [7, 6], [8, 7], [2, 6], [1, 7]].map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}</svg>`;
+    if (bar.querySelector(".status-bar__xray")) bar.insertBefore(antBtn, bar.querySelector(".status-bar__xray")); else bar.append(antBtn);
+  }
+  if (antBtn._nestLoader) { antBtn.removeEventListener("click", antBtn._nestLoader); delete antBtn._nestLoader; }
   let game = null;
 
   // A stray ant is the easter egg for a closed Nest. It walks the reading pane on its own, not on
@@ -396,6 +400,7 @@
   const openNest = () => { game = start(); };
   antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
   document.querySelectorAll("[data-nest-start]").forEach((button) => {
+    if (button._nestLoader) { button.removeEventListener("click", button._nestLoader); delete button._nestLoader; }
     button.addEventListener("click", () => { if (!game) openNest(); });
   });
   window.__nestLauncher = { open: () => { if (!game) openNest(); }, close: () => { if (game) leave(); } };
