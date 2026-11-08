@@ -15,6 +15,7 @@ declare global {
         ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; letter?: unknown; el?: Element }>;
         trails: Array<{ block: Element }>;
         built: number;
+        sweet?: { pieces: number } | null;
       };
       home: { base: [number, number] };
       startParty: (final?: boolean) => void;
@@ -22,6 +23,10 @@ declare global {
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
       newAnt: (role: string, route: string, d: number) => unknown;
+      sweetCard: () => void;
+      placeSweet: (x: number, y: number) => unknown;
+      spawnEnv: (kind: string) => void;
+      env?: unknown;
       wipeTrail: (trail: unknown, at: [number, number]) => void;
       rival: { active: boolean; ants: Array<unknown>; trails: Array<{ end: [number, number] }>; stolen: Set<unknown>; returnAt: number; mound?: { base: [number, number] } | null };
     };
@@ -384,6 +389,41 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     });
     await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
   });
+
+  test("the sweet card places a lure that feeds ants without touching page-left", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.evaluate(() => window.__nest!.sweetCard());
+    const card = page.locator(".nest-sweet-card");
+    await expect(card).toBeVisible();
+    await card.click();
+    await expect(page.locator("main")).toHaveClass(/nest-sweet-planning/);
+    await page.evaluate(() => window.__nest!.placeSweet(420, 480));
+    const sweet = page.locator(".nest-sweet");
+    await expect(sweet).toBeVisible();
+    const before = await page.locator("[data-k='holds-val']").textContent();
+    await expect.poll(() => page.evaluate(() => window.__nest!.state.sweet?.pieces ?? 0), { timeout: 18_000 }).toBeLessThan(6);
+    await expect.poll(() => page.evaluate(() => window.__nest!.state.sweet === null), { timeout: 20_000 }).toBe(true);
+    expect(await page.locator("[data-k='holds-val']").textContent()).toBe(before);
+  });
+
+  for (const kind of ["vacuum", "anteater"] as const) {
+    test(`the ${kind} trigger clears page ants without touching letters`, async ({ page }) => {
+      await page.goto("/?nest-debug");
+      await page.locator(".nest-switch").click();
+      await expect(page.locator("#nest-mock")).toBeVisible();
+      await page.waitForFunction(() => window.__nest?.state.ants.some((a) => a.el && a.where === "page"));
+      const before = await page.evaluate(() => window.__nest!.state.ants.filter((a) => a.el && a.where === "page").length);
+      const pageBefore = await page.locator("[data-k='holds-val']").textContent();
+      await page.evaluate((k) => window.__nest!.spawnEnv(k), kind);
+      const card = page.locator(".nest-event-card");
+      await expect(card).toBeVisible();
+      await card.click();
+      await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.el && a.where === "page").length), { timeout: 5_000 }).toBeLessThan(before);
+      expect(await page.locator("[data-k='holds-val']").textContent()).toBe(pageBefore);
+    });
+  }
 
   test("the rival colony founds, steals and retreats when its trail is wiped", async ({ page }) => {
     await page.goto("/?nest-debug");
