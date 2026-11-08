@@ -2567,8 +2567,11 @@
   const melody = () => [392, 440, 523, 587, 659, 784].forEach((f, i) => setTimeout(() => blip(f, 0.18, "sine", 0.04), i * 90));
 
   // ================================ drawing the nest ================================
+  let nestDrawAt = 0, nestDrawCost = 0;
   const drawNest = (now) => {
     if (!base) return;
+    if (now - nestDrawAt < (nestDrawCost > 20 ? 240 : 100)) return;
+    const drawStart = performance.now();
     const d = base.slice();
     const put = (x, y, t) => { x = Math.round(x); y = Math.round(y); if (x >= 0 && y >= 0 && x < W && y < H) d[y * W + x] = t; };
     const step = Math.floor(now / 180) % 2;
@@ -2612,6 +2615,7 @@
         if (cell.dataset.tone !== toneKey) { cell.className = tone > 0 ? `t${tone}` : ""; cell.dataset.tone = toneKey; }
       }
     }
+    nestDrawAt = now; nestDrawCost = performance.now() - drawStart;
   };
 
   const statText = new Map();
@@ -2712,6 +2716,8 @@
     if (!stopped && !state.paused && !document.hidden) rafId = requestAnimationFrame(frame);
   };
   const tickFrame = (now) => {
+    const perfStart = performance.now();
+    let perfStep = 0;
     frameRect = main.getBoundingClientRect();
     const dt = Math.min(0.05, (now - last) / 1000) * state.speed; last = now;
     if (!state.paused) {
@@ -2736,9 +2742,9 @@
           el.style.transform = antTransform(a); el._px = a.px; el._py = a.py; el._heading = a.heading;
         }
       }
+      perfStep = performance.now();
       if (rival.active && rival.ants.length === 0 && performance.now() > (rival.buildUntil || 0) && performance.now() > (rival.rebuildUntil || 0)) retreatRival();
       if (!rival.active && !state.party && state.partyIndex >= 1 && performance.now() >= rival.returnAt) foundRival();
-      if (!state.sweet && !state.sweetCard && !state.sweetPlanning && !state.party && performance.now() >= state.sweetNext) sweetCard();
       if (!state.env && !state.party && performance.now() >= state.envNext) spawnEnv(Math.random() < 0.5 ? "vacuum" : "anteater");
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
@@ -2770,7 +2776,15 @@
         if (!state.overrun && !state.party && state.stolenTotal >= worshipTarget()) startParty(false);
         tickMinis(now);
       }
-      drawNest(now); drawStats();
+      const perfDrawStart = performance.now();
+      drawNest(now);
+      const perfStatsStart = performance.now();
+      drawStats();
+      if (window.__nestPerf) { window.__nestPerfDraw = performance.now() - perfDrawStart; window.__nestPerfNest = perfStatsStart - perfDrawStart; }
+    }
+    if (window.__nestPerf) {
+      const total = performance.now() - perfStart;
+      if (total > 20) window.__nestPerf.push({ total: Math.round(total * 10) / 10, step: Math.round((perfStep - perfStart) * 10) / 10, draw: window.__nestPerfDraw ? Math.round(window.__nestPerfDraw * 10) / 10 : 0, nest: window.__nestPerfNest ? Math.round(window.__nestPerfNest * 10) / 10 : 0, ants: state.ants.length, trails: state.trails.length });
     }
     frameRect = null;
   };
