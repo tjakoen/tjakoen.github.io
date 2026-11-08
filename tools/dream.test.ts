@@ -9,8 +9,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   coverage,
+  dreamDueLine,
   dshSlug,
   indexCoverage,
+  isDreamDue,
+  memoryIndexPath,
   frontmatterDate,
   frontmatterTitle,
   isInside,
@@ -183,6 +186,43 @@ describe("parseEvents", () => {
     const parsed = parseEvents('{"type":"session","id":"a"}\n[not json\n');
     expect(parsed.events).toHaveLength(1);
     expect(parsed.skipped).toBe(1);
+  });
+});
+
+describe("isDreamDue", () => {
+  const clock = (ageDays: number, newItems: number) => ({ ageDays, newItems, runs: newItems, sessions: 0 });
+
+  test("enough new work makes it due whatever the age", () => {
+    expect(isDreamDue(clock(1, 8))).toBe(true);
+  });
+
+  test("a quiet week is not due", () => {
+    expect(isDreamDue(clock(5, 3))).toBe(false);
+  });
+
+  test("an abandoned index is due on a single new fact", () => {
+    expect(isDreamDue(clock(31, 1))).toBe(true);
+  });
+
+  test("an old index with nothing new is not due, because there is nothing to read", () => {
+    expect(isDreamDue(clock(400, 0))).toBe(false);
+  });
+});
+
+describe("the memory store path", () => {
+  test("follows the harness slug rule, dots turned to dashes", () => {
+    expect(
+      memoryIndexPath("/Users/tjakoenstolk/Local/Development/bread-repos/tjakoen.github.io"),
+    ).toEndWith("/.claude/projects/-Users-tjakoenstolk-Local-Development-bread-repos-tjakoen-github-io/memory/MEMORY.md");
+  });
+});
+
+describe("dreamDueLine", () => {
+  test("names the evidence and the way to act on it", () => {
+    const line = dreamDueLine({ ageDays: 12, newItems: 9, runs: 6, sessions: 3 });
+    expect(line).toContain("12 day(s) ago");
+    expect(line).toContain("6 run report(s), 3 session(s)");
+    expect(line).toContain("plans/memory-dream.md");
   });
 });
 

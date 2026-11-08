@@ -1,6 +1,6 @@
 ---
 id: memory-dream
-status: doing
+status: done
 track: ai
 depends: []
 touches:
@@ -60,6 +60,23 @@ proves every source in the manifest has an output, which is his coverage check.
   reasoning, the harness preamble and the workspace-instruction block the harness repeats in user
   turns, which is most of what a raw transcript holds. A trimmed transcript is never reported as read
   whole, and no analyzer may record a fact that only the elided middle could have carried.
+
+## How it fires, in each harness
+
+- **Claude Code and Codex** already run `finish-gate.sh stop` on every Stop, and both read the same
+  hook list. When a session signals it is finished, the gate asks the project's own tool whether the
+  store is due, and if it is, the dream becomes an item in the gate's single block. One block, one
+  decision, and the same behaviour in both harnesses because the script is shared.
+- **DSH** never runs `finish-gate.sh`. Its stop hook builds its checkpoint from the repository's own
+  `close --json`, so the dream is a fact there and the checkpoint prints it beside the report and the
+  push state.
+- **Any other harness** gets nothing until it runs one of those two paths, which is the same bar every
+  other gate in this estate sets.
+
+The nudge is never a schedule and never a silent pass. `finish-gate.sh` blocks once with a reason the
+model reads, and the reason says in as many words that a dream is a judgment and must be put to the
+owner rather than started unasked. If the owner says not now, the session says so in its recap and the
+gate stays quiet until the store is genuinely due again.
 
 ## How to run one
 
@@ -174,10 +191,16 @@ reading the diff.
       store carries its own commit. The notes themselves were not touched, which is the second task
       below.
 - [x] Write the run report at `artifacts/runs/2026-11-09-memory-dream.md`. **Done 2026-11-09.**
-- [ ] Wire the pass to session close, in the close skill, so the trigger is the one this plan argues
-      for rather than a step someone remembers.
-- [ ] A second dream, later, that is allowed to merge and retire the notes themselves, once the index
-      pass has shown the proposals are worth acting on.
+- [x] Wire the pass to session close, in all three harnesses. **Done 2026-11-09.** The check is
+      `bun run dream due`, which reads the index's own modification time and counts what landed since;
+      the thresholds are evidence based, and the index is its own marker, so there is no second file
+      to keep in step. Claude Code and Codex reach it through `finish-gate.sh`, which every finish
+      already runs and which now raises the dream as an item in its one block; DSH reaches it through
+      `close --json`, whose `dream` fact the stop hook prints in its checkpoint. Nothing new had to be
+      registered in a hook list, because both paths already existed.
+- [x] A second dream, later, that is allowed to merge and retire the notes themselves. **Moved
+      2026-11-09 to `plans/memory-dream-notes.md`**, with the 35 queued facts and the three
+      contradictions as its tasks, so this plan closes without the queue closing with it.
 
 ## What this does not do
 
