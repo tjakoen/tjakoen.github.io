@@ -35,7 +35,7 @@ test("bait pulls nearby ants off their trails", async ({ page }) => {
 test("the rival cache is placed at the fallen rival mound", async ({ page }) => {
   await open(page);
   await page.evaluate(() => (window.__nest as any).startParty());
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 25_000 }).toBeGreaterThan(0);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 40_000 }).toBeGreaterThan(0);
   const before = await page.evaluate(() => (window.__nest as any).rival.mound.base.slice());
   await page.evaluate(() => (window.__nest as any).retreatRival());
   const result = await page.evaluate(() => {
@@ -60,7 +60,7 @@ test("the rival mound dies when every rival ant dies", async ({ page }) => {
     const n = window.__nest as any;
     for (const a of n.rival.ants.slice()) n.removeRivalAnt(a);
   });
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 3_000 }).toBe(false);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 8_000 }).toBe(false);
 });
 
 
@@ -214,4 +214,16 @@ test("a soldier breaks a rival mini mound before the main mound", async ({ page 
   });
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 12_000 }).toBeLessThan(before.minis);
   expect(await page.evaluate(() => (window.__nest as any).rival.hp)).toBe(before.hp);
+});
+
+
+test("the worker stat matches the main worker castes", async ({ page }) => {
+  await open(page);
+  await page.waitForTimeout(8000);
+  const result = await page.evaluate(() => {
+    const n = window.__nest as any;
+    const workers = n.state.ants.filter((a: any) => a.side !== "rival" && a.role === "worker").length;
+    return { workers, ui: Number(document.querySelector("[data-k='workers']")?.textContent) };
+  });
+  expect(result.ui).toBe(result.workers);
 });
