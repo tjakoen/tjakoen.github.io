@@ -967,8 +967,9 @@
   const backPath = (ant) => (routePts(ant) ? lanePath(routePts(ant).toReversed(), -(ant.lane || 0)) : []).concat([hillOf(ant).hole.slice()]);
   const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.scoutRoute = null; ant.el?.classList.remove("wait"); };
 
-  // The trail is laid when the scout picks the first letter up, so a carrier cannot hold the only
-  // route in limbo. A scout killed before that pickup leaves nothing for the workers to join.
+  // A light first letter is carried home before the trail opens; a scout killed on the way leaves
+  // nothing for the workers to join. A heavy letter opens the trail at the pickup and calls a
+  // crew, because one scout cannot lift it and a trail-less wait would stall the colony.
   const layTrail = (ant, copy = "the scout is home; a trail is laid") => {
     const route = ant.scoutRoute; if (!route) return null;
     const points = route.pts.map((p) => p.join(",")).join(" ");
@@ -999,12 +1000,12 @@
     const L = pick.L;
     if (L.state === "free") { L.need = needOf(L.n); L.state = "gather"; L.crew = []; }
     L.crew.push(ant); ant.letter = L; ant.job = "toLetter";
-    // Lay the trail at the pickup, not at the delivery. A scout walking a long page with the
-    // only letter can otherwise hold the trail in limbo and stall the whole colony.
-    if (light && ant.scoutRoute) {
-      const t = layTrail(ant, needOf(L.n) > 1
-        ? "the scout calls for help; a trail is laid"
-        : "the scout picks up a letter; a trail is laid");
+    // A light letter can be carried alone, so the scout takes it home before the trail opens.
+    // A heavy letter cannot, and that is the case that used to stall: the scout stood at the
+    // letter waiting for a crew that had no trail to follow. Only the heavy pickup opens the
+    // trail early, and the call for help goes out with it.
+    if (light && ant.scoutRoute && needOf(L.n) > 1) {
+      const t = layTrail(ant, "the scout calls for help; a trail is laid");
       if (t) join(ant, t);
     }
     const k = L.crew.length - 1, spread = (k - (L.need - 1) / 2) * 12;
@@ -1176,6 +1177,7 @@
       if (isSealed(hillOf(ant))) { ant.k = ant.path.length - 1; return; } // waits at the sealed hill, letter held up
       L.glyph.remove(); L.state = "stolen"; state.stolen.add(L); state.stolenTotal++;
       blip(520, 0.05, "sine"); chord([523, 659], 0.16, 0.022);
+      if (ant.scoutRoute) layTrail(ant);
       if (ant.role === "scout") { ant.role = "worker"; }
       if (ant.role === "flyer") { state.stores++; ant.letter = null; ant.job = "fly"; ant.path = [randomPoint()]; ant.k = 0; return; } // flyers feed the stores and fly on
       L.crew.forEach((a) => { if (a !== ant && a.el) enterNest(a, null); });

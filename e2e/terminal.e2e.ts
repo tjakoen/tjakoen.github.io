@@ -66,15 +66,15 @@ test.describe("the interactive terminal (third client of the one door)", () => {
   });
 
   test("the Nest is lazy: no game request before the launcher is used", async ({ page }) => {
+    let gameRequests = 0;
+    page.on("request", (request) => { if (request.url().includes("/site/nest-mockup.js")) gameRequests++; });
     await page.goto("/");
     await expect(page.locator(".nest-switch")).toBeVisible();
     await page.waitForTimeout(500);
-    const requested = () => page.evaluate(() =>
-      performance.getEntriesByType("resource").some((entry) => entry.name.includes("/site/nest-mockup.js")));
-    expect(await requested()).toBe(false);
+    expect(gameRequests).toBe(0);
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await expect.poll(requested).toBe(true);
+    await expect.poll(() => gameRequests, { timeout: 15_000 }).toBeGreaterThan(0);
   });
 
   test("the note starts the colony from its own button", async ({ page }) => {
@@ -248,11 +248,11 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
     await page.waitForFunction(() => {
-      const scouts = window.__nest?.state.ants.filter((a) => a.role === "scout" && a.job === "scout" && a.block) ?? [];
-      return scouts.length > 0;
+      const scout = window.__nest?.state.ants.find((a) => a.role === "scout" && a.job === "carry" && a.scoutRoute && a.block);
+      return !!scout;
     });
     const route = await page.evaluate(() => {
-      const scout = window.__nest!.state.ants.find((a) => a.role === "scout" && a.job === "scout" && a.block);
+      const scout = window.__nest!.state.ants.find((a) => a.role === "scout" && a.job === "carry" && a.scoutRoute && a.block);
       return scout ? { id: scout.id, block: (scout.block!.textContent || "").trim().slice(0, 40) } : null;
     });
     expect(route).not.toBeNull();
@@ -411,6 +411,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
     await page.waitForTimeout(600);
+    await page.waitForFunction(() => window.__nest?.state.ants.some((a) => a.el) ?? false);
     await page.evaluate(() => window.__nest!.startParty());
     await expect(page.locator("#nest-mock")).toHaveClass(/celebrating/);
     await expect(page.locator(".nest-queen")).toBeVisible();
