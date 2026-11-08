@@ -39,6 +39,13 @@ export function parseAnalytics(value: unknown): AnalyticsData | null {
   return data;
 }
 
+// A snapshot with no counts at all is not data. "0 visits" on a site that has been read is worse than
+// no number, and a zero snapshot published as a fallback would show that claim until the next
+// successful pull replaced it. One rule, used by every reader and writer of the snapshot.
+export function hasCounts(data: AnalyticsData | null): boolean {
+  return data !== null && (data.visits > 0 || Object.keys(data.paths).length > 0);
+}
+
 // Read the pulled counts, or null when there are none. Read ONCE at module load: the export crawls
 // hundreds of pages off one booted server, and re-reading the file per page would be pure waste.
 // A malformed or partial file is treated as absent rather than crashing the build — the numbers are
@@ -46,7 +53,8 @@ export function parseAnalytics(value: unknown): AnalyticsData | null {
 export function load(path = ANALYTICS_CACHE): AnalyticsData | null {
   try {
     // sync on purpose: this is a module-load constant, not a per-request read
-    return parseAnalytics(JSON.parse(readFileSync(path, "utf8")));
+    const data = parseAnalytics(JSON.parse(readFileSync(path, "utf8")));
+    return hasCounts(data) ? data : null;
   } catch {
     return null;
   }

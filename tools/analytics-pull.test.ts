@@ -2,7 +2,7 @@
 // and the two places it looks for the previous numbers when the pull itself fails.
 import { test, expect, describe } from "bun:test";
 import { writeFileSync } from "node:fs";
-import { foldPaths, localSnapshot, publishedSnapshot } from "./analytics-pull.ts";
+import { chunkWindow, foldCounts, foldPaths, localSnapshot, publishedSnapshot } from "./analytics-pull.ts";
 
 const row = (requestPath: string, count: number) => ({ count, dimensions: { requestPath } });
 
@@ -35,6 +35,49 @@ describe("foldPaths", () => {
 
   test("no rows → an empty map, not a throw", () => {
     expect(foldPaths([])).toEqual({});
+  });
+});
+
+describe("chunkWindow", () => {
+  test("the whole life of the site becomes contiguous 30 day spans", () => {
+    const spans = chunkWindow("2026-08-11T00:00:00Z", new Date("2026-11-09T00:00:00Z"));
+    expect(spans).toHaveLength(3);
+    expect(spans[0].from).toBe("2026-08-11T00:00:00.000Z");
+    expect(spans[0].to).toBe("2026-09-10T00:00:00.000Z");
+    expect(spans[1].from).toBe(spans[0].to);
+    expect(spans[2].to).toBe("2026-11-09T00:00:00.000Z");
+  });
+
+  test("a window shorter than one span is one span, and an empty window is none", () => {
+    expect(chunkWindow("2026-11-01T00:00:00Z", new Date("2026-11-09T00:00:00Z"))).toHaveLength(1);
+    expect(chunkWindow("2026-11-09T00:00:00Z", new Date("2026-11-09T00:00:00Z"))).toEqual([]);
+    expect(chunkWindow("2026-11-10T00:00:00Z", new Date("2026-11-09T00:00:00Z"))).toEqual([]);
+  });
+});
+
+describe("foldCounts", () => {
+  test("sums visits across every row, not just the first bucket", () => {
+    const rows = [
+      { count: 40, sum: { visits: 30 } },
+      { count: 20, sum: { visits: 10 } },
+    ];
+    expect(foldCounts(rows)).toEqual({ visits: 40, paths: {} });
+  });
+
+  test("falls back to page loads when the visit sum is absent everywhere", () => {
+    expect(foldCounts([{ count: 7 }, { count: 5 }]).visits).toBe(12);
+  });
+
+  test("folds the page rows the same way the single-window pull did", () => {
+    const rows = [
+      { count: 3, sum: { visits: 3 }, dimensions: { requestPath: "/grain" } },
+      { count: 4, sum: { visits: 2 }, dimensions: { requestPath: "/grain/" } },
+    ];
+    expect(foldCounts(rows).paths).toEqual({ "/grain/": 7 });
+  });
+
+  test("no rows is no counts, not a throw", () => {
+    expect(foldCounts([])).toEqual({ visits: 0, paths: {} });
   });
 });
 
@@ -79,6 +122,15 @@ describe("publishedSnapshot", () => {
 
   test("an empty or partial body is rejected rather than half-rendered", async () => {
     const server = Bun.serve({ port: 0, fetch: () => Response.json({ visits: 2650 }) });
+    try {
+      expect(await publishedSnapshot(new URL("/analytics.json", server.url))).toBeNull();
+    } finally {
+      server.stop(true);
+    }
+  });
+
+  test("a zero snapshot is not a snapshot, so it can never be shown as the site's numbers", async () => {
+    const server = Bun.serve({ port: 0, fetch: () => Response.json({ visits: 0, paths: {}, pulledAt: "2026-11-08" }) });
     try {
       expect(await publishedSnapshot(new URL("/analytics.json", server.url))).toBeNull();
     } finally {

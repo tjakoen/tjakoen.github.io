@@ -48,7 +48,7 @@ import { findMissingComponents, missingReport } from "../src/component-refs.ts";
 import { loadTours } from "@tjakoen/crumb/loader.ts";
 import { fileURLToPath } from "node:url";
 import { config } from "../src/config.ts";
-import { analytics } from "../src/analytics.ts";
+import { analytics, hasCounts } from "../src/analytics.ts";
 
 const PORT = parsePort(Bun.env.EXPORT_PORT, 3330, "EXPORT_PORT");
 const BASE = `http://localhost:${PORT}`;
@@ -212,7 +212,7 @@ try {
   // fails and .cache is empty (tools/analytics-pull.ts), so a slow Cloudflare call costs freshness
   // rather than the numbers. Written only when data exists: a local export with no cache must leave
   // no file behind, or its absence would turn into an empty snapshot the next build trusted.
-  if (analytics) {
+  if (analytics && hasCounts(analytics)) {
     writeFileSync(join(DIST, "analytics.json"), `${JSON.stringify(analytics, null, 2)}\n`);
     console.log(`[export] analytics.json published, as of ${analytics.pulledAt}`);
   }

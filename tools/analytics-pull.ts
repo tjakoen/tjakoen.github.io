@@ -27,7 +27,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseAnalytics, type AnalyticsData } from "../src/analytics.ts";
+import { hasCounts, parseAnalytics, type AnalyticsData } from "../src/analytics.ts";
 import { canonicalPath, SITE } from "../src/seo.ts";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -115,38 +115,69 @@ async function probe() {
   }
 }
 
-// The counts query. Grouped by requestPath, so ONE request returns every page's views plus the
-// site total — no per-page fan-out.
-// requestHost scopes this to THIS site. Without a scope the query returns the whole ACCOUNT's RUM
-// data, so the day a second site is added to Web Analytics its traffic would silently merge into
-// the portfolio's numbers.
+// The counts query. Cloudflare's adaptive dataset returns GROUPS, bucketed by time, so `limit: 1`
+// was never a site total. It was one bucket, and the number drifted with whichever bucket the API
+// picked, which is how the bar went from 2,650 visits to 0 to 1,000 across one afternoon. The pages
+// query had the mirror problem: 5,000 rows over a three month window truncates, so the path count
+// moved between 131, 23 and none.
 //
-// It filters on the HOST, not on siteTag: siteTag is NOT the public beacon token (filtering by that
-// was measured returning 0 rows), and the host is a value this repo already knows for certain —
-// SITE.origin in seo.ts, so there is one source of truth and no second env var to keep in sync.
+// Both are now summed across 30 day windows. Each window is small enough to come back whole, and the
+// sum of every row is the cumulative figure the bar has always claimed to show.
+const CHUNK_DAYS = 30;
+
 const COUNTS = `
-  query Counts($account: String!, $since: Time!, $hosts: [String!]!) {
+  query Counts($account: String!, $from: Time!, $to: Time!, $hosts: [String!]!) {
     viewer {
       accounts(filter: { accountTag: $account }) {
-        total: rumPageloadEventsAdaptiveGroups(
-          filter: { datetime_geq: $since, requestHost_in: $hosts }
-          limit: 1
-        ) {
-          sum { visits }
-          count
-        }
-        pages: rumPageloadEventsAdaptiveGroups(
-          filter: { datetime_geq: $since, requestHost_in: $hosts }
+        groups: rumPageloadEventsAdaptiveGroups(
+          filter: { datetime_geq: $from, datetime_leq: $to, requestHost_in: $hosts }
           limit: 5000
-          orderBy: [count_DESC]
         ) {
           count
+          sum { visits }
           dimensions { requestPath }
         }
       }
     }
   }
 `;
+
+// Split the window Cloudflare is asked about into contiguous spans. Cloudflare retains what it
+// retains; asking for more simply returns what it has, so the first span may come back short.
+export function chunkWindow(since: string, until: Date, days = CHUNK_DAYS): { from: string; to: string }[] {
+  const spans: { from: string; to: string }[] = [];
+  let start = new Date(since).getTime();
+  const end = until.getTime();
+  while (start < end) {
+    const next = Math.min(start + days * 86_400_000, end);
+    spans.push({ from: new Date(start).toISOString(), to: new Date(next).toISOString() });
+    start = next;
+  }
+  return spans;
+}
+
+type CountRow = {
+  count: number;
+  sum?: { visits?: number };
+  dimensions?: { requestPath?: string };
+};
+
+// One window's rows to the two numbers the bar needs. `sum.visits` is Cloudflare's visit count and
+// `count` is page loads, so visits is preferred and counted only when the sum is absent altogether.
+export function foldCounts(rows: CountRow[]): { visits: number; paths: Record<string, number> } {
+  let visits = 0;
+  let counted = 0;
+  let sawVisits = false;
+  for (const row of rows) {
+    counted += row.count;
+    const sum = row.sum?.visits;
+    if (typeof sum === "number") {
+      visits += sum;
+      sawVisits = true;
+    }
+  }
+  return { visits: sawVisits ? visits : counted, paths: foldPaths(rows) };
+}
 
 // Every host the site has ever answered at. The site moved from tjakoen.github.io to
 // portfolio.tjakoen.com on 2026-11-07, and Cloudflare records each page load under the host it was
@@ -157,19 +188,10 @@ export function siteHosts(): string[] {
   return [...new Set([new URL(SITE.origin).hostname, ...PAST_HOSTS])];
 }
 
-type CountsResponse = {
-  viewer?: {
-    accounts?: {
-      total?: { sum?: { visits?: number }; count?: number }[];
-      pages?: { count: number; dimensions: { requestPath: string } }[];
-    }[];
-  };
-};
-
 // Fold the grouped rows into canonical-path → views. Cloudflare reports the path as requested, so
 // /notes/x and /notes/x/ can BOTH appear; canonicalPath collapses them the same way seo.ts does,
 // and the counts are summed rather than one silently winning.
-export function foldPaths(rows: { count: number; dimensions: { requestPath: string } }[]): Record<string, number> {
+export function foldPaths(rows: { count: number; dimensions?: { requestPath?: string } }[]): Record<string, number> {
   const out: Record<string, number> = {};
   for (const row of rows) {
     const path = row.dimensions?.requestPath;
@@ -186,27 +208,49 @@ function write(data: AnalyticsData) {
 }
 
 async function pull(): Promise<AnalyticsData> {
-  const data = await graphql(COUNTS, { account: ACCOUNT, since: SINCE, hosts: siteHosts() }) as CountsResponse;
-  const account = data?.viewer?.accounts?.[0];
-  if (!account) throw new Error("no account in the response — check CF_ACCOUNT_ID and the token's scope");
+  const spans = chunkWindow(SINCE, new Date());
+  const paths: Record<string, number> = {};
+  let visits = 0;
 
-  const visits = account.total?.[0]?.sum?.visits ?? account.total?.[0]?.count ?? 0;
-  const paths = foldPaths(account.pages ?? []);
+  for (const span of spans) {
+    const data = await graphql(COUNTS, {
+      account: ACCOUNT,
+      from: span.from,
+      to: span.to,
+      hosts: siteHosts(),
+    }) as { viewer?: { accounts?: { groups?: CountRow[] }[] } };
+
+    const groups = data?.viewer?.accounts?.[0]?.groups;
+    if (!Array.isArray(groups)) {
+      throw new Error("no account in the response — check CF_ACCOUNT_ID and the token's scope");
+    }
+
+    if (groups.length >= 5000) {
+      console.log(`[analytics] window ${span.from.slice(0, 10)} to ${span.to.slice(0, 10)} hit the 5,000 row limit; its share is truncated`);
+    }
+
+    const folded = foldCounts(groups);
+    visits += folded.visits;
+    for (const [path, count] of Object.entries(folded.paths)) {
+      paths[path] = (paths[path] ?? 0) + count;
+    }
+  }
 
   // An empty per-page result next to a site total is the shape Cloudflare returned on 2026-11-08
   // ("1,000 visits, 0 paths"), and it is not something a visitor can see or a reader can debug. Log
   // what actually came back, once, so the next run explains itself instead of looking like a site
   // nobody visits.
-  if (visits > 0 && Object.keys(paths).length === 0) {
-    const rows = account.pages?.length ?? 0;
-    console.log(`[analytics] ${visits} visits but ${rows} page rows; first row: ${JSON.stringify(account.pages?.[0] ?? null).slice(0, 300)}`);
+  const pulled: AnalyticsData = { visits, paths, pulledAt: new Date().toISOString().slice(0, 10) };
+  if (!hasCounts(pulled)) {
+    // Not a zero: a site that has been read never drops to nothing, and publishing this would put
+    // "0 visits" on every page. Throwing sends the run to the retry and then to the last snapshot.
+    throw new Error(`the query returned no counts across ${spans.length} window(s)`);
+  }
+  if (Object.keys(paths).length === 0) {
+    console.log(`[analytics] ${visits} visits but no usable page rows across ${spans.length} window(s)`);
   }
 
-  return {
-    visits,
-    paths,
-    pulledAt: new Date().toISOString().slice(0, 10),
-  };
+  return pulled;
 }
 
 async function pullWithRetry(): Promise<AnalyticsData> {
@@ -230,7 +274,8 @@ async function pullWithRetry(): Promise<AnalyticsData> {
 // no .cache at all and the last deploy put its numbers in dist/analytics.json.
 export function localSnapshot(path = OUT): AnalyticsData | null {
   try {
-    return parseAnalytics(JSON.parse(readFileSync(path, "utf8")));
+    const data = parseAnalytics(JSON.parse(readFileSync(path, "utf8")));
+    return hasCounts(data) ? data : null;
   } catch {
     return null;
   }
@@ -242,7 +287,8 @@ export async function publishedSnapshot(url: URL = SNAPSHOT_URL): Promise<Analyt
   try {
     const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(SNAPSHOT_TIMEOUT_MS) });
     if (!res.ok) return null;
-    return parseAnalytics(await res.json());
+    const data = parseAnalytics(await res.json());
+    return hasCounts(data) ? data : null;
   } catch {
     return null;
   }
