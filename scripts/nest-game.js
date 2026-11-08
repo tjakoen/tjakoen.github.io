@@ -2072,6 +2072,24 @@
     }
     return best;
   };
+  const rivalBranchTarget = (avoid) => {
+    const hole = rival.mound.hole;
+    let best = null, bestD = -Infinity;
+    for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i++) {
+      if (!/\S/.test(n.data[i])) continue;
+      const L = letterOf(n, i);
+      if (L.state !== "free" || L.span) continue;
+      const r = rectOf(n, i); if (!r.width) continue;
+      const [x, y] = local(r);
+      const tx = x + r.width / 2, ty = y + r.height;
+      if (Math.hypot(tx - hole[0], ty - hole[1]) > 620) continue;
+      const nearest = avoid.length ? Math.min(...avoid.map((p) => Math.hypot(tx - p.x, ty - p.y))) : Math.hypot(tx - hole[0], ty - hole[1]);
+      if (nearest < 55) continue;
+      if (nearest > bestD) { bestD = nearest; best = { L, block: blockOf(n), x: tx, y: ty, r }; }
+    }
+    return best || rivalTarget(new Set(), avoid);
+  };
+
   const rivalTrail = (pick) => {
     const hole = rival.mound.hole;
     const dx = pick.x - hole[0], dy = pick.y - hole[1], dist = Math.hypot(dx, dy) || 1;
@@ -2415,45 +2433,63 @@
       if (!rival.active || rival.mound !== mound) return;
       const pick = rivalTarget();
       if (!pick) { mound.el.remove(); rival.active = false; rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-      const used = new Set(); const targets = [pick];
-      for (let i = 0; i < 3; i++) {
-        const next = i === 0 ? pick : rivalTarget(used, targets);
-        if (!next) break;
-        used.add(next.block); if (i) targets.push(next);
-        const t = rivalTrail(next); spawnRival(t);
-      }
-      const miniSpots = [];
-      const terrain = miniTerrain();
-      for (const radius of [130, 170, 210]) {
-        for (let k = 0; k < 18; k++) {
-          const a = (k / 18) * Math.PI * 2;
-          const x = rival.mound.base[0] + Math.cos(a) * radius, y = rival.mound.base[1] + Math.sin(a) * radius * 0.6;
-          const box = [x - 26, y - 26, x + 26, y + 16];
-          if (!miniFits(box, terrain.obstacles)) continue;
-          if (Math.hypot(x - home.base[0], y - home.base[1]) < 180) continue;
-          if (miniSpots.some((p) => Math.hypot(p.x - x, p.y - y) < 90)) continue;
-          miniSpots.push({ x, y }); break;
-        }
-        if (miniSpots.length >= 2) break;
-      }
-      miniSpots.slice(0, 2).forEach((p) => {
-        const x = p.x, y = p.y;
-        const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
-        el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el); el.classList.add("rising"); setTimeout(() => el.classList.remove("rising"), 900);
-        rival.minis.push({ el, base: [x, y], hp: 3 });
-        const trail = rival.trails[0];
-        const path = trail ? lanePath(trail.pts, (rival.minis.length % 2 ? 1 : -1) * 9) : Array.from({ length: 7 }, (_, k) => [x + Math.cos(k * 0.9) * 25, y + Math.sin(k * 0.9) * 16]);
-        spawnRivalUnit("rival-guard", [x, y], path, null);
-        spawnRivalUnit("rival-flyer", [x, y], [randomPoint()], null);
-      });
-      for (let i = 0; i < 2; i++) {
-        const gx = rival.mound.base[0] + (i ? 34 : -34), gy = rival.mound.base[1] + 16;
-        spawnRivalUnit("rival-guard", [gx, gy], Array.from({ length: 9 }, (_, k) => [gx + Math.cos(k * 1.1) * 28, gy + Math.sin(k * 1.1) * 18]), null);
-      }
+      const t = rivalTrail(pick); spawnRival(t); spawnRival(t);
+      const guardPath = lanePath(t.pts, 8);
+      spawnRivalUnit("rival-guard", [rival.mound.base[0] - 28, rival.mound.base[1] + 16], guardPath, null);
+      rival.nextGrow = performance.now() + 3500;
+      log("the rival opens its first trail");
       log("the rival trails open");
       blip(260, 0.1, "sawtooth", 0.025);
     }, 2600);
   };
+  const buildRivalMinis = () => {
+    if (rival.minis.length || !rival.active) return;
+    const miniSpots = [];
+    const terrain = miniTerrain();
+    for (const radius of [130, 170, 210]) {
+      for (let k = 0; k < 18; k++) {
+        const a = (k / 18) * Math.PI * 2;
+        const x = rival.mound.base[0] + Math.cos(a) * radius, y = rival.mound.base[1] + Math.sin(a) * radius * 0.6;
+        const box = [x - 26, y - 26, x + 26, y + 16];
+        if (!miniFits(box, terrain.obstacles)) continue;
+        if (Math.hypot(x - home.base[0], y - home.base[1]) < 180) continue;
+        if (miniSpots.some((p) => Math.hypot(p.x - x, p.y - y) < 90)) continue;
+        miniSpots.push({ x, y }); break;
+      }
+      if (miniSpots.length >= 2) break;
+    }
+    miniSpots.slice(0, 2).forEach((p) => {
+      const x = p.x, y = p.y;
+      const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
+      el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el); el.classList.add("rising"); setTimeout(() => el.classList.remove("rising"), 900);
+      rival.minis.push({ el, base: [x, y], hp: 3 });
+      const trail = rival.trails[0];
+      spawnRivalUnit("rival-guard", [x, y], trail ? lanePath(trail.pts, 8) : [[x, y - 22], [x, y + 22]], null);
+      spawnRivalUnit("rival-flyer", [x, y], [randomPoint()], null);
+    });
+    log("the rival raises its mini mounds");
+  };
+  const growRival = () => {
+    if (!rival.active || state.party) return;
+    if (!rival.ants.length) { if (rival.trails.length || performance.now() > (rival.buildUntil || 0)) retreatRival(); return; }
+    if (performance.now() < (rival.nextGrow || 0)) return;
+    rival.nextGrow = performance.now() + 3500;
+    if (rival.trails.length < 3) {
+      const avoid = rival.trails.map((t) => ({ x: t.end[0], y: t.end[1] }));
+      const pick = rivalBranchTarget(avoid);
+      if (pick) {
+        const t = rivalTrail(pick); spawnRival(t); spawnRival(t);
+        spawnRivalUnit("rival-guard", [rival.mound.base[0] + 28, rival.mound.base[1] + 16], lanePath(t.pts, -8), null);
+        log("the rival opens another trail");
+        if (rival.trails.length >= 2) buildRivalMinis();
+      }
+      return;
+    }
+    if (rival.minis.length < 2) { buildRivalMinis(); return; }
+    const t = rival.trails[Math.floor(Math.random() * rival.trails.length)];
+    if (t) spawnRival(t);
+  };
+
   const placeBait = (e) => {
     setBaitArmed(false);
     const m = main.getBoundingClientRect(), x = e.clientX - m.left + main.scrollLeft, y = e.clientY - m.top + main.scrollTop;
@@ -2670,6 +2706,7 @@
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
             rivalCombat(now);
       tickRivalAttack(now);
+      growRival();
       for (const a of state.ants) {
         const el = a.el; if (!el) continue;
         if (a.px !== el._px || a.py !== el._py || a.heading !== el._heading) {
