@@ -83,14 +83,14 @@
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
-.nest-event-card { position: absolute; z-index: 5; width: 54px; height: 54px; padding: 7px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); cursor: pointer; pointer-events: auto; }
-    .nest-event-card svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-    .nest-event-card:hover, .nest-event-card:focus-visible { background: var(--paper-2); outline: 2px dashed var(--color-accent); outline-offset: 2px; }
+.nest-event-card { position: absolute; z-index: 5; width: auto; height: auto; padding: 2px 3px 6px; border: 0; background: none; color: var(--color-accent); cursor: pointer; pointer-events: auto; line-height: .82; opacity: .92; }
+    .nest-event-card .nest-event-art { margin: 0; font: 12px/.82 var(--font-mono); letter-spacing: 0; white-space: pre; text-shadow: 0 0 12px color-mix(in srgb, var(--color-accent) 32%, transparent); }
+    .nest-event-card::after { content: ""; position: absolute; left: 4px; right: 4px; bottom: 0; border-bottom: 1px dashed currentColor; opacity: .45; }
+    .nest-event-card:hover, .nest-event-card:focus-visible { opacity: 1; outline: none; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 45%, transparent)); }
     .nest-hill.hit { animation: nest-hill-hit .3s steps(2); }
     @keyframes nest-hill-hit { 50% { transform: translateX(3px); filter: brightness(1.5); } }
     .nest-hill.unbuilding { animation: nest-hill-unbuild .55s cubic-bezier(.6,0,.8,.4) both; transform-origin: 50% 100%; }
     @keyframes nest-hill-unbuild { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scaleY(.06); } }
-    .nest-event-card { width: 44px; }
     .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; color: var(--nest-rival); }
     .nest-ant.fighting::after { content: "✶"; position: absolute; left: 50%; top: -12px; color: var(--color-accent); font-size: 12px; }
     .nest-ant.marching { filter: drop-shadow(0 0 4px var(--color-accent)); }
@@ -100,10 +100,8 @@
     .nest-tongue { position: absolute; z-index: 6; pointer-events: none; overflow: visible; }
     .nest-suck { position: absolute; z-index: 7; width: 3px; height: 3px; border-radius: 50%; background: var(--color-accent); pointer-events: none; }
     .nest-vacuum-head { position: absolute; z-index: 7; width: 48px; height: 48px; padding: 6px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); pointer-events: none; }
-    .nest-vacuum-head svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; }
+    .nest-vacuum-head .nest-event-art { margin: 0; font: 8px/.8 var(--font-mono); color: var(--color-accent); }
     .nest-ant.stuck { color: var(--color-accent); opacity: .8; }
-    .nest-event-card { width: 54px !important; height: 54px !important; padding: 7px !important; border: 1px solid var(--color-accent) !important; background: var(--paper) !important; border-radius: 0 !important; }
-    .nest-event-card:hover, .nest-event-card:focus-visible { background: var(--paper-2) !important; outline: 2px dashed var(--color-accent); outline-offset: 2px; }
     @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
     .nest-scent polyline.rival { stroke: var(--nest-rival); }
     .nest-meter .hint .rival, #nest-mock .stat-grid .rival { color: var(--nest-rival); }
@@ -1690,9 +1688,11 @@
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
-  const eventIcon = (kind) => kind === "vacuum"
-    ? "<svg viewBox='0 0 48 48' aria-hidden='true'><rect x='9' y='8' width='22' height='25' rx='6'/><circle cx='20' cy='20' r='5'/><path d='M31 31h9v7M9 40h22'/></svg>"
-    : "<svg viewBox='0 0 48 48' aria-hidden='true'><path d='M4 28c7-17 22-20 35-8l6 5-13 7c-8 4-16 0-17-6z'/><circle cx='13' cy='25' r='1'/><path d='M7 36h34'/></svg>";
+  const EVENT_ART = {
+    vacuum: "⠀⠀⢀⣤⣤⣤⣤⡀⠀⠀\n⠀⠀⣿⣿⣿⣿⣿⣿⡄⠀\n⠀⠀⣿⣿⣿⣿⣿⣿⣷⡀\n⠀⠀⠘⣿⣿⣿⣿⣿⣿⣷⣄\n⠀⠀⠀⠙⠿⣿⣿⣿⣿⣿⣿⣦\n⠀⠀⠀⠀⠀⠈⠙⠛⠿⠿⠟",
+    anteater: "⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀\n⠉⠉⠉⠉⠉⠉⢉⣉⣉⣉⣉⣉⣉⣉\n⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠉⠉"
+  };
+  const eventIcon = (kind) => `<pre class="nest-event-art" aria-hidden="true">${EVENT_ART[kind]}</pre>`;
 
   // ---- environmental pest control: a switch and an anteater, never banked -----------------
   const removeEnvAnt = (a) => {
@@ -1772,7 +1772,7 @@
     if (!spot) { state.envNext = performance.now() + 20000; return; }
     const el = document.createElement("button");
     el.type = "button"; el.className = "nest-event-card"; el.dataset.kind = kind;
-    el.setAttribute("aria-label", kind === "vacuum" ? "A wrapped switch. Click to unwrap." : "A wrapped anteater. Click to unwrap.");
+    el.setAttribute("aria-label", kind === "vacuum" ? "A vacuum in the page. Click to use." : "An anteater in the page. Click to use.");
     el.innerHTML = eventIcon(kind);
     el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 64)}px`;
     layer.append(el);

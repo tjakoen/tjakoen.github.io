@@ -36,11 +36,11 @@ test("the event cards are icon cards, not visible text", async ({ page }) => {
   await page.evaluate(() => (window.__nest as any).spawnEnv("vacuum"));
   const vacuum = page.locator(".nest-event-card");
   await expect(vacuum).toBeVisible();
-  expect((await vacuum.textContent())?.trim()).toBe("");
-  await expect(vacuum.locator("svg")).toBeVisible();
+  await expect(vacuum.locator(".nest-event-art")).toBeVisible();
+  expect((await vacuum.textContent())?.trim().length).toBeGreaterThan(0);
   await page.evaluate(() => (window.__nest as any).spawnEnv("anteater"));
   const anteater = page.locator(".nest-event-card");
   await expect(anteater).toBeVisible();
-  expect((await anteater.textContent())?.trim()).toBe("");
-  await expect(anteater.locator("svg")).toBeVisible();
+  await expect(anteater.locator(".nest-event-art")).toBeVisible();
+  expect((await anteater.textContent())?.trim().length).toBeGreaterThan(0);
 });
