@@ -628,7 +628,7 @@
   addEventListener("beforeunload", onBeforeUnload);
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
-    sweet: null, sweetCard: null, sweetPlanning: false, sweetNext: 0, env: null, envNext: 0,
+    sweet: null, sweetCard: null, sweetPlanning: false, sweetNext: 0, env: null, envNext: 0, cache: null,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(state.ants.length / 3)));
   const rival = { active: false, mound: null, trails: [], ants: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8 };
@@ -998,6 +998,10 @@
       options.push(...(open.length ? open : free));
     }
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
+    if (state.cache) {
+      const nearCache = options.filter((o) => Math.hypot(o[1] - state.cache.x, o[2] - state.cache.y) < 340);
+      if (nearCache.length) options.splice(0, options.length, ...nearCache);
+    }
     const distToHole = (o) => Math.hypot(o[1] - hole[0], o[2] - hole[1]);
     const spread = (o) => Math.min(...state.openingTargets.map(([px, py]) => Math.hypot(o[1] - px, o[2] - py)));
     const moundSide = hole[0] > main.clientWidth / 2 ? 1 : -1;
@@ -1766,7 +1770,7 @@
       const from = [anchor.x - Math.cos(angle) * len, anchor.y - Math.sin(angle) * len];
       const to = [anchor.x + Math.cos(angle) * len, anchor.y + Math.sin(angle) * len];
       const sweep = document.createElement("div"); sweep.className = "nest-vacuum";
-      sweep.style.width = "130px"; sweep.style.height = main.scrollHeight + "px"; sweep.style.left = "0"; sweep.style.top = "0"; sweep.style.transformOrigin = "0 0";
+      sweep.style.width = "220px"; sweep.style.height = main.scrollHeight + "px"; sweep.style.left = "0"; sweep.style.top = "0"; sweep.style.transformOrigin = "0 0";
       layer.append(sweep);
       sweep.animate([{ transform: `translate(${from[0]}px, ${from[1]}px) rotate(${angle}rad)` }, { transform: `translate(${to[0]}px, ${to[1]}px) rotate(${angle}rad)` }], { duration: 1600, easing: "ease-in-out" }).onfinish = () => sweep.remove();
       for (let i = 0; i < 12; i++) {
@@ -1785,8 +1789,9 @@
       for (let k = 0; k <= 36; k++) { const u = k / 36; pts.push([-20 + u * (main.clientWidth + 40), cy + Math.sin(u * Math.PI * 2.4) * 54 + Math.sin(u * Math.PI * 5) * 12]); }
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("class", "nest-tongue"); svg.setAttribute("width", String(main.clientWidth)); svg.setAttribute("height", String(main.clientHeight));
       const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      line.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); line.setAttribute("fill", "none"); line.setAttribute("stroke", "var(--color-accent)"); line.setAttribute("stroke-width", "3"); line.setAttribute("stroke-linecap", "round");
-      svg.append(line); layer.append(svg);
+      line.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); line.setAttribute("fill", "none"); line.setAttribute("stroke", "var(--color-accent)"); line.setAttribute("stroke-width", "7"); line.setAttribute("stroke-linecap", "round");
+      const head = document.createElementNS("http://www.w3.org/2000/svg", "circle"); head.setAttribute("cx", pts[pts.length - 1][0]); head.setAttribute("cy", pts[pts.length - 1][1]); head.setAttribute("r", "7"); head.setAttribute("fill", "var(--color-accent)");
+      svg.append(line, head); layer.append(svg);
       const stuck = [];
       if (anchor.el && !anchor.tongue) { anchor.tongue = true; anchor.el.classList.add("stuck"); stuck.push(anchor); }
       const stick = () => {
@@ -1802,7 +1807,7 @@
         clearInterval(timer);
         line.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 }).onfinish = () => svg.remove();
         setTimeout(() => { stuck.forEach(removeEnvAnt); log("the tongue retracts; the stuck ants are gone"); }, 350);
-      }, 1500);
+      }, 3000);
       log("the anteater unrolls its tongue");
     }
     blip(kind === "vacuum" ? 120 : 90, 0.24, "sawtooth", 0.04);
@@ -2205,7 +2210,7 @@
     for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i++) {
       if (!/\S/.test(n.data[i])) continue;
       const L = letterOf(n, i);
-      if (L.state !== "free" || L.span || needOf(n) > 1 || exclude.has(blockOf(n))) continue;
+      if (L.state !== "free" || L.span || exclude.has(blockOf(n))) continue;
       const r = rectOf(n, i); if (!r.width) continue;
       const [x, y] = local(r);
       const d = Math.hypot(x - hole[0], y - hole[1]);
@@ -2248,9 +2253,7 @@
     if (!trail || !state.trails.includes(trail)) return false;
     const options = freeIn(trail.block, trail.end);
     if (!options.length) return false;
-    const light = options.find((o) => needOf(o.L.n) === 1);
-    if (!light) return false;
-    const L = light.L;
+    const L = options[0].L;
     const r = rectOf(L.n, L.i); const [x, y] = local(r);
     hideChar(L); L.state = "rival-carry"; L.crew = [];
     const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
@@ -2332,7 +2335,9 @@
         if (!r.el) return;
         r.el.classList.remove("fighting");
         removeRivalAnt(r); state.squashed++;
-        log("a soldier drives a rival ant off the trail");
+        defender.hp = (defender.hp || 1) - 1;
+        if (defender.hp <= 0) { squashQuiet(defender); log("the rival guard kills a main soldier"); }
+        else log("a soldier drives a rival ant off the trail");
       }, 520);
       break;
     }
@@ -2347,6 +2352,7 @@
       const pick = rivalTarget();
       if (!pick) { rivalRetarget(); return; }
       rival.trails.slice().forEach((old) => retireRivalTrail(old, false));
+      rival.rebuildUntil = performance.now() + 1600;
       const t = rivalTrail(pick); spawnRival(t); spawnRival(t);
       log("the rival opens a new trail");
     }, 1200);
@@ -2390,6 +2396,7 @@
     const unit = state.ants.find((a) => a.el && (a.role === "soldier" || a.role === "guard") && a.job !== "dance" && !a.rivalSiege && !a.rivalContest);
     if (!unit) return;
     const contest = rivalContestPoint();
+    if (!contest && rival.stolen.size === 0) return;
     if (contest) {
       unit.job = "rival-contest"; unit.path = [contest]; unit.k = 0; unit.rivalContest = true; unit.el.classList.add("marching");
       log("a guard moves to a contested trail");
@@ -2415,8 +2422,10 @@
     [...rival.ants].forEach(removeRivalAnt);
     rival.mound?.el.remove(); rival.mound = null;
     rival.minis.forEach((m) => m.el.remove()); rival.minis = [];
-    rival.stolen.forEach((L) => state.stolen.add(L));
+    const deadAt = rival.mound ? rival.mound.base.slice() : [home.base[0], home.base[1]];
+    rival.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
     rival.stolen.clear();
+    state.cache = { x: deadAt[0], y: deadAt[1], until: performance.now() + 30000 };
     rival.returnAt = performance.now() + 22000 + Math.random() * 18000;
     log("the rival colony retreats below the fold");
   };
@@ -2424,7 +2433,7 @@
     if (rival.active || state.over || state.party) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8;
+    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8; rival.buildUntil = performance.now() + 1300;
     log("a rival mound is being built on the opposite side");
     setTimeout(() => {
       if (!rival.active || rival.mound !== mound) return;
@@ -2438,7 +2447,7 @@
         const t = rivalTrail(next); spawnRival(t);
       }
       for (let i = 0; i < 2; i++) {
-        const x = rival.mound.base[0] + (i ? 82 : -82), y = rival.mound.base[1] + (i ? 34 : -18);
+        const x = rival.mound.base[0] + (i ? 128 : -128), y = rival.mound.base[1] + (i ? 54 : 18);
         const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
         el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el);
         rival.minis.push({ el, base: [x, y] });
@@ -2673,6 +2682,7 @@
           el.style.transform = antTransform(a); el._px = a.px; el._py = a.py; el._heading = a.heading;
         }
       }
+      if (rival.active && rival.ants.length === 0 && performance.now() > (rival.buildUntil || 0) && performance.now() > (rival.rebuildUntil || 0)) retreatRival();
       if (!rival.active && !state.party && state.partyIndex >= 1 && performance.now() >= rival.returnAt) foundRival();
       if (!state.sweet && !state.sweetCard && !state.sweetPlanning && !state.party && performance.now() >= state.sweetNext) sweetCard();
       if (!state.env && !state.party && performance.now() >= state.envNext) spawnEnv(Math.random() < 0.5 ? "vacuum" : "anteater");
