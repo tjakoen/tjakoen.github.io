@@ -699,7 +699,7 @@
     main.querySelectorAll("img, svg, pre, button, input, textarea, figure, hr").forEach((el) => { if (layer.contains(el)) return; const c = el.getBoundingClientRect(); if (c.width) { const [x, y] = local(c); rects.push([x, y, x + c.width, y + c.height]); } });
     const w = hr.width, h = hr.height, pad = 14;
     const collect = (top, bottom) => {
-      const spots = [];
+      let spots = [];
       for (let y = Math.max(h + 10, top + h + 26); y < Math.min(main.scrollHeight - 20, bottom - 8); y += 18) for (let x = w / 2 + 20; x < main.clientWidth - w / 2 - 20; x += 18) {
         const box = [x - w / 2 - pad, y - h - pad, x + w / 2 + pad, y + pad];
         let near = Infinity;
@@ -1036,15 +1036,37 @@
   // A light first letter is carried home before the trail opens; a scout killed on the way leaves
   // nothing for the workers to join. A heavy letter opens the trail at the pickup and calls a
   // crew, because one scout cannot lift it and a trail-less wait would stall the colony.
+  // Trails that leave the same hill close together share their first stretch. Snapping the
+  // nearby early points onto an existing line turns a pile of near-parallel curves into one
+  // trunk, then lets the new branch peel off where it actually diverges.
+  const mergeRoute = (pts, block) => {
+    const merged = pts.map((p) => p.slice());
+    const others = state.trails.filter((t) => !t.side && t.ready && t.state !== "gone" && t.block !== block);
+    for (const t of others) {
+      let joined = false;
+      for (let i = 0; i < merged.length; i++) {
+        let best = null, bestD = 15;
+        for (const q of t.pts) {
+          const d = Math.hypot(merged[i][0] - q[0], merged[i][1] - q[1]);
+          if (d < bestD) { bestD = d; best = q; }
+        }
+        if (best) { merged[i] = best.slice(); joined = true; }
+        else if (joined && i > 2) break;
+      }
+    }
+    return merged;
+  };
+
   const layTrail = (ant, copy = "the scout is home; a trail is laid") => {
     const route = ant.scoutRoute; if (!route) return null;
-    const points = route.pts.map((p) => p.join(",")).join(" ");
+    const merged = mergeRoute(route.pts, route.block);
+    const points = merged.map((p) => p.join(",")).join(" ");
     const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     halo.setAttribute("points", points); halo.classList.add("halo");
     const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     line.setAttribute("points", points);
     const born = performance.now() / 1000;
-    const t = { pts: route.pts, block: route.block, end: route.end, ants: new Set(), line, halo, ready: true, hill: route.hill,
+    const t = { pts: merged, block: route.block, end: route.end, ants: new Set(), line, halo, ready: true, hill: route.hill,
       state: "ready", born, ttl: born + TUNING.trailTtl };
     scent.append(halo, line);
     line.style.opacity = "0"; halo.style.opacity = "0";
@@ -1869,15 +1891,18 @@
     template.setAttribute("aria-hidden", "true");
     const terrain = miniTerrain();
     const hw = hr.width, hh = hr.height;
-    const spots = [];
-    for (const radius of [260, 330, 410, 500]) {
-      for (let k = 0; k < 14; k++) {
-        const angle = (k / 14) * Math.PI * 2 + Math.random() * 0.3;
+    const side = home.base[0] < main.clientWidth / 2 ? 1 : -1;
+    let spots = [];
+    const clear = (box) => miniFits(box, terrain.obstacles) && !terrain.gaps.some((r) => overlaps(box, r));
+    for (const radius of [380, 460, 550, 650]) {
+      for (let k = 0; k < 18; k++) {
+        const angle = (k / 18) * Math.PI * 2 + Math.random() * 0.2;
         const x = home.base[0] + Math.cos(angle) * radius;
         const y = home.base[1] + Math.sin(angle) * radius * 0.62;
+        if ((x - home.base[0]) * side < 150) continue;
+        if (Math.hypot(x - home.base[0], y - home.base[1]) < 360) continue;
         const box = [x - hw / 2 - 10, y - hh - 10, x + hw / 2 + 10, y + 10];
-        if (!miniFits(box, terrain.obstacles) || terrain.gaps.some((r) => overlaps(box, r))) continue;
-        spots.push({ x, y });
+        if (clear(box)) spots.push({ x, y });
       }
     }
     // If no ring spot is open, search the rest of the page for the nearest clear full-size
@@ -1887,9 +1912,13 @@
       for (let y = 80; y < main.scrollHeight - 40; y += 46) {
         for (let x = 100; x < main.clientWidth - 100; x += 46) {
           const box = [x - hw / 2 - 10, y - hh - 10, x + hw / 2 + 10, y + 10];
-          if (miniFits(box, terrain.obstacles) && !terrain.gaps.some((r) => overlaps(box, r))) spots.push({ x, y });
+          if (clear(box)) spots.push({ x, y });
         }
       }
+      const far = spots.filter((p) => Math.hypot(p.x - home.base[0], p.y - home.base[1]) > 360);
+      const opposite = far.filter((p) => (p.x - home.base[0]) * side > 150);
+      if (opposite.length) spots = opposite;
+      else if (far.length) spots = far;
     }
     if (!spots.length) return null;
     const nearest = Math.min(...spots.map((p) => Math.hypot(p.x - home.base[0], p.y - home.base[1])));
