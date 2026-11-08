@@ -12,6 +12,10 @@ test("the rival waits for the first worship, builds with builders, then opens cu
   await page.evaluate(() => (window.__nest as any).startParty());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.ants.some((a: any) => a.job === "rival-build")), { timeout: 4_000 }).toBe(true);
+  const buildersBefore = await page.evaluate(() => (window.__nest as any).rival.ants.filter((a: any) => a.job === "rival-build").map((a: any) => [a.x, a.y]));
+  await page.waitForTimeout(300);
+  const buildersAfter = await page.evaluate(() => (window.__nest as any).rival.ants.filter((a: any) => a.job === "rival-build").map((a: any) => [a.x, a.y]));
+  expect(buildersAfter.every((p: number[], i: number) => Math.hypot(p[0] - buildersBefore[i][0], p[1] - buildersBefore[i][1]) < 2)).toBe(true);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 10_000 }).toBeGreaterThanOrEqual(3);
   const rival = await page.evaluate(() => {
     const n = window.__nest as any;
