@@ -81,18 +81,60 @@ test("a rival cannot camp the main nest and kill the restart scout", async ({ pa
 });
 
 
-test("a main soldier beats a rival guard one-on-one", async ({ page }) => {
+test("a main guard wins 60 percent of rival guard duels", async ({ page }) => {
   await page.goto("/?nest-debug");
   await page.locator(".nest-switch").click();
   await expect(page.locator("#nest-mock")).toBeVisible();
   const result = await page.evaluate(() => {
     const n = window.__nest as any;
-    const at = [900, 500];
-    const soldier = n.spawnPageAnt("soldier", at, null);
-    const guard = n.spawnRivalUnit("rival-guard", at, [[900, 500]], null);
-    n.rivalCombat(performance.now() + 1000);
-    return { soldier: !!soldier.el, guard: !!guard.el };
+    const run = (roll: number, at: [number, number], now: number) => {
+      const old = Math.random; Math.random = () => roll;
+      const m = n.spawnPageAnt("guard", at, null);
+      const r = n.spawnRivalUnit("rival-guard", at, [[at[0], at[1]]], null);
+      n.rivalCombat(now);
+      Math.random = old;
+      return { main: !!m.el, rival: !!r.el };
+    };
+    return { win: run(0.3, [900, 500], 1000), lose: run(0.7, [920, 520], 5000) };
   });
-  expect(result.soldier).toBe(true);
-  expect(result.guard).toBe(false);
+  expect(result.win).toEqual({ main: true, rival: false });
+  expect(result.lose).toEqual({ main: false, rival: true });
+});
+
+
+test("two rival guards overwhelm one main guard", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  const result = await page.evaluate(() => {
+    const n = window.__nest as any;
+    const at = [1000, 600];
+    const m = n.spawnPageAnt("guard", at, null);
+    n.spawnRivalUnit("rival-guard", at, [[at[0], at[1]]], null);
+    n.spawnRivalUnit("rival-guard", at, [[at[0], at[1]]], null);
+    n.rivalCombat(performance.now() + 1000);
+    return { main: !!m.el };
+  });
+  expect(result.main).toBe(false);
+});
+
+
+test("a main flyer wins 75 percent of rival flyer fights", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  const result = await page.evaluate(() => {
+    const n = window.__nest as any;
+    const run = (roll: number, at: [number, number], now: number) => {
+      const old = Math.random; Math.random = () => roll;
+      const m = n.spawnPageAnt("flyer", at, null);
+      const r = n.spawnRivalUnit("rival-flyer", at, [[at[0], at[1]]], null);
+      n.rivalCombat(now);
+      Math.random = old;
+      return { main: !!m.el, rival: !!r.el };
+    };
+    return { win: run(0.7, [1100, 500], 1000), lose: run(0.9, [1120, 520], 5000) };
+  });
+  expect(result.win).toEqual({ main: true, rival: false });
+  expect(result.lose).toEqual({ main: false, rival: true });
 });
