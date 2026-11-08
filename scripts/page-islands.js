@@ -17,6 +17,7 @@ if (document.querySelector("[data-live-figure]")) tasks.push(import("/site/figur
 // The ant in the status bar is the door. The game script loads with the page and stays closed
 // until the ant is clicked or `nest` is typed in the terminal. There is no query-string shortcut.
 tasks.push(import("/site/nest-mockup.js"));
+if (document.querySelector("[data-surface=\"chat-log\"]")) tasks.push(import("/site/desk-consent.js"));
 if (document.querySelector("[data-note-progress]")) tasks.push(import("/site/note-progress.js"));
 
 await Promise.all(tasks);

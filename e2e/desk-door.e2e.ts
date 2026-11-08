@@ -79,7 +79,7 @@ test.describe("THE DESK — client transport, no WebGPU → Desk Offline (chat h
       (window as unknown as { grain: { door: { submit(a: string, s: string, p: unknown): void } } })
         .grain.door.submit("chat.send", "chat-log", { text: "What should I build next?" }));
 
-    const reply = page.locator('[data-surface="chat-log"] .chat-message[data-role="ai"]').last();
+    const reply = page.locator('[data-surface="chat-log"] .chat-message[data-role="ai"]:not([data-consent-notice])').last();
     await expect(reply).toContainText("offline");
     await expect(reply).not.toContainText("Noted —");   // the stub's chat.send phrasing — never leaks through
   });
