@@ -29,6 +29,16 @@ export type AnalyticsData = {
 
 export const ANALYTICS_CACHE = join(HERE, "..", ".cache", "analytics.json");
 
+// One shape check, shared by the file on disk and the snapshot published by the last deploy. A
+// partial object is rejected rather than half-rendered: `paths` present but not a map would throw on
+// every page, and a missing `visits` would print "undefined visits" in the bar.
+export function parseAnalytics(value: unknown): AnalyticsData | null {
+  const data = value as AnalyticsData | null;
+  if (typeof data?.visits !== "number") return null;
+  if (typeof data?.paths !== "object" || data.paths === null || Array.isArray(data.paths)) return null;
+  return data;
+}
+
 // Read the pulled counts, or null when there are none. Read ONCE at module load: the export crawls
 // hundreds of pages off one booted server, and re-reading the file per page would be pure waste.
 // A malformed or partial file is treated as absent rather than crashing the build — the numbers are
@@ -36,9 +46,7 @@ export const ANALYTICS_CACHE = join(HERE, "..", ".cache", "analytics.json");
 export function load(path = ANALYTICS_CACHE): AnalyticsData | null {
   try {
     // sync on purpose: this is a module-load constant, not a per-request read
-    const data = JSON.parse(readFileSync(path, "utf8")) as AnalyticsData;
-    if (typeof data?.visits !== "number" || typeof data?.paths !== "object" || !data.paths) return null;
-    return data;
+    return parseAnalytics(JSON.parse(readFileSync(path, "utf8")));
   } catch {
     return null;
   }

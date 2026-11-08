@@ -23,7 +23,7 @@ import { rewriteOrigin } from "@tjakoen/batch/export/rewrite.ts";
 import {
   listPortfolioContentRoutes, listPortfolioRawContentRoutes, listPortfolioDeckRoutes, FOLDED_NOTES, COLLECTION_DIRS,
 } from "../src/content.ts";
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 
 // Badge extras the crawler won't discover: the /b/<id> short aliases (a redirect page each) and the
 // /badges/<slug>.json Open Badges assertions (data routes). Both are generator output, read off disk.
@@ -48,6 +48,7 @@ import { findMissingComponents, missingReport } from "../src/component-refs.ts";
 import { loadTours } from "@tjakoen/crumb/loader.ts";
 import { fileURLToPath } from "node:url";
 import { config } from "../src/config.ts";
+import { analytics } from "../src/analytics.ts";
 
 const PORT = parsePort(Bun.env.EXPORT_PORT, 3330, "EXPORT_PORT");
 const BASE = `http://localhost:${PORT}`;
@@ -206,6 +207,15 @@ try {
     publicOrigin: Bun.env.PUBLIC_ORIGIN,
     log: (m) => console.log(m),
   });
+
+  // Publish the snapshot the counts were baked from. The NEXT deploy reads it back when its own pull
+  // fails and .cache is empty (tools/analytics-pull.ts), so a slow Cloudflare call costs freshness
+  // rather than the numbers. Written only when data exists: a local export with no cache must leave
+  // no file behind, or its absence would turn into an empty snapshot the next build trusted.
+  if (analytics) {
+    writeFileSync(join(DIST, "analytics.json"), `${JSON.stringify(analytics, null, 2)}\n`);
+    console.log(`[export] analytics.json published, as of ${analytics.pulledAt}`);
+  }
 
   // GitHub Pages serves ONE file for an unknown URL, and it looks for `404.html` at the deploy
   // root. Every other route freezes as `<route>/index.html`, so without this copy the site would

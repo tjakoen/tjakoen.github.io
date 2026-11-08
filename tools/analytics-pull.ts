@@ -10,6 +10,13 @@
 //                       the public beacon token in src/seo.ts: anyone holding it can read the
 //                       account's analytics, so it lives in GitHub Secrets and never in the repo.
 //
+// A FAILED PULL KEEPS THE LAST NUMBERS RATHER THAN BLANKING THE BAR. The Cloudflare GraphQL call is
+// a slow third party, and on 2026-11-08 the daily deploy timed out at the old 20s cap and shipped a
+// site whose status bar had no counts at all. Two changes answer that: the attempt now gets 60s and
+// one retry, and a pull that still fails falls back to the snapshot the previous deploy published at
+// /analytics.json. The bar already dates what it shows ("as of 11 Aug"), so a kept snapshot is
+// honest; a blank bar is the one outcome that loses information the site already had.
+//
 // Missing env is NOT an error: the script exits 0 having written nothing, so `bun run export` on a
 // laptop or a fork still succeeds and simply renders no numbers. The counts are a nicety; they must
 // never be able to cost a deploy. Every failure path below follows the same rule.
@@ -17,10 +24,10 @@
 // --probe exists because the RUM dataset's exact field names are not in Cloudflare's published
 // docs. Run it once with a real token and it prints what the schema actually offers, so the query
 // below can be corrected against reality instead of guessed at.
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { AnalyticsData } from "../src/analytics.ts";
+import { parseAnalytics, type AnalyticsData } from "../src/analytics.ts";
 import { canonicalPath, SITE } from "../src/seo.ts";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -34,8 +41,19 @@ const TOKEN = Bun.env.CF_ANALYTICS_TOKEN?.trim();
 // asking for more than Cloudflare retains simply returns what it has.
 const SINCE = Bun.env.CF_ANALYTICS_SINCE?.trim() || "2026-08-11T00:00:00Z";
 
-// Give up rather than hang a deploy on a slow third party.
-const TIMEOUT_MS = 20_000;
+// Give up rather than hang a deploy on a slow third party. 60s, because the query that groups every
+// path over three months is the slow one and 20s was measured cutting it off mid-response; the
+// deploy can afford a minute far more easily than it can afford a bar with no numbers.
+const TIMEOUT_MS = 60_000;
+
+// One retry, not a loop: a single bad window at Cloudflare is the common case, and a deploy that
+// waits two minutes to render nothing anyway is worse than one that falls back.
+const ATTEMPTS = 2;
+const RETRY_DELAY_MS = 2_000;
+
+// The fallback read is a plain file over the CDN, not a query. It gets a shorter rope than the
+// GraphQL call, so a site that is itself down cannot add another minute to the deploy.
+const SNAPSHOT_TIMEOUT_MS = 15_000;
 
 async function graphql(query: string, variables: Record<string, unknown> = {}) {
   const res = await fetch(ENDPOINT, {
@@ -162,18 +180,84 @@ export function foldPaths(rows: { count: number; dimensions: { requestPath: stri
   return out;
 }
 
-async function pull() {
+function write(data: AnalyticsData) {
+  mkdirSync(dirname(OUT), { recursive: true });
+  writeFileSync(OUT, JSON.stringify(data, null, 2));
+}
+
+async function pull(): Promise<AnalyticsData> {
   const data = await graphql(COUNTS, { account: ACCOUNT, since: SINCE, hosts: siteHosts() }) as CountsResponse;
   const account = data?.viewer?.accounts?.[0];
   if (!account) throw new Error("no account in the response — check CF_ACCOUNT_ID and the token's scope");
 
   const visits = account.total?.[0]?.sum?.visits ?? account.total?.[0]?.count ?? 0;
-  const paths = foldPaths(account.pages ?? []);
-  const out: AnalyticsData = { visits, paths, pulledAt: new Date().toISOString().slice(0, 10) };
+  return {
+    visits,
+    paths: foldPaths(account.pages ?? []),
+    pulledAt: new Date().toISOString().slice(0, 10),
+  };
+}
 
-  mkdirSync(dirname(OUT), { recursive: true });
-  writeFileSync(OUT, JSON.stringify(out, null, 2));
-  console.log(`[analytics] ${visits} visits, ${Object.keys(paths).length} paths → ${OUT}`);
+async function pullWithRetry(): Promise<AnalyticsData> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+    try {
+      return await pull();
+    } catch (error) {
+      lastError = error;
+      if (attempt < ATTEMPTS) {
+        console.log(`[analytics] attempt ${attempt} failed (${(error as Error).message}); retrying in ${RETRY_DELAY_MS / 1000}s`);
+        await Bun.sleep(RETRY_DELAY_MS);
+      }
+    }
+  }
+  throw lastError;
+}
+
+// The two places a previous snapshot can come from. The file on disk is the one a laptop keeps
+// between runs; the published URL is what a fresh CI checkout has, because that checkout starts with
+// no .cache at all and the last deploy put its numbers in dist/analytics.json.
+export function localSnapshot(path = OUT): AnalyticsData | null {
+  try {
+    return parseAnalytics(JSON.parse(readFileSync(path, "utf8")));
+  } catch {
+    return null;
+  }
+}
+
+export const SNAPSHOT_URL = new URL("/analytics.json", SITE.origin);
+
+export async function publishedSnapshot(url: URL = SNAPSHOT_URL): Promise<AnalyticsData | null> {
+  try {
+    const res = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(SNAPSHOT_TIMEOUT_MS) });
+    if (!res.ok) return null;
+    return parseAnalytics(await res.json());
+  } catch {
+    return null;
+  }
+}
+
+// Do not blank the bar when the numbers are already known. The page dates what it shows, so a kept
+// snapshot is honest; the warning is loud because a site that ships the same numbers for a week is
+// a deploy that has quietly stopped measuring.
+async function keepPrevious(reason: string) {
+  const local = localSnapshot();
+  if (local) {
+    console.log(`[analytics] ${reason}; keeping the snapshot of ${local.pulledAt} already on disk`);
+    return;
+  }
+
+  const published = await publishedSnapshot();
+  if (published) {
+    write(published);
+    console.log(`[analytics] ${reason}; showing the snapshot published on ${published.pulledAt}`);
+    return;
+  }
+
+  const message = `${reason}; no previous snapshot exists, so the status bar renders without numbers`;
+  // The annotation is for the Actions run, where nobody reads the step log unless it is highlighted.
+  // A laptop gets a plain warning rather than a marker GitHub happens to understand.
+  console.log(process.env.GITHUB_ACTIONS === "true" ? `::warning::[analytics] ${message}` : `[analytics] WARNING ${message}`);
 }
 
 // Only when RUN, never when imported: analytics-pull.test.ts imports foldPaths, and a test run must
@@ -183,13 +267,21 @@ if (import.meta.main) {
   const wantsProbe = process.argv.includes("--probe");
   if (!TOKEN || !ACCOUNT) {
     console.log("[analytics] CF_ACCOUNT_ID / CF_ANALYTICS_TOKEN not set — skipping (no numbers will render)");
+  } else if (wantsProbe) {
+    try {
+      await probe();
+    } catch (err) {
+      console.log(`[analytics] probe failed: ${(err as Error).message}`);
+    }
   } else {
     try {
-      await (wantsProbe ? probe() : pull());
+      const data = await pullWithRetry();
+      write(data);
+      console.log(`[analytics] ${data.visits} visits, ${Object.keys(data.paths).length} paths → ${OUT}`);
     } catch (err) {
       // Deliberately exit 0: a Cloudflare outage, an expired token or a schema drift must degrade to
-      // "no numbers", never to a failed deploy.
-      console.log(`[analytics] pull failed, rendering without numbers: ${(err as Error).message}`);
+      // the previous numbers (or to none, never to a failed deploy).
+      await keepPrevious(`the pull failed (${(err as Error).message})`);
     }
   }
 }
