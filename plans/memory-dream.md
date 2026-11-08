@@ -9,6 +9,7 @@ touches:
   - standards/
   - artifacts/runs/
   - package.json
+  - view/pages/
 owner: ai
 ---
 # Memory dream — a hindsight pass over the store
@@ -37,13 +38,18 @@ cheaper and better input than a transcript: the run report.
 Whoever changes the analyzer prompt changes what the store keeps, which is his own warning about the
 one place to edit.
 
+The credit also sits on `/reading`, in the shelf and its card, because that page is where a reader
+goes to see whose work shaped this one, and a citation that only a standards page carries is a
+citation the reader never meets.
+
 ## The two lanes
 
 `bun run dream export` builds the corpus and writes a manifest; `bun run dream verify <run-dir>`
 proves every source in the manifest has an output, which is his coverage check.
 
-- **runs**: `artifacts/runs/*.md`, this project's own run reports, 56 of them at 542 KB. Compact,
-  dated, written with hindsight, and the lane to read first.
+- **runs**: `artifacts/runs/*.md`, this project's own run reports as one corpus, 57 of them and
+  556 KB at the 2026-11-09 export. Compact, dated, written with hindsight, and the lane to read
+  first.
 - **sessions**: DeepSeek Harness transcripts from `~/.dsh/sessions`, one text file per session. Rich
   and enormous. At the 2026-11-09 02:20 export: 19 sessions, 31.3 MB compressed, 5.8 MB delivered
   under a cap of 700,000 characters per session, which is about 724 KB once UTF-8 is counted. A
@@ -54,6 +60,34 @@ proves every source in the manifest has an output, which is his coverage check.
   reasoning, the harness preamble and the workspace-instruction block the harness repeats in user
   turns, which is most of what a raw transcript holds. A trimmed transcript is never reported as read
   whole, and no analyzer may record a fact that only the elided middle could have carried.
+
+## How to run one
+
+```sh
+bun run dream export                                  # both lanes, into a private temporary dir
+bun run dream export --lane runs --since 2026-08-01   # just the run reports, from a date
+bun run dream export --lane sessions                  # just this project's transcripts
+bun run dream verify <run-dir>                        # every source has an output worth reading
+```
+
+The export prints the run directory and writes `manifest.json` beside the text. One analyzer gets
+one unit: a single session file, or the runs corpus, or a half of the store. The organizer gets all
+the proposals and nothing else, and is the only agent that writes. Applying its index is a copy over
+`MEMORY.md` in the store, taken after the current file has been copied into the run directory, and
+the next session's checklist is the check that the store still loads.
+
+What proves it worked, rather than that it ran: every note file has a line in the new index, and no
+line points at a file that is not on disk.
+
+```sh
+bun run dream check-index <store-dir>
+```
+
+It reads `MEMORY.md`, lists the notes beside it, and exits nonzero on an unindexed note, a dead link
+or a note linked twice. The index this plan produced reports 99 links across 99 notes, every note
+covered and every line real. That command exists instead of a shell one-liner because the obvious
+one, `grep -o '](.*\.md)'`, is greedy and mangles a line that carries three links, which is exactly
+the line the old index had.
 
 ## The trigger: session close, never a schedule
 
