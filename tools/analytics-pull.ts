@@ -191,9 +191,20 @@ async function pull(): Promise<AnalyticsData> {
   if (!account) throw new Error("no account in the response — check CF_ACCOUNT_ID and the token's scope");
 
   const visits = account.total?.[0]?.sum?.visits ?? account.total?.[0]?.count ?? 0;
+  const paths = foldPaths(account.pages ?? []);
+
+  // An empty per-page result next to a site total is the shape Cloudflare returned on 2026-11-08
+  // ("1,000 visits, 0 paths"), and it is not something a visitor can see or a reader can debug. Log
+  // what actually came back, once, so the next run explains itself instead of looking like a site
+  // nobody visits.
+  if (visits > 0 && Object.keys(paths).length === 0) {
+    const rows = account.pages?.length ?? 0;
+    console.log(`[analytics] ${visits} visits but ${rows} page rows; first row: ${JSON.stringify(account.pages?.[0] ?? null).slice(0, 300)}`);
+  }
+
   return {
     visits,
-    paths: foldPaths(account.pages ?? []),
+    paths,
     pulledAt: new Date().toISOString().slice(0, 10),
   };
 }
