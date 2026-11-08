@@ -1,7 +1,15 @@
+---
+title: Do mounted skills fire unprompted? (S0 exit)
+status: resolved
+resolved: 2026-11-08
+---
+
 # Decision — do mounted skills fire unprompted? (S0 exit)
 
 - **Date:** 2026-08-05
 - **Gates:** `plans/skills-runtime.md` S0 → S1
+- **Resolved:** 2026-11-08. The sync emits `when:` and 21 skills mount; every standard's `when` carries
+  the pre-emptive clause, literal triggers and an anti-rationalization line.
 - **Verdict:** **Yes, the mechanism works. No, ours did not fire.** The discriminator is description
   shape, and it is the whole lever. S1 keeps its `when:` key and gains a register requirement.
 

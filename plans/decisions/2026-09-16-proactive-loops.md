@@ -1,8 +1,16 @@
+---
+title: Scheduled work is adopted, under a gate
+status: resolved
+resolved: 2026-11-08
+---
+
 # Decision — scheduled work is adopted, under a gate
 
 - **Date:** 2026-09-16
 - **Amends:** the 2026-07-26 call recorded in LOOP §1 and `plans/ai-workflow-loop.md`: *no cron, no
   scheduled agents, the loop is work-triggered*.
+- **Resolved:** 2026-11-08. All five chores are wired: link rot, cold build and unacked answers in
+  heartbeat.yml, dependency upgrades in deps-drift.yml, and the red-main responder in ci-red.yml.
 - **Verdict:** **The blanket rejection is lifted and replaced by a four-condition promotion gate.**
   Five chores move to a trigger nobody is present for. The hard stops do not move at all.
 

@@ -21,7 +21,7 @@ the story card from the same set.
 ## The AI implementation roadmap note (drafted 2026-08-18)
 
 **Everybody Wants the Agent. Somebody Has to Build the Floor.**
-(content/notes/build-the-floor.md, **PUBLISHED** 2026-08-19, ~28 min after the 2026-08-20 pass). The
+(content/notes/build-the-floor.md, **PUBLISHED** 2026-08-19; the 2026-08-20 pass follows it). The
 deck shipped alongside it: [/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 33 slides.
 
 **2026-08-20 pass, uncommitted at time of writing.** A section was added between the roadmap and
