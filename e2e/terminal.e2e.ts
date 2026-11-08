@@ -389,8 +389,10 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await expect.poll(() => page.evaluate(() => window.__nest!.rival.active)).toBe(true);
-    await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length)).toBeGreaterThan(0);
+    expect(await page.evaluate(() => window.__nest!.rival.active)).toBe(false);
+    await page.evaluate(() => window.__nest!.startParty());
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.active), { timeout: 20_000 }).toBe(true);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length), { timeout: 15_000 }).toBeGreaterThan(0);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size), { timeout: 15_000 }).toBeGreaterThan(0);
     const placement = await page.evaluate(() => {
       const home = window.__nest!.home.base;

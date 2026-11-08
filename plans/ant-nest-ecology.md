@@ -1,6 +1,6 @@
 # Nest: the page owner's ecology
 
-Status: PHASE 0 IMPLEMENTED; PHASE 4 HAS A FIRST SLICE. The rival mound, theft, retreat and a first soldier contest are in. The full rival queen, crew growth, sweet, environmental triggers and satellite roles remain. The worktree is
+Status: PHASE 0 IMPLEMENTED; PHASE 4 HAS A FIRST SLICE. The rival arrives after the first worship with a built, slightly different mound; theft, retreat and a first soldier contest are in. The full rival queen, crew growth, sweet, environmental triggers and satellite roles remain. The worktree is
 `perf/nest-lazy-load`; the audit session's main tree stays untouched.
 
 ## The decision this plan is built on
