@@ -84,7 +84,6 @@
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-ant.rival-worker svg { transform: scale(.78); }
     .nest-ant.rival.soldier svg, .nest-ant.rival-guard svg { transform: scale(1.3); }
-    .nest-ant.rival-guard svg { transform: scale(1.3); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
     .nest-hill.rival.constructing { animation: rival-build 2.6s cubic-bezier(.2,.7,.3,1) both; transform-origin: 50% 100%; }
     @keyframes rival-build { from { opacity: .12; transform: scaleY(.06); } 55% { opacity: .7; } to { opacity: 1; transform: none; } }
@@ -2575,7 +2574,7 @@
 
   const growRival = () => {
     if (!rival.active || state.party) return;
-    if (!rival.war && (rival.stolen.size >= 8 || state.partyIndex >= 2)) { rival.war = true; log("the colony declares all-out war on the rival"); }
+    if (!rival.war && rival.stolen.size >= 10) { rival.war = true; log("the colony declares all-out war on the rival"); }
     if (!rival.ants.length) { if (rival.trails.length || performance.now() > (rival.buildUntil || 0)) retreatRival(); return; }
     if (performance.now() < (rival.nextGrow || 0)) return;
     const caps = rivalCaps();

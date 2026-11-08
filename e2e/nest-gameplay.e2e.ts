@@ -239,3 +239,15 @@ test("reset restores letters taken by the rival", async ({ page }) => {
   await page.waitForTimeout(800);
   expect(await page.evaluate(() => (window.__nest as any).state.hiddenLetters.size)).toBe(0);
 });
+
+
+test("you can click a rival mini mound down", async ({ page }) => {
+  test.setTimeout(90_000);
+  await open(page);
+  await page.evaluate(() => (window.__nest as any).startRival());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 45_000 }).toBeGreaterThan(0);
+  const before = await page.evaluate(() => (window.__nest as any).rival.minis.length);
+  const mini = page.locator(".nest-hill.rival.rival-mini").first();
+  await mini.click(); await mini.click(); await mini.click();
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 5_000 }).toBeLessThan(before);
+});
