@@ -201,6 +201,35 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(mound).toHaveClass(/exposed/);
   });
 
+  test("the colony stops its frame loop when the tab is hidden", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.__rafCount = 0;
+      const raf = window.requestAnimationFrame.bind(window);
+      window.requestAnimationFrame = (cb) => raf((t) => {
+        window.__rafCount = (window.__rafCount ?? 0) + 1;
+        cb(t);
+      });
+    });
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(400);
+    await page.evaluate(() => {
+      Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await page.waitForTimeout(200);
+    const hidden = await page.evaluate(() => window.__rafCount ?? 0);
+    await page.waitForTimeout(400);
+    expect(await page.evaluate(() => window.__rafCount ?? 0)).toBe(hidden);
+    await page.evaluate(() => {
+      Object.defineProperty(document, "hidden", { configurable: true, get: () => false });
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await page.waitForTimeout(350);
+    expect(await page.evaluate(() => window.__rafCount ?? 0)).toBeGreaterThan(hidden);
+  });
+
   test("keyboard tool switches do not resize the colony", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
@@ -308,7 +337,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(mound).toHaveAttribute("aria-label", /5 hits left/);
   });
 
-  test("the next worship scales with the colony", async ({ page }) => {
+  test("the next worship stays put while the colony grows", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
@@ -316,7 +345,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.evaluate(() => { for (let i = 0; i < 8; i++) window.__nest!.newAnt("worker", "hatch", 0); });
     await page.waitForTimeout(250);
     const after = await page.locator("#nest-mock [data-k='worship-val']").textContent();
-    expect(after).not.toBe(before);
+    expect(after).toBe(before);
   });
 
   test("the meters explain themselves", async ({ page }) => {
@@ -416,14 +445,14 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder") ?? false);
     await page.evaluate(() => window.__nest!.startParty());
     await expect(page.locator("#nest-mock")).toHaveClass(/celebrating/);
-    await expect(page.locator(".nest-queen")).toBeVisible();
+    await expect(page.locator(".nest-queen:not(.panel-queen)")).toBeVisible();
     await expect(page.locator("[data-k='worship-bar']")).toBeVisible();
     await expect(page.locator(".nest-ant.dancing").first()).toBeVisible();
     await page.waitForTimeout(1800);
-    await expect(page.locator(".nest-queen")).toHaveClass(/dancing/);
-    const queen = await page.locator(".nest-queen").boundingBox();
+    await expect(page.locator(".nest-queen:not(.panel-queen)")).toHaveClass(/dancing/);
+    const queen = await page.locator(".nest-queen:not(.panel-queen)").boundingBox();
     const hill = await page.locator(".nest-hill").first().boundingBox();
-    expect(queen && hill && queen.y > hill.y + hill.height).toBe(true);
+    expect(queen && hill && (queen.y > hill.y + hill.height || queen.x > hill.x + hill.width || queen.x + queen.width < hill.x)).toBe(true);
   });
 
   test("the stray command sends an ant that runs for the launcher", async ({ page }) => {
@@ -449,6 +478,20 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.evaluate(() => window.__nestStray?.spawn(true));
     await expect(page.locator(".nest-stray")).toHaveCount(1);
     await expect(page.locator(".nest-stray")).toHaveCount(0, { timeout: 25000 });
+  });
+
+  test("the speed control cycles the colony through 1x, 2x and 4x", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    const speed = page.locator('[data-k="speed"]');
+    await expect(speed).toContainText("1×");
+    await speed.click();
+    await expect(speed).toContainText("2×");
+    await speed.click();
+    await expect(speed).toContainText("4×");
+    await speed.click();
+    await expect(speed).toContainText("1×");
   });
 
   test("Nest tools lock links during play, and a page switch closes the colony", async ({ page }) => {
