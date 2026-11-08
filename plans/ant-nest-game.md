@@ -64,7 +64,8 @@ unreadable and the colony has won that page.
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
   below the fold. The first two favor a spot near the main hill; later ones spread out with a little jitter, not on a grid. If no clear ground is near, the search expands outward before it gives up. Builders
   favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends
-  guards to the nearest trail; when that trail disappears they take the nearest new one, or circle
+  guards to the nearest trail, spread across lanes; they walk several passes, return to circle their
+  mound once and head back out. When a trail disappears they take the nearest new one, or circle
   the mound while none is ready. Each mound keeps up to three guards and three flyers. It sends
   flyers to steal letters. Its mound thins
   with each hit, and a fallen mound lowers the stores cap. A hurt mound heals one hit at a time. Knocking it calls the guards home and flashes the mound and every guard; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
