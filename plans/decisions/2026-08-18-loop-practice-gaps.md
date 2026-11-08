@@ -1,10 +1,19 @@
+---
+title: The three calls under loop-practice-gaps
+status: resolved
+resolved: 2026-11-08
+---
+
 # Decision — the three calls under loop-practice-gaps
 
 - **Date:** 2026-08-18
 - **Gates:** `plans/loop-practice-gaps.md` from todo to buildable
-- **Verdict:** **All three settled as recommended.** A test failure reaches the model rather than
-  only the transcript, `opusplan` becomes the machine default on a week's trial, and the worktree
-  unit is the session.
+- **Resolved:** 2026-11-08. Call 1 is wired through PostToolUse, call 3 is the convention, and call 2
+  is the named exception: sonnet stays.
+- **Verdict:** **Two of the three settled as recommended, and the owner kept sonnet.** A test failure
+  reaches the model rather than only the transcript, the machine default stays on sonnet because this
+  work does not need a stronger model and the cheaper one is good, and the worktree unit is the
+  session.
 
 ## What this is, and what it is not
 
@@ -38,7 +47,7 @@ model, and never block. Advisory in the sense that no turn is failed; not adviso
 that matters, because the session receives it and has to answer for it. The teeth are that the
 failure arrives where work still happens rather than where reading happens.
 
-## 2. `opusplan` becomes the machine default, on a week's trial
+## 2. The machine default stays on sonnet (the exception)
 
 **The question.** SESSION-LOOP section 6 recommends the plan-then-execute split and names
 `/model opusplan` as the way to get it with no babysitting. `settings.json` sets `opus[1m]` flat.
@@ -52,9 +61,10 @@ which is early by construction, when there is little behind it to re-pay for. Th
 is smaller and duller: token accounting spread across two tiers is harder to read than accounting on
 one, and this estate does read it.
 
-**The answer.** Machine default, measured for a week against the flat baseline, reverted if the
-numbers disappoint. A standard that has never run cannot be defended on the grounds that running it
-might complicate a report.
+**The answer, as it stands on 2026-11-08.** Sonnet stays. The week's trial was not run, and the
+  owner's call is that this work does not need a stronger model, the cheaper default is good, and the
+  plan-then-execute split can be asked for per session when a task actually wants it. The reasoning
+  above is kept as the case that was made and declined, not as an instruction to run later.
 
 ## 3. The worktree unit is the session
 
