@@ -9,6 +9,7 @@ import mailbox from "../content/data/mailbox.json" with { type: "json" };
 declare global {
   interface Window {
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
+    __rafCount?: number;
     __nest?: {
       state: {
         ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; el?: Element }>;
@@ -203,23 +204,53 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     expect(Math.abs((after?.width ?? 0) - (before?.width ?? 0))).toBeLessThan(1);
   });
 
+  test("pause stops the frame loop and resume starts it again", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.__rafCount = 0;
+      const raf = window.requestAnimationFrame.bind(window);
+      window.requestAnimationFrame = (cb) => raf((t) => {
+        window.__rafCount = (window.__rafCount ?? 0) + 1;
+        cb(t);
+      });
+    });
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(400);
+    const running = await page.evaluate(() => window.__rafCount ?? 0);
+    expect(running).toBeGreaterThan(0);
+
+    await page.locator('[data-k="pause"]').click();
+    await page.waitForTimeout(250);
+    const paused = await page.evaluate(() => window.__rafCount ?? 0);
+    await page.waitForTimeout(400);
+    expect(await page.evaluate(() => window.__rafCount ?? 0)).toBe(paused);
+
+    await page.locator('[data-k="pause"]').click();
+    await page.waitForTimeout(350);
+    expect(await page.evaluate(() => window.__rafCount ?? 0)).toBeGreaterThan(paused);
+  });
+
   test("a killed scout leaves no trail behind", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.waitForFunction(() => (window.__nest?.state.ants.filter((a) => a.scoutRoute).length ?? 0) >= 1);
+    await page.waitForFunction(() => {
+      const scouts = window.__nest?.state.ants.filter((a) => a.role === "scout" && a.job === "scout" && a.block) ?? [];
+      return scouts.length > 0;
+    });
     const route = await page.evaluate(() => {
-      const scout = window.__nest!.state.ants.find((a) => a.scoutRoute);
-      return scout ? (scout.block!.textContent || "").trim().slice(0, 40) : null;
+      const scout = window.__nest!.state.ants.find((a) => a.role === "scout" && a.job === "scout" && a.block);
+      return scout ? { id: scout.id, block: (scout.block!.textContent || "").trim().slice(0, 40) } : null;
     });
     expect(route).not.toBeNull();
-    await page.evaluate(() => {
-      const scout = window.__nest!.state.ants.find((a) => a.scoutRoute);
+    await page.evaluate((id) => {
+      const scout = window.__nest!.state.ants.find((a) => a.id === id);
       if (scout) window.__nest!.squash(scout);
-    });
+    }, route!.id);
     await page.waitForTimeout(350);
     const trailBlocks = await page.evaluate(() => window.__nest!.state.trails.map((t) => (t.block.textContent || "").trim().slice(0, 40)));
-    expect(trailBlocks).not.toContain(route);
+    expect(trailBlocks).not.toContain(route!.block);
   });
 
   test("the queen sends a scout when none is left", async ({ page }) => {
