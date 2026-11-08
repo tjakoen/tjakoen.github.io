@@ -181,8 +181,10 @@
     .nest-mini.hit { animation: nest-mini-hit .25s ease-out; }
     @keyframes nest-mini-hit { 30% { transform: translateX(2px) scale(.96); } }
     .nest-queen { position: absolute; width: 60px; height: 38px; margin: -19px 0 0 -30px; color: var(--color-accent); pointer-events: none; z-index: 2;
-      filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 35%, transparent)); transition: opacity .4s; }
+
+      filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 35%, transparent)); transition: opacity .4s, left 1.2s ease-in-out, top 1.2s ease-in-out; }
     .nest-queen svg { display: block; width: 60px; height: 38px; overflow: visible; }
+    .nest-queen.panel-queen { z-index: 4; }
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
     .nest-queen.crawling { animation: nest-queen-crawl .18s steps(2) infinite; }
     .nest-queen.dancing { animation: nest-queen-dance .5s ease-in-out infinite alternate; }
@@ -433,6 +435,7 @@
     sound: '<path d="M3 9h4l5-4v14l-5-4H3zm13 0a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/>',
     pause: '<path d="M9 5v14m6-14v14"/>',
     play: '<path d="m8 5 11 7-11 7z"/>',
+    fast: '<path d="m4 5 7 7-7 7m7-14 7 7-7 7"/>',
     restore: '<path d="M4 10a8 8 0 1 1 1 8m-1-8V4m0 6h6"/>',
   };
   const icon = (name) => `<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[name]}</svg>`;
@@ -481,7 +484,7 @@
       ${tool("squash", "Squash", "1")}${tool("wipe", "Wipe", "2")}${gameAction("bait", "bait", "Bait", "Drop bait", "Place a crumb to lure nearby ants away.")}${gameAction("seal", "seal", "Seal", "Seal hills", "Seal every anthill for a few seconds.")}
     </div>
     <div class="row tools" role="group" aria-label="Page controls">
-      ${tool("read", "Links", "3", true)}${action("sound", "muted", "Unmute", "Turn on colony sounds.")}${action("pause", "pause", "Pause", "Pause the colony.")}${action("restore", "restore", "Restore page", "Put stolen letters back and re-site the mounds while the colony keeps running.")}
+      ${tool("read", "Links", "3", true)}${action("sound", "muted", "Unmute", "Turn on colony sounds.")}${gameAction("speed", "fast", "1×", "Speed 1×", "Run the colony faster.")}${action("pause", "pause", "Pause", "Pause the colony.")}${action("restore", "restore", "Restore page", "Put stolen letters back and re-site the mounds while the colony keeps running.")}
     </div>
 
     <div class="confirm" data-k="confirm" role="alertdialog" aria-labelledby="nest-confirm-title" hidden>
@@ -596,7 +599,7 @@
   };
   addEventListener("beforeunload", onBeforeUnload);
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
-    over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false,
+    over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
@@ -907,12 +910,18 @@
   // A scout wanders: loose waypoints toward a block of text no trail reaches yet, its steps recorded.
   const remaining = (t) => {
     if (!t || t.state === "gone") return false;
-    if (t.ttl && performance.now() / 1000 > t.ttl) return false;
+    const now = performance.now();
+    if (t.ttl && now / 1000 > t.ttl) return false;
+    // The step and every worker at the entrance ask this. A short cache keeps the text and rect
+    // scan off the hot path; a trail may linger for at most this long after its last letter.
+    if (t.remainAt && now - t.remainAt < 600) return t.remainValue;
+    t.remainAt = now;
     for (const n of textNodes(t.block)) for (let i = 0; i < n.data.length; i++) {
       if (!/\S/.test(n.data[i])) continue;
       const L = letterOf(n, i); if (L.state === "stolen") continue;
-      if (inPatch(rectOf(n, i), t.end)) return true;
+      if (inPatch(rectOf(n, i), t.end)) { t.remainValue = true; return true; }
     }
+    t.remainValue = false;
     return false;
   };
 
@@ -1132,8 +1141,8 @@
     checkWipe();
   };
 
-  const enterNest = (ant, carrying) => {
-    ant.el?.remove(); ant.el = null; ant.where = "nest"; ant.route = "down"; ant.d = 0; ant.food = carrying || null; ant.letter = null;
+  const enterNest = (ant, carrying, meal = 1) => {
+    ant.el?.remove(); ant.el = null; ant.where = "nest"; ant.route = "down"; ant.d = 0; ant.food = carrying || null; ant.meal = meal; ant.letter = null;
   };
 
   // Walk toward a point. Ants keep their distance: one that would close on an ant ahead going the
@@ -1234,11 +1243,11 @@
       blip(520, 0.05, "sine"); chord([523, 659], 0.16, 0.022);
       if (ant.scoutRoute) layTrail(ant);
       if (ant.role === "scout") { ant.role = "worker"; }
-      if (ant.role === "flyer") { state.stores++; ant.letter = null; ant.job = "fly"; ant.path = [randomPoint()]; ant.k = 0; return; } // flyers feed the stores and fly on
+      if (ant.role === "flyer") { state.stores += L.need; ant.letter = null; ant.job = "fly"; ant.path = [randomPoint()]; ant.k = 0; return; } // flyers feed the stores and fly on
       L.crew.forEach((a) => { if (a !== ant && a.el) enterNest(a, null); });
-      return enterNest(ant, L.ch);
+      return enterNest(ant, L.ch, L.need);
     }
-    if (!move(ant, goal[0], goal[1], dt, SPEED)) {
+    if (!move(ant, goal[0], goal[1], dt, ant.job === "scout" ? SPEED * 1.35 : SPEED)) {
       if (ant.job === "scout" && Math.hypot(ant.x - ant.walked[ant.walked.length - 1][0], ant.y - ant.walked[ant.walked.length - 1][1]) > 14) ant.walked.push([ant.x, ant.y]);
       ant.px = ant.x; ant.py = ant.y; return;
     }
@@ -1271,13 +1280,20 @@
     if (ant.route === "hatch") { ant.route = "up"; ant.d = LEN.up; return atEntrance(ant); }
     if (ant.route === "down") { if (ant.food) state.larder.push(ant.food); ant.route = "feed"; ant.d = 0; ant.food = ant.food ? "meal" : null; return; }
     if (ant.route === "feed") {
-      // every other letter goes to the stores instead of the queen; a full store builds a mini hill
-      if (ant.food && (state.feedFlip = !state.feedFlip) && !state.queenDead) { state.larder.shift(); state.stores++; ant.food = null; }
+      // A light letter is one portion. A heading that needed two or three ants is worth that many
+      // portions, split half to the stores and half to the queen in the same alternating order.
       if (ant.food) {
-        state.larder.shift(); state.meals++; state.queen.eat = 0.8;
-        if (state.meals % 3 === 0 && !state.queenDead) { state.queen.lay = 1; setTimeout(() => { state.eggs.push({ d: 0, age: 0 }); log("the queen laid an egg"); blip(660, 0.06, "sine", 0.04); }, 900); }
+        const portions = Math.max(1, ant.meal || 1);
+        for (let k = 0; k < portions; k++) {
+          if ((state.feedFlip = !state.feedFlip) && !state.queenDead) state.stores++;
+          else {
+            state.meals++; state.queen.eat = 0.8;
+            if (state.meals % 3 === 0 && !state.queenDead) { state.queen.lay = 1; setTimeout(() => { state.eggs.push({ d: 0, age: 0 }); log("the queen laid an egg"); blip(660, 0.06, "sine", 0.04); }, 900); }
+          }
+        }
+        state.larder.shift();
       }
-      ant.food = null; ant.route = "up"; ant.d = 0; return;
+      ant.food = null; ant.meal = 1; ant.route = "up"; ant.d = 0; return;
     }
     if (ant.route === "up") atEntrance(ant);
   };
@@ -1309,24 +1325,41 @@
   // should walk into open ground, not through a line of prose.
   const stageSpot = () => {
     const terrain = miniTerrain(true);
-    const hb = home.el.getBoundingClientRect(); const [hx, hy] = local(hb);
+    const hb = home.el.getBoundingClientRect(); const m = main.getBoundingClientRect();
+    const hx = hb.left - m.left + main.scrollLeft, hy = hb.top - m.top + main.scrollTop;
     const own = [hx, hy, hx + hb.width, hy + hb.height];
     const obstacles = terrain.obstacles.filter((r) => !(r[0] < own[2] && r[2] > own[0] && r[1] < own[3] && r[3] > own[1]));
-    const fallback = { x: home.base[0], y: Math.min(main.scrollHeight - 30, home.base[1] + 46) };
-    for (const [dx, dy] of [[0, 46], [0, 74], [64, 28], [-64, 28], [80, 56], [-80, 56], [0, 104]]) {
-      const x = home.base[0] + dx, y = Math.min(main.scrollHeight - 30, home.base[1] + dy);
+    const baseX = hx + hb.width / 2;
+    const baseY = hy + hb.height;
+    const fallback = { x: baseX, y: Math.min(main.scrollHeight - 30, baseY + 26) };
+    for (const [dx, dy] of [[0, 26], [0, 54], [hb.width / 2 + 34, 18], [-hb.width / 2 - 34, 18], [hb.width / 2 + 46, 44], [-hb.width / 2 - 46, 44]]) {
+      const x = baseX + dx, y = Math.min(main.scrollHeight - 30, baseY + dy);
       const box = [x - 54, y - 38, x + 54, y + 44];
       if (box[0] < 4 || box[2] > main.clientWidth - 4 || box[1] < 0 || box[3] > main.scrollHeight) continue;
+      if (overlaps(box, own)) continue;
       if (!obstacles.some((r) => overlaps(box, r))) return { x, y };
     }
     return fallback;
   };
-  // The next worship rises and falls with the living colony. A small colony does not wait for a
-  // big colony's letter count, and a big one is not dragged back to a small target.
-  const worshipTarget = () => {
-    const tier = TUNING.party[state.partyIndex] ?? state.nextParty + 120;
-    const scale = Math.max(0.45, Math.min(1.8, state.ants.length / 10));
-    return Math.max(8, Math.round(tier * scale));
+  // The current milestone is fixed. It does not move while the colony hatches, so the bar can
+  // actually reach it; only the dance that completes it raises the next target.
+  const worshipTarget = () => Math.max(8, state.nextParty);
+
+  // A little queen walks up out of the panel nest for the start of the dance, and back down at
+  // the end. The page queen does the long walk to the stage in between.
+  const panelQueen = (descend = false) => {
+    const q = document.createElement("div");
+    q.className = "nest-queen panel-queen";
+    q.innerHTML = QUEEN_SVG;
+    q.style.left = `${QUEEN[0] * well.clientWidth}px`;
+    q.style.top = `${QUEEN[1] * well.clientHeight}px`;
+    well.append(q);
+    const frames = descend
+      ? [{ transform: "translate(-50%, -240%) scale(.7)", opacity: 0 },
+        { transform: "translate(-50%, -50%) scale(1)", opacity: 1 }]
+      : [{ transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
+        { transform: "translate(-50%, -240%) scale(.7)", opacity: 0 }];
+    q.animate(frames, { duration: 1200, easing: "ease-in-out" }).onfinish = () => q.remove();
   };
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
@@ -1336,7 +1369,11 @@
     const queen = document.createElement("div"); queen.className = "nest-queen bob crawling"; queen.innerHTML = QUEEN_SVG;
     queen.style.left = mound.hole[0] + "px"; queen.style.top = (mound.hole[1] - 8) + "px";
     layer.append(queen);
+    requestAnimationFrame(() => { queen.style.left = stage.x + "px"; queen.style.top = stage.y + "px"; });
+    setTimeout(() => { queen.classList.remove("crawling"); queen.classList.add("dancing"); }, 1200);
     panel.classList.add("celebrating");
+    scent.style.opacity = "0";
+    panelQueen();
     hills.forEach((h) => { h.el.style.pointerEvents = "none"; });
     const dancers = state.ants.filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
     dancers.forEach((a, i) => {
@@ -1349,7 +1386,8 @@
       g.dataset.radius = String(54 + (i % 2) * 16);
       layer.append(g); glyphs.push(g);
     });
-    state.party = { start: now, until: now + (final ? 16000 : 9000), final, queen, dancers, glyphs, stage,
+    const until = now + (final ? 16000 : 9000);
+    state.party = { start: now, until, returnAt: until - 1400, final, queen, dancers, glyphs, stage, returning: false,
       queenFrom: mound.hole.slice() };
     state.queen.lay = 0;
     log(final ? "the colony takes the page" : "the colony dances");
@@ -1358,13 +1396,13 @@
   const stepParty = (now, dt) => {
     const p = state.party; if (!p) return;
     const t = now / 1000;
-    const walk = Math.min(1, (now - p.start) / 1200);
-    const ease = walk * walk * (3 - 2 * walk);
-    const qx = p.queenFrom[0] + (p.stage.x - p.queenFrom[0]) * ease + Math.sin(walk * Math.PI * 7) * 2;
-    const qy = p.queenFrom[1] + (p.stage.y - p.queenFrom[1]) * ease;
-    p.queen.style.left = qx + "px"; p.queen.style.top = qy + "px";
-    p.queen.classList.toggle("crawling", walk < 1);
-    p.queen.classList.toggle("dancing", walk >= 1);
+    if (!p.returning && now >= p.returnAt) {
+      p.returning = true;
+      p.queen.style.left = p.queenFrom[0] + "px";
+      p.queen.style.top = (p.queenFrom[1] - 8) + "px";
+      p.queen.classList.remove("dancing");
+      p.queen.classList.add("crawling");
+    }
     p.dancers.forEach((a) => {
       if (!a.el) return;
       const angle = a.party.angle + t * 0.9;
@@ -1383,6 +1421,8 @@
     const p = state.party; if (!p) return;
     p.queen.remove(); p.glyphs.forEach((g) => g.remove());
     panel.classList.remove("celebrating");
+    scent.style.opacity = "";
+    panelQueen(true);
     hills.forEach((h) => { h.el.style.pointerEvents = ""; });
     p.dancers.forEach((a) => {
       if (!a.el) return;
@@ -1472,11 +1512,16 @@
     };
     for (const [left, , right, bottomEdge] of terrain.gaps) {
       const center = (left + right) / 2;
-      for (const offset of [-18, 0, 18]) consider(center + offset, bottomEdge, true);
+      for (const offset of [-18, 0, 18]) consider(center + offset + (Math.random() - 0.5) * 18, bottomEdge + (Math.random() - 0.5) * 8, true);
+    }
+    // Leave a little air around the grid. A few random probes keep the third mound from landing
+    // on the same rail as the first two, which is what made the hills look placed by a grid.
+    for (let n = 0; n < 28; n++) {
+      consider(34 + Math.random() * (main.clientWidth - 68), top + 40 + Math.random() * Math.max(1, bottom - top - 80), false);
     }
     if (best) return best;
     for (let y = top + 40; y < bottom - 4; y += 12) {
-      for (let x = 34; x <= main.clientWidth - 34; x += 12) consider(x, y, false);
+      for (let x = 34; x <= main.clientWidth - 34; x += 12) consider(x + (Math.random() - 0.5) * 8, y + (Math.random() - 0.5) * 8, false);
     }
     return best;
   };
@@ -1661,8 +1706,8 @@
         }
       } else if (m.hp >= MINI_HP) m.nextHeal = 0;
       if (t < m.next || state.queenDead) return; m.next = t + SPEED_SPAWN();
-      if (m.guards.size < 2 && !(m.hadGuards && m.guards.size === 0)) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); }
-      else if (m.flyers.size < 2) { const f = spawnPageAnt("flyer", m.hole.slice(), m); m.flyers.add(f); f.job = "fly"; f.path = [randomPoint()]; f.k = 0; blip(720, 0.04, "sine", 0.02); }
+      if (m.guards.size < 3 && !(m.hadGuards && m.guards.size === 0)) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); }
+      else if (m.flyers.size < 3) { const f = spawnPageAnt("flyer", m.hole.slice(), m); m.flyers.add(f); f.job = "fly"; f.path = [randomPoint()]; f.k = 0; blip(720, 0.04, "sine", 0.02); }
     });
   };
   const SPEED_SPAWN = () => SPAWN_EVERY * (0.8 + Math.random() * 0.4);
@@ -1973,7 +2018,7 @@
   };
   const tickFrame = (now) => {
     frameRect = main.getBoundingClientRect();
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const dt = Math.min(0.05, (now - last) / 1000) * state.speed; last = now;
     if (!state.paused) {
       if (state.party) stepParty(now, dt);
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
@@ -1991,7 +2036,9 @@
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
         else if ((e.age += dt) > 3.4 && state.ants.length < MAX_ANTS) {
           state.eggs.splice(state.eggs.indexOf(e), 1);
-          const soldier = state.ants.length >= 8 && Math.random() < 0.22;
+          const soldiers = state.ants.filter((a) => a.role === "soldier").length;
+          const wantSoldiers = Math.min(3, Math.floor(state.ants.length / 8));
+          const soldier = state.ants.length >= 10 && soldiers < wantSoldiers && Math.random() < 0.3;
           newAnt(soldier ? "soldier" : "worker", "hatch", 0);
           log(soldier ? "a soldier hatched" : "an egg hatched");
           blip(soldier ? 220 : 440, 0.06, "square", 0.035);
@@ -2133,6 +2180,11 @@
   soundBtn.classList.add("nest-sound-hint");
   soundHintTimer = setTimeout(clearSoundHint, 8000);
   ["pointerenter", "focus", "click"].forEach((ev) => soundBtn.addEventListener(ev, clearSoundHint, { once: true }));
+  $("speed").addEventListener("click", () => {
+    state.speed = state.speed >= 4 ? 1 : state.speed * 2;
+    setAction("speed", "fast", `Speed ${state.speed}×`, `Run the colony at ${state.speed}×.`);
+    $("speed").querySelector("[data-label]").textContent = `${state.speed}×`;
+  });
   $("pause").addEventListener("click", () => {
     state.paused = !state.paused;
     if (state.paused) { setAction("pause", "play", "Resume", "Resume the colony."); stopLoop(); }
