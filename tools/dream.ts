@@ -197,6 +197,65 @@ export function dshSlug(cwd: string): string {
   return `--${resolve(cwd).split(sep).filter(Boolean).join("-")}--`;
 }
 
+/**
+ * Where the agent memory store keeps this project's index. Claude Code names the directory after the
+ * path with every non-alphanumeric character turned into a dash, which is the rule PANTRY also owns
+ * in its context reader; this copy exists because the dream runs from a repo, not from the hub.
+ */
+export function memoryIndexPath(cwd: string): string {
+  const slug = `-${resolve(cwd).split(sep).filter(Boolean).join("-").replaceAll(".", "-")}`;
+  return join(homedir(), ".claude", "projects", slug, "memory", "MEMORY.md");
+}
+
+export type DreamClock = {
+  /** Days since the index was written. */
+  ageDays: number;
+  /** Run reports and sessions that landed after it. */
+  newItems: number;
+  runs: number;
+  sessions: number;
+};
+
+/**
+ * The thresholds are deliberately dull. A dream is a judgment pass, so it should be overdue by
+ * evidence rather than by a schedule: either enough has landed to be worth reading back, or the
+ * index is old enough that a reader is trusting a stale map.
+ */
+export function isDreamDue(clock: DreamClock, limits = { minItems: 8, maxAgeDays: 30 }): boolean {
+  if (clock.newItems >= limits.minItems) return true;
+  return clock.ageDays >= limits.maxAgeDays && clock.newItems >= 1;
+}
+
+export function dreamClock(cwd: string, now = Date.now()): DreamClock | null {
+  const index = memoryIndexPath(cwd);
+  if (!existsSync(index)) return null;
+  const since = statSync(index).mtimeMs;
+  const ageDays = Math.floor((now - since) / 86_400_000);
+
+  const runDir = join(cwd, "artifacts", "runs");
+  const runs = existsSync(runDir)
+    ? readdirSync(runDir).filter((f) => f.endsWith(".md") && statSync(join(runDir, f)).mtimeMs > since).length
+    : 0;
+
+  const sessionsDir = join(homedir(), ".dsh", "sessions", dshSlug(cwd));
+  let sessions = 0;
+  if (existsSync(sessionsDir)) {
+    for (const entry of readdirSync(sessionsDir)) {
+      const log = join(sessionsDir, entry, "session.v4.jsonl.zstd");
+      if (existsSync(log) && statSync(log).mtimeMs > since) sessions += 1;
+    }
+  }
+  return { ageDays, newItems: runs + sessions, runs, sessions };
+}
+
+export function dreamDueLine(clock: DreamClock): string {
+  return (
+    `the memory index was written ${clock.ageDays === 0 ? "today" : `${clock.ageDays} day(s) ago`}, and ` +
+    `${clock.newItems} piece(s) of work have landed since (${clock.runs} run report(s), ${clock.sessions} session(s)). ` +
+    `A dream is the pass that reads them back: bun run dream export, then the analyzer and organizer prompts in plans/memory-dream.md.`
+  );
+}
+
 function realOrResolved(path: string): string {
   try {
     return realpathSync(path);
@@ -604,6 +663,25 @@ function verifyCommand(args: string[]): number {
   return failed ? 1 : 0;
 }
 
+function dueCommand(args: string[]): number {
+  const root = ROOT;
+  const clock = dreamClock(root);
+  if (!clock) {
+    if (args.includes("--json")) console.log(JSON.stringify({ due: false, reason: "no memory index for this project" }));
+    return 0;
+  }
+  const minItems = Number(flag(args, "min-items") ?? Bun.env.DREAM_MIN_ITEMS ?? 8);
+  const maxAgeDays = Number(flag(args, "max-age-days") ?? Bun.env.DREAM_MAX_AGE_DAYS ?? 30);
+  const due = isDreamDue(clock, { minItems, maxAgeDays });
+  if (args.includes("--json")) {
+    console.log(JSON.stringify({ due, ...clock, line: due ? dreamDueLine(clock) : "" }));
+    return 0;
+  }
+  if (!due) return 0;
+  console.log(`dream due: ${dreamDueLine(clock)}`);
+  return 0;
+}
+
 function checkIndexCommand(args: string[]): number {
   const dir = resolve(args[1] ?? "");
   const index = join(dir, "MEMORY.md");
@@ -638,12 +716,15 @@ if (import.meta.main) {
         ? verifyCommand([command, ...rest])
         : command === "check-index"
           ? checkIndexCommand([command, ...rest])
+          : command === "due"
+            ? dueCommand(rest)
         : (console.log(
             `dream: build the corpus a memory dream reads.\n\n` +
               `  bun run dream export [--lane runs|sessions|both] [--since YYYY-MM-DD]\n` +
               `                      [--max-chars N] [--max-result-chars N] [--out DIR]\n` +
               `  bun run dream verify <run-dir>\n` +
-              `  bun run dream check-index <store-dir>\n\n` +
+              `  bun run dream check-index <store-dir>\n` +
+              `  bun run dream due [--json] [--min-items N] [--max-age-days N]\n\n` +
               `Method: ${CREDIT.author}, "${CREDIT.title}", ${CREDIT.publication}, ${CREDIT.published}.\n${CREDIT.url}\n` +
               `Prompts and guardrails: plans/memory-dream.md.`,
           ),

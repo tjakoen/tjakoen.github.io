@@ -18,6 +18,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { dreamClock, dreamDueLine, isDreamDue } from '../dream.ts';
 
 export type PrFacts = {
   number: number;
@@ -75,6 +76,8 @@ export type CloseFacts = {
   /** The repository keeps a run ledger at artifacts/runs. */
   reportDir: boolean;
   report: ReportFacts;
+  /** The memory store is overdue a dream, when this repository carries the dream tool. */
+  dream?: { due: boolean; line: string } | null;
   gate: { ran: boolean; ok: boolean | null; script: string | null };
 };
 
@@ -397,8 +400,25 @@ export function gather(repo: string, options: CloseOptions = {}): CloseFacts {
     staleWorktrees: worked.stale,
     reportDir: existsSync(join(repo, 'artifacts', 'runs')),
     report: readReport(repo, branch),
+    dream: readDream(repo),
     gate,
   };
+}
+
+/**
+ * The dream nudge, read from the project's own tool rather than reimplemented here. A repository
+ * without tools/dream.ts has no memory store to maintain, so it reports null and says nothing.
+ */
+export function readDream(repo: string): CloseFacts['dream'] {
+  if (!existsSync(join(repo, 'tools', 'dream.ts'))) return null;
+  try {
+    const clock = dreamClock(repo);
+    if (!clock) return null;
+    const due = isDreamDue(clock);
+    return { due, line: due ? dreamDueLine(clock) : '' };
+  } catch {
+    return null;
+  }
 }
 
 export function isOnMain(facts: CloseFacts): boolean {

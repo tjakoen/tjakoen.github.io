@@ -149,6 +149,15 @@ need" move as the standards index itself.
 than forking a second copy. When a memory turns out wrong, fix or delete it — a stale memory that
 contradicts the code is worse than none. Convert relative dates to absolute ("today" rots).
 
+**The dream, when the store is due one.** Writing forward leaves the store full of facts that were
+true on the day they were written, and no session ever reads it backwards. That pass is the dream: the
+run reports and the session transcripts are exported as text, one analyzer distills each one, and one
+organizer rewrites the index with dated supersession. It is a judgment, so LOOP §2b keeps it off any
+schedule. The check is dull on purpose: the dream due command prints a line when enough has landed
+since the index was written, the close gate raises that line once, and the owner decides. The method,
+the two prompts and the guardrails live in the portfolio's memory-dream plan, which is also where the
+tool lives; the credit for the pattern is recorded in LOOP §5.
+
 ---
 
 ## 5. Handoff (end a session so the next one starts cold-but-oriented)
