@@ -75,8 +75,9 @@ proves every source in the manifest has an output, which is his coverage check.
 
 The nudge is never a schedule and never a silent pass. `finish-gate.sh` blocks once with a reason the
 model reads, and the reason says in as many words that a dream is a judgment and must be put to the
-owner rather than started unasked. If the owner says not now, the session says so in its recap and the
-gate stays quiet until the store is genuinely due again.
+owner rather than started unasked. If the owner says not now, the session says so in its recap, and the
+question returns at the next close, because a store that is due stays due until it is dreamed. That is
+the heartbeat working rather than a bug.
 
 ## How to run one
 
