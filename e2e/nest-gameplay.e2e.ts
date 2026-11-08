@@ -130,3 +130,22 @@ test("heading letters advertise a heavier crew than body letters", async ({ page
   });
   expect(needs.some((v: number) => v >= 2)).toBe(true);
 });
+
+
+test("a main guard can break the rival mound without a player wipe", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => (window.__nest as any).startParty());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
+  const hole = await page.evaluate(() => (window.__nest as any).rival.mound.hole.slice());
+  await page.evaluate(([x, y]) => {
+    const n = window.__nest as any;
+    n.rival.hp = 1;
+    const guard = n.spawnPageAnt("guard", [x, y], null);
+    guard.hp = 99;
+    guard.job = "rival-siege";
+    guard.path = [[x, y]];
+    guard.k = 0;
+    guard.nextBite = 0;
+  }, hole);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 15_000 }).toBe(false);
+});
