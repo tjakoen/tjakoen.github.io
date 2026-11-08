@@ -52,7 +52,8 @@ unreadable and the colony has won that page.
   the first takes the closest, the second the opposite side of the mound, and the third the most
   spread-out remaining spot. A scout carries its first light letter home before the trail opens;
   a scout killed on the way leaves nothing. A heavy letter gets the trail at the pickup and a call
-  for the workers. Workers take open trails in turn, five to
+  for the workers; the next worker out of the nest joins that trail first, and keeps joining it
+  until the crew is full. Other workers take open trails in turn, five to
   a line, and a trail fades when its patch empties or after ninety seconds. Each retired
   trail sends its own successor scout, so several spent patches do not leave one line. Successors
   look near the mound first; the trail target is one per two ants, so it keeps climbing. Soldiers hatch once the colony passes eight and take two
