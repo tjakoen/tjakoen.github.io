@@ -19,6 +19,7 @@ test("the rival waits for the first worship, builds with builders, then opens cu
   const buildersAfter = await page.evaluate(() => (window.__nest as any).rival.ants.filter((a: any) => a.job === "rival-build").map((a: any) => [a.x, a.y]));
   expect(buildersAfter.every((p: number[], i: number) => Math.hypot(p[0] - buildersBefore[i][0], p[1] - buildersBefore[i][1]) < 2)).toBe(true);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 25_000 }).toBeGreaterThanOrEqual(3);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
   const rival = await page.evaluate(() => {
     const n = window.__nest as any;
     return {
@@ -32,6 +33,7 @@ test("the rival waits for the first worship, builds with builders, then opens cu
   expect(rival.trails.every((t: any) => t.pts > 20)).toBe(true);
   expect(rival.trails.every((t: any) => t.first[0] !== t.last[0])).toBe(true);
   expect(new Set(rival.trails.map((t: any) => `${Math.round(t.last[0])},${Math.round(t.last[1])}`)).size).toBe(3);
+  expect(await page.evaluate(() => Number(document.querySelector("[data-k='rivals']")?.textContent))).toBe(await page.evaluate(() => (window.__nest as any).rival.ants.length));
 });
 
 
