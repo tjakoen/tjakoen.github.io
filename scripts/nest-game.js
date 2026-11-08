@@ -1283,7 +1283,7 @@
   };
 
   const stepPage = (ant, dt) => {
-    if (ant.side === "rival") return stepRival(ant, dt);
+    if (ant.side === "rival") { ant.px = ant.x; ant.py = ant.y; return stepRival(ant, dt); }
     if (ant.tongue || ant.job === "scout-pending") return;
     ant.px = ant.x; ant.py = ant.y;
     if (ant.job === "dance") return; // the party moves its own dancers
@@ -1454,7 +1454,9 @@
   const checkWipe = () => {
     if (state.over || mainAnts().length || state.eggs.length || minis.length || state.builder) return;
     newAnt("scout", "hatch", 0);
-    log("the queen sends out a scout"); blip(330, 0.08, "sine");
+    newAnt("worker", "up", LEN.up - 0.06);
+    newAnt("worker", "up", LEN.up - 0.09);
+    log("the queen sends out a scout and two workers"); blip(330, 0.08, "sine");
   };
   // A missing scout is a gap, not an ending. The queen sends one whenever nobody is scouting, so
   // a killed scout cannot leave the colony with no way to find a new trail.
@@ -1988,6 +1990,7 @@
   // ---- the rival colony: a small, inverse-colour nuisance below the fold -------------------
   const removeRivalAnt = (a) => {
     if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); showChar(a.letter); a.letter.state = "free"; a.letter = null; }
+    a.glyph?.remove(); a.glyph = null;
     a.el?.remove(); a.el = null;
     a.trail?.ants.delete(a);
     state.ants = state.ants.filter((x) => x !== a);
@@ -2161,30 +2164,40 @@
       a.job = "rival-bait"; a.baitUntil = performance.now() + 6000; a.path = [[x, y]]; a.k = 0;
     });
   };
+  const bankRival = (a) => {
+    if (a.letter?.state === "rival-carry") {
+      a.letter.glyph?.remove(); a.letter.glyph = null; a.letter.state = "stolen"; rival.stolen.add(a.letter); a.letter = null;
+    }
+    a.glyph?.remove(); a.glyph = null;
+    a.job = "rival-pause"; a.pauseAt = performance.now() + 700;
+  };
   const stepRival = (a, dt) => {
     if (!a.el || a.tongue) return;
     if (a.job === "rival-flyer") {
       const g = a.path[a.k]; if (!g) { a.path = [randomPoint()]; a.k = 0; return; }
-      if (move(a, g[0], g[1], dt, SPEED * 1.5)) { a.px = a.x; a.py = a.y; a.path = [randomPoint()]; a.k = 0; }
+      const arrived = move(a, g[0], g[1], dt, SPEED * 1.5); a.px = a.x; a.py = a.y;
+      if (arrived) { a.path = [randomPoint()]; a.k = 0; }
       return;
     }
     if (a.job === "rival-build") return;
     if (a.job === "rival-guard" || a.job === "rival-defend") {
-      const threat = mainAnts().find((m) => m.el && m.where === "page" && (m.role === "soldier" || m.role === "guard" || m.role === "worker") && Math.hypot(m.x - a.x, m.y - a.y) < 150);
+      const threat = mainAnts().find((m) => m.el && m.where === "page" && (m.role === "soldier" || m.role === "guard" || m.role === "worker") && Math.hypot(m.x - a.x, m.y - a.y) < 150 && Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) > 180);
       if (threat) {
         a.job = "rival-defend"; a.path = [[threat.x, threat.y]]; a.k = 0; a.guardPause = 0;
-        if (move(a, threat.x, threat.y, dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; }
+        move(a, threat.x, threat.y, dt, SPEED * 0.9); a.px = a.x; a.py = a.y;
         return;
       }
       if (a.job === "rival-defend") { a.job = "rival-guard"; a.path = a.guardPath || []; a.k = 0; }
       if (a.guardPause && performance.now() < a.guardPause) return;
       const g = a.path[a.k]; if (!g) return;
-      if (move(a, g[0], g[1], dt, SPEED * 0.7)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.guardPath = a.path; a.path = a.path.toReversed(); a.k = 0; a.guardPause = performance.now() + 600; } }
+      const arrived = move(a, g[0], g[1], dt, SPEED * 0.7); a.px = a.x; a.py = a.y;
+      if (arrived) { if (++a.k >= a.path.length) { a.guardPath = a.path; a.path = a.path.toReversed(); a.k = 0; a.guardPause = performance.now() + 600; } }
       return;
     }
     if (a.job === "rival-bait") {
       const g = a.path[a.k];
-      if (g && move(a, g[0], g[1], dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; a.k = 0; }
+      if (g) { move(a, g[0], g[1], dt, SPEED * 0.9); a.px = a.x; a.py = a.y; }
+      a.k = 0;
       if (performance.now() >= a.baitUntil) { a.job = a.trail && state.trails.includes(a.trail) ? "rival-follow" : "rival-pause"; a.path = a.trail ? lanePath(a.trail.pts, a.lane) : []; a.k = 0; a.pauseAt = performance.now() + 300; }
       return;
     }
@@ -2197,6 +2210,7 @@
     }
     const g = a.path[a.k]; if (!g) return;
     if (!move(a, g[0], g[1], dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; return; }
+    if (a.job === "rival-home" && a.letter?.state === "rival-carry" && Math.hypot(a.x - rival.mound.hole[0], a.y - rival.mound.hole[1]) < 34) { bankRival(a); return; }
     a.px = a.x; a.py = a.y;
     if (a.glyph) { a.glyph.style.left = a.x + 2 + "px"; a.glyph.style.top = a.y - 16 + "px"; }
     if (++a.k < a.path.length) return;
@@ -2204,11 +2218,9 @@
       stealRival(a.trail, a);
       a.job = "rival-home"; a.path = lanePath(a.trail.pts.toReversed(), -a.lane); a.k = 0;
     } else if (a.job === "rival-home") {
-      if (a.letter?.state === "rival-carry") {
-        a.letter.glyph?.remove(); a.letter.state = "stolen"; rival.stolen.add(a.letter); a.letter = null; a.glyph = null;
-        log("the rival banks a letter at its mound");
-      }
-      a.job = "rival-pause"; a.pauseAt = now + 700;
+      const had = !!a.letter;
+      bankRival(a);
+      if (had) log("the rival banks a letter at its mound");
       if (a.trail && !remaining(a.trail)) { const old = a.trail; retireRivalTrail(old, false); rivalRetarget(); }
     }
   };
@@ -2238,6 +2250,7 @@
     }
     for (const m of mains) {
       if (!m.el) continue;
+      if (Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) < 180) continue;
       const group = rival.ants.filter((r) => r.el && near(r, m));
       const power = group.reduce((s, a) => s + combatPower(a), 0);
       if (power < combHp(m)) continue;
@@ -2360,7 +2373,7 @@
     if (!state.cacheTrail || !state.trails.includes(state.cacheTrail)) return goHome(ant);
     const g = ant.path[ant.k];
     if (!g) return clearCache(ant);
-    if (move(ant, g[0], g[1], dt, SPEED * 0.9)) { ant.px = ant.x; ant.py = ant.y; ant.k++; }
+    if (move(ant, g[0], g[1], dt, SPEED * 1.8)) { ant.px = ant.x; ant.py = ant.y; ant.k++; }
     else { ant.px = ant.x; ant.py = ant.y; }
     if (ant.k >= ant.path.length) return clearCache(ant);
   };
