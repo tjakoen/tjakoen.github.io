@@ -1,7 +1,7 @@
 # Nest: the page owner's ecology
 
-Status: PHASE 0 IMPLEMENTED. Phases 1-6 remain the next phase. The worktree is
-`fix/ant-edge-cases`; the audit session's main tree stays untouched.
+Status: PHASE 0 IMPLEMENTED; PHASE 4 HAS A FIRST SLICE. The full rival colony, sweet, environmental triggers and satellite roles remain. The worktree is
+`perf/nest-lazy-load`; the audit session's main tree stays untouched.
 
 ## The decision this plan is built on
 

@@ -77,9 +77,13 @@
     [data-nest-tool="wipe"], [data-nest-tool="wipe"] * { user-select: none; -webkit-user-select: none; }
     .nest-ant, .nest-hill, .nest-stray { user-select: none; -webkit-user-select: none; }
     .nest-scent { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; }
-    .nest-layer { --nest-trail: var(--ink-muted); }
+    .nest-layer { --nest-trail: var(--ink-muted); --nest-rival: #5b6f99; }
+    :root[data-color-scheme="dark"] .nest-layer { --nest-rival: #9fb2d8; }
     :root[data-color-scheme="light"] .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); }
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
+    .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
+    .nest-scent polyline.rival { stroke: var(--nest-rival); }
+    .nest-meter .hint .rival, #nest-mock .stat-grid .rival { color: var(--nest-rival); }
     .nest-scent polyline { fill: none; stroke: var(--nest-trail); stroke-width: 1.7; stroke-dasharray: 1 4.2; stroke-linecap: round; opacity: .8; transition: opacity 1s; }
     .nest-scent polyline.halo { stroke: var(--paper); stroke-width: 3.6; stroke-dasharray: none; opacity: .55; }
     .nest-scent polyline.breaking { transition: opacity .55s, transform .55s; }
@@ -458,7 +462,7 @@
     <div class="nest-meters">
       <div class="nest-meter"><span class="lbl muted">page left</span><span class="lbl" data-k="holds-val">100%</span>
         <div class="nest-meter__bar" data-k="holds-bar" role="progressbar" aria-label="Page left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="fill" data-k="holds"></span><span class="rest" data-k="holds-rest"></span></div>
-        <i class="hint" data-k="holds-hint">page still whole</i></div>
+        <i class="hint"><span data-k="holds-hint">page still whole</span><span class="rival" data-k="rival-hint"></span></i></div>
       <div class="nest-meter"><span class="lbl muted">stores</span><span class="lbl" data-k="stores-val">0/12</span>
         <div class="nest-meter__bar" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="stores"></span><span class="rest" data-k="stores-rest"></span></div>
         <i class="hint">builds mound builders</i></div>
@@ -475,6 +479,7 @@
       <div title="Soldiers guard the hill"><dt>soldiers</dt><dd data-k="soldiers">0</dd></div>
       <div title="Mini hills"><dt>hills</dt><dd class="accent" data-k="minis">0</dd></div>
       <div title="Flyers steal letters"><dt>flyers</dt><dd data-k="flyers">0</dd></div>
+      <div title="Rival theft"><dt>rival</dt><dd class="rival" data-k="rivals">0</dd></div>
       <div title="Scent trails in use"><dt>trails</dt><dd data-k="trails">0</dd></div>
       <div title="Ants squashed"><dt>squashed</dt><dd data-k="squashed">0</dd></div>
       <div title="Letters stolen" style="grid-column: 1 / -1"><dt>larder</dt><dd class="accent" data-k="larder" style="text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">empty</dd></div>
@@ -601,6 +606,7 @@
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(state.ants.length / 3)));
+  const rival = { active: false, mound: null, trails: [], ants: [], stolen: new Set(), returnAt: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
   // the layer covers the page exactly and clips what crosses its edge, so nothing scrolls sideways
@@ -794,7 +800,7 @@
   // The helper is aimed at that exact letter, and helpers already walking are counted, so the
   // colony sends only the missing crew instead of piling every worker onto the patch.
   const helpLetterFor = (t) => {
-    if (!t.ready || t.state === "gone") return null;
+    if (t.side || !t.ready || t.state === "gone") return null;
     for (const a of t.ants) {
       const L = a.letter;
       if (!L || L.state !== "gather" || L.need <= L.crew.length) continue;
@@ -809,7 +815,7 @@
   // out, so every trail fills at the same pace and a finished trail's ants move to the others.
   const openTrail = () => {
     const cap = trailCap();
-    const ready = state.trails.filter((t) => t.ready && t.state !== "gone" && t.ants.size < cap && remaining(t));
+    const ready = state.trails.filter((t) => !t.side && t.ready && t.state !== "gone" && t.ants.size < cap && remaining(t));
     if (!ready.length) return null;
     const help = ready.filter(needsHelp);
     const pool = help.length ? help : ready;
@@ -831,6 +837,7 @@
   // never sits still waiting for a worker to notice there is nothing left to do.
   const retire = (t) => {
     if (!t || t.state === "gone") return;
+    if (t.side === "rival") { retireRivalTrail(t); return; }
     t.state = "gone"; t.ready = false;
     t.line.style.opacity = "0"; t.halo.style.opacity = "0";
     t.hit?.remove();
@@ -865,7 +872,7 @@
     if (state.over || hills.every(isSealed)) { ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); return; } // nowhere to go out
     if (ant.role === "scout") return emerge(ant);
     if (ant.role === "soldier") {
-      const ready = state.trails.filter((t) => t.ready && t.state !== "gone");
+      const ready = state.trails.filter((t) => !t.side && t.ready && t.state !== "gone");
       if (ready.length) { ant.patrol = ready[Math.floor(Math.random() * ready.length)]; return emerge(ant); }
       ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); return;
     }
@@ -878,7 +885,8 @@
     // One trail for every two ants. A scout already looking for a patch counts toward the
     // target, so the colony can raise several lines at once instead of filling one line first.
     const wantTrails = Math.max(2, Math.round(state.ants.length / 2));
-    if (state.trails.length + scoutCount() < wantTrails) {
+    const mainTrails = state.trails.filter((t) => !t.side).length;
+    if (mainTrails + scoutCount() < wantTrails) {
       if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
       ant.role = "scout"; log("a worker turned scout"); return emerge(ant);
     }
@@ -909,7 +917,7 @@
     else { ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; }
     label(ant);
   };
-  const label = (ant) => { if (!ant.el) return; ant.el.inert = state.tool === "wipe"; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier" || ant.role === "guard"); ant.el.classList.toggle("builder", ant.role === "builder"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder" }[ant.role]} ant. Press to squash.`); };
+  const label = (ant) => { if (!ant.el) return; ant.el.inert = state.tool === "wipe"; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier" || ant.role === "guard"); ant.el.classList.toggle("builder", ant.role === "builder"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival" }[ant.role]} ant. Press to squash.`); };
 
   // A scout wanders: loose waypoints toward a block of text no trail reaches yet, its steps recorded.
   const remaining = (t) => {
@@ -1670,7 +1678,7 @@
   // It leaves no line behind it: a soldier is not a scent.
   const assignGuard = (g, preferred, stay = false) => {
     if (!g.mini || !minis.includes(g.mini)) { g.job = "home"; g.path = [hillOf(g).hole.slice()]; g.k = 0; return; }
-    const ready = state.trails.filter((t) => t.ready && t.state !== "gone");
+    const ready = state.trails.filter((t) => !t.side && t.ready && t.state !== "gone");
     if (!ready.length || stay) {
       const c = [g.mini.spot.x, g.mini.spot.y - 6];
       g.job = "patrol"; g.patrol = null; g.circling = true; g.retired = stay;
@@ -1729,7 +1737,7 @@
     const patrol = ant.role === "soldier" || ant.role === "guard";
     let nearest = null;
     for (const trail of state.trails) {
-      if (!trail.ready || (!patrol && (trail.ants.size >= trailCap() || !remaining(trail)))) continue;
+      if (trail.side || !trail.ready || (!patrol && (trail.ants.size >= trailCap() || !remaining(trail)))) continue;
       for (let i = 1; i < trail.pts.length; i++) {
         const [x, y] = trail.pts[i - 1];
         const dx = trail.pts[i][0] - x, dy = trail.pts[i][1] - y;
@@ -1780,6 +1788,12 @@
   const wipeTrail = (trail, at) => {
     if (!trail || trail.state === "gone") return;
     breakTrail(trail, at);
+    if (trail.side === "rival") {
+      retireRivalTrail(trail);
+      blip(240, 0.2, "sawtooth"); noiseBurst(0.18, 0.06, 500);
+      log("you wiped a rival scent trail");
+      return;
+    }
     const displaced = state.ants.filter((ant) => ant.el && (ant.trail === trail || ant.patrol === trail));
     retire(trail);
     displaced.forEach((ant, i) => {
@@ -1830,6 +1844,139 @@
     if (armed) setAction("bait", "cancel", "Cancel bait", "Cancel bait placement.");
     else setAction("bait", "bait", "Drop bait", "Place a crumb to lure nearby ants away.");
     $("tool-help").textContent = armed ? "Click or tap the page to drop bait." : toolHelp[state.tool];
+  };
+
+  // ---- the rival colony: a small, inverse-colour nuisance below the fold -------------------
+  const removeRivalAnt = (a) => {
+    a.el?.remove(); a.el = null;
+    a.trail?.ants.delete(a);
+    rival.ants = rival.ants.filter((x) => x !== a);
+  };
+  const squashRival = (a) => {
+    if (!a.el) return;
+    state.squashed++;
+    a.el.classList.add("swatted");
+    blip(160, 0.08, "square", 0.04);
+    setTimeout(() => { if (a.el) removeRivalAnt(a); }, 260);
+    log("you squashed a rival ant");
+  };
+  const rivalMound = () => {
+    const el = document.createElement("div");
+    el.className = "nest-hill rival";
+    el.textContent = miniArt(1);
+    el.setAttribute("aria-hidden", "true");
+    const y = Math.min(main.scrollHeight - 40, main.scrollTop + main.clientHeight + 120);
+    const x = 70 + Math.random() * Math.max(1, main.clientWidth - 140);
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    layer.append(el);
+    return { el, base: [x, y], hole: [x, y - 7] };
+  };
+  const rivalTarget = () => {
+    const hole = rival.mound.hole;
+    let best = null, bestD = Infinity;
+    for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i++) {
+      if (!/\S/.test(n.data[i])) continue;
+      const L = letterOf(n, i);
+      if (L.state !== "free" || L.span) continue;
+      const r = rectOf(n, i); if (!r.width) continue;
+      const [x, y] = local(r);
+      const d = Math.hypot(x - hole[0], y - hole[1]);
+      if (d < bestD) { bestD = d; best = { L, block: blockOf(n), x: x + r.width / 2, y: y + r.height, r }; }
+    }
+    return best;
+  };
+  const rivalTrail = (pick) => {
+    const hole = rival.mound.hole;
+    const pts = [];
+    for (let k = 0; k <= 22; k++) {
+      const u = k / 22;
+      const x = hole[0] + (pick.x - hole[0]) * u;
+      const y = hole[1] + (pick.y - hole[1]) * u + Math.sin(u * Math.PI) * 12;
+      pts.push([x, y]);
+    }
+    const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    halo.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); halo.classList.add("halo", "rival");
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    line.setAttribute("points", halo.getAttribute("points")); line.classList.add("rival");
+    scent.append(halo, line);
+    const born = performance.now() / 1000;
+    const t = { pts, block: pick.block, end: [pick.x, pick.y], ants: new Set(), line, halo, ready: true,
+      side: "rival", state: "ready", born, ttl: born + TUNING.trailTtl };
+    addEraser(t);
+    state.trails.push(t); rival.trails.push(t);
+    return t;
+  };
+  const spawnRival = (trail) => {
+    const hole = rival.mound.hole;
+    const a = { id: ++state.total, role: "rival", side: "rival", where: "page", x: hole[0], y: hole[1], px: hole[0], py: hole[1],
+      heading: -Math.PI / 2, trail, job: "rival-follow", lane: Math.random() < 0.5 ? 3 : -3, hp: 1 };
+    a.path = lanePath(trail.pts, a.lane); a.k = 0;
+    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival walk";
+    a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival ant. Press to squash.");
+    a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
+    layer.append(a.el); placeAnt(a); label(a); rival.ants.push(a); trail.ants.add(a);
+  };
+  const stealRival = (trail) => {
+    if (!trail || !state.trails.includes(trail)) return;
+    const options = freeIn(trail.block, trail.end);
+    if (!options.length) { retireRivalTrail(trail); return; }
+    const L = options[0].L;
+    hideChar(L); L.state = "stolen"; L.crew = [];
+    rival.stolen.add(L);
+    log(`the rival takes “${L.ch}”`);
+    blip(330, 0.05, "triangle", 0.03);
+  };
+  const stepRival = (a, dt) => {
+    if (!a.el) return;
+    const now = performance.now();
+    if (a.job === "rival-pause") {
+      if (now < a.pauseAt) return;
+      if (!a.trail || !state.trails.includes(a.trail)) { removeRivalAnt(a); return; }
+      a.job = "rival-follow"; a.path = lanePath(a.trail.pts, a.lane); a.k = 0;
+      return;
+    }
+    const g = a.path[a.k]; if (!g) return;
+    if (!move(a, g[0], g[1], dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; return; }
+    a.px = a.x; a.py = a.y;
+    if (++a.k < a.path.length) return;
+    if (a.job === "rival-follow") {
+      stealRival(a.trail);
+      a.job = "rival-home"; a.path = lanePath(a.trail.pts.toReversed(), -a.lane); a.k = 0;
+    } else if (a.job === "rival-home") {
+      a.job = "rival-pause"; a.pauseAt = now + 700;
+    }
+  };
+  const retireRivalTrail = (t) => {
+    if (!t || t.state === "gone") return;
+    t.state = "gone"; t.ready = false;
+    t.line.remove(); t.halo.remove(); t.hit?.remove();
+    state.trails = state.trails.filter((x) => x !== t);
+    rival.trails = rival.trails.filter((x) => x !== t);
+    [...t.ants].forEach(removeRivalAnt);
+    if (!rival.trails.length) retreatRival();
+  };
+  const retreatRival = () => {
+    if (!rival.active) return;
+    rival.active = false;
+    [...rival.trails].forEach(retireRivalTrail);
+    [...rival.ants].forEach(removeRivalAnt);
+    rival.mound?.el.remove(); rival.mound = null;
+    rival.stolen.forEach((L) => state.stolen.add(L));
+    rival.stolen.clear();
+    rival.returnAt = performance.now() + 22000 + Math.random() * 18000;
+    log("the rival colony retreats below the fold");
+  };
+  const foundRival = () => {
+    if (rival.active || state.over || state.party) return;
+    rival.mound = rivalMound();
+    const pick = rivalTarget();
+    if (!pick) { rival.mound.el.remove(); rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
+    const t = rivalTrail(pick);
+    spawnRival(t); spawnRival(t);
+    rival.active = true; rival.returnAt = 0;
+    log("a rival colony founds below the fold");
+    blip(260, 0.1, "sawtooth", 0.025);
   };
   const placeBait = (e) => {
     setBaitArmed(false);
@@ -1978,7 +2125,10 @@
     setText("minis", minis.length);
     const cap = storeCap();
     setMeter("stores", state.stores / cap, state.builder ? "building" : minis.length >= MAX_MINIS ? "full" : `${state.stores}/${cap}`);
-    const held = pageLetters ? Math.max(0, 1 - state.stolen.size / pageLetters) : 1;
+    const rivalStolen = rival.stolen.size;
+    setText("rivals", rivalStolen);
+    setText("rival-hint", rivalStolen ? ` · rival ${rivalStolen}` : "");
+    const held = pageLetters ? Math.max(0, 1 - (state.stolen.size + rivalStolen) / pageLetters) : 1;
     setMeter("holds", held, `${Math.round(held * 100)}%`);
     const pageLeft = Math.round(held * 100);
     setText("holds-hint", pageLeft >= 99 ? "page still whole"
@@ -2034,6 +2184,7 @@
     if (!state.paused) {
       if (state.party) stepParty(now, dt);
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
+      rival.ants.slice().forEach((a) => stepRival(a, dt));
       for (const a of state.ants) {
         const el = a.el; if (!el) continue;
         if (a.px !== el._px || a.py !== el._py || a.heading !== el._heading) {
@@ -2043,6 +2194,13 @@
         const walking = a.job !== "wait" && !a.paused;
         if (el._walk !== walking) { el.classList.toggle("walk", walking); el._walk = walking; }
       }
+      for (const a of rival.ants) {
+        const el = a.el; if (!el) continue;
+        if (a.px !== el._px || a.py !== el._py || a.heading !== el._heading) {
+          el.style.transform = antTransform(a); el._px = a.px; el._py = a.py; el._heading = a.heading;
+        }
+      }
+      if (!rival.active && !state.party && performance.now() >= rival.returnAt) foundRival();
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
@@ -2221,6 +2379,9 @@
       a.el?.classList.remove("wait");
     });
     oldMinis.forEach(() => { const s = findMiniSpot(); if (s) makeMini(s); });
+    retreatRival();
+    rival.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
+    rival.stolen.clear();
     state.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
     state.stolen.clear(); state.larder = []; log("every letter is back; the mounds have moved");
     const r = home.el.getBoundingClientRect(), view = main.getBoundingClientRect();
@@ -2236,6 +2397,7 @@
   // opening is a beat, not a waiting room: a trail should exist before the player wonders if it works.
   newAnt("scout", "hatch", LEN.hatch * 0.85); newAnt("scout", "hatch", LEN.hatch * 0.55); newAnt("scout", "hatch", LEN.hatch * 0.3);
   for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
+  foundRival();
   log("the colony wakes; three scouts head out");
   blip(196, 0.3, "sine", 0.04, -40);
   setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
@@ -2274,6 +2436,9 @@
     }
     state.ants.forEach((a) => { const L = a.letter; if (L && L.glyph) { L.glyph.remove(); showChar(L); } });
     state.stolen.forEach(showChar);
+    rival.stolen.forEach(showChar);
+    rival.ants.slice().forEach(removeRivalAnt);
+    rival.mound?.el.remove();
     for (const [letter, animation] of returningLetters) {
       animation.cancel();
       finishReturn(letter);
@@ -2298,7 +2463,7 @@
     leaveGo = go;
   };
   if (new URLSearchParams(location.search).has("nest-debug")) {
-    window.__nest = { state, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label };
+    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival };
   }
   return { stop, confirmLeave };
   };

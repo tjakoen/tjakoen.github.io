@@ -104,7 +104,7 @@ unreadable and the colony has won that page.
 
 ## Mockup
 
-`scripts/nest-mockup.js` fakes the panel and one wave of ants on the live site so the idea can be
+`scripts/nest-game.js` is the live game module, not a mockup: it runs the panel, the colony and the page ants on the live site.
 played before the real build. Click the ant in the status bar, or type `nest` in the terminal;
 `?nest-debug` only exposes the local test hooks. It is a playable sketch: ants steal real letters, the queen breeds
 every three, a click squashes, and every colour is a theme token.

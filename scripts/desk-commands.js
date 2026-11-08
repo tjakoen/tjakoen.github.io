@@ -99,14 +99,14 @@
 
   // ── easter eggs — each one honest about how this thing actually works ───────────────────────────
   t.register({ name: "nest", args: "", help: "reveal the ant colony", async run(ctx) {
-    await import("/site/nest-mockup.js");
+    await import("/site/nest-game.js");
     const already = !!document.getElementById("nest-mock");
     window.__nestLauncher?.open();
     ctx.print(already ? "The colony is already open." : "The colony is open in the sidebar.");
   }});
   t.register({ name: "stray", args: "", help: "send a stray ant across the page", async run(ctx) {
     if (document.getElementById("nest-mock")) { ctx.printErr("close the Nest first."); return; }
-    await import("/site/nest-mockup.js");
+    await import("/site/nest-game.js");
     if (!window.__nestStray) { ctx.printErr("the colony is not loaded on this page."); return; }
     window.__nestStray.spawn(true);
     ctx.print("A stray ant is crossing the page. Click it and it will run for the launcher.");
