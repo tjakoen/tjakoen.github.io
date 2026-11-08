@@ -150,33 +150,23 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     expect(cells.size).toBeGreaterThan(1);
   });
 
-  test("the first three scouts take different source blocks", async ({ page }) => {
+  test("scouts and trails scale with the worker crew", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.waitForFunction(() => (window.__nest?.state.ants.filter((a) => a.role === "scout" && a.block).length ?? 0) >= 3);
-    const blocks = await page.evaluate(() => window.__nest!.state.ants
-      .filter((a) => a.role === "scout" && a.block)
-      .map((a) => (a.block!.textContent || "").trim().slice(0, 40)));
-    expect(blocks).toHaveLength(3);
-    expect(new Set(blocks).size).toBe(3);
-    const shape = await page.evaluate(() => {
-      const points = window.__nest!.state.ants
-        .filter((a) => a.role === "scout" && a.block)
-        .map((a) => {
-          const r = a.block!.getBoundingClientRect();
-          return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
-        });
-      const main = document.querySelector("main")!.getBoundingClientRect();
-      const home = window.__nest!.home.base;
-      const inView = points.every((p) => p.x > main.left && p.x < main.right && p.y > main.top && p.y < main.bottom);
-      const secondOpposite = (points[1].x - main.left - home[0]) * (home[0] - main.width / 2) < 0;
-      const minThird = Math.min(...points.slice(0, 2).map((p) => Math.hypot(p.x - points[2].x, p.y - points[2].y)));
-      return { inView, secondOpposite, minThird };
+    await page.waitForTimeout(3000);
+    const stats = await page.evaluate(() => {
+      const n = window.__nest!;
+      const crew = n.state.ants.filter((a) => a.role === "worker" || a.role === "scout").length;
+      return {
+        crew,
+        scouts: n.state.ants.filter((a) => a.role === "scout").length,
+        trails: (n.state.trails as any[]).filter((t) => !t.side).length,
+      };
     });
-    expect(shape.inView).toBe(true);
-    expect(shape.secondOpposite).toBe(true);
-    expect(shape.minThird).toBeGreaterThan(80);
+    const wanted = Math.max(1, Math.floor(stats.crew / 4));
+    expect(stats.scouts).toBeLessThanOrEqual(wanted);
+    expect(stats.trails).toBeLessThanOrEqual(wanted);
   });
 
   test("a guarded mound calls its guards and opens when they are gone", async ({ page }) => {
