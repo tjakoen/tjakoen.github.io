@@ -149,3 +149,48 @@ test("a main guard can break the rival mound without a player wipe", async ({ pa
   }, hole);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 15_000 }).toBe(false);
 });
+
+
+test("main trails share a trunk and fork instead of running parallel", async ({ page }) => {
+  await open(page);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.trails.filter((t: any) => !t.side).length), { timeout: 35_000 }).toBeGreaterThanOrEqual(2);
+  const shared = await page.evaluate(() => {
+    const n = window.__nest as any;
+    const trails = n.state.trails.filter((t: any) => !t.side);
+    let best = 0;
+    for (let a = 0; a < trails.length; a++) for (let b = a + 1; b < trails.length; b++) {
+      let count = 0;
+      for (const p of trails[a].pts) if (trails[b].pts.some((q: number[]) => Math.hypot(p[0] - q[0], p[1] - q[1]) < 7)) count++;
+      best = Math.max(best, count);
+    }
+    return best;
+  });
+  expect(shared).toBeGreaterThan(1);
+});
+
+test("a contesting guard does not stand at an empty crossing forever", async ({ page }) => {
+  await open(page);
+  const result = await page.evaluate(() => {
+    const n = window.__nest as any;
+    const at = [400, 400];
+    const guard = n.spawnPageAnt("guard", at, null);
+    guard.job = "rival-contest";
+    guard.path = [[400, 400]];
+    guard.k = 0;
+    return { id: guard.id };
+  });
+  await page.waitForTimeout(3_200);
+  const job = await page.evaluate((id) => (window.__nest as any).state.ants.find((a: any) => a.id === id)?.job, result.id);
+  expect(job).not.toBe("rival-contest");
+});
+
+test("soldiers and guards use the same ant art", async ({ page }) => {
+  await open(page);
+  const same = await page.evaluate(() => {
+    const n = window.__nest as any;
+    const a = n.spawnPageAnt("soldier", [300, 300], null);
+    const b = n.spawnPageAnt("guard", [320, 300], null);
+    return a.el.innerHTML === b.el.innerHTML;
+  });
+  expect(same).toBe(true);
+});

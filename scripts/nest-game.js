@@ -135,9 +135,6 @@
     .nest-hill { position: absolute; font: 12px/1.2 var(--font-mono); letter-spacing: -0.04em; white-space: pre; color: var(--ink-muted);
       -webkit-text-stroke: 0.05em currentColor; pointer-events: none; }
     .nest-hill b { font-weight: inherit; color: var(--ink-faint); }
-    .nest-ant.soldier, .nest-ant.guard { color: var(--ink-muted); }
-    .nest-ant.soldier svg, .nest-ant.guard svg { transform: scale(1.35); }
-    .nest-ant.soldier:hover svg, .nest-ant.guard:hover svg { transform: scale(1.62); }
     .nest-ant.hit { color: var(--color-accent); }
     .nest-ant.flash { color: var(--color-accent); animation: nest-ant-flash .18s steps(2) 2; }
     @keyframes nest-ant-flash { 50% { opacity: .25; } }
@@ -290,7 +287,6 @@
   const ANT_SVG = `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
   // colour. At a glance it should not read as another worker.
-  const SOLDIER_SVG = `<svg width="23" height="13" viewBox="-2.4 0 24.8 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const cancelStray = () => {
     clearTimeout(strayTimer); clearTimeout(strayExitTimer);
@@ -929,7 +925,7 @@
     const hole = ant.hill.hole;
     ant.where = "page"; ant.x = hole[0]; ant.y = hole[1]; ant.heading = -Math.PI / 2; ant.px = ant.x; ant.py = ant.y;
     ant.el = document.createElement("button"); ant.el.type = "button";
-    ant.el.className = "nest-ant walk"; ant.el.innerHTML = ant.role === "soldier" ? SOLDIER_SVG : ANT_SVG;
+    ant.el.className = "nest-ant walk"; ant.el.innerHTML = ANT_SVG;
     ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
     layer.append(ant.el); placeAnt(ant);
     if (ant.role === "scout") { ant.job = "scout-pending"; state.scoutQueue.push(ant); return; }
@@ -1083,6 +1079,23 @@
     if (best) {
       const trunk = best.t.pts.slice(0, best.j + 1);
       const merged = [...trunk, best.hit, ...pts.slice(best.i + 1)];
+      const clean = [];
+      for (const p of merged) if (!clean.length || Math.hypot(p[0] - clean[clean.length - 1][0], p[1] - clean[clean.length - 1][1]) > 4) clean.push(p);
+      return chaikin(clean, 1);
+    }
+    // No crossing: find the nearest fork point between the new route and an existing
+    // trail, share the existing trunk to that fork and peel off from there.
+    let fork = null;
+    for (const t of trails) {
+      if (t.state === "gone" || t.block === block) continue;
+      for (let j = 1; j < t.pts.length - 1; j++) for (let i = 1; i < Math.min(pts.length - 1, 18); i++) {
+        const d = Math.hypot(t.pts[j][0] - pts[i][0], t.pts[j][1] - pts[i][1]);
+        const score = d + j * 0.7 + i * 1.1;
+        if (d < 96 && (!fork || score < fork.score)) fork = { i, j, d, t, score };
+      }
+    }
+    if (fork) {
+      const merged = [...fork.t.pts.slice(0, fork.j + 1), ...pts.slice(fork.i + 1)];
       const clean = [];
       for (const p of merged) if (!clean.length || Math.hypot(p[0] - clean[clean.length - 1][0], p[1] - clean[clean.length - 1][1]) > 4) clean.push(p);
       return chaikin(clean, 1);
@@ -1649,7 +1662,7 @@
   const spawnPageAnt = (role, at, mini) => {
     state.total++; const a = { id: state.total, role, side: "main", where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant walk" + (role === "flyer" ? " flyer" : "");
-    a.el.innerHTML = role === "flyer" ? ANT_SVG.replace("<g class=\"legs-a\">", `<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g><g class="legs-a">`) : role === "guard" ? SOLDIER_SVG : ANT_SVG;
+    a.el.innerHTML = role === "flyer" ? ANT_SVG.replace("<g class=\"legs-a\">", `<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g><g class="legs-a">`) : ANT_SVG;
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
@@ -2210,11 +2223,7 @@
       if (move(a, g[0], g[1], dt, SPEED * 1.5)) { a.px = a.x; a.py = a.y; a.path = [randomPoint()]; a.k = 0; }
       return;
     }
-    if (a.job === "rival-build") {
-      const g = a.path[a.k]; if (!g) return;
-      if (move(a, g[0], g[1], dt, SPEED * 0.55)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.path = a.path.toReversed(); a.k = 0; } }
-      return;
-    }
+    if (a.job === "rival-build") return;
     if (a.job === "rival-guard") {
       const g = a.path[a.k]; if (!g) return;
       if (move(a, g[0], g[1], dt, SPEED * 0.7)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.path = a.path.toReversed(); a.k = 0; } }
@@ -2307,8 +2316,20 @@
     if (!rival.active || !rival.mound) return goHome(ant);
     const target = ant.job === "rival-contest" ? ant.path[ant.k] : rival.mound.hole;
     if (!target) return goHome(ant);
-    if (!move(ant, target[0], target[1], dt, SPEED * 0.85)) { ant.px = ant.x; ant.py = ant.y; return; }
+    const arrived = move(ant, target[0], target[1], dt, SPEED * 0.85);
     ant.px = ant.x; ant.py = ant.y;
+    if (!arrived) return;
+    if (ant.job === "rival-contest") {
+      const near = rival.ants.some((r) => r.el && Math.hypot(r.x - ant.x, r.y - ant.y) < 48);
+      if (near) { ant.contestWait = 0; return; }
+      ant.contestWait = (ant.contestWait || 0) + dt;
+      if (ant.contestWait > 2.5) {
+        ant.job = "patrol"; ant.path = []; ant.k = 0; ant.contestWait = 0;
+        if (ant.trail && state.trails.includes(ant.trail)) { ant.path = lanePath(ant.trail.pts, ant.lane || 0); }
+        else { ant.job = "home"; ant.path = [hillOf(ant).hole.slice()]; }
+      }
+      return;
+    }
     if (ant.job === "rival-siege") {
       if (performance.now() < (ant.nextBite || 0)) return;
       ant.nextBite = performance.now() + 900;
@@ -2366,7 +2387,7 @@
     const builders = [];
     for (let i = 0; i < 3; i++) {
       const bx = mound.base[0] + (i - 1) * 26, by = mound.base[1] + 8;
-      builders.push(spawnRivalUnit("rival-build", [bx, by], Array.from({ length: 6 }, (_, k) => [bx + Math.cos(k * 1.1) * 16, by + Math.sin(k * 1.1) * 10]), null));
+      const b = spawnRivalUnit("rival-build", [bx, by], [], null); b.el.classList.remove("walk"); b.el.classList.add("building"); builders.push(b);
     }
     log("three rival builders start the mound");
     setTimeout(() => {
