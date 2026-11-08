@@ -224,7 +224,14 @@ function shellChrome(inject: string, injectHead = ""): PageChrome {
     // under the masthead and above the first section, not above the title.
     const contents = kind === "entry" && collection.prefix === "/notes" && frontmatter
       ? renderNoteContents(body, frontmatter) : "";
-    let readable = contents ? body.replace("</header>", `</header>${contents}`) : body;
+    // A note may open with its own start button. That call to action belongs directly under the
+    // subtitle, above the generated contents block, not below it.
+    const leadingStart = body.match(/<p class="nest-start">[\s\S]*?<\/p>/)?.[0] ?? "";
+    let readable = body;
+    if (contents) {
+      if (leadingStart) readable = readable.replace(leadingStart, "");
+      readable = readable.replace("</header>", `</header>${leadingStart}${contents}`);
+    }
     // A badge page's own template already states the title, the skill and the recipient, so MILL's
     // entry header underneath it would be the same words a second time at h1 size. Drop that header
     // (the rest of the body still renders) — badge pages only.
