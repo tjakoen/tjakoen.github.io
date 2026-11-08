@@ -10,6 +10,7 @@ import { join } from "node:path";
 import {
   coverage,
   dreamDueLine,
+  dreamLimits,
   dshSlug,
   indexCoverage,
   isDreamDue,
@@ -206,6 +207,19 @@ describe("isDreamDue", () => {
 
   test("an old index with nothing new is not due, because there is nothing to read", () => {
     expect(isDreamDue(clock(400, 0))).toBe(false);
+  });
+});
+
+describe("dreamLimits", () => {
+  test("zero is a threshold, not a missing value", () => {
+    expect(dreamLimits({ DREAM_MIN_ITEMS: "0", DREAM_MAX_AGE_DAYS: "0" })).toEqual({
+      minItems: 0,
+      maxAgeDays: 0,
+    });
+  });
+
+  test("nonsense falls back to the dull defaults", () => {
+    expect(dreamLimits({ DREAM_MIN_ITEMS: "many" })).toEqual({ minItems: 8, maxAgeDays: 30 });
   });
 });
 

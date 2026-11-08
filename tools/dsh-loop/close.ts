@@ -18,7 +18,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { dreamClock, dreamDueLine, isDreamDue } from '../dream.ts';
+import { dreamClock, dreamDueLine, dreamLimits, isDreamDue } from '../dream.ts';
 
 export type PrFacts = {
   number: number;
@@ -414,7 +414,7 @@ export function readDream(repo: string): CloseFacts['dream'] {
   try {
     const clock = dreamClock(repo);
     if (!clock) return null;
-    const due = isDreamDue(clock);
+    const due = isDreamDue(clock, dreamLimits());
     return { due, line: due ? dreamDueLine(clock) : '' };
   } catch {
     return null;

@@ -221,7 +221,23 @@ export type DreamClock = {
  * evidence rather than by a schedule: either enough has landed to be worth reading back, or the
  * index is old enough that a reader is trusting a stale map.
  */
-export function isDreamDue(clock: DreamClock, limits = { minItems: 8, maxAgeDays: 30 }): boolean {
+export type DreamLimits = { minItems: number; maxAgeDays: number };
+
+/** The thresholds, with the two environment overrides the close path and a test both need. */
+export function dreamLimits(env: Record<string, string | undefined> = Bun.env): DreamLimits {
+  const whole = (raw: string | undefined, fallback: number): number => {
+    const value = Number(raw ?? fallback);
+    // 0 is a legitimate threshold, so a falsy check here silently replaced a test override with
+    // the default and made the gate look broken in the one case someone was proving it worked.
+    return Number.isFinite(value) && value >= 0 ? value : fallback;
+  };
+  return {
+    minItems: whole(env.DREAM_MIN_ITEMS, 8),
+    maxAgeDays: whole(env.DREAM_MAX_AGE_DAYS, 30),
+  };
+}
+
+export function isDreamDue(clock: DreamClock, limits: DreamLimits = { minItems: 8, maxAgeDays: 30 }): boolean {
   if (clock.newItems >= limits.minItems) return true;
   return clock.ageDays >= limits.maxAgeDays && clock.newItems >= 1;
 }
@@ -506,10 +522,28 @@ function human(bytes: number): string {
 /** The repository root, not the shell's cwd. Exported so a test can prove it is the repo. */
 export const ROOT = resolve(import.meta.dir, "..");
 
+/**
+ * The project, as the session sees it. ROOT is the module's own path, which is right when the tool is
+ * run from the repository but says nothing about the directory a session was opened in. Starting from
+ * the working directory and walking up to the folder that holds this tool covers both: a run from
+ * tools/, and a run after cd into a subdirectory, with ROOT as the last resort.
+ */
+export function projectRoot(from = process.cwd()): string {
+  let dir = resolve(from);
+  for (let depth = 0; depth < 8; depth += 1) {
+    if (existsSync(join(dir, "tools", "dream.ts"))) return dir;
+    const up = resolve(dir, "..");
+    if (up === dir) break;
+    dir = up;
+  }
+  return ROOT;
+}
+
 function exportCommand(args: string[]): number {
   // Run from tools/ with --out ../artifacts and a cwd-based root calls the served public tree
-  // "outside the project", which is exactly the wrong answer.
-  const root = ROOT;
+  // "outside the project", which is exactly the wrong answer. projectRoot walks up instead, so the
+  // guard holds wherever the command is run from, and the slug matches the one the harness used.
+  const root = projectRoot();
   const lane = flag(args, "lane") ?? "both";
   if (!["both", "runs", "sessions"].includes(lane)) {
     console.error(`dream: --lane must be runs, sessions or both, not "${lane}".`);
@@ -664,15 +698,17 @@ function verifyCommand(args: string[]): number {
 }
 
 function dueCommand(args: string[]): number {
-  const root = ROOT;
+  const root = projectRoot();
   const clock = dreamClock(root);
   if (!clock) {
     if (args.includes("--json")) console.log(JSON.stringify({ due: false, reason: "no memory index for this project" }));
     return 0;
   }
-  const minItems = Number(flag(args, "min-items") ?? Bun.env.DREAM_MIN_ITEMS ?? 8);
-  const maxAgeDays = Number(flag(args, "max-age-days") ?? Bun.env.DREAM_MAX_AGE_DAYS ?? 30);
-  const due = isDreamDue(clock, { minItems, maxAgeDays });
+  const limits = dreamLimits();
+  const due = isDreamDue(clock, {
+    minItems: Number(flag(args, "min-items") ?? limits.minItems),
+    maxAgeDays: Number(flag(args, "max-age-days") ?? limits.maxAgeDays),
+  });
   if (args.includes("--json")) {
     console.log(JSON.stringify({ due, ...clock, line: due ? dreamDueLine(clock) : "" }));
     return 0;
