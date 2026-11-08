@@ -1,7 +1,7 @@
 // portfolio/analytics.test.ts — the status-bar view counts baked in at build time.
 import { test, expect, describe } from "bun:test";
 import { writeFileSync } from "node:fs";
-import { injectViews, viewsLabel, formatCount, shortDate, load, parseAnalytics, type AnalyticsData } from "./analytics.ts";
+import { injectViews, viewsLabel, formatCount, shortDate, hasCounts, load, parseAnalytics, type AnalyticsData } from "./analytics.ts";
 
 const DATA: AnalyticsData = {
   visits: 1204,
@@ -141,6 +141,18 @@ describe("parseAnalytics", () => {
   });
 });
 
+describe("hasCounts", () => {
+  test("a real snapshot has visits or paths", () => {
+    expect(hasCounts({ visits: 1204, paths: {}, pulledAt: "2026-11-08" })).toBe(true);
+    expect(hasCounts({ visits: 0, paths: { "/": 1 }, pulledAt: "2026-11-08" })).toBe(true);
+  });
+
+  test("nothing at all is not a snapshot, so no reader renders 0 visits", () => {
+    expect(hasCounts(null)).toBe(false);
+    expect(hasCounts({ visits: 0, paths: {}, pulledAt: "2026-11-08" })).toBe(false);
+  });
+});
+
 describe("load", () => {
   test("a missing file is absent data, not a crash (the local case)", () => {
     expect(load("/tmp/definitely-not-here-analytics.json")).toBeNull();
@@ -162,5 +174,11 @@ describe("load", () => {
     const p = "/tmp/analytics-good.json";
     writeFileSync(p, JSON.stringify(DATA));
     expect(load(p)).toEqual(DATA);
+  });
+
+  test("a file of zeros is treated as no data, so the bar collapses instead of claiming 0 visits", () => {
+    const p = "/tmp/analytics-zeros.json";
+    writeFileSync(p, JSON.stringify({ visits: 0, paths: {}, pulledAt: "2026-11-08" }));
+    expect(load(p)).toBeNull();
   });
 });
