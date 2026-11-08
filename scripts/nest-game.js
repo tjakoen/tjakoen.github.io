@@ -2171,6 +2171,14 @@
     a.glyph?.remove(); a.glyph = null;
     a.job = "rival-pause"; a.pauseAt = performance.now() + 700;
   };
+  const rivalRetarget = () => {
+    if (!rival.active || rival.trails.length >= 3) return;
+    const pick = rivalTarget();
+    if (!pick) return;
+    const t = rivalTrail(pick); spawnRival(t); spawnRival(t);
+    log("the rival retargets a trail");
+  };
+
   const stepRival = (a, dt) => {
     if (!a.el || a.tongue) return;
     if (a.job === "rival-flyer") {
@@ -2181,7 +2189,7 @@
     }
     if (a.job === "rival-build") return;
     if (a.job === "rival-guard" || a.job === "rival-defend") {
-      const threat = mainAnts().find((m) => m.el && m.where === "page" && (m.role === "soldier" || m.role === "guard" || m.role === "worker") && Math.hypot(m.x - a.x, m.y - a.y) < 150 && Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) > 180);
+      const threat = mainAnts().find((m) => m.el && m.where === "page" && (m.role === "soldier" || m.role === "guard" || m.role === "worker") && Math.hypot(m.x - a.x, m.y - a.y) < 110 && Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) > 180 && (m.role === "soldier" || m.role === "guard"));
       if (threat) {
         a.job = "rival-defend"; a.path = [[threat.x, threat.y]]; a.k = 0; a.guardPause = 0;
         move(a, threat.x, threat.y, dt, SPEED * 0.9); a.px = a.x; a.py = a.y;
@@ -2486,7 +2494,8 @@
     if (!rival.active || state.party) return;
     if (!rival.ants.length) { if (rival.trails.length || performance.now() > (rival.buildUntil || 0)) retreatRival(); return; }
     if (performance.now() < (rival.nextGrow || 0)) return;
-    rival.nextGrow = performance.now() + 3500;
+    if (rival.ants.length >= 9) return;
+    rival.nextGrow = performance.now() + 5000;
     if (rival.trails.length < 3) {
       const avoid = rival.trails.map((t) => ({ x: t.end[0], y: t.end[1] }));
       const pick = rivalBranchTarget(avoid);
