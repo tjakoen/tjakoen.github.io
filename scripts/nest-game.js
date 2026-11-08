@@ -100,6 +100,9 @@
     .nest-tongue { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: visible; }
     .nest-tongue .tongue-braille { position: absolute; transform: translate(-50%, -50%); font: 12px/1 var(--font-mono); color: var(--color-accent); white-space: pre; opacity: 0; transition: opacity .12s linear; }
     .nest-tongue .tongue-braille.on { opacity: 1; }
+    .nest-anteater { position: absolute; z-index: 5; border: 0; background: none; padding: 0; color: var(--color-accent); cursor: pointer; pointer-events: auto; }
+    .nest-anteater .nest-event-art { margin: 0; font: 18px/.82 var(--font-mono); white-space: pre; text-shadow: 0 0 12px color-mix(in srgb, var(--color-accent) 30%, transparent); }
+    .nest-anteater:hover, .nest-anteater:focus-visible { outline: none; filter: drop-shadow(0 0 5px color-mix(in srgb, var(--color-accent) 45%, transparent)); }
     .nest-tongue-head { position: absolute; z-index: 6; color: var(--color-accent); pointer-events: none; transform-origin: 20% 50%; }
     .nest-tongue-head .nest-event-art { font: 13px/.82 var(--font-mono); }
     .nest-suck { position: absolute; z-index: 7; color: var(--color-accent); font: 11px/1 var(--font-mono); pointer-events: none; }
@@ -1710,7 +1713,11 @@
   };
   const resolveEnv = (kind) => {
     const card = state.env; if (!card) return;
-    state.env = null; card.el.remove();
+    card.el.getAnimations().forEach((a) => a.cancel());
+    const mr = card.el.getBoundingClientRect(), mm = main.getBoundingClientRect();
+    const cardSource = [mr.right - mm.left + main.scrollLeft, mr.top - mm.top + main.scrollTop + mr.height * 0.45];
+    state.env = null;
+    if (card.kind === "anteater") card.el.classList.add("feeding"); else card.el.remove();
     const all = [...mainAnts().filter((a) => a.el && a.where === "page"), ...rival.ants];
     const anchor = all[Math.floor(Math.random() * all.length)] || { x: main.clientWidth / 2, y: main.clientHeight / 2 };
     const distToSeg = (p, a, b) => {
@@ -1761,11 +1768,7 @@
       const pickable = state.trails.filter((t) => t.state !== "gone" && t.pts && t.pts.length > 2);
       const targetTrail = pickable[Math.floor(Math.random() * Math.max(1, pickable.length))];
       const target = targetTrail ? targetTrail.pts[Math.floor(targetTrail.pts.length * (0.35 + Math.random() * 0.3))] : [anchor.x, anchor.y];
-      const fromLeft = target[0] > main.clientWidth / 2;
-      const source = [
-        fromLeft ? 105 : main.clientWidth - 105,
-        Math.max(30, Math.min(main.scrollHeight - 30, target[1] + (Math.random() - 0.5) * 120)),
-      ];
+      const source = cardSource || [target[0] - 160, target[1]];
       const dx = target[0] - source[0], dy = target[1] - source[1], len = Math.hypot(dx, dy) || 1;
       const nx = -dy / len, ny = dx / len;
       const phase = Math.random() * Math.PI * 2, amp = Math.min(18, Math.max(7, len * 0.07));
@@ -1776,10 +1779,6 @@
         const sway = Math.sin(u * Math.PI * 3.2 + phase) * amp * Math.sin(Math.PI * u);
         pts.push([source[0] + dx * u + nx * sway, source[1] + dy * u + ny * sway]);
       }
-      const head = document.createElement("div"); head.className = "nest-tongue-head"; head.innerHTML = eventIcon("anteater");
-      head.style.left = source[0] + "px"; head.style.top = source[1] + "px";
-      head.style.transform = `translate(-20%, -50%) rotate(${Math.atan2(dy, dx)}rad)`;
-      layer.append(head);
       const tongue = document.createElement("div"); tongue.className = "nest-tongue";
       const spans = [];
       for (let i = 1; i < pts.length; i++) {
@@ -1811,7 +1810,7 @@
         clearInterval(timer);
         spans.slice().toReversed().forEach((span, i) => setTimeout(() => span.classList.remove("on"), i * 3));
         setTimeout(() => {
-          tongue.remove(); head.remove();
+          tongue.remove(); card.el.remove();
           stuck.forEach(removeEnvAnt);
           log("the anteater draws its tongue back; the stuck ants are gone");
         }, 650);
@@ -1826,18 +1825,40 @@
     const spot = findMiniSpot();
     if (!spot) { state.envNext = performance.now() + 20000; return; }
     const el = document.createElement("button");
-    el.type = "button"; el.className = "nest-event-card"; el.dataset.kind = kind;
-    el.setAttribute("aria-label", kind === "vacuum" ? "A vacuum in the page. Click to use." : "An anteater in the page. Click to use.");
-    el.innerHTML = eventIcon(kind);
-    el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 64)}px`;
-    layer.append(el);
-    const card = { el, kind, ttl: 10000 };
-    state.env = card;
+    el.type = "button";
+    el.setAttribute("aria-label", kind === "vacuum" ? "A vacuum in the page. Click to use." : "An anteater walking in. Click to use.");
+    el.dataset.kind = kind;
+    let card;
+    if (kind === "anteater") {
+      el.className = "nest-anteater"; el.innerHTML = eventIcon("anteater");
+      const targetX = main.clientWidth * 0.36;
+      el.style.left = `${targetX}px`; el.style.top = `${Math.max(10, spot.y - 70)}px`;
+      layer.append(el);
+      const width = el.offsetWidth || 250;
+      const startX = -(targetX + width + 30);
+      el.style.transform = `translateX(${startX}px)`;
+      card = { el, kind, ttl: 7000 };
+      state.env = card;
+      el.getAnimations().forEach((a) => a.cancel());
+      el.animate([{ transform: `translateX(${startX}px)` }, { transform: "translateX(0)" }], { duration: 3200, easing: "ease-out", fill: "forwards" });
+      setTimeout(() => {
+        if (state.env !== card) return;
+        el.animate([{ transform: "translateX(0)" }, { transform: `translateX(${startX - 80}px)` }], { duration: 1800, easing: "ease-in", fill: "forwards" }).onfinish = () => {
+          if (state.env === card) { el.remove(); state.env = null; state.envNext = performance.now() + 80000; }
+        };
+      }, card.ttl);
+    } else {
+      el.className = "nest-event-card"; el.innerHTML = eventIcon(kind);
+      el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 64)}px`;
+      layer.append(el);
+      card = { el, kind, ttl: 10000 };
+      state.env = card;
+      setTimeout(() => { if (state.env === card) { el.remove(); state.env = null; state.envNext = performance.now() + 80000; } }, card.ttl);
+    }
     el.addEventListener("click", (e) => {
       e.preventDefault(); e.stopPropagation();
       resolveEnv(kind);
     });
-    setTimeout(() => { if (state.env === card) { el.remove(); state.env = null; state.envNext = performance.now() + 80000; } }, card.ttl);
   };
 
   const startBuild = () => {
