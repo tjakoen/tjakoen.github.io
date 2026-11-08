@@ -50,9 +50,9 @@ unreadable and the colony has won that page.
 - **The colony.** Three scouts and three workers to start. A block with a trail or a scout is taken,
   so the first three scouts and later ones stay off each other's source. The first three stay in view:
   the first takes the closest, the second the opposite side of the mound, and the third the most
-  spread-out remaining spot. A scout lays its trail when it picks up the first letter, not when it
-  reaches the hill; a scout killed before that pickup leaves nothing. A heavy letter gets the trail
-  at the pickup and a call for the workers. Workers take open trails in turn, five to
+  spread-out remaining spot. A scout carries its first light letter home before the trail opens;
+  a scout killed on the way leaves nothing. A heavy letter gets the trail at the pickup and a call
+  for the workers. Workers take open trails in turn, five to
   a line, and a trail fades when its patch empties or after ninety seconds. Each retired
   trail sends its own successor scout, so several spent patches do not leave one line. Successors
   look near the mound first; the trail target is one per two ants, so it keeps climbing. Soldiers hatch once the colony passes eight and take two
