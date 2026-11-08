@@ -1077,7 +1077,8 @@
       }
     }
     if (best) {
-      const trunk = best.t.pts.slice(0, best.j + 1);
+      const bestJ = best.j >= 3 ? best.j : Math.min(5, best.t.pts.length - 2);
+      const trunk = best.t.pts.slice(0, bestJ + 1);
       const merged = [...trunk, best.hit, ...pts.slice(best.i + 1)];
       const clean = [];
       for (const p of merged) if (!clean.length || Math.hypot(p[0] - clean[clean.length - 1][0], p[1] - clean[clean.length - 1][1]) > 4) clean.push(p);
@@ -1095,7 +1096,29 @@
       }
     }
     if (fork) {
-      const merged = [...fork.t.pts.slice(0, fork.j + 1), ...pts.slice(fork.i + 1)];
+      const forkJ = fork.j >= 3 ? fork.j : Math.min(5, fork.t.pts.length - 2);
+      const merged = [...fork.t.pts.slice(0, forkJ + 1), ...pts.slice(fork.i + 1)];
+      const clean = [];
+      for (const p of merged) if (!clean.length || Math.hypot(p[0] - clean[clean.length - 1][0], p[1] - clean[clean.length - 1][1]) > 4) clean.push(p);
+      return chaikin(clean, 1);
+    }
+    // Even when the routes do not meet, keep a readable shared trunk near the mound.
+    // Pick the existing trail with the closest target bearing, take its first few points,
+    // then rejoin the new route at its nearest point.
+    let trunk = null;
+    for (const t of trails) {
+      if (t.state === "gone" || t.block === block || t.pts.length < 5) continue;
+      const j = Math.min(5, t.pts.length - 2);
+      let bestI = 1, bestD = Infinity;
+      for (let i = 1; i < Math.min(pts.length - 1, 22); i++) {
+        const d = Math.hypot(pts[i][0] - t.pts[j][0], pts[i][1] - t.pts[j][1]);
+        if (d < bestD) { bestD = d; bestI = i; }
+      }
+      const score = bestD + Math.abs((t.end?.[1] || 0) - (pts[pts.length - 1]?.[1] || 0)) * 0.2;
+      if (bestD < 220 && (!trunk || score < trunk.score)) trunk = { t, j, i: bestI, score };
+    }
+    if (trunk) {
+      const merged = [...trunk.t.pts.slice(0, trunk.j + 1), ...pts.slice(trunk.i + 1)];
       const clean = [];
       for (const p of merged) if (!clean.length || Math.hypot(p[0] - clean[clean.length - 1][0], p[1] - clean[clean.length - 1][1]) > 4) clean.push(p);
       return chaikin(clean, 1);

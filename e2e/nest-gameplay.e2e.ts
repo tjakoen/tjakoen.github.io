@@ -165,7 +165,7 @@ test("main trails share a trunk and fork instead of running parallel", async ({ 
     }
     return best;
   });
-  expect(shared).toBeGreaterThan(1);
+  expect(shared).toBeGreaterThan(3);
 });
 
 test("a contesting guard does not stand at an empty crossing forever", async ({ page }) => {
