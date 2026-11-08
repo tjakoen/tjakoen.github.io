@@ -403,6 +403,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       const card = page.locator(".nest-event-card");
       await expect(card).toBeVisible();
       await card.click();
+      await expect(page.locator(kind === "vacuum" ? ".nest-vacuum-braille" : ".tongue-braille").first()).toBeVisible();
       await expect.poll(() => page.evaluate(() => window.__nest!.state.squashed), { timeout: 5_000 }).toBeGreaterThan(before);
       expect(await page.locator("[data-k='holds-val']").textContent()).toBe(pageBefore);
     });
