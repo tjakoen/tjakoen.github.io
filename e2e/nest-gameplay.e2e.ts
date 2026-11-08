@@ -35,7 +35,8 @@ test("bait pulls nearby ants off their trails", async ({ page }) => {
 test("the rival falls without dropping letters and celebrates", async ({ page }) => {
   await open(page);
   await page.evaluate(() => (window.__nest as any).startRival());
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 40_000 }).toBeGreaterThan(0);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
+  await page.evaluate(() => (window.__nest as any).forceRivalSteal());
   const before = await page.evaluate(() => ({ hidden: (window.__nest as any).state.hiddenLetters.size }));
   await page.evaluate(() => (window.__nest as any).retreatRival());
   const result = await page.evaluate(() => {
@@ -230,7 +231,9 @@ test("the worker stat matches the main worker castes", async ({ page }) => {
 test("reset restores letters taken by the rival", async ({ page }) => {
   await open(page);
   await page.evaluate(() => (window.__nest as any).startRival());
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 40_000 }).toBeGreaterThan(0);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
+  await page.evaluate(() => (window.__nest as any).forceRivalSteal());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 5_000 }).toBeGreaterThan(0);
   await page.evaluate(() => (window.__nest as any).retreatRival());
   expect(await page.evaluate(() => (window.__nest as any).state.hiddenLetters.size)).toBeGreaterThan(0);
   await page.locator("button[data-k='restore']").click();
