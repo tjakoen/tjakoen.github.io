@@ -40,12 +40,16 @@ test("the rival cache is placed at the fallen rival mound", async ({ page }) => 
   await page.evaluate(() => (window.__nest as any).retreatRival());
   const result = await page.evaluate(() => {
     const n = window.__nest as any;
-    return { active: n.rival.active, cache: n.state.cache, stolen: n.rival.stolen.size };
+    return { active: n.rival.active, cache: n.state.cache, stolen: n.rival.stolen.size, trail: n.state.cacheTrail !== null, letters: n.state.cacheLetters.length, glyphs: document.querySelectorAll(".nest-cache-letter").length };
   });
   expect(result.active).toBe(false);
   expect(result.stolen).toBe(0);
   expect(result.cache).not.toBeNull();
+  expect(result.trail).toBe(true);
+  expect(result.letters).toBeGreaterThan(0);
+  expect(result.glyphs).toBe(result.letters);
   expect(Math.hypot(result.cache.x - before[0], result.cache.y - before[1])).toBeLessThan(8);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.cacheLetters.length), { timeout: 25_000 }).toBeLessThan(result.letters);
 });
 
 test("the rival mound dies when every rival ant dies", async ({ page }) => {
@@ -193,4 +197,21 @@ test("soldiers and guards use the same ant art", async ({ page }) => {
     return a.el.innerHTML === b.el.innerHTML;
   });
   expect(same).toBe(true);
+});
+
+
+test("a soldier breaks a rival mini mound before the main mound", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => (window.__nest as any).startParty());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 20_000 }).toBeGreaterThan(0);
+  const before = await page.evaluate(() => {
+    const n = window.__nest as any;
+    const mini = n.rival.minis[0];
+    mini.hp = 1;
+    const guard = n.spawnPageAnt("soldier", [mini.base[0], mini.base[1]], null);
+    guard.hp = 99; guard.job = "rival-siege"; guard.path = [[mini.base[0], mini.base[1]]]; guard.k = 0; guard.nextBite = 0;
+    return { minis: n.rival.minis.length, hp: n.rival.hp };
+  });
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 12_000 }).toBeLessThan(before.minis);
+  expect(await page.evaluate(() => (window.__nest as any).rival.hp)).toBe(before.hp);
 });
