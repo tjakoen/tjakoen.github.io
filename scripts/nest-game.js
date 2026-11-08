@@ -2346,12 +2346,12 @@
   };
   const retreatRival = () => {
     if (!rival.active) return;
+    const deadAt = rival.mound ? rival.mound.base.slice() : [home.base[0], home.base[1]];
     rival.active = false;
     [...rival.trails].forEach((t) => retireRivalTrail(t, false));
     [...rival.ants].forEach(removeRivalAnt);
     rival.mound?.el.remove(); rival.mound = null;
     rival.minis.forEach((m) => m.el.remove()); rival.minis = [];
-    const deadAt = rival.mound ? rival.mound.base.slice() : [home.base[0], home.base[1]];
     rival.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
     rival.stolen.clear();
     state.cache = { x: deadAt[0], y: deadAt[1], until: performance.now() + 30000 };
@@ -2918,7 +2918,7 @@
     leaveGo = go;
   };
   if (new URLSearchParams(location.search).has("nest-debug")) {
-    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, spawnEnv, resolveEnv, spawnPageAnt, spawnRivalUnit, rivalCombat };
+    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, spawnEnv, resolveEnv, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf };
   }
   return { stop, confirmLeave };
   };
