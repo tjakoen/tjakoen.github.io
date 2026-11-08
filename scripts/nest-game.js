@@ -974,15 +974,17 @@
     const distToHole = (o) => Math.hypot(o[1] - hole[0], o[2] - hole[1]);
     const spread = (o) => Math.min(...state.openingTargets.map(([px, py]) => Math.hypot(o[1] - px, o[2] - py)));
     const moundSide = hole[0] > main.clientWidth / 2 ? 1 : -1;
-    const opposite = options.filter((o) => (o[1] - hole[0]) * moundSide < 0);
-    const near = options.filter((o) => distToHole(o) < 420);
+    // Stay near the mound while there is still food here. The old second and third scouts were
+    // deliberately opposite or spread out, which sent trails across the page past a full table.
+    const near = options.filter((o) => distToHole(o) < 520);
     const close = near.length ? near : options;
+    const opposite = close.filter((o) => (o[1] - hole[0]) * moundSide < 0);
     const pick = firstOpening
-      ? options.reduce((best, o) => (distToHole(o) < distToHole(best) ? o : best), options[0])
+      ? close.reduce((best, o) => (distToHole(o) < distToHole(best) ? o : best), close[0])
       : state.openingTargets.length === 1
-        ? (opposite.length ? opposite : options).reduce((best, o) => (distToHole(o) > distToHole(best) ? o : best), (opposite.length ? opposite : options)[0])
+        ? (opposite.length ? opposite : close).reduce((best, o) => (distToHole(o) > distToHole(best) ? o : best), (opposite.length ? opposite : close)[0])
         : state.openingTargets.length === 2
-          ? options.reduce((best, o) => (spread(o) > spread(best) ? o : best), options[0])
+          ? close.reduce((best, o) => (spread(o) > spread(best) ? o : best), close[0])
           : close.reduce((best, o) => (distToHole(o) < distToHole(best) ? o : best), close[0]);
     const [node, tx, ty] = pick;
     const block = blockOf(node);
@@ -1861,16 +1863,42 @@
     log("you squashed a rival ant");
   };
   const rivalMound = () => {
-    const el = document.createElement("div");
-    el.className = "nest-hill rival";
-    el.textContent = miniArt(1);
-    el.setAttribute("aria-hidden", "true");
-    const y = Math.min(main.scrollHeight - 40, main.scrollTop + main.clientHeight + 120);
-    const x = 70 + Math.random() * Math.max(1, main.clientWidth - 140);
-    el.style.left = `${x}px`;
-    el.style.top = `${y}px`;
-    layer.append(el);
-    return { el, base: [x, y], hole: [x, y - 7] };
+    const template = hill.cloneNode(true);
+    template.className = "nest-hill rival";
+    template.removeAttribute("aria-label");
+    template.setAttribute("aria-hidden", "true");
+    const terrain = miniTerrain();
+    const hw = hr.width, hh = hr.height;
+    const spots = [];
+    for (const radius of [260, 330, 410, 500]) {
+      for (let k = 0; k < 14; k++) {
+        const angle = (k / 14) * Math.PI * 2 + Math.random() * 0.3;
+        const x = home.base[0] + Math.cos(angle) * radius;
+        const y = home.base[1] + Math.sin(angle) * radius * 0.62;
+        const box = [x - hw / 2 - 10, y - hh - 10, x + hw / 2 + 10, y + 10];
+        if (!miniFits(box, terrain.obstacles) || terrain.gaps.some((r) => overlaps(box, r))) continue;
+        spots.push({ x, y });
+      }
+    }
+    // If no ring spot is open, search the rest of the page for the nearest clear full-size
+    // patch. This keeps the rival close enough to meet the main trails instead of leaving it
+    // stranded in a text block.
+    if (!spots.length) {
+      for (let y = 80; y < main.scrollHeight - 40; y += 46) {
+        for (let x = 100; x < main.clientWidth - 100; x += 46) {
+          const box = [x - hw / 2 - 10, y - hh - 10, x + hw / 2 + 10, y + 10];
+          if (miniFits(box, terrain.obstacles) && !terrain.gaps.some((r) => overlaps(box, r))) spots.push({ x, y });
+        }
+      }
+    }
+    if (!spots.length) return null;
+    const nearest = Math.min(...spots.map((p) => Math.hypot(p.x - home.base[0], p.y - home.base[1])));
+    const pool = spots.filter((p) => Math.hypot(p.x - home.base[0], p.y - home.base[1]) < nearest + 140);
+    const { x, y } = pool[Math.floor(Math.random() * pool.length)];
+    template.style.left = `${x - hw / 2}px`;
+    template.style.top = `${y - hh}px`;
+    layer.append(template);
+    return { el: template, base: [x, y], hole: [x, y - hh + 4] };
   };
   const rivalTarget = () => {
     const hole = rival.mound.hole;
@@ -1947,6 +1975,23 @@
       a.job = "rival-pause"; a.pauseAt = now + 700;
     }
   };
+  let lastRivalFight = 0;
+  const rivalCombat = (now) => {
+    if (now - lastRivalFight < 420) return;
+    lastRivalFight = now;
+    for (const r of rival.ants.slice()) {
+      if (!r.el) continue;
+      const defender = state.ants.find((a) => a.el && (a.role === "soldier" || a.role === "guard") &&
+        Math.hypot(a.x - r.x, a.y - r.y) < 18);
+      if (!defender) continue;
+      removeRivalAnt(r);
+      state.squashed++;
+      blip(180, 0.06, "square", 0.03);
+      log("a soldier drives a rival ant off the trail");
+      break;
+    }
+  };
+
   const retireRivalTrail = (t) => {
     if (!t || t.state === "gone") return;
     t.state = "gone"; t.ready = false;
@@ -1969,7 +2014,9 @@
   };
   const foundRival = () => {
     if (rival.active || state.over || state.party) return;
-    rival.mound = rivalMound();
+    const mound = rivalMound();
+    if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
+    rival.mound = mound;
     const pick = rivalTarget();
     if (!pick) { rival.mound.el.remove(); rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
     const t = rivalTrail(pick);
@@ -2185,6 +2232,7 @@
       if (state.party) stepParty(now, dt);
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
       rival.ants.slice().forEach((a) => stepRival(a, dt));
+      rivalCombat(now);
       for (const a of state.ants) {
         const el = a.el; if (!el) continue;
         if (a.px !== el._px || a.py !== el._py || a.heading !== el._heading) {
