@@ -1056,7 +1056,7 @@
   // Trails that leave the same hill close together share their first stretch. Snapping the
   // nearby early points onto an existing line turns a pile of near-parallel curves into one
   // trunk, then lets the new branch peel off where it actually diverges.
-  const mergeRoute = (pts, block, trails = state.trails) => {
+  const mergeRoute = (pts, block, trails = state.trails, allowFork = true) => {
     const cross = (a, b, c, d) => {
       const rx = b[0] - a[0], ry = b[1] - a[1], sx = d[0] - c[0], sy = d[1] - c[1];
       const den = rx * sy - ry * sx; if (!den) return null;
@@ -1101,6 +1101,7 @@
     // Even when the routes do not meet, keep a readable shared trunk near the mound.
     // Pick the existing trail with the closest target bearing, take its first few points,
     // then rejoin the new route at its nearest point.
+    if (!allowFork) return pts;
     let trunk = null;
     for (const t of trails) {
       if (t.state === "gone" || t.block === block || t.pts.length < 5) continue;
@@ -2055,9 +2056,9 @@
     layer.append(template);
     return { el: template, base: [x, y], hole: [x, y - hh + 4] };
   };
-  const rivalTarget = (exclude = new Set()) => {
+  const rivalTarget = (exclude = new Set(), avoid = []) => {
     const hole = rival.mound.hole;
-    let best = null, bestD = Infinity;
+    let best = null, bestD = -Infinity;
     for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i++) {
       if (!/\S/.test(n.data[i])) continue;
       const L = letterOf(n, i);
@@ -2065,7 +2066,9 @@
       const r = rectOf(n, i); if (!r.width) continue;
       const [x, y] = local(r);
       const d = Math.hypot(x - hole[0], y - hole[1]);
-      if (d < bestD) { bestD = d; best = { L, block: blockOf(n), x: x + r.width / 2, y: y + r.height, r }; }
+      if (d > 620) continue;
+      const spread = avoid.length ? Math.min(...avoid.map((t) => Math.hypot(x - t.x, y - t.y))) : -d;
+      if (spread > bestD) { bestD = spread; best = { L, block: blockOf(n), x: x + r.width / 2, y: y + r.height, r }; }
     }
     return best;
   };
@@ -2089,7 +2092,7 @@
       const wobble = (Math.sin(k * 5.2 + phase) * 0.6 + jag) * Math.sin(Math.PI * k);
       pts.push([bx + nx * wobble, by + ny * wobble]);
     }
-    pts = mergeRoute(pts, pick.block, rival.trails);
+    pts = mergeRoute(pts, pick.block, rival.trails, false);
     const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     halo.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); halo.classList.add("halo", "rival");
     const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
@@ -2148,9 +2151,17 @@
       return;
     }
     if (a.job === "rival-build") return;
-    if (a.job === "rival-guard") {
+    if (a.job === "rival-guard" || a.job === "rival-defend") {
+      const threat = mainAnts().find((m) => m.el && m.where === "page" && (m.role === "soldier" || m.role === "guard" || m.role === "worker") && Math.hypot(m.x - a.x, m.y - a.y) < 150);
+      if (threat) {
+        a.job = "rival-defend"; a.path = [[threat.x, threat.y]]; a.k = 0; a.guardPause = 0;
+        if (move(a, threat.x, threat.y, dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; }
+        return;
+      }
+      if (a.job === "rival-defend") { a.job = "rival-guard"; a.path = a.guardPath || []; a.k = 0; }
+      if (a.guardPause && performance.now() < a.guardPause) return;
       const g = a.path[a.k]; if (!g) return;
-      if (move(a, g[0], g[1], dt, SPEED * 0.7)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.path = a.path.toReversed(); a.k = 0; } }
+      if (move(a, g[0], g[1], dt, SPEED * 0.7)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.guardPath = a.path; a.path = a.path.toReversed(); a.k = 0; a.guardPause = performance.now() + 600; } }
       return;
     }
     if (a.job === "rival-bait") {
@@ -2404,11 +2415,11 @@
       if (!rival.active || rival.mound !== mound) return;
       const pick = rivalTarget();
       if (!pick) { mound.el.remove(); rival.active = false; rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-      const used = new Set();
+      const used = new Set(); const targets = [pick];
       for (let i = 0; i < 3; i++) {
-        const next = i === 0 ? pick : rivalTarget(used);
+        const next = i === 0 ? pick : rivalTarget(used, targets);
         if (!next) break;
-        used.add(next.block);
+        used.add(next.block); if (i) targets.push(next);
         const t = rivalTrail(next); spawnRival(t);
       }
       const miniSpots = [];

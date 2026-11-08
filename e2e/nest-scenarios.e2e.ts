@@ -30,4 +30,5 @@ test("the rival waits for the first worship, builds with builders, then opens cu
   expect(Math.hypot(rival.minis[0][0] - rival.minis[1][0], rival.minis[0][1] - rival.minis[1][1])).toBeGreaterThan(80);
   expect(rival.trails.every((t: any) => t.pts > 20)).toBe(true);
   expect(rival.trails.every((t: any) => t.first[0] !== t.last[0])).toBe(true);
+  expect(new Set(rival.trails.map((t: any) => `${Math.round(t.last[0])},${Math.round(t.last[1])}`)).size).toBe(3);
 });
