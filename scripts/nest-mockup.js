@@ -35,29 +35,29 @@
   const style = document.createElement("style");
   style.textContent = `
     #nest-mock { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px;
-      padding: var(--space-3, 12px); font: 12px/1.4 var(--font-mono); color: var(--ink);
+      padding: var(--space-3, 12px); font: var(--text-2xs)/1.4 var(--font-mono); color: var(--ink);
       min-width: 0; max-width: 100%; overflow-x: hidden; }
     #nest-mock > * { min-width: 0; max-width: 100%; }
     #nest-mock .head { min-width: 0; }
     #nest-mock .head .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .muted { color: var(--ink-muted); }
-    #nest-mock .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; gap: 8px; }
+    #nest-mock .lbl { font-size: var(--text-3xs); text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; gap: 8px; }
     #nest-mock .well { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
       display: flex; align-items: stretch; justify-content: center; }
-    .nest-pre { width: 100%; height: 100%; margin: 0; font-family: var(--font-mono); font-size: 10px; line-height: 1.2; letter-spacing: -0.04em;
+    .nest-pre { width: 100%; height: 100%; margin: 0; font-family: var(--font-mono); font-size: var(--text-3xs); line-height: 1.2; letter-spacing: -0.04em;
       -webkit-text-stroke: 0.05em currentColor; color: color-mix(in srgb, var(--ink) 66%, var(--paper-2)); user-select: none; }
     .nest-pre b { font-weight: inherit; }
     .nest-pre .t1 { color: var(--ink-muted); } .nest-pre .t2, .nest-pre .t5, .nest-pre .t6 { color: var(--color-accent); }
     .nest-pre .t3, .nest-pre .t4 { color: var(--ink); }
     #nest-mock .stats { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 2px 10px; margin: 0; align-items: baseline; }
-    #nest-mock .stats dt, #nest-mock .stats dd { margin: 0; font-size: 12px; line-height: 1.4; }
+    #nest-mock .stats dt, #nest-mock .stats dd { margin: 0; font-size: var(--text-2xs); line-height: 1.4; }
     #nest-mock .stats dd { text-align: right; font-variant-numeric: tabular-nums; }
     #nest-mock .accent { color: var(--color-accent); }
     #nest-mock .bar { font-family: var(--font-mono); letter-spacing: -0.04em; -webkit-text-stroke: 0.05em currentColor; }
     #nest-mock .nest-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; margin-bottom: -10px; }
     #nest-mock .nest-foot .log { flex: 1; min-width: 0; }
     #nest-mock .nest-foot .note-link { flex: 0 0 auto; margin: 0; }
-    #nest-mock .log { margin: 0; padding: 0; list-style: none; min-height: 1.4em; max-height: 1.4em; overflow: hidden; font-size: 11px; color: var(--ink-muted); }
+    #nest-mock .log { margin: 0; padding: 0; list-style: none; min-height: 1.4em; max-height: 1.4em; overflow: hidden; font-size: var(--text-2xs); color: var(--ink-muted); }
     #nest-mock .log li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .log li:first-child { color: var(--ink); }
     #nest-mock .log li::before { content: "› "; color: var(--ink-faint); }
@@ -66,8 +66,8 @@
     #nest-mock button:hover { background: var(--paper-2); }
     #nest-mock .tools button { position: relative; display: grid; place-items: center; min-width: 0; min-height: 40px; }
     #nest-mock .tools button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
-    #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: 9px; }
-    #nest-mock .tool-help { min-height: 1.5em; height: 1.5em; overflow: hidden; margin: 0; font-size: 10px; line-height: 1.3; }
+    #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: var(--text-3xs); }
+    #nest-mock .tool-help { min-height: 1.5em; height: 1.5em; overflow: hidden; margin: 0; font-size: var(--text-3xs); line-height: 1.3; }
     #nest-mock { position: relative; }
     #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
       background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
@@ -106,7 +106,7 @@
     @keyframes nest-wait { 50% { transform: rotate(8deg); } }
     .nest-letter { position: absolute; white-space: pre; pointer-events: none; line-height: 1; transform-origin: 50% 100%; }
     .nest-squash { position: absolute; color: var(--ink-faint); font: 14px var(--font-mono); pointer-events: none; transition: opacity 1.4s; }
-    .nest-hill { position: absolute; font: 12px/1.2 var(--font-mono); letter-spacing: -0.04em; white-space: pre; color: var(--ink-muted);
+    .nest-hill { position: absolute; font: var(--text-2xs)/1.2 var(--font-mono); letter-spacing: -0.04em; white-space: pre; color: var(--ink-muted);
       -webkit-text-stroke: 0.05em currentColor; pointer-events: none; }
     .nest-hill b { font-weight: inherit; color: var(--ink-faint); }
     .nest-ant.soldier, .nest-ant.guard { color: var(--ink-muted); }
@@ -124,8 +124,8 @@
     @keyframes nest-swat { 40% { transform: scale(1.25,.5) translateY(2px); } 100% { transform: scale(1.55,.16) translateY(4px); opacity: 0; } }
     @keyframes nest-splat { to { transform: scale(2.4); opacity: 0; } }
     @keyframes nest-flap { 50% { opacity: .15; } }
-    .nest-mini { width: 56px; height: 20px; translate: -50% -100%; text-align: center; font-size: 9px; line-height: 10px; }
-    .nest-badge { position: absolute; translate: -50% 0; font: 10px/1 var(--font-mono); color: var(--ink-muted); pointer-events: none; white-space: nowrap; }
+    .nest-mini { width: 56px; height: 20px; translate: -50% -100%; text-align: center; font-size: var(--text-3xs); line-height: 10px; }
+    .nest-badge { position: absolute; translate: -50% 0; font: var(--text-3xs)/1 var(--font-mono); color: var(--ink-muted); pointer-events: none; white-space: nowrap; }
     .nest-badge.open { color: var(--color-accent); }
     .nest-mini.open { cursor: pointer; }
     .nest-mini.exposed { color: var(--color-accent); }
@@ -145,14 +145,14 @@
       padding: var(--space-4, 16px); background: var(--paper); border: 1px solid var(--ink); text-align: center; }
     #nest-mock .end h3 { margin: 0; font: 400 var(--text-xl, 20px)/1.2 var(--font-accent, serif); }
     #nest-mock .end pre { margin: 0; font: inherit; text-align: left; display: inline-block; }
-    #nest-mock details { font-size: 11px; color: var(--ink-muted); } #nest-mock summary { cursor: pointer; }
+    #nest-mock details { font-size: var(--text-2xs); color: var(--ink-muted); } #nest-mock summary { cursor: pointer; }
     #nest-mock details p { margin: 6px 0 0; }
     #nest-mock .tools button[aria-pressed="true"] { color: var(--color-accent); border-color: currentColor; background: var(--paper-2); box-shadow: inset 0 0 0 1px currentColor; }
     .nest-scent .hit { pointer-events: none; }
     .nest-layer[data-tool="wipe"] .nest-scent .hit { pointer-events: stroke; touch-action: none; }
     #nest-mock .tools button[disabled] { opacity: .45; cursor: default; }
     .nest-switch { background: none; border: 0; padding: 2px 4px; margin: 0 6px; color: var(--ink-faint); cursor: pointer; line-height: 0; }
-    [data-nest-start] { font: 11px/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border: 1px solid currentColor; background: none; color: inherit; cursor: pointer; }
+    [data-nest-start] { font: var(--text-2xs)/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; padding: 8px 12px; border: 1px solid currentColor; background: none; color: inherit; cursor: pointer; }
     [data-nest-start]:hover, [data-nest-start]:focus-visible { background: var(--paper-2); outline: 1px dashed var(--color-accent); outline-offset: 2px; }
     .nest-switch:hover, .nest-switch:focus-visible { color: var(--ink); }
     .nest-switch[aria-pressed="true"] { color: var(--color-accent); }
@@ -163,7 +163,7 @@
     .nest-lock-toast { position: fixed; left: 50%; bottom: 48px; transform: translateX(-50%); z-index: 300;
       display: flex; align-items: center; gap: 10px; max-width: min(92vw, 470px); padding: 10px 12px;
       background: var(--paper); color: var(--ink); border: 1px solid var(--ink); box-shadow: 4px 4px 0 var(--color-line);
-      font: 11px/1.35 var(--font-mono); }
+      font: var(--text-2xs)/1.35 var(--font-mono); }
     .nest-lock-toast button { border: 1px solid currentColor; background: none; padding: 4px 8px; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
     .nest-lock-toast button:hover { background: var(--paper-2); }
     #nest-mock .nest-sound-hint { color: var(--color-accent); border-color: var(--color-accent); animation: nest-sound-pulse 1.2s ease-in-out infinite; }
@@ -197,30 +197,30 @@
     #nest-mock.celebrating .nest-pre { animation: nest-party-sway 1.4s ease-in-out infinite alternate; }
     @keyframes nest-party-glow { from { border-color: var(--color-line); box-shadow: inset 0 0 0 0 transparent; } to { border-color: var(--color-accent); box-shadow: inset 0 0 22px color-mix(in srgb, var(--color-accent) 15%, transparent); } }
     @keyframes nest-party-sway { to { transform: translateY(-1.5px); filter: brightness(1.1); } }
-    .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
+    .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: var(--text-2xs)/1 var(--font-mono); opacity: .75; }
     @keyframes nest-bob { to { transform: translateY(-3px); } }
     #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     #nest-mock .nest-meter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-content: start;
       padding: 6px 8px; border: 1px solid var(--color-line); background: var(--paper-2); }
     #nest-mock .nest-meter > .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #nest-mock .nest-meter .hint { grid-column: 1 / -1; font: 8px/1.15 var(--font-mono); font-style: normal; letter-spacing: .02em; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    #nest-mock .nest-meter__bar { grid-column: 1 / -1; font: 10px/1.2 var(--font-mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
+    #nest-mock .nest-meter .hint { grid-column: 1 / -1; font: var(--text-3xs)/1.15 var(--font-mono); font-style: normal; letter-spacing: .02em; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #nest-mock .nest-meter__bar { grid-column: 1 / -1; font: var(--text-3xs)/1.2 var(--font-mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
     #nest-mock .nest-meter__bar .fill { color: var(--color-accent); }
     #nest-mock .nest-meter__bar .rest { color: var(--ink-faint); opacity: .7; }
     #nest-mock .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px 10px; margin: 0; align-items: baseline; }
     #nest-mock .stat-grid div { display: flex; justify-content: flex-start; gap: 4px; min-width: 0; overflow: hidden; }
-    #nest-mock .stat-grid dt { margin: 0; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); white-space: nowrap; }
-    #nest-mock .stat-grid dd { margin: 0; font-size: 12px; font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #nest-mock .stat-grid dt { margin: 0; font-size: var(--text-3xs); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-muted); white-space: nowrap; }
+    #nest-mock .stat-grid dd { margin: 0; font-size: var(--text-2xs); font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .tools button { min-width: 0; }
     #nest-mock .tools button.wide { flex: 1.8; }
-    #nest-mock .head .lbl { font-size: 9px; }
-    #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: color-mix(in srgb, var(--ink) 66%, var(--paper-2)); }
+    #nest-mock .head .lbl { font-size: var(--text-3xs); }
+    #nest-mock .tools button span { font-size: var(--text-3xs); letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: var(--text-3xs) var(--font-mono); color: color-mix(in srgb, var(--ink) 66%, var(--paper-2)); }
     #nest-mock .tools button kbd::after { content: attr(data-key); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
-    #nest-mock .note-link { color: var(--ink-muted); font-size: 9px; line-height: 1.2; text-decoration: none; }
+    #nest-mock .note-link { color: var(--ink-muted); font-size: var(--text-3xs); line-height: 1.2; text-decoration: none; }
     #nest-mock .note-link:hover { color: var(--ink); }
-    #nest-mock .activity { margin: 0; padding: 0; list-style: none; min-height: 2.6em; font-size: 10px; color: var(--ink-muted); }
+    #nest-mock .activity { margin: 0; padding: 0; list-style: none; min-height: 2.6em; font-size: var(--text-3xs); color: var(--ink-muted); }
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .activity li:first-child { color: var(--ink); }
     #nest-mock .activity li::before { content: "› "; color: var(--ink-faint); }

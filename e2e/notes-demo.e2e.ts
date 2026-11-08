@@ -11,7 +11,7 @@ test("'See what's new' travels the newest notes, writes the digest into the chat
   await page.goto("/notes");
 
   const trigger = page.locator("[data-ai-run]");
-  const before = await page.locator('[data-surface="chat-log"] .chat-message').count();
+  const before = await page.locator('[data-surface="chat-log"] .chat-message:not([data-consent-notice])').count();
   await trigger.click();
 
   await expect(page.locator(".ai-backdrop.is-on")).toBeVisible({ timeout: 3000 });    // ops NOT dropped
@@ -25,8 +25,8 @@ test("'See what's new' travels the newest notes, writes the digest into the chat
   await expect(trigger).not.toHaveAttribute("data-commit", "pending");
 
   // the digest landed in the chat — a fresh AI bubble, stays grain (AI-authored text stays grain)
-  await expect(page.locator('[data-surface="chat-log"] .chat-message')).toHaveCount(before + 1);
-  const reply = page.locator('[data-surface="chat-log"] .chat-message[data-role="ai"]').last();
+  await expect(page.locator('[data-surface="chat-log"] .chat-message:not([data-consent-notice])')).toHaveCount(before + 1);
+  const reply = page.locator('[data-surface="chat-log"] .chat-message[data-role="ai"]:not([data-consent-notice])').last();
   await expect(reply).toHaveAttribute("data-grade", "grain");
   await expect(page.locator('[data-surface="notes-digest"]')).not.toBeEmpty();
 });

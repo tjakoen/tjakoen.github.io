@@ -253,10 +253,10 @@ test.describe("/grain — the surface is operable by both a person and the AI, t
 
     // (1) the composer SEND BUTTON dispatches on CLICK — it lives in the aside, which the dispatcher
     // used to skip wholesale (only Enter worked). Closing that gap is what makes chat controls fire.
-    const n0 = await log.locator(".chat-message").count();
+    const n0 = await log.locator(".chat-message:not([data-consent-notice])").count();
     await page.locator('.assistant__composer input[data-surface="chat-input"]').fill("hi from the send button");
     await page.locator('.assistant__composer .icon-btn[data-action="chat.send"]').click();
-    await expect(log.locator(".chat-message")).toHaveCount(n0 + 2);   // your line + the AI's grain reply
+    await expect(log.locator(".chat-message:not([data-consent-notice])")).toHaveCount(n0 + 2);   // your line + the AI's grain reply
     await expect(log.locator('.chat-message[data-role="you"]').last()).toContainText("hi from the send button");
 
     // (2) an AI-OFFERED actionable dialog — a b-button carrying the vocabulary inside a grain
@@ -272,10 +272,10 @@ test.describe("/grain — the surface is operable by both a person and the AI, t
     });
     const btn = page.locator(".chat-message__actions .btn");
     await expect(btn).toHaveCSS("pointer-events", "auto");            // grade override wins while online → operable
-    const n1 = await log.locator(".chat-message").count();
+    const n1 = await log.locator(".chat-message:not([data-consent-notice])").count();
     await page.locator('.assistant__composer input[data-surface="chat-input"]').fill("from the dialog button");
     await btn.click();
-    await expect(log.locator(".chat-message")).toHaveCount(n1 + 2);   // the offered action posted through the door
+    await expect(log.locator(".chat-message:not([data-consent-notice])")).toHaveCount(n1 + 2);   // the offered action posted through the door
   });
 });
 
