@@ -96,9 +96,10 @@
     .nest-ant.marching { filter: drop-shadow(0 0 4px var(--color-accent)); }
     @keyframes nest-fight { 50% { transform: translateX(2px) rotate(4deg); } }
 
-    .nest-vacuum { position: absolute; z-index: 6; width: 100px; height: 100%; pointer-events: none; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent); border-left: 1px solid var(--color-accent); }
-    .nest-tongue { position: absolute; z-index: 6; pointer-events: none; overflow: visible; }
-    .nest-suck { position: absolute; z-index: 7; width: 3px; height: 3px; border-radius: 50%; background: var(--color-accent); pointer-events: none; }
+    .nest-vacuum-braille { position: absolute; z-index: 6; pointer-events: none; color: var(--color-accent); font: 8px/8px var(--font-mono); letter-spacing: 0; white-space: pre; overflow: hidden; opacity: .55; }
+    .nest-tongue { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: visible; }
+    .nest-tongue .tongue-braille { position: absolute; transform: translate(-50%, -50%); font: 20px/1 var(--font-mono); color: var(--color-accent); white-space: pre; text-shadow: 0 0 7px color-mix(in srgb, var(--color-accent) 35%, transparent); }
+    .nest-suck { position: absolute; z-index: 7; color: var(--color-accent); font: 11px/1 var(--font-mono); pointer-events: none; }
     .nest-vacuum-head { position: absolute; z-index: 7; width: 48px; height: 48px; padding: 6px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); pointer-events: none; }
     .nest-vacuum-head .nest-event-art { margin: 0; font: 8px/.8 var(--font-mono); color: var(--color-accent); }
     .nest-ant.stuck { color: var(--color-accent); opacity: .8; }
@@ -1719,15 +1720,16 @@
       const len = Math.hypot(main.clientWidth, main.scrollHeight) * 0.85;
       const from = [anchor.x - Math.cos(angle) * len, anchor.y - Math.sin(angle) * len];
       const to = [anchor.x + Math.cos(angle) * len, anchor.y + Math.sin(angle) * len];
-      const sweep = document.createElement("div"); sweep.className = "nest-vacuum";
+      const sweep = document.createElement("pre"); sweep.className = "nest-vacuum-braille";
       sweep.style.width = "220px"; sweep.style.height = main.scrollHeight + "px"; sweep.style.left = "0"; sweep.style.top = "0"; sweep.style.transformOrigin = "0 0";
+      sweep.textContent = Array.from({ length: Math.ceil(main.scrollHeight / 8) }, () => "⣿⣤⣤⣶⣿⣤⣤⣶⣿⣤⣤⣶".repeat(5)).join("\n");
       layer.append(sweep);
       const head = document.createElement("div"); head.className = "nest-vacuum-head"; head.innerHTML = eventIcon("vacuum");
       head.style.left = from[0] + "px"; head.style.top = from[1] + "px"; layer.append(head);
       head.animate([{ transform: "translate(0,0)" }, { transform: `translate(${to[0] - from[0]}px, ${to[1] - from[1]}px)` }], { duration: 1600, easing: "ease-in-out" }).onfinish = () => head.remove();
       sweep.animate([{ transform: `translate(${from[0]}px, ${from[1]}px) rotate(${angle}rad)` }, { transform: `translate(${to[0]}px, ${to[1]}px) rotate(${angle}rad)` }], { duration: 1600, easing: "ease-in-out" }).onfinish = () => sweep.remove();
       for (let i = 0; i < 12; i++) {
-        const p = document.createElement("span"); p.className = "nest-suck";
+        const p = document.createElement("span"); p.className = "nest-suck"; p.textContent = "⣿";
         const sx = anchor.x + (Math.random() - 0.5) * 260, sy = anchor.y + (Math.random() - 0.5) * 160;
         p.style.left = sx + "px"; p.style.top = sy + "px"; layer.append(p);
         p.animate([{ transform: "translate(0,0)", opacity: .9 }, { transform: `translate(${anchor.x - sx}px, ${anchor.y - sy}px)`, opacity: 0 }], { duration: 1000, easing: "ease-in" }).onfinish = () => p.remove();
@@ -1740,11 +1742,16 @@
       const cy = anchor.y;
       const pts = [];
       for (let k = 0; k <= 36; k++) { const u = k / 36; pts.push([-20 + u * (main.clientWidth + 40), cy + Math.sin(u * Math.PI * 2.4) * 54 + Math.sin(u * Math.PI * 5) * 12]); }
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("class", "nest-tongue"); svg.setAttribute("width", String(main.clientWidth)); svg.setAttribute("height", String(main.clientHeight));
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      line.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); line.setAttribute("fill", "none"); line.setAttribute("stroke", "var(--color-accent)"); line.setAttribute("stroke-width", "7"); line.setAttribute("stroke-linecap", "round");
-      const head = document.createElementNS("http://www.w3.org/2000/svg", "circle"); head.setAttribute("cx", pts[pts.length - 1][0]); head.setAttribute("cy", pts[pts.length - 1][1]); head.setAttribute("r", "7"); head.setAttribute("fill", "var(--color-accent)");
-      svg.append(line, head); layer.append(svg);
+      const tongue = document.createElement("div"); tongue.className = "nest-tongue";
+      for (let i = 1; i < pts.length; i += 2) {
+        const [x, y] = pts[i], [nx, ny] = pts[Math.min(pts.length - 1, i + 1)];
+        const span = document.createElement("span"); span.className = "tongue-braille";
+        span.textContent = "⣿";
+        span.style.left = x + "px"; span.style.top = y + "px";
+        span.style.transform = `translate(-50%, -50%) rotate(${Math.atan2(ny - y, nx - x)}rad)`;
+        tongue.append(span);
+      }
+      layer.append(tongue);
       const stuck = [];
       if (anchor.el && !anchor.tongue) { anchor.tongue = true; anchor.el.classList.add("stuck"); stuck.push(anchor); }
       const stick = () => {
@@ -1758,7 +1765,7 @@
       const timer = setInterval(stick, 120);
       setTimeout(() => {
         clearInterval(timer);
-        line.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 }).onfinish = () => svg.remove();
+        tongue.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 }).onfinish = () => tongue.remove();
         setTimeout(() => { stuck.forEach(removeEnvAnt); log("the tongue retracts; the stuck ants are gone"); }, 350);
       }, 3000);
       log("the anteater unrolls its tongue");
