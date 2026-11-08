@@ -83,6 +83,8 @@
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
+    .nest-hill.unbuilding { animation: nest-hill-unbuild .55s cubic-bezier(.6,0,.8,.4) both; transform-origin: 50% 100%; }
+    @keyframes nest-hill-unbuild { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scaleY(.06); } }
     .nest-sweet-card, .nest-event-card { position: absolute; z-index: 5; width: 46px; height: 28px; padding: 0; border: 0; background: none; color: var(--color-accent); cursor: pointer; pointer-events: auto; animation: nest-sweet-fade 12s linear both; }
     .nest-event-card { width: 44px; }
     .nest-sweet-card .wrapper, .nest-event-card .wrapper { position: absolute; top: 4px; width: 15px; height: 20px; background: currentColor; opacity: .78; transition: transform .42s ease, opacity .42s; }
@@ -106,6 +108,8 @@
 
     .nest-vacuum { position: absolute; z-index: 6; width: 100px; height: 100%; pointer-events: none; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent); border-left: 1px solid var(--color-accent); }
     .nest-tongue { position: absolute; z-index: 6; pointer-events: none; overflow: visible; }
+    .nest-suck { position: absolute; z-index: 7; width: 3px; height: 3px; border-radius: 50%; background: var(--color-accent); pointer-events: none; }
+    .nest-ant.stuck { color: var(--color-accent); opacity: .8; }
     @keyframes nest-sweet-fade { from { opacity: 1; } to { opacity: .15; } }
     @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
     .nest-scent polyline.rival { stroke: var(--nest-rival); }
@@ -1241,6 +1245,7 @@
   };
 
   const stepPage = (ant, dt) => {
+    if (ant.tongue) return;
     ant.px = ant.x; ant.py = ant.y;
     if (ant.job === "dance") return; // the party moves its own dancers
     if (ant.job === "wait") {
@@ -1734,38 +1739,69 @@
   };
 
   // ---- environmental pest control: a switch and an anteater, never banked -----------------
+  const removeEnvAnt = (a) => {
+    if (a.side === "rival") removeRivalAnt(a);
+    else {
+      if (a.letter?.state === "carried") drop(a.letter);
+      else if (a.letter?.state === "gather") { a.letter.crew = a.letter.crew.filter((m) => m !== a); if (!a.letter.crew.length) a.letter.state = "free"; }
+      squashQuiet(a);
+    }
+    state.squashed++;
+  };
   const resolveEnv = (kind) => {
     const card = state.env; if (!card) return;
     state.env = null; card.el.remove();
-    const mainAnts = state.ants.filter((a) => a.el && a.where === "page");
-    const rivals = [...rival.ants];
-    const caught = kind === "vacuum" ? [...mainAnts, ...rivals] : [...mainAnts, ...rivals].filter((_, i) => i % 2 === 0);
-    caught.forEach((a) => {
-      if (a.side === "rival") removeRivalAnt(a);
-      else {
-        if (a.letter?.state === "carried") drop(a.letter);
-        else if (a.letter?.state === "gather") { a.letter.crew = a.letter.crew.filter((m) => m !== a); if (!a.letter.crew.length) a.letter.state = "free"; }
-        squashQuiet(a);
-      }
-      state.squashed++;
-    });
+    const all = [...state.ants.filter((a) => a.el && a.where === "page"), ...rival.ants];
+    const anchor = all[Math.floor(Math.random() * all.length)] || { x: main.clientWidth / 2, y: main.clientHeight / 2 };
+    const distToSeg = (p, a, b) => {
+      const dx = b[0] - a[0], dy = b[1] - a[1], l = dx * dx + dy * dy || 1;
+      const t = Math.max(0, Math.min(1, ((p.x - a[0]) * dx + (p.y - a[1]) * dy) / l));
+      return Math.hypot(p.x - (a[0] + t * dx), p.y - (a[1] + t * dy));
+    };
     if (kind === "vacuum") {
+      const angle = (Math.random() < 0.5 ? 1 : -1) * (0.55 + Math.random() * 0.3);
+      const len = Math.hypot(main.clientWidth, main.scrollHeight) * 0.85;
+      const from = [anchor.x - Math.cos(angle) * len, anchor.y - Math.sin(angle) * len];
+      const to = [anchor.x + Math.cos(angle) * len, anchor.y + Math.sin(angle) * len];
       const sweep = document.createElement("div"); sweep.className = "nest-vacuum";
-      sweep.style.top = main.scrollTop + "px"; sweep.style.height = main.clientHeight + "px";
+      sweep.style.width = "130px"; sweep.style.height = main.scrollHeight + "px"; sweep.style.left = "0"; sweep.style.top = "0"; sweep.style.transformOrigin = "0 0";
       layer.append(sweep);
-      sweep.animate([{ transform: "translateX(-120px)" }, { transform: "translateX(" + (main.clientWidth + 120) + "px)" }], { duration: 900, easing: "ease-in" }).onfinish = () => sweep.remove();
+      sweep.animate([{ transform: `translate(${from[0]}px, ${from[1]}px) rotate(${angle}rad)` }, { transform: `translate(${to[0]}px, ${to[1]}px) rotate(${angle}rad)` }], { duration: 1600, easing: "ease-in-out" }).onfinish = () => sweep.remove();
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement("span"); p.className = "nest-suck";
+        const sx = anchor.x + (Math.random() - 0.5) * 260, sy = anchor.y + (Math.random() - 0.5) * 160;
+        p.style.left = sx + "px"; p.style.top = sy + "px"; layer.append(p);
+        p.animate([{ transform: "translate(0,0)", opacity: .9 }, { transform: `translate(${anchor.x - sx}px, ${anchor.y - sy}px)`, opacity: 0 }], { duration: 1000, easing: "ease-in" }).onfinish = () => p.remove();
+      }
+      setTimeout(() => {
+        all.filter((a) => a.el && distToSeg(a, from, to) < 85).forEach(removeEnvAnt);
+        log("the vacuum takes a slice of the page");
+      }, 700);
     } else {
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.setAttribute("class", "nest-tongue"); svg.setAttribute("width", String(main.clientWidth)); svg.setAttribute("height", String(main.clientHeight));
-      svg.style.top = main.scrollTop + "px";
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      const y = main.clientHeight * 0.45;
-      path.setAttribute("d", `M -20 ${y} C ${main.clientWidth * .2} ${y - 80}, ${main.clientWidth * .35} ${y + 90}, ${main.clientWidth * .55} ${y} S ${main.clientWidth * .85} ${y - 70}, ${main.clientWidth + 20} ${y + 20}`);
-      path.setAttribute("fill", "none"); path.setAttribute("stroke", "var(--color-accent)"); path.setAttribute("stroke-width", "3"); path.setAttribute("stroke-linecap", "round");
-      svg.append(path); layer.append(svg);
-      path.animate([{ opacity: 0, strokeDasharray: "0 2000" }, { opacity: 1, strokeDasharray: "2000 0" }], { duration: 900, easing: "ease-in" }).onfinish = () => svg.remove();
+      const cy = anchor.y;
+      const pts = [];
+      for (let k = 0; k <= 36; k++) { const u = k / 36; pts.push([-20 + u * (main.clientWidth + 40), cy + Math.sin(u * Math.PI * 2.4) * 54 + Math.sin(u * Math.PI * 5) * 12]); }
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("class", "nest-tongue"); svg.setAttribute("width", String(main.clientWidth)); svg.setAttribute("height", String(main.clientHeight));
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      line.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); line.setAttribute("fill", "none"); line.setAttribute("stroke", "var(--color-accent)"); line.setAttribute("stroke-width", "3"); line.setAttribute("stroke-linecap", "round");
+      svg.append(line); layer.append(svg);
+      const stuck = [];
+      const stick = () => {
+        for (const a of all) {
+          if (!a.el || a.tongue) continue;
+          if (pts.some((p, i) => i && distToSeg(a, pts[i - 1], p) < 16)) {
+            a.tongue = true; a.px = a.x; a.py = a.y; a.el.classList.add("stuck"); stuck.push(a);
+          }
+        }
+      };
+      const timer = setInterval(stick, 120);
+      setTimeout(() => {
+        clearInterval(timer);
+        line.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 }).onfinish = () => svg.remove();
+        setTimeout(() => { stuck.forEach(removeEnvAnt); log("the tongue retracts; the stuck ants are gone"); }, 350);
+      }, 1500);
+      log("the anteater unrolls its tongue");
     }
-    log(kind === "vacuum" ? "the vacuum sweeps the page" : "the anteater licks the page");
     blip(kind === "vacuum" ? 120 : 90, 0.24, "sawtooth", 0.04);
     state.envNext = performance.now() + 80000 + Math.random() * 60000;
   };
@@ -2236,7 +2272,7 @@
     });
   };
   const stepRival = (a, dt) => {
-    if (!a.el) return;
+    if (!a.el || a.tongue) return;
     if (a.job === "rival-guard") {
       const g = a.path[a.k]; if (!g) return;
       if (move(a, g[0], g[1], dt, SPEED * 0.7)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.path = a.path.toReversed(); a.k = 0; } }
@@ -2755,7 +2791,12 @@
     layer.querySelectorAll(".nest-ant").forEach((el) => { el.classList.toggle("walk", !state.paused); el._walk = !state.paused; });
     if (state.paused) drawStats(); else startLoop();
   });
+  let resetting = false;
   const resetPage = () => {
+    if (resetting) return;
+    resetting = true;
+    home.el.classList.add("unbuilding");
+    setTimeout(() => {
     if (state.builder?.spot.gap) cancelBuild(state.builder);
     const oldMinis = minis.slice();
     oldMinis.forEach((m) => removeMini(m, true));
@@ -2781,6 +2822,11 @@
     if (r.top < view.top + 24 || r.bottom > view.bottom - 24) {
       home.el.scrollIntoView({ block: "center", inline: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     }
+    home.el.classList.remove("unbuilding");
+    home.el.classList.add("rising");
+    setTimeout(() => home.el?.classList.remove("rising"), 950);
+    resetting = false;
+    }, 560);
   };
   $("restore").addEventListener("click", () => { $("reset-confirm").hidden = false; $("reset-go").focus(); });
   $("reset-go").addEventListener("click", () => { $("reset-confirm").hidden = true; resetPage(); });
