@@ -1079,7 +1079,7 @@
   // Trails that leave the same hill close together share their first stretch. Snapping the
   // nearby early points onto an existing line turns a pile of near-parallel curves into one
   // trunk, then lets the new branch peel off where it actually diverges.
-  const mergeRoute = (pts, block) => {
+  const mergeRoute = (pts, block, trails = state.trails) => {
     const cross = (a, b, c, d) => {
       const rx = b[0] - a[0], ry = b[1] - a[1], sx = d[0] - c[0], sy = d[1] - c[1];
       const den = rx * sy - ry * sx; if (!den) return null;
@@ -1088,8 +1088,8 @@
       return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? [a[0] + t * rx, a[1] + t * ry] : null;
     };
     let best = null;
-    for (const t of state.trails) {
-      if (t.side || t.state === "gone" || t.block === block) continue;
+    for (const t of trails) {
+      if (t.state === "gone" || t.block === block) continue;
       for (let i = 1; i < pts.length; i++) for (let j = 1; j < t.pts.length; j++) {
         const hit = cross(pts[i - 1], pts[i], t.pts[j - 1], t.pts[j]);
         if (hit && (!best || i < best.i)) best = { i, j, hit, t };
@@ -1107,7 +1107,7 @@
 
   const layTrail = (ant, copy = "the scout is home; a trail is laid") => {
     const route = ant.scoutRoute; if (!route) return null;
-    const merged = mergeRoute(route.pts, route.block);
+    const merged = mergeRoute(route.pts, route.block, state.trails.filter((t) => !t.side));
     const points = merged.map((p) => p.join(",")).join(" ");
     const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     halo.setAttribute("points", points); halo.classList.add("halo");
@@ -2235,13 +2235,25 @@
   };
   const rivalTrail = (pick) => {
     const hole = rival.mound.hole;
-    const pts = [];
-    for (let k = 0; k <= 22; k++) {
-      const u = k / 22;
-      const x = hole[0] + (pick.x - hole[0]) * u;
-      const y = hole[1] + (pick.y - hole[1]) * u + Math.sin(u * Math.PI) * 12;
-      pts.push([x, y]);
+    const dx = pick.x - hole[0], dy = pick.y - hole[1], dist = Math.hypot(dx, dy) || 1;
+    const nx = -dy / dist, ny = dx / dist;
+    const amp = Math.min(46, Math.max(10, dist * 0.2));
+    const side = Math.random() < 0.5 ? -1 : 1;
+    const c1 = amp * (0.6 + Math.random() * 0.8) * side;
+    const c2 = amp * (0.25 + Math.random() * 0.75) * (Math.random() < 0.28 ? -side : side);
+    const p0 = [hole[0], hole[1]], p1 = [hole[0] + dx * 0.3 + nx * c1, hole[1] + dy * 0.3 + ny * c1];
+    const p2 = [hole[0] + dx * 0.7 + nx * c2, hole[1] + dy * 0.7 + ny * c2], p3 = [pick.x, pick.y];
+    const phase = Math.random() * Math.PI * 2; let jag = 0;
+    let pts = [];
+    for (let s = 0; s <= 28; s++) {
+      const k = s / 28, u = 1 - k;
+      const bx = u * u * u * p0[0] + 3 * u * u * k * p1[0] + 3 * u * k * k * p2[0] + k * k * k * p3[0];
+      const by = u * u * u * p0[1] + 3 * u * u * k * p1[1] + 3 * u * k * k * p2[1] + k * k * k * p3[1];
+      jag = jag * 0.58 + (Math.random() - 0.5) * 4.2;
+      const wobble = (Math.sin(k * 5.2 + phase) * 0.6 + jag) * Math.sin(Math.PI * k);
+      pts.push([bx + nx * wobble, by + ny * wobble]);
     }
+    pts = mergeRoute(pts, pick.block, rival.trails);
     const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     halo.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); halo.classList.add("halo", "rival");
     const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
