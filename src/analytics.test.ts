@@ -1,7 +1,7 @@
 // portfolio/analytics.test.ts — the status-bar view counts baked in at build time.
 import { test, expect, describe } from "bun:test";
 import { writeFileSync } from "node:fs";
-import { injectViews, viewsLabel, formatCount, shortDate, load, type AnalyticsData } from "./analytics.ts";
+import { injectViews, viewsLabel, formatCount, shortDate, load, parseAnalytics, type AnalyticsData } from "./analytics.ts";
 
 const DATA: AnalyticsData = {
   visits: 1204,
@@ -117,6 +117,27 @@ describe("injectViews", () => {
   test("only the views span is touched — the rest of the bar is untouched", () => {
     const extra = `<a class="status-bar__contact" href="/about#contact">Contact</a>`;
     expect(injectViews(bar(extra), "/about", DATA)).toContain(extra);
+  });
+});
+
+describe("parseAnalytics", () => {
+  test("the pulled shape passes", () => {
+    expect(parseAnalytics(DATA)).toEqual(DATA);
+  });
+
+  test("a snapshot from a JSON file or a fetch is the same value, not a class", () => {
+    expect(parseAnalytics(JSON.parse(JSON.stringify(DATA)))).toEqual(DATA);
+  });
+
+  test("no visits, no paths, a null, an array or a string is rejected", () => {
+    expect(parseAnalytics(null)).toBeNull();
+    expect(parseAnalytics(undefined)).toBeNull();
+    expect(parseAnalytics({ paths: {} })).toBeNull();
+    expect(parseAnalytics({ visits: 5 })).toBeNull();
+    expect(parseAnalytics({ visits: "5", paths: {} })).toBeNull();
+    expect(parseAnalytics({ visits: 5, paths: null })).toBeNull();
+    expect(parseAnalytics({ visits: 5, paths: [] })).toBeNull();
+    expect(parseAnalytics("not data")).toBeNull();
   });
 });
 
