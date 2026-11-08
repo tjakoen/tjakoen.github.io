@@ -65,6 +65,18 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page).toHaveURL(/\/bread$/);
   });
 
+  test("the Nest is lazy: no game request before the launcher is used", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".nest-switch")).toBeVisible();
+    await page.waitForTimeout(500);
+    const requested = () => page.evaluate(() =>
+      performance.getEntriesByType("resource").some((entry) => entry.name.includes("/site/nest-mockup.js")));
+    expect(await requested()).toBe(false);
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await expect.poll(requested).toBe(true);
+  });
+
   test("the note starts the colony from its own button", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
     await page.getByRole("button", { name: "Start the colony" }).click();

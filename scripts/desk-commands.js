@@ -104,8 +104,9 @@
     window.__nestLauncher?.open();
     ctx.print(already ? "The colony is already open." : "The colony is open in the sidebar.");
   }});
-  t.register({ name: "stray", args: "", help: "send a stray ant across the page", run(ctx) {
+  t.register({ name: "stray", args: "", help: "send a stray ant across the page", async run(ctx) {
     if (document.getElementById("nest-mock")) { ctx.printErr("close the Nest first."); return; }
+    await import("/site/nest-mockup.js");
     if (!window.__nestStray) { ctx.printErr("the colony is not loaded on this page."); return; }
     window.__nestStray.spawn(true);
     ctx.print("A stray ant is crossing the page. Click it and it will run for the launcher.");
