@@ -83,12 +83,26 @@
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
-    .nest-sweet-card { position: absolute; z-index: 5; pointer-events: auto; padding: 8px 10px; border: 1px dashed var(--color-accent); background: var(--paper); color: var(--color-accent); font: 12px/1.2 var(--font-mono); cursor: pointer; animation: nest-sweet-fade 12s linear both; }
+    .nest-sweet-card, .nest-event-card { position: absolute; z-index: 5; width: 46px; height: 28px; padding: 0; border: 0; background: none; color: var(--color-accent); cursor: pointer; pointer-events: auto; animation: nest-sweet-fade 12s linear both; }
+    .nest-event-card { width: 44px; }
+    .nest-sweet-card .wrapper, .nest-event-card .wrapper { position: absolute; top: 4px; width: 15px; height: 20px; background: currentColor; opacity: .78; transition: transform .42s ease, opacity .42s; }
+    .nest-sweet-card .wrapper.left, .nest-event-card .wrapper.left { left: 0; clip-path: polygon(100% 0, 0 50%, 100% 100%); transform-origin: 100% 50%; }
+    .nest-sweet-card .wrapper.right, .nest-event-card .wrapper.right { right: 0; clip-path: polygon(0 0, 100% 50%, 0 100%); transform-origin: 0 50%; }
+    .nest-sweet-card .candy, .nest-event-card .candy { position: absolute; left: 13px; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: currentColor; box-shadow: inset 0 0 0 3px var(--paper), 0 0 8px color-mix(in srgb, currentColor 35%, transparent); transition: transform .42s ease, opacity .42s; }
+    .nest-sweet-card .candy::after { content: ""; position: absolute; left: 6px; top: 3px; width: 8px; height: 14px; border-radius: 50%; background: var(--paper); opacity: .65; }
+    .nest-event-card[data-kind="vacuum"] .candy { border-radius: 4px; }
+    .nest-event-card[data-kind="vacuum"] .candy::after { content: ""; position: absolute; left: 8px; top: 3px; width: 3px; height: 14px; background: var(--paper); }
+    .nest-event-card[data-kind="anteater"] .candy { left: 11px; width: 24px; height: 10px; top: 9px; border-radius: 10px 0 0 10px; }
+    .nest-event-card[data-kind="anteater"] .candy::after { content: ""; position: absolute; right: 1px; top: 3px; width: 7px; height: 4px; border-radius: 50%; background: var(--paper); }
+    .nest-sweet-card.unwrapping .wrapper.left, .nest-event-card.unwrapping .wrapper.left { transform: translateX(-28px) rotate(-35deg); opacity: 0; }
+    .nest-sweet-card.unwrapping .wrapper.right, .nest-event-card.unwrapping .wrapper.right { transform: translateX(28px) rotate(35deg); opacity: 0; }
+    .nest-sweet-card.unwrapping .candy, .nest-event-card.unwrapping .candy { transform: scale(1.35); }
+    .nest-sweet-card:focus-visible, .nest-event-card:focus-visible { outline: 2px dashed var(--color-accent); outline-offset: 3px; }
     .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; color: var(--nest-rival); }
     @keyframes nest-fight { 50% { transform: translateX(2px) rotate(4deg); } }
     .nest-sweet { position: absolute; z-index: 4; color: var(--color-accent); font: 18px/1 var(--font-mono); letter-spacing: 2px; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 40%, transparent); pointer-events: none; }
     main.nest-sweet-planning { cursor: crosshair; }
-    .nest-event-card { position: absolute; z-index: 5; pointer-events: auto; padding: 7px 9px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); font: 11px/1.2 var(--font-mono); cursor: pointer; }
+
     .nest-event-effect { position: absolute; z-index: 6; pointer-events: none; font: 24px/1 var(--font-mono); color: var(--color-accent); }
     @keyframes nest-sweet-fade { from { opacity: 1; } to { opacity: .15; } }
     @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
@@ -1631,12 +1645,19 @@
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
   // ---- the sweet: a rare lure that buys the page time without feeding the copy -------------
+  const unwrapCard = (el, done) => {
+    if (el.classList.contains("unwrapping")) return;
+    el.classList.add("unwrapping");
+    setTimeout(done, 430);
+  };
   const sweetCard = () => {
     if (state.sweet || state.sweetCard || state.sweetPlanning || state.party) return;
     const spot = findMiniSpot();
     if (!spot) { state.sweetNext = performance.now() + 20000; return; }
     const el = document.createElement("button");
-    el.type = "button"; el.className = "nest-sweet-card"; el.textContent = "a sweet?";
+    el.type = "button"; el.className = "nest-sweet-card";
+    el.setAttribute("aria-label", "A wrapped candy. Click to unwrap and place it.");
+    el.innerHTML = "<span class='wrapper left'></span><span class='candy'></span><span class='wrapper right'></span>";
     el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 70)}px`;
     layer.append(el);
     const card = { el, ttl: 12000 };
@@ -1648,15 +1669,19 @@
     setTimeout(remove, card.ttl);
     el.addEventListener("click", (e) => {
       e.preventDefault(); e.stopPropagation();
-      if (state.sweetCard !== card) return;
-      el.remove(); state.sweetCard = null;
-      state.sweetPlanning = true; main.classList.add("nest-sweet-planning");
-      log("place the sweet on a clear patch");
-      setTimeout(() => {
-        if (!state.sweetPlanning) return;
-        state.sweetPlanning = false; main.classList.remove("nest-sweet-planning");
-        state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
-      }, 8000);
+      if (state.sweetCard !== card || card.unwrapping) return;
+      card.unwrapping = true;
+      unwrapCard(el, () => {
+        if (state.sweetCard !== card) return;
+        el.remove(); state.sweetCard = null;
+        state.sweetPlanning = true; main.classList.add("nest-sweet-planning");
+        log("place the unwrapped sweet on a clear patch");
+        setTimeout(() => {
+          if (!state.sweetPlanning) return;
+          state.sweetPlanning = false; main.classList.remove("nest-sweet-planning");
+          state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
+        }, 8000);
+      });
     });
   };
   const removeSweet = (why) => {
@@ -1736,13 +1761,19 @@
     const spot = findMiniSpot();
     if (!spot) { state.envNext = performance.now() + 20000; return; }
     const el = document.createElement("button");
-    el.type = "button"; el.className = "nest-event-card";
-    el.textContent = kind === "vacuum" ? "vacuum switch" : "anteater";
+    el.type = "button"; el.className = "nest-event-card"; el.dataset.kind = kind;
+    el.setAttribute("aria-label", kind === "vacuum" ? "A wrapped switch. Click to unwrap." : "A wrapped anteater. Click to unwrap.");
+    el.innerHTML = "<span class='wrapper left'></span><span class='candy'></span><span class='wrapper right'></span>";
     el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 64)}px`;
     layer.append(el);
     const card = { el, kind, ttl: 10000 };
     state.env = card;
-    el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); resolveEnv(kind); });
+    el.addEventListener("click", (e) => {
+      e.preventDefault(); e.stopPropagation();
+      if (card.unwrapping) return;
+      card.unwrapping = true;
+      unwrapCard(el, () => resolveEnv(kind));
+    });
     setTimeout(() => { if (state.env === card) { el.remove(); state.env = null; state.envNext = performance.now() + 80000; } }, card.ttl);
   };
 
