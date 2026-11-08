@@ -29,7 +29,7 @@ declare global {
       spawnEnv: (kind: string) => void;
       env?: unknown;
       wipeTrail: (trail: unknown, at: [number, number]) => void;
-      rival: { active: boolean; ants: Array<unknown>; trails: Array<{ end: [number, number] }>; stolen: Set<unknown>; returnAt: number; mound?: { base: [number, number] } | null };
+      rival: { active: boolean; ants: Array<unknown>; trails: Array<{ end: [number, number] }>; stolen: Set<unknown>; returnAt: number; minis: Array<unknown>; mound?: { base: [number, number] } | null };
     };
   }
 }
@@ -434,6 +434,8 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.evaluate(() => window.__nest!.startParty());
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.active), { timeout: 20_000 }).toBe(true);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length), { timeout: 15_000 }).toBeGreaterThan(0);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.trails.length), { timeout: 15_000 }).toBeGreaterThan(0);
+    expect(await page.evaluate(() => window.__nest!.rival.minis.length)).toBe(2);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size), { timeout: 15_000 }).toBeGreaterThan(0);
     const placement = await page.evaluate(() => {
       const home = window.__nest!.home.base;
@@ -444,8 +446,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     expect(placement.dist).toBeGreaterThan(340);
     await expect(page.locator("[data-k='rival-hint']")).toContainText("rival");
     await page.evaluate(() => {
-      const trail = window.__nest!.rival.trails[0];
-      window.__nest!.wipeTrail(trail, trail.end);
+      for (const trail of window.__nest!.rival.trails.slice()) window.__nest!.wipeTrail(trail, trail.end);
     });
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.active)).toBe(false);
     await expect(page.locator("[data-k='rival-hint']")).toHaveText("");
