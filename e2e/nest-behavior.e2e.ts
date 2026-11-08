@@ -50,3 +50,18 @@ test("staged combat does not throw frame errors", async ({ page }) => {
   await page.waitForTimeout(600);
   expect(errors).toEqual([]);
 });
+
+
+test("a rival guard breaks patrol to defend against a main intruder", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  const job = await page.evaluate(async () => {
+    const n = window.__nest as any;
+    const guard = n.spawnRivalUnit("rival-guard", [500, 420], [[500, 420], [540, 420]], null);
+    n.spawnPageAnt("soldier", [430, 420], null);
+    await new Promise((r) => setTimeout(r, 400));
+    return guard.job;
+  });
+  expect(job).toBe("rival-defend");
+});
