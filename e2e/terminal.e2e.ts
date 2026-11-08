@@ -23,7 +23,6 @@ declare global {
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
       newAnt: (role: string, route: string, d: number) => unknown;
-      spawnEnv: (kind: string) => void;
       env?: unknown;
       spawnPageAnt: (role: string, at: [number, number], mini: unknown) => { el: Element };
       spawnRivalUnit: (job: string, at: [number, number], path: number[][], sweet: unknown) => { el: Element };
@@ -390,24 +389,6 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     });
     await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
   });
-
-  for (const kind of ["vacuum", "anteater"] as const) {
-    test(`the ${kind} trigger clears page ants without touching letters`, async ({ page }) => {
-      await page.goto("/?nest-debug");
-      await page.locator(".nest-switch").click();
-      await expect(page.locator("#nest-mock")).toBeVisible();
-      await page.waitForFunction(() => window.__nest?.state.ants.some((a) => a.el && a.where === "page"));
-      const before = await page.evaluate(() => window.__nest!.state.squashed);
-      const pageBefore = await page.locator("[data-k='holds-val']").textContent();
-      await page.evaluate((k) => window.__nest!.spawnEnv(k), kind);
-      const card = page.locator(kind === "anteater" ? ".nest-anteater" : ".nest-event-card");
-      await expect(card).toBeVisible();
-      await card.click();
-      await expect(page.locator(kind === "vacuum" ? ".nest-vacuum-rect" : ".tongue-braille").first()).toBeVisible();
-      await expect.poll(() => page.evaluate(() => window.__nest!.state.squashed), { timeout: 9_000 }).toBeGreaterThan(before);
-      expect(await page.locator("[data-k='holds-val']").textContent()).toBe(pageBefore);
-    });
-  }
 
   test("the rival colony founds, steals and retreats when its trail is wiped", async ({ page }) => {
     await page.goto("/?nest-debug");
