@@ -82,9 +82,14 @@
     :root[data-color-scheme="light"] .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); }
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
+    .nest-ant.rival-worker svg { transform: scale(.78); }
+    .nest-ant.rival.soldier svg, .nest-ant.rival-guard svg { transform: scale(1.3); }
+    .nest-ant.rival-guard svg { transform: scale(1.3); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
     .nest-hill.rival.constructing { animation: rival-build 2.6s cubic-bezier(.2,.7,.3,1) both; transform-origin: 50% 100%; }
     @keyframes rival-build { from { opacity: .12; transform: scaleY(.06); } 55% { opacity: .7; } to { opacity: 1; transform: none; } }
+    .nest-celebration { position: absolute; z-index: 9; left: 50%; top: 42%; transform: translate(-50%, -50%); padding: 10px 16px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); font: 12px/1.4 var(--font-mono); text-align: center; pointer-events: none; animation: nest-celebration 2.4s ease-out both; }
+    @keyframes nest-celebration { 0% { opacity: 0; transform: translate(-50%, -40%) scale(.9); } 15% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -58%) scale(1); } }
     .nest-cache-letter { position: absolute; z-index: 4; color: var(--color-accent); pointer-events: none; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 35%, transparent); }
     .nest-hill.hit { animation: nest-hill-hit .3s steps(2); }
     @keyframes nest-hill-hit { 50% { transform: translateX(3px); filter: brightness(1.5); } }
@@ -202,7 +207,6 @@
     .nest-queen svg { display: block; width: 60px; height: 38px; overflow: visible; }
     .queen-ant { position: absolute; inset: 0; display: grid; place-items: center; }
     .queen-ant svg { width: 60px; height: 38px; }
-    .queen-crown { position: absolute; left: 50%; top: -9px; width: 22px; height: 11px; transform: translateX(-50%); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
     .queen-braille { margin: 0; font: 8px/1 var(--font-mono); letter-spacing: 0; color: inherit; text-align: center; white-space: pre; }
     .nest-queen.panel-queen { z-index: 4; }
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
@@ -611,10 +615,10 @@
   addEventListener("beforeunload", onBeforeUnload);
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
-    cache: null, cacheLetters: [], cacheTrail: null, scoutQueue: [],
+    cache: null, cacheLetters: [], cacheTrail: null, hiddenLetters: new Set(), scoutQueue: [],
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(mainAnts().length / 3)));
-  const rival = { active: false, mound: null, trails: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8 };
+  const rival = { active: false, mound: null, trails: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8, war: false, lastMilestone: 0, lastBase: null, tier: 0 };
   const mainAnts = () => state.ants.filter((a) => a.side !== "rival");
   Object.defineProperty(rival, "ants", { get: () => state.ants.filter((a) => a.side === "rival") });
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
@@ -681,9 +685,9 @@
       mid.replaceWith(span); span.append(mid);
       L.n = mid; L.i = 0; L.span = span; byNode.set(mid, new Map([[0, L]]));
     }
-    L.span.style.visibility = "hidden";
+    L.span.style.visibility = "hidden"; state.hiddenLetters.add(L);
   };
-  const showChar = (L) => { if (L.span) L.span.style.visibility = ""; };
+  const showChar = (L) => { if (L.span) L.span.style.visibility = ""; state.hiddenLetters.delete(L); };
   const blockOf = (n) => n.parentElement.closest("p, h1, h2, h3, h4, li, dd, blockquote, figcaption, a") || n.parentElement;
   const needOf = (n) => { const fs = parseFloat(getComputedStyle(n.parentElement).fontSize); return fs >= 28 ? 3 : fs >= 20 ? 2 : 1; };
 
@@ -933,7 +937,7 @@
     else { ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; }
     label(ant);
   };
-  const label = (ant) => { if (!ant.el) return; ant.el.inert = state.tool === "wipe"; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier" || ant.role === "guard"); ant.el.classList.toggle("builder", ant.role === "builder"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival" }[ant.role]} ant. Press to squash.`); };
+  const label = (ant) => { if (!ant.el) return; ant.el.inert = state.tool === "wipe"; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier" || ant.role === "guard"); ant.el.classList.toggle("builder", ant.role === "builder"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival", "rival-worker": "Rival worker" }[ant.role]} ant. Press to squash.`); };
 
   // A scout wanders: loose waypoints toward a block of text no trail reaches yet, its steps recorded.
   const remaining = (t) => {
@@ -986,6 +990,8 @@
       const open = free.filter((o) => !busyBlocks.has(blockOf(o[0])));
       options.push(...(open.length ? open : free));
     }
+    const nearHome = options.filter((o) => Math.hypot(o[1] - hole[0], o[2] - hole[1]) < 520);
+    if (nearHome.length) options.splice(0, options.length, ...nearHome);
     if (!options.length) { ant.role = "worker"; ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; return; }
     if (state.cache) {
       const nearCache = options.filter((o) => Math.hypot(o[1] - state.cache.x, o[2] - state.cache.y) < 340);
@@ -1300,6 +1306,25 @@
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
     if (ant.job === "rival-siege" || ant.job === "rival-contest") return stepRivalDefense(ant, dt);
     if (ant.job === "cache") return stepCache(ant, dt);
+    if ((ant.role === "soldier" || ant.role === "guard") && ant.job !== "dance" && ant.job !== "rival-siege" && ant.job !== "rival-contest") {
+      const threat = rival.ants.find((r) => r.el && (Math.hypot(r.x - ant.x, r.y - ant.y) < 170 || state.trails.some((t) => !t.side && t.pts.some((p) => Math.hypot(p[0] - r.x, p[1] - r.y) < 45))));
+      if (threat) {
+        if (ant.job !== "guard-chase") { ant.chaseResume = ant.job; ant.chaseMini = ant.mini; ant.chasePatrol = ant.patrol; }
+        ant.job = "guard-chase"; ant.path = [[threat.x, threat.y]]; ant.k = 0;
+      }
+    }
+    if (ant.job === "guard-chase") {
+      const threat = rival.ants.find((r) => r.el && Math.hypot(r.x - ant.x, r.y - ant.y) < 220);
+      if (!threat) {
+        if (ant.chaseMini && minis.includes(ant.chaseMini)) { ant.job = "mini-home"; ant.path = [ant.chaseMini.hole.slice()]; }
+        else if (ant.chasePatrol && state.trails.includes(ant.chasePatrol)) { ant.job = "patrol"; ant.path = lanePath(ant.chasePatrol.pts, ant.lane || 0); }
+        else { ant.job = "patrol"; ant.path = []; }
+        ant.k = 0; return;
+      }
+      if (move(ant, threat.x, threat.y, dt, SPEED * 0.95)) { ant.px = ant.x; ant.py = ant.y; }
+      else { ant.px = ant.x; ant.py = ant.y; }
+      return;
+    }
     if ((ant.job === "defend" || ant.job === "guard") && ant.defendUntil && performance.now() > ant.defendUntil) {
       ant.defendUntil = 0;
       if (ant.mini && minis.includes(ant.mini)) {
@@ -1457,6 +1482,7 @@
   const checkWipe = () => {
     if (state.over || mainAnts().length || state.eggs.length || minis.length || state.builder) return;
     newAnt("scout", "hatch", 0);
+    newAnt("soldier", "hatch", 0);
     newAnt("worker", "up", LEN.up - 0.06);
     newAnt("worker", "up", LEN.up - 0.09);
     log("the queen sends out a scout and two workers"); blip(330, 0.08, "sine");
@@ -1516,13 +1542,14 @@
         { transform: "translate(-50%, -240%) scale(.7)", opacity: 0 }];
     q.animate(frames, { duration: 1200, easing: "ease-in-out" }).onfinish = () => q.remove();
   };
-  const queenMarkup = () => `<div class="queen-ant" aria-hidden="true">${ANT_SVG}</div><svg class="queen-crown" viewBox="0 0 24 12" aria-hidden="true"><path d="M2 10 5 3l3 5 4-6 4 6 3-5 3 7z" /></svg>`;
+  const queenMarkup = () => `<div class="queen-ant" aria-hidden="true">${ANT_SVG}</div>`;
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
     const now = performance.now();
     const mound = home;
     const stage = stageSpot();
     const queen = document.createElement("div"); queen.className = "nest-queen bob crawling"; queen.innerHTML = queenMarkup();
+    queen.style.transition = "none";
     queen.style.left = mound.hole[0] + "px"; queen.style.top = (mound.hole[1] - 8) + "px";
     layer.append(queen);
     requestAnimationFrame(() => { queen.style.left = stage.x + "px"; queen.style.top = stage.y + "px"; });
@@ -1555,10 +1582,16 @@
     const t = now / 1000;
     if (!p.returning && now >= p.returnAt) {
       p.returning = true;
-      p.queen.style.left = p.queenFrom[0] + "px";
-      p.queen.style.top = (p.queenFrom[1] - 8) + "px";
+      p.crawlFrom = [parseFloat(p.queen.style.left) || p.stage.x, parseFloat(p.queen.style.top) || p.stage.y];
+      p.crawlStart = now;
       p.queen.classList.remove("dancing");
       p.queen.classList.add("crawling");
+    }
+    if (p.returning) {
+      const u = Math.min(1, (now - p.crawlStart) / 1800);
+      p.queen.style.left = (p.crawlFrom[0] + (p.queenFrom[0] - p.crawlFrom[0]) * u) + "px";
+      p.queen.style.top = (p.crawlFrom[1] + (p.queenFrom[1] - 8 - p.crawlFrom[1]) * u) + "px";
+      if (u >= 1) { p.queen.classList.remove("crawling"); p.queen.classList.add("wait"); }
     }
     p.dancers.forEach((a) => {
       if (!a.el) return;
@@ -1597,6 +1630,8 @@
       }
     });
     state.party = null;
+    state.stores = Math.max(state.stores, storeCap());
+    log("the worship fills the stores");
     if (p.final) { state.nextParty = Infinity; return; }
     state.partyIndex = Math.min(state.partyIndex + 1, TUNING.party.length);
     state.nextParty = TUNING.party[state.partyIndex] ?? state.nextParty + 120;
@@ -1607,7 +1642,7 @@
   // a mini hill in open ground; squash the builder and the stores are lost. A mini hill sends out
   // guards, which walk to an existing trail and patrol it, and flyers, which roam and steal any
   // letter. It falls to a few clicks, but only once none of its guards are left.
-  const STORE_COSTS = [12, 18, 24, 30], MAX_MINIS = 4, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, HEAL_AFTER = 6, HEAL_EVERY = 5;
+  const STORE_COSTS = [12, 18, 24, 30, 36], MAX_MINIS = Infinity, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, HEAL_AFTER = 6, HEAL_EVERY = 5;
   const MOUND_REACH = 560;
   const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
   const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
@@ -1993,7 +2028,7 @@
 
   // ---- the rival colony: a small, inverse-colour nuisance below the fold -------------------
   const removeRivalAnt = (a) => {
-    if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); showChar(a.letter); a.letter.state = "free"; a.letter = null; }
+    if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); a.letter.glyph = null; a.letter.state = "spent"; a.letter.crew = []; a.letter = null; }
     a.glyph?.remove(); a.glyph = null;
     a.el?.remove(); a.el = null;
     a.trail?.ants.delete(a);
@@ -2036,6 +2071,7 @@
         if ((x - home.base[0]) * side < 150) continue;
         if (Math.hypot(x - home.base[0], y - home.base[1]) < 360) continue;
         if (Math.abs(y - home.base[1]) > 460) continue;
+        if (rival.lastBase && Math.hypot(x - rival.lastBase[0], y - rival.lastBase[1]) < 260) continue;
         const box = [x - hw / 2 - 10, y - hh - 10, x + hw / 2 + 10, y + 10];
         if (clear(box)) spots.push({ x, y });
       }
@@ -2047,6 +2083,7 @@
       for (let y = 80; y < main.scrollHeight - 40; y += 46) {
         for (let x = 100; x < main.clientWidth - 100; x += 46) {
           if (Math.abs(y - home.base[1]) > 460) continue;
+        if (rival.lastBase && Math.hypot(x - rival.lastBase[0], y - rival.lastBase[1]) < 260) continue;
           const box = [x - hw / 2 - 10, y - hh - 10, x + hw / 2 + 10, y + 10];
           if (clear(box)) spots.push({ x, y });
         }
@@ -2134,11 +2171,11 @@
   };
   const spawnRival = (trail) => {
     const hole = rival.mound.hole;
-    const a = { id: ++state.total, role: "rival", side: "rival", where: "page", x: hole[0], y: hole[1], px: hole[0], py: hole[1],
+    const a = { id: ++state.total, role: "rival-worker", side: "rival", where: "page", x: hole[0], y: hole[1], px: hole[0], py: hole[1],
       heading: -Math.PI / 2, trail, job: "rival-follow", lane: Math.random() < 0.5 ? 3 : -3, hp: 1 };
     a.path = lanePath(trail.pts, a.lane); a.k = 0;
-    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival walk";
-    a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival ant. Press to squash.");
+    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival rival-worker walk";
+    a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
     layer.append(a.el); placeAnt(a); label(a); state.ants.push(a); trail.ants.add(a);
   };
@@ -2158,9 +2195,9 @@
   };
   const spawnRivalUnit = (job, at, path) => {
     const a = { id: ++state.total, role: job === "rival-guard" ? "guard" : "rival", side: "rival", where: "page", x: at[0], y: at[1], px: at[0], py: at[1],
-      heading: -Math.PI / 2, job, path, k: 0, hp: job === "rival-guard" ? 3 : 1 };
-    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival walk";
-    a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival ant. Press to squash.");
+      heading: -Math.PI / 2, job, path, k: 0, hp: job === "rival-guard" ? 2 : 1 };
+    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival rival-worker walk";
+    a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
     layer.append(a.el); placeAnt(a); label(a); state.ants.push(a);
     return a;
@@ -2239,8 +2276,8 @@
     }
   };
   let lastRivalFight = 0;
-  const combatPower = (a) => (a.role === "soldier" || a.role === "guard") ? 2 : 1;
-  const combHp = (a) => (a.side === "rival" && a.role === "guard" ? 3 : a.role === "soldier" || a.role === "guard" ? 2 : 1);
+  const combatPower = (a) => a.side === "rival" ? (a.role === "guard" ? 2 : 1) : (a.role === "soldier" || a.role === "guard" ? 3 : 1);
+  const combHp = (a) => a.side === "rival" ? (a.role === "guard" ? 2 : 1) : (a.role === "soldier" || a.role === "guard" ? 4 : 1);
   const removeMainCombatant = (a) => {
     if (a.letter?.state === "carried") drop(a.letter);
     else if (a.letter?.state === "gather") { a.letter.crew = a.letter.crew.filter((m) => m !== a); if (!a.letter.crew.length) a.letter.state = "free"; }
@@ -2334,6 +2371,12 @@
   const tickRivalAttack = (now) => {
     if (!rival.active || state.party || now < nextRivalAttack) return;
     nextRivalAttack = now + 3500;
+    if (rival.war) {
+      const units = mainAnts().filter((a) => a.el && (a.role === "soldier" || a.role === "guard") && a.job !== "dance" && !a.rivalSiege && !a.rivalContest).slice(0, 3);
+      units.forEach((a) => { a.job = "rival-siege"; a.path = [rival.mound.hole.slice()]; a.k = 0; a.rivalSiege = true; a.el.classList.add("marching"); });
+      if (units.length) log("the colony sends soldiers to end the rival");
+      return;
+    }
     const soldier = mainAnts().find((a) => a.el && a.role === "soldier" && a.job !== "dance" && !a.rivalSiege && !a.rivalContest);
     const guard = mainAnts().find((a) => a.el && a.role === "guard" && a.job !== "dance" && !a.rivalSiege && !a.rivalContest);
     const unit = soldier || guard;
@@ -2391,7 +2434,7 @@
     else { ant.px = ant.x; ant.py = ant.y; }
     if (ant.k >= ant.path.length) return clearCache(ant);
   };
-  const makeCacheTrail = (cacheAt, letters) => {
+  const _makeCacheTrail = (cacheAt, letters) => {
     const hole = home.hole;
     const dx = cacheAt[0] - hole[0], dy = cacheAt[1] - hole[1], dist = Math.hypot(dx, dy) || 1;
     const nx = -dy / dist, ny = dx / dist, amp = Math.min(40, Math.max(10, dist * 0.08));
@@ -2426,28 +2469,34 @@
     });
   };
 
+  const celebrate = (text) => {
+    const el = document.createElement("div"); el.className = "nest-celebration"; el.textContent = text;
+    layer.append(el); setTimeout(() => el.remove(), 2500);
+  };
+
   const retreatRival = () => {
     if (!rival.active) return;
-    const deadAt = rival.mound ? rival.mound.base.slice() : [home.base[0], home.base[1]];
     rival.active = false;
     [...rival.trails].forEach((t) => retireRivalTrail(t, false));
     [...rival.ants].forEach(removeRivalAnt);
     rival.mound?.el.remove(); rival.mound = null;
     rival.minis.forEach((m) => m.el.remove()); rival.minis = [];
-    const cacheLetters = [...rival.stolen].filter((L) => L.ch);
-    rival.stolen.forEach((L) => { L.state = "cache"; L.crew = []; });
+    rival.stolen.forEach((L) => { L.state = "spent"; L.crew = []; });
     rival.stolen.clear();
-    state.cache = { x: deadAt[0], y: deadAt[1], until: performance.now() + 30000 };
-    if (cacheLetters.length) makeCacheTrail(deadAt, cacheLetters);
+    state.cache = null; state.cacheLetters = []; if (state.cacheTrail) retireCacheTrail();
     rival.returnAt = performance.now() + 22000 + Math.random() * 18000;
-    log("the rival colony retreats below the fold");
+    log("the rival colony falls; its stolen letters are gone");
+    celebrate("the rival colony falls");
   };
   const foundRival = () => {
     if (rival.active || state.over || state.party) return;
+    const milestone = state.partyIndex;
+    if (milestone < 2 || milestone % 2 !== 0 || rival.lastMilestone === milestone) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
     mound.el.classList.add("constructing");
     rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8; rival.buildUntil = performance.now() + 3200;
+    rival.lastMilestone = milestone; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1;
     const builders = [];
     for (let i = 0; i < 3; i++) {
       const bx = mound.base[0] + (i - 1) * 26, by = mound.base[1] + 8;
@@ -2471,8 +2520,24 @@
   };
   const rivalCaps = () => {
     const crew = mainAnts().length;
-    return { ants: Math.min(16, Math.max(7, crew - 3)), trails: Math.min(5, Math.max(3, Math.ceil(crew / 6))), minis: Math.min(4, Math.max(2, Math.floor(crew / 5))) };
+    const tier = Math.max(1, rival.tier);
+    return { ants: Math.max(3, Math.min(crew - 1, crew - 3 + tier)), trails: Math.max(3, Math.ceil(crew / 6) + tier - 1), minis: Math.max(3, Math.floor(crew / 5) + tier - 1) };
   };
+  const damageRivalMini = (m) => {
+    if (!rival.active || !m.el) return;
+    m.hp--; m.el.classList.add("hit"); setTimeout(() => m.el?.classList.remove("hit"), 320);
+    log(`you hit a rival mini mound (${Math.max(0, m.hp)} left)`);
+    rival.ants.filter((a) => a.role === "guard" && a.el && Math.hypot(a.x - m.base[0], a.y - m.base[1]) < 280).forEach((g) => {
+      g.job = "rival-guard"; g.guardPause = 0; g.path = [[m.base[0] + 24, m.base[1] + 10], [m.base[0] - 24, m.base[1] + 10]]; g.k = 0;
+    });
+    if (m.hp <= 0) {
+      m.el.classList.add("unbuilding");
+      setTimeout(() => { m.el.remove(); rival.minis = rival.minis.filter((x) => x !== m); }, 560);
+    }
+  };
+
+  const startRival = () => { state.partyIndex = 2; rival.lastMilestone = 0; foundRival(); };
+
   const buildRivalMinis = () => {
     if (!rival.active || rival.minis.length >= rivalCaps().minis) return;
     const miniSpots = [];
@@ -2492,20 +2557,30 @@
     miniSpots.slice(0, Math.max(1, rivalCaps().minis - rival.minis.length)).forEach((p) => {
       const x = p.x, y = p.y;
       const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
-      el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el); el.classList.add("rising"); setTimeout(() => el.classList.remove("rising"), 900);
-      rival.minis.push({ el, base: [x, y], hp: 3 });
+      el.style.left = `${x}px`; el.style.top = `${y}px`; el.setAttribute("role", "button"); el.setAttribute("tabindex", "0"); el.setAttribute("aria-label", "Rival mini mound. Click to damage."); layer.append(el); el.classList.add("rising"); setTimeout(() => el.classList.remove("rising"), 900);
+      const mini = { el, base: [x, y], hp: 3 }; rival.minis.push(mini);
+      el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); damageRivalMini(mini); });
       const trail = rival.trails[0];
       spawnRivalUnit("rival-guard", [x, y], trail ? lanePath(trail.pts, 8) : [[x, y - 22], [x, y + 22]], null);
       spawnRivalUnit("rival-flyer", [x, y], [randomPoint()], null);
     });
     log("the rival raises its mini mounds");
   };
+  const consumeRivalLetter = () => {
+    const L = rival.stolen.values().next().value;
+    if (!L) return false;
+    rival.stolen.delete(L); L.state = "spent";
+    return true;
+  };
+
   const growRival = () => {
     if (!rival.active || state.party) return;
+    if (!rival.war && (rival.stolen.size >= 8 || state.partyIndex >= 2)) { rival.war = true; log("the colony declares all-out war on the rival"); }
     if (!rival.ants.length) { if (rival.trails.length || performance.now() > (rival.buildUntil || 0)) retreatRival(); return; }
     if (performance.now() < (rival.nextGrow || 0)) return;
     const caps = rivalCaps();
     if (rival.ants.length >= caps.ants) return;
+    if (!consumeRivalLetter()) { rival.nextGrow = performance.now() + 5000; return; }
     rival.nextGrow = performance.now() + 5000;
     if (rival.trails.length < caps.trails) {
       const avoid = rival.trails.map((t) => ({ x: t.end[0], y: t.end[1] }));
@@ -2769,8 +2844,10 @@
       const mainCount = mainAnts().length;
       const soldierCount = mainAnts().filter((a) => a.role === "soldier").length;
       const wantSoldiers = Math.min(4, Math.floor(mainCount / 6));
-      if (mainCount >= 10 && soldierCount < wantSoldiers && performance.now() >= nextDefender) {
+      if ((mainCount >= 10 || (rival.active && rival.ants.length >= 4)) && soldierCount < wantSoldiers && performance.now() >= nextDefender) {
         nextDefender = performance.now() + 7000;
+        if (state.stores > 0) state.stores--;
+        else if (state.larder.length) state.larder.pop();
         newAnt("soldier", "hatch", 0);
         log("a soldier answers the rival");
       }
@@ -2929,6 +3006,15 @@
     layer.querySelectorAll(".nest-ant").forEach((el) => { el.classList.toggle("walk", !state.paused); el._walk = !state.paused; });
     if (state.paused) drawStats(); else startLoop();
   });
+  const restoreHiddenLetters = () => {
+    for (const L of state.hiddenLetters) {
+      L.cacheGlyph?.remove(); L.cacheGlyph = null;
+      showChar(L); L.state = "free"; L.crew = [];
+    }
+    state.hiddenLetters.clear(); state.cacheLetters = []; state.cache = null;
+    if (state.cacheTrail) retireCacheTrail();
+  };
+
   let resetting = false;
   const resetPage = () => {
     if (resetting) return;
@@ -2954,6 +3040,7 @@
     retreatRival();
     rival.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
     rival.stolen.clear();
+    restoreHiddenLetters();
     state.stolen.forEach((L) => { showChar(L); L.state = "free"; L.crew = []; });
     state.stolen.clear(); state.larder = []; log("every letter is back; the mounds have moved");
     const r = home.el.getBoundingClientRect(), view = main.getBoundingClientRect();
@@ -3013,6 +3100,7 @@
     state.ants.forEach((a) => { const L = a.letter; if (L && L.glyph) { L.glyph.remove(); showChar(L); } });
     state.stolen.forEach(showChar);
     rival.stolen.forEach(showChar);
+    restoreHiddenLetters();
     rival.ants.slice().forEach(removeRivalAnt);
     rival.mound?.el.remove();
     for (const [letter, animation] of returningLetters) {
@@ -3039,7 +3127,7 @@
     leaveGo = go;
   };
   if (new URLSearchParams(location.search).has("nest-debug")) {
-    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf };
+    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, startRival, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf };
   }
   return { stop, confirmLeave };
   };

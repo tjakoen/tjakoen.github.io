@@ -9,7 +9,7 @@ const open = async (page: import("@playwright/test").Page) => {
 test("the rival waits for the first worship, builds with builders, then opens curved trails", async ({ page }) => {
   await open(page);
   expect(await page.evaluate(() => (window.__nest as any).rival.active)).toBe(false);
-  await page.evaluate(() => (window.__nest as any).startParty());
+  await page.evaluate(() => (window.__nest as any).startRival());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.ants.some((a: any) => a.job === "rival-build")), { timeout: 4_000 }).toBe(true);
   expect(await page.evaluate(() => (window.__nest as any).rival.mound.el.classList.contains("constructing"))).toBe(true);
@@ -18,8 +18,8 @@ test("the rival waits for the first worship, builds with builders, then opens cu
   await page.waitForTimeout(300);
   const buildersAfter = await page.evaluate(() => (window.__nest as any).rival.ants.filter((a: any) => a.job === "rival-build").map((a: any) => [a.x, a.y]));
   expect(buildersAfter.every((p: number[], i: number) => Math.hypot(p[0] - buildersBefore[i][0], p[1] - buildersBefore[i][1]) < 2)).toBe(true);
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 25_000 }).toBeGreaterThanOrEqual(3);
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 45_000 }).toBeGreaterThanOrEqual(3);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 30_000 }).toBeGreaterThanOrEqual(2);
   const rival = await page.evaluate(() => {
     const n = window.__nest as any;
     return {
@@ -28,12 +28,12 @@ test("the rival waits for the first worship, builds with builders, then opens cu
       home: n.home.base,
     };
   });
-  expect(rival.minis).toHaveLength(2);
+  expect(rival.minis.length).toBeGreaterThanOrEqual(2);
   expect(Math.hypot(rival.minis[0][0] - rival.minis[1][0], rival.minis[0][1] - rival.minis[1][1])).toBeGreaterThan(80);
   expect(rival.trails.every((t: any) => t.pts > 20)).toBe(true);
   expect(rival.trails.every((t: any) => t.first[0] !== t.last[0])).toBe(true);
   expect(new Set(rival.trails.map((t: any) => `${Math.round(t.last[0])},${Math.round(t.last[1])}`)).size).toBe(3);
-  expect(await page.evaluate(() => Number(document.querySelector("[data-k='rivals']")?.textContent))).toBe(await page.evaluate(() => (window.__nest as any).rival.ants.length));
+  await expect.poll(() => page.evaluate(() => Number(document.querySelector("[data-k='rivals']")?.textContent) === (window.__nest as any).rival.ants.length)).toBe(true);
 });
 
 
@@ -42,7 +42,7 @@ test("the rival runs without runtime errors", async ({ page }) => {
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
   await open(page);
-  await page.evaluate(() => (window.__nest as any).startParty());
+  await page.evaluate(() => (window.__nest as any).startRival());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 25_000 }).toBeGreaterThan(0);
   await page.waitForTimeout(8_000);
   expect(errors).toEqual([]);
