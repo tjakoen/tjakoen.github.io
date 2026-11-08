@@ -933,8 +933,8 @@
   const backPath = (ant) => (routePts(ant) ? lanePath(routePts(ant).toReversed(), -(ant.lane || 0)) : []).concat([hillOf(ant).hole.slice()]);
   const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.scoutRoute = null; ant.el?.classList.remove("wait"); };
 
-  // The first trail is laid only when the scout gets its first letter home. A scout killed on the
-  // way leaves no half-open trail and nothing for the workers to join.
+  // The trail is laid when the scout picks the first letter up, so a carrier cannot hold the only
+  // route in limbo. A scout killed before that pickup leaves nothing for the workers to join.
   const layTrail = (ant, copy = "the scout is home; a trail is laid") => {
     const route = ant.scoutRoute; if (!route) return null;
     const points = route.pts.map((p) => p.join(",")).join(" ");
