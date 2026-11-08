@@ -102,6 +102,7 @@
     .nest-sweet-card.unwrapping .candy, .nest-event-card.unwrapping .candy { transform: scale(1.35); }
     .nest-sweet-card:focus-visible, .nest-event-card:focus-visible { outline: 2px dashed var(--color-accent); outline-offset: 3px; }
     .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; color: var(--nest-rival); }
+    .nest-ant.marching { filter: drop-shadow(0 0 4px var(--color-accent)); }
     @keyframes nest-fight { 50% { transform: translateX(2px) rotate(4deg); } }
     .nest-sweet { position: absolute; z-index: 4; color: var(--color-accent); font: 18px/1 var(--font-mono); letter-spacing: 2px; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 40%, transparent); pointer-events: none; }
     main.nest-sweet-planning { cursor: crosshair; }
@@ -630,7 +631,7 @@
     sweet: null, sweetCard: null, sweetPlanning: false, sweetNext: 0, env: null, envNext: 0,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(state.ants.length / 3)));
-  const rival = { active: false, mound: null, trails: [], ants: [], minis: [], stolen: new Set(), returnAt: 0 };
+  const rival = { active: false, mound: null, trails: [], ants: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
   // the layer covers the page exactly and clips what crosses its edge, so nothing scrolls sideways
@@ -1257,6 +1258,7 @@
     if (ant.job === "fly") return stepFlyer(ant, dt);
     if (ant.job === "sweet-walk" || ant.job === "sweet-eat") return stepSweetAnt(ant, dt);
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
+    if (ant.job === "rival-siege" || ant.job === "rival-contest") return stepRivalDefense(ant, dt);
     if ((ant.job === "defend" || ant.job === "guard") && ant.defendUntil && performance.now() > ant.defendUntil) {
       ant.defendUntil = 0;
       if (ant.mini && minis.includes(ant.mini)) {
@@ -1786,6 +1788,7 @@
       line.setAttribute("points", pts.map((p) => p.join(",")).join(" ")); line.setAttribute("fill", "none"); line.setAttribute("stroke", "var(--color-accent)"); line.setAttribute("stroke-width", "3"); line.setAttribute("stroke-linecap", "round");
       svg.append(line); layer.append(svg);
       const stuck = [];
+      if (anchor.el && !anchor.tongue) { anchor.tongue = true; anchor.el.classList.add("stuck"); stuck.push(anchor); }
       const stick = () => {
         for (const a of all) {
           if (!a.el || a.tongue) continue;
@@ -2348,6 +2351,54 @@
       log("the rival opens a new trail");
     }, 1200);
   };
+  const trailCross = (a, b) => {
+    for (let i = 1; i < a.pts.length; i++) for (let j = 1; j < b.pts.length; j++) {
+      const [x1, y1] = a.pts[i - 1], [x2, y2] = a.pts[i], [x3, y3] = b.pts[j - 1], [x4, y4] = b.pts[j];
+      const d = (x2 - x1) * (y4 - y3) - (y2 - y1) * (x4 - x3);
+      if (!d) continue;
+      const t = ((x3 - x1) * (y4 - y3) - (y3 - y1) * (x4 - x3)) / d;
+      const u = ((x3 - x1) * (y2 - y1) - (y3 - y1) * (x2 - x1)) / d;
+      if (t >= 0 && t <= 1 && u >= 0 && u <= 1) return [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
+    }
+    return null;
+  };
+  const rivalContestPoint = () => {
+    for (const a of state.trails.filter((t) => !t.side)) for (const b of rival.trails) {
+      const p = trailCross(a, b); if (p) return p;
+    }
+    return null;
+  };
+  const stepRivalDefense = (ant, dt) => {
+    if (!rival.active || !rival.mound) return goHome(ant);
+    const target = ant.job === "rival-contest" ? ant.path[ant.k] : rival.mound.hole;
+    if (!target) return goHome(ant);
+    if (!move(ant, target[0], target[1], dt, SPEED * 0.85)) { ant.px = ant.x; ant.py = ant.y; return; }
+    ant.px = ant.x; ant.py = ant.y;
+    if (ant.job === "rival-siege") {
+      if (performance.now() < (ant.nextBite || 0)) return;
+      ant.nextBite = performance.now() + 900;
+      rival.hp--;
+      blip(150, 0.08, "square", 0.035);
+      log(`the colony bites the rival mound (${Math.max(0, rival.hp)} left)`);
+      if (rival.hp <= 0) { log("the main colony breaks the rival mound"); retreatRival(); goHome(ant); }
+    }
+  };
+  let nextRivalAttack = 0;
+  const tickRivalAttack = (now) => {
+    if (!rival.active || state.party || now < nextRivalAttack) return;
+    nextRivalAttack = now + 3500;
+    const unit = state.ants.find((a) => a.el && (a.role === "soldier" || a.role === "guard") && a.job !== "dance" && !a.rivalSiege && !a.rivalContest);
+    if (!unit) return;
+    const contest = rivalContestPoint();
+    if (contest) {
+      unit.job = "rival-contest"; unit.path = [contest]; unit.k = 0; unit.rivalContest = true; unit.el.classList.add("marching");
+      log("a guard moves to a contested trail");
+    } else {
+      unit.job = "rival-siege"; unit.path = [rival.mound.hole.slice()]; unit.k = 0; unit.rivalSiege = true; unit.el.classList.add("marching");
+      log("a guard marches on the rival mound");
+    }
+  };
+
   const retireRivalTrail = (t, retreat = true) => {
     if (!t || t.state === "gone") return;
     t.state = "gone"; t.ready = false;
@@ -2373,7 +2424,7 @@
     if (rival.active || state.over || state.party) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-    rival.mound = mound; rival.active = true; rival.returnAt = 0;
+    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8;
     log("a rival mound is being built on the opposite side");
     setTimeout(() => {
       if (!rival.active || rival.mound !== mound) return;
@@ -2606,6 +2657,7 @@
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
       rival.ants.slice().forEach((a) => stepRival(a, dt));
       rivalCombat(now);
+      tickRivalAttack(now);
       for (const a of state.ants) {
         const el = a.el; if (!el) continue;
         if (a.px !== el._px || a.py !== el._py || a.heading !== el._heading) {
