@@ -403,7 +403,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       const card = page.locator(".nest-event-card");
       await expect(card).toBeVisible();
       await card.click();
-      await expect(page.locator(kind === "vacuum" ? ".nest-vacuum-braille" : ".tongue-braille").first()).toBeVisible();
+      await expect(page.locator(kind === "vacuum" ? ".nest-vacuum-rect" : ".tongue-braille").first()).toBeVisible();
       await expect.poll(() => page.evaluate(() => window.__nest!.state.squashed), { timeout: 5_000 }).toBeGreaterThan(before);
       expect(await page.locator("[data-k='holds-val']").textContent()).toBe(pageBefore);
     });
@@ -439,23 +439,15 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.waitForFunction(() => {
-      const ants = window.__nest?.state.ants.filter((a) => a.el && a.where === "page") ?? [];
-      return ants.some((a, i) => ants.some((b, j) => i !== j && Math.hypot(a.x - b.x, a.y - b.y) < 15));
+    const before = await page.evaluate(() => {
+      const n = window.__nest!;
+      const at: [number, number] = [420, 420];
+      n.spawnPageAnt("worker", at, null);
+      const second = n.spawnPageAnt("worker", at, null);
+      const count = n.state.ants.length;
+      (second.el as HTMLElement).click();
+      return count;
     });
-    const pair = await page.evaluate(() => {
-      const ants = window.__nest!.state.ants.filter((a) => a.el && a.where === "page");
-      for (let i = 0; i < ants.length; i++) for (let j = i + 1; j < ants.length; j++) {
-        if (Math.hypot(ants[i].x - ants[j].x, ants[i].y - ants[j].y) < 15) return [ants[i].id, ants[j].id];
-      }
-      return null;
-    });
-    expect(pair).not.toBeNull();
-    const before = await page.evaluate(() => window.__nest!.state.ants.length);
-    await page.evaluate(([id]) => {
-      const ant = window.__nest!.state.ants.find((a) => a.id === id);
-      (ant?.el as HTMLElement | undefined)?.click();
-    }, pair!);
     await page.waitForTimeout(250);
     const after = await page.evaluate(() => window.__nest!.state.ants.length);
     expect(after).toBeLessThanOrEqual(before - 2);

@@ -96,7 +96,7 @@
     .nest-ant.marching { filter: drop-shadow(0 0 4px var(--color-accent)); }
     @keyframes nest-fight { 50% { transform: translateX(2px) rotate(4deg); } }
 
-    .nest-vacuum-braille { position: absolute; z-index: 6; pointer-events: none; color: var(--color-accent); font: 8px/8px var(--font-mono); letter-spacing: 0; white-space: pre; overflow: hidden; opacity: .55; }
+    .nest-vacuum-rect { position: absolute; z-index: 6; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); letter-spacing: 0; white-space: pre; opacity: .9; transform-origin: 50% 50%; }
     .nest-tongue { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: visible; }
     .nest-tongue .tongue-braille { position: absolute; transform: translate(-50%, -50%); font: 12px/1 var(--font-mono); color: var(--color-accent); white-space: pre; opacity: 0; transition: opacity .12s linear; }
     .nest-tongue .tongue-braille.on { opacity: 1; }
@@ -1719,29 +1719,45 @@
       return Math.hypot(p.x - (a[0] + t * dx), p.y - (a[1] + t * dy));
     };
     if (kind === "vacuum") {
-      const angle = (Math.random() < 0.5 ? 1 : -1) * (0.55 + Math.random() * 0.3);
-      const len = Math.hypot(main.clientWidth, main.scrollHeight) * 0.85;
-      const from = [anchor.x - Math.cos(angle) * len, anchor.y - Math.sin(angle) * len];
-      const to = [anchor.x + Math.cos(angle) * len, anchor.y + Math.sin(angle) * len];
-      const sweep = document.createElement("pre"); sweep.className = "nest-vacuum-braille";
-      sweep.style.width = "220px"; sweep.style.height = main.scrollHeight + "px"; sweep.style.left = "0"; sweep.style.top = "0"; sweep.style.transformOrigin = "0 0";
-      sweep.textContent = Array.from({ length: Math.ceil(main.scrollHeight / 8) }, () => "⣿⣤⣤⣶⣿⣤⣤⣶⣿⣤⣤⣶".repeat(5)).join("\n");
-      layer.append(sweep);
-      const head = document.createElement("div"); head.className = "nest-vacuum-head"; head.innerHTML = eventIcon("vacuum");
-      head.style.left = from[0] + "px"; head.style.top = from[1] + "px"; layer.append(head);
-      head.animate([{ transform: "translate(0,0)" }, { transform: `translate(${to[0] - from[0]}px, ${to[1] - from[1]}px)` }], { duration: 1600, easing: "ease-in-out" }).onfinish = () => head.remove();
-      sweep.animate([{ transform: `translate(${from[0]}px, ${from[1]}px) rotate(${angle}rad)` }, { transform: `translate(${to[0]}px, ${to[1]}px) rotate(${angle}rad)` }], { duration: 1600, easing: "ease-in-out" }).onfinish = () => sweep.remove();
-      for (let i = 0; i < 12; i++) {
-        const p = document.createElement("span"); p.className = "nest-suck"; p.textContent = "⣿";
-        const sx = anchor.x + (Math.random() - 0.5) * 260, sy = anchor.y + (Math.random() - 0.5) * 160;
-        p.style.left = sx + "px"; p.style.top = sy + "px"; layer.append(p);
-        p.animate([{ transform: "translate(0,0)", opacity: .9 }, { transform: `translate(${anchor.x - sx}px, ${anchor.y - sy}px)`, opacity: 0 }], { duration: 1000, easing: "ease-in" }).onfinish = () => p.remove();
-      }
+      const angle = Math.random() * Math.PI * 2;
+      const dir = [Math.cos(angle), Math.sin(angle)];
+      const len = 300 + Math.random() * 180;
+      const from = [anchor.x - dir[0] * len / 2, anchor.y - dir[1] * len / 2];
+      const to = [anchor.x + dir[0] * len / 2, anchor.y + dir[1] * len / 2];
+      const body = document.createElement("pre"); body.className = "nest-vacuum-rect";
+      body.textContent = [
+        "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿",
+        "⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿",
+        "⣿⠀⣠⠴⠶⢶⡀⠀⠀⠀⣿",
+        "⣿⠀⠈⠳⣤⡴⠋⠀⠀⠀⣿",
+        "⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿",
+        "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿"
+      ].join("\n");
+      body.style.left = from[0] + "px"; body.style.top = from[1] + "px";
+      body.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
+      layer.append(body);
+      const duration = 2200;
+      const started = performance.now();
+      body.animate([
+        { transform: `translate(-50%, -50%) translate(0, 0) rotate(${angle}rad)` },
+        { transform: `translate(-50%, -50%) translate(${to[0] - from[0]}px, ${to[1] - from[1]}px) rotate(${angle}rad)` }
+      ], { duration, easing: "ease-in-out" });
+      const timer = setInterval(() => {
+        const u = Math.min(1, (performance.now() - started) / duration);
+        const px = from[0] + (to[0] - from[0]) * u, py = from[1] + (to[1] - from[1]) * u;
+        all.filter((a) => a.el && Math.hypot(a.x - px, a.y - py) < 70).forEach(removeEnvAnt);
+        if (Math.random() < 0.6) {
+          const dust = document.createElement("span"); dust.className = "nest-suck"; dust.textContent = "⣿";
+          dust.style.left = px + (Math.random() - 0.5) * 120 + "px"; dust.style.top = py + (Math.random() - 0.5) * 80 + "px";
+          layer.append(dust);
+          dust.animate([{ transform: "translate(0,0)", opacity: .8 }, { transform: `translate(${px - (parseFloat(dust.style.left))}px, ${py - parseFloat(dust.style.top)}px)`, opacity: 0 }], { duration: 420 }).onfinish = () => dust.remove();
+        }
+      }, 90);
       setTimeout(() => {
-        all.filter((a) => a.el && distToSeg(a, from, to) < 85).forEach(removeEnvAnt);
-        log("the vacuum takes a slice of the page");
-      }, 700);
-    } else {
+        clearInterval(timer); body.remove();
+        log("the vacuum passes through and takes the ants in its path");
+      }, duration + 260);
+        } else {
       const pickable = state.trails.filter((t) => t.state !== "gone" && t.pts && t.pts.length > 2);
       const targetTrail = pickable[Math.floor(Math.random() * Math.max(1, pickable.length))];
       const target = targetTrail ? targetTrail.pts[Math.floor(targetTrail.pts.length * (0.35 + Math.random() * 0.3))] : [anchor.x, anchor.y];
