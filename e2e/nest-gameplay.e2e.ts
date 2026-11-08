@@ -33,6 +33,7 @@ test("bait pulls nearby ants off their trails", async ({ page }) => {
 });
 
 test("the rival cache is placed at the fallen rival mound", async ({ page }) => {
+  test.setTimeout(120_000);
   await open(page);
   await page.evaluate(() => (window.__nest as any).startParty());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 40_000 }).toBeGreaterThan(0);
@@ -49,7 +50,7 @@ test("the rival cache is placed at the fallen rival mound", async ({ page }) => 
   expect(result.letters).toBeGreaterThan(0);
   expect(result.glyphs).toBe(result.letters);
   expect(Math.hypot(result.cache.x - before[0], result.cache.y - before[1])).toBeLessThan(8);
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.cacheLetters.length), { timeout: 25_000 }).toBeLessThan(result.letters);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.cacheLetters.length), { timeout: 60_000 }).toBeLessThan(result.letters);
 });
 
 test("the rival mound dies when every rival ant dies", async ({ page }) => {

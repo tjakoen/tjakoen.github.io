@@ -58,10 +58,26 @@ test("a rival guard breaks patrol to defend against a main intruder", async ({ p
   await expect(page.locator("#nest-mock")).toBeVisible();
   const job = await page.evaluate(async () => {
     const n = window.__nest as any;
-    const guard = n.spawnRivalUnit("rival-guard", [500, 420], [[500, 420], [540, 420]], null);
-    n.spawnPageAnt("soldier", [430, 420], null);
+    const guard = n.spawnRivalUnit("rival-guard", [980, 500], [[980, 500], [1020, 500]], null);
+    n.spawnPageAnt("soldier", [900, 500], null);
     await new Promise((r) => setTimeout(r, 400));
     return guard.job;
   });
   expect(job).toBe("rival-defend");
+});
+
+
+test("a rival cannot camp the main nest and kill the restart scout", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  const alive = await page.evaluate(async () => {
+    const n = window.__nest as any;
+    const at = n.home.hole;
+    const scout = n.spawnPageAnt("scout", [at[0], at[1]], null);
+    n.spawnRivalUnit("rival-guard", [at[0] + 42, at[1]], [[at[0] + 42, at[1]]], null);
+    await new Promise((r) => setTimeout(r, 500));
+    return n.state.ants.includes(scout);
+  });
+  expect(alive).toBe(true);
 });
