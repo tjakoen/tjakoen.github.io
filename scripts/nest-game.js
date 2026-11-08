@@ -622,8 +622,10 @@
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
     env: null, envNext: 0, cache: null, scoutQueue: [],
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
-  const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(state.ants.length / 3)));
-  const rival = { active: false, mound: null, trails: [], ants: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8 };
+  const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(mainAnts().length / 3)));
+  const rival = { active: false, mound: null, trails: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8 };
+  const mainAnts = () => state.ants.filter((a) => a.side !== "rival");
+  Object.defineProperty(rival, "ants", { get: () => state.ants.filter((a) => a.side === "rival") });
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
   // the layer covers the page exactly and clips what crosses its edge, so nothing scrolls sideways
@@ -783,7 +785,7 @@
   const PATCH = 70;
   // A bigger colony can keep a longer, wider patch alive. This is what lets a busy trail at
   // the far end of the page keep finding letters instead of dying at its first small clump.
-  const patchRadius = () => Math.min(170, PATCH + Math.max(0, state.ants.length - 8) * 6);
+  const patchRadius = () => Math.min(170, PATCH + Math.max(0, mainAnts().length - 8) * 6);
   const inPatch = (r, c) => { const m = pageRect(); return Math.hypot(r.left + r.width / 2 - (c[0] - main.scrollLeft + m.left), r.top + r.height / 2 - (c[1] - main.scrollTop + m.top)) <= patchRadius(); };
   const freeIn = (block, center) => {
     const found = [];
@@ -812,9 +814,9 @@
   };
 
 
-  const newAnt = (role, route, d) => { state.total++; const a = { id: state.total, role, where: "nest", route, d }; state.ants.push(a); return a; };
-  const scoutsOut = () => state.ants.some((a) => a.role === "scout");
-  const scoutCount = () => state.ants.filter((a) => a.role === "scout").length;
+  const newAnt = (role, route, d) => { state.total++; const a = { id: state.total, role, side: "main", where: "nest", route, d }; state.ants.push(a); return a; };
+  const scoutsOut = () => mainAnts().some((a) => a.role === "scout");
+  const scoutCount = () => mainAnts().filter((a) => a.role === "scout").length;
   // A big letter that is still short of its crew is the one trail that must not wait its turn.
   // The helper is aimed at that exact letter, and helpers already walking are counted, so the
   // colony sends only the missing crew instead of piling every worker onto the patch.
@@ -823,7 +825,7 @@
     for (const a of t.ants) {
       const L = a.letter;
       if (!L || L.state !== "gather" || L.need <= L.crew.length) continue;
-      const inFlight = state.ants.filter((x) => x.helpLetter === L).length;
+      const inFlight = mainAnts().filter((x) => x.helpLetter === L).length;
       if (L.crew.length + inFlight < L.need) return L;
     }
     return null;
@@ -867,7 +869,7 @@
   };
   const spawnSuccessor = () => {
     if (state.over || state.overrun || state.queenDead) return;
-    const pick = state.ants.find((a) => a.role === "worker" && a.job !== "carry" && a.job !== "crew" && a.job !== "dance");
+    const pick = mainAnts().find((a) => a.role === "worker" && a.job !== "carry" && a.job !== "crew" && a.job !== "dance");
     if (pick) {
       const held = pick.letter;
       if (held?.state === "gather") {
@@ -903,7 +905,7 @@
     if (help) { join(ant, help.trail); ant.helpLetter = help.L; return emerge(ant); }
     // One trail for every two ants. A scout already looking for a patch counts toward the
     // target, so the colony can raise several lines at once instead of filling one line first.
-    const wantTrails = Math.max(2, Math.round(state.ants.length / 2));
+    const wantTrails = Math.max(2, Math.round(mainAnts().length / 2));
     const mainTrails = state.trails.filter((t) => !t.side).length;
     if (mainTrails + scoutCount() < wantTrails) {
       if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
@@ -914,7 +916,7 @@
     if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
     ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); // queue in the tunnel
   };
-  const waitingRank = (ant) => state.ants.filter((a) => a.where === "nest" && a.route === "up" && a.d > LEN.up - 0.3 && a.id < ant.id).length;
+  const waitingRank = (ant) => mainAnts().filter((a) => a.where === "nest" && a.route === "up" && a.d > LEN.up - 0.3 && a.id < ant.id).length;
 
   const antTransform = (a) => `translate3d(${a.px}px, ${a.py}px, 0) rotate(${a.heading + Math.PI}rad)`;
   const placeAnt = (a) => {
@@ -964,7 +966,7 @@
     // first three scouts off one paragraph, and later scouts off an active source.
     const busyBlocks = new Set([
       ...state.trails.map((t) => t.block),
-      ...state.ants.filter((a) => (a.job === "scout" || a.scoutRoute) && a.block).map((a) => a.block),
+      ...mainAnts().filter((a) => (a.job === "scout" || a.scoutRoute) && a.block).map((a) => a.block),
     ]);
     const options = [];
     for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 3) {
@@ -1414,7 +1416,7 @@
   // There is no win and no reserve. If the last ant is gone the queen sends one scout back out
   // and the colony carries on. The only ending left is the page itself running out.
   const checkWipe = () => {
-    if (state.over || state.ants.length || state.eggs.length || minis.length || state.builder) return;
+    if (state.over || mainAnts().length || state.eggs.length || minis.length || state.builder) return;
     newAnt("scout", "hatch", 0);
     log("the queen sends out a scout"); blip(330, 0.08, "sine");
   };
@@ -1422,7 +1424,7 @@
   // a killed scout cannot leave the colony with no way to find a new trail.
   const ensureScout = () => {
     if (state.over || state.overrun || state.queenDead || state.party) return;
-    if (state.ants.some((a) => a.role === "scout" || a.job === "scout")) return;
+    if (mainAnts().some((a) => a.role === "scout" || a.job === "scout")) return;
     if (state.builder) return;
     newAnt("scout", "hatch", 0);
     log("the queen sends out a scout");
@@ -1488,7 +1490,7 @@
     scent.style.opacity = "0";
     panelQueen();
     hills.forEach((h) => { h.el.style.pointerEvents = "none"; });
-    const dancers = state.ants.filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
+    const dancers = mainAnts().filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
     dancers.forEach((a, i) => {
       a.party = { angle: (i / Math.max(1, dancers.length)) * Math.PI * 2, radius: 40 + (i % 3) * 13 };
       a.job = "dance"; a.el.classList.remove("wait"); a.el.classList.add("dancing");
@@ -1644,7 +1646,7 @@
   };
   const randomPoint = () => [20 + Math.random() * (main.clientWidth - 40), main.scrollTop + 30 + Math.random() * (main.clientHeight - 60)];
   const spawnPageAnt = (role, at, mini) => {
-    state.total++; const a = { id: state.total, role, where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
+    state.total++; const a = { id: state.total, role, side: "main", where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant walk" + (role === "flyer" ? " flyer" : "");
     a.el.innerHTML = role === "flyer" ? ANT_SVG.replace("<g class=\"legs-a\">", `<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g><g class="legs-a">`) : role === "guard" ? SOLDIER_SVG : ANT_SVG;
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
@@ -1667,7 +1669,7 @@
   const resolveEnv = (kind) => {
     const card = state.env; if (!card) return;
     state.env = null; card.el.remove();
-    const all = [...state.ants.filter((a) => a.el && a.where === "page"), ...rival.ants];
+    const all = [...mainAnts().filter((a) => a.el && a.where === "page"), ...rival.ants];
     const anchor = all[Math.floor(Math.random() * all.length)] || { x: main.clientWidth / 2, y: main.clientHeight / 2 };
     const distToSeg = (p, a, b) => {
       const dx = b[0] - a[0], dy = b[1] - a[1], l = dx * dx + dy * dy || 1;
@@ -2047,7 +2049,7 @@
     if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); showChar(a.letter); a.letter.state = "free"; a.letter = null; }
     a.el?.remove(); a.el = null;
     a.trail?.ants.delete(a);
-    rival.ants = rival.ants.filter((x) => x !== a);
+    state.ants = state.ants.filter((x) => x !== a);
   };
   const squashRival = (a) => {
     if (!a.el) return;
@@ -2170,7 +2172,7 @@
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival walk";
     a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival ant. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
-    layer.append(a.el); placeAnt(a); label(a); rival.ants.push(a); trail.ants.add(a);
+    layer.append(a.el); placeAnt(a); label(a); state.ants.push(a); trail.ants.add(a);
   };
   const stealRival = (trail, ant) => {
     if (!trail || !state.trails.includes(trail)) return false;
@@ -2192,7 +2194,7 @@
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival walk";
     a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival ant. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
-    layer.append(a.el); placeAnt(a); label(a); rival.ants.push(a);
+    layer.append(a.el); placeAnt(a); label(a); state.ants.push(a);
     return a;
   };
   const rivalBait = (x, y) => {
@@ -2258,7 +2260,7 @@
   const rivalCombat = (now) => {
     if (now - lastRivalFight < 300) return;
     lastRivalFight = now;
-    const mains = state.ants.filter((a) => a.el && a.where === "page");
+    const mains = mainAnts().filter((a) => a.el && a.where === "page");
     const rivals = rival.ants.filter((a) => a.el);
     const near = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) < 26;
     for (const r of rivals.slice()) {
@@ -2319,7 +2321,7 @@
   const tickRivalAttack = (now) => {
     if (!rival.active || state.party || now < nextRivalAttack) return;
     nextRivalAttack = now + 3500;
-    const unit = state.ants.find((a) => a.el && (a.role === "soldier" || a.role === "guard") && a.job !== "dance" && !a.rivalSiege && !a.rivalContest);
+    const unit = mainAnts().find((a) => a.el && (a.role === "soldier" || a.role === "guard") && a.job !== "dance" && !a.rivalSiege && !a.rivalContest);
     if (!unit) return;
     const contest = rivalContestPoint();
     if (!contest && rival.stolen.size === 0) return;
@@ -2411,7 +2413,7 @@
     const m = main.getBoundingClientRect(), x = e.clientX - m.left + main.scrollLeft, y = e.clientY - m.top + main.scrollTop;
     const crumb = document.createElement("div"); crumb.className = "nest-bait"; crumb.textContent = "⣴⣦"; crumb.style.left = x + "px"; crumb.style.top = y + "px"; layer.append(crumb);
     baitReady = performance.now() / 1000 + BAIT_COOL; blip(400, 0.08, "sine"); noiseBurst(0.05, 0.03, 900);
-    const lured = state.ants.filter((a) => a.el && a !== state.builder && !a.letter && a.job !== "crew" && a.role !== "soldier" && Math.hypot(a.x - x, a.y - y) < 200);
+    const lured = mainAnts().filter((a) => a.el && a !== state.builder && !a.letter && a.job !== "crew" && a.role !== "soldier" && Math.hypot(a.x - x, a.y - y) < 200);
     lured.forEach((a) => { a.trail?.ants.delete(a); a.trail = null; a.helpLetter = null; a.job = "bait"; a.path = [[x + (Math.random() - 0.5) * 30, y + (Math.random() - 0.5) * 20]]; a.k = 0; });
     if (rival.active) rivalBait(x, y);
     log(lured.length ? `${lured.length} ant${lured.length > 1 ? "s" : ""} took the bait` : "nothing near enough to smell it");
@@ -2548,7 +2550,7 @@
       if (text != null) setText(`${key}-val`, text);
     };
     let scouts = 0, workers = 0, soldiers = 0, flyers = 0;
-    for (const ant of state.ants) {
+    for (const ant of mainAnts()) {
       if (ant.role === "scout") scouts++;
       else if (ant.role === "worker") workers++;
       else if (ant.role === "soldier" || ant.role === "guard") soldiers++;
@@ -2619,9 +2621,8 @@
     if (!state.paused) {
       if (state.party) stepParty(now, dt);
       if (state.scoutQueue.length) { const pending = state.scoutQueue.shift(); if (pending?.el && pending.role === "scout") scout(pending); }
-      state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
-      rival.ants.slice().forEach((a) => stepRival(a, dt));
-      rivalCombat(now);
+      state.ants.slice().forEach((a) => (a.side === "rival" ? stepRival(a, dt) : (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt))));
+            rivalCombat(now);
       tickRivalAttack(now);
       for (const a of state.ants) {
         const el = a.el; if (!el) continue;
@@ -2632,12 +2633,6 @@
         const walking = a.job !== "wait" && !a.paused;
         if (el._walk !== walking) { el.classList.toggle("walk", walking); el._walk = walking; }
       }
-      for (const a of rival.ants) {
-        const el = a.el; if (!el) continue;
-        if (a.px !== el._px || a.py !== el._py || a.heading !== el._heading) {
-          el.style.transform = antTransform(a); el._px = a.px; el._py = a.py; el._heading = a.heading;
-        }
-      }
       perfStep = performance.now();
       if (rival.active && rival.ants.length === 0 && performance.now() > (rival.buildUntil || 0) && performance.now() > (rival.rebuildUntil || 0)) retreatRival();
       if (!rival.active && !state.party && state.partyIndex >= 1 && performance.now() >= rival.returnAt) foundRival();
@@ -2645,11 +2640,11 @@
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
-        else if ((e.age += dt) > 3.4 && state.ants.length < MAX_ANTS) {
+        else if ((e.age += dt) > 3.4 && mainAnts().length < MAX_ANTS) {
           state.eggs.splice(state.eggs.indexOf(e), 1);
-          const soldiers = state.ants.filter((a) => a.role === "soldier").length;
-          const wantSoldiers = Math.min(3, Math.floor(state.ants.length / 8));
-          const soldier = state.ants.length >= 10 && soldiers < wantSoldiers && Math.random() < 0.3;
+          const soldiers = mainAnts().filter((a) => a.role === "soldier").length;
+          const wantSoldiers = Math.min(3, Math.floor(mainAnts().length / 8));
+          const soldier = mainAnts().length >= 10 && soldiers < wantSoldiers && Math.random() < 0.3;
           newAnt(soldier ? "soldier" : "worker", "hatch", 0);
           log(soldier ? "a soldier hatched" : "an egg hatched");
           blip(soldier ? 220 : 440, 0.06, "square", 0.035);
@@ -2668,7 +2663,7 @@
         }
       });
       if (!state.over) {
-        state.peak = Math.max(state.peak, state.ants.length); checkWipe(); ensureScout();
+        state.peak = Math.max(state.peak, mainAnts().length); checkWipe(); ensureScout();
         if (!state.overrun && !state.party && state.stolenTotal >= worshipTarget()) startParty(false);
         tickMinis(now);
       }
@@ -2826,7 +2821,7 @@
     home.hole = [spot[0], spot[1] - hr.height + 4];
     home.el.style.left = spot[0] - hr.width / 2 + "px";
     home.el.style.top = spot[1] - hr.height + "px";
-    state.ants.forEach((a) => {
+    mainAnts().forEach((a) => {
       if (a.where !== "page") return;
       if (a.letter?.state === "carried") drop(a.letter);
       a.letter = null; a.trail = null; a.job = "home"; a.path = [home.hole.slice()]; a.k = 0;
