@@ -32,30 +32,27 @@ test("bait pulls nearby ants off their trails", async ({ page }) => {
   expect(await page.evaluate(() => (window.__nest as any).state.ants.some((a: any) => a.job === "bait" || a.job === "baited"))).toBe(true);
 });
 
-test("the rival cache is placed at the fallen rival mound", async ({ page }) => {
-  test.setTimeout(120_000);
+test("the rival falls without dropping letters and celebrates", async ({ page }) => {
   await open(page);
-  await page.evaluate(() => (window.__nest as any).startParty());
+  await page.evaluate(() => (window.__nest as any).startRival());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 40_000 }).toBeGreaterThan(0);
-  const before = await page.evaluate(() => (window.__nest as any).rival.mound.base.slice());
+  const before = await page.evaluate(() => ({ hidden: (window.__nest as any).state.hiddenLetters.size }));
   await page.evaluate(() => (window.__nest as any).retreatRival());
   const result = await page.evaluate(() => {
     const n = window.__nest as any;
-    return { active: n.rival.active, cache: n.state.cache, stolen: n.rival.stolen.size, trail: n.state.cacheTrail !== null, letters: n.state.cacheLetters.length, glyphs: document.querySelectorAll(".nest-cache-letter").length };
+    return { active: n.rival.active, cache: n.state.cache, letters: n.state.cacheLetters.length, stolen: n.rival.stolen.size, hidden: n.state.hiddenLetters.size, celebration: document.querySelectorAll(".nest-celebration").length };
   });
   expect(result.active).toBe(false);
+  expect(result.cache).toBeNull();
+  expect(result.letters).toBe(0);
   expect(result.stolen).toBe(0);
-  expect(result.cache).not.toBeNull();
-  expect(result.trail).toBe(true);
-  expect(result.letters).toBeGreaterThan(0);
-  expect(result.glyphs).toBe(result.letters);
-  expect(Math.hypot(result.cache.x - before[0], result.cache.y - before[1])).toBeLessThan(8);
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.cacheLetters.length), { timeout: 60_000 }).toBeLessThan(result.letters);
+  expect(result.hidden).toBe(before.hidden);
+  expect(result.celebration).toBeGreaterThan(0);
 });
 
 test("the rival mound dies when every rival ant dies", async ({ page }) => {
   await open(page);
-  await page.evaluate(() => (window.__nest as any).startParty());
+  await page.evaluate(() => (window.__nest as any).startRival());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 20_000 }).toBeGreaterThan(0);
   await page.evaluate(() => {
     const n = window.__nest as any;
@@ -139,7 +136,7 @@ test("heading letters advertise a heavier crew than body letters", async ({ page
 
 test("a main guard can break the rival mound without a player wipe", async ({ page }) => {
   await open(page);
-  await page.evaluate(() => (window.__nest as any).startParty());
+  await page.evaluate(() => (window.__nest as any).startRival());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
   const hole = await page.evaluate(() => (window.__nest as any).rival.mound.hole.slice());
   await page.evaluate(([x, y]) => {
@@ -203,8 +200,8 @@ test("soldiers and guards use the same ant art", async ({ page }) => {
 
 test("a soldier breaks a rival mini mound before the main mound", async ({ page }) => {
   await open(page);
-  await page.evaluate(() => (window.__nest as any).startParty());
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 20_000 }).toBeGreaterThan(0);
+  await page.evaluate(() => (window.__nest as any).startRival());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 40_000 }).toBeGreaterThan(0);
   const before = await page.evaluate(() => {
     const n = window.__nest as any;
     const mini = n.rival.minis[0];
@@ -227,4 +224,18 @@ test("the worker stat matches the main worker castes", async ({ page }) => {
     return { workers, ui: Number(document.querySelector("[data-k='workers']")?.textContent) };
   });
   expect(result.ui).toBe(result.workers);
+});
+
+
+test("reset restores letters taken by the rival", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => (window.__nest as any).startRival());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 40_000 }).toBeGreaterThan(0);
+  await page.evaluate(() => (window.__nest as any).retreatRival());
+  expect(await page.evaluate(() => (window.__nest as any).state.hiddenLetters.size)).toBeGreaterThan(0);
+  await page.locator("button[data-k='restore']").click();
+  await page.waitForTimeout(300);
+  await page.locator("button[data-k='reset-go']").click();
+  await page.waitForTimeout(800);
+  expect(await page.evaluate(() => (window.__nest as any).state.hiddenLetters.size)).toBe(0);
 });

@@ -1,13 +1,12 @@
 import { test, expect } from "@playwright/test";
 
-test("three workers can overwhelm a rival guard", async ({ page }) => {
+test("two workers can overwhelm a rival guard", async ({ page }) => {
   await page.goto("/?nest-debug");
   await page.locator(".nest-switch").click();
   await expect(page.locator("#nest-mock")).toBeVisible();
   const result = await page.evaluate(() => {
     const n = window.__nest as any;
     const at = [420, 420];
-    n.spawnPageAnt("worker", at, null);
     n.spawnPageAnt("worker", at, null);
     n.spawnPageAnt("worker", at, null);
     const guard = n.spawnRivalUnit("rival-guard", at, [[420, 420]], null);
@@ -18,14 +17,13 @@ test("three workers can overwhelm a rival guard", async ({ page }) => {
   expect(result.remaining).toBe(0);
 });
 
-test("two workers cannot remove a rival guard", async ({ page }) => {
+test("one worker cannot remove a rival guard", async ({ page }) => {
   await page.goto("/?nest-debug");
   await page.locator(".nest-switch").click();
   await expect(page.locator("#nest-mock")).toBeVisible();
   const result = await page.evaluate(() => {
     const n = window.__nest as any;
     const at = [440, 440];
-    n.spawnPageAnt("worker", at, null);
     n.spawnPageAnt("worker", at, null);
     n.spawnRivalUnit("rival-guard", at, [[440, 440]], null);
     n.rivalCombat(performance.now() + 1000);
@@ -80,4 +78,21 @@ test("a rival cannot camp the main nest and kill the restart scout", async ({ pa
     return n.state.ants.includes(scout);
   });
   expect(alive).toBe(true);
+});
+
+
+test("a main soldier beats a rival guard one-on-one", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  const result = await page.evaluate(() => {
+    const n = window.__nest as any;
+    const at = [900, 500];
+    const soldier = n.spawnPageAnt("soldier", at, null);
+    const guard = n.spawnRivalUnit("rival-guard", at, [[900, 500]], null);
+    n.rivalCombat(performance.now() + 1000);
+    return { soldier: !!soldier.el, guard: !!guard.el };
+  });
+  expect(result.soldier).toBe(true);
+  expect(result.guard).toBe(false);
 });

@@ -19,6 +19,7 @@ declare global {
       };
       home: { base: [number, number] };
       startParty: (final?: boolean) => void;
+      startRival: () => void;
       makeMini: (spot: unknown) => unknown;
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
@@ -385,7 +386,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
     expect(await page.evaluate(() => window.__nest!.rival.active)).toBe(false);
-    await page.evaluate(() => window.__nest!.startParty());
+    await page.evaluate(() => window.__nest!.startRival());
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.active), { timeout: 20_000 }).toBe(true);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length), { timeout: 15_000 }).toBeGreaterThan(0);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.trails.length), { timeout: 15_000 }).toBeGreaterThan(0);
