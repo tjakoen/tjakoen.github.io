@@ -14,9 +14,9 @@ when: >
 > **Starter template.** Copy this to the root of a new repo as `CLAUDE.md`, delete this line, and
 > fill the `<…>` placeholders. It wires a fresh project into Tjakoen's personal standards (how I build
 > with AI, voice, badges, AI-use posture) from day one. The standards live publicly at
-> `https://tjakoen.github.io/standards` (source: the [`standards/`](https://github.com/tjakoen/tjakoen.github.io/tree/main/standards)
+> `https://portfolio.tjakoen.com/standards` (source: the [`standards/`](https://github.com/tjakoen/tjakoen.github.io/tree/main/standards)
 > dir in the portfolio repo) —
-> **reference them, don't fork them.** The published [index](https://tjakoen.github.io/standards)
+> **reference them, don't fork them.** The published [index](https://portfolio.tjakoen.com/standards)
 > is the map; point this repo at it rather than copying files that will drift.
 >
 > **Make it tool-agnostic.** Symlink `AGENTS.md → CLAUDE.md` (`ln -s CLAUDE.md AGENTS.md`) so any
@@ -30,8 +30,8 @@ before touching it.>
 
 ## How I work here (non-negotiables)
 
-The full rulebook is **[`AI-DEVELOPMENT.md`](https://tjakoen.github.io/standards/ai-development)**
-(the standards) + **[`SESSION-LOOP.md`](https://tjakoen.github.io/standards/session-loop)** (the
+The full rulebook is **[`AI-DEVELOPMENT.md`](https://portfolio.tjakoen.com/standards/ai-development)**
+(the standards) + **[`SESSION-LOOP.md`](https://portfolio.tjakoen.com/standards/session-loop)** (the
 session mechanics, memory, handoff, model economy). The short version for this repo:
 
 - **I build with AI, out loud, on purpose.** The work is co-authored with Claude as a *practice* —
@@ -48,21 +48,21 @@ session mechanics, memory, handoff, model economy). The short version for this r
 
 ## Voice (for any prose in my name)
 
-Follow **[VOICE.md](https://tjakoen.github.io/standards/voice)**. The short
+Follow **[VOICE.md](https://portfolio.tjakoen.com/standards/voice)**. The short
 version: honest, quirky, self-deprecating, concrete, opinionated-with-the-why; **no backticks in
 prose**; contractions in casual writing, expanded in formal docs. Never publish a claim I haven't
 earned; keep money vague.
 
 ## README presentation (do this once, at repo start)
 
-Follow **[README-STANDARD.md](https://tjakoen.github.io/standards/readme-standard)**. In short:
+Follow **[README-STANDARD.md](https://portfolio.tjakoen.com/standards/readme-standard)**. In short:
 
 1. **Title emoji.** One emoji before the H1 that fits this repo (my repos lean a bread/baking family).
 2. **A curated badge row** (~5–7, honesty rule: only true, ideally verifiable badges), always led by:
-   `[![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://tjakoen.github.io/notes/ten-times-zero)`
+   `[![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://portfolio.tjakoen.com/notes/ten-times-zero)`
 3. **The text footer** at the bottom of the README:
    > ---
-   > 🤖 **Built with Claude. I don't prompt and pray, I prompt and prove.** Every commit here is co-authored with an AI, on purpose. [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)
+   > 🤖 **Built with Claude. I don't prompt and pray, I prompt and prove.** Every commit here is co-authored with an AI, on purpose. [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)
 
 The fastest way: paste the "reusable prompt" from README-STANDARD.md into a Claude session here, and it reads this
 codebase and proposes the emoji + honest badge set for you.

@@ -285,7 +285,7 @@ Reach into this shelf instead of writing *"a modern typeface"* or *"a recent pro
 (Real ≠ automatically publishable; see the guardrails.)
 
 **Projects (the recurring cast)**
-- **TJ's Desk:** his personal site (tjakoen.github.io), a portfolio, a notebook, and a live demo
+- **TJ's Desk:** his personal site (portfolio.tjakoen.com), a portfolio, a notebook, and a live demo
   of the stack, built on it. E-ink / Swiss-editorial; the flagship of his aesthetic.
 - **The AI-operable design system (GRAIN + BATCH):** a docs site that doesn't just *describe*
   components, it lets the AI *drive* them: drivable catalog, build queue, token playground. The

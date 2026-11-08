@@ -243,7 +243,7 @@ away when it is actually needed. A `CLAUDE.md` that has grown into a config dump
 content that belongs in a mounted dir leaked into the front door.
 
 **Standards are referenced by URL, never forked into the repo.** Every repo points at
-<https://tjakoen.github.io/standards>; none carries its own copy. Two copies drift, and then both are
+<https://portfolio.tjakoen.com/standards>; none carries its own copy. Two copies drift, and then both are
 suspect. (This is the reference-don't-fork rule from the standards index, made a kit requirement.)
 
 **Memory discipline** (the SESSION-LOOP §4 split, with one public-repo teeth): a durable, repo-worthy fact
@@ -539,7 +539,7 @@ prompt lets the agent write the rationale you will later have to defend, is the 
 **The comprehension-debt warning.** Osmani's sharpest point, and the one this whole file is built around:
 a loop that ships code faster than anyone understands it is not a productivity win, it is *debt* — you can
 run a repo you no longer comprehend right up until the day you have to fix it. This is exactly the
-[ten-times-zero](https://tjakoen.github.io/notes/ten-times-zero) thesis: the multiplier is real, and
+[ten-times-zero](https://portfolio.tjakoen.com/notes/ten-times-zero) thesis: the multiplier is real, and
 anything times zero is still zero. The verify rule (§2), the run ledger (§4), and the human gate on every
 merge exist precisely so speed never outruns comprehension. The loop draft; the human, who still
 understands the code, lands.

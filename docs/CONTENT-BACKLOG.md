@@ -22,7 +22,7 @@ the story card from the same set.
 
 **Everybody Wants the Agent. Somebody Has to Build the Floor.**
 (content/notes/build-the-floor.md, **PUBLISHED** 2026-08-19, ~28 min after the 2026-08-20 pass). The
-deck shipped alongside it: [/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 32 slides.
+deck shipped alongside it: [/talks/build-the-floor](../view/pages/talks/build-the-floor.html), 33 slides.
 
 **2026-08-20 pass, uncommitted at time of writing.** A section was added between the roadmap and
 stage zero, *I had a parts list, not an architecture*, giving the cross-section the five stages build
@@ -338,7 +338,7 @@ Two notes added to close gaps between the published set and work that shipped si
       - **The honest limit**, which the note must carry to be worth reading: this is one person's
         setup on one machine, tool preference is not evidence, and the standards deliberately name
         the capability rather than the product so the loop survives a change of harness. See
-        [`plans/nimbalyst-in-the-loop.md`](../plans/nimbalyst-in-the-loop.md) for that decision.
+        [`plans/done/nimbalyst-in-the-loop.md`](../plans/done/nimbalyst-in-the-loop.md) for that decision.
       - Figure per FIGURES if one earns its place: the flow scaffold, brief to spawned session to
         workstream, is the shape most likely to.
 

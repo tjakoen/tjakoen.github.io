@@ -116,7 +116,14 @@ jobs:
       # This one exits 1 by design when something is stale, and its markdown goes to stdout, so the
       # redirect has to survive the nonzero. Nothing else about the step cares.
       - name: answers nobody acted on
-        run: bun tools/answers-check.ts --markdown >> findings.md || true
+        run: |
+          set +e
+          bun tools/answers-check.ts --markdown >> findings.md
+          code=$?
+          if [ "$code" -ne 0 ] && [ "$code" -ne 1 ]; then
+            echo "answers-check failed with exit $code" >&2
+            exit "$code"
+          fi
 
       # The upsert. Three outcomes and no fourth: there are findings and no issue, so open one;
       # there are findings and an issue, so rewrite its body; there are none, so close whatever is

@@ -35,9 +35,13 @@ const CHUNKS = 8;
 for (const scheme of ["light", "dark"] as const) for (let chunk = 0; chunk < CHUNKS; chunk++) {
   test(`canonical routes pass axe WCAG 2.2 AA (${scheme}, part ${chunk + 1} of ${CHUNKS})`, async ({ page }) => {
     test.setTimeout(600_000);
-    const xml = await (await page.request.get("/sitemap.xml")).text();
-    const routes = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, loc]) => new URL(loc!).pathname)
-      .filter((_, i) => i % CHUNKS === chunk);
+    const sitemap = await page.request.get("/sitemap.xml");
+    expect(sitemap.status(), "sitemap response").toBe(200);
+    const xml = await sitemap.text();
+    const allRoutes = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, loc]) => new URL(loc!).pathname);
+    expect(allRoutes.length, "sitemap returned no routes").toBeGreaterThan(0);
+    const routes = allRoutes.filter((_, i) => i % CHUNKS === chunk);
+    expect(routes.length, "this chunk scanned no routes").toBeGreaterThan(0);
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
     const failures: string[] = [];
     mkdirSync("test-results", { recursive: true });

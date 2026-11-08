@@ -655,9 +655,13 @@ is enough.
 - Shneiderman, B. (2022). *Human-Centered AI.* Oxford University Press. (See also *Human-Centered AI: Three Fresh Ideas*, AIS THCI 12(3), 2020.) https://global.oup.com/academic/product/human-centered-ai-9780192845290
 - *Software as Content* (2026). arXiv:2603.21334. https://arxiv.org/abs/2603.21334 *(examined; the reading that it parallels our model was refuted, it is generative-runtime.)*
 - Vercel (2024). *AI SDK 3.0: Generative UI.* https://vercel.com/blog/ai-sdk-3-generative-ui
-- arXiv:2602.17245 (2026). *"Web verbs": typed semantic actions for web agents* (descriptive title; confirm before final cite). https://arxiv.org/abs/2602.17245
+- Jiang, L., Xi, R., Liu, Z., Chen, S., Lin, Z., Nath, S. (2026). *Web Agents Should Use Typed Actions Instead of Click-Based Browsing.* arXiv:2602.17245. https://arxiv.org/abs/2602.17245
 - Vachtsevanou, D., Ciortea, A., Mayer, S., Lemée, J. (2023). *Signifiers as a First-class Abstraction in Hypermedia Multi-Agent Systems.* AAMAS 2023. https://arxiv.org/abs/2302.06970
 - Xie, T. et al. (2024). *OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments.* NeurIPS 2024. https://arxiv.org/abs/2404.07972
 - Zhang, C. et al. (2024). *Large Language Model-Brained GUI Agents: A Survey.* arXiv:2411.18279. https://arxiv.org/abs/2411.18279
 - *GUI Agents: A Survey* (2024). arXiv:2412.13501. https://arxiv.org/html/2412.13501v2
 - Zhou, S. et al. (2023). *WebArena: A Realistic Web Environment for Building Autonomous Agents.* ICLR 2024. https://arxiv.org/abs/2307.13854
+
+---
+
+*The [judgment is human](ten-times-zero.md). The typing, by design, is not.*

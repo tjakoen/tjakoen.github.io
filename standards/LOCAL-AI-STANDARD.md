@@ -2,9 +2,10 @@
 title: LOCAL-AI-STANDARD.md
 summary: Choose, measure, and tune browser-local AI around real user tasks, with explicit limits and repeatable evidence.
 when: >
-  Read this before adding a browser-local model, changing its prompt or runtime settings, choosing a
+  Read this BEFORE adding a browser-local model, changing its prompt or runtime settings, choosing a
   model profile, or claiming that a local AI feature works well. Use it to audit an existing feature
-  before tuning it.
+  before tuning it. Don't skip because the model is already chosen or the demo looked fine once; that
+  is the case this standard exists to test.
 ---
 
 # Make browser-local AI earn its place

@@ -151,7 +151,7 @@ if (deck) {
     let clicks = 0;
     $('[data-trap-bad]', trap).addEventListener('click', () => {
       clicks += 1;
-      $('[data-trap-out-bad]', trap).innerHTML = clicks < 3
+      $('[data-trap-out-bad]', trap).innerHTML = clicks < 2
         ? '&nbsp;' : `<b>Nothing. ${clicks} clicks, no error, no warning.</b>`;
     });
     $('[data-trap-good]', trap).addEventListener('click', () => {

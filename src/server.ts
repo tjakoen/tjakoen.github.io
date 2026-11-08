@@ -43,8 +43,18 @@ const BADGES_DIR = COLLECTION_DIRS["/badges"];
 // Short share aliases: /b/<id> → the full cert. The generator writes this map on --emit. Loaded once
 // at boot (authoring a badge = a redeploy anyway). A miss is a 404, not a crash.
 const SHORTLINKS: Record<string, string> = (() => {
-  try { return JSON.parse(readFileSync(join(BADGES_DIR, "shortlinks.json"), "utf8")); }
-  catch { return {}; }
+  const file = join(BADGES_DIR, "shortlinks.json");
+  try {
+    const parsed: unknown = JSON.parse(readFileSync(file, "utf8"));
+    const map: Record<string, string> = Object.create(null);
+    if (parsed && typeof parsed === "object") {
+      for (const [id, slug] of Object.entries(parsed)) if (typeof slug === "string") map[id] = slug;
+    }
+    return map;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") console.error(`[shortlinks] cannot read ${file}:`, error);
+    return Object.create(null);
+  }
 })();
 // The redirect page a shortlink serves: it carries the badge's own OG card + title so the SHORT url
 // unfurls with the badge on LinkedIn, then sends a real visitor on to the full cert. A rendered page,
@@ -787,6 +797,10 @@ async function serveMedia(rel: string): Promise<Response> {
 if (import.meta.main) {
 Bun.serve({
   port: config.port,
+  // The desk holds an SSE connection open. Bun's 10 second default closes an idle stream, so the
+  // browser reconnects every ten seconds and a push in the gap has no subscriber. Two minutes is
+  // longer than any quiet spell between turns, and short enough for a dead client to be reaped.
+  idleTimeout: 120,
   routes: {
     ...buildAiRoutes(stream, aiLayer),   // /intent, /stream, /ai/manifest
     "/components.css": async () =>
@@ -910,7 +924,7 @@ Bun.serve({
     // --- short share alias: /b/<id> → cert redirect page (carries the badge OG card) ---
     if (p.startsWith("/b/")) {
       const id = p.slice("/b/".length).replace(/\/$/, "");
-      const certSlug = SHORTLINKS[id];
+      const certSlug = Object.hasOwn(SHORTLINKS, id) ? SHORTLINKS[id] : undefined;
       if (certSlug) return new Response(shortlinkPage(certSlug, new URL(req.url).origin),
         { headers: { "Content-Type": "text/html; charset=utf-8" } });
       return new Response("Not found", { status: 404 });

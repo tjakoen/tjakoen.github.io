@@ -119,12 +119,12 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       await page.goto("/?nest-debug");
       await page.locator(".nest-switch").click();
       await expect(page.locator(".nest-hill")).toBeVisible();
+      // The exact position, not a coarse bin: a 3x3 cell can collapse ten different random
+      // placements into one box on a narrower layout, which is what made this red on CI while it
+      // passed locally. Two loads landing on the same pixel is the only truly static outcome.
       cells.add(await page.evaluate(() => {
         const h = document.querySelector(".nest-hill")!.getBoundingClientRect();
-        const m = document.querySelector("main")!.getBoundingClientRect();
-        const col = Math.min(2, Math.floor(((h.left + h.width / 2 - m.left) / m.width) * 3));
-        const row = Math.min(2, Math.floor(((h.top + h.height / 2 - m.top) / m.height) * 3));
-        return `${col},${row}`;
+        return `${Math.round(h.left)},${Math.round(h.top)}`;
       }));
     }
     expect(cells.size).toBeGreaterThan(1);

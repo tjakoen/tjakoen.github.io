@@ -30,7 +30,7 @@ anyone working here for three practical reasons: uncommitted work is attributed 
 dirty tree is not automatically yours (LOOP §4b); a rendered change can be screenshotted and shown
 inline rather than described; and `.nimbalyst/` plus `nimbalyst-local/` are gitignored private
 working material, never site content. None of this is required by the standards, which state the
-capability and name the tool only as the example. See [`plans/nimbalyst-in-the-loop.md`](plans/nimbalyst-in-the-loop.md).
+capability and name the tool only as the example. See [`plans/done/nimbalyst-in-the-loop.md`](plans/done/nimbalyst-in-the-loop.md).
 
 When the session opens in DeepSeek Harness (DSH), the front door is this same file and the skills
 come from .agents/skills, a symlink to .claude/skills. DSH runs none of the Claude Code hooks.
@@ -45,7 +45,7 @@ done. The machine source is agent-config/shared/tools/dsh. See
 ## Start here (reading order)
 
 The standards are installed here as **skills**. Invoke them, do not fetch them: `Skill(voice)`,
-`Skill(figures)`, `Skill(note-standard)`, `Skill(readme-standard)`, and the rest of the seventeen
+`Skill(figures)`, `Skill(note-standard)`, `Skill(readme-standard)`, and the rest of the twenty-one
 under `.claude/skills/`. The published URLs below are the human-readable copy of the same file and
 are there for a reader, not for a session: a web fetch to read a standard this repo already ships
 is a wasted round trip. The source of every one lives in this repo's `standards/` dir, so edits go
@@ -64,8 +64,8 @@ serves both harnesses.
 3. `Skill(voice)` ([published](https://portfolio.tjakoen.com/standards/voice)): the writing standard
    (voice, the machine-tells to avoid). Match it for any prose in his name.
 4. `Skill(figures)` ([published](https://portfolio.tjakoen.com/standards/figures)): the figure standard,
-   the two tokenized inline-SVG scaffolds (data-viz + flow) and the no-mermaid-on-the-published-site
-   rule. Use it for any diagram or chart.
+   the two tokenized inline-SVG scaffolds (data-viz + flow) and the mermaid rule: a generated diagram
+   only, with a label. Use it for any diagram or chart.
 5. `Skill(note-standard)` ([published](https://portfolio.tjakoen.com/standards/note-standard)): how a
    note/blog post is built (frontmatter, structure, the sign-off footer) + a reusable prompt to
    draft one. Use it for any `content/notes/*.md`.

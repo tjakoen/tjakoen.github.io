@@ -35,7 +35,7 @@ export function strippedForScan(html: string): string {
 /** Every component tag a template references, deduplicated, in first-seen order. */
 export function componentRefs(html: string): string[] {
   const seen = new Set<string>();
-  for (const m of strippedForScan(html).matchAll(TAG_RE)) seen.add(m[1]!);
+  for (const m of strippedForScan(html).matchAll(TAG_RE)) if (m[1]) seen.add(m[1]);
   return [...seen];
 }
 
@@ -43,7 +43,13 @@ async function htmlFilesUnder(dir: string): Promise<string[]> {
   const out: string[] = [];
   let entries;
   try { entries = await readdir(dir, { withFileTypes: true }); }
-  catch { return out; }                                  // a root that does not exist is not a failure here
+  catch (error) {
+    // A missing template root used to return an empty list, so the preflight scanned nothing and
+    // passed. That is the silent success this whole file exists to catch.
+    if ((error as NodeJS.ErrnoException).code === "ENOENT")
+      throw new Error(`component preflight: template root ${dir} does not exist`, { cause: error });
+    throw error;
+  }
   for (const e of entries) {
     const full = join(dir, e.name);
     if (e.isDirectory()) out.push(...await htmlFilesUnder(full));

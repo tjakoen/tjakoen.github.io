@@ -1,4 +1,3 @@
-| `/reading` | `view/pages/reading.html` (the people I learn from, each linked to the notes where their idea shows up) |
 # HACKING.md — change something yourself, fast
 
 The map I reach for when I want to make a *small* edit without spinning up an AI: where every URL's
@@ -42,6 +41,8 @@ you know where to edit.
 | `/proof` | `view/pages/proof/index.html` (PROOF page) |
 | `/pantry` | `view/pages/pantry/index.html` (PANTRY page) |
 | `/docs` | `view/pages/docs/index.html` (developer-docs hub — plan in [`../DEV-DOCS.md`](../../bread/DEV-DOCS.md)) |
+| `/teaching` | `view/pages/teaching/index.html` (the teaching record: courses, assessment, the classroom) |
+| `/reading` | `view/pages/reading.html` (the people I learn from, each linked to the notes where their idea shows up) |
 
 **Content** — Markdown through MILL, wired in [`src/content.ts`](../src/content.ts) (not hand-authored HTML):
 

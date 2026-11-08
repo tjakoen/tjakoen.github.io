@@ -66,11 +66,11 @@ PHASE 0 - Mechanical tier first, so you do not spend judgment on grep.
   repo could reasonably install it, which is a finding in its own right (C8).
 
 PHASE 1 - Read the canon you are checking against. Fetch it, do not recall it:
-    https://tjakoen.github.io/standards                  (the index)
-    https://tjakoen.github.io/standards/loop             (the estate loop, sections 2, 3, 4)
-    https://tjakoen.github.io/standards/ai-repo-standard (the kit, sections 2, 3, 4, 5, 7, 11)
-    https://tjakoen.github.io/standards/session-loop     (one session, sections 1, 3, 4)
-    https://tjakoen.github.io/standards/graph            (the query-first rule, for C7)
+    https://portfolio.tjakoen.com/standards                  (the index)
+    https://portfolio.tjakoen.com/standards/loop             (the estate loop, sections 2, 3, 4)
+    https://portfolio.tjakoen.com/standards/ai-repo-standard (the kit, sections 2, 3, 4, 5, 7, 11)
+    https://portfolio.tjakoen.com/standards/session-loop     (one session, sections 1, 3, 4)
+    https://portfolio.tjakoen.com/standards/graph            (the query-first rule, for C7)
   Then read, in THIS repo: CLAUDE.md, AGENTS.md, AUDIT.md if present, README.md,
   plans/ , .claude/settings.json, .github/workflows/ , .git/hooks/ , .gitignore.
 
@@ -134,7 +134,7 @@ PHASE 3 - Report, then stop.
   b) A findings table, most severe first, columns exactly:
        check | severity | file:line | what is wrong | the fix
      Severity is blocker / major / minor, and it means consequence, never effort
-     (see https://tjakoen.github.io/standards/audit-standard section 3). A finding you
+     (see https://portfolio.tjakoen.com/standards/audit-standard section 3). A finding you
      cannot argue into one of the three is a preference: drop it.
   c) Per-check status for ALL of C1 to C8, including the clean ones.
   d) WHAT WAS NOT COVERED, named. Anything skipped, unreachable, or not run.
@@ -191,4 +191,4 @@ and after a standard is renamed. Not on a schedule: this estate does not run sch
 - [ ] The working tree is unchanged: `git status --short` is empty of anything the pass wrote.
 
 ---
-🤖 **Built with Claude, checks included.** The prompt that audits how these repos are wired was written the same way they are: with an AI, out loud, on purpose. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)
+🤖 **Built with Claude, checks included.** The prompt that audits how these repos are wired was written the same way they are: with an AI, out loud, on purpose. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)

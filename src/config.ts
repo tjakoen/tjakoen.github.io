@@ -17,7 +17,13 @@ const GRAIN = dirname(fileURLToPath(import.meta.resolve("@tjakoen/grain/PLAN.md"
 
 export const config = {
   isDev,
-  port: Number(Bun.env.PORT ?? 3000),
+  port: (() => {
+    const raw = Bun.env.PORT ?? "3000";
+    const port = Number(raw);
+    if (!Number.isInteger(port) || port < 1 || port > 65535)
+      throw new Error(`PORT must be an integer between 1 and 65535, got "${raw}"`);
+    return port;
+  })(),
 
   // GRAIN's package dir, exposed so server.ts can read GRAIN's own stylesheets without a cwd path.
   grainDir: GRAIN,

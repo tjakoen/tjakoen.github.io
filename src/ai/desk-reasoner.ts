@@ -187,8 +187,6 @@ function humanizeSeg(route: string): string {
   const seg = route.split("/").filter(Boolean).pop();
   return seg ? seg.split("-").map((w) => w[0]!.toUpperCase() + w.slice(1)).join(" ") : "Home";
 }
-// Trailing-slash-insensitive route compare — "is the hit already on the page we're standing on?".
-
 const OFFLINE_LINE =
   "The desk runs a small AI model in your browser, and this browser can't run it, so the desk is offline. Everything else on the site works as usual.";
 

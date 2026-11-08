@@ -900,10 +900,6 @@ Everybody wants the agent. I would rather be the one who builds the floor.
 
 ---
 
-*The [judgment is human](ten-times-zero.md). The typing, by design, is not.*
-
----
-
 ### Sources
 
 - [DORA, State of AI-assisted Software Development 2025](https://dora.dev/dora-report-2025/)
@@ -916,3 +912,7 @@ Everybody wants the agent. I would rather be the one who builds the floor.
 - [Addy Osmani, Loop Engineering](https://addyosmani.com/blog/loop-engineering/)
 - [Cole Medin, AI-native starter pack](https://github.com/coleam00/ai-native-starter-pack) and the accompanying [workshop](https://www.youtube.com/watch?v=Tliio-33w4g), on the three-layer anatomy of the layer, wiring it across the whole delivery chain, and closing every bug with a rule rather than a patch
 - My own version of this loop, smaller and more honest about its limits: [I Was Shipping Faster Than I Could Understand It](one-loop-every-repo.md)
+
+---
+
+*The [judgment is human](ten-times-zero.md). The typing, by design, is not.*

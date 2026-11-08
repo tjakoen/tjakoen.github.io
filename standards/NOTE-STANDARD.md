@@ -12,7 +12,7 @@ when: >
 
 # Note / blog-post standard + reusable prompt
 
-My standard for how a note (a blog post on tjakoen.github.io/notes) is put together: the frontmatter
+My standard for how a note (a blog post on portfolio.tjakoen.com/notes) is put together: the frontmatter
 template, the structure, the sign-off footer, and the guardrails, plus a copy-paste prompt that tells
 an AI how to draft or finish one in my voice. Companion to [`VOICE.md`](VOICE.md) (**the** source of
 truth for *how it reads*) and [`README-STANDARD.md`](README-STANDARD.md) (the sibling standard, for
@@ -212,15 +212,15 @@ Non-negotiable, and they *precede* voice, a specific being real doesn't make it 
 ## The prompt (paste into Claude Code to draft or finish a note)
 
 ```text
-Draft/finish a note for tjakoen.github.io/notes following my personal standard. This ships under my
+Draft/finish a note for portfolio.tjakoen.com/notes following my personal standard. This ships under my
 byline, so voice and honesty are the whole job.
 
 STEP 1 — READ THE STANDARDS FIRST, don't wing it:
-- tjakoen.github.io/standards/VOICE.md — how it must READ. Match it. If a passage is clean, correct, and
+- portfolio.tjakoen.com/standards/VOICE.md — how it must READ. Match it. If a passage is clean, correct, and
   forgettable, it sounds like AI; make it mine (a confession up front, a real number, a wink at my
   own expense, a sentence that's too short).
-- tjakoen.github.io/standards/NOTE-STANDARD.md (this file) — the artifact: frontmatter, structure, footer.
-- tjakoen.github.io/docs/CONTENT-BACKLOG.md — is this piece planned? what's its angle? what must it NOT say?
+- portfolio.tjakoen.com/standards/NOTE-STANDARD.md (this file) — the artifact: frontmatter, structure, footer.
+- portfolio.tjakoen.com/docs/CONTENT-BACKLOG.md — is this piece planned? what's its angle? what must it NOT say?
 
 STEP 1b — PICK THE KIND. Personal note (reader is following me) or guide (reader is a company with
 a decision and a budget)? The standard's "Two kinds of note" table says what changes. If it's a
