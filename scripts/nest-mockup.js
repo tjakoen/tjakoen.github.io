@@ -356,7 +356,6 @@
   const spawnStray = (force = false) => {
     if (!force && (strayConsumed() || game || document.hidden || !launcherVisible() || strayEl)) return;
     if (force && (game || document.hidden || !launcherVisible() || strayEl)) return;
-    if (getComputedStyle(main).position === "static") main.style.position = "relative";
     const fromLeft = Math.random() < 0.5;
     const y = main.scrollTop + Math.max(80, main.clientHeight * (0.25 + Math.random() * 0.45));
     const startX = fromLeft ? -24 : main.clientWidth + 24;
@@ -601,6 +600,7 @@
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
+  const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(state.ants.length / 3)));
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
   // the layer covers the page exactly and clips what crosses its edge, so nothing scrolls sideways
@@ -756,7 +756,10 @@
   // A trail feeds from a patch, the letters within PATCH pixels of where its scout found food, so
   // the ants on it visibly work one small area of the page.
   const PATCH = 70;
-  const inPatch = (r, c) => { const m = pageRect(); return Math.hypot(r.left + r.width / 2 - (c[0] - main.scrollLeft + m.left), r.top + r.height / 2 - (c[1] - main.scrollTop + m.top)) <= PATCH; };
+  // A bigger colony can keep a longer, wider patch alive. This is what lets a busy trail at
+  // the far end of the page keep finding letters instead of dying at its first small clump.
+  const patchRadius = () => Math.min(170, PATCH + Math.max(0, state.ants.length - 8) * 6);
+  const inPatch = (r, c) => { const m = pageRect(); return Math.hypot(r.left + r.width / 2 - (c[0] - main.scrollLeft + m.left), r.top + r.height / 2 - (c[1] - main.scrollTop + m.top)) <= patchRadius(); };
   const freeIn = (block, center) => {
     const found = [];
     for (const n of textNodes(block)) for (let i = 0; i < n.data.length; i++) {
@@ -805,7 +808,8 @@
   // Workers leaving the nest take the ready trails in turn, skipping any that are full or worked
   // out, so every trail fills at the same pace and a finished trail's ants move to the others.
   const openTrail = () => {
-    const ready = state.trails.filter((t) => t.ready && t.state !== "gone" && t.ants.size < LINE && remaining(t));
+    const cap = trailCap();
+    const ready = state.trails.filter((t) => t.ready && t.state !== "gone" && t.ants.size < cap && remaining(t));
     if (!ready.length) return null;
     const help = ready.filter(needsHelp);
     const pool = help.length ? help : ready;
@@ -942,7 +946,7 @@
       if (busyBlocks.has(blockOf(n))) continue;
       const [x, y] = local(r);
       if (opening && !onScreen(r)) continue;
-      if (state.trails.some((t) => Math.hypot(t.end[0] - x, t.end[1] - y) < PATCH * 2)) continue;
+      if (state.trails.some((t) => Math.hypot(t.end[0] - x, t.end[1] - y) < patchRadius() * 2)) continue;
       options.push([n, x + r.width / 2, y + r.height]);
     }
     if (!options.length) {
@@ -1492,7 +1496,7 @@
     box[1] >= 0 && box[3] <= main.scrollHeight && !obstacles.some((rect) => overlaps(box, rect));
   const miniSiteFits = (spot, box, { gaps, obstacles }) => miniFits(box, obstacles) &&
     spot.gap === gaps.some((rect) => overlaps(box, rect));
-  const findMiniSpot = () => {
+  const findMiniSpot = (reach = MOUND_REACH) => {
     const terrain = miniTerrain();
     const top = 0, bottom = main.scrollHeight;
     const viewTop = main.scrollTop, viewBottom = viewTop + main.clientHeight;
@@ -1506,7 +1510,7 @@
       const nearHome = Math.hypot((x - home.base[0]) * 1.15, y - home.base[1]);
       // A mound guards the trails around it. Keep it within reach of the main hill, then spread
       // the later ones enough that their guards are not stacked on one patch.
-      if (nearHome > MOUND_REACH) return;
+      if (nearHome > reach) return;
       const score = (minis.length < 2 ? -nearHome : separation - nearHome * 0.45) + (box[1] >= viewTop && box[3] <= viewBottom ? 1000 : 0);
       if (score > bestScore) { best = spot; bestScore = score; }
     };
@@ -1538,10 +1542,18 @@
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
   const startBuild = () => {
-    const spot = findMiniSpot();
+    let spot = findMiniSpot();
+    if (!spot) {
+      spot = findMiniSpot(MOUND_REACH + 320);
+      if (spot) log("the stores are full; the colony expands outward for a mound");
+    }
+    if (!spot) {
+      spot = findMiniSpot(Infinity);
+      if (spot) log("the stores are full; the colony expands to the rest of the page");
+    }
     if (!spot) {
       nextBuildSearch = performance.now() + 6000;
-      log("the stores are full; there is no clear ground for another mound");
+      log("the stores are full; there is no clear ground anywhere for another mound");
       return;
     }
     const b = spawnPageAnt("builder", home.hole.slice(), null);
@@ -1717,7 +1729,7 @@
     const patrol = ant.role === "soldier" || ant.role === "guard";
     let nearest = null;
     for (const trail of state.trails) {
-      if (!trail.ready || (!patrol && (trail.ants.size >= LINE || !remaining(trail)))) continue;
+      if (!trail.ready || (!patrol && (trail.ants.size >= trailCap() || !remaining(trail)))) continue;
       for (let i = 1; i < trail.pts.length; i++) {
         const [x, y] = trail.pts[i - 1];
         const dx = trail.pts[i][0] - x, dy = trail.pts[i][1] - y;
