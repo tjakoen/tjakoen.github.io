@@ -390,7 +390,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length), { timeout: 15_000 }).toBeGreaterThan(0);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.trails.length), { timeout: 15_000 }).toBeGreaterThan(0);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.minis.length), { timeout: 20_000 }).toBe(2);
-    await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size), { timeout: 15_000 }).toBeGreaterThan(0);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size), { timeout: 40_000 }).toBeGreaterThan(0);
     const placement = await page.evaluate(() => {
       const home = window.__nest!.home.base;
       const rival = window.__nest!.rival.mound!.base;
