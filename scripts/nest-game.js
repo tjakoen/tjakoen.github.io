@@ -83,6 +83,8 @@
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
+    .nest-hill.hit { animation: nest-hill-hit .3s steps(2); }
+    @keyframes nest-hill-hit { 50% { transform: translateX(3px); filter: brightness(1.5); } }
     .nest-hill.unbuilding { animation: nest-hill-unbuild .55s cubic-bezier(.6,0,.8,.4) both; transform-origin: 50% 100%; }
     @keyframes nest-hill-unbuild { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scaleY(.06); } }
     .nest-sweet-card, .nest-event-card { position: absolute; z-index: 5; width: 46px; height: 28px; padding: 0; border: 0; background: none; color: var(--color-accent); cursor: pointer; pointer-events: auto; animation: nest-sweet-fade 12s linear both; }
@@ -2296,6 +2298,11 @@
       if (move(a, g[0], g[1], dt, SPEED * 1.5)) { a.px = a.x; a.py = a.y; a.path = [randomPoint()]; a.k = 0; }
       return;
     }
+    if (a.job === "rival-build") {
+      const g = a.path[a.k]; if (!g) return;
+      if (move(a, g[0], g[1], dt, SPEED * 0.55)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.path = a.path.toReversed(); a.k = 0; } }
+      return;
+    }
     if (a.job === "rival-guard") {
       const g = a.path[a.k]; if (!g) return;
       if (move(a, g[0], g[1], dt, SPEED * 0.7)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.path = a.path.toReversed(); a.k = 0; } }
@@ -2305,11 +2312,6 @@
       const g = a.path[a.k];
       if (g && move(a, g[0], g[1], dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; a.k = 0; }
       if (performance.now() >= a.baitUntil) { a.job = a.trail && state.trails.includes(a.trail) ? "rival-follow" : "rival-pause"; a.path = a.trail ? lanePath(a.trail.pts, a.lane) : []; a.k = 0; a.pauseAt = performance.now() + 300; }
-      return;
-    }
-    if (a.job === "rival-sweet") {
-      const sweet = state.sweet; if (!sweet) { removeRivalAnt(a); return; }
-      if (move(a, sweet.x, sweet.y, dt, SPEED * 1.1)) { a.px = a.x; a.py = a.y; if (performance.now() >= (a.nextEat || 0)) { a.nextEat = performance.now() + 550; sweet.pieces--; sweet.el.textContent = "⣿".repeat(Math.max(0, sweet.pieces)); if (sweet.pieces <= 0) removeSweet("eaten"); } }
       return;
     }
     const now = performance.now();
@@ -2400,7 +2402,7 @@
     if (ant.job === "rival-siege") {
       if (performance.now() < (ant.nextBite || 0)) return;
       ant.nextBite = performance.now() + 900;
-      rival.hp--;
+      rival.hp--; rival.mound.el.classList.add("hit"); setTimeout(() => rival.mound?.el.classList.remove("hit"), 320);
       blip(150, 0.08, "square", 0.035);
       log(`the colony bites the rival mound (${Math.max(0, rival.hp)} left)`);
       if (rival.hp <= 0) { log("the main colony breaks the rival mound"); retreatRival(); goHome(ant); }
@@ -2450,9 +2452,15 @@
     if (rival.active || state.over || state.party) return;
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8; rival.buildUntil = performance.now() + 1300;
-    log("a rival mound is being built on the opposite side");
+    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8; rival.buildUntil = performance.now() + 3200;
+    const builders = [];
+    for (let i = 0; i < 3; i++) {
+      const bx = mound.base[0] + (i - 1) * 26, by = mound.base[1] + 8;
+      builders.push(spawnRivalUnit("rival-build", [bx, by], Array.from({ length: 6 }, (_, k) => [bx + Math.cos(k * 1.1) * 16, by + Math.sin(k * 1.1) * 10]), null));
+    }
+    log("three rival builders start the mound");
     setTimeout(() => {
+      builders.forEach(removeRivalAnt);
       if (!rival.active || rival.mound !== mound) return;
       const pick = rivalTarget();
       if (!pick) { mound.el.remove(); rival.active = false; rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
@@ -2480,7 +2488,7 @@
       miniSpots.slice(0, 2).forEach((p) => {
         const x = p.x, y = p.y;
         const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
-        el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el);
+        el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el); el.classList.add("rising"); setTimeout(() => el.classList.remove("rising"), 900);
         rival.minis.push({ el, base: [x, y] });
         const trail = rival.trails[0];
         const path = trail ? lanePath(trail.pts, (rival.minis.length % 2 ? 1 : -1) * 9) : Array.from({ length: 7 }, (_, k) => [x + Math.cos(k * 0.9) * 25, y + Math.sin(k * 0.9) * 16]);
@@ -2489,7 +2497,7 @@
       });
       log("the rival trails open");
       blip(260, 0.1, "sawtooth", 0.025);
-    }, 900);
+    }, 2600);
   };
   const placeBait = (e) => {
     setBaitArmed(false);
