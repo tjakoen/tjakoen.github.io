@@ -1250,6 +1250,7 @@
   };
 
   const stepPage = (ant, dt) => {
+    if (ant.side === "rival") return stepRival(ant, dt);
     if (ant.tongue || ant.job === "scout-pending") return;
     ant.px = ant.x; ant.py = ant.y;
     if (ant.job === "dance") return; // the party moves its own dancers
@@ -2621,7 +2622,7 @@
     if (!state.paused) {
       if (state.party) stepParty(now, dt);
       if (state.scoutQueue.length) { const pending = state.scoutQueue.shift(); if (pending?.el && pending.role === "scout") scout(pending); }
-      state.ants.slice().forEach((a) => (a.side === "rival" ? stepRival(a, dt) : (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt))));
+      state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
             rivalCombat(now);
       tickRivalAttack(now);
       for (const a of state.ants) {
