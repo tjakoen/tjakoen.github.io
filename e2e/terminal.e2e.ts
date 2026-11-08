@@ -12,7 +12,7 @@ declare global {
     __rafCount?: number;
     __nest?: {
       state: {
-        ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; el?: Element }>;
+        ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; letter?: unknown; el?: Element }>;
         trails: Array<{ block: Element }>;
         built: number;
       };
@@ -325,6 +325,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator("#nest-mock")).toBeVisible();
     await expect(page.locator("#nest-mock .nest-meter .hint")).toHaveCount(4);
     await expect(page.locator("#nest-mock .nest-meter .hint").nth(1)).toContainText("mound builders");
+    await expect(page.locator("#nest-mock .nest-meter .hint").nth(2)).toContainText("three meals lay an egg");
     await expect(page.locator("#nest-mock .nest-meter .hint").nth(3)).toContainText("queen dances");
   });
 
@@ -411,7 +412,8 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
     await page.waitForTimeout(600);
-    await page.waitForFunction(() => window.__nest?.state.ants.some((a) => a.el) ?? false);
+    await page.waitForFunction(() => window.__nest?.state.ants.some((a) =>
+      a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder") ?? false);
     await page.evaluate(() => window.__nest!.startParty());
     await expect(page.locator("#nest-mock")).toHaveClass(/celebrating/);
     await expect(page.locator(".nest-queen")).toBeVisible();

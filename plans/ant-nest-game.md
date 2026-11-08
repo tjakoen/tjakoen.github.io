@@ -56,12 +56,15 @@ unreadable and the colony has won that page.
   until the crew is full. Other workers take open trails in turn, five to
   a line, and a trail fades when its patch empties or after ninety seconds. Each retired
   trail sends its own successor scout, so several spent patches do not leave one line. Successors
-  look near the mound first; the trail target is one per two ants, so it keeps climbing. Soldiers hatch once the colony passes eight and take two
+  look near the mound first; the trail target is one per two ants, and several scouts can work at
+  once, so the number keeps climbing. Soldiers hatch once the colony passes eight and take two
   hits.
 - **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
   below the fold. The first two favor a spot near the main hill; later ones spread out. Builders
-  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to stay on the nearest trail until it disappears, then return to the mound, and flyers to steal letters. Its mound thins
+  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends
+  guards to the nearest trail; when that trail disappears they take the nearest new one, or circle
+  the mound while none is ready. It sends flyers to steal letters. Its mound thins
   with each hit, and a fallen mound lowers the stores cap. A hurt mound heals one hit at a time. Knocking it calls the guards home and flashes the mound and every guard; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
 - **The player's tools.** The colony tools are Squash, Wipe, Bait and Seal, with names on the
   tiles; Links, mute, pause and restore are the utility row below. Squash holds every page link so
