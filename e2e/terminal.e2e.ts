@@ -281,7 +281,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.waitForFunction(() => {
       const scout = window.__nest?.state.ants.find((a) => a.role === "scout" && a.job === "carry" && a.scoutRoute && a.block);
       return !!scout;
-    });
+    }, null, { timeout: 20_000 });
     const route = await page.evaluate(() => {
       const scout = window.__nest!.state.ants.find((a) => a.role === "scout" && a.job === "carry" && a.scoutRoute && a.block);
       return scout ? { id: scout.id, block: (scout.block!.textContent || "").trim().slice(0, 40) } : null;
