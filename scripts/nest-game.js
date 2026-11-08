@@ -200,7 +200,10 @@
 
       filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 35%, transparent)); transition: opacity .4s, left 1.2s ease-in-out, top 1.2s ease-in-out; }
     .nest-queen svg { display: block; width: 60px; height: 38px; overflow: visible; }
-    .queen-braille { margin: 0; font: 10px/1 var(--font-mono); letter-spacing: 0; color: inherit; text-align: center; white-space: pre; }
+    .queen-ant { position: absolute; inset: 0; display: grid; place-items: center; }
+    .queen-ant svg { width: 60px; height: 38px; }
+    .queen-crown { position: absolute; left: 50%; top: -9px; width: 22px; height: 11px; transform: translateX(-50%); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+    .queen-braille { margin: 0; font: 8px/1 var(--font-mono); letter-spacing: 0; color: inherit; text-align: center; white-space: pre; }
     .nest-queen.panel-queen { z-index: 4; }
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
     .nest-queen.crawling { animation: nest-queen-crawl .18s steps(2) infinite; }
@@ -879,7 +882,7 @@
   // scout if nobody is scouting, or wait in the tunnel.
   const atEntrance = (ant) => {
     if (state.over || hills.every(isSealed)) { ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); return; } // nowhere to go out
-    if (state.cacheTrail && state.trails.includes(state.cacheTrail) && ant.role !== "builder") {
+    if (state.cacheTrail && state.trails.includes(state.cacheTrail) && (ant.role === "worker" || ant.role === "scout")) {
       join(ant, state.cacheTrail); emerge(ant); ant.job = "cache"; ant.path = lanePath(state.cacheTrail.pts, ant.lane || 0); ant.k = 0; return;
     }
     if (ant.role === "scout") return emerge(ant);
@@ -925,7 +928,7 @@
     ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
     layer.append(ant.el); placeAnt(ant);
     if (ant.role === "scout") { ant.job = "scout-pending"; state.scoutQueue.push(ant); return; }
-    else if (ant.role === "soldier") { ant.lane = ant.lane || ((ant.id % 5) - 2) * 8; ant.patrolLaps = 0; ant.job = "patrol"; ant.path = lanePath(ant.patrol.pts, ant.lane); ant.k = 0; ant.hp = ant.hp || 2; }
+    else if (ant.role === "soldier") { ant.lane = ant.lane || ((ant.id % 5) - 2) * 8; ant.patrolLaps = 0; ant.job = "patrol"; ant.path = ant.patrol ? lanePath(ant.patrol.pts, ant.lane) : []; ant.k = 0; ant.hp = ant.hp || 2; }
     else if (ant.trail && ant.trail.state !== "gone") { ant.job = "follow"; ant.path = lanePath(ant.trail.pts, ant.lane || 0); ant.k = 0; }
     else { ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; }
     label(ant);
@@ -1513,7 +1516,7 @@
         { transform: "translate(-50%, -240%) scale(.7)", opacity: 0 }];
     q.animate(frames, { duration: 1200, easing: "ease-in-out" }).onfinish = () => q.remove();
   };
-  const queenMarkup = () => "<pre class='queen-braille' aria-hidden='true'>⢀⣀⣀⡀\n⣿⣿⣿⣿\n⠶⠶⠶⠶</pre>";
+  const queenMarkup = () => `<div class="queen-ant" aria-hidden="true">${ANT_SVG}</div><svg class="queen-crown" viewBox="0 0 24 12" aria-hidden="true"><path d="M2 10 5 3l3 5 4-6 4 6 3-5 3 7z" /></svg>`;
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
     const now = performance.now();
@@ -1540,7 +1543,8 @@
       layer.append(g); glyphs.push(g);
     });
     const until = now + (final ? 16000 : 9000);
-    state.party = { start: now, until, returnAt: until - 1400, final, queen, dancers, glyphs, stage, returning: false,
+    const returnAt = until - 2200;
+    state.party = { start: now, until, returnAt, final, queen, dancers, glyphs, stage, returning: false,
       queenFrom: mound.hole.slice() };
     state.queen.lay = 0;
     log(final ? "the colony takes the page" : "the colony dances");
@@ -1603,7 +1607,7 @@
   // a mini hill in open ground; squash the builder and the stores are lost. A mini hill sends out
   // guards, which walk to an existing trail and patrol it, and flyers, which roam and steal any
   // letter. It falls to a few clicks, but only once none of its guards are left.
-  const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, HEAL_AFTER = 6, HEAL_EVERY = 5;
+  const STORE_COSTS = [12, 18, 24, 30], MAX_MINIS = 4, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, HEAL_AFTER = 6, HEAL_EVERY = 5;
   const MOUND_REACH = 560;
   const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
   const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
@@ -2031,6 +2035,7 @@
         const y = home.base[1] + Math.sin(angle) * radius * 0.62;
         if ((x - home.base[0]) * side < 150) continue;
         if (Math.hypot(x - home.base[0], y - home.base[1]) < 360) continue;
+        if (Math.abs(y - home.base[1]) > 460) continue;
         const box = [x - hw / 2 - 10, y - hh - 10, x + hw / 2 + 10, y + 10];
         if (clear(box)) spots.push({ x, y });
       }
@@ -2041,6 +2046,7 @@
     if (!spots.length) {
       for (let y = 80; y < main.scrollHeight - 40; y += 46) {
         for (let x = 100; x < main.clientWidth - 100; x += 46) {
+          if (Math.abs(y - home.base[1]) > 460) continue;
           const box = [x - hw / 2 - 10, y - hh - 10, x + hw / 2 + 10, y + 10];
           if (clear(box)) spots.push({ x, y });
         }
@@ -2220,7 +2226,7 @@
     if (!move(a, g[0], g[1], dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; return; }
     if (a.job === "rival-home" && a.letter?.state === "rival-carry" && Math.hypot(a.x - rival.mound.hole[0], a.y - rival.mound.hole[1]) < 34) { bankRival(a); return; }
     a.px = a.x; a.py = a.y;
-    if (a.glyph) { a.glyph.style.left = a.x + 2 + "px"; a.glyph.style.top = a.y - 16 + "px"; }
+    if (a.glyph) { a.glyph.style.left = a.px + 2 + "px"; a.glyph.style.top = a.py - 16 + "px"; }
     if (++a.k < a.path.length) return;
     if (a.job === "rival-follow") {
       stealRival(a.trail, a);
@@ -2324,7 +2330,7 @@
       }
     }
   };
-  let nextRivalAttack = 0;
+  let nextRivalAttack = 0, nextDefender = 0;
   const tickRivalAttack = (now) => {
     if (!rival.active || state.party || now < nextRivalAttack) return;
     nextRivalAttack = now + 3500;
@@ -2463,8 +2469,12 @@
       blip(260, 0.1, "sawtooth", 0.025);
     }, 2600);
   };
+  const rivalCaps = () => {
+    const crew = mainAnts().length;
+    return { ants: Math.min(16, Math.max(7, crew - 3)), trails: Math.min(5, Math.max(3, Math.ceil(crew / 6))), minis: Math.min(4, Math.max(2, Math.floor(crew / 5))) };
+  };
   const buildRivalMinis = () => {
-    if (rival.minis.length || !rival.active) return;
+    if (!rival.active || rival.minis.length >= rivalCaps().minis) return;
     const miniSpots = [];
     const terrain = miniTerrain();
     for (const radius of [130, 170, 210]) {
@@ -2479,7 +2489,7 @@
       }
       if (miniSpots.length >= 2) break;
     }
-    miniSpots.slice(0, 2).forEach((p) => {
+    miniSpots.slice(0, Math.max(1, rivalCaps().minis - rival.minis.length)).forEach((p) => {
       const x = p.x, y = p.y;
       const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
       el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el); el.classList.add("rising"); setTimeout(() => el.classList.remove("rising"), 900);
@@ -2494,9 +2504,10 @@
     if (!rival.active || state.party) return;
     if (!rival.ants.length) { if (rival.trails.length || performance.now() > (rival.buildUntil || 0)) retreatRival(); return; }
     if (performance.now() < (rival.nextGrow || 0)) return;
-    if (rival.ants.length >= 9) return;
+    const caps = rivalCaps();
+    if (rival.ants.length >= caps.ants) return;
     rival.nextGrow = performance.now() + 5000;
-    if (rival.trails.length < 3) {
+    if (rival.trails.length < caps.trails) {
       const avoid = rival.trails.map((t) => ({ x: t.end[0], y: t.end[1] }));
       const pick = rivalBranchTarget(avoid);
       if (pick) {
@@ -2507,7 +2518,7 @@
       }
       return;
     }
-    if (rival.minis.length < 2) { buildRivalMinis(); return; }
+    if (rival.minis.length < caps.minis) { buildRivalMinis(); return; }
     const t = rival.trails[Math.floor(Math.random() * rival.trails.length)];
     if (t) spawnRival(t);
   };
@@ -2665,7 +2676,7 @@
     const cap = storeCap();
     setMeter("stores", state.stores / cap, state.builder ? "building" : minis.length >= MAX_MINIS ? "full" : `${state.stores}/${cap}`);
     const rivalStolen = rival.stolen.size;
-    setText("rivals", rivalStolen);
+    setText("rivals", rival.ants.length);
     setText("rival-hint", rivalStolen ? ` · rival ${rivalStolen}` : "");
     const held = pageLetters ? Math.max(0, 1 - (state.stolen.size + rivalStolen) / pageLetters) : 1;
     setMeter("holds", held, `${Math.round(held * 100)}%`);
@@ -2747,14 +2758,22 @@
         else if ((e.age += dt) > 3.4 && mainAnts().length < MAX_ANTS) {
           state.eggs.splice(state.eggs.indexOf(e), 1);
           const soldiers = mainAnts().filter((a) => a.role === "soldier").length;
-          const wantSoldiers = Math.min(3, Math.floor(mainAnts().length / 8));
-          const soldier = mainAnts().length >= 10 && soldiers < wantSoldiers && Math.random() < 0.3;
+          const wantSoldiers = Math.min(4, Math.floor(mainAnts().length / 6));
+          const soldier = mainAnts().length >= 10 && soldiers < wantSoldiers;
           newAnt(soldier ? "soldier" : "worker", "hatch", 0);
           log(soldier ? "a soldier hatched" : "an egg hatched");
           blip(soldier ? 220 : 440, 0.06, "square", 0.035);
           setTimeout(() => blip(soldier ? 330 : 660, 0.05, "sine", 0.03), 90);
         }
       });
+      const mainCount = mainAnts().length;
+      const soldierCount = mainAnts().filter((a) => a.role === "soldier").length;
+      const wantSoldiers = Math.min(4, Math.floor(mainCount / 6));
+      if (mainCount >= 10 && soldierCount < wantSoldiers && performance.now() >= nextDefender) {
+        nextDefender = performance.now() + 7000;
+        newAnt("soldier", "hatch", 0);
+        log("a soldier answers the rival");
+      }
     }
     if ((tick = (tick + 1) % 6) === 0) {
       if (!state.paused) state.trails.slice().forEach((t) => {
