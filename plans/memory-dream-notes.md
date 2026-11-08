@@ -37,12 +37,16 @@ the run directory's `organizer-report.md`. The index that came out of that pass 
 
 ## Tasks
 
-- [ ] Settle the context window in `session-context-measured.md` from the harness, by measuring it,
-      not by deciding which sentence reads better.
-- [ ] Fix or refute the answer channel: run a card to finish once and grep `answers.jsonl`, then write
-      the dated result into both notes.
-- [ ] Correct the DRAFT paragraph in `folding-a-note.md` with the 2026-08-20 rule and keep the older
-      one as a dated line.
+- [x] Settle the context window in `session-context-measured.md`. **Done 2026-11-09.** The body
+      already said 1M and named 835k as the largest of twelve sessions; the description was the wrong
+      half. Corrected, with a dated line saying which half was wrong.
+- [x] Fix or refute the answer channel. **Done 2026-11-09, and refuted.** `plans/decisions/answers.jsonl`
+      carries answers and acks through 2026-11-05, and PANTRY owns the route that writes it. The two
+      old notes now say they describe the era before P5, and point at `p5-answer-on-finish` for the
+      current write path. The defect they recorded was the Record button, not a dropping log.
+- [x] Correct the DRAFT paragraph in `folding-a-note.md`. **Done 2026-11-09.** `src/content.ts` now
+      hides an explicit DRAFT, so the 2026-08-14 sentence was reversed on 2026-08-20; the older line
+      stays as history and is marked reversed.
 - [ ] Work the 35 queued facts in the organizer report, in the order it lists them. Each one gets a
       note only if it still holds, and a note is one fact, per SESSION-LOOP section 4.
 - [ ] Fold the six duplicate clusters the analyzers named, deleting only where the survivor already
