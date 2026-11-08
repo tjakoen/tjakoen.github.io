@@ -456,13 +456,13 @@
     <div class="nest-meters">
       <div class="nest-meter"><span class="lbl muted">page left</span><span class="lbl" data-k="holds-val">100%</span>
         <div class="nest-meter__bar" data-k="holds-bar" role="progressbar" aria-label="Page left" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="fill" data-k="holds"></span><span class="rest" data-k="holds-rest"></span></div>
-        <i class="hint">page still whole</i></div>
+        <i class="hint" data-k="holds-hint">page still whole</i></div>
       <div class="nest-meter"><span class="lbl muted">stores</span><span class="lbl" data-k="stores-val">0/12</span>
         <div class="nest-meter__bar" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="stores"></span><span class="rest" data-k="stores-rest"></span></div>
         <i class="hint">builds mound builders</i></div>
-      <div class="nest-meter"><span class="lbl muted">next egg</span><span class="lbl" data-k="bar-val">0/3</span>
-        <div class="nest-meter__bar" data-k="bar-bar" role="progressbar" aria-label="Next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="bar"></span><span class="rest" data-k="bar-rest"></span></div>
-        <i class="hint">hatches ants</i></div>
+      <div class="nest-meter"><span class="lbl muted">meals to egg</span><span class="lbl" data-k="bar-val">0/3</span>
+        <div class="nest-meter__bar" data-k="bar-bar" role="progressbar" aria-label="Meals to the next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="bar"></span><span class="rest" data-k="bar-rest"></span></div>
+        <i class="hint">three meals lay an egg</i></div>
       <div class="nest-meter"><span class="lbl muted">next worship</span><span class="lbl" data-k="worship-val">0/20</span>
         <div class="nest-meter__bar" data-k="worship-bar" role="progressbar" aria-label="Next worship" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="worship"></span><span class="rest" data-k="worship-rest"></span></div>
         <i class="hint">the queen dances</i></div>
@@ -783,16 +783,21 @@
 
   const newAnt = (role, route, d) => { state.total++; const a = { id: state.total, role, where: "nest", route, d }; state.ants.push(a); return a; };
   const scoutsOut = () => state.ants.some((a) => a.role === "scout");
+  const scoutCount = () => state.ants.filter((a) => a.role === "scout").length;
   // A big letter that is still short of its crew is the one trail that must not wait its turn.
-  // The next worker out of the nest joins it, and keeps joining it, until the crew is full.
-  const needsHelp = (t) => {
-    if (!t.ready || t.state === "gone" || t.ants.size >= LINE) return false;
+  // The helper is aimed at that exact letter, and helpers already walking are counted, so the
+  // colony sends only the missing crew instead of piling every worker onto the patch.
+  const helpLetterFor = (t) => {
+    if (!t.ready || t.state === "gone") return null;
     for (const a of t.ants) {
       const L = a.letter;
-      if (L && L.state === "gather" && L.need > L.crew.length) return true;
+      if (!L || L.state !== "gather" || L.need <= L.crew.length) continue;
+      const inFlight = state.ants.filter((x) => x.helpLetter === L).length;
+      if (L.crew.length + inFlight < L.need) return L;
     }
-    return false;
+    return null;
   };
+  const needsHelp = (t) => !!helpLetterFor(t);
 
   // Workers leaving the nest take the ready trails in turn, skipping any that are full or worked
   // out, so every trail fills at the same pace and a finished trail's ants move to the others.
@@ -857,11 +862,22 @@
       if (ready.length) { ant.patrol = ready[Math.floor(Math.random() * ready.length)]; return emerge(ant); }
       ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); return;
     }
+    let help = null;
+    for (const trail of state.trails) {
+      const L = helpLetterFor(trail);
+      if (L) { help = { trail, L }; break; }
+    }
+    if (help) { join(ant, help.trail); ant.helpLetter = help.L; return emerge(ant); }
+    // One trail for every two ants. A scout already looking for a patch counts toward the
+    // target, so the colony can raise several lines at once instead of filling one line first.
+    const wantTrails = Math.max(2, Math.round(state.ants.length / 2));
+    if (state.trails.length + scoutCount() < wantTrails) {
+      if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
+      ant.role = "scout"; log("a worker turned scout"); return emerge(ant);
+    }
     const t = openTrail(ant);
     if (t) { join(ant, t); return emerge(ant); }
     if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
-    const wantTrails = Math.max(2, Math.round(state.ants.length / 2));
-    if (state.trails.length < wantTrails && !scoutsOut()) { ant.role = "scout"; log("a worker turned scout"); return emerge(ant); }
     ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); // queue in the tunnel
   };
   const waitingRank = (ant) => state.ants.filter((a) => a.where === "nest" && a.route === "up" && a.d > LEN.up - 0.3 && a.id < ant.id).length;
@@ -978,7 +994,21 @@
 
   const routePts = (ant) => (ant.trail ? ant.trail.pts : ant.scoutRoute ? ant.scoutRoute.pts : null);
   const backPath = (ant) => (routePts(ant) ? lanePath(routePts(ant).toReversed(), -(ant.lane || 0)) : []).concat([hillOf(ant).hole.slice()]);
-  const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.scoutRoute = null; ant.el?.classList.remove("wait"); };
+  const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.helpLetter = null; ant.scoutRoute = null; ant.el?.classList.remove("wait"); };
+  // A big letter can outlive its trail. If the scent is wiped or aged out while a worker is
+  // waiting on the letter, put the worker back on the page and free the letter instead of
+  // leaving a `wait` job with no route and no trail.
+  const abandonGather = (ant) => {
+    const L = ant.letter;
+    if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
+    if (L) {
+      L.crew = L.crew.filter((a) => a !== ant);
+      if (!L.crew.length) L.state = "free";
+    }
+    ant.letter = null;
+    ant.el?.classList.remove("wait");
+    goHome(ant);
+  };
 
   // A light first letter is carried home before the trail opens; a scout killed on the way leaves
   // nothing for the workers to join. A heavy letter opens the trail at the pickup and calls a
@@ -1006,6 +1036,14 @@
 
   const toLetter = (ant, block, light) => {
     if (!block) return goHome(ant);
+    const preferred = ant.helpLetter;
+    ant.helpLetter = null;
+    if (preferred && preferred.state === "gather" && preferred.crew.length < preferred.need) {
+      preferred.crew.push(ant); ant.letter = preferred; ant.job = "toLetter";
+      const r = rectOf(preferred.n, preferred.i); const [x, y] = local(r);
+      const k = preferred.crew.length - 1, spread = (k - (preferred.need - 1) / 2) * 12;
+      ant.path = [[x + r.width / 2 + spread, y + r.height]]; ant.k = 0; return;
+    }
     const all = freeIn(block, ant.trail ? ant.trail.end : ant.scoutRoute ? ant.scoutRoute.end : [ant.x, ant.y]);
     // a scout alone takes a letter it can lift alone, when the patch has one
     const pick = (light && all.find((f) => f.L.state === "free" && needOf(f.L.n) === 1)) || all[0];
@@ -1125,7 +1163,11 @@
   const stepPage = (ant, dt) => {
     ant.px = ant.x; ant.py = ant.y;
     if (ant.job === "dance") return; // the party moves its own dancers
-    if (ant.job === "wait" || ant.job === "crew") return; // crew members are placed by their leader
+    if (ant.job === "wait") {
+      if (!ant.letter || ant.letter.state !== "gather") { ant.el?.classList.remove("wait"); goHome(ant); return; }
+      if (!ant.trail || ant.trail.state === "gone" || !state.trails.includes(ant.trail)) { abandonGather(ant); return; }
+    }
+    if (ant.job === "crew") return; // crew members are placed by their leader
     if (ant.job === "baited") return;
     if (ant.job === "fly") return stepFlyer(ant, dt);
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
@@ -1147,7 +1189,7 @@
       return;
     }
     if (ant.job === "patrol") { // soldiers and guards walk their trail out and back, guarding it
-      if (ant.circling && !ant.retired && state.trails.some((trail) => trail.ready && trail.state !== "gone")) return assignGuard(ant);
+      if (ant.circling && state.trails.some((trail) => trail.ready && trail.state !== "gone")) return assignGuard(ant);
       if (!ant.circling && !state.trails.includes(ant.patrol)) {
         if (ant.mini && minis.includes(ant.mini)) { ant.retired = true; ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; }
         else { ant.job = "home"; ant.path = [hillOf(ant).hole.slice()]; ant.k = 0; }
@@ -1243,7 +1285,6 @@
   // ================================ the round ================================
   // There is no win and no reserve. If the last ant is gone the queen sends one scout back out
   // and the colony carries on. The only ending left is the page itself running out.
-  const LOSE = Math.max(25, Math.min(120, Math.round(pageLetters * 0.15)));
   const checkWipe = () => {
     if (state.over || state.ants.length || state.eggs.length || minis.length || state.builder) return;
     newAnt("scout", "hatch", 0);
@@ -1370,6 +1411,7 @@
   // guards, which walk to an existing trail and patrol it, and flyers, which roam and steal any
   // letter. It falls to a few clicks, but only once none of its guards are left.
   const STORE_COSTS = [12, 18, 24], MAX_MINIS = 3, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, HEAL_AFTER = 6, HEAL_EVERY = 5;
+  const MOUND_REACH = 560;
   const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
   const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
     const w = 18, h = 8, cells = new Int8Array(w * h).fill(-1);
@@ -1422,8 +1464,10 @@
       if (box[1] < top + 4 || box[3] > bottom - 4 || !miniSiteFits(spot, box, terrain)) return;
       const separation = Math.min(...bases.map(([baseX, baseY]) => Math.hypot((x - baseX) * 1.5, y - baseY)));
       const nearHome = Math.hypot((x - home.base[0]) * 1.15, y - home.base[1]);
-      // The first two mini hills grow near the main hill; later ones spread out.
-      const score = (minis.length < 2 ? -nearHome : separation) + (box[1] >= viewTop && box[3] <= viewBottom ? 1000 : 0);
+      // A mound guards the trails around it. Keep it within reach of the main hill, then spread
+      // the later ones enough that their guards are not stacked on one patch.
+      if (nearHome > MOUND_REACH) return;
+      const score = (minis.length < 2 ? -nearHome : separation - nearHome * 0.45) + (box[1] >= viewTop && box[3] <= viewBottom ? 1000 : 0);
       if (score > bestScore) { best = spot; bestScore = score; }
     };
     for (const [left, , right, bottomEdge] of terrain.gaps) {
@@ -1449,7 +1493,12 @@
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
   const startBuild = () => {
-    const spot = findMiniSpot(); if (!spot) return;
+    const spot = findMiniSpot();
+    if (!spot) {
+      nextBuildSearch = performance.now() + 6000;
+      log("the stores are full; there is no clear ground for another mound");
+      return;
+    }
     const b = spawnPageAnt("builder", home.hole.slice(), null);
     b.job = "build-walk"; b.path = [[spot.x, spot.y - 6]]; b.k = 0; b.spot = spot; state.builder = b;
     log("the stores are full; a builder heads out");
@@ -1688,7 +1737,7 @@
         ant.mini.links = ant.mini.links.filter((link) => link !== ant.guardLink);
         ant.guardLink = null;
       }
-      ant.letter = null; ant.patrol = null; ant.circling = false; ant.lead = null;
+      ant.letter = null; ant.helpLetter = null; ant.patrol = null; ant.circling = false; ant.lead = null;
       ant.el.classList.remove("wait");
       const angle = i * 2.4 + ant.heading + Math.PI / 2;
       const x = Math.max(10, Math.min(main.scrollWidth - 10, ant.x + Math.cos(angle) * 42));
@@ -1731,7 +1780,7 @@
     const crumb = document.createElement("div"); crumb.className = "nest-bait"; crumb.textContent = "⣴⣦"; crumb.style.left = x + "px"; crumb.style.top = y + "px"; layer.append(crumb);
     baitReady = performance.now() / 1000 + BAIT_COOL; blip(400, 0.08, "sine"); noiseBurst(0.05, 0.03, 900);
     const lured = state.ants.filter((a) => a.el && a !== state.builder && !a.letter && a.job !== "crew" && a.role !== "soldier" && Math.hypot(a.x - x, a.y - y) < 200);
-    lured.forEach((a) => { a.trail?.ants.delete(a); a.trail = null; a.job = "bait"; a.path = [[x + (Math.random() - 0.5) * 30, y + (Math.random() - 0.5) * 20]]; a.k = 0; });
+    lured.forEach((a) => { a.trail?.ants.delete(a); a.trail = null; a.helpLetter = null; a.job = "bait"; a.path = [[x + (Math.random() - 0.5) * 30, y + (Math.random() - 0.5) * 20]]; a.k = 0; });
     log(lured.length ? `${lured.length} ant${lured.length > 1 ? "s" : ""} took the bait` : "nothing near enough to smell it");
     setTimeout(() => {
       crumb.style.opacity = "0"; setTimeout(() => crumb.remove(), 1000);
@@ -1872,8 +1921,14 @@
     setText("minis", minis.length);
     const cap = storeCap();
     setMeter("stores", state.stores / cap, state.builder ? "building" : minis.length >= MAX_MINIS ? "full" : `${state.stores}/${cap}`);
-    const held = Math.max(0, 1 - state.stolen.size / LOSE);
+    const held = pageLetters ? Math.max(0, 1 - state.stolen.size / pageLetters) : 1;
     setMeter("holds", held, `${Math.round(held * 100)}%`);
+    const pageLeft = Math.round(held * 100);
+    setText("holds-hint", pageLeft >= 99 ? "page still whole"
+      : pageLeft >= 75 ? "the copy is thinning"
+      : pageLeft >= 50 ? "half the page is left"
+      : pageLeft >= 25 ? "the page is mostly gone"
+      : pageLeft > 0 ? "only a few letters left" : "the page is gone");
     const wait = Math.ceil(baitReady - performance.now() / 1000);
     const sealWait = Math.ceil(Math.max(...hills.map((h) => h.cool)) - performance.now() / 1000);
     const sealButton = $("seal"), bait = $("bait");
