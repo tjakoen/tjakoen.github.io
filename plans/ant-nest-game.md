@@ -54,7 +54,7 @@ unreadable and the colony has won that page.
   a scout killed on the way leaves nothing. A heavy letter gets the trail at the pickup and a call
   for the workers; the next worker out of the nest joins that trail first, and keeps joining it
   until the crew is full. A big letter is worth its crew size in portions, split between the queen and the stores. Other workers take open trails in turn, five to
-  a line, and a trail fades when its patch empties or after ninety seconds. Each retired
+  a line when the colony is small; the line widens with the colony, and the patch radius widens too so a long busy trail keeps finding letters. A trail fades when its patch empties or after ninety seconds. Each retired
   trail sends its own successor scout, so several spent patches do not leave one line. Successors
   look near the mound first; the trail target is one per two ants, and several scouts can work at
   once, so the number keeps climbing. Most eggs are workers; a few soldiers hatch once the colony
@@ -62,7 +62,7 @@ unreadable and the colony has won that page.
   hits.
 - **Mini hills.** Every other portion goes to two storerooms instead of the queen, and a stores bar
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
-  below the fold. The first two favor a spot near the main hill; later ones spread out with a little jitter, not on a grid. Builders
+  below the fold. The first two favor a spot near the main hill; later ones spread out with a little jitter, not on a grid. If no clear ground is near, the search expands outward before it gives up. Builders
   favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends
   guards to the nearest trail; when that trail disappears they take the nearest new one, or circle
   the mound while none is ready. Each mound keeps up to three guards and three flyers. It sends
