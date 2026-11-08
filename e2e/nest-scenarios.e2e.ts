@@ -33,3 +33,16 @@ test("the rival waits for the first worship, builds with builders, then opens cu
   expect(rival.trails.every((t: any) => t.first[0] !== t.last[0])).toBe(true);
   expect(new Set(rival.trails.map((t: any) => `${Math.round(t.last[0])},${Math.round(t.last[1])}`)).size).toBe(3);
 });
+
+
+test("the rival runs without runtime errors", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+  await open(page);
+  await page.evaluate(() => (window.__nest as any).startParty());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 25_000 }).toBeGreaterThan(0);
+  await page.waitForTimeout(8_000);
+  expect(errors).toEqual([]);
+  expect(await page.evaluate(() => (window.__nest as any).state.ants.filter((a: any) => a.side !== "rival").length)).toBeGreaterThan(0);
+});
