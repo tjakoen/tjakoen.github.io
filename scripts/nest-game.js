@@ -890,7 +890,8 @@
     if (help) { join(ant, help.trail); ant.helpLetter = help.L; return emerge(ant); }
     // One trail for every two ants. A scout already looking for a patch counts toward the
     // target, so the colony can raise several lines at once instead of filling one line first.
-    const wantTrails = Math.max(2, Math.round(mainAnts().length / 2));
+    const crew = mainAnts().filter((a) => a.role === "worker" || a.role === "scout").length;
+    const wantTrails = Math.min(trailCap(), Math.max(1, Math.floor(crew / 4)));
     const mainTrails = state.trails.filter((t) => !t.side).length;
     if (mainTrails + scoutCount() < wantTrails) {
       if (ant.trail) { ant.trail.ants.delete(ant); ant.trail = null; }
@@ -2786,11 +2787,11 @@
   $("reset-go").addEventListener("click", () => { $("reset-confirm").hidden = true; resetPage(); });
   $("reset-cancel").addEventListener("click", () => { $("reset-confirm").hidden = true; antBtn.focus(); });
 
-  // Six ants to start: three scouts already on their way up and three workers below them. The
-  // opening is a beat, not a waiting room: a trail should exist before the player wonders if it works.
-  newAnt("scout", "hatch", LEN.hatch * 0.85); newAnt("scout", "hatch", LEN.hatch * 0.55); newAnt("scout", "hatch", LEN.hatch * 0.3);
+  // Start with one scout and three workers. More scouts and trails only appear as the worker
+  // crew grows, so the page does not fill with thin trails.
+  newAnt("scout", "hatch", LEN.hatch * 0.5);
   for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
-  log("the colony wakes; three scouts head out");
+  log("the colony wakes; a scout heads out");
   blip(196, 0.3, "sine", 0.04, -40);
   setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
   startLoop();
