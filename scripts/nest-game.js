@@ -98,7 +98,8 @@
 
     .nest-vacuum-braille { position: absolute; z-index: 6; pointer-events: none; color: var(--color-accent); font: 8px/8px var(--font-mono); letter-spacing: 0; white-space: pre; overflow: hidden; opacity: .55; }
     .nest-tongue { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: visible; }
-    .nest-tongue .tongue-braille { position: absolute; transform: translate(-50%, -50%); font: 20px/1 var(--font-mono); color: var(--color-accent); white-space: pre; text-shadow: 0 0 7px color-mix(in srgb, var(--color-accent) 35%, transparent); }
+    .nest-tongue .tongue-braille.head { font-size: 26px; }
+    .nest-tongue .tongue-braille { position: absolute; transform: translate(-50%, -50%); font: 18px/1 var(--font-mono); color: var(--color-accent); white-space: pre; text-shadow: 0 0 7px color-mix(in srgb, var(--color-accent) 35%, transparent); }
     .nest-suck { position: absolute; z-index: 7; color: var(--color-accent); font: 11px/1 var(--font-mono); pointer-events: none; }
     .nest-vacuum-head { position: absolute; z-index: 7; width: 48px; height: 48px; padding: 6px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); pointer-events: none; }
     .nest-vacuum-head .nest-event-art { margin: 0; font: 8px/.8 var(--font-mono); color: var(--color-accent); }
@@ -1690,8 +1691,8 @@
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
   const EVENT_ART = {
-    vacuum: "⠀⠀⢀⣤⣤⣤⣤⡀⠀⠀\n⠀⠀⣿⣿⣿⣿⣿⣿⡄⠀\n⠀⠀⣿⣿⣿⣿⣿⣿⣷⡀\n⠀⠀⠘⣿⣿⣿⣿⣿⣿⣷⣄\n⠀⠀⠀⠙⠿⣿⣿⣿⣿⣿⣿⣦\n⠀⠀⠀⠀⠀⠈⠙⠛⠿⠿⠟",
-    anteater: "⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀\n⠉⠉⠉⠉⠉⠉⢉⣉⣉⣉⣉⣉⣉⣉\n⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠉⠉"
+    vacuum: "⠀⠀⣠⠴⠶⢶⡀⠀⠀⠀⠀⠀⠀⠀\n⠀⣾⠁⠀⠀⠀⢹⡆⠀⠀⢀⡤⠤⠀\n⠀⠈⠳⣤⣤⡴⠋⠀⢀⡴⠋⠀⠀⠀\n⠀⠀⣠⠞⠙⢦⡀⡴⠋⠀⠀⠀⠀⠀\n⠒⠚⠓⠒⠒⠒⠛⠓⠒⠒⠒⠒⠒⠒",
+    anteater: "⠀⢀⡴⠞⠛⠛⠶⣄⠀⠀⠀⠀⠀⠀\n⣴⠋⠀⠀⠀⠀⠀⠈⢳⣤⣤⣤⣤⣤\n⠈⠳⠤⣄⣀⣠⠤⠔⠋⠀⠀⠀⠀⠀\n⠀⠀⢀⡴⠛⢦⡀⠀⠀⠀⠀⠀⠀⠀"
   };
   const eventIcon = (kind) => `<pre class="nest-event-art" aria-hidden="true">${EVENT_ART[kind]}</pre>`;
 
@@ -1743,14 +1744,20 @@
       const pts = [];
       for (let k = 0; k <= 36; k++) { const u = k / 36; pts.push([-20 + u * (main.clientWidth + 40), cy + Math.sin(u * Math.PI * 2.4) * 54 + Math.sin(u * Math.PI * 5) * 12]); }
       const tongue = document.createElement("div"); tongue.className = "nest-tongue";
-      for (let i = 1; i < pts.length; i += 2) {
-        const [x, y] = pts[i], [nx, ny] = pts[Math.min(pts.length - 1, i + 1)];
-        const span = document.createElement("span"); span.className = "tongue-braille";
-        span.textContent = "⣿";
-        span.style.left = x + "px"; span.style.top = y + "px";
-        span.style.transform = `translate(-50%, -50%) rotate(${Math.atan2(ny - y, nx - x)}rad)`;
-        tongue.append(span);
+      let last = null;
+      for (let i = 1; i < pts.length; i++) {
+        const [ax, ay] = pts[i - 1], [bx, by] = pts[i];
+        const len = Math.hypot(bx - ax, by - ay), steps = Math.max(1, Math.ceil(len / 5));
+        for (let k = 0; k < steps; k++) {
+          const u = k / steps, x = ax + (bx - ax) * u, y = ay + (by - ay) * u;
+          const span = document.createElement("span"); span.className = "tongue-braille";
+          span.textContent = "⣿";
+          span.style.left = x + "px"; span.style.top = y + "px";
+          span.style.transform = `translate(-50%, -50%) rotate(${Math.atan2(by - ay, bx - ax)}rad)`;
+          tongue.append(span); last = span;
+        }
       }
+      if (last) { last.classList.add("head"); last.textContent = "⣿"; }
       layer.append(tongue);
       const stuck = [];
       if (anchor.el && !anchor.tongue) { anchor.tongue = true; anchor.el.classList.add("stuck"); stuck.push(anchor); }
