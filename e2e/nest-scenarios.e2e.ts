@@ -38,9 +38,22 @@ test("the event cards are icon cards, not visible text", async ({ page }) => {
   await expect(vacuum).toBeVisible();
   await expect(vacuum.locator(".nest-event-art")).toBeVisible();
   expect((await vacuum.textContent())?.trim().length).toBeGreaterThan(0);
-  await page.evaluate(() => (window.__nest as any).spawnEnv("anteater"));
-  const anteater = page.locator(".nest-event-card");
+  await page.evaluate(() => { const n = window.__nest as any; n.state.env?.el.remove(); n.state.env = null; n.spawnEnv("anteater"); });
+  const anteater = page.locator(".nest-anteater");
   await expect(anteater).toBeVisible();
   await expect(anteater.locator(".nest-event-art")).toBeVisible();
   expect((await anteater.textContent())?.trim().length).toBeGreaterThan(0);
+});
+
+
+test("the anteater walks in from the side and leaves if ignored", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => (window.__nest as any).spawnEnv("anteater"));
+  const anteater = page.locator(".nest-anteater");
+  await expect(anteater).toBeVisible();
+  const first = await anteater.boundingBox();
+  await page.waitForTimeout(700);
+  const second = await anteater.boundingBox();
+  expect(second!.x).toBeGreaterThan(first!.x);
+  await expect(anteater).toHaveCount(0, { timeout: 12_000 });
 });

@@ -400,11 +400,11 @@ test.describe("the interactive terminal (third client of the one door)", () => {
       const before = await page.evaluate(() => window.__nest!.state.squashed);
       const pageBefore = await page.locator("[data-k='holds-val']").textContent();
       await page.evaluate((k) => window.__nest!.spawnEnv(k), kind);
-      const card = page.locator(".nest-event-card");
+      const card = page.locator(kind === "anteater" ? ".nest-anteater" : ".nest-event-card");
       await expect(card).toBeVisible();
       await card.click();
       await expect(page.locator(kind === "vacuum" ? ".nest-vacuum-rect" : ".tongue-braille").first()).toBeVisible();
-      await expect.poll(() => page.evaluate(() => window.__nest!.state.squashed), { timeout: 5_000 }).toBeGreaterThan(before);
+      await expect.poll(() => page.evaluate(() => window.__nest!.state.squashed), { timeout: 9_000 }).toBeGreaterThan(before);
       expect(await page.locator("[data-k='holds-val']").textContent()).toBe(pageBefore);
     });
   }
