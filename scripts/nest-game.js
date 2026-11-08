@@ -83,11 +83,6 @@
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
-.nest-event-card { position: absolute; z-index: 5; width: auto; height: auto; padding: 2px 3px 6px; border: 0; background: none; color: var(--color-accent); cursor: pointer; pointer-events: auto; line-height: .82; opacity: .92; }
-    .nest-event-card .nest-event-art { margin: 0; font: 12px/.82 var(--font-mono); }
-    .nest-event-card[data-kind='vacuum'] .nest-event-art { font: 4px/.82 var(--font-mono); } letter-spacing: 0; white-space: pre; text-shadow: 0 0 12px color-mix(in srgb, var(--color-accent) 32%, transparent); }
-    .nest-event-card::after { content: ""; position: absolute; left: 4px; right: 4px; bottom: 0; border-bottom: 1px dashed currentColor; opacity: .45; }
-    .nest-event-card:hover, .nest-event-card:focus-visible { opacity: 1; outline: none; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 45%, transparent)); }
     .nest-hill.hit { animation: nest-hill-hit .3s steps(2); }
     @keyframes nest-hill-hit { 50% { transform: translateX(3px); filter: brightness(1.5); } }
     .nest-hill.unbuilding { animation: nest-hill-unbuild .55s cubic-bezier(.6,0,.8,.4) both; transform-origin: 50% 100%; }
@@ -97,18 +92,6 @@
     .nest-ant.marching { filter: drop-shadow(0 0 4px var(--color-accent)); }
     @keyframes nest-fight { 50% { transform: translateX(2px) rotate(4deg); } }
 
-    .nest-vacuum-rect { position: absolute; z-index: 6; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); letter-spacing: 0; white-space: pre; opacity: .9; transform-origin: 50% 50%; }
-    .nest-tongue { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: visible; }
-    .nest-tongue .tongue-braille { position: absolute; transform: translate(-50%, -50%); font: 12px/1 var(--font-mono); color: var(--color-accent); white-space: pre; opacity: 0; transition: opacity .12s linear; }
-    .nest-tongue .tongue-braille.on { opacity: 1; }
-    .nest-anteater { position: absolute; z-index: 5; border: 0; background: none; padding: 0; color: var(--color-accent); cursor: pointer; pointer-events: auto; }
-    .nest-anteater .nest-event-art { margin: 0; font: 5px/.82 var(--font-mono); white-space: pre; text-shadow: 0 0 12px color-mix(in srgb, var(--color-accent) 30%, transparent); }
-    .nest-anteater:hover, .nest-anteater:focus-visible { outline: none; filter: drop-shadow(0 0 5px color-mix(in srgb, var(--color-accent) 45%, transparent)); }
-    .nest-tongue-head { position: absolute; z-index: 6; color: var(--color-accent); pointer-events: none; transform-origin: 20% 50%; }
-    .nest-tongue-head .nest-event-art { font: 13px/.82 var(--font-mono); }
-    .nest-suck { position: absolute; z-index: 7; color: var(--color-accent); font: 11px/1 var(--font-mono); pointer-events: none; }
-    .nest-vacuum-head { position: absolute; z-index: 7; width: 48px; height: 48px; padding: 6px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); pointer-events: none; }
-    .nest-vacuum-head .nest-event-art { margin: 0; font: 8px/.8 var(--font-mono); color: var(--color-accent); }
     .nest-ant.stuck { color: var(--color-accent); opacity: .8; }
     @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
     .nest-scent polyline.rival { stroke: var(--nest-rival); }
@@ -622,7 +605,7 @@
   addEventListener("beforeunload", onBeforeUnload);
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
-    env: null, envNext: 0, cache: null, scoutQueue: [],
+    cache: null, scoutQueue: [],
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(mainAnts().length / 3)));
   const rival = { active: false, mound: null, trails: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8 };
@@ -1696,172 +1679,6 @@
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
-  const EVENT_ART = {
-    vacuum: "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⣿⣦⡀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⠟⠁⢸⣿⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⡟⠀⢠⣾⠋⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣷⣾⠿⠃⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⡟⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⡇⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⡟⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⡇⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣶⣾⣿⣿⣿⣶⣶⣶⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⣀⡀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀\n⠀⠀⠀⠀⣀⣤⣴⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀\n⠀⠀⣰⣿⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣿⣿⣿⣿⣿⠇⠀\n⠀⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡇⠹⣿⣿⣿⣿⠟⠀⠀\n⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠀⠀⠈⠉⠉⠁⠀⠀⠀\n⠀⠉⠉⠉⠉⠉⠛⠛⠛⠛⠻⠿⠿⠿⠿⢿⡿⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-    anteater: "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣦⣤⣄⣀⠀⠀⠀⠀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣿⣿⣿⣿⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⣠⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n⠀⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀\n⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀\n⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀\n⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠋⠉⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄⠀⠀⠀⠀\n⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀\n⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀\n⠹⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠉⠙⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀\n⠀⠀⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⡄\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣷\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣿⣿⣿⣿⣿⡿\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠉⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣤⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣧⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"
-  };
-  const eventIcon = (kind) => `<pre class="nest-event-art" aria-hidden="true">${EVENT_ART[kind]}</pre>`;
-
-  // ---- environmental pest control: a switch and an anteater, never banked -----------------
-  const removeEnvAnt = (a) => {
-    if (a.side === "rival") removeRivalAnt(a);
-    else {
-      if (a.letter?.state === "carried") drop(a.letter);
-      else if (a.letter?.state === "gather") { a.letter.crew = a.letter.crew.filter((m) => m !== a); if (!a.letter.crew.length) a.letter.state = "free"; }
-      squashQuiet(a);
-    }
-    state.squashed++;
-  };
-  const resolveEnv = (kind) => {
-    const card = state.env; if (!card) return;
-    card.el.getAnimations().forEach((a) => a.cancel());
-    const mr = card.el.getBoundingClientRect(), mm = main.getBoundingClientRect();
-    const cardSource = [mr.right - mm.left + main.scrollLeft, mr.top - mm.top + main.scrollTop + mr.height * 0.45];
-    state.env = null;
-    if (card.kind === "anteater") card.el.classList.add("feeding"); else card.el.remove();
-    const all = [...mainAnts().filter((a) => a.el && a.where === "page"), ...rival.ants];
-    const anchor = all[Math.floor(Math.random() * all.length)] || { x: main.clientWidth / 2, y: main.clientHeight / 2 };
-    const distToSeg = (p, a, b) => {
-      const dx = b[0] - a[0], dy = b[1] - a[1], l = dx * dx + dy * dy || 1;
-      const t = Math.max(0, Math.min(1, ((p.x - a[0]) * dx + (p.y - a[1]) * dy) / l));
-      return Math.hypot(p.x - (a[0] + t * dx), p.y - (a[1] + t * dy));
-    };
-    if (kind === "vacuum") {
-      const angle = Math.random() * Math.PI * 2;
-      const dir = [Math.cos(angle), Math.sin(angle)];
-      const len = 300 + Math.random() * 180;
-      const from = [anchor.x - dir[0] * len / 2, anchor.y - dir[1] * len / 2];
-      const to = [anchor.x + dir[0] * len / 2, anchor.y + dir[1] * len / 2];
-      const body = document.createElement("pre"); body.className = "nest-vacuum-rect";
-      body.textContent = [
-        "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿",
-        "⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿",
-        "⣿⠀⣠⠴⠶⢶⡀⠀⠀⠀⣿",
-        "⣿⠀⠈⠳⣤⡴⠋⠀⠀⠀⣿",
-        "⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿",
-        "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿"
-      ].join("\n");
-      body.style.left = from[0] + "px"; body.style.top = from[1] + "px";
-      body.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
-      layer.append(body);
-      const duration = 2200;
-      const started = performance.now();
-      body.animate([
-        { transform: `translate(-50%, -50%) translate(0, 0) rotate(${angle}rad)` },
-        { transform: `translate(-50%, -50%) translate(${to[0] - from[0]}px, ${to[1] - from[1]}px) rotate(${angle}rad)` }
-      ], { duration, easing: "ease-in-out" });
-      const timer = setInterval(() => {
-        const u = Math.min(1, (performance.now() - started) / duration);
-        const px = from[0] + (to[0] - from[0]) * u, py = from[1] + (to[1] - from[1]) * u;
-        all.filter((a) => a.el && Math.hypot(a.x - px, a.y - py) < 70).forEach(removeEnvAnt);
-        if (Math.random() < 0.6) {
-          const dust = document.createElement("span"); dust.className = "nest-suck"; dust.textContent = "⣿";
-          dust.style.left = px + (Math.random() - 0.5) * 120 + "px"; dust.style.top = py + (Math.random() - 0.5) * 80 + "px";
-          layer.append(dust);
-          dust.animate([{ transform: "translate(0,0)", opacity: .8 }, { transform: `translate(${px - (parseFloat(dust.style.left))}px, ${py - parseFloat(dust.style.top)}px)`, opacity: 0 }], { duration: 420 }).onfinish = () => dust.remove();
-        }
-      }, 90);
-      setTimeout(() => {
-        clearInterval(timer); body.remove();
-        log("the vacuum passes through and takes the ants in its path");
-      }, duration + 260);
-        } else {
-      const pickable = state.trails.filter((t) => t.state !== "gone" && t.pts && t.pts.length > 2);
-      const targetTrail = pickable[Math.floor(Math.random() * Math.max(1, pickable.length))];
-      const target = targetTrail ? targetTrail.pts[Math.floor(targetTrail.pts.length * (0.35 + Math.random() * 0.3))] : [anchor.x, anchor.y];
-      const source = cardSource || [target[0] - 160, target[1]];
-      const dx = target[0] - source[0], dy = target[1] - source[1], len = Math.hypot(dx, dy) || 1;
-      const nx = -dy / len, ny = dx / len;
-      const phase = Math.random() * Math.PI * 2, amp = Math.min(18, Math.max(7, len * 0.07));
-      const pts = [];
-      const steps = Math.max(12, Math.ceil(len / 6));
-      for (let k = 0; k <= steps; k++) {
-        const u = k / steps;
-        const sway = Math.sin(u * Math.PI * 3.2 + phase) * amp * Math.sin(Math.PI * u);
-        pts.push([source[0] + dx * u + nx * sway, source[1] + dy * u + ny * sway]);
-      }
-      const tongue = document.createElement("div"); tongue.className = "nest-tongue";
-      const spans = [];
-      for (let i = 1; i < pts.length; i++) {
-        const [ax, ay] = pts[i - 1], [bx, by] = pts[i];
-        const segLen = Math.hypot(bx - ax, by - ay), n = Math.max(1, Math.ceil(segLen / 4));
-        for (let k = 0; k < n; k++) {
-          const u = k / n, x = ax + (bx - ax) * u, y = ay + (by - ay) * u;
-          const span = document.createElement("span"); span.className = "tongue-braille";
-          span.textContent = "⠒";
-          span.style.left = x + "px"; span.style.top = y + "px";
-          span.style.transform = `translate(-50%, -50%) rotate(${Math.atan2(by - ay, bx - ax)}rad)`;
-          tongue.append(span); spans.push(span);
-        }
-      }
-      layer.append(tongue);
-      spans.forEach((span, i) => setTimeout(() => span.classList.add("on"), 350 + i * 4));
-      const stuck = [];
-      if (anchor.el && !anchor.tongue) { anchor.tongue = true; anchor.el.classList.add("stuck"); stuck.push(anchor); }
-      const stick = () => {
-        for (const a of all) {
-          if (!a.el || a.tongue) continue;
-          if (pts.some((p, i) => i && distToSeg(a, pts[i - 1], p) < 14)) {
-            a.tongue = true; a.px = a.x; a.py = a.y; a.el.classList.add("stuck"); stuck.push(a);
-          }
-        }
-      };
-      const timer = setInterval(stick, 120);
-      setTimeout(() => {
-        clearInterval(timer);
-        spans.slice().toReversed().forEach((span, i) => setTimeout(() => span.classList.remove("on"), i * 3));
-        setTimeout(() => {
-          tongue.remove(); card.el.remove();
-          stuck.forEach(removeEnvAnt);
-          log("the anteater draws its tongue back; the stuck ants are gone");
-        }, 650);
-      }, 3000);
-      log("the anteater's tongue winds toward a trail");
-    }
-    blip(kind === "vacuum" ? 120 : 90, 0.24, "sawtooth", 0.04);
-    state.envNext = performance.now() + 80000 + Math.random() * 60000;
-  };
-  const spawnEnv = (kind) => {
-    if (state.env || state.party) return;
-    const spot = findMiniSpot();
-    if (!spot) { state.envNext = performance.now() + 20000; return; }
-    const el = document.createElement("button");
-    el.type = "button";
-    el.setAttribute("aria-label", kind === "vacuum" ? "A vacuum in the page. Click to use." : "An anteater walking in. Click to use.");
-    el.dataset.kind = kind;
-    let card;
-    if (kind === "anteater") {
-      el.className = "nest-anteater"; el.innerHTML = eventIcon("anteater");
-      const targetX = main.clientWidth * 0.36;
-      el.style.left = `${targetX}px`; el.style.top = `${Math.max(10, spot.y - 70)}px`;
-      layer.append(el);
-      const width = el.offsetWidth || 250;
-      const startX = -(targetX + width + 30);
-      el.style.transform = `translateX(${startX}px)`;
-      card = { el, kind, ttl: 7000 };
-      state.env = card;
-      el.getAnimations().forEach((a) => a.cancel());
-      el.animate([{ transform: `translateX(${startX}px)` }, { transform: "translateX(0)" }], { duration: 3200, easing: "ease-out", fill: "forwards" });
-      setTimeout(() => {
-        if (state.env !== card) return;
-        el.animate([{ transform: "translateX(0)" }, { transform: `translateX(${startX - 80}px)` }], { duration: 1800, easing: "ease-in", fill: "forwards" }).onfinish = () => {
-          if (state.env === card) { el.remove(); state.env = null; state.envNext = performance.now() + 80000; }
-        };
-      }, card.ttl);
-    } else {
-      el.className = "nest-event-card"; el.innerHTML = eventIcon(kind);
-      el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 64)}px`;
-      layer.append(el);
-      card = { el, kind, ttl: 10000 };
-      state.env = card;
-      setTimeout(() => { if (state.env === card) { el.remove(); state.env = null; state.envNext = performance.now() + 80000; } }, card.ttl);
-    }
-    el.addEventListener("click", (e) => {
-      e.preventDefault(); e.stopPropagation();
-      resolveEnv(kind);
-    });
-  };
-
   const startBuild = () => {
     let spot = findMiniSpot();
     if (!spot) {
@@ -2759,7 +2576,6 @@
       perfStep = performance.now();
       if (rival.active && rival.ants.length === 0 && performance.now() > (rival.buildUntil || 0) && performance.now() > (rival.rebuildUntil || 0)) retreatRival();
       if (!rival.active && !state.party && state.partyIndex >= 1 && performance.now() >= rival.returnAt) foundRival();
-      if (!state.env && !state.party && performance.now() >= state.envNext) spawnEnv(Math.random() < 0.5 ? "vacuum" : "anteater");
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
@@ -2974,7 +2790,6 @@
   // opening is a beat, not a waiting room: a trail should exist before the player wonders if it works.
   newAnt("scout", "hatch", LEN.hatch * 0.85); newAnt("scout", "hatch", LEN.hatch * 0.55); newAnt("scout", "hatch", LEN.hatch * 0.3);
   for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
-  state.envNext = performance.now() + 30000;
   log("the colony wakes; three scouts head out");
   blip(196, 0.3, "sine", 0.04, -40);
   setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
@@ -3040,7 +2855,7 @@
     leaveGo = go;
   };
   if (new URLSearchParams(location.search).has("nest-debug")) {
-    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, spawnEnv, resolveEnv, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf };
+    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf };
   }
   return { stop, confirmLeave };
   };
