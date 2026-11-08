@@ -83,6 +83,12 @@
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
+    .nest-sweet-card { position: absolute; z-index: 5; pointer-events: auto; padding: 8px 10px; border: 1px dashed var(--color-accent); background: var(--paper); color: var(--color-accent); font: 12px/1.2 var(--font-mono); cursor: pointer; animation: nest-sweet-fade 12s linear both; }
+    .nest-sweet { position: absolute; z-index: 4; color: var(--color-accent); font: 18px/1 var(--font-mono); letter-spacing: 2px; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 40%, transparent); pointer-events: none; }
+    main.nest-sweet-planning { cursor: crosshair; }
+    .nest-event-card { position: absolute; z-index: 5; pointer-events: auto; padding: 7px 9px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); font: 11px/1.2 var(--font-mono); cursor: pointer; }
+    .nest-event-effect { position: absolute; z-index: 6; pointer-events: none; font: 24px/1 var(--font-mono); color: var(--color-accent); }
+    @keyframes nest-sweet-fade { from { opacity: 1; } to { opacity: .15; } }
     @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
     .nest-scent polyline.rival { stroke: var(--nest-rival); }
     .nest-meter .hint .rival, #nest-mock .stat-grid .rival { color: var(--nest-rival); }
@@ -606,6 +612,7 @@
   addEventListener("beforeunload", onBeforeUnload);
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
+    sweet: null, sweetCard: null, sweetPlanning: false, sweetNext: 0, env: null, envNext: 0,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(state.ants.length / 3)));
   const rival = { active: false, mound: null, trails: [], ants: [], stolen: new Set(), returnAt: 0 };
@@ -1230,6 +1237,7 @@
     if (ant.job === "crew") return; // crew members are placed by their leader
     if (ant.job === "baited") return;
     if (ant.job === "fly") return stepFlyer(ant, dt);
+    if (ant.job === "sweet-walk" || ant.job === "sweet-eat") return stepSweetAnt(ant, dt);
     if (ant.job === "build-walk" || ant.job === "building" || ant.job === "mini-home") return stepMiniJob(ant, dt);
     if ((ant.job === "defend" || ant.job === "guard") && ant.defendUntil && performance.now() > ant.defendUntil) {
       ant.defendUntil = 0;
@@ -1620,6 +1628,122 @@
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
+  // ---- the sweet: a rare lure that buys the page time without feeding the copy -------------
+  const sweetCard = () => {
+    if (state.sweet || state.sweetCard || state.sweetPlanning || state.party) return;
+    const spot = findMiniSpot();
+    if (!spot) { state.sweetNext = performance.now() + 20000; return; }
+    const el = document.createElement("button");
+    el.type = "button"; el.className = "nest-sweet-card"; el.textContent = "a sweet?";
+    el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 70)}px`;
+    layer.append(el);
+    const card = { el, ttl: 12000 };
+    state.sweetCard = card;
+    const remove = () => {
+      if (state.sweetCard !== card) return;
+      el.remove(); state.sweetCard = null; state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
+    };
+    setTimeout(remove, card.ttl);
+    el.addEventListener("click", (e) => {
+      e.preventDefault(); e.stopPropagation();
+      if (state.sweetCard !== card) return;
+      el.remove(); state.sweetCard = null;
+      state.sweetPlanning = true; main.classList.add("nest-sweet-planning");
+      log("place the sweet on a clear patch");
+      setTimeout(() => {
+        if (!state.sweetPlanning) return;
+        state.sweetPlanning = false; main.classList.remove("nest-sweet-planning");
+        state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
+      }, 8000);
+    });
+  };
+  const removeSweet = (why) => {
+    const sweet = state.sweet; if (!sweet) return;
+    sweet.el.remove(); state.sweet = null;
+    state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
+    state.ants.filter((a) => a.sweetTarget === sweet).forEach((a) => goHome(a));
+    log(why === "eaten" ? "the sweet is gone; the page is still here" : "the sweet fades away");
+  };
+  const placeSweet = (x, y) => {
+    if (!state.sweetPlanning || state.sweet) return null;
+    state.sweetPlanning = false; main.classList.remove("nest-sweet-planning");
+    const el = document.createElement("div");
+    el.className = "nest-sweet"; el.textContent = "⣿⣿⣿⣿⣿⣿";
+    el.style.left = `${x}px`; el.style.top = `${y}px`;
+    layer.append(el);
+    const sweet = { x, y, pieces: 6, el, ttl: 25000 };
+    state.sweet = sweet;
+    state.sweetNext = performance.now() + 70000 + Math.random() * 50000;
+    for (let i = 0; i < 2; i++) {
+      const a = spawnPageAnt("worker", home.hole.slice(), null);
+      a.job = "sweet-walk"; a.sweetTarget = sweet;
+      a.path = [[x + (i ? 18 : -18), y + 10]]; a.k = 0;
+    }
+    log("the sweet is placed; workers are coming");
+    blip(520, 0.08, "sine", 0.03);
+    setTimeout(() => { if (state.sweet === sweet) removeSweet("faded"); }, sweet.ttl);
+    return sweet;
+  };
+  const stepSweetAnt = (ant, dt) => {
+    const sweet = state.sweet;
+    if (!sweet || ant.sweetTarget !== sweet) { goHome(ant); return; }
+    if (ant.job === "sweet-walk") {
+      const g = ant.path[ant.k];
+      if (!g) { ant.job = "sweet-eat"; ant.nextEat = performance.now() + 250; return; }
+      if (move(ant, g[0], g[1], dt, SPEED * 1.45)) { ant.px = ant.x; ant.py = ant.y; if (++ant.k >= ant.path.length) { ant.job = "sweet-eat"; ant.nextEat = performance.now() + 250; } }
+      else { ant.px = ant.x; ant.py = ant.y; }
+      return;
+    }
+    if (performance.now() < (ant.nextEat || 0)) return;
+    ant.nextEat = performance.now() + 500;
+    sweet.pieces--;
+    if ((state.feedFlip = !state.feedFlip)) state.stores++;
+    else { state.meals++; state.queen.eat = 0.8; }
+    sweet.el.textContent = "⣿".repeat(Math.max(0, sweet.pieces));
+    blip(420, 0.04, "sine", 0.02);
+    if (sweet.pieces <= 0) removeSweet("eaten");
+  };
+
+  // ---- environmental pest control: a switch and an anteater, never banked -----------------
+  const resolveEnv = (kind) => {
+    const card = state.env; if (!card) return;
+    state.env = null; card.el.remove();
+    const mainAnts = state.ants.filter((a) => a.el && a.where === "page");
+    const rivals = [...rival.ants];
+    const caught = kind === "vacuum" ? [...mainAnts, ...rivals] : [...mainAnts, ...rivals].filter((_, i) => i % 2 === 0);
+    caught.forEach((a) => {
+      if (a.side === "rival") removeRivalAnt(a);
+      else {
+        if (a.letter?.state === "carried") drop(a.letter);
+        else if (a.letter?.state === "gather") { a.letter.crew = a.letter.crew.filter((m) => m !== a); if (!a.letter.crew.length) a.letter.state = "free"; }
+        squashQuiet(a);
+      }
+      state.squashed++;
+    });
+    const effect = document.createElement("div");
+    effect.className = "nest-event-effect"; effect.textContent = kind === "vacuum" ? "≋" : "⌇";
+    effect.style.left = "8%"; effect.style.top = "45%";
+    layer.append(effect);
+    effect.animate([{ opacity: 1, transform: "translateX(0)" }, { opacity: 0, transform: "translateX(72vw)" }], { duration: 900, easing: "ease-in" }).onfinish = () => effect.remove();
+    log(kind === "vacuum" ? "the vacuum sweeps the page" : "the anteater licks the page");
+    blip(kind === "vacuum" ? 120 : 90, 0.24, "sawtooth", 0.04);
+    state.envNext = performance.now() + 80000 + Math.random() * 60000;
+  };
+  const spawnEnv = (kind) => {
+    if (state.env || state.party) return;
+    const spot = findMiniSpot();
+    if (!spot) { state.envNext = performance.now() + 20000; return; }
+    const el = document.createElement("button");
+    el.type = "button"; el.className = "nest-event-card";
+    el.textContent = kind === "vacuum" ? "vacuum switch" : "anteater";
+    el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 64)}px`;
+    layer.append(el);
+    const card = { el, kind, ttl: 10000 };
+    state.env = card;
+    el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); resolveEnv(kind); });
+    setTimeout(() => { if (state.env === card) { el.remove(); state.env = null; state.envNext = performance.now() + 80000; } }, card.ttl);
+  };
+
   const startBuild = () => {
     let spot = findMiniSpot();
     if (!spot) {
@@ -2341,6 +2465,8 @@
         }
       }
       if (!rival.active && !state.party && state.partyIndex >= 1 && performance.now() >= rival.returnAt) foundRival();
+      if (!state.sweet && !state.sweetCard && !state.sweetPlanning && !state.party && performance.now() >= state.sweetNext) sweetCard();
+      if (!state.env && !state.party && performance.now() >= state.envNext) spawnEnv(Math.random() < 0.5 ? "vacuum" : "anteater");
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
@@ -2459,6 +2585,12 @@
   document.addEventListener("auxclick", holdLinks, true);
   // Wipe with a drag anywhere on the page, not only if the pointer starts on the thin hit path.
   let wipeFrom = null;
+  main.addEventListener("click", (e) => {
+    if (!state.sweetPlanning) return;
+    e.preventDefault(); e.stopPropagation();
+    const m = main.getBoundingClientRect();
+    placeSweet(e.clientX - m.left + main.scrollLeft, e.clientY - m.top + main.scrollTop);
+  }, true);
   main.addEventListener("pointerdown", (e) => {
     if (state.tool !== "wipe" || !e.isPrimary || e.button !== 0) return;
     if (e.target.closest?.("#nest-mock, .nest-switch, [data-surface='console']")) return;
@@ -2537,6 +2669,8 @@
   // opening is a beat, not a waiting room: a trail should exist before the player wonders if it works.
   newAnt("scout", "hatch", LEN.hatch * 0.85); newAnt("scout", "hatch", LEN.hatch * 0.55); newAnt("scout", "hatch", LEN.hatch * 0.3);
   for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
+  state.sweetNext = performance.now() + 12000;
+  state.envNext = performance.now() + 30000;
   log("the colony wakes; three scouts head out");
   blip(196, 0.3, "sine", 0.04, -40);
   setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
@@ -2602,7 +2736,7 @@
     leaveGo = go;
   };
   if (new URLSearchParams(location.search).has("nest-debug")) {
-    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival };
+    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, sweetCard, placeSweet, spawnEnv, resolveEnv };
   }
   return { stop, confirmLeave };
   };
