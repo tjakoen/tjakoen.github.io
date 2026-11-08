@@ -134,10 +134,12 @@ reading the diff.
 - [x] Credit the source in LOOP section 5's research base, where this project's citations live.
       **Done 2026-11-09**, and the mounted loop-standard skill was re-synced from the canon the same
       day, because a citation that only exists in a standard no agent mounts is not a citation.
-- [ ] Dream the store once: three analyzers (run reports, each half of the store), one organizer, a
-      new `MEMORY.md` applied over a snapshot with the diff shown. Partly done 2026-11-09, the
-      analyzer proposals exist; the index rewrite awaits the organizer.
-- [ ] Write the run report at `artifacts/runs/2026-11-09-memory-dream.md`.
+- [x] Dream the store once: three analyzers (run reports, each half of the store), one organizer, a
+      new `MEMORY.md` applied over a snapshot. **Done 2026-11-09.** The index went from 11,162 bytes
+      and 120 lines to 8,496 bytes and 133 lines, 99 links for 99 notes, 33 hooks corrected, and the
+      store carries its own commit. The notes themselves were not touched, which is the second task
+      below.
+- [x] Write the run report at `artifacts/runs/2026-11-09-memory-dream.md`. **Done 2026-11-09.**
 - [ ] Wire the pass to session close, in the close skill, so the trigger is the one this plan argues
       for rather than a step someone remembers.
 - [ ] A second dream, later, that is allowed to merge and retire the notes themselves, once the index
