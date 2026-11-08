@@ -75,9 +75,9 @@ session mechanics around them:
    work](https://www.linkedin.com/posts/addyosmani_ai-programming-softwareengineering-share_7524690987357470720-cLIK/):
    form a hypothesis before asking, and in unfamiliar ground ask for a blind spot pass instead of an
    opinion. One line is enough, because a prediction nobody can check is a diary entry.
-3. **Report at load-bearing moments** — a plan before a big move, an honest status after (what
+3. **Report at load-bearing moments**: a plan before a big move, an honest status after (what
    passed, what was skipped, what's still red). No "done!" when it isn't.
-4. **Hit the gate before you call anything done** — typecheck + tests + docs synced + diff read.
+4. **Hit the gate before you call anything done**: typecheck + tests + docs synced + diff read.
    The full checklist is AI-DEVELOPMENT §8; run it, don't paraphrase it.
 5. **The gate is also the commit trigger.** Once it's green, commit (see §3 below). Don't leave
    finished, verified work sitting uncommitted.

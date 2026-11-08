@@ -29,12 +29,19 @@ import { readdirSync, readFileSync } from "node:fs";
 // /badges/<slug>.json Open Badges assertions (data routes). Both are generator output, read off disk.
 const BADGES_DIR = COLLECTION_DIRS["/badges"];
 function badgeShortlinkRoutes(): string[] {
-  try { return Object.keys(JSON.parse(readFileSync(join(BADGES_DIR, "shortlinks.json"), "utf8"))).map((id) => `/b/${id}`); }
-  catch { return []; }
+  const file = join(BADGES_DIR, "shortlinks.json");
+  try { return Object.keys(JSON.parse(readFileSync(file, "utf8"))).map((id) => `/b/${id}`); }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw new Error(`export: cannot read ${file}: ${(error as Error).message}`, { cause: error });
+  }
 }
 function badgeObJsonRoutes(): string[] {
   try { return readdirSync(BADGES_DIR).filter((f) => f.endsWith(".ob.json")).map((f) => `/badges/${f.replace(/\.ob\.json$/, "")}.json`); }
-  catch { return []; }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw new Error(`export: cannot read ${BADGES_DIR}: ${(error as Error).message}`, { cause: error });
+  }
 }
 import { listPlanRoutes } from "../src/plans.ts";
 import { findMissingComponents, missingReport } from "../src/component-refs.ts";

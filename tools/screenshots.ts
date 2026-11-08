@@ -173,6 +173,7 @@ try {
   await waitForServer(BASE);
   await mkdir(OUT, { recursive: true });
   const browser = await chromium.launch();
+  let failed = 0;
   const cards: string[] = [];
   for (const shot of SHOTS) {
     process.stdout.write(`[shots] ${shot.name} … `);
@@ -203,6 +204,8 @@ try {
       );
       console.log("ok");
     } catch (e) {
+      process.exitCode = 1;
+      failed += 1;
       console.log(`FAILED (${(e as Error).message})`);
     } finally {
       await context.close();
@@ -242,7 +245,7 @@ try {
     `\n</div>`;
   await writeFile(`${OUT}/gallery.html`, gallery);
 
-  console.log(`[shots] wrote ${SHOTS.length} images + ${OUT}/gallery.html`);
+  console.log(`[shots] wrote ${SHOTS.length - failed} of ${SHOTS.length} images + ${OUT}/gallery.html`);
 } finally {
   server.kill();
 }

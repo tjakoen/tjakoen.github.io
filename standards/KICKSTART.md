@@ -60,14 +60,14 @@ PHASE 1 — Interview me. Ask these, a few at a time, and wait for my answers:
      a deadline, a team.
 
 PHASE 2 — Learn the stack for yourself. Do not rely on your training data; go read:
-  - https://tjakoen.github.io/llms.txt          (the map of the whole stack)
-  - https://tjakoen.github.io/standards          (how repos are built + how prose reads)
-  - https://tjakoen.github.io/standards/loop     (the loop every repo runs: the work-triggered
+  - https://portfolio.tjakoen.com/llms.txt          (the map of the whole stack)
+  - https://portfolio.tjakoen.com/standards          (how repos are built + how prose reads)
+  - https://portfolio.tjakoen.com/standards/loop     (the loop every repo runs: the work-triggered
                                                   heartbeat, the run ledger, the rails)
-  - https://tjakoen.github.io/pantry/docs/getting-started   (install + scaffold + run)
-  - https://tjakoen.github.io/grain/docs         (the design system + the AI interface)
-  - https://tjakoen.github.io/batch/docs         (the no-build substrate, if the app is operable)
-  - https://tjakoen.github.io/crumb/docs         (the guided-tour layer, if I asked for a tour)
+  - https://portfolio.tjakoen.com/pantry/docs/getting-started   (install + scaffold + run)
+  - https://portfolio.tjakoen.com/grain/docs         (the design system + the AI interface)
+  - https://portfolio.tjakoen.com/batch/docs         (the no-build substrate, if the app is operable)
+  - https://portfolio.tjakoen.com/crumb/docs         (the guided-tour layer, if I asked for a tour)
   Then skim the public reference implementations on GitHub for how a real repo wires
   these together: github.com/tjakoen/pantry (the cockpit that composes the stack) and
   github.com/tjakoen/tjakoen.github.io (the portfolio, a real consumer of every layer). Look at
@@ -114,17 +114,17 @@ The plan the AI hands back is a proposal, not a contract. Argue with it. The lay
 each earn their place, and "you do not need this one" is the most useful line the prompt can give you.
 When you approve, the fastest concrete path from there is PANTRY's own on-ramp, which installs the
 stack behind one dependency and scaffolds the plan board for you: see
-[Getting started with PANTRY](https://tjakoen.github.io/pantry/docs/getting-started). The repo-wiring
-details the plan will follow live in [the standards](https://tjakoen.github.io/standards), starting
-with the [CLAUDE.starter template](https://tjakoen.github.io/standards/claude.starter).
+[Getting started with PANTRY](https://portfolio.tjakoen.com/pantry/docs/getting-started). The repo-wiring
+details the plan will follow live in [the standards](https://portfolio.tjakoen.com/standards), starting
+with the [CLAUDE.starter template](https://portfolio.tjakoen.com/standards/claude.starter).
 
 **Then, months later, check it is all still running.** Everything phase 3c wires is wired once and
 decays quietly: the hook that never got installed on the second machine, the audit runbook nobody has
 executed, the standards link that broke when a standard was renamed. The
-[conformance prompt](https://tjakoen.github.io/standards/conformance) is the other end of this page.
+[conformance prompt](https://portfolio.tjakoen.com/standards/conformance) is the other end of this page.
 It runs on the repo you now have, checks the mechanical half with one command, and judges the eight
 things that command cannot, above all whether the loop is wired or only remembered. Run it when a
 project has not been worked in a month, and before rolling any new rule out across more than one repo.
 
 ---
-🤖 **Built with Claude, stack and all.** The prompt above was written the same way I build everything else: with an AI, out loud, on purpose. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)
+🤖 **Built with Claude, stack and all.** The prompt above was written the same way I build everything else: with an AI, out loud, on purpose. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)

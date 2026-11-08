@@ -15,7 +15,7 @@ export interface NavDest { route: string; label: string }
 const STOP = new Set([
   "the", "a", "an", "to", "me", "my", "of", "and", "or", "on", "in", "at", "for", "please",
   "take", "bring", "send", "go", "get", "see", "show", "open", "this", "that", "page", "pages",
-  "section", "view", "please", "us", "into", "over",
+  "section", "view", "us", "into", "over",
 ]);
 
 const norm = (s: string): string => s.toLowerCase().replace(/[^\w\s/-]/g, " ").replace(/\s+/g, " ").trim();

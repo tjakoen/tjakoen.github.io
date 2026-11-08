@@ -83,8 +83,9 @@ async function markdownIn(dir: string): Promise<string[]> {
   try {
     const entries = await readdir(dir, { withFileTypes: true });
     return entries.filter((e) => e.isFile() && e.name.endsWith(".md")).map((e) => join(dir, e.name));
-  } catch {
-    return []; // a layer that ships no docs dir is not a failure, it is just absent
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; // absent by design
+    throw error;
   }
 }
 
@@ -93,6 +94,11 @@ if (import.meta.main) {
   const files = argv.length
     ? argv
     : (await Promise.all(RENDERED_DIRS.map(markdownIn))).flat().toSorted();
+
+  if (!files.length) {
+    console.error("link-lint: no rendered files found; refusing to report a pass");
+    process.exit(1);
+  }
 
   const hits: DeadLink[] = [];
   for (const file of files) hits.push(...scan(file, await Bun.file(file).text()));

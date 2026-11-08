@@ -57,6 +57,7 @@ test.describe("flagship featured", () => {
     // compare; the order check below still holds over whatever notes remain.
 
     const seen = hrefs.map((h) => { const d = dates.get(h); expect(d, `no feed date for ${h}`).toBeTruthy(); return d!; });
+    expect(seen.length, "the recent feed rendered no dated notes").toBeGreaterThan(0);
     expect(seen).toEqual([...seen].sort().reverse());   // ISO dates sort lexically
   });
 });

@@ -12,10 +12,10 @@ Keep it accurate: if a standard changes, this file and the index change in the s
 ## What this is
 
 The single source of truth for the cross-repo standards, published at
-<https://tjakoen.github.io/standards> (rendered by the portfolio from its own `standards/` dir,
+<https://portfolio.tjakoen.com/standards> (rendered by the portfolio from its own `standards/` dir,
 where these files are canonically homed since the 2026-07-09 fold-in) and resolved the same way by
 PANTRY, out of the portfolio package. **Every other repo references this set — none forks it.**
-[`README.md`](README.md) is the index: one line per standard, so a reader loads one file, not six.
+[`README.md`](README.md) is the index: one line per standard, so a reader loads one file, not nineteen.
 
 ## Start here (reading order)
 

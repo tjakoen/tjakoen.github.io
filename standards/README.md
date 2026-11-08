@@ -1,13 +1,13 @@
 ---
 title: standards/ — how I build, write, and work with AI
-summary: The index - one line per standard, so a reader loads one file, not six.
+summary: The index - one line per standard, so a reader loads one file, not nineteen.
 ---
 
 # 📐 standards/: how I build, write, and work with AI
 
-[![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://tjakoen.github.io/notes/ten-times-zero)
+[![Made with Claude](https://img.shields.io/badge/Made_with-Claude-D97757?logo=anthropic&logoColor=white)](https://portfolio.tjakoen.com/notes/ten-times-zero)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue)](LICENSE)
-[![Published](https://img.shields.io/badge/published-tjakoen.github.io%2Fstandards-2ea44f)](https://tjakoen.github.io/standards)
+[![Published](https://img.shields.io/badge/published-portfolio.tjakoen.com%2Fstandards-2ea44f)](https://portfolio.tjakoen.com/standards)
 
 The single source of truth for how I work across every repo: how I build software with an AI
 partner, how anything under my byline reads, and how a new repo is set up. Public and portable:
@@ -16,7 +16,7 @@ any repo of mine references this folder instead of copying its own drifting rule
 I maintain these as the current working standards for repositories that adopt this folder. The
 applicability line on each page says when it applies; read the linked file before relying on a rule.
 
-**How to use this, human or AI:** read this index first, then fetch **only** the standard the task in
+**How to use this, human or AI:** read this index first, then read **only** the standard the task in
 front of you needs. Each line below is the whole hook: that's the point, so you load one file, not
 six.
 
@@ -38,7 +38,7 @@ six.
 | **Handing over a change someone has to look at** | [TOUR-STANDARD.md](TOUR-STANDARD.md) | How a CRUMB review tour is built: one step per changed surface, a verify line the reviewer can actually run, an honest status. Owns the *artifact*; LOOP owns the rule that a rendered change owes one. |
 | **Asking the human something a run can't decide** | [DECISIONS.md](DECISIONS.md) | The four surfaces a question can land on (chat, the inbox, a tour's decision card, the handoff), what picks between them, what a request has to carry, and the one channel an answer comes back on. LOOP owns how much scrutiny a change earns; this owns where the question goes. |
 | **Turning a pasted ask into scoped work** | [INTAKE.md](INTAKE.md) | The arrival half of the envelope: four questions a person answers before a session starts spending, the test for when no brief is needed at all, and where the brief lands. LOOP section 4b owns what an envelope is; this owns getting one written before the work rather than after. |
-| **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard: two tokenized inline-SVG scaffolds (data-viz + flow), one palette each, no mermaid on the published site. |
+| **Making a diagram or chart** | [FIGURES.md](FIGURES.md) | The figure standard: two tokenized inline-SVG scaffolds (data-viz + flow), one palette each; mermaid publishes only as a generated, labelled fence. |
 | **Setting up a README** | [README-STANDARD.md](README-STANDARD.md) | Title emoji, the honest badge row, the "built with Claude" footer, plus a runnable prompt. |
 | **Deciding which stack layers a new project needs** | [KICKSTART.md](KICKSTART.md) | A paste-in prompt that interviews you, reads the live stack and the public repos, and proposes which BREAD layers your project actually needs (and which it does not). The on-ramp before the repo exists. |
 | **Starting a new repo** | [CLAUDE.starter.md](CLAUDE.starter.md) | The `CLAUDE.md` template that wires a fresh repo into all of the above from day one. |
@@ -100,4 +100,4 @@ Single source of truth, everywhere. Each fact has exactly one home here; every o
 thing stated in two of these files, one of them is a bug: fix it to a link.
 
 ---
-🤖 **Built with Claude, rules included.** The standards that govern how I work with an AI were themselves written with one, which is either very meta or very honest, and I am going with both. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)
+🤖 **Built with Claude, rules included.** The standards that govern how I work with an AI were themselves written with one, which is either very meta or very honest, and I am going with both. **I don't prompt and pray, I prompt and prove.** [How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)

@@ -3,9 +3,9 @@
 //
 // One colony, two views. Every ant is either in the nest (Braille dots in the sidebar) or out on
 // the page (a small dot SVG), and it leaves and enters through the anthill drawn in both places.
-// The colony starts with two scouts and four workers. Workers stay home until a scout finds text
+// The colony starts with three scouts and three workers. Workers stay home until a scout finds text
 // and walks a letter back, which lays a scent trail; that scout becomes a worker, and workers
-// follow the trail, six to a line. A full line, or no trail at all, sends a worker out to scout.
+// follow the trail, five to a line. A full line, or no trail at all, sends a worker out to scout.
 // A trail lasts while any of its ants live. Big letters need a crew of two or three, who carry it
 // side by side. A carried letter keeps its own colour, face and underline, and drifts home slowly
 // when a carrier is squashed. If the whole colony dies, the queen sends out one new scout.
@@ -562,7 +562,7 @@
     STORES.forEach(([u, v], k) => { const [tu, tv] = k ? [0.68, 0.77] : [0.36, 0.72]; for (let s2 = 0; s2 <= 30; s2++) carve((u + (tu - u) * s2 / 30) * W, (v + (tv - v) * s2 / 30) * H, 1.5, 1.5); carve(u * W, v * H, R * 0.7, R * 0.42); });
     carve(QUEEN[0] * W, QUEEN[1] * H, R * 1.4, R * 0.7);
   };
-  new ResizeObserver(buildNest).observe(well);
+  const nestResize = new ResizeObserver(buildNest); nestResize.observe(well);
 
   // ================================ the page ================================
   let allowLeave = false;
@@ -573,13 +573,13 @@
   };
   addEventListener("beforeunload", onBeforeUnload);
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
-    over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false,
-    queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
+    over: false, stores: 0, built: 0, feedFlip: false, stolenTotal: 0, sound: false,
+    queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0] };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
   // the layer covers the page exactly and clips what crosses its edge, so nothing scrolls sideways
   const fitLayer = () => { layer.style.height = "0"; layer.style.height = main.scrollHeight + "px"; };
-  fitLayer(); new ResizeObserver(fitLayer).observe(main);
+  fitLayer(); const layerResize = new ResizeObserver(fitLayer); layerResize.observe(main);
   const scent = document.createElementNS("http://www.w3.org/2000/svg", "svg"); scent.classList.add("nest-scent"); layer.append(scent);
   const local = (r) => { const m = main.getBoundingClientRect(); return [r.left - m.left + main.scrollLeft, r.top - m.top + main.scrollTop]; };
 
@@ -1172,7 +1172,6 @@
   };
 
   const stepNest = (ant, dt) => {
-    if (ant.route === "up" && ant.d >= LEN.up - 0.3 && ant.d < LEN.up && ant.held) { ant.held = false; }
     ant.d += NEST_SPEED * dt;
     if (ant.d < LEN[ant.route]) return;
     if (ant.route === "hatch") { ant.route = "up"; ant.d = LEN.up; return atEntrance(ant); }
@@ -1857,7 +1856,7 @@
         }
       });
       if (!state.over) {
-        state.peak = Math.max(state.peak, state.ants.length); checkWipe(); ensureScout();
+        checkWipe(); ensureScout();
         if (!state.overrun && !state.party && state.stolenTotal >= worshipTarget()) startParty(false);
         tickMinis(now);
       }
@@ -2019,7 +2018,7 @@
 
   // Leaving: put every letter back, carried or stolen, and take the colony off the page.
   const stop = () => {
-    watchTerrain.disconnect();
+    watchTerrain.disconnect(); nestResize.disconnect(); layerResize.disconnect();
     stopped = true; document.removeEventListener("click", holdLinks, true);
     document.removeEventListener("auxclick", holdLinks, true); document.removeEventListener("keydown", onKey);
     removeEventListener("beforeunload", onBeforeUnload);

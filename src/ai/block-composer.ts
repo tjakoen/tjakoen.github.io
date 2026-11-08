@@ -454,7 +454,7 @@ export function composeMessage(ask: string, names: readonly string[] = BLOCK_NAM
     "Repeat an object to ask for more than one block of the same name.",
     "Include a block only when the visitor asks to add it. A block name mentioned in a prohibition, exclusion, example or explanation is not a request to add that block.",
     "The code fills only requested text by using words from the visitor's sentence. Do not add copy, facts, claims, testimonials, guarantees or statistics.",
-    "Put blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.)",
+    "Put blocks in the order the sentence asks for. Add \"span\": \"full\", \"half\" or \"third\" only if the sentence says how wide they sit.",
   ].join("\n");
 }
 

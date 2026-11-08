@@ -297,9 +297,9 @@ export function routeAction(text: string): Action | null {
   // reasoner answers it honestly either way (already-dark vs. a real toggle). "dark(er)"/"light(er)"
   // both count ("make it darker").
   const SCHEME_WORD = /\b(dark|light)(?:er)?\b/;
-  if (SCHEME_WORD.test(t) && /\b(?:mode|theme|make it|switch|go)\b/.test(t)) {
-    const m = SCHEME_WORD.exec(t)!;
-    return { kind: "theme", target: m[1]! };
+  const scheme = SCHEME_WORD.exec(t);
+  if (scheme && /\b(?:mode|theme|make it|switch|go)\b/.test(t)) {
+    return { kind: "theme", target: scheme[1]! };
   }
   // cycle/next flavor — "cycle the theme", "next theme".
   if (/\b(?:cycle|next)\b.*\btheme\b|\btheme\b.*\b(?:cycle|next)\b/.test(t)) return { kind: "theme", target: "next" };

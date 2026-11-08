@@ -122,7 +122,7 @@ the walk could not answer itself, and a template that composes the answers into 
 back into a session. Use it for the judgements only the reviewer can make (does this read right, which
 piece comes next), never for something the walk already showed. Two or three questions is the size
 that gets answered; a form of eight is a survey, and a survey gets closed. The grammar is in
-[WRITE-A-TOUR](https://tjakoen.github.io/crumb/docs/write-a-tour).
+[WRITE-A-TOUR](https://portfolio.tjakoen.com/crumb/docs/write-a-tour).
 
 ## Where it lives, and who sees it
 
@@ -131,7 +131,7 @@ folder without recursing, so a tour one level down is invisible to the board and
 which is the worst of both.
 
 Check whether the host publishes its tours before writing anything you would not put on the live
-site. On tjakoen.github.io the tours folder is exported, so a review tour ships publicly, and that is
+site. On portfolio.tjakoen.com the tours folder is exported, so a review tour ships publicly, and that is
 deliberate: it is a receipt. On a host where that is not wanted, the folder has to move out of the
 exported tree first.
 
@@ -166,4 +166,4 @@ exported tree first.
 🤖 **Built with Claude, and the tour is how I make it check the work rather than take my word for
 it.** I decided what "reviewed" has to mean; Claude typed the parser that enforces it. **I don't
 prompt and pray, I prompt and prove.**
-[How I actually work with AI, receipts and all →](https://tjakoen.github.io/notes/ten-times-zero)
+[How I actually work with AI, receipts and all →](https://portfolio.tjakoen.com/notes/ten-times-zero)

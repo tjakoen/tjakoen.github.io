@@ -1,6 +1,6 @@
 // portfolio/content.ts — piece 4: the portfolio's MILL wiring (consumer-owned).
 //
-// Three collections flow through MILL's live content route (mill/serve.ts):
+// Collections flow through MILL's live content route (mill/serve.ts):
 //   /notes       + /notes/:slug   ← portfolio/notes/*.md   (the portfolio's own content)
 //   /grain/docs  + /grain/docs/:slug ← this repo's own docs/grain/  (option b, 2026-07-09)
 //   /batch/docs  + /batch/docs/:slug ← this repo's own docs/batch/  (option b, 2026-07-09)
@@ -95,7 +95,7 @@ function publishedSource(base: ContentSource): ContentSource {
       for (let offset = 0; offset < slugs.length; offset += CONTENT_READ_BATCH) {
         keep.push(...await Promise.all(slugs.slice(offset, offset + CONTENT_READ_BATCH).map(publishable)));
       }
-      return slugs.filter((_, i) => keep[i]!);
+      return slugs.filter((_, i) => keep[i] === true);
     },
     read: async (slug) => {
       const raw = await base.read(slug);
@@ -293,7 +293,7 @@ export const COLLECTION_DIRS = {
   "/badges": join(import.meta.dir, "..", "content", "badges"),
 } as const;
 
-// The three collections — module-level so the routes AND the route list derive from
+// The collections — module-level so the routes AND the route list derive from
 // one definition (a new note or doc automatically reaches the sitemap and the export).
 const collections: MillCollection[] = [
   {
@@ -538,8 +538,8 @@ export function listPortfolioRawContentRoutes(): Promise<string[]> {
 // stub that names where the writing went. Deliberately a rendered PAGE with a canonical + a
 // meta refresh, NOT a 301: the static export freezes response BODIES, so a redirect the crawler
 // followed would write the destination's full text at both URLs and hand search engines two
-// copies of the same note. Add a line here when a note is folded; both the sitemap and the
-// export allowlist read this map, so the stub travels to Pages automatically.
+// copies of the same note. Add a line here when a note is folded; the export allowlist reads
+// this map, so the stub travels to Pages automatically.
 export const FOLDED_NOTES: Record<string, { to: string; title: string }> = {
   "/notes/where-were-we": {
     to: "/notes/one-loop-every-repo",
