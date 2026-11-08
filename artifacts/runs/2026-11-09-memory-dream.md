@@ -15,7 +15,7 @@ touched:
   - artifacts/reviews/2026-11-09-memory-dream/plan.png
   - artifacts/reviews/2026-11-09-memory-dream/loop-credit.png
 diffstat: 8 files changed, 995 insertions(+), this report not counted
-unpushed: 1, the commit itself, left for the owner to push
+unpushed: 2, this change and its follow-up, left for the owner to push
 verifiedBy: 938 unit tests, the typecheck, the lint gate at 4483, 23 tests in the new file, a second-pass review by an agent that did not write the change, and two screenshots
 doctor: run at 02:16, the context row still warns at 28,834 characters across four files, the index is no longer the largest of them
 ---
