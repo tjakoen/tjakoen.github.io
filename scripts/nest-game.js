@@ -103,7 +103,8 @@
     .nest-sweet { position: absolute; z-index: 4; color: var(--color-accent); font: 18px/1 var(--font-mono); letter-spacing: 2px; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 40%, transparent); pointer-events: none; }
     main.nest-sweet-planning { cursor: crosshair; }
 
-    .nest-event-effect { position: absolute; z-index: 6; pointer-events: none; font: 24px/1 var(--font-mono); color: var(--color-accent); }
+    .nest-vacuum { position: absolute; z-index: 6; width: 100px; height: 100%; pointer-events: none; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent); border-left: 1px solid var(--color-accent); }
+    .nest-tongue { position: absolute; z-index: 6; pointer-events: none; overflow: visible; }
     @keyframes nest-sweet-fade { from { opacity: 1; } to { opacity: .15; } }
     @keyframes nest-hill-rise { from { opacity: 0; transform: translateY(9px) scaleY(.12); } to { opacity: 1; transform: none; } }
     .nest-scent polyline.rival { stroke: var(--nest-rival); }
@@ -631,7 +632,7 @@
     sweet: null, sweetCard: null, sweetPlanning: false, sweetNext: 0, env: null, envNext: 0,
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(state.ants.length / 3)));
-  const rival = { active: false, mound: null, trails: [], ants: [], stolen: new Set(), returnAt: 0 };
+  const rival = { active: false, mound: null, trails: [], ants: [], minis: [], stolen: new Set(), returnAt: 0 };
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
   const layer = document.createElement("div"); layer.className = "nest-layer"; main.append(layer);
   // the layer covers the page exactly and clips what crosses its edge, so nothing scrolls sideways
@@ -1706,6 +1707,7 @@
       a.job = "sweet-walk"; a.sweetTarget = sweet;
       a.path = [[x + (i ? 18 : -18), y + 10]]; a.k = 0;
     }
+    if (rival.active && rival.mound) spawnRivalUnit("rival-sweet", rival.mound.hole.slice(), [[x, y]], sweet);
     log("the sweet is placed; workers are coming");
     blip(520, 0.08, "sine", 0.03);
     setTimeout(() => { if (state.sweet === sweet) removeSweet("faded"); }, sweet.ttl);
@@ -1747,11 +1749,22 @@
       }
       state.squashed++;
     });
-    const effect = document.createElement("div");
-    effect.className = "nest-event-effect"; effect.textContent = kind === "vacuum" ? "≋" : "⌇";
-    effect.style.left = "8%"; effect.style.top = "45%";
-    layer.append(effect);
-    effect.animate([{ opacity: 1, transform: "translateX(0)" }, { opacity: 0, transform: "translateX(72vw)" }], { duration: 900, easing: "ease-in" }).onfinish = () => effect.remove();
+    if (kind === "vacuum") {
+      const sweep = document.createElement("div"); sweep.className = "nest-vacuum";
+      sweep.style.top = main.scrollTop + "px"; sweep.style.height = main.clientHeight + "px";
+      layer.append(sweep);
+      sweep.animate([{ transform: "translateX(-120px)" }, { transform: "translateX(" + (main.clientWidth + 120) + "px)" }], { duration: 900, easing: "ease-in" }).onfinish = () => sweep.remove();
+    } else {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "nest-tongue"); svg.setAttribute("width", String(main.clientWidth)); svg.setAttribute("height", String(main.clientHeight));
+      svg.style.top = main.scrollTop + "px";
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const y = main.clientHeight * 0.45;
+      path.setAttribute("d", `M -20 ${y} C ${main.clientWidth * .2} ${y - 80}, ${main.clientWidth * .35} ${y + 90}, ${main.clientWidth * .55} ${y} S ${main.clientWidth * .85} ${y - 70}, ${main.clientWidth + 20} ${y + 20}`);
+      path.setAttribute("fill", "none"); path.setAttribute("stroke", "var(--color-accent)"); path.setAttribute("stroke-width", "3"); path.setAttribute("stroke-linecap", "round");
+      svg.append(path); layer.append(svg);
+      path.animate([{ opacity: 0, strokeDasharray: "0 2000" }, { opacity: 1, strokeDasharray: "2000 0" }], { duration: 900, easing: "ease-in" }).onfinish = () => svg.remove();
+    }
     log(kind === "vacuum" ? "the vacuum sweeps the page" : "the anteater licks the page");
     blip(kind === "vacuum" ? 120 : 90, 0.24, "sawtooth", 0.04);
     state.envNext = performance.now() + 80000 + Math.random() * 60000;
@@ -2147,13 +2160,13 @@
     setTimeout(() => template.classList.remove("rising"), 900);
     return { el: template, base: [x, y], hole: [x, y - hh + 4] };
   };
-  const rivalTarget = () => {
+  const rivalTarget = (exclude = new Set()) => {
     const hole = rival.mound.hole;
     let best = null, bestD = Infinity;
     for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i++) {
       if (!/\S/.test(n.data[i])) continue;
       const L = letterOf(n, i);
-      if (L.state !== "free" || L.span) continue;
+      if (L.state !== "free" || L.span || exclude.has(blockOf(n))) continue;
       const r = rectOf(n, i); if (!r.width) continue;
       const [x, y] = local(r);
       const d = Math.hypot(x - hole[0], y - hole[1]);
@@ -2206,8 +2219,38 @@
     blip(330, 0.05, "triangle", 0.03);
     return true;
   };
+  const spawnRivalUnit = (job, at, path, sweet) => {
+    const a = { id: ++state.total, role: "rival", side: "rival", where: "page", x: at[0], y: at[1], px: at[0], py: at[1],
+      heading: -Math.PI / 2, job, path, k: 0, sweetTarget: sweet, hp: job === "rival-guard" ? 2 : 1 };
+    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival walk";
+    a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival ant. Press to squash.");
+    a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
+    layer.append(a.el); placeAnt(a); label(a); rival.ants.push(a);
+    return a;
+  };
+  const rivalBait = (x, y) => {
+    rival.ants.filter((a) => a.el && Math.hypot(a.x - x, a.y - y) < 210).forEach((a) => {
+      a.job = "rival-bait"; a.baitUntil = performance.now() + 6000; a.path = [[x, y]]; a.k = 0;
+    });
+  };
   const stepRival = (a, dt) => {
     if (!a.el) return;
+    if (a.job === "rival-guard") {
+      const g = a.path[a.k]; if (!g) return;
+      if (move(a, g[0], g[1], dt, SPEED * 0.7)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.path = a.path.toReversed(); a.k = 0; } }
+      return;
+    }
+    if (a.job === "rival-bait") {
+      const g = a.path[a.k];
+      if (g && move(a, g[0], g[1], dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; a.k = 0; }
+      if (performance.now() >= a.baitUntil) { a.job = a.trail && state.trails.includes(a.trail) ? "rival-follow" : "rival-pause"; a.path = a.trail ? lanePath(a.trail.pts, a.lane) : []; a.k = 0; a.pauseAt = performance.now() + 300; }
+      return;
+    }
+    if (a.job === "rival-sweet") {
+      const sweet = state.sweet; if (!sweet) { removeRivalAnt(a); return; }
+      if (move(a, sweet.x, sweet.y, dt, SPEED * 1.1)) { a.px = a.x; a.py = a.y; if (performance.now() >= (a.nextEat || 0)) { a.nextEat = performance.now() + 550; sweet.pieces--; sweet.el.textContent = "⣿".repeat(Math.max(0, sweet.pieces)); if (sweet.pieces <= 0) removeSweet("eaten"); } }
+      return;
+    }
     const now = performance.now();
     if (a.job === "rival-pause") {
       if (now < a.pauseAt) return;
@@ -2282,6 +2325,7 @@
     [...rival.trails].forEach((t) => retireRivalTrail(t, false));
     [...rival.ants].forEach(removeRivalAnt);
     rival.mound?.el.remove(); rival.mound = null;
+    rival.minis.forEach((m) => m.el.remove()); rival.minis = [];
     rival.stolen.forEach((L) => state.stolen.add(L));
     rival.stolen.clear();
     rival.returnAt = performance.now() + 22000 + Math.random() * 18000;
@@ -2297,9 +2341,21 @@
       if (!rival.active || rival.mound !== mound) return;
       const pick = rivalTarget();
       if (!pick) { mound.el.remove(); rival.active = false; rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
-      const t = rivalTrail(pick);
-      spawnRival(t); spawnRival(t);
-      log("the rival trail opens");
+      const used = new Set();
+      for (let i = 0; i < 3; i++) {
+        const next = i === 0 ? pick : rivalTarget(used);
+        if (!next) break;
+        used.add(next.block);
+        const t = rivalTrail(next); spawnRival(t);
+      }
+      for (let i = 0; i < 2; i++) {
+        const x = rival.mound.base[0] + (i ? 82 : -82), y = rival.mound.base[1] + (i ? 34 : -18);
+        const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
+        el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el);
+        rival.minis.push({ el, base: [x, y] });
+        if (i < 2) spawnRivalUnit("rival-guard", [x, y], Array.from({ length: 7 }, (_, k) => [x + Math.cos(k * 0.9) * 25, y + Math.sin(k * 0.9) * 16]), null);
+      }
+      log("the rival trails open");
       blip(260, 0.1, "sawtooth", 0.025);
     }, 900);
   };
@@ -2310,6 +2366,7 @@
     baitReady = performance.now() / 1000 + BAIT_COOL; blip(400, 0.08, "sine"); noiseBurst(0.05, 0.03, 900);
     const lured = state.ants.filter((a) => a.el && a !== state.builder && !a.letter && a.job !== "crew" && a.role !== "soldier" && Math.hypot(a.x - x, a.y - y) < 200);
     lured.forEach((a) => { a.trail?.ants.delete(a); a.trail = null; a.helpLetter = null; a.job = "bait"; a.path = [[x + (Math.random() - 0.5) * 30, y + (Math.random() - 0.5) * 20]]; a.k = 0; });
+    if (rival.active) rivalBait(x, y);
     log(lured.length ? `${lured.length} ant${lured.length > 1 ? "s" : ""} took the bait` : "nothing near enough to smell it");
     setTimeout(() => {
       crumb.style.opacity = "0"; setTimeout(() => crumb.remove(), 1000);
