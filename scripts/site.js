@@ -118,7 +118,7 @@
     const MODE_KEY = "portfolio:aside-mode";
     const modeTabs = document.querySelectorAll(".assistant__modes [data-shell-mode]");
     for (const b of modeTabs) b.addEventListener("click", () => {
-      try { store && store.setItem(MODE_KEY, b.getAttribute("data-shell-mode")); } catch { /* private mode */ }
+      try { if (store) store.setItem(MODE_KEY, b.getAttribute("data-shell-mode")); } catch { /* private mode */ }
     });
 
     // ---- mobile: the open-tabs strip (grain/scripts/tabs.js) scrolls horizontally with no

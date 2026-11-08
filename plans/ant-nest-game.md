@@ -1,7 +1,11 @@
 ---
-status: proposed
+status: done
 owner: human
 ---
+
+> Shipped on 2026-11-08. The opening below is the original pitch, kept for the record. The colony
+> that shipped is the one in "What the mockup now does"; the note that teaches it is
+> [/notes/the-site-has-ants](/notes/the-site-has-ants).
 
 # Nest: an optional ant colony that lives in the site
 

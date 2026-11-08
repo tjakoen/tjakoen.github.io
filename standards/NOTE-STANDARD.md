@@ -80,9 +80,9 @@ socialImageAlt: "What the card shows."
 
 ### The share block
 
-If the note has a `social:` block, the page renders it at the bottom, collapsed, with a copy button
-and the canonical link. The `subtitle` is the social preview; the `social` block is the post copy. Do
-not paste the summary into it. When `socialImage` is set, the block also shows the image and a
+If the note has a social block, the page renders it at the bottom, collapsed, with a copy button
+and the canonical link. The subtitle is the social preview; the social block is the post copy. Do
+not paste the summary into it. When a social image is set, the block also shows the image and a
 download link.
 
 Follow VOICE.md's *Structure of a typical piece* and *Signature moves*, as a **repertoire, not a

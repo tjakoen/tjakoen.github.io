@@ -94,6 +94,14 @@ test("a branch that exists only on this machine is DO NOT CLOSE", () => {
   expect(verdict.next).toContain("git push -u origin feat/thing");
 });
 
+test("main with an unpushed commit hands off without claiming main is not main", () => {
+  const verdict = verdictFor(facts({ branch: "main", upstream: "origin/main", aheadOfDefault: 1, unpushed: 1 }));
+  expect(verdict.verdict).toBe("HAND OFF");
+  expect(verdict.notes.join(" ")).not.toContain("is pushed but not on main");
+  expect(verdict.notes.join(" ")).toContain("1 commit(s) are not pushed");
+  expect(verdict.next).toContain("git push origin main");
+});
+
 test("a squash merge counts as on main even though the commits are not ancestors", () => {
   const verdict = verdictFor(facts({ aheadOfDefault: 3, contentOnMain: true }));
   expect(isOnMain(facts({ aheadOfDefault: 3, contentOnMain: true }))).toBe(true);
