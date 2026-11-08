@@ -518,6 +518,20 @@ process failure that actually happened, and none after a quality failure, becaus
 were caught by a human reading the diff. That works at one person and one repo, which is exactly the
 condition the article says it stops working under.
 
+**The memory half is named, and it is the half this file had not solved.** Brad Abrams'
+[Dreaming with a dynamic workflow](https://platform.claude.com/cookbook/managed-agents-cma-dreaming-with-a-dynamic-workflow)
+(Claude Cookbook, 2 November 2026) is a background pass over finished sessions that rewrites the memory
+future sessions read: dated facts instead of copies, small linked files with an index, one analyzer per
+transcript and one organizer at the end. The shape of its store is close to the one SESSION-LOOP §4 asks
+for, and it was arrived at independently, which is the useful part: the format was never the gap. What
+was missing is the pass that reads the store backwards. The first one here ran on 2026-11-09 over this
+project's own run reports and memory index, and plans/memory-dream.md records what it took, what it
+changed and what it deliberately did not; the notes themselves were left for a second pass. It stays off
+§2b's table on purpose, and §2b already gives the reason: a dream's output is a judgment about what is
+still true, and no chore whose output is a judgment is scheduled. It is built to run at session close,
+in the cognitive tier, where a person reads the result, rather than on the nightly cron the cookbook
+uses. That wiring is still a task, and this paragraph should not be read as saying it is done.
+
 Two honest caveats, the same posture as the STE cite in [`VOICE.md`](VOICE.md): the two books are being
 read as this is written, so this section is a living base, not a finished literature review — it gets
 revisited after the read. And none of these sources is a study of *this* estate; they are the shape the
