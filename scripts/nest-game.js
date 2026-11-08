@@ -1071,23 +1071,29 @@
   // nearby early points onto an existing line turns a pile of near-parallel curves into one
   // trunk, then lets the new branch peel off where it actually diverges.
   const mergeRoute = (pts, block) => {
-    const merged = pts.map((p) => p.slice());
-    const others = state.trails.filter((t) => !t.side && t.ready && t.state !== "gone" && t.block !== block);
-    for (const t of others) {
-      let joined = false;
-      for (let i = 0; i < merged.length; i++) {
-        let best = null, bestD = 15;
-        for (const q of t.pts) {
-          const d = Math.hypot(merged[i][0] - q[0], merged[i][1] - q[1]);
-          if (d < bestD) { bestD = d; best = q; }
-        }
-        if (best) { merged[i] = best.slice(); joined = true; }
-        else if (joined && i > 2) break;
+    const cross = (a, b, c, d) => {
+      const rx = b[0] - a[0], ry = b[1] - a[1], sx = d[0] - c[0], sy = d[1] - c[1];
+      const den = rx * sy - ry * sx; if (!den) return null;
+      const t = ((c[0] - a[0]) * sy - (c[1] - a[1]) * sx) / den;
+      const u = ((c[0] - a[0]) * ry - (c[1] - a[1]) * rx) / den;
+      return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? [a[0] + t * rx, a[1] + t * ry] : null;
+    };
+    let best = null;
+    for (const t of state.trails) {
+      if (t.side || t.state === "gone" || t.block === block) continue;
+      for (let i = 1; i < pts.length; i++) for (let j = 1; j < t.pts.length; j++) {
+        const hit = cross(pts[i - 1], pts[i], t.pts[j - 1], t.pts[j]);
+        if (hit && (!best || i < best.i)) best = { i, j, hit, t };
       }
     }
-    const clean = [];
-    for (const p of merged) if (!clean.length || Math.hypot(p[0] - clean[clean.length - 1][0], p[1] - clean[clean.length - 1][1]) > 5) clean.push(p);
-    return clean.length > 2 ? chaikin(clean, 1) : clean;
+    if (best) {
+      const trunk = best.t.pts.slice(0, best.j + 1);
+      const merged = [...trunk, best.hit, ...pts.slice(best.i + 1)];
+      const clean = [];
+      for (const p of merged) if (!clean.length || Math.hypot(p[0] - clean[clean.length - 1][0], p[1] - clean[clean.length - 1][1]) > 4) clean.push(p);
+      return chaikin(clean, 1);
+    }
+    return pts;
   };
 
   const layTrail = (ant, copy = "the scout is home; a trail is laid") => {
@@ -2279,6 +2285,11 @@
   };
   const stepRival = (a, dt) => {
     if (!a.el || a.tongue) return;
+    if (a.job === "rival-flyer") {
+      const g = a.path[a.k]; if (!g) { a.path = [randomPoint()]; a.k = 0; return; }
+      if (move(a, g[0], g[1], dt, SPEED * 1.5)) { a.px = a.x; a.py = a.y; a.path = [randomPoint()]; a.k = 0; }
+      return;
+    }
     if (a.job === "rival-guard") {
       const g = a.path[a.k]; if (!g) return;
       if (move(a, g[0], g[1], dt, SPEED * 0.7)) { a.px = a.x; a.py = a.y; if (++a.k >= a.path.length) { a.path = a.path.toReversed(); a.k = 0; } }
@@ -2446,13 +2457,30 @@
         used.add(next.block);
         const t = rivalTrail(next); spawnRival(t);
       }
-      for (let i = 0; i < 2; i++) {
-        const x = rival.mound.base[0] + (i ? 128 : -128), y = rival.mound.base[1] + (i ? 54 : 18);
+      const miniSpots = [];
+      const terrain = miniTerrain();
+      for (const radius of [130, 170, 210]) {
+        for (let k = 0; k < 18; k++) {
+          const a = (k / 18) * Math.PI * 2;
+          const x = rival.mound.base[0] + Math.cos(a) * radius, y = rival.mound.base[1] + Math.sin(a) * radius * 0.6;
+          const box = [x - 26, y - 26, x + 26, y + 16];
+          if (!miniFits(box, terrain.obstacles)) continue;
+          if (Math.hypot(x - home.base[0], y - home.base[1]) < 180) continue;
+          if (miniSpots.some((p) => Math.hypot(p.x - x, p.y - y) < 90)) continue;
+          miniSpots.push({ x, y }); break;
+        }
+        if (miniSpots.length >= 2) break;
+      }
+      miniSpots.slice(0, 2).forEach((p) => {
+        const x = p.x, y = p.y;
         const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
         el.style.left = `${x}px`; el.style.top = `${y}px`; layer.append(el);
         rival.minis.push({ el, base: [x, y] });
-        if (i < 2) spawnRivalUnit("rival-guard", [x, y], Array.from({ length: 7 }, (_, k) => [x + Math.cos(k * 0.9) * 25, y + Math.sin(k * 0.9) * 16]), null);
-      }
+        const trail = rival.trails[0];
+        const path = trail ? lanePath(trail.pts, (rival.minis.length % 2 ? 1 : -1) * 9) : Array.from({ length: 7 }, (_, k) => [x + Math.cos(k * 0.9) * 25, y + Math.sin(k * 0.9) * 16]);
+        spawnRivalUnit("rival-guard", [x, y], path, null);
+        spawnRivalUnit("rival-flyer", [x, y], [randomPoint()], null);
+      });
       log("the rival trails open");
       blip(260, 0.1, "sawtooth", 0.025);
     }, 900);
