@@ -23,7 +23,7 @@ declare global {
       squash: (ant: unknown) => void;
       newAnt: (role: string, route: string, d: number) => unknown;
       wipeTrail: (trail: unknown, at: [number, number]) => void;
-      rival: { active: boolean; ants: Array<unknown>; trails: Array<{ end: [number, number] }>; stolen: Set<unknown>; returnAt: number };
+      rival: { active: boolean; ants: Array<unknown>; trails: Array<{ end: [number, number] }>; stolen: Set<unknown>; returnAt: number; mound?: { base: [number, number] } | null };
     };
   }
 }
@@ -391,7 +391,14 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator("#nest-mock")).toBeVisible();
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.active)).toBe(true);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length)).toBeGreaterThan(0);
-    await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size)).toBeGreaterThan(0);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size), { timeout: 15_000 }).toBeGreaterThan(0);
+    const placement = await page.evaluate(() => {
+      const home = window.__nest!.home.base;
+      const rival = window.__nest!.rival.mound!.base;
+      return { dx: rival[0] - home[0], width: document.querySelector("main")!.clientWidth, homeX: home[0], dist: Math.hypot(rival[0] - home[0], rival[1] - home[1]) };
+    });
+    expect(placement.dx * (placement.homeX - placement.width / 2)).toBeLessThan(0);
+    expect(placement.dist).toBeGreaterThan(340);
     await expect(page.locator("[data-k='rival-hint']")).toContainText("rival");
     await page.evaluate(() => {
       const trail = window.__nest!.rival.trails[0];
