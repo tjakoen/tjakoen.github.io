@@ -10,6 +10,7 @@ import { join } from "node:path";
 import {
   coverage,
   dshSlug,
+  indexCoverage,
   frontmatterDate,
   frontmatterTitle,
   isInside,
@@ -185,6 +186,32 @@ describe("parseEvents", () => {
   });
 });
 
+describe("indexCoverage", () => {
+  const index = "# Memory index\n\n- [a](a.md): one\n- [b](b.md): two\n- [c](c.md): three\n";
+
+  test("a full index over its notes is clean", () => {
+    expect(indexCoverage(index, ["MEMORY.md", "a.md", "b.md", "c.md"])).toEqual({
+      missing: [],
+      dead: [],
+      duplicates: [],
+      linked: 3,
+    });
+  });
+
+  test("names a note with no line, a line with no note, and a note linked twice", () => {
+    const thin = "- [a](a.md): one\n- [a](a.md): one again\n- [gone](gone.md): nothing\n";
+    const found = indexCoverage(thin, ["MEMORY.md", "a.md", "b.md"]);
+    expect(found.missing).toEqual(["b.md"]);
+    expect(found.dead).toEqual(["gone.md"]);
+    expect(found.duplicates).toEqual(["a.md"]);
+  });
+
+  test("a line carrying three links counts all three", () => {
+    const bundled = "- audits: [a](a.md); [b](b.md); [c](c.md): three\n";
+    expect(indexCoverage(bundled, ["MEMORY.md", "a.md", "b.md", "c.md"]).missing).toEqual([]);
+  });
+});
+
 describe("coverage", () => {
   test("names every source with no output", () => {
     const dir = mkdtempSync(join(tmpdir(), "dream-test-"));
@@ -209,6 +236,15 @@ describe("frontmatter", () => {
 
   test("reads the title", () => {
     expect(frontmatterTitle(report)).toBe("Keep the view counts");
+  });
+
+  test("finds the date behind a title long enough to fill a real report's header", () => {
+    // The first version read only 400 characters, so a report whose title and fields ran past that
+    // lost its date, and --since then skipped every report in the corpus.
+    const long = `---\ntitle: ${"A very long run report title ".repeat(20)}\ndate: 2026-11-09\nstatus: complete\n---\n\nbody`;
+    expect(long.indexOf("date:")).toBeGreaterThan(400);
+    expect(frontmatterDate(long)).toBe("2026-11-09");
+    expect(frontmatterTitle(long)?.startsWith("A very long run report title")).toBe(true);
   });
 
   test("returns undefined without frontmatter rather than guessing", () => {

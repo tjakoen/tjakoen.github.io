@@ -270,20 +270,26 @@ export type Source = {
   parts?: number;
 };
 
+/**
+ * The frontmatter block, or nothing. This used to read only the first 400 characters, which is less
+ * than a real run report spends on a long title and its fields, so `date:` fell outside the window,
+ * the date came back undefined, and --since quietly skipped every report. A regression test carries
+ * a deliberately long title.
+ */
+function frontmatterBlock(markdown: string): string | undefined {
+  return /^---\r?\n([\s\S]*?)\r?\n---/.exec(markdown)?.[1];
+}
+
 export function frontmatterDate(markdown: string): string | undefined {
-  const head = markdown.slice(0, 400);
-  const match = /^---\n([\s\S]*?)\n---/.exec(head);
-  if (!match) return undefined;
-  const date = /^date:\s*(\S+)/m.exec(match[1]);
-  return date?.[1];
+  const block = frontmatterBlock(markdown);
+  if (!block) return undefined;
+  return /^date:\s*(\S+)/m.exec(block)?.[1];
 }
 
 export function frontmatterTitle(markdown: string): string | undefined {
-  const head = markdown.slice(0, 400);
-  const match = /^---\n([\s\S]*?)\n---/.exec(head);
-  if (!match) return undefined;
-  const title = /^title:\s*(.+)$/m.exec(match[1]);
-  return title?.[1].trim();
+  const block = frontmatterBlock(markdown);
+  if (!block) return undefined;
+  return /^title:\s*(.+)$/m.exec(block)?.[1].trim();
 }
 
 function runSources(root: string, outDir: string, since?: string): { source?: Source; corpus: string; parts: number; undated: number } {
@@ -404,6 +410,25 @@ export type Manifest = {
     droppedChars?: number;
   };
 };
+
+/**
+ * What an index promises: a line for every note that exists, and no line for a note that does not.
+ * Pure, because the comparison is the whole check and it should be provable without a store.
+ */
+export function indexCoverage(
+  indexText: string,
+  files: string[],
+): { missing: string[]; dead: string[]; duplicates: string[]; linked: number } {
+  const linked = [...indexText.matchAll(/\]\(([^)\s]+\.md)\)/g)].map((m) => m[1]);
+  const unique = [...new Set(linked)];
+  const notes = files.filter((f) => f.endsWith(".md") && f !== "MEMORY.md");
+  return {
+    missing: notes.filter((f) => !unique.includes(f)),
+    dead: unique.filter((f) => !notes.includes(f)),
+    duplicates: unique.filter((f) => linked.filter((l) => l === f).length > 1),
+    linked: unique.length,
+  };
+}
 
 /** Every source in the manifest has an output, and the output is not empty. The cookbook's own check. */
 export function coverage(manifest: Manifest): { total: number; missing: string[] } {
@@ -579,6 +604,26 @@ function verifyCommand(args: string[]): number {
   return failed ? 1 : 0;
 }
 
+function checkIndexCommand(args: string[]): number {
+  const dir = resolve(args[1] ?? "");
+  const index = join(dir, "MEMORY.md");
+  if (!existsSync(index)) {
+    console.error(`dream check-index: no MEMORY.md in ${dir}.`);
+    return 2;
+  }
+  const files = readdirSync(dir);
+  const found = indexCoverage(readFileSync(index, "utf8"), files);
+  const ok = !found.missing.length && !found.dead.length && !found.duplicates.length;
+  console.log(
+    `dream check-index: ${found.linked} link(s) across ${files.filter((f) => f.endsWith(".md") && f !== "MEMORY.md").length} note(s)` +
+      (ok ? ", every note covered and every line real" : ""),
+  );
+  for (const f of found.missing) console.log(`  UNINDEXED ${f}`);
+  for (const f of found.dead) console.log(`  DEAD ${f}`);
+  for (const f of found.duplicates) console.log(`  TWICE ${f}`);
+  return ok ? 0 : 1;
+}
+
 function flag(args: string[], name: string): string | undefined {
   const index = args.indexOf(`--${name}`);
   return index >= 0 ? args[index + 1] : undefined;
@@ -591,11 +636,14 @@ if (import.meta.main) {
       ? exportCommand(rest)
       : command === "verify"
         ? verifyCommand([command, ...rest])
+        : command === "check-index"
+          ? checkIndexCommand([command, ...rest])
         : (console.log(
             `dream: build the corpus a memory dream reads.\n\n` +
               `  bun run dream export [--lane runs|sessions|both] [--since YYYY-MM-DD]\n` +
               `                      [--max-chars N] [--max-result-chars N] [--out DIR]\n` +
-              `  bun run dream verify <run-dir>\n\n` +
+              `  bun run dream verify <run-dir>\n` +
+              `  bun run dream check-index <store-dir>\n\n` +
               `Method: ${CREDIT.author}, "${CREDIT.title}", ${CREDIT.publication}, ${CREDIT.published}.\n${CREDIT.url}\n` +
               `Prompts and guardrails: plans/memory-dream.md.`,
           ),

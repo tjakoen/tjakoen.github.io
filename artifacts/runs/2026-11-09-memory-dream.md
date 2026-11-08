@@ -4,7 +4,7 @@ date: 2026-11-09
 status: complete
 lane: gated
 branch: main
-scope: [tools, plans, standards, artifacts]
+scope: [tools, plans, standards, artifacts, view]
 touched:
   - tools/dream.ts
   - tools/dream.test.ts
@@ -14,9 +14,12 @@ touched:
   - artifacts/runs/2026-11-09-memory-dream.md
   - artifacts/reviews/2026-11-09-memory-dream/plan.png
   - artifacts/reviews/2026-11-09-memory-dream/loop-credit.png
-diffstat: 8 files changed, 995 insertions(+), this report not counted
-unpushed: 2, this change and its follow-up, left for the owner to push
-verifiedBy: 938 unit tests, the typecheck, the lint gate at 4483, 23 tests in the new file, a second-pass review by an agent that did not write the change, and two screenshots
+  - artifacts/reviews/2026-11-09-memory-dream/reading-shelf.png
+  - artifacts/reviews/2026-11-09-memory-dream/reading-card.png
+  - view/pages/reading.html
+diffstat: 10 files changed, 1123 insertions(+), 1 deletion(-), this report not counted
+unpushed: 3, the change and its two follow-ups, left for the owner to push
+verifiedBy: 942 unit tests, the typecheck, the lint gate at 4483, 27 tests in the new file, a second-pass review by an agent that did not write the change, and four screenshots
 doctor: run at 02:16, the context row still warns at 28,834 characters across four files, the index is no longer the largest of them
 ---
 
@@ -104,10 +107,10 @@ same day so an agent reads it too rather than only a browser.
 ### bun run check
 $ tsc --noEmit
 ### bun test
- 938 pass
+ 942 pass
  0 fail
- 3978 expect() calls
-Ran 938 tests across 50 files. [27.82s]
+ 3986 expect() calls
+Ran 942 tests across 50 files. [10.96s]
 ### bun tools/lint-gate.ts
 lint gate: level. 4483 flag(s) total (oxlint + voice-lint), matching or under the 4483 in
 tools/lint-baseline.json (generated 2026-11-08).
@@ -115,9 +118,16 @@ tools/lint-baseline.json (generated 2026-11-08).
 
 ## What the gate did not cover
 
-The unit suite does not run the browser, so the two rendered surfaces were screenshotted instead:
-the plan at `/plans/plan/memory-dream`, and the credit paragraph on `/standards/loop`, both in
-`artifacts/reviews/2026-11-09-memory-dream/`.
+The unit suite does not run the browser, so the rendered surfaces were screenshotted instead: the
+plan at `/plans/plan/memory-dream`, the credit paragraph on `/standards/loop`, and the shelf and card
+on `/reading`, all in `artifacts/reviews/2026-11-09-memory-dream/`.
+
+The static export was run as well, with `PUBLIC_ORIGIN=https://portfolio.tjakoen.com`, and
+`verify:export` returned OK: every internal href and src in the exported HTML resolves, and every
+mermaid fence in served content is named and cached. The same export without the origin bakes
+`http://localhost:3330` into the sitemap and fails 428 checks, all of them the origin, none of them a
+page. That is a local-export artifact rather than a property of this change, and it is worth knowing
+before someone reads a red run as a broken page.
 
 The doctor's context row still warns. It now measures four files rather than two, and the total is
 28,834 characters, so the warning did not clear even though the index lost 2,666 of them. The four are
@@ -179,8 +189,29 @@ relative climb out of standards/ fails the link checker by design (the same clas
 `../docs/PHILOSOPHY.md`, which is flagged dead). The standard names the file in plain text, and this
 report carries the link.
 
+## Follow-up, after checking the work
+
+Three things came out of exercising it rather than reading it.
+
+The credit also sits where a person reads it: `/reading` gained a shelf entry and a card for the
+cookbook, in his name, with the address of the chapter. The shelf now holds thirteen works and wraps
+to a second line, which is what its stylesheet is built for.
+
+The tool had a real defect that only a run would show. Frontmatter was read from the first 400
+characters, and a real run report spends more than that on its title and fields, so `date:` fell
+outside the window, every report came back undated, and `--since` skipped all of them. The filter
+looked like it worked because it returned nothing quietly. It now reads the whole frontmatter block,
+a test carries a title long enough to reproduce the bug, and `--since 2026-11-01` returns 14 reports
+where it returned none.
+
+The coverage claim was a paragraph and a fragile shell one-liner, and the one-liner was wrong: the
+obvious `grep -o '](.*\.md)'` is greedy and mangles the one index line that carries three links. It
+is now `bun run dream check-index <store-dir>`, with three tests, and it reports 99 links across 99
+notes, every note covered and every line real.
+
 ## Files
 
 `tools/dream.ts` and `tools/dream.test.ts` are new. `plans/memory-dream.md` is new. `standards/LOOP.md`
-gained one paragraph. `package.json` gained one script. This is a tool and a documents change, so no
-page copy moved and no published route changed.
+gained one paragraph, and the mounted skill was re-synced from it. `package.json` gained one script,
+then a second command inside the same tool. `view/pages/reading.html` gained one shelf entry, one
+card and a name in the description. No route changed: `/reading` already existed and the shelf wraps.
