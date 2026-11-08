@@ -77,8 +77,8 @@
     [data-nest-tool="wipe"], [data-nest-tool="wipe"] * { user-select: none; -webkit-user-select: none; }
     .nest-ant, .nest-hill, .nest-stray { user-select: none; -webkit-user-select: none; }
     .nest-scent { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; }
-    .nest-layer { --nest-trail: var(--ink-muted); --nest-rival: #5b6f99; }
-    :root[data-color-scheme="dark"] .nest-layer { --nest-rival: #9fb2d8; }
+    .nest-layer { --nest-trail: var(--ink-muted); --nest-rival: #a33b3b; }
+    :root[data-color-scheme="dark"] .nest-layer { --nest-rival: #e08a8a; }
     :root[data-color-scheme="light"] .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); }
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
@@ -94,6 +94,7 @@
     .nest-event-card[data-kind="vacuum"] .candy::after { content: ""; position: absolute; left: 8px; top: 3px; width: 3px; height: 14px; background: var(--paper); }
     .nest-event-card[data-kind="anteater"] .candy { left: 11px; width: 24px; height: 10px; top: 9px; border-radius: 10px 0 0 10px; }
     .nest-event-card[data-kind="anteater"] .candy::after { content: ""; position: absolute; right: 1px; top: 3px; width: 7px; height: 4px; border-radius: 50%; background: var(--paper); }
+    .nest-event-card .candy svg { position: absolute; inset: 0; width: 100%; height: 100%; stroke: var(--paper); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .nest-sweet-card.unwrapping .wrapper.left, .nest-event-card.unwrapping .wrapper.left { transform: translateX(-28px) rotate(-35deg); opacity: 0; }
     .nest-sweet-card.unwrapping .wrapper.right, .nest-event-card.unwrapping .wrapper.right { transform: translateX(28px) rotate(35deg); opacity: 0; }
     .nest-sweet-card.unwrapping .candy, .nest-event-card.unwrapping .candy { transform: scale(1.35); }
@@ -213,6 +214,7 @@
 
       filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 35%, transparent)); transition: opacity .4s, left 1.2s ease-in-out, top 1.2s ease-in-out; }
     .nest-queen svg { display: block; width: 60px; height: 38px; overflow: visible; }
+    .queen-braille { margin: 0; font: 10px/1 var(--font-mono); letter-spacing: 0; color: inherit; text-align: center; white-space: pre; }
     .nest-queen.panel-queen { z-index: 4; }
     .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
     .nest-queen.crawling { animation: nest-queen-crawl .18s steps(2) infinite; }
@@ -292,14 +294,6 @@
   // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
   // colour. At a glance it should not read as another worker.
   const SOLDIER_SVG = `<svg width="23" height="13" viewBox="-2.4 0 24.8 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
-  // The queen is a bigger soldier under a real crown, not a Braille blob. The sidepanel keeps the
-  // Braille queen inside the nest; outside, she should read as the animal leading the colony.
-  const QUEEN_ABDOMEN = [[9.2, 0.4], [10.6, 0.4], [12, 0.4], [13.4, 0.4], [9.8, 1.8], [11.2, 1.8], [12.6, 1.8], [14, 1.8], [10.4, 3.2], [11.8, 3.2], [13.2, 3.2]];
-  const QUEEN_SVG = `<svg width="60" height="38" viewBox="-4 -4.5 30 20" fill="currentColor" aria-hidden="true">
-    <g opacity=".16"><ellipse cx="12" cy="2.2" rx="9.6" ry="3.6"/><ellipse cx="12" cy="4.4" rx="7.4" ry="2.8"/></g>
-    ${dots(BODY)}${dots([[-1, 4], [-1.5, 3], [-1.5, 5], [-1, 2], [-1, 6]])}${dots(QUEEN_ABDOMEN)}
-    <path d="M-1.9 -1 0 -3.7 1.9 -1 3.8 -3.7 5.7 -1Z" fill="currentColor" stroke="none"/>
-    <g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const cancelStray = () => {
     clearTimeout(strayTimer); clearTimeout(strayExitTimer);
@@ -1004,7 +998,7 @@
     const moundSide = hole[0] > main.clientWidth / 2 ? 1 : -1;
     // Stay near the mound while there is still food here. The old second and third scouts were
     // deliberately opposite or spread out, which sent trails across the page past a full table.
-    const near = options.filter((o) => distToHole(o) < 520);
+    const near = options.filter((o) => distToHole(o) < 400);
     const close = near.length ? near : options;
     const opposite = close.filter((o) => (o[1] - hole[0]) * moundSide < 0);
     const pick = firstOpening
@@ -1082,7 +1076,9 @@
         else if (joined && i > 2) break;
       }
     }
-    return merged;
+    const clean = [];
+    for (const p of merged) if (!clean.length || Math.hypot(p[0] - clean[clean.length - 1][0], p[1] - clean[clean.length - 1][1]) > 5) clean.push(p);
+    return clean.length > 2 ? chaikin(clean, 1) : clean;
   };
 
   const layTrail = (ant, copy = "the scout is home; a trail is laid") => {
@@ -1458,7 +1454,7 @@
   const panelQueen = (descend = false) => {
     const q = document.createElement("div");
     q.className = "nest-queen panel-queen";
-    q.innerHTML = QUEEN_SVG;
+    q.innerHTML = queenMarkup();
     q.style.left = `${QUEEN[0] * well.clientWidth}px`;
     q.style.top = `${QUEEN[1] * well.clientHeight}px`;
     well.append(q);
@@ -1469,12 +1465,13 @@
         { transform: "translate(-50%, -240%) scale(.7)", opacity: 0 }];
     q.animate(frames, { duration: 1200, easing: "ease-in-out" }).onfinish = () => q.remove();
   };
+  const queenMarkup = () => "<pre class='queen-braille' aria-hidden='true'>⢀⣀⣀⡀\n⣿⣿⣿⣿\n⠶⠶⠶⠶</pre>";
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
     const now = performance.now();
     const mound = home;
     const stage = stageSpot();
-    const queen = document.createElement("div"); queen.className = "nest-queen bob crawling"; queen.innerHTML = QUEEN_SVG;
+    const queen = document.createElement("div"); queen.className = "nest-queen bob crawling"; queen.innerHTML = queenMarkup();
     queen.style.left = mound.hole[0] + "px"; queen.style.top = (mound.hole[1] - 8) + "px";
     layer.append(queen);
     requestAnimationFrame(() => { queen.style.left = stage.x + "px"; queen.style.top = stage.y + "px"; });
@@ -1646,6 +1643,9 @@
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
   // ---- the sweet: a rare lure that buys the page time without feeding the copy -------------
+  const eventIcon = (kind) => kind === "vacuum"
+    ? "<svg viewBox='0 0 20 20' aria-hidden='true'><rect x='4' y='4' width='12' height='12' rx='3'/><path d='M8 8h4M10 4V1'/></svg>"
+    : "<svg viewBox='0 0 20 20' aria-hidden='true'><path d='M2 11c4-7 9-7 13 0l3 4H1z'/><circle cx='7' cy='10' r='1'/><path d='M5 15h10'/></svg>";
   const unwrapCard = (el, done) => {
     if (el.classList.contains("unwrapping")) return;
     el.classList.add("unwrapping");
@@ -1776,7 +1776,7 @@
     const el = document.createElement("button");
     el.type = "button"; el.className = "nest-event-card"; el.dataset.kind = kind;
     el.setAttribute("aria-label", kind === "vacuum" ? "A wrapped switch. Click to unwrap." : "A wrapped anteater. Click to unwrap.");
-    el.innerHTML = "<span class='wrapper left'></span><span class='candy'></span><span class='wrapper right'></span>";
+    el.innerHTML = `<span class='wrapper left'></span><span class='candy'>${eventIcon(kind)}</span><span class='wrapper right'></span>`;
     el.style.left = `${spot.x}px`; el.style.top = `${Math.max(10, spot.y - 64)}px`;
     layer.append(el);
     const card = { el, kind, ttl: 10000 };
@@ -2166,7 +2166,7 @@
     for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i++) {
       if (!/\S/.test(n.data[i])) continue;
       const L = letterOf(n, i);
-      if (L.state !== "free" || L.span || exclude.has(blockOf(n))) continue;
+      if (L.state !== "free" || L.span || needOf(n) > 1 || exclude.has(blockOf(n))) continue;
       const r = rectOf(n, i); if (!r.width) continue;
       const [x, y] = local(r);
       const d = Math.hypot(x - hole[0], y - hole[1]);
@@ -2209,7 +2209,9 @@
     if (!trail || !state.trails.includes(trail)) return false;
     const options = freeIn(trail.block, trail.end);
     if (!options.length) return false;
-    const L = options[0].L;
+    const light = options.find((o) => needOf(o.L.n) === 1);
+    if (!light) return false;
+    const L = light.L;
     const r = rectOf(L.n, L.i); const [x, y] = local(r);
     hideChar(L); L.state = "rival-carry"; L.crew = [];
     const glyph = document.createElement("span"); glyph.className = "nest-letter rival-carry"; glyph.textContent = L.ch;
@@ -2282,7 +2284,7 @@
     for (const r of rival.ants.slice()) {
       if (!r.el || r.contest) continue;
       const defender = state.ants.find((a) => a.el && (a.role === "soldier" || a.role === "guard") &&
-        Math.hypot(a.x - r.x, a.y - r.y) < 18);
+        Math.hypot(a.x - r.x, a.y - r.y) < 28);
       if (!defender) continue;
       r.contest = now; r.el.classList.add("fighting"); defender.el.classList.add("fighting");
       blip(220, 0.05, "square", 0.035);
