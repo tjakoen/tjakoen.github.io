@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="A cream square card for the ant colony note, with a Braille anthill, dotted scent trails, and the title My portfolio has ants now.">
+  <rect width="1200" height="1200" fill="#faf7f1"/>
+  <rect x="36" y="36" width="1128" height="1128" fill="none" stroke="#d8cfc1" stroke-width="2"/>
+  <text x="86" y="156" font-family="Georgia, 'Times New Roman', serif" font-size="72" fill="#2b2b2b">My portfolio</text>
+  <text x="86" y="238" font-family="Georgia, 'Times New Roman', serif" font-size="72" fill="#2b2b2b">has ants now.</text>
+  <text x="90" y="306" font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#6b6259">A small ecosystem hidden under the copy.</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#2b2b2b" text-anchor="middle" letter-spacing="-1">
+    <text x="600" y="500">⠀⠀⠀⠀⣀⣤⣤⣤⣤⣀⠀⠀⠀⠀</text>
+    <text x="600" y="520">⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣄⠀⠀</text>
+    <text x="600" y="540">⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀</text>
+    <text x="600" y="560">⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇</text>
+    <text x="600" y="580">⠈⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠁</text>
+  </g>
+  <circle cx="600" cy="546" r="22" fill="#faf7f1"/>
+  <path d="M600 570 C520 640 430 690 330 760" fill="none" stroke="#d97757" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
+  <path d="M600 570 C690 650 780 700 890 760" fill="none" stroke="#d97757" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
+
+  <g fill="#2b2b2b" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round">
+    <g transform="translate(320 760)">
+      <ellipse cx="-13" cy="0" rx="8" ry="6" fill="#2b2b2b"/><circle cx="0" cy="-1" r="7"/><ellipse cx="13" cy="0" rx="10" ry="7"/>
+      <path d="M-17 -4 L-27 -12 M-17 3 L-27 11 M0 -7 L-5 -17 M0 6 L-5 15 M20 -4 L29 -12 M20 4 L29 12" fill="none"/>
+    </g>
+    <g transform="translate(890 760) scale(-1 1)">
+      <ellipse cx="-13" cy="0" rx="8" ry="6"/><circle cx="0" cy="-1" r="7"/><ellipse cx="13" cy="0" rx="10" ry="7"/>
+      <path d="M-17 -4 L-27 -12 M-17 3 L-27 11 M0 -7 L-5 -17 M0 6 L-5 15 M20 -4 L29 -12 M20 4 L29 12" fill="none"/>
+    </g>
+  </g>
+
+  <text x="86" y="1010" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#2b2b2b">No canvas. No game library.</text>
+  <text x="86" y="1055" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#2b2b2b">One plain JavaScript file.</text>
+  <text x="86" y="1108" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" fill="#d97757" letter-spacing="2">PORTFOLIO.TJAKOEN.COM</text>
+</svg>
