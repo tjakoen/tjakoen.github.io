@@ -28,6 +28,9 @@ declare global {
       placeSweet: (x: number, y: number) => unknown;
       spawnEnv: (kind: string) => void;
       env?: unknown;
+      spawnPageAnt: (role: string, at: [number, number], mini: unknown) => { el: Element };
+      spawnRivalUnit: (job: string, at: [number, number], path: number[][], sweet: unknown) => { el: Element };
+      rivalCombat: (now: number) => void;
       wipeTrail: (trail: unknown, at: [number, number]) => void;
       rival: { active: boolean; ants: Array<unknown>; trails: Array<{ end: [number, number] }>; stolen: Set<unknown>; returnAt: number; minis: Array<unknown>; mound?: { base: [number, number] } | null };
     };
