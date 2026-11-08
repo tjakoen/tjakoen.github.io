@@ -133,7 +133,7 @@
     .nest-hill.pressing { filter: brightness(1.4); }
     .nest-hill.sealed { color: var(--color-accent); }
     .nest-hill.sealed b { color: var(--color-accent); }
-    .nest-scent .hit { stroke: transparent; stroke-width: 16; stroke-dasharray: none; cursor: grab; opacity: 1; }
+    .nest-scent .hit { stroke: transparent; stroke-width: 24; stroke-dasharray: none; cursor: cell; opacity: 1; }
     .nest-bait { position: absolute; font: 16px var(--font-mono); color: var(--color-accent); -webkit-text-stroke: .05em currentColor;
       transform: translate(-50%, -50%); pointer-events: none; transition: opacity 1s; }
     [data-nest-tool="squash"], [data-nest-tool="squash"] :is(a, button, summary, label) { cursor: crosshair; }
@@ -935,7 +935,7 @@
 
   // The first trail is laid only when the scout gets its first letter home. A scout killed on the
   // way leaves no half-open trail and nothing for the workers to join.
-  const layTrail = (ant) => {
+  const layTrail = (ant, copy = "the scout is home; a trail is laid") => {
     const route = ant.scoutRoute; if (!route) return null;
     const points = route.pts.map((p) => p.join(",")).join(" ");
     const halo = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
@@ -951,7 +951,8 @@
     addEraser(t);
     state.trails.push(t);
     ant.scoutRoute = null;
-    log("the scout is home; a trail is laid"); chord([392, 523], 0.18, 0.03);
+    log(copy);
+    chord([392, 523], 0.18, 0.03);
     return t;
   };
 
@@ -962,11 +963,16 @@
     const pick = (light && all.find((f) => f.L.state === "free" && needOf(f.L.n) === 1)) || all[0];
     if (!pick) return goHome(ant);
     const L = pick.L;
-    // a scout that finds only heavy letters cannot carry one home alone, so it turns back and
-    // looks elsewhere rather than opening a trail nobody can use.
-    if (light && needOf(L.n) > 1) { log(`a big “${L.ch}” needs ${needOf(L.n)} ants`); return goHome(ant); }
     if (L.state === "free") { L.need = needOf(L.n); L.state = "gather"; L.crew = []; }
     L.crew.push(ant); ant.letter = L; ant.job = "toLetter";
+    // Lay the trail at the pickup, not at the delivery. A scout walking a long page with the
+    // only letter can otherwise hold the trail in limbo and stall the whole colony.
+    if (light && ant.scoutRoute) {
+      const t = layTrail(ant, needOf(L.n) > 1
+        ? "the scout calls for help; a trail is laid"
+        : "the scout picks up a letter; a trail is laid");
+      if (t) join(ant, t);
+    }
     const k = L.crew.length - 1, spread = (k - (L.need - 1) / 2) * 12;
     ant.path = [[pick.x + spread, pick.y + 7]]; ant.k = 0;
   };
@@ -1136,7 +1142,6 @@
       if (isSealed(hillOf(ant))) { ant.k = ant.path.length - 1; return; } // waits at the sealed hill, letter held up
       L.glyph.remove(); L.state = "stolen"; state.stolen.add(L); state.stolenTotal++;
       blip(520, 0.05, "sine"); chord([523, 659], 0.16, 0.022);
-      if (ant.scoutRoute) layTrail(ant);
       if (ant.role === "scout") { ant.role = "worker"; }
       if (ant.role === "flyer") { state.stores++; ant.letter = null; ant.job = "fly"; ant.path = [randomPoint()]; ant.k = 0; return; } // flyers feed the stores and fly on
       L.crew.forEach((a) => { if (a !== ant && a.el) enterNest(a, null); });
@@ -1652,7 +1657,7 @@
       e.preventDefault(); from = [e.clientX, e.clientY]; hit.setPointerCapture(e.pointerId);
     });
     hit.addEventListener("pointermove", (e) => {
-      if (!e.isPrimary || !from || Math.hypot(e.clientX - from[0], e.clientY - from[1]) < 28) return;
+      if (!e.isPrimary || !from || Math.hypot(e.clientX - from[0], e.clientY - from[1]) < 12) return;
       from = null;
       if (state.trails.includes(t)) {
         const m = main.getBoundingClientRect();
@@ -1943,6 +1948,24 @@
   };
   document.addEventListener("click", holdLinks, true);
   document.addEventListener("auxclick", holdLinks, true);
+  // Wipe with a drag anywhere on the page, not only if the pointer starts on the thin hit path.
+  let wipeFrom = null;
+  main.addEventListener("pointerdown", (e) => {
+    if (state.tool !== "wipe" || !e.isPrimary || e.button !== 0) return;
+    if (e.target.closest?.("#nest-mock, .nest-switch, [data-surface='console']")) return;
+    e.preventDefault(); wipeFrom = [e.clientX, e.clientY];
+  });
+  main.addEventListener("pointermove", (e) => {
+    if (!wipeFrom || state.tool !== "wipe") return;
+    if (Math.hypot(e.clientX - wipeFrom[0], e.clientY - wipeFrom[1]) < 8) return;
+    const m = main.getBoundingClientRect();
+    const at = [e.clientX - m.left + main.scrollLeft, e.clientY - m.top + main.scrollTop];
+    const hit = state.trails.find((t) => t.pts.some((p) => Math.hypot(p[0] - at[0], p[1] - at[1]) < 24));
+    if (!hit) return;
+    wipeFrom = null;
+    wipeTrail(hit, at);
+  });
+  ["pointerup", "pointercancel"].forEach((ev) => main.addEventListener(ev, () => { wipeFrom = null; }));
   setTool("squash");
   $("x").addEventListener("click", leave);
   $("seal").addEventListener("click", () => hills.forEach(seal));
