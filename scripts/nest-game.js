@@ -873,7 +873,7 @@
     if (ant.role === "scout") return emerge(ant);
     if (ant.role === "soldier") {
       const ready = state.trails.filter((t) => !t.side && t.ready && t.state !== "gone");
-      if (ready.length) { ant.patrol = ready[Math.floor(Math.random() * ready.length)]; return emerge(ant); }
+      if (ready.length) { ant.lane = ((ant.id % 5) - 2) * 8; ant.patrol = ready[Math.floor(Math.random() * ready.length)]; return emerge(ant); }
       ant.d = LEN[ant.route] - 0.01 - 0.025 * waitingRank(ant); return;
     }
     let help = null;
@@ -912,7 +912,7 @@
     ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
     layer.append(ant.el); placeAnt(ant);
     if (ant.role === "scout") scout(ant);
-    else if (ant.role === "soldier") { ant.job = "patrol"; ant.path = lanePath(ant.patrol.pts, ant.lane || 0); ant.k = 0; ant.hp = ant.hp || 2; }
+    else if (ant.role === "soldier") { ant.lane = ant.lane || ((ant.id % 5) - 2) * 8; ant.patrolLaps = 0; ant.job = "patrol"; ant.path = lanePath(ant.patrol.pts, ant.lane); ant.k = 0; ant.hp = ant.hp || 2; }
     else if (ant.trail && ant.trail.state !== "gone") { ant.job = "follow"; ant.path = lanePath(ant.trail.pts, ant.lane || 0); ant.k = 0; }
     else { ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; }
     label(ant);
@@ -1205,6 +1205,17 @@
     ant.x += (dx / d) * v - (dy / d) * sway; ant.y += (dy / d) * v + (dx / d) * sway; return false;
   };
 
+  const PATROL_LAPS = 4; // two full out-and-back passes before a guard visits its mound
+  const patrolMound = (ant) => (ant.mini && minis.includes(ant.mini) ? ant.mini : home);
+  const patrolCircle = (ant) => {
+    const m = patrolMound(ant);
+    const c = m.spot ? [m.spot.x, m.spot.y - 6] : [m.hole[0], m.hole[1]];
+    return Array.from({ length: 9 }, (_, k) => {
+      const a = (k / 8) * Math.PI * 2;
+      return [c[0] + Math.cos(a) * 28, c[1] + Math.sin(a) * 16];
+    });
+  };
+
   const stepPage = (ant, dt) => {
     ant.px = ant.x; ant.py = ant.y;
     if (ant.job === "dance") return; // the party moves its own dancers
@@ -1233,6 +1244,30 @@
       } else { ant.px = ant.x; ant.py = ant.y; }
       return;
     }
+    if (ant.job === "patrol-return") {
+      const g = ant.path[ant.k];
+      if (!g) { ant.job = "patrol-circle"; ant.path = patrolCircle(ant); ant.k = 0; return; }
+      if (move(ant, g[0], g[1], dt, SPEED * 0.9)) {
+        ant.px = ant.x; ant.py = ant.y;
+        if (++ant.k >= ant.path.length) { ant.job = "patrol-circle"; ant.path = patrolCircle(ant); ant.k = 0; }
+      } else { ant.px = ant.x; ant.py = ant.y; }
+      return;
+    }
+    if (ant.job === "patrol-circle") {
+      const g = ant.path[ant.k];
+      if (!g) { ant.job = "patrol"; ant.path = []; ant.k = 0; return; }
+      if (move(ant, g[0], g[1], dt, SPEED * 0.8)) {
+        ant.px = ant.x; ant.py = ant.y;
+        if (++ant.k >= ant.path.length) {
+          ant.patrolLaps = 0;
+          const t = ant.patrol;
+          if (t && state.trails.includes(t)) { ant.job = "patrol"; ant.path = lanePath(t.pts, ant.lane || 0); ant.k = 0; }
+          else if (ant.mini && minis.includes(ant.mini)) { ant.job = "mini-home"; ant.path = [ant.mini.hole.slice()]; ant.k = 0; }
+          else { ant.job = "home"; ant.path = [hillOf(ant).hole.slice()]; ant.k = 0; }
+        }
+      } else { ant.px = ant.x; ant.py = ant.y; }
+      return;
+    }
     if (ant.job === "patrol") { // soldiers and guards walk their trail out and back, guarding it
       if (ant.circling && state.trails.some((trail) => trail.ready && trail.state !== "gone")) return assignGuard(ant);
       if (!ant.circling && !state.trails.includes(ant.patrol)) {
@@ -1247,7 +1282,15 @@
         return;
       }
       const beforeX = ant.x, beforeY = ant.y;
-      if (move(ant, g[0], g[1], dt, SPEED * 0.8)) { if (++ant.k >= ant.path.length) { ant.path = ant.path.toReversed(); ant.k = 0; } }
+      if (move(ant, g[0], g[1], dt, SPEED * 0.8)) {
+        if (++ant.k >= ant.path.length) {
+          ant.patrolLaps = (ant.patrolLaps || 0) + 1;
+          if (ant.patrolLaps >= PATROL_LAPS) {
+            const m = patrolMound(ant);
+            ant.job = "patrol-return"; ant.path = [m.hole.slice()]; ant.k = 0;
+          } else { ant.path = ant.path.toReversed(); ant.k = 0; }
+        }
+      }
       ant.progress = (ant.progress || 0) + Math.hypot(ant.x - beforeX, ant.y - beforeY);
       if (!ant.probe) ant.probe = performance.now();
       if (performance.now() - ant.probe > 6000) {
@@ -1718,9 +1761,9 @@
     const lo = Math.max(1, best - 4), hi = Math.min(t.pts.length, best + 5);
     // Walk beside the trail, never on it: the workers need the line itself and a guard in the
     // same lane is what made a busy trail look crowded.
-    const side = g.id % 2 ? 1 : -1, span = 13 + (g.id % 3) * 2;
-    g.job = "patrol"; g.patrol = t; g.circling = false; g.retired = false;
-    g.path = [[g.x, g.y], ...lanePath(t.pts.slice(lo, hi), span * side)]; g.k = 0;
+    g.lane = ((g.id % 5) - 2) * 8;
+    g.job = "patrol"; g.patrol = t; g.circling = false; g.retired = false; g.patrolLaps = 0;
+    g.path = [[g.x, g.y], ...lanePath(t.pts.slice(lo, hi), g.lane)]; g.k = 0;
     g.guardLink = null;
   };
   const stepFlyer = (f, dt) => {
