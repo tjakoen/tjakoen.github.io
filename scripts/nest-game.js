@@ -636,7 +636,7 @@
   addEventListener("beforeunload", onBeforeUnload);
   const state = { ants: [], eggs: [], trails: [], larder: [], stolen: new Set(), openingTargets: [], squashed: 0, meals: 0, paused: false,
     over: false, stores: 0, built: 0, feedFlip: false, peak: 0, stolenTotal: 0, sound: false, speed: 1,
-    sweet: null, sweetCard: null, sweetPlanning: false, sweetNext: 0, env: null, envNext: 0, cache: null,
+    env: null, envNext: 0, cache: null, scoutQueue: [],
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(state.ants.length / 3)));
   const rival = { active: false, mound: null, trails: [], ants: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8 };
@@ -946,7 +946,7 @@
     ant.el.className = "nest-ant walk"; ant.el.innerHTML = ant.role === "soldier" ? SOLDIER_SVG : ANT_SVG;
     ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
     layer.append(ant.el); placeAnt(ant);
-    if (ant.role === "scout") scout(ant);
+    if (ant.role === "scout") { ant.job = "scout-pending"; state.scoutQueue.push(ant); return; }
     else if (ant.role === "soldier") { ant.lane = ant.lane || ((ant.id % 5) - 2) * 8; ant.patrolLaps = 0; ant.job = "patrol"; ant.path = lanePath(ant.patrol.pts, ant.lane); ant.k = 0; ant.hp = ant.hp || 2; }
     else if (ant.trail && ant.trail.state !== "gone") { ant.job = "follow"; ant.path = lanePath(ant.trail.pts, ant.lane || 0); ant.k = 0; }
     else { ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; }
@@ -1264,7 +1264,7 @@
   };
 
   const stepPage = (ant, dt) => {
-    if (ant.tongue) return;
+    if (ant.tongue || ant.job === "scout-pending") return;
     ant.px = ant.x; ant.py = ant.y;
     if (ant.job === "dance") return; // the party moves its own dancers
     if (ant.job === "wait") {
@@ -2705,6 +2705,7 @@
     const dt = Math.min(0.05, (now - last) / 1000) * state.speed; last = now;
     if (!state.paused) {
       if (state.party) stepParty(now, dt);
+      if (state.scoutQueue.length) { const pending = state.scoutQueue.shift(); if (pending?.el && pending.role === "scout") scout(pending); }
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
       rival.ants.slice().forEach((a) => stepRival(a, dt));
       rivalCombat(now);
