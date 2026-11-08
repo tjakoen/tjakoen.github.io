@@ -98,8 +98,10 @@
 
     .nest-vacuum-braille { position: absolute; z-index: 6; pointer-events: none; color: var(--color-accent); font: 8px/8px var(--font-mono); letter-spacing: 0; white-space: pre; overflow: hidden; opacity: .55; }
     .nest-tongue { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: visible; }
-    .nest-tongue .tongue-braille.head { font-size: 26px; }
-    .nest-tongue .tongue-braille { position: absolute; transform: translate(-50%, -50%); font: 18px/1 var(--font-mono); color: var(--color-accent); white-space: pre; text-shadow: 0 0 7px color-mix(in srgb, var(--color-accent) 35%, transparent); }
+    .nest-tongue .tongue-braille { position: absolute; transform: translate(-50%, -50%); font: 12px/1 var(--font-mono); color: var(--color-accent); white-space: pre; opacity: 0; transition: opacity .12s linear; }
+    .nest-tongue .tongue-braille.on { opacity: 1; }
+    .nest-tongue-head { position: absolute; z-index: 6; color: var(--color-accent); pointer-events: none; transform-origin: 20% 50%; }
+    .nest-tongue-head .nest-event-art { font: 13px/.82 var(--font-mono); }
     .nest-suck { position: absolute; z-index: 7; color: var(--color-accent); font: 11px/1 var(--font-mono); pointer-events: none; }
     .nest-vacuum-head { position: absolute; z-index: 7; width: 48px; height: 48px; padding: 6px; border: 1px solid var(--color-accent); background: var(--paper); color: var(--color-accent); pointer-events: none; }
     .nest-vacuum-head .nest-event-art { margin: 0; font: 8px/.8 var(--font-mono); color: var(--color-accent); }
@@ -1740,31 +1742,50 @@
         log("the vacuum takes a slice of the page");
       }, 700);
     } else {
-      const cy = anchor.y;
+      const pickable = state.trails.filter((t) => t.state !== "gone" && t.pts && t.pts.length > 2);
+      const targetTrail = pickable[Math.floor(Math.random() * Math.max(1, pickable.length))];
+      const target = targetTrail ? targetTrail.pts[Math.floor(targetTrail.pts.length * (0.35 + Math.random() * 0.3))] : [anchor.x, anchor.y];
+      const fromLeft = target[0] > main.clientWidth / 2;
+      const source = [
+        fromLeft ? 105 : main.clientWidth - 105,
+        Math.max(30, Math.min(main.scrollHeight - 30, target[1] + (Math.random() - 0.5) * 120)),
+      ];
+      const dx = target[0] - source[0], dy = target[1] - source[1], len = Math.hypot(dx, dy) || 1;
+      const nx = -dy / len, ny = dx / len;
+      const phase = Math.random() * Math.PI * 2, amp = Math.min(18, Math.max(7, len * 0.07));
       const pts = [];
-      for (let k = 0; k <= 36; k++) { const u = k / 36; pts.push([-20 + u * (main.clientWidth + 40), cy + Math.sin(u * Math.PI * 2.4) * 54 + Math.sin(u * Math.PI * 5) * 12]); }
+      const steps = Math.max(12, Math.ceil(len / 6));
+      for (let k = 0; k <= steps; k++) {
+        const u = k / steps;
+        const sway = Math.sin(u * Math.PI * 3.2 + phase) * amp * Math.sin(Math.PI * u);
+        pts.push([source[0] + dx * u + nx * sway, source[1] + dy * u + ny * sway]);
+      }
+      const head = document.createElement("div"); head.className = "nest-tongue-head"; head.innerHTML = eventIcon("anteater");
+      head.style.left = source[0] + "px"; head.style.top = source[1] + "px";
+      head.style.transform = `translate(-20%, -50%) rotate(${Math.atan2(dy, dx)}rad)`;
+      layer.append(head);
       const tongue = document.createElement("div"); tongue.className = "nest-tongue";
-      let last = null;
+      const spans = [];
       for (let i = 1; i < pts.length; i++) {
         const [ax, ay] = pts[i - 1], [bx, by] = pts[i];
-        const len = Math.hypot(bx - ax, by - ay), steps = Math.max(1, Math.ceil(len / 5));
-        for (let k = 0; k < steps; k++) {
-          const u = k / steps, x = ax + (bx - ax) * u, y = ay + (by - ay) * u;
+        const segLen = Math.hypot(bx - ax, by - ay), n = Math.max(1, Math.ceil(segLen / 4));
+        for (let k = 0; k < n; k++) {
+          const u = k / n, x = ax + (bx - ax) * u, y = ay + (by - ay) * u;
           const span = document.createElement("span"); span.className = "tongue-braille";
-          span.textContent = "⣿";
+          span.textContent = "⠒";
           span.style.left = x + "px"; span.style.top = y + "px";
           span.style.transform = `translate(-50%, -50%) rotate(${Math.atan2(by - ay, bx - ax)}rad)`;
-          tongue.append(span); last = span;
+          tongue.append(span); spans.push(span);
         }
       }
-      if (last) { last.classList.add("head"); last.textContent = "⣿"; }
       layer.append(tongue);
+      spans.forEach((span, i) => setTimeout(() => span.classList.add("on"), 350 + i * 4));
       const stuck = [];
       if (anchor.el && !anchor.tongue) { anchor.tongue = true; anchor.el.classList.add("stuck"); stuck.push(anchor); }
       const stick = () => {
         for (const a of all) {
           if (!a.el || a.tongue) continue;
-          if (pts.some((p, i) => i && distToSeg(a, pts[i - 1], p) < 16)) {
+          if (pts.some((p, i) => i && distToSeg(a, pts[i - 1], p) < 14)) {
             a.tongue = true; a.px = a.x; a.py = a.y; a.el.classList.add("stuck"); stuck.push(a);
           }
         }
@@ -1772,10 +1793,14 @@
       const timer = setInterval(stick, 120);
       setTimeout(() => {
         clearInterval(timer);
-        tongue.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350 }).onfinish = () => tongue.remove();
-        setTimeout(() => { stuck.forEach(removeEnvAnt); log("the tongue retracts; the stuck ants are gone"); }, 350);
+        spans.slice().toReversed().forEach((span, i) => setTimeout(() => span.classList.remove("on"), i * 3));
+        setTimeout(() => {
+          tongue.remove(); head.remove();
+          stuck.forEach(removeEnvAnt);
+          log("the anteater draws its tongue back; the stuck ants are gone");
+        }, 650);
       }, 3000);
-      log("the anteater unrolls its tongue");
+      log("the anteater's tongue winds toward a trail");
     }
     blip(kind === "vacuum" ? 120 : 90, 0.24, "sawtooth", 0.04);
     state.envNext = performance.now() + 80000 + Math.random() * 60000;
