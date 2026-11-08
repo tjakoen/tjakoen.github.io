@@ -48,3 +48,13 @@ test("the rival runs without runtime errors", async ({ page }) => {
   expect(errors).toEqual([]);
   expect(await page.evaluate(() => (window.__nest as any).state.ants.filter((a: any) => a.side !== "rival").length)).toBeGreaterThan(0);
 });
+
+
+test("the first worship does not spawn the rival; the second does", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => (window.__nest as any).startParty());
+  await expect.poll(() => page.evaluate(() => !!(window.__nest as any).state.party), { timeout: 15_000 }).toBe(false);
+  expect(await page.evaluate(() => (window.__nest as any).rival.active)).toBe(false);
+  await page.evaluate(() => (window.__nest as any).startParty());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 25_000 }).toBe(true);
+});
