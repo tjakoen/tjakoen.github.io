@@ -528,7 +528,9 @@
 
   const bit = [[0x01, 0x08], [0x02, 0x10], [0x04, 0x20], [0x40, 0x80]];
   let W = 0, H = 0, R = 0, base = null;
+  let nestCells = null, nestCols = 0, nestRows = 0;
   const buildNest = () => {
+    nestCells = null;
     const probe = document.createElement("span"); probe.textContent = "⣿".repeat(20); pre.textContent = ""; pre.append(probe);
     const pr = probe.getBoundingClientRect(); probe.remove();
     const cellW = pr.width / 20, cellH = pr.height;
@@ -559,6 +561,25 @@
     STORES.forEach(([u, v], k) => { const [tu, tv] = k ? [0.68, 0.77] : [0.36, 0.72]; for (let s2 = 0; s2 <= 30; s2++) carve((u + (tu - u) * s2 / 30) * W, (v + (tv - v) * s2 / 30) * H, 1.5, 1.5); carve(u * W, v * H, R * 0.7, R * 0.42); });
     carve(QUEEN[0] * W, QUEEN[1] * H, R * 1.4, R * 0.7);
   };
+  // A Braille cell stays in the DOM for the life of the nest. Redrawing only changes the cells
+  // whose dots moved, so the panel no longer replaces a thousand nodes ten times a second.
+  const buildNestCells = () => {
+    nestCols = W / 2; nestRows = H / 4;
+    nestCells = Array.from({ length: nestCols * nestRows });
+    const frag = document.createDocumentFragment();
+    for (let row = 0; row < nestRows; row++) {
+      for (let col = 0; col < nestCols; col++) {
+        const cell = document.createElement("b");
+        cell.textContent = "\u2800";
+        cell.dataset.tone = "";
+        cell._ch = "\u2800";
+        nestCells[row * nestCols + col] = cell;
+        frag.append(cell);
+      }
+      frag.append("\n");
+    }
+    pre.replaceChildren(frag);
+  };
   new ResizeObserver(buildNest).observe(well);
 
   // ================================ the page ================================
@@ -578,7 +599,9 @@
   const fitLayer = () => { layer.style.height = "0"; layer.style.height = main.scrollHeight + "px"; };
   fitLayer(); new ResizeObserver(fitLayer).observe(main);
   const scent = document.createElementNS("http://www.w3.org/2000/svg", "svg"); scent.classList.add("nest-scent"); layer.append(scent);
-  const local = (r) => { const m = main.getBoundingClientRect(); return [r.left - m.left + main.scrollLeft, r.top - m.top + main.scrollTop]; };
+  let frameRect = null;
+  const pageRect = () => frameRect || main.getBoundingClientRect();
+  const local = (r, m = pageRect()) => [r.left - m.left + main.scrollLeft, r.top - m.top + main.scrollTop];
 
   // A trail should look walked, not sampled. Chaikin keeps the two ends and rounds every corner.
   const chaikin = (pts, passes = 2) => {
@@ -615,7 +638,7 @@
     return out;
   };
   const rectOf = (n, i) => { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 1); return r.getBoundingClientRect(); };
-  const onScreen = (r) => { const m = main.getBoundingClientRect(); return r.width > 0 && r.top > m.top + 10 && r.bottom < m.bottom - 10; };
+  const onScreen = (r, m = pageRect()) => r.width > 0 && r.top > m.top + 10 && r.bottom < m.bottom - 10;
   const pageLetters = textNodes(main).reduce((s, n) => s + (n.data.match(/\S/g) || []).length, 0);
   // A taken letter is hidden where it stands, never removed, so the words around it do not move.
   // Its character is split into its own span; letters after it in the same text node move to the
@@ -725,7 +748,7 @@
   // A trail feeds from a patch, the letters within PATCH pixels of where its scout found food, so
   // the ants on it visibly work one small area of the page.
   const PATCH = 70;
-  const inPatch = (r, c) => Math.hypot(r.left + r.width / 2 - (c[0] - main.scrollLeft + main.getBoundingClientRect().left), r.top + r.height / 2 - (c[1] - main.scrollTop + main.getBoundingClientRect().top)) <= PATCH;
+  const inPatch = (r, c) => { const m = pageRect(); return Math.hypot(r.left + r.width / 2 - (c[0] - main.scrollLeft + m.left), r.top + r.height / 2 - (c[1] - main.scrollTop + m.top)) <= PATCH; };
   const freeIn = (block, center) => {
     const found = [];
     for (const n of textNodes(block)) for (let i = 0; i < n.data.length; i++) {
@@ -825,6 +848,12 @@
   };
   const waitingRank = (ant) => state.ants.filter((a) => a.where === "nest" && a.route === "up" && a.d > LEN.up - 0.3 && a.id < ant.id).length;
 
+  const antTransform = (a) => `translate3d(${a.px}px, ${a.py}px, 0) rotate(${a.heading + Math.PI}rad)`;
+  const placeAnt = (a) => {
+    a.el.style.left = "0px"; a.el.style.top = "0px";
+    a.el.style.transform = antTransform(a);
+    a.el._px = a.px; a.el._py = a.py; a.el._heading = a.heading; a.el._walk = true;
+  };
   const emerge = (ant) => {
     const open = hills.filter((h) => !isSealed(h)); ant.hill = open[Math.floor(Math.random() * open.length)] || home;
     const hole = ant.hill.hole;
@@ -832,7 +861,7 @@
     ant.el = document.createElement("button"); ant.el.type = "button";
     ant.el.className = "nest-ant walk"; ant.el.innerHTML = ant.role === "soldier" ? SOLDIER_SVG : ANT_SVG;
     ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
-    layer.append(ant.el);
+    layer.append(ant.el); placeAnt(ant);
     if (ant.role === "scout") scout(ant);
     else if (ant.role === "soldier") { ant.job = "patrol"; ant.path = lanePath(ant.patrol.pts, ant.lane || 0); ant.k = 0; ant.hp = ant.hp || 2; }
     else if (ant.trail && ant.trail.state !== "gone") { ant.job = "follow"; ant.path = lanePath(ant.trail.pts, ant.lane || 0); ant.k = 0; }
@@ -1397,7 +1426,7 @@
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant walk" + (role === "flyer" ? " flyer" : "");
     a.el.innerHTML = role === "flyer" ? ANT_SVG.replace("<g class=\"legs-a\">", `<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g><g class="legs-a">`) : role === "guard" ? SOLDIER_SVG : ANT_SVG;
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
-    layer.append(a.el); state.ants.push(a); label(a); return a;
+    layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
   const startBuild = () => {
     const spot = findMiniSpot(); if (!spot) return;
@@ -1764,77 +1793,124 @@
       const leg = step ? 1 : -1; put(x - cy * 1.5 + cx * leg, y + cx * 1.5 + cy * leg, t); put(x + cy * 1.5 - cx * leg, y - cx * 1.5 - cy * leg, t);
       if (a.food) { put(x + cx * 3, y + cy * 3, 5); put(x + cx * 3, y + cy * 3 - 1, 5); }
     });
-    let out = "";
+    if (!nestCells || nestCols !== W / 2 || nestRows !== H / 4) buildNestCells();
+    let cellIndex = 0;
     for (let cy = 0; cy < H; cy += 4) {
       for (let cx = 0; cx < W; cx += 2) {
         let code = 0, tone = -1;
         for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) { const t = d[(cy + dy) * W + cx + dx]; if (t >= 0) { code |= bit[dy][dx]; tone = Math.max(tone, t); } }
         const ch = String.fromCharCode(0x2800 + code);
-        out += tone > 0 ? `<b class="t${tone}">${ch}</b>` : ch;
+        const cell = nestCells[cellIndex++];
+        if (cell._ch !== ch) { cell.firstChild.data = ch; cell._ch = ch; }
+        const toneKey = tone > 0 ? String(tone) : "";
+        if (cell.dataset.tone !== toneKey) { cell.className = tone > 0 ? `t${tone}` : ""; cell.dataset.tone = toneKey; }
       }
-      out += "\n";
     }
-    pre.innerHTML = out;
   };
 
+  const statText = new Map();
+  const setText = (key, value) => {
+    const text = String(value);
+    if (statText.get(key) === text) return;
+    const el = $(key); if (el) el.textContent = text;
+    statText.set(key, text);
+  };
+  const meterCells = new Map();
+  const meterObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) meterCells.set(entry.target, Math.max(10, Math.floor(entry.contentRect.width / 6)));
+  });
+  for (const key of ["stores", "holds", "bar", "worship"]) {
+    const meter = $(`${key}-bar`);
+    if (!meter) continue;
+    meterCells.set(meter, Math.max(10, Math.floor(meter.clientWidth / 6)));
+    meterObserver.observe(meter);
+  }
   const drawStats = () => {
     const setMeter = (key, ratio, text) => {
       const r = Math.min(1, Math.max(0, ratio));
       const meter = $(`${key}-bar`);
-      const cells = Math.max(10, Math.floor((meter?.clientWidth || 160) / 6));
+      const cells = meterCells.get(meter) ?? Math.max(10, Math.floor((meter?.clientWidth || 160) / 6));
       const filled = Math.round(r * cells);
-      const fill = $(key); if (fill) fill.textContent = "█".repeat(filled);
-      const rest = $(`${key}-rest`); if (rest) rest.textContent = "░".repeat(cells - filled);
+      setText(key, "█".repeat(filled));
+      setText(`${key}-rest`, "░".repeat(cells - filled));
       if (meter) {
-        meter.setAttribute("aria-valuenow", String(Math.round(r * 100)));
-        meter.setAttribute("aria-valuetext", text ?? `${Math.round(r * 100)}%`);
+        const now = String(Math.round(r * 100));
+        if (meter.getAttribute("aria-valuenow") !== now) meter.setAttribute("aria-valuenow", now);
+        const valueText = text ?? `${Math.round(r * 100)}%`;
+        if (meter.getAttribute("aria-valuetext") !== valueText) meter.setAttribute("aria-valuetext", valueText);
       }
-      const val = $(`${key}-val`); if (val && text != null) val.textContent = text;
+      if (text != null) setText(`${key}-val`, text);
     };
-    $("scouts").textContent = state.ants.filter((a) => a.role === "scout").length;
-    $("workers").textContent = state.ants.filter((a) => a.role === "worker").length;
-    $("soldiers").textContent = state.ants.filter((a) => a.role === "soldier" || a.role === "guard").length;
-    $("flyers").textContent = state.ants.filter((a) => a.role === "flyer").length;
-    $("minis").textContent = minis.length;
+    let scouts = 0, workers = 0, soldiers = 0, flyers = 0;
+    for (const ant of state.ants) {
+      if (ant.role === "scout") scouts++;
+      else if (ant.role === "worker") workers++;
+      else if (ant.role === "soldier" || ant.role === "guard") soldiers++;
+      else if (ant.role === "flyer") flyers++;
+    }
+    setText("scouts", scouts); setText("workers", workers); setText("soldiers", soldiers); setText("flyers", flyers);
+    setText("minis", minis.length);
     const cap = storeCap();
     setMeter("stores", state.stores / cap, state.builder ? "building" : minis.length >= MAX_MINIS ? "full" : `${state.stores}/${cap}`);
     const held = Math.max(0, 1 - state.stolen.size / LOSE);
     setMeter("holds", held, `${Math.round(held * 100)}%`);
     const wait = Math.ceil(baitReady - performance.now() / 1000);
     const sealWait = Math.ceil(Math.max(...hills.map((h) => h.cool)) - performance.now() / 1000);
-    $("seal").disabled = sealWait > 0 || state.queenDead || !!state.party;
+    const sealButton = $("seal"), bait = $("bait");
+    const sealDisabled = sealWait > 0 || state.queenDead || !!state.party;
+    if (sealButton.disabled !== sealDisabled) sealButton.disabled = sealDisabled;
     if (state.over && main.classList.contains("nest-armed")) setBaitArmed(false);
-    $("bait").disabled = wait > 0 || state.over || state.tool === "read";
+    const baitDisabled = wait > 0 || state.over || state.tool === "read";
+    if (bait.disabled !== baitDisabled) bait.disabled = baitDisabled;
     for (const [key, seconds] of [["seal", sealWait], ["bait", wait]]) {
-      if (seconds > 0) $(key).dataset.cooldown = `${seconds}s`;
-      else $(key).removeAttribute("data-cooldown");
+      const button = $(key); const cooldown = seconds > 0 ? `${seconds}s` : "";
+      if (cooldown) { if (button.dataset.cooldown !== cooldown) button.dataset.cooldown = cooldown; }
+      else if (button.hasAttribute("data-cooldown")) button.removeAttribute("data-cooldown");
     }
-    $("trails").textContent = state.trails.length;
-    $("squashed").textContent = state.squashed;
-    $("larder").textContent = [...state.stolen].slice(-18).map((L) => L.ch).join("") || "empty";
+    setText("trails", state.trails.length);
+    setText("squashed", state.squashed);
+    setText("larder", [...state.stolen].slice(-18).map((L) => L.ch).join("") || "empty");
     const fed = state.meals % 3;
     setMeter("bar", fed / 3, `${fed}/3`);
     const worshipAt = worshipTarget();
     setMeter("worship", state.stolenTotal / worshipAt, `${state.stolenTotal}/${worshipAt}`);
-    $("status").textContent = state.party ? "dancing" : state.queenDead ? "the queen is dead" : state.overrun ? "overrun"
+    setText("status", state.party ? "dancing" : state.queenDead ? "the queen is dead" : state.overrun ? "overrun"
       : state.paused ? "paused" : state.queen.lay > 0 ? "laying" : state.queen.eat > 0 ? "feeding"
-      : scoutsOut() ? "scouting" : state.trails.length ? "foraging" : "resting";
+      : scoutsOut() ? "scouting" : state.trails.length ? "foraging" : "resting");
   };
 
   // ================================ the loop ================================
-  let last = performance.now(), tick = 0;
+  let last = performance.now(), tick = 0, rafId = 0;
   let stopped = false;
+  const stopLoop = () => { if (rafId) { cancelAnimationFrame(rafId); rafId = 0; } };
+  const startLoop = () => {
+    if (rafId || stopped || state.paused || document.hidden) return;
+    last = performance.now();
+    rafId = requestAnimationFrame(frame);
+  };
+  const onVisibility = () => { if (document.hidden) stopLoop(); else startLoop(); };
+  document.addEventListener("visibilitychange", onVisibility);
   const frame = (now) => {
+    rafId = 0;
     if (stopped) return;
-    try { tickFrame(now); } catch (err) { console.error("nest:", err); }
-    requestAnimationFrame(frame);
+    try { tickFrame(now); } catch (err) { frameRect = null; console.error("nest:", err); }
+    if (!stopped && !state.paused && !document.hidden) rafId = requestAnimationFrame(frame);
   };
   const tickFrame = (now) => {
+    frameRect = main.getBoundingClientRect();
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     if (!state.paused) {
       if (state.party) stepParty(now, dt);
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
-      state.ants.forEach((a) => { if (a.el) { a.el.style.left = a.px + "px"; a.el.style.top = a.py + "px"; a.el.style.transform = `rotate(${a.heading + Math.PI}rad)`; a.el.classList.toggle("walk", a.job !== "wait" && !a.paused); } });
+      for (const a of state.ants) {
+        const el = a.el; if (!el) continue;
+        if (a.px !== el._px || a.py !== el._py || a.heading !== el._heading) {
+          el.style.transform = antTransform(a);
+          el._px = a.px; el._py = a.py; el._heading = a.heading;
+        }
+        const walking = a.job !== "wait" && !a.paused;
+        if (el._walk !== walking) { el.classList.toggle("walk", walking); el._walk = walking; }
+      }
       state.queen.eat = Math.max(0, state.queen.eat - dt); state.queen.lay = Math.max(0, state.queen.lay - dt * 0.7);
       state.eggs.slice().forEach((e) => {
         if (e.d < LEN.lay) e.d += NEST_SPEED * 0.6 * dt;
@@ -1865,6 +1941,7 @@
       }
       drawNest(now); drawStats();
     }
+    frameRect = null;
   };
 
   $("bait").addEventListener("click", () => {
@@ -1983,9 +2060,10 @@
   ["pointerenter", "focus", "click"].forEach((ev) => soundBtn.addEventListener(ev, clearSoundHint, { once: true }));
   $("pause").addEventListener("click", () => {
     state.paused = !state.paused;
-    if (state.paused) setAction("pause", "play", "Resume", "Resume the colony.");
-    else setAction("pause", "pause", "Pause", "Pause the colony.");
-    layer.querySelectorAll(".nest-ant").forEach((el) => el.classList.toggle("walk", !state.paused));
+    if (state.paused) { setAction("pause", "play", "Resume", "Resume the colony."); stopLoop(); }
+    else { setAction("pause", "pause", "Pause", "Pause the colony."); }
+    layer.querySelectorAll(".nest-ant").forEach((el) => { el.classList.toggle("walk", !state.paused); el._walk = !state.paused; });
+    if (state.paused) drawStats(); else startLoop();
   });
   const resetPage = () => {
     if (state.builder?.spot.gap) cancelBuild(state.builder);
@@ -2022,7 +2100,7 @@
   log("the colony wakes; three scouts head out");
   blip(196, 0.3, "sine", 0.04, -40);
   setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
-  requestAnimationFrame(frame);
+  startLoop();
 
   let terrainWidth = main.clientWidth;
   const watchTerrain = new ResizeObserver(() => {
@@ -2040,8 +2118,11 @@
   // Leaving: put every letter back, carried or stolen, and take the colony off the page.
   const stop = () => {
     watchTerrain.disconnect();
+    meterObserver.disconnect();
+    stopLoop();
     stopped = true; document.removeEventListener("click", holdLinks, true);
     document.removeEventListener("auxclick", holdLinks, true); document.removeEventListener("keydown", onKey);
+    document.removeEventListener("visibilitychange", onVisibility);
     removeEventListener("beforeunload", onBeforeUnload);
     main.classList.remove("nest-armed"); delete main.dataset.nestTool;
     if (state.party) {
