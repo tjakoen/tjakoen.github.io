@@ -783,13 +783,26 @@
 
   const newAnt = (role, route, d) => { state.total++; const a = { id: state.total, role, where: "nest", route, d }; state.ants.push(a); return a; };
   const scoutsOut = () => state.ants.some((a) => a.role === "scout");
+  // A big letter that is still short of its crew is the one trail that must not wait its turn.
+  // The next worker out of the nest joins it, and keeps joining it, until the crew is full.
+  const needsHelp = (t) => {
+    if (!t.ready || t.state === "gone" || t.ants.size >= LINE) return false;
+    for (const a of t.ants) {
+      const L = a.letter;
+      if (L && L.state === "gather" && L.need > L.crew.length) return true;
+    }
+    return false;
+  };
+
   // Workers leaving the nest take the ready trails in turn, skipping any that are full or worked
   // out, so every trail fills at the same pace and a finished trail's ants move to the others.
   const openTrail = () => {
     const ready = state.trails.filter((t) => t.ready && t.state !== "gone" && t.ants.size < LINE && remaining(t));
     if (!ready.length) return null;
-    state.rr = ((state.rr || 0) + 1) % ready.length;
-    return ready[state.rr];
+    const help = ready.filter(needsHelp);
+    const pool = help.length ? help : ready;
+    state.rr = ((state.rr || 0) + 1) % pool.length;
+    return pool[state.rr];
   };
   const join = (ant, t) => {
     if (ant.trail && ant.trail !== t) ant.trail.ants.delete(ant);
