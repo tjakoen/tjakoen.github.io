@@ -36,9 +36,10 @@ and a dotted scent line. Ants on a trail get an outbound and a return lane, so t
 the same three pixels, and a queued ant slows instead of stopping dead. The line is five ants, not
 six, and the colony caps at twenty.
 
-**Trails.** A scout's walk is a route, not a trail: the scent line is laid only when the first
-letter reaches the hill. A scout killed before that leaves nothing to join, so the old half-open
-trail cannot softlock the colony. A new trail fades in over a second rather than popping, and it
+**Trails.** A scout's walk is a route, not a trail: the scent line is laid when the scout picks the
+first letter up. A scout killed before that pickup leaves nothing to join. A heavy letter gets the
+trail at the pickup and a call for the workers, the one deliberate exception that stops a
+heading-only page from softlocking the colony. A new trail fades in over a second rather than popping, and it
 fades out again when its patch empties or after ninety seconds. Each spent trail sends its own worker out as the next scout; the old one-scout rule
 dropped the replacements when two patches emptied together, which is why three trails could fall to
 one. Successors look near the mound first and only widen the search when nothing is close, and the
