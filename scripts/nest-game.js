@@ -1088,10 +1088,10 @@
     let fork = null;
     for (const t of trails) {
       if (t.state === "gone" || t.block === block) continue;
-      for (let j = 1; j < t.pts.length - 1; j++) for (let i = 1; i < Math.min(pts.length - 1, 18); i++) {
+      for (let j = 2; j < t.pts.length - 1; j++) for (let i = 1; i < Math.min(pts.length - 1, 18); i++) {
         const d = Math.hypot(t.pts[j][0] - pts[i][0], t.pts[j][1] - pts[i][1]);
         const score = d + j * 0.7 + i * 1.1;
-        if (d < 96 && (!fork || score < fork.score)) fork = { i, j, d, t, score };
+        if (d < 120 && (!fork || score < fork.score)) fork = { i, j, d, t, score };
       }
     }
     if (fork) {
@@ -1353,6 +1353,7 @@
       }
       ant.px = ant.x; ant.py = ant.y; return;
     }
+    if (!Array.isArray(ant.path) || !ant.path.length) { ant.job = "home"; ant.path = [hillOf(ant).hole.slice()]; ant.k = 0; }
     const goal = ant.path[ant.k]; if (!goal) return;
     const L = ant.letter;
     if (ant.job === "carry") { // the leader moves the centre of the crew; everyone stands under the letter
