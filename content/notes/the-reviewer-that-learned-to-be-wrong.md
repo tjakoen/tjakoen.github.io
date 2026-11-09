@@ -651,16 +651,14 @@ routine flatters itself against a human who reviews in the morning. The window b
 only a few weeks, and other things changed over the same months that I cannot separate from the
 kit. It is a before and after, not an experiment.
 
-The other half of the payoff was mine. Before the kit, first-pass review ate a big share of my working hours: I
-was the bottleneck, and I was reading every word a reviewer I did not trust had written. Now I do not
-re-read its reviews at all. I trust them, which was the whole point of answering Kaither's question,
-and calibration runs without me. What reaches me is the short list the kit is built to hand me: the
-approve button, and the rulings when a proposed lens change disagrees with how the codebase actually
-works. The hours that used to go to the review queue go to the people on my team
-instead: the one-on-ones, the unblocking, the dashboards I wrote about in
-[I Showed My Team a Dashboard](show-them-the-board.md). For a manager that is the real trade. The
-kit took the part of the job a machine can be held to a standard on, and gave back the part only I
-can do.
+The other half of the payoff was mine. Before the kit, first-pass review ate a big share of my
+working hours. I was the bottleneck, reading every word a reviewer I did not trust had written. Now I
+do not re-read its reviews at all. I trust them, which was the whole point of answering Kaither's
+question, and the calibration that earned that trust runs without me. So the hours that used to go
+to the review queue go to the people on my team instead: the one-on-ones, the unblocking, the
+dashboards I wrote about in [I Showed My Team a Dashboard](show-them-the-board.md). For a manager,
+that is the real trade. The kit took the part of the job a machine can be held to a standard on, and
+gave back the part only I can do.
 
 ## What I have not shown
 
