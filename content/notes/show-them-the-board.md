@@ -52,16 +52,18 @@ version of People Manager at all, and the announcement is how I found it.
 
 That is the small story. The bigger one is what happened after I showed it to my team.
 
+> **Every screen in this note runs on mock data.** The dashboards are the real ones, but every
+> person, ticket, pull request and number in them is invented for this post. The real versions hold
+> my team's work and Career Team's data, and those stay at work. This note is here to show how the
+> tools work and maybe nudge you to build your own, not to show what is in mine.
+
 ## The review kit, now with a window
 
-The first dashboard I leaned on was the board for my PR review kit. It started in
-August as one review skill I ran by hand, and as a snapshot it is now 737 commits and a 2.6 release
-later, which is a story of its own: [Six Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md). Back
-in September, when it was a much simpler thing, I gave a talk introducing it to the team, [Every Time
-It Was Wrong](/talks/every-time-it-was-wrong). A lot has changed since that deck. The short
-version of how it works today: pull requests arrive from the team's code review column, scheduled
-routines review them against the ticket and the epic's decided rules, follow up on replies, re-review
-new commits, and post under my account. It never approves or merges. Approval stays mine.
+The first dashboard I leaned on was the board for my PR review kit, the set of Claude skills that
+reviews my team's pull requests and posts under my name. It never approves or merges; approval stays
+mine. How it got from one hand-run skill in August to what it is now, and how every part of it works,
+is its own note: [Seven Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md).
+Here I only want the window.
 
 What changed most is that I stopped managing it from a terminal. Every pull request the kit has
 touched sits on a board, in the column of whoever owes the next move. I can queue one by pasting a
@@ -76,14 +78,6 @@ of reading log files like a raccoon going through a bin.
 </figure>
 
 
-Two things made it worth writing about again:
-
-- **Other managers use it.** The kit is not a personal toy anymore. It is shared, each manager gets
-  their own profile and board, and a teammate's kit can run a second look on a pull request mine
-  already reviewed, posting only what it adds.
-- **It has a backup brain.** When my Claude usage passes the limits I set on the board, new reviews
-  wait, and Codex can take over once my weekly use crosses a threshold I choose. Running out of
-  tokens used to mean the reviews stopped. Now it means they change hands.
 
 <svg viewBox="0 0 360 448" width="100%" role="img"
      aria-label="How the review kit runs. A pull request reaches code review in Jira. The Reviews routine checks it against the ticket, the epic's decisions and six lenses, and posts a verdict. Follow-ups answer replies and verify fixes, and new commits get a re-review. If my Claude usage passes my limit, Codex takes over the routine. Approval always stays with me."
