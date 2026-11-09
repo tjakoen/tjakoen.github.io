@@ -1,10 +1,40 @@
-/* Site-side trial of a narrower date rail, to be upstreamed into GRAIN's organisms/date-rail once it
-   reads right. GRAIN ships a 7.5rem rail with a wide gap, which takes too much of a narrow note
-   column. This keeps the rail just wide enough for a short date label and tightens the gap. */
-.date-rail { --date-rail-width: 3.75rem; }
-.date-rail__section { column-gap: var(--space-3); }
+/* Site-side trial of the date rail, to be upstreamed into GRAIN's organisms/date-rail once it reads
+   right. Two changes from GRAIN 0.1.31:
+   1. The rail decides from the width of its own column, not the viewport. A note in a narrow pane
+      on a wide screen was getting the full rail and too little room for prose. Below 40rem of
+      column, every date folds into a small label above its heading, the same as on a phone.
+   2. Where the rail does show, it is narrower and the gap is tighter. The hairline moves from the
+      rail's ::before onto each section body, because a container cannot query its own width. */
+.date-rail {
+  --date-rail-width: 4.5rem;
+  container-type: inline-size;
+}
+.date-rail::before { content: none; }
+.date-rail__section + .date-rail__section { padding-top: 0; }
+.date-rail__section { column-gap: var(--space-4); }
+.date-rail__body {
+  border-inline-start: 1px solid var(--color-line);
+  padding-inline-start: var(--space-4);
+  padding-block-end: var(--space-6);
+}
 .date-rail__date {
-  padding-inline-end: var(--space-2);
+  padding-inline-end: 0;
   font-size: var(--text-xs);
-  line-height: var(--leading-tight, 1.25);
+  line-height: 1.3;
+}
+
+@container (max-width: 40rem) {
+  .date-rail__section { display: block; }
+  .date-rail__body { border-inline-start: 0; padding-inline-start: 0; }
+  .date-rail__date {
+    position: static;
+    padding: 0;
+    text-align: start;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    background: none;
+  }
+  .date-rail__date:empty { display: none; }
+  .date-rail__body > h2:first-child { margin-top: var(--space-1); }
 }
