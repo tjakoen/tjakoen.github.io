@@ -42,11 +42,11 @@ commits are the reviewer being told it was wrong, and me building the machinery 
 > careful about that line, so this note shows how the kit works and how it got there, never what it
 > found.
 
-## Aug–Nov · The turns, on one line
+### The turns, on one line
 
 <svg viewBox="0 0 600 250" width="100%" role="img"
      aria-label="Timeline of the PR review kit from August to November 2026: one hand-run skill on August 14, scoring its own outcomes from August 18, the team talk and routines that answer their own threads on September 17, a kit anyone can install on September 28, Codex as a backup on October 8, the board and 1.0 release on October 15, second looks across teammates' kits on October 19, and risk intake with the epic check on November 3."
-     style="display:block;width:100%;max-width:580px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
+     style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
   <line x1="30" y1="125" x2="570" y2="125" style="stroke:var(--color-line);stroke-width:2"/>
   <g style="fill:var(--color-fg)">
     <circle cx="40" cy="125" r="6"/>
