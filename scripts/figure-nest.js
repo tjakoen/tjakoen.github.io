@@ -1,5 +1,5 @@
 // Each box runs one bounded colony event with the same movement, food, combat, and build rules as Nest.
-import { antClasses, antMarkup, miniArt } from "./nest-assets.js";
+import { antClasses, antMarkup, miniArt, poseAntWings } from "./nest-assets.js";
 import {
   BUILD_TIME,
   MOUND_BITE_INTERVAL,
@@ -62,6 +62,18 @@ function addTrail(sim) {
   return el;
 }
 
+function forageRoute(actor, home, letter) {
+  const end = { x: letter.x, y: letter.y + 12 };
+  const dx = end.x - home.x;
+  const dy = end.y - home.y;
+  const distance = Math.hypot(dx, dy) || 1;
+  const bend = Math.min(34, Math.max(16, distance * 0.14)) * (actor.id % 2 ? 1 : -1);
+  return [
+    { x: (home.x + end.x) / 2 - dy / distance * bend, y: (home.y + end.y) / 2 + dx / distance * bend },
+    end,
+  ];
+}
+
 function trailPoints(path, start = 0, end = 1, steps = 10) {
   const length = path.getTotalLength();
   return Array.from({ length: steps + 1 }, (_, index) => {
@@ -109,7 +121,7 @@ function addActor(sim, role, side, x, y, { job = "idle", scale = 1 } = {}) {
   turn.append(ant);
   wrap.append(turn);
   sim.dynamic.append(wrap);
-  const actor = { id: sim.actors.length + 1, role, side, x, y, heading: side === "rival" ? Math.PI : 0, job, scale, el: wrap, turn, carry: null, stuck: 0, paused: false };
+  const actor = { id: sim.actors.length + 1, role, side, x, y, heading: side === "rival" ? Math.PI : 0, job, scale, el: wrap, turn, carry: null, stuck: 0, paused: false, flightPhase: 0 };
   sim.actors.push(actor);
   placeActor(actor);
   return actor;
@@ -132,7 +144,11 @@ function moveActor(sim, actor, target, dt, { job = actor.job, factor = 1, letter
   if (actor.home) actor.el.classList.toggle("inside-mound", Math.hypot(actor.x - actor.home.x, actor.y - actor.home.y) < 11);
   recordRule(sim, "stepMovement");
   const walking = Math.hypot(actor.x - beforeX, actor.y - beforeY) > 0.02;
-  if (walking && actor.role === "scout" && actor.pathPoints &&
+  if (actor.role === "flyer") {
+    if (walking) actor.flightPhase = (actor.flightPhase + dt * Math.PI * 16) % (Math.PI * 2);
+    poseAntWings(actor.el, actor.flightPhase, walking);
+  }
+  if (walking && actor.pathPoints &&
       Math.hypot(actor.x - actor.pathPoints.at(-1)[0], actor.y - actor.pathPoints.at(-1)[1]) > 5) {
     actor.pathPoints.push([actor.x, actor.y]);
   }
@@ -209,10 +225,11 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
       actor.letter = next;
       actor.job = actor.role === "scout" && scoutFirst ? "scout" : "toLetter";
       actor.pathPoints = [[actor.x, actor.y]];
+      actor.forageRoute = forageRoute(actor, home, next);
     }
     if (actor.job === "scout" || actor.job === "toLetter") {
       const letter = actor.letter;
-      const route = sim.trailPoints?.[actor.side];
+      const route = sim.trailPoints?.[actor.side] || actor.forageRoute;
       let arrived = false;
       if (route) {
         if (actor.routeDirection !== "outbound") { actor.routeDirection = "outbound"; actor.routeIndex = 0; }
@@ -221,6 +238,7 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
           : moveActor(sim, actor, { x: letter.x, y: letter.y + 12 }, dt, { job: actor.job });
       } else arrived = moveActor(sim, actor, { x: letter.x, y: letter.y + 12 }, dt, { job: actor.job });
       if (arrived) {
+        actor.foragePath = actor.pathPoints?.slice() || [];
         letter.state = "carried";
         letter.node.style.opacity = "0";
         actor.job = "carry";
@@ -231,7 +249,7 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
       }
     } else if (actor.job === "carry") {
       const letter = actor.carry;
-      const trailCurve = sim.trailPoints?.[actor.side];
+      const trailCurve = sim.trailPoints?.[actor.side] || actor.forageRoute;
       const returnRoute = trailCurve?.toReversed();
       const arrived = returnRoute && actor.routeIndex < returnRoute.length
         ? moveOnRoute(sim, actor, returnRoute, dt, { job: "carry", letterNeed: letter.need }) && moveActor(sim, actor, home, dt, { job: "carry", letterNeed: letter.need })
@@ -243,11 +261,14 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
       actor.carryGlyph?.remove();
       actor.carryGlyph = null;
       applyFood(sim, letter);
-      if (actor.role === "scout" && !sim.trailLaid) {
-        const points = [...(actor.pathPoints || []), [letter.x, letter.y + 12], [home.x, home.y]];
+      if (sim.trailPath && !sim.trailLaid) {
+        const points = actor.foragePath?.length ? actor.foragePath : actor.pathPoints || [];
         const route = points.map(([px, py], index) => `${index ? "L" : "M"}${px.toFixed(1)} ${py.toFixed(1)}`).join(" ");
         sim.trailPath.setAttribute("d", route);
+        sim.trailPoints ||= {};
+        sim.trailPoints[actor.side] = points.map(([x, y]) => ({ x, y }));
         sim.trailLaid = true;
+        sim.host.dataset.trailLaid = "true";
       }
       actor.job = "search";
       onDelivery?.(letter);
@@ -260,7 +281,6 @@ function resetCycle(sim) {
   sim.host.dataset.completedCycles = String(sim.completedCycles);
   sim.host.dataset.resetCount = String(sim.completedCycles);
   sim.host.dataset.cycle = String(sim.completedCycles + 1);
-  sim.svg.replaceChildren();
   sim.actors = [];
   sim.usedRules.clear();
   sim.host.dataset.rulesUsed = "";
@@ -271,6 +291,7 @@ function resetCycle(sim) {
   sim.meals = 0;
   sim.feedFlip = false;
   sim.trailLaid = false;
+  sim.host.dataset.trailLaid = "false";
   sim.data = {};
   sim.host.dataset.stores = "0";
   setPhase(sim, "reset");
@@ -295,7 +316,6 @@ function drawScene(sim) {
 }
 
 function setupEat(sim) {
-  addFloor(sim);
   const home = { x: 100, y: 164 };
   addMound(sim, 30, 123, { width: 136, height: 55 });
   sim.trailPath = addTrail(sim);
@@ -309,7 +329,6 @@ function setupEat(sim) {
 }
 
 function setupColony(sim) {
-  addFloor(sim);
   const home = { x: 105, y: 164 };
   addMound(sim, 34, 123, { width: 140, height: 55 });
   sim.letters = addSentence(sim, "letters build a new nest", [0, 8]);
@@ -326,7 +345,7 @@ function setupColony(sim) {
 
 function addFighters(sim, { mainCount = 3, rivalCount = 2, homeX = 118, rivalX = 468 } = {}) {
   for (let index = 0; index < mainCount; index++) addActor(sim, "worker", "main", homeX + index * 2, 154 + index * 8, { job: "approach" });
-  for (let index = 0; index < rivalCount; index++) addActor(sim, "rival-guard", "rival", rivalX + index * 7, 144 + index * 18, { job: "guard", scale: 1.25 });
+  for (let index = 0; index < rivalCount; index++) addActor(sim, "rival-guard", "rival", rivalX + index * 7, 144 + index * 18, { job: "guard", scale: 1 });
 }
 
 function setupFight(sim) {
@@ -348,7 +367,7 @@ function setupCastes(sim) {
     { role: "soldier", side: "main", x: 187, y: 98, factor: 0.8, route: [[212, 80], [216, 116]], scale: 1.2 },
     { role: "flyer", side: "main", x: 297, y: 98, factor: 1, route: [[337, 70], [346, 105]], scale: 1.15 },
     { role: "queen", side: "main", x: 405, y: 98, factor: 0.9, route: [[441, 91], [434, 114]], scale: 1.55 },
-    { role: "rival-guard", side: "rival", x: 515, y: 98, factor: 0.7, route: [[482, 80], [478, 116]], scale: 1.25 },
+    { role: "rival-guard", side: "rival", x: 515, y: 98, factor: 0.7, route: [[482, 80], [478, 116]], scale: 1 },
   ];
   sim.actors = roles.map((entry) => {
     const actor = addActor(sim, entry.role, entry.side, entry.x, entry.y, { job: "role-route", scale: entry.scale || 1 });
@@ -702,7 +721,10 @@ function tick(sim, dt) {
     return;
   }
   if (sim.phase === "reset") {
-    if (sim.clock >= sim.restartAt) drawScene(sim);
+    if (sim.clock >= sim.restartAt) {
+      sim.svg.replaceChildren();
+      drawScene(sim);
+    }
     return;
   }
   if (sim.mode === "eat") tickForage(sim, dt);

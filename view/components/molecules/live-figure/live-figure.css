@@ -710,10 +710,10 @@
 .nest-scene .nest-ant.builder svg { color: var(--color-accent); }
 .nest-scene .nest-ant.rival svg { color: var(--color-accent); }
 .nest-scene .nest-ant.rival[data-role="rival-worker"] svg { transform: scale(.78); }
-.nest-scene .nest-ant.rival[data-role="rival-guard"] svg { transform: scale(1.3); }
+.nest-scene .nest-ant.rival[data-role="rival-guard"] svg { transform: scale(1); color: var(--ink-muted); }
 .nest-scene .nest-ant[data-role="queen"] svg { width: 29px; height: 17px; color: var(--color-accent); }
 .nest-scene .nest-ant[data-health] { transition: opacity .25s; }
-.nest-scene__mound { overflow: hidden; color: var(--ink-muted); }
+.nest-scene__mound { overflow: hidden; color: var(--ink); }
 .nest-scene__mound-art { display: flex; width: 100%; height: 100%; align-items: flex-end; justify-content: center; overflow: hidden; margin: 0; color: inherit; font: 9px/1.2 var(--font-mono); letter-spacing: -.04em; white-space: pre; }
 .nest-scene__mound-art.rival { color: var(--color-accent); }
 .nest-scene__floor { fill: none; stroke: var(--color-line); stroke-width: 1; }
@@ -724,4 +724,11 @@
 .nest-scene .nest-ant.walk .legs-a { animation: nest-scene-step .18s steps(1) infinite; }
 .nest-scene .nest-ant.walk .legs-b { animation: nest-scene-step .18s steps(1) infinite reverse; }
 @keyframes nest-scene-step { 0% { opacity: 1; } 50% { opacity: 0; } }
+.live-fig--colony { width: 100%; max-width: 36rem; overflow: hidden; border: 1px solid var(--color-line); background: var(--paper); color: var(--ink); }
+.colony-interior { display: block; width: 100%; aspect-ratio: 3 / 2; overflow: hidden; background: var(--paper-2); }
+.colony-interior__cells { font: 15px/1 var(--font-mono); letter-spacing: -.04em; -webkit-text-stroke: .035em currentColor; fill: var(--ink-muted); }
+.colony-interior__cell.t1 { fill: var(--ink); }
+.colony-interior__cell.t2, .colony-interior__cell.t5, .colony-interior__cell.t6 { fill: var(--color-accent); }
+.colony-interior__cell.t3, .colony-interior__cell.t4 { fill: var(--ink); }
 @media (prefers-reduced-motion: reduce) { .nest-scene .nest-ant.walk .legs-a, .nest-scene .nest-ant.walk .legs-b { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .live-fig--colony .nest-ant.walk .legs-a, .live-fig--colony .nest-ant.walk .legs-b { animation: none; } }

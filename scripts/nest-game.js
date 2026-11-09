@@ -10,7 +10,7 @@
 // side by side. A carried letter keeps its own colour, face and underline, and drifts home slowly
 // when a carrier is squashed. If the whole colony dies, the queen sends out one new scout.
 // Every colour is a theme token, so each flavor recolours the nest.
-import { antMarkup, antClasses, miniArt } from "./nest-assets.js";
+import { antMarkup, antClasses, miniArt, NEST_LAYOUT, nestRouteLength, buildNestBase, encodeNestBraille, composeNestGrid } from "./nest-assets.js";
 import {
   BUILD_TIME,
   MOUND_BITE_INTERVAL,
@@ -297,6 +297,9 @@ import {
   // marks the tab, so the random ant does not come back until a new tab.
   let strayTimer = null, strayExitTimer = null, strayEl = null, strayLeaving = false;
   const STRAY_KEY = "nest-stray-clicked";
+  const strayDelay = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
+  const firstStrayDelay = () => strayDelay(120000, 180000);
+  const nextStrayDelay = () => strayDelay(300000, 480000);
   const strayConsumed = () => { try { return sessionStorage.getItem(STRAY_KEY) === "1"; } catch { return false; } };
   const consumeStray = () => { try { sessionStorage.setItem(STRAY_KEY, "1"); } catch { /* private mode */ } };
   const strayReduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -313,7 +316,7 @@ import {
   const scheduleStray = (delay) => {
     clearTimeout(strayTimer);
     if (noteFiguresOnPage || game || document.hidden || !launcherVisible() || strayConsumed()) return;
-    strayTimer = setTimeout(spawnStray, delay ?? 30000 + Math.random() * 60000);
+    strayTimer = setTimeout(spawnStray, delay ?? firstStrayDelay());
   };
   const pulseLauncher = () => {
     antBtn.classList.add("nest-pulse");
@@ -326,7 +329,7 @@ import {
     strayLeaving = true;
     const from = el.getBoundingClientRect(), to = antBtn.getBoundingClientRect();
     if (!to.width || strayReduced()) {
-      el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(180000 + Math.random() * 120000); return;
+      el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(nextStrayDelay()); return;
     }
     // A run along the page, not a flight: down to the bottom of the reading pane, along the
     // status bar, then up into the launcher. The ant turns at each corner and keeps its legs.
@@ -362,7 +365,7 @@ import {
         else {
           seg++;
           if (seg < path.length - 1) step();
-          else { el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(180000 + Math.random() * 120000); }
+          else { el.remove(); strayEl = null; strayLeaving = false; pulseLauncher(); scheduleStray(nextStrayDelay()); }
         }
       };
       requestAnimationFrame(frame);
@@ -382,7 +385,7 @@ import {
       el.style.left = sx + (tx - sx) * k + "px";
       el.style.opacity = String(0.7 * (1 - k));
       if (k < 1) requestAnimationFrame(frame);
-      else { el.remove(); strayEl = null; strayLeaving = false; scheduleStray(120000 + Math.random() * 120000); }
+      else { el.remove(); strayEl = null; strayLeaving = false; scheduleStray(nextStrayDelay()); }
     };
     requestAnimationFrame(frame);
   };
@@ -410,7 +413,7 @@ import {
     }
     const walk = (i) => {
       if (!strayEl || game || strayLeaving) return;
-      if (i >= legs.length) { clearTimeout(strayExitTimer); el.remove(); strayEl = null; scheduleStray(120000 + Math.random() * 120000); return; }
+      if (i >= legs.length) { clearTimeout(strayExitTimer); el.remove(); strayEl = null; scheduleStray(nextStrayDelay()); return; }
       const [tx, ty] = legs[i], sx = parseFloat(el.style.left), sy = parseFloat(el.style.top);
       const dur = 1800 + Math.random() * 1800, t0 = performance.now();
       const frame = (now) => {
@@ -550,28 +553,9 @@ import {
   // ================================ the nest ================================
   // Routes in nest units (0..1 across, 0..1 down). Ants and eggs hold a route and a distance along
   // it, so the nest can be redrawn at any size without losing anyone. The entrance is the mound.
-  const SURFACE = 0.16, MOUND = 0.075;
-  const ROUTES = {
-    down:  [[0.5, SURFACE - MOUND * 0.55], [0.5, 0.3], [0.73, 0.44], [0.8, 0.6]],            // anthill to larder
-    feed:  [[0.8, 0.6], [0.68, 0.77], [0.58, 0.87]],                                         // larder to the queen
-    up:    [[0.58, 0.87], [0.38, 0.74], [0.32, 0.47], [0.5, 0.3], [0.5, SURFACE - MOUND * 0.55]], // queen back out
-    lay:   [[0.42, 0.89], [0.38, 0.74], [0.3, 0.51], [0.2, 0.54]],                           // egg to the nursery
-    hatch: [[0.2, 0.54], [0.32, 0.47], [0.5, 0.3], [0.5, SURFACE - MOUND * 0.55]],            // newborn to the anthill
-  };
-  const routeLen = (r) => r.slice(1).reduce((s, p, k) => s + Math.hypot(p[0] - r[k][0], p[1] - r[k][1]), 0);
-  const LEN = Object.fromEntries(Object.entries(ROUTES).map(([k, r]) => [k, routeLen(r)]));
-  const along = (name, d) => {
-    const r = ROUTES[name];
-    for (let k = 0; k < r.length - 1; k++) {
-      const seg = Math.hypot(r[k + 1][0] - r[k][0], r[k + 1][1] - r[k][1]);
-      if (d <= seg) return [r[k][0] + (r[k + 1][0] - r[k][0]) * d / seg, r[k][1] + (r[k + 1][1] - r[k][1]) * d / seg, Math.atan2(r[k + 1][1] - r[k][1], r[k + 1][0] - r[k][0])];
-      d -= seg;
-    }
-    const e = r[r.length - 1]; return [e[0], e[1], -Math.PI / 2];
-  };
-  const NURSERY = [0.2, 0.54], LARDER = [0.8, 0.61], QUEEN = [0.5, 0.89], STORES = [[0.13, 0.76], [0.87, 0.8]];
+  const { routes: ROUTES, queen: QUEEN } = NEST_LAYOUT;
+  const LEN = Object.fromEntries(Object.entries(ROUTES).map(([key, route]) => [key, nestRouteLength(route)]));
 
-  const bit = [[0x01, 0x08], [0x02, 0x10], [0x04, 0x20], [0x40, 0x80]];
   let W = 0, H = 0, R = 0, base = null;
   let nestCells = null, nestCols = 0, nestRows = 0;
   const buildNest = () => {
@@ -581,30 +565,9 @@ import {
     const cellW = pr.width / 20, cellH = pr.height;
     if (!cellW || !cellH || !well.clientHeight) return;
     W = Math.floor(well.clientWidth / cellW) * 2; H = Math.floor(well.clientHeight / cellH) * 4;
-    R = Math.max(4, W / 7);
-    base = new Int8Array(W * H).fill(-1);
-    const set = (x, y, t) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < W && y < H) base[y * W + x] = t; };
-    const clear = (x, y) => set(x, y, -1);
-    let seed = 7; const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
-    const sky = Math.round(H * SURFACE);
-    // soil below the surface, in two tones
-    for (let y = sky + 2; y < H; y++) for (let x = 0; x < W; x++) if ((x + 2 * y) % 4 === 0 || rnd() < 0.05) set(x, y, y < H * 0.36 ? 1 : 0);
-    // the anthill: a dome of packed dots on the surface, the entrance a gap at its crown
-    const mx = W * 0.5, mw = W * 0.24, mh = H * MOUND;
-    for (let y = sky - mh; y <= sky + 1; y++) for (let x = mx - mw; x <= mx + mw; x++) {
-      const u = (x - mx) / mw, top = sky - mh * (1 - u * u);
-      if (y >= top && ((x + y) % 2 === 0 || y < top + 1.5)) set(x, y, 1);
-    }
-    // grass either side of the mound
-    for (let x = 0; x < W; x++) { if (Math.abs(x - mx) < mw) continue; set(x, sky + Math.round(Math.sin(x / 5) * 0.6), 2); if (x % 3 === 0) set(x, sky - 2 + (x % 2), 2); }
-    const carve = (cx, cy, rx, ry) => { for (let j = -ry; j <= ry; j++) for (let i = -rx; i <= rx; i++) if ((i * i) / (rx * rx) + (j * j) / (ry * ry) <= 1) clear(cx + i, cy + j); };
-    Object.values(ROUTES).forEach((r) => { for (let k = 0; k < r.length - 1; k++) for (let s = 0; s <= 50; s++) carve((r[k][0] + (r[k + 1][0] - r[k][0]) * s / 50) * W, (r[k][1] + (r[k + 1][1] - r[k][1]) * s / 50) * H, 2, 2); });
-    carve(mx, sky - mh + 1, 2, 2);
-    carve(NURSERY[0] * W, NURSERY[1] * H, R * 0.85, R * 0.45);
-    carve(LARDER[0] * W, LARDER[1] * H, R * 0.85, R * 0.45);
-    // the two storerooms, joined to the tunnels by short side passages
-    STORES.forEach(([u, v], k) => { const [tu, tv] = k ? [0.68, 0.77] : [0.36, 0.72]; for (let s2 = 0; s2 <= 30; s2++) carve((u + (tu - u) * s2 / 30) * W, (v + (tv - v) * s2 / 30) * H, 1.5, 1.5); carve(u * W, v * H, R * 0.7, R * 0.42); });
-    carve(QUEEN[0] * W, QUEEN[1] * H, R * 1.4, R * 0.7);
+    const nest = buildNestBase(W, H);
+    R = nest.radius;
+    base = nest.cells;
   };
   // A Braille cell stays in the DOM for the life of the nest. Redrawing only changes the cells
   // whose dots moved, so the panel no longer replaces a thousand nodes ten times a second.
@@ -720,7 +683,10 @@ import {
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const u = (x - w / 2) / (w / 2), top = h * (u * u) * 0.95; if (y >= top && ((x + y) % 2 === 0 || y < top + 1.2 || rnd() < 0.2)) cells[y * w + x] = y > h - 3 ? 1 : 0; }
     for (let y = 0; y < 4; y++) for (let x = w / 2 - 3; x < w / 2 + 3; x++) cells[y * w + x] = -1;
     let out = "";
-    for (let cy = 0; cy < h; cy += 4) { for (let cx = 0; cx < w; cx += 2) { let code = 0, t = -1; for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) { const v = cells[(cy + dy) * w + cx + dx]; if (v >= 0) { code |= bit[dy][dx]; t = Math.max(t, v); } } const ch = String.fromCharCode(0x2800 + code); out += t === 1 ? `<b>${ch}</b>` : ch; } out += "\n"; }
+    encodeNestBraille(cells, w, h).forEach(({ char, tone }, index) => {
+      out += tone === 1 ? `<b>${char}</b>` : char;
+      if ((index + 1) % (w / 2) === 0) out += "\n";
+    });
     hill.innerHTML = out.trimEnd();
   }
   layer.append(hill);
@@ -2103,7 +2069,10 @@ import {
     }
     for (let y = 0; y < 4; y++) for (let x = Math.floor(w * 0.57); x < Math.floor(w * 0.57) + 5; x++) cells[y * w + x] = -1;
     let out = "";
-    for (let cy = 0; cy < h; cy += 4) { for (let cx = 0; cx < w; cx += 2) { let code = 0, t = -1; for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) { const v = cells[(cy + dy) * w + cx + dx]; if (v >= 0) { code |= bit[dy][dx]; t = Math.max(t, v); } } const ch = String.fromCharCode(0x2800 + code); out += t === 1 ? `<b>${ch}</b>` : ch; } out += "\n"; }
+    encodeNestBraille(cells, w, h).forEach(({ char, tone }, index) => {
+      out += tone === 1 ? `<b>${char}</b>` : char;
+      if ((index + 1) % (w / 2) === 0) out += "\n";
+    });
     return out.trimEnd();
   };
   const rivalMound = () => {
@@ -2411,7 +2380,7 @@ import {
       const flies = rivals.filter((r) => r.job === "rival-flyer" && !spent.has(r) && near(r, m));
       if (flies.length !== 1) continue;
       const f = flies[0]; spent.add(m); spent.add(f);
-      beginDuel(m, f, Math.random() < duelOdds(m.role, f.role));
+      beginDuel(m, f, Math.random() < duelOdds(m.role, f.job === "rival-flyer" ? "rival-flyer" : f.role));
     }
     for (const r of rivals.slice()) {
       if (!r.el || spent.has(r)) continue;
@@ -2805,48 +2774,14 @@ import {
     if (!base) return;
     if (now - nestDrawAt < (nestDrawCost > 20 ? 240 : 100)) return;
     const drawStart = performance.now();
-    const d = base.slice();
-    const put = (x, y, t) => { x = Math.round(x); y = Math.round(y); if (x >= 0 && y >= 0 && x < W && y < H) d[y * W + x] = t; };
-    const step = Math.floor(now / 180) % 2;
-    if (!state.party) {
-      const qx = QUEEN[0] * W, qy = QUEEN[1] * H, q = state.queen;
-      const swell = state.queenDead ? 0.9 : 1 + 0.06 * Math.sin(now / 400) + 0.25 * q.lay;
-      const ax = R * 0.6 * swell, ay = R * 0.26 * swell;
-      for (let j = -ay; j <= ay; j++) for (let i = -ax; i <= ax; i++) if ((i * i) / (ax * ax) + (j * j) / (ay * ay) <= 1 && (Math.round(i + j) % 2 === 0 || Math.abs(j) < ay * 0.5)) put(qx + R * 0.15 + i, qy + j, state.queenDead ? 0 : 6);
-      const hx = qx - R * 0.6 - (q.eat > 0 ? step * 2 : 0);
-      for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { put(qx - R * 0.45 + i, qy + j, 6); if (Math.abs(i) + Math.abs(j) < 3) put(hx - 4 + i, qy + j, 6); }
-      for (let k = -1; k <= 1; k++) for (let s = 1; s < 4; s++) { const lx = qx - R * 0.45 + k * 3 + s * k + (step && k === 0 ? 1 : 0); put(lx, qy + 2 + s, 6); put(lx, qy - 2 - s, 6); }
-      if (q.eat > 0) { put(hx - 8 + q.eat * 3, qy, 5); put(hx - 8 + q.eat * 3, qy - 1, 5); }
-      if (q.lay > 0) put(qx + R * 0.15 + ax + 2, qy, 4);
-    }
-    { const cap = storeCap(), fill = Math.min(1, state.stores / cap), per = Math.round(fill * R * 1.1);
-      STORES.forEach(([u, v], c) => { for (let k = 0; k < per; k++) { const col = k % Math.max(2, Math.floor(R * 0.9)), row = Math.floor(k / Math.max(2, Math.floor(R * 0.9))); put(u * W - R * 0.45 + col * 1.0 + (c ? 0 : 0), v * H + 2 - row, 5); } }); }
-    state.larder.forEach((_, k) => { if (k < R * 0.8) { put(LARDER[0] * W - R * 0.7 + k * 2, LARDER[1] * H + 2, 5); put(LARDER[0] * W - R * 0.7 + k * 2, LARDER[1] * H + 1 - (k % 2), 5); } });
-    state.eggs.forEach((e, k) => {
-      const [u, v] = e.d < LEN.lay ? along("lay", e.d) : [NURSERY[0] - 0.08 + (k % 5) * 0.035, NURSERY[1] + 0.01];
-      const wob = e.d >= LEN.lay && e.age > 2 ? step : 0;
-      put(u * W + wob, v * H, 4); put(u * W + 1 + wob, v * H, 4);
-    });
-    state.ants.forEach((a) => {
-      if (a.where !== "nest") return;
-      const [u, v, ang] = along(a.route, Math.min(a.d, LEN[a.route]));
-      const x = u * W, y = v * H, cx = Math.cos(ang), cy = Math.sin(ang), t = a.role === "scout" ? 5 : 3;
-      for (let s = -2; s <= 1; s++) put(x + cx * s, y + cy * s, t);
-      const leg = step ? 1 : -1; put(x - cy * 1.5 + cx * leg, y + cx * 1.5 + cy * leg, t); put(x + cy * 1.5 - cx * leg, y - cx * 1.5 - cy * leg, t);
-      if (a.food) { put(x + cx * 3, y + cy * 3, 5); put(x + cx * 3, y + cy * 3 - 1, 5); }
-    });
+    const d = composeNestGrid(base, W, H, R, state, now, storeCap);
     if (!nestCells || nestCols !== W / 2 || nestRows !== H / 4) buildNestCells();
     let cellIndex = 0;
-    for (let cy = 0; cy < H; cy += 4) {
-      for (let cx = 0; cx < W; cx += 2) {
-        let code = 0, tone = -1;
-        for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) { const t = d[(cy + dy) * W + cx + dx]; if (t >= 0) { code |= bit[dy][dx]; tone = Math.max(tone, t); } }
-        const ch = String.fromCharCode(0x2800 + code);
+    for (const { char: ch, tone } of encodeNestBraille(d, W, H)) {
         const cell = nestCells[cellIndex++];
         if (cell._ch !== ch) { cell.firstChild.data = ch; cell._ch = ch; }
         const toneKey = tone > 0 ? String(tone) : "";
         if (cell.dataset.tone !== toneKey) { cell.className = tone > 0 ? `t${tone}` : ""; cell.dataset.tone = toneKey; }
-      }
     }
     nestDrawAt = now; nestDrawCost = performance.now() - drawStart;
   };

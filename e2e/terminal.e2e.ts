@@ -104,6 +104,49 @@ test("note figures keep their event loops with reduced motion enabled", async ({
   }).toBeGreaterThanOrEqual(1);
 });
 
+test("the caste figure flaps the flyer's wings while it moves", async ({ page }) => {
+  await page.goto("/notes/the-site-has-ants");
+  const wing = page.locator('[data-nest-mode="castes"] [data-role="flyer"] .wing-a');
+  await expect(wing).toBeAttached();
+  const firstPose = await wing.getAttribute("transform");
+  await expect.poll(() => wing.getAttribute("transform"), { timeout: 5_000 }).not.toBe(firstPose);
+});
+
+test("the note has a separate self-running colony that drains and resets", async ({ page }) => {
+  test.setTimeout(150_000);
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() !== "error") return;
+    const source = message.location().url;
+    if (source.includes("/stream?session=")) return;
+    pageErrors.push(message.text());
+  });
+  await page.goto("/notes/the-site-has-ants");
+  const colony = page.locator('[data-live-figure="colony"]');
+  await colony.scrollIntoViewIfNeeded();
+  await expect(colony.locator("svg.colony-interior")).toBeAttached();
+  await expect(colony.locator(".colony-interior__cell")).not.toHaveCount(0);
+  const startingColor = await colony.locator(".colony-interior__cell.t1").first().evaluate((cell) => getComputedStyle(cell).fill);
+  await page.locator("[data-cycle-theme]").click();
+  await expect.poll(() => colony.locator(".colony-interior__cell.t1").first().evaluate((cell) => getComputedStyle(cell).fill)).not.toBe(startingColor);
+  const sceneHasNoInternalLabels = await colony.locator("svg.colony-interior").textContent();
+  expect(sceneHasNoInternalLabels).not.toMatch(/[a-z0-9]/i);
+  await expect.poll(async () => Number(await colony.getAttribute("data-completed-cycles")), {
+    timeout: 140_000,
+    intervals: [500, 1000, 2000],
+  }).toBeGreaterThanOrEqual(2);
+  const contained = await colony.evaluate((host) => {
+    const bounds = host.getBoundingClientRect();
+    return [...host.querySelectorAll("svg.colony-interior, svg.colony-interior *")].every((node) => {
+      const rect = node.getBoundingClientRect();
+      return rect.width === 0 || (rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1 && rect.top >= bounds.top - 1 && rect.bottom <= bounds.bottom + 1);
+    });
+  });
+  expect(contained).toBe(true);
+  expect(pageErrors).toEqual([]);
+});
+
   test("the old ?nest link is just a page, not a shortcut into the game", async ({ page }) => {
     await page.goto("/?nest");
     await expect(page.getByRole("button", { name: "Open the Nest" })).toBeVisible();
@@ -677,6 +720,16 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
 test("the note mounts its six live colony boxes", async ({ page }) => {
   test.setTimeout(110_000);
   const errors: string[] = [];
+  await page.addInitScript(() => {
+    const samples: number[] = [];
+    (window as any).__nestResetSamples = samples;
+    new MutationObserver((records) => records.forEach((record) => {
+      const host = record.target;
+      if (host instanceof HTMLElement && host.matches('[data-live-figure="nest"]') && host.dataset.eventState === "reset") {
+        samples.push(host.querySelector(".nest-scene__stage > svg")?.childElementCount || 0);
+      }
+    })).observe(document, { subtree: true, attributes: true, attributeFilter: ["data-event-state"] });
+  });
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
     if (message.type() !== "error") return;
@@ -688,6 +741,10 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   await page.goto("/notes/the-site-has-ants");
   await expect(page.locator(".nest-scene")).toHaveCount(6);
   const hosts = page.locator('[data-live-figure="nest"]');
+  await expect.poll(async () => hosts.evaluateAll((els) => els.slice(0, 2).map((el) => (el as HTMLElement).dataset.trailLaid)), {
+    timeout: 45_000,
+    intervals: [250, 500, 1000],
+  }).toEqual(["true", "true"]);
   await expect.poll(async () => hosts.evaluateAll((els) => els.map((el) => {
     const host = el as HTMLElement;
     return Number(host.dataset.completedCycles) >= 2 &&
@@ -698,6 +755,10 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
     timeout: 100_000,
     intervals: [250, 500, 1000],
   }).toEqual([true, true, true, true, true, true]);
+  await expect.poll(async () => hosts.evaluateAll((els) => els.slice(0, 2).map((el) => (el as HTMLElement).dataset.trailLaid)), {
+    timeout: 45_000,
+    intervals: [250, 500, 1000],
+  }).toEqual(["true", "true"]);
 
   const reports = await hosts.evaluateAll((els) => els.map((el) => {
     const host = el as HTMLElement;
@@ -725,6 +786,19 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
       storesSeen: Number(host.dataset.maxStoresSeen || 0),
       storeGlyphs: host.querySelectorAll(".nest-scene__stored-food").length,
       trails: host.querySelectorAll(".nest-scene__trail").length,
+      floorLines: host.querySelectorAll(".nest-scene__floor").length,
+      queenCount: actors.filter((actor) => actor.getAttribute("data-role") === "queen").length,
+      rivalGuards: actors.filter((actor) => actor.getAttribute("data-role") === "rival-guard").length,
+      trailDashed: [...host.querySelectorAll(".nest-scene__trail")].every((trail) => getComputedStyle(trail).strokeDasharray !== "none"),
+      trailCurved: [...host.querySelectorAll(".nest-scene__trail")].every((trail) => {
+        const length = (trail as SVGPathElement).getTotalLength();
+        if (!length) return false;
+        const start = (trail as SVGPathElement).getPointAtLength(0);
+        const middle = (trail as SVGPathElement).getPointAtLength(length / 2);
+        const end = (trail as SVGPathElement).getPointAtLength(length);
+        const chord = Math.hypot(end.x - start.x, end.y - start.y) || 1;
+        return Math.abs((end.x - start.x) * (start.y - middle.y) - (start.x - middle.x) * (end.y - start.y)) / chord > 2;
+      }),
       trailRouteSteps: Number(host.dataset.trailRouteSteps || 0),
       lastFight: host.dataset.lastFight ? JSON.parse(host.dataset.lastFight) : null,
       contained: actorsContained && stageBox.left >= box.left && stageBox.right <= box.right,
@@ -744,6 +818,9 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(reports[3].rules).toEqual(expect.arrayContaining(["advanceBuild", "foodShares", "groupCanWin", "damageMound"]));
   expect(reports[3].moundsDestroyed).toBeGreaterThanOrEqual(2);
   expect(reports[3].soldiers).toBe(3);
+  expect(reports[3].queenCount).toBe(0);
+  expect(reports.slice(0, 2).every((report) => report.floorLines === 0 && report.trailDashed && report.trailCurved)).toBe(true);
+  expect(await page.evaluate(() => (window as any).__nestResetSamples.length > 0 && (window as any).__nestResetSamples.every((children: number) => children > 0))).toBe(true);
   expect(reports[0].storesSeen).toBeGreaterThan(0);
   expect(reports[1].storesSeen).toBeGreaterThan(0);
   expect(reports[2].storesSeen).toBeGreaterThan(0);
@@ -754,6 +831,10 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(reports[4].rules).toEqual(expect.arrayContaining(["combatPower", "combatHealth", "groupCanWin"]));
   expect(reports[4].lastFight?.damage).toBeGreaterThan(0);
   expect(reports[4].lastFight?.remainingHealth).toBeLessThan(reports[4].lastFight?.health);
+  expect(reports[4].queenCount).toBe(0);
+  expect(reports[4].rivalGuards).toBe(2);
+  expect(reports[5].queenCount).toBe(1);
+  expect(reports[5].rivalGuards).toBe(1);
   expect(reports[5].rules).toEqual(expect.arrayContaining(["stepMovement", "roleSpeed"]));
 
   const colors = await page.evaluate(() => {
