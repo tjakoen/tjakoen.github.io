@@ -22,11 +22,13 @@ way I would, in the tone I would, and posts under my account. It reads the ticke
 it never approves anything, and it keeps a log of every time it was wrong. That last part is most of
 the story.
 
-I did not start from a blank page. Career Team's platform group already ships its own Claude plugins
-for our codebase, including a staff-level PR reviewer and a fixer with a proper evaluation suite, and
-my kit is built on top of that work. Theirs is the general reviewer for everyone. Mine bends it
-toward how I review and toward the one thing I could not stop wanting, which was a record of every
-time it got something wrong.
+It is not the only one. Career Team's platform group ships its own Claude plugins for our codebase,
+including a staff-level PR reviewer and a fixer with a proper evaluation suite, and my kit grew up
+alongside them. The two reviewers arrived at the same shape on their own, and mine has borrowed from
+theirs more than once: the evaluation idea came from the fixer, and since November my kit reads the
+company reviewer's verdicts as another kit's review. Theirs is the general reviewer for everyone.
+Mine leans toward how I review and toward the one thing I could not stop wanting, which was a record
+of every time it got something wrong.
 
 On August 14 I committed one file, a skill called check-pr-voice. The next day I made eleven more
 commits to it, and one of them was titled *review the ticket, not just the diff*. That should have
@@ -244,7 +246,7 @@ single rule:
   and a rule earns its place when the team's own reviewers said the same thing more than once. The
   times a person caught what the reviewer missed are worth the most, since each one became a gate, a
   standard or a test case.
-- The platform group's Claude plugins: the staff-level PR reviewer the kit is built on, and the PR
+- The platform group's Claude plugins: the staff-level PR reviewer the kit runs alongside, and the PR
   fixer whose evaluation suite taught me to test whether a review is any good, not only whether the
   machinery runs.
 - My tech lead's epic check, which supplies the epic decisions and the collision check, and which
