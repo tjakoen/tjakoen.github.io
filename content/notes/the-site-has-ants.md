@@ -59,53 +59,54 @@ There is no single script that says "now the colony does this." Each ant has a s
 <p class="nest-start"><a href="#" data-nest-start>Open the colony</a> while you read. It runs on this page.</p>
 
 <svg viewBox="0 0 620 318" width="100%" role="img"
-     aria-label="The colony loop: a scout finds a letter and lays a trail; workers follow the trail and carry letters home; meals feed the queen, who lays more ants; stores fill and send a builder to raise a mini mound; the mini mound sends guards and flyers back out to find more letters."
-     style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.2rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  aria-label="The colony loop: a scout finds a letter and lays a trail; workers follow the trail and carry letters home; meals feed the queen, who lays more ants; stores fill and send a builder to raise a mini mound; the mini mound sends guards and flyers back out to find more letters."
+  style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.2rem;font-family:Georgia,'Times New Roman',serif;font-size:12.5px">
   <defs>
-    <marker id="nest-loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-    </marker>
+  <marker id="nest-loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+  <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+  </marker>
   </defs>
-
-    <g id="nest-ant-icon" style="color:var(--color-fg)">
-      <ellipse cx="-7" cy="0" rx="4" ry="3" style="fill:currentColor"/>
-      <circle cx="0" cy="-1" r="3.2" style="fill:currentColor"/>
-      <ellipse cx="7" cy="0" rx="5" ry="3.5" style="fill:currentColor"/>
-      <path d="M-9 -3 L-14 -8 M-9 3 L-14 8 M0 -4 L-3 -9 M0 3 L-3 8 M10 -3 L14 -8 M10 3 L14 8" style="fill:none;stroke:currentColor;stroke-width:1"/>
-    </g>
+  
+  <g id="nest-ant-icon" style="color:var(--color-fg)">
+  <ellipse cx="-7" cy="0" rx="4" ry="3" style="fill:currentColor"/>
+  <circle cx="0" cy="-1" r="3.2" style="fill:currentColor"/>
+  <ellipse cx="7" cy="0" rx="5" ry="3.5" style="fill:currentColor"/>
+  <path d="M-9 -3 L-14 -8 M-9 3 L-14 8 M0 -4 L-3 -9 M0 3 L-3 8 M10 -3 L14 -8 M10 3 L14 8" style="fill:none;stroke:currentColor;stroke-width:1"/>
+  </g>
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="20" y="24" width="150" height="42" rx="6"/>
-    <rect x="235" y="24" width="150" height="42" rx="6"/>
-    <rect x="450" y="24" width="150" height="42" rx="6"/>
-    <rect x="450" y="114" width="150" height="42" rx="6"/>
-    <rect x="235" y="204" width="150" height="42" rx="6"/>
-    <rect x="20" y="204" width="150" height="42" rx="6"/>
+  <rect x="20" y="24" width="150" height="42" rx="6"/>
+  <rect x="235" y="24" width="150" height="42" rx="6"/>
+  <rect x="450" y="24" width="150" height="42" rx="6"/>
+  <rect x="450" y="114" width="150" height="42" rx="6"/>
+  <rect x="235" y="204" width="150" height="42" rx="6"/>
+  <rect x="20" y="204" width="150" height="42" rx="6"/>
   </g>
   <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="170" y1="45" x2="233" y2="45" marker-end="url(#nest-loop-arrow)"/>
-    <line x1="385" y1="45" x2="448" y2="45" marker-end="url(#nest-loop-arrow)"/>
-    <line x1="525" y1="66" x2="525" y2="112" marker-end="url(#nest-loop-arrow)"/>
-    <line x1="450" y1="135" x2="387" y2="135" marker-end="url(#nest-loop-arrow)"/>
-    <path d="M235 135 C190 135 190 45 168 45" marker-end="url(#nest-loop-arrow)" stroke-dasharray="5 4"/>
-    <line x1="385" y1="225" x2="323" y2="225" marker-end="url(#nest-loop-arrow)"/>
-    <line x1="235" y1="225" x2="172" y2="225" marker-end="url(#nest-loop-arrow)"/>
-    <path d="M95 204 C60 160 115 110 155 70" marker-end="url(#nest-loop-arrow)" stroke-dasharray="5 4"/>
+  <line x1="170" y1="45" x2="233" y2="45" marker-end="url(#nest-loop-arrow)"/>
+  <line x1="385" y1="45" x2="448" y2="45" marker-end="url(#nest-loop-arrow)"/>
+  <line x1="525" y1="66" x2="525" y2="112" marker-end="url(#nest-loop-arrow)"/>
+  <path d="M450 135 C410 135 410 225 387 225" marker-end="url(#nest-loop-arrow)"/>
+  <path d="M235 135 C190 135 190 45 168 45" marker-end="url(#nest-loop-arrow)" stroke-dasharray="5 4"/>
+  <line x1="385" y1="225" x2="323" y2="225" marker-end="url(#nest-loop-arrow)"/>
+  <line x1="235" y1="225" x2="172" y2="225" marker-end="url(#nest-loop-arrow)"/>
+  <path d="M95 204 C60 160 115 110 155 70" marker-end="url(#nest-loop-arrow)" stroke-dasharray="5 4"/>
   </g>
   <g style="fill:var(--color-fg);text-anchor:middle">
-    <use href="#nest-ant-icon" x="66" y="86"/>
-    <text x="95" y="50">scout finds a letter</text>
-    <text x="310" y="50">trail is laid</text>
-    <use href="#nest-ant-icon" x="496" y="86"/>
-    <text x="525" y="50">workers carry</text>
-    <use href="#nest-ant-icon" x="496" y="176"/>
-    <text x="525" y="140">queen and stores</text>
-    <text x="310" y="230">builder raises a mound</text>
-    <text x="95" y="230">guards and flyers</text>
+  <use href="#nest-ant-icon" x="66" y="86"/>
+  <text x="95" y="50">scout finds a letter</text>
+  <text x="310" y="50">trail is laid</text>
+  <use href="#nest-ant-icon" x="496" y="86"/>
+  <text x="525" y="50">workers carry</text>
+  <use href="#nest-ant-icon" x="496" y="176"/>
+  <text x="525" y="140">queen and stores</text>
+  <text x="310" y="222">builder raises</text>
+  <text x="310" y="238">a mound</text>
+  <text x="95" y="230">guards and flyers</text>
   </g>
   <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9" fill="var(--color-muted)" text-anchor="middle">
-    <text x="310" y="102">meals feed the queen</text>
-    <text x="310" y="178">full stores make more colony</text>
-    <text x="310" y="290">the loop has no ending</text>
+  <text x="310" y="102">meals feed the queen</text>
+  <text x="310" y="178">full stores make more colony</text>
+  <text x="310" y="290">the loop has no ending</text>
   </g>
 </svg>
 
@@ -130,37 +131,37 @@ The first rival appears after the second worship, not the first. It starts as a 
 <p style="margin:0 0 .5rem"><a href="#" data-nest-start>Start the colony</a> if you want to watch a rival arrive.</p>
 
 <svg viewBox="0 0 620 256" width="100%" role="img"
-     aria-label="The rival life cycle: a rival founds after the second worship; it builds one trail and a few ants; it spends stolen letters to add trails and mini mounds; guards and flyers defend those mounds; after ten stolen letters or about a minute it goes to all-out war; when it falls there is a celebration and no loot."
-     style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.2rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
+  aria-label="The rival life cycle: a rival founds after the second worship; it builds one trail and a few ants; it spends stolen letters to add trails and mini mounds; guards and flyers defend those mounds; after ten stolen letters or about a minute it goes to all-out war; when it falls there is a celebration and no loot."
+  style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.2rem;font-family:Georgia,'Times New Roman',serif;font-size:12.5px">
   <defs><marker id="nest-rival-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/></marker></defs>
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="12" y="52" width="108" height="54" rx="6"/>
-    <rect x="136" y="52" width="108" height="54" rx="6"/>
-    <rect x="260" y="52" width="108" height="54" rx="6"/>
-    <rect x="384" y="52" width="108" height="54" rx="6"/>
-    <rect x="500" y="52" width="108" height="54" rx="6"/>
+  <rect x="12" y="52" width="108" height="54" rx="6"/>
+  <rect x="136" y="52" width="108" height="54" rx="6"/>
+  <rect x="260" y="52" width="108" height="54" rx="6"/>
+  <rect x="384" y="52" width="108" height="54" rx="6"/>
+  <rect x="500" y="52" width="108" height="54" rx="6"/>
   </g>
   <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="120" y1="79" x2="134" y2="79" marker-end="url(#nest-rival-arrow)"/>
-    <line x1="244" y1="79" x2="258" y2="79" marker-end="url(#nest-rival-arrow)"/>
-    <line x1="368" y1="79" x2="382" y2="79" marker-end="url(#nest-rival-arrow)"/>
-    <line x1="492" y1="79" x2="498" y2="79" marker-end="url(#nest-rival-arrow)"/>
+  <line x1="120" y1="79" x2="134" y2="79" marker-end="url(#nest-rival-arrow)"/>
+  <line x1="244" y1="79" x2="258" y2="79" marker-end="url(#nest-rival-arrow)"/>
+  <line x1="368" y1="79" x2="382" y2="79" marker-end="url(#nest-rival-arrow)"/>
+  <line x1="492" y1="79" x2="498" y2="79" marker-end="url(#nest-rival-arrow)"/>
   </g>
   <g style="fill:var(--color-fg);text-anchor:middle;font-size:12.5px">
-    <use href="#nest-ant-icon" x="44" y="126"/>
-    <text x="66" y="74">2nd worship</text>
-    <text x="66" y="92">rival founds</text>
-    <text x="190" y="74">one trail</text>
-    <text x="190" y="92">a few ants</text>
-    <text x="314" y="74">letters become</text>
-    <text x="314" y="92">trails and mounds</text>
-    <text x="438" y="74">guards</text>
-    <text x="438" y="92">and flyers</text>
-    <text x="554" y="74">10 letters</text>
-    <text x="554" y="92">or 65 seconds</text>
+  <use href="#nest-ant-icon" x="44" y="126"/>
+  <text x="66" y="74">2nd worship</text>
+  <text x="66" y="92">rival founds</text>
+  <text x="190" y="74">one trail</text>
+  <text x="190" y="92">a few ants</text>
+  <text x="314" y="74">letters become</text>
+  <text x="314" y="92">trails and mounds</text>
+  <text x="438" y="74">guards</text>
+  <text x="438" y="92">and flyers</text>
+  <text x="554" y="74">10 letters</text>
+  <text x="554" y="92">or 65 seconds</text>
   </g>
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="136" y="158" width="456" height="58" rx="6"/>
+  <rect x="136" y="158" width="456" height="58" rx="6"/>
   </g>
   <text x="364" y="180" text-anchor="middle" style="fill:var(--color-fg);font-size:12.5px">the main colony answers with a siege</text>
   <text x="364" y="200" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">the rival spends its stolen letters as it grows</text>
@@ -180,50 +181,46 @@ The rival prefers the left side when the main colony is on the right, and it kee
 Combat is deliberately small. The main colony gets the advantage, but not every fight is a formality.
 
 <svg viewBox="0 0 620 250" width="100%" role="img"
-     aria-label="Combat rules: two main workers beat one rival guard; one main guard against one rival guard is a sixty percent main win; two rival guards beat one main guard; one main flyer against one rival flyer is a seventy-five percent main win."
-     style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.2rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
+  aria-label="Combat rules: two main workers beat one rival guard; one main guard against one rival guard is a sixty percent main win; two rival guards beat one main guard; one main flyer against one rival flyer is a seventy-five percent main win."
+  style="display:block;width:100%;max-width:620px;height:auto;margin:0 auto 1.2rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
   <defs>
-    <g id="nest-ant-icon-fight" style="color:var(--color-fg)">
-      <ellipse cx="-7" cy="0" rx="4" ry="3" style="fill:currentColor"/>
-      <circle cx="0" cy="-1" r="3.2" style="fill:currentColor"/>
-      <ellipse cx="7" cy="0" rx="5" ry="3.5" style="fill:currentColor"/>
-      <path d="M-9 -3 L-14 -8 M-9 3 L-14 8 M0 -4 L-3 -9 M0 3 L-3 8 M10 -3 L14 -8 M10 3 L14 8" style="fill:none;stroke:currentColor;stroke-width:1"/>
-    </g>
-</defs>
+  <g id="nest-ant-icon-fight" style="color:var(--color-fg)">
+  <ellipse cx="-7" cy="0" rx="4" ry="3" style="fill:currentColor"/>
+  <circle cx="0" cy="-1" r="3.2" style="fill:currentColor"/>
+  <ellipse cx="7" cy="0" rx="5" ry="3.5" style="fill:currentColor"/>
+  <path d="M-9 -3 L-14 -8 M-9 3 L-14 8 M0 -4 L-3 -9 M0 3 L-3 8 M10 -3 L14 -8 M10 3 L14 8" style="fill:none;stroke:currentColor;stroke-width:1"/>
+  </g>
+  </defs>
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="12" y="18" width="142" height="94" rx="6"/>
-    <rect x="166" y="18" width="142" height="94" rx="6"/>
-    <rect x="320" y="18" width="142" height="94" rx="6"/>
-    <rect x="474" y="18" width="134" height="94" rx="6"/>
+  <rect x="12" y="18" width="142" height="94" rx="6"/>
+  <rect x="166" y="18" width="142" height="94" rx="6"/>
+  <rect x="320" y="18" width="142" height="94" rx="6"/>
+  <rect x="474" y="18" width="134" height="94" rx="6"/>
   </g>
   <g style="fill:var(--color-fg);text-anchor:middle">
-    <use href="#nest-ant-icon-fight" x="44" y="44"/>
-    <text x="83" y="46" style="font-size:12px">2 workers</text>
-    <text x="83" y="64" style="font-size:12px">beat 1 guard</text>
-    <use href="#nest-ant-icon-fight" x="198" y="44"/>
-    <text x="237" y="46" style="font-size:12px">1 guard vs 1 guard</text>
-    <text x="237" y="64" style="font-size:12px">main wins 60%</text>
-    <use href="#nest-ant-icon-fight" x="352" y="44"/>
-    <text x="391" y="46" style="font-size:12px">2 rival guards</text>
-    <text x="391" y="64" style="font-size:12px">beat 1 main guard</text>
-    <use href="#nest-ant-icon-fight" x="506" y="44"/>
-    <text x="541" y="46" style="font-size:12px">1 flyer vs 1 flyer</text>
-    <text x="541" y="64" style="font-size:12px">main wins 75%</text>
+  <text x="83" y="46" style="font-size:12px">2 workers</text>
+  <text x="83" y="64" style="font-size:12px">beat 1 guard</text>
+  <text x="237" y="46" style="font-size:12px">1 guard vs 1 guard</text>
+  <text x="237" y="64" style="font-size:12px">main wins 60%</text>
+  <text x="391" y="46" style="font-size:12px">2 rival guards</text>
+  <text x="391" y="64" style="font-size:12px">beat 1 main guard</text>
+  <text x="541" y="46" style="font-size:12px">1 flyer vs 1 flyer</text>
+  <text x="541" y="64" style="font-size:12px">main wins 75%</text>
   </g>
   <g style="fill:var(--color-muted)">
-    <rect x="32" y="82" width="106" height="5" rx="2"/>
-    <rect x="32" y="82" width="106" height="5" rx="2" style="fill:var(--color-accent)"/>
-    <rect x="186" y="82" width="102" height="5" rx="2"/>
-    <rect x="186" y="82" width="61" height="5" rx="2" style="fill:var(--color-accent)"/>
-    <rect x="340" y="82" width="102" height="5" rx="2" style="fill:var(--color-accent)"/>
-    <rect x="494" y="82" width="94" height="5" rx="2"/>
-    <rect x="494" y="82" width="70" height="5" rx="2" style="fill:var(--color-accent)"/>
+  <rect x="32" y="82" width="106" height="5" rx="2"/>
+  <rect x="32" y="82" width="106" height="5" rx="2" style="fill:var(--color-accent)"/>
+  <rect x="186" y="82" width="102" height="5" rx="2"/>
+  <rect x="186" y="82" width="61" height="5" rx="2" style="fill:var(--color-accent)"/>
+  <rect x="340" y="82" width="102" height="5" rx="2" style="fill:var(--color-accent)"/>
+  <rect x="494" y="82" width="94" height="5" rx="2"/>
+  <rect x="494" y="82" width="70" height="5" rx="2" style="fill:var(--color-accent)"/>
   </g>
   <g style="fill:var(--color-muted);text-anchor:middle;font-size:10.5px">
-    <text x="83" y="126">group power</text>
-    <text x="237" y="126">a real duel</text>
-    <text x="391" y="126">numbers matter</text>
-    <text x="541" y="126">the air is contested</text>
+  <text x="83" y="126">group power</text>
+  <text x="237" y="126">a real duel</text>
+  <text x="391" y="126">numbers matter</text>
+  <text x="541" y="126">the air is contested</text>
   </g>
   <text x="310" y="190" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">The main nest is stronger. It is not invulnerable.</text>
   <text x="310" y="214" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">two workers can gang up; two rival guards can punish a lone main guard</text>
