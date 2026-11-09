@@ -532,6 +532,23 @@ still true, and no chore whose output is a judgment is scheduled. It is built to
 in the cognitive tier, where a person reads the result, rather than on the nightly cron the cookbook
 uses. That wiring is still a task, and this paragraph should not be read as saying it is done.
 
+**The harness is a bet with an expiry date, and the bets do expire.** The cleanest evidence is
+Anthropic's own. A harness that needed a feature list, a progress file and context resets to keep
+Sonnet 4.5 coherent had its sprint decomposition removed outright once Opus 4.6 arrived, and its
+evaluator cut from a pass per sprint to a single pass at the end, because the model had taken over the
+job the scaffold was doing. Prithvi Rajasekaran's account of that work,
+[Harness design for long-running application development](https://www.anthropic.com/research/harness-design-long-running-apps),
+ends on the rule that matters more than any of its components: every part of a harness encodes an
+assumption about what the model cannot do on its own, those assumptions go stale, and a new model is
+the moment to remove one piece at a time and see whether the result still holds. Nothing in this file
+is exempt, including the doctor, the turn-end gate and the second pass. The test is the one §2a already
+applies to a chore: does this still catch something a person would miss? A check that no longer does is
+ceremony, and ceremony is what gets deleted in the next clean-up along with the check that still earned
+its place. The companion finding from the earlier Anthropic harness is a task in
+[the loop plan](https://github.com/tjakoen/tjakoen.github.io/blob/main/plans/ai-workflow-loop.md) rather
+than a rule here: a completion state the worker can rewrite is a completion state that bends, and this
+estate's plan board is Markdown the session itself edits.
+
 Two honest caveats, the same posture as the STE cite in [`VOICE.md`](VOICE.md): the two books are being
 read as this is written, so this section is a living base, not a finished literature review — it gets
 revisited after the read. And none of these sources is a study of *this* estate; they are the shape the

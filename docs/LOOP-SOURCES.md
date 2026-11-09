@@ -106,6 +106,43 @@ in every CLAUDE.md already are.
 
 ---
 
+## The long-running-agent harness
+
+**Anthropic, [Effective harnesses for long-running agents](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents).**
+Published 26 November 2025 by Anthropic's engineering team; the page carries no individual byline.
+The initializer agent and the coding agent, the JSON feature list that marks each feature passing or
+failing, the progress file plus git log as the handoff, and one feature per session, paired against
+four failure modes: declaring victory early, a tree left half-built between sessions, a feature marked
+done without being tested end to end, and rediscovering how to start the app every session. Their
+reason for JSON over Markdown is the part worth keeping: a model is far less likely to rewrite a
+structured status file than a checklist it can reword.
+
+Read on 2026-11-09 and found mostly a subset. The session-start ritual, the progress record and the
+rule that verification comes from an agent that did not write the change were already stricter here
+(SESSION-LOOP section 1, the run ledger in LOOP section 4a, the verify rule in section 2). It named one
+real gap: this estate's plan board is Markdown that the session itself edits, so a run can reshape the
+task it failed. That is now a task in [the loop plan](../plans/ai-workflow-loop.md), not a change to
+the standard.
+
+**Prithvi Rajasekaran, [Harness design for long-running application development](https://www.anthropic.com/research/harness-design-long-running-apps).**
+Anthropic Labs, 24 March 2026.
+Planner, generator and evaluator; the finding that agents grade their own work generously, which is why
+the evaluator is a separate agent tuned against its own logs; four design criteria with hard thresholds;
+the sprint contract, agreed before any code, that bridges a high-level spec to testable behavior;
+verification through the running app rather than the diff; and the cost table that makes the trade
+honest, a solo run at 20 minutes and 9 dollars against the full harness at six hours and 200, and a
+later version at 3h50 and 124.70. Its closing lesson is the one that landed: every harness component
+encodes an assumption about what the model cannot do alone, the assumptions go stale, and a new model
+is the moment to strip one at a time and see whether the result holds. That rule is now the paragraph
+before the caveats in LOOP section 5.
+
+Honest limit on the second: the harness was built for greenfield full-stack apps generated from a
+one-line prompt, which is not the shape of the work in this estate. The evaluator economics transfer;
+the three-agent scaffold does not have to. The sprint contract is on the plan as a scoped follow-up,
+limited to tasks with a surface a person can look at.
+
+---
+
 ## The writing standard
 
 **ASD-STE100, Simplified Technical English.**
@@ -162,6 +199,8 @@ round costs a model run and that needs a budget call first.
 | Agentic Code Quality | LOOP section 5, this file, the 2026-08-13 audit |
 | Graziano | LOOP section 5 |
 | Spec Kit | LOOP section 5 |
+| Effective harnesses | LOOP section 5, this file, the P7 tasks in plans/ai-workflow-loop.md |
+| Harness design (Rajasekaran) | LOOP section 5, this file, the P7 tasks in plans/ai-workflow-loop.md |
 | C.R.I.S.S.P. | LOOP section 4(a), standards NOTICE, and in PANTRY its NOTICE, README, PLAN and the certify and /control source |
 | ASD-STE100 | VOICE, the draft note body, agent memory |
 | ste-lint.py | the header of the voice linter |
