@@ -227,11 +227,11 @@ ask are the ones I actually want answered:
 
 > I wanted the feedback I gave to be something a person could act on.
 
-I say the same framing every time: the numbers are a diagnostic and a comparison with the team, not
+I frame it the same way: the numbers are a diagnostic and a comparison with the team, not
 a grade, and they are read over a quarter rather than one sprint. That framing is what lets someone
 hear "your kickbacks are high" as a puzzle to solve together instead of a verdict.
 
-It landed better than I expected. As a snapshot, over five weeks of one-on-ones the dashboard came up
+It landed. As a snapshot, over five weeks of one-on-ones the dashboard came up
 in most of them, and nobody pushed back. One developer said that seeing their numbers next to the
 team's finally gave them a clear direction. Another called it a useful tool for self-reflection.
 Several left with one concrete thing to work on, a root-cause look at their own kickbacks or a daily
