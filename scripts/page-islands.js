@@ -59,6 +59,10 @@ if (nestModes && nestAside && nestMain && nestBar) {
   let nestPlaceholderLauncher = null, nestPlaceholderStray = null;
 
   const openNest = async () => {
+    if (document.querySelector('[data-live-figure="nest"]')) {
+      location.assign("/?nest=play");
+      return;
+    }
     try {
       await ensureNestGame();
       if (window.__nestLauncher && window.__nestLauncher !== nestPlaceholderLauncher) window.__nestLauncher.open();
@@ -77,6 +81,7 @@ if (nestModes && nestAside && nestMain && nestBar) {
   window.__nestLauncher = nestPlaceholderLauncher;
   nestPlaceholderStray = {
     spawn: async (force = false) => {
+      if (document.querySelector('[data-live-figure="nest"]')) return;
       try {
         await ensureNestGame();
         if (window.__nestStray && window.__nestStray !== nestPlaceholderStray) window.__nestStray.spawn(force);
@@ -85,6 +90,12 @@ if (nestModes && nestAside && nestMain && nestBar) {
     cancel: () => {},
   };
   window.__nestStray = nestPlaceholderStray;
+  const launchNest = new URL(location.href);
+  if (launchNest.searchParams.get("nest") === "play" && !document.querySelector('[data-live-figure="nest"]')) {
+    launchNest.searchParams.delete("nest");
+    history.replaceState(null, "", `${launchNest.pathname}${launchNest.search}${launchNest.hash}`);
+    void openNest();
+  }
 }
 
 if (document.querySelector("[data-note-progress]")) tasks.push(import("/site/note-progress.js"));

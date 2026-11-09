@@ -702,6 +702,7 @@
 .nest-scene__stage > svg { display: block; width: 100%; height: 100%; overflow: hidden; }
 .nest-scene__stage text { font-family: var(--font-mono); }
 .nest-scene .nest-ant { position: static; display: block; width: auto; height: auto; margin: 0; padding: 0; border: 0; background: none; color: var(--ink); pointer-events: none; }
+.nest-scene .nest-ant.inside-mound { visibility: hidden; }
 .nest-scene .nest-ant svg { width: 19px; height: 11px; overflow: visible; }
 .nest-scene .nest-ant.scout svg { color: var(--color-accent); }
 .nest-scene .nest-ant.soldier svg { width: 21px; height: 12px; }
@@ -719,8 +720,7 @@
 .nest-scene__trail { fill: none; stroke: var(--color-accent); stroke-width: 1.2; stroke-dasharray: 1 4; stroke-linecap: round; opacity: .7; }
 .nest-scene .nest-scene__sentence { fill: var(--ink); font: 17px var(--font-accent, Georgia, serif); }
 .nest-scene__carry { fill: var(--color-accent); font: 14px var(--font-accent, Georgia, serif); }
-.nest-scene__store { fill: none; stroke: var(--color-line); stroke-width: 1; }
-.nest-scene__store.filled { fill: var(--color-accent); stroke: var(--color-accent); }
+.nest-scene__stored-food { fill: var(--color-accent); font: 11px var(--font-accent, Georgia, serif); opacity: .9; }
 .nest-scene .nest-ant .legs-b { opacity: 0; }
 .nest-scene .nest-ant.walk .legs-a { animation: nest-scene-step .18s steps(1) infinite; }
 .nest-scene .nest-ant.walk .legs-b { animation: nest-scene-step .18s steps(1) infinite reverse; }

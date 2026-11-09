@@ -1,6 +1,13 @@
 // The colony's small, deterministic rules shared by the game and the note figures.
 export const STORE_COSTS = [12, 18, 24, 30, 36];
 export const BUILD_TIME = 8;
+export const RIVAL_FOUNDING_TIME = 3.2;
+export const RIVAL_MOUND_HEALTH = 8;
+export const MOUND_BITE_INTERVAL = 1.1;
+
+export function damageMound(health) {
+  return Math.max(0, health - 1);
+}
 
 export function storeCapacity(builtCount) {
   return STORE_COSTS[Math.min(builtCount, STORE_COSTS.length - 1)];

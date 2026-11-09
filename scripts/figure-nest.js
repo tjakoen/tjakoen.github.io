@@ -2,9 +2,13 @@
 import { antClasses, antMarkup, miniArt } from "./nest-assets.js";
 import {
   BUILD_TIME,
+  MOUND_BITE_INTERVAL,
+  RIVAL_FOUNDING_TIME,
+  RIVAL_MOUND_HEALTH,
   advanceBuild,
   combatHealth,
   combatPower,
+  damageMound,
   foodShares,
   groupCanWin,
   roleSpeed,
@@ -105,6 +109,7 @@ function moveActor(sim, actor, target, dt, { job = actor.job, factor = 1, letter
     now: sim.clock * 1000,
     blocked: () => false,
   });
+  if (actor.home) actor.el.classList.toggle("inside-mound", Math.hypot(actor.x - actor.home.x, actor.y - actor.home.y) < 11);
   recordRule(sim, "stepMovement");
   const walking = Math.hypot(actor.x - beforeX, actor.y - beforeY) > 0.02;
   if (walking && actor.role === "scout" && actor.pathPoints &&
@@ -149,31 +154,42 @@ function updateCarryGlyph(actor) {
   }
 }
 
-function addStores(sim, { x = 25, y = 207, count = 12, value = 0 } = {}) {
-  const meter = svg("g", { class: "nest-scene__stores", role: "img", "aria-label": "Colony stores" });
-  sim.svg.append(meter);
-  sim.storeMarks = [];
-  for (let i = 0; i < count; i++) {
-    const mark = svg("rect", { x: x + i * 12, y, width: 8, height: 7, rx: 1, class: "nest-scene__store" });
-    meter.append(mark);
-    sim.storeMarks.push(mark);
-  }
+function addStores(sim, { count = 12, value = 0, x = 172, y = 210, seed = "·" } = {}) {
   sim.storeMax = count;
   sim.stores = value;
+  sim.storeContents = Array.from({ length: value }, () => seed);
+  sim.storeX = x;
+  sim.storeY = y;
+  sim.storeGlyphs = svg("g", { class: "nest-scene__stores", "aria-hidden": "true" });
+  sim.dynamic.append(sim.storeGlyphs);
   renderStores(sim);
-  return meter;
 }
 
 function renderStores(sim) {
-  sim.storeMarks?.forEach((mark, index) => mark.classList.toggle("filled", index < sim.stores));
+  if (sim.storeGlyphs) {
+    const marks = sim.storeContents.map((character, index) => {
+      const glyph = svg("text", {
+        class: "nest-scene__stored-food",
+        x: sim.storeX + (index % 4) * 8 + (Math.floor(index / 4) % 2) * 2,
+        y: sim.storeY + Math.floor(index / 4) * 8,
+      });
+      glyph.textContent = character;
+      return glyph;
+    });
+    sim.storeGlyphs.replaceChildren(...marks);
+  }
   if (sim.host.dataset.stores !== undefined) sim.host.dataset.stores = String(sim.stores);
+  sim.host.dataset.maxStoresSeen = String(Math.max(Number(sim.host.dataset.maxStoresSeen) || 0, sim.stores));
+  if (sim.storeGlyphs) sim.host.dataset.maxStoreGlyphsSeen = String(Math.max(Number(sim.host.dataset.maxStoreGlyphsSeen) || 0, sim.storeGlyphs.childElementCount));
 }
 
 function applyFood(sim, letter) {
   const shares = foodShares(letter.need, sim.feedFlip, true);
   recordRule(sim, "foodShares");
   sim.feedFlip = shares.feedFlip;
-  sim.stores = Math.min(sim.storeMax, sim.stores + shares.stores);
+  const gained = Math.min(sim.storeMax - sim.stores, shares.stores);
+  sim.stores += gained;
+  for (let index = 0; index < gained; index++) sim.storeContents.push(letter.ch);
   sim.meals += shares.meals;
   sim.host.dataset.meals = String(sim.meals);
   renderStores(sim);
@@ -234,6 +250,7 @@ function resetCycle(sim) {
   sim.letters = [];
   sim.storeMarks = [];
   sim.stores = 0;
+  sim.storeContents = [];
   sim.meals = 0;
   sim.feedFlip = false;
   sim.trailLaid = false;
@@ -267,8 +284,9 @@ function setupEat(sim) {
   sim.trailPath = addTrail(sim);
   sim.letters = addSentence(sim, "letters feed a colony", [0, 5, 17]);
   sim.storeMax = 6;
-  addStores(sim, { x: 24, y: 211, count: sim.storeMax });
+  addStores(sim, { count: sim.storeMax, x: home.x + 70 });
   sim.actors = [addActor(sim, "scout", "main", home.x, home.y, { job: "search" }), addActor(sim, "worker", "main", home.x - 8, home.y + 6, { job: "search" }), addActor(sim, "worker", "main", home.x + 7, home.y + 7, { job: "search" })];
+  sim.actors.forEach((actor) => { actor.home = home; actor.el.classList.add("inside-mound"); });
   sim.data = { home, forage: sim.actors, scoutFirst: true };
   setPhase(sim, "scout-out");
 }
@@ -278,11 +296,12 @@ function setupColony(sim) {
   const home = { x: 105, y: 164 };
   addMound(sim, 34, 123, { width: 140, height: 55 });
   sim.letters = addSentence(sim, "letters build a new nest", [0, 8]);
-  addStores(sim, { x: 23, y: 211, count: 12, value: 11 });
+  addStores(sim, { count: 12, value: 11, x: home.x + 70, seed: sim.letters[0]?.ch });
   sim.host.dataset.stores = "11";
   sim.storeMax = storeCapacity(0);
   recordRule(sim, "storeCapacity");
   sim.actors = [addActor(sim, "queen", "main", home.x, home.y, { scale: 1.55 }), addActor(sim, "worker", "main", home.x - 10, home.y + 7, { job: "search" }), addActor(sim, "worker", "main", home.x + 9, home.y + 6, { job: "search" }), addActor(sim, "soldier", "main", home.x + 1, home.y + 12, { scale: 1.2 })];
+  sim.actors.forEach((actor) => { actor.home = home; actor.el.classList.add("inside-mound"); });
   sim.trailPath = addTrail(sim);
   sim.data = { home, forage: sim.actors.slice(1, 3), builder: null, mound: null, build: 0, buildTarget: { x: 456, y: 164 }, stage: "delivery" };
   setPhase(sim, "workers-deliver");
@@ -295,7 +314,7 @@ function addFighters(sim, { mainCount = 3, rivalCount = 2, homeX = 118, rivalX =
 
 function setupFight(sim) {
   addFloor(sim, 178);
-  sim.dynamic.append(svg("path", { d: "M36 154 H564", class: "nest-scene__trail" }));
+  sim.dynamic.append(svg("path", { d: "M36 154 C96 146 108 126 166 132 S244 171 302 158 S392 124 446 137 S518 163 564 148", class: "nest-scene__trail" }));
   addFighters(sim);
   sim.data = { mains: sim.actors.filter((actor) => actor.side === "main"), rivals: sim.actors.filter((actor) => actor.side === "rival"), target: null, fightElapsed: 0, mainLosses: 0 };
   setPhase(sim, "approach");
@@ -325,11 +344,14 @@ function setupWorship(sim) {
   addFloor(sim);
   const home = { x: 300, y: 165 };
   addMound(sim, 242, 121, { width: 116, height: 48 });
-  addStores(sim, { x: 228, y: 210, count: 12 });
+  addStores(sim, { count: 12, x: home.x + 70 });
   sim.storeMax = storeCapacity(0);
   recordRule(sim, "storeCapacity");
   const queen = addActor(sim, "queen", "main", home.x, home.y, { scale: 1.55, job: "worship" });
+  queen.home = home;
+  queen.el.classList.add("inside-mound");
   const dancers = Array.from({ length: 7 }, (_, index) => addActor(sim, "worker", "main", home.x + (index - 3) * 11, home.y + 12, { job: "gather" }));
+  dancers.forEach((actor) => { actor.home = home; actor.el.classList.add("inside-mound"); });
   sim.actors = [queen, ...dancers];
   sim.data = { home, stage: { x: 300, y: 76 }, queen, dancers, gathered: false, danceStart: 0, returnAt: 0, orbitPhase: 0 };
   setPhase(sim, "queen-leaves");
@@ -340,16 +362,28 @@ function setupRival(sim) {
   const home = { x: 488, y: 164 };
   const mainHome = { x: 105, y: 164 };
   const rivalMound = addMound(sim, 425, 125, { width: 126, height: 54, rival: true, progress: 0 });
-  addMound(sim, 36, 125, { width: 126, height: 54 });
-  sim.letters = addSentence(sim, "rival ants steal letters", [0, 8, 18]);
-  addStores(sim, { x: 24, y: 211, count: 6 });
-  sim.storeMax = 6;
+  addMound(sim, 36, 125, { width: 126, height: 54, progress: 1 });
+  sim.letters = addSentence(sim, "rival ants steal letters", [0, 1, 2, 3, 4, 7, 8, 9]);
+  sim.storeMax = storeCapacity(0);
+  sim.stores = 0;
+  sim.storeContents = [];
+  sim.storeMax = storeCapacity(0);
+  recordRule(sim, "storeCapacity");
   sim.trailPath = addTrail(sim);
-  const guard = addActor(sim, "rival-guard", "rival", home.x, home.y, { job: "guard", scale: 1.25 });
+  sim.trailPath.setAttribute("d", "M150 158 C202 140 242 168 294 148 S388 136 444 158");
   const workers = [addActor(sim, "rival-worker", "rival", home.x - 8, home.y + 8, { job: "wait" }), addActor(sim, "rival-worker", "rival", home.x + 8, home.y + 9, { job: "wait" })];
-  const mains = [addActor(sim, "worker", "main", mainHome.x, mainHome.y, { job: "wait" }), addActor(sim, "worker", "main", mainHome.x - 8, mainHome.y + 8, { job: "wait" }), addActor(sim, "soldier", "main", mainHome.x + 8, mainHome.y + 8, { job: "wait", scale: 1.2 })];
-  sim.actors = [guard, ...workers, ...mains];
-  sim.data = { home, mainHome, rivalMound, guard, workers, mains, stage: "build", build: 0, fightElapsed: 0, returnCount: 0 };
+  const mainWorkers = [addActor(sim, "worker", "main", mainHome.x - 8, mainHome.y + 7, { job: "wait" }), addActor(sim, "worker", "main", mainHome.x + 8, mainHome.y + 7, { job: "wait" })];
+  const soldiers = [
+    addActor(sim, "soldier", "main", mainHome.x - 8, mainHome.y + 12, { job: "wait", scale: 1.2 }),
+    addActor(sim, "soldier", "main", mainHome.x, mainHome.y + 14, { job: "wait", scale: 1.2 }),
+    addActor(sim, "soldier", "main", mainHome.x + 8, mainHome.y + 12, { job: "wait", scale: 1.2 }),
+  ];
+  const guards = [addActor(sim, "rival-guard", "rival", home.x - 8, home.y + 7, { job: "guard", scale: 1.25 }), addActor(sim, "rival-guard", "rival", home.x + 8, home.y + 8, { job: "guard", scale: 1.25 })];
+  workers.forEach((actor) => { actor.home = home; actor.el.classList.add("inside-mound"); });
+  [...mainWorkers, ...soldiers, ...guards].forEach((actor) => { actor.home = actor.side === "main" ? mainHome : home; actor.el.classList.add("inside-mound"); });
+  const mains = [...mainWorkers, ...soldiers];
+  sim.actors = [...guards, ...workers, ...mains];
+  sim.data = { home, mainHome, rivalMound, guards, workers, mainWorkers, soldiers, mains, stage: "build", build: 0, siegeHealth: RIVAL_MOUND_HEALTH, siegeElapsed: 0 };
   setPhase(sim, "rival-build");
 }
 
@@ -397,6 +431,7 @@ function tickColonyBuild(sim, dt) {
     data.stage = "ready";
     sim.host.dataset.miniMound = "ready";
     sim.stores = Math.max(0, sim.stores - sim.storeMax);
+    sim.storeContents = sim.storeContents.slice(0, sim.stores);
     renderStores(sim);
     setPhase(sim, "mini-ready");
     completeCycle(sim);
@@ -534,6 +569,7 @@ function tickWorship(sim, dt) {
     for (const actor of dancers) moveActor(sim, actor, home, dt, { job: "home" });
     if (dancers.every((actor) => Math.hypot(actor.x - home.x, actor.y - home.y) < 12)) {
       sim.stores = storeCapacity(0);
+      sim.storeContents = Array.from({ length: sim.stores }, () => "·");
       recordRule(sim, "storeCapacity");
       renderStores(sim);
       sim.host.dataset.stores = String(sim.stores);
@@ -545,7 +581,7 @@ function tickWorship(sim, dt) {
 function tickRival(sim, dt) {
   const data = sim.data;
   if (data.stage === "build") {
-    data.build = advanceBuild(data.build, dt, BUILD_TIME);
+    data.build = advanceBuild(data.build, dt, RIVAL_FOUNDING_TIME);
     recordRule(sim, "advanceBuild");
     setMoundProgress(sim, data.rivalMound, data.build);
     sim.host.dataset.buildProgress = data.build.toFixed(2);
@@ -558,32 +594,60 @@ function tickRival(sim, dt) {
   if (data.stage === "steal") {
     data.workers.forEach((actor) => { if (actor.job === "wait") actor.job = "search"; });
     useForage(sim, dt, { home: data.home, workers: data.workers });
+    data.mainWorkers.forEach((actor) => { if (actor.job === "wait") actor.job = "search"; });
+    useForage(sim, dt, { home: data.mainHome, workers: data.mainWorkers });
     if (allLettersDelivered(sim)) {
       data.stage = "fight";
-      data.mains.forEach((actor) => { actor.job = "approach"; });
-      data.guard.alive = true;
-      data.fightElapsed = 0;
+      data.soldiers.forEach((actor) => { actor.job = "approach"; });
+      data.guards.forEach((actor) => { actor.alive = true; actor.el.classList.remove("inside-mound"); });
       setPhase(sim, "main-answers");
     }
     return;
   }
   if (data.stage === "fight") {
-    if (data.guard.alive === false && sim.phase === "resolve-win" && sim.clock < sim.data.resolveUntil) return;
-    tickCombat(sim, dt, {
-      mains: data.mains,
-      rivals: [data.guard],
-      getTarget: () => data.guard,
-      finish: () => {
-        data.stage = "driven-off";
-        data.workers.forEach((actor) => { actor.job = "retreat"; });
-        setPhase(sim, "rival-driven-off");
-      },
-    });
-    if (data.guard.alive === false && sim.phase === "resolve-win" && sim.clock >= data.resolveUntil) {
+    if (sim.phase === "resolve-win" || sim.phase === "resolve-loss") {
+      if (sim.clock < sim.data.resolveUntil) return;
       sim.data.pendingTarget?.el.remove();
       sim.data.pendingTarget = null;
-      data.stage = "driven-off";
+      if (data.guards.every((actor) => actor.alive === false)) {
+        data.stage = "destroy";
+        data.siegeElapsed = 0;
+        data.soldiers.forEach((actor) => { actor.job = "rival-siege"; });
+        setPhase(sim, "soldiers-destroy-mound");
+        return;
+      }
+      setPhase(sim, "approach");
+    }
+    tickCombat(sim, dt, {
+      mains: data.soldiers,
+      rivals: data.guards,
+      getTarget: (_mains, aliveGuards) => aliveGuards.find((actor) => actor.alive !== false) || null,
+      finish: () => {
+        data.stage = "destroy";
+        data.siegeElapsed = 0;
+        data.soldiers.forEach((actor) => { actor.job = "rival-siege"; });
+        setPhase(sim, "soldiers-destroy-mound");
+      },
+    });
+    return;
+  }
+  if (data.stage === "destroy") {
+    const arrivals = data.soldiers.map((actor, index) => moveActor(sim, actor, { x: data.rivalMound.x + 58, y: 159 + index * 7 }, dt, { job: "rival-siege", factor: 0.9 }));
+    if (!arrivals.every(Boolean)) return;
+    data.siegeElapsed += dt;
+    if (data.siegeElapsed >= MOUND_BITE_INTERVAL) {
+      data.siegeElapsed = 0;
+      for (let index = 0; index < data.soldiers.length && data.siegeHealth > 0; index++) {
+        data.siegeHealth = damageMound(data.siegeHealth);
+        recordRule(sim, "damageMound");
+      }
+      setMoundProgress(sim, data.rivalMound, data.siegeHealth / 8);
+      sim.host.dataset.rivalMoundHealth = String(data.siegeHealth);
+    }
+    if (data.siegeHealth === 0) {
+      sim.host.dataset.rivalMoundsDestroyed = String((Number(sim.host.dataset.rivalMoundsDestroyed) || 0) + 1);
       data.workers.forEach((actor) => { actor.job = "retreat"; });
+      data.stage = "driven-off";
       setPhase(sim, "rival-driven-off");
     }
     return;
@@ -625,11 +689,13 @@ export function mountNest(host) {
   host.dataset.eventState = "starting";
   host.dataset.completedCycles = "0";
   host.dataset.resetCount = "0";
+  if (mode === "rival") host.dataset.rivalMoundsDestroyed = "0";
+  host.dataset.maxStoresSeen = "0";
+  host.dataset.maxStoreGlyphsSeen = "0";
   host.dataset.lastRulesUsed = "";
   host.dataset.cycle = "1";
   host.dataset.stores = "0";
   drawScene(sim);
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
   let last = performance.now();
   const frame = (now) => {
     const dt = Math.min(0.05, (now - last) / 1000);
