@@ -16,6 +16,23 @@ summary: >
   production break it let through. It got
   good by being measured against its misses, not by being prompted harder, and approval never left
   my hands.
+social: |
+  I was still reading every word my AI code reviewer wrote. In a manager meeting I told our Director
+  of Engineering, Kaither Holiway (https://www.linkedin.com/in/kaither-holiway/), that I didn't trust
+  it.
+
+  He asked, "Why not?"
+
+  I didn't have a good answer, so I spent three months and seven hundred commits earning one. The
+  reviewer now grades every comment it leaves by what happened next, and when it misses something, the
+  fix gets replayed on the exact commit it missed.
+
+  The slowest quarter of my team's pull requests used to wait about 17 hours for a first review. Now
+  it's about 3. It let one bad change into production in that time, and that miss is in the note too.
+
+  Thanks, Kaither, for the question.
+socialImage: "/media/notes/the-reviewer-that-learned-to-be-wrong-social.png"
+socialImageAlt: "The question that started it, \"I don't trust it\" and \"Why not?\", above a four-step loop: it reviews, it is graded, one lens is fixed, it is replayed where it missed. Below, the slowest quarter of the team's review wait falling from 17.6 hours to 3.0 hours."
 ---
 
 My PR review kit is a set of Claude skills that reviews my team's pull requests at [Career Team](https://careerteam.com) the
@@ -463,8 +480,8 @@ happens after the miss.
 ## Nov 9 · How it works now
 
 A pull request lands on my board from my team's code review column, from risk intake, or because I
-pasted it in. Scheduled routines take it from there, and only between 17:00 and 06:59, so nothing
-posts during the working day.
+pasted it in. Scheduled routines take it from there, and only between 17:00 and 06:59. That is my
+working day, since I work nights, so every review lands while I am awake to answer for it.
 
 The loop at the center is the one I showed in September. Reviewing, following up and learning from
 every outcome were all running by the talk. What changed since is everything around that loop:
