@@ -418,6 +418,30 @@ a hope. A replayed one is a receipt.
   </g>
 </svg>
 
+## Oct 18 · Then it got a map of the code
+
+The lenses I started from read the diff and the files around it. That is the company reviewer's
+shape, and it misses the thing that breaks most often in a codebase our size: the code that is not in
+the diff but depends on it. So on `Oct 18` the kit gained code graphs, built with
+[Graphify](https://github.com/Graphify-Labs/graphify) from each branch the team ships, and shared by
+everyone who runs the kit.
+
+Before the lenses run, the review cuts a slice of that graph for the change and hands it over:
+
+- who calls each changed function,
+- functions with the same name in other apps,
+- the permission and feature gates on each one,
+- and the tests that touch them.
+
+The graph is rebuilt whenever its branch moves, and the build runs locked down with no network, so a
+tool reading the whole codebase cannot send any of it anywhere. It also does a second job I did not
+plan for. Risk intake asks the same graph whether an outside pull request reaches code my team owns,
+and uses it to ignore the shared helpers that almost everything touches, which would otherwise make
+every change look like ours.
+
+The honest limit: the graph slice is still on a watch rather than on for everyone. It runs on my
+reviews while I measure whether the lenses that get it find more than the ones that do not.
+
 ## Oct 26 · Then it had to decide what deserved a look
 
 The newest turns are the reviewer getting choosier about its inputs. On `Oct 26` it started
@@ -656,7 +680,7 @@ single rule:
   and the rule that a reader should never have to guess whether feedback blocks the merge.
 - Anthropic's model migration guidance, the premise of the kit's effort trials.
 - [Graphify](https://github.com/Graphify-Labs/graphify), which builds the code graphs the lenses
-  read.
+  read and risk intake uses to tell which code is my team's.
 
 **My own notes**
 
