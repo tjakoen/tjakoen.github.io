@@ -44,6 +44,12 @@ pointed it at the data, and handed it People Manager as a reference for what I w
 had finished being skeptical about it. That dashboard is called Crew Watch, and I am now fairly sure
 I do not need People Manager anymore.
 
+In fairness to the timing, I was already building dashboards with Claude before it was a feature. The
+review board was one. Then Anthropic shipped [Claude Dashboards](https://claude.com/resources/articles/dashboards-and-motion)
+on October 8, and what I had been doing by hand got easier: a dashboard became a thing you ask for,
+pin, and keep, rather than a page you coax into existence. That launch is what got me to try the lazy
+version of People Manager at all, and the announcement is how I found it.
+
 That is the small story. The bigger one is what happened after I showed it to my team.
 
 ## The review kit, now with a window
