@@ -433,11 +433,17 @@ Before the lenses run, the review cuts a slice of that graph for the change and 
 - the permission and feature gates on each one,
 - and the tests that touch them.
 
-The graph is rebuilt whenever its branch moves, and the build runs locked down with no network, so a
-tool reading the whole codebase cannot send any of it anywhere. It also does a second job I did not
+The graph is rebuilt whenever its branch moves. It also does a second job I did not
 plan for. Risk intake asks the same graph whether an outside pull request reaches code my team owns,
 and uses it to ignore the shared helpers that almost everything touches, which would otherwise make
 every change look like ours.
+
+This is company code, so Graphify gets the same treatment as everything else in the kit that touches
+it: hard blocks, not good intentions. It is an outside library, and the kit runs only its code-reading
+pass, as a pinned version checked against a hash, in a sandbox with no network. Its installers, hooks
+and server are never run. The graphs it produces stay in the kit's private repository and on the
+machines of the people who run the kit. A tool that reads the whole codebase cannot send any of it
+anywhere, because nothing in that sandbox can reach anywhere to send it.
 
 The honest limit: the graph slice is still on a watch rather than on for everyone. It runs on my
 reviews while I measure whether the lenses that get it find more than the ones that do not.
