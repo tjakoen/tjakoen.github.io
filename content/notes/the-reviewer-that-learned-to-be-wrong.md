@@ -6,7 +6,7 @@ status: DRAFT
 type: note
 date: 2026-11-09
 deck: "Every time it was wrong | Talk | /talks/every-time-it-was-wrong | 18 slides · runs in the browser, no download"
-readingTime: "~10 min"
+readingTime: "~12 min"
 tags: [ai, claude, code-review, leadership, codex]
 summary: >
   The story of my PR review kit at Career Team, told from its git history: one hand-run Claude skill
@@ -21,6 +21,12 @@ My PR review kit is a set of Claude skills that reviews my team's pull requests 
 way I would, in the tone I would, and posts under my account. It reads the ticket before the diff,
 it never approves anything, and it keeps a log of every time it was wrong. That last part is most of
 the story.
+
+I did not start from a blank page. Career Team's platform group already ships its own Claude plugins
+for our codebase, including a staff-level PR reviewer and a fixer with a proper evaluation suite, and
+my kit is built on top of that work. Theirs is the general reviewer for everyone. Mine bends it
+toward how I review and toward the one thing I could not stop wanting, which was a record of every
+time it got something wrong.
 
 On August 14 I committed one file, a skill called check-pr-voice. The next day I made eleven more
 commits to it, and one of them was titled *review the ticket, not just the diff*. That should have
@@ -225,6 +231,56 @@ second job.
 Back to that commit on day two, *review the ticket, not just the diff*. Seven hundred commits later
 the kit still does that first, and almost everything after it is the same idea, applied to the
 reviewer itself: read what it was supposed to do, then check what it actually did.
+
+## Sources
+
+Almost nothing in the kit was designed from scratch. Most of it was extracted, and the kit keeps its
+own credits file so every rule can be traced. The parts that shaped the system, as opposed to a
+single rule:
+
+**Inside Career Team**
+
+- My colleagues' review comments. The kit's standards are mined from real reviews on our codebase,
+  and a rule earns its place when the team's own reviewers said the same thing more than once. The
+  times a person caught what the reviewer missed are worth the most, since each one became a gate, a
+  standard or a test case.
+- The platform group's Claude plugins: the staff-level PR reviewer the kit is built on, and the PR
+  fixer whose evaluation suite taught me to test whether a review is any good, not only whether the
+  machinery runs.
+- My tech lead's epic check, which supplies the epic decisions and the collision check, and which
+  the kit runs as a plugin since November 3.
+
+**Published work**
+
+- Addy Osmani, [Loop Engineering](https://addyosmani.com/blog/loop-engineering/), for the shape of
+  the loop, and his writing on code review becoming the bottleneck once code arrives fast.
+- Google's [The Standard of Code Review](https://google.github.io/eng-practices/review/reviewer/standard.md),
+  for continuous improvement over perfection, and for polish as an ignorable nit.
+- Sadowski and colleagues, [Modern Code Review: A Case Study at
+  Google](https://research.google/pubs/modern-code-review-a-case-study-at-google/), and Bacchelli
+  and Bird, [Expectations, Outcomes, and Challenges of Modern Code
+  Review](https://www.microsoft.com/en-us/research/publication/expectations-outcomes-and-challenges-of-modern-code-review/).
+  Both also mark the one place the kit disagrees with the literature on purpose: it cuts most of the
+  code-improvement comments those papers say human review earns its value on, and trades them for
+  precision.
+- The Cisco and SmartBear review study, for the evidence that coverage falls as a change grows. Its
+  numbers measure human fatigue, so the kit borrows the shape and not the threshold.
+- [alibaba/open-code-review](https://github.com/alibaba/open-code-review), for moving every step
+  that must not go wrong out of the model and into plain engineering.
+- [Conventional Comments](https://conventionalcomments.org/), for every comment label the kit posts
+  and the rule that a reader should never have to guess whether feedback blocks the merge.
+- Anthropic's model migration guidance, the premise of the kit's effort trials.
+- [Graphify](https://github.com/Graphify-Labs/graphify), which builds the code graphs the lenses
+  read.
+
+**My own notes**
+
+- [The Check Ran Once in 165 Sessions](the-check-that-never-ran.md), for distrusting a check that
+  reports success while looking at nothing.
+- [Watch Its Hands](watch-its-hands.md), for verifying what an agent did rather than what it says.
+- [I Was Shipping Faster Than I Could Understand It](one-loop-every-repo.md), for one loop per repo.
+- [VOICE](https://portfolio.tjakoen.com/standards/voice), the writing standard every posted comment
+  is held to.
 
 ---
 
