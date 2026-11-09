@@ -4,6 +4,7 @@ subtitle: "In August I wrote one Claude skill to review pull requests in my voic
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
+layout: timeline
 date: 2026-11-09
 readingTime: "~12 min"
 tags: [ai, claude, code-review, leadership, codex]
@@ -87,7 +88,27 @@ commits are the reviewer being told it was wrong, and me building the machinery 
   </g>
 </svg>
 
-## It started as a reviewer I had to babysit
+## Why not?
+
+Before any of this I was already using the company's standard PR reviewer, and I was still reading
+every word it wrote. My name goes on the approval, so its output had to be right before I clicked
+anything. I also sit in the architecture group, which means some pull requests cannot merge until I
+review them, and that summer code review was a real bottleneck on the team. Architecture review
+was the worst of it, and a fair share of that queue was waiting on me.
+
+So in a manager meeting I raised it with [Kaither Holiway](https://www.linkedin.com/in/kaither-holiway/),
+our Director of Engineering. Before Career Team he was a Senior Software Engineering Manager at
+GoFundMe, where by his account the engineering teams went hard on AI and built it into how they
+actually worked, and that was the bar he wanted to bring here. I explained that I was still
+checking everything the reviewer did by hand. He asked why. I said I did not trust it.
+
+He asked, "Why not?"
+
+I did not have a good answer, and that turned out to be the whole project. Everything below is me
+trying to earn one: give the reviewer a record I could check, and fix it every time the record said
+it was wrong, until trusting it was a decision I could defend.
+
+## Aug 14 · It started as a reviewer I had to babysit
 
 The first version was a skill I typed a pull request number into and watched. The core of it came
 straight from the company reviewer: a handful of parallel lenses over the change (security,
@@ -101,7 +122,7 @@ calling everything Minor.* *Ask whether we already built this.* *Scale the revie
 never by size alone.* Each of those is a review I watched go out and winced at. It was useful from
 day one and annoying from day one, which I suspect is true of most first hires.
 
-## Then it had to keep score
+## Aug 18 · Then it had to keep score
 
 On August 18 the history gets a commit called *the first scored outcomes, and the one lesson in
 them*. That is the turn the rest of the story hangs on.
@@ -120,7 +141,7 @@ to learn nothing.
 > A reviewer does not get better by being prompted harder. It gets better by being shown, row by
 > row, where it was wrong.
 
-## The talk was the old version
+## Sep 17 · The talk was the old version
 
 On September 17 I introduced the kit to the team in a talk, [Every Time It Was
 Wrong](/talks/every-time-it-was-wrong). The deck is still up, and it is an honest snapshot of what the
@@ -134,7 +155,7 @@ incremental pass over the new commits, instead of a whole new review. Every unat
 one report format, so I could read a night's work in a table instead of a transcript. This is where
 the kit stopped being a tool I used and became something that ran on a schedule.
 
-## Then other people wanted it
+## Sep 24 · Then other people wanted it
 
 On September 24 the repository was restructured so someone who was not me could clone it, and on
 September 28 the installer learned to set the kit up from a profile per person. Everything personal,
@@ -159,7 +180,7 @@ what theirs left unchecked, posts an addendum, and posts nothing at all when it 
 Since November 4 every second look carries its own label, so a silent one still shows on the pull
 request.
 
-## Then it needed a second engine
+## Oct 8 · Then it needed a second engine
 
 There is a practical problem with running a reviewer on a schedule, which is that my Claude usage is
 finite and pull requests are not. On October 8 the reviewer was installed and adapted for Codex, and
@@ -181,7 +202,7 @@ Codex is the backup, not a peer I benchmark against in this note. The comparison
 plans folder and it is not finished. What is finished is that a quiet week on one engine no longer
 means a quiet week on reviews.
 
-## Then it had to prove its repairs held
+## Oct 14 · Then it had to prove its repairs held
 
 A replay ledger arrived on October 14, and by late October it did the part I trust most: when a lens
 gets repaired after a miss, the repair is replayed on the pull request the miss came from, at the
@@ -189,7 +210,7 @@ commit the original review ran on. On November 3 a batch of thirty-three replays
 lens rules were fixed because the replays found them wanting. A repair that has not been replayed is
 a hope. A replayed one is a receipt.
 
-## Then it had to decide what deserved a look
+## Oct 26 · Then it had to decide what deserved a look
 
 The newest turns are the reviewer getting choosier about its inputs. On October 26 it started
 reading the epic's decided rules and the decisions made in Jira comments, and on November 3 it folded
@@ -203,7 +224,7 @@ lens that skips them twice gets named in the evidence block, and the review cann
 is the reviewer being held to the same rule I hold my students to. Show your work, or it does not
 count.
 
-## How it works now
+## Nov 9 · How it works now
 
 A pull request lands on my board from my team's code review column, from risk intake, or because I
 pasted it in. Scheduled routines take it from there, and only between 17:00 and 06:59, so nothing
