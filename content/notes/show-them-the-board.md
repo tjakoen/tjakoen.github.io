@@ -234,9 +234,9 @@ hear "your kickbacks are high" as a puzzle to solve together instead of a verdic
 It landed. As a snapshot, over five weeks of one-on-ones:
 
 - **It came up in most of them,** and nobody pushed back.
-- **"A clear direction."** One developer said that seeing their numbers next to the team's finally
+- **A clear direction.** One developer said that seeing their numbers next to the team's finally
   gave them one.
-- **"A useful tool for self-reflection,"** in another's words.
+- **A tool for self-reflection.** Another found it useful for exactly that.
 - **Several left with one concrete thing to work on,** like a root-cause look at their own kickbacks
   or a daily review habit, which is the whole point.
 
