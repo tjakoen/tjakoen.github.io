@@ -55,16 +55,11 @@ are moving the right way. I still run the reviews. I just get to look at them li
 of reading log files like a raccoon going through a bin.
 
 <figure class="shot">
-  <img class="shot__img" src="/media/review-kit/board-in-claude.jpg" width="1440" height="640" loading="lazy" data-lightbox
+  <img class="shot__img" src="/media/review-kit/board-in-claude.jpg" width="2880" height="1000" loading="lazy" data-lightbox
        alt="The review board open as a Claude dashboard, with a mock of the Claude sidebar beside it pinning the review board, Crew Watch, the epic board and a chat thread for each. The board shows five columns: queued, in flight, waiting on author, waiting on you, and done, holding demo pull requests.">
-  <figcaption class="shot__cap">The board from the kit's demo, with made-up pull requests, inside a mock of the Claude app it lives in. The sidebar is mocked for this note, and it is close to mine: each dashboard is pinned next to the chat thread that builds and runs it, so the board and the conversation are always one click apart.</figcaption>
+  <figcaption class="shot__cap">My actual board, the current version, running on invented pull requests, inside a mock of the Claude app it lives in. The sidebar is mocked for this note, and it is close to mine: each dashboard is pinned next to the chat thread that builds and runs it, so the board and the conversation are always one click apart.</figcaption>
 </figure>
 
-<figure class="shot">
-  <img class="shot__img" src="/media/review-kit/card.jpg" width="800" height="676" loading="lazy" data-lightbox
-       alt="One demo pull request opened on the board: its verdict, a table of findings raised, dropped in verification, and posted per lens, buttons to recheck, respond to threads or re-review, and a box to tell the reviewer what it got wrong.">
-  <figcaption class="shot__cap">One card, opened. The lens table shows what each specialist raised and how much it threw away after trying to refute itself, and the box at the bottom is where I correct it.</figcaption>
-</figure>
 
 Two things made it worth writing about again:
 
@@ -113,11 +108,6 @@ Two things made it worth writing about again:
 
 *The kit does the rounds. The last box is the one it cannot reach.*
 
-<figure class="shot">
-  <img class="shot__img" src="/media/review-kit/stats.jpg" width="1280" height="625" loading="lazy" data-lightbox
-       alt="The demo Stats tab: tiles for findings logged and misses repaired, a short verdict on whether the reviewer is improving, and three charts for precision and adoption, findings per pull request, and weekly volume.">
-  <figcaption class="shot__cap">The Stats tab, on demo numbers. It answers the question I actually care about, whether the reviewer is getting better or just getting louder.</figcaption>
-</figure>
 
 ## Crew Watch, attempt number four
 
@@ -178,7 +168,7 @@ dashboard renders it, and an audit I ran against the old DevLake numbers caught 
 two disagreed before anyone saw a wrong figure in a one-on-one.
 
 <figure class="shot">
-  <img class="shot__img" src="/media/crew/crew-watch-in-claude.jpg" width="1440" height="860" loading="lazy" data-lightbox
+  <img class="shot__img" src="/media/crew/crew-watch-in-claude.jpg" width="2880" height="1720" loading="lazy" data-lightbox
        alt="Crew Watch open as a Claude dashboard in a mock of the Claude sidebar, filled with invented people and tickets: fourteen things that need me, from overdue one-on-ones to blocked tickets.">
   <figcaption class="shot__cap">Crew Watch, refilled with invented people and tickets for this note, inside the same mock Claude sidebar. The real one looks the same, with my team in it.</figcaption>
 </figure>
@@ -214,6 +204,12 @@ ticket against the plan, flags conflicts with other open pull requests, and catc
 before any code exists. It has its own board where the plan owner ticks decisions, drafts tickets,
 and moves conflicts. It helps him do the tech lead part of the job: staying on top of technical
 decisions while they are still moving.
+
+<figure class="shot">
+  <img class="shot__img" src="/media/crew/epic-board-in-claude.jpg" width="2880" height="1720" loading="lazy" data-lightbox
+       alt="Kercwin's epic board open as a Claude dashboard in a mock of the Claude sidebar, on an invented epic called Reports export: tabs for what blocks a merge, what needs deciding and open conflicts, a list headed fix first with two conflicts between pull requests, and one flagged decision open on the right with Claude's recommendation and accept, accept with changes and reject buttons.">
+  <figcaption class="shot__cap">Kercwin's board, his latest version, running on an invented epic inside the same mock sidebar. A flagged decision goes against the plan, Claude recommends a change, and a person picks the button.</figcaption>
+</figure>
 
 The idea underneath it is not his or mine. It comes from Matt, our CTO, whose standing rule is to
 move bugs as far left in the process as they will go. A wrong assumption caught on a ticket is
