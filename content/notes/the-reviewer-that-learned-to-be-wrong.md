@@ -22,8 +22,8 @@ way I would, in the tone I would, and posts under my account. It reads the ticke
 it never approves anything, and it keeps a log of every time it was wrong. That last part is most of
 the story.
 
-It has a sibling. Career Team's platform group ships its own Claude plugins for our codebase, a
-staff-level PR reviewer among them, and mine started from theirs. The bones of my first version, the
+It has a sibling. Career Team's platform group ships its own Claude plugins for our codebase, among
+them a staff-level PR reviewer that Kaither built, and mine started from his. The bones of my first version, the
 parallel lenses and the habit of checking every finding before it posts, are the company reviewer's
 idea, and I am not going to pretend otherwise. After that the two grew up side by side, and I kept
 borrowing when it paid. Their PR fixer's evaluation suite is why
@@ -113,7 +113,9 @@ of the reviewer I pulled hundreds of their reviews and mined them for the rules 
 That turned into the self-learning loop the rest of this note is about: the reviewer's own comments
 scored against what happened next, and every miss folded back in as a lesson.
 
-From there it spread outward. I read how other reviewers work and kept reading as new things came
+From there it spread outward, and it turned into a habit. Whenever someone shares something I think
+could make the reviewer better, a teammate's tool, a post, a paper, I take what I can from it and
+put it in the kit. I read how other reviewers work and kept reading as new things came
 out. When I saw how Google writes down its standard for code review, how Alibaba moved the parts of
 its AI reviewer that must not go wrong out of the model and into plain code, and how Addy Osmani
 describes the loop that agentic work runs on, each one went into the kit. The full list is in the
@@ -436,6 +438,28 @@ lens that skips them twice gets named in the evidence block, and the review cann
 is the reviewer being held to the same rule I hold my students to. Show your work, or it does not
 count.
 
+## Oct 30 · Then it let one through
+
+I have run the kit unattended for months, and in that time we broke production once on a change it
+had passed. A data-fix migration was meant to remove a few unwanted entries from one customer's
+dropdown. Its filter matched on a type field that some unrelated rows also carried, so it switched
+off a handful of reference rows another part of the product depended on. The rows were switched off,
+not deleted, so nothing was lost, and they were restored from the backup the migration itself had
+taken. But for a few weeks some staff could not record work they needed to record, and nothing on
+screen told them why.
+
+The reviewer had read that migration and said nothing. So it went through the same loop as every
+other miss, with more at stake. It was recorded against the migrations lens, and on `Oct 30` that lens
+got a new rule: a change to rows that other features read is checked against every reader of that
+data, not just against the ticket that asked for it. Then the repair was replayed on the original
+pull request, at the commit the review had read the first time, with no hint of what had gone wrong.
+It blocked the change. Two other pull requests with the same shape went in as test cases alongside it, and it caught
+those too.
+
+One production break in months is a record I am comfortable defending. It is also the best argument
+for the loop I have. A reviewer that never misses does not exist, so the question was always what
+happens after the miss.
+
 ## Nov 9 · How it works now
 
 A pull request lands on my board from my team's code review column, from risk intake, or because I
@@ -547,10 +571,11 @@ look at instead of guess at. Whether that adds up to fewer bugs reaching product
 study than three months, and I have not run it.
 
 I have also not measured my own time. The team's wait went down, and calibration runs without me: the
-loop scores, tightens and replays on its own schedule. What reaches me is the short list it is built
-to hand me, the approve button and the rulings when a proposed lens change disagrees with how the
-codebase actually works. That feels like less than reviewing every pull request by hand, but feels
-is not a number, and I have not kept one.
+loop scores, tightens and replays on its own schedule. I do not re-read its reviews any more. I trust
+them, which was the whole point of answering Kaither's question. What reaches me is the short list
+the kit is built to hand me, the approve button and the rulings when a proposed lens change disagrees
+with how the codebase actually works. That is far less than reviewing every pull request by hand, but
+I have not put a number on it.
 
 Back to that commit on day two, `feat(check-pr): review the ticket, not just the diff`. Seven hundred commits later
 the kit still does that first, and almost everything after it is the same idea, applied to the
@@ -568,7 +593,7 @@ single rule:
   and a rule earns its place when the team's own reviewers said the same thing more than once. The
   times a person caught what the reviewer missed are worth the most, since each one became a gate, a
   standard or a test case.
-- The platform group's Claude plugins: the staff-level PR reviewer whose lenses and verification step the kit
+- The platform group's Claude plugins: Kaither's staff-level PR reviewer, whose lenses and verification step the kit
   started from, and the PR
   fixer whose evaluation suite taught me to test whether a review is any good, not only whether the
   machinery runs.
