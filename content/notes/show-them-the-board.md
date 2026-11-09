@@ -8,12 +8,12 @@ date: 2026-11-10
 readingTime: "~8 min"
 tags: [ai, leadership, claude, dashboards, team]
 summary: >
-  How I run my engineering team at Career Team on Claude dashboards: a PR review kit with a board I
-  share with other managers and a Codex fallback for when my Claude usage runs dry, and Crew Watch,
-  a team view that replaced three earlier attempts, including an app I was building by hand. Then
-  the part I care about more: after one demo, my tech lead built an epic checker that keeps our work
-  aligned with decisions as they change, and another developer built his own work dashboard in
-  Obsidian. The rule I hold them to is the one I hold my students to: own the output, or do not ship it.
+  I stalled for a month building a people app the way a developer would, screen by screen, then
+  rebuilt it in an afternoon as a Claude dashboard once I started thinking like an orchestrator. The
+  better story is what my team did after I demoed it: Kercwin, a tech lead in his first job, built an
+  epic checker that keeps a busy project aligned to its decisions, with Confluence as the source of
+  truth, and Kyle, a junior on my team, built his own work board in Obsidian. I lead with demos rather
+  than mandates, and I hold my team to the rule I hold my students to: own the output, or do not ship it.
 social: |
   I spent a month hand-building a people app for my team. Then I replaced it in an afternoon with a
   Claude dashboard.
