@@ -230,8 +230,44 @@ filed every session into a sidebar section by its status, so the sidebar itself 
 same day I moved the board off the tool I had started it in and onto that sidebar for good.
 
 The deck is still up, and its diagrams are the clearest picture of how the reviewer thinks, so two
-of them are in this note. Everything below that date is what changed after people started seeing
-it.
+of them are in this note. This is the review as the talk showed it. Six specialist reviewers read
+the change at once, and most of what they find never reaches the author:
+
+<svg viewBox="0 0 700 208" role="img"
+   aria-label="Six specialist reviewers read the change at the same time. What they find passes through checks that throw things out, then through the reviewer arguing against its own findings, and at most six comments come out. A band underneath tapers from everything it could have said down to what it actually says."
+   style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:12px">
+<defs>
+  <marker id="fn-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+  </marker>
+</defs>
+<g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
+  <path d="M156 56 L186 56" marker-end="url(#fn-a)"/>
+  <path d="M368 56 L398 56" marker-end="url(#fn-a)"/>
+  <path d="M540 56 L570 56" marker-end="url(#fn-a)"/>
+</g>
+<rect x="8" y="30" width="148" height="52" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+<text x="82" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">six reviewers</text>
+<text x="82" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">reading at the same time</text>
+
+<rect x="186" y="30" width="182" height="52" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+<text x="277" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">checks that throw things out</text>
+<text x="277" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">the next slide</text>
+
+<rect x="398" y="30" width="142" height="52" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+<text x="469" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">it argues back</text>
+<text x="469" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">against its own findings</text>
+
+<rect x="570" y="30" width="122" height="52" rx="4" style="fill:var(--color-fg)"/>
+<text x="631" y="62" text-anchor="middle" style="fill:var(--color-bg);font-size:13px">six comments</text>
+
+<text x="8" y="124" style="fill:var(--color-muted);font-size:12px">everything it could have said</text>
+<text x="692" y="124" text-anchor="end" style="fill:var(--color-fg);font-size:12px">what it actually says</text>
+<path d="M8 134 L692 162 L692 184 L8 194 Z" style="fill:var(--color-line)"/>
+    </svg>
+
+That shape has not changed since. Most of what follows is the loop growing new inputs and a second
+engine, not a new loop.
 
 The same days in the history are the densest of the early stretch. A second skill,
 `/respond-pr-voice`, started answering replies waiting on us, checking a claimed fix at the new
@@ -401,8 +437,12 @@ count.
 
 A pull request lands on my board from my team's code review column, from risk intake, or because I
 pasted it in. Scheduled routines take it from there, and only between 17:00 and 06:59, so nothing
-posts during the working day. The whole thing is one loop, and the half that matters most is the one
-that runs after the review is posted.
+posts during the working day.
+
+The loop at the center is the one I showed in September. Reviewing, following up and learning from
+every outcome were all running by the talk. What changed since is everything around that loop:
+where pull requests come from, what a review reads before the diff, who else is reviewing, and which
+engine does the work. The dates below say which is which.
 
 <svg viewBox="0 0 600 220" width="100%" role="img"
      aria-label="The review kit's loop: a pull request comes in from the board, a review is posted, the follow-up answers threads and re-reviews pushes, and the learning step scores every comment and replays every miss, feeding repairs back into the review."
@@ -437,67 +477,33 @@ that runs after the review is posted.
   </g>
 </svg>
 
-**The review.** This diagram is also from the talk. Six specialist reviewers read the change at
-once, and most of what they find never reaches the author:
+**The review.** A Reviews routine works through the same steps every time:
 
-<svg viewBox="0 0 700 208" role="img"
-   aria-label="Six specialist reviewers read the change at the same time. What they find passes through checks that throw things out, then through the reviewer arguing against its own findings, and at most six comments come out. A band underneath tapers from everything it could have said down to what it actually says."
-   style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:12px">
-<defs>
-  <marker id="fn-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-    <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
-  </marker>
-</defs>
-<g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
-  <path d="M156 56 L186 56" marker-end="url(#fn-a)"/>
-  <path d="M368 56 L398 56" marker-end="url(#fn-a)"/>
-  <path d="M540 56 L570 56" marker-end="url(#fn-a)"/>
-</g>
-<rect x="8" y="30" width="148" height="52" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
-<text x="82" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">six reviewers</text>
-<text x="82" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">reading at the same time</text>
-
-<rect x="186" y="30" width="182" height="52" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-<text x="277" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">checks that throw things out</text>
-<text x="277" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">the next slide</text>
-
-<rect x="398" y="30" width="142" height="52" rx="4" style="fill:none;stroke:var(--color-muted)"/>
-<text x="469" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">it argues back</text>
-<text x="469" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">against its own findings</text>
-
-<rect x="570" y="30" width="122" height="52" rx="4" style="fill:var(--color-fg)"/>
-<text x="631" y="62" text-anchor="middle" style="fill:var(--color-bg);font-size:13px">six comments</text>
-
-<text x="8" y="124" style="fill:var(--color-muted);font-size:12px">everything it could have said</text>
-<text x="692" y="124" text-anchor="end" style="fill:var(--color-fg);font-size:12px">what it actually says</text>
-<path d="M8 134 L692 162 L692 184 L8 194 Z" style="fill:var(--color-line)"/>
-    </svg>
-
-A Reviews routine works through the same steps every time:
-
-- It reads the ticket and its epic, and checks the change against the epic's decided rules and the
-  decisions in the ticket's comments.
-- It runs the epic check where the epic has one, and notes any other open pull request editing the
-  same lines.
-- It sends six specialist lenses over the diff and tries to refute every finding before keeping it.
-- It posts line-anchored comments with a PASS, REQUEST CHANGES or BLOCKING verdict.
+- It reads the ticket and its epic before the diff. Since `Aug 15`.
+- It sends six specialist lenses over the diff and tries to refute every finding before keeping it,
+  then posts line-anchored comments with a PASS, REQUEST CHANGES or BLOCKING verdict. Since the
+  first version, and on the September slides.
+- It checks the change against the epic's decided rules and the decisions in the ticket's comments,
+  and notes any other open pull request editing the same lines. Since `Oct 26`.
+- It runs the epic check where the epic has one. Since `Nov 3`.
 
 **After the review.** Each event that follows gets its own response:
 
-| When this happens | The kit does this |
-|---|---|
-| An author replies to a thread | Answers it if the team's recorded decisions settle it, otherwise leaves it for me |
-| An author says it is fixed | Checks the fix at the new commit and resolves its own thread |
-| An author pushes new commits | Runs a re-review over just those commits |
-| A teammate's kit already reviewed the head | Runs a second look over only what theirs left unchecked |
-| My Claude use passes the weekly threshold | Hands new reviews to Codex |
+| When this happens | The kit does this | Since |
+|---|---|---|
+| An author replies to a thread | Answers it if the team's recorded decisions settle it, otherwise leaves it for me | `Sep 16` |
+| An author says it is fixed | Checks the fix at the new commit and resolves its own thread | `Sep 16` |
+| An author pushes new commits | Runs a re-review over just those commits | `Sep 17` |
+| A teammate's kit already reviewed the head | Runs a second look over only what theirs left unchecked | `Oct 19` |
+| My Claude use passes the weekly threshold | Hands new reviews to Codex | `Oct 21` |
 
-**The learning half.** This is the part that earns the trust:
+**The learning half.** This is the part that earns the trust, and most of it predates the talk:
 
-- Every comment is scored by what happened next.
-- A theme that keeps being closed without a fix gets its lens tightened.
-- Every miss is recorded with the lens that should have caught it.
-- Every repair is replayed on the pull request where the miss happened.
+- Every comment is scored by what happened next. Since `Aug 18`.
+- Every miss is recorded with the lens that should have caught it. Since `Aug 19`.
+- A theme that keeps being closed without a fix gets its lens tightened. Since `Sep 9`.
+- Every repair is replayed on the pull request where the miss happened, at the commit the review ran
+  on. Since late October, and the one big addition to the loop after the talk.
 
 The Calibration tab shows each change to the reviewer and why it was made.
 
