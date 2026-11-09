@@ -10,8 +10,8 @@
   "dependencies": {
     "@tjakoen/batch": "^0.3.0",
     "@tjakoen/crumb": "^0.1.10",
-    "@tjakoen/grain": "^0.1.30",
-    "@tjakoen/mill": "^0.4.1",
+    "@tjakoen/grain": "^0.1.31",
+    "@tjakoen/mill": "^0.4.2",
     "@tjakoen/proof": "^0.1.5",
     "highlight.js": "^11.12.0"
   },

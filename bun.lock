@@ -7,8 +7,8 @@
       "dependencies": {
         "@tjakoen/batch": "^0.3.0",
         "@tjakoen/crumb": "^0.1.10",
-        "@tjakoen/grain": "^0.1.30",
-        "@tjakoen/mill": "^0.4.1",
+        "@tjakoen/grain": "^0.1.31",
+        "@tjakoen/mill": "^0.4.2",
         "@tjakoen/proof": "^0.1.5",
         "highlight.js": "^11.12.0",
       },
@@ -81,9 +81,9 @@
 
     "@tjakoen/crumb": ["@tjakoen/crumb@0.1.10", "", { "dependencies": { "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "crumb": "cli.ts" } }, "sha512-Kx/5oOzc2tJL9iwQICvVL4I3i9rHO/qMFMl5zHhJs0i4D2ksylwbGBCLLP26SAnc4H9POoRzFm/8YKRyl2/KSg=="],
 
-    "@tjakoen/grain": ["@tjakoen/grain@0.1.30", "", {}, "sha512-k6QwabdVB+MU4W0Roh0vNWup0I8FZmeve9V1SBah2f4FNFSSHqHH+/fN2DtwgqeugMxbG6Dqpfv6rPPiPAEGCg=="],
+    "@tjakoen/grain": ["@tjakoen/grain@0.1.31", "", {}, "sha512-RSSguYBCk/zXTVgrwirgVeAnzJCgfNfwZghIMysx5TGHNgfUpLxZo5OqRqh9IrJA4EDCp6WfGKK9NsSUAVBxnA=="],
 
-    "@tjakoen/mill": ["@tjakoen/mill@0.4.1", "", { "dependencies": { "@tjakoen/grain": "^0.1.23" } }, "sha512-BPXw/9We4nvrC9IgWkWMQ3QFs2JZjs9MPw4fQY3yuXj3R4cHqkwvwW57EsQVeIGljVH9cwIT0axio7LICcOUFw=="],
+    "@tjakoen/mill": ["@tjakoen/mill@0.4.2", "", { "dependencies": { "@tjakoen/grain": "^0.1.23" } }, "sha512-pf4iNqIBMdWY7DBw2RlaKWlO4VLj64vYBogWnb6CLOz4r12KhZpuksKYmiCMHMjDEzFI4zg18vlnB+fNDfHQoQ=="],
 
     "@tjakoen/proof": ["@tjakoen/proof@0.1.5", "", { "dependencies": { "@tjakoen/batch": "github:tjakoen/batch#d13d361", "@tjakoen/grain": "^0.1.8", "@tjakoen/mill": "^0.2.0" }, "bin": { "proof": "cli.ts" } }, "sha512-He8shMOEbcosOr5O0F/igpfMAvRjTYG3SUA23lwFOsb7eJOf1NfaPrzWjcwcE9vAB+bYf3aKqSO/XklUCwV50w=="],
 
@@ -311,7 +311,7 @@
 
     "@tjakoen/crumb/@tjakoen/mill": ["@tjakoen/mill@0.2.2", "", { "dependencies": { "@tjakoen/grain": "^0.1.8" } }, "sha512-cT7Hh3a1owWw9xfCV3W0+Gl0e1+5ir4arZ/iBG+CprebHk16mztbBo9qO/RzkNyyyq9BpeUu5T1uzbLvrWzUXA=="],
 
-    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@0.1.28", "", {}, "sha512-Gh13FAJ0pf4VEliGhZ6TTNyY3eOEFMmXeEdItWedXYpr7MEC3sSPXkPUEERf7tY9dW97JF2/BHiC4fY40+CEaw=="],
+    "@tjakoen/mill/@tjakoen/grain": ["@tjakoen/grain@0.1.30", "", {}, "sha512-k6QwabdVB+MU4W0Roh0vNWup0I8FZmeve9V1SBah2f4FNFSSHqHH+/fN2DtwgqeugMxbG6Dqpfv6rPPiPAEGCg=="],
 
     "@tjakoen/proof/@tjakoen/batch": ["@tjakoen/batch@github:tjakoen/batch#d13d361", {}, "tjakoen-batch-d13d361", "sha512-/gtFCmugE5X1MmQrt8+yu6SYgJsKOGW35L/2NFRKUSwVWDkRKtczpiJJXBHFj1tm1O17e/k0Azm09hR8+c+fpA=="],
 
