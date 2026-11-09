@@ -88,17 +88,23 @@ The first scouts leave the hill and look for letters near home first. A scout ta
 
 The letters are real. A letter taken from this page is the actual glyph, in its actual font and color, lifted out of its sentence. The space it leaves stays exactly where it was, so the paragraph never reflows. The reading gets worse one character at a time, which is a much quieter kind of damage than a banner.
 
+<div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="theft" data-surface="figure:nest-theft">
+<p class="live-fig__note">A live letter raid: a scout follows the trail, takes the letter a, leaves the gap, and carries the glyph home.</p>
+</div>
+
 A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. The stores turn enough food into a builder, and the builder raises a mini mound somewhere else on the page. The mini mound gets its own guards and flyers, and the flyers ignore trails entirely and pinch letters from anywhere.
 
 ## Inside the nest
 
 The mound is the only part you see from the outside. Under it, the colony is a small set of rooms and tunnels: the queen's chamber at the bottom, the nursery where eggs wait, the larder where stolen letters are held, and the two stores where meals are counted.
 
-<img src="/media/notes/nest-colony-live.gif" alt="A short loop of the actual Nest panel open on this note: the Braille colony, the queen at the bottom, stats, stores and the colony tools." style="display:block;width:100%;max-width:350px;margin:0 auto .5rem">
+<div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="colony" data-surface="figure:nest-colony">
+<p class="live-fig__note">A live cutaway of the colony: the queen in her chamber, ants walking the tunnels, a scout carrying a letter, and the nursery, larder and stores.</p>
+</div>
 
-*The actual panel, not a diagram: the nest, the queen, the stores and the tools.*
+*The colony loop, live: the same dot ants, trails and mound as the game, boxed here so it cannot spill into the page.*
 
-In the panel, the queen's chamber is the room at the bottom, the nursery holds the eggs, the larder holds stolen letters, and the two stores hold meals. The tunnel is the thin route between them, and the crown is the entrance.
+In the nest, the queen's chamber is the room at the bottom, the nursery holds the eggs, the larder holds stolen letters, and the two stores hold meals. The tunnel is the thin route between them, and the crown is the entrance.
 
 The queen never leaves the chamber except for worship. The nursery fills with eggs, the larder with letters, and the stores with the meals those letters become. A worker carrying a letter home is not a delivery to a generic nest; it is feeding a room.
 
@@ -106,7 +112,9 @@ The queen never leaves the chamber except for worship. The nursery fills with eg
 
 Worship is the one moment the whole colony shares a direction. The rules pause, the trails go quiet, and every ant turns toward the queen. It is also the economy's reset: the stores fill, which pays for the soldiers and builders that keep the colony alive after the pause.
 
-<img src="/media/notes/nest-worship-live.gif" alt="A short loop of the actual worship: eight ants circling the queen, with the Nest panel reading DANCING." style="display:block;width:100%;max-width:400px;margin:0 auto .5rem">
+<div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="worship" data-surface="figure:nest-worship">
+<p class="live-fig__note">A live worship loop: the queen at the centre, eight ants circling her, and the stores filling.</p>
+</div>
 
 *The actual worship mid-spin, in motion: the queen and the ants circling her.*
 

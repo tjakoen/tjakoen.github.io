@@ -657,3 +657,13 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
   await expect(page.locator(".nest-queen:not(.panel-queen)")).toHaveCount(0, { timeout: 18_000 });
   await expect(page.locator(".nest-queen.panel-queen")).toBeVisible();
 });
+
+
+test("the note mounts its three live colony boxes", async ({ page }) => {
+  await page.goto("/notes/the-site-has-ants");
+  await expect(page.locator(".nest-scene")).toHaveCount(3);
+  const before = await page.locator(".nest-scene").first().locator("svg [transform]").last().getAttribute("transform");
+  await page.waitForTimeout(700);
+  const after = await page.locator(".nest-scene").first().locator("svg [transform]").last().getAttribute("transform");
+  expect(after).not.toBe(before);
+});
