@@ -34,8 +34,16 @@ social: |
   on my team instead of the queue.
 
   Thank you, Kaither, for the question that inspired all of it.
-socialImage: "/media/notes/the-reviewer-that-learned-to-be-wrong-social.png"
-socialImageAlt: "The question that started it, \"I don't trust it\" and \"Why not?\", above the real review board running on invented pull requests, in columns for queued, in flight, waiting on author and waiting on you. Below, the wait for a first review that 1 in 4 pull requests exceeded, falling from 17.6 hours to 3.0 hours, and cost per review down by half."
+socialImage:
+  - "/media/notes/the-reviewer-that-learned-to-be-wrong-social-1-question.png"
+  - "/media/notes/the-reviewer-that-learned-to-be-wrong-social-2-loop.png"
+  - "/media/notes/the-reviewer-that-learned-to-be-wrong-social-3-wait.png"
+  - "/media/notes/the-reviewer-that-learned-to-be-wrong-social-4-board.png"
+socialImageAlt:
+  - "The question that started it, set large: \"I don't trust it.\" and \"Why not?\", with the answer three months later: I don't re-read its reviews any more."
+  - "How the reviewer learns: a review comment stamped FIXED and WRONG, with arrows around it. The lens that missed gets fixed, then replayed on the commit it missed."
+  - "Two bars for how long 1 in 4 of the team's pull requests waited for a first review: 17.6 hours before the reviewer, 3.0 hours now, with cost per review down by half."
+  - "The real review board on invented pull requests, in columns for queued, in flight and waiting on author, under the question that started it."
 ---
 
 My PR review kit is a set of Claude skills that reviews my team's pull requests at [Career Team](https://careerteam.com) the
