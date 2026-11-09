@@ -205,6 +205,39 @@ two disagreed before anyone saw a wrong figure in a one-on-one.
   <figcaption class="shot__cap">Crew Watch, refilled with invented people and tickets for this note, inside the same mock Claude sidebar. The real one looks the same, with my team in it.</figcaption>
 </figure>
 
+### What it changed in one-on-ones
+
+Before Crew Watch, the numbers we looked at were the usual ones: commits, lines changed, pull requests
+opened. I consider those unproductive stats. They count activity, and nobody walks out of a one-on-one
+knowing what to do differently because their commit count was average.
+
+So I built Crew Watch to be people-centric. Each person is compared, anonymously, to the rest of the
+team, so the comparison points at where to focus instead of at who is ahead. The questions it lets me
+ask are the ones I actually want answered:
+
+- **Someone moves really fast.** Good. Maybe we should look harder at code quality on their work, so
+  the speed is not borrowing from later.
+- **Someone has a lot of kickbacks.** Then the question is why. Perhaps the tickets are not written
+  well, perhaps the ticket is not being read closely. Either one is fixable, and they are fixed in
+  different places.
+- **Someone is a senior.** How many code reviews do they do compared to the team? A senior should be
+  carrying more of the reviewing, and the number shows whether that is happening.
+- **How do your story points weigh against how long the work takes,** compared to the team average?
+  That is a conversation about estimating, not about effort.
+
+> I wanted the feedback I gave to be something a person could act on.
+
+I say the same framing every time: the numbers are a diagnostic and a comparison with the team, not
+a grade, and they are read over a quarter rather than one sprint. That framing is what lets someone
+hear "your kickbacks are high" as a puzzle to solve together instead of a verdict.
+
+It landed better than I expected. As a snapshot, over five weeks of one-on-ones the dashboard came up
+in most of them, and nobody pushed back. One developer said that seeing their numbers next to the
+team's finally gave them a clear direction. Another called it a useful tool for self-reflection.
+Several left with one concrete thing to work on, a root-cause look at their own kickbacks or a daily
+review habit, which is the whole point. That is a handful of people saying so out loud, not a survey,
+and I would rather say that plainly than round it up.
+
 ## Then I showed them
 
 I do not hand my team an AI policy and hope. I show them what I built, rough edges included, and let
