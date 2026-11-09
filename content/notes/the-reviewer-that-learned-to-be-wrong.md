@@ -546,11 +546,11 @@ that its misses get replayed, and that the share of its comments people act on i
 look at instead of guess at. Whether that adds up to fewer bugs reaching production is a longer
 study than three months, and I have not run it.
 
-I have also not shown that it saves me time in the way the first commit hoped. The team's wait went
-down. Mine moved. Less of
-it goes to first-pass review, and a real amount goes to reading calibration and ruling on lens rules
-the codebase disagreed with. On a good week that is a better use of a manager. On a bad week it is a
-second job.
+I have also not measured my own time. The team's wait went down, and calibration runs without me: the
+loop scores, tightens and replays on its own schedule. What reaches me is the short list it is built
+to hand me, the approve button and the rulings when a proposed lens change disagrees with how the
+codebase actually works. That feels like less than reviewing every pull request by hand, but feels
+is not a number, and I have not kept one.
 
 Back to that commit on day two, `feat(check-pr): review the ticket, not just the diff`. Seven hundred commits later
 the kit still does that first, and almost everything after it is the same idea, applied to the
