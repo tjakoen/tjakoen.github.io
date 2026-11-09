@@ -108,7 +108,7 @@ Worship is the one moment the whole colony shares a direction. The rules pause, 
 
 ![The actual worship in the game: the queen and gathered ants on the page, with the Nest panel reading DANCING.](/media/notes/nest-worship-live.png)
 
-*The actual worship mid-dance: the queen and the gathered ants, with the panel reading DANCING.*
+*The actual worship mid-spin: the queen and eight ants circling her, with the panel reading DANCING.*
 
 The first dance comes at twenty letters, then fifty, then ninety. The queen climbs out of the panel, walks to a clear patch and dances. Every ant on the page comes toward her, the trails go quiet, and the workers stop carrying. The queen crawls back down, shrinks into the entrance and only then does the panel queen return. The next threshold is fixed for the current dance and only moves after she is home, so hatching does not keep pushing the target away.
 
