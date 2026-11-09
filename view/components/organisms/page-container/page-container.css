@@ -1,0 +1,4 @@
+/* Names the main column as GRAIN's "page" container. GRAIN's date rail asks this container whether
+   there is room to hang its dates in the margin, and folds them into labels when there is not.
+   GRAIN documents the hook and leaves setting it to the site. */
+.app-shell__main { container: page / inline-size; }
