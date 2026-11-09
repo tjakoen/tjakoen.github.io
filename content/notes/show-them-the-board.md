@@ -238,7 +238,7 @@ Several left with one concrete thing to work on, a root-cause look at their own 
 review habit, which is the whole point. That is a handful of people saying so out loud, not a survey,
 and I would rather say that plainly than round it up.
 
-## Then I showed them
+## My whole AI policy is a demo
 
 I do not hand my team an AI policy and hope. I show them what I built, rough edges included, and let
 them decide it looks easy enough to try. Nobody gets inspired by a mandate. People get inspired by
