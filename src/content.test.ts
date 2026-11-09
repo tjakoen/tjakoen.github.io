@@ -41,7 +41,9 @@ test("every published note renders clean (human grade, no unrenderable construct
     const res = await serve(`/notes/${slug}`);
     expect(res?.status).toBe(200);
     const body = await res!.text();
-    expect(body).toContain(`<article class="note" data-grade="smooth">`);
+    // A note on GRAIN's date rail adds data-layout="timeline" before the grade, so match the grade on
+    // the note's article rather than the exact attribute string.
+    expect(body).toMatch(/<article class="note"(?: data-layout="[a-z-]+")? data-grade="smooth">/);
     expect(body).not.toContain(`data-grade="grain"`);
   }
 });

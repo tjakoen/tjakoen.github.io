@@ -1032,16 +1032,26 @@ function renderShareBlock(social: unknown, url: string, image?: unknown, imageAl
     .filter(Boolean).join("\n\n");
   const text = escapeHtml(unwrapped);
   const href = escapeHtml(url);
-  const imageHref = typeof image === "string" && image.trim() ? escapeHtml(image.trim()) : "";
-  const alt = typeof imageAlt === "string" && imageAlt.trim() ? escapeHtml(imageAlt.trim()) : "Social card";
-  const imageBlock = imageHref ? `<figure class="share-block__figure">
+  // One image, or a dash list of them for a multi-image post. Alts pair with images by position; a
+  // missing alt falls back to a numbered label rather than an empty one.
+  const list = (v: unknown) => (Array.isArray(v) ? v : [v]).filter((x): x is string => typeof x === "string" && !!x.trim()).map((x) => x.trim());
+  const images = list(image);
+  const alts = list(imageAlt);
+  const many = images.length > 1;
+  const imageBlock = images.map((src, i) => {
+    const imageHref = escapeHtml(src);
+    const alt = escapeHtml(alts[i] ?? (many ? `Social card ${i + 1} of ${images.length}` : "Social card"));
+    const label = many ? `Download image ${i + 1} of ${images.length}` : "Download image";
+    return `<figure class="share-block__figure">
     <img class="share-block__image" src="${imageHref}" alt="${alt}" width="1200" height="1200" loading="lazy">
-    <figcaption class="share-block__caption"><a class="share-block__download" href="${imageHref}" download>Download image</a></figcaption>
-  </figure>` : "";
+    <figcaption class="share-block__caption"><a class="share-block__download" href="${imageHref}" download>${label}</a></figcaption>
+  </figure>`;
+  }).join("\n  ");
+  const gallery = many ? `<div class="share-block__gallery">${imageBlock}</div>` : imageBlock;
   return `<details class="share-block" data-share>
   <summary class="share-block__head">Social post copy</summary>
   <pre class="share-block__text" data-share-text>${text}</pre>
-  ${imageBlock}
+  ${gallery}
   <p class="share-block__row">
     <button class="share-block__copy" type="button" data-share-copy aria-live="polite">Copy</button>
     <a class="share-block__link" href="${href}">${href}</a>
