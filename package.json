@@ -27,6 +27,7 @@
     "shots": "bun tools/screenshots.ts",
     "og:card": "bun tools/og-card.ts",
     "social:card": "bun tools/social-card.ts",
+    "social:card:dashboards": "bun tools/social-card-dashboards.ts",
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",
