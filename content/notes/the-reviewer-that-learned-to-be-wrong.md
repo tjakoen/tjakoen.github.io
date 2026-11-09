@@ -104,9 +104,25 @@ checking everything the reviewer did by hand. He asked why. I said I did not tru
 
 He asked, "Why not?"
 
-I did not have a good answer, and that turned out to be the whole project. Everything below is me
-trying to earn one: give the reviewer a record I could check, and fix it every time the record said
-it was wrong, until trusting it was a decision I could defend.
+Something clicked. I did not have a good answer, and I realized the honest response was not to keep
+distrusting the reviewer but to make it into something I could trust. Then came the rabbit hole.
+
+The first thing I noticed was how much there was to learn from other people's reviews. The
+architecture group takes review seriously and leaves a lot of feedback, so before I changed a line
+of the reviewer I pulled hundreds of their reviews and mined them for the rules they kept repeating.
+That turned into the self-learning loop the rest of this note is about: the reviewer's own comments
+scored against what happened next, and every miss folded back in as a lesson.
+
+From there it spread outward. I read how other reviewers work and kept reading as new things came
+out. When I saw how Google writes down its standard for code review, how Alibaba moved the parts of
+its AI reviewer that must not go wrong out of the model and into plain code, and how Addy Osmani
+describes the loop that agentic work runs on, each one went into the kit. The full list is in the
+sources at the end.
+
+Kaither did not hand me a tool or a plan. He asked a question that made me want to trust my AI, and
+trust it for reasons I could show rather than a feeling. Everything below is me trying to earn that:
+a record I could check, a fix every time the record said it was wrong, and guardrails around the
+parts I was never going to hand over.
 
 ## Aug 14 · It started as a reviewer I had to babysit
 
