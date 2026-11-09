@@ -131,6 +131,10 @@ The mound is the only part you see from the outside. Under it, the colony is a s
 
 *Figure: the colony from the inside. The same mound sits above a tunnel that splits to the queen, the nursery, the larder and the stores.*
 
+![The actual Nest panel open on this note: the Braille colony, the queen at the bottom, stats, stores and the colony tools.](/media/notes/nest-colony-live.png)
+
+*The actual panel, not a diagram: the nest, the queen, the stores and the tools.*
+
 The queen never leaves the chamber except for worship. The nursery fills with eggs, the larder with letters, and the stores with the meals those letters become. A worker carrying a letter home is not a delivery to a generic nest; it is feeding a room.
 
 ## Why the colony stops to worship
@@ -167,6 +171,10 @@ Worship is the one moment the whole colony shares a direction. The rules pause, 
 </svg>
 
 *Figure: the four beats of worship. The threshold, the queen leaving, the gathering, and the return with full stores.*
+
+![The actual worship in the game: the queen and gathered ants on the page, with the Nest panel reading DANCING.](/media/notes/nest-worship-live.png)
+
+*The actual worship on the page: the queen, the gathered ants and the panel reading DANCING.*
 
 The first dance comes at twenty letters, then fifty, then ninety. The queen climbs out of the panel, walks to a clear patch and dances. Every ant on the page comes toward her, the trails go quiet, and the workers stop carrying. The queen crawls back down, shrinks into the entrance and only then does the panel queen return. The next threshold is fixed for the current dance and only moves after she is home, so hatching does not keep pushing the target away.
 
