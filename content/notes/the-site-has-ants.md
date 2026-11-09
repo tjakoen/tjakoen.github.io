@@ -269,7 +269,7 @@ The game has been played by me, a preview browser, and a browser suite. That is 
 
 On a phone it needs a different kind of care. Squashing an ant with a thumb on a narrow column is not the same game, and the launcher hides on small screens, so the stray ant has nowhere to lead. That version is not built.
 
-The honest position is that this is a finished small simulation and an unfinished piece of game design. The rules hold. The economy runs. The rival can surprise me. The next round is less about adding systems and more about watching the existing ones for a long time.
+The honest position is that this is a finished small simulation. It is not a finished piece of game design. The rules hold. The economy runs. The rival can surprise me. The next round is less about adding systems and more about watching the existing ones for a long time.
 
 ---
 
