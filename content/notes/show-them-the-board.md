@@ -28,7 +28,7 @@ social: |
 ## I was building the wrong thing, carefully
 
 For about a month I was writing an app called People Manager. It was going to be the one place I
-looked at my team: tickets, pull requests, cycle time, the things I bring to a one-on-one. It had a
+looked at my engineering team at [Career Team](https://careerteam.com): tickets, pull requests, cycle time, the things I bring to a one-on-one. It had a
 plan folder, a design, a few hundred commits. It was also going nowhere fast, and it took me a while to see why.
 
 I was thinking like a developer, not like an AI orchestrator. I had sat down to build the thing the
