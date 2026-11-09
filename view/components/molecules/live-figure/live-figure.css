@@ -729,3 +729,9 @@
 .nest-scene__surface { fill: none; stroke: var(--color-line); stroke-width: 1.3; }
 .nest-scene__room { fill: none; stroke: var(--color-line); }
 .nest-scene__mound-art.rival { color: var(--nest-rival, #9b3a32); }
+.nest-scene .nest-ant .legs-b { opacity: 0; }
+.nest-scene .nest-ant.walk .legs-a { animation: nest-scene-step .18s steps(1) infinite; }
+.nest-scene .nest-ant.walk .legs-b { animation: nest-scene-step .18s steps(1) infinite reverse; }
+@keyframes nest-scene-step { 0% { opacity: 1; } 50% { opacity: 0; } }
+.nest-scene .nest-ant.walk { will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .nest-scene .nest-ant.walk .legs-a, .nest-scene .nest-ant.walk .legs-b { animation: none; } }

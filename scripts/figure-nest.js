@@ -3,12 +3,8 @@
 // Each host owns its own state. Nothing is a keyframe: ants choose a free letter, carry it, fight
 // over a point, gather at the queen, or build. When the event resolves, the little world resets and
 // runs again. The visuals are the game's dot ants and Braille mound, drawn in the page tokens.
-const MAIN_MOUND = "\u2800\u2800\u2800\u2800\u2800\u2800\u2880\u28e0\u2894\u2806\u2800\u2800\u2890\u2896\u28a4\u28c0\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u28e0\u28fe\u2895\u2895\u28bd\u2895\u28f5\u28d7\u289d\u2895\u28b5\u28b5\u289d\u28a6\u2840\u2800\u2800\u2800\n\u2800\u2800\u28e0\u289e\u289d\u28b5\u28f5\u2895\u2895\u289d\u2895\u2895\u28bd\u289f\u2895\u289d\u2895\u2895\u289d\u28a6\u2840\u2800\n\u28a0\u28de\u28b7\u2897\u289f\u28f7\u2895\u2895\u289d\u2897\u289d\u28dd\u28dd\u289d\u28dd\u28d5\u2897\u2895\u289d\u2897\u289d\u28a6";
-const BODY = [[0,0],[1,1],[1,2]].concat(
-  ["","","",".xxx.xx.xxxxx.","xxxx.xxx.xxxxx",".xxx.xx.xxxxx."]
-    .flatMap((row, y) => [...row].map((k, x) => (k === "x" ? [x, y] : null)).filter(Boolean)),
-);
-const LEGS = [[5,2],[4,1],[9,2],[10,1],[7,6],[8,7],[2,6],[1,7]];
+import { ANT_BODY as BODY, ANT_LEGS_A as LEGS_A, ANT_LEGS_B as LEGS_B, MAIN_MOUND } from "./nest-assets.js";
+
 const circle = (x, y, r = .72) => `<circle cx="${x * 1.6 + .8}" cy="${y * 1.6 + .8}" r="${r}"/>`;
 const dots = (pts) => pts.map(([x, y]) => circle(x, y)).join("");
 const trail = (d) => `<path class="nest-scene__trail" d="${d}"/>`;
@@ -35,7 +31,12 @@ const rand = (n) => Math.random() * n;
 const moveTo = (a, target, speed, dt) => {
   const dx = target.x - a.x, dy = target.y - a.y, d = Math.hypot(dx, dy) || 1;
   const step = Math.min(d, speed * dt);
-  a.x += dx / d * step; a.y += dy / d * step; a.heading = Math.atan2(dy, dx);
+  a.x += dx / d * step; a.y += dy / d * step;
+  const want = Math.atan2(dy, dx);
+  let turn = want - a.heading;
+  while (turn > Math.PI) turn -= Math.PI * 2;
+  while (turn < -Math.PI) turn += Math.PI * 2;
+  a.heading += turn * Math.min(1, dt * 12);
   return d <= speed * dt + 1;
 };
 
@@ -46,10 +47,10 @@ const create = (mode, stage) => {
   const mk = (role, x, y, cls = "") => {
     const el = document.createElementNS("http://www.w3.org/2000/svg", "g");
     el.setAttribute("class", "nest-ant " + cls);
-    el.innerHTML = dots(BODY) + `<g opacity=".82">${dots(LEGS)}</g>`;
+    el.innerHTML = dots(BODY) + `<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g>`;
     el.setAttribute("fill", role.includes("rival") ? "var(--nest-rival, #9b3a32)" : "currentColor");
     layer.append(el);
-    return { role, x, y, el, hp: role.includes("guard") || role === "soldier" ? 2 : 1, power: role.includes("guard") || role === "soldier" ? 2 : 1, cooldown: 0, carry: null, phase: rand(6.28) };
+    return { id: s.ants.length, role, x, y, el, hp: role.includes("guard") || role === "soldier" ? 2 : 1, power: role.includes("guard") || role === "soldier" ? 2 : 1, cooldown: 0, carry: null, phase: rand(6.28) };
   };
   const mkLetter = (x, y, ch) => {
     const el = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -140,7 +141,9 @@ const tick = (s, dt) => {
 
 const draw = (s) => {
   s.ants.forEach((a) => {
-    a.el.setAttribute("transform", `translate(${a.x} ${a.y}) scale(${a.role === "queen" ? 2 : a.role === "soldier" || a.role.includes("guard") ? 1.3 : 1}) rotate(${(a.heading || 0) * 180 / Math.PI})`);
+    a.el.classList.add("walk");
+    const bob = a.role === "queen" ? 0 : Math.sin((s.t * 9) + (a.id || 0)) * 0.5;
+    a.el.setAttribute("transform", `translate(${a.x} ${a.y + bob}) scale(${a.role === "queen" ? 2 : a.role === "soldier" || a.role.includes("guard") ? 1.3 : 1}) rotate(${(a.heading || 0) * 180 / Math.PI})`);
   });
   if (s.mode === "colony") { const mini = s.stage.querySelector("[data-mini]"); if (mini) mini.style.opacity = String(.15 + s.mini * .85); }
   if (s.mode === "rival") {

@@ -10,6 +10,8 @@
 // side by side. A carried letter keeps its own colour, face and underline, and drifts home slowly
 // when a carrier is squashed. If the whole colony dies, the queen sends out one new scout.
 // Every colour is a theme token, so each flavor recolours the nest.
+import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
+
 (() => {
   const modes = document.querySelector(".assistant__modes");
   const aside = document.querySelector(".assistant");
@@ -279,12 +281,8 @@
   const strayConsumed = () => { try { return sessionStorage.getItem(STRAY_KEY) === "1"; } catch { return false; } };
   const consumeStray = () => { try { sessionStorage.setItem(STRAY_KEY, "1"); } catch { /* private mode */ } };
   const strayReduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // The ant art is shared by the colony and the stray easter egg.
-  const LEGS_A = [[5, 2], [4, 1], [9, 2], [10, 1], [7, 6], [8, 7], [2, 6], [1, 7]];
-  const LEGS_B = [[7, 2], [8, 1], [3, 2], [2, 1], [5, 6], [4, 7], [10, 6], [11, 7]];
-  const BODY = ["", "", "", ".xxx.xx.xxxxx.", "xxxx.xxx.xxxxx", ".xxx.xx.xxxxx."].flatMap((row, y) => [...row].map((k, x) => k === "x" ? [x, y] : null).filter(Boolean)).concat([[0, 0], [1, 1], [1, 2]]);
-  const dots = (pts) => pts.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("");
-  const ANT_SVG = `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${dots(BODY)}<g class="legs-a">${dots(LEGS_A)}</g><g class="legs-b">${dots(LEGS_B)}</g></svg>`;
+  // The ant art is shared by the colony, the stray easter egg and the note figures.
+  const ANT_SVG = `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${ANT_BODY.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}<g class="legs-a">${ANT_LEGS_A.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}</g><g class="legs-b">${ANT_LEGS_B.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}</g></svg>`;
   // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
   // colour. At a glance it should not read as another worker.
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
