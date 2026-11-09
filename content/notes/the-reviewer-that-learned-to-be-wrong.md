@@ -1,6 +1,6 @@
 ---
 title: "Seven Hundred Commits to Teach a Reviewer It Was Wrong"
-subtitle: "In August I wrote one Claude skill to review pull requests in my voice. Three months later it runs on a schedule, borrows Codex when Claude runs dry, checks other managers' reviews, and most of its commits are the reviewer being corrected."
+subtitle: "In August I wrote one Claude skill to review pull requests in my voice. Three months later it runs on a schedule, borrows Codex when Claude runs dry, builds on teammates' reviews, and most of its commits are the reviewer being corrected."
 author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
@@ -12,7 +12,8 @@ summary: >
   The story of my PR review kit at Career Team, told from its git history: one hand-run Claude skill
   in August, a talk that introduced it to the team in September, then an outcome log that scores
   every finding, misses replayed at the commit they slipped through, routines that answer their own
-  threads, a kit other managers install, Codex as a backup, risk intake and an epic check. It got
+  threads, a kit other managers install, Codex as a backup, risk intake and an epic check, and the one
+  production break it let through. It got
   good by being measured against its misses, not by being prompted harder, and approval never left
   my hands.
 ---
@@ -29,9 +30,9 @@ idea, and I am not going to pretend otherwise. After that the two grew up side b
 borrowing when it paid. Their PR fixer's evaluation suite is why
 my kit tests whether a review is any good, and since November my kit treats a verdict from theirs as
 a review to build on instead of one to repeat. Theirs is the reviewer for everyone. Mine is the
-opinionated one. It reviews the way I do, and it keeps a ledger of every time it was wrong.
+opinionated one, and it reviews the way I do.
 
-On `Aug 14` I committed one file, a skill called `/check-pr-voice`. The next day I made eleven more
+On `Aug 14` I committed the first version of a skill called `/check-pr-voice`. The next day I made forty more
 commits to it, and one of them was titled `feat(check-pr): review the ticket, not just the diff`. That should have
 told me how this was going to go. As a snapshot, on `Nov 9` the repository has 737 commits and
 sits at release 2.6. The number sounds like a flex and it is closer to a confession: most of those
@@ -268,8 +269,7 @@ the change at once, and most of what they find never reaches the author:
 <path d="M8 134 L692 162 L692 184 L8 194 Z" style="fill:var(--color-line)"/>
     </svg>
 
-That shape has not changed since. Most of what follows is the loop growing new inputs and a second
-engine, not a new loop.
+That shape has not changed since.
 
 The same days in the history are the densest of the early stretch. A second skill,
 `/respond-pr-voice`, started answering replies waiting on us, checking a claimed fix at the new
@@ -278,14 +278,14 @@ queueing a re-review, an incremental pass over the new commits, instead of a who
 unattended routine got one report format, so I could read a night's work in a table instead of a
 transcript.
 
-## Sep 24 · Then other people wanted it
+## Sep 28 · Then other people wanted it
 
 On `Sep 24` the repository was restructured so someone who was not me could clone it, and on
 `Sep 28` the installer learned to set the kit up from a profile per person. Everything personal,
 the outcome log, the watcher state, the boards a person cares about, moved under that person's own
 directory.
 
-The board followed on `Oct 14` and 15: one page per person with Board, History, Calibration and
+The board page followed on `Oct 14` and 15: one page per person with Board, History, Calibration and
 Stats tabs, cards that move between columns depending on who owes the next move, a Run now button,
 settings that live on the board, and setup from one paste. The 1.0 release notes put it plainly:
 the first release a teammate can set up, use and repair alone. I am no longer the only manager whose
@@ -299,7 +299,8 @@ reviews run through it.
 
 Once there were two kits, they started reviewing the same pull requests. On `Oct 19` the kit
 learned the second look: when a teammate's kit has already reviewed the head commit, mine runs only
-what theirs left unchecked, posts an addendum, and posts nothing at all when it finds nothing new.
+what theirs left unchecked, posts an addendum. At first it left a one-line note when it had nothing new; now it posts nothing
+at all.
 Since `Nov 4` every second look carries its own label, so a silent one still shows on the pull
 request.
 
@@ -310,8 +311,8 @@ finite and pull requests are not. On `Oct 8` the reviewer was installed and adap
 by `Oct 11` the calibration loop found reviews from both hosts through their attribution labels,
 so a review Codex wrote is scored in the same log as one Claude wrote.
 
-Then it became the fallback for when I run low on tokens. On `Oct 20` and `Oct 21` the switch stopped
-being something I flipped by hand. As my weekly Claude use climbs, the kit runs fewer reviews at
+Then it became the fallback for when I run low on tokens. On `Oct 15` the switch stopped being
+something I flipped by hand, and on `Oct 20` and `Oct 21` it got finer. As my weekly Claude use climbs, the kit runs fewer reviews at
 once, and past a threshold I choose it hands them to Codex:
 
 | Weekly Claude use | Claude reviews at once |
@@ -336,7 +337,7 @@ means a quiet week on reviews.
 
 ## Oct 14 · Then it had to prove its repairs held
 
-A replay ledger arrived on `Oct 14`, and by late October it did the part I trust most: when a lens
+A replay ledger arrived on `Oct 14`, and by mid-October it did the part that convinced me: when a lens
 gets repaired after a miss, the repair is replayed on the pull request the miss came from, at the
 commit the original review ran on. On `Nov 3` a batch of thirty-three replays came back and nine
 lens rules were fixed because the replays found them wanting. A repair that has not been replayed is
@@ -434,8 +435,7 @@ ranked three a day so the queue does not drown.
 </svg>
 
 Release 2.6, on `Nov 4`, made every lens prove it read its rules before its findings count. A
-lens that skips them twice gets named in the evidence block, and the review cannot post PASS. That
-is the reviewer being held to the same rule I hold my students to. Show your work, or it does not
+lens that skips them twice gets named in the evidence block, and the review cannot post PASS. Show your work, or it does not
 count.
 
 ## Oct 30 · Then it let one through
@@ -522,7 +522,7 @@ engine does the work. The dates below say which is which.
 | An author says it is fixed | Checks the fix at the new commit and resolves its own thread | `Sep 16` |
 | An author pushes new commits | Runs a re-review over just those commits | `Sep 17` |
 | A teammate's kit already reviewed the head | Runs a second look over only what theirs left unchecked | `Oct 19` |
-| My Claude use passes the weekly threshold | Hands new reviews to Codex | `Oct 21` |
+| My Claude use passes the weekly threshold | Hands new reviews to Codex | `Oct 15` |
 
 **The learning half.** This is the part that earns the trust, and most of it predates the talk:
 
@@ -530,12 +530,12 @@ engine does the work. The dates below say which is which.
 - Every miss is recorded with the lens that should have caught it. Since `Aug 19`.
 - A theme that keeps being closed without a fix gets its lens tightened. Since `Sep 9`.
 - Every repair is replayed on the pull request where the miss happened, at the commit the review ran
-  on. Since late October, and the one big addition to the loop after the talk.
+  on. Since mid-October, and the one big addition to the loop after the talk.
 
 The Calibration tab shows each change to the reviewer and why it was made.
 
-It never approves, never merges and never pushes code. Guards make a push impossible rather than
-merely unintended. A PASS from the kit means it has nothing left to say, and the approve button stays
+It never approves, never merges and never pushes code. Guards block a push rather than merely
+discourage one. A PASS from the kit means it has nothing left to say, and the approve button stays
 mine.
 
 ## What the team felt
@@ -548,9 +548,9 @@ anyone other than its author, as a snapshot on `Nov 10`:
 
 | Pull requests opened | Reviewed | Median wait | The slowest quarter waited longer than |
 |---|---|---|---|
-| Before `Aug 14`, no kit | 51 | 1.7 hours | 17.8 hours |
+| Before `Aug 14`, no kit | 53 | 1.7 hours | 17.6 hours |
 | `Aug 14` to `Sep 16`, run by hand then on routines | 87 | 1.5 hours | 12.6 hours |
-| `Sep 17` to `Oct 14`, automatic on the sidebar | 81 | 1.7 hours | 12.9 hours |
+| `Sep 17` to `Oct 14`, automatic on the sidebar | 81 | 1.7 hours | 13.2 hours |
 | `Oct 15` to `Nov 10`, the board and Codex as backup | 98 | 0.9 hours | 3.0 hours |
 
 The median barely moved, because most pull requests were never the problem: someone usually picked
