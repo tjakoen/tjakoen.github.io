@@ -92,6 +92,8 @@
     .nest-cache-letter { position: absolute; z-index: 4; color: var(--color-accent); pointer-events: none; text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 35%, transparent); }
     .nest-hill.hit { animation: nest-hill-hit .3s steps(2); }
     @keyframes nest-hill-hit { 50% { transform: translateX(3px); filter: brightness(1.5); } }
+    .nest-hill.attacking { animation: nest-mound-attack .28s steps(2) 3; }
+    @keyframes nest-mound-attack { 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
     .nest-hill.unbuilding { animation: nest-hill-unbuild .55s cubic-bezier(.6,0,.8,.4) both; transform-origin: 50% 100%; }
     @keyframes nest-hill-unbuild { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scaleY(.06); } }
     .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; color: var(--nest-rival); filter: brightness(1.5) drop-shadow(0 0 4px var(--color-accent)); }
@@ -1291,6 +1293,7 @@
   };
 
   const stepPage = (ant, dt) => {
+    if (ant.fightUntil && performance.now() < ant.fightUntil) return;
     if (ant.side === "rival") { ant.px = ant.x; ant.py = ant.y; return stepRival(ant, dt); }
     if (ant.tongue || ant.job === "scout-pending") return;
     ant.px = ant.x; ant.py = ant.y;
@@ -1592,14 +1595,19 @@
       p.crawlFrom = [parseFloat(p.queen.style.left) || p.stage.x, parseFloat(p.queen.style.top) || p.stage.y];
       p.crawlStart = now; p.crawlDone = false;
       p.until = Math.max(p.until, now + 2200);
-      p.queen.classList.remove("dancing");
+      p.queen.classList.remove("dancing", "bob");
       p.queen.classList.add("crawling");
     }
     if (p.returning) {
       const u = Math.min(1, (now - p.crawlStart) / 1800);
       p.queen.style.left = (p.crawlFrom[0] + (p.queenFrom[0] - p.crawlFrom[0]) * u) + "px";
       p.queen.style.top = (p.crawlFrom[1] + (p.queenFrom[1] - 8 - p.crawlFrom[1]) * u) + "px";
-      if (u >= 1) { p.crawlDone = true; p.queen.classList.remove("crawling"); p.queen.classList.add("wait"); }
+      if (u >= 1 && !p.crawlDone) {
+        p.crawlDone = true; p.until = Math.max(p.until, now + 650);
+        p.queen.classList.remove("crawling", "wait");
+        p.queen.style.transition = "transform .55s ease-in, opacity .55s ease-in";
+        p.queen.style.transform = "translateY(22px) scale(.1)"; p.queen.style.opacity = "0";
+      }
     }
     p.dancers.forEach((a) => {
       if (!a.el) return;
@@ -1837,7 +1845,7 @@
     const m = { el, spot, base: [spot.x, spot.y], hole: [spot.x, spot.y - 17], hp: MINI_HP, hadGuards: false, guards: new Set(), flyers: new Set(), next: performance.now() / 1000 + 2, lastHit: 0, nextHeal: 0, links: [] };
     el.addEventListener("click", (e) => {
       e.stopPropagation(); if (state.overrun || state.queenDead) return;
-      if (m.guards.size) {
+      if ([...m.guards].some((g) => g.el)) {
         callGuards(m);
         el.classList.add("denied"); setTimeout(() => el.classList.remove("denied"), 300);
         m.guards.forEach((g) => {
@@ -2244,6 +2252,7 @@
   };
 
   const stepRival = (a, dt) => {
+    if (a.fightUntil && performance.now() < a.fightUntil) return;
     if (!a.el || a.tongue) return;
     if (a.job === "rival-flyer") {
       const g = a.path[a.k]; if (!g) { a.path = [randomPoint()]; a.k = 0; return; }
@@ -2300,10 +2309,51 @@
   const combatPower = (a) => a.side === "rival" ? (a.role === "guard" ? 2 : 1) : (a.role === "soldier" || a.role === "guard" ? 3 : 1);
   const combHp = (a) => a.side === "rival" ? (a.role === "guard" ? 2 : 1) : (a.role === "soldier" || a.role === "guard" ? 4 : 1);
   const removeMainCombatant = (a) => {
+    if (a.mini) { a.mini.guards?.delete(a); a.mini.flyers?.delete(a); }
     if (a.letter?.state === "carried") drop(a.letter);
     else if (a.letter?.state === "gather") { a.letter.crew = a.letter.crew.filter((m) => m !== a); if (!a.letter.crew.length) a.letter.state = "free"; }
     squashQuiet(a);
   };
+  const pendingFights = new Set(), pendingDuels = new Set();
+  const finishFight = (fight) => {
+    if (fight.done) return;
+    fight.done = true; pendingFights.delete(fight);
+    const { target, side } = fight;
+    if (!target.el) return;
+    const alive = side === "rival" ? mainAnts().filter((a) => a.el && Math.hypot(a.x - target.x, a.y - target.y) < 42) : rival.ants.filter((a) => a.el && Math.hypot(a.x - target.x, a.y - target.y) < 42);
+    const power = alive.reduce((s, a) => s + combatPower(a), 0);
+    target.el.classList.remove("fighting"); alive.forEach((a) => a.el?.classList.remove("fighting"));
+    target.fightUntil = 0;
+    if (power < combHp(target)) return;
+    if (side === "rival") { removeRivalAnt(target); state.squashed++; log(alive.length > 1 ? "the colony wins a group fight" : "a main ant drives off a rival ant"); }
+    else { removeMainCombatant(target); state.squashed++; log("the rival ants overwhelm a main ant"); }
+  };
+  const beginFight = (target, group, side) => {
+    if (!target.el || target.fightUntil) return;
+    const until = performance.now() + 1000;
+    target.fightUntil = until; group.forEach((a) => { a.fightUntil = until; a.el?.classList.add("fighting"); });
+    target.el.classList.add("fighting");
+    const fight = { target, side, done: false };
+    pendingFights.add(fight);
+    setTimeout(() => finishFight(fight), 1000);
+  };
+  const finishDuel = (duel) => {
+    if (duel.done) return;
+    duel.done = true; pendingDuels.delete(duel);
+    const { m, r, mainWins } = duel;
+    if (mainWins) { if (r.el) { removeRivalAnt(r); state.squashed++; log("the main guard wins the duel"); } }
+    else if (m.el) { removeMainCombatant(m); state.squashed++; log("the rival guard wins the duel"); }
+    m.el?.classList.remove("fighting"); r.el?.classList.remove("fighting");
+  };
+  const beginDuel = (m, r, mainWins) => {
+    if (!m.el || !r.el) return;
+    const until = performance.now() + 1000; m.fightUntil = until; r.fightUntil = until;
+    m.el.classList.add("fighting"); r.el.classList.add("fighting");
+    const duel = { m, r, mainWins, done: false };
+    pendingDuels.add(duel);
+    setTimeout(() => finishDuel(duel), 1000);
+  };
+  const finishFights = () => { [...pendingFights].forEach(finishFight); [...pendingDuels].forEach(finishDuel); };
   const rivalCombat = (now) => {
     if (now - lastRivalFight < 300) return;
     lastRivalFight = now;
@@ -2316,29 +2366,24 @@
       const friends = mains.filter((a) => a !== m && near(a, m));
       const guards = rivals.filter((r) => r.role === "guard" && near(r, m));
       if (friends.length) continue;
-      if (guards.length >= 2) { spent.add(m); guards.forEach((r) => spent.add(r)); removeMainCombatant(m); state.squashed++; log("two rival guards overwhelm a main guard"); continue; }
+      if (guards.length >= 2) { spent.add(m); guards.forEach((r) => spent.add(r)); beginFight(m, guards, "main"); continue; }
       if (guards.length !== 1) continue;
       const r = guards[0]; spent.add(m); spent.add(r);
-      if (Math.random() < 0.6) { removeRivalAnt(r); state.squashed++; log("the main guard wins the duel"); }
-      else { removeMainCombatant(m); state.squashed++; log("the rival guard wins the duel"); }
+      beginDuel(m, r, Math.random() < 0.6);
     }
     for (const m of mains) {
       if (spent.has(m) || m.role !== "flyer") continue;
       const flies = rivals.filter((r) => r.job === "rival-flyer" && !spent.has(r) && near(r, m));
       if (flies.length !== 1) continue;
       const f = flies[0]; spent.add(m); spent.add(f);
-      if (Math.random() < 0.75) { removeRivalAnt(f); state.squashed++; log("the main flyer wins the air fight"); }
-      else { removeMainCombatant(m); state.squashed++; log("the rival flyer wins the air fight"); }
+      beginDuel(m, f, Math.random() < 0.75);
     }
     for (const r of rivals.slice()) {
       if (!r.el || spent.has(r)) continue;
       const group = mains.filter((m) => m.el && near(m, r));
       const power = group.reduce((s, a) => s + combatPower(a), 0);
       if (power < combHp(r)) continue;
-      r.el.classList.add("fighting"); group.forEach((a) => a.el?.classList.add("fighting"));
-      setTimeout(() => { group.forEach((a) => a.el?.classList.remove("fighting")); if (r.el) r.el.classList.remove("fighting"); }, 320);
-      removeRivalAnt(r); state.squashed++;
-      log(group.length > 1 ? "workers overwhelm a rival ant" : "a main ant drives off a rival ant");
+      beginFight(r, group, "rival");
     }
     for (const m of mains) {
       if (!m.el || spent.has(m)) continue;
@@ -2347,10 +2392,7 @@
       const group = rival.ants.filter((r) => r.el && near(r, m) && (!military || r.role === "guard" || r.job === "rival-flyer"));
       const power = group.reduce((s, a) => s + combatPower(a), 0);
       if (power < combHp(m)) continue;
-      m.el.classList.add("fighting"); group.forEach((r) => r.el?.classList.add("fighting"));
-      setTimeout(() => { group.forEach((r) => r.el?.classList.remove("fighting")); if (m.el) m.el.classList.remove("fighting"); }, 320);
-      removeMainCombatant(m); state.squashed++;
-      log("the rival ants overwhelm a main ant");
+      beginFight(m, group, "main");
     }
   };
 
@@ -2391,8 +2433,13 @@
       return;
     }
     if (ant.job === "rival-siege") {
+      const crew = mainAnts().filter((a) => a.el && a.job === "rival-siege" && Math.hypot(a.x - target[0], a.y - target[1]) < 70).length;
+      if (crew < 3) { ant.el?.classList.add("waiting"); return; }
+      ant.el?.classList.remove("waiting");
       if (performance.now() < (ant.nextBite || 0)) return;
-      ant.nextBite = performance.now() + 900;
+      ant.nextBite = performance.now() + 1100;
+      const moundEl = mini ? mini.el : rival.mound.el;
+      moundEl.classList.add("attacking"); setTimeout(() => moundEl?.classList.remove("attacking"), 900);
       if (mini) {
         mini.hp--; mini.el.classList.add("hit"); setTimeout(() => mini.el?.classList.remove("hit"), 320);
         blip(150, 0.08, "square", 0.035);
@@ -3202,7 +3249,7 @@
       }
       return false;
     };
-    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, startRival, forceRivalSteal, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf };
+    window.__nest = { state, rival, home, startParty, wipeTrail, retire, squash, makeMini, findMiniSpot, newAnt, label, foundRival, startRival, forceRivalSteal, finishFights, spawnPageAnt, spawnRivalUnit, rivalCombat, retreatRival, removeRivalAnt, needOf };
   }
   return { stop, confirmLeave };
   };

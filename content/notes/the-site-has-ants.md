@@ -121,7 +121,7 @@ The letters are real. A letter taken from this page is the actual glyph, in its 
 
 A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. The stores turn enough food into a builder, and the builder raises a mini mound somewhere else on the page. The mini mound gets its own guards and flyers, and the flyers ignore trails entirely and pinch letters from anywhere.
 
-Worship is the colony's pause. At twenty letters, then fifty, then ninety, the queen climbs out of the panel, walks to a clear patch, and dances. Every ant on the page comes toward her, the trails go quiet, and for a moment the whole system is pointed at one thing. When it ends she crawls back down. Worship also fills the stores, which is the colony's reward: a reason to keep going and a way to pay for the next round of soldiers.
+Worship is the colony's pause. At twenty letters, then fifty, then ninety, the queen climbs out of the panel, walks to a clear patch, and dances. Every ant on the page comes toward her, the trails go quiet, and for a moment the whole system is pointed at one thing. When it ends she crawls back down, shrinks into the entrance and only then does the panel queen return. Worship also fills the stores, which is the colony's reward: a reason to keep going and a way to pay for the next round of soldiers.
 
 ## The rival is a second ecosystem, not a second player
 
@@ -173,7 +173,7 @@ The rival is not a second player base. It does not take orders, it does not get 
 
 Its population stays one ant below the main colony. It can still grow trails, mini mounds and flyers, but it cannot outgrow the nest it is fighting. The first rival is meant to be an easy fight. Later rivals start with more workers and more mounds if the main colony is already large, because a grown colony should not get a free win against a fresh, tiny rival. The goal is a fight with a clear main-colony advantage, not a guaranteed walkover.
 
-The rival prefers the left side when the main colony is on the right, and it keeps its distance. That is partly visual, so the two colonies do not sit on top of each other, and partly mechanical, so the rival has room to grow before the main trails reach it. Its mini mounds can be clicked down, and its guards react to the damage. When the rival falls, its stolen letters are gone for good. There is no cache to clean up and no loot to collect. The reward is the celebration and a quieter page.
+The rival prefers the left side when the main colony is on the right, and it keeps its distance. That is partly visual, so the two colonies do not sit on top of each other, and partly mechanical, so the rival has room to grow before the main trails reach it. Its mini mounds can be clicked down, and its guards react to the damage. A rival mound is not a one-ant job: at least three main ants have to be working it at once, and the mound shakes under the crew before it comes down. When the rival falls, its stolen letters are gone for good. There is no cache to clean up and no loot to collect. The reward is the celebration and a quieter page.
 
 ## Who wins a fight
 
@@ -231,7 +231,7 @@ Combat is deliberately small. The main colony gets the advantage, but not every 
 
 *Figure: the main colony has the edge in a fair fight. A crowd is still a crowd.*
 
-The exact rules are simple enough to hold in your head. A main guard and a rival guard roll a duel, with the main guard winning sixty percent. Two rival guards do not roll that duel; they overwhelm one main guard. A main flyer has a seventy-five percent edge over a rival flyer. Workers are weak alone, but two of them can take a guard. The numbers are there to make the main colony feel like the home team without making the rival a decoration.
+The exact rules are simple enough to hold in your head. A main guard and a rival guard roll a duel, with the main guard winning sixty percent. Two rival guards do not roll that duel; they overwhelm one main guard. A main flyer has a seventy-five percent edge over a rival flyer. Workers are weak alone, but two of them can take a guard. Fights stay open for about a second, not a frame, so ants nearby can pile in and the winner is decided by the crowd that is actually there. The numbers are there to make the main colony feel like the home team without making the rival a decoration.
 
 ## You are the disturbance, not the colony
 

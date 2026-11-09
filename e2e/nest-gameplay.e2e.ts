@@ -79,7 +79,7 @@ test("a main worker beats a single rival worker", async ({ page }) => {
     const at = [480, 480];
     const soldier = n.spawnPageAnt("soldier", at, null);
     const worker = n.spawnRivalUnit("rival-worker", at, [[480, 480]]);
-    n.rivalCombat(performance.now() + 1000);
+    n.rivalCombat(performance.now() + 1000); n.finishFights();
     return { soldier: !!soldier.el, worker: !!worker.el };
   });
   expect(result.soldier).toBe(true);
@@ -143,12 +143,14 @@ test("a main guard can break the rival mound without a player wipe", async ({ pa
   await page.evaluate(([x, y]) => {
     const n = window.__nest as any;
     n.rival.hp = 1;
-    const guard = n.spawnPageAnt("guard", [x, y], null);
-    guard.hp = 99;
-    guard.job = "rival-siege";
-    guard.path = [[x, y]];
-    guard.k = 0;
-    guard.nextBite = 0;
+    for (let i = 0; i < 3; i++) {
+      const guard = n.spawnPageAnt("guard", [x, y], null);
+      guard.hp = 99;
+      guard.job = "rival-siege";
+      guard.path = [[x, y]];
+      guard.k = 0;
+      guard.nextBite = 0;
+    }
   }, hole);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 15_000 }).toBe(false);
 });
@@ -207,8 +209,10 @@ test("a soldier breaks a rival mini mound before the main mound", async ({ page 
     const n = window.__nest as any;
     const mini = n.rival.minis[0];
     mini.hp = 1;
-    const guard = n.spawnPageAnt("soldier", [mini.base[0], mini.base[1]], null);
-    guard.hp = 99; guard.job = "rival-siege"; guard.path = [[mini.base[0], mini.base[1]]]; guard.k = 0; guard.nextBite = 0;
+    for (let i = 0; i < 3; i++) {
+      const guard = n.spawnPageAnt("soldier", [mini.base[0], mini.base[1]], null);
+      guard.hp = 99; guard.job = "rival-siege"; guard.path = [[mini.base[0], mini.base[1]]]; guard.k = 0; guard.nextBite = 0;
+    }
     return { minis: n.rival.minis.length, hp: n.rival.hp };
   });
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 12_000 }).toBeLessThan(before.minis);
@@ -232,8 +236,7 @@ test("reset restores letters taken by the rival", async ({ page }) => {
   await open(page);
   await page.evaluate(() => (window.__nest as any).startRival());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
-  await page.evaluate(() => (window.__nest as any).forceRivalSteal());
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.stolen.size), { timeout: 5_000 }).toBeGreaterThan(0);
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).forceRivalSteal() || (window.__nest as any).rival.stolen.size > 0), { timeout: 10_000 }).toBe(true);
   await page.evaluate(() => (window.__nest as any).retreatRival());
   expect(await page.evaluate(() => (window.__nest as any).state.hiddenLetters.size)).toBeGreaterThan(0);
   await page.locator("button[data-k='restore']").click();
@@ -264,4 +267,21 @@ test("the main colony respects its ant cap", async ({ page }) => {
     return n.state.ants.filter((a: any) => a.side !== "rival").length;
   });
   expect(result).toBeLessThanOrEqual(20);
+});
+
+
+test("a lone main ant cannot break a rival mound", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => (window.__nest as any).startRival());
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
+  const result = await page.evaluate(async () => {
+    const n = window.__nest as any;
+    const hole = n.rival.mound.hole.slice();
+    n.rival.hp = 8;
+    const guard = n.spawnPageAnt("guard", [hole[0], hole[1]], null);
+    guard.hp = 99; guard.job = "rival-siege"; guard.path = [[hole[0], hole[1]]]; guard.k = 0; guard.nextBite = 0;
+    await new Promise((r) => setTimeout(r, 1800));
+    return n.rival.hp;
+  });
+  expect(result).toBe(8);
 });
