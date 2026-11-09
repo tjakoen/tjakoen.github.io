@@ -56,7 +56,9 @@ That is the small story. The bigger one is what happened after I showed it to my
 
 The first dashboard I leaned on was the board for my PR review kit. It started in
 August as one review skill I ran by hand, and as a snapshot it is now 737 commits and a 2.6 release
-later, which is a story of its own: [Six Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md). The short
+later, which is a story of its own: [Six Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md). Back
+in September, when it was a much simpler thing, I gave a talk introducing it to the team, [Every Time
+It Was Wrong](/talks/every-time-it-was-wrong). A lot has changed since that deck. The short
 version of how it works today: pull requests arrive from the team's code review column, scheduled
 routines review them against the ticket and the epic's decided rules, follow up on replies, re-review
 new commits, and post under my account. It never approves or merges. Approval stays mine.
