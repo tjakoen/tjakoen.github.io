@@ -55,9 +55,9 @@ are moving the right way. I still run the reviews. I just get to look at them li
 of reading log files like a raccoon going through a bin.
 
 <figure class="shot">
-  <img class="shot__img" src="/media/review-kit/board-in-claude.jpg" width="1440" height="520" loading="lazy" data-lightbox
-       alt="The review board as a Claude dashboard, beside a mock Claude chat. The chat asks which pull requests are waiting on me, and the board shows five columns: queued, in flight, waiting on author, waiting on you, and done, holding demo pull requests.">
-  <figcaption class="shot__cap">The board from the kit's demo, with made-up pull requests, inside a mock of the Claude window it lives in. The chat beside it is mocked for this note; the point is that the conversation never goes away, I just get a board next to it.</figcaption>
+  <img class="shot__img" src="/media/review-kit/board-in-claude.jpg" width="1440" height="640" loading="lazy" data-lightbox
+       alt="The review board open as a Claude dashboard, with a mock of the Claude sidebar beside it pinning the review board, Crew Watch, the epic board and a chat thread for each. The board shows five columns: queued, in flight, waiting on author, waiting on you, and done, holding demo pull requests.">
+  <figcaption class="shot__cap">The board from the kit's demo, with made-up pull requests, inside a mock of the Claude app it lives in. The sidebar is mocked for this note, and it is close to mine: each dashboard is pinned next to the chat thread that builds and runs it, so the board and the conversation are always one click apart.</figcaption>
 </figure>
 
 <figure class="shot">
@@ -179,8 +179,8 @@ two disagreed before anyone saw a wrong figure in a one-on-one.
 
 <figure class="shot">
   <img class="shot__img" src="/media/crew/crew-watch-in-claude.jpg" width="1440" height="860" loading="lazy" data-lightbox
-       alt="Crew Watch as a Claude dashboard beside a mock Claude chat, filled with invented people and tickets.">
-  <figcaption class="shot__cap">Crew Watch, refilled with invented people and tickets for this note, inside the same mock Claude window. The real one looks the same, with my team in it.</figcaption>
+       alt="Crew Watch open as a Claude dashboard in a mock of the Claude sidebar, filled with invented people and tickets: fourteen things that need me, from overdue one-on-ones to blocked tickets.">
+  <figcaption class="shot__cap">Crew Watch, refilled with invented people and tickets for this note, inside the same mock Claude sidebar. The real one looks the same, with my team in it.</figcaption>
 </figure>
 
 ## Then I showed them
