@@ -162,6 +162,16 @@ the first three were all reasonable at the time.
 
 *Four tries at the same view. The third one did not ship, and it still did the most work.*
 
+DevLake deserves more credit than one box in a diagram. [Apache DevLake](https://devlake.apache.org/)
+is an open-source tool that pulls your Jira and GitHub history into one database and puts dashboards
+on top: cycle time, review time, what finished per sprint. It was the step that taught me what the
+numbers even were. Before it, I had opinions about how the team was doing. After it, I had a lake of
+real data and a set of queries that defined each metric precisely, which is the part that carried
+forward. When Crew Watch came along, those definitions became its spec, and the audit I ran checked
+Crew Watch's figures against DevLake's before I trusted them. DevLake answered the questions it was
+built for. It just was not built for mine, which were about people rather than pipelines, and that gap
+is what the next two tries were for.
+
 <figure class="shot">
   <img class="shot__img" src="/media/crew/people-manager.jpg" width="1280" height="800" loading="lazy" data-lightbox
        alt="People Manager in its demo mode, with an invented roster: a banner saying so, a sidebar of people whose one-on-ones are slipping, and a status page headed five relationships are slipping, with this week's open questions grouped by person.">
