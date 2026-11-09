@@ -72,6 +72,8 @@ The letters are real. A letter taken from this page is the actual glyph, in its 
 <p class="live-fig__note">A live letter raid: a scout follows the trail, takes the letter a, leaves the gap, and carries the glyph home.</p>
 </div>
 
+*The raid, live: one ant, one trail, one real letter.*
+
 A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. The stores turn enough food into a builder, and the builder raises a mini mound somewhere else on the page. The mini mound gets its own guards and flyers, and the flyers ignore trails entirely and pinch letters from anywhere.
 
 ## Inside the nest
@@ -108,8 +110,6 @@ The first rival appears after the second worship, not the first. It starts as a 
 
 <p style="margin:0 0 .5rem"><a href="#" data-nest-start>Start the colony</a> if you want to watch a rival arrive.</p>
 
-
-
 The rival is not a second player base. It does not take orders, it does not get a turn, and it cannot see the whole board. It runs the same kind of local rules the main colony runs: follow a trail, take a letter, carry it home, spend it on another ant. The difference is that its growth comes out of what it steals.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="rival" data-surface="figure:nest-rival">
@@ -124,7 +124,6 @@ The rival prefers the left side when the main colony is on the right, and it kee
 
 ## Who wins a fight
 
-
 Combat is deliberately small. The main colony gets the advantage, but not every fight is a formality.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="fight" data-surface="figure:nest-fight">
@@ -137,9 +136,7 @@ Combat is deliberately small. The main colony gets the advantage, but not every 
 <p class="live-fig__note">The castes, live: worker, soldier, flyer, queen and rival guard with their relative sizes.</p>
 </div>
 
-*The castes, live: same dot animal, different jobs.*
-
-
+*The castes, live: worker, soldier, flyer, queen and rival guard, same dot animal, different jobs.*
 
 
 The exact rules are simple enough to hold in your head. A main guard and a rival guard roll a duel, with the main guard winning sixty percent. Two rival guards do not roll that duel; they overwhelm one main guard. A main flyer has a seventy-five percent edge over a rival flyer. Workers are weak alone, but two of them can take a guard. Fights stay open for about a second, not a frame, so ants nearby can pile in and the winner is decided by the crowd that is actually there. The numbers are there to make the main colony feel like the home team without making the rival a decoration.

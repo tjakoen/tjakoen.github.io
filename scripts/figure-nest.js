@@ -8,17 +8,16 @@ import { ANT_BODY as BODY, ANT_LEGS_A as LEGS_A, ANT_LEGS_B as LEGS_B, MAIN_MOUN
 const circle = (x, y, r = .72) => `<circle cx="${x * 1.6 + .8}" cy="${y * 1.6 + .8}" r="${r}"/>`;
 const dots = (pts) => pts.map(([x, y]) => circle(x, y)).join("");
 const trail = (d) => `<path class="nest-scene__trail" d="${d}"/>`;
-const label = (x, y, text, cls = "nest-scene__label") => `<text x="${x}" y="${y}" class="${cls}" text-anchor="middle">${text}</text>`;
 const mound = (x, y, w = 160, h = 72, rival = false) => `<foreignObject x="${x}" y="${y}" width="${w}" height="${h}"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art${rival ? " rival" : ""}">${MAIN_MOUND}</pre></foreignObject>`;
-const SHELL = (head, hint, svg, status = "working") => `<div class="nest-scene"><div class="nest-scene__head"><span>${head}</span><strong>${status}</strong></div><div class="nest-scene__stage"><svg viewBox="0 0 600 400" role="img">${svg}</svg></div><p class="nest-scene__hint">${hint}</p></div>`;
+const SHELL = (_head, _hint, svg, _status = "working") => `<div class="nest-scene"><div class="nest-scene__stage"><svg viewBox="0 0 600 400" role="img">${svg}</svg></div></div>`;
 
 const backgrounds = {
-  eat: () => `${mound(38, 272, 132, 60)}${trail("M100 330 C190 265 285 190 390 120")}<text x="74" y="96" class="nest-theft__word">the copy is food</text>${label(100, 360, "mound")}${label(390, 84, "real letters")}`,
-  colony: () => `${mound(220, 58, 160, 72)}<path d="M18 126 L582 126" class="nest-scene__surface"/>${trail("M300 126 L300 210")}${trail("M300 210 L150 266")}${trail("M300 210 L450 266")}${trail("M300 210 L300 330")}${trail("M300 330 L145 356")}${trail("M300 330 L455 356")}<ellipse cx="300" cy="336" rx="76" ry="36" class="nest-scene__room"/><ellipse cx="150" cy="266" rx="58" ry="28" class="nest-scene__room"/><ellipse cx="450" cy="266" rx="58" ry="28" class="nest-scene__room"/><ellipse cx="145" cy="360" rx="48" ry="22" class="nest-scene__room"/><ellipse cx="455" cy="360" rx="48" ry="22" class="nest-scene__room"/>${label(300, 48, "entrance")}${label(300, 394, "queen chamber")}${label(150, 246, "nursery")}${label(450, 246, "larder")}${label(145, 394, "stores")}${label(455, 394, "stores")}<foreignObject data-mini x="505" y="292" width="84" height="42" opacity=".15"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>${label(548, 366, "new mound")}`,
-  fight: () => `${trail("M34 260 L566 260", "var(--color-line)", ".3")}${label(110, 330, "main workers")}${label(490, 330, "rival guards")}${label(300, 74, "nearest ants join")}`,
-  castes: () => `${label(88, 150, "worker")}${label(208, 148, "soldier")}${label(330, 148, "flyer")}${label(456, 150, "queen")}${label(552, 148, "rival guard")}${label(300, 310, "same dot animal, different jobs")}` ,
-  worship: () => `${mound(196, 270, 208, 72)}<ellipse cx="300" cy="190" rx="130" ry="55" class="nest-scene__orbit"/>${label(300, 58, "the queen is centre")}${label(300, 350, "stores fill")}${label(300, 382, "the trails go quiet")}`,
-  rival: () => `${mound(40, 300, 116, 54, true)}${mound(444, 300, 116, 54)}${trail("M100 312 C190 250 280 238 360 262")}${trail("M500 312 C410 250 320 238 280 262")}${label(92, 220, "rival", "nest-scene__label rival")}${label(500, 220, "main")}${label(300, 82, "the rival arrives")}`,
+  eat: () => `${mound(38, 272, 132, 60)}${trail("M100 330 C190 265 285 190 390 120")}<text x="74" y="96" class="nest-theft__word">the copy is food</text>`,
+  colony: () => `${mound(220, 58, 160, 72)}<path d="M18 126 L582 126" class="nest-scene__surface"/>${trail("M300 126 L300 210")}${trail("M300 210 L150 266")}${trail("M300 210 L450 266")}${trail("M300 210 L300 330")}${trail("M300 330 L145 356")}${trail("M300 330 L455 356")}<ellipse cx="300" cy="336" rx="76" ry="36" class="nest-scene__room"/><ellipse cx="150" cy="266" rx="58" ry="28" class="nest-scene__room"/><ellipse cx="450" cy="266" rx="58" ry="28" class="nest-scene__room"/><ellipse cx="145" cy="360" rx="48" ry="22" class="nest-scene__room"/><ellipse cx="455" cy="360" rx="48" ry="22" class="nest-scene__room"/><foreignObject data-mini x="505" y="292" width="84" height="42" opacity=".15"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>`,
+  fight: () => `${trail("M34 260 L566 260", "var(--color-line)", ".3")}`,
+  castes: () => "",
+  worship: () => `${mound(196, 270, 208, 72)}<ellipse cx="300" cy="190" rx="130" ry="55" class="nest-scene__orbit"/>`,
+  rival: () => `${mound(40, 300, 116, 54, true)}${mound(444, 300, 116, 54)}${trail("M100 312 C190 250 280 238 360 262")}${trail("M500 312 C410 250 320 238 280 262")}`,
 };
 
 const scene = (mode) => SHELL(
