@@ -21,13 +21,14 @@ way I would, in the tone I would, and posts under my account. It reads the ticke
 it never approves anything, and it keeps a log of every time it was wrong. That last part is most of
 the story.
 
-It is not the only one. Career Team's platform group ships its own Claude plugins for our codebase,
-including a staff-level PR reviewer and a fixer with a proper evaluation suite, and my kit grew up
-alongside them. The two reviewers arrived at the same shape on their own, and mine has borrowed from
-theirs more than once: the evaluation idea came from the fixer, and since November my kit reads the
-company reviewer's verdicts as another kit's review. Theirs is the general reviewer for everyone.
-Mine leans toward how I review and toward the one thing I could not stop wanting, which was a record
-of every time it got something wrong.
+It has a sibling. Career Team's platform group ships its own Claude plugins for our codebase, a
+staff-level PR reviewer among them, and mine started from theirs. The bones of my first version, the
+parallel lenses and the habit of checking every finding before it posts, are the company reviewer's
+idea, and I am not going to pretend otherwise. After that the two grew up side by side, and I kept
+borrowing when it paid. Their PR fixer's evaluation suite is why
+my kit tests whether a review is any good, and since November my kit treats a verdict from theirs as
+a review to build on instead of one to repeat. Theirs is the reviewer for everyone. Mine is the
+opinionated one. It reviews the way I do, and it keeps a ledger of every time it was wrong.
 
 On August 14 I committed one file, a skill called check-pr-voice. The next day I made eleven more
 commits to it, and one of them was titled *review the ticket, not just the diff*. That should have
@@ -88,11 +89,12 @@ commits are the reviewer being told it was wrong, and me building the machinery 
 
 ## It started as a reviewer I had to babysit
 
-The first version was a skill I typed a pull request number into and watched. It read the diff, read
-the linked ticket and its epic, sent a handful of parallel lenses over the change (security,
-accessibility, tests, migrations, a staff-engineer read), checked every finding a second time before
-keeping it, and posted one review with comments anchored to lines. Then it waited for me to run it
-again.
+The first version was a skill I typed a pull request number into and watched. The core of it came
+straight from the company reviewer: a handful of parallel lenses over the change (security,
+accessibility, tests, migrations, a staff-engineer read), every finding checked a second time before
+it was kept, and one review posted with comments anchored to lines. What I added was the reading
+before the diff, the linked ticket and its epic, and my own tone on the way out. Then it waited for
+me to run it again.
 
 The first two days of history are mostly the skill learning manners. *Post one review, and stop
 calling everything Minor.* *Ask whether we already built this.* *Scale the review to the diff, but
@@ -245,7 +247,8 @@ single rule:
   and a rule earns its place when the team's own reviewers said the same thing more than once. The
   times a person caught what the reviewer missed are worth the most, since each one became a gate, a
   standard or a test case.
-- The platform group's Claude plugins: the staff-level PR reviewer the kit runs alongside, and the PR
+- The platform group's Claude plugins: the staff-level PR reviewer whose lenses and verification step the kit
+  started from, and the PR
   fixer whose evaluation suite taught me to test whether a review is any good, not only whether the
   machinery runs.
 - My tech lead's epic check, which supplies the epic decisions and the collision check, and which
