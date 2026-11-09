@@ -17,7 +17,7 @@ summary: >
   my hands.
 ---
 
-My PR review kit is a set of Claude skills that reviews my team's pull requests at Career Team the
+My PR review kit is a set of Claude skills that reviews my team's pull requests at [Career Team](https://careerteam.com) the
 way I would, in the tone I would, and posts under my account. It reads the ticket before the diff,
 it never approves anything, and it keeps a log of every time it was wrong. That last part is most of
 the story.
