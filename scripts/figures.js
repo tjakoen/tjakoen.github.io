@@ -16,15 +16,17 @@ const needsWidgets = ["ratio", "matrix", "sprint", "loop", "trap"].some((name) =
 const needsFloor = ["whiplash", "buildorder", "rulegate", "roadmap", "agentloop", "gates", "twopath", "failreport", "costwait", "promotion"]
   .some((name) => names.has(name));
 const needsNest = names.has("nest");
+const needsColony = names.has("colony");
 
 // Static SVGs already carry the meaning when JavaScript is off. On routes with no live figure, do not
 // download the three interactive figure families just because this small upgrade hook is shared by
 // the shell. Notes and talk decks load only the family their own figures use.
-const [multiplier, widgets, floor, nest] = await Promise.all([
+const [multiplier, widgets, floor, nest, colony] = await Promise.all([
   names.has("multiplier") ? import("/site/figure-multiplier.js") : null,
   needsWidgets ? import("/site/figure-widgets.js") : null,
   needsFloor ? import("/site/figure-floor.js") : null,
   needsNest ? import("/site/figure-nest.js") : null,
+  needsColony ? import("/site/figure-colony.js") : null,
 ]);
 
 const BUILDERS = {
@@ -41,6 +43,7 @@ const BUILDERS = {
     gates: floor.mountGates, twopath: floor.mountTwoPath, failreport: floor.mountFailReport,
     costwait: floor.mountCostWait, promotion: floor.mountPromotion } : {}),
   ...(nest ? { nest: nest.mountNest } : {}),
+  ...(colony ? { colony: colony.mountColony } : {}),
 };
 
 for (const host of hosts) {

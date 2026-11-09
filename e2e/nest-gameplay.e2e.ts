@@ -113,6 +113,11 @@ test("full stores send a builder out and the mini mound finishes", async ({ page
   await expect.poll(() => page.evaluate(() => (window.__nest as any).state.built), { timeout: 20_000 }).toBeGreaterThan(0);
   const result = await page.evaluate(() => document.querySelectorAll(".nest-mini").length);
   expect(result).toBeGreaterThan(0);
+  await page.evaluate(() => {
+    const n = window.__nest as any;
+    // Leave room under the colony cap for this mound's guards and flyer to spawn.
+    n.state.ants.filter((ant: any) => ant.role === "worker" && !ant.letter).slice(0, 8).forEach(n.squash);
+  });
   await expect.poll(() => page.evaluate(() => (window.__nest as any).state.ants.some((a: any) => a.role === "guard" && a.mini)), { timeout: 12_000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).state.ants.some((a: any) => a.role === "flyer" && a.mini)), { timeout: 30_000 }).toBe(true);
 });
