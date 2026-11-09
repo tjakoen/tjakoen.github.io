@@ -164,10 +164,18 @@ request.
 There is a practical problem with running a reviewer on a schedule, which is that my Claude usage is
 finite and pull requests are not. On October 8 the reviewer was installed and adapted for Codex, and
 by October 11 the calibration loop found reviews from both hosts through their attribution labels,
-so a review Codex wrote is scored in the same log as one Claude wrote. On October 20 and 21 that
-became a policy rather than a manual switch: Codex takes over the reviews once my weekly Claude use
-passes a threshold I choose, and the Reviews slots step down from four to one as use passes 70, 80
-and 90 percent.
+so a review Codex wrote is scored in the same log as one Claude wrote.
+
+Then it became the fallback for when I run low on tokens. On October 20 and 21 the switch stopped
+being something I flipped by hand. As my weekly Claude use climbs, the Reviews slots step down from
+four to one at 70, 80 and 90 percent, and once use passes a threshold I choose, Codex takes over the
+reviews outright. A pull request keeps the engine that first reviewed it, so a conversation that
+started with Codex finishes with Codex instead of changing voice halfway through.
+
+That still left the week I burn through Claude completely, when the board itself has nothing to run
+on. So I built a second, much smaller thing next to the kit: a minimal Codex dashboard that shows
+the review queue and lets me keep reviews moving with no Claude at all. It is plain on purpose. It
+exists for the bad week, and on the bad week I want a list and a button, not a tour.
 
 Codex is the backup, not a peer I benchmark against in this note. The comparison work exists in the
 plans folder and it is not finished. What is finished is that a quiet week on one engine no longer
