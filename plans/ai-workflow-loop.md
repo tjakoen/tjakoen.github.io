@@ -232,6 +232,28 @@ since 2026-07-26 — a skill's Verification checklist is the shape 11c was waiti
 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills), the executable form of the
 Loop Engineering post already cited above. See `plans/skills-runtime.md`.
 
+### P7 — what the harness reading left (2026-11-09)
+Read on 2026-11-09: Anthropic's [Effective harnesses for long-running agents](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents)
+(engineering team, 26 November 2025) and Prithvi Rajasekaran's
+[Harness design for long-running application development](https://www.anthropic.com/research/harness-design-long-running-apps)
+(Anthropic Labs, 24 March 2026). Both are credited in docs/LOOP-SOURCES.md; the decay rule they close
+on is now LOOP section 5. These two tasks are what remains.
+- [ ] Completion state the worker cannot rewrite. The plan board is Markdown with a checkbox per
+      task, and the session that worked the task is the one that edits it, so a run can drop or reword
+      the task it failed and still look finished; the run ledger catches the lie most of the time, not
+      the redefinition. Anthropic's harness keeps its feature list in JSON with a passes flag and
+      tells the coding agent it may change only that flag, on the finding that models rewrite Markdown
+      to suit themselves and leave structured status alone. Decide where task state lives so only the
+      gate or the reviewing pass moves it, and add a doctor check that a claimed task's acceptance
+      still matches what the plan said when it was claimed. The detail belongs in pantry's PLAN.md
+      beside the run-ledger schema (piece 11c), not forked here.
+- [ ] The sprint contract, for a task whose result a person can look at. Before code, write what done
+      means and how it will be checked, and have the second pass sign off on that list before
+      implementation rather than after; that is the step that turns a high-level task into testable
+      behavior, and it is what Anthropic's generator and evaluator negotiated per sprint. Scope it to
+      tasks with a visible surface and to runs where a second pass is already owed, or the ceremony
+      outruns the value. A doc edit, a flag or a parser change needs none.
+
 ## Non-negotiables carried into every phase
 - Portfolio standards/ stays SSOT; every repo references, never forks.
 - Human gates merge and anything outward-facing. The loop drafts; it does not land.
