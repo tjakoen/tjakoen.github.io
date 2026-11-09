@@ -62,7 +62,8 @@ three of these hold:
   the single most reliable predictor of growth in the ledger, and it beats length as a trigger.
 - **It carries no named envelope already.** Seven of the fifty-four did. Read theirs and use it.
 
-Skip in every other case, and skip out loud in one sentence rather than silently, so the person knows
+A shorter prompt that still wants something changed is not left alone: [PROMPT](PROMPT.md) section 3
+gives it a lighter polish pass. Skip in every other case, and skip out loud in one sentence rather than silently, so the person knows
 the test ran. Three skips worth naming, because each one gets argued:
 
 | The case | Why no brief |
