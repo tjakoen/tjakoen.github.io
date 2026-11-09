@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-color-scheme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/styles/variables.css">
+<link rel="stylesheet" href="/styles/global.css">
+<link rel="stylesheet" href="/styles/grain.css">
+<link rel="stylesheet" href="/components.css">
+<style>
+  html, body { margin: 0; height: 100%; background: var(--paper); color: var(--ink); }
+  .app-shell { display: flex; height: 100%; min-height: 0; }
+  .app-shell__main { flex: 1; min-width: 0; overflow: auto; padding: 28px 32px; }
+  .assistant { width: 330px; min-width: 280px; overflow: hidden; border-left: 1px solid var(--color-line); background: var(--paper-2); }
+  .assistant__modes { padding: 10px 12px; border-bottom: 1px solid var(--color-line); font: 10px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; }
+  .status-bar { display: none; }
+  .sample { max-width: 430px; font-family: var(--font-accent, Georgia, serif); font-size: 18px; line-height: 1.55; }
+  .sample b { font-size: 34px; line-height: 1; display: block; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <main class="app-shell__main">
+    <article class="sample"><b>The page is the food.</b> A colony reads the page, takes the real letters, and carries them home. The gaps stay exactly where they were. The queen turns the meals into eggs, the stores send out builders, and the rival colony grows from what it steals. This is the actual game running in a small box, not a picture of it.</article>
+  </main>
+  <aside class="assistant"><div class="assistant__modes">Chat</div><div class="assistant__body"></div></aside>
+  <div class="status-bar"></div>
+</div>
+<script type="module">
+  const parentTheme = (() => { try { const d = parent.document.documentElement; return { scheme: d.dataset.colorScheme, flavor: d.dataset.flavor }; } catch { return {}; } })();
+  if (parentTheme.scheme) document.documentElement.dataset.colorScheme = parentTheme.scheme;
+  if (parentTheme.flavor) document.documentElement.dataset.flavor = parentTheme.flavor;
+  const mod = await import("/site/nest-game.js");
+  window.__nestLauncher?.open();
+  if (new URLSearchParams(location.search).has("worship")) {
+    const party = () => {
+      if (window.__nest && !window.__nest.state.party) {
+        for (let i = 0; i < 8; i++) window.__nest.spawnPageAnt("worker", [440 + Math.cos(i) * 24, 250 + Math.sin(i) * 24], null);
+        window.__nest.startParty();
+      }
+      setTimeout(party, 15000);
+    };
+    setTimeout(party, 2600);
+  }
+</script>
+</body>
+</html>

@@ -659,11 +659,9 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
 });
 
 
-test("the note mounts its three live colony boxes", async ({ page }) => {
+test("the note mounts the actual colony and worship boxes", async ({ page }) => {
   await page.goto("/notes/the-site-has-ants");
-  await expect(page.locator(".nest-scene")).toHaveCount(3);
-  const before = await page.locator(".nest-scene").first().locator("svg [transform]").last().getAttribute("transform");
-  await page.waitForTimeout(700);
-  const after = await page.locator(".nest-scene").first().locator("svg [transform]").last().getAttribute("transform");
-  expect(after).not.toBe(before);
+  await expect(page.locator("iframe.nest-live-frame")).toHaveCount(2);
+  await expect(page.locator('iframe[src*="worship"]')).toHaveCount(1);
+  await expect(page.locator('iframe[src*="colony"]')).toHaveCount(1);
 });
