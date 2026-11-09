@@ -14,6 +14,15 @@ summary: >
   the part I care about more: after one demo, my tech lead built an epic checker that keeps our work
   aligned with decisions as they change, and another developer built his own work dashboard in
   Obsidian. The rule I hold them to is the one I hold my students to: own the output, or do not ship it.
+social: |
+  I spent a month hand-building a people app for my team. Then I replaced it in an afternoon with a
+  Claude dashboard.
+
+  The better part came after I demoed it. Within two weeks, Kercwin (LINKEDIN_KERCWIN) built an epic
+  checker that keeps our work aligned with decisions as they change, and Kyle (LINKEDIN_KYLE) built
+  his own work board in Obsidian.
+
+  If you lead people and you've built something, show them. The worst case is they nod.
 ---
 
 ## I was building the wrong thing, carefully
@@ -117,7 +126,7 @@ built their own.
 
 ### Kercwin's epic checker
 
-Full credit goes to Kercwin. He is fairly new, and I pushed him into the tech lead role because I saw
+Full credit goes to [Kercwin](LINKEDIN_KERCWIN). He is fairly new, and I pushed him into the tech lead role because I saw
 something in him before he did. I know that feeling from the other side. A lot of my job with him is
 the stuff nobody puts on a ticket: the voice that says you are not ready, learning to hand work off
 instead of carrying it, getting him to see in himself what the rest of us already see. He is doing a
@@ -151,7 +160,7 @@ did not plan that, and I like it a lot.
 
 ### Kyle's Obsidian board
 
-Then in my one-on-one with Kyle last week, he showed me a dashboard he built in Obsidian to run his
+Then in my one-on-one with [Kyle](LINKEDIN_KYLE) last week, he showed me a dashboard he built in Obsidian to run his
 own work: his tickets, his pull requests, what is waiting on him and what is waiting on someone else.
 Nobody asked him to. It is not for me, it is for him, which is exactly why I was happy to see it.
 
