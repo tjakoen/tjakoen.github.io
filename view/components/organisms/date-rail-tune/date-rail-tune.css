@@ -12,18 +12,24 @@
 .date-rail { --date-rail-width: 5rem; --date-rail-gap: var(--space-5, 1.5rem); }
 .date-rail::before { content: none; }
 
-/* Default: folded labels above each heading. */
+/* Default: folded labels above each heading. Each label carries a rule under it and sticks to the
+   top of the column while its section is on screen, then the next section's label pushes it off.
+   The handover comes free from position: sticky inside the section, with no scroll JS. */
 .date-rail__section { display: block; position: relative; }
 .date-rail__date {
-  position: static;
-  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-block: var(--space-2);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-line);
   text-align: start;
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-muted);
-  background: none;
+  background: var(--color-bg);
 }
 .date-rail__date:empty { display: none; }
 .date-rail__body > h2:first-child { margin-top: var(--space-1); }
@@ -47,6 +53,10 @@
     height: 0;
     margin-inline-start: calc(-1 * (var(--date-rail-width) + var(--date-rail-gap)));
     overflow: visible;
+    padding: 0;
+    margin-bottom: 0;
+    border-bottom: 0;
+    background: none;
     text-align: end;
     text-transform: none;
     letter-spacing: 0;
