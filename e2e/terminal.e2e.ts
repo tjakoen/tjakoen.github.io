@@ -662,4 +662,8 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
 test("the note mounts its six live colony boxes", async ({ page }) => {
   await page.goto("/notes/the-site-has-ants");
   await expect(page.locator(".nest-scene")).toHaveCount(6);
+  const before = await page.locator(".nest-scene .nest-ant").evaluateAll((els) => els.map((el) => el.getAttribute("transform")));
+  await page.waitForTimeout(650);
+  const after = await page.locator(".nest-scene .nest-ant").evaluateAll((els) => els.map((el) => el.getAttribute("transform")));
+  expect(after.filter((value, index) => value !== before[index]).length).toBeGreaterThan(0);
 });
