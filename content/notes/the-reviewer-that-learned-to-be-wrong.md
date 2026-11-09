@@ -28,7 +28,10 @@ social: |
   fix gets replayed on the exact commit it missed.
 
   One in four of my team's pull requests used to wait 17 hours or more for a first review. Now that
-  one in four waits 3 hours or more. It let one bad change into production in that time, and that miss is in the note too.
+  one in four waits 3 hours or more.
+
+  It also gave me my time back. The hours I used to spend on first-pass review now go into my
+  team, and I am on top of them in a way I was not before.
 
   Thanks, Kaither, for the question.
 socialImage: "/media/notes/the-reviewer-that-learned-to-be-wrong-social.png"
@@ -659,8 +662,10 @@ I have also not measured my own time. The team's wait went down, and calibration
 loop scores, tightens and replays on its own schedule. I do not re-read its reviews any more. I trust
 them, which was the whole point of answering Kaither's question. What reaches me is the short list
 the kit is built to hand me, the approve button and the rulings when a proposed lens change disagrees
-with how the codebase actually works. That is far less than reviewing every pull request by hand, but
-I have not put a number on it.
+with how the codebase actually works. That is far less than reviewing every pull request by hand,
+and the time it freed went into my team: the one-on-ones, the unblocking, and the dashboards I wrote
+about in [I Showed My Team a Dashboard](show-them-the-board.md). I am on top of my team now in a way I
+was not when I was reading every review. I have not put a number on the hours, though.
 
 Back to that commit on day two, `feat(check-pr): review the ticket, not just the diff`. Seven hundred commits later
 the kit still does that first, and almost everything after it is the same idea, applied to the
