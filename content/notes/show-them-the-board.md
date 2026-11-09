@@ -22,6 +22,9 @@ social: |
   checker that keeps our work aligned with decisions as they change, and Kyle (https://www.linkedin.com/in/kylealanmanayon/) built
   his own work board in Obsidian.
 
+  The epic checker grew out of an idea from our CTO, Matt Monroe (https://www.linkedin.com/in/matt-monroe-a3728593/):
+  move bugs as far left in the process as possible. Kercwin turned that into a tool.
+
   If you lead people and you've built something, show them. The worst case is they nod.
 ---
 
