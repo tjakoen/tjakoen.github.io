@@ -384,7 +384,10 @@ a hope. A replayed one is a receipt.
 
 The newest turns are the reviewer getting choosier about its inputs. On `Oct 26` it started
 reading the epic's decided rules and the decisions made in Jira comments, and on `Nov 3` it folded
-in the epic check my tech lead built as his own plugin, so a deviation the team already agreed to
+in the epic check that
+[Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/), a tech lead on my team, built as
+his own plugin after seeing my board (the story is in
+[I Showed My Team a Dashboard](show-them-the-board.md#kercwins-epic-checker)), so a deviation the team already agreed to
 stops being flagged as a defect. The same day risk intake arrived: a pull request from outside my
 boards gets queued only when it touches a high-risk area and reaches code my team owns, capped at a
 ranked three a day so the queue does not drown.
@@ -514,7 +517,8 @@ mine.
 ## What the team felt
 
 The bottleneck that started all this was review wait, so that is the number I checked. Crew Watch,
-the team dashboard I built for my one-on-ones, keeps every pull request my team opened since late
+the team dashboard I built for my one-on-ones and wrote about in
+[I Showed My Team a Dashboard](show-them-the-board.md), keeps every pull request my team opened since late
 July with its reviews. This is the time from a pull request being opened to its first review by
 anyone other than its author, as a snapshot on `Nov 10`:
 
@@ -568,7 +572,7 @@ single rule:
   started from, and the PR
   fixer whose evaluation suite taught me to test whether a review is any good, not only whether the
   machinery runs.
-- My tech lead's epic check, which supplies the epic decisions and the collision check, and which
+- [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/)'s epic check, which supplies the epic decisions and the collision check, and which
   the kit runs as a plugin since `Nov 3`.
 
 **Published work**
