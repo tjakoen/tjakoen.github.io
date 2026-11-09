@@ -167,19 +167,78 @@ to learn nothing.
 > A reviewer does not get better by being prompted harder. It gets better by being shown, row by
 > row, where it was wrong.
 
+This is the part of the kit I care about most, and the part I would build first if I started again.
+The reviewer is not a prompt I keep polishing. It is a loop that grades itself and changes itself,
+and I sit at one point in it. This is the loop from the talk:
+
+<svg viewBox="0 0 700 224" role="img"
+   aria-label="A loop. It leaves a comment, every one is written down, each is graded later by whether you fixed it or it was wrong, the scores are read per topic so a bad one cannot hide in an average, and that points at one reviewer to fix. A heavy bar across the arrow into that change marks the point it cannot pass on its own. Then it is re-run on old pull requests and the loop returns to the start."
+   style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:12px">
+<defs>
+  <marker id="lp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+  </marker>
+</defs>
+<g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
+  <path d="M172 48 L212 48" marker-end="url(#lp-a)"/>
+  <path d="M374 48 L414 48" marker-end="url(#lp-a)"/>
+  <path d="M528 72 L528 104" marker-end="url(#lp-a)"/>
+  <path d="M414 126 L374 126" marker-end="url(#lp-a)"/>
+  <path d="M212 126 L172 126" marker-end="url(#lp-a)"/>
+  <path d="M100 104 L100 72" marker-end="url(#lp-a)"/>
+</g>
+<rect x="28" y="26" width="144" height="44" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+<text x="100" y="53" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">it leaves a comment</text>
+
+<rect x="212" y="26" width="162" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+<text x="293" y="53" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">every one is written down</text>
+
+<rect x="414" y="26" width="228" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+<text x="528" y="45" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">graded later: did you fix it,</text>
+<text x="528" y="62" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">or was it wrong?</text>
+
+<rect x="414" y="106" width="228" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+<text x="528" y="125" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">scored per topic, so a bad one</text>
+<text x="528" y="142" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">cannot hide in an average</text>
+
+<rect x="212" y="106" width="162" height="44" rx="4" style="fill:var(--color-fg)"/>
+<text x="293" y="133" text-anchor="middle" style="fill:var(--color-bg);font-size:13px">fix one reviewer</text>
+
+<rect x="28" y="106" width="144" height="44" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+<text x="100" y="125" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">re-run it on</text>
+<text x="100" y="142" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">old pull requests</text>
+
+<line x1="394" y1="108" x2="394" y2="148" style="stroke:var(--color-fg);stroke-width:2.6"/>
+<text x="394" y="170" text-anchor="middle" style="fill:var(--color-fg);font-size:12.5px">it cannot get past this on its own</text>
+
+<text x="8" y="208" style="fill:var(--color-fg);font-size:15px">It can tell me it was wrong. It does not get to decide what to do about that.</text>
+    </svg>
+
+Two details in that loop do most of the work. Every score is read per topic, never as one average,
+because a reviewer can be excellent on database changes and noisy on frontend speed, and the mean of
+those looks fine. And the heavy bar on the arrow into a change is me. The loop can find the lens that
+needs fixing and propose the fix, but it cannot change itself without my sign-off, and every change
+it does make is re-run on old pull requests before it counts.
+
 ## Sep 17 · The talk was the old version
 
 On `Sep 17` I introduced the kit to the team in a talk, [Every Time It Was
-Wrong](/talks/every-time-it-was-wrong). The deck is still up, and it is an honest snapshot of what the
-kit was that week: a reviewer I ran myself, a growing outcome log, and a first pass at calibration.
-Everything below that date in this note is what changed after people started seeing it.
+Wrong](/talks/every-time-it-was-wrong). By then it was not a reviewer I ran by hand any more. It was
+already largely automatic and already learning from itself. It ran out of the Claude Code desktop
+app: scheduled checks found pull requests waiting for review, spun up a session for each one, and
+filed every session into a sidebar section by its status, so the sidebar itself was the board. The
+same day I moved the board off the tool I had started it in and onto that sidebar for good.
 
-The same days in the history are the densest of the early stretch. A second skill, `/respond-pr-voice`,
-started answering replies waiting on us, checking a claimed fix at the new commit, resolving its own
-threads and updating the verdict label. A push from the author started queueing a re-review, an
-incremental pass over the new commits, instead of a whole new review. Every unattended routine got
-one report format, so I could read a night's work in a table instead of a transcript. This is where
-the kit stopped being a tool I used and became something that ran on a schedule.
+The deck is still up, and its diagrams are the clearest picture of how the reviewer thinks, so two
+of them are in this note. Everything below that date is what changed after people started seeing
+it.
+
+The same days in the history are the densest of the early stretch. A second skill,
+`/respond-pr-voice`, started answering replies waiting on us, checking a claimed fix at the new
+commit, resolving its own threads and updating the verdict label. A push from the author started
+queueing a re-review, an incremental pass over the new commits, instead of a whole new review. Every
+unattended routine got one report format, so I could read a night's work in a table instead of a
+transcript.
 
 ## Sep 24 · Then other people wanted it
 
@@ -299,7 +358,43 @@ that runs after the review is posted.
   </g>
 </svg>
 
-**The review.** A Reviews routine works through the same steps every time:
+**The review.** This diagram is also from the talk. Six specialist reviewers read the change at
+once, and most of what they find never reaches the author:
+
+<svg viewBox="0 0 700 208" role="img"
+   aria-label="Six specialist reviewers read the change at the same time. What they find passes through checks that throw things out, then through the reviewer arguing against its own findings, and at most six comments come out. A band underneath tapers from everything it could have said down to what it actually says."
+   style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:12px">
+<defs>
+  <marker id="fn-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+  </marker>
+</defs>
+<g style="fill:none;stroke:var(--color-muted);stroke-width:1.4">
+  <path d="M156 56 L186 56" marker-end="url(#fn-a)"/>
+  <path d="M368 56 L398 56" marker-end="url(#fn-a)"/>
+  <path d="M540 56 L570 56" marker-end="url(#fn-a)"/>
+</g>
+<rect x="8" y="30" width="148" height="52" rx="4" style="fill:none;stroke:var(--color-fg);stroke-width:1.6"/>
+<text x="82" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">six reviewers</text>
+<text x="82" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">reading at the same time</text>
+
+<rect x="186" y="30" width="182" height="52" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+<text x="277" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">checks that throw things out</text>
+<text x="277" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">the next slide</text>
+
+<rect x="398" y="30" width="142" height="52" rx="4" style="fill:none;stroke:var(--color-muted)"/>
+<text x="469" y="52" text-anchor="middle" style="fill:var(--color-fg);font-size:13px">it argues back</text>
+<text x="469" y="69" text-anchor="middle" style="fill:var(--color-muted);font-size:11.5px">against its own findings</text>
+
+<rect x="570" y="30" width="122" height="52" rx="4" style="fill:var(--color-fg)"/>
+<text x="631" y="62" text-anchor="middle" style="fill:var(--color-bg);font-size:13px">six comments</text>
+
+<text x="8" y="124" style="fill:var(--color-muted);font-size:12px">everything it could have said</text>
+<text x="692" y="124" text-anchor="end" style="fill:var(--color-fg);font-size:12px">what it actually says</text>
+<path d="M8 134 L692 162 L692 184 L8 194 Z" style="fill:var(--color-line)"/>
+    </svg>
+
+A Reviews routine works through the same steps every time:
 
 - It reads the ticket and its epic, and checks the change against the epic's decided rules and the
   decisions in the ticket's comments.
