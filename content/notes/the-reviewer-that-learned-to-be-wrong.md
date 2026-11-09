@@ -304,6 +304,46 @@ commit the original review ran on. On `Nov 3` a batch of thirty-three replays ca
 lens rules were fixed because the replays found them wanting. A repair that has not been replayed is
 a hope. A replayed one is a receipt.
 
+<svg viewBox="0 0 600 230" width="100%" role="img"
+     aria-label="How a repair is proven. A human catches something the reviewer missed. The miss is recorded with the lens that should have caught it. That lens is repaired. The repair is replayed on the same pull request at the commit the original review ran on. If the replay catches the miss, the lesson held and it counts. If it does not, the repair goes back to be fixed again."
+     style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:12.5px">
+  <defs>
+    <marker id="rp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="8" y="30" width="122" height="60" rx="6"/>
+    <rect x="156" y="30" width="122" height="60" rx="6"/>
+    <rect x="304" y="30" width="122" height="60" rx="6"/>
+    <rect x="452" y="30" width="140" height="60" rx="6"/>
+  </g>
+  <rect x="452" y="150" width="140" height="56" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="130" y1="60" x2="156" y2="60" marker-end="url(#rp-a)"/>
+    <line x1="278" y1="60" x2="304" y2="60" marker-end="url(#rp-a)"/>
+    <line x1="426" y1="60" x2="452" y2="60" marker-end="url(#rp-a)"/>
+    <line x1="522" y1="90" x2="522" y2="150" marker-end="url(#rp-a)"/>
+    <path d="M490,90 L490,120 L365,120 L365,90" stroke-dasharray="4 3" marker-end="url(#rp-a)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="69" y="56" style="fill:var(--color-fg)">A human catches</text>
+    <text x="69" y="73" style="fill:var(--color-fg)">a miss</text>
+    <text x="217" y="56" style="fill:var(--color-fg)">Record the lens</text>
+    <text x="217" y="73" style="fill:var(--color-muted);font-size:11.5px">that should have</text>
+    <text x="217" y="86" style="fill:var(--color-muted);font-size:11.5px">caught it</text>
+    <text x="365" y="56" style="fill:var(--color-fg)">Repair</text>
+    <text x="365" y="73" style="fill:var(--color-muted);font-size:11.5px">that lens's rules</text>
+    <text x="522" y="56" style="fill:var(--color-fg)">Replay</text>
+    <text x="522" y="73" style="fill:var(--color-muted);font-size:11.5px">same pull request,</text>
+    <text x="522" y="86" style="fill:var(--color-muted);font-size:11.5px">original commit</text>
+    <text x="428" y="137" style="fill:var(--color-muted);font-size:11.5px">missed again: repair again</text>
+    <text x="545" y="125" text-anchor="start" style="fill:var(--color-muted);font-size:11.5px">caught</text>
+    <text x="522" y="175" style="fill:var(--color-bg)">A receipt</text>
+    <text x="522" y="192" style="fill:var(--color-bg);font-size:11.5px">the lesson held</text>
+  </g>
+</svg>
+
 ## Oct 26 · Then it had to decide what deserved a look
 
 The newest turns are the reviewer getting choosier about its inputs. On `Oct 26` it started
@@ -312,6 +352,45 @@ in the epic check my tech lead built as his own plugin, so a deviation the team 
 stops being flagged as a defect. The same day risk intake arrived: a pull request from outside my
 boards gets queued only when it touches a high-risk area and reaches code my team owns, capped at a
 ranked three a day so the queue does not drown.
+
+<svg viewBox="0 0 600 200" width="100%" role="img"
+     aria-label="How risk intake picks pull requests from outside my boards. Every open pull request passes two gates: does it touch a high-risk area such as migrations, auth or shared config, and does it reach code my team changed recently. Anything failing either gate is skipped. What passes both is ranked, and only the top three a day join my queue beside the pull requests from my own boards."
+     style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:12.5px">
+  <defs>
+    <marker id="ri-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="8" y="40" width="112" height="60" rx="6"/>
+    <rect x="146" y="40" width="122" height="60" rx="6"/>
+    <rect x="294" y="40" width="122" height="60" rx="6"/>
+    <rect x="442" y="150" width="150" height="40" rx="6"/>
+  </g>
+  <rect x="442" y="40" width="150" height="60" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="120" y1="70" x2="146" y2="70" marker-end="url(#ri-a)"/>
+    <line x1="268" y1="70" x2="294" y2="70" marker-end="url(#ri-a)"/>
+    <line x1="416" y1="70" x2="442" y2="70" marker-end="url(#ri-a)"/>
+    <line x1="207" y1="100" x2="207" y2="140" stroke-dasharray="4 3"/>
+    <line x1="355" y1="100" x2="355" y2="140" stroke-dasharray="4 3"/>
+    <line x1="517" y1="150" x2="517" y2="100" marker-end="url(#ri-a)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="64" y="66" style="fill:var(--color-fg)">Every open</text>
+    <text x="64" y="83" style="fill:var(--color-fg)">pull request</text>
+    <text x="207" y="64" style="fill:var(--color-fg)">Touches a</text>
+    <text x="207" y="80" style="fill:var(--color-fg)">high-risk area?</text>
+    <text x="207" y="94" style="fill:var(--color-muted);font-size:11px">migrations, auth, config</text>
+    <text x="355" y="64" style="fill:var(--color-fg)">Reaches code</text>
+    <text x="355" y="80" style="fill:var(--color-fg)">my team owns?</text>
+    <text x="355" y="94" style="fill:var(--color-muted);font-size:11px">changed in 90 days</text>
+    <text x="517" y="66" style="fill:var(--color-bg)">Ranked, top three</text>
+    <text x="517" y="83" style="fill:var(--color-bg)">a day join my queue</text>
+    <text x="281" y="158" style="fill:var(--color-muted);font-size:11.5px">no to either: skipped</text>
+    <text x="517" y="174" style="fill:var(--color-fg);font-size:12px">my own boards</text>
+  </g>
+</svg>
 
 Release 2.6, on `Nov 4`, made every lens prove it read its rules before its findings count. A
 lens that skips them twice gets named in the evidence block, and the review cannot post PASS. That
