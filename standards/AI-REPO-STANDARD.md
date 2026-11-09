@@ -295,7 +295,7 @@ lines you're about to change — same as a map is not the territory.
 
 Day one (an hour):
 
-- [ ] Copy in `AI-DEVELOPMENT.md` (the interaction playbook) and this file.
+- [ ] Link the published URLs for `AI-DEVELOPMENT.md` (the interaction playbook) and this file.
 - [ ] Write the root `CLAUDE.md`: what-this-is, reading order, commands, five
       non-negotiables, definition of done, the self-maintenance line.
 - [ ] Start the sync table with the 3–4 change-kinds you already know about.
