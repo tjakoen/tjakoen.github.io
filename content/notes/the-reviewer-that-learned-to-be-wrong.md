@@ -33,7 +33,7 @@ social: |
   It also gave me my time back. The hours I used to spend on first-pass review now go to the people
   on my team instead of the queue.
 
-  Thanks, Kaither, for the question.
+  Thank you, Kaither, for the question that inspired all of it.
 socialImage: "/media/notes/the-reviewer-that-learned-to-be-wrong-social.png"
 socialImageAlt: "The question that started it, \"I don't trust it\" and \"Why not?\", above the real review board running on invented pull requests, in columns for queued, in flight, waiting on author and waiting on you. Below, the wait for a first review that 1 in 4 pull requests exceeded, falling from 17.6 hours to 3.0 hours, and cost per review down by half."
 ---
