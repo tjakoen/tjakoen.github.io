@@ -2,7 +2,7 @@
 title: "I Showed My Team a Dashboard. Two Weeks Later They Showed Me Theirs."
 subtitle: "I spent a month building a people app the slow way, then replaced it in an afternoon with a Claude dashboard. The better part came after I demoed it: my team went and built their own."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-11-10
 readingTime: "~8 min"
