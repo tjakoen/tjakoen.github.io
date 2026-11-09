@@ -2,7 +2,7 @@
 title: "Seven Hundred Commits to Teach a Reviewer It Was Wrong"
 subtitle: "In August I wrote one Claude skill to review pull requests in my voice. Three months later it runs on a schedule, borrows Codex when Claude runs dry, checks other managers' reviews, and most of its commits are the reviewer being corrected."
 author: "Tjakoen Stolk"
-status: DRAFT
+status: PUBLISHED
 type: note
 date: 2026-11-09
 readingTime: "~12 min"
