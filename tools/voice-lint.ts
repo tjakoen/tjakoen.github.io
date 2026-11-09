@@ -24,13 +24,19 @@
 import { readFileSync } from "node:fs";
 import { Glob } from "bun";
 
-type Rule = { id: string; sev: "tell" | "warn"; re: RegExp; msg: string };
+type Rule = { id: string; sev: "tell" | "warn"; re: RegExp; msg: string; test?: (line: string) => boolean };
+
+// VOICE's console exception: a slash command, a commit title quoted with its conventional prefix, and
+// a short or ISO date may sit in inline code. Spans are paired left to right, so the text between two
+// exempt spans is never mistaken for a span of its own.
+const CONSOLE_SPAN = /^(?:\/[\w-]+|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}|\d{4}-\d{2}-\d{2}|[a-z]+(?:\([^)]+\))?: .+)$/;
+const hasProseBacktick = (line: string) => [...line.matchAll(/`([^`]+)`/g)].some((m) => !CONSOLE_SPAN.test(m[1]));
 
 // Ordered loudest-first. `sev: "tell"` = a top machine fingerprint (backtick, em-dash, the not-just-X
 // shape); `sev: "warn"` = worth a look but sometimes legitimate in context (a lone "showcase", a three).
 const RULES: Rule[] = [
   { id: "em-dash", sev: "tell", re: /—/, msg: "em-dash — now a top AI tell. Use a comma, period, colon, or parentheses." },
-  { id: "backtick", sev: "tell", re: /`[^`]+`/, msg: "backtick in prose — the loudest tell. Write the term as plain words, *italics*, or a link." },
+  { id: "backtick", sev: "tell", re: /`[^`]+`/, test: hasProseBacktick, msg: "backtick in prose — the loudest tell. Write the term as plain words, *italics*, or a link. (Slash commands, prefixed commit titles and dates are exempt; see VOICE's console exception.)" },
   { id: "not-just-x", sev: "tell", re: /\b(it'?s|is|isn'?t|not just|wasn'?t)\b[^.?!]*\bnot just\b|\bnot only\b[^.?!]*\bbut also\b/i, msg: "the \"it's not just X, it's Y\" / \"not only… but also\" cadence — the signature generated shape." },
   { id: "throat-clearing", sev: "tell", re: /\bin today'?s\b|\bin the world of\b|\bin the realm of\b|\bit'?s worth noting\b|\bit is worth noting\b|\bneedless to say\b/i, msg: "throat-clearing opener/filler — start with the stake, not the scenery." },
   { id: "eager-signoff", sev: "tell", re: /\bi hope this helps\b|\bfeel free to\b|\blet me know if\b|\bgreat question\b|\bcertainly[!,]/i, msg: "eager sign-off — cut it." },
@@ -84,7 +90,7 @@ function lintFile(file: string): Finding[] {
       if (t.startsWith("//") || t.startsWith("*") || t.startsWith("/*")) continue;
       for (const rule of RULES) {
         if (!SRC_RULES.has(rule.id)) continue;
-        if (rule.re.test(lines[i])) out.push({ file, line: i + 1, sev: rule.sev, id: rule.id, msg: rule.msg });
+        if (rule.test ? rule.test(lines[i]) : rule.re.test(lines[i])) out.push({ file, line: i + 1, sev: rule.sev, id: rule.id, msg: rule.msg });
       }
     }
     return out;
@@ -114,7 +120,7 @@ function lintFile(file: string): Finding[] {
     const open = scan.lastIndexOf("<!--");
     if (open !== -1 && scan.indexOf("-->", open) === -1) { inComment = true; scan = scan.slice(0, open); }
     for (const rule of RULES) {
-      if (rule.re.test(scan)) out.push({ file, line: i + 1, sev: rule.sev, id: rule.id, msg: rule.msg });
+      if (rule.test ? rule.test(scan) : rule.re.test(scan)) out.push({ file, line: i + 1, sev: rule.sev, id: rule.id, msg: rule.msg });
     }
   }
   return out;

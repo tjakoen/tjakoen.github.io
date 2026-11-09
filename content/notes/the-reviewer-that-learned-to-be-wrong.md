@@ -32,7 +32,7 @@ a review to build on instead of one to repeat. Theirs is the reviewer for everyo
 opinionated one. It reviews the way I do, and it keeps a ledger of every time it was wrong.
 
 On `Aug 14` I committed one file, a skill called `/check-pr-voice`. The next day I made eleven more
-commits to it, and one of them was titled `review the ticket, not just the diff`. That should have
+commits to it, and one of them was titled `feat(check-pr): review the ticket, not just the diff`. That should have
 told me how this was going to go. As a snapshot, on `Nov 9` the repository has 737 commits and
 sits at release 2.6. The number sounds like a flex and it is closer to a confession: most of those
 commits are the reviewer being told it was wrong, and me building the machinery to tell it.
@@ -343,7 +343,7 @@ it goes to first-pass review, and a real amount goes to reading calibration and 
 the codebase disagreed with. On a good week that is a better use of a manager. On a bad week it is a
 second job.
 
-Back to that commit on day two, `review the ticket, not just the diff`. Seven hundred commits later
+Back to that commit on day two, `feat(check-pr): review the ticket, not just the diff`. Seven hundred commits later
 the kit still does that first, and almost everything after it is the same idea, applied to the
 reviewer itself: read what it was supposed to do, then check what it actually did.
 
