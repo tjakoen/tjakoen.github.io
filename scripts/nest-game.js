@@ -10,7 +10,21 @@
 // side by side. A carried letter keeps its own colour, face and underline, and drifts home slowly
 // when a carrier is squashed. If the whole colony dies, the queen sends out one new scout.
 // Every colour is a theme token, so each flavor recolours the nest.
-import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
+import { antMarkup, antClasses, miniArt } from "./nest-assets.js";
+import {
+  BUILD_TIME,
+  advanceBuild,
+  combatHealth as sharedCombatHealth,
+  combatPower as sharedCombatPower,
+  duelOdds,
+  foodShares,
+  groupCanWin,
+  roleSpeed,
+  stepMovement,
+  storeCapacity,
+  worshipReturnAt,
+  worshipTarget as getWorshipTarget,
+} from "./nest-simulation.js";
 
 (() => {
   const modes = document.querySelector(".assistant__modes");
@@ -282,7 +296,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
   const consumeStray = () => { try { sessionStorage.setItem(STRAY_KEY, "1"); } catch { /* private mode */ } };
   const strayReduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   // The ant art is shared by the colony, the stray easter egg and the note figures.
-  const ANT_SVG = `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${ANT_BODY.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}<g class="legs-a">${ANT_LEGS_A.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}</g><g class="legs-b">${ANT_LEGS_B.map(([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`).join("")}</g></svg>`;
+  const ANT_SVG = antMarkup();
   // The soldier is the same animal with a wider head and two mandibles, in the flyer's quieter
   // colour. At a glance it should not read as another worker.
   const launcherVisible = () => { const r = antBtn.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
@@ -927,7 +941,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     const hole = ant.hill.hole;
     ant.where = "page"; ant.x = hole[0]; ant.y = hole[1]; ant.heading = -Math.PI / 2; ant.px = ant.x; ant.py = ant.y;
     ant.el = document.createElement("button"); ant.el.type = "button";
-    ant.el.className = "nest-ant walk"; ant.el.innerHTML = ANT_SVG;
+    ant.el.className = antClasses(ant.role, ant.side); ant.el.innerHTML = ANT_SVG;
     ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
     layer.append(ant.el); placeAnt(ant);
     if (ant.role === "scout") { ant.job = "scout-pending"; state.scoutQueue.push(ant); return; }
@@ -936,7 +950,13 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     else { ant.job = "home"; ant.path = [hole.slice()]; ant.k = 0; }
     label(ant);
   };
-  const label = (ant) => { if (!ant.el) return; ant.el.inert = state.tool === "wipe"; ant.el.classList.toggle("scout", ant.role === "scout"); ant.el.classList.toggle("soldier", ant.role === "soldier" || ant.role === "guard"); ant.el.classList.toggle("builder", ant.role === "builder"); ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival", "rival-worker": "Rival worker" }[ant.role]} ant. Press to squash.`); };
+  const label = (ant) => {
+    if (!ant.el) return;
+    ant.el.inert = state.tool === "wipe";
+    const classes = antClasses(ant.role, ant.side).split(" ");
+    ["scout", "soldier", "flyer", "builder", "rival"].forEach((name) => ant.el.classList.toggle(name, classes.includes(name)));
+    ant.el.setAttribute("aria-label", `${{ scout: "Scout", soldier: "Soldier", worker: "Worker", guard: "Guard", flyer: "Flying", builder: "Builder", rival: "Rival", "rival-worker": "Rival worker" }[ant.role]} ant. Press to squash.`);
+  };
 
   // A scout wanders: loose waypoints toward a block of text no trail reaches yet, its steps recorded.
   const remaining = (t) => {
@@ -1264,20 +1284,9 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     ant.trail && o.trail === ant.trail && outbound(o) === outbound(ant) &&
     Math.hypot(o.px - ant.x, o.py - ant.y) < GAP && Math.cos(ant.heading - o.heading) > 0.2 &&
     ((o.px - ant.x) * Math.cos(ant.heading) + (o.py - ant.y) * Math.sin(ant.heading)) > 0);
-  const move = (ant, tx, ty, dt, speed) => {
-    const dx = tx - ant.x, dy = ty - ant.y, d = Math.hypot(dx, dy), v = speed * dt;
-    if (d > 0.5) {
-      const want = Math.atan2(dy, dx);
-      const diff = ((want - ant.heading + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-      ant.heading += diff * Math.min(1, 9 * dt);
-    }
-    if (d <= v) { ant.x = tx; ant.y = ty; return true; }
-    if (ant.job !== "carry" && blocked(ant) && (ant.stuck || 0) < 0.32) { ant.paused = true; ant.stuck = (ant.stuck || 0) + dt; return false; }
-    ant.paused = false; if (ant.stuck) ant.stuck = Math.max(0, ant.stuck - dt * 1.4);
-    // A little sway, folded into the heading instead of kicked sideways every frame.
-    const sway = Math.sin(performance.now() / 240 + ant.id * 0.7) * 0.12;
-    ant.x += (dx / d) * v - (dy / d) * sway; ant.y += (dy / d) * v + (dx / d) * sway; return false;
-  };
+  const move = (ant, tx, ty, dt, speed) => stepMovement(ant, tx, ty, dt, speed, {
+    now: performance.now(), blocked: () => blocked(ant),
+  });
 
   const PATROL_LAPS = 4; // two full out-and-back passes before a guard visits its mound
   const patrolMound = (ant) => (ant.mini && minis.includes(ant.mini) ? ant.mini : home);
@@ -1321,7 +1330,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
         else { ant.job = "patrol"; ant.path = []; }
         ant.k = 0; return;
       }
-      if (move(ant, threat.x, threat.y, dt, SPEED * 0.95)) { ant.px = ant.x; ant.py = ant.y; }
+      if (move(ant, threat.x, threat.y, dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.95 }))) { ant.px = ant.x; ant.py = ant.y; }
       else { ant.px = ant.x; ant.py = ant.y; }
       return;
     }
@@ -1336,7 +1345,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     if (ant.job === "defend") { // a clicked mound calls its guards home
       const g = ant.path[ant.k];
       if (!g) { ant.job = "guard"; ant.path = []; return; }
-      if (move(ant, g[0], g[1], dt, SPEED * 0.9)) {
+      if (move(ant, g[0], g[1], dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.9 }))) {
         ant.px = ant.x; ant.py = ant.y;
         if (++ant.k >= ant.path.length) { ant.job = "guard"; ant.path = []; }
       } else { ant.px = ant.x; ant.py = ant.y; }
@@ -1345,7 +1354,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     if (ant.job === "patrol-return") {
       const g = ant.path[ant.k];
       if (!g) { ant.job = "patrol-circle"; ant.path = patrolCircle(ant); ant.k = 0; return; }
-      if (move(ant, g[0], g[1], dt, SPEED * 0.9)) {
+      if (move(ant, g[0], g[1], dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.9 }))) {
         ant.px = ant.x; ant.py = ant.y;
         if (++ant.k >= ant.path.length) { ant.job = "patrol-circle"; ant.path = patrolCircle(ant); ant.k = 0; }
       } else { ant.px = ant.x; ant.py = ant.y; }
@@ -1354,7 +1363,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     if (ant.job === "patrol-circle") {
       const g = ant.path[ant.k];
       if (!g) { ant.job = "patrol"; ant.path = []; ant.k = 0; return; }
-      if (move(ant, g[0], g[1], dt, SPEED * 0.8)) {
+      if (move(ant, g[0], g[1], dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.8 }))) {
         ant.px = ant.x; ant.py = ant.y;
         if (++ant.k >= ant.path.length) {
           ant.patrolLaps = 0;
@@ -1380,7 +1389,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
         return;
       }
       const beforeX = ant.x, beforeY = ant.y;
-      if (move(ant, g[0], g[1], dt, SPEED * 0.8)) {
+      if (move(ant, g[0], g[1], dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.8 }))) {
         if (++ant.k >= ant.path.length) {
           ant.patrolLaps = (ant.patrolLaps || 0) + 1;
           if (ant.patrolLaps >= PATROL_LAPS) {
@@ -1407,7 +1416,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     const L = ant.letter;
     if (ant.job === "carry") { // the leader moves the centre of the crew; everyone stands under the letter
       ant.x = ant.cx; ant.y = ant.cy;
-      const arrived = move(ant, goal[0], goal[1], dt, ant.role === "flyer" ? SPEED * 1.7 : SPEED / (1 + 0.3 * (L.need - 1)));
+      const arrived = move(ant, goal[0], goal[1], dt, roleSpeed(ant.role, "carry", SPEED, { letterNeed: L.need }));
       ant.cx = ant.x; ant.cy = ant.y;
       const n = L.crew.length, nx = -Math.sin(ant.heading), ny = Math.cos(ant.heading);
       L.crew.forEach((a, k) => { const off = (k - (n - 1) / 2) * 12; a.x = a.px = ant.cx + nx * off; a.y = a.py = ant.cy + ny * off; a.heading = ant.heading; });
@@ -1425,7 +1434,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
       L.crew.forEach((a) => { if (a !== ant && a.el) enterNest(a, null); });
       return enterNest(ant, L.ch, L.need);
     }
-    if (!move(ant, goal[0], goal[1], dt, ant.job === "scout" ? SPEED * 1.35 : SPEED)) {
+    if (!move(ant, goal[0], goal[1], dt, roleSpeed(ant.role, ant.job, SPEED))) {
       if (ant.job === "scout" && Math.hypot(ant.x - ant.walked[ant.walked.length - 1][0], ant.y - ant.walked[ant.walked.length - 1][1]) > 14) ant.walked.push([ant.x, ant.y]);
       ant.px = ant.x; ant.py = ant.y; return;
     }
@@ -1462,12 +1471,12 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
       // portions, split half to the stores and half to the queen in the same alternating order.
       if (ant.food) {
         const portions = Math.max(1, ant.meal || 1);
-        for (let k = 0; k < portions; k++) {
-          if ((state.feedFlip = !state.feedFlip) && !state.queenDead) state.stores++;
-          else {
-            state.meals++; state.queen.eat = 0.8;
-            if (state.meals % 3 === 0 && !state.queenDead) { state.queen.lay = 1; setTimeout(() => { state.eggs.push({ d: 0, age: 0 }); log("the queen laid an egg"); blip(660, 0.06, "sine", 0.04); }, 900); }
-          }
+        const shares = foodShares(portions, state.feedFlip, !state.queenDead);
+        state.feedFlip = shares.feedFlip;
+        state.stores += shares.stores;
+        for (let meal = 0; meal < shares.meals; meal++) {
+          state.meals++; state.queen.eat = 0.8;
+          if (state.meals % 3 === 0 && !state.queenDead) { state.queen.lay = 1; setTimeout(() => { state.eggs.push({ d: 0, age: 0 }); log("the queen laid an egg"); blip(660, 0.06, "sine", 0.04); }, 900); }
         }
         state.larder.shift();
       }
@@ -1532,7 +1541,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
   };
   // The current milestone is fixed. It does not move while the colony hatches, so the bar can
   // actually reach it; only the dance that completes it raises the next target.
-  const worshipTarget = () => Math.max(8, state.nextParty);
+  const worshipTarget = () => getWorshipTarget(state.nextParty);
 
   // A little queen walks up out of the panel nest for the start of the dance, and back down at
   // the end. The page queen does the long walk to the stage in between.
@@ -1578,7 +1587,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
       layer.append(g); glyphs.push(g);
     });
     const until = now + (final ? 16000 : 9000);
-    const returnAt = until - 2200;
+    const returnAt = worshipReturnAt(until);
     state.party = { start: now, until, returnAt, final, queen, dancers, glyphs, stage, returning: false,
       queenFrom: mound.hole.slice() };
     state.queen.lay = 0;
@@ -1610,7 +1619,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     p.dancers.forEach((a) => {
       if (!a.el) return;
       const angle = a.party.angle + t * 0.9;
-      move(a, p.stage.x + Math.cos(angle) * a.party.radius, p.stage.y + Math.sin(angle) * a.party.radius * 0.55 + 8, dt, SPEED * 0.9);
+      move(a, p.stage.x + Math.cos(angle) * a.party.radius, p.stage.y + Math.sin(angle) * a.party.radius * 0.55 + 8, dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.9 }));
       a.px = a.x; a.py = a.y;
     });
     p.glyphs.forEach((g, i) => {
@@ -1656,16 +1665,9 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
   // a mini hill in open ground; squash the builder and the stores are lost. A mini hill sends out
   // guards, which walk to an existing trail and patrol it, and flyers, which roam and steal any
   // letter. It falls to a few clicks, but only once none of its guards are left.
-  const STORE_COSTS = [12, 18, 24, 30, 36], MAX_MINIS = Infinity, BUILD_TIME = 8, MINI_HP = 5, SPAWN_EVERY = 6, HEAL_AFTER = 6, HEAL_EVERY = 5;
+  const MAX_MINIS = Infinity, MINI_HP = 5, SPAWN_EVERY = 6, HEAL_AFTER = 6, HEAL_EVERY = 5;
   const MOUND_REACH = 560;
-  const storeCap = () => STORE_COSTS[Math.min(state.built, STORE_COSTS.length - 1)];
-  const miniArt = (p) => { // a small Braille dome; p from 0 to 1 decides how much of it stands
-    const w = 18, h = 8, cells = new Int8Array(w * h).fill(-1);
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const u = (x - w / 2) / (w / 2), top = h * u * u; const hash = ((x * 73 + y * 151) % 97) / 97; if (y >= top && ((x + y) % 2 === 0 || y < top + 1.2) && hash < p) cells[y * w + x] = 0; }
-    for (let y = 0; y < 3; y++) for (let x = w / 2 - 2; x < w / 2 + 2; x++) cells[y * w + x] = -1;
-    let out = ""; for (let cy = 0; cy < h; cy += 4) { for (let cx = 0; cx < w; cx += 2) { let code = 0; for (let dy = 0; dy < 4; dy++) for (let dx = 0; dx < 2; dx++) if (cells[(cy + dy) * w + cx + dx] >= 0) code |= bit[dy][dx]; out += String.fromCharCode(0x2800 + code); } out += "\n"; }
-    return out.trimEnd();
-  };
+  const storeCap = () => storeCapacity(state.built);
   const overlaps = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
 
   // The compact mound fits on a line of prose. An open-ground site also needs room for its badge.
@@ -1739,8 +1741,8 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
   const spawnPageAnt = (role, at, mini) => {
     if (mainAnts().length >= MAX_ANTS) return null;
     state.total++; const a = { id: state.total, role, side: "main", where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
-    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant walk" + (role === "flyer" ? " flyer" : "");
-    a.el.innerHTML = role === "flyer" ? ANT_SVG.replace("<g class=\"legs-a\">", `<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g><g class="legs-a">`) : ANT_SVG;
+    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = antClasses(role, "main");
+    a.el.innerHTML = antMarkup({ flyer: role === "flyer" });
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
@@ -1775,7 +1777,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
   const stepMiniJob = (ant, dt) => {
     if (ant.job === "building") {
       const before = ant.build || 0;
-      ant.build = (ant.build || 0) + dt / BUILD_TIME;
+      ant.build = advanceBuild(ant.build || 0, dt, BUILD_TIME);
       if (Math.floor(ant.build * 5) !== Math.floor(before * 5)) noiseBurst(0.04, 0.03, 700);
       ant.mound.textContent = miniArt(Math.min(1, ant.build));
       ant.heading += Math.sin(performance.now() / 150) * 0.05;
@@ -1897,7 +1899,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
   };
   const stepFlyer = (f, dt) => {
     const g = f.path[f.k];
-    if (!move(f, g[0], g[1], dt, SPEED * 2.1)) { f.px = f.x; f.py = f.y; return; }
+    if (!move(f, g[0], g[1], dt, roleSpeed(f.role, f.job, SPEED, { factor: 2.1 }))) { f.px = f.x; f.py = f.y; return; }
     f.px = f.x; f.py = f.y;
     if (Math.random() < 0.35) { // dive for a letter somewhere on screen
       const pool = []; for (const n of textNodes(main)) for (let i = 0; i < n.data.length; i += 2) { if (!/\S/.test(n.data[i])) continue; const L = letterOf(n, i); if (L.state !== "free" || needOf(n) > 1) continue; const r = rectOf(n, i); if (onScreen(r)) pool.push([L, r]); if (pool.length > 400) break; }
@@ -2202,7 +2204,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     const a = { id: ++state.total, role: "rival-worker", side: "rival", where: "page", x: hole[0], y: hole[1], px: hole[0], py: hole[1],
       heading: -Math.PI / 2, trail, job: "rival-follow", lane: Math.random() < 0.5 ? 3 : -3, hp: 1 };
     a.path = lanePath(trail.pts, a.lane); a.k = 0;
-    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival rival-worker walk";
+    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = antClasses("rival-worker", "rival");
     a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
     layer.append(a.el); placeAnt(a); label(a); state.ants.push(a); trail.ants.add(a);
@@ -2224,8 +2226,8 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
   const spawnRivalUnit = (job, at, path) => {
     const a = { id: ++state.total, role: job === "rival-guard" ? "guard" : "rival", side: "rival", where: "page", x: at[0], y: at[1], px: at[0], py: at[1],
       heading: -Math.PI / 2, job, path, k: 0, hp: job === "rival-guard" ? 2 : 1 };
-    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant rival rival-worker walk";
-    a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
+    a.el = document.createElement("button"); a.el.type = "button"; a.el.className = antClasses(job, "rival");
+    a.el.innerHTML = antMarkup({ flyer: job === "rival-flyer" }); a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
     layer.append(a.el); placeAnt(a); label(a); state.ants.push(a);
     return a;
@@ -2255,7 +2257,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     if (!a.el || a.tongue) return;
     if (a.job === "rival-flyer") {
       const g = a.path[a.k]; if (!g) { a.path = [randomPoint()]; a.k = 0; return; }
-      const arrived = move(a, g[0], g[1], dt, SPEED * 1.5); a.px = a.x; a.py = a.y;
+      const arrived = move(a, g[0], g[1], dt, roleSpeed(a.role, a.job, SPEED)); a.px = a.x; a.py = a.y;
       if (arrived) { a.path = [randomPoint()]; a.k = 0; }
       return;
     }
@@ -2264,19 +2266,19 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
       const threat = mainAnts().find((m) => m.el && m.where === "page" && (m.role === "soldier" || m.role === "guard" || m.role === "worker") && Math.hypot(m.x - a.x, m.y - a.y) < 110 && Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) > 180 && (m.role === "soldier" || m.role === "guard"));
       if (threat) {
         a.job = "rival-defend"; a.path = [[threat.x, threat.y]]; a.k = 0; a.guardPause = 0;
-        move(a, threat.x, threat.y, dt, SPEED * 0.9); a.px = a.x; a.py = a.y;
+        move(a, threat.x, threat.y, dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.9 })); a.px = a.x; a.py = a.y;
         return;
       }
       if (a.job === "rival-defend") { a.job = "rival-guard"; a.path = a.guardPath || []; a.k = 0; }
       if (a.guardPause && performance.now() < a.guardPause) return;
       const g = a.path[a.k]; if (!g) return;
-      const arrived = move(a, g[0], g[1], dt, SPEED * 0.7); a.px = a.x; a.py = a.y;
+      const arrived = move(a, g[0], g[1], dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.7 })); a.px = a.x; a.py = a.y;
       if (arrived) { if (++a.k >= a.path.length) { a.guardPath = a.path; a.path = a.path.toReversed(); a.k = 0; a.guardPause = performance.now() + 600; } }
       return;
     }
     if (a.job === "rival-bait") {
       const g = a.path[a.k];
-      if (g) { move(a, g[0], g[1], dt, SPEED * 0.9); a.px = a.x; a.py = a.y; }
+      if (g) { move(a, g[0], g[1], dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.9 })); a.px = a.x; a.py = a.y; }
       a.k = 0;
       if (performance.now() >= a.baitUntil) { a.job = a.trail && state.trails.includes(a.trail) ? "rival-follow" : "rival-pause"; a.path = a.trail ? lanePath(a.trail.pts, a.lane) : []; a.k = 0; a.pauseAt = performance.now() + 300; }
       return;
@@ -2289,7 +2291,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
       return;
     }
     const g = a.path[a.k]; if (!g) return;
-    if (!move(a, g[0], g[1], dt, SPEED * 0.9)) { a.px = a.x; a.py = a.y; return; }
+    if (!move(a, g[0], g[1], dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.9 }))) { a.px = a.x; a.py = a.y; return; }
     if (a.job === "rival-home" && a.letter?.state === "rival-carry" && Math.hypot(a.x - rival.mound.hole[0], a.y - rival.mound.hole[1]) < 34) { bankRival(a); return; }
     a.px = a.x; a.py = a.y;
     if (a.glyph) { a.glyph.style.left = a.px + 2 + "px"; a.glyph.style.top = a.py - 16 + "px"; }
@@ -2305,8 +2307,8 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     }
   };
   let lastRivalFight = 0;
-  const combatPower = (a) => a.side === "rival" ? (a.role === "guard" ? 2 : 1) : (a.role === "soldier" || a.role === "guard" ? 3 : 1);
-  const combHp = (a) => a.side === "rival" ? (a.role === "guard" ? 2 : 1) : (a.role === "soldier" || a.role === "guard" ? 4 : 1);
+  const combatPower = (a) => sharedCombatPower(a.role, a.side);
+  const combHp = (a) => sharedCombatHealth(a.role, a.side);
   const removeMainCombatant = (a) => {
     if (a.mini) { a.mini.guards?.delete(a); a.mini.flyers?.delete(a); }
     if (a.letter?.state === "carried") drop(a.letter);
@@ -2323,7 +2325,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     const power = alive.reduce((s, a) => s + combatPower(a), 0);
     target.el.classList.remove("fighting"); alive.forEach((a) => a.el?.classList.remove("fighting"));
     target.fightUntil = 0;
-    if (power < combHp(target)) return;
+    if (!groupCanWin(power, combHp(target))) return;
     if (side === "rival") { removeRivalAnt(target); state.squashed++; log(alive.length > 1 ? "the colony wins a group fight" : "a main ant drives off a rival ant"); }
     else { removeMainCombatant(target); state.squashed++; log("the rival ants overwhelm a main ant"); }
   };
@@ -2368,20 +2370,20 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
       if (guards.length >= 2) { spent.add(m); guards.forEach((r) => spent.add(r)); beginFight(m, guards, "main"); continue; }
       if (guards.length !== 1) continue;
       const r = guards[0]; spent.add(m); spent.add(r);
-      beginDuel(m, r, Math.random() < 0.6);
+      beginDuel(m, r, Math.random() < duelOdds(m.role, r.role));
     }
     for (const m of mains) {
       if (spent.has(m) || m.role !== "flyer") continue;
       const flies = rivals.filter((r) => r.job === "rival-flyer" && !spent.has(r) && near(r, m));
       if (flies.length !== 1) continue;
       const f = flies[0]; spent.add(m); spent.add(f);
-      beginDuel(m, f, Math.random() < 0.75);
+      beginDuel(m, f, Math.random() < duelOdds(m.role, f.role));
     }
     for (const r of rivals.slice()) {
       if (!r.el || spent.has(r)) continue;
       const group = mains.filter((m) => m.el && near(m, r));
       const power = group.reduce((s, a) => s + combatPower(a), 0);
-      if (power < combHp(r)) continue;
+      if (!groupCanWin(power, combHp(r))) continue;
       beginFight(r, group, "rival");
     }
     for (const m of mains) {
@@ -2390,7 +2392,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
       const military = m.role === "soldier" || m.role === "guard";
       const group = rival.ants.filter((r) => r.el && near(r, m) && (!military || r.role === "guard" || r.job === "rival-flyer"));
       const power = group.reduce((s, a) => s + combatPower(a), 0);
-      if (power < combHp(m)) continue;
+      if (!groupCanWin(power, combHp(m))) continue;
       beginFight(m, group, "main");
     }
   };
@@ -2417,7 +2419,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     const mini = ant.job === "rival-siege" ? rival.minis.find((m) => m.hp > 0) : null;
     const target = ant.job === "rival-contest" ? ant.path[ant.k] : mini ? [mini.base[0], mini.base[1]] : rival.mound.hole;
     if (!target) return goHome(ant);
-    const arrived = move(ant, target[0], target[1], dt, SPEED * 0.85);
+    const arrived = move(ant, target[0], target[1], dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.85 }));
     ant.px = ant.x; ant.py = ant.y;
     if (!arrived) return;
     if (ant.job === "rival-contest") {
@@ -2508,7 +2510,7 @@ import { ANT_BODY, ANT_LEGS_A, ANT_LEGS_B } from "./nest-assets.js";
     if (!state.cacheTrail || !state.trails.includes(state.cacheTrail)) return goHome(ant);
     const g = ant.path[ant.k];
     if (!g) return clearCache(ant);
-    if (move(ant, g[0], g[1], dt, SPEED * 1.8)) { ant.px = ant.x; ant.py = ant.y; ant.k++; }
+    if (move(ant, g[0], g[1], dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 1.8 }))) { ant.px = ant.x; ant.py = ant.y; ant.k++; }
     else { ant.px = ant.x; ant.py = ant.y; }
     if (ant.k >= ant.path.length) return clearCache(ant);
   };

@@ -69,10 +69,9 @@ The first scouts leave the hill and look for letters near home first. A scout ta
 The letters are real. A letter taken from this page is the actual glyph, in its actual font and color, lifted out of its sentence. The space it leaves stays exactly where it was, so the paragraph never reflows. The reading gets worse one character at a time, which is a much quieter kind of damage than a banner.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="theft" data-surface="figure:nest-theft">
-<p class="live-fig__note">A live letter raid: a scout follows the trail, takes the letter a, leaves the gap, and carries the glyph home.</p>
 </div>
 
-*The raid, live: one ant, one trail, one real letter.*
+*A scout finds letters; workers carry them home and the stores rise.*
 
 A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. The stores turn enough food into a builder, and the builder raises a mini mound somewhere else on the page. The mini mound gets its own guards and flyers, and the flyers ignore trails entirely and pinch letters from anywhere.
 
@@ -81,10 +80,9 @@ A heavy heading needs a crew. A small letter can be carried by one ant. A larger
 The mound is the only part you see from the outside. Under it, the colony is a small set of rooms and tunnels: the queen's chamber at the bottom, the nursery where eggs wait, the larder where stolen letters are held, and the two stores where meals are counted.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="colony" data-surface="figure:nest-colony">
-<p class="live-fig__note">A live cutaway of the colony: the queen in her chamber, ants walking the tunnels, and the nursery, larder and stores.</p>
 </div>
 
-*The colony, live: the game's dot ants, Braille mound and scent trails in a contained loop.*
+*Workers feed the stores, then a builder raises a new mini mound.*
 
 In the nest, the queen's chamber is the room at the bottom, the nursery holds the eggs, the larder holds stolen letters, and the two stores hold meals. The tunnel is the thin route between them, and the crown is the entrance.
 
@@ -95,10 +93,9 @@ The queen never leaves the chamber except for worship. The nursery fills with eg
 Worship is the one moment the whole colony shares a direction. The rules pause, the trails go quiet, and every ant turns toward the queen. It is also the economy's reset: the stores fill, which pays for the soldiers and builders that keep the colony alive after the pause.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="worship" data-surface="figure:nest-worship">
-<p class="live-fig__note">A live worship loop: the queen at the centre, eight ants circling her, and the stores filling.</p>
 </div>
 
-*The worship, live: the queen and the ants circling her in a contained loop.*
+*The queen leaves the mound; the colony gathers, circles, and returns with full stores.*
 
 The first dance comes at twenty letters, then fifty, then ninety. The queen climbs out of the panel, walks to a clear patch and dances. Every ant on the page comes toward her, the trails go quiet, and the workers stop carrying. The queen crawls back down, shrinks into the entrance and only then does the panel queen return. The next threshold is fixed for the current dance and only moves after she is home, so hatching does not keep pushing the target away.
 
@@ -113,10 +110,9 @@ The first rival appears after the second worship, not the first. It starts as a 
 The rival is not a second player base. It does not take orders, it does not get a turn, and it cannot see the whole board. It runs the same kind of local rules the main colony runs: follow a trail, take a letter, carry it home, spend it on another ant. The difference is that its growth comes out of what it steals.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="rival" data-surface="figure:nest-rival">
-<p class="live-fig__note">A live rival loop: the rival builds, sends workers for letters, and the main colony answers.</p>
 </div>
 
-*The rival, live: it builds, steals, and the main colony answers.*
+*A rival builds and steals letters; the main colony drives it off.*
 
 Its population stays one ant below the main colony. It can still grow trails, mini mounds and flyers, but it cannot outgrow the nest it is fighting. The first rival is meant to be an easy fight. Later rivals start with more workers and more mounds if the main colony is already large, because a grown colony should not get a free win against a fresh, tiny rival. The goal is a fight with a clear main-colony advantage, not a guaranteed walkover.
 
@@ -127,16 +123,14 @@ The rival prefers the left side when the main colony is on the right, and it kee
 Combat is deliberately small. The main colony gets the advantage, but not every fight is a formality.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="fight" data-surface="figure:nest-fight">
-<p class="live-fig__note">A live fight loop: the main workers and rival guards close, clash, and the crowd resolves.</p>
 </div>
 
-*The fight, live: the clash opens long enough for the nearest ants to join.*
+*Main ants and rival guards close on the trail, clash, lose health, and resolve.*
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="castes" data-surface="figure:nest-castes">
-<p class="live-fig__note">The castes, live: worker, soldier, flyer, queen and rival guard with their relative sizes.</p>
 </div>
 
-*The castes, live: worker, soldier, flyer, queen and rival guard, same dot animal, different jobs.*
+*Worker, soldier, flyer, queen, and rival guard move by role and appearance.*
 
 
 The exact rules are simple enough to hold in your head. A main guard and a rival guard roll a duel, with the main guard winning sixty percent. Two rival guards do not roll that duel; they overwhelm one main guard. A main flyer has a seventy-five percent edge over a rival flyer. Workers are weak alone, but two of them can take a guard. Fights stay open for about a second, not a frame, so ants nearby can pile in and the winner is decided by the crowd that is actually there. The numbers are there to make the main colony feel like the home team without making the rival a decoration.
