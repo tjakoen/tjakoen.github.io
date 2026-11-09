@@ -1,0 +1,10 @@
+/* Site-side trial of a narrower date rail, to be upstreamed into GRAIN's organisms/date-rail once it
+   reads right. GRAIN ships a 7.5rem rail with a wide gap, which takes too much of a narrow note
+   column. This keeps the rail just wide enough for a short date label and tightens the gap. */
+.date-rail { --date-rail-width: 3.75rem; }
+.date-rail__section { column-gap: var(--space-3); }
+.date-rail__date {
+  padding-inline-end: var(--space-2);
+  font-size: var(--text-xs);
+  line-height: var(--leading-tight, 1.25);
+}
