@@ -3,10 +3,14 @@ import {
   advanceBuild,
   combatHealth,
   combatPower,
+  damageMound,
   duelOdds,
   foodShares,
   groupCanWin,
   roleSpeed,
+  RIVAL_FOUNDING_TIME,
+  RIVAL_MOUND_HEALTH,
+  MOUND_BITE_INTERVAL,
   stepMovement,
   storeCapacity,
   worshipReturnAt,
@@ -15,6 +19,15 @@ import {
 import { antClasses, antMarkup, miniArt } from "./nest-assets.js";
 
 describe("shared nest rules", () => {
+  test("mound bites remove one shared hit point without going below zero", () => {
+    expect(RIVAL_MOUND_HEALTH).toBe(8);
+    expect(RIVAL_FOUNDING_TIME).toBe(3.2);
+    expect(MOUND_BITE_INTERVAL).toBe(1.1);
+    expect(damageMound(8)).toBe(7);
+    expect(damageMound(1)).toBe(0);
+    expect(damageMound(0)).toBe(0);
+  });
+
   test("movement eases heading and uses its explicit clock for sway", () => {
     const ant = { id: 3, x: 0, y: 0, heading: Math.PI, job: "follow" };
     const arrived = stepMovement(ant, 20, 0, 0.1, 10, { now: 240, blocked: () => false });

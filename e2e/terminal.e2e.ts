@@ -86,11 +86,23 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect.poll(() => gameRequests, { timeout: 15_000 }).toBeGreaterThan(0);
   });
 
-  test("the note starts the colony from its own button", async ({ page }) => {
+  test("the note opens the colony on the home page", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
-    await page.getByRole("button", { name: "Play the colony" }).click();
+    await page.getByRole("link", { name: "Play the colony" }).click();
+    await expect(page).toHaveURL(/\/$/);
     await expect(page.locator("#nest-mock")).toBeVisible();
   });
+
+test("note figures keep their event loops with reduced motion enabled", async ({ page }) => {
+  test.setTimeout(30_000);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/notes/the-site-has-ants");
+  const scout = page.locator('[data-nest-mode="theft"]');
+  await expect.poll(() => scout.evaluate((host) => Number((host as HTMLElement).dataset.completedCycles)), {
+    timeout: 25_000,
+    intervals: [250, 500, 1000],
+  }).toBeGreaterThanOrEqual(1);
+});
 
   test("the old ?nest link is just a page, not a shortcut into the game", async ({ page }) => {
     await page.goto("/?nest");
@@ -660,7 +672,7 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
 
 
 test("the note mounts its six live colony boxes", async ({ page }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(110_000);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -680,7 +692,7 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
       host.querySelectorAll(".nest-scene__actors").length === 1 &&
       host.querySelectorAll(".nest-ant").length >= 3;
   })), {
-    timeout: 55_000,
+    timeout: 100_000,
     intervals: [250, 500, 1000],
   }).toEqual([true, true, true, true, true, true]);
 
@@ -704,12 +716,16 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
       visibleActors: actors.length,
       sceneLayers: host.querySelectorAll(".nest-scene__actors").length,
       sentences: host.querySelectorAll(".nest-scene__sentence").length,
+      homeActorsHidden: actors.filter((actor) => actor.classList.contains("inside-mound")).every((actor) => getComputedStyle(actor).visibility === "hidden"),
+      moundsDestroyed: Number(host.dataset.rivalMoundsDestroyed || 0),
+      soldiers: actors.filter((actor) => actor.getAttribute("data-role") === "soldier").length,
+      foodGlyphsSeen: Number(host.dataset.maxStoreGlyphsSeen || 0),
       lastFight: host.dataset.lastFight ? JSON.parse(host.dataset.lastFight) : null,
       contained: actorsContained && stageBox.left >= box.left && stageBox.right <= box.right,
     };
   }));
   expect(reports.map((report) => report.mode)).toEqual(["theft", "colony", "worship", "rival", "fight", "castes"]);
-  expect(reports.every((report) => report.cycles >= 2 && report.resets >= 2 && report.visibleActors >= 3 && report.sceneLayers === 1 && report.labels === 0 && report.contained)).toBe(true);
+  expect(reports.every((report) => report.cycles >= 2 && report.resets >= 2 && report.visibleActors >= 3 && report.sceneLayers === 1 && report.labels === 0 && report.contained && report.homeActorsHidden)).toBe(true);
   expect(reports[0].sentences).toBe(1);
   expect(reports[1].sentences).toBe(1);
   expect(reports[2].sentences).toBe(0);
@@ -719,7 +735,12 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(reports[0].rules).toEqual(expect.arrayContaining(["stepMovement", "roleSpeed", "foodShares"]));
   expect(reports[1].rules).toEqual(expect.arrayContaining(["stepMovement", "foodShares", "advanceBuild"]));
   expect(reports[2].rules).toEqual(expect.arrayContaining(["stepMovement", "worshipReturnAt", "storeCapacity"]));
-  expect(reports[3].rules).toEqual(expect.arrayContaining(["advanceBuild", "foodShares", "groupCanWin"]));
+  expect(reports[3].rules).toEqual(expect.arrayContaining(["advanceBuild", "foodShares", "groupCanWin", "damageMound"]));
+  expect(reports[3].moundsDestroyed).toBeGreaterThanOrEqual(2);
+  expect(reports[3].soldiers).toBe(3);
+  expect(reports[0].foodGlyphsSeen).toBeGreaterThan(0);
+  expect(reports[1].foodGlyphsSeen).toBeGreaterThan(0);
+  expect(reports[2].foodGlyphsSeen).toBeGreaterThan(0);
   expect(reports[4].rules).toEqual(expect.arrayContaining(["combatPower", "combatHealth", "groupCanWin"]));
   expect(reports[4].lastFight?.damage).toBeGreaterThan(0);
   expect(reports[4].lastFight?.remainingHealth).toBeLessThan(reports[4].lastFight?.health);
@@ -736,4 +757,9 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   });
   expect(colors.dark).not.toBe(colors.light);
   expect(errors).toEqual([]);
+
+  await page.getByRole("link", { name: "Play the colony" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await expect(page.locator(".nest-scene")).toHaveCount(0);
 });

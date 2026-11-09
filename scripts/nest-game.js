@@ -13,9 +13,13 @@
 import { antMarkup, antClasses, miniArt } from "./nest-assets.js";
 import {
   BUILD_TIME,
+  MOUND_BITE_INTERVAL,
+  RIVAL_FOUNDING_TIME,
+  RIVAL_MOUND_HEALTH,
   advanceBuild,
   combatHealth as sharedCombatHealth,
   combatPower as sharedCombatPower,
+  damageMound,
   duelOdds,
   foodShares,
   groupCanWin,
@@ -286,6 +290,7 @@ import {
   }
   if (antBtn._nestLoader) { antBtn.removeEventListener("click", antBtn._nestLoader); delete antBtn._nestLoader; }
   let game = null;
+  const noteFiguresOnPage = document.querySelector('[data-live-figure="nest"]') !== null;
 
   // A stray ant is the easter egg for a closed Nest. It walks the reading pane on its own, not on
   // a trail, and if someone clicks it the ant runs for the launcher and makes it pulse. One click
@@ -307,7 +312,7 @@ import {
   };
   const scheduleStray = (delay) => {
     clearTimeout(strayTimer);
-    if (game || document.hidden || !launcherVisible() || strayConsumed()) return;
+    if (noteFiguresOnPage || game || document.hidden || !launcherVisible() || strayConsumed()) return;
     strayTimer = setTimeout(spawnStray, delay ?? 30000 + Math.random() * 60000);
   };
   const pulseLauncher = () => {
@@ -382,6 +387,7 @@ import {
     requestAnimationFrame(frame);
   };
   const spawnStray = (force = false) => {
+    if (noteFiguresOnPage) return;
     if (!force && (strayConsumed() || game || document.hidden || !launcherVisible() || strayEl)) return;
     if (force && (game || document.hidden || !launcherVisible() || strayEl)) return;
     const fromLeft = Math.random() < 0.5;
@@ -426,7 +432,10 @@ import {
   try { localStorage.removeItem("nest-colony"); } catch { /* private mode */ }
   try { if (localStorage.getItem("portfolio:aside-mode") === "nest") localStorage.removeItem("portfolio:aside-mode"); } catch { /* private mode */ }
   const leave = () => game && game.confirmLeave(() => { game.stop(); game = null; antBtn.focus(); scheduleStray(); });
-  const openNest = () => { game = start(); };
+  const openNest = () => {
+    if (noteFiguresOnPage) { location.assign("/?nest=play"); return; }
+    game = start();
+  };
   antBtn.addEventListener("click", () => { if (game) leave(); else openNest(); });
   document.querySelectorAll("[data-nest-start]").forEach((button) => {
     if (button._nestLoader) { button.removeEventListener("click", button._nestLoader); delete button._nestLoader; }
@@ -631,7 +640,7 @@ import {
     cache: null, cacheLetters: [], cacheTrail: null, hiddenLetters: new Set(), scoutQueue: [],
     queen: { eat: 0, lay: 0 }, total: 0, party: null, partyIndex: 0, nextParty: TUNING.party[0], trailSerial: 0 };
   const trailCap = () => Math.min(12, Math.max(LINE, Math.ceil(mainAnts().length / 3)));
-  const rival = { active: false, mound: null, trails: [], minis: [], stolen: new Set(), returnAt: 0, hp: 8, war: false, lastMilestone: 0, lastBase: null, tier: 0 };
+  const rival = { active: false, mound: null, trails: [], minis: [], stolen: new Set(), returnAt: 0, hp: RIVAL_MOUND_HEALTH, war: false, lastMilestone: 0, lastBase: null, tier: 0 };
   const mainAnts = () => state.ants.filter((a) => a.side !== "rival");
   Object.defineProperty(rival, "ants", { get: () => state.ants.filter((a) => a.side === "rival") });
   if (getComputedStyle(main).position === "static") main.style.position = "relative";
@@ -2438,11 +2447,11 @@ import {
       if (crew < 3) { ant.el?.classList.add("waiting"); return; }
       ant.el?.classList.remove("waiting");
       if (performance.now() < (ant.nextBite || 0)) return;
-      ant.nextBite = performance.now() + 1100;
+      ant.nextBite = performance.now() + MOUND_BITE_INTERVAL * 1000;
       const moundEl = mini ? mini.el : rival.mound.el;
       moundEl.classList.add("attacking"); setTimeout(() => moundEl?.classList.remove("attacking"), 900);
       if (mini) {
-        mini.hp--; mini.el.classList.add("hit"); setTimeout(() => mini.el?.classList.remove("hit"), 320);
+        mini.hp = damageMound(mini.hp); mini.el.classList.add("hit"); setTimeout(() => mini.el?.classList.remove("hit"), 320);
         blip(150, 0.08, "square", 0.035);
         log(`the colony breaks a rival mini mound (${Math.max(0, mini.hp)} hits left)`);
         if (mini.hp <= 0) {
@@ -2450,7 +2459,7 @@ import {
           setTimeout(() => { mini.el.remove(); rival.minis = rival.minis.filter((m) => m !== mini); }, 560);
         }
       } else {
-        rival.hp--; rival.mound.el.classList.add("hit"); setTimeout(() => rival.mound?.el.classList.remove("hit"), 320);
+        rival.hp = damageMound(rival.hp); rival.mound.el.classList.add("hit"); setTimeout(() => rival.mound?.el.classList.remove("hit"), 320);
         blip(150, 0.08, "square", 0.035);
         log(`the colony bites the rival mound (${Math.max(0, rival.hp)} left)`);
         if (rival.hp <= 0) { log("the main colony breaks the rival mound"); retreatRival(); goHome(ant); }
@@ -2575,7 +2584,7 @@ import {
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
     mound.el.classList.add("constructing");
-    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8; rival.buildUntil = performance.now() + 3200; rival.war = false;
+    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = RIVAL_MOUND_HEALTH; rival.buildUntil = performance.now() + RIVAL_FOUNDING_TIME * 1000; rival.war = false;
     rival.lastMilestone = milestone; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1; rival.activeAt = performance.now();
     const builders = [];
     for (let i = 0; i < 3; i++) {
@@ -2610,7 +2619,7 @@ import {
   };
   const damageRivalMini = (m) => {
     if (!rival.active || !m.el) return;
-    m.hp--; m.el.classList.add("hit"); setTimeout(() => m.el?.classList.remove("hit"), 320);
+    m.hp = damageMound(m.hp); m.el.classList.add("hit"); setTimeout(() => m.el?.classList.remove("hit"), 320);
     log(`you hit a rival mini mound (${Math.max(0, m.hp)} left)`);
     rival.ants.filter((a) => a.role === "guard" && a.el && Math.hypot(a.x - m.base[0], a.y - m.base[1]) < 280).forEach((g) => {
       g.job = "rival-guard"; g.guardPause = 0; g.path = [[m.base[0] + 24, m.base[1] + 10], [m.base[0] - 24, m.base[1] + 10]]; g.k = 0;

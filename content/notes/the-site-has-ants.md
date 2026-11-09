@@ -5,13 +5,13 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-07
-updated: 2026-11-09
+updated: 2026-11-10
 readingTime: "~16 min"
 tags: [games, interactive, vanilla, simulation, grain, ai]
 summary: >
   My portfolio has ants now. They read the page, take real letters home, feed a queen, build more
-  mounds, and meet a rival colony that grows on its own rules. It is one plain JavaScript file on the
-  same vanilla stack as the site, built over a weekend as a small, serious easter egg and a test of
+  mounds, and meet a rival colony that grows on its own rules. It is a handful of plain JavaScript
+  modules on the same vanilla stack as the site, built over a weekend as a small, serious easter egg and a test of
   the workflow behind it.
 image: /media/notes/nest-og.png
 imageAlt: "TJ's Desk home page with an ant colony at work: an anthill drawn in Braille dots, scent trails running down to the page copy with letters missing, and the Nest panel in the sidebar."
@@ -32,7 +32,7 @@ social: |
   the rest of the site.
 ---
 
-<p class="nest-start"><button type="button" data-nest-start>Play the colony</button></p>
+<p class="nest-start"><a href="/?nest=play" data-nest-start>Play the colony</a></p>
 
 I did not need to put ants on my portfolio. That was the point.
 
@@ -48,7 +48,7 @@ The first version came together over a weekend. I used it as a reason to test De
 
 The portfolio needed to stay serious. So the game had to be quiet. It lives behind the ant in the status bar, a button on this note, and one terminal word. Most people will never see it. The people who do should get a small surprise, not a pop-up asking them to subscribe.
 
-I also wanted to show what the framework can do. The site is built on GRAIN, a system that mostly renders documents. A game is a useful stress test: if the same tokens, the same typography and the same one-file discipline can carry an interactive colony, then the framework is doing more than laying out text. And if it cannot, I would rather find out by building something fun.
+I also wanted to show what the framework can do. The site is built on GRAIN, a system that mostly renders documents. A game is a useful stress test: if the same tokens, the same typography and the same small-module discipline can carry an interactive colony, then the framework is doing more than laying out text. And if it cannot, I would rather find out by building something fun.
 
 ## What it is
 
@@ -56,7 +56,7 @@ A self-growing ecosystem built from rules.
 
 There is no single script that says "now the colony does this." Each ant has a small amount of state and follows a small rule. A scout looks for a letter. A worker follows a trail. A letter that needs two or three ants takes two or three. The queen turns meals into eggs. The stores turn food into a builder. The builder raises a mini mound. The mini mound sends guards to patrol and flyers to steal. The rival does the same thing, with its own resource and its own limits.
 
-<p class="nest-start"><a href="#" data-nest-start>Open the colony</a> while you read. It runs on this page.</p>
+<p class="nest-start"><a href="/?nest=play" data-nest-start>Open the colony</a> on the home page while you read.</p>
 
 
 
@@ -105,7 +105,7 @@ There is no win screen after the dance. Worship is the colony's own event, not t
 
 The first rival appears after the second worship, not the first. It starts as a smaller colony with one trail, a few workers and a guard. Later rivals appear on later milestones, and each new one is a little harder than the last.
 
-<p style="margin:0 0 .5rem"><a href="#" data-nest-start>Start the colony</a> if you want to watch a rival arrive.</p>
+<p style="margin:0 0 .5rem"><a href="/?nest=play" data-nest-start>Start the colony</a> on the home page if you want to watch a rival arrive.</p>
 
 The rival is not a second player base. It does not take orders, it does not get a turn, and it cannot see the whole board. It runs the same kind of local rules the main colony runs: follow a trail, take a letter, carry it home, spend it on another ant. The difference is that its growth comes out of what it steals.
 
@@ -147,7 +147,7 @@ The absence of a win condition is the design, not a missing feature. A portfolio
 
 ## How it is built
 
-The game is one plain JavaScript file. No canvas, no game library, no build step for the game itself.
+The game is a few plain JavaScript modules. No canvas, no game library, no build step for the game itself.
 
 The nest is a grid of Braille characters, each cell eight dots, colored by the active GRAIN theme. The ants are tiny inline SVGs made of round dots, with two leg frames. The scent trails are one soft curve with a small walk in it, so a trail looks walked rather than sampled. The sounds are synthesized in the same file: a few oscillators and one noise buffer, no audio files. The whole thing is lazy loaded: the note is a page first, and the game is only requested when someone opens the launcher.
 
@@ -163,7 +163,7 @@ That is the real advertisement. Not that an AI can write a game. That I can see 
 
 I also wanted the portfolio to stay professional. The easter egg is small on purpose. It is behind a status-bar ant, a terminal word and a button in a note. It does not interrupt a recruiter reading the résumé, and it does not turn the home page into a game landing page. If you find it, you get a surprise. If you do not, the site is still the site.
 
-<p class="nest-start"><a href="#" data-nest-start>Open the colony</a> and leave it running for a minute. The page is the food.</p>
+<p class="nest-start"><a href="/?nest=play" data-nest-start>Open the colony</a> on the home page and leave it running for a minute. The page is the food.</p>
 
 ## What I have not earned yet
 
