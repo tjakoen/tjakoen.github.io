@@ -28,8 +28,10 @@ told me how this was going to go. As a snapshot, on November 9 the repository ha
 sits at release 2.6. The number sounds like a flex and it is closer to a confession: most of those
 commits are the reviewer being told it was wrong, and me building the machinery to tell it.
 
-This note is about how the kit works and how it changed, not about anything it found. What it found
-belongs to the team and the codebase, and neither is mine to publish.
+> **Every screen in this note runs on mock data.** The board is the real one, running on invented pull
+> requests and invented people. The real version holds Career Team's work, and it stays at work. I am
+> careful about that line, so this note shows how the kit works and how it got there, never what it
+> found.
 
 ## The turns, on one line
 
