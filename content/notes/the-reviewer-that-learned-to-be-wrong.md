@@ -31,9 +31,9 @@ my kit tests whether a review is any good, and since November my kit treats a ve
 a review to build on instead of one to repeat. Theirs is the reviewer for everyone. Mine is the
 opinionated one. It reviews the way I do, and it keeps a ledger of every time it was wrong.
 
-On August 14 I committed one file, a skill called */check-pr-voice*. The next day I made eleven more
-commits to it, and one of them was titled *review the ticket, not just the diff*. That should have
-told me how this was going to go. As a snapshot, on November 9 the repository has 737 commits and
+On `Aug 14` I committed one file, a skill called `/check-pr-voice`. The next day I made eleven more
+commits to it, and one of them was titled `review the ticket, not just the diff`. That should have
+told me how this was going to go. As a snapshot, on `Nov 9` the repository has 737 commits and
 sits at release 2.6. The number sounds like a flex and it is closer to a confession: most of those
 commits are the reviewer being told it was wrong, and me building the machinery to tell it.
 
@@ -150,24 +150,16 @@ day one and annoying from day one, which I suspect is true of most first hires.
 
 ## Aug 18 · Then it had to keep score
 
-On August 18 the history gets this commit, and it is the turn the rest of the story hangs on:
-
-```console
-2026-08-18  fix(check-pr): the first scored outcomes, and the one lesson in them
-```
+On `Aug 18` the history gets `fix(check-pr): the first scored outcomes, and the one lesson in
+them`, and it is the turn the rest of the story hangs on.
 
 Every finding the reviewer posts gets a row in an outcome log, scored later by what happened to it:
 fixed, answered, closed without a change, or ignored. Anything a human reviewer caught that mine did
-not goes into a separate miss log. By September 9 there was a standing skill, */calibrate-pr-voice*,
+not goes into a separate miss log. By `Sep 9` there was a standing skill, `/calibrate-pr-voice`,
 whose only job is to read those logs and fold the lessons back into the lenses.
 
-I would love to say this went smoothly. On October 1 there is this one:
-
-```console
-2026-10-01  calibrate: lock the outcome log, because eleven scores in twelve were being lost
-```
-
-Two routines had been writing to the same file and
+I would love to say this went smoothly. On `Oct 1` there is `calibrate: lock the outcome log,
+because eleven scores in twelve were being lost`. Two routines had been writing to the same file and
 quietly overwriting each other, so for a stretch the reviewer was being graded on a sample of almost
 nothing and I had not noticed. A measuring tool that loses its measurements is a very confident way
 to learn nothing.
@@ -177,12 +169,12 @@ to learn nothing.
 
 ## Sep 17 · The talk was the old version
 
-On September 17 I introduced the kit to the team in a talk, [Every Time It Was
+On `Sep 17` I introduced the kit to the team in a talk, [Every Time It Was
 Wrong](/talks/every-time-it-was-wrong). The deck is still up, and it is an honest snapshot of what the
 kit was that week: a reviewer I ran myself, a growing outcome log, and a first pass at calibration.
 Everything below that date in this note is what changed after people started seeing it.
 
-The same days in the history are the densest of the early stretch. A second skill, */respond-pr-voice*,
+The same days in the history are the densest of the early stretch. A second skill, `/respond-pr-voice`,
 started answering replies waiting on us, checking a claimed fix at the new commit, resolving its own
 threads and updating the verdict label. A push from the author started queueing a re-review, an
 incremental pass over the new commits, instead of a whole new review. Every unattended routine got
@@ -191,12 +183,12 @@ the kit stopped being a tool I used and became something that ran on a schedule.
 
 ## Sep 24 · Then other people wanted it
 
-On September 24 the repository was restructured so someone who was not me could clone it, and on
-September 28 the installer learned to set the kit up from a profile per person. Everything personal,
+On `Sep 24` the repository was restructured so someone who was not me could clone it, and on
+`Sep 28` the installer learned to set the kit up from a profile per person. Everything personal,
 the outcome log, the watcher state, the boards a person cares about, moved under that person's own
 directory.
 
-The board followed on October 14 and 15: one page per person with Board, History, Calibration and
+The board followed on `Oct 14` and 15: one page per person with Board, History, Calibration and
 Stats tabs, cards that move between columns depending on who owes the next move, a Run now button,
 settings that live on the board, and setup from one paste. The 1.0 release notes put it plainly:
 the first release a teammate can set up, use and repair alone. I am no longer the only manager whose
@@ -208,20 +200,20 @@ reviews run through it.
   <figcaption class="shot__cap">The board as it looks today, running on invented pull requests. No card here is a real one.</figcaption>
 </figure>
 
-Once there were two kits, they started reviewing the same pull requests. On October 19 the kit
+Once there were two kits, they started reviewing the same pull requests. On `Oct 19` the kit
 learned the second look: when a teammate's kit has already reviewed the head commit, mine runs only
 what theirs left unchecked, posts an addendum, and posts nothing at all when it finds nothing new.
-Since November 4 every second look carries its own label, so a silent one still shows on the pull
+Since `Nov 4` every second look carries its own label, so a silent one still shows on the pull
 request.
 
 ## Oct 8 · Then it needed a second engine
 
 There is a practical problem with running a reviewer on a schedule, which is that my Claude usage is
-finite and pull requests are not. On October 8 the reviewer was installed and adapted for Codex, and
-by October 11 the calibration loop found reviews from both hosts through their attribution labels,
+finite and pull requests are not. On `Oct 8` the reviewer was installed and adapted for Codex, and
+by `Oct 11` the calibration loop found reviews from both hosts through their attribution labels,
 so a review Codex wrote is scored in the same log as one Claude wrote.
 
-Then it became the fallback for when I run low on tokens. On October 20 and 21 the switch stopped
+Then it became the fallback for when I run low on tokens. On `Oct 20` and `Oct 21` the switch stopped
 being something I flipped by hand. As my weekly Claude use climbs, the kit runs fewer reviews at
 once, and past a threshold I choose it hands them to Codex:
 
@@ -247,22 +239,22 @@ means a quiet week on reviews.
 
 ## Oct 14 · Then it had to prove its repairs held
 
-A replay ledger arrived on October 14, and by late October it did the part I trust most: when a lens
+A replay ledger arrived on `Oct 14`, and by late October it did the part I trust most: when a lens
 gets repaired after a miss, the repair is replayed on the pull request the miss came from, at the
-commit the original review ran on. On November 3 a batch of thirty-three replays came back and nine
+commit the original review ran on. On `Nov 3` a batch of thirty-three replays came back and nine
 lens rules were fixed because the replays found them wanting. A repair that has not been replayed is
 a hope. A replayed one is a receipt.
 
 ## Oct 26 · Then it had to decide what deserved a look
 
-The newest turns are the reviewer getting choosier about its inputs. On October 26 it started
-reading the epic's decided rules and the decisions made in Jira comments, and on November 3 it folded
+The newest turns are the reviewer getting choosier about its inputs. On `Oct 26` it started
+reading the epic's decided rules and the decisions made in Jira comments, and on `Nov 3` it folded
 in the epic check my tech lead built as his own plugin, so a deviation the team already agreed to
 stops being flagged as a defect. The same day risk intake arrived: a pull request from outside my
 boards gets queued only when it touches a high-risk area and reaches code my team owns, capped at a
 ranked three a day so the queue does not drown.
 
-Release 2.6, on November 4, made every lens prove it read its rules before its findings count. A
+Release 2.6, on `Nov 4`, made every lens prove it read its rules before its findings count. A
 lens that skips them twice gets named in the evidence block, and the review cannot post PASS. That
 is the reviewer being held to the same rule I hold my students to. Show your work, or it does not
 count.
@@ -351,7 +343,7 @@ it goes to first-pass review, and a real amount goes to reading calibration and 
 the codebase disagreed with. On a good week that is a better use of a manager. On a bad week it is a
 second job.
 
-Back to that commit on day two, *review the ticket, not just the diff*. Seven hundred commits later
+Back to that commit on day two, `review the ticket, not just the diff`. Seven hundred commits later
 the kit still does that first, and almost everything after it is the same idea, applied to the
 reviewer itself: read what it was supposed to do, then check what it actually did.
 
@@ -372,7 +364,7 @@ single rule:
   fixer whose evaluation suite taught me to test whether a review is any good, not only whether the
   machinery runs.
 - My tech lead's epic check, which supplies the epic decisions and the collision check, and which
-  the kit runs as a plugin since November 3.
+  the kit runs as a plugin since `Nov 3`.
 
 **Published work**
 
