@@ -367,8 +367,27 @@ trial behind it.
 
 On `Oct 13` the kit started pricing every review session, lens agents included, at list rates for the
 model each turn ran on. That is an estimate rather than the bill, but it is the same estimate every
-week, so the trend is real: over the four weeks it covered, the median cost of a review fell by more
+week, so the trend is real. The board's Stats tab plots it, and over the four weeks the first data covered, the median cost of a review fell by more
 than half. Trial four, a stricter low setting, is still running.
+
+<svg viewBox="0 0 600 250" width="100%" role="img"
+     aria-label="Median estimated cost of one review, week by week, for the four weeks starting September 14, 2026. Each week is lower than the one before, and the last week is less than half the first."
+     style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
+  <text x="20" y="24" style="fill:var(--color-muted);font-size:12px">median estimated cost of one review, per week</text>
+  <line x1="70" y1="200" x2="580" y2="200" style="stroke:var(--color-line);stroke-width:1"/>
+    <rect x="90" y="30" width="72" height="170" rx="3" style="fill:none;stroke:var(--color-fg);stroke-width:1.5"/>
+    <text x="126" y="222" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">week of Sep 14</text>
+    <rect x="210" y="76" width="72" height="124" rx="3" style="fill:none;stroke:var(--color-fg);stroke-width:1.5"/>
+    <text x="246" y="222" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">week of Sep 21</text>
+    <rect x="330" y="101" width="72" height="99" rx="3" style="fill:none;stroke:var(--color-fg);stroke-width:1.5"/>
+    <text x="366" y="222" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">week of Sep 28</text>
+    <rect x="450" y="131" width="72" height="69" rx="3" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1.5"/>
+    <text x="486" y="222" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">week of Oct 5</text>
+  <line x1="90" y1="30" x2="522" y2="30" style="stroke:var(--color-line);stroke-dasharray:4 4"/>
+  <line x1="90" y1="115" x2="522" y2="115" style="stroke:var(--color-line);stroke-dasharray:4 4"/>
+  <text x="530" y="34" style="fill:var(--color-muted);font-size:12px">first week</text>
+  <text x="530" y="119" style="fill:var(--color-muted);font-size:12px">half of it</text>
+</svg>
 
 ## Oct 14 · Then it had to prove its repairs held
 
@@ -664,7 +683,8 @@ single rule:
   fixer whose evaluation suite taught me to test whether a review is any good, not only whether the
   machinery runs.
 - [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/)'s epic check, which supplies the epic decisions and the collision check, and which
-  the kit runs as a plugin since `Nov 3`.
+  the kit runs as a plugin since `Nov 3`. How he came to build it is in
+  [I Showed My Team a Dashboard](show-them-the-board.md#kercwins-epic-checker).
 
 **Published work**
 
