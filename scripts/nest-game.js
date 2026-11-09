@@ -2046,6 +2046,7 @@
 
   // ---- the rival colony: a small, inverse-colour nuisance below the fold -------------------
   const removeRivalAnt = (a) => {
+    if (a.mini) { a.mini.guards?.delete(a); a.mini.flyers?.delete(a); }
     if (a.letter?.state === "rival-carry") { a.letter.glyph?.remove(); a.letter.glyph = null; a.letter.state = "spent"; a.letter.crew = []; a.letter = null; }
     a.glyph?.remove(); a.glyph = null;
     a.el?.remove(); a.el = null;
@@ -2642,11 +2643,13 @@
       const x = p.x, y = p.y;
       const el = document.createElement("div"); el.className = "nest-hill rival rival-mini"; el.textContent = miniArt(1);
       el.style.left = `${x}px`; el.style.top = `${y}px`; el.setAttribute("role", "button"); el.setAttribute("tabindex", "0"); el.setAttribute("aria-label", "Rival mini mound. Click to damage."); layer.append(el); el.classList.add("rising"); setTimeout(() => el.classList.remove("rising"), 900);
-      const mini = { el, base: [x, y], hp: 3 }; rival.minis.push(mini);
+      const mini = { el, base: [x, y], hp: 3, guards: new Set(), flyers: new Set() }; rival.minis.push(mini);
       el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); damageRivalMini(mini); });
       const trail = rival.trails[0];
-      spawnRivalUnit("rival-guard", [x, y], trail ? lanePath(trail.pts, 8) : [[x, y - 22], [x, y + 22]], null);
-      spawnRivalUnit("rival-flyer", [x, y], [randomPoint()], null);
+      const g = spawnRivalUnit("rival-guard", [x, y], trail ? lanePath(trail.pts, 8) : [[x, y - 22], [x, y + 22]], null);
+      const f = spawnRivalUnit("rival-flyer", [x, y], [randomPoint()], null);
+      if (g) { g.mini = mini; mini.guards.add(g); }
+      if (f) { f.mini = mini; mini.flyers.add(f); }
     });
     log("the rival raises its mini mounds");
   };
@@ -2696,9 +2699,13 @@
     const t = rival.trails[Math.floor(Math.random() * rival.trails.length)];
     if (t) { spawnRival(t); spawnRival(t); }
     if (rival.minis.length) {
-      const m = rival.minis[Math.floor(Math.random() * rival.minis.length)];
-      spawnRivalUnit("rival-guard", [m.base[0], m.base[1]], [[m.base[0] - 24, m.base[1] + 12], [m.base[0] + 24, m.base[1] + 12]], null);
-      spawnRivalUnit("rival-flyer", [m.base[0], m.base[1]], [randomPoint()], null);
+      const m = rival.minis.find((mini) => mini.guards.size < 2) || rival.minis.find((mini) => mini.flyers.size < 2);
+      if (m) {
+        const g = spawnRivalUnit("rival-guard", [m.base[0], m.base[1]], [[m.base[0] - 24, m.base[1] + 12], [m.base[0] + 24, m.base[1] + 12]], null);
+        const f = spawnRivalUnit("rival-flyer", [m.base[0], m.base[1]], [randomPoint()], null);
+        if (g) { g.mini = m; m.guards.add(g); }
+        if (f) { f.mini = m; m.flyers.add(f); }
+      }
     }
   };
 
