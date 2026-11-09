@@ -232,11 +232,53 @@ sound when it writes *to* him. Same tool, opposite direction, and both of them r
 
 Then, inspired by the review board, he built the epic checker. It keeps an epic's code and tickets
 aligned with its architecture plan. As a project evolves, decisions change, and the work done last
-sprint can quietly drift from the decision made this sprint. The checker scans a pull request or a
-ticket against the plan, flags conflicts with other open pull requests, and catches ticket problems
-before any code exists. It has its own board where the plan owner ticks decisions, drafts tickets,
-and moves conflicts. It helps him do the tech lead part of the job: staying on top of technical
-decisions while they are still moving.
+sprint can quietly drift from the decision made this sprint. The checker is how he stays on top of
+technical decisions while they are still moving.
+
+<svg viewBox="0 0 360 476" width="100%" role="img"
+     aria-label="How the epic checker works. The architecture plan in Confluence is the source of truth. A ticket before any code exists, or an open pull request, goes into the epic check, which reads it against the plan and the other open pull requests. It surfaces new decisions, conflicts between pull requests, and ticket problems. Those land on the decision board, where the plan owner ticks decisions, drafts tickets and moves conflicts, and every decision is written back to the plan."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-epic0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <rect x="55" y="16" width="250" height="52" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:2"/>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="20" y="104" width="150" height="52" rx="6"/>
+    <rect x="190" y="104" width="150" height="52" rx="6"/>
+    <rect x="45" y="280" width="270" height="52" rx="6"/>
+    <rect x="45" y="368" width="270" height="68" rx="6"/>
+  </g>
+  <rect x="60" y="192" width="240" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="140" y1="68" x2="140" y2="104" marker-end="url(#fl-epic0)"/>
+    <line x1="220" y1="68" x2="220" y2="104" marker-end="url(#fl-epic0)"/>
+    <line x1="95" y1="156" x2="140" y2="192" marker-end="url(#fl-epic0)"/>
+    <line x1="265" y1="156" x2="220" y2="192" marker-end="url(#fl-epic0)"/>
+    <line x1="180" y1="244" x2="180" y2="280" marker-end="url(#fl-epic0)"/>
+    <line x1="180" y1="332" x2="180" y2="368" marker-end="url(#fl-epic0)"/>
+    <path d="M315,402 C352,402 352,42 305,42" stroke-dasharray="4 4" marker-end="url(#fl-epic0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="180" y="38.3" style="fill:var(--color-fg)">The architecture plan</text>
+    <text x="180" y="54.8" style="fill:var(--color-muted);font-size:12px">in Confluence, the source of truth</text>
+    <text x="95" y="126.3" style="fill:var(--color-fg)">A ticket</text>
+    <text x="95" y="142.8" style="fill:var(--color-muted);font-size:12px">before any code exists</text>
+    <text x="265" y="126.3" style="fill:var(--color-fg)">A pull request</text>
+    <text x="265" y="142.8" style="fill:var(--color-muted);font-size:12px">while it is still open</text>
+    <text x="180" y="214.3" style="fill:var(--color-bg)">The epic check</text>
+    <text x="180" y="230.8" style="fill:var(--color-bg);font-size:12px">against the plan and every open PR</text>
+    <text x="180" y="302.3" style="fill:var(--color-fg)">New decisions, conflicts, ticket problems</text>
+    <text x="180" y="318.8" style="fill:var(--color-muted);font-size:12px">each one a row someone owns</text>
+    <text x="180" y="390.3" style="fill:var(--color-fg)">The decision board</text>
+    <text x="180" y="406.8" style="fill:var(--color-muted);font-size:12px">the plan owner ticks decisions,</text>
+    <text x="180" y="422.3" style="fill:var(--color-muted);font-size:12px">drafts tickets and moves conflicts</text>
+    <text x="180" y="462" style="fill:var(--color-muted);font-size:12px">dashed: every decision goes back into the plan</text>
+  </g>
+</svg>
+
+*The plan stays the source of truth. The checker only ever points at where the work and the plan disagree.*
 
 That matters more than it sounds, because an epic here has a lot of hands on it: the plan owner,
 product, leads from more than one team, and the developers doing the work. With that many people,
