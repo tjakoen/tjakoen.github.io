@@ -1,189 +1,168 @@
-// site/figure-nest.js — the ant colony as a live figure, not a screenshot.
+// site/figure-nest.js — small, self-running simulations of the colony's events.
 //
-// Each host is a small boxed stage. The elements are the game's own dot ants, Braille-derived
-// mounds, letters and scent trails; the colours are the page tokens, so the figures follow the
-// active flavour. The movement is a set loop: a scout walks a trail, a worker carries a letter
-// home, the colony's castes gather, and the queen's worship circles. Nothing here is the game
-// itself; the real colony is still behind the ant in the status bar.
+// Each host owns its own state. Nothing is a keyframe: ants choose a free letter, carry it, fight
+// over a point, gather at the queen, or build. When the event resolves, the little world resets and
+// runs again. The visuals are the game's dot ants and Braille mound, drawn in the page tokens.
 const MAIN_MOUND = "\u2800\u2800\u2800\u2800\u2800\u2800\u2880\u28e0\u2894\u2806\u2800\u2800\u2890\u2896\u28a4\u28c0\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u28e0\u28fe\u2895\u2895\u28bd\u2895\u28f5\u28d7\u289d\u2895\u28b5\u28b5\u289d\u28a6\u2840\u2800\u2800\u2800\n\u2800\u2800\u28e0\u289e\u289d\u28b5\u28f5\u2895\u2895\u289d\u2895\u2895\u28bd\u289f\u2895\u289d\u2895\u2895\u289d\u28a6\u2840\u2800\n\u28a0\u28de\u28b7\u2897\u289f\u28f7\u2895\u2895\u289d\u2897\u289d\u28dd\u28dd\u289d\u28dd\u28d5\u2897\u2895\u289d\u2897\u289d\u28a6";
 const BODY = [[0,0],[1,1],[1,2]].concat(
   ["","","",".xxx.xx.xxxxx.","xxxx.xxx.xxxxx",".xxx.xx.xxxxx."]
     .flatMap((row, y) => [...row].map((k, x) => (k === "x" ? [x, y] : null)).filter(Boolean)),
 );
 const LEGS = [[5,2],[4,1],[9,2],[10,1],[7,6],[8,7],[2,6],[1,7]];
-const circle = (x, y, r, cls = "") => `<circle cx="${x}" cy="${y}" r="${r}"${cls ? ` class="${cls}"` : ""}/>`;
-const dots = (pts, r = .72) => pts.map(([x, y]) => circle(x * 1.6 + .8, y * 1.6 + .8, r)).join("");
-const ant = (cls = "") => `<g class="nest-ant ${cls}" fill="currentColor">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>`;
-const movingAnt = (id, cls = "") => `<g data-walk="${id}" class="nest-ant ${cls}" fill="currentColor">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>`;
+const circle = (x, y, r = .72) => `<circle cx="${x * 1.6 + .8}" cy="${y * 1.6 + .8}" r="${r}"/>`;
+const dots = (pts) => pts.map(([x, y]) => circle(x, y)).join("");
 const trail = (d) => `<path class="nest-scene__trail" d="${d}"/>`;
 const label = (x, y, text, cls = "nest-scene__label") => `<text x="${x}" y="${y}" class="${cls}" text-anchor="middle">${text}</text>`;
+const mound = (x, y, w = 160, h = 72, rival = false) => `<foreignObject x="${x}" y="${y}" width="${w}" height="${h}"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art${rival ? " rival" : ""}">${MAIN_MOUND}</pre></foreignObject>`;
+const SHELL = (head, hint, svg, status = "working") => `<div class="nest-scene"><div class="nest-scene__head"><span>${head}</span><strong>${status}</strong></div><div class="nest-scene__stage"><svg viewBox="0 0 600 400" role="img">${svg}</svg></div><p class="nest-scene__hint">${hint}</p></div>`;
 
-const SHELL = (head, hint, svg, status = "working") => `<div class="nest-scene">
-  <div class="nest-scene__head"><span>${head}</span><strong>${status}</strong></div>
-  <div class="nest-scene__stage">${svg}</div>
-  <p class="nest-scene__hint">${hint}</p>
-</div>`;
-
-const colony = () => SHELL("The colony", "queen's chamber · nursery · larder · stores", `
-  <svg viewBox="0 0 600 400" role="img" aria-label="A live cutaway colony: a queen in the chamber, ants walking a tunnel, a scout carrying a letter, and the nursery, larder and stores.">
-    <path d="M18 126 L582 126" style="fill:none;stroke:var(--color-line);stroke-width:1.4"/>
-    <foreignObject x="220" y="58" width="160" height="72"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>
-    ${label(300,48,"entrance at the crown")}
-    ${trail("M300 126 L300 210")}
-    ${trail("M300 210 L150 262")}
-    ${trail("M300 210 L450 262")}
-    ${trail("M300 210 L300 330")}
-    ${trail("M300 330 L145 356")}
-    ${trail("M300 330 L455 356")}
-    <ellipse cx="300" cy="336" rx="76" ry="36" style="fill:none;stroke:var(--color-line)"/>
-    <ellipse cx="150" cy="266" rx="58" ry="28" style="fill:none;stroke:var(--color-line)"/>
-    <ellipse cx="450" cy="266" rx="58" ry="28" style="fill:none;stroke:var(--color-line)"/>
-    <ellipse cx="145" cy="360" rx="48" ry="22" style="fill:none;stroke:var(--color-line)"/>
-    <ellipse cx="455" cy="360" rx="48" ry="22" style="fill:none;stroke:var(--color-line)"/>
-    <g transform="translate(300 336) scale(1.7)">${ant("nest-ant--queen")}</g>
-    ${label(300,394,"queen's chamber")}
-    ${label(150,246,"nursery")}
-    ${label(450,246,"larder")}
-    ${label(145,394,"stores")}
-    ${label(455,394,"stores")}
-    <g fill="var(--ink-muted)" opacity=".7">${[0,1,2,3].map(i=>circle(134+i*9,254,2)).join("")}${[0,1,2].map(i=>circle(440+i*10,258,2)).join("")}</g>
-    <text x="420" y="272" text-anchor="middle" style="fill:var(--ink);font-size:17px">a</text>
-    <text x="446" y="274" text-anchor="middle" style="fill:var(--ink);font-size:17px">n</text>
-    ${movingAnt("a")}${movingAnt("b")}${movingAnt("c")}
-    ${label(300,204,"tunnel")}
-  </svg>`);
-
-const theft = () => SHELL("The page is food", "a scout takes a real letter, then carries it home", `
-  <svg viewBox="0 0 600 400" role="img" aria-label="A live letter raid: an ant walks a trail to a sentence, removes the letter a, leaves the gap, and carries the glyph back to the mound.">
-    <foreignObject x="42" y="282" width="116" height="54"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>
-    ${trail("M100 330 C180 250 280 180 410 110")}
-    <text x="120" y="95" class="nest-theft__word">the copy is <tspan data-theft-letter>a</tspan>nd food</text>
-    ${movingAnt("thief")}
-    <text class="nest-theft__carry" data-theft-carry>a</text>
-    ${label(100,360,"mound")}
-    ${label(410,74,"a real letter")}
-  </svg>`);
-
-const worship = () => SHELL("Worship", "the queen leaves, the ants circle, the stores fill", `
-  <svg viewBox="0 0 600 400" role="img" aria-label="A live worship loop: the queen stands above the mound while eight ants orbit her, with the stores filling.">
-    <foreignObject x="196" y="270" width="208" height="72"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>
-    <ellipse cx="300" cy="190" rx="130" ry="55" class="nest-scene__orbit"/>
-    <g transform="translate(300 190) scale(3.2)">${ant("nest-ant--queen")}</g>
-    ${Array.from({length:8},(_,i)=>`<g data-orbit="${i}" class="nest-ant" fill="currentColor">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>`).join("")}
-    ${label(300,58,"the queen is centre")}
-    ${label(300,350,"stores fill")}
-    ${label(300,382,"the trails go quiet")}
-  </svg>`, "DANCING");
-
-
-const fight = () => SHELL("The fight", "one second, then the crowd decides", `
-  <svg viewBox="0 0 600 400" role="img" aria-label="A live fight loop: main workers and a rival guard clash, the fight opens, and the group resolves.">
-    ${trail("M36 260 L560 260", "var(--color-line)", ".35")}
-    <g data-fight-main="a" transform="translate(170 220)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    <g data-fight-main="b" transform="translate(130 270)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    <g data-fight-rival="a" transform="translate(430 220)" fill="var(--nest-rival, #9b3a32)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    <g data-fight-rival="b" transform="translate(470 270)" fill="var(--nest-rival, #9b3a32)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    <ellipse data-fight-ring cx="300" cy="250" rx="58" ry="24" style="fill:none;stroke:var(--color-accent);stroke-dasharray:2 4;opacity:.25"/>
-    ${label(110,330,"main workers")}
-    ${label(490,330,"rival guards")}
-    ${label(300,76,"the fight opens")}
-    ${label(300,102,"the nearest ants join")}
-  </svg>`, "FIGHTING");
-
-const castes = () => SHELL("The castes", "same animal, different jobs", `
-  <svg viewBox="0 0 600 400" role="img" aria-label="The live caste sheet: worker, soldier, flyer, queen and rival guard, drawn with the game's dot ants.">
-    <g data-caste="0" transform="translate(88 96) scale(1.5)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    <g data-caste="1" transform="translate(208 92) scale(1.75)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    <g data-caste="2" transform="translate(330 92) scale(1.5)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    <g data-caste="3" transform="translate(456 92) scale(2.1)" fill="var(--color-accent)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    <g data-caste="4" transform="translate(552 96) scale(1.7)" fill="var(--nest-rival, #9b3a32)">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>
-    ${label(88,140,"worker")}
-    ${label(208,138,"soldier")}
-    ${label(330,138,"flyer")}
-    ${label(456,140,"queen")}
-    ${label(552,138,"rival guard")}
-    ${label(300,206,"the colony is a set of jobs, not a rank")}
-    ${label(300,250,"two workers beat one guard")}
-    ${label(300,276,"two rival guards beat one main guard")}
-    ${label(300,302,"main flyer beats rival flyer 75%")}
-  </svg>`, "CASTES");
-
-const mount = (host) => {
-  const mode = host.dataset.nestMode || "colony";
-  host.innerHTML = mode === "worship" ? worship() : mode === "theft" ? theft() : mode === "fight" ? fight() : mode === "castes" ? castes() : colony();
-  const stage = host.querySelector(".nest-scene__stage");
-  if (!stage) return false;
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
-
-  const walkers = [...stage.querySelectorAll("[data-walk]")];
-  const thief = stage.querySelector("[data-walk='thief']");
-  const letter = stage.querySelector("[data-theft-letter]");
-  const carry = stage.querySelector("[data-theft-carry]");
-  const orbit = [...stage.querySelectorAll("[data-orbit]")];
-  const start = performance.now();
-
-  const place = (el, points, t) => {
-    const total = points.length - 1;
-    const u = Math.max(0, Math.min(.999, t)) * total;
-    const i = Math.floor(u), f = u - i;
-    const [x1, y1] = points[i], [x2, y2] = points[Math.min(total, i + 1)];
-    const x = x1 + (x2 - x1) * f, y = y1 + (y2 - y1) * f;
-    el.setAttribute("transform", `translate(${x} ${y}) rotate(${Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI})`);
-  };
-
-  const tick = (now) => {
-    const t = (now - start) / 1000;
-    if (mode === "colony") {
-      const paths = [
-        [[300,130],[300,210],[150,266],[150,336]],
-        [[300,130],[300,210],[450,266],[450,336]],
-        [[300,130],[300,210],[300,330],[300,360]],
-      ];
-      walkers.forEach((el, i) => place(el, paths[i], ((t * .06) + i * .31) % 1));
-    } else if (mode === "theft") {
-      const cycle = (t % 7) / 7;
-      const u = cycle < .45 ? cycle / .45 : cycle < .8 ? 1 - (cycle - .45) / .35 : 0;
-      place(thief, [[100,330],[180,250],[280,170],[330,95]], u);
-      const taken = cycle > .28 && cycle < .82;
-      if (letter) letter.style.visibility = taken ? "hidden" : "";
-      if (carry) {
-        carry.style.display = cycle > .38 && cycle < .82 ? "" : "none";
-        carry.setAttribute("x", String(410 + (100 - 410) * Math.min(1, (cycle - .38) / .44)));
-        carry.setAttribute("y", String(95 + (300 - 95) * Math.min(1, (cycle - .38) / .44)));
-      }
-    } else if (mode === "fight") {
-      const phase = (t % 4) / 4;
-      const clash = phase < .5 ? phase / .5 : 0;
-      const back = phase < .5 ? 0 : (phase - .5) / .5;
-      const push = Math.sin(clash * Math.PI) * 34;
-      const retreat = Math.sin(back * Math.PI) * 20;
-      stage.querySelectorAll("[data-fight-main]").forEach((el, i) => {
-        const base = i ? 130 : 170;
-        el.setAttribute("transform", `translate(${base + push - retreat} ${i ? 270 : 220})`);
-      });
-      stage.querySelectorAll("[data-fight-rival]").forEach((el, i) => {
-        const base = i ? 470 : 430;
-        el.setAttribute("transform", `translate(${base - push + retreat} ${i ? 270 : 220})`);
-      });
-      const ring = stage.querySelector("[data-fight-ring]");
-      if (ring) ring.style.opacity = String(.15 + Math.sin(clash * Math.PI) * .5);
-      const on = clash > .35;
-      stage.querySelectorAll("[data-fight-main], [data-fight-rival]").forEach((el) => el.classList.toggle("nest-fight", on));
-    } else if (mode === "castes") {
-      stage.querySelectorAll("[data-caste]").forEach((el, i) => {
-        const x = [88,208,330,456,552][i];
-        el.setAttribute("transform", `translate(${x} ${92 + Math.sin(t * 1.7 + i) * 4}) scale(${[1.5,1.75,1.5,2.1,1.7][i]})`);
-      });
-    } else {
-      orbit.forEach((el, i) => {
-        const a = t * .9 + (i / orbit.length) * Math.PI * 2;
-        el.setAttribute("transform", `translate(${300 + Math.cos(a) * 130} ${190 + Math.sin(a) * 55}) rotate(${a * 180 / Math.PI + 90})`);
-      });
-    }
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-  return true;
+const backgrounds = {
+  eat: () => `${mound(38, 272, 132, 60)}${trail("M100 330 C190 265 285 190 390 120")}<text x="74" y="96" class="nest-theft__word">the copy is food</text>${label(100, 360, "mound")}${label(390, 84, "real letters")}`,
+  colony: () => `${mound(220, 58, 160, 72)}<path d="M18 126 L582 126" class="nest-scene__surface"/>${trail("M300 126 L300 210")}${trail("M300 210 L150 266")}${trail("M300 210 L450 266")}${trail("M300 210 L300 330")}${trail("M300 330 L145 356")}${trail("M300 330 L455 356")}<ellipse cx="300" cy="336" rx="76" ry="36" class="nest-scene__room"/><ellipse cx="150" cy="266" rx="58" ry="28" class="nest-scene__room"/><ellipse cx="450" cy="266" rx="58" ry="28" class="nest-scene__room"/><ellipse cx="145" cy="360" rx="48" ry="22" class="nest-scene__room"/><ellipse cx="455" cy="360" rx="48" ry="22" class="nest-scene__room"/>${label(300, 48, "entrance")}${label(300, 394, "queen chamber")}${label(150, 246, "nursery")}${label(450, 246, "larder")}${label(145, 394, "stores")}${label(455, 394, "stores")}<foreignObject data-mini x="505" y="292" width="84" height="42" opacity=".15"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>${label(548, 366, "new mound")}`,
+  fight: () => `${trail("M34 260 L566 260", "var(--color-line)", ".3")}${label(110, 330, "main workers")}${label(490, 330, "rival guards")}${label(300, 74, "nearest ants join")}`,
+  castes: () => `${label(88, 150, "worker")}${label(208, 148, "soldier")}${label(330, 148, "flyer")}${label(456, 150, "queen")}${label(552, 148, "rival guard")}${label(300, 310, "same dot animal, different jobs")}` ,
+  worship: () => `${mound(196, 270, 208, 72)}<ellipse cx="300" cy="190" rx="130" ry="55" class="nest-scene__orbit"/>${label(300, 58, "the queen is centre")}${label(300, 350, "stores fill")}${label(300, 382, "the trails go quiet")}`,
+  rival: () => `${mound(40, 300, 116, 54, true)}${mound(444, 300, 116, 54)}${trail("M100 312 C190 250 280 238 360 262")}${trail("M500 312 C410 250 320 238 280 262")}${label(92, 220, "rival", "nest-scene__label rival")}${label(500, 220, "main")}${label(300, 82, "the rival arrives")}`,
 };
 
-export const mountNest = mount;
+const scene = (mode) => SHELL(
+  { eat: "Eating", colony: "The colony", fight: "Fighting", castes: "The castes", worship: "Worship", rival: "Rival" }[mode] || "The colony",
+  { eat: "a scout finds a letter, carries it, and the stores rise", colony: "the colony grows while the ants work the rooms", fight: "the crowd resolves the clash", castes: "worker, soldier, flyer, queen and rival guard", worship: "the queen and the circle around her", rival: "the rival builds, steals, and is driven off" }[mode] || "",
+  backgrounds[mode](), { worship: "DANCING", fight: "FIGHTING", castes: "CASTES" }[mode] || "WORKING",
+);
+
+const rand = (n) => Math.random() * n;
+const moveTo = (a, target, speed, dt) => {
+  const dx = target.x - a.x, dy = target.y - a.y, d = Math.hypot(dx, dy) || 1;
+  const step = Math.min(d, speed * dt);
+  a.x += dx / d * step; a.y += dy / d * step; a.heading = Math.atan2(dy, dx);
+  return d <= speed * dt + 1;
+};
+
+const create = (mode, stage) => {
+  const layer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  layer.dataset.simLayer = "";
+  stage.querySelector("svg")?.append(layer);
+  const mk = (role, x, y, cls = "") => {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    el.setAttribute("class", "nest-ant " + cls);
+    el.innerHTML = dots(BODY) + `<g opacity=".82">${dots(LEGS)}</g>`;
+    el.setAttribute("fill", role.includes("rival") ? "var(--nest-rival, #9b3a32)" : "currentColor");
+    layer.append(el);
+    return { role, x, y, el, hp: role.includes("guard") || role === "soldier" ? 2 : 1, power: role.includes("guard") || role === "soldier" ? 2 : 1, cooldown: 0, carry: null, phase: rand(6.28) };
+  };
+  const mkLetter = (x, y, ch) => {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    el.setAttribute("x", x); el.setAttribute("y", y); el.setAttribute("text-anchor", "middle");
+    el.setAttribute("style", "fill:var(--ink);font-family:var(--font-accent,Georgia,serif);font-size:22px");
+    el.textContent = ch; layer.append(el);
+    return { x, y, ch, free: true, el };
+  };
+  const s = { mode, stage, ants: [], letters: [], t: 0, phase: 0, stores: 0, mini: 0, labelEl: null };
+
+  if (mode === "eat") {
+    s.letters = [mkLetter(390, 120, "a"), mkLetter(460, 150, "n"), mkLetter(330, 86, "e")];
+    s.ants = [mk("worker", 100, 330), mk("worker", 100, 330), mk("worker", 100, 330)];
+    s.ants.forEach((a) => { a.job = "seek"; });
+  } else if (mode === "colony") {
+    s.letters = [mkLetter(420, 270, "a"), mkLetter(446, 274, "n")];
+    s.ants = [mk("queen", 300, 336), mk("worker", 300, 336), mk("worker", 300, 336), mk("soldier", 300, 336)];
+    s.ants.forEach((a) => { a.job = a.role === "queen" ? "idle" : "seek"; });
+  } else if (mode === "fight") {
+    s.ants = [mk("soldier", 150, 230), mk("worker", 120, 280), mk("rival-guard", 450, 230, "rival"), mk("rival-guard", 480, 280, "rival")];
+    s.ants.forEach((a) => { a.job = "fight"; });
+  } else if (mode === "castes") {
+    s.ants = [mk("worker", 88, 110), mk("soldier", 208, 105), mk("flyer", 330, 105), mk("queen", 456, 105), mk("rival-guard", 552, 110, "rival")];
+    s.ants[0].el.setAttribute("style", "fill:var(--color-fg)");
+    s.ants[1].el.insertAdjacentHTML("beforeend", '<path d="M2 1 L-4 -1 M2 10 L-4 12" style="fill:none;stroke:currentColor;stroke-width:1.2"/>');
+    s.ants[2].el.insertAdjacentHTML("beforeend", '<ellipse cx="10" cy="4" rx="6" ry="2.1" opacity=".3"/><ellipse cx="16" cy="4" rx="6" ry="2.1" opacity=".3"/>');
+    s.ants[3].el.setAttribute("style", "fill:var(--color-accent)");
+    s.ants[4].el.setAttribute("style", "fill:var(--nest-rival, #9b3a32)");
+  } else if (mode === "worship") {
+    s.ants = [mk("queen", 300, 190), mk("worker", 300, 190), mk("worker", 300, 190), mk("worker", 300, 190), mk("worker", 300, 190), mk("worker", 300, 190), mk("worker", 300, 190), mk("worker", 300, 190), mk("worker", 300, 190)];
+  } else if (mode === "rival") {
+    s.ants = [mk("rival-worker", 80, 300, "rival"), mk("rival-worker", 80, 300, "rival"), mk("rival-guard", 80, 300, "rival"), mk("worker", 500, 300), mk("soldier", 500, 300)];
+    s.ants.forEach((a, i) => { a.job = i < 3 ? "steal" : "guard"; });
+    s.letters = [mkLetter(300, 120, "a"), mkLetter(355, 140, "n"), mkLetter(410, 105, "d")];
+    s.mini = 0;
+  }
+  return s;
+};
+
+const reset = (s) => {
+  s.t = 0; s.stores = 0; s.mini = 0;
+  if (s.mode === "eat") { s.letters.forEach((l) => { l.free = true; l.el.style.opacity = "1"; }); s.ants.forEach((a) => { a.carry = null; a.job = "seek"; a.x = 100; a.y = 330; }); }
+  if (s.mode === "colony") { s.letters.forEach((l) => { l.free = true; l.el.style.opacity = "1"; }); s.ants.forEach((a) => { a.carry = null; a.job = "seek"; a.x = 300; a.y = 336; }); }
+  if (s.mode === "fight") { s.ants.forEach((a, i) => { a.hp = a.power = (a.role.includes("guard") || a.role === "soldier") ? 2 : 1; a.x = i < 2 ? 150 + i * 20 : 450 + (i - 2) * 20; a.y = 230 + (i % 2) * 50; a.el.style.display = ""; }); }
+  if (s.mode === "worship") { s.stores = 0; s.ants.forEach((a) => { a.phase = rand(6.28); }); }
+  if (s.mode === "colony") { const mini = s.stage.querySelector("[data-mini]"); if (mini) mini.style.opacity = String(.15 + s.mini * .85); }
+  if (s.mode === "rival") { s.ants.forEach((a, i) => { a.hp = a.power = 1; a.x = i < 3 ? 80 : 500; a.y = 300; a.el.style.display = ""; a.job = i < 3 ? "steal" : "guard"; }); s.mini = 0; }
+};
+
+const tick = (s, dt) => {
+  s.t += dt;
+  if (s.mode === "eat" || s.mode === "colony") {
+    const home = s.mode === "eat" ? { x: 100, y: 330 } : { x: 300, y: 336 };
+    s.ants.forEach((a) => {
+      if (a.role === "queen") return;
+      if (a.carry) {
+        if (moveTo(a, home, 95, dt)) { a.carry = null; a.job = "seek"; s.stores++; }
+      } else {
+        const L = s.letters.find((l) => l.free); if (!L) return;
+        if (moveTo(a, L, 100, dt)) { L.free = false; L.el.style.opacity = "0"; a.carry = L; }
+      }
+    });
+    if (!s.letters.some((l) => l.free) && !s.ants.some((a) => a.carry) && s.t > 1) {
+      if (s.mode === "colony" && s.stores >= 2 && s.mini < 1) s.mini = Math.min(1, s.mini + dt * .4);
+      if (s.t > (s.mode === "colony" ? 10 : 7)) reset(s);
+    }
+  } else if (s.mode === "fight") {
+    const main = s.ants.filter((a) => !a.role.includes("rival")), rival = s.ants.filter((a) => a.role.includes("rival"));
+    s.ants.forEach((a) => { const foe = (a.role.includes("rival") ? main : rival).find((b) => b.hp > 0); if (!foe) return; if (moveTo(a, foe, 70, dt)) { a.cooldown -= dt; if (a.cooldown <= 0) { foe.hp -= a.power; foe.el.style.display = foe.hp > 0 ? "" : "none"; a.cooldown = .6; } } });
+    if (!main.some((a) => a.hp > 0) || !rival.some((a) => a.hp > 0)) { if (s.t > 5) reset(s); }
+  } else if (s.mode === "castes") {
+    s.ants.forEach((a, i) => { a.phase += dt * (.6 + i * .07); const x = [88,208,330,456,552][i]; a.x = x + Math.sin(a.phase) * (i < 3 ? 14 : 4); a.y = [110,105,105,105,110][i] + Math.cos(a.phase) * 5; });
+  } else if (s.mode === "worship") {
+    s.phase += dt;
+    if (s.phase > 10) reset(s);
+    s.stores = Math.min(1, s.phase / 8);
+    s.ants.forEach((a, i) => { if (a.role === "queen") return; const ang = s.phase * .9 + (i / s.ants.length) * Math.PI * 2; a.x = 300 + Math.cos(ang) * 130; a.y = 190 + Math.sin(ang) * 55; });
+  } else if (s.mode === "rival") {
+    s.phase += dt;
+    if (s.phase < 3) s.mini = Math.min(1, s.phase / 3);
+    s.ants.forEach((a) => {
+      if (a.job === "steal") { const L = s.letters.find((l) => l.free); if (L && moveTo(a, L, 70, dt)) { L.free = false; L.el.style.opacity = "0"; a.job = "home"; } else if (a.job === "home" && moveTo(a, { x: 100, y: 300 }, 80, dt)) { a.job = "steal"; } }
+      else { const r = s.ants.find((b) => b.role.includes("rival") && b.hp > 0); if (r && moveTo(a, r, 75, dt)) { r.hp -= 1; if (r.hp <= 0) r.el.style.display = "none"; } }
+    });
+    if (s.phase > 9) reset(s);
+  }
+};
+
+const draw = (s) => {
+  s.ants.forEach((a) => {
+    a.el.setAttribute("transform", `translate(${a.x} ${a.y}) scale(${a.role === "queen" ? 2 : a.role === "soldier" || a.role.includes("guard") ? 1.3 : 1}) rotate(${(a.heading || 0) * 180 / Math.PI})`);
+  });
+  if (s.mode === "colony") { const mini = s.stage.querySelector("[data-mini]"); if (mini) mini.style.opacity = String(.15 + s.mini * .85); }
+  if (s.mode === "rival") {
+    const pre = s.stage.querySelector(".nest-scene__mound-art.rival");
+    if (pre) pre.style.opacity = String(.3 + s.mini * .7);
+  }
+};
+
+const mountNest = (host) => {
+  const mode = host.dataset.nestMode === "theft" ? "eat" : host.dataset.nestMode || "colony";
+  host.innerHTML = scene(mode);
+  const stage = host.querySelector(".nest-scene__stage");
+  if (!stage) return false;
+  const sim = create(mode, stage);
+  draw(sim);
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+  let last = performance.now();
+  const frame = (now) => {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    tick(sim, dt); draw(sim); requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+  return true;
+};
+export { mountNest };
