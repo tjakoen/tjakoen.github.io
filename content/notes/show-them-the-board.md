@@ -274,9 +274,21 @@ did not plan that, and I like it a lot.
 
 ### Kyle's Obsidian board
 
-Then in my one-on-one with [Kyle](https://www.linkedin.com/in/kylealanmanayon/) last week, he showed me a dashboard he built in Obsidian to run his
-own work: his tickets, his pull requests, what is waiting on him and what is waiting on someone else.
-Nobody asked him to. It is not for me, it is for him, which is exactly why I was happy to see it.
+[Kyle](https://www.linkedin.com/in/kylealanmanayon/) is a junior on my team, and he is on track to be
+a senior in due time. He is the kind of developer who listens in a demo, says very little, and then
+goes and does something with it.
+
+In my one-on-one with him last week, he turned his screen around and showed me a dashboard he had built
+in Obsidian to run his own work: his tickets, his pull requests, what is waiting on him and what is
+waiting on someone else. He had built it shortly after my demo. Nobody asked him to, and it is not for
+me. It is for him.
+
+I found that genuinely cool, and a little inspiring in the other direction. A junior developer saw a
+manager's dashboard and did not think "nice tool for managers." He thought "I could have one of those
+for me," picked a tool he already lived in, and made it. That is the exact instinct I was hoping the
+demo would plant, and it showed up in the person with the least reason to feel entitled to it. It is
+also the habit that turns a junior into a senior: noticing the friction in your own work and fixing it
+instead of carrying it.
 
 ## The rule that comes with the tokens
 
