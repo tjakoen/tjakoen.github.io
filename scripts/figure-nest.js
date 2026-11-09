@@ -5,6 +5,7 @@
 // active flavour. The movement is a set loop: a scout walks a trail, a worker carries a letter
 // home, the colony's castes gather, and the queen's worship circles. Nothing here is the game
 // itself; the real colony is still behind the ant in the status bar.
+const MAIN_MOUND = "\u2800\u2800\u2800\u2800\u2800\u2800\u2880\u28e0\u2894\u2806\u2800\u2800\u2890\u2896\u28a4\u28c0\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u28e0\u28fe\u2895\u2895\u28bd\u2895\u28f5\u28d7\u289d\u2895\u28b5\u28b5\u289d\u28a6\u2840\u2800\u2800\u2800\n\u2800\u2800\u28e0\u289e\u289d\u28b5\u28f5\u2895\u2895\u289d\u2895\u2895\u28bd\u289f\u2895\u289d\u2895\u2895\u289d\u28a6\u2840\u2800\n\u28a0\u28de\u28b7\u2897\u289f\u28f7\u2895\u2895\u289d\u2897\u289d\u28dd\u28dd\u289d\u28dd\u28d5\u2897\u2895\u289d\u2897\u289d\u28a6";
 const BODY = [[0,0],[1,1],[1,2]].concat(
   ["","","",".xxx.xx.xxxxx.","xxxx.xxx.xxxxx",".xxx.xx.xxxxx."]
     .flatMap((row, y) => [...row].map((k, x) => (k === "x" ? [x, y] : null)).filter(Boolean)),
@@ -14,15 +15,6 @@ const circle = (x, y, r, cls = "") => `<circle cx="${x}" cy="${y}" r="${r}"${cls
 const dots = (pts, r = .72) => pts.map(([x, y]) => circle(x * 1.6 + .8, y * 1.6 + .8, r)).join("");
 const ant = (cls = "") => `<g class="nest-ant ${cls}" fill="currentColor">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>`;
 const movingAnt = (id, cls = "") => `<g data-walk="${id}" class="nest-ant ${cls}" fill="currentColor">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>`;
-const mound = (cx, base, w, h, rival = false) => {
-  let out = "";
-  for (let row = 0; row < h; row += 1) {
-    const y = base - row * 3.4;
-    const half = (w / 2) * Math.sqrt((h - row) / h);
-    for (let x = -half; x <= half; x += 5.2) out += circle(cx + x, y, .9);
-  }
-  return `<g class="nest-scene__mound${rival ? " nest-scene__mound-rival" : ""}">${out}</g>`;
-};
 const trail = (d) => `<path class="nest-scene__trail" d="${d}"/>`;
 const label = (x, y, text, cls = "nest-scene__label") => `<text x="${x}" y="${y}" class="${cls}" text-anchor="middle">${text}</text>`;
 
@@ -35,7 +27,7 @@ const SHELL = (head, hint, svg, status = "working") => `<div class="nest-scene">
 const colony = () => SHELL("The colony", "queen's chamber · nursery · larder · stores", `
   <svg viewBox="0 0 600 400" role="img" aria-label="A live cutaway colony: a queen in the chamber, ants walking a tunnel, a scout carrying a letter, and the nursery, larder and stores.">
     <path d="M18 126 L582 126" style="fill:none;stroke:var(--color-line);stroke-width:1.4"/>
-    ${mound(300,126,150,22)}
+    <foreignObject x="220" y="58" width="160" height="72"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>
     ${label(300,48,"entrance at the crown")}
     ${trail("M300 126 L300 210")}
     ${trail("M300 210 L150 262")}
@@ -63,7 +55,7 @@ const colony = () => SHELL("The colony", "queen's chamber · nursery · larder �
 
 const theft = () => SHELL("The page is food", "a scout takes a real letter, then carries it home", `
   <svg viewBox="0 0 600 400" role="img" aria-label="A live letter raid: an ant walks a trail to a sentence, removes the letter a, leaves the gap, and carries the glyph back to the mound.">
-    ${mound(100,330,110,18)}
+    <foreignObject x="42" y="282" width="116" height="54"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>
     ${trail("M100 330 C180 250 280 180 410 110")}
     <text x="120" y="95" class="nest-theft__word">the copy is <tspan data-theft-letter>a</tspan>nd food</text>
     ${movingAnt("thief")}
@@ -74,7 +66,7 @@ const theft = () => SHELL("The page is food", "a scout takes a real letter, then
 
 const worship = () => SHELL("Worship", "the queen leaves, the ants circle, the stores fill", `
   <svg viewBox="0 0 600 400" role="img" aria-label="A live worship loop: the queen stands above the mound while eight ants orbit her, with the stores filling.">
-    ${mound(300,332,170,20)}
+    <foreignObject x="196" y="270" width="208" height="72"><pre xmlns="http://www.w3.org/1999/xhtml" class="nest-scene__mound-art">${MAIN_MOUND}</pre></foreignObject>
     <ellipse cx="300" cy="190" rx="130" ry="55" class="nest-scene__orbit"/>
     <g transform="translate(300 190) scale(3.2)">${ant("nest-ant--queen")}</g>
     ${Array.from({length:8},(_,i)=>`<g data-orbit="${i}" class="nest-ant" fill="currentColor">${dots(BODY)}<g opacity=".82">${dots(LEGS)}</g></g>`).join("")}

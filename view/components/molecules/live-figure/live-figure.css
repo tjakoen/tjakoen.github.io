@@ -718,3 +718,5 @@
 .nest-scene .nest-theft__carry { fill: var(--color-accent); font-family: var(--font-accent, Georgia, serif); font-size: 14px; }
 .nest-scene .nest-scene__orbit { fill: none; stroke: var(--color-line); stroke-dasharray: 2 4; }
 @media (prefers-reduced-motion: reduce) { .nest-scene * { animation: none !important; transition: none !important; } }
+.nest-scene .nest-scene__mound-art { margin: 0; width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center; font: 9px/1.2 var(--font-mono); letter-spacing: -.04em; white-space: pre; color: var(--ink-muted); overflow: hidden; }
+.nest-scene .nest-scene__mound-art b { font-weight: inherit; }
