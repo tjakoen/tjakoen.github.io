@@ -79,43 +79,46 @@ of reading log files like a raccoon going through a bin.
 
 
 
-<svg viewBox="0 0 360 448" width="100%" role="img"
-     aria-label="How the review kit runs. A pull request reaches code review in Jira. The Reviews routine checks it against the ticket, the epic's decisions and six lenses, and posts a verdict. Follow-ups answer replies and verify fixes, and new commits get a re-review. If my Claude usage passes my limit, Codex takes over the routine. Approval always stays with me."
-     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+<svg viewBox="0 0 360 420" width="100%" role="img"
+     aria-label="The review kit as a loop. A pull request reaches code review and enters the loop. Review, against the ticket, the epic's decisions and six lenses. A verdict, posted under my name. Follow up on replies and claimed fixes. Re-review when new commits land, which leads back to review. The loop runs on Claude, or on Codex past my usage limit. Outside the loop sits the one step it cannot take: approval stays with me."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
   <defs>
     <marker id="fl-kit0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
     </marker>
   </defs>
-  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="55" y="16" width="250" height="36" rx="6"/>
-    <rect x="55" y="192" width="250" height="52" rx="6"/>
-    <rect x="55" y="280" width="250" height="52" rx="6"/>
+  <circle cx="180" cy="196" r="112" style="fill:none;stroke:var(--color-line);stroke-width:1;stroke-dasharray:2 5"/>
+  <g style="fill:var(--color-bg);stroke:var(--color-line);stroke-width:1">
+    <rect x="110" y="64" width="140" height="40" rx="20"/>
+    <rect x="250" y="176" width="104" height="40" rx="20"/>
+    <rect x="110" y="288" width="140" height="40" rx="20"/>
+    <rect x="6" y="176" width="104" height="40" rx="20"/>
   </g>
-  <rect x="55" y="88" width="250" height="68" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
-  <rect x="55" y="380" width="250" height="52" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:2"/>
   <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="180" y1="52" x2="180" y2="88" marker-end="url(#fl-kit0)"/>
-    <line x1="180" y1="156" x2="180" y2="192" marker-end="url(#fl-kit0)"/>
-    <line x1="180" y1="244" x2="180" y2="280" marker-end="url(#fl-kit0)"/>
-    <line x1="180" y1="332" x2="180" y2="380" marker-end="url(#fl-kit0)"/>
-    <path d="M55,306 C15,306 15,122 55,122" marker-end="url(#fl-kit0)"/>
+    <line x1="180" y1="30" x2="180" y2="62" marker-end="url(#fl-kit0)"/>
+    <path d="M252,88 Q300,100 302,172" marker-end="url(#fl-kit0)"/>
+    <path d="M302,218 Q300,292 254,304" marker-end="url(#fl-kit0)"/>
+    <path d="M108,304 Q60,292 58,220" marker-end="url(#fl-kit0)"/>
+    <path d="M58,174 Q60,100 106,88" marker-end="url(#fl-kit0)"/>
   </g>
+  <rect x="70" y="360" width="220" height="44" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
   <g text-anchor="middle">
-    <text x="180" y="38.3" style="fill:var(--color-fg)">A pull request reaches code review</text>
-    <text x="180" y="112" style="fill:var(--color-bg)">Reviews routine</text>
-    <text x="180" y="128.5" style="fill:var(--color-bg);font-size:12px">ticket, epic decisions, six lenses</text>
-    <text x="180" y="145" style="fill:var(--color-bg);font-size:12px">Claude, or Codex past my limit</text>
-    <text x="180" y="214.3" style="fill:var(--color-fg)">A verdict, posted under my name</text>
-    <text x="180" y="230.8" style="fill:var(--color-muted);font-size:12px">and a card on the board</text>
-    <text x="180" y="302.3" style="fill:var(--color-fg)">Follow up on replies and fixes</text>
-    <text x="180" y="318.8" style="fill:var(--color-muted);font-size:12px">new commits loop back for a re-review</text>
-    <text x="180" y="402.3" style="fill:var(--color-fg)">Approval stays with me</text>
-    <text x="180" y="418.8" style="fill:var(--color-muted);font-size:12px">it never approves, merges or pushes</text>
+    <text x="180" y="20" style="fill:var(--color-muted);font-size:12px">a pull request reaches code review</text>
+    <text x="180" y="88.5" style="fill:var(--color-fg)">Review</text>
+    <text x="302" y="200.5" style="fill:var(--color-fg)">Verdict</text>
+    <text x="180" y="312.5" style="fill:var(--color-fg)">Follow up</text>
+    <text x="58" y="200.5" style="fill:var(--color-fg)">Re-review</text>
+    <text x="180" y="122" style="fill:var(--color-muted);font-size:11.5px">ticket, epic decisions, six lenses</text>
+    <text x="180" y="276" style="fill:var(--color-muted);font-size:11.5px">replies and claimed fixes</text>
+    <text x="180" y="182" style="fill:var(--color-fg);font-size:11.5px">runs on Claude,</text>
+    <text x="180" y="198" style="fill:var(--color-fg);font-size:11.5px">or on Codex</text>
+    <text x="180" y="214" style="fill:var(--color-fg);font-size:11.5px">past my limit</text>
+    <text x="180" y="379" style="fill:var(--color-bg)">Approval stays with me</text>
+    <text x="180" y="395" style="fill:var(--color-bg);font-size:11.5px">the one step outside the loop</text>
   </g>
 </svg>
 
-*The kit does the rounds. The last box is the one it cannot reach.*
+*The kit goes round and round. The one step it cannot take sits outside the circle.*
 
 
 ## Crew Watch, attempt number four
@@ -123,36 +126,40 @@ of reading log files like a raccoon going through a bin.
 Crew Watch is the view I take into one-on-ones and planning. It took me four tries to get there, and
 the first three were all reasonable at the time.
 
-<svg viewBox="0 0 360 404" width="100%" role="img"
-     aria-label="Four attempts at a team view. A spreadsheet, kept by hand. DevLake, a metrics platform with dashboards. People Manager, a full app I was coding myself, which stalled for lack of tokens. Crew Watch, a Claude dashboard built in an afternoon with People Manager as its reference."
-     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+<svg viewBox="0 0 360 300" width="100%" role="img"
+     aria-label="Four attempts at a team view, drawn as steps that climb left to right. Sheets, kept by hand. DevLake, real metrics but not my questions. People Manager, a full app I was coding myself, which stalled. Crew Watch, a Claude dashboard built in an afternoon, the top step. A dashed line marks People Manager as the reference Crew Watch was built from."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
   <defs>
     <marker id="fl-crew0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
     </marker>
   </defs>
+  <line x1="12" y1="220" x2="348" y2="220" style="stroke:var(--color-line);stroke-width:1"/>
   <g style="fill:none;stroke:var(--color-line);stroke-width:1">
-    <rect x="55" y="16" width="250" height="52" rx="6"/>
-    <rect x="55" y="104" width="250" height="52" rx="6"/>
-    <rect x="55" y="192" width="250" height="52" rx="6"/>
+    <rect x="16" y="190" width="76" height="30"/>
+    <rect x="100" y="155" width="76" height="65"/>
+    <rect x="184" y="115" width="76" height="105"/>
   </g>
-  <rect x="55" y="280" width="250" height="52" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
-  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
-    <line x1="180" y1="68" x2="180" y2="104" marker-end="url(#fl-crew0)"/>
-    <line x1="180" y1="156" x2="180" y2="192" marker-end="url(#fl-crew0)"/>
-    <line x1="180" y1="244" x2="180" y2="280" marker-end="url(#fl-crew0)"/>
-  </g>
-  <path d="M305,218 C345,218 345,306 305,306" style="fill:none;stroke:var(--color-muted);stroke-width:1.5;stroke-dasharray:4 4" marker-end="url(#fl-crew0)"/>
+  <rect x="268" y="60" width="76" height="160" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <path d="M246,112 C248,76 254,62 266,58" style="fill:none;stroke:var(--color-muted);stroke-width:1.5;stroke-dasharray:4 4" marker-end="url(#fl-crew0)"/>
   <g text-anchor="middle">
-    <text x="180" y="38.3" style="fill:var(--color-fg)">Sheets</text>
-    <text x="180" y="54.8" style="fill:var(--color-muted);font-size:12px">kept by hand, stale by Thursday</text>
-    <text x="180" y="126.3" style="fill:var(--color-fg)">DevLake</text>
-    <text x="180" y="142.8" style="fill:var(--color-muted);font-size:12px">real metrics, not my questions</text>
-    <text x="180" y="214.3" style="fill:var(--color-fg)">People Manager</text>
-    <text x="180" y="230.8" style="fill:var(--color-muted);font-size:12px">a whole app, stalled on tokens</text>
-    <text x="180" y="302.3" style="fill:var(--color-bg)">Crew Watch</text>
-    <text x="180" y="318.8" style="fill:var(--color-bg);font-size:12px">a Claude dashboard, one afternoon</text>
-    <text x="180" y="380" style="fill:var(--color-muted);font-size:12px">dashed: People Manager as the reference</text>
+    <text x="54" y="182" style="fill:var(--color-fg)">1</text>
+    <text x="138" y="147" style="fill:var(--color-fg)">2</text>
+    <text x="222" y="107" style="fill:var(--color-fg)">3</text>
+    <text x="306" y="90" style="fill:var(--color-bg)">4</text>
+    <text x="54" y="242" style="fill:var(--color-fg)">Sheets</text>
+    <text x="54" y="258" style="fill:var(--color-muted);font-size:11.5px">by hand,</text>
+    <text x="54" y="272" style="fill:var(--color-muted);font-size:11.5px">stale fast</text>
+    <text x="138" y="242" style="fill:var(--color-fg)">DevLake</text>
+    <text x="138" y="258" style="fill:var(--color-muted);font-size:11.5px">real metrics,</text>
+    <text x="138" y="272" style="fill:var(--color-muted);font-size:11.5px">not my questions</text>
+    <text x="222" y="242" style="fill:var(--color-fg)">People Mgr</text>
+    <text x="222" y="258" style="fill:var(--color-muted);font-size:11.5px">a whole app,</text>
+    <text x="222" y="272" style="fill:var(--color-muted);font-size:11.5px">stalled</text>
+    <text x="306" y="242" style="fill:var(--color-fg)">Crew Watch</text>
+    <text x="306" y="258" style="fill:var(--color-muted);font-size:11.5px">a dashboard,</text>
+    <text x="306" y="272" style="fill:var(--color-muted);font-size:11.5px">one afternoon</text>
+    <text x="236" y="52" style="fill:var(--color-muted);font-size:11.5px">the reference</text>
   </g>
 </svg>
 
