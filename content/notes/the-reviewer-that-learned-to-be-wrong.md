@@ -27,12 +27,12 @@ social: |
   reviewer now grades every comment it leaves by what happened next, and when it misses something, the
   fix gets replayed on the exact commit it missed.
 
-  The slowest quarter of my team's pull requests used to wait about 17 hours for a first review. Now
-  it's about 3. It let one bad change into production in that time, and that miss is in the note too.
+  One in four of my team's pull requests used to wait 17 hours or more for a first review. Now that
+  one in four waits 3 hours or more. It let one bad change into production in that time, and that miss is in the note too.
 
   Thanks, Kaither, for the question.
 socialImage: "/media/notes/the-reviewer-that-learned-to-be-wrong-social.png"
-socialImageAlt: "The question that started it, \"I don't trust it\" and \"Why not?\", above the real review board running on invented pull requests, in columns for queued, in flight, waiting on author and waiting on you. Below, the slowest quarter of the team's wait for a first review falling from 17.6 hours to 3.0 hours, and cost per review down by half."
+socialImageAlt: "The question that started it, \"I don't trust it\" and \"Why not?\", above the real review board running on invented pull requests, in columns for queued, in flight, waiting on author and waiting on you. Below, the wait for a first review that 1 in 4 pull requests exceeded, falling from 17.6 hours to 3.0 hours, and cost per review down by half."
 ---
 
 My PR review kit is a set of Claude skills that reviews my team's pull requests at [Career Team](https://careerteam.com) the
@@ -605,7 +605,7 @@ the team dashboard I built for my one-on-ones and wrote about in
 July with its reviews. This is the time from a pull request being opened to its first review by
 anyone other than its author, as a snapshot on `Nov 10`:
 
-| Pull requests opened | Reviewed | Median wait | The slowest quarter waited longer than |
+| Pull requests opened | Reviewed | Median wait | 1 in 4 waited longer than |
 |---|---|---|---|
 | Before `Aug 14`, no kit | 53 | 1.7 hours | 17.6 hours |
 | `Aug 14` to `Sep 16`, run by hand then on routines | 87 | 1.5 hours | 12.6 hours |
@@ -613,8 +613,9 @@ anyone other than its author, as a snapshot on `Nov 10`:
 | `Oct 15` to `Nov 10`, the board and Codex as backup | 98 | 0.9 hours | 3.0 hours |
 
 The median barely moved, because most pull requests were never the problem: someone usually picked
-them up within a couple of hours. The long tail is what the kit took apart. The slowest quarter used
-to wait most of a day, and since the board and the Codex fallback it waits about three hours. That is
+them up within a couple of hours. The long tail is what the kit took apart. One pull request in
+four used to wait most of a day or more. Since the board and the Codex fallback, that one in four
+waits three hours or more. That is
 the bottleneck I raised in that manager meeting.
 
 The honest limits on that table: these are wall-clock hours, nights included, so an overnight

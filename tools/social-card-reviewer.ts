@@ -53,7 +53,7 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
     <rect x="96" y="420" width="${W - 192}" height="440" rx="10" style="fill:none;stroke:${INK};stroke-width:2"/>
     <text x="${W - 110}" y="884" text-anchor="end" style="fill:${MUTED};font-size:19px;font-style:italic">the real board, on invented pull requests</text>
 
-    <text x="96" y="950" style="fill:${MUTED};font-size:23px">Slowest quarter of my team's wait for a first review</text>
+    <text x="96" y="950" style="fill:${MUTED};font-size:23px">1 in 4 of my team's pull requests waited at least this long for a first review</text>
     <text x="96" y="1030" style="fill:${INK};font-size:68px">17.6 h <tspan style="fill:${MUTED}">→</tspan> 3.0 h</text>
     <text x="${W - 96}" y="1030" text-anchor="end" style="fill:${MUTED};font-size:23px">cost per review: down by half</text>
 
