@@ -27,7 +27,7 @@ social: |
 
   If you lead people and you've built something, show them. The worst case is they nod.
 socialImage: "/media/notes/show-them-the-board-social.png"
-socialImageAlt: "I showed my team a dashboard and they built their own: my review board and Crew Watch lead to one demo, which two weeks later becomes Kercwin's epic checker and Kyle's Obsidian board."
+socialImageAlt: "I showed my team a dashboard and they built their own: my dark review board on the left, then two weeks later Kercwin's epic checker and Kyle's Obsidian board, drawn as three small windows."
 ---
 
 ## I was building the wrong thing, carefully
