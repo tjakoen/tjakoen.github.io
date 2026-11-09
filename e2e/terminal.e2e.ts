@@ -660,10 +660,80 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
 
 
 test("the note mounts its six live colony boxes", async ({ page }) => {
+  test.setTimeout(60_000);
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() !== "error") return;
+    const source = message.location().url;
+    // The local app shell keeps a native EventSource open; its reconnect transport is not a note error.
+    if (source.includes("/stream?session=")) return;
+    errors.push(message.text());
+  });
   await page.goto("/notes/the-site-has-ants");
   await expect(page.locator(".nest-scene")).toHaveCount(6);
-  const before = await page.locator(".nest-scene .nest-ant").evaluateAll((els) => els.map((el) => el.getAttribute("transform")));
-  await page.waitForTimeout(650);
-  const after = await page.locator(".nest-scene .nest-ant").evaluateAll((els) => els.map((el) => el.getAttribute("transform")));
-  expect(after.filter((value, index) => value !== before[index]).length).toBeGreaterThan(0);
+  const hosts = page.locator('[data-live-figure="nest"]');
+  await expect.poll(async () => hosts.evaluateAll((els) => els.map((el) => {
+    const host = el as HTMLElement;
+    return Number(host.dataset.completedCycles) >= 2 &&
+      host.dataset.eventState !== "reset" &&
+      host.querySelectorAll(".nest-scene__actors").length === 1 &&
+      host.querySelectorAll(".nest-ant").length >= 3;
+  })), {
+    timeout: 55_000,
+    intervals: [250, 500, 1000],
+  }).toEqual([true, true, true, true, true, true]);
+
+  const reports = await hosts.evaluateAll((els) => els.map((el) => {
+    const host = el as HTMLElement;
+    const stage = host.querySelector(".nest-scene__stage")!;
+    const box = host.getBoundingClientRect();
+    const stageBox = stage.getBoundingClientRect();
+    const actors = [...host.querySelectorAll(".nest-ant")];
+    const actorsContained = actors.every((actor) => {
+      const rect = actor.getBoundingClientRect();
+      return rect.left >= stageBox.left - 1 && rect.top >= stageBox.top - 1 &&
+        rect.right <= stageBox.right + 1 && rect.bottom <= stageBox.bottom + 1;
+    });
+    return {
+      mode: host.dataset.nestMode,
+      cycles: Number(host.dataset.completedCycles),
+      resets: Number(host.dataset.resetCount),
+      rules: host.dataset.lastRulesUsed?.split(" ").filter(Boolean),
+      labels: host.querySelectorAll(".nest-scene__head,.nest-scene__hint,.nest-scene__label").length,
+      visibleActors: actors.length,
+      sceneLayers: host.querySelectorAll(".nest-scene__actors").length,
+      sentences: host.querySelectorAll(".nest-scene__sentence").length,
+      lastFight: host.dataset.lastFight ? JSON.parse(host.dataset.lastFight) : null,
+      contained: actorsContained && stageBox.left >= box.left && stageBox.right <= box.right,
+    };
+  }));
+  expect(reports.map((report) => report.mode)).toEqual(["theft", "colony", "worship", "rival", "fight", "castes"]);
+  expect(reports.every((report) => report.cycles >= 2 && report.resets >= 2 && report.visibleActors >= 3 && report.sceneLayers === 1 && report.labels === 0 && report.contained)).toBe(true);
+  expect(reports[0].sentences).toBe(1);
+  expect(reports[1].sentences).toBe(1);
+  expect(reports[2].sentences).toBe(0);
+  expect(reports[3].sentences).toBe(1);
+  expect(reports[4].sentences).toBe(0);
+  expect(reports[5].sentences).toBe(0);
+  expect(reports[0].rules).toEqual(expect.arrayContaining(["stepMovement", "roleSpeed", "foodShares"]));
+  expect(reports[1].rules).toEqual(expect.arrayContaining(["stepMovement", "foodShares", "advanceBuild"]));
+  expect(reports[2].rules).toEqual(expect.arrayContaining(["stepMovement", "worshipReturnAt", "storeCapacity"]));
+  expect(reports[3].rules).toEqual(expect.arrayContaining(["advanceBuild", "foodShares", "groupCanWin"]));
+  expect(reports[4].rules).toEqual(expect.arrayContaining(["combatPower", "combatHealth", "groupCanWin"]));
+  expect(reports[4].lastFight?.damage).toBeGreaterThan(0);
+  expect(reports[4].lastFight?.remainingHealth).toBeLessThan(reports[4].lastFight?.health);
+  expect(reports[5].rules).toEqual(expect.arrayContaining(["stepMovement", "roleSpeed"]));
+
+  const colors = await page.evaluate(() => {
+    const root = document.documentElement;
+    const stage = document.querySelector(".nest-scene__stage")!;
+    root.setAttribute("data-color-scheme", "light");
+    const light = getComputedStyle(stage).backgroundColor;
+    root.setAttribute("data-color-scheme", "dark");
+    const dark = getComputedStyle(stage).backgroundColor;
+    return { light, dark };
+  });
+  expect(colors.dark).not.toBe(colors.light);
+  expect(errors).toEqual([]);
 });
