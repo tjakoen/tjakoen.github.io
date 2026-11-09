@@ -1289,7 +1289,7 @@ import {
   // Only ants on the same trail, heading the same way, hold each other up, so two crossing trails
   // never lock; and an ant kept waiting for more than a second walks on anyway.
   const outbound = (a) => a.job === "follow" || a.job === "toLetter";
-  const blocked = (ant) => (ant.stuck || 0) < 1 && state.ants.some((o) => o !== ant && o.el && o.job !== "crew" && o.lead !== ant && ant.lead !== o &&
+  const blocked = (ant) => ant.job !== "dance" && (ant.stuck || 0) < 1 && state.ants.some((o) => o !== ant && o.el && o.job !== "crew" && o.lead !== ant && ant.lead !== o &&
     ant.trail && o.trail === ant.trail && outbound(o) === outbound(ant) &&
     Math.hypot(o.px - ant.x, o.py - ant.y) < GAP && Math.cos(ant.heading - o.heading) > 0.2 &&
     ((o.px - ant.x) * Math.cos(ant.heading) + (o.py - ant.y) * Math.sin(ant.heading)) > 0);
@@ -1585,9 +1585,13 @@ import {
     panelQueen();
     hills.forEach((h) => { h.el.style.pointerEvents = "none"; });
     const dancers = mainAnts().filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
+    const pausedScouts = state.scoutQueue.filter((a) => dancers.includes(a));
+    state.scoutQueue = state.scoutQueue.filter((a) => !dancers.includes(a));
+    const center = dancers.length ? dancers.reduce((sum, a) => ({ x: sum.x + a.x / dancers.length, y: sum.y + a.y / dancers.length }), { x: 0, y: 0 }) : stage;
+    const firstAngle = Math.atan2(center.y - stage.y, center.x - stage.x);
     dancers.forEach((a, i) => {
-      a.party = { angle: (i / Math.max(1, dancers.length)) * Math.PI * 2, radius: 40 + (i % 3) * 13 };
-      a.job = "dance"; a.el.classList.remove("wait"); a.el.classList.add("dancing");
+      a.party = { angle: firstAngle + (i / Math.max(1, dancers.length)) * Math.PI * 2, radius: 48 };
+      a.job = "dance"; a.el.classList.remove("wait", "dancing");
     });
     const glyphs = [];
     [...state.stolen].slice(-8).forEach((L, i) => {
@@ -1598,7 +1602,9 @@ import {
     const until = now + (final ? 16000 : 9000);
     const returnAt = worshipReturnAt(until);
     state.party = { start: now, until, returnAt, final, queen, dancers, glyphs, stage, returning: false,
+      gathering: dancers.length > 0, gatherStart: now, pausedScouts,
       queenFrom: mound.hole.slice() };
+    panel.dataset.partyPhase = dancers.length ? "gathering" : "dance";
     state.queen.lay = 0;
     log(final ? "the colony takes the page" : "the colony dances");
     melody();
@@ -1606,7 +1612,7 @@ import {
   const stepParty = (now, dt) => {
     const p = state.party; if (!p) return;
     const t = now / 1000;
-    if (!p.returning && now >= p.returnAt) {
+    if (!p.gathering && !p.returning && now >= p.returnAt) {
       p.returning = true;
       p.crawlFrom = [parseFloat(p.queen.style.left) || p.stage.x, parseFloat(p.queen.style.top) || p.stage.y];
       p.crawlStart = now; p.crawlDone = false;
@@ -1625,12 +1631,27 @@ import {
         p.queen.style.transform = "translateY(22px) scale(.1)"; p.queen.style.opacity = "0";
       }
     }
+    let gathered = true;
     p.dancers.forEach((a) => {
       if (!a.el) return;
       const angle = a.party.angle + t * 0.9;
-      move(a, p.stage.x + Math.cos(angle) * a.party.radius, p.stage.y + Math.sin(angle) * a.party.radius * 0.55 + 8, dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.9 }));
+      const targetAngle = p.gathering ? a.party.angle : angle;
+      const tx = p.stage.x + Math.cos(targetAngle) * a.party.radius;
+      const ty = p.stage.y + Math.sin(targetAngle) * a.party.radius * 0.55 + 8;
+      move(a, tx, ty, dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.9 }));
+      const arrived = Math.hypot(a.x - tx, a.y - ty) < 8;
+      if (p.gathering && !arrived) gathered = false;
+      a.el.classList.toggle("walk", !arrived);
+      if (!p.gathering) a.el.classList.add("dancing");
       a.px = a.x; a.py = a.y;
     });
+    if (p.gathering && gathered) {
+      p.gathering = false;
+      panel.dataset.partyPhase = "dance";
+      const pause = now - p.gatherStart;
+      p.until += pause;
+      p.returnAt += pause;
+    }
     p.glyphs.forEach((g, i) => {
       const angle = (i / Math.max(1, p.glyphs.length)) * Math.PI * 2 + t * 0.7;
       const r = Number(g.dataset.radius) || 58;
@@ -1662,6 +1683,10 @@ import {
       }
     });
     state.party = null;
+    p.pausedScouts.forEach((a) => {
+      if (a.el && state.ants.includes(a) && !state.scoutQueue.includes(a)) state.scoutQueue.push(a);
+    });
+    delete panel.dataset.partyPhase;
     state.stores = Math.max(state.stores, storeCap());
     log("the worship fills the stores");
     if (p.final) { state.nextParty = Infinity; return; }

@@ -28,10 +28,10 @@ gates:
   - bun run check | exit 0
   - bun tools/lint-gate.ts | 4486 flags, matching the committed baseline
   - bun test scripts/nest-simulation.test.js | 7 pass, 0 fail, 35 expectations
-  - PORT=3184 bunx playwright test e2e/terminal.e2e.ts -g 'the note mounts its six live colony boxes' | 1 passed
-  - PORT=3184 bunx playwright test e2e/terminal.e2e.ts | 36 passed, 0 failed
+  - PORT=3185 bunx playwright test e2e/terminal.e2e.ts -g 'the queen leaves the nest for the page dance|the note mounts its six live colony boxes' | 2 passed
+  - PORT=3185 bunx playwright test e2e/terminal.e2e.ts -g 'note figures keep their event loops with reduced motion enabled' | 1 passed
 diffstat: ten files covering shared rules and assets, game and note integration, event figures, note copy, checks, and this report
-unpushed: 83 | This work is committed locally only, as requested. The branch has no upstream.
+unpushed: 84 | This work is committed locally only, as requested. The branch has no upstream.
 verifiedBy: independent read-only second-pass review; findings fixed and rechecked
 doctor: graph current; inherited report evidence, local layer pin, skill mount, and shell stream are carried below
 ---
@@ -56,13 +56,18 @@ interval. Actors have per-box state, move through eased
 headings with shared movement rules, and alternate the game's ant leg frames while walking. Every
 scene completes, clears for a short reset, and starts again.
 
-The note boxes no longer show blue store squares, internal labels, or explanatory copy. Theme-colored
-letter glyphs accumulate beside the mound to show stores rising. Actors are hidden inside a mound.
-The fight trail now curves across the scene. The note links
-open and start the full game on the home page, and the note page suppresses the full game's idle
-stray ant. The event loop continues when reduced motion is enabled, with the CSS leg frames
-suppressed. The technical description now refers to a few JavaScript modules instead of one file.
-The captions and story remain outside the event boxes.
+The note boxes no longer show store glyphs, internal labels, or explanatory copy. Store counts still
+rise in simulation state, while each figure ends at the scene floor and omits the unused area below
+it. Actors are hidden inside a mound. The rival scene draws one trail from each colony toward the
+shared sentence. Rival foragers follow sampled points along their colony's trail to the sentence
+and back while carrying. The two fighting groups walk opposite sampled trail segments before the
+shared combat rules resolve the clash. The fight trail follows a shallow, organic route through the
+approach and clash area. The actual game worship now gathers available ants around the queen before they circle her;
+the pending scout queue pauses during the dance so it cannot pull dancers away. The note links open
+and start the full game on the home page, and the note page suppresses the full game's idle stray
+ant. The event loop continues when reduced motion is enabled, with the CSS leg frames suppressed.
+The technical description now refers to a few JavaScript modules instead of one file. The captions
+and story remain outside the event boxes.
 
 ## Gate output
 
@@ -93,11 +98,16 @@ Ran 7 tests across 1 file.
 ```
 
 ```text
-Running 36 tests using 4 workers
-  ✓  the note opens the colony on the home page
-  ✓  note figures keep their event loops with reduced motion enabled
-  ✓  the note mounts its six live colony boxes (1.3m)
-  36 passed
+Running 2 tests using 2 workers
+  ✓  the queen leaves the nest for the page dance (11.8s)
+  ✓  the note mounts its six live colony boxes (1.2m)
+  2 passed
+```
+
+```text
+Running 1 test using 1 worker
+  ✓  note figures keep their event loops with reduced motion enabled (14.0s)
+  1 passed
 ```
 
 ## What was not done
@@ -112,10 +122,15 @@ the figures continue their own loops there.
 
 The focused Playwright test watched each box through at least two full cycles and visible resets. It
 checked one actor layer per scene, expected sentence counts, shared rule use, actor containment,
-theme changes, hidden mound actors, visible store glyphs, the three-soldier rival defeat, and
-note-side console and page errors. A separate test confirmed that the event loop continues under
-reduced motion. The full terminal suite passed. The current rival and fight scenes were also opened
-and visually reviewed in the browser.
+theme changes, hidden mound actors, store counts without glyphs, the two sentence-bound rival trails,
+the three-soldier rival defeat, and note-side console and page errors. A separate test confirmed
+that the event loop continues under reduced motion. The actual game worship test checks that the
+ants gather before their orbit. The note, rival trails, fight trail, and shortened scene boxes were
+opened and visually reviewed in the browser.
+
+Port 3184 belongs to the main checkout, so it could not verify this worktree. The focused suite ran
+on port 3185, where Playwright started the server from this branch. A broader suite was stopped
+after it reused the wrong checkout; its partial failures are not evidence about this branch.
 
 The local site shell emits three failed reconnect requests to its long-lived /stream EventSource
 while the note runs. The request URL is outside the note module, and the test excludes only that

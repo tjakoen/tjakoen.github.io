@@ -476,6 +476,9 @@ test("note figures keep their event loops with reduced motion enabled", async ({
     await expect(page.locator("#nest-mock")).toHaveClass(/celebrating/);
     await expect(page.locator(".nest-queen:not(.panel-queen)")).toBeVisible();
     await expect(page.locator("[data-k='worship-bar']")).toBeVisible();
+    await expect(page.locator("#nest-mock")).toHaveAttribute("data-party-phase", "gathering");
+    await expect(page.locator(".nest-ant.walk").first()).toBeVisible();
+    await expect.poll(() => page.locator("#nest-mock").getAttribute("data-party-phase"), { timeout: 12_000 }).toBe("dance");
     await expect(page.locator(".nest-ant.dancing").first()).toBeVisible();
     await page.waitForTimeout(1800);
     await expect(page.locator(".nest-queen:not(.panel-queen)")).toHaveClass(/dancing/);
@@ -719,7 +722,10 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
       homeActorsHidden: actors.filter((actor) => actor.classList.contains("inside-mound")).every((actor) => getComputedStyle(actor).visibility === "hidden"),
       moundsDestroyed: Number(host.dataset.rivalMoundsDestroyed || 0),
       soldiers: actors.filter((actor) => actor.getAttribute("data-role") === "soldier").length,
-      foodGlyphsSeen: Number(host.dataset.maxStoreGlyphsSeen || 0),
+      storesSeen: Number(host.dataset.maxStoresSeen || 0),
+      storeGlyphs: host.querySelectorAll(".nest-scene__stored-food").length,
+      trails: host.querySelectorAll(".nest-scene__trail").length,
+      trailRouteSteps: Number(host.dataset.trailRouteSteps || 0),
       lastFight: host.dataset.lastFight ? JSON.parse(host.dataset.lastFight) : null,
       contained: actorsContained && stageBox.left >= box.left && stageBox.right <= box.right,
     };
@@ -738,9 +744,13 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(reports[3].rules).toEqual(expect.arrayContaining(["advanceBuild", "foodShares", "groupCanWin", "damageMound"]));
   expect(reports[3].moundsDestroyed).toBeGreaterThanOrEqual(2);
   expect(reports[3].soldiers).toBe(3);
-  expect(reports[0].foodGlyphsSeen).toBeGreaterThan(0);
-  expect(reports[1].foodGlyphsSeen).toBeGreaterThan(0);
-  expect(reports[2].foodGlyphsSeen).toBeGreaterThan(0);
+  expect(reports[0].storesSeen).toBeGreaterThan(0);
+  expect(reports[1].storesSeen).toBeGreaterThan(0);
+  expect(reports[2].storesSeen).toBeGreaterThan(0);
+  expect(reports.every((report) => report.storeGlyphs === 0)).toBe(true);
+  expect(reports[3].trails).toBe(2);
+  expect(reports[3].trailRouteSteps).toBeGreaterThan(0);
+  expect(reports[4].trailRouteSteps).toBeGreaterThan(0);
   expect(reports[4].rules).toEqual(expect.arrayContaining(["combatPower", "combatHealth", "groupCanWin"]));
   expect(reports[4].lastFight?.damage).toBeGreaterThan(0);
   expect(reports[4].lastFight?.remainingHealth).toBeLessThan(reports[4].lastFight?.health);

@@ -19,7 +19,7 @@ import {
 
 const NS = "http://www.w3.org/2000/svg";
 const WIDTH = 600;
-const HEIGHT = 240;
+const HEIGHT = 200;
 const BASE_SPEED = 76;
 const svg = (name, attrs = {}) => {
   const el = document.createElementNS(NS, name);
@@ -60,6 +60,26 @@ function addTrail(sim) {
   const el = svg("path", { class: "nest-scene__trail", d: "" });
   sim.dynamic.append(el);
   return el;
+}
+
+function trailPoints(path, start = 0, end = 1, steps = 10) {
+  const length = path.getTotalLength();
+  return Array.from({ length: steps + 1 }, (_, index) => {
+    const t = start + (end - start) * index / steps;
+    const point = path.getPointAtLength(length * t);
+    return { x: point.x, y: point.y };
+  });
+}
+
+function moveOnRoute(sim, actor, route, dt, options = {}) {
+  const point = route[actor.routeIndex || 0];
+  if (!point) return true;
+  if (moveActor(sim, actor, point, dt, options)) {
+    actor.routeIndex = (actor.routeIndex || 0) + 1;
+    sim.host.dataset.trailRouteSteps = String((Number(sim.host.dataset.trailRouteSteps) || 0) + 1);
+    return actor.routeIndex >= route.length;
+  }
+  return false;
 }
 
 function addMound(sim, x, y, { width = 118, height = 54, rival = false, progress = 1 } = {}) {
@@ -154,33 +174,16 @@ function updateCarryGlyph(actor) {
   }
 }
 
-function addStores(sim, { count = 12, value = 0, x = 172, y = 210, seed = "·" } = {}) {
+function addStores(sim, { count = 12, value = 0, seed = "·" } = {}) {
   sim.storeMax = count;
   sim.stores = value;
   sim.storeContents = Array.from({ length: value }, () => seed);
-  sim.storeX = x;
-  sim.storeY = y;
-  sim.storeGlyphs = svg("g", { class: "nest-scene__stores", "aria-hidden": "true" });
-  sim.dynamic.append(sim.storeGlyphs);
   renderStores(sim);
 }
 
 function renderStores(sim) {
-  if (sim.storeGlyphs) {
-    const marks = sim.storeContents.map((character, index) => {
-      const glyph = svg("text", {
-        class: "nest-scene__stored-food",
-        x: sim.storeX + (index % 4) * 8 + (Math.floor(index / 4) % 2) * 2,
-        y: sim.storeY + Math.floor(index / 4) * 8,
-      });
-      glyph.textContent = character;
-      return glyph;
-    });
-    sim.storeGlyphs.replaceChildren(...marks);
-  }
   if (sim.host.dataset.stores !== undefined) sim.host.dataset.stores = String(sim.stores);
   sim.host.dataset.maxStoresSeen = String(Math.max(Number(sim.host.dataset.maxStoresSeen) || 0, sim.stores));
-  if (sim.storeGlyphs) sim.host.dataset.maxStoreGlyphsSeen = String(Math.max(Number(sim.host.dataset.maxStoreGlyphsSeen) || 0, sim.storeGlyphs.childElementCount));
 }
 
 function applyFood(sim, letter) {
@@ -199,7 +202,7 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
   for (const actor of workers) {
     if (actor.job === "idle" || actor.job === "search") {
       if (scoutFirst && actor.role !== "scout" && !sim.trailLaid) continue;
-      const next = sim.letters.filter((letter) => letter.state === "free")
+      const next = sim.letters.filter((letter) => letter.state === "free" && (sim.mode !== "rival" || letter.side === actor.side))
         .toSorted((a, b) => Math.hypot(actor.x - a.x, actor.y - a.y) - Math.hypot(actor.x - b.x, actor.y - b.y))[0];
       if (!next) continue;
       next.state = "assigned";
@@ -209,16 +212,30 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
     }
     if (actor.job === "scout" || actor.job === "toLetter") {
       const letter = actor.letter;
-      if (moveActor(sim, actor, { x: letter.x, y: letter.y + 12 }, dt, { job: actor.job })) {
+      const route = sim.trailPoints?.[actor.side];
+      let arrived = false;
+      if (route) {
+        if (actor.routeDirection !== "outbound") { actor.routeDirection = "outbound"; actor.routeIndex = 0; }
+        arrived = actor.routeIndex < route.length
+          ? moveOnRoute(sim, actor, route, dt, { job: actor.job }) && moveActor(sim, actor, { x: letter.x, y: letter.y + 12 }, dt, { job: actor.job })
+          : moveActor(sim, actor, { x: letter.x, y: letter.y + 12 }, dt, { job: actor.job });
+      } else arrived = moveActor(sim, actor, { x: letter.x, y: letter.y + 12 }, dt, { job: actor.job });
+      if (arrived) {
         letter.state = "carried";
         letter.node.style.opacity = "0";
         actor.job = "carry";
         actor.carry = letter;
+        actor.routeDirection = "inbound";
+        actor.routeIndex = 0;
         attachCarryGlyph(sim, actor, letter);
       }
     } else if (actor.job === "carry") {
       const letter = actor.carry;
-      const arrived = moveActor(sim, actor, home, dt, { job: "carry", letterNeed: letter.need });
+      const trailCurve = sim.trailPoints?.[actor.side];
+      const returnRoute = trailCurve?.toReversed();
+      const arrived = returnRoute && actor.routeIndex < returnRoute.length
+        ? moveOnRoute(sim, actor, returnRoute, dt, { job: "carry", letterNeed: letter.need }) && moveActor(sim, actor, home, dt, { job: "carry", letterNeed: letter.need })
+        : moveActor(sim, actor, home, dt, { job: "carry", letterNeed: letter.need });
       updateCarryGlyph(actor);
       if (!arrived) continue;
       letter.state = "delivered";
@@ -314,10 +331,14 @@ function addFighters(sim, { mainCount = 3, rivalCount = 2, homeX = 118, rivalX =
 
 function setupFight(sim) {
   addFloor(sim, 178);
-  sim.dynamic.append(svg("path", { d: "M36 154 C96 146 108 126 166 132 S244 171 302 158 S392 124 446 137 S518 163 564 148", class: "nest-scene__trail" }));
+  const trail = svg("path", { d: "M66 158 C134 151 176 137 236 145 S360 162 410 148 S484 141 534 155", class: "nest-scene__trail" });
+  sim.dynamic.append(trail);
   addFighters(sim);
-  sim.data = { mains: sim.actors.filter((actor) => actor.side === "main"), rivals: sim.actors.filter((actor) => actor.side === "rival"), target: null, fightElapsed: 0, mainLosses: 0 };
-  setPhase(sim, "approach");
+  sim.data = { mains: sim.actors.filter((actor) => actor.side === "main"), rivals: sim.actors.filter((actor) => actor.side === "rival"), target: null, fightElapsed: 0, mainLosses: 0,
+    trailMet: false };
+  sim.data.mains.forEach((actor, index) => { actor.routeIndex = 0; actor.trailRoute = trailPoints(trail, 0.12, 0.48, 8 + index); });
+  sim.data.rivals.forEach((actor, index) => { actor.routeIndex = 0; actor.trailRoute = trailPoints(trail, 0.88, 0.52, 6 + index); });
+  setPhase(sim, "trail-approach");
 }
 
 function setupCastes(sim) {
@@ -364,13 +385,19 @@ function setupRival(sim) {
   const rivalMound = addMound(sim, 425, 125, { width: 126, height: 54, rival: true, progress: 0 });
   addMound(sim, 36, 125, { width: 126, height: 54, progress: 1 });
   sim.letters = addSentence(sim, "rival ants steal letters", [0, 1, 2, 3, 4, 7, 8, 9]);
+  sim.letters.forEach((letter, index) => { letter.side = index < sim.letters.length / 2 ? "main" : "rival"; });
   sim.storeMax = storeCapacity(0);
   sim.stores = 0;
   sim.storeContents = [];
   sim.storeMax = storeCapacity(0);
   recordRule(sim, "storeCapacity");
-  sim.trailPath = addTrail(sim);
-  sim.trailPath.setAttribute("d", "M150 158 C202 140 242 168 294 148 S388 136 444 158");
+  sim.trailPaths = [addTrail(sim), addTrail(sim)];
+  sim.trailPaths[0].setAttribute("d", `M150 158 C174 130 187 113 ${sim.letters[0].x} 83 S${sim.letters[0].x + 22} 68 ${sim.letters[0].x + 38} 63`);
+  sim.trailPaths[1].setAttribute("d", `M450 158 C426 130 416 113 ${sim.letters.at(-1).x} 83 S${sim.letters.at(-1).x - 22} 68 ${sim.letters.at(-1).x - 38} 63`);
+  sim.trailPoints = {
+    main: trailPoints(sim.trailPaths[0]),
+    rival: trailPoints(sim.trailPaths[1]),
+  };
   const workers = [addActor(sim, "rival-worker", "rival", home.x - 8, home.y + 8, { job: "wait" }), addActor(sim, "rival-worker", "rival", home.x + 8, home.y + 9, { job: "wait" })];
   const mainWorkers = [addActor(sim, "worker", "main", mainHome.x - 8, mainHome.y + 7, { job: "wait" }), addActor(sim, "worker", "main", mainHome.x + 8, mainHome.y + 7, { job: "wait" })];
   const soldiers = [
@@ -492,6 +519,15 @@ function tickCombat(sim, dt, { mains, rivals, getTarget, finish } = {}) {
 }
 
 function tickFight(sim, dt) {
+  if (!sim.data.trailMet) {
+    const travelers = [...sim.data.mains, ...sim.data.rivals];
+    const arrived = travelers.map((actor) => moveOnRoute(sim, actor, actor.trailRoute, dt, { job: "approach" }));
+    if (arrived.every(Boolean)) {
+      sim.data.trailMet = true;
+      setPhase(sim, "approach");
+    }
+    return;
+  }
   if (sim.phase === "resolve-win" || sim.phase === "resolve-loss") {
     if (sim.clock < sim.data.resolveUntil) return;
     sim.data.pendingTarget?.el.remove();
@@ -691,7 +727,6 @@ export function mountNest(host) {
   host.dataset.resetCount = "0";
   if (mode === "rival") host.dataset.rivalMoundsDestroyed = "0";
   host.dataset.maxStoresSeen = "0";
-  host.dataset.maxStoreGlyphsSeen = "0";
   host.dataset.lastRulesUsed = "";
   host.dataset.cycle = "1";
   host.dataset.stores = "0";
