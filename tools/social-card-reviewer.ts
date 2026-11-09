@@ -26,7 +26,7 @@ ${inner}
 
 // A: the question, big
 const A=frame(`
-<text x="96" y="140" style="fill:${MUTED};font-size:21px;letter-spacing:6px">ME, TO MY DIRECTOR, ABOUT MY AI CODE REVIEWER</text>
+<text x="96" y="140" style="fill:${MUTED};font-size:21px;letter-spacing:6px">1 / 4 · THE QUESTION THAT STARTED IT</text>
 <text x="90" y="400" style="fill:${INK};font-size:150px;letter-spacing:-4px">"I don't</text>
 <text x="90" y="560" style="fill:${INK};font-size:150px;letter-spacing:-4px">trust it."</text>
 <text x="90" y="800" style="fill:${INK};font-size:190px;letter-spacing:-5px;font-style:italic">"Why not?"</text>
@@ -36,22 +36,21 @@ const A=frame(`
 // B: the wait, as a chart
 const sc=(h:number)=>Math.round(h/17.6*940);
 const B=frame(`
-<text x="96" y="140" style="fill:${MUTED};font-size:21px;letter-spacing:6px">"I DON'T TRUST IT." "WHY NOT?"</text>
-<text x="96" y="250" style="fill:${INK};font-size:62px;letter-spacing:-1px">How long 1 in 4 of my team's</text>
-<text x="96" y="330" style="fill:${INK};font-size:62px;letter-spacing:-1px">pull requests waited for</text>
-<text x="96" y="410" style="fill:${INK};font-size:62px;letter-spacing:-1px">a first review</text>
-<text x="96" y="530" style="fill:${MUTED};font-size:26px">Before my AI reviewer</text>
-<rect x="96" y="550" width="${sc(17.6)}" height="110" rx="6" style="fill:none;stroke:${INK};stroke-width:2.5"/>
-<text x="${96+sc(17.6)-24}" y="625" text-anchor="end" style="fill:${INK};font-size:56px">17.6 hours</text>
-<text x="96" y="760" style="fill:${MUTED};font-size:26px">Now</text>
-<rect x="96" y="780" width="${sc(3.0)}" height="110" rx="6" style="fill:${INK}"/>
-<text x="${96+sc(3.0)+28}" y="855" style="fill:${INK};font-size:56px">3.0 hours</text>
-<text x="96" y="980" style="fill:${MUTED};font-size:26px;font-style:italic">and cost per review down by half. A before and after, not an experiment.</text>`);
+<text x="96" y="140" style="fill:${MUTED};font-size:21px;letter-spacing:6px">3 / 4 · WHAT MY TEAM FELT</text>
+<text x="96" y="230" style="fill:${INK};font-size:64px;letter-spacing:-1px">How long 1 in 4 pull requests</text>
+<text x="96" y="310" style="fill:${INK};font-size:64px;letter-spacing:-1px;font-style:italic">waited for a first review.</text>
+<text x="96" y="410" style="fill:${MUTED};font-size:26px">Before my AI reviewer</text>
+<rect x="96" y="430" width="${sc(17.6)}" height="110" rx="6" style="fill:none;stroke:${INK};stroke-width:2.5"/>
+<text x="${96+sc(17.6)-24}" y="505" text-anchor="end" style="fill:${INK};font-size:56px">17.6 hours</text>
+<text x="96" y="640" style="fill:${MUTED};font-size:26px">Now</text>
+<rect x="96" y="660" width="${sc(3.0)}" height="110" rx="6" style="fill:${INK}"/>
+<text x="${96+sc(3.0)+28}" y="735" style="fill:${INK};font-size:56px">3.0 hours</text>
+<text x="96" y="860" style="fill:${MUTED};font-size:26px;font-style:italic">and cost per review down by half. A before and after, not an experiment.</text>`);
 
 // C: the loop, drawn
 const stamp=(x:number,y:number,t:string,rot:number,dark=false)=>`<g transform="rotate(${rot} ${x} ${y})"><rect x="${x-80}" y="${y-30}" width="160" height="60" rx="6" style="fill:${dark?INK:"none"};stroke:${INK};stroke-width:3"/><text x="${x}" y="${y+12}" text-anchor="middle" style="fill:${dark?PAPER:INK};font-size:32px;letter-spacing:3px">${t}</text></g>`;
 const C=frame(`
-<text x="96" y="140" style="fill:${MUTED};font-size:21px;letter-spacing:6px">HOW MY AI CODE REVIEWER LEARNS</text>
+<text x="96" y="140" style="fill:${MUTED};font-size:21px;letter-spacing:6px">2 / 4 · HOW IT LEARNS</text>
 <text x="96" y="230" style="fill:${INK};font-size:64px;letter-spacing:-1px">Every comment it leaves</text>
 <text x="96" y="310" style="fill:${INK};font-size:64px;letter-spacing:-1px;font-style:italic">gets graded.</text>
 <rect x="250" y="400" width="700" height="250" rx="12" style="fill:${PAPER};stroke:${INK};stroke-width:2"/>
@@ -67,17 +66,17 @@ ${stamp(300,690,"WRONG",6)}
 <path d="M300,800 C130,760 120,560 245,525" style="fill:none;stroke:${MUTED};stroke-width:2.5" marker-end="url(#arr)"/>
 <text x="600" y="830" text-anchor="middle" style="fill:${INK};font-size:34px">the lens that missed gets fixed,</text>
 <text x="600" y="880" text-anchor="middle" style="fill:${INK};font-size:34px">then replayed on the commit it missed</text>
-<text x="96" y="1000" style="fill:${MUTED};font-size:26px">It started with my director asking, "Why not?"</text>`);
+<text x="96" y="1000" style="fill:${MUTED};font-size:26px">Every miss becomes a test it has to pass next time.</text>`);
 
 // D: the board, cleaner, dark full-bleed
 const D=frame(`
-<defs><clipPath id="c"><rect x="60" y="300" width="1080" height="640" rx="14"/></clipPath></defs>
-<text x="96" y="150" style="fill:${PAPER};font-size:66px;letter-spacing:-1.5px">"I don't trust it."</text>
-<text x="96" y="236" style="fill:${PAPER};font-size:66px;letter-spacing:-1.5px;font-style:italic">"Why not?"</text>
-<g clip-path="url(#c)"><image href="${shot}" x="-345" y="300" width="2160" height="750" preserveAspectRatio="xMinYMin slice"/></g>
-<rect x="60" y="300" width="1080" height="640" rx="14" style="fill:none;stroke:rgba(226,224,216,.35);stroke-width:2"/>
-<text x="96" y="1010" style="fill:${PAPER};font-size:30px">Three months later, it reviews my team's pull requests on its own.</text>
-<text x="96" y="1056" style="fill:${MUTED};font-size:22px;font-style:italic">the real board, on invented pull requests</text>`,INK);
+<defs><clipPath id="c"><rect x="96" y="400" width="1008" height="560" rx="12"/></clipPath></defs>
+<text x="96" y="140" style="fill:${MUTED};font-size:21px;letter-spacing:6px">4 / 4 · WHAT IT LOOKS LIKE</text>
+<text x="96" y="230" style="fill:${INK};font-size:64px;letter-spacing:-1px">It reviews my team's</text>
+<text x="96" y="310" style="fill:${INK};font-size:64px;letter-spacing:-1px;font-style:italic">pull requests on its own.</text>
+<g clip-path="url(#c)"><image href="${shot}" x="-268" y="400" width="2016" height="700" preserveAspectRatio="xMinYMin slice"/></g>
+<rect x="96" y="400" width="1008" height="560" rx="12" style="fill:none;stroke:${INK};stroke-width:2"/>
+<text x="96" y="1010" style="fill:${MUTED};font-size:24px;font-style:italic">The real board, on invented pull requests. Approval still stays with me.</text>`);
 
 const b=await chromium.launch();
 try{const pg=await b.newPage({viewport:{width:W,height:H}});

@@ -41,9 +41,9 @@ socialImage:
   - "/media/notes/the-reviewer-that-learned-to-be-wrong-social-4-board.png"
 socialImageAlt:
   - "The question that started it, set large: \"I don't trust it.\" and \"Why not?\", with the answer three months later: I don't re-read its reviews any more."
-  - "How the reviewer learns: a review comment stamped FIXED and WRONG, with arrows around it. The lens that missed gets fixed, then replayed on the commit it missed."
+  - "How the reviewer learns: a review comment stamped FIXED and WRONG, with arrows around it. The lens that missed gets fixed, then replayed on the commit it missed. Every miss becomes a test it has to pass next time."
   - "Two bars for how long 1 in 4 of the team's pull requests waited for a first review: 17.6 hours before the reviewer, 3.0 hours now, with cost per review down by half."
-  - "The real review board on invented pull requests, in columns for queued, in flight and waiting on author, under the question that started it."
+  - "Card four of four: the real review board on invented pull requests, in columns for queued, in flight and waiting on author, under the line: it reviews my team's pull requests on its own. Approval still stays with me."
 ---
 
 My PR review kit is a set of Claude skills that reviews my team's pull requests at [Career Team](https://careerteam.com) the
