@@ -44,6 +44,14 @@ verbatim at the top of the first reply. When the script prints nothing the plugi
 saying the checklist did not run, rather than staying silent, because a missing block and a passing
 block look identical from inside the session.
 
+**Known defect, 9 November 2026.** The injection does not work today, and the fallback does not
+either. The plugin runs the script through execFile without closing stdin, so the script's first line
+waits on a pipe that never ends and the 20 second timeout kills it, and runChecklist returns null. The
+notice the plugin builds for that case did not reach this GUI session's transcript, which is the second
+half of the same silence. Until the plugin patch lands, run the checklist by hand and show its output.
+The reproduction and the patch are in
+[the 9 November run report](../artifacts/runs/2026-11-09-analytics-fallback.md).
+
 Before calling work done:
 
 ```sh

@@ -32,7 +32,7 @@ both: read first, then say something you can defend, then stop.
 ## What this does not do
 
 **It never re-implements the doctor.** `bunx pantry doctor` is the mechanical tier of the loop
-(LOOP §2) and it already owns fourteen checks: `CLAUDE.md` present, the `AGENTS.md` symlink, forked
+(LOOP §2) and it already owns the mechanical checks: `CLAUDE.md` present, the `AGENTS.md` symlink, forked
 standards, `plans/`, `pantry.config.json`, audit freshness, graphify freshness, an e2e suite, doc
 links, doc symbols, layer pins, mounted skills, run-ledger evidence, and scope growth against the
 graph. Those are grep, exit codes and file-age math. A model re-deriving them by hand is slower, more
@@ -94,10 +94,11 @@ PHASE 2 - Judge the eight things the doctor cannot. One row per check. Cite file
      for real, not eyeballed. Quote the glob or zsh eats it, follow redirects or every
      healthy link reads as broken (Pages answers 301 before 200), and strip the trailing
      punctuation a URL picks up at the end of a sentence:
-       grep -rhoE 'https://tjakoen\.github\.io/[^ )"`>]+' --include='*.md' . \
+       grep -rhoE 'https://(tjakoen\.github\.io|portfolio\.tjakoen\.com)/[^ )"`>]+' --include='*.md' . \
          | sed 's/[.,;:]*$//' | sort -u \
          | while read u; do echo "$(curl -sL -o /dev/null -w '%{http_code}' "$u") $u"; done
-     Anything not 200 is a finding. A standard that was renamed breaks every repo that
+     Anything not 200 is a finding, and so is a run that matched nothing: a check that tests
+     no address is a check that cannot fail. A standard that was renamed breaks every repo that
      pointed at it, and the pointing repo is where it shows up.
   C5 AUDIT RUNBOOK. If AUDIT.md exists: is every check a COMMAND plus a PASS BAR
      ("expect zero hits"), or is it prose? Run two or three of its checks and say

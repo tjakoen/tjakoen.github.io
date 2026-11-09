@@ -68,7 +68,7 @@ Two tiers of check, and the machine tier now has four triggers rather than three
 
 | Trigger | What runs | On red |
 |---|---|---|
-| Push | The doctor + typecheck + tests + e2e + lint (CI, where the repo is on GitHub). | CI fails the push visibly. Nonzero exit, no merge. |
+| Push | The typecheck + tests + e2e + lint (CI, where the repo is on GitHub). | CI fails the push visibly. Nonzero exit, no merge. |
 | Session start | The doctor, as the first orientation step (SESSION-LOOP §1 grows this rule). Its answer-log check reads the decision channel in the same pass. | Its findings land in `plans/` triage — the session sees them before touching code. An answer nobody has acted on is named there too, so it is acted on or acked, never simply not seen. |
 | Turn end | The typecheck when a typed file moved this turn, `proof verify` over the diff, a nudge for the dev tour §4a asks of a rendered change, and a lint count graded against a committed baseline. | The run does not get to say "done" yet. Ordered by what each catches: a type error is broken code, a lint flag is a preference. |
 | Schedule (weekly, §2b) | Only the chores that passed the §2a gate: link rot, a cold build on a clean checkout, the unacked-answer count, a dependency refresh. | It files a finding where the next session will meet it. It never fails a push, because there is no push to fail, and it never lands anything. |

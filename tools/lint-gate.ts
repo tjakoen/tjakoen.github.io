@@ -205,7 +205,7 @@ function report(): void {
     console.log(`  ${r.key}: baseline ${r.base} -> now ${r.now} (+${r.now - r.base})`);
   }
   console.log(
-    "A real increase is fine — rerun `bun run lint:baseline` to accept it deliberately. A surprise\n" +
+    "A real increase is fine — rerun `bun run lint:baseline --accept` to accept it deliberately. A surprise\n" +
       "one is a warning worth fixing before it joins the baseline permanently.",
   );
 }

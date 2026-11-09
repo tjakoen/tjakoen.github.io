@@ -127,11 +127,12 @@ would put every dependency bump in the human lane, which is the blunt instrument
 naming.
 
 **Blocking is rare here, and this was the first of it.** Every gate in this estate exits 0 except the
-two PreToolUse denials in this file, and that default is sound: a gate that fails a turn over a soft
-signal gets removed within the week. A path on this list is not a soft signal. It is a rule LOOP
-already states as absolute, so blocking makes the mechanism match the prose instead of adding a
-constraint of its own. When this hook was written on 2026-08-13 it was the only teeth in the estate;
-section 4 is the second set, added a week later, and the bar for a third is the same argument.
+three PreToolUse denials, the two here and the Edge push guard. That default is sound: a gate that
+fails a turn over a soft signal gets removed within the week. A path on this list is not a soft
+signal. It is a rule LOOP already states as absolute, so blocking makes the mechanism match the prose
+instead of adding a constraint of its own. When this hook was written on 2026-08-13 it was the only
+teeth in the estate. Section 4 is the second set, added a week later, and the bar for a third is the
+same argument.
 
 **The escape hatch is a file the owner writes.** A file in the machine's config directory holds one
 extended regular expression per line, and a path matching one is allowed through. The file is itself

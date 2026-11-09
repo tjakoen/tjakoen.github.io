@@ -226,11 +226,12 @@ empty. And measure the window before setting a line in it: the remembered figure
 is usually an older model's, and a threshold set there fires halfway through an ordinary session.
 
 The trigger is built rather than proposed: a reader that tails the transcript, called from the
-turn-end hook in a quiet mode that prints nothing until the reading crosses the warn line. It belongs
-at machine level rather than in any one repo, and so does the durable-state check beside it, because
-neither is about the repo it runs in: one reads a transcript, the other reads git. Wired once in the
-agent config, every repo on the machine inherits both, and the config being a repo of its own is what
-carries the trigger to a second device. A per-repo copy is the version that covers one repo today and
+PostToolUse hook in a quiet mode that prints nothing until the reading crosses the warn line. It
+belongs at machine level rather than in any one repo, and so does the durable-state check beside it,
+because neither is about the repo it runs in: one reads a transcript, the other reads git. Wired once
+in the agent config, every repo on the machine inherits both, and the config being a repo of its own
+is what carries the trigger to a second device. A per-repo copy is the version that covers one repo
+today and
 becomes three drifting copies later.
 
 The defaults are the measurement and not a memory, and the two lines deliberately answer different
