@@ -653,7 +653,10 @@ kit. It is a before and after, not an experiment.
 
 The other half of the payoff was mine. Before the kit, first-pass review ate a big share of my working hours: I
 was the bottleneck, and I was reading every word a reviewer I did not trust had written. Now I do not
-re-read its reviews at all. The hours that used to go to the review queue go to the people on my team
+re-read its reviews at all. I trust them, which was the whole point of answering Kaither's question,
+and calibration runs without me. What reaches me is the short list the kit is built to hand me: the
+approve button, and the rulings when a proposed lens change disagrees with how the codebase actually
+works. The hours that used to go to the review queue go to the people on my team
 instead: the one-on-ones, the unblocking, the dashboards I wrote about in
 [I Showed My Team a Dashboard](show-them-the-board.md). For a manager that is the real trade. The
 kit took the part of the job a machine can be held to a standard on, and gave back the part only I
@@ -665,13 +668,6 @@ I have not shown that the kit makes the codebase better. I have shown that its f
 that its misses get replayed, and that the share of its comments people act on is something I can
 look at instead of guess at. Whether that adds up to fewer bugs reaching production is a longer
 study than three months, and I have not run it.
-
-I have also not measured my own time. The team's wait went down, and calibration runs without me: the
-loop scores, tightens and replays on its own schedule. I do not re-read its reviews any more. I trust
-them, which was the whole point of answering Kaither's question. What reaches me is the short list
-the kit is built to hand me, the approve button and the rulings when a proposed lens change disagrees
-with how the codebase actually works. That is far less than reviewing every pull request by hand,
-and the freed time went to my team, but I have not put a number on the hours.
 
 Back to that commit on day two, `feat(check-pr): review the ticket, not just the diff`. Seven hundred commits later
 the kit still does that first, and almost everything after it is the same idea, applied to the
