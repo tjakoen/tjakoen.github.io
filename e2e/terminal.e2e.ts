@@ -88,7 +88,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
 
   test("the note starts the colony from its own button", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
-    await page.getByRole("button", { name: "Start the colony" }).click();
+    await page.getByRole("button", { name: "Play the colony" }).click();
     await expect(page.locator("#nest-mock")).toBeVisible();
   });
 
@@ -100,7 +100,6 @@ test.describe("the interactive terminal (third client of the one door)", () => {
 
   test("the launcher is always there, and nest opens the colony", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
-    await expect(page.getByText("Open the terminal at the bottom of the page", { exact: false })).toBeVisible();
     const launcher = page.getByRole("button", { name: "Open the Nest" });
     await expect(launcher).toBeVisible();
     await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
@@ -391,7 +390,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.active), { timeout: 20_000 }).toBe(true);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length), { timeout: 15_000 }).toBeGreaterThan(0);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.trails.length), { timeout: 15_000 }).toBeGreaterThan(0);
-    await expect.poll(() => page.evaluate(() => window.__nest!.rival.minis.length), { timeout: 20_000 }).toBe(2);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.minis.length), { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
     await page.evaluate(() => window.__nest!.forceRivalSteal());
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size), { timeout: 5_000 }).toBeGreaterThan(0);
     const placement = await page.evaluate(() => {

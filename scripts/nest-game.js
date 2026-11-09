@@ -1306,7 +1306,7 @@
     if (ant.job === "rival-siege" || ant.job === "rival-contest") return stepRivalDefense(ant, dt);
     if (ant.job === "cache") return stepCache(ant, dt);
     if ((ant.role === "soldier" || ant.role === "guard") && ant.job !== "dance" && ant.job !== "rival-siege" && ant.job !== "rival-contest") {
-      const threat = rival.ants.find((r) => r.el && (Math.hypot(r.x - ant.x, r.y - ant.y) < 170 || state.trails.some((t) => !t.side && t.pts.some((p) => Math.hypot(p[0] - r.x, p[1] - r.y) < 45))));
+      const threat = rival.ants.find((r) => r.el && (r.role === "guard" || r.job === "rival-flyer") && (Math.hypot(r.x - ant.x, r.y - ant.y) < 170 || state.trails.some((t) => !t.side && t.pts.some((p) => Math.hypot(p[0] - r.x, p[1] - r.y) < 45))));
       if (threat) {
         if (ant.job !== "guard-chase") { ant.chaseResume = ant.job; ant.chaseMini = ant.mini; ant.chasePatrol = ant.patrol; }
         ant.job = "guard-chase"; ant.path = [[threat.x, threat.y]]; ant.k = 0;
@@ -1488,8 +1488,16 @@
   };
   // A missing scout is a gap, not an ending. The queen sends one whenever nobody is scouting, so
   // a killed scout cannot leave the colony with no way to find a new trail.
+  const enforceMainCap = () => {
+    while (mainAnts().length > MAX_ANTS) {
+      const victim = mainAnts().find((a) => a.role === "worker" && !a.letter) || mainAnts().find((a) => a.role !== "scout");
+      if (!victim) break;
+      squashQuiet(victim);
+    }
+  };
+
   const ensureScout = () => {
-    if (state.over || state.overrun || state.queenDead || state.party) return;
+    if (state.over || state.overrun || state.queenDead || state.party || mainAnts().length >= MAX_ANTS) return;
     if (mainAnts().some((a) => a.role === "scout" || a.job === "scout")) return;
     if (state.builder) return;
     newAnt("scout", "hatch", 0);
@@ -1723,6 +1731,7 @@
   };
   const randomPoint = () => [20 + Math.random() * (main.clientWidth - 40), main.scrollTop + 30 + Math.random() * (main.clientHeight - 60)];
   const spawnPageAnt = (role, at, mini) => {
+    if (mainAnts().length >= MAX_ANTS) return null;
     state.total++; const a = { id: state.total, role, side: "main", where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = "nest-ant walk" + (role === "flyer" ? " flyer" : "");
     a.el.innerHTML = role === "flyer" ? ANT_SVG.replace("<g class=\"legs-a\">", `<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g><g class="legs-a">`) : ANT_SVG;
@@ -1745,6 +1754,7 @@
       return;
     }
     const b = spawnPageAnt("builder", home.hole.slice(), null);
+    if (!b) return;
     b.job = "build-walk"; b.path = [[spot.x, spot.y - 6]]; b.k = 0; b.spot = spot; state.builder = b;
     log("the stores are full; a builder heads out");
   };
@@ -1906,8 +1916,8 @@
         }
       } else if (m.hp >= MINI_HP) m.nextHeal = 0;
       if (t < m.next || state.queenDead) return; m.next = t + SPEED_SPAWN();
-      if (m.guards.size < 3 && !(m.hadGuards && m.guards.size === 0)) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); }
-      else if (m.flyers.size < 3) { const f = spawnPageAnt("flyer", m.hole.slice(), m); m.flyers.add(f); f.job = "fly"; f.path = [randomPoint()]; f.k = 0; blip(720, 0.04, "sine", 0.02); }
+      if (m.guards.size < 3 && !(m.hadGuards && m.guards.size === 0)) { const g = spawnPageAnt("guard", [m.spot.x + (Math.random() < 0.5 ? -22 : 22), m.spot.y + 2], m); if (g) { m.guards.add(g); markGuards(m); assignGuard(g); blip(180, 0.05, "sawtooth", 0.03); } }
+      else if (m.flyers.size < 3) { const f = spawnPageAnt("flyer", m.hole.slice(), m); if (f) { m.flyers.add(f); f.job = "fly"; f.path = [randomPoint()]; f.k = 0; blip(720, 0.04, "sine", 0.02); } }
     });
   };
   const SPEED_SPAWN = () => SPAWN_EVERY * (0.8 + Math.random() * 0.4);
@@ -2333,7 +2343,8 @@
     for (const m of mains) {
       if (!m.el || spent.has(m)) continue;
       if (Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) < 180) continue;
-      const group = rival.ants.filter((r) => r.el && near(r, m));
+      const military = m.role === "soldier" || m.role === "guard";
+      const group = rival.ants.filter((r) => r.el && near(r, m) && (!military || r.role === "guard" || r.job === "rival-flyer"));
       const power = group.reduce((s, a) => s + combatPower(a), 0);
       if (power < combHp(m)) continue;
       m.el.classList.add("fighting"); group.forEach((r) => r.el?.classList.add("fighting"));
@@ -2516,7 +2527,7 @@
     const mound = rivalMound();
     if (!mound) { rival.mound = null; rival.returnAt = performance.now() + 8000; return; }
     mound.el.classList.add("constructing");
-    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8; rival.buildUntil = performance.now() + 3200;
+    rival.mound = mound; rival.active = true; rival.returnAt = 0; rival.hp = 8; rival.buildUntil = performance.now() + 3200; rival.war = false;
     rival.lastMilestone = milestone; rival.lastBase = mound.base.slice(); rival.tier = (rival.tier || 0) + 1; rival.activeAt = performance.now();
     const builders = [];
     for (let i = 0; i < 3; i++) {
@@ -2534,11 +2545,11 @@
       const guardPath = lanePath(t.pts, 8);
       spawnRivalUnit("rival-guard", [rival.mound.base[0] - 28, rival.mound.base[1] + 16], guardPath, null);
       rival.nextGrow = performance.now() + 3500;
-      if (mainAnts().length >= 12) {
-        for (let i = 0; i < 3; i++) spawnRival(t);
-        buildRivalMinis(); buildRivalMinis();
-        log("the rival starts with extra mounds and workers");
-      }
+      const starter = Math.min(rivalCaps().ants, 6 + rival.tier * 4);
+      let guard = 0;
+      while (rival.ants.length < starter && guard++ < 24) spawnRival(t);
+      buildRivalMinis(); buildRivalMinis();
+      if (starter > 3) log("the rival starts with extra mounds and workers");
       log("the rival opens its first trail");
       log("the rival trails open");
       blip(260, 0.1, "sawtooth", 0.025);
@@ -2889,15 +2900,23 @@
       });
       const mainCount = mainAnts().length;
       const soldierCount = mainAnts().filter((a) => a.role === "soldier").length;
-      const wantSoldiers = Math.min(4, Math.floor(mainCount / 6));
+      const threatSoldiers = rival.active ? Math.min(6, Math.ceil(rival.ants.length / 3)) : 0;
+      const wantSoldiers = Math.max(Math.min(4, Math.floor(mainCount / 6)), threatSoldiers);
       if ((mainCount >= 10 || (rival.active && rival.ants.length >= 4)) && soldierCount < wantSoldiers && performance.now() >= nextDefender) {
         nextDefender = performance.now() + 7000;
+        if (mainCount >= MAX_ANTS) {
+          const spare = mainAnts().find((a) => a.role === "worker" && !a.letter && a.job !== "carry" && a.job !== "crew");
+          if (!spare) return;
+          squashQuiet(spare);
+          log("a worker steps aside for a soldier");
+        }
         if (state.stores > 0) state.stores--;
         else if (state.larder.length) state.larder.pop();
         newAnt("soldier", "hatch", 0);
         log("a soldier answers the rival");
       }
     }
+    enforceMainCap();
     if ((tick = (tick + 1) % 6) === 0) {
       if (!state.paused) state.trails.slice().forEach((t) => {
         if (t.side === "rival" || t.state === "gone" || t === state.cacheTrail) return;

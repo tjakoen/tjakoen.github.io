@@ -95,7 +95,7 @@ test("a main guard wins 60 percent of rival guard duels", async ({ page }) => {
       Math.random = old;
       return { main: !!m.el, rival: !!r.el };
     };
-    return { win: run(0.3, [900, 500], 1000), lose: run(0.7, [920, 520], 5000) };
+    return { win: run(0.3, [900, 500], performance.now() + 1000), lose: run(0.7, [920, 520], performance.now() + 5000) };
   });
   expect(result.win).toEqual({ main: true, rival: false });
   expect(result.lose).toEqual({ main: false, rival: true });
@@ -133,7 +133,7 @@ test("a main flyer wins 75 percent of rival flyer fights", async ({ page }) => {
       Math.random = old;
       return { main: !!m.el, rival: !!r.el };
     };
-    return { win: run(0.7, [1100, 500], 1000), lose: run(0.9, [1120, 520], 5000) };
+    return { win: run(0.7, [1100, 500], performance.now() + 1000), lose: run(0.9, [1120, 520], performance.now() + 5000) };
   });
   expect(result.win).toEqual({ main: true, rival: false });
   expect(result.lose).toEqual({ main: false, rival: true });
