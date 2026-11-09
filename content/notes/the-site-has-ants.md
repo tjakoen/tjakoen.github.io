@@ -94,7 +94,7 @@ A heavy heading needs a crew. A small letter can be carried by one ant. A larger
 
 The mound is the only part you see from the outside. Under it, the colony is a small set of rooms and tunnels: the queen's chamber at the bottom, the nursery where eggs wait, the larder where stolen letters are held, and the two stores where meals are counted.
 
-![The actual Nest panel open on this note: the Braille colony, the queen at the bottom, stats, stores and the colony tools.](/media/notes/nest-colony-live.png)
+<img src="/media/notes/nest-colony-live.gif" alt="A short loop of the actual Nest panel open on this note: the Braille colony, the queen at the bottom, stats, stores and the colony tools." style="display:block;width:100%;max-width:350px;margin:0 auto .5rem">
 
 *The actual panel, not a diagram: the nest, the queen, the stores and the tools.*
 
