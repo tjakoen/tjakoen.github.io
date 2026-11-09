@@ -54,6 +54,18 @@ link, correct a finding, see which lens has been wrong lately, and watch whether
 are moving the right way. I still run the reviews. I just get to look at them like a person instead
 of reading log files like a raccoon going through a bin.
 
+<figure class="shot">
+  <img class="shot__img" src="/media/review-kit/board-in-claude.jpg" width="1440" height="520" loading="lazy" data-lightbox
+       alt="The review board as a Claude dashboard, beside a mock Claude chat. The chat asks which pull requests are waiting on me, and the board shows five columns: queued, in flight, waiting on author, waiting on you, and done, holding demo pull requests.">
+  <figcaption class="shot__cap">The board from the kit's demo, with made-up pull requests, inside a mock of the Claude window it lives in. The chat beside it is mocked for this note; the point is that the conversation never goes away, I just get a board next to it.</figcaption>
+</figure>
+
+<figure class="shot">
+  <img class="shot__img" src="/media/review-kit/card.jpg" width="800" height="676" loading="lazy" data-lightbox
+       alt="One demo pull request opened on the board: its verdict, a table of findings raised, dropped in verification, and posted per lens, buttons to recheck, respond to threads or re-review, and a box to tell the reviewer what it got wrong.">
+  <figcaption class="shot__cap">One card, opened. The lens table shows what each specialist raised and how much it threw away after trying to refute itself, and the box at the bottom is where I correct it.</figcaption>
+</figure>
+
 Two things made it worth writing about again:
 
 - **Other managers use it.** The kit is not a personal toy anymore. It is shared, each manager gets
@@ -62,6 +74,50 @@ Two things made it worth writing about again:
 - **It has a backup brain.** When my Claude usage passes the limits I set on the board, new reviews
   wait, and Codex can take over once my weekly use crosses a threshold I choose. Running out of
   tokens used to mean the reviews stopped. Now it means they change hands.
+
+<svg viewBox="0 0 360 448" width="100%" role="img"
+     aria-label="How the review kit runs. A pull request reaches code review in Jira. The Reviews routine checks it against the ticket, the epic's decisions and six lenses, and posts a verdict. Follow-ups answer replies and verify fixes, and new commits get a re-review. If my Claude usage passes my limit, Codex takes over the routine. Approval always stays with me."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13.5px">
+  <defs>
+    <marker id="fl-kit0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="55" y="16" width="250" height="36" rx="6"/>
+    <rect x="55" y="192" width="250" height="52" rx="6"/>
+    <rect x="55" y="280" width="250" height="52" rx="6"/>
+  </g>
+  <rect x="55" y="88" width="250" height="68" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg);stroke-width:1"/>
+  <rect x="55" y="380" width="250" height="52" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:2"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="180" y1="52" x2="180" y2="88" marker-end="url(#fl-kit0)"/>
+    <line x1="180" y1="156" x2="180" y2="192" marker-end="url(#fl-kit0)"/>
+    <line x1="180" y1="244" x2="180" y2="280" marker-end="url(#fl-kit0)"/>
+    <line x1="180" y1="332" x2="180" y2="380" marker-end="url(#fl-kit0)"/>
+    <path d="M55,306 C15,306 15,122 55,122" marker-end="url(#fl-kit0)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="180" y="38.3" style="fill:var(--color-fg)">A pull request reaches code review</text>
+    <text x="180" y="112" style="fill:var(--color-bg)">Reviews routine</text>
+    <text x="180" y="128.5" style="fill:var(--color-bg);font-size:12px">ticket, epic decisions, six lenses</text>
+    <text x="180" y="145" style="fill:var(--color-bg);font-size:12px">Claude, or Codex past my limit</text>
+    <text x="180" y="214.3" style="fill:var(--color-fg)">A verdict, posted under my name</text>
+    <text x="180" y="230.8" style="fill:var(--color-muted);font-size:12px">and a card on the board</text>
+    <text x="180" y="302.3" style="fill:var(--color-fg)">Follow up on replies and fixes</text>
+    <text x="180" y="318.8" style="fill:var(--color-muted);font-size:12px">new commits loop back for a re-review</text>
+    <text x="180" y="402.3" style="fill:var(--color-fg)">Approval stays with me</text>
+    <text x="180" y="418.8" style="fill:var(--color-muted);font-size:12px">it never approves, merges or pushes</text>
+  </g>
+</svg>
+
+*The kit does the rounds. The last box is the one it cannot reach.*
+
+<figure class="shot">
+  <img class="shot__img" src="/media/review-kit/stats.jpg" width="1280" height="625" loading="lazy" data-lightbox
+       alt="The demo Stats tab: tiles for findings logged and misses repaired, a short verdict on whether the reviewer is improving, and three charts for precision and adoption, findings per pull request, and weekly volume.">
+  <figcaption class="shot__cap">The Stats tab, on demo numbers. It answers the question I actually care about, whether the reviewer is getting better or just getting louder.</figcaption>
+</figure>
 
 ## Crew Watch, attempt number four
 
@@ -103,6 +159,13 @@ the first three were all reasonable at the time.
 
 *Four tries at the same view. The third one did not ship, and it still did the most work.*
 
+<figure class="shot">
+  <img class="shot__img" src="/media/crew/people-manager.jpg" width="1280" height="800" loading="lazy" data-lightbox
+       alt="People Manager in its demo mode, with an invented roster: a banner saying so, a sidebar of people whose one-on-ones are slipping, and a status page headed five relationships are slipping, with this week's open questions grouped by person.">
+  <figcaption class="shot__cap">People Manager, running its own demo mode with an invented roster. It is a good app. It was also a month in and nowhere near done.</figcaption>
+</figure>
+
+
 The honest footnote is that the afternoon was not really an afternoon. Crew Watch was fast because
 People Manager already existed. A month of deciding what the view should show, which numbers I
 trusted and which questions I actually ask in a one-on-one, was sitting in a plan folder, and the
@@ -113,6 +176,12 @@ I am keeping this part about how it works rather than what it shows, because wha
 team, and that stays at work. A small script pulls from Jira and GitHub into one data file, the
 dashboard renders it, and an audit I ran against the old DevLake numbers caught the places where the
 two disagreed before anyone saw a wrong figure in a one-on-one.
+
+<figure class="shot">
+  <img class="shot__img" src="/media/crew/crew-watch-in-claude.jpg" width="1440" height="860" loading="lazy" data-lightbox
+       alt="Crew Watch as a Claude dashboard beside a mock Claude chat, filled with invented people and tickets.">
+  <figcaption class="shot__cap">Crew Watch, refilled with invented people and tickets for this note, inside the same mock Claude window. The real one looks the same, with my team in it.</figcaption>
+</figure>
 
 ## Then I showed them
 
@@ -150,6 +219,27 @@ The idea underneath it is not his or mine. It comes from Matt, our CTO, whose st
 move bugs as far left in the process as they will go. A wrong assumption caught on a ticket is
 cheaper than one caught in review, which is cheaper than one caught in production. The epic checker
 is that rule turned into a tool.
+
+<svg viewBox="0 0 360 150" width="100%" role="img"
+     aria-label="Where a wrong assumption gets caught, from cheapest to most expensive: on the ticket, in review, in testing, in production. The epic checker works at the ticket and the pull request, the left end of the line."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
+  <defs>
+    <marker id="fl-left0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <line x1="20" y1="60" x2="340" y2="60" style="stroke:var(--color-muted);stroke-width:1.5" marker-end="url(#fl-left0)"/>
+  <rect x="14" y="40" width="150" height="40" rx="6" style="fill:none;stroke:var(--color-fg);stroke-width:2"/>
+  <g style="fill:var(--color-fg)"><circle cx="40" cy="60" r="5"/><circle cx="125" cy="60" r="5"/><circle cx="210" cy="60" r="5"/><circle cx="300" cy="60" r="5"/></g>
+  <g text-anchor="middle" style="fill:var(--color-fg)">
+    <text x="40" y="104">Ticket</text><text x="125" y="104">Review</text><text x="210" y="104">Testing</text><text x="300" y="104">Production</text>
+    <text x="89" y="30" style="font-size:12px">the epic checker works here</text>
+  </g>
+  <text x="20" y="136" style="fill:var(--color-muted);font-size:12px">cheaper to fix</text>
+  <text x="340" y="136" text-anchor="end" style="fill:var(--color-muted);font-size:12px">dearer to fix</text>
+</svg>
+
+*Matt's rule, drawn. Every step right costs more than the one before it.*
 
 I helped him plan it, and then I did the most flattering thing a manager can do to a teammate's
 project: I started using it and sending commits. As a snapshot, the history has about 81 commits from
