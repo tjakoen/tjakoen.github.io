@@ -659,9 +659,7 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
 });
 
 
-test("the note mounts the actual colony and worship boxes", async ({ page }) => {
+test("the note mounts its five live colony boxes", async ({ page }) => {
   await page.goto("/notes/the-site-has-ants");
-  await expect(page.locator("iframe.nest-live-frame")).toHaveCount(2);
-  await expect(page.locator('iframe[src*="worship"]')).toHaveCount(1);
-  await expect(page.locator('iframe[src*="colony"]')).toHaveCount(1);
+  await expect(page.locator(".nest-scene")).toHaveCount(5);
 });
