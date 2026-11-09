@@ -133,9 +133,14 @@ it was kept, and one review posted with comments anchored to lines. What I added
 before the diff, the linked ticket and its epic, and my own tone on the way out. Then it waited for
 me to run it again.
 
-The first two days of history are mostly the skill learning manners. *Post one review, and stop
-calling everything Minor.* *Ask whether we already built this.* *Scale the review to the diff, but
-never by size alone.* Each of those is a review I watched go out and winced at. It was useful from
+The first two days of history are mostly the skill learning manners. The commit titles read like
+notes from a bad first week:
+
+- *Post one review, and stop calling everything Minor.*
+- *Ask whether we already built this.*
+- *Scale the review to the diff, but never by size alone.*
+
+Each of those is a review I watched go out and winced at. It was useful from
 day one and annoying from day one, which I suspect is true of most first hires.
 
 ## Aug 18 · Then it had to keep score
@@ -204,9 +209,18 @@ by October 11 the calibration loop found reviews from both hosts through their a
 so a review Codex wrote is scored in the same log as one Claude wrote.
 
 Then it became the fallback for when I run low on tokens. On October 20 and 21 the switch stopped
-being something I flipped by hand. As my weekly Claude use climbs, the Reviews slots step down from
-four to one at 70, 80 and 90 percent, and once use passes a threshold I choose, Codex takes over the
-reviews outright. A pull request keeps the engine that first reviewed it, so a conversation that
+being something I flipped by hand. As my weekly Claude use climbs, the kit runs fewer reviews at
+once, and past a threshold I choose it hands them to Codex:
+
+| Weekly Claude use | Claude reviews at once |
+|---|---|
+| Under 70 percent | Four |
+| 70 percent | Three |
+| 80 percent | Two |
+| 90 percent | One |
+| Past my threshold | New reviews go to Codex |
+
+A pull request keeps the engine that first reviewed it, so a conversation that
 started with Codex finishes with Codex instead of changing voice halfway through.
 
 That still left the week I burn through Claude completely, when the board itself has nothing to run
@@ -244,21 +258,69 @@ count.
 
 A pull request lands on my board from my team's code review column, from risk intake, or because I
 pasted it in. Scheduled routines take it from there, and only between 17:00 and 06:59, so nothing
-posts during the working day.
+posts during the working day. The whole thing is one loop, and the half that matters most is the one
+that runs after the review is posted.
 
-A Reviews routine reads the ticket and its epic, checks the change against the epic's decided rules
-and the decisions in the ticket's comments, runs the epic check where the epic has one, notes any
-other open pull request editing the same lines, sends six specialist lenses over the diff, tries to
-refute every finding, and posts line-anchored comments with a PASS, REQUEST CHANGES or BLOCKING
-verdict. The thread poll answers replies it can settle from the team's recorded decisions, verifies
-a claimed fix at the new commit, and resolves its own threads. A push gets a re-review. A head a
-teammate's kit already reviewed gets a second look. Up to four reviews run at once, fewer as my
-usage climbs, and Codex picks up the rest past the weekly threshold.
+<svg viewBox="0 0 600 220" width="100%" role="img"
+     aria-label="The review kit's loop: a pull request comes in from the board, a review is posted, the follow-up answers threads and re-reviews pushes, and the learning step scores every comment and replays every miss, feeding repairs back into the review."
+     style="display:block;width:100%;height:auto;margin:0 0 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
+  <defs>
+    <marker id="kit-loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="10" y="40" width="125" height="64" rx="6"/>
+    <rect x="160" y="40" width="125" height="64" rx="6"/>
+    <rect x="310" y="40" width="125" height="64" rx="6"/>
+  </g>
+  <rect x="460" y="40" width="130" height="64" rx="6" style="fill:var(--color-fg);stroke:var(--color-fg)"/>
+  <g style="stroke:var(--color-muted);stroke-width:1.5;fill:none">
+    <line x1="135" y1="72" x2="160" y2="72" marker-end="url(#kit-loop-arrow)"/>
+    <line x1="285" y1="72" x2="310" y2="72" marker-end="url(#kit-loop-arrow)"/>
+    <line x1="435" y1="72" x2="460" y2="72" marker-end="url(#kit-loop-arrow)"/>
+    <path d="M525,104 L525,170 L222,170 L222,104" marker-end="url(#kit-loop-arrow)"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="72" y="68" style="fill:var(--color-fg)">Intake</text>
+    <text x="72" y="86" style="fill:var(--color-muted);font-size:11.5px">board, risk, paste</text>
+    <text x="222" y="68" style="fill:var(--color-fg)">Review</text>
+    <text x="222" y="86" style="fill:var(--color-muted);font-size:11.5px">ticket, epic, lenses</text>
+    <text x="372" y="68" style="fill:var(--color-fg)">Follow up</text>
+    <text x="372" y="86" style="fill:var(--color-muted);font-size:11.5px">threads, re-reviews</text>
+    <text x="525" y="68" style="fill:var(--color-bg)">Learn</text>
+    <text x="525" y="86" style="fill:var(--color-bg);font-size:11.5px">score, replay, repair</text>
+    <text x="374" y="190" style="fill:var(--color-muted);font-size:12px">every repair goes back into the next review</text>
+  </g>
+</svg>
 
-Then the learning half runs. Every comment is scored by what happened next, a theme that keeps being
-closed without a fix gets its lens tightened, every miss is recorded with the lens that should have
-caught it, and every repair is replayed where the miss happened. The Calibration tab shows each
-change to the reviewer and why it was made.
+**The review.** A Reviews routine works through the same steps every time:
+
+- It reads the ticket and its epic, and checks the change against the epic's decided rules and the
+  decisions in the ticket's comments.
+- It runs the epic check where the epic has one, and notes any other open pull request editing the
+  same lines.
+- It sends six specialist lenses over the diff and tries to refute every finding before keeping it.
+- It posts line-anchored comments with a PASS, REQUEST CHANGES or BLOCKING verdict.
+
+**After the review.** Each event that follows gets its own response:
+
+| When this happens | The kit does this |
+|---|---|
+| An author replies to a thread | Answers it if the team's recorded decisions settle it, otherwise leaves it for me |
+| An author says it is fixed | Checks the fix at the new commit and resolves its own thread |
+| An author pushes new commits | Runs a re-review over just those commits |
+| A teammate's kit already reviewed the head | Runs a second look over only what theirs left unchecked |
+| My Claude use passes the weekly threshold | Hands new reviews to Codex |
+
+**The learning half.** This is the part that earns the trust:
+
+- Every comment is scored by what happened next.
+- A theme that keeps being closed without a fix gets its lens tightened.
+- Every miss is recorded with the lens that should have caught it.
+- Every repair is replayed on the pull request where the miss happened.
+
+The Calibration tab shows each change to the reviewer and why it was made.
 
 It never approves, never merges and never pushes code. Guards make a push impossible rather than
 merely unintended. A PASS from the kit means it has nothing left to say, and the approve button stays
