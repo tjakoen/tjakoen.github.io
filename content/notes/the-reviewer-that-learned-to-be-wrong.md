@@ -5,7 +5,6 @@ author: "Tjakoen Stolk"
 status: DRAFT
 type: note
 date: 2026-11-09
-deck: "Every time it was wrong | Talk | /talks/every-time-it-was-wrong | 18 slides · runs in the browser, no download"
 readingTime: "~12 min"
 tags: [ai, claude, code-review, leadership, codex]
 summary: >
