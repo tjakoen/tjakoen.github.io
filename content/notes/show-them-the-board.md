@@ -19,7 +19,7 @@ social: |
   Claude dashboard.
 
   The better part came after I demoed it. Within two weeks, Kercwin (https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/) built an epic
-  checker that keeps our work aligned with decisions as they change, and Kyle (LINKEDIN_KYLE) built
+  checker that keeps our work aligned with decisions as they change, and Kyle (https://www.linkedin.com/in/kylealanmanayon/) built
   his own work board in Obsidian.
 
   If you lead people and you've built something, show them. The worst case is they nod.
@@ -160,7 +160,7 @@ did not plan that, and I like it a lot.
 
 ### Kyle's Obsidian board
 
-Then in my one-on-one with [Kyle](LINKEDIN_KYLE) last week, he showed me a dashboard he built in Obsidian to run his
+Then in my one-on-one with [Kyle](https://www.linkedin.com/in/kylealanmanayon/) last week, he showed me a dashboard he built in Obsidian to run his
 own work: his tickets, his pull requests, what is waiting on him and what is waiting on someone else.
 Nobody asked him to. It is not for me, it is for him, which is exactly why I was happy to see it.
 
