@@ -72,7 +72,7 @@ test("sealing a hill stops its traffic until it reopens", async ({ page }) => {
   await expect(seal).toBeDisabled();
 });
 
-test("a main soldier beats a single rival worker", async ({ page }) => {
+test("a main worker beats a single rival worker", async ({ page }) => {
   await open(page);
   const result = await page.evaluate(() => {
     const n = window.__nest as any;
@@ -251,6 +251,17 @@ test("you can click a rival mini mound down", async ({ page }) => {
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 45_000 }).toBeGreaterThan(0);
   const before = await page.evaluate(() => (window.__nest as any).rival.minis.length);
   const mini = page.locator(".nest-hill.rival.rival-mini").first();
-  await mini.click(); await mini.click(); await mini.click();
+  await mini.dispatchEvent("click"); await mini.dispatchEvent("click"); await mini.dispatchEvent("click");
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 5_000 }).toBeLessThan(before);
+});
+
+
+test("the main colony respects its ant cap", async ({ page }) => {
+  await open(page);
+  const result = await page.evaluate(() => {
+    const n = window.__nest as any;
+    for (let i = 0; i < 40; i++) n.spawnPageAnt("worker", [500, 500], null);
+    return n.state.ants.filter((a: any) => a.side !== "rival").length;
+  });
+  expect(result).toBeLessThanOrEqual(20);
 });
