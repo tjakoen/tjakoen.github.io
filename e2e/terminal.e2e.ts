@@ -659,7 +659,7 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
 });
 
 
-test("the note mounts its five live colony boxes", async ({ page }) => {
+test("the note mounts its six live colony boxes", async ({ page }) => {
   await page.goto("/notes/the-site-has-ants");
-  await expect(page.locator(".nest-scene")).toHaveCount(5);
+  await expect(page.locator(".nest-scene")).toHaveCount(6);
 });
