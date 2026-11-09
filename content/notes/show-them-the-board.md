@@ -18,7 +18,7 @@ social: |
   I spent a month hand-building a people app for my team. Then I replaced it in an afternoon with a
   Claude dashboard.
 
-  The better part came after I demoed it. Within two weeks, Kercwin (LINKEDIN_KERCWIN) built an epic
+  The better part came after I demoed it. Within two weeks, Kercwin (https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/) built an epic
   checker that keeps our work aligned with decisions as they change, and Kyle (LINKEDIN_KYLE) built
   his own work board in Obsidian.
 
@@ -126,7 +126,7 @@ built their own.
 
 ### Kercwin's epic checker
 
-Full credit goes to [Kercwin](LINKEDIN_KERCWIN). He is fairly new, and I pushed him into the tech lead role because I saw
+Full credit goes to [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/). He is fairly new, and I pushed him into the tech lead role because I saw
 something in him before he did. I know that feeling from the other side. A lot of my job with him is
 the stuff nobody puts on a ticket: the voice that says you are not ready, learning to hand work off
 instead of carrying it, getting him to see in himself what the rest of us already see. He is doing a
