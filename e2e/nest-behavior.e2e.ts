@@ -10,7 +10,7 @@ test("two workers can overwhelm a rival guard", async ({ page }) => {
     n.spawnPageAnt("worker", at, null);
     n.spawnPageAnt("worker", at, null);
     const guard = n.spawnRivalUnit("rival-guard", at, [[420, 420]], null);
-    n.rivalCombat(performance.now() + 1000);
+    n.rivalCombat(performance.now() + 1000); n.finishFights();
     return { guardEl: !!guard.el, remaining: n.rival.ants.length };
   });
   expect(result.guardEl).toBe(false);
@@ -26,7 +26,7 @@ test("one worker cannot remove a rival guard", async ({ page }) => {
     const at = [440, 440];
     n.spawnPageAnt("worker", at, null);
     n.spawnRivalUnit("rival-guard", at, [[440, 440]], null);
-    n.rivalCombat(performance.now() + 1000);
+    n.rivalCombat(performance.now() + 1000); n.finishFights();
     return { guardEl: !!n.rival.ants[0]?.el, remaining: n.rival.ants.length };
   });
   expect(result.guardEl).toBe(true);
@@ -91,7 +91,7 @@ test("a main guard wins 60 percent of rival guard duels", async ({ page }) => {
       const old = Math.random; Math.random = () => roll;
       const m = n.spawnPageAnt("guard", at, null);
       const r = n.spawnRivalUnit("rival-guard", at, [[at[0], at[1]]], null);
-      n.rivalCombat(now);
+      n.rivalCombat(now); n.finishFights();
       Math.random = old;
       return { main: !!m.el, rival: !!r.el };
     };
@@ -112,7 +112,7 @@ test("two rival guards overwhelm one main guard", async ({ page }) => {
     const m = n.spawnPageAnt("guard", at, null);
     n.spawnRivalUnit("rival-guard", at, [[at[0], at[1]]], null);
     n.spawnRivalUnit("rival-guard", at, [[at[0], at[1]]], null);
-    n.rivalCombat(performance.now() + 1000);
+    n.rivalCombat(performance.now() + 1000); n.finishFights();
     return { main: !!m.el };
   });
   expect(result.main).toBe(false);
@@ -129,7 +129,7 @@ test("a main flyer wins 75 percent of rival flyer fights", async ({ page }) => {
       const old = Math.random; Math.random = () => roll;
       const m = n.spawnPageAnt("flyer", at, null);
       const r = n.spawnRivalUnit("rival-flyer", at, [[at[0], at[1]]], null);
-      n.rivalCombat(now);
+      n.rivalCombat(now); n.finishFights();
       Math.random = old;
       return { main: !!m.el, rival: !!r.el };
     };
@@ -137,4 +137,22 @@ test("a main flyer wins 75 percent of rival flyer fights", async ({ page }) => {
   });
   expect(result.win).toEqual({ main: true, rival: false });
   expect(result.lose).toEqual({ main: false, rival: true });
+});
+
+
+test("a fight animates open so another ant can join", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await page.evaluate(() => {
+    const n = window.__nest as any;
+    const at = [500, 500];
+    n.spawnPageAnt("worker", at, null);
+    n.spawnPageAnt("worker", [510, 500], null);
+    n.spawnRivalUnit("rival-guard", at, [[500, 500]], null);
+    n.rivalCombat(performance.now() + 1000);
+  });
+  await expect(page.locator(".nest-ant.fighting")).toHaveCount(3);
+  await page.waitForTimeout(1200);
+  expect(await page.evaluate(() => (window.__nest as any).rival.ants.length)).toBe(0);
 });
