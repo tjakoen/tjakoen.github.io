@@ -163,6 +163,13 @@ where possible, never mixed or grandiose.
   words, in *italics*, or as a real markdown [link](.). **The only exception:** fenced code *blocks*
   of actual code, and hard reference docs where a literal token must be exact (ARCHITECTURE,
   CONVENTIONS, and this standard, for filenames). When in doubt, drop the ticks; looking human wins.
+  **The console exception.** A note that tells the story of a tool may set the literal things a
+  reader would see in a terminal as inline code: a slash command (`/calibrate-pr-voice`), a commit
+  title quoted verbatim with its prefix (`fix(check-pr): the first scored outcomes`), and the dates of
+  a dated story (`Aug 18`, `2026-08-18`). Those are output, not vocabulary, and setting them like
+  output is what makes them read as receipts. Anything else, a product name, a concept, a word the
+  writer wants to sound technical, stays out of the ticks. Added 2026-11-10 at Tjakoen's call, on the
+  review kit note.
 - **Italics for stress**, on the one word that carries the sentence: *is*, *same*, *first*. Not bold
   on every other phrase (a tell).
 - **Blockquotes** for (a) pull-quotes and (b) `> *Figure: ...*` placeholders describing a diagram to
@@ -587,7 +594,7 @@ before the colon, separating a fragment from a clause needs a parser, and the re
 flagged 318 lines of this repo where the sampled ones were ordinary sentence colons. Ten times zero:
 the linter multiplies the eye, it does not replace it.
 
-- [ ] **A backtick in prose.** The number-one machine tell. (Code blocks + reference docs exempt.)
+- [ ] **A backtick in prose.** The number-one machine tell. (Code blocks, reference docs and the console exception exempt.)
 - [ ] **An em-dash.** Now a top machine tell too. Rewrite with a comma, period, colon, or parentheses.
 - [ ] **The "it's not just X, it's Y" shape**, an eager sign-off, or anything from *Do not sound like the machine*.
 - [ ] **A vague placeholder where a real name goes.** *"A modern font"* → *Redaction.* *"AI tooling"* → *Claude.*
