@@ -29,12 +29,18 @@ social: |
 
 For about a month I was writing an app called People Manager. It was going to be the one place I
 looked at my team: tickets, pull requests, cycle time, the things I bring to a one-on-one. It had a
-plan folder, a design, a few hundred commits. It was also going nowhere fast, and the reason was
-embarrassing: my tokens kept getting eaten by the other thing I had built, the robot that reviews my
-team's pull requests.
+plan folder, a design, a few hundred commits. It was also going nowhere fast, and it took me a while to see why.
 
-So one afternoon I tried something lazier. I asked Claude for a dashboard instead of an app, pointed
-it at the data, and handed it People Manager as a reference for what I wanted. It was done before I
+I was thinking like a developer, not like an AI orchestrator. I had sat down to build the thing the
+way I would have three years ago: a schema, a server, a page at a time, every screen typed into
+existence. Meanwhile the tokens that could have built it were being eaten by the other thing I had
+made, the robot that reviews my team's pull requests. I was spending the machine on the work and
+spending myself on the typing, which is exactly backwards.
+
+> I kept asking how to build it. The better question was what I wanted to see.
+
+So one afternoon I asked the better question. I asked Claude for a dashboard instead of an app,
+pointed it at the data, and handed it People Manager as a reference for what I wanted. It was done before I
 had finished being skeptical about it. That dashboard is called Crew Watch, and I am now fairly sure
 I do not need People Manager anymore.
 
@@ -44,7 +50,7 @@ That is the small story. The bigger one is what happened after I showed it to my
 
 The first dashboard I leaned on was the board for my PR review kit. It started in
 August as one review skill I ran by hand, and as a snapshot it is now 737 commits and a 2.6 release
-later, which is a story of its own for another note. The short
+later, which is a story of its own: [Seven Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md). The short
 version of how it works today: pull requests arrive from the team's code review column, scheduled
 routines review them against the ticket and the epic's decided rules, follow up on replies, re-review
 new commits, and post under my account. It never approves or merges. Approval stays mine.
@@ -160,8 +166,14 @@ the first three were all reasonable at the time.
 The honest footnote is that the afternoon was not really an afternoon. Crew Watch was fast because
 People Manager already existed. A month of deciding what the view should show, which numbers I
 trusted and which questions I actually ask in a one-on-one, was sitting in a plan folder, and the
-dashboard got to read all of it. The app did not ship. The thinking inside it did. I will take that
-trade every time, and I would not tell anyone the dashboard came from nothing.
+dashboard got to read all of it.
+
+> The app did not ship. The thinking inside it did.
+
+That is the part I would underline for anyone trying this. The expensive work was never the code. It
+was deciding what matters, and no model did that for me. A month of my judgment, written down, is what
+let an afternoon of Claude's typing land. I will take that trade every time, and I would not tell
+anyone the dashboard came from nothing.
 
 I am keeping this part about how it works rather than what it shows, because what it shows is my
 team, and that stays at work. A small script pulls from Jira and GitHub into one data file, the
@@ -176,17 +188,25 @@ two disagreed before anyone saw a wrong figure in a one-on-one.
 
 ## Then I showed them
 
-I try to show my team what I build whenever I can. Not as a performance, more as a dare. I joke that
+I do not hand my team an AI policy and hope. I show them what I built, rough edges included, and let
+them decide it looks easy enough to try. Nobody gets inspired by a mandate. People get inspired by
+watching someone they work with do the thing, on their real problems, and come out the other side
+with an afternoon back.
+
+So I show my team what I build whenever I can. Not as a performance, more as a dare. I joke that
 if I were still a full-time developer I would have automated my whole process end to end by now, and
 the joke is doing a job: it tells them the tokens they have are for exactly this, and that making
 their own work easier is not a side project, it is the work.
 
 A couple of weeks ago I demoed the review board and Crew Watch. In that couple of weeks, two of them
-built their own.
+built their own. I did not assign either one.
+
+> The best thing a demo can do is make someone else open their own session.
 
 ### Kercwin's epic checker
 
-Full credit goes to [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/). He is fairly new, and I pushed him into the tech lead role because I saw
+Full credit goes to [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/). This is his first job, and he went from developer to tech lead in about a year, which is fast for
+anyone. I pushed him into the role because I saw
 something in him before he did. I know that feeling from the other side. A lot of my job with him is
 the stuff nobody puts on a ticket: the voice that says you are not ready, learning to hand work off
 instead of carrying it, getting him to see in himself what the rest of us already see. He is doing a
@@ -205,6 +225,13 @@ ticket against the plan, flags conflicts with other open pull requests, and catc
 before any code exists. It has its own board where the plan owner ticks decisions, drafts tickets,
 and moves conflicts. It helps him do the tech lead part of the job: staying on top of technical
 decisions while they are still moving.
+
+That matters more than it sounds, because an epic here has a lot of hands on it: the plan owner,
+product, leads from more than one team, and the developers doing the work. With that many people,
+alignment is the hard part, and his checker is the thing that keeps everyone reading the same page.
+Two of its choices started as my advice, and I like that he kept them. Confluence is the source of
+truth, so decisions live where everyone already reads them instead of inside a tool only one person
+opens. And the run logs are shared, so anyone can see what the checker did, when, and on whose run.
 
 <figure class="shot">
   <img class="shot__img" src="/media/crew/epic-board-in-claude.jpg" width="2880" height="1720" loading="lazy" data-lightbox
