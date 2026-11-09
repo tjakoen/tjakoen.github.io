@@ -42,7 +42,7 @@ commits are the reviewer being told it was wrong, and me building the machinery 
 > careful about that line, so this note shows how the kit works and how it got there, never what it
 > found.
 
-## The turns, on one line
+## Aug–Nov · The turns, on one line
 
 <svg viewBox="0 0 600 250" width="100%" role="img"
      aria-label="Timeline of the PR review kit from August to November 2026: one hand-run skill on August 14, scoring its own outcomes from August 18, the team talk and routines that answer their own threads on September 17, a kit anyone can install on September 28, Codex as a backup on October 8, the board and 1.0 release on October 15, second looks across teammates' kits on October 19, and risk intake with the epic check on November 3."
@@ -88,12 +88,12 @@ commits are the reviewer being told it was wrong, and me building the machinery 
   </g>
 </svg>
 
-## Why not?
+## Early Aug · Why not?
 
 Before any of this I was already using the company's standard PR reviewer, and I was still reading
 every word it wrote. My name goes on the approval, so its output had to be right before I clicked
 anything. I also sit in the architecture group, which means some pull requests cannot merge until I
-review them, and that summer code review was a real bottleneck on the team. Architecture review
+review them, and that summer, code review was a real bottleneck on the team. Architecture review
 was the worst of it, and a fair share of that queue was waiting on me.
 
 So in a manager meeting I raised it with [Kaither Holiway](https://www.linkedin.com/in/kaither-holiway/),
