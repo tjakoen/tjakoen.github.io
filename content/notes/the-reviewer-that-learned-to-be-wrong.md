@@ -511,6 +511,30 @@ It never approves, never merges and never pushes code. Guards make a push imposs
 merely unintended. A PASS from the kit means it has nothing left to say, and the approve button stays
 mine.
 
+## What the team felt
+
+The bottleneck that started all this was review wait, so that is the number I checked. Crew Watch,
+the team dashboard I built for my one-on-ones, keeps every pull request my team opened since late
+July with its reviews. This is the time from a pull request being opened to its first review by
+anyone other than its author, as a snapshot on `Nov 10`:
+
+| Pull requests opened | Reviewed | Median wait | The slowest quarter waited longer than |
+|---|---|---|---|
+| Before `Aug 14`, no kit | 51 | 1.7 hours | 17.8 hours |
+| `Aug 14` to `Sep 16`, run by hand then on routines | 87 | 1.5 hours | 12.6 hours |
+| `Sep 17` to `Oct 14`, automatic on the sidebar | 81 | 1.7 hours | 12.9 hours |
+| `Oct 15` to `Nov 10`, the board and Codex as backup | 98 | 0.9 hours | 3.0 hours |
+
+The median barely moved, because most pull requests were never the problem: someone usually picked
+them up within a couple of hours. The long tail is what the kit took apart. The slowest quarter used
+to wait most of a day, and since the board and the Codex fallback it waits about three hours. That is
+the bottleneck I raised in that manager meeting.
+
+The honest limits on that table: these are wall-clock hours, nights included, so an overnight
+routine flatters itself against a human who reviews in the morning. The window before the kit is
+only a few weeks, and other things changed over the same months that I cannot separate from the
+kit. It is a before and after, not an experiment.
+
 ## What I have not shown
 
 I have not shown that the kit makes the codebase better. I have shown that its findings get scored,
@@ -518,7 +542,8 @@ that its misses get replayed, and that the share of its comments people act on i
 look at instead of guess at. Whether that adds up to fewer bugs reaching production is a longer
 study than three months, and I have not run it.
 
-I have also not shown that it saves time in the way the first commit hoped. It moved my time. Less of
+I have also not shown that it saves me time in the way the first commit hoped. The team's wait went
+down. Mine moved. Less of
 it goes to first-pass review, and a real amount goes to reading calibration and ruling on lens rules
 the codebase disagreed with. On a good week that is a better use of a manager. On a bad week it is a
 second job.
