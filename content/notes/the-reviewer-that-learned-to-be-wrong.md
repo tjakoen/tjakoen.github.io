@@ -1,17 +1,17 @@
 ---
-title: "Seven Hundred Commits to Teach a Reviewer It Was Wrong"
-subtitle: "In August I wrote one Claude skill to review pull requests in my voice. Three months later it has a board, a schedule, a backup model and other managers using it, and most of those commits are the reviewer being corrected."
+title: "Six Hundred Commits to Teach a Reviewer It Was Wrong"
+subtitle: "In August I wrote one Claude skill to review pull requests in my voice. Two months later it has a board, a schedule, a backup model and a second person using it, and most of those commits are the reviewer being corrected."
 author: "Tjakoen Stolk"
 status: DRAFT
 type: note
-date: 2026-11-10
-readingTime: "~9 min"
+date: 2026-10-20
+readingTime: "~8 min"
 tags: [ai, claude, code-review, leadership, codex]
 summary: >
   The story of my PR review kit at Career Team, told from its git history: one hand-run Claude skill
   in August, then an outcome log that scored every finding, routines that answer their own threads,
-  a kit other people could install, Codex as a backup, and second looks and risk intake that decide
-  what deserves a review at all. The lesson is that the reviewer got good by being measured against
+  a kit other people could install, Codex as a backup, and second looks that decide how much a new
+  push deserves. The lesson is that the reviewer got good by being measured against
   its misses, not by being prompted harder, and that approval never left my hands.
 ---
 
@@ -20,19 +20,18 @@ to review a pull request the way I would, in the tone I would, so I could stop b
 on my own team's merges. The next day I made eleven more commits to it, and one of them was titled
 *review the ticket, not just the diff*. That should have told me how this was going to go.
 
-As a snapshot, on November 10 the repository has 737 commits and sits at release 2.6. I want to be
+As a snapshot, on October 20 the repository has 608 commits and released 2.0 yesterday. I want to be
 precise about what those commits are, because the number sounds like a flex and it is closer to a
 confession. Most of them are the reviewer being told it was wrong, and me building the machinery to
 tell it.
 
-I mentioned the kit in [I Showed My Team a Dashboard](show-them-the-board.md) and promised it a note
-of its own. This is that note. It is about how the kit works and how it changed, not about anything
+This note is about how the kit works and how it changed, not about anything
 it found, because what it found belongs to the team and the codebase, and neither is mine to publish.
 
 ## The turns, on one line
 
 <svg viewBox="0 0 600 250" width="100%" role="img"
-     aria-label="Timeline of the PR review kit from August to November 2026: one hand-run skill on August 14, scoring its own outcomes from August 18, routines that answer their own threads on September 17, a kit anyone can install on September 28 and a board and 1.0 release on October 15, Codex as a backup on October 8, and second looks with risk intake through November 4."
+     aria-label="Timeline of the PR review kit from August to October 2026: one hand-run skill on August 14, scoring its own outcomes from August 18, routines that answer their own threads on September 17, a kit anyone can install on September 28 and a board and 1.0 release on October 15, Codex as a backup on October 8, and second looks with the 2.0 release on October 19."
      style="display:block;width:100%;max-width:580px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
   <line x1="30" y1="125" x2="570" y2="125" style="stroke:var(--color-line);stroke-width:2"/>
   <g style="fill:var(--color-fg)">
@@ -66,8 +65,8 @@ it found, because what it found belongs to the team and the codebase, and neithe
     <text x="366" y="52" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">Codex as backup</text>
     <text x="410" y="226" text-anchor="middle">Oct 15</text>
     <text x="410" y="242" text-anchor="middle" style="fill:var(--color-muted);font-size:12px">the board, 1.0</text>
-    <text x="566" y="36" text-anchor="end">Nov 4</text>
-    <text x="566" y="52" text-anchor="end" style="fill:var(--color-muted);font-size:12px">second looks, risk intake</text>
+    <text x="566" y="36" text-anchor="end">Oct 19</text>
+    <text x="566" y="52" text-anchor="end" style="fill:var(--color-muted);font-size:12px">second looks, 2.0</text>
   </g>
 </svg>
 
@@ -131,8 +130,9 @@ directory.
 The board followed on October 14 and 15: one page per person with Board, History, Calibration and
 Stats tabs, cards that move between columns depending on who owes the next move, a Run now button,
 settings that live on the board, and setup from one paste. The 1.0 release notes put it plainly:
-the first release a teammate can set up, use and repair alone. As a snapshot, three people have
-profiles in the kit today, and I am no longer the only manager whose reviews run through it.
+the first release a teammate can set up, use and repair alone. As a snapshot, two people have
+profiles in the kit today, and the second one joined yesterday. I am no longer the only person whose
+reviews run through it.
 
 <figure class="shot">
   <img class="shot__img" src="/media/review-kit/board-in-claude.jpg" width="2880" height="1000" loading="lazy" data-lightbox
@@ -152,32 +152,31 @@ I want to be honest about what that is. Codex is the backup, not a peer I benchm
 note. The comparison work exists in the plans folder and it is not finished. What is finished is that
 a quiet week on one engine no longer means a quiet week on reviews.
 
-## Then it had to decide what deserved a look
+## Then it had to decide how much a push deserves
 
-The October and November history is the reviewer getting choosier. Second looks arrived on October
-19: when a pull request it already passed gets new commits, it posts a one-line note if nothing is
-new, and runs the tests lens again regardless. Risk intake arrived on November 3: pull requests from
-outside my own boards get queued when they reach code my team owns and touch an area marked high
-risk, capped at a ranked three a day so the queue does not drown. Release 2.6, the next day, made
-every lens prove it read its rules before its findings count. A lens that skips them twice gets
-named in the evidence block, and the review cannot post PASS.
+The newest turn is the reviewer getting choosier. Second looks landed on October 19, in the 2.0
+release: when a pull request it already passed gets new commits, it posts a one-line note if nothing
+is new instead of a whole fresh review, and it runs the tests lens again regardless, because a PASS
+that nobody re-tested after a push is a PASS on code that no longer exists. Today it learned to add
+an architecture focus to a second look, and to post that note only where the change has
+architecture surface.
 
-That last one is my favorite commit in the whole history, because it is the reviewer being held to
-the same rule I hold my students to. Show your work, or it does not count.
+That last rule is my favorite kind of commit in the whole history: the reviewer being told to say
+less. Show your work when there is work to show, and otherwise get out of the way.
 
 ## What I have not shown
 
 I have not shown that the kit makes the codebase better. I have shown that its findings get scored,
 that its misses get replayed, and that the share of its comments people act on is something I can
 look at instead of guess at. Whether that adds up to fewer bugs reaching production is a longer
-study than three months, and I have not run it.
+study than two months, and I have not run it.
 
 I have also not shown that it saves time in the way the first commit hoped. It moved my time. Less of
 it goes to first-pass review, and a real amount goes to reading calibration and ruling on lens rules
 the codebase disagreed with. On a good week that is a better use of a manager. On a bad week it is a
 second job.
 
-Back to that commit on day two, *review the ticket, not just the diff*. Seven hundred commits later
+Back to that commit on day two, *review the ticket, not just the diff*. Six hundred commits later
 the kit still does that first, and almost everything after it is the same idea, applied to the
 reviewer itself: read what it was supposed to do, then check what it actually did.
 
