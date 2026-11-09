@@ -32,7 +32,7 @@ social: |
 
   Thanks, Kaither, for the question.
 socialImage: "/media/notes/the-reviewer-that-learned-to-be-wrong-social.png"
-socialImageAlt: "The question that started it, \"I don't trust it\" and \"Why not?\", above a four-step loop: it reviews, it is graded, one lens is fixed, it is replayed where it missed. Below, the slowest quarter of the team's review wait falling from 17.6 hours to 3.0 hours."
+socialImageAlt: "The question that started it, \"I don't trust it\" and \"Why not?\", above the real review board running on invented pull requests, in columns for queued, in flight, waiting on author and waiting on you. Below, the slowest quarter of the team's wait for a first review falling from 17.6 hours to 3.0 hours, and cost per review down by half."
 ---
 
 My PR review kit is a set of Claude skills that reviews my team's pull requests at [Career Team](https://careerteam.com) the
@@ -351,6 +351,24 @@ exists for the bad week, and on the bad week I want a list and a button, not a t
 Codex is the backup, not a peer I benchmark against in this note. The comparison work exists in the
 plans folder and it is not finished. What is finished is that a quiet week on one engine no longer
 means a quiet week on reviews.
+
+## Oct 13 · Then it had to earn its keep
+
+A reviewer that runs every night has a bill, and I wanted model choices made the same way as lens
+changes: on results, not on taste. So the model behind each part of the kit is a decision with a
+trial behind it.
+
+| What runs it | What I tried | What the results said |
+|---|---|---|
+| The six lenses and the skeptic | Pinned to Sonnet in September | They held their precision, so the expensive model only does the parts that need judgment |
+| The review itself | Opus 5 at medium, then Opus 5.5 at medium | About a fifth fewer findings per review, and every blocking finding still held up |
+| Effort on the review | Medium, then a lower setting | More findings per review than the baseline, and not one blocking finding thrown out across thirty reviews |
+| The routines that only check for work | Haiku | Far cheaper per check, but a pinned model does not switch a session that is already running, so the slots went back to Opus |
+
+On `Oct 13` the kit started pricing every review session, lens agents included, at list rates for the
+model each turn ran on. That is an estimate rather than the bill, but it is the same estimate every
+week, so the trend is real: over the four weeks it covered, the median cost of a review fell by more
+than half. Trial four, a stricter low setting, is still running.
 
 ## Oct 14 · Then it had to prove its repairs held
 

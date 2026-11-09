@@ -21,43 +21,41 @@ const INK = "#1C1B17";
 const MUTED = "#6E6C64";
 const LINE = "rgba(28,27,23,.18)";
 
-// The learning loop as four stations on a rounded track, the last one filled.
+// (kept for a variant) The learning loop as four stations on a rounded track, the last one filled.
 const station = (x: number, y: number, label: string, sub: string, filled = false) => `
   <rect x="${x - 150}" y="${y - 46}" width="300" height="92" rx="12" style="fill:${filled ? INK : PAPER};stroke:${INK};stroke-width:2"/>
   <text x="${x}" y="${y - 4}" text-anchor="middle" style="fill:${filled ? PAPER : INK};font-size:30px">${label}</text>
   <text x="${x}" y="${y + 28}" text-anchor="middle" style="fill:${filled ? "rgba(226,224,216,.75)" : MUTED};font-size:21px">${sub}</text>`;
 
+const SHOT = join(import.meta.dir, "..", "content", "media", "review-kit", "board-in-claude.jpg");
+const shot = `data:image/jpeg;base64,${Buffer.from(await Bun.file(SHOT).arrayBuffer()).toString("base64")}`;
+
+// The real board, on invented pull requests, cropped to the board columns and framed as a window.
 const card = `<!doctype html><html><head><meta charset="utf-8"><style>
   html, body { margin: 0; }
 </style></head><body>
   <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"
-       font-family="Georgia, 'Times New Roman', serif">
+       xmlns:xlink="http://www.w3.org/1999/xlink" font-family="Georgia, 'Times New Roman', serif">
     <defs>
-      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
-        <path d="M0,0 L10,5 L0,10 z" style="fill:${MUTED}"/>
-      </marker>
+      <clipPath id="shot"><rect x="96" y="420" width="${W - 192}" height="440" rx="10"/></clipPath>
     </defs>
     <rect width="${W}" height="${H}" style="fill:${PAPER}"/>
     <rect x="28" y="28" width="${W - 56}" height="${H - 56}" rx="10" style="fill:none;stroke:${LINE};stroke-width:1.5"/>
 
-    <text x="96" y="122" style="fill:${MUTED};font-size:21px;letter-spacing:6px">A PR REVIEWER · THREE MONTHS</text>
-    <text x="96" y="222" style="fill:${INK};font-size:72px;letter-spacing:-1.5px">"I don't trust it."</text>
-    <text x="96" y="318" style="fill:${INK};font-size:72px;letter-spacing:-1.5px;font-style:italic">"Why not?"</text>
+    <text x="96" y="122" style="fill:${MUTED};font-size:21px;letter-spacing:6px">MY AI CODE REVIEWER · THREE MONTHS</text>
+    <text x="96" y="220" style="fill:${INK};font-size:70px;letter-spacing:-1.5px">"I don't trust it."</text>
+    <text x="96" y="310" style="fill:${INK};font-size:70px;letter-spacing:-1.5px;font-style:italic">"Why not?"</text>
+    <text x="96" y="370" style="fill:${MUTED};font-size:26px">So I made it grade every comment, and replay every miss.</text>
 
-    ${station(330, 480, "It reviews", "every pull request")}
-    ${station(870, 480, "It is graded", "by what happened next")}
-    ${station(870, 700, "One lens is fixed", "never the average")}
-    ${station(330, 700, "It is replayed", "where it missed", true)}
-    <g style="stroke:${MUTED};stroke-width:2.5;fill:none">
-      <line x1="480" y1="480" x2="716" y2="480" marker-end="url(#arr)"/>
-      <line x1="870" y1="526" x2="870" y2="650" marker-end="url(#arr)"/>
-      <line x1="720" y1="700" x2="484" y2="700" marker-end="url(#arr)"/>
-      <line x1="330" y1="654" x2="330" y2="530" marker-end="url(#arr)"/>
+    <g clip-path="url(#shot)">
+      <image href="${shot}" x="-238" y="420" width="1810" height="628" preserveAspectRatio="xMinYMin slice"/>
     </g>
+    <rect x="96" y="420" width="${W - 192}" height="440" rx="10" style="fill:none;stroke:${INK};stroke-width:2"/>
+    <text x="${W - 110}" y="884" text-anchor="end" style="fill:${MUTED};font-size:19px;font-style:italic">the real board, on invented pull requests</text>
 
-    <text x="96" y="880" style="fill:${MUTED};font-size:24px">The slowest quarter of my team's pull requests waited for a first review</text>
-    <text x="96" y="960" style="fill:${INK};font-size:64px">17.6 hours  <tspan style="fill:${MUTED}">→</tspan>  3.0 hours</text>
-    <text x="96" y="1012" style="fill:${MUTED};font-size:22px;font-style:italic">a before and after, not an experiment</text>
+    <text x="96" y="950" style="fill:${MUTED};font-size:23px">Slowest quarter of my team's wait for a first review</text>
+    <text x="96" y="1030" style="fill:${INK};font-size:68px">17.6 h <tspan style="fill:${MUTED}">→</tspan> 3.0 h</text>
+    <text x="${W - 96}" y="1030" text-anchor="end" style="fill:${MUTED};font-size:23px">cost per review: down by half</text>
 
     <line x1="96" y1="1122" x2="${W - 96}" y2="1122" style="stroke:${LINE};stroke-width:1"/>
     <text x="96" y="1158" style="fill:${INK};font-size:22px">Seven Hundred Commits to Teach a Reviewer It Was Wrong</text>
