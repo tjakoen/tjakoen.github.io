@@ -305,11 +305,16 @@ rule:
 
 > Move bugs as far left in the process as possible.
 >
-> *[Matt Monroe](https://www.linkedin.com/in/matt-monroe-a3728593/), CTO at [Career Team](https://careerteam.com)*
+> *The idea, in my words, from a knowledge-sharing session by [Matt Monroe](https://www.linkedin.com/in/matt-monroe-a3728593/), CTO at [Career Team](https://careerteam.com)*
 
 A wrong assumption caught on a ticket is
 cheaper than one caught in review, which is cheaper than one caught in production. The epic checker
 is that rule turned into a tool.
+
+Kercwin credits it the same way. In his own slides, the one on direction for technical excellence
+opens with that session of Matt's, and then put the job in his own terms:
+preventative and proactive measures, tracking and auditing to steer technical direction, and bridging
+delivery between product, leads and developers, in any order the cycle runs.
 
 <svg viewBox="0 0 360 150" width="100%" role="img"
      aria-label="Where a wrong assumption gets caught, from cheapest to most expensive: on the ticket, in review, in testing, in production. The epic checker works at the ticket and the pull request, the left end of the line."
