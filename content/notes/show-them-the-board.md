@@ -293,12 +293,12 @@ opens. And the run logs are shared, so anyone can see what the checker did, when
   <figcaption class="shot__cap">Kercwin's board, his latest version, running on an invented epic inside the same mock sidebar. A flagged decision goes against the plan, Claude recommends a change, and a person picks the button.</figcaption>
 </figure>
 
-The idea underneath it is not his or mine. It comes from Matt, our CTO, and it is his standing
+The idea underneath it is not his or mine. It comes from [Matt](https://www.linkedin.com/in/matt-monroe-a3728593/), our CTO, and it is his standing
 rule:
 
 > Move bugs as far left in the process as possible.
 >
-> *Matt, CTO at [Career Team](https://careerteam.com)*
+> *[Matt Monroe](https://www.linkedin.com/in/matt-monroe-a3728593/), CTO at [Career Team](https://careerteam.com)*
 
 A wrong assumption caught on a ticket is
 cheaper than one caught in review, which is cheaper than one caught in production. The epic checker
