@@ -372,8 +372,7 @@ trial behind it.
 | What runs it | What I tried | What the results said |
 |---|---|---|
 | The six lenses and the skeptic | Pinned to Sonnet in September | They held their precision, so the expensive model only does the parts that need judgment |
-| The review itself | Opus 5 at medium, then Opus 5.5 at medium | About a fifth fewer findings per review, and every blocking finding still held up |
-| Effort on the review | Medium, then a lower setting | More findings per review than the baseline, and not one blocking finding thrown out across thirty reviews |
+| The review itself | Opus 5 at medium, then Opus 5.5 at medium, and now Opus 5.5 at low | Low held up: across thirty reviews it found more per review than the medium baseline, and not one blocking finding was thrown out |
 | The routines that only check for work | Haiku | Far cheaper per check, but a pinned model does not switch a session that is already running, so the slots went back to Opus |
 
 On `Oct 13` the kit started pricing every review session, lens agents included, at list rates for the
