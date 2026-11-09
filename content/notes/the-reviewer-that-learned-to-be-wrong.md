@@ -31,7 +31,7 @@ my kit tests whether a review is any good, and since November my kit treats a ve
 a review to build on instead of one to repeat. Theirs is the reviewer for everyone. Mine is the
 opinionated one. It reviews the way I do, and it keeps a ledger of every time it was wrong.
 
-On August 14 I committed one file, a skill called check-pr-voice. The next day I made eleven more
+On August 14 I committed one file, a skill called */check-pr-voice*. The next day I made eleven more
 commits to it, and one of them was titled *review the ticket, not just the diff*. That should have
 told me how this was going to go. As a snapshot, on November 9 the repository has 737 commits and
 sits at release 2.6. The number sounds like a flex and it is closer to a confession: most of those
@@ -136,25 +136,38 @@ me to run it again.
 The first two days of history are mostly the skill learning manners. The commit titles read like
 notes from a bad first week:
 
-- *Post one review, and stop calling everything Minor.*
-- *Ask whether we already built this.*
-- *Scale the review to the diff, but never by size alone.*
+```console
+$ git log --reverse --format='%ad  %s' --date=short
+2026-08-15  feat(check-pr): review the ticket, not just the diff
+2026-08-15  feat(check-pr): post one review, and stop calling everything Minor
+2026-08-15  feat(check-pr): ask whether we already built this
+2026-08-15  feat(check-pr): scale the review to the diff, but never by size alone
+...
+```
 
 Each of those is a review I watched go out and winced at. It was useful from
 day one and annoying from day one, which I suspect is true of most first hires.
 
 ## Aug 18 · Then it had to keep score
 
-On August 18 the history gets a commit called *the first scored outcomes, and the one lesson in
-them*. That is the turn the rest of the story hangs on.
+On August 18 the history gets this commit, and it is the turn the rest of the story hangs on:
+
+```console
+2026-08-18  fix(check-pr): the first scored outcomes, and the one lesson in them
+```
 
 Every finding the reviewer posts gets a row in an outcome log, scored later by what happened to it:
 fixed, answered, closed without a change, or ignored. Anything a human reviewer caught that mine did
-not goes into a separate miss log. By September 9 there was a standing skill, calibrate-pr-voice,
+not goes into a separate miss log. By September 9 there was a standing skill, */calibrate-pr-voice*,
 whose only job is to read those logs and fold the lessons back into the lenses.
 
-I would love to say this went smoothly. On October 1 there is a commit that locks the outcome log,
-*because eleven scores in twelve were being lost*. Two routines had been writing to the same file and
+I would love to say this went smoothly. On October 1 there is this one:
+
+```console
+2026-10-01  calibrate: lock the outcome log, because eleven scores in twelve were being lost
+```
+
+Two routines had been writing to the same file and
 quietly overwriting each other, so for a stretch the reviewer was being graded on a sample of almost
 nothing and I had not noticed. A measuring tool that loses its measurements is a very confident way
 to learn nothing.
@@ -169,7 +182,7 @@ Wrong](/talks/every-time-it-was-wrong). The deck is still up, and it is an hones
 kit was that week: a reviewer I ran myself, a growing outcome log, and a first pass at calibration.
 Everything below that date in this note is what changed after people started seeing it.
 
-The same days in the history are the densest of the early stretch. A second skill, respond-pr-voice,
+The same days in the history are the densest of the early stretch. A second skill, */respond-pr-voice*,
 started answering replies waiting on us, checking a claimed fix at the new commit, resolving its own
 threads and updating the verdict label. A push from the author started queueing a re-review, an
 incremental pass over the new commits, instead of a whole new review. Every unattended routine got
