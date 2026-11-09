@@ -21,10 +21,61 @@ const INK = "#1C1B17";
 const MUTED = "#6E6C64";
 const LINE = "rgba(28,27,23,.18)";
 
-const box = (x: number, y: number, w: number, h: number, title: string, sub: string) => `
-    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" style="fill:${PAPER};stroke:${INK};stroke-width:2"/>
-    <text x="${x + w / 2}" y="${y + 52}" text-anchor="middle" style="fill:${INK};font-size:34px">${title}</text>
-    <text x="${x + w / 2}" y="${y + 92}" text-anchor="middle" style="fill:${MUTED};font-size:25px">${sub}</text>`;
+// One abstract dashboard window: a title bar with three dots, then a body drawn by the caller.
+const win = (x: number, y: number, w: number, h: number, dark: boolean, body: string) => {
+  const fill = dark ? INK : PAPER;
+  const stroke = INK;
+  const dot = dark ? PAPER : MUTED;
+  return `
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" style="fill:${fill};stroke:${stroke};stroke-width:2"/>
+    <line x1="${x}" y1="${y + 34}" x2="${x + w}" y2="${y + 34}" style="stroke:${dark ? "rgba(226,224,216,.25)" : LINE};stroke-width:1.5"/>
+    <circle cx="${x + 20}" cy="${y + 17}" r="5" style="fill:${dot}"/>
+    <circle cx="${x + 38}" cy="${y + 17}" r="5" style="fill:${dot}"/>
+    <circle cx="${x + 56}" cy="${y + 17}" r="5" style="fill:${dot}"/>
+    ${body}`;
+};
+
+// Mine: a board of columns with cards, in light ink on the dark window.
+const boardBody = (x: number, y: number) => {
+  const ink = "rgba(226,224,216,.85)";
+  const faint = "rgba(226,224,216,.3)";
+  let out = "";
+  const counts = [3, 2, 3, 1];
+  counts.forEach((n, c) => {
+    const cx = x + 18 + c * 70;
+    out += `<rect x="${cx}" y="${y + 52}" width="60" height="8" rx="4" style="fill:${ink}"/>`;
+    for (let i = 0; i < n; i++)
+      out += `<rect x="${cx}" y="${y + 72 + i * 42}" width="60" height="34" rx="6" style="fill:none;stroke:${faint};stroke-width:1.5"/>`;
+  });
+  return out;
+};
+
+// Kercwin's: a list on the left, one row open on the right with accept and reject.
+const epicBody = (x: number, y: number) => {
+  let out = "";
+  for (let i = 0; i < 5; i++)
+    out += `<rect x="${x + 18}" y="${y + 54 + i * 34}" width="${i === 1 ? 112 : 96}" height="20" rx="4" style="fill:${i === 1 ? INK : LINE}"/>`;
+  out += `<rect x="${x + 150}" y="${y + 54}" width="128" height="156" rx="8" style="fill:none;stroke:${INK};stroke-width:1.5"/>`;
+  out += `<rect x="${x + 164}" y="${y + 70}" width="96" height="10" rx="5" style="fill:${INK}"/>`;
+  out += `<rect x="${x + 164}" y="${y + 92}" width="80" height="8" rx="4" style="fill:${LINE}"/>`;
+  out += `<rect x="${x + 164}" y="${y + 110}" width="90" height="8" rx="4" style="fill:${LINE}"/>`;
+  out += `<rect x="${x + 164}" y="${y + 172}" width="44" height="24" rx="6" style="fill:none;stroke:${INK};stroke-width:1.5"/>`;
+  out += `<rect x="${x + 216}" y="${y + 172}" width="48" height="24" rx="6" style="fill:none;stroke:${MUTED};stroke-width:1.5"/>`;
+  return out;
+};
+
+// Kyle's: a note with checkboxes, some ticked.
+const notesBody = (x: number, y: number) => {
+  let out = `<rect x="${x + 22}" y="${y + 54}" width="150" height="12" rx="6" style="fill:${INK}"/>`;
+  const widths = [190, 150, 210, 130, 170];
+  widths.forEach((w, i) => {
+    const ry = y + 86 + i * 26;
+    const done = i < 2;
+    out += `<rect x="${x + 22}" y="${ry}" width="14" height="14" rx="3" style="fill:${done ? INK : "none"};stroke:${INK};stroke-width:1.5"/>`;
+    out += `<rect x="${x + 46}" y="${ry + 3}" width="${w}" height="8" rx="4" style="fill:${done ? MUTED : LINE}"/>`;
+  });
+  return out;
+};
 
 const card = `<!doctype html><html><head><meta charset="utf-8"><style>
   html, body { margin: 0; }
@@ -44,20 +95,22 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
     <text x="96" y="312" style="fill:${INK};font-size:80px;letter-spacing:-1.5px">a dashboard.</text>
     <text x="96" y="400" style="fill:${INK};font-size:80px;letter-spacing:-1.5px;font-style:italic">They built their own.</text>
 
-    ${box(330, 470, 540, 120, "My review board", "and Crew Watch")}
+    ${win(96, 500, 330, 240, true, boardBody(96, 500))}
+    <text x="261" y="786" text-anchor="middle" style="fill:${INK};font-size:30px">Mine</text>
+    <text x="261" y="822" text-anchor="middle" style="fill:${MUTED};font-size:23px">the demo</text>
 
-    <line x1="600" y1="590" x2="600" y2="652" style="stroke:${MUTED};stroke-width:2" marker-end="url(#arr)"/>
-    <rect x="470" y="656" width="260" height="76" rx="38" style="fill:${INK}"/>
-    <text x="600" y="704" text-anchor="middle" style="fill:${PAPER};font-size:32px">one demo</text>
+    <path d="M440,600 C500,560 560,575 590,628" style="fill:none;stroke:${MUTED};stroke-width:2;stroke-dasharray:6 7" marker-end="url(#arr)"/>
+    <text x="600" y="560" text-anchor="middle" style="fill:${MUTED};font-size:24px;font-style:italic">two weeks later</text>
 
-    <path d="M540,732 C470,800 330,800 300,858" style="fill:none;stroke:${MUTED};stroke-width:2" marker-end="url(#arr)"/>
-    <path d="M660,732 C730,800 870,800 900,858" style="fill:none;stroke:${MUTED};stroke-width:2" marker-end="url(#arr)"/>
-    <text x="600" y="812" text-anchor="middle" style="fill:${MUTED};font-size:24px;font-style:italic">two weeks later</text>
+    ${win(470, 640, 300, 240, false, epicBody(470, 640))}
+    <text x="620" y="926" text-anchor="middle" style="fill:${INK};font-size:30px">Kercwin's</text>
+    <text x="620" y="962" text-anchor="middle" style="fill:${MUTED};font-size:23px">an epic checker</text>
 
-    ${box(110, 864, 400, 120, "An epic checker", "Kercwin, tech lead")}
-    ${box(690, 864, 400, 120, "An Obsidian board", "Kyle, developer")}
+    ${win(806, 640, 298, 240, false, notesBody(806, 640))}
+    <text x="955" y="926" text-anchor="middle" style="fill:${INK};font-size:30px">Kyle's</text>
+    <text x="955" y="962" text-anchor="middle" style="fill:${MUTED};font-size:23px">a board in Obsidian</text>
 
-    <text x="600" y="1050" text-anchor="middle" style="fill:${MUTED};font-size:24px">Nobody was assigned either one.</text>
+    <text x="96" y="1050" style="fill:${MUTED};font-size:24px">Nobody was assigned either one.</text>
 
     <line x1="96" y1="1122" x2="${W - 96}" y2="1122" style="stroke:${LINE};stroke-width:1"/>
     <text x="96" y="1158" style="fill:${INK};font-size:22px">I Showed My Team a Dashboard</text>
