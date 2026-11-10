@@ -275,7 +275,7 @@ test("the worker stat matches the main worker castes", async ({ page }) => {
   await page.waitForTimeout(8000);
   const result = await page.evaluate(() => {
     const n = window.__nest as any;
-    const workers = n.state.ants.filter((a: any) => a.side !== "rival" && a.role === "worker").length;
+    const workers = n.state.ants.filter((a: any) => a.side !== "rival" && (a.role === "worker" || a.role === "builder")).length;
     return { workers, ui: Number(document.querySelector("[data-k='workers']")?.textContent) };
   });
   expect(result.ui).toBe(result.workers);
@@ -334,4 +334,36 @@ test("a lone main ant cannot break a rival mound", async ({ page }) => {
     return n.rival.hp;
   });
   expect(result).toBe(8);
+});
+
+
+test("a full colony can staff a second mini mound and count its builder", async ({ page }) => {
+  await open(page);
+  const population = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    nest.makeMini(nest.findMiniSpot());
+    nest.state.built = 1;
+    nest.state.speed = 4;
+    while (nest.state.ants.length < 20) {
+      const [x, y] = nest.home.hole;
+      const worker = nest.spawnPageAnt("worker", [x + 65, y + 35], null);
+      worker.job = "home";
+      worker.path = [nest.home.hole.slice()];
+      worker.k = 0;
+    }
+    nest.state.stores = 100;
+    return nest.state.ants.map((ant: any) => ant.id);
+  });
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.builder?.id), { timeout: 8000 }).toBeDefined();
+  const staffing = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    return {
+      builder: nest.state.builder.id,
+      workers: nest.state.ants.filter((ant: any) => ant.role === "worker" || ant.role === "builder").length,
+      displayed: Number(document.querySelector("[data-k='workers']")?.textContent),
+    };
+  });
+  expect(population).toContain(staffing.builder);
+  expect(staffing.displayed).toBe(staffing.workers);
+  await expect(page.locator("[data-k='minis']")).toHaveText("2", { timeout: 18000 });
 });

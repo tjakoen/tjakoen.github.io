@@ -232,28 +232,32 @@ test("the note has a separate self-running colony that drains and resets", async
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.evaluate(() => { const spot = window.__nest!.findMiniSpot(); if (spot) window.__nest!.makeMini(spot); });
-    await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").length)).toBeGreaterThan(0);
-    const guardNear = await page.evaluate(() => {
-      const guard = window.__nest!.state.ants.find((a) => a.role === "guard");
-      return guard?.mini ? Math.hypot(guard.x - guard.mini.base[0], guard.y - guard.mini.base[1]) : null;
+    const site = await page.evaluate(() => {
+      const spot = window.__nest!.findMiniSpot() as { x: number; y: number };
+      window.__nest!.makeMini(spot);
+      return [spot.x, spot.y];
     });
-    expect(guardNear).not.toBeNull();
-    expect(guardNear!).toBeLessThan(300);
+    const guards = () => page.evaluate(([x, y]) => window.__nest!.state.ants.filter((ant) =>
+      ant.role === "guard" && ant.mini?.base[0] === x && ant.mini.base[1] === y).map(({ x: antX, y: antY, job }) => ({ x: antX, y: antY, job })), site);
+    await expect.poll(async () => (await guards()).length).toBeGreaterThan(0);
+    const [guard] = await guards();
+    const guardNear = Math.hypot(guard.x - site[0], guard.y - site[1]);
+    expect(guardNear).toBeLessThan(300);
     const mound = page.locator(".nest-mini").first();
     await mound.click();
-    await page.waitForFunction(() => {
-      const guards = window.__nest!.state.ants.filter((a) => a.role === "guard");
-      return guards.length > 0 && guards.every((a) => a.job === "defend" || a.job === "guard");
-    });
+    await expect.poll(async () => {
+      const crew = await guards();
+      return crew.length > 0 && crew.every((ant) => ant.job === "defend" || ant.job === "guard");
+    }).toBe(true);
     await page.waitForTimeout(4500);
-    const freed = await page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").map((a) => a.job));
+    const freed = (await guards()).map((ant) => ant.job);
     expect(freed.every((job) => job !== "defend" && job !== "guard")).toBe(true);
-    await page.evaluate(() => {
-      for (const g of window.__nest!.state.ants.filter((a) => a.role === "guard")) {
+    await page.evaluate(([x, y]) => {
+      for (const g of window.__nest!.state.ants.filter((ant) =>
+        ant.role === "guard" && ant.mini?.base[0] === x && ant.mini.base[1] === y)) {
         window.__nest!.squash(g); window.__nest!.squash(g);
       }
-    });
+    }, site);
     await expect(mound).toHaveClass(/exposed/);
   });
 
