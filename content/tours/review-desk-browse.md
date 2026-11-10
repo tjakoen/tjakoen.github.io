@@ -1,7 +1,7 @@
 ---
 id: review-desk-browse
 mode: dev
-title: "Review the Desk's Browse mode"
+title: "Review: the Desk's Browse mode"
 route: /grain
 ---
 The Desk can show recent notes and calendar posts without loading a model. Phones open in Browse, and desktop visitors can switch to it from Chat.
