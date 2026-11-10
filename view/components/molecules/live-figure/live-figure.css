@@ -697,7 +697,8 @@
 
 /* ---- the ant colony: a live, theme-aware figure box ---------------------- */
 .live-fig--nest { max-width: 36rem; }
-.nest-scene { width: 100%; overflow: hidden; border: 1px solid var(--color-line); background: var(--paper); color: var(--ink); }
+.nest-scene { --nest-rival: #a33b3b; width: 100%; overflow: hidden; border: 1px solid var(--color-line); background: var(--paper); color: var(--ink); }
+:root[data-color-scheme="dark"] .nest-scene { --nest-rival: #e08a8a; }
 .nest-scene__stage { position: relative; width: 100%; aspect-ratio: 3 / 1; overflow: hidden; background: var(--paper); }
 .nest-scene__stage > svg { display: block; width: 100%; height: 100%; overflow: hidden; }
 .nest-scene__stage text { font-family: var(--font-mono); }
@@ -708,9 +709,8 @@
 .nest-scene .nest-ant.soldier svg { width: 21px; height: 12px; }
 .nest-scene .nest-ant.flyer svg { width: 20px; height: 12px; color: var(--ink-muted); }
 .nest-scene .nest-ant.builder svg { color: var(--color-accent); }
-.nest-scene .nest-ant.rival svg { color: var(--color-accent); }
-.nest-scene .nest-ant.rival[data-role="rival-worker"] svg { transform: scale(.78); }
-.nest-scene .nest-ant.rival[data-role="rival-guard"] svg { transform: scale(1); color: var(--ink-muted); }
+.nest-scene .nest-ant.rival svg { color: var(--nest-rival); }
+.nest-scene .nest-ant.flyer .wing { animation: nest-scene-flap .1s steps(1) infinite; }
 .nest-scene .nest-ant[data-role="queen"] svg { width: 29px; height: 17px; color: var(--color-accent); }
 .nest-scene .nest-ant[data-health] { transition: opacity .25s; }
 .nest-scene__mound { overflow: hidden; color: var(--ink); }
@@ -724,11 +724,11 @@
 .nest-scene .nest-ant.walk .legs-a { animation: nest-scene-step .18s steps(1) infinite; }
 .nest-scene .nest-ant.walk .legs-b { animation: nest-scene-step .18s steps(1) infinite reverse; }
 @keyframes nest-scene-step { 0% { opacity: 1; } 50% { opacity: 0; } }
-.live-fig--colony { width: 100%; max-width: 36rem; overflow: hidden; border: 1px solid var(--color-line); background: var(--paper); color: var(--ink); }
-.colony-interior { display: block; width: 100%; aspect-ratio: 3 / 2; overflow: hidden; background: var(--paper-2); }
-.colony-interior__cells { font: 15px/1 var(--font-mono); letter-spacing: -.04em; -webkit-text-stroke: .035em currentColor; fill: var(--ink-muted); }
-.colony-interior__cell.t1 { fill: var(--ink); }
-.colony-interior__cell.t2, .colony-interior__cell.t5, .colony-interior__cell.t6 { fill: var(--color-accent); }
-.colony-interior__cell.t3, .colony-interior__cell.t4 { fill: var(--ink); }
+.live-fig--colony { width: 100%; max-width: 36rem; aspect-ratio: 3 / 2; overflow: hidden; border: 1px solid var(--color-line); background: var(--paper-2); color: var(--ink-faint); }
+.live-fig--colony .nest-pre { display: block; position: relative; width: 100%; height: 100%; overflow: hidden; margin: 0; font: 10px/1.2 var(--font-mono); letter-spacing: -.04em; -webkit-text-stroke: .05em currentColor; color: var(--ink-faint); user-select: none; }
+.live-fig--colony .nest-pre b { font-weight: inherit; }
+.live-fig--colony .nest-pre .t1 { color: var(--ink-muted); }
+.live-fig--colony .nest-pre .t2, .live-fig--colony .nest-pre .t5, .live-fig--colony .nest-pre .t6 { color: var(--color-accent); }
+.live-fig--colony .nest-pre .t3, .live-fig--colony .nest-pre .t4 { color: var(--ink); }
+@keyframes nest-scene-flap { 50% { opacity: .15; } }
 @media (prefers-reduced-motion: reduce) { .nest-scene .nest-ant.walk .legs-a, .nest-scene .nest-ant.walk .legs-b { animation: none; } }
-@media (prefers-reduced-motion: reduce) { .live-fig--colony .nest-ant.walk .legs-a, .live-fig--colony .nest-ant.walk .legs-b { animation: none; } }

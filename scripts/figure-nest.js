@@ -1,11 +1,12 @@
 // Each box runs one bounded colony event with the same movement, food, combat, and build rules as Nest.
-import { antClasses, antMarkup, miniArt, poseAntWings } from "./nest-assets.js";
+import { antClasses, antMarkup, miniArt } from "./nest-assets.js";
 import {
   BUILD_TIME,
   MOUND_BITE_INTERVAL,
   RIVAL_FOUNDING_TIME,
   RIVAL_MOUND_HEALTH,
   advanceBuild,
+  blockedByTrailMate,
   combatHealth,
   combatPower,
   damageMound,
@@ -13,6 +14,7 @@ import {
   groupCanWin,
   roleSpeed,
   stepMovement,
+  TRAIL_FOLLOW_GAP,
   storeCapacity,
   worshipReturnAt,
 } from "./nest-simulation.js";
@@ -121,7 +123,7 @@ function addActor(sim, role, side, x, y, { job = "idle", scale = 1 } = {}) {
   turn.append(ant);
   wrap.append(turn);
   sim.dynamic.append(wrap);
-  const actor = { id: sim.actors.length + 1, role, side, x, y, heading: side === "rival" ? Math.PI : 0, job, scale, el: wrap, turn, carry: null, stuck: 0, paused: false, flightPhase: 0 };
+  const actor = { id: sim.actors.length + 1, role, side, x, y, px: x, py: y, heading: side === "rival" ? Math.PI : 0, job, scale, el: wrap, turn, carry: null, stuck: 0, paused: false, flightPhase: 0, trailId: null };
   sim.actors.push(actor);
   placeActor(actor);
   return actor;
@@ -137,17 +139,15 @@ function moveActor(sim, actor, target, dt, { job = actor.job, factor = 1, letter
   const speed = roleSpeed(actor.role, job, BASE_SPEED, { letterNeed, factor });
   recordRule(sim, "roleSpeed");
   const beforeX = actor.x, beforeY = actor.y;
+  actor.px = beforeX;
+  actor.py = beforeY;
   const arrived = stepMovement(actor, target.x, target.y, dt, speed, {
     now: sim.clock * 1000,
-    blocked: () => false,
+    blocked: () => blockedByTrailMate(actor, sim.actors, TRAIL_FOLLOW_GAP),
   });
   if (actor.home) actor.el.classList.toggle("inside-mound", Math.hypot(actor.x - actor.home.x, actor.y - actor.home.y) < 11);
   recordRule(sim, "stepMovement");
   const walking = Math.hypot(actor.x - beforeX, actor.y - beforeY) > 0.02;
-  if (actor.role === "flyer") {
-    if (walking) actor.flightPhase = (actor.flightPhase + dt * Math.PI * 16) % (Math.PI * 2);
-    poseAntWings(actor.el, actor.flightPhase, walking);
-  }
   if (walking && actor.pathPoints &&
       Math.hypot(actor.x - actor.pathPoints.at(-1)[0], actor.y - actor.pathPoints.at(-1)[1]) > 5) {
     actor.pathPoints.push([actor.x, actor.y]);
@@ -224,6 +224,7 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
       next.state = "assigned";
       actor.letter = next;
       actor.job = actor.role === "scout" && scoutFirst ? "scout" : "toLetter";
+      actor.trailId = `${sim.mode}-${actor.side}`;
       actor.pathPoints = [[actor.x, actor.y]];
       actor.forageRoute = forageRoute(actor, home, next);
     }
@@ -343,18 +344,30 @@ function setupColony(sim) {
   setPhase(sim, "workers-deliver");
 }
 
-function addFighters(sim, { mainCount = 3, rivalCount = 2, homeX = 118, rivalX = 468 } = {}) {
-  for (let index = 0; index < mainCount; index++) addActor(sim, "worker", "main", homeX + index * 2, 154 + index * 8, { job: "approach" });
-  for (let index = 0; index < rivalCount; index++) addActor(sim, "rival-guard", "rival", rivalX + index * 7, 144 + index * 18, { job: "guard", scale: 1 });
+function addFighters(sim, { mainCount = 3, rivalCount = 3, homeX = 118, rivalX = 468 } = {}) {
+  for (let index = 0; index < mainCount; index++) {
+    const actor = addActor(sim, "soldier", "main", homeX + index * 7, 142 + index * 18, { job: "follow", scale: 1 });
+    actor.trailId = "fight-trail";
+  }
+  for (let index = 0; index < rivalCount; index++) {
+    const actor = addActor(sim, "rival-guard", "rival", rivalX + index * 7, 142 + index * 18, { job: "follow", scale: 1 });
+    actor.trailId = "fight-trail";
+  }
 }
 
 function setupFight(sim) {
-  addFloor(sim, 178);
-  const trail = svg("path", { d: "M66 158 C134 151 176 137 236 145 S360 162 410 148 S484 141 534 155", class: "nest-scene__trail" });
+  const trail = svg("path", { d: "M66 106 C134 96 176 84 236 94 S360 117 410 100 S484 88 534 106", class: "nest-scene__trail" });
   sim.dynamic.append(trail);
   addFighters(sim);
   sim.data = { mains: sim.actors.filter((actor) => actor.side === "main"), rivals: sim.actors.filter((actor) => actor.side === "rival"), target: null, fightElapsed: 0, mainLosses: 0,
+    fightCenter: { x: 300, y: 100 },
     trailMet: false };
+  sim.host.dataset.fightMainCount = String(sim.data.mains.length);
+  sim.host.dataset.fightRivalCount = String(sim.data.rivals.length);
+  sim.host.dataset.fightSizes = JSON.stringify([
+    getComputedStyle(sim.data.mains[0].turn.querySelector("svg")).width,
+    getComputedStyle(sim.data.rivals[0].turn.querySelector("svg")).width,
+  ]);
   sim.data.mains.forEach((actor, index) => { actor.routeIndex = 0; actor.trailRoute = trailPoints(trail, 0.12, 0.48, 8 + index); });
   sim.data.rivals.forEach((actor, index) => { actor.routeIndex = 0; actor.trailRoute = trailPoints(trail, 0.88, 0.52, 6 + index); });
   setPhase(sim, "trail-approach");
@@ -484,7 +497,7 @@ function tickColonyBuild(sim, dt) {
   }
 }
 
-function tickCombat(sim, dt, { mains, rivals, getTarget, finish } = {}) {
+function tickCombat(sim, dt, { mains, rivals, getTarget, finish, center = null } = {}) {
   const aliveMains = mains.filter((actor) => actor.alive !== false);
   const aliveRivals = rivals.filter((actor) => actor.alive !== false);
   if (!aliveRivals.length) { finish(); return; }
@@ -497,6 +510,23 @@ function tickCombat(sim, dt, { mains, rivals, getTarget, finish } = {}) {
   }
   if (!target) { finish(); return; }
   if (sim.phase !== "clash") {
+    if (center) {
+      const mainTargets = aliveMains.map((_, index) => ({
+        x: center.x - 11,
+        y: center.y + (index - (aliveMains.length - 1) / 2) * 24,
+      }));
+      const rivalTargets = aliveRivals.map((_, index) => ({
+        x: center.x + 11,
+        y: center.y + (index - (aliveRivals.length - 1) / 2) * 24,
+      }));
+      const mainArrivals = aliveMains.map((actor, index) => moveActor(sim, actor, mainTargets[index], dt, { job: "follow", factor: 0.9 }));
+      const rivalArrivals = aliveRivals.map((actor, index) => moveActor(sim, actor, rivalTargets[index], dt, { job: "follow", factor: 0.9 }));
+      if (![...mainArrivals, ...rivalArrivals].every(Boolean)) return;
+      aliveRivals.forEach((actor) => { actor.job = "guard"; });
+      setPhase(sim, "clash");
+      sim.data.fightElapsed = 0;
+      return;
+    }
     const radius = sim.mode === "rival" ? 30 : 26;
     const offsets = aliveMains.map((_, index) => ({ x: target.x - radius, y: target.y + (index - (aliveMains.length - 1) / 2) * 9 }));
     const arrivals = aliveMains.map((actor, index) => moveActor(sim, actor, offsets[index], dt, { job: "approach", factor: 0.9 }));
@@ -540,7 +570,7 @@ function tickCombat(sim, dt, { mains, rivals, getTarget, finish } = {}) {
 function tickFight(sim, dt) {
   if (!sim.data.trailMet) {
     const travelers = [...sim.data.mains, ...sim.data.rivals];
-    const arrived = travelers.map((actor) => moveOnRoute(sim, actor, actor.trailRoute, dt, { job: "approach" }));
+    const arrived = travelers.map((actor) => moveOnRoute(sim, actor, actor.trailRoute, dt, { job: "follow" }));
     if (arrived.every(Boolean)) {
       sim.data.trailMet = true;
       setPhase(sim, "approach");
@@ -556,6 +586,7 @@ function tickFight(sim, dt) {
   tickCombat(sim, dt, {
     mains: sim.data.mains,
     rivals: sim.data.rivals,
+    center: sim.data.fightCenter,
     getTarget: (mains, rivals) => rivals[0] || null,
     finish: () => completeCycle(sim),
   });
