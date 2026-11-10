@@ -18,6 +18,21 @@ test("the colony reads the page into the larder and stores", async ({ page }) =>
   expect(result.carried || result.stores).toBeTruthy();
 });
 
+test("the queen's first egg waits for the simulation to resume", async ({ page }) => {
+  await page.clock.install();
+  await open(page);
+  const pause = page.getByRole("button", { name: "Pause", exact: true });
+  await pause.click();
+  const eggs = () => page.evaluate(() => (window.__nest as any).state.eggs.length);
+
+  await page.clock.fastForward(7_000);
+  expect(await eggs()).toBe(0);
+
+  await page.getByRole("button", { name: "Resume", exact: true }).click();
+  await page.clock.runFor(6_200);
+  expect(await eggs()).toBeGreaterThan(0);
+});
+
 test("bait pulls nearby ants off their trails", async ({ page }) => {
   await open(page);
   await page.waitForFunction(() => (window.__nest as any).state.ants.some((a: any) => a.el && a.where === "page"));

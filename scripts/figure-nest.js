@@ -115,15 +115,13 @@ function setMoundProgress(sim, mound, progress) {
   recordRule(sim, "miniArt");
 }
 
-function addActor(sim, role, side, x, y, { job = "idle", scale = 1 } = {}) {
+function addActor(sim, role, side, x, y, { job = "idle" } = {}) {
   const wrap = svg("g", { class: antClasses(role, side), "data-role": role, "data-side": side });
   const turn = svg("g");
-  const ant = svg("svg", { x: -11.5, y: -6.5, width: 23, height: 13, viewBox: "0 0 22.4 12.8", class: "nest-scene__ant-art" });
-  ant.innerHTML = antMarkup({ flyer: role === "flyer" || role === "rival-flyer" });
-  turn.append(ant);
+  turn.innerHTML = antMarkup({ role, centered: true });
   wrap.append(turn);
   sim.dynamic.append(wrap);
-  const actor = { id: sim.actors.length + 1, role, side, x, y, px: x, py: y, heading: side === "rival" ? Math.PI : 0, job, scale, el: wrap, turn, carry: null, stuck: 0, paused: false, flightPhase: 0, trailId: null };
+  const actor = { id: sim.actors.length + 1, role, side, x, y, px: x, py: y, heading: side === "rival" ? Math.PI : 0, job, el: wrap, turn, carry: null, stuck: 0, paused: false, flightPhase: 0, trailId: null };
   sim.actors.push(actor);
   placeActor(actor);
   return actor;
@@ -131,7 +129,7 @@ function addActor(sim, role, side, x, y, { job = "idle", scale = 1 } = {}) {
 
 function placeActor(actor) {
   actor.el.setAttribute("transform", `translate(${actor.x} ${actor.y})`);
-  actor.turn.setAttribute("transform", `rotate(${actor.heading * 180 / Math.PI}) scale(${actor.scale})`);
+  actor.turn.setAttribute("transform", `rotate(${actor.heading * 180 / Math.PI})`);
 }
 
 function moveActor(sim, actor, target, dt, { job = actor.job, factor = 1, letterNeed = 1 } = {}) {
@@ -337,39 +335,36 @@ function setupColony(sim) {
   sim.host.dataset.stores = "11";
   sim.storeMax = storeCapacity(0);
   recordRule(sim, "storeCapacity");
-  sim.actors = [addActor(sim, "queen", "main", home.x, home.y, { scale: 1.55 }), addActor(sim, "worker", "main", home.x - 10, home.y + 7, { job: "search" }), addActor(sim, "worker", "main", home.x + 9, home.y + 6, { job: "search" }), addActor(sim, "soldier", "main", home.x + 1, home.y + 12, { scale: 1.2 })];
+  sim.actors = [addActor(sim, "queen", "main", home.x, home.y), addActor(sim, "worker", "main", home.x - 10, home.y + 7, { job: "search" }), addActor(sim, "worker", "main", home.x + 9, home.y + 6, { job: "search" }), addActor(sim, "soldier", "main", home.x + 1, home.y + 12)];
   sim.actors.forEach((actor) => { actor.home = home; actor.el.classList.add("inside-mound"); });
   sim.trailPath = addTrail(sim);
   sim.data = { home, forage: sim.actors.slice(1, 3), builder: null, mound: null, build: 0, buildTarget: { x: 456, y: 164 }, stage: "delivery" };
   setPhase(sim, "workers-deliver");
 }
 
-function addFighters(sim, { mainCount = 3, rivalCount = 3, homeX = 118, rivalX = 468 } = {}) {
-  for (let index = 0; index < mainCount; index++) {
-    const actor = addActor(sim, "soldier", "main", homeX + index * 7, 142 + index * 18, { job: "follow", scale: 1 });
-    actor.trailId = "fight-trail";
-  }
-  for (let index = 0; index < rivalCount; index++) {
-    const actor = addActor(sim, "rival-guard", "rival", rivalX + index * 7, 142 + index * 18, { job: "follow", scale: 1 });
-    actor.trailId = "fight-trail";
-  }
-}
-
 function setupFight(sim) {
   const trail = svg("path", { d: "M66 106 C134 96 176 84 236 94 S360 117 410 100 S484 88 534 106", class: "nest-scene__trail" });
   sim.dynamic.append(trail);
-  addFighters(sim);
-  sim.data = { mains: sim.actors.filter((actor) => actor.side === "main"), rivals: sim.actors.filter((actor) => actor.side === "rival"), target: null, fightElapsed: 0, mainLosses: 0,
-    fightCenter: { x: 300, y: 100 },
-    trailMet: false };
-  sim.host.dataset.fightMainCount = String(sim.data.mains.length);
-  sim.host.dataset.fightRivalCount = String(sim.data.rivals.length);
-  sim.host.dataset.fightSizes = JSON.stringify([
-    getComputedStyle(sim.data.mains[0].turn.querySelector("svg")).width,
-    getComputedStyle(sim.data.rivals[0].turn.querySelector("svg")).width,
-  ]);
-  sim.data.mains.forEach((actor, index) => { actor.routeIndex = 0; actor.trailRoute = trailPoints(trail, 0.12, 0.48, 8 + index); });
-  sim.data.rivals.forEach((actor, index) => { actor.routeIndex = 0; actor.trailRoute = trailPoints(trail, 0.88, 0.52, 6 + index); });
+  const center = { x: 300, y: 100 };
+  const group = (role, side, start, end) => {
+    const route = trailPoints(trail, start, end);
+    const trailEnd = route.at(-1);
+    return [-32, 0, 32].map((offset) => {
+      const lane = route.map(({ x, y }) => ({ x, y: center.y + offset + y - trailEnd.y }));
+      const actor = addActor(sim, role, side, lane[0].x, lane[0].y, { job: "follow" });
+      actor.trailId = "fight-trail";
+      actor.trailRoute = lane;
+      actor.routeIndex = 1;
+      actor.clashY = center.y + offset;
+      return actor;
+    });
+  };
+  const mains = group("soldier", "main", 0.12, 0.44);
+  const rivals = group("rival-guard", "rival", 0.88, 0.56);
+  sim.data = { mains, rivals, target: null, fightElapsed: 0, fightCenter: center, trailMet: false };
+  sim.host.dataset.fightMainCount = String(mains.length);
+  sim.host.dataset.fightRivalCount = String(rivals.length);
+  sim.host.dataset.fightSizes = JSON.stringify([mains[0], rivals[0]].map((actor) => getComputedStyle(actor.turn.querySelector("svg")).width));
   setPhase(sim, "trail-approach");
 }
 
@@ -377,13 +372,13 @@ function setupCastes(sim) {
   addFloor(sim, 153);
   const roles = [
     { role: "worker", side: "main", x: 78, y: 98, factor: 1, route: [[112, 82], [120, 112]] },
-    { role: "soldier", side: "main", x: 187, y: 98, factor: 0.8, route: [[212, 80], [216, 116]], scale: 1.2 },
-    { role: "flyer", side: "main", x: 297, y: 98, factor: 1, route: [[337, 70], [346, 105]], scale: 1.15 },
-    { role: "queen", side: "main", x: 405, y: 98, factor: 0.9, route: [[441, 91], [434, 114]], scale: 1.55 },
-    { role: "rival-guard", side: "rival", x: 515, y: 98, factor: 0.7, route: [[482, 80], [478, 116]], scale: 1 },
+    { role: "soldier", side: "main", x: 187, y: 98, factor: 0.8, route: [[212, 80], [216, 116]] },
+    { role: "flyer", side: "main", x: 297, y: 98, factor: 1, route: [[337, 70], [346, 105]] },
+    { role: "queen", side: "main", x: 405, y: 98, factor: 0.9, route: [[441, 91], [434, 114]] },
+    { role: "rival-guard", side: "rival", x: 515, y: 98, factor: 0.7, route: [[482, 80], [478, 116]] },
   ];
   sim.actors = roles.map((entry) => {
-    const actor = addActor(sim, entry.role, entry.side, entry.x, entry.y, { job: "role-route", scale: entry.scale || 1 });
+    const actor = addActor(sim, entry.role, entry.side, entry.x, entry.y, { job: "role-route" });
     actor.route = [[entry.x, entry.y], ...entry.route.map(([x, y]) => [x, y]), [entry.x, entry.y]];
     actor.routeIndex = 1;
     actor.roleFactor = entry.factor;
@@ -400,7 +395,7 @@ function setupWorship(sim) {
   addStores(sim, { count: 12, x: home.x + 70 });
   sim.storeMax = storeCapacity(0);
   recordRule(sim, "storeCapacity");
-  const queen = addActor(sim, "queen", "main", home.x, home.y, { scale: 1.55, job: "worship" });
+  const queen = addActor(sim, "queen", "main", home.x, home.y, { job: "worship" });
   queen.home = home;
   queen.el.classList.add("inside-mound");
   const dancers = Array.from({ length: 7 }, (_, index) => addActor(sim, "worker", "main", home.x + (index - 3) * 11, home.y + 12, { job: "gather" }));
@@ -433,11 +428,11 @@ function setupRival(sim) {
   const workers = [addActor(sim, "rival-worker", "rival", home.x - 8, home.y + 8, { job: "wait" }), addActor(sim, "rival-worker", "rival", home.x + 8, home.y + 9, { job: "wait" })];
   const mainWorkers = [addActor(sim, "worker", "main", mainHome.x - 8, mainHome.y + 7, { job: "wait" }), addActor(sim, "worker", "main", mainHome.x + 8, mainHome.y + 7, { job: "wait" })];
   const soldiers = [
-    addActor(sim, "soldier", "main", mainHome.x - 8, mainHome.y + 12, { job: "wait", scale: 1.2 }),
-    addActor(sim, "soldier", "main", mainHome.x, mainHome.y + 14, { job: "wait", scale: 1.2 }),
-    addActor(sim, "soldier", "main", mainHome.x + 8, mainHome.y + 12, { job: "wait", scale: 1.2 }),
+    addActor(sim, "soldier", "main", mainHome.x - 8, mainHome.y + 12, { job: "wait" }),
+    addActor(sim, "soldier", "main", mainHome.x, mainHome.y + 14, { job: "wait" }),
+    addActor(sim, "soldier", "main", mainHome.x + 8, mainHome.y + 12, { job: "wait" }),
   ];
-  const guards = [addActor(sim, "rival-guard", "rival", home.x - 8, home.y + 7, { job: "guard", scale: 1.25 }), addActor(sim, "rival-guard", "rival", home.x + 8, home.y + 8, { job: "guard", scale: 1.25 })];
+  const guards = [addActor(sim, "rival-guard", "rival", home.x - 8, home.y + 7, { job: "guard" }), addActor(sim, "rival-guard", "rival", home.x + 8, home.y + 8, { job: "guard" })];
   workers.forEach((actor) => { actor.home = home; actor.el.classList.add("inside-mound"); });
   [...mainWorkers, ...soldiers, ...guards].forEach((actor) => { actor.home = actor.side === "main" ? mainHome : home; actor.el.classList.add("inside-mound"); });
   const mains = [...mainWorkers, ...soldiers];
@@ -465,7 +460,7 @@ function tickForage(sim, dt) {
     }
   } else if (!pending && sim.data.stage === "delivery") {
     sim.data.stage = "build";
-    sim.data.builder = addActor(sim, "builder", "main", sim.data.home.x, sim.data.home.y, { job: "build-walk", scale: 1.1 });
+    sim.data.builder = addActor(sim, "builder", "main", sim.data.home.x, sim.data.home.y, { job: "build-walk" });
     sim.data.mound = addMound(sim, sim.data.buildTarget.x - 56, sim.data.buildTarget.y - 48, { width: 112, height: 50, progress: 0 });
     setPhase(sim, "builder-leaves");
   }
@@ -511,14 +506,8 @@ function tickCombat(sim, dt, { mains, rivals, getTarget, finish, center = null }
   if (!target) { finish(); return; }
   if (sim.phase !== "clash") {
     if (center) {
-      const mainTargets = aliveMains.map((_, index) => ({
-        x: center.x - 11,
-        y: center.y + (index - (aliveMains.length - 1) / 2) * 24,
-      }));
-      const rivalTargets = aliveRivals.map((_, index) => ({
-        x: center.x + 11,
-        y: center.y + (index - (aliveRivals.length - 1) / 2) * 24,
-      }));
+      const mainTargets = aliveMains.map((actor) => ({ x: center.x - 15, y: actor.clashY }));
+      const rivalTargets = aliveRivals.map((actor) => ({ x: center.x + 15, y: actor.clashY }));
       const mainArrivals = aliveMains.map((actor, index) => moveActor(sim, actor, mainTargets[index], dt, { job: "follow", factor: 0.9 }));
       const rivalArrivals = aliveRivals.map((actor, index) => moveActor(sim, actor, rivalTargets[index], dt, { job: "follow", factor: 0.9 }));
       if (![...mainArrivals, ...rivalArrivals].every(Boolean)) return;
@@ -786,7 +775,7 @@ export function mountNest(host) {
   drawScene(sim);
   let last = performance.now();
   const frame = (now) => {
-    const dt = Math.min(0.05, (now - last) / 1000);
+    const dt = Math.max(0, Math.min(0.05, (now - last) / 1000));
     last = now;
     tick(sim, dt);
     requestAnimationFrame(frame);

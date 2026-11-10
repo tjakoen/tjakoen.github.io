@@ -80,7 +80,8 @@ describe("shared nest rules", () => {
 
   test("ant roles and progressive mounds use shared game assets", () => {
     expect(antMarkup()).toContain('class="legs-a"');
-    expect(antMarkup({ flyer: true })).toContain('class="wing"');
+    expect(antMarkup({ role: "flyer" })).toContain('class="wing"');
+    expect(antMarkup({ role: "rival-guard" })).toBe(antMarkup({ role: "soldier" }));
     expect(antClasses("rival-guard", "rival")).toContain("rival");
     expect(antClasses("rival-worker", "rival")).toContain("rival-worker");
     expect(miniArt(0)).not.toBe(miniArt(1));

@@ -29,7 +29,7 @@ social: |
   in the status bar or the word nest in the terminal. The play button in this note opens the full
   game on the home page, clear of the live figures.
 
-  No canvas, no game library, no framework. One plain JavaScript file on the same vanilla stack as
+  No canvas, no game library, no framework. A few plain JavaScript modules on the same vanilla stack as
   the rest of the site.
 ---
 
@@ -47,7 +47,7 @@ I was inspired by [Swarm Protocol](https://domvirus.com/games/swarm-protocol/), 
 
 The first version came together over a weekend. I used it as a reason to try DeepSeek and to test the loop I now use for most of my work: notice something interesting, turn it into a small project, give it enough constraints to make it real, then let the AI do most of the typing while I keep the judgment, review and taste. I moved between DeepSeek, Codex and Claude as the colony grew, but the loop stayed the same. I wrote more about that in [The Loop Outlives the Model](one-loop-three-harnesses.md). This portfolio is a small proof of concept for the loop too: the standards and checks that guide the AI are part of the site it helps build. The test was whether an idea from a browser link could become something working on the site without the process turning into a second job.
 
-The portfolio needed to stay serious, so the game had to be quiet. The play buttons here open the full colony on the home page, clear of the live figures, while the smaller simulations keep running in this note. Most people will never see the game. The people who do should get a small surprise, not a pop-up asking them to subscribe.
+Most people will never see the colony. I wanted the people who find it to spend a minute watching a scout steal the copy, then get their page back when they close the Nest.
 
 I also wanted to show what the framework can do. The site is built on GRAIN, a system that mostly renders documents. A game is a useful stress test: if the same tokens, the same typography and the same small-module discipline can carry an interactive colony, then the framework is doing more than laying out text. And if it cannot, I would rather find out by building something fun.
 
@@ -57,10 +57,7 @@ A self-growing ecosystem built from rules.
 
 There is no single script that says "now the colony does this." Each ant has a small amount of state and follows a small rule. A scout looks for a letter. A worker follows a trail. A letter that needs two or three ants takes two or three. The queen turns meals into eggs. The stores turn food into a builder. The builder raises a mini mound. The mini mound sends guards to patrol and flyers to steal. The rival does the same thing, with its own resource and its own limits.
 
-<p class="nest-start"><a href="/?nest=play" data-nest-start>Open the full colony</a></p>
-
-The colony is available across the site, not only on the home page. On desktop, click the ant icon at the bottom of the status bar to open it in the sidebar from any other page. The launcher is not available on mobile. The play buttons in this note open the full colony on the home page, clear of the live figures, while the smaller simulations keep running here.
-
+The boxes in this note start each event with its own setup and replay it. Their ants use the same sprites and rules for walking, carrying and fighting as the full colony. Open the full colony to see how those events happen on their own.
 
 
 The loop is the whole design. Letters are food and building material. Ants are the machinery that moves both. There is no final level and no score to beat. The colony can grow, the rival can grow, the page can run out of letters, and the system still has something to do. At some point the page is simply a quieter place with gaps in it.
@@ -116,8 +113,6 @@ There is no win screen after the dance. Worship is the colony's own event, not t
 
 The first rival appears after the second worship, not the first. It starts as a smaller colony with one trail, a few workers and a guard. Later rivals appear on later milestones, and each new one is a little harder than the last.
 
-<p class="nest-start"><a href="/?nest=play" data-nest-start>Start the colony</a></p>
-
 The rival is not a second player base. It does not take orders, it does not get a turn, and it cannot see the whole board. It runs the same kind of local rules the main colony runs: follow a trail, take a letter, carry it home, spend it on another ant. The difference is that its growth comes out of what it steals.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="rival" data-surface="figure:nest-rival">
@@ -136,12 +131,12 @@ Combat is deliberately small. The main colony gets the advantage, but not every 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="fight" data-surface="figure:nest-fight">
 </div>
 
-*Main ants and rival guards close on the trail, clash, lose health, and resolve.*
+*The red guards meet the main colony’s soldiers on the trail. Watch the gap close before the fight starts.*
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="castes" data-surface="figure:nest-castes">
 </div>
 
-*Worker, soldier, flyer, queen, and rival guard move by role and appearance.*
+*From left to right, a worker, a soldier, a flyer, the queen and a red rival guard.*
 
 
 The rules are simple enough to hold in your head:
@@ -157,7 +152,7 @@ Fights stay open for about a second, so nearby ants can pile in. The crowd that 
 
 You do not command the ants. You disturb them.
 
-The panel gives you a few ways to disturb the colony:
+Wait for a dotted trail to appear, select Wipe, then drag across the trail. The ants leave that trail and look for another route. Watch what happens to the delivery you interrupted.
 
 - **Squash** flattens one ant.
 - **Wipe** breaks a trail and sends its ants looking for another.
@@ -172,7 +167,7 @@ There is no game over screen. If the main colony loses every ant, the queen send
 
 Closing the Nest puts every letter back. A refresh or a new page starts a fresh colony.
 
-The absence of a win condition is the design, not a missing feature. A portfolio game that ends with YOU WIN is a different thing: it asks the visitor to stop reading and play until the game is over. This one asks them to leave it running while they read, or to poke at it for a minute and close it. The state is the interesting part. The score would only get in the way.
+The absence of a win condition is the design, not a missing feature. A portfolio game that ends with YOU WIN is a different thing: it asks the visitor to stop reading and play until the game is over. Here you can watch a delivery, interrupt one, then close the Nest and get your sentence back. The state is the interesting part. The score would only get in the way.
 
 ## How it is built
 
