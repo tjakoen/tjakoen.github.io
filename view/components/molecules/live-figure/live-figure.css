@@ -694,3 +694,40 @@
 .presentation__slide[data-figure] :is(.wait__row, .promo__row) { padding: .55rem 1rem; }
 .presentation__slide[data-figure] :is(.wait__name, .promo__name) { font-size: 1.05rem; }
 .presentation__slide[data-figure] :is(.wait__cost, .promo__blast, .promo__state) { font-size: .9rem; }
+
+/* ---- the ant colony: a live, theme-aware figure box ---------------------- */
+.live-fig--nest { max-width: 36rem; }
+.nest-scene { --nest-rival: #a33b3b; width: 100%; overflow: hidden; border: 1px solid var(--color-line); background: var(--paper); color: var(--ink); }
+:root[data-color-scheme="dark"] .nest-scene { --nest-rival: #e08a8a; }
+.nest-scene__stage { position: relative; width: 100%; aspect-ratio: 3 / 1; overflow: hidden; background: var(--paper); }
+.nest-scene__stage > svg { display: block; width: 100%; height: 100%; overflow: hidden; }
+.nest-scene__stage text { font-family: var(--font-mono); }
+.nest-scene .nest-ant { position: static; display: block; width: auto; height: auto; margin: 0; padding: 0; border: 0; background: none; color: var(--ink); pointer-events: none; }
+.nest-scene .nest-ant.inside-mound { visibility: hidden; }
+.nest-scene .nest-ant svg { overflow: visible; }
+.nest-scene .nest-ant.scout svg { color: var(--color-accent); }
+.nest-scene .nest-ant.flyer svg { color: var(--ink-muted); }
+.nest-scene .nest-ant.builder svg { color: var(--color-accent); }
+.nest-scene .nest-ant.rival svg { color: var(--nest-rival); }
+.nest-scene .nest-ant.flyer .wing { animation: nest-scene-flap .1s steps(1) infinite; }
+.nest-scene .nest-ant[data-role="queen"] svg { color: var(--color-accent); }
+.nest-scene .nest-ant[data-health] { transition: opacity .25s; }
+.nest-scene__mound { overflow: hidden; color: var(--ink); }
+.nest-scene__mound-art { display: flex; width: 100%; height: 100%; align-items: flex-end; justify-content: center; overflow: hidden; margin: 0; color: inherit; font: 9px/1.2 var(--font-mono); letter-spacing: -.04em; white-space: pre; }
+.nest-scene__mound-art.rival { color: var(--nest-rival); }
+.nest-scene__floor { fill: none; stroke: var(--color-line); stroke-width: 1; }
+.nest-scene__trail { fill: none; stroke: var(--color-accent); stroke-width: 1.2; stroke-dasharray: 1 4; stroke-linecap: round; opacity: .7; }
+.nest-scene .nest-scene__sentence { fill: var(--ink); font: 17px var(--font-accent, Georgia, serif); }
+.nest-scene__carry { fill: var(--color-accent); font: 14px var(--font-accent, Georgia, serif); }
+.nest-scene .nest-ant .legs-b { opacity: 0; }
+.nest-scene .nest-ant.walk .legs-a { animation: nest-scene-step .18s steps(1) infinite; }
+.nest-scene .nest-ant.walk .legs-b { animation: nest-scene-step .18s steps(1) infinite reverse; }
+@keyframes nest-scene-step { 0% { opacity: 1; } 50% { opacity: 0; } }
+.live-fig--colony { width: 100%; max-width: 36rem; aspect-ratio: 3 / 2; overflow: hidden; border: 1px solid var(--color-line); background: var(--paper-2); color: var(--ink-faint); }
+.live-fig--colony .nest-pre { display: block; position: relative; width: 100%; height: 100%; overflow: hidden; margin: 0; font: 10px/1.2 var(--font-mono); letter-spacing: -.04em; -webkit-text-stroke: .05em currentColor; color: var(--ink-faint); user-select: none; }
+.live-fig--colony .nest-pre b { font-weight: inherit; }
+.live-fig--colony .nest-pre .t1 { color: var(--ink-muted); }
+.live-fig--colony .nest-pre .t2, .live-fig--colony .nest-pre .t5, .live-fig--colony .nest-pre .t6 { color: var(--color-accent); }
+.live-fig--colony .nest-pre .t3, .live-fig--colony .nest-pre .t4 { color: var(--ink); }
+@keyframes nest-scene-flap { 50% { opacity: .15; } }
+@media (prefers-reduced-motion: reduce) { .nest-scene .nest-ant.walk .legs-a, .nest-scene .nest-ant.walk .legs-b { animation: none; } }

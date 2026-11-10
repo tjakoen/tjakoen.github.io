@@ -56,19 +56,27 @@ unreadable and the colony has won that page.
 - **The colony.** Three scouts and three workers to start. A block with a trail or a scout is taken,
   so the first three scouts and later ones stay off each other's source. The first three stay in view:
   the first takes the closest, the second the opposite side of the mound, and the third the most
-  spread-out remaining spot. A scout walks a route and lays no trail until it carries the first
-  letter home; a scout killed on the way leaves nothing. Workers take open trails in turn, five to
-  a line, and a trail fades when its patch empties or after ninety seconds. Each retired
+  spread-out remaining spot. A scout carries its first light letter home before the trail opens;
+  a scout killed on the way leaves nothing. A heavy letter gets the trail at the pickup and a call
+  for the workers; the next worker out of the nest joins that trail first, and keeps joining it
+  until the crew is full. A big letter is worth its crew size in portions, split between the queen and the stores. Other workers take open trails in turn, five to
+  a line when the colony is small; the line widens with the colony, and the patch radius widens too so a long busy trail keeps finding letters. A trail fades when its patch empties or after ninety seconds. Each retired
   trail sends its own successor scout, so several spent patches do not leave one line. Successors
-  look near the mound first; the trail target is one per two ants, so it keeps climbing. Soldiers hatch once the colony passes eight and take two
+  look near the mound first; the trail target is one per two ants, and several scouts can work at
+  once, so the number keeps climbing. Most eggs are workers; a few soldiers hatch once the colony
+  passes ten, capped at three, and take two
   hits.
-- **Mini hills.** Every other letter goes to two storerooms instead of the queen, and a stores bar
+- **Mini hills.** Every other portion goes to two storerooms instead of the queen, and a stores bar
   shows how full they are. A full store sends a builder to an open spot on the page, sometimes
-  below the fold. The first two favor a spot near the main hill; later ones spread out. Builders
-  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends guards to stay on the nearest trail until it disappears, then return to the mound, and flyers to steal letters. Its mound thins
+  below the fold. The first two favor a spot near the main hill; later ones spread out with a little jitter, not on a grid. If no clear ground is near, the search expands outward before it gives up. Builders
+  favor gaps left by stolen letters. Squash the builder and the stores are lost. A mini hill sends
+  guards to the nearest trail, spread across lanes; they walk several passes, return to circle their
+  mound once and head back out. When a trail disappears they take the nearest new one, or circle
+  the mound while none is ready. Each mound keeps up to three guards and three flyers. It sends
+  flyers to steal letters. Its mound thins
   with each hit, and a fallen mound lowers the stores cap. A hurt mound heals one hit at a time. Knocking it calls the guards home and flashes the mound and every guard; clearing them splits the mound open and no new guards spawn. Five clicks break it. Its flyers outlive it.
 - **The player's tools.** The colony tools are Squash, Wipe, Bait and Seal, with names on the
-  tiles; Links, mute, pause and restore are the utility row below. Squash holds every page link so
+  tiles; Links, mute, speed, pause and restore are the utility row below. Squash holds every page link so
   a missed ant never navigates, wipe is the only tool that breaks scent, and links gives the page
   back with a leave confirmation. A blocked link shows a toast with a one-click switch to Links. The panel gives
   each tool a name, an icon and a key. Squash ants (a pile goes together), drag across a scent trail to break it, drop bait
@@ -79,7 +87,8 @@ unreadable and the colony has won that page.
   number of letters, it stops: the queen crawls out of the hill and walks to a clear patch near
   it, every ant on the page moves toward her and the far ones turn back to their trails when it
   ends, the sidepanel pulses, the stolen glyphs orbit, and a next worship bar tracks the next
-  one. The target rises and falls with the living colony, and the queen dances at the patch. The page is the whole environment, so the ants may work below the fold while
+  one. The target is fixed until that dance finishes, then the next one is set. The queen climbs
+  out of the panel nest and back down, and the trails hide while she is out. The page is the whole environment, so the ants may work below the fold while
   the player reads.
 - **No announced ending.** There is no win, no reserve and no game over. If the last ant is gone
   the queen sends one scout back out and the colony continues. The page can run out, and the
@@ -102,7 +111,7 @@ unreadable and the colony has won that page.
 
 ## Mockup
 
-`scripts/nest-mockup.js` fakes the panel and one wave of ants on the live site so the idea can be
+`scripts/nest-game.js` is the live game module, not a mockup: it runs the panel, the colony and the page ants on the live site.
 played before the real build. Click the ant in the status bar, or type `nest` in the terminal;
 `?nest-debug` only exposes the local test hooks. It is a playable sketch: ants steal real letters, the queen breeds
 every three, a click squashes, and every colour is a theme token.

@@ -9,18 +9,28 @@ import mailbox from "../content/data/mailbox.json" with { type: "json" };
 declare global {
   interface Window {
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
+    __rafCount?: number;
     __nest?: {
       state: {
-        ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; el?: Element }>;
+        ants: Array<{ id: number; role: string; block: Element | null; job?: string; where?: string; x: number; y: number; mini?: { base: [number, number] }; scoutRoute?: unknown; letter?: unknown; el?: Element }>;
         trails: Array<{ block: Element }>;
         built: number;
+        squashed: number;
       };
       home: { base: [number, number] };
       startParty: (final?: boolean) => void;
+      startRival: () => void;
+      forceRivalSteal: () => boolean;
       makeMini: (spot: unknown) => unknown;
       findMiniSpot: () => unknown;
       squash: (ant: unknown) => void;
       newAnt: (role: string, route: string, d: number) => unknown;
+      env?: unknown;
+      spawnPageAnt: (role: string, at: [number, number], mini: unknown) => { el: Element };
+      spawnRivalUnit: (job: string, at: [number, number], path: number[][], sweet: unknown) => { el: Element };
+      rivalCombat: (now: number) => void;
+      wipeTrail: (trail: unknown, at: [number, number]) => void;
+      rival: { active: boolean; ants: Array<unknown>; trails: Array<{ end: [number, number] }>; stolen: Set<unknown>; returnAt: number; minis: Array<unknown>; mound?: { base: [number, number] } | null };
     };
   }
 }
@@ -64,11 +74,81 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page).toHaveURL(/\/bread$/);
   });
 
-  test("the note starts the colony from its own button", async ({ page }) => {
+  test("the Nest is lazy: no game request before the launcher is used", async ({ page }) => {
+    let gameRequests = 0;
+    page.on("request", (request) => { if (request.url().includes("/site/nest-game.js")) gameRequests++; });
+    await page.goto("/");
+    await expect(page.locator(".nest-switch")).toBeVisible();
+    await page.waitForTimeout(500);
+    expect(gameRequests).toBe(0);
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await expect.poll(() => gameRequests, { timeout: 15_000 }).toBeGreaterThan(0);
+  });
+
+  test("the note opens the colony on the home page", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
-    await page.getByRole("button", { name: "Start the colony" }).click();
+    await page.getByRole("link", { name: "Play the colony" }).click();
+    await expect(page).toHaveURL(/\/$/);
     await expect(page.locator("#nest-mock")).toBeVisible();
   });
+
+test("note figures keep their event loops with reduced motion enabled", async ({ page }) => {
+  test.setTimeout(30_000);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/notes/the-site-has-ants");
+  const scout = page.locator('[data-nest-mode="theft"]');
+  await expect.poll(() => scout.evaluate((host) => Number((host as HTMLElement).dataset.completedCycles)), {
+    timeout: 25_000,
+    intervals: [250, 500, 1000],
+  }).toBeGreaterThanOrEqual(1);
+});
+
+test("the caste figure flaps the flyer's wings while it moves", async ({ page }) => {
+  await page.goto("/notes/the-site-has-ants");
+  const wing = page.locator('[data-nest-mode="castes"] [data-role="flyer"] .wing-a');
+  await expect(wing).toBeAttached();
+  const firstPose = await wing.getAttribute("transform");
+  await expect.poll(() => wing.getAttribute("transform"), { timeout: 5_000 }).not.toBe(firstPose);
+});
+
+test("the note has a separate self-running colony that drains and resets", async ({ page }) => {
+  test.setTimeout(150_000);
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() !== "error") return;
+    const source = message.location().url;
+    if (source.includes("/stream?session=")) return;
+    pageErrors.push(message.text());
+  });
+  await page.goto("/notes/the-site-has-ants");
+  const colony = page.locator('[data-live-figure="colony"]');
+  await colony.scrollIntoViewIfNeeded();
+  await expect(colony.locator("pre.colony-interior")).toBeAttached();
+  await expect(colony.locator("pre.colony-interior b")).not.toHaveCount(0);
+  const startingColor = await colony.locator("pre.colony-interior .t1").first().evaluate((cell) => getComputedStyle(cell).color);
+  await page.locator("[data-cycle-theme]").click();
+  await expect.poll(() => colony.locator("pre.colony-interior .t1").first().evaluate((cell) => getComputedStyle(cell).color)).not.toBe(startingColor);
+  const sceneHasNoInternalLabels = await colony.locator("pre.colony-interior").textContent();
+  expect(sceneHasNoInternalLabels).not.toMatch(/[a-z0-9]/i);
+  await expect.poll(async () => {
+    return Number(await colony.getAttribute("data-completed-cycles")) >= 2 && await colony.getAttribute("data-queen-home") === "true";
+  }, {
+    timeout: 140_000,
+    intervals: [500, 1000, 2000],
+  }).toBe(true);
+  await expect(colony).toHaveAttribute("data-worship", "home");
+  const contained = await colony.evaluate((host) => {
+    const bounds = host.getBoundingClientRect();
+    return [...host.querySelectorAll("pre.colony-interior, pre.colony-interior *")].every((node) => {
+      const rect = node.getBoundingClientRect();
+      return rect.width === 0 || (rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1 && rect.top >= bounds.top - 1 && rect.bottom <= bounds.bottom + 1);
+    });
+  });
+  expect(contained).toBe(true);
+  expect(pageErrors).toEqual([]);
+});
 
   test("the old ?nest link is just a page, not a shortcut into the game", async ({ page }) => {
     await page.goto("/?nest");
@@ -78,7 +158,6 @@ test.describe("the interactive terminal (third client of the one door)", () => {
 
   test("the launcher is always there, and nest opens the colony", async ({ page }) => {
     await page.goto("/notes/the-site-has-ants");
-    await expect(page.getByText("Open the terminal at the bottom of the page", { exact: false })).toBeVisible();
     const launcher = page.getByRole("button", { name: "Open the Nest" });
     await expect(launcher).toBeVisible();
     await expect(page.locator('[data-surface="nest-controls"]')).toHaveCount(0);
@@ -118,45 +197,35 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     for (let i = 0; i < 10; i++) {
       await page.goto("/?nest-debug");
       await page.locator(".nest-switch").click();
-      await expect(page.locator(".nest-hill")).toBeVisible();
+      await expect(page.locator(".nest-hill:not(.rival)")).toBeVisible();
       // The exact position, not a coarse bin: a 3x3 cell can collapse ten different random
       // placements into one box on a narrower layout, which is what made this red on CI while it
       // passed locally. Two loads landing on the same pixel is the only truly static outcome.
       cells.add(await page.evaluate(() => {
-        const h = document.querySelector(".nest-hill")!.getBoundingClientRect();
+        const h = document.querySelector(".nest-hill:not(.rival)")!.getBoundingClientRect();
         return `${Math.round(h.left)},${Math.round(h.top)}`;
       }));
     }
     expect(cells.size).toBeGreaterThan(1);
   });
 
-  test("the first three scouts take different source blocks", async ({ page }) => {
+  test("scouts and trails scale with the worker crew", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.waitForFunction(() => (window.__nest?.state.ants.filter((a) => a.role === "scout" && a.block).length ?? 0) >= 3);
-    const blocks = await page.evaluate(() => window.__nest!.state.ants
-      .filter((a) => a.role === "scout" && a.block)
-      .map((a) => (a.block!.textContent || "").trim().slice(0, 40)));
-    expect(blocks).toHaveLength(3);
-    expect(new Set(blocks).size).toBe(3);
-    const shape = await page.evaluate(() => {
-      const points = window.__nest!.state.ants
-        .filter((a) => a.role === "scout" && a.block)
-        .map((a) => {
-          const r = a.block!.getBoundingClientRect();
-          return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
-        });
-      const main = document.querySelector("main")!.getBoundingClientRect();
-      const home = window.__nest!.home.base;
-      const inView = points.every((p) => p.x > main.left && p.x < main.right && p.y > main.top && p.y < main.bottom);
-      const secondOpposite = (points[1].x - main.left - home[0]) * (home[0] - main.width / 2) < 0;
-      const minThird = Math.min(...points.slice(0, 2).map((p) => Math.hypot(p.x - points[2].x, p.y - points[2].y)));
-      return { inView, secondOpposite, minThird };
+    await page.waitForTimeout(3000);
+    const stats = await page.evaluate(() => {
+      const n = window.__nest!;
+      const crew = n.state.ants.filter((a) => a.role === "worker" || a.role === "scout").length;
+      return {
+        crew,
+        scouts: n.state.ants.filter((a) => a.role === "scout").length,
+        trails: (n.state.trails as any[]).filter((t) => !t.side).length,
+      };
     });
-    expect(shape.inView).toBe(true);
-    expect(shape.secondOpposite).toBe(true);
-    expect(shape.minThird).toBeGreaterThan(80);
+    const wanted = Math.max(1, Math.floor(stats.crew / 4));
+    expect(stats.scouts).toBeLessThanOrEqual(wanted);
+    expect(stats.trails).toBeLessThanOrEqual(wanted);
   });
 
   test("a guarded mound calls its guards and opens when they are gone", async ({ page }) => {
@@ -188,6 +257,35 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(mound).toHaveClass(/exposed/);
   });
 
+  test("the colony stops its frame loop when the tab is hidden", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.__rafCount = 0;
+      const raf = window.requestAnimationFrame.bind(window);
+      window.requestAnimationFrame = (cb) => raf((t) => {
+        window.__rafCount = (window.__rafCount ?? 0) + 1;
+        cb(t);
+      });
+    });
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(400);
+    await page.evaluate(() => {
+      Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await page.waitForTimeout(200);
+    const hidden = await page.evaluate(() => window.__rafCount ?? 0);
+    await page.waitForTimeout(400);
+    expect(await page.evaluate(() => window.__rafCount ?? 0)).toBe(hidden);
+    await page.evaluate(() => {
+      Object.defineProperty(document, "hidden", { configurable: true, get: () => false });
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await page.waitForTimeout(350);
+    expect(await page.evaluate(() => window.__rafCount ?? 0)).toBeGreaterThan(hidden);
+  });
+
   test("keyboard tool switches do not resize the colony", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
@@ -203,23 +301,53 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     expect(Math.abs((after?.width ?? 0) - (before?.width ?? 0))).toBeLessThan(1);
   });
 
+  test("pause stops the frame loop and resume starts it again", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.__rafCount = 0;
+      const raf = window.requestAnimationFrame.bind(window);
+      window.requestAnimationFrame = (cb) => raf((t) => {
+        window.__rafCount = (window.__rafCount ?? 0) + 1;
+        cb(t);
+      });
+    });
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    await page.waitForTimeout(400);
+    const running = await page.evaluate(() => window.__rafCount ?? 0);
+    expect(running).toBeGreaterThan(0);
+
+    await page.locator('[data-k="pause"]').click();
+    await page.waitForTimeout(250);
+    const paused = await page.evaluate(() => window.__rafCount ?? 0);
+    await page.waitForTimeout(400);
+    expect(await page.evaluate(() => window.__rafCount ?? 0)).toBe(paused);
+
+    await page.locator('[data-k="pause"]').click();
+    await page.waitForTimeout(350);
+    expect(await page.evaluate(() => window.__rafCount ?? 0)).toBeGreaterThan(paused);
+  });
+
   test("a killed scout leaves no trail behind", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.waitForFunction(() => (window.__nest?.state.ants.filter((a) => a.scoutRoute).length ?? 0) >= 1);
+    await page.waitForFunction(() => {
+      const scout = window.__nest?.state.ants.find((a) => a.role === "scout" && a.job === "carry" && a.scoutRoute && a.block);
+      return !!scout;
+    }, null, { timeout: 20_000 });
     const route = await page.evaluate(() => {
-      const scout = window.__nest!.state.ants.find((a) => a.scoutRoute);
-      return scout ? (scout.block!.textContent || "").trim().slice(0, 40) : null;
+      const scout = window.__nest!.state.ants.find((a) => a.role === "scout" && a.job === "carry" && a.scoutRoute && a.block);
+      return scout ? { id: scout.id, block: (scout.block!.textContent || "").trim().slice(0, 40) } : null;
     });
     expect(route).not.toBeNull();
-    await page.evaluate(() => {
-      const scout = window.__nest!.state.ants.find((a) => a.scoutRoute);
+    await page.evaluate((id) => {
+      const scout = window.__nest!.state.ants.find((a) => a.id === id);
       if (scout) window.__nest!.squash(scout);
-    });
+    }, route!.id);
     await page.waitForTimeout(350);
     const trailBlocks = await page.evaluate(() => window.__nest!.state.trails.map((t) => (t.block.textContent || "").trim().slice(0, 40)));
-    expect(trailBlocks).not.toContain(route);
+    expect(trailBlocks).not.toContain(route!.block);
   });
 
   test("the queen sends a scout when none is left", async ({ page }) => {
@@ -265,7 +393,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(mound).toHaveAttribute("aria-label", /5 hits left/);
   });
 
-  test("the next worship scales with the colony", async ({ page }) => {
+  test("the next worship stays put while the colony grows", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
@@ -273,7 +401,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.evaluate(() => { for (let i = 0; i < 8; i++) window.__nest!.newAnt("worker", "hatch", 0); });
     await page.waitForTimeout(250);
     const after = await page.locator("#nest-mock [data-k='worship-val']").textContent();
-    expect(after).not.toBe(before);
+    expect(after).toBe(before);
   });
 
   test("the meters explain themselves", async ({ page }) => {
@@ -282,6 +410,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect(page.locator("#nest-mock")).toBeVisible();
     await expect(page.locator("#nest-mock .nest-meter .hint")).toHaveCount(4);
     await expect(page.locator("#nest-mock .nest-meter .hint").nth(1)).toContainText("mound builders");
+    await expect(page.locator("#nest-mock .nest-meter .hint").nth(2)).toContainText("three meals lay an egg");
     await expect(page.locator("#nest-mock .nest-meter .hint").nth(3)).toContainText("queen dances");
   });
 
@@ -310,27 +439,46 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "scout").length)).toBeGreaterThan(0);
   });
 
+  test("the rival colony founds, steals and retreats when its trail is wiped", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    expect(await page.evaluate(() => window.__nest!.rival.active)).toBe(false);
+    await page.evaluate(() => window.__nest!.startRival());
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.active), { timeout: 20_000 }).toBe(true);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length), { timeout: 15_000 }).toBeGreaterThan(0);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.trails.length), { timeout: 15_000 }).toBeGreaterThan(0);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.minis.length), { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
+    await page.evaluate(() => window.__nest!.forceRivalSteal());
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size), { timeout: 5_000 }).toBeGreaterThan(0);
+    const placement = await page.evaluate(() => {
+      const home = window.__nest!.home.base;
+      const rival = window.__nest!.rival.mound!.base;
+      return { dx: rival[0] - home[0], width: document.querySelector("main")!.clientWidth, homeX: home[0], dist: Math.hypot(rival[0] - home[0], rival[1] - home[1]) };
+    });
+    expect(placement.dx * (placement.homeX - placement.width / 2)).toBeLessThan(0);
+    expect(placement.dist).toBeGreaterThan(340);
+    await expect(page.locator("[data-k='rival-hint']")).toContainText("rival");
+    await page.evaluate(() => {
+      for (const trail of window.__nest!.rival.trails.slice()) window.__nest!.wipeTrail(trail, trail.end);
+    });
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.active)).toBe(false);
+    await expect(page.locator("[data-k='rival-hint']")).toHaveText("");
+  });
+
   test("a pile of ants goes under one click", async ({ page }) => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.waitForFunction(() => {
-      const ants = window.__nest?.state.ants.filter((a) => a.el && a.where === "page") ?? [];
-      return ants.some((a, i) => ants.some((b, j) => i !== j && Math.hypot(a.x - b.x, a.y - b.y) < 15));
+    const before = await page.evaluate(() => {
+      const n = window.__nest!;
+      const at: [number, number] = [420, 420];
+      n.spawnPageAnt("worker", at, null);
+      const second = n.spawnPageAnt("worker", at, null);
+      const count = n.state.ants.length;
+      (second.el as HTMLElement).click();
+      return count;
     });
-    const pair = await page.evaluate(() => {
-      const ants = window.__nest!.state.ants.filter((a) => a.el && a.where === "page");
-      for (let i = 0; i < ants.length; i++) for (let j = i + 1; j < ants.length; j++) {
-        if (Math.hypot(ants[i].x - ants[j].x, ants[i].y - ants[j].y) < 15) return [ants[i].id, ants[j].id];
-      }
-      return null;
-    });
-    expect(pair).not.toBeNull();
-    const before = await page.evaluate(() => window.__nest!.state.ants.length);
-    await page.evaluate(([id]) => {
-      const ant = window.__nest!.state.ants.find((a) => a.id === id);
-      (ant?.el as HTMLElement | undefined)?.click();
-    }, pair!);
     await page.waitForTimeout(250);
     const after = await page.evaluate(() => window.__nest!.state.ants.length);
     expect(after).toBeLessThanOrEqual(before - 2);
@@ -358,7 +506,7 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.waitForTimeout(700);
     const after = await page.evaluate(() => window.__nest!.home.base.slice());
     expect(after).not.toEqual(before);
-    await expect(page.locator(".nest-hill").first()).toBeInViewport();
+    await expect(page.locator(".nest-hill:not(.rival)").first()).toBeInViewport();
     const antsAfter = await page.evaluate(() => window.__nest!.state.ants.length);
     expect(antsAfter).toBeGreaterThanOrEqual(antsBefore);
   });
@@ -367,21 +515,22 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.waitForTimeout(2800);
+    await page.waitForTimeout(600);
+    await page.waitForFunction(() => window.__nest?.state.ants.some((a) =>
+      a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder") ?? false);
     await page.evaluate(() => window.__nest!.startParty());
     await expect(page.locator("#nest-mock")).toHaveClass(/celebrating/);
-    await expect(page.locator(".nest-queen")).toBeVisible();
+    await expect(page.locator(".nest-queen:not(.panel-queen)")).toBeVisible();
     await expect(page.locator("[data-k='worship-bar']")).toBeVisible();
+    await expect(page.locator("#nest-mock")).toHaveAttribute("data-party-phase", "gathering");
+    await expect(page.locator(".nest-ant.walk").first()).toBeVisible();
+    await expect.poll(() => page.locator("#nest-mock").getAttribute("data-party-phase"), { timeout: 12_000 }).toBe("dance");
     await expect(page.locator(".nest-ant.dancing").first()).toBeVisible();
-    const q0 = await page.locator(".nest-queen").boundingBox();
-    await page.waitForTimeout(500);
-    const q1 = await page.locator(".nest-queen").boundingBox();
-    expect(q0 && q1 && Math.hypot(q1.x - q0.x, q1.y - q0.y)).toBeGreaterThan(8);
-    await page.waitForTimeout(900);
-    await expect(page.locator(".nest-queen")).toHaveClass(/dancing/);
-    const queen = await page.locator(".nest-queen").boundingBox();
-    const hill = await page.locator(".nest-hill").first().boundingBox();
-    expect(queen && hill && queen.y > hill.y + hill.height).toBe(true);
+    await page.waitForTimeout(1800);
+    await expect(page.locator(".nest-queen:not(.panel-queen)")).toHaveClass(/dancing/);
+    const queen = await page.locator(".nest-queen:not(.panel-queen)").boundingBox();
+    const hill = await page.locator(".nest-hill:not(.rival)").first().boundingBox();
+    expect(queen && hill && (queen.y > hill.y + hill.height || queen.x > hill.x + hill.width || queen.x + queen.width < hill.x)).toBe(true);
   });
 
   test("the stray command sends an ant that runs for the launcher", async ({ page }) => {
@@ -407,6 +556,20 @@ test.describe("the interactive terminal (third client of the one door)", () => {
     await page.evaluate(() => window.__nestStray?.spawn(true));
     await expect(page.locator(".nest-stray")).toHaveCount(1);
     await expect(page.locator(".nest-stray")).toHaveCount(0, { timeout: 25000 });
+  });
+
+  test("the speed control cycles the colony through 1x, 2x and 4x", async ({ page }) => {
+    await page.goto("/?nest-debug");
+    await page.locator(".nest-switch").click();
+    await expect(page.locator("#nest-mock")).toBeVisible();
+    const speed = page.locator('[data-k="speed"]');
+    await expect(speed).toContainText("1×");
+    await speed.click();
+    await expect(speed).toContainText("2×");
+    await speed.click();
+    await expect(speed).toContainText("4×");
+    await speed.click();
+    await expect(speed).toContainText("1×");
   });
 
   test("Nest tools lock links during play, and a page switch closes the colony", async ({ page }) => {
@@ -542,4 +705,166 @@ test.describe("terminal desk verbs (deterministic, no model needed)", () => {
     await expect(page.locator('[data-surface="console"]')).toContainText("notes about what?");
     await expect(page).not.toHaveURL(/[?&]tag=/);   // nothing was routed
   });
+});
+
+
+test("the queen is gone before the panel queen returns", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await page.waitForTimeout(600);
+  await page.evaluate(() => window.__nest!.startParty());
+  await expect(page.locator(".nest-queen:not(.panel-queen)")).toBeVisible();
+  await expect(page.locator(".nest-queen:not(.panel-queen)")).toHaveCount(0, { timeout: 18_000 });
+  await expect(page.locator(".nest-queen.panel-queen")).toBeVisible();
+});
+
+
+test("the note mounts its six live colony boxes", async ({ page }) => {
+  test.setTimeout(110_000);
+  const errors: string[] = [];
+  await page.addInitScript(() => {
+    const samples: number[] = [];
+    (window as any).__nestResetSamples = samples;
+    new MutationObserver((records) => records.forEach((record) => {
+      const host = record.target;
+      if (host instanceof HTMLElement && host.matches('[data-live-figure="nest"]') && host.dataset.eventState === "reset") {
+        samples.push(host.querySelector(".nest-scene__stage > svg")?.childElementCount || 0);
+      }
+    })).observe(document, { subtree: true, attributes: true, attributeFilter: ["data-event-state"] });
+  });
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() !== "error") return;
+    const source = message.location().url;
+    // The local app shell keeps a native EventSource open; its reconnect transport is not a note error.
+    if (source.includes("/stream?session=")) return;
+    errors.push(message.text());
+  });
+  await page.goto("/notes/the-site-has-ants");
+  await expect(page.locator(".nest-scene")).toHaveCount(6);
+  const hosts = page.locator('[data-live-figure="nest"]');
+  await expect.poll(async () => hosts.evaluateAll((els) => els.slice(0, 2).map((el) => (el as HTMLElement).dataset.trailLaid)), {
+    timeout: 45_000,
+    intervals: [250, 500, 1000],
+  }).toEqual(["true", "true"]);
+  await expect.poll(async () => hosts.evaluateAll((els) => els.map((el) => {
+    const host = el as HTMLElement;
+    return Number(host.dataset.completedCycles) >= 2 &&
+      host.dataset.eventState !== "reset" &&
+      host.querySelectorAll(".nest-scene__actors").length === 1 &&
+      host.querySelectorAll(".nest-ant").length >= 3;
+  })), {
+    timeout: 100_000,
+    intervals: [250, 500, 1000],
+  }).toEqual([true, true, true, true, true, true]);
+  await expect.poll(async () => hosts.evaluateAll((els) => els.slice(0, 2).map((el) => (el as HTMLElement).dataset.trailLaid)), {
+    timeout: 45_000,
+    intervals: [250, 500, 1000],
+  }).toEqual(["true", "true"]);
+
+  const reports = await hosts.evaluateAll((els) => els.map((el) => {
+    const host = el as HTMLElement;
+    const stage = host.querySelector(".nest-scene__stage")!;
+    const box = host.getBoundingClientRect();
+    const stageBox = stage.getBoundingClientRect();
+    const actors = [...host.querySelectorAll(".nest-ant")];
+    const actorsContained = actors.every((actor) => {
+      const rect = actor.getBoundingClientRect();
+      return rect.left >= stageBox.left - 1 && rect.top >= stageBox.top - 1 &&
+        rect.right <= stageBox.right + 1 && rect.bottom <= stageBox.bottom + 1;
+    });
+    return {
+      mode: host.dataset.nestMode,
+      cycles: Number(host.dataset.completedCycles),
+      resets: Number(host.dataset.resetCount),
+      rules: host.dataset.lastRulesUsed?.split(" ").filter(Boolean),
+      labels: host.querySelectorAll(".nest-scene__head,.nest-scene__hint,.nest-scene__label").length,
+      visibleActors: actors.length,
+      sceneLayers: host.querySelectorAll(".nest-scene__actors").length,
+      sentences: host.querySelectorAll(".nest-scene__sentence").length,
+      homeActorsHidden: actors.filter((actor) => actor.classList.contains("inside-mound")).every((actor) => getComputedStyle(actor).visibility === "hidden"),
+      moundsDestroyed: Number(host.dataset.rivalMoundsDestroyed || 0),
+      soldiers: actors.filter((actor) => actor.getAttribute("data-role") === "soldier").length,
+      storesSeen: Number(host.dataset.maxStoresSeen || 0),
+      storeGlyphs: host.querySelectorAll(".nest-scene__stored-food").length,
+      trails: host.querySelectorAll(".nest-scene__trail").length,
+      floorLines: host.querySelectorAll(".nest-scene__floor").length,
+      queenCount: actors.filter((actor) => actor.getAttribute("data-role") === "queen").length,
+      rivalGuards: actors.filter((actor) => actor.getAttribute("data-role") === "rival-guard").length,
+      fighterWidths: actors.filter((actor) => ["soldier", "rival-guard"].includes(actor.getAttribute("data-role") || "")).map((actor) => getComputedStyle(actor.querySelector("svg")!).width),
+      initialMainFighters: Number(host.dataset.fightMainCount || 0),
+      initialRivalFighters: Number(host.dataset.fightRivalCount || 0),
+      fightSizes: host.dataset.fightSizes ? JSON.parse(host.dataset.fightSizes) : [],
+      rivalColor: getComputedStyle(host.querySelector(".nest-scene")!).getPropertyValue("--nest-rival").trim(),
+      trailDashed: [...host.querySelectorAll(".nest-scene__trail")].every((trail) => getComputedStyle(trail).strokeDasharray !== "none"),
+      trailCurved: [...host.querySelectorAll(".nest-scene__trail")].every((trail) => {
+        const length = (trail as SVGPathElement).getTotalLength();
+        if (!length) return false;
+        const start = (trail as SVGPathElement).getPointAtLength(0);
+        const middle = (trail as SVGPathElement).getPointAtLength(length / 2);
+        const end = (trail as SVGPathElement).getPointAtLength(length);
+        const chord = Math.hypot(end.x - start.x, end.y - start.y) || 1;
+        return Math.abs((end.x - start.x) * (start.y - middle.y) - (start.x - middle.x) * (end.y - start.y)) / chord > 2;
+      }),
+      trailRouteSteps: Number(host.dataset.trailRouteSteps || 0),
+      lastFight: host.dataset.lastFight ? JSON.parse(host.dataset.lastFight) : null,
+      contained: actorsContained && stageBox.left >= box.left && stageBox.right <= box.right,
+    };
+  }));
+  expect(reports.map((report) => report.mode)).toEqual(["theft", "colony", "worship", "rival", "fight", "castes"]);
+  expect(reports.every((report) => report.cycles >= 2 && report.resets >= 2 && report.visibleActors >= 3 && report.sceneLayers === 1 && report.labels === 0 && report.contained && report.homeActorsHidden)).toBe(true);
+  expect(reports[0].sentences).toBe(1);
+  expect(reports[1].sentences).toBe(1);
+  expect(reports[2].sentences).toBe(0);
+  expect(reports[3].sentences).toBe(1);
+  expect(reports[4].sentences).toBe(0);
+  expect(reports[5].sentences).toBe(0);
+  expect(reports[0].rules).toEqual(expect.arrayContaining(["stepMovement", "roleSpeed", "foodShares"]));
+  expect(reports[1].rules).toEqual(expect.arrayContaining(["stepMovement", "foodShares", "advanceBuild"]));
+  expect(reports[2].rules).toEqual(expect.arrayContaining(["stepMovement", "worshipReturnAt", "storeCapacity"]));
+  expect(reports[3].rules).toEqual(expect.arrayContaining(["advanceBuild", "foodShares", "groupCanWin", "damageMound"]));
+  expect(reports[3].moundsDestroyed).toBeGreaterThanOrEqual(2);
+  expect(reports[3].soldiers).toBe(3);
+  expect(reports[3].queenCount).toBe(0);
+  expect(reports.slice(0, 2).every((report) => report.floorLines === 0 && report.trailDashed && report.trailCurved)).toBe(true);
+  expect(await page.evaluate(() => (window as any).__nestResetSamples.length > 0 && (window as any).__nestResetSamples.every((children: number) => children > 0))).toBe(true);
+  expect(reports[0].storesSeen).toBeGreaterThan(0);
+  expect(reports[1].storesSeen).toBeGreaterThan(0);
+  expect(reports[2].storesSeen).toBeGreaterThan(0);
+  expect(reports.every((report) => report.storeGlyphs === 0)).toBe(true);
+  expect(reports[3].trails).toBe(2);
+  expect(reports[3].trailRouteSteps).toBeGreaterThan(0);
+  expect(reports[4].trailRouteSteps).toBeGreaterThan(0);
+  expect(reports[4].rules).toEqual(expect.arrayContaining(["combatPower", "combatHealth", "groupCanWin"]));
+  expect(reports[4].lastFight?.damage).toBeGreaterThan(0);
+  expect(reports[4].lastFight?.remainingHealth).toBeLessThan(reports[4].lastFight?.health);
+  expect(reports[4].queenCount).toBe(0);
+  expect(reports[4].soldiers).toBe(3);
+  expect(reports[4].initialMainFighters).toBe(3);
+  expect(reports[4].initialRivalFighters).toBe(3);
+  expect(new Set(reports[4].fightSizes).size).toBe(1);
+  expect(reports[4].floorLines).toBe(0);
+  expect(new Set(reports[4].fighterWidths).size).toBe(1);
+  expect(reports[4].rivalColor).toMatch(/#a33b3b|#e08a8a/i);
+  expect(reports[5].queenCount).toBe(1);
+  expect(reports[5].rivalGuards).toBe(1);
+  expect(reports[5].rules).toEqual(expect.arrayContaining(["stepMovement", "roleSpeed"]));
+
+  const colors = await page.evaluate(() => {
+    const root = document.documentElement;
+    const stage = document.querySelector(".nest-scene__stage")!;
+    root.setAttribute("data-color-scheme", "light");
+    const light = getComputedStyle(stage).backgroundColor;
+    root.setAttribute("data-color-scheme", "dark");
+    const dark = getComputedStyle(stage).backgroundColor;
+    return { light, dark };
+  });
+  expect(colors.dark).not.toBe(colors.light);
+  expect(errors).toEqual([]);
+
+  await page.getByRole("link", { name: "Play the colony" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await expect(page.locator(".nest-scene")).toHaveCount(0);
 });
