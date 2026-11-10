@@ -22,6 +22,8 @@ social: |
   architecture plan, and puts each drift in front of the person who owns the decision.
 
   It does not decide anything. It just makes sure the decision gets made on the ticket, not in production.
+socialImage: "/media/notes/move-bugs-left-social.png"
+socialImageAlt: "Move bugs left. Catch it on the ticket, not in production. Four stops on a line, ticket, review, testing and production, each dot bigger than the last, with the first two boxed: the epic checker works here."
 ---
 
 An epic at [Career Team](https://careerteam.com) has a lot of hands on it: the plan owner, product,
