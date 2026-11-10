@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   advanceBuild,
   blockedByTrailMate,
+  trailClearance,
   combatHealth,
   combatPower,
   damageMound,
@@ -44,6 +45,37 @@ describe("shared nest rules", () => {
     expect(blockedByTrailMate({ ...follower, trailId: "trail-2" }, [leader, follower])).toBe(false);
     expect(blockedByTrailMate({ ...follower, heading: Math.PI }, [leader, follower])).toBe(false);
     expect(blockedByTrailMate({ ...follower, stuck: 1 }, [leader, follower])).toBe(false);
+  });
+
+  test("a trail follower uses only the space left by the ant ahead", () => {
+    const trail = {};
+    const leader = { id: 1, x: 19, y: 0, heading: 0, job: "follow", trail };
+    const follower = { id: 2, x: 0, y: 0, heading: 0, job: "follow", trail };
+    const maxStep = trailClearance(follower, [leader, follower], 50, 0);
+    expect(maxStep).toBe(1);
+    stepMovement(follower, 50, 0, 0.1, 44, { now: 0, maxStep, wander: 0 });
+    expect(follower.x).toBe(1);
+    expect(trailClearance(follower, [leader, follower], 50, 0)).toBe(0);
+    leader.x += 3;
+    expect(trailClearance(follower, [leader, follower], 50, 0)).toBe(3);
+    expect(trailClearance(follower, [{ ...leader, trail: {} }, follower], 50, 0)).toBe(Infinity);
+    expect(trailClearance(follower, [{ ...leader, job: "home" }, follower], 50, 0)).toBe(Infinity);
+    expect(trailClearance(follower, [{ ...leader, x: follower.x }, follower], 50, 0)).toBe(0);
+  });
+
+  test("an inbound worker queues behind the center of a letter crew", () => {
+    const trail = {};
+    const carrier = { id: 1, x: 16, y: 8, cx: 19, cy: 0, heading: 0, job: "carry", trail };
+    const follower = { id: 2, x: 0, y: 0, heading: 0, job: "home", trail };
+    expect(trailClearance(follower, [carrier, follower], 50, 0)).toBe(1);
+  });
+
+  test("two converging followers yield in one direction at a bend", () => {
+    const trail = {};
+    const first = { id: 1, x: 0, y: -3, heading: Math.PI / 6, job: "follow", trail };
+    const second = { id: 2, x: 0, y: 3, heading: -Math.PI / 6, job: "follow", trail };
+    expect(trailClearance(first, [first, second], 35, 17)).toBe(Infinity);
+    expect(trailClearance(second, [first, second], 35, -17)).toBe(0);
   });
 
   test("carried letters keep the game's load and role speeds", () => {

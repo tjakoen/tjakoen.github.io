@@ -17,7 +17,6 @@ import {
   RIVAL_FOUNDING_TIME,
   RIVAL_MOUND_HEALTH,
   advanceBuild,
-  blockedByTrailMate,
   combatHealth as sharedCombatHealth,
   combatPower as sharedCombatPower,
   damageMound,
@@ -26,6 +25,8 @@ import {
   groupCanWin,
   roleSpeed,
   stepMovement,
+  trailClearance,
+  turnToward,
   TRAIL_FOLLOW_GAP,
   storeCapacity,
   worshipReturnAt,
@@ -117,7 +118,7 @@ import {
     @keyframes nest-mound-attack { 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
     .nest-hill.unbuilding { animation: nest-hill-unbuild .55s cubic-bezier(.6,0,.8,.4) both; transform-origin: 50% 100%; }
     @keyframes nest-hill-unbuild { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scaleY(.06); } }
-    .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; filter: brightness(1.5) drop-shadow(0 0 4px var(--color-accent)); }
+    .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; filter: brightness(1.5) drop-shadow(0 0 2px var(--color-accent)); }
     .nest-ant.fighting::after { content: "✶"; position: absolute; left: 50%; top: -12px; color: var(--color-accent); font-size: 12px; }
     .nest-ant.marching { filter: drop-shadow(0 0 4px var(--color-accent)); }
     @keyframes nest-fight { 50% { filter: brightness(.7) drop-shadow(0 0 2px var(--color-accent)); } }
@@ -829,7 +830,7 @@ import {
   const join = (ant, t) => {
     if (ant.trail && ant.trail !== t) ant.trail.ants.delete(ant);
     ant.trail = t;
-    ant.lane = (ant.id % 2 ? 1 : -1) * 3.2;
+    ant.lane = 5;
     t.ants.add(ant);
   };
   const leaveTrail = (ant) => {
@@ -908,7 +909,7 @@ import {
   const antTransform = (a, x = a.px, y = a.py) => `translate3d(${x}px, ${y}px, 0) rotate(${a.heading + Math.PI}rad)`;
   const drawPageAnts = () => {
     const positions = state.ants.filter((a) => a.el && !a.el.hidden && !a.dead).map((a) => ({
-      ant: a, x: a.px, y: a.py, anchored: !!a.letter || a.job === "crew",
+      ant: a, x: a.px, y: a.py, anchored: !!a.letter || a.job === "crew" || !!a.fightUntil,
     }));
     // Separate the sprites without changing trails, letter crews, or combat distances.
     for (let pass = 0; pass < 2; pass++) {
@@ -917,7 +918,7 @@ import {
         for (let j = 0; j < i; j++) {
           const b = positions[j];
           if (a.anchored && b.anchored) continue;
-          const gap = a.ant.fightUntil || b.ant.fightUntil ? 25 : 14;
+          const gap = 14;
           let dx = a.x - b.x, dy = a.y - b.y;
           const squared = dx * dx + dy * dy;
           if (squared >= gap * gap) continue;
@@ -940,7 +941,7 @@ import {
         el.style.transform = antTransform(ant, x, y);
         el._px = x; el._py = y; el._heading = ant.heading;
       }
-      const walking = ant.job !== "wait" && !ant.paused && !ant.fightUntil;
+      const walking = ant.fightUntil ? ant.fightWalking : ant.job !== "wait" && !ant.paused;
       if (el._walk !== walking) { el.classList.toggle("walk", walking); el._walk = walking; }
     }
   };
@@ -1074,7 +1075,7 @@ import {
   };
 
   const routePts = (ant) => (ant.trail ? ant.trail.pts : ant.scoutRoute ? ant.scoutRoute.pts : null);
-  const backPath = (ant) => (routePts(ant) ? lanePath(routePts(ant).toReversed(), -(ant.lane || 0)) : []).concat([hillOf(ant).hole.slice()]);
+  const backPath = (ant) => (routePts(ant) ? lanePath(routePts(ant).toReversed(), ant.lane || 0) : []).concat([hillOf(ant).hole.slice()]);
   const goHome = (ant) => { ant.job = "home"; ant.path = backPath(ant); ant.k = 0; ant.letter = null; ant.helpLetter = null; ant.scoutRoute = null; ant.el?.classList.remove("wait"); };
   // A big letter can outlive its trail. If the scent is wiped or aged out while a worker is
   // waiting on the letter, put the worker back on the page and free the letter instead of
@@ -1288,14 +1289,21 @@ import {
     ant.el?.remove(); ant.el = null; ant.where = "nest"; ant.route = "down"; ant.d = 0; ant.food = carrying || null; ant.meal = meal; ant.letter = null;
   };
 
-  // Walk toward a point. Ants keep their distance: one that would close on an ant ahead going the
-  // same way stops for the frame, which is what turns a trail into a line.
-  // Only ants on the same trail, heading the same way, hold each other up, so two crossing trails
-  // never lock; and an ant kept waiting for more than a second walks on anyway.
-  const blocked = (ant) => blockedByTrailMate(ant, state.ants, GAP);
+  // A follower uses the space left by the ant ahead in its lane. Reversing a route puts returning
+  // ants on the other side of the trail, so the two lines can pass.
   const move = (ant, tx, ty, dt, speed) => stepMovement(ant, tx, ty, dt, speed, {
-    now: performance.now(), blocked: () => blocked(ant),
+    now: performance.now(),
+    maxStep: trailClearance(ant, ant.trail?.ants ?? state.ants, tx, ty, GAP),
+    wander: ant.trail ? 0.035 : 0.12,
   });
+
+  const approachOpponent = (ant, opponent, dt, speed) => {
+    const distance = Math.hypot(opponent.x - ant.x, opponent.y - ant.y);
+    stepMovement(ant, opponent.x, opponent.y, dt, speed, {
+      now: performance.now(), maxStep: Math.max(0, distance - 14),
+    });
+    ant.px = ant.x; ant.py = ant.y;
+  };
 
   const PATROL_LAPS = 4; // two full out-and-back passes before a guard visits its mound
   const patrolMound = (ant) => (ant.mini && minis.includes(ant.mini) ? ant.mini : home);
@@ -1309,7 +1317,7 @@ import {
   };
 
   const stepPage = (ant, dt) => {
-    if (ant.fightUntil && performance.now() < ant.fightUntil) return;
+    if (ant.fightUntil) return stepCombatant(ant, dt);
     if (ant.side === "rival") { ant.px = ant.x; ant.py = ant.y; return stepRival(ant, dt); }
     if (ant.tongue || ant.job === "scout-pending") return;
     ant.px = ant.x; ant.py = ant.y;
@@ -1339,8 +1347,7 @@ import {
         else { ant.job = "patrol"; ant.path = []; }
         ant.k = 0; return;
       }
-      if (move(ant, threat.x, threat.y, dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.95 }))) { ant.px = ant.x; ant.py = ant.y; }
-      else { ant.px = ant.x; ant.py = ant.y; }
+      approachOpponent(ant, threat, dt, roleSpeed(ant.role, ant.job, SPEED, { factor: 0.95 }));
       return;
     }
     if ((ant.job === "defend" || ant.job === "guard") && ant.defendUntil && performance.now() > ant.defendUntil) {
@@ -2256,7 +2263,7 @@ import {
     if (rival.active && rival.ants.length >= rivalCaps().ants) return;
     const hole = rival.mound.hole;
     const a = { id: ++state.total, role: "rival-worker", side: "rival", where: "page", x: hole[0], y: hole[1], px: hole[0], py: hole[1],
-      heading: -Math.PI / 2, trail, job: "rival-follow", lane: Math.random() < 0.5 ? 3 : -3, hp: 1 };
+      heading: -Math.PI / 2, trail, job: "rival-follow", lane: 5, hp: 1 };
     a.path = lanePath(trail.pts, a.lane); a.k = 0;
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = antClasses("rival-worker", "rival");
     a.el.innerHTML = ANT_SVG; a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
@@ -2308,7 +2315,6 @@ import {
   };
 
   const stepRival = (a, dt) => {
-    if (a.fightUntil && performance.now() < a.fightUntil) return;
     if (!a.el || a.dead || a.tongue) return;
     if (state.party && rival.mound) {
       if (a.el.hidden) return;
@@ -2337,7 +2343,7 @@ import {
       const threat = mainAnts().find((m) => m.el && m.where === "page" && (m.role === "soldier" || m.role === "guard" || m.role === "worker") && Math.hypot(m.x - a.x, m.y - a.y) < 110 && Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) > 180 && (m.role === "soldier" || m.role === "guard"));
       if (threat) {
         a.job = "rival-defend"; a.path = [[threat.x, threat.y]]; a.k = 0; a.guardPause = 0;
-        move(a, threat.x, threat.y, dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.9 })); a.px = a.x; a.py = a.y;
+        approachOpponent(a, threat, dt, roleSpeed(a.role, a.job, SPEED, { factor: 0.9 }));
         return;
       }
       if (a.job === "rival-defend") { a.job = "rival-guard"; a.path = a.guardPath || []; a.k = 0; }
@@ -2369,7 +2375,7 @@ import {
     if (++a.k < a.path.length) return;
     if (a.job === "rival-follow") {
       stealRival(a.trail, a);
-      a.job = "rival-home"; a.path = lanePath(a.trail.pts.toReversed(), -a.lane); a.k = 0;
+      a.job = "rival-home"; a.path = lanePath(a.trail.pts.toReversed(), a.lane); a.k = 0;
     } else if (a.job === "rival-home") {
       const had = !!a.letter;
       bankRival(a);
@@ -2390,28 +2396,68 @@ import {
   const pendingFights = new Set(), pendingDuels = new Set();
   const inCombat = (a) => a.el && !a.dead;
   const readyToFight = (a) => inCombat(a) && !a.fightUntil;
+  const stageCombat = (mains, rivals) => {
+    const midpoint = (ants) => ants.reduce(([x, y], ant) => [x + ant.x / ants.length, y + ant.y / ants.length], [0, 0]);
+    const [mx, my] = midpoint(mains), [rx, ry] = midpoint(rivals);
+    const angle = Math.hypot(rx - mx, ry - my) > 1 ? Math.atan2(ry - my, rx - mx) : mains[0].heading;
+    const ux = Math.cos(angle), uy = Math.sin(angle);
+    const width = main.clientWidth, height = main.scrollHeight;
+    const cx = Math.max(30, Math.min(width - 30, (mx + rx) / 2));
+    const cy = Math.max(30, Math.min(height - 30, (my + ry) / 2));
+    const startedAt = performance.now();
+    const placeSide = (ants, side) => {
+      const ordered = ants.toSorted((a, b) => (a.y - b.y) * ux - (a.x - b.x) * uy || a.id - b.id);
+      ordered.forEach((ant, index) => {
+        const lane = (index - (ordered.length - 1) / 2) * 23;
+        const x = Math.max(14, Math.min(width - 14, cx + side * 15 * ux - lane * uy));
+        const y = Math.max(14, Math.min(height - 14, cy + side * 15 * uy + lane * ux));
+        ant.fightPose = { x, y, face: side < 0 ? angle : angle + Math.PI, startedAt };
+        ant.fightUntil = startedAt + 1000;
+        ant.el.classList.add("fighting");
+      });
+    };
+    placeSide(mains, -1);
+    placeSide(rivals, 1);
+  };
+  const stepCombatant = (ant, dt) => {
+    if (!inCombat(ant)) return;
+    const { x, y, face, startedAt } = ant.fightPose;
+    const now = performance.now();
+    const beforeX = ant.x, beforeY = ant.y;
+    const carrying = ant.letter?.state === "carried" || ant.letter?.state === "rival-carry";
+    if (!carrying && ant.job !== "crew") {
+      const lean = 3 * Math.sin((now - startedAt) / 105 + ant.id);
+      const heading = ant.heading;
+      stepMovement(ant, x + Math.cos(face) * lean, y + Math.sin(face) * lean, dt, SPEED * 1.45, { now });
+      ant.heading = heading;
+    }
+    turnToward(ant, face, dt);
+    ant.px = ant.x; ant.py = ant.y;
+    ant.fightWalking = Math.hypot(ant.x - beforeX, ant.y - beforeY) > 0.03;
+  };
   const releaseFighter = (a) => {
     a.fightUntil = 0;
+    a.fightPose = null;
     a.el?.classList.remove("fighting");
   };
   const finishFight = (fight) => {
     if (fight.done) return;
     fight.done = true; pendingFights.delete(fight);
-    const { target, group, side } = fight;
+    const { target, group, side, origin } = fight;
     releaseFighter(target);
     group.forEach(releaseFighter);
     if (state.party || !inCombat(target)) return;
     const allies = side === "rival" ? mainAnts() : rival.ants;
-    const alive = allies.filter((a) => readyToFight(a) && Math.hypot(a.x - target.x, a.y - target.y) < 42);
+    const alive = allies.filter((a) => readyToFight(a) && (group.includes(a) || Math.hypot(a.x - origin[0], a.y - origin[1]) < 42));
     const power = alive.reduce((s, a) => s + combatPower(a), 0);
     if (!groupCanWin(power, combHp(target))) return;
     if (side === "rival") { removeRivalAnt(target); state.squashed++; log(alive.length > 1 ? "the colony wins a group fight" : "a main ant drives off a rival ant"); }
     else { removeMainCombatant(target); state.squashed++; log("the rival ants overwhelm a main ant"); }
   };
   const beginFight = (target, group, side) => {
-    const until = performance.now() + 1000;
-    [target, ...group].forEach((a) => { a.fightUntil = until; a.el.classList.add("fighting"); });
-    const fight = { target, group, side, done: false };
+    const fight = { target, group, side, origin: [target.x, target.y], done: false };
+    if (side === "rival") stageCombat(group, [target]);
+    else stageCombat([target], group);
     pendingFights.add(fight);
     setTimeout(() => finishFight(fight), 1000);
   };
@@ -2425,8 +2471,7 @@ import {
     else { removeMainCombatant(m); state.squashed++; log("the rival guard wins the duel"); }
   };
   const beginDuel = (m, r, mainWins) => {
-    const until = performance.now() + 1000; m.fightUntil = until; r.fightUntil = until;
-    m.el.classList.add("fighting"); r.el.classList.add("fighting");
+    stageCombat([m], [r]);
     const duel = { m, r, mainWins, done: false };
     pendingDuels.add(duel);
     setTimeout(() => finishDuel(duel), 1000);

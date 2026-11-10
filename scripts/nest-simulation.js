@@ -11,7 +11,7 @@ const trailId = (ant) => ant.trailId ?? ant.trail?.id;
 const leadOf = (ant) => ant.leadId ?? ant.lead;
 const isActive = (ant) => ant.active ?? (ant.el !== undefined ? Boolean(ant.el) : ant.location !== "nest" && ant.where !== "nest");
 
-// Keep the same-trail spacing rule in one place for the game and every live note simulation.
+// The note scenarios use a short yield at close range so their bounded loops can replay.
 export function blockedByTrailMate(ant, ants, gap = TRAIL_FOLLOW_GAP) {
   const trail = trailId(ant);
   if (ant.job === "dance" || !trail || (ant.stuck || 0) >= 1) return false;
@@ -25,6 +25,39 @@ export function blockedByTrailMate(ant, ants, gap = TRAIL_FOLLOW_GAP) {
     return Math.hypot(dx, dy) < gap && Math.cos(ant.heading - other.heading) > 0.2 &&
       dx * Math.cos(ant.heading) + dy * Math.sin(ant.heading) > 0;
   });
+}
+
+const trafficDirection = (job) => {
+  if (hasOutboundJob(job) || job === "rival-follow") return 1;
+  if (job === "home" || job === "carry" || job === "rival-home") return -1;
+  return 0;
+};
+
+export function trailClearance(ant, ants, tx, ty, gap = TRAIL_FOLLOW_GAP) {
+  const trail = ant.trailId ?? ant.trail;
+  const direction = trafficDirection(ant.job);
+  if (!trail || !direction) return Infinity;
+  const length = Math.hypot(tx - ant.x, ty - ant.y);
+  if (!length) return Infinity;
+  const ux = (tx - ant.x) / length, uy = (ty - ant.y) / length;
+  let clearance = Infinity;
+  for (const other of ants) {
+    if (other === ant || !isActive(other) || other.dead || other.el?.hidden || other.fightUntil) continue;
+    if ((other.trailId ?? other.trail) !== trail || trafficDirection(other.job) !== direction) continue;
+    const x = other.job === "carry" ? other.cx : other.x;
+    const y = other.job === "carry" ? other.cy : other.y;
+    const dx = x - ant.x, dy = y - ant.y;
+    const ahead = dx * ux + dy * uy;
+    if (ahead < 0 || (ahead === 0 && other.id > ant.id) || Math.abs(dx * uy - dy * ux) > gap / 2) continue;
+    const goal = other.path?.[other.k];
+    const vx = goal ? goal[0] - x : Math.cos(other.heading);
+    const vy = goal ? goal[1] - y : Math.sin(other.heading);
+    if (vx * ux + vy * uy < 0) continue;
+    // At a bend two ants can both see the other ahead. Let the earlier ant go first.
+    if (-dx * vx - dy * vy > 0 && other.id > ant.id) continue;
+    clearance = Math.min(clearance, Math.max(0, ahead - gap));
+  }
+  return clearance;
 }
 
 export function damageMound(health) {
@@ -42,21 +75,24 @@ export function roleSpeed(role, job, baseSpeed, { letterNeed = 1, factor = 1 } =
   return baseSpeed * factor;
 }
 
-export function stepMovement(ant, tx, ty, dt, speed, { now, blocked = () => false } = {}) {
+export function turnToward(ant, heading, dt) {
+  const difference = ((heading - ant.heading + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+  ant.heading += difference * Math.min(1, 9 * dt);
+}
+
+export function stepMovement(ant, tx, ty, dt, speed, { now, blocked = () => false, maxStep = Infinity, wander = 0.12 } = {}) {
   const dx = tx - ant.x;
   const dy = ty - ant.y;
   const distance = Math.hypot(dx, dy);
-  const step = speed * dt;
-  if (distance > 0.5) {
-    const desired = Math.atan2(dy, dx);
-    const difference = ((desired - ant.heading + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-    ant.heading += difference * Math.min(1, 9 * dt);
-  }
+  const step = Math.min(speed * dt, maxStep);
+  if (distance > 0.5) turnToward(ant, Math.atan2(dy, dx), dt);
   if (distance <= step) {
     ant.x = tx;
     ant.y = ty;
+    ant.paused = false;
     return true;
   }
+  if (step <= 0) { ant.paused = true; return false; }
   if (ant.job !== "carry" && blocked(ant) && (ant.stuck || 0) < 0.32) {
     ant.paused = true;
     ant.stuck = (ant.stuck || 0) + dt;
@@ -64,7 +100,7 @@ export function stepMovement(ant, tx, ty, dt, speed, { now, blocked = () => fals
   }
   ant.paused = false;
   if (ant.stuck) ant.stuck = Math.max(0, ant.stuck - dt * 1.4);
-  const sway = Math.sin(now / 240 + ant.id * 0.7) * 0.12;
+  const sway = Math.sin(now / 240 + ant.id * 0.7) * Math.min(wander, maxStep * 0.15);
   ant.x += (dx / distance) * step - (dy / distance) * sway;
   ant.y += (dy / distance) * step + (dx / distance) * sway;
   return false;
