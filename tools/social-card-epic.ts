@@ -2,7 +2,7 @@
 //
 // Same card family as tools/social-card-dashboards.ts (1200×1200, paper and ink, Georgia, the host
 // in the footer). The picture is Matt's rule: four places a wrong assumption can be caught, each one
-// dearer than the last, with the epic checker boxed at the cheap end.
+// costlier than the last, with the epic checker boxed at the cheap end.
 //
 //   bun run social:card:epic   # → content/media/notes/move-bugs-left-social.png
 import { chromium } from "@playwright/test";
@@ -58,7 +58,7 @@ const card = `<!doctype html><html><head><meta charset="utf-8"><style>
       )
       .join("\n    ")}
     <text x="110" y="${Y + 200}" style="fill:${MUTED};font-size:24px">cheaper to fix</text>
-    <text x="1110" y="${Y + 200}" text-anchor="end" style="fill:${MUTED};font-size:24px">dearer to fix</text>
+    <text x="1110" y="${Y + 200}" text-anchor="end" style="fill:${MUTED};font-size:24px">costlier to fix</text>
 
     <line x1="96" y1="1122" x2="${W - 96}" y2="1122" style="stroke:${LINE};stroke-width:1"/>
     <text x="96" y="1158" style="fill:${INK};font-size:22px">Our CTO Said Move Bugs Left</text>
