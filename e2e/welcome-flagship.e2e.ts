@@ -63,15 +63,16 @@ test.describe("flagship featured", () => {
 });
 
 test.describe("welcome mobile layout", () => {
-  test("the leadership and course-scale claims lead to inspectable evidence on desktop and phone", async ({ page }) => {
+  test("the first proof links show AI adoption and course scale on desktop and phone", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
-    await expect(page.locator(".welcome__proof")).toContainText("in production across several university courses");
-    await expect(page.locator(".welcome__proof")).toContainText("hundreds of student repositories each term");
-    await expect(page.locator(".welcome__proof")).toContainText("lead 15 to 25 engineers and product specialists");
+    await expect(page.locator(".welcome__sub")).toContainText("mentor software developers");
 
     const proofLinks = page.locator(".welcome__proof-links");
-    await expect(proofLinks.getByRole("link", { name: "Course platform story" })).toHaveAttribute("href", "/native-github-classroom");
+    const featured = proofLinks.getByRole("link");
+    await expect(featured.nth(0)).toHaveAttribute("href", "/notes/the-reviewer-that-learned-to-be-wrong");
+    await expect(featured.nth(1)).toHaveAttribute("href", "/notes/show-them-the-board");
+    await expect(featured.nth(2)).toHaveAttribute("href", "/native-github-classroom");
     await expect(proofLinks.getByRole("link", { name: "Open the privacy-safe demo" }))
       .toHaveAttribute("href", "https://portfolio.tjakoen.com/github-native-course-platform/?demo=1");
     await expect(proofLinks.getByRole("link", { name: "Leadership experience" })).toHaveAttribute("href", "/about#role-manager");
