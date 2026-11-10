@@ -50,7 +50,8 @@ test.describe("flagship featured", () => {
 
     await page.goto("/");
     // the column also carries a plain "/notes" row (see all), which has no card and no date
-    const hrefs = (await page.locator(".recent .recent__item, .recent [href^='/notes/']")
+    // The Browse pane also carries a recent list; this test is about the Welcome page's own feed.
+    const hrefs = (await page.locator('[data-surface="welcome-recent"] .recent__item, [data-surface="welcome-recent"] [href^="/notes/"]')
       .evaluateAll((rows) => rows.map((r) => r.getAttribute("href") ?? "")))
       .filter((h) => /^\/notes\/.+/.test(h));
     // Recent mixes calendar posts in, so a run of new events can leave fewer than two notes to
