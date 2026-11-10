@@ -370,7 +370,7 @@ can hand it off and go do something else. That is the part that changed my week,
 None of this is a flex about volume. I do a lot with AI because the loop makes the volume safe to
 carry.
 
-At [Career Team](https://careerteam.com) I use the company's Claude and Codex with the same loop, for management work and
+At [Career Team](/leading) I use the company's Claude and Codex with the same loop, for management work and
 technical work. The work laptop is on company accounts. The hardcoded rules keep the work data out
 of the personal setup. The config is a standard, not a copy of the work.
 
