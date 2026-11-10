@@ -10,11 +10,15 @@ export const ANT_LEGS_B = [[7,2],[8,1],[3,2],[2,1],[5,6],[4,7],[10,6],[11,7]];
 
 const dot = ([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="0.72"/>`;
 
-export function antMarkup({ flyer = false } = {}) {
+export function antMarkup({ role = "worker", centered = false } = {}) {
+  const soldier = role === "soldier" || role === "guard" || role === "rival-guard";
+  const flyer = role === "flyer" || role === "rival-flyer";
+  const [width, height] = role === "queen" ? [40, 23] : soldier ? [25, 14] : [23, 13];
+  const origin = centered ? ` x="${-width / 2}" y="${-height / 2}"` : "";
   const wings = flyer
     ? '<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g>'
     : "";
-  return `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${ANT_BODY.map(dot).join("")}${wings}<g class="legs-a">${ANT_LEGS_A.map(dot).join("")}</g><g class="legs-b">${ANT_LEGS_B.map(dot).join("")}</g></svg>`;
+  return `<svg width="${width}" height="${height}"${origin} viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${ANT_BODY.map(dot).join("")}${wings}<g class="legs-a">${ANT_LEGS_A.map(dot).join("")}</g><g class="legs-b">${ANT_LEGS_B.map(dot).join("")}</g></svg>`;
 }
 
 export function miniArt(progress) {

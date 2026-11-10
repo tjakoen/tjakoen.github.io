@@ -58,13 +58,14 @@ import {
   style.textContent = `
     #nest-mock { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px;
       padding: var(--space-3, 12px); font: 12px/1.4 var(--font-mono); color: var(--ink);
-      min-width: 0; max-width: 100%; overflow-x: hidden; }
+      min-width: 0; max-width: 100%; overflow-x: hidden; overflow-y: auto; }
+    #nest-mock > :not(.well) { flex-shrink: 0; }
     #nest-mock > * { min-width: 0; max-width: 100%; }
     #nest-mock .head { min-width: 0; }
     #nest-mock .head .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #nest-mock .muted { color: var(--ink-muted); }
     #nest-mock .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; display: flex; justify-content: space-between; gap: 8px; }
-    #nest-mock .well { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
+    #nest-mock .well { position: relative; flex: 1 1 0; min-height: 8em; overflow: hidden; background: var(--paper-2); border: 1px solid var(--color-line);
       display: flex; align-items: stretch; justify-content: center; }
     .nest-pre { width: 100%; height: 100%; margin: 0; font-family: var(--font-mono); font-size: 10px; line-height: 1.2; letter-spacing: -0.04em;
       -webkit-text-stroke: 0.05em currentColor; color: var(--ink-faint); user-select: none; }
@@ -89,7 +90,7 @@ import {
     #nest-mock .tools button { position: relative; display: grid; place-items: center; min-width: 0; min-height: 40px; }
     #nest-mock .tools button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
     #nest-mock .tools button[data-cooldown]::after { content: attr(data-cooldown); position: absolute; right: 2px; bottom: 0; font-size: 9px; }
-    #nest-mock .tool-help { min-height: 1.5em; height: 1.5em; overflow: hidden; margin: 0; font-size: 10px; line-height: 1.3; }
+    #nest-mock .tool-help { min-height: 2.8em; margin: 0; font-size: 12px; line-height: 1.4; }
     #nest-mock { position: relative; }
     #nest-mock .confirm { position: absolute; inset: auto var(--space-3, 12px) var(--space-3, 12px); padding: var(--space-3, 12px);
       background: var(--paper); border: 1px solid var(--ink); box-shadow: 0 6px 24px rgba(0,0,0,.35); }
@@ -104,8 +105,6 @@ import {
     :root[data-color-scheme="light"] .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); }
     @media (prefers-color-scheme: light) { :root:not([data-color-scheme="dark"]) .nest-layer { --nest-trail: color-mix(in srgb, var(--ink) 66%, var(--paper)); } }
     .nest-hill.rival, .nest-ant.rival { color: var(--nest-rival); }
-    .nest-ant.rival-worker svg { transform: scale(.78); }
-    .nest-ant.rival.soldier svg, .nest-ant.rival-guard svg { transform: scale(1.3); }
     .nest-hill.rising { animation: nest-hill-rise .78s cubic-bezier(.2,.8,.2,1) both; transform-origin: 50% 100%; }
     .nest-hill.rival.constructing { animation: rival-build 2.6s cubic-bezier(.2,.7,.3,1) both; transform-origin: 50% 100%; }
     @keyframes rival-build { from { opacity: .12; transform: scaleY(.06); } 55% { opacity: .7; } to { opacity: 1; transform: none; } }
@@ -118,7 +117,7 @@ import {
     @keyframes nest-mound-attack { 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
     .nest-hill.unbuilding { animation: nest-hill-unbuild .55s cubic-bezier(.6,0,.8,.4) both; transform-origin: 50% 100%; }
     @keyframes nest-hill-unbuild { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(10px) scaleY(.06); } }
-    .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; color: var(--nest-rival); filter: brightness(1.5) drop-shadow(0 0 4px var(--color-accent)); }
+    .nest-ant.fighting { animation: nest-fight .12s steps(2) infinite; filter: brightness(1.5) drop-shadow(0 0 4px var(--color-accent)); }
     .nest-ant.fighting::after { content: "✶"; position: absolute; left: 50%; top: -12px; color: var(--color-accent); font-size: 12px; }
     .nest-ant.marching { filter: drop-shadow(0 0 4px var(--color-accent)); }
     @keyframes nest-fight { 50% { filter: brightness(.7) drop-shadow(0 0 2px var(--color-accent)); } }
@@ -262,9 +261,10 @@ import {
     #nest-mock .tools button.wide { flex: 1.8; }
     #nest-mock .head .lbl { font-size: 9px; }
     #nest-mock .tools button span { font-size: 9px; letter-spacing: .04em; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #nest-mock .tools [data-tool="read"] span { white-space: normal; line-height: 1.1; }
     #nest-mock .tools button kbd { position: absolute; top: 2px; left: 4px; font: 8px var(--font-mono); color: var(--ink-faint); }
     #nest-mock .tools button[aria-pressed="true"] kbd { color: var(--color-accent); }
-    #nest-mock .note-link { color: var(--ink-muted); font-size: 9px; line-height: 1.2; text-decoration: none; }
+    #nest-mock .note-link { color: var(--ink-muted); font-size: 11px; line-height: 1.2; text-decoration: underline; }
     #nest-mock .note-link:hover { color: var(--ink); }
     #nest-mock .activity { margin: 0; padding: 0; list-style: none; min-height: 2.6em; font-size: 10px; color: var(--ink-muted); }
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -481,8 +481,8 @@ import {
   };
   const icon = (name) => `<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[name]}</svg>`;
   const toolHelp = {
-    squash: "Click or tap ants to squash them. Stop them from destroying the page!",
-    wipe: "Drag across a dotted trail to scatter its ants. Stop them from destroying the page!",
+    squash: "Click or tap an ant to squash it.",
+    wipe: "Drag across a dotted trail. Its ants will look for another route.",
     read: "Links unlocked. The colony keeps running.",
   };
   const tool = (name, label, key, wide = false) => `<button type="button" class="${wide ? "wide" : ""}" data-tool="${name}" aria-label="${label}" title="${toolHelp[name]}" aria-pressed="false">${icon(name)}<span>${label}</span><kbd>${key}</kbd></button>`;
@@ -495,7 +495,7 @@ import {
     <div class="well"><pre class="nest-pre" role="img" aria-label="Side view of the ant nest"></pre></div>
     <div class="nest-foot">
       <ul class="log activity" data-k="log" aria-live="polite"></ul>
-      <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener" title="The colony, explained">explained ↗</a>
+      <a class="note-link" href="/notes/the-site-has-ants" target="_blank" rel="noopener">Field notes ↗</a>
     </div>
     <div class="nest-meters">
       <div class="nest-meter"><span class="lbl muted">page left</span><span class="lbl" data-k="holds-val">100%</span>
@@ -503,7 +503,7 @@ import {
         <i class="hint"><span data-k="holds-hint">page still whole</span><span class="rival" data-k="rival-hint"></span></i></div>
       <div class="nest-meter"><span class="lbl muted">stores</span><span class="lbl" data-k="stores-val">0/12</span>
         <div class="nest-meter__bar" data-k="stores-bar" role="progressbar" aria-label="Stores" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="stores"></span><span class="rest" data-k="stores-rest"></span></div>
-        <i class="hint">builds mound builders</i></div>
+        <i class="hint">pays for new mounds</i></div>
       <div class="nest-meter"><span class="lbl muted">meals to egg</span><span class="lbl" data-k="bar-val">0/3</span>
         <div class="nest-meter__bar" data-k="bar-bar" role="progressbar" aria-label="Meals to the next egg" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-k="bar"></span><span class="rest" data-k="bar-rest"></span></div>
         <i class="hint">three meals lay an egg</i></div>
@@ -918,7 +918,7 @@ import {
     const hole = ant.hill.hole;
     ant.where = "page"; ant.x = hole[0]; ant.y = hole[1]; ant.heading = -Math.PI / 2; ant.px = ant.x; ant.py = ant.y;
     ant.el = document.createElement("button"); ant.el.type = "button";
-    ant.el.className = antClasses(ant.role, ant.side); ant.el.innerHTML = ANT_SVG;
+    ant.el.className = antClasses(ant.role, ant.side); ant.el.innerHTML = antMarkup({ role: ant.role });
     ant.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(ant); });
     layer.append(ant.el); placeAnt(ant);
     if (ant.role === "scout") { ant.job = "scout-pending"; state.scoutQueue.push(ant); return; }
@@ -1532,7 +1532,7 @@ import {
         { transform: "translate(-50%, -240%) scale(.7)", opacity: 0 }];
     q.animate(frames, { duration: 1200, easing: "ease-in-out" }).onfinish = () => q.remove();
   };
-  const queenMarkup = () => `<div class="queen-ant" aria-hidden="true">${ANT_SVG}</div>`;
+  const queenMarkup = () => `<div class="queen-ant" aria-hidden="true">${antMarkup({ role: "queen" })}</div>`;
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
     const now = performance.now();
@@ -1740,7 +1740,7 @@ import {
     if (mainAnts().length >= MAX_ANTS) return null;
     state.total++; const a = { id: state.total, role, side: "main", where: "page", x: at[0], y: at[1], px: at[0], py: at[1], heading: -Math.PI / 2, mini, hill: mini || home, hp: role === "guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = antClasses(role, "main");
-    a.el.innerHTML = antMarkup({ flyer: role === "flyer" });
+    a.el.innerHTML = antMarkup({ role });
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); swarm(a); });
     layer.append(a.el); placeAnt(a); state.ants.push(a); label(a); return a;
   };
@@ -2228,7 +2228,7 @@ import {
     const a = { id: ++state.total, role: job === "rival-guard" ? "guard" : "rival", side: "rival", where: "page", x: at[0], y: at[1], px: at[0], py: at[1],
       heading: -Math.PI / 2, job, path, k: 0, hp: job === "rival-guard" ? 2 : 1 };
     a.el = document.createElement("button"); a.el.type = "button"; a.el.className = antClasses(job, "rival");
-    a.el.innerHTML = antMarkup({ flyer: job === "rival-flyer" }); a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
+    a.el.innerHTML = antMarkup({ role: job }); a.el.setAttribute("aria-label", "Rival worker. Press to squash.");
     a.el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); squashRival(a); });
     layer.append(a.el); placeAnt(a); label(a); state.ants.push(a);
     return a;
@@ -2867,6 +2867,7 @@ import {
   // ================================ the loop ================================
   let last = performance.now(), tick = 0, rafId = 0;
   let stopped = false;
+  let firstEggIn = 6;
   const stopLoop = () => { if (rafId) { cancelAnimationFrame(rafId); rafId = 0; } };
   const startLoop = () => {
     if (rafId || stopped || state.paused || document.hidden) return;
@@ -2885,8 +2886,16 @@ import {
     const perfStart = performance.now();
     let perfStep = 0;
     frameRect = main.getBoundingClientRect();
-    const dt = Math.min(0.05, (now - last) / 1000) * state.speed; last = now;
+    const elapsed = Math.max(0, (now - last) / 1000);
+    const dt = Math.min(0.05, elapsed) * state.speed;
+    last = now;
     if (!state.paused) {
+      if (firstEggIn > 0 && (firstEggIn -= elapsed) <= 0 && !state.queenDead && !state.over) {
+        state.queen.lay = 1;
+        state.eggs.push({ d: 0, age: 0 });
+        log("the queen lays the first egg");
+        blip(660, 0.06, "sine", 0.04);
+      }
       if (state.party) stepParty(now, dt);
       if (state.scoutQueue.length) { const pending = state.scoutQueue.shift(); if (pending?.el && pending.role === "scout") scout(pending); }
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
@@ -2924,17 +2933,17 @@ import {
       const threatSoldiers = rival.active ? Math.min(6, Math.ceil(rival.ants.length / 3)) : 0;
       const wantSoldiers = Math.max(Math.min(4, Math.floor(mainCount / 6)), threatSoldiers);
       if ((mainCount >= 10 || (rival.active && rival.ants.length >= 4)) && soldierCount < wantSoldiers && performance.now() >= nextDefender) {
-        nextDefender = performance.now() + 7000;
-        if (mainCount >= MAX_ANTS) {
-          const spare = mainAnts().find((a) => a.role === "worker" && !a.letter && a.job !== "carry" && a.job !== "crew");
-          if (!spare) return;
-          squashQuiet(spare);
-          log("a worker steps aside for a soldier");
+        const spare = mainCount >= MAX_ANTS
+          ? mainAnts().find((a) => a.role === "worker" && !a.letter && a.job !== "carry" && a.job !== "crew")
+          : null;
+        if (mainCount < MAX_ANTS || spare) {
+          nextDefender = now + 7000;
+          if (spare) squashQuiet(spare);
+          if (state.stores > 0) state.stores--;
+          else if (state.larder.length) state.larder.pop();
+          newAnt("soldier", "hatch", 0);
+          log(rival.active ? "a soldier answers the rival" : "a soldier joins the patrol");
         }
-        if (state.stores > 0) state.stores--;
-        else if (state.larder.length) state.larder.pop();
-        newAnt("soldier", "hatch", 0);
-        log("a soldier answers the rival");
       }
     }
     enforceMainCap();
@@ -3066,6 +3075,7 @@ import {
   });
   ["pointerup", "pointercancel"].forEach((ev) => main.addEventListener(ev, () => { wipeFrom = null; }));
   setTool("squash");
+  $("tool-help").textContent = "Watch a scout find a letter and workers follow its trail. Use the tools to see how they respond.";
   $("x").addEventListener("click", leave);
   $("seal").addEventListener("click", () => hills.forEach(seal));
   $("sound").addEventListener("click", () => {
@@ -3149,7 +3159,6 @@ import {
   for (let k = 0; k < 3; k++) newAnt("worker", "up", LEN.up - 0.06 - k * 0.025);
   log("the colony wakes; a scout heads out");
   blip(196, 0.3, "sine", 0.04, -40);
-  setTimeout(() => { if (!state.queenDead && !state.over) { state.queen.lay = 1; state.eggs.push({ d: 0, age: 0 }); log("the queen lays the first egg"); blip(660, 0.06, "sine", 0.04); } }, 6000);
   startLoop();
 
   let terrainWidth = main.clientWidth;
