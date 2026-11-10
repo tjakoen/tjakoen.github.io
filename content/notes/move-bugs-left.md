@@ -27,7 +27,7 @@ socialImageAlt: "Move bugs left. Catch it on the ticket, not in production. Four
 ---
 
 An epic at [Career Team](https://careerteam.com) has a lot of hands on it: the plan owner, product,
-leads from more than one team, and the developers doing the work. Decisions change while the work is
+leads from potentially more than one team, and the developers doing the work. Decisions change while the work is
 moving, and the code written last sprint can quietly drift from the decision made this sprint. Nobody
 notices until review, or testing, or a customer.
 
@@ -69,16 +69,17 @@ is that rule turned into a tool.
 
 *Matt's rule, drawn. Every step right costs more than the one before it.*
 
-Kercwin credits it the same way. In his own slides, the one on direction for technical excellence
-opens with that session of Matt's, and then puts the job in his own terms:
+Kercwin credits it the same way. At the team's engineering knowledge-sharing session, he opened his
+presentation about his skill and dashboard with his own reading of what Matt said, and then put the
+job in his own terms:
 preventative and proactive measures, tracking and auditing to steer technical direction, and bridging
 delivery between product, leads and developers, in any order the cycle runs.
 
 ## Who built it
 
 Full credit goes to [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/). He went from developer to tech lead in about a year, which is fast for
-anyone. I pushed him into the role because I saw
-something in him before he did. I know that feeling from the other side. A lot of my job with him is
+anyone. I pushed him into the role because I saw something in him before he did, which is a feeling I
+know from the other side. A lot of my job with him is
 the stuff nobody puts on a ticket: the inner voice in your head that says you are not ready, learning to hand work off
 instead of carrying it, getting him to see in himself what the rest of us already see. He is doing a
 great job, and he is still working out what kind of leader he wants to be, which is the correct
@@ -141,8 +142,7 @@ moving.
 
 *The plan stays the source of truth. The checker only ever points at where the work and the plan disagree.*
 
-That matters more than it sounds, because an epic here has a lot of hands on it: the plan owner,
-product, leads from more than one team, and the developers doing the work. With that many people,
+That matters more than it sounds, because of all those hands from the opening. With that many people,
 alignment is the hard part, and his checker is the thing that keeps everyone reading the same page.
 Two of its choices started as my advice, and I like that he kept them. Confluence is the source of
 truth, so decisions live where everyone already reads them instead of inside a tool only one person
@@ -164,14 +164,63 @@ I helped him plan it, and then I did the most flattering thing a manager can do 
 project: I started using it and sending commits. As a snapshot, the history has about 81 commits from
 him and 14 from me. Mine are mostly plumbing, a daily refresh routine for every epic on the index, a
 run log and stats view on the board, workday-only scheduling, and the hook that lets my review kit
-fold the epic check's decided deviations into its verdict. His tool now makes my reviews smarter. I
-did not plan that, and I like it a lot.
+fold the epic check's decided deviations into its verdict.
+
+**His tool now makes my reviews smarter.** I did not plan that, and I like it a lot. It is the part of
+this project I would point at first: a tool built for one tech lead's epics ended up improving a
+reviewer that runs on every pull request the team opens. When one of us shares what helps them, the
+whole team gets the benefit.
 
 ## What my reviewer already learned the hard way
 
 My review kit has been through this road, and the story of it is in
 [Seven Hundred Commits to Teach a Reviewer It Was Wrong](the-reviewer-that-learned-to-be-wrong.md).
 Three of its lessons carry straight over to an epic checker, and I have been passing them to Kercwin.
+
+<svg viewBox="0 0 360 250" width="100%" role="img"
+     aria-label="Three lessons from my reviewer and what each becomes on the epic checker. Keep score: every review comment graded by what happened next becomes every flag graded as accepted, changed, rejected or ignored. Read scores per topic: sharp on database changes and noisy on frontend speed becomes split by kind of flag, conflicts versus new decisions. A miss is worth more than a hit: a fix replayed on the commit it missed becomes a decision found late turned into a test for the next run."
+     style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
+  <defs>
+    <marker id="fl-lesson0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" style="fill:var(--color-muted)"/>
+    </marker>
+  </defs>
+  <g text-anchor="middle" style="fill:var(--color-muted);font-size:12px">
+    <text x="90" y="18">My reviewer</text><text x="270" y="18">The epic checker</text>
+  </g>
+  <g style="fill:none;stroke:var(--color-line);stroke-width:1">
+    <rect x="10" y="30" width="160" height="60" rx="6"/><rect x="190" y="30" width="160" height="60" rx="6"/>
+    <rect x="10" y="105" width="160" height="60" rx="6"/><rect x="190" y="105" width="160" height="60" rx="6"/>
+    <rect x="10" y="180" width="160" height="60" rx="6"/><rect x="190" y="180" width="160" height="60" rx="6"/>
+  </g>
+  <g style="stroke:var(--color-muted);stroke-width:1.5">
+    <line x1="170" y1="60" x2="189" y2="60" marker-end="url(#fl-lesson0)"/>
+    <line x1="170" y1="135" x2="189" y2="135" marker-end="url(#fl-lesson0)"/>
+    <line x1="170" y1="210" x2="189" y2="210" marker-end="url(#fl-lesson0)"/>
+  </g>
+  <g text-anchor="middle" style="fill:var(--color-fg)">
+    <text x="90" y="54">Keep score</text>
+    <text x="90" y="72" style="fill:var(--color-muted);font-size:11.5px">each comment graded by</text>
+    <text x="90" y="84" style="fill:var(--color-muted);font-size:11.5px">what happened next</text>
+    <text x="270" y="54">Grade every flag</text>
+    <text x="270" y="72" style="fill:var(--color-muted);font-size:11.5px">accepted, changed, rejected,</text>
+    <text x="270" y="84" style="fill:var(--color-muted);font-size:11.5px">or never touched</text>
+    <text x="90" y="129">Score per topic</text>
+    <text x="90" y="147" style="fill:var(--color-muted);font-size:11.5px">sharp on databases,</text>
+    <text x="90" y="159" style="fill:var(--color-muted);font-size:11.5px">noisy on frontend speed</text>
+    <text x="270" y="129">Split by kind of flag</text>
+    <text x="270" y="147" style="fill:var(--color-muted);font-size:11.5px">conflicts apart from</text>
+    <text x="270" y="159" style="fill:var(--color-muted);font-size:11.5px">new decisions</text>
+    <text x="90" y="204">A miss beats a hit</text>
+    <text x="90" y="222" style="fill:var(--color-muted);font-size:11.5px">the fix replayed on the</text>
+    <text x="90" y="234" style="fill:var(--color-muted);font-size:11.5px">commit it missed</text>
+    <text x="270" y="204">A late decision</text>
+    <text x="270" y="222" style="fill:var(--color-muted);font-size:11.5px">becomes a test the</text>
+    <text x="270" y="234" style="fill:var(--color-muted);font-size:11.5px">next run must pass</text>
+  </g>
+</svg>
+
+*The same three lessons, carried from one tool to the other.*
 
 The first is to keep score. My reviewer only got good once every comment it left was graded by what
 happened next: fixed, answered, closed without a change, or ignored. A flag on the epic board can be
