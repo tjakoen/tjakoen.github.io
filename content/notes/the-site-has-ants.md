@@ -33,7 +33,7 @@ social: |
   the rest of the site.
 ---
 
-<p class="nest-start"><a href="/?nest=play" data-nest-start>Play the colony</a></p>
+<p class="nest-start" hidden><a href="/?nest=play" data-nest-start>Play the colony</a></p>
 
 I did not need to put ants on my portfolio. That was the point.
 
@@ -73,7 +73,7 @@ The letters are real. A letter taken from this page is the actual glyph, in its 
 
 *A scout finds letters; workers carry them home and the stores rise.*
 
-A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. The stores turn enough food into a builder, and the builder raises a mini mound somewhere else on the page. A mini mound stays above ground and spawns soldiers to guard it and flyers to steal letters. The rival does the same thing, with its own resource and limits.
+A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. Full stores send a builder to raise a mini mound elsewhere on the page. If the colony is at its population cap, a worker takes the job. A mini mound stays above ground and spawns soldiers to guard it and flyers to steal letters. The rival does the same thing, with its own resource and limits.
 
 ## Inside the nest
 
@@ -92,7 +92,7 @@ The queen's chamber sits at the bottom, beside rooms for the nursery, larder and
 
 ## Why the colony stops to worship
 
-Worship is the one moment the whole colony shares a direction. The rules pause, the trails go quiet, and every ant turns toward the queen. It is also the economy's reset: the stores fill, which pays for the soldiers and builders that keep the colony alive after the pause.
+Worship is the one moment the whole colony shares a direction. The trails go quiet as the colony gathers and the rival heads for its own mound. It is also the economy's reset: the stores fill, which pays for the soldiers and builders that keep the colony alive after the pause.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="worship" data-surface="figure:nest-worship">
 </div>
@@ -102,7 +102,7 @@ Worship is the one moment the whole colony shares a direction. The rules pause, 
 The first dance comes at twenty letters, then fifty, then ninety:
 
 1. The queen climbs out of the panel and walks to a clear patch.
-2. Every ant on the page gathers around her. Trails go quiet, and workers stop carrying.
+2. Ants from her colony gather around her while the rival shelters in its mound.
 3. The queen dances, then returns through the entrance. The panel queen comes back only after she is home.
 
 The next threshold is fixed for the current dance and moves only after the queen returns. Hatching cannot keep pushing the target away.
@@ -120,7 +120,7 @@ The rival is not a second player base. It does not take orders, it does not get 
 
 *The main colony forages while the rival mound takes shape. Once the mound is ready, rival workers follow the red trail and carry letters home while a guard patrols.*
 
-Its population stays one ant below the main colony. It can still grow trails, mini mounds and flyers, but it cannot outgrow the nest it is fighting. The first rival is meant to be an easy fight. Later rivals start with more workers and more mounds if the main colony is already large, because a grown colony should not get a free win against a fresh, tiny rival. The goal is a fight with a clear main-colony advantage, not a guaranteed walkover.
+Builders walk to a site before the mound takes shape. Workers and guards leave the entrance one at a time. Its population stays one ant below the main colony. It can still grow trails, mini mounds and flyers, but it cannot outgrow the nest it is fighting. The first rival is meant to be an easy fight. Later rivals start with more workers and more mounds if the main colony is already large, because a grown colony should not get a free win against a fresh, tiny rival. The goal is a fight with a clear main-colony advantage, not a guaranteed walkover.
 
 The rival prefers the left side when the main colony is on the right, and it keeps its distance. That is partly visual, so the two colonies do not sit on top of each other, and partly mechanical, so the rival has room to grow before the main trails reach it. Its mini mounds can be clicked down, and its guards react to the damage. A rival mound is not a one-ant job: at least three main ants have to be working it at once, and the mound shakes under the crew before it comes down. When the rival falls, its stolen letters are gone for good. There is no cache to clean up and no loot to collect. The reward is the celebration and a quieter page.
 
@@ -194,15 +194,15 @@ That is the real advertisement. Not that an AI can write a game. That I can see 
 
 I also wanted the portfolio to stay professional. The easter egg is small on purpose. It is behind a status-bar ant, a terminal word and a button in a note. It does not interrupt a recruiter reading the résumé, and it does not turn the home page into a game landing page. If you find it, you get a surprise. If you do not, the site is still the site.
 
-<p class="nest-start"><a href="/?nest=play" data-nest-start>Open the full colony</a></p>
+<p class="nest-start" hidden><a href="/?nest=play" data-nest-start>Open the full colony</a></p>
 
-On desktop, click the ant icon at the bottom of the status bar to open the colony from any other page. The launcher is not available on mobile. Leave it running for a minute. The page is the food.
+On desktop, click the ant icon at the bottom of the status bar to open the colony from any other page. The playable colony is desktop-only. The figures in this note also run on phones. Leave it running for a minute. The page is the food.
 
 ## What I have not earned yet
 
 The game has been played by me, a preview browser, and a browser suite. That is still a small audience. Balance is an opinion: the population caps, the cost of a mound, the sixty and seventy-five percent duels, the point where the rival goes to war. The tests cover the rules I can state, not the feeling of a long session on a slow laptop.
 
-On a phone it needs a different kind of care. Squashing an ant with a thumb on a narrow column is not the same game, and the launcher hides on small screens, so the stray ant has nowhere to lead. That version is not built.
+A phone needs a different kind of care. On a narrow column, a thumb covers the ant and the copy around it. For now the playable colony and the stray ant stay on desktop.
 
 The honest position is that this is a finished small simulation. It is not a finished piece of game design. The rules hold. The economy runs. The rival can surprise me. The next round is less about adding systems and more about watching the existing ones for a long time.
 

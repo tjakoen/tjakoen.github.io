@@ -6,6 +6,36 @@ const open = async (page: import("@playwright/test").Page) => {
   await expect(page.locator("#nest-mock")).toBeVisible();
 };
 
+test("the home mound fits the page after opening a hidden sidebar", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("grain.shell.aside-hidden", "1");
+    const observer = new MutationObserver(() => {
+      const main = document.querySelector(".app-shell__main");
+      if (!main?.querySelector(".nest-hill-live")) return;
+      main.setAttribute("data-test-nest-spawn-width", String(main.clientWidth));
+      observer.disconnect();
+    });
+    observer.observe(document, { childList: true, subtree: true });
+  });
+  await page.goto("/");
+  const main = page.locator(".app-shell__main");
+  const aside = page.locator(".app-shell__aside");
+  await expect(page.locator(".app-shell")).toHaveAttribute("data-aside-hidden", "true");
+  await expect.poll(() => aside.evaluate((el) => el.clientWidth)).toBe(0);
+  await page.getByRole("button", { name: "Open the Nest" }).click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await expect.poll(() => aside.evaluate((el) => el.clientWidth)).toBeGreaterThan(250);
+  const spawnWidth = Number(await main.getAttribute("data-test-nest-spawn-width"));
+  expect(spawnWidth).toBe(await main.evaluate((el) => el.clientWidth));
+  const bounds = await main.evaluate((el) => {
+    const pane = el.getBoundingClientRect();
+    const mound = el.querySelector(".nest-hill-live")!.getBoundingClientRect();
+    return { pageLeft: pane.left, pageRight: pane.right, moundLeft: mound.left, moundRight: mound.right };
+  });
+  expect(bounds.moundLeft).toBeGreaterThanOrEqual(bounds.pageLeft);
+  expect(bounds.moundRight).toBeLessThanOrEqual(bounds.pageRight);
+});
+
 test("the colony reads the page into the larder and stores", async ({ page }) => {
   await open(page);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).state.stores), { timeout: 35_000 }).toBeGreaterThan(0);
@@ -245,7 +275,7 @@ test("the worker stat matches the main worker castes", async ({ page }) => {
   await page.waitForTimeout(8000);
   const result = await page.evaluate(() => {
     const n = window.__nest as any;
-    const workers = n.state.ants.filter((a: any) => a.side !== "rival" && a.role === "worker").length;
+    const workers = n.state.ants.filter((a: any) => a.side !== "rival" && (a.role === "worker" || a.role === "builder")).length;
     return { workers, ui: Number(document.querySelector("[data-k='workers']")?.textContent) };
   });
   expect(result.ui).toBe(result.workers);
@@ -304,4 +334,36 @@ test("a lone main ant cannot break a rival mound", async ({ page }) => {
     return n.rival.hp;
   });
   expect(result).toBe(8);
+});
+
+
+test("a full colony can staff a second mini mound and count its builder", async ({ page }) => {
+  await open(page);
+  const population = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    nest.makeMini(nest.findMiniSpot());
+    nest.state.built = 1;
+    nest.state.speed = 4;
+    while (nest.state.ants.length < 20) {
+      const [x, y] = nest.home.hole;
+      const worker = nest.spawnPageAnt("worker", [x + 65, y + 35], null);
+      worker.job = "home";
+      worker.path = [nest.home.hole.slice()];
+      worker.k = 0;
+    }
+    nest.state.stores = 100;
+    return nest.state.ants.map((ant: any) => ant.id);
+  });
+  await expect.poll(() => page.evaluate(() => (window.__nest as any).state.builder?.id), { timeout: 8000 }).toBeDefined();
+  const staffing = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    return {
+      builder: nest.state.builder.id,
+      workers: nest.state.ants.filter((ant: any) => ant.role === "worker" || ant.role === "builder").length,
+      displayed: Number(document.querySelector("[data-k='workers']")?.textContent),
+    };
+  });
+  expect(population).toContain(staffing.builder);
+  expect(staffing.displayed).toBe(staffing.workers);
+  await expect(page.locator("[data-k='minis']")).toHaveText("2", { timeout: 18000 });
 });
