@@ -231,31 +231,35 @@ test("the note has a separate self-running colony that drains and resets", async
     await page.goto("/?nest-debug");
     await page.locator(".nest-switch").click();
     await expect(page.locator("#nest-mock")).toBeVisible();
-    await page.evaluate(() => { const spot = window.__nest!.findMiniSpot(); if (spot) window.__nest!.makeMini(spot); });
-    await expect.poll(() => page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").length)).toBeGreaterThan(0);
-    const guardNear = await page.evaluate(() => {
-      const guard = window.__nest!.state.ants.find((a) => a.role === "guard");
-      return guard?.mini ? Math.hypot(guard.x - guard.mini.base[0], guard.y - guard.mini.base[1]) : null;
+    const site = await page.evaluate(() => {
+      const spot = window.__nest!.findMiniSpot() as { x: number; y: number };
+      window.__nest!.makeMini(spot);
+      return [spot.x, spot.y];
     });
-    expect(guardNear).not.toBeNull();
-    expect(guardNear!).toBeLessThan(300);
+    const guards = () => page.evaluate(([x, y]) => window.__nest!.state.ants.filter((ant) =>
+      ant.role === "guard" && ant.mini?.base[0] === x && ant.mini.base[1] === y).map(({ x: antX, y: antY, job }) => ({ x: antX, y: antY, job })), site);
+    await expect.poll(async () => (await guards()).length).toBeGreaterThan(0);
+    const [guard] = await guards();
+    const guardNear = Math.hypot(guard.x - site[0], guard.y - site[1]);
+    expect(guardNear).toBeLessThan(300);
     const mound = page.locator(".nest-mini").first();
     // Wait until the mound itself owns a guard. The colony can have guards on the page before this
     // mound's own set is populated, and a click in that gap damages the hill instead of calling them.
     await expect(mound).toHaveAttribute("aria-label", /guards?$/, { timeout: 30_000 });
     await mound.click();
-    await page.waitForFunction(() => {
-      const guards = window.__nest!.state.ants.filter((a) => a.role === "guard");
-      return guards.length > 0 && guards.every((a) => a.job === "defend" || a.job === "guard");
-    });
+    await expect.poll(async () => {
+      const crew = await guards();
+      return crew.length > 0 && crew.every((ant) => ant.job === "defend" || ant.job === "guard");
+    }).toBe(true);
     await page.waitForTimeout(4500);
-    const freed = await page.evaluate(() => window.__nest!.state.ants.filter((a) => a.role === "guard").map((a) => a.job));
+    const freed = (await guards()).map((ant) => ant.job);
     expect(freed.every((job) => job !== "defend" && job !== "guard")).toBe(true);
-    await page.evaluate(() => {
-      for (const g of window.__nest!.state.ants.filter((a) => a.role === "guard")) {
+    await page.evaluate(([x, y]) => {
+      for (const g of window.__nest!.state.ants.filter((ant) =>
+        ant.role === "guard" && ant.mini?.base[0] === x && ant.mini.base[1] === y)) {
         window.__nest!.squash(g); window.__nest!.squash(g);
       }
-    });
+    }, site);
     await expect(mound).toHaveClass(/exposed/);
   });
 
@@ -710,15 +714,22 @@ test.describe("terminal desk verbs (deterministic, no model needed)", () => {
 });
 
 
-test("the queen is gone before the panel queen returns", async ({ page }) => {
+test("the worship queen returns before she appears in her chamber", async ({ page }) => {
   await page.goto("/?nest-debug");
   await page.locator(".nest-switch").click();
   await expect(page.locator("#nest-mock")).toBeVisible();
-  await page.waitForTimeout(600);
+  const chamberQueen = page.locator("#nest-mock .nest-pre .t6");
+  const pageQueen = page.locator(".nest-layer .nest-queen");
+  await expect(chamberQueen.first()).toBeVisible();
   await page.evaluate(() => window.__nest!.startParty());
-  await expect(page.locator(".nest-queen:not(.panel-queen)")).toBeVisible();
-  await expect(page.locator(".nest-queen:not(.panel-queen)")).toHaveCount(0, { timeout: 18_000 });
-  await expect(page.locator(".nest-queen.panel-queen")).toBeVisible();
+
+  await expect(pageQueen).toHaveClass(/dancing/);
+  await expect(pageQueen.locator("svg")).toHaveCSS("width", "40px");
+  await expect(pageQueen).toHaveClass(/crawling/, { timeout: 16_000 });
+  await expect(chamberQueen).toHaveCount(0);
+  await expect(pageQueen).toHaveCount(0, { timeout: 8_000 });
+  expect(await page.locator(".panel-queen").count()).toBe(0);
+  await expect(chamberQueen.first()).toBeVisible();
 });
 
 

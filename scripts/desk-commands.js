@@ -1,3 +1,5 @@
+import { nestDesktop } from "./nest-availability.js";
+
 // portfolio/scripts/desk-commands.js — the PORTFOLIO's own terminal commands (the persona lives
 // here, so grain/scripts/terminal.js stays persona-neutral). Registers through the GRAIN seam
 // (window.grain.terminal.register). Loads AFTER terminal.js, so the registry already exists.
@@ -98,19 +100,24 @@
   }});
 
   // ── easter eggs — each one honest about how this thing actually works ───────────────────────────
-  t.register({ name: "nest", args: "", help: "reveal the ant colony", async run(ctx) {
-    await import("/site/nest-game.js");
-    const already = !!document.getElementById("nest-mock");
-    window.__nestLauncher?.open();
-    ctx.print(already ? "The colony is already open." : "The colony is open in the sidebar.");
-  }});
-  t.register({ name: "stray", args: "", help: "send a stray ant across the page", async run(ctx) {
-    if (document.getElementById("nest-mock")) { ctx.printErr("close the Nest first."); return; }
-    await import("/site/nest-game.js");
-    if (!window.__nestStray) { ctx.printErr("the colony is not loaded on this page."); return; }
-    window.__nestStray.spawn(true);
-    ctx.print("A stray ant is crossing the page. Click it and it will run for the launcher.");
-  }});
+  const registerNestCommands = () => {
+    if (!nestDesktop.matches) return;
+    nestDesktop.removeEventListener("change", registerNestCommands);
+    t.register({ name: "nest", args: "", help: "reveal the ant colony", async run(ctx) {
+      if (!nestDesktop.matches || !window.__nestLauncher) return ctx.printErr("command not found: nest.");
+      const already = !!document.getElementById("nest-mock");
+      await window.__nestLauncher.open();
+      ctx.print(already ? "The colony is already open." : "The colony is open in the sidebar.");
+    }});
+    t.register({ name: "stray", args: "", help: "send a stray ant across the page", async run(ctx) {
+      if (!nestDesktop.matches || !window.__nestStray) return ctx.printErr("command not found: stray.");
+      if (document.getElementById("nest-mock")) { ctx.printErr("close the Nest first."); return; }
+      await window.__nestStray.spawn(true);
+      ctx.print("A stray ant is crossing the page. Click it and it will run for the launcher.");
+    }});
+  };
+  if (nestDesktop.matches) registerNestCommands();
+  else nestDesktop.addEventListener("change", registerNestCommands);
   t.register({ name: "sudo", args: "", help: "", run(ctx) {
     ctx.print("you're already the operator. Equal footing is the whole point here — no elevated mode to grant.");
   }});

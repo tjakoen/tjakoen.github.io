@@ -1,3 +1,5 @@
+import { nestDesktop } from "./nest-availability.js";
+
 // Page-specific enhancements stay off routes that have no matching content.
 const tasks = [];
 
@@ -26,6 +28,7 @@ if (nestModes && nestAside && nestMain && nestBar) {
   const nestStyle = document.createElement("style");
   nestStyle.textContent = `
     .nest-switch { background: none; border: 0; padding: 2px 4px; margin: 0 6px; color: var(--ink-faint); cursor: pointer; line-height: 0; }
+    .nest-switch[hidden], .nest-start[hidden] { display: none !important; }
     .nest-switch:hover, .nest-switch:focus-visible { color: var(--ink); }
     .nest-switch[aria-pressed="true"] { color: var(--color-accent); }
     .nest-switch.nest-pulse svg { animation: nest-pulse 1.1s ease-out 2; }
@@ -48,6 +51,14 @@ if (nestModes && nestAside && nestMain && nestBar) {
   if (nestBar.querySelector(".status-bar__xray")) nestBar.insertBefore(nestAnt, nestBar.querySelector(".status-bar__xray"));
   else nestBar.append(nestAnt);
 
+  const playLinks = document.querySelectorAll(".nest-start");
+  const syncNestLauncher = () => {
+    nestAnt.hidden = !nestDesktop.matches;
+    playLinks.forEach((link) => { link.hidden = !nestDesktop.matches; });
+  };
+  syncNestLauncher();
+  nestDesktop.addEventListener("change", syncNestLauncher);
+
   let nestGamePromise = null;
   const ensureNestGame = () => {
     if (!nestGamePromise) nestGamePromise = import("/site/nest-game.js").catch((err) => {
@@ -59,6 +70,7 @@ if (nestModes && nestAside && nestMain && nestBar) {
   let nestPlaceholderLauncher = null, nestPlaceholderStray = null;
 
   const openNest = async () => {
+    if (!nestDesktop.matches) return;
     if (document.querySelector('[data-live-figure="nest"]')) {
       location.assign("/?nest=play");
       return;
@@ -81,7 +93,7 @@ if (nestModes && nestAside && nestMain && nestBar) {
   window.__nestLauncher = nestPlaceholderLauncher;
   nestPlaceholderStray = {
     spawn: async (force = false) => {
-      if (document.querySelector('[data-live-figure="nest"]')) return;
+      if (!nestDesktop.matches || document.querySelector('[data-live-figure="nest"]')) return;
       try {
         await ensureNestGame();
         if (window.__nestStray && window.__nestStray !== nestPlaceholderStray) window.__nestStray.spawn(force);

@@ -9,15 +9,23 @@ const open = async (page: import("@playwright/test").Page) => {
 test("the rival waits for the first worship, builds with builders, then opens curved trails", async ({ page }) => {
   await open(page);
   expect(await page.evaluate(() => (window.__nest as any).rival.active)).toBe(false);
-  await page.evaluate(() => (window.__nest as any).startRival());
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 20_000 }).toBe(true);
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.ants.some((a: any) => a.job === "rival-build")), { timeout: 4_000 }).toBe(true);
-  expect(await page.evaluate(() => (window.__nest as any).rival.mound.el.classList.contains("constructing"))).toBe(true);
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 8_000 }).toBe(1);
-  const buildersBefore = await page.evaluate(() => (window.__nest as any).rival.ants.filter((a: any) => a.job === "rival-build").map((a: any) => [a.x, a.y]));
-  await page.waitForTimeout(300);
-  const buildersAfter = await page.evaluate(() => (window.__nest as any).rival.ants.filter((a: any) => a.job === "rival-build").map((a: any) => [a.x, a.y]));
-  expect(buildersAfter.every((p: number[], i: number) => Math.hypot(p[0] - buildersBefore[i][0], p[1] - buildersBefore[i][1]) < 2)).toBe(true);
+  const before = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    nest.startRival();
+    return nest.rival.ants.map((ant: any) => ({ id: ant.id, x: ant.x, y: ant.y }));
+  });
+  expect(before).toHaveLength(3);
+  await expect.poll(() => page.evaluate((initial: { id: number; x: number; y: number }[]) =>
+    (window.__nest as any).rival.ants.some((ant: any) => {
+      const origin = initial.find((entry) => entry.id === ant.id);
+      return origin && Math.hypot(ant.x - origin.x, ant.y - origin.y) > 5;
+    }), before)).toBe(true);
+  await expect(page.locator(".nest-hill.rival.constructing").first()).toBeVisible();
+  await expect.poll(() => page.evaluate(() => {
+    const nest = window.__nest as any;
+    return nest.rival.trails.length === 1 && nest.rival.ants.filter((ant: any) => ant.job !== "rival-build").length === 1;
+  }), { timeout: 10000, intervals: [50, 100, 150] }).toBe(true);
+  await expect(page.locator(".rival-mini.constructing").first()).toBeVisible({ timeout: 20000 });
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.trails.length), { timeout: 45_000 }).toBeGreaterThanOrEqual(3);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 30_000 }).toBeGreaterThanOrEqual(2);
   const rival = await page.evaluate(() => {
@@ -57,4 +65,27 @@ test("the first worship does not spawn the rival; the second does", async ({ pag
   expect(await page.evaluate(() => (window.__nest as any).rival.active)).toBe(false);
   await page.evaluate(() => (window.__nest as any).startParty());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 25_000 }).toBe(true);
+});
+
+
+test("rival ants shelter at their own mound during worship and return to work", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const nest = window.__nest as any;
+    nest.startRival();
+    nest.state.speed = 4;
+    const [x, y] = nest.rival.mound.hole;
+    nest.spawnRivalUnit("rival-guard", [x + 70, y], [[x + 70, y]], null);
+    nest.startParty();
+  });
+  await expect.poll(() => page.evaluate(() => {
+    const nest = window.__nest as any;
+    const [x, y] = nest.rival.mound.hole;
+    return !!nest.state.party && nest.rival.ants.length > 0 && nest.rival.ants.every((ant: any) =>
+      ant.el.hidden && Math.hypot(ant.x - x, ant.y - y) < 2);
+  }), { timeout: 6000 }).toBe(true);
+  await expect.poll(() => page.evaluate(() => {
+    const nest = window.__nest as any;
+    return !nest.state.party && nest.rival.ants.length > 0 && nest.rival.ants.every((ant: any) => !ant.el.hidden);
+  }), { timeout: 20000 }).toBe(true);
 });
