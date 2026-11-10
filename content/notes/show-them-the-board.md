@@ -305,6 +305,12 @@ for me," picked Obsidian, and made it. That is the exact instinct I was hoping t
 demo would plant, and seeing it come from a junior made it land harder. It is also the habit that turns a junior into a senior: noticing the friction in your own work and fixing it
 instead of carrying it.
 
+That is also why I keep sharing and nudging. It is not only so each developer has an easier day,
+though they do. A developer who loses less time to friction gives that time back to the team, and
+what one of us learns, the rest of us get to borrow. Kercwin's checker is the example. I hooked it
+into my reviewer, so my reviews now know which deviations from an epic were decided on purpose. One
+person's tool made another person's tool better, and the whole team gets the sharper review.
+
 ## The rule that comes with the tokens
 
 I push hard for AI, because I think it is where the work is going and I would rather my team arrive
