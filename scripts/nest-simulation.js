@@ -4,6 +4,28 @@ export const BUILD_TIME = 8;
 export const RIVAL_FOUNDING_TIME = 3.2;
 export const RIVAL_MOUND_HEALTH = 8;
 export const MOUND_BITE_INTERVAL = 1.1;
+export const TRAIL_FOLLOW_GAP = 18;
+
+const hasOutboundJob = (job) => job === "follow" || job === "toLetter" || job === "scout-walk" || job === "forage";
+const trailId = (ant) => ant.trailId ?? ant.trail?.id;
+const leadOf = (ant) => ant.leadId ?? ant.lead;
+const isActive = (ant) => ant.active ?? (ant.el !== undefined ? Boolean(ant.el) : ant.location !== "nest" && ant.where !== "nest");
+
+// Keep the same-trail spacing rule in one place for the game and every live note simulation.
+export function blockedByTrailMate(ant, ants, gap = TRAIL_FOLLOW_GAP) {
+  const trail = trailId(ant);
+  if (ant.job === "dance" || !trail || (ant.stuck || 0) >= 1) return false;
+  return ants.some((other) => {
+    if (other === ant || !isActive(other) || other.job === "crew") return false;
+    if (trailId(other) !== trail || hasOutboundJob(other.job) !== hasOutboundJob(ant.job)) return false;
+    const lead = leadOf(ant), otherLead = leadOf(other);
+    if ((lead && otherLead === lead) || lead === other || otherLead === ant) return false;
+    const dx = other.px - ant.x;
+    const dy = other.py - ant.y;
+    return Math.hypot(dx, dy) < gap && Math.cos(ant.heading - other.heading) > 0.2 &&
+      dx * Math.cos(ant.heading) + dy * Math.sin(ant.heading) > 0;
+  });
+}
 
 export function damageMound(health) {
   return Math.max(0, health - 1);

@@ -1,8 +1,10 @@
 import {
   advanceBuild,
+  blockedByTrailMate,
   foodShares,
   roleSpeed,
   stepMovement,
+  TRAIL_FOLLOW_GAP,
   storeCapacity,
   worshipReturnAt,
   worshipTarget,
@@ -275,7 +277,10 @@ export function createNestEngine({ world, settings, seed, initialFrame }) {
       factor: state.colony.speed,
     });
     const beforeX = ant.x, beforeY = ant.y;
-    const arrived = stepMovement(ant, target.x, target.y, dt, speed, { now: frame.nowMs, blocked: () => false });
+    const arrived = stepMovement(ant, target.x, target.y, dt, speed, {
+      now: frame.nowMs,
+      blocked: () => blockedByTrailMate(ant, state.ants, TRAIL_FOLLOW_GAP),
+    });
     const moved = Math.hypot(ant.x - beforeX, ant.y - beforeY);
     ant.walkPhase += moved / 4;
     ant.px = beforeX;

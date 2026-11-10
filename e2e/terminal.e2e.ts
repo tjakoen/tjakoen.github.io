@@ -125,20 +125,23 @@ test("the note has a separate self-running colony that drains and resets", async
   await page.goto("/notes/the-site-has-ants");
   const colony = page.locator('[data-live-figure="colony"]');
   await colony.scrollIntoViewIfNeeded();
-  await expect(colony.locator("svg.colony-interior")).toBeAttached();
-  await expect(colony.locator(".colony-interior__cell")).not.toHaveCount(0);
-  const startingColor = await colony.locator(".colony-interior__cell.t1").first().evaluate((cell) => getComputedStyle(cell).fill);
+  await expect(colony.locator("pre.colony-interior")).toBeAttached();
+  await expect(colony.locator("pre.colony-interior b")).not.toHaveCount(0);
+  const startingColor = await colony.locator("pre.colony-interior .t1").first().evaluate((cell) => getComputedStyle(cell).color);
   await page.locator("[data-cycle-theme]").click();
-  await expect.poll(() => colony.locator(".colony-interior__cell.t1").first().evaluate((cell) => getComputedStyle(cell).fill)).not.toBe(startingColor);
-  const sceneHasNoInternalLabels = await colony.locator("svg.colony-interior").textContent();
+  await expect.poll(() => colony.locator("pre.colony-interior .t1").first().evaluate((cell) => getComputedStyle(cell).color)).not.toBe(startingColor);
+  const sceneHasNoInternalLabels = await colony.locator("pre.colony-interior").textContent();
   expect(sceneHasNoInternalLabels).not.toMatch(/[a-z0-9]/i);
-  await expect.poll(async () => Number(await colony.getAttribute("data-completed-cycles")), {
+  await expect.poll(async () => {
+    return Number(await colony.getAttribute("data-completed-cycles")) >= 2 && await colony.getAttribute("data-queen-home") === "true";
+  }, {
     timeout: 140_000,
     intervals: [500, 1000, 2000],
-  }).toBeGreaterThanOrEqual(2);
+  }).toBe(true);
+  await expect(colony).toHaveAttribute("data-worship", "home");
   const contained = await colony.evaluate((host) => {
     const bounds = host.getBoundingClientRect();
-    return [...host.querySelectorAll("svg.colony-interior, svg.colony-interior *")].every((node) => {
+    return [...host.querySelectorAll("pre.colony-interior, pre.colony-interior *")].every((node) => {
       const rect = node.getBoundingClientRect();
       return rect.width === 0 || (rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1 && rect.top >= bounds.top - 1 && rect.bottom <= bounds.bottom + 1);
     });
@@ -789,6 +792,11 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
       floorLines: host.querySelectorAll(".nest-scene__floor").length,
       queenCount: actors.filter((actor) => actor.getAttribute("data-role") === "queen").length,
       rivalGuards: actors.filter((actor) => actor.getAttribute("data-role") === "rival-guard").length,
+      fighterWidths: actors.filter((actor) => ["soldier", "rival-guard"].includes(actor.getAttribute("data-role") || "")).map((actor) => getComputedStyle(actor.querySelector("svg")!).width),
+      initialMainFighters: Number(host.dataset.fightMainCount || 0),
+      initialRivalFighters: Number(host.dataset.fightRivalCount || 0),
+      fightSizes: host.dataset.fightSizes ? JSON.parse(host.dataset.fightSizes) : [],
+      rivalColor: getComputedStyle(host.querySelector(".nest-scene")!).getPropertyValue("--nest-rival").trim(),
       trailDashed: [...host.querySelectorAll(".nest-scene__trail")].every((trail) => getComputedStyle(trail).strokeDasharray !== "none"),
       trailCurved: [...host.querySelectorAll(".nest-scene__trail")].every((trail) => {
         const length = (trail as SVGPathElement).getTotalLength();
@@ -832,7 +840,13 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(reports[4].lastFight?.damage).toBeGreaterThan(0);
   expect(reports[4].lastFight?.remainingHealth).toBeLessThan(reports[4].lastFight?.health);
   expect(reports[4].queenCount).toBe(0);
-  expect(reports[4].rivalGuards).toBe(2);
+  expect(reports[4].soldiers).toBe(3);
+  expect(reports[4].initialMainFighters).toBe(3);
+  expect(reports[4].initialRivalFighters).toBe(3);
+  expect(new Set(reports[4].fightSizes).size).toBe(1);
+  expect(reports[4].floorLines).toBe(0);
+  expect(new Set(reports[4].fighterWidths).size).toBe(1);
+  expect(reports[4].rivalColor).toMatch(/#a33b3b|#e08a8a/i);
   expect(reports[5].queenCount).toBe(1);
   expect(reports[5].rivalGuards).toBe(1);
   expect(reports[5].rules).toEqual(expect.arrayContaining(["stepMovement", "roleSpeed"]));

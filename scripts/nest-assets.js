@@ -12,15 +12,9 @@ const dot = ([x, y]) => `<circle cx="${x * 1.6 + 0.8}" cy="${y * 1.6 + 0.8}" r="
 
 export function antMarkup({ flyer = false } = {}) {
   const wings = flyer
-    ? '<g class="wings"><ellipse class="wing-a" cx="9" cy="2" rx="5" ry="2.7" opacity=".78" stroke="currentColor" stroke-width=".35"/><ellipse class="wing-b" cx="15" cy="2" rx="5" ry="2.7" opacity=".78" stroke="currentColor" stroke-width=".35"/></g>'
+    ? '<g class="wing"><ellipse cx="9" cy="2" rx="5" ry="2.2" opacity=".45"/><ellipse cx="15" cy="2" rx="5" ry="2.2" opacity=".45"/></g>'
     : "";
   return `<svg width="23" height="13" viewBox="0 0 22.4 12.8" fill="currentColor" aria-hidden="true">${ANT_BODY.map(dot).join("")}${wings}<g class="legs-a">${ANT_LEGS_A.map(dot).join("")}</g><g class="legs-b">${ANT_LEGS_B.map(dot).join("")}</g></svg>`;
-}
-
-export function poseAntWings(ant, phase, flying) {
-  const amount = flying ? Math.sin(phase) * 58 : 4;
-  ant.querySelector(".wing-a")?.setAttribute("transform", `rotate(${amount.toFixed(1)} 9 2)`);
-  ant.querySelector(".wing-b")?.setAttribute("transform", `rotate(${-amount.toFixed(1)} 15 2)`);
 }
 
 export function miniArt(progress) {

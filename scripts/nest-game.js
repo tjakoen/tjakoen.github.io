@@ -17,6 +17,7 @@ import {
   RIVAL_FOUNDING_TIME,
   RIVAL_MOUND_HEALTH,
   advanceBuild,
+  blockedByTrailMate,
   combatHealth as sharedCombatHealth,
   combatPower as sharedCombatPower,
   damageMound,
@@ -25,6 +26,7 @@ import {
   groupCanWin,
   roleSpeed,
   stepMovement,
+  TRAIL_FOLLOW_GAP,
   storeCapacity,
   worshipReturnAt,
   worshipTarget as getWorshipTarget,
@@ -43,7 +45,7 @@ import {
     line: 5,              // ants that share one trail
     maxAnts: 20,
     speed: 44,            // page pixels per second
-    gap: 18,              // spacing between ants walking the same way
+    gap: TRAIL_FOLLOW_GAP, // spacing between ants walking the same way
     nestSpeed: 0.18,      // nest units per second
     trailTtl: 90,         // seconds before a trail wears out even with letters left
     trailFade: 1600,      // ms a spent trail takes to leave the page
@@ -1254,11 +1256,7 @@ import {
   // same way stops for the frame, which is what turns a trail into a line.
   // Only ants on the same trail, heading the same way, hold each other up, so two crossing trails
   // never lock; and an ant kept waiting for more than a second walks on anyway.
-  const outbound = (a) => a.job === "follow" || a.job === "toLetter";
-  const blocked = (ant) => ant.job !== "dance" && (ant.stuck || 0) < 1 && state.ants.some((o) => o !== ant && o.el && o.job !== "crew" && o.lead !== ant && ant.lead !== o &&
-    ant.trail && o.trail === ant.trail && outbound(o) === outbound(ant) &&
-    Math.hypot(o.px - ant.x, o.py - ant.y) < GAP && Math.cos(ant.heading - o.heading) > 0.2 &&
-    ((o.px - ant.x) * Math.cos(ant.heading) + (o.py - ant.y) * Math.sin(ant.heading)) > 0);
+  const blocked = (ant) => blockedByTrailMate(ant, state.ants, GAP);
   const move = (ant, tx, ty, dt, speed) => stepMovement(ant, tx, ty, dt, speed, {
     now: performance.now(), blocked: () => blocked(ant),
   });

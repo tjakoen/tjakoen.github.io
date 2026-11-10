@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   advanceBuild,
+  blockedByTrailMate,
   combatHealth,
   combatPower,
   damageMound,
@@ -34,6 +35,15 @@ describe("shared nest rules", () => {
     expect(arrived).toBe(false);
     expect(ant.heading).toBeCloseTo(Math.PI - 0.9 * Math.PI, 6);
     expect(ant.x).toBeCloseTo(1, 6);
+  });
+
+  test("ants queue behind same-trail ants moving in the same direction", () => {
+    const leader = { id: 1, x: 38, y: 0, px: 37, py: 0, heading: 0, job: "follow", trailId: "trail-1", where: "page" };
+    const follower = { id: 2, x: 20, y: 0, px: 20, py: 0, heading: 0, job: "follow", trailId: "trail-1", where: "page" };
+    expect(blockedByTrailMate(follower, [leader, follower])).toBe(true);
+    expect(blockedByTrailMate({ ...follower, trailId: "trail-2" }, [leader, follower])).toBe(false);
+    expect(blockedByTrailMate({ ...follower, heading: Math.PI }, [leader, follower])).toBe(false);
+    expect(blockedByTrailMate({ ...follower, stuck: 1 }, [leader, follower])).toBe(false);
   });
 
   test("carried letters keep the game's load and role speeds", () => {

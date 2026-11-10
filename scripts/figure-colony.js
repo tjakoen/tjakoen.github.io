@@ -2,34 +2,21 @@ import { buildNestBase, composeNestGrid, encodeNestBraille } from "./nest-assets
 import { createNestEngine } from "./nest-engine.js";
 import { storeCapacity } from "./nest-simulation.js";
 
-const VIEW_WIDTH = 720;
-const VIEW_HEIGHT = 480;
-const GRID_WIDTH = 96;
-const GRID_HEIGHT = 128;
-const COLS = GRID_WIDTH / 2;
-const ROWS = GRID_HEIGHT / 4;
-const CELL_WIDTH = VIEW_WIDTH / COLS;
-const CELL_HEIGHT = VIEW_HEIGHT / ROWS;
-const SVG = "http://www.w3.org/2000/svg";
-const makeSvg = (name, attrs = {}) => {
-  const node = document.createElementNS(SVG, name);
-  Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, String(value)));
-  return node;
-};
-
 function makeWorld() {
   const words = "ants carry food";
-  const letters = [...words].filter((char) => /[a-z]/i.test(char)).map((char, index) => ({ id: `interior-letter-${index + 1}`, text: char }));
-  const home = { x: 360, y: 192, holeX: 360, holeY: 34, width: 136, height: 55 };
+  const letters = [...words].filter((char) => /[a-z]/i.test(char)).map((text, index) => ({ id: `interior-letter-${index + 1}`, text }));
+  const width = 600;
+  const height = 400;
+  const home = { x: width / 2, y: height * 0.88, holeX: width / 2, holeY: height * 0.12, width: 136, height: 55 };
   const frame = {
-    width: VIEW_WIDTH,
-    height: VIEW_HEIGHT,
+    width,
+    height,
     nowMs: performance.now(),
     home,
     letters: letters.map(({ id }, index) => ({
       id,
-      x: 424 + index % 13 * 17,
-      y: 38 + Math.floor(index / 13) * 38,
+      x: width * (0.63 + index % 13 * 0.023),
+      y: height * (0.055 + Math.floor(index / 13) * 0.09),
       width: 8,
       height: 14,
       claimable: true,
@@ -40,38 +27,20 @@ function makeWorld() {
   return { world: { id: "note-colony-interior", letters }, frame };
 }
 
-function toneClass(tone) {
-  return tone > 0 ? `t${tone}` : "";
-}
+const toneClass = (tone) => tone > 0 ? `t${tone}` : "";
 
 export function mountColony(host) {
-  const svg = makeSvg("svg", { class: "colony-interior", viewBox: `0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" });
-  const layer = makeSvg("g", { class: "colony-interior__cells" });
-  const base = buildNestBase(GRID_WIDTH, GRID_HEIGHT);
-  const rendered = encodeNestBraille(base.cells, GRID_WIDTH, GRID_HEIGHT);
-  const cells = rendered.map(({ char, tone }, index) => {
-    const row = Math.floor(index / COLS);
-    const col = index % COLS;
-    const node = makeSvg("text", {
-      x: col * CELL_WIDTH,
-      y: (row + 1) * CELL_HEIGHT - (row === ROWS - 1 ? 3 : 0),
-      class: `colony-interior__cell ${toneClass(tone)}`,
-      "data-tone": tone,
-    });
-    node.textContent = char;
-    layer.append(node);
-    return node;
-  });
-  svg.append(layer);
-  host.replaceChildren(svg);
+  const pre = document.createElement("pre");
+  pre.className = "colony-interior nest-pre";
+  pre.setAttribute("aria-hidden", "true");
+  host.replaceChildren(pre);
 
-  const { world, frame: initialFrame } = makeWorld();
-  const engine = createNestEngine({
-    world,
-    settings: { rivals: "disabled", maxAnts: 12, partyThresholds: [3, 6, 9] },
-    seed: 61421,
-    initialFrame,
-  });
+  let engine;
+  let initialFrame;
+  let base;
+  let gridWidth = 0;
+  let gridHeight = 0;
+  let cells = [];
   let lastFrame = performance.now();
   let lastDraw = 0;
   let paused = document.hidden;
@@ -81,8 +50,63 @@ export function mountColony(host) {
   let stopped = false;
   let frameRequest = 0;
   let observer;
+  let resizeObserver;
+
+  function buildCells(width, height) {
+    gridWidth = width;
+    gridHeight = height;
+    const cols = width / 2;
+    const rows = height / 4;
+    cells = Array.from({ length: cols * rows });
+    const fragment = document.createDocumentFragment();
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const cell = document.createElement("b");
+        cell.textContent = "\u2800";
+        cell.dataset.tone = "";
+        cell._ch = "\u2800";
+        cells[row * cols + col] = cell;
+        fragment.append(cell);
+      }
+      fragment.append("\n");
+    }
+    pre.replaceChildren(fragment);
+  }
+
+  function measureAndReset() {
+    if (stopped) return;
+    const probe = document.createElement("span");
+    probe.textContent = "⣿".repeat(20);
+    probe.style.cssText = "position:absolute;visibility:hidden;white-space:pre";
+    pre.append(probe);
+    const probeRect = probe.getBoundingClientRect();
+    probe.remove();
+    const cellWidth = probeRect.width / 20;
+    const cellHeight = probeRect.height;
+    if (!cellWidth || !cellHeight || !pre.clientWidth || !pre.clientHeight) return;
+    const width = Math.floor(pre.clientWidth / cellWidth) * 2;
+    const height = Math.floor(pre.clientHeight / cellHeight) * 4;
+    if (width < 20 || height < 20 || (width === gridWidth && height === gridHeight && engine)) return;
+    const now = performance.now();
+    const { world, frame } = makeWorld();
+    initialFrame = frame;
+    base = buildNestBase(width, height);
+    buildCells(width, height);
+    engine?.destroy();
+    engine = createNestEngine({
+      world,
+      settings: { rivals: "disabled", maxAnts: 12, partyThresholds: [1_000_000] },
+      seed: 61421,
+      initialFrame: { ...initialFrame, nowMs: now },
+    });
+    lastFrame = now;
+    resetAfter = 0;
+    host.dataset.phase = "starting";
+    draw(engine.snapshot(), now);
+  }
 
   function draw(snapshot, now) {
+    if (!cells.length) return;
     const nestAnts = snapshot.ants.filter((ant) => ant.location === "nest").map((ant) => ({
       id: ant.id,
       role: ant.role,
@@ -96,26 +120,30 @@ export function mountColony(host) {
       eggs: snapshot.eggs.map((egg) => ({ ...egg, d: Infinity })),
       queen: snapshot.queen,
       queenDead: snapshot.colony.queenDead,
-      party: snapshot.colony.worshipPhase === "home" ? null : {},
+      party: null,
       stores: snapshot.colony.stores,
       built: snapshot.colony.built,
       larder: Array.from({ length: snapshot.interiorLarder }, (_, index) => index),
     };
     const next = encodeNestBraille(
-      composeNestGrid(base.cells, GRID_WIDTH, GRID_HEIGHT, base.radius, viewState, now, storeCapacity),
-      GRID_WIDTH,
-      GRID_HEIGHT,
+      composeNestGrid(base.cells, gridWidth, gridHeight, base.radius, viewState, now, storeCapacity),
+      gridWidth,
+      gridHeight,
     );
     next.forEach(({ char, tone }, index) => {
       const cell = cells[index];
-      if (cell.textContent !== char) cell.textContent = char;
+      if (cell._ch !== char) {
+        cell._ch = char;
+        cell.textContent = char;
+      }
       const key = tone > 0 ? String(tone) : "";
       if (cell.dataset.tone !== key) {
         cell.dataset.tone = key;
-        cell.setAttribute("class", `colony-interior__cell ${toneClass(tone)}`.trim());
+        cell.className = toneClass(tone);
       }
     });
     host.dataset.worship = snapshot.colony.worshipPhase;
+    host.dataset.queenHome = "true";
     host.dataset.stores = String(snapshot.colony.stores);
     host.dataset.inLarder = String(snapshot.interiorLarder);
     host.dataset.antsInside = String(nestAnts.length);
@@ -126,8 +154,8 @@ export function mountColony(host) {
   function cycle(snapshot, now) {
     const drained = snapshot.letters.every((letter) => letter.state === "stored");
     const settled = snapshot.ants.every((ant) => ant.location === "nest");
-    if (drained && settled && snapshot.colony.worshipIndex >= 2) {
-      if (!resetAfter) resetAfter = now + 800;
+    if (drained && settled) {
+      if (!resetAfter) resetAfter = now + 2200;
       if (now >= resetAfter) {
         const reset = engine.reset({ ...initialFrame, nowMs: now });
         completedCycles++;
@@ -141,7 +169,7 @@ export function mountColony(host) {
 
   function tick(now) {
     frameRequest = 0;
-    if (stopped || paused) return;
+    if (stopped || paused || !engine) return;
     const dt = Math.min(0.05, (now - lastFrame) / 1000);
     lastFrame = now;
     const result = engine.step(dt, { ...initialFrame, nowMs: now });
@@ -154,7 +182,7 @@ export function mountColony(host) {
   }
 
   function scheduleTick() {
-    if (!stopped && !paused && !frameRequest) frameRequest = requestAnimationFrame(tick);
+    if (!stopped && !paused && engine && !frameRequest) frameRequest = requestAnimationFrame(tick);
   }
   function updatePause() {
     paused = document.hidden || !inView;
@@ -170,15 +198,20 @@ export function mountColony(host) {
     }, { rootMargin: "100px" });
     observer.observe(host);
   }
+  if ("ResizeObserver" in window) {
+    resizeObserver = new ResizeObserver(measureAndReset);
+    resizeObserver.observe(host);
+  }
   host.dataset.completedCycles = "0";
-  draw(engine.snapshot(), performance.now());
+  measureAndReset();
   scheduleTick();
   return () => {
     stopped = true;
     if (frameRequest) cancelAnimationFrame(frameRequest);
     observer?.disconnect();
+    resizeObserver?.disconnect();
     document.removeEventListener("visibilitychange", updatePause);
-    engine.destroy();
+    engine?.destroy();
     host.replaceChildren();
   };
 }
