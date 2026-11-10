@@ -102,6 +102,55 @@ test("a main guard wins 60 percent of rival guard duels", async ({ page }) => {
 });
 
 
+test("repeated combat scans only roll a guard duel once", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  const outcome = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    const at: [number, number] = [900, 500];
+    const main = nest.spawnPageAnt("guard", at, null);
+    const rival = nest.spawnRivalUnit("rival-guard", at, [at], null);
+    const random = Math.random;
+    let rolls = 0;
+    Math.random = () => rolls++ === 0 ? 0.8 : 0.2;
+    try {
+      const now = performance.now() + 1000;
+      nest.rivalCombat(now);
+      nest.rivalCombat(now + 350);
+      nest.rivalCombat(now + 700);
+      nest.finishFights();
+      return { rolls, main: !!main.el, rival: !!rival.el };
+    } finally {
+      Math.random = random;
+    }
+  });
+  expect(outcome).toEqual({ rolls: 1, main: false, rival: true });
+});
+
+test("a squashed rival cannot finish a pending duel", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  const mainSurvives = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    const at: [number, number] = [900, 500];
+    const main = nest.spawnPageAnt("guard", at, null);
+    const rival = nest.spawnRivalUnit("rival-guard", at, [at], null);
+    const random = Math.random;
+    Math.random = () => 0.8;
+    try {
+      nest.rivalCombat(performance.now() + 1000);
+      rival.el.click();
+      nest.finishFights();
+      return !!main.el;
+    } finally {
+      Math.random = random;
+    }
+  });
+  expect(mainSurvives).toBe(true);
+});
+
 test("two rival guards overwhelm one main guard", async ({ page }) => {
   await page.goto("/?nest-debug");
   await page.locator(".nest-switch").click();

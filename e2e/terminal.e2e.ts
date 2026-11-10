@@ -708,15 +708,22 @@ test.describe("terminal desk verbs (deterministic, no model needed)", () => {
 });
 
 
-test("the queen is gone before the panel queen returns", async ({ page }) => {
+test("the worship queen returns before she appears in her chamber", async ({ page }) => {
   await page.goto("/?nest-debug");
   await page.locator(".nest-switch").click();
   await expect(page.locator("#nest-mock")).toBeVisible();
-  await page.waitForTimeout(600);
+  const chamberQueen = page.locator("#nest-mock .nest-pre .t6");
+  const pageQueen = page.locator(".nest-layer .nest-queen");
+  await expect(chamberQueen.first()).toBeVisible();
   await page.evaluate(() => window.__nest!.startParty());
-  await expect(page.locator(".nest-queen:not(.panel-queen)")).toBeVisible();
-  await expect(page.locator(".nest-queen:not(.panel-queen)")).toHaveCount(0, { timeout: 18_000 });
-  await expect(page.locator(".nest-queen.panel-queen")).toBeVisible();
+
+  await expect(pageQueen).toHaveClass(/dancing/);
+  await expect(pageQueen.locator("svg")).toHaveCSS("width", "40px");
+  await expect(pageQueen).toHaveClass(/crawling/, { timeout: 16_000 });
+  await expect(chamberQueen).toHaveCount(0);
+  await expect(pageQueen).toHaveCount(0, { timeout: 8_000 });
+  expect(await page.locator(".panel-queen").count()).toBe(0);
+  await expect(chamberQueen.first()).toBeVisible();
 });
 
 
