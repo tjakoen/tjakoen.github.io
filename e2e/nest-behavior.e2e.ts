@@ -207,20 +207,59 @@ test("a fight animates open so another ant can join", async ({ page }) => {
 });
 
 
-test("ants at the same combat point render as separate fighters", async ({ page }) => {
+test("fighters walk apart, face each other and keep moving until the duel resolves", async ({ page }) => {
+  await page.clock.install();
   await page.goto("/?nest-debug");
   await page.locator(".nest-switch").click();
   await expect(page.locator("#nest-mock")).toBeVisible();
-  const distance = await page.evaluate(async () => {
+  await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + 5000));
+  await page.evaluate(() => {
     const nest = window.__nest as any;
     const at: [number, number] = [420, 340];
-    const main = nest.spawnPageAnt("guard", at, null);
-    const rival = nest.spawnRivalUnit("rival-guard", at, [at], null);
+    nest.spawnPageAnt("guard", at, null);
+    nest.spawnRivalUnit("rival-guard", at, [at], null);
     nest.rivalCombat(performance.now() + 1000);
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    const a = new DOMMatrixReadOnly(getComputedStyle(main.el).transform);
-    const b = new DOMMatrixReadOnly(getComputedStyle(rival.el).transform);
-    return Math.hypot(a.m41 - b.m41, a.m42 - b.m42);
   });
-  expect(distance).toBeGreaterThanOrEqual(22);
+  const fighters = page.locator(".nest-ant.fighting");
+  const positions = () => fighters.evaluateAll((ants) => ants.map((ant) => {
+    const t = new DOMMatrixReadOnly(getComputedStyle(ant).transform);
+    return { x: t.m41, y: t.m42, facingX: -t.a, facingY: -t.b };
+  }));
+  await page.clock.runFor(50);
+  const early = await positions();
+  await page.clock.runFor(400);
+  const [main, rival] = await positions();
+  expect(early).toHaveLength(2);
+  expect(Math.hypot(early[0].x - early[1].x, early[0].y - early[1].y)).toBeLessThan(16);
+  expect(Math.hypot(main.x - rival.x, main.y - rival.y)).toBeGreaterThan(22);
+  expect(main.facingX * (rival.x - main.x) + main.facingY * (rival.y - main.y)).toBeGreaterThan(0);
+  expect(rival.facingX * (main.x - rival.x) + rival.facingY * (main.y - rival.y)).toBeGreaterThan(0);
+  await page.clock.runFor(130);
+  expect(await positions()).not.toEqual([main, rival]);
+});
+
+test("workers leaving the same point form a moving trail queue", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await page.clock.pauseAt(new Date((await page.evaluate(() => Date.now())) + 5000));
+  const ids = await page.evaluate(() => {
+    const nest = window.__nest as any;
+    const trail = {};
+    return Array.from({ length: 3 }, () => {
+      const worker = nest.spawnPageAnt("worker", [240, 310], null);
+      Object.assign(worker, { trail, job: "follow", heading: 0, path: [[440, 310]], k: 0 });
+      return worker.id;
+    });
+  });
+  await page.clock.runFor(1450);
+  const row = await page.evaluate((workerIds) => workerIds.map((id) => {
+    const worker = (window.__nest as any).state.ants.find((ant: any) => ant.id === id);
+    return [worker.x, worker.y];
+  }), ids);
+  expect(row[2][0]).toBeGreaterThan(250);
+  expect(row[0][0] - row[1][0]).toBeGreaterThanOrEqual(17.5);
+  expect(row[1][0] - row[2][0]).toBeGreaterThanOrEqual(17.5);
+  expect(row.every(([, y]) => Math.abs(y - 310) < 2)).toBe(true);
 });
