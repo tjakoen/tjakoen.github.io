@@ -13,7 +13,7 @@ test("role philosophy is readable and contained at desktop and phone widths", as
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
 
     await page.goto("/resume");
-    await expect(page.locator(".lede").first()).toContainText("I am a teacher, engineer, and manager");
+    await expect(page.locator(".lede").first()).toContainText("I lead 15 to 25 engineers and product specialists");
     await expect(page.locator(".resume-philosophy-link a")).toHaveAttribute("href", "/about#profile");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width + 1);
 
