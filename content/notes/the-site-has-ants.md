@@ -1,5 +1,5 @@
 ---
-title: "My portfolio has ants now, and they eat the copy"
+title: "I put bugs on my website. On purpose."
 subtitle: "A small, self-growing ant colony hidden on a professional site. It has rules, rival colonies, and no win screen, because it is a simulation more than a game."
 author: "Tjakoen Stolk"
 status: PUBLISHED
@@ -14,9 +14,9 @@ summary: >
   modules on the same vanilla stack as the site, built over a weekend as a small, serious easter egg and a test of
   the workflow behind it.
 image: /media/notes/nest-og.png
-imageAlt: "TJ's Desk home page with an ant colony at work: an anthill drawn in Braille dots, scent trails running down to the page copy with letters missing, and the Nest panel in the sidebar."
+imageAlt: "Three ants carry the missing D from the TJ's Desk heading over the remaining letters and up a dotted trail to a Braille mound. I lead engineering teams, build multi-model AI workflows, and mentor software developers. I put bugs on my website. On purpose. portfolio.tjakoen.com."
 socialImage: /media/notes/nest-social.png
-socialImageAlt: "A cream social card with a Braille anthill, two dotted scent trails, two ants, and the words My portfolio has ants now."
+socialImageAlt: "Three ants carry the missing D from the TJ's Desk heading over the remaining letters and up a dotted trail to a Braille mound. I lead engineering teams, build multi-model AI workflows, and mentor software developers. I put bugs on my website. On purpose. portfolio.tjakoen.com."
 social: |
   My portfolio has bugs now.
 
@@ -118,7 +118,7 @@ The rival is not a second player base. It does not take orders, it does not get 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="rival" data-surface="figure:nest-rival">
 </div>
 
-*A rival builds and steals letters; the main colony drives it off.*
+*The main colony forages while the rival mound takes shape. Once the mound is ready, rival workers follow the red trail and carry letters home while a guard patrols.*
 
 Its population stays one ant below the main colony. It can still grow trails, mini mounds and flyers, but it cannot outgrow the nest it is fighting. The first rival is meant to be an easy fight. Later rivals start with more workers and more mounds if the main colony is already large, because a grown colony should not get a free win against a fresh, tiny rival. The goal is a fight with a clear main-colony advantage, not a guaranteed walkover.
 
@@ -131,7 +131,7 @@ Combat is deliberately small. The main colony gets the advantage, but not every 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="fight" data-surface="figure:nest-fight">
 </div>
 
-*The red guards meet the main colony’s soldiers on the trail. Watch the gap close before the fight starts.*
+*Four encounters repeat in turn. The guard and flyer duels roll for a winner each time. In the other two, the ants close enough to join the fight can overpower a lone defender.*
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="castes" data-surface="figure:nest-castes">
 </div>
@@ -143,10 +143,10 @@ The rules are simple enough to hold in your head:
 
 - A main guard wins sixty percent of duels against a rival guard.
 - Two rival guards can overwhelm one main guard.
-- A main flyer has a seventy-five percent edge over a rival flyer.
+- A main flyer wins seventy-five percent of duels against a rival flyer.
 - Workers are weak alone, but two can take a guard together.
 
-Fights stay open for about a second, so nearby ants can pile in. The crowd that is actually there decides the winner. The numbers make the main colony feel like the home team without turning the rival into a decoration.
+Group fights stay open for about a second, so nearby ants can pile in. The game counts the ants still close enough when the fight ends. The numbers make the main colony feel like the home team without turning the rival into a decoration.
 
 ## You are the disturbance, not the colony
 

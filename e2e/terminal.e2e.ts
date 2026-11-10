@@ -8,6 +8,7 @@ import mailbox from "../content/data/mailbox.json" with { type: "json" };
 
 declare global {
   interface Window {
+    advanceNoteFrames: (milliseconds: number) => Promise<void>;
     __nestStray?: { spawn: (force?: boolean) => void; cancel: () => void };
     __rafCount?: number;
     __nest?: {
@@ -104,12 +105,10 @@ test("note figures keep their event loops with reduced motion enabled", async ({
   }).toBeGreaterThanOrEqual(1);
 });
 
-test("the caste figure flaps the flyer's wings while it moves", async ({ page }) => {
+test("the caste figure animates the flyer's wings", async ({ page }) => {
   await page.goto("/notes/the-site-has-ants");
-  const wing = page.locator('[data-nest-mode="castes"] [data-role="flyer"] .wing-a');
-  await expect(wing).toBeAttached();
-  const firstPose = await wing.getAttribute("transform");
-  await expect.poll(() => wing.getAttribute("transform"), { timeout: 5_000 }).not.toBe(firstPose);
+  const wing = page.locator('[data-nest-mode="castes"] [data-role="flyer"] .wing');
+  await expect(wing).toHaveCSS("animation-name", "nest-scene-flap");
 });
 
 test("the note has a separate self-running colony that drains and resets", async ({ page }) => {
@@ -720,8 +719,81 @@ test("the queen is gone before the panel queen returns", async ({ page }) => {
 });
 
 
+// Advance only the note simulations. Background tabs and busy browser workers throttle real frames.
+async function driveNoteFrames(page: Page) {
+  await page.addInitScript(() => {
+    const realFrame = window.requestAnimationFrame.bind(window);
+    const noteCallbacks = new WeakSet<FrameRequestCallback>();
+    const queued = new Set<FrameRequestCallback>();
+    window.requestAnimationFrame = (callback) => {
+      if (!noteCallbacks.has(callback)) {
+        if (!new Error().stack?.includes("/site/figure-nest.js:")) return realFrame(callback);
+        noteCallbacks.add(callback);
+      }
+      queued.add(callback);
+      return 0;
+    };
+    let time: number;
+    Object.assign(window, {
+      async advanceNoteFrames(milliseconds: number) {
+        time ??= performance.now();
+        for (let elapsed = 0; elapsed < milliseconds; elapsed += 20) {
+          time += 20;
+          const callbacks = [...queued];
+          queued.clear();
+          callbacks.forEach((callback) => callback(time));
+          await Promise.resolve();
+        }
+      },
+    });
+  });
+  return (milliseconds: number) => page.evaluate(
+    (duration) => window.advanceNoteFrames(duration),
+    milliseconds,
+  );
+}
+
+test("note ants face their travel direction and illustrate the game's combat cases", async ({ page }) => {
+  const advance = await driveNoteFrames(page);
+  await page.goto("/notes/the-site-has-ants");
+  const fight = page.locator('[data-nest-mode="fight"]');
+  await expect(fight.locator(".nest-ant")).toHaveCount(2);
+
+  const main = fight.locator('.nest-ant[data-side="main"]');
+  const pose = () => main.evaluate((node) => {
+    const actor = node as unknown as SVGGElement;
+    const { e: x, f: y } = actor.transform.baseVal.getItem(0).matrix;
+    const { a, b } = actor.querySelector("g")!.transform.baseVal.getItem(0).matrix;
+    return { x, y, a, b };
+  });
+  const before = await pose();
+  await advance(160);
+  const after = await pose();
+  const dx = after.x - before.x, dy = after.y - before.y;
+  const headAlignment = -(dx * after.a + dy * after.b) / Math.hypot(dx, dy);
+  expect(headAlignment).toBeGreaterThan(0.8);
+
+  await fight.evaluate((node) => {
+    const host = node as HTMLElement;
+    const results: Record<string, unknown> = {};
+    const observer = new MutationObserver(() => {
+      const { encounter, ...result } = JSON.parse(host.dataset.lastFight!);
+      results[encounter] = result;
+      host.dataset.observedFights = JSON.stringify(results);
+      if (Object.keys(results).length === 4) observer.disconnect();
+    });
+    observer.observe(host, { attributes: true, attributeFilter: ["data-last-fight"] });
+  });
+  await advance(24_000);
+  const outcomes = JSON.parse((await fight.getAttribute("data-observed-fights")) ?? "{}");
+  expect(outcomes["guard-duel"]).toEqual({ odds: 0.6, winner: expect.stringMatching(/^(main|rival)$/) });
+  expect(outcomes["flyer-duel"]).toEqual({ odds: 0.75, winner: expect.stringMatching(/^(main|rival)$/) });
+  expect(outcomes["rival-group"]).toEqual({ power: 4, health: 4, winner: "rival" });
+  expect(outcomes["main-group"]).toEqual({ power: 2, health: 2, winner: "main" });
+});
+
 test("the note mounts its six live colony boxes", async ({ page }) => {
-  test.setTimeout(110_000);
+  const advance = await driveNoteFrames(page);
   const errors: string[] = [];
   await page.addInitScript(() => {
     const samples: number[] = [];
@@ -744,24 +816,18 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   await page.goto("/notes/the-site-has-ants");
   await expect(page.locator(".nest-scene")).toHaveCount(6);
   const hosts = page.locator('[data-live-figure="nest"]');
-  await expect.poll(async () => hosts.evaluateAll((els) => els.slice(0, 2).map((el) => (el as HTMLElement).dataset.trailLaid)), {
-    timeout: 45_000,
-    intervals: [250, 500, 1000],
-  }).toEqual(["true", "true"]);
-  await expect.poll(async () => hosts.evaluateAll((els) => els.map((el) => {
-    const host = el as HTMLElement;
-    return Number(host.dataset.completedCycles) >= 2 &&
-      host.dataset.eventState !== "reset" &&
-      host.querySelectorAll(".nest-scene__actors").length === 1 &&
-      host.querySelectorAll(".nest-ant").length >= 3;
-  })), {
-    timeout: 100_000,
-    intervals: [250, 500, 1000],
-  }).toEqual([true, true, true, true, true, true]);
-  await expect.poll(async () => hosts.evaluateAll((els) => els.slice(0, 2).map((el) => (el as HTMLElement).dataset.trailLaid)), {
-    timeout: 45_000,
-    intervals: [250, 500, 1000],
-  }).toEqual(["true", "true"]);
+  await advance(45_000);
+  await expect.poll(async () => {
+    await advance(400);
+    return hosts.evaluateAll((els) => els.map((el, index) => {
+      const host = el as HTMLElement;
+      return Number(host.dataset.completedCycles) >= 2 &&
+        host.dataset.eventState !== "reset" &&
+        (index > 1 || host.dataset.trailLaid === "true") &&
+        host.querySelectorAll(".nest-scene__actors").length === 1 &&
+        host.querySelectorAll(".nest-ant").length >= 2;
+    }));
+  }, { timeout: 25_000 }).toEqual([true, true, true, true, true, true]);
 
   const reports = await hosts.evaluateAll((els) => els.map((el) => {
     const host = el as HTMLElement;
@@ -784,8 +850,7 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
       sceneLayers: host.querySelectorAll(".nest-scene__actors").length,
       sentences: host.querySelectorAll(".nest-scene__sentence").length,
       homeActorsHidden: actors.filter((actor) => actor.classList.contains("inside-mound")).every((actor) => getComputedStyle(actor).visibility === "hidden"),
-      moundsDestroyed: Number(host.dataset.rivalMoundsDestroyed || 0),
-      soldiers: actors.filter((actor) => actor.getAttribute("data-role") === "soldier").length,
+      rivalLettersBanked: Number(host.dataset.rivalLettersBanked || 0),
       storesSeen: Number(host.dataset.maxStoresSeen || 0),
       storeGlyphs: host.querySelectorAll(".nest-scene__stored-food").length,
       trails: host.querySelectorAll(".nest-scene__trail").length,
@@ -793,9 +858,6 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
       queenCount: actors.filter((actor) => actor.getAttribute("data-role") === "queen").length,
       rivalGuards: actors.filter((actor) => actor.getAttribute("data-role") === "rival-guard").length,
       fighterWidths: actors.filter((actor) => ["soldier", "rival-guard"].includes(actor.getAttribute("data-role") || "")).map((actor) => getComputedStyle(actor.querySelector("svg")!).width),
-      initialMainFighters: Number(host.dataset.fightMainCount || 0),
-      initialRivalFighters: Number(host.dataset.fightRivalCount || 0),
-      fightSizes: host.dataset.fightSizes ? JSON.parse(host.dataset.fightSizes) : [],
       rivalColor: getComputedStyle(host.querySelector(".nest-scene")!).getPropertyValue("--nest-rival").trim(),
       trailDashed: [...host.querySelectorAll(".nest-scene__trail")].every((trail) => getComputedStyle(trail).strokeDasharray !== "none"),
       trailCurved: [...host.querySelectorAll(".nest-scene__trail")].every((trail) => {
@@ -813,7 +875,7 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
     };
   }));
   expect(reports.map((report) => report.mode)).toEqual(["theft", "colony", "worship", "rival", "fight", "castes"]);
-  expect(reports.every((report) => report.cycles >= 2 && report.resets >= 2 && report.visibleActors >= 3 && report.sceneLayers === 1 && report.labels === 0 && report.contained && report.homeActorsHidden)).toBe(true);
+  expect(reports.every((report) => report.cycles >= 2 && report.resets >= 2 && report.visibleActors >= 2 && report.sceneLayers === 1 && report.labels === 0 && report.contained && report.homeActorsHidden)).toBe(true);
   expect(reports[0].sentences).toBe(1);
   expect(reports[1].sentences).toBe(1);
   expect(reports[2].sentences).toBe(0);
@@ -823,9 +885,8 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(reports[0].rules).toEqual(expect.arrayContaining(["stepMovement", "roleSpeed", "foodShares"]));
   expect(reports[1].rules).toEqual(expect.arrayContaining(["stepMovement", "foodShares", "advanceBuild"]));
   expect(reports[2].rules).toEqual(expect.arrayContaining(["stepMovement", "worshipReturnAt", "storeCapacity"]));
-  expect(reports[3].rules).toEqual(expect.arrayContaining(["advanceBuild", "foodShares", "groupCanWin", "damageMound"]));
-  expect(reports[3].moundsDestroyed).toBeGreaterThanOrEqual(2);
-  expect(reports[3].soldiers).toBe(3);
+  expect(reports[3].rules).toEqual(expect.arrayContaining(["advanceBuild", "foodShares", "roleSpeed"]));
+  expect(reports[3].rivalLettersBanked).toBeGreaterThanOrEqual(8);
   expect(reports[3].queenCount).toBe(0);
   expect(reports.slice(0, 2).every((report) => report.floorLines === 0 && report.trailDashed && report.trailCurved)).toBe(true);
   expect(await page.evaluate(() => (window as any).__nestResetSamples.length > 0 && (window as any).__nestResetSamples.every((children: number) => children > 0))).toBe(true);
@@ -836,16 +897,10 @@ test("the note mounts its six live colony boxes", async ({ page }) => {
   expect(reports[3].trails).toBe(2);
   expect(reports[3].trailRouteSteps).toBeGreaterThan(0);
   expect(reports[4].trailRouteSteps).toBeGreaterThan(0);
-  expect(reports[4].rules).toEqual(expect.arrayContaining(["combatPower", "combatHealth", "groupCanWin"]));
-  expect(reports[4].lastFight?.damage).toBeGreaterThan(0);
-  expect(reports[4].lastFight?.remainingHealth).toBeLessThan(reports[4].lastFight?.health);
+  expect(["main", "rival"]).toContain(reports[4].lastFight?.winner);
   expect(reports[4].queenCount).toBe(0);
-  expect(reports[4].soldiers).toBe(3);
-  expect(reports[4].initialMainFighters).toBe(3);
-  expect(reports[4].initialRivalFighters).toBe(3);
-  expect(new Set(reports[4].fightSizes).size).toBe(1);
   expect(reports[4].floorLines).toBe(0);
-  expect(new Set(reports[4].fighterWidths).size).toBe(1);
+  expect(new Set(reports[4].fighterWidths).size).toBeLessThanOrEqual(1);
   expect(reports[4].rivalColor).toMatch(/#a33b3b|#e08a8a/i);
   expect(reports[5].queenCount).toBe(1);
   expect(reports[5].rivalGuards).toBe(1);

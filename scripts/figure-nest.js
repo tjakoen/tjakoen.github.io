@@ -2,14 +2,12 @@
 import { antClasses, antMarkup, miniArt } from "./nest-assets.js";
 import {
   BUILD_TIME,
-  MOUND_BITE_INTERVAL,
   RIVAL_FOUNDING_TIME,
-  RIVAL_MOUND_HEALTH,
   advanceBuild,
   blockedByTrailMate,
   combatHealth,
   combatPower,
-  damageMound,
+  duelOdds,
   foodShares,
   groupCanWin,
   roleSpeed,
@@ -32,10 +30,10 @@ const svg = (name, attrs = {}) => {
 const stateLabel = {
   eat: "Scout finds and carries letters home",
   colony: "Letters feed the stores and raise a mini mound",
-  fight: "Main ants meet rival guards and resolve a group fight",
+  fight: "Guard and flyer duels, two rival guards against one soldier, and two workers against one rival guard",
   castes: "Worker, soldier, flyer, queen, and rival guard move by role",
   worship: "The queen leaves, the colony gathers, and worship ends",
-  rival: "A rival builds, steals letters, and is driven off",
+  rival: "A rival founds a mound, patrols its trail, and banks stolen letters while the main colony forages",
 };
 
 const modeFor = (host) => host.dataset.nestMode === "theft" ? "eat" : host.dataset.nestMode;
@@ -129,7 +127,8 @@ function addActor(sim, role, side, x, y, { job = "idle" } = {}) {
 
 function placeActor(actor) {
   actor.el.setAttribute("transform", `translate(${actor.x} ${actor.y})`);
-  actor.turn.setAttribute("transform", `rotate(${actor.heading * 180 / Math.PI})`);
+  // The shared ant artwork faces left at rest.
+  actor.turn.setAttribute("transform", `rotate(${actor.heading * 180 / Math.PI + 180})`);
 }
 
 function moveActor(sim, actor, target, dt, { job = actor.job, factor = 1, letterNeed = 1 } = {}) {
@@ -228,7 +227,7 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
     }
     if (actor.job === "scout" || actor.job === "toLetter") {
       const letter = actor.letter;
-      const route = sim.trailPoints?.[actor.side] || actor.forageRoute;
+      const route = actor.trailRoute || sim.trailPoints?.[actor.side] || actor.forageRoute;
       let arrived = false;
       if (route) {
         if (actor.routeDirection !== "outbound") { actor.routeDirection = "outbound"; actor.routeIndex = 0; }
@@ -248,7 +247,7 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
       }
     } else if (actor.job === "carry") {
       const letter = actor.carry;
-      const trailCurve = sim.trailPoints?.[actor.side] || actor.forageRoute;
+      const trailCurve = actor.trailRoute || sim.trailPoints?.[actor.side] || actor.forageRoute;
       const returnRoute = trailCurve?.toReversed();
       const arrived = returnRoute && actor.routeIndex < returnRoute.length
         ? moveOnRoute(sim, actor, returnRoute, dt, { job: "carry", letterNeed: letter.need }) && moveActor(sim, actor, home, dt, { job: "carry", letterNeed: letter.need })
@@ -259,7 +258,7 @@ function useForage(sim, dt, { home, workers, scoutFirst = false, onDelivery = nu
       actor.carry = null;
       actor.carryGlyph?.remove();
       actor.carryGlyph = null;
-      applyFood(sim, letter);
+      if (actor.side === "main") applyFood(sim, letter);
       if (sim.trailPath && !sim.trailLaid) {
         const points = actor.foragePath?.length ? actor.foragePath : actor.pathPoints || [];
         const route = points.map(([px, py], index) => `${index ? "L" : "M"}${px.toFixed(1)} ${py.toFixed(1)}`).join(" ");
@@ -342,29 +341,42 @@ function setupColony(sim) {
   setPhase(sim, "workers-deliver");
 }
 
+const FIGHT_CASES = [
+  { id: "guard-duel", title: "Guard duel", main: ["soldier"], rival: ["rival-guard"] },
+  { id: "rival-group", title: "Two rival guards against one soldier", main: ["soldier"], rival: ["rival-guard", "rival-guard"], defending: "main" },
+  { id: "main-group", title: "Two workers against one rival guard", main: ["worker", "worker"], rival: ["rival-guard"], defending: "rival" },
+  { id: "flyer-duel", title: "Flyer duel", main: ["flyer"], rival: ["rival-flyer"] },
+];
+
+function sceneText(sim, text, y) {
+  const label = svg("text", { class: "nest-scene__caption", x: WIDTH / 2, y, "text-anchor": "middle" });
+  label.textContent = text;
+  sim.dynamic.append(label);
+  return label;
+}
+
 function setupFight(sim) {
-  const trail = svg("path", { d: "M66 106 C134 96 176 84 236 94 S360 117 410 100 S484 88 534 106", class: "nest-scene__trail" });
+  const encounter = FIGHT_CASES[sim.completedCycles % FIGHT_CASES.length];
+  const title = sceneText(sim, encounter.title, 35);
+  const trail = svg("path", { d: "M158 108 Q218 82 289 100 H311 Q382 82 442 108", class: "nest-scene__trail" });
   sim.dynamic.append(trail);
-  const center = { x: 300, y: 100 };
-  const group = (role, side, start, end) => {
+  const group = (roles, side, start, end) => {
     const route = trailPoints(trail, start, end);
-    const trailEnd = route.at(-1);
-    return [-32, 0, 32].map((offset) => {
-      const lane = route.map(({ x, y }) => ({ x, y: center.y + offset + y - trailEnd.y }));
-      const actor = addActor(sim, role, side, lane[0].x, lane[0].y, { job: "follow" });
-      actor.trailId = "fight-trail";
+    return roles.map((role, index) => {
+      const offset = (index - (roles.length - 1) / 2) * 19;
+      const lane = route.map(({ x, y }) => ({ x, y: y + offset }));
+      const actor = addActor(sim, role, side, lane[0].x, lane[0].y);
       actor.trailRoute = lane;
       actor.routeIndex = 1;
-      actor.clashY = center.y + offset;
       return actor;
     });
   };
-  const mains = group("soldier", "main", 0.12, 0.44);
-  const rivals = group("rival-guard", "rival", 0.88, 0.56);
-  sim.data = { mains, rivals, target: null, fightElapsed: 0, fightCenter: center, trailMet: false };
-  sim.host.dataset.fightMainCount = String(mains.length);
-  sim.host.dataset.fightRivalCount = String(rivals.length);
-  sim.host.dataset.fightSizes = JSON.stringify([mains[0], rivals[0]].map((actor) => getComputedStyle(actor.turn.querySelector("svg")).width));
+  const mains = group(encounter.main, "main", 0, 0.465);
+  const rivals = group(encounter.rival, "rival", 1, 0.535);
+  const status = sceneText(sim, "", 164);
+  const odds = encounter.defending ? null : duelOdds(mains[0].role, rivals[0].role);
+  if (odds !== null) title.textContent += ` · ${Math.round(odds * 100)}% chance for the main colony`;
+  sim.data = { encounter, mains, rivals, status, odds };
   setPhase(sim, "trail-approach");
 }
 
@@ -410,34 +422,43 @@ function setupRival(sim) {
   const home = { x: 488, y: 164 };
   const mainHome = { x: 105, y: 164 };
   const rivalMound = addMound(sim, 425, 125, { width: 126, height: 54, rival: true, progress: 0 });
-  addMound(sim, 36, 125, { width: 126, height: 54, progress: 1 });
-  sim.letters = addSentence(sim, "rival ants steal letters", [0, 1, 2, 3, 4, 7, 8, 9]);
-  sim.letters.forEach((letter, index) => { letter.side = index < sim.letters.length / 2 ? "main" : "rival"; });
-  sim.storeMax = storeCapacity(0);
-  sim.stores = 0;
-  sim.storeContents = [];
+  addMound(sim, 36, 125, { width: 126, height: 54 });
+  sim.letters = addSentence(sim, "The page feeds both colonies.", [4, 5, 6, 7, 20, 21, 22, 23]);
+  sim.letters.forEach((letter, index) => { letter.side = index < 4 ? "main" : "rival"; });
   sim.storeMax = storeCapacity(0);
   recordRule(sim, "storeCapacity");
-  sim.trailPaths = [addTrail(sim), addTrail(sim)];
-  sim.trailPaths[0].setAttribute("d", `M150 158 C174 130 187 113 ${sim.letters[0].x} 83 S${sim.letters[0].x + 22} 68 ${sim.letters[0].x + 38} 63`);
-  sim.trailPaths[1].setAttribute("d", `M450 158 C426 130 416 113 ${sim.letters.at(-1).x} 83 S${sim.letters.at(-1).x - 22} 68 ${sim.letters.at(-1).x - 38} 63`);
-  sim.trailPoints = {
-    main: trailPoints(sim.trailPaths[0]),
-    rival: trailPoints(sim.trailPaths[1]),
-  };
-  const workers = [addActor(sim, "rival-worker", "rival", home.x - 8, home.y + 8, { job: "wait" }), addActor(sim, "rival-worker", "rival", home.x + 8, home.y + 9, { job: "wait" })];
-  const mainWorkers = [addActor(sim, "worker", "main", mainHome.x - 8, mainHome.y + 7, { job: "wait" }), addActor(sim, "worker", "main", mainHome.x + 8, mainHome.y + 7, { job: "wait" })];
-  const soldiers = [
-    addActor(sim, "soldier", "main", mainHome.x - 8, mainHome.y + 12, { job: "wait" }),
-    addActor(sim, "soldier", "main", mainHome.x, mainHome.y + 14, { job: "wait" }),
-    addActor(sim, "soldier", "main", mainHome.x + 8, mainHome.y + 12, { job: "wait" }),
-  ];
-  const guards = [addActor(sim, "rival-guard", "rival", home.x - 8, home.y + 7, { job: "guard" }), addActor(sim, "rival-guard", "rival", home.x + 8, home.y + 8, { job: "guard" })];
-  workers.forEach((actor) => { actor.home = home; actor.el.classList.add("inside-mound"); });
-  [...mainWorkers, ...soldiers, ...guards].forEach((actor) => { actor.home = actor.side === "main" ? mainHome : home; actor.el.classList.add("inside-mound"); });
-  const mains = [...mainWorkers, ...soldiers];
-  sim.actors = [...guards, ...workers, ...mains];
-  sim.data = { home, mainHome, rivalMound, guards, workers, mainWorkers, soldiers, mains, stage: "build", build: 0, siegeHealth: RIVAL_MOUND_HEALTH, siegeElapsed: 0 };
+
+  const mainTrail = addTrail(sim);
+  mainTrail.setAttribute("d", `M105 164 Q153 86 ${sim.letters[2].x} 70`);
+  const rivalTrail = addTrail(sim);
+  rivalTrail.classList.add("rival");
+  rivalTrail.setAttribute("visibility", "hidden");
+  rivalTrail.setAttribute("d", `M488 164 Q434 86 ${sim.letters[6].x} 70`);
+  sim.trailPoints = { main: trailPoints(mainTrail), rival: trailPoints(rivalTrail) };
+
+  const workers = [addActor(sim, "rival-worker", "rival", home.x, home.y, { job: "wait" }),
+    addActor(sim, "rival-worker", "rival", home.x, home.y, { job: "wait" })];
+  const mainWorkers = [addActor(sim, "worker", "main", mainHome.x, mainHome.y, { job: "search" }),
+    addActor(sim, "worker", "main", mainHome.x, mainHome.y, { job: "search" })];
+  const guard = addActor(sim, "rival-guard", "rival", home.x, home.y, { job: "guard" });
+  guard.patrol = sim.trailPoints.rival.slice(1, -1).map(({ x, y }) => ({ x: x + 8, y }));
+  for (const crew of [workers, mainWorkers]) {
+    crew.forEach((actor, index) => {
+      const offset = index === 0 ? -5 : 5;
+      actor.trailRoute = sim.trailPoints[actor.side].map(({ x, y }) => ({ x: x + offset, y }));
+    });
+  }
+  const builders = [-26, 0, 26].map((offset) => {
+    const builder = addActor(sim, "builder", "rival", home.x + offset, home.y + 10);
+    builder.el.classList.remove("walk");
+    return builder;
+  });
+  [...workers, guard, ...mainWorkers].forEach((actor) => {
+    actor.home = actor.side === "main" ? mainHome : home;
+    actor.el.classList.add("inside-mound");
+  });
+  const status = sceneText(sim, "The rival mound takes shape", 26);
+  sim.data = { home, mainHome, rivalMound, rivalTrail, guard, workers, mainWorkers, builders, build: 0, status, banked: 0 };
   setPhase(sim, "rival-build");
 }
 
@@ -492,93 +513,49 @@ function tickColonyBuild(sim, dt) {
   }
 }
 
-function tickCombat(sim, dt, { mains, rivals, getTarget, finish, center = null } = {}) {
-  const aliveMains = mains.filter((actor) => actor.alive !== false);
-  const aliveRivals = rivals.filter((actor) => actor.alive !== false);
-  if (!aliveRivals.length) { finish(); return; }
-  let target = sim.data.target;
-  if (!target || target.alive === false) {
-    target = getTarget(aliveMains, aliveRivals);
-    sim.data.target = target;
-    sim.data.fighters = aliveMains;
-    sim.data.fightElapsed = 0;
-  }
-  if (!target) { finish(); return; }
-  if (sim.phase !== "clash") {
-    if (center) {
-      const mainTargets = aliveMains.map((actor) => ({ x: center.x - 15, y: actor.clashY }));
-      const rivalTargets = aliveRivals.map((actor) => ({ x: center.x + 15, y: actor.clashY }));
-      const mainArrivals = aliveMains.map((actor, index) => moveActor(sim, actor, mainTargets[index], dt, { job: "follow", factor: 0.9 }));
-      const rivalArrivals = aliveRivals.map((actor, index) => moveActor(sim, actor, rivalTargets[index], dt, { job: "follow", factor: 0.9 }));
-      if (![...mainArrivals, ...rivalArrivals].every(Boolean)) return;
-      aliveRivals.forEach((actor) => { actor.job = "guard"; });
-      setPhase(sim, "clash");
-      sim.data.fightElapsed = 0;
-      return;
-    }
-    const radius = sim.mode === "rival" ? 30 : 26;
-    const offsets = aliveMains.map((_, index) => ({ x: target.x - radius, y: target.y + (index - (aliveMains.length - 1) / 2) * 9 }));
-    const arrivals = aliveMains.map((actor, index) => moveActor(sim, actor, offsets[index], dt, { job: "approach", factor: 0.9 }));
-    const arrived = arrivals.every(Boolean);
-    if (!arrived) return;
-    target.job = "guard";
-    setPhase(sim, "clash");
-    sim.data.fightElapsed = 0;
-    return;
-  }
-  sim.data.fightElapsed += dt;
-  sim.host.dataset.fightElapsed = sim.data.fightElapsed.toFixed(1);
-  if (sim.data.fightElapsed < 1) return;
-  const power = aliveMains.reduce((total, actor) => total + combatPower(actor.role, actor.side), 0);
-  recordRule(sim, "combatPower");
-  const maxHealth = combatHealth(target.role, target.side);
-  const health = target.health ?? maxHealth;
-  recordRule(sim, "combatHealth");
-  const won = groupCanWin(power, health);
-  recordRule(sim, "groupCanWin");
-  const damage = won ? health : 1;
-  target.health = Math.max(0, health - damage);
-  target.el.dataset.health = String(target.health);
-  target.el.style.opacity = won ? "0.42" : String(Math.max(0.45, target.health / maxHealth));
-  sim.host.dataset.lastFight = JSON.stringify({ power, health, damage, remainingHealth: target.health });
-  if (!won) {
-    const lost = aliveMains.at(-1);
-    lost.alive = false;
-    lost.el.dataset.health = "0";
-    lost.el.style.opacity = "0";
-  } else {
-    target.alive = false;
-    sim.data.pendingTarget = target;
-  }
-  sim.data.target = null;
-  setPhase(sim, won ? "resolve-win" : "resolve-loss");
-  sim.data.resolveUntil = sim.clock + 0.35;
-  finish.pending = true;
-}
-
 function tickFight(sim, dt) {
-  if (!sim.data.trailMet) {
-    const travelers = [...sim.data.mains, ...sim.data.rivals];
-    const arrived = travelers.map((actor) => moveOnRoute(sim, actor, actor.trailRoute, dt, { job: "follow" }));
-    if (arrived.every(Boolean)) {
-      sim.data.trailMet = true;
-      setPhase(sim, "approach");
-    }
+  const { encounter, mains, rivals, odds, status } = sim.data;
+  const actors = [...mains, ...rivals];
+  if (sim.phase === "trail-approach") {
+    const arrived = actors.map((actor) => moveOnRoute(sim, actor, actor.trailRoute, dt, {
+      job: actor.role === "flyer" ? "fly" : "follow",
+    }));
+    if (!arrived.every(Boolean)) return;
+    actors.forEach((actor) => {
+      actor.el.classList.remove("walk");
+      actor.el.classList.add("fighting");
+    });
+    status.textContent = odds === null ? "The nearby ants join the fight" : "The ants clash";
+    setPhase(sim, "clash");
     return;
   }
-  if (sim.phase === "resolve-win" || sim.phase === "resolve-loss") {
-    if (sim.clock < sim.data.resolveUntil) return;
-    sim.data.pendingTarget?.el.remove();
-    sim.data.pendingTarget = null;
-    setPhase(sim, "approach");
+  if (sim.clock - sim.phaseAt < 1) return;
+
+  const result = { encounter: encounter.id };
+  let loser;
+  if (odds !== null) {
+    recordRule(sim, "duelOdds");
+    result.odds = odds;
+    result.winner = Math.random() < odds ? "main" : "rival";
+    loser = result.winner === "main" ? rivals[0] : mains[0];
+  } else {
+    const target = encounter.defending === "main" ? mains[0] : rivals[0];
+    const attackers = encounter.defending === "main" ? rivals : mains;
+    const nearby = attackers.filter((actor) => Math.hypot(actor.x - target.x, actor.y - target.y) < 42);
+    result.power = nearby.reduce((total, actor) => total + combatPower(actor.role, actor.side), 0);
+    result.health = combatHealth(target.role, target.side);
+    ["combatPower", "combatHealth", "groupCanWin"].forEach((rule) => recordRule(sim, rule));
+    if (groupCanWin(result.power, result.health)) {
+      result.winner = nearby[0].side;
+      loser = target;
+    }
   }
-  tickCombat(sim, dt, {
-    mains: sim.data.mains,
-    rivals: sim.data.rivals,
-    center: sim.data.fightCenter,
-    getTarget: (mains, rivals) => rivals[0] || null,
-    finish: () => completeCycle(sim),
-  });
+  actors.forEach((actor) => actor.el.classList.remove("fighting"));
+  if (loser) loser.el.style.opacity = "0";
+  status.textContent = result.winner === "main" ? "The main colony wins" :
+    result.winner === "rival" ? "The rival colony wins" : "The defender holds";
+  sim.host.dataset.lastFight = JSON.stringify(result);
+  completeCycle(sim);
 }
 
 function tickCastes(sim, dt) {
@@ -655,89 +632,43 @@ function tickWorship(sim, dt) {
 
 function tickRival(sim, dt) {
   const data = sim.data;
-  if (data.stage === "build") {
+  useForage(sim, dt, { home: data.mainHome, workers: data.mainWorkers });
+  if (sim.phase === "rival-build") {
     data.build = advanceBuild(data.build, dt, RIVAL_FOUNDING_TIME);
     recordRule(sim, "advanceBuild");
     setMoundProgress(sim, data.rivalMound, data.build);
-    sim.host.dataset.buildProgress = data.build.toFixed(2);
-    if (data.build >= 1) {
-      data.stage = "steal";
-      setPhase(sim, "rival-steals");
-    }
-    return;
+    if (data.build < 1) return;
+    data.builders.forEach((actor) => actor.el.remove());
+    sim.actors = sim.actors.filter((actor) => !data.builders.includes(actor));
+    data.rivalTrail.removeAttribute("visibility");
+    data.workers.forEach((actor) => { actor.job = "search"; });
+    data.status.textContent = "Rival workers follow the red trail";
+    setPhase(sim, "rival-steals");
   }
-  if (data.stage === "steal") {
-    data.workers.forEach((actor) => { if (actor.job === "wait") actor.job = "search"; });
-    useForage(sim, dt, { home: data.home, workers: data.workers });
-    data.mainWorkers.forEach((actor) => { if (actor.job === "wait") actor.job = "search"; });
-    useForage(sim, dt, { home: data.mainHome, workers: data.mainWorkers });
-    if (allLettersDelivered(sim)) {
-      data.stage = "fight";
-      data.soldiers.forEach((actor) => { actor.job = "approach"; });
-      data.guards.forEach((actor) => { actor.alive = true; actor.el.classList.remove("inside-mound"); });
-      setPhase(sim, "main-answers");
-    }
-    return;
+
+  useForage(sim, dt, {
+    home: data.home,
+    workers: data.workers,
+    onDelivery: () => {
+      data.banked++;
+      data.status.textContent = `Letters banked by the rival · ${data.banked}`;
+      sim.host.dataset.rivalLettersBanked = String((Number(sim.host.dataset.rivalLettersBanked) || 0) + 1);
+    },
+  });
+  const { guard } = data;
+  if (sim.clock >= (guard.resumeAt ?? 0) && moveOnRoute(sim, guard, guard.patrol, dt, { job: "guard", factor: 0.7 })) {
+    guard.el.classList.remove("walk");
+    guard.patrol.reverse();
+    guard.routeIndex = 1;
+    guard.resumeAt = sim.clock + 0.6;
   }
-  if (data.stage === "fight") {
-    if (sim.phase === "resolve-win" || sim.phase === "resolve-loss") {
-      if (sim.clock < sim.data.resolveUntil) return;
-      sim.data.pendingTarget?.el.remove();
-      sim.data.pendingTarget = null;
-      if (data.guards.every((actor) => actor.alive === false)) {
-        data.stage = "destroy";
-        data.siegeElapsed = 0;
-        data.soldiers.forEach((actor) => { actor.job = "rival-siege"; });
-        setPhase(sim, "soldiers-destroy-mound");
-        return;
-      }
-      setPhase(sim, "approach");
-    }
-    tickCombat(sim, dt, {
-      mains: data.soldiers,
-      rivals: data.guards,
-      getTarget: (_mains, aliveGuards) => aliveGuards.find((actor) => actor.alive !== false) || null,
-      finish: () => {
-        data.stage = "destroy";
-        data.siegeElapsed = 0;
-        data.soldiers.forEach((actor) => { actor.job = "rival-siege"; });
-        setPhase(sim, "soldiers-destroy-mound");
-      },
-    });
-    return;
-  }
-  if (data.stage === "destroy") {
-    const arrivals = data.soldiers.map((actor, index) => moveActor(sim, actor, { x: data.rivalMound.x + 58, y: 159 + index * 7 }, dt, { job: "rival-siege", factor: 0.9 }));
-    if (!arrivals.every(Boolean)) return;
-    data.siegeElapsed += dt;
-    if (data.siegeElapsed >= MOUND_BITE_INTERVAL) {
-      data.siegeElapsed = 0;
-      for (let index = 0; index < data.soldiers.length && data.siegeHealth > 0; index++) {
-        data.siegeHealth = damageMound(data.siegeHealth);
-        recordRule(sim, "damageMound");
-      }
-      setMoundProgress(sim, data.rivalMound, data.siegeHealth / 8);
-      sim.host.dataset.rivalMoundHealth = String(data.siegeHealth);
-    }
-    if (data.siegeHealth === 0) {
-      sim.host.dataset.rivalMoundsDestroyed = String((Number(sim.host.dataset.rivalMoundsDestroyed) || 0) + 1);
-      data.workers.forEach((actor) => { actor.job = "retreat"; });
-      data.stage = "driven-off";
-      setPhase(sim, "rival-driven-off");
-    }
-    return;
-  }
-  if (data.stage === "driven-off") {
-    const returns = data.workers.map((actor, index) => moveActor(sim, actor, { x: data.home.x + index * 7, y: data.home.y + 6 }, dt, { job: "retreat", factor: 0.9 }));
-    const returned = returns.every(Boolean);
-    if (returned) completeCycle(sim);
-  }
+  if (allLettersDelivered(sim)) completeCycle(sim);
 }
 
 function tick(sim, dt) {
   sim.clock += dt;
   if (sim.phase === "complete") {
-    if (sim.clock - sim.phaseAt >= 0.65) resetCycle(sim);
+    if (sim.clock - sim.phaseAt >= (sim.mode === "fight" || sim.mode === "rival" ? 1.7 : 0.65)) resetCycle(sim);
     return;
   }
   if (sim.phase === "reset") {
@@ -767,7 +698,6 @@ export function mountNest(host) {
   host.dataset.eventState = "starting";
   host.dataset.completedCycles = "0";
   host.dataset.resetCount = "0";
-  if (mode === "rival") host.dataset.rivalMoundsDestroyed = "0";
   host.dataset.maxStoresSeen = "0";
   host.dataset.lastRulesUsed = "";
   host.dataset.cycle = "1";

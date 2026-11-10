@@ -1,33 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="A cream square card for the ant colony note, with a Braille anthill, dotted scent trails, and the title My portfolio has ants now.">
-  <rect width="1200" height="1200" fill="#faf7f1"/>
-  <rect x="36" y="36" width="1128" height="1128" fill="none" stroke="#d8cfc1" stroke-width="2"/>
-  <text x="86" y="156" font-family="Georgia, 'Times New Roman', serif" font-size="72" fill="#2b2b2b">My portfolio</text>
-  <text x="86" y="238" font-family="Georgia, 'Times New Roman', serif" font-size="72" fill="#2b2b2b">has ants now.</text>
-  <text x="90" y="306" font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#6b6259">A small ecosystem hidden under the copy.</text>
-
-  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#2b2b2b" text-anchor="middle" letter-spacing="-1">
-    <text x="600" y="500">⠀⠀⠀⠀⣀⣤⣤⣤⣤⣀⠀⠀⠀⠀</text>
-    <text x="600" y="520">⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣄⠀⠀</text>
-    <text x="600" y="540">⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀</text>
-    <text x="600" y="560">⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇</text>
-    <text x="600" y="580">⠈⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠁</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" data-layout="square" role="img" aria-label="Three ants carry the missing D from the TJ’s Desk heading over the remaining letters and up a dotted trail to a Braille mound. I lead engineering teams, build multi-model AI workflows, and mentor software developers. I put bugs on my website. On purpose. portfolio.tjakoen.com.">
+  <!-- The heading uses Redaction 70 outlines. The mound and ants use the Nest dot patterns. -->
+  <style>
+    .hero { transform: translate(5px, 44px) scale(.94); }
+    [data-layout="square"] .hero { transform: translate(-10px, -88px) scale(1.13); }
+    .header { transform: translateY(-7px); }
+    .intro { transform: translateY(-31px); }
+    .mound { transform: translate(1060px, 324px) scale(.76) translate(-958px, -656px); }
+    .cargo { transform: translate(570px, 430px) scale(.88) translate(-632px, -744px); }
+    .square-trail, .square-footer { display: none; }
+    [data-layout="square"] .header { transform: translateY(-103px); }
+    [data-layout="square"] .intro { transform: translateY(-86px); }
+    [data-layout="square"] .mound { transform: translate(895px, 165px) scale(.72) translate(-958px, -656px); }
+    [data-layout="square"] .cargo { transform: translate(-62px, -429px); }
+    [data-layout="square"] .wide-trail, [data-layout="square"] .wide-footer { display: none; }
+    [data-layout="square"] .square-trail, [data-layout="square"] .square-footer { display: inline; }
+  </style>
+  <defs>
+    <g id="nest-ant" fill="currentColor" transform="translate(-11.2 -6.4)"><circle cx="0.8" cy="0.8" r="0.72"/><circle cx="2.4000000000000004" cy="2.4000000000000004" r="0.72"/><circle cx="2.4000000000000004" cy="4" r="0.72"/><circle cx="2.4000000000000004" cy="5.6000000000000005" r="0.72"/><circle cx="4" cy="5.6000000000000005" r="0.72"/><circle cx="5.6000000000000005" cy="5.6000000000000005" r="0.72"/><circle cx="8.8" cy="5.6000000000000005" r="0.72"/><circle cx="10.400000000000002" cy="5.6000000000000005" r="0.72"/><circle cx="13.600000000000001" cy="5.6000000000000005" r="0.72"/><circle cx="15.200000000000001" cy="5.6000000000000005" r="0.72"/><circle cx="16.8" cy="5.6000000000000005" r="0.72"/><circle cx="18.400000000000002" cy="5.6000000000000005" r="0.72"/><circle cx="20.000000000000004" cy="5.6000000000000005" r="0.72"/><circle cx="0.8" cy="7.2" r="0.72"/><circle cx="2.4000000000000004" cy="7.2" r="0.72"/><circle cx="4" cy="7.2" r="0.72"/><circle cx="5.6000000000000005" cy="7.2" r="0.72"/><circle cx="8.8" cy="7.2" r="0.72"/><circle cx="10.400000000000002" cy="7.2" r="0.72"/><circle cx="12.000000000000002" cy="7.2" r="0.72"/><circle cx="15.200000000000001" cy="7.2" r="0.72"/><circle cx="16.8" cy="7.2" r="0.72"/><circle cx="18.400000000000002" cy="7.2" r="0.72"/><circle cx="20.000000000000004" cy="7.2" r="0.72"/><circle cx="21.6" cy="7.2" r="0.72"/><circle cx="2.4000000000000004" cy="8.8" r="0.72"/><circle cx="4" cy="8.8" r="0.72"/><circle cx="5.6000000000000005" cy="8.8" r="0.72"/><circle cx="8.8" cy="8.8" r="0.72"/><circle cx="10.400000000000002" cy="8.8" r="0.72"/><circle cx="13.600000000000001" cy="8.8" r="0.72"/><circle cx="15.200000000000001" cy="8.8" r="0.72"/><circle cx="16.8" cy="8.8" r="0.72"/><circle cx="18.400000000000002" cy="8.8" r="0.72"/><circle cx="20.000000000000004" cy="8.8" r="0.72"/><g class="legs-a"><circle cx="8.8" cy="4" r="0.72"/><circle cx="7.2" cy="2.4000000000000004" r="0.72"/><circle cx="15.200000000000001" cy="4" r="0.72"/><circle cx="16.8" cy="2.4000000000000004" r="0.72"/><circle cx="12.000000000000002" cy="10.400000000000002" r="0.72"/><circle cx="13.600000000000001" cy="12.000000000000002" r="0.72"/><circle cx="4" cy="10.400000000000002" r="0.72"/><circle cx="2.4000000000000004" cy="12.000000000000002" r="0.72"/></g></g>
+  </defs>
+  <rect width="1200" height="1200" fill="#F5EEDD"/>
+  <g class="hero">
+  <g class="header">
+  <text x="86" y="391" fill="#6E6249" font-family="Georgia, serif" font-size="34" letter-spacing="1">Tjakoen Stolk · Portfolio</text>
+  <g fill="#2C2416">
+    <path transform="translate(84 558) scale(0.16 -0.16)" d="M0 700H630V630H420V70H490V0H210V70H280V630H70V490H0Z"/>
+    <path transform="translate(184.8 558) scale(0.16 -0.16)" d="M350 70V0H210V70H350V630H280V700H490V140H420V70ZM70 210H140V0H70V70H0V140H70Z"/>
+    <path transform="translate(274.4 558) scale(0.16 -0.16)" d="M140 700V420H70V700Z"/>
+    <path transform="translate(308 558) scale(0.16 -0.16)" d="M70 140H140V70H280V140H210V210H70V490H210V420H140V280H280V210H350V0H140V70H70ZM350 350H280V490H350Z"/>
+    <path transform="translate(532 558) scale(0.16 -0.16)" d="M420 280H350V420H140V140H210V70H350V0H140V70H70V420H140V490H350V420H420ZM280 280H350V210H280Z"/>
+    <path transform="translate(610.4 558) scale(0.16 -0.16)" d="M70 140H140V70H280V140H210V210H70V490H210V420H140V280H280V210H350V0H140V70H70ZM350 350H280V490H350Z"/>
+    <path transform="translate(677.6 558) scale(0.16 -0.16)" d="M70 700H140V70H210V0H70ZM420 0V70H350V140H280V210H210V280H280V350H350V490H560V420H420V350H350V210H420V140H490V70H560V0Z"/>
   </g>
-  <circle cx="600" cy="546" r="22" fill="#faf7f1"/>
-  <path d="M600 570 C520 640 430 690 330 760" fill="none" stroke="#d97757" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
-  <path d="M600 570 C690 650 780 700 890 760" fill="none" stroke="#d97757" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
-
-  <g fill="#2b2b2b" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round">
-    <g transform="translate(320 760)">
-      <ellipse cx="-13" cy="0" rx="8" ry="6" fill="#2b2b2b"/><circle cx="0" cy="-1" r="7"/><ellipse cx="13" cy="0" rx="10" ry="7"/>
-      <path d="M-17 -4 L-27 -12 M-17 3 L-27 11 M0 -7 L-5 -17 M0 6 L-5 15 M20 -4 L29 -12 M20 4 L29 12" fill="none"/>
-    </g>
-    <g transform="translate(890 760) scale(-1 1)">
-      <ellipse cx="-13" cy="0" rx="8" ry="6"/><circle cx="0" cy="-1" r="7"/><ellipse cx="13" cy="0" rx="10" ry="7"/>
-      <path d="M-17 -4 L-27 -12 M-17 3 L-27 11 M0 -7 L-5 -17 M0 6 L-5 15 M20 -4 L29 -12 M20 4 L29 12" fill="none"/>
-    </g>
   </g>
-
-  <text x="86" y="1010" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#2b2b2b">No canvas. No game library.</text>
-  <text x="86" y="1055" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#2b2b2b">One plain JavaScript file.</text>
-  <text x="86" y="1108" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" fill="#d97757" letter-spacing="2">PORTFOLIO.TJAKOEN.COM</text>
+  <text class="intro" x="86" y="663" fill="#6E6249" font-family="Georgia, serif" font-size="33">
+    <tspan x="86">I lead engineering teams, build multi-model AI workflows,</tspan>
+    <tspan x="86" dy="45">and mentor software developers.</tspan>
+  </text>
+  <g fill="none" stroke="#6E6249" stroke-width="4" stroke-dasharray="1 13" stroke-linecap="round">
+    <path class="wide-trail" d="M475 505 C475 468 524 454 575 454 C694 454 759 434 808 396 S928 320 988 320 Q1025 321 1060 324"/>
+    <path class="square-trail" d="M475 409 C475 362 523 343 577 343 C687 343 739 321 773 278 S811 206 841 178 Q864 151 895 165"/>
+  </g>
+  <g class="mound">
+  <g fill="#6E6249">
+    <circle cx="926.5" cy="663" r="2.4"/><circle cx="933" cy="663" r="2.4"/><circle cx="978.5" cy="663" r="2.4"/><circle cx="985" cy="663" r="2.4"/><circle cx="991.5" cy="663" r="2.4"/>
+    <circle cx="913.5" cy="670" r="2.4"/><circle cx="920" cy="670" r="2.4"/><circle cx="933" cy="670" r="2.4"/><circle cx="985" cy="670" r="2.4"/><circle cx="998" cy="670" r="2.4"/><circle cx="1004.5" cy="670" r="2.4"/>
+    <circle cx="900.5" cy="677" r="2.4"/><circle cx="907" cy="677" r="2.4"/><circle cx="913.5" cy="677" r="2.4"/><circle cx="926.5" cy="677" r="2.4"/><circle cx="978.5" cy="677" r="2.4"/><circle cx="991.5" cy="677" r="2.4"/><circle cx="1004.5" cy="677" r="2.4"/><circle cx="1011" cy="677" r="2.4"/><circle cx="1017.5" cy="677" r="2.4"/>
+    <circle cx="887.5" cy="684" r="2.4"/><circle cx="894" cy="684" r="2.4"/><circle cx="907" cy="684" r="2.4"/><circle cx="920" cy="684" r="2.4"/><circle cx="926.5" cy="684" r="2.4"/><circle cx="933" cy="684" r="2.4"/><circle cx="946" cy="684" r="2.4"/><circle cx="959" cy="684" r="2.4"/><circle cx="972" cy="684" r="2.4"/><circle cx="978.5" cy="684" r="2.4"/><circle cx="985" cy="684" r="2.4"/><circle cx="998" cy="684" r="2.4"/><circle cx="1011" cy="684" r="2.4"/><circle cx="1024" cy="684" r="2.4"/><circle cx="1030.5" cy="684" r="2.4"/>
+    <circle cx="881" cy="691" r="2.4"/><circle cx="887.5" cy="691" r="2.4"/><circle cx="900.5" cy="691" r="2.4"/><circle cx="913.5" cy="691" r="2.4"/><circle cx="926.5" cy="691" r="2.4"/><circle cx="939.5" cy="691" r="2.4"/><circle cx="952.5" cy="691" r="2.4"/><circle cx="959" cy="691" r="2.4"/><circle cx="965.5" cy="691" r="2.4"/><circle cx="978.5" cy="691" r="2.4"/><circle cx="991.5" cy="691" r="2.4"/><circle cx="1004.5" cy="691" r="2.4"/><circle cx="1017.5" cy="691" r="2.4"/><circle cx="1030.5" cy="691" r="2.4"/><circle cx="1037" cy="691" r="2.4"/>
+    <circle cx="874.5" cy="698" r="2.4"/><circle cx="881" cy="698" r="2.4"/><circle cx="887.5" cy="698" r="2.4"/><circle cx="894" cy="698" r="2.4"/><circle cx="907" cy="698" r="2.4"/><circle cx="920" cy="698" r="2.4"/><circle cx="926.5" cy="698" r="2.4"/><circle cx="933" cy="698" r="2.4"/><circle cx="946" cy="698" r="2.4"/><circle cx="952.5" cy="698" r="2.4"/><circle cx="959" cy="698" r="2.4"/><circle cx="972" cy="698" r="2.4"/><circle cx="985" cy="698" r="2.4"/><circle cx="998" cy="698" r="2.4"/><circle cx="1004.5" cy="698" r="2.4"/><circle cx="1011" cy="698" r="2.4"/><circle cx="1017.5" cy="698" r="2.4"/><circle cx="1024" cy="698" r="2.4"/><circle cx="1037" cy="698" r="2.4"/><circle cx="1043.5" cy="698" r="2.4"/>
+    <circle cx="868" cy="705" r="2.4"/><circle cx="874.5" cy="705" r="2.4"/><circle cx="881" cy="705" r="2.4"/><circle cx="887.5" cy="705" r="2.4"/><circle cx="900.5" cy="705" r="2.4"/><circle cx="913.5" cy="705" r="2.4"/><circle cx="926.5" cy="705" r="2.4"/><circle cx="939.5" cy="705" r="2.4"/><circle cx="946" cy="705" r="2.4"/><circle cx="952.5" cy="705" r="2.4"/><circle cx="959" cy="705" r="2.4"/><circle cx="965.5" cy="705" r="2.4"/><circle cx="978.5" cy="705" r="2.4"/><circle cx="991.5" cy="705" r="2.4"/><circle cx="1004.5" cy="705" r="2.4"/><circle cx="1017.5" cy="705" r="2.4"/><circle cx="1030.5" cy="705" r="2.4"/><circle cx="1043.5" cy="705" r="2.4"/><circle cx="1050" cy="705" r="2.4"/>
+    <circle cx="861.5" cy="712" r="2.4"/><circle cx="868" cy="712" r="2.4"/><circle cx="874.5" cy="712" r="2.4"/><circle cx="881" cy="712" r="2.4"/><circle cx="894" cy="712" r="2.4"/><circle cx="907" cy="712" r="2.4"/><circle cx="920" cy="712" r="2.4"/><circle cx="933" cy="712" r="2.4"/><circle cx="939.5" cy="712" r="2.4"/><circle cx="946" cy="712" r="2.4"/><circle cx="959" cy="712" r="2.4"/><circle cx="972" cy="712" r="2.4"/><circle cx="978.5" cy="712" r="2.4"/><circle cx="985" cy="712" r="2.4"/><circle cx="991.5" cy="712" r="2.4"/><circle cx="998" cy="712" r="2.4"/><circle cx="1011" cy="712" r="2.4"/><circle cx="1017.5" cy="712" r="2.4"/><circle cx="1024" cy="712" r="2.4"/><circle cx="1037" cy="712" r="2.4"/><circle cx="1050" cy="712" r="2.4"/><circle cx="1056.5" cy="712" r="2.4"/>
+    <circle cx="855" cy="719" r="2.4"/><circle cx="861.5" cy="719" r="2.4"/><circle cx="874.5" cy="719" r="2.4"/><circle cx="887.5" cy="719" r="2.4"/><circle cx="900.5" cy="719" r="2.4"/><circle cx="913.5" cy="719" r="2.4"/><circle cx="926.5" cy="719" r="2.4"/><circle cx="939.5" cy="719" r="2.4"/><circle cx="952.5" cy="719" r="2.4"/><circle cx="965.5" cy="719" r="2.4"/><circle cx="978.5" cy="719" r="2.4"/><circle cx="985" cy="719" r="2.4"/><circle cx="991.5" cy="719" r="2.4"/><circle cx="1004.5" cy="719" r="2.4"/><circle cx="1017.5" cy="719" r="2.4"/><circle cx="1030.5" cy="719" r="2.4"/><circle cx="1043.5" cy="719" r="2.4"/><circle cx="1056.5" cy="719" r="2.4"/><circle cx="1063" cy="719" r="2.4"/>
+    <circle cx="848.5" cy="726" r="2.4"/><circle cx="855" cy="726" r="2.4"/><circle cx="868" cy="726" r="2.4"/><circle cx="881" cy="726" r="2.4"/><circle cx="887.5" cy="726" r="2.4"/><circle cx="894" cy="726" r="2.4"/><circle cx="900.5" cy="726" r="2.4"/><circle cx="907" cy="726" r="2.4"/><circle cx="920" cy="726" r="2.4"/><circle cx="933" cy="726" r="2.4"/><circle cx="946" cy="726" r="2.4"/><circle cx="959" cy="726" r="2.4"/><circle cx="972" cy="726" r="2.4"/><circle cx="978.5" cy="726" r="2.4"/><circle cx="985" cy="726" r="2.4"/><circle cx="998" cy="726" r="2.4"/><circle cx="1011" cy="726" r="2.4"/><circle cx="1024" cy="726" r="2.4"/><circle cx="1037" cy="726" r="2.4"/><circle cx="1050" cy="726" r="2.4"/><circle cx="1063" cy="726" r="2.4"/><circle cx="1069.5" cy="726" r="2.4"/>
+    <circle cx="842" cy="733" r="2.4"/><circle cx="848.5" cy="733" r="2.4"/><circle cx="861.5" cy="733" r="2.4"/><circle cx="874.5" cy="733" r="2.4"/><circle cx="887.5" cy="733" r="2.4"/><circle cx="894" cy="733" r="2.4"/><circle cx="900.5" cy="733" r="2.4"/><circle cx="913.5" cy="733" r="2.4"/><circle cx="926.5" cy="733" r="2.4"/><circle cx="939.5" cy="733" r="2.4"/><circle cx="952.5" cy="733" r="2.4"/><circle cx="965.5" cy="733" r="2.4"/><circle cx="978.5" cy="733" r="2.4"/><circle cx="991.5" cy="733" r="2.4"/><circle cx="1004.5" cy="733" r="2.4"/><circle cx="1017.5" cy="733" r="2.4"/><circle cx="1030.5" cy="733" r="2.4"/><circle cx="1043.5" cy="733" r="2.4"/><circle cx="1056.5" cy="733" r="2.4"/><circle cx="1069.5" cy="733" r="2.4"/><circle cx="1076" cy="733" r="2.4"/>
+    <circle cx="835.5" cy="740" r="2.4"/><circle cx="842" cy="740" r="2.4"/><circle cx="855" cy="740" r="2.4"/><circle cx="868" cy="740" r="2.4"/><circle cx="874.5" cy="740" r="2.4"/><circle cx="881" cy="740" r="2.4"/><circle cx="894" cy="740" r="2.4"/><circle cx="907" cy="740" r="2.4"/><circle cx="920" cy="740" r="2.4"/><circle cx="926.5" cy="740" r="2.4"/><circle cx="933" cy="740" r="2.4"/><circle cx="946" cy="740" r="2.4"/><circle cx="952.5" cy="740" r="2.4"/><circle cx="959" cy="740" r="2.4"/><circle cx="965.5" cy="740" r="2.4"/><circle cx="972" cy="740" r="2.4"/><circle cx="978.5" cy="740" r="2.4"/><circle cx="985" cy="740" r="2.4"/><circle cx="991.5" cy="740" r="2.4"/><circle cx="998" cy="740" r="2.4"/><circle cx="1004.5" cy="740" r="2.4"/><circle cx="1011" cy="740" r="2.4"/><circle cx="1024" cy="740" r="2.4"/><circle cx="1037" cy="740" r="2.4"/><circle cx="1050" cy="740" r="2.4"/><circle cx="1056.5" cy="740" r="2.4"/><circle cx="1063" cy="740" r="2.4"/><circle cx="1076" cy="740" r="2.4"/><circle cx="1082.5" cy="740" r="2.4"/>
+    <circle cx="829" cy="747" r="2.4"/><circle cx="835.5" cy="747" r="2.4"/><circle cx="842" cy="747" r="2.4"/><circle cx="848.5" cy="747" r="2.4"/><circle cx="855" cy="747" r="2.4"/><circle cx="861.5" cy="747" r="2.4"/><circle cx="868" cy="747" r="2.4"/><circle cx="874.5" cy="747" r="2.4"/><circle cx="881" cy="747" r="2.4"/><circle cx="887.5" cy="747" r="2.4"/><circle cx="900.5" cy="747" r="2.4"/><circle cx="913.5" cy="747" r="2.4"/><circle cx="926.5" cy="747" r="2.4"/><circle cx="933" cy="747" r="2.4"/><circle cx="939.5" cy="747" r="2.4"/><circle cx="952.5" cy="747" r="2.4"/><circle cx="965.5" cy="747" r="2.4"/><circle cx="978.5" cy="747" r="2.4"/><circle cx="991.5" cy="747" r="2.4"/><circle cx="1004.5" cy="747" r="2.4"/><circle cx="1017.5" cy="747" r="2.4"/><circle cx="1024" cy="747" r="2.4"/><circle cx="1030.5" cy="747" r="2.4"/><circle cx="1043.5" cy="747" r="2.4"/><circle cx="1056.5" cy="747" r="2.4"/><circle cx="1063" cy="747" r="2.4"/><circle cx="1069.5" cy="747" r="2.4"/><circle cx="1082.5" cy="747" r="2.4"/><circle cx="1089" cy="747" r="2.4"/>
+  </g>
+  <g fill="#B9AC8E">
+    <circle cx="822.5" cy="754" r="2.4"/><circle cx="829" cy="754" r="2.4"/><circle cx="842" cy="754" r="2.4"/><circle cx="848.5" cy="754" r="2.4"/><circle cx="855" cy="754" r="2.4"/><circle cx="868" cy="754" r="2.4"/><circle cx="881" cy="754" r="2.4"/><circle cx="887.5" cy="754" r="2.4"/><circle cx="894" cy="754" r="2.4"/><circle cx="907" cy="754" r="2.4"/><circle cx="920" cy="754" r="2.4"/><circle cx="933" cy="754" r="2.4"/><circle cx="946" cy="754" r="2.4"/><circle cx="959" cy="754" r="2.4"/><circle cx="972" cy="754" r="2.4"/><circle cx="985" cy="754" r="2.4"/><circle cx="998" cy="754" r="2.4"/><circle cx="1011" cy="754" r="2.4"/><circle cx="1024" cy="754" r="2.4"/><circle cx="1037" cy="754" r="2.4"/><circle cx="1050" cy="754" r="2.4"/><circle cx="1063" cy="754" r="2.4"/><circle cx="1076" cy="754" r="2.4"/><circle cx="1089" cy="754" r="2.4"/><circle cx="1095.5" cy="754" r="2.4"/>
+    <circle cx="822.5" cy="761" r="2.4"/><circle cx="829" cy="761" r="2.4"/><circle cx="835.5" cy="761" r="2.4"/><circle cx="848.5" cy="761" r="2.4"/><circle cx="861.5" cy="761" r="2.4"/><circle cx="874.5" cy="761" r="2.4"/><circle cx="881" cy="761" r="2.4"/><circle cx="887.5" cy="761" r="2.4"/><circle cx="900.5" cy="761" r="2.4"/><circle cx="913.5" cy="761" r="2.4"/><circle cx="926.5" cy="761" r="2.4"/><circle cx="939.5" cy="761" r="2.4"/><circle cx="952.5" cy="761" r="2.4"/><circle cx="959" cy="761" r="2.4"/><circle cx="965.5" cy="761" r="2.4"/><circle cx="972" cy="761" r="2.4"/><circle cx="978.5" cy="761" r="2.4"/><circle cx="991.5" cy="761" r="2.4"/><circle cx="998" cy="761" r="2.4"/><circle cx="1004.5" cy="761" r="2.4"/><circle cx="1011" cy="761" r="2.4"/><circle cx="1017.5" cy="761" r="2.4"/><circle cx="1030.5" cy="761" r="2.4"/><circle cx="1043.5" cy="761" r="2.4"/><circle cx="1056.5" cy="761" r="2.4"/><circle cx="1069.5" cy="761" r="2.4"/><circle cx="1082.5" cy="761" r="2.4"/><circle cx="1095.5" cy="761" r="2.4"/>
+  </g>
+  </g>
+  <g class="cargo">
+  <g color="#2C2416">
+    <use href="#nest-ant" transform="translate(646 757) rotate(152) scale(3.1)"/>
+    <use href="#nest-ant" transform="translate(685 769) rotate(141) scale(3.1)"/>
+    <use href="#nest-ant" transform="translate(728 753) rotate(129) scale(3.1)"/>
+  </g>
+  <g fill="#2C2416" transform="translate(632 744) rotate(-13)">
+    <path transform="scale(.181 -.181)" d="M560 140V70H490V140H560V560H490V630H210V70H490V0H70V700H490V630H560V560H630V490H700V210H630V140Z"/>
+  </g>
+  </g>
+  </g>
+  <g class="square-footer" font-family="Georgia, serif">
+    <path d="M86 755H1114" stroke="#B9AC8E" stroke-width="2"/>
+    <text x="86" y="869" fill="#2C2416" font-size="80">
+      <tspan x="86">I put bugs on my website.</tspan>
+      <tspan x="86" dy="91" font-style="italic">On purpose.</tspan>
+    </text>
+    <text x="86" y="1070" fill="#8A5E12" font-size="35">portfolio.tjakoen.com</text>
+  </g>
+  <g class="wide-footer" font-family="Georgia, serif">
+    <path d="M86 735H1114" stroke="#B9AC8E" stroke-width="2"/>
+    <text x="86" y="806" fill="#2C2416" font-size="46">I put bugs on my website. <tspan font-style="italic">On purpose.</tspan></text>
+    <text x="86" y="856" fill="#8A5E12" font-size="29">portfolio.tjakoen.com</text>
+  </g>
 </svg>
