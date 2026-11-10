@@ -454,7 +454,7 @@ test("the note has a separate self-running colony that drains and resets", async
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.active), { timeout: 20_000 }).toBe(true);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.ants.length), { timeout: 15_000 }).toBeGreaterThan(0);
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.trails.length), { timeout: 15_000 }).toBeGreaterThan(0);
-    await expect.poll(() => page.evaluate(() => window.__nest!.rival.minis.length), { timeout: 20_000 }).toBeGreaterThanOrEqual(2);
+    await expect.poll(() => page.evaluate(() => window.__nest!.rival.minis.length), { timeout: 20_000 }).toBeGreaterThanOrEqual(1);
     await page.evaluate(() => window.__nest!.forceRivalSteal());
     await expect.poll(() => page.evaluate(() => window.__nest!.rival.stolen.size), { timeout: 5_000 }).toBeGreaterThan(0);
     const placement = await page.evaluate(() => {

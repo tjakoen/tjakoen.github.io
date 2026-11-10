@@ -2,7 +2,7 @@
 export const STORE_COSTS = [12, 18, 24, 30, 36];
 export const BUILD_TIME = 8;
 export const RIVAL_FOUNDING_TIME = 3.2;
-export const RIVAL_MOUND_HEALTH = 8;
+export const RIVAL_MOUND_HEALTH = 16;
 export const MOUND_BITE_INTERVAL = 1.1;
 export const TRAIL_FOLLOW_GAP = 18;
 

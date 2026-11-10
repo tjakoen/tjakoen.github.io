@@ -5,7 +5,7 @@ author: "Tjakoen Stolk"
 status: PUBLISHED
 type: note
 date: 2026-11-07
-updated: 2026-11-10
+updated: 2026-11-11
 readingTime: "~16 min"
 tags: [games, interactive, vanilla, simulation, grain, ai]
 summary: >
@@ -60,7 +60,7 @@ There is no single script that says "now the colony does this." Each ant has a s
 The boxes in this note start each event with its own setup and replay it. Their ants use the same sprites and rules for walking, carrying and fighting as the full colony. Open the full colony to see how those events happen on their own.
 
 
-The loop is the whole design. Letters are food and building material. Ants are the machinery that moves both. There is no final level and no score to beat. The colony can grow, the rival can grow, the page can run out of letters, and the system still has something to do. At some point the page is simply a quieter place with gaps in it.
+The loop is the whole design. Letters are food and building material. Ants are the machinery that moves both. There is no final level and no score to chase. The colony can grow, the rival can grow, and the page can run out of letters. When it does, the colony keeps the emptied page as a permanent celebration instead of showing a win screen.
 
 ## How the colony works
 
@@ -73,7 +73,7 @@ The letters are real. A letter taken from this page is the actual glyph, in its 
 
 *A scout finds letters; workers carry them home and the stores rise.*
 
-A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. Full stores send a builder to raise a mini mound elsewhere on the page. If the colony is at its population cap, a worker takes the job. A mini mound stays above ground and spawns soldiers to guard it and flyers to steal letters. The rival does the same thing, with its own resource and limits.
+A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. Full stores send a builder to raise a mini mound elsewhere on the page. If the colony is at its population cap, a worker takes the job. A mini mound stays above ground and spawns guards to patrol and flyers to steal letters. The rival does the same thing, with its own resource and limits.
 
 ## Inside the nest
 
@@ -111,7 +111,7 @@ There is no win screen after the dance. Worship is the colony's own event, not t
 
 ## The rival is a second ecosystem, not a second player
 
-The first rival appears after the second worship, not the first. It starts as a smaller colony with one trail, a few workers and a guard. Later rivals appear on later milestones, and each new one is a little harder than the last.
+The first rival appears after the second worship, not the first. It starts as a smaller colony with one trail, a few workers and a guard. A new rival comes at worships three, four and five if the last one was beaten. After the fifth, the page sends another rival every fifth worship: ten, fifteen, twenty. If one is still alive when its next worship passes, that slot is skipped and the next one waits.
 
 The rival is not a second player base. It does not take orders, it does not get a turn, and it cannot see the whole board. It runs the same kind of local rules the main colony runs: follow a trail, take a letter, carry it home, spend it on another ant. The difference is that its growth comes out of what it steals.
 
@@ -120,9 +120,9 @@ The rival is not a second player base. It does not take orders, it does not get 
 
 *The main colony forages while the rival mound takes shape. Once the mound is ready, rival workers follow the red trail and carry letters home while a guard patrols.*
 
-Builders walk to a site before the mound takes shape. Workers and guards leave the entrance one at a time. Its population stays one ant below the main colony. It can still grow trails, mini mounds and flyers, but it cannot outgrow the nest it is fighting. The first rival is meant to be an easy fight. Later rivals start with more workers and more mounds if the main colony is already large, because a grown colony should not get a free win against a fresh, tiny rival. The goal is a fight with a clear main-colony advantage, not a guaranteed walkover.
+Builders walk to a site before the mound takes shape. Workers and guards leave the entrance one at a time. Its population starts at a little over half the main colony, not one ant below it, and that share grows slowly with each new rival. It can still raise trails, mini mounds and flyers, but it cannot outgrow the nest it is fighting. The first rival is a real fight. Later rivals start from the live main colony, because a grown colony should not get a free win against a fresh, tiny rival. The goal is a clear main-colony advantage, not a guaranteed walkover.
 
-The rival prefers the left side when the main colony is on the right, and it keeps its distance. That is partly visual, so the two colonies do not sit on top of each other, and partly mechanical, so the rival has room to grow before the main trails reach it. Its mini mounds can be clicked down, and its guards react to the damage. A rival mound is not a one-ant job: at least three main ants have to be working it at once, and the mound shakes under the crew before it comes down. When the rival falls, its stolen letters are gone for good. There is no cache to clean up and no loot to collect. The reward is the celebration and a quieter page.
+The rival prefers the left side when the main colony is on the right, and it keeps its distance. That is partly visual, so the two colonies do not sit on top of each other, and partly mechanical, so the rival has room to grow before the main trails reach it. Its mini mounds can be clicked down, and its guards react to the damage. A rival mound is not a one-ant job: two main ants can work it together, and the mound shakes under the crew before it comes down. The rival can break a main mini hill the same way, so a mound left without guards does not last. When the rival falls, its stolen letters are gone for good. There is no cache to clean up and no loot to collect. The reward is the celebration and a quieter page.
 
 ## Who wins a fight
 
@@ -163,9 +163,9 @@ Wait for a dotted trail to appear, select Wipe, then drag across the trail. The 
 
 Speed, pause and mute are there because a simulation should be comfortable to leave running.
 
-There is no game over screen. If the main colony loses every ant, the queen sends a scout, a soldier and workers back out. The nest can be hurt, but it cannot be permanently deleted. If the rival loses every ant, its mound falls and the page celebrates. If the page runs out of letters, the colony sends another scout and keeps looking.
+There is no game over screen. If the main colony loses every ant, the queen sends a scout, a soldier and workers back out, even when a mini hill is still standing. The nest can be hurt, but it cannot be permanently deleted. If the rival loses every ant, its mound sends another one out; the colony is beaten only when the mound itself is broken. A trail that no ant has walked for a while fades, so an old path does not sit on the page forever. If the page runs out of letters, the colony stays in a permanent celebration: the queen keeps her circle, some ants wander the page, and every hill keeps a dancer on top.
 
-Closing the Nest puts every letter back. A refresh or a new page starts a fresh colony.
+Closing the Nest refreshes the page, so every letter is restored from its source rather than from a pile of patched text. A new page starts a fresh colony.
 
 The absence of a win condition is the design, not a missing feature. A portfolio game that ends with YOU WIN is a different thing: it asks the visitor to stop reading and play until the game is over. Here you can watch a delivery, interrupt one, then close the Nest and get your sentence back. The state is the interesting part. The score would only get in the way.
 
