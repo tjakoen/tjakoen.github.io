@@ -29,6 +29,7 @@
     "social:card": "bun tools/social-card.ts",
     "social:card:dashboards": "bun tools/social-card-dashboards.ts",
     "social:card:reviewer": "bun tools/social-card-reviewer.ts",
+    "social:card:epic": "bun tools/social-card-epic.ts",
     "audit": "bun tools/audit.ts",
     "lint:voice": "bun tools/voice-lint.ts",
     "lint:links": "bun tools/link-lint.ts",
