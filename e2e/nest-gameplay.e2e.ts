@@ -302,10 +302,12 @@ test("you can click a rival mini mound down", async ({ page }) => {
   await open(page);
   await page.evaluate(() => (window.__nest as any).startRival());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 45_000 }).toBeGreaterThan(0);
-  const before = await page.evaluate(() => (window.__nest as any).rival.minis.length);
-  const mini = page.locator(".nest-hill.rival.rival-mini").first();
-  await mini.dispatchEvent("click"); await mini.dispatchEvent("click"); await mini.dispatchEvent("click");
-  await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.minis.length), { timeout: 5_000 }).toBeLessThan(before);
+  // Hold the clicked hill, not the collection: the rival can found another mound while this one is
+  // coming down, which made a count comparison pass or fail on timing rather than on the clicks.
+  const mini = await page.locator(".nest-hill.rival.rival-mini").first().elementHandle();
+  expect(mini).not.toBeNull();
+  for (let i = 0; i < 10; i++) await mini!.dispatchEvent("click");
+  await expect.poll(() => mini!.evaluate((el) => el.isConnected), { timeout: 5_000 }).toBe(false);
 });
 
 
