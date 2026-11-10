@@ -1,7 +1,7 @@
 ---
 id: review-engineering-leadership
 mode: dev
-title: "Review the engineering leadership introduction"
+title: "Review: the engineering leadership introduction"
 route: /
 ---
 The Desk now introduces the work I do with my team. The résumé connects that work to the review kit I built and the epic checker an engineer on the team built.
