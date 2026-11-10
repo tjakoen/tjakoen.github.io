@@ -240,6 +240,9 @@ test("the note has a separate self-running colony that drains and resets", async
     expect(guardNear).not.toBeNull();
     expect(guardNear!).toBeLessThan(300);
     const mound = page.locator(".nest-mini").first();
+    // Wait until the mound itself owns a guard. The colony can have guards on the page before this
+    // mound's own set is populated, and a click in that gap damages the hill instead of calling them.
+    await expect(mound).toHaveAttribute("aria-label", /guards?$/, { timeout: 30_000 });
     await mound.click();
     await page.waitForFunction(() => {
       const guards = window.__nest!.state.ants.filter((a) => a.role === "guard");
