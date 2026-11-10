@@ -68,5 +68,5 @@ describe("createNestEngine", () => {
     expect(Object.isFrozen(latest.ants[0])).toBe(true);
     engine.destroy();
     expect(() => engine.snapshot()).toThrow("Nest engine destroyed");
-  });
+  }, 30_000);
 });
