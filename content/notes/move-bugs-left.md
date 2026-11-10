@@ -168,8 +168,11 @@ fold the epic check's decided deviations into its verdict.
 
 **His tool now makes my reviews smarter.** I did not plan that, and I like it a lot. It is the part of
 this project I would point at first: a tool built for one tech lead's epics ended up improving a
-reviewer that runs on every pull request the team opens. When one of us shares what helps them, the
-whole team gets the benefit.
+reviewer that runs on every pull request the team opens. My reviews now know which deviations from
+an epic were decided on purpose, so a deliberate change no longer gets flagged like a mistake.
+
+> **One person's tool made another person's tool better.** When one of us shares what helps them,
+> the whole team gets the benefit, and that is the lesson I would keep from this project.
 
 ## What my reviewer already learned the hard way
 
