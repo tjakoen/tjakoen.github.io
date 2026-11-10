@@ -6,6 +6,36 @@ const open = async (page: import("@playwright/test").Page) => {
   await expect(page.locator("#nest-mock")).toBeVisible();
 };
 
+test("the home mound fits the page after opening a hidden sidebar", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("grain.shell.aside-hidden", "1");
+    const observer = new MutationObserver(() => {
+      const main = document.querySelector(".app-shell__main");
+      if (!main?.querySelector(".nest-hill-live")) return;
+      main.setAttribute("data-test-nest-spawn-width", String(main.clientWidth));
+      observer.disconnect();
+    });
+    observer.observe(document, { childList: true, subtree: true });
+  });
+  await page.goto("/");
+  const main = page.locator(".app-shell__main");
+  const aside = page.locator(".app-shell__aside");
+  await expect(page.locator(".app-shell")).toHaveAttribute("data-aside-hidden", "true");
+  await expect.poll(() => aside.evaluate((el) => el.clientWidth)).toBe(0);
+  await page.getByRole("button", { name: "Open the Nest" }).click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  await expect.poll(() => aside.evaluate((el) => el.clientWidth)).toBeGreaterThan(250);
+  const spawnWidth = Number(await main.getAttribute("data-test-nest-spawn-width"));
+  expect(spawnWidth).toBe(await main.evaluate((el) => el.clientWidth));
+  const bounds = await main.evaluate((el) => {
+    const pane = el.getBoundingClientRect();
+    const mound = el.querySelector(".nest-hill-live")!.getBoundingClientRect();
+    return { pageLeft: pane.left, pageRight: pane.right, moundLeft: mound.left, moundRight: mound.right };
+  });
+  expect(bounds.moundLeft).toBeGreaterThanOrEqual(bounds.pageLeft);
+  expect(bounds.moundRight).toBeLessThanOrEqual(bounds.pageRight);
+});
+
 test("the colony reads the page into the larder and stores", async ({ page }) => {
   await open(page);
   await expect.poll(() => page.evaluate(() => (window.__nest as any).state.stores), { timeout: 35_000 }).toBeGreaterThan(0);
