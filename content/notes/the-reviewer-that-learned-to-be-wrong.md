@@ -46,7 +46,7 @@ socialImageAlt:
   - "Card four of four: the real review board on invented pull requests, in columns for queued, in flight and waiting on author, under the line: it reviews my team's pull requests on its own. Approval still stays with me."
 ---
 
-My PR review kit is a set of Claude skills that reviews my team's pull requests at [Career Team](https://careerteam.com) the
+My PR review kit is a set of Claude skills that reviews my team's pull requests at [Career Team](/leading) the
 way I would, in the tone I would, and posts under my account. It reads the ticket before the diff,
 it never approves anything, and it keeps a log of every time it was wrong. That last part is most of
 the story.

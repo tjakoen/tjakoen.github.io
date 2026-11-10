@@ -26,7 +26,7 @@ socialImage: "/media/notes/move-bugs-left-social.png"
 socialImageAlt: "Move bugs left. Catch it on the ticket, not in production. Four stops on a line, ticket, review, testing and production, each dot bigger than the last, with the first two boxed: the epic checker works here."
 ---
 
-An epic at [Career Team](https://careerteam.com) has a lot of hands on it: the plan owner, product,
+An epic at [Career Team](/leading) has a lot of hands on it: the plan owner, product,
 leads from potentially more than one team, and the developers doing the work. Decisions change while the work is
 moving, and the code written last sprint can quietly drift from the decision made this sprint. Nobody
 notices until review, or testing, or a customer.
