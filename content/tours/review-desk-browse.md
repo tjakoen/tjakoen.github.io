@@ -24,8 +24,8 @@ On a phone, the tabs still open the Desk sheet.
 - at: /grain
 - status: needs-verification
 - review: Browse fills almost the whole phone screen. Each recent item shows its published type.
-- verify: On a phone or with phone emulation, open Browse. Check that the sheet nearly fills the screen, then follow a tagged update.
-All updates opens the calendar. While Browse is open, it checks for new posts every minute.
+- verify: On a phone or with phone emulation, open Browse. Check that the sheet nearly fills the screen. Choose All updates and confirm that the calendar opens with the All tab selected.
+While Browse is open, it checks for new posts every minute.
 
 ## desk-choice
 - at: /grain
