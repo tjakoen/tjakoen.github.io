@@ -17,8 +17,9 @@ test.describe("portfolio umbrella", () => {
       .toHaveAttribute("href", "/about#profile");
     await expect(page.locator('[data-surface="welcome-start"] a[href="/projects"]')).toHaveCount(0);
     // Recent is fed LIVE from MILL frontmatter: real note or calendar links, not hand-typed rows
-    await expect(page.locator('.recent .recent__item[href^="/notes/"], .recent .recent__item[href^="/calendar/"]').first()).toBeVisible();
-    await expect(page.locator(".recent .recent__path").first()).toContainText(".md");
+    const welcomeRecent = '[data-surface="welcome-recent"]';
+    await expect(page.locator(`${welcomeRecent} .recent__item[href^="/notes/"], ${welcomeRecent} .recent__item[href^="/calendar/"]`).first()).toBeVisible();
+    await expect(page.locator(`${welcomeRecent} .recent__path`).first()).toContainText(".md");
     await expect(page.locator(".walks .walk").first()).toBeVisible();
     // the whole site sits in ONE editor window: title bar (nav + ⌘K search) + status bar
     await expect(page.locator(".window-bar__nav button")).toHaveCount(3);   // back / refresh / forward
