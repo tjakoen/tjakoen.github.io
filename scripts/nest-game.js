@@ -223,15 +223,11 @@ import {
     #nest-mock .head .x:hover { border-color: var(--color-line); color: var(--ink); }
     .nest-mini.hit { animation: nest-mini-hit .25s ease-out; }
     @keyframes nest-mini-hit { 30% { transform: translateX(2px) scale(.96); } }
-    .nest-queen { position: absolute; width: 60px; height: 38px; margin: -19px 0 0 -30px; color: var(--color-accent); pointer-events: none; z-index: 2;
-
-      filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 35%, transparent)); transition: opacity .4s, left 1.2s ease-in-out, top 1.2s ease-in-out; }
-    .nest-queen svg { display: block; width: 60px; height: 38px; overflow: visible; }
-    .queen-ant { position: absolute; inset: 0; display: grid; place-items: center; }
-    .queen-ant svg { width: 60px; height: 38px; }
-    .queen-braille { margin: 0; font: 8px/1 var(--font-mono); letter-spacing: 0; color: inherit; text-align: center; white-space: pre; }
-    .nest-queen.panel-queen { z-index: 4; }
-    .nest-queen.bob { animation: nest-bob .55s ease-in-out infinite alternate; }
+    .nest-queen { position: absolute; width: max-content; translate: -50% -50%; color: var(--color-accent); pointer-events: none; z-index: 2; }
+    .nest-queen svg { display: block; overflow: visible; }
+    .nest-queen .legs-b { opacity: 0; }
+    .nest-queen.crawling .legs-a { animation: nest-step .18s steps(1) infinite; }
+    .nest-queen.crawling .legs-b { animation: nest-step .18s steps(1) infinite reverse; }
     .nest-queen.crawling { animation: nest-queen-crawl .18s steps(2) infinite; }
     .nest-queen.dancing { animation: nest-queen-dance .5s ease-in-out infinite alternate; }
     @keyframes nest-queen-crawl { 50% { transform: translateY(1px) rotate(2deg); } }
@@ -244,7 +240,6 @@ import {
     @keyframes nest-party-glow { from { border-color: var(--color-line); box-shadow: inset 0 0 0 0 transparent; } to { border-color: var(--color-accent); box-shadow: inset 0 0 22px color-mix(in srgb, var(--color-accent) 15%, transparent); } }
     @keyframes nest-party-sway { to { transform: translateY(-1.5px); filter: brightness(1.1); } }
     .nest-orbit { position: absolute; white-space: pre; pointer-events: none; color: var(--color-accent); font: 11px/1 var(--font-mono); opacity: .75; }
-    @keyframes nest-bob { to { transform: translateY(-3px); } }
     #nest-mock .nest-meters { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     #nest-mock .nest-meter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 6px; align-content: start;
       padding: 6px 8px; border: 1px solid var(--color-line); background: var(--paper-2); }
@@ -270,7 +265,7 @@ import {
     #nest-mock .activity li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #nest-mock .activity li:first-child { color: var(--ink); }
     #nest-mock .activity li::before { content: "› "; color: var(--ink-faint); }
-    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.bob, .nest-queen.crawling, .nest-queen.dancing, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, .nest-ant.flash, .nest-hill.rising, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
+    @media (prefers-reduced-motion: reduce) { .nest-ant.walk .legs-a, .nest-ant.walk .legs-b, .nest-stray.walk .legs-a, .nest-stray.walk .legs-b, .nest-stray.running .legs-a, .nest-stray.running .legs-b, .nest-ant.wait svg, .nest-queen.crawling, .nest-queen.crawling .legs-a, .nest-queen.crawling .legs-b, .nest-queen.dancing, .nest-ant.swatted svg, .nest-splat, .nest-ant.dancing svg, .nest-ant.flash, .nest-hill.rising, #nest-mock.celebrating .well, #nest-mock.celebrating .nest-pre { animation: none; } }`;
   document.head.append(style);
 
   // ================================ the switch ================================
@@ -557,7 +552,7 @@ import {
   // ================================ the nest ================================
   // Routes in nest units (0..1 across, 0..1 down). Ants and eggs hold a route and a distance along
   // it, so the nest can be redrawn at any size without losing anyone. The entrance is the mound.
-  const { routes: ROUTES, queen: QUEEN } = NEST_LAYOUT;
+  const { routes: ROUTES } = NEST_LAYOUT;
   const LEN = Object.fromEntries(Object.entries(ROUTES).map(([key, route]) => [key, nestRouteLength(route)]));
 
   let W = 0, H = 0, R = 0, base = null;
@@ -1518,37 +1513,17 @@ import {
   // actually reach it; only the dance that completes it raises the next target.
   const worshipTarget = () => getWorshipTarget(state.nextParty);
 
-  // A little queen walks up out of the panel nest for the start of the dance, and back down at
-  // the end. The page queen does the long walk to the stage in between.
-  const panelQueen = (descend = false) => {
-    const q = document.createElement("div");
-    q.className = "nest-queen panel-queen";
-    q.innerHTML = queenMarkup();
-    q.style.left = `${QUEEN[0] * well.clientWidth}px`;
-    q.style.top = `${QUEEN[1] * well.clientHeight}px`;
-    well.append(q);
-    const frames = descend
-      ? [{ transform: "translate(-50%, -240%) scale(.7)", opacity: 0 },
-        { transform: "translate(-50%, -50%) scale(1)", opacity: 1 }]
-      : [{ transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
-        { transform: "translate(-50%, -240%) scale(.7)", opacity: 0 }];
-    q.animate(frames, { duration: 1200, easing: "ease-in-out" }).onfinish = () => q.remove();
-  };
-  const queenMarkup = () => `<div class="queen-ant" aria-hidden="true">${antMarkup({ role: "queen" })}</div>`;
   const startParty = (final = false) => {
     if (state.party || state.queenDead) return;
     const now = performance.now();
     const mound = home;
     const stage = stageSpot();
-    const queen = document.createElement("div"); queen.className = "nest-queen bob crawling"; queen.innerHTML = queenMarkup();
-    queen.style.transition = "none";
+    const queen = document.createElement("div"); queen.className = "nest-queen crawling";
+    queen.innerHTML = antMarkup({ role: "queen" });
     queen.style.left = mound.hole[0] + "px"; queen.style.top = (mound.hole[1] - 8) + "px";
     layer.append(queen);
-    requestAnimationFrame(() => { queen.style.left = stage.x + "px"; queen.style.top = stage.y + "px"; });
-    setTimeout(() => { queen.classList.remove("crawling"); queen.classList.add("dancing"); }, 1200);
     panel.classList.add("celebrating");
     scent.style.opacity = "0";
-    panelQueen();
     hills.forEach((h) => { h.el.style.pointerEvents = "none"; });
     const dancers = mainAnts().filter((a) => a.el && a.where === "page" && !a.letter && a.job !== "carry" && a.job !== "crew" && a.job !== "wait" && a.role !== "builder");
     const pausedScouts = state.scoutQueue.filter((a) => dancers.includes(a));
@@ -1567,29 +1542,41 @@ import {
     });
     const until = now + (final ? 16000 : 9000);
     const returnAt = worshipReturnAt(until);
-    state.party = { start: now, until, returnAt, final, queen, dancers, glyphs, stage, returning: false,
+    state.party = { start: now, until, returnAt, final, queen, dancers, glyphs, stage, departing: true, returning: false,
       gathering: dancers.length > 0, gatherStart: now, pausedScouts,
       queenFrom: mound.hole.slice() };
     panel.dataset.partyPhase = dancers.length ? "gathering" : "dance";
     state.queen.lay = 0;
+    drawNest(now, true);
     log(final ? "the colony takes the page" : "the colony dances");
     melody();
   };
   const stepParty = (now, dt) => {
     const p = state.party; if (!p) return;
     const t = now / 1000;
-    if (!p.gathering && !p.returning && now >= p.returnAt) {
+    if (p.departing) {
+      const u = Math.min(1, (now - p.start) / 1200);
+      p.queen.style.left = (p.queenFrom[0] + (p.stage.x - p.queenFrom[0]) * u) + "px";
+      p.queen.style.top = (p.queenFrom[1] - 8 + (p.stage.y - p.queenFrom[1] + 8) * u) + "px";
+      if (u >= 1) {
+        p.departing = false;
+        p.queen.classList.replace("crawling", "dancing");
+      }
+    }
+    if (!p.returning && now >= (p.gathering ? p.until : p.returnAt)) {
+      p.gathering = false;
       p.returning = true;
+      panel.dataset.partyPhase = "returning";
       p.crawlFrom = [parseFloat(p.queen.style.left) || p.stage.x, parseFloat(p.queen.style.top) || p.stage.y];
       p.crawlStart = now; p.crawlDone = false;
       p.until = Math.max(p.until, now + 2200);
-      p.queen.classList.remove("dancing", "bob");
+      p.queen.classList.remove("dancing");
       p.queen.classList.add("crawling");
     }
     if (p.returning) {
       const u = Math.min(1, (now - p.crawlStart) / 1800);
-      p.queen.style.left = (p.crawlFrom[0] + (p.queenFrom[0] - p.crawlFrom[0]) * u) + "px";
-      p.queen.style.top = (p.crawlFrom[1] + (p.queenFrom[1] - 8 - p.crawlFrom[1]) * u) + "px";
+      p.queen.style.left = (p.crawlFrom[0] + (home.hole[0] - p.crawlFrom[0]) * u) + "px";
+      p.queen.style.top = (p.crawlFrom[1] + (home.hole[1] - 8 - p.crawlFrom[1]) * u) + "px";
       if (u >= 1 && !p.crawlDone) {
         p.crawlDone = true; p.until = Math.max(p.until, now + 650);
         p.queen.classList.remove("crawling", "wait");
@@ -1624,14 +1611,13 @@ import {
       g.style.left = (p.stage.x + Math.cos(angle) * r) + "px";
       g.style.top = (p.stage.y + Math.sin(angle) * r * 0.55 - 4) + "px";
     });
-    if (now >= p.until && (!p.returning || p.crawlDone)) endParty();
+    if (p.crawlDone && now >= p.until) endParty();
   };
   const endParty = () => {
     const p = state.party; if (!p) return;
     p.queen.remove(); p.glyphs.forEach((g) => g.remove());
     panel.classList.remove("celebrating");
     scent.style.opacity = "";
-    panelQueen(true);
     hills.forEach((h) => { h.el.style.pointerEvents = ""; });
     p.dancers.forEach((a) => {
       if (!a.el) return;
@@ -1649,6 +1635,7 @@ import {
       }
     });
     state.party = null;
+    drawNest(performance.now(), true);
     p.pausedScouts.forEach((a) => {
       if (a.el && state.ants.includes(a) && !state.scoutQueue.includes(a)) state.scoutQueue.push(a);
     });
@@ -2054,7 +2041,8 @@ import {
     state.ants = state.ants.filter((x) => x !== a);
   };
   const squashRival = (a) => {
-    if (!a.el) return;
+    if (!a.el || a.dead) return;
+    a.dead = true;
     state.squashed++;
     a.el.classList.add("swatted");
     blip(160, 0.08, "square", 0.04);
@@ -2319,25 +2307,30 @@ import {
     squashQuiet(a);
   };
   const pendingFights = new Set(), pendingDuels = new Set();
+  const inCombat = (a) => a.el && !a.dead;
+  const readyToFight = (a) => inCombat(a) && !a.fightUntil;
+  const releaseFighter = (a) => {
+    a.fightUntil = 0;
+    a.el?.classList.remove("fighting");
+  };
   const finishFight = (fight) => {
     if (fight.done) return;
     fight.done = true; pendingFights.delete(fight);
-    const { target, side } = fight;
-    if (!target.el) return;
-    const alive = side === "rival" ? mainAnts().filter((a) => a.el && Math.hypot(a.x - target.x, a.y - target.y) < 42) : rival.ants.filter((a) => a.el && Math.hypot(a.x - target.x, a.y - target.y) < 42);
+    const { target, group, side } = fight;
+    releaseFighter(target);
+    group.forEach(releaseFighter);
+    if (!inCombat(target)) return;
+    const allies = side === "rival" ? mainAnts() : rival.ants;
+    const alive = allies.filter((a) => readyToFight(a) && Math.hypot(a.x - target.x, a.y - target.y) < 42);
     const power = alive.reduce((s, a) => s + combatPower(a), 0);
-    target.el.classList.remove("fighting"); alive.forEach((a) => a.el?.classList.remove("fighting"));
-    target.fightUntil = 0;
     if (!groupCanWin(power, combHp(target))) return;
     if (side === "rival") { removeRivalAnt(target); state.squashed++; log(alive.length > 1 ? "the colony wins a group fight" : "a main ant drives off a rival ant"); }
     else { removeMainCombatant(target); state.squashed++; log("the rival ants overwhelm a main ant"); }
   };
   const beginFight = (target, group, side) => {
-    if (!target.el || target.fightUntil) return;
     const until = performance.now() + 1000;
-    target.fightUntil = until; group.forEach((a) => { a.fightUntil = until; a.el?.classList.add("fighting"); });
-    target.el.classList.add("fighting");
-    const fight = { target, side, done: false };
+    [target, ...group].forEach((a) => { a.fightUntil = until; a.el.classList.add("fighting"); });
+    const fight = { target, group, side, done: false };
     pendingFights.add(fight);
     setTimeout(() => finishFight(fight), 1000);
   };
@@ -2345,12 +2338,12 @@ import {
     if (duel.done) return;
     duel.done = true; pendingDuels.delete(duel);
     const { m, r, mainWins } = duel;
-    if (mainWins) { if (r.el) { removeRivalAnt(r); state.squashed++; log("the main guard wins the duel"); } }
-    else if (m.el) { removeMainCombatant(m); state.squashed++; log("the rival guard wins the duel"); }
-    m.el?.classList.remove("fighting"); r.el?.classList.remove("fighting");
+    releaseFighter(m); releaseFighter(r);
+    if (!inCombat(m) || !inCombat(r)) return;
+    if (mainWins) { removeRivalAnt(r); state.squashed++; log("the main guard wins the duel"); }
+    else { removeMainCombatant(m); state.squashed++; log("the rival guard wins the duel"); }
   };
   const beginDuel = (m, r, mainWins) => {
-    if (!m.el || !r.el) return;
     const until = performance.now() + 1000; m.fightUntil = until; r.fightUntil = until;
     m.el.classList.add("fighting"); r.el.classList.add("fighting");
     const duel = { m, r, mainWins, done: false };
@@ -2364,36 +2357,31 @@ import {
     const mains = mainAnts().filter((a) => a.el && a.where === "page");
     const rivals = rival.ants.filter((a) => a.el);
     const near = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) < 26;
-    const spent = new Set();
+    const military = (a) => a.role === "soldier" || a.role === "guard";
     for (const m of mains) {
-      if (spent.has(m) || (m.role !== "soldier" && m.role !== "guard")) continue;
-      const friends = mains.filter((a) => a !== m && near(a, m));
-      const guards = rivals.filter((r) => r.role === "guard" && near(r, m));
-      if (friends.length) continue;
-      if (guards.length >= 2) { spent.add(m); guards.forEach((r) => spent.add(r)); beginFight(m, guards, "main"); continue; }
-      if (guards.length !== 1) continue;
-      const r = guards[0]; spent.add(m); spent.add(r);
-      beginDuel(m, r, Math.random() < duelOdds(m.role, r.role));
+      if (!readyToFight(m) || !military(m)) continue;
+      const friends = mains.some((a) => a !== m && readyToFight(a) && near(a, m));
+      if (friends) continue;
+      const guards = rivals.filter((r) => readyToFight(r) && r.role === "guard" && near(r, m));
+      if (guards.length >= 2) beginFight(m, guards, "main");
+      else if (guards.length === 1) beginDuel(m, guards[0], Math.random() < duelOdds(m.role, guards[0].role));
     }
     for (const m of mains) {
-      if (spent.has(m) || m.role !== "flyer") continue;
-      const flies = rivals.filter((r) => r.job === "rival-flyer" && !spent.has(r) && near(r, m));
-      if (flies.length !== 1) continue;
-      const f = flies[0]; spent.add(m); spent.add(f);
-      beginDuel(m, f, Math.random() < duelOdds(m.role, f.job === "rival-flyer" ? "rival-flyer" : f.role));
+      if (!readyToFight(m) || m.role !== "flyer") continue;
+      const flies = rivals.filter((r) => readyToFight(r) && r.job === "rival-flyer" && near(r, m));
+      if (flies.length === 1) beginDuel(m, flies[0], Math.random() < duelOdds(m.role, flies[0].job));
     }
-    for (const r of rivals.slice()) {
-      if (!r.el || spent.has(r)) continue;
-      const group = mains.filter((m) => m.el && near(m, r));
+    for (const r of rivals) {
+      if (!readyToFight(r)) continue;
+      const group = mains.filter((m) => readyToFight(m) && near(m, r));
       const power = group.reduce((s, a) => s + combatPower(a), 0);
       if (!groupCanWin(power, combHp(r))) continue;
       beginFight(r, group, "rival");
     }
     for (const m of mains) {
-      if (!m.el || spent.has(m)) continue;
+      if (!readyToFight(m)) continue;
       if (Math.hypot(m.x - home.hole[0], m.y - home.hole[1]) < 180) continue;
-      const military = m.role === "soldier" || m.role === "guard";
-      const group = rival.ants.filter((r) => r.el && near(r, m) && (!military || r.role === "guard" || r.job === "rival-flyer"));
+      const group = rivals.filter((r) => readyToFight(r) && near(r, m) && (!military(m) || r.role === "guard" || r.job === "rival-flyer"));
       const power = group.reduce((s, a) => s + combatPower(a), 0);
       if (!groupCanWin(power, combHp(m))) continue;
       beginFight(m, group, "main");
@@ -2770,9 +2758,9 @@ import {
 
   // ================================ drawing the nest ================================
   let nestDrawAt = 0, nestDrawCost = 0;
-  const drawNest = (now) => {
+  const drawNest = (now, force = false) => {
     if (!base) return;
-    if (now - nestDrawAt < (nestDrawCost > 20 ? 240 : 100)) return;
+    if (!force && now - nestDrawAt < (nestDrawCost > 20 ? 240 : 100)) return;
     const drawStart = performance.now();
     const d = composeNestGrid(base, W, H, R, state, now, storeCap);
     if (!nestCells || nestCols !== W / 2 || nestRows !== H / 4) buildNestCells();
