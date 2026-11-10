@@ -179,7 +179,7 @@ Crew Watch's figures against DevLake's before I trusted them. DevLake answered t
 built for. It just was not built for mine, which were about people rather than pipelines, and that gap
 is what the next two tries were for.
 
-> DevLake answered the questions it was built for. It just was not built for mine.
+> DevLake measured the pipeline. My questions were about the people in it.
 
 <figure class="shot">
   <img class="shot__img" src="/media/crew/people-manager.jpg" width="1280" height="800" loading="lazy" data-lightbox
