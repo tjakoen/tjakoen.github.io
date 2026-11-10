@@ -64,7 +64,7 @@ is that rule turned into a tool.
     <text x="89" y="30" style="font-size:12px">the epic checker works here</text>
   </g>
   <text x="20" y="136" style="fill:var(--color-muted);font-size:12px">cheaper to fix</text>
-  <text x="340" y="136" text-anchor="end" style="fill:var(--color-muted);font-size:12px">costlier to fix</text>
+  <text x="340" y="136" text-anchor="end" style="fill:var(--color-muted);font-size:12px">more expensive to fix</text>
 </svg>
 
 *Matt's rule, drawn. Every step right costs more than the one before it.*
