@@ -10,7 +10,7 @@ tags: [ai, leadership, claude, dashboards, team]
 summary: >
   I stalled for a month building a people app the way a developer would, screen by screen, then
   rebuilt it in an afternoon as a Claude dashboard once I started thinking like an orchestrator. The
-  better story is what my team did after I demoed it: Kercwin, a tech lead in his first job, built an
+  better story is what my team did after I demoed it: Kercwin, the tech lead of my team, built an
   epic checker that keeps a busy project aligned to its decisions, with Confluence as the source of
   truth, and Kyle, a junior on my team, built his own work board in Obsidian. I lead with demos rather
   than mandates, and I hold my team to the rule I hold my students to: own the output, or do not ship it.
@@ -132,7 +132,7 @@ Crew Watch is the view I take into one-on-ones and planning. It took me four tri
 the first three were all reasonable at the time.
 
 <svg viewBox="0 0 360 300" width="100%" role="img"
-     aria-label="Four attempts at a team view, drawn as steps that climb left to right. Sheets, kept by hand. DevLake, real metrics but not my questions. People Manager, a full app I was coding myself, which stalled. Crew Watch, a Claude dashboard built in an afternoon, the top step. A dashed line marks People Manager as the reference Crew Watch was built from."
+     aria-label="Four attempts at a team view, drawn as steps that climb left to right. Sheets, pulling GitHub data. DevLake, real metrics but not my questions. People Manager, a full app I was coding myself, which stalled. Crew Watch, a Claude dashboard built in an afternoon, the top step. A dashed line marks People Manager as the reference Crew Watch was built from."
      style="display:block;width:100%;max-width:470px;height:auto;margin:0 auto 1.5rem;font-family:Georgia,'Times New Roman',serif;font-size:13px">
   <defs>
     <marker id="fl-crew0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
@@ -153,8 +153,8 @@ the first three were all reasonable at the time.
     <text x="222" y="107" style="fill:var(--color-fg)">3</text>
     <text x="306" y="90" style="fill:var(--color-bg)">4</text>
     <text x="54" y="242" style="fill:var(--color-fg)">Sheets</text>
-    <text x="54" y="258" style="fill:var(--color-muted);font-size:11.5px">by hand,</text>
-    <text x="54" y="272" style="fill:var(--color-muted);font-size:11.5px">stale fast</text>
+    <text x="54" y="258" style="fill:var(--color-muted);font-size:11.5px">pulling</text>
+    <text x="54" y="272" style="fill:var(--color-muted);font-size:11.5px">GitHub data</text>
     <text x="138" y="242" style="fill:var(--color-fg)">DevLake</text>
     <text x="138" y="258" style="fill:var(--color-muted);font-size:11.5px">real metrics,</text>
     <text x="138" y="272" style="fill:var(--color-muted);font-size:11.5px">not my questions</text>
@@ -172,10 +172,11 @@ the first three were all reasonable at the time.
 
 DevLake deserves more credit than one box in a diagram. [Apache DevLake](https://devlake.apache.org/)
 is an open-source tool that pulls your Jira and GitHub history into one database and puts dashboards
-on top: cycle time, review time, what finished per sprint. It was the step that taught me what the
-numbers even were. Before it, I had opinions about how the team was doing. After it, I had a lake of
-real data and a set of queries that defined each metric precisely, which is the part that carried
-forward. When Crew Watch came along, those definitions became its spec, and the audit I ran checked
+on top for cycle time, review time and what finished per sprint. It also has a dashboard for
+[DORA metrics](https://devlake.apache.org/docs/v0.20/DORA/), including how often changes reach
+production and how long they take to get there. DevLake taught me what those numbers even were.
+Before it, I had opinions about how the team was doing. After it, I had a lake of real data and a
+set of queries that defined each metric precisely, which is the part that carried forward. When Crew Watch came along, those definitions became its spec, and the audit I ran checked
 Crew Watch's figures against DevLake's before I trusted them. DevLake answered the questions it was
 built for. It just was not built for mine, which were about people rather than pipelines, and that gap
 is what the next two tries were for.
@@ -266,10 +267,10 @@ built their own. I did not assign either one.
 
 ### Kercwin's epic checker
 
-Full credit goes to [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/). This is his first job, and he went from developer to tech lead in about a year, which is fast for
-anyone. I pushed him into the role because I saw
-something in him before he did. I know that feeling from the other side. A lot of my job with him is
-the stuff nobody puts on a ticket: the voice that says you are not ready, learning to hand work off
+Full credit goes to [Kercwin](https://www.linkedin.com/in/kercwin-paul-ocampo-22729222b/).
+He went from developer to tech lead in about a year, which is fast for anyone. I pushed him into
+the role because I saw something in him before he did. I know that feeling from the other side. A
+lot of my job with him is the stuff nobody puts on a ticket: the voice that says you are not ready, learning to hand work off
 instead of carrying it, getting him to see in himself what the rest of us already see. He is doing a
 great job, and he is still working out what kind of leader he wants to be, which is the correct
 amount of figured out for anyone.
@@ -388,8 +389,8 @@ did not plan that, and I like it a lot.
 
 ### Kyle's Obsidian board
 
-[Kyle](https://www.linkedin.com/in/kylealanmanayon/) is a junior on my team, and he is on track to be
-a senior in due time.
+[Kyle](https://www.linkedin.com/in/kylealanmanayon/) is a junior on my team, and I see a lot of
+potential in him.
 
 In my one-on-one with him last week, he showed me a dashboard he had built
 in Obsidian to run his own work: his tickets, his pull requests, what is waiting on him and what is
