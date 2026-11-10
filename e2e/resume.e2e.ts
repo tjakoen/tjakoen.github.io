@@ -37,13 +37,10 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
     await expect(page.locator("[data-resume-print]")).toBeVisible();
   });
 
-  test("introduces the résumé through the same teacher, engineer, and manager philosophy", async ({ page }) => {
+  test("introduces the résumé through engineering leadership and AI adoption", async ({ page }) => {
     await page.goto("/resume");
     const summary = page.locator(".lede").first();
-    await expect(summary).toContainText("I am a teacher, engineer, and manager");
-    await expect(summary).toContainText("I treat students as adults");
-    await expect(summary).toContainText("I hold the architecture and quality bar");
-    await expect(summary).toContainText("I grow people first");
+    await expect(summary).toHaveText(cv.summary);
     await expect(page.locator(".resume-philosophy-link a")).toHaveAttribute("href", "/about#profile");
   });
 
@@ -89,7 +86,7 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
     await expect(entry.locator(".cv-entry__links")).toBeHidden();  // :empty hides the links row
   });
 
-  test("a role WITH feed posts renders each as a /calendar link", async ({ page }) => {
+  test("a role with related work renders its notes and calendar links", async ({ page }) => {
     await page.goto("/resume");
     const role = cv.roles[linkedRoleIdx];
     const entry = page.locator(".cv-entry").nth(linkedRoleIdx);
@@ -98,7 +95,7 @@ test.describe("résumé — the real CV (data/cv.json)", () => {
     await expect(links).toHaveCount(role.links!.length);
     for (const l of role.links!) {
       await expect(entry.locator(`.cv-link[href="${l.href}"]`)).toHaveText(l.label);
-      expect(l.href.startsWith("/calendar/")).toBe(true);
+      expect(l.href).toMatch(/^\/(notes|calendar)\//);
     }
   });
 

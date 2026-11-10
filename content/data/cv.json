@@ -1,5 +1,5 @@
 {
-  "summary": "I am a teacher, engineer, and manager. I treat students as adults, go straight at the hard parts, and automate mechanical grading so I can spend more time teaching. I hold the architecture and quality bar, and keep direction legible to whoever opens the file next. I grow people first and deliver goals through them. I lead 15 to 25 engineers and product specialists at Career Team, teach college-level software engineering to 150 to 300 students each term, and have completed one year in the classroom. I also build the BREAD stack.",
+  "summary": "I lead 15 to 25 engineers and product specialists at Career Team. I help the team put AI to work in planning and delivery, and set the review standards for the work it produces. I teach software engineering to 150 to 300 students each term and built the course platform I use to review and sign off on grades AI drafts. I also build the BREAD stack.",
   "roles": [
     {
       "title": "Senior Technical Team Lead",
@@ -9,13 +9,16 @@
       "end": "Present",
       "current": true,
       "roleTag": "ai",
-      "summary": "Manage and mentor 15 to 25 Software Engineers and Product Specialists, and lead the team's AI-first development culture.",
+      "summary": "Lead and mentor 15 to 25 engineers and product specialists, and help the team use AI in planning, code review, and delivery.",
       "bullets": [
         "Spearheaded scalable full-stack solutions with Next.js, NestJS, and MongoDB on AWS microservices for U.S. government and education clients.",
-        "Rolled out AI coding assistants, set review standards for AI-generated code, and integrated AI-assisted workflows into delivery.",
+        "Built and am rolling out an AI-assisted PR review kit. I log findings and their outcomes, replay missed issues against the original changes, and retain responsibility for approval.",
+        "Work with product leads to use AI in planning, clarify requirements, and keep Jira boards current. We are rolling out an epic checker built by an engineer on the team to check tickets and pull requests against agreed decisions.",
         "Turned social-impact goals into technical specifications with product, design, and leadership."
       ],
       "links": [
+        { "href": "/notes/the-reviewer-that-learned-to-be-wrong", "label": "How I evaluate the PR review kit" },
+        { "href": "/notes/show-them-the-board", "label": "How the team built its epic checker" },
         { "href": "/calendar/gdg-hau-ai-hack", "label": "Judged an AI hackathon" }
       ]
     },
@@ -168,9 +171,9 @@
     { "value": "no build", "label": "my own stack", "sub": "this site runs on it" }
   ],
   "primarySkills": [
+    { "text": "AI adoption in engineering teams", "href": "/notes/show-them-the-board" },
+    { "text": "AI workflow evaluation and review", "href": "/notes/the-reviewer-that-learned-to-be-wrong" },
     { "text": "0-to-1 product and platform engineering", "href": "/projects" },
-    { "text": "AI-first development and workflow optimization", "href": "/notes/ten-times-zero" },
-    { "text": "Driving AI adoption in engineering teams", "href": "/notes/ten-times-zero" },
     { "text": "Full-stack microservices architecture", "href": "/projects" },
     { "text": "Engineering mentorship and technical education", "href": "/teaching" }
   ],
