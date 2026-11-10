@@ -73,7 +73,7 @@ The letters are real. A letter taken from this page is the actual glyph, in its 
 
 *A scout finds letters; workers carry them home and the stores rise.*
 
-A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. The stores turn enough food into a builder, and the builder raises a mini mound somewhere else on the page. A mini mound stays above ground and spawns soldiers to guard it and flyers to steal letters. The rival does the same thing, with its own resource and limits.
+A heavy heading needs a crew. A small letter can be carried by one ant. A larger one takes two or three, and the trail waits until the crew is full. When the letter reaches the nest, its portions are split between the queen and the stores. The queen turns meals into eggs. Full stores send a builder to raise a mini mound elsewhere on the page. If the colony is at its population cap, a worker takes the job. A mini mound stays above ground and spawns soldiers to guard it and flyers to steal letters. The rival does the same thing, with its own resource and limits.
 
 ## Inside the nest
 
@@ -92,7 +92,7 @@ The queen's chamber sits at the bottom, beside rooms for the nursery, larder and
 
 ## Why the colony stops to worship
 
-Worship is the one moment the whole colony shares a direction. The rules pause, the trails go quiet, and every ant turns toward the queen. It is also the economy's reset: the stores fill, which pays for the soldiers and builders that keep the colony alive after the pause.
+Worship is the one moment the whole colony shares a direction. The trails go quiet as the colony gathers and the rival heads for its own mound. It is also the economy's reset: the stores fill, which pays for the soldiers and builders that keep the colony alive after the pause.
 
 <div class="live-fig live-fig--nest" data-live-figure="nest" data-nest-mode="worship" data-surface="figure:nest-worship">
 </div>
@@ -102,7 +102,7 @@ Worship is the one moment the whole colony shares a direction. The rules pause, 
 The first dance comes at twenty letters, then fifty, then ninety:
 
 1. The queen climbs out of the panel and walks to a clear patch.
-2. Every ant on the page gathers around her. Trails go quiet, and workers stop carrying.
+2. Ants from her colony gather around her while the rival shelters in its mound.
 3. The queen dances, then returns through the entrance. The panel queen comes back only after she is home.
 
 The next threshold is fixed for the current dance and moves only after the queen returns. Hatching cannot keep pushing the target away.

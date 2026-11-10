@@ -205,3 +205,22 @@ test("a fight animates open so another ant can join", async ({ page }) => {
   await page.waitForTimeout(1200);
   expect(await page.evaluate(() => (window.__nest as any).rival.ants.length)).toBe(0);
 });
+
+
+test("ants at the same combat point render as separate fighters", async ({ page }) => {
+  await page.goto("/?nest-debug");
+  await page.locator(".nest-switch").click();
+  await expect(page.locator("#nest-mock")).toBeVisible();
+  const distance = await page.evaluate(async () => {
+    const nest = window.__nest as any;
+    const at: [number, number] = [420, 340];
+    const main = nest.spawnPageAnt("guard", at, null);
+    const rival = nest.spawnRivalUnit("rival-guard", at, [at], null);
+    nest.rivalCombat(performance.now() + 1000);
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const a = new DOMMatrixReadOnly(getComputedStyle(main.el).transform);
+    const b = new DOMMatrixReadOnly(getComputedStyle(rival.el).transform);
+    return Math.hypot(a.m41 - b.m41, a.m42 - b.m42);
+  });
+  expect(distance).toBeGreaterThanOrEqual(22);
+});

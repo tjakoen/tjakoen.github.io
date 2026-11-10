@@ -58,3 +58,26 @@ test("the first worship does not spawn the rival; the second does", async ({ pag
   await page.evaluate(() => (window.__nest as any).startParty());
   await expect.poll(() => page.evaluate(() => (window.__nest as any).rival.active), { timeout: 25_000 }).toBe(true);
 });
+
+
+test("rival ants shelter at their own mound during worship and return to work", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const nest = window.__nest as any;
+    nest.startRival();
+    nest.state.speed = 4;
+    const [x, y] = nest.rival.mound.hole;
+    nest.spawnRivalUnit("rival-guard", [x + 70, y], [[x + 70, y]], null);
+    nest.startParty();
+  });
+  await expect.poll(() => page.evaluate(() => {
+    const nest = window.__nest as any;
+    const [x, y] = nest.rival.mound.hole;
+    return !!nest.state.party && nest.rival.ants.length > 0 && nest.rival.ants.every((ant: any) =>
+      ant.el.hidden && Math.hypot(ant.x - x, ant.y - y) < 2);
+  }), { timeout: 6000 }).toBe(true);
+  await expect.poll(() => page.evaluate(() => {
+    const nest = window.__nest as any;
+    return !nest.state.party && nest.rival.ants.length > 0 && nest.rival.ants.every((ant: any) => !ant.el.hidden);
+  }), { timeout: 20000 }).toBe(true);
+});

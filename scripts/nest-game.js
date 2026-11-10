@@ -135,6 +135,7 @@ import {
     @media (pointer: coarse) {
       .nest-ant { width: 44px; height: 44px; margin: -22px 0 0 -22px; display: grid; place-items: center; }
     }
+    .nest-ant[hidden] { display: none; }
     .nest-ant:hover svg, .nest-ant:focus-visible svg { transform: scale(1.35); }
     .nest-ant:focus-visible { outline: 1px dashed var(--color-accent); outline-offset: 3px; }
     .nest-ant.scout { color: var(--color-accent); }
@@ -510,11 +511,11 @@ import {
     </div>
     <dl class="stat-grid">
       <div title="Scouts find new food"><dt>scouts</dt><dd class="accent" data-k="scouts">0</dd></div>
-      <div title="Workers carry letters"><dt>workers</dt><dd data-k="workers">0</dd></div>
+      <div title="Workers in the nest and on the page, including builders"><dt>workers</dt><dd data-k="workers">0</dd></div>
       <div title="Soldiers guard the hill"><dt>soldiers</dt><dd data-k="soldiers">0</dd></div>
       <div title="Mini hills"><dt>hills</dt><dd class="accent" data-k="minis">0</dd></div>
       <div title="Flyers steal letters"><dt>flyers</dt><dd data-k="flyers">0</dd></div>
-      <div title="Rival theft"><dt>rival</dt><dd class="rival" data-k="rivals">0</dd></div>
+      <div title="Living rival ants"><dt>rival</dt><dd class="rival" data-k="rivals">0</dd></div>
       <div title="Scent trails in use"><dt>trails</dt><dd data-k="trails">0</dd></div>
       <div title="Ants squashed"><dt>squashed</dt><dd data-k="squashed">0</dd></div>
       <div title="Letters stolen" style="grid-column: 1 / -1"><dt>larder</dt><dd class="accent" data-k="larder" style="text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">empty</dd></div>
@@ -904,7 +905,45 @@ import {
   };
   const waitingRank = (ant) => mainAnts().filter((a) => a.where === "nest" && a.route === "up" && a.d > LEN.up - 0.3 && a.id < ant.id).length;
 
-  const antTransform = (a) => `translate3d(${a.px}px, ${a.py}px, 0) rotate(${a.heading + Math.PI}rad)`;
+  const antTransform = (a, x = a.px, y = a.py) => `translate3d(${x}px, ${y}px, 0) rotate(${a.heading + Math.PI}rad)`;
+  const drawPageAnts = () => {
+    const positions = state.ants.filter((a) => a.el && !a.el.hidden && !a.dead).map((a) => ({
+      ant: a, x: a.px, y: a.py, anchored: !!a.letter || a.job === "crew",
+    }));
+    // Separate the sprites without changing trails, letter crews, or combat distances.
+    for (let pass = 0; pass < 2; pass++) {
+      for (let i = 0; i < positions.length; i++) {
+        const a = positions[i];
+        for (let j = 0; j < i; j++) {
+          const b = positions[j];
+          if (a.anchored && b.anchored) continue;
+          const gap = a.ant.fightUntil || b.ant.fightUntil ? 25 : 14;
+          let dx = a.x - b.x, dy = a.y - b.y;
+          const squared = dx * dx + dy * dy;
+          if (squared >= gap * gap) continue;
+          const distance = Math.sqrt(squared);
+          if (distance) { dx /= distance; dy /= distance; }
+          else {
+            const angle = (a.ant.id - b.ant.id) * 2.4;
+            dx = Math.cos(angle); dy = Math.sin(angle);
+          }
+          const push = (gap - distance) * (a.anchored || b.anchored ? 1 : 0.5);
+          if (!a.anchored) { a.x += dx * push; a.y += dy * push; }
+          if (!b.anchored) { b.x -= dx * push; b.y -= dy * push; }
+        }
+      }
+    }
+    for (const { ant, x: spacedX, y } of positions) {
+      const el = ant.el;
+      const x = spacedX === ant.px ? spacedX : Math.max(12, Math.min(frameRect.width - 12, spacedX));
+      if (x !== el._px || y !== el._py || ant.heading !== el._heading) {
+        el.style.transform = antTransform(ant, x, y);
+        el._px = x; el._py = y; el._heading = ant.heading;
+      }
+      const walking = ant.job !== "wait" && !ant.paused && !ant.fightUntil;
+      if (el._walk !== walking) { el.classList.toggle("walk", walking); el._walk = walking; }
+    }
+  };
   const placeAnt = (a) => {
     a.el.style.left = "0px"; a.el.style.top = "0px";
     a.el.style.transform = antTransform(a);
@@ -1544,7 +1583,9 @@ import {
     const returnAt = worshipReturnAt(until);
     state.party = { start: now, until, returnAt, final, queen, dancers, glyphs, stage, departing: true, returning: false,
       gathering: dancers.length > 0, gatherStart: now, pausedScouts,
-      queenFrom: mound.hole.slice() };
+      queenFrom: mound.hole.slice(),
+      rivalReturnSpeed: rival.mound ? rival.ants.reduce((speed, ant) =>
+        Math.max(speed, Math.hypot(ant.x - rival.mound.hole[0], ant.y - rival.mound.hole[1]) / 4), SPEED * 1.6) : 0 };
     panel.dataset.partyPhase = dancers.length ? "gathering" : "dance";
     state.queen.lay = 0;
     drawNest(now, true);
@@ -1611,7 +1652,8 @@ import {
       g.style.left = (p.stage.x + Math.cos(angle) * r) + "px";
       g.style.top = (p.stage.y + Math.sin(angle) * r * 0.55 - 4) + "px";
     });
-    if (p.crawlDone && now >= p.until) endParty();
+    const rivalsSheltered = !rival.mound || rival.ants.every((ant) => !ant.el || ant.dead || ant.tongue || ant.el.hidden);
+    if (p.crawlDone && now >= p.until && rivalsSheltered) endParty();
   };
   const endParty = () => {
     const p = state.party; if (!p) return;
@@ -1635,6 +1677,7 @@ import {
       }
     });
     state.party = null;
+    for (const ant of rival.ants) if (ant.el) ant.el.hidden = false;
     drawNest(performance.now(), true);
     p.pausedScouts.forEach((a) => {
       if (a.el && state.ants.includes(a) && !state.scoutQueue.includes(a)) state.scoutQueue.push(a);
@@ -1748,18 +1791,38 @@ import {
       log("the stores are full; there is no clear ground anywhere for another mound");
       return;
     }
-    const b = spawnPageAnt("builder", home.hole.slice(), null);
+    const b = spawnPageAnt("builder", home.hole.slice(), null) || mainAnts().find((ant) => {
+      if (ant.role !== "worker" || ant.letter || ant.fightUntil) return false;
+      if (ant.where === "nest") return ant.route === "up" && ant.d >= LEN.up - 0.3 && hills.some((entrance) => !isSealed(entrance));
+      return ant.el && (ant.job === "follow" || ant.job === "home");
+    });
     if (!b) return;
+    if (b.role === "worker") {
+      if (b.where === "nest") emerge(b);
+      leaveTrail(b);
+      b.reassignedBuilder = true;
+      b.role = "builder";
+      b.el.classList.add("builder");
+      label(b);
+    }
     b.job = "build-walk"; b.path = [[spot.x, spot.y - 6]]; b.k = 0; b.spot = spot; state.builder = b;
     log("the stores are full; a builder heads out");
   };
   const failBuild = (b) => {
     b.mound?.remove(); state.builder = null; state.stores = 0; log("you stopped the builder; the stores are lost");
   };
+  const returnBuilder = (ant) => {
+    ant.role = "worker";
+    ant.reassignedBuilder = false;
+    ant.el.classList.remove("builder");
+    goHome(ant);
+    label(ant);
+  };
   const cancelBuild = (ant) => {
     ant.mound?.remove();
     state.builder = null;
-    squashQuiet(ant);
+    if (ant.reassignedBuilder && ant.el) returnBuilder(ant);
+    else squashQuiet(ant);
   };
   const stepMiniJob = (ant, dt) => {
     if (ant.job === "building") {
@@ -1771,7 +1834,7 @@ import {
       if (ant.build < 1) return;
       if (!miniSiteFits(ant.spot, miniBox(ant.spot), miniTerrain())) return cancelBuild(ant);
       ant.mound.remove(); makeMini(ant.spot); state.stores = Math.max(0, state.stores - storeCap()); state.built++; state.builder = null;
-      ant.job = "home"; ant.role = "worker"; ant.path = [home.hole.slice()]; ant.k = 0; label(ant); return;
+      returnBuilder(ant); return;
     }
     const g = ant.path[ant.k]; if (!g) return;
     if (!move(ant, g[0], g[1], dt, SPEED)) { ant.px = ant.x; ant.py = ant.y; return; }
@@ -1897,7 +1960,7 @@ import {
   let nextBuildSearch = 0;
   const tickMinis = (now) => {
     const t = now / 1000;
-    if (!state.paused && now >= nextBuildSearch && !state.builder && !state.queenDead && minis.length < MAX_MINIS && state.stores >= storeCap()) {
+    if (!state.paused && !state.party && now >= nextBuildSearch && !state.builder && !state.queenDead && minis.length < MAX_MINIS && state.stores >= storeCap()) {
       nextBuildSearch = now + 1000;
       startBuild();
     }
@@ -2224,6 +2287,7 @@ import {
     return a;
   };
   const rivalBait = (x, y) => {
+    if (state.party) return;
     rival.ants.filter((a) => a.el && Math.hypot(a.x - x, a.y - y) < 210).forEach((a) => {
       a.job = "rival-bait"; a.baitUntil = performance.now() + 6000; a.path = [[x, y]]; a.k = 0;
     });
@@ -2245,7 +2309,23 @@ import {
 
   const stepRival = (a, dt) => {
     if (a.fightUntil && performance.now() < a.fightUntil) return;
-    if (!a.el || a.tongue) return;
+    if (!a.el || a.dead || a.tongue) return;
+    if (state.party && rival.mound) {
+      if (a.el.hidden) return;
+      const [x, y] = rival.mound.hole;
+      const arrived = move(a, x, y, dt, state.party.rivalReturnSpeed);
+      a.px = a.x; a.py = a.y;
+      if (a.glyph) { a.glyph.style.left = a.px + 2 + "px"; a.glyph.style.top = a.py - 16 + "px"; }
+      if (arrived) {
+        if (a.job === "rival-home" || a.letter) {
+          const job = a.job;
+          bankRival(a);
+          if (!a.trail && job !== "rival-home") a.job = job;
+        } else if (a.job === "rival-follow") a.k = 0;
+        a.el.hidden = true;
+      }
+      return;
+    }
     if (a.job === "rival-flyer") {
       const g = a.path[a.k]; if (!g) { a.path = [randomPoint()]; a.k = 0; return; }
       const arrived = move(a, g[0], g[1], dt, roleSpeed(a.role, a.job, SPEED)); a.px = a.x; a.py = a.y;
@@ -2301,6 +2381,7 @@ import {
   const combatPower = (a) => sharedCombatPower(a.role, a.side);
   const combHp = (a) => sharedCombatHealth(a.role, a.side);
   const removeMainCombatant = (a) => {
+    if (state.builder === a) { a.mound?.remove(); state.builder = null; }
     if (a.mini) { a.mini.guards?.delete(a); a.mini.flyers?.delete(a); }
     if (a.letter?.state === "carried") drop(a.letter);
     else if (a.letter?.state === "gather") { a.letter.crew = a.letter.crew.filter((m) => m !== a); if (!a.letter.crew.length) a.letter.state = "free"; }
@@ -2319,7 +2400,7 @@ import {
     const { target, group, side } = fight;
     releaseFighter(target);
     group.forEach(releaseFighter);
-    if (!inCombat(target)) return;
+    if (state.party || !inCombat(target)) return;
     const allies = side === "rival" ? mainAnts() : rival.ants;
     const alive = allies.filter((a) => readyToFight(a) && Math.hypot(a.x - target.x, a.y - target.y) < 42);
     const power = alive.reduce((s, a) => s + combatPower(a), 0);
@@ -2339,7 +2420,7 @@ import {
     duel.done = true; pendingDuels.delete(duel);
     const { m, r, mainWins } = duel;
     releaseFighter(m); releaseFighter(r);
-    if (!inCombat(m) || !inCombat(r)) return;
+    if (state.party || !inCombat(m) || !inCombat(r)) return;
     if (mainWins) { removeRivalAnt(r); state.squashed++; log("the main guard wins the duel"); }
     else { removeMainCombatant(m); state.squashed++; log("the rival guard wins the duel"); }
   };
@@ -2352,7 +2433,7 @@ import {
   };
   const finishFights = () => { [...pendingFights].forEach(finishFight); [...pendingDuels].forEach(finishDuel); };
   const rivalCombat = (now) => {
-    if (now - lastRivalFight < 300) return;
+    if (state.party || now - lastRivalFight < 300) return;
     lastRivalFight = now;
     const mains = mainAnts().filter((a) => a.el && a.where === "page");
     const rivals = rival.ants.filter((a) => a.el);
@@ -2407,6 +2488,7 @@ import {
   };
   const stepRivalDefense = (ant, dt) => {
     if (!rival.active || !rival.mound) return goHome(ant);
+    if (state.party) return;
     const mini = ant.job === "rival-siege" ? rival.minis.find((m) => m.hp > 0) : null;
     const target = ant.job === "rival-contest" ? ant.path[ant.k] : mini ? [mini.base[0], mini.base[1]] : rival.mound.hole;
     if (!target) return goHome(ant);
@@ -2791,6 +2873,20 @@ import {
     meterCells.set(meter, Math.max(10, Math.floor(meter.clientWidth / 6)));
     meterObserver.observe(meter);
   }
+  const drawCounts = () => {
+    let scouts = 0, workers = 0, soldiers = 0, flyers = 0;
+    for (const ant of mainAnts()) {
+      if (ant.role === "scout") scouts++;
+      else if (ant.role === "worker" || ant.role === "builder") workers++;
+      else if (ant.role === "soldier" || ant.role === "guard") soldiers++;
+      else if (ant.role === "flyer") flyers++;
+    }
+    setText("scouts", scouts); setText("workers", workers); setText("soldiers", soldiers); setText("flyers", flyers);
+    setText("minis", minis.length);
+    setText("rivals", rival.ants.filter((ant) => !ant.dead).length);
+    setText("trails", state.trails.filter((trail) => trail.state !== "gone").length);
+    setText("squashed", state.squashed);
+  };
   const drawStats = () => {
     const setMeter = (key, ratio, text) => {
       const r = Math.min(1, Math.max(0, ratio));
@@ -2807,19 +2903,10 @@ import {
       }
       if (text != null) setText(`${key}-val`, text);
     };
-    let scouts = 0, workers = 0, soldiers = 0, flyers = 0;
-    for (const ant of mainAnts()) {
-      if (ant.role === "scout") scouts++;
-      else if (ant.role === "worker") workers++;
-      else if (ant.role === "soldier" || ant.role === "guard") soldiers++;
-      else if (ant.role === "flyer") flyers++;
-    }
-    setText("scouts", scouts); setText("workers", workers); setText("soldiers", soldiers); setText("flyers", flyers);
-    setText("minis", minis.length);
+    drawCounts();
     const cap = storeCap();
     setMeter("stores", state.stores / cap, state.builder ? "building" : minis.length >= MAX_MINIS ? "full" : `${state.stores}/${cap}`);
     const rivalStolen = rival.stolen.size;
-    setText("rivals", rival.ants.length);
     setText("rival-hint", rivalStolen ? ` · rival ${rivalStolen}` : "");
     const held = pageLetters ? Math.max(0, 1 - (state.stolen.size + rivalStolen) / pageLetters) : 1;
     setMeter("holds", held, `${Math.round(held * 100)}%`);
@@ -2842,8 +2929,6 @@ import {
       if (cooldown) { if (button.dataset.cooldown !== cooldown) button.dataset.cooldown = cooldown; }
       else if (button.hasAttribute("data-cooldown")) button.removeAttribute("data-cooldown");
     }
-    setText("trails", state.trails.length);
-    setText("squashed", state.squashed);
     setText("larder", [...state.stolen].slice(-18).map((L) => L.ch).join("") || "empty");
     const fed = state.meals % 3;
     setMeter("bar", fed / 3, `${fed}/3`);
@@ -2889,18 +2974,10 @@ import {
       if (state.party) stepParty(now, dt);
       if (state.scoutQueue.length) { const pending = state.scoutQueue.shift(); if (pending?.el && pending.role === "scout") scout(pending); }
       state.ants.slice().forEach((a) => (a.where === "nest" ? stepNest(a, dt) : stepPage(a, dt)));
-            rivalCombat(now);
+      rivalCombat(now);
       tickRivalAttack(now);
       growRival();
-      for (const a of state.ants) {
-        const el = a.el; if (!el) continue;
-        if (a.px !== el._px || a.py !== el._py || a.heading !== el._heading) {
-          el.style.transform = antTransform(a);
-          el._px = a.px; el._py = a.py; el._heading = a.heading;
-        }
-        const walking = a.job !== "wait" && !a.paused;
-        if (el._walk !== walking) { el.classList.toggle("walk", walking); el._walk = walking; }
-      }
+      drawPageAnts();
       perfStep = performance.now();
       if (rival.active && rival.ants.length === 0 && performance.now() > (rival.buildUntil || 0) && performance.now() > (rival.rebuildUntil || 0)) retreatRival();
       if (!rival.active && !state.party && state.partyIndex >= 1 && performance.now() >= rival.returnAt) foundRival();
@@ -2957,7 +3034,7 @@ import {
       const perfStatsStart = performance.now();
       drawStats();
       if (window.__nestPerf) { window.__nestPerfDraw = performance.now() - perfDrawStart; window.__nestPerfNest = perfStatsStart - perfDrawStart; }
-    }
+    } else drawCounts();
     if (window.__nestPerf) {
       const total = performance.now() - perfStart;
       if (total > 20) window.__nestPerf.push({ total: Math.round(total * 10) / 10, step: Math.round((perfStep - perfStart) * 10) / 10, draw: window.__nestPerfDraw ? Math.round(window.__nestPerfDraw * 10) / 10 : 0, nest: window.__nestPerfNest ? Math.round(window.__nestPerfNest * 10) / 10 : 0, ants: state.ants.length, trails: state.trails.length });
@@ -3107,7 +3184,7 @@ import {
     resetting = true;
     home.el.classList.add("unbuilding");
     setTimeout(() => {
-    if (state.builder?.spot.gap) cancelBuild(state.builder);
+    if (state.builder) cancelBuild(state.builder);
     const oldMinis = minis.slice();
     oldMinis.forEach((m) => removeMini(m, true));
     state.trails.slice().forEach(retire);
